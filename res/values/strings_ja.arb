@@ -1,1 +1,11 @@
-{}
+{
+  "language": "jpn",
+  "hello": "こんにちは。",
+  "gallery_tab_name": "ホーム",
+  "settings_tab_name": "設定",
+  "settings_general": "一般",
+  "settings_language": "言語",
+  "settings_data": "データ",
+  "settings_tutorial": "ヘルプ",
+  "cur_account": "アカウント"
+}

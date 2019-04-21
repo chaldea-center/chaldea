@@ -1,1 +1,11 @@
-{}
+{
+  "language": "chs",
+  "hello": "你好！",
+  "gallery_tab_name": "首页",
+  "settings_tab_name": "设置",
+  "settings_general": "通用",
+  "settings_language": "语言",
+  "settings_data": "数据",
+  "settings_tutorial": "使用帮助",
+  "cur_account": "当前账号"
+}

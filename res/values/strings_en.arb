@@ -1,0 +1,11 @@
+{
+  "language": "eng",
+  "hello": "Hello！",
+  "gallery_tab_name": "Home",
+  "settings_tab_name": "Settings",
+  "settings_general": "General",
+  "settings_language": "Language",
+  "settings_data": "Data",
+  "settings_tutorial": "Tutorial",
+  "cur_account": "Current Account"
+}
