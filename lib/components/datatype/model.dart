@@ -12,10 +12,10 @@ part 'model.g.dart';
 class AppData {
   // setting page
   @JsonKey(defaultValue: LangCode.chs)
-  String language = LangCode.chs;
+  String language ;
 
-  @JsonKey(defaultValue: [])
-  List<String> galleries = [];
+  @JsonKey(defaultValue: <String,bool>{})
+  Map<String,bool> galleries;
 
   String curUser;
 
@@ -24,9 +24,9 @@ class AppData {
   Map<String, User> users = <String, User>{};
 
   // functions, getters
-  List<String> get userIDs=>users.keys.toList();
+  List<String> get userIDs=>users.values.map((u)=>u.name).toList();
 
-  AppData({this.language, this.galleries, this.curUser});
+  AppData({this.language= LangCode.chs, this.galleries, this.curUser});
 
   // json_serializable
   factory AppData.fromJson(Map<String, dynamic> data) =>
@@ -38,12 +38,12 @@ class AppData {
 @JsonSerializable()
 class User {
   @JsonKey(nullable: false)
-  String id;
+  String name;
 
-  @JsonKey(defaultValue: 'cn')
-  String server = 'cn';
+  @JsonKey(defaultValue: GameServer.cn)
+  String server;
 
-  User({@required this.id, this.server});
+  User({@required this.name, this.server=GameServer.cn});
 
   factory User.fromJson(Map<String, dynamic> data) => _$UserFromJson(data);
 

@@ -21,10 +21,26 @@ class S implements WidgetsLocalizations {
   @override
   TextDirection get textDirection => TextDirection.ltr;
 
+  String get backup => "Backup to ...";
+  String get backup_restore => "Backup & Restore";
+  String get cancel => "Cancel";
   String get cur_account => "Current Account";
+  String get delete => "Delete";
+  String get edit => "Edit";
   String get gallery_tab_name => "Home";
   String get hello => "Hello！";
+  String get input_error => "Invalid input value.";
+  String get item_title => "Items";
   String get language => "eng";
+  String get more => "More";
+  String get new_account => "New account";
+  String get ok => "OK";
+  String get rename => "Rename";
+  String get restore => "Restore";
+  String get servant_title => "Servant";
+  String get server => "Server";
+  String get server_cn => "CN";
+  String get server_jp => "JP";
   String get settings_data => "Data";
   String get settings_general => "General";
   String get settings_language => "Language";
@@ -41,21 +57,51 @@ class zh_TW extends S {
   @override
   String get gallery_tab_name => "首頁";
   @override
-  String get settings_data => "數據";
+  String get cancel => "Cancel";
   @override
-  String get cur_account => "當前賬號";
+  String get server => "Server";
+  @override
+  String get backup => "Backup to ...";
+  @override
+  String get restore => "Restore";
+  @override
+  String get edit => "Edit";
   @override
   String get settings_general => "通用";
   @override
   String get settings_language => "語言";
   @override
+  String get more => "More";
+  @override
   String get language => "cht";
   @override
+  String get delete => "Delete";
+  @override
+  String get settings_data => "數據";
+  @override
+  String get cur_account => "當前賬號";
+  @override
+  String get rename => "Rename";
+  @override
+  String get input_error => "Invalid input value.";
+  @override
+  String get server_jp => "JP";
+  @override
   String get hello => "你好！";
+  @override
+  String get ok => "OK";
+  @override
+  String get server_cn => "CN";
+  @override
+  String get servant_title => "Servant";
+  @override
+  String get item_title => "Items";
   @override
   String get settings_tab_name => "設置";
   @override
   String get settings_tutorial => "使用幫助";
+  @override
+  String get new_account => "New account";
 }
 
 class ja extends S {
@@ -67,21 +113,51 @@ class ja extends S {
   @override
   String get gallery_tab_name => "ホーム";
   @override
-  String get settings_data => "データ";
+  String get cancel => "Cancel";
   @override
-  String get cur_account => "アカウント";
+  String get server => "Server";
+  @override
+  String get backup => "Backup to ...";
+  @override
+  String get restore => "Restore";
+  @override
+  String get edit => "Edit";
   @override
   String get settings_general => "一般";
   @override
   String get settings_language => "言語";
   @override
+  String get more => "More";
+  @override
   String get language => "jpn";
   @override
+  String get delete => "Delete";
+  @override
+  String get settings_data => "データ";
+  @override
+  String get cur_account => "アカウント";
+  @override
+  String get rename => "Rename";
+  @override
+  String get input_error => "Invalid input value.";
+  @override
+  String get server_jp => "JP";
+  @override
   String get hello => "こんにちは。";
+  @override
+  String get ok => "OK";
+  @override
+  String get server_cn => "CN";
+  @override
+  String get servant_title => "Servant";
+  @override
+  String get item_title => "Items";
   @override
   String get settings_tab_name => "設定";
   @override
   String get settings_tutorial => "ヘルプ";
+  @override
+  String get new_account => "New account";
 }
 
 class en extends S {
@@ -97,21 +173,51 @@ class zh extends S {
   @override
   String get gallery_tab_name => "首页";
   @override
-  String get settings_data => "数据";
+  String get cancel => "Cancel";
   @override
-  String get cur_account => "当前账号";
+  String get server => "Server";
+  @override
+  String get backup => "Backup to ...";
+  @override
+  String get restore => "Restore";
+  @override
+  String get edit => "Edit";
   @override
   String get settings_general => "通用";
   @override
   String get settings_language => "语言";
   @override
+  String get more => "More";
+  @override
   String get language => "chs";
   @override
+  String get delete => "Delete";
+  @override
+  String get settings_data => "数据";
+  @override
+  String get cur_account => "当前账号";
+  @override
+  String get rename => "Rename";
+  @override
+  String get input_error => "Invalid input value.";
+  @override
+  String get server_jp => "JP";
+  @override
   String get hello => "你好！";
+  @override
+  String get ok => "OK";
+  @override
+  String get server_cn => "CN";
+  @override
+  String get servant_title => "Servant";
+  @override
+  String get item_title => "Items";
   @override
   String get settings_tab_name => "设置";
   @override
   String get settings_tutorial => "使用帮助";
+  @override
+  String get new_account => "New account";
 }
 
 

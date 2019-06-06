@@ -7,5 +7,21 @@
   "settings_language": "Language",
   "settings_data": "Data",
   "settings_tutorial": "Tutorial",
-  "cur_account": "Current Account"
+  "cur_account": "Current Account",
+  "cancel": "Cancel",
+  "ok": "OK",
+  "rename": "Rename",
+  "input_error": "Invalid input value.",
+  "delete": "Delete",
+  "new_account": "New account",
+  "server": "Server",
+  "server_cn": "CN",
+  "server_jp": "JP",
+  "backup_restore": "Backup & Restore",
+  "backup": "Backup to ...",
+  "restore": "Restore",
+  "servant_title": "Servant",
+  "item_title": "Items",
+  "edit": "Edit",
+  "more": "More"
 }

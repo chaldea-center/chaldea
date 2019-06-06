@@ -1,3 +1,5 @@
+import 'package:chaldea/components/components.dart';
+import 'package:chaldea/components/split_route.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavigation extends StatefulWidget {
@@ -20,10 +22,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
             //set background color of BottomNavigatorBar
-            canvasColor: Color(0xFFEEEEEF)),
+            canvasColor: MyColors.setting_tile),
         child: BottomNavigationBar(
           onTap: (index) {
             setState(() {
+              SplitRoute.popAndPush(context);
               _curIndex = index;
             });
           },

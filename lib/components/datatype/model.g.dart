@@ -9,8 +9,10 @@ part of model;
 AppData _$AppDataFromJson(Map<String, dynamic> json) {
   return AppData(
       language: json['language'] as String ?? 'chs',
-      galleries:
-          (json['galleries'] as List)?.map((e) => e as String)?.toList() ?? [],
+      galleries: (json['galleries'] as Map<String, dynamic>)?.map(
+            (k, e) => MapEntry(k, e as bool),
+          ) ??
+          {},
       curUser: json['curUser'] as String)
     ..users = (json['users'] as Map<String, dynamic>)?.map(
           (k, e) => MapEntry(
@@ -28,8 +30,8 @@ Map<String, dynamic> _$AppDataToJson(AppData instance) => <String, dynamic>{
 
 User _$UserFromJson(Map<String, dynamic> json) {
   return User(
-      id: json['id'] as String, server: json['server'] as String ?? 'cn');
+      name: json['name'] as String, server: json['server'] as String ?? 'cn');
 }
 
 Map<String, dynamic> _$UserToJson(User instance) =>
-    <String, dynamic>{'id': instance.id, 'server': instance.server};
+    <String, dynamic>{'name': instance.name, 'server': instance.server};

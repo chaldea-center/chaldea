@@ -7,5 +7,20 @@
   "settings_language": "语言",
   "settings_data": "数据",
   "settings_tutorial": "使用帮助",
-  "cur_account": "当前账号"
+  "cur_account": "当前账号",
+  "cancel": "Cancel",
+  "ok": "OK",
+  "rename": "Rename",
+  "input_error": "Invalid input value.",
+  "delete": "Delete",
+  "new_account": "New account",
+  "server": "Server",
+  "server_cn": "CN",
+  "server_jp": "JP",
+  "backup": "Backup to ...",
+  "restore": "Restore",
+  "servant_title": "Servant",
+  "item_title": "Items",
+  "edit": "Edit",
+  "more": "More"
 }

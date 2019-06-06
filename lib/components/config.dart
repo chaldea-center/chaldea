@@ -8,6 +8,7 @@ import 'package:chaldea/components/spec_delegate.dart'
     show DataChangeCallback;
 import 'datatype/model.dart';
 import 'datatype/constants.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 /// app config:
 /// app database
@@ -15,6 +16,7 @@ import 'datatype/constants.dart';
 class Database {
   DataChangeCallback onDataChange;
   AppData data;
+
   // GameData gameData;
 
   Future<Null> loadUserData({String filename = defaultAppDataFilename}) async {
@@ -28,12 +30,12 @@ class Database {
   }
 
   Future<Null> saveUserData({String filename = defaultAppDataFilename}) async {
-    try{
-      final contents=json.encode(data);
+    try {
+      final contents = json.encode(data);
       (await _getLocalFile(filename))
           .writeAsStringSync(contents);
       print('Saved "$filename":\n$contents\n');
-    }catch(e){
+    } catch (e) {
       print('Error saving "$filename"!');
       print(e);
     }
@@ -49,6 +51,10 @@ class Database {
     String contents = (await _getLocalFile(filename)).readAsStringSync();
     print('load json data:\n$contents');
     return jsonDecode(contents);
+  }
+
+  Future<String> loadAsset(String key) async {
+    return await rootBundle.loadString(key);
   }
 
   static final _db = new Database._internal();

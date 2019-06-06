@@ -49,7 +49,7 @@ class SWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Container(
-      color: AppColor.setting_tile,
+      color: MyColors.setting_tile,
       child: ListTile(
         leading: icon,
         title: Text(label),
@@ -73,7 +73,7 @@ class SModal extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Container(
-      color: AppColor.setting_tile,
+      color: MyColors.setting_tile,
       child: ListTile(
         leading: icon,
         title: Text(label),
@@ -84,7 +84,11 @@ class SModal extends StatelessWidget {
               value ?? "",
               style: TextStyle(color: Colors.grey),
             ),
-            Icon(Icons.arrow_forward_ios)
+            IconButton(
+              icon: Icon(Icons.arrow_forward_ios),
+              iconSize: 5.0,
+              onPressed: null,
+            ),
           ],
         ),
         onTap: callback,
@@ -106,7 +110,7 @@ class SSwitch extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Container(
-      color: AppColor.setting_tile,
+      color: MyColors.setting_tile,
       child: SwitchListTile(
         secondary: icon,
         title: Text(label),
@@ -172,11 +176,12 @@ class SGroup extends StatelessWidget {
     final List<Widget> group = children.map((child) {
       final box = Container(
         decoration: BoxDecoration(
-            border: Border(
-                top: _first
-                    ? Divider.createBorderSide(context, width: 0.5)
-                    : BorderSide.none,
-                bottom: Divider.createBorderSide(context, width: 0.5))),
+          border: Border(
+              top: _first
+                  ? Divider.createBorderSide(context, width: 0.5)
+                  : BorderSide.none,
+              bottom: Divider.createBorderSide(context, width: 0.5)),
+        ),
         child: child,
       );
       _first = false;
@@ -213,7 +218,7 @@ class TileGroup extends StatelessWidget {
                     ? Divider.createBorderSide(context, width: 0.5)
                     : BorderSide.none,
                 bottom: Divider.createBorderSide(context, width: 0.5)),
-            color: AppColor.setting_tile),
+            color: MyColors.setting_tile),
         child: tile,
       );
       _first = false;
@@ -230,18 +235,20 @@ class TileGroup extends StatelessWidget {
   }
 }
 
-class SRadios extends StatefulWidget{
+class SRadios extends StatefulWidget {
   final List<Widget> tiles;
 
   const SRadios({Key key, this.tiles}) : super(key: key);
-  @override
-  State<StatefulWidget> createState()=>_SRadiosState();
 
+  @override
+  State<StatefulWidget> createState() => _SRadiosState();
 }
 
 class _SRadiosState extends State<SRadios> {
   @override
   Widget build(BuildContext context) {
-    return TileGroup(tiles: widget.tiles,);
+    return TileGroup(
+      tiles: widget.tiles,
+    );
   }
 }
