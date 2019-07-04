@@ -69,3 +69,6 @@ local.properties
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+.gradle/5.3-rc-2/vcsMetadata-1/
+ios/Frameworks/
+res/data/

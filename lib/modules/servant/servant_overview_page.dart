@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chaldea/components/CustomTile.dart';
+import 'package:chaldea/components/custom_tile.dart';
 import 'package:chaldea/components/datatype/all_datatype.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,9 +15,11 @@ class ServantPage extends StatefulWidget {
 
 class _ServantPageState extends State<ServantPage> {
   List<Servant> svtData = [];
-  String filter = '';
+  String filterString = '';
   Map<int, Widget> widgetMap = {};
   TextEditingController controller = new TextEditingController();
+  FocusNode focusNode = FocusNode();
+  Map<String, int> filters = new Map();
 
   void loadSvtData() {
     db.loadAsset('res/data/svt_list.json').then((jsonData) {
@@ -48,7 +50,9 @@ class _ServantPageState extends State<ServantPage> {
                 child: Container(),
               ),
               Text(
-                  '${Random().nextInt(9) + 1}/${Random().nextInt(10) + 1}/${Random().nextInt(10) + 1} ${Random().nextInt(5) + 1}      '),
+                  '${Random().nextInt(9) + 1}/${Random().nextInt(10) +
+                      1}/${Random().nextInt(10) + 1} ${Random().nextInt(5) +
+                      1}      '),
             ],
           ),
           trailing: Icon(Icons.arrow_forward_ios),
@@ -70,7 +74,7 @@ class _ServantPageState extends State<ServantPage> {
     // List Style
     // img size=132*144
     List<Widget> tiles = [];
-    StringFilter filter =StringFilter(filterString);
+    StringFilter filter = StringFilter(filterString);
 //    List<String> words = filter.split(RegExp(r'\s+'));
 //    words.removeWhere((item) => item == '');
 
@@ -84,12 +88,12 @@ class _ServantPageState extends State<ServantPage> {
         svt.info.nicknames.join('\t')
       ].join('\t');
 
-      if(filter.match(string)){
+      if (filter.match(string)) {
         tiles.add(widgetMap[svt.no]);
       }
     });
 
-    print('building listView: filter="$filterString", length=${tiles.length}');
+//    print('building listView: filter="$filterString", length=${tiles.length}');
     return ListView.separated(
         padding: EdgeInsets.only(top: 6.0),
         shrinkWrap: true,
@@ -103,63 +107,242 @@ class _ServantPageState extends State<ServantPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     loadSvtData();
   }
+
   @override
   void dispose() {
-    // TODO: implement dispose
     this.controller.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    Widget body = buildListView(filterString);
     return Scaffold(
       appBar: AppBar(
         title: Text('Servant'),
         leading: BackButton(),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.filter_list),
-            onPressed: () {
-              setState(() {
-                print('refresh state');
-              });
-            },
-          )
-        ],
-      ),
-      body: svtData.length == 0
-          ? Center(child: Text('no data'))
-          : Column(
-              children: <Widget>[
-                TextField(
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(45.0),
+          child: Theme(
+            data: Theme.of(context).copyWith(primaryColor: Colors.grey),
+            child: Container(
+                height: 45.0,
+                padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0),
+                child: TextField(
                   controller: controller,
+                  style: TextStyle(fontSize: 13.0),
                   decoration: InputDecoration(
+                      filled: true,
+                      contentPadding: EdgeInsets.zero,
+                      border: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              width: 0.0, style: BorderStyle.none),
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(10.0))),
+                      fillColor: Colors.white,
                       hintText: 'Seach',
-                      prefixIcon: Icon(Icons.search),
+                      prefixIcon: Icon(
+                        Icons.search,
+                        size: 20.0,
+                      ),
                       suffixIcon: IconButton(
-                        icon: Icon(Icons.clear),
+                        padding: EdgeInsets.zero,
+                        icon: Icon(
+                          Icons.clear,
+                          size: 20.0,
+                        ),
                         onPressed: () {
                           setState(() {
-                            controller.text='';
-                            filter='';
+                            controller.text = '';
+                            filterString = '';
                           });
                         },
                       )),
                   onChanged: (s) {
                     setState(() {
-                      filter = s;
+                      filterString = s;
                     });
                   },
-                ),
-                Expanded(
-                  child: buildListView(filter),
-                )
-              ],
-            ),
+                  onSubmitted: (s) {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                  },
+                )),
+          ),
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.filter_list),
+            onPressed: () {
+              buildFilterSheet(context);
+            },
+          )
+        ],
+      ),
+      body: body,
     );
+  }
+
+  void buildFilterSheet(BuildContext context) {
+    //@formatter:off
+  final classNames = ['Saber', 'Archer', 'Lancer', 'Rider', 'Caster',
+    'Assassin', 'Berserker', 'Shielder', 'Ruler', 'Avenger', 'MoonCancer',
+    'Alterego', 'Foreigner', 'Beast'];
+  //@formatter:on
+
+  showModalBottomSheet(context: context, builder: (context) {
+    return StatefulBuilder(builder: (BuildContext sheetContext, setSheetState) {
+      List<Widget> classWidgets = [];
+      filters['class'] = filters['class'] ?? 0;
+      for (int index = 0; index < classNames.length; index++) {
+        final flag = (filters['class'] & 1 << index) != 0;
+//        print('flag=$flag');
+        classWidgets.add(GestureDetector(
+          onTap: () {
+            filters['class'] = filters['class'] ^ (1 << index);
+            print('changed! [class]=${filters['class'].toRadixString(2)}');
+            setState(() {});
+            setSheetState(() {});
+          },
+          child: CachedNetworkImage(
+              width: 30.0,
+              imageUrl:
+              'https://fgo.wiki/images${flag
+                  ? '/4/41/金卡Saber.png'
+                  : '/5/5e/铜卡Saber.png'}'),
+        ));
+      }
+      return Scaffold(
+        body: Builder(
+          builder: (context) =>
+              GestureDetector(
+                  onTap: () {},
+                  child: ListView(
+                    children: <Widget>[
+                      ListTile(
+                        leading: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 0.0),
+                          child: Text('Class'),
+                        ),
+                        title: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 0.0),
+                          child: Row(
+                            children: <Widget>[
+                              Flexible(flex: 2,
+                                fit: FlexFit.tight,
+                                child: GridView.count(
+                                  crossAxisSpacing: 5.0,
+                                  mainAxisSpacing: 2.5,
+                                  shrinkWrap: true,
+                                  crossAxisCount: 1,
+                                  children: <Widget>[
+                                    GestureDetector(
+                                      onTap: () {
+                                        filters['class'] =
+                                            (1 << classNames.length) - 1;
+                                        print('select all');
+                                        setState(() {});
+                                        setSheetState(() {});
+                                      },
+                                      child: CachedNetworkImage(
+                                          imageUrl:
+                                          'https://fgo.wiki/images${filters['class'] ==
+                                              (1 << classNames.length) - 1
+                                              ? '/4/41/金卡Saber.png'
+                                              : '/5/5e/铜卡Saber.png'}'),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        filters['class'] = 0;
+                                        print('clear all');
+                                        setState(() {});
+                                        setSheetState(() {});
+                                      },
+                                      child: CachedNetworkImage(
+                                          width: 30.0,
+                                          imageUrl:
+                                          'https://fgo.wiki/images${filters['class'] ==
+                                              0
+                                              ? '/4/41/金卡Saber.png'
+                                              : '/5/5e/铜卡Saber.png'}'),
+                                    )
+                                  ],),),
+                              Flexible(flex: 1,child: Container(),),
+                              Flexible(flex: 14,
+                                fit: FlexFit.tight,
+                                child: GridView.count(
+                                  crossAxisSpacing: 5.0,
+                                  mainAxisSpacing: 2.5,
+                                  shrinkWrap: true,
+                                  crossAxisCount: 7,
+                                  children: classWidgets,
+                                ),)
+
+                            ],
+                          ),
+                        ),
+                      ),
+                      Divider(),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+
+                        children: <Widget>[
+                          Flexible(
+                            flex: 1, fit: FlexFit.tight, child: Text('Class'),),
+                          Flexible(flex: 5, fit: FlexFit.tight, child: Row(
+                            children: <Widget>[
+                              Flexible(flex: 1, fit: FlexFit.tight, child: Wrap(
+                                runSpacing: 5.0,
+                                spacing: 5.0,
+                                children: <Widget>[
+                                  GestureDetector(
+                                    onTap: () {
+                                      filters['class'] =
+                                          (1 << classNames.length) - 1;
+                                      print('select all');
+                                      setState(() {});
+                                      setSheetState(() {});
+                                    },
+                                    child: CachedNetworkImage(
+                                        width: 30.0,
+                                        imageUrl:
+                                        'https://fgo.wiki/images${filters['class'] ==
+                                            (1 << classNames.length) - 1
+                                            ? '/4/41/金卡Saber.png'
+                                            : '/5/5e/铜卡Saber.png'}'),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      filters['class'] = 0;
+                                      print('clear all');
+                                      setState(() {});
+                                      setSheetState(() {});
+                                    },
+                                    child: CachedNetworkImage(
+                                        width: 30.0,
+                                        imageUrl:
+                                        'https://fgo.wiki/images${filters['class'] ==
+                                            0
+                                            ? '/4/41/金卡Saber.png'
+                                            : '/5/5e/铜卡Saber.png'}'),
+                                  )
+                                ],),),
+                              Flexible(flex: 6, fit: FlexFit.tight, child: Wrap(
+                                spacing: 5.0,
+                                runSpacing: 5.0,
+                                children: classWidgets,
+                              ),)
+                            ],
+                          ),)
+                        ],),
+                    ],
+                  )),
+        ),
+      );
+    },
+    );
+  });
   }
 }

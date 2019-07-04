@@ -86,7 +86,6 @@ class StringFilter {
 
   bool match(String string, {bool matchCase = false}) {
     if (patterns.length == 0){
-      print('filter is empty');
       return true;
     };
     if (!matchCase) {

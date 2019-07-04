@@ -13,6 +13,7 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
       : super(settings: settings);
 
   final WidgetBuilder builder;
+  FocusScopeNode node=FocusScopeNode();
 
   //if builder==null, just pop no push
   static void popAndPush(BuildContext context,
@@ -44,10 +45,10 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
     );
   }
 
-  static Widget createDetailPage(BuildContext context, Widget child) {
+  // DetailPage should not be created outside SplitRoute()
+  Widget createDetailPage(BuildContext context, Widget child) {
     final tablet = isTablet(context);
-    FocusScopeNode node = FocusScopeNode();
-    FocusScope.of(context).setFirstFocus(node);
+//    FocusScope.of(context).setFirstFocus(node);
     return Positioned(
         left: tablet
             ? MediaQuery.of(context).size.width *
@@ -60,14 +61,14 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
               BoxDecoration(border: Border(left: BorderSide(width: 0.0))),
           child: FocusScope(
             node: node,
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height,
-              width: tablet
-                  ? MediaQuery.of(context).size.width *
-                      (1 - kTabletMasterContainerRatio / 100)
-                  : MediaQuery.of(context).size.width,
-              child: child,
-            ),
+           child: SizedBox(
+             height: MediaQuery.of(context).size.height,
+             width: tablet
+                 ? MediaQuery.of(context).size.width *
+                 (1 - kTabletMasterContainerRatio / 100)
+                 : MediaQuery.of(context).size.width,
+             child: child,
+           ),
           ),
         ));
   }
