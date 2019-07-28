@@ -1,6 +1,6 @@
 import 'package:chaldea/generated/i18n.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show SystemChannels;
 
 class InputCancelOkDialog extends StatefulWidget {
   final String title;

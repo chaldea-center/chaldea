@@ -1,5 +1,5 @@
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/datatype/constants.dart';
+import 'package:chaldea/components/constants.dart';
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:chaldea/modules/home/home.dart';
 import 'package:flutter/material.dart';

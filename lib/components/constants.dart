@@ -87,7 +87,7 @@ class StringFilter {
   bool match(String string, {bool matchCase = false}) {
     if (patterns.length == 0){
       return true;
-    };
+    }
     if (!matchCase) {
       string = string.toLowerCase();
       patterns = patterns.map((p) => p.toLowerCase()).toList();

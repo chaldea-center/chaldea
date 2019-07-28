@@ -1,6 +1,6 @@
+///TODO: add transition animation and swipe support
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 const kTabletMasterContainerRatio = 38; // percentage
 

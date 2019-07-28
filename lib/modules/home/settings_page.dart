@@ -1,5 +1,5 @@
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/datatype/constants.dart';
+import 'package:chaldea/components/constants.dart';
 import 'package:chaldea/modules/home/settings_item.dart';
 import 'package:chaldea/modules/home/subpage/account_page.dart';
 import 'package:chaldea/modules/home/subpage/lang_page.dart';

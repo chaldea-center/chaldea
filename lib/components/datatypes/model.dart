@@ -1,13 +1,6 @@
-/// run in terminal [flutter packages pub run build_runner watch/build]
-library model;
-
-import 'package:chaldea/components/datatype/constants.dart';
-import 'package:json_annotation/json_annotation.dart';
-import 'package:meta/meta.dart';
-
-part 'model.g.dart';
-
 /// App settings and users data
+part of datatypes;
+
 @JsonSerializable()
 class AppData {
   // setting page

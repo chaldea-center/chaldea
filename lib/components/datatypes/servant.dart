@@ -1,10 +1,5 @@
-/// run in terminal [flutter packages pub run build_runner watch/build]
-library servant;
-
-import 'package:chaldea/components/datatype/constants.dart';
-import 'package:json_annotation/json_annotation.dart';
-
-part 'servant.g.dart';
+/// Servant data
+part of datatypes;
 
 @JsonSerializable()
 class Servant {

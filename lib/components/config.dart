@@ -1,18 +1,17 @@
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:chaldea/components/spec_delegate.dart'
     show DataChangeCallback;
-import 'datatype/model.dart';
-import 'datatype/constants.dart';
+import 'package:chaldea/components/constants.dart';
+import 'datatypes/datatypes.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 /// app config:
-/// app database
-/// user database
+///  - app database
+///  - user database
 class Database {
   DataChangeCallback onDataChange;
   AppData data;
