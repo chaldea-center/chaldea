@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/constants.dart';
 import 'package:chaldea/modules/blank_page.dart';
@@ -15,40 +17,45 @@ class _ChaldeaState extends State<Chaldea> {
 
   void onDataChange({Locale locale}) {
     setState(() {
-      if(null!=locale){
+      if (null != locale) {
         _localOverrideDelegate =
             SpecifiedLocalizationDelegate(locale ?? Locale('zh'));
       }
-      db.saveUserData();
+      db.saveAppData();
     });
   }
 
   @override
   void initState() {
-    db.onDataChange = this.onDataChange;
-    db.loadUserData().then((_) {
-      setState(() {
-        if (LangCode.codes.contains(db.data.language)) {
-          _localOverrideDelegate = SpecifiedLocalizationDelegate(
-              LangCode.getLocale(db.data.language));
-        }
-        //check/initial data
-        if (null == db.data.users || 0 == db.data.users.length) {
-          // create default account
-          final name = "default";
-          db.data
-            ..curUser = name
-            ..users = {name: User(name: name, server: GameServer.cn)};
-        }
+    // update anything after db.initial()!!!
+    db.initial().then((_) {
+      db.onDataChange = this.onDataChange;
+      db.loadUserData().then((_) {
+        setState(() {
+          if (LangCode.codes.contains(db.appData.language)) {
+            _localOverrideDelegate = SpecifiedLocalizationDelegate(
+                LangCode.getLocale(db.appData.language));
+          }
+          //check/initial data
+          if (null == db.appData.users || 0 == db.appData.users.length) {
+            // create default account
+            final name = "default";
+            db.appData
+              ..curUser = name
+              ..users = {name: User(name: name, server: GameServer.cn)};
+          }
+        });
       });
+      //load and extract icons
+      db.loadZipAssets('res/data/icons.zip', dir: 'icons');
     });
+    //use default before db.initial() and db.load***
     _localOverrideDelegate = SpecifiedLocalizationDelegate(Locale('zh', ''));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Chaldea",
@@ -59,7 +66,9 @@ class _ChaldeaState extends State<Chaldea> {
         GlobalWidgetsLocalizations.delegate
       ],
       supportedLocales: S.delegate.supportedLocales,
-      home: db.data==null?BlankPage():HomePage(), //pass a function for exit button with context
+      home: db.appData == null
+          ? BlankPage()
+          : HomePage(), //pass a function for exit button with context
     );
   }
 }

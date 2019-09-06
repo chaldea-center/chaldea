@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-const String defaultAppDataFilename = 'userdata.json';
+const String appDataFilename = 'appdata.json';
+const String userDataFilename = 'userdata.json';
 
 class LangCode {
   // code must match S.of(context).language in every .arb file
@@ -85,7 +86,7 @@ class StringFilter {
   }
 
   bool match(String string, {bool matchCase = false}) {
-    if (patterns.length == 0){
+    if (patterns.length == 0) {
       return true;
     }
     if (!matchCase) {
@@ -115,4 +116,40 @@ class StringFilter {
     }
     return matched;
   }
+}
+
+String formatNumberToString<T>(T number, [String style]) {
+  if(number is String||number is double){
+    return '$number';
+  }else if(number is int){
+    int num = number;
+    switch (style) {
+      case 'percent':
+      // return percent of num/100, num=1230->return 12.3%
+        return num % 100 == 0 ? '${num ~/ 100}%' : '${num / 100.0}%';
+      case 'kilo':
+        if (num % 1e9 == 0) {
+          return formatNumberToString(num ~/ 1e9, 'decimal')+'G';
+        } else if (num % 1e6 == 0) {
+          return formatNumberToString(num ~/ 1e6, 'decimal')+'M';
+        } else if (num % 1e3 == 0) {
+          return formatNumberToString(num ~/ 1e3, 'decimal')+'K';
+        } else {
+          return formatNumberToString(num, 'decimal');
+        }
+        break;
+      case 'decimal':
+        String s = '';
+        while (num > 0) {
+          s = '${num % 1000},$s';
+          num = num ~/ 1000;
+        }
+        return s.substring(0, s.length - 1);
+      default:
+        return '$num';
+    }
+  }else{
+    throw TypeError();
+  }
+
 }

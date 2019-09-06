@@ -36,7 +36,7 @@ class _LanguagePageState extends State<LanguagePage> {
                 ],
               ),
               onTap: () {
-                db.data.language = code;
+                db.appData.language = code;
                 db.onDataChange(locale: LangCode.getLocale(code));
               },
             );

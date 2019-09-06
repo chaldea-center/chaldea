@@ -2,14 +2,37 @@
 part of datatypes;
 
 @JsonSerializable()
+class GameData{
+  Map<String,Servant> servants;
+  Map<String,String> crafts;
+  GameData({this.servants,this.crafts});
+
+  factory GameData.fromJson(Map<String, dynamic> data) =>
+      _$GameDataFromJson(data);
+
+  Map<String, dynamic> toJson() => _$GameDataToJson(this);
+}
+
+@JsonSerializable()
 class Servant {
   int no;
   String mcLink;
   String icon;
   ServantBaseInfo info;
   List<NobelPhantasm> nobelPhantasm;
+  List<List<Skill>> activeSkills;
+  List<Skill> passiveSkills;
+  ItemCost itemCost;
 
-  Servant({this.no, this.mcLink, this.info, this.nobelPhantasm});
+  Servant(
+      {this.no,
+      this.mcLink,
+      this.icon,
+      this.info,
+      this.nobelPhantasm,
+      this.activeSkills,
+      this.passiveSkills,
+      this.itemCost});
 
   factory Servant.fromJson(Map<String, dynamic> data) =>
       _$ServantFromJson(data);
@@ -127,4 +150,67 @@ class NobelPhantasm {
       this.rank,
       this.typeText,
       this.effect});
+}
+
+@JsonSerializable()
+class Skill {
+  String state;
+  String openTime;
+  String openCondition;
+  String openQuest;
+  String name;
+  String rank;
+  String icon;
+  int cd;
+  List<Effect> effects;
+
+  factory Skill.fromJson(Map<String, dynamic> data) => _$SkillFromJson(data);
+
+  Map<String, dynamic> toJson() => _$SkillToJson(this);
+
+  Skill({this.state, this.openTime, this.openCondition, this.openQuest,
+      this.name, this.rank, this.icon, this.cd, this.effects});
+}
+
+@JsonSerializable()
+class Effect {
+  String description;
+  String target;
+  String valueType;
+  List<dynamic> lvData;
+
+  factory Effect.fromJson(Map<String, dynamic> data) => _$EffectFromJson(data);
+
+  Map<String, dynamic> toJson() => _$EffectToJson(this);
+
+  Effect({this.description, this.target, this.valueType, this.lvData});
+}
+
+@JsonSerializable()
+class ItemCost{
+  List<List<Item>> ascension;
+  List<List<Item>> skill;
+
+  List<String> dressName;
+  List<List<Item>> dress;
+
+  factory ItemCost.fromJson(Map<String, dynamic> data) =>
+      _$ItemCostFromJson(data);
+
+  Map<String, dynamic> toJson() => _$ItemCostToJson(this);
+
+  ItemCost({this.ascension,this.skill,this.dressName,this.dress});
+}
+
+@JsonSerializable()
+class Item{
+  String name;
+  int num;
+
+  factory Item.fromJson(Map<String, dynamic> data) =>
+      _$ItemFromJson(data);
+
+  Map<String, dynamic> toJson() => _$ItemToJson(this);
+
+  Item({this.name, this.num});
 }

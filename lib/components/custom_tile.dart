@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// modified from [ListTile].
 class CustomTile extends StatelessWidget {
   final Widget leading;
   final Widget title;
@@ -7,6 +8,7 @@ class CustomTile extends StatelessWidget {
   final Widget trailing;
   final EdgeInsets contentPadding;
   final titlePadding;
+  final alignment;
   final bool enabled;
   final bool selected;
   final GestureTapCallback onTap;
@@ -20,11 +22,13 @@ class CustomTile extends StatelessWidget {
       this.trailing,
       this.contentPadding,
       this.titlePadding,
+      this.alignment = CrossAxisAlignment.center,
       this.enabled = true,
       this.selected = false,
       this.onTap,
       this.onLongPress})
-      : assert(enabled != null),
+      : assert(alignment != null),
+        assert(enabled != null),
         assert(selected != null),
         super(key: key);
 
@@ -69,7 +73,7 @@ class CustomTile extends StatelessWidget {
 
     final EdgeInsets resolvedContentPadding = contentPadding ??
         tileTheme?.contentPadding ??
-        EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0);
+        EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
     final EdgeInsets resolvedTitlePadding =
         titlePadding ?? EdgeInsets.symmetric(horizontal: 6.0);
     List<Widget> allElements = [
@@ -79,6 +83,8 @@ class CustomTile extends StatelessWidget {
         child: Padding(
             padding: resolvedTitlePadding,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: subtitleText == null
                   ? [titleText]
@@ -97,7 +103,7 @@ class CustomTile extends StatelessWidget {
         child: Padding(
           padding: resolvedContentPadding,
           child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: alignment,
               mainAxisSize: MainAxisSize.max,
               children: allElements),
         ),

@@ -5,6 +5,7 @@ import 'package:chaldea/modules/servant/servant_overview_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/services.dart';
 
 class Gallery extends StatefulWidget {
   @override
@@ -20,10 +21,10 @@ class GalleryState extends State<Gallery> {
   void initState() {
     super.initState();
     // here db.data has not fully loaded. (loading)
-    if (db.data.galleries == null) {
+    if (db.appData.galleries == null) {
       // set default value
       print('why galleries=null ????');
-      db.data.galleries = {};
+      db.appData.galleries = {};
     }
   }
 
@@ -45,17 +46,17 @@ class GalleryState extends State<Gallery> {
           routeName: '/more',
           builder: (context) => EditGalleryPage())
     };
-    db.data.galleries = GalleryItem.allItems.map((key, item) {
-      return MapEntry<String, bool>(key, db.data.galleries[key] ?? false);
+    db.appData.galleries = GalleryItem.allItems.map((key, item) {
+      return MapEntry<String, bool>(key, db.appData.galleries[key] ?? false);
     });
-    db.data.galleries[GalleryItem.more] = true;
+    db.appData.galleries[GalleryItem.more] = true;
   }
 
   @override
   Widget build(BuildContext context) {
     _getAllGalleries(context);
     List<Widget> gridItems = [];
-    db.data.galleries.forEach((v, isShown) {
+    db.appData.galleries.forEach((v, isShown) {
       if (isShown || v == GalleryItem.more) {
         final item = GalleryItem.allItems[v];
         gridItems.add(DecoratedBox(
@@ -112,8 +113,8 @@ class GalleryState extends State<Gallery> {
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.accessibility),
-              onPressed: () {
-                db.onDataChange(locale: Locale('en', ''));
+              onPressed: () async {
+
               },
             ),
           ],
@@ -123,8 +124,8 @@ class GalleryState extends State<Gallery> {
             AspectRatio(
               aspectRatio: 8.0 / 3.0,
               child: Slider(<String>[
-                "https://fgo.wiki/images/7/7d/Saber_Wars%E5%A4%8D%E5%88%BB.png",
-                "https://fgo.wiki/images/e/ec/%E5%94%A0%E5%94%A0%E5%8F%A8%E5%8F%A8%E5%B8%9D%E9%83%BD%E5%9C%A3%E6%9D%AF%E5%A5%87%E8%B0%AD%E5%A4%8D%E5%88%BB_jp.png",
+//                "https://fgo.wiki/images/7/7d/Saber_Wars%E5%A4%8D%E5%88%BB.png",
+//                "https://fgo.wiki/images/e/ec/%E5%94%A0%E5%94%A0%E5%8F%A8%E5%8F%A8%E5%B8%9D%E9%83%BD%E5%9C%A3%E6%9D%AF%E5%A5%87%E8%B0%AD%E5%A4%8D%E5%88%BB_jp.png",
               ]),
             ),
             GridView.count(
@@ -164,8 +165,8 @@ class _SliderState extends State<Slider> {
         return CachedNetworkImage(
           imageUrl: widget.imgUrls[index],
           placeholder: (context, url) => Center(
-                child: CircularProgressIndicator(),
-              ),
+            child: CircularProgressIndicator(),
+          ),
           errorWidget: (context, url, error) => Icon(Icons.error),
         );
       },

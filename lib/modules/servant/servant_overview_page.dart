@@ -1,9 +1,8 @@
-import 'dart:convert';
 import 'dart:math';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chaldea/components/custom_tile.dart';
 import 'package:chaldea/components/datatypes/datatypes.dart';
+import 'package:chaldea/modules/servant/servant_detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:chaldea/components/components.dart';
@@ -14,91 +13,76 @@ class ServantPage extends StatefulWidget {
 }
 
 class _ServantPageState extends State<ServantPage> {
-  List<Servant> svtData = [];
   String filterString = '';
-  Map<int, Widget> widgetMap = {};
   TextEditingController controller = new TextEditingController();
   FocusNode focusNode = FocusNode();
   Map<String, int> filters = new Map();
 
-  void loadSvtData() {
-    db.loadAsset('res/data/svt_list.json').then((jsonData) {
-      Map<String, dynamic> decoded = jsonDecode(jsonData);
-      decoded.forEach((no, svt) {
-        svtData.add(Servant.fromJson(svt));
-      });
-      print(svtData[1].info.toJson());
-      svtData.forEach((svt) {
-        widgetMap[svt.no] = CustomTile(
-          leading: SizedBox(
-            width: 13.2 * 4.5,
-            height: 14.4 * 4.5,
-            child: CachedNetworkImage(
-              imageUrl: svt.icon,
-              placeholder: (context, url) => Center(),
-              errorWidget: (context, url, error) => Text(svt.info.name),
-            ),
-          ),
-          title: Text('${svt.mcLink}'),
-          subtitle: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text(svt.info.className),
-              Expanded(
-                flex: 1,
-                child: Container(),
-              ),
-              Text(
-                  '${Random().nextInt(9) + 1}/${Random().nextInt(10) + 1}/${Random().nextInt(10) + 1} ${Random().nextInt(5) + 1}      '),
-            ],
-          ),
-          trailing: Icon(Icons.arrow_forward_ios),
-          contentPadding: null,
-          //EdgeInsets.symmetric(vertical: 3.0,horizontal: 8.0),
-          titlePadding: null,
-          //EdgeInsets.symmetric(horizontal: 6.0),
-          onTap: () {
-            print('Tap No.${svt.no} - ${svt.info.nicknames}');
-//            Navigator.of(context).push(SplitRoute(builde))
-          },
-        );
-      });
-      print('loaded svtData:length=${svtData.length}.');
-      setState(() {});
-    });
-  }
-
   Widget buildListView(String filterString) {
     // List Style
     // img size=132*144
-    List<Widget> tiles = [];
+    List<String> noList = [];
     StringFilter filter = StringFilter(filterString);
-//    List<String> words = filter.split(RegExp(r'\s+'));
-//    words.removeWhere((item) => item == '');
 
-    svtData.forEach((svt) {
-      String string = [
-        svt.no,
-        svt.info.cv,
-        svt.mcLink,
-        svt.info.name,
-        svt.info.illustName,
-        svt.info.nicknames.join('\t')
-      ].join('\t');
+    if(filterString!=''){
+      db.gameData.servants.forEach((no,svt) {
+        String string = [
+          svt.no,
+          svt.info.cv,
+          svt.mcLink,
+          svt.info.name,
+          svt.info.illustName,
+          svt.info.nicknames.join('\t')
+        ].join('\t');
 
-      if (filter.match(string)) {
-        tiles.add(widgetMap[svt.no]);
-      }
-    });
+        if (filter.match(string)) {
+          noList.add(svt.no.toString());
+        }
+      });
+    }else{
+      noList=db.gameData.servants.keys.toList();
+    }
 
-//    print('building listView: filter="$filterString", length=${tiles.length}');
+    print('building listView: filter="$filterString", length=${noList.length}');
     return ListView.separated(
-        padding: EdgeInsets.only(top: 6.0),
         shrinkWrap: true,
         physics: ScrollPhysics(),
-        itemBuilder: (context, index) => tiles[index],
-        separatorBuilder: (context, index) => Divider(),
-        itemCount: tiles.length);
+        itemBuilder: (context, index){
+          final svt=db.gameData.servants[noList[index]];
+          final plan=db.userData.servants[noList[index]];
+          return CustomTile(
+            leading: SizedBox(
+              width: 132 * 0.45,
+              height: 144 * 0.45,
+              child: Image.file(db.getLocalFile(svt.icon,rel: 'icons')),
+            ),
+            title: Text('${svt.mcLink}'),
+            subtitle: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text(svt.info.className),
+                Expanded(
+                  flex: 1,
+                  child: Container(),
+                ),
+                Text(plan ==null?'-':plan.curAscensionLv.toString()),
+              ],
+            ),
+            trailing: Icon(Icons.arrow_forward_ios),
+            contentPadding: null,
+            //EdgeInsets.symmetric(vertical: 3.0,horizontal: 8.0),
+            titlePadding: null,
+            //EdgeInsets.symmetric(horizontal: 6.0),
+            onTap: () {
+              print('Tap No.${svt.no} - ${svt.info.nicknames}');
+              Navigator.push(context,
+                  SplitRoute(builder: (context) => ServantDetailPage(svt)));
+            },
+          );
+        },
+        separatorBuilder: (context, index) =>
+            Divider(height: 1.0, indent: 16.0),
+        itemCount: noList.length);
 
     //TODO: Grid style
   }
@@ -106,7 +90,6 @@ class _ServantPageState extends State<ServantPage> {
   @override
   void initState() {
     super.initState();
-    loadSvtData();
   }
 
   @override
@@ -117,7 +100,6 @@ class _ServantPageState extends State<ServantPage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget body = buildListView(filterString);
     return Scaffold(
       appBar: AppBar(
         title: Text('Servant'),
@@ -179,7 +161,7 @@ class _ServantPageState extends State<ServantPage> {
           )
         ],
       ),
-      body: body,
+      body: buildListView(filterString),
     );
   }
 

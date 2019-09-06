@@ -14,12 +14,11 @@ AppData _$AppDataFromJson(Map<String, dynamic> json) {
         ) ??
         {},
     curUser: json['curUser'] as String,
-  )
-    ..users = (json['users'] as Map<String, dynamic>)?.map(
-          (k, e) => MapEntry(
-              k, e == null ? null : User.fromJson(e as Map<String, dynamic>)),
-        ) ??
-        {};
+  )..users = (json['users'] as Map<String, dynamic>)?.map(
+        (k, e) => MapEntry(
+            k, e == null ? null : User.fromJson(e as Map<String, dynamic>)),
+      ) ??
+      {};
 }
 
 Map<String, dynamic> _$AppDataToJson(AppData instance) => <String, dynamic>{
@@ -41,10 +40,28 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'server': instance.server,
     };
 
+GameData _$GameDataFromJson(Map<String, dynamic> json) {
+  return GameData(
+    servants: (json['servants'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(
+          k, e == null ? null : Servant.fromJson(e as Map<String, dynamic>)),
+    ),
+    crafts: (json['crafts'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(k, e as String),
+    ),
+  );
+}
+
+Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
+      'servants': instance.servants,
+      'crafts': instance.crafts,
+    };
+
 Servant _$ServantFromJson(Map<String, dynamic> json) {
   return Servant(
     no: json['no'] as int,
     mcLink: json['mcLink'] as String,
+    icon: json['icon'] as String,
     info: json['info'] == null
         ? null
         : ServantBaseInfo.fromJson(json['info'] as Map<String, dynamic>),
@@ -53,7 +70,20 @@ Servant _$ServantFromJson(Map<String, dynamic> json) {
             ? null
             : NobelPhantasm.fromJson(e as Map<String, dynamic>))
         ?.toList(),
-  )..icon = json['icon'] as String;
+    activeSkills: (json['activeSkills'] as List)
+        ?.map((e) => (e as List)
+            ?.map((e) =>
+                e == null ? null : Skill.fromJson(e as Map<String, dynamic>))
+            ?.toList())
+        ?.toList(),
+    passiveSkills: (json['passiveSkills'] as List)
+        ?.map(
+            (e) => e == null ? null : Skill.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+    itemCost: json['itemCost'] == null
+        ? null
+        : ItemCost.fromJson(json['itemCost'] as Map<String, dynamic>),
+  );
 }
 
 Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
@@ -62,6 +92,9 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'icon': instance.icon,
       'info': instance.info,
       'nobelPhantasm': instance.nobelPhantasm,
+      'activeSkills': instance.activeSkills,
+      'passiveSkills': instance.passiveSkills,
+      'itemCost': instance.itemCost,
     };
 
 ServantBaseInfo _$ServantBaseInfoFromJson(Map<String, dynamic> json) {
@@ -182,4 +215,148 @@ Map<String, dynamic> _$NobelPhantasmToJson(NobelPhantasm instance) =>
       'rank': instance.rank,
       'typeText': instance.typeText,
       'effect': instance.effect,
+    };
+
+Skill _$SkillFromJson(Map<String, dynamic> json) {
+  return Skill(
+    state: json['state'] as String,
+    openTime: json['openTime'] as String,
+    openCondition: json['openCondition'] as String,
+    openQuest: json['openQuest'] as String,
+    name: json['name'] as String,
+    rank: json['rank'] as String,
+    icon: json['icon'] as String,
+    cd: json['cd'] as int,
+    effects: (json['effects'] as List)
+        ?.map((e) =>
+            e == null ? null : Effect.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+  );
+}
+
+Map<String, dynamic> _$SkillToJson(Skill instance) => <String, dynamic>{
+      'state': instance.state,
+      'openTime': instance.openTime,
+      'openCondition': instance.openCondition,
+      'openQuest': instance.openQuest,
+      'name': instance.name,
+      'rank': instance.rank,
+      'icon': instance.icon,
+      'cd': instance.cd,
+      'effects': instance.effects,
+    };
+
+Effect _$EffectFromJson(Map<String, dynamic> json) {
+  return Effect(
+    description: json['description'] as String,
+    target: json['target'] as String,
+    valueType: json['valueType'] as String,
+    lvData: json['lvData'] as List,
+  );
+}
+
+Map<String, dynamic> _$EffectToJson(Effect instance) => <String, dynamic>{
+      'description': instance.description,
+      'target': instance.target,
+      'valueType': instance.valueType,
+      'lvData': instance.lvData,
+    };
+
+ItemCost _$ItemCostFromJson(Map<String, dynamic> json) {
+  return ItemCost(
+    ascension: (json['ascension'] as List)
+        ?.map((e) => (e as List)
+            ?.map((e) =>
+                e == null ? null : Item.fromJson(e as Map<String, dynamic>))
+            ?.toList())
+        ?.toList(),
+    skill: (json['skill'] as List)
+        ?.map((e) => (e as List)
+            ?.map((e) =>
+                e == null ? null : Item.fromJson(e as Map<String, dynamic>))
+            ?.toList())
+        ?.toList(),
+    dressName: (json['dressName'] as List)?.map((e) => e as String)?.toList(),
+    dress: (json['dress'] as List)
+        ?.map((e) => (e as List)
+            ?.map((e) =>
+                e == null ? null : Item.fromJson(e as Map<String, dynamic>))
+            ?.toList())
+        ?.toList(),
+  );
+}
+
+Map<String, dynamic> _$ItemCostToJson(ItemCost instance) => <String, dynamic>{
+      'ascension': instance.ascension,
+      'skill': instance.skill,
+      'dressName': instance.dressName,
+      'dress': instance.dress,
+    };
+
+Item _$ItemFromJson(Map<String, dynamic> json) {
+  return Item(
+    name: json['name'] as String,
+    num: json['num'] as int,
+  );
+}
+
+Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
+      'name': instance.name,
+      'num': instance.num,
+    };
+
+Plans _$PlansFromJson(Map json) {
+  return Plans(
+    servants: (json['servants'] as Map)?.map(
+      (k, e) => MapEntry(
+          k as String,
+          e == null
+              ? null
+              : ServantPlan.fromJson((e as Map)?.map(
+                  (k, e) => MapEntry(k as String, e),
+                ))),
+    ),
+    items: (json['items'] as Map)?.map(
+      (k, e) => MapEntry(k as String, e as int),
+    ),
+  );
+}
+
+Map<String, dynamic> _$PlansToJson(Plans instance) => <String, dynamic>{
+      'servants': instance.servants,
+      'items': instance.items,
+    };
+
+ServantPlan _$ServantPlanFromJson(Map<String, dynamic> json) {
+  return ServantPlan(
+    curSkillLv: (json['curSkillLv'] as List)?.map((e) => e as int)?.toList() ??
+        [1, 1, 1],
+    targetSkillLv:
+        (json['targetSkillLv'] as List)?.map((e) => e as int)?.toList() ??
+            [1, 1, 1],
+    skillEnhanced:
+        (json['skillEnhanced'] as List)?.map((e) => e as bool)?.toList() ??
+            [true, true, true],
+    curAscensionLv: json['curAscensionLv'] as int ?? 0,
+    targetAscensionLv: json['targetAscensionLv'] as int ?? 0,
+    curGrail: json['curGrail'] as int ?? 0,
+    targetGrail: json['targetGrail'] as int ?? 0,
+    npLv: json['npLv'] as int ?? 1,
+    npEnhanced: json['npEnhanced'] as bool ?? false,
+    favorite: json['favorite'] as bool ?? false,
+  );
+}
+
+Map<String, dynamic> _$ServantPlanToJson(ServantPlan instance) =>
+    <String, dynamic>{
+      'curSkillLv': instance.curSkillLv,
+      'targetSkillLv': instance.targetSkillLv,
+      'skillEnhanced': instance.skillEnhanced,
+      'curAscensionLv': instance.curAscensionLv,
+      'targetAscensionLv': instance.targetAscensionLv,
+      'curGrail': instance.curGrail,
+      'targetGrail': instance.targetGrail,
+      'npLv': instance.npLv,
+      'npEnhanced': instance.npEnhanced,
+      'favorite': instance.favorite,
     };

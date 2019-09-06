@@ -3,59 +3,113 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:chaldea/components/spec_delegate.dart'
-    show DataChangeCallback;
+import 'package:chaldea/components/spec_delegate.dart' show DataChangeCallback;
 import 'package:chaldea/components/constants.dart';
 import 'datatypes/datatypes.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart';
+import 'package:archive/archive.dart';
+import 'package:archive/archive_io.dart';
 
 /// app config:
 ///  - app database
 ///  - user database
 class Database {
   DataChangeCallback onDataChange;
-  AppData data;
+  AppData appData;
+  Plans userData;
+  GameData gameData;
+  static String _rootPath = '';
 
-  // GameData gameData;
+  String get rootPath => _rootPath;
 
-  Future<Null> loadUserData({String filename = defaultAppDataFilename}) async {
-    try {
-      data = AppData.fromJson(await _getJsonFile(filename));
-      print('load userdata "$filename": $data');
-    } catch (e) {
-      print("Error loading '$filename'");
-      data = AppData();
-    }
+  // initialization
+  Future<Null> initial() async {
+    _rootPath = (await getApplicationDocumentsDirectory()).path;
   }
 
-  Future<Null> saveUserData({String filename = defaultAppDataFilename}) async {
+  Future<Null> loadUserData() async {
+    appData = AppData.fromJson(
+        getJsonFromFile(appDataFilename, Map<String, dynamic>()));
+    userData = Plans.fromJson(
+        getJsonFromFile(userDataFilename, Map<String, dynamic>()));
+
+    gameData=GameData.fromJson({
+      'servants':jsonDecode(await rootBundle.loadString('res/data/svt_list.json')),
+      'crafts':<String,String>{}
+    });
+  }
+
+  Future<Null> saveAppData() async {
     try {
-      final contents = json.encode(data);
-      (await _getLocalFile(filename))
-          .writeAsStringSync(contents);
-      print('Saved "$filename":\n$contents\n');
+      final contents = json.encode(appData);
+      getLocalFile(appDataFilename).writeAsStringSync(contents);
+      print('Saved "$appDataFilename"\n');
     } catch (e) {
-      print('Error saving "$filename"!');
+      print('Error saving "$appDataFilename"!');
+      print(e);
+    }
+  }
+  Future<Null> saveUserData() async {
+    try {
+      final contents = json.encode(userData);
+      getLocalFile(userDataFilename).writeAsStringSync(contents);
+      print('Saved "$userDataFilename"\n');
+    } catch (e) {
+      print('Error saving "$userDataFilename"!');
       print(e);
     }
   }
 
+  File getLocalFile(String filename, {rel = ''}) {
+    return File(join(_rootPath, rel, filename));
+  }
+
+  dynamic getJsonFromFile(String filename,dynamic k) {
+    dynamic result;
+    try {
+      String contents = getLocalFile(filename).readAsStringSync();
+      result = jsonDecode(contents);
+      print('load json "$filename":\n${contents} ...');
+    } catch (e) {
+      result = k;
+      print('error load "$filename", use defailt value. Error:\n$e');
+    }
+    return result;
+  }
+
+  Future<Null> loadZipAssets(String assetKey,
+      {String dir = 'temp/', bool forceLoad = false}) async {
+    String basePath = join(_rootPath, dir);
+    if (forceLoad || !Directory(basePath).existsSync()) {
+      //extract
+      final data = await rootBundle.load(assetKey);
+      extractZip(data.buffer.asUint8List().cast<int>(), basePath);
+    }
+  }
+
+  Future<Null> extractZip(List<int> bytes, String path) async {
+    Archive archive = ZipDecoder().decodeBytes(bytes);
+    for (ArchiveFile file in archive) {
+      String fullFilepath = join(path, file.name);
+      if (file.isFile) {
+        List<int> data = file.content;
+        File(fullFilepath)
+          ..createSync(recursive: true)
+          ..writeAsBytesSync(data);
+      } else {
+        Directory(fullFilepath)..create(recursive: true);
+      }
+    }
+    //
+    print('------------------------------------------------------------');
+    print('Zip file has been extracted, directory tree ($path)}):');
+    for (final file in Directory(path).listSync()) {
+      print(file.path);
+    }
+    print('end of tree.\n-----------------------------------------------');
+  }
+
   /// static methods and internals
-  static Future<File> _getLocalFile(String filename) async {
-    String dir = (await getApplicationDocumentsDirectory()).path;
-    return new File(join(dir, filename));
-  }
-
-  static Future<Map> _getJsonFile(String filename) async {
-    String contents = (await _getLocalFile(filename)).readAsStringSync();
-    print('load json data:\n$contents');
-    return jsonDecode(contents);
-  }
-
-  Future<String> loadAsset(String key) async {
-    return await rootBundle.loadString(key);
-  }
-
   static final _db = new Database._internal();
 
   factory Database() {

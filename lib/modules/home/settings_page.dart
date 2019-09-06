@@ -36,7 +36,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: Text(S.of(context).server),
                 trailing: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
-                    value: db.data.users[db.data.curUser].server,
+                    value: db.appData.users[db.appData.curUser].server,
                     items: <DropdownMenuItem<String>>[
                       DropdownMenuItem(
                         value: GameServer.cn,
@@ -47,8 +47,8 @@ class _SettingsPageState extends State<SettingsPage> {
                         child: Text(S.of(context).server_jp),
                       )
                     ],
-                    onChanged: (v){
-                      db.data.users[db.data.curUser].server=v;
+                    onChanged: (v) {
+                      db.appData.users[db.appData.curUser].server = v;
                       db.onDataChange();
                     },
                   ),
@@ -59,11 +59,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Text(db.data.users[db.data.curUser].name,style: TextStyle(color: Colors.black87),),
+                    Text(
+                      db.appData.users[db.appData.curUser].name,
+                      style: TextStyle(color: Colors.black87),
+                    ),
                     Icon(Icons.arrow_forward_ios)
                   ],
                 ),
-                onTap: (){
+                onTap: () {
                   SplitRoute.popAndPush(context,
                       builder: (context) => AccountPage());
                 },
@@ -78,12 +81,16 @@ class _SettingsPageState extends State<SettingsPage> {
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Text(LangCode.getName(language) ?? "",style: TextStyle(color: Colors.black87),),
+                    Text(
+                      LangCode.getName(language) ?? "",
+                      style: TextStyle(color: Colors.black87),
+                    ),
                     Icon(Icons.arrow_forward_ios)
                   ],
                 ),
-                onTap: (){
-                  SplitRoute.popAndPush(context, builder: (context)=>LanguagePage());
+                onTap: () {
+                  SplitRoute.popAndPush(context,
+                      builder: (context) => LanguagePage());
                 },
               )
             ],
@@ -91,6 +98,17 @@ class _SettingsPageState extends State<SettingsPage> {
           TileGroup(
             header: S.of(context).backup_restore,
             tiles: <Widget>[
+              ListTile(
+                title: Text('Extract dataset'),
+                onTap: () {
+                  db
+                      .loadZipAssets('res/data/icons.zip', dir: 'icons',forceLoad: true)
+                      .then((_) {
+                    Scaffold.of(context).showSnackBar(
+                        SnackBar(content: Text('Icons have been extracted.')));
+                  });
+                },
+              ),
               ListTile(
                 title: Text(S.of(context).backup),
               ),

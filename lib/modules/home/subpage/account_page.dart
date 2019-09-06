@@ -32,16 +32,16 @@ class _AccountPageState extends State<AccountPage> {
                     title: S.of(context).new_account,
                     errorText: S.of(context).input_error,
                     validate: (v){
-                      return v==v.trim()&&!db.data.userIDs.contains(v);
+                      return v==v.trim()&&!db.appData.userIDs.contains(v);
                     },
                     onSubmit: (v){
-                      final keys=db.data.users.keys;
+                      final keys=db.appData.users.keys;
                       String newKey;
                       do{
                         newKey=Random().nextInt(100000).toString();
                         print('new key $newKey');
                       }while(keys.contains(newKey));
-                      db.data.users[newKey]=User(name: v);
+                      db.appData.users[newKey]=User(name: v);
                       db.onDataChange();
                     },
                   );
@@ -54,9 +54,9 @@ class _AccountPageState extends State<AccountPage> {
         ],
       ),
       body: TileGroup(
-        tiles: db.data.users.keys.map((key) {
-          final user=db.data.users[key];
-          final bool _isCurUser = key == db.data.curUser;
+        tiles: db.appData.users.keys.map((key) {
+          final user=db.appData.users[key];
+          final bool _isCurUser = key == db.appData.curUser;
           var tile = ListTile(
             title: Row(
               mainAxisSize: MainAxisSize.min,
@@ -90,7 +90,7 @@ class _AccountPageState extends State<AccountPage> {
                               defaultText: user.name,
                               errorText: S.of(context).input_error,
                               validate: (v){
-                                return v==v.trim()&&!db.data.userIDs.contains(v);
+                                return v==v.trim()&&!db.appData.userIDs.contains(v);
                               },
                               onSubmit: (v){
                                 user.name = v;
@@ -107,14 +107,14 @@ class _AccountPageState extends State<AccountPage> {
                         onTap: () {
                           setState(() {
                             //confirm
-                            print('delete ${db.data.users[key].toJson()}');
+                            print('delete ${db.appData.users[key].toJson()}');
                             Navigator.pop(context);
-                            db.data.users.remove(key);
+                            db.appData.users.remove(key);
                             if(_isCurUser){
-                              db.data.curUser=db.data.userIDs[0];
+                              db.appData.curUser=db.appData.userIDs[0];
                             }
                             db.onDataChange();
-                            print('accounts: ${db.data.userIDs}');
+                            print('accounts: ${db.appData.userIDs}');
                           });
                         },
                       ),
@@ -122,7 +122,7 @@ class _AccountPageState extends State<AccountPage> {
                   ],
             ),
             onTap: () {
-              db.data.curUser = key;
+              db.appData.curUser = key;
               db.onDataChange();
             },
           );
