@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:chaldea/generated/i18n.dart';
 
-typedef void DataChangeCallback({Locale locale});
+typedef void LocaleChangeCallback({Locale locale});
 
 class SpecifiedLocalizationDelegate
     extends LocalizationsDelegate<WidgetsLocalizations> {
   //class static vars: need to remove?
   //onLocaleChange should be bind to MaterialApp function containing setState().
-  static DataChangeCallback onLocaleChange;
+  static LocaleChangeCallback onLocaleChange;
 
   // for instance
   final Locale overriddenLocale;

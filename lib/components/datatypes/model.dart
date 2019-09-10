@@ -7,6 +7,9 @@ class AppData {
   @JsonKey(defaultValue: LangCode.chs)
   String language ;
 
+  @JsonKey(defaultValue: 'dataset')
+  String gameDataPath;
+
   @JsonKey(defaultValue: <String,bool>{})
   Map<String,bool> galleries;
 
@@ -19,7 +22,8 @@ class AppData {
   // functions, getters
   List<String> get userIDs=>users.values.map((u)=>u.name).toList();
 
-  AppData({this.language= LangCode.chs, this.galleries, this.curUser});
+  AppData({this.language = LangCode
+      .chs, this.galleries, this.curUser, this.gameDataPath = 'dataset'});
 
   // json_serializable
   factory AppData.fromJson(Map<String, dynamic> data) =>

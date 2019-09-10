@@ -2,15 +2,31 @@
 part of datatypes;
 
 @JsonSerializable()
-class GameData{
-  Map<String,Servant> servants;
-  Map<String,String> crafts;
-  GameData({this.servants,this.crafts});
+class GameData {
+  Map<String, Servant> servants;
+  Map<String, String> crafts;
+  Map<String, Item> items;
+  Map<String, GameIcon> icons;
+
+  GameData({this.servants, this.crafts, this.items, this.icons});
 
   factory GameData.fromJson(Map<String, dynamic> data) =>
       _$GameDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$GameDataToJson(this);
+}
+
+@JsonSerializable()
+class GameIcon {
+  String filename;
+  String url;
+
+  GameIcon({this.filename, this.url});
+
+  factory GameIcon.fromJson(Map<String, dynamic> data) =>
+      _$GameIconFromJson(data);
+
+  Map<String, dynamic> toJson() => _$GameIconToJson(this);
 }
 
 @JsonSerializable()
@@ -158,6 +174,7 @@ class Skill {
   String openTime;
   String openCondition;
   String openQuest;
+  bool enhanced;
   String name;
   String rank;
   String icon;
@@ -168,8 +185,16 @@ class Skill {
 
   Map<String, dynamic> toJson() => _$SkillToJson(this);
 
-  Skill({this.state, this.openTime, this.openCondition, this.openQuest,
-      this.name, this.rank, this.icon, this.cd, this.effects});
+  Skill({this.state,
+    this.openTime,
+    this.openCondition,
+    this.openQuest,
+    this.enhanced,
+    this.name,
+    this.rank,
+    this.icon,
+    this.cd,
+    this.effects});
 }
 
 @JsonSerializable()
@@ -187,11 +212,12 @@ class Effect {
 }
 
 @JsonSerializable()
-class ItemCost{
+class ItemCost {
   List<List<Item>> ascension;
   List<List<Item>> skill;
 
   List<String> dressName;
+  List<String> dressNameJp;
   List<List<Item>> dress;
 
   factory ItemCost.fromJson(Map<String, dynamic> data) =>
@@ -199,18 +225,26 @@ class ItemCost{
 
   Map<String, dynamic> toJson() => _$ItemCostToJson(this);
 
-  ItemCost({this.ascension,this.skill,this.dressName,this.dress});
+  ItemCost({this.ascension,
+    this.skill,
+    this.dressName,
+    this.dressNameJp,
+    this.dress});
 }
 
 @JsonSerializable()
-class Item{
+class Item {
+  int id;
   String name;
+  @JsonKey(defaultValue: 0)
+  int rarity;
+  String category;
+  @JsonKey(defaultValue: 0)
   int num;
 
-  factory Item.fromJson(Map<String, dynamic> data) =>
-      _$ItemFromJson(data);
+  factory Item.fromJson(Map<String, dynamic> data) => _$ItemFromJson(data);
 
   Map<String, dynamic> toJson() => _$ItemToJson(this);
 
-  Item({this.name, this.num});
+  Item({this.id, this.name, this.rarity = 0, this.category, this.num = 0});
 }

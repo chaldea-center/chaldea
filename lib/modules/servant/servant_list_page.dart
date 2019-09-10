@@ -1,21 +1,18 @@
-import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chaldea/components/custom_tile.dart';
-import 'package:chaldea/components/datatypes/datatypes.dart';
 import 'package:chaldea/modules/servant/servant_detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:chaldea/components/components.dart';
 
-class ServantPage extends StatefulWidget {
+class ServantListPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _ServantPageState();
+  State<StatefulWidget> createState() => _ServantListPageState();
 }
 
-class _ServantPageState extends State<ServantPage> {
+class _ServantListPageState extends State<ServantListPage> {
   String filterString = '';
   TextEditingController controller = new TextEditingController();
-  FocusNode focusNode = FocusNode();
   Map<String, int> filters = new Map();
 
   Widget buildListView(String filterString) {
@@ -24,8 +21,8 @@ class _ServantPageState extends State<ServantPage> {
     List<String> noList = [];
     StringFilter filter = StringFilter(filterString);
 
-    if(filterString!=''){
-      db.gameData.servants.forEach((no,svt) {
+    if (filterString != '') {
+      db.gameData.servants.forEach((no, svt) {
         String string = [
           svt.no,
           svt.info.cv,
@@ -39,22 +36,22 @@ class _ServantPageState extends State<ServantPage> {
           noList.add(svt.no.toString());
         }
       });
-    }else{
-      noList=db.gameData.servants.keys.toList();
+    } else {
+      noList = db.gameData.servants.keys.toList();
     }
 
-    print('building listView: filter="$filterString", length=${noList.length}');
+//    print('building listView: filter="$filterString", length=${noList.length}');
     return ListView.separated(
         shrinkWrap: true,
         physics: ScrollPhysics(),
-        itemBuilder: (context, index){
-          final svt=db.gameData.servants[noList[index]];
-          final plan=db.userData.servants[noList[index]];
+        itemBuilder: (context, index) {
+          final svt = db.gameData.servants[noList[index]];
+          final plan = db.userData.servants[noList[index]];
           return CustomTile(
             leading: SizedBox(
               width: 132 * 0.45,
               height: 144 * 0.45,
-              child: Image.file(db.getLocalFile(svt.icon,rel: 'icons')),
+              child: Image.file(db.getIconFile(svt.icon)),
             ),
             title: Text('${svt.mcLink}'),
             subtitle: Row(
@@ -65,14 +62,10 @@ class _ServantPageState extends State<ServantPage> {
                   flex: 1,
                   child: Container(),
                 ),
-                Text(plan ==null?'-':plan.curAscensionLv.toString()),
+                Text(plan == null ? '-' : plan.ascensionLv.toString()),
               ],
             ),
             trailing: Icon(Icons.arrow_forward_ios),
-            contentPadding: null,
-            //EdgeInsets.symmetric(vertical: 3.0,horizontal: 8.0),
-            titlePadding: null,
-            //EdgeInsets.symmetric(horizontal: 6.0),
             onTap: () {
               print('Tap No.${svt.no} - ${svt.info.nicknames}');
               Navigator.push(context,
@@ -84,7 +77,7 @@ class _ServantPageState extends State<ServantPage> {
             Divider(height: 1.0, indent: 16.0),
         itemCount: noList.length);
 
-    //TODO: Grid style
+    //TODO: Grid style vs List style
   }
 
   @override
@@ -136,7 +129,8 @@ class _ServantPageState extends State<ServantPage> {
                         ),
                         onPressed: () {
                           setState(() {
-                            controller.text = '';
+                            WidgetsBinding.instance.addPostFrameCallback(
+                                    (_) => controller.clear());
                             filterString = '';
                           });
                         },
@@ -147,7 +141,7 @@ class _ServantPageState extends State<ServantPage> {
                     });
                   },
                   onSubmitted: (s) {
-                    FocusScope.of(context).requestFocus(FocusNode());
+//                    FocusScope.of(context).requestFocus(FocusNode());
                   },
                 )),
           ),

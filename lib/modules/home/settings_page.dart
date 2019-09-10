@@ -1,6 +1,6 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/constants.dart';
-import 'package:chaldea/modules/home/settings_item.dart';
+import 'package:chaldea/components/tile_items.dart';
 import 'package:chaldea/modules/home/subpage/account_page.dart';
 import 'package:chaldea/modules/home/subpage/lang_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -49,7 +49,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ],
                     onChanged: (v) {
                       db.appData.users[db.appData.curUser].server = v;
-                      db.onDataChange();
+                      db.onLocaleChange();
                     },
                   ),
                 ),
@@ -102,10 +102,27 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: Text('Extract dataset'),
                 onTap: () {
                   db
-                      .loadZipAssets('res/data/icons.zip', dir: 'icons',forceLoad: true)
+                      .loadZipAssets('res/data/dataset.zip', forceLoad: true)
                       .then((_) {
-                    Scaffold.of(context).showSnackBar(
-                        SnackBar(content: Text('Icons have been extracted.')));
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text('dataset have been extracted.')));
+                  });
+                },
+              ),
+              ListTile(
+                title: Text('clear all data'),
+                onTap: () {
+                  db.clearData(user: true, app: true, game: true).then((_) =>
+                      Scaffold.of(context).showSnackBar(
+                          SnackBar(content: Text('userdata cleared'))));
+                },
+              ),
+              ListTile(
+                title: Text('Reload app/user/game data'),
+                onTap: () {
+                  db.loadData().then((_) {
+                    Scaffold.of(context)
+                        .showSnackBar(SnackBar(content: Text('load finish.')));
                   });
                 },
               ),

@@ -2,6 +2,7 @@
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 const kTabletMasterContainerRatio = 38; // percentage
 
@@ -129,7 +130,6 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
   // DetailPage should not be created outside SplitRoute()
   Widget createDetailPage(BuildContext context, Widget child) {
     final tablet = isTablet(context);
-//    FocusScope.of(context).setFirstFocus(node);
     return Positioned(
         left: tablet
             ? MediaQuery.of(context).size.width *
@@ -156,6 +156,7 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
 
   @override
   Iterable<OverlayEntry> createOverlayEntries() sync* {
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
     yield OverlayEntry(
         opaque: false,
         maintainState: true,

@@ -1,6 +1,6 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/constants.dart';
-import 'package:chaldea/modules/home/settings_item.dart';
+import 'package:chaldea/components/tile_items.dart';
 import 'package:flutter/material.dart';
 
 class LanguagePage extends StatefulWidget {
@@ -37,7 +37,7 @@ class _LanguagePageState extends State<LanguagePage> {
               ),
               onTap: () {
                 db.appData.language = code;
-                db.onDataChange(locale: LangCode.getLocale(code));
+                db.onLocaleChange(locale: LangCode.getLocale(code));
               },
             );
           }).toList(),

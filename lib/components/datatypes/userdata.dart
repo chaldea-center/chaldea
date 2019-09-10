@@ -19,33 +19,26 @@ class Plans {
 
 @JsonSerializable()
 class ServantPlan {
+  @JsonKey(defaultValue: [0, 0])
+  List<int> ascensionLv;
+  @JsonKey(defaultValue: [
+    [1, 1],
+    [1, 1],
+    [1, 1]
+  ])
+  List<List<int>> skillLv;
+  @JsonKey(defaultValue: [])
+  List<List<int>> dressLv;
+  @JsonKey(defaultValue: [0, 0])
+  List<int> grailLv;
 
-  @JsonKey(defaultValue: [1, 1, 1])
-  List<int> curSkillLv;
-
-  @JsonKey(defaultValue: [1, 1, 1])
-  List<int> targetSkillLv;
-
-  @JsonKey(defaultValue: [true, true, true])
-  List<bool> skillEnhanced;
-
-  @JsonKey(defaultValue: 0)
-  int curAscensionLv;
-
-  @JsonKey(defaultValue: 0)
-  int targetAscensionLv;
-
-  @JsonKey(defaultValue: 0)
-  int curGrail;
-
-  @JsonKey(defaultValue: 0)
-  int targetGrail;
-
+  //enhanced - 0:default,1:enhanced,-1:not enhanced
+  @JsonKey()
+  List<Sign> skillEnhanced;
+  @JsonKey()
+  Sign npEnhanced;
   @JsonKey(defaultValue: 1)
   int npLv;
-
-  @JsonKey(defaultValue: false)
-  bool npEnhanced;
 
   @JsonKey(defaultValue: false)
   bool favorite;
@@ -55,19 +48,23 @@ class ServantPlan {
 
   Map<String, dynamic> toJson() => _$ServantPlanToJson(this);
 
-  ServantPlan(
-      {this.curSkillLv,
-      this.targetSkillLv,
+  ServantPlan({this.ascensionLv,
+    this.skillLv,
+    this.dressLv,
+    this.grailLv,
       this.skillEnhanced,
-      this.curAscensionLv = 0,
-      this.targetAscensionLv = 0,
-      this.curGrail = 0,
-      this.targetGrail = 0,
+    this.npEnhanced = Sign.none,
       this.npLv = 1,
-      this.npEnhanced = false,
       this.favorite = false}) {
-    curSkillLv = curSkillLv ?? [1, 1, 1];
-    targetSkillLv = targetSkillLv ?? [1, 1, 1];
-    skillEnhanced = skillEnhanced ?? [false, false, false];
+    ascensionLv = ascensionLv ?? [0, 0];
+    skillLv = skillLv ??
+        [
+          [1, 1],
+          [1, 1],
+          [1, 1]
+        ];
+    dressLv = dressLv ?? [];
+    grailLv = grailLv ?? [0, 0];
+    skillEnhanced = skillEnhanced ?? [Sign.none, Sign.none, Sign.none];
   }
 }

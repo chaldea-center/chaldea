@@ -1,9 +1,8 @@
-import 'dart:io';
-
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/custom_tile.dart';
+import 'package:chaldea/components/tile_items.dart';
 import 'package:flutter/material.dart';
-import 'dart:math' show max, min;
 
 class ItemUnit extends StatelessWidget {
   final Image icon;
@@ -57,9 +56,13 @@ class ItemCostPage extends StatefulWidget {
   final List<List<Item>> costList;
   final int curLv;
   final int targetLv;
+  final String title;
 
-  const ItemCostPage(this.costList,
-      {this.curLv = 0, this.targetLv = 0, Key key})
+  const ItemCostPage({Key key,
+    @required this.costList,
+    this.curLv = 0,
+    this.targetLv = 0,
+    this.title = ''})
       : super(key: key);
 
   @override
@@ -74,7 +77,7 @@ class ItemCostPageState extends State<ItemCostPage> {
     final bool isSkill = widget.costList.length == 9;
     return Scaffold(
       appBar: AppBar(
-        title: Text(isSkill ? 'Skill Level Up' : 'Ascension'),
+        title: Text(widget.title),
         centerTitle: true,
         actions: <Widget>[
           IconButton(
@@ -114,7 +117,7 @@ class ItemCostPageState extends State<ItemCostPage> {
                         children: lvCost
                             .map((item) => ItemUnit(
                                   Image.file(
-                                      db.getLocalFile(item.name, rel: 'icons'),
+                                      db.getIconFile(item.name),
                                       width: 110 * 0.5),
                                   formatNumberToString(item.num, 'kilo'),
                                 ))
@@ -159,103 +162,78 @@ class PlanTabState extends State<PlanTab> with AutomaticKeepAliveClientMixin {
         child: Text('Nothing'),
       );
     }
+
+    // ascension part
     List<Widget> children = [];
     if (widget.svt.no != 1) {
-      children.add(CustomTile(
-        title: Text('灵基再临'),
-        trailing: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            DropdownButton(
-              value: svtPlan.curAscensionLv,
-              items: List.generate(
-                  5,
-                  (index) => DropdownMenuItem(
-                        value: index,
-                        child: Text('$index  '),
-                      )),
-              onChanged: (int value) {
-                svtPlan.curAscensionLv = value;
-                svtPlan.targetAscensionLv =
-                    max(value, svtPlan.targetAscensionLv);
-                svtPlan.favorite = true;
-                widget?.updateParent();
-              },
+      children.add(TileGroup(
+        header: '灵基再临',
+        tiles: <Widget>[
+          CustomTile(
+            title: Text('灵基再临'),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                RangeSelector<int>(
+                  start: svtPlan.ascensionLv[0],
+                  end: svtPlan.ascensionLv[1],
+                  startItems: List.generate(
+                      5, (index) => MapEntry(index, Text(index.toString()))),
+                  endItems: List.generate(
+                      5, (index) => MapEntry(index, Text(index.toString()))),
+                  onChanged: (start, end) {
+                    svtPlan.ascensionLv = [start, end];
+                    svtPlan.favorite = true;
+                    widget?.updateParent();
+                    setState(() {});
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.info_outline, color: Colors.blueAccent),
+                  onPressed: () {
+                    showSheet(
+                        context,
+                        ItemCostPage(
+                            costList: widget.svt.itemCost.ascension,
+                            title: '灵基再临',
+                            curLv: svtPlan.ascensionLv[0],
+                            targetLv: svtPlan.ascensionLv[1]));
+                  },
+                )
+              ],
             ),
-            Text('   →   '),
-            DropdownButton(
-              value: svtPlan.targetAscensionLv,
-              items: List.generate(
-                  5,
-                  (index) => DropdownMenuItem(
-                        value: index,
-                        child: Text('$index  '),
-                      )),
-              onChanged: (int value) {
-                svtPlan.targetAscensionLv = value;
-                svtPlan.curAscensionLv = min(value, svtPlan.curAscensionLv);
-                svtPlan.favorite = true;
-                widget?.updateParent();
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.info_outline, color: Colors.blueAccent),
-              onPressed: () {
-                showSheet(
-                    context,
-                    ItemCostPage(widget.svt.itemCost.ascension,
-                        curLv: svtPlan.curAscensionLv,
-                        targetLv: svtPlan.targetAscensionLv));
-              },
-            )
-          ],
-        ),
+          )
+        ],
       ));
     }
 
+    //skill part
+    List<Widget> skillWidgets = [];
     for (int index = 0; index < widget.svt.activeSkills.length; index++) {
       Skill skill = widget.svt.activeSkills[index][0];
-      children.add(CustomTile(
+      skillWidgets.add(CustomTile(
         contentPadding: EdgeInsets.fromLTRB(16, 6, 16, 6),
         leading: Image.file(
-          db.getLocalFile(skill.icon, rel: 'icons'),
+          db.getIconFile(skill.icon),
           height: 110 * 0.3,
         ),
         title: Text('${skill.name} ${skill.rank}'),
         trailing: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
-            DropdownButton(
-              value: svtPlan.curSkillLv[index],
-              items: List.generate(
-                  10,
-                  (index) => DropdownMenuItem(
-                        value: index + 1,
-                        child: Text('${index + 1}'),
-                      )),
-              onChanged: (int value) {
-                svtPlan.curSkillLv[index] = value;
-                svtPlan.targetSkillLv[index] =
-                    max(value, svtPlan.targetSkillLv[index]);
+            RangeSelector(
+              start: svtPlan.skillLv[index][0],
+              end: svtPlan.skillLv[index][1],
+              startItems: List.generate(10,
+                      (index) =>
+                      MapEntry(index + 1, Text((index + 1).toString()))),
+              endItems: List.generate(10,
+                      (index) =>
+                      MapEntry(index + 1, Text((index + 1).toString()))),
+              onChanged: (start, end) {
+                svtPlan.skillLv[index] = [start, end];
                 svtPlan.favorite = true;
                 widget?.updateParent();
-              },
-            ),
-            Text('   →   '),
-            DropdownButton(
-              value: svtPlan.targetSkillLv[index],
-              items: List.generate(
-                  10,
-                  (index) => DropdownMenuItem(
-                        value: 1 + index,
-                        child: Text('${1 + index}'),
-                      )),
-              onChanged: (int value) {
-                svtPlan.targetSkillLv[index] = value;
-                svtPlan.curSkillLv[index] =
-                    min(value, svtPlan.curSkillLv[index]);
-                svtPlan.favorite = true;
-                widget.updateParent();
               },
             ),
             IconButton(
@@ -264,9 +242,10 @@ class PlanTabState extends State<PlanTab> with AutomaticKeepAliveClientMixin {
                 showSheet(
                     context,
                     ItemCostPage(
-                      widget.svt.itemCost.skill,
-                      curLv: svtPlan.curSkillLv[index],
-                      targetLv: svtPlan.targetSkillLv[index],
+                      costList: widget.svt.itemCost.skill,
+                      title: '技能${index + 1} - ${skill.name}',
+                      curLv: svtPlan.skillLv[index][0],
+                      targetLv: svtPlan.skillLv[index][1],
                     ));
               },
             )
@@ -274,27 +253,59 @@ class PlanTabState extends State<PlanTab> with AutomaticKeepAliveClientMixin {
         ),
       ));
     }
+    children.add(TileGroup(header: '技能升级', tiles: skillWidgets));
 
+    // dress part
+    List<Widget> dressWidgets = [];
     for (int index = 0; index < widget.svt.itemCost.dress.length; index++) {
-      children.add(CustomTile(
-        leading: null,
-        title: Text(widget.svt.itemCost.dressName[index]),
-        trailing: IconButton(
-          icon: Icon(Icons.info_outline, color: Colors.blueAccent),
-          onPressed: () {
-            showSheet(
-                context, ItemCostPage([widget.svt.itemCost.dress[index]]));
-          },
+      if (svtPlan.dressLv.length <= index) {
+        // dress number may increase in the future
+        svtPlan.dressLv.add([0, 0]);
+      }
+      dressWidgets.add(CustomTile(
+        leading: Image.file(db.getIconFile('灵衣开放权'),
+            height: 110 * 0.3),
+        title: AutoSizeText(widget.svt.itemCost.dressName[index], maxLines: 1),
+        subtitle: AutoSizeText(
+          widget.svt.itemCost.dressNameJp[index],
+          maxLines: 1,
+          minFontSize: 10,
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            RangeSelector<int>(
+              start: svtPlan.dressLv[index][0],
+              end: svtPlan.dressLv[index][1],
+              startItems: List.generate(
+                  2, (index) => MapEntry(index, Text(index.toString()))),
+              endItems: List.generate(
+                  2, (index) => MapEntry(index, Text(index.toString()))),
+              onChanged: (start, end) {
+                widget?.updateParent();
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.info_outline, color: Colors.blueAccent),
+              onPressed: () {
+                showSheet(
+                    context,
+                    ItemCostPage(
+                      costList: [widget.svt.itemCost.dress[index]],
+                      title: '灵衣开放 - ${widget.svt.itemCost.dressName[index]}',
+                    ));
+              },
+            )
+          ],
         ),
       ));
     }
+    if (dressWidgets.length > 0) {
+      children.add(TileGroup(header: '灵衣开放', tiles: dressWidgets));
+    }
+
     return ListView(
-      children: divideTiles2(children,
-          divider: Divider(
-            height: 0,
-            indent: 16,
-            endIndent: 16,
-          )),
+      children: children,
     );
   }
 
@@ -314,7 +325,7 @@ class SkillTab extends StatefulWidget {
 }
 
 class SkillTabState extends State<SkillTab> with AutomaticKeepAliveClientMixin {
-  List<bool> changed = [false, false, false, false];
+//  List<bool> changed = [false, false, false, false];
 
   @override
   Widget build(BuildContext context) {
@@ -322,14 +333,20 @@ class SkillTabState extends State<SkillTab> with AutomaticKeepAliveClientMixin {
     if (widget.svt.activeSkills == null) {
       return Center(child: Text('Nothing'));
     }
+
+    final plan = db.userData.servants[widget.svt.no.toString()];
     List<Widget> children = [];
     widget.svt.activeSkills.asMap().keys.forEach((index) {
       List<Skill> skillList = widget.svt.activeSkills[index];
-      Skill skill = skillList[changed[index] ? 1 : 0];
+      bool enhanced =
+      [skillList[0].enhanced, true, false][plan.skillEnhanced[index].index];
+
+      Skill skill = skillList[enhanced ? 1 : 0];
+
       children.add(CustomTile(
-        contentPadding: EdgeInsets.fromLTRB(16, 6, 48, 6),
+        contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
         leading: Image.file(
-          db.getLocalFile(skill.icon, rel: 'icons'),
+          db.getIconFile(skill.icon),
           height: 110 * 0.3,
         ),
         title: Row(
@@ -340,16 +357,13 @@ class SkillTabState extends State<SkillTab> with AutomaticKeepAliveClientMixin {
               child: skillList.length == 2
                   ? GestureDetector(
                       onTap: () {
-                        changed[index] = !(changed[index] ?? false);
+//                  changed[index] = !(changed[index] ?? false);
+                        plan.skillEnhanced[index] =
+                        !enhanced ? Sign.positive : Sign.negative;
                         setState(() {});
                       },
                       child: Image.file(
-                        db.getLocalFile(
-                            (skillList[0].state == '强化前') ^
-                                    (changed[index] ?? false)
-                                ? '技能未强化.png'
-                                : '技能强化.png',
-                            rel: 'icons'),
+                        db.getIconFile(enhanced ? '技能强化' : '技能未强化'),
                         height: 110 * 0.2,
                       ),
                     )
@@ -359,115 +373,57 @@ class SkillTabState extends State<SkillTab> with AutomaticKeepAliveClientMixin {
         ),
         trailing: Text('CD: ${skill.cd}→${skill.cd - 2}'),
       ));
-      skill.effects.forEach((effect) {
-        bool twoLine = effect.lvData.length == 10;
-        children
-          ..add(CustomTile(
-              contentPadding: EdgeInsets.fromLTRB(16, 6, 48, 6),
-              subtitle: Text(effect.description),
-              trailing: effect.lvData.length == 1
-                  ? Text(
-                      formatNumberToString(effect.lvData[0], effect.valueType))
-                  : null));
-        if (effect.lvData.length > 1) {
-          children
+
+      if (skill.effects.length > 0) {
+        List<Widget> effectWidgets = [];
+        skill.effects.forEach((effect) {
+          bool twoLine = effect.lvData.length == 10;
+          effectWidgets
             ..add(CustomTile(
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
-                title: GridView.count(
-                  childAspectRatio: twoLine ? 3.5 : 7,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  crossAxisCount: twoLine ? 5 : effect.lvData.length,
-                  children: effect.lvData.asMap().keys.map((index) {
-                    return Center(
-                      child: Text(
-                        formatNumberToString(
-                            effect.lvData[index], effect.valueType),
-                        style: TextStyle(
-                            fontSize: 13,
-                            color: [5, 9].contains(index)
-                                ? Colors.redAccent
-                                : null),
-                      ),
-                    );
-                  }).toList(),
-                )));
-        }
-      });
+                contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
+                subtitle: Text(effect.description),
+                trailing: effect.lvData.length == 1
+                    ? Text(formatNumberToString(
+                    effect.lvData[0], effect.valueType))
+                    : null));
+          if (effect.lvData.length > 1) {
+            effectWidgets
+              ..add(CustomTile(
+                  contentPadding:
+                  EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
+                  title: GridView.count(
+                    childAspectRatio: twoLine ? 3.5 : 7,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    crossAxisCount: twoLine ? 5 : effect.lvData.length,
+                    children: effect.lvData
+                        .asMap()
+                        .keys
+                        .map((index) {
+                      return Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          formatNumberToString(
+                              effect.lvData[index], effect.valueType),
+                          style: TextStyle(
+                              fontSize: 13,
+                              color: [5, 9].contains(index)
+                                  ? Colors.redAccent
+                                  : null),
+                        ),
+                      );
+                    }).toList(),
+                  )));
+          }
+        });
+        children.add(TileGroup(tiles: effectWidgets));
+      }
     });
     return ListView(
-//      key: PageStorageKey('skills'),
-      children: divideTiles2(children,
-          divider: Divider(
-            height: 0.0,
-            indent: 16,
-            endIndent: 16,
-          ),
-          bottom: true),
+      children: children,
     );
   }
 
   @override
   bool get wantKeepAlive => true;
-}
-
-List<Widget> divideTiles(Iterable<Widget> tiles,
-    {Widget divider = const Divider(height: 1.0),
-    bool top = false,
-    bool bottom = false}) {
-  if (tiles.length == 0) {
-    return tiles;
-  }
-  List<Widget> combined = [];
-  if (top) {
-    combined.add(divider);
-  }
-  Iterator iterator = tiles.iterator;
-  combined.add(iterator.current);
-  while (iterator.moveNext()) {
-    combined..add(divider)..add(iterator.current);
-  }
-  if (bottom) {
-    combined.add(divider);
-  }
-  return combined;
-}
-
-List<Widget> divideTiles2(List<Widget> tiles,
-    {Widget divider = const Divider(height: 1.0),
-    bool top = false,
-    bool bottom = false}) {
-  if (tiles.length == 0) {
-    return tiles;
-  }
-  List<Widget> combined = [];
-  if (top) {
-    combined.add(divider);
-  }
-  for (int index = 0; index < tiles.length - 1; index++) {
-    combined..add(tiles[index])..add(divider);
-  }
-  combined.add(tiles.last);
-  if (bottom) {
-    combined.add(divider);
-  }
-  return combined;
-}
-
-void showSheet(BuildContext context, Widget child) {
-  // exactly, ModalBottomSheet's height is decided by [initialChildSize]
-  // and cannot be modified by drag.
-  showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => DraggableScrollableSheet(
-            initialChildSize: 0.75,
-            minChildSize: 0.25,
-            maxChildSize: 0.9,
-            expand: false,
-            builder:
-                (BuildContext context, ScrollController scrollController) =>
-                    child,
-          ));
 }

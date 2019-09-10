@@ -15,41 +15,45 @@ class Chaldea extends StatefulWidget {
 class _ChaldeaState extends State<Chaldea> {
   SpecifiedLocalizationDelegate _localOverrideDelegate;
 
-  void onDataChange({Locale locale}) {
+  void onLocaleChange({Locale locale}) {
     setState(() {
       if (null != locale) {
         _localOverrideDelegate =
             SpecifiedLocalizationDelegate(locale ?? Locale('zh'));
       }
-      db.saveAppData();
+      db.saveData(app: true);
     });
+  }
+
+  Future<Null> initial() async {
+    await db.initial();
+    db.onLocaleChange = this.onLocaleChange;
+    await db.loadData(app: true, user: true, game: false);
+    await db.loadZipAssets(
+        'res/data/dataset.zip', dir: db.appData.gameDataPath);
+    await db.loadData(app: false, user: false, game: true);
   }
 
   @override
   void initState() {
-    // update anything after db.initial()!!!
-    db.initial().then((_) {
-      db.onDataChange = this.onDataChange;
-      db.loadUserData().then((_) {
-        setState(() {
-          if (LangCode.codes.contains(db.appData.language)) {
-            _localOverrideDelegate = SpecifiedLocalizationDelegate(
-                LangCode.getLocale(db.appData.language));
-          }
-          //check/initial data
-          if (null == db.appData.users || 0 == db.appData.users.length) {
-            // create default account
-            final name = "default";
-            db.appData
-              ..curUser = name
-              ..users = {name: User(name: name, server: GameServer.cn)};
-          }
-        });
+    // update anything after initial()!!!
+    initial().then((_) {
+      setState(() {
+        if (LangCode.codes.contains(db.appData.language)) {
+          _localOverrideDelegate = SpecifiedLocalizationDelegate(
+              LangCode.getLocale(db.appData.language));
+        }
+        //check/initial data
+        if (null == db.appData.users || 0 == db.appData.users.length) {
+          // create default account
+          final name = "default";
+          db.appData
+            ..curUser = name
+            ..users = {name: User(name: name, server: GameServer.cn)};
+        }
       });
-      //load and extract icons
-      db.loadZipAssets('res/data/icons.zip', dir: 'icons');
     });
-    //use default before db.initial() and db.load***
+    //use default before data loaded***
     _localOverrideDelegate = SpecifiedLocalizationDelegate(Locale('zh', ''));
     super.initState();
   }

@@ -1,7 +1,7 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
 import 'package:chaldea/modules/item/item_page.dart';
-import 'package:chaldea/modules/servant/servant_overview_page.dart';
+import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -34,7 +34,7 @@ class GalleryState extends State<Gallery> {
           title: S.of(context).servant_title,
           icon: Icons.people,
           routeName: '/servant',
-          builder: (context) => ServantPage()),
+          builder: (context) => ServantListPage()),
       GalleryItem.item: GalleryItem(
           title: S.of(context).item_title,
           icon: Icons.category,

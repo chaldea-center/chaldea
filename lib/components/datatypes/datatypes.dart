@@ -12,7 +12,8 @@ import 'package:meta/meta.dart';
 
 /// data-type classes, part of [datatypes].
 part 'model.dart';
-part 'servant.dart';
+
+part 'gamedata.dart';
 part 'userdata.dart';
 
 /// generated file by JsonSerializableGenerator

@@ -45,7 +45,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
   @override
   void deactivate() {
     super.deactivate();
-    db.saveUserData();
+    db.saveData(user: true);
   }
 
   @override
@@ -59,8 +59,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
           children: <Widget>[
             CustomTile(
               alignment: CrossAxisAlignment.start,
-              leading: Image.file(
-                db.getLocalFile(svt.icon, rel: 'icons'),
+              leading: Image.file(db.getIconFile(svt.icon),
                 fit: BoxFit.contain,
                 height: 100,
               ),

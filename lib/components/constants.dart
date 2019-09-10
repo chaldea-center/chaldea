@@ -118,6 +118,13 @@ class StringFilter {
   }
 }
 
+enum Sign {
+  none,
+  positive,
+  negative
+}
+
+
 String formatNumberToString<T>(T number, [String style]) {
   if(number is String||number is double){
     return '$number';

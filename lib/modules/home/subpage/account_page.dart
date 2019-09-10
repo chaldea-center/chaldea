@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/dialog.dart';
-import 'package:chaldea/modules/home/settings_item.dart';
+import 'package:chaldea/components/tile_items.dart';
 import 'package:flutter/material.dart';
 
 
@@ -42,12 +42,12 @@ class _AccountPageState extends State<AccountPage> {
                         print('new key $newKey');
                       }while(keys.contains(newKey));
                       db.appData.users[newKey]=User(name: v);
-                      db.onDataChange();
+                      db.onLocaleChange();
                     },
                   );
                 }
               );
-              db.onDataChange();
+              db.onLocaleChange();
               print('Add account');
             },
           )
@@ -94,7 +94,7 @@ class _AccountPageState extends State<AccountPage> {
                               },
                               onSubmit: (v){
                                 user.name = v;
-                                db.onDataChange();
+                                db.onLocaleChange();
                               },
                             ),
                           );
@@ -113,7 +113,7 @@ class _AccountPageState extends State<AccountPage> {
                             if(_isCurUser){
                               db.appData.curUser=db.appData.userIDs[0];
                             }
-                            db.onDataChange();
+                            db.onLocaleChange();
                             print('accounts: ${db.appData.userIDs}');
                           });
                         },
@@ -123,7 +123,7 @@ class _AccountPageState extends State<AccountPage> {
             ),
             onTap: () {
               db.appData.curUser = key;
-              db.onDataChange();
+              db.onLocaleChange();
             },
           );
 
