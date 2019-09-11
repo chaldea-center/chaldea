@@ -33,6 +33,43 @@ class _ItemPageState extends State<ItemPage>
   Map<String, List<MyTextController<Item>>> inputControllers = {};
   TextEditingController _lastFocusedController;
 
+  // to be moved
+  Map<String, List<int>> allCost = {},
+      planCost = {};
+  bool filtered = false;
+
+  void calculateItemCost() {
+    db.gameData.items.forEach((itemName, _) {
+      allCost[itemName] = [0, 0, 0];
+      planCost[itemName] = [0, 0, 0];
+    });
+    db.gameData.servants.forEach((key, svt) {
+      final plan = db.userData.servants[svt.no.toString()];
+      if (plan == null) {
+        return;
+      }
+      for (int i = plan.ascensionLv[0]; i < plan.ascensionLv[1]; i++) {
+        for (var item in svt.itemCost.ascension[i]) {
+          planCost[item.name][0] += item.num;
+        }
+      }
+      for (int i = 0; i < 3; i++) {
+        for (int j = plan.skillLv[i][0]; j < plan.skillLv[i][1]; j++) {
+          for (var item in svt.itemCost.skill[j - 1]) {
+            planCost[item.name][1] += item.num;
+          }
+        }
+      }
+      for (int i = 0; i < svt.itemCost.dress.length; i++) {
+        if (plan.dressLv[i] == [0, 1]) {
+          for (var item in svt.itemCost.dress[i]) {
+            planCost[item.name][2] += item.num;
+          }
+        }
+      }
+    });
+  }
+
   void getFocused(TextEditingController controller, FocusNode node,
       {bool isTap = false}) {
     if ((node.hasFocus || isTap) && _lastFocusedController != controller) {
@@ -86,12 +123,23 @@ class _ItemPageState extends State<ItemPage>
 
   @override
   Widget build(BuildContext context) {
+    calculateItemCost();
     return Scaffold(
       appBar: AppBar(
         title: Text(S
             .of(context)
             .item_title),
         leading: BackButton(),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+                filtered ? Icons.check_circle : Icons.check_circle_outline),
+            onPressed: () {
+              filtered = !filtered;
+              setState(() {});
+            },
+          )
+        ],
         bottom: TabBar(
             controller: _tabController,
             tabs: categories.map((category) => Tab(text: category)).toList()),
@@ -104,13 +152,23 @@ class _ItemPageState extends State<ItemPage>
             final len = group.length;
             for (int index = 0; index < len; index++) {
               final controller = group[index];
+              String iconKey = controller.data.name;
+              final r = [planCost[iconKey]?.fold(0, (p, c) => p + c) ?? 0]
+                ..addAll(planCost[iconKey] ?? [0, 0, 0]);
+              bool enough = r[0] <= (db.userData.items[iconKey] ?? 0);
+              if (filtered && enough) {
+                continue;
+              }
               tiles.add(CustomTile(
                 leading: Image.file(
-                  db.getIconFile(controller.data.name),
+                  db.getIconFile(iconKey),
                   height: 110 * 0.5,
                 ),
-                title: Text(controller.data.name),
-                subtitle: Text('库存数量:  '),
+                title: Text(iconKey),
+                subtitle: Text(
+                  '共需 ${r[0]}(${r[1]}/${r[2]}/${r[3]})',
+                  style: enough ? null : TextStyle(color: Colors.redAccent),
+                ),
                 titlePadding: EdgeInsets.fromLTRB(16, 0, 16, 0),
                 trailing: SizedBox(
                   width: 45,
