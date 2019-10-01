@@ -4,15 +4,16 @@ import 'package:flutter/material.dart';
 
 class SHeader extends StatelessWidget {
   final String label;
+  final TextStyle style;
 
-  SHeader(this.label);
+  SHeader(this.label, {this.style});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(left: 10.0, top: 8.0, bottom: 5.0),
-      child:
-      Text(label, style: TextStyle(color: Colors.black54, fontSize: 14.0)),
+      child: Text(label,
+          style: style ?? TextStyle(color: Colors.black54, fontSize: 14.0)),
     );
   }
 }
@@ -138,7 +139,9 @@ class SSelect extends StatelessWidget {
               trailing: index == selected
                   ? Icon(
                 Icons.check,
-                color: Theme.of(context).primaryColor,
+                color: Theme
+                    .of(context)
+                    .primaryColor,
               )
                   : null,
               onTap: () {
@@ -238,7 +241,6 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
 
   _RangeSelectorState(this.start, this.end);
 
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -284,13 +286,12 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
   }
 }
 
-
 List<Widget> divideTiles(Iterable<Widget> tiles,
     {Widget divider = const Divider(height: 1.0),
       bool top = false,
       bool bottom = false}) {
   if (tiles.length == 0) {
-    return tiles;
+    return tiles.toList();
   }
   List<Widget> combined = [];
   if (top) {
@@ -307,7 +308,7 @@ List<Widget> divideTiles(Iterable<Widget> tiles,
   return combined;
 }
 
-List<Widget> divideTiles2(List<Widget> tiles,
+List<Widget> _divideTiles2(List<Widget> tiles,
     {Widget divider = const Divider(height: 1.0),
       bool top = false,
       bool bottom = false}) {
@@ -328,20 +329,123 @@ List<Widget> divideTiles2(List<Widget> tiles,
   return combined;
 }
 
-void showSheet(BuildContext context, Widget child) {
-  // exactly, ModalBottomSheet's height is decided by [initialChildSize]
-  // and cannot be modified by drag.
+typedef SheetBuilder = Widget Function(BuildContext, StateSetter);
+
+void showSheet(BuildContext context,
+    {@required SheetBuilder builder, double size = 0.75}) {
+  assert(size >= 0.25 && size <= 1);
+
   showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (context) =>
-          DraggableScrollableSheet(
-            initialChildSize: 0.75,
-            minChildSize: 0.25,
-            maxChildSize: 0.9,
-            expand: false,
-            builder:
-                (BuildContext context, ScrollController scrollController) =>
-            child,
+          StatefulBuilder(
+            builder: (sheetContext, setSheetState) {
+              return DraggableScrollableSheet(
+                initialChildSize: size,
+                minChildSize: 0.25,
+                maxChildSize: 1,
+                expand: false,
+                builder: (context, scrollController) =>
+                    builder(sheetContext, setSheetState),
+              );
+            },
           ));
+}
+
+class FilterButton extends StatefulWidget {
+  final Color selectedColor;
+  final Color unselectedColor;
+  final Widget child;
+  final ValueChanged<bool> onPressed;
+  final bool value;
+
+  const FilterButton({Key key,
+    this.selectedColor = Colors.lightBlueAccent,
+    this.unselectedColor,
+    this.onPressed,
+    @required this.value,
+    @required this.child})
+      : super(key: key);
+
+  @override
+  _FilterButtonState createState() => _FilterButtonState(value);
+}
+
+class _FilterButtonState extends State<FilterButton> {
+  bool value;
+
+  _FilterButtonState(this.value);
+
+  @override
+  Widget build(BuildContext context) {
+    return ButtonTheme(
+      minWidth: 25,
+      child: FlatButton(
+        onPressed: () {
+          setState(() {
+            value = !value;
+            widget.onPressed(value);
+          });
+        },
+        color: value ? widget.selectedColor : widget.unselectedColor,
+        child: widget.child,
+        shape: ContinuousRectangleBorder(
+            side: BorderSide(color: Colors.grey),
+            borderRadius: BorderRadius.circular(3)),
+      ),
+    );
+  }
+}
+
+class FilterButtonGroup<T> extends StatefulWidget {
+  final List<T> data;
+  final List<Widget> labels;
+  final List<T> values;
+  final ValueChanged<List<T>> onChanged;
+
+  FilterButtonGroup(
+      {Key key, @required this.data, this.labels, this.values, this.onChanged})
+      : assert(data != null && data.length == data
+      .toSet()
+      .length),
+        assert(labels == null || labels.length == data.length),
+        super(key: key);
+
+  @override
+  _FilterButtonGroupState createState() => _FilterButtonGroupState(values);
+}
+
+class _FilterButtonGroupState<T> extends State<FilterButtonGroup<T>> {
+  List<T> values;
+
+  _FilterButtonGroupState(values) : values = values ?? [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 6,
+      children: List.generate(widget.data.length, (index) {
+        final label = widget.labels == null
+            ? Text('${widget.data[index]}')
+            : widget.labels[index];
+
+        return FilterButton(
+          value: values.contains(widget.data[index]),
+          child: label,
+          onPressed: (selected) {
+            if (selected) {
+              values.add(widget.data[index]);
+            } else {
+              values.removeWhere((e) => e == widget.data[index]);
+            }
+            if (widget.onChanged != null) {
+              widget.onChanged(values);
+            }
+          },
+        );
+      }),
+    );
+    ;
+  }
 }

@@ -16,26 +16,6 @@ class MyRoute extends MaterialPageRoute {
   MyRoute({@required this.builder, RouteSettings settings})
       : super(settings: settings, builder: builder);
 
-//      : super(
-//            settings: settings,
-//            pageBuilder: (BuildContext context, Animation<double> animation,
-//                Animation<double> secondaryAnimation) {
-//              return builder(context);
-//            },
-//            transitionsBuilder: (BuildContext context,
-//                Animation<double> animation,
-//                Animation<double> secondaryAnimation,
-//                Widget child) {
-//              return SlideTransition(
-//                position: new Tween<Offset>(
-//                  begin: const Offset(1.0, 0.0),
-//                  end: Offset.zero,
-//                ).animate(animation),
-//                child: child,
-//              );
-//            });
-
-  //if builder==null, just pop no push
   static void popAndPush(BuildContext context,
       {WidgetBuilder builder, RouteSettings settings}) {
     Navigator.of(context).popUntil((route) => route.settings.isInitialRoute);
@@ -88,14 +68,24 @@ class MyRoute extends MaterialPageRoute {
           ),
         ));
   }
+
+  @override
+  Iterable<OverlayEntry> createOverlayEntries() {
+    // TODO: implement createOverlayEntries
+
+    return super.createOverlayEntries();
+  }
 }
 
 class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
-  SplitRoute({@required this.builder, RouteSettings settings})
-      : super(settings: settings);
-
   final WidgetBuilder builder;
+  final RouteSettings settings;
+  bool tablet;
   FocusScopeNode node = FocusScopeNode();
+
+  SplitRoute({@required this.builder, RouteSettings settings})
+      : settings = settings ?? RouteSettings(),
+        super(settings: settings ?? RouteSettings());
 
   //if builder==null, just pop no push
   static void popAndPush(BuildContext context,
@@ -129,7 +119,7 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
 
   // DetailPage should not be created outside SplitRoute()
   Widget createDetailPage(BuildContext context, Widget child) {
-    final tablet = isTablet(context);
+//    final tablet = isTablet(context);
     return Positioned(
         left: tablet
             ? MediaQuery.of(context).size.width *
@@ -161,15 +151,11 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
         opaque: false,
         maintainState: true,
         builder: (context) {
+          tablet = isTablet(context);
           return settings.isInitialRoute
               ? createMasterPage(context, builder(context))
               : createDetailPage(context, builder(context));
         });
-  }
-
-  @override
-  void install(OverlayEntry insertionPoint) {
-    super.install(insertionPoint);
   }
 
   @override
@@ -182,8 +168,9 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
     return returnValue;
   }
 
+  /// master-page: opaque, detail-page: transparent
   @override
-  bool get opaque => false;
+  bool get opaque => !(settings.isInitialRoute == false && tablet == true);
 
   @override
   Duration get transitionDuration => Duration(milliseconds: 250);

@@ -4,53 +4,6 @@ import 'package:chaldea/components/custom_tile.dart';
 import 'package:chaldea/components/tile_items.dart';
 import 'package:flutter/material.dart';
 
-class ItemUnit extends StatelessWidget {
-  final Image icon;
-  final String text;
-  final AlignmentDirectional alignment;
-
-  ItemUnit(this.icon, this.text,
-      {Key key, this.alignment = AlignmentDirectional.bottomEnd})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      alignment: alignment,
-      children: <Widget>[
-        icon,
-        Padding(
-          padding: EdgeInsets.symmetric(
-              vertical: icon.width * 0.05, horizontal: icon.width * 0.1),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: icon.width * 0.9),
-            child: FittedBox(
-              fit: BoxFit.fitWidth,
-              child: Stack(
-                children: <Widget>[
-                  Text(
-                    text,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      foreground: Paint()
-                        ..style = PaintingStyle.stroke
-                        ..strokeWidth = 3
-                        ..color = Colors.white,
-                    ),
-                  ),
-                  Text(
-                    text,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  )
-                ],
-              ),
-            ),
-          ),
-        )
-      ],
-    );
-  }
-}
 
 class ItemCostPage extends StatefulWidget {
   final List<List<Item>> costList;
@@ -116,8 +69,7 @@ class ItemCostPageState extends State<ItemCostPage> {
                         spacing: 5,
                         children: lvCost
                             .map((item) => ItemUnit(
-                                  Image.file(
-                                      db.getIconFile(item.name),
+                          Image.file(db.getIconFile(item.name),
                                       width: 110 * 0.5),
                                   formatNumberToString(item.num, 'kilo'),
                                 ))
@@ -192,12 +144,14 @@ class PlanTabState extends State<PlanTab> with AutomaticKeepAliveClientMixin {
                   icon: Icon(Icons.info_outline, color: Colors.blueAccent),
                   onPressed: () {
                     showSheet(
-                        context,
-                        ItemCostPage(
-                            costList: widget.svt.itemCost.ascension,
-                            title: '灵基再临',
-                            curLv: svtPlan.ascensionLv[0],
-                            targetLv: svtPlan.ascensionLv[1]));
+                      context,
+                      builder: (sheetContext, setSheetState) =>
+                          ItemCostPage(
+                              costList: widget.svt.itemCost.ascension,
+                              title: '灵基再临',
+                              curLv: svtPlan.ascensionLv[0],
+                              targetLv: svtPlan.ascensionLv[1]),
+                    );
                   },
                 )
               ],
@@ -239,14 +193,14 @@ class PlanTabState extends State<PlanTab> with AutomaticKeepAliveClientMixin {
             IconButton(
               icon: Icon(Icons.info_outline, color: Colors.blueAccent),
               onPressed: () {
-                showSheet(
-                    context,
-                    ItemCostPage(
-                      costList: widget.svt.itemCost.skill,
-                      title: '技能${index + 1} - ${skill.name}',
-                      curLv: svtPlan.skillLv[index][0],
-                      targetLv: svtPlan.skillLv[index][1],
-                    ));
+                showSheet(context,
+                    builder: (sheetContext, setSheetState) =>
+                        ItemCostPage(
+                          costList: widget.svt.itemCost.skill,
+                          title: '技能${index + 1} - ${skill.name}',
+                          curLv: svtPlan.skillLv[index][0],
+                          targetLv: svtPlan.skillLv[index][1],
+                        ));
               },
             )
           ],
@@ -263,8 +217,7 @@ class PlanTabState extends State<PlanTab> with AutomaticKeepAliveClientMixin {
         svtPlan.dressLv.add([0, 0]);
       }
       dressWidgets.add(CustomTile(
-        leading: Image.file(db.getIconFile('灵衣开放权'),
-            height: 110 * 0.3),
+        leading: Image.file(db.getIconFile('灵衣开放权'), height: 110 * 0.3),
         title: AutoSizeText(widget.svt.itemCost.dressName[index], maxLines: 1),
         subtitle: AutoSizeText(
           widget.svt.itemCost.dressNameJp[index],
@@ -282,18 +235,21 @@ class PlanTabState extends State<PlanTab> with AutomaticKeepAliveClientMixin {
               endItems: List.generate(
                   2, (index) => MapEntry(index, Text(index.toString()))),
               onChanged: (start, end) {
+                svtPlan.dressLv[index] = [start, end];
+                svtPlan.favorite = true;
                 widget?.updateParent();
               },
             ),
             IconButton(
               icon: Icon(Icons.info_outline, color: Colors.blueAccent),
               onPressed: () {
-                showSheet(
-                    context,
-                    ItemCostPage(
-                      costList: [widget.svt.itemCost.dress[index]],
-                      title: '灵衣开放 - ${widget.svt.itemCost.dressName[index]}',
-                    ));
+                showSheet(context,
+                    builder: (sheetContext, setSheetState) =>
+                        ItemCostPage(
+                          costList: [widget.svt.itemCost.dress[index]],
+                          title:
+                          '灵衣开放 - ${widget.svt.itemCost.dressName[index]}',
+                        ));
               },
             )
           ],

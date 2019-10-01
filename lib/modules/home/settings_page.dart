@@ -100,13 +100,12 @@ class _SettingsPageState extends State<SettingsPage> {
             tiles: <Widget>[
               ListTile(
                 title: Text('Extract dataset'),
-                onTap: () {
-                  db
-                      .loadZipAssets('res/data/dataset.zip', forceLoad: true)
-                      .then((_) {
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text('dataset have been extracted.')));
-                  });
+                onTap: () async {
+                  await db.loadZipAssets('res/data/dataset.zip',
+                      forceLoad: true);
+                  await db.loadData();
+                  Scaffold.of(context).showSnackBar(
+                      SnackBar(content: Text('dataset have been extracted.')));
                 },
               ),
               ListTile(

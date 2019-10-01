@@ -1,6 +1,6 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
-import 'package:chaldea/modules/item/item_page.dart';
+import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -39,7 +39,7 @@ class GalleryState extends State<Gallery> {
           title: S.of(context).item_title,
           icon: Icons.category,
           routeName: '/item',
-          builder: (context) => ItemPage()),
+          builder: (context) => ItemListPage()),
       GalleryItem.more: GalleryItem(
           title: S.of(context).more,
           icon: Icons.add,
@@ -63,8 +63,6 @@ class GalleryState extends State<Gallery> {
           decoration: BoxDecoration(),
           child: FlatButton(
             child: Column(
-//              crossAxisAlignment: CrossAxisAlignment.center,
-//              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Expanded(
                   flex: 6,
@@ -99,8 +97,7 @@ class GalleryState extends State<Gallery> {
               SplitRoute.popAndPush(context,
                   builder: item.builder,
                   settings: RouteSettings(
-                      name: item.routeName,
-                      isInitialRoute: item.isInitialRoute ?? false));
+                      isInitialRoute: item.isInitialRoute ?? true));
             },
           ),
         ));

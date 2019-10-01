@@ -20,6 +20,7 @@ class Database {
   AppData appData;
   Plans userData;
   GameData gameData;
+  Map<String, int> hashCodes = {};
   static String _rootPath = '';
 
   String get rootPath => _rootPath;
@@ -34,17 +35,18 @@ class Database {
     if (app) {
       appData = AppData.fromJson(
           getJsonFromFile(appDataFilename, Map<String, dynamic>()));
+      hashCodes['app'] = appData.hashCode;
       print('appdata reloaded');
     }
 
     if (user) {
       userData = Plans.fromJson(
           getJsonFromFile(userDataFilename, Map<String, dynamic>()));
+      hashCodes['user'] = userData.hashCode;
       print('userdata reloaded');
     }
     if (game) {
       // use downloaded data if exist
-
       gameData = GameData.fromJson({
         'servants':
         getJsonFromFile(join(appData.gameDataPath, 'svt_list.json'), Map()),
@@ -59,26 +61,36 @@ class Database {
   }
 
   Future<Null> saveData({bool app: false, bool user: false}) async {
-    //todo: load and save hashCode, don't save if hashCode didn't change
     if (app) {
-      try {
-        final contents = json.encode(appData);
-        getLocalFile(appDataFilename).writeAsStringSync(contents);
-        print('Saved "$appDataFilename"\n');
-      } catch (e) {
-        print('Error saving "$appDataFilename"!');
-        print(e);
-      }
+      _saveJsonFile(appData, appDataFilename);
+//      int newCode = appData.hashCode;
+//      if (hashCodes['app'] != newCode) {
+//        print('appData hashCode changed, saving file.');
+//        hashCodes['app'] = newCode;
+//        _saveJsonFile(appData, appDataFilename);
+//      }
     }
     if (user) {
-      try {
-        final contents = json.encode(userData);
-        getLocalFile(userDataFilename).writeAsStringSync(contents);
-        print('Saved "$userDataFilename"\n');
-      } catch (e) {
-        print('Error saving "$userDataFilename"!');
-        print(e);
-      }
+      _saveJsonFile(userData, userDataFilename);
+//      int newCode = userData.hashCode;
+//      if (hashCodes['user'] != newCode) {
+//        print('userData hashCode changed, saving file.');
+//        hashCodes['user'] = newCode;
+//        _saveJsonFile(userData, userDataFilename);
+//      }else{
+//        print('userData hashCode no change: ${userData.servants}');
+//      }
+    }
+  }
+
+  Future<Null> _saveJsonFile(dynamic jsonData, String relativePath) async {
+    try {
+      final contents = json.encode(jsonData);
+      getLocalFile(relativePath).writeAsStringSync(contents);
+      print('Saved "$relativePath"\n');
+    } catch (e) {
+      print('Error saving "$relativePath"!');
+      print(e);
     }
   }
 

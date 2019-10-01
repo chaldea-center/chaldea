@@ -40,6 +40,84 @@ class Servant {
   List<Skill> passiveSkills;
   ItemCost itemCost;
 
+  Map<String, int> calculateCost(ServantPlan plan, {bool planned = true}) {
+    if (planned && (plan == null || plan.favorite == false)) {
+      return {};
+    }
+    Map<String, int> cost = {};
+    List<Map<String, int>> all = [
+      calAscensionCost(lv: planned ? plan.ascensionLv : null),
+      calSkillCost(lv: planned ? plan.skillLv : null),
+      calDressCost(lv: planned ? plan.dressLv : null)
+    ];
+    all.forEach((e) =>
+        e.forEach((item, num) {
+          cost[item] = (cost[item] ?? 0) + num;
+        }));
+    return cost;
+  }
+
+  Map<String, int> calAscensionCost({List<int> lv}) {
+    Map<String, int> cost = {};
+    if (itemCost == null || itemCost.ascension == null) {
+      return cost;
+    }
+    lv = lv ?? [0, 4];
+    int start = lv[0],
+        end = lv[1];
+    for (int i = start; i < end; i++) {
+      for (var item in itemCost.ascension[i]) {
+        cost[item.name] = (cost[item.name] ?? 0) + item.num;
+      }
+    }
+    if (sum(cost.values) > 0) {
+//      print('Ascension: $cost');
+    }
+    return cost;
+  }
+
+  Map<String, int> calSkillCost({List<List<int>> lv}) {
+    Map<String, int> cost = {};
+    if (itemCost == null || itemCost.skill == null) {
+      return cost;
+    }
+    lv = lv ?? List.generate(3, (i) => [1, 10]);
+    for (int i = 0; i < 3; i++) {
+      int start = lv[i][0],
+          end = lv[i][1];
+      for (int j = start - 1; j < end - 1; j++) {
+        for (var item in itemCost.skill[j]) {
+          cost[item.name] = (cost[item.name] ?? 0) + item.num;
+        }
+      }
+    }
+    if (sum(cost.values) > 0) {
+//      print('Skill: $cost');
+    }
+    return cost;
+  }
+
+  Map<String, int> calDressCost({List<List<int>> lv}) {
+    Map<String, int> cost = {};
+    if (itemCost == null || itemCost.dress == null) {
+      return cost;
+    }
+    lv = lv ?? List.generate(itemCost.dress.length, (i) => [0, 1]);
+    for (int i = 0; i < itemCost.dress.length; i++) {
+      int start = lv[i][0],
+          end = lv[i][1];
+      for (int j = start; j < end; j++) {
+        for (var item in itemCost.dress[i]) {
+          cost[item.name] = (cost[item.name] ?? 0) + item.num;
+        }
+      }
+    }
+    if (sum(cost.values) > 0) {
+//      print('Dress: $cost');
+    }
+    return cost;
+  }
+
   Servant(
       {this.no,
       this.mcLink,
@@ -215,10 +293,10 @@ class Effect {
 class ItemCost {
   List<List<Item>> ascension;
   List<List<Item>> skill;
+  List<List<Item>> dress;
 
   List<String> dressName;
   List<String> dressNameJp;
-  List<List<Item>> dress;
 
   factory ItemCost.fromJson(Map<String, dynamic> data) =>
       _$ItemCostFromJson(data);
@@ -241,6 +319,27 @@ class Item {
   String category;
   @JsonKey(defaultValue: 0)
   int num;
+
+//  Item operator +(Object other) {
+//    if (Object is Item) {
+//      Item otherItem = other as Item;
+//      return this.copyWith(num: num + otherItem.num);
+//    } else if (Object is int) {
+//      int otherInt = other as int;
+//      return copyWith(num: num + otherInt);
+//    } else {
+//      throw (TypeError());
+//    }
+//  }
+
+  Item copyWith({int id, String name, int rarity, String category, int num}) {
+    return Item(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        rarity: rarity ?? this.name,
+        category: category ?? this.category,
+        num: num ?? this.num);
+  }
 
   factory Item.fromJson(Map<String, dynamic> data) => _$ItemFromJson(data);
 

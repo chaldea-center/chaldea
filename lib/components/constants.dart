@@ -77,10 +77,10 @@ class GalleryItem {
   }
 }
 
-class StringFilter {
+class TextFilter {
   List<String> patterns;
 
-  StringFilter(filterString) {
+  TextFilter(filterString) {
     patterns = filterString.split(RegExp(r'\s+'));
     patterns.removeWhere((item) => item == '');
   }
@@ -118,17 +118,51 @@ class StringFilter {
   }
 }
 
-enum Sign {
-  none,
-  positive,
-  negative
+class ClassName {
+  final String name;
+  static const all = const ClassName('All');
+  static const saber = const ClassName('Saber');
+  static const archer = const ClassName('Archer');
+  static const lancer = const ClassName('Lancer');
+  static const rider = const ClassName('Rider');
+  static const caster = const ClassName('Caster');
+  static const assassin = const ClassName('Assassin');
+  static const berserker = const ClassName('Berserker');
+  static const shielder = const ClassName('Shielder');
+  static const ruler = const ClassName('Ruler');
+  static const avenger = const ClassName('Avenger');
+  static const alterego = const ClassName('Alterego');
+  static const mooncancer = const ClassName('MoonCancer');
+  static const foreigner = const ClassName('Foreigner');
+  static const beast = const ClassName('Beast');
+
+  static List<ClassName> get values =>
+      [
+        saber,
+        archer,
+        lancer,
+        rider,
+        caster,
+        assassin,
+        berserker,
+        shielder,
+        ruler,
+        avenger,
+        alterego,
+        mooncancer,
+        foreigner,
+        beast
+      ];
+
+  const ClassName(this.name);
 }
 
+enum Sign { none, positive, negative }
 
 String formatNumberToString<T>(T number, [String style]) {
-  if(number is String||number is double){
+  if (number is String || number is double) {
     return '$number';
-  }else if(number is int){
+  } else if (number is int) {
     int num = number;
     switch (style) {
       case 'percent':
@@ -136,11 +170,11 @@ String formatNumberToString<T>(T number, [String style]) {
         return num % 100 == 0 ? '${num ~/ 100}%' : '${num / 100.0}%';
       case 'kilo':
         if (num % 1e9 == 0) {
-          return formatNumberToString(num ~/ 1e9, 'decimal')+'G';
+          return formatNumberToString(num ~/ 1e9, 'decimal') + 'G';
         } else if (num % 1e6 == 0) {
-          return formatNumberToString(num ~/ 1e6, 'decimal')+'M';
+          return formatNumberToString(num ~/ 1e6, 'decimal') + 'M';
         } else if (num % 1e3 == 0) {
-          return formatNumberToString(num ~/ 1e3, 'decimal')+'K';
+          return formatNumberToString(num ~/ 1e3, 'decimal') + 'K';
         } else {
           return formatNumberToString(num, 'decimal');
         }
@@ -155,8 +189,9 @@ String formatNumberToString<T>(T number, [String style]) {
       default:
         return '$num';
     }
-  }else{
+  } else {
     throw TypeError();
   }
-
 }
+
+num sum(Iterable<num> x) => x.fold(0, (p, c) => p + c);
