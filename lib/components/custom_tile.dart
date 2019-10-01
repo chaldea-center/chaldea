@@ -181,46 +181,50 @@ class ItemUnit extends StatelessWidget {
   final Image icon;
   final String text;
   final AlignmentDirectional alignment;
+  final VoidCallback onTap;
 
   ItemUnit(this.icon, this.text,
-      {Key key, this.alignment = AlignmentDirectional.bottomEnd})
+      {Key key, this.alignment = AlignmentDirectional.bottomEnd, this.onTap})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: alignment,
-      children: <Widget>[
-        icon,
-        Padding(
-          padding: EdgeInsets.symmetric(
-              vertical: icon.width * 0.28, horizontal: icon.width * 0.05),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: icon.width * 0.9),
-            child: FittedBox(
-              fit: BoxFit.fitWidth,
-              child: Stack(
-                children: <Widget>[
-                  Text(
-                    text,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      foreground: Paint()
-                        ..style = PaintingStyle.stroke
-                        ..strokeWidth = 3
-                        ..color = Colors.white,
+    return GestureDetector(
+      onTap: onTap,
+      child: Stack(
+        alignment: alignment,
+        children: <Widget>[
+          icon,
+          Padding(
+            padding: EdgeInsets.symmetric(
+                vertical: icon.width * 0.28, horizontal: icon.width * 0.05),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: icon.width * 0.9),
+              child: FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Stack(
+                  children: <Widget>[
+                    Text(
+                      text,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        foreground: Paint()
+                          ..style = PaintingStyle.stroke
+                          ..strokeWidth = 3
+                          ..color = Colors.white,
+                      ),
                     ),
-                  ),
-                  Text(
-                    text,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  )
-                ],
+                    Text(
+                      text,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-        )
-      ],
+          )
+        ],
+      ),
     );
   }
 }

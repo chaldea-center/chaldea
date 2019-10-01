@@ -33,7 +33,6 @@ class TextInputsManager<T> {
         data: datum, textEditingController: controller, focusNode: node));
   }
 
-
   // focus part
   void addFocus(FocusNode node) {
     // could node of _focusList not in _focusNodes list?
@@ -77,7 +76,6 @@ class _ItemListPageState extends State<ItemListPage>
   ItemCostStatistics statistics;
   bool filtered = true;
 
-
   void getFocused(TextEditingController controller, FocusNode node,
       {bool isTap = false}) {
     if ((node.hasFocus || isTap) && _lastFocusedController != controller) {
@@ -94,6 +92,13 @@ class _ItemListPageState extends State<ItemListPage>
     super.deactivate();
     print('ItemListPage deactived.');
     db.saveData(user: true);
+  }
+
+  void update() {
+    // for sub-page callback
+    setState(() {
+//      print('update item_list_page');
+    });
   }
 
   @override
@@ -170,9 +175,11 @@ class _ItemListPageState extends State<ItemListPage>
               manager.addFocus(component.focusNode);
               tiles.add(CustomTile(
                 onTap: () {
-                  Navigator.of(context).push(SplitRoute(
-                      builder: (context) => ItemDetailPage(iconKey),
-                      settings: RouteSettings(isInitialRoute: false)));
+                  SplitRoute.popAndPush(context,
+                      builder: (context) =>
+                          ItemDetailPage(iconKey,
+                              statistics: statistics, updateParent: update),
+                      settings: RouteSettings(isInitialRoute: false));
                 },
                 leading: Image.file(
                   db.getIconFile(iconKey),
