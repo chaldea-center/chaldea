@@ -1,11 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/services.dart';
 
 class Gallery extends StatefulWidget {
   @override
@@ -155,7 +154,6 @@ class Slider extends StatefulWidget {
 class _SliderState extends State<Slider> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     if (null == widget.imgUrls) return null;
     return Swiper(
       itemBuilder: (BuildContext context, int index) {

@@ -1,7 +1,7 @@
-//import 'package:chaldea/components/components.dart';
-import 'constants.dart';
 import 'package:chaldea/components/split_route.dart';
 import 'package:flutter/material.dart';
+
+import 'constants.dart';
 
 class BottomNavigation extends StatefulWidget {
   final List<TabData> tabs;
@@ -17,7 +17,6 @@ class _BottomNavigationState extends State<BottomNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       body: widget.tabs[_curIndex].tab,
       bottomNavigationBar: Theme(

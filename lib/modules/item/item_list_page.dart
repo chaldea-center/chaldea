@@ -1,18 +1,15 @@
+import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/custom_tile.dart';
 import 'package:chaldea/components/tile_items.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
-import 'package:chaldea/modules/servant/servant_tabs.dart';
 import 'package:flutter/material.dart';
-import 'package:chaldea/components/components.dart';
-//
 
 class InputComponent<T> {
   T data;
   TextEditingController textEditingController;
   FocusNode focusNode;
 
-  InputComponent(
-      {@required this.data, this.textEditingController, this.focusNode})
+  InputComponent({@required this.data, this.textEditingController, this.focusNode})
       : assert(data != null);
 
   void dispose() {
@@ -62,10 +59,10 @@ class TextInputsManager<T> {
 
 class ItemListPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _ItemListPageState();
+  State<StatefulWidget> createState() => ItemListPageState();
 }
 
-class _ItemListPageState extends State<ItemListPage>
+class ItemListPageState extends State<ItemListPage>
     with SingleTickerProviderStateMixin {
   List<String> categories = ['material', 'gem', 'piece', 'event'];
 
@@ -92,13 +89,6 @@ class _ItemListPageState extends State<ItemListPage>
     super.deactivate();
     print('ItemListPage deactived.');
     db.saveData(user: true);
-  }
-
-  void update() {
-    // for sub-page callback
-    setState(() {
-//      print('update item_list_page');
-    });
   }
 
   @override
@@ -167,18 +157,24 @@ class _ItemListPageState extends State<ItemListPage>
               final itemStat = statistics.getNumOfItem(iconKey);
               final allNum = sum(itemStat.values);
               final ownNum = db.userData.items[iconKey] ?? 0;
-              bool enough = allNum <= ownNum;
+              int leftNum = ownNum - allNum;
+              bool enough = leftNum >= 0;
 
               if (filtered && enough) {
                 continue;
               }
+              final highlightStyle =
+              TextStyle(color: enough ? null : Colors.redAccent);
               manager.addFocus(component.focusNode);
               tiles.add(CustomTile(
                 onTap: () {
                   SplitRoute.popAndPush(context,
                       builder: (context) =>
-                          ItemDetailPage(iconKey,
-                              statistics: statistics, updateParent: update),
+                          ItemDetailPage(
+                            iconKey,
+                            statistics: statistics,
+                            parent: this,
+                          ),
                       settings: RouteSettings(isInitialRoute: false));
                 },
                 leading: Image.file(
@@ -193,16 +189,18 @@ class _ItemListPageState extends State<ItemListPage>
                         child: Text(
                           '共需 $allNum(${itemStat.ascension}/${itemStat
                               .skill}/${itemStat.dress})',
-                          style: TextStyle(
-                              color: enough ? null : Colors.redAccent),
+                          style: highlightStyle,
                         )),
-                    Expanded(
-                        flex: 2,
-                        child: Text(
-                          '剩余 ${ownNum - allNum}',
-                          style: TextStyle(
-                              color: enough ? null : Colors.redAccent),
-                        ))
+                    Text(
+                      '剩余 ',
+                      style: highlightStyle,
+                    ),
+                    SizedBox(
+                        width: 37,
+                        child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(leftNum.toString(),
+                                style: highlightStyle)))
                   ],
                 ),
                 titlePadding: EdgeInsets.fromLTRB(16, 0, 16, 0),
@@ -240,7 +238,6 @@ class _ItemListPageState extends State<ItemListPage>
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     inputManagers.forEach((key, manager) {
       manager.dispose();

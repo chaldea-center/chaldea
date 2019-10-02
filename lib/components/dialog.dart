@@ -35,7 +35,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
   @override
   void initState() {
     super.initState();
-    _controller= TextEditingController(text: widget.defaultText);
+    _controller = TextEditingController(text: widget.defaultText);
   }
 
   @override

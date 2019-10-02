@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/constants.dart';
 import 'package:chaldea/modules/blank_page.dart';
@@ -29,8 +27,8 @@ class _ChaldeaState extends State<Chaldea> {
     await db.initial();
     db.onLocaleChange = this.onLocaleChange;
     await db.loadData(app: true, user: true, game: false);
-    await db.loadZipAssets(
-        'res/data/dataset.zip', dir: db.appData.gameDataPath);
+    await db.loadZipAssets('res/data/dataset.zip',
+        dir: db.appData.gameDataPath);
     await db.loadData(app: false, user: false, game: true);
   }
 

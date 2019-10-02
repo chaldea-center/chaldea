@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:chaldea/generated/i18n.dart';
+import 'package:flutter/material.dart';
 
-typedef void LocaleChangeCallback({Locale locale});
+import 'constants.dart' show LocaleChangeCallback;
 
 class SpecifiedLocalizationDelegate
     extends LocalizationsDelegate<WidgetsLocalizations> {
-  //class static vars: need to remove?
   //onLocaleChange should be bind to MaterialApp function containing setState().
   static LocaleChangeCallback onLocaleChange;
 

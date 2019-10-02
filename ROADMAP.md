@@ -1,4 +1,6 @@
 ## TODO:
- - spider skill/np enhanced in cn-server
- - ... 
+ - Icon with text: different bottom padding
+ - remember tab no
+ - modalSheet meet master-guest view?
+ - 
  

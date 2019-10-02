@@ -177,14 +177,21 @@ class CustomTile extends StatelessWidget {
   }
 }
 
-class ItemUnit extends StatelessWidget {
-  final Image icon;
+class ImageWithText extends StatelessWidget {
+  final Image image;
   final String text;
+  final double bottom;
   final AlignmentDirectional alignment;
   final VoidCallback onTap;
+  static const double itemBottom = 0.08;
+  static const double svtBottom = 0.28;
 
-  ItemUnit(this.icon, this.text,
-      {Key key, this.alignment = AlignmentDirectional.bottomEnd, this.onTap})
+  ImageWithText({Key key,
+    this.image,
+    this.text,
+    this.bottom = ImageWithText.itemBottom,
+    this.alignment = AlignmentDirectional.bottomEnd,
+    this.onTap})
       : super(key: key);
 
   @override
@@ -194,12 +201,12 @@ class ItemUnit extends StatelessWidget {
       child: Stack(
         alignment: alignment,
         children: <Widget>[
-          icon,
+          image,
           Padding(
             padding: EdgeInsets.symmetric(
-                vertical: icon.width * 0.28, horizontal: icon.width * 0.05),
+                vertical: image.width * bottom, horizontal: image.width * 0.06),
             child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: icon.width * 0.9),
+              constraints: BoxConstraints(maxWidth: image.width * 0.9),
               child: FittedBox(
                 fit: BoxFit.fitWidth,
                 child: Stack(

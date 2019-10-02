@@ -2,16 +2,16 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/custom_tile.dart';
 import 'package:chaldea/components/tile_items.dart';
+import 'package:chaldea/modules/servant/servant_detail.dart';
 import 'package:flutter/material.dart';
 
-
-class ItemCostPage extends StatefulWidget {
+class LevelUpCostPage extends StatefulWidget {
   final List<List<Item>> costList;
   final int curLv;
   final int targetLv;
   final String title;
 
-  const ItemCostPage({Key key,
+  const LevelUpCostPage({Key key,
     @required this.costList,
     this.curLv = 0,
     this.targetLv = 0,
@@ -19,10 +19,10 @@ class ItemCostPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => ItemCostPageState();
+  State<StatefulWidget> createState() => LevelUpCostPageState();
 }
 
-class ItemCostPageState extends State<ItemCostPage> {
+class LevelUpCostPageState extends State<LevelUpCostPage> {
   bool showAll = false;
 
   @override
@@ -68,10 +68,12 @@ class ItemCostPageState extends State<ItemCostPage> {
                         alignment: WrapAlignment.start,
                         spacing: 5,
                         children: lvCost
-                            .map((item) => ItemUnit(
-                          Image.file(db.getIconFile(item.name),
+                            .map((item) =>
+                            ImageWithText(
+                              image: Image.file(db.getIconFile(item.name),
                                       width: 110 * 0.5),
-                                  formatNumberToString(item.num, 'kilo'),
+                              text: formatNumberToString(item.num, 'kilo'),
+                              bottom: ImageWithText.itemBottom,
                                 ))
                             .toList())
                   ],
@@ -87,11 +89,12 @@ class ItemCostPageState extends State<ItemCostPage> {
 
 class PlanTab extends StatefulWidget {
   final Servant svt;
-  final VoidCallback updateParent;
+
+//  final VoidCallback updateParent;
+  final ServantDetailPageState parent;
   final ServantPlan plan;
 
-  const PlanTab(this.svt, {Key key, this.updateParent, this.plan})
-      : super(key: key);
+  const PlanTab(this.svt, {Key key, this.plan, this.parent}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => PlanTabState(plan);
@@ -106,13 +109,58 @@ class PlanTabState extends State<PlanTab> with AutomaticKeepAliveClientMixin {
     svtPlan = svtPlan ?? ServantPlan();
   }
 
+  Widget buildPlanRow({Widget leading,
+    String title,
+    String subtitle,
+    @required IntRangeValues value,
+    @required IntRangeValues range,
+    void onRangeChanged(int s, int e),
+    Widget detailPage}) {
+    assert(value != null && range != null);
+    return CustomTile(
+      contentPadding: EdgeInsets.fromLTRB(16, 8, 8, 8),
+      leading: leading,
+      title: title == null ? null : AutoSizeText(title, maxLines: 1),
+      subtitle: subtitle == null
+          ? null
+          : AutoSizeText(subtitle, maxLines: 1, minFontSize: 10),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          RangeSelector<int>(
+            start: value.startInt,
+            end: value.endInt,
+            startItems: List.generate(
+                range.nodeNum,
+                    (index) =>
+                    MapEntry(range[index], Text(range[index].toString()))),
+            endItems: List.generate(
+                range.nodeNum,
+                    (index) =>
+                    MapEntry(range[index], Text(range[index].toString()))),
+            onChanged: onRangeChanged,
+          ),
+          IconButton(
+            icon: Icon(Icons.info_outline, color: Colors.blueAccent),
+            onPressed: () {
+              if (detailPage != null) {
+                showSheet(
+                  context,
+                  builder: (sheetContext, setSheetState) => detailPage,
+                );
+              }
+            },
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     if (widget.svt.activeSkills == null) {
-      return Center(
-        child: Text('Nothing'),
-      );
+      return Center(child: Text('Nothing'));
     }
 
     // ascension part
@@ -121,91 +169,52 @@ class PlanTabState extends State<PlanTab> with AutomaticKeepAliveClientMixin {
       children.add(TileGroup(
         header: '灵基再临',
         tiles: <Widget>[
-          CustomTile(
-            title: Text('灵基再临'),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                RangeSelector<int>(
-                  start: svtPlan.ascensionLv[0],
-                  end: svtPlan.ascensionLv[1],
-                  startItems: List.generate(
-                      5, (index) => MapEntry(index, Text(index.toString()))),
-                  endItems: List.generate(
-                      5, (index) => MapEntry(index, Text(index.toString()))),
-                  onChanged: (start, end) {
-                    svtPlan.ascensionLv = [start, end];
-                    svtPlan.favorite = true;
-                    widget?.updateParent();
-                    setState(() {});
-                  },
-                ),
-                IconButton(
-                  icon: Icon(Icons.info_outline, color: Colors.blueAccent),
-                  onPressed: () {
-                    showSheet(
-                      context,
-                      builder: (sheetContext, setSheetState) =>
-                          ItemCostPage(
-                              costList: widget.svt.itemCost.ascension,
-                              title: '灵基再临',
-                              curLv: svtPlan.ascensionLv[0],
-                              targetLv: svtPlan.ascensionLv[1]),
-                    );
-                  },
-                )
-              ],
-            ),
-          )
+          buildPlanRow(
+              title: '灵基再临',
+              value: IntRangeValues.fromList(svtPlan.ascensionLv),
+              range: IntRangeValues(0, 4),
+              onRangeChanged: (_start, _end) {
+                svtPlan.ascensionLv = [_start, _end];
+                svtPlan.favorite = true;
+                widget.parent?.setState(() {});
+              },
+              detailPage: LevelUpCostPage(
+                costList: widget.svt.itemCost.ascension,
+                title: '灵基再临',
+                curLv: svtPlan.ascensionLv[0],
+                targetLv: svtPlan.ascensionLv[1],
+              ))
         ],
       ));
     }
 
     //skill part
     List<Widget> skillWidgets = [];
+    final plan = db.userData.servants[widget.svt.no.toString()];
     for (int index = 0; index < widget.svt.activeSkills.length; index++) {
-      Skill skill = widget.svt.activeSkills[index][0];
-      skillWidgets.add(CustomTile(
-        contentPadding: EdgeInsets.fromLTRB(16, 6, 16, 6),
-        leading: Image.file(
-          db.getIconFile(skill.icon),
-          height: 110 * 0.3,
-        ),
-        title: Text('${skill.name} ${skill.rank}'),
-        trailing: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            RangeSelector(
-              start: svtPlan.skillLv[index][0],
-              end: svtPlan.skillLv[index][1],
-              startItems: List.generate(10,
-                      (index) =>
-                      MapEntry(index + 1, Text((index + 1).toString()))),
-              endItems: List.generate(10,
-                      (index) =>
-                      MapEntry(index + 1, Text((index + 1).toString()))),
-              onChanged: (start, end) {
-                svtPlan.skillLv[index] = [start, end];
-                svtPlan.favorite = true;
-                widget?.updateParent();
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.info_outline, color: Colors.blueAccent),
-              onPressed: () {
-                showSheet(context,
-                    builder: (sheetContext, setSheetState) =>
-                        ItemCostPage(
-                          costList: widget.svt.itemCost.skill,
-                          title: '技能${index + 1} - ${skill.name}',
-                          curLv: svtPlan.skillLv[index][0],
-                          targetLv: svtPlan.skillLv[index][1],
-                        ));
-              },
-            )
-          ],
-        ),
-      ));
+      List<Skill> skillList = widget.svt.activeSkills[index];
+      bool enhanced = plan.skillEnhanced[index] ?? skillList[0].enhanced;
+      Skill skill = skillList[enhanced ? 1 : 0];
+//      Skill skill = widget.svt.activeSkills[index][0];
+      skillWidgets.add(buildPlanRow(
+          leading: Image.file(
+            db.getIconFile(skill.icon),
+            height: 110 * 0.3,
+          ),
+          title: '${skill.name} ${skill.rank}',
+          value: IntRangeValues.fromList(svtPlan.skillLv[index]),
+          range: IntRangeValues(1, 10),
+          onRangeChanged: (_start, _end) {
+            svtPlan.skillLv[index] = [_start, _end];
+            svtPlan.favorite = true;
+            widget.parent?.setState(() {});
+          },
+          detailPage: LevelUpCostPage(
+            costList: widget.svt.itemCost.skill,
+            title: '技能${index + 1} - ${skill.name}',
+            curLv: svtPlan.skillLv[index][0],
+            targetLv: svtPlan.skillLv[index][1],
+          )));
     }
     children.add(TileGroup(header: '技能升级', tiles: skillWidgets));
 
@@ -216,50 +225,25 @@ class PlanTabState extends State<PlanTab> with AutomaticKeepAliveClientMixin {
         // dress number may increase in the future
         svtPlan.dressLv.add([0, 0]);
       }
-      dressWidgets.add(CustomTile(
-        leading: Image.file(db.getIconFile('灵衣开放权'), height: 110 * 0.3),
-        title: AutoSizeText(widget.svt.itemCost.dressName[index], maxLines: 1),
-        subtitle: AutoSizeText(
-          widget.svt.itemCost.dressNameJp[index],
-          maxLines: 1,
-          minFontSize: 10,
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            RangeSelector<int>(
-              start: svtPlan.dressLv[index][0],
-              end: svtPlan.dressLv[index][1],
-              startItems: List.generate(
-                  2, (index) => MapEntry(index, Text(index.toString()))),
-              endItems: List.generate(
-                  2, (index) => MapEntry(index, Text(index.toString()))),
-              onChanged: (start, end) {
-                svtPlan.dressLv[index] = [start, end];
-                svtPlan.favorite = true;
-                widget?.updateParent();
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.info_outline, color: Colors.blueAccent),
-              onPressed: () {
-                showSheet(context,
-                    builder: (sheetContext, setSheetState) =>
-                        ItemCostPage(
-                          costList: [widget.svt.itemCost.dress[index]],
-                          title:
-                          '灵衣开放 - ${widget.svt.itemCost.dressName[index]}',
-                        ));
-              },
-            )
-          ],
-        ),
-      ));
+      dressWidgets.add(buildPlanRow(
+          leading: Image.file(db.getIconFile('灵衣开放权'), height: 110 * 0.3),
+          title: widget.svt.itemCost.dressName[index],
+          subtitle: widget.svt.itemCost.dressNameJp[index],
+          value: IntRangeValues.fromList(svtPlan.dressLv[index]),
+          range: IntRangeValues(0, 1),
+          onRangeChanged: (_start, _end) {
+            svtPlan.dressLv[index] = [_start, _end];
+            svtPlan.favorite = true;
+            widget.parent?.setState(() {});
+          },
+          detailPage: LevelUpCostPage(
+            costList: [widget.svt.itemCost.dress[index]],
+            title: '灵衣开放 - ${widget.svt.itemCost.dressName[index]}',
+          )));
     }
     if (dressWidgets.length > 0) {
       children.add(TileGroup(header: '灵衣开放', tiles: dressWidgets));
     }
-
     return ListView(
       children: children,
     );
@@ -273,16 +257,15 @@ class PlanTabState extends State<PlanTab> with AutomaticKeepAliveClientMixin {
 
 class SkillTab extends StatefulWidget {
   final Servant svt;
+  final ServantDetailPageState parent;
 
-  const SkillTab(this.svt, {Key key}) : super(key: key);
+  const SkillTab(this.svt, {Key key, this.parent}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => SkillTabState();
 }
 
 class SkillTabState extends State<SkillTab> with AutomaticKeepAliveClientMixin {
-//  List<bool> changed = [false, false, false, false];
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -294,9 +277,7 @@ class SkillTabState extends State<SkillTab> with AutomaticKeepAliveClientMixin {
     List<Widget> children = [];
     widget.svt.activeSkills.asMap().keys.forEach((index) {
       List<Skill> skillList = widget.svt.activeSkills[index];
-      bool enhanced =
-      [skillList[0].enhanced, true, false][plan.skillEnhanced[index].index];
-
+      bool enhanced = plan.skillEnhanced[index] ?? skillList[0].enhanced;
       Skill skill = skillList[enhanced ? 1 : 0];
 
       children.add(CustomTile(
@@ -313,12 +294,12 @@ class SkillTabState extends State<SkillTab> with AutomaticKeepAliveClientMixin {
               child: skillList.length == 2
                   ? GestureDetector(
                       onTap: () {
-//                  changed[index] = !(changed[index] ?? false);
-                        plan.skillEnhanced[index] =
-                        !enhanced ? Sign.positive : Sign.negative;
-                        setState(() {});
+                        widget.parent?.setState(() {
+                          plan.skillEnhanced[index] = !enhanced;
+                        });
                       },
                       child: Image.file(
+                        // Icon: skill enhanced(gold) or not enhanced(grey)
                         db.getIconFile(enhanced ? '技能强化' : '技能未强化'),
                         height: 110 * 0.2,
                       ),

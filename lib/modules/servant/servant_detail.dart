@@ -1,11 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/custom_tile.dart';
-import 'package:chaldea/components/slvier_tabbar_delegate.dart';
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:chaldea/modules/servant/servant_tabs.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:chaldea/components/components.dart';
 
 class ServantDetailPage extends StatefulWidget {
   final Servant svt;
@@ -32,14 +29,10 @@ class ServantDetailPageState extends State<ServantDetailPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: _tabNames.length, vsync: this);
-    if(!db.userData.servants.containsKey(svt.no.toString())){
+    if (!db.userData.servants.containsKey(svt.no.toString())) {
       db.userData.servants[svt.no.toString()] = ServantPlan();
     }
     plan = db.userData.servants[svt.no.toString()];
-  }
-
-  void updatePlan() {
-    setState(() {});
   }
 
   @override
@@ -60,18 +53,12 @@ class ServantDetailPageState extends State<ServantDetailPage>
             CustomTile(
               alignment: CrossAxisAlignment.start,
               leading: Image.file(db.getIconFile(svt.icon),
-                fit: BoxFit.contain,
-                height: 100,
-              ),
-              titlePadding:
-                  EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-              title: Text('${svt.info.className}'),
+                  fit: BoxFit.contain, height: 100),
+              titlePadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              title: Text('No.${svt.no}\n${svt.info.className}'),
               trailing: IconButton(
                 icon: plan.favorite
-                    ? Icon(
-                        Icons.favorite,
-                        color: Colors.redAccent,
-                      )
+                    ? Icon(Icons.favorite, color: Colors.redAccent)
                     : Icon(Icons.favorite_border),
                 onPressed: () {
                   plan.favorite = !plan.favorite;
@@ -84,12 +71,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
               labelColor: Colors.black87,
               unselectedLabelColor: Colors.grey,
               isScrollable: true,
-              tabs: _tabNames.map((name) {
-                return Tab(text: name);
-              }).toList(),
-              onTap: (index) {
-                print('tab $index: ${_tabNames[index]}');
-              },
+              tabs: _tabNames.map((name) => Tab(text: name)).toList(),
             ),
             Divider(
               height: 0.0,
@@ -100,13 +82,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
                 children: _tabNames.map((name) {
                   switch (name) {
                     case '规划':
-                      return PlanTab(
-                        svt,
-                        updateParent: updatePlan,
-                        plan: plan,
-                      );
+                      return PlanTab(svt, plan: plan, parent: this);
                     case '技能':
-                      return SkillTab(svt);
+                      return SkillTab(svt, parent: this);
                     default:
                       return ListView(
                         children: <Widget>[
@@ -117,7 +95,8 @@ class ServantDetailPageState extends State<ServantDetailPage>
                               child: Text(name),
                               onPressed: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => BlankPage()));
+                                  builder: (context) => BlankPage(),
+                                ));
                               },
                             )),
                           )

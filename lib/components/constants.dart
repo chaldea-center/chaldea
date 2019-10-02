@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
+//typedef
+typedef void LocaleChangeCallback({Locale locale});
+//const value
 const String appDataFilename = 'appdata.json';
 const String userDataFilename = 'userdata.json';
 
+//const value in class
 class LangCode {
   // code must match S.of(context).language in every .arb file
   static const String chs = 'chs';
@@ -72,7 +76,6 @@ class GalleryItem {
 
   @override
   String toString() {
-    // TODO: implement toString
     return '$runtimeType($title $routeName)';
   }
 }
@@ -157,8 +160,7 @@ class ClassName {
   const ClassName(this.name);
 }
 
-enum Sign { none, positive, negative }
-
+//public functions
 String formatNumberToString<T>(T number, [String style]) {
   if (number is String || number is double) {
     return '$number';

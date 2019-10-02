@@ -1,16 +1,16 @@
+import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/custom_tile.dart';
 import 'package:chaldea/components/tile_items.dart';
+import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/servant/servant_detail.dart';
 import 'package:flutter/material.dart';
-import 'package:chaldea/components/components.dart';
 
 class ItemDetailPage extends StatefulWidget {
   final String itemName;
   final ItemCostStatistics statistics;
-  final VoidCallback updateParent;
+  final ItemListPageState parent;
 
-  const ItemDetailPage(this.itemName,
-      {Key key, this.statistics, this.updateParent})
+  const ItemDetailPage(this.itemName, {Key key, this.statistics, this.parent})
       : super(key: key);
 
   @override
@@ -24,7 +24,6 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     statistics = (widget.statistics ??
         ItemCostStatistics(db.gameData, db.userData.servants));
@@ -35,19 +34,18 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
     src.forEach((no, num) {
       final svt = db.gameData.servants[no];
       if (num > 0) {
-        list.add(ItemUnit(
-          Image.file(db.getIconFile(svt.icon), width: 110 * 0.5),
-          num.toString(),
+        list.add(ImageWithText(
+          image: Image.file(db.getIconFile(svt.icon), width: 110 * 0.5),
+          text: num.toString(),
+          bottom: ImageWithText.svtBottom,
           onTap: () {
             Navigator.of(context)
                 .push(SplitRoute(builder: (context) => ServantDetailPage(svt)))
                 .then((_) {
               statistics.update(db.gameData, db.userData.servants);
-              if (widget.updateParent != null) {
-                widget.updateParent();
-              }
-              print(
-                  'From SvtDetail backto ItemDetail, update item count statistics');
+              widget.parent?.setState(() {});
+//              print(
+//                  'From SvtDetail back to ItemDetail, update item count statistics');
             });
           },
         ));

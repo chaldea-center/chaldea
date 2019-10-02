@@ -1,6 +1,5 @@
 ///TODO: add transition animation and swipe support
 import 'package:chaldea/modules/blank_page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -8,73 +7,6 @@ const kTabletMasterContainerRatio = 38; // percentage
 
 bool isTablet(BuildContext context) {
   return MediaQuery.of(context).size.width >= 768.0;
-}
-
-class MyRoute extends MaterialPageRoute {
-  final WidgetBuilder builder;
-
-  MyRoute({@required this.builder, RouteSettings settings})
-      : super(settings: settings, builder: builder);
-
-  static void popAndPush(BuildContext context,
-      {WidgetBuilder builder, RouteSettings settings}) {
-    Navigator.of(context).popUntil((route) => route.settings.isInitialRoute);
-    if (builder != null) {
-      Navigator.of(context).push(MyRoute(builder: builder, settings: settings));
-    }
-  }
-
-  static Widget createMasterPage(BuildContext context, Widget child) {
-    final tablet = isTablet(context);
-    return Row(
-      children: <Widget>[
-        Flexible(
-            flex: kTabletMasterContainerRatio,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Theme.of(context).accentColor,
-                  border: Border(right: BorderSide(width: tablet ? 0.0 : 0.0))),
-              child: child,
-            )),
-        tablet
-            ? Flexible(
-                flex: 100 - kTabletMasterContainerRatio, child: BlankPage())
-            : Container(),
-      ],
-    );
-  }
-
-  // DetailPage should not be created outside SplitRoute()
-  static Widget createDetailPage(BuildContext context, Widget child) {
-    final tablet = isTablet(context);
-//    FocusScope.of(context).setFirstFocus(node);
-    return Positioned(
-        left: tablet
-            ? MediaQuery.of(context).size.width *
-                kTabletMasterContainerRatio /
-                100
-            : 0,
-        top: 0,
-        child: Container(
-          decoration:
-              BoxDecoration(border: Border(left: BorderSide(width: 0.0))),
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width: tablet
-                ? MediaQuery.of(context).size.width *
-                    (1 - kTabletMasterContainerRatio / 100)
-                : MediaQuery.of(context).size.width,
-            child: child,
-          ),
-        ));
-  }
-
-  @override
-  Iterable<OverlayEntry> createOverlayEntries() {
-    // TODO: implement createOverlayEntries
-
-    return super.createOverlayEntries();
-  }
 }
 
 class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {

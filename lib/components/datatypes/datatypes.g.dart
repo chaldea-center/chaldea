@@ -6,42 +6,6 @@ part of datatypes;
 // JsonSerializableGenerator
 // **************************************************************************
 
-AppData _$AppDataFromJson(Map<String, dynamic> json) {
-  return AppData(
-    language: json['language'] as String ?? 'chs',
-    galleries: (json['galleries'] as Map<String, dynamic>)?.map(
-          (k, e) => MapEntry(k, e as bool),
-        ) ??
-        {},
-    curUser: json['curUser'] as String,
-    gameDataPath: json['gameDataPath'] as String ?? 'dataset',
-  )..users = (json['users'] as Map<String, dynamic>)?.map(
-        (k, e) => MapEntry(
-            k, e == null ? null : User.fromJson(e as Map<String, dynamic>)),
-      ) ??
-      {};
-}
-
-Map<String, dynamic> _$AppDataToJson(AppData instance) => <String, dynamic>{
-      'language': instance.language,
-  'gameDataPath': instance.gameDataPath,
-      'galleries': instance.galleries,
-      'curUser': instance.curUser,
-      'users': instance.users,
-    };
-
-User _$UserFromJson(Map<String, dynamic> json) {
-  return User(
-    name: json['name'] as String,
-    server: json['server'] as String ?? 'cn',
-  );
-}
-
-Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
-      'name': instance.name,
-      'server': instance.server,
-    };
-
 GameData _$GameDataFromJson(Map<String, dynamic> json) {
   return GameData(
     servants: (json['servants'] as Map<String, dynamic>)?.map(
@@ -321,9 +285,9 @@ ItemCost _$ItemCostFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$ItemCostToJson(ItemCost instance) => <String, dynamic>{
       'ascension': instance.ascension,
       'skill': instance.skill,
+  'dress': instance.dress,
       'dressName': instance.dressName,
   'dressNameJp': instance.dressNameJp,
-      'dress': instance.dress,
     };
 
 Item _$ItemFromJson(Map<String, dynamic> json) {
@@ -342,6 +306,46 @@ Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
   'rarity': instance.rarity,
   'category': instance.category,
       'num': instance.num,
+    };
+
+AppData _$AppDataFromJson(Map<String, dynamic> json) {
+  return AppData(
+    language: json['language'] as String ?? 'chs',
+    galleries: (json['galleries'] as Map<String, dynamic>)?.map(
+          (k, e) => MapEntry(k, e as bool),
+    ) ??
+        {},
+    curUser: json['curUser'] as String,
+    gameDataPath: json['gameDataPath'] as String ?? 'dataset',
+  )
+    ..users = (json['users'] as Map<String, dynamic>)?.map(
+          (k, e) =>
+          MapEntry(
+              k, e == null ? null : User.fromJson(e as Map<String, dynamic>)),
+    ) ??
+        {};
+}
+
+Map<String, dynamic> _$AppDataToJson(AppData instance) =>
+    <String, dynamic>{
+      'language': instance.language,
+      'gameDataPath': instance.gameDataPath,
+      'galleries': instance.galleries,
+      'curUser': instance.curUser,
+      'users': instance.users,
+    };
+
+User _$UserFromJson(Map<String, dynamic> json) {
+  return User(
+    name: json['name'] as String,
+    server: json['server'] as String ?? 'cn',
+  );
+}
+
+Map<String, dynamic> _$UserToJson(User instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'server': instance.server,
     };
 
 Plans _$PlansFromJson(Map json) {
@@ -384,10 +388,9 @@ ServantPlan _$ServantPlanFromJson(Map<String, dynamic> json) {
         [],
     grailLv:
     (json['grailLv'] as List)?.map((e) => e as int)?.toList() ?? [0, 0],
-    skillEnhanced: (json['skillEnhanced'] as List)
-        ?.map((e) => _$enumDecodeNullable(_$SignEnumMap, e))
-        ?.toList(),
-    npEnhanced: _$enumDecodeNullable(_$SignEnumMap, json['npEnhanced']),
+    skillEnhanced:
+    (json['skillEnhanced'] as List)?.map((e) => e as bool)?.toList(),
+    npEnhanced: json['npEnhanced'] as bool,
     npLv: json['npLv'] as int ?? 1,
     favorite: json['favorite'] as bool ?? false,
   );
@@ -399,45 +402,8 @@ Map<String, dynamic> _$ServantPlanToJson(ServantPlan instance) =>
       'skillLv': instance.skillLv,
       'dressLv': instance.dressLv,
       'grailLv': instance.grailLv,
-      'skillEnhanced':
-      instance.skillEnhanced?.map((e) => _$SignEnumMap[e])?.toList(),
-      'npEnhanced': _$SignEnumMap[instance.npEnhanced],
+      'skillEnhanced': instance.skillEnhanced,
+      'npEnhanced': instance.npEnhanced,
       'npLv': instance.npLv,
       'favorite': instance.favorite,
     };
-
-T _$enumDecode<T>(Map<T, dynamic> enumValues,
-    dynamic source, {
-      T unknownValue,
-    }) {
-  if (source == null) {
-    throw ArgumentError('A value must be provided. Supported values: '
-        '${enumValues.values.join(', ')}');
-  }
-
-  final value = enumValues.entries
-      .singleWhere((e) => e.value == source, orElse: () => null)
-      ?.key;
-
-  if (value == null && unknownValue == null) {
-    throw ArgumentError('`$source` is not one of the supported values: '
-        '${enumValues.values.join(', ')}');
-  }
-  return value ?? unknownValue;
-}
-
-T _$enumDecodeNullable<T>(Map<T, dynamic> enumValues,
-    dynamic source, {
-      T unknownValue,
-    }) {
-  if (source == null) {
-    return null;
-  }
-  return _$enumDecode<T>(enumValues, source, unknownValue: unknownValue);
-}
-
-const _$SignEnumMap = {
-  Sign.none: 'none',
-  Sign.positive: 'positive',
-  Sign.negative: 'negative',
-};

@@ -1,10 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/custom_tile.dart';
 import 'package:chaldea/components/tile_items.dart';
 import 'package:chaldea/modules/servant/servant_detail.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:chaldea/components/components.dart';
 
 class ServantListPage extends StatefulWidget {
   @override

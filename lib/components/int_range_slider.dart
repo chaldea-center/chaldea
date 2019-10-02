@@ -39,12 +39,43 @@ class IntRangeSlider extends RangeSlider {
 
 class IntRangeValues extends RangeValues {
   /// Creates pair of start and end values.
-  IntRangeValues(this.startInt, this.endInt)
-      : super(startInt.toDouble(), endInt.toDouble());
-
   final int startInt;
-
   final int endInt;
+  final int interval;
+
+  int get nodeNum => (endInt - startInt) ~/ interval + 1;
+
+  List<int> get nodeList =>
+      List.generate(nodeNum, (index) => startInt + interval * index);
+
+  int operator [](int index) {
+    assert(index >= 0 && index <= endInt - startInt);
+    return startInt + index;
+  }
+
+  IntRangeValues(this.startInt, endInt, {this.interval = 1})
+      : assert(startInt != null &&
+      endInt != null &&
+      interval != null &&
+      interval != 0),
+        endInt = startInt + (endInt - startInt) ~/ interval,
+        super(startInt.toDouble(), endInt.toDouble());
+
+  factory IntRangeValues.fromRange(RangeValues values,
+      {int interval = 1, int roundMethod = 0}) {
+    return IntRangeValues(
+        _toInt(values.start, roundMethod), _toInt(values.end, roundMethod),
+        interval: interval);
+  }
+
+  RangeValues toRange() => RangeValues(startInt.toDouble(), endInt.toDouble());
+
+  factory IntRangeValues.fromList(List<int> values, {int interval = 1}) {
+    assert(values.length == 2);
+    return IntRangeValues(values[0], values[1], interval: interval);
+  }
+
+  List<int> toList() => [startInt, endInt];
 
   static int _toInt(double x, [int roundMethod = 0]) {
     switch (roundMethod) {
@@ -56,21 +87,6 @@ class IntRangeValues extends RangeValues {
         return x.round();
     }
   }
-
-  IntRangeValues.fromRange(RangeValues values, [int roundMethod = 0])
-      : startInt = _toInt(values.start, roundMethod),
-        endInt = _toInt(values.end, roundMethod),
-        super(values.start, values.end);
-
-  RangeValues toRange() => RangeValues(start.toDouble(), end.toDouble());
-
-  IntRangeValues.fromList(List<int> values)
-      : assert(values.length == 2),
-        startInt = values[0],
-        endInt = values[1],
-        super(values[0].toDouble(), values[1].toDouble());
-
-  List<int> toList() => [startInt, endInt];
 
   @override
   bool operator ==(Object other) {

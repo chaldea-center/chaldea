@@ -1,4 +1,5 @@
 import 'dart:math' show max, min;
+
 import 'package:chaldea/components/components.dart';
 import 'package:flutter/material.dart';
 
@@ -219,15 +220,14 @@ class RangeSelector<T extends num> extends StatefulWidget {
   final List<MapEntry<T, Widget>> endItems;
   final void Function(T, T) onChanged;
 
-  /// compare>0: start<end; compare<0: start>end; compare=0: no change
-  final Sign sort;
+  final bool increasing;
 
   const RangeSelector({Key key,
     this.start,
     this.end,
     this.startItems,
     this.endItems,
-    this.sort = Sign.positive,
+    this.increasing,
     this.onChanged})
       : super(key: key);
 
@@ -257,9 +257,9 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
               .toList(),
           onChanged: (value) {
             start = value;
-            end = widget.sort == Sign.positive
-                ? max(start, end)
-                : widget.sort == Sign.negative ? min(start, end) : end;
+            end = widget.increasing == null
+                ? end
+                : widget.increasing ? max(start, end) : min(start, end);
             widget.onChanged(start, end);
           },
         ),
@@ -275,9 +275,9 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
               .toList(),
           onChanged: (value) {
             end = value;
-            start = widget.sort == Sign.positive
-                ? min(start, end)
-                : widget.sort == Sign.negative ? max(start, end) : start;
+            start = widget.increasing == null
+                ? start
+                : widget.increasing ? min(start, end) : max(start, end);
             widget.onChanged(start, end);
           },
         )
@@ -302,27 +302,6 @@ List<Widget> divideTiles(Iterable<Widget> tiles,
   while (iterator.moveNext()) {
     combined..add(divider)..add(iterator.current);
   }
-  if (bottom) {
-    combined.add(divider);
-  }
-  return combined;
-}
-
-List<Widget> _divideTiles2(List<Widget> tiles,
-    {Widget divider = const Divider(height: 1.0),
-      bool top = false,
-      bool bottom = false}) {
-  if (tiles.length == 0) {
-    return tiles;
-  }
-  List<Widget> combined = [];
-  if (top) {
-    combined.add(divider);
-  }
-  for (int index = 0; index < tiles.length - 1; index++) {
-    combined..add(tiles[index])..add(divider);
-  }
-  combined.add(tiles.last);
   if (bottom) {
     combined.add(divider);
   }
@@ -446,6 +425,5 @@ class _FilterButtonGroupState<T> extends State<FilterButtonGroup<T>> {
         );
       }),
     );
-    ;
   }
 }

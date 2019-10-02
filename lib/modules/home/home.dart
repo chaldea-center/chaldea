@@ -12,11 +12,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return WillPopScope(onWillPop: () {
-//          SystemChannels.platform.invokeMethod(
-//          'SystemNavigator.pop');
-//          return Future.value(false);
       if (Platform.isAndroid) {
         if (Navigator.of(context).canPop()) {
           return Future.value(true);

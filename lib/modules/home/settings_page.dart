@@ -3,7 +3,6 @@ import 'package:chaldea/components/constants.dart';
 import 'package:chaldea/components/tile_items.dart';
 import 'package:chaldea/modules/home/subpage/account_page.dart';
 import 'package:chaldea/modules/home/subpage/lang_page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {
