@@ -13,19 +13,17 @@ class Chaldea extends StatefulWidget {
 class _ChaldeaState extends State<Chaldea> {
   SpecifiedLocalizationDelegate _localOverrideDelegate;
 
-  void onLocaleChange({Locale locale}) {
+  void onAppUpdate() {
     setState(() {
-      if (null != locale) {
-        _localOverrideDelegate =
-            SpecifiedLocalizationDelegate(locale ?? Locale('zh'));
-      }
+      final locale = LangCode.getLocale(db.appData.language ?? LangCode.chs);
+      _localOverrideDelegate = SpecifiedLocalizationDelegate(locale);
       db.saveData(app: true);
     });
   }
 
   Future<Null> initial() async {
     await db.initial();
-    db.onLocaleChange = this.onLocaleChange;
+    db.onAppUpdate = this.onAppUpdate;
     await db.loadData(app: true, user: true, game: false);
     await db.loadZipAssets('res/data/dataset.zip',
         dir: db.appData.gameDataPath);

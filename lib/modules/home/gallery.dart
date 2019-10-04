@@ -46,7 +46,7 @@ class GalleryState extends State<Gallery> {
           builder: (context) => EditGalleryPage())
     };
     db.appData.galleries = GalleryItem.allItems.map((key, item) {
-      return MapEntry<String, bool>(key, db.appData.galleries[key] ?? false);
+      return MapEntry<String, bool>(key, db.appData.galleries[key] ?? true);
     });
     db.appData.galleries[GalleryItem.more] = true;
   }
@@ -109,9 +109,7 @@ class GalleryState extends State<Gallery> {
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.accessibility),
-              onPressed: () async {
-
-              },
+              onPressed: () async {},
             ),
           ],
         ),
@@ -133,6 +131,18 @@ class GalleryState extends State<Gallery> {
               childAspectRatio: 1.0,
               children: gridItems,
             ),
+            Card(
+              margin: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('Screen size: ${MediaQuery.of(context).size}')
+                  ],
+                ),
+              ),
+            )
           ],
         ));
   }

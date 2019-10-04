@@ -55,9 +55,9 @@ class IntRangeValues extends RangeValues {
 
   IntRangeValues(this.startInt, endInt, {this.interval = 1})
       : assert(startInt != null &&
-      endInt != null &&
-      interval != null &&
-      interval != 0),
+            endInt != null &&
+            interval != null &&
+            interval != 0),
         endInt = startInt + (endInt - startInt) ~/ interval,
         super(startInt.toDouble(), endInt.toDouble());
 

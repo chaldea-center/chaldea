@@ -302,3 +302,4 @@ doc/api/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+/ios/Flutter/flutter_export_environment.sh

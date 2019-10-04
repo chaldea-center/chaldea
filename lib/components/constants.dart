@@ -139,8 +139,7 @@ class ClassName {
   static const foreigner = const ClassName('Foreigner');
   static const beast = const ClassName('Beast');
 
-  static List<ClassName> get values =>
-      [
+  static List<ClassName> get values => [
         saber,
         archer,
         lancer,
@@ -168,7 +167,7 @@ String formatNumberToString<T>(T number, [String style]) {
     int num = number;
     switch (style) {
       case 'percent':
-      // return percent of num/100, num=1230->return 12.3%
+        // return percent of num/100, num=1230->return 12.3%
         return num % 100 == 0 ? '${num ~/ 100}%' : '${num / 100.0}%';
       case 'kilo':
         if (num % 1e9 == 0) {

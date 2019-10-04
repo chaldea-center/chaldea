@@ -17,7 +17,7 @@ class _EditGalleryPageState extends State<EditGalleryPage>{
           value: db.appData.galleries[key],
           onChanged: (bool _selected){
             db.appData.galleries[key]=_selected;
-            db.onLocaleChange();
+            db.onAppUpdate();
           },
           title: Text(item.title),
         ));

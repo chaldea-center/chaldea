@@ -186,12 +186,13 @@ class ImageWithText extends StatelessWidget {
   static const double itemBottom = 0.08;
   static const double svtBottom = 0.28;
 
-  ImageWithText({Key key,
-    this.image,
-    this.text,
-    this.bottom = ImageWithText.itemBottom,
-    this.alignment = AlignmentDirectional.bottomEnd,
-    this.onTap})
+  ImageWithText(
+      {Key key,
+      this.image,
+      this.text,
+      this.bottom = ImageWithText.itemBottom,
+      this.alignment = AlignmentDirectional.bottomEnd,
+      this.onTap})
       : super(key: key);
 
   @override

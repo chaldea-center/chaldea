@@ -18,6 +18,7 @@ class _ServantListPageState extends State<ServantListPage> {
   bool favorite = false;
 
   Widget buildListView(String filterString) {
+    //TODO: Grid style vs List style
     // List Style
     // img size=132*144
     List<String> noList = [];
@@ -56,11 +57,11 @@ class _ServantListPageState extends State<ServantListPage> {
           final plan = db.userData.servants[noList[index]];
           final lvs = plan?.favorite == true
               ? [
-            plan.ascensionLv[0],
-            plan.skillLv[0][0],
-            plan.skillLv[1][0],
-            plan.skillLv[2][0]
-          ]
+                  plan.ascensionLv[0],
+                  plan.skillLv[0][0],
+                  plan.skillLv[1][0],
+                  plan.skillLv[2][0]
+                ]
               : null;
           return CustomTile(
             leading: SizedBox(
@@ -97,8 +98,6 @@ class _ServantListPageState extends State<ServantListPage> {
         separatorBuilder: (context, index) =>
             Divider(height: 1.0, indent: 16.0),
         itemCount: noList.length);
-
-    //TODO: Grid style vs List style
   }
 
   @override
@@ -151,7 +150,7 @@ class _ServantListPageState extends State<ServantListPage> {
                         onPressed: () {
                           setState(() {
                             WidgetsBinding.instance.addPostFrameCallback(
-                                    (_) => controller.clear());
+                                (_) => controller.clear());
                             filterString = '';
                           });
                         },
@@ -196,8 +195,7 @@ class _ServantListPageState extends State<ServantListPage> {
     traits.sort();
 
     showSheet(context,
-        builder: (sheetContext, setSheetState) =>
-            Scaffold(
+        builder: (sheetContext, setSheetState) => Scaffold(
               appBar: AppBar(
                 leading: BackButton(),
                 title: Text('筛选'),
@@ -246,7 +244,7 @@ class _ServantListPageState extends State<ServantListPage> {
                             childAspectRatio: 1.3,
                             physics: NeverScrollableScrollPhysics(),
                             children:
-                            List.generate(ClassName.values.length, (index) {
+                                List.generate(ClassName.values.length, (index) {
                               final className = ClassName.values[index];
                               final color = filters['all'] == 0 ? '金卡' : '铜卡';
                               return GestureDetector(

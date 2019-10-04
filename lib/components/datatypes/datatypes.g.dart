@@ -16,15 +16,12 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
       (k, e) => MapEntry(k, e as String),
     ),
     items: (json['items'] as Map<String, dynamic>)?.map(
-          (k, e) =>
-          MapEntry(
-              k, e == null ? null : Item.fromJson(e as Map<String, dynamic>)),
+      (k, e) => MapEntry(
+          k, e == null ? null : Item.fromJson(e as Map<String, dynamic>)),
     ),
     icons: (json['icons'] as Map<String, dynamic>)?.map(
-          (k, e) =>
-          MapEntry(
-              k,
-              e == null ? null : GameIcon.fromJson(e as Map<String, dynamic>)),
+      (k, e) => MapEntry(
+          k, e == null ? null : GameIcon.fromJson(e as Map<String, dynamic>)),
     ),
   );
 }
@@ -32,9 +29,9 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
       'servants': instance.servants,
       'crafts': instance.crafts,
-  'items': instance.items,
-  'icons': instance.icons,
-};
+      'items': instance.items,
+      'icons': instance.icons,
+    };
 
 GameIcon _$GameIconFromJson(Map<String, dynamic> json) {
   return GameIcon(
@@ -43,8 +40,7 @@ GameIcon _$GameIconFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$GameIconToJson(GameIcon instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$GameIconToJson(GameIcon instance) => <String, dynamic>{
       'filename': instance.filename,
       'url': instance.url,
     };
@@ -174,39 +170,42 @@ Map<String, dynamic> _$ServantBaseInfoToJson(ServantBaseInfo instance) =>
 
 NobelPhantasm _$NobelPhantasmFromJson(Map<String, dynamic> json) {
   return NobelPhantasm(
+    enhanced: json['enhanced'] as bool,
     state: json['state'] as String,
     openTime: json['openTime'] as String,
     openCondition: json['openCondition'] as String,
     opeQuest: json['opeQuest'] as String,
     name: json['name'] as String,
-    nameJP: json['nameJP'] as String,
+    nameJp: json['nameJp'] as String,
     upperName: json['upperName'] as String,
-    upperNameJP: json['upperNameJP'] as String,
+    upperNameJp: json['upperNameJp'] as String,
     color: json['color'] as String,
     category: json['category'] as String,
     rank: json['rank'] as String,
     typeText: json['typeText'] as String,
-    effect: (json['effect'] as List)
-        ?.map((e) => e as Map<String, dynamic>)
+    effects: (json['effects'] as List)
+        ?.map((e) =>
+            e == null ? null : Effect.fromJson(e as Map<String, dynamic>))
         ?.toList(),
   );
 }
 
 Map<String, dynamic> _$NobelPhantasmToJson(NobelPhantasm instance) =>
     <String, dynamic>{
+      'enhanced': instance.enhanced,
       'state': instance.state,
       'openTime': instance.openTime,
       'openCondition': instance.openCondition,
       'opeQuest': instance.opeQuest,
       'name': instance.name,
-      'nameJP': instance.nameJP,
+      'nameJp': instance.nameJp,
       'upperName': instance.upperName,
-      'upperNameJP': instance.upperNameJP,
+      'upperNameJp': instance.upperNameJp,
       'color': instance.color,
       'category': instance.category,
       'rank': instance.rank,
       'typeText': instance.typeText,
-      'effect': instance.effect,
+      'effects': instance.effects,
     };
 
 Skill _$SkillFromJson(Map<String, dynamic> json) {
@@ -217,6 +216,7 @@ Skill _$SkillFromJson(Map<String, dynamic> json) {
     openQuest: json['openQuest'] as String,
     enhanced: json['enhanced'] as bool,
     name: json['name'] as String,
+    nameJp: json['nameJp'] as String,
     rank: json['rank'] as String,
     icon: json['icon'] as String,
     cd: json['cd'] as int,
@@ -232,8 +232,9 @@ Map<String, dynamic> _$SkillToJson(Skill instance) => <String, dynamic>{
       'openTime': instance.openTime,
       'openCondition': instance.openCondition,
       'openQuest': instance.openQuest,
-  'enhanced': instance.enhanced,
+      'enhanced': instance.enhanced,
       'name': instance.name,
+      'nameJp': instance.nameJp,
       'rank': instance.rank,
       'icon': instance.icon,
       'cd': instance.cd,
@@ -272,7 +273,7 @@ ItemCost _$ItemCostFromJson(Map<String, dynamic> json) {
         ?.toList(),
     dressName: (json['dressName'] as List)?.map((e) => e as String)?.toList(),
     dressNameJp:
-    (json['dressNameJp'] as List)?.map((e) => e as String)?.toList(),
+        (json['dressNameJp'] as List)?.map((e) => e as String)?.toList(),
     dress: (json['dress'] as List)
         ?.map((e) => (e as List)
             ?.map((e) =>
@@ -285,9 +286,9 @@ ItemCost _$ItemCostFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$ItemCostToJson(ItemCost instance) => <String, dynamic>{
       'ascension': instance.ascension,
       'skill': instance.skill,
-  'dress': instance.dress,
+      'dress': instance.dress,
       'dressName': instance.dressName,
-  'dressNameJp': instance.dressNameJp,
+      'dressNameJp': instance.dressNameJp,
     };
 
 Item _$ItemFromJson(Map<String, dynamic> json) {
@@ -301,34 +302,33 @@ Item _$ItemFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
-  'id': instance.id,
+      'id': instance.id,
       'name': instance.name,
-  'rarity': instance.rarity,
-  'category': instance.category,
+      'rarity': instance.rarity,
+      'category': instance.category,
       'num': instance.num,
     };
 
 AppData _$AppDataFromJson(Map<String, dynamic> json) {
   return AppData(
     language: json['language'] as String ?? 'chs',
+    criticalWidth: (json['criticalWidth'] as num)?.toDouble(),
+    curUser: json['curUser'] as String ?? 'default',
+    users: (json['users'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(
+          k, e == null ? null : User.fromJson(e as Map<String, dynamic>)),
+    ),
     galleries: (json['galleries'] as Map<String, dynamic>)?.map(
           (k, e) => MapEntry(k, e as bool),
-    ) ??
+        ) ??
         {},
-    curUser: json['curUser'] as String,
     gameDataPath: json['gameDataPath'] as String ?? 'dataset',
-  )
-    ..users = (json['users'] as Map<String, dynamic>)?.map(
-          (k, e) =>
-          MapEntry(
-              k, e == null ? null : User.fromJson(e as Map<String, dynamic>)),
-    ) ??
-        {};
+  );
 }
 
-Map<String, dynamic> _$AppDataToJson(AppData instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$AppDataToJson(AppData instance) => <String, dynamic>{
       'language': instance.language,
+      'criticalWidth': instance.criticalWidth,
       'gameDataPath': instance.gameDataPath,
       'galleries': instance.galleries,
       'curUser': instance.curUser,
@@ -342,8 +342,7 @@ User _$UserFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$UserToJson(User instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'name': instance.name,
       'server': instance.server,
     };
@@ -373,23 +372,23 @@ Map<String, dynamic> _$PlansToJson(Plans instance) => <String, dynamic>{
 ServantPlan _$ServantPlanFromJson(Map<String, dynamic> json) {
   return ServantPlan(
     ascensionLv:
-    (json['ascensionLv'] as List)?.map((e) => e as int)?.toList() ?? [0, 0],
+        (json['ascensionLv'] as List)?.map((e) => e as int)?.toList() ?? [0, 0],
     skillLv: (json['skillLv'] as List)
-        ?.map((e) => (e as List)?.map((e) => e as int)?.toList())
-        ?.toList() ??
+            ?.map((e) => (e as List)?.map((e) => e as int)?.toList())
+            ?.toList() ??
         [
           [1, 1],
           [1, 1],
           [1, 1]
         ],
     dressLv: (json['dressLv'] as List)
-        ?.map((e) => (e as List)?.map((e) => e as int)?.toList())
-        ?.toList() ??
+            ?.map((e) => (e as List)?.map((e) => e as int)?.toList())
+            ?.toList() ??
         [],
     grailLv:
-    (json['grailLv'] as List)?.map((e) => e as int)?.toList() ?? [0, 0],
+        (json['grailLv'] as List)?.map((e) => e as int)?.toList() ?? [0, 0],
     skillEnhanced:
-    (json['skillEnhanced'] as List)?.map((e) => e as bool)?.toList(),
+        (json['skillEnhanced'] as List)?.map((e) => e as bool)?.toList(),
     npEnhanced: json['npEnhanced'] as bool,
     npLv: json['npLv'] as int ?? 1,
     favorite: json['favorite'] as bool ?? false,

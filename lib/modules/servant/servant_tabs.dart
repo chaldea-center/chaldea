@@ -11,12 +11,14 @@ class LevelUpCostPage extends StatefulWidget {
   final int targetLv;
   final String title;
 
-  const LevelUpCostPage({Key key,
-    @required this.costList,
-    this.curLv = 0,
-    this.targetLv = 0,
-    this.title = ''})
-      : super(key: key);
+  const LevelUpCostPage(
+      {Key key,
+      @required this.costList,
+      this.curLv = 0,
+      this.targetLv = 0,
+      this.title = ''})
+      : assert(curLv <= targetLv),
+        super(key: key);
 
   @override
   State<StatefulWidget> createState() => LevelUpCostPageState();
@@ -25,9 +27,40 @@ class LevelUpCostPage extends StatefulWidget {
 class LevelUpCostPageState extends State<LevelUpCostPage> {
   bool showAll = false;
 
+  Widget buildOneLevel(String title, List<Item> lvCost) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 3),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          CustomTile(
+            title: Text(title),
+            contentPadding: EdgeInsets.zero,
+          ),
+          Wrap(
+              alignment: WrapAlignment.start,
+              spacing: 5,
+              children: lvCost
+                  .map((item) => ImageWithText(
+                        image: Image.file(db.getIconFile(item.name),
+                            width: 110 * 0.5),
+                        text: formatNumberToString(item.num, 'kilo'),
+                        bottom: ImageWithText.itemBottom,
+                      ))
+                  .toList())
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final bool isSkill = widget.costList.length == 9;
+    final int offset = widget.costList.length == 9 ? -1 : 0;
+    final bool _showAll = showAll || widget.curLv >= widget.targetLv;
+    final int lva = _showAll ? 0 : widget.curLv + offset,
+        lvb = _showAll ? widget.costList.length : widget.targetLv + offset;
+    assert(0 <= lva && lvb <= widget.costList.length);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -42,83 +75,51 @@ class LevelUpCostPageState extends State<LevelUpCostPage> {
         ],
       ),
       body: ListView(
-        children: widget.costList
-            .asMap()
-            .keys
-            .map((index) {
-              final lva = isSkill ? index + 1 : index,
-                  lvb = isSkill ? index + 2 : index + 1;
-              final lvCost = widget.costList[index];
-              if (widget.curLv < widget.targetLv &&
-                  !showAll &&
-                  (lva < widget.curLv || lva >= widget.targetLv)) {
-                return null;
-              }
-              return Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 3),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    CustomTile(
-                      title: Text('Lv.$lva → Lv.$lvb'),
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                    Wrap(
-                        alignment: WrapAlignment.start,
-                        spacing: 5,
-                        children: lvCost
-                            .map((item) =>
-                            ImageWithText(
-                              image: Image.file(db.getIconFile(item.name),
-                                      width: 110 * 0.5),
-                              text: formatNumberToString(item.num, 'kilo'),
-                              bottom: ImageWithText.itemBottom,
-                                ))
-                            .toList())
-                  ],
-                ),
-              );
-            })
-            .where((e) => e != null)
-            .toList(),
+        children: List.generate(lvb - lva, (i) {
+          return buildOneLevel(
+            'Lv.${lva + i - offset} → Lv.${lva + i - offset + 1}',
+            widget.costList[lva + i],
+          );
+        }),
       ),
     );
   }
 }
 
 class PlanTab extends StatefulWidget {
-  final Servant svt;
-
-//  final VoidCallback updateParent;
   final ServantDetailPageState parent;
-  final ServantPlan plan;
 
-  const PlanTab(this.svt, {Key key, this.plan, this.parent}) : super(key: key);
+  const PlanTab({Key key, this.parent}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => PlanTabState(plan);
+  State<StatefulWidget> createState() => _PlanTabState();
 }
 
-class PlanTabState extends State<PlanTab> with AutomaticKeepAliveClientMixin {
-  ServantPlan svtPlan;
+class _PlanTabState extends State<PlanTab> with AutomaticKeepAliveClientMixin {
+  Servant svt;
+  ServantPlan plan;
+
+  _PlanTabState({this.svt, this.plan});
 
   @override
   void initState() {
     super.initState();
-    svtPlan = svtPlan ?? ServantPlan();
+    svt ??= widget.parent?.svt;
+    plan ??= widget.parent?.plan ?? ServantPlan();
+    assert(svt != null);
   }
 
-  Widget buildPlanRow({Widget leading,
-    String title,
-    String subtitle,
-    @required IntRangeValues value,
-    @required IntRangeValues range,
-    void onRangeChanged(int s, int e),
-    Widget detailPage}) {
+  Widget buildPlanRow(
+      {Widget leading,
+      String title,
+      String subtitle,
+      @required IntRangeValues value,
+      @required IntRangeValues range,
+      void onRangeChanged(int s, int e),
+      Widget detailPage}) {
     assert(value != null && range != null);
     return CustomTile(
-      contentPadding: EdgeInsets.fromLTRB(16, 8, 8, 8),
+      contentPadding: EdgeInsets.fromLTRB(16, 4, 0, 4),
       leading: leading,
       title: title == null ? null : AutoSizeText(title, maxLines: 1),
       subtitle: subtitle == null
@@ -132,11 +133,11 @@ class PlanTabState extends State<PlanTab> with AutomaticKeepAliveClientMixin {
             end: value.endInt,
             startItems: List.generate(
                 range.nodeNum,
-                    (index) =>
+                (index) =>
                     MapEntry(range[index], Text(range[index].toString()))),
             endItems: List.generate(
                 range.nodeNum,
-                    (index) =>
+                (index) =>
                     MapEntry(range[index], Text(range[index].toString()))),
             onChanged: onRangeChanged,
           ),
@@ -159,30 +160,30 @@ class PlanTabState extends State<PlanTab> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (widget.svt.activeSkills == null) {
+    if (svt.activeSkills == null) {
       return Center(child: Text('Nothing'));
     }
 
     // ascension part
     List<Widget> children = [];
-    if (widget.svt.no != 1) {
+    if (svt.no != 1) {
       children.add(TileGroup(
         header: '灵基再临',
         tiles: <Widget>[
           buildPlanRow(
               title: '灵基再临',
-              value: IntRangeValues.fromList(svtPlan.ascensionLv),
+              value: IntRangeValues.fromList(plan.ascensionLv),
               range: IntRangeValues(0, 4),
               onRangeChanged: (_start, _end) {
-                svtPlan.ascensionLv = [_start, _end];
-                svtPlan.favorite = true;
+                plan.ascensionLv = [_start, _end];
+                plan.favorite = true;
                 widget.parent?.setState(() {});
               },
               detailPage: LevelUpCostPage(
-                costList: widget.svt.itemCost.ascension,
+                costList: svt.itemCost.ascension,
                 title: '灵基再临',
-                curLv: svtPlan.ascensionLv[0],
-                targetLv: svtPlan.ascensionLv[1],
+                curLv: plan.ascensionLv[0],
+                targetLv: plan.ascensionLv[1],
               ))
         ],
       ));
@@ -190,55 +191,53 @@ class PlanTabState extends State<PlanTab> with AutomaticKeepAliveClientMixin {
 
     //skill part
     List<Widget> skillWidgets = [];
-    final plan = db.userData.servants[widget.svt.no.toString()];
-    for (int index = 0; index < widget.svt.activeSkills.length; index++) {
-      List<Skill> skillList = widget.svt.activeSkills[index];
+    for (int index = 0; index < svt.activeSkills.length; index++) {
+      List<Skill> skillList = svt.activeSkills[index];
       bool enhanced = plan.skillEnhanced[index] ?? skillList[0].enhanced;
       Skill skill = skillList[enhanced ? 1 : 0];
-//      Skill skill = widget.svt.activeSkills[index][0];
       skillWidgets.add(buildPlanRow(
           leading: Image.file(
             db.getIconFile(skill.icon),
             height: 110 * 0.3,
           ),
           title: '${skill.name} ${skill.rank}',
-          value: IntRangeValues.fromList(svtPlan.skillLv[index]),
+          value: IntRangeValues.fromList(plan.skillLv[index]),
           range: IntRangeValues(1, 10),
           onRangeChanged: (_start, _end) {
-            svtPlan.skillLv[index] = [_start, _end];
-            svtPlan.favorite = true;
+            plan.skillLv[index] = [_start, _end];
+            plan.favorite = true;
             widget.parent?.setState(() {});
           },
           detailPage: LevelUpCostPage(
-            costList: widget.svt.itemCost.skill,
+            costList: svt.itemCost.skill,
             title: '技能${index + 1} - ${skill.name}',
-            curLv: svtPlan.skillLv[index][0],
-            targetLv: svtPlan.skillLv[index][1],
+            curLv: plan.skillLv[index][0],
+            targetLv: plan.skillLv[index][1],
           )));
     }
     children.add(TileGroup(header: '技能升级', tiles: skillWidgets));
 
     // dress part
     List<Widget> dressWidgets = [];
-    for (int index = 0; index < widget.svt.itemCost.dress.length; index++) {
-      if (svtPlan.dressLv.length <= index) {
+    for (int index = 0; index < svt.itemCost.dress.length; index++) {
+      if (plan.dressLv.length <= index) {
         // dress number may increase in the future
-        svtPlan.dressLv.add([0, 0]);
+        plan.dressLv.add([0, 0]);
       }
       dressWidgets.add(buildPlanRow(
           leading: Image.file(db.getIconFile('灵衣开放权'), height: 110 * 0.3),
-          title: widget.svt.itemCost.dressName[index],
-          subtitle: widget.svt.itemCost.dressNameJp[index],
-          value: IntRangeValues.fromList(svtPlan.dressLv[index]),
+          title: svt.itemCost.dressName[index],
+          subtitle: svt.itemCost.dressNameJp[index],
+          value: IntRangeValues.fromList(plan.dressLv[index]),
           range: IntRangeValues(0, 1),
           onRangeChanged: (_start, _end) {
-            svtPlan.dressLv[index] = [_start, _end];
-            svtPlan.favorite = true;
+            plan.dressLv[index] = [_start, _end];
+            plan.favorite = true;
             widget.parent?.setState(() {});
           },
           detailPage: LevelUpCostPage(
-            costList: [widget.svt.itemCost.dress[index]],
-            title: '灵衣开放 - ${widget.svt.itemCost.dressName[index]}',
+            costList: [svt.itemCost.dress[index]],
+            title: '灵衣开放 - ${svt.itemCost.dressName[index]}',
           )));
     }
     if (dressWidgets.length > 0) {
@@ -251,113 +250,235 @@ class PlanTabState extends State<PlanTab> with AutomaticKeepAliveClientMixin {
 
   @override
   bool get wantKeepAlive => true;
-
-  PlanTabState(this.svtPlan);
 }
 
 class SkillTab extends StatefulWidget {
-  final Servant svt;
   final ServantDetailPageState parent;
 
-  const SkillTab(this.svt, {Key key, this.parent}) : super(key: key);
+  const SkillTab({Key key, this.parent}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => SkillTabState();
+  State<StatefulWidget> createState() => _SkillTabState();
 }
 
-class SkillTabState extends State<SkillTab> with AutomaticKeepAliveClientMixin {
+class _SkillTabState extends State<SkillTab>
+    with AutomaticKeepAliveClientMixin {
+  Servant svt;
+  ServantPlan plan;
+
+  _SkillTabState({this.svt, this.plan});
+
+  @override
+  void initState() {
+    super.initState();
+    svt ??= widget.parent?.svt;
+    plan ??= widget.parent?.plan ?? ServantPlan();
+    assert(svt != null);
+  }
+
+  List<Widget> buildSkill(int index) {
+    List<Skill> skillList = svt.activeSkills[index];
+    bool enhanced = plan.skillEnhanced[index] ?? skillList[0].enhanced;
+    Skill skill = skillList[enhanced ? 1 : 0];
+
+    return <Widget>[
+      CustomTile(
+          contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
+          leading: Image.file(
+            db.getIconFile(skill.icon),
+            height: 110 * 0.3,
+          ),
+          title: Text('${skill.name} ${skill.rank}'),
+          subtitle: Text('${skill.nameJp} ${skill.rank}'),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              if (skillList.length > 1)
+                GestureDetector(
+                  onTap: () {
+                    widget.parent?.setState(() {
+                      plan.skillEnhanced[index] = !enhanced;
+                    });
+                  },
+                  child: Image.file(
+                    db.getIconFile(enhanced ? '技能强化' : '技能未强化'),
+                    height: 110 * 0.2,
+                  ),
+                ),
+              Text('   CD: ${skill.cd}→${skill.cd - 2}')
+            ],
+          )),
+      for (Effect effect in skill.effects) ...buildEffect(effect)
+    ];
+  }
+
+  List<Widget> buildEffect(Effect effect) {
+    bool twoLine = effect.lvData.length == 10;
+    return <Widget>[
+      CustomTile(
+          contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
+          subtitle: Text(effect.description),
+          trailing: effect.lvData.length == 1
+              ? Text(formatNumberToString(effect.lvData[0], effect.valueType))
+              : null),
+      if (effect.lvData.length > 1)
+        CustomTile(
+            contentPadding:
+                EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
+            title: GridView.count(
+              childAspectRatio: twoLine ? 3 : 6,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              crossAxisCount: twoLine ? 5 : effect.lvData.length,
+              children: effect.lvData.asMap().keys.map((index) {
+                return Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    formatNumberToString(
+                        effect.lvData[index], effect.valueType),
+                    style: TextStyle(
+                        fontSize: 13,
+                        color:
+                            [5, 9].contains(index) ? Colors.redAccent : null),
+                  ),
+                );
+              }).toList(),
+            )),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (widget.svt.activeSkills == null) {
+    if (svt.activeSkills == null) {
       return Center(child: Text('Nothing'));
     }
 
-    final plan = db.userData.servants[widget.svt.no.toString()];
-    List<Widget> children = [];
-    widget.svt.activeSkills.asMap().keys.forEach((index) {
-      List<Skill> skillList = widget.svt.activeSkills[index];
-      bool enhanced = plan.skillEnhanced[index] ?? skillList[0].enhanced;
-      Skill skill = skillList[enhanced ? 1 : 0];
+    return ListView(children: [
+      TileGroup(tiles: <Widget>[
+        for (var index = 0; index < svt.activeSkills.length; index++)
+          ...buildSkill(index)
+      ])
+    ]);
+  }
 
-      children.add(CustomTile(
-        contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
-        leading: Image.file(
-          db.getIconFile(skill.icon),
-          height: 110 * 0.3,
-        ),
-        title: Row(
-          children: <Widget>[
-            Expanded(flex: 4, child: Text('${skill.name} ${skill.rank}')),
-            Expanded(
-              flex: 1,
-              child: skillList.length == 2
-                  ? GestureDetector(
-                      onTap: () {
-                        widget.parent?.setState(() {
-                          plan.skillEnhanced[index] = !enhanced;
-                        });
-                      },
-                      child: Image.file(
-                        // Icon: skill enhanced(gold) or not enhanced(grey)
-                        db.getIconFile(enhanced ? '技能强化' : '技能未强化'),
-                        height: 110 * 0.2,
-                      ),
-                    )
-                  : Container(),
-            )
-          ],
-        ),
-        trailing: Text('CD: ${skill.cd}→${skill.cd - 2}'),
-      ));
+  @override
+  bool get wantKeepAlive => true;
+}
 
-      if (skill.effects.length > 0) {
-        List<Widget> effectWidgets = [];
-        skill.effects.forEach((effect) {
-          bool twoLine = effect.lvData.length == 10;
-          effectWidgets
-            ..add(CustomTile(
-                contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
-                subtitle: Text(effect.description),
-                trailing: effect.lvData.length == 1
-                    ? Text(formatNumberToString(
-                    effect.lvData[0], effect.valueType))
-                    : null));
-          if (effect.lvData.length > 1) {
-            effectWidgets
-              ..add(CustomTile(
-                  contentPadding:
-                  EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
-                  title: GridView.count(
-                    childAspectRatio: twoLine ? 3.5 : 7,
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    crossAxisCount: twoLine ? 5 : effect.lvData.length,
-                    children: effect.lvData
-                        .asMap()
-                        .keys
-                        .map((index) {
-                      return Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          formatNumberToString(
-                              effect.lvData[index], effect.valueType),
-                          style: TextStyle(
-                              fontSize: 13,
-                              color: [5, 9].contains(index)
-                                  ? Colors.redAccent
-                                  : null),
-                        ),
-                      );
-                    }).toList(),
-                  )));
-          }
-        });
-        children.add(TileGroup(tiles: effectWidgets));
-      }
-    });
+class NobelPhantasmTab extends StatefulWidget {
+  final ServantDetailPageState parent;
+
+  const NobelPhantasmTab({Key key, this.parent}) : super(key: key);
+
+  @override
+  _NobelPhantasmTabState createState() => _NobelPhantasmTabState();
+}
+
+class _NobelPhantasmTabState extends State<NobelPhantasmTab>
+    with AutomaticKeepAliveClientMixin {
+  Servant svt;
+  ServantPlan plan;
+
+  _NobelPhantasmTabState({this.svt, this.plan});
+
+  @override
+  void initState() {
+    super.initState();
+    svt ??= widget.parent?.svt;
+    plan ??= widget.parent?.plan ?? ServantPlan();
+    assert(svt != null);
+  }
+
+  Widget buildHeader(NobelPhantasm np, bool enhanced) {
+    return CustomTile(
+      leading: Image.file(
+        db.getIconFile(np.color),
+        height: 110 * 0.8,
+      ),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            np.upperName,
+            style: TextStyle(fontSize: 16, color: Colors.black54),
+          ),
+          Text(
+            np.name,
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
+          Text(
+            '${np.typeText} ${np.rank}',
+            style: TextStyle(fontSize: 15, color: Colors.black),
+          )
+        ],
+      ),
+      trailing: svt.nobelPhantasm.length <= 1
+          ? null
+          : GestureDetector(
+              onTap: () {
+                widget.parent?.setState(() {
+                  plan.npEnhanced = !enhanced;
+                });
+              },
+              child: Image.file(
+                db.getIconFile(enhanced ? '宝具强化' : '宝具未强化'),
+                height: 110 * 0.2,
+              ),
+            ),
+    );
+  }
+
+  List<Widget> buildEffect(Effect effect) {
+    assert([1, 5].contains(effect.lvData.length), '$effect');
+    return <Widget>[
+      CustomTile(
+          contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
+          subtitle: Text(effect.description),
+          trailing: effect.lvData.length == 1
+              ? Text(formatNumberToString(effect.lvData[0], effect.valueType))
+              : null),
+      if (effect.lvData.length > 1)
+        CustomTile(
+            contentPadding:
+                EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
+            title: GridView.count(
+              childAspectRatio: 2.5,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              crossAxisCount: 5,
+              children: List.generate(effect.lvData.length, (index) {
+                return Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    formatNumberToString(
+                        effect.lvData[index], effect.valueType),
+                    style: TextStyle(fontSize: 14),
+                  ),
+                );
+              }),
+            ))
+    ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    if (svt.nobelPhantasm == null || svt.nobelPhantasm.length == 0) {
+      return Container(child: Center(child: Text('No NobelPhantasm Data')));
+    }
+    print(svt.nobelPhantasm.first.toJson());
+    bool enhanced = plan.npEnhanced ?? svt.nobelPhantasm.first.enhanced;
+    final np = svt.nobelPhantasm[enhanced ? 1 : 0];
     return ListView(
-      children: children,
+      children: <Widget>[
+        TileGroup(
+          tiles: <Widget>[
+            buildHeader(np, enhanced),
+            for (Effect e in np.effects) ...buildEffect(e)
+          ],
+        )
+      ],
     );
   }
 

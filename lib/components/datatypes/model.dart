@@ -7,25 +7,35 @@ class AppData {
   @JsonKey(defaultValue: LangCode.chs)
   String language;
 
+  double criticalWidth;
+
   @JsonKey(defaultValue: 'dataset')
   String gameDataPath;
 
   @JsonKey(defaultValue: <String, bool>{})
   Map<String, bool> galleries;
 
+  @JsonKey(defaultValue: 'default')
   String curUser;
 
   // users=[User,...]
-  @JsonKey(defaultValue: <String, User>{})
+  @JsonKey()
   Map<String, User> users = <String, User>{};
 
   // functions, getters
   List<String> get userIDs => users.values.map((u) => u.name).toList();
 
-  AppData({this.language = LangCode.chs,
-    this.galleries,
-    this.curUser,
-    this.gameDataPath = 'dataset'});
+  AppData(
+      {this.language = LangCode.chs,
+      this.criticalWidth,
+      this.curUser,
+      this.users,
+      this.galleries,
+      this.gameDataPath = 'dataset'}) {
+    curUser ??= 'default';
+    users ??= {curUser: User(name: curUser)};
+    galleries ??= {};
+  }
 
   // json_serializable
   factory AppData.fromJson(Map<String, dynamic> data) =>

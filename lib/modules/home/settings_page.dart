@@ -35,7 +35,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: Text(S.of(context).server),
                 trailing: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
-                    value: db.appData.users[db.appData.curUser].server,
+                    value: db.appData.users[db.appData.curUser].server??'cn',
                     items: <DropdownMenuItem<String>>[
                       DropdownMenuItem(
                         value: GameServer.cn,
@@ -48,7 +48,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ],
                     onChanged: (v) {
                       db.appData.users[db.appData.curUser].server = v;
-                      db.onLocaleChange();
+                      db.onAppUpdate();
                     },
                   ),
                 ),
@@ -97,6 +97,29 @@ class _SettingsPageState extends State<SettingsPage> {
           TileGroup(
             header: S.of(context).backup_restore,
             tiles: <Widget>[
+              ListTile(
+                title: Text('Master-Detail width'),
+                trailing: DropdownButtonHideUnderline(
+                  child: DropdownButton<double>(
+                    value: db.appData.criticalWidth??768,
+                    items: <DropdownMenuItem<double>>[
+                      DropdownMenuItem(
+                        value: 768,
+                        child: Text('768'),
+                      ),
+                      DropdownMenuItem(
+                        value: 600,
+                        child: Text('600'),
+                      )
+                    ],
+                    onChanged: (v) {
+                      setState(() {
+                        db.appData.criticalWidth = v;
+                      });
+                    },
+                  ),
+                ),
+              ),
               ListTile(
                 title: Text('Extract dataset'),
                 onTap: () async {

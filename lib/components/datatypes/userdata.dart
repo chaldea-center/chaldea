@@ -52,20 +52,17 @@ class ServantPlan {
 
   Map<String, dynamic> toJson() => _$ServantPlanToJson(this);
 
-  ServantPlan({this.ascensionLv,
-    this.skillLv,
-    this.dressLv,
-    this.grailLv,
+  ServantPlan(
+      {this.ascensionLv,
+      this.skillLv,
+      this.dressLv,
+      this.grailLv,
       this.skillEnhanced,
-    this.npEnhanced,
+      this.npEnhanced,
       this.npLv = 1,
       this.favorite = false}) {
     ascensionLv ??= [0, 0];
-    skillLv ??= [
-      [1, 1],
-      [1, 1],
-      [1, 1]
-    ];
+    skillLv ??= List.generate(3, (i)=>[1,1]);
     dressLv ??= [];
     grailLv ??= [0, 0];
     skillEnhanced ??= [null, null, null];
@@ -130,7 +127,7 @@ class ItemCostStatistics {
     // cal items
     for (String itemKey in gameData.items.keys) {
       PartSet<Map<String, int>> planOneItem =
-      PartSet<Map<String, int>>(k: () => {}),
+              PartSet<Map<String, int>>(k: () => {}),
           allOneItem = PartSet<Map<String, int>>(k: () => {});
       planCountBySvt.forEach((no, value) {
         planOneItem.ascension[no] =
@@ -157,7 +154,7 @@ class ItemCostStatistics {
 
   PartSet<int> getNumOfItem(String itemKey, [bool planned = true]) {
     PartSet<Map<String, int>> value =
-    planned ? planCountByItem[itemKey] : allCountByItem[itemKey];
+        planned ? planCountByItem[itemKey] : allCountByItem[itemKey];
     return PartSet<int>(
         ascension: sum(value.ascension.values),
         skill: sum(value.skill.values),

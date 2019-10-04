@@ -9,7 +9,8 @@ class InputComponent<T> {
   TextEditingController textEditingController;
   FocusNode focusNode;
 
-  InputComponent({@required this.data, this.textEditingController, this.focusNode})
+  InputComponent(
+      {@required this.data, this.textEditingController, this.focusNode})
       : assert(data != null);
 
   void dispose() {
@@ -124,9 +125,7 @@ class ItemListPageState extends State<ItemListPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S
-            .of(context)
-            .item_title),
+        title: Text(S.of(context).item_title),
         leading: BackButton(),
         actions: <Widget>[
           IconButton(
@@ -164,13 +163,12 @@ class ItemListPageState extends State<ItemListPage>
                 continue;
               }
               final highlightStyle =
-              TextStyle(color: enough ? null : Colors.redAccent);
+                  TextStyle(color: enough ? null : Colors.redAccent);
               manager.addFocus(component.focusNode);
               tiles.add(CustomTile(
                 onTap: () {
                   SplitRoute.popAndPush(context,
-                      builder: (context) =>
-                          ItemDetailPage(
+                      builder: (context) => ItemDetailPage(
                             iconKey,
                             statistics: statistics,
                             parent: this,
@@ -187,8 +185,7 @@ class ItemListPageState extends State<ItemListPage>
                     Expanded(
                         flex: 3,
                         child: Text(
-                          '共需 $allNum(${itemStat.ascension}/${itemStat
-                              .skill}/${itemStat.dress})',
+                          '共需 $allNum(${itemStat.ascension}/${itemStat.skill}/${itemStat.dress})',
                           style: highlightStyle,
                         )),
                     Text(
@@ -229,7 +226,6 @@ class ItemListPageState extends State<ItemListPage>
               ));
             }
             return ListView(
-              shrinkWrap: true,
               children: [TileGroup(tiles: tiles)],
             );
           }).toList()),

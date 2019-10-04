@@ -1,12 +1,14 @@
 ///TODO: add transition animation and swipe support
+import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-const kTabletMasterContainerRatio = 38; // percentage
+const int kMasterRatio = 38; // percentage
 
 bool isTablet(BuildContext context) {
-  return MediaQuery.of(context).size.width >= 768.0;
+  return MediaQuery.of(context).size.width >=
+      (db.appData?.criticalWidth ?? 768);
 }
 
 class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
@@ -19,7 +21,7 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
       : settings = settings ?? RouteSettings(),
         super(settings: settings ?? RouteSettings());
 
-  //if builder==null, just pop no push
+  ///if [builder] is null, just pop without push
   static void popAndPush(BuildContext context,
       {WidgetBuilder builder, RouteSettings settings}) {
     Navigator.of(context).popUntil((route) => route.settings.isInitialRoute);
@@ -30,50 +32,44 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
   }
 
   static Widget createMasterPage(BuildContext context, Widget child) {
-    final tablet = isTablet(context);
+    if (!isTablet(context)) {
+      return child;
+    }
     return Row(
       children: <Widget>[
         Flexible(
-            flex: kTabletMasterContainerRatio,
+            flex: kMasterRatio,
             child: Container(
               decoration: BoxDecoration(
-                  color: Theme.of(context).accentColor,
-                  border: Border(right: BorderSide(width: tablet ? 0.0 : 0.0))),
+                  border: Border(
+                      right: BorderSide(color: Colors.white70, width: 0.2))),
               child: child,
             )),
-        tablet
-            ? Flexible(
-                flex: 100 - kTabletMasterContainerRatio, child: BlankPage())
-            : Container(),
+        Flexible(flex: 100 - kMasterRatio, child: BlankPage()),
       ],
     );
   }
 
   // DetailPage should not be created outside SplitRoute()
   Widget createDetailPage(BuildContext context, Widget child) {
-//    final tablet = isTablet(context);
-    return Positioned(
-        left: tablet
-            ? MediaQuery.of(context).size.width *
-                kTabletMasterContainerRatio /
-                100
-            : 0,
-        top: 0,
-        child: Container(
-          decoration:
-              BoxDecoration(border: Border(left: BorderSide(width: 0.0))),
-          child: FocusScope(
-            node: node,
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height,
-              width: tablet
-                  ? MediaQuery.of(context).size.width *
-                      (1 - kTabletMasterContainerRatio / 100)
-                  : MediaQuery.of(context).size.width,
-              child: child,
-            ),
-          ),
-        ));
+    final fullWidth = MediaQuery.of(context).size.width,
+        masterWidth = fullWidth * kMasterRatio / 100,
+        detailWidth = fullWidth - masterWidth;
+    Widget detail = Container(
+      decoration: BoxDecoration(
+          color: Theme.of(context).primaryColor,
+          border: Border(left: BorderSide(width: 0))),
+      child: FocusScope(
+        node: node,
+        child: tablet
+            ? SizedBox(
+                height: MediaQuery.of(context).size.height,
+                width: detailWidth,
+                child: child)
+            : child,
+      ),
+    );
+    return tablet ? Positioned(left: masterWidth, child: detail) : detail;
   }
 
   @override
@@ -100,9 +96,9 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
     return returnValue;
   }
 
-  /// master-page: opaque, detail-page: transparent
+  /// master-page: opaque(true), detail-page: transparent(false)
   @override
-  bool get opaque => !(settings.isInitialRoute == false && tablet == true);
+  bool get opaque => settings.isInitialRoute == true || tablet == false;
 
   @override
   Duration get transitionDuration => Duration(milliseconds: 250);

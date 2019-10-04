@@ -8,7 +8,12 @@ class GameData {
   Map<String, Item> items;
   Map<String, GameIcon> icons;
 
-  GameData({this.servants, this.crafts, this.items, this.icons});
+  GameData({this.servants, this.crafts, this.items, this.icons}){
+    servants??={};
+    crafts??={};
+    items??={};
+    icons??={};
+  }
 
   factory GameData.fromJson(Map<String, dynamic> data) =>
       _$GameDataFromJson(data);
@@ -40,6 +45,16 @@ class Servant {
   List<Skill> passiveSkills;
   ItemCost itemCost;
 
+  Servant(
+      {this.no,
+      this.mcLink,
+      this.icon,
+      this.info,
+      this.nobelPhantasm,
+      this.activeSkills,
+      this.passiveSkills,
+      this.itemCost});
+
   Map<String, int> calculateCost(ServantPlan plan, {bool planned = true}) {
     if (planned && (plan == null || plan.favorite == false)) {
       return {};
@@ -50,8 +65,7 @@ class Servant {
       calSkillCost(lv: planned ? plan.skillLv : null),
       calDressCost(lv: planned ? plan.dressLv : null)
     ];
-    all.forEach((e) =>
-        e.forEach((item, num) {
+    all.forEach((e) => e.forEach((item, num) {
           cost[item] = (cost[item] ?? 0) + num;
         }));
     return cost;
@@ -63,8 +77,7 @@ class Servant {
       return cost;
     }
     lv = lv ?? [0, 4];
-    int start = lv[0],
-        end = lv[1];
+    int start = lv[0], end = lv[1];
     for (int i = start; i < end; i++) {
       for (var item in itemCost.ascension[i]) {
         cost[item.name] = (cost[item.name] ?? 0) + item.num;
@@ -83,8 +96,7 @@ class Servant {
     }
     lv = lv ?? List.generate(3, (i) => [1, 10]);
     for (int i = 0; i < 3; i++) {
-      int start = lv[i][0],
-          end = lv[i][1];
+      int start = lv[i][0], end = lv[i][1];
       for (int j = start - 1; j < end - 1; j++) {
         for (var item in itemCost.skill[j]) {
           cost[item.name] = (cost[item.name] ?? 0) + item.num;
@@ -104,8 +116,7 @@ class Servant {
     }
     lv = lv ?? List.generate(itemCost.dress.length, (i) => [0, 1]);
     for (int i = 0; i < itemCost.dress.length; i++) {
-      int start = lv[i][0],
-          end = lv[i][1];
+      int start = lv[i][0], end = lv[i][1];
       for (int j = start; j < end; j++) {
         for (var item in itemCost.dress[i]) {
           cost[item.name] = (cost[item.name] ?? 0) + item.num;
@@ -117,16 +128,6 @@ class Servant {
     }
     return cost;
   }
-
-  Servant(
-      {this.no,
-      this.mcLink,
-      this.icon,
-      this.info,
-      this.nobelPhantasm,
-      this.activeSkills,
-      this.passiveSkills,
-      this.itemCost});
 
   factory Servant.fromJson(Map<String, dynamic> data) =>
       _$ServantFromJson(data);
@@ -211,19 +212,20 @@ class ServantBaseInfo {
 
 @JsonSerializable()
 class NobelPhantasm {
+  bool enhanced;
   String state;
   String openTime;
   String openCondition;
   String opeQuest;
   String name;
-  String nameJP;
+  String nameJp;
   String upperName;
-  String upperNameJP;
+  String upperNameJp;
   String color;
   String category;
   String rank;
   String typeText;
-  List<Map<String, dynamic>> effect;
+  List<Effect> effects;
 
   factory NobelPhantasm.fromJson(Map<String, dynamic> data) =>
       _$NobelPhantasmFromJson(data);
@@ -231,19 +233,20 @@ class NobelPhantasm {
   Map<String, dynamic> toJson() => _$NobelPhantasmToJson(this);
 
   NobelPhantasm(
-      {this.state,
+      {this.enhanced,
+      this.state,
       this.openTime,
       this.openCondition,
       this.opeQuest,
       this.name,
-      this.nameJP,
+      this.nameJp,
       this.upperName,
-      this.upperNameJP,
+      this.upperNameJp,
       this.color,
       this.category,
       this.rank,
       this.typeText,
-      this.effect});
+      this.effects});
 }
 
 @JsonSerializable()
@@ -254,6 +257,7 @@ class Skill {
   String openQuest;
   bool enhanced;
   String name;
+  String nameJp;
   String rank;
   String icon;
   int cd;
@@ -263,16 +267,18 @@ class Skill {
 
   Map<String, dynamic> toJson() => _$SkillToJson(this);
 
-  Skill({this.state,
-    this.openTime,
-    this.openCondition,
-    this.openQuest,
-    this.enhanced,
-    this.name,
-    this.rank,
-    this.icon,
-    this.cd,
-    this.effects});
+  Skill(
+      {this.state,
+      this.openTime,
+      this.openCondition,
+      this.openQuest,
+      this.enhanced,
+      this.name,
+      this.nameJp,
+      this.rank,
+      this.icon,
+      this.cd,
+      this.effects});
 }
 
 @JsonSerializable()
@@ -303,11 +309,12 @@ class ItemCost {
 
   Map<String, dynamic> toJson() => _$ItemCostToJson(this);
 
-  ItemCost({this.ascension,
-    this.skill,
-    this.dressName,
-    this.dressNameJp,
-    this.dress});
+  ItemCost(
+      {this.ascension,
+      this.skill,
+      this.dressName,
+      this.dressNameJp,
+      this.dress});
 }
 
 @JsonSerializable()

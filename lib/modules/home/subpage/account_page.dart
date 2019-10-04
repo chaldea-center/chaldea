@@ -42,12 +42,12 @@ class _AccountPageState extends State<AccountPage> {
                         print('new key $newKey');
                       }while(keys.contains(newKey));
                       db.appData.users[newKey]=User(name: v);
-                      db.onLocaleChange();
+                      db.onAppUpdate();
                     },
                   );
                 }
               );
-              db.onLocaleChange();
+              db.onAppUpdate();
               print('Add account');
             },
           )
@@ -94,7 +94,7 @@ class _AccountPageState extends State<AccountPage> {
                               },
                               onSubmit: (v){
                                 user.name = v;
-                                db.onLocaleChange();
+                                db.onAppUpdate();
                               },
                             ),
                           );
@@ -113,7 +113,7 @@ class _AccountPageState extends State<AccountPage> {
                             if(_isCurUser){
                               db.appData.curUser=db.appData.userIDs[0];
                             }
-                            db.onLocaleChange();
+                            db.onAppUpdate();
                             print('accounts: ${db.appData.userIDs}');
                           });
                         },
@@ -123,7 +123,7 @@ class _AccountPageState extends State<AccountPage> {
             ),
             onTap: () {
               db.appData.curUser = key;
-              db.onLocaleChange();
+              db.onAppUpdate();
             },
           );
 

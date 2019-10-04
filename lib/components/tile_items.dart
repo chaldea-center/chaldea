@@ -133,23 +133,21 @@ class SSelect extends StatelessWidget {
       tiles: labels
           .asMap()
           .map((index, label) {
-        return MapEntry(
-            index,
-            ListTile(
-              title: Text(label),
-              trailing: index == selected
-                  ? Icon(
-                Icons.check,
-                color: Theme
-                    .of(context)
-                    .primaryColor,
-              )
-                  : null,
-              onTap: () {
-                callback(index);
-              },
-            ));
-      })
+            return MapEntry(
+                index,
+                ListTile(
+                  title: Text(label),
+                  trailing: index == selected
+                      ? Icon(
+                          Icons.check,
+                          color: Theme.of(context).primaryColor,
+                        )
+                      : null,
+                  onTap: () {
+                    callback(index);
+                  },
+                ));
+          })
           .values
           .toList(),
     );
@@ -161,8 +159,9 @@ class TileGroup extends StatelessWidget {
   final List<Widget> tiles;
   final String header;
   final String footer;
+  final EdgeInsets padding;
 
-  const TileGroup({Key key, this.tiles, this.header, this.footer})
+  const TileGroup({Key key, this.tiles, this.header, this.footer, this.padding})
       : super(key: key);
 
   @override
@@ -183,18 +182,20 @@ class TileGroup extends StatelessWidget {
       return box;
     }).toList();
     return Padding(
-      padding: EdgeInsets.only(bottom: 8),
+      padding: padding??EdgeInsets.only(bottom: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
-        children: <Widget>[]..addAll(
-            null == header ? [] : [SHeader(header)])..addAll(group)..addAll(
-            null == footer ? [] : [SFooter(footer)]),
+        children: <Widget>[]
+          ..addAll(null == header ? [] : [SHeader(header)])
+          ..addAll(group)
+          ..addAll(null == footer ? [] : [SFooter(footer)]),
       ),
     );
   }
 }
 
+//not finished
 class SRadios extends StatefulWidget {
   final List<Widget> tiles;
 
@@ -222,13 +223,14 @@ class RangeSelector<T extends num> extends StatefulWidget {
 
   final bool increasing;
 
-  const RangeSelector({Key key,
-    this.start,
-    this.end,
-    this.startItems,
-    this.endItems,
-    this.increasing,
-    this.onChanged})
+  const RangeSelector(
+      {Key key,
+      this.start,
+      this.end,
+      this.startItems,
+      this.endItems,
+      this.increasing,
+      this.onChanged})
       : super(key: key);
 
   @override
@@ -249,11 +251,10 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
         DropdownButton<T>(
           value: start,
           items: widget.startItems
-              .map((entry) =>
-              DropdownMenuItem<T>(
-                value: entry.key,
-                child: entry.value,
-              ))
+              .map((entry) => DropdownMenuItem<T>(
+                    value: entry.key,
+                    child: entry.value,
+                  ))
               .toList(),
           onChanged: (value) {
             start = value;
@@ -267,11 +268,10 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
         DropdownButton<T>(
           value: end,
           items: widget.endItems
-              .map((entry) =>
-              DropdownMenuItem<T>(
-                value: entry.key,
-                child: entry.value,
-              ))
+              .map((entry) => DropdownMenuItem<T>(
+                    value: entry.key,
+                    child: entry.value,
+                  ))
               .toList(),
           onChanged: (value) {
             end = value;
@@ -288,8 +288,8 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
 
 List<Widget> divideTiles(Iterable<Widget> tiles,
     {Widget divider = const Divider(height: 1.0),
-      bool top = false,
-      bool bottom = false}) {
+    bool top = false,
+    bool bottom = false}) {
   if (tiles.length == 0) {
     return tiles.toList();
   }
@@ -317,8 +317,7 @@ void showSheet(BuildContext context,
   showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (context) =>
-          StatefulBuilder(
+      builder: (context) => StatefulBuilder(
             builder: (sheetContext, setSheetState) {
               return DraggableScrollableSheet(
                 initialChildSize: size,
@@ -339,12 +338,13 @@ class FilterButton extends StatefulWidget {
   final ValueChanged<bool> onPressed;
   final bool value;
 
-  const FilterButton({Key key,
-    this.selectedColor = Colors.lightBlueAccent,
-    this.unselectedColor,
-    this.onPressed,
-    @required this.value,
-    @required this.child})
+  const FilterButton(
+      {Key key,
+      this.selectedColor = Colors.lightBlueAccent,
+      this.unselectedColor,
+      this.onPressed,
+      @required this.value,
+      @required this.child})
       : super(key: key);
 
   @override
@@ -385,9 +385,7 @@ class FilterButtonGroup<T> extends StatefulWidget {
 
   FilterButtonGroup(
       {Key key, @required this.data, this.labels, this.values, this.onChanged})
-      : assert(data != null && data.length == data
-      .toSet()
-      .length),
+      : assert(data != null && data.length == data.toSet().length),
         assert(labels == null || labels.length == data.length),
         super(key: key);
 

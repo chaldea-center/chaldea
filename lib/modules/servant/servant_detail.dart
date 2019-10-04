@@ -82,9 +82,11 @@ class ServantDetailPageState extends State<ServantDetailPage>
                 children: _tabNames.map((name) {
                   switch (name) {
                     case '规划':
-                      return PlanTab(svt, plan: plan, parent: this);
+                      return PlanTab(parent: this);
                     case '技能':
-                      return SkillTab(svt, parent: this);
+                      return SkillTab(parent: this);
+                    case '宝具':
+                      return NobelPhantasmTab(parent: this);
                     default:
                       return ListView(
                         children: <Widget>[
