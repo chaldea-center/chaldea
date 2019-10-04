@@ -392,9 +392,17 @@ class _NobelPhantasmTabState extends State<NobelPhantasmTab>
 
   Widget buildHeader(NobelPhantasm np, bool enhanced) {
     return CustomTile(
-      leading: Image.file(
-        db.getIconFile(np.color),
-        height: 110 * 0.8,
+      leading: Column(
+        children: <Widget>[
+          Image.file(
+            db.getIconFile(np.color),
+            height: 110 * 0.9,
+          ),
+          Text(
+            '${np.typeText} ${np.rank}',
+            style: TextStyle(fontSize: 14, color: Colors.black),
+          )
+        ],
       ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -406,11 +414,14 @@ class _NobelPhantasmTabState extends State<NobelPhantasmTab>
           Text(
             np.name,
             style: TextStyle(fontWeight: FontWeight.w600),
+          ),Text(
+            np.upperNameJp,
+            style: TextStyle(fontSize: 16, color: Colors.black54),
           ),
           Text(
-            '${np.typeText} ${np.rank}',
-            style: TextStyle(fontSize: 15, color: Colors.black),
-          )
+            np.nameJp,
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
         ],
       ),
       trailing: svt.nobelPhantasm.length <= 1

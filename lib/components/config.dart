@@ -137,23 +137,9 @@ class Database {
   Future<Null> saveData({bool app: false, bool user: false}) async {
     if (app) {
       _saveJsonFile(appData, appDataFilename);
-//      int newCode = appData.hashCode;
-//      if (hashCodes['app'] != newCode) {
-//        print('appData hashCode changed, saving file.');
-//        hashCodes['app'] = newCode;
-//        _saveJsonFile(appData, appDataFilename);
-//      }
     }
     if (user) {
       _saveJsonFile(userData, userDataFilename);
-//      int newCode = userData.hashCode;
-//      if (hashCodes['user'] != newCode) {
-//        print('userData hashCode changed, saving file.');
-//        hashCodes['user'] = newCode;
-//        _saveJsonFile(userData, userDataFilename);
-//      }else{
-//        print('userData hashCode no change: ${userData.servants}');
-//      }
     }
   }
 

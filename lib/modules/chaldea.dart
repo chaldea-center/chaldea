@@ -11,13 +11,11 @@ class Chaldea extends StatefulWidget {
 }
 
 class _ChaldeaState extends State<Chaldea> {
-  SpecifiedLocalizationDelegate _localOverrideDelegate;
+  Locale locale;
 
   void onAppUpdate() {
     setState(() {
-      final locale = LangCode.getLocale(db.appData.language ?? LangCode.chs);
-      _localOverrideDelegate = SpecifiedLocalizationDelegate(locale);
-      db.saveData(app: true);
+      locale=LangCode.getLocale(db?.appData?.language);
     });
   }
 
@@ -33,42 +31,26 @@ class _ChaldeaState extends State<Chaldea> {
   @override
   void initState() {
     // update anything after initial()!!!
-    initial().then((_) {
-      setState(() {
-        if (LangCode.codes.contains(db.appData.language)) {
-          _localOverrideDelegate = SpecifiedLocalizationDelegate(
-              LangCode.getLocale(db.appData.language));
-        }
-        //check/initial data
-        if (null == db.appData.users || 0 == db.appData.users.length) {
-          // create default account
-          final name = "default";
-          db.appData
-            ..curUser = name
-            ..users = {name: User(name: name, server: GameServer.cn)};
-        }
-      });
-    });
-    //use default before data loaded***
-    _localOverrideDelegate = SpecifiedLocalizationDelegate(Locale('zh', ''));
     super.initState();
+    initial().then((_) {
+      onAppUpdate();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      locale: locale,
       title: "Chaldea",
       localizationsDelegates: [
-        _localOverrideDelegate,
         S.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate
       ],
       supportedLocales: S.delegate.supportedLocales,
-      home: db.appData == null
-          ? BlankPage()
-          : HomePage(), //pass a function for exit button with context
+      localeResolutionCallback: S.delegate.resolution(fallback: Locale('zh','')),
+      home: db.appData == null ? BlankPage() : HomePage(), //pass a function for exit button with context
     );
   }
 }

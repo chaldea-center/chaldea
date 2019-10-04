@@ -17,6 +17,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     language = S.of(context).language;
+    print('in setting page: S.lang=$language');
     return Scaffold(
       appBar: AppBar(
         title: Text(S.of(context).settings_tab_name),
@@ -158,5 +159,12 @@ class _SettingsPageState extends State<SettingsPage> {
         ],
       ),
     );
+  }
+
+
+  @override
+  void deactivate() {
+    super.deactivate();
+    db.saveData(app: true,user: true);
   }
 }

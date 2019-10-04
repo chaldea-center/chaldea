@@ -115,7 +115,7 @@ class _ServantListPageState extends State<ServantListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Servant'),
+        title: Text(S.of(context).servant),
         leading: BackButton(),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(45.0),

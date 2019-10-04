@@ -37,6 +37,7 @@ class S implements WidgetsLocalizations {
   String get ok => "OK";
   String get rename => "Rename";
   String get restore => "Restore";
+  String get servant => "Servant";
   String get servant_title => "Servant";
   String get server => "Server";
   String get server_cn => "CN";
@@ -55,13 +56,25 @@ class $zh_TW extends S {
   TextDirection get textDirection => TextDirection.ltr;
 
   @override
-  String get gallery_tab_name => "首頁";
-  @override
   String get cancel => "Cancel";
   @override
   String get server => "Server";
   @override
   String get backup => "Backup to ...";
+  @override
+  String get language => "cht";
+  @override
+  String get delete => "Delete";
+  @override
+  String get servant => "從者";
+  @override
+  String get ok => "OK";
+  @override
+  String get server_cn => "CN";
+  @override
+  String get item_title => "Items";
+  @override
+  String get gallery_tab_name => "首頁";
   @override
   String get restore => "Restore";
   @override
@@ -72,10 +85,6 @@ class $zh_TW extends S {
   String get settings_language => "語言";
   @override
   String get more => "More";
-  @override
-  String get language => "cht";
-  @override
-  String get delete => "Delete";
   @override
   String get settings_data => "數據";
   @override
@@ -89,13 +98,7 @@ class $zh_TW extends S {
   @override
   String get hello => "你好！";
   @override
-  String get ok => "OK";
-  @override
-  String get server_cn => "CN";
-  @override
   String get servant_title => "Servant";
-  @override
-  String get item_title => "Items";
   @override
   String get settings_tab_name => "設置";
   @override
@@ -111,13 +114,25 @@ class $ja extends S {
   TextDirection get textDirection => TextDirection.ltr;
 
   @override
-  String get gallery_tab_name => "ホーム";
-  @override
   String get cancel => "Cancel";
   @override
   String get server => "Server";
   @override
   String get backup => "Backup to ...";
+  @override
+  String get language => "jpn";
+  @override
+  String get delete => "Delete";
+  @override
+  String get servant => "サーバント";
+  @override
+  String get ok => "OK";
+  @override
+  String get server_cn => "CN";
+  @override
+  String get item_title => "Items";
+  @override
+  String get gallery_tab_name => "ホーム";
   @override
   String get restore => "Restore";
   @override
@@ -128,10 +143,6 @@ class $ja extends S {
   String get settings_language => "言語";
   @override
   String get more => "More";
-  @override
-  String get language => "jpn";
-  @override
-  String get delete => "Delete";
   @override
   String get settings_data => "データ";
   @override
@@ -145,13 +156,7 @@ class $ja extends S {
   @override
   String get hello => "こんにちは。";
   @override
-  String get ok => "OK";
-  @override
-  String get server_cn => "CN";
-  @override
   String get servant_title => "Servant";
-  @override
-  String get item_title => "Items";
   @override
   String get settings_tab_name => "設定";
   @override
@@ -171,13 +176,25 @@ class $zh extends S {
   TextDirection get textDirection => TextDirection.ltr;
 
   @override
-  String get gallery_tab_name => "首页";
-  @override
   String get cancel => "Cancel";
   @override
   String get server => "Server";
   @override
   String get backup => "Backup to ...";
+  @override
+  String get language => "chs";
+  @override
+  String get delete => "Delete";
+  @override
+  String get servant => "从者";
+  @override
+  String get ok => "OK";
+  @override
+  String get server_cn => "CN";
+  @override
+  String get item_title => "Items";
+  @override
+  String get gallery_tab_name => "首页";
   @override
   String get restore => "Restore";
   @override
@@ -189,10 +206,6 @@ class $zh extends S {
   @override
   String get more => "More";
   @override
-  String get language => "chs";
-  @override
-  String get delete => "Delete";
-  @override
   String get settings_data => "数据";
   @override
   String get cur_account => "当前账号";
@@ -203,15 +216,9 @@ class $zh extends S {
   @override
   String get server_jp => "JP";
   @override
-  String get hello => "你好！";
-  @override
-  String get ok => "OK";
-  @override
-  String get server_cn => "CN";
+  String get hello => "你好！Master!";
   @override
   String get servant_title => "Servant";
-  @override
-  String get item_title => "Items";
   @override
   String get settings_tab_name => "设置";
   @override

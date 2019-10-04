@@ -32,8 +32,11 @@ class AppData {
       this.users,
       this.galleries,
       this.gameDataPath = 'dataset'}) {
-    curUser ??= 'default';
-    users ??= {curUser: User(name: curUser)};
+    String defaultName = 'default';
+    users ??= {defaultName: User(name: defaultName)};
+    if(!users.containsKey(curUser)){
+      curUser=defaultName;
+    }
     galleries ??= {};
   }
 
@@ -52,7 +55,10 @@ class User {
   @JsonKey(defaultValue: GameServer.cn)
   String server;
 
-  User({@required this.name, this.server = GameServer.cn});
+  User({@required this.name, this.server = GameServer.cn})
+      : assert(name != null && name.isNotEmpty) {
+    server ??= GameServer.cn;
+  }
 
   factory User.fromJson(Map<String, dynamic> data) => _$UserFromJson(data);
 
