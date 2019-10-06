@@ -182,7 +182,7 @@ class TileGroup extends StatelessWidget {
       return box;
     }).toList();
     return Padding(
-      padding: padding??EdgeInsets.only(bottom: 8),
+      padding: padding ?? EdgeInsets.only(bottom: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -331,97 +331,139 @@ void showSheet(BuildContext context,
           ));
 }
 
-class FilterButton extends StatefulWidget {
-  final Color selectedColor;
-  final Color unselectedColor;
-  final Widget child;
-  final ValueChanged<bool> onPressed;
-  final bool value;
+// for filter items
+typedef bool FilterCallBack<T>(T data);
 
-  const FilterButton(
+class FilterGroup<T> extends StatelessWidget {
+  final Widget title;
+  final List<String> options;
+  final FilterGroupData values;
+  final Widget Function(String value) generator;
+  final bool showMatchAll;
+  final bool showInvert;
+  final bool useRadio;
+  final void Function(FilterGroupData optionData) onFilterChanged;
+
+  FilterGroup(
       {Key key,
-      this.selectedColor = Colors.lightBlueAccent,
-      this.unselectedColor,
-      this.onPressed,
-      @required this.value,
-      @required this.child})
-      : super(key: key);
+      this.title,
+      @required this.options,
+      @required this.values,
+      this.generator,
+      this.showMatchAll = false,
+      this.showInvert = false,
+        this.useRadio=false,
+      this.onFilterChanged})
+      : assert(values != null),
+        super(key: key);
 
-  @override
-  _FilterButtonState createState() => _FilterButtonState(value);
-}
-
-class _FilterButtonState extends State<FilterButton> {
-  bool value;
-
-  _FilterButtonState(this.value);
+  Widget _buildSwitch(bool checked, String text, VoidCallback onTap,BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Row(
+        children: <Widget>[
+          Icon(
+            checked ? Icons.check_circle : Icons.check_circle_outline,
+            color: Theme.of(context).primaryColor,
+          ),
+          Text(text)
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ButtonTheme(
-      minWidth: 25,
-      child: FlatButton(
-        onPressed: () {
-          setState(() {
-            value = !value;
-            widget.onPressed(value);
-          });
-        },
-        color: value ? widget.selectedColor : widget.unselectedColor,
-        child: widget.child,
-        shape: ContinuousRectangleBorder(
-            side: BorderSide(color: Colors.grey),
-            borderRadius: BorderRadius.circular(3)),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          if (title != null || showMatchAll || showInvert)
+            CustomTile(
+              title: title,
+              contentPadding: EdgeInsets.zero,
+              trailing: Row(
+                children: <Widget>[
+                  if (showMatchAll)
+                    _buildSwitch(values.matchAll, 'Match All', () {
+                      values.matchAll = !values.matchAll;
+                      if (onFilterChanged != null) {
+                        onFilterChanged(values);
+                      }
+                    },context),
+                  if (showInvert)
+                    _buildSwitch(values.invert, 'Invert', () {
+                      values.invert = !values.invert;
+                      if (onFilterChanged != null) {
+                        onFilterChanged(values);
+                      }
+                    },context)
+                ],
+              ),
+            ),
+          Wrap(
+            spacing: 6,
+            children: options.map((key) {
+              return FilterOption(
+                  selected: values.options[key] ?? false,
+                  value: key,
+                  child: generator == null ? Text(key) : generator(key),
+                  onChanged: (v) {
+                    if(useRadio){
+                      values.options.clear();
+                    }
+                    values.options[key] = v;
+                    values.options.removeWhere((k, v) => v != true);
+                    if (onFilterChanged != null) {
+                      onFilterChanged(values);
+                    }
+                  });
+            }).toList(),
+          )
+        ],
       ),
     );
   }
 }
 
-class FilterButtonGroup<T> extends StatefulWidget {
-  final List<T> data;
-  final List<Widget> labels;
-  final List<T> values;
-  final ValueChanged<List<T>> onChanged;
+class FilterOption<T, S> extends StatelessWidget {
+  final bool selected;
+  final T value;
+  final Widget child;
+  final ValueChanged<bool> onChanged;
+  final Color selectedColor;
+  final Color unselectedColor;
 
-  FilterButtonGroup(
-      {Key key, @required this.data, this.labels, this.values, this.onChanged})
-      : assert(data != null && data.length == data.toSet().length),
-        assert(labels == null || labels.length == data.length),
+  FilterOption(
+      {Key key,
+      @required this.selected,
+      @required this.value,
+      this.child,
+      this.onChanged,
+      this.selectedColor = Colors.lightBlueAccent,
+      this.unselectedColor})
+      : assert(selected != null && value != null),
         super(key: key);
 
   @override
-  _FilterButtonGroupState createState() => _FilterButtonGroupState(values);
-}
-
-class _FilterButtonGroupState<T> extends State<FilterButtonGroup<T>> {
-  List<T> values;
-
-  _FilterButtonGroupState(values) : values = values ?? [];
-
-  @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 6,
-      children: List.generate(widget.data.length, (index) {
-        final label = widget.labels == null
-            ? Text('${widget.data[index]}')
-            : widget.labels[index];
-
-        return FilterButton(
-          value: values.contains(widget.data[index]),
-          child: label,
-          onPressed: (selected) {
-            if (selected) {
-              values.add(widget.data[index]);
-            } else {
-              values.removeWhere((e) => e == widget.data[index]);
-            }
-            if (widget.onChanged != null) {
-              widget.onChanged(values);
-            }
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: 36),
+      child: ButtonTheme(
+        minWidth: 20,
+        height: 30,
+        child: FlatButton(
+          onPressed: () {
+            onChanged(!selected);
           },
-        );
-      }),
+          color: selected ? selectedColor : unselectedColor,
+          child: child ?? Text(value.toString()),
+          shape: ContinuousRectangleBorder(
+              side: BorderSide(color: Colors.grey),
+              borderRadius: BorderRadius.circular(3)),
+        ),
+      ),
     );
   }
 }

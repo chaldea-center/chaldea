@@ -26,10 +26,10 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   void initState() {
     super.initState();
     statistics = (widget.statistics ??
-        ItemCostStatistics(db.gameData, db.userData.servants));
+        ItemCostStatistics(db.gameData, db.curPlan.servants));
   }
 
-  List<Widget> getSvtIconList(Map<String, int> src) {
+  List<Widget> getSvtIconList(Map<int, int> src) {
     List<Widget> list = [];
     src.forEach((no, num) {
       final svt = db.gameData.servants[no];
@@ -42,10 +42,8 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
             Navigator.of(context)
                 .push(SplitRoute(builder: (context) => ServantDetailPage(svt)))
                 .then((_) {
-              statistics.update(db.gameData, db.userData.servants);
+              statistics.update(db.gameData, db.curPlan.servants);
               widget.parent?.setState(() {});
-//              print(
-//                  'From SvtDetail back to ItemDetail, update item count statistics');
             });
           },
         ));

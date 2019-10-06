@@ -18,11 +18,10 @@ import 'datatypes/datatypes.dart';
 class Database {
   VoidCallback onAppUpdate;
   AppData appData;
-  Plans userData;
   GameData gameData;
-  Map<String, int> hashCodes = {};
-  static String _rootPath = '';
 
+  Plans get curPlan=>appData.users[appData.curUserName]?.plans;
+  static String _rootPath = '';
   String get rootPath => _rootPath;
 
   // initialization
@@ -32,7 +31,7 @@ class Database {
 
   // load data
   Future<Null> loadData(
-      {bool user = true, bool app = true, bool game = true}) async {
+      {bool app = true, bool game = true}) async {
     if (app) {
       appData = parseJson(
           parser: () =>
@@ -41,13 +40,6 @@ class Database {
       print('appdata reloaded');
     }
 
-    if (user) {
-      userData = parseJson(
-          parser: () => Plans.fromJson(
-              getJsonFromFile(userDataFilename, k: Map<String, dynamic>())),
-          k: () => Plans());
-      print('userdata reloaded');
-    }
     if (game) {
       // use downloaded data if exist
       gameData = parseJson(
@@ -134,13 +126,8 @@ class Database {
   }
 
   //save data
-  Future<Null> saveData({bool app: false, bool user: false}) async {
-    if (app) {
-      _saveJsonFile(appData, appDataFilename);
-    }
-    if (user) {
-      _saveJsonFile(userData, userDataFilename);
-    }
+  Future<Null> saveData() async {
+    _saveJsonFile(appData, appDataFilename);
   }
 
   Future<Null> _saveJsonFile(dynamic jsonData, String relativePath) async {
@@ -156,10 +143,8 @@ class Database {
 
   // clear data
   Future<void> clearData(
-      {bool user = false, bool app = false, bool game = false}) async {
-    if (user) {
-      _deleteFileOrDirectory(userDataFilename);
-    }
+      { bool app = false, bool game = false}) async {
+
     if (app) {
       _deleteFileOrDirectory(appDataFilename);
     }
@@ -168,7 +153,7 @@ class Database {
       _deleteFileOrDirectory(appData.gameDataPath);
     }
     await loadZipAssets('res/data/dataset.zip', dir: appData.gameDataPath);
-    await loadData(app: app, user: user, game: game);
+    await loadData(app: app, game: game);
   }
 
   void _deleteFileOrDirectory(String relativePath) {

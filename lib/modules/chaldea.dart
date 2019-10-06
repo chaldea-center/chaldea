@@ -22,10 +22,10 @@ class _ChaldeaState extends State<Chaldea> {
   Future<Null> initial() async {
     await db.initial();
     db.onAppUpdate = this.onAppUpdate;
-    await db.loadData(app: true, user: true, game: false);
+    await db.loadData(app: true, game: false);
     await db.loadZipAssets('res/data/dataset.zip',
         dir: db.appData.gameDataPath);
-    await db.loadData(app: false, user: false, game: true);
+    await db.loadData(app: false, game: true);
   }
 
   @override

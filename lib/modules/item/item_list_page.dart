@@ -89,14 +89,14 @@ class ItemListPageState extends State<ItemListPage>
   void deactivate() {
     super.deactivate();
     print('ItemListPage deactived.');
-    db.saveData(user: true);
+    db.saveData();
   }
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: categories.length, vsync: this);
-    statistics = ItemCostStatistics(db.gameData, db.userData.servants);
+    statistics = ItemCostStatistics(db.gameData, db.curPlan.servants);
     final items = db.gameData.items;
     categories.forEach((e) {
       inputManagers[e] = TextInputsManager();
@@ -106,11 +106,11 @@ class ItemListPageState extends State<ItemListPage>
         return;
       }
       TextEditingController textEditingController = TextEditingController(
-          text: (db.userData.items[item.name] ?? 0).toString());
+          text: (db.curPlan.items[item.name] ?? 0).toString());
       FocusNode focusNode = FocusNode();
       textEditingController.addListener(() {
         int num = int.parse('0' + textEditingController.text);
-        db.userData.items[item.name] = num;
+        db.curPlan.items[item.name] = num;
         getFocused(textEditingController, focusNode);
       });
       inputManagers[item.category].addEntry(
@@ -144,7 +144,6 @@ class ItemListPageState extends State<ItemListPage>
       body: TabBarView(
           controller: _tabController,
           children: categories.map((tabKey) {
-//            final group = inputControllers[tabKey];
             final manager = inputManagers[tabKey];
             manager.resetFocusList();
             List<Widget> tiles = [];
@@ -155,7 +154,7 @@ class ItemListPageState extends State<ItemListPage>
               String iconKey = component.data.name;
               final itemStat = statistics.getNumOfItem(iconKey);
               final allNum = sum(itemStat.values);
-              final ownNum = db.userData.items[iconKey] ?? 0;
+              final ownNum = db.curPlan.items[iconKey] ?? 0;
               int leftNum = ownNum - allNum;
               bool enough = leftNum >= 0;
 

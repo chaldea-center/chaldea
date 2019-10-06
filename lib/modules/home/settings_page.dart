@@ -17,7 +17,6 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     language = S.of(context).language;
-    print('in setting page: S.lang=$language');
     return Scaffold(
       appBar: AppBar(
         title: Text(S.of(context).settings_tab_name),
@@ -36,7 +35,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: Text(S.of(context).server),
                 trailing: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
-                    value: db.appData.users[db.appData.curUser].server??'cn',
+                    value: db.appData.users[db.appData.curUserName].server??'cn',
                     items: <DropdownMenuItem<String>>[
                       DropdownMenuItem(
                         value: GameServer.cn,
@@ -48,7 +47,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       )
                     ],
                     onChanged: (v) {
-                      db.appData.users[db.appData.curUser].server = v;
+                      db.appData.users[db.appData.curUserName].server = v;
                       db.onAppUpdate();
                     },
                   ),
@@ -60,7 +59,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Text(
-                      db.appData.users[db.appData.curUser].name,
+                      db.appData.users[db.appData.curUserName].name,
                       style: TextStyle(color: Colors.black87),
                     ),
                     Icon(Icons.arrow_forward_ios)
@@ -82,7 +81,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Text(
-                      LangCode.getName(language) ?? "",
+                      S.of(context).language,
                       style: TextStyle(color: Colors.black87),
                     ),
                     Icon(Icons.arrow_forward_ios)
@@ -134,7 +133,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ListTile(
                 title: Text('clear all data'),
                 onTap: () {
-                  db.clearData(user: true, app: true, game: true).then((_) =>
+                  db.clearData(app: true, game: true).then((_) =>
                       Scaffold.of(context).showSnackBar(
                           SnackBar(content: Text('userdata cleared'))));
                 },
@@ -165,6 +164,6 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void deactivate() {
     super.deactivate();
-    db.saveData(app: true,user: true);
+    db.saveData();
   }
 }

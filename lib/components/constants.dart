@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 //typedef
-typedef void LocaleChangeCallback({Locale locale});
 //const value
 const String appDataFilename = 'appdata.json';
 const String userDataFilename = 'userdata.json';
@@ -9,27 +8,21 @@ const String userDataFilename = 'userdata.json';
 //const value in class
 class LangCode {
   // code must match S.of(context).language in every .arb file
-  static const String chs = 'chs';
-  static const String cht = 'cht';
-  static const String jpn = 'jpn';
-  static const String eng = 'eng';
-  static const _allLanguage = {
-    chs: ['简体中文', const Locale('zh', '')],
-    cht: ['繁體中文', const Locale('zh', 'TW')],
-    jpn: ['日本語', const Locale('ja', '')],
-    eng: ['English', const Locale('en', '')],
+  static const String chs = '简体中文';
+  static const String cht = '繁體中文';
+  static const String jpn = '日本語';
+  static const String eng = 'English';
+
+  static const Map<String, Locale> values = {
+    chs: Locale('zh', ''),
+    cht: Locale('zh', 'TW'),
+    jpn: Locale('ja', ''),
+    eng: Locale('en', '')
   };
 
-  static String getName(String code) =>
-      codes.contains(code) ? _allLanguage[code][0] as String : null;
+  static Locale getLocale(String code) => code == null ? null : values[code];
 
-  static Locale getLocale(String code) =>
-      codes.contains(code) ? _allLanguage[code][1] as Locale : null;
-
-  static List<String> get codes => _allLanguage.keys.toList();
-
-  static List<String> get names =>
-      _allLanguage.values.map((v) => v[0] as String).toList();
+  static List<String> get codes => values.keys.toList();
 }
 
 class GameServer {
@@ -84,7 +77,7 @@ class TextFilter {
   List<String> patterns;
 
   TextFilter(filterString) {
-    patterns = filterString.split(RegExp(r'\s+'));
+    patterns = (filterString??'').split(RegExp(r'\s+'));
     patterns.removeWhere((item) => item == '');
   }
 
@@ -139,7 +132,7 @@ class ClassName {
   static const foreigner = const ClassName('Foreigner');
   static const beast = const ClassName('Beast');
 
-  static List<ClassName> get values => [
+  static List<ClassName> get values => const [
         saber,
         archer,
         lancer,

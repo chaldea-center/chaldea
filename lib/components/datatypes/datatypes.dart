@@ -6,6 +6,7 @@
 /// non-constant value are set after default constructor(e.g. Test({a,this.b}):a=a).
 library datatypes;
 
+import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/constants.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
@@ -15,5 +16,5 @@ part 'datatypes.g.dart';
 
 part 'gamedata.dart';
 /// data-type classes, part of [datatypes].
-part 'model.dart';
+part 'appdata.dart';
 part 'userdata.dart';

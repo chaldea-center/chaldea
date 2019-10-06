@@ -29,16 +29,16 @@ class ServantDetailPageState extends State<ServantDetailPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: _tabNames.length, vsync: this);
-    if (!db.userData.servants.containsKey(svt.no.toString())) {
-      db.userData.servants[svt.no.toString()] = ServantPlan();
+    if (!db.curPlan.servants.containsKey(svt.no)) {
+      db.curPlan.servants[svt.no] = ServantPlan();
     }
-    plan = db.userData.servants[svt.no.toString()];
+    plan = db.curPlan.servants[svt.no];
   }
 
   @override
   void deactivate() {
     super.deactivate();
-    db.saveData(user: true);
+    db.saveData();
   }
 
   @override

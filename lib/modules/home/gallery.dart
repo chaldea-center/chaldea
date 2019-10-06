@@ -91,8 +91,6 @@ class GalleryState extends State<Gallery> {
               ],
             ),
             onPressed: () {
-//              Navigator.of(context).push(MaterialPageRoute(builder: item.builder));
-//              return;
               SplitRoute.popAndPush(context,
                   builder: item.builder,
                   settings: RouteSettings(
@@ -151,10 +149,6 @@ class GalleryState extends State<Gallery> {
 class Slider extends StatefulWidget {
   final List<String> imgUrls;
 
-  //<String>[
-  // "https://fgo.wiki/images/e/ec/%E5%94%A0%E5%94%A0%E5%8F%A8%E5%8F%A8%E5%B8%9D%E9%83%BD%E5%9C%A3%E6%9D%AF%E5%A5%87%E8%B0%AD%E5%A4%8D%E5%88%BB_jp.png",
-  // "https://fgo.wiki/images/7/7d/Saber_Wars%E5%A4%8D%E5%88%BB.png"
-  //]
   const Slider(this.imgUrls);
 
   @override

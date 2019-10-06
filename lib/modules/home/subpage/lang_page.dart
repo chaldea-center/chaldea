@@ -17,7 +17,7 @@ class _LanguagePageState extends State<LanguagePage> {
           leading: BackButton(),
         ),
         body: TileGroup(
-          tiles: LangCode.codes.map((code) {
+          tiles: LangCode.values.keys.map((code) {
             print('code=$code, cur_lang=${db.appData.language}, S.lang=${S.of(context).language}');
             bool _isCurLang = S.of(context).language == code;
             return ListTile(
@@ -30,10 +30,10 @@ class _LanguagePageState extends State<LanguagePage> {
                       Icons.check,
                       color: _isCurLang
                           ? Theme.of(context).primaryColor
-                          : Color(0x00),
+                          : Color(0x00).withAlpha(0),
                     ),
                   ),
-                  Text(LangCode.getName(code))
+                  Text(code)
                 ],
               ),
               onTap: () {

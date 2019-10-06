@@ -3,7 +3,7 @@ part of datatypes;
 
 @JsonSerializable()
 class GameData {
-  Map<String, Servant> servants;
+  Map<int, Servant> servants;
   Map<String, String> crafts;
   Map<String, Item> items;
   Map<String, GameIcon> icons;
@@ -83,9 +83,6 @@ class Servant {
         cost[item.name] = (cost[item.name] ?? 0) + item.num;
       }
     }
-    if (sum(cost.values) > 0) {
-//      print('Ascension: $cost');
-    }
     return cost;
   }
 
@@ -102,9 +99,6 @@ class Servant {
           cost[item.name] = (cost[item.name] ?? 0) + item.num;
         }
       }
-    }
-    if (sum(cost.values) > 0) {
-//      print('Skill: $cost');
     }
     return cost;
   }
@@ -123,9 +117,6 @@ class Servant {
         }
       }
     }
-    if (sum(cost.values) > 0) {
-//      print('Dress: $cost');
-    }
     return cost;
   }
 
@@ -137,7 +128,7 @@ class Servant {
 
 @JsonSerializable()
 class ServantBaseInfo {
-  String get;
+  String obtain;
   int rarity;
   int rarity2;
   String weight;
@@ -176,7 +167,7 @@ class ServantBaseInfo {
   Map<String, dynamic> toJson() => _$ServantBaseInfoToJson(this);
 
   ServantBaseInfo(
-      {this.get,
+      {this.obtain,
       this.rarity,
       this.rarity2,
       this.weight,
@@ -326,18 +317,6 @@ class Item {
   String category;
   @JsonKey(defaultValue: 0)
   int num;
-
-//  Item operator +(Object other) {
-//    if (Object is Item) {
-//      Item otherItem = other as Item;
-//      return this.copyWith(num: num + otherItem.num);
-//    } else if (Object is int) {
-//      int otherInt = other as int;
-//      return copyWith(num: num + otherInt);
-//    } else {
-//      throw (TypeError());
-//    }
-//  }
 
   Item copyWith({int id, String name, int rarity, String category, int num}) {
     return Item(

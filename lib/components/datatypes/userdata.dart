@@ -1,10 +1,27 @@
 // userdata: plan etc.
 part of datatypes;
 
+@JsonSerializable()
+class User {
+  @JsonKey(nullable: false)
+  String name;
+  String server;
+  Plans plans;
+
+  User({@required this.name, this.server, this.plans})
+      : assert(name != null && name.isNotEmpty) {
+    server ??= GameServer.cn;
+    plans ??= Plans();
+  }
+
+  factory User.fromJson(Map<String, dynamic> data) => _$UserFromJson(data);
+
+  Map<String, dynamic> toJson() => _$UserToJson(this);
+}
+
 @JsonSerializable(anyMap: true)
 class Plans {
-  Map<String, ServantPlan> servants;
-
+  Map<int, ServantPlan> servants;
   Map<String, int> items;
 
   factory Plans.fromJson(Map<String, dynamic> data) => _$PlansFromJson(data);
@@ -12,39 +29,20 @@ class Plans {
   Map<String, dynamic> toJson() => _$PlansToJson(this);
 
   Plans({this.servants, this.items}) {
-    servants ??= <String, ServantPlan>{};
-    items ??= <String, int>{};
+    servants ??= {};
+    items ??={};
   }
 }
 
 @JsonSerializable()
 class ServantPlan {
-  @JsonKey(defaultValue: [0, 0])
   List<int> ascensionLv;
-
-  @JsonKey(defaultValue: [
-    [1, 1],
-    [1, 1],
-    [1, 1]
-  ])
   List<List<int>> skillLv;
-
-  @JsonKey(defaultValue: [])
   List<List<int>> dressLv;
-
-  @JsonKey(defaultValue: [0, 0])
   List<int> grailLv;
-
-  @JsonKey(nullable: true)
   List<bool> skillEnhanced;
-
-  @JsonKey()
   bool npEnhanced;
-
-  @JsonKey(defaultValue: 1)
   int npLv;
-
-  @JsonKey(defaultValue: false)
   bool favorite;
 
   factory ServantPlan.fromJson(Map<String, dynamic> data) =>
@@ -59,13 +57,16 @@ class ServantPlan {
       this.grailLv,
       this.skillEnhanced,
       this.npEnhanced,
-      this.npLv = 1,
+      this.npLv,
       this.favorite = false}) {
     ascensionLv ??= [0, 0];
-    skillLv ??= List.generate(3, (i)=>[1,1]);
+    skillLv ??= List.generate(3, (i) => [1, 1]);
     dressLv ??= [];
     grailLv ??= [0, 0];
     skillEnhanced ??= [null, null, null];
+    // npEnhanced??=null;
+    npLv ??= 1;
+    favorite ??= false;
   }
 }
 
@@ -96,16 +97,16 @@ class PartSet<T> {
 
 class ItemCostStatistics {
   //Map<SvtNo, List<Map<ItemKey,num>>>
-  Map<String, PartSet<Map<String, int>>> planCountBySvt, allCountBySvt;
+  Map<int, PartSet<Map<String, int>>> planCountBySvt, allCountBySvt;
 
   // Map<ItemKey, List<Map<SvtNo, num>>>
-  Map<String, PartSet<Map<String, int>>> planCountByItem, allCountByItem;
+  Map<String, PartSet<Map<int, int>>> planCountByItem, allCountByItem;
 
-  ItemCostStatistics(GameData gameData, Map<String, ServantPlan> plans) {
+  ItemCostStatistics(GameData gameData, Map<int, ServantPlan> plans) {
     update(gameData, plans);
   }
 
-  void update(GameData gameData, Map<String, ServantPlan> plans) {
+  void update(GameData gameData, Map<int, ServantPlan> plans) {
     planCountBySvt = {};
     allCountBySvt = {};
     planCountByItem = {};
@@ -126,9 +127,8 @@ class ItemCostStatistics {
     });
     // cal items
     for (String itemKey in gameData.items.keys) {
-      PartSet<Map<String, int>> planOneItem =
-              PartSet<Map<String, int>>(k: () => {}),
-          allOneItem = PartSet<Map<String, int>>(k: () => {});
+      PartSet<Map<int, int>> planOneItem = PartSet<Map<int, int>>(k: () => {}),
+          allOneItem = PartSet<Map<int, int>>(k: () => {});
       planCountBySvt.forEach((no, value) {
         planOneItem.ascension[no] =
             (planOneItem.ascension[no] ?? 0) + (value.ascension[itemKey] ?? 0);
@@ -153,7 +153,7 @@ class ItemCostStatistics {
   }
 
   PartSet<int> getNumOfItem(String itemKey, [bool planned = true]) {
-    PartSet<Map<String, int>> value =
+    PartSet<Map<int, int>> value =
         planned ? planCountByItem[itemKey] : allCountByItem[itemKey];
     return PartSet<int>(
         ascension: sum(value.ascension.values),
@@ -161,7 +161,7 @@ class ItemCostStatistics {
         dress: sum(value.dress.values));
   }
 
-  PartSet<Map<String, int>> getSvtListOfItem(String itemKey,
+  PartSet<Map<int, int>> getSvtListOfItem(String itemKey,
       [bool planned = true]) {
     return planned ? planCountByItem[itemKey] : allCountByItem[itemKey];
   }

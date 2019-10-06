@@ -9,8 +9,8 @@ part of datatypes;
 GameData _$GameDataFromJson(Map<String, dynamic> json) {
   return GameData(
     servants: (json['servants'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(
-          k, e == null ? null : Servant.fromJson(e as Map<String, dynamic>)),
+      (k, e) => MapEntry(int.parse(k),
+          e == null ? null : Servant.fromJson(e as Map<String, dynamic>)),
     ),
     crafts: (json['crafts'] as Map<String, dynamic>)?.map(
       (k, e) => MapEntry(k, e as String),
@@ -27,7 +27,7 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
-      'servants': instance.servants,
+      'servants': instance.servants?.map((k, e) => MapEntry(k.toString(), e)),
       'crafts': instance.crafts,
       'items': instance.items,
       'icons': instance.icons,
@@ -87,7 +87,7 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
 
 ServantBaseInfo _$ServantBaseInfoFromJson(Map<String, dynamic> json) {
   return ServantBaseInfo(
-    get: json['get'] as String,
+    obtain: json['obtain'] as String,
     rarity: json['rarity'] as int,
     rarity2: json['rarity2'] as int,
     weight: json['weight'] as String,
@@ -134,7 +134,7 @@ ServantBaseInfo _$ServantBaseInfoFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$ServantBaseInfoToJson(ServantBaseInfo instance) =>
     <String, dynamic>{
-      'get': instance.get,
+      'obtain': instance.obtain,
       'rarity': instance.rarity,
       'rarity2': instance.rarity2,
       'weight': instance.weight,
@@ -311,19 +311,23 @@ Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
 
 AppData _$AppDataFromJson(Map<String, dynamic> json) {
   return AppData(
-    language: json['language'] as String ?? 'chs',
+    language: json['language'] as String,
     criticalWidth: (json['criticalWidth'] as num)?.toDouble(),
-    curUser: json['curUser'] as String ?? 'default',
+    gameDataPath: json['gameDataPath'] as String,
+    galleries: (json['galleries'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(k, e as bool),
+    ),
+    curUserName: json['curUserName'] as String,
     users: (json['users'] as Map<String, dynamic>)?.map(
       (k, e) => MapEntry(
           k, e == null ? null : User.fromJson(e as Map<String, dynamic>)),
     ),
-    galleries: (json['galleries'] as Map<String, dynamic>)?.map(
-          (k, e) => MapEntry(k, e as bool),
-        ) ??
-        {},
-    gameDataPath: json['gameDataPath'] as String ?? 'dataset',
-  );
+    svtFilter: json['svtFilter'] == null
+        ? null
+        : SvtFilterData.fromJson(json['svtFilter'] as Map<String, dynamic>),
+  )..itemFilter = json['itemFilter'] == null
+      ? null
+      : SvtFilterData.fromJson(json['itemFilter'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$AppDataToJson(AppData instance) => <String, dynamic>{
@@ -331,27 +335,112 @@ Map<String, dynamic> _$AppDataToJson(AppData instance) => <String, dynamic>{
       'criticalWidth': instance.criticalWidth,
       'gameDataPath': instance.gameDataPath,
       'galleries': instance.galleries,
-      'curUser': instance.curUser,
+      'curUserName': instance.curUserName,
       'users': instance.users,
+      'svtFilter': instance.svtFilter,
+      'itemFilter': instance.itemFilter,
+    };
+
+SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
+  return SvtFilterData(
+    favorite: json['favorite'] as bool,
+    sortKeys: (json['sortKeys'] as List)?.map((e) => e as String)?.toList(),
+    sortDirections:
+        (json['sortDirections'] as List)?.map((e) => e as bool)?.toList(),
+    rarity: json['rarity'] == null
+        ? null
+        : FilterGroupData.fromJson(json['rarity'] as Map<String, dynamic>),
+    className: json['className'] == null
+        ? null
+        : FilterGroupData.fromJson(json['className'] as Map<String, dynamic>),
+    obtain: json['obtain'] == null
+        ? null
+        : FilterGroupData.fromJson(json['obtain'] as Map<String, dynamic>),
+    npColor: json['npColor'] == null
+        ? null
+        : FilterGroupData.fromJson(json['npColor'] as Map<String, dynamic>),
+    npType: json['npType'] == null
+        ? null
+        : FilterGroupData.fromJson(json['npType'] as Map<String, dynamic>),
+    attribute: json['attribute'] == null
+        ? null
+        : FilterGroupData.fromJson(json['attribute'] as Map<String, dynamic>),
+    alignment1: json['alignment1'] == null
+        ? null
+        : FilterGroupData.fromJson(json['alignment1'] as Map<String, dynamic>),
+    alignment2: json['alignment2'] == null
+        ? null
+        : FilterGroupData.fromJson(json['alignment2'] as Map<String, dynamic>),
+    gender: json['gender'] == null
+        ? null
+        : FilterGroupData.fromJson(json['gender'] as Map<String, dynamic>),
+    trait: json['trait'] == null
+        ? null
+        : FilterGroupData.fromJson(json['trait'] as Map<String, dynamic>),
+    traitSpecial: json['traitSpecial'] == null
+        ? null
+        : FilterGroupData.fromJson(
+            json['traitSpecial'] as Map<String, dynamic>),
+  )..filterString = json['filterString'] as String;
+}
+
+Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
+    <String, dynamic>{
+      'favorite': instance.favorite,
+      'filterString': instance.filterString,
+      'sortKeys': instance.sortKeys,
+      'sortDirections': instance.sortDirections,
+      'rarity': instance.rarity,
+      'className': instance.className,
+      'obtain': instance.obtain,
+      'npColor': instance.npColor,
+      'npType': instance.npType,
+      'attribute': instance.attribute,
+      'alignment1': instance.alignment1,
+      'alignment2': instance.alignment2,
+      'gender': instance.gender,
+      'trait': instance.trait,
+      'traitSpecial': instance.traitSpecial,
+    };
+
+FilterGroupData _$FilterGroupDataFromJson(Map<String, dynamic> json) {
+  return FilterGroupData(
+    matchAll: json['matchAll'] as bool,
+    invert: json['invert'] as bool,
+    options: (json['options'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(k, e as bool),
+    ),
+  );
+}
+
+Map<String, dynamic> _$FilterGroupDataToJson(FilterGroupData instance) =>
+    <String, dynamic>{
+      'matchAll': instance.matchAll,
+      'invert': instance.invert,
+      'options': instance.options,
     };
 
 User _$UserFromJson(Map<String, dynamic> json) {
   return User(
     name: json['name'] as String,
-    server: json['server'] as String ?? 'cn',
+    server: json['server'] as String,
+    plans: json['plans'] == null
+        ? null
+        : Plans.fromJson(json['plans'] as Map<String, dynamic>),
   );
 }
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'name': instance.name,
       'server': instance.server,
+      'plans': instance.plans,
     };
 
 Plans _$PlansFromJson(Map json) {
   return Plans(
     servants: (json['servants'] as Map)?.map(
       (k, e) => MapEntry(
-          k as String,
+          int.parse(k as String),
           e == null
               ? null
               : ServantPlan.fromJson((e as Map)?.map(
@@ -365,33 +454,25 @@ Plans _$PlansFromJson(Map json) {
 }
 
 Map<String, dynamic> _$PlansToJson(Plans instance) => <String, dynamic>{
-      'servants': instance.servants,
+      'servants': instance.servants?.map((k, e) => MapEntry(k.toString(), e)),
       'items': instance.items,
     };
 
 ServantPlan _$ServantPlanFromJson(Map<String, dynamic> json) {
   return ServantPlan(
-    ascensionLv:
-        (json['ascensionLv'] as List)?.map((e) => e as int)?.toList() ?? [0, 0],
+    ascensionLv: (json['ascensionLv'] as List)?.map((e) => e as int)?.toList(),
     skillLv: (json['skillLv'] as List)
-            ?.map((e) => (e as List)?.map((e) => e as int)?.toList())
-            ?.toList() ??
-        [
-          [1, 1],
-          [1, 1],
-          [1, 1]
-        ],
+        ?.map((e) => (e as List)?.map((e) => e as int)?.toList())
+        ?.toList(),
     dressLv: (json['dressLv'] as List)
-            ?.map((e) => (e as List)?.map((e) => e as int)?.toList())
-            ?.toList() ??
-        [],
-    grailLv:
-        (json['grailLv'] as List)?.map((e) => e as int)?.toList() ?? [0, 0],
+        ?.map((e) => (e as List)?.map((e) => e as int)?.toList())
+        ?.toList(),
+    grailLv: (json['grailLv'] as List)?.map((e) => e as int)?.toList(),
     skillEnhanced:
         (json['skillEnhanced'] as List)?.map((e) => e as bool)?.toList(),
     npEnhanced: json['npEnhanced'] as bool,
-    npLv: json['npLv'] as int ?? 1,
-    favorite: json['favorite'] as bool ?? false,
+    npLv: json['npLv'] as int,
+    favorite: json['favorite'] as bool,
   );
 }
 
