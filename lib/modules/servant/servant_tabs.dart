@@ -38,17 +38,18 @@ class LevelUpCostPageState extends State<LevelUpCostPage> {
             title: Text(title),
             contentPadding: EdgeInsets.zero,
           ),
-          Wrap(
-              alignment: WrapAlignment.start,
-              spacing: 5,
-              children: lvCost
-                  .map((item) => ImageWithText(
-                        image: Image.file(db.getIconFile(item.name),
-                            width: 110 * 0.5),
-                        text: formatNumberToString(item.num, 'kilo'),
-                        bottom: ImageWithText.itemBottom,
-                      ))
-                  .toList())
+          GridView.count(
+            crossAxisCount: 6,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            children: lvCost
+                .map((item) => ImageWithText(
+                      image: Image.file(db.getIconFile(item.name)),
+                      text: formatNumberToString(item.num, 'kilo'),
+                      padding: EdgeInsets.only(right: 3),
+                    ))
+                .toList(),
+          ),
         ],
       ),
     );
@@ -116,7 +117,7 @@ class _PlanTabState extends State<PlanTab> with AutomaticKeepAliveClientMixin {
       @required IntRangeValues value,
       @required IntRangeValues range,
       void onRangeChanged(int s, int e),
-      Widget detailPage}) {
+      WidgetBuilder detailPageBuilder}) {
     assert(value != null && range != null);
     return CustomTile(
       contentPadding: EdgeInsets.fromLTRB(16, 4, 0, 4),
@@ -144,10 +145,11 @@ class _PlanTabState extends State<PlanTab> with AutomaticKeepAliveClientMixin {
           IconButton(
             icon: Icon(Icons.info_outline, color: Colors.blueAccent),
             onPressed: () {
-              if (detailPage != null) {
+              if (detailPageBuilder != null) {
                 showSheet(
                   context,
-                  builder: (sheetContext, setSheetState) => detailPage,
+                  builder: (sheetContext, setSheetState) =>
+                      detailPageBuilder(sheetContext),
                 );
               }
             },
@@ -179,12 +181,12 @@ class _PlanTabState extends State<PlanTab> with AutomaticKeepAliveClientMixin {
                 plan.favorite = true;
                 widget.parent?.setState(() {});
               },
-              detailPage: LevelUpCostPage(
-                costList: svt.itemCost.ascension,
-                title: '灵基再临',
-                curLv: plan.ascensionLv[0],
-                targetLv: plan.ascensionLv[1],
-              ))
+              detailPageBuilder: (context) => LevelUpCostPage(
+                    costList: svt.itemCost.ascension,
+                    title: '灵基再临',
+                    curLv: plan.ascensionLv[0],
+                    targetLv: plan.ascensionLv[1],
+                  ))
         ],
       ));
     }
@@ -208,12 +210,12 @@ class _PlanTabState extends State<PlanTab> with AutomaticKeepAliveClientMixin {
             plan.favorite = true;
             widget.parent?.setState(() {});
           },
-          detailPage: LevelUpCostPage(
-            costList: svt.itemCost.skill,
-            title: '技能${index + 1} - ${skill.name}',
-            curLv: plan.skillLv[index][0],
-            targetLv: plan.skillLv[index][1],
-          )));
+          detailPageBuilder: (context) => LevelUpCostPage(
+                costList: svt.itemCost.skill,
+                title: '技能${index + 1} - ${skill.name}',
+                curLv: plan.skillLv[index][0],
+                targetLv: plan.skillLv[index][1],
+              )));
     }
     children.add(TileGroup(header: '技能升级', tiles: skillWidgets));
 
@@ -235,10 +237,10 @@ class _PlanTabState extends State<PlanTab> with AutomaticKeepAliveClientMixin {
             plan.favorite = true;
             widget.parent?.setState(() {});
           },
-          detailPage: LevelUpCostPage(
-            costList: [svt.itemCost.dress[index]],
-            title: '灵衣开放 - ${svt.itemCost.dressName[index]}',
-          )));
+          detailPageBuilder: (context) => LevelUpCostPage(
+                costList: [svt.itemCost.dress[index]],
+                title: '灵衣开放 - ${svt.itemCost.dressName[index]}',
+              )));
     }
     if (dressWidgets.length > 0) {
       children.add(TileGroup(header: '灵衣开放', tiles: dressWidgets));
@@ -414,7 +416,8 @@ class _NobelPhantasmTabState extends State<NobelPhantasmTab>
           Text(
             np.name,
             style: TextStyle(fontWeight: FontWeight.w600),
-          ),Text(
+          ),
+          Text(
             np.upperNameJp,
             style: TextStyle(fontSize: 16, color: Colors.black54),
           ),

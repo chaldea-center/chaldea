@@ -229,7 +229,7 @@ class RangeSelector<T extends num> extends StatefulWidget {
       this.end,
       this.startItems,
       this.endItems,
-      this.increasing,
+      this.increasing=true,
       this.onChanged})
       : super(key: key);
 
@@ -363,8 +363,8 @@ class FilterGroup<T> extends StatelessWidget {
       child: Row(
         children: <Widget>[
           Icon(
-            checked ? Icons.check_circle : Icons.check_circle_outline,
-            color: Theme.of(context).primaryColor,
+            checked ? Icons.check_box : Icons.check_box_outline_blank,
+            color: Colors.lightBlueAccent,
           ),
           Text(text)
         ],

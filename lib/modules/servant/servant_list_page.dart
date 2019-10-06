@@ -47,10 +47,14 @@ class ServantListPageState extends State<ServantListPage> {
       }
     }
     // svt data filter
+    // class name
+    if (!filterData.className.singleValueFilter(svt.info.className,
+        compares: {'Beast': (o, v) => v.startsWith(o)})) {
+      return false;
+    }
     // single value
     Map<FilterGroupData, String> singleValuePair = {
       filterData.rarity: svt.info.rarity.toString(),
-      filterData.className: svt.info.className,
       filterData.obtain: svt.info.obtain,
       filterData.npColor: svt.nobelPhantasm?.first?.color,
       filterData.npType: svt.nobelPhantasm?.first?.category,
@@ -103,7 +107,83 @@ class ServantListPageState extends State<ServantListPage> {
     });
   }
 
-  Widget buildListView() {
+  Widget _buildListView(List<Servant> shownSvtList) {
+    return ListView.separated(
+        physics: ScrollPhysics(),
+        controller: _scrollController,
+        separatorBuilder: (context, index) =>
+            Divider(height: 1.0, indent: 16.0),
+        itemCount: shownSvtList.length,
+        itemBuilder: (context, index) {
+          final svt = shownSvtList[index];
+          final plan = db.curPlan.servants[svt.no];
+          String text='';
+          if(plan?.favorite==true){
+            text='${plan.npLv}宝'
+                '${plan.ascensionLv[0]}-'
+                '${plan.skillLv[0][0]}/'
+                '${plan.skillLv[1][0]}/'
+                '${plan.skillLv[2][0]}';
+          }
+          return CustomTile(
+            leading: SizedBox(
+              width: 132 * 0.45,
+              height: 144 * 0.45,
+              child: Image.file(db.getIconFile(svt.icon)),
+            ),
+            title: Text('${svt.mcLink}'),
+            subtitle: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  flex: 3,
+                  child: Text(svt.info.className),
+                ),
+                Text(text),
+              ],
+            ),
+            trailing: Icon(Icons.arrow_forward_ios),
+            onTap: () {
+              SplitRoute.popAndPush(context,
+                  builder: (context) => ServantDetailPage(svt));
+            },
+          );
+        });
+  }
+
+  Widget _buildGridView(List<Servant> shownSvtList) {
+    return GridView.count(
+        crossAxisCount: 5,
+        childAspectRatio: 1,
+        children: shownSvtList.map((svt) {
+          final plan=db.curPlan.servants[svt.no];
+          String text;
+          if(plan?.favorite==true){
+            text='${plan.npLv}\n'
+                '${plan.ascensionLv[0]}-'
+                '${plan.skillLv[0][0]}/'
+                '${plan.skillLv[1][0]}/'
+                '${plan.skillLv[2][0]}';
+          }
+          return Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 1,),
+              child: ImageWithText(
+                image: Image.file(db.getIconFile(svt.icon)),
+                text: text,
+                alignment: AlignmentDirectional.bottomStart,
+                padding: EdgeInsets.fromLTRB(4, 0, 8, -4),
+                onTap: (){
+                  SplitRoute.popAndPush(context,
+                      builder: (context) => ServantDetailPage(svt));
+                },
+              ),
+            ),
+          );
+        }).toList());
+  }
+
+  Widget buildSvtOverview() {
     //TODO: Grid style vs List style
     // List Style
     // img size=132*144
@@ -138,53 +218,9 @@ class ServantListPageState extends State<ServantListPage> {
                   _getSortValue(b, filterData.sortKeys[1])) *
               (filterData.sortDirections[1] ? 1 : -1);
     });
-    return ListView.separated(
-        physics: ScrollPhysics(),
-        controller: _scrollController,
-        separatorBuilder: (context, index) =>
-            Divider(height: 1.0, indent: 16.0),
-        itemCount: shownSvtList.length,
-        itemBuilder: (context, index) {
-          final svt = shownSvtList[index];
-          final plan = db.curPlan.servants[svt.no.toString()];
-          final lvs = plan?.favorite == true
-              ? [
-                  plan.ascensionLv[0],
-                  plan.skillLv[0][0],
-                  plan.skillLv[1][0],
-                  plan.skillLv[2][0]
-                ]
-              : null;
-          return CustomTile(
-            leading: SizedBox(
-              width: 132 * 0.45,
-              height: 144 * 0.45,
-              child: Image.file(db.getIconFile(svt.icon)),
-            ),
-            title: Text('${svt.mcLink}'),
-            subtitle: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  flex: 3,
-                  child: Text(svt.info.className),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Text(plan?.favorite == true
-                      ? '${lvs[0]}-${lvs[1]}/${lvs[2]}/${lvs[3]}'
-                      : ''),
-                ),
-              ],
-            ),
-            trailing: Icon(Icons.arrow_forward_ios),
-            onTap: () {
-              print('Tap No.${svt.no} - ${svt.info.nicknames}');
-              SplitRoute.popAndPush(context,
-                  builder: (context) => ServantDetailPage(svt));
-            },
-          );
-        });
+    return filterData.useGrid
+        ? _buildGridView(shownSvtList)
+        : _buildListView(shownSvtList);
   }
 
   @override
@@ -265,7 +301,7 @@ class ServantListPageState extends State<ServantListPage> {
           onPressed: () {
             _scrollController.jumpTo(0);
           }),
-      body: buildListView(),
+      body: buildSvtOverview(),
     );
   }
 

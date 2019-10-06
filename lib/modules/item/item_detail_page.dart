@@ -29,15 +29,15 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
         ItemCostStatistics(db.gameData, db.curPlan.servants));
   }
 
-  List<Widget> getSvtIconList(Map<int, int> src) {
+  Widget getSvtIconList(Map<int, int> src) {
     List<Widget> list = [];
     src.forEach((no, num) {
       final svt = db.gameData.servants[no];
       if (num > 0) {
         list.add(ImageWithText(
-          image: Image.file(db.getIconFile(svt.icon), width: 110 * 0.5),
+          image: Image.file(db.getIconFile(svt.icon)),
           text: num.toString(),
-          bottom: ImageWithText.svtBottom,
+          padding: EdgeInsets.only(right: 5, bottom: 16),
           onTap: () {
             Navigator.of(context)
                 .push(SplitRoute(builder: (context) => ServantDetailPage(svt)))
@@ -49,11 +49,21 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
         ));
       }
     });
-    return list;
+//    return list.is
+    if (list.isEmpty) {
+      return Container();
+    }
+    return GridView.count(
+        crossAxisCount: 6,
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        children: list);
   }
 
   @override
   Widget build(BuildContext context) {
+    //todo: add list view by svt (no ascension/skill/dress classification)
     final svtList = statistics.getSvtListOfItem(widget.itemName, planned);
     final counts = statistics.getNumOfItem(widget.itemName, planned);
     return Scaffold(
@@ -84,35 +94,17 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                 title: Text('灵基再临'),
                 trailing: Text('${counts.ascension}'),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Wrap(
-                    spacing: 6,
-                    runSpacing: 6,
-                    children: getSvtIconList(svtList.ascension)),
-              ),
+              getSvtIconList(svtList.ascension),
               CustomTile(
                 title: Text('技能升级'),
                 trailing: Text('${counts.skill}'),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Wrap(
-                    spacing: 6,
-                    runSpacing: 6,
-                    children: getSvtIconList(svtList.skill)),
-              ),
+              getSvtIconList(svtList.skill),
               CustomTile(
                 title: Text('灵衣开放'),
                 trailing: Text('${counts.dress}'),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Wrap(
-                    spacing: 6,
-                    runSpacing: 6,
-                    children: getSvtIconList(svtList.dress)),
-              )
+              getSvtIconList(svtList.dress)
             ],
           )
         ],

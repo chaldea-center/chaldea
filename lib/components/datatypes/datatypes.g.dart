@@ -347,6 +347,7 @@ SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
     sortKeys: (json['sortKeys'] as List)?.map((e) => e as String)?.toList(),
     sortDirections:
         (json['sortDirections'] as List)?.map((e) => e as bool)?.toList(),
+    useGrid: json['useGrid'] as bool,
     rarity: json['rarity'] == null
         ? null
         : FilterGroupData.fromJson(json['rarity'] as Map<String, dynamic>),
@@ -390,6 +391,7 @@ Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
       'filterString': instance.filterString,
       'sortKeys': instance.sortKeys,
       'sortDirections': instance.sortDirections,
+      'useGrid': instance.useGrid,
       'rarity': instance.rarity,
       'className': instance.className,
       'obtain': instance.obtain,

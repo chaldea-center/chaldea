@@ -24,6 +24,12 @@ class _SvtFilterPageState extends State<SvtFilterPage> {
     filterData.filterString = '';
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    db.saveData();
+  }
+
   void updateParentFilterResult() {
     setState(() {
       widget.parent?.onFilterChanged(filterData);
@@ -39,31 +45,51 @@ class _SvtFilterPageState extends State<SvtFilterPage> {
           Text('显示&排序'),
           Wrap(
             spacing: 6,
-            children: List<Widget>.generate(filterData.sortKeys.length, (i) {
-              return Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(' ${i + 1}   '),
-                  DropdownButton(
-                      value: filterData.sortKeys[i],
-                      items: SvtFilterData.sortKeyData.map((key) {
-                        return DropdownMenuItem(child: Text(key), value: key);
-                      }).toList(),
-                      onChanged: (key) {
-                        filterData.sortKeys[i] = key;
-                        updateParentFilterResult();
-                      }),
-                  IconButton(
-                      icon: Icon(filterData.sortDirections[i]
-                          ? Icons.arrow_upward
-                          : Icons.arrow_downward),
-                      onPressed: () {
-                        filterData.sortDirections[i]=!filterData.sortDirections[i];
-                        updateParentFilterResult();
-                      })
-                ],
-              );
-            }),
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              for (int i = 0; i < filterData.sortKeys.length; i++)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(' ${i + 1}   '),
+                    DropdownButton(
+                        value: filterData.sortKeys[i],
+                        items: SvtFilterData.sortKeyData.map((key) {
+                          return DropdownMenuItem(child: Text(key), value: key);
+                        }).toList(),
+                        onChanged: (key) {
+                          filterData.sortKeys[i] = key;
+                          updateParentFilterResult();
+                        }),
+                    IconButton(
+                        icon: Icon(filterData.sortDirections[i]
+                            ? Icons.arrow_upward
+                            : Icons.arrow_downward),
+                        onPressed: () {
+                          filterData.sortDirections[i] =
+                              !filterData.sortDirections[i];
+                          updateParentFilterResult();
+                        })
+                  ],
+                ),
+              ToggleButtons(
+                constraints: BoxConstraints(),
+                selectedColor: Colors.white,
+                fillColor: Theme.of(context).primaryColor,
+                children: List.generate(
+                    2,
+                    (i) => Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                          child: Text(['List', 'Grid'][i]),
+                        )),
+                isSelected: [!filterData.useGrid, filterData.useGrid],
+                onPressed: (i) {
+                  filterData.useGrid = i == 1;
+                  updateParentFilterResult();
+                },
+              )
+            ],
           )
         ],
       ),

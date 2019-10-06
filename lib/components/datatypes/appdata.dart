@@ -49,6 +49,7 @@ class SvtFilterData {
   String filterString;
   List<String> sortKeys;
   List<bool> sortDirections;
+  bool useGrid;
 
   FilterGroupData rarity;
   FilterGroupData className;
@@ -66,6 +67,7 @@ class SvtFilterData {
       {this.favorite,
       this.sortKeys,
       this.sortDirections,
+      this.useGrid,
       this.rarity,
       this.className,
       this.obtain,
@@ -79,8 +81,9 @@ class SvtFilterData {
       this.traitSpecial}) {
     favorite ??= false;
     filterString ??= '';
-    sortKeys??=List.generate(2, (i)=>sortKeyData[i]);
-    sortDirections??=List.filled(sortKeys.length, true);
+    sortKeys ??= List.generate(2, (i) => sortKeyData[i]);
+    sortDirections ??= List.filled(sortKeys.length, true);
+    useGrid ??= false;
     rarity ??= FilterGroupData();
     className ??= FilterGroupData();
     obtain ??= FilterGroupData();
@@ -109,13 +112,16 @@ class SvtFilterData {
       ];
 
   void reset() {
+    sortKeys = List.generate(2, (i) => sortKeyData[i]);
+    sortDirections = List.filled(sortKeys.length, false);
+
     for (var group in groupValues) {
       group.reset();
     }
   }
 
   // const data
-  static const List<String> sortKeyData=['序号', '星级', '职阶'];
+  static const List<String> sortKeyData = ['序号', '星级', '职阶'];
   static const List<String> rarityData = const ['0', '1', '2', '3', '4', '5'];
   static const List<String> classesData = [
     'Saber',

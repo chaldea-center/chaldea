@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 /// modified from [ListTile].
@@ -180,59 +182,76 @@ class CustomTile extends StatelessWidget {
 class ImageWithText extends StatelessWidget {
   final Image image;
   final String text;
-  final double bottom;
+  final EdgeInsets padding;
+
   final AlignmentDirectional alignment;
   final VoidCallback onTap;
-  static const double itemBottom = 0.08;
-  static const double svtBottom = 0.28;
 
   ImageWithText(
       {Key key,
       this.image,
       this.text,
-      this.bottom = ImageWithText.itemBottom,
+      this.padding = EdgeInsets.zero,
       this.alignment = AlignmentDirectional.bottomEnd,
       this.onTap})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Stack(
-        alignment: alignment,
-        children: <Widget>[
-          image,
-          Padding(
-            padding: EdgeInsets.symmetric(
-                vertical: image.width * bottom, horizontal: image.width * 0.06),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: image.width * 0.9),
-              child: FittedBox(
-                fit: BoxFit.fitWidth,
-                child: Stack(
-                  children: <Widget>[
-                    Text(
-                      text,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        foreground: Paint()
-                          ..style = PaintingStyle.stroke
-                          ..strokeWidth = 3
-                          ..color = Colors.white,
-                      ),
-                    ),
-                    Text(
-                      text,
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    )
-                  ],
+    //TODO: fix image pos shift with different alignment
+    return LayoutBuilder(
+      builder: (context, constraints) {
+//        print('${constraints.biggest},${constraints.smallest}');
+        return GestureDetector(
+          onTap: onTap,
+          child: Stack(
+            alignment: alignment,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                    -min(0.0, padding.left),
+                    -min(0.0, padding.top),
+                    -min(0.0, padding.right),
+                    -min(0.0, padding.bottom)),
+                child: Center(
+                  widthFactor: 1,
+                  heightFactor: 1,
+                  child: image,
                 ),
               ),
-            ),
-          )
-        ],
-      ),
+              if (text != null)
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                      max(0.0, padding.left),
+                      max(0.0, padding.top),
+                      max(0.0, padding.right),
+                      max(0.0, padding.bottom)),
+                  child: FittedBox(
+                    fit: BoxFit.fitWidth, //no effect is width is not constraint
+                    child: Stack(
+                      children: <Widget>[
+                        Text(
+                          text,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            foreground: Paint()
+                              ..style = PaintingStyle.stroke
+                              ..strokeWidth = 3
+                              ..color = Colors.white,
+                          ),
+                        ),
+                        Text(
+                          text,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )
+                      ],
+                    ),
+                  ),
+                )
+            ],
+          ),
+        );
+      },
     );
   }
 }
