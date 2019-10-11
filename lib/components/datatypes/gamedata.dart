@@ -322,7 +322,7 @@ class Item {
     return Item(
         id: id ?? this.id,
         name: name ?? this.name,
-        rarity: rarity ?? this.name,
+        rarity: rarity ?? this.rarity,
         category: category ?? this.category,
         num: num ?? this.num);
   }
@@ -332,4 +332,10 @@ class Item {
   Map<String, dynamic> toJson() => _$ItemToJson(this);
 
   Item({this.id, this.name, this.rarity = 0, this.category, this.num = 0});
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    return 'Item($name)';
+  }
 }

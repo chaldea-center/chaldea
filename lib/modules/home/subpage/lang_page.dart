@@ -18,7 +18,7 @@ class _LanguagePageState extends State<LanguagePage> {
         ),
         body: TileGroup(
           tiles: LangCode.values.keys.map((code) {
-            print('code=$code, cur_lang=${db.appData.language}, S.lang=${S.of(context).language}');
+//            print('code=$code, cur_lang=${db.appData.language}, S.lang=${S.of(context).language}');
             bool _isCurLang = S.of(context).language == code;
             return ListTile(
               title: Row(

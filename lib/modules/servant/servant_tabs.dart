@@ -45,7 +45,7 @@ class LevelUpCostPageState extends State<LevelUpCostPage> {
             children: lvCost
                 .map((item) => ImageWithText(
                       image: Image.file(db.getIconFile(item.name)),
-                      text: formatNumberToString(item.num, 'kilo'),
+                      text: formatNumToString(item.num, 'kilo'),
                       padding: EdgeInsets.only(right: 3),
                     ))
                 .toList(),
@@ -321,7 +321,7 @@ class _SkillTabState extends State<SkillTab>
           contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
           subtitle: Text(effect.description),
           trailing: effect.lvData.length == 1
-              ? Text(formatNumberToString(effect.lvData[0], effect.valueType))
+              ? Text(formatNumToString(effect.lvData[0], effect.valueType))
               : null),
       if (effect.lvData.length > 1)
         CustomTile(
@@ -336,7 +336,7 @@ class _SkillTabState extends State<SkillTab>
                 return Align(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    formatNumberToString(
+                    formatNumToString(
                         effect.lvData[index], effect.valueType),
                     style: TextStyle(
                         fontSize: 13,
@@ -450,7 +450,7 @@ class _NobelPhantasmTabState extends State<NobelPhantasmTab>
           contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
           subtitle: Text(effect.description),
           trailing: effect.lvData.length == 1
-              ? Text(formatNumberToString(effect.lvData[0], effect.valueType))
+              ? Text(formatNumToString(effect.lvData[0], effect.valueType))
               : null),
       if (effect.lvData.length > 1)
         CustomTile(
@@ -465,7 +465,7 @@ class _NobelPhantasmTabState extends State<NobelPhantasmTab>
                 return Align(
                   alignment: Alignment.center,
                   child: Text(
-                    formatNumberToString(
+                    formatNumToString(
                         effect.lvData[index], effect.valueType),
                     style: TextStyle(fontSize: 14),
                   ),

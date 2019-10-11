@@ -130,12 +130,20 @@ class GalleryState extends State<Gallery> {
               children: gridItems,
             ),
             Card(
+              elevation: 2,
               margin: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 16, horizontal: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
+                    Center(
+                        heightFactor: 1,
+                        child: Text(
+                          'Test Info Pad',
+                          style: TextStyle(fontSize: 18),
+                        )),
+                    Divider(thickness: 1),
                     Text('Screen size: ${MediaQuery.of(context).size}')
                   ],
                 ),

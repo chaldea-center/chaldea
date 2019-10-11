@@ -40,6 +40,7 @@ class TextInputsManager<T> {
 
   void moveNextFocus(BuildContext context, FocusNode node) {
     final index = _focusList.indexOf(node);
+    node.unfocus();
     if (index < 0) {
       print('WARNING: focus node not in list!');
     } else if (index == _focusList.length - 1) {
@@ -70,25 +71,25 @@ class ItemListPageState extends State<ItemListPage>
   //controller
   TabController _tabController;
   Map<String, TextInputsManager<Item>> inputManagers = {};
-  TextEditingController _lastFocusedController;
+  InputComponent _lastComponent;
   ItemCostStatistics statistics;
   bool filtered = true;
 
-  void getFocused(TextEditingController controller, FocusNode node,
-      {bool isTap = false}) {
-    if ((node.hasFocus || isTap) && _lastFocusedController != controller) {
-      _lastFocusedController?.selection =
-          TextSelection(baseOffset: 0, extentOffset: 0);
+  void getFocused(InputComponent component, {bool isTap = false}) {
+    //TODO: focus trouble, 理解不能！
+    final node = component.focusNode,
+        controller = component.textEditingController;
+    if ((node.hasFocus || isTap == true) && _lastComponent != component) {
+      _lastComponent?.textEditingController?.selection = TextSelection(baseOffset: 0, extentOffset: 0);
+      _lastComponent = component;
       controller.selection =
           TextSelection(baseOffset: 0, extentOffset: controller.text.length);
-      _lastFocusedController = controller;
     }
   }
 
   @override
   void deactivate() {
     super.deactivate();
-    print('ItemListPage deactived.');
     db.saveData();
   }
 
@@ -98,27 +99,107 @@ class ItemListPageState extends State<ItemListPage>
     _tabController = TabController(length: categories.length, vsync: this);
     statistics = ItemCostStatistics(db.gameData, db.curPlan.servants);
     final items = db.gameData.items;
+    InputComponent<Item> generateComponent(String k) {
+      TextEditingController textEditingController =
+          TextEditingController(text: (db.curPlan.items[k] ?? 0).toString());
+      FocusNode focusNode = FocusNode();
+      InputComponent<Item> component = InputComponent(
+          data: items[k],
+          textEditingController: textEditingController,
+          focusNode: focusNode);
+      textEditingController.addListener(() {
+        int num = int.parse('0' + textEditingController.text);
+        db.curPlan.items[k] = num;
+        getFocused(component);
+      });
+      return component;
+    }
+
+    ;
     categories.forEach((e) {
       inputManagers[e] = TextInputsManager();
+      final qpKey = 'QP';
+      inputManagers[e].components.add(generateComponent(qpKey));
     });
     items.forEach((String key, Item item) {
       if (!categories.contains(item.category)) {
         return;
       }
-      TextEditingController textEditingController = TextEditingController(
-          text: (db.curPlan.items[item.name] ?? 0).toString());
-      FocusNode focusNode = FocusNode();
-      textEditingController.addListener(() {
-        int num = int.parse('0' + textEditingController.text);
-        db.curPlan.items[item.name] = num;
-        getFocused(textEditingController, focusNode);
-      });
-      inputManagers[item.category].addEntry(
-          datum: item, controller: textEditingController, node: focusNode);
+      inputManagers[item.category].components.add(generateComponent(item.name));
     });
     inputManagers.forEach((key, group) {
       group.components.sort((a, b) => a.data.id - b.data.id);
+      group.components.insert(0, group.components.removeLast());
     });
+  }
+
+  Widget getItemRow(
+      {bool filtered,
+      TextInputsManager<Item> manager,
+      InputComponent<Item> component,
+      int ownNum,
+      PartSet<int> itemStat}) {
+    final iconKey = component.data.name;
+    final allNum = sum(itemStat.values);
+    int leftNum = ownNum - allNum;
+    bool enough = leftNum >= 0;
+    final highlightStyle = TextStyle(color: enough ? null : Colors.redAccent);
+
+    if (filtered && enough) {
+      return null;
+    }
+    manager.addFocus(component.focusNode);
+    return CustomTile(
+      onTap: () => SplitRoute.popAndPush(context,
+          builder: (context) => ItemDetailPage(
+                iconKey,
+                statistics: statistics,
+                parent: this,
+              ),
+          settings: RouteSettings(isInitialRoute: false)),
+      leading: Image.file(db.getIconFile(iconKey), height: 110 * 0.5),
+      title: Text(iconKey),
+      subtitle: Row(
+        children: <Widget>[
+          Expanded(
+              flex: 3,
+              child: Text(
+                '共需 ${formatNumToString(allNum, "decimal")}' +
+                    (iconKey == 'QP' ? '' : '(${itemStat.values.join("/")})'),
+                style: highlightStyle,
+              )),
+          Text('剩余 ', style: highlightStyle),
+          ConstrainedBox(
+            constraints: BoxConstraints(minWidth: 37),
+            child: Align(
+                alignment: Alignment.centerRight,
+                child: Text(formatNumToString(leftNum, 'decimal'),
+                    style: highlightStyle)),
+          )
+        ],
+      ),
+      titlePadding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+      trailing: SizedBox(
+        width: 45,
+        child: EnsureVisibleWhenFocused(
+            child: TextField(
+              maxLength: 4,
+              controller: component.textEditingController,
+              focusNode: component.focusNode,
+              textAlign: TextAlign.center,
+              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.next,
+              decoration: InputDecoration(counterText: ''),
+              onTap: () {
+                getFocused(component, isTap: true);
+              },
+              onSubmitted: (s) {
+                manager.moveNextFocus(context, component.focusNode);
+              },
+            ),
+            focusNode: component.focusNode),
+      ),
+    );
   }
 
   @override
@@ -153,76 +234,16 @@ class ItemListPageState extends State<ItemListPage>
               final component = manager.components[index];
               String iconKey = component.data.name;
               final itemStat = statistics.getNumOfItem(iconKey);
-              final allNum = sum(itemStat.values);
               final ownNum = db.curPlan.items[iconKey] ?? 0;
-              int leftNum = ownNum - allNum;
-              bool enough = leftNum >= 0;
-
-              if (filtered && enough) {
-                continue;
+              Widget tile = getItemRow(
+                  filtered: filtered,
+                  manager: manager,
+                  ownNum: ownNum,
+                  itemStat: itemStat,
+                  component: component);
+              if (tile != null) {
+                tiles.add(tile);
               }
-              final highlightStyle =
-                  TextStyle(color: enough ? null : Colors.redAccent);
-              manager.addFocus(component.focusNode);
-              tiles.add(CustomTile(
-                onTap: () {
-                  SplitRoute.popAndPush(context,
-                      builder: (context) => ItemDetailPage(
-                            iconKey,
-                            statistics: statistics,
-                            parent: this,
-                          ),
-                      settings: RouteSettings(isInitialRoute: false));
-                },
-                leading: Image.file(
-                  db.getIconFile(iconKey),
-                  height: 110 * 0.5,
-                ),
-                title: Text(iconKey),
-                subtitle: Row(
-                  children: <Widget>[
-                    Expanded(
-                        flex: 3,
-                        child: Text(
-                          '共需 $allNum(${itemStat.ascension}/${itemStat.skill}/${itemStat.dress})',
-                          style: highlightStyle,
-                        )),
-                    Text(
-                      '剩余 ',
-                      style: highlightStyle,
-                    ),
-                    SizedBox(
-                        width: 37,
-                        child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(leftNum.toString(),
-                                style: highlightStyle)))
-                  ],
-                ),
-                titlePadding: EdgeInsets.fromLTRB(16, 0, 16, 0),
-                trailing: SizedBox(
-                  width: 45,
-                  child: EnsureVisibleWhenFocused(
-                      child: TextField(
-                        maxLength: 4,
-                        controller: component.textEditingController,
-                        focusNode: component.focusNode,
-                        textAlign: TextAlign.center,
-                        keyboardType: TextInputType.number,
-                        textInputAction: TextInputAction.next,
-                        decoration: InputDecoration(counterText: ''),
-                        onTap: () {
-                          getFocused(component.textEditingController,
-                              component.focusNode,
-                              isTap: true);
-                        },
-                        onSubmitted: (s) {
-                          manager.moveNextFocus(context, component.focusNode);
-                        },
-                      ),
-                      focusNode: component.focusNode),
-                ),
-              ));
             }
             return ListView(
               children: [TileGroup(tiles: tiles)],

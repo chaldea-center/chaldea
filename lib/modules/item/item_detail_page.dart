@@ -21,6 +21,8 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   List<List<Widget>> tiles;
   bool planned = true;
   ItemCostStatistics statistics;
+  PartSet<String> panelTitles = PartSet(
+      ascension: '灵基再临', skill: '技能升级', dress: '灵衣开放');
 
   @override
   void initState() {
@@ -36,7 +38,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
       if (num > 0) {
         list.add(ImageWithText(
           image: Image.file(db.getIconFile(svt.icon)),
-          text: num.toString(),
+          text: formatNumToString(num,'kilo'),
           padding: EdgeInsets.only(right: 5, bottom: 16),
           onTap: () {
             Navigator.of(context)
@@ -49,7 +51,6 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
         ));
       }
     });
-//    return list.is
     if (list.isEmpty) {
       return Container();
     }
@@ -82,29 +83,21 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
         ],
       ),
       body: ListView(
-        shrinkWrap: true,
         children: <Widget>[
           TileGroup(
             tiles: <Widget>[
               CustomTile(
                 title: Text('共需'),
-                trailing: Text('${sum(counts.values)}'),
+                trailing: Text(formatNumToString(sum(counts.values),'decimal')),
               ),
-              CustomTile(
-                title: Text('灵基再临'),
-                trailing: Text('${counts.ascension}'),
-              ),
-              getSvtIconList(svtList.ascension),
-              CustomTile(
-                title: Text('技能升级'),
-                trailing: Text('${counts.skill}'),
-              ),
-              getSvtIconList(svtList.skill),
-              CustomTile(
-                title: Text('灵衣开放'),
-                trailing: Text('${counts.dress}'),
-              ),
-              getSvtIconList(svtList.dress)
+              for(int i in[0, 1, 2])
+                Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                  CustomTile(
+                    title: Text(panelTitles.values[i]),
+                    trailing: Text(formatNumToString(counts.values[i],'decimal')),
+                  ),
+                  getSvtIconList(svtList.values[i]),
+                ],)
             ],
           )
         ],

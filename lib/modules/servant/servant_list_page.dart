@@ -155,6 +155,7 @@ class ServantListPageState extends State<ServantListPage> {
     return GridView.count(
         crossAxisCount: 5,
         childAspectRatio: 1,
+        controller: _scrollController,
         children: shownSvtList.map((svt) {
           final plan=db.curPlan.servants[svt.no];
           String text;
@@ -310,6 +311,7 @@ class ServantListPageState extends State<ServantListPage> {
         builder: (sheetContext, setSheetState) => SvtFilterPage(
               parent: this,
               filterData: db.appData.svtFilter,
-            ));
+            ),
+    );
   }
 }

@@ -77,7 +77,7 @@ class TextFilter {
   List<String> patterns;
 
   TextFilter(filterString) {
-    patterns = (filterString??'').split(RegExp(r'\s+'));
+    patterns = (filterString ?? '').split(RegExp(r'\s+'));
     patterns.removeWhere((item) => item == '');
   }
 
@@ -153,36 +153,49 @@ class ClassName {
 }
 
 //public functions
-String formatNumberToString<T>(T number, [String style]) {
+String formatNumToString<T>(T number, [String style]) {
   if (number is String || number is double) {
     return '$number';
   } else if (number is int) {
     int num = number;
+    String prefix = num >= 0 ? '' : '-';
+    num = num >= 0 ? num : -num;
+    String body;
     switch (style) {
       case 'percent':
         // return percent of num/100, num=1230->return 12.3%
-        return num % 100 == 0 ? '${num ~/ 100}%' : '${num / 100.0}%';
+        body = num % 100 == 0 ? '${num ~/ 100}%' : '${num / 100.0}%';
+        break;
       case 'kilo':
-        if (num % 1e9 == 0) {
-          return formatNumberToString(num ~/ 1e9, 'decimal') + 'G';
-        } else if (num % 1e6 == 0) {
-          return formatNumberToString(num ~/ 1e6, 'decimal') + 'M';
-        } else if (num % 1e3 == 0) {
-          return formatNumberToString(num ~/ 1e3, 'decimal') + 'K';
+        if (num % 1000000000 == 0) {
+          body = formatNumToString(num ~/ 1000000000, 'decimal') + 'G';
+        } else if (num % 1000000 == 0) {
+          body = formatNumToString(num ~/ 1000000, 'decimal') + 'M';
+        } else if (num % 1000 == 0) {
+          body = formatNumToString(num ~/ 1000, 'decimal') + 'K';
         } else {
-          return formatNumberToString(num, 'decimal');
+          body = formatNumToString(num, 'decimal');
         }
         break;
       case 'decimal':
         String s = '';
-        while (num > 0) {
-          s = '${num % 1000},$s';
-          num = num ~/ 1000;
+        if(num==0){
+          body=num.toString();
+        }else{
+          List<String> list=[];
+          while (num > 0) {
+            list.insert(0, '${num % 1000}'.padLeft(3,'0'));
+            s = '${num % 1000}'.padLeft(3,'0')+',$s';
+            num = num ~/ 1000;
+          }
+          list[0]=int.parse(list[0]).toString();
+          body = list.join(',');
         }
-        return s.substring(0, s.length - 1);
+        break;
       default:
-        return '$num';
+        body = '$num';
     }
+    return prefix + body;
   } else {
     throw TypeError();
   }

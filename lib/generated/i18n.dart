@@ -31,7 +31,7 @@ class S implements WidgetsLocalizations {
   String get hello => "Hello！";
   String get input_error => "Invalid input value.";
   String get item_title => "Items";
-  String get language => "eng";
+  String get language => "English";
   String get more => "More";
   String get new_account => "New account";
   String get ok => "OK";
@@ -62,7 +62,7 @@ class $zh_TW extends S {
   @override
   String get backup => "Backup to ...";
   @override
-  String get language => "cht";
+  String get language => "繁體中文";
   @override
   String get delete => "Delete";
   @override
@@ -120,7 +120,7 @@ class $ja extends S {
   @override
   String get backup => "Backup to ...";
   @override
-  String get language => "jpn";
+  String get language => "日本語";
   @override
   String get delete => "Delete";
   @override
@@ -182,7 +182,7 @@ class $zh extends S {
   @override
   String get backup => "Backup to ...";
   @override
-  String get language => "chs";
+  String get language => "简体中文";
   @override
   String get delete => "Delete";
   @override
