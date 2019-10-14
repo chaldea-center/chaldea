@@ -1,3 +1,4 @@
+export 'package:flutter/material.dart';
 export 'package:chaldea/generated/i18n.dart';
 
 export 'constants.dart';
@@ -11,3 +12,4 @@ export 'ensure_visible_when_focused.dart';
 export 'int_range_slider.dart';
 export 'split_route.dart';
 export 'tile_items.dart';
+export 'input_manager.dart';
