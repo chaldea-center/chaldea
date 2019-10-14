@@ -286,10 +286,7 @@ class _SkillTabState extends State<SkillTab>
     return <Widget>[
       CustomTile(
           contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
-          leading: Image.file(
-            db.getIconFile(skill.icon),
-            height: 110 * 0.3,
-          ),
+          leading: Image.file(db.getIconFile(skill.icon), height: 110 * 0.3),
           title: Text('${skill.name} ${skill.rank}'),
           subtitle: Text('${skill.nameJp} ${skill.rank}'),
           trailing: Row(
@@ -336,8 +333,7 @@ class _SkillTabState extends State<SkillTab>
                 return Align(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    formatNumToString(
-                        effect.lvData[index], effect.valueType),
+                    formatNumToString(effect.lvData[index], effect.valueType),
                     style: TextStyle(
                         fontSize: 13,
                         color:
@@ -465,8 +461,7 @@ class _NobelPhantasmTabState extends State<NobelPhantasmTab>
                 return Align(
                   alignment: Alignment.center,
                   child: Text(
-                    formatNumToString(
-                        effect.lvData[index], effect.valueType),
+                    formatNumToString(effect.lvData[index], effect.valueType),
                     style: TextStyle(fontSize: 14),
                   ),
                 );
