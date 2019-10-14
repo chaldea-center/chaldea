@@ -204,51 +204,56 @@ class ImageWithText extends StatelessWidget {
 //        print('${constraints.biggest},${constraints.smallest}');
         return GestureDetector(
           onTap: onTap,
-          child: Stack(
-            alignment: alignment,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.fromLTRB(
-                    -min(0.0, padding.left),
-                    -min(0.0, padding.top),
-                    -min(0.0, padding.right),
-                    -min(0.0, padding.bottom)),
-                child: Center(
-                  widthFactor: 1,
-                  heightFactor: 1,
-                  child: image,
-                ),
-              ),
-              if (text != null)
+          child: Center(
+            widthFactor: 1,
+            heightFactor: 1,
+            child: Stack(
+              alignment: alignment,
+              children: <Widget>[
                 Padding(
                   padding: EdgeInsets.fromLTRB(
-                      max(0.0, padding.left),
-                      max(0.0, padding.top),
-                      max(0.0, padding.right),
-                      max(0.0, padding.bottom)),
-                  child: FittedBox(
-                    fit: BoxFit.fitWidth, //no effect is width is not constraint
-                    child: Stack(
-                      children: <Widget>[
-                        Text(
-                          text,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            foreground: Paint()
-                              ..style = PaintingStyle.stroke
-                              ..strokeWidth = 3
-                              ..color = Colors.white,
-                          ),
-                        ),
-                        Text(
-                          text,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
+                      -min(0.0, padding.left),
+                      -min(0.0, padding.top),
+                      -min(0.0, padding.right),
+                      -min(0.0, padding.bottom)),
+                  child: Center(
+                    widthFactor: 1,
+                    heightFactor: 1,
+                    child: image,
                   ),
-                )
-            ],
+                ),
+                if (text != null)
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(
+                        max(0.0, padding.left),
+                        max(0.0, padding.top),
+                        max(0.0, padding.right),
+                        max(0.0, padding.bottom)),
+                    child: FittedBox(
+                      fit: BoxFit
+                          .fitWidth, //no effect is width is not constraint
+                      child: Stack(
+                        children: <Widget>[
+                          Text(
+                            text,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              foreground: Paint()
+                                ..style = PaintingStyle.stroke
+                                ..strokeWidth = 3
+                                ..color = Colors.white,
+                            ),
+                          ),
+                          Text(
+                            text,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+              ],
+            ),
           ),
         );
       },

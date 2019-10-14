@@ -23,6 +23,10 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
       (k, e) => MapEntry(
           k, e == null ? null : GameIcon.fromJson(e as Map<String, dynamic>)),
     ),
+    events: (json['events'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(
+          k, e == null ? null : Event.fromJson(e as Map<String, dynamic>)),
+    ),
   );
 }
 
@@ -31,6 +35,7 @@ Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
       'crafts': instance.crafts,
       'items': instance.items,
       'icons': instance.icons,
+      'events': instance.events,
     };
 
 GameIcon _$GameIconFromJson(Map<String, dynamic> json) {
@@ -296,7 +301,7 @@ Item _$ItemFromJson(Map<String, dynamic> json) {
     id: json['id'] as int,
     name: json['name'] as String,
     rarity: json['rarity'] as int ?? 0,
-    category: json['category'] as String,
+    category: json['category'] as int,
     num: json['num'] as int ?? 0,
   );
 }
@@ -307,6 +312,42 @@ Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
       'rarity': instance.rarity,
       'category': instance.category,
       'num': instance.num,
+    };
+
+Event _$EventFromJson(Map<String, dynamic> json) {
+  return Event(
+    name: json['name'] as String,
+    link: json['link'] as String,
+    grail: json['grail'] as int,
+    crystal: json['crystal'] as int,
+    grail2crystal: json['grail2crystal'] as int,
+    qp: json['qp'] as int,
+    items: (json['items'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(k, e as int),
+    ),
+    category: json['category'] as String,
+    hunting: (json['hunting'] as List)
+        ?.map((e) => (e as Map<String, dynamic>)?.map(
+              (k, e) => MapEntry(k, (e as num)?.toDouble()),
+            ))
+        ?.toList(),
+    lottery: (json['lottery'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(k, e as int),
+    ),
+  );
+}
+
+Map<String, dynamic> _$EventToJson(Event instance) => <String, dynamic>{
+      'name': instance.name,
+      'link': instance.link,
+      'grail': instance.grail,
+      'crystal': instance.crystal,
+      'grail2crystal': instance.grail2crystal,
+      'qp': instance.qp,
+      'items': instance.items,
+      'category': instance.category,
+      'hunting': instance.hunting,
+      'lottery': instance.lottery,
     };
 
 AppData _$AppDataFromJson(Map<String, dynamic> json) {

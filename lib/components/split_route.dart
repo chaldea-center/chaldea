@@ -23,11 +23,11 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
 
   ///if [builder] is null, just pop without push
   static void popAndPush(BuildContext context,
-      {WidgetBuilder builder, RouteSettings settings}) {
+      {WidgetBuilder builder, bool isDetail=true}) {
     Navigator.of(context).popUntil((route) => route.settings.isInitialRoute);
     if (builder != null) {
       Navigator.of(context)
-          .push(SplitRoute(builder: builder, settings: settings));
+          .push(SplitRoute(builder: builder, settings: RouteSettings(isInitialRoute: !isDetail)));
     }
   }
 

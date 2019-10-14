@@ -167,7 +167,10 @@ String formatNumToString<T>(T number, [String style]) {
         body = num % 100 == 0 ? '${num ~/ 100}%' : '${num / 100.0}%';
         break;
       case 'kilo':
-        if (num % 1000000000 == 0) {
+        if(num==0){
+          body=num.toString();
+        }
+        else if (num % 1000000000 == 0) {
           body = formatNumToString(num ~/ 1000000000, 'decimal') + 'G';
         } else if (num % 1000000 == 0) {
           body = formatNumToString(num ~/ 1000000, 'decimal') + 'M';

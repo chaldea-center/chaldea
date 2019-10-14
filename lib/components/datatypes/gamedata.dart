@@ -7,12 +7,14 @@ class GameData {
   Map<String, String> crafts;
   Map<String, Item> items;
   Map<String, GameIcon> icons;
+  Map<String, Event> events;
 
-  GameData({this.servants, this.crafts, this.items, this.icons}){
-    servants??={};
-    crafts??={};
-    items??={};
-    icons??={};
+  GameData({this.servants, this.crafts, this.items, this.icons, this.events}) {
+    servants ??= {};
+    crafts ??= {};
+    items ??= {};
+    icons ??= {};
+    events ??= {};
   }
 
   factory GameData.fromJson(Map<String, dynamic> data) =>
@@ -314,11 +316,13 @@ class Item {
   String name;
   @JsonKey(defaultValue: 0)
   int rarity;
-  String category;
+  int category;
   @JsonKey(defaultValue: 0)
   int num;
 
-  Item copyWith({int id, String name, int rarity, String category, int num}) {
+  Item({this.id, this.name, this.rarity = 0, this.category, this.num = 0});
+
+  Item copyWith({int id, String name, int rarity, int category, int num}) {
     return Item(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -331,11 +335,38 @@ class Item {
 
   Map<String, dynamic> toJson() => _$ItemToJson(this);
 
-  Item({this.id, this.name, this.rarity = 0, this.category, this.num = 0});
-
   @override
   String toString() {
-    // TODO: implement toString
-    return 'Item($name)';
+    return 'Item($name, $num)';
   }
+}
+
+@JsonSerializable()
+class Event {
+  String name;
+  String link;
+  int grail;
+  int crystal;
+  int grail2crystal;
+  int qp;
+  Map<String, int> items;
+  String category;
+  List<Map<String, double>> hunting;
+  Map<String, int> lottery;
+
+  Event(
+      {this.name,
+      this.link,
+      this.grail,
+      this.crystal,
+      this.grail2crystal,
+      this.qp,
+      this.items,
+      this.category,
+      this.hunting,
+      this.lottery});
+
+  factory Event.fromJson(Map<String, dynamic> data) => _$EventFromJson(data);
+
+  Map<String, dynamic> toJson() => _$EventToJson(this);
 }

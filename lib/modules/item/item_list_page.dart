@@ -8,11 +8,11 @@ class ItemListPage extends StatefulWidget {
 
 class ItemListPageState extends State<ItemListPage>
     with SingleTickerProviderStateMixin {
-  List<String> categories = ['material', 'gem', 'piece', 'event'];
+  List<int> categories = [1, 2, 3, 4];
 
   //controller
   TabController _tabController;
-  Map<String, TextInputsManager<Item>> inputManagers = {};
+  Map<int, TextInputsManager<Item>> inputManagers = {};
   InputComponent _lastComponent;
   ItemCostStatistics statistics;
   bool filtered = true;
@@ -22,7 +22,8 @@ class ItemListPageState extends State<ItemListPage>
     final node = component.focusNode,
         controller = component.textEditingController;
     if ((node.hasFocus || isTap == true) && _lastComponent != component) {
-      _lastComponent?.textEditingController?.selection = TextSelection(baseOffset: 0, extentOffset: 0);
+      _lastComponent?.textEditingController?.selection =
+          TextSelection(baseOffset: 0, extentOffset: 0);
       _lastComponent = component;
       controller.selection =
           TextSelection(baseOffset: 0, extentOffset: controller.text.length);
@@ -57,7 +58,6 @@ class ItemListPageState extends State<ItemListPage>
       return component;
     }
 
-    ;
     categories.forEach((e) {
       inputManagers[e] = TextInputsManager();
       final qpKey = 'QP';
@@ -97,8 +97,7 @@ class ItemListPageState extends State<ItemListPage>
                 iconKey,
                 statistics: statistics,
                 parent: this,
-              ),
-          settings: RouteSettings(isInitialRoute: false)),
+              )),
       leading: Image.file(db.getIconFile(iconKey), height: 110 * 0.5),
       title: Text(iconKey),
       subtitle: Row(
@@ -162,7 +161,10 @@ class ItemListPageState extends State<ItemListPage>
         ],
         bottom: TabBar(
             controller: _tabController,
-            tabs: categories.map((category) => Tab(text: category)).toList()),
+            tabs: categories
+                .map((category) => Tab(
+                    text: ['x', 'Material', 'Gem', 'Piece', 'Event'][category]))
+                .toList()),
       ),
       body: TabBarView(
           controller: _tabController,

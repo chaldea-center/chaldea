@@ -111,15 +111,14 @@ class ServantListPageState extends State<ServantListPage> {
     return ListView.separated(
         physics: ScrollPhysics(),
         controller: _scrollController,
-        separatorBuilder: (context, index) =>
-            Divider(height: 1.0, indent: 16.0),
+        separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
         itemCount: shownSvtList.length,
         itemBuilder: (context, index) {
           final svt = shownSvtList[index];
           final plan = db.curPlan.servants[svt.no];
-          String text='';
-          if(plan?.favorite==true){
-            text='${plan.npLv}宝'
+          String text = '';
+          if (plan?.favorite == true) {
+            text = '${plan.npLv}宝'
                 '${plan.ascensionLv[0]}-'
                 '${plan.skillLv[0][0]}/'
                 '${plan.skillLv[1][0]}/'
@@ -157,10 +156,10 @@ class ServantListPageState extends State<ServantListPage> {
         childAspectRatio: 1,
         controller: _scrollController,
         children: shownSvtList.map((svt) {
-          final plan=db.curPlan.servants[svt.no];
+          final plan = db.curPlan.servants[svt.no];
           String text;
-          if(plan?.favorite==true){
-            text='${plan.npLv}\n'
+          if (plan?.favorite == true) {
+            text = '${plan.npLv}\n'
                 '${plan.ascensionLv[0]}-'
                 '${plan.skillLv[0][0]}/'
                 '${plan.skillLv[1][0]}/'
@@ -168,13 +167,15 @@ class ServantListPageState extends State<ServantListPage> {
           }
           return Center(
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 1,),
+              padding: EdgeInsets.symmetric(
+                vertical: 1,
+              ),
               child: ImageWithText(
                 image: Image.file(db.getIconFile(svt.icon)),
                 text: text,
                 alignment: AlignmentDirectional.bottomStart,
                 padding: EdgeInsets.fromLTRB(4, 0, 8, -4),
-                onTap: (){
+                onTap: () {
                   SplitRoute.popAndPush(context,
                       builder: (context) => ServantDetailPage(svt));
                 },
@@ -185,9 +186,6 @@ class ServantListPageState extends State<ServantListPage> {
   }
 
   Widget buildSvtOverview() {
-    //TODO: Grid style vs List style
-    // List Style
-    // img size=132*144
     List<Servant> shownSvtList = [];
     db.gameData.servants.forEach((no, svt) {
       if (!filterData.favorite || db.curPlan.servants[no]?.favorite == true) {
@@ -307,11 +305,12 @@ class ServantListPageState extends State<ServantListPage> {
   }
 
   void buildFilterSheet(BuildContext context) {
-    showSheet(context,
-        builder: (sheetContext, setSheetState) => SvtFilterPage(
-              parent: this,
-              filterData: db.appData.svtFilter,
-            ),
+    showSheet(
+      context,
+      builder: (sheetContext, setSheetState) => SvtFilterPage(
+        parent: this,
+        filterData: db.appData.svtFilter,
+      ),
     );
   }
 }

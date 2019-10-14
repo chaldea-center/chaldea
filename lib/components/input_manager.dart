@@ -27,6 +27,10 @@ class TextInputsManager<T> {
         data: datum, textEditingController: controller, focusNode: node));
   }
 
+  InputComponent<T> getComponentByData(T datum){
+    //TODO: what if multi elements have the same datum
+    return components.firstWhere((e)=>e.data==datum,orElse: ()=>null);
+  }
   // focus part
   void addFocus(FocusNode node) {
     // could node of _focusList not in _focusNodes list?

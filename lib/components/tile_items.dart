@@ -290,14 +290,14 @@ List<Widget> divideTiles(Iterable<Widget> tiles,
     {Widget divider = const Divider(height: 1.0),
     bool top = false,
     bool bottom = false}) {
-  if (tiles.length == 0) {
-    return tiles.toList();
+  Iterator iterator = tiles.iterator;
+  if (!iterator.moveNext()) {
+    return [];
   }
   List<Widget> combined = [];
   if (top) {
     combined.add(divider);
   }
-  Iterator iterator = tiles.iterator;
   combined.add(iterator.current);
   while (iterator.moveNext()) {
     combined..add(divider)..add(iterator.current);

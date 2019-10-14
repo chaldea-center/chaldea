@@ -476,7 +476,6 @@ class _NobelPhantasmTabState extends State<NobelPhantasmTab>
     if (svt.nobelPhantasm == null || svt.nobelPhantasm.length == 0) {
       return Container(child: Center(child: Text('No NobelPhantasm Data')));
     }
-    print(svt.nobelPhantasm.first.toJson());
     bool enhanced = plan.npEnhanced ?? svt.nobelPhantasm.first.enhanced;
     final np = svt.nobelPhantasm[enhanced ? 1 : 0];
     return ListView(

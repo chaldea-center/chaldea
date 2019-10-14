@@ -99,8 +99,7 @@ class GalleryState extends State<Gallery> {
             onPressed: () {
               SplitRoute.popAndPush(context,
                   builder: item.builder,
-                  settings: RouteSettings(
-                      isInitialRoute: item.isInitialRoute ?? true));
+                  isDetail: false,);
             },
           ),
         ));

@@ -20,8 +20,9 @@ class Database {
   AppData appData;
   GameData gameData;
 
-  Plans get curPlan=>appData.users[appData.curUserName]?.plans;
+  Plans get curPlan => appData.users[appData.curUserName]?.plans;
   static String _rootPath = '';
+
   String get rootPath => _rootPath;
 
   // initialization
@@ -30,8 +31,7 @@ class Database {
   }
 
   // load data
-  Future<Null> loadData(
-      {bool app = true, bool game = true}) async {
+  Future<Null> loadData({bool app = true, bool game = true}) async {
     if (app) {
       appData = parseJson(
           parser: () =>
@@ -45,15 +45,14 @@ class Database {
       gameData = parseJson(
           parser: () => GameData.fromJson({
                 'servants': getJsonFromFile(
-                    join(appData.gameDataPath, 'svt_list.json'),
-                    k: Map()),
+                    join(appData.gameDataPath, 'servants.json')),
                 'crafts': <String, String>{},
-                'items': getJsonFromFile(
-                    join(appData.gameDataPath, 'items.json'),
-                    k: Map()),
-                'icons': getJsonFromFile(
-                    join(appData.gameDataPath, 'icons.json'),
-                    k: Map())
+                'items':
+                    getJsonFromFile(join(appData.gameDataPath, 'items.json')),
+                'icons':
+                    getJsonFromFile(join(appData.gameDataPath, 'icons.json')),
+                "events":
+                    getJsonFromFile(join(appData.gameDataPath, 'events.json'))
               }),
           k: () => GameData());
       print('gamedata reloaded');
@@ -72,7 +71,8 @@ class Database {
   }
 
   dynamic getJsonFromFile(String filename, {dynamic k}) {
-    // dynamic: json object can be Map or List
+    // dynamic: json object can be Map or List.
+    // However, json_serializable always use Map->Class
     dynamic result;
     try {
       String contents = getLocalFile(filename).readAsStringSync();
@@ -142,9 +142,7 @@ class Database {
   }
 
   // clear data
-  Future<void> clearData(
-      { bool app = false, bool game = false}) async {
-
+  Future<void> clearData({bool app = false, bool game = false}) async {
     if (app) {
       _deleteFileOrDirectory(appDataFilename);
     }
