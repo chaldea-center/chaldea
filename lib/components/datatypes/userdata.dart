@@ -23,15 +23,17 @@ class User {
 class Plans {
   Map<int, ServantPlan> servants;
   Map<String, int> items;
+  Map<String, EventPlan> events;
+
+  Plans({this.servants, this.items}) {
+    servants ??= {};
+    items ??= {};
+    events ??= {};
+  }
 
   factory Plans.fromJson(Map<String, dynamic> data) => _$PlansFromJson(data);
 
   Map<String, dynamic> toJson() => _$PlansToJson(this);
-
-  Plans({this.servants, this.items}) {
-    servants ??= {};
-    items ??={};
-  }
 }
 
 @JsonSerializable()
@@ -68,6 +70,26 @@ class ServantPlan {
     npLv ??= 1;
     favorite ??= false;
   }
+}
+
+@JsonSerializable()
+class EventPlan {
+  bool enable;
+  bool rerun;
+  int lottery;
+  Map<String, int> hunting;
+
+  EventPlan({this.enable, this.rerun, this.lottery, this.hunting}) {
+    enable ??= false;
+    rerun ??= true;
+    lottery ??= 0;
+    hunting ??= {};
+  }
+
+  factory EventPlan.fromJson(Map<String, dynamic> data) =>
+      _$EventPlanFromJson(data);
+
+  Map<String, dynamic> toJson() => _$EventPlanToJson(this);
 }
 
 class PartSet<T> {

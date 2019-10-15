@@ -17,10 +17,10 @@ import 'datatypes/datatypes.dart';
 ///  - user database
 class Database {
   VoidCallback onAppUpdate;
-  AppData appData;
+  UserData userData;
   GameData gameData;
 
-  Plans get curPlan => appData.users[appData.curUserName]?.plans;
+  Plans get curPlan => userData.users[userData.curUserName]?.plans;
   static String _rootPath = '';
 
   String get rootPath => _rootPath;
@@ -31,12 +31,12 @@ class Database {
   }
 
   // load data
-  Future<Null> loadData({bool app = true, bool game = true}) async {
-    if (app) {
-      appData = parseJson(
+  Future<Null> loadData({bool user = true, bool game = true}) async {
+    if (user) {
+      userData = parseJson(
           parser: () =>
-              AppData.fromJson(getJsonFromFile(appDataFilename, k: {})),
-          k: () => AppData());
+              UserData.fromJson(getJsonFromFile(userDataFilename, k: {})),
+          k: () => UserData());
       print('appdata reloaded');
     }
 
@@ -45,18 +45,44 @@ class Database {
       gameData = parseJson(
           parser: () => GameData.fromJson({
                 'servants': getJsonFromFile(
-                    join(appData.gameDataPath, 'servants.json')),
+                    join(userData.gameDataPath, 'servants.json')),
                 'crafts': <String, String>{},
                 'items':
-                    getJsonFromFile(join(appData.gameDataPath, 'items.json')),
+                    getJsonFromFile(join(userData.gameDataPath, 'items.json')),
                 'icons':
-                    getJsonFromFile(join(appData.gameDataPath, 'icons.json')),
+                    getJsonFromFile(join(userData.gameDataPath, 'icons.json')),
                 "events":
-                    getJsonFromFile(join(appData.gameDataPath, 'events.json'))
+                    getJsonFromFile(join(userData.gameDataPath, 'events.json'))
               }),
           k: () => GameData());
       print('gamedata reloaded');
     }
+  }
+
+  Future<Null> loadGameData() async {
+    // TODO: use downloaded data if exist
+    gameData = parseJson(
+        parser: () => GameData.fromJson({
+              'servants':
+                  getJsonFromFile(join(userData.gameDataPath, 'servants.json')),
+              'crafts': <String, String>{},
+              'items':
+                  getJsonFromFile(join(userData.gameDataPath, 'items.json')),
+              'icons':
+                  getJsonFromFile(join(userData.gameDataPath, 'icons.json')),
+              "events":
+                  getJsonFromFile(join(userData.gameDataPath, 'events.json'))
+            }),
+        k: () => GameData());
+    print('gamedata reloaded');
+  }
+
+  Future<Null> loadUserData() async {
+    userData = parseJson(
+        parser: () =>
+            UserData.fromJson(getJsonFromFile(userDataFilename, k: {})),
+        k: () => UserData());
+    print('appdata reloaded');
   }
 
   T parseJson<T>({T parser(), T k()}) {
@@ -90,19 +116,20 @@ class Database {
   }
 
   File getIconFile(String iconKey) {
-    return File(join(_rootPath, appData.gameDataPath, 'icons',
+    return File(join(_rootPath, userData.gameDataPath, 'icons',
         gameData.icons[iconKey].filename));
   }
 
-  Future<Null> loadZipAssets(String assetKey,
-      {String dir = 'temp', bool forceLoad = false}) async {
+  Future<Null> loadAssetsData(String assetKey,
+      {String dir, bool force = false}) async {
+    dir ??= userData?.gameDataPath ?? 'temp';
     String basePath = join(_rootPath, dir);
-    if (forceLoad || !Directory(basePath).existsSync()) {
+    if (force || !Directory(basePath).existsSync()) {
       //extract zip file
       final data = await rootBundle.load(assetKey);
       await extractZip(data.buffer.asUint8List().cast<int>(), basePath);
     }
-    appData.gameDataPath = dir;
+    userData.gameDataPath = dir;
   }
 
   Future<Null> extractZip(List<int> bytes, String path) async {
@@ -127,7 +154,7 @@ class Database {
 
   //save data
   Future<Null> saveData() async {
-    _saveJsonFile(appData, appDataFilename);
+    _saveJsonFile(userData, userDataFilename);
   }
 
   Future<Null> _saveJsonFile(dynamic jsonData, String relativePath) async {
@@ -142,16 +169,18 @@ class Database {
   }
 
   // clear data
-  Future<void> clearData({bool app = false, bool game = false}) async {
-    if (app) {
-      _deleteFileOrDirectory(appDataFilename);
+  Future<void> clearData({bool user = false, bool game = false}) async {
+    final oldPath = userData.gameDataPath;
+    if (user) {
+      _deleteFileOrDirectory(userDataFilename);
+      await loadUserData();
     }
     if (game) {
       // to clear all history version or not?
-      _deleteFileOrDirectory(appData.gameDataPath);
+      _deleteFileOrDirectory(oldPath);
     }
-    await loadZipAssets('res/data/dataset.zip', dir: appData.gameDataPath);
-    await loadData(app: app, game: game);
+    await loadAssetsData('res/data/dataset.zip', dir: userData.gameDataPath);
+    await loadGameData();
   }
 
   void _deleteFileOrDirectory(String relativePath) {

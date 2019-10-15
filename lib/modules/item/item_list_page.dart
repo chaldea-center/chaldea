@@ -1,5 +1,6 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
+import 'package:flutter/services.dart';
 
 class ItemListPage extends StatefulWidget {
   @override
@@ -16,19 +17,6 @@ class ItemListPageState extends State<ItemListPage>
   InputComponent _lastComponent;
   ItemCostStatistics statistics;
   bool filtered = true;
-
-  void getFocused(InputComponent component, {bool isTap = false}) {
-    //TODO: focus trouble, 理解不能！
-    final node = component.focusNode,
-        controller = component.textEditingController;
-    if ((node.hasFocus || isTap == true) && _lastComponent != component) {
-      _lastComponent?.textEditingController?.selection =
-          TextSelection(baseOffset: 0, extentOffset: 0);
-      _lastComponent = component;
-      controller.selection =
-          TextSelection(baseOffset: 0, extentOffset: controller.text.length);
-    }
-  }
 
   @override
   void deactivate() {
@@ -48,13 +36,8 @@ class ItemListPageState extends State<ItemListPage>
       FocusNode focusNode = FocusNode();
       InputComponent<Item> component = InputComponent(
           data: items[k],
-          textEditingController: textEditingController,
+          controller: textEditingController,
           focusNode: focusNode);
-      textEditingController.addListener(() {
-        int num = int.parse('0' + textEditingController.text);
-        db.curPlan.items[k] = num;
-        getFocused(component);
-      });
       return component;
     }
 
@@ -90,7 +73,7 @@ class ItemListPageState extends State<ItemListPage>
     if (filtered && enough) {
       return null;
     }
-    manager.addFocus(component.focusNode);
+    manager.addObserver(component);
     return CustomTile(
       onTap: () => SplitRoute.popAndPush(context,
           builder: (context) => ItemDetailPage(
@@ -125,17 +108,21 @@ class ItemListPageState extends State<ItemListPage>
         child: EnsureVisibleWhenFocused(
             child: TextField(
               maxLength: 4,
-              controller: component.textEditingController,
+              controller: component.controller,
               focusNode: component.focusNode,
               textAlign: TextAlign.center,
               keyboardType: TextInputType.number,
               textInputAction: TextInputAction.next,
               decoration: InputDecoration(counterText: ''),
+              inputFormatters: [WhitelistingTextInputFormatter(RegExp(r'\d'))],
+              onChanged: (v) {
+                db.curPlan.items[component.data.name] = int.tryParse(v) ?? 0;
+              },
               onTap: () {
-                getFocused(component, isTap: true);
+                component.selectAll();
               },
               onSubmitted: (s) {
-                manager.moveNextFocus(context, component.focusNode);
+                manager.moveNextFocus(context, component);
               },
             ),
             focusNode: component.focusNode),
@@ -148,14 +135,15 @@ class ItemListPageState extends State<ItemListPage>
     return Scaffold(
       appBar: AppBar(
         title: Text(S.of(context).item_title),
-        leading: BackButton(),
+        leading: SplitViewBackButton(),
         actions: <Widget>[
           IconButton(
             icon: Icon(
                 filtered ? Icons.check_circle : Icons.check_circle_outline),
             onPressed: () {
-              filtered = !filtered;
-              setState(() {});
+              setState(() {
+                filtered = !filtered;
+              });
             },
           )
         ],

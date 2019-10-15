@@ -1,9 +1,6 @@
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/constants.dart';
-import 'package:chaldea/components/tile_items.dart';
 import 'package:chaldea/modules/home/subpage/account_page.dart';
 import 'package:chaldea/modules/home/subpage/lang_page.dart';
-import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -35,7 +32,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: Text(S.of(context).server),
                 trailing: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
-                    value: db.appData.users[db.appData.curUserName].server??'cn',
+                    value: db.userData.users[db.userData.curUserName].server ??
+                        'cn',
                     items: <DropdownMenuItem<String>>[
                       DropdownMenuItem(
                         value: GameServer.cn,
@@ -47,7 +45,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       )
                     ],
                     onChanged: (v) {
-                      db.appData.users[db.appData.curUserName].server = v;
+                      db.userData.users[db.userData.curUserName].server = v;
                       db.onAppUpdate();
                     },
                   ),
@@ -59,7 +57,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Text(
-                      db.appData.users[db.appData.curUserName].name,
+                      db.userData.users[db.userData.curUserName].name,
                       style: TextStyle(color: Colors.black87),
                     ),
                     Icon(Icons.arrow_forward_ios)
@@ -101,7 +99,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: Text('Master-Detail width'),
                 trailing: DropdownButtonHideUnderline(
                   child: DropdownButton<double>(
-                    value: db.appData.criticalWidth??768,
+                    value: db.userData.criticalWidth ?? 768,
                     items: <DropdownMenuItem<double>>[
                       DropdownMenuItem(
                         value: 768,
@@ -113,38 +111,28 @@ class _SettingsPageState extends State<SettingsPage> {
                       )
                     ],
                     onChanged: (v) {
-                      setState(() {
-                        db.appData.criticalWidth = v;
-                      });
+                      db.userData.criticalWidth = v;
+                      db.onAppUpdate();
                     },
                   ),
                 ),
               ),
               ListTile(
-                title: Text('Extract dataset'),
+                title: Text('Reload gamedata'),
                 onTap: () async {
-                  await db.loadZipAssets('res/data/dataset.zip',
-                      forceLoad: true);
-                  await db.loadData();
+                  await db.loadAssetsData('res/data/dataset.zip',
+                      force: true);
+                  await db.loadGameData();
                   Scaffold.of(context).showSnackBar(
                       SnackBar(content: Text('dataset have been extracted.')));
                 },
               ),
               ListTile(
-                title: Text('clear all data'),
+                title: Text('Clear and reload all data'),
                 onTap: () {
-                  db.clearData(app: true, game: true).then((_) =>
+                  db.clearData(user: true, game: true).then((_) =>
                       Scaffold.of(context).showSnackBar(
                           SnackBar(content: Text('userdata cleared'))));
-                },
-              ),
-              ListTile(
-                title: Text('Reload app/user/game data'),
-                onTap: () {
-                  db.loadData().then((_) {
-                    Scaffold.of(context)
-                        .showSnackBar(SnackBar(content: Text('load finish.')));
-                  });
                 },
               ),
               ListTile(
@@ -159,7 +147,6 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
   }
-
 
   @override
   void deactivate() {

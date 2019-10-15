@@ -350,8 +350,8 @@ Map<String, dynamic> _$EventToJson(Event instance) => <String, dynamic>{
       'lottery': instance.lottery,
     };
 
-AppData _$AppDataFromJson(Map<String, dynamic> json) {
-  return AppData(
+UserData _$AppDataFromJson(Map<String, dynamic> json) {
+  return UserData(
     language: json['language'] as String,
     criticalWidth: (json['criticalWidth'] as num)?.toDouble(),
     gameDataPath: json['gameDataPath'] as String,
@@ -371,7 +371,7 @@ AppData _$AppDataFromJson(Map<String, dynamic> json) {
       : SvtFilterData.fromJson(json['itemFilter'] as Map<String, dynamic>);
 }
 
-Map<String, dynamic> _$AppDataToJson(AppData instance) => <String, dynamic>{
+Map<String, dynamic> _$AppDataToJson(UserData instance) => <String, dynamic>{
       'language': instance.language,
       'criticalWidth': instance.criticalWidth,
       'gameDataPath': instance.gameDataPath,
@@ -493,12 +493,21 @@ Plans _$PlansFromJson(Map json) {
     items: (json['items'] as Map)?.map(
       (k, e) => MapEntry(k as String, e as int),
     ),
-  );
+  )..events = (json['events'] as Map)?.map(
+      (k, e) => MapEntry(
+          k as String,
+          e == null
+              ? null
+              : EventPlan.fromJson((e as Map)?.map(
+                  (k, e) => MapEntry(k as String, e),
+                ))),
+    );
 }
 
 Map<String, dynamic> _$PlansToJson(Plans instance) => <String, dynamic>{
       'servants': instance.servants?.map((k, e) => MapEntry(k.toString(), e)),
       'items': instance.items,
+      'events': instance.events,
     };
 
 ServantPlan _$ServantPlanFromJson(Map<String, dynamic> json) {
@@ -529,4 +538,22 @@ Map<String, dynamic> _$ServantPlanToJson(ServantPlan instance) =>
       'npEnhanced': instance.npEnhanced,
       'npLv': instance.npLv,
       'favorite': instance.favorite,
+    };
+
+EventPlan _$EventPlanFromJson(Map<String, dynamic> json) {
+  return EventPlan(
+    enable: json['enable'] as bool,
+    rerun: json['rerun'] as bool,
+    lottery: json['lottery'] as int,
+    hunting: (json['hunting'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(k, e as int),
+    ),
+  );
+}
+
+Map<String, dynamic> _$EventPlanToJson(EventPlan instance) => <String, dynamic>{
+      'enable': instance.enable,
+      'rerun': instance.rerun,
+      'lottery': instance.lottery,
+      'hunting': instance.hunting,
     };

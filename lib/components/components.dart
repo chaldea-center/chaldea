@@ -4,7 +4,6 @@ export 'package:chaldea/generated/i18n.dart';
 export 'constants.dart';
 export 'datatypes/datatypes.dart';
 
-export 'bottom_navigation.dart';
 export 'config.dart';
 export 'custom_tile.dart';
 export 'dialog.dart';

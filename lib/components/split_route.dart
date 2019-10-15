@@ -8,7 +8,7 @@ const int kMasterRatio = 38; // percentage
 
 bool isTablet(BuildContext context) {
   return MediaQuery.of(context).size.width >=
-      (db.appData?.criticalWidth ?? 768);
+      (db.userData?.criticalWidth ?? 768);
 }
 
 class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
@@ -23,11 +23,12 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
 
   ///if [builder] is null, just pop without push
   static void popAndPush(BuildContext context,
-      {WidgetBuilder builder, bool isDetail=true}) {
+      {WidgetBuilder builder, bool isDetail = true}) {
     Navigator.of(context).popUntil((route) => route.settings.isInitialRoute);
     if (builder != null) {
-      Navigator.of(context)
-          .push(SplitRoute(builder: builder, settings: RouteSettings(isInitialRoute: !isDetail)));
+      Navigator.of(context).push(SplitRoute(
+          builder: builder,
+          settings: RouteSettings(isInitialRoute: !isDetail)));
     }
   }
 
@@ -102,4 +103,16 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
 
   @override
   Duration get transitionDuration => Duration(milliseconds: 250);
+}
+
+class SplitViewBackButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BackButton(
+      onPressed: () {
+        SplitRoute.popAndPush(context);
+        Navigator.maybePop(context);
+      },
+    );
+  }
 }

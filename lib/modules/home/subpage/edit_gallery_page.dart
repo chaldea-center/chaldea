@@ -13,10 +13,10 @@ class _EditGalleryPageState extends State<EditGalleryPage>{
     List<Widget> tiles=[];
     GalleryItem.allItems.forEach((key,item){
       if(key!=GalleryItem.more){
-        tiles.add(SwitchListTile(
-          value: db.appData.galleries[key],
+        tiles.add(SwitchListTile.adaptive(
+          value: db.userData.galleries[key],
           onChanged: (bool _selected){
-            db.appData.galleries[key]=_selected;
+            db.userData.galleries[key]=_selected;
             db.onAppUpdate();
           },
           title: Text(item.title),

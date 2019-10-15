@@ -20,7 +20,7 @@ class ServantListPageState extends State<ServantListPage> {
     super.initState();
     _inputController = TextEditingController();
     _scrollController = ScrollController();
-    filterData = db.appData.svtFilter;
+    filterData = db.userData.svtFilter;
   }
 
   @override
@@ -228,7 +228,7 @@ class ServantListPageState extends State<ServantListPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(S.of(context).servant),
-        leading: BackButton(),
+        leading: SplitViewBackButton(),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(45.0),
           child: Theme(
@@ -309,7 +309,7 @@ class ServantListPageState extends State<ServantListPage> {
       context,
       builder: (sheetContext, setSheetState) => SvtFilterPage(
         parent: this,
-        filterData: db.appData.svtFilter,
+        filterData: db.userData.svtFilter,
       ),
     );
   }

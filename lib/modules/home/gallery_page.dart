@@ -4,15 +4,14 @@ import 'package:chaldea/modules/event/event_list_page.dart';
 import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
-class Gallery extends StatefulWidget {
+class GalleryPage extends StatefulWidget {
   @override
-  GalleryState createState() => GalleryState();
+  _GalleryPageState createState() => _GalleryPageState();
 }
 
-class GalleryState extends State<Gallery> {
+class _GalleryPageState extends State<GalleryPage> {
   String selectedItem;
   Map<String, GalleryItem> kAllGalleryItems;
   List<String> shownGalleryItems;
@@ -21,10 +20,10 @@ class GalleryState extends State<Gallery> {
   void initState() {
     super.initState();
     // here db.data has not fully loaded. (loading)
-    if (db.appData.galleries == null) {
+    if (db.userData.galleries == null) {
       // set default value
       print('why galleries=null ????');
-      db.appData.galleries = {};
+      db.userData.galleries = {};
     }
   }
 
@@ -51,17 +50,17 @@ class GalleryState extends State<Gallery> {
           routeName: '/more',
           builder: (context) => EditGalleryPage())
     };
-    db.appData.galleries = GalleryItem.allItems.map((key, item) {
-      return MapEntry<String, bool>(key, db.appData.galleries[key] ?? true);
+    db.userData.galleries = GalleryItem.allItems.map((key, item) {
+      return MapEntry<String, bool>(key, db.userData.galleries[key] ?? true);
     });
-    db.appData.galleries[GalleryItem.more] = true;
+    db.userData.galleries[GalleryItem.more] = true;
   }
 
   @override
   Widget build(BuildContext context) {
     _getAllGalleries(context);
     List<Widget> gridItems = [];
-    db.appData.galleries.forEach((v, isShown) {
+    db.userData.galleries.forEach((v, isShown) {
       if (isShown || v == GalleryItem.more) {
         final item = GalleryItem.allItems[v];
         gridItems.add(DecoratedBox(
@@ -97,9 +96,11 @@ class GalleryState extends State<Gallery> {
               ],
             ),
             onPressed: () {
-              SplitRoute.popAndPush(context,
-                  builder: item.builder,
-                  isDetail: false,);
+              SplitRoute.popAndPush(
+                context,
+                builder: item.builder,
+                isDetail: false,
+              );
             },
           ),
         ));

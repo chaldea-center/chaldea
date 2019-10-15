@@ -2,7 +2,7 @@
 part of datatypes;
 
 @JsonSerializable()
-class AppData {
+class UserData {
   // app settings
   String language;
   double criticalWidth;
@@ -17,7 +17,7 @@ class AppData {
   SvtFilterData svtFilter;
   SvtFilterData itemFilter;
 
-  AppData(
+  UserData(
       {this.language,
       this.criticalWidth,
       this.gameDataPath,
@@ -37,7 +37,7 @@ class AppData {
   }
 
   // json_serializable
-  factory AppData.fromJson(Map<String, dynamic> data) =>
+  factory UserData.fromJson(Map<String, dynamic> data) =>
       _$AppDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$AppDataToJson(this);

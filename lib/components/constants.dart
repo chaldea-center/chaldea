@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 //typedef
 //const value
-const String appDataFilename = 'appdata.json';
 const String userDataFilename = 'userdata.json';
 
 //const value in class

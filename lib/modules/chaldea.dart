@@ -1,8 +1,6 @@
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/constants.dart';
 import 'package:chaldea/modules/blank_page.dart';
-import 'package:chaldea/modules/home/home.dart';
-import 'package:flutter/material.dart';
+import 'package:chaldea/modules/home/home_page.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 class Chaldea extends StatefulWidget {
@@ -11,37 +9,32 @@ class Chaldea extends StatefulWidget {
 }
 
 class _ChaldeaState extends State<Chaldea> {
-  Locale locale;
-
   void onAppUpdate() {
-    setState(() {
-      locale=LangCode.getLocale(db?.appData?.language);
-    });
+    setState(() {});
   }
 
-  Future<Null> initial() async {
+  Future<Null> initialApp() async {
     await db.initial();
     db.onAppUpdate = this.onAppUpdate;
-    await db.loadData(app: true, game: false);
-    await db.loadZipAssets('res/data/dataset.zip',
-        dir: db.appData.gameDataPath);
-    await db.loadData(app: false, game: true);
+    await db.loadUserData();
+    await db.loadAssetsData('res/data/dataset.zip',
+        dir: db.userData.gameDataPath);
+    await db.loadGameData();
+    setState(() {});
   }
 
   @override
   void initState() {
-    // update anything after initial()!!!
+    // show anything after data loaded in initial()!!!
     super.initState();
-    initial().then((_) {
-      onAppUpdate();
-    });
+    initialApp();
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      locale: locale,
+      locale: LangCode.getLocale(db.userData?.language),
       title: "Chaldea",
       localizationsDelegates: [
         S.delegate,
@@ -49,8 +42,9 @@ class _ChaldeaState extends State<Chaldea> {
         GlobalWidgetsLocalizations.delegate
       ],
       supportedLocales: S.delegate.supportedLocales,
-      localeResolutionCallback: S.delegate.resolution(fallback: Locale('zh','')),
-      home: db.appData == null ? BlankPage() : HomePage(), //pass a function for exit button with context
+      localeResolutionCallback:
+          S.delegate.resolution(fallback: Locale('zh', '')),
+      home: db.userData == null ? BlankPage() : HomePage(),
     );
   }
 }

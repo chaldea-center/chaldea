@@ -1,16 +1,29 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class InputComponent<T> {
   T data;
-  TextEditingController textEditingController;
+  TextEditingController controller;
   FocusNode focusNode;
 
-  InputComponent(
-      {@required this.data, this.textEditingController, this.focusNode})
+  InputComponent({@required this.data, this.controller, this.focusNode})
       : assert(data != null);
 
+  void selectAll() {
+    if (controller != null) {
+      controller.selection =
+          TextSelection(baseOffset: 0, extentOffset: controller.text.length);
+    }
+  }
+
+  void unSelect() {
+    if (controller != null) {
+      controller.selection = TextSelection(baseOffset: 0, extentOffset: 0);
+    }
+  }
+
   void dispose() {
-    textEditingController?.dispose();
+    controller?.dispose();
     focusNode?.dispose();
   }
 }
@@ -19,39 +32,37 @@ class TextInputsManager<T> {
   List<InputComponent<T>> components = [];
 
   // for focus switching
-  List<FocusNode> _focusList = [];
+  List<InputComponent<T>> _observerList = [];
 
-  void addEntry({T datum, TextEditingController controller, FocusNode node}) {
-    // whether they are all required?
-    components.add(InputComponent(
-        data: datum, textEditingController: controller, focusNode: node));
-  }
-
-  InputComponent<T> getComponentByData(T datum){
+  InputComponent<T> getComponentByData(T datum) {
     //TODO: what if multi elements have the same datum
-    return components.firstWhere((e)=>e.data==datum,orElse: ()=>null);
+    return components.firstWhere((e) => e.data == datum, orElse: () => null);
   }
+
   // focus part
-  void addFocus(FocusNode node) {
+  void addObserver(InputComponent component) {
     // could node of _focusList not in _focusNodes list?
     // if could, it's just two functionality
-    _focusList.add(node);
+    _observerList.add(component);
   }
 
-  void moveNextFocus(BuildContext context, FocusNode node) {
-    final index = _focusList.indexOf(node);
-    node.unfocus();
+  void moveNextFocus(BuildContext context, InputComponent component) {
+    final index = _observerList.indexOf(component);
+    component.unSelect();
     if (index < 0) {
       print('WARNING: focus node not in list!');
-    } else if (index == _focusList.length - 1) {
+    } else if (index == _observerList.length - 1) {
       FocusScope.of(context).unfocus();
     } else {
-      FocusScope.of(context).requestFocus(_focusList[index + 1]);
+      final next = _observerList[index + 1];
+      FocusScope.of(context).requestFocus(next.focusNode);
+      next.controller.selection = TextSelection(
+          baseOffset: 0, extentOffset: next.controller.text.length);
     }
   }
 
   void resetFocusList() {
-    _focusList.clear();
+    _observerList.clear();
   }
 
   void dispose() {
