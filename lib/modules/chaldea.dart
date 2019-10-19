@@ -1,6 +1,7 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:chaldea/modules/home/home_page.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 class Chaldea extends StatefulWidget {

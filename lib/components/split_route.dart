@@ -97,9 +97,11 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
     return returnValue;
   }
 
-  /// master-page: opaque(true), detail-page: transparent(false)
+  /// TODO: enhance? set opaque=false when tablet=false **dynamic**,
+  /// but this getter is called only once. thus the error is:
+  /// when portrait to landscape, detail-page is still opaque(black master part)
   @override
-  bool get opaque => settings.isInitialRoute == true || tablet == false;
+  bool get opaque =>settings.isInitialRoute == true;
 
   @override
   Duration get transitionDuration => Duration(milliseconds: 250);

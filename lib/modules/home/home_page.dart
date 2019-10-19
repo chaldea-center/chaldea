@@ -1,8 +1,9 @@
 import 'dart:io';
-import 'package:flutter/services.dart';
+
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/home/gallery_page.dart';
 import 'package:chaldea/modules/home/settings_page.dart';
+import 'package:flutter/services.dart';
 
 class HomePage extends StatefulWidget {
   @override

@@ -350,11 +350,14 @@ Map<String, dynamic> _$EventToJson(Event instance) => <String, dynamic>{
       'lottery': instance.lottery,
     };
 
-UserData _$AppDataFromJson(Map<String, dynamic> json) {
+UserData _$UserDataFromJson(Map<String, dynamic> json) {
   return UserData(
     language: json['language'] as String,
     criticalWidth: (json['criticalWidth'] as num)?.toDouble(),
     gameDataPath: json['gameDataPath'] as String,
+    sliderUrls: (json['sliderUrls'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(k, e as String),
+    ),
     galleries: (json['galleries'] as Map<String, dynamic>)?.map(
       (k, e) => MapEntry(k, e as bool),
     ),
@@ -371,10 +374,11 @@ UserData _$AppDataFromJson(Map<String, dynamic> json) {
       : SvtFilterData.fromJson(json['itemFilter'] as Map<String, dynamic>);
 }
 
-Map<String, dynamic> _$AppDataToJson(UserData instance) => <String, dynamic>{
+Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'language': instance.language,
       'criticalWidth': instance.criticalWidth,
       'gameDataPath': instance.gameDataPath,
+      'sliderUrls': instance.sliderUrls,
       'galleries': instance.galleries,
       'curUserName': instance.curUserName,
       'users': instance.users,

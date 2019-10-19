@@ -31,34 +31,6 @@ class Database {
   }
 
   // load data
-  Future<Null> loadData({bool user = true, bool game = true}) async {
-    if (user) {
-      userData = parseJson(
-          parser: () =>
-              UserData.fromJson(getJsonFromFile(userDataFilename, k: {})),
-          k: () => UserData());
-      print('appdata reloaded');
-    }
-
-    if (game) {
-      // use downloaded data if exist
-      gameData = parseJson(
-          parser: () => GameData.fromJson({
-                'servants': getJsonFromFile(
-                    join(userData.gameDataPath, 'servants.json')),
-                'crafts': <String, String>{},
-                'items':
-                    getJsonFromFile(join(userData.gameDataPath, 'items.json')),
-                'icons':
-                    getJsonFromFile(join(userData.gameDataPath, 'icons.json')),
-                "events":
-                    getJsonFromFile(join(userData.gameDataPath, 'events.json'))
-              }),
-          k: () => GameData());
-      print('gamedata reloaded');
-    }
-  }
-
   Future<Null> loadGameData() async {
     // TODO: use downloaded data if exist
     gameData = parseJson(

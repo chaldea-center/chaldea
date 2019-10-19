@@ -31,6 +31,7 @@ dependencies:
   json_annotation: ^3.0.0
   cached_network_image: ^1.1.1
   archive: ^2.0.10
+  url_launcher: ^5.2.0
 
 dev_dependencies:
   flutter_test:

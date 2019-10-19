@@ -27,6 +27,7 @@ class S implements WidgetsLocalizations {
   String get cur_account => "Current Account";
   String get delete => "Delete";
   String get edit => "Edit";
+  String get event_title => "Events";
   String get gallery_tab_name => "Home";
   String get hello => "Hello！";
   String get input_error => "Invalid input value.";
@@ -37,7 +38,7 @@ class S implements WidgetsLocalizations {
   String get ok => "OK";
   String get rename => "Rename";
   String get restore => "Restore";
-  String get servant => "Servant";
+  String get servant => "Servants";
   String get servant_title => "Servant";
   String get server => "Server";
   String get server_cn => "CN";
@@ -85,6 +86,8 @@ class $zh_TW extends S {
   String get settings_language => "語言";
   @override
   String get more => "More";
+  @override
+  String get event_title => "Events";
   @override
   String get settings_data => "數據";
   @override
@@ -144,6 +147,8 @@ class $ja extends S {
   @override
   String get more => "More";
   @override
+  String get event_title => "Events";
+  @override
   String get settings_data => "データ";
   @override
   String get cur_account => "アカウント";
@@ -176,23 +181,23 @@ class $zh extends S {
   TextDirection get textDirection => TextDirection.ltr;
 
   @override
-  String get cancel => "Cancel";
+  String get cancel => "取消";
   @override
-  String get server => "Server";
+  String get server => "服务器";
   @override
   String get backup => "Backup to ...";
   @override
   String get language => "简体中文";
   @override
-  String get delete => "Delete";
+  String get delete => "删除";
   @override
   String get servant => "从者";
   @override
-  String get ok => "OK";
+  String get ok => "确定";
   @override
-  String get server_cn => "CN";
+  String get server_cn => "国服";
   @override
-  String get item_title => "Items";
+  String get item_title => "素材";
   @override
   String get gallery_tab_name => "首页";
   @override
@@ -204,27 +209,29 @@ class $zh extends S {
   @override
   String get settings_language => "语言";
   @override
-  String get more => "More";
+  String get more => "更多";
+  @override
+  String get event_title => "活动";
   @override
   String get settings_data => "数据";
   @override
   String get cur_account => "当前账号";
   @override
-  String get rename => "Rename";
+  String get rename => "重命名";
   @override
-  String get input_error => "Invalid input value.";
+  String get input_error => "无效输入值";
   @override
-  String get server_jp => "JP";
+  String get server_jp => "日服";
   @override
   String get hello => "你好！Master!";
   @override
-  String get servant_title => "Servant";
+  String get servant_title => "从者";
   @override
   String get settings_tab_name => "设置";
   @override
   String get settings_tutorial => "使用帮助";
   @override
-  String get new_account => "New account";
+  String get new_account => "新建账号";
 }
 
 class GeneratedLocalizationsDelegate extends LocalizationsDelegate<S> {

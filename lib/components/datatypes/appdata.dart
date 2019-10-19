@@ -7,11 +7,12 @@ class UserData {
   String language;
   double criticalWidth;
   String gameDataPath;
+  Map<String,String> sliderUrls;
   Map<String, bool> galleries;
 
-  // user-related data
+  // user-related game data
   String curUserName;
-  Map<String, User> users = <String, User>{};
+  Map<String, User> users;
 
   //filters, ItemFilterDat to be done
   SvtFilterData svtFilter;
@@ -21,6 +22,7 @@ class UserData {
       {this.language,
       this.criticalWidth,
       this.gameDataPath,
+        this.sliderUrls,
       this.galleries,
       this.curUserName,
       this.users,
@@ -28,6 +30,7 @@ class UserData {
     // not initiate language: auto-change language if not set yet.
     String defaultName = 'default';
     gameDataPath ??= 'dataset';
+    sliderUrls??={};
     galleries ??= {};
     users ??= {defaultName: User(name: defaultName)};
     if (!users.containsKey(curUserName)) {
@@ -38,9 +41,9 @@ class UserData {
 
   // json_serializable
   factory UserData.fromJson(Map<String, dynamic> data) =>
-      _$AppDataFromJson(data);
+      _$UserDataFromJson(data);
 
-  Map<String, dynamic> toJson() => _$AppDataToJson(this);
+  Map<String, dynamic> toJson() => _$UserDataToJson(this);
 }
 
 @JsonSerializable()

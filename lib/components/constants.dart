@@ -46,29 +46,28 @@ class GalleryItem {
   static const String master_equip = 'master_equip';
   static const String backup = 'backup';
   static const String more = 'more';
-  static Map<String, GalleryItem> allItems;
+//  static Map<String, GalleryItem> allItems;
 
   // instant part
-  final String title;
+  String name;
+  String Function(BuildContext context) titleBuilder;
   final IconData icon;
-  final String routeName;
   final WidgetBuilder builder;
-  final bool isInitialRoute;
+  final bool isDetail;
 
   GalleryItem(
-      {@required this.title,
+      {@required this.name,
+      @required this.titleBuilder,
       @required this.icon,
-      @required this.routeName,
       @required this.builder,
-      this.isInitialRoute})
-      : assert(title != null),
+      this.isDetail=false})
+      : assert(titleBuilder != null),
         assert(icon != null),
-        assert(routeName != null),
         assert(builder != null);
 
   @override
   String toString() {
-    return '$runtimeType($title $routeName)';
+    return '$runtimeType($name)';
   }
 }
 
@@ -166,10 +165,9 @@ String formatNumToString<T>(T number, [String style]) {
         body = num % 100 == 0 ? '${num ~/ 100}%' : '${num / 100.0}%';
         break;
       case 'kilo':
-        if(num==0){
-          body=num.toString();
-        }
-        else if (num % 1000000000 == 0) {
+        if (num == 0) {
+          body = num.toString();
+        } else if (num % 1000000000 == 0) {
           body = formatNumToString(num ~/ 1000000000, 'decimal') + 'G';
         } else if (num % 1000000 == 0) {
           body = formatNumToString(num ~/ 1000000, 'decimal') + 'M';
@@ -181,16 +179,16 @@ String formatNumToString<T>(T number, [String style]) {
         break;
       case 'decimal':
         String s = '';
-        if(num==0){
-          body=num.toString();
-        }else{
-          List<String> list=[];
+        if (num == 0) {
+          body = num.toString();
+        } else {
+          List<String> list = [];
           while (num > 0) {
-            list.insert(0, '${num % 1000}'.padLeft(3,'0'));
-            s = '${num % 1000}'.padLeft(3,'0')+',$s';
+            list.insert(0, '${num % 1000}'.padLeft(3, '0'));
+            s = '${num % 1000}'.padLeft(3, '0') + ',$s';
             num = num ~/ 1000;
           }
-          list[0]=int.parse(list[0]).toString();
+          list[0] = int.parse(list[0]).toString();
           body = list.join(',');
         }
         break;
