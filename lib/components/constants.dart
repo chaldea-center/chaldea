@@ -46,6 +46,7 @@ class GalleryItem {
   static const String master_equip = 'master_equip';
   static const String backup = 'backup';
   static const String more = 'more';
+
 //  static Map<String, GalleryItem> allItems;
 
   // instant part
@@ -60,7 +61,7 @@ class GalleryItem {
       @required this.titleBuilder,
       @required this.icon,
       @required this.builder,
-      this.isDetail=false})
+      this.isDetail = false})
       : assert(titleBuilder != null),
         assert(icon != null),
         assert(builder != null);
@@ -202,3 +203,21 @@ String formatNumToString<T>(T number, [String style]) {
 }
 
 num sum(Iterable<num> x) => x.fold(0, (p, c) => p + c);
+
+Map<K, V> sumDict<K, V extends num>(List<Map<K, V>> list) {
+  Map<K, V> res = {};
+  for (var m in list) {
+    m.forEach((k, v) {
+      res[k] = (res[k] ?? 0) + v;
+    });
+  }
+  return res;
+}
+
+Map<K, V> multiplyDict<K, V extends num>(Map<K, V> d, V multiplier) {
+  Map<K, V> res = {};
+  d.forEach((k, v) {
+    res[k] = v * multiplier;
+  });
+  return res;
+}

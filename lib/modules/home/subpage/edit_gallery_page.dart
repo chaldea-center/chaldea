@@ -15,11 +15,9 @@ class _EditGalleryPageState extends State<EditGalleryPage> {
   Widget build(BuildContext context) {
     List<Widget> tiles = [];
     widget.galleries?.forEach((name, item) {
-      if (db.userData.galleries.containsKey(name) &&
-          name != GalleryItem.more &&
-          widget.galleries?.containsKey(name) == true) {
+      if (name != GalleryItem.more) {
         tiles.add(SwitchListTile.adaptive(
-          value: db.userData.galleries[name],
+          value: db.userData.galleries[name] ?? true,
           onChanged: (bool _selected) {
             db.userData.galleries[name] = _selected;
             db.onAppUpdate();

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:flutter/services.dart';
@@ -16,7 +17,8 @@ class ItemListPageState extends State<ItemListPage>
   Map<int, TextInputsManager<Item>> inputManagers = {};
   InputComponent _lastComponent;
   ItemCostStatistics statistics;
-  bool filtered = true;
+  Map<String, int> eventItemStatistics;
+  bool filtered = false;
 
   @override
   void deactivate() {
@@ -28,6 +30,11 @@ class ItemListPageState extends State<ItemListPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: categories.length, vsync: this);
+    List<Map<String, int>> eventItemList = [];
+    db.gameData.events.forEach((name, event) {
+      eventItemList.add(event.getAllItems(db.curPlan.events[name]));
+    });
+    eventItemStatistics = sumDict(eventItemList);
     statistics = ItemCostStatistics(db.gameData, db.curPlan.servants);
     final items = db.gameData.items;
     InputComponent<Item> generateComponent(String k) {
@@ -63,10 +70,11 @@ class ItemListPageState extends State<ItemListPage>
       TextInputsManager<Item> manager,
       InputComponent<Item> component,
       int ownNum,
+      int eventNum = 0,
       PartSet<int> itemStat}) {
     final iconKey = component.data.name;
     final allNum = sum(itemStat.values);
-    int leftNum = ownNum - allNum;
+    int leftNum = ownNum + eventNum - allNum;
     bool enough = leftNum >= 0;
     final highlightStyle = TextStyle(color: enough ? null : Colors.redAccent);
 
@@ -82,24 +90,34 @@ class ItemListPageState extends State<ItemListPage>
                 parent: this,
               )),
       leading: Image.file(db.getIconFile(iconKey), height: 110 * 0.5),
-      title: Text(iconKey),
+      title: Row(
+        children: <Widget>[
+          Expanded(flex: 5, child: Text(iconKey)),
+          Expanded(
+              flex: 3,
+              child: AutoSizeText(
+                '剩余 ${formatNumToString(leftNum)}',
+                maxLines: 1,
+                style: highlightStyle,
+              ))
+        ],
+      ),
       subtitle: Row(
         children: <Widget>[
           Expanded(
-              flex: 3,
+              flex: 5,
               child: Text(
                 '共需 ${formatNumToString(allNum, "decimal")}' +
                     (iconKey == 'QP' ? '' : '(${itemStat.values.join("/")})'),
-                style: highlightStyle,
+                style: null,
               )),
-          Text('剩余 ', style: highlightStyle),
-          ConstrainedBox(
-            constraints: BoxConstraints(minWidth: 37),
-            child: Align(
-                alignment: Alignment.centerRight,
-                child: Text(formatNumToString(leftNum, 'decimal'),
-                    style: highlightStyle)),
-          )
+          Expanded(
+              flex: 3,
+              child: AutoSizeText(
+                '活动 ${formatNumToString(eventNum, 'decimal')}',
+                style: null,
+                maxLines: 1,
+              ))
         ],
       ),
       titlePadding: EdgeInsets.fromLTRB(16, 0, 16, 0),
@@ -171,6 +189,7 @@ class ItemListPageState extends State<ItemListPage>
                   filtered: filtered,
                   manager: manager,
                   ownNum: ownNum,
+                  eventNum: eventItemStatistics[iconKey] ?? 0,
                   itemStat: itemStat,
                   component: component);
               if (tile != null) {

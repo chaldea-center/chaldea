@@ -43,6 +43,23 @@ class _SvtFilterPageState extends State<SvtFilterPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text('显示&排序'),
+          ToggleButtons(
+            constraints: BoxConstraints(),
+            selectedColor: Colors.white,
+            fillColor: Theme.of(context).primaryColor,
+            children: List.generate(
+                2,
+                    (i) => Padding(
+                  padding:
+                  EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  child: Text(['List', 'Grid'][i]),
+                )),
+            isSelected: [!filterData.useGrid, filterData.useGrid],
+            onPressed: (i) {
+              filterData.useGrid = i == 1;
+              updateParentFilterResult();
+            },
+          ),
           Wrap(
             spacing: 6,
             crossAxisAlignment: WrapCrossAlignment.center,
@@ -51,7 +68,7 @@ class _SvtFilterPageState extends State<SvtFilterPage> {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Text(' ${i + 1}   '),
+                    Text('${i + 1}  '),
                     DropdownButton(
                         value: filterData.sortKeys[i],
                         items: SvtFilterData.sortKeyData.map((key) {
@@ -72,23 +89,6 @@ class _SvtFilterPageState extends State<SvtFilterPage> {
                         })
                   ],
                 ),
-              ToggleButtons(
-                constraints: BoxConstraints(),
-                selectedColor: Colors.white,
-                fillColor: Theme.of(context).primaryColor,
-                children: List.generate(
-                    2,
-                    (i) => Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          child: Text(['List', 'Grid'][i]),
-                        )),
-                isSelected: [!filterData.useGrid, filterData.useGrid],
-                onPressed: (i) {
-                  filterData.useGrid = i == 1;
-                  updateParentFilterResult();
-                },
-              )
             ],
           )
         ],

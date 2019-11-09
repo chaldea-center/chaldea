@@ -70,6 +70,25 @@ class ServantPlan {
     npLv ??= 1;
     favorite ??= false;
   }
+
+  void reset() {
+    ascensionLv = [0, 0];
+    skillLv = List.generate(3, (i) => [1, 1]);
+    dressLv = [];
+    grailLv = [0, 0];
+    // npEnhanced??=null;
+    npLv = 1;
+  }
+
+  void planMax() {
+    ascensionLv[1] = 4;
+    for (var s in skillLv) {
+      s[1] = 10;
+    }
+    for (var s in dressLv) {
+      s[1] = 1;
+    }
+  }
 }
 
 @JsonSerializable()
@@ -136,16 +155,16 @@ class ItemCostStatistics {
     gameData.servants.forEach((no, svt) {
       if (plans != null && plans[no]?.favorite == true) {
         planCountBySvt[no] = PartSet<Map<String, int>>(
-            ascension: svt.calAscensionCost(lv: plans[no].ascensionLv),
-            skill: svt.calSkillCost(lv: plans[no].skillLv),
-            dress: svt.calDressCost(lv: plans[no].dressLv));
+            ascension: svt.getAscensionCost(lv: plans[no].ascensionLv),
+            skill: svt.getSkillCost(lv: plans[no].skillLv),
+            dress: svt.getDressCost(lv: plans[no].dressLv));
       } else {
         planCountBySvt[no] = PartSet<Map<String, int>>(k: () => {});
       }
       allCountBySvt[no] = PartSet<Map<String, int>>(
-          ascension: svt.calAscensionCost(),
-          skill: svt.calSkillCost(),
-          dress: svt.calDressCost());
+          ascension: svt.getAscensionCost(),
+          skill: svt.getSkillCost(),
+          dress: svt.getDressCost());
     });
     // cal items
     for (String itemKey in gameData.items.keys) {

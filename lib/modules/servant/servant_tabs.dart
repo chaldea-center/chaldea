@@ -89,25 +89,30 @@ class LevelUpCostPageState extends State<LevelUpCostPage> {
 
 class PlanTab extends StatefulWidget {
   final ServantDetailPageState parent;
+  final Servant svt;
+  final ServantPlan plan;
 
-  const PlanTab({Key key, this.parent}) : super(key: key);
+  PlanTab({Key key, this.parent, this.svt, this.plan}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _PlanTabState();
+  State<StatefulWidget> createState() =>
+      _PlanTabState(parent: this.parent, svt: this.svt, plan: this.plan);
 }
 
 class _PlanTabState extends State<PlanTab> with AutomaticKeepAliveClientMixin {
   Servant svt;
   ServantPlan plan;
 
-  _PlanTabState({this.svt, this.plan});
+  _PlanTabState(
+      {ServantDetailPageState parent, Servant svt, ServantPlan plan}) {
+    this.svt = svt ?? parent?.svt;
+    assert(this.svt != null);
+    this.plan = plan ?? widget.parent?.plan ?? ServantPlan();
+  }
 
   @override
   void initState() {
     super.initState();
-    svt ??= widget.parent?.svt;
-    plan ??= widget.parent?.plan ?? ServantPlan();
-    assert(svt != null);
   }
 
   Widget buildPlanRow(

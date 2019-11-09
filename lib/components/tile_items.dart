@@ -223,25 +223,23 @@ class RangeSelector<T extends num> extends StatefulWidget {
 
   final bool increasing;
 
-  const RangeSelector(
+  RangeSelector(
       {Key key,
       this.start,
       this.end,
       this.startItems,
       this.endItems,
-      this.increasing=true,
+      this.increasing = true,
       this.onChanged})
       : super(key: key);
 
   @override
-  _RangeSelectorState createState() => _RangeSelectorState<T>(start, end);
+  _RangeSelectorState createState() => _RangeSelectorState<T>();
 }
 
 class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
-  T start;
-  T end;
 
-  _RangeSelectorState(this.start, this.end);
+  _RangeSelectorState();
 
   @override
   Widget build(BuildContext context) {
@@ -249,7 +247,7 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         DropdownButton<T>(
-          value: start,
+          value: widget.start,
           items: widget.startItems
               .map((entry) => DropdownMenuItem<T>(
                     value: entry.key,
@@ -257,16 +255,16 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
                   ))
               .toList(),
           onChanged: (value) {
-            start = value;
-            end = widget.increasing == null
-                ? end
-                : widget.increasing ? max(start, end) : min(start, end);
+            final start = value;
+            final end = widget.increasing == null
+                ? widget.end
+                : widget.increasing ? max(start, widget.end) : min(start, widget.end);
             widget.onChanged(start, end);
           },
         ),
         Text('   →   '),
         DropdownButton<T>(
-          value: end,
+          value: widget.end,
           items: widget.endItems
               .map((entry) => DropdownMenuItem<T>(
                     value: entry.key,
@@ -274,10 +272,10 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
                   ))
               .toList(),
           onChanged: (value) {
-            end = value;
-            start = widget.increasing == null
-                ? start
-                : widget.increasing ? min(start, end) : max(start, end);
+            final end = value;
+            final start = widget.increasing == null
+                ? widget.start
+                : widget.increasing ? min(widget.start, end) : max(widget.start, end);
             widget.onChanged(start, end);
           },
         )
@@ -352,12 +350,13 @@ class FilterGroup<T> extends StatelessWidget {
       this.generator,
       this.showMatchAll = false,
       this.showInvert = false,
-        this.useRadio=false,
+      this.useRadio = false,
       this.onFilterChanged})
       : assert(values != null),
         super(key: key);
 
-  Widget _buildSwitch(bool checked, String text, VoidCallback onTap,BuildContext context) {
+  Widget _buildSwitch(
+      bool checked, String text, VoidCallback onTap, BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Row(
@@ -391,14 +390,14 @@ class FilterGroup<T> extends StatelessWidget {
                       if (onFilterChanged != null) {
                         onFilterChanged(values);
                       }
-                    },context),
+                    }, context),
                   if (showInvert)
                     _buildSwitch(values.invert, 'Invert', () {
                       values.invert = !values.invert;
                       if (onFilterChanged != null) {
                         onFilterChanged(values);
                       }
-                    },context)
+                    }, context)
                 ],
               ),
             ),
@@ -410,7 +409,7 @@ class FilterGroup<T> extends StatelessWidget {
                   value: key,
                   child: generator == null ? Text(key) : generator(key),
                   onChanged: (v) {
-                    if(useRadio){
+                    if (useRadio) {
                       values.options.clear();
                     }
                     values.options[key] = v;

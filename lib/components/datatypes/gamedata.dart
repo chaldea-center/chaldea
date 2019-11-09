@@ -57,15 +57,15 @@ class Servant {
       this.passiveSkills,
       this.itemCost});
 
-  Map<String, int> calculateCost(ServantPlan plan, {bool planned = true}) {
+  Map<String, int> getAllCost(ServantPlan plan, {bool planned = true}) {
     if (planned && (plan == null || plan.favorite == false)) {
       return {};
     }
     Map<String, int> cost = {};
     List<Map<String, int>> all = [
-      calAscensionCost(lv: planned ? plan.ascensionLv : null),
-      calSkillCost(lv: planned ? plan.skillLv : null),
-      calDressCost(lv: planned ? plan.dressLv : null)
+      getAscensionCost(lv: planned ? plan.ascensionLv : null),
+      getSkillCost(lv: planned ? plan.skillLv : null),
+      getDressCost(lv: planned ? plan.dressLv : null)
     ];
     all.forEach((e) => e.forEach((item, num) {
           cost[item] = (cost[item] ?? 0) + num;
@@ -73,7 +73,7 @@ class Servant {
     return cost;
   }
 
-  Map<String, int> calAscensionCost({List<int> lv}) {
+  Map<String, int> getAscensionCost({List<int> lv}) {
     Map<String, int> cost = {};
     if (itemCost == null || itemCost.ascension == null) {
       return cost;
@@ -88,7 +88,7 @@ class Servant {
     return cost;
   }
 
-  Map<String, int> calSkillCost({List<List<int>> lv}) {
+  Map<String, int> getSkillCost({List<List<int>> lv}) {
     Map<String, int> cost = {};
     if (itemCost == null || itemCost.skill == null) {
       return cost;
@@ -105,7 +105,7 @@ class Servant {
     return cost;
   }
 
-  Map<String, int> calDressCost({List<List<int>> lv}) {
+  Map<String, int> getDressCost({List<List<int>> lv}) {
     Map<String, int> cost = {};
     if (itemCost == null || itemCost.dress == null) {
       return cost;
@@ -369,4 +369,14 @@ class Event {
   factory Event.fromJson(Map<String, dynamic> data) => _$EventFromJson(data);
 
   Map<String, dynamic> toJson() => _$EventToJson(this);
+
+  Map<String, int> getAllItems(EventPlan plan) {
+    if (plan == null || !plan.enable) {
+      return {};
+    } else {
+      Map<String, int> lotterySum =
+          lottery == null ? {} : multiplyDict(lottery, plan.lottery);
+      return sumDict([items, plan.hunting, lotterySum]);
+    }
+  }
 }

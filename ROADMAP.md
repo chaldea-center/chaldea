@@ -13,3 +13,4 @@
  - remember tab no
  - modalSheet meet master-detail view?
  - add QP in item_list_page 
+ - add NEXT button in input list on iOS.

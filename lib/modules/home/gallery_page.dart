@@ -98,7 +98,7 @@ class _GalleryPageState extends State<GalleryPage> {
   List<Widget> _getAllGalleries(BuildContext context) {
     List<Widget> _galleryItems = [];
     kAllGalleryItems.forEach((name, item) {
-      if (db.userData.galleries[name] == true || name == GalleryItem.more) {
+      if ((db.userData.galleries[name] ?? true) || name == GalleryItem.more) {
         _galleryItems.add(FlatButton(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,

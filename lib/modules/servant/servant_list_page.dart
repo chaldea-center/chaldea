@@ -48,8 +48,10 @@ class ServantListPageState extends State<ServantListPage> {
     }
     // svt data filter
     // class name
-    if (!filterData.className.singleValueFilter(svt.info.className,
-        compares: {'Beast': (o, v) => v.startsWith(o)})) {
+    if (!filterData.className.singleValueFilter(svt.info.className, compares: {
+      'Beast': (o, v) => v.startsWith(o),
+      'Caster': (o, v) => v.contains(o)
+    })) {
       return false;
     }
     // single value
@@ -202,20 +204,29 @@ class ServantListPageState extends State<ServantListPage> {
         case '星级':
           return svt.info.rarity;
         case '职阶':
-          return SvtFilterData.classesData.indexWhere(
-              (v) => v.startsWith(svt.info.className.substring(0, 5)));
+          if (svt.info.className == 'Grand Caster') {
+            return SvtFilterData.classesData.indexWhere((v) => v == 'Caster');
+          } else if (svt.info.className.startsWith('Beast')) {
+            return SvtFilterData.classesData.indexWhere((v) => v == 'Beast');
+          } else {
+            return SvtFilterData.classesData.indexWhere(
+                (v) => v.startsWith(svt.info.className.substring(0, 5)));
+          }
+          break;
         default:
           return 0;
       }
     };
 
     shownSvtList.sort((a, b) {
-      return (_getSortValue(a, filterData.sortKeys[0]) -
-                  _getSortValue(b, filterData.sortKeys[0])) *
-              (filterData.sortDirections[0] ? 1000 : -1000) +
-          (_getSortValue(a, filterData.sortKeys[1]) -
-                  _getSortValue(b, filterData.sortKeys[1])) *
-              (filterData.sortDirections[1] ? 1 : -1);
+      int r = 0;
+      for (var i = 0; i < filterData.sortKeys.length; i++) {
+        final sortKey = filterData.sortKeys[i];
+        r = r * 1000 +
+            (_getSortValue(a, sortKey) - _getSortValue(b, sortKey)) *
+                (filterData.sortDirections[i] ? 1000 : -1000);
+      }
+      return r;
     });
     return filterData.useGrid
         ? _buildGridView(shownSvtList)

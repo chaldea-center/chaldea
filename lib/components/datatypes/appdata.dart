@@ -84,7 +84,7 @@ class SvtFilterData {
       this.traitSpecial}) {
     favorite ??= false;
     filterString ??= '';
-    sortKeys ??= List.generate(2, (i) => sortKeyData[i]);
+    sortKeys ??= List.generate(3, (i) => sortKeyData[i]);
     sortDirections ??= List.filled(sortKeys.length, true);
     useGrid ??= false;
     rarity ??= FilterGroupData();

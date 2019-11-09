@@ -1,7 +1,6 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:chaldea/modules/home/home_page.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 class Chaldea extends StatefulWidget {
@@ -45,7 +44,7 @@ class _ChaldeaState extends State<Chaldea> {
       supportedLocales: S.delegate.supportedLocales,
       localeResolutionCallback:
           S.delegate.resolution(fallback: Locale('zh', '')),
-      home: db.userData == null ? BlankPage() : HomePage(),
+      home: db.userData == null ? BlankPage(showProgress: true) : HomePage(),
     );
   }
 }

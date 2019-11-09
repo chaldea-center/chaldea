@@ -56,15 +56,40 @@ class ServantDetailPageState extends State<ServantDetailPage>
                   fit: BoxFit.contain, height: 100),
               titlePadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               title: Text('No.${svt.no}\n${svt.info.className}'),
-              trailing: IconButton(
-                icon: plan.favorite
-                    ? Icon(Icons.favorite, color: Colors.redAccent)
-                    : Icon(Icons.favorite_border),
-                onPressed: () {
-                  plan.favorite = !plan.favorite;
-                  setState(() {});
-                },
+              subtitle: Align(
+                alignment: Alignment.centerRight,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    IconButton(
+                        icon: Icon(Icons.trending_up),
+                        onPressed: () {
+                          setState(() {
+                            print('plan max?');
+                            plan.planMax();
+                          });
+                        }),
+                    IconButton(
+                        icon: Icon(Icons.replay),
+                        onPressed: () {
+                          setState(() {
+                            plan.reset();
+                          });
+                        }),
+                    IconButton(
+                      icon: plan.favorite
+                          ? Icon(Icons.favorite, color: Colors.redAccent)
+                          : Icon(Icons.favorite_border),
+                      onPressed: () {
+                        setState(() {
+                          plan.favorite = !plan.favorite;
+                        });
+                      },
+                    ),
+                  ],
+                ),
               ),
+              trailing: null,
             ),
             TabBar(
               controller: _tabController,
@@ -82,7 +107,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                 children: _tabNames.map((name) {
                   switch (name) {
                     case '规划':
-                      return PlanTab(parent: this);
+                      return PlanTab(parent: this, plan: plan);
                     case '技能':
                       return SkillTab(parent: this);
                     case '宝具':
