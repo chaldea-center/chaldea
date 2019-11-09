@@ -1,5 +1,6 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/blank_page.dart';
+import 'package:chaldea/modules/servant/tabs/svt_illust_tab.dart';
 import 'package:chaldea/modules/servant/tabs/svt_info_tab.dart';
 
 import 'tabs/svt_plan_tab.dart';
@@ -53,7 +54,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
       ));
     };
 
-    _builders['卡面'] = (context) => getDefaultPage('卡面');
+    _builders['卡面'] = (context) => SvtIllustTab(parent: this);
 
     _builders['语音'] = (context) => getDefaultPage('语音');
   }

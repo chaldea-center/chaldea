@@ -23,7 +23,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
   Widget build(BuildContext context) {
     super.build(context);
     return ListView(
-      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      padding: EdgeInsets.fromLTRB(0, 8, 0, 10),
       children: <Widget>[
         InfoRow.fromChild(children: [
           Text(svt.info.name, style: TextStyle(fontWeight: FontWeight.bold))
@@ -33,22 +33,10 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
         InfoRow.fromText(texts: ['No.${svt.no}', svt.info.className]),
         InfoRow.fromText(texts: ['画师', '声优'], color: InfoCell.headerColor),
         InfoRow.fromText(texts: [svt.info.illustrator, svt.info.cv.join(', ')]),
-        InfoRow.fromText(texts: ['性别','身高','体重'],color: InfoCell.headerColor),
-        InfoRow.fromText(texts: [svt.info.gender,svt.info.height,svt.info.weight]),
-//        InfoRow(
-//          children: <Widget>[
-//            InfoCell.header(text: '性别', flex: 1),
-//            InfoCell.header(text: '职阶', flex: 2),
-//            InfoCell.header(text: '属性', flex: 3),
-//          ],
-//          color: InfoCell.headerColor,
-//        ),
-//        InfoRow(children: <Widget>[
-//          InfoCell(text: svt.info.gender, flex: 1),
-//          InfoCell(text: svt.info.className, flex: 2),
-//          InfoCell(text: svt.info.alignments.join('·'), flex: 2),
-//          InfoCell(text: svt.info.attribute, flex: 1),
-//        ]),
+        InfoRow.fromText(
+            texts: ['性别', '身高', '体重'], color: InfoCell.headerColor),
+        InfoRow.fromText(
+            texts: [svt.info.gender, svt.info.height, svt.info.weight]),
         InfoRow.fromText(
           texts: ['筋力', '耐久', '敏捷', '魔力', '幸运', '宝具'],
           color: InfoCell.headerColor,
@@ -68,7 +56,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
           children: <Widget>[
             InfoCell(text: '人形', color: InfoCell.headerColor, flex: 1),
             InfoCell(text: '被EA特攻', color: InfoCell.headerColor, flex: 2),
-            InfoCell(text: '属性',color: InfoCell.headerColor,flex: 3)
+            InfoCell(text: '属性', color: InfoCell.headerColor, flex: 3)
           ],
         ),
         InfoRow(
@@ -164,9 +152,6 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
             ].map((v) => '${v / 100}%').toList(),
           ),
         ],
-        Container(
-          height: 100,
-        )
       ],
     );
   }
@@ -238,12 +223,15 @@ class InfoCell extends StatelessWidget {
     if (child != null) {
       _child = child;
     } else {
-      _child = Text(text,textAlign: TextAlign.center,);
+      _child = Text(
+        text,
+        textAlign: TextAlign.center,
+      );
     }
 
     return Expanded(
       flex: flex,
-      child:  DecoratedBox(
+      child: DecoratedBox(
         decoration: BoxDecoration(
             color: color, border: Border(left: borderSide, right: borderSide)),
         child: Align(
