@@ -8,13 +8,22 @@ class CustomTile extends StatelessWidget {
   final Widget title;
   final Widget subtitle;
   final Widget trailing;
+
+  /// default: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0)
   final EdgeInsets contentPadding;
+
+  /// default: EdgeInsets.symmetric(horizontal: 6.0)
   final EdgeInsets titlePadding;
   final CrossAxisAlignment alignment;
   final bool enabled;
   final bool selected;
   final GestureTapCallback onTap;
   final GestureLongPressCallback onLongPress;
+
+  ///default values
+  static EdgeInsets defaultContentPadding =
+      EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
+  static EdgeInsets defaultTitlePadding = EdgeInsets.symmetric(horizontal: 6.0);
 
   const CustomTile(
       {Key key,

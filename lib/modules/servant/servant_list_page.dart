@@ -1,7 +1,7 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/custom_tile.dart';
 import 'package:chaldea/components/tile_items.dart';
-import 'package:chaldea/modules/servant/servant_detail.dart';
+import 'package:chaldea/modules/servant/servant_detail_page.dart';
 import 'package:chaldea/modules/servant/svt_filter_page.dart';
 import 'package:flutter/material.dart';
 
@@ -58,8 +58,8 @@ class ServantListPageState extends State<ServantListPage> {
     Map<FilterGroupData, String> singleValuePair = {
       filterData.rarity: svt.info.rarity.toString(),
       filterData.obtain: svt.info.obtain,
-      filterData.npColor: svt.nobelPhantasm?.first?.color,
-      filterData.npType: svt.nobelPhantasm?.first?.category,
+      filterData.npColor: svt.treasureDevice?.first?.color,
+      filterData.npType: svt.treasureDevice?.first?.category,
       filterData.attribute: svt.info.attribute,
     };
     for (var entry in singleValuePair.entries) {
@@ -120,7 +120,7 @@ class ServantListPageState extends State<ServantListPage> {
           final plan = db.curPlan.servants[svt.no];
           String text = '';
           if (plan?.favorite == true) {
-            text = '${plan.npLv}宝'
+            text = '${plan.treasureDeviceLv}宝'
                 '${plan.ascensionLv[0]}-'
                 '${plan.skillLv[0][0]}/'
                 '${plan.skillLv[1][0]}/'
@@ -161,7 +161,7 @@ class ServantListPageState extends State<ServantListPage> {
           final plan = db.curPlan.servants[svt.no];
           String text;
           if (plan?.favorite == true) {
-            text = '${plan.npLv}\n'
+            text = '${plan.treasureDeviceLv}\n'
                 '${plan.ascensionLv[0]}-'
                 '${plan.skillLv[0][0]}/'
                 '${plan.skillLv[1][0]}/'

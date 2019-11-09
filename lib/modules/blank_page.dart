@@ -1,3 +1,4 @@
+import 'package:chaldea/components/components.dart';
 import 'package:flutter/material.dart';
 
 class BlankPage extends StatelessWidget {
@@ -9,17 +10,24 @@ class BlankPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       return Scaffold(
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ConstrainedBox(
-              constraints: BoxConstraints(
-                  maxWidth: constraints.biggest.width * 0.5,
-                  maxHeight: constraints.biggest.height * 0.5),
-              child: Image(image: AssetImage("res/img/chaldea.png")),
-            ),
-            if (showProgress) CircularProgressIndicator()
-          ],
+        body: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxWidth: constraints.biggest.width * 0.5,
+                    maxHeight: constraints.biggest.height * 0.5),
+                child: Image(image: AssetImage("res/img/chaldea.png")),
+              ),
+              if (showProgress)
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: CircularProgressIndicator(),
+                )
+            ],
+          ),
         ),
       );
     });

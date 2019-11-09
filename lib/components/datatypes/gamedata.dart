@@ -42,17 +42,18 @@ class Servant {
   String mcLink;
   String icon;
   ServantBaseInfo info;
-  List<NobelPhantasm> nobelPhantasm;
+  List<TreasureDevice> treasureDevice;
   List<List<Skill>> activeSkills;
   List<Skill> passiveSkills;
   ItemCost itemCost;
+  static const List<int> unavailable = [83, 149, 151, 152, 168, 240];
 
   Servant(
       {this.no,
       this.mcLink,
       this.icon,
       this.info,
-      this.nobelPhantasm,
+      this.treasureDevice,
       this.activeSkills,
       this.passiveSkills,
       this.itemCost});
@@ -142,6 +143,8 @@ class ServantBaseInfo {
   bool isHumanoid;
   bool isWeakToEA;
   String name;
+  String nameJp;
+  String nameEn;
   String illustName;
   List<String> nicknames;
   List<String> cv;
@@ -149,7 +152,9 @@ class ServantBaseInfo {
   List<String> traits;
   Map<String, String> ability;
   List<Map<String, String>> illust;
-  Map<String, Map<String, dynamic>> cards;
+  List<String> cards;
+  Map<String, int> cardHits;
+  Map<String, List<int>> cardHitsDamage;
   Map<String, int> npRate;
   int atkMin;
   int hpMin;
@@ -181,6 +186,8 @@ class ServantBaseInfo {
       this.isHumanoid,
       this.isWeakToEA,
       this.name,
+      this.nameJp,
+      this.nameEn,
       this.illustName,
       this.nicknames,
       this.cv,
@@ -189,6 +196,8 @@ class ServantBaseInfo {
       this.ability,
       this.illust,
       this.cards,
+      this.cardHits,
+      this.cardHitsDamage,
       this.npRate,
       this.atkMin,
       this.hpMin,
@@ -204,7 +213,7 @@ class ServantBaseInfo {
 }
 
 @JsonSerializable()
-class NobelPhantasm {
+class TreasureDevice {
   bool enhanced;
   String state;
   String openTime;
@@ -220,12 +229,12 @@ class NobelPhantasm {
   String typeText;
   List<Effect> effects;
 
-  factory NobelPhantasm.fromJson(Map<String, dynamic> data) =>
-      _$NobelPhantasmFromJson(data);
+  factory TreasureDevice.fromJson(Map<String, dynamic> data) =>
+      _$TreasureDeviceFromJson(data);
 
-  Map<String, dynamic> toJson() => _$NobelPhantasmToJson(this);
+  Map<String, dynamic> toJson() => _$TreasureDeviceToJson(this);
 
-  NobelPhantasm(
+  TreasureDevice(
       {this.enhanced,
       this.state,
       this.openTime,

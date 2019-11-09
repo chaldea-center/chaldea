@@ -2,7 +2,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/custom_tile.dart';
 import 'package:chaldea/components/tile_items.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
-import 'package:chaldea/modules/servant/servant_detail.dart';
+import 'package:chaldea/modules/servant/servant_detail_page.dart';
 import 'package:flutter/material.dart';
 
 class ItemDetailPage extends StatefulWidget {

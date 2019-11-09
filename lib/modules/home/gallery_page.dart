@@ -221,11 +221,19 @@ class _GalleryPageState extends State<GalleryPage> {
                           style: TextStyle(fontSize: 18),
                         )),
                     Text('Screen size: ${MediaQuery.of(context).size}'),
+                    Text('assets version:  ${getAssetsVersion()}')
                   ]),
                 ),
               ),
             )
           ],
         ));
+  }
+
+  String getAssetsVersion() {
+    final file = db.getLocalFile('VERSION', rel: db.userData.gameDataPath);
+    return file.existsSync()
+        ? file.readAsStringSync()
+        : 'VERSION file not exist.';
   }
 }

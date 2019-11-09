@@ -58,10 +58,10 @@ Servant _$ServantFromJson(Map<String, dynamic> json) {
     info: json['info'] == null
         ? null
         : ServantBaseInfo.fromJson(json['info'] as Map<String, dynamic>),
-    nobelPhantasm: (json['nobelPhantasm'] as List)
+    treasureDevice: (json['treasureDevice'] as List)
         ?.map((e) => e == null
             ? null
-            : NobelPhantasm.fromJson(e as Map<String, dynamic>))
+            : TreasureDevice.fromJson(e as Map<String, dynamic>))
         ?.toList(),
     activeSkills: (json['activeSkills'] as List)
         ?.map((e) => (e as List)
@@ -84,7 +84,7 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'mcLink': instance.mcLink,
       'icon': instance.icon,
       'info': instance.info,
-      'nobelPhantasm': instance.nobelPhantasm,
+      'treasureDevice': instance.treasureDevice,
       'activeSkills': instance.activeSkills,
       'passiveSkills': instance.passiveSkills,
       'itemCost': instance.itemCost,
@@ -104,6 +104,8 @@ ServantBaseInfo _$ServantBaseInfoFromJson(Map<String, dynamic> json) {
     isHumanoid: json['isHumanoid'] as bool,
     isWeakToEA: json['isWeakToEA'] as bool,
     name: json['name'] as String,
+    nameJp: json['nameJp'] as String,
+    nameEn: json['nameEn'] as String,
     illustName: json['illustName'] as String,
     nicknames: (json['nicknames'] as List)?.map((e) => e as String)?.toList(),
     cv: (json['cv'] as List)?.map((e) => e as String)?.toList(),
@@ -117,8 +119,12 @@ ServantBaseInfo _$ServantBaseInfoFromJson(Map<String, dynamic> json) {
               (k, e) => MapEntry(k, e as String),
             ))
         ?.toList(),
-    cards: (json['cards'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as Map<String, dynamic>),
+    cards: (json['cards'] as List)?.map((e) => e as String)?.toList(),
+    cardHits: (json['cardHits'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(k, e as int),
+    ),
+    cardHitsDamage: (json['cardHitsDamage'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(k, (e as List)?.map((e) => e as int)?.toList()),
     ),
     npRate: (json['npRate'] as Map<String, dynamic>)?.map(
       (k, e) => MapEntry(k, e as int),
@@ -151,6 +157,8 @@ Map<String, dynamic> _$ServantBaseInfoToJson(ServantBaseInfo instance) =>
       'isHumanoid': instance.isHumanoid,
       'isWeakToEA': instance.isWeakToEA,
       'name': instance.name,
+      'nameJp': instance.nameJp,
+      'nameEn': instance.nameEn,
       'illustName': instance.illustName,
       'nicknames': instance.nicknames,
       'cv': instance.cv,
@@ -159,6 +167,8 @@ Map<String, dynamic> _$ServantBaseInfoToJson(ServantBaseInfo instance) =>
       'ability': instance.ability,
       'illust': instance.illust,
       'cards': instance.cards,
+      'cardHits': instance.cardHits,
+      'cardHitsDamage': instance.cardHitsDamage,
       'npRate': instance.npRate,
       'atkMin': instance.atkMin,
       'hpMin': instance.hpMin,
@@ -173,8 +183,8 @@ Map<String, dynamic> _$ServantBaseInfoToJson(ServantBaseInfo instance) =>
       'criticalRate': instance.criticalRate,
     };
 
-NobelPhantasm _$NobelPhantasmFromJson(Map<String, dynamic> json) {
-  return NobelPhantasm(
+TreasureDevice _$TreasureDeviceFromJson(Map<String, dynamic> json) {
+  return TreasureDevice(
     enhanced: json['enhanced'] as bool,
     state: json['state'] as String,
     openTime: json['openTime'] as String,
@@ -195,7 +205,7 @@ NobelPhantasm _$NobelPhantasmFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$NobelPhantasmToJson(NobelPhantasm instance) =>
+Map<String, dynamic> _$TreasureDeviceToJson(TreasureDevice instance) =>
     <String, dynamic>{
       'enhanced': instance.enhanced,
       'state': instance.state,
@@ -526,8 +536,8 @@ ServantPlan _$ServantPlanFromJson(Map<String, dynamic> json) {
     grailLv: (json['grailLv'] as List)?.map((e) => e as int)?.toList(),
     skillEnhanced:
         (json['skillEnhanced'] as List)?.map((e) => e as bool)?.toList(),
-    npEnhanced: json['npEnhanced'] as bool,
-    npLv: json['npLv'] as int,
+    treasureDeviceEnhanced: json['treasureDeviceEnhanced'] as int,
+    treasureDeviceLv: json['treasureDeviceLv'] as int,
     favorite: json['favorite'] as bool,
   );
 }
@@ -539,8 +549,8 @@ Map<String, dynamic> _$ServantPlanToJson(ServantPlan instance) =>
       'dressLv': instance.dressLv,
       'grailLv': instance.grailLv,
       'skillEnhanced': instance.skillEnhanced,
-      'npEnhanced': instance.npEnhanced,
-      'npLv': instance.npLv,
+      'treasureDeviceEnhanced': instance.treasureDeviceEnhanced,
+      'treasureDeviceLv': instance.treasureDeviceLv,
       'favorite': instance.favorite,
     };
 

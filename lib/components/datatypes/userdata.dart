@@ -43,8 +43,8 @@ class ServantPlan {
   List<List<int>> dressLv;
   List<int> grailLv;
   List<bool> skillEnhanced;
-  bool npEnhanced;
-  int npLv;
+  int treasureDeviceEnhanced;
+  int treasureDeviceLv;
   bool favorite;
 
   factory ServantPlan.fromJson(Map<String, dynamic> data) =>
@@ -58,16 +58,16 @@ class ServantPlan {
       this.dressLv,
       this.grailLv,
       this.skillEnhanced,
-      this.npEnhanced,
-      this.npLv,
+      this.treasureDeviceEnhanced,
+      this.treasureDeviceLv,
       this.favorite = false}) {
     ascensionLv ??= [0, 0];
     skillLv ??= List.generate(3, (i) => [1, 1]);
     dressLv ??= [];
     grailLv ??= [0, 0];
     skillEnhanced ??= [null, null, null];
-    // npEnhanced??=null;
-    npLv ??= 1;
+    // treasureDeviceEnhanced??=null;
+    treasureDeviceLv ??= 1;
     favorite ??= false;
   }
 
@@ -76,18 +76,24 @@ class ServantPlan {
     skillLv = List.generate(3, (i) => [1, 1]);
     dressLv = [];
     grailLv = [0, 0];
-    // npEnhanced??=null;
-    npLv = 1;
+    skillEnhanced ??= [null, null, null];
+    treasureDeviceEnhanced = null;
+    treasureDeviceLv = 1;
+    favorite = false;
   }
 
   void planMax() {
-    ascensionLv[1] = 4;
-    for (var s in skillLv) {
-      s[1] = 10;
-    }
-    for (var s in dressLv) {
-      s[1] = 1;
-    }
+    ascensionLv.last = 4;
+    skillLv.forEach((e) => e.last = 10);
+    dressLv.forEach((e) => e.last = 1);
+    favorite = true;
+  }
+
+  void allMax() {
+    ascensionLv = [4, 4];
+    skillLv.forEach((e) => e.fillRange(0, 2, 10));
+    dressLv.forEach((e) => e.fillRange(0, 2, 1));
+    favorite = true;
   }
 }
 
