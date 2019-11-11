@@ -45,7 +45,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
               child: TabBar(
                 controller: _tabController,
                 isScrollable: true,
-                tabs: ['基础资料', '羁绊故事', '羁绊礼装','情人节礼装']
+                tabs: ['基础资料', '羁绊故事', '羁绊礼装', '情人节礼装']
                     .map((tabName) => Tab(
                             child: Text(
                           tabName,
@@ -74,15 +74,13 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
           ],
         ),
         Expanded(
-            child: TabBarView(
-          controller: _tabController,
-          children: [
+          child: TabBarView(controller: _tabController, children: [
             buildBaseInfoTab(),
             buildProfileTab(),
             buildBondCraftEssenceTab(),
             buildBondCraftEssenceTab()
-          ],
-        ))
+          ]),
+        ),
       ],
     );
   }
@@ -186,8 +184,10 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
               children: <Widget>[
                 InfoCell(text: card, color: InfoCell.headerColor, flex: 1),
                 InfoCell(
-                  text: '   ${svt.info.cardHits[card]} Hits '
-                      '(${svt.info.cardHitsDamage[card].join(', ')})',
+                  text: svt.info.cardHits[card] == 0
+                      ? '   -'
+                      : '   ${svt.info.cardHits[card]} Hits '
+                          '(${svt.info.cardHitsDamage[card].join(', ')})',
                   flex: 5,
                   alignment: Alignment.centerLeft,
                 )
@@ -215,12 +215,12 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
   }
 
   Widget buildProfileTab() {
-    bool hasCharaInfo=svt.profiles.first.loreText.isNotEmpty;
+    bool hasCharaInfo = svt.profiles.first.loreText.isNotEmpty;
     return ListView(
       children: List.generate(7, (i) {
-        final lore = svt.profiles[hasCharaInfo?i:i+1];
-        String label = hasCharaInfo
-            ? i == 0 ? '角色详情' : '个人资料$i': '个人资料${i + 1}';
+        final lore = svt.profiles[hasCharaInfo ? i : i + 1];
+        String label =
+            hasCharaInfo ? i == 0 ? '角色详情' : '个人资料$i' : '个人资料${i + 1}';
         String text = useLangCN ? lore.loreText : lore.loreTextJp;
         if (text.isEmpty) {
           text = '???';
@@ -242,9 +242,12 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
     );
   }
 
-  Widget buildBondCraftEssenceTab(){
-    return Center(child: Text('礼装'),);
+  Widget buildBondCraftEssenceTab() {
+    return Center(
+      child: Text('礼装'),
+    );
   }
+
   @override
   bool get wantKeepAlive => true;
 }
@@ -320,7 +323,6 @@ class InfoCell extends StatelessWidget {
         textAlign: TextAlign.center,
       );
     }
-    final border = Border(left: borderSide, right: borderSide);
     return Expanded(
       flex: flex,
       child: Container(

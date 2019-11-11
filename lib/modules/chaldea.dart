@@ -1,3 +1,4 @@
+import 'package:catcher/core/catcher.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:chaldea/modules/home/home_page.dart';
@@ -33,9 +34,10 @@ class _ChaldeaState extends State<Chaldea> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      locale: LangCode.getLocale(db.userData?.language),
       title: "Chaldea",
+      debugShowCheckedModeBanner: false,
+      navigatorKey: Catcher.navigatorKey,
+      locale: LangCode.getLocale(db.userData?.language),
       localizationsDelegates: [
         S.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -44,6 +46,14 @@ class _ChaldeaState extends State<Chaldea> {
       supportedLocales: S.delegate.supportedLocales,
       localeResolutionCallback:
           S.delegate.resolution(fallback: Locale('zh', '')),
+      builder: (context, widget) {
+        // TODO: error widget not shown? blank page only.
+        Catcher.addDefaultErrorWidget(
+            showStacktrace: false,
+            customTitle: "Custom error title",
+            customDescription: "Custom error description");
+        return widget;
+      },
       home: db.userData == null ? BlankPage(showProgress: true) : HomePage(),
     );
   }

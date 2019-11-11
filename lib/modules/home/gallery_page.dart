@@ -20,7 +20,7 @@ class GalleryPage extends StatefulWidget {
 class _GalleryPageState extends State<GalleryPage> {
   Map<String, GalleryItem> kAllGalleryItems;
 
-  void resolveSliderImageUrls({bool reload = false}) async {
+  Future<Null> resolveSliderImageUrls({bool reload = false}) async {
     final url = 'https://fgo.wiki/w/模板:自动取值轮播';
     String checkUrl(String url) {
       String url2;
@@ -73,22 +73,34 @@ class _GalleryPageState extends State<GalleryPage> {
     kAllGalleryItems = {
       GalleryItem.servant: GalleryItem(
           name: GalleryItem.servant,
-          titleBuilder: (context) => S.of(context).servant_title,
+          titleBuilder: (context) =>
+          S
+              .of(context)
+              .servant_title,
           icon: Icons.people,
           builder: (context) => ServantListPage()),
       GalleryItem.item: GalleryItem(
           name: GalleryItem.item,
-          titleBuilder: (context) => S.of(context).item_title,
+          titleBuilder: (context) =>
+          S
+              .of(context)
+              .item_title,
           icon: Icons.category,
           builder: (context) => ItemListPage()),
       GalleryItem.event: GalleryItem(
           name: GalleryItem.event,
-          titleBuilder: (context) => S.of(context).event_title,
+          titleBuilder: (context) =>
+          S
+              .of(context)
+              .event_title,
           icon: Icons.event_available,
           builder: (context) => EventListPage()),
       GalleryItem.more: GalleryItem(
           name: GalleryItem.more,
-          titleBuilder: (context) => S.of(context).more,
+          titleBuilder: (context) =>
+          S
+              .of(context)
+              .more,
           icon: Icons.add,
           builder: (context) => EditGalleryPage(galleries: kAllGalleryItems),
           isDetail: true)
@@ -108,7 +120,9 @@ class _GalleryPageState extends State<GalleryPage> {
                 child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Icon(item.icon,
-                        size: 40, color: Theme.of(context).primaryColor)),
+                        size: 40, color: Theme
+                            .of(context)
+                            .primaryColor)),
               ),
               Expanded(
                 flex: 4,
@@ -148,7 +162,9 @@ class _GalleryPageState extends State<GalleryPage> {
                 actions: <Widget>[
                   FlatButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      child: Text(S.of(context).cancel)),
+                      child: Text(S
+                          .of(context)
+                          .cancel)),
                   FlatButton(
                       onPressed: () async {
                         if (await canLaunch(link)) {
@@ -158,15 +174,18 @@ class _GalleryPageState extends State<GalleryPage> {
                           throw 'Could not launch $link';
                         }
                       },
-                      child: Text(S.of(context).ok))
+                      child: Text(S
+                          .of(context)
+                          .ok))
                 ],
               ));
         },
         child: CachedNetworkImage(
           imageUrl: imgUrl,
-          placeholder: (context, url) => Center(
-            child: CircularProgressIndicator(),
-          ),
+          placeholder: (context, url) =>
+              Center(
+                child: CircularProgressIndicator(),
+              ),
           errorWidget: (context, url, error) => Icon(Icons.error),
         ),
       ));
@@ -183,7 +202,11 @@ class _GalleryPageState extends State<GalleryPage> {
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.refresh),
-                onPressed: () => resolveSliderImageUrls(reload: true)),
+                onPressed: () async {
+                  await resolveSliderImageUrls(reload: true);
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text('Homepage sliders have been updated.')));
+                }),
           ],
         ),
         body: ListView(
@@ -192,7 +215,7 @@ class _GalleryPageState extends State<GalleryPage> {
               aspectRatio: 8 / 3,
               child: Swiper(
                 itemBuilder: (BuildContext context, int index) =>
-                    sliderPages[index],
+                sliderPages[index],
                 itemCount: sliderPages.length,
                 autoplay: kDebugMode ? false : sliderPages.length > 1,
                 pagination: SwiperPagination(margin: const EdgeInsets.all(1)),
@@ -220,7 +243,9 @@ class _GalleryPageState extends State<GalleryPage> {
                           'Test Info Pad',
                           style: TextStyle(fontSize: 18),
                         )),
-                    Text('Screen size: ${MediaQuery.of(context).size}'),
+                    Text('Screen size: ${MediaQuery
+                        .of(context)
+                        .size}'),
                     Text('assets version:  ${getAssetsVersion()}')
                   ]),
                 ),

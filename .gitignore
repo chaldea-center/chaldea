@@ -1,5 +1,6 @@
 # custom
 res/data/dataset.zip
+/lib/test.dart
 
 # Miscellaneous
 *.class
