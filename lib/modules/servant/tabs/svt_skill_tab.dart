@@ -52,6 +52,18 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab>
     ];
   }
 
+  List<Widget> buildPassiveSkill(int index) {
+    Skill skill = svt.passiveSkills[index];
+    return <Widget>[
+      CustomTile(
+        contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
+        leading: Image.file(db.getIconFile(skill.icon), height: 110 * 0.3),
+        title: Text('${skill.name} ${skill.rank}'),
+      ),
+      for (Effect effect in skill.effects) ...buildEffect(effect),
+    ];
+  }
+
   List<Widget> buildEffect(Effect effect) {
     bool twoLine = effect.lvData.length == 10;
     return <Widget>[
@@ -94,10 +106,18 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab>
     }
 
     return ListView(children: [
-      TileGroup(tiles: <Widget>[
+      TileGroup(header: '主动技能', tiles: <Widget>[
         for (var index = 0; index < svt.activeSkills.length; index++)
-          ...buildSkill(index)
-      ])
+          ...buildSkill(index),
+      ]),
+      TileGroup(
+        header: '职阶技能',
+        tiles: <Widget>[
+          if (svt.passiveSkills != null)
+            for (var index = 0; index < svt.passiveSkills.length; index++)
+              ...buildPassiveSkill(index),
+        ],
+      )
     ]);
   }
 

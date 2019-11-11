@@ -1,6 +1,8 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/event/event_detail_page.dart';
+
+import 'tabs/limit_event_tab.dart';
+import 'tabs/exchange_ticket_tab.dart';
+import 'tabs/main_record_tab.dart';
 
 class EventListPage extends StatefulWidget {
   @override
@@ -9,7 +11,7 @@ class EventListPage extends StatefulWidget {
 
 class _EventListPageState extends State<EventListPage>
     with SingleTickerProviderStateMixin {
-  final tabNames = ['Events', 'Main Records','Exchange Tickets'];
+  final tabNames = ['Events', 'Main Records', 'Exchange Tickets'];
   TabController _tabController;
 
   @override
@@ -31,11 +33,7 @@ class _EventListPageState extends State<EventListPage>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: <Widget>[
-          EventListTab(),
-          MainRecordTab(),
-          ExchangeTicketTab()
-        ],
+        children: <Widget>[LimitEventTab(), MainRecordTab(), ExchangeTicketTab()],
       ),
     );
   }
@@ -44,86 +42,5 @@ class _EventListPageState extends State<EventListPage>
   void deactivate() {
     super.deactivate();
     db.saveData();
-  }
-}
-
-class EventListTab extends StatefulWidget {
-  @override
-  _EventListTabState createState() => _EventListTabState();
-}
-
-class _EventListTabState extends State<EventListTab>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    final eventNames = db.gameData.events.keys.toList();
-    return ListView.separated(
-      itemCount: eventNames.length,
-      separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
-      itemBuilder: (context, index) {
-        final event = db.gameData.events[eventNames[index]];
-        final plan =
-            db.curPlan.events.putIfAbsent(event.name, () => EventPlan());
-        return CustomTile(
-          title: AutoSizeText(event.name, maxLines: 1),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              if (event.hunting != null || event.lottery != null)
-                Icon(
-                  Icons.star,
-                  color: Colors.yellow[700],
-                ),
-              Switch.adaptive(
-                  value: db.curPlan.events[event.name]?.enable ?? false,
-                  onChanged: (v) => setState(() {
-                        db.curPlan.events
-                            .putIfAbsent(event.name, () => EventPlan())
-                            .enable = v;
-                      }))
-            ],
-          ),
-          onTap: () {
-            SplitRoute.popAndPush(context,
-                builder: (context) => EventDetailPage(name: event.name));
-          },
-        );
-      },
-    );
-  }
-
-  @override
-  bool get wantKeepAlive => true;
-}
-
-class MainRecordTab extends StatefulWidget {
-  @override
-  _MainRecordTabState createState() => _MainRecordTabState();
-}
-
-class _MainRecordTabState extends State<MainRecordTab>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return Center(
-      child: Text('TODO: Main Records'),
-    );
-  }
-
-  @override
-  bool get wantKeepAlive => true;
-}
-
-class ExchangeTicketTab extends StatefulWidget {
-  @override
-  _ExchangeTicketTabState createState() => _ExchangeTicketTabState();
-}
-
-class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: Text('Exchange Tickets Tab'));
   }
 }

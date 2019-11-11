@@ -76,6 +76,10 @@ Servant _$ServantFromJson(Map<String, dynamic> json) {
     itemCost: json['itemCost'] == null
         ? null
         : ItemCost.fromJson(json['itemCost'] as Map<String, dynamic>),
+    profiles: (json['profiles'] as List)
+        ?.map((e) =>
+            e == null ? null : ProfileData.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
   );
 }
 
@@ -88,6 +92,7 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'activeSkills': instance.activeSkills,
       'passiveSkills': instance.passiveSkills,
       'itemCost': instance.itemCost,
+      'profiles': instance.profiles,
     };
 
 ServantBaseInfo _$ServantBaseInfoFromJson(Map<String, dynamic> json) {
@@ -360,6 +365,21 @@ Map<String, dynamic> _$EventToJson(Event instance) => <String, dynamic>{
       'lottery': instance.lottery,
     };
 
+ProfileData _$ProfileDataFromJson(Map<String, dynamic> json) {
+  return ProfileData(
+    loreText: json['loreText'] as String,
+    loreTextJp: json['loreTextJp'] as String,
+    condition: json['condition'] as String,
+  );
+}
+
+Map<String, dynamic> _$ProfileDataToJson(ProfileData instance) =>
+    <String, dynamic>{
+      'loreText': instance.loreText,
+      'loreTextJp': instance.loreTextJp,
+      'condition': instance.condition,
+    };
+
 UserData _$UserDataFromJson(Map<String, dynamic> json) {
   return UserData(
     language: json['language'] as String,
@@ -379,15 +399,18 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
     svtFilter: json['svtFilter'] == null
         ? null
         : SvtFilterData.fromJson(json['svtFilter'] as Map<String, dynamic>),
-  )..itemFilter = json['itemFilter'] == null
-      ? null
-      : SvtFilterData.fromJson(json['itemFilter'] as Map<String, dynamic>);
+  )
+    ..useMobileNetwork = json['useMobileNetwork'] as bool
+    ..itemFilter = json['itemFilter'] == null
+        ? null
+        : SvtFilterData.fromJson(json['itemFilter'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'language': instance.language,
       'criticalWidth': instance.criticalWidth,
       'gameDataPath': instance.gameDataPath,
+      'useMobileNetwork': instance.useMobileNetwork,
       'sliderUrls': instance.sliderUrls,
       'galleries': instance.galleries,
       'curUserName': instance.curUserName,

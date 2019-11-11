@@ -15,3 +15,4 @@
  - modalSheet meet master-detail view?
  - add QP in item_list_page 
  - add NEXT button in input list on iOS.
+ - add wifi/4G detect when cached_image

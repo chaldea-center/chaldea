@@ -33,6 +33,7 @@ dependencies:
   cached_network_image: ^2.0.0-rc
   archive: ^2.0.10
   url_launcher: ^5.2.5
+  connectivity: ^0.4.5
 
 dev_dependencies:
   flutter_test:

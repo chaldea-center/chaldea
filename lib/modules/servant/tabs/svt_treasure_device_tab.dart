@@ -36,22 +36,12 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab>
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            np.upperName,
-            style: TextStyle(fontSize: 16, color: Colors.black54),
-          ),
-          Text(
-            np.name,
-            style: TextStyle(fontWeight: FontWeight.w600),
-          ),
-          Text(
-            np.upperNameJp,
-            style: TextStyle(fontSize: 16, color: Colors.black54),
-          ),
-          Text(
-            np.nameJp,
-            style: TextStyle(fontWeight: FontWeight.w600),
-          ),
+          Text(np.upperName,
+              style: TextStyle(fontSize: 16, color: Colors.black54)),
+          Text(np.name, style: TextStyle(fontWeight: FontWeight.w600)),
+          Text(np.upperNameJp,
+              style: TextStyle(fontSize: 16, color: Colors.black54)),
+          Text(np.nameJp, style: TextStyle(fontWeight: FontWeight.w600)),
         ],
       ),
     );

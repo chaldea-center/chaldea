@@ -46,6 +46,7 @@ class Servant {
   List<List<Skill>> activeSkills;
   List<Skill> passiveSkills;
   ItemCost itemCost;
+  List<ProfileData> profiles;
   static const List<int> unavailable = [83, 149, 151, 152, 168, 240];
 
   Servant(
@@ -56,7 +57,8 @@ class Servant {
       this.treasureDevice,
       this.activeSkills,
       this.passiveSkills,
-      this.itemCost});
+      this.itemCost,
+      this.profiles});
 
   Map<String, int> getAllCost(ServantPlan plan, {bool planned = true}) {
     if (planned && (plan == null || plan.favorite == false)) {
@@ -388,4 +390,18 @@ class Event {
       return sumDict([items, plan.hunting, lotterySum]);
     }
   }
+}
+
+@JsonSerializable()
+class ProfileData {
+  String loreText;
+  String loreTextJp;
+  String condition;
+
+  ProfileData({this.loreText, this.loreTextJp, this.condition});
+
+  factory ProfileData.fromJson(Map<String, dynamic> data) =>
+      _$ProfileDataFromJson(data);
+
+  Map<String, dynamic> toJson() => _$ProfileDataToJson(this);
 }

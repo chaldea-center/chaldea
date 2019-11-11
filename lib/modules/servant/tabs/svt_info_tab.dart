@@ -14,20 +14,88 @@ class SvtInfoTab extends SvtTabBaseWidget {
 }
 
 class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
+  TabController _tabController;
+
   _SvtInfoTabState(
       {ServantDetailPageState parent, Servant svt, ServantPlan plan})
       : super(parent: parent, svt: svt, plan: plan);
+  bool useLangCN = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 4, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _tabController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ListView(
-      padding: EdgeInsets.fromLTRB(0, 8, 0, 10),
+    return Column(
       children: <Widget>[
-        InfoRow.fromChild(children: [
-          Text(svt.info.name, style: TextStyle(fontWeight: FontWeight.bold))
-        ], color: InfoCell.headerColor),
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: TabBar(
+                controller: _tabController,
+                isScrollable: true,
+                tabs: ['基础资料', '羁绊故事', '羁绊礼装','情人节礼装']
+                    .map((tabName) => Tab(
+                            child: Text(
+                          tabName,
+                          style: TextStyle(color: Colors.black87),
+                        )))
+                    .toList(),
+              ),
+            ),
+            ToggleButtons(
+              constraints: BoxConstraints(),
+              selectedColor: Colors.white,
+              fillColor: Theme.of(context).primaryColor,
+              onPressed: (i) {
+                setState(() {
+                  useLangCN = i == 0;
+                });
+              },
+              children: List.generate(
+                  2,
+                  (i) => Padding(
+                        padding: EdgeInsets.all(6),
+                        child: Text(['中文', '日本語'][i]),
+                      )),
+              isSelected: List.generate(2, (i) => useLangCN == (i == 0)),
+            ),
+          ],
+        ),
+        Expanded(
+            child: TabBarView(
+          controller: _tabController,
+          children: [
+            buildBaseInfoTab(),
+            buildProfileTab(),
+            buildBondCraftEssenceTab(),
+            buildBondCraftEssenceTab()
+          ],
+        ))
+      ],
+    );
+  }
+
+  Widget buildBaseInfoTab() {
+    return ListView(
+      children: <Widget>[
+        InfoRow.fromChild(
+          children: [
+            Text(svt.info.name, style: TextStyle(fontWeight: FontWeight.bold))
+          ],
+          color: InfoCell.headerColor,
+        ),
         InfoRow.fromText(texts: [svt.info.nameJp]),
         InfoRow.fromText(texts: [svt.info.nameEn]),
         InfoRow.fromText(texts: ['No.${svt.no}', svt.info.className]),
@@ -45,13 +113,8 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
             texts: ['strength', 'endurance', 'agility', 'mana', 'luck', 'np']
                 .map((e) => svt.info.ability[e])
                 .toList()),
-        InfoRow.fromText(
-          texts: ['特性'],
-          color: InfoCell.headerColor,
-        ),
-        InfoRow.fromText(
-          texts: [svt.info.traits.join(', ')],
-        ),
+        InfoRow.fromText(texts: ['特性'], color: InfoCell.headerColor),
+        InfoRow.fromText(texts: [svt.info.traits.join(', ')]),
         InfoRow(
           children: <Widget>[
             InfoCell(text: '人形', color: InfoCell.headerColor, flex: 1),
@@ -86,9 +149,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
           ),
           InfoRow(
             children: [
-              InfoCell.header(
-                text: 'HP',
-              ),
+              InfoCell.header(text: 'HP'),
               InfoCell(text: svt.info.hpMin.toString()),
               InfoCell(text: svt.info.hpMax.toString()),
               InfoCell(text: svt.info.hp90.toString()),
@@ -120,14 +181,10 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
             ],
           ),
           InfoRow.fromText(texts: ['Hits信息'], color: InfoCell.headerColor),
-          for (String card in (svt.info?.cardHits?.keys ?? []))
+          for (String card in (svt.info.cardHits.keys))
             InfoRow(
               children: <Widget>[
-                InfoCell(
-                  text: card,
-                  color: InfoCell.headerColor,
-                  flex: 1,
-                ),
+                InfoCell(text: card, color: InfoCell.headerColor, flex: 1),
                 InfoCell(
                   text: '   ${svt.info.cardHits[card]} Hits '
                       '(${svt.info.cardHitsDamage[card].join(', ')})',
@@ -152,10 +209,42 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
             ].map((v) => '${v / 100}%').toList(),
           ),
         ],
+        Container(height: 20)
       ],
     );
   }
 
+  Widget buildProfileTab() {
+    bool hasCharaInfo=svt.profiles.first.loreText.isNotEmpty;
+    return ListView(
+      children: List.generate(7, (i) {
+        final lore = svt.profiles[hasCharaInfo?i:i+1];
+        String label = hasCharaInfo
+            ? i == 0 ? '角色详情' : '个人资料$i': '个人资料${i + 1}';
+        String text = useLangCN ? lore.loreText : lore.loreTextJp;
+        if (text.isEmpty) {
+          text = '???';
+        }
+        return Card(
+          margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              CustomTile(title: Text(label)),
+              CustomTile(
+                subtitle: Text(text),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget buildBondCraftEssenceTab(){
+    return Center(child: Text('礼装'),);
+  }
   @override
   bool get wantKeepAlive => true;
 }
@@ -175,12 +264,15 @@ class InfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
+    //TODO: fix bgColor not all filled
+    return Container(
       decoration: BoxDecoration(
-          border:
-              Border(top: InfoCell.borderSide, bottom: InfoCell.borderSide)),
+          color: color,
+          border: Border(
+            top: InfoCell.borderSide,
+            bottom: InfoCell.borderSide,
+          )),
       child: Row(
-//        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: children,
       ),
     );
@@ -195,7 +287,7 @@ class InfoCell extends StatelessWidget {
   final Alignment alignment;
 
   static const borderSide =
-      BorderSide(color: Color.fromRGBO(162, 169, 177, 1), width: 0.25);
+      BorderSide(color: Color.fromRGBO(162, 169, 177, 1), width: 0.3);
   static const headerColor = Color.fromRGBO(234, 235, 238, 1);
 
   const InfoCell({
@@ -228,12 +320,14 @@ class InfoCell extends StatelessWidget {
         textAlign: TextAlign.center,
       );
     }
-
+    final border = Border(left: borderSide, right: borderSide);
     return Expanded(
       flex: flex,
-      child: DecoratedBox(
+      child: Container(
         decoration: BoxDecoration(
-            color: color, border: Border(left: borderSide, right: borderSide)),
+          color: color,
+          border: Border(left: borderSide, right: borderSide),
+        ),
         child: Align(
           alignment: alignment,
           child: Padding(

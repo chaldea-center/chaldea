@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
 import 'package:chaldea/components/constants.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
@@ -19,6 +20,7 @@ class Database {
   VoidCallback onAppUpdate;
   UserData userData;
   GameData gameData;
+  bool enableDownload;
 
   Plans get curPlan => userData.users[userData.curUserName]?.plans;
   static String _rootPath = '';
@@ -30,20 +32,28 @@ class Database {
     _rootPath = (await getApplicationDocumentsDirectory()).path;
   }
 
+  Future<Null> checkNetwork() async {
+    final result = await Connectivity().checkConnectivity();
+    enableDownload = db.userData.useMobileNetwork == true ||
+        result != ConnectivityResult.mobile;
+//    enableDownload = false;
+  }
+
   // load data
   Future<Null> loadGameData() async {
     // TODO: use downloaded data if exist
     gameData = parseJson(
-        parser: () => GameData.fromJson({
+        parser: () =>
+            GameData.fromJson({
               'servants':
-                  getJsonFromFile(join(userData.gameDataPath, 'servants.json')),
+              getJsonFromFile(join(userData.gameDataPath, 'servants.json')),
               'crafts': <String, String>{},
               'items':
-                  getJsonFromFile(join(userData.gameDataPath, 'items.json')),
+              getJsonFromFile(join(userData.gameDataPath, 'items.json')),
               'icons':
-                  getJsonFromFile(join(userData.gameDataPath, 'icons.json')),
+              getJsonFromFile(join(userData.gameDataPath, 'icons.json')),
               "events":
-                  getJsonFromFile(join(userData.gameDataPath, 'events.json'))
+              getJsonFromFile(join(userData.gameDataPath, 'events.json'))
             }),
         k: () => GameData());
     print('gamedata reloaded');
@@ -88,8 +98,12 @@ class Database {
   }
 
   File getIconFile(String iconKey) {
-    return File(join(_rootPath, userData.gameDataPath, 'icons',
-        gameData.icons[iconKey].filename));
+    if (gameData.icons.containsKey(iconKey)) {
+      return File(join(_rootPath, userData.gameDataPath, 'icons',
+          gameData.icons[iconKey].filename));
+    } else {
+      return null;
+    }
   }
 
   Future<Null> loadAssetsData(String assetKey,
@@ -117,7 +131,8 @@ class Database {
           ..writeAsBytesSync(data);
         print('file: ${file.name}');
       } else {
-        Directory(fullFilepath)..create(recursive: true);
+        Directory(fullFilepath)
+          ..create(recursive: true);
         print('dir : ${file.name}');
       }
     }
@@ -133,7 +148,7 @@ class Database {
     try {
       final contents = json.encode(jsonData);
       getLocalFile(relativePath).writeAsStringSync(contents);
-      print('Saved "$relativePath"\n');
+      // print('Saved "$relativePath"\n');
     } catch (e) {
       print('Error saving "$relativePath"!');
       print(e);

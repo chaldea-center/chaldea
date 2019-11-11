@@ -90,49 +90,51 @@ class ServantDetailPageState extends State<ServantDetailPage>
                   fit: BoxFit.contain, height: 100),
               titlePadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               title: Text('No.${svt.no}\n${svt.info.className}'),
-              subtitle: Align(
-                alignment: Alignment.centerRight,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    IconButton(
-                        icon: Icon(Icons.vertical_align_top),
-                        tooltip: '练度最大化',
-                        onPressed: () {
-                          setState(() {
-                            plan.allMax();
-                          });
-                        }),
-                    IconButton(
-                        icon: Icon(Icons.trending_up),
-                        tooltip: '规划最大化',
-                        onPressed: () {
-                          setState(() {
-                            plan.planMax();
-                          });
-                        }),
-                    IconButton(
-                        icon: Icon(Icons.replay),
-                        tooltip: '重置',
-                        onPressed: () {
-                          setState(() {
-                            plan.reset();
-                          });
-                        }),
-                    IconButton(
-                      icon: plan.favorite
-                          ? Icon(Icons.favorite, color: Colors.redAccent)
-                          : Icon(Icons.favorite_border),
-                      tooltip: '关注',
-                      onPressed: () {
-                        setState(() {
-                          plan.favorite = !plan.favorite;
-                        });
-                      },
+              subtitle: Servant.unavailable.contains(svt.no)
+                  ? null
+                  : Align(
+                      alignment: Alignment.centerRight,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          IconButton(
+                              icon: Icon(Icons.vertical_align_top),
+                              tooltip: '练度最大化',
+                              onPressed: () {
+                                setState(() {
+                                  plan.allMax();
+                                });
+                              }),
+                          IconButton(
+                              icon: Icon(Icons.trending_up),
+                              tooltip: '规划最大化',
+                              onPressed: () {
+                                setState(() {
+                                  plan.planMax();
+                                });
+                              }),
+                          IconButton(
+                              icon: Icon(Icons.replay),
+                              tooltip: '重置',
+                              onPressed: () {
+                                setState(() {
+                                  plan.reset();
+                                });
+                              }),
+                          IconButton(
+                            icon: plan.favorite
+                                ? Icon(Icons.favorite, color: Colors.redAccent)
+                                : Icon(Icons.favorite_border),
+                            tooltip: '关注',
+                            onPressed: () {
+                              setState(() {
+                                plan.favorite = !plan.favorite;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
-              ),
               trailing: null,
             ),
             TabBar(

@@ -8,6 +8,7 @@ library datatypes;
 
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/constants.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 

@@ -13,33 +13,23 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    language = S
-        .of(context)
-        .language;
+    language = S.of(context).language;
     return Scaffold(
       appBar: AppBar(
-        title: Text(S
-            .of(context)
-            .settings_tab_name),
+        title: Text(S.of(context).settings_tab_name),
       ),
       backgroundColor: MyColors.setting_bg,
       body: ListView(
         children: <Widget>[
           TileGroup(
-            header: S
-                .of(context)
-                .settings_data,
+            header: S.of(context).settings_data,
             tiles: <Widget>[
               ListTile(
-                title: Text(S
-                    .of(context)
-                    .settings_tutorial),
+                title: Text(S.of(context).settings_tutorial),
                 trailing: null,
               ),
               ListTile(
-                title: Text(S
-                    .of(context)
-                    .server),
+                title: Text(S.of(context).server),
                 trailing: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
                     value: db.userData.users[db.userData.curUserName].server ??
@@ -47,15 +37,11 @@ class _SettingsPageState extends State<SettingsPage> {
                     items: <DropdownMenuItem<String>>[
                       DropdownMenuItem(
                         value: GameServer.cn,
-                        child: Text(S
-                            .of(context)
-                            .server_cn),
+                        child: Text(S.of(context).server_cn),
                       ),
                       DropdownMenuItem(
                         value: GameServer.jp,
-                        child: Text(S
-                            .of(context)
-                            .server_jp),
+                        child: Text(S.of(context).server_jp),
                       )
                     ],
                     onChanged: (v) {
@@ -66,9 +52,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
               ListTile(
-                title: Text(S
-                    .of(context)
-                    .cur_account),
+                title: Text(S.of(context).cur_account),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
@@ -87,21 +71,15 @@ class _SettingsPageState extends State<SettingsPage> {
             ],
           ),
           TileGroup(
-            header: S
-                .of(context)
-                .settings_general,
+            header: S.of(context).settings_general,
             tiles: <Widget>[
               ListTile(
-                title: Text(S
-                    .of(context)
-                    .settings_language),
+                title: Text(S.of(context).settings_language),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Text(
-                      S
-                          .of(context)
-                          .language,
+                      S.of(context).language,
                       style: TextStyle(color: Colors.black87),
                     ),
                     Icon(Icons.arrow_forward_ios)
@@ -111,13 +89,19 @@ class _SettingsPageState extends State<SettingsPage> {
                   SplitRoute.popAndPush(context,
                       builder: (context) => LanguagePage());
                 },
-              )
+              ),
+              SwitchListTile.adaptive(
+                  title: Text('使用移动数据下载'),
+                  value: db.userData.useMobileNetwork??false,
+                  onChanged: (v) {
+                    setState(() {
+                      db.userData.useMobileNetwork=v;
+                    });
+                  })
             ],
           ),
           TileGroup(
-            header: S
-                .of(context)
-                .backup_restore,
+            header: S.of(context).backup_restore,
             tiles: <Widget>[
               ListTile(
                 title: Text('Master-Detail width'),
@@ -158,14 +142,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               ),
               ListTile(
-                title: Text(S
-                    .of(context)
-                    .backup),
+                title: Text(S.of(context).backup),
               ),
               ListTile(
-                title: Text(S
-                    .of(context)
-                    .restore),
+                title: Text(S.of(context).restore),
               )
             ],
           )

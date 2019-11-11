@@ -7,7 +7,8 @@ class UserData {
   String language;
   double criticalWidth;
   String gameDataPath;
-  Map<String,String> sliderUrls;
+  bool useMobileNetwork;
+  Map<String, String> sliderUrls;
   Map<String, bool> galleries;
 
   // user-related game data
@@ -22,7 +23,7 @@ class UserData {
       {this.language,
       this.criticalWidth,
       this.gameDataPath,
-        this.sliderUrls,
+      this.sliderUrls,
       this.galleries,
       this.curUserName,
       this.users,
@@ -30,7 +31,7 @@ class UserData {
     // not initiate language: auto-change language if not set yet.
     String defaultName = 'default';
     gameDataPath ??= 'dataset';
-    sliderUrls??={};
+    sliderUrls ??= {};
     galleries ??= {};
     users ??= {defaultName: User(name: defaultName)};
     if (!users.containsKey(curUserName)) {
