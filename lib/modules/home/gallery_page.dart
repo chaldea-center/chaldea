@@ -22,7 +22,7 @@ class _GalleryPageState extends State<GalleryPage> {
 
   Future<Null> resolveSliderImageUrls({bool reload = false}) async {
     final url = 'https://fgo.wiki/w/模板:自动取值轮播';
-    String checkUrl(String url) {
+    String tryDecodeUrl(String url) {
       String url2;
       if (url.toLowerCase().startsWith(RegExp(r'http|fgo.wiki'))) {
         url2 = url;
@@ -34,28 +34,29 @@ class _GalleryPageState extends State<GalleryPage> {
       try {
         url2 = Uri.decodeComponent(url2);
       } catch (e) {
-        print('decode url failed:\n $e');
-      } finally {}
-      print('url:\n$url2');
+        // print('decode url failed:\n $e');
+      } finally {
+        // print('url: "$url2"');
+      }
       return url2;
     }
 
     if (db.userData.sliderUrls.isEmpty || reload) {
       db.userData.sliderUrls.clear();
       try {
-        print('http GET from $url.....');
+        print('http GET from "$url" .....');
         var response = await http.get(url);
-        print('----------- recieve http response ------------');
+        print('----------- recieved http response ------------');
         var body = parser.parse(response.body);
         dom.Element element = body.getElementById('transImageBox');
         for (var linkNode in element.getElementsByTagName('a')) {
-          String link = checkUrl(linkNode.attributes['href']);
+          String link = tryDecodeUrl(linkNode.attributes['href']);
           var imgNodes = linkNode.getElementsByTagName('img');
           if (imgNodes.isNotEmpty) {
-            var imgUrl = checkUrl(imgNodes.first.attributes['src']);
-            print('------&&&&----\n$imgUrl\n$link');
+            var imgUrl = tryDecodeUrl(imgNodes.first.attributes['src']);
+            print('------resolved slider url------');
             db.userData.sliderUrls[imgUrl] = link;
-            print('imgUrl= $imgUrl\nhref  = $link');
+            print('imgUrl= "$imgUrl"\nhref  = "$link"');
           }
         }
         setState(() {});
@@ -73,34 +74,22 @@ class _GalleryPageState extends State<GalleryPage> {
     kAllGalleryItems = {
       GalleryItem.servant: GalleryItem(
           name: GalleryItem.servant,
-          titleBuilder: (context) =>
-          S
-              .of(context)
-              .servant_title,
+          titleBuilder: (context) => S.of(context).servant_title,
           icon: Icons.people,
           builder: (context) => ServantListPage()),
       GalleryItem.item: GalleryItem(
           name: GalleryItem.item,
-          titleBuilder: (context) =>
-          S
-              .of(context)
-              .item_title,
+          titleBuilder: (context) => S.of(context).item_title,
           icon: Icons.category,
           builder: (context) => ItemListPage()),
       GalleryItem.event: GalleryItem(
           name: GalleryItem.event,
-          titleBuilder: (context) =>
-          S
-              .of(context)
-              .event_title,
+          titleBuilder: (context) => S.of(context).event_title,
           icon: Icons.event_available,
           builder: (context) => EventListPage()),
       GalleryItem.more: GalleryItem(
           name: GalleryItem.more,
-          titleBuilder: (context) =>
-          S
-              .of(context)
-              .more,
+          titleBuilder: (context) => S.of(context).more,
           icon: Icons.add,
           builder: (context) => EditGalleryPage(galleries: kAllGalleryItems),
           isDetail: true)
@@ -120,9 +109,7 @@ class _GalleryPageState extends State<GalleryPage> {
                 child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Icon(item.icon,
-                        size: 40, color: Theme
-                            .of(context)
-                            .primaryColor)),
+                        size: 40, color: Theme.of(context).primaryColor)),
               ),
               Expanded(
                 flex: 4,
@@ -162,9 +149,7 @@ class _GalleryPageState extends State<GalleryPage> {
                 actions: <Widget>[
                   FlatButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      child: Text(S
-                          .of(context)
-                          .cancel)),
+                      child: Text(S.of(context).cancel)),
                   FlatButton(
                       onPressed: () async {
                         if (await canLaunch(link)) {
@@ -174,18 +159,15 @@ class _GalleryPageState extends State<GalleryPage> {
                           throw 'Could not launch $link';
                         }
                       },
-                      child: Text(S
-                          .of(context)
-                          .ok))
+                      child: Text(S.of(context).ok))
                 ],
               ));
         },
         child: CachedNetworkImage(
           imageUrl: imgUrl,
-          placeholder: (context, url) =>
-              Center(
-                child: CircularProgressIndicator(),
-              ),
+          placeholder: (context, url) => Center(
+            child: CircularProgressIndicator(),
+          ),
           errorWidget: (context, url, error) => Icon(Icons.error),
         ),
       ));
@@ -215,9 +197,9 @@ class _GalleryPageState extends State<GalleryPage> {
               aspectRatio: 8 / 3,
               child: Swiper(
                 itemBuilder: (BuildContext context, int index) =>
-                sliderPages[index],
+                    sliderPages[index],
                 itemCount: sliderPages.length,
-                autoplay: kDebugMode ? false : sliderPages.length > 1,
+                autoplay: !kDebugMode && sliderPages.length > 1,
                 pagination: SwiperPagination(margin: const EdgeInsets.all(1)),
                 autoplayDelay: 5000,
               ),
@@ -229,29 +211,32 @@ class _GalleryPageState extends State<GalleryPage> {
               childAspectRatio: 1,
               children: _getAllGalleries(context),
             ),
-            Card(
-              elevation: 2,
-              margin: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: divideTiles(<Widget>[
-                    Center(
-                        heightFactor: 1,
-                        child: Text(
-                          'Test Info Pad',
-                          style: TextStyle(fontSize: 18),
-                        )),
-                    Text('Screen size: ${MediaQuery
-                        .of(context)
-                        .size}'),
-                    Text('assets version:  ${getAssetsVersion()}')
-                  ]),
-                ),
-              ),
-            )
+            buildTestInfoPad()
           ],
+        ));
+  }
+
+  Widget buildTestInfoPad() {
+    return Card(
+        elevation: 2,
+        margin: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: divideTiles(<Widget>[
+            ListTile(
+              title: Center(
+                child: Text('Test Info Pad', style: TextStyle(fontSize: 18)),
+              ),
+            ),
+            ListTile(
+              title: Text('Screen size'),
+              trailing: Text(MediaQuery.of(context).size.toString()),
+            ),
+            ListTile(
+              title: Text('Assets version'),
+              trailing: Text(getAssetsVersion()),
+            ),
+          ]),
         ));
   }
 
