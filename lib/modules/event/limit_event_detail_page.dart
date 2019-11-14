@@ -2,16 +2,16 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:flutter/services.dart';
 
-class EventDetailPage extends StatefulWidget {
+class LimitEventDetailPage extends StatefulWidget {
   final String name;
 
-  const EventDetailPage({Key key, this.name}) : super(key: key);
+  const LimitEventDetailPage({Key key, this.name}) : super(key: key);
 
   @override
-  _EventDetailPageState createState() => _EventDetailPageState();
+  _LimitEventDetailPageState createState() => _LimitEventDetailPageState();
 }
 
-class _EventDetailPageState extends State<EventDetailPage> {
+class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
   LimitEvent event;
   LimitEventPlan plan;
   TextEditingController _lotteryController;

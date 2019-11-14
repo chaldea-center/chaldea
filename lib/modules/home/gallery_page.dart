@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/event/event_list_page.dart';
+import 'package:chaldea/modules/event/events_page.dart';
 import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
