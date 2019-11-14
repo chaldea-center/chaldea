@@ -11,7 +11,7 @@ class EventListPage extends StatefulWidget {
 
 class _EventListPageState extends State<EventListPage>
     with SingleTickerProviderStateMixin {
-  final tabNames = ['Events', 'Main Records', 'Exchange Tickets'];
+  final tabNames = ['Limit Events', 'Main Records', 'Tickets'];
   TabController _tabController;
 
   @override
@@ -28,7 +28,7 @@ class _EventListPageState extends State<EventListPage>
         leading: SplitViewBackButton(),
         bottom: TabBar(
             controller: _tabController,
-            isScrollable: true,
+            isScrollable: false,
             tabs: tabNames.map((name) => Tab(text: name)).toList()),
       ),
       body: TabBarView(

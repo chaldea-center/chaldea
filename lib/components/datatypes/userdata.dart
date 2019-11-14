@@ -23,12 +23,23 @@ class User {
 class Plans {
   Map<int, ServantPlan> servants;
   Map<String, int> items;
-  Map<String, EventPlan> events;
+  Map<String, LimitEventPlan> limitEvents;
+  /// {'chapter 1': [drops_switch,rewards_switch]}
+  Map<String, List<bool>> mainRecords;
+  ///{'monthCn': [num1, num2, num3]}
+  Map<String, List<int>> exchangeTickets;
 
-  Plans({this.servants, this.items}) {
+  Plans(
+      {this.servants,
+      this.items,
+      this.limitEvents,
+      this.mainRecords,
+      this.exchangeTickets}) {
     servants ??= {};
     items ??= {};
-    events ??= {};
+    limitEvents ??= {};
+    mainRecords ??= {};
+    exchangeTickets ??= {};
   }
 
   factory Plans.fromJson(Map<String, dynamic> data) => _$PlansFromJson(data);
@@ -98,23 +109,23 @@ class ServantPlan {
 }
 
 @JsonSerializable()
-class EventPlan {
+class LimitEventPlan {
   bool enable;
   bool rerun;
   int lottery;
   Map<String, int> hunting;
 
-  EventPlan({this.enable, this.rerun, this.lottery, this.hunting}) {
+  LimitEventPlan({this.enable, this.rerun, this.lottery, this.hunting}) {
     enable ??= false;
     rerun ??= true;
     lottery ??= 0;
     hunting ??= {};
   }
 
-  factory EventPlan.fromJson(Map<String, dynamic> data) =>
-      _$EventPlanFromJson(data);
+  factory LimitEventPlan.fromJson(Map<String, dynamic> data) =>
+      _$LimitEventPlanFromJson(data);
 
-  Map<String, dynamic> toJson() => _$EventPlanToJson(this);
+  Map<String, dynamic> toJson() => _$LimitEventPlanToJson(this);
 }
 
 class PartSet<T> {

@@ -10,12 +10,11 @@ class ItemListPage extends StatefulWidget {
 
 class ItemListPageState extends State<ItemListPage>
     with SingleTickerProviderStateMixin {
-  List<int> categories = [1, 2, 3, 4];
+  List<int> categories = [1, 2, 3];
 
   //controller
   TabController _tabController;
   Map<int, TextInputsManager<Item>> inputManagers = {};
-  InputComponent _lastComponent;
   ItemCostStatistics statistics;
   Map<String, int> eventItemStatistics;
   bool filtered = false;
@@ -30,11 +29,7 @@ class ItemListPageState extends State<ItemListPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: categories.length, vsync: this);
-    List<Map<String, int>> eventItemList = [];
-    db.gameData.events.forEach((name, event) {
-      eventItemList.add(event.getAllItems(db.curPlan.events[name]));
-    });
-    eventItemStatistics = sumDict(eventItemList);
+    eventItemStatistics = db.gameData.events.getAllItems(db.curPlan);
     statistics = ItemCostStatistics(db.gameData, db.curPlan.servants);
     final items = db.gameData.items;
     InputComponent<Item> generateComponent(String k) {

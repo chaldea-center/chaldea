@@ -1,5 +1,4 @@
 import 'package:chaldea/components/components.dart';
-import 'package:flutter/material.dart';
 
 class BlankPage extends StatelessWidget {
   final bool showProgress;

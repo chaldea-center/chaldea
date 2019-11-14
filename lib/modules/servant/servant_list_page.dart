@@ -1,9 +1,6 @@
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/custom_tile.dart';
-import 'package:chaldea/components/tile_items.dart';
 import 'package:chaldea/modules/servant/servant_detail_page.dart';
 import 'package:chaldea/modules/servant/svt_filter_page.dart';
-import 'package:flutter/material.dart';
 
 class ServantListPage extends StatefulWidget {
   @override

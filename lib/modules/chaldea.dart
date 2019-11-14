@@ -48,10 +48,7 @@ class _ChaldeaState extends State<Chaldea> {
           S.delegate.resolution(fallback: Locale('zh', '')),
       builder: (context, widget) {
         // TODO: error widget not shown? blank page only.
-        Catcher.addDefaultErrorWidget(
-            showStacktrace: false,
-            customTitle: "Custom error title",
-            customDescription: "Custom error description");
+        Catcher.addDefaultErrorWidget(showStacktrace: true);
         return widget;
       },
       home: db.userData == null ? BlankPage(showProgress: true) : HomePage(),

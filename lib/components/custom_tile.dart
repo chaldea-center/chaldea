@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
+import 'package:chaldea/components/components.dart';
 
 /// modified from [ListTile].
 class CustomTile extends StatelessWidget {
@@ -14,6 +14,7 @@ class CustomTile extends StatelessWidget {
 
   /// default: EdgeInsets.symmetric(horizontal: 6.0)
   final EdgeInsets titlePadding;
+  final Color color;
   final CrossAxisAlignment alignment;
   final bool enabled;
   final bool selected;
@@ -33,6 +34,7 @@ class CustomTile extends StatelessWidget {
       this.trailing,
       this.contentPadding,
       this.titlePadding,
+      this.color,
       this.alignment = CrossAxisAlignment.center,
       this.enabled = true,
       this.selected = false,
@@ -111,12 +113,15 @@ class CustomTile extends StatelessWidget {
       child: Semantics(
         enabled: enabled,
         selected: selected,
-        child: Padding(
-          padding: resolvedContentPadding,
-          child: Row(
-              crossAxisAlignment: alignment,
-              mainAxisSize: MainAxisSize.max,
-              children: allElements),
+        child: Container(
+          color: color,
+          child: Padding(
+            padding: resolvedContentPadding,
+            child: Row(
+                crossAxisAlignment: alignment,
+                mainAxisSize: MainAxisSize.max,
+                children: allElements),
+          ),
         ),
       ),
     );

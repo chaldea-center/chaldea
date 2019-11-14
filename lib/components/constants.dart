@@ -12,16 +12,16 @@ class LangCode {
   static const String jpn = '日本語';
   static const String eng = 'English';
 
-  static const Map<String, Locale> values = {
+  static const Map<String, Locale> allEntries = {
     chs: Locale('zh', ''),
     cht: Locale('zh', 'TW'),
     jpn: Locale('ja', ''),
     eng: Locale('en', '')
   };
 
-  static Locale getLocale(String code) => code == null ? null : values[code];
+  static Locale getLocale(String code) => code == null ? null : allEntries[code];
 
-  static List<String> get codes => values.keys.toList();
+  static List<String> get codes => allEntries.keys.toList();
 }
 
 class GameServer {

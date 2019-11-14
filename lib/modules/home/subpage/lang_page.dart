@@ -1,7 +1,5 @@
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/constants.dart';
 import 'package:chaldea/components/tile_items.dart';
-import 'package:flutter/material.dart';
 
 class LanguagePage extends StatefulWidget {
   @override
@@ -17,7 +15,7 @@ class _LanguagePageState extends State<LanguagePage> {
           leading: BackButton(),
         ),
         body: TileGroup(
-          tiles: LangCode.values.keys.map((code) {
+          tiles: LangCode.allEntries.keys.map((code) {
 //            print('code=$code, cur_lang=${db.appData.language}, S.lang=${S.of(context).language}');
             bool _isCurLang = S.of(context).language == code;
             return ListTile(

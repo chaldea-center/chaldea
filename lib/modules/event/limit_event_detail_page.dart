@@ -12,16 +12,16 @@ class EventDetailPage extends StatefulWidget {
 }
 
 class _EventDetailPageState extends State<EventDetailPage> {
-  Event event;
-  EventPlan plan;
+  LimitEvent event;
+  LimitEventPlan plan;
   TextEditingController _lotteryController;
   TextInputsManager<String> manager = TextInputsManager();
 
   @override
   void initState() {
     super.initState();
-    event = db.gameData.events[widget.name] ?? Event(name: 'empty event');
-    plan = db.curPlan.events.putIfAbsent(event.name, () => EventPlan());
+    event = db.gameData.events.limitEvents[widget.name] ?? LimitEvent(name: 'empty event');
+    plan = db.curPlan.limitEvents.putIfAbsent(event.name, () => LimitEventPlan());
     if (event.lottery != null) {
       _lotteryController = TextEditingController(text: plan.lottery.toString());
     }

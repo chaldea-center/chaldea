@@ -7,6 +7,7 @@ import 'package:archive/archive_io.dart';
 import 'package:chaldea/components/constants.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -22,7 +23,7 @@ class Database {
   GameData gameData;
   bool enableDownload;
 
-  Plans get curPlan => userData.users[userData.curUserName]?.plans;
+  Plans get curPlan => userData.users[userData.curUser]?.plans;
   static String _rootPath = '';
 
   String get rootPath => _rootPath;
@@ -34,26 +35,28 @@ class Database {
 
   Future<Null> checkNetwork() async {
     final result = await Connectivity().checkConnectivity();
-    enableDownload = db.userData.useMobileNetwork == true ||
-        result != ConnectivityResult.mobile;
-//    enableDownload = false;
+    enableDownload = (!kDebugMode || db.userData.testAllowDownload) &&
+        (db.userData.useMobileNetwork || result != ConnectivityResult.mobile);
+    print(
+        'kDebugMode=$kDebugMode,\ntestAllowDown=${db.userData.testAllowDownload},\n'
+        'useMobile=${db.userData.useMobileNetwork},\nnetwork=$result,\n'
+        'enableDown=$enableDownload');
   }
 
   // load data
   Future<Null> loadGameData() async {
     // TODO: use downloaded data if exist
     gameData = parseJson(
-        parser: () =>
-            GameData.fromJson({
+        parser: () => GameData.fromJson({
               'servants':
-              getJsonFromFile(join(userData.gameDataPath, 'servants.json')),
+                  getJsonFromFile(join(userData.gameDataPath, 'servants.json')),
               'crafts': <String, String>{},
               'items':
-              getJsonFromFile(join(userData.gameDataPath, 'items.json')),
+                  getJsonFromFile(join(userData.gameDataPath, 'items.json')),
               'icons':
-              getJsonFromFile(join(userData.gameDataPath, 'icons.json')),
+                  getJsonFromFile(join(userData.gameDataPath, 'icons.json')),
               "events":
-              getJsonFromFile(join(userData.gameDataPath, 'events.json'))
+                  getJsonFromFile(join(userData.gameDataPath, 'events.json'))
             }),
         k: () => GameData());
     print('gamedata reloaded');
@@ -131,8 +134,7 @@ class Database {
           ..writeAsBytesSync(data);
         print('file: ${file.name}');
       } else {
-        Directory(fullFilepath)
-          ..create(recursive: true);
+        Directory(fullFilepath)..create(recursive: true);
         print('dir : ${file.name}');
       }
     }

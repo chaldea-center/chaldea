@@ -5,15 +5,21 @@ part of datatypes;
 class UserData {
   // app settings
   String language;
-  double criticalWidth;
   String gameDataPath;
   bool useMobileNetwork;
   Map<String, String> sliderUrls;
   Map<String, bool> galleries;
 
   // user-related game data
-  String curUserName;
+  String curUser;
   Map<String, User> users;
+
+  List<String> get userNames => users.values.map((user) => user.name).toList();
+
+  //test
+  @JsonKey(ignore: true)
+  double criticalWidth;
+  bool testAllowDownload = true;
 
   //filters, ItemFilterDat to be done
   SvtFilterData svtFilter;
@@ -23,19 +29,21 @@ class UserData {
       {this.language,
       this.criticalWidth,
       this.gameDataPath,
+      this.useMobileNetwork,
       this.sliderUrls,
       this.galleries,
-      this.curUserName,
+      this.curUser,
       this.users,
       this.svtFilter}) {
     // not initiate language: auto-change language if not set yet.
     String defaultName = 'default';
     gameDataPath ??= 'dataset';
+    useMobileNetwork ??= false;
     sliderUrls ??= {};
     galleries ??= {};
     users ??= {defaultName: User(name: defaultName)};
-    if (!users.containsKey(curUserName)) {
-      curUserName = users.keys.first;
+    if (!users.containsKey(curUser)) {
+      curUser = users.keys.first;
     }
     svtFilter ??= SvtFilterData();
   }

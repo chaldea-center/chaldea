@@ -184,6 +184,7 @@ class _GalleryPageState extends State<GalleryPage> {
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.refresh),
+                tooltip: 'Refresh sliders',
                 onPressed: () async {
                   await resolveSliderImageUrls(reload: true);
                   Scaffold.of(context).showSnackBar(SnackBar(

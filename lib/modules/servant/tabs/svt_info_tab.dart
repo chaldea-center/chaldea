@@ -215,13 +215,13 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
   }
 
   Widget buildProfileTab() {
-    bool hasCharaInfo = svt.profiles.first.loreText.isNotEmpty;
+    bool hasCharaInfo = svt.profiles.first.profile.isNotEmpty;
     return ListView(
       children: List.generate(7, (i) {
         final lore = svt.profiles[hasCharaInfo ? i : i + 1];
         String label =
             hasCharaInfo ? i == 0 ? '角色详情' : '个人资料$i' : '个人资料${i + 1}';
-        String text = useLangCN ? lore.loreText : lore.loreTextJp;
+        String text = useLangCN ? lore.profile : lore.profileJp;
         if (text.isEmpty) {
           text = '???';
         }

@@ -1,10 +1,6 @@
-import 'dart:math';
-
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/dialog.dart';
 import 'package:chaldea/components/tile_items.dart';
-import 'package:flutter/material.dart';
-
 
 class AccountPage extends StatefulWidget {
   @override
@@ -18,9 +14,7 @@ class _AccountPageState extends State<AccountPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S
-            .of(context)
-            .cur_account),
+        title: Text(S.of(context).cur_account),
         leading: BackButton(),
         actions: <Widget>[
           IconButton(
@@ -30,39 +24,28 @@ class _AccountPageState extends State<AccountPage> {
                   context: context,
                   builder: (context) {
                     return InputCancelOkDialog(
-                      title: S
-                          .of(context)
-                          .new_account,
-                      errorText: S
-                          .of(context)
-                          .input_error,
-                      validate: (v) {
-                        return v == v.trim() && !db.userData.users.containsKey(v);
-                      },
+                      title: S.of(context).new_account,
+                      errorText: S.of(context).input_error,
+                      validate: (v) =>
+                          v == v.trim() && !db.userData.users.containsKey(v),
                       onSubmit: (v) {
-                        final keys = db.userData.users.keys;
-                        String newKey;
-                        do {
-                          newKey = Random().nextInt(100000).toString();
-                          print('new key $newKey');
-                        } while (keys.contains(newKey));
+                        String newKey =
+                            DateTime.now().millisecondsSinceEpoch.toString();
                         db.userData.users[newKey] = User(name: v);
                         db.onAppUpdate();
+                        print('Add account $v(key:$newKey)');
                       },
                     );
-                  }
-              );
-              db.onAppUpdate();
-              print('Add account');
+                  });
             },
           )
         ],
       ),
       body: TileGroup(
-        tiles: db.userData.users.keys.map((key) {
-          final user = db.userData.users[key];
-          final bool _isCurUser = key == db.userData.curUserName;
-          var tile = ListTile(
+        tiles: db.userData.users.keys.map((userKey) {
+          final user = db.userData.users[userKey];
+          final bool _isCurUser = userKey == db.userData.curUser;
+          return ListTile(
             title: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -71,88 +54,93 @@ class _AccountPageState extends State<AccountPage> {
                   child: Icon(
                     Icons.check,
                     size: 18.0,
-                    color: _isCurUser ? Theme
-                        .of(context)
-                        .primaryColor : Color(0x00),
+                    color: _isCurUser
+                        ? Theme.of(context).primaryColor
+                        : Colors.transparent,
                   ),
                 ),
-                Text(
-                  '${user.name} - ${user.server}',
-                  style: TextStyle(),
-                )
+                Text('${user.name} - ${user.server}')
               ],
             ),
             selected: _isCurUser,
             trailing: PopupMenuButton(
-              itemBuilder: (BuildContext context) =>
-              [
+              itemBuilder: (BuildContext context) => [
                 PopupMenuItem(
-                  child: GestureDetector(
-                    child: Text(S
-                        .of(context)
-                        .rename),
-                    onTap: () {
-                      Navigator.pop(context);
-                      showDialog(
-                        context: context,
-                        builder: (context) =>
-                            InputCancelOkDialog(
-                              title: '${S
-                                  .of(context)
-                                  .rename} - ${user.name}',
-                              defaultText: user.name,
-                              errorText: S
-                                  .of(context)
-                                  .input_error,
-                              validate: (v) {
-                                return v == v.trim() &&
-                                    !db.userData.users.containsKey(v);
-                              },
-                              onSubmit: (v) {
-                                user.name = v;
-                                db.onAppUpdate();
-                              },
-                            ),
-                      );
-                    },
-                  ),
-                ),
+                    value: 'rename', child: Text(S.of(context).rename)),
                 PopupMenuItem(
-                  child: GestureDetector(
-                    child: Text(S
-                        .of(context)
-                        .delete),
-                    onTap: () {
-                      setState(() {
-                        //confirm
-                        print('delete ${db.userData.users[key].toJson()}...');
-                        Navigator.pop(context);
-                        if (db.userData.users.length > 1) {
-                          db.userData.users.remove(key);
-                          if (_isCurUser) {
-                            db.userData.curUserName = db.userData.users.keys.first;
-                          }
-                          db.onAppUpdate();
-                          print('accounts: ${db.userData.users.keys.toList()}');
-                        } else {
-                          Scaffold.of(context).showSnackBar(
-                              SnackBar(content: Text('Delete failed! At least 1 account!'),));
-                        }
-                      });
-                    },
-                  ),
-                )
+                    value: 'delete', child: Text(S.of(context).delete))
               ],
+              onSelected: (k) {
+                switch (k) {
+                  case 'rename':
+                    renameUser(userKey);
+                    break;
+                  case 'delete':
+                    deleteUser(userKey);
+                    break;
+                  default:
+                    break;
+                }
+              },
             ),
             onTap: () {
-              db.userData.curUserName = key;
+              db.userData.curUser = userKey;
               db.onAppUpdate();
             },
           );
-
-          return tile;
         }).toList(),
       ),
     );
+  }
+
+  void renameUser(String key) {
+    final user = db.userData.users[key];
+    showDialog(
+      context: context,
+      builder: (context) => InputCancelOkDialog(
+        title: '${S.of(context).rename} - ${user.name}',
+        text: user.name,
+        errorText: S.of(context).input_error,
+        validate: (v) {
+          return v == v.trim() && !db.userData.userNames.contains(v);
+        },
+        onSubmit: (v) {
+          user.name = v;
+          db.onAppUpdate();
+        },
+      ),
+    );
+  }
+
+  void deleteUser(String key) {
+    print('delete user key $key...');
+    final canDelete = db.userData.users.length > 1;
+    setState(() {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: Text('Delete ${db.userData.users[key].name}'),
+                content: canDelete
+                    ? null
+                    : Text('Cannot delete, at least one account!'),
+                actions: <Widget>[
+                  FlatButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text(S.of(context).cancel)),
+                  if (canDelete)
+                    FlatButton(
+                        onPressed: () {
+                          db.userData.users.remove(key);
+                          if (db.userData.curUser == key) {
+                            db.userData.curUser = db.userData.users.keys.first;
+                          }
+                          db.onAppUpdate();
+                          print('accounts: ${db.userData.users.keys.toList()}');
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(S.of(context).ok)),
+                ],
+              ));
+    });
   }
 }

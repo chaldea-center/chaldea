@@ -1,5 +1,4 @@
 import 'package:chaldea/components/components.dart';
-import 'package:flutter/material.dart';
 
 class EditGalleryPage extends StatefulWidget {
   final Map<String, GalleryItem> galleries;

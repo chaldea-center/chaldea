@@ -1,7 +1,6 @@
 import 'dart:math' show max, min;
 
 import 'package:chaldea/components/components.dart';
-import 'package:flutter/material.dart';
 
 class SHeader extends StatelessWidget {
   final String label;
@@ -186,10 +185,13 @@ class TileGroup extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
-        children: <Widget>[]
-          ..addAll(null == header ? [] : [SHeader(header)])
-          ..addAll(group)
-          ..addAll(null == footer ? [] : [SFooter(footer)]),
+        children: <Widget>[
+          if(header!=null)
+            SHeader(header),
+          ...group,
+          if(footer!=null)
+            SFooter(footer)
+        ]
       ),
     );
   }

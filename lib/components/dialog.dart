@@ -4,7 +4,7 @@ import 'package:flutter/services.dart' show SystemChannels;
 
 class InputCancelOkDialog extends StatefulWidget {
   final String title;
-  final String defaultText;
+  final String text;
   final String hintText;
   final String errorText;
   final bool Function(String) validate;
@@ -13,7 +13,7 @@ class InputCancelOkDialog extends StatefulWidget {
   const InputCancelOkDialog(
       {Key key,
       this.title,
-      this.defaultText,
+      this.text,
       this.hintText,
       this.errorText,
       this.validate,
@@ -24,6 +24,12 @@ class InputCancelOkDialog extends StatefulWidget {
   State<StatefulWidget> createState() => _InputCancelOkDialogState();
 }
 
+/// debug warnings:
+/// W/IInputConnectionWrapper(31507): beginBatchEdit on inactive InputConnection
+/// W/IInputConnectionWrapper(31507): getTextBeforeCursor on inactive InputConnection
+/// W/IInputConnectionWrapper(31507): getTextAfterCursor on inactive InputConnection
+/// W/IInputConnectionWrapper(31507): getSelectedText on inactive InputConnection
+/// W/IInputConnectionWrapper(31507): endBatchEdit on inactive InputConnection
 class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
   TextEditingController _controller;
   bool validation = true;
@@ -35,7 +41,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.defaultText);
+    _controller = TextEditingController(text: widget.text);
   }
 
   @override
@@ -45,6 +51,8 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
       title: Text(widget.title),
       content: TextField(
         controller: _controller,
+        autofocus: true,
+        autocorrect: false,
         decoration: InputDecoration(
             hintText: widget.hintText,
             errorText: validation ? null : "Invalid input."),
@@ -57,6 +65,8 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
         },
         onSubmitted: (v) {
           SystemChannels.textInput.invokeMethod('TextInput.hide');
+          widget.onSubmit(v);
+          Navigator.pop(context);
         },
       ),
       actions: <Widget>[
