@@ -6,6 +6,158 @@ part of datatypes;
 // JsonSerializableGenerator
 // **************************************************************************
 
+CraftEssential _$CraftEssentialFromJson(Map<String, dynamic> json) {
+  return CraftEssential(
+    no: json['no'] as int,
+    rarity: json['rarity'] as int,
+    name: json['name'] as String,
+    nameJp: json['nameJp'] as String,
+    mcLink: json['mcLink'] as String,
+    icon: json['icon'] as String,
+    illust: json['illust'] as String,
+    illustrator:
+        (json['illustrator'] as List)?.map((e) => e as String)?.toList(),
+    cost: json['cost'] as int,
+    hpMin: json['hpMin'] as int,
+    hpMax: json['hpMax'] as int,
+    atkMin: json['atkMin'] as int,
+    atkMax: json['atkMax'] as int,
+    skillIcon: json['skillIcon'] as String,
+    skill: json['skill'] as String,
+    eventIcons: (json['eventIcons'] as List)?.map((e) => e as String)?.toList(),
+    eventSkills:
+        (json['eventSkills'] as List)?.map((e) => e as String)?.toList(),
+    description: json['description'] as String,
+    descriptionJp: json['descriptionJp'] as String,
+    category: json['category'] as int,
+    characters: (json['characters'] as List)?.map((e) => e as String)?.toList(),
+    bond: json['bond'] as int,
+    valentine: json['valentine'] as int,
+  );
+}
+
+Map<String, dynamic> _$CraftEssentialToJson(CraftEssential instance) =>
+    <String, dynamic>{
+      'no': instance.no,
+      'rarity': instance.rarity,
+      'name': instance.name,
+      'nameJp': instance.nameJp,
+      'mcLink': instance.mcLink,
+      'icon': instance.icon,
+      'illust': instance.illust,
+      'illustrator': instance.illustrator,
+      'cost': instance.cost,
+      'hpMin': instance.hpMin,
+      'hpMax': instance.hpMax,
+      'atkMin': instance.atkMin,
+      'atkMax': instance.atkMax,
+      'skillIcon': instance.skillIcon,
+      'skill': instance.skill,
+      'eventIcons': instance.eventIcons,
+      'eventSkills': instance.eventSkills,
+      'description': instance.description,
+      'descriptionJp': instance.descriptionJp,
+      'category': instance.category,
+      'characters': instance.characters,
+      'bond': instance.bond,
+      'valentine': instance.valentine,
+    };
+
+Events _$EventsFromJson(Map<String, dynamic> json) {
+  return Events(
+    limitEvents: (json['limitEvents'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(
+          k, e == null ? null : LimitEvent.fromJson(e as Map<String, dynamic>)),
+    ),
+    mainRecords: (json['mainRecords'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(
+          k, e == null ? null : MainRecord.fromJson(e as Map<String, dynamic>)),
+    ),
+    exchangeTickets: (json['exchangeTickets'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(
+          k,
+          e == null
+              ? null
+              : ExchangeTicket.fromJson(e as Map<String, dynamic>)),
+    ),
+  );
+}
+
+Map<String, dynamic> _$EventsToJson(Events instance) => <String, dynamic>{
+      'limitEvents': instance.limitEvents,
+      'mainRecords': instance.mainRecords,
+      'exchangeTickets': instance.exchangeTickets,
+    };
+
+LimitEvent _$LimitEventFromJson(Map<String, dynamic> json) {
+  return LimitEvent(
+    name: json['name'] as String,
+    link: json['link'] as String,
+    grail: json['grail'] as int,
+    crystal: json['crystal'] as int,
+    grail2crystal: json['grail2crystal'] as int,
+    qp: json['qp'] as int,
+    items: (json['items'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(k, e as int),
+    ),
+    category: json['category'] as String,
+    hunting: (json['hunting'] as List)
+        ?.map((e) => (e as Map<String, dynamic>)?.map(
+              (k, e) => MapEntry(k, (e as num)?.toDouble()),
+            ))
+        ?.toList(),
+    lottery: (json['lottery'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(k, e as int),
+    ),
+  );
+}
+
+Map<String, dynamic> _$LimitEventToJson(LimitEvent instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'link': instance.link,
+      'grail': instance.grail,
+      'crystal': instance.crystal,
+      'grail2crystal': instance.grail2crystal,
+      'qp': instance.qp,
+      'items': instance.items,
+      'category': instance.category,
+      'hunting': instance.hunting,
+      'lottery': instance.lottery,
+    };
+
+MainRecord _$MainRecordFromJson(Map<String, dynamic> json) {
+  return MainRecord(
+    drops: (json['drops'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(k, e as int),
+    ),
+    rewards: (json['rewards'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(k, e as int),
+    ),
+  );
+}
+
+Map<String, dynamic> _$MainRecordToJson(MainRecord instance) =>
+    <String, dynamic>{
+      'drops': instance.drops,
+      'rewards': instance.rewards,
+    };
+
+ExchangeTicket _$ExchangeTicketFromJson(Map<String, dynamic> json) {
+  return ExchangeTicket(
+    days: json['days'] as int,
+    monthJp: json['monthJp'] as String,
+    items: (json['items'] as List)?.map((e) => e as String)?.toList(),
+  );
+}
+
+Map<String, dynamic> _$ExchangeTicketToJson(ExchangeTicket instance) =>
+    <String, dynamic>{
+      'days': instance.days,
+      'monthJp': instance.monthJp,
+      'items': instance.items,
+    };
+
 GameData _$GameDataFromJson(Map<String, dynamic> json) {
   return GameData(
     servants: (json['servants'] as Map<String, dynamic>)?.map(
@@ -13,7 +165,11 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
           e == null ? null : Servant.fromJson(e as Map<String, dynamic>)),
     ),
     crafts: (json['crafts'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as String),
+      (k, e) => MapEntry(
+          int.parse(k),
+          e == null
+              ? null
+              : CraftEssential.fromJson(e as Map<String, dynamic>)),
     ),
     items: (json['items'] as Map<String, dynamic>)?.map(
       (k, e) => MapEntry(
@@ -31,7 +187,7 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
       'servants': instance.servants?.map((k, e) => MapEntry(k.toString(), e)),
-      'crafts': instance.crafts,
+      'crafts': instance.crafts?.map((k, e) => MapEntry(k.toString(), e)),
       'items': instance.items,
       'icons': instance.icons,
       'events': instance.events,
@@ -47,6 +203,58 @@ GameIcon _$GameIconFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$GameIconToJson(GameIcon instance) => <String, dynamic>{
       'filename': instance.filename,
       'url': instance.url,
+    };
+
+ItemCost _$ItemCostFromJson(Map<String, dynamic> json) {
+  return ItemCost(
+    ascension: (json['ascension'] as List)
+        ?.map((e) => (e as List)
+            ?.map((e) =>
+                e == null ? null : Item.fromJson(e as Map<String, dynamic>))
+            ?.toList())
+        ?.toList(),
+    skill: (json['skill'] as List)
+        ?.map((e) => (e as List)
+            ?.map((e) =>
+                e == null ? null : Item.fromJson(e as Map<String, dynamic>))
+            ?.toList())
+        ?.toList(),
+    dressName: (json['dressName'] as List)?.map((e) => e as String)?.toList(),
+    dressNameJp:
+        (json['dressNameJp'] as List)?.map((e) => e as String)?.toList(),
+    dress: (json['dress'] as List)
+        ?.map((e) => (e as List)
+            ?.map((e) =>
+                e == null ? null : Item.fromJson(e as Map<String, dynamic>))
+            ?.toList())
+        ?.toList(),
+  );
+}
+
+Map<String, dynamic> _$ItemCostToJson(ItemCost instance) => <String, dynamic>{
+      'ascension': instance.ascension,
+      'skill': instance.skill,
+      'dress': instance.dress,
+      'dressName': instance.dressName,
+      'dressNameJp': instance.dressNameJp,
+    };
+
+Item _$ItemFromJson(Map<String, dynamic> json) {
+  return Item(
+    id: json['id'] as int,
+    name: json['name'] as String,
+    rarity: json['rarity'] as int ?? 0,
+    category: json['category'] as int,
+    num: json['num'] as int ?? 0,
+  );
+}
+
+Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'rarity': instance.rarity,
+      'category': instance.category,
+      'num': instance.num,
     };
 
 Servant _$ServantFromJson(Map<String, dynamic> json) {
@@ -80,6 +288,8 @@ Servant _$ServantFromJson(Map<String, dynamic> json) {
             ? null
             : SvtProfileData.fromJson(e as Map<String, dynamic>))
         ?.toList(),
+    bondCraft: json['bondCraft'] as int,
+    valentineCraft: json['valentineCraft'] as int,
   );
 }
 
@@ -93,6 +303,8 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'passiveSkills': instance.passiveSkills,
       'itemCost': instance.itemCost,
       'profiles': instance.profiles,
+      'bondCraft': instance.bondCraft,
+      'valentineCraft': instance.valentineCraft,
     };
 
 ServantBaseInfo _$ServantBaseInfoFromJson(Map<String, dynamic> json) {
@@ -277,153 +489,6 @@ Map<String, dynamic> _$EffectToJson(Effect instance) => <String, dynamic>{
       'lvData': instance.lvData,
     };
 
-ItemCost _$ItemCostFromJson(Map<String, dynamic> json) {
-  return ItemCost(
-    ascension: (json['ascension'] as List)
-        ?.map((e) => (e as List)
-            ?.map((e) =>
-                e == null ? null : Item.fromJson(e as Map<String, dynamic>))
-            ?.toList())
-        ?.toList(),
-    skill: (json['skill'] as List)
-        ?.map((e) => (e as List)
-            ?.map((e) =>
-                e == null ? null : Item.fromJson(e as Map<String, dynamic>))
-            ?.toList())
-        ?.toList(),
-    dressName: (json['dressName'] as List)?.map((e) => e as String)?.toList(),
-    dressNameJp:
-        (json['dressNameJp'] as List)?.map((e) => e as String)?.toList(),
-    dress: (json['dress'] as List)
-        ?.map((e) => (e as List)
-            ?.map((e) =>
-                e == null ? null : Item.fromJson(e as Map<String, dynamic>))
-            ?.toList())
-        ?.toList(),
-  );
-}
-
-Map<String, dynamic> _$ItemCostToJson(ItemCost instance) => <String, dynamic>{
-      'ascension': instance.ascension,
-      'skill': instance.skill,
-      'dress': instance.dress,
-      'dressName': instance.dressName,
-      'dressNameJp': instance.dressNameJp,
-    };
-
-Item _$ItemFromJson(Map<String, dynamic> json) {
-  return Item(
-    id: json['id'] as int,
-    name: json['name'] as String,
-    rarity: json['rarity'] as int ?? 0,
-    category: json['category'] as int,
-    num: json['num'] as int ?? 0,
-  );
-}
-
-Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-      'rarity': instance.rarity,
-      'category': instance.category,
-      'num': instance.num,
-    };
-
-Events _$EventsFromJson(Map<String, dynamic> json) {
-  return Events(
-    limitEvents: (json['limitEvents'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(
-          k, e == null ? null : LimitEvent.fromJson(e as Map<String, dynamic>)),
-    ),
-    mainRecords: (json['mainRecords'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(
-          k, e == null ? null : MainRecord.fromJson(e as Map<String, dynamic>)),
-    ),
-    exchangeTickets: (json['exchangeTickets'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(
-          k,
-          e == null
-              ? null
-              : ExchangeTicket.fromJson(e as Map<String, dynamic>)),
-    ),
-  );
-}
-
-Map<String, dynamic> _$EventsToJson(Events instance) => <String, dynamic>{
-      'limitEvents': instance.limitEvents,
-      'mainRecords': instance.mainRecords,
-      'exchangeTickets': instance.exchangeTickets,
-    };
-
-LimitEvent _$LimitEventFromJson(Map<String, dynamic> json) {
-  return LimitEvent(
-    name: json['name'] as String,
-    link: json['link'] as String,
-    grail: json['grail'] as int,
-    crystal: json['crystal'] as int,
-    grail2crystal: json['grail2crystal'] as int,
-    qp: json['qp'] as int,
-    items: (json['items'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as int),
-    ),
-    category: json['category'] as String,
-    hunting: (json['hunting'] as List)
-        ?.map((e) => (e as Map<String, dynamic>)?.map(
-              (k, e) => MapEntry(k, (e as num)?.toDouble()),
-            ))
-        ?.toList(),
-    lottery: (json['lottery'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as int),
-    ),
-  );
-}
-
-Map<String, dynamic> _$LimitEventToJson(LimitEvent instance) =>
-    <String, dynamic>{
-      'name': instance.name,
-      'link': instance.link,
-      'grail': instance.grail,
-      'crystal': instance.crystal,
-      'grail2crystal': instance.grail2crystal,
-      'qp': instance.qp,
-      'items': instance.items,
-      'category': instance.category,
-      'hunting': instance.hunting,
-      'lottery': instance.lottery,
-    };
-
-MainRecord _$MainRecordFromJson(Map<String, dynamic> json) {
-  return MainRecord(
-    drops: (json['drops'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as int),
-    ),
-    rewards: (json['rewards'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as int),
-    ),
-  );
-}
-
-Map<String, dynamic> _$MainRecordToJson(MainRecord instance) =>
-    <String, dynamic>{
-      'drops': instance.drops,
-      'rewards': instance.rewards,
-    };
-
-ExchangeTicket _$ExchangeTicketFromJson(Map<String, dynamic> json) {
-  return ExchangeTicket(
-    days: json['days'] as int,
-    monthJp: json['monthJp'] as String,
-    items: (json['items'] as List)?.map((e) => e as String)?.toList(),
-  );
-}
-
-Map<String, dynamic> _$ExchangeTicketToJson(ExchangeTicket instance) =>
-    <String, dynamic>{
-      'days': instance.days,
-      'monthJp': instance.monthJp,
-      'items': instance.items,
-    };
-
 SvtProfileData _$SvtProfileDataFromJson(Map<String, dynamic> json) {
   return SvtProfileData(
     profile: json['profile'] as String,
@@ -437,125 +502,6 @@ Map<String, dynamic> _$SvtProfileDataToJson(SvtProfileData instance) =>
       'profile': instance.profile,
       'profileJp': instance.profileJp,
       'condition': instance.condition,
-    };
-
-UserData _$UserDataFromJson(Map<String, dynamic> json) {
-  return UserData(
-    language: json['language'] as String,
-    criticalWidth: (json['criticalWidth'] as num)?.toDouble(),
-    gameDataPath: json['gameDataPath'] as String,
-    useMobileNetwork: json['useMobileNetwork'] as bool,
-    sliderUrls: (json['sliderUrls'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as String),
-    ),
-    galleries: (json['galleries'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as bool),
-    ),
-    curUser: json['curUser'] as String,
-    users: (json['users'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(
-          k, e == null ? null : User.fromJson(e as Map<String, dynamic>)),
-    ),
-    svtFilter: json['svtFilter'] == null
-        ? null
-        : SvtFilterData.fromJson(json['svtFilter'] as Map<String, dynamic>),
-  )..itemFilter = json['itemFilter'] == null
-      ? null
-      : SvtFilterData.fromJson(json['itemFilter'] as Map<String, dynamic>);
-}
-
-Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
-      'language': instance.language,
-      'criticalWidth': instance.criticalWidth,
-      'gameDataPath': instance.gameDataPath,
-      'useMobileNetwork': instance.useMobileNetwork,
-      'sliderUrls': instance.sliderUrls,
-      'galleries': instance.galleries,
-      'curUser': instance.curUser,
-      'users': instance.users,
-      'svtFilter': instance.svtFilter,
-      'itemFilter': instance.itemFilter,
-    };
-
-SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
-  return SvtFilterData(
-    favorite: json['favorite'] as bool,
-    sortKeys: (json['sortKeys'] as List)?.map((e) => e as String)?.toList(),
-    sortDirections:
-        (json['sortDirections'] as List)?.map((e) => e as bool)?.toList(),
-    useGrid: json['useGrid'] as bool,
-    rarity: json['rarity'] == null
-        ? null
-        : FilterGroupData.fromJson(json['rarity'] as Map<String, dynamic>),
-    className: json['className'] == null
-        ? null
-        : FilterGroupData.fromJson(json['className'] as Map<String, dynamic>),
-    obtain: json['obtain'] == null
-        ? null
-        : FilterGroupData.fromJson(json['obtain'] as Map<String, dynamic>),
-    npColor: json['npColor'] == null
-        ? null
-        : FilterGroupData.fromJson(json['npColor'] as Map<String, dynamic>),
-    npType: json['npType'] == null
-        ? null
-        : FilterGroupData.fromJson(json['npType'] as Map<String, dynamic>),
-    attribute: json['attribute'] == null
-        ? null
-        : FilterGroupData.fromJson(json['attribute'] as Map<String, dynamic>),
-    alignment1: json['alignment1'] == null
-        ? null
-        : FilterGroupData.fromJson(json['alignment1'] as Map<String, dynamic>),
-    alignment2: json['alignment2'] == null
-        ? null
-        : FilterGroupData.fromJson(json['alignment2'] as Map<String, dynamic>),
-    gender: json['gender'] == null
-        ? null
-        : FilterGroupData.fromJson(json['gender'] as Map<String, dynamic>),
-    trait: json['trait'] == null
-        ? null
-        : FilterGroupData.fromJson(json['trait'] as Map<String, dynamic>),
-    traitSpecial: json['traitSpecial'] == null
-        ? null
-        : FilterGroupData.fromJson(
-            json['traitSpecial'] as Map<String, dynamic>),
-  )..filterString = json['filterString'] as String;
-}
-
-Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
-    <String, dynamic>{
-      'favorite': instance.favorite,
-      'filterString': instance.filterString,
-      'sortKeys': instance.sortKeys,
-      'sortDirections': instance.sortDirections,
-      'useGrid': instance.useGrid,
-      'rarity': instance.rarity,
-      'className': instance.className,
-      'obtain': instance.obtain,
-      'npColor': instance.npColor,
-      'npType': instance.npType,
-      'attribute': instance.attribute,
-      'alignment1': instance.alignment1,
-      'alignment2': instance.alignment2,
-      'gender': instance.gender,
-      'trait': instance.trait,
-      'traitSpecial': instance.traitSpecial,
-    };
-
-FilterGroupData _$FilterGroupDataFromJson(Map<String, dynamic> json) {
-  return FilterGroupData(
-    matchAll: json['matchAll'] as bool,
-    invert: json['invert'] as bool,
-    options: (json['options'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as bool),
-    ),
-  );
-}
-
-Map<String, dynamic> _$FilterGroupDataToJson(FilterGroupData instance) =>
-    <String, dynamic>{
-      'matchAll': instance.matchAll,
-      'invert': instance.invert,
-      'options': instance.options,
     };
 
 User _$UserFromJson(Map<String, dynamic> json) {
@@ -663,4 +609,154 @@ Map<String, dynamic> _$LimitEventPlanToJson(LimitEventPlan instance) =>
       'rerun': instance.rerun,
       'lottery': instance.lottery,
       'hunting': instance.hunting,
+    };
+
+UserData _$UserDataFromJson(Map<String, dynamic> json) {
+  return UserData(
+    language: json['language'] as String,
+    gameDataPath: json['gameDataPath'] as String,
+    useMobileNetwork: json['useMobileNetwork'] as bool,
+    sliderUrls: (json['sliderUrls'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(k, e as String),
+    ),
+    galleries: (json['galleries'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(k, e as bool),
+    ),
+    curUser: json['curUser'] as String,
+    users: (json['users'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(
+          k, e == null ? null : User.fromJson(e as Map<String, dynamic>)),
+    ),
+    svtFilter: json['svtFilter'] == null
+        ? null
+        : SvtFilterData.fromJson(json['svtFilter'] as Map<String, dynamic>),
+    craftFilter: json['craftFilter'] == null
+        ? null
+        : CraftFilterData.fromJson(json['craftFilter'] as Map<String, dynamic>),
+  )..testAllowDownload = json['testAllowDownload'] as bool;
+}
+
+Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
+      'language': instance.language,
+      'gameDataPath': instance.gameDataPath,
+      'useMobileNetwork': instance.useMobileNetwork,
+      'sliderUrls': instance.sliderUrls,
+      'galleries': instance.galleries,
+      'curUser': instance.curUser,
+      'users': instance.users,
+      'testAllowDownload': instance.testAllowDownload,
+      'svtFilter': instance.svtFilter,
+      'craftFilter': instance.craftFilter,
+    };
+
+SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
+  return SvtFilterData(
+    favorite: json['favorite'] as bool,
+    sortKeys: (json['sortKeys'] as List)?.map((e) => e as String)?.toList(),
+    sortDirections:
+        (json['sortDirections'] as List)?.map((e) => e as bool)?.toList(),
+    useGrid: json['useGrid'] as bool,
+    rarity: json['rarity'] == null
+        ? null
+        : FilterGroupData.fromJson(json['rarity'] as Map<String, dynamic>),
+    className: json['className'] == null
+        ? null
+        : FilterGroupData.fromJson(json['className'] as Map<String, dynamic>),
+    obtain: json['obtain'] == null
+        ? null
+        : FilterGroupData.fromJson(json['obtain'] as Map<String, dynamic>),
+    npColor: json['npColor'] == null
+        ? null
+        : FilterGroupData.fromJson(json['npColor'] as Map<String, dynamic>),
+    npType: json['npType'] == null
+        ? null
+        : FilterGroupData.fromJson(json['npType'] as Map<String, dynamic>),
+    attribute: json['attribute'] == null
+        ? null
+        : FilterGroupData.fromJson(json['attribute'] as Map<String, dynamic>),
+    alignment1: json['alignment1'] == null
+        ? null
+        : FilterGroupData.fromJson(json['alignment1'] as Map<String, dynamic>),
+    alignment2: json['alignment2'] == null
+        ? null
+        : FilterGroupData.fromJson(json['alignment2'] as Map<String, dynamic>),
+    gender: json['gender'] == null
+        ? null
+        : FilterGroupData.fromJson(json['gender'] as Map<String, dynamic>),
+    trait: json['trait'] == null
+        ? null
+        : FilterGroupData.fromJson(json['trait'] as Map<String, dynamic>),
+    traitSpecial: json['traitSpecial'] == null
+        ? null
+        : FilterGroupData.fromJson(
+            json['traitSpecial'] as Map<String, dynamic>),
+  )..filterString = json['filterString'] as String;
+}
+
+Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
+    <String, dynamic>{
+      'favorite': instance.favorite,
+      'filterString': instance.filterString,
+      'sortKeys': instance.sortKeys,
+      'sortDirections': instance.sortDirections,
+      'useGrid': instance.useGrid,
+      'rarity': instance.rarity,
+      'className': instance.className,
+      'obtain': instance.obtain,
+      'npColor': instance.npColor,
+      'npType': instance.npType,
+      'attribute': instance.attribute,
+      'alignment1': instance.alignment1,
+      'alignment2': instance.alignment2,
+      'gender': instance.gender,
+      'trait': instance.trait,
+      'traitSpecial': instance.traitSpecial,
+    };
+
+CraftFilterData _$CraftFilterDataFromJson(Map<String, dynamic> json) {
+  return CraftFilterData(
+    favorite: json['favorite'] as bool,
+    sortKeys: (json['sortKeys'] as List)?.map((e) => e as String)?.toList(),
+    sortDirections:
+        (json['sortDirections'] as List)?.map((e) => e as bool)?.toList(),
+    useGrid: json['useGrid'] as bool,
+    rarity: json['rarity'] == null
+        ? null
+        : FilterGroupData.fromJson(json['rarity'] as Map<String, dynamic>),
+    category: json['category'] == null
+        ? null
+        : FilterGroupData.fromJson(json['category'] as Map<String, dynamic>),
+    attribute: json['attribute'] == null
+        ? null
+        : FilterGroupData.fromJson(json['attribute'] as Map<String, dynamic>),
+  )..filterString = json['filterString'] as String;
+}
+
+Map<String, dynamic> _$CraftFilterDataToJson(CraftFilterData instance) =>
+    <String, dynamic>{
+      'favorite': instance.favorite,
+      'filterString': instance.filterString,
+      'sortKeys': instance.sortKeys,
+      'sortDirections': instance.sortDirections,
+      'useGrid': instance.useGrid,
+      'rarity': instance.rarity,
+      'category': instance.category,
+      'attribute': instance.attribute,
+    };
+
+FilterGroupData _$FilterGroupDataFromJson(Map<String, dynamic> json) {
+  return FilterGroupData(
+    matchAll: json['matchAll'] as bool,
+    invert: json['invert'] as bool,
+    options: (json['options'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(k, e as bool),
+    ),
+  );
+}
+
+Map<String, dynamic> _$FilterGroupDataToJson(FilterGroupData instance) =>
+    <String, dynamic>{
+      'matchAll': instance.matchAll,
+      'invert': instance.invert,
+      'options': instance.options,
     };

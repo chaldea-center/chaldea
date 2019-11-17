@@ -1,5 +1,5 @@
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/servant/servant_list_page.dart';
+import 'servant_list_page.dart';
 
 class SvtFilterPage extends StatefulWidget {
   final ServantListPageState parent;
@@ -14,7 +14,6 @@ class SvtFilterPage extends StatefulWidget {
 
 class _SvtFilterPageState extends State<SvtFilterPage> {
   SvtFilterData filterData;
-  Map<String, FilterCallBack<Servant>> filterFunctions = {};
 
   @override
   void initState() {
@@ -176,7 +175,6 @@ class _SvtFilterPageState extends State<SvtFilterPage> {
         ],
       ),
       body: ListView(
-        shrinkWrap: true,
         children: <Widget>[
           _buildDisplay(),
           _buildClassFilter(),

@@ -8,14 +8,20 @@ library datatypes;
 
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/constants.dart';
-import 'package:connectivity/connectivity.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
+
+part 'craft_essential.dart';
 
 /// generated file by JsonSerializableGenerator
 part 'datatypes.g.dart';
 
+part 'event.dart';
+
 part 'gamedata.dart';
-/// data-type classes, part of [datatypes].
-part 'appdata.dart';
+
+part 'servant.dart';
+
+part 'user.dart';
+
 part 'userdata.dart';

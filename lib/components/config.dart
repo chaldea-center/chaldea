@@ -6,7 +6,6 @@ import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
 import 'package:chaldea/components/constants.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
@@ -46,18 +45,16 @@ class Database {
   // load data
   Future<Null> loadGameData() async {
     // TODO: use downloaded data if exist
+    dynamic _getGameJson(Map<String, String> paths) => paths.map((key, fn) =>
+        MapEntry(key, getJsonFromFile(join(userData.gameDataPath, fn))));
     gameData = parseJson(
-        parser: () => GameData.fromJson({
-              'servants':
-                  getJsonFromFile(join(userData.gameDataPath, 'servants.json')),
-              'crafts': <String, String>{},
-              'items':
-                  getJsonFromFile(join(userData.gameDataPath, 'items.json')),
-              'icons':
-                  getJsonFromFile(join(userData.gameDataPath, 'icons.json')),
-              "events":
-                  getJsonFromFile(join(userData.gameDataPath, 'events.json'))
-            }),
+        parser: () => GameData.fromJson(_getGameJson({
+              'servants': 'servants.json',
+              'crafts': 'crafts.json',
+              'items': 'items.json',
+              'icons': 'icons.json',
+              'events': 'events.json'
+            })),
         k: () => GameData());
     print('gamedata reloaded');
   }
@@ -75,8 +72,9 @@ class Database {
     try {
       result = parser();
     } catch (e) {
-      result = k();
-      print('Error parsing json object to instance "$T"');
+      result = k == null ? null : k();
+      print('Error parsing json object to instance "$T"\n'
+          'error=$e');
     }
     return result;
   }
@@ -105,6 +103,7 @@ class Database {
       return File(join(_rootPath, userData.gameDataPath, 'icons',
           gameData.icons[iconKey].filename));
     } else {
+      //todo: replace with error.png
       return null;
     }
   }

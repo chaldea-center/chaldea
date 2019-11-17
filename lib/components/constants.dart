@@ -34,43 +34,6 @@ class MyColors {
   static const Color setting_tile = Colors.white;
 }
 
-class GalleryItem {
-  static const String servant = 'servant';
-  static const String item = 'item';
-  static const String event = 'event';
-  static const String plan = 'plan';
-  static const String craft = 'craft';
-  static const String cmd_code = 'cmd_code';
-  static const String gacha = 'gacha';
-  static const String calculator = 'calculator';
-  static const String master_equip = 'master_equip';
-  static const String backup = 'backup';
-  static const String more = 'more';
-
-//  static Map<String, GalleryItem> allItems;
-
-  // instant part
-  String name;
-  String Function(BuildContext context) titleBuilder;
-  final IconData icon;
-  final WidgetBuilder builder;
-  final bool isDetail;
-
-  GalleryItem(
-      {@required this.name,
-      @required this.titleBuilder,
-      @required this.icon,
-      @required this.builder,
-      this.isDetail = false})
-      : assert(titleBuilder != null),
-        assert(icon != null),
-        assert(builder != null);
-
-  @override
-  String toString() {
-    return '$runtimeType($name)';
-  }
-}
 
 class TextFilter {
   List<String> patterns;

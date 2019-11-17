@@ -24,6 +24,7 @@ class S implements WidgetsLocalizations {
   String get backup => "Backup to ...";
   String get backup_restore => "Backup & Restore";
   String get cancel => "Cancel";
+  String get craft_essential => "Craft Essential";
   String get cur_account => "Current Account";
   String get delete => "Delete";
   String get edit => "Edit";
@@ -38,7 +39,7 @@ class S implements WidgetsLocalizations {
   String get ok => "OK";
   String get rename => "Rename";
   String get restore => "Restore";
-  String get servant => "Servants";
+  String get servant => "Servant";
   String get servant_title => "Servant";
   String get server => "Server";
   String get server_cn => "CN";
@@ -92,6 +93,8 @@ class $zh_TW extends S {
   String get settings_data => "數據";
   @override
   String get cur_account => "當前賬號";
+  @override
+  String get craft_essential => "概念禮裝";
   @override
   String get rename => "Rename";
   @override
@@ -152,6 +155,8 @@ class $ja extends S {
   String get settings_data => "データ";
   @override
   String get cur_account => "アカウント";
+  @override
+  String get craft_essential => "概念礼装";
   @override
   String get rename => "Rename";
   @override
@@ -216,6 +221,8 @@ class $zh extends S {
   String get settings_data => "数据";
   @override
   String get cur_account => "当前账号";
+  @override
+  String get craft_essential => "概念礼装";
   @override
   String get rename => "重命名";
   @override

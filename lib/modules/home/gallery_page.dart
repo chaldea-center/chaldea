@@ -1,8 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/craft/craft_list_page.dart';
 import 'package:chaldea/modules/event/events_page.dart';
-import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:flutter/foundation.dart';
@@ -11,6 +11,8 @@ import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
+
+import 'subpage/edit_gallery_page.dart';
 
 class GalleryPage extends StatefulWidget {
   @override
@@ -77,6 +79,11 @@ class _GalleryPageState extends State<GalleryPage> {
           titleBuilder: (context) => S.of(context).servant_title,
           icon: Icons.people,
           builder: (context) => ServantListPage()),
+      GalleryItem.craft_essential: GalleryItem(
+          name: GalleryItem.craft_essential,
+          titleBuilder: (context) => S.of(context).craft_essential,
+          icon: Icons.extension,
+          builder: (context) => CraftListPage()),
       GalleryItem.item: GalleryItem(
           name: GalleryItem.item,
           titleBuilder: (context) => S.of(context).item_title,

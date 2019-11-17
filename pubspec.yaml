@@ -27,7 +27,6 @@ dependencies:
   cupertino_icons: ^0.1.2
   path_provider: ^1.4.0
   flutter_swiper: ^1.1.6
-  carousel_slider: ^1.3.1
   auto_size_text: ^2.1.0
   json_annotation: ^3.0.0
   cached_network_image: ^2.0.0-rc

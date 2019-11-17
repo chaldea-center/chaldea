@@ -106,14 +106,14 @@ class ServantListPageState extends State<ServantListPage> {
     });
   }
 
-  Widget _buildListView(List<Servant> shownSvtList) {
+  Widget _buildListView(List<Servant> shownList) {
     return ListView.separated(
         physics: ScrollPhysics(),
         controller: _scrollController,
         separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
-        itemCount: shownSvtList.length,
+        itemCount: shownList.length,
         itemBuilder: (context, index) {
-          final svt = shownSvtList[index];
+          final svt = shownList[index];
           final plan = db.curPlan.servants[svt.no];
           String text = '';
           if (plan?.favorite == true) {
@@ -149,12 +149,12 @@ class ServantListPageState extends State<ServantListPage> {
         });
   }
 
-  Widget _buildGridView(List<Servant> shownSvtList) {
+  Widget _buildGridView(List<Servant> shownList) {
     return GridView.count(
         crossAxisCount: 5,
         childAspectRatio: 1,
         controller: _scrollController,
-        children: shownSvtList.map((svt) {
+        children: shownList.map((svt) {
           final plan = db.curPlan.servants[svt.no];
           String text;
           if (plan?.favorite == true) {
@@ -184,12 +184,12 @@ class ServantListPageState extends State<ServantListPage> {
         }).toList());
   }
 
-  Widget buildSvtOverview() {
-    List<Servant> shownSvtList = [];
+  Widget buildOverview() {
+    List<Servant> shownList = [];
     db.gameData.servants.forEach((no, svt) {
       if (!filterData.favorite || db.curPlan.servants[no]?.favorite == true) {
         if (filtrateServant(filterData, svt)) {
-          shownSvtList.add(svt);
+          shownList.add(svt);
         }
       }
     });
@@ -215,7 +215,7 @@ class ServantListPageState extends State<ServantListPage> {
       }
     };
 
-    shownSvtList.sort((a, b) {
+    shownList.sort((a, b) {
       int r = 0;
       for (var i = 0; i < filterData.sortKeys.length; i++) {
         final sortKey = filterData.sortKeys[i];
@@ -226,8 +226,8 @@ class ServantListPageState extends State<ServantListPage> {
       return r;
     });
     return filterData.useGrid
-        ? _buildGridView(shownSvtList)
-        : _buildListView(shownSvtList);
+        ? _buildGridView(shownList)
+        : _buildListView(shownList);
   }
 
   @override
@@ -256,17 +256,11 @@ class ServantListPageState extends State<ServantListPage> {
                           borderRadius:
                               BorderRadius.all(Radius.circular(10.0))),
                       fillColor: Colors.white,
-                      hintText: 'Seach',
-                      prefixIcon: Icon(
-                        Icons.search,
-                        size: 20.0,
-                      ),
+                      hintText: 'Search',
+                      prefixIcon: Icon(Icons.search, size: 20.0),
                       suffixIcon: IconButton(
                         padding: EdgeInsets.zero,
-                        icon: Icon(
-                          Icons.clear,
-                          size: 20.0,
-                        ),
+                        icon: Icon(Icons.clear, size: 20.0),
                         onPressed: () {
                           setState(() {
                             WidgetsBinding.instance.addPostFrameCallback(
@@ -308,7 +302,7 @@ class ServantListPageState extends State<ServantListPage> {
           onPressed: () {
             _scrollController.jumpTo(0);
           }),
-      body: buildSvtOverview(),
+      body: buildOverview(),
     );
   }
 

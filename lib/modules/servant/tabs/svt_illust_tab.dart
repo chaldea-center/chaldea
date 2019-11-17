@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 
 import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
@@ -45,10 +45,10 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
             isScrollable: true,
             tabs: svt.info.illust
                 .map((v) => Tab(
-                child: Text(
-                  v['name'],
-                  style: TextStyle(color: Colors.black87),
-                )))
+                        child: Text(
+                      v['name'],
+                      style: TextStyle(color: Colors.black87),
+                    )))
                 .toList()),
         Expanded(
           child: TabBarView(
@@ -61,15 +61,15 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
                   imageBuilder: (context, url) => GestureDetector(
                     onTap: () async {
                       int newIndex =
-                      await Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => FullScreenImageSlider(
-                            imgUrls: svt.info.illust
-                                .map((e) => e['url'])
-                                .toList(),
-                            initialPage: i,
-                            enableDownload: db.enableDownload,
-                          ),
-                          fullscreenDialog: true));
+                          await Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => FullScreenImageSlider(
+                                    imgUrls: svt.info.illust
+                                        .map((e) => e['url'])
+                                        .toList(),
+                                    initialPage: i,
+                                    enableDownload: db.enableDownload,
+                                  ),
+                              fullscreenDialog: true));
                       setState(() {
                         _tabController.animateTo(newIndex);
                       });
@@ -120,32 +120,28 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: WillPopScope(
-        onWillPop: () async {
-          Navigator.of(context).pop(_curIndex);
-          return false;
-        },
-        child: CarouselSlider(
-          enableInfiniteScroll: false,
-          viewportFraction: 1.0,
-          aspectRatio: MediaQuery.of(context).size.aspectRatio,
-          initialPage: widget.initialPage,
-          onPageChanged: (_newIndex) => _curIndex = _newIndex,
-          items: widget.imgUrls
-              .map(
-                (url) => GestureDetector(
+    return Scaffold(
+      body: WillPopScope(
+          onWillPop: () async {
+            Navigator.of(context).pop(_curIndex);
+            return false;
+          },
+          child: Swiper(
+            itemBuilder: (BuildContext context, int index) => GestureDetector(
                 onTap: () => Navigator.of(context).pop(_curIndex),
                 child: MyCachedImage(
-                  url: url,
+                  url: widget.imgUrls[index],
                   enableDownload: widget.enableDownload,
                   imageBuilder: (context, url) => CachedNetworkImage(
                     imageUrl: url,
                     placeholder: MyCachedImage.defaultPlaceholder,
                   ),
                 )),
-          )
-              .toList(),
-        )),);
+            itemCount: widget.imgUrls.length,
+            autoplay: false,
+            loop: false,
+          )),
+    );
   }
 }
 

@@ -1,226 +1,359 @@
-// userdata: plan etc.
+/// App settings and users data
 part of datatypes;
 
 @JsonSerializable()
-class User {
-  @JsonKey(nullable: false)
-  String name;
-  String server;
-  Plans plans;
+class UserData {
+  // app settings
+  String language;
+  String gameDataPath;
+  bool useMobileNetwork;
+  Map<String, String> sliderUrls;
+  Map<String, bool> galleries;
 
-  User({@required this.name, this.server, this.plans})
-      : assert(name != null && name.isNotEmpty) {
-    server ??= GameServer.cn;
-    plans ??= Plans();
+  // user-related game data
+  String curUser;
+  Map<String, User> users;
+
+  List<String> get userNames => users.values.map((user) => user.name).toList();
+
+  //test
+  @JsonKey(ignore: true)
+  double criticalWidth;
+  bool testAllowDownload = true;
+
+  //filters, ItemFilterDat to be done
+  SvtFilterData svtFilter;
+  CraftFilterData craftFilter;
+
+  UserData(
+      {this.language,
+      this.criticalWidth,
+      this.gameDataPath,
+      this.useMobileNetwork,
+      this.sliderUrls,
+      this.galleries,
+      this.curUser,
+      this.users,
+      this.svtFilter,
+      this.craftFilter}) {
+    // not initiate language: auto-change language if not set yet.
+    String defaultName = 'default';
+    gameDataPath ??= 'dataset';
+    useMobileNetwork ??= false;
+    sliderUrls ??= {};
+    galleries ??= {};
+    users ??= {defaultName: User(name: defaultName)};
+    if (!users.containsKey(curUser)) {
+      curUser = users.keys.first;
+    }
+    svtFilter ??= SvtFilterData();
+    craftFilter ??= CraftFilterData();
   }
 
-  factory User.fromJson(Map<String, dynamic> data) => _$UserFromJson(data);
+  // json_serializable
+  factory UserData.fromJson(Map<String, dynamic> data) =>
+      _$UserDataFromJson(data);
 
-  Map<String, dynamic> toJson() => _$UserToJson(this);
-}
-
-@JsonSerializable(anyMap: true)
-class Plans {
-  Map<int, ServantPlan> servants;
-  Map<String, int> items;
-  Map<String, LimitEventPlan> limitEvents;
-  /// {'chapter 1': [drops_switch,rewards_switch]}
-  Map<String, List<bool>> mainRecords;
-  ///{'monthCn': [num1, num2, num3]}
-  Map<String, List<int>> exchangeTickets;
-
-  Plans(
-      {this.servants,
-      this.items,
-      this.limitEvents,
-      this.mainRecords,
-      this.exchangeTickets}) {
-    servants ??= {};
-    items ??= {};
-    limitEvents ??= {};
-    mainRecords ??= {};
-    exchangeTickets ??= {};
-  }
-
-  factory Plans.fromJson(Map<String, dynamic> data) => _$PlansFromJson(data);
-
-  Map<String, dynamic> toJson() => _$PlansToJson(this);
+  Map<String, dynamic> toJson() => _$UserDataToJson(this);
 }
 
 @JsonSerializable()
-class ServantPlan {
-  List<int> ascensionLv;
-  List<List<int>> skillLv;
-  List<List<int>> dressLv;
-  List<int> grailLv;
-  List<bool> skillEnhanced;
-  int treasureDeviceEnhanced;
-  int treasureDeviceLv;
+class SvtFilterData {
   bool favorite;
+  String filterString;
+  List<String> sortKeys;
+  List<bool> sortDirections;
+  bool useGrid;
 
-  factory ServantPlan.fromJson(Map<String, dynamic> data) =>
-      _$ServantPlanFromJson(data);
+  FilterGroupData rarity;
+  FilterGroupData className;
+  FilterGroupData obtain;
+  FilterGroupData npColor;
+  FilterGroupData npType;
+  FilterGroupData attribute;
+  FilterGroupData alignment1;
+  FilterGroupData alignment2;
+  FilterGroupData gender;
+  FilterGroupData trait;
+  FilterGroupData traitSpecial;
 
-  Map<String, dynamic> toJson() => _$ServantPlanToJson(this);
-
-  ServantPlan(
-      {this.ascensionLv,
-      this.skillLv,
-      this.dressLv,
-      this.grailLv,
-      this.skillEnhanced,
-      this.treasureDeviceEnhanced,
-      this.treasureDeviceLv,
-      this.favorite = false}) {
-    ascensionLv ??= [0, 0];
-    skillLv ??= List.generate(3, (i) => [1, 1]);
-    dressLv ??= [];
-    grailLv ??= [0, 0];
-    skillEnhanced ??= [null, null, null];
-    // treasureDeviceEnhanced??=null;
-    treasureDeviceLv ??= 1;
+  SvtFilterData(
+      {this.favorite,
+      this.sortKeys,
+      this.sortDirections,
+      this.useGrid,
+      this.rarity,
+      this.className,
+      this.obtain,
+      this.npColor,
+      this.npType,
+      this.attribute,
+      this.alignment1,
+      this.alignment2,
+      this.gender,
+      this.trait,
+      this.traitSpecial}) {
     favorite ??= false;
+    filterString ??= '';
+    sortKeys ??= List.generate(3, (i) => sortKeyData[i]);
+    sortDirections ??= List.filled(sortKeys.length, true);
+    useGrid ??= false;
+    rarity ??= FilterGroupData();
+    className ??= FilterGroupData();
+    obtain ??= FilterGroupData();
+    npColor ??= FilterGroupData();
+    npType ??= FilterGroupData();
+    attribute ??= FilterGroupData();
+    alignment1 ??= FilterGroupData();
+    alignment2 ??= FilterGroupData();
+    gender ??= FilterGroupData();
+    trait ??= FilterGroupData();
+    traitSpecial ??= FilterGroupData();
   }
+
+  List<FilterGroupData> get groupValues => [
+        rarity,
+        className,
+        obtain,
+        npColor,
+        npType,
+        attribute,
+        alignment1,
+        alignment2,
+        gender,
+        trait,
+        traitSpecial
+      ];
 
   void reset() {
-    ascensionLv = [0, 0];
-    skillLv = List.generate(3, (i) => [1, 1]);
-    dressLv = [];
-    grailLv = [0, 0];
-    skillEnhanced ??= [null, null, null];
-    treasureDeviceEnhanced = null;
-    treasureDeviceLv = 1;
-    favorite = false;
-  }
+    sortKeys = List.generate(sortKeys.length, (i) => sortKeyData[i]);
+    sortDirections = List.filled(sortKeys.length, false);
 
-  void planMax() {
-    ascensionLv.last = 4;
-    skillLv.forEach((e) => e.last = 10);
-    dressLv.forEach((e) => e.last = 1);
-    favorite = true;
-  }
-
-  void allMax() {
-    ascensionLv = [4, 4];
-    skillLv.forEach((e) => e.fillRange(0, 2, 10));
-    dressLv.forEach((e) => e.fillRange(0, 2, 1));
-    favorite = true;
-  }
-}
-
-@JsonSerializable()
-class LimitEventPlan {
-  bool enable;
-  bool rerun;
-  int lottery;
-  Map<String, int> hunting;
-
-  LimitEventPlan({this.enable, this.rerun, this.lottery, this.hunting}) {
-    enable ??= false;
-    rerun ??= true;
-    lottery ??= 0;
-    hunting ??= {};
-  }
-
-  factory LimitEventPlan.fromJson(Map<String, dynamic> data) =>
-      _$LimitEventPlanFromJson(data);
-
-  Map<String, dynamic> toJson() => _$LimitEventPlanToJson(this);
-}
-
-class PartSet<T> {
-  T ascension;
-  T skill;
-  T dress;
-
-  PartSet({this.ascension, this.skill, this.dress, T k()}) {
-    ascension ??= k();
-    skill ??= k();
-    dress ??= k();
-  }
-
-  List<T> get values => [ascension, skill, dress];
-
-  @override
-  String toString() {
-    return 'PartSet<$T>(\n  ascension:$ascension,\n  skill:$skill,\n  dress:$dress))';
-  }
-
-  void forEach(void f(T)) {
-    f(ascension);
-    f(skill);
-    f(dress);
-  }
-}
-
-class ItemCostStatistics {
-  //Map<SvtNo, List<Map<ItemKey,num>>>
-  Map<int, PartSet<Map<String, int>>> planCountBySvt, allCountBySvt;
-
-  // Map<ItemKey, List<Map<SvtNo, num>>>
-  Map<String, PartSet<Map<int, int>>> planCountByItem, allCountByItem;
-
-  ItemCostStatistics(GameData gameData, Map<int, ServantPlan> plans) {
-    update(gameData, plans);
-  }
-
-  void update(GameData gameData, Map<int, ServantPlan> plans) {
-    planCountBySvt = {};
-    allCountBySvt = {};
-    planCountByItem = {};
-    allCountByItem = {};
-    gameData.servants.forEach((no, svt) {
-      if (plans != null && plans[no]?.favorite == true) {
-        planCountBySvt[no] = PartSet<Map<String, int>>(
-            ascension: svt.getAscensionCost(lv: plans[no].ascensionLv),
-            skill: svt.getSkillCost(lv: plans[no].skillLv),
-            dress: svt.getDressCost(lv: plans[no].dressLv));
-      } else {
-        planCountBySvt[no] = PartSet<Map<String, int>>(k: () => {});
-      }
-      allCountBySvt[no] = PartSet<Map<String, int>>(
-          ascension: svt.getAscensionCost(),
-          skill: svt.getSkillCost(),
-          dress: svt.getDressCost());
-    });
-    // cal items
-    for (String itemKey in gameData.items.keys) {
-      PartSet<Map<int, int>> planOneItem = PartSet<Map<int, int>>(k: () => {}),
-          allOneItem = PartSet<Map<int, int>>(k: () => {});
-      planCountBySvt.forEach((no, value) {
-        planOneItem.ascension[no] =
-            (planOneItem.ascension[no] ?? 0) + (value.ascension[itemKey] ?? 0);
-        planOneItem.skill[no] =
-            (planOneItem.skill[no] ?? 0) + (value.skill[itemKey] ?? 0);
-        planOneItem.dress[no] =
-            (planOneItem.dress[no] ?? 0) + (value.dress[itemKey] ?? 0);
-      });
-      allCountBySvt.forEach((no, value) {
-        allOneItem.ascension[no] =
-            (allOneItem.ascension[no] ?? 0) + (value.ascension[itemKey] ?? 0);
-        allOneItem.skill[no] =
-            (allOneItem.skill[no] ?? 0) + (value.skill[itemKey] ?? 0);
-        allOneItem.dress[no] =
-            (allOneItem.dress[no] ?? 0) + (value.dress[itemKey] ?? 0);
-      });
-      planCountByItem[itemKey] = planOneItem
-        ..forEach((e) => e.removeWhere((k, v) => v == 0));
-      allCountByItem[itemKey] = allOneItem
-        ..forEach((e) => e.removeWhere((k, v) => v == 0));
+    for (var group in groupValues) {
+      group.reset();
     }
   }
 
-  PartSet<int> getNumOfItem(String itemKey, [bool planned = true]) {
-    PartSet<Map<int, int>> value =
-        planned ? planCountByItem[itemKey] : allCountByItem[itemKey];
-    return PartSet<int>(
-        ascension: sum(value.ascension.values),
-        skill: sum(value.skill.values),
-        dress: sum(value.dress.values));
+  // const data
+  static const List<String> sortKeyData = ['序号', '星级', '职阶'];
+  static const List<String> rarityData = const ['0', '1', '2', '3', '4', '5'];
+  static const List<String> classesData = [
+    'Saber',
+    'Archer',
+    'Lancer',
+    'Rider',
+    'Caster',
+    'Assassin',
+    'Berserker',
+    'Shielder',
+    'Ruler',
+    'Avenger',
+    'Alterego',
+    'MoonCancer',
+    'Foreigner',
+    'Beast'
+  ];
+  static const List<String> obtainData = [
+    '剧情',
+    '活动',
+    '无法召唤',
+    '常驻',
+    '限定',
+    '友情点召唤'
+  ];
+  static const npColorData = ['Quick', 'Arts', 'Buster'];
+  static const npTypeData = ['单体', '全体', '辅助'];
+  static const attributeData = ['天', '地', '人', '星', '兽'];
+  static const alignment1Data = ['秩序', '混沌', '中立'];
+  static const alignment2Data = ['善', '恶', '中庸', '新娘', '狂', '夏'];
+  static const genderData = ['男性', '女性', '其他'];
+  static const traitData = [
+    '龙',
+    '骑乘',
+    '神性',
+    '猛兽',
+    '王',
+    '罗马',
+    '亚瑟',
+    '阿尔托莉雅脸',
+    '所爱之人',
+    '希腊神话男性',
+    '人类的威胁',
+    '阿尔戈号的相关者',
+    '魔性',
+    '超巨大',
+    '天地(拟似除外)',
+    '拟似/亚从者'
+  ];
+  static const traitSpecialData = ['EA不特攻', '无特殊特性'];
+
+  // json_serializable
+  factory SvtFilterData.fromJson(Map<String, dynamic> data) =>
+      _$SvtFilterDataFromJson(data);
+
+  Map<String, dynamic> toJson() => _$SvtFilterDataToJson(this);
+}
+
+@JsonSerializable()
+class CraftFilterData {
+  bool favorite;
+  String filterString;
+  List<String> sortKeys;
+  List<bool> sortDirections;
+  bool useGrid;
+
+  FilterGroupData rarity;
+  FilterGroupData category;
+  FilterGroupData attribute;
+
+  CraftFilterData(
+      {this.favorite,
+      this.sortKeys,
+      this.sortDirections,
+      this.useGrid,
+      this.rarity,
+      this.category,
+      this.attribute}) {
+    favorite ??= false;
+    filterString ??= '';
+    sortKeys ??= List.generate(2, (i) => sortKeyData[i]);
+    sortDirections ??= List.filled(sortKeys.length, true);
+    useGrid ??= false;
+    rarity ??= FilterGroupData();
+    category ??= FilterGroupData();
+    attribute ??= FilterGroupData();
   }
 
-  PartSet<Map<int, int>> getSvtListOfItem(String itemKey,
-      [bool planned = true]) {
-    return planned ? planCountByItem[itemKey] : allCountByItem[itemKey];
+  List<FilterGroupData> get groupValues => [
+        rarity,
+        category,
+        attribute,
+      ];
+
+  void reset() {
+    sortKeys = List.generate(sortKeys.length, (i) => sortKeyData[i]);
+    sortDirections = List.filled(sortKeys.length, false);
+
+    for (var group in groupValues) {
+      group.reset();
+    }
+  }
+
+  // const data
+  static const List<String> sortKeyData = ['序号', '星级', 'ATK', 'HP'];
+  static const List<String> rarityData = ['1', '2', '3', '4', '5'];
+
+  // category: bin: 0b1111111111
+  static const List<String> categoryData = [
+    '活动加成',
+    '达芬奇工坊',
+    '羁绊礼装',
+    '情人节礼装',
+    '纪念礼装',
+    'EXP礼装',
+    '卡池常驻',
+    '活动奖励',
+    '期间限定',
+    '剧情限定'
+  ];
+  static const attributeData = ['hp', 'atk', 'mix', 'none'];
+
+  // json_serializable
+  factory CraftFilterData.fromJson(Map<String, dynamic> data) =>
+      _$CraftFilterDataFromJson(data);
+
+  Map<String, dynamic> toJson() => _$CraftFilterDataToJson(this);
+}
+
+typedef bool CompareFilterKeyCallback(String option, String value);
+
+@JsonSerializable()
+class FilterGroupData {
+  bool matchAll;
+  bool invert;
+  Map<String, bool> options;
+
+  FilterGroupData({this.matchAll, this.invert, this.options}) {
+    matchAll ??= false;
+    invert ??= false;
+    options ??= {};
+  }
+
+  void reset() {
+    options.clear();
+  }
+
+  bool _customCompare(
+      String _optionKey, String _srcKey, CompareFilterKeyCallback _compare) {
+    return _compare == null
+        ? _optionKey == _srcKey
+        : _compare(_optionKey, _srcKey);
+  }
+
+  bool singleValueFilter(String value,
+      {Map<String, CompareFilterKeyCallback> compares}) {
+    // ignore matchAll?
+    options.removeWhere((k, v) => v != true);
+    if (options.isEmpty) {
+      return true;
+    }
+    bool result;
+    if (compares == null) {
+      result = options.containsKey(value);
+    } else {
+      result = false;
+      for (var option in options.keys) {
+        if (_customCompare(option, value, compares[option])) {
+          result = true;
+          break;
+        }
+      }
+    }
+    return invert ? !result : result;
+  }
+
+  bool listValueFilter(List<String> values,
+      {Map<String, CompareFilterKeyCallback> compares}) {
+    compares ??= {};
+    options.removeWhere((k, v) => v != true);
+    if (options.isEmpty) {
+      return true;
+    }
+    bool result;
+    if (matchAll) {
+      result = true;
+      for (String option in options.keys) {
+        List<bool> tmp = values
+            .map((v) => _customCompare(option, v, compares[option]))
+            .toList();
+        if (!tmp.contains(true)) {
+          result = false;
+          break;
+        }
+      }
+    } else {
+      result = false;
+      for (String option in options.keys) {
+        List<bool> tmp = values
+            .map((v) => _customCompare(option, v, compares[option]))
+            .toList();
+        if (tmp.contains(true)) {
+          result = true;
+          break;
+        }
+      }
+    }
+    return invert ? !result : result;
+  }
+
+  // json_serializable
+  factory FilterGroupData.fromJson(Map<String, dynamic> data) =>
+      _$FilterGroupDataFromJson(data);
+
+  Map<String, dynamic> toJson() => _$FilterGroupDataToJson(this);
+
+  @override
+  String toString() {
+    return 'Data($matchAll, $invert, $options)';
   }
 }
