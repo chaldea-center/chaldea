@@ -183,16 +183,13 @@ class TileGroup extends StatelessWidget {
     return Padding(
       padding: padding ?? EdgeInsets.only(bottom: 8),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          if(header!=null)
-            SHeader(header),
-          ...group,
-          if(footer!=null)
-            SFooter(footer)
-        ]
-      ),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            if (header != null) SHeader(header),
+            ...group,
+            if (footer != null) SFooter(footer)
+          ]),
     );
   }
 }
@@ -240,7 +237,6 @@ class RangeSelector<T extends num> extends StatefulWidget {
 }
 
 class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
-
   _RangeSelectorState();
 
   @override
@@ -260,7 +256,9 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
             final start = value;
             final end = widget.increasing == null
                 ? widget.end
-                : widget.increasing ? max(start, widget.end) : min(start, widget.end);
+                : widget.increasing
+                    ? max(start, widget.end)
+                    : min(start, widget.end);
             widget.onChanged(start, end);
           },
         ),
@@ -277,7 +275,9 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
             final end = value;
             final start = widget.increasing == null
                 ? widget.start
-                : widget.increasing ? min(widget.start, end) : max(widget.start, end);
+                : widget.increasing
+                    ? min(widget.start, end)
+                    : max(widget.start, end);
             widget.onChanged(start, end);
           },
         )
@@ -334,11 +334,11 @@ void showSheet(BuildContext context,
 // for filter items
 typedef bool FilterCallBack<T>(T data);
 
-class FilterGroup<T> extends StatelessWidget {
+class FilterGroup extends StatelessWidget {
   final Widget title;
   final List<String> options;
   final FilterGroupData values;
-  final Widget Function(String value) generator;
+  final Widget Function(String value) optionBuilder;
   final bool showMatchAll;
   final bool showInvert;
   final bool useRadio;
@@ -349,7 +349,7 @@ class FilterGroup<T> extends StatelessWidget {
       this.title,
       @required this.options,
       @required this.values,
-      this.generator,
+      this.optionBuilder,
       this.showMatchAll = false,
       this.showInvert = false,
       this.useRadio = false,
@@ -409,7 +409,8 @@ class FilterGroup<T> extends StatelessWidget {
               return FilterOption(
                   selected: values.options[key] ?? false,
                   value: key,
-                  child: generator == null ? Text(key) : generator(key),
+                  child:
+                      optionBuilder == null ? Text('$key') : optionBuilder(key),
                   onChanged: (v) {
                     if (useRadio) {
                       values.options.clear();
@@ -463,6 +464,100 @@ class FilterOption<T, S> extends StatelessWidget {
           shape: ContinuousRectangleBorder(
               side: BorderSide(color: Colors.grey),
               borderRadius: BorderRadius.circular(3)),
+        ),
+      ),
+    );
+  }
+}
+
+class InfoRow extends StatelessWidget {
+  final List<Widget> children;
+  final Color color;
+
+  const InfoRow({Key key, this.children, this.color}) : super(key: key);
+
+  InfoRow.fromText({List<String> texts, this.color})
+      : children = texts.map((e) => InfoCell(text: e, color: color)).toList();
+
+  InfoRow.fromChild({List<Widget> children, this.color})
+      : children =
+            children.map((e) => InfoCell(child: e, color: color)).toList();
+
+  @override
+  Widget build(BuildContext context) {
+    //TODO: fix bgColor not all filled
+    return Container(
+      decoration: BoxDecoration(
+          color: color,
+          border: Border(
+            top: InfoCell.borderSide,
+            bottom: InfoCell.borderSide,
+          )),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: children,
+      ),
+    );
+  }
+}
+
+class InfoCell extends StatelessWidget {
+  final Color color;
+  final String text;
+  final Widget child;
+  final int flex;
+  final Alignment alignment;
+  final EdgeInsets padding;
+
+  static const borderSide =
+      BorderSide(color: Color.fromRGBO(162, 169, 177, 1), width: 0.3);
+  static const headerColor = Color.fromRGBO(234, 235, 238, 1);
+
+  const InfoCell({
+    Key key,
+    this.text,
+    this.child,
+    this.flex = 1,
+    this.color,
+    this.alignment = Alignment.center,
+    this.padding = const EdgeInsets.symmetric(vertical: 4),
+  })  : assert(text == null || child == null),
+        super(key: key);
+
+  const InfoCell.header({
+    Key key,
+    this.text,
+    this.child,
+    this.flex = 1,
+    this.alignment = Alignment.center,
+    this.padding = const EdgeInsets.symmetric(vertical: 4),
+  })  : color = headerColor,
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Widget _child;
+    if (child != null) {
+      _child = child;
+    } else {
+      _child = Text(
+        text,
+        textAlign: TextAlign.center,
+      );
+    }
+    return Flexible(
+      flex: flex,
+      child: Container(
+        decoration: BoxDecoration(
+          color: color,
+          border: Border(left: borderSide, right: borderSide),
+        ),
+        child: Align(
+          alignment: alignment,
+          child: Padding(
+            padding: padding,
+            child: _child,
+          ),
         ),
       ),
     );

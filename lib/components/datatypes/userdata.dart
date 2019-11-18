@@ -136,7 +136,7 @@ class SvtFilterData {
 
   // const data
   static const List<String> sortKeyData = ['序号', '星级', '职阶'];
-  static const List<String> rarityData = const ['0', '1', '2', '3', '4', '5'];
+  static const List<String> rarityData = ['0', '1', '2', '3', '4', '5'];
   static const List<String> classesData = [
     'Saber',
     'Archer',
@@ -196,7 +196,6 @@ class SvtFilterData {
 
 @JsonSerializable()
 class CraftFilterData {
-  bool favorite;
   String filterString;
   List<String> sortKeys;
   List<bool> sortDirections;
@@ -204,30 +203,28 @@ class CraftFilterData {
 
   FilterGroupData rarity;
   FilterGroupData category;
-  FilterGroupData attribute;
+  FilterGroupData atkHpType;
 
   CraftFilterData(
-      {this.favorite,
-      this.sortKeys,
+      {this.sortKeys,
       this.sortDirections,
       this.useGrid,
       this.rarity,
       this.category,
-      this.attribute}) {
-    favorite ??= false;
+      this.atkHpType}) {
     filterString ??= '';
     sortKeys ??= List.generate(2, (i) => sortKeyData[i]);
     sortDirections ??= List.filled(sortKeys.length, true);
     useGrid ??= false;
     rarity ??= FilterGroupData();
     category ??= FilterGroupData();
-    attribute ??= FilterGroupData();
+    atkHpType ??= FilterGroupData();
   }
 
   List<FilterGroupData> get groupValues => [
         rarity,
         category,
-        attribute,
+        atkHpType,
       ];
 
   void reset() {
@@ -256,7 +253,12 @@ class CraftFilterData {
     '期间限定',
     '剧情限定'
   ];
-  static const attributeData = ['hp', 'atk', 'mix', 'none'];
+  static const atkHpTypeData = [
+    'NONE',
+    'HP',
+    'ATK',
+    'MIX',
+  ];
 
   // json_serializable
   factory CraftFilterData.fromJson(Map<String, dynamic> data) =>
@@ -354,6 +356,6 @@ class FilterGroupData {
 
   @override
   String toString() {
-    return 'Data($matchAll, $invert, $options)';
+    return 'FilterGroupData(matchAll=$matchAll, invert=$invert, options=$options)';
   }
 }

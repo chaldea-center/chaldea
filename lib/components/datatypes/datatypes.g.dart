@@ -715,7 +715,6 @@ Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
 
 CraftFilterData _$CraftFilterDataFromJson(Map<String, dynamic> json) {
   return CraftFilterData(
-    favorite: json['favorite'] as bool,
     sortKeys: (json['sortKeys'] as List)?.map((e) => e as String)?.toList(),
     sortDirections:
         (json['sortDirections'] as List)?.map((e) => e as bool)?.toList(),
@@ -726,22 +725,21 @@ CraftFilterData _$CraftFilterDataFromJson(Map<String, dynamic> json) {
     category: json['category'] == null
         ? null
         : FilterGroupData.fromJson(json['category'] as Map<String, dynamic>),
-    attribute: json['attribute'] == null
+    atkHpType: json['atkHpType'] == null
         ? null
-        : FilterGroupData.fromJson(json['attribute'] as Map<String, dynamic>),
+        : FilterGroupData.fromJson(json['atkHpType'] as Map<String, dynamic>),
   )..filterString = json['filterString'] as String;
 }
 
 Map<String, dynamic> _$CraftFilterDataToJson(CraftFilterData instance) =>
     <String, dynamic>{
-      'favorite': instance.favorite,
       'filterString': instance.filterString,
       'sortKeys': instance.sortKeys,
       'sortDirections': instance.sortDirections,
       'useGrid': instance.useGrid,
       'rarity': instance.rarity,
       'category': instance.category,
-      'attribute': instance.attribute,
+      'atkHpType': instance.atkHpType,
     };
 
 FilterGroupData _$FilterGroupDataFromJson(Map<String, dynamic> json) {

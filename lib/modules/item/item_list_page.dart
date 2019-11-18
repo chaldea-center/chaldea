@@ -84,7 +84,7 @@ class ItemListPageState extends State<ItemListPage>
                 statistics: statistics,
                 parent: this,
               )),
-      leading: Image.file(db.getIconFile(iconKey), height: 110 * 0.5),
+      leading: Image(image: db.getIconFile(iconKey), height: 110 * 0.5),
       title: Row(
         children: <Widget>[
           Expanded(flex: 5, child: Text(iconKey)),

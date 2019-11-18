@@ -109,8 +109,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab>
       bool enhanced = plan.skillEnhanced[index] ?? skillList[0].enhanced;
       Skill skill = skillList[enhanced ? 1 : 0];
       skillWidgets.add(buildPlanRow(
-          leading: Image.file(
-            db.getIconFile(skill.icon),
+          leading: Image(
+            image: db.getIconFile(skill.icon),
             height: 110 * 0.3,
           ),
           title: '${skill.name} ${skill.rank}',
@@ -138,7 +138,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab>
         plan.dressLv.add([0, 0]);
       }
       dressWidgets.add(buildPlanRow(
-          leading: Image.file(db.getIconFile('灵衣开放权'), height: 110 * 0.3),
+          leading: Image(image: db.getIconFile('灵衣开放权'), height: 110 * 0.3),
           title: svt.itemCost.dressName[index],
           subtitle: svt.itemCost.dressNameJp[index],
           value: IntRangeValues.fromList(plan.dressLv[index]),

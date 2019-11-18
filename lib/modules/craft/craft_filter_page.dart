@@ -119,7 +119,7 @@ class _CraftFilterPageState extends State<CraftFilterPage> {
             title: Text('Rarity'),
             options: CraftFilterData.rarityData,
             values: filterData.rarity,
-            generator: (v) => Text('$v星'),
+            optionBuilder: (v) => Text('$v星'),
             onFilterChanged: (value) {
               // object should be the same, need not to update manually
               filterData.rarity = value;
@@ -137,10 +137,10 @@ class _CraftFilterPageState extends State<CraftFilterPage> {
           ),
           FilterGroup(
             title: Text('属性'),
-            options: CraftFilterData.attributeData,
-            values: filterData.attribute,
+            options: CraftFilterData.atkHpTypeData,
+            values: filterData.atkHpType,
             onFilterChanged: (value) {
-              filterData.attribute = value;
+              filterData.atkHpType = value;
               updateParentFilterResult();
             },
           ),

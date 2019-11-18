@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+
 import 'servant_list_page.dart';
 
 class SvtFilterPage extends StatefulWidget {
@@ -47,11 +48,10 @@ class _SvtFilterPageState extends State<SvtFilterPage> {
             fillColor: Theme.of(context).primaryColor,
             children: List.generate(
                 2,
-                    (i) => Padding(
-                  padding:
-                  EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                  child: Text(['List', 'Grid'][i]),
-                )),
+                (i) => Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                      child: Text(['List', 'Grid'][i]),
+                    )),
             isSelected: [!filterData.useGrid, filterData.useGrid],
             onPressed: (i) {
               filterData.useGrid = i == 1;
@@ -114,9 +114,7 @@ class _SvtFilterPageState extends State<SvtFilterPage> {
                     children: List.generate(2, (index) {
                       final name = ['金卡', '铜卡'][index] + 'All';
                       return GestureDetector(
-                        child: Image.file(
-                          db.getIconFile(name),
-                        ),
+                        child: Image(image: db.getIconFile(name)),
                         onTap: () {
                           if (index == 0) {
                             SvtFilterData.classesData.forEach(
@@ -141,9 +139,7 @@ class _SvtFilterPageState extends State<SvtFilterPage> {
                           filterData.className.options[className] ?? false;
                       final color = selected ? '金卡' : '铜卡';
                       return GestureDetector(
-                        child: Image.file(
-                          db.getIconFile('$color$className'),
-                        ),
+                        child: Image(image: db.getIconFile('$color$className')),
                         onTap: () {
                           filterData.className.options[className] = !selected;
                           updateParentFilterResult();
@@ -182,7 +178,7 @@ class _SvtFilterPageState extends State<SvtFilterPage> {
             title: Text('Rarity'),
             options: SvtFilterData.rarityData,
             values: filterData.rarity,
-            generator: (v) => Text('$v星'),
+            optionBuilder: (v) => Text('$v星'),
             onFilterChanged: (value) {
               // object should be the same, need not to update manually
               filterData.rarity = value;

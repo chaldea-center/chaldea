@@ -27,7 +27,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab>
     return <Widget>[
       CustomTile(
           contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
-          leading: Image.file(db.getIconFile(skill.icon), height: 110 * 0.3),
+          leading: Image(image: db.getIconFile(skill.icon), height: 110 * 0.3),
           title: Text('${skill.name} ${skill.rank}'),
           subtitle: Text('${skill.nameJp} ${skill.rank}'),
           trailing: Row(
@@ -40,8 +40,8 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab>
                       plan.skillEnhanced[index] = !enhanced;
                     });
                   },
-                  child: Image.file(
-                    db.getIconFile(enhanced ? '技能强化' : '技能未强化'),
+                  child: Image(
+                    image: db.getIconFile(enhanced ? '技能强化' : '技能未强化'),
                     height: 110 * 0.2,
                   ),
                 ),
@@ -57,7 +57,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab>
     return <Widget>[
       CustomTile(
         contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
-        leading: Image.file(db.getIconFile(skill.icon), height: 110 * 0.3),
+        leading: Image(image: db.getIconFile(skill.icon), height: 110 * 0.3),
         title: Text('${skill.name} ${skill.rank}'),
       ),
       for (Effect effect in skill.effects) ...buildEffect(effect),

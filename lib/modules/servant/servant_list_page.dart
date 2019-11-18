@@ -12,6 +12,9 @@ class ServantListPageState extends State<ServantListPage> {
   TextEditingController _inputController;
   ScrollController _scrollController;
 
+  //temp, calculate once build() called.
+  TextFilter __textFilter;
+
   @override
   void initState() {
     super.initState();
@@ -27,10 +30,13 @@ class ServantListPageState extends State<ServantListPage> {
     super.dispose();
   }
 
-  bool filtrateServant(SvtFilterData _filterData, Servant svt) {
+  void beforeFiltrate() {
+    __textFilter = TextFilter(filterData.filterString);
+  }
+
+  bool filtrateServant(Servant svt) {
     // input text filter
     if (filterData.filterString.trim().isNotEmpty) {
-      TextFilter textFilter = TextFilter(filterData.filterString);
       String srcString = [
         svt.no,
         svt.info.cv,
@@ -39,7 +45,7 @@ class ServantListPageState extends State<ServantListPage> {
         svt.info.illustName,
         svt.info.nicknames.join('\t')
       ].join('\t');
-      if (!textFilter.match(srcString)) {
+      if (!__textFilter.match(srcString)) {
         return false;
       }
     }
@@ -104,130 +110,6 @@ class ServantListPageState extends State<ServantListPage> {
     setState(() {
       filterData = data;
     });
-  }
-
-  Widget _buildListView(List<Servant> shownList) {
-    return ListView.separated(
-        physics: ScrollPhysics(),
-        controller: _scrollController,
-        separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
-        itemCount: shownList.length,
-        itemBuilder: (context, index) {
-          final svt = shownList[index];
-          final plan = db.curPlan.servants[svt.no];
-          String text = '';
-          if (plan?.favorite == true) {
-            text = '${plan.treasureDeviceLv}宝'
-                '${plan.ascensionLv[0]}-'
-                '${plan.skillLv[0][0]}/'
-                '${plan.skillLv[1][0]}/'
-                '${plan.skillLv[2][0]}';
-          }
-          return CustomTile(
-            leading: SizedBox(
-              width: 132 * 0.45,
-              height: 144 * 0.45,
-              child: Image.file(db.getIconFile(svt.icon)),
-            ),
-            title: Text('${svt.mcLink}'),
-            subtitle: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  flex: 3,
-                  child: Text(svt.info.className),
-                ),
-                Text(text),
-              ],
-            ),
-            trailing: Icon(Icons.arrow_forward_ios),
-            onTap: () {
-              SplitRoute.popAndPush(context,
-                  builder: (context) => ServantDetailPage(svt));
-            },
-          );
-        });
-  }
-
-  Widget _buildGridView(List<Servant> shownList) {
-    return GridView.count(
-        crossAxisCount: 5,
-        childAspectRatio: 1,
-        controller: _scrollController,
-        children: shownList.map((svt) {
-          final plan = db.curPlan.servants[svt.no];
-          String text;
-          if (plan?.favorite == true) {
-            text = '${plan.treasureDeviceLv}\n'
-                '${plan.ascensionLv[0]}-'
-                '${plan.skillLv[0][0]}/'
-                '${plan.skillLv[1][0]}/'
-                '${plan.skillLv[2][0]}';
-          }
-          return Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: 1,
-              ),
-              child: ImageWithText(
-                image: Image.file(db.getIconFile(svt.icon)),
-                text: text,
-                alignment: AlignmentDirectional.bottomStart,
-                padding: EdgeInsets.fromLTRB(4, 0, 8, -4),
-                onTap: () {
-                  SplitRoute.popAndPush(context,
-                      builder: (context) => ServantDetailPage(svt));
-                },
-              ),
-            ),
-          );
-        }).toList());
-  }
-
-  Widget buildOverview() {
-    List<Servant> shownList = [];
-    db.gameData.servants.forEach((no, svt) {
-      if (!filterData.favorite || db.curPlan.servants[no]?.favorite == true) {
-        if (filtrateServant(filterData, svt)) {
-          shownList.add(svt);
-        }
-      }
-    });
-    //sort
-    final _getSortValue = (Servant svt, String key) {
-      switch (key) {
-        case '序号':
-          return svt.no;
-        case '星级':
-          return svt.info.rarity;
-        case '职阶':
-          if (svt.info.className == 'Grand Caster') {
-            return SvtFilterData.classesData.indexWhere((v) => v == 'Caster');
-          } else if (svt.info.className.startsWith('Beast')) {
-            return SvtFilterData.classesData.indexWhere((v) => v == 'Beast');
-          } else {
-            return SvtFilterData.classesData.indexWhere(
-                (v) => v.startsWith(svt.info.className.substring(0, 5)));
-          }
-          break;
-        default:
-          return 0;
-      }
-    };
-
-    shownList.sort((a, b) {
-      int r = 0;
-      for (var i = 0; i < filterData.sortKeys.length; i++) {
-        final sortKey = filterData.sortKeys[i];
-        r = r * 1000 +
-            (_getSortValue(a, sortKey) - _getSortValue(b, sortKey)) *
-                (filterData.sortDirections[i] ? 1000 : -1000);
-      }
-      return r;
-    });
-    return filterData.useGrid
-        ? _buildGridView(shownList)
-        : _buildListView(shownList);
   }
 
   @override
@@ -304,6 +186,131 @@ class ServantListPageState extends State<ServantListPage> {
           }),
       body: buildOverview(),
     );
+  }
+
+  Widget buildOverview() {
+    List<Servant> shownList = [];
+    beforeFiltrate();
+    db.gameData.servants.forEach((no, svt) {
+      if (!filterData.favorite || db.curPlan.servants[no]?.favorite == true) {
+        if (filtrateServant(svt)) {
+          shownList.add(svt);
+        }
+      }
+    });
+    //sort
+    final _getSortValue = (Servant svt, String key) {
+      switch (key) {
+        case '序号':
+          return svt.no;
+        case '星级':
+          return svt.info.rarity;
+        case '职阶':
+          if (svt.info.className == 'Grand Caster') {
+            return SvtFilterData.classesData.indexWhere((v) => v == 'Caster');
+          } else if (svt.info.className.startsWith('Beast')) {
+            return SvtFilterData.classesData.indexWhere((v) => v == 'Beast');
+          } else {
+            return SvtFilterData.classesData.indexWhere(
+                (v) => v.startsWith(svt.info.className.substring(0, 5)));
+          }
+          break;
+        default:
+          return 0;
+      }
+    };
+
+    shownList.sort((a, b) {
+      int r = 0;
+      for (var i = 0; i < filterData.sortKeys.length; i++) {
+        final sortKey = filterData.sortKeys[i];
+        r = r * 1000 +
+            (_getSortValue(a, sortKey) - _getSortValue(b, sortKey)) *
+                (filterData.sortDirections[i] ? 1000 : -1000);
+      }
+      return r;
+    });
+    return filterData.useGrid
+        ? _buildGridView(shownList)
+        : _buildListView(shownList);
+  }
+
+  Widget _buildListView(List<Servant> shownList) {
+    return ListView.separated(
+        physics: ScrollPhysics(),
+        controller: _scrollController,
+        separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
+        itemCount: shownList.length,
+        itemBuilder: (context, index) {
+          final svt = shownList[index];
+          final plan = db.curPlan.servants[svt.no];
+          String text = '';
+          if (plan?.favorite == true) {
+            text = '${plan.treasureDeviceLv}宝'
+                '${plan.ascensionLv[0]}-'
+                '${plan.skillLv[0][0]}/'
+                '${plan.skillLv[1][0]}/'
+                '${plan.skillLv[2][0]}';
+          }
+          return CustomTile(
+            leading: SizedBox(
+              width: 132 * 0.45,
+              height: 144 * 0.45,
+              child: Image(image: db.getIconFile(svt.icon)),
+            ),
+            title: Text('${svt.mcLink}'),
+            subtitle: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  flex: 3,
+                  child: Text(svt.info.className),
+                ),
+                Text(text),
+              ],
+            ),
+            trailing: Icon(Icons.arrow_forward_ios),
+            onTap: () {
+              SplitRoute.popAndPush(context,
+                  builder: (context) => ServantDetailPage(svt));
+            },
+          );
+        });
+  }
+
+  Widget _buildGridView(List<Servant> shownList) {
+    return GridView.count(
+        crossAxisCount: 5,
+        childAspectRatio: 1,
+        controller: _scrollController,
+        children: shownList.map((svt) {
+          final plan = db.curPlan.servants[svt.no];
+          String text;
+          if (plan?.favorite == true) {
+            text = '${plan.treasureDeviceLv}\n'
+                '${plan.ascensionLv[0]}-'
+                '${plan.skillLv[0][0]}/'
+                '${plan.skillLv[1][0]}/'
+                '${plan.skillLv[2][0]}';
+          }
+          return Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: 1,
+              ),
+              child: ImageWithText(
+                image: Image(image: db.getIconFile(svt.icon)),
+                text: text,
+                alignment: AlignmentDirectional.bottomStart,
+                padding: EdgeInsets.fromLTRB(4, 0, 8, -4),
+                onTap: () {
+                  SplitRoute.popAndPush(context,
+                      builder: (context) => ServantDetailPage(svt));
+                },
+              ),
+            ),
+          );
+        }).toList());
   }
 
   void buildFilterSheet(BuildContext context) {

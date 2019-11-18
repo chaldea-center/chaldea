@@ -7,6 +7,7 @@ import 'package:archive/archive_io.dart';
 import 'package:chaldea/components/constants.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -98,13 +99,12 @@ class Database {
     return File(join(_rootPath, rel, filename));
   }
 
-  File getIconFile(String iconKey) {
+  ImageProvider getIconFile(String iconKey) {
     if (gameData.icons.containsKey(iconKey)) {
-      return File(join(_rootPath, userData.gameDataPath, 'icons',
-          gameData.icons[iconKey].filename));
+      return FileImage(File(join(_rootPath, userData.gameDataPath, 'icons',
+          gameData.icons[iconKey].filename)));
     } else {
-      //todo: replace with error.png
-      return null;
+      return AssetImage('res/img/error.png');
     }
   }
 

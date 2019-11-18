@@ -20,7 +20,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
   _SvtInfoTabState(
       {ServantDetailPageState parent, Servant svt, ServantPlan plan})
       : super(parent: parent, svt: svt, plan: plan);
-  bool useLangCN = true;
+  bool useLangJp = false;
 
   @override
   void initState() {
@@ -60,7 +60,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
               fillColor: Theme.of(context).primaryColor,
               onPressed: (i) {
                 setState(() {
-                  useLangCN = i == 0;
+                  useLangJp = i == 1;
                 });
               },
               children: List.generate(
@@ -69,7 +69,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
                         padding: EdgeInsets.all(6),
                         child: Text(['中文', '日本語'][i]),
                       )),
-              isSelected: List.generate(2, (i) => useLangCN == (i == 0)),
+              isSelected: List.generate(2, (i) => useLangJp == (i == 1)),
             ),
           ],
         ),
@@ -159,8 +159,8 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
           InfoRow(
             children: <Widget>[
               InfoCell(
-                  child: Image.file(
-                      db.getIconFile(svt.treasureDevice.first.color),
+                  child: Image(
+                      image: db.getIconFile(svt.treasureDevice.first.color),
                       height: 110 * 0.5),
                   flex: 2),
               InfoCell(
@@ -169,8 +169,8 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
                       children: svt.info.cards
                           .map((e) => Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 2),
-                                child: Image.file(
-                                  db.getIconFile(e),
+                                child: Image(
+                                  image: db.getIconFile(e),
                                   height: 110 * 0.4,
                                 ),
                               ))
@@ -221,7 +221,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
         final lore = svt.profiles[hasCharaInfo ? i : i + 1];
         String label =
             hasCharaInfo ? i == 0 ? '角色详情' : '个人资料$i' : '个人资料${i + 1}';
-        String text = useLangCN ? lore.profile : lore.profileJp;
+        String text = useLangJp ? lore.profileJp : lore.profile;
         if (text.isEmpty) {
           text = '???';
         }
@@ -250,94 +250,4 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
 
   @override
   bool get wantKeepAlive => true;
-}
-
-class InfoRow extends StatelessWidget {
-  final List<Widget> children;
-  final Color color;
-
-  const InfoRow({Key key, this.children, this.color}) : super(key: key);
-
-  InfoRow.fromText({List<String> texts, this.color})
-      : children = texts.map((e) => InfoCell(text: e, color: color)).toList();
-
-  InfoRow.fromChild({List<Widget> children, this.color})
-      : children =
-            children.map((e) => InfoCell(child: e, color: color)).toList();
-
-  @override
-  Widget build(BuildContext context) {
-    //TODO: fix bgColor not all filled
-    return Container(
-      decoration: BoxDecoration(
-          color: color,
-          border: Border(
-            top: InfoCell.borderSide,
-            bottom: InfoCell.borderSide,
-          )),
-      child: Row(
-        children: children,
-      ),
-    );
-  }
-}
-
-class InfoCell extends StatelessWidget {
-  final Color color;
-  final String text;
-  final Widget child;
-  final int flex;
-  final Alignment alignment;
-
-  static const borderSide =
-      BorderSide(color: Color.fromRGBO(162, 169, 177, 1), width: 0.3);
-  static const headerColor = Color.fromRGBO(234, 235, 238, 1);
-
-  const InfoCell({
-    Key key,
-    this.text,
-    this.child,
-    this.flex = 1,
-    this.color,
-    this.alignment = Alignment.center,
-  })  : assert(text == null || child == null),
-        super(key: key);
-
-  const InfoCell.header({
-    Key key,
-    this.text,
-    this.child,
-    this.flex = 1,
-    this.alignment = Alignment.center,
-  })  : color = headerColor,
-        super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    Widget _child;
-    if (child != null) {
-      _child = child;
-    } else {
-      _child = Text(
-        text,
-        textAlign: TextAlign.center,
-      );
-    }
-    return Expanded(
-      flex: flex,
-      child: Container(
-        decoration: BoxDecoration(
-          color: color,
-          border: Border(left: borderSide, right: borderSide),
-        ),
-        child: Align(
-          alignment: alignment,
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 4),
-            child: _child,
-          ),
-        ),
-      ),
-    );
-  }
 }

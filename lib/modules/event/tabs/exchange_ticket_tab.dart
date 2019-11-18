@@ -20,7 +20,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
         final iconKey = ticketInfo.items[i];
         final maxValue = ticketInfo.days - sum(tickets[monthCn].getRange(0, i));
         trailing
-          ..add(Image.file(db.getIconFile(iconKey), height: 48))
+          ..add(Image(image: db.getIconFile(iconKey), height: 48))
           ..add(buildDropDownMenu(
               value: tickets[monthCn][i],
               maxValue: maxValue,
@@ -60,7 +60,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     return Stack(
       alignment: AlignmentDirectional.bottomEnd,
       children: <Widget>[
-        Image.file(db.getIconFile(iconKey), height: 48),
+        Image(image: db.getIconFile(iconKey), height: 48),
         if (checked)
           Container(
             decoration: BoxDecoration(

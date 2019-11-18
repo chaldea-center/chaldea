@@ -39,7 +39,7 @@ class LevelingCostPageState extends State<LevelingCostPage> {
             physics: NeverScrollableScrollPhysics(),
             children: lvCost
                 .map((item) => ImageWithText(
-                      image: Image.file(db.getIconFile(item.name)),
+                      image: Image(image:db.getIconFile(item.name)),
                       text: formatNumToString(item.num, 'kilo'),
                       padding: EdgeInsets.only(right: 3),
                     ))

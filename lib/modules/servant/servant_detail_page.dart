@@ -86,8 +86,10 @@ class ServantDetailPageState extends State<ServantDetailPage>
           children: <Widget>[
             CustomTile(
               alignment: CrossAxisAlignment.start,
-              leading: Image.file(db.getIconFile(svt.icon),
-                  fit: BoxFit.contain, height: 100),
+              leading: Image(
+                  image: db.getIconFile(svt.icon),
+                  fit: BoxFit.contain,
+                  height: 100),
               titlePadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               title: Text('No.${svt.no}\n${svt.info.className}'),
               subtitle: Servant.unavailable.contains(svt.no)

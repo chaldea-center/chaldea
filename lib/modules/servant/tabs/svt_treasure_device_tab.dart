@@ -23,8 +23,8 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab>
     Widget tdHeader = CustomTile(
       leading: Column(
         children: <Widget>[
-          Image.file(
-            db.getIconFile(np.color),
+          Image(
+            image: db.getIconFile(np.color),
             height: 110 * 0.9,
           ),
           Text(
@@ -67,7 +67,8 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab>
                       : Row(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            Image.file(db.getIconFile(iconKey),
+                            Image(
+                                image: db.getIconFile(iconKey),
                                 height: 110 * 0.2),
                             Text(td.state)
                           ],

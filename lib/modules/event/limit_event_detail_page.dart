@@ -20,8 +20,10 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
   @override
   void initState() {
     super.initState();
-    event = db.gameData.events.limitEvents[widget.name] ?? LimitEvent(name: 'empty event');
-    plan = db.curPlan.limitEvents.putIfAbsent(event.name, () => LimitEventPlan());
+    event = db.gameData.events.limitEvents[widget.name] ??
+        LimitEvent(name: 'empty event');
+    plan =
+        db.curPlan.limitEvents.putIfAbsent(event.name, () => LimitEventPlan());
     if (event.lottery != null) {
       _lotteryController = TextEditingController(text: plan.lottery.toString());
     }
@@ -63,8 +65,9 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
                 keyboardType: TextInputType.number,
                 scrollPadding: EdgeInsets.zero,
                 decoration: InputDecoration(
-                    counterText: '',
-                    suffixText: '池',),
+                  counterText: '',
+                  suffixText: '池',
+                ),
                 controller: _lotteryController,
                 inputFormatters: [
                   WhitelistingTextInputFormatter(RegExp(r'\d'))
@@ -118,7 +121,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
               .map((item) => Padding(
                     padding: EdgeInsets.symmetric(vertical: 2, horizontal: 1),
                     child: ImageWithText(
-                      image: Image.file(db.getIconFile(item.name)),
+                      image: Image(image: db.getIconFile(item.name)),
                       text: formatNumToString(data[item.name], 'kilo'),
                       padding: EdgeInsets.only(right: 3),
                     ),
@@ -148,7 +151,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
         final component = manager.getComponentByData(name);
         manager.addObserver(component);
         children.add(CustomTile(
-          leading: Image.file(db.getIconFile(name), height: 110 * 0.5),
+          leading: Image(image: db.getIconFile(name), height: 110 * 0.5),
           title: Text(name),
           subtitle: Text('参考掉率: $drop AP/个'),
           titlePadding: EdgeInsets.fromLTRB(16, 0, 16, 0),

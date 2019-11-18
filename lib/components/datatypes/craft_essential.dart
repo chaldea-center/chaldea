@@ -17,6 +17,7 @@ class CraftEssential {
   int atkMax;
   String skillIcon;
   String skill;
+  String skillMax;
   List<String> eventIcons;
   List<String> eventSkills;
   String description;
@@ -42,6 +43,7 @@ class CraftEssential {
       this.atkMax,
       this.skillIcon,
       this.skill,
+      this.skillMax,
       this.eventIcons,
       this.eventSkills,
       this.description,
