@@ -21,6 +21,7 @@ class _ChaldeaState extends State<Chaldea> {
     await db.loadAssetsData('res/data/dataset.zip',
         dir: db.userData.gameDataPath);
     await db.loadGameData();
+    db.checkNetwork();
     setState(() {});
   }
 
@@ -47,7 +48,6 @@ class _ChaldeaState extends State<Chaldea> {
       localeResolutionCallback:
           S.delegate.resolution(fallback: Locale('zh', '')),
       builder: (context, widget) {
-        // TODO: error widget not shown? blank page only.
         Catcher.addDefaultErrorWidget(showStacktrace: true);
         return widget;
       },

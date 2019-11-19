@@ -520,7 +520,7 @@ class InfoCell extends StatelessWidget {
     this.flex = 1,
     this.color,
     this.alignment = Alignment.center,
-    this.padding = const EdgeInsets.symmetric(vertical: 4),
+    this.padding = const EdgeInsets.all(4),
   })  : assert(text == null || child == null),
         super(key: key);
 
@@ -540,10 +540,7 @@ class InfoCell extends StatelessWidget {
     if (child != null) {
       _child = child;
     } else {
-      _child = Text(
-        text,
-        textAlign: TextAlign.center,
-      );
+      _child = Text(text);
     }
     return Flexible(
       flex: flex,

@@ -12,3 +12,4 @@ export 'int_range_slider.dart';
 export 'split_route.dart';
 export 'tile_items.dart';
 export 'input_manager.dart';
+export 'image_viewer.dart';

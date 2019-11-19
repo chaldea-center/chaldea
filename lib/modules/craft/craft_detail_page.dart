@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/tile_items.dart';
 
@@ -18,6 +19,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
   void initState() {
     super.initState();
     ce = widget.ce;
+    db.checkNetwork();
   }
 
   @override
@@ -75,9 +77,17 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
                           InfoRow(
                             children: <Widget>[
                               InfoCell.header(text: 'ATK'),
-                              InfoCell(text: '${ce.atkMin}/${ce.atkMax}'),
+                              InfoCell(
+                                  child: AutoSizeText(
+                                '${ce.atkMin}/${ce.atkMax}',
+                                maxLines: 1,
+                              )),
                               InfoCell.header(text: 'HP'),
-                              InfoCell(text: '${ce.hpMin}/${ce.hpMax}')
+                              InfoCell(
+                                  child: AutoSizeText(
+                                '${ce.hpMin}/${ce.hpMax}',
+                                maxLines: 1,
+                              )),
                             ],
                           ),
                         ],
@@ -89,7 +99,14 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
                   children: <Widget>[
                     CustomTile(
                       title: Center(child: Text('查看卡面')),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => FullScreenImageSlider(
+                                  imgUrls: [ce.illust],
+                                  enableDownload: db.enableDownload,
+                                ),
+                            fullscreenDialog: true));
+                      },
                       contentPadding: EdgeInsets.zero,
                     )
                   ],
@@ -158,8 +175,14 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
                     ],
                   )
                 ], color: InfoCell.headerColor),
-                InfoRow.fromText(
-                  texts: [useLangJp ? ce.descriptionJp : ce.description],
+                InfoRow(
+                  children: <Widget>[
+                    InfoCell(
+                      text: useLangJp ? ce.descriptionJp : ce.description,
+                      alignment: Alignment.centerLeft,
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    )
+                  ],
                 )
               ],
             ),
