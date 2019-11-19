@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+import 'package:flutter/foundation.dart';
 
 import 'subpage/account_page.dart';
 import 'subpage/lang_page.dart';
@@ -116,23 +117,23 @@ class _SettingsPageState extends State<SettingsPage> {
               SwitchListTile.adaptive(
                   title: Text('使用移动数据下载'),
                   value: db.userData.useMobileNetwork ?? false,
-                  onChanged: (v) {
-                    setState(() {
-                      db.userData.useMobileNetwork = v;
-                    });
+                  onChanged: (v) async {
+                    db.userData.useMobileNetwork = v;
+                    await db.checkNetwork();
+                    setState(() {});
                   }),
             ],
           ),
           TileGroup(
-            header: 'Test',
+            header: 'Test(debug mode: ${kDebugMode ? 'on' : 'off'})',
             tiles: <Widget>[
               SwitchListTile.adaptive(
                   title: Text('允许下载'),
                   value: db.userData.testAllowDownload ?? true,
-                  onChanged: (v) {
-                    setState(() {
-                      db.userData.testAllowDownload = v;
-                    });
+                  onChanged: (v) async {
+                    db.userData.testAllowDownload = v;
+                    await db.checkNetwork();
+                    setState(() {});
                   }),
               ListTile(
                 title: Text('Master-Detail width'),
@@ -214,6 +215,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   String getDataSetVersion() {
     final file = db.getLocalFile('VERSION', rel: db.userData.gameDataPath);
-    return file.existsSync() ? file.readAsStringSync() : 'INVALID.';
+    return file.existsSync() ? file.readAsStringSync() : 'INVALID';
   }
 }

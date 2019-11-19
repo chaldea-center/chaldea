@@ -241,17 +241,17 @@ class _GalleryPageState extends State<GalleryPage> {
               trailing: Text(MediaQuery.of(context).size.toString()),
             ),
             ListTile(
-              title: Text('Assets version'),
-              trailing: Text(getAssetsVersion()),
+              title: Text('Dataset version'),
+              trailing: Text(getDataSetVersion()),
             ),
           ]),
         ));
   }
 
-  String getAssetsVersion() {
+  String getDataSetVersion() {
     final file = db.getLocalFile('VERSION', rel: db.userData.gameDataPath);
     return file.existsSync()
         ? file.readAsStringSync()
-        : 'VERSION file not exist.';
+        : 'INVALID';
   }
 }

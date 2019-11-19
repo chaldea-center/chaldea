@@ -8,13 +8,20 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 
 import 'config.dart';
 
+typedef Widget UriImageWidgetBuilder(BuildContext context, String url);
+
 class FullScreenImageSlider extends StatefulWidget {
   final List<String> imgUrls;
   final int initialPage;
   final bool enableDownload;
+  final UriImageWidgetBuilder placeholder;
 
   const FullScreenImageSlider(
-      {Key key, this.imgUrls, this.initialPage, this.enableDownload})
+      {Key key,
+      this.imgUrls,
+      this.initialPage,
+      this.enableDownload,
+      this.placeholder})
       : super(key: key);
 
   @override
@@ -53,15 +60,17 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
                   enableDownload: widget.enableDownload,
                   imageBuilder: (context, url) => CachedNetworkImage(
                     imageUrl: url,
-                    placeholder: MyCachedImage.defaultPlaceholder,
+                    placeholder: MyCachedImage.defaultIndicatorBuilder,
                     errorWidget: (context, url, error) => Center(
                       child: Text('Error loading network image.\n$error'),
                     ),
                   ),
+                  placeholder: widget.placeholder,
                 )),
             itemCount: widget.imgUrls.length,
             autoplay: false,
             loop: false,
+            index: _curIndex,
             onIndexChanged: (newIndex) => _curIndex = newIndex,
           )),
     );
@@ -71,9 +80,10 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
 class MyCachedImage extends StatefulWidget {
   final String url;
   final bool enableDownload;
-  final Widget Function(BuildContext context, String url) imageBuilder;
+  final UriImageWidgetBuilder imageBuilder;
+  final UriImageWidgetBuilder placeholder;
 
-  static get defaultPlaceholder {
+  static get defaultIndicatorBuilder {
     return (BuildContext context, String url) => LayoutBuilder(
           builder: (context, constraints) {
             final width = 0.3 *
@@ -90,7 +100,11 @@ class MyCachedImage extends StatefulWidget {
   }
 
   const MyCachedImage(
-      {Key key, this.url, this.enableDownload, this.imageBuilder})
+      {Key key,
+      this.url,
+      this.enableDownload,
+      this.imageBuilder,
+      this.placeholder})
       : super(key: key);
 
   @override
@@ -117,12 +131,11 @@ class _MyCachedImageState extends State<MyCachedImage> {
   Widget build(BuildContext context) {
     return cached == null
         ? Container()
-        : cached == true || widget.enableDownload ??
-                db.runtimeData.enableDownload ??
-                true
+        : cached == true ||
+                (widget.enableDownload ?? db.runtimeData.enableDownload ?? true)
             ? widget.imageBuilder(context, widget.url)
-            : Center(
-                child: Text('Downloading disabled.'),
-              );
+            : widget.placeholder == null
+                ? Center(child: Text('Downloading disabled.'))
+                : widget.placeholder(context, widget.url);
   }
 }

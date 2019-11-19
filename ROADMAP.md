@@ -1,4 +1,4 @@
-## TODO:
+## TODOs:
 >**New features:**
  - add transition animation and swipe support
  - crash catcher: [Catcher On Medium](https://medium.com/flutter-community/handling-flutter-errors-with-catcher-efce74397862)

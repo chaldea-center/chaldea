@@ -96,7 +96,7 @@ class SvtFilterData {
     favorite ??= false;
     filterString ??= '';
     sortKeys ??= List.generate(3, (i) => sortKeyData[i]);
-    sortDirections ??= List.filled(sortKeys.length, true);
+    sortDirections ??= List.filled(sortKeys.length, false);
     useGrid ??= false;
     rarity ??= FilterGroupData();
     className ??= FilterGroupData();
@@ -214,7 +214,7 @@ class CraftFilterData {
       this.atkHpType}) {
     filterString ??= '';
     sortKeys ??= List.generate(2, (i) => sortKeyData[i]);
-    sortDirections ??= List.filled(sortKeys.length, true);
+    sortDirections ??= List.filled(sortKeys.length, false);
     useGrid ??= false;
     rarity ??= FilterGroupData();
     category ??= FilterGroupData();

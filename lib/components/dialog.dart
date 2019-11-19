@@ -122,6 +122,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
             child: Text(S.of(context).ok),
             onPressed: () {
               onTapOk();
+              Navigator.of(context).pop();
             },
           )
       ],

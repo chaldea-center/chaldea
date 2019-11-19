@@ -29,6 +29,20 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
     db.checkNetwork();
   }
 
+  UriImageWidgetBuilder getPlaceholder() {
+    String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
+    return (context, url) => Image(
+          image: db.getIconFile('${capitalize(svt.info.className)}${[
+            '黑',
+            '铜',
+            '铜',
+            '银',
+            '金',
+            '金'
+          ][svt.info.rarity]}卡背'),
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -51,7 +65,6 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
                 final url = svt.info.illust[i]['url'];
                 return MyCachedImage(
                   url: url,
-                  enableDownload: db.runtimeData.enableDownload,
                   imageBuilder: (context, url) => GestureDetector(
                     onTap: () async {
                       int newIndex =
@@ -61,7 +74,9 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
                                         .map((e) => e['url'])
                                         .toList(),
                                     initialPage: i,
-                                    enableDownload: db.runtimeData.enableDownload,
+                                    enableDownload:
+                                        db.runtimeData.enableDownload,
+                                    placeholder: getPlaceholder(),
                                   ),
                               fullscreenDialog: true));
                       setState(() {
@@ -70,9 +85,10 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
                     },
                     child: CachedNetworkImage(
                       imageUrl: url,
-                      placeholder: MyCachedImage.defaultPlaceholder,
+                      placeholder: MyCachedImage.defaultIndicatorBuilder,
                     ),
                   ),
+                  placeholder: getPlaceholder(),
                 );
               })),
         )

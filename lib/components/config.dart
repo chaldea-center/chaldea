@@ -105,6 +105,7 @@ class Database {
       return FileImage(File(join(_rootPath, userData.gameDataPath, 'icons',
           gameData.icons[iconKey].filename)));
     } else {
+      print('error loading icon $iconKey');
       return AssetImage('res/img/error.png');
     }
   }
@@ -200,7 +201,7 @@ class Database {
 }
 
 class RuntimeData {
-  bool enableDownload;
+  bool enableDownload = false;
   ItemsOfSvts itemsOfSvts = ItemsOfSvts();
   Map<String, int> itemsOfEvents = {};
 }
