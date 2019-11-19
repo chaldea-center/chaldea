@@ -1,7 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:flutter/services.dart';
+
+import 'item_detail_page.dart';
 
 class ItemListPage extends StatefulWidget {
   @override
@@ -14,9 +15,11 @@ class ItemListPageState extends State<ItemListPage>
 
   //controller
   TabController _tabController;
-  Map<int, TextInputsManager<Item>> inputManagers = {};
-  ItemCostStatistics statistics;
-  Map<String, int> eventItemStatistics;
+
+//  Map<int, TextInputsManager<Item>> inputManagers = {};
+
+//  ItemStatisticsOfSvt itemCostOfSvt;
+//  Map<String, int> obtainedItemsFromEvents;
   bool filtered = false;
 
   @override
@@ -29,118 +32,8 @@ class ItemListPageState extends State<ItemListPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: categories.length, vsync: this);
-    eventItemStatistics = db.gameData.events.getAllItems(db.curPlan);
-    statistics = ItemCostStatistics(db.gameData, db.curPlan.servants);
-    final items = db.gameData.items;
-    InputComponent<Item> generateComponent(String k) {
-      TextEditingController textEditingController =
-          TextEditingController(text: (db.curPlan.items[k] ?? 0).toString());
-      FocusNode focusNode = FocusNode();
-      InputComponent<Item> component = InputComponent(
-          data: items[k],
-          controller: textEditingController,
-          focusNode: focusNode);
-      return component;
-    }
-
-    categories.forEach((e) {
-      inputManagers[e] = TextInputsManager();
-      final qpKey = 'QP';
-      inputManagers[e].components.add(generateComponent(qpKey));
-    });
-    items.forEach((String key, Item item) {
-      if (!categories.contains(item.category)) {
-        return;
-      }
-      inputManagers[item.category].components.add(generateComponent(item.name));
-    });
-    inputManagers.forEach((key, group) {
-      group.components.sort((a, b) => a.data.id - b.data.id);
-      group.components.insert(0, group.components.removeLast());
-    });
-  }
-
-  Widget getItemRow(
-      {bool filtered,
-      TextInputsManager<Item> manager,
-      InputComponent<Item> component,
-      int ownNum,
-      int eventNum = 0,
-      PartSet<int> itemStat}) {
-    final iconKey = component.data.name;
-    final allNum = sum(itemStat.values);
-    int leftNum = ownNum + eventNum - allNum;
-    bool enough = leftNum >= 0;
-    final highlightStyle = TextStyle(color: enough ? null : Colors.redAccent);
-
-    if (filtered && enough) {
-      return null;
-    }
-    manager.addObserver(component);
-    return CustomTile(
-      onTap: () => SplitRoute.popAndPush(context,
-          builder: (context) => ItemDetailPage(
-                iconKey,
-                statistics: statistics,
-                parent: this,
-              )),
-      leading: Image(image: db.getIconFile(iconKey), height: 110 * 0.5),
-      title: Row(
-        children: <Widget>[
-          Expanded(flex: 5, child: Text(iconKey)),
-          Expanded(
-              flex: 3,
-              child: AutoSizeText(
-                '剩余 ${formatNumToString(leftNum)}',
-                maxLines: 1,
-                style: highlightStyle,
-              ))
-        ],
-      ),
-      subtitle: Row(
-        children: <Widget>[
-          Expanded(
-              flex: 5,
-              child: Text(
-                '共需 ${formatNumToString(allNum, "decimal")}' +
-                    (iconKey == 'QP' ? '' : '(${itemStat.values.join("/")})'),
-                style: null,
-              )),
-          Expanded(
-              flex: 3,
-              child: AutoSizeText(
-                '活动 ${formatNumToString(eventNum, 'decimal')}',
-                style: null,
-                maxLines: 1,
-              ))
-        ],
-      ),
-      titlePadding: EdgeInsets.fromLTRB(16, 0, 16, 0),
-      trailing: SizedBox(
-        width: 45,
-        child: EnsureVisibleWhenFocused(
-            child: TextField(
-              maxLength: 4,
-              controller: component.controller,
-              focusNode: component.focusNode,
-              textAlign: TextAlign.center,
-              keyboardType: TextInputType.number,
-              textInputAction: TextInputAction.next,
-              decoration: InputDecoration(counterText: ''),
-              inputFormatters: [WhitelistingTextInputFormatter(RegExp(r'\d'))],
-              onChanged: (v) {
-                db.curPlan.items[component.data.name] = int.tryParse(v) ?? 0;
-              },
-              onTap: () {
-                component.selectAll();
-              },
-              onSubmitted: (s) {
-                manager.moveNextFocus(context, component);
-              },
-            ),
-            focusNode: component.focusNode),
-      ),
-    );
+    db.runtimeData.itemsOfEvents = db.gameData.events.getAllItems(db.curPlan);
+    db.runtimeData.itemsOfSvts.update(db.gameData, db.curPlan.servants);
   }
 
   @override
@@ -163,46 +56,209 @@ class ItemListPageState extends State<ItemListPage>
         bottom: TabBar(
             controller: _tabController,
             tabs: categories
-                .map((category) => Tab(
-                    text: ['x', 'Material', 'Gem', 'Piece', 'Event'][category]))
+                .map((category) =>
+                    Tab(text: ['x', '普通素材', '技能石', '棋子', '活动素材'][category]))
                 .toList()),
       ),
       body: TabBarView(
           controller: _tabController,
-          children: categories.map((tabKey) {
-            final manager = inputManagers[tabKey];
-            manager.resetFocusList();
-            List<Widget> tiles = [];
-            final len = manager.components.length;
-            for (int index = 0; index < len; index++) {
-              // for every item
-              final component = manager.components[index];
-              String iconKey = component.data.name;
-              final itemStat = statistics.getNumOfItem(iconKey);
-              final ownNum = db.curPlan.items[iconKey] ?? 0;
-              Widget tile = getItemRow(
-                  filtered: filtered,
-                  manager: manager,
-                  ownNum: ownNum,
-                  eventNum: eventItemStatistics[iconKey] ?? 0,
-                  itemStat: itemStat,
-                  component: component);
-              if (tile != null) {
-                tiles.add(tile);
-              }
-            }
-            return ListView(
-              children: [TileGroup(tiles: tiles)],
-            );
-          }).toList()),
+          children: categories
+              .map((category) =>
+                  ItemListTab(category: category, filtered: filtered))
+              .toList()),
     );
+  }
+}
+
+class ItemListTab extends StatefulWidget {
+  final int category;
+  final bool filtered;
+
+  const ItemListTab({Key key, this.category, this.filtered = false})
+      : super(key: key);
+
+  @override
+  _ItemListTabState createState() => _ItemListTabState();
+}
+
+class _ItemListTabState extends State<ItemListTab> {
+  TextInputsManager<Item> inputsManager = TextInputsManager();
+  final qpKey = 'QP';
+
+  @override
+  void initState() {
+    super.initState();
+    db.gameData.items.forEach((key, item) {
+      if (item.category == widget.category || key == qpKey) {
+        inputsManager.components.add(InputComponent(
+            data: item,
+            controller: TextEditingController(
+                text: (db.curPlan.items[key] ?? 0).toString()),
+            focusNode: FocusNode()));
+      }
+    });
+    inputsManager.components.sort((a, b) => a.data.id - b.data.id);
+    int qpIndex =
+        inputsManager.components.indexWhere((e) => e.data.name == qpKey);
+    if (qpIndex >= 0) {
+      inputsManager.components
+          .insert(0, inputsManager.components.removeAt(qpIndex));
+    }
   }
 
   @override
   void dispose() {
     super.dispose();
-    inputManagers.forEach((key, manager) {
-      manager.dispose();
-    });
+    inputsManager.dispose();
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
+    db.saveData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    inputsManager.resetFocusList();
+    List<Widget> children = [
+      for (var c in inputsManager.components) buildItemTile(c)
+    ];
+    children.removeWhere((e) => e == null);
+    return ListView.separated(
+        itemBuilder: (context, index) => children[index],
+        separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
+        itemCount: children.length);
+  }
+
+  Widget buildItemTile(InputComponent<Item> component) {
+    final itemKey = component.data.name;
+    PartSet<int> svtCostStat = db.runtimeData.itemsOfSvts.getNumOfItem(itemKey);
+    int svtCostNum = sum(svtCostStat.values);
+    int eventNum = db.runtimeData.itemsOfEvents[itemKey] ?? 0;
+    int ownNum = db.curPlan.items[itemKey] ?? 0;
+    int leftNum = ownNum + eventNum - svtCostNum;
+    bool enough = leftNum >= 0;
+    bool isQp = itemKey == qpKey;
+    if (widget.filtered && enough && !isQp) {
+      return null;
+    }
+    inputsManager.addObserver(component);
+    return StatefulBuilder(
+      builder: (BuildContext context, setState2) {
+        int ownNum = db.curPlan.items[itemKey] ?? 0;
+        int leftNum = ownNum + eventNum - svtCostNum;
+        bool enough = leftNum >= 0;
+
+        final highlightStyle =
+            TextStyle(color: enough ? null : Colors.redAccent);
+
+        Widget textField = EnsureVisibleWhenFocused(
+            child: TextField(
+              maxLength: isQp ? 20 : 5,
+              controller: component.controller,
+              focusNode: component.focusNode,
+              textAlign: TextAlign.center,
+              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.next,
+              decoration: InputDecoration(
+                isDense: true,
+                counterText: '',
+                contentPadding: EdgeInsets.all(0),
+              ),
+              inputFormatters: [
+                WhitelistingTextInputFormatter.digitsOnly,
+                if (isQp) NumberInputFormatter(),
+              ],
+              onChanged: (v) {
+                db.curPlan.items[component.data.name] =
+                    int.tryParse(v.replaceAll(',', '')) ?? 0;
+                setState2(() {});
+              },
+              onTap: () {
+                component.onTap(context);
+              },
+              onSubmitted: (s) {
+                inputsManager.moveNextFocus(context, component);
+              },
+            ),
+            focusNode: component.focusNode);
+        Widget title, subtitle;
+        if (isQp) {
+          title = Row(
+            children: <Widget>[
+              Text(itemKey + '  '),
+              Expanded(child: textField)
+            ],
+          );
+          subtitle = Row(
+            children: <Widget>[
+              Expanded(
+                  flex: 1,
+                  child: AutoSizeText(
+                    '共需 ${formatNumToString(svtCostNum, "decimal")}',
+                    maxLines: 1,
+                  )),
+              Expanded(
+                  flex: 1,
+                  child: AutoSizeText(
+                    '剩余 ${formatNumToString(leftNum, "decimal")}',
+                    maxLines: 1,
+                    style: highlightStyle,
+                    minFontSize: 10,
+                  ))
+            ],
+          );
+        } else {
+          title = Row(
+            children: <Widget>[
+              Expanded(child: AutoSizeText(itemKey, maxLines: 1)),
+              Text('剩余'),
+              SizedBox(
+                  width: 40,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: AutoSizeText(formatNumToString(leftNum),
+                        style: highlightStyle, maxLines: 1),
+                  )),
+            ],
+          );
+          subtitle = Row(
+            children: <Widget>[
+              Expanded(
+                  child: AutoSizeText(
+                '共需 ${formatNumToString(svtCostNum, "decimal")}' +
+                    '(${svtCostStat.values.join("/")})',
+                maxLines: 1,
+              )),
+              Text('活动'),
+              SizedBox(
+                  width: 40,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: AutoSizeText(formatNumToString(eventNum),
+                        style: highlightStyle, maxLines: 1),
+                  )),
+            ],
+          );
+        }
+        return CustomTile(
+          onTap: () => SplitRoute.popAndPush(context,
+              builder: (context) => ItemDetailPage(itemKey)),
+          leading: Image(image: db.getIconFile(itemKey), height: 110 * 0.5),
+          title: title,
+          subtitle: subtitle,
+          titlePadding: isQp
+              ? EdgeInsets.fromLTRB(16, 0, 0, 0)
+              : EdgeInsets.fromLTRB(16, 0, 16, 0),
+          trailing: isQp
+              ? null
+              : SizedBox(
+                  width: 50,
+                  child: textField,
+                ),
+        );
+      },
+    );
   }
 }

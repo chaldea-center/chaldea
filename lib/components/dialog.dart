@@ -91,3 +91,40 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
     );
   }
 }
+
+class SimpleCancelOkDialog extends StatelessWidget {
+  final Widget title;
+  final Widget content;
+  final VoidCallback onTapOk;
+  final VoidCallback onTapCancel;
+
+  const SimpleCancelOkDialog(
+      {Key key, this.title, this.content, this.onTapOk, this.onTapCancel})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: title,
+      content: content,
+      actions: <Widget>[
+        FlatButton(
+          child: Text(S.of(context).cancel),
+          onPressed: () {
+            if (onTapCancel != null) {
+              onTapCancel();
+            }
+            Navigator.pop(context);
+          },
+        ),
+        if (onTapOk != null)
+          FlatButton(
+            child: Text(S.of(context).ok),
+            onPressed: () {
+              onTapOk();
+            },
+          )
+      ],
+    );
+  }
+}

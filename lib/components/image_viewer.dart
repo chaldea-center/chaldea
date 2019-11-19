@@ -6,13 +6,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
+import 'config.dart';
+
 class FullScreenImageSlider extends StatefulWidget {
   final List<String> imgUrls;
   final int initialPage;
   final bool enableDownload;
 
   const FullScreenImageSlider(
-      {Key key, this.imgUrls, this.initialPage, this.enableDownload = true})
+      {Key key, this.imgUrls, this.initialPage, this.enableDownload})
       : super(key: key);
 
   @override
@@ -88,9 +90,8 @@ class MyCachedImage extends StatefulWidget {
   }
 
   const MyCachedImage(
-      {Key key, this.url, bool enableDownload, this.imageBuilder})
-      : enableDownload = enableDownload ?? true,
-        super(key: key);
+      {Key key, this.url, this.enableDownload, this.imageBuilder})
+      : super(key: key);
 
   @override
   _MyCachedImageState createState() => _MyCachedImageState();
@@ -116,7 +117,9 @@ class _MyCachedImageState extends State<MyCachedImage> {
   Widget build(BuildContext context) {
     return cached == null
         ? Container()
-        : cached == true || widget.enableDownload == true
+        : cached == true || widget.enableDownload ??
+                db.runtimeData.enableDownload ??
+                true
             ? widget.imageBuilder(context, widget.url)
             : Center(
                 child: Text('Downloading disabled.'),

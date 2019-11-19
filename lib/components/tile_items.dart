@@ -365,7 +365,7 @@ class FilterGroup extends StatelessWidget {
         children: <Widget>[
           Icon(
             checked ? Icons.check_box : Icons.check_box_outline_blank,
-            color: Colors.lightBlueAccent,
+            color: Colors.grey,
           ),
           Text(text)
         ],
@@ -462,7 +462,8 @@ class FilterOption<T, S> extends StatelessWidget {
           color: selected ? selectedColor : unselectedColor,
           child: child ?? Text(value.toString()),
           shape: ContinuousRectangleBorder(
-              side: BorderSide(color: Colors.grey),
+              side: BorderSide(
+                  color: selected ? selectedColor : Colors.grey),
               borderRadius: BorderRadius.circular(3)),
         ),
       ),

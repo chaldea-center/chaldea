@@ -101,7 +101,7 @@ class _SvtFilterPageState extends State<SvtFilterPage> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text('Classes', style: TextStyle(fontSize: 16)),
+          Text('职阶', style: TextStyle(fontSize: 16)),
           Row(
             children: <Widget>[
               Expanded(
@@ -175,7 +175,7 @@ class _SvtFilterPageState extends State<SvtFilterPage> {
           _buildDisplay(),
           _buildClassFilter(),
           FilterGroup(
-            title: Text('Rarity'),
+            title: Text('稀有度'),
             options: SvtFilterData.rarityData,
             values: filterData.rarity,
             optionBuilder: (v) => Text('$v星'),

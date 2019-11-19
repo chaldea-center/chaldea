@@ -51,7 +51,7 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
                 final url = svt.info.illust[i]['url'];
                 return MyCachedImage(
                   url: url,
-                  enableDownload: db.enableDownload,
+                  enableDownload: db.runtimeData.enableDownload,
                   imageBuilder: (context, url) => GestureDetector(
                     onTap: () async {
                       int newIndex =
@@ -61,7 +61,7 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
                                         .map((e) => e['url'])
                                         .toList(),
                                     initialPage: i,
-                                    enableDownload: db.enableDownload,
+                                    enableDownload: db.runtimeData.enableDownload,
                                   ),
                               fullscreenDialog: true));
                       setState(() {

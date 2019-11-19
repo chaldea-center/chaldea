@@ -196,6 +196,7 @@ class CustomTile extends StatelessWidget {
 class ImageWithText extends StatelessWidget {
   final Image image;
   final String text;
+  final double fontSize;
   final EdgeInsets padding;
 
   final AlignmentDirectional alignment;
@@ -205,6 +206,7 @@ class ImageWithText extends StatelessWidget {
       {Key key,
       this.image,
       this.text,
+      this.fontSize,
       this.padding = EdgeInsets.zero,
       this.alignment = AlignmentDirectional.bottomEnd,
       this.onTap})
@@ -251,6 +253,7 @@ class ImageWithText extends StatelessWidget {
                           Text(
                             text,
                             style: TextStyle(
+                              fontSize: fontSize,
                               fontWeight: FontWeight.bold,
                               foreground: Paint()
                                 ..style = PaintingStyle.stroke
@@ -260,7 +263,10 @@ class ImageWithText extends StatelessWidget {
                           ),
                           Text(
                             text,
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontSize: fontSize,
+                              fontWeight: FontWeight.bold,
+                            ),
                           )
                         ],
                       ),

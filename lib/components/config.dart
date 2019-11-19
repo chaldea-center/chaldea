@@ -21,7 +21,7 @@ class Database {
   VoidCallback onAppUpdate;
   UserData userData;
   GameData gameData;
-  bool enableDownload;
+  final RuntimeData runtimeData = RuntimeData();
 
   Plans get curPlan => userData.users[userData.curUser]?.plans;
   static String _rootPath = '';
@@ -35,12 +35,13 @@ class Database {
 
   Future<Null> checkNetwork() async {
     final result = await Connectivity().checkConnectivity();
-    enableDownload = (!kDebugMode || db.userData.testAllowDownload) &&
+    runtimeData.enableDownload = (!kDebugMode ||
+            db.userData.testAllowDownload) &&
         (db.userData.useMobileNetwork || result != ConnectivityResult.mobile);
     print(
         'kDebugMode=$kDebugMode,\ntestAllowDown=${db.userData.testAllowDownload},\n'
         'useMobile=${db.userData.useMobileNetwork},\nnetwork=$result,\n'
-        'enableDown=$enableDownload');
+        'enableDown=${runtimeData.enableDownload}');
   }
 
   // load data
@@ -196,6 +197,12 @@ class Database {
   }
 
   Database._internal();
+}
+
+class RuntimeData {
+  bool enableDownload;
+  ItemsOfSvts itemsOfSvts = ItemsOfSvts();
+  Map<String, int> itemsOfEvents = {};
 }
 
 Database db = new Database();

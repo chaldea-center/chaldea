@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/tile_items.dart';
 
 class CraftDetailPage extends StatefulWidget {
   final CraftEssential ce;
@@ -103,7 +102,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => FullScreenImageSlider(
                                   imgUrls: [ce.illust],
-                                  enableDownload: db.enableDownload,
+                                  enableDownload: db.runtimeData.enableDownload,
                                 ),
                             fullscreenDialog: true));
                       },

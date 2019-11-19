@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 class InputComponent<T> {
   T data;
@@ -8,6 +10,11 @@ class InputComponent<T> {
 
   InputComponent({@required this.data, this.controller, this.focusNode})
       : assert(data != null);
+
+  void onTap(BuildContext context) {
+    FocusScope.of(context).requestFocus(focusNode);
+    selectAll();
+  }
 
   void selectAll() {
     if (controller != null) {
@@ -69,3 +76,22 @@ class TextInputsManager<T> {
     components.forEach((e) => e.dispose());
   }
 }
+
+class NumberInputFormatter extends TextInputFormatter {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    if (newValue.selection.baseOffset == 0) {
+      return newValue;
+    }
+    int value = int.tryParse(newValue.text);
+    if (value == null) {
+      return newValue;
+    }
+    String newText = thousandFormatter.format(value);
+    return newValue.copyWith(
+        text: newText,
+        selection: TextSelection.collapsed(offset: newText.length));
+  }
+}
+
+final thousandFormatter = NumberFormat('###,###.###');

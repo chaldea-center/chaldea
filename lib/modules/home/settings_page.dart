@@ -1,6 +1,6 @@
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/home/subpage/account_page.dart';
 
+import 'subpage/account_page.dart';
 import 'subpage/lang_page.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -11,6 +11,13 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   String language;
   String user;
+  String dataVersion;
+
+  @override
+  void initState() {
+    super.initState();
+    dataVersion = getDataSetVersion();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +127,7 @@ class _SettingsPageState extends State<SettingsPage> {
             header: 'Test',
             tiles: <Widget>[
               SwitchListTile.adaptive(
-                  title: Text('允许下载(Test)'),
+                  title: Text('允许下载'),
                   value: db.userData.testAllowDownload ?? true,
                   onChanged: (v) {
                     setState(() {
@@ -150,22 +157,48 @@ class _SettingsPageState extends State<SettingsPage> {
             tiles: <Widget>[
               ListTile(
                 title: Text('Reload gamedata'),
-                onTap: () async {
-                  await db.clearData(game: true);
-                  Scaffold.of(context).showSnackBar(
-                      SnackBar(content: Text('dataset have been extracted.')));
+                trailing: Text(dataVersion),
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      child: SimpleCancelOkDialog(
+                        title: Text('Confirm to reload gamedata?'),
+                        onTapOk: () async {
+                          await db.clearData(game: true);
+                          setState(() {
+                            dataVersion = getDataSetVersion();
+                          });
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                              content: Text('dataset have been extracted.')));
+                        },
+                      ));
                 },
               ),
               ListTile(
                 title: Text('Clear and reload all data'),
-                onTap: () async {
-                  await db.clearData(user: true, game: true);
-                  Scaffold.of(context).showSnackBar(
-                      SnackBar(content: Text('userdata cleared')));
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      child: SimpleCancelOkDialog(
+                        title: Text('Confirm to delete all data?'),
+                        onTapOk: () async {
+                          await db.clearData(user: true, game: true);
+                          Scaffold.of(context).showSnackBar(
+                              SnackBar(content: Text('userdata cleared')));
+                        },
+                      ));
                 },
               ),
-              ListTile(title: Text(S.of(context).backup)),
-              ListTile(title: Text(S.of(context).restore))
+              ListTile(
+                title: Text(S.of(context).backup),
+                onTap: () => Scaffold.of(context).showSnackBar(
+                    SnackBar(content: Text('To be implemented...'))),
+              ),
+              ListTile(
+                title: Text(S.of(context).restore),
+                onTap: () => Scaffold.of(context).showSnackBar(
+                    SnackBar(content: Text('To be implemented...'))),
+              )
             ],
           )
         ],
@@ -177,5 +210,10 @@ class _SettingsPageState extends State<SettingsPage> {
   void deactivate() {
     super.deactivate();
     db.saveData();
+  }
+
+  String getDataSetVersion() {
+    final file = db.getLocalFile('VERSION', rel: db.userData.gameDataPath);
+    return file.existsSync() ? file.readAsStringSync() : 'INVALID.';
   }
 }

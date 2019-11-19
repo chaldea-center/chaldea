@@ -1,10 +1,11 @@
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/servant/servant_detail_page.dart';
+
+import 'item_list_page.dart';
 
 class ItemDetailPage extends StatefulWidget {
   final String itemName;
-  final ItemCostStatistics statistics;
+  final ItemsOfSvts statistics;
   final ItemListPageState parent;
 
   const ItemDetailPage(this.itemName, {Key key, this.statistics, this.parent})
@@ -17,15 +18,12 @@ class ItemDetailPage extends StatefulWidget {
 class _ItemDetailPageState extends State<ItemDetailPage> {
   List<List<Widget>> tiles;
   bool planned = true;
-  ItemCostStatistics statistics;
   PartSet<String> panelTitles =
       PartSet(ascension: '灵基再临', skill: '技能升级', dress: '灵衣开放');
 
   @override
   void initState() {
     super.initState();
-    statistics = (widget.statistics ??
-        ItemCostStatistics(db.gameData, db.curPlan.servants));
   }
 
   Widget getSvtIconList(Map<int, int> src) {
@@ -41,7 +39,8 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
             Navigator.of(context)
                 .push(SplitRoute(builder: (context) => ServantDetailPage(svt)))
                 .then((_) {
-              statistics.update(db.gameData, db.curPlan.servants);
+              db.runtimeData.itemsOfSvts
+                  .update(db.gameData, db.curPlan.servants);
               widget.parent?.setState(() {});
             });
           },
@@ -52,7 +51,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
       return Container();
     }
     return GridView.count(
-        crossAxisCount: 6,
+        crossAxisCount: 5,
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         padding: EdgeInsets.symmetric(horizontal: 16),
@@ -62,8 +61,10 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   @override
   Widget build(BuildContext context) {
     //todo: add list view by svt (no ascension/skill/dress classification)
-    final svtList = statistics.getSvtListOfItem(widget.itemName, planned);
-    final counts = statistics.getNumOfItem(widget.itemName, planned);
+    final svtList =
+        db.runtimeData.itemsOfSvts.getSvtListOfItem(widget.itemName, planned);
+    final counts =
+        db.runtimeData.itemsOfSvts.getNumOfItem(widget.itemName, planned);
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),

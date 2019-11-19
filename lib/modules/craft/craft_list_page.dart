@@ -1,7 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/craft/craft_detail_page.dart';
-import 'package:chaldea/modules/craft/craft_filter_page.dart';
+
+import 'craft_detail_page.dart';
+import 'craft_filter_page.dart';
 
 class CraftListPage extends StatefulWidget {
   @override
@@ -95,29 +96,29 @@ class CraftListPageState extends State<CraftListPage> {
         title: Text(S.of(context).craft_essential),
         leading: SplitViewBackButton(),
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(45.0),
+          preferredSize: Size.fromHeight(45),
           child: Theme(
             data: Theme.of(context).copyWith(primaryColor: Colors.grey),
             child: Container(
-                height: 45.0,
-                padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0),
+                height: 45,
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                 child: TextField(
                   controller: _inputController,
-                  style: TextStyle(fontSize: 13.0),
+                  style: TextStyle(fontSize: 14),
                   decoration: InputDecoration(
+                      isDense: true,
                       filled: true,
                       contentPadding: EdgeInsets.zero,
                       border: OutlineInputBorder(
                           borderSide: const BorderSide(
-                              width: 0.0, style: BorderStyle.none),
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(10.0))),
+                              width: 0, style: BorderStyle.none),
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
                       fillColor: Colors.white,
                       hintText: 'Search',
-                      prefixIcon: Icon(Icons.search, size: 20.0),
+                      prefixIcon: Icon(Icons.search, size: 20),
                       suffixIcon: IconButton(
                         padding: EdgeInsets.zero,
-                        icon: Icon(Icons.clear, size: 20.0),
+                        icon: Icon(Icons.clear, size: 20),
                         onPressed: () {
                           setState(() {
                             WidgetsBinding.instance.addPostFrameCallback(
@@ -228,7 +229,6 @@ class CraftListPageState extends State<CraftListPage> {
               child: ImageWithText(
                 image: Image(image: db.getIconFile(ce.icon)),
                 alignment: AlignmentDirectional.bottomStart,
-                padding: EdgeInsets.fromLTRB(4, 0, 8, -4),
                 onTap: () {
                   SplitRoute.popAndPush(context,
                       builder: (context) => CraftDetailPage(ce: ce));

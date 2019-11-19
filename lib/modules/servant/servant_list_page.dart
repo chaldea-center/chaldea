@@ -1,6 +1,7 @@
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/servant/servant_detail_page.dart';
-import 'package:chaldea/modules/servant/svt_filter_page.dart';
+
+import 'servant_detail_page.dart';
+import 'svt_filter_page.dart';
 
 class ServantListPage extends StatefulWidget {
   @override
@@ -120,29 +121,29 @@ class ServantListPageState extends State<ServantListPage> {
         title: Text(S.of(context).servant),
         leading: SplitViewBackButton(),
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(45.0),
+          preferredSize: Size.fromHeight(45),
           child: Theme(
             data: Theme.of(context).copyWith(primaryColor: Colors.grey),
             child: Container(
-                height: 45.0,
-                padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0),
+                height: 45,
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                 child: TextField(
                   controller: _inputController,
-                  style: TextStyle(fontSize: 13.0),
+                  style: TextStyle(fontSize: 14),
                   decoration: InputDecoration(
+                      isDense: true,
                       filled: true,
                       contentPadding: EdgeInsets.zero,
                       border: OutlineInputBorder(
                           borderSide: const BorderSide(
-                              width: 0.0, style: BorderStyle.none),
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(10.0))),
+                              width: 0, style: BorderStyle.none),
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
                       fillColor: Colors.white,
                       hintText: 'Search',
-                      prefixIcon: Icon(Icons.search, size: 20.0),
+                      prefixIcon: Icon(Icons.search, size: 20),
                       suffixIcon: IconButton(
                         padding: EdgeInsets.zero,
-                        icon: Icon(Icons.clear, size: 20.0),
+                        icon: Icon(Icons.clear, size: 20),
                         onPressed: () {
                           setState(() {
                             WidgetsBinding.instance.addPostFrameCallback(
@@ -301,8 +302,9 @@ class ServantListPageState extends State<ServantListPage> {
               child: ImageWithText(
                 image: Image(image: db.getIconFile(svt.icon)),
                 text: text,
+                fontSize: 11,
                 alignment: AlignmentDirectional.bottomStart,
-                padding: EdgeInsets.fromLTRB(4, 0, 8, -4),
+                padding: EdgeInsets.fromLTRB(4, 0, 8, 0),
                 onTap: () {
                   SplitRoute.popAndPush(context,
                       builder: (context) => ServantDetailPage(svt));

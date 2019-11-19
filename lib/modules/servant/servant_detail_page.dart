@@ -1,8 +1,8 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/blank_page.dart';
-import 'package:chaldea/modules/servant/tabs/svt_illust_tab.dart';
-import 'package:chaldea/modules/servant/tabs/svt_info_tab.dart';
 
+import 'tabs/svt_illust_tab.dart';
+import 'tabs/svt_info_tab.dart';
 import 'tabs/svt_plan_tab.dart';
 import 'tabs/svt_skill_tab.dart';
 import 'tabs/svt_treasure_device_tab.dart';

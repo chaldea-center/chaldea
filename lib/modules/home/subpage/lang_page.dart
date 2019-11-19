@@ -1,5 +1,4 @@
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/tile_items.dart';
 
 class LanguagePage extends StatefulWidget {
   @override

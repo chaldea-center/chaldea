@@ -175,7 +175,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
                       huntingPlan[name] = value;
                     }
                   },
-                  onTap: () => component.selectAll(),
+                  onTap: () => component.onTap(context),
                   onSubmitted: (_) {
                     manager.moveNextFocus(context, component);
                   },

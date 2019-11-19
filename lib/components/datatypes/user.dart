@@ -153,16 +153,14 @@ class PartSet<T> {
   }
 }
 
-class ItemCostStatistics {
+class ItemsOfSvts {
   //Map<SvtNo, List<Map<ItemKey,num>>>
   Map<int, PartSet<Map<String, int>>> planCountBySvt, allCountBySvt;
 
   // Map<ItemKey, List<Map<SvtNo, num>>>
   Map<String, PartSet<Map<int, int>>> planCountByItem, allCountByItem;
 
-  ItemCostStatistics(GameData gameData, Map<int, ServantPlan> plans) {
-    update(gameData, plans);
-  }
+  ItemsOfSvts();
 
   void update(GameData gameData, Map<int, ServantPlan> plans) {
     planCountBySvt = {};

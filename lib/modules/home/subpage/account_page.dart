@@ -1,6 +1,4 @@
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/dialog.dart';
-import 'package:chaldea/components/tile_items.dart';
 
 class AccountPage extends StatefulWidget {
   @override
