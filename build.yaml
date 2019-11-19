@@ -1,0 +1,6 @@
+targets:
+  $default:
+    builders:
+      json_serializable|json_serializable:
+        generate_for:
+          - lib/components/**/*.dart

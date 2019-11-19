@@ -24,6 +24,7 @@ CraftEssential _$CraftEssentialFromJson(Map<String, dynamic> json) {
     atkMax: json['atkMax'] as int,
     skillIcon: json['skillIcon'] as String,
     skill: json['skill'] as String,
+    skillMax: json['skillMax'] as String,
     eventIcons: (json['eventIcons'] as List)?.map((e) => e as String)?.toList(),
     eventSkills:
         (json['eventSkills'] as List)?.map((e) => e as String)?.toList(),
@@ -53,6 +54,7 @@ Map<String, dynamic> _$CraftEssentialToJson(CraftEssential instance) =>
       'atkMax': instance.atkMax,
       'skillIcon': instance.skillIcon,
       'skill': instance.skill,
+      'skillMax': instance.skillMax,
       'eventIcons': instance.eventIcons,
       'eventSkills': instance.eventSkills,
       'description': instance.description,
