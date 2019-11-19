@@ -52,6 +52,9 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
                   imageBuilder: (context, url) => CachedNetworkImage(
                     imageUrl: url,
                     placeholder: MyCachedImage.defaultPlaceholder,
+                    errorWidget: (context, url, error) => Center(
+                      child: Text('Error loading network image.\n$error'),
+                    ),
                   ),
                 )),
             itemCount: widget.imgUrls.length,
@@ -116,7 +119,7 @@ class _MyCachedImageState extends State<MyCachedImage> {
         : cached == true || widget.enableDownload == true
             ? widget.imageBuilder(context, widget.url)
             : Center(
-                child: Text('Mobile network downloading disabled.'),
+                child: Text('Downloading disabled.'),
               );
   }
 }
