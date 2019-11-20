@@ -56,7 +56,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
 
     _builders['卡面'] = (context) => SvtIllustTab(parent: this);
 
-    _builders['语音'] = (context) => getDefaultPage('语音');
+//    _builders['语音'] = (context) => getDefaultPage('语音');
   }
 
   @override

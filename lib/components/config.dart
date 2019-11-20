@@ -38,10 +38,6 @@ class Database {
     runtimeData.enableDownload = (!kDebugMode ||
             db.userData.testAllowDownload) &&
         (db.userData.useMobileNetwork || result != ConnectivityResult.mobile);
-    print(
-        'kDebugMode=$kDebugMode,\ntestAllowDown=${db.userData.testAllowDownload},\n'
-        'useMobile=${db.userData.useMobileNetwork},\nnetwork=$result,\n'
-        'enableDown=${runtimeData.enableDownload}');
   }
 
   // load data

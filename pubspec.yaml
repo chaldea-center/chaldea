@@ -41,7 +41,16 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^1.7.2
   json_serializable: ^3.2.3
+  flutter_launcher_icons: ^0.7.4
 
+flutter_icons:
+  #  image_path: "assets/images/icon-128x128.png"
+  ios: true # can specify file name here e.g. "My-Launcher-Icon"
+  image_path_ios: "res/img/launcher_icon/ic_ios.png"
+  android: true # can specify file name here e.g. "ic_launcher"
+  image_path_android: "res/img/launcher_icon/ic_android_foreground.png"
+#  adaptive_icon_background: "#FFFFFF" # only available for Android 8.0 devices and above
+#  adaptive_icon_foreground: "res/img/launcher_icon/ic_android_foreground.png" # only available for Android 8.0 devices and above
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
