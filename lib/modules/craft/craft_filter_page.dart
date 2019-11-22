@@ -21,7 +21,6 @@ class _CraftFilterPageState extends State<CraftFilterPage> {
   void initState() {
     super.initState();
     filterData = widget.filterData ?? CraftFilterData();
-    filterData.filterString = '';
   }
 
   @override
@@ -104,7 +103,7 @@ class _CraftFilterPageState extends State<CraftFilterPage> {
         centerTitle: true,
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.refresh),
+              icon: Icon(Icons.replay),
               onPressed: () {
                 filterData.reset();
                 updateParentFilterResult();

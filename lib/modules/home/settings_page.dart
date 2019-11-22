@@ -1,5 +1,7 @@
 import 'package:chaldea/components/components.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'subpage/account_page.dart';
 import 'subpage/lang_page.dart';
@@ -164,28 +166,37 @@ class _SettingsPageState extends State<SettingsPage> {
                       context: context,
                       child: SimpleCancelOkDialog(
                         title: Text('Confirm to reload gamedata?'),
-                        onTapOk: () async {
-                          await db.clearData(game: true);
-                          setState(() {
-                            dataVersion = getDataSetVersion();
+                        onTapOk: () {
+                          Fluttertoast.showToast(msg: 'cleaning...');
+                          SchedulerBinding.instance
+                              .addPostFrameCallback((_) async {
+                            await db.clearData(game: true);
+                            setState(() {
+                              dataVersion = getDataSetVersion();
+                            });
+                            Fluttertoast.showToast(msg: 'gamedata reloaded');
                           });
-                          Scaffold.of(context).showSnackBar(SnackBar(
-                              content: Text('dataset have been extracted.')));
                         },
                       ));
                 },
               ),
               ListTile(
-                title: Text('Clear and reload all data'),
+                title: Text('Clear all data(include userdata)'),
                 onTap: () {
                   showDialog(
                       context: context,
                       child: SimpleCancelOkDialog(
                         title: Text('Confirm to delete all data?'),
-                        onTapOk: () async {
-                          await db.clearData(user: true, game: true);
-                          Scaffold.of(context).showSnackBar(
-                              SnackBar(content: Text('userdata cleared')));
+                        onTapOk: () {
+                          Fluttertoast.showToast(msg: 'cleaning...');
+                          SchedulerBinding.instance
+                              .addPostFrameCallback((_) async {
+                            await db.clearData(user: true, game: true);
+                            setState(() {
+                              dataVersion = getDataSetVersion();
+                            });
+                            Fluttertoast.showToast(msg: 'all data reloaded');
+                          });
                         },
                       ));
                 },

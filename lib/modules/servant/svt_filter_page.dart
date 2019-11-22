@@ -20,7 +20,6 @@ class _SvtFilterPageState extends State<SvtFilterPage> {
   void initState() {
     super.initState();
     filterData = widget.filterData ?? SvtFilterData();
-    filterData.filterString = '';
   }
 
   @override
@@ -163,7 +162,7 @@ class _SvtFilterPageState extends State<SvtFilterPage> {
         centerTitle: true,
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.refresh),
+              icon: Icon(Icons.replay),
               onPressed: () {
                 filterData.reset();
                 updateParentFilterResult();

@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/craft/craft_detail_page.dart';
 
 import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
@@ -77,8 +78,8 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
           child: TabBarView(controller: _tabController, children: [
             buildBaseInfoTab(),
             buildProfileTab(),
-            buildBondCraftEssenceTab(),
-            buildBondCraftEssenceTab()
+            buildBondCraftTab(),
+            buildValentineCraftTab()
           ]),
         ),
       ],
@@ -242,10 +243,22 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
     );
   }
 
-  Widget buildBondCraftEssenceTab() {
-    return Center(
-      child: Text('礼装'),
-    );
+  Widget buildBondCraftTab() {
+    if (svt.bondCraft != null) {
+      return CraftDetailBasePage(
+          ce: db.gameData.crafts[svt.bondCraft], useLangJp: useLangJp);
+    } else {
+      return Center(child: Text('无羁绊礼装'));
+    }
+  }
+
+  Widget buildValentineCraftTab() {
+    if (svt.valentineCraft != null) {
+      return CraftDetailBasePage(
+          ce: db.gameData.crafts[svt.valentineCraft], useLangJp: useLangJp);
+    } else {
+      return Center(child: Text('无情人节礼装'));
+    }
   }
 
   @override

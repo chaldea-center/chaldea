@@ -111,18 +111,18 @@ class SimpleCancelOkDialog extends StatelessWidget {
         FlatButton(
           child: Text(S.of(context).cancel),
           onPressed: () {
+            Navigator.pop(context);
             if (onTapCancel != null) {
               onTapCancel();
             }
-            Navigator.pop(context);
           },
         ),
         if (onTapOk != null)
           FlatButton(
             child: Text(S.of(context).ok),
             onPressed: () {
-              onTapOk();
               Navigator.of(context).pop();
+              onTapOk();
             },
           )
       ],

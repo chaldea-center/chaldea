@@ -31,6 +31,10 @@ class Events {
 class LimitEvent {
   String name;
   String link;
+  String startTimeJp;
+  String endTimeJp;
+  String startTimeCn;
+  String endTimeCn;
   int grail;
   int crystal;
   int grail2crystal;
@@ -43,6 +47,10 @@ class LimitEvent {
   LimitEvent(
       {this.name,
       this.link,
+      this.startTimeJp,
+      this.endTimeJp,
+      this.startTimeCn,
+      this.endTimeCn,
       this.grail,
       this.crystal,
       this.grail2crystal,
@@ -69,10 +77,12 @@ class LimitEvent {
 
 @JsonSerializable()
 class MainRecord {
+  String name;
+  String startTimeJp;
   Map<String, int> drops;
   Map<String, int> rewards;
 
-  MainRecord({this.drops, this.rewards});
+  MainRecord({this.name, this.startTimeJp, this.drops, this.rewards});
 
   factory MainRecord.fromJson(Map<String, dynamic> data) =>
       _$MainRecordFromJson(data);
@@ -92,9 +102,10 @@ class MainRecord {
 class ExchangeTicket {
   int days;
   String monthJp;
+  String monthCn;
   List<String> items;
 
-  ExchangeTicket({this.days, this.monthJp, this.items});
+  ExchangeTicket({this.days, this.monthJp, this.monthCn, this.items});
 
   factory ExchangeTicket.fromJson(Map<String, dynamic> data) =>
       _$ExchangeTicketFromJson(data);

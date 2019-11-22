@@ -2,6 +2,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 
 class MainRecordTab extends StatefulWidget {
+  final bool reverse;
+
+  const MainRecordTab({Key key, this.reverse}) : super(key: key);
+
   @override
   _MainRecordTabState createState() => _MainRecordTabState();
 }
@@ -11,23 +15,10 @@ class _MainRecordTabState extends State<MainRecordTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    List<Widget> children = [];
-    db.gameData.events.mainRecords.forEach((chapter, record) {
-      children.add(CustomTile(
-        title: AutoSizeText(chapter, maxLines: 1),
-        trailing: Wrap(
-          children: List.generate(2, (i) {
-            return Switch.adaptive(
-                value: db.curPlan.mainRecords[chapter]?.elementAt(i) ?? false,
-                onChanged: (v) {
-                  setState(() {
-                    db.curPlan.mainRecords[chapter] ??= List.filled(2, false);
-                    db.curPlan.mainRecords[chapter][i] = v;
-                  });
-                });
-          }).toList(),
-        ),
-      ));
+    final mainRecords = db.gameData.events.mainRecords.values.toList();
+    mainRecords.sort((a, b) {
+      return (a.startTimeJp).compareTo(b.startTimeJp) *
+          (widget.reverse ? -1 : 1);
     });
     return Column(
       children: <Widget>[
@@ -35,17 +26,34 @@ class _MainRecordTabState extends State<MainRecordTab>
           title: Text('章节'),
           trailing: Wrap(
             spacing: 10,
-            children: <Widget>[
-              Text('主线掉落'),
-              Text('主线奖励'),
-            ],
+            children: <Widget>[Text('主线掉落'), Text('主线奖励')],
           ),
         ),
         Divider(thickness: 1),
         Expanded(
-            child: ListView(
-          children: children,
-        ))
+            child: ListView.separated(
+                itemCount: mainRecords.length,
+                separatorBuilder: (context, index) =>
+                    Divider(height: 1, indent: 16),
+                itemBuilder: (context, index) {
+                  final chapter = mainRecords[index].name;
+                  final plan = db.curPlan.mainRecords;
+                  return CustomTile(
+                    title: AutoSizeText(chapter, maxLines: 1, maxFontSize: 16),
+                    trailing: Wrap(
+                      children: List.generate(2, (i) {
+                        return Switch.adaptive(
+                            value: plan[chapter]?.elementAt(i) ?? false,
+                            onChanged: (v) {
+                              setState(() {
+                                plan[chapter] ??= List.filled(2, false);
+                                plan[chapter][i] = v;
+                              });
+                            });
+                      }).toList(),
+                    ),
+                  );
+                }))
       ],
     );
   }

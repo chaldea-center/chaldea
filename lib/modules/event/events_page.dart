@@ -11,8 +11,9 @@ class EventListPage extends StatefulWidget {
 
 class _EventListPageState extends State<EventListPage>
     with SingleTickerProviderStateMixin {
-  final tabNames = ['Limit Events', 'Main Records', 'Tickets'];
+  final tabNames = ['限时活动', '主线记录', '素材交换券'];
   TabController _tabController;
+  bool reverse = true;
 
   @override
   void initState() {
@@ -24,8 +25,13 @@ class _EventListPageState extends State<EventListPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Events'),
+        title: Text(S.of(context).event_title),
         leading: SplitViewBackButton(),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(reverse ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+              onPressed: () => setState(() => reverse = !reverse))
+        ],
         bottom: TabBar(
             controller: _tabController,
             isScrollable: false,
@@ -33,7 +39,11 @@ class _EventListPageState extends State<EventListPage>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: <Widget>[LimitEventTab(), MainRecordTab(), ExchangeTicketTab()],
+        children: <Widget>[
+          LimitEventTab(reverse: reverse),
+          MainRecordTab(reverse: reverse),
+          ExchangeTicketTab(reverse: reverse)
+        ],
       ),
     );
   }

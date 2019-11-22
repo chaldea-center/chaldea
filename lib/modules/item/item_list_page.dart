@@ -16,10 +16,6 @@ class ItemListPageState extends State<ItemListPage>
   //controller
   TabController _tabController;
 
-//  Map<int, TextInputsManager<Item>> inputManagers = {};
-
-//  ItemStatisticsOfSvt itemCostOfSvt;
-//  Map<String, int> obtainedItemsFromEvents;
   bool filtered = false;
 
   @override

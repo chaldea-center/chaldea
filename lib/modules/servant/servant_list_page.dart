@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'servant_detail_page.dart';
 import 'svt_filter_page.dart';
@@ -10,8 +11,9 @@ class ServantListPage extends StatefulWidget {
 
 class ServantListPageState extends State<ServantListPage> {
   SvtFilterData filterData;
-  TextEditingController _inputController;
-  ScrollController _scrollController;
+  TextEditingController _inputController = TextEditingController();
+  FocusNode _inputFocusNode = FocusNode(), _blankNode = FocusNode();
+  ScrollController _scrollController = ScrollController();
 
   //temp, calculate once build() called.
   TextFilter __textFilter;
@@ -19,16 +21,27 @@ class ServantListPageState extends State<ServantListPage> {
   @override
   void initState() {
     super.initState();
-    _inputController = TextEditingController();
-    _scrollController = ScrollController();
     filterData = db.userData.svtFilter;
+    filterData.filterString = '';
+    _inputFocusNode.addListener(() {
+      if (!_inputFocusNode.hasFocus) {
+        SchedulerBinding.instance.addPostFrameCallback(
+            (_) => FocusScope.of(context).requestFocus(_blankNode));
+      }
+    });
   }
 
   @override
   void dispose() {
     _inputController.dispose();
     _scrollController.dispose();
+    _inputFocusNode.dispose();
     super.dispose();
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
   }
 
   void beforeFiltrate() {
@@ -128,6 +141,7 @@ class ServantListPageState extends State<ServantListPage> {
                 height: 45,
                 padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                 child: TextField(
+                  focusNode: _inputFocusNode,
                   controller: _inputController,
                   style: TextStyle(fontSize: 14),
                   decoration: InputDecoration(

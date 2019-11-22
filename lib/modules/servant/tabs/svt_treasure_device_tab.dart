@@ -25,11 +25,14 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab>
         children: <Widget>[
           Image(
             image: db.getIconFile(np.color),
-            height: 110 * 0.9,
+            width: 110 * 0.9,
           ),
-          Text(
-            '${np.typeText} ${np.rank}',
-            style: TextStyle(fontSize: 14, color: Colors.black),
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 110 * 0.9),
+            child: Text(
+              '${np.typeText} ${np.rank}',
+              style: TextStyle(fontSize: 14, color: Colors.black),
+            ),
           )
         ],
       ),

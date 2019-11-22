@@ -95,6 +95,10 @@ LimitEvent _$LimitEventFromJson(Map<String, dynamic> json) {
   return LimitEvent(
     name: json['name'] as String,
     link: json['link'] as String,
+    startTimeJp: json['startTimeJp'] as String,
+    endTimeJp: json['endTimeJp'] as String,
+    startTimeCn: json['startTimeCn'] as String,
+    endTimeCn: json['endTimeCn'] as String,
     grail: json['grail'] as int,
     crystal: json['crystal'] as int,
     grail2crystal: json['grail2crystal'] as int,
@@ -118,6 +122,10 @@ Map<String, dynamic> _$LimitEventToJson(LimitEvent instance) =>
     <String, dynamic>{
       'name': instance.name,
       'link': instance.link,
+      'startTimeJp': instance.startTimeJp,
+      'endTimeJp': instance.endTimeJp,
+      'startTimeCn': instance.startTimeCn,
+      'endTimeCn': instance.endTimeCn,
       'grail': instance.grail,
       'crystal': instance.crystal,
       'grail2crystal': instance.grail2crystal,
@@ -130,6 +138,8 @@ Map<String, dynamic> _$LimitEventToJson(LimitEvent instance) =>
 
 MainRecord _$MainRecordFromJson(Map<String, dynamic> json) {
   return MainRecord(
+    name: json['name'] as String,
+    startTimeJp: json['startTimeJp'] as String,
     drops: (json['drops'] as Map<String, dynamic>)?.map(
       (k, e) => MapEntry(k, e as int),
     ),
@@ -141,6 +151,8 @@ MainRecord _$MainRecordFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$MainRecordToJson(MainRecord instance) =>
     <String, dynamic>{
+      'name': instance.name,
+      'startTimeJp': instance.startTimeJp,
       'drops': instance.drops,
       'rewards': instance.rewards,
     };
@@ -149,6 +161,7 @@ ExchangeTicket _$ExchangeTicketFromJson(Map<String, dynamic> json) {
   return ExchangeTicket(
     days: json['days'] as int,
     monthJp: json['monthJp'] as String,
+    monthCn: json['monthCn'] as String,
     items: (json['items'] as List)?.map((e) => e as String)?.toList(),
   );
 }
@@ -157,6 +170,7 @@ Map<String, dynamic> _$ExchangeTicketToJson(ExchangeTicket instance) =>
     <String, dynamic>{
       'days': instance.days,
       'monthJp': instance.monthJp,
+      'monthCn': instance.monthCn,
       'items': instance.items,
     };
 

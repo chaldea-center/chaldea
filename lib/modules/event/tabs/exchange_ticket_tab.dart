@@ -4,6 +4,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 
 class ExchangeTicketTab extends StatefulWidget {
+  final bool reverse;
+
+  const ExchangeTicketTab({Key key, this.reverse}) : super(key: key);
+
   @override
   _ExchangeTicketTabState createState() => _ExchangeTicketTabState();
 }
@@ -11,52 +15,60 @@ class ExchangeTicketTab extends StatefulWidget {
 class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
   @override
   Widget build(BuildContext context) {
-    final tickets = db.curPlan.exchangeTickets;
-    List<Widget> children = [];
-    db.gameData.events.exchangeTickets.forEach((monthCn, ticketInfo) {
-      tickets[monthCn] ??= [0, 0, 0];
-      List<Widget> trailing = [];
-      for (var i = 0; i < 3; i++) {
-        final iconKey = ticketInfo.items[i];
-        final maxValue = ticketInfo.days - sum(tickets[monthCn].getRange(0, i));
-        trailing
-          ..add(Image(image: db.getIconFile(iconKey), height: 48))
-          ..add(buildDropDownMenu(
-              value: tickets[monthCn][i],
-              maxValue: maxValue,
-              onChanged: (v) {
-                setState(() {
-                  tickets[monthCn][i] = v;
-                  for (var j = 0; j < 3; j++) {
-                    tickets[monthCn][j] = min(tickets[monthCn][j],
-                        ticketInfo.days - sum(tickets[monthCn].getRange(0, j)));
-                  }
-                });
-              }));
-      }
-      children.add(CustomTile(
-        contentPadding: EdgeInsets.fromLTRB(16, 8, 0, 8),
-        title: Text('$monthCn'),
-        subtitle: AutoSizeText(
-          'max ${ticketInfo.days}\n${ticketInfo.monthJp}(JP)',
-          maxLines: 2,
-        ),
-        color: MyColors.setting_tile,
-        trailing: ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: 40),
-          child: Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: trailing),
-        ),
-      ));
+    final startDate = DateTime.now().subtract(Duration(days: 31 * 3));
+    final tickets = db.gameData.events.exchangeTickets.values.toList()
+      ..retainWhere((e) => DateTime.parse(e.monthCn + '01').isAfter(startDate));
+    tickets.sort((a, b) {
+      return (a.monthCn).compareTo(b.monthCn) * (widget.reverse ? -1 : 1);
     });
-    return ListView(
-      children: children.reversed.toList(),
-    );
+    return ListView.separated(
+        itemCount: tickets.length,
+        separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
+        itemBuilder: (context, index) {
+          final ticket = tickets[index];
+          final plan = db.curPlan.exchangeTickets;
+          plan[ticket.monthCn] ??= [0, 0, 0];
+          List<Widget> trailing = [];
+          for (var i = 0; i < 3; i++) {
+            final iconKey = ticket.items[i];
+            final maxValue =
+                ticket.days - sum(plan[ticket.monthCn].getRange(0, i));
+            trailing
+              ..add(Image(image: db.getIconFile(iconKey), height: 48))
+              ..add(buildDropDownMenu(
+                  value: plan[ticket.monthCn][i],
+                  maxValue: maxValue,
+                  onChanged: (v) {
+                    setState(() {
+                      plan[ticket.monthCn][i] = v;
+                      for (var j = 0; j < 3; j++) {
+                        plan[ticket.monthCn][j] = min(
+                            plan[ticket.monthCn][j],
+                            ticket.days -
+                                sum(plan[ticket.monthCn].getRange(0, j)));
+                      }
+                    });
+                  }));
+          }
+          return CustomTile(
+            contentPadding: EdgeInsets.fromLTRB(16, 8, 0, 8),
+            title: Text(ticket.monthCn),
+            subtitle: AutoSizeText('max ${ticket.days}\n${ticket.monthJp}(JP)',
+                maxLines: 2),
+            color: MyColors.setting_tile,
+            trailing: ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: 40),
+              child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: trailing),
+            ),
+          );
+        });
   }
 
   Widget buildCheckedItem(String iconKey, bool checked) {
+    // not used, Item with check icon
     return Stack(
       alignment: AlignmentDirectional.bottomEnd,
       children: <Widget>[

@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'craft_detail_page.dart';
 import 'craft_filter_page.dart';
@@ -11,8 +12,9 @@ class CraftListPage extends StatefulWidget {
 
 class CraftListPageState extends State<CraftListPage> {
   CraftFilterData filterData;
-  TextEditingController _inputController;
-  ScrollController _scrollController;
+  TextEditingController _inputController = TextEditingController();
+  FocusNode _inputFocusNode = FocusNode(), _blankNode = FocusNode();
+  ScrollController _scrollController = ScrollController();
 
   //temp, calculate once build() called.
   int __binCategory, __binAtkHpType;
@@ -21,15 +23,21 @@ class CraftListPageState extends State<CraftListPage> {
   @override
   void initState() {
     super.initState();
-    _inputController = TextEditingController();
-    _scrollController = ScrollController();
     filterData = db.userData.craftFilter;
+    filterData.filterString = '';
+    _inputFocusNode.addListener(() {
+      if (!_inputFocusNode.hasFocus) {
+        SchedulerBinding.instance.addPostFrameCallback(
+            (_) => FocusScope.of(context).requestFocus(_blankNode));
+      }
+    });
   }
 
   @override
   void dispose() {
     _inputController.dispose();
     _scrollController.dispose();
+    _inputFocusNode.dispose();
     super.dispose();
   }
 
@@ -103,6 +111,7 @@ class CraftListPageState extends State<CraftListPage> {
                 height: 45,
                 padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                 child: TextField(
+                  focusNode: _inputFocusNode,
                   controller: _inputController,
                   style: TextStyle(fontSize: 14),
                   decoration: InputDecoration(

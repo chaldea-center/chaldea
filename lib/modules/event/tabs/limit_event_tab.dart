@@ -4,6 +4,10 @@ import 'package:chaldea/components/components.dart';
 import '../limit_event_detail_page.dart';
 
 class LimitEventTab extends StatefulWidget {
+  final bool reverse;
+
+  const LimitEventTab({Key key, this.reverse = false}) : super(key: key);
+
   @override
   _LimitEventTabState createState() => _LimitEventTabState();
 }
@@ -13,26 +17,29 @@ class _LimitEventTabState extends State<LimitEventTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final eventNames = db.gameData.events.limitEvents.keys.toList();
+    final events = db.gameData.events.limitEvents.values.toList();
+    events.sort((a, b) {
+      return (a.startTimeJp).compareTo(b.startTimeJp) *
+          (widget.reverse ? -1 : 1);
+    });
     return ListView.separated(
-      itemCount: eventNames.length,
+      itemCount: events.length,
       separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
       itemBuilder: (context, index) {
-        final event = db.gameData.events.limitEvents[eventNames[index]];
+        final event = events[index];
+        final plan = db.curPlan.limitEvents;
         return CustomTile(
-          title: AutoSizeText(event.name??'null?$event', maxLines: 1),
+          title: AutoSizeText(event.name, maxLines: 1),
+          subtitle: AutoSizeText(event.startTimeJp ?? 'null', maxLines: 1),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               if (event.hunting != null || event.lottery != null)
-                Icon(
-                  Icons.star,
-                  color: Colors.yellow[700],
-                ),
+                Icon(Icons.star, color: Colors.yellow[700]),
               Switch.adaptive(
-                  value: db.curPlan.limitEvents[event.name]?.enable ?? false,
+                  value: plan[event.name]?.enable ?? false,
                   onChanged: (v) => setState(() {
-                        db.curPlan.limitEvents
+                        plan
                             .putIfAbsent(event.name, () => LimitEventPlan())
                             .enable = v;
                       }))
