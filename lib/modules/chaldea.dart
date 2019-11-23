@@ -51,7 +51,7 @@ class _ChaldeaState extends State<Chaldea> {
         Catcher.addDefaultErrorWidget(showStacktrace: true);
         return widget;
       },
-      home: db.userData == null ? BlankPage(showProgress: true) : HomePage(),
+      home: db.userData == null ? BlankPage() : HomePage(),
     );
   }
 }

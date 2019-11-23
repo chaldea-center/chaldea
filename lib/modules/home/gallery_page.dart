@@ -147,27 +147,18 @@ class _GalleryPageState extends State<GalleryPage> {
         onTap: () {
           showDialog(
               context: context,
-              child: AlertDialog(
+              child: SimpleCancelOkDialog(
                 title: Text('Jump to Mooncell?'),
-                content: Text(
-                  link,
-                  style: TextStyle(decoration: TextDecoration.underline),
-                ),
-                actions: <Widget>[
-                  FlatButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: Text(S.of(context).cancel)),
-                  FlatButton(
-                      onPressed: () async {
-                        if (await canLaunch(link)) {
-                          launch(link);
-                          Navigator.of(context).pop();
-                        } else {
-                          throw 'Could not launch $link';
-                        }
-                      },
-                      child: Text(S.of(context).ok))
-                ],
+                content: Text(link,
+                    style: TextStyle(decoration: TextDecoration.underline)),
+                onTapOk: () async {
+                  if (await canLaunch(link)) {
+                    launch(link);
+                    Navigator.of(context).pop();
+                  } else {
+                    throw 'Could not launch $link';
+                  }
+                },
               ));
         },
         child: CachedNetworkImage(
@@ -250,8 +241,6 @@ class _GalleryPageState extends State<GalleryPage> {
 
   String getDataSetVersion() {
     final file = db.getLocalFile('VERSION', rel: db.userData.gameDataPath);
-    return file.existsSync()
-        ? file.readAsStringSync()
-        : 'INVALID';
+    return file.existsSync() ? file.readAsStringSync() : 'INVALID';
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import 'subpage/about_page.dart';
 import 'subpage/account_page.dart';
 import 'subpage/lang_page.dart';
 
@@ -210,7 +211,12 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: Text(S.of(context).restore),
                 onTap: () => Scaffold.of(context).showSnackBar(
                     SnackBar(content: Text('To be implemented...'))),
-              )
+              ),
+              ListTile(
+                title: Text('关于Chaldea'),
+                onTap: () => SplitRoute.popAndPush(context,
+                    builder: (context) => AboutPage()),
+              ),
             ],
           )
         ],

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 //typedef
 //const value
 const String userDataFilename = 'userdata.json';
+const String supportTeamEmailAddress = 'support@narumi.cc';
+
 
 //const value in class
 class LangCode {
@@ -19,7 +21,8 @@ class LangCode {
     eng: Locale('en', '')
   };
 
-  static Locale getLocale(String code) => code == null ? null : allEntries[code];
+  static Locale getLocale(String code) =>
+      code == null ? null : allEntries[code];
 
   static List<String> get codes => allEntries.keys.toList();
 }
@@ -33,7 +36,6 @@ class MyColors {
   static const Color setting_bg = Color(0xFFF9F9F9);
   static const Color setting_tile = Colors.white;
 }
-
 
 class TextFilter {
   List<String> patterns;

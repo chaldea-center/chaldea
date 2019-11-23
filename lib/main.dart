@@ -1,23 +1,33 @@
 import 'package:catcher/catcher_plugin.dart';
+import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/chaldea.dart';
+import 'package:package_info/package_info.dart';
 
-void main() {
+void main() async {
   // show launcher screen forever if return before runApp.
   // launcher screen is programmed in platform folder(android/ or ios/)
-  // runApp(Chaldea());
-  EmailManualHandler emailHandler = EmailManualHandler(["support@narumi.cc"],
+
+  WidgetsFlutterBinding.ensureInitialized();
+  final info = await PackageInfo.fromPlatform();
+  final emailHandler = EmailManualHandler(
+      [supportTeamEmailAddress],
       enableDeviceParameters: true,
       enableStackTrace: true,
       enableCustomParameters: true,
       enableApplicationParameters: true,
       sendHtml: true,
-      emailTitle: "Sample Title",
-      emailHeader: "Sample Header",
+      emailTitle: '${info.appName} v${info.version} Freedback',
+      emailHeader: "Please attatch screenshot.",
       printLogs: true);
-  CatcherOptions debugOptions =
-      CatcherOptions(SilentReportMode(), [ConsoleHandler()]);
-  CatcherOptions releaseOptions =
-      CatcherOptions(DialogReportMode(), [emailHandler]);
+  final debugOptions =
+      CatcherOptions(DialogReportMode(), [ConsoleHandler(), ToastHandler()]);
+  final releaseOptions =
+      CatcherOptions(DialogReportMode(), [emailHandler, ToastHandler()]);
 
-  Catcher(Chaldea(), debugConfig: debugOptions, releaseConfig: releaseOptions);
+  Catcher(
+    Chaldea(),
+    debugConfig: debugOptions,
+    profileConfig: debugOptions,
+    releaseConfig: releaseOptions,
+  );
 }
