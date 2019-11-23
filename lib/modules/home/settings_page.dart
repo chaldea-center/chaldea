@@ -168,7 +168,9 @@ class _SettingsPageState extends State<SettingsPage> {
                       child: SimpleCancelOkDialog(
                         title: Text('Confirm to reload gamedata?'),
                         onTapOk: () {
-                          Fluttertoast.showToast(msg: 'cleaning...');
+                          Fluttertoast.showToast(
+                              msg: 'cleaning...',
+                              toastLength: Toast.LENGTH_LONG);
                           SchedulerBinding.instance
                               .addPostFrameCallback((_) async {
                             await db.clearData(game: true);

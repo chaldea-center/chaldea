@@ -29,7 +29,7 @@ class _AboutPageState extends State<AboutPage> {
               for (var ref in references.entries)
                 CustomTile(
                   title: Text(ref.key),
-                  subtitle: Text(ref.value),
+                  subtitle: AutoSizeText(ref.value, maxLines: 1),
                   onTap: () => jumpToLink(context, ref.key, ref.value),
                 ),
             ],
@@ -38,7 +38,7 @@ class _AboutPageState extends State<AboutPage> {
             header: '反馈',
             tiles: <Widget>[
               ListTile(
-                title: Text('Send Email'),
+                title: Text('Email'),
                 subtitle: AutoSizeText('优先使用出错时的弹窗发送，并附上出错页面截图', maxLines: 1),
                 onTap: () async {
                   final info = await PackageInfo.fromPlatform();
@@ -70,7 +70,6 @@ void jumpToLink(BuildContext context, String name, String link) {
         onTapOk: () async {
           if (await canLaunch(link)) {
             launch(link);
-            Navigator.of(context).pop();
           } else {
             throw 'Could not launch $link';
           }

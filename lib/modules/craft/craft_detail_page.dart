@@ -101,12 +101,9 @@ class CraftDetailBasePage extends StatelessWidget {
           children: <Widget>[
             InfoCell(
               child: LayoutBuilder(builder: (context, constraints) {
-                print(constraints.biggest);
                 return ConstrainedBox(
                   constraints: BoxConstraints(
-                    maxWidth: constraints.biggest.width,
-                    maxHeight: 90
-                  ),
+                      maxWidth: constraints.biggest.width, maxHeight: 90),
                   child: Image(image: db.getIconFile(ce.icon)),
                 );
               }),
@@ -179,13 +176,15 @@ class CraftDetailBasePage extends StatelessWidget {
               ),
             ),
             InfoCell(
-                flex: 3,
+                flex: 5,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Text(ce.skill),
-                    Divider(height: 2),
-                    Text(ce.skillMax ?? '---'),
+                    if (ce.skillMax?.isNotEmpty == true) ...[
+                      Divider(height: 2),
+                      Text(ce.skillMax),
+                    ]
                   ],
                 )),
           ],
@@ -200,7 +199,7 @@ class CraftDetailBasePage extends StatelessWidget {
                       image: db.getIconFile(ce.eventIcons[i]), height: 40),
                 ),
               ),
-              InfoCell(flex: 3, text: ce.eventSkills[i]),
+              InfoCell(flex: 5, text: ce.eventSkills[i]),
             ],
           ),
         InfoRow.fromText(texts: ['解说'], color: InfoCell.headerColor),

@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
             return Future.value(true);
           } else {
             _androidAppRetain.invokeMethod("sendBackground");
-            print('sendBackground?');
+            print('sendBackground');
             return Future.value(false);
           }
         } else {

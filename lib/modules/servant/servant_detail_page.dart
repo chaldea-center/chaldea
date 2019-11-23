@@ -89,7 +89,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
               leading: Image(
                   image: db.getIconFile(svt.icon),
                   fit: BoxFit.contain,
-                  height: 100),
+                  height: 90),
               titlePadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               title: Text('No.${svt.no}\n${svt.info.className}'),
               subtitle: Servant.unavailable.contains(svt.no)
