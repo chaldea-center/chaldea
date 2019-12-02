@@ -106,13 +106,13 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab>
     }
 
     return ListView(children: [
-      TileGroup(header: '主动技能', tiles: <Widget>[
+      TileGroup(header: '主动技能', children: <Widget>[
         for (var index = 0; index < svt.activeSkills.length; index++)
           ...buildSkill(index),
       ]),
       TileGroup(
         header: '职阶技能',
-        tiles: <Widget>[
+        children: <Widget>[
           if (svt.passiveSkills != null)
             for (var index = 0; index < svt.passiveSkills.length; index++)
               ...buildPassiveSkill(index),

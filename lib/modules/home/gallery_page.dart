@@ -233,14 +233,9 @@ class _GalleryPageState extends State<GalleryPage> {
             ),
             ListTile(
               title: Text('Dataset version'),
-              trailing: Text(getDataSetVersion()),
+              trailing: Text(db.gameData.version),
             ),
           ]),
         ));
-  }
-
-  String getDataSetVersion() {
-    final file = db.getLocalFile('VERSION', rel: db.userData.gameDataPath);
-    return file.existsSync() ? file.readAsStringSync() : 'INVALID';
   }
 }

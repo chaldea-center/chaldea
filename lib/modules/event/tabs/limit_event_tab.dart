@@ -34,7 +34,7 @@ class _LimitEventTabState extends State<LimitEventTab>
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              if (event.hunting != null || event.lottery != null)
+              if (event.extra != null || event.lottery != null)
                 Icon(Icons.star, color: Colors.yellow[700]),
               Switch.adaptive(
                   value: plan[event.name]?.enable ?? false,

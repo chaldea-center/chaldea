@@ -6,7 +6,11 @@ class Events {
   Map<String, MainRecord> mainRecords;
   Map<String, ExchangeTicket> exchangeTickets;
 
-  Events({this.limitEvents, this.mainRecords, this.exchangeTickets});
+  Events({this.limitEvents, this.mainRecords, this.exchangeTickets}) {
+    limitEvents ??= {};
+    mainRecords ??= {};
+    exchangeTickets ??= {};
+  }
 
   factory Events.fromJson(Map<String, dynamic> data) => _$EventsFromJson(data);
 
@@ -41,7 +45,9 @@ class LimitEvent {
   int qp;
   Map<String, int> items;
   String category;
-  List<Map<String, double>> hunting;
+  Map<String, String> extra;
+
+//  List<Map<String, double>> hunting;
   Map<String, int> lottery;
 
   LimitEvent(
@@ -57,7 +63,7 @@ class LimitEvent {
       this.qp,
       this.items,
       this.category,
-      this.hunting,
+      this.extra,
       this.lottery});
 
   factory LimitEvent.fromJson(Map<String, dynamic> data) =>

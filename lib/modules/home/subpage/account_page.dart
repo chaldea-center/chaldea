@@ -40,7 +40,7 @@ class _AccountPageState extends State<AccountPage> {
         ],
       ),
       body: TileGroup(
-        tiles: db.userData.users.keys.map((userKey) {
+        children: db.userData.users.keys.map((userKey) {
           final user = db.userData.users[userKey];
           final bool _isCurUser = userKey == db.userData.curUser;
           return ListTile(

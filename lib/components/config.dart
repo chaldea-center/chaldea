@@ -24,13 +24,25 @@ class Database {
   final RuntimeData runtimeData = RuntimeData();
 
   Plans get curPlan => userData.users[userData.curUser]?.plans;
-  static String _rootPath = '';
+  static PathManager _paths = PathManager();
 
-  String get rootPath => _rootPath;
+  PathManager get paths => _paths;
+
+//  static String _rootPath = '';
+//
+//  String get rootPath => _rootPath;
+//
+//  String get tempDir => join(_rootPath, 'temp');
+//
+//  String get gameDataDir => join(_rootPath, 'dataset');
+//
+//  String get datasetCacheDir => join(_rootPath, 'datasets');
 
   // initialization
   Future<Null> initial() async {
-    _rootPath = (await getApplicationDocumentsDirectory()).path;
+    paths.setRootPath((await getApplicationDocumentsDirectory()).path);
+    Directory(paths.tempDir).createSync(recursive: true);
+    Directory(paths.datasetCacheDir).createSync(recursive: true);
   }
 
   Future<Null> checkNetwork() async {
@@ -43,24 +55,21 @@ class Database {
   // load data
   Future<Null> loadGameData() async {
     // TODO: use downloaded data if exist
-    dynamic _getGameJson(Map<String, String> paths) => paths.map((key, fn) =>
-        MapEntry(key, getJsonFromFile(join(userData.gameDataPath, fn))));
     gameData = parseJson(
-        parser: () => GameData.fromJson(_getGameJson({
-              'servants': 'servants.json',
-              'crafts': 'crafts.json',
-              'items': 'items.json',
-              'icons': 'icons.json',
-              'events': 'events.json'
-            })),
+        parser: () => GameData.fromJson(getJsonFromFile(
+              join(paths.gameDataDir, kGameDataFilename),
+              k: () => <String, dynamic>{},
+            )),
         k: () => GameData());
-    print('gamedata reloaded');
+    print('gamedata reloaded, version ${gameData.version}.');
   }
 
   Future<Null> loadUserData() async {
     userData = parseJson(
-        parser: () =>
-            UserData.fromJson(getJsonFromFile(userDataFilename, k: {})),
+        parser: () => UserData.fromJson(getJsonFromFile(
+              kUserDataFilename,
+              k: () => <String, dynamic>{},
+            )),
         k: () => UserData());
     print('appdata reloaded');
   }
@@ -77,7 +86,7 @@ class Database {
     return result;
   }
 
-  dynamic getJsonFromFile(String filename, {dynamic k}) {
+  dynamic getJsonFromFile(String filename, {dynamic k()}) {
     // dynamic: json object can be Map or List.
     // However, json_serializable always use Map->Class
     dynamic result;
@@ -86,20 +95,20 @@ class Database {
       result = jsonDecode(contents);
       print('load json "$filename".');
     } catch (e) {
-      result = k;
+      result = k == null ? null : k();
       print('error load "$filename", use defailt value. Error:\n$e');
     }
     return result;
   }
 
   File getLocalFile(String filename, {rel = ''}) {
-    return File(join(_rootPath, rel, filename));
+    return File(join(paths.rootPath, rel, filename));
   }
 
   ImageProvider getIconFile(String iconKey) {
     if (gameData.icons.containsKey(iconKey)) {
-      return FileImage(File(join(_rootPath, userData.gameDataPath, 'icons',
-          gameData.icons[iconKey].filename)));
+      return FileImage(File(
+          join(paths.gameDataDir, 'icons', gameData.icons[iconKey].filename)));
     } else {
       print('error loading icon $iconKey');
       return AssetImage('res/img/error.png');
@@ -108,14 +117,13 @@ class Database {
 
   Future<Null> loadAssetsData(String assetKey,
       {String dir, bool force = false}) async {
-    dir ??= userData?.gameDataPath ?? 'temp';
-    String basePath = join(_rootPath, dir);
-    if (force || !Directory(basePath).existsSync()) {
+    String extractDir =
+        dir == null ? paths.gameDataDir : join(paths.rootPath, dir);
+    if (force || !Directory(extractDir).existsSync()) {
       //extract zip file
       final data = await rootBundle.load(assetKey);
-      await extractZip(data.buffer.asUint8List().cast<int>(), basePath);
+      await extractZip(data.buffer.asUint8List().cast<int>(), extractDir);
     }
-    userData.gameDataPath = dir;
   }
 
   Future<Null> extractZip(List<int> bytes, String path) async {
@@ -140,7 +148,7 @@ class Database {
 
   //save data
   Future<Null> saveData() async {
-    _saveJsonFile(userData, userDataFilename);
+    _saveJsonFile(userData, kUserDataFilename);
   }
 
   Future<Null> _saveJsonFile(dynamic jsonData, String relativePath) async {
@@ -156,23 +164,21 @@ class Database {
 
   // clear data
   Future<void> clearData({bool user = false, bool game = false}) async {
-    final oldPath = userData.gameDataPath;
     if (user) {
-      _deleteFileOrDirectory(userDataFilename);
+      _deleteFileOrDirectory(kUserDataFilename, relative: true);
       await loadUserData();
     }
     if (game) {
       // to clear all history version or not?
-      _deleteFileOrDirectory(oldPath);
+      _deleteFileOrDirectory(paths.gameDataDir);
     }
-    await loadAssetsData('res/data/dataset.zip', dir: userData.gameDataPath);
+    await loadAssetsData(kDefaultDatasetAssetKey);
     await loadGameData();
   }
 
-  void _deleteFileOrDirectory(String relativePath) {
-    String fullPath = join(_rootPath, relativePath);
+  void _deleteFileOrDirectory(String path, {bool relative = false}) {
+    String fullPath = relative ? join(paths.gameDataDir, path) : path;
     final type = FileSystemEntity.typeSync(fullPath, followLinks: false);
-
     if (type == FileSystemEntityType.directory) {
       Directory directory = Directory(fullPath);
       if (directory.existsSync()) {
@@ -194,6 +200,26 @@ class Database {
   }
 
   Database._internal();
+}
+
+class PathManager {
+  static String _rootPath = '';
+
+  void setRootPath(String path) {
+    if (path != null && path.isNotEmpty) {
+      _rootPath = path;
+    }
+  }
+
+  String get rootPath => _rootPath;
+
+  String get tempDir => join(_rootPath, 'temp');
+
+  String get gameDataDir => join(_rootPath, 'dataset');
+
+  String get gameIconDir => join(gameDataDir, 'icons');
+
+  String get datasetCacheDir => join(_rootPath, 'datasets');
 }
 
 class RuntimeData {

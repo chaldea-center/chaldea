@@ -3,18 +3,26 @@ part of datatypes;
 
 @JsonSerializable()
 class GameData {
+  String version;
   Map<int, Servant> servants;
   Map<int, CraftEssential> crafts;
   Map<String, Item> items;
   Map<String, GameIcon> icons;
   Events events;
 
-  GameData({this.servants, this.crafts, this.items, this.icons, this.events}) {
+  GameData(
+      {this.version,
+      this.servants,
+      this.crafts,
+      this.items,
+      this.icons,
+      this.events}) {
+    version ??= '0';
     servants ??= {};
     crafts ??= {};
     items ??= {};
     icons ??= {};
-    // events ??= null;
+    events ??= Events();
   }
 
   factory GameData.fromJson(Map<String, dynamic> data) =>

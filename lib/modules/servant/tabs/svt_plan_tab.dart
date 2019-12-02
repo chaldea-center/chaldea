@@ -82,7 +82,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab>
     if (svt.no != 1) {
       children.add(TileGroup(
         header: '灵基再临',
-        tiles: <Widget>[
+        children: <Widget>[
           buildPlanRow(
               title: '灵基再临',
               value: IntRangeValues.fromList(plan.ascensionLv),
@@ -128,7 +128,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab>
                 targetLv: plan.skillLv[index][1],
               )));
     }
-    children.add(TileGroup(header: '技能升级', tiles: skillWidgets));
+    children.add(TileGroup(header: '技能升级', children: skillWidgets));
 
     // dress part
     List<Widget> dressWidgets = [];
@@ -154,7 +154,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab>
               )));
     }
     if (dressWidgets.length > 0) {
-      children.add(TileGroup(header: '灵衣开放', tiles: dressWidgets));
+      children.add(TileGroup(header: '灵衣开放', children: dressWidgets));
     }
     return ListView(
       children: children,

@@ -18,8 +18,7 @@ class _ChaldeaState extends State<Chaldea> {
     await db.initial();
     db.onAppUpdate = this.onAppUpdate;
     await db.loadUserData();
-    await db.loadAssetsData('res/data/dataset.zip',
-        dir: db.userData.gameDataPath);
+    await db.loadAssetsData(kDefaultDatasetAssetKey);
     await db.loadGameData();
     db.checkNetwork();
     setState(() {});

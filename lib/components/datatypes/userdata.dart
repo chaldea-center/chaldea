@@ -5,10 +5,11 @@ part of datatypes;
 class UserData {
   // app settings
   String language;
-  String gameDataPath;
+
   bool useMobileNetwork;
   Map<String, String> sliderUrls;
   Map<String, bool> galleries;
+  String serverDomain;
 
   // user-related game data
   String curUser;
@@ -19,7 +20,7 @@ class UserData {
   //test
   @JsonKey(ignore: true)
   double criticalWidth;
-  bool testAllowDownload = true;
+  bool testAllowDownload;
 
   //filters, ItemFilterDat to be done
   SvtFilterData svtFilter;
@@ -28,20 +29,22 @@ class UserData {
   UserData(
       {this.language,
       this.criticalWidth,
-      this.gameDataPath,
       this.useMobileNetwork,
+      this.testAllowDownload,
       this.sliderUrls,
       this.galleries,
+      this.serverDomain,
       this.curUser,
       this.users,
       this.svtFilter,
       this.craftFilter}) {
     // not initiate language: auto-change language if not set yet.
     String defaultName = 'default';
-    gameDataPath ??= 'dataset';
     useMobileNetwork ??= false;
+    testAllowDownload ??= true;
     sliderUrls ??= {};
     galleries ??= {};
+    serverDomain ??= 'http://chaldea.narumi.cc';
     users ??= {defaultName: User(name: defaultName)};
     if (!users.containsKey(curUser)) {
       curUser = users.keys.first;

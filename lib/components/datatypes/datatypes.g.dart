@@ -107,11 +107,9 @@ LimitEvent _$LimitEventFromJson(Map<String, dynamic> json) {
       (k, e) => MapEntry(k, e as int),
     ),
     category: json['category'] as String,
-    hunting: (json['hunting'] as List)
-        ?.map((e) => (e as Map<String, dynamic>)?.map(
-              (k, e) => MapEntry(k, (e as num)?.toDouble()),
-            ))
-        ?.toList(),
+    extra: (json['extra'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(k, e as String),
+    ),
     lottery: (json['lottery'] as Map<String, dynamic>)?.map(
       (k, e) => MapEntry(k, e as int),
     ),
@@ -132,7 +130,7 @@ Map<String, dynamic> _$LimitEventToJson(LimitEvent instance) =>
       'qp': instance.qp,
       'items': instance.items,
       'category': instance.category,
-      'hunting': instance.hunting,
+      'extra': instance.extra,
       'lottery': instance.lottery,
     };
 
@@ -176,6 +174,7 @@ Map<String, dynamic> _$ExchangeTicketToJson(ExchangeTicket instance) =>
 
 GameData _$GameDataFromJson(Map<String, dynamic> json) {
   return GameData(
+    version: json['version'] as String,
     servants: (json['servants'] as Map<String, dynamic>)?.map(
       (k, e) => MapEntry(int.parse(k),
           e == null ? null : Servant.fromJson(e as Map<String, dynamic>)),
@@ -202,6 +201,7 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
+      'version': instance.version,
       'servants': instance.servants?.map((k, e) => MapEntry(k.toString(), e)),
       'crafts': instance.crafts?.map((k, e) => MapEntry(k.toString(), e)),
       'items': instance.items,
@@ -630,14 +630,15 @@ Map<String, dynamic> _$LimitEventPlanToJson(LimitEventPlan instance) =>
 UserData _$UserDataFromJson(Map<String, dynamic> json) {
   return UserData(
     language: json['language'] as String,
-    gameDataPath: json['gameDataPath'] as String,
     useMobileNetwork: json['useMobileNetwork'] as bool,
+    testAllowDownload: json['testAllowDownload'] as bool,
     sliderUrls: (json['sliderUrls'] as Map<String, dynamic>)?.map(
       (k, e) => MapEntry(k, e as String),
     ),
     galleries: (json['galleries'] as Map<String, dynamic>)?.map(
       (k, e) => MapEntry(k, e as bool),
     ),
+    serverDomain: json['serverDomain'] as String,
     curUser: json['curUser'] as String,
     users: (json['users'] as Map<String, dynamic>)?.map(
       (k, e) => MapEntry(
@@ -649,15 +650,15 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
     craftFilter: json['craftFilter'] == null
         ? null
         : CraftFilterData.fromJson(json['craftFilter'] as Map<String, dynamic>),
-  )..testAllowDownload = json['testAllowDownload'] as bool;
+  );
 }
 
 Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'language': instance.language,
-      'gameDataPath': instance.gameDataPath,
       'useMobileNetwork': instance.useMobileNetwork,
       'sliderUrls': instance.sliderUrls,
       'galleries': instance.galleries,
+      'serverDomain': instance.serverDomain,
       'curUser': instance.curUser,
       'users': instance.users,
       'testAllowDownload': instance.testAllowDownload,

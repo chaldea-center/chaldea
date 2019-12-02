@@ -129,7 +129,7 @@ class SSelect extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TileGroup(
-      tiles: labels
+      children: labels
           .asMap()
           .map((index, label) {
             return MapEntry(
@@ -153,20 +153,21 @@ class SSelect extends StatelessWidget {
   }
 }
 
-/// [tiles] should be [SSwitch] or [SModal] or []
+/// [children] should be [SSwitch] or [SModal] or []
 class TileGroup extends StatelessWidget {
-  final List<Widget> tiles;
+  final List<Widget> children;
   final String header;
   final String footer;
   final EdgeInsets padding;
 
-  const TileGroup({Key key, this.tiles, this.header, this.footer, this.padding})
+  const TileGroup(
+      {Key key, this.children, this.header, this.footer, this.padding})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     bool _first = true; // add top border of first child
-    final List<Widget> group = tiles.map((tile) {
+    final List<Widget> group = children.map((tile) {
       final box = Container(
         decoration: BoxDecoration(
             border: Border(
@@ -208,7 +209,7 @@ class _SRadiosState extends State<SRadios> {
   @override
   Widget build(BuildContext context) {
     return TileGroup(
-      tiles: widget.tiles,
+      children: widget.tiles,
     );
   }
 }
@@ -462,8 +463,7 @@ class FilterOption<T, S> extends StatelessWidget {
           color: selected ? selectedColor : unselectedColor,
           child: child ?? Text(value.toString()),
           shape: ContinuousRectangleBorder(
-              side: BorderSide(
-                  color: selected ? selectedColor : Colors.grey),
+              side: BorderSide(color: selected ? selectedColor : Colors.grey),
               borderRadius: BorderRadius.circular(3)),
         ),
       ),

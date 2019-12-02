@@ -137,7 +137,7 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab>
     return ListView(
       children: <Widget>[
         TileGroup(
-          tiles: <Widget>[
+          children: <Widget>[
             buildHeader(np, tdNo),
             for (Effect e in np.effects) ...buildEffect(e)
           ],

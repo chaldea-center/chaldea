@@ -27,15 +27,13 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     if (event.lottery != null) {
       _lotteryController = TextEditingController(text: plan.lottery.toString());
     }
-    if (event.hunting != null) {
-      for (var day in event.hunting) {
-        for (var name in day.keys) {
-          manager.components.add(InputComponent(
-              data: name,
-              controller:
-                  TextEditingController(text: plan.hunting[name]?.toString()),
-              focusNode: FocusNode()));
-        }
+    if (event.extra != null) {
+      for (var name in event.extra.keys) {
+        manager.components.add(InputComponent(
+            data: name,
+            controller:
+                TextEditingController(text: plan.hunting[name]?.toString()),
+            focusNode: FocusNode()));
       }
     }
   }
@@ -55,7 +53,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     }
     if (event.lottery != null) {
       children
-        ..add(ListTile(
+        ..add(CustomTile(
           title: Text('无限池共计'),
           trailing: SizedBox(
               width: 80,
@@ -67,6 +65,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
                 decoration: InputDecoration(
                   counterText: '',
                   suffixText: '池',
+                  isDense: true,
                 ),
                 controller: _lotteryController,
                 inputFormatters: [
@@ -81,15 +80,15 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     }
     if (grailNum + crystalNum > 0 || event.items != null) {
       children
-        ..add(ListTile(title: Center(child: Text('商店&任务&点数'))))
+        ..add(CustomTile(title: Center(child: Text('商店&任务&点数'))))
         ..add(_buildItemList({'圣杯': grailNum, '传承结晶': crystalNum}
           ..addAll(event.items)
           ..removeWhere((k, v) => v <= 0)));
     }
-    if (event.hunting != null) {
+    if (event.extra != null) {
       children
-        ..add(ListTile(title: Center(child: Text('狩猎关卡'))))
-        ..add(_buildHunting(event.hunting, plan.hunting));
+        ..add(CustomTile(title: Center(child: Text('Extra items'))))
+        ..add(_buildHunting(event.extra, plan.hunting));
     }
     return Scaffold(
       appBar: AppBar(
@@ -138,53 +137,44 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     );
   }
 
-  Widget _buildHunting(
-      List<Map<String, double>> data, Map<String, int> huntingPlan) {
+  Widget _buildHunting(Map<String, String> data, Map<String, int> huntingPlan) {
     manager.resetFocusList();
     List<Widget> children = [];
-    for (var i = 0; i < data.length; i++) {
-      children.add(Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Text('Day ${i + 1}'),
+    data.forEach((name, hint) {
+      final component = manager.getComponentByData(name);
+      manager.addObserver(component);
+      children.add(CustomTile(
+        leading: Image(image: db.getIconFile(name), height: 110 * 0.5),
+        title: Text(name),
+        subtitle: Text(hint),
+        titlePadding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+        trailing: SizedBox(
+          width: 45,
+          child: EnsureVisibleWhenFocused(
+              child: TextField(
+                maxLength: 4,
+                controller: component.controller,
+                focusNode: component.focusNode,
+                textAlign: TextAlign.center,
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.next,
+                inputFormatters: [NumberInputFormatter()],
+                decoration: InputDecoration(counterText: ''),
+                onChanged: (v) {
+                  if (huntingPlan != null) {
+                    int value = int.tryParse(v) ?? 0;
+                    huntingPlan[name] = value;
+                  }
+                },
+                onTap: () => component.onTap(context),
+                onSubmitted: (_) {
+                  manager.moveNextFocus(context, component);
+                },
+              ),
+              focusNode: component.focusNode),
+        ),
       ));
-      data[i].forEach((name, drop) {
-        final component = manager.getComponentByData(name);
-        manager.addObserver(component);
-        children.add(CustomTile(
-          leading: Image(image: db.getIconFile(name), height: 110 * 0.5),
-          title: Text(name),
-          subtitle: Text('参考掉率: $drop AP/个'),
-          titlePadding: EdgeInsets.fromLTRB(16, 0, 16, 0),
-          trailing: SizedBox(
-            width: 45,
-            child: EnsureVisibleWhenFocused(
-                child: TextField(
-                  maxLength: 4,
-                  controller: component.controller,
-                  focusNode: component.focusNode,
-                  textAlign: TextAlign.center,
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.next,
-                  inputFormatters: [
-                    WhitelistingTextInputFormatter(RegExp(r'\d'))
-                  ],
-                  decoration: InputDecoration(counterText: ''),
-                  onChanged: (v) {
-                    if (huntingPlan != null) {
-                      int value = int.tryParse(v) ?? 0;
-                      huntingPlan[name] = value;
-                    }
-                  },
-                  onTap: () => component.onTap(context),
-                  onSubmitted: (_) {
-                    manager.moveNextFocus(context, component);
-                  },
-                ),
-                focusNode: component.focusNode),
-          ),
-        ));
-      });
-    }
+    });
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: children,
@@ -196,10 +186,12 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     Map<int, List<Item>> groups = {};
     for (String itemKey in items) {
       final item = db.gameData.items[itemKey];
-      final groupKey =
-          (category ? item.category * 10 : 0) + (rarity ? item.rarity : 0);
-      groups[groupKey] ??= [];
-      groups[groupKey].add(item);
+      if (item != null) {
+        final groupKey =
+            (category ? item.category * 10 : 0) + (rarity ? item.rarity : 0);
+        groups[groupKey] ??= [];
+        groups[groupKey].add(item);
+      }
     }
     final sortedKeys = groups.keys.toList()..sort();
     return Map.fromEntries(sortedKeys.map((key) {

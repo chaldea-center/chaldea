@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 //typedef
 //const value
-const String userDataFilename = 'userdata.json';
-const String supportTeamEmailAddress = 'support@narumi.cc';
-
+const String kUserDataFilename = 'userdata.json';
+const String kGameDataFilename = 'dataset.json';
+const String kSupportTeamEmailAddress = 'support@narumi.cc';
+const String kDefaultDatasetAssetKey = 'res/data/dataset.zip';
 
 //const value in class
 class LangCode {

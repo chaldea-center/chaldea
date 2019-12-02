@@ -1,7 +1,6 @@
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/home/subpage/dataset_manage_page.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import 'subpage/about_page.dart';
 import 'subpage/account_page.dart';
@@ -15,12 +14,10 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   String language;
   String user;
-  String dataVersion;
 
   @override
   void initState() {
     super.initState();
-    dataVersion = getDataSetVersion();
   }
 
   @override
@@ -35,7 +32,7 @@ class _SettingsPageState extends State<SettingsPage> {
         children: <Widget>[
           TileGroup(
             header: S.of(context).settings_data,
-            tiles: <Widget>[
+            children: <Widget>[
               ListTile(
                 title: Text(S.of(context).settings_tutorial),
                 trailing: null,
@@ -84,7 +81,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           TileGroup(
             header: S.of(context).settings_general,
-            tiles: <Widget>[
+            children: <Widget>[
               ListTile(
                 title: Text(S.of(context).settings_language),
                 trailing: Row(
@@ -129,7 +126,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           TileGroup(
             header: 'Test(debug mode: ${kDebugMode ? 'on' : 'off'})',
-            tiles: <Widget>[
+            children: <Widget>[
               SwitchListTile.adaptive(
                   title: Text('允许下载'),
                   value: db.userData.testAllowDownload ?? true,
@@ -158,50 +155,19 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           TileGroup(
             header: S.of(context).backup_restore,
-            tiles: <Widget>[
+            children: <Widget>[
               ListTile(
-                title: Text('Reload gamedata'),
-                trailing: Text(dataVersion),
+                title: Text('Dataset Management'),
+                trailing: Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: <Widget>[
+                    Text(db.gameData.version),
+                    Icon(Icons.arrow_forward_ios)
+                  ],
+                ),
                 onTap: () {
-                  showDialog(
-                      context: context,
-                      child: SimpleCancelOkDialog(
-                        title: Text('Confirm to reload gamedata?'),
-                        onTapOk: () {
-                          Fluttertoast.showToast(
-                              msg: 'cleaning...',
-                              toastLength: Toast.LENGTH_LONG);
-                          SchedulerBinding.instance
-                              .addPostFrameCallback((_) async {
-                            await db.clearData(game: true);
-                            setState(() {
-                              dataVersion = getDataSetVersion();
-                            });
-                            Fluttertoast.showToast(msg: 'gamedata reloaded');
-                          });
-                        },
-                      ));
-                },
-              ),
-              ListTile(
-                title: Text('Clear all data(include userdata)'),
-                onTap: () {
-                  showDialog(
-                      context: context,
-                      child: SimpleCancelOkDialog(
-                        title: Text('Confirm to delete all data?'),
-                        onTapOk: () {
-                          Fluttertoast.showToast(msg: 'cleaning...');
-                          SchedulerBinding.instance
-                              .addPostFrameCallback((_) async {
-                            await db.clearData(user: true, game: true);
-                            setState(() {
-                              dataVersion = getDataSetVersion();
-                            });
-                            Fluttertoast.showToast(msg: 'all data reloaded');
-                          });
-                        },
-                      ));
+                  SplitRoute.popAndPush(context,
+                      builder: (context) => DatasetManagePage());
                 },
               ),
               ListTile(
@@ -230,10 +196,5 @@ class _SettingsPageState extends State<SettingsPage> {
   void deactivate() {
     super.deactivate();
     db.saveData();
-  }
-
-  String getDataSetVersion() {
-    final file = db.getLocalFile('VERSION', rel: db.userData.gameDataPath);
-    return file.existsSync() ? file.readAsStringSync() : 'INVALID';
   }
 }

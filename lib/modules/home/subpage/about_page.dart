@@ -12,7 +12,7 @@ class AboutPage extends StatefulWidget {
 class _AboutPageState extends State<AboutPage> {
   final references = const {
     'Mooncell': 'https://fgo.wiki',
-    'NGA': 'https://bbs.nga.cn/thread.php?fid=540',
+    'NGA-FGO版块': 'https://bbs.nga.cn/thread.php?fid=540',
     '效率剧场': 'https://sites.google.com/view/fgo-domus-aurea'
   };
 
@@ -25,7 +25,7 @@ class _AboutPageState extends State<AboutPage> {
           TileGroup(
             header: '数据来源',
             footer: '若存在未标注的来源或侵权敬请告知',
-            tiles: <Widget>[
+            children: <Widget>[
               for (var ref in references.entries)
                 CustomTile(
                   title: Text(ref.key),
@@ -36,7 +36,7 @@ class _AboutPageState extends State<AboutPage> {
           ),
           TileGroup(
             header: '反馈',
-            tiles: <Widget>[
+            children: <Widget>[
               ListTile(
                 title: Text('Email'),
                 subtitle: AutoSizeText('优先使用出错时的弹窗发送，并附上出错页面截图', maxLines: 1),
@@ -45,7 +45,7 @@ class _AboutPageState extends State<AboutPage> {
                   final Email email = Email(
                     subject: '${info.appName} v${info.version} Freedback',
                     body: 'Please attach screenshot.',
-                    recipients: [supportTeamEmailAddress],
+                    recipients: [kSupportTeamEmailAddress],
                     isHTML: true,
                   );
                   FlutterEmailSender.send(email);
@@ -53,26 +53,26 @@ class _AboutPageState extends State<AboutPage> {
               ),
               ListTile(title: Text('***@NGA'))
             ],
-          )
+          ),
         ],
       ),
     );
   }
-}
 
-void jumpToLink(BuildContext context, String name, String link) {
-  showDialog(
-      context: context,
-      child: SimpleCancelOkDialog(
-        title: Text('跳转到 $name'),
-        content:
-            Text(link, style: TextStyle(decoration: TextDecoration.underline)),
-        onTapOk: () async {
-          if (await canLaunch(link)) {
-            launch(link);
-          } else {
-            throw 'Could not launch $link';
-          }
-        },
-      ));
+  void jumpToLink(BuildContext context, String name, String link) {
+    showDialog(
+        context: context,
+        child: SimpleCancelOkDialog(
+          title: Text('跳转到 $name'),
+          content: Text(link,
+              style: TextStyle(decoration: TextDecoration.underline)),
+          onTapOk: () async {
+            if (await canLaunch(link)) {
+              launch(link);
+            } else {
+              throw 'Could not launch $link';
+            }
+          },
+        ));
+  }
 }

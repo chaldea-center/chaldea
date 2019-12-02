@@ -83,7 +83,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
       body: ListView(
         children: <Widget>[
           TileGroup(
-            tiles: <Widget>[
+            children: <Widget>[
               CustomTile(
                 title: Text('共需'),
                 trailing:

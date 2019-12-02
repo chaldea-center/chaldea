@@ -10,7 +10,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final info = await PackageInfo.fromPlatform();
   final emailHandler = EmailManualHandler(
-      [supportTeamEmailAddress],
+      [kSupportTeamEmailAddress],
       enableDeviceParameters: true,
       enableStackTrace: true,
       enableCustomParameters: true,
