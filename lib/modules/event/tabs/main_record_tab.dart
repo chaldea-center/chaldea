@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/event/main_record_detail_page.dart';
 
 class MainRecordTab extends StatefulWidget {
   final bool reverse;
@@ -52,6 +53,11 @@ class _MainRecordTabState extends State<MainRecordTab>
                             });
                       }).toList(),
                     ),
+                    onTap: () {
+                      SplitRoute.popAndPush(context,
+                          builder: (context) =>
+                              MainRecordDetailPage(name: chapter));
+                    },
                   );
                 }))
       ],

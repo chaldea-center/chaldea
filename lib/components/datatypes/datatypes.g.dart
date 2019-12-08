@@ -669,10 +669,13 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
 SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
   return SvtFilterData(
     favorite: json['favorite'] as bool,
-    sortKeys: (json['sortKeys'] as List)?.map((e) => e as String)?.toList(),
-    sortDirections:
-        (json['sortDirections'] as List)?.map((e) => e as bool)?.toList(),
+    sortKeys: (json['sortKeys'] as List)
+        ?.map((e) => _$enumDecodeNullable(_$SvtCompareEnumMap, e))
+        ?.toList(),
+    sortReversed:
+        (json['sortReversed'] as List)?.map((e) => e as bool)?.toList(),
     useGrid: json['useGrid'] as bool,
+    hasDress: json['hasDress'] as bool,
     rarity: json['rarity'] == null
         ? null
         : FilterGroupData.fromJson(json['rarity'] as Map<String, dynamic>),
@@ -714,9 +717,11 @@ Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
     <String, dynamic>{
       'favorite': instance.favorite,
       'filterString': instance.filterString,
-      'sortKeys': instance.sortKeys,
-      'sortDirections': instance.sortDirections,
+      'sortKeys':
+          instance.sortKeys?.map((e) => _$SvtCompareEnumMap[e])?.toList(),
+      'sortReversed': instance.sortReversed,
       'useGrid': instance.useGrid,
+      'hasDress': instance.hasDress,
       'rarity': instance.rarity,
       'className': instance.className,
       'obtain': instance.obtain,
@@ -730,11 +735,53 @@ Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
       'traitSpecial': instance.traitSpecial,
     };
 
+T _$enumDecode<T>(
+  Map<T, dynamic> enumValues,
+  dynamic source, {
+  T unknownValue,
+}) {
+  if (source == null) {
+    throw ArgumentError('A value must be provided. Supported values: '
+        '${enumValues.values.join(', ')}');
+  }
+
+  final value = enumValues.entries
+      .singleWhere((e) => e.value == source, orElse: () => null)
+      ?.key;
+
+  if (value == null && unknownValue == null) {
+    throw ArgumentError('`$source` is not one of the supported values: '
+        '${enumValues.values.join(', ')}');
+  }
+  return value ?? unknownValue;
+}
+
+T _$enumDecodeNullable<T>(
+  Map<T, dynamic> enumValues,
+  dynamic source, {
+  T unknownValue,
+}) {
+  if (source == null) {
+    return null;
+  }
+  return _$enumDecode<T>(enumValues, source, unknownValue: unknownValue);
+}
+
+const _$SvtCompareEnumMap = {
+  SvtCompare.no: 'no',
+  SvtCompare.className: 'className',
+  SvtCompare.rarity: 'rarity',
+  SvtCompare.atk: 'atk',
+  SvtCompare.hp: 'hp',
+};
+
 CraftFilterData _$CraftFilterDataFromJson(Map<String, dynamic> json) {
   return CraftFilterData(
-    sortKeys: (json['sortKeys'] as List)?.map((e) => e as String)?.toList(),
-    sortDirections:
-        (json['sortDirections'] as List)?.map((e) => e as bool)?.toList(),
+    sortKeys: (json['sortKeys'] as List)
+        ?.map((e) => _$enumDecodeNullable(_$CraftCompareEnumMap, e))
+        ?.toList(),
+    sortReversed:
+        (json['sortReversed'] as List)?.map((e) => e as bool)?.toList(),
     useGrid: json['useGrid'] as bool,
     rarity: json['rarity'] == null
         ? null
@@ -751,13 +798,21 @@ CraftFilterData _$CraftFilterDataFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$CraftFilterDataToJson(CraftFilterData instance) =>
     <String, dynamic>{
       'filterString': instance.filterString,
-      'sortKeys': instance.sortKeys,
-      'sortDirections': instance.sortDirections,
+      'sortKeys':
+          instance.sortKeys?.map((e) => _$CraftCompareEnumMap[e])?.toList(),
+      'sortReversed': instance.sortReversed,
       'useGrid': instance.useGrid,
       'rarity': instance.rarity,
       'category': instance.category,
       'atkHpType': instance.atkHpType,
     };
+
+const _$CraftCompareEnumMap = {
+  CraftCompare.no: 'no',
+  CraftCompare.rarity: 'rarity',
+  CraftCompare.atk: 'atk',
+  CraftCompare.hp: 'hp',
+};
 
 FilterGroupData _$FilterGroupDataFromJson(Map<String, dynamic> json) {
   return FilterGroupData(

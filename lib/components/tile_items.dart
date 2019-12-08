@@ -430,13 +430,14 @@ class FilterGroup extends StatelessWidget {
   }
 }
 
-class FilterOption<T, S> extends StatelessWidget {
+class FilterOption<T> extends StatelessWidget {
   final bool selected;
   final T value;
   final Widget child;
   final ValueChanged<bool> onChanged;
   final Color selectedColor;
   final Color unselectedColor;
+  final Color selectedTextColor;
 
   FilterOption(
       {Key key,
@@ -444,13 +445,15 @@ class FilterOption<T, S> extends StatelessWidget {
       @required this.value,
       this.child,
       this.onChanged,
-      this.selectedColor = Colors.lightBlueAccent,
-      this.unselectedColor})
+      this.selectedColor,
+      this.unselectedColor,
+      this.selectedTextColor = Colors.white})
       : assert(selected != null && value != null),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final _selectedColor = selectedColor ?? Theme.of(context).primaryColor;
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: 36),
       child: ButtonTheme(
@@ -458,12 +461,23 @@ class FilterOption<T, S> extends StatelessWidget {
         height: 30,
         child: FlatButton(
           onPressed: () {
-            onChanged(!selected);
+            if (onChanged != null) {
+              onChanged(!selected);
+            }
           },
-          color: selected ? selectedColor : unselectedColor,
-          child: child ?? Text(value.toString()),
+          color: selected ? _selectedColor : unselectedColor,
+          child: DefaultTextStyle(
+            style: TextStyle(
+                color: selected
+                    ? selectedTextColor
+                    : Theme.of(context).textTheme.title.color),
+            child: child ?? Text(value.toString()),
+          ),
           shape: ContinuousRectangleBorder(
-              side: BorderSide(color: selected ? selectedColor : Colors.grey),
+              side: BorderSide(
+                color: selected ? _selectedColor : Colors.grey,
+                width: 0.5,
+              ),
               borderRadius: BorderRadius.circular(3)),
         ),
       ),

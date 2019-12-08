@@ -62,17 +62,19 @@ class CraftListPageState extends State<CraftListPage> {
 
   bool filtrateCraft(CraftEssential ce) {
     if (filterData.filterString.isNotEmpty) {
-      String srcString = [
-        ce.no,
+      List<String> searchStrings = [
+        ce.no.toString(),
         ce.name,
         ce.nameJp,
         ce.mcLink,
-        ce.illustrator.join('\t'),
-        ce.characters.join('\t'),
+        ...ce.illustrator,
+        ...ce.characters,
         ce.skill,
-        ce.eventSkills.join('\t')
-      ].join('\t');
-      if (!__textFilter.match(srcString)) {
+        ce.skillMax,
+        ...ce.eventSkills,
+        ...ce.characters
+      ];
+      if (!__textFilter.match(searchStrings.join('\t'))) {
         return false;
       }
     }
@@ -150,7 +152,7 @@ class CraftListPageState extends State<CraftListPage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.filter_list),
-            onPressed: () => buildFilterSheet(context),
+            onPressed: () => showFilterSheet(context),
           )
         ],
       ),
@@ -169,32 +171,8 @@ class CraftListPageState extends State<CraftListPage> {
         shownList.add(ce);
       }
     });
-    //sort
-    final _getSortValue = (CraftEssential ce, String key) {
-      switch (key) {
-        case '序号':
-          return ce.no;
-        case '星级':
-          return ce.rarity;
-        case 'ATK':
-          return ce.atkMax;
-        case 'HP':
-          return ce.hpMax;
-        default:
-          return 0;
-      }
-    };
-
-    shownList.sort((a, b) {
-      int r = 0;
-      for (var i = 0; i < filterData.sortKeys.length; i++) {
-        final sortKey = filterData.sortKeys[i];
-        r = r * 1000 +
-            (_getSortValue(a, sortKey) - _getSortValue(b, sortKey)) *
-                (filterData.sortDirections[i] ? 1000 : -1000);
-      }
-      return r;
-    });
+    shownList.sort((a, b) => CraftEssential.compare(
+        a, b, filterData.sortKeys, filterData.sortReversed));
     return filterData.useGrid
         ? _buildGridView(shownList)
         : _buildListView(shownList);
@@ -215,8 +193,13 @@ class CraftListPageState extends State<CraftListPage> {
               child: Image(image: db.getIconFile(ce.icon)),
             ),
             title: AutoSizeText(ce.name, maxLines: 1),
-            subtitle: AutoSizeText('No.${ce.no}\n${ce.nameJp ?? ce.name}',
-                maxLines: 2),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                AutoSizeText(ce.nameJp ?? ce.name, maxLines: 1),
+                Text('No.${ce.no}')
+              ],
+            ),
             trailing: Icon(Icons.arrow_forward_ios),
             onTap: () {
               SplitRoute.popAndPush(context,
@@ -248,7 +231,7 @@ class CraftListPageState extends State<CraftListPage> {
         }).toList());
   }
 
-  void buildFilterSheet(BuildContext context) {
+  void showFilterSheet(BuildContext context) {
     showSheet(
       context,
       builder: (sheetContext, setSheetState) =>

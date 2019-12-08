@@ -157,7 +157,7 @@ class _SettingsPageState extends State<SettingsPage> {
             header: S.of(context).backup_restore,
             children: <Widget>[
               ListTile(
-                title: Text('Dataset Management'),
+                title: Text('Datasets'),
                 trailing: Wrap(
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: <Widget>[

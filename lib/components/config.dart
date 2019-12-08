@@ -57,7 +57,7 @@ class Database {
     // TODO: use downloaded data if exist
     gameData = parseJson(
         parser: () => GameData.fromJson(getJsonFromFile(
-              join(paths.gameDataDir, kGameDataFilename),
+              paths.gameDataFilepath,
               k: () => <String, dynamic>{},
             )),
         k: () => GameData());
@@ -116,9 +116,9 @@ class Database {
   }
 
   Future<Null> loadAssetsData(String assetKey,
-      {String dir, bool force = false}) async {
+      {String relPath, bool force = false}) async {
     String extractDir =
-        dir == null ? paths.gameDataDir : join(paths.rootPath, dir);
+        relPath == null ? paths.gameDataDir : join(paths.rootPath, relPath);
     if (force || !Directory(extractDir).existsSync()) {
       //extract zip file
       final data = await rootBundle.load(assetKey);
@@ -216,6 +216,8 @@ class PathManager {
   String get tempDir => join(_rootPath, 'temp');
 
   String get gameDataDir => join(_rootPath, 'dataset');
+
+  String get gameDataFilepath => join(gameDataDir, kGameDataFilename);
 
   String get gameIconDir => join(gameDataDir, 'icons');
 

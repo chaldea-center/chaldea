@@ -64,10 +64,11 @@ class UserData {
 class SvtFilterData {
   bool favorite;
   String filterString;
-  List<String> sortKeys;
-  List<bool> sortDirections;
+  List<SvtCompare> sortKeys;
+  List<bool> sortReversed;
   bool useGrid;
 
+  bool hasDress;
   FilterGroupData rarity;
   FilterGroupData className;
   FilterGroupData obtain;
@@ -83,8 +84,9 @@ class SvtFilterData {
   SvtFilterData(
       {this.favorite,
       this.sortKeys,
-      this.sortDirections,
+      this.sortReversed,
       this.useGrid,
+      this.hasDress,
       this.rarity,
       this.className,
       this.obtain,
@@ -99,8 +101,9 @@ class SvtFilterData {
     favorite ??= false;
     filterString ??= '';
     sortKeys ??= List.generate(3, (i) => sortKeyData[i]);
-    sortDirections ??= List.filled(sortKeys.length, false);
+    sortReversed ??= List.filled(sortKeys.length, true);
     useGrid ??= false;
+    hasDress ??= false;
     rarity ??= FilterGroupData();
     className ??= FilterGroupData();
     obtain ??= FilterGroupData();
@@ -130,7 +133,7 @@ class SvtFilterData {
 
   void reset() {
     sortKeys = List.generate(sortKeys.length, (i) => sortKeyData[i]);
-    sortDirections = List.filled(sortKeys.length, false);
+    sortReversed = List.filled(sortKeys.length, false);
 
     for (var group in groupValues) {
       group.reset();
@@ -138,7 +141,7 @@ class SvtFilterData {
   }
 
   // const data
-  static const List<String> sortKeyData = ['序号', '星级', '职阶'];
+  static const List<SvtCompare> sortKeyData = SvtCompare.values;
   static const List<String> rarityData = ['0', '1', '2', '3', '4', '5'];
   static const List<String> classesData = [
     'Saber',
@@ -200,8 +203,8 @@ class SvtFilterData {
 @JsonSerializable()
 class CraftFilterData {
   String filterString;
-  List<String> sortKeys;
-  List<bool> sortDirections;
+  List<CraftCompare> sortKeys;
+  List<bool> sortReversed;
   bool useGrid;
 
   FilterGroupData rarity;
@@ -210,14 +213,14 @@ class CraftFilterData {
 
   CraftFilterData(
       {this.sortKeys,
-      this.sortDirections,
+      this.sortReversed,
       this.useGrid,
       this.rarity,
       this.category,
       this.atkHpType}) {
     filterString ??= '';
     sortKeys ??= List.generate(2, (i) => sortKeyData[i]);
-    sortDirections ??= List.filled(sortKeys.length, false);
+    sortReversed ??= List.filled(sortKeys.length, true);
     useGrid ??= false;
     rarity ??= FilterGroupData();
     category ??= FilterGroupData();
@@ -232,7 +235,7 @@ class CraftFilterData {
 
   void reset() {
     sortKeys = List.generate(sortKeys.length, (i) => sortKeyData[i]);
-    sortDirections = List.filled(sortKeys.length, false);
+    sortReversed = List.filled(sortKeys.length, false);
 
     for (var group in groupValues) {
       group.reset();
@@ -240,7 +243,7 @@ class CraftFilterData {
   }
 
   // const data
-  static const List<String> sortKeyData = ['序号', '星级', 'ATK', 'HP'];
+  static const List<CraftCompare> sortKeyData = CraftCompare.values;
   static const List<String> rarityData = ['1', '2', '3', '4', '5'];
 
   // category: bin: 0b1111111111

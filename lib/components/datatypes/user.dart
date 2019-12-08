@@ -24,8 +24,10 @@ class Plans {
   Map<int, ServantPlan> servants;
   Map<String, int> items;
   Map<String, LimitEventPlan> limitEvents;
+
   /// {'chapter 1': [drops_switch,rewards_switch]}
   Map<String, List<bool>> mainRecords;
+
   ///{'monthCn': [num1, num2, num3]}
   Map<String, List<int>> exchangeTickets;
 
@@ -93,9 +95,12 @@ class ServantPlan {
     favorite = false;
   }
 
-  void planMax() {
+  void planMax([bool max9 = false]) {
     ascensionLv.last = 4;
-    skillLv.forEach((e) => e.last = 10);
+    skillLv.forEach((e) {
+      e.last = max9 ? 9 : 10;
+      e.first = min(e.first, e.last);
+    });
     dressLv.forEach((e) => e.last = 1);
     favorite = true;
   }

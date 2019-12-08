@@ -27,11 +27,23 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   }
 
   Widget getSvtIconList(Map<int, int> src) {
-    List<Widget> list = [];
-    src.forEach((no, num) {
+    if (src.isEmpty) {
+      return Container();
+    }
+    List<Widget> children = [];
+    var sortedSvts = src.keys.toList()
+      ..sort((a, b) {
+        return Servant.compare(
+            db.gameData.servants[a],
+            db.gameData.servants[b],
+            [SvtCompare.className, SvtCompare.rarity, SvtCompare.no],
+            [false, true, false]);
+      });
+    sortedSvts.forEach((no) {
       final svt = db.gameData.servants[no];
+      final num = src[no];
       if (num > 0) {
-        list.add(ImageWithText(
+        children.add(ImageWithText(
           image: Image(image: db.getIconFile(svt.icon)),
           text: formatNumToString(num, 'kilo'),
           padding: EdgeInsets.only(right: 5, bottom: 16),
@@ -47,15 +59,12 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
         ));
       }
     });
-    if (list.isEmpty) {
-      return Container();
-    }
     return GridView.count(
         crossAxisCount: 5,
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         padding: EdgeInsets.symmetric(horizontal: 16),
-        children: list);
+        children: children);
   }
 
   @override

@@ -179,6 +179,7 @@ class CraftDetailBasePage extends StatelessWidget {
                 flex: 5,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(ce.skill),
                     if (ce.skillMax?.isNotEmpty == true) ...[
@@ -199,7 +200,10 @@ class CraftDetailBasePage extends StatelessWidget {
                       image: db.getIconFile(ce.eventIcons[i]), height: 40),
                 ),
               ),
-              InfoCell(flex: 5, text: ce.eventSkills[i]),
+              InfoCell(
+                  flex: 5,
+                  alignment: Alignment.centerLeft,
+                  text: ce.eventSkills[i]),
             ],
           ),
         InfoRow.fromText(texts: ['解说'], color: InfoCell.headerColor),

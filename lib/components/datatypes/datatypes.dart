@@ -6,6 +6,8 @@
 /// non-constant value are set after default constructor(e.g. Test({a,this.b}):a=a).
 library datatypes;
 
+import 'dart:math';
+
 import 'package:chaldea/components/components.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';

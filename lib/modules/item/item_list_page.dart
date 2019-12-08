@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
 import 'item_detail_page.dart';
@@ -80,17 +81,29 @@ class ItemListTab extends StatefulWidget {
 class _ItemListTabState extends State<ItemListTab> {
   TextInputsManager<Item> inputsManager = TextInputsManager();
   final qpKey = 'QP';
+  FocusNode _blankNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
     db.gameData.items.forEach((key, item) {
       if (item.category == widget.category || key == qpKey) {
+        final node = FocusNode();
+        node.addListener(() {
+          // auto focus problem when deactivated->activated
+          for (var component in inputsManager.components) {
+            if (component.focusNode.hasFocus) {
+              return;
+            }
+          }
+          SchedulerBinding.instance.addPostFrameCallback(
+              (_) => FocusScope.of(context).requestFocus(_blankNode));
+        });
         inputsManager.components.add(InputComponent(
             data: item,
             controller: TextEditingController(
                 text: (db.curPlan.items[key] ?? 0).toString()),
-            focusNode: FocusNode()));
+            focusNode: node));
       }
     });
     inputsManager.components.sort((a, b) => a.data.id - b.data.id);
@@ -214,7 +227,7 @@ class _ItemListTabState extends State<ItemListTab> {
                   width: 40,
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: AutoSizeText(formatNumToString(leftNum),
+                    child: AutoSizeText(leftNum.toString(),
                         style: highlightStyle, maxLines: 1),
                   )),
             ],
@@ -223,8 +236,7 @@ class _ItemListTabState extends State<ItemListTab> {
             children: <Widget>[
               Expanded(
                   child: AutoSizeText(
-                '共需 ${formatNumToString(svtCostNum, "decimal")}' +
-                    '(${svtCostStat.values.join("/")})',
+                '共需 $svtCostNum' + '(${svtCostStat.values.join("/")})',
                 maxLines: 1,
               )),
               Text('活动'),
@@ -232,7 +244,7 @@ class _ItemListTabState extends State<ItemListTab> {
                   width: 40,
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: AutoSizeText(formatNumToString(eventNum),
+                    child: AutoSizeText(eventNum.toString(),
                         style: highlightStyle, maxLines: 1),
                   )),
             ],

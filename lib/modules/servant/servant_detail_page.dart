@@ -26,7 +26,6 @@ class ServantDetailPageState extends State<ServantDetailPage>
   Map<String, WidgetBuilder> _builders = {};
 
   // store data
-  List<bool> enhanced = [false, false, false, false];
   ServantPlan plan;
 
   ServantDetailPageState(this.svt) {
@@ -107,14 +106,28 @@ class ServantDetailPageState extends State<ServantDetailPage>
                                   plan.allMax();
                                 });
                               }),
-                          IconButton(
-                              icon: Icon(Icons.trending_up),
-                              tooltip: '规划最大化',
-                              onPressed: () {
-                                setState(() {
-                                  plan.planMax();
-                                });
-                              }),
+                          Stack(alignment:AlignmentDirectional.bottomEnd ,children: <Widget>[
+                            Text('9  '),
+                            IconButton(
+                                icon: Icon(Icons.trending_up),
+                                tooltip: '规划最大化',
+                                onPressed: () {
+                                  setState(() {
+                                    plan.planMax(true);
+                                  });
+                                }),
+                          ],),
+                          Stack(alignment:AlignmentDirectional.bottomEnd ,children: <Widget>[
+                            Text('10 '),
+                            IconButton(
+                                icon: Icon(Icons.trending_up),
+                                tooltip: '规划最大化',
+                                onPressed: () {
+                                  setState(() {
+                                    plan.planMax();
+                                  });
+                                }),
+                          ],),
                           IconButton(
                               icon: Icon(Icons.replay),
                               tooltip: '重置',

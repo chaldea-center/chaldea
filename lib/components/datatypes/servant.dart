@@ -16,18 +16,19 @@ class Servant {
 
   static const List<int> unavailable = [83, 149, 151, 152, 168, 240];
 
-  Servant(
-      {this.no,
-      this.mcLink,
-      this.icon,
-      this.info,
-      this.treasureDevice,
-      this.activeSkills,
-      this.passiveSkills,
-      this.itemCost,
-      this.profiles,
-      this.bondCraft,
-      this.valentineCraft});
+  Servant({
+    this.no,
+    this.mcLink,
+    this.icon,
+    this.info,
+    this.treasureDevice,
+    this.activeSkills,
+    this.passiveSkills,
+    this.itemCost,
+    this.profiles,
+    this.bondCraft,
+    this.valentineCraft,
+  });
 
   Map<String, int> getAllCost(ServantPlan plan, {bool planned = true}) {
     if (planned && (plan == null || plan.favorite == false)) {
@@ -94,11 +95,54 @@ class Servant {
     return cost;
   }
 
+  int getClassSortIndex() {
+    if (info.className == 'Grand Caster') {
+      return SvtFilterData.classesData.indexWhere((v) => v == 'Caster');
+    } else if (info.className.startsWith('Beast')) {
+      return SvtFilterData.classesData.indexWhere((v) => v == 'Beast');
+    } else {
+      return SvtFilterData.classesData
+          .indexWhere((v) => v.startsWith(info.className.substring(0, 5)));
+    }
+  }
+
+  static int compare(Servant a, Servant b,
+      [List<SvtCompare> keys, List<bool> reversed]) {
+    int res = 0;
+    if (keys == null || keys.isEmpty) {
+      keys = [SvtCompare.no];
+    }
+    for (var i = 0; i < keys.length; i++) {
+      int r;
+      switch (keys[i]) {
+        case SvtCompare.no:
+          r = a.no - b.no;
+          break;
+        case SvtCompare.className:
+          r = a.getClassSortIndex() - b.getClassSortIndex();
+          break;
+        case SvtCompare.rarity:
+          r = a.info.rarity - b.info.rarity;
+          break;
+        case SvtCompare.atk:
+          r = (a.info?.atkMax ?? 0) - (b.info?.atkMax ?? 0);
+          break;
+        case SvtCompare.hp:
+          r = (a.info?.hpMax ?? 0) - (b.info?.hpMax ?? 0);
+          break;
+      }
+      res = res * 1000 + ((reversed?.elementAt(i) ?? false) ? -r : r);
+    }
+    return res;
+  }
+
   factory Servant.fromJson(Map<String, dynamic> data) =>
       _$ServantFromJson(data);
 
   Map<String, dynamic> toJson() => _$ServantToJson(this);
 }
+
+enum SvtCompare { no, className, rarity, atk, hp }
 
 @JsonSerializable()
 class ServantBaseInfo {

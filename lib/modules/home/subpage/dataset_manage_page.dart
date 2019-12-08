@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:math' show min;
 
 import 'package:chaldea/components/components.dart';
 import 'package:dio/dio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:json_patch/json_patch.dart';
 import 'package:path/path.dart' show basename;
 
 class DatasetManagePage extends StatefulWidget {
@@ -13,14 +16,12 @@ class DatasetManagePage extends StatefulWidget {
 class _DatasetManagePageState extends State<DatasetManagePage> {
   Map<String, String> cachedFiles = {};
   List<String> onlineVersions = [];
-  TextEditingController _editingController;
 
   Dio _dio = Dio(BaseOptions(baseUrl: db.userData.serverDomain));
 
   @override
   void initState() {
     super.initState();
-    _editingController = TextEditingController(text: db.userData.serverDomain);
     updateCachedDataFile();
   }
 
@@ -63,7 +64,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 trailing: Text(db.gameData.version),
               ),
               ListTile(
-                title: Text('Reload current gamedata'),
+                title: Text('Reload default gamedata'),
                 onTap: () {
                   showDialog(
                       context: context,
@@ -73,6 +74,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                           Fluttertoast.showToast(
                               msg: 'reloading gamedata...',
                               toastLength: Toast.LENGTH_LONG);
+                          await db.loadAssetsData(kDefaultDatasetAssetKey);
                           await db.loadGameData();
                           setState(() {});
                           Fluttertoast.showToast(msg: 'gamedata reloaded.');
@@ -172,21 +174,30 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
             header: 'Online Versions',
             children: <Widget>[
               ListTile(
-                title: Row(
-                  children: <Widget>[
-                    Text('Server:   '),
-                    Expanded(
-                        child: TextField(
-                      decoration: InputDecoration(isDense: true),
-                      textAlign: TextAlign.center,
-                      controller: _editingController,
-                      onChanged: (s) {
-                        db.userData.serverDomain = s.trim();
-                        _dio.options.baseUrl = db.userData.serverDomain;
-                      },
-                    ))
-                  ],
-                ),
+                title: Text('Server'),
+                subtitle: Text(db.userData.serverDomain ?? 'none'),
+                trailing: IconButton(
+                    icon: Icon(Icons.edit),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => InputCancelOkDialog(
+                          title: 'Edit server',
+                          text: db.userData.serverDomain,
+                          errorText: S.of(context).input_error,
+                          onSubmit: (v) {
+                            v = v.trim();
+                            if (v.endsWith('/')) {
+                              v = v.substring(0, v.length - 1);
+                            }
+                            setState(() {
+                              db.userData.serverDomain = v;
+                              _dio.options.baseUrl = db.userData.serverDomain;
+                            });
+                          },
+                        ),
+                      );
+                    }),
               ),
               ListTile(
                 title: Center(child: Text('Check Online Versions')),
@@ -231,9 +242,9 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
   }
 
   void checkOnlineVersions() async {
-    Response response = await _dio.get('/check_versions');
-    if (response.statusCode == 200) {
-      try {
+    try {
+      Response response = await _dio.get('/check_versions');
+      if (response.statusCode == 200) {
         print('receive data: ${response.data}.');
         setState(() {
           onlineVersions = List.castFrom(response.data);
@@ -241,20 +252,20 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
           onlineVersions = onlineVersions.reversed.toList();
         });
         Fluttertoast.showToast(msg: 'Online version list loaded');
-      } catch (e) {
-        Fluttertoast.showToast(msg: 'parse data failed.');
-        print('parse json error:\n$e');
+      } else {
+        Fluttertoast.showToast(msg: 'server error: ${response.statusCode}');
+        print('---error, response---\n$response\n----------');
       }
-    } else {
-      Fluttertoast.showToast(msg: 'server error: ${response.statusCode}');
-      print('---response---\n$response\n----------');
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'check online versions failed.');
+      print('check online versions error:\n$e');
     }
   }
 
   void downloadVersion(String version) async {
-    final url = '/download?version=$version';
     try {
-      Response response = await _dio.get(url,
+      Response response = await _dio.get('/download',
+          queryParameters: {'version': version},
           options: Options(responseType: ResponseType.bytes));
       print(response.headers);
       if (response.statusCode == 200) {
@@ -275,5 +286,31 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
     }
   }
 
-  void patchVersion(String version) async {}
+  void patchVersion(String version) async {
+    try {
+      Response response = await _dio.get('/patch',
+          queryParameters: {'from': db.gameData.version, 'to': version});
+      if (response.statusCode == 200) {
+        var patch = response.data;
+        print(
+            'download patch: ${patch.toString().substring(0, min(200, patch.toString().length))}');
+        final patched = JsonPatch.apply(
+            db.getJsonFromFile(db.paths.gameDataFilepath),
+            List.castFrom(patch));
+        File file = File(db.paths.gameDataFilepath);
+        var raf = file.openSync(mode: FileMode.write);
+        raf.writeStringSync(json.encode(patched));
+        raf.closeSync();
+        await db.loadGameData();
+        setState(() {});
+        Fluttertoast.showToast(msg: 'patch success.');
+        print('patched version: ${patched['version']}');
+      }
+    } catch (e, s) {
+      Fluttertoast.showToast(msg: 'patch data failed.');
+      print('patch data error:\n$e');
+      print('stack trace: \n$s');
+      rethrow;
+    }
+  }
 }

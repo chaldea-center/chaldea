@@ -51,15 +51,40 @@ class ServantListPageState extends State<ServantListPage> {
   bool filtrateServant(Servant svt) {
     // input text filter
     if (filterData.filterString.trim().isNotEmpty) {
-      String srcString = [
-        svt.no,
-        svt.info.cv,
+      List<String> searchStrings = [
+        svt.no.toString(),
         svt.mcLink,
+        ...svt.info.cv,
         svt.info.name,
+        svt.info.nameJp,
+        svt.info.illustrator,
         svt.info.illustName,
-        svt.info.nicknames.join('\t')
-      ].join('\t');
-      if (!__textFilter.match(srcString)) {
+        ...svt.info.nicknames,
+      ];
+      svt?.treasureDevice?.forEach((td) {
+        searchStrings.addAll([
+          td.name,
+          td.nameJp,
+          td.upperName,
+          td.upperNameJp,
+          for (var e in td.effects) e.description
+        ]);
+      });
+      svt?.activeSkills?.forEach((activeSkill) {
+        activeSkill.forEach((skill) {
+          searchStrings.addAll([
+            skill.name,
+            skill.nameJp,
+            for (var e in skill.effects) e.description
+          ]);
+        });
+      });
+      if (!__textFilter.match(searchStrings.join('\t'))) {
+        return false;
+      }
+    }
+    if (filterData.hasDress) {
+      if ((svt.itemCost?.dressName?.length ?? 0) <= 0) {
         return false;
       }
     }
@@ -189,7 +214,7 @@ class ServantListPageState extends State<ServantListPage> {
           IconButton(
             icon: Icon(Icons.filter_list),
             onPressed: () {
-              buildFilterSheet(context);
+              showFilterSheet(context);
             },
           )
         ],
@@ -213,38 +238,8 @@ class ServantListPageState extends State<ServantListPage> {
         }
       }
     });
-    //sort
-    final _getSortValue = (Servant svt, String key) {
-      switch (key) {
-        case '序号':
-          return svt.no;
-        case '星级':
-          return svt.info.rarity;
-        case '职阶':
-          if (svt.info.className == 'Grand Caster') {
-            return SvtFilterData.classesData.indexWhere((v) => v == 'Caster');
-          } else if (svt.info.className.startsWith('Beast')) {
-            return SvtFilterData.classesData.indexWhere((v) => v == 'Beast');
-          } else {
-            return SvtFilterData.classesData.indexWhere(
-                (v) => v.startsWith(svt.info.className.substring(0, 5)));
-          }
-          break;
-        default:
-          return 0;
-      }
-    };
-
-    shownList.sort((a, b) {
-      int r = 0;
-      for (var i = 0; i < filterData.sortKeys.length; i++) {
-        final sortKey = filterData.sortKeys[i];
-        r = r * 1000 +
-            (_getSortValue(a, sortKey) - _getSortValue(b, sortKey)) *
-                (filterData.sortDirections[i] ? 1000 : -1000);
-      }
-      return r;
-    });
+    shownList.sort((a, b) =>
+        Servant.compare(a, b, filterData.sortKeys, filterData.sortReversed));
     return filterData.useGrid
         ? _buildGridView(shownList)
         : _buildListView(shownList);
@@ -279,7 +274,7 @@ class ServantListPageState extends State<ServantListPage> {
               children: <Widget>[
                 Expanded(
                   flex: 3,
-                  child: Text(svt.info.className),
+                  child: Text('${svt.info.className}\nNo.${svt.no}'),
                 ),
                 Text(text),
               ],
@@ -329,7 +324,7 @@ class ServantListPageState extends State<ServantListPage> {
         }).toList());
   }
 
-  void buildFilterSheet(BuildContext context) {
+  void showFilterSheet(BuildContext context) {
     showSheet(
       context,
       builder: (sheetContext, setSheetState) => SvtFilterPage(

@@ -41,21 +41,37 @@ class _SvtFilterPageState extends State<SvtFilterPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text('显示&排序'),
-          ToggleButtons(
-            constraints: BoxConstraints(),
-            selectedColor: Colors.white,
-            fillColor: Theme.of(context).primaryColor,
-            children: List.generate(
-                2,
-                (i) => Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      child: Text(['List', 'Grid'][i]),
-                    )),
-            isSelected: [!filterData.useGrid, filterData.useGrid],
-            onPressed: (i) {
-              filterData.useGrid = i == 1;
-              updateParentFilterResult();
-            },
+          Wrap(
+            spacing: 12,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: <Widget>[
+              ToggleButtons(
+                constraints: BoxConstraints(minHeight: 30),
+                selectedColor: Colors.white,
+                fillColor: Theme.of(context).primaryColor,
+                children: List.generate(
+                    2,
+                    (i) => Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          child: Text(['List', 'Grid'][i]),
+                        )),
+                isSelected: [!filterData.useGrid, filterData.useGrid],
+                onPressed: (i) {
+                  filterData.useGrid = i == 1;
+                  updateParentFilterResult();
+                },
+              ),
+              FilterOption(
+                selected: filterData.hasDress,
+                value: '灵衣',
+                onChanged: (v) {
+                  setState(() {
+                    filterData.hasDress = v;
+                    updateParentFilterResult();
+                  });
+                },
+              )
+            ],
           ),
           Wrap(
             spacing: 6,
@@ -69,19 +85,21 @@ class _SvtFilterPageState extends State<SvtFilterPage> {
                     DropdownButton(
                         value: filterData.sortKeys[i],
                         items: SvtFilterData.sortKeyData.map((key) {
-                          return DropdownMenuItem(child: Text(key), value: key);
+                          return DropdownMenuItem(
+                              child: Text(['序号', '职阶', '星级','ATK','HP'][key.index]),
+                              value: key);
                         }).toList(),
                         onChanged: (key) {
                           filterData.sortKeys[i] = key;
                           updateParentFilterResult();
                         }),
                     IconButton(
-                        icon: Icon(filterData.sortDirections[i]
-                            ? Icons.arrow_upward
-                            : Icons.arrow_downward),
+                        icon: Icon(filterData.sortReversed[i]
+                            ? Icons.arrow_downward
+                            : Icons.arrow_upward),
                         onPressed: () {
-                          filterData.sortDirections[i] =
-                              !filterData.sortDirections[i];
+                          filterData.sortReversed[i] =
+                              !filterData.sortReversed[i];
                           updateParentFilterResult();
                         })
                   ],

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 
 import '../servant_detail_page.dart';
@@ -32,6 +33,7 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab>
             child: Text(
               '${np.typeText} ${np.rank}',
               style: TextStyle(fontSize: 14, color: Colors.black),
+              textAlign: TextAlign.center,
             ),
           )
         ],
@@ -39,12 +41,26 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab>
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(np.upperName,
-              style: TextStyle(fontSize: 16, color: Colors.black54)),
-          Text(np.name, style: TextStyle(fontWeight: FontWeight.w600)),
-          Text(np.upperNameJp,
-              style: TextStyle(fontSize: 16, color: Colors.black54)),
-          Text(np.nameJp, style: TextStyle(fontWeight: FontWeight.w600)),
+          AutoSizeText(
+            np.upperName,
+            style: TextStyle(fontSize: 16, color: Colors.black54),
+            maxLines: 1,
+          ),
+          AutoSizeText(
+            np.name,
+            style: TextStyle(fontWeight: FontWeight.w600),
+            maxLines: 1,
+          ),
+          AutoSizeText(
+            np.upperNameJp,
+            style: TextStyle(fontSize: 16, color: Colors.black54),
+            maxLines: 1,
+          ),
+          AutoSizeText(
+            np.nameJp,
+            style: TextStyle(fontWeight: FontWeight.w600),
+            maxLines: 1,
+          ),
         ],
       ),
     );

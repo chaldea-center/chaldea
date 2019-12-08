@@ -43,13 +43,13 @@ class _CraftFilterPageState extends State<CraftFilterPage> {
         children: <Widget>[
           Text('显示&排序'),
           ToggleButtons(
-            constraints: BoxConstraints(),
+            constraints: BoxConstraints(minHeight: 30),
             selectedColor: Colors.white,
             fillColor: Theme.of(context).primaryColor,
             children: List.generate(
                 2,
                 (i) => Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                      padding: EdgeInsets.symmetric(horizontal: 8),
                       child: Text(['List', 'Grid'][i]),
                     )),
             isSelected: [!filterData.useGrid, filterData.useGrid],
@@ -70,19 +70,21 @@ class _CraftFilterPageState extends State<CraftFilterPage> {
                     DropdownButton(
                         value: filterData.sortKeys[i],
                         items: CraftFilterData.sortKeyData.map((key) {
-                          return DropdownMenuItem(child: Text(key), value: key);
+                          return DropdownMenuItem(
+                              child: Text(['序号', '星级', 'ATK', 'HP'][key.index]),
+                              value: key);
                         }).toList(),
                         onChanged: (key) {
                           filterData.sortKeys[i] = key;
                           updateParentFilterResult();
                         }),
                     IconButton(
-                        icon: Icon(filterData.sortDirections[i]
-                            ? Icons.arrow_upward
-                            : Icons.arrow_downward),
+                        icon: Icon(filterData.sortReversed[i]
+                            ? Icons.arrow_downward
+                            : Icons.arrow_upward),
                         onPressed: () {
-                          filterData.sortDirections[i] =
-                              !filterData.sortDirections[i];
+                          filterData.sortReversed[i] =
+                              !filterData.sortReversed[i];
                           updateParentFilterResult();
                         })
                   ],
