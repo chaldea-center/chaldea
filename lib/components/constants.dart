@@ -173,7 +173,7 @@ num sum(Iterable<num> x) => x.fold(0, (p, c) => p + c);
 Map<K, V> sumDict<K, V extends num>(List<Map<K, V>> list) {
   Map<K, V> res = {};
   for (var m in list) {
-    m.forEach((k, v) {
+    m?.forEach((k, v) {
       res[k] = (res[k] ?? 0) + v;
     });
   }

@@ -12,7 +12,8 @@ class CustomTile extends StatelessWidget {
   /// default: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0)
   final EdgeInsets contentPadding;
 
-  /// default: EdgeInsets.symmetric(horizontal: 6.0)
+  /// default: if leading is null, EdgeInsets.symmetric(horizontal: 6.0)
+  /// if not null, EdgeInsets.zero
   final EdgeInsets titlePadding;
   final Color color;
   final CrossAxisAlignment alignment;
@@ -87,8 +88,10 @@ class CustomTile extends StatelessWidget {
     final EdgeInsets resolvedContentPadding = contentPadding ??
         tileTheme?.contentPadding ??
         EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
-    final EdgeInsets resolvedTitlePadding =
-        titlePadding ?? EdgeInsets.symmetric(horizontal: 6.0);
+    final EdgeInsets resolvedTitlePadding = titlePadding ??
+        (leading == null
+            ? EdgeInsets.zero
+            : EdgeInsets.symmetric(horizontal: 6.0));
     List<Widget> allElements = [
       leadingIcon,
       Expanded(

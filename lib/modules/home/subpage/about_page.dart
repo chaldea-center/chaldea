@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -18,6 +22,10 @@ class _AboutPageState extends State<AboutPage> {
 
   @override
   Widget build(BuildContext context) {
+    final crashFile = File(db.paths.crashLog);
+    String crashLog = crashFile.existsSync()
+        ? crashFile.readAsStringSync()
+        : 'No crash log found';
     return Scaffold(
       appBar: AppBar(leading: BackButton(), title: Text('关于Chaldea')),
       body: ListView(
@@ -39,19 +47,37 @@ class _AboutPageState extends State<AboutPage> {
             children: <Widget>[
               ListTile(
                 title: Text('Email'),
-                subtitle: AutoSizeText('优先使用出错时的弹窗发送，并附上出错页面截图', maxLines: 1),
+                subtitle: AutoSizeText('请附上出错页面截图', maxLines: 1),
                 onTap: () async {
                   final info = await PackageInfo.fromPlatform();
                   final Email email = Email(
-                    subject: '${info.appName} v${info.version} Freedback',
-                    body: 'Please attach screenshot.',
-                    recipients: [kSupportTeamEmailAddress],
-                    isHTML: true,
-                  );
+                      subject: '${info.appName} v${info.version} Freedback',
+                      body: '请附上出错页面截图.\n\n',
+                      recipients: [kSupportTeamEmailAddress],
+                      isHTML: true,
+                      attachmentPath:
+                          crashFile.existsSync() ? crashFile.path : null);
                   FlutterEmailSender.send(email);
                 },
               ),
-              ListTile(title: Text('***@NGA'))
+              ListTile(title: Text('***@NGA')),
+              if (kDebugMode)
+                TileGroup(
+                  header: 'Crash log (${crashFile.statSync().size ~/ 1000} KB)',
+                  children: <Widget>[
+                    ConstrainedBox(
+                      constraints: BoxConstraints(maxHeight: 300),
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: <Widget>[
+                          DefaultTextStyle(
+                              style: Theme.of(context).textTheme.body1,
+                              child: Text(crashLog, maxLines: 200))
+                        ],
+                      ),
+                    )
+                  ],
+                ),
             ],
           ),
         ],
@@ -70,7 +96,7 @@ class _AboutPageState extends State<AboutPage> {
             if (await canLaunch(link)) {
               launch(link);
             } else {
-              throw 'Could not launch $link';
+              Fluttertoast.showToast(msg: 'Could not launch uri: $link');
             }
           },
         ));

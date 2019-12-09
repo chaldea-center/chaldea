@@ -28,20 +28,9 @@ class Database {
 
   PathManager get paths => _paths;
 
-//  static String _rootPath = '';
-//
-//  String get rootPath => _rootPath;
-//
-//  String get tempDir => join(_rootPath, 'temp');
-//
-//  String get gameDataDir => join(_rootPath, 'dataset');
-//
-//  String get datasetCacheDir => join(_rootPath, 'datasets');
-
   // initialization
   Future<Null> initial() async {
-    paths.setRootPath((await getApplicationDocumentsDirectory()).path);
-    Directory(paths.tempDir).createSync(recursive: true);
+    await paths.initRootPath();
     Directory(paths.datasetCacheDir).createSync(recursive: true);
   }
 
@@ -203,17 +192,19 @@ class Database {
 }
 
 class PathManager {
-  static String _rootPath = '';
+  static String _rootPath;
+  static String _tempDir;
 
-  void setRootPath(String path) {
-    if (path != null && path.isNotEmpty) {
-      _rootPath = path;
+  Future<Null> initRootPath() async {
+    if (_rootPath == null || _tempDir == null) {
+      _rootPath = (await getApplicationDocumentsDirectory()).path;
+      _tempDir = (await getTemporaryDirectory()).path;
     }
   }
 
   String get rootPath => _rootPath;
 
-  String get tempDir => join(_rootPath, 'temp');
+  String get tempDir => _tempDir;
 
   String get gameDataDir => join(_rootPath, 'dataset');
 
@@ -222,6 +213,8 @@ class PathManager {
   String get gameIconDir => join(gameDataDir, 'icons');
 
   String get datasetCacheDir => join(_rootPath, 'datasets');
+
+  String get crashLog => join(_tempDir, 'crash.log');
 }
 
 class RuntimeData {
