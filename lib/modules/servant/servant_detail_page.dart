@@ -93,8 +93,8 @@ class ServantDetailPageState extends State<ServantDetailPage>
               title: Text('No.${svt.no}\n${svt.info.className}'),
               subtitle: Servant.unavailable.contains(svt.no)
                   ? null
-                  : Align(
-                      alignment: Alignment.centerRight,
+                  : FittedBox(
+                      fit: BoxFit.scaleDown,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
@@ -106,28 +106,34 @@ class ServantDetailPageState extends State<ServantDetailPage>
                                   plan.allMax();
                                 });
                               }),
-                          Stack(alignment:AlignmentDirectional.bottomEnd ,children: <Widget>[
-                            Text('9  '),
-                            IconButton(
-                                icon: Icon(Icons.trending_up),
-                                tooltip: '规划最大化',
-                                onPressed: () {
-                                  setState(() {
-                                    plan.planMax(true);
-                                  });
-                                }),
-                          ],),
-                          Stack(alignment:AlignmentDirectional.bottomEnd ,children: <Widget>[
-                            Text('10 '),
-                            IconButton(
-                                icon: Icon(Icons.trending_up),
-                                tooltip: '规划最大化',
-                                onPressed: () {
-                                  setState(() {
-                                    plan.planMax();
-                                  });
-                                }),
-                          ],),
+                          Stack(
+                            alignment: AlignmentDirectional.bottomEnd,
+                            children: <Widget>[
+                              Text('9  '),
+                              IconButton(
+                                  icon: Icon(Icons.trending_up),
+                                  tooltip: '规划最大化',
+                                  onPressed: () {
+                                    setState(() {
+                                      plan.planMax(true);
+                                    });
+                                  }),
+                            ],
+                          ),
+                          Stack(
+                            alignment: AlignmentDirectional.bottomEnd,
+                            children: <Widget>[
+                              Text('10 '),
+                              IconButton(
+                                  icon: Icon(Icons.trending_up),
+                                  tooltip: '规划最大化',
+                                  onPressed: () {
+                                    setState(() {
+                                      plan.planMax();
+                                    });
+                                  }),
+                            ],
+                          ),
                           IconButton(
                               icon: Icon(Icons.replay),
                               tooltip: '重置',

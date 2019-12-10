@@ -41,7 +41,11 @@ class MyColors {
 class TextFilter {
   List<String> patterns;
 
-  TextFilter(filterString) {
+  TextFilter([String filterString = '']) {
+    setFilter(filterString);
+  }
+
+  void setFilter(String filterString) {
     patterns = (filterString ?? '').split(RegExp(r'\s+'));
     patterns.removeWhere((item) => item == '');
   }

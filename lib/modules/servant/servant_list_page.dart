@@ -2,7 +2,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:flutter/scheduler.dart';
 
 import 'servant_detail_page.dart';
-import 'svt_filter_page.dart';
+import 'servant_filter_page.dart';
 
 class ServantListPage extends StatefulWidget {
   @override
@@ -16,7 +16,7 @@ class ServantListPageState extends State<ServantListPage> {
   ScrollController _scrollController = ScrollController();
 
   //temp, calculate once build() called.
-  TextFilter __textFilter;
+  TextFilter __textFilter = TextFilter();
 
   @override
   void initState() {
@@ -45,7 +45,7 @@ class ServantListPageState extends State<ServantListPage> {
   }
 
   void beforeFiltrate() {
-    __textFilter = TextFilter(filterData.filterString);
+    __textFilter.setFilter(filterData.filterString);
   }
 
   bool filtrateServant(Servant svt) {
@@ -327,7 +327,7 @@ class ServantListPageState extends State<ServantListPage> {
   void showFilterSheet(BuildContext context) {
     showSheet(
       context,
-      builder: (sheetContext, setSheetState) => SvtFilterPage(
+      builder: (sheetContext, setSheetState) => ServantFilterPage(
         parent: this,
         filterData: db.userData.svtFilter,
       ),

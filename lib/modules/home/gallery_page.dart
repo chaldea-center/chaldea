@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/craft/craft_list_page.dart';
 import 'package:chaldea/modules/event/events_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
@@ -84,6 +85,11 @@ class _GalleryPageState extends State<GalleryPage> {
           titleBuilder: (context) => S.of(context).craft_essential,
           icon: Icons.extension,
           builder: (context) => CraftListPage()),
+      GalleryItem.cmd_code: GalleryItem(
+          name: GalleryItem.cmd_code,
+          titleBuilder: (context) => S.of(context).cmd_code_title,
+          icon: Icons.stars,
+          builder: (context) => CmdCodeListPage()),
       GalleryItem.item: GalleryItem(
           name: GalleryItem.item,
           titleBuilder: (context) => S.of(context).item_title,
@@ -99,7 +105,7 @@ class _GalleryPageState extends State<GalleryPage> {
           titleBuilder: (context) => S.of(context).more,
           icon: Icons.add,
           builder: (context) => EditGalleryPage(galleries: kAllGalleryItems),
-          isDetail: true)
+          isDetail: true),
     };
   }
 

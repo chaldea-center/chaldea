@@ -1,25 +1,24 @@
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 
-import 'craft_list_page.dart';
+class CmdCodeFilterPage extends StatefulWidget {
+  final CmdCodeListPageState parent;
+  final CmdCodeFilterData filterData;
 
-class CraftFilterPage extends StatefulWidget {
-  final CraftListPageState parent;
-  final CraftFilterData filterData;
-
-  const CraftFilterPage({Key key, this.parent, this.filterData})
+  const CmdCodeFilterPage({Key key, this.parent, this.filterData})
       : super(key: key);
 
   @override
-  _CraftFilterPageState createState() => _CraftFilterPageState();
+  _CmdCodeFilterPageState createState() => _CmdCodeFilterPageState();
 }
 
-class _CraftFilterPageState extends State<CraftFilterPage> {
-  CraftFilterData filterData;
+class _CmdCodeFilterPageState extends State<CmdCodeFilterPage> {
+  CmdCodeFilterData filterData;
 
   @override
   void initState() {
     super.initState();
-    filterData = widget.filterData ?? CraftFilterData();
+    filterData = widget.filterData ?? CmdCodeFilterData();
   }
 
   @override
@@ -68,10 +67,9 @@ class _CraftFilterPageState extends State<CraftFilterPage> {
                     Text('${i + 1}  '),
                     DropdownButton(
                         value: filterData.sortKeys[i],
-                        items: CraftFilterData.sortKeyData.map((key) {
+                        items: CmdCodeFilterData.sortKeyData.map((key) {
                           return DropdownMenuItem(
-                              child: Text(['序号', '星级', 'ATK', 'HP'][key.index]),
-                              value: key);
+                              child: Text(['序号', '星级'][key.index]), value: key);
                         }).toList(),
                         onChanged: (key) {
                           filterData.sortKeys[i] = key;
@@ -116,31 +114,21 @@ class _CraftFilterPageState extends State<CraftFilterPage> {
         children: <Widget>[
           _buildDisplay(),
           FilterGroup(
-            title: Text('Rarity'),
-            options: CraftFilterData.rarityData,
+            title: Text('稀有度'),
+            options: CmdCodeFilterData.rarityData,
             values: filterData.rarity,
             optionBuilder: (v) => Text('$v星'),
             onFilterChanged: (value) {
-              // object should be the same, need not to update manually
               filterData.rarity = value;
               updateParentFilterResult();
             },
           ),
           FilterGroup(
             title: Text('分类'),
-            options: CraftFilterData.categoryData,
-            values: filterData.category,
+            options: CmdCodeFilterData.obtainData,
+            values: filterData.obtain,
             onFilterChanged: (value) {
-              filterData.category = value;
-              updateParentFilterResult();
-            },
-          ),
-          FilterGroup(
-            title: Text('属性'),
-            options: CraftFilterData.atkHpTypeData,
-            values: filterData.atkHpType,
-            onFilterChanged: (value) {
-              filterData.atkHpType = value;
+              filterData.obtain = value;
               updateParentFilterResult();
             },
           ),

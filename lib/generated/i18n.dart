@@ -24,15 +24,16 @@ class S implements WidgetsLocalizations {
   String get backup => "Backup to ...";
   String get backup_restore => "Backup & Restore";
   String get cancel => "Cancel";
+  String get cmd_code_title => "Command Code";
   String get craft_essential => "Craft Essential";
   String get cur_account => "Current Account";
   String get delete => "Delete";
   String get edit => "Edit";
-  String get event_title => "Events";
+  String get event_title => "Event";
   String get gallery_tab_name => "Home";
   String get hello => "Hello！";
   String get input_error => "Invalid input value.";
-  String get item_title => "Items";
+  String get item_title => "Item";
   String get language => "English";
   String get more => "More";
   String get new_account => "New account";
@@ -223,6 +224,8 @@ class $zh extends S {
   String get cur_account => "当前账号";
   @override
   String get craft_essential => "概念礼装";
+  @override
+  String get cmd_code_title => "纹章";
   @override
   String get rename => "重命名";
   @override

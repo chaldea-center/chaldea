@@ -31,12 +31,13 @@ class Plans {
   ///{'monthCn': [num1, num2, num3]}
   Map<String, List<int>> exchangeTickets;
 
-  Plans(
-      {this.servants,
-      this.items,
-      this.limitEvents,
-      this.mainRecords,
-      this.exchangeTickets}) {
+  Plans({
+    this.servants,
+    this.items,
+    this.limitEvents,
+    this.mainRecords,
+    this.exchangeTickets,
+  }) {
     servants ??= {};
     items ??= {};
     limitEvents ??= {};
@@ -65,15 +66,16 @@ class ServantPlan {
 
   Map<String, dynamic> toJson() => _$ServantPlanToJson(this);
 
-  ServantPlan(
-      {this.ascensionLv,
-      this.skillLv,
-      this.dressLv,
-      this.grailLv,
-      this.skillEnhanced,
-      this.treasureDeviceEnhanced,
-      this.treasureDeviceLv,
-      this.favorite = false}) {
+  ServantPlan({
+    this.ascensionLv,
+    this.skillLv,
+    this.dressLv,
+    this.grailLv,
+    this.skillEnhanced,
+    this.treasureDeviceEnhanced,
+    this.treasureDeviceLv,
+    this.favorite = false,
+  }) {
     ascensionLv ??= [0, 0];
     skillLv ??= List.generate(3, (i) => [1, 1]);
     dressLv ??= [];

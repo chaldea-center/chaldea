@@ -6,6 +6,44 @@ part of datatypes;
 // JsonSerializableGenerator
 // **************************************************************************
 
+CommandCode _$CommandCodeFromJson(Map<String, dynamic> json) {
+  return CommandCode(
+    no: json['no'] as int,
+    rarity: json['rarity'] as int,
+    name: json['name'] as String,
+    nameJp: json['nameJp'] as String,
+    mcLink: json['mcLink'] as String,
+    icon: json['icon'] as String,
+    illust: json['illust'] as String,
+    illustrators:
+        (json['illustrators'] as List)?.map((e) => e as String)?.toList(),
+    skillIcon: json['skillIcon'] as String,
+    skill: json['skill'] as String,
+    description: json['description'] as String,
+    descriptionJp: json['descriptionJp'] as String,
+    obtain: json['obtain'] as String,
+    characters: (json['characters'] as List)?.map((e) => e as String)?.toList(),
+  );
+}
+
+Map<String, dynamic> _$CommandCodeToJson(CommandCode instance) =>
+    <String, dynamic>{
+      'no': instance.no,
+      'rarity': instance.rarity,
+      'name': instance.name,
+      'nameJp': instance.nameJp,
+      'mcLink': instance.mcLink,
+      'icon': instance.icon,
+      'illust': instance.illust,
+      'illustrators': instance.illustrators,
+      'skillIcon': instance.skillIcon,
+      'skill': instance.skill,
+      'description': instance.description,
+      'descriptionJp': instance.descriptionJp,
+      'obtain': instance.obtain,
+      'characters': instance.characters,
+    };
+
 CraftEssential _$CraftEssentialFromJson(Map<String, dynamic> json) {
   return CraftEssential(
     no: json['no'] as int,
@@ -15,8 +53,8 @@ CraftEssential _$CraftEssentialFromJson(Map<String, dynamic> json) {
     mcLink: json['mcLink'] as String,
     icon: json['icon'] as String,
     illust: json['illust'] as String,
-    illustrator:
-        (json['illustrator'] as List)?.map((e) => e as String)?.toList(),
+    illustrators:
+        (json['illustrators'] as List)?.map((e) => e as String)?.toList(),
     cost: json['cost'] as int,
     hpMin: json['hpMin'] as int,
     hpMax: json['hpMax'] as int,
@@ -46,7 +84,7 @@ Map<String, dynamic> _$CraftEssentialToJson(CraftEssential instance) =>
       'mcLink': instance.mcLink,
       'icon': instance.icon,
       'illust': instance.illust,
-      'illustrator': instance.illustrator,
+      'illustrators': instance.illustrators,
       'cost': instance.cost,
       'hpMin': instance.hpMin,
       'hpMax': instance.hpMax,
@@ -186,6 +224,10 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
               ? null
               : CraftEssential.fromJson(e as Map<String, dynamic>)),
     ),
+    cmdCodes: (json['cmdCodes'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(int.parse(k),
+          e == null ? null : CommandCode.fromJson(e as Map<String, dynamic>)),
+    ),
     items: (json['items'] as Map<String, dynamic>)?.map(
       (k, e) => MapEntry(
           k, e == null ? null : Item.fromJson(e as Map<String, dynamic>)),
@@ -204,6 +246,7 @@ Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
       'version': instance.version,
       'servants': instance.servants?.map((k, e) => MapEntry(k.toString(), e)),
       'crafts': instance.crafts?.map((k, e) => MapEntry(k.toString(), e)),
+      'cmdCodes': instance.cmdCodes?.map((k, e) => MapEntry(k.toString(), e)),
       'items': instance.items,
       'icons': instance.icons,
       'events': instance.events,
@@ -650,6 +693,10 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
     craftFilter: json['craftFilter'] == null
         ? null
         : CraftFilterData.fromJson(json['craftFilter'] as Map<String, dynamic>),
+    cmdCodeFilter: json['cmdCodeFilter'] == null
+        ? null
+        : CmdCodeFilterData.fromJson(
+            json['cmdCodeFilter'] as Map<String, dynamic>),
   );
 }
 
@@ -664,6 +711,7 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'testAllowDownload': instance.testAllowDownload,
       'svtFilter': instance.svtFilter,
       'craftFilter': instance.craftFilter,
+      'cmdCodeFilter': instance.cmdCodeFilter,
     };
 
 SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
@@ -812,6 +860,39 @@ const _$CraftCompareEnumMap = {
   CraftCompare.rarity: 'rarity',
   CraftCompare.atk: 'atk',
   CraftCompare.hp: 'hp',
+};
+
+CmdCodeFilterData _$CmdCodeFilterDataFromJson(Map<String, dynamic> json) {
+  return CmdCodeFilterData(
+    sortKeys: (json['sortKeys'] as List)
+        ?.map((e) => _$enumDecodeNullable(_$CmdCodeCompareEnumMap, e))
+        ?.toList(),
+    sortReversed:
+        (json['sortReversed'] as List)?.map((e) => e as bool)?.toList(),
+    useGrid: json['useGrid'] as bool,
+    rarity: json['rarity'] == null
+        ? null
+        : FilterGroupData.fromJson(json['rarity'] as Map<String, dynamic>),
+    obtain: json['obtain'] == null
+        ? null
+        : FilterGroupData.fromJson(json['obtain'] as Map<String, dynamic>),
+  )..filterString = json['filterString'] as String;
+}
+
+Map<String, dynamic> _$CmdCodeFilterDataToJson(CmdCodeFilterData instance) =>
+    <String, dynamic>{
+      'filterString': instance.filterString,
+      'sortKeys':
+          instance.sortKeys?.map((e) => _$CmdCodeCompareEnumMap[e])?.toList(),
+      'sortReversed': instance.sortReversed,
+      'useGrid': instance.useGrid,
+      'rarity': instance.rarity,
+      'obtain': instance.obtain,
+    };
+
+const _$CmdCodeCompareEnumMap = {
+  CmdCodeCompare.no: 'no',
+  CmdCodeCompare.rarity: 'rarity',
 };
 
 FilterGroupData _$FilterGroupDataFromJson(Map<String, dynamic> json) {

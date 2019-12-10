@@ -2,18 +2,18 @@ import 'package:chaldea/components/components.dart';
 
 import 'servant_list_page.dart';
 
-class SvtFilterPage extends StatefulWidget {
+class ServantFilterPage extends StatefulWidget {
   final ServantListPageState parent;
   final SvtFilterData filterData;
 
-  const SvtFilterPage({Key key, this.parent, this.filterData})
+  const ServantFilterPage({Key key, this.parent, this.filterData})
       : super(key: key);
 
   @override
-  _SvtFilterPageState createState() => _SvtFilterPageState();
+  _ServantFilterPageState createState() => _ServantFilterPageState();
 }
 
-class _SvtFilterPageState extends State<SvtFilterPage> {
+class _ServantFilterPageState extends State<ServantFilterPage> {
   SvtFilterData filterData;
 
   @override
@@ -86,7 +86,8 @@ class _SvtFilterPageState extends State<SvtFilterPage> {
                         value: filterData.sortKeys[i],
                         items: SvtFilterData.sortKeyData.map((key) {
                           return DropdownMenuItem(
-                              child: Text(['序号', '职阶', '星级','ATK','HP'][key.index]),
+                              child: Text(
+                                  ['序号', '职阶', '星级', 'ATK', 'HP'][key.index]),
                               value: key);
                         }).toList(),
                         onChanged: (key) {

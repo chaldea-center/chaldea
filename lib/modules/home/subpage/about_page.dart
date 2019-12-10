@@ -61,25 +61,23 @@ class _AboutPageState extends State<AboutPage> {
                 },
               ),
               ListTile(title: Text('***@NGA')),
-              if (kDebugMode)
-                TileGroup(
-                  header: 'Crash log (${crashFile.statSync().size ~/ 1000} KB)',
-                  children: <Widget>[
-                    ConstrainedBox(
-                      constraints: BoxConstraints(maxHeight: 300),
-                      child: ListView(
-                        shrinkWrap: true,
-                        children: <Widget>[
-                          DefaultTextStyle(
-                              style: Theme.of(context).textTheme.body1,
-                              child: Text(crashLog, maxLines: 200))
-                        ],
-                      ),
-                    )
-                  ],
-                ),
             ],
           ),
+          if (kDebugMode)
+            TileGroup(
+              header: 'Crash log (${crashFile.statSync().size ~/ 1000} KB)',
+              children: <Widget>[
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: 300),
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: <Widget>[
+                      CustomTile(subtitle: Text(crashLog, maxLines: 200))
+                    ],
+                  ),
+                )
+              ],
+            ),
         ],
       ),
     );

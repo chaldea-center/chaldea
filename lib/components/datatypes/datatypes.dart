@@ -12,6 +12,8 @@ import 'package:chaldea/components/components.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
+part 'cmd_code.dart';
+
 part 'craft_essential.dart';
 
 /// generated file by JsonSerializableGenerator

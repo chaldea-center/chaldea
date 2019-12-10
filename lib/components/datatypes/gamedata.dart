@@ -6,20 +6,24 @@ class GameData {
   String version;
   Map<int, Servant> servants;
   Map<int, CraftEssential> crafts;
+  Map<int, CommandCode> cmdCodes;
   Map<String, Item> items;
   Map<String, GameIcon> icons;
   Events events;
 
-  GameData(
-      {this.version,
-      this.servants,
-      this.crafts,
-      this.items,
-      this.icons,
-      this.events}) {
+  GameData({
+    this.version,
+    this.servants,
+    this.crafts,
+    this.cmdCodes,
+    this.items,
+    this.icons,
+    this.events,
+  }) {
     version ??= '0';
     servants ??= {};
     crafts ??= {};
+    cmdCodes ??= {};
     items ??= {};
     icons ??= {};
     events ??= Events();
@@ -58,12 +62,13 @@ class ItemCost {
 
   Map<String, dynamic> toJson() => _$ItemCostToJson(this);
 
-  ItemCost(
-      {this.ascension,
-      this.skill,
-      this.dressName,
-      this.dressNameJp,
-      this.dress});
+  ItemCost({
+    this.ascension,
+    this.skill,
+    this.dressName,
+    this.dressNameJp,
+    this.dress,
+  });
 }
 
 @JsonSerializable()

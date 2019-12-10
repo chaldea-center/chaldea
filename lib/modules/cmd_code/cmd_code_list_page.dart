@@ -2,28 +2,26 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:flutter/scheduler.dart';
 
-import 'craft_detail_page.dart';
-import 'craft_filter_page.dart';
+import 'cmd_code_detail_page.dart';
+import 'cmd_code_filter_page.dart';
 
-class CraftListPage extends StatefulWidget {
+class CmdCodeListPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => CraftListPageState();
+  State<StatefulWidget> createState() => CmdCodeListPageState();
 }
 
-class CraftListPageState extends State<CraftListPage> {
-  CraftFilterData filterData;
+class CmdCodeListPageState extends State<CmdCodeListPage> {
+  CmdCodeFilterData filterData;
   TextEditingController _inputController = TextEditingController();
   FocusNode _inputFocusNode = FocusNode(), _blankNode = FocusNode();
   ScrollController _scrollController = ScrollController();
 
-  //temp, calculate once build() called.
-  int __binCategory, __binAtkHpType;
   TextFilter __textFilter = TextFilter();
 
   @override
   void initState() {
     super.initState();
-    filterData = db.userData.craftFilter;
+    filterData = db.userData.cmdCodeFilter;
     filterData.filterString = '';
     _inputFocusNode.addListener(() {
       if (!_inputFocusNode.hasFocus) {
@@ -44,56 +42,38 @@ class CraftListPageState extends State<CraftListPage> {
   void beforeFiltrate() {
     filterData.filterString = filterData.filterString.trim();
     __textFilter.setFilter(filterData.filterString);
-    __binCategory = 0;
-    for (int i = 0; i < CraftFilterData.categoryData.length; i++) {
-      if (filterData.category.options[CraftFilterData.categoryData[i]] ==
-          true) {
-        __binCategory += 1 << i;
-      }
-    }
-    __binAtkHpType = 0;
-    for (int i = 0; i < CraftFilterData.atkHpTypeData.length; i++) {
-      if (filterData.atkHpType.options[CraftFilterData.atkHpTypeData[i]] ==
-          true) {
-        __binAtkHpType += 1 << i;
-      }
-    }
   }
 
-  bool filtrateCraft(CraftEssential ce) {
+  bool filtrateCmdCode(CommandCode code) {
     if (filterData.filterString.isNotEmpty) {
       List<String> searchStrings = [
-        ce.no.toString(),
-        ce.name,
-        ce.nameJp,
-        ce.mcLink,
-        ...ce.illustrators,
-        ...ce.characters,
-        ce.skill,
-        ce.skillMax,
-        ...ce.eventSkills,
-        ...ce.characters
+        code.no.toString(),
+        code.name,
+        code.nameJp,
+        code.mcLink,
+        code.obtain,
+        ...code.illustrators,
+        ...code.characters,
+        code.skill,
+        ...code.characters
       ];
       if (!__textFilter.match(searchStrings.join('\t'))) {
         return false;
       }
     }
-    if (!filterData.rarity.singleValueFilter(ce.rarity.toString())) {
+    if (!filterData.rarity.singleValueFilter(code.rarity.toString())) {
       return false;
     }
-    if (__binCategory > 0 && ce.category & __binCategory == 0) {
-      return false;
-    }
-    if (__binAtkHpType > 0 &&
-        ((1 << ((ce.hpMax > 0 ? 1 : 0) + (ce.atkMax > 0 ? 2 : 0))) &
-                __binAtkHpType) ==
-            0) {
+    if (!filterData.obtain.singleValueFilter(code.obtain, compares: {
+      CmdCodeFilterData.obtainData[1]: (o, v) =>
+          v != CmdCodeFilterData.obtainData[0]
+    })) {
       return false;
     }
     return true;
   }
 
-  void onFilterChanged(CraftFilterData data) {
+  void onFilterChanged(CmdCodeFilterData data) {
     setState(() {
       filterData = data;
     });
@@ -103,7 +83,7 @@ class CraftListPageState extends State<CraftListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).craft_essential),
+        title: Text(S.of(context).cmd_code_title),
         leading: SplitViewBackButton(),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(45),
@@ -164,66 +144,66 @@ class CraftListPageState extends State<CraftListPage> {
   }
 
   Widget buildOverview() {
-    List<CraftEssential> shownList = [];
+    List<CommandCode> shownList = [];
     beforeFiltrate();
-    db.gameData.crafts.forEach((no, ce) {
-      if (filtrateCraft(ce)) {
-        shownList.add(ce);
+    db.gameData.cmdCodes.forEach((no, code) {
+      if (filtrateCmdCode(code)) {
+        shownList.add(code);
       }
     });
-    shownList.sort((a, b) => CraftEssential.compare(
+    shownList.sort((a, b) => CommandCode.compare(
         a, b, filterData.sortKeys, filterData.sortReversed));
     return filterData.useGrid
         ? _buildGridView(shownList)
         : _buildListView(shownList);
   }
 
-  Widget _buildListView(List<CraftEssential> shownList) {
+  Widget _buildListView(List<CommandCode> shownList) {
     return ListView.separated(
         physics: ScrollPhysics(),
         controller: _scrollController,
         separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
         itemCount: shownList.length,
         itemBuilder: (context, index) {
-          final ce = shownList[index];
+          final code = shownList[index];
           return CustomTile(
             leading: SizedBox(
               width: 132 * 0.45,
               height: 144 * 0.45,
-              child: Image(image: db.getIconFile(ce.icon)),
+              child: Image(image: db.getIconFile(code.icon)),
             ),
-            title: AutoSizeText(ce.name, maxLines: 1),
+            title: AutoSizeText(code.name, maxLines: 1),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                AutoSizeText(ce.nameJp ?? ce.name, maxLines: 1),
-                Text('No.${ce.no}')
+                AutoSizeText(code.nameJp ?? code.name, maxLines: 1),
+                Text('No.${code.no}')
               ],
             ),
             trailing: Icon(Icons.arrow_forward_ios),
             onTap: () {
               SplitRoute.popAndPush(context,
-                  builder: (context) => CraftDetailPage(ce: ce));
+                  builder: (context) => CmdCodeDetailPage(code: code));
             },
           );
         });
   }
 
-  Widget _buildGridView(List<CraftEssential> shownList) {
+  Widget _buildGridView(List<CommandCode> shownList) {
     return GridView.count(
         crossAxisCount: 5,
         childAspectRatio: 1,
         controller: _scrollController,
-        children: shownList.map((ce) {
+        children: shownList.map((code) {
           return Center(
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 1),
               child: ImageWithText(
-                image: Image(image: db.getIconFile(ce.icon)),
+                image: Image(image: db.getIconFile(code.icon)),
                 alignment: AlignmentDirectional.bottomStart,
                 onTap: () {
                   SplitRoute.popAndPush(context,
-                      builder: (context) => CraftDetailPage(ce: ce));
+                      builder: (context) => CmdCodeDetailPage(code: code));
                 },
               ),
             ),
@@ -234,8 +214,9 @@ class CraftListPageState extends State<CraftListPage> {
   void showFilterSheet(BuildContext context) {
     showSheet(
       context,
+      size: 0.6,
       builder: (sheetContext, setSheetState) =>
-          CraftFilterPage(parent: this, filterData: filterData),
+          CmdCodeFilterPage(parent: this, filterData: filterData),
     );
   }
 }

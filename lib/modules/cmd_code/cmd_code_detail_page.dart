@@ -1,24 +1,23 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class CraftDetailPage extends StatefulWidget {
-  final CraftEssential ce;
+class CmdCodeDetailPage extends StatefulWidget {
+  final CommandCode code;
 
-  const CraftDetailPage({Key key, this.ce}) : super(key: key);
+  const CmdCodeDetailPage({Key key, this.code}) : super(key: key);
 
   @override
-  _CraftDetailPageState createState() => _CraftDetailPageState();
+  _CmdCodeDetailPageState createState() => _CmdCodeDetailPageState();
 }
 
-class _CraftDetailPageState extends State<CraftDetailPage> {
+class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
   bool useLangJp = false;
-  CraftEssential ce;
+  CommandCode code;
 
   @override
   void initState() {
     super.initState();
-    ce = widget.ce;
+    code = widget.code;
     db.checkNetwork();
   }
 
@@ -27,12 +26,12 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: Text(ce.name),
+        title: Text(code.name),
       ),
       body: Column(
         children: <Widget>[
           Expanded(
-            child: CraftDetailBasePage(ce: ce, useLangJp: useLangJp),
+            child: CmdCodeDetailBasePage(code: code, useLangJp: useLangJp),
           ),
           ButtonBar(alignment: MainAxisAlignment.center, children: [
             ToggleButtons(
@@ -55,11 +54,11 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
             for (var i = 0; i < 2; i++)
               RaisedButton(
                 onPressed: () {
-                  int nextNo = ce.no + [-1, 1][i];
-                  if (db.gameData.crafts.containsKey(nextNo)) {
+                  int nextNo = code.no + [-1, 1][i];
+                  if (db.gameData.cmdCodes.containsKey(nextNo)) {
                     setState(() {
-                      ce = db.gameData.crafts[nextNo];
-                      print('move to craft No.${ce.no}-${ce.name}');
+                      code = db.gameData.cmdCodes[nextNo];
+                      print('move to cmd code No.${code.no}-${code.name}');
                     });
                   } else {
                     Fluttertoast.showToast(
@@ -79,11 +78,11 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
   }
 }
 
-class CraftDetailBasePage extends StatelessWidget {
-  final CraftEssential ce;
+class CmdCodeDetailBasePage extends StatelessWidget {
+  final CommandCode code;
   final bool useLangJp;
 
-  const CraftDetailBasePage({Key key, this.ce, this.useLangJp = false})
+  const CmdCodeDetailBasePage({Key key, this.code, this.useLangJp = false})
       : super(key: key);
 
   @override
@@ -92,11 +91,11 @@ class CraftDetailBasePage extends StatelessWidget {
       children: <Widget>[
         InfoRow.fromChild(
           children: [
-            Text(ce.name, style: TextStyle(fontWeight: FontWeight.bold))
+            Text(code.name, style: TextStyle(fontWeight: FontWeight.bold))
           ],
           color: InfoCell.headerColor,
         ),
-        InfoRow.fromText(texts: [ce.nameJp]),
+        InfoRow.fromText(texts: [code.nameJp]),
         InfoRow(
           children: <Widget>[
             InfoCell(
@@ -104,7 +103,7 @@ class CraftDetailBasePage extends StatelessWidget {
                 return ConstrainedBox(
                   constraints: BoxConstraints(
                       maxWidth: constraints.biggest.width, maxHeight: 90),
-                  child: Image(image: db.getIconFile(ce.icon)),
+                  child: Image(image: db.getIconFile(code.icon)),
                 );
               }),
             ),
@@ -113,104 +112,66 @@ class CraftDetailBasePage extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  InfoRow.fromText(texts: ['No. ${ce.no}']),
+                  InfoRow.fromText(texts: ['No. ${code.no}']),
                   InfoRow(
                     children: <Widget>[
                       InfoCell.header(text: '画师'),
-                      InfoCell(text: ce.illustrators.join(' & '), flex: 3)
+                      InfoCell(text: code.illustrators.join(' & '), flex: 3)
                     ],
                   ),
                   InfoRow(
                     children: <Widget>[
                       InfoCell.header(text: '稀有度'),
-                      InfoCell(text: ce.rarity.toString()),
-                      InfoCell.header(text: 'COST'),
-                      InfoCell(text: ce.cost.toString())
+                      InfoCell(text: code.rarity.toString(), flex: 3),
                     ],
                   ),
-                  InfoRow(
+                  InfoRow.fromChild(
                     children: <Widget>[
-                      InfoCell.header(text: 'ATK'),
-                      InfoCell(
-                          child: AutoSizeText(
-                        '${ce.atkMin}/${ce.atkMax}',
-                        maxLines: 1,
-                      )),
-                      InfoCell.header(text: 'HP'),
-                      InfoCell(
-                          child: AutoSizeText(
-                        '${ce.hpMin}/${ce.hpMax}',
-                        maxLines: 1,
-                      )),
+                      CustomTile(
+                        title: Center(child: Text('查看卡面')),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => FullScreenImageSlider(
+                                    imgUrls: [code.illust],
+                                    enableDownload:
+                                        db.runtimeData.enableDownload,
+                                  ),
+                              fullscreenDialog: true));
+                        },
+                        contentPadding: EdgeInsets.zero,
+                      )
                     ],
+                    color: InfoCell.headerColor,
                   ),
                 ],
               ),
             )
           ],
         ),
-        InfoRow.fromChild(
-          children: <Widget>[
-            CustomTile(
-              title: Center(child: Text('查看卡面')),
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => FullScreenImageSlider(
-                          imgUrls: [ce.illust],
-                          enableDownload: db.runtimeData.enableDownload,
-                        ),
-                    fullscreenDialog: true));
-              },
-              contentPadding: EdgeInsets.zero,
-            )
-          ],
-          color: InfoCell.headerColor,
-        ),
+        InfoRow.fromText(texts: ['获取方式'], color: InfoCell.headerColor),
+        InfoRow.fromChild(children: [
+          Text(
+            code.obtain,
+            textAlign: TextAlign.center,
+          )
+        ]),
         InfoRow.fromText(texts: ['持有技能'], color: InfoCell.headerColor),
         InfoRow(
           children: <Widget>[
             InfoCell(
               child: Padding(
                 padding: EdgeInsets.all(6),
-                child: Image(image: db.getIconFile(ce.skillIcon), height: 40),
+                child: Image(image: db.getIconFile(code.skillIcon), height: 40),
               ),
             ),
-            InfoCell(
-                flex: 5,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(ce.skill),
-                    if (ce.skillMax?.isNotEmpty == true) ...[
-                      Divider(height: 2),
-                      Text(ce.skillMax),
-                    ]
-                  ],
-                )),
+            InfoCell(flex: 5, child: Text(code.skill)),
           ],
         ),
-        for (var i = 0; i < ce.eventIcons.length; i++)
-          InfoRow(
-            children: <Widget>[
-              InfoCell(
-                child: Padding(
-                  padding: EdgeInsets.all(6),
-                  child: Image(
-                      image: db.getIconFile(ce.eventIcons[i]), height: 40),
-                ),
-              ),
-              InfoCell(
-                  flex: 5,
-                  alignment: Alignment.centerLeft,
-                  text: ce.eventSkills[i]),
-            ],
-          ),
         InfoRow.fromText(texts: ['解说'], color: InfoCell.headerColor),
         InfoRow(
           children: <Widget>[
             InfoCell(
-              text: useLangJp ? ce.descriptionJp : ce.description,
+              text: useLangJp ? code.descriptionJp : code.description,
               alignment: Alignment.centerLeft,
               padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             )

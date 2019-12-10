@@ -188,43 +188,44 @@ class ServantBaseInfo {
 
   Map<String, dynamic> toJson() => _$ServantBaseInfoToJson(this);
 
-  ServantBaseInfo(
-      {this.obtain,
-      this.rarity,
-      this.rarity2,
-      this.weight,
-      this.height,
-      this.gender,
-      this.illustrator,
-      this.className,
-      this.attribute,
-      this.isHumanoid,
-      this.isWeakToEA,
-      this.name,
-      this.nameJp,
-      this.nameEn,
-      this.illustName,
-      this.nicknames,
-      this.cv,
-      this.alignments,
-      this.traits,
-      this.ability,
-      this.illust,
-      this.cards,
-      this.cardHits,
-      this.cardHitsDamage,
-      this.npRate,
-      this.atkMin,
-      this.hpMin,
-      this.atkMax,
-      this.hpMax,
-      this.atk90,
-      this.hp90,
-      this.atk100,
-      this.hp100,
-      this.starRate,
-      this.deathRate,
-      this.criticalRate});
+  ServantBaseInfo({
+    this.obtain,
+    this.rarity,
+    this.rarity2,
+    this.weight,
+    this.height,
+    this.gender,
+    this.illustrator,
+    this.className,
+    this.attribute,
+    this.isHumanoid,
+    this.isWeakToEA,
+    this.name,
+    this.nameJp,
+    this.nameEn,
+    this.illustName,
+    this.nicknames,
+    this.cv,
+    this.alignments,
+    this.traits,
+    this.ability,
+    this.illust,
+    this.cards,
+    this.cardHits,
+    this.cardHitsDamage,
+    this.npRate,
+    this.atkMin,
+    this.hpMin,
+    this.atkMax,
+    this.hpMax,
+    this.atk90,
+    this.hp90,
+    this.atk100,
+    this.hp100,
+    this.starRate,
+    this.deathRate,
+    this.criticalRate,
+  });
 }
 
 @JsonSerializable()
@@ -249,21 +250,22 @@ class TreasureDevice {
 
   Map<String, dynamic> toJson() => _$TreasureDeviceToJson(this);
 
-  TreasureDevice(
-      {this.enhanced,
-      this.state,
-      this.openTime,
-      this.openCondition,
-      this.opeQuest,
-      this.name,
-      this.nameJp,
-      this.upperName,
-      this.upperNameJp,
-      this.color,
-      this.category,
-      this.rank,
-      this.typeText,
-      this.effects});
+  TreasureDevice({
+    this.enhanced,
+    this.state,
+    this.openTime,
+    this.openCondition,
+    this.opeQuest,
+    this.name,
+    this.nameJp,
+    this.upperName,
+    this.upperNameJp,
+    this.color,
+    this.category,
+    this.rank,
+    this.typeText,
+    this.effects,
+  });
 }
 
 @JsonSerializable()
@@ -284,18 +286,19 @@ class Skill {
 
   Map<String, dynamic> toJson() => _$SkillToJson(this);
 
-  Skill(
-      {this.state,
-      this.openTime,
-      this.openCondition,
-      this.openQuest,
-      this.enhanced,
-      this.name,
-      this.nameJp,
-      this.rank,
-      this.icon,
-      this.cd,
-      this.effects});
+  Skill({
+    this.state,
+    this.openTime,
+    this.openCondition,
+    this.openQuest,
+    this.enhanced,
+    this.name,
+    this.nameJp,
+    this.rank,
+    this.icon,
+    this.cd,
+    this.effects,
+  });
 }
 
 @JsonSerializable()

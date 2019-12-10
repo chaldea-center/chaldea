@@ -9,7 +9,7 @@ class CraftEssential {
   String mcLink;
   String icon;
   String illust;
-  List<String> illustrator;
+  List<String> illustrators;
   int cost;
   int hpMin;
   int hpMax;
@@ -35,7 +35,7 @@ class CraftEssential {
     this.mcLink,
     this.icon,
     this.illust,
-    this.illustrator,
+    this.illustrators,
     this.cost,
     this.hpMin,
     this.hpMax,

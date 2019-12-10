@@ -27,12 +27,7 @@ void main() async {
   };
   runZoned(
     () {
-      Catcher(
-        Chaldea(),
-        debugConfig: catcherOptions,
-        profileConfig: catcherOptions,
-        releaseConfig: catcherOptions,
-      );
+      Catcher(Chaldea(), releaseConfig: catcherOptions);
     },
     zoneSpecification: ZoneSpecification(
       print: (Zone self, ZoneDelegate parent, Zone zone, String line) {

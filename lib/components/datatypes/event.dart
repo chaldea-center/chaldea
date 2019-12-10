@@ -50,21 +50,22 @@ class LimitEvent {
 //  List<Map<String, double>> hunting;
   Map<String, int> lottery;
 
-  LimitEvent(
-      {this.name,
-      this.link,
-      this.startTimeJp,
-      this.endTimeJp,
-      this.startTimeCn,
-      this.endTimeCn,
-      this.grail,
-      this.crystal,
-      this.grail2crystal,
-      this.qp,
-      this.items,
-      this.category,
-      this.extra,
-      this.lottery});
+  LimitEvent({
+    this.name,
+    this.link,
+    this.startTimeJp,
+    this.endTimeJp,
+    this.startTimeCn,
+    this.endTimeCn,
+    this.grail,
+    this.crystal,
+    this.grail2crystal,
+    this.qp,
+    this.items,
+    this.category,
+    this.extra,
+    this.lottery,
+  });
 
   factory LimitEvent.fromJson(Map<String, dynamic> data) =>
       _$LimitEventFromJson(data);

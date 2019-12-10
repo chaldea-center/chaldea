@@ -25,19 +25,22 @@ class UserData {
   //filters, ItemFilterDat to be done
   SvtFilterData svtFilter;
   CraftFilterData craftFilter;
+  CmdCodeFilterData cmdCodeFilter;
 
-  UserData(
-      {this.language,
-      this.criticalWidth,
-      this.useMobileNetwork,
-      this.testAllowDownload,
-      this.sliderUrls,
-      this.galleries,
-      this.serverDomain,
-      this.curUser,
-      this.users,
-      this.svtFilter,
-      this.craftFilter}) {
+  UserData({
+    this.language,
+    this.criticalWidth,
+    this.useMobileNetwork,
+    this.testAllowDownload,
+    this.sliderUrls,
+    this.galleries,
+    this.serverDomain,
+    this.curUser,
+    this.users,
+    this.svtFilter,
+    this.craftFilter,
+    this.cmdCodeFilter,
+  }) {
     // not initiate language: auto-change language if not set yet.
     String defaultName = 'default';
     useMobileNetwork ??= false;
@@ -51,6 +54,7 @@ class UserData {
     }
     svtFilter ??= SvtFilterData();
     craftFilter ??= CraftFilterData();
+    cmdCodeFilter ??= CmdCodeFilterData();
   }
 
   // json_serializable
@@ -81,23 +85,24 @@ class SvtFilterData {
   FilterGroupData trait;
   FilterGroupData traitSpecial;
 
-  SvtFilterData(
-      {this.favorite,
-      this.sortKeys,
-      this.sortReversed,
-      this.useGrid,
-      this.hasDress,
-      this.rarity,
-      this.className,
-      this.obtain,
-      this.npColor,
-      this.npType,
-      this.attribute,
-      this.alignment1,
-      this.alignment2,
-      this.gender,
-      this.trait,
-      this.traitSpecial}) {
+  SvtFilterData({
+    this.favorite,
+    this.sortKeys,
+    this.sortReversed,
+    this.useGrid,
+    this.hasDress,
+    this.rarity,
+    this.className,
+    this.obtain,
+    this.npColor,
+    this.npType,
+    this.attribute,
+    this.alignment1,
+    this.alignment2,
+    this.gender,
+    this.trait,
+    this.traitSpecial,
+  }) {
     favorite ??= false;
     filterString ??= '';
     sortKeys ??= List.generate(3, (i) => sortKeyData[i]);
@@ -211,13 +216,14 @@ class CraftFilterData {
   FilterGroupData category;
   FilterGroupData atkHpType;
 
-  CraftFilterData(
-      {this.sortKeys,
-      this.sortReversed,
-      this.useGrid,
-      this.rarity,
-      this.category,
-      this.atkHpType}) {
+  CraftFilterData({
+    this.sortKeys,
+    this.sortReversed,
+    this.useGrid,
+    this.rarity,
+    this.category,
+    this.atkHpType,
+  }) {
     filterString ??= '';
     sortKeys ??= List.generate(2, (i) => sortKeyData[i]);
     sortReversed ??= List.filled(sortKeys.length, true);
@@ -271,6 +277,59 @@ class CraftFilterData {
       _$CraftFilterDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$CraftFilterDataToJson(this);
+}
+
+@JsonSerializable()
+class CmdCodeFilterData {
+  String filterString;
+  List<CmdCodeCompare> sortKeys;
+  List<bool> sortReversed;
+  bool useGrid;
+
+  FilterGroupData rarity;
+  FilterGroupData obtain;
+
+  CmdCodeFilterData({
+    this.sortKeys,
+    this.sortReversed,
+    this.useGrid,
+    this.rarity,
+    this.obtain,
+  }) {
+    filterString ??= '';
+    sortKeys ??= List.generate(2, (i) => sortKeyData[i]);
+    sortReversed ??= List.filled(sortKeys.length, true);
+    useGrid ??= false;
+    rarity ??= FilterGroupData();
+    obtain ??= FilterGroupData();
+  }
+
+  List<FilterGroupData> get groupValues => [
+        rarity,
+        obtain,
+      ];
+
+  void reset() {
+    sortKeys = List.generate(sortKeys.length, (i) => sortKeyData[i]);
+    sortReversed = List.filled(sortKeys.length, false);
+
+    for (var group in groupValues) {
+      group.reset();
+    }
+  }
+
+  // const data
+  static const List<CmdCodeCompare> sortKeyData = CmdCodeCompare.values;
+  static const List<String> rarityData = ['1', '2', '3', '4', '5'];
+
+  // category: bin: 0b1111111111
+  static const List<String> obtainData = ['友情池常驻', '活动奖励'];
+
+  // json_serializable
+  factory CmdCodeFilterData.fromJson(Map<String, dynamic> data) =>
+      _$CmdCodeFilterDataFromJson(data);
+
+  Map<String, dynamic> toJson() => _$CmdCodeFilterDataToJson(this);
 }
 
 typedef bool CompareFilterKeyCallback(String option, String value);
