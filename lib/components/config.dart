@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
-import 'package:chaldea/components/constants.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'constants.dart';
 import 'datatypes/datatypes.dart';
 
 /// app config:
@@ -23,7 +23,7 @@ class Database {
   GameData gameData;
   final RuntimeData runtimeData = RuntimeData();
 
-  Plans get curPlan => userData.users[userData.curUser]?.plans;
+  User get curUser => userData.users[userData.curUser];
   static PathManager _paths = PathManager();
 
   PathManager get paths => _paths;
@@ -56,7 +56,7 @@ class Database {
   Future<Null> loadUserData() async {
     userData = parseJson(
         parser: () => UserData.fromJson(getJsonFromFile(
-              kUserDataFilename,
+              paths.userDataPath,
               k: () => <String, dynamic>{},
             )),
         k: () => UserData());
@@ -146,23 +146,22 @@ class Database {
       getLocalFile(relativePath).writeAsStringSync(contents);
       // print('Saved "$relativePath"\n');
     } catch (e) {
-      print('Error saving "$relativePath"!');
-      print(e);
+      print('Error saving "$relativePath"!\n$e');
     }
   }
 
   // clear data
   Future<void> clearData({bool user = false, bool game = false}) async {
     if (user) {
-      _deleteFileOrDirectory(kUserDataFilename, relative: true);
+      _deleteFileOrDirectory(paths.userDataPath);
       await loadUserData();
     }
     if (game) {
       // to clear all history version or not?
       _deleteFileOrDirectory(paths.gameDataDir);
+      await loadAssetsData(kDefaultDatasetAssetKey);
+      await loadGameData();
     }
-    await loadAssetsData(kDefaultDatasetAssetKey);
-    await loadGameData();
   }
 
   void _deleteFileOrDirectory(String path, {bool relative = false}) {
@@ -205,6 +204,8 @@ class PathManager {
   String get rootPath => _rootPath;
 
   String get tempDir => _tempDir;
+
+  String get userDataPath => join(_rootPath, kUserDataFilename);
 
   String get gameDataDir => join(_rootPath, 'dataset');
 

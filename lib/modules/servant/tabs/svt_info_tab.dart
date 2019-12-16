@@ -6,12 +6,12 @@ import 'svt_tab_base.dart';
 
 class SvtInfoTab extends SvtTabBaseWidget {
   SvtInfoTab(
-      {Key key, ServantDetailPageState parent, Servant svt, ServantPlan plan})
-      : super(key: key, parent: parent, svt: svt, plan: plan);
+      {Key key, ServantDetailPageState parent, Servant svt, ServantStatus plan})
+      : super(key: key, parent: parent, svt: svt, status: plan);
 
   @override
   _SvtInfoTabState createState() =>
-      _SvtInfoTabState(parent: parent, svt: svt, plan: plan);
+      _SvtInfoTabState(parent: parent, svt: svt, plan: status);
 }
 
 class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
@@ -19,8 +19,8 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
   TabController _tabController;
 
   _SvtInfoTabState(
-      {ServantDetailPageState parent, Servant svt, ServantPlan plan})
-      : super(parent: parent, svt: svt, plan: plan);
+      {ServantDetailPageState parent, Servant svt, ServantStatus plan})
+      : super(parent: parent, svt: svt, status: plan);
   bool useLangJp = false;
 
   @override

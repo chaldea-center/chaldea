@@ -38,7 +38,7 @@ class _MainRecordTabState extends State<MainRecordTab>
                     Divider(height: 1, indent: 16),
                 itemBuilder: (context, index) {
                   final chapter = mainRecords[index].name;
-                  final plan = db.curPlan.mainRecords;
+                  final plan = db.curUser.mainRecords;
                   return CustomTile(
                     title: AutoSizeText(chapter, maxLines: 1, maxFontSize: 16),
                     trailing: Wrap(

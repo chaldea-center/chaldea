@@ -26,7 +26,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
         separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
         itemBuilder: (context, index) {
           final ticket = tickets[index];
-          final plan = db.curPlan.exchangeTickets;
+          final plan = db.curUser.exchangeTickets;
           plan[ticket.monthCn] ??= [0, 0, 0];
           List<Widget> trailing = [];
           for (var i = 0; i < 3; i++) {

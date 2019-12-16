@@ -5,6 +5,7 @@ import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/craft/craft_list_page.dart';
 import 'package:chaldea/modules/event/events_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
+import 'package:chaldea/modules/plan/plan_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -100,6 +101,11 @@ class _GalleryPageState extends State<GalleryPage> {
           titleBuilder: (context) => S.of(context).event_title,
           icon: Icons.event_available,
           builder: (context) => EventListPage()),
+      GalleryItem.plan: GalleryItem(
+          name: GalleryItem.plan,
+          titleBuilder: (context) => 'Plan',
+          icon: Icons.description,
+          builder: (context) => PlanPage()),
       GalleryItem.more: GalleryItem(
           name: GalleryItem.more,
           titleBuilder: (context) => S.of(context).more,

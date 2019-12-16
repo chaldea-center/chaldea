@@ -47,7 +47,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                         title: Text('Confirm to delete userdata?'),
                         onTapOk: () async {
                           Fluttertoast.showToast(msg: 'cleaning userdata...');
-                          await db.clearData(user: true, game: true);
+                          await db.clearData(user: true, game: false);
                           setState(() {});
                           Fluttertoast.showToast(msg: 'userdata cleared.');
                         },
@@ -281,7 +281,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
         Fluttertoast.showToast(msg: 'Version $version downloaded');
       }
     } catch (e) {
-      print(e);
+      print('error download:\n$e');
       Fluttertoast.showToast(msg: 'error download: $e');
       rethrow;
     }

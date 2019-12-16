@@ -29,8 +29,8 @@ class ItemListPageState extends State<ItemListPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: categories.length, vsync: this);
-    db.runtimeData.itemsOfEvents = db.gameData.events.getAllItems(db.curPlan);
-    db.runtimeData.itemsOfSvts.update(db.gameData, db.curPlan.servants);
+    db.runtimeData.itemsOfEvents = db.gameData.events.getAllItems(db.curUser);
+    db.runtimeData.itemsOfSvts.update(db.curUser.servants, db.curUser.curPlan2);
   }
 
   @override
@@ -102,7 +102,7 @@ class _ItemListTabState extends State<ItemListTab> {
         inputsManager.components.add(InputComponent(
             data: item,
             controller: TextEditingController(
-                text: (db.curPlan.items[key] ?? 0).toString()),
+                text: (db.curUser.items[key] ?? 0).toString()),
             focusNode: node));
       }
     });
@@ -145,7 +145,7 @@ class _ItemListTabState extends State<ItemListTab> {
     PartSet<int> svtCostStat = db.runtimeData.itemsOfSvts.getNumOfItem(itemKey);
     int svtCostNum = sum(svtCostStat.values);
     int eventNum = db.runtimeData.itemsOfEvents[itemKey] ?? 0;
-    int ownNum = db.curPlan.items[itemKey] ?? 0;
+    int ownNum = db.curUser.items[itemKey] ?? 0;
     int leftNum = ownNum + eventNum - svtCostNum;
     bool enough = leftNum >= 0;
     bool isQp = itemKey == qpKey;
@@ -155,7 +155,7 @@ class _ItemListTabState extends State<ItemListTab> {
     inputsManager.addObserver(component);
     return StatefulBuilder(
       builder: (BuildContext context, setState2) {
-        int ownNum = db.curPlan.items[itemKey] ?? 0;
+        int ownNum = db.curUser.items[itemKey] ?? 0;
         int leftNum = ownNum + eventNum - svtCostNum;
         bool enough = leftNum >= 0;
 
@@ -180,7 +180,7 @@ class _ItemListTabState extends State<ItemListTab> {
                 if (isQp) NumberInputFormatter(),
               ],
               onChanged: (v) {
-                db.curPlan.items[component.data.name] =
+                db.curUser.items[component.data.name] =
                     int.tryParse(v.replaceAll(',', '')) ?? 0;
                 setState2(() {});
               },

@@ -41,6 +41,7 @@ dependencies:
   package_info: ^0.4.0+10
   dio: ^3.0.6
   json_patch: ^1.0.2
+  flutter_liquidcore: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -73,6 +74,7 @@ flutter:
   assets:
   - res/data/dataset.zip
   - res/img/
+  - res/lib/
   - res/values/
 
   # An image asset can refer to one or more resolution-specific "variants", see

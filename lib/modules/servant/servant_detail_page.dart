@@ -26,7 +26,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
   Map<String, WidgetBuilder> _builders = {};
 
   // store data
-  ServantPlan plan;
+  ServantStatus status;
 
   ServantDetailPageState(this.svt) {
     if (!Servant.unavailable.contains(svt.no)) {
@@ -41,16 +41,17 @@ class ServantDetailPageState extends State<ServantDetailPage>
     _builders['资料'] = (context) => SvtInfoTab(parent: this);
     final getDefaultPage = (String name) {
       return Center(
-          child: FlatButton(
-        child: Text(name),
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => BlankPage(
-              showProgress: true,
-            ),
-          ));
-        },
-      ));
+        child: FlatButton(
+          child: Text(name),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => BlankPage(showProgress: true),
+              ),
+            );
+          },
+        ),
+      );
     };
 
     _builders['卡面'] = (context) => SvtIllustTab(parent: this);
@@ -62,10 +63,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: _builders.length, vsync: this);
-    if (!db.curPlan.servants.containsKey(svt.no)) {
-      db.curPlan.servants[svt.no] = ServantPlan();
-    }
-    plan = db.curPlan.servants[svt.no];
+    status = db.curUser.servants.putIfAbsent(svt.no, () => ServantStatus());
   }
 
   @override
@@ -77,10 +75,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          leading: BackButton(),
-          title: Text(svt.info.name),
-        ),
+        appBar: AppBar(leading: BackButton(), title: Text(svt.info.name)),
         body: Column(
           children: <Widget>[
             CustomTile(
@@ -91,7 +86,8 @@ class ServantDetailPageState extends State<ServantDetailPage>
                   height: 90),
               titlePadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               title: Text('No.${svt.no}\n${svt.info.className}'),
-              subtitle: Servant.unavailable.contains(svt.no)
+              subtitle: null,
+              trailing: Servant.unavailable.contains(svt.no)
                   ? null
                   : FittedBox(
                       fit: BoxFit.scaleDown,
@@ -99,64 +95,20 @@ class ServantDetailPageState extends State<ServantDetailPage>
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           IconButton(
-                              icon: Icon(Icons.vertical_align_top),
-                              tooltip: '练度最大化',
-                              onPressed: () {
-                                setState(() {
-                                  plan.allMax();
-                                });
-                              }),
-                          Stack(
-                            alignment: AlignmentDirectional.bottomEnd,
-                            children: <Widget>[
-                              Text('9  '),
-                              IconButton(
-                                  icon: Icon(Icons.trending_up),
-                                  tooltip: '规划最大化',
-                                  onPressed: () {
-                                    setState(() {
-                                      plan.planMax(true);
-                                    });
-                                  }),
-                            ],
-                          ),
-                          Stack(
-                            alignment: AlignmentDirectional.bottomEnd,
-                            children: <Widget>[
-                              Text('10 '),
-                              IconButton(
-                                  icon: Icon(Icons.trending_up),
-                                  tooltip: '规划最大化',
-                                  onPressed: () {
-                                    setState(() {
-                                      plan.planMax();
-                                    });
-                                  }),
-                            ],
-                          ),
-                          IconButton(
-                              icon: Icon(Icons.replay),
-                              tooltip: '重置',
-                              onPressed: () {
-                                setState(() {
-                                  plan.reset();
-                                });
-                              }),
-                          IconButton(
-                            icon: plan.favorite
+                            icon: status.curVal.favorite
                                 ? Icon(Icons.favorite, color: Colors.redAccent)
                                 : Icon(Icons.favorite_border),
                             tooltip: '关注',
                             onPressed: () {
                               setState(() {
-                                plan.favorite = !plan.favorite;
+                                status.curVal.favorite =
+                                    !status.curVal.favorite;
                               });
                             },
                           ),
                         ],
                       ),
                     ),
-              trailing: null,
             ),
             TabBar(
               controller: _tabController,

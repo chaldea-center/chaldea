@@ -1,5 +1,6 @@
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
+
+import 'cmd_code_list_page.dart';
 
 class CmdCodeFilterPage extends StatefulWidget {
   final CmdCodeListPageState parent;

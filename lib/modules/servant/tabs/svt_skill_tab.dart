@@ -5,23 +5,23 @@ import 'svt_tab_base.dart';
 
 class SvtSkillTab extends SvtTabBaseWidget {
   SvtSkillTab(
-      {Key key, ServantDetailPageState parent, Servant svt, ServantPlan plan})
-      : super(key: key, parent: parent, svt: svt, plan: plan);
+      {Key key, ServantDetailPageState parent, Servant svt, ServantStatus plan})
+      : super(key: key, parent: parent, svt: svt, status: plan);
 
   @override
   State<StatefulWidget> createState() =>
-      _SvtSkillTabState(parent: parent, svt: svt, plan: plan);
+      _SvtSkillTabState(parent: parent, svt: svt, plan: status);
 }
 
 class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab>
     with AutomaticKeepAliveClientMixin {
   _SvtSkillTabState(
-      {ServantDetailPageState parent, Servant svt, ServantPlan plan})
-      : super(parent: parent, svt: svt, plan: plan);
+      {ServantDetailPageState parent, Servant svt, ServantStatus plan})
+      : super(parent: parent, svt: svt, status: plan);
 
   List<Widget> buildSkill(int index) {
     List<Skill> skillList = svt.activeSkills[index];
-    bool enhanced = plan.skillEnhanced[index] ?? skillList[0].enhanced;
+    bool enhanced = status.skillEnhanced[index] ?? skillList[0].enhanced;
     Skill skill = skillList[enhanced ? 1 : 0];
 
     return <Widget>[
@@ -37,7 +37,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab>
                 GestureDetector(
                   onTap: () {
                     widget.parent?.setState(() {
-                      plan.skillEnhanced[index] = !enhanced;
+                      status.skillEnhanced[index] = !enhanced;
                     });
                   },
                   child: Image(

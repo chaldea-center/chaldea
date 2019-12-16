@@ -6,12 +6,12 @@ import 'svt_tab_base.dart';
 
 class SvtIllustTab extends SvtTabBaseWidget {
   SvtIllustTab(
-      {Key key, ServantDetailPageState parent, Servant svt, ServantPlan plan})
-      : super(key: key, parent: parent, svt: svt, plan: plan);
+      {Key key, ServantDetailPageState parent, Servant svt, ServantStatus plan})
+      : super(key: key, parent: parent, svt: svt, status: plan);
 
   @override
   _SvtIllustTabState createState() =>
-      _SvtIllustTabState(parent: parent, svt: svt, plan: plan);
+      _SvtIllustTabState(parent: parent, svt: svt, plan: status);
 }
 
 class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
@@ -19,8 +19,8 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
   TabController _tabController;
 
   _SvtIllustTabState(
-      {ServantDetailPageState parent, Servant svt, ServantPlan plan})
-      : super(parent: parent, svt: svt, plan: plan);
+      {ServantDetailPageState parent, Servant svt, ServantStatus plan})
+      : super(parent: parent, svt: svt, status: plan);
 
   @override
   void initState() {

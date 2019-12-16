@@ -30,30 +30,31 @@ class Servant {
     this.valentineCraft,
   });
 
-  Map<String, int> getAllCost(ServantPlan plan, {bool planned = true}) {
-    if (planned && (plan == null || plan.favorite == false)) {
+  /// [cur]=[target]=null: all
+  /// [cur.favorite]=[target.favorite]=true
+  /// else empty
+  Map<String, int> getAllCost(ServantPlan cur, ServantPlan target) {
+    if (cur == null && target == null) {
+      return sumDict([getAscensionCost(), getSkillCost(), getDressCost()]);
+    } else if (cur?.favorite == true && target?.favorite == true) {
+      return sumDict([
+        getAscensionCost(cur: cur.ascension, target: target.ascension),
+        getSkillCost(cur: cur.skills, target: target.skills),
+        getDressCost(cur: cur.dress, target: target.dress)
+      ]);
+    } else {
       return {};
     }
-    Map<String, int> cost = {};
-    List<Map<String, int>> all = [
-      getAscensionCost(lv: planned ? plan.ascensionLv : null),
-      getSkillCost(lv: planned ? plan.skillLv : null),
-      getDressCost(lv: planned ? plan.dressLv : null)
-    ];
-    all.forEach((e) => e.forEach((item, num) {
-          cost[item] = (cost[item] ?? 0) + num;
-        }));
-    return cost;
   }
 
-  Map<String, int> getAscensionCost({List<int> lv}) {
+  Map<String, int> getAscensionCost({int cur = 0, target = 4}) {
     Map<String, int> cost = {};
     if (itemCost == null || itemCost.ascension == null) {
       return cost;
     }
-    lv = lv ?? [0, 4];
-    int start = lv[0], end = lv[1];
-    for (int i = start; i < end; i++) {
+//    lv = lv ?? [0, 4];
+//    int cur = lv[0], target = lv[1];
+    for (int i = cur; i < target; i++) {
       for (var item in itemCost.ascension[i]) {
         cost[item.name] = (cost[item.name] ?? 0) + item.num;
       }
@@ -61,15 +62,17 @@ class Servant {
     return cost;
   }
 
-  Map<String, int> getSkillCost({List<List<int>> lv}) {
+  Map<String, int> getSkillCost(
+      {List<int> cur = const [1, 1, 1],
+      List<int> target = const [10, 10, 10]}) {
     Map<String, int> cost = {};
     if (itemCost == null || itemCost.skill == null) {
       return cost;
     }
-    lv = lv ?? List.generate(3, (i) => [1, 10]);
+//    lv = lv ?? List.generate(3, (i) => [1, 10]);
     for (int i = 0; i < 3; i++) {
-      int start = lv[i][0], end = lv[i][1];
-      for (int j = start - 1; j < end - 1; j++) {
+//      int start = cur[i], end = target[i];
+      for (int j = cur[i] - 1; j < target[i] - 1; j++) {
         for (var item in itemCost.skill[j]) {
           cost[item.name] = (cost[item.name] ?? 0) + item.num;
         }
@@ -78,15 +81,18 @@ class Servant {
     return cost;
   }
 
-  Map<String, int> getDressCost({List<List<int>> lv}) {
+  Map<String, int> getDressCost({List<int> cur, List<int> target}) {
     Map<String, int> cost = {};
     if (itemCost == null || itemCost.dress == null) {
       return cost;
     }
-    lv = lv ?? List.generate(itemCost.dress.length, (i) => [0, 1]);
+    cur ??= List.generate(itemCost.dress.length, (i) => 0);
+    target ??= List.generate(itemCost.dress.length, (i) => 1);
+
+//    lv = lv ?? List.generate(itemCost.dress.length, (i) => [0, 1]);
     for (int i = 0; i < itemCost.dress.length; i++) {
-      int start = lv[i][0], end = lv[i][1];
-      for (int j = start; j < end; j++) {
+//      int start = lv[i][0], end = lv[i][1];
+      for (int j = cur[i]; j < target[i]; j++) {
         for (var item in itemCost.dress[i]) {
           cost[item.name] = (cost[item.name] ?? 0) + item.num;
         }

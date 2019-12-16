@@ -53,7 +53,7 @@ class IntRangeValues extends RangeValues {
     return startInt + index;
   }
 
-  IntRangeValues(this.startInt, endInt, {this.interval = 1})
+  IntRangeValues(this.startInt, int endInt, {this.interval = 1})
       : assert(startInt != null &&
             endInt != null &&
             interval != null &&

@@ -172,7 +172,7 @@ String formatNumToString<T>(T number, [String style]) {
   }
 }
 
-num sum(Iterable<num> x) => x.fold(0, (p, c) => p + c);
+num sum(Iterable<num> x) => x.fold(0, (p, c) => (p ?? 0) + (c ?? 0));
 
 Map<K, V> sumDict<K, V extends num>(List<Map<K, V>> list) {
   Map<K, V> res = {};

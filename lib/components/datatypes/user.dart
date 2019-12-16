@@ -6,22 +6,17 @@ class User {
   @JsonKey(nullable: false)
   String name;
   String server;
-  Plans plans;
 
-  User({@required this.name, this.server, this.plans})
-      : assert(name != null && name.isNotEmpty) {
-    server ??= GameServer.cn;
-    plans ??= Plans();
-  }
+  // plans
 
-  factory User.fromJson(Map<String, dynamic> data) => _$UserFromJson(data);
+  Map<int, ServantStatus> servants;
+  int curPlanNo;
 
-  Map<String, dynamic> toJson() => _$UserToJson(this);
-}
+  /// Map<planNo, Map<SvtNo, SvtPlan>>
+  Map<int, Map<int, ServantPlan>> servantPlans;
 
-@JsonSerializable(anyMap: true)
-class Plans {
-  Map<int, ServantPlan> servants;
+  Map<int, ServantPlan> get curPlan2 =>
+      servantPlans.putIfAbsent(curPlanNo, () => {});
   Map<String, int> items;
   Map<String, LimitEventPlan> limitEvents;
 
@@ -31,88 +26,139 @@ class Plans {
   ///{'monthCn': [num1, num2, num3]}
   Map<String, List<int>> exchangeTickets;
 
-  Plans({
+  User({
+    @required this.name,
+    this.server,
     this.servants,
+    this.curPlanNo,
+    this.servantPlans,
     this.items,
     this.limitEvents,
     this.mainRecords,
     this.exchangeTickets,
-  }) {
+  }) : assert(name != null && name.isNotEmpty) {
+    server ??= GameServer.cn;
     servants ??= {};
+    curPlanNo ??= 0;
+    servantPlans ??= {};
     items ??= {};
     limitEvents ??= {};
     mainRecords ??= {};
     exchangeTickets ??= {};
   }
 
-  factory Plans.fromJson(Map<String, dynamic> data) => _$PlansFromJson(data);
+  factory User.fromJson(Map<String, dynamic> data) => _$UserFromJson(data);
 
-  Map<String, dynamic> toJson() => _$PlansToJson(this);
+  Map<String, dynamic> toJson() => _$UserToJson(this);
+}
+
+//@JsonSerializable(anyMap: true)
+//class Plans {
+//  Map<int, ServantStatus> servants;
+//  int curPlanNo;
+//
+//  /// Map<planNo, Map<SvtNo, SvtPlan>>
+//  Map<int, Map<int, ServantPlan>> servantPlans;
+//  Map<String, int> items;
+//  Map<String, LimitEventPlan> limitEvents;
+//
+//  /// {'chapter 1': [drops_switch,rewards_switch]}
+//  Map<String, List<bool>> mainRecords;
+//
+//  ///{'monthCn': [num1, num2, num3]}
+//  Map<String, List<int>> exchangeTickets;
+//
+//  Plans({
+//    this.servants,
+//    this.curPlanNo,
+//    this.servantPlans,
+//    this.items,
+//    this.limitEvents,
+//    this.mainRecords,
+//    this.exchangeTickets,
+//  }) {
+//    servants ??= {};
+//    curPlanNo ??= 0;
+//    servantPlans ??= {};
+//    items ??= {};
+//    limitEvents ??= {};
+//    mainRecords ??= {};
+//    exchangeTickets ??= {};
+//  }
+//
+//  factory Plans.fromJson(Map<String, dynamic> data) => _$PlansFromJson(data);
+//
+//  Map<String, dynamic> toJson() => _$PlansToJson(this);
+//}
+
+@JsonSerializable()
+class ServantStatus {
+  ServantPlan curVal;
+  List<bool> skillEnhanced; //length=3
+  int treasureDeviceEnhanced;
+  int treasureDeviceLv;
+
+  ServantStatus({
+    this.curVal,
+    this.skillEnhanced,
+    this.treasureDeviceEnhanced,
+    this.treasureDeviceLv,
+  }) {
+    curVal ??= ServantPlan();
+    skillEnhanced ??= List.filled(3, null);
+    // treasureDeviceEnhanced??=null;
+    treasureDeviceLv ??= 1;
+  }
+
+  factory ServantStatus.fromJson(Map<String, dynamic> data) =>
+      _$ServantStatusFromJson(data);
+
+  Map<String, dynamic> toJson() => _$ServantStatusToJson(this);
 }
 
 @JsonSerializable()
 class ServantPlan {
-  List<int> ascensionLv;
-  List<List<int>> skillLv;
-  List<List<int>> dressLv;
-  List<int> grailLv;
-  List<bool> skillEnhanced;
-  int treasureDeviceEnhanced;
-  int treasureDeviceLv;
   bool favorite;
+  int ascension;
+  List<int> skills; // length 3
+  List<int> dress;
+  int grail;
+
+  ServantPlan({
+    this.favorite,
+    this.ascension,
+    this.skills,
+    this.dress,
+    this.grail,
+  }) {
+    favorite ??= false;
+    ascension ??= 0;
+    skills ??= List.filled(3, 1);
+    dress ??= [];
+    grail ??= 0;
+  }
+
+  void reset() {
+    favorite = false;
+    ascension = 0;
+    skills.fillRange(0, 3, 1);
+    dress.fillRange(0, dress.length, 0);
+    grail = 0;
+  }
+
+  void setMax({int skill = 10}) {
+    // not change grail lv
+    favorite = true;
+    ascension = 4;
+    skills.fillRange(0, 3, skill);
+    dress.fillRange(0, dress.length, 1);
+    // grail = grail;
+  }
 
   factory ServantPlan.fromJson(Map<String, dynamic> data) =>
       _$ServantPlanFromJson(data);
 
   Map<String, dynamic> toJson() => _$ServantPlanToJson(this);
-
-  ServantPlan({
-    this.ascensionLv,
-    this.skillLv,
-    this.dressLv,
-    this.grailLv,
-    this.skillEnhanced,
-    this.treasureDeviceEnhanced,
-    this.treasureDeviceLv,
-    this.favorite = false,
-  }) {
-    ascensionLv ??= [0, 0];
-    skillLv ??= List.generate(3, (i) => [1, 1]);
-    dressLv ??= [];
-    grailLv ??= [0, 0];
-    skillEnhanced ??= [null, null, null];
-    // treasureDeviceEnhanced??=null;
-    treasureDeviceLv ??= 1;
-    favorite ??= false;
-  }
-
-  void reset() {
-    ascensionLv = [0, 0];
-    skillLv = List.generate(3, (i) => [1, 1]);
-    dressLv = [];
-    grailLv = [0, 0];
-    skillEnhanced ??= [null, null, null];
-    treasureDeviceEnhanced = null;
-    treasureDeviceLv = 1;
-    favorite = false;
-  }
-
-  void planMax([bool max9 = false]) {
-    ascensionLv.last = 4;
-    skillLv.forEach((e) {
-      e.last = max9 ? 9 : 10;
-      e.first = min(e.first, e.last);
-    });
-    dressLv.forEach((e) => e.last = 1);
-    favorite = true;
-  }
-
-  void allMax() {
-    ascensionLv = [4, 4];
-    skillLv.forEach((e) => e.fillRange(0, 2, 10));
-    dressLv.forEach((e) => e.fillRange(0, 2, 1));
-    favorite = true;
-  }
 }
 
 @JsonSerializable()
@@ -169,17 +215,20 @@ class ItemsOfSvts {
 
   ItemsOfSvts();
 
-  void update(GameData gameData, Map<int, ServantPlan> plans) {
+  void update(
+      Map<int, ServantStatus> curPlan, Map<int, ServantPlan> targetPlan) {
     planCountBySvt = {};
     allCountBySvt = {};
     planCountByItem = {};
     allCountByItem = {};
-    gameData.servants.forEach((no, svt) {
-      if (plans != null && plans[no]?.favorite == true) {
+    db.gameData.servants.forEach((no, svt) {
+      final cur = curPlan[no]?.curVal, target = targetPlan[no];
+      if (cur?.favorite == true && target?.favorite == true) {
         planCountBySvt[no] = PartSet<Map<String, int>>(
-            ascension: svt.getAscensionCost(lv: plans[no].ascensionLv),
-            skill: svt.getSkillCost(lv: plans[no].skillLv),
-            dress: svt.getDressCost(lv: plans[no].dressLv));
+            ascension: svt.getAscensionCost(
+                cur: cur.ascension, target: target.ascension),
+            skill: svt.getSkillCost(cur: cur.skills, target: target.skills),
+            dress: svt.getDressCost(cur: cur.dress, target: target.dress));
       } else {
         planCountBySvt[no] = PartSet<Map<String, int>>(k: () => {});
       }
@@ -189,24 +238,25 @@ class ItemsOfSvts {
           dress: svt.getDressCost());
     });
     // cal items
-    for (String itemKey in gameData.items.keys) {
+    for (String itemKey in db.gameData.items.keys) {
       PartSet<Map<int, int>> planOneItem = PartSet<Map<int, int>>(k: () => {}),
           allOneItem = PartSet<Map<int, int>>(k: () => {});
+
       planCountBySvt.forEach((no, value) {
         planOneItem.ascension[no] =
-            (planOneItem.ascension[no] ?? 0) + (value.ascension[itemKey] ?? 0);
+            sum([planOneItem.ascension[no], value.ascension[itemKey]]);
         planOneItem.skill[no] =
-            (planOneItem.skill[no] ?? 0) + (value.skill[itemKey] ?? 0);
+            sum([planOneItem.skill[no], value.skill[itemKey]]);
         planOneItem.dress[no] =
-            (planOneItem.dress[no] ?? 0) + (value.dress[itemKey] ?? 0);
+            sum([planOneItem.dress[no], value.dress[itemKey]]);
       });
       allCountBySvt.forEach((no, value) {
         allOneItem.ascension[no] =
-            (allOneItem.ascension[no] ?? 0) + (value.ascension[itemKey] ?? 0);
+            sum([allOneItem.ascension[no], value.ascension[itemKey]]);
         allOneItem.skill[no] =
-            (allOneItem.skill[no] ?? 0) + (value.skill[itemKey] ?? 0);
+            sum([allOneItem.skill[no], value.skill[itemKey]]);
         allOneItem.dress[no] =
-            (allOneItem.dress[no] ?? 0) + (value.dress[itemKey] ?? 0);
+            sum([allOneItem.dress[no], value.dress[itemKey]]);
       });
       planCountByItem[itemKey] = planOneItem
         ..forEach((e) => e.removeWhere((k, v) => v == 0));

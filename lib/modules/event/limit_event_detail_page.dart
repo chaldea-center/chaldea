@@ -24,7 +24,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     event = db.gameData.events.limitEvents[widget.name] ??
         LimitEvent(name: 'empty event');
     plan =
-        db.curPlan.limitEvents.putIfAbsent(event.name, () => LimitEventPlan());
+        db.curUser.limitEvents.putIfAbsent(event.name, () => LimitEventPlan());
     if (event.lottery != null) {
       _lotteryController = TextEditingController(text: plan.lottery.toString());
     }

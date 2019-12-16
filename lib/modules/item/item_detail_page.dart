@@ -52,7 +52,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                 .push(SplitRoute(builder: (context) => ServantDetailPage(svt)))
                 .then((_) {
               db.runtimeData.itemsOfSvts
-                  .update(db.gameData, db.curPlan.servants);
+                  .update(db.curUser.servants, db.curUser.curPlan2);
               widget.parent?.setState(() {});
             });
           },

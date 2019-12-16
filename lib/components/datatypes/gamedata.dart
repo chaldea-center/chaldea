@@ -10,6 +10,7 @@ class GameData {
   Map<String, Item> items;
   Map<String, GameIcon> icons;
   Events events;
+  GLPKData glpk;
 
   GameData({
     this.version,
@@ -19,6 +20,7 @@ class GameData {
     this.items,
     this.icons,
     this.events,
+    this.glpk,
   }) {
     version ??= '0';
     servants ??= {};
@@ -27,6 +29,7 @@ class GameData {
     items ??= {};
     icons ??= {};
     events ??= Events();
+    glpk ??= GLPKData();
   }
 
   factory GameData.fromJson(Map<String, dynamic> data) =>

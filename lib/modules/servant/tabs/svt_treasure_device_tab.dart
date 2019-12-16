@@ -6,19 +6,19 @@ import 'svt_tab_base.dart';
 
 class SvtTreasureDeviceTab extends SvtTabBaseWidget {
   SvtTreasureDeviceTab(
-      {Key key, ServantDetailPageState parent, Servant svt, ServantPlan plan})
-      : super(key: key, parent: parent, svt: svt, plan: plan);
+      {Key key, ServantDetailPageState parent, Servant svt, ServantStatus plan})
+      : super(key: key, parent: parent, svt: svt, status: plan);
 
   @override
   _SvtTreasureDeviceTabState createState() =>
-      _SvtTreasureDeviceTabState(parent: parent, svt: svt, plan: plan);
+      _SvtTreasureDeviceTabState(parent: parent, svt: svt, plan: status);
 }
 
 class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab>
     with AutomaticKeepAliveClientMixin {
   _SvtTreasureDeviceTabState(
-      {ServantDetailPageState parent, Servant svt, ServantPlan plan})
-      : super(parent: parent, svt: svt, plan: plan);
+      {ServantDetailPageState parent, Servant svt, ServantStatus plan})
+      : super(parent: parent, svt: svt, status: plan);
 
   Widget buildHeader(TreasureDevice np, int tdNo) {
     Widget tdHeader = CustomTile(
@@ -99,7 +99,7 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab>
               }),
               onPressed: (no) {
                 setState(() {
-                  plan.treasureDeviceEnhanced = no;
+                  status.treasureDeviceEnhanced = no;
                 });
               },
             ),
@@ -147,7 +147,7 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab>
     if (svt.treasureDevice == null || svt.treasureDevice.length == 0) {
       return Container(child: Center(child: Text('No NobelPhantasm Data')));
     }
-    int tdNo = plan.treasureDeviceEnhanced ??
+    int tdNo = status.treasureDeviceEnhanced ??
         (svt.treasureDevice.first.enhanced ? 1 : 0);
     final np = svt.treasureDevice[tdNo];
     return ListView(

@@ -232,7 +232,7 @@ class ServantListPageState extends State<ServantListPage> {
     List<Servant> shownList = [];
     beforeFiltrate();
     db.gameData.servants.forEach((no, svt) {
-      if (!filterData.favorite || db.curPlan.servants[no]?.favorite == true) {
+      if (!filterData.favorite || db.curUser.servants[no]?.curVal?.favorite == true) {
         if (filtrateServant(svt)) {
           shownList.add(svt);
         }
@@ -253,14 +253,14 @@ class ServantListPageState extends State<ServantListPage> {
         itemCount: shownList.length,
         itemBuilder: (context, index) {
           final svt = shownList[index];
-          final plan = db.curPlan.servants[svt.no];
+          final plan = db.curUser.servants[svt.no];
           String text = '';
-          if (plan?.favorite == true) {
+          if (plan?.curVal?.favorite == true) {
             text = '${plan.treasureDeviceLv}宝'
-                '${plan.ascensionLv[0]}-'
-                '${plan.skillLv[0][0]}/'
-                '${plan.skillLv[1][0]}/'
-                '${plan.skillLv[2][0]}';
+                '${plan.curVal.ascension}-'
+                '${plan.curVal.skills[0]}/'
+                '${plan.curVal.skills[1]}/'
+                '${plan.curVal.skills[2]}';
           }
           return CustomTile(
             leading: SizedBox(
@@ -294,14 +294,14 @@ class ServantListPageState extends State<ServantListPage> {
         childAspectRatio: 1,
         controller: _scrollController,
         children: shownList.map((svt) {
-          final plan = db.curPlan.servants[svt.no];
+          final plan = db.curUser.servants[svt.no];
           String text;
-          if (plan?.favorite == true) {
+          if (plan?.curVal?.favorite == true) {
             text = '${plan.treasureDeviceLv}\n'
-                '${plan.ascensionLv[0]}-'
-                '${plan.skillLv[0][0]}/'
-                '${plan.skillLv[1][0]}/'
-                '${plan.skillLv[2][0]}';
+                '${plan.curVal.ascension}-'
+                '${plan.curVal.skills[0]}/'
+                '${plan.curVal.skills[1]}/'
+                '${plan.curVal.skills[2]}';
           }
           return Center(
             child: Padding(
