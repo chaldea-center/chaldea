@@ -347,7 +347,7 @@ Map<String, dynamic> _$GLPKDataToJson(GLPKData instance) => <String, dynamic>{
 GLPKParams _$GLPKParamsFromJson(Map<String, dynamic> json) {
   return GLPKParams(
     objRows: (json['objRows'] as List)?.map((e) => e as String)?.toList(),
-    objNum: (json['objNum'] as List)?.map((e) => e as int)?.toList(),
+    objNums: (json['objNums'] as List)?.map((e) => e as int)?.toList(),
     minCoeff: json['minCoeff'] as int,
     maxSortOrder: json['maxSortOrder'] as int,
     coeffPrio: json['coeffPrio'] as bool,
@@ -358,7 +358,7 @@ GLPKParams _$GLPKParamsFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$GLPKParamsToJson(GLPKParams instance) =>
     <String, dynamic>{
       'objRows': instance.objRows,
-      'objNum': instance.objNum,
+      'objNums': instance.objNums,
       'minCoeff': instance.minCoeff,
       'maxSortOrder': instance.maxSortOrder,
       'coeffPrio': instance.coeffPrio,

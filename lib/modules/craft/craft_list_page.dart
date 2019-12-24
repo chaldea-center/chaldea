@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:flutter/scheduler.dart';
 
 import 'craft_detail_page.dart';
 import 'craft_filter_page.dart';
@@ -13,7 +12,7 @@ class CraftListPage extends StatefulWidget {
 class CraftListPageState extends State<CraftListPage> {
   CraftFilterData filterData;
   TextEditingController _inputController = TextEditingController();
-  FocusNode _inputFocusNode = FocusNode(), _blankNode = FocusNode();
+  FocusNode _inputFocusNode = FocusNode();
   ScrollController _scrollController = ScrollController();
 
   //temp, calculate once build() called.
@@ -25,12 +24,6 @@ class CraftListPageState extends State<CraftListPage> {
     super.initState();
     filterData = db.userData.craftFilter;
     filterData.filterString = '';
-    _inputFocusNode.addListener(() {
-      if (!_inputFocusNode.hasFocus) {
-        SchedulerBinding.instance.addPostFrameCallback(
-            (_) => FocusScope.of(context).requestFocus(_blankNode));
-      }
-    });
   }
 
   @override

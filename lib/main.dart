@@ -30,9 +30,9 @@ void main() async {
       Catcher(Chaldea(), releaseConfig: catcherOptions);
     },
     zoneSpecification: ZoneSpecification(
-      print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
-        // catch all print msg(line)
-      },
+//      print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
+//        // catch all print msg(line)
+//      },
     ),
     onError: (error, stackTrace) async {
       // called in release mode

@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:flutter/scheduler.dart';
 
 import 'cmd_code_detail_page.dart';
 import 'cmd_code_filter_page.dart';
@@ -13,7 +12,7 @@ class CmdCodeListPage extends StatefulWidget {
 class CmdCodeListPageState extends State<CmdCodeListPage> {
   CmdCodeFilterData filterData;
   TextEditingController _inputController = TextEditingController();
-  FocusNode _inputFocusNode = FocusNode(), _blankNode = FocusNode();
+  FocusNode _inputFocusNode = FocusNode();
   ScrollController _scrollController = ScrollController();
 
   TextFilter __textFilter = TextFilter();
@@ -23,12 +22,6 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
     super.initState();
     filterData = db.userData.cmdCodeFilter;
     filterData.filterString = '';
-    _inputFocusNode.addListener(() {
-      if (!_inputFocusNode.hasFocus) {
-        SchedulerBinding.instance.addPostFrameCallback(
-            (_) => FocusScope.of(context).requestFocus(_blankNode));
-      }
-    });
   }
 
   @override

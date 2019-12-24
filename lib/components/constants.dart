@@ -7,6 +7,9 @@ const String kGameDataFilename = 'dataset.json';
 const String kSupportTeamEmailAddress = 'support@narumi.cc';
 const String kDefaultDatasetAssetKey = 'res/data/dataset.zip';
 
+//
+final FocusNode kBlankNode = FocusNode();
+
 //const value in class
 class LangCode {
   // code must match S.of(context).language in every .arb file

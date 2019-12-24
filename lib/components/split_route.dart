@@ -21,14 +21,22 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
         super(settings: settings ?? RouteSettings());
 
   ///if [builder] is null, just pop without push
-  static void popAndPush(BuildContext context,
+  static Future popAndPush(BuildContext context,
       {WidgetBuilder builder, bool isDetail = true}) {
     Navigator.of(context).popUntil((route) => route.settings.isInitialRoute);
     if (builder != null) {
-      Navigator.of(context).push(SplitRoute(
-          builder: builder,
-          settings: RouteSettings(isInitialRoute: !isDetail)));
+      return push(context, builder: builder, isDetail: isDetail);
+    } else {
+      return Future.value(null);
     }
+  }
+
+  static Future push(BuildContext context,
+      {WidgetBuilder builder, bool isDetail = true}) {
+    assert(builder != null);
+    FocusScope.of(context).unfocus();
+    return Navigator.of(context).push(SplitRoute(
+        builder: builder, settings: RouteSettings(isInitialRoute: !isDetail)));
   }
 
   static Widget createMasterPage(BuildContext context, Widget child) {
@@ -65,7 +73,8 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
             ? SizedBox(
                 height: MediaQuery.of(context).size.height,
                 width: detailWidth,
-                child: child)
+                child: child,
+              )
             : child,
       ),
     );
@@ -100,7 +109,7 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
   /// but this getter is called only once. thus the error is:
   /// when portrait to landscape, detail-page is still opaque(black master part)
   @override
-  bool get opaque =>settings.isInitialRoute == true;
+  bool get opaque => settings.isInitialRoute == true;
 
   @override
   Duration get transitionDuration => Duration(milliseconds: 250);

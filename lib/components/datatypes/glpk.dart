@@ -30,7 +30,7 @@ class GLPKData {
 @JsonSerializable()
 class GLPKParams {
   List<String> objRows;
-  List<int> objNum;
+  List<int> objNums;
   int minCoeff;
   int maxSortOrder;
   bool coeffPrio;
@@ -40,14 +40,16 @@ class GLPKParams {
 
   GLPKParams({
     this.objRows,
-    this.objNum,
+    this.objNums,
     this.minCoeff,
     this.maxSortOrder,
     this.coeffPrio,
     this.useCn,
   }) {
     objRows ??= [];
-    objNum ??= [];
+    objNums ??= [];
+    controllers =
+        objNums.map((e) => TextEditingController(text: e.toString())).toList();
     // minCoeff ??= 0;
     //  maxSortOrder??=null;// Infinity
     // coeffPrio ??= true;
@@ -56,12 +58,14 @@ class GLPKParams {
 
   void addOne(String row, [int n = 0]) {
     objRows.add(row);
-    objNum.add(n);
+    objNums.add(n);
+    controllers.add(TextEditingController(text: n.toString()));
   }
 
   void removeAt(int index) {
     objRows.removeAt(index);
-    objNum.removeAt(index);
+    objNums.removeAt(index);
+    controllers.removeAt(index);
   }
 
   factory GLPKParams.fromJson(Map<String, dynamic> data) =>
@@ -70,6 +74,7 @@ class GLPKParams {
   Map<String, dynamic> toJson() => _$GLPKParamsToJson(this);
 }
 
+/// TODO: for one X_i: place key, value(num), cost(ap), items map<item key, num>
 @JsonSerializable()
 class GLPKSolution {
   int totalEff;
@@ -86,6 +91,13 @@ class GLPKSolution {
     this.solutionKeys,
     this.solutionValues,
   });
+
+  void clear() {
+    totalEff = null;
+    totalNum = null;
+    solutionKeys.clear();
+    solutionValues.clear();
+  }
 
   void sortByValue() {
     Map<String, int> dict = {};

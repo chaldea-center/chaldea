@@ -12,12 +12,10 @@ class ItemListPage extends StatefulWidget {
 
 class ItemListPageState extends State<ItemListPage>
     with SingleTickerProviderStateMixin {
-  List<int> categories = [1, 2, 3];
-
   //controller
   TabController _tabController;
-
   bool filtered = false;
+  final List<int> categories = [1, 2, 3];
 
   @override
   void deactivate() {
@@ -161,7 +159,6 @@ class _ItemListTabState extends State<ItemListTab> {
 
         final highlightStyle =
             TextStyle(color: enough ? null : Colors.redAccent);
-
         Widget textField = EnsureVisibleWhenFocused(
             child: TextField(
               maxLength: isQp ? 20 : 5,

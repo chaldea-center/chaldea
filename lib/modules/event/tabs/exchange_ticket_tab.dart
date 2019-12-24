@@ -21,11 +21,9 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     tickets.sort((a, b) {
       return (a.monthCn).compareTo(b.monthCn) * (widget.reverse ? -1 : 1);
     });
-    return ListView.separated(
-        itemCount: tickets.length,
-        separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
-        itemBuilder: (context, index) {
-          final ticket = tickets[index];
+    return ListView(
+      children: divideTiles(
+        tickets.map((ticket) {
           final plan = db.curUser.exchangeTickets;
           plan[ticket.monthCn] ??= [0, 0, 0];
           List<Widget> trailing = [];
@@ -53,18 +51,21 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
           return CustomTile(
             contentPadding: EdgeInsets.fromLTRB(16, 8, 0, 8),
             title: Text(ticket.monthCn),
-            subtitle: AutoSizeText('max ${ticket.days}\n${ticket.monthJp}(JP)',
+            subtitle: AutoSizeText('JP: ${ticket.monthJp}\nmax: ${ticket.days}',
                 maxLines: 2),
             color: MyColors.setting_tile,
             trailing: ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: 40),
+              constraints: BoxConstraints(maxHeight: 48),
               child: Row(
                   mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: trailing),
             ),
           );
-        });
+        }),
+        divider: Divider(height: 1, indent: 16),
+      ).toList(),
+    );
   }
 
   Widget buildCheckedItem(String iconKey, bool checked) {
@@ -85,21 +86,33 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
 
   Widget buildDropDownMenu(
       {@required int value, @required int maxValue, void onChanged(int)}) {
-    return DropdownButton<int>(
-        value: value,
-        items: List.generate(maxValue + 1, (i) {
-          int v = i == 0 ? 0 : maxValue + 1 - i;
-          return DropdownMenuItem(
-            value: v,
-            child: SizedBox(
-              width: 20,
-              child: Text(
-                v == 0 ? '' : v.toString(),
-                textAlign: TextAlign.right,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: <Widget>[
+        DropdownButton<int>(
+          isDense: true,
+          value: value,
+          items: List.generate(maxValue + 1, (i) {
+            int v = i == 0 ? 0 : maxValue + 1 - i;
+            return DropdownMenuItem(
+              value: v,
+              child: SizedBox(
+                width: 20,
+                child: Text(
+                  v == 0 ? '' : v.toString(),
+                  textAlign: TextAlign.right,
+                ),
               ),
-            ),
-          );
-        }),
-        onChanged: onChanged);
+            );
+          }),
+          onChanged: onChanged,
+        ),
+        DefaultTextStyle(
+          style: Theme.of(context).textTheme.body1,
+          child: Text('1230', maxLines: 1),
+        )
+      ],
+    );
   }
 }

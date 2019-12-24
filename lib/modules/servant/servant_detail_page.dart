@@ -39,24 +39,25 @@ class ServantDetailPageState extends State<ServantDetailPage>
       _builders['宝具'] = (context) => SvtTreasureDeviceTab(parent: this);
     }
     _builders['资料'] = (context) => SvtInfoTab(parent: this);
-    final getDefaultPage = (String name) {
-      return Center(
-        child: FlatButton(
-          child: Text(name),
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => BlankPage(showProgress: true),
-              ),
-            );
-          },
-        ),
-      );
-    };
 
     _builders['卡面'] = (context) => SvtIllustTab(parent: this);
 
-//    _builders['语音'] = (context) => getDefaultPage('语音');
+    // _builders['语音'] = (context) => getDefaultTab('语音');
+  }
+
+  Widget getDefaultTab(String name) {
+    return Center(
+      child: FlatButton(
+        child: Text(name),
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => BlankPage(showProgress: true),
+            ),
+          );
+        },
+      ),
+    );
   }
 
   @override

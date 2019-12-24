@@ -1,5 +1,4 @@
 import 'package:chaldea/components/components.dart';
-import 'package:flutter/scheduler.dart';
 
 import 'servant_detail_page.dart';
 import 'servant_filter_page.dart';
@@ -12,7 +11,7 @@ class ServantListPage extends StatefulWidget {
 class ServantListPageState extends State<ServantListPage> {
   SvtFilterData filterData;
   TextEditingController _inputController = TextEditingController();
-  FocusNode _inputFocusNode = FocusNode(), _blankNode = FocusNode();
+  FocusNode _inputFocusNode = FocusNode();
   ScrollController _scrollController = ScrollController();
 
   //temp, calculate once build() called.
@@ -23,12 +22,6 @@ class ServantListPageState extends State<ServantListPage> {
     super.initState();
     filterData = db.userData.svtFilter;
     filterData.filterString = '';
-    _inputFocusNode.addListener(() {
-      if (!_inputFocusNode.hasFocus) {
-        SchedulerBinding.instance.addPostFrameCallback(
-            (_) => FocusScope.of(context).requestFocus(_blankNode));
-      }
-    });
   }
 
   @override
@@ -232,7 +225,8 @@ class ServantListPageState extends State<ServantListPage> {
     List<Servant> shownList = [];
     beforeFiltrate();
     db.gameData.servants.forEach((no, svt) {
-      if (!filterData.favorite || db.curUser.servants[no]?.curVal?.favorite == true) {
+      if (!filterData.favorite ||
+          db.curUser.servants[no]?.curVal?.favorite == true) {
         if (filtrateServant(svt)) {
           shownList.add(svt);
         }

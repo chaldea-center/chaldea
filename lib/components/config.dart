@@ -18,13 +18,14 @@ import 'datatypes/datatypes.dart';
 ///  - app database
 ///  - user database
 class Database {
+  /// setState for root StatefulWidget
   VoidCallback onAppUpdate;
   UserData userData;
   GameData gameData;
   final RuntimeData runtimeData = RuntimeData();
+  static PathManager _paths = PathManager();
 
   User get curUser => userData.users[userData.curUser];
-  static PathManager _paths = PathManager();
 
   PathManager get paths => _paths;
 
@@ -82,7 +83,7 @@ class Database {
     try {
       String contents = getLocalFile(filename).readAsStringSync();
       result = jsonDecode(contents);
-      print('load json "$filename".');
+      print('loaded json "$filename".');
     } catch (e) {
       result = k == null ? null : k();
       print('error load "$filename", use defailt value. Error:\n$e');
