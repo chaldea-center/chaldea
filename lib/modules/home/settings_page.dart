@@ -125,35 +125,6 @@ class _SettingsPageState extends State<SettingsPage> {
             ],
           ),
           TileGroup(
-            header: 'Test(debug mode: ${kDebugMode ? 'on' : 'off'})',
-            children: <Widget>[
-              SwitchListTile.adaptive(
-                  title: Text('允许下载'),
-                  value: db.userData.testAllowDownload ?? true,
-                  onChanged: (v) async {
-                    db.userData.testAllowDownload = v;
-                    await db.checkNetwork();
-                    setState(() {});
-                  }),
-              ListTile(
-                title: Text('Master-Detail width'),
-                trailing: DropdownButtonHideUnderline(
-                  child: DropdownButton<double>(
-                    value: db.userData.criticalWidth ?? 768,
-                    items: <DropdownMenuItem<double>>[
-                      DropdownMenuItem(value: 768, child: Text('768')),
-                      DropdownMenuItem(value: 600, child: Text('600'))
-                    ],
-                    onChanged: (v) {
-                      db.userData.criticalWidth = v;
-                      db.onAppUpdate();
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
-          TileGroup(
             header: S.of(context).backup_restore,
             children: <Widget>[
               ListTile(
@@ -186,7 +157,36 @@ class _SettingsPageState extends State<SettingsPage> {
                     builder: (context) => AboutPage()),
               ),
             ],
-          )
+          ),
+          TileGroup(
+            header: 'Test(debug mode: ${kDebugMode ? 'on' : 'off'})',
+            children: <Widget>[
+              SwitchListTile.adaptive(
+                  title: Text('允许下载'),
+                  value: db.userData.testAllowDownload ?? true,
+                  onChanged: (v) async {
+                    db.userData.testAllowDownload = v;
+                    await db.checkNetwork();
+                    setState(() {});
+                  }),
+              ListTile(
+                title: Text('Master-Detail width'),
+                trailing: DropdownButtonHideUnderline(
+                  child: DropdownButton<double>(
+                    value: db.userData.criticalWidth ?? 768,
+                    items: <DropdownMenuItem<double>>[
+                      DropdownMenuItem(value: 768, child: Text('768')),
+                      DropdownMenuItem(value: 600, child: Text('600'))
+                    ],
+                    onChanged: (v) {
+                      db.userData.criticalWidth = v;
+                      db.onAppUpdate();
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );

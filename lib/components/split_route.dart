@@ -34,7 +34,7 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
   static Future push(BuildContext context,
       {WidgetBuilder builder, bool isDetail = true}) {
     assert(builder != null);
-    FocusScope.of(context).unfocus();
+    FocusScope.of(context).requestFocus(kBlankNode);
     return Navigator.of(context).push(SplitRoute(
         builder: builder, settings: RouteSettings(isInitialRoute: !isDetail)));
   }

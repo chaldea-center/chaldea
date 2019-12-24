@@ -27,6 +27,9 @@ class UserData {
   CraftFilterData craftFilter;
   CmdCodeFilterData cmdCodeFilter;
 
+  // glpk
+  GLPKParams glpkParams;
+
   UserData({
     this.language,
     this.criticalWidth,
@@ -40,6 +43,7 @@ class UserData {
     this.svtFilter,
     this.craftFilter,
     this.cmdCodeFilter,
+    this.glpkParams,
   }) {
     // not initiate language: auto-change language if not set yet.
     String defaultName = 'default';
@@ -55,6 +59,7 @@ class UserData {
     svtFilter ??= SvtFilterData();
     craftFilter ??= CraftFilterData();
     cmdCodeFilter ??= CmdCodeFilterData();
+    glpkParams ??= GLPKParams();
   }
 
   // json_serializable

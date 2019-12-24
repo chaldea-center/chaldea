@@ -328,9 +328,7 @@ GLPKData _$GLPKDataFromJson(Map<String, dynamic> json) {
     matrix: (json['matrix'] as List)
         ?.map((e) => (e as List)?.map((e) => e as num)?.toList())
         ?.toList(),
-    ia: (json['ia'] as List)?.map((e) => e as int)?.toList(),
-    ja: (json['ja'] as List)?.map((e) => e as int)?.toList(),
-    ar: (json['ar'] as List)?.map((e) => e as num)?.toList(),
+    cnMaxColNum: json['cnMaxColNum'] as int,
   );
 }
 
@@ -339,9 +337,7 @@ Map<String, dynamic> _$GLPKDataToJson(GLPKData instance) => <String, dynamic>{
       'rowNames': instance.rowNames,
       'coeff': instance.coeff,
       'matrix': instance.matrix,
-      'ia': instance.ia,
-      'ja': instance.ja,
-      'ar': instance.ar,
+      'cnMaxColNum': instance.cnMaxColNum,
     };
 
 GLPKParams _$GLPKParamsFromJson(Map<String, dynamic> json) {
@@ -351,7 +347,7 @@ GLPKParams _$GLPKParamsFromJson(Map<String, dynamic> json) {
     minCoeff: json['minCoeff'] as int,
     maxSortOrder: json['maxSortOrder'] as int,
     coeffPrio: json['coeffPrio'] as bool,
-    useCn: json['useCn'] as bool,
+    maxColNum: json['maxColNum'] as int,
   );
 }
 
@@ -362,17 +358,17 @@ Map<String, dynamic> _$GLPKParamsToJson(GLPKParams instance) =>
       'minCoeff': instance.minCoeff,
       'maxSortOrder': instance.maxSortOrder,
       'coeffPrio': instance.coeffPrio,
-      'useCn': instance.useCn,
+      'maxColNum': instance.maxColNum,
     };
 
 GLPKSolution _$GLPKSolutionFromJson(Map<String, dynamic> json) {
   return GLPKSolution(
     totalEff: json['totalEff'] as int,
     totalNum: json['totalNum'] as int,
-    solutionKeys:
-        (json['solutionKeys'] as List)?.map((e) => e as String)?.toList(),
-    solutionValues:
-        (json['solutionValues'] as List)?.map((e) => e as int)?.toList(),
+    variables: (json['variables'] as List)
+        ?.map((e) =>
+            e == null ? null : GLPKVariable.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
   );
 }
 
@@ -380,8 +376,26 @@ Map<String, dynamic> _$GLPKSolutionToJson(GLPKSolution instance) =>
     <String, dynamic>{
       'totalEff': instance.totalEff,
       'totalNum': instance.totalNum,
-      'solutionKeys': instance.solutionKeys,
-      'solutionValues': instance.solutionValues,
+      'variables': instance.variables,
+    };
+
+GLPKVariable _$GLPKVariableFromJson(Map<String, dynamic> json) {
+  return GLPKVariable(
+    name: json['name'] as String,
+    value: json['value'] as int,
+    coeff: json['coeff'] as int,
+    detail: (json['detail'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(k, e as int),
+    ),
+  );
+}
+
+Map<String, dynamic> _$GLPKVariableToJson(GLPKVariable instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'value': instance.value,
+      'coeff': instance.coeff,
+      'detail': instance.detail,
     };
 
 Servant _$ServantFromJson(Map<String, dynamic> json) {

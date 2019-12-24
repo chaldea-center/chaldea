@@ -1,4 +1,4 @@
-
+/// glpk solver
 function solve_glpk(data_str, params_str) {
     var t0 = new Date().getTime();
     var data = JSON.parse(data_str);
@@ -14,9 +14,13 @@ function solve_glpk(data_str, params_str) {
     var max_sort_order = params['maxSortOrder'] || Infinity;
     // if true, use coeff, minimize eff; else coeff=1, minimize num.
     var coeff_prio = params['coeffPrio'] || true;
-    // if cn server, decide to skip which cols.
-    var use_cn = params['useCn'] || false;
+    // for cn server, first col_num colums will be used.
+    var max_col_num = params['maxColNum'] || -1;
+    // end params
 
+    // main solver
+    var col_count = data.colNames.length;
+    var col_count = max_col_num > 0 ? Math.min(max_col_num, col_count) : col_count;
     // max_sort_order
     var filtered_cols = new Set();
     for (let i = 0; i < obj_rows.length; i++) {
@@ -39,8 +43,6 @@ function solve_glpk(data_str, params_str) {
         }
     }
     // console.log(`filtered: ${Array.from(filtered_cols)}`);
-
-    var col_count = data.colNames.length
 
     glp_set_print_func(console.log);
     var lp = glp_create_prob();
@@ -79,12 +81,7 @@ function solve_glpk(data_str, params_str) {
         var index = data.rowNames.indexOf(obj_rows[i]);
         console.log(`row[${index}]=${data.rowNames[index]}, num=${obj_num[i]}`);
         // console.log(`  row_data=${data.matrix[index]}`);
-
         for (var j = 0; j < col_count; j++) {
-            if (use_cn == true && (j >= 198 || j == 150)) {
-                // WARNING: update conditions if needed.
-                continue
-            }
             if (data.matrix[index][j] > 0 && filtered_cols.has(data.colNames[j]) && data.coeff[j] >= min_coeff) {
                 ia.push(i + 1);
                 ja.push(j + 1);
@@ -105,15 +102,24 @@ function solve_glpk(data_str, params_str) {
     console.log('------------ Summary ------------');
     var total_eff = glp_mip_obj_val(lp);
     var total_num = 0;
-    var solution_keys = new Array(), solution_values = new Array();
+    var variables = [];
 
-    for (var i = 0; i < col_count; i++) {
-        if (glp_mip_col_val(lp, i + 1) != 0) {
-            var v = glp_mip_col_val(lp, i + 1);
+    for (var col_no = 0; col_no < col_count; col_no++) {
+        if (glp_mip_col_val(lp, col_no + 1) != 0) {
+            var variable = { "value": null, "coeff": null, "detail": {} };
+            var v = glp_mip_col_val(lp, col_no + 1);
             total_num += v;
-            solution_keys.push(data.colNames[i]);
-            solution_values.push(v);
-            console.log(`result ${i + 1}, AP ${data.coeff[i]}, ${v} times. col=${data.colNames[i]}`);
+            variable["name"] = data.colNames[col_no];
+            variable["value"] = v;
+            variable["coeff"] = data.coeff[col_no];
+            for (let row_no = 0; row_no < obj_rows.length; row_no++) {
+                var index = data.rowNames.indexOf(obj_rows[row_no]);
+                if (data.matrix[index][col_no] > 0) {
+                    variable["detail"][obj_rows[row_no]] = Math.floor(v * data.coeff[col_no] / data.matrix[index][col_no]);
+                }
+            }
+            variables.push(variable);
+            console.log(`result ${col_no + 1}, AP ${data.coeff[col_no]}, ${v} times. col=${data.colNames[col_no]}`);
         }
     }
     console.log(`total_eff=${total_eff}, total_num=${total_num}.`); // min AP
@@ -123,7 +129,11 @@ function solve_glpk(data_str, params_str) {
     return {
         "totalEff": total_eff,
         "totalNum": total_num,
-        "solutionKeys": solution_keys,
-        "solutionValues": solution_values
+        "variables": variables
     }
+}
+
+function add_log(a) {
+    document.getElementById('logs').innerHTML += '<p>' + a.toString() + '</p>';
+    return a.toString();
 }

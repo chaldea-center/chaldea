@@ -25,7 +25,7 @@ class _GalleryPageState extends State<GalleryPage> {
   Map<String, GalleryItem> kAllGalleryItems;
 
   Future<Null> resolveSliderImageUrls({bool reload = false}) async {
-    final url = 'https://fgo.wiki/w/模板:自动取值轮播';
+    final url = 'https://fgo.wiki/w/%E6%A8%A1%E6%9D%BF:%E8%87%AA%E5%8A%A8%E5%8F%96%E5%80%BC%E8%BD%AE%E6%92%AD';
     String tryDecodeUrl(String url) {
       String url2;
       if (url.toLowerCase().startsWith(RegExp(r'http|fgo.wiki'))) {
@@ -101,10 +101,10 @@ class _GalleryPageState extends State<GalleryPage> {
           titleBuilder: (context) => S.of(context).event_title,
           icon: Icons.event_available,
           builder: (context) => EventListPage()),
-      GalleryItem.plan: GalleryItem(
-          name: GalleryItem.plan,
-          titleBuilder: (context) => 'Plan',
-          icon: Icons.description,
+      GalleryItem.drop_calculator: GalleryItem(
+          name: GalleryItem.drop_calculator,
+          titleBuilder: (context) => S.of(context).drop_calculator,
+          icon: Icons.pin_drop,
           builder: (context) => DropCalculatorPage()),
       GalleryItem.more: GalleryItem(
           name: GalleryItem.more,

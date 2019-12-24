@@ -28,6 +28,7 @@ class S implements WidgetsLocalizations {
   String get craft_essential => "Craft Essential";
   String get cur_account => "Current Account";
   String get delete => "Delete";
+  String get drop_calculator => "Drop Calc";
   String get edit => "Edit";
   String get event_title => "Event";
   String get gallery_tab_name => "Home";
@@ -196,6 +197,8 @@ class $zh extends S {
   String get language => "简体中文";
   @override
   String get delete => "删除";
+  @override
+  String get drop_calculator => "掉落速查";
   @override
   String get servant => "从者";
   @override

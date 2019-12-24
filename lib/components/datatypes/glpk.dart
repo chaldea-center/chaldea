@@ -6,18 +6,14 @@ class GLPKData {
   List<String> rowNames;
   List<num> coeff;
   List<List<num>> matrix;
-  List<int> ia;
-  List<int> ja;
-  List<num> ar;
+  int cnMaxColNum;
 
   GLPKData({
     this.colNames,
     this.rowNames,
     this.coeff,
     this.matrix,
-    this.ia,
-    this.ja,
-    this.ar,
+    this.cnMaxColNum,
   });
 
   factory GLPKData.fromJson(Map<String, dynamic> data) =>
@@ -26,17 +22,17 @@ class GLPKData {
   Map<String, dynamic> toJson() => _$GLPKDataToJson(this);
 }
 
-/// for data_str and params_str
+/// for solve_glpk(data_str and params_str)
 @JsonSerializable()
 class GLPKParams {
+  @JsonKey(ignore: true)
+  List<TextEditingController> controllers;
   List<String> objRows;
   List<int> objNums;
   int minCoeff;
   int maxSortOrder;
   bool coeffPrio;
-  bool useCn;
-  @JsonKey(ignore: true)
-  List<TextEditingController> controllers;
+  int maxColNum;
 
   GLPKParams({
     this.objRows,
@@ -44,28 +40,35 @@ class GLPKParams {
     this.minCoeff,
     this.maxSortOrder,
     this.coeffPrio,
-    this.useCn,
+    this.maxColNum,
   }) {
     objRows ??= [];
     objNums ??= [];
-    controllers =
-        objNums.map((e) => TextEditingController(text: e.toString())).toList();
-    // minCoeff ??= 0;
-    //  maxSortOrder??=null;// Infinity
-    // coeffPrio ??= true;
-    // useCn ??= false;
+    minCoeff ??= 0;
+    //  maxSortOrder ??= null; // js Infinity
+    coeffPrio ??= true;
+    maxColNum ??= -1;
+    // controllers ??= null;
+  }
+
+  void enableControllers() {
+    if (controllers?.length != objNums.length) {
+      controllers = objNums
+          .map((e) => TextEditingController(text: e.toString()))
+          .toList();
+    }
   }
 
   void addOne(String row, [int n = 0]) {
     objRows.add(row);
     objNums.add(n);
-    controllers.add(TextEditingController(text: n.toString()));
+    controllers?.add(TextEditingController(text: n.toString()));
   }
 
   void removeAt(int index) {
     objRows.removeAt(index);
     objNums.removeAt(index);
-    controllers.removeAt(index);
+    controllers?.removeAt(index);
   }
 
   factory GLPKParams.fromJson(Map<String, dynamic> data) =>
@@ -74,41 +77,41 @@ class GLPKParams {
   Map<String, dynamic> toJson() => _$GLPKParamsToJson(this);
 }
 
-/// TODO: for one X_i: place key, value(num), cost(ap), items map<item key, num>
 @JsonSerializable()
 class GLPKSolution {
   int totalEff;
   int totalNum;
-  List<String> solutionKeys; // quest_name
-  List<int> solutionValues;
+  List<GLPKVariable> variables;
 
-  factory GLPKSolution.fromJson(Map<String, dynamic> data) =>
-      _$GLPKSolutionFromJson(data);
-
-  GLPKSolution({
-    this.totalEff,
-    this.totalNum,
-    this.solutionKeys,
-    this.solutionValues,
-  });
+  GLPKSolution({this.totalEff, this.totalNum, this.variables});
 
   void clear() {
     totalEff = null;
     totalNum = null;
-    solutionKeys.clear();
-    solutionValues.clear();
+    variables.clear();
   }
 
   void sortByValue() {
-    Map<String, int> dict = {};
-    for (var i = 0; i < solutionKeys.length; i++) {
-      dict[solutionKeys[i]] = solutionValues[i];
-    }
-    solutionKeys.sort((a, b) {
-      return -(dict[a] - dict[b]);
-    });
-    solutionValues = solutionKeys.map((e) => dict[e]).toList();
+    variables.sort((a, b) => b.value - a.value);
   }
 
+  factory GLPKSolution.fromJson(Map<String, dynamic> data) =>
+      _$GLPKSolutionFromJson(data);
+
   Map<String, dynamic> toJson() => _$GLPKSolutionToJson(this);
+}
+
+@JsonSerializable()
+class GLPKVariable {
+  String name;
+  int value;
+  int coeff;
+  Map<String, int> detail;
+
+  GLPKVariable({this.name, this.value, this.coeff, this.detail});
+
+  factory GLPKVariable.fromJson(Map<String, dynamic> data) =>
+      _$GLPKVariableFromJson(data);
+
+  Map<String, dynamic> toJson() => _$GLPKVariableToJson(this);
 }
