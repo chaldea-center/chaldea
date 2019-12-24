@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:chaldea/components/components.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_picker/flutter_picker.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 class DropCalculatorPage extends StatefulWidget {
   @override
@@ -12,10 +9,9 @@ class DropCalculatorPage extends StatefulWidget {
 }
 
 class _DropCalculatorPageState extends State<DropCalculatorPage> {
-  final flutterWebViewPlugin = FlutterWebviewPlugin();
+  final solver = GLPKSolver();
   GLPKParams params;
-  GLPKSolution result;
-  bool solverReady; // launch only once
+  GLPKSolution solution;
   Map<String, List<String>> pickerData = {};
 
   String getItemCategory(String itemKey) {
@@ -47,13 +43,12 @@ class _DropCalculatorPageState extends State<DropCalculatorPage> {
       params.addOne(pickerData.values.first[1], 50);
     }
     params.enableControllers();
-    _loadLib();
+    solver.initial().then((_) => setState(() {}));
   }
 
   @override
   void dispose() {
-    flutterWebViewPlugin.close();
-    flutterWebViewPlugin.dispose();
+    solver.dispose();
     super.dispose();
   }
 
@@ -80,8 +75,8 @@ class _DropCalculatorPageState extends State<DropCalculatorPage> {
                     header: 'Solution',
                     children: <Widget>[
                       ListTile(
-                        title: Text('Total Num: ${result?.totalNum}'),
-                        trailing: Text('Total AP: ${result?.totalEff}'),
+                        title: Text('Total Num: ${solution?.totalNum}'),
+                        trailing: Text('Total AP: ${solution?.totalEff}'),
                       ),
                       ...buildPlaceRows()
                     ],
@@ -156,8 +151,8 @@ class _DropCalculatorPageState extends State<DropCalculatorPage> {
   }
 
   List<Widget> buildPlaceRows() {
-    return List.generate(result?.variables?.length ?? 0, (i) {
-      final variable = result.variables[i];
+    return List.generate(solution?.variables?.length ?? 0, (i) {
+      final variable = solution.variables[i];
       return ListTile(
         title: Text(variable.name),
         subtitle: Text(variable.detail.entries
@@ -222,14 +217,15 @@ class _DropCalculatorPageState extends State<DropCalculatorPage> {
               color: Theme.of(context).primaryColor,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)),
-              onPressed: solverReady != true
+              onPressed: solver.solverReady != true
                   ? null
-                  : () {
-                      if (params.objRows.length > 0 &&
-                          sum(params.objNums) > 0) {
-                        calculate();
+                  : () async {
+                      if (sum(params.objNums) > 0) {
+                        solution = await solver.calculate(
+                            data: db.gameData.glpk, params: params);
+                        setState(() {});
                       } else {
-                        showToast('invalid input');
+                        showToast('invalid inputs.');
                       }
                     },
               child: Text('Solve', style: TextStyle(color: Colors.white)),
@@ -238,53 +234,5 @@ class _DropCalculatorPageState extends State<DropCalculatorPage> {
         )
       ],
     );
-  }
-
-  Future<Null> _loadLib() async {
-    // should only load once
-    print('load js libs...');
-    await flutterWebViewPlugin.close();
-    solverReady = false;
-    final t0 = DateTime.now();
-    await flutterWebViewPlugin.launch(
-      Uri.dataFromString(
-          '<html><body><h3>Logs:</h3><div id="logs"></div></body></html>',
-          mimeType: 'text/html',
-          parameters: {'charset': 'utf-8'}).toString(),
-      hidden: true,
-    );
-    await flutterWebViewPlugin
-        .evalJavascript(await rootBundle.loadString('res/lib/glpk.min.js'));
-    await flutterWebViewPlugin
-        .evalJavascript(await rootBundle.loadString('res/lib/solver.js'));
-    await flutterWebViewPlugin.evalJavascript(
-        '''add_log(`${DateTime.now().toString()}: Load libs finished.`)''');
-    solverReady = true;
-    print('=========load libs finish:'
-        ' ${DateTime.now().difference(t0).inMilliseconds / 1000} sec.=========');
-    setState(() {});
-  }
-
-  void calculate() async {
-    try {
-      if (solverReady != true) {
-        await _loadLib();
-      }
-      print('solveing...\nparams="${json.encode(params)}"');
-      final r = await flutterWebViewPlugin.evalJavascript(
-          '''solve_glpk( `${json.encode(db.gameData.glpk)}`,`${json.encode(params)}`);''');
-      result = GLPKSolution.fromJson(Map.from(json.decode(r)));
-      result.sortByValue();
-      print('result: ${json.encode(result)}');
-      await flutterWebViewPlugin.evalJavascript(
-          '''add_log(`${DateTime.now().toString()}: solve result: ${json.encode(result)}`)''');
-    } catch (e, s) {
-      showToast('calculator error:\n$e');
-      result?.clear();
-      FlutterError.dumpErrorToConsole(
-          FlutterErrorDetails(exception: e, stack: s));
-    } finally {
-      setState(() {});
-    }
   }
 }

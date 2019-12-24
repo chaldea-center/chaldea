@@ -8,6 +8,7 @@ export 'custom_tile.dart';
 export 'datatypes/datatypes.dart';
 export 'dialog.dart';
 export 'ensure_visible_when_focused.dart';
+export 'glpk_solver.dart';
 export 'image_viewer.dart';
 export 'input_manager.dart';
 export 'int_range_slider.dart';
