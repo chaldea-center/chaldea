@@ -25,7 +25,7 @@ class _ServantFilterPageState extends State<ServantFilterPage> {
   @override
   void dispose() {
     super.dispose();
-    db.saveData();
+    db.saveUserData();
   }
 
   void updateParentFilterResult() {

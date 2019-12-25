@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/item/item_plan_solver_page.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
@@ -19,7 +20,7 @@ class ItemListPageState extends State<ItemListPage>
   @override
   void deactivate() {
     super.deactivate();
-    db.saveData();
+    db.saveUserData();
   }
 
   @override
@@ -27,8 +28,6 @@ class ItemListPageState extends State<ItemListPage>
     super.initState();
     _tabController = TabController(length: categories.length, vsync: this);
     db.runtimeData.itemStatistics.update(db.curUser);
-//    db.runtimeData.itemsOfEvents = db.gameData.events.getAllItems(db.curUser.events);
-//    db.runtimeData.itemsOfSvts.update(db.curUser.servants, db.curUser.curPlan);
   }
 
   @override
@@ -47,14 +46,23 @@ class ItemListPageState extends State<ItemListPage>
               });
             },
           ),
-          IconButton(icon: Icon(Icons.toys), onPressed: () {})
+          IconButton(
+              icon: Icon(Icons.toys),
+              onPressed: () {
+                SplitRoute.push(context,
+                    builder: (context) => ItemPlanSolverPage());
+              })
         ],
         bottom: TabBar(
-            controller: _tabController,
-            tabs: categories
-                .map((category) =>
-                    Tab(text: ['x', '普通素材', '技能石', '棋子'][category]))
-                .toList()),
+          controller: _tabController,
+          tabs: categories
+              .map(
+                  (category) => Tab(text: ['x', '普通素材', '技能石', '棋子'][category]))
+              .toList(),
+          onTap: (_) {
+            FocusScope.of(context).unfocus();
+          },
+        ),
       ),
       body: TabBarView(
           controller: _tabController,
@@ -123,7 +131,7 @@ class _ItemListTabState extends State<ItemListTab> {
   @override
   void deactivate() {
     super.deactivate();
-    db.saveData();
+    db.saveUserData();
   }
 
   @override
@@ -179,7 +187,9 @@ class _ItemListTabState extends State<ItemListTab> {
               onChanged: (v) {
                 db.curUser.items[itemKey] =
                     int.tryParse(v.replaceAll(',', '')) ?? 0;
-                setState2(() {});
+                setState2(() {
+                  db.runtimeData.itemStatistics.updateLeftItems();
+                });
               },
               onTap: () {
                 component.onTap(context);
@@ -246,7 +256,6 @@ class _ItemListTabState extends State<ItemListTab> {
                     alignment: Alignment.centerRight,
                     child: AutoSizeText(
                         (statistics.eventItems[itemKey] ?? 0).toString(),
-                        style: highlightStyle,
                         maxLines: 1),
                   )),
             ],

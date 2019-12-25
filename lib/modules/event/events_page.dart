@@ -52,6 +52,6 @@ class _EventListPageState extends State<EventListPage>
   @override
   void deactivate() {
     super.deactivate();
-    db.saveData();
+    db.saveUserData();
   }
 }

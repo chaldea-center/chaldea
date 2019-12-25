@@ -2,6 +2,7 @@ part of datatypes;
 
 @JsonSerializable()
 class Servant {
+  // left avatar & model
   int no;
   String mcLink;
   String icon;
@@ -10,6 +11,7 @@ class Servant {
   List<List<Skill>> activeSkills;
   List<Skill> passiveSkills;
   ItemCost itemCost;
+  List<int> bondPoints;
   List<SvtProfileData> profiles;
   int bondCraft;
   int valentineCraft;
@@ -25,6 +27,7 @@ class Servant {
     this.activeSkills,
     this.passiveSkills,
     this.itemCost,
+    this.bondPoints,
     this.profiles,
     this.bondCraft,
     this.valentineCraft,
@@ -33,7 +36,8 @@ class Servant {
   /// [cur]=[target]=null: all
   /// [cur.favorite]=[target.favorite]=true
   /// else empty
-  Map<String, int> getAllCost({ServantPlan cur, ServantPlan target, bool all = false}) {
+  Map<String, int> getAllCost(
+      {ServantPlan cur, ServantPlan target, bool all = false}) {
     if (all) {
       return sumDict([getAscensionCost(), getSkillCost(), getDressCost()]);
     }

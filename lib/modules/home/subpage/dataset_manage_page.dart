@@ -74,7 +74,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                           Fluttertoast.showToast(
                               msg: 'reloading gamedata...',
                               toastLength: Toast.LENGTH_LONG);
-                          await db.loadAssetsData(kDefaultDatasetAssetKey,
+                          await db.loadZipAssets(kDefaultDatasetAssetKey,
                               force: true);
                           await db.loadGameData();
                           setState(() {});

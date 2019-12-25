@@ -14,21 +14,21 @@ class ItemStatistics {
     user ??= db.curUser;
     updateSvtItems(user);
     updateEventItems(user);
-    print('$runtimeType all updated.');
+    // print('$runtimeType all updated.');
   }
 
   void updateSvtItems([User user]) {
     user ??= db.curUser;
     svtItemDetail.update(curStat: user.servants, targetPlan: user.curPlan);
     updateLeftItems(user);
-    print('$runtimeType svt part updated.');
+    // print('$runtimeType svt part updated.');
   }
 
   void updateEventItems([User user]) {
     user ??= db.curUser;
     eventItems = db.gameData.events.getAllItems(user.events);
     updateLeftItems(user);
-    print('$runtimeType event part updated.');
+    // print('$runtimeType event part updated.');
   }
 
   void updateLeftItems([User user]) {

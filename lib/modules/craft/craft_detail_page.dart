@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -117,7 +116,11 @@ class CraftDetailBasePage extends StatelessWidget {
                   InfoRow(
                     children: <Widget>[
                       InfoCell.header(text: '画师'),
-                      InfoCell(text: ce.illustrators.join(' & '), flex: 3)
+                      InfoCell(
+                        text: ce.illustrators.join(' & '),
+                        flex: 3,
+                        maxLines: 1,
+                      )
                     ],
                   ),
                   InfoRow(
@@ -132,16 +135,14 @@ class CraftDetailBasePage extends StatelessWidget {
                     children: <Widget>[
                       InfoCell.header(text: 'ATK'),
                       InfoCell(
-                          child: AutoSizeText(
-                        '${ce.atkMin}/${ce.atkMax}',
+                        text: '${ce.atkMin}/${ce.atkMax}',
                         maxLines: 1,
-                      )),
+                      ),
                       InfoCell.header(text: 'HP'),
                       InfoCell(
-                          child: AutoSizeText(
-                        '${ce.hpMin}/${ce.hpMax}',
+                        text: '${ce.hpMin}/${ce.hpMax}',
                         maxLines: 1,
-                      )),
+                      ),
                     ],
                   ),
                 ],

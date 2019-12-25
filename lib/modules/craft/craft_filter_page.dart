@@ -25,7 +25,7 @@ class _CraftFilterPageState extends State<CraftFilterPage> {
   @override
   void dispose() {
     super.dispose();
-    db.saveData();
+    db.saveUserData();
   }
 
   void updateParentFilterResult() {

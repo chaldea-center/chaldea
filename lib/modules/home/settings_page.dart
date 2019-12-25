@@ -195,6 +195,6 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void deactivate() {
     super.deactivate();
-    db.saveData();
+    db.saveUserData();
   }
 }

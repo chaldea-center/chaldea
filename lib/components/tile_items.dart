@@ -1,5 +1,6 @@
 import 'dart:math' show max, min;
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 
 class SHeader extends StatelessWidget {
@@ -309,7 +310,6 @@ List<Widget> divideTiles(Iterable<Widget> tiles,
   return combined;
 }
 
-
 // for filter items
 typedef bool FilterCallBack<T>(T data);
 
@@ -469,8 +469,10 @@ class InfoRow extends StatelessWidget {
 
   const InfoRow({Key key, this.children, this.color}) : super(key: key);
 
-  InfoRow.fromText({List<String> texts, this.color})
-      : children = texts.map((e) => InfoCell(text: e, color: color)).toList();
+  InfoRow.fromText({List<String> texts, this.color, int maxLines})
+      : children = texts
+            .map((e) => InfoCell(text: e, color: color, maxLines: maxLines))
+            .toList();
 
   InfoRow.fromChild({List<Widget> children, this.color})
       : children =
@@ -497,6 +499,7 @@ class InfoRow extends StatelessWidget {
 class InfoCell extends StatelessWidget {
   final Color color;
   final String text;
+  final int maxLines;
   final Widget child;
   final int flex;
   final Alignment alignment;
@@ -509,6 +512,7 @@ class InfoCell extends StatelessWidget {
   const InfoCell({
     Key key,
     this.text,
+    this.maxLines,
     this.child,
     this.flex = 1,
     this.color,
@@ -520,6 +524,7 @@ class InfoCell extends StatelessWidget {
   const InfoCell.header({
     Key key,
     this.text,
+    this.maxLines,
     this.child,
     this.flex = 1,
     this.alignment = Alignment.center,
@@ -533,7 +538,9 @@ class InfoCell extends StatelessWidget {
     if (child != null) {
       _child = child;
     } else {
-      _child = Text(text);
+      _child = maxLines == null
+          ? Text(text)
+          : AutoSizeText(text, maxLines: maxLines);
     }
     return Flexible(
       flex: flex,

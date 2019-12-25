@@ -70,7 +70,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
   @override
   void deactivate() {
     super.deactivate();
-    db.saveData();
+    db.saveUserData();
   }
 
   @override

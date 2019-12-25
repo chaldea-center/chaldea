@@ -3,15 +3,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/craft/craft_list_page.dart';
+import 'package:chaldea/modules/drop_calculator//drop_calculator_page.dart';
 import 'package:chaldea/modules/event/events_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
-import 'package:chaldea/modules/drop_calculator//drop_calculator_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'subpage/edit_gallery_page.dart';
@@ -25,7 +26,8 @@ class _GalleryPageState extends State<GalleryPage> {
   Map<String, GalleryItem> kAllGalleryItems;
 
   Future<Null> resolveSliderImageUrls({bool reload = false}) async {
-    final url = 'https://fgo.wiki/w/%E6%A8%A1%E6%9D%BF:%E8%87%AA%E5%8A%A8%E5%8F%96%E5%80%BC%E8%BD%AE%E6%92%AD';
+    final srcUrl =
+        'https://fgo.wiki/w/%E6%A8%A1%E6%9D%BF:%E8%87%AA%E5%8A%A8%E5%8F%96%E5%80%BC%E8%BD%AE%E6%92%AD';
     String tryDecodeUrl(String url) {
       String url2;
       if (url.toLowerCase().startsWith(RegExp(r'http|fgo.wiki'))) {
@@ -48,8 +50,8 @@ class _GalleryPageState extends State<GalleryPage> {
     if (db.userData.sliderUrls.isEmpty || reload) {
       db.userData.sliderUrls.clear();
       try {
-        print('http GET from "$url" .....');
-        var response = await http.get(url);
+        print('http GET from "$srcUrl" .....');
+        var response = await http.get(srcUrl);
         print('----------- recieved http response ------------');
         var body = parser.parse(response.body);
         dom.Element element = body.getElementById('transImageBox');
@@ -64,7 +66,7 @@ class _GalleryPageState extends State<GalleryPage> {
           }
         }
         setState(() {});
-        db.saveData();
+        db.saveUserData();
       } catch (e) {
         print('http error: $e');
       }
@@ -187,7 +189,7 @@ class _GalleryPageState extends State<GalleryPage> {
 
   @override
   Widget build(BuildContext context) {
-    var sliderPages = _getSliderPages();
+    final sliderPages = _getSliderPages();
     return Scaffold(
         appBar: AppBar(
           title: Text("Chaldea"),
@@ -206,14 +208,20 @@ class _GalleryPageState extends State<GalleryPage> {
           children: <Widget>[
             AspectRatio(
               aspectRatio: 8 / 3,
-              child: Swiper(
-                itemBuilder: (BuildContext context, int index) =>
-                    sliderPages[index],
-                itemCount: sliderPages.length,
-                autoplay: !kDebugMode && sliderPages.length > 1,
-                pagination: SwiperPagination(margin: const EdgeInsets.all(1)),
-                autoplayDelay: 5000,
-              ),
+              child: sliderPages.isEmpty
+                  ? Container(
+                      decoration: BoxDecoration(
+                      border: Border(bottom: BorderSide(width: 0.5)),
+                    ))
+                  : Swiper(
+                      itemBuilder: (BuildContext context, int index) =>
+                          sliderPages[index],
+                      itemCount: sliderPages.length,
+                      autoplay: !kDebugMode && sliderPages.length > 1,
+                      pagination:
+                          SwiperPagination(margin: const EdgeInsets.all(1)),
+                      autoplayDelay: 5000,
+                    ),
             ),
             GridView.count(
               crossAxisCount: 4,

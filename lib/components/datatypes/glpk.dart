@@ -2,8 +2,8 @@ part of datatypes;
 
 @JsonSerializable()
 class GLPKData {
-  List<String> colNames;
-  List<String> rowNames;
+  List<String> colNames; //quests
+  List<String> rowNames; // items
   List<num> coeff;
   List<List<num>> matrix;
   int cnMaxColNum;

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -9,53 +10,66 @@ import 'utils.dart' show showToast;
 
 class GLPKSolver {
   final flutterWebViewPlugin = FlutterWebviewPlugin();
+  StreamSubscription<WebViewStateChanged> onStateChange;
   bool solverReady;
 
-  GLPKSolver();
+  GLPKSolver() {
+    onStateChange =
+        flutterWebViewPlugin.onStateChanged.listen((state) async {});
+  }
 
   /// must call [dispose]!!!
   void dispose() {
+    onStateChange.cancel();
     flutterWebViewPlugin.close();
     flutterWebViewPlugin.dispose();
   }
 
-  Future<bool> initial() async {
-    // should only load once
-    print('load js libs...');
+  Future<Null> initial({VoidCallback callback}) async {
+    // only load once
+    // use callback to setState, not Future.
+    print('=========loading js libs=========');
     try {
       if (solverReady == true) {
         print('closing...');
+        onStateChange?.cancel();
         await flutterWebViewPlugin.close();
       }
       solverReady = false;
-      final t0 = DateTime.now();
       print('launching...');
+      onStateChange = flutterWebViewPlugin.onStateChanged.listen((state) async {
+        print('state changed: ${state.type}');
+        if (state.type == WebViewState.finishLoad && solverReady != true) {
+          print('eval glpk...');
+          await flutterWebViewPlugin.evalJavascript(
+              await rootBundle.loadString('res/lib/glpk.min.js'));
+          print('eval solver func...');
+          await flutterWebViewPlugin
+              .evalJavascript(await rootBundle.loadString('res/lib/solver.js'));
+          print('eval log...');
+          await flutterWebViewPlugin.evalJavascript(
+              '''add_log(`${DateTime.now().toString()}: Load libs finished.`)''');
+          await flutterWebViewPlugin.evalJavascript(
+              '''add_log(`${DateTime.now().toString()}: Load libs finished.`)''');
+          solverReady = true;
+          print('=========js libs loaded.=========');
+          if (callback != null) {
+            callback();
+          }
+        }
+      });
       await flutterWebViewPlugin.launch(
         Uri.dataFromString(
-            '<html><body><h3>Logs:</h3><div id="logs"></div></body></html>',
+            '''<html><body><h3>Logs:</h3><div id="logs"></div></body></html>''',
             mimeType: 'text/html',
             parameters: {'charset': 'utf-8'}).toString(),
         hidden: true,
       );
-      print('eval glpk...');
-      await flutterWebViewPlugin
-          .evalJavascript(await rootBundle.loadString('res/lib/glpk.min.js'));
-      print('eval solver func...');
-      await flutterWebViewPlugin
-          .evalJavascript(await rootBundle.loadString('res/lib/solver.js'));
-      print('eval log...');
-      await flutterWebViewPlugin.evalJavascript(
-          '''add_log(`${DateTime.now().toString()}: Load libs finished.`)''');
-      solverReady = true;
-      print('=========load libs finish:'
-          ' ${DateTime.now().difference(t0).inMilliseconds / 1000} sec.=========');
-      return true;
     } catch (e, s) {
       print('initial js error:\n$e\n-----statck----\n$s');
       FlutterError.dumpErrorToConsole(
           FlutterErrorDetails(exception: e, stack: s));
       showToast('ERROR: fail to initial solver.\n$e');
-      return false;
     }
   }
 

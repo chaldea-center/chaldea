@@ -209,6 +209,47 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
               svt.info.criticalRate
             ].map((v) => '${v / 100}%').toList(),
           ),
+          if (svt.bondPoints != null) ...[
+            InfoRow.fromText(texts: ['羁绊点数'], color: InfoCell.headerColor),
+            InfoRow.fromText(
+              texts: ['Lv.', '1', '2', '3', '4', '5'],
+              color: InfoCell.headerColor.withOpacity(0.3),
+            ),
+            InfoRow.fromText(
+              texts: [
+                '点数',
+                for (var i = 0; i < 5; i++) svt.bondPoints[i].toString()
+              ],
+              maxLines: 1,
+            ),
+            InfoRow.fromText(
+              texts: [
+                '累计',
+                for (var i = 0; i < 5; i++)
+                  sum(svt.bondPoints.sublist(0, i + 1)).toString()
+              ],
+              maxLines: 1,
+            ),
+            InfoRow.fromText(
+              texts: ['Lv.', '6', '7', '8', '9', '10'],
+              color: InfoCell.headerColor.withOpacity(0.3),
+            ),
+            InfoRow.fromText(
+              texts: [
+                '点数',
+                for (var i = 5; i < 10; i++) svt.bondPoints[i].toString()
+              ],
+              maxLines: 1,
+            ),
+            InfoRow.fromText(
+              texts: [
+                '累计',
+                for (var i = 5; i < 10; i++)
+                  sum(svt.bondPoints.sublist(0, i + 1)).toString()
+              ],
+              maxLines: 1,
+            ),
+          ]
         ],
         Container(height: 20)
       ],

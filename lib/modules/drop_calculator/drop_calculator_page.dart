@@ -43,7 +43,7 @@ class _DropCalculatorPageState extends State<DropCalculatorPage> {
       params.addOne(pickerData.values.first[1], 50);
     }
     params.enableControllers();
-    solver.initial().then((_) => setState(() {}));
+    solver.initial(callback: () => setState(() {}));
   }
 
   @override

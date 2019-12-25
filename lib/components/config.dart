@@ -42,7 +42,17 @@ class Database {
         (db.userData.useMobileNetwork || result != ConnectivityResult.mobile);
   }
 
-  // load data
+  // data files operation
+  Future<Null> loadUserData() async {
+    userData = parseJson(
+        parser: () => UserData.fromJson(getJsonFromFile(
+              paths.userDataPath,
+              k: () => <String, dynamic>{},
+            )),
+        k: () => UserData());
+    print('appdata reloaded');
+  }
+
   Future<Null> loadGameData() async {
     // TODO: use downloaded data if exist
     gameData = parseJson(
@@ -54,45 +64,31 @@ class Database {
     print('gamedata reloaded, version ${gameData.version}.');
   }
 
-  Future<Null> loadUserData() async {
-    userData = parseJson(
-        parser: () => UserData.fromJson(getJsonFromFile(
-              paths.userDataPath,
-              k: () => <String, dynamic>{},
-            )),
-        k: () => UserData());
-    print('appdata reloaded');
-  }
-
-  T parseJson<T>({T parser(), T k()}) {
-    T result;
-    try {
-      result = parser();
-    } catch (e) {
-      result = k == null ? null : k();
-      print('Error parsing json object to instance "$T"\n'
-          'error=$e');
+  Future<Null> loadZipAssets(String assetKey,
+      {String relPath, bool force = false}) async {
+    String extractDir = relPath ?? paths.gameDataDir;
+    if (force || !Directory(extractDir).existsSync()) {
+      //extract zip file
+      final data = await rootBundle.load(assetKey);
+      await extractZip(data.buffer.asUint8List().cast<int>(), extractDir);
     }
-    return result;
   }
 
-  dynamic getJsonFromFile(String filename, {dynamic k()}) {
-    // dynamic: json object can be Map or List.
-    // However, json_serializable always use Map->Class
-    dynamic result;
-    try {
-      String contents = getLocalFile(filename).readAsStringSync();
-      result = jsonDecode(contents);
-      print('loaded json "$filename".');
-    } catch (e) {
-      result = k == null ? null : k();
-      print('error load "$filename", use defailt value. Error:\n$e');
+  Future<Null> saveUserData() async {
+    _saveJsonToFile(userData, paths.userDataPath);
+  }
+
+  Future<void> clearData({bool user = false, bool game = false}) async {
+    if (user) {
+      _deleteFileOrDirectory(paths.userDataPath);
+      await loadUserData();
     }
-    return result;
-  }
-
-  File getLocalFile(String filename, {rel = ''}) {
-    return File(join(paths.rootPath, rel, filename));
+    if (game) {
+      // to clear all history version or not?
+      _deleteFileOrDirectory(paths.gameDataDir);
+      await loadZipAssets(kDefaultDatasetAssetKey);
+      await loadGameData();
+    }
   }
 
   ImageProvider getIconFile(String iconKey) {
@@ -105,15 +101,57 @@ class Database {
     }
   }
 
-  Future<Null> loadAssetsData(String assetKey,
-      {String relPath, bool force = false}) async {
-    String extractDir =
-        relPath == null ? paths.gameDataDir : join(paths.rootPath, relPath);
-    if (force || !Directory(extractDir).existsSync()) {
-      //extract zip file
-      final data = await rootBundle.load(assetKey);
-      await extractZip(data.buffer.asUint8List().cast<int>(), extractDir);
+  // assist methods
+  dynamic getJsonFromFile(String filepath, {dynamic k()}) {
+    // dynamic: json object can be Map or List.
+    // However, json_serializable always use Map->Class
+    dynamic result;
+    try {
+      String contents = File(filepath).readAsStringSync();
+      result = jsonDecode(contents);
+      print('loaded json "$filepath".');
+    } catch (e) {
+      result = k == null ? null : k();
+      print('error load "$filepath", use defailt value. Error:\n$e');
     }
+    return result;
+  }
+
+  Future<Null> _saveJsonToFile(dynamic jsonData, String filepath) async {
+    try {
+      final contents = json.encode(jsonData);
+      File(filepath).writeAsStringSync(contents);
+      // print('Saved "$relativePath"\n');
+    } catch (e) {
+      print('Error saving "$filepath"!\n$e');
+    }
+  }
+
+  void _deleteFileOrDirectory(String path) {
+    final type = FileSystemEntity.typeSync(path, followLinks: false);
+    if (type == FileSystemEntityType.directory) {
+      Directory directory = Directory(path);
+      if (directory.existsSync()) {
+        directory.deleteSync(recursive: true);
+      }
+    } else if (type == FileSystemEntityType.file) {
+      File file = File(path);
+      if (file.existsSync()) {
+        File(path).deleteSync();
+      }
+    }
+  }
+
+  T parseJson<T>({T parser(), T k()}) {
+    T result;
+    try {
+      result = parser();
+    } catch (e) {
+      result = k == null ? null : k();
+      print('Error parsing json object to instance "$T"\n'
+          'error=$e');
+    }
+    return result;
   }
 
   Future<Null> extractZip(List<int> bytes, String path) async {
@@ -136,87 +174,55 @@ class Database {
     print('end of zip tree.\n-----------------------------------------------');
   }
 
-  //save data
-  Future<Null> saveData() async {
-    _saveJsonFile(userData, kUserDataFilename);
-  }
-
-  Future<Null> _saveJsonFile(dynamic jsonData, String relativePath) async {
-    try {
-      final contents = json.encode(jsonData);
-      getLocalFile(relativePath).writeAsStringSync(contents);
-      // print('Saved "$relativePath"\n');
-    } catch (e) {
-      print('Error saving "$relativePath"!\n$e');
-    }
-  }
-
-  // clear data
-  Future<void> clearData({bool user = false, bool game = false}) async {
-    if (user) {
-      _deleteFileOrDirectory(paths.userDataPath);
-      await loadUserData();
-    }
-    if (game) {
-      // to clear all history version or not?
-      _deleteFileOrDirectory(paths.gameDataDir);
-      await loadAssetsData(kDefaultDatasetAssetKey);
-      await loadGameData();
-    }
-  }
-
-  void _deleteFileOrDirectory(String path, {bool relative = false}) {
-    String fullPath = relative ? join(paths.gameDataDir, path) : path;
-    final type = FileSystemEntity.typeSync(fullPath, followLinks: false);
-    if (type == FileSystemEntityType.directory) {
-      Directory directory = Directory(fullPath);
-      if (directory.existsSync()) {
-        directory.deleteSync(recursive: true);
-      }
-    } else if (type == FileSystemEntityType.file) {
-      File file = File(fullPath);
-      if (file.existsSync()) {
-        File(fullPath).deleteSync();
-      }
-    }
-  }
-
-  /// internals
+  // internals
   static final _db = new Database._internal();
 
-  factory Database() {
-    return _db;
-  }
+  factory Database() => _db;
 
   Database._internal();
 }
 
 class PathManager {
-  static String _rootPath;
-  static String _tempDir;
+  static String _appPath;
+  static String _savePath;
+  static String _tempPath;
 
   Future<Null> initRootPath() async {
-    if (_rootPath == null || _tempDir == null) {
-      _rootPath = (await getApplicationDocumentsDirectory()).path;
-      _tempDir = (await getTemporaryDirectory()).path;
+    if (_appPath == null || _tempPath == null) {
+      _appPath = (await getApplicationDocumentsDirectory()).path;
+      _tempPath = (await getTemporaryDirectory()).path;
+      if (Platform.isIOS) {
+        _savePath = _appPath;
+      } else {
+        final dirs = await getExternalStorageDirectories();
+        _savePath = dirs[dirs.length > 1 ? 1 : 0].path;
+      }
     }
   }
 
-  String get rootPath => _rootPath;
+  String get appPath => _appPath;
 
-  String get tempDir => _tempDir;
+  String get savePath => _savePath;
 
-  String get userDataPath => join(_rootPath, kUserDataFilename);
+  String get tempPath => _tempPath;
 
-  String get gameDataDir => join(_rootPath, 'dataset');
+  String get userDataPath => join(_savePath, kUserDataFilename);
+
+  String get gameDataDir => join(_appPath, 'dataset');
 
   String get gameDataFilepath => join(gameDataDir, kGameDataFilename);
 
   String get gameIconDir => join(gameDataDir, 'icons');
 
-  String get datasetCacheDir => join(_rootPath, 'datasets');
+  String get datasetCacheDir => join(_appPath, 'datasets');
 
-  String get crashLog => join(_tempDir, 'crash.log');
+  String get crashLog => join(_tempPath, 'crash.log');
+
+  static PathManager _instance = PathManager._internal();
+
+  PathManager._internal();
+
+  factory PathManager() => _instance;
 }
 
 class RuntimeData {

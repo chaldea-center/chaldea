@@ -424,6 +424,7 @@ Servant _$ServantFromJson(Map<String, dynamic> json) {
     itemCost: json['itemCost'] == null
         ? null
         : ItemCost.fromJson(json['itemCost'] as Map<String, dynamic>),
+    bondPoints: (json['bondPoints'] as List)?.map((e) => e as int)?.toList(),
     profiles: (json['profiles'] as List)
         ?.map((e) => e == null
             ? null
@@ -443,6 +444,7 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'activeSkills': instance.activeSkills,
       'passiveSkills': instance.passiveSkills,
       'itemCost': instance.itemCost,
+      'bondPoints': instance.bondPoints,
       'profiles': instance.profiles,
       'bondCraft': instance.bondCraft,
       'valentineCraft': instance.valentineCraft,
