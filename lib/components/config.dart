@@ -25,7 +25,7 @@ class Database {
   final RuntimeData runtimeData = RuntimeData();
   static PathManager _paths = PathManager();
 
-  User get curUser => userData.users[userData.curUser];
+  User get curUser => userData.users[userData.curUsername];
 
   PathManager get paths => _paths;
 
@@ -221,8 +221,7 @@ class PathManager {
 
 class RuntimeData {
   bool enableDownload = false;
-  ItemsOfSvts itemsOfSvts = ItemsOfSvts();
-  Map<String, int> itemsOfEvents = {};
+  final ItemStatistics itemStatistics = ItemStatistics();
 }
 
 Database db = new Database();

@@ -4,11 +4,11 @@ import 'package:chaldea/modules/servant/servant_detail_page.dart';
 import 'item_list_page.dart';
 
 class ItemDetailPage extends StatefulWidget {
-  final String itemName;
+  final String itemKey;
   final ItemsOfSvts statistics;
   final ItemListPageState parent;
 
-  const ItemDetailPage(this.itemName, {Key key, this.statistics, this.parent})
+  const ItemDetailPage(this.itemKey, {Key key, this.statistics, this.parent})
       : super(key: key);
 
   @override
@@ -17,7 +17,8 @@ class ItemDetailPage extends StatefulWidget {
 
 class _ItemDetailPageState extends State<ItemDetailPage> {
   List<List<Widget>> tiles;
-  bool planned = true;
+  bool favorite = true;
+  bool split = true;
   PartSet<String> panelTitles =
       PartSet(ascension: '灵基再临', skill: '技能升级', dress: '灵衣开放');
 
@@ -26,10 +27,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
     super.initState();
   }
 
-  Widget getSvtIconList(Map<int, int> src) {
-    if (src.isEmpty) {
-      return Container();
-    }
+  Widget buildSvtIconGrid(Map<int, int> src) {
     List<Widget> children = [];
     var sortedSvts = src.keys.toList()
       ..sort((a, b) {
@@ -51,69 +49,85 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
             Navigator.of(context)
                 .push(SplitRoute(builder: (context) => ServantDetailPage(svt)))
                 .then((_) {
-              db.runtimeData.itemsOfSvts
-                  .update(db.curUser.servants, db.curUser.curPlan2);
+              db.runtimeData.itemStatistics.updateSvtItems(db.curUser);
               widget.parent?.setState(() {});
             });
           },
         ));
       }
     });
-    return GridView.count(
+    if (children.isEmpty) {
+      return Container();
+    } else {
+      return GridView.count(
         crossAxisCount: 5,
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         padding: EdgeInsets.symmetric(horizontal: 16),
-        children: children);
+        children: children,
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     //todo: add list view by svt (no ascension/skill/dress classification)
-    final svtList =
-        db.runtimeData.itemsOfSvts.getSvtListOfItem(widget.itemName, planned);
-    final counts =
-        db.runtimeData.itemsOfSvts.getNumOfItem(widget.itemName, planned);
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: Text(widget.itemName),
+        title: Text(widget.itemKey),
         actions: <Widget>[
           IconButton(
-              icon: Icon(
-                  planned ? Icons.check_circle : Icons.check_circle_outline),
+              icon: Icon(favorite ? Icons.favorite : Icons.favorite_border),
               onPressed: () {
                 setState(() {
-                  planned = !planned;
+                  favorite = !favorite;
+                });
+              }),
+          IconButton(
+              icon: Icon(Icons.clear_all),
+              onPressed: () {
+                setState(() {
+                  split = !split;
                 });
               })
         ],
       ),
-      body: ListView(
-        children: <Widget>[
-          TileGroup(
-            children: <Widget>[
-              CustomTile(
-                title: Text('共需'),
-                trailing:
-                    Text(formatNumToString(sum(counts.values), 'decimal')),
-              ),
-              for (int i in [0, 1, 2])
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    CustomTile(
-                      title: Text(panelTitles.values[i]),
-                      trailing:
-                          Text(formatNumToString(counts.values[i], 'decimal')),
-                    ),
-                    getSvtIconList(svtList.values[i]),
-                  ],
-                )
-            ],
-          )
-        ],
+      body: buildContent(),
+    );
+  }
+
+  Widget buildContent() {
+    final detail = db.runtimeData.itemStatistics.svtItemDetail;
+    final counts = favorite ? detail.planItemCounts : detail.allItemCounts;
+    final svtsDetail =
+        favorite ? detail.planCountByItem : detail.allCountByItem;
+    List<Widget> children = [];
+    children.add(CustomTile(
+      title: Text('共需'),
+      trailing: Text(
+        formatNumToString(counts.summation[widget.itemKey] ?? 0, 'decimal'),
       ),
+    ));
+    if (split) {
+      for (int i in [0, 1, 2]) {
+        children.add(Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            CustomTile(
+              title: Text(panelTitles.values[i]),
+              trailing: Text(formatNumToString(
+                  counts.values[i][widget.itemKey], 'decimal')),
+            ),
+            buildSvtIconGrid(svtsDetail.values[i][widget.itemKey]),
+          ],
+        ));
+      }
+    } else {
+      children.add(buildSvtIconGrid(svtsDetail.summation[widget.itemKey]));
+    }
+    return SingleChildScrollView(
+      child: TileGroup(children: children),
     );
   }
 }

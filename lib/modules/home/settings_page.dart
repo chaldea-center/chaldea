@@ -41,7 +41,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: Text(S.of(context).server),
                 trailing: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
-                    value: db.userData.users[db.userData.curUser].server ??
+                    value: db.userData.users[db.userData.curUsername].server ??
                         GameServer.jp,
                     items: <DropdownMenuItem<String>>[
                       DropdownMenuItem(
@@ -54,7 +54,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       )
                     ],
                     onChanged: (v) {
-                      db.userData.users[db.userData.curUser].server = v;
+                      db.userData.users[db.userData.curUsername].server = v;
                       db.onAppUpdate();
                     },
                   ),
@@ -66,7 +66,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Text(
-                      db.userData.users[db.userData.curUser].name,
+                      db.userData.users[db.userData.curUsername].name,
                       style: TextStyle(color: Colors.black87),
                     ),
                     Icon(Icons.arrow_forward_ios)

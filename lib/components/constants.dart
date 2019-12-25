@@ -177,10 +177,11 @@ String formatNumToString<T>(T number, [String style]) {
 
 num sum(Iterable<num> x) => x.fold(0, (p, c) => (p ?? 0) + (c ?? 0));
 
-Map<K, V> sumDict<K, V extends num>(List<Map<K, V>> list) {
+Map<K, V> sumDict<K, V extends num>(Iterable<Map<K, V>> operands) {
   Map<K, V> res = {};
-  for (var m in list) {
+  for (var m in operands) {
     m?.forEach((k, v) {
+      // use "+ (v??0)" to allow v=null
       res[k] = (res[k] ?? 0) + v;
     });
   }

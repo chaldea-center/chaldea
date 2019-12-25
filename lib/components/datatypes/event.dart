@@ -16,16 +16,16 @@ class Events {
 
   Map<String, dynamic> toJson() => _$EventsToJson(this);
 
-  Map<String, int> getAllItems(User user) {
+  Map<String, int> getAllItems(EventPlans eventPlans) {
     List<Map<String, int>> resultList = [];
     limitEvents.forEach((name, event) {
-      resultList.add(event.getAllItems(user.limitEvents[name]));
+      resultList.add(event.getAllItems(eventPlans.limitEvents[name]));
     });
     mainRecords.forEach((name, event) {
-      resultList.add(event.getAllItems(user.mainRecords[name]));
+      resultList.add(event.getAllItems(eventPlans.mainRecords[name]));
     });
     exchangeTickets.forEach((name, event) {
-      resultList.add(event.getAllItems(user.exchangeTickets[name]));
+      resultList.add(event.getAllItems(eventPlans.exchangeTickets[name]));
     });
     return sumDict(resultList);
   }

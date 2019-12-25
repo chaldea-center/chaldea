@@ -668,19 +668,9 @@ User _$UserFromJson(Map<String, dynamic> json) {
     items: (json['items'] as Map<String, dynamic>)?.map(
       (k, e) => MapEntry(k, e as int),
     ),
-    limitEvents: (json['limitEvents'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(
-          k,
-          e == null
-              ? null
-              : LimitEventPlan.fromJson(e as Map<String, dynamic>)),
-    ),
-    mainRecords: (json['mainRecords'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, (e as List)?.map((e) => e as bool)?.toList()),
-    ),
-    exchangeTickets: (json['exchangeTickets'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, (e as List)?.map((e) => e as int)?.toList()),
-    ),
+    events: json['events'] == null
+        ? null
+        : EventPlans.fromJson(json['events'] as Map<String, dynamic>),
   );
 }
 
@@ -692,9 +682,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'servantPlans': instance.servantPlans?.map((k, e) =>
           MapEntry(k.toString(), e?.map((k, e) => MapEntry(k.toString(), e)))),
       'items': instance.items,
-      'limitEvents': instance.limitEvents,
-      'mainRecords': instance.mainRecords,
-      'exchangeTickets': instance.exchangeTickets,
+      'events': instance.events,
     };
 
 ServantStatus _$ServantStatusFromJson(Map<String, dynamic> json) {
@@ -736,6 +724,31 @@ Map<String, dynamic> _$ServantPlanToJson(ServantPlan instance) =>
       'grail': instance.grail,
     };
 
+EventPlans _$EventPlansFromJson(Map<String, dynamic> json) {
+  return EventPlans(
+    limitEvents: (json['limitEvents'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(
+          k,
+          e == null
+              ? null
+              : LimitEventPlan.fromJson(e as Map<String, dynamic>)),
+    ),
+    mainRecords: (json['mainRecords'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(k, (e as List)?.map((e) => e as bool)?.toList()),
+    ),
+    exchangeTickets: (json['exchangeTickets'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(k, (e as List)?.map((e) => e as int)?.toList()),
+    ),
+  );
+}
+
+Map<String, dynamic> _$EventPlansToJson(EventPlans instance) =>
+    <String, dynamic>{
+      'limitEvents': instance.limitEvents,
+      'mainRecords': instance.mainRecords,
+      'exchangeTickets': instance.exchangeTickets,
+    };
+
 LimitEventPlan _$LimitEventPlanFromJson(Map<String, dynamic> json) {
   return LimitEventPlan(
     enable: json['enable'] as bool,
@@ -767,7 +780,7 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
       (k, e) => MapEntry(k, e as bool),
     ),
     serverDomain: json['serverDomain'] as String,
-    curUser: json['curUser'] as String,
+    curUsername: json['curUsername'] as String,
     users: (json['users'] as Map<String, dynamic>)?.map(
       (k, e) => MapEntry(
           k, e == null ? null : User.fromJson(e as Map<String, dynamic>)),
@@ -782,6 +795,9 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
         ? null
         : CmdCodeFilterData.fromJson(
             json['cmdCodeFilter'] as Map<String, dynamic>),
+    glpkParams: json['glpkParams'] == null
+        ? null
+        : GLPKParams.fromJson(json['glpkParams'] as Map<String, dynamic>),
   );
 }
 
@@ -791,12 +807,13 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'sliderUrls': instance.sliderUrls,
       'galleries': instance.galleries,
       'serverDomain': instance.serverDomain,
-      'curUser': instance.curUser,
+      'curUsername': instance.curUsername,
       'users': instance.users,
       'testAllowDownload': instance.testAllowDownload,
       'svtFilter': instance.svtFilter,
       'craftFilter': instance.craftFilter,
       'cmdCodeFilter': instance.cmdCodeFilter,
+      'glpkParams': instance.glpkParams,
     };
 
 SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {

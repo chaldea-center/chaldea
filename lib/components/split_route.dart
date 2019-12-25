@@ -23,9 +23,12 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
   ///if [builder] is null, just pop without push
   static Future popAndPush(BuildContext context,
       {WidgetBuilder builder, bool isDetail = true}) {
+    FocusScope.of(context).requestFocus(FocusNode());
     Navigator.of(context).popUntil((route) => route.settings.isInitialRoute);
     if (builder != null) {
-      return push(context, builder: builder, isDetail: isDetail);
+      return Navigator.of(context).push(SplitRoute(
+          builder: builder,
+          settings: RouteSettings(isInitialRoute: !isDetail)));
     } else {
       return Future.value(null);
     }
@@ -34,7 +37,7 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
   static Future push(BuildContext context,
       {WidgetBuilder builder, bool isDetail = true}) {
     assert(builder != null);
-    FocusScope.of(context).requestFocus(kBlankNode);
+    FocusScope.of(context).requestFocus(FocusNode());
     return Navigator.of(context).push(SplitRoute(
         builder: builder, settings: RouteSettings(isInitialRoute: !isDetail)));
   }

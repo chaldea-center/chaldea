@@ -15,6 +15,7 @@ class CustomTile extends StatelessWidget {
   /// default: if leading is null, EdgeInsets.symmetric(horizontal: 6.0)
   /// if not null, EdgeInsets.zero
   final EdgeInsets titlePadding;
+  final BoxConstraints constraints;
   final Color color;
   final CrossAxisAlignment alignment;
   final bool enabled;
@@ -35,6 +36,7 @@ class CustomTile extends StatelessWidget {
       this.trailing,
       this.contentPadding,
       this.titlePadding,
+      this.constraints,
       this.color,
       this.alignment = CrossAxisAlignment.center,
       this.enabled = true,
@@ -118,6 +120,7 @@ class CustomTile extends StatelessWidget {
         selected: selected,
         child: Container(
           color: color,
+          constraints: constraints,
           child: Padding(
             padding: resolvedContentPadding,
             child: Row(

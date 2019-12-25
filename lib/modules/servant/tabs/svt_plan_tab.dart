@@ -95,7 +95,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab>
     if (svt.activeSkills == null) {
       return Center(child: Text('Nothing'));
     }
-    final plan = db.curUser.curPlan2.putIfAbsent(svt.no, () => ServantPlan());
+    final plan = db.curUser.curPlan.putIfAbsent(svt.no, () => ServantPlan());
     // ascension part
     List<Widget> children = [];
     if (svt.no != 1) {

@@ -12,7 +12,7 @@ class UserData {
   String serverDomain;
 
   // user-related game data
-  String curUser;
+  String curUsername;
   Map<String, User> users;
 
   List<String> get userNames => users.values.map((user) => user.name).toList();
@@ -38,7 +38,7 @@ class UserData {
     this.sliderUrls,
     this.galleries,
     this.serverDomain,
-    this.curUser,
+    this.curUsername,
     this.users,
     this.svtFilter,
     this.craftFilter,
@@ -53,8 +53,8 @@ class UserData {
     galleries ??= {};
     serverDomain ??= 'http://chaldea.narumi.cc';
     users ??= {defaultName: User(name: defaultName)};
-    if (!users.containsKey(curUser)) {
-      curUser = users.keys.first;
+    if (!users.containsKey(curUsername)) {
+      curUsername = users.keys.first;
     }
     svtFilter ??= SvtFilterData();
     craftFilter ??= CraftFilterData();

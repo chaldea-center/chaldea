@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';
 import 'package:flutter/services.dart';
 
@@ -23,8 +24,8 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     super.initState();
     event = db.gameData.events.limitEvents[widget.name] ??
         LimitEvent(name: 'empty event');
-    plan =
-        db.curUser.limitEvents.putIfAbsent(event.name, () => LimitEventPlan());
+    plan = db.curUser.events.limitEvents
+        .putIfAbsent(event.name, () => LimitEventPlan());
     if (event.lottery != null) {
       _lotteryController = TextEditingController(text: plan.lottery.toString());
     }
@@ -77,14 +78,16 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
                 },
               )),
         ))
-        ..add(buildItemList(event.lottery));
+        ..add(buildItemList(event.lottery, onTap: onTapIcon));
     }
     if (grailNum + crystalNum > 0 || event.items != null) {
       children
         ..add(CustomTile(title: Center(child: Text('商店&任务&点数'))))
-        ..add(buildItemList({'圣杯': grailNum, '传承结晶': crystalNum}
-          ..addAll(event.items)
-          ..removeWhere((k, v) => v <= 0)));
+        ..add(buildItemList(
+            {'圣杯': grailNum, '传承结晶': crystalNum}
+              ..addAll(event.items)
+              ..removeWhere((k, v) => v <= 0),
+            onTap: onTapIcon));
     }
     if (event.extra != null) {
       children
@@ -109,12 +112,15 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
       Map<String, String> data, Map<String, int> huntingPlan) {
     manager.resetFocusList();
     List<Widget> children = [];
-    data.forEach((name, hint) {
-      final component = manager.getComponentByData(name);
+    data.forEach((itemKey, hint) {
+      final component = manager.getComponentByData(itemKey);
       manager.addObserver(component);
       children.add(CustomTile(
-        leading: Image(image: db.getIconFile(name), height: 110 * 0.5),
-        title: Text(name),
+        leading: GestureDetector(
+          onTap: () => onTapIcon(itemKey),
+          child: Image(image: db.getIconFile(itemKey), height: 110 * 0.5),
+        ),
+        title: Text(itemKey),
         subtitle: Text(hint),
         titlePadding: EdgeInsets.fromLTRB(16, 0, 16, 0),
         trailing: SizedBox(
@@ -132,7 +138,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
                 onChanged: (v) {
                   if (huntingPlan != null) {
                     int value = int.tryParse(v) ?? 0;
-                    huntingPlan[name] = value;
+                    huntingPlan[itemKey] = value;
                   }
                 },
                 onTap: () => component.onTap(context),
@@ -148,6 +154,10 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: children,
     );
+  }
+
+  void onTapIcon(String itemKey) {
+    SplitRoute.push(context, builder: (context) => ItemDetailPage(itemKey));
   }
 
   @override

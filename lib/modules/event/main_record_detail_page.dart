@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';
 
 class MainRecordDetailPage extends StatefulWidget {
@@ -15,6 +16,8 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
   @override
   Widget build(BuildContext context) {
     final record = db.gameData.events.mainRecords[widget.name];
+    final _onTap = (String itemKey) =>
+        SplitRoute.push(context, builder: (context) => ItemDetailPage(itemKey));
     return Scaffold(
       appBar: AppBar(leading: BackButton(), title: Text(widget.name)),
       body: ListView(
@@ -28,11 +31,11 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
           Divider(),
           TileGroup(
             header: '固定掉落',
-            children: <Widget>[buildItemList(record.drops)],
+            children: <Widget>[buildItemList(record.drops, onTap: _onTap)],
           ),
           TileGroup(
             header: '通关奖励',
-            children: <Widget>[buildItemList(record.rewards)],
+            children: <Widget>[buildItemList(record.rewards, onTap: _onTap)],
           )
         ],
       ),

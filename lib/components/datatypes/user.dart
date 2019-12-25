@@ -15,16 +15,10 @@ class User {
   /// Map<planNo, Map<SvtNo, SvtPlan>>
   Map<int, Map<int, ServantPlan>> servantPlans;
 
-  Map<int, ServantPlan> get curPlan2 =>
+  Map<int, ServantPlan> get curPlan =>
       servantPlans.putIfAbsent(curPlanNo, () => {});
   Map<String, int> items;
-  Map<String, LimitEventPlan> limitEvents;
-
-  /// {'chapter 1': [drops_switch,rewards_switch]}
-  Map<String, List<bool>> mainRecords;
-
-  ///{'monthCn': [num1, num2, num3]}
-  Map<String, List<int>> exchangeTickets;
+  EventPlans events;
 
   User({
     @required this.name,
@@ -33,63 +27,20 @@ class User {
     this.curPlanNo,
     this.servantPlans,
     this.items,
-    this.limitEvents,
-    this.mainRecords,
-    this.exchangeTickets,
+    this.events,
   }) : assert(name != null && name.isNotEmpty) {
     server ??= GameServer.cn;
     servants ??= {};
     curPlanNo ??= 0;
     servantPlans ??= {};
     items ??= {};
-    limitEvents ??= {};
-    mainRecords ??= {};
-    exchangeTickets ??= {};
+    events ??= EventPlans();
   }
 
   factory User.fromJson(Map<String, dynamic> data) => _$UserFromJson(data);
 
   Map<String, dynamic> toJson() => _$UserToJson(this);
 }
-
-//@JsonSerializable(anyMap: true)
-//class Plans {
-//  Map<int, ServantStatus> servants;
-//  int curPlanNo;
-//
-//  /// Map<planNo, Map<SvtNo, SvtPlan>>
-//  Map<int, Map<int, ServantPlan>> servantPlans;
-//  Map<String, int> items;
-//  Map<String, LimitEventPlan> limitEvents;
-//
-//  /// {'chapter 1': [drops_switch,rewards_switch]}
-//  Map<String, List<bool>> mainRecords;
-//
-//  ///{'monthCn': [num1, num2, num3]}
-//  Map<String, List<int>> exchangeTickets;
-//
-//  Plans({
-//    this.servants,
-//    this.curPlanNo,
-//    this.servantPlans,
-//    this.items,
-//    this.limitEvents,
-//    this.mainRecords,
-//    this.exchangeTickets,
-//  }) {
-//    servants ??= {};
-//    curPlanNo ??= 0;
-//    servantPlans ??= {};
-//    items ??= {};
-//    limitEvents ??= {};
-//    mainRecords ??= {};
-//    exchangeTickets ??= {};
-//  }
-//
-//  factory Plans.fromJson(Map<String, dynamic> data) => _$PlansFromJson(data);
-//
-//  Map<String, dynamic> toJson() => _$PlansToJson(this);
-//}
 
 @JsonSerializable()
 class ServantStatus {
@@ -159,6 +110,28 @@ class ServantPlan {
       _$ServantPlanFromJson(data);
 
   Map<String, dynamic> toJson() => _$ServantPlanToJson(this);
+}
+
+@JsonSerializable()
+class EventPlans {
+  Map<String, LimitEventPlan> limitEvents;
+
+  /// {'chapter 1': [drops_switch,rewards_switch]}
+  Map<String, List<bool>> mainRecords;
+
+  ///{'monthCn': [num1, num2, num3]}
+  Map<String, List<int>> exchangeTickets;
+
+  EventPlans({this.limitEvents, this.mainRecords, this.exchangeTickets}) {
+    limitEvents ??= {};
+    mainRecords ??= {};
+    exchangeTickets ??= {};
+  }
+
+  factory EventPlans.fromJson(Map<String, dynamic> data) =>
+      _$EventPlansFromJson(data);
+
+  Map<String, dynamic> toJson() => _$EventPlansToJson(this);
 }
 
 @JsonSerializable()

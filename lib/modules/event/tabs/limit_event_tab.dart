@@ -27,7 +27,7 @@ class _LimitEventTabState extends State<LimitEventTab>
       separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
       itemBuilder: (context, index) {
         final event = events[index];
-        final plan = db.curUser.limitEvents;
+        final plan = db.curUser.events.limitEvents;
         return CustomTile(
           title: AutoSizeText(event.name, maxLines: 1),
           subtitle: AutoSizeText(event.startTimeJp ?? 'null', maxLines: 1),
@@ -42,6 +42,7 @@ class _LimitEventTabState extends State<LimitEventTab>
                         plan
                             .putIfAbsent(event.name, () => LimitEventPlan())
                             .enable = v;
+                        db.runtimeData.itemStatistics.updateEventItems();
                       }))
             ],
           ),

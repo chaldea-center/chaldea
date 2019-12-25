@@ -38,7 +38,7 @@ class _MainRecordTabState extends State<MainRecordTab>
                     Divider(height: 1, indent: 16),
                 itemBuilder: (context, index) {
                   final chapter = mainRecords[index].name;
-                  final plan = db.curUser.mainRecords;
+                  final plan = db.curUser.events.mainRecords;
                   return CustomTile(
                     title: AutoSizeText(chapter, maxLines: 1, maxFontSize: 16),
                     trailing: Wrap(
@@ -49,6 +49,8 @@ class _MainRecordTabState extends State<MainRecordTab>
                               setState(() {
                                 plan[chapter] ??= List.filled(2, false);
                                 plan[chapter][i] = v;
+                                db.runtimeData.itemStatistics
+                                    .updateEventItems();
                               });
                             });
                       }).toList(),

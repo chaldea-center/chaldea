@@ -33,10 +33,11 @@ class Servant {
   /// [cur]=[target]=null: all
   /// [cur.favorite]=[target.favorite]=true
   /// else empty
-  Map<String, int> getAllCost(ServantPlan cur, ServantPlan target) {
-    if (cur == null && target == null) {
+  Map<String, int> getAllCost({ServantPlan cur, ServantPlan target, bool all = false}) {
+    if (all) {
       return sumDict([getAscensionCost(), getSkillCost(), getDressCost()]);
-    } else if (cur?.favorite == true && target?.favorite == true) {
+    }
+    if (cur?.favorite == true && target?.favorite == true) {
       return sumDict([
         getAscensionCost(cur: cur.ascension, target: target.ascension),
         getSkillCost(cur: cur.skills, target: target.skills),
@@ -44,6 +45,27 @@ class Servant {
       ]);
     } else {
       return {};
+    }
+  }
+
+  SvtParts<Map<String, int>> getAllCostParts(
+      {ServantPlan cur, ServantPlan target, bool all = false}) {
+    if (all) {
+      return SvtParts(
+        ascension: getAscensionCost(),
+        skill: getSkillCost(),
+        dress: getDressCost(),
+      );
+    }
+    if (cur?.favorite == true && target?.favorite == true) {
+      return SvtParts(
+        ascension:
+            getAscensionCost(cur: cur.ascension, target: target.ascension),
+        skill: getSkillCost(cur: cur.skills, target: target.skills),
+        dress: getDressCost(cur: cur.dress, target: target.dress),
+      );
+    } else {
+      return SvtParts(k: () => <String, int>{});
     }
   }
 

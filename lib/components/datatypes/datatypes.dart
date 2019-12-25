@@ -6,15 +6,17 @@
 /// non-constant value are set after default constructor(e.g. Test({a,this.b}):a=a).
 library datatypes;
 
-import 'package:chaldea/components/components.dart';
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
+
+import '../config.dart' show db;
+import '../constants.dart';
 
 part 'cmd_code.dart';
 
 part 'craft_essential.dart';
 
-/// generated file by JsonSerializableGenerator
 part 'datatypes.g.dart';
 
 part 'event.dart';
@@ -22,6 +24,8 @@ part 'event.dart';
 part 'gamedata.dart';
 
 part 'glpk.dart';
+
+part 'item_statistic.dart';
 
 part 'servant.dart';
 

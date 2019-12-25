@@ -1,7 +1,7 @@
 import 'package:chaldea/components/components.dart';
 
-import 'tabs/limit_event_tab.dart';
 import 'tabs/exchange_ticket_tab.dart';
+import 'tabs/limit_event_tab.dart';
 import 'tabs/main_record_tab.dart';
 
 class EventListPage extends StatefulWidget {
@@ -19,6 +19,7 @@ class _EventListPageState extends State<EventListPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: tabNames.length, vsync: this);
+    db.runtimeData.itemStatistics.update();
   }
 
   @override

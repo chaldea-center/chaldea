@@ -12,7 +12,6 @@ class ItemListPage extends StatefulWidget {
 
 class ItemListPageState extends State<ItemListPage>
     with SingleTickerProviderStateMixin {
-  //controller
   TabController _tabController;
   bool filtered = false;
   final List<int> categories = [1, 2, 3];
@@ -27,8 +26,9 @@ class ItemListPageState extends State<ItemListPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: categories.length, vsync: this);
-    db.runtimeData.itemsOfEvents = db.gameData.events.getAllItems(db.curUser);
-    db.runtimeData.itemsOfSvts.update(db.curUser.servants, db.curUser.curPlan2);
+    db.runtimeData.itemStatistics.update(db.curUser);
+//    db.runtimeData.itemsOfEvents = db.gameData.events.getAllItems(db.curUser.events);
+//    db.runtimeData.itemsOfSvts.update(db.curUser.servants, db.curUser.curPlan);
   }
 
   @override
@@ -46,13 +46,14 @@ class ItemListPageState extends State<ItemListPage>
                 filtered = !filtered;
               });
             },
-          )
+          ),
+          IconButton(icon: Icon(Icons.toys), onPressed: () {})
         ],
         bottom: TabBar(
             controller: _tabController,
             tabs: categories
                 .map((category) =>
-                    Tab(text: ['x', '普通素材', '技能石', '棋子', '活动素材'][category]))
+                    Tab(text: ['x', '普通素材', '技能石', '棋子'][category]))
                 .toList()),
       ),
       body: TabBarView(
@@ -128,10 +129,13 @@ class _ItemListTabState extends State<ItemListTab> {
   @override
   Widget build(BuildContext context) {
     inputsManager.resetFocusList();
-    List<Widget> children = [
-      for (var c in inputsManager.components) buildItemTile(c)
-    ];
-    children.removeWhere((e) => e == null);
+    List<Widget> children = [];
+    for (var c in inputsManager.components) {
+      Widget tile = buildItemTile(c);
+      if (tile != null) {
+        children.add(tile);
+      }
+    }
     return ListView.separated(
         itemBuilder: (context, index) => children[index],
         separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
@@ -140,22 +144,18 @@ class _ItemListTabState extends State<ItemListTab> {
 
   Widget buildItemTile(InputComponent<Item> component) {
     final itemKey = component.data.name;
-    PartSet<int> svtCostStat = db.runtimeData.itemsOfSvts.getNumOfItem(itemKey);
-    int svtCostNum = sum(svtCostStat.values);
-    int eventNum = db.runtimeData.itemsOfEvents[itemKey] ?? 0;
-    int ownNum = db.curUser.items[itemKey] ?? 0;
-    int leftNum = ownNum + eventNum - svtCostNum;
-    bool enough = leftNum >= 0;
+    final statistics = db.runtimeData.itemStatistics;
     bool isQp = itemKey == qpKey;
+    bool enough = statistics.leftItems[itemKey] >= 0;
+
     if (widget.filtered && enough && !isQp) {
       return null;
     }
     inputsManager.addObserver(component);
     return StatefulBuilder(
       builder: (BuildContext context, setState2) {
-        int ownNum = db.curUser.items[itemKey] ?? 0;
-        int leftNum = ownNum + eventNum - svtCostNum;
-        bool enough = leftNum >= 0;
+        bool enough =
+            statistics.leftItems[itemKey] >= 0; // update when text input
 
         final highlightStyle =
             TextStyle(color: enough ? null : Colors.redAccent);
@@ -177,7 +177,7 @@ class _ItemListTabState extends State<ItemListTab> {
                 if (isQp) NumberInputFormatter(),
               ],
               onChanged: (v) {
-                db.curUser.items[component.data.name] =
+                db.curUser.items[itemKey] =
                     int.tryParse(v.replaceAll(',', '')) ?? 0;
                 setState2(() {});
               },
@@ -202,13 +202,13 @@ class _ItemListTabState extends State<ItemListTab> {
               Expanded(
                   flex: 1,
                   child: AutoSizeText(
-                    '共需 ${formatNumToString(svtCostNum, "decimal")}',
+                    '共需 ${formatNumToString(statistics.svtItems[itemKey], "decimal")}',
                     maxLines: 1,
                   )),
               Expanded(
                   flex: 1,
                   child: AutoSizeText(
-                    '剩余 ${formatNumToString(leftNum, "decimal")}',
+                    '剩余 ${formatNumToString(statistics.leftItems[itemKey], "decimal")}',
                     maxLines: 1,
                     style: highlightStyle,
                     minFontSize: 10,
@@ -224,8 +224,10 @@ class _ItemListTabState extends State<ItemListTab> {
                   width: 40,
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: AutoSizeText(leftNum.toString(),
-                        style: highlightStyle, maxLines: 1),
+                    child: AutoSizeText(
+                        statistics.leftItems[itemKey].toString(),
+                        style: highlightStyle,
+                        maxLines: 1),
                   )),
             ],
           );
@@ -233,7 +235,8 @@ class _ItemListTabState extends State<ItemListTab> {
             children: <Widget>[
               Expanded(
                   child: AutoSizeText(
-                '共需 $svtCostNum' + '(${svtCostStat.values.join("/")})',
+                '共需 ${statistics.svtItems[itemKey]}' +
+                    '(${statistics.svtItemDetail.planItemCounts.values.map((e) => e[itemKey] ?? 0).join("/")})',
                 maxLines: 1,
               )),
               Text('活动'),
@@ -241,8 +244,10 @@ class _ItemListTabState extends State<ItemListTab> {
                   width: 40,
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: AutoSizeText(eventNum.toString(),
-                        style: highlightStyle, maxLines: 1),
+                    child: AutoSizeText(
+                        (statistics.eventItems[itemKey] ?? 0).toString(),
+                        style: highlightStyle,
+                        maxLines: 1),
                   )),
             ],
           );
