@@ -2,10 +2,10 @@ part of datatypes;
 
 @JsonSerializable()
 class GLPKData {
-  List<String> colNames; //quests
-  List<String> rowNames; // items
-  List<num> coeff;
-  List<List<num>> matrix;
+  List<String> colNames; //quests, n
+  List<String> rowNames; // items, m
+  List<num> coeff; // n
+  List<List<num>> matrix; //m*n
   int cnMaxColNum;
 
   GLPKData({
@@ -15,6 +15,20 @@ class GLPKData {
     this.matrix,
     this.cnMaxColNum,
   });
+
+  /// don't edit on origin data, copied data preferred.
+  void removeColumn(String col) {
+    int index = colNames.indexOf(col);
+    colNames.removeAt(index);
+    coeff.removeAt(index);
+    matrix.forEach((row) => row.removeAt(index));
+  }
+
+  void removeRow(String row) {
+    int index = rowNames.indexOf(row);
+    rowNames.removeAt(index);
+    matrix.removeAt(index);
+  }
 
   factory GLPKData.fromJson(Map<String, dynamic> data) =>
       _$GLPKDataFromJson(data);
@@ -45,7 +59,7 @@ class GLPKParams {
     objRows ??= [];
     objNums ??= [];
     minCoeff ??= 0;
-    //  maxSortOrder ??= null; // js Infinity
+    maxSortOrder ??= 6;
     coeffPrio ??= true;
     maxColNum ??= -1;
     // controllers ??= null;

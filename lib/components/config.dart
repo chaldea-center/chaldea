@@ -4,9 +4,9 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
+import 'package:chaldea/components/components.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -43,7 +43,7 @@ class Database {
   }
 
   // data files operation
-  Future<Null> loadUserData() async {
+  Future<bool> loadUserData() async {
     userData = parseJson(
         parser: () => UserData.fromJson(getJsonFromFile(
               paths.userDataPath,
@@ -51,17 +51,21 @@ class Database {
             )),
         k: () => UserData());
     print('appdata reloaded');
+    return true;
   }
 
-  Future<Null> loadGameData() async {
+  Future<bool> loadGameData() async {
     // TODO: use downloaded data if exist
-    gameData = parseJson(
-        parser: () => GameData.fromJson(getJsonFromFile(
-              paths.gameDataFilepath,
-              k: () => <String, dynamic>{},
-            )),
-        k: () => GameData());
-    print('gamedata reloaded, version ${gameData.version}.');
+    try {
+      gameData = GameData.fromJson(getJsonFromFile(paths.gameDataFilepath));
+      print('gamedata reloaded, version ${gameData.version}.');
+      return true;
+    } catch (e) {
+      gameData ??= GameData(); // if not null, don't change data
+      print('load game data error:\n$e');
+      showToast('ERROR load gamedata\n$e');
+      return false;
+    }
   }
 
   Future<Null> loadZipAssets(String assetKey,

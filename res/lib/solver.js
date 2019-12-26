@@ -9,46 +9,23 @@ function solve_glpk(data_str, params_str) {
     // required, array b in Ax >= b, int list.
     var obj_num = params['objNums'];
     // skip if coeff < min_coeff
-    var min_coeff = params['minCoeff'] || 0;
+    // var min_coeff = params['minCoeff'] || 0;
     // skip if col not in first max_sort_order of every row key's sorting
-    var max_sort_order = params['maxSortOrder'] || Infinity;
+    // var max_sort_order = params['maxSortOrder'] || Infinity;
     // if true, use coeff, minimize eff; else coeff=1, minimize num.
-    var coeff_prio = params['coeffPrio'] || true;
+     var coeff_prio = params['coeffPrio'] || true;
     // for cn server, first col_num colums will be used.
-    var max_col_num = params['maxColNum'] || -1;
+    // var max_col_num = params['maxColNum'] || -1;
     // end params
 
     // main solver
-    var col_count = data.colNames.length;
-    var col_count = max_col_num > 0 ? Math.min(max_col_num, col_count) : col_count;
-    // max_sort_order
-    var filtered_cols = new Set();
-    for (let i = 0; i < obj_rows.length; i++) {
-        var index = data.rowNames.indexOf(obj_rows[i]);
-        var sort_cols = [];
-        for (let i = 0; i < data.colNames.length; i++) {
-            if (data.matrix[index][i] > 0) {
-                sort_cols.push([data.colNames[i], data.coeff[i] / data.matrix[index][i]]);
-            } else {
-                sort_cols.push([data.colNames[i], 0]);
-            }
-        }
-        sort_cols.sort(function (a, b) {
-            return b[1] - a[1];
-        });
-        for (let i = 0; i < sort_cols.length; i++) {
-            if (i < max_sort_order) {
-                filtered_cols.add(sort_cols[i][0]);
-            }
-        }
-    }
-    // console.log(`filtered: ${Array.from(filtered_cols)}`);
-
+    var col_count = data.colNames.length;  
     glp_set_print_func(console.log);
     var lp = glp_create_prob();
     glp_set_obj_dir(lp, GLP_MIN); // optimization direction flag - minimization
     glp_add_cols(lp, col_count);
     glp_add_rows(lp, obj_rows.length);
+
     // columns settings, boundary: [0, INF)]
     for (var i = 0; i < col_count; i++) {
         glp_set_col_name(lp, i + 1, data.colNames[i]);  // col_name
@@ -82,7 +59,7 @@ function solve_glpk(data_str, params_str) {
         console.log(`row[${index}]=${data.rowNames[index]}, num=${obj_num[i]}`);
         // console.log(`  row_data=${data.matrix[index]}`);
         for (var j = 0; j < col_count; j++) {
-            if (data.matrix[index][j] > 0 && filtered_cols.has(data.colNames[j]) && data.coeff[j] >= min_coeff) {
+            if (data.matrix[index][j] > 0) {
                 ia.push(i + 1);
                 ja.push(j + 1);
                 ar.push(data.coeff[j] / data.matrix[index][j]);

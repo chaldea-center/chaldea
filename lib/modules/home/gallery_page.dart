@@ -12,7 +12,6 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'subpage/edit_gallery_page.dart';

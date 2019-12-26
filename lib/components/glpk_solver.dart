@@ -12,6 +12,7 @@ class GLPKSolver {
   final flutterWebViewPlugin = FlutterWebviewPlugin();
   StreamSubscription<WebViewStateChanged> onStateChange;
   bool solverReady;
+  bool _solving;
 
   GLPKSolver() {
     onStateChange =
@@ -75,15 +76,27 @@ class GLPKSolver {
 
   Future<GLPKSolution> calculate({GLPKData data, GLPKParams params}) async {
     assert(data != null && params != null);
+    _solving = true;
     GLPKSolution solution;
+    Timer(Duration(seconds: 30), () {
+      //TODO: how to force stop?
+      if (_solving == true) {
+        print('solver didn\'t finish in 30s, stop it.');
+        flutterWebViewPlugin.close();
+        showToast('solver didn\'t finish in 30s, stop it.');
+      } else {
+        print('solver already finished in 30s?');
+      }
+    });
     try {
       if (solverReady != true) {
         await initial();
       }
       print('solveing...\nparams="${json.encode(params)}"');
-      final String resultString = await flutterWebViewPlugin.evalJavascript(
-          '''solve_glpk( `${json.encode(data)}`,`${json.encode(params)}`);''');
-      if (resultString == null) {
+      final data2 = preProcess(data: data, params: params);
+      String resultString = await flutterWebViewPlugin.evalJavascript(
+          '''solve_glpk( `${json.encode(data2)}`,`${json.encode(params)}`);''');
+      if (resultString?.isNotEmpty == false) {
         throw 'evalJavascript return null!';
       }
       solution = GLPKSolution.fromJson(Map.from(json.decode(resultString)));
@@ -96,6 +109,69 @@ class GLPKSolver {
       FlutterError.dumpErrorToConsole(
           FlutterErrorDetails(exception: e, stack: s));
     }
+    _solving = false;
     return solution;
+  }
+
+  GLPKData preProcess({GLPKData data, GLPKParams params}) {
+    print('pre processing...');
+    if (params.maxSortOrder <= 0 || params.objRows.length <= 0) {
+      return null;
+    }
+    List<String> _columns;
+    // server, maxColNum
+    if (params.maxColNum > 0) {
+      _columns = data.colNames.sublist(0, params.maxColNum);
+    } else {
+      _columns = List.from(data.colNames);
+    }
+
+    // minCoeff & maxSortOrder
+    Set<String> removeCols = {};
+    Set<String> retainCols = {};
+    for (int j = 0; j < _columns.length; j++) {
+      if (data.coeff[j] < params.minCoeff) {
+        removeCols.add(data.colNames[j]);
+      }
+    }
+    Map<String, int> colIndexMap = {};
+    for (var i = 0; i < data.colNames.length; i++) {
+      colIndexMap[data.colNames[i]] = i;
+    }
+    int getSortValue(int rowIndex, String key) {
+      num value = data.matrix[rowIndex][colIndexMap[key]];
+      return value > 0 ? (value * 10).toInt() : 1000000;
+    }
+
+    for (int i = 0; i < params.objRows.length; i++) {
+      if (params.objNums[i] > 0) {
+        int rowIndex = data.rowNames.indexOf(params.objRows[i]);
+        _columns.sort(
+            (a, b) => getSortValue(rowIndex, a) - getSortValue(rowIndex, b));
+        Set<String> cols =
+            Set<String>.from(_columns.sublist(0, params.maxSortOrder))
+                .difference(removeCols);
+        if (cols.isEmpty) {
+          // insure at least one quest for every item
+          cols.add(_columns.first);
+        }
+        retainCols.addAll(cols);
+      }
+    }
+    // create new data instance
+    List<String> retainRowList = List.from(params.objRows),
+        retainColList = retainCols.toList();
+    return GLPKData(
+      rowNames: retainRowList,
+      colNames: retainColList,
+      coeff: retainColList.map((col) => data.coeff[colIndexMap[col]]).toList(),
+      matrix: retainRowList.map((row) {
+        int rowIndex = data.rowNames.indexOf(row);
+        return retainColList
+            .map((col) => data.matrix[rowIndex][colIndexMap[col]])
+            .toList();
+      }).toList(),
+      cnMaxColNum: retainColList.length,
+    );
   }
 }
