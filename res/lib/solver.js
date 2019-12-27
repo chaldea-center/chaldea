@@ -56,7 +56,7 @@ function solve_glpk(data_str, params_str) {
 
     for (var i = 0; i < obj_rows.length; i++) {
         var index = data.rowNames.indexOf(obj_rows[i]);
-        console.log(`row[${index}]=${data.rowNames[index]}, num=${obj_num[i]}`);
+        // console.log(`row[${index}]=${data.rowNames[index]}, num=${obj_num[i]}`);
         // console.log(`  row_data=${data.matrix[index]}`);
         for (var j = 0; j < col_count; j++) {
             if (data.matrix[index][j] > 0) {
@@ -99,6 +99,7 @@ function solve_glpk(data_str, params_str) {
             console.log(`result ${col_no + 1}, AP ${data.coeff[col_no]}, ${v} times. col=${data.colNames[col_no]}`);
         }
     }
+    console.log(`--- input data: ${obj_rows.length} rows, ${data.colNames.length} columns.`);
     console.log(`total_eff=${total_eff}, total_num=${total_num}.`); // min AP
     var t1 = new Date().getTime();
     console.log(`Time: ${(t1 - t0) / 1000} s.`);

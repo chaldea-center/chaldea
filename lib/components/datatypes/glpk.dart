@@ -58,7 +58,7 @@ class GLPKParams {
   }) {
     objRows ??= [];
     objNums ??= [];
-    minCoeff ??= 0;
+    minCoeff ??= 15;
     maxSortOrder ??= 6;
     coeffPrio ??= true;
     maxColNum ??= -1;
@@ -66,6 +66,9 @@ class GLPKParams {
   }
 
   void enableControllers() {
+    assert(objRows.length == objNums.length);
+    controllers?.forEach((e) => e.dispose());
+    controllers?.clear();
     if (controllers?.length != objNums.length) {
       controllers = objNums
           .map((e) => TextEditingController(text: e.toString()))
@@ -83,6 +86,31 @@ class GLPKParams {
     objRows.removeAt(index);
     objNums.removeAt(index);
     controllers?.removeAt(index);
+  }
+
+  void removeAll() {
+    objRows.clear();
+    objNums.clear();
+    controllers?.forEach((e) => e.dispose());
+    controllers?.clear();
+  }
+
+  GLPKParams copyWith({
+    List<String> objRows,
+    List<int> objNums,
+    int minCoeff,
+    int maxSortOrder,
+    bool coeffPrio,
+    int maxColNum,
+  }) {
+    return GLPKParams(
+      objRows: objRows ?? List.from(this.objRows),
+      objNums: objNums ?? List.from(this.objNums),
+      minCoeff: minCoeff ?? this.minCoeff,
+      maxSortOrder: maxSortOrder ?? this.maxSortOrder,
+      coeffPrio: coeffPrio ?? this.coeffPrio,
+      maxColNum: maxColNum ?? this.maxColNum,
+    );
   }
 
   factory GLPKParams.fromJson(Map<String, dynamic> data) =>

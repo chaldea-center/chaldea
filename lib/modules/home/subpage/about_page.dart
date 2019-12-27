@@ -85,18 +85,19 @@ class _AboutPageState extends State<AboutPage> {
 
   void jumpToLink(BuildContext context, String name, String link) {
     showDialog(
-        context: context,
-        child: SimpleCancelOkDialog(
-          title: Text('跳转到 $name'),
-          content: Text(link,
-              style: TextStyle(decoration: TextDecoration.underline)),
-          onTapOk: () async {
-            if (await canLaunch(link)) {
-              launch(link);
-            } else {
-              Fluttertoast.showToast(msg: 'Could not launch uri: $link');
-            }
-          },
-        ));
+      context: context,
+      child: SimpleCancelOkDialog(
+        title: Text('跳转到 $name'),
+        content:
+            Text(link, style: TextStyle(decoration: TextDecoration.underline)),
+        onTapOk: () async {
+          if (await canLaunch(link)) {
+            launch(link);
+          } else {
+            Fluttertoast.showToast(msg: 'Could not launch uri: $link');
+          }
+        },
+      ),
+    );
   }
 }

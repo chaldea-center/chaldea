@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/item/item_plan_solver_page.dart';
+import 'package:chaldea/modules/drop_calculator/drop_calculator_page.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
@@ -48,9 +48,21 @@ class ItemListPageState extends State<ItemListPage>
           ),
           IconButton(
               icon: Icon(Icons.toys),
-              onPressed: () {
-                SplitRoute.push(context,
-                    builder: (context) => ItemPlanSolverPage());
+              onPressed: () async {
+                GLPKParams params = GLPKParams();
+                db.runtimeData.itemStatistics
+                  ..update()
+                  ..leftItems.forEach((itemKey, value) {
+                    if (db.gameData.glpk.rowNames.contains(itemKey) &&
+                        value < 0) {
+                      params.objRows.add(itemKey);
+                      params.objNums.add(-value);
+                    }
+                  });
+                SplitRoute.push(
+                  context,
+                  builder: (context) => DropCalculatorPage(params: params),
+                );
               })
         ],
         bottom: TabBar(

@@ -10,18 +10,22 @@ import 'utils.dart' show showToast;
 
 class GLPKSolver {
   final flutterWebViewPlugin = FlutterWebviewPlugin();
-  StreamSubscription<WebViewStateChanged> onStateChange;
-  bool solverReady;
-  bool _solving;
+  StreamSubscription<WebViewStateChanged> _onWebViewStateChanged;
+  StreamController<bool> onStateChanged = StreamController.broadcast();
+  bool solverReady = false;
 
-  GLPKSolver() {
-    onStateChange =
-        flutterWebViewPlugin.onStateChanged.listen((state) async {});
+  GLPKSolver();
+
+  void stateChanged(bool state) {
+    print('state=$state');
+    solverReady = state;
+    onStateChanged.sink.add(solverReady);
   }
 
   /// must call [dispose]!!!
   void dispose() {
-    onStateChange.cancel();
+    onStateChanged.close();
+    _onWebViewStateChanged.cancel();
     flutterWebViewPlugin.close();
     flutterWebViewPlugin.dispose();
   }
@@ -30,15 +34,16 @@ class GLPKSolver {
     // only load once
     // use callback to setState, not Future.
     print('=========loading js libs=========');
+    if (solverReady == true) {
+      print('closing...');
+      _onWebViewStateChanged?.cancel();
+      await flutterWebViewPlugin.close();
+    }
+    stateChanged(false);
     try {
-      if (solverReady == true) {
-        print('closing...');
-        onStateChange?.cancel();
-        await flutterWebViewPlugin.close();
-      }
-      solverReady = false;
       print('launching...');
-      onStateChange = flutterWebViewPlugin.onStateChanged.listen((state) async {
+      _onWebViewStateChanged =
+          flutterWebViewPlugin.onStateChanged.listen((state) async {
         print('state changed: ${state.type}');
         if (state.type == WebViewState.finishLoad && solverReady != true) {
           print('eval glpk...');
@@ -52,7 +57,7 @@ class GLPKSolver {
               '''add_log(`${DateTime.now().toString()}: Load libs finished.`)''');
           await flutterWebViewPlugin.evalJavascript(
               '''add_log(`${DateTime.now().toString()}: Load libs finished.`)''');
-          solverReady = true;
+          stateChanged(true);
           print('=========js libs loaded.=========');
           if (callback != null) {
             callback();
@@ -76,23 +81,20 @@ class GLPKSolver {
 
   Future<GLPKSolution> calculate({GLPKData data, GLPKParams params}) async {
     assert(data != null && params != null);
-    _solving = true;
+    print('=========solving========\nparams="${json.encode(params)}"');
+    stateChanged(false);
     GLPKSolution solution;
-    Timer(Duration(seconds: 30), () {
-      //TODO: how to force stop?
-      if (_solving == true) {
-        print('solver didn\'t finish in 30s, stop it.');
-        flutterWebViewPlugin.close();
-        showToast('solver didn\'t finish in 30s, stop it.');
-      } else {
-        print('solver already finished in 30s?');
-      }
-    });
+//    Timer(Duration(seconds: 30), () {
+//      //TODO: how to force stop?
+//      if (_solving == true) {
+//        print('solver didn\'t finish in 30s, stop it.');
+//        flutterWebViewPlugin.close();
+//        showToast('solver didn\'t finish in 30s, stop it.');
+//      } else {
+//        print('solver already finished in 30s?');
+//      }
+//    });
     try {
-      if (solverReady != true) {
-        await initial();
-      }
-      print('solveing...\nparams="${json.encode(params)}"');
       final data2 = preProcess(data: data, params: params);
       String resultString = await flutterWebViewPlugin.evalJavascript(
           '''solve_glpk( `${json.encode(data2)}`,`${json.encode(params)}`);''');
@@ -109,7 +111,8 @@ class GLPKSolver {
       FlutterError.dumpErrorToConsole(
           FlutterErrorDetails(exception: e, stack: s));
     }
-    _solving = false;
+    stateChanged(true);
+    print('=========solving finished=========');
     return solution;
   }
 
@@ -161,7 +164,7 @@ class GLPKSolver {
     // create new data instance
     List<String> retainRowList = List.from(params.objRows),
         retainColList = retainCols.toList();
-    return GLPKData(
+    final data2 = GLPKData(
       rowNames: retainRowList,
       colNames: retainColList,
       coeff: retainColList.map((col) => data.coeff[colIndexMap[col]]).toList(),
@@ -173,5 +176,8 @@ class GLPKSolver {
       }).toList(),
       cnMaxColNum: retainColList.length,
     );
+    print(
+        'processed data: ${data2.rowNames.length} rows, ${data2.colNames.length} columns');
+    return data2;
   }
 }
