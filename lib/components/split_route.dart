@@ -122,8 +122,8 @@ class SplitViewBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BackButton(
-      onPressed: () {
-        SplitRoute.popAndPush(context);
+      onPressed: () async {
+        await SplitRoute.popAndPush(context);
         Navigator.maybePop(context);
       },
     );

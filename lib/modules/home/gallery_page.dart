@@ -116,7 +116,7 @@ class _GalleryPageState extends State<GalleryPage> {
     };
   }
 
-  List<Widget> _getAllGalleries(BuildContext context) {
+  List<Widget> _getShownGalleries(BuildContext context) {
     List<Widget> _galleryItems = [];
     kAllGalleryItems.forEach((name, item) {
       if ((db.userData.galleries[name] ?? true) || name == GalleryItem.more) {
@@ -230,7 +230,7 @@ class _GalleryPageState extends State<GalleryPage> {
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               childAspectRatio: 1,
-              children: _getAllGalleries(context),
+              children: _getShownGalleries(context),
             ),
             buildTestInfoPad()
           ],

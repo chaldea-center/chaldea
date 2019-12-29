@@ -77,9 +77,11 @@ class GLPKParams {
   }
 
   void addOne(String row, [int n = 0]) {
-    objRows.add(row);
-    objNums.add(n);
-    controllers?.add(TextEditingController(text: n.toString()));
+    if (row != null) {
+      objRows.add(row);
+      objNums.add(n);
+      controllers?.add(TextEditingController(text: n.toString()));
+    }
   }
 
   void removeAt(int index) {

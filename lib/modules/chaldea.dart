@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:catcher/core/catcher.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:chaldea/modules/home/home_page.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 class Chaldea extends StatefulWidget {
@@ -29,7 +32,7 @@ class _ChaldeaState extends State<Chaldea> {
   void initState() {
     // show anything after data loaded in initial()!!!
     super.initState();
-    initialApp();
+    SchedulerBinding.instance.addPostFrameCallback((_) => initialApp());
   }
 
   @override

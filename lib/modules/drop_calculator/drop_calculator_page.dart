@@ -118,8 +118,8 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
     });
     params = db.userData.glpkParams..removeAll();
     if (widget.params == null) {
-      params.addOne(pickerData.values.first[0], 50);
-      params.addOne(pickerData.values.first[1], 50);
+      params.addOne(pickerData.values?.first?.elementAt(0), 50);
+      params.addOne(pickerData.values?.first?.elementAt(1), 50);
     } else {
       params.objRows = widget.params.objRows;
       params.objNums = widget.params.objNums;
@@ -286,7 +286,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
                     ),
                     onPressed: () {
                       setState(() {
-                        params.addOne(db.gameData.glpk.rowNames.first, 50);
+                        params.addOne(db.gameData.glpk.rowNames?.first, 50);
                       });
                     }),
                 StreamBuilder(
@@ -335,7 +335,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
         child: SimpleCancelOkDialog(
           title: Text('Confirm'),
           content: Text(
-              'If item rows too long, it may run out of memory and crash!!!'),
+              'If there are too many item rows, it may run out of memory and crash!!!'),
           onTapOk: () async {
             final solution =
                 await solver.calculate(data: db.gameData.glpk, params: params);

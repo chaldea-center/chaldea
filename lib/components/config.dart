@@ -69,12 +69,16 @@ class Database {
   }
 
   Future<Null> loadZipAssets(String assetKey,
-      {String relPath, bool force = false}) async {
-    String extractDir = relPath ?? paths.gameDataDir;
+      {String extractDir, bool force = false}) async {
+    extractDir ??= paths.gameDataDir;
     if (force || !Directory(extractDir).existsSync()) {
       //extract zip file
-      final data = await rootBundle.load(assetKey);
-      await extractZip(data.buffer.asUint8List().cast<int>(), extractDir);
+      return rootBundle.load(assetKey).then((data) async {
+        await extractZip(data.buffer.asUint8List().cast<int>(), extractDir);
+      }, onError: (e, s) {
+        print('Error load assets: $assetKey\n$e');
+        showToast('Error load assets: $assetKey\n$e');
+      });
     }
   }
 
