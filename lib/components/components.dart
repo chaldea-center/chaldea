@@ -4,6 +4,7 @@ export 'package:path/path.dart' show join;
 
 export 'config.dart';
 export 'constants.dart';
+export 'custom_table.dart';
 export 'custom_tile.dart';
 export 'datatypes/datatypes.dart';
 export 'dialog.dart';

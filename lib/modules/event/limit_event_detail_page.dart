@@ -78,12 +78,12 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
                 },
               )),
         ))
-        ..add(buildItemList(event.lottery, onTap: onTapIcon));
+        ..add(buildClassifiedItemList(event.lottery, onTap: onTapIcon));
     }
     if (grailNum + crystalNum > 0 || event.items != null) {
       children
         ..add(CustomTile(title: Center(child: Text('商店&任务&点数'))))
-        ..add(buildItemList(
+        ..add(buildClassifiedItemList(
             {'圣杯': grailNum, '传承结晶': crystalNum}
               ..addAll(event.items)
               ..removeWhere((k, v) => v <= 0),
@@ -118,7 +118,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
       children.add(CustomTile(
         leading: GestureDetector(
           onTap: () => onTapIcon(itemKey),
-          child: Image(image: db.getIconFile(itemKey), height: 110 * 0.5),
+          child: Image(image: db.getIconImage(itemKey), height: 110 * 0.5),
         ),
         title: Text(itemKey),
         subtitle: Text(hint),

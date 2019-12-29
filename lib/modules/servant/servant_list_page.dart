@@ -260,7 +260,7 @@ class ServantListPageState extends State<ServantListPage> {
             leading: SizedBox(
               width: 132 * 0.45,
               height: 144 * 0.45,
-              child: Image(image: db.getIconFile(svt.icon)),
+              child: Image(image: db.getIconImage(svt.icon)),
             ),
             title: Text('${svt.mcLink}'),
             subtitle: Row(
@@ -303,7 +303,7 @@ class ServantListPageState extends State<ServantListPage> {
                 vertical: 1,
               ),
               child: ImageWithText(
-                image: Image(image: db.getIconFile(svt.icon)),
+                image: Image(image: db.getIconImage(svt.icon)),
                 text: text,
                 fontSize: 11,
                 alignment: AlignmentDirectional.bottomStart,

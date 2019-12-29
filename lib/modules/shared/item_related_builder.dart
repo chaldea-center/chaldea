@@ -1,6 +1,6 @@
 import 'package:chaldea/components/components.dart';
 
-Widget buildItemList(Map<String, int> data, {void onTap(String iconKey)}) {
+Widget buildClassifiedItemList(Map<String, int> data, {void onTap(String iconKey)}) {
   final divided = divideItemsToGroups(data.keys.toList(), rarity: true);
   List<Widget> children = [];
   for (var key in divided.keys) {
@@ -17,7 +17,7 @@ Widget buildItemList(Map<String, int> data, {void onTap(String iconKey)}) {
                   padding: EdgeInsets.symmetric(vertical: 2, horizontal: 1),
                   child: ImageWithText(
                     onTap: onTap == null ? null : () => onTap(item.name),
-                    image: Image(image: db.getIconFile(item.name)),
+                    image: Image(image: db.getIconImage(item.name)),
                     text: formatNumToString(data[item.name], 'kilo'),
                     padding: EdgeInsets.only(right: 3),
                   ),

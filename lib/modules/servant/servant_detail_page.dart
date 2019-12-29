@@ -73,6 +73,30 @@ class ServantDetailPageState extends State<ServantDetailPage>
     db.saveUserData();
   }
 
+  Widget getObtainIcon() {
+    //{初始获得, 常驻, 剧情, 活动, 限定, 友情点召唤, 无法召唤}
+    final bgColor = {
+      "初始获得": Color(0xFFA6A6A6),
+      "常驻": Color(0xFF84B63C),
+      "剧情": Color(0xFFA443DF),
+      "活动": Color(0xFF4487DF),
+      "限定": Color(0xFFE7815C),
+      "友情点召唤": Color(0xFFD19F76),
+      "无法召唤": Color(0xFFA6A6A6)
+    }[svt.info.obtain];
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border.all(width: 0.5, color: bgColor),
+        borderRadius: BorderRadius.circular(6),
+        color: bgColor,
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: Text(svt.info.obtain, style: TextStyle(color: Colors.white)),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,12 +106,21 @@ class ServantDetailPageState extends State<ServantDetailPage>
             CustomTile(
               alignment: CrossAxisAlignment.start,
               leading: Image(
-                  image: db.getIconFile(svt.icon),
+                  image: db.getIconImage(svt.icon),
                   fit: BoxFit.contain,
                   height: 90),
-              titlePadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              titlePadding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               title: Text('No.${svt.no}\n${svt.info.className}'),
-              subtitle: null,
+              subtitle: Padding(
+                padding: EdgeInsets.symmetric(vertical: 6),
+                child: Wrap(
+                  spacing: 4,
+                  children: <Widget>[
+                    // more tags/info here
+                    getObtainIcon(),
+                  ],
+                ),
+              ),
               trailing: Servant.unavailable.contains(svt.no)
                   ? null
                   : FittedBox(
@@ -111,16 +144,18 @@ class ServantDetailPageState extends State<ServantDetailPage>
                       ),
                     ),
             ),
-            TabBar(
-              controller: _tabController,
-              labelColor: Colors.black87,
-              unselectedLabelColor: Colors.grey,
-              isScrollable: true,
-              tabs: _builders.keys.map((name) => Tab(text: name)).toList(),
+            Container(
+              height: 36,
+              child: TabBar(
+                controller: _tabController,
+                labelColor: Colors.black87,
+                labelPadding: kTabLabelPadding,
+                unselectedLabelColor: Colors.grey,
+                isScrollable: true,
+                tabs: _builders.keys.map((name) => Tab(text: name)).toList(),
+              ),
             ),
-            Divider(
-              height: 0.0,
-            ),
+            Divider(height: 0.0),
             Expanded(
               child: TabBarView(
                 controller: _tabController,

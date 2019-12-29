@@ -32,7 +32,7 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
   UriImageWidgetBuilder getPlaceholder() {
     String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
     return (context, url) => Image(
-          image: db.getIconFile('${capitalize(svt.info.className)}${[
+          image: db.getIconImage('${capitalize(svt.info.className)}${[
             '黑',
             '铜',
             '铜',

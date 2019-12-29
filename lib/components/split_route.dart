@@ -53,7 +53,7 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
             child: Container(
               decoration: BoxDecoration(
                   border: Border(
-                      right: BorderSide(color: Colors.white70, width: 0.2))),
+                      right: Divider.createBorderSide(context, width: 0.2))),
               child: child,
             )),
         Flexible(flex: 100 - kMasterRatio, child: BlankPage()),

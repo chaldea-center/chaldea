@@ -276,7 +276,7 @@ class _ItemListTabState extends State<ItemListTab> {
         return CustomTile(
           onTap: () => SplitRoute.popAndPush(context,
               builder: (context) => ItemDetailPage(itemKey)),
-          leading: Image(image: db.getIconFile(itemKey), height: 110 * 0.5),
+          leading: Image(image: db.getIconImage(itemKey), height: 110 * 0.5),
           title: title,
           subtitle: subtitle,
           titlePadding: isQp

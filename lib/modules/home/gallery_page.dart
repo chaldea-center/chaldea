@@ -210,8 +210,11 @@ class _GalleryPageState extends State<GalleryPage> {
               child: sliderPages.isEmpty
                   ? Container(
                       decoration: BoxDecoration(
-                      border: Border(bottom: BorderSide(width: 0.5)),
-                    ))
+                        border: Border(
+                          bottom: Divider.createBorderSide(context, width: 0.5),
+                        ),
+                      ),
+                    )
                   : Swiper(
                       itemBuilder: (BuildContext context, int index) =>
                           sliderPages[index],

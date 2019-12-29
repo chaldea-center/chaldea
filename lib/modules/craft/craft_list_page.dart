@@ -183,7 +183,7 @@ class CraftListPageState extends State<CraftListPage> {
             leading: SizedBox(
               width: 132 * 0.45,
               height: 144 * 0.45,
-              child: Image(image: db.getIconFile(ce.icon)),
+              child: Image(image: db.getIconImage(ce.icon)),
             ),
             title: AutoSizeText(ce.name, maxLines: 1),
             subtitle: Column(
@@ -212,7 +212,7 @@ class CraftListPageState extends State<CraftListPage> {
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 1),
               child: ImageWithText(
-                image: Image(image: db.getIconFile(ce.icon)),
+                image: Image(image: db.getIconImage(ce.icon)),
                 alignment: AlignmentDirectional.bottomStart,
                 onTap: () {
                   SplitRoute.popAndPush(context,

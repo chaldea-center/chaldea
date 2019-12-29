@@ -42,7 +42,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
       final num = src[no];
       if (num > 0) {
         children.add(ImageWithText(
-          image: Image(image: db.getIconFile(svt.icon)),
+          image: Image(image: db.getIconImage(svt.icon)),
           text: formatNumToString(num, 'kilo'),
           padding: EdgeInsets.only(right: 5, bottom: 16),
           onTap: () {

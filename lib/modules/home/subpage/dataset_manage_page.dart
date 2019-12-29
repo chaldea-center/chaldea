@@ -69,7 +69,8 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                   showDialog(
                       context: context,
                       child: SimpleCancelOkDialog(
-                        title: Text('Confirm to reload gamedata?'),
+                        title: Text('Confirm'),
+                        content: Text('reload default dataset?'),
                         onTapOk: () async {
                           Fluttertoast.showToast(
                               msg: 'reloading gamedata...',
@@ -114,7 +115,8 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                   showDialog(
                       context: context,
                       child: SimpleCancelOkDialog(
-                        title: Text('Confirm to clear and reload?'),
+                        title: Text('Confirm'),
+                        content: Text('clear then reload default dataset?'),
                         onTapOk: () async {
                           Fluttertoast.showToast(
                               msg: 'clear & reloading',

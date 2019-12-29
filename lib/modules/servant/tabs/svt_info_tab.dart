@@ -87,104 +87,94 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
   }
 
   Widget buildBaseInfoTab() {
-    return ListView(
-      children: <Widget>[
-        InfoRow.fromChild(
-          children: [
-            Text(svt.info.name, style: TextStyle(fontWeight: FontWeight.bold))
-          ],
-          color: InfoCell.headerColor,
-        ),
-        InfoRow.fromText(texts: [svt.info.nameJp]),
-        InfoRow.fromText(texts: [svt.info.nameEn]),
-        InfoRow.fromText(texts: ['No.${svt.no}', svt.info.className]),
-        InfoRow.fromText(texts: ['画师', '声优'], color: InfoCell.headerColor),
-        InfoRow.fromText(texts: [svt.info.illustrator, svt.info.cv.join(', ')]),
-        InfoRow.fromText(
-            texts: ['性别', '身高', '体重'], color: InfoCell.headerColor),
-        InfoRow.fromText(
-            texts: [svt.info.gender, svt.info.height, svt.info.weight]),
-        InfoRow.fromText(
-          texts: ['筋力', '耐久', '敏捷', '魔力', '幸运', '宝具'],
-          color: InfoCell.headerColor,
-        ),
-        InfoRow.fromText(
-            texts: ['strength', 'endurance', 'agility', 'mana', 'luck', 'np']
-                .map((e) => svt.info.ability[e])
-                .toList()),
-        InfoRow.fromText(texts: ['特性'], color: InfoCell.headerColor),
-        InfoRow.fromText(texts: [svt.info.traits.join(', ')]),
-        InfoRow(
-          children: <Widget>[
-            InfoCell(text: '人形', color: InfoCell.headerColor, flex: 1),
-            InfoCell(text: '被EA特攻', color: InfoCell.headerColor, flex: 2),
-            InfoCell(text: '属性', color: InfoCell.headerColor, flex: 3)
-          ],
-        ),
-        InfoRow(
-          children: <Widget>[
-            InfoCell(text: svt.info.isHumanoid ? '是' : '否', flex: 1),
-            InfoCell(text: svt.info.isWeakToEA ? '是' : '否', flex: 2),
-            InfoCell(text: svt.info.alignments.join('·'), flex: 2),
-            InfoCell(text: svt.info.attribute, flex: 1),
-          ],
-        ),
-        if (!Servant.unavailable.contains(svt.no)) ...[
-          InfoRow.fromText(
-            texts: ['数值', '1级', '满级', '90级', '100级', 'MAX'],
-            color: InfoCell.headerColor,
-          ),
-          InfoRow(
+    final headerData = TableCellData(isHeader: true);
+    return SingleChildScrollView(
+      padding: EdgeInsets.only(bottom: 10, top: 5),
+      child: CustomTable(
+        children: <Widget>[
+          CustomTableRow.fromChildren(
             children: [
-              InfoCell.header(
-                text: 'ATK',
+              Text(svt.info.name, style: TextStyle(fontWeight: FontWeight.bold))
+            ],
+            defaultData: headerData,
+          ),
+          CustomTableRow.fromTexts(texts: [svt.info.nameJp]),
+          CustomTableRow.fromTexts(texts: [svt.info.nameEn]),
+          CustomTableRow.fromTexts(texts: ['No.${svt.no}', svt.info.className]),
+          CustomTableRow.fromTexts(
+              texts: ['画师', '声优'], defaultData: headerData),
+          CustomTableRow.fromTexts(
+              texts: [svt.info.illustrator, svt.info.cv.join(', ')]),
+          CustomTableRow.fromTexts(
+              texts: ['性别', '身高', '体重'], defaultData: headerData),
+          CustomTableRow.fromTexts(
+              texts: [svt.info.gender, svt.info.height, svt.info.weight]),
+          CustomTableRow.fromTexts(
+              texts: ['筋力', '耐久', '敏捷', '魔力', '幸运', '宝具'],
+              defaultData: headerData),
+          CustomTableRow.fromTexts(
+              texts: ['strength', 'endurance', 'agility', 'mana', 'luck', 'np']
+                  .map((e) => svt.info.ability[e])
+                  .toList()),
+          CustomTableRow.fromTexts(texts: ['特性'], defaultData: headerData),
+          CustomTableRow.fromTexts(texts: [svt.info.traits.join(', ')]),
+          CustomTableRow(children: [
+            TableCellData(text: '人形', isHeader: true, flex: 1),
+            TableCellData(text: '被EA特攻', isHeader: true, flex: 2),
+            TableCellData(text: '属性', isHeader: true, flex: 3),
+          ]),
+          CustomTableRow(children: [
+            TableCellData(text: svt.info.isHumanoid ? '是' : '否', flex: 1),
+            TableCellData(text: svt.info.isWeakToEA ? '是' : '否', flex: 2),
+            TableCellData(text: svt.info.alignments.join('·'), flex: 2),
+            TableCellData(text: svt.info.attribute, flex: 1),
+          ]),
+          if (!Servant.unavailable.contains(svt.no)) ...[
+            CustomTableRow.fromTexts(
+                texts: ['数值', '1级', '满级', '90级', '100级', 'MAX'],
+                defaultData: headerData),
+            CustomTableRow(children: [
+              TableCellData(text: 'ATK', isHeader: true),
+              TableCellData(text: svt.info.atkMin.toString()),
+              TableCellData(text: svt.info.atkMax.toString()),
+              TableCellData(text: svt.info.atk90.toString()),
+              TableCellData(text: svt.info.atk100.toString()),
+              TableCellData(text: (svt.info.atk100 + 2000).toString()),
+            ]),
+            CustomTableRow(children: [
+              TableCellData(text: 'HP', isHeader: true),
+              TableCellData(text: svt.info.hpMin.toString()),
+              TableCellData(text: svt.info.hpMax.toString()),
+              TableCellData(text: svt.info.hp90.toString()),
+              TableCellData(text: svt.info.hp100.toString()),
+              TableCellData(text: (svt.info.hp100 + 2000).toString()),
+            ]),
+            CustomTableRow.fromTexts(texts: ['配卡'], defaultData: headerData),
+            CustomTableRow(children: [
+              TableCellData(
+                child: Image(
+                  image: db.getIconImage(svt.treasureDevice.first.color),
+                  height: 110 * 0.5,
+                ),
+                flex: 1,
               ),
-              InfoCell(text: svt.info.atkMin.toString()),
-              InfoCell(text: svt.info.atkMax.toString()),
-              InfoCell(text: svt.info.atk90.toString()),
-              InfoCell(text: svt.info.atk100.toString()),
-              InfoCell(text: (svt.info.atk100 + 2000).toString()),
-            ],
-          ),
-          InfoRow(
-            children: [
-              InfoCell.header(text: 'HP'),
-              InfoCell(text: svt.info.hpMin.toString()),
-              InfoCell(text: svt.info.hpMax.toString()),
-              InfoCell(text: svt.info.hp90.toString()),
-              InfoCell(text: svt.info.hp100.toString()),
-              InfoCell(text: (svt.info.hp100 + 2000).toString()),
-            ],
-          ),
-          InfoRow.fromText(texts: ['配卡'], color: InfoCell.headerColor),
-          InfoRow(
-            children: <Widget>[
-              InfoCell(
-                  child: Image(
-                      image: db.getIconFile(svt.treasureDevice.first.color),
-                      height: 110 * 0.5),
-                  flex: 2),
-              InfoCell(
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: svt.info.cards
-                          .map((e) => Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 2),
-                                child: Image(
-                                  image: db.getIconFile(e),
-                                  height: 110 * 0.4,
-                                ),
-                              ))
-                          .toList()),
-                  flex: 6)
-            ],
-          ),
-          InfoRow.fromText(texts: ['Hits信息'], color: InfoCell.headerColor),
-          for (String card in (svt.info.cardHits.keys))
-            InfoRow(
-              children: <Widget>[
-                InfoCell(text: card, color: InfoCell.headerColor, flex: 1),
-                InfoCell(
+              TableCellData(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: svt.info.cards
+                      .map((e) =>
+                          Image(image: db.getIconImage(e), height: 110 * 0.4))
+                      .toList(),
+                ),
+                flex: 3,
+              )
+            ]),
+            CustomTableRow.fromTexts(
+                texts: ['Hits信息'], defaultData: headerData),
+            for (String card in svt.info.cardHits.keys)
+              CustomTableRow(children: [
+                TableCellData(text: card, isHeader: true),
+                TableCellData(
                   text: svt.info.cardHits[card] == 0
                       ? '   -'
                       : '   ${svt.info.cardHits[card]} Hits '
@@ -192,67 +182,70 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
                   flex: 5,
                   alignment: Alignment.centerLeft,
                 )
-              ],
-            ),
-          InfoRow.fromText(texts: ['NP获得率'], color: InfoCell.headerColor),
-          InfoRow.fromText(
-              texts: svt.info.npRate.keys.toList(),
-              color: InfoCell.headerColor),
-          InfoRow.fromText(
-              texts: svt.info.npRate.values.map((v) => '${v / 100}%').toList()),
-          InfoRow.fromText(
-              texts: ['出星率', '被即死率', '暴击权重'], color: InfoCell.headerColor),
-          InfoRow.fromText(
-            texts: [
-              svt.info.starRate,
-              svt.info.deathRate,
-              svt.info.criticalRate
-            ].map((v) => '${v / 100}%').toList(),
-          ),
-          if (svt.bondPoints != null) ...[
-            InfoRow.fromText(texts: ['羁绊点数'], color: InfoCell.headerColor),
-            InfoRow.fromText(
-              texts: ['Lv.', '1', '2', '3', '4', '5'],
-              color: InfoCell.headerColor.withOpacity(0.3),
-            ),
-            InfoRow.fromText(
+              ]),
+            CustomTableRow.fromTexts(texts: ['NP获得率'], defaultData: headerData),
+            CustomTableRow.fromTexts(
+                texts: svt.info.npRate.keys.toList(),
+                defaultData: TableCellData(isHeader: true, maxLines: 1)),
+            CustomTableRow.fromTexts(
+                texts:
+                    svt.info.npRate.values.map((v) => '${v / 100}%').toList()),
+            CustomTableRow.fromTexts(
+                texts: ['出星率', '被即死率', '暴击权重'], defaultData: headerData),
+            CustomTableRow.fromTexts(
               texts: [
-                '点数',
-                for (var i = 0; i < 5; i++) svt.bondPoints[i].toString()
-              ],
-              maxLines: 1,
+                svt.info.starRate,
+                svt.info.deathRate,
+                svt.info.criticalRate
+              ].map((v) => '${v / 100}%').toList(),
             ),
-            InfoRow.fromText(
-              texts: [
-                '累计',
-                for (var i = 0; i < 5; i++)
-                  sum(svt.bondPoints.sublist(0, i + 1)).toString()
-              ],
-              maxLines: 1,
-            ),
-            InfoRow.fromText(
-              texts: ['Lv.', '6', '7', '8', '9', '10'],
-              color: InfoCell.headerColor.withOpacity(0.3),
-            ),
-            InfoRow.fromText(
-              texts: [
-                '点数',
-                for (var i = 5; i < 10; i++) svt.bondPoints[i].toString()
-              ],
-              maxLines: 1,
-            ),
-            InfoRow.fromText(
-              texts: [
-                '累计',
-                for (var i = 5; i < 10; i++)
-                  sum(svt.bondPoints.sublist(0, i + 1)).toString()
-              ],
-              maxLines: 1,
-            ),
-          ]
+            if (svt.bondPoints != null) ...[
+              CustomTableRow.fromTexts(
+                  texts: ['羁绊点数'], defaultData: headerData),
+              CustomTableRow.fromTexts(
+                texts: ['Lv.', '1', '2', '3', '4', '5'],
+                defaultData: TableCellData(
+                    color: TableCellData.headerColor.withOpacity(0.3)),
+              ),
+              CustomTableRow.fromTexts(
+                texts: [
+                  '点数',
+                  for (var i = 0; i < 5; i++) svt.bondPoints[i].toString()
+                ],
+                defaultData: TableCellData(maxLines: 1),
+              ),
+              CustomTableRow.fromTexts(
+                texts: [
+                  '累计',
+                  for (var i = 0; i < 5; i++)
+                    sum(svt.bondPoints.sublist(0, i + 1)).toString()
+                ],
+                defaultData: TableCellData(maxLines: 1),
+              ),
+              CustomTableRow.fromTexts(
+                texts: ['Lv.', '6', '7', '8', '9', '10'],
+                defaultData: TableCellData(
+                    color: TableCellData.headerColor.withOpacity(0.3)),
+              ),
+              CustomTableRow.fromTexts(
+                texts: [
+                  '点数',
+                  for (var i = 5; i < 10; i++) svt.bondPoints[i].toString()
+                ],
+                defaultData: TableCellData(maxLines: 1),
+              ),
+              CustomTableRow.fromTexts(
+                texts: [
+                  '累计',
+                  for (var i = 5; i < 10; i++)
+                    sum(svt.bondPoints.sublist(0, i + 1)).toString()
+                ],
+                defaultData: TableCellData(maxLines: 1),
+              ),
+            ]
+          ] //end available svts
         ],
-        Container(height: 20)
-      ],
+      ),
     );
   }
 
@@ -269,6 +262,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
         }
         return Card(
           margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          color: Theme.of(context).cardColor.withOpacity(0.975),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,

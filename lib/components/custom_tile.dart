@@ -101,8 +101,8 @@ class CustomTile extends StatelessWidget {
         child: Padding(
             padding: resolvedTitlePadding,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: subtitleText == null
                   ? [titleText]
@@ -124,9 +124,10 @@ class CustomTile extends StatelessWidget {
           child: Padding(
             padding: resolvedContentPadding,
             child: Row(
-                crossAxisAlignment: alignment,
-                mainAxisSize: MainAxisSize.max,
-                children: allElements),
+              crossAxisAlignment: alignment,
+              mainAxisSize: MainAxisSize.max,
+              children: allElements,
+            ),
           ),
         ),
       ),

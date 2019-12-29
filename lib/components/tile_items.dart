@@ -1,7 +1,7 @@
 import 'dart:math' show max, min;
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:flutter/scheduler.dart';
 
 class SHeader extends StatelessWidget {
   final String label;
@@ -457,104 +457,6 @@ class FilterOption<T> extends StatelessWidget {
                 width: 0.5,
               ),
               borderRadius: BorderRadius.circular(3)),
-        ),
-      ),
-    );
-  }
-}
-
-class InfoRow extends StatelessWidget {
-  final List<Widget> children;
-  final Color color;
-
-  const InfoRow({Key key, this.children, this.color}) : super(key: key);
-
-  InfoRow.fromText({List<String> texts, this.color, int maxLines})
-      : children = texts
-            .map((e) => InfoCell(text: e, color: color, maxLines: maxLines))
-            .toList();
-
-  InfoRow.fromChild({List<Widget> children, this.color})
-      : children =
-            children.map((e) => InfoCell(child: e, color: color)).toList();
-
-  @override
-  Widget build(BuildContext context) {
-    //TODO: fix bgColor not all filled
-    return Container(
-      decoration: BoxDecoration(
-          color: color,
-          border: Border(
-            top: InfoCell.borderSide,
-            bottom: InfoCell.borderSide,
-          )),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: children,
-      ),
-    );
-  }
-}
-
-class InfoCell extends StatelessWidget {
-  final Color color;
-  final String text;
-  final int maxLines;
-  final Widget child;
-  final int flex;
-  final Alignment alignment;
-  final EdgeInsets padding;
-
-  static const borderSide =
-      BorderSide(color: Color.fromRGBO(162, 169, 177, 1), width: 0.3);
-  static const headerColor = Color.fromRGBO(234, 235, 238, 1);
-
-  const InfoCell({
-    Key key,
-    this.text,
-    this.maxLines,
-    this.child,
-    this.flex = 1,
-    this.color,
-    this.alignment = Alignment.center,
-    this.padding = const EdgeInsets.all(4),
-  })  : assert(text == null || child == null),
-        super(key: key);
-
-  const InfoCell.header({
-    Key key,
-    this.text,
-    this.maxLines,
-    this.child,
-    this.flex = 1,
-    this.alignment = Alignment.center,
-    this.padding = const EdgeInsets.symmetric(vertical: 4),
-  })  : color = headerColor,
-        super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    Widget _child;
-    if (child != null) {
-      _child = child;
-    } else {
-      _child = maxLines == null
-          ? Text(text)
-          : AutoSizeText(text, maxLines: maxLines);
-    }
-    return Flexible(
-      flex: flex,
-      child: Container(
-        decoration: BoxDecoration(
-          color: color,
-          border: Border(left: borderSide, right: borderSide),
-        ),
-        child: Align(
-          alignment: alignment,
-          child: Padding(
-            padding: padding,
-            child: _child,
-          ),
         ),
       ),
     );

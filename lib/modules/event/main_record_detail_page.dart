@@ -31,11 +31,11 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
           Divider(),
           TileGroup(
             header: '固定掉落',
-            children: <Widget>[buildItemList(record.drops, onTap: _onTap)],
+            children: <Widget>[buildClassifiedItemList(record.drops, onTap: _onTap)],
           ),
           TileGroup(
             header: '通关奖励',
-            children: <Widget>[buildItemList(record.rewards, onTap: _onTap)],
+            children: <Widget>[buildClassifiedItemList(record.rewards, onTap: _onTap)],
           )
         ],
       ),

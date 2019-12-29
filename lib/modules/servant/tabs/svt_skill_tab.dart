@@ -19,37 +19,62 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab>
       {ServantDetailPageState parent, Servant svt, ServantStatus plan})
       : super(parent: parent, svt: svt, status: plan);
 
-  List<Widget> buildSkill(int index) {
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    if (svt.activeSkills == null) {
+      return Center(child: Text('Nothing'));
+    }
+
+    return ListView(children: [
+      SHeader('主动技能'),
+      for (var index = 0; index < svt.activeSkills.length; index++)
+        buildSkill(index),
+      TileGroup(
+        header: '职阶技能',
+        children: <Widget>[
+          if (svt.passiveSkills != null)
+            for (var index = 0; index < svt.passiveSkills.length; index++)
+              ...buildPassiveSkill(index),
+        ],
+      )
+    ]);
+  }
+
+  Widget buildSkill(int index) {
     List<Skill> skillList = svt.activeSkills[index];
     bool enhanced = status.skillEnhanced[index] ?? skillList[0].enhanced;
     Skill skill = skillList[enhanced ? 1 : 0];
 
-    return <Widget>[
-      CustomTile(
-          contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
-          leading: Image(image: db.getIconFile(skill.icon), height: 110 * 0.3),
-          title: Text('${skill.name} ${skill.rank}'),
-          subtitle: Text('${skill.nameJp} ${skill.rank}'),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              if (skillList.length > 1)
-                GestureDetector(
-                  onTap: () {
-                    widget.parent?.setState(() {
-                      status.skillEnhanced[index] = !enhanced;
-                    });
-                  },
-                  child: Image(
-                    image: db.getIconFile(enhanced ? '技能强化' : '技能未强化'),
-                    height: 110 * 0.2,
+    return TileGroup(
+      children: <Widget>[
+        CustomTile(
+            contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
+            leading:
+                Image(image: db.getIconImage(skill.icon), height: 110 * 0.3),
+            title: Text('${skill.name} ${skill.rank}'),
+            subtitle: Text('${skill.nameJp} ${skill.rank}'),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                if (skillList.length > 1)
+                  GestureDetector(
+                    onTap: () {
+                      widget.parent?.setState(() {
+                        status.skillEnhanced[index] = !enhanced;
+                      });
+                    },
+                    child: Image(
+                      image: db.getIconImage(enhanced ? '技能强化' : '技能未强化'),
+                      height: 110 * 0.2,
+                    ),
                   ),
-                ),
-              Text('   CD: ${skill.cd}→${skill.cd - 2}')
-            ],
-          )),
-      for (Effect effect in skill.effects) ...buildEffect(effect)
-    ];
+                Text('   CD: ${skill.cd}→${skill.cd - 2}')
+              ],
+            )),
+        for (Effect effect in skill.effects) ...buildEffect(effect)
+      ],
+    );
   }
 
   List<Widget> buildPassiveSkill(int index) {
@@ -57,7 +82,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab>
     return <Widget>[
       CustomTile(
         contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
-        leading: Image(image: db.getIconFile(skill.icon), height: 110 * 0.3),
+        leading: Image(image: db.getIconImage(skill.icon), height: 110 * 0.3),
         title: Text('${skill.name} ${skill.rank}'),
       ),
       for (Effect effect in skill.effects) ...buildEffect(effect),
@@ -96,29 +121,6 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab>
               }).toList(),
             )),
     ];
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    if (svt.activeSkills == null) {
-      return Center(child: Text('Nothing'));
-    }
-
-    return ListView(children: [
-      TileGroup(header: '主动技能', children: <Widget>[
-        for (var index = 0; index < svt.activeSkills.length; index++)
-          ...buildSkill(index),
-      ]),
-      TileGroup(
-        header: '职阶技能',
-        children: <Widget>[
-          if (svt.passiveSkills != null)
-            for (var index = 0; index < svt.passiveSkills.length; index++)
-              ...buildPassiveSkill(index),
-        ],
-      )
-    ]);
   }
 
   @override

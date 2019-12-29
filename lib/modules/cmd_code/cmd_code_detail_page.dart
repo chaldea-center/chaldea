@@ -87,97 +87,96 @@ class CmdCodeDetailBasePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        InfoRow.fromChild(
-          children: [
-            Text(code.name, style: TextStyle(fontWeight: FontWeight.bold))
-          ],
-          color: InfoCell.headerColor,
-        ),
-        InfoRow.fromText(texts: [code.nameJp]),
-        InfoRow(
-          children: <Widget>[
-            InfoCell(
-              child: LayoutBuilder(builder: (context, constraints) {
-                return ConstrainedBox(
-                  constraints: BoxConstraints(
-                      maxWidth: constraints.biggest.width, maxHeight: 90),
-                  child: Image(image: db.getIconFile(code.icon)),
-                );
-              }),
-            ),
-            Flexible(
-              flex: 3,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  InfoRow.fromText(texts: ['No. ${code.no}']),
-                  InfoRow(
-                    children: <Widget>[
-                      InfoCell.header(text: '画师'),
-                      InfoCell(text: code.illustrators.join(' & '), flex: 3)
-                    ],
-                  ),
-                  InfoRow(
-                    children: <Widget>[
-                      InfoCell.header(text: '稀有度'),
-                      InfoCell(text: code.rarity.toString(), flex: 3),
-                    ],
-                  ),
-                  InfoRow.fromChild(
-                    children: <Widget>[
-                      CustomTile(
-                        title: Center(child: Text('查看卡面')),
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => FullScreenImageSlider(
-                                    imgUrls: [code.illust],
-                                    enableDownload:
-                                        db.runtimeData.enableDownload,
-                                  ),
-                              fullscreenDialog: true));
-                        },
-                        contentPadding: EdgeInsets.zero,
-                      )
-                    ],
-                    color: InfoCell.headerColor,
-                  ),
-                ],
-              ),
+    return SingleChildScrollView(
+      child: CustomTable(
+        children: <Widget>[
+          CustomTableRow(children: [
+            TableCellData(
+              child: Text(code.name,
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              isHeader: true,
             )
-          ],
-        ),
-        InfoRow.fromText(texts: ['获取方式'], color: InfoCell.headerColor),
-        InfoRow.fromChild(children: [
-          Text(
-            code.obtain,
-            textAlign: TextAlign.center,
-          )
-        ]),
-        InfoRow.fromText(texts: ['持有技能'], color: InfoCell.headerColor),
-        InfoRow(
-          children: <Widget>[
-            InfoCell(
-              child: Padding(
-                padding: EdgeInsets.all(6),
-                child: Image(image: db.getIconFile(code.skillIcon), height: 40),
+          ]),
+          CustomTableRow(children: [TableCellData(text: code.nameJp)]),
+          CustomTableRow(
+            children: [
+              TableCellData(
+                child: Image(image: db.getIconImage(code.icon)),
+                flex: 1,
+                padding: EdgeInsets.all(8),
+                fitHeight: true,
               ),
-            ),
-            InfoCell(flex: 5, child: Text(code.skill)),
-          ],
-        ),
-        InfoRow.fromText(texts: ['解说'], color: InfoCell.headerColor),
-        InfoRow(
-          children: <Widget>[
-            InfoCell(
-              text: useLangJp ? code.descriptionJp : code.description,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            )
-          ],
-        )
-      ],
+              TableCellData(
+                flex: 3,
+                padding: EdgeInsets.zero,
+                child: CustomTable(
+                  hideOutline: true,
+                  children: <Widget>[
+                    CustomTableRow(
+                        children: [TableCellData(text: 'No. ${code.no}')]),
+                    CustomTableRow(children: [
+                      TableCellData(text: '画师', isHeader: true),
+                      TableCellData(
+                          text: code.illustrators.join(' & '), flex: 3)
+                    ]),
+                    CustomTableRow(children: [
+                      TableCellData(text: '稀有度', isHeader: true),
+                      TableCellData(text: code.rarity.toString(), flex: 3),
+                    ]),
+                    CustomTableRow(
+                      children: [
+                        TableCellData(
+                          child: CustomTile(
+                            title: Center(child: Text('查看卡面')),
+                            contentPadding: EdgeInsets.zero,
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => FullScreenImageSlider(
+                                      imgUrls: [code.illust],
+                                      enableDownload:
+                                          db.runtimeData.enableDownload),
+                                  fullscreenDialog: true));
+                            },
+                          ),
+                          isHeader: true,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          CustomTableRow(
+              children: [TableCellData(text: '获取方式', isHeader: true)]),
+          CustomTableRow(children: [
+            TableCellData(child: Text(code.obtain, textAlign: TextAlign.center))
+          ]),
+          CustomTableRow(
+              children: [TableCellData(text: '持有技能', isHeader: true)]),
+          CustomTableRow(
+            children: [
+              TableCellData(
+                padding: EdgeInsets.all(10),
+                flex: 1,
+                child:
+                    Image(image: db.getIconImage(code.skillIcon), height: 40),
+              ),
+              TableCellData(flex: 5, text: code.skill)
+            ],
+          ),
+          CustomTableRow(children: [TableCellData(text: '解说', isHeader: true)]),
+          CustomTableRow(
+            children: [
+              TableCellData(
+                text: useLangJp ? code.descriptionJp : code.description,
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              )
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

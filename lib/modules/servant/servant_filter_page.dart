@@ -132,7 +132,7 @@ class _ServantFilterPageState extends State<ServantFilterPage> {
                     children: List.generate(2, (index) {
                       final name = ['金卡', '铜卡'][index] + 'All';
                       return GestureDetector(
-                        child: Image(image: db.getIconFile(name)),
+                        child: Image(image: db.getIconImage(name)),
                         onTap: () {
                           if (index == 0) {
                             SvtFilterData.classesData.forEach(
@@ -157,7 +157,7 @@ class _ServantFilterPageState extends State<ServantFilterPage> {
                           filterData.className.options[className] ?? false;
                       final color = selected ? '金卡' : '铜卡';
                       return GestureDetector(
-                        child: Image(image: db.getIconFile('$color$className')),
+                        child: Image(image: db.getIconImage('$color$className')),
                         onTap: () {
                           filterData.className.options[className] = !selected;
                           updateParentFilterResult();

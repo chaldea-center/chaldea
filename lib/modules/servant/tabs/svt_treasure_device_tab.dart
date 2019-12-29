@@ -20,18 +20,87 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab>
       {ServantDetailPageState parent, Servant svt, ServantStatus plan})
       : super(parent: parent, svt: svt, status: plan);
 
-  Widget buildHeader(TreasureDevice np, int tdNo) {
-    Widget tdHeader = CustomTile(
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    if (svt.treasureDevice == null || svt.treasureDevice.length == 0) {
+      return Container(child: Center(child: Text('No NobelPhantasm Data')));
+    }
+    if (status.treasureDeviceEnhanced == null ||
+        status.treasureDeviceEnhanced >= svt.treasureDevice.length) {}
+    int tdNo = status.treasureDeviceEnhanced;
+    if (tdNo == null || tdNo < 0 || tdNo >= svt.treasureDevice.length) {
+      tdNo =
+          svt.treasureDevice.first.enhanced ? svt.treasureDevice.length - 1 : 0;
+    }
+    final td = svt.treasureDevice[tdNo];
+    return ListView(
+      children: <Widget>[
+        TileGroup(
+          children: <Widget>[
+            buildToggle(tdNo),
+            buildHeader(td),
+            for (Effect e in td.effects) ...buildEffect(e)
+          ],
+        )
+      ],
+    );
+  }
+
+  Widget buildToggle(int selected) {
+    if (svt.treasureDevice.length <= 1) {
+      return Container();
+    }
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.only(top: 8, bottom: 4),
+        child: ToggleButtons(
+          constraints: BoxConstraints(),
+          selectedColor: Colors.white,
+          fillColor: Theme.of(context).primaryColor,
+          children: svt.treasureDevice.map((td) {
+            String iconKey = td.state.contains('强化前')
+                ? '宝具未强化'
+                : td.state.contains('强化后') ? '宝具强化' : null;
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+              child: iconKey == null
+                  ? Text(td.state)
+                  : Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Image(
+                            image: db.getIconImage(iconKey), height: 110 * 0.2),
+                        Text(td.state)
+                      ],
+                    ),
+            );
+          }).toList(),
+          isSelected: List.generate(svt.treasureDevice.length, (i) {
+            return selected == i;
+          }),
+          onPressed: (no) {
+            setState(() {
+              status.treasureDeviceEnhanced = no;
+            });
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget buildHeader(TreasureDevice td) {
+    return CustomTile(
       leading: Column(
         children: <Widget>[
           Image(
-            image: db.getIconFile(np.color),
+            image: db.getIconImage(td.color),
             width: 110 * 0.9,
           ),
           ConstrainedBox(
             constraints: BoxConstraints(maxWidth: 110 * 0.9),
             child: Text(
-              '${np.typeText} ${np.rank}',
+              '${td.typeText} ${td.rank}',
               style: TextStyle(fontSize: 14, color: Colors.black),
               textAlign: TextAlign.center,
             ),
@@ -42,72 +111,28 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           AutoSizeText(
-            np.upperName,
+            td.upperName,
             style: TextStyle(fontSize: 16, color: Colors.black54),
             maxLines: 1,
           ),
           AutoSizeText(
-            np.name,
+            td.name,
             style: TextStyle(fontWeight: FontWeight.w600),
             maxLines: 1,
           ),
           AutoSizeText(
-            np.upperNameJp,
+            td.upperNameJp,
             style: TextStyle(fontSize: 16, color: Colors.black54),
             maxLines: 1,
           ),
           AutoSizeText(
-            np.nameJp,
+            td.nameJp,
             style: TextStyle(fontWeight: FontWeight.w600),
             maxLines: 1,
           ),
         ],
       ),
     );
-    if (svt.treasureDevice.length <= 1) {
-      return tdHeader;
-    } else {
-      return Column(
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(top: 8),
-            child: ToggleButtons(
-              constraints: BoxConstraints(),
-              selectedColor: Colors.white,
-              fillColor: Theme.of(context).primaryColor,
-              children: svt.treasureDevice.map((td) {
-                String iconKey = td.state.contains('强化前')
-                    ? '宝具未强化'
-                    : td.state.contains('强化后') ? '宝具强化' : null;
-                return Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                  child: iconKey == null
-                      ? Text(td.state)
-                      : Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Image(
-                                image: db.getIconFile(iconKey),
-                                height: 110 * 0.2),
-                            Text(td.state)
-                          ],
-                        ),
-                );
-              }).toList(),
-              isSelected: List.generate(svt.treasureDevice.length, (i) {
-                return tdNo == i;
-              }),
-              onPressed: (no) {
-                setState(() {
-                  status.treasureDeviceEnhanced = no;
-                });
-              },
-            ),
-          ),
-          tdHeader
-        ],
-      );
-    }
   }
 
   List<Widget> buildEffect(Effect effect) {
@@ -139,27 +164,6 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab>
               }),
             ))
     ];
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    if (svt.treasureDevice == null || svt.treasureDevice.length == 0) {
-      return Container(child: Center(child: Text('No NobelPhantasm Data')));
-    }
-    int tdNo = status.treasureDeviceEnhanced ??
-        (svt.treasureDevice.first.enhanced ? 1 : 0);
-    final np = svt.treasureDevice[tdNo];
-    return ListView(
-      children: <Widget>[
-        TileGroup(
-          children: <Widget>[
-            buildHeader(np, tdNo),
-            for (Effect e in np.effects) ...buildEffect(e)
-          ],
-        )
-      ],
-    );
   }
 
   @override

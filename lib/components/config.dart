@@ -95,7 +95,7 @@ class Database {
     }
   }
 
-  ImageProvider getIconFile(String iconKey) {
+  ImageProvider getIconImage(String iconKey) {
     if (gameData.icons.containsKey(iconKey)) {
       return FileImage(File(
           join(paths.gameDataDir, 'icons', gameData.icons[iconKey].filename)));

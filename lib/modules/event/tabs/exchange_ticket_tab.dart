@@ -56,7 +56,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
           GestureDetector(
             onTap: () => SplitRoute.popAndPush(context,
                 builder: (context) => ItemDetailPage(iconKey)),
-            child: Image(image: db.getIconFile(iconKey), height: 48),
+            child: Image(image: db.getIconImage(iconKey), height: 48),
           ),
           Column(
             mainAxisSize: MainAxisSize.min,

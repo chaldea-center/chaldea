@@ -87,137 +87,123 @@ class CraftDetailBasePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        InfoRow.fromChild(
-          children: [
-            Text(ce.name, style: TextStyle(fontWeight: FontWeight.bold))
-          ],
-          color: InfoCell.headerColor,
-        ),
-        InfoRow.fromText(texts: [ce.nameJp]),
-        InfoRow(
-          children: <Widget>[
-            InfoCell(
-              child: LayoutBuilder(builder: (context, constraints) {
-                return ConstrainedBox(
-                  constraints: BoxConstraints(
-                      maxWidth: constraints.biggest.width, maxHeight: 90),
-                  child: Image(image: db.getIconFile(ce.icon)),
-                );
-              }),
-            ),
-            Flexible(
-              flex: 3,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  InfoRow.fromText(texts: ['No. ${ce.no}']),
-                  InfoRow(
-                    children: <Widget>[
-                      InfoCell.header(text: '画师'),
-                      InfoCell(
-                        text: ce.illustrators.join(' & '),
-                        flex: 3,
-                        maxLines: 1,
-                      )
-                    ],
-                  ),
-                  InfoRow(
-                    children: <Widget>[
-                      InfoCell.header(text: '稀有度'),
-                      InfoCell(text: ce.rarity.toString()),
-                      InfoCell.header(text: 'COST'),
-                      InfoCell(text: ce.cost.toString())
-                    ],
-                  ),
-                  InfoRow(
-                    children: <Widget>[
-                      InfoCell.header(text: 'ATK'),
-                      InfoCell(
-                        text: '${ce.atkMin}/${ce.atkMax}',
-                        maxLines: 1,
-                      ),
-                      InfoCell.header(text: 'HP'),
-                      InfoCell(
-                        text: '${ce.hpMin}/${ce.hpMax}',
-                        maxLines: 1,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+    return SingleChildScrollView(
+      child: CustomTable(
+        children: <Widget>[
+          CustomTableRow(children: [
+            TableCellData(
+              child:
+                  Text(ce.name, style: TextStyle(fontWeight: FontWeight.bold)),
+              isHeader: true,
             )
-          ],
-        ),
-        InfoRow.fromChild(
-          children: <Widget>[
-            CustomTile(
-              title: Center(child: Text('查看卡面')),
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => FullScreenImageSlider(
-                          imgUrls: [ce.illust],
-                          enableDownload: db.runtimeData.enableDownload,
-                        ),
-                    fullscreenDialog: true));
-              },
-              contentPadding: EdgeInsets.zero,
-            )
-          ],
-          color: InfoCell.headerColor,
-        ),
-        InfoRow.fromText(texts: ['持有技能'], color: InfoCell.headerColor),
-        InfoRow(
-          children: <Widget>[
-            InfoCell(
-              child: Padding(
-                padding: EdgeInsets.all(6),
-                child: Image(image: db.getIconFile(ce.skillIcon), height: 40),
+          ]),
+          CustomTableRow(children: [TableCellData(text: ce.nameJp)]),
+          CustomTableRow(
+            children: [
+              TableCellData(
+                child: Image(image: db.getIconImage(ce.icon)),
+                flex: 1,
+                padding: EdgeInsets.all(8),
+                fitHeight: true,
               ),
-            ),
-            InfoCell(
-                flex: 5,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              TableCellData(
+                flex: 3,
+                padding: EdgeInsets.zero,
+                child: CustomTable(
+                  hideOutline: true,
                   children: <Widget>[
-                    Text(ce.skill),
-                    if (ce.skillMax?.isNotEmpty == true) ...[
-                      Divider(height: 2),
-                      Text(ce.skillMax),
-                    ]
+                    CustomTableRow(
+                        children: [TableCellData(text: 'No. ${ce.no}')]),
+                    CustomTableRow(children: [
+                      TableCellData(text: '画师', isHeader: true),
+                      TableCellData(text: ce.illustrators.join(' & '), flex: 3)
+                    ]),
+                    CustomTableRow(children: [
+                      TableCellData(text: '稀有度', isHeader: true),
+                      TableCellData(text: ce.rarity.toString()),
+                      TableCellData(text: 'COST', isHeader: true),
+                      TableCellData(text: ce.cost.toString()),
+                    ]),
+                    CustomTableRow(children: [
+                      TableCellData(text: 'ATK', isHeader: true),
+                      TableCellData(text: '${ce.atkMin}/${ce.atkMax}'),
+                      TableCellData(text: 'HP', isHeader: true),
+                      TableCellData(text: '${ce.hpMin}/${ce.hpMax}'),
+                    ])
                   ],
-                )),
-          ],
-        ),
-        for (var i = 0; i < ce.eventIcons.length; i++)
-          InfoRow(
-            children: <Widget>[
-              InfoCell(
-                child: Padding(
-                  padding: EdgeInsets.all(6),
-                  child: Image(
-                      image: db.getIconFile(ce.eventIcons[i]), height: 40),
                 ),
               ),
-              InfoCell(
-                  flex: 5,
-                  alignment: Alignment.centerLeft,
-                  text: ce.eventSkills[i]),
             ],
           ),
-        InfoRow.fromText(texts: ['解说'], color: InfoCell.headerColor),
-        InfoRow(
-          children: <Widget>[
-            InfoCell(
-              text: useLangJp ? ce.descriptionJp : ce.description,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            )
-          ],
-        )
-      ],
+          CustomTableRow(
+            children: [
+              TableCellData(
+                child: CustomTile(
+                  title: Center(child: Text('查看卡面')),
+                  contentPadding: EdgeInsets.zero,
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => FullScreenImageSlider(
+                            imgUrls: [ce.illust],
+                            enableDownload: db.runtimeData.enableDownload),
+                        fullscreenDialog: true));
+                  },
+                ),
+                isHeader: true,
+              ),
+            ],
+          ),
+          CustomTableRow(
+              children: [TableCellData(text: '持有技能', isHeader: true)]),
+          CustomTableRow(
+            children: [
+              TableCellData(
+                padding: EdgeInsets.all(10),
+                flex: 1,
+                child: Image(image: db.getIconImage(ce.skillIcon), height: 40),
+              ),
+              TableCellData(
+                  flex: 5,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(ce.skill),
+                      if (ce.skillMax?.isNotEmpty == true) ...[
+                        Divider(height: 2),
+                        Text(ce.skillMax),
+                      ]
+                    ],
+                  ))
+            ],
+          ),
+          for (var i = 0; i < ce.eventIcons.length; i++)
+            CustomTableRow(
+              children: [
+                TableCellData(
+                  padding: EdgeInsets.all(10),
+                  flex: 1,
+                  child: Image(
+                    image: db.getIconImage(ce.eventIcons[i]),
+                    height: 40,
+                  ),
+                  fitHeight: true,
+                ),
+                TableCellData(flex: 5, text: ce.eventSkills[i])
+              ],
+            ),
+          CustomTableRow(children: [TableCellData(text: '解说', isHeader: true)]),
+          CustomTableRow(
+            children: [
+              TableCellData(
+                text: useLangJp ? ce.descriptionJp : ce.description,
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              )
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
