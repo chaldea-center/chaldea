@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:chaldea/components/components.dart';
+import 'package:flutter/material.dart';
 
 /// modified from [ListTile].
 class CustomTile extends StatelessWidget {
@@ -8,6 +8,7 @@ class CustomTile extends StatelessWidget {
   final Widget title;
   final Widget subtitle;
   final Widget trailing;
+  final Widget trailingIcon;
 
   /// default: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0)
   final EdgeInsets contentPadding;
@@ -34,6 +35,7 @@ class CustomTile extends StatelessWidget {
       this.title,
       this.subtitle,
       this.trailing,
+      this.trailingIcon,
       this.contentPadding,
       this.titlePadding,
       this.constraints,
@@ -55,7 +57,7 @@ class CustomTile extends StatelessWidget {
     final ListTileTheme tileTheme = ListTileTheme.of(context);
 
     IconThemeData iconThemeData;
-    if (leading != null || trailing != null)
+    if (leading != null || trailing != null || trailingIcon != null)
       iconThemeData = IconThemeData(color: _iconColor(theme, tileTheme));
 
     Widget leadingIcon;
@@ -80,11 +82,18 @@ class CustomTile extends StatelessWidget {
       );
     }
 
-    Widget trailingIcon;
+    List<Widget> trailingIcons = [];
     if (trailing != null) {
-      trailingIcon = IconTheme.merge(
-          data: iconThemeData.copyWith(color: theme.buttonColor),
-          child: trailing);
+      trailingIcons.add(IconTheme.merge(
+        data: iconThemeData.copyWith(color: theme.buttonColor),
+        child: trailing,
+      ));
+    }
+    if (trailingIcon != null) {
+      trailingIcons.add(IconTheme.merge(
+        data: iconThemeData.copyWith(color: theme.buttonColor),
+        child: trailingIcon,
+      ));
     }
 
     final EdgeInsets resolvedContentPadding = contentPadding ??
@@ -104,12 +113,10 @@ class CustomTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: subtitleText == null
-                  ? [titleText]
-                  : [titleText, subtitleText],
+              children: [titleText, if (subtitleText != null) subtitleText],
             )),
       ),
-      trailingIcon
+      ...trailingIcons
     ];
     allElements.removeWhere((item) => item == null);
     return InkWell(

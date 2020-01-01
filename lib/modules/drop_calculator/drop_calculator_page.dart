@@ -1,5 +1,5 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 
@@ -16,6 +16,7 @@ class _DropCalculatorPageState extends State<DropCalculatorPage>
     with SingleTickerProviderStateMixin {
   GLPKSolution solution;
   TabController _tabController;
+  final _blankNode = FocusNode();
 
   @override
   void initState() {
@@ -39,53 +40,27 @@ class _DropCalculatorPageState extends State<DropCalculatorPage>
       ),
       body: GestureDetector(
         onTap: () {
-          FocusScope.of(context).requestFocus(kBlankNode);
+          FocusScope.of(context).requestFocus(_blankNode);
         },
         behavior: HitTestBehavior.translucent,
         child: TabBarView(
           controller: _tabController,
           children: [
-            DropCalcInputTab(
-              params: widget.params,
-              onSolved: (s) {
-                setState(() {
-                  solution = s;
-                });
-                _tabController.index = 1;
-              },
+            KeepAliveBuilder(
+              builder: (context) => DropCalcInputTab(
+                params: widget.params,
+                onSolved: (s) {
+                  setState(() {
+                    solution = s;
+                  });
+                  _tabController.index = 1;
+                },
+              ),
             ),
-            buildOutputTab()
+            KeepAliveBuilder(builder: (context) => DropCalcOutputTab(solution)),
           ],
         ),
       ),
-    );
-  }
-
-  Widget buildOutputTab() {
-    return Column(
-      children: <Widget>[
-        ListTile(
-          title: Text('Total Num: ${solution?.totalNum}'),
-          trailing: Text('Total AP: ${solution?.totalEff}'),
-        ),
-        Divider(height: 1, thickness: 1),
-        Expanded(
-          child: ListView.separated(
-              itemBuilder: (context, index) {
-                final variable = solution.variables[index];
-                return ListTile(
-                  title: Text(variable.name),
-                  subtitle: Text(variable.detail.entries
-                      .map((e) => '${e.key}*${e.value}')
-                      .join(', ')),
-                  trailing: Text('${variable.value}*${variable.coeff} AP'),
-                );
-              },
-              separatorBuilder: (context, index) =>
-                  Divider(height: 1, thickness: 1),
-              itemCount: solution?.variables?.length ?? 0),
-        )
-      ],
     );
   }
 }
@@ -101,8 +76,7 @@ class DropCalcInputTab extends StatefulWidget {
   _DropCalcInputTabState createState() => _DropCalcInputTabState();
 }
 
-class _DropCalcInputTabState extends State<DropCalcInputTab>
-    with AutomaticKeepAliveClientMixin {
+class _DropCalcInputTabState extends State<DropCalcInputTab> {
   GLPKParams params;
   Map<String, List<String>> pickerData = {};
   final solver = GLPKSolver();
@@ -136,75 +110,78 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Column(
       children: <Widget>[
         if (params.objRows.isEmpty)
           ListTile(title: Center(child: Text('No item data, click + to add.'))),
-        Expanded(
-          child: ListView.separated(
-            itemBuilder: (context, index) => ListTile(
-              title: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: FlatButton(
-                        onPressed: () {
-                          final String itemKey = params.objRows[index];
-                          final String category = getItemCategory(itemKey);
-                          Picker(
-                            adapter: PickerDataAdapter<String>(
-                                pickerdata: [pickerData]),
-                            selecteds: [
-                              pickerData.keys.toList().indexOf(category),
-                              pickerData[category].indexOf(itemKey)
-                            ],
-                            height: 250,
-                            itemExtent: 48,
-                            changeToFirst: true,
-                            onConfirm: (Picker picker, List value) {
-                              print(picker.getSelectedValues());
-                              setState(() {
-                                params.objRows[index] =
-                                    picker.getSelectedValues().last;
-                              });
-                            },
-                          ).showModal(context);
-                        },
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(params.objRows[index]),
-                        )),
-                  ),
-                  Expanded(
-                    child: TextField(
-                      controller: params.controllers[index],
-                      keyboardType: TextInputType.number,
-                      textAlign: TextAlign.center,
-                      inputFormatters: [
-                        WhitelistingTextInputFormatter.digitsOnly
-                      ],
-                      onChanged: (s) {
-                        params.objNums[index] = int.tryParse(s) ?? 0;
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              trailing: IconButton(
-                  icon: Icon(Icons.delete_outline, color: Colors.redAccent),
-                  onPressed: () {
-                    setState(() {
-                      params.removeAt(index);
-                    });
-                  }),
-            ),
-            separatorBuilder: (context, index) =>
-                Divider(height: 1, thickness: 0.5),
-            itemCount: params.objRows.length,
-          ),
-        ),
+        Expanded(child: _buildInputRows()),
         _buildButtonBar(),
       ],
+    );
+  }
+
+  Widget _buildInputRows() {
+    return ListView.separated(
+      itemBuilder: (context, index) => ListTile(
+        leading: Padding(
+          padding: EdgeInsets.symmetric(vertical: 8),
+          child: Image(image: db.getIconImage(params.objRows[index])),
+        ),
+        title: Row(
+          children: <Widget>[
+            Expanded(
+              child: FlatButton(
+                  onPressed: () {
+                    final String itemKey = params.objRows[index];
+                    final String category = getItemCategory(itemKey);
+                    Picker(
+                      adapter:
+                          PickerDataAdapter<String>(pickerdata: [pickerData]),
+                      selecteds: [
+                        pickerData.keys.toList().indexOf(category),
+                        pickerData[category].indexOf(itemKey)
+                      ],
+                      height: 250,
+                      itemExtent: 48,
+                      changeToFirst: true,
+                      onConfirm: (Picker picker, List value) {
+                        print(picker.getSelectedValues());
+                        setState(() {
+                          params.objRows[index] =
+                              picker.getSelectedValues().last;
+                        });
+                      },
+                    ).showModal(context);
+                  },
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(params.objRows[index]),
+                  )),
+            ),
+            Expanded(
+              child: TextField(
+                controller: params.controllers[index],
+                keyboardType: TextInputType.number,
+                textAlign: TextAlign.center,
+                decoration: InputDecoration(isDense: true),
+                inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                onChanged: (s) {
+                  params.objNums[index] = int.tryParse(s) ?? 0;
+                },
+              ),
+            ),
+          ],
+        ),
+        trailing: IconButton(
+            icon: Icon(Icons.delete_outline, color: Colors.redAccent),
+            onPressed: () {
+              setState(() {
+                params.removeAt(index);
+              });
+            }),
+      ),
+      separatorBuilder: (context, index) => Divider(height: 1, thickness: 0.5),
+      itemCount: params.objRows.length,
     );
   }
 
@@ -237,11 +214,13 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
               children: <Widget>[
                 Text('掉落前'),
                 DropdownButton(
-                    value: params.maxSortOrder,
-                    items: List.generate(5, (i) {
-                      int v = i * 2 + 2;
+                    value: [0, 1, 2, 4, 6, 8].contains(params.maxSortOrder)
+                        ? params.maxSortOrder
+                        : 0,
+                    items: List.generate(6, (i) {
+                      int v = [0, 1, 2, 4, 6, 8][i];
                       return DropdownMenuItem(
-                          value: v, child: Text(v.toString()));
+                          value: v, child: Text(v <= 0 ? 'ALL' : v.toString()));
                     }),
                     onChanged: (v) => params.maxSortOrder = v),
               ],
@@ -290,20 +269,45 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
                       });
                     }),
                 StreamBuilder(
-                    initialData: false,
-                    stream: solver.onStateChanged.stream,
-                    builder: (context, snapshot) {
-                      bool enabled = snapshot.data == true;
-                      return RaisedButton(
-                        color: Theme.of(context).primaryColor,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        onPressed: enabled ? solve : null,
-                        child: Text(
-                          enabled ? ' Solve ' : 'Running',
-                          style: TextStyle(color: Colors.white),
+                  initialData: false,
+                  stream: solver.onStateChanged.stream,
+                  builder: (context, snapshot) {
+                    bool enabled = snapshot.data == true;
+                    return RaisedButton(
+                      color: Theme.of(context).primaryColor,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      onPressed: enabled ? solve : null,
+                      child: SizedBox(
+                        width: 75,
+                        child: Center(
+                          child: Text(
+                            enabled ? 'Sovle' : 'Running',
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
-                      );
+                      ),
+                    );
+                  },
+                ),
+                IconButton(
+                    icon: Icon(
+                      Icons.help,
+                      color: Colors.blueAccent,
+                    ),
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          child: SimpleCancelOkDialog(
+                            title: Text('Help'),
+                            content: Text('计算结果仅供参考==\n'
+                                '>>>最低AP：\n过滤AP较低的free\n'
+                                '>>>掉落前n：\n仅限于单素材掉落在前n的关卡的合集\n'
+                                '以上筛选时将保证每个素材至少有一个关卡\n'
+                                '>>>目标：\n最低总次数或最低总AP为优化目标\n'
+                                '>>>版本：\n选择国服且包含国服未实装的素材将不能得到结果！\n'
+                                ''),
+                          ));
                     })
               ],
             )
@@ -327,29 +331,157 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
     return null;
   }
 
-  void solve() {
+  void solve() async {
     if (sum(params.objNums) > 0) {
       FocusScope.of(context).unfocus();
-      showDialog(
-        context: context,
-        child: SimpleCancelOkDialog(
-          title: Text('Confirm'),
-          content: Text(
-              'If there are too many item rows, it may run out of memory and crash!!!'),
-          onTapOk: () async {
-            final solution =
-                await solver.calculate(data: db.gameData.glpk, params: params);
-            if (widget.onSolved != null) {
-              widget.onSolved(solution);
-            }
-          },
-        ),
-      );
+      final solution =
+          await solver.calculate(data: db.gameData.glpk, params: params);
+      if (widget.onSolved != null) {
+        widget.onSolved(solution);
+      }
     } else {
       showToast('invalid inputs.');
     }
   }
+}
+
+class DropCalcOutputTab extends StatelessWidget {
+  final GLPKSolution solution;
+
+  DropCalcOutputTab(this.solution);
 
   @override
-  bool get wantKeepAlive => true;
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Container(
+          decoration: BoxDecoration(
+              border: Border(bottom: Divider.createBorderSide(context))),
+          child: ListTile(
+            title: Text('Total Num: ${solution?.totalNum}'),
+            trailing: Text('Total AP: ${solution?.totalEff}'),
+          ),
+        ),
+        Expanded(
+            child: ListView(
+          children: solution?.variables?.map((variable) {
+                final quest = db.gameData.freeQuests[variable.name];
+                return Container(
+                  decoration: BoxDecoration(
+                      border:
+                          Border(bottom: Divider.createBorderSide(context))),
+                  child: ValueStatefulBuilder<bool>(
+                      data: false,
+                      builder: (context, state) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            CustomTile(
+                              title: Text(quest?.placeCn ?? variable.name),
+                              subtitle: Text(variable.detail.entries
+                                  .map((e) => '${e.key}*${e.value}')
+                                  .join(', ')),
+                              trailing: Text(
+                                  '${variable.value}*${variable.coeff} AP'),
+                              trailingIcon: IconButton(
+                                  icon: Icon(
+                                    state.data
+                                        ? Icons.expand_less
+                                        : Icons.expand_more,
+                                    color: quest == null
+                                        ? Colors.transparent
+                                        : Colors.grey,
+                                  ),
+                                  onPressed: () {
+                                    state.data = !state.data;
+                                    state.updateState();
+                                  }),
+                            ),
+                            if (state.data && (quest?.battles?.length ?? 0) > 0)
+                              _buildQuestDetail(quest),
+                          ],
+                        );
+                      }),
+                );
+              })?.toList() ??
+              [],
+        ))
+      ],
+    );
+  }
+
+  Widget _buildQuestDetail(Quest quest) {
+    Widget _buildWave(List<Enemy> enemies) {
+      List<Widget> enemyWidgets = enemies.map((enemy) {
+        return enemy == null
+            ? Container()
+            : AutoSizeText(
+                '${enemy.shownName}\n'
+                '${enemy.className} ${enemy.hp}',
+                maxFontSize: 14,
+                maxLines: 2,
+                textAlign: TextAlign.center,
+              );
+      }).toList();
+      while (enemyWidgets.length % 3 != 0) {
+        enemyWidgets.add(Container());
+      }
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: List.generate(enemyWidgets.length ~/ 3, (i) {
+          return Row(
+            children: <Widget>[
+              Expanded(child: enemyWidgets[i * 3 + 2]),
+              Expanded(child: enemyWidgets[i * 3 + 1]),
+              Expanded(child: enemyWidgets[i * 3]),
+            ],
+          );
+        }),
+      );
+    }
+
+    return Card(
+      elevation: 2,
+      color: Colors.white,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: divideTiles(
+            [
+              for (var i = 0; i < quest.battles.length; i++) ...[
+                Center(
+                  child: AutoSizeText(
+                    '${quest.chapter}\n'
+                    '${quest.battles[i].placeJp}  '
+                    '羁绊 ${quest.bondPoint}  '
+                    '经验 ${quest.experience}',
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                if (quest.battles.length > 1)
+                  Center(child: Text('Session ${i + 1}')),
+                for (var j = 0; j < quest.battles[i].enemies.length; j++)
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 3),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      textBaseline: TextBaseline.ideographic,
+                      children: <Widget>[
+                        Text('  ${j + 1}  '),
+                        Expanded(child: _buildWave(quest.battles[i].enemies[j]))
+                      ],
+                    ),
+                  )
+              ]
+            ],
+            divider: Divider(height: 1, thickness: 0.5),
+          ).toList(),
+        ),
+      ),
+    );
+  }
 }

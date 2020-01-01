@@ -248,9 +248,9 @@ class ServantListPageState extends State<ServantListPage> {
         itemBuilder: (context, index) {
           final svt = shownList[index];
           final plan = db.curUser.servants[svt.no];
-          String text = '';
+          String planText = '';
           if (plan?.curVal?.favorite == true) {
-            text = '${plan.treasureDeviceLv}宝'
+            planText = '${plan.treasureDeviceLv}宝'
                 '${plan.curVal.ascension}-'
                 '${plan.curVal.skills[0]}/'
                 '${plan.curVal.skills[1]}/'
@@ -270,7 +270,7 @@ class ServantListPageState extends State<ServantListPage> {
                   flex: 3,
                   child: Text('${svt.info.className}\nNo.${svt.no}'),
                 ),
-                Text(text),
+                Text(planText),
               ],
             ),
             trailing: Icon(Icons.arrow_forward_ios),

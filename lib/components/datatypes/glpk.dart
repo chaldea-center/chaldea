@@ -41,28 +41,28 @@ class GLPKData {
 class GLPKParams {
   @JsonKey(ignore: true)
   List<TextEditingController> controllers;
-  List<String> objRows;
-  List<int> objNums;
   int minCoeff;
   int maxSortOrder;
   bool coeffPrio;
   int maxColNum;
+  List<String> objRows;
+  List<int> objNums;
 
   GLPKParams({
-    this.objRows,
-    this.objNums,
     this.minCoeff,
     this.maxSortOrder,
     this.coeffPrio,
     this.maxColNum,
+    this.objRows,
+    this.objNums,
   }) {
-    objRows ??= [];
-    objNums ??= [];
-    minCoeff ??= 15;
-    maxSortOrder ??= 6;
+    // controllers ??= null;
+    minCoeff ??= 0;
+    maxSortOrder ??= 0;
     coeffPrio ??= true;
     maxColNum ??= -1;
-    // controllers ??= null;
+    objRows ??= [];
+    objNums ??= [];
   }
 
   void enableControllers() {

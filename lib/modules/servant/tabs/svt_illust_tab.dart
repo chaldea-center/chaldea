@@ -15,7 +15,7 @@ class SvtIllustTab extends SvtTabBaseWidget {
 }
 
 class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
-    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
   TabController _tabController;
 
   _SvtIllustTabState(
@@ -53,10 +53,8 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
             isScrollable: true,
             tabs: svt.info.illust
                 .map((v) => Tab(
-                        child: Text(
-                      v['name'],
-                      style: TextStyle(color: Colors.black87),
-                    )))
+                    child: Text(v['name'],
+                        style: TextStyle(color: Colors.black87))))
                 .toList()),
         Expanded(
           child: TabBarView(
@@ -95,9 +93,6 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
       ],
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 
   @override
   void dispose() {

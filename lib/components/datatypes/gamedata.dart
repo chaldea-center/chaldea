@@ -10,6 +10,7 @@ class GameData {
   Map<String, Item> items;
   Map<String, GameIcon> icons;
   Events events;
+  Map<String, Quest> freeQuests;
   GLPKData glpk;
 
   GameData({
@@ -20,6 +21,7 @@ class GameData {
     this.items,
     this.icons,
     this.events,
+    this.freeQuests,
     this.glpk,
   }) {
     version ??= '0';
@@ -29,6 +31,7 @@ class GameData {
     items ??= {};
     icons ??= {};
     events ??= Events();
+    freeQuests ??= {};
     glpk ??= GLPKData();
   }
 

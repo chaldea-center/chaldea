@@ -14,8 +14,7 @@ class SvtTreasureDeviceTab extends SvtTabBaseWidget {
       _SvtTreasureDeviceTabState(parent: parent, svt: svt, plan: status);
 }
 
-class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab>
-    with AutomaticKeepAliveClientMixin {
+class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab> {
   _SvtTreasureDeviceTabState(
       {ServantDetailPageState parent, Servant svt, ServantStatus plan})
       : super(parent: parent, svt: svt, status: plan);
@@ -165,7 +164,4 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab>
             ))
     ];
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

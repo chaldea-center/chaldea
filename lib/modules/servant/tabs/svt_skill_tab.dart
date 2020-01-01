@@ -13,8 +13,7 @@ class SvtSkillTab extends SvtTabBaseWidget {
       _SvtSkillTabState(parent: parent, svt: svt, plan: status);
 }
 
-class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab>
-    with AutomaticKeepAliveClientMixin {
+class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
   _SvtSkillTabState(
       {ServantDetailPageState parent, Servant svt, ServantStatus plan})
       : super(parent: parent, svt: svt, status: plan);
@@ -122,7 +121,4 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab>
             )),
     ];
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

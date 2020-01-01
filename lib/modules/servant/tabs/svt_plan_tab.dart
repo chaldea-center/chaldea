@@ -1,4 +1,4 @@
-import 'dart:math' show min;
+import 'dart:math' show max, min;
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
@@ -17,14 +17,23 @@ class SvtPlanTab extends SvtTabBaseWidget {
       _SvtPlanTabState(parent: parent, svt: svt, status: status);
 }
 
-class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab>
-    with AutomaticKeepAliveClientMixin {
+class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
   ServantPlan plan;
 
   _SvtPlanTabState(
       {ServantDetailPageState parent, Servant svt, ServantStatus status})
       : super(parent: parent, svt: svt, status: status) {
     plan = db.curUser.curPlan.putIfAbsent(this.svt.no, () => ServantPlan());
+  }
+
+  void ensurePlanLarger(ServantPlan cur, ServantPlan target) {
+    target.ascension = max(target.ascension, cur.ascension);
+    for (var i = 0; i < cur.skills.length; i++) {
+      target.skills[i] = max(target.skills[i], cur.skills[i]);
+    }
+    for (var i = 0; i < cur.dress?.length ?? 0; i++) {
+      target.dress[i] = max(target.dress[i], cur.dress[i]);
+    }
   }
 
   @override
@@ -34,6 +43,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab>
       return Center(child: Text('Nothing'));
     }
     final curVal = status.curVal;
+    ensurePlanLarger(curVal, plan);
     // ascension part
     List<Widget> children = [];
     if (svt.no != 1) {
@@ -161,11 +171,12 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab>
       selector = DropdownButton(
         value: start,
         items: List.generate(
-            maxVal - minVal + 1,
-            (index) => DropdownMenuItem(
-                  value: minVal + index,
-                  child: Text((minVal + index).toString()),
-                )),
+          maxVal - minVal + 1,
+          (index) => DropdownMenuItem(
+            value: minVal + index,
+            child: Text((minVal + index).toString()),
+          ),
+        ),
         onChanged: onValueChanged,
       );
     } else {
@@ -219,62 +230,102 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab>
           border: Border(top: Divider.createBorderSide(context, width: 0.5))),
       child: ButtonBar(
         children: <Widget>[
-          IconButton(
-              icon: Icon(Icons.vertical_align_top),
-              tooltip: '练度最大化(310)',
-              onPressed: () {
-                state.setState(() {
-                  curVal.setMax(skill: 10);
-                  plan.setMax(skill: 10);
-                });
-              }),
-          Stack(
-            alignment: AlignmentDirectional.bottomEnd,
+          Wrap(
+            spacing: 4,
             children: <Widget>[
-              Text('9  '),
-              IconButton(
-                  icon: Icon(Icons.trending_up),
-                  tooltip: '规划最大化(999)',
-                  onPressed: () {
-                    state.setState(() {
-                      plan.setMax(skill: 9);
-                      curVal.favorite = true;
-                      for (int i = 0; i < 3; i++) {
-                        curVal.skills[i] = min(curVal.skills[i], 9);
+              DropdownButton(
+                value: db.curUser.curPlanNo,
+                items: List.generate(
+                  db.curUser.servantPlans.length,
+                  (index) => DropdownMenuItem(
+                      value: index, child: Text('Plan ${index + 1}')),
+                ),
+                onChanged: (planNo) {
+                  widget.parent?.setState(() {
+                    db.curUser.curPlanNo = planNo;
+                  });
+                },
+              ),
+              DropdownButton(
+                value: Set.from(curVal.skills).length == 1
+                    ? curVal.skills[0]
+                    : null,
+                hint: Text('Lv. ≠'),
+                items: List.generate(
+                    9,
+                    (i) => DropdownMenuItem(
+                        value: i + 1, child: Text('Lv. ${i + 1}'))),
+                onChanged: (v) {
+                  state.setState(
+                    () {
+                      for (var i = 0; i < 3; i++) {
+                        curVal.skills[i] = v;
+                        plan.skills[i] = max(v, plan.skills[i]);
                       }
-                    });
-                  }),
+                    },
+                  );
+                },
+              ),
             ],
           ),
-          Stack(
-            alignment: AlignmentDirectional.bottomEnd,
+          Wrap(
+            spacing: 4,
             children: <Widget>[
-              Text('10 '),
               IconButton(
-                  icon: Icon(Icons.trending_up),
-                  tooltip: '规划最大化',
+                  icon: Icon(Icons.vertical_align_top),
+                  tooltip: '练度最大化(310)',
                   onPressed: () {
                     state.setState(() {
-                      curVal.favorite = true;
+                      curVal.setMax(skill: 10);
                       plan.setMax(skill: 10);
                     });
                   }),
+              Stack(
+                alignment: AlignmentDirectional.bottomEnd,
+                children: <Widget>[
+                  Text('9  '),
+                  IconButton(
+                      icon: Icon(Icons.trending_up),
+                      tooltip: '规划最大化(999)',
+                      onPressed: () {
+                        state.setState(() {
+                          plan.setMax(skill: 9);
+                          curVal.favorite = true;
+                          for (int i = 0; i < 3; i++) {
+                            curVal.skills[i] = min(curVal.skills[i], 9);
+                          }
+                        });
+                      }),
+                ],
+              ),
+              Stack(
+                alignment: AlignmentDirectional.bottomEnd,
+                children: <Widget>[
+                  Text('10 '),
+                  IconButton(
+                      icon: Icon(Icons.trending_up),
+                      tooltip: '规划最大化(310)',
+                      onPressed: () {
+                        state.setState(() {
+                          curVal.favorite = true;
+                          plan.setMax(skill: 10);
+                        });
+                      }),
+                ],
+              ),
+              IconButton(
+                  icon: Icon(Icons.replay),
+                  tooltip: '重置',
+                  onPressed: () {
+                    state.setState(() {
+                      curVal.reset();
+                      plan.reset();
+                    });
+                  }),
             ],
           ),
-          IconButton(
-              icon: Icon(Icons.replay),
-              tooltip: '重置',
-              onPressed: () {
-                state.setState(() {
-                  curVal.reset();
-                  plan.reset();
-                });
-              }),
         ],
       ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

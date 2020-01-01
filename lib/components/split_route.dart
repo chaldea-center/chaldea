@@ -1,7 +1,9 @@
 ///TODO: add transition animation and swipe support
-import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/blank_page.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'config.dart' show db;
 
 const int kMasterRatio = 38; // percentage
 

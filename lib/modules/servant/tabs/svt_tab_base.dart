@@ -11,7 +11,8 @@ abstract class SvtTabBaseWidget extends StatefulWidget {
       : super(key: key);
 }
 
-abstract class SvtTabBaseState<T extends SvtTabBaseWidget> extends State<T> {
+abstract class SvtTabBaseState<T extends SvtTabBaseWidget> extends State<T>
+    with AutomaticKeepAliveClientMixin {
   Servant svt;
   ServantStatus status;
 
@@ -21,4 +22,7 @@ abstract class SvtTabBaseState<T extends SvtTabBaseWidget> extends State<T> {
     this.svt = svt ?? parent?.svt;
     this.status = status ?? parent?.status ?? ServantStatus();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

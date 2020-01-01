@@ -1,7 +1,11 @@
 import 'dart:math' show max, min;
 
-import 'package:chaldea/components/components.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+
+import 'constants.dart';
+import 'custom_tile.dart';
+import 'datatypes/datatypes.dart';
 
 class SHeader extends StatelessWidget {
   final String label;
@@ -167,21 +171,19 @@ class TileGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool _first = true; // add top border of first child
-    final List<Widget> group = children.map((tile) {
-      final box = Container(
+    final List<Widget> group = List.generate(
+      children.length,
+      (index) => Container(
         decoration: BoxDecoration(
             border: Border(
-                top: _first
+                top: Divider.createBorderSide(context, width: 0.5),
+                bottom: index == children.length - 1
                     ? Divider.createBorderSide(context, width: 0.5)
-                    : BorderSide.none,
-                bottom: Divider.createBorderSide(context, width: 0.5)),
+                    : BorderSide.none),
             color: MyColors.setting_tile),
-        child: tile,
-      );
-      _first = false;
-      return box;
-    }).toList();
+        child: children[index],
+      ),
+    );
     return Padding(
       padding: padding ?? EdgeInsets.only(bottom: 8),
       child: Column(

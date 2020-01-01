@@ -239,6 +239,10 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
     events: json['events'] == null
         ? null
         : Events.fromJson(json['events'] as Map<String, dynamic>),
+    freeQuests: (json['freeQuests'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(
+          k, e == null ? null : Quest.fromJson(e as Map<String, dynamic>)),
+    ),
     glpk: json['glpk'] == null
         ? null
         : GLPKData.fromJson(json['glpk'] as Map<String, dynamic>),
@@ -253,6 +257,7 @@ Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
       'items': instance.items,
       'icons': instance.icons,
       'events': instance.events,
+      'freeQuests': instance.freeQuests,
       'glpk': instance.glpk,
     };
 
@@ -342,23 +347,23 @@ Map<String, dynamic> _$GLPKDataToJson(GLPKData instance) => <String, dynamic>{
 
 GLPKParams _$GLPKParamsFromJson(Map<String, dynamic> json) {
   return GLPKParams(
-    objRows: (json['objRows'] as List)?.map((e) => e as String)?.toList(),
-    objNums: (json['objNums'] as List)?.map((e) => e as int)?.toList(),
     minCoeff: json['minCoeff'] as int,
     maxSortOrder: json['maxSortOrder'] as int,
     coeffPrio: json['coeffPrio'] as bool,
     maxColNum: json['maxColNum'] as int,
+    objRows: (json['objRows'] as List)?.map((e) => e as String)?.toList(),
+    objNums: (json['objNums'] as List)?.map((e) => e as int)?.toList(),
   );
 }
 
 Map<String, dynamic> _$GLPKParamsToJson(GLPKParams instance) =>
     <String, dynamic>{
-      'objRows': instance.objRows,
-      'objNums': instance.objNums,
       'minCoeff': instance.minCoeff,
       'maxSortOrder': instance.maxSortOrder,
       'coeffPrio': instance.coeffPrio,
       'maxColNum': instance.maxColNum,
+      'objRows': instance.objRows,
+      'objNums': instance.objNums,
     };
 
 GLPKSolution _$GLPKSolutionFromJson(Map<String, dynamic> json) {
@@ -398,6 +403,72 @@ Map<String, dynamic> _$GLPKVariableToJson(GLPKVariable instance) =>
       'detail': instance.detail,
     };
 
+Quest _$QuestFromJson(Map<String, dynamic> json) {
+  return Quest(
+    chapter: json['chapter'] as String,
+    nameJp: json['nameJp'] as String,
+    nameCn: json['nameCn'] as String,
+    level: json['level'] as int,
+    bondPoint: json['bondPoint'] as int,
+    experience: json['experience'] as int,
+    qp: json['qp'] as int,
+    battles: (json['battles'] as List)
+        ?.map((e) =>
+            e == null ? null : Battle.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+  );
+}
+
+Map<String, dynamic> _$QuestToJson(Quest instance) => <String, dynamic>{
+      'chapter': instance.chapter,
+      'nameJp': instance.nameJp,
+      'nameCn': instance.nameCn,
+      'level': instance.level,
+      'bondPoint': instance.bondPoint,
+      'experience': instance.experience,
+      'qp': instance.qp,
+      'battles': instance.battles,
+    };
+
+Battle _$BattleFromJson(Map<String, dynamic> json) {
+  return Battle(
+    ap: json['ap'] as int,
+    placeJp: json['placeJp'] as String,
+    placeCn: json['placeCn'] as String,
+    enemies: (json['enemies'] as List)
+        ?.map((e) => (e as List)
+            ?.map((e) =>
+                e == null ? null : Enemy.fromJson(e as Map<String, dynamic>))
+            ?.toList())
+        ?.toList(),
+  );
+}
+
+Map<String, dynamic> _$BattleToJson(Battle instance) => <String, dynamic>{
+      'ap': instance.ap,
+      'placeJp': instance.placeJp,
+      'placeCn': instance.placeCn,
+      'enemies': instance.enemies,
+    };
+
+Enemy _$EnemyFromJson(Map<String, dynamic> json) {
+  return Enemy(
+    name: json['name'] as String,
+    shownName: json['shownName'] as String,
+    className: json['className'] as String,
+    rank: json['rank'] as int,
+    hp: json['hp'] as int,
+  );
+}
+
+Map<String, dynamic> _$EnemyToJson(Enemy instance) => <String, dynamic>{
+      'name': instance.name,
+      'shownName': instance.shownName,
+      'className': instance.className,
+      'rank': instance.rank,
+      'hp': instance.hp,
+    };
+
 Servant _$ServantFromJson(Map<String, dynamic> json) {
   return Servant(
     no: json['no'] as int,
@@ -431,7 +502,8 @@ Servant _$ServantFromJson(Map<String, dynamic> json) {
             : SvtProfileData.fromJson(e as Map<String, dynamic>))
         ?.toList(),
     bondCraft: json['bondCraft'] as int,
-    valentineCraft: json['valentineCraft'] as int,
+    valentineCraft:
+        (json['valentineCraft'] as List)?.map((e) => e as int)?.toList(),
   );
 }
 
@@ -656,17 +728,15 @@ User _$UserFromJson(Map<String, dynamic> json) {
           e == null ? null : ServantStatus.fromJson(e as Map<String, dynamic>)),
     ),
     curPlanNo: json['curPlanNo'] as int,
-    servantPlans: (json['servantPlans'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(
-          int.parse(k),
-          (e as Map<String, dynamic>)?.map(
-            (k, e) => MapEntry(
-                int.parse(k),
-                e == null
-                    ? null
-                    : ServantPlan.fromJson(e as Map<String, dynamic>)),
-          )),
-    ),
+    servantPlans: (json['servantPlans'] as List)
+        ?.map((e) => (e as Map<String, dynamic>)?.map(
+              (k, e) => MapEntry(
+                  int.parse(k),
+                  e == null
+                      ? null
+                      : ServantPlan.fromJson(e as Map<String, dynamic>)),
+            ))
+        ?.toList(),
     items: (json['items'] as Map<String, dynamic>)?.map(
       (k, e) => MapEntry(k, e as int),
     ),
@@ -681,8 +751,9 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'server': instance.server,
       'servants': instance.servants?.map((k, e) => MapEntry(k.toString(), e)),
       'curPlanNo': instance.curPlanNo,
-      'servantPlans': instance.servantPlans?.map((k, e) =>
-          MapEntry(k.toString(), e?.map((k, e) => MapEntry(k.toString(), e)))),
+      'servantPlans': instance.servantPlans
+          ?.map((e) => e?.map((k, e) => MapEntry(k.toString(), e)))
+          ?.toList(),
       'items': instance.items,
       'events': instance.events,
     };
@@ -756,7 +827,7 @@ LimitEventPlan _$LimitEventPlanFromJson(Map<String, dynamic> json) {
     enable: json['enable'] as bool,
     rerun: json['rerun'] as bool,
     lottery: json['lottery'] as int,
-    hunting: (json['hunting'] as Map<String, dynamic>)?.map(
+    extra: (json['hunting'] as Map<String, dynamic>)?.map(
       (k, e) => MapEntry(k, e as int),
     ),
   );
@@ -767,7 +838,7 @@ Map<String, dynamic> _$LimitEventPlanToJson(LimitEventPlan instance) =>
       'enable': instance.enable,
       'rerun': instance.rerun,
       'lottery': instance.lottery,
-      'hunting': instance.hunting,
+      'hunting': instance.extra,
     };
 
 UserData _$UserDataFromJson(Map<String, dynamic> json) {

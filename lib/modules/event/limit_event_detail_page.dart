@@ -34,7 +34,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
         manager.components.add(InputComponent(
             data: name,
             controller:
-                TextEditingController(text: plan.hunting[name]?.toString()),
+                TextEditingController(text: plan.extra[name]?.toString()),
             focusNode: FocusNode()));
       }
     }
@@ -92,7 +92,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     if (event.extra != null) {
       children
         ..add(CustomTile(title: Center(child: Text('Extra items'))))
-        ..add(_buildExtraItems(event.extra, plan.hunting));
+        ..add(_buildExtraItems(event.extra, plan.extra));
     }
     return Scaffold(
       appBar: AppBar(

@@ -1,6 +1,5 @@
 import 'package:chaldea/generated/i18n.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show SystemChannels;
 
 class InputCancelOkDialog extends StatefulWidget {
   final String title;
@@ -64,7 +63,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
           }
         },
         onSubmitted: (v) {
-          SystemChannels.textInput.invokeMethod('TextInput.hide');
+          FocusScope.of(context).unfocus();
           widget.onSubmit(v);
           Navigator.pop(context);
         },

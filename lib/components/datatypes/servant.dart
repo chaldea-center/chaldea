@@ -14,7 +14,7 @@ class Servant {
   List<int> bondPoints;
   List<SvtProfileData> profiles;
   int bondCraft;
-  int valentineCraft;
+  List<int> valentineCraft;
 
   static const List<int> unavailable = [83, 149, 151, 152, 168, 240];
 

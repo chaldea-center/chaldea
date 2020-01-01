@@ -41,9 +41,9 @@ class _EventListPageState extends State<EventListPage>
       body: TabBarView(
         controller: _tabController,
         children: <Widget>[
-          LimitEventTab(reverse: reverse),
-          MainRecordTab(reverse: reverse),
-          ExchangeTicketTab(reverse: reverse)
+          KeepAliveBuilder(builder: (_) => LimitEventTab(reverse: reverse)),
+          KeepAliveBuilder(builder: (_) => MainRecordTab(reverse: reverse)),
+          KeepAliveBuilder(builder: (_) => ExchangeTicketTab(reverse: reverse)),
         ],
       ),
     );

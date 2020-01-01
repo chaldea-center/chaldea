@@ -46,8 +46,6 @@ class LimitEvent {
   Map<String, int> items;
   String category;
   Map<String, String> extra;
-
-//  List<Map<String, double>> hunting;
   Map<String, int> lottery;
 
   LimitEvent({
@@ -78,7 +76,7 @@ class LimitEvent {
     }
     Map<String, int> lotterySum =
         lottery == null ? {} : multiplyDict(lottery, plan.lottery);
-    return sumDict([items, plan.hunting, lotterySum]);
+    return sumDict([items, plan.extra, lotterySum]);
   }
 }
 

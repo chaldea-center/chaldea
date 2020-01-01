@@ -27,6 +27,8 @@ part 'glpk.dart';
 
 part 'item_statistic.dart';
 
+part 'quest.dart';
+
 part 'servant.dart';
 
 part 'user.dart';

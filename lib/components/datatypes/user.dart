@@ -13,10 +13,10 @@ class User {
   int curPlanNo;
 
   /// Map<planNo, Map<SvtNo, SvtPlan>>
-  Map<int, Map<int, ServantPlan>> servantPlans;
+  List<Map<int, ServantPlan>> servantPlans;
 
   Map<int, ServantPlan> get curPlan =>
-      servantPlans.putIfAbsent(curPlanNo, () => {});
+      servantPlans[curPlanNo];
   Map<String, int> items;
   EventPlans events;
 
@@ -32,7 +32,7 @@ class User {
     server ??= GameServer.cn;
     servants ??= {};
     curPlanNo ??= 0;
-    servantPlans ??= {};
+    servantPlans ??= List.generate(5, (i)=>{});
     items ??= {};
     events ??= EventPlans();
   }
@@ -139,13 +139,13 @@ class LimitEventPlan {
   bool enable;
   bool rerun;
   int lottery;
-  Map<String, int> hunting;
+  Map<String, int> extra;
 
-  LimitEventPlan({this.enable, this.rerun, this.lottery, this.hunting}) {
+  LimitEventPlan({this.enable, this.rerun, this.lottery, this.extra}) {
     enable ??= false;
     rerun ??= true;
     lottery ??= 0;
-    hunting ??= {};
+    extra ??= {};
   }
 
   factory LimitEventPlan.fromJson(Map<String, dynamic> data) =>

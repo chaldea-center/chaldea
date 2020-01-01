@@ -15,7 +15,7 @@ class SvtInfoTab extends SvtTabBaseWidget {
 }
 
 class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
-    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
   TabController _tabController;
 
   _SvtInfoTabState(
@@ -288,14 +288,17 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
   }
 
   Widget buildValentineCraftTab() {
-    if (svt.valentineCraft != null) {
-      return CraftDetailBasePage(
-          ce: db.gameData.crafts[svt.valentineCraft], useLangJp: useLangJp);
+    if (svt.valentineCraft?.isNotEmpty == true) {
+      // mash has two valentine crafts
+      return ListView.separated(
+        itemBuilder: (context, index) => CraftDetailBasePage(
+            ce: db.gameData.crafts[svt.valentineCraft[index]],
+            useLangJp: useLangJp),
+        separatorBuilder: (context, index) => Divider(height: 20),
+        itemCount: svt.valentineCraft.length,
+      );
     } else {
       return Center(child: Text('无情人节礼装'));
     }
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

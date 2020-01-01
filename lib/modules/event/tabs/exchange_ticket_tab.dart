@@ -22,18 +22,22 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     tickets.sort((a, b) {
       return (a.monthCn).compareTo(b.monthCn) * (widget.reverse ? -1 : 1);
     });
-    ListTile();
+
     return ListView(
       children: divideTiles(
         tickets.map((ticket) {
+          final plannedStyle =
+              sum(db.curUser.events.exchangeTickets[ticket.monthCn] ?? []) > 0
+                  ? TextStyle(color: Colors.blueAccent)
+                  : null;
           return CustomTile(
             contentPadding: EdgeInsets.fromLTRB(16, 8, 0, 8),
-            title: Text(ticket.monthCn),
+            title: Text(ticket.monthCn, style: plannedStyle),
             subtitle: AutoSizeText('JP: ${ticket.monthJp}\nmax: ${ticket.days}',
-                maxLines: 2),
+                maxLines: 2, style: plannedStyle),
             trailing: buildTrailing(ticket),
             constraints: BoxConstraints.expand(height: 72),
-            color: MyColors.setting_tile,
+//            color: MyColors.setting_tile,
           );
         }),
         divider: Divider(height: 1, indent: 16),
@@ -42,14 +46,14 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
   }
 
   Widget buildTrailing(ExchangeTicket ticket) {
-    final plan = db.curUser.events.exchangeTickets;
-    plan[ticket.monthCn] ??= [0, 0, 0];
+    final monthPlan = db.curUser.events.exchangeTickets
+        .putIfAbsent(ticket.monthCn, () => [0, 0, 0]);
     List<Widget> trailing = [];
 
     for (var i = 0; i < 3; i++) {
       final iconKey = ticket.items[i];
       int leftNum = db.runtimeData.itemStatistics.leftItems[iconKey] ?? 0;
-      final maxValue = ticket.days - sum(plan[ticket.monthCn].getRange(0, i));
+      final maxValue = ticket.days - sum(monthPlan.getRange(0, i));
       trailing.add(Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -64,28 +68,32 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
             children: <Widget>[
               DropdownButton<int>(
                 isDense: true,
-                value: plan[ticket.monthCn][i],
+                icon: Icon(Icons.arrow_drop_down, size: 18),
+                value: monthPlan[i],
                 items: List.generate(maxValue + 1, (i) {
                   int v = i == 0 ? 0 : maxValue + 1 - i;
                   return DropdownMenuItem(
                     value: v,
-                    child: SizedBox(
-                      width: 25,
-                      child: Text(
-                        v == 0 ? '' : ' $v',
-                        textAlign: TextAlign.right,
-                      ),
+                    child: Text(v == 0 ? '0' : ' $v'),
+                  );
+                }),
+                selectedItemBuilder: (context) =>
+                    List.generate(maxValue + 1, (i) {
+                  int v = i == 0 ? 0 : maxValue + 1 - i;
+                  return SizedBox(
+                    width: 30,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 3),
+                      child: Center(child: Text(v == 0 ? '' : ' $v')),
                     ),
                   );
                 }),
                 onChanged: (v) {
                   setState(() {
-                    plan[ticket.monthCn][i] = v;
+                    monthPlan[i] = v;
                     for (var j = 0; j < 3; j++) {
-                      plan[ticket.monthCn][j] = min(
-                          plan[ticket.monthCn][j],
-                          ticket.days -
-                              sum(plan[ticket.monthCn].getRange(0, j)));
+                      monthPlan[j] = min(monthPlan[j],
+                          ticket.days - sum(monthPlan.getRange(0, j)));
                     }
                     db.runtimeData.itemStatistics.updateEventItems();
                   });
@@ -96,8 +104,8 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                 child: Text(
                   leftNum.toString(),
                   maxLines: 1,
-                  style:
-                      TextStyle(color: leftNum >= 0 ? null : Colors.redAccent),
+                  style: TextStyle(
+                      color: leftNum >= 0 ? Colors.grey : Colors.redAccent),
                 ),
               )
             ],

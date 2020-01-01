@@ -11,16 +11,15 @@ class MainRecordTab extends StatefulWidget {
   _MainRecordTabState createState() => _MainRecordTabState();
 }
 
-class _MainRecordTabState extends State<MainRecordTab>
-    with AutomaticKeepAliveClientMixin {
+class _MainRecordTabState extends State<MainRecordTab> {
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    final mainRecords = db.gameData.events.mainRecords.values.toList();
-    mainRecords.sort((a, b) {
-      return (a.startTimeJp).compareTo(b.startTimeJp) *
-          (widget.reverse ? -1 : 1);
-    });
+    var mainRecords = db.gameData.events.mainRecords.values.toList();
+    mainRecords.sort((a, b) => a.startTimeJp.compareTo(b.startTimeJp));
+    if (widget.reverse) {
+      // first three chapters has the same startTimeJp
+      mainRecords = mainRecords.reversed.toList();
+    }
     return Column(
       children: <Widget>[
         CustomTile(
@@ -65,7 +64,4 @@ class _MainRecordTabState extends State<MainRecordTab>
       ],
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

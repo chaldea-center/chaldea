@@ -38,6 +38,28 @@ class ItemListPageState extends State<ItemListPage>
         leading: SplitViewBackButton(),
         actions: <Widget>[
           IconButton(
+              icon: Icon(Icons.list),
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    child: SimpleDialog(
+                      title: Text('Choose plan'),
+                      children: List.generate(db.curUser.servantPlans.length,
+                          (index) {
+                        return ListTile(
+                          title: Text('Plan ${index + 1}'),
+                          selected: index == db.curUser.curPlanNo,
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            db.curUser.curPlanNo = index;
+                            db.runtimeData.itemStatistics.update(db.curUser);
+                            setState(() {});
+                          },
+                        );
+                      }),
+                    ));
+              }),
+          IconButton(
             icon: Icon(
                 filtered ? Icons.check_circle : Icons.check_circle_outline),
             onPressed: () {
