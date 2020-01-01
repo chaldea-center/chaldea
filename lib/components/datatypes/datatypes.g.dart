@@ -827,7 +827,7 @@ LimitEventPlan _$LimitEventPlanFromJson(Map<String, dynamic> json) {
     enable: json['enable'] as bool,
     rerun: json['rerun'] as bool,
     lottery: json['lottery'] as int,
-    extra: (json['hunting'] as Map<String, dynamic>)?.map(
+    extra: (json['extra'] as Map<String, dynamic>)?.map(
       (k, e) => MapEntry(k, e as int),
     ),
   );
@@ -838,7 +838,7 @@ Map<String, dynamic> _$LimitEventPlanToJson(LimitEventPlan instance) =>
       'enable': instance.enable,
       'rerun': instance.rerun,
       'lottery': instance.lottery,
-      'hunting': instance.extra,
+      'extra': instance.extra,
     };
 
 UserData _$UserDataFromJson(Map<String, dynamic> json) {
