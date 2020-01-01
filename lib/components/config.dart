@@ -61,9 +61,9 @@ class Database {
       gameData = GameData.fromJson(getJsonFromFile(paths.gameDataFilepath));
       print('gamedata reloaded, version ${gameData.version}.');
       return true;
-    } catch (e) {
+    } catch (e, s) {
       gameData ??= GameData(); // if not null, don't change data
-      print('load game data error:\n$e');
+      print('load game data error:\n$e\n$s');
       showToast('ERROR load gamedata\n$e');
       return false;
     }
@@ -119,9 +119,9 @@ class Database {
       String contents = File(filepath).readAsStringSync();
       result = jsonDecode(contents);
       print('loaded json "$filepath".');
-    } catch (e) {
+    } catch (e, s) {
       result = k == null ? null : k();
-      print('error load "$filepath", use defailt value. Error:\n$e');
+      print('error load "$filepath", use defailt value. Error:\n$e\n$s');
     }
     return result;
   }
@@ -131,8 +131,8 @@ class Database {
       final contents = json.encode(jsonData);
       File(filepath).writeAsStringSync(contents);
       // print('Saved "$relativePath"\n');
-    } catch (e) {
-      print('Error saving "$filepath"!\n$e');
+    } catch (e, s) {
+      print('Error saving "$filepath"!\n$e\n$s');
     }
   }
 
@@ -155,10 +155,9 @@ class Database {
     T result;
     try {
       result = parser();
-    } catch (e) {
+    } catch (e, s) {
       result = k == null ? null : k();
-      print('Error parsing json object to instance "$T"\n'
-          'error=$e');
+      print('Error parsing json object to instance "$T"\n$e\n$s');
     }
     return result;
   }

@@ -1,6 +1,6 @@
 part of datatypes;
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class Servant {
   // left avatar & model
   int no;
@@ -170,7 +170,7 @@ class Servant {
 
 enum SvtCompare { no, className, rarity, atk, hp }
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class ServantBaseInfo {
   String obtain;
   int rarity;
@@ -254,7 +254,7 @@ class ServantBaseInfo {
   });
 }
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class TreasureDevice {
   bool enhanced;
   String state;
@@ -294,7 +294,7 @@ class TreasureDevice {
   });
 }
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class Skill {
   String state;
   String openTime;
@@ -327,7 +327,7 @@ class Skill {
   });
 }
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class Effect {
   String description;
   String target;
@@ -341,7 +341,7 @@ class Effect {
   Effect({this.description, this.target, this.valueType, this.lvData});
 }
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class SvtProfileData {
   String profile;
   String profileJp;

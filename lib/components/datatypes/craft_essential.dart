@@ -1,6 +1,6 @@
 part of datatypes;
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class CraftEssential {
   int no;
   int rarity;

@@ -1,7 +1,7 @@
 // userdata: plan etc.
 part of datatypes;
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class User {
   @JsonKey(nullable: false)
   String name;
@@ -15,8 +15,7 @@ class User {
   /// Map<planNo, Map<SvtNo, SvtPlan>>
   List<Map<int, ServantPlan>> servantPlans;
 
-  Map<int, ServantPlan> get curPlan =>
-      servantPlans[curPlanNo];
+  Map<int, ServantPlan> get curPlan => servantPlans[curPlanNo];
   Map<String, int> items;
   EventPlans events;
 
@@ -32,7 +31,7 @@ class User {
     server ??= GameServer.cn;
     servants ??= {};
     curPlanNo ??= 0;
-    servantPlans ??= List.generate(5, (i)=>{});
+    servantPlans ??= List.generate(5, (i) => {});
     items ??= {};
     events ??= EventPlans();
   }
@@ -42,7 +41,7 @@ class User {
   Map<String, dynamic> toJson() => _$UserToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class ServantStatus {
   ServantPlan curVal;
   List<bool> skillEnhanced; //length=3
@@ -67,7 +66,7 @@ class ServantStatus {
   Map<String, dynamic> toJson() => _$ServantStatusToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class ServantPlan {
   bool favorite;
   int ascension;
@@ -112,7 +111,7 @@ class ServantPlan {
   Map<String, dynamic> toJson() => _$ServantPlanToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class EventPlans {
   Map<String, LimitEventPlan> limitEvents;
 
@@ -134,7 +133,7 @@ class EventPlans {
   Map<String, dynamic> toJson() => _$EventPlansToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class LimitEventPlan {
   bool enable;
   bool rerun;
@@ -152,103 +151,4 @@ class LimitEventPlan {
       _$LimitEventPlanFromJson(data);
 
   Map<String, dynamic> toJson() => _$LimitEventPlanToJson(this);
-}
-
-class PartSet<T> {
-  T ascension;
-  T skill;
-  T dress;
-
-  PartSet({this.ascension, this.skill, this.dress, T k()}) {
-    ascension ??= k();
-    skill ??= k();
-    dress ??= k();
-  }
-
-  List<T> get values => [ascension, skill, dress];
-
-  @override
-  String toString() {
-    return 'PartSet<$T>(\n  ascension:$ascension,\n  skill:$skill,\n  dress:$dress))';
-  }
-
-  void forEach(void f(T)) {
-    f(ascension);
-    f(skill);
-    f(dress);
-  }
-}
-
-class ItemsOfSvts {
-  //Map<SvtNo, List<Map<ItemKey,num>>>
-  Map<int, PartSet<Map<String, int>>> planCountBySvt, allCountBySvt;
-
-  // Map<ItemKey, List<Map<SvtNo, num>>>
-  Map<String, PartSet<Map<int, int>>> planCountByItem, allCountByItem;
-
-  ItemsOfSvts();
-
-  void update(
-      Map<int, ServantStatus> curPlan, Map<int, ServantPlan> targetPlan) {
-    planCountBySvt = {};
-    allCountBySvt = {};
-    planCountByItem = {};
-    allCountByItem = {};
-    db.gameData.servants.forEach((no, svt) {
-      final cur = curPlan[no]?.curVal, target = targetPlan[no];
-      if (cur?.favorite == true && target?.favorite == true) {
-        planCountBySvt[no] = PartSet<Map<String, int>>(
-            ascension: svt.getAscensionCost(
-                cur: cur.ascension, target: target.ascension),
-            skill: svt.getSkillCost(cur: cur.skills, target: target.skills),
-            dress: svt.getDressCost(cur: cur.dress, target: target.dress));
-      } else {
-        planCountBySvt[no] = PartSet<Map<String, int>>(k: () => {});
-      }
-      allCountBySvt[no] = PartSet<Map<String, int>>(
-          ascension: svt.getAscensionCost(),
-          skill: svt.getSkillCost(),
-          dress: svt.getDressCost());
-    });
-    // cal items
-    for (String itemKey in db.gameData.items.keys) {
-      PartSet<Map<int, int>> planOneItem = PartSet<Map<int, int>>(k: () => {}),
-          allOneItem = PartSet<Map<int, int>>(k: () => {});
-
-      planCountBySvt.forEach((no, value) {
-        planOneItem.ascension[no] =
-            sum([planOneItem.ascension[no], value.ascension[itemKey]]);
-        planOneItem.skill[no] =
-            sum([planOneItem.skill[no], value.skill[itemKey]]);
-        planOneItem.dress[no] =
-            sum([planOneItem.dress[no], value.dress[itemKey]]);
-      });
-      allCountBySvt.forEach((no, value) {
-        allOneItem.ascension[no] =
-            sum([allOneItem.ascension[no], value.ascension[itemKey]]);
-        allOneItem.skill[no] =
-            sum([allOneItem.skill[no], value.skill[itemKey]]);
-        allOneItem.dress[no] =
-            sum([allOneItem.dress[no], value.dress[itemKey]]);
-      });
-      planCountByItem[itemKey] = planOneItem
-        ..forEach((e) => e.removeWhere((k, v) => v == 0));
-      allCountByItem[itemKey] = allOneItem
-        ..forEach((e) => e.removeWhere((k, v) => v == 0));
-    }
-  }
-
-  PartSet<int> getNumOfItem(String itemKey, [bool planned = true]) {
-    PartSet<Map<int, int>> value =
-        planned ? planCountByItem[itemKey] : allCountByItem[itemKey];
-    return PartSet<int>(
-        ascension: sum(value.ascension.values),
-        skill: sum(value.skill.values),
-        dress: sum(value.dress.values));
-  }
-
-  PartSet<Map<int, int>> getSvtListOfItem(String itemKey,
-      [bool planned = true]) {
-    return planned ? planCountByItem[itemKey] : allCountByItem[itemKey];
-  }
 }

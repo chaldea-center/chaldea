@@ -1,7 +1,7 @@
 /// App settings and users data
 part of datatypes;
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class UserData {
   // app settings
   String language;
@@ -69,7 +69,7 @@ class UserData {
   Map<String, dynamic> toJson() => _$UserDataToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class SvtFilterData {
   bool favorite;
   String filterString;
@@ -210,7 +210,7 @@ class SvtFilterData {
   Map<String, dynamic> toJson() => _$SvtFilterDataToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class CraftFilterData {
   String filterString;
   List<CraftCompare> sortKeys;
@@ -270,12 +270,7 @@ class CraftFilterData {
     '期间限定',
     '剧情限定'
   ];
-  static const atkHpTypeData = [
-    'NONE',
-    'HP',
-    'ATK',
-    'MIX',
-  ];
+  static const atkHpTypeData = ['NONE', 'HP', 'ATK', 'MIX'];
 
   // json_serializable
   factory CraftFilterData.fromJson(Map<String, dynamic> data) =>
@@ -284,7 +279,7 @@ class CraftFilterData {
   Map<String, dynamic> toJson() => _$CraftFilterDataToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class CmdCodeFilterData {
   String filterString;
   List<CmdCodeCompare> sortKeys;
@@ -309,10 +304,7 @@ class CmdCodeFilterData {
     obtain ??= FilterGroupData();
   }
 
-  List<FilterGroupData> get groupValues => [
-        rarity,
-        obtain,
-      ];
+  List<FilterGroupData> get groupValues => [rarity, obtain];
 
   void reset() {
     sortKeys = List.generate(sortKeys.length, (i) => sortKeyData[i]);
@@ -339,7 +331,7 @@ class CmdCodeFilterData {
 
 typedef bool CompareFilterKeyCallback(String option, String value);
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class FilterGroupData {
   bool matchAll;
   bool invert;
@@ -418,7 +410,6 @@ class FilterGroupData {
     return invert ? !result : result;
   }
 
-  // json_serializable
   factory FilterGroupData.fromJson(Map<String, dynamic> data) =>
       _$FilterGroupDataFromJson(data);
 

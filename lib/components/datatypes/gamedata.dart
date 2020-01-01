@@ -1,7 +1,7 @@
 /// Servant data
 part of datatypes;
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class GameData {
   String version;
   Map<int, Servant> servants;
@@ -41,7 +41,7 @@ class GameData {
   Map<String, dynamic> toJson() => _$GameDataToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class GameIcon {
   String filename;
   String url;
@@ -54,7 +54,7 @@ class GameIcon {
   Map<String, dynamic> toJson() => _$GameIconToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class ItemCost {
   List<List<Item>> ascension;
   List<List<Item>> skill;
@@ -77,7 +77,7 @@ class ItemCost {
   });
 }
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class Item {
   int id;
   String name;

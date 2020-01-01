@@ -1,6 +1,6 @@
 part of datatypes;
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class Events {
   Map<String, LimitEvent> limitEvents;
   Map<String, MainRecord> mainRecords;
@@ -31,7 +31,7 @@ class Events {
   }
 }
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class LimitEvent {
   String name;
   String link;
@@ -80,7 +80,7 @@ class LimitEvent {
   }
 }
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class MainRecord {
   String name;
   String startTimeJp;
@@ -103,7 +103,7 @@ class MainRecord {
   }
 }
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class ExchangeTicket {
   int days;
   String monthJp;

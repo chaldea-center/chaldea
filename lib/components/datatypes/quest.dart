@@ -1,6 +1,6 @@
 part of datatypes;
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class Quest {
   String chapter;
   String nameJp;
@@ -30,23 +30,23 @@ class Quest {
   Map<String, dynamic> toJson() => _$QuestToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class Battle {
   int ap;
   String placeJp;
   String placeCn;
+
   /// wave_num*enemy_num
   List<List<Enemy>> enemies;
 
   Battle({this.ap, this.placeJp, this.placeCn, this.enemies});
-
 
   factory Battle.fromJson(Map<String, dynamic> data) => _$BattleFromJson(data);
 
   Map<String, dynamic> toJson() => _$BattleToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class Enemy {
   String name;
   String shownName;

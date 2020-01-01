@@ -37,7 +37,7 @@ class GLPKData {
 }
 
 /// for solve_glpk(data_str and params_str)
-@JsonSerializable()
+@JsonSerializable(checked: true)
 class GLPKParams {
   @JsonKey(ignore: true)
   List<TextEditingController> controllers;

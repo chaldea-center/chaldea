@@ -7,23 +7,27 @@ part of datatypes;
 // **************************************************************************
 
 CommandCode _$CommandCodeFromJson(Map<String, dynamic> json) {
-  return CommandCode(
-    no: json['no'] as int,
-    rarity: json['rarity'] as int,
-    name: json['name'] as String,
-    nameJp: json['nameJp'] as String,
-    mcLink: json['mcLink'] as String,
-    icon: json['icon'] as String,
-    illust: json['illust'] as String,
-    illustrators:
-        (json['illustrators'] as List)?.map((e) => e as String)?.toList(),
-    skillIcon: json['skillIcon'] as String,
-    skill: json['skill'] as String,
-    description: json['description'] as String,
-    descriptionJp: json['descriptionJp'] as String,
-    obtain: json['obtain'] as String,
-    characters: (json['characters'] as List)?.map((e) => e as String)?.toList(),
-  );
+  return $checkedNew('CommandCode', json, () {
+    final val = CommandCode(
+      no: $checkedConvert(json, 'no', (v) => v as int),
+      rarity: $checkedConvert(json, 'rarity', (v) => v as int),
+      name: $checkedConvert(json, 'name', (v) => v as String),
+      nameJp: $checkedConvert(json, 'nameJp', (v) => v as String),
+      mcLink: $checkedConvert(json, 'mcLink', (v) => v as String),
+      icon: $checkedConvert(json, 'icon', (v) => v as String),
+      illust: $checkedConvert(json, 'illust', (v) => v as String),
+      illustrators: $checkedConvert(json, 'illustrators',
+          (v) => (v as List)?.map((e) => e as String)?.toList()),
+      skillIcon: $checkedConvert(json, 'skillIcon', (v) => v as String),
+      skill: $checkedConvert(json, 'skill', (v) => v as String),
+      description: $checkedConvert(json, 'description', (v) => v as String),
+      descriptionJp: $checkedConvert(json, 'descriptionJp', (v) => v as String),
+      obtain: $checkedConvert(json, 'obtain', (v) => v as String),
+      characters: $checkedConvert(json, 'characters',
+          (v) => (v as List)?.map((e) => e as String)?.toList()),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$CommandCodeToJson(CommandCode instance) =>
@@ -45,34 +49,39 @@ Map<String, dynamic> _$CommandCodeToJson(CommandCode instance) =>
     };
 
 CraftEssential _$CraftEssentialFromJson(Map<String, dynamic> json) {
-  return CraftEssential(
-    no: json['no'] as int,
-    rarity: json['rarity'] as int,
-    name: json['name'] as String,
-    nameJp: json['nameJp'] as String,
-    mcLink: json['mcLink'] as String,
-    icon: json['icon'] as String,
-    illust: json['illust'] as String,
-    illustrators:
-        (json['illustrators'] as List)?.map((e) => e as String)?.toList(),
-    cost: json['cost'] as int,
-    hpMin: json['hpMin'] as int,
-    hpMax: json['hpMax'] as int,
-    atkMin: json['atkMin'] as int,
-    atkMax: json['atkMax'] as int,
-    skillIcon: json['skillIcon'] as String,
-    skill: json['skill'] as String,
-    skillMax: json['skillMax'] as String,
-    eventIcons: (json['eventIcons'] as List)?.map((e) => e as String)?.toList(),
-    eventSkills:
-        (json['eventSkills'] as List)?.map((e) => e as String)?.toList(),
-    description: json['description'] as String,
-    descriptionJp: json['descriptionJp'] as String,
-    category: json['category'] as int,
-    characters: (json['characters'] as List)?.map((e) => e as String)?.toList(),
-    bond: json['bond'] as int,
-    valentine: json['valentine'] as int,
-  );
+  return $checkedNew('CraftEssential', json, () {
+    final val = CraftEssential(
+      no: $checkedConvert(json, 'no', (v) => v as int),
+      rarity: $checkedConvert(json, 'rarity', (v) => v as int),
+      name: $checkedConvert(json, 'name', (v) => v as String),
+      nameJp: $checkedConvert(json, 'nameJp', (v) => v as String),
+      mcLink: $checkedConvert(json, 'mcLink', (v) => v as String),
+      icon: $checkedConvert(json, 'icon', (v) => v as String),
+      illust: $checkedConvert(json, 'illust', (v) => v as String),
+      illustrators: $checkedConvert(json, 'illustrators',
+          (v) => (v as List)?.map((e) => e as String)?.toList()),
+      cost: $checkedConvert(json, 'cost', (v) => v as int),
+      hpMin: $checkedConvert(json, 'hpMin', (v) => v as int),
+      hpMax: $checkedConvert(json, 'hpMax', (v) => v as int),
+      atkMin: $checkedConvert(json, 'atkMin', (v) => v as int),
+      atkMax: $checkedConvert(json, 'atkMax', (v) => v as int),
+      skillIcon: $checkedConvert(json, 'skillIcon', (v) => v as String),
+      skill: $checkedConvert(json, 'skill', (v) => v as String),
+      skillMax: $checkedConvert(json, 'skillMax', (v) => v as String),
+      eventIcons: $checkedConvert(json, 'eventIcons',
+          (v) => (v as List)?.map((e) => e as String)?.toList()),
+      eventSkills: $checkedConvert(json, 'eventSkills',
+          (v) => (v as List)?.map((e) => e as String)?.toList()),
+      description: $checkedConvert(json, 'description', (v) => v as String),
+      descriptionJp: $checkedConvert(json, 'descriptionJp', (v) => v as String),
+      category: $checkedConvert(json, 'category', (v) => v as int),
+      characters: $checkedConvert(json, 'characters',
+          (v) => (v as List)?.map((e) => e as String)?.toList()),
+      bond: $checkedConvert(json, 'bond', (v) => v as int),
+      valentine: $checkedConvert(json, 'valentine', (v) => v as int),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$CraftEssentialToJson(CraftEssential instance) =>
@@ -104,23 +113,41 @@ Map<String, dynamic> _$CraftEssentialToJson(CraftEssential instance) =>
     };
 
 Events _$EventsFromJson(Map<String, dynamic> json) {
-  return Events(
-    limitEvents: (json['limitEvents'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(
-          k, e == null ? null : LimitEvent.fromJson(e as Map<String, dynamic>)),
-    ),
-    mainRecords: (json['mainRecords'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(
-          k, e == null ? null : MainRecord.fromJson(e as Map<String, dynamic>)),
-    ),
-    exchangeTickets: (json['exchangeTickets'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(
-          k,
-          e == null
-              ? null
-              : ExchangeTicket.fromJson(e as Map<String, dynamic>)),
-    ),
-  );
+  return $checkedNew('Events', json, () {
+    final val = Events(
+      limitEvents: $checkedConvert(
+          json,
+          'limitEvents',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(
+                    k,
+                    e == null
+                        ? null
+                        : LimitEvent.fromJson(e as Map<String, dynamic>)),
+              )),
+      mainRecords: $checkedConvert(
+          json,
+          'mainRecords',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(
+                    k,
+                    e == null
+                        ? null
+                        : MainRecord.fromJson(e as Map<String, dynamic>)),
+              )),
+      exchangeTickets: $checkedConvert(
+          json,
+          'exchangeTickets',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(
+                    k,
+                    e == null
+                        ? null
+                        : ExchangeTicket.fromJson(e as Map<String, dynamic>)),
+              )),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$EventsToJson(Events instance) => <String, dynamic>{
@@ -130,28 +157,40 @@ Map<String, dynamic> _$EventsToJson(Events instance) => <String, dynamic>{
     };
 
 LimitEvent _$LimitEventFromJson(Map<String, dynamic> json) {
-  return LimitEvent(
-    name: json['name'] as String,
-    link: json['link'] as String,
-    startTimeJp: json['startTimeJp'] as String,
-    endTimeJp: json['endTimeJp'] as String,
-    startTimeCn: json['startTimeCn'] as String,
-    endTimeCn: json['endTimeCn'] as String,
-    grail: json['grail'] as int,
-    crystal: json['crystal'] as int,
-    grail2crystal: json['grail2crystal'] as int,
-    qp: json['qp'] as int,
-    items: (json['items'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as int),
-    ),
-    category: json['category'] as String,
-    extra: (json['extra'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as String),
-    ),
-    lottery: (json['lottery'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as int),
-    ),
-  );
+  return $checkedNew('LimitEvent', json, () {
+    final val = LimitEvent(
+      name: $checkedConvert(json, 'name', (v) => v as String),
+      link: $checkedConvert(json, 'link', (v) => v as String),
+      startTimeJp: $checkedConvert(json, 'startTimeJp', (v) => v as String),
+      endTimeJp: $checkedConvert(json, 'endTimeJp', (v) => v as String),
+      startTimeCn: $checkedConvert(json, 'startTimeCn', (v) => v as String),
+      endTimeCn: $checkedConvert(json, 'endTimeCn', (v) => v as String),
+      grail: $checkedConvert(json, 'grail', (v) => v as int),
+      crystal: $checkedConvert(json, 'crystal', (v) => v as int),
+      grail2crystal: $checkedConvert(json, 'grail2crystal', (v) => v as int),
+      qp: $checkedConvert(json, 'qp', (v) => v as int),
+      items: $checkedConvert(
+          json,
+          'items',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(k, e as int),
+              )),
+      category: $checkedConvert(json, 'category', (v) => v as String),
+      extra: $checkedConvert(
+          json,
+          'extra',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(k, e as String),
+              )),
+      lottery: $checkedConvert(
+          json,
+          'lottery',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(k, e as int),
+              )),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$LimitEventToJson(LimitEvent instance) =>
@@ -173,16 +212,25 @@ Map<String, dynamic> _$LimitEventToJson(LimitEvent instance) =>
     };
 
 MainRecord _$MainRecordFromJson(Map<String, dynamic> json) {
-  return MainRecord(
-    name: json['name'] as String,
-    startTimeJp: json['startTimeJp'] as String,
-    drops: (json['drops'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as int),
-    ),
-    rewards: (json['rewards'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as int),
-    ),
-  );
+  return $checkedNew('MainRecord', json, () {
+    final val = MainRecord(
+      name: $checkedConvert(json, 'name', (v) => v as String),
+      startTimeJp: $checkedConvert(json, 'startTimeJp', (v) => v as String),
+      drops: $checkedConvert(
+          json,
+          'drops',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(k, e as int),
+              )),
+      rewards: $checkedConvert(
+          json,
+          'rewards',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(k, e as int),
+              )),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$MainRecordToJson(MainRecord instance) =>
@@ -194,12 +242,16 @@ Map<String, dynamic> _$MainRecordToJson(MainRecord instance) =>
     };
 
 ExchangeTicket _$ExchangeTicketFromJson(Map<String, dynamic> json) {
-  return ExchangeTicket(
-    days: json['days'] as int,
-    monthJp: json['monthJp'] as String,
-    monthCn: json['monthCn'] as String,
-    items: (json['items'] as List)?.map((e) => e as String)?.toList(),
-  );
+  return $checkedNew('ExchangeTicket', json, () {
+    final val = ExchangeTicket(
+      days: $checkedConvert(json, 'days', (v) => v as int),
+      monthJp: $checkedConvert(json, 'monthJp', (v) => v as String),
+      monthCn: $checkedConvert(json, 'monthCn', (v) => v as String),
+      items: $checkedConvert(
+          json, 'items', (v) => (v as List)?.map((e) => e as String)?.toList()),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$ExchangeTicketToJson(ExchangeTicket instance) =>
@@ -211,42 +263,79 @@ Map<String, dynamic> _$ExchangeTicketToJson(ExchangeTicket instance) =>
     };
 
 GameData _$GameDataFromJson(Map<String, dynamic> json) {
-  return GameData(
-    version: json['version'] as String,
-    servants: (json['servants'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(int.parse(k),
-          e == null ? null : Servant.fromJson(e as Map<String, dynamic>)),
-    ),
-    crafts: (json['crafts'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(
-          int.parse(k),
-          e == null
-              ? null
-              : CraftEssential.fromJson(e as Map<String, dynamic>)),
-    ),
-    cmdCodes: (json['cmdCodes'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(int.parse(k),
-          e == null ? null : CommandCode.fromJson(e as Map<String, dynamic>)),
-    ),
-    items: (json['items'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(
-          k, e == null ? null : Item.fromJson(e as Map<String, dynamic>)),
-    ),
-    icons: (json['icons'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(
-          k, e == null ? null : GameIcon.fromJson(e as Map<String, dynamic>)),
-    ),
-    events: json['events'] == null
-        ? null
-        : Events.fromJson(json['events'] as Map<String, dynamic>),
-    freeQuests: (json['freeQuests'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(
-          k, e == null ? null : Quest.fromJson(e as Map<String, dynamic>)),
-    ),
-    glpk: json['glpk'] == null
-        ? null
-        : GLPKData.fromJson(json['glpk'] as Map<String, dynamic>),
-  );
+  return $checkedNew('GameData', json, () {
+    final val = GameData(
+      version: $checkedConvert(json, 'version', (v) => v as String),
+      servants: $checkedConvert(
+          json,
+          'servants',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(
+                    int.parse(k),
+                    e == null
+                        ? null
+                        : Servant.fromJson(e as Map<String, dynamic>)),
+              )),
+      crafts: $checkedConvert(
+          json,
+          'crafts',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(
+                    int.parse(k),
+                    e == null
+                        ? null
+                        : CraftEssential.fromJson(e as Map<String, dynamic>)),
+              )),
+      cmdCodes: $checkedConvert(
+          json,
+          'cmdCodes',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(
+                    int.parse(k),
+                    e == null
+                        ? null
+                        : CommandCode.fromJson(e as Map<String, dynamic>)),
+              )),
+      items: $checkedConvert(
+          json,
+          'items',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(
+                    k,
+                    e == null
+                        ? null
+                        : Item.fromJson(e as Map<String, dynamic>)),
+              )),
+      icons: $checkedConvert(
+          json,
+          'icons',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(
+                    k,
+                    e == null
+                        ? null
+                        : GameIcon.fromJson(e as Map<String, dynamic>)),
+              )),
+      events: $checkedConvert(json, 'events',
+          (v) => v == null ? null : Events.fromJson(v as Map<String, dynamic>)),
+      freeQuests: $checkedConvert(
+          json,
+          'freeQuests',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(
+                    k,
+                    e == null
+                        ? null
+                        : Quest.fromJson(e as Map<String, dynamic>)),
+              )),
+      glpk: $checkedConvert(
+          json,
+          'glpk',
+          (v) =>
+              v == null ? null : GLPKData.fromJson(v as Map<String, dynamic>)),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
@@ -262,10 +351,13 @@ Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
     };
 
 GameIcon _$GameIconFromJson(Map<String, dynamic> json) {
-  return GameIcon(
-    filename: json['filename'] as String,
-    url: json['url'] as String,
-  );
+  return $checkedNew('GameIcon', json, () {
+    final val = GameIcon(
+      filename: $checkedConvert(json, 'filename', (v) => v as String),
+      url: $checkedConvert(json, 'url', (v) => v as String),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$GameIconToJson(GameIcon instance) => <String, dynamic>{
@@ -274,29 +366,45 @@ Map<String, dynamic> _$GameIconToJson(GameIcon instance) => <String, dynamic>{
     };
 
 ItemCost _$ItemCostFromJson(Map<String, dynamic> json) {
-  return ItemCost(
-    ascension: (json['ascension'] as List)
-        ?.map((e) => (e as List)
-            ?.map((e) =>
-                e == null ? null : Item.fromJson(e as Map<String, dynamic>))
-            ?.toList())
-        ?.toList(),
-    skill: (json['skill'] as List)
-        ?.map((e) => (e as List)
-            ?.map((e) =>
-                e == null ? null : Item.fromJson(e as Map<String, dynamic>))
-            ?.toList())
-        ?.toList(),
-    dressName: (json['dressName'] as List)?.map((e) => e as String)?.toList(),
-    dressNameJp:
-        (json['dressNameJp'] as List)?.map((e) => e as String)?.toList(),
-    dress: (json['dress'] as List)
-        ?.map((e) => (e as List)
-            ?.map((e) =>
-                e == null ? null : Item.fromJson(e as Map<String, dynamic>))
-            ?.toList())
-        ?.toList(),
-  );
+  return $checkedNew('ItemCost', json, () {
+    final val = ItemCost(
+      ascension: $checkedConvert(
+          json,
+          'ascension',
+          (v) => (v as List)
+              ?.map((e) => (e as List)
+                  ?.map((e) => e == null
+                      ? null
+                      : Item.fromJson(e as Map<String, dynamic>))
+                  ?.toList())
+              ?.toList()),
+      skill: $checkedConvert(
+          json,
+          'skill',
+          (v) => (v as List)
+              ?.map((e) => (e as List)
+                  ?.map((e) => e == null
+                      ? null
+                      : Item.fromJson(e as Map<String, dynamic>))
+                  ?.toList())
+              ?.toList()),
+      dressName: $checkedConvert(json, 'dressName',
+          (v) => (v as List)?.map((e) => e as String)?.toList()),
+      dressNameJp: $checkedConvert(json, 'dressNameJp',
+          (v) => (v as List)?.map((e) => e as String)?.toList()),
+      dress: $checkedConvert(
+          json,
+          'dress',
+          (v) => (v as List)
+              ?.map((e) => (e as List)
+                  ?.map((e) => e == null
+                      ? null
+                      : Item.fromJson(e as Map<String, dynamic>))
+                  ?.toList())
+              ?.toList()),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$ItemCostToJson(ItemCost instance) => <String, dynamic>{
@@ -308,13 +416,16 @@ Map<String, dynamic> _$ItemCostToJson(ItemCost instance) => <String, dynamic>{
     };
 
 Item _$ItemFromJson(Map<String, dynamic> json) {
-  return Item(
-    id: json['id'] as int,
-    name: json['name'] as String,
-    rarity: json['rarity'] as int ?? 0,
-    category: json['category'] as int,
-    num: json['num'] as int ?? 0,
-  );
+  return $checkedNew('Item', json, () {
+    final val = Item(
+      id: $checkedConvert(json, 'id', (v) => v as int),
+      name: $checkedConvert(json, 'name', (v) => v as String),
+      rarity: $checkedConvert(json, 'rarity', (v) => v as int) ?? 0,
+      category: $checkedConvert(json, 'category', (v) => v as int),
+      num: $checkedConvert(json, 'num', (v) => v as int) ?? 0,
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
@@ -346,14 +457,19 @@ Map<String, dynamic> _$GLPKDataToJson(GLPKData instance) => <String, dynamic>{
     };
 
 GLPKParams _$GLPKParamsFromJson(Map<String, dynamic> json) {
-  return GLPKParams(
-    minCoeff: json['minCoeff'] as int,
-    maxSortOrder: json['maxSortOrder'] as int,
-    coeffPrio: json['coeffPrio'] as bool,
-    maxColNum: json['maxColNum'] as int,
-    objRows: (json['objRows'] as List)?.map((e) => e as String)?.toList(),
-    objNums: (json['objNums'] as List)?.map((e) => e as int)?.toList(),
-  );
+  return $checkedNew('GLPKParams', json, () {
+    final val = GLPKParams(
+      minCoeff: $checkedConvert(json, 'minCoeff', (v) => v as int),
+      maxSortOrder: $checkedConvert(json, 'maxSortOrder', (v) => v as int),
+      coeffPrio: $checkedConvert(json, 'coeffPrio', (v) => v as bool),
+      maxColNum: $checkedConvert(json, 'maxColNum', (v) => v as int),
+      objRows: $checkedConvert(json, 'objRows',
+          (v) => (v as List)?.map((e) => e as String)?.toList()),
+      objNums: $checkedConvert(
+          json, 'objNums', (v) => (v as List)?.map((e) => e as int)?.toList()),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$GLPKParamsToJson(GLPKParams instance) =>
@@ -404,19 +520,25 @@ Map<String, dynamic> _$GLPKVariableToJson(GLPKVariable instance) =>
     };
 
 Quest _$QuestFromJson(Map<String, dynamic> json) {
-  return Quest(
-    chapter: json['chapter'] as String,
-    nameJp: json['nameJp'] as String,
-    nameCn: json['nameCn'] as String,
-    level: json['level'] as int,
-    bondPoint: json['bondPoint'] as int,
-    experience: json['experience'] as int,
-    qp: json['qp'] as int,
-    battles: (json['battles'] as List)
-        ?.map((e) =>
-            e == null ? null : Battle.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-  );
+  return $checkedNew('Quest', json, () {
+    final val = Quest(
+      chapter: $checkedConvert(json, 'chapter', (v) => v as String),
+      nameJp: $checkedConvert(json, 'nameJp', (v) => v as String),
+      nameCn: $checkedConvert(json, 'nameCn', (v) => v as String),
+      level: $checkedConvert(json, 'level', (v) => v as int),
+      bondPoint: $checkedConvert(json, 'bondPoint', (v) => v as int),
+      experience: $checkedConvert(json, 'experience', (v) => v as int),
+      qp: $checkedConvert(json, 'qp', (v) => v as int),
+      battles: $checkedConvert(
+          json,
+          'battles',
+          (v) => (v as List)
+              ?.map((e) =>
+                  e == null ? null : Battle.fromJson(e as Map<String, dynamic>))
+              ?.toList()),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$QuestToJson(Quest instance) => <String, dynamic>{
@@ -431,17 +553,24 @@ Map<String, dynamic> _$QuestToJson(Quest instance) => <String, dynamic>{
     };
 
 Battle _$BattleFromJson(Map<String, dynamic> json) {
-  return Battle(
-    ap: json['ap'] as int,
-    placeJp: json['placeJp'] as String,
-    placeCn: json['placeCn'] as String,
-    enemies: (json['enemies'] as List)
-        ?.map((e) => (e as List)
-            ?.map((e) =>
-                e == null ? null : Enemy.fromJson(e as Map<String, dynamic>))
-            ?.toList())
-        ?.toList(),
-  );
+  return $checkedNew('Battle', json, () {
+    final val = Battle(
+      ap: $checkedConvert(json, 'ap', (v) => v as int),
+      placeJp: $checkedConvert(json, 'placeJp', (v) => v as String),
+      placeCn: $checkedConvert(json, 'placeCn', (v) => v as String),
+      enemies: $checkedConvert(
+          json,
+          'enemies',
+          (v) => (v as List)
+              ?.map((e) => (e as List)
+                  ?.map((e) => e == null
+                      ? null
+                      : Enemy.fromJson(e as Map<String, dynamic>))
+                  ?.toList())
+              ?.toList()),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$BattleToJson(Battle instance) => <String, dynamic>{
@@ -452,13 +581,16 @@ Map<String, dynamic> _$BattleToJson(Battle instance) => <String, dynamic>{
     };
 
 Enemy _$EnemyFromJson(Map<String, dynamic> json) {
-  return Enemy(
-    name: json['name'] as String,
-    shownName: json['shownName'] as String,
-    className: json['className'] as String,
-    rank: json['rank'] as int,
-    hp: json['hp'] as int,
-  );
+  return $checkedNew('Enemy', json, () {
+    final val = Enemy(
+      name: $checkedConvert(json, 'name', (v) => v as String),
+      shownName: $checkedConvert(json, 'shownName', (v) => v as String),
+      className: $checkedConvert(json, 'className', (v) => v as String),
+      rank: $checkedConvert(json, 'rank', (v) => v as int),
+      hp: $checkedConvert(json, 'hp', (v) => v as int),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$EnemyToJson(Enemy instance) => <String, dynamic>{
@@ -470,41 +602,63 @@ Map<String, dynamic> _$EnemyToJson(Enemy instance) => <String, dynamic>{
     };
 
 Servant _$ServantFromJson(Map<String, dynamic> json) {
-  return Servant(
-    no: json['no'] as int,
-    mcLink: json['mcLink'] as String,
-    icon: json['icon'] as String,
-    info: json['info'] == null
-        ? null
-        : ServantBaseInfo.fromJson(json['info'] as Map<String, dynamic>),
-    treasureDevice: (json['treasureDevice'] as List)
-        ?.map((e) => e == null
-            ? null
-            : TreasureDevice.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-    activeSkills: (json['activeSkills'] as List)
-        ?.map((e) => (e as List)
-            ?.map((e) =>
-                e == null ? null : Skill.fromJson(e as Map<String, dynamic>))
-            ?.toList())
-        ?.toList(),
-    passiveSkills: (json['passiveSkills'] as List)
-        ?.map(
-            (e) => e == null ? null : Skill.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-    itemCost: json['itemCost'] == null
-        ? null
-        : ItemCost.fromJson(json['itemCost'] as Map<String, dynamic>),
-    bondPoints: (json['bondPoints'] as List)?.map((e) => e as int)?.toList(),
-    profiles: (json['profiles'] as List)
-        ?.map((e) => e == null
-            ? null
-            : SvtProfileData.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-    bondCraft: json['bondCraft'] as int,
-    valentineCraft:
-        (json['valentineCraft'] as List)?.map((e) => e as int)?.toList(),
-  );
+  return $checkedNew('Servant', json, () {
+    final val = Servant(
+      no: $checkedConvert(json, 'no', (v) => v as int),
+      mcLink: $checkedConvert(json, 'mcLink', (v) => v as String),
+      icon: $checkedConvert(json, 'icon', (v) => v as String),
+      info: $checkedConvert(
+          json,
+          'info',
+          (v) => v == null
+              ? null
+              : ServantBaseInfo.fromJson(v as Map<String, dynamic>)),
+      treasureDevice: $checkedConvert(
+          json,
+          'treasureDevice',
+          (v) => (v as List)
+              ?.map((e) => e == null
+                  ? null
+                  : TreasureDevice.fromJson(e as Map<String, dynamic>))
+              ?.toList()),
+      activeSkills: $checkedConvert(
+          json,
+          'activeSkills',
+          (v) => (v as List)
+              ?.map((e) => (e as List)
+                  ?.map((e) => e == null
+                      ? null
+                      : Skill.fromJson(e as Map<String, dynamic>))
+                  ?.toList())
+              ?.toList()),
+      passiveSkills: $checkedConvert(
+          json,
+          'passiveSkills',
+          (v) => (v as List)
+              ?.map((e) =>
+                  e == null ? null : Skill.fromJson(e as Map<String, dynamic>))
+              ?.toList()),
+      itemCost: $checkedConvert(
+          json,
+          'itemCost',
+          (v) =>
+              v == null ? null : ItemCost.fromJson(v as Map<String, dynamic>)),
+      bondPoints: $checkedConvert(json, 'bondPoints',
+          (v) => (v as List)?.map((e) => e as int)?.toList()),
+      profiles: $checkedConvert(
+          json,
+          'profiles',
+          (v) => (v as List)
+              ?.map((e) => e == null
+                  ? null
+                  : SvtProfileData.fromJson(e as Map<String, dynamic>))
+              ?.toList()),
+      bondCraft: $checkedConvert(json, 'bondCraft', (v) => v as int),
+      valentineCraft: $checkedConvert(json, 'valentineCraft',
+          (v) => (v as List)?.map((e) => e as int)?.toList()),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
@@ -523,56 +677,80 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
     };
 
 ServantBaseInfo _$ServantBaseInfoFromJson(Map<String, dynamic> json) {
-  return ServantBaseInfo(
-    obtain: json['obtain'] as String,
-    rarity: json['rarity'] as int,
-    rarity2: json['rarity2'] as int,
-    weight: json['weight'] as String,
-    height: json['height'] as String,
-    gender: json['gender'] as String,
-    illustrator: json['illustrator'] as String,
-    className: json['className'] as String,
-    attribute: json['attribute'] as String,
-    isHumanoid: json['isHumanoid'] as bool,
-    isWeakToEA: json['isWeakToEA'] as bool,
-    name: json['name'] as String,
-    nameJp: json['nameJp'] as String,
-    nameEn: json['nameEn'] as String,
-    illustName: json['illustName'] as String,
-    nicknames: (json['nicknames'] as List)?.map((e) => e as String)?.toList(),
-    cv: (json['cv'] as List)?.map((e) => e as String)?.toList(),
-    alignments: (json['alignments'] as List)?.map((e) => e as String)?.toList(),
-    traits: (json['traits'] as List)?.map((e) => e as String)?.toList(),
-    ability: (json['ability'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as String),
-    ),
-    illust: (json['illust'] as List)
-        ?.map((e) => (e as Map<String, dynamic>)?.map(
-              (k, e) => MapEntry(k, e as String),
-            ))
-        ?.toList(),
-    cards: (json['cards'] as List)?.map((e) => e as String)?.toList(),
-    cardHits: (json['cardHits'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as int),
-    ),
-    cardHitsDamage: (json['cardHitsDamage'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, (e as List)?.map((e) => e as int)?.toList()),
-    ),
-    npRate: (json['npRate'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as int),
-    ),
-    atkMin: json['atkMin'] as int,
-    hpMin: json['hpMin'] as int,
-    atkMax: json['atkMax'] as int,
-    hpMax: json['hpMax'] as int,
-    atk90: json['atk90'] as int,
-    hp90: json['hp90'] as int,
-    atk100: json['atk100'] as int,
-    hp100: json['hp100'] as int,
-    starRate: json['starRate'] as int,
-    deathRate: json['deathRate'] as int,
-    criticalRate: json['criticalRate'] as int,
-  );
+  return $checkedNew('ServantBaseInfo', json, () {
+    final val = ServantBaseInfo(
+      obtain: $checkedConvert(json, 'obtain', (v) => v as String),
+      rarity: $checkedConvert(json, 'rarity', (v) => v as int),
+      rarity2: $checkedConvert(json, 'rarity2', (v) => v as int),
+      weight: $checkedConvert(json, 'weight', (v) => v as String),
+      height: $checkedConvert(json, 'height', (v) => v as String),
+      gender: $checkedConvert(json, 'gender', (v) => v as String),
+      illustrator: $checkedConvert(json, 'illustrator', (v) => v as String),
+      className: $checkedConvert(json, 'className', (v) => v as String),
+      attribute: $checkedConvert(json, 'attribute', (v) => v as String),
+      isHumanoid: $checkedConvert(json, 'isHumanoid', (v) => v as bool),
+      isWeakToEA: $checkedConvert(json, 'isWeakToEA', (v) => v as bool),
+      name: $checkedConvert(json, 'name', (v) => v as String),
+      nameJp: $checkedConvert(json, 'nameJp', (v) => v as String),
+      nameEn: $checkedConvert(json, 'nameEn', (v) => v as String),
+      illustName: $checkedConvert(json, 'illustName', (v) => v as String),
+      nicknames: $checkedConvert(json, 'nicknames',
+          (v) => (v as List)?.map((e) => e as String)?.toList()),
+      cv: $checkedConvert(
+          json, 'cv', (v) => (v as List)?.map((e) => e as String)?.toList()),
+      alignments: $checkedConvert(json, 'alignments',
+          (v) => (v as List)?.map((e) => e as String)?.toList()),
+      traits: $checkedConvert(json, 'traits',
+          (v) => (v as List)?.map((e) => e as String)?.toList()),
+      ability: $checkedConvert(
+          json,
+          'ability',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(k, e as String),
+              )),
+      illust: $checkedConvert(
+          json,
+          'illust',
+          (v) => (v as List)
+              ?.map((e) => (e as Map<String, dynamic>)?.map(
+                    (k, e) => MapEntry(k, e as String),
+                  ))
+              ?.toList()),
+      cards: $checkedConvert(
+          json, 'cards', (v) => (v as List)?.map((e) => e as String)?.toList()),
+      cardHits: $checkedConvert(
+          json,
+          'cardHits',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(k, e as int),
+              )),
+      cardHitsDamage: $checkedConvert(
+          json,
+          'cardHitsDamage',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) =>
+                    MapEntry(k, (e as List)?.map((e) => e as int)?.toList()),
+              )),
+      npRate: $checkedConvert(
+          json,
+          'npRate',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(k, e as int),
+              )),
+      atkMin: $checkedConvert(json, 'atkMin', (v) => v as int),
+      hpMin: $checkedConvert(json, 'hpMin', (v) => v as int),
+      atkMax: $checkedConvert(json, 'atkMax', (v) => v as int),
+      hpMax: $checkedConvert(json, 'hpMax', (v) => v as int),
+      atk90: $checkedConvert(json, 'atk90', (v) => v as int),
+      hp90: $checkedConvert(json, 'hp90', (v) => v as int),
+      atk100: $checkedConvert(json, 'atk100', (v) => v as int),
+      hp100: $checkedConvert(json, 'hp100', (v) => v as int),
+      starRate: $checkedConvert(json, 'starRate', (v) => v as int),
+      deathRate: $checkedConvert(json, 'deathRate', (v) => v as int),
+      criticalRate: $checkedConvert(json, 'criticalRate', (v) => v as int),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$ServantBaseInfoToJson(ServantBaseInfo instance) =>
@@ -616,25 +794,31 @@ Map<String, dynamic> _$ServantBaseInfoToJson(ServantBaseInfo instance) =>
     };
 
 TreasureDevice _$TreasureDeviceFromJson(Map<String, dynamic> json) {
-  return TreasureDevice(
-    enhanced: json['enhanced'] as bool,
-    state: json['state'] as String,
-    openTime: json['openTime'] as String,
-    openCondition: json['openCondition'] as String,
-    opeQuest: json['opeQuest'] as String,
-    name: json['name'] as String,
-    nameJp: json['nameJp'] as String,
-    upperName: json['upperName'] as String,
-    upperNameJp: json['upperNameJp'] as String,
-    color: json['color'] as String,
-    category: json['category'] as String,
-    rank: json['rank'] as String,
-    typeText: json['typeText'] as String,
-    effects: (json['effects'] as List)
-        ?.map((e) =>
-            e == null ? null : Effect.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-  );
+  return $checkedNew('TreasureDevice', json, () {
+    final val = TreasureDevice(
+      enhanced: $checkedConvert(json, 'enhanced', (v) => v as bool),
+      state: $checkedConvert(json, 'state', (v) => v as String),
+      openTime: $checkedConvert(json, 'openTime', (v) => v as String),
+      openCondition: $checkedConvert(json, 'openCondition', (v) => v as String),
+      opeQuest: $checkedConvert(json, 'opeQuest', (v) => v as String),
+      name: $checkedConvert(json, 'name', (v) => v as String),
+      nameJp: $checkedConvert(json, 'nameJp', (v) => v as String),
+      upperName: $checkedConvert(json, 'upperName', (v) => v as String),
+      upperNameJp: $checkedConvert(json, 'upperNameJp', (v) => v as String),
+      color: $checkedConvert(json, 'color', (v) => v as String),
+      category: $checkedConvert(json, 'category', (v) => v as String),
+      rank: $checkedConvert(json, 'rank', (v) => v as String),
+      typeText: $checkedConvert(json, 'typeText', (v) => v as String),
+      effects: $checkedConvert(
+          json,
+          'effects',
+          (v) => (v as List)
+              ?.map((e) =>
+                  e == null ? null : Effect.fromJson(e as Map<String, dynamic>))
+              ?.toList()),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$TreasureDeviceToJson(TreasureDevice instance) =>
@@ -656,22 +840,28 @@ Map<String, dynamic> _$TreasureDeviceToJson(TreasureDevice instance) =>
     };
 
 Skill _$SkillFromJson(Map<String, dynamic> json) {
-  return Skill(
-    state: json['state'] as String,
-    openTime: json['openTime'] as String,
-    openCondition: json['openCondition'] as String,
-    openQuest: json['openQuest'] as String,
-    enhanced: json['enhanced'] as bool,
-    name: json['name'] as String,
-    nameJp: json['nameJp'] as String,
-    rank: json['rank'] as String,
-    icon: json['icon'] as String,
-    cd: json['cd'] as int,
-    effects: (json['effects'] as List)
-        ?.map((e) =>
-            e == null ? null : Effect.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-  );
+  return $checkedNew('Skill', json, () {
+    final val = Skill(
+      state: $checkedConvert(json, 'state', (v) => v as String),
+      openTime: $checkedConvert(json, 'openTime', (v) => v as String),
+      openCondition: $checkedConvert(json, 'openCondition', (v) => v as String),
+      openQuest: $checkedConvert(json, 'openQuest', (v) => v as String),
+      enhanced: $checkedConvert(json, 'enhanced', (v) => v as bool),
+      name: $checkedConvert(json, 'name', (v) => v as String),
+      nameJp: $checkedConvert(json, 'nameJp', (v) => v as String),
+      rank: $checkedConvert(json, 'rank', (v) => v as String),
+      icon: $checkedConvert(json, 'icon', (v) => v as String),
+      cd: $checkedConvert(json, 'cd', (v) => v as int),
+      effects: $checkedConvert(
+          json,
+          'effects',
+          (v) => (v as List)
+              ?.map((e) =>
+                  e == null ? null : Effect.fromJson(e as Map<String, dynamic>))
+              ?.toList()),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$SkillToJson(Skill instance) => <String, dynamic>{
@@ -689,12 +879,15 @@ Map<String, dynamic> _$SkillToJson(Skill instance) => <String, dynamic>{
     };
 
 Effect _$EffectFromJson(Map<String, dynamic> json) {
-  return Effect(
-    description: json['description'] as String,
-    target: json['target'] as String,
-    valueType: json['valueType'] as String,
-    lvData: json['lvData'] as List,
-  );
+  return $checkedNew('Effect', json, () {
+    final val = Effect(
+      description: $checkedConvert(json, 'description', (v) => v as String),
+      target: $checkedConvert(json, 'target', (v) => v as String),
+      valueType: $checkedConvert(json, 'valueType', (v) => v as String),
+      lvData: $checkedConvert(json, 'lvData', (v) => v as List),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$EffectToJson(Effect instance) => <String, dynamic>{
@@ -705,11 +898,14 @@ Map<String, dynamic> _$EffectToJson(Effect instance) => <String, dynamic>{
     };
 
 SvtProfileData _$SvtProfileDataFromJson(Map<String, dynamic> json) {
-  return SvtProfileData(
-    profile: json['profile'] as String,
-    profileJp: json['profileJp'] as String,
-    condition: json['condition'] as String,
-  );
+  return $checkedNew('SvtProfileData', json, () {
+    final val = SvtProfileData(
+      profile: $checkedConvert(json, 'profile', (v) => v as String),
+      profileJp: $checkedConvert(json, 'profileJp', (v) => v as String),
+      condition: $checkedConvert(json, 'condition', (v) => v as String),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$SvtProfileDataToJson(SvtProfileData instance) =>
@@ -720,30 +916,48 @@ Map<String, dynamic> _$SvtProfileDataToJson(SvtProfileData instance) =>
     };
 
 User _$UserFromJson(Map<String, dynamic> json) {
-  return User(
-    name: json['name'] as String,
-    server: json['server'] as String,
-    servants: (json['servants'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(int.parse(k),
-          e == null ? null : ServantStatus.fromJson(e as Map<String, dynamic>)),
-    ),
-    curPlanNo: json['curPlanNo'] as int,
-    servantPlans: (json['servantPlans'] as List)
-        ?.map((e) => (e as Map<String, dynamic>)?.map(
-              (k, e) => MapEntry(
-                  int.parse(k),
-                  e == null
-                      ? null
-                      : ServantPlan.fromJson(e as Map<String, dynamic>)),
-            ))
-        ?.toList(),
-    items: (json['items'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as int),
-    ),
-    events: json['events'] == null
-        ? null
-        : EventPlans.fromJson(json['events'] as Map<String, dynamic>),
-  );
+  return $checkedNew('User', json, () {
+    final val = User(
+      name: $checkedConvert(json, 'name', (v) => v as String),
+      server: $checkedConvert(json, 'server', (v) => v as String),
+      servants: $checkedConvert(
+          json,
+          'servants',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(
+                    int.parse(k),
+                    e == null
+                        ? null
+                        : ServantStatus.fromJson(e as Map<String, dynamic>)),
+              )),
+      curPlanNo: $checkedConvert(json, 'curPlanNo', (v) => v as int),
+      servantPlans: $checkedConvert(
+          json,
+          'servantPlans',
+          (v) => (v as List)
+              ?.map((e) => (e as Map<String, dynamic>)?.map(
+                    (k, e) => MapEntry(
+                        int.parse(k),
+                        e == null
+                            ? null
+                            : ServantPlan.fromJson(e as Map<String, dynamic>)),
+                  ))
+              ?.toList()),
+      items: $checkedConvert(
+          json,
+          'items',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(k, e as int),
+              )),
+      events: $checkedConvert(
+          json,
+          'events',
+          (v) => v == null
+              ? null
+              : EventPlans.fromJson(v as Map<String, dynamic>)),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
@@ -759,15 +973,23 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
     };
 
 ServantStatus _$ServantStatusFromJson(Map<String, dynamic> json) {
-  return ServantStatus(
-    curVal: json['curVal'] == null
-        ? null
-        : ServantPlan.fromJson(json['curVal'] as Map<String, dynamic>),
-    skillEnhanced:
-        (json['skillEnhanced'] as List)?.map((e) => e as bool)?.toList(),
-    treasureDeviceEnhanced: json['treasureDeviceEnhanced'] as int,
-    treasureDeviceLv: json['treasureDeviceLv'] as int,
-  );
+  return $checkedNew('ServantStatus', json, () {
+    final val = ServantStatus(
+      curVal: $checkedConvert(
+          json,
+          'curVal',
+          (v) => v == null
+              ? null
+              : ServantPlan.fromJson(v as Map<String, dynamic>)),
+      skillEnhanced: $checkedConvert(json, 'skillEnhanced',
+          (v) => (v as List)?.map((e) => e as bool)?.toList()),
+      treasureDeviceEnhanced:
+          $checkedConvert(json, 'treasureDeviceEnhanced', (v) => v as int),
+      treasureDeviceLv:
+          $checkedConvert(json, 'treasureDeviceLv', (v) => v as int),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$ServantStatusToJson(ServantStatus instance) =>
@@ -779,13 +1001,18 @@ Map<String, dynamic> _$ServantStatusToJson(ServantStatus instance) =>
     };
 
 ServantPlan _$ServantPlanFromJson(Map<String, dynamic> json) {
-  return ServantPlan(
-    favorite: json['favorite'] as bool,
-    ascension: json['ascension'] as int,
-    skills: (json['skills'] as List)?.map((e) => e as int)?.toList(),
-    dress: (json['dress'] as List)?.map((e) => e as int)?.toList(),
-    grail: json['grail'] as int,
-  );
+  return $checkedNew('ServantPlan', json, () {
+    final val = ServantPlan(
+      favorite: $checkedConvert(json, 'favorite', (v) => v as bool),
+      ascension: $checkedConvert(json, 'ascension', (v) => v as int),
+      skills: $checkedConvert(
+          json, 'skills', (v) => (v as List)?.map((e) => e as int)?.toList()),
+      dress: $checkedConvert(
+          json, 'dress', (v) => (v as List)?.map((e) => e as int)?.toList()),
+      grail: $checkedConvert(json, 'grail', (v) => v as int),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$ServantPlanToJson(ServantPlan instance) =>
@@ -798,21 +1025,35 @@ Map<String, dynamic> _$ServantPlanToJson(ServantPlan instance) =>
     };
 
 EventPlans _$EventPlansFromJson(Map<String, dynamic> json) {
-  return EventPlans(
-    limitEvents: (json['limitEvents'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(
-          k,
-          e == null
-              ? null
-              : LimitEventPlan.fromJson(e as Map<String, dynamic>)),
-    ),
-    mainRecords: (json['mainRecords'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, (e as List)?.map((e) => e as bool)?.toList()),
-    ),
-    exchangeTickets: (json['exchangeTickets'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, (e as List)?.map((e) => e as int)?.toList()),
-    ),
-  );
+  return $checkedNew('EventPlans', json, () {
+    final val = EventPlans(
+      limitEvents: $checkedConvert(
+          json,
+          'limitEvents',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(
+                    k,
+                    e == null
+                        ? null
+                        : LimitEventPlan.fromJson(e as Map<String, dynamic>)),
+              )),
+      mainRecords: $checkedConvert(
+          json,
+          'mainRecords',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) =>
+                    MapEntry(k, (e as List)?.map((e) => e as bool)?.toList()),
+              )),
+      exchangeTickets: $checkedConvert(
+          json,
+          'exchangeTickets',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) =>
+                    MapEntry(k, (e as List)?.map((e) => e as int)?.toList()),
+              )),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$EventPlansToJson(EventPlans instance) =>
@@ -823,14 +1064,20 @@ Map<String, dynamic> _$EventPlansToJson(EventPlans instance) =>
     };
 
 LimitEventPlan _$LimitEventPlanFromJson(Map<String, dynamic> json) {
-  return LimitEventPlan(
-    enable: json['enable'] as bool,
-    rerun: json['rerun'] as bool,
-    lottery: json['lottery'] as int,
-    extra: (json['extra'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as int),
-    ),
-  );
+  return $checkedNew('LimitEventPlan', json, () {
+    final val = LimitEventPlan(
+      enable: $checkedConvert(json, 'enable', (v) => v as bool),
+      rerun: $checkedConvert(json, 'rerun', (v) => v as bool),
+      lottery: $checkedConvert(json, 'lottery', (v) => v as int),
+      extra: $checkedConvert(
+          json,
+          'extra',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(k, e as int),
+              )),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$LimitEventPlanToJson(LimitEventPlan instance) =>
@@ -842,36 +1089,64 @@ Map<String, dynamic> _$LimitEventPlanToJson(LimitEventPlan instance) =>
     };
 
 UserData _$UserDataFromJson(Map<String, dynamic> json) {
-  return UserData(
-    language: json['language'] as String,
-    useMobileNetwork: json['useMobileNetwork'] as bool,
-    testAllowDownload: json['testAllowDownload'] as bool,
-    sliderUrls: (json['sliderUrls'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as String),
-    ),
-    galleries: (json['galleries'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as bool),
-    ),
-    serverDomain: json['serverDomain'] as String,
-    curUsername: json['curUsername'] as String,
-    users: (json['users'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(
-          k, e == null ? null : User.fromJson(e as Map<String, dynamic>)),
-    ),
-    svtFilter: json['svtFilter'] == null
-        ? null
-        : SvtFilterData.fromJson(json['svtFilter'] as Map<String, dynamic>),
-    craftFilter: json['craftFilter'] == null
-        ? null
-        : CraftFilterData.fromJson(json['craftFilter'] as Map<String, dynamic>),
-    cmdCodeFilter: json['cmdCodeFilter'] == null
-        ? null
-        : CmdCodeFilterData.fromJson(
-            json['cmdCodeFilter'] as Map<String, dynamic>),
-    glpkParams: json['glpkParams'] == null
-        ? null
-        : GLPKParams.fromJson(json['glpkParams'] as Map<String, dynamic>),
-  );
+  return $checkedNew('UserData', json, () {
+    final val = UserData(
+      language: $checkedConvert(json, 'language', (v) => v as String),
+      useMobileNetwork:
+          $checkedConvert(json, 'useMobileNetwork', (v) => v as bool),
+      testAllowDownload:
+          $checkedConvert(json, 'testAllowDownload', (v) => v as bool),
+      sliderUrls: $checkedConvert(
+          json,
+          'sliderUrls',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(k, e as String),
+              )),
+      galleries: $checkedConvert(
+          json,
+          'galleries',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(k, e as bool),
+              )),
+      serverDomain: $checkedConvert(json, 'serverDomain', (v) => v as String),
+      curUsername: $checkedConvert(json, 'curUsername', (v) => v as String),
+      users: $checkedConvert(
+          json,
+          'users',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(
+                    k,
+                    e == null
+                        ? null
+                        : User.fromJson(e as Map<String, dynamic>)),
+              )),
+      svtFilter: $checkedConvert(
+          json,
+          'svtFilter',
+          (v) => v == null
+              ? null
+              : SvtFilterData.fromJson(v as Map<String, dynamic>)),
+      craftFilter: $checkedConvert(
+          json,
+          'craftFilter',
+          (v) => v == null
+              ? null
+              : CraftFilterData.fromJson(v as Map<String, dynamic>)),
+      cmdCodeFilter: $checkedConvert(
+          json,
+          'cmdCodeFilter',
+          (v) => v == null
+              ? null
+              : CmdCodeFilterData.fromJson(v as Map<String, dynamic>)),
+      glpkParams: $checkedConvert(
+          json,
+          'glpkParams',
+          (v) => v == null
+              ? null
+              : GLPKParams.fromJson(v as Map<String, dynamic>)),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
@@ -890,50 +1165,90 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
     };
 
 SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
-  return SvtFilterData(
-    favorite: json['favorite'] as bool,
-    sortKeys: (json['sortKeys'] as List)
-        ?.map((e) => _$enumDecodeNullable(_$SvtCompareEnumMap, e))
-        ?.toList(),
-    sortReversed:
-        (json['sortReversed'] as List)?.map((e) => e as bool)?.toList(),
-    useGrid: json['useGrid'] as bool,
-    hasDress: json['hasDress'] as bool,
-    rarity: json['rarity'] == null
-        ? null
-        : FilterGroupData.fromJson(json['rarity'] as Map<String, dynamic>),
-    className: json['className'] == null
-        ? null
-        : FilterGroupData.fromJson(json['className'] as Map<String, dynamic>),
-    obtain: json['obtain'] == null
-        ? null
-        : FilterGroupData.fromJson(json['obtain'] as Map<String, dynamic>),
-    npColor: json['npColor'] == null
-        ? null
-        : FilterGroupData.fromJson(json['npColor'] as Map<String, dynamic>),
-    npType: json['npType'] == null
-        ? null
-        : FilterGroupData.fromJson(json['npType'] as Map<String, dynamic>),
-    attribute: json['attribute'] == null
-        ? null
-        : FilterGroupData.fromJson(json['attribute'] as Map<String, dynamic>),
-    alignment1: json['alignment1'] == null
-        ? null
-        : FilterGroupData.fromJson(json['alignment1'] as Map<String, dynamic>),
-    alignment2: json['alignment2'] == null
-        ? null
-        : FilterGroupData.fromJson(json['alignment2'] as Map<String, dynamic>),
-    gender: json['gender'] == null
-        ? null
-        : FilterGroupData.fromJson(json['gender'] as Map<String, dynamic>),
-    trait: json['trait'] == null
-        ? null
-        : FilterGroupData.fromJson(json['trait'] as Map<String, dynamic>),
-    traitSpecial: json['traitSpecial'] == null
-        ? null
-        : FilterGroupData.fromJson(
-            json['traitSpecial'] as Map<String, dynamic>),
-  )..filterString = json['filterString'] as String;
+  return $checkedNew('SvtFilterData', json, () {
+    final val = SvtFilterData(
+      favorite: $checkedConvert(json, 'favorite', (v) => v as bool),
+      sortKeys: $checkedConvert(
+          json,
+          'sortKeys',
+          (v) => (v as List)
+              ?.map((e) => _$enumDecodeNullable(_$SvtCompareEnumMap, e))
+              ?.toList()),
+      sortReversed: $checkedConvert(json, 'sortReversed',
+          (v) => (v as List)?.map((e) => e as bool)?.toList()),
+      useGrid: $checkedConvert(json, 'useGrid', (v) => v as bool),
+      hasDress: $checkedConvert(json, 'hasDress', (v) => v as bool),
+      rarity: $checkedConvert(
+          json,
+          'rarity',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      className: $checkedConvert(
+          json,
+          'className',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      obtain: $checkedConvert(
+          json,
+          'obtain',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      npColor: $checkedConvert(
+          json,
+          'npColor',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      npType: $checkedConvert(
+          json,
+          'npType',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      attribute: $checkedConvert(
+          json,
+          'attribute',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      alignment1: $checkedConvert(
+          json,
+          'alignment1',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      alignment2: $checkedConvert(
+          json,
+          'alignment2',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      gender: $checkedConvert(
+          json,
+          'gender',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      trait: $checkedConvert(
+          json,
+          'trait',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      traitSpecial: $checkedConvert(
+          json,
+          'traitSpecial',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+    );
+    $checkedConvert(
+        json, 'filterString', (v) => val.filterString = v as String);
+    return val;
+  });
 }
 
 Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
@@ -999,23 +1314,40 @@ const _$SvtCompareEnumMap = {
 };
 
 CraftFilterData _$CraftFilterDataFromJson(Map<String, dynamic> json) {
-  return CraftFilterData(
-    sortKeys: (json['sortKeys'] as List)
-        ?.map((e) => _$enumDecodeNullable(_$CraftCompareEnumMap, e))
-        ?.toList(),
-    sortReversed:
-        (json['sortReversed'] as List)?.map((e) => e as bool)?.toList(),
-    useGrid: json['useGrid'] as bool,
-    rarity: json['rarity'] == null
-        ? null
-        : FilterGroupData.fromJson(json['rarity'] as Map<String, dynamic>),
-    category: json['category'] == null
-        ? null
-        : FilterGroupData.fromJson(json['category'] as Map<String, dynamic>),
-    atkHpType: json['atkHpType'] == null
-        ? null
-        : FilterGroupData.fromJson(json['atkHpType'] as Map<String, dynamic>),
-  )..filterString = json['filterString'] as String;
+  return $checkedNew('CraftFilterData', json, () {
+    final val = CraftFilterData(
+      sortKeys: $checkedConvert(
+          json,
+          'sortKeys',
+          (v) => (v as List)
+              ?.map((e) => _$enumDecodeNullable(_$CraftCompareEnumMap, e))
+              ?.toList()),
+      sortReversed: $checkedConvert(json, 'sortReversed',
+          (v) => (v as List)?.map((e) => e as bool)?.toList()),
+      useGrid: $checkedConvert(json, 'useGrid', (v) => v as bool),
+      rarity: $checkedConvert(
+          json,
+          'rarity',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      category: $checkedConvert(
+          json,
+          'category',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      atkHpType: $checkedConvert(
+          json,
+          'atkHpType',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+    );
+    $checkedConvert(
+        json, 'filterString', (v) => val.filterString = v as String);
+    return val;
+  });
 }
 
 Map<String, dynamic> _$CraftFilterDataToJson(CraftFilterData instance) =>
@@ -1038,20 +1370,34 @@ const _$CraftCompareEnumMap = {
 };
 
 CmdCodeFilterData _$CmdCodeFilterDataFromJson(Map<String, dynamic> json) {
-  return CmdCodeFilterData(
-    sortKeys: (json['sortKeys'] as List)
-        ?.map((e) => _$enumDecodeNullable(_$CmdCodeCompareEnumMap, e))
-        ?.toList(),
-    sortReversed:
-        (json['sortReversed'] as List)?.map((e) => e as bool)?.toList(),
-    useGrid: json['useGrid'] as bool,
-    rarity: json['rarity'] == null
-        ? null
-        : FilterGroupData.fromJson(json['rarity'] as Map<String, dynamic>),
-    obtain: json['obtain'] == null
-        ? null
-        : FilterGroupData.fromJson(json['obtain'] as Map<String, dynamic>),
-  )..filterString = json['filterString'] as String;
+  return $checkedNew('CmdCodeFilterData', json, () {
+    final val = CmdCodeFilterData(
+      sortKeys: $checkedConvert(
+          json,
+          'sortKeys',
+          (v) => (v as List)
+              ?.map((e) => _$enumDecodeNullable(_$CmdCodeCompareEnumMap, e))
+              ?.toList()),
+      sortReversed: $checkedConvert(json, 'sortReversed',
+          (v) => (v as List)?.map((e) => e as bool)?.toList()),
+      useGrid: $checkedConvert(json, 'useGrid', (v) => v as bool),
+      rarity: $checkedConvert(
+          json,
+          'rarity',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      obtain: $checkedConvert(
+          json,
+          'obtain',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+    );
+    $checkedConvert(
+        json, 'filterString', (v) => val.filterString = v as String);
+    return val;
+  });
 }
 
 Map<String, dynamic> _$CmdCodeFilterDataToJson(CmdCodeFilterData instance) =>
@@ -1071,13 +1417,19 @@ const _$CmdCodeCompareEnumMap = {
 };
 
 FilterGroupData _$FilterGroupDataFromJson(Map<String, dynamic> json) {
-  return FilterGroupData(
-    matchAll: json['matchAll'] as bool,
-    invert: json['invert'] as bool,
-    options: (json['options'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as bool),
-    ),
-  );
+  return $checkedNew('FilterGroupData', json, () {
+    final val = FilterGroupData(
+      matchAll: $checkedConvert(json, 'matchAll', (v) => v as bool),
+      invert: $checkedConvert(json, 'invert', (v) => v as bool),
+      options: $checkedConvert(
+          json,
+          'options',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(k, e as bool),
+              )),
+    );
+    return val;
+  });
 }
 
 Map<String, dynamic> _$FilterGroupDataToJson(FilterGroupData instance) =>
