@@ -36,10 +36,12 @@ class _MainRecordTabState extends State<MainRecordTab> {
                 separatorBuilder: (context, index) =>
                     Divider(height: 1, indent: 16),
                 itemBuilder: (context, index) {
-                  final chapter = mainRecords[index].name;
+                  final chapter = mainRecords[index].chapter;
                   final plan = db.curUser.events.mainRecords;
-                  return CustomTile(
+                  return ListTile(
                     title: AutoSizeText(chapter, maxLines: 1, maxFontSize: 16),
+                    subtitle:
+                        AutoSizeText(mainRecords[index].title, maxLines: 1),
                     trailing: Wrap(
                       children: List.generate(2, (i) {
                         return Switch.adaptive(
@@ -57,7 +59,7 @@ class _MainRecordTabState extends State<MainRecordTab> {
                     onTap: () {
                       SplitRoute.popAndPush(context,
                           builder: (context) =>
-                              MainRecordDetailPage(name: chapter));
+                              MainRecordDetailPage(chapter: chapter));
                     },
                   );
                 }))

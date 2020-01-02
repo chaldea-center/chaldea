@@ -84,6 +84,13 @@ class GLPKParams {
     }
   }
 
+  void remove(String obj) {
+    int removeIndex = objRows.indexOf(obj);
+    if (removeIndex >= 0) {
+      removeAt(removeIndex);
+    }
+  }
+
   void removeAt(int index) {
     objRows.removeAt(index);
     objNums.removeAt(index);

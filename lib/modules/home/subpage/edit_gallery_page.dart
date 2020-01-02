@@ -25,14 +25,13 @@ class _EditGalleryPageState extends State<EditGalleryPage> {
         ));
       }
     });
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit galleries'),
         leading: BackButton(),
       ),
-      body: ListView(
-        children: tiles,
-      ),
+      body: ListView(children: divideTiles(tiles, bottom: true)),
     );
   }
 }

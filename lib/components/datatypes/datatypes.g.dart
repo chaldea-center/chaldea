@@ -214,7 +214,9 @@ Map<String, dynamic> _$LimitEventToJson(LimitEvent instance) =>
 MainRecord _$MainRecordFromJson(Map<String, dynamic> json) {
   return $checkedNew('MainRecord', json, () {
     final val = MainRecord(
-      name: $checkedConvert(json, 'name', (v) => v as String),
+      chapter: $checkedConvert(json, 'chapter', (v) => v as String),
+      title: $checkedConvert(json, 'title', (v) => v as String),
+      fullname: $checkedConvert(json, 'fullname', (v) => v as String),
       startTimeJp: $checkedConvert(json, 'startTimeJp', (v) => v as String),
       drops: $checkedConvert(
           json,
@@ -235,7 +237,9 @@ MainRecord _$MainRecordFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$MainRecordToJson(MainRecord instance) =>
     <String, dynamic>{
-      'name': instance.name,
+      'chapter': instance.chapter,
+      'title': instance.title,
+      'fullname': instance.fullname,
       'startTimeJp': instance.startTimeJp,
       'drops': instance.drops,
       'rewards': instance.rewards,

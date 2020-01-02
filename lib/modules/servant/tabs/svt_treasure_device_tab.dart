@@ -6,8 +6,11 @@ import 'svt_tab_base.dart';
 
 class SvtTreasureDeviceTab extends SvtTabBaseWidget {
   SvtTreasureDeviceTab(
-      {Key key, ServantDetailPageState parent, Servant svt, ServantStatus plan})
-      : super(key: key, parent: parent, svt: svt, status: plan);
+      {Key key,
+      ServantDetailPageState parent,
+      Servant svt,
+      ServantStatus status})
+      : super(key: key, parent: parent, svt: svt, status: status);
 
   @override
   _SvtTreasureDeviceTabState createState() =>

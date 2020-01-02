@@ -26,14 +26,15 @@ class _LimitEventTabState extends State<LimitEventTab> {
       itemBuilder: (context, index) {
         final event = events[index];
         final plan = db.curUser.events.limitEvents;
-        return CustomTile(
+        return ListTile(
           title: AutoSizeText(event.name, maxLines: 1),
           subtitle:
               AutoSizeText(event.startTimeJp.split(' ').first, maxLines: 1),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              if (event.extra != null || event.lottery != null)
+              if (event.extra?.isNotEmpty == true ||
+                  event.lottery?.isNotEmpty == true)
                 Icon(Icons.star, color: Colors.yellow[700]),
               Switch.adaptive(
                 value: plan[event.name]?.enable ?? false,

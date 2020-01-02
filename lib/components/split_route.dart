@@ -78,8 +78,7 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
             ? SizedBox(
                 height: MediaQuery.of(context).size.height,
                 width: detailWidth,
-                child: child,
-              )
+                child: child)
             : child,
       ),
     );

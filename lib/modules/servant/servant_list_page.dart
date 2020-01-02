@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 
 import 'servant_detail_page.dart';
@@ -93,8 +94,8 @@ class ServantListPageState extends State<ServantListPage> {
     Map<FilterGroupData, String> singleValuePair = {
       filterData.rarity: svt.info.rarity.toString(),
       filterData.obtain: svt.info.obtain,
-      filterData.npColor: svt.treasureDevice?.first?.color,
-      filterData.npType: svt.treasureDevice?.first?.category,
+      filterData.npColor: getValueInList(svt.treasureDevice, 0)?.color,
+      filterData.npType: getValueInList(svt.treasureDevice, 0)?.category,
       filterData.attribute: svt.info.attribute,
     };
     for (var entry in singleValuePair.entries) {
@@ -257,18 +258,19 @@ class ServantListPageState extends State<ServantListPage> {
                 '${plan.curVal.skills[2]}';
           }
           return CustomTile(
-            leading: SizedBox(
-              width: 132 * 0.45,
-              height: 144 * 0.45,
-              child: Image(image: db.getIconImage(svt.icon)),
-            ),
-            title: Text('${svt.mcLink}'),
+            leading: Image(image: db.getIconImage(svt.icon), height: 65),
+            title: Text('${svt.info.name}'),
             subtitle: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Expanded(
-                  flex: 3,
-                  child: Text('${svt.info.className}\nNo.${svt.no}'),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      AutoSizeText('${svt.info.nameJp}', maxLines: 1),
+                      Text('No.${svt.no} ${svt.info.className}')
+                    ],
+                  ),
                 ),
                 Text(planText),
               ],
@@ -283,11 +285,19 @@ class ServantListPageState extends State<ServantListPage> {
   }
 
   Widget _buildGridView(List<Servant> shownList) {
+    // make sure the floating button not cover svt icon
+    if (shownList.length % 5 == 0) {
+      shownList.add(null);
+    }
     return GridView.count(
         crossAxisCount: 5,
         childAspectRatio: 1,
         controller: _scrollController,
+        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
         children: shownList.map((svt) {
+          if (svt == null) {
+            return Container();
+          }
           final plan = db.curUser.servants[svt.no];
           String text;
           if (plan?.curVal?.favorite == true) {
@@ -299,9 +309,7 @@ class ServantListPageState extends State<ServantListPage> {
           }
           return Center(
             child: Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: 1,
-              ),
+              padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
               child: ImageWithText(
                 image: Image(image: db.getIconImage(svt.icon)),
                 text: text,

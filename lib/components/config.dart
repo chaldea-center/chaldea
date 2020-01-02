@@ -8,6 +8,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -83,8 +84,15 @@ class Database {
     }
   }
 
-  Future<Null> saveUserData() async {
-    _saveJsonToFile(userData, paths.userDataPath);
+  Future<Null> saveUserData() {
+    return _saveJsonToFile(userData, paths.userDataPath);
+  }
+
+  Future<String> backupUserdata() async {
+    String timeStamp = DateFormat('yyyyMMddTHHmmss').format(DateTime.now());
+    String filepath = join(paths.savePath, 'userdata-$timeStamp.json');
+    await _saveJsonToFile(userData, filepath);
+    return filepath;
   }
 
   Future<void> clearData({bool user = false, bool game = false}) async {
@@ -102,10 +110,10 @@ class Database {
 
   ImageProvider getIconImage(String iconKey) {
     if (gameData.icons.containsKey(iconKey)) {
-      return FileImage(File(
-          join(paths.gameDataDir, 'icons', gameData.icons[iconKey].filename)));
+      return FileImage(
+          File(join(paths.gameIconDir, gameData.icons[iconKey].filename)));
     } else {
-      print('error loading icon $iconKey');
+      print('no such icon: $iconKey');
       return AssetImage('res/img/error.png');
     }
   }
@@ -119,9 +127,12 @@ class Database {
       String contents = File(filepath).readAsStringSync();
       result = jsonDecode(contents);
       print('loaded json "$filepath".');
+    } on FileSystemException catch (e) {
+      result = k == null ? null : k();
+      print('error loading "$filepath", use defailt value. Error:\n$e');
     } catch (e, s) {
       result = k == null ? null : k();
-      print('error load "$filepath", use defailt value. Error:\n$e\n$s');
+      print('error loading "$filepath", use defailt value. Error:\n$e\n$s');
     }
     return result;
   }

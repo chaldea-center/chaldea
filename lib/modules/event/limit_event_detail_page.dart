@@ -42,9 +42,10 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> children = [];
+    // 复刻
     int grailNum = event.grail + (plan.rerun ? 0 : event.grail2crystal),
         crystalNum = event.crystal + (plan.rerun ? event.grail2crystal : 0);
-    List<Widget> children = [];
     if (event.grail2crystal > 0) {
       children.add(SwitchListTile.adaptive(
         title: Text('复刻活动'),
@@ -53,10 +54,13 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
         onChanged: (v) => setState(() => plan.rerun = v),
       ));
     }
-    if (event.lottery != null) {
+
+    // 无限池
+    if (event.lottery?.isNotEmpty == true) {
       children
-        ..add(CustomTile(
-          title: Text('无限池共计'),
+        ..add(ListTile(
+          title: Text('无限池'),
+          subtitle: Text('共计池数'),
           trailing: SizedBox(
               width: 80,
               child: TextField(
@@ -70,9 +74,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
                   isDense: true,
                 ),
                 controller: _lotteryController,
-                inputFormatters: [
-                  WhitelistingTextInputFormatter(RegExp(r'\d'))
-                ],
+                inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
                 onChanged: (v) {
                   plan.lottery = int.tryParse(v) ?? 0;
                 },
@@ -80,18 +82,22 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
         ))
         ..add(buildClassifiedItemList(event.lottery, onTap: onTapIcon));
     }
+
+    // 商店任务点数
     if (grailNum + crystalNum > 0 || event.items != null) {
       children
-        ..add(CustomTile(title: Center(child: Text('商店&任务&点数'))))
+        ..add(ListTile(title: Text('商店&任务&点数')))
         ..add(buildClassifiedItemList(
             {'圣杯': grailNum, '传承结晶': crystalNum}
               ..addAll(event.items)
               ..removeWhere((k, v) => v <= 0),
             onTap: onTapIcon));
     }
-    if (event.extra != null) {
+
+    // 狩猎 无限池终本掉落等
+    if (event.extra?.isNotEmpty == true) {
       children
-        ..add(CustomTile(title: Center(child: Text('Extra items'))))
+        ..add(ListTile(title: Text('Extra items')))
         ..add(_buildExtraItems(event.extra, plan.extra));
     }
     return Scaffold(
@@ -100,31 +106,27 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
         title: AutoSizeText(widget.name ?? '', maxLines: 1),
       ),
       body: ListView(
-        children: divideTiles(children,
-            divider: Divider(
-              thickness: 1,
-            )),
+        children: divideTiles(children),
       ),
     );
   }
 
   Widget _buildExtraItems(
-      Map<String, String> data, Map<String, int> huntingPlan) {
+      Map<String, String> data, Map<String, int> extraPlan) {
     manager.resetFocusList();
     List<Widget> children = [];
     data.forEach((itemKey, hint) {
       final component = manager.getComponentByData(itemKey);
       manager.addObserver(component);
-      children.add(CustomTile(
+      children.add(ListTile(
         leading: GestureDetector(
           onTap: () => onTapIcon(itemKey),
           child: Image(image: db.getIconImage(itemKey), height: 110 * 0.5),
         ),
         title: Text(itemKey),
         subtitle: Text(hint),
-        titlePadding: EdgeInsets.fromLTRB(16, 0, 16, 0),
         trailing: SizedBox(
-          width: 45,
+          width: 50,
           child: EnsureVisibleWhenFocused(
               child: TextField(
                 maxLength: 4,
@@ -136,9 +138,8 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
                 inputFormatters: [NumberInputFormatter()],
                 decoration: InputDecoration(counterText: ''),
                 onChanged: (v) {
-                  if (huntingPlan != null) {
-                    int value = int.tryParse(v) ?? 0;
-                    huntingPlan[itemKey] = value;
+                  if (extraPlan != null) {
+                    extraPlan[itemKey] = int.tryParse(v) ?? 0;
                   }
                 },
                 onTap: () => component.onTap(context),
@@ -150,10 +151,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
         ),
       ));
     });
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: children,
-    );
+    return TileGroup(children: children);
   }
 
   void onTapIcon(String itemKey) {

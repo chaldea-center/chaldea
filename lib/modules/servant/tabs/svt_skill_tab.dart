@@ -5,8 +5,11 @@ import 'svt_tab_base.dart';
 
 class SvtSkillTab extends SvtTabBaseWidget {
   SvtSkillTab(
-      {Key key, ServantDetailPageState parent, Servant svt, ServantStatus plan})
-      : super(key: key, parent: parent, svt: svt, status: plan);
+      {Key key,
+      ServantDetailPageState parent,
+      Servant svt,
+      ServantStatus status})
+      : super(key: key, parent: parent, svt: svt, status: status);
 
   @override
   State<StatefulWidget> createState() =>
@@ -21,7 +24,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (svt.activeSkills == null) {
+    if (svt.activeSkills?.isNotEmpty != true) {
       return Center(child: Text('Nothing'));
     }
 
@@ -29,14 +32,11 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
       SHeader('主动技能'),
       for (var index = 0; index < svt.activeSkills.length; index++)
         buildSkill(index),
-      TileGroup(
-        header: '职阶技能',
-        children: <Widget>[
-          if (svt.passiveSkills != null)
-            for (var index = 0; index < svt.passiveSkills.length; index++)
-              ...buildPassiveSkill(index),
-        ],
-      )
+      if (svt.passiveSkills?.isNotEmpty == true) ...[
+        SHeader('职阶技能'),
+        for (var index = 0; index < svt.passiveSkills.length; index++)
+          buildPassiveSkill(index),
+      ]
     ]);
   }
 
@@ -76,16 +76,18 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
     );
   }
 
-  List<Widget> buildPassiveSkill(int index) {
+  Widget buildPassiveSkill(int index) {
     Skill skill = svt.passiveSkills[index];
-    return <Widget>[
-      CustomTile(
-        contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
-        leading: Image(image: db.getIconImage(skill.icon), height: 110 * 0.3),
-        title: Text('${skill.name} ${skill.rank}'),
-      ),
-      for (Effect effect in skill.effects) ...buildEffect(effect),
-    ];
+    return TileGroup(
+      children: <Widget>[
+        CustomTile(
+          contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
+          leading: Image(image: db.getIconImage(skill.icon), height: 110 * 0.3),
+          title: Text('${skill.name} ${skill.rank}'),
+        ),
+        for (Effect effect in skill.effects) ...buildEffect(effect),
+      ],
+    );
   }
 
   List<Widget> buildEffect(Effect effect) {

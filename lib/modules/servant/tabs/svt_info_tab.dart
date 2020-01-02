@@ -6,8 +6,11 @@ import 'svt_tab_base.dart';
 
 class SvtInfoTab extends SvtTabBaseWidget {
   SvtInfoTab(
-      {Key key, ServantDetailPageState parent, Servant svt, ServantStatus plan})
-      : super(key: key, parent: parent, svt: svt, status: plan);
+      {Key key,
+      ServantDetailPageState parent,
+      Servant svt,
+      ServantStatus status})
+      : super(key: key, parent: parent, svt: svt, status: status);
 
   @override
   _SvtInfoTabState createState() =>
@@ -89,7 +92,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
   Widget buildBaseInfoTab() {
     final headerData = TableCellData(isHeader: true);
     return SingleChildScrollView(
-      padding: EdgeInsets.only(bottom: 10, top: 5),
+      padding: EdgeInsets.only(bottom: 10),
       child: CustomTable(
         children: <Widget>[
           CustomTableRow.fromChildren(

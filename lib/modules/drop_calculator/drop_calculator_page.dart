@@ -50,10 +50,14 @@ class _DropCalculatorPageState extends State<DropCalculatorPage>
               builder: (context) => DropCalcInputTab(
                 params: widget.params,
                 onSolved: (s) {
-                  setState(() {
-                    solution = s;
-                  });
-                  _tabController.index = 1;
+                  if (s == null) {
+                    showToast('no solution');
+                  } else {
+                    setState(() {
+                      solution = s;
+                    });
+                    _tabController.index = 1;
+                  }
                 },
               ),
             ),
@@ -91,9 +95,11 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
       }
     });
     params = db.userData.glpkParams..removeAll();
-    if (widget.params == null) {
-      params.addOne(pickerData.values?.first?.elementAt(0), 50);
-      params.addOne(pickerData.values?.first?.elementAt(1), 50);
+    if (widget.params == null &&
+        pickerData.values.isNotEmpty &&
+        pickerData.values.first.length >= 2) {
+      params.addOne(pickerData.values.first.elementAt(0), 50);
+      params.addOne(pickerData.values.first.elementAt(1), 50);
     } else {
       params.objRows = widget.params.objRows;
       params.objNums = widget.params.objNums;
@@ -299,13 +305,13 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                       showDialog(
                           context: context,
                           child: SimpleCancelOkDialog(
-                            title: Text('Help'),
+                            title: Text('Hints'),
                             content: Text('计算结果仅供参考==\n'
                                 '>>>最低AP：\n过滤AP较低的free\n'
                                 '>>>掉落前n：\n仅限于单素材掉落在前n的关卡的合集\n'
                                 '以上筛选时将保证每个素材至少有一个关卡\n'
                                 '>>>目标：\n最低总次数或最低总AP为优化目标\n'
-                                '>>>版本：\n选择国服且包含国服未实装的素材将不能得到结果！\n'
+                                '>>>版本：\n选择国服则国服未实装的素材将被踢出群\n'
                                 ''),
                           ));
                     })
@@ -442,7 +448,6 @@ class DropCalcOutputTab extends StatelessWidget {
     }
 
     return Card(
-      elevation: 2,
       color: Colors.white,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),

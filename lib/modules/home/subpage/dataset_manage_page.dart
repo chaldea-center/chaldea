@@ -44,12 +44,35 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                   showDialog(
                       context: context,
                       child: SimpleCancelOkDialog(
-                        title: Text('Confirm to delete userdata?'),
+                        title: Text('Confirm'),
+                        content: Text('Delete userdata?'),
                         onTapOk: () async {
                           Fluttertoast.showToast(msg: 'cleaning userdata...');
                           await db.clearData(user: true, game: false);
                           setState(() {});
                           Fluttertoast.showToast(msg: 'userdata cleared.');
+                        },
+                      ));
+                },
+              ),
+              ListTile(
+                title: Text('Backup userdata'),
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      child: SimpleCancelOkDialog(
+                        title: Text('Confirm'),
+                        content:
+                            Text('Backup userdata to\n${db.paths.savePath}'),
+                        onTapOk: () async {
+                          db.backupUserdata().then((fp) {
+                            showDialog(
+                                context: context,
+                                child: SimpleCancelOkDialog(
+                                  title: Text('Backup success'),
+                                  content: Text(fp),
+                                ));
+                          });
                         },
                       ));
                 },

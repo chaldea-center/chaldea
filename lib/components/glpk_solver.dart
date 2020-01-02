@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -88,17 +89,24 @@ class GLPKSolver {
     stateChanged(false);
     GLPKSolution solution;
     try {
-      final data2 = preProcess(data: data, params: params);
-      String resultString = await flutterWebViewPlugin.evalJavascript(
-          '''solve_glpk( `${json.encode(data2)}`,`${json.encode(params)}`);''');
-      if (resultString?.isNotEmpty == false) {
-        throw 'evalJavascript return null!';
+      final params2 = params.copyWith();
+      final filtratedData = preProcess(data: data, params: params2);
+      if (params2.objRows.length == 0) {
+        print('after pre processing, params has no valid rows.\n'
+            'params=${json.encode(params2)}');
+      } else {
+        print('modified params: ${json.encode(params2)}');
+        String resultString = await flutterWebViewPlugin.evalJavascript(
+            '''solve_glpk( `${json.encode(filtratedData)}`,`${json.encode(params2)}`);''');
+        if (resultString?.isNotEmpty != true) {
+          throw 'evalJavascript return null!';
+        }
+        solution = GLPKSolution.fromJson(Map.from(json.decode(resultString)));
+        solution.sortByValue();
+        print('result: ${json.encode(solution)}');
+        await flutterWebViewPlugin.evalJavascript(
+            '''add_log(`${DateTime.now().toString()}: solve result: ${json.encode(solution)}`)''');
       }
-      solution = GLPKSolution.fromJson(Map.from(json.decode(resultString)));
-      solution.sortByValue();
-      print('result: ${json.encode(solution)}');
-      await flutterWebViewPlugin.evalJavascript(
-          '''add_log(`${DateTime.now().toString()}: solve result: ${json.encode(solution)}`)''');
     } catch (e, s) {
       showToast('ERROR: failt to execute GLPK solver:\n$e');
       FlutterError.dumpErrorToConsole(
@@ -109,12 +117,11 @@ class GLPKSolver {
     return solution;
   }
 
+  /// modify [params] and return [newData] as a new copy of filtrated [data]
   GLPKData preProcess({GLPKData data, GLPKParams params}) {
     print('pre processing...');
-    if (params.objRows.length <= 0) {
-      return null;
-    }
     List<String> _columns;
+
     // server, maxColNum
     if (params.maxColNum > 0) {
       _columns = data.colNames.sublist(0, params.maxColNum);
@@ -125,6 +132,7 @@ class GLPKSolver {
     // store filtrate results
     Set<String> removeCols = {};
     Set<String> retainCols = {};
+    Set<String> removeRows = {}; // no quest's drop contains the item.
 
     Map<String, int> colIndexMap = {};
     for (var i = 0; i < data.colNames.length; i++) {
@@ -139,34 +147,48 @@ class GLPKSolver {
     }
 
     // maxSortOrder
-    if (params.maxSortOrder <= 0) {
-      retainCols = Set.from(_columns);
-    } else {
-      int getSortValue(int rowIndex, String key) {
-        num value = data.matrix[rowIndex][colIndexMap[key]];
-        return value > 0 ? (value * 10).toInt() : 1000000;
-      }
+    int getSortValue(int rowIndex, String key) {
+      num value = data.matrix[rowIndex][colIndexMap[key]];
+      return value > 0 ? (value * 10).toInt() : 1000000;
+    }
 
-      for (int i = 0; i < params.objRows.length; i++) {
-        if (params.objNums[i] > 0) {
-          int rowIndex = data.rowNames.indexOf(params.objRows[i]);
-          _columns.sort(
-              (a, b) => getSortValue(rowIndex, a) - getSortValue(rowIndex, b));
-          Set<String> cols =
-              Set<String>.from(_columns.sublist(0, params.maxSortOrder))
-                  .difference(removeCols);
-          if (cols.isEmpty) {
+    for (int i = 0; i < params.objRows.length; i++) {
+      if (params.objNums[i] > 0) {
+        int rowIndex = data.rowNames.indexOf(params.objRows[i]);
+        final filtratedCols = _columns
+            .where((col) => data.matrix[rowIndex][colIndexMap[col]] > 0)
+            .toList()
+              ..sort((a, b) =>
+                  getSortValue(rowIndex, a) - getSortValue(rowIndex, b));
+        Set<String> cols = Set<String>.from(params.maxSortOrder > 0
+                ? filtratedCols.sublist(
+                    0, min(filtratedCols.length, params.maxSortOrder))
+                : filtratedCols)
+            .difference(removeCols);
+        if (cols.isEmpty) {
+          if (filtratedCols.isEmpty) {
+            // no any column(quest) contain the row key(item drop)
+            removeRows.add(params.objRows[i]);
+          } else {
             // ensure at least one quest for every item
-            cols.add(_columns.first);
+            cols.add(filtratedCols.first);
           }
-          retainCols.addAll(cols);
         }
+        retainCols.addAll(cols);
       }
     }
     // create new data instance
+    for (var key in removeRows) {
+      params.remove(key);
+    }
+    if (params.objRows.length == 0) {
+      // no rows (glpk will raise error), need to check in caller
+      print('no valid objRows');
+      return data;
+    }
     List<String> retainRowList = List.from(params.objRows),
         retainColList = retainCols.toList();
-    final data2 = GLPKData(
+    final newData = GLPKData(
       rowNames: retainRowList,
       colNames: retainColList,
       coeff: retainColList.map((col) => data.coeff[colIndexMap[col]]).toList(),
@@ -178,8 +200,8 @@ class GLPKSolver {
       }).toList(),
       cnMaxColNum: retainColList.length,
     );
-    print('processed data: ${data2.rowNames.length} rows,'
-        ' ${data2.colNames.length} columns');
-    return data2;
+    print('processed data: ${newData.rowNames.length} rows,'
+        ' ${newData.colNames.length} columns');
+    return newData;
   }
 }

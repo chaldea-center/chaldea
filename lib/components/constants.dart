@@ -192,3 +192,11 @@ Map<K, V> multiplyDict<K, V extends num>(Map<K, V> d, V multiplier) {
   });
   return res;
 }
+
+T getValueInList<T>(List<T> data, int index, [k()]) {
+  if ((data?.length ?? 0) > index) {
+    return data[index];
+  } else {
+    return k == null ? null : k();
+  }
+}

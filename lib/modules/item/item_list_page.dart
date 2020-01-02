@@ -304,12 +304,7 @@ class _ItemListTabState extends State<ItemListTab> {
           titlePadding: isQp
               ? EdgeInsets.fromLTRB(16, 0, 0, 0)
               : EdgeInsets.fromLTRB(16, 0, 16, 0),
-          trailing: isQp
-              ? null
-              : SizedBox(
-                  width: 50,
-                  child: textField,
-                ),
+          trailing: isQp ? null : SizedBox(width: 50, child: textField),
         );
       },
     );

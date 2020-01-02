@@ -16,7 +16,7 @@ class SHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 10.0, top: 8.0, bottom: 5.0),
+      padding: const EdgeInsets.only(left: 16.0, top: 8.0, bottom: 4.0),
       child: Text(label,
           style: style ?? TextStyle(color: Colors.black54, fontSize: 14.0)),
     );

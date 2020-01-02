@@ -60,6 +60,13 @@ class ServantStatus {
     treasureDeviceLv ??= 1;
   }
 
+  void reset() {
+    treasureDeviceLv = 1;
+    treasureDeviceEnhanced = null;
+    skillEnhanced.fillRange(0, 3, null);
+    curVal.reset();
+  }
+
   factory ServantStatus.fromJson(Map<String, dynamic> data) =>
       _$ServantStatusFromJson(data);
 

@@ -14,9 +14,11 @@ class ExchangeTicketTab extends StatefulWidget {
 }
 
 class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
+  final AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
+
   @override
   Widget build(BuildContext context) {
-    final startDate = DateTime.now().subtract(Duration(days: 31 * 3));
+    final startDate = DateTime.now().subtract(Duration(days: 31 * 4));
     final tickets = db.gameData.events.exchangeTickets.values.toList()
       ..retainWhere((e) => DateTime.parse(e.monthCn + '01').isAfter(startDate));
     tickets.sort((a, b) {
@@ -26,18 +28,20 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     return ListView(
       children: divideTiles(
         tickets.map((ticket) {
-          final plannedStyle =
-              sum(db.curUser.events.exchangeTickets[ticket.monthCn] ?? []) > 0
-                  ? TextStyle(color: Colors.blueAccent)
-                  : null;
-          return CustomTile(
-            contentPadding: EdgeInsets.fromLTRB(16, 8, 0, 8),
+          TextStyle plannedStyle;
+          if (sum(db.curUser.events.exchangeTickets[ticket.monthCn] ?? []) >
+              0) {
+            plannedStyle = TextStyle(color: Colors.blueAccent);
+          }
+          return ListTile(
             title: Text(ticket.monthCn, style: plannedStyle),
-            subtitle: AutoSizeText('JP: ${ticket.monthJp}\nmax: ${ticket.days}',
-                maxLines: 2, style: plannedStyle),
+            subtitle: AutoSizeText(
+              'JP: ${ticket.monthJp}\nmax: ${ticket.days}',
+              maxLines: 2,
+              style: plannedStyle,
+              minFontSize: 6,
+            ),
             trailing: buildTrailing(ticket),
-            constraints: BoxConstraints.expand(height: 72),
-//            color: MyColors.setting_tile,
           );
         }),
         divider: Divider(height: 1, indent: 16),
@@ -48,19 +52,22 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
   Widget buildTrailing(ExchangeTicket ticket) {
     final monthPlan = db.curUser.events.exchangeTickets
         .putIfAbsent(ticket.monthCn, () => [0, 0, 0]);
-    List<Widget> trailing = [];
+    List<Widget> trailingItems = [];
 
     for (var i = 0; i < 3; i++) {
       final iconKey = ticket.items[i];
       int leftNum = db.runtimeData.itemStatistics.leftItems[iconKey] ?? 0;
       final maxValue = ticket.days - sum(monthPlan.getRange(0, i));
-      trailing.add(Row(
+      trailingItems.add(Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           GestureDetector(
             onTap: () => SplitRoute.popAndPush(context,
                 builder: (context) => ItemDetailPage(iconKey)),
-            child: Image(image: db.getIconImage(iconKey), height: 48),
+            child: Image(
+              image: db.getIconImage(iconKey),
+              width: 42,
+            ),
           ),
           Column(
             mainAxisSize: MainAxisSize.min,
@@ -68,7 +75,10 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
             children: <Widget>[
               DropdownButton<int>(
                 isDense: true,
-                icon: Icon(Icons.arrow_drop_down, size: 18),
+                icon: Text(
+                  '▼ ',
+                  style: TextStyle(color: Colors.black54, fontSize: 8),
+                ),
                 value: monthPlan[i],
                 items: List.generate(maxValue + 1, (i) {
                   int v = i == 0 ? 0 : maxValue + 1 - i;
@@ -81,10 +91,18 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                     List.generate(maxValue + 1, (i) {
                   int v = i == 0 ? 0 : maxValue + 1 - i;
                   return SizedBox(
-                    width: 30,
+                    width: 25,
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 3),
-                      child: Center(child: Text(v == 0 ? '' : ' $v')),
+                      child: Center(
+                        child: AutoSizeText(
+                          '${v == 0 ? '' : v}',
+                          maxLines: 1,
+                          maxFontSize: 16,
+                          minFontSize: 6,
+                          group: _autoSizeGroup,
+                        ),
+                      ),
                     ),
                   );
                 }),
@@ -101,9 +119,10 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
               ),
               DefaultTextStyle(
                 style: Theme.of(context).textTheme.body1,
-                child: Text(
+                child: AutoSizeText(
                   leftNum.toString(),
                   maxLines: 1,
+                  group: _autoSizeGroup,
                   style: TextStyle(
                       color: leftNum >= 0 ? Colors.grey : Colors.redAccent),
                 ),
@@ -113,8 +132,6 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
         ],
       ));
     }
-    return Wrap(
-      children: trailing,
-    );
+    return Wrap(spacing: 4, children: trailingItems);
   }
 }

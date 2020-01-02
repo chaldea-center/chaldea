@@ -160,11 +160,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
         itemBuilder: (context, index) {
           final code = shownList[index];
           return CustomTile(
-            leading: SizedBox(
-              width: 132 * 0.45,
-              height: 144 * 0.45,
-              child: Image(image: db.getIconImage(code.icon)),
-            ),
+            leading: Image(image: db.getIconImage(code.icon), height: 65),
             title: AutoSizeText(code.name, maxLines: 1),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -183,17 +179,23 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
   }
 
   Widget _buildGridView(List<CommandCode> shownList) {
+    if (shownList.length % 5 == 0) {
+      shownList.add(null);
+    }
     return GridView.count(
         crossAxisCount: 5,
         childAspectRatio: 1,
         controller: _scrollController,
+        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
         children: shownList.map((code) {
+          if (code == null) {
+            return Container();
+          }
           return Center(
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 1),
-              child: ImageWithText(
-                image: Image(image: db.getIconImage(code.icon)),
-                alignment: AlignmentDirectional.bottomStart,
+              padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+              child: GestureDetector(
+                child: Image(image: db.getIconImage(code.icon)),
                 onTap: () {
                   SplitRoute.popAndPush(context,
                       builder: (context) => CmdCodeDetailPage(code: code));

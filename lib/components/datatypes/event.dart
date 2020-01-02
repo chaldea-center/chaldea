@@ -24,8 +24,11 @@ class Events {
     mainRecords.forEach((name, event) {
       resultList.add(event.getAllItems(eventPlans.mainRecords[name]));
     });
+    final startDate = DateTime.now().subtract(Duration(days: 31 * 4));
     exchangeTickets.forEach((name, event) {
-      resultList.add(event.getAllItems(eventPlans.exchangeTickets[name]));
+      if (DateTime.parse(event.monthCn + '01').isAfter(startDate)) {
+        resultList.add(event.getAllItems(eventPlans.exchangeTickets[name]));
+      }
     });
     return sumDict(resultList);
   }
@@ -82,12 +85,20 @@ class LimitEvent {
 
 @JsonSerializable(checked: true)
 class MainRecord {
-  String name;
+  String chapter;
+  String title;
+  String fullname;
   String startTimeJp;
   Map<String, int> drops;
   Map<String, int> rewards;
 
-  MainRecord({this.name, this.startTimeJp, this.drops, this.rewards});
+  MainRecord(
+      {this.chapter,
+      this.title,
+      this.fullname,
+      this.startTimeJp,
+      this.drops,
+      this.rewards});
 
   factory MainRecord.fromJson(Map<String, dynamic> data) =>
       _$MainRecordFromJson(data);

@@ -32,10 +32,10 @@ class ServantDetailPageState extends State<ServantDetailPage>
     if (!Servant.unavailable.contains(svt.no)) {
       _builders['规划'] = (context) => SvtPlanTab(parent: this);
     }
-    if (svt.activeSkills != null) {
+    if (svt.activeSkills?.isNotEmpty == true) {
       _builders['技能'] = (context) => SvtSkillTab(parent: this);
     }
-    if (svt.treasureDevice != null && svt.treasureDevice.length > 0) {
+    if (svt.treasureDevice?.isNotEmpty == true) {
       _builders['宝具'] = (context) => SvtTreasureDeviceTab(parent: this);
     }
     _builders['资料'] = (context) => SvtInfoTab(parent: this);
@@ -100,7 +100,34 @@ class ServantDetailPageState extends State<ServantDetailPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(leading: BackButton(), title: Text(svt.info.name)),
+        appBar: AppBar(
+          leading: BackButton(),
+          title: Text(svt.info.name),
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.list),
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      child: SimpleDialog(
+                        title: Text('Choose plan'),
+                        children: List.generate(db.curUser.servantPlans.length,
+                            (index) {
+                          return ListTile(
+                            title: Text('Plan ${index + 1}'),
+                            selected: index == db.curUser.curPlanNo,
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              db.curUser.curPlanNo = index;
+                              db.runtimeData.itemStatistics.update(db.curUser);
+                              this.setState(() {});
+                            },
+                          );
+                        }),
+                      ));
+                }),
+          ],
+        ),
         body: Column(
           children: <Widget>[
             CustomTile(
@@ -125,37 +152,55 @@ class ServantDetailPageState extends State<ServantDetailPage>
                   ? null
                   : FittedBox(
                       fit: BoxFit.scaleDown,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          IconButton(
-                            icon: status.curVal.favorite
-                                ? Icon(Icons.favorite, color: Colors.redAccent)
-                                : Icon(Icons.favorite_border),
-                            tooltip: '关注',
-                            onPressed: () {
-                              setState(() {
-                                status.curVal.favorite =
-                                    !status.curVal.favorite;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
+                      child: IconTheme(
+                          data: Theme.of(context)
+                              .iconTheme
+                              .copyWith(color: Colors.black54),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              IconButton(
+                                icon: status.curVal.favorite
+                                    ? Icon(Icons.favorite,
+                                        color: Colors.redAccent)
+                                    : Icon(Icons.favorite_border),
+                                tooltip: '关注',
+                                onPressed: () {
+                                  setState(() {
+                                    status.curVal.favorite =
+                                        !status.curVal.favorite;
+                                  });
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.replay),
+                                tooltip: '重置',
+                                onPressed: () {
+                                  setState(() {
+                                    status.reset();
+                                    db.curUser.curPlan[svt.no].reset();
+                                  });
+                                },
+                              ),
+                            ],
+                          )),
                     ),
             ),
             Container(
               height: 36,
-              child: TabBar(
-                controller: _tabController,
-                labelColor: Colors.black87,
-                labelPadding: kTabLabelPadding,
-                unselectedLabelColor: Colors.grey,
-                isScrollable: true,
-                tabs: _builders.keys.map((name) => Tab(text: name)).toList(),
+              decoration: BoxDecoration(
+                  border: Border(bottom: Divider.createBorderSide(context))),
+              child: Center(
+                child: TabBar(
+                  controller: _tabController,
+                  labelColor: Colors.black87,
+                  labelPadding: kTabLabelPadding,
+                  unselectedLabelColor: Colors.grey,
+                  isScrollable: true,
+                  tabs: _builders.keys.map((name) => Tab(text: name)).toList(),
+                ),
               ),
             ),
-            Divider(height: 0.0),
             Expanded(
               child: TabBarView(
                 controller: _tabController,

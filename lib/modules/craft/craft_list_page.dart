@@ -180,11 +180,7 @@ class CraftListPageState extends State<CraftListPage> {
         itemBuilder: (context, index) {
           final ce = shownList[index];
           return CustomTile(
-            leading: SizedBox(
-              width: 132 * 0.45,
-              height: 144 * 0.45,
-              child: Image(image: db.getIconImage(ce.icon)),
-            ),
+            leading: Image(image: db.getIconImage(ce.icon), height: 65),
             title: AutoSizeText(ce.name, maxLines: 1),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -203,23 +199,28 @@ class CraftListPageState extends State<CraftListPage> {
   }
 
   Widget _buildGridView(List<CraftEssential> shownList) {
+    if (shownList.length % 5 == 0) {
+      shownList.add(null);
+    }
     return GridView.count(
         crossAxisCount: 5,
         childAspectRatio: 1,
         controller: _scrollController,
+        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
         children: shownList.map((ce) {
+          if (ce == null) {
+            return Container();
+          }
           return Center(
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 1),
-              child: ImageWithText(
-                image: Image(image: db.getIconImage(ce.icon)),
-                alignment: AlignmentDirectional.bottomStart,
-                onTap: () {
-                  SplitRoute.popAndPush(context,
-                      builder: (context) => CraftDetailPage(ce: ce));
-                },
-              ),
-            ),
+                padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+                child: GestureDetector(
+                  child: Image(image: db.getIconImage(ce.icon)),
+                  onTap: () {
+                    SplitRoute.popAndPush(context,
+                        builder: (context) => CraftDetailPage(ce: ce));
+                  },
+                )),
           );
         }).toList());
   }

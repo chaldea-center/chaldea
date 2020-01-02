@@ -1,36 +1,39 @@
 import 'package:chaldea/components/components.dart';
 
-Widget buildClassifiedItemList(Map<String, int> data, {void onTap(String iconKey)}) {
+Widget buildClassifiedItemList(Map<String, int> data,
+    {void onTap(String iconKey)}) {
   final divided = divideItemsToGroups(data.keys.toList(), rarity: true);
   List<Widget> children = [];
   for (var key in divided.keys) {
-    children
-      ..add(Text(getNameOfCategory(key ~/ 10, key % 10)))
-      ..add(GridView.count(
-        padding: EdgeInsets.only(top: 3, bottom: 6),
-        childAspectRatio: 132 / 144,
-        crossAxisCount: 6,
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        children: divided[key]
-            .map((item) => Padding(
-                  padding: EdgeInsets.symmetric(vertical: 2, horizontal: 1),
-                  child: ImageWithText(
-                    onTap: onTap == null ? null : () => onTap(item.name),
-                    image: Image(image: db.getIconImage(item.name)),
-                    text: formatNumToString(data[item.name], 'kilo'),
-                    padding: EdgeInsets.only(right: 3),
-                  ),
-                ))
-            .toList(),
-      ));
+    children.add(TileGroup(
+      header: getNameOfCategory(key ~/ 10, key % 10),
+      padding: EdgeInsets.only(bottom: 0),
+      children: <Widget>[
+        GridView.count(
+          padding: EdgeInsets.only(left: 10, top: 3, bottom: 3),
+          childAspectRatio: 132 / 144,
+          crossAxisCount: 6,
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          children: divided[key]
+              .map((item) => Padding(
+                    padding: EdgeInsets.symmetric(vertical: 2, horizontal: 1),
+                    child: ImageWithText(
+                      onTap: onTap == null ? null : () => onTap(item.name),
+                      image: Image(image: db.getIconImage(item.name)),
+                      text: formatNumToString(data[item.name], 'kilo'),
+                      padding: EdgeInsets.only(right: 3),
+                    ),
+                  ))
+              .toList(),
+        )
+      ],
+    ));
   }
-  return Padding(
-    padding: EdgeInsets.symmetric(horizontal: 8),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: children,
-    ),
+  return Column(
+    mainAxisSize: MainAxisSize.min,
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: children,
   );
 }
 

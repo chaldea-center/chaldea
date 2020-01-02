@@ -30,7 +30,9 @@ class _EventListPageState extends State<EventListPage>
         leading: SplitViewBackButton(),
         actions: <Widget>[
           IconButton(
-              icon: Icon(reverse ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+              icon: Icon(reverse
+                  ? Icons.keyboard_arrow_up
+                  : Icons.keyboard_arrow_down),
               onPressed: () => setState(() => reverse = !reverse))
         ],
         bottom: TabBar(

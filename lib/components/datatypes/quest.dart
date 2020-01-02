@@ -11,9 +11,9 @@ class Quest {
   int qp;
   List<Battle> battles;
 
-  String get placeJp => battles?.first?.placeJp;
+  String get placeJp => getValueInList(battles, 0)?.placeJp;
 
-  String get placeCn => battles?.first?.placeCn;
+  String get placeCn => getValueInList(battles, 0)?.placeCn;
 
   Quest(
       {this.chapter,

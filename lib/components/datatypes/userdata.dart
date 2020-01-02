@@ -142,9 +142,8 @@ class SvtFilterData {
       ];
 
   void reset() {
-    sortKeys = List.generate(sortKeys.length, (i) => sortKeyData[i]);
-    sortReversed = List.filled(sortKeys.length, false);
-
+    // sortKeys = List.generate(sortKeys.length, (i) => sortKeyData[i]);
+    // sortReversed = List.filled(sortKeys.length, false);
     for (var group in groupValues) {
       group.reset();
     }
@@ -245,9 +244,8 @@ class CraftFilterData {
       ];
 
   void reset() {
-    sortKeys = List.generate(sortKeys.length, (i) => sortKeyData[i]);
-    sortReversed = List.filled(sortKeys.length, false);
-
+    // sortKeys = List.generate(sortKeys.length, (i) => sortKeyData[i]);
+    // sortReversed = List.filled(sortKeys.length, false);
     for (var group in groupValues) {
       group.reset();
     }
@@ -307,9 +305,8 @@ class CmdCodeFilterData {
   List<FilterGroupData> get groupValues => [rarity, obtain];
 
   void reset() {
-    sortKeys = List.generate(sortKeys.length, (i) => sortKeyData[i]);
-    sortReversed = List.filled(sortKeys.length, false);
-
+    // sortKeys = List.generate(sortKeys.length, (i) => sortKeyData[i]);
+    // sortReversed = List.filled(sortKeys.length, false);
     for (var group in groupValues) {
       group.reset();
     }
