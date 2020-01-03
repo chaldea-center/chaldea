@@ -19,20 +19,44 @@ class QuestCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: divideTiles(
             [
+              Center(
+                child: AutoSizeText(
+                  '${quest.chapter}\n'
+                  '${quest.nameCn}/${quest.nameJp}\n'
+                  '羁绊 ${quest.bondPoint}  '
+                  '经验 ${quest.experience}',
+                  maxLines: 3,
+                  textAlign: TextAlign.center,
+                ),
+              ),
               for (var i = 0; i < quest.battles.length; i++) ...[
-                Center(
-                  child: AutoSizeText(
-                    '${quest.chapter}\n'
-                    '${quest.battles[i].placeCn}-${quest.nameCn}\n'
-                    '${quest.battles[i].placeJp}-${quest.nameJp}\n'
-                    '羁绊 ${quest.bondPoint}  '
-                    '经验 ${quest.experience}',
-                    maxLines: 4,
-                    textAlign: TextAlign.center,
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 3),
+                  child: Row(
+                    children: <Widget>[
+                      if (quest.battles.length > 1)
+                        Expanded(
+                          flex: 1,
+                          child: Center(
+                            child: Text('进行度${i + 1}/${quest.battles.length}'),
+                          ),
+                        ),
+                      Expanded(
+                          flex: 1,
+                          child: Center(
+                            child: Text('AP ${quest.battles[i].ap}'),
+                          )),
+                      Expanded(
+                          flex: 2,
+                          child: Center(
+                            child: AutoSizeText(
+                              '${quest.battles[i].placeCn}/${quest.battles[i].placeJp}',
+                              maxLines: 1,
+                            ),
+                          )),
+                    ],
                   ),
                 ),
-                if (quest.battles.length > 1)
-                  Center(child: Text('Session ${i + 1}')),
                 for (var j = 0; j < quest.battles[i].enemies.length; j++)
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 3),

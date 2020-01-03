@@ -24,9 +24,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     language = S.of(context).language;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.of(context).settings_tab_name),
-      ),
+      appBar: AppBar(title: Text(S.of(context).settings_tab_name)),
       backgroundColor: MyColors.setting_bg,
       body: ListView(
         children: <Widget>[
@@ -35,31 +33,30 @@ class _SettingsPageState extends State<SettingsPage> {
             children: <Widget>[
               ListTile(
                 title: Text(S.of(context).settings_tutorial),
-                trailing: null,
               ),
-              ListTile(
-                title: Text(S.of(context).server),
-                trailing: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    value: db.userData.users[db.userData.curUsername].server ??
-                        GameServer.jp,
-                    items: <DropdownMenuItem<String>>[
-                      DropdownMenuItem(
-                        value: GameServer.cn,
-                        child: Text(S.of(context).server_cn),
-                      ),
-                      DropdownMenuItem(
-                        value: GameServer.jp,
-                        child: Text(S.of(context).server_jp),
-                      )
-                    ],
-                    onChanged: (v) {
-                      db.userData.users[db.userData.curUsername].server = v;
-                      db.onAppUpdate();
-                    },
-                  ),
-                ),
-              ),
+//              ListTile(
+//                title: Text(S.of(context).server),
+//                trailing: DropdownButtonHideUnderline(
+//                  child: DropdownButton<String>(
+//                    value: db.userData.users[db.userData.curUsername].server ??
+//                        GameServer.jp,
+//                    items: <DropdownMenuItem<String>>[
+//                      DropdownMenuItem(
+//                        value: GameServer.cn,
+//                        child: Text(S.of(context).server_cn),
+//                      ),
+//                      DropdownMenuItem(
+//                        value: GameServer.jp,
+//                        child: Text(S.of(context).server_jp),
+//                      )
+//                    ],
+//                    onChanged: (v) {
+//                      db.userData.users[db.userData.curUsername].server = v;
+//                      db.onAppUpdate();
+//                    },
+//                  ),
+//                ),
+//              ),
               ListTile(
                 title: Text(S.of(context).cur_account),
                 trailing: Row(
@@ -75,6 +72,20 @@ class _SettingsPageState extends State<SettingsPage> {
                 onTap: () {
                   SplitRoute.popAndPush(context,
                       builder: (context) => AccountPage());
+                },
+              ),
+              ListTile(
+                title: Text('数据管理'),
+                trailing: Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: <Widget>[
+                    Text(db.gameData.version),
+                    Icon(Icons.arrow_forward_ios)
+                  ],
+                ),
+                onTap: () {
+                  SplitRoute.popAndPush(context,
+                      builder: (context) => DatasetManagePage());
                 },
               ),
             ],
@@ -125,32 +136,8 @@ class _SettingsPageState extends State<SettingsPage> {
             ],
           ),
           TileGroup(
-            header: S.of(context).backup_restore,
+            header: 'About',
             children: <Widget>[
-              ListTile(
-                title: Text('Datasets'),
-                trailing: Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: <Widget>[
-                    Text(db.gameData.version),
-                    Icon(Icons.arrow_forward_ios)
-                  ],
-                ),
-                onTap: () {
-                  SplitRoute.popAndPush(context,
-                      builder: (context) => DatasetManagePage());
-                },
-              ),
-              ListTile(
-                title: Text(S.of(context).backup),
-                onTap: () => Scaffold.of(context).showSnackBar(
-                    SnackBar(content: Text('To be implemented...'))),
-              ),
-              ListTile(
-                title: Text(S.of(context).restore),
-                onTap: () => Scaffold.of(context).showSnackBar(
-                    SnackBar(content: Text('To be implemented...'))),
-              ),
               ListTile(
                 title: Text('关于Chaldea'),
                 onTap: () => SplitRoute.popAndPush(context,

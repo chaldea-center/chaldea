@@ -6,6 +6,8 @@
 /// non-constant value are set after default constructor(e.g. Test({a,this.b}):a=a).
 library datatypes;
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
@@ -27,9 +29,9 @@ part 'glpk.dart';
 
 part 'item_statistic.dart';
 
-part 'serializable_checker.dart';
-
 part 'quest.dart';
+
+part 'serializable_checker.dart';
 
 part 'servant.dart';
 

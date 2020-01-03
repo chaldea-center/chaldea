@@ -9,6 +9,7 @@ class ItemObtainEventPage extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> children = [];
     final highlight = TextStyle(color: Colors.blueAccent);
+    children.add(SHeader('素材交换券'));
     db.gameData.events
       ..exchangeTickets.values.forEach((ticket) {
         int itemIndex = ticket.items.indexOf(itemKey);
@@ -21,8 +22,11 @@ class ItemObtainEventPage extends StatelessWidget {
             trailing: Text('${itemNum ?? 0}/${ticket.days}'),
           ));
         }
-      })
-      ..mainRecords.values.forEach((record) {
+      });
+    children.add(SHeader('主线掉落与通关奖励'));
+    db.gameData.events.mainRecords.values.toList()
+      ..sort((a, b) => a.startTimeJp.compareTo(b.startTimeJp))
+      ..forEach((record) {
         final plan = db.curUser.events.mainRecords[record.chapter];
         if (record.isNotOutdated()) {
           List<TextSpan> texts = [];
@@ -38,19 +42,27 @@ class ItemObtainEventPage extends StatelessWidget {
           }
           if (hasReward) {
             texts.add(TextSpan(
-                text: '奖励${record.drops[itemKey]}',
+                text: '奖励${record.rewards[itemKey]}',
                 style: plan?.elementAt(1) == true ? highlight : null));
           }
           if (texts.length > 0) {
             children.add(ListTile(
               title: Text(record.chapter),
               subtitle: Text(record.title),
-              trailing: RichText(text: TextSpan(children: texts)),
+              trailing: RichText(
+                text: TextSpan(
+                  children: texts,
+                  style: DefaultTextStyle.of(context).style,
+                ),
+              ),
             ));
           }
         }
-      })
-      ..limitEvents.values.forEach((limitEvent) {
+      });
+    children.add(SHeader('限时活动'));
+    db.gameData.events.limitEvents.values.toList()
+      ..sort((a, b) => a.startTimeJp.compareTo(b.startTimeJp))
+      ..forEach((limitEvent) {
         final plan = db.curUser.events.limitEvents[limitEvent.name];
         final int numShop = (limitEvent.items ?? {})[itemKey],
             numLottery = (limitEvent.lottery ?? {})[itemKey];

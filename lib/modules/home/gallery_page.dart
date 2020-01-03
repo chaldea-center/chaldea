@@ -66,8 +66,10 @@ class _GalleryPageState extends State<GalleryPage> {
         }
         setState(() {});
         db.saveUserData();
+        showToast('Slides have been updated.');
       } catch (e) {
-        print('http error: $e');
+        print('Error refresh slides:\n$e');
+        showToast('Error refresh slides:\n$e');
       }
     }
   }
@@ -195,10 +197,8 @@ class _GalleryPageState extends State<GalleryPage> {
             IconButton(
                 icon: Icon(Icons.refresh),
                 tooltip: 'Refresh sliders',
-                onPressed: () async {
-                  await resolveSliderImageUrls(reload: true);
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text('Homepage sliders have been updated.')));
+                onPressed: () {
+                  resolveSliderImageUrls(reload: true);
                 }),
           ],
         ),

@@ -4,11 +4,23 @@ part of datatypes;
 class ItemStatistics {
   SvtCostItems svtItemDetail = SvtCostItems();
 
+  //todo: replace
+  StreamController<ItemStatistics> onItemStatUpdated =
+      StreamController.broadcast();
+
   Map<String, int> get svtItems => svtItemDetail.planItemCounts.summation;
   Map<String, int> eventItems;
   Map<String, int> leftItems;
 
   ItemStatistics();
+
+  void dispose() {
+    onItemStatUpdated.close();
+  }
+
+  void broadcast() {
+    onItemStatUpdated.sink.add(this);
+  }
 
   void update([User user]) {
     user ??= db.curUser;
