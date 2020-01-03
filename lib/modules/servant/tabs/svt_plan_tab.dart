@@ -23,7 +23,7 @@ class SvtPlanTab extends SvtTabBaseWidget {
 class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
 //  ServantPlan plan;
   ServantPlan get plan =>
-      db.curUser.curPlan.putIfAbsent(this.svt.no, () => ServantPlan());
+      db.curUser.curSvtPlan.putIfAbsent(this.svt.no, () => ServantPlan());
 
   _SvtPlanTabState(
       {ServantDetailPageState parent, Servant svt, ServantStatus status})

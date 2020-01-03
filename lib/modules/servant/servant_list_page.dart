@@ -198,11 +198,16 @@ class ServantListPageState extends State<ServantListPage> {
         ),
         actions: <Widget>[
           IconButton(
-              icon: Icon(
-                  filterData.favorite ? Icons.favorite : Icons.favorite_border),
+              icon: Icon(filterData.favorite == null
+                  ? Icons.star_half
+                  : filterData.favorite
+                      ? Icons.favorite
+                      : Icons.favorite_border),
               onPressed: () {
                 setState(() {
-                  filterData.favorite = !filterData.favorite;
+                  final favList = [null, true, false];
+                  filterData.favorite =
+                      favList[(favList.indexOf(filterData.favorite) + 1) % 3];
                 });
               }),
           IconButton(
@@ -226,8 +231,9 @@ class ServantListPageState extends State<ServantListPage> {
     List<Servant> shownList = [];
     beforeFiltrate();
     db.gameData.servants.forEach((no, svt) {
-      if (!filterData.favorite ||
-          db.curUser.servants[no]?.curVal?.favorite == true) {
+      if (filterData.favorite == null ||
+          filterData.favorite ==
+              (db.curUser.servants[no]?.curVal?.favorite ?? false)) {
         if (filtrateServant(svt)) {
           shownList.add(svt);
         }

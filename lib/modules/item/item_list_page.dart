@@ -48,10 +48,10 @@ class ItemListPageState extends State<ItemListPage>
                           (index) {
                         return ListTile(
                           title: Text('Plan ${index + 1}'),
-                          selected: index == db.curUser.curPlanNo,
+                          selected: index == db.curUser.curSvtPlanNo,
                           onTap: () {
                             Navigator.of(context).pop();
-                            db.curUser.curPlanNo = index;
+                            db.curUser.curSvtPlanNo = index;
                             db.runtimeData.itemStatistics.update(db.curUser);
                             setState(() {});
                           },

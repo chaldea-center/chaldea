@@ -2,9 +2,9 @@ part of datatypes;
 
 @JsonSerializable(checked: true)
 class Events {
-  Map<String, LimitEvent> limitEvents;
-  Map<String, MainRecord> mainRecords;
-  Map<String, ExchangeTicket> exchangeTickets;
+  Map<String, LimitEvent> limitEvents; //key: event.name, custom short name
+  Map<String, MainRecord> mainRecords; //key: event.chapter, 特异点F
+  Map<String, ExchangeTicket> exchangeTickets; //key: event.monthCn
 
   Events({this.limitEvents, this.mainRecords, this.exchangeTickets}) {
     limitEvents ??= {};
@@ -81,6 +81,15 @@ class LimitEvent {
         lottery == null ? {} : multiplyDict(lottery, plan.lottery);
     return sumDict([items, plan.extra, lotterySum]);
   }
+
+  bool isNotOutdated([int months = 1]) {
+    if (startTimeCn?.isNotEmpty == true) {
+      final endDate = DateTime.now().subtract(Duration(days: 31 * months));
+      return DateTime.parse(startTimeCn).isAfter(endDate);
+    } else {
+      return true;
+    }
+  }
 }
 
 @JsonSerializable(checked: true)
@@ -89,6 +98,7 @@ class MainRecord {
   String title;
   String fullname;
   String startTimeJp;
+  String startTimeCn;
   Map<String, int> drops;
   Map<String, int> rewards;
 
@@ -97,6 +107,7 @@ class MainRecord {
       this.title,
       this.fullname,
       this.startTimeJp,
+      this.startTimeCn,
       this.drops,
       this.rewards});
 
@@ -111,6 +122,15 @@ class MainRecord {
     }
     assert(plan.length == 2, 'incorrect main record plan: $plan');
     return sumDict([if (plan[0]) drops, if (plan[1]) rewards]);
+  }
+
+  bool isNotOutdated([int months = 1]) {
+    if (startTimeCn?.isNotEmpty == true) {
+      final endDate = DateTime.now().subtract(Duration(days: 31 * months));
+      return DateTime.parse(startTimeCn).isAfter(endDate);
+    } else {
+      return true;
+    }
   }
 }
 
@@ -138,5 +158,10 @@ class ExchangeTicket {
       result[items[i]] = plan[i];
     }
     return result;
+  }
+
+  bool isNotOutdated([int months = 4]) {
+    final startDate = DateTime.now().subtract(Duration(days: 31 * months));
+    return DateTime.parse(monthCn + '01').isAfter(startDate);
   }
 }

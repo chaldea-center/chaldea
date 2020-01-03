@@ -10,12 +10,12 @@ class User {
   // plans
 
   Map<int, ServantStatus> servants;
-  int curPlanNo;
+  int curSvtPlanNo;
 
   /// Map<planNo, Map<SvtNo, SvtPlan>>
   List<Map<int, ServantPlan>> servantPlans;
 
-  Map<int, ServantPlan> get curPlan => servantPlans[curPlanNo];
+  Map<int, ServantPlan> get curSvtPlan => servantPlans[curSvtPlanNo];
   Map<String, int> items;
   EventPlans events;
 
@@ -23,14 +23,14 @@ class User {
     @required this.name,
     this.server,
     this.servants,
-    this.curPlanNo,
+    this.curSvtPlanNo,
     this.servantPlans,
     this.items,
     this.events,
   }) : assert(name != null && name.isNotEmpty) {
     server ??= GameServer.cn;
     servants ??= {};
-    curPlanNo ??= 0;
+    curSvtPlanNo ??= 0;
     servantPlans ??= List.generate(5, (i) => {});
     items ??= {};
     events ??= EventPlans();

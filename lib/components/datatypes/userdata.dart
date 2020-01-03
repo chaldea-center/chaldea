@@ -108,7 +108,7 @@ class SvtFilterData {
     this.trait,
     this.traitSpecial,
   }) {
-    favorite ??= false;
+    favorite ??= null; //null-all,false-not fav,true-fav
     filterString ??= '';
     sortKeys ??= List.generate(3, (i) => sortKeyData[i]);
     sortReversed ??= List.filled(sortKeys.length, true);

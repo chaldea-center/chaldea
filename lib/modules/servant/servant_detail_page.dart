@@ -115,10 +115,10 @@ class ServantDetailPageState extends State<ServantDetailPage>
                             (index) {
                           return ListTile(
                             title: Text('Plan ${index + 1}'),
-                            selected: index == db.curUser.curPlanNo,
+                            selected: index == db.curUser.curSvtPlanNo,
                             onTap: () {
                               Navigator.of(context).pop();
-                              db.curUser.curPlanNo = index;
+                              db.curUser.curSvtPlanNo = index;
                               db.runtimeData.itemStatistics.update(db.curUser);
                               this.setState(() {});
                             },
@@ -178,7 +178,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                                 onPressed: () {
                                   setState(() {
                                     status.reset();
-                                    db.curUser.curPlan[svt.no].reset();
+                                    db.curUser.curSvtPlan[svt.no].reset();
                                   });
                                 },
                               ),

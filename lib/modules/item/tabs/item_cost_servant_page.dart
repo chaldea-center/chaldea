@@ -21,9 +21,19 @@ class ItemCostServantPage extends StatelessWidget {
     final counts = favorite ? detail.planItemCounts : detail.allItemCounts;
     final svtsDetail =
         favorite ? detail.planCountByItem : detail.allCountByItem;
-    Widget contents;
+    List<Widget> children = [
+      CustomTile(
+        title: Text('剩余 ${statistics.leftItems[itemKey] ?? 0}\n'
+            '拥有 ${db.curUser.items[itemKey] ?? 0} '
+            '活动 ${statistics.eventItems[itemKey] ?? 0}'),
+        trailing: Text(
+          '共需 ${counts.summation[itemKey]}\n'
+          '${counts.values.map((v) => (v[itemKey] ?? 0).toString()).join('/')}',
+          textAlign: TextAlign.end,
+        ),
+      ),
+    ];
     if (viewType == 0) {
-      List<Widget> children = [];
       for (int i in [0, 1, 2]) {
         children.add(Column(
           mainAxisSize: MainAxisSize.min,
@@ -38,36 +48,18 @@ class ItemCostServantPage extends StatelessWidget {
           ],
         ));
       }
-      contents = SingleChildScrollView(child: TileGroup(children: children));
     } else if (viewType == 1) {
-      contents = _buildSvtIconGrid(context, svtsDetail.summation[itemKey],
-          scrollable: true, highlight: favorite == false);
+      children.add(_buildSvtIconGrid(context, svtsDetail.summation[itemKey],
+          highlight: favorite == false));
     } else {
-      contents = buildSvtList(context, svtsDetail);
+      children.addAll(buildSvtList(context, svtsDetail));
     }
 
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      children: <Widget>[
-        Container(
-          decoration: BoxDecoration(
-              border: Border(bottom: Divider.createBorderSide(context))),
-          child: CustomTile(
-            title: Text('拥有 ${db.curUser.items[itemKey] ?? 0}  '
-                '剩余 ${statistics.leftItems[itemKey] ?? 0}'),
-            trailing: Text(
-              '共需 ${counts.summation[itemKey]}'
-              '(${counts.values.map((v) => (v[itemKey] ?? 0).toString()).join('/')})',
-            ),
-          ),
-        ),
-        Expanded(child: contents),
-      ],
-    );
+    return ListView(children: divideTiles(children));
   }
 
   Widget _buildSvtIconGrid(BuildContext context, Map<int, int> src,
-      {bool scrollable = false, bool highlight = false}) {
+      {bool highlight = false}) {
     List<Widget> children = [];
     var sortedSvts = sortSvts(src.keys.toList());
     sortedSvts.forEach((svtNo) {
@@ -115,18 +107,18 @@ class ItemCostServantPage extends StatelessWidget {
       return GridView.count(
         crossAxisCount: 5,
         shrinkWrap: true,
-        physics: scrollable ? null : NeverScrollableScrollPhysics(),
+        physics: NeverScrollableScrollPhysics(),
         padding: EdgeInsets.symmetric(horizontal: 16),
         children: children,
       );
     }
   }
 
-  Widget buildSvtList(
+  List<Widget> buildSvtList(
       BuildContext context, SvtParts<Map<String, Map<int, int>>> stat) {
     List<Widget> children = [];
-    sortSvts(stat.summation[itemKey].keys.toList()).forEach((svtNo){
-      final allNum=stat.summation[itemKey][svtNo];
+    sortSvts(stat.summation[itemKey].keys.toList()).forEach((svtNo) {
+      final allNum = stat.summation[itemKey][svtNo];
       if (allNum <= 0) {
         return;
       }
@@ -151,11 +143,7 @@ class ItemCostServantPage extends StatelessWidget {
       ));
     });
 
-    return ListView.separated(
-      separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
-      itemCount: children.length,
-      itemBuilder: (context, index) => children[index],
-    );
+    return children;
   }
 
   List<int> sortSvts(List<int> svts) {

@@ -218,6 +218,7 @@ MainRecord _$MainRecordFromJson(Map<String, dynamic> json) {
       title: $checkedConvert(json, 'title', (v) => v as String),
       fullname: $checkedConvert(json, 'fullname', (v) => v as String),
       startTimeJp: $checkedConvert(json, 'startTimeJp', (v) => v as String),
+      startTimeCn: $checkedConvert(json, 'startTimeCn', (v) => v as String),
       drops: $checkedConvert(
           json,
           'drops',
@@ -241,6 +242,7 @@ Map<String, dynamic> _$MainRecordToJson(MainRecord instance) =>
       'title': instance.title,
       'fullname': instance.fullname,
       'startTimeJp': instance.startTimeJp,
+      'startTimeCn': instance.startTimeCn,
       'drops': instance.drops,
       'rewards': instance.rewards,
     };
@@ -934,7 +936,7 @@ User _$UserFromJson(Map<String, dynamic> json) {
                         ? null
                         : ServantStatus.fromJson(e as Map<String, dynamic>)),
               )),
-      curPlanNo: $checkedConvert(json, 'curPlanNo', (v) => v as int),
+      curSvtPlanNo: $checkedConvert(json, 'curSvtPlanNo', (v) => v as int),
       servantPlans: $checkedConvert(
           json,
           'servantPlans',
@@ -968,7 +970,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'name': instance.name,
       'server': instance.server,
       'servants': instance.servants?.map((k, e) => MapEntry(k.toString(), e)),
-      'curPlanNo': instance.curPlanNo,
+      'curSvtPlanNo': instance.curSvtPlanNo,
       'servantPlans': instance.servantPlans
           ?.map((e) => e?.map((k, e) => MapEntry(k.toString(), e)))
           ?.toList(),

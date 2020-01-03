@@ -1,14 +1,13 @@
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/item/tabs/item_cost_servant_page.dart';
-import 'package:chaldea/modules/item/tabs/item_obtain_free_page.dart';
 
-import 'item_list_page.dart';
+import 'tabs/item_cost_servant_page.dart';
+import 'tabs/item_obtain_event.dart';
+import 'tabs/item_obtain_free_page.dart';
 
 class ItemDetailPage extends StatefulWidget {
   final String itemKey;
-  final ItemListPageState parent;
 
-  const ItemDetailPage(this.itemKey, {Key key, this.parent}) : super(key: key);
+  const ItemDetailPage(this.itemKey, {Key key}) : super(key: key);
 
   @override
   _ItemDetailPageState createState() => _ItemDetailPageState();
@@ -28,7 +27,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -37,34 +36,37 @@ class _ItemDetailPageState extends State<ItemDetailPage>
       appBar: AppBar(
         leading: BackButton(),
         title: Text(widget.itemKey),
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.view_carousel),
-              onPressed: () {
-                setState(() {
-                  viewType = (viewType + 1) % 3;
-                });
-              }),
-          IconButton(
-              icon: Icon(Icons.sort),
-              onPressed: () {
-                setState(() {
-                  sortType = (sortType + 1) % 3;
-                });
-              }),
-          IconButton(
-              icon: Icon(favorite ? Icons.favorite : Icons.favorite_border),
-              onPressed: () {
-                setState(() {
-                  favorite = !favorite;
-                });
-              }),
-        ],
+        actions: _tabController.index != 0
+            ? null
+            : <Widget>[
+                IconButton(
+                    icon: Icon(Icons.view_carousel),
+                    onPressed: () {
+                      setState(() {
+                        viewType = (viewType + 1) % 3;
+                      });
+                    }),
+                IconButton(
+                    icon: Icon(Icons.sort),
+                    onPressed: () {
+                      setState(() {
+                        sortType = (sortType + 1) % 3;
+                      });
+                    }),
+                IconButton(
+                    icon:
+                        Icon(favorite ? Icons.favorite : Icons.favorite_border),
+                    onPressed: () {
+                      setState(() {
+                        favorite = !favorite;
+                      });
+                    }),
+              ],
         bottom: TabBar(controller: _tabController, tabs: [
           Tab(text: 'Servants'),
           Tab(text: 'Free'),
           Tab(text: 'Events'),
-          Tab(text: 'Interludes'),
+          // Tab(text: 'Interludes'),
         ]),
       ),
       body: TabBarView(
@@ -76,11 +78,10 @@ class _ItemDetailPageState extends State<ItemDetailPage>
               viewType: viewType,
               sortType: sortType),
           ItemObtainFreeTab(itemKey: widget.itemKey),
-          Container(child: Center(child: Text('Events'))),
-          Container(child: Center(child: Text('Interludes'))),
+          ItemObtainEventPage(itemKey: widget.itemKey),
+          // Container(child: Center(child: Text('Interludes'))),
         ],
       ),
     );
   }
-
 }

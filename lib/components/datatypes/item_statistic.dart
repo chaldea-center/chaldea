@@ -19,7 +19,7 @@ class ItemStatistics {
 
   void updateSvtItems([User user]) {
     user ??= db.curUser;
-    svtItemDetail.update(curStat: user.servants, targetPlan: user.curPlan);
+    svtItemDetail.update(curStat: user.servants, targetPlan: user.curSvtPlan);
     updateLeftItems(user);
     // print('$runtimeType svt part updated.');
   }
