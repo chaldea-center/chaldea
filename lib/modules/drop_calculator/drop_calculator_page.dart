@@ -1,5 +1,5 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/shared/quest_card.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 
@@ -372,40 +372,39 @@ class DropCalcOutputTab extends StatelessWidget {
             child: ListView(
           children: solution?.variables?.map((variable) {
                 final quest = db.gameData.freeQuests[variable.name];
+                String title = quest?.placeCn ?? variable.name;
+                if (['后山', '群岛'].contains(title)) {
+                  // 下总国后山&四章群岛 two quests
+                  title = '$title-${quest.nameCn}';
+                }
                 return Container(
                   decoration: BoxDecoration(
                       border:
                           Border(bottom: Divider.createBorderSide(context))),
                   child: ValueStatefulBuilder<bool>(
-                      data: false,
+                      value: false,
                       builder: (context, state) {
                         return Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             CustomTile(
-                              title: Text(quest?.placeCn ?? variable.name),
+                              title: Text(title),
                               subtitle: Text(variable.detail.entries
                                   .map((e) => '${e.key}*${e.value}')
                                   .join(', ')),
                               trailing: Text(
                                   '${variable.value}*${variable.coeff} AP'),
-                              trailingIcon: IconButton(
-                                  icon: Icon(
-                                    state.data
-                                        ? Icons.expand_less
-                                        : Icons.expand_more,
-                                    color: quest == null
-                                        ? Colors.transparent
-                                        : Colors.grey,
-                                  ),
-                                  onPressed: () {
-                                    state.data = !state.data;
-                                    state.updateState();
-                                  }),
+                              onTap: quest == null
+                                  ? null
+                                  : () {
+                                      state.value = !state.value;
+                                      state.updateState();
+                                    },
                             ),
-                            if (state.data && (quest?.battles?.length ?? 0) > 0)
-                              _buildQuestDetail(quest),
+                            if (state.value &&
+                                (quest?.battles?.length ?? 0) > 0)
+                              QuestCard(quest: quest),
                           ],
                         );
                       }),
@@ -414,79 +413,6 @@ class DropCalcOutputTab extends StatelessWidget {
               [],
         ))
       ],
-    );
-  }
-
-  Widget _buildQuestDetail(Quest quest) {
-    Widget _buildWave(List<Enemy> enemies) {
-      List<Widget> enemyWidgets = enemies.map((enemy) {
-        return enemy == null
-            ? Container()
-            : AutoSizeText(
-                '${enemy.shownName}\n'
-                '${enemy.className} ${enemy.hp}',
-                maxFontSize: 14,
-                maxLines: 2,
-                textAlign: TextAlign.center,
-              );
-      }).toList();
-      while (enemyWidgets.length % 3 != 0) {
-        enemyWidgets.add(Container());
-      }
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: List.generate(enemyWidgets.length ~/ 3, (i) {
-          return Row(
-            children: <Widget>[
-              Expanded(child: enemyWidgets[i * 3 + 2]),
-              Expanded(child: enemyWidgets[i * 3 + 1]),
-              Expanded(child: enemyWidgets[i * 3]),
-            ],
-          );
-        }),
-      );
-    }
-
-    return Card(
-      color: Colors.white,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: divideTiles(
-            [
-              for (var i = 0; i < quest.battles.length; i++) ...[
-                Center(
-                  child: AutoSizeText(
-                    '${quest.chapter}\n'
-                    '${quest.battles[i].placeJp}  '
-                    '羁绊 ${quest.bondPoint}  '
-                    '经验 ${quest.experience}',
-                    maxLines: 2,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                if (quest.battles.length > 1)
-                  Center(child: Text('Session ${i + 1}')),
-                for (var j = 0; j < quest.battles[i].enemies.length; j++)
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 3),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      textBaseline: TextBaseline.ideographic,
-                      children: <Widget>[
-                        Text('  ${j + 1}  '),
-                        Expanded(child: _buildWave(quest.battles[i].enemies[j]))
-                      ],
-                    ),
-                  )
-              ]
-            ],
-            divider: Divider(height: 1, thickness: 0.5),
-          ).toList(),
-        ),
-      ),
     );
   }
 }

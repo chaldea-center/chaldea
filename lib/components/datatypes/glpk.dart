@@ -4,8 +4,8 @@ part of datatypes;
 class GLPKData {
   List<String> colNames; //quests, n
   List<String> rowNames; // items, m
-  List<num> coeff; // n
-  List<List<num>> matrix; //m*n
+  List<int> coeff; // n
+  List<List<double>> matrix; //m*n
   int cnMaxColNum;
 
   GLPKData({

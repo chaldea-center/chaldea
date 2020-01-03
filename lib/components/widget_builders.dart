@@ -4,22 +4,22 @@ typedef ValueStatefulWidgetBuilder<T> = Widget Function(
     BuildContext context, _ValueStatefulBuilderState<T> state);
 
 class ValueStatefulBuilder<T> extends StatefulWidget {
-  final T data;
+  final T value;
   final ValueStatefulWidgetBuilder<T> builder;
 
-  const ValueStatefulBuilder({Key key, this.data, @required this.builder})
+  const ValueStatefulBuilder({Key key, this.value, @required this.builder})
       : assert(builder != null),
         super(key: key);
 
   @override
   _ValueStatefulBuilderState<T> createState() =>
-      _ValueStatefulBuilderState<T>(data);
+      _ValueStatefulBuilderState<T>(value);
 }
 
 class _ValueStatefulBuilderState<T> extends State<ValueStatefulBuilder<T>> {
-  T data;
+  T value;
 
-  _ValueStatefulBuilderState(this.data);
+  _ValueStatefulBuilderState(this.value);
 
   void updateState() {
     setState(() {});

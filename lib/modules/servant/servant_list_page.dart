@@ -248,18 +248,18 @@ class ServantListPageState extends State<ServantListPage> {
         itemCount: shownList.length,
         itemBuilder: (context, index) {
           final svt = shownList[index];
-          final plan = db.curUser.servants[svt.no];
-          String planText = '';
-          if (plan?.curVal?.favorite == true) {
-            planText = '${plan.treasureDeviceLv}宝'
-                '${plan.curVal.ascension}-'
-                '${plan.curVal.skills[0]}/'
-                '${plan.curVal.skills[1]}/'
-                '${plan.curVal.skills[2]}';
+          final status = db.curUser.servants[svt.no];
+          String statusText = '';
+          if (status?.curVal?.favorite == true) {
+            statusText = '${status.treasureDeviceLv}宝'
+                '${status.curVal.ascension}-'
+                '${status.curVal.skills[0]}/'
+                '${status.curVal.skills[1]}/'
+                '${status.curVal.skills[2]}';
           }
           return CustomTile(
             leading: Image(image: db.getIconImage(svt.icon), height: 65),
-            title: Text('${svt.info.name}'),
+            title: AutoSizeText('${svt.info.name}', maxLines: 1),
             subtitle: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
@@ -272,7 +272,7 @@ class ServantListPageState extends State<ServantListPage> {
                     ],
                   ),
                 ),
-                Text(planText),
+                Text(statusText),
               ],
             ),
             trailing: Icon(Icons.arrow_forward_ios),
@@ -298,21 +298,21 @@ class ServantListPageState extends State<ServantListPage> {
           if (svt == null) {
             return Container();
           }
-          final plan = db.curUser.servants[svt.no];
-          String text;
-          if (plan?.curVal?.favorite == true) {
-            text = '${plan.treasureDeviceLv}\n'
-                '${plan.curVal.ascension}-'
-                '${plan.curVal.skills[0]}/'
-                '${plan.curVal.skills[1]}/'
-                '${plan.curVal.skills[2]}';
+          final status = db.curUser.servants[svt.no];
+          String statusText;
+          if (status?.curVal?.favorite == true) {
+            statusText = '${status.treasureDeviceLv}\n'
+                '${status.curVal.ascension}-'
+                '${status.curVal.skills[0]}/'
+                '${status.curVal.skills[1]}/'
+                '${status.curVal.skills[2]}';
           }
           return Center(
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
               child: ImageWithText(
                 image: Image(image: db.getIconImage(svt.icon)),
-                text: text,
+                text: statusText,
                 fontSize: 11,
                 alignment: AlignmentDirectional.bottomStart,
                 padding: EdgeInsets.fromLTRB(4, 0, 8, 0),

@@ -198,7 +198,6 @@ class _ItemListTabState extends State<ItemListTab> {
       builder: (BuildContext context, setState2) {
         bool enough =
             statistics.leftItems[itemKey] >= 0; // update when text input
-
         final highlightStyle =
             TextStyle(color: enough ? null : Colors.redAccent);
         Widget textField = EnsureVisibleWhenFocused(
@@ -209,11 +208,7 @@ class _ItemListTabState extends State<ItemListTab> {
               textAlign: TextAlign.center,
               keyboardType: TextInputType.number,
               textInputAction: TextInputAction.next,
-              decoration: InputDecoration(
-                isDense: true,
-                counterText: '',
-                contentPadding: EdgeInsets.all(0),
-              ),
+              decoration: InputDecoration(counterText: ''),
               inputFormatters: [
                 WhitelistingTextInputFormatter.digitsOnly,
                 if (isQp) NumberInputFormatter(),

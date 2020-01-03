@@ -27,7 +27,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
 
   _SvtPlanTabState(
       {ServantDetailPageState parent, Servant svt, ServantStatus status})
-      : super(parent: parent, svt: svt, status: status) {}
+      : super(parent: parent, svt: svt, status: status);
 
   void ensurePlanLarger(ServantPlan cur, ServantPlan target) {
     target.ascension = max(target.ascension, cur.ascension);

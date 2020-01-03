@@ -47,12 +47,12 @@ class _GalleryPageState extends State<GalleryPage> {
     }
 
     if (db.userData.sliderUrls.isEmpty || reload) {
-      db.userData.sliderUrls.clear();
       try {
         print('http GET from "$srcUrl" .....');
         var response = await http.get(srcUrl);
         print('----------- recieved http response ------------');
         var body = parser.parse(response.body);
+        db.userData.sliderUrls.clear();
         dom.Element element = body.getElementById('transImageBox');
         for (var linkNode in element.getElementsByTagName('a')) {
           String link = tryDecodeUrl(linkNode.attributes['href']);
@@ -167,9 +167,8 @@ class _GalleryPageState extends State<GalleryPage> {
                 onTapOk: () async {
                   if (await canLaunch(link)) {
                     launch(link);
-                    Navigator.of(context).pop();
                   } else {
-                    throw 'Could not launch $link';
+                    showToast('Could not launch link:\n$link');
                   }
                 },
               ));

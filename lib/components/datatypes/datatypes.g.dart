@@ -444,9 +444,9 @@ GLPKData _$GLPKDataFromJson(Map<String, dynamic> json) {
   return GLPKData(
     colNames: (json['colNames'] as List)?.map((e) => e as String)?.toList(),
     rowNames: (json['rowNames'] as List)?.map((e) => e as String)?.toList(),
-    coeff: (json['coeff'] as List)?.map((e) => e as num)?.toList(),
+    coeff: (json['coeff'] as List)?.map((e) => e as int)?.toList(),
     matrix: (json['matrix'] as List)
-        ?.map((e) => (e as List)?.map((e) => e as num)?.toList())
+        ?.map((e) => (e as List)?.map((e) => (e as num)?.toDouble())?.toList())
         ?.toList(),
     cnMaxColNum: json['cnMaxColNum'] as int,
   );
