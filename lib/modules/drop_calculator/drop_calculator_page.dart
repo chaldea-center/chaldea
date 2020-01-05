@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/shared/quest_card.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_picker/flutter_picker.dart';
@@ -131,7 +132,15 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
       itemBuilder: (context, index) => ListTile(
         leading: Padding(
           padding: EdgeInsets.symmetric(vertical: 8),
-          child: Image(image: db.getIconImage(params.objRows[index])),
+          child: GestureDetector(
+            onTap: () {
+              SplitRoute.push(
+                context,
+                builder: (context) => ItemDetailPage(params.objRows[index]),
+              );
+            },
+            child: Image(image: db.getIconImage(params.objRows[index])),
+          ),
         ),
         title: Row(
           children: <Widget>[

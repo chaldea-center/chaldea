@@ -89,7 +89,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
         ..add(ListTile(title: Text('商店&任务&点数')))
         ..add(buildClassifiedItemList(
             {'圣杯': grailNum, '传承结晶': crystalNum}
-              ..addAll(event.items)
+              ..addAll(event.items ?? {})
               ..removeWhere((k, v) => v <= 0),
             onTap: onTapIcon));
     }

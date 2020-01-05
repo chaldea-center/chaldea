@@ -23,7 +23,7 @@ class _ChaldeaState extends State<Chaldea> {
     await db.loadZipAssets(kDefaultDatasetAssetKey);
     await db.loadGameData();
     await db.loadUserData();
-    db.runtimeData.itemStatistics.update();
+    db.itemStat.update();
     db.checkNetwork();
     setState(() {});
   }

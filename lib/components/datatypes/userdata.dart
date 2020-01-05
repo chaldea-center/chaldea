@@ -30,6 +30,17 @@ class UserData {
   // glpk
   GLPKParams glpkParams;
 
+  @JsonKey(ignore: true)
+  StreamController<UserData> onUserUpdated = StreamController.broadcast();
+
+  void broadcastUserUpdate() {
+    onUserUpdated.sink.add(this);
+  }
+
+  void dispose() {
+    onUserUpdated.close();
+  }
+
   UserData({
     this.language,
     this.criticalWidth,

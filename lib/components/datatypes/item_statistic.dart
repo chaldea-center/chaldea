@@ -5,8 +5,7 @@ class ItemStatistics {
   SvtCostItems svtItemDetail = SvtCostItems();
 
   //todo: replace
-  StreamController<ItemStatistics> onItemStatUpdated =
-      StreamController.broadcast();
+  StreamController<ItemStatistics> onUpdated = StreamController.broadcast();
 
   Map<String, int> get svtItems => svtItemDetail.planItemCounts.summation;
   Map<String, int> eventItems;
@@ -15,51 +14,70 @@ class ItemStatistics {
   ItemStatistics();
 
   void dispose() {
-    onItemStatUpdated.close();
+    onUpdated.close();
   }
 
-  void broadcast() {
-    onItemStatUpdated.sink.add(this);
+  void _broadcast() {
+    onUpdated.sink.add(this);
   }
 
-  void update([User user]) {
+  void update({User user, bool notify = true}) {
     user ??= db.curUser;
-    updateSvtItems(user);
-    updateEventItems(user);
+    updateSvtItems(user: user, shouldBroadcast: false);
+    updateEventItems(user: user, shouldBroadcast: false);
+    if (notify) {
+      _broadcast();
+    }
     // print('$runtimeType all updated.');
   }
 
-  void updateSvtItems([User user]) {
+  void updateSvtItems({User user, bool shouldBroadcast = true}) {
     user ??= db.curUser;
     svtItemDetail.update(curStat: user.servants, targetPlan: user.curSvtPlan);
-    updateLeftItems(user);
+    updateLeftItems(user: user, shouldBroadcast: false);
+    if (shouldBroadcast) {
+      _broadcast();
+    }
     // print('$runtimeType svt part updated.');
   }
 
-  void updateEventItems([User user]) {
+  void updateEventItems({User user, bool shouldBroadcast = true}) {
     user ??= db.curUser;
     eventItems = db.gameData.events.getAllItems(user.events);
-    updateLeftItems(user);
+    updateLeftItems(user: user, shouldBroadcast: false);
+    if (shouldBroadcast) {
+      _broadcast();
+    }
     // print('$runtimeType event part updated.');
   }
 
-  void updateLeftItems([User user]) {
+  void updateLeftItems({User user, bool shouldBroadcast = true}) {
     user ??= db.curUser;
     leftItems = sumDict([eventItems, user.items, multiplyDict(svtItems, -1)]);
+    if (shouldBroadcast) {
+      _broadcast();
+    }
   }
 }
 
 class SvtCostItems {
   //Map<SvtNo, List<Map<ItemKey,num>>>
-//  Map<int, SvtParts<Map<String, int>>> planCountBySvt, allCountBySvt;
   SvtParts<Map<int, Map<String, int>>> planCountBySvt, allCountBySvt;
 
+  SvtParts<Map<int, Map<String, int>>> getCountBySvt([bool planned = true]) =>
+      planned ? planCountBySvt : allCountBySvt;
+
   // Map<ItemKey, List<Map<SvtNo, num>>>
-//  Map<String, SvtParts<Map<int, int>>> planCountByItem, allCountByItem;
   SvtParts<Map<String, Map<int, int>>> planCountByItem, allCountByItem;
 
-//  Map<String, SvtParts<int>> planItemCounts, allItemCounts;
+  SvtParts<Map<String, Map<int, int>>> getCountByItem([bool planned = true]) =>
+      planned ? planCountByItem : allCountByItem;
+
+  // Map<ItemKey, num>
   SvtParts<Map<String, int>> planItemCounts, allItemCounts;
+
+  SvtParts<Map<String, int>> getItemCounts([bool planned = true]) =>
+      planned ? planItemCounts : allItemCounts;
 
   void update(
       {Map<int, ServantStatus> curStat, Map<int, ServantPlan> targetPlan}) {

@@ -31,37 +31,41 @@ class _ItemDetailPageState extends State<ItemDetailPage>
   }
 
   @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
         title: Text(widget.itemKey),
-        actions: _tabController.index != 0
-            ? null
-            : <Widget>[
-                IconButton(
-                    icon: Icon(Icons.view_carousel),
-                    onPressed: () {
-                      setState(() {
-                        viewType = (viewType + 1) % 3;
-                      });
-                    }),
-                IconButton(
-                    icon: Icon(Icons.sort),
-                    onPressed: () {
-                      setState(() {
-                        sortType = (sortType + 1) % 3;
-                      });
-                    }),
-                IconButton(
-                    icon:
-                        Icon(favorite ? Icons.favorite : Icons.favorite_border),
-                    onPressed: () {
-                      setState(() {
-                        favorite = !favorite;
-                      });
-                    }),
-              ],
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.view_carousel),
+              onPressed: () {
+                setState(() {
+                  viewType = (viewType + 1) % 3;
+                });
+              }),
+          IconButton(
+              icon: Icon(Icons.sort),
+              tooltip: ['序号', '职阶', '稀有度'][sortType % 3] + '排序',
+              onPressed: () {
+                setState(() {
+                  sortType = (sortType + 1) % 3;
+                });
+              }),
+          IconButton(
+              icon: Icon(favorite ? Icons.favorite : Icons.favorite_border),
+              onPressed: () {
+                setState(() {
+                  favorite = !favorite;
+                });
+              }),
+        ],
         bottom: TabBar(controller: _tabController, tabs: [
           Tab(text: 'Servants'),
           Tab(text: 'Free'),

@@ -16,46 +16,51 @@ class ItemCostServantPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statistics = db.runtimeData.itemStatistics;
-    final detail = db.runtimeData.itemStatistics.svtItemDetail;
-    final counts = favorite ? detail.planItemCounts : detail.allItemCounts;
-    final svtsDetail =
-        favorite ? detail.planCountByItem : detail.allCountByItem;
-    List<Widget> children = [
-      CustomTile(
-        title: Text('剩余 ${statistics.leftItems[itemKey] ?? 0}\n'
-            '拥有 ${db.curUser.items[itemKey] ?? 0} '
-            '活动 ${statistics.eventItems[itemKey] ?? 0}'),
-        trailing: Text(
-          '共需 ${counts.summation[itemKey]}\n'
-          '${counts.values.map((v) => (v[itemKey] ?? 0).toString()).join('/')}',
-          textAlign: TextAlign.end,
-        ),
-      ),
-    ];
-    if (viewType == 0) {
-      for (int i in [0, 1, 2]) {
-        children.add(Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
+    return StreamBuilder<ItemStatistics>(
+        initialData: db.itemStat,
+        stream: db.itemStat.onUpdated.stream,
+        builder: (context, snapshot) {
+          final statistics = snapshot.data;
+          final counts = statistics.svtItemDetail.getItemCounts(favorite);
+          final details = statistics.svtItemDetail.getCountByItem(favorite);
+          List<Widget> children = [
             CustomTile(
-              title: Text(['灵基再临', '技能升级', '灵衣开放'][i]),
-              trailing:
-                  Text(formatNumToString(counts.values[i][itemKey], 'decimal')),
+              title: Text('剩余 ${statistics.leftItems[itemKey] ?? 0}\n'
+                  '拥有 ${db.curUser.items[itemKey] ?? 0} '
+                  '活动 ${statistics.eventItems[itemKey] ?? 0}'),
+              trailing: Text(
+                '共需 ${counts.summation[itemKey]}\n' +
+                    counts.values.map((v) => v[itemKey] ?? 0).join('/'),
+                textAlign: TextAlign.end,
+              ),
             ),
-            _buildSvtIconGrid(context, svtsDetail.values[i][itemKey],
-                highlight: favorite == false),
-          ],
-        ));
-      }
-    } else if (viewType == 1) {
-      children.add(_buildSvtIconGrid(context, svtsDetail.summation[itemKey],
-          highlight: favorite == false));
-    } else {
-      children.addAll(buildSvtList(context, svtsDetail));
-    }
+          ];
+          if (viewType == 0) {
+            for (int i in [0, 1, 2]) {
+              children.add(Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  CustomTile(
+                    title: Text(['灵基再临', '技能升级', '灵衣开放'][i]),
+                    trailing: Text(formatNumToString(
+                        counts.values[i][itemKey], 'decimal')),
+                  ),
+                  _buildSvtIconGrid(context, details.values[i][itemKey],
+                      highlight: favorite == false),
+                ],
+              ));
+            }
+          } else if (viewType == 1) {
+            children.add(_buildSvtIconGrid(context, details.summation[itemKey],
+                highlight: favorite == false));
+          } else {
+            children.addAll(buildSvtList(context, details));
+          }
 
-    return ListView(children: divideTiles(children));
+          return ListView(
+            children: divideTiles(children),
+          );
+        });
   }
 
   Widget _buildSvtIconGrid(BuildContext context, Map<int, int> src,

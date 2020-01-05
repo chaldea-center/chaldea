@@ -148,83 +148,88 @@ class ServantListPageState extends State<ServantListPage> {
   @override
   Widget build(BuildContext context) {
     //todo: hide/show floatingButton when scroll down/up
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(S.of(context).servant),
-        leading: SplitViewBackButton(),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(45),
-          child: Theme(
-            data: Theme.of(context).copyWith(primaryColor: Colors.grey),
-            child: Container(
-                height: 45,
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                child: TextField(
-                  focusNode: _inputFocusNode,
-                  controller: _inputController,
-                  style: TextStyle(fontSize: 14),
-                  decoration: InputDecoration(
-                      isDense: true,
-                      filled: true,
-                      contentPadding: EdgeInsets.zero,
-                      border: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              width: 0, style: BorderStyle.none),
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      fillColor: Colors.white,
-                      hintText: 'Search',
-                      prefixIcon: Icon(Icons.search, size: 20),
-                      suffixIcon: IconButton(
-                        padding: EdgeInsets.zero,
-                        icon: Icon(Icons.clear, size: 20),
-                        onPressed: () {
+    return StreamBuilder(
+        stream: db.userData.onUserUpdated.stream,
+        builder: (context, snapshot) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(S.of(context).servant),
+              leading: SplitViewBackButton(),
+              bottom: PreferredSize(
+                preferredSize: Size.fromHeight(45),
+                child: Theme(
+                  data: Theme.of(context).copyWith(primaryColor: Colors.grey),
+                  child: Container(
+                      height: 45,
+                      padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                      child: TextField(
+                        focusNode: _inputFocusNode,
+                        controller: _inputController,
+                        style: TextStyle(fontSize: 14),
+                        decoration: InputDecoration(
+                            isDense: true,
+                            filled: true,
+                            contentPadding: EdgeInsets.zero,
+                            border: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    width: 0, style: BorderStyle.none),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            fillColor: Colors.white,
+                            hintText: 'Search',
+                            prefixIcon: Icon(Icons.search, size: 20),
+                            suffixIcon: IconButton(
+                              padding: EdgeInsets.zero,
+                              icon: Icon(Icons.clear, size: 20),
+                              onPressed: () {
+                                setState(() {
+                                  WidgetsBinding.instance.addPostFrameCallback(
+                                      (_) => _inputController.clear());
+                                  filterData.filterString = '';
+                                });
+                              },
+                            )),
+                        onChanged: (s) {
                           setState(() {
-                            WidgetsBinding.instance.addPostFrameCallback(
-                                (_) => _inputController.clear());
-                            filterData.filterString = '';
+                            filterData.filterString = s;
                           });
                         },
+                        onSubmitted: (s) {
+                          FocusScope.of(context).unfocus();
+                        },
                       )),
-                  onChanged: (s) {
-                    setState(() {
-                      filterData.filterString = s;
-                    });
+                ),
+              ),
+              actions: <Widget>[
+                IconButton(
+                    icon: Icon(filterData.favorite == null
+                        ? Icons.star_half
+                        : filterData.favorite
+                            ? Icons.favorite
+                            : Icons.favorite_border),
+                    onPressed: () {
+                      setState(() {
+                        final favList = [null, true, false];
+                        filterData.favorite = favList[
+                            (favList.indexOf(filterData.favorite) + 1) % 3];
+                      });
+                    }),
+                IconButton(
+                  icon: Icon(Icons.filter_list),
+                  onPressed: () {
+                    showFilterSheet(context);
                   },
-                  onSubmitted: (s) {
-                    FocusScope.of(context).unfocus();
-                  },
-                )),
-          ),
-        ),
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(filterData.favorite == null
-                  ? Icons.star_half
-                  : filterData.favorite
-                      ? Icons.favorite
-                      : Icons.favorite_border),
-              onPressed: () {
-                setState(() {
-                  final favList = [null, true, false];
-                  filterData.favorite =
-                      favList[(favList.indexOf(filterData.favorite) + 1) % 3];
-                });
-              }),
-          IconButton(
-            icon: Icon(Icons.filter_list),
-            onPressed: () {
-              showFilterSheet(context);
-            },
-          )
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.arrow_upward),
-          onPressed: () {
-            _scrollController.jumpTo(0);
-          }),
-      body: buildOverview(),
-    );
+                )
+              ],
+            ),
+            floatingActionButton: FloatingActionButton(
+                child: Icon(Icons.arrow_upward),
+                onPressed: () {
+                  _scrollController.jumpTo(0);
+                }),
+            body: buildOverview(),
+          );
+        });
   }
 
   Widget buildOverview() {

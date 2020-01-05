@@ -119,8 +119,8 @@ class ServantDetailPageState extends State<ServantDetailPage>
                             onTap: () {
                               Navigator.of(context).pop();
                               db.curUser.curSvtPlanNo = index;
-                              db.runtimeData.itemStatistics.update(db.curUser);
                               this.setState(() {});
+                              db.itemStat.updateSvtItems();
                             },
                           );
                         }),
@@ -170,6 +170,8 @@ class ServantDetailPageState extends State<ServantDetailPage>
                                     status.curVal.favorite =
                                         !status.curVal.favorite;
                                   });
+                                  db.userData.broadcastUserUpdate();
+                                  db.itemStat.updateSvtItems();
                                 },
                               ),
                               IconButton(
@@ -180,6 +182,8 @@ class ServantDetailPageState extends State<ServantDetailPage>
                                     status.reset();
                                     db.curUser.curSvtPlan[svt.no].reset();
                                   });
+                                  db.userData.broadcastUserUpdate();
+                                  db.itemStat.updateSvtItems();
                                 },
                               ),
                             ],

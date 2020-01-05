@@ -50,8 +50,7 @@ class _MainRecordTabState extends State<MainRecordTab> {
                               setState(() {
                                 plan[chapter] ??= List.filled(2, false);
                                 plan[chapter][i] = v;
-                                db.runtimeData.itemStatistics
-                                    .updateEventItems();
+                                db.itemStat.updateEventItems();
                               });
                             });
                       }).toList(),

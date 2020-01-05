@@ -27,7 +27,7 @@ class ItemListPageState extends State<ItemListPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: categories.length, vsync: this);
-    db.runtimeData.itemStatistics.update(db.curUser);
+    db.itemStat.update();
   }
 
   @override
@@ -52,7 +52,7 @@ class ItemListPageState extends State<ItemListPage>
                           onTap: () {
                             Navigator.of(context).pop();
                             db.curUser.curSvtPlanNo = index;
-                            db.runtimeData.itemStatistics.update(db.curUser);
+                            db.itemStat.update();
                             setState(() {});
                           },
                         );
@@ -72,15 +72,13 @@ class ItemListPageState extends State<ItemListPage>
               icon: Icon(Icons.toys),
               onPressed: () async {
                 GLPKParams params = GLPKParams();
-                db.runtimeData.itemStatistics
-                  ..update()
-                  ..leftItems.forEach((itemKey, value) {
-                    if (db.gameData.glpk.rowNames.contains(itemKey) &&
-                        value < 0) {
-                      params.objRows.add(itemKey);
-                      params.objNums.add(-value);
-                    }
-                  });
+                db.itemStat.leftItems.forEach((itemKey, value) {
+                  if (db.gameData.glpk.rowNames.contains(itemKey) &&
+                      value < 0) {
+                    params.objRows.add(itemKey);
+                    params.objNums.add(-value);
+                  }
+                });
                 SplitRoute.push(
                   context,
                   builder: (context) => DropCalculatorPage(params: params),
@@ -130,6 +128,8 @@ class _ItemListTabState extends State<ItemListTab> {
     db.gameData.items.forEach((key, item) {
       if (item.category == widget.category || key == qpKey) {
         final node = FocusNode();
+        final textController = TextEditingController(
+            text: kThousandFormatter.format(db.curUser.items[key] ?? 0));
         node.addListener(() {
           // auto focus problem when deactivated->activated
           for (var component in inputsManager.components) {
@@ -137,14 +137,12 @@ class _ItemListTabState extends State<ItemListTab> {
               return;
             }
           }
+          // if no one has focus
           SchedulerBinding.instance.addPostFrameCallback(
               (_) => FocusScope.of(context).requestFocus(_blankNode));
         });
         inputsManager.components.add(InputComponent(
-            data: item,
-            controller: TextEditingController(
-                text: (db.curUser.items[key] ?? 0).toString()),
-            focusNode: node));
+            data: item, controller: textController, focusNode: node));
       }
     });
     inputsManager.components.sort((a, b) => a.data.id - b.data.id);
@@ -158,35 +156,41 @@ class _ItemListTabState extends State<ItemListTab> {
 
   @override
   void dispose() {
-    super.dispose();
     inputsManager.dispose();
+    super.dispose();
   }
 
   @override
   void deactivate() {
-    super.deactivate();
     db.saveUserData();
+    super.deactivate();
   }
 
   @override
   Widget build(BuildContext context) {
     inputsManager.resetFocusList();
     List<Widget> children = [];
-    for (var c in inputsManager.components) {
-      Widget tile = buildItemTile(c);
-      if (tile != null) {
-        children.add(tile);
-      }
-    }
-    return ListView.separated(
-        itemBuilder: (context, index) => children[index],
-        separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
-        itemCount: children.length);
+    return StreamBuilder<ItemStatistics>(
+        initialData: db.itemStat,
+        stream: db.itemStat.onUpdated.stream,
+        builder: (context, snapshot) {
+          for (var c in inputsManager.components) {
+            Widget tile = buildItemTile(c, snapshot.data);
+            if (tile != null) {
+              children.add(tile);
+            }
+          }
+          return ListView.separated(
+              itemBuilder: (context, index) => children[index],
+              separatorBuilder: (context, index) =>
+                  Divider(height: 1, indent: 16),
+              itemCount: children.length);
+        });
   }
 
-  Widget buildItemTile(InputComponent<Item> component) {
+  Widget buildItemTile(
+      InputComponent<Item> component, ItemStatistics statistics) {
     final itemKey = component.data.name;
-    final statistics = db.runtimeData.itemStatistics;
     bool isQp = itemKey == qpKey;
     bool enough = statistics.leftItems[itemKey] >= 0;
 
@@ -211,14 +215,13 @@ class _ItemListTabState extends State<ItemListTab> {
               decoration: InputDecoration(counterText: ''),
               inputFormatters: [
                 WhitelistingTextInputFormatter.digitsOnly,
-                if (isQp) NumberInputFormatter(),
+                NumberInputFormatter(),
               ],
               onChanged: (v) {
                 db.curUser.items[itemKey] =
                     int.tryParse(v.replaceAll(',', '')) ?? 0;
-                setState2(() {
-                  db.runtimeData.itemStatistics.updateLeftItems();
-                });
+                statistics.updateLeftItems();
+                setState2(() {});
               },
               onTap: () {
                 component.onTap(context);

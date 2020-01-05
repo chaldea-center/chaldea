@@ -10,19 +10,18 @@ class ItemObtainEventPage extends StatelessWidget {
     List<Widget> children = [];
     final highlight = TextStyle(color: Colors.blueAccent);
     children.add(SHeader('素材交换券'));
-    db.gameData.events
-      ..exchangeTickets.values.forEach((ticket) {
-        int itemIndex = ticket.items.indexOf(itemKey);
-        if (itemIndex >= 0 && ticket.isNotOutdated()) {
-          int itemNum = db.curUser.events.exchangeTickets[ticket.monthCn]
-              ?.elementAt(itemIndex);
-          children.add(ListTile(
-            title: Text('交换券${ticket.monthCn}'),
-            subtitle: Text(ticket.items.join('/')),
-            trailing: Text('${itemNum ?? 0}/${ticket.days}'),
-          ));
-        }
-      });
+    db.gameData.events.exchangeTickets.values.forEach((ticket) {
+      int itemIndex = ticket.items.indexOf(itemKey);
+      if (itemIndex >= 0 && ticket.isNotOutdated()) {
+        int itemNum = db.curUser.events.exchangeTickets[ticket.monthCn]
+            ?.elementAt(itemIndex);
+        children.add(ListTile(
+          title: Text('交换券${ticket.monthCn}'),
+          subtitle: Text(ticket.items.join('/')),
+          trailing: Text('${itemNum ?? 0}/${ticket.days}'),
+        ));
+      }
+    });
     children.add(SHeader('主线掉落与通关奖励'));
     db.gameData.events.mainRecords.values.toList()
       ..sort((a, b) => a.startTimeJp.compareTo(b.startTimeJp))

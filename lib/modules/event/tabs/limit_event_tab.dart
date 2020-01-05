@@ -43,7 +43,7 @@ class _LimitEventTabState extends State<LimitEventTab> {
                     plan
                         .putIfAbsent(event.name, () => LimitEventPlan())
                         .enable = v;
-                    db.runtimeData.itemStatistics.updateEventItems();
+                    db.itemStat.updateEventItems();
                   },
                 ),
               )

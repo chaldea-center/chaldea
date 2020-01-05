@@ -21,7 +21,6 @@ class SvtPlanTab extends SvtTabBaseWidget {
 }
 
 class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
-//  ServantPlan plan;
   ServantPlan get plan =>
       db.curUser.curSvtPlan.putIfAbsent(this.svt.no, () => ServantPlan());
 
@@ -67,7 +66,9 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
               plan
                 ..ascension = _end
                 ..favorite = true;
-              widget.parent?.setState(() {});
+//              widget.parent?.setState(() {});
+              db.userData.broadcastUserUpdate();
+              db.itemStat.updateSvtItems();
             },
             detailPageBuilder: (context) => LevelingCostPage(
               costList: svt.itemCost.ascension,
@@ -103,7 +104,9 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           plan
             ..skills[index] = _end
             ..favorite = true;
-          widget.parent?.setState(() {});
+//          widget.parent?.setState(() {});
+          db.userData.broadcastUserUpdate();
+          db.itemStat.updateSvtItems();
         },
         detailPageBuilder: (context) => LevelingCostPage(
           costList: svt.itemCost.skill,
@@ -138,7 +141,9 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           plan
             ..dress[index] = _end
             ..favorite = true;
-          widget.parent?.setState(() {});
+//          widget.parent?.setState(() {});
+          db.userData.broadcastUserUpdate();
+          db.itemStat.updateSvtItems();
         },
         detailPageBuilder: (context) => LevelingCostPage(
           costList: [svt.itemCost.dress[index]],
@@ -162,7 +167,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             status.treasureDeviceLv = _value;
             curVal.favorite = true;
             plan.favorite = true;
-            widget.parent?.setState(() {});
+            db.userData.broadcastUserUpdate();
+//            widget.parent?.setState(() {});
           },
           detailPageBuilder: null,
         ),
@@ -180,7 +186,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             plan
               ..grail = _end
               ..favorite = true;
-            widget.parent?.setState(() {});
+            db.userData.broadcastUserUpdate();
+//            widget.parent?.setState(() {});
           },
           detailPageBuilder: null,
         )
@@ -299,6 +306,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                           }
                         },
                       );
+                      db.userData.broadcastUserUpdate();
+                      db.itemStat.updateSvtItems();
                     },
                   ),
                   IconButton(
@@ -307,8 +316,10 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                     onPressed: () {
                       state.setState(() {
                         curVal.setMax(skill: 10);
-                        // plan.setMax(skill: 10);
+                        plan.setMax(skill: 10);
                       });
+                      db.userData.broadcastUserUpdate();
+                      db.itemStat.updateSvtItems();
                     },
                   ),
                   Stack(
@@ -329,6 +340,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                               curVal.skills[i] = min(curVal.skills[i], 9);
                             }
                           });
+                          db.userData.broadcastUserUpdate();
+                          db.itemStat.updateSvtItems();
                         },
                       ),
                     ],
@@ -348,6 +361,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                             curVal.favorite = true;
                             plan.setMax(skill: 10);
                           });
+                          db.userData.broadcastUserUpdate();
+                          db.itemStat.updateSvtItems();
                         },
                       ),
                     ],

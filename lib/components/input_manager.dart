@@ -87,11 +87,11 @@ class NumberInputFormatter extends TextInputFormatter {
     if (value == null) {
       return newValue;
     }
-    String newText = thousandFormatter.format(value);
+    String newText = kThousandFormatter.format(value);
     return newValue.copyWith(
         text: newText,
         selection: TextSelection.collapsed(offset: newText.length));
   }
 }
 
-final thousandFormatter = NumberFormat('###,###.###');
+final kThousandFormatter = NumberFormat('###,###.###');

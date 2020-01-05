@@ -24,10 +24,13 @@ class Database {
   VoidCallback onAppUpdate;
   UserData userData;
   GameData gameData;
-  final RuntimeData runtimeData = RuntimeData();
-  static PathManager _paths = PathManager();
 
   User get curUser => userData.users[userData.curUsername];
+
+  final ItemStatistics itemStat = ItemStatistics();
+  final RuntimeData runtimeData = RuntimeData();
+
+  static PathManager _paths = PathManager();
 
   PathManager get paths => _paths;
 
@@ -246,7 +249,7 @@ class PathManager {
 
 class RuntimeData {
   bool enableDownload = false;
-  final ItemStatistics itemStatistics = ItemStatistics();
+//  final ItemStatistics itemStatistics = ItemStatistics();
 }
 
 Database db = new Database();

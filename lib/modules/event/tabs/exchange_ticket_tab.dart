@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_picker/Picker.dart';
 
 class ExchangeTicketTab extends StatefulWidget {
   final bool reverse;
@@ -41,7 +43,11 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
               style: plannedStyle,
               minFontSize: 6,
             ),
-            trailing: buildTrailing(ticket),
+            trailing: StreamBuilder<ItemStatistics>(
+                initialData: db.itemStat,
+                stream: db.itemStat.onUpdated.stream,
+                builder: (context, snapshot) =>
+                    buildTrailing(ticket, snapshot.data)),
           );
         }),
         divider: Divider(height: 1, indent: 16),
@@ -49,14 +55,13 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     );
   }
 
-  Widget buildTrailing(ExchangeTicket ticket) {
+  Widget buildTrailing(ExchangeTicket ticket, ItemStatistics statistics) {
     final monthPlan = db.curUser.events.exchangeTickets
         .putIfAbsent(ticket.monthCn, () => [0, 0, 0]);
     List<Widget> trailingItems = [];
-
     for (var i = 0; i < 3; i++) {
       final iconKey = ticket.items[i];
-      int leftNum = db.runtimeData.itemStatistics.leftItems[iconKey] ?? 0;
+      int leftNum = statistics.leftItems[iconKey] ?? 0;
       final maxValue = ticket.days - sum(monthPlan.getRange(0, i));
       trailingItems.add(Row(
         mainAxisSize: MainAxisSize.min,
@@ -64,70 +69,51 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
           GestureDetector(
             onTap: () => SplitRoute.popAndPush(context,
                 builder: (context) => ItemDetailPage(iconKey)),
-            child: Image(
-              image: db.getIconImage(iconKey),
-              width: 42,
-            ),
+            child: Image(image: db.getIconImage(iconKey), width: 42),
           ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              DropdownButton<int>(
-                isDense: true,
-                icon: Text(
-                  '▼ ',
-                  style: TextStyle(color: Colors.black54, fontSize: 8),
-                ),
-                value: monthPlan[i],
-                items: List.generate(maxValue + 1, (i) {
-                  int v = i == 0 ? 0 : maxValue + 1 - i;
-                  return DropdownMenuItem(
-                    value: v,
-                    child: Text(v == 0 ? '0' : ' $v'),
-                  );
-                }),
-                selectedItemBuilder: (context) =>
-                    List.generate(maxValue + 1, (i) {
-                  int v = i == 0 ? 0 : maxValue + 1 - i;
-                  return SizedBox(
-                    width: 25,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 3),
-                      child: Center(
-                        child: AutoSizeText(
-                          '${v == 0 ? '' : v}',
-                          maxLines: 1,
-                          maxFontSize: 16,
-                          minFontSize: 6,
-                          group: _autoSizeGroup,
-                        ),
-                      ),
+          SizedBox(
+            width: 36,
+            child: MaterialButton(
+              padding: EdgeInsets.symmetric(),
+              child: Column(
+                children: <Widget>[
+                  Text(monthPlan[i] == 0 ? '' : monthPlan[i].toString()),
+                  Divider(height: 1),
+                  DefaultTextStyle(
+                    style: Theme.of(context).textTheme.body1,
+                    child: AutoSizeText(
+                      leftNum.toString(),
+                      maxLines: 1,
+                      group: _autoSizeGroup,
+                      style: TextStyle(
+                          color: leftNum >= 0 ? Colors.grey : Colors.redAccent),
                     ),
-                  );
-                }),
-                onChanged: (v) {
-                  setState(() {
-                    monthPlan[i] = v;
+                  )
+                ],
+              ),
+              onPressed: () {
+                Picker(
+                  adapter: NumberPickerAdapter(
+                    data: [
+                      NumberPickerColumn(
+                          items: List.generate(maxValue + 2,
+                              (i) => i == 0 ? 0 : maxValue + 1 - i),
+                          initValue: monthPlan[i]),
+                    ],
+                  ),
+                  onConfirm: (picker, values) {
+                    monthPlan[i] = picker.getSelectedValues()[0];
                     for (var j = 0; j < 3; j++) {
                       monthPlan[j] = min(monthPlan[j],
                           ticket.days - sum(monthPlan.getRange(0, j)));
                     }
-                    db.runtimeData.itemStatistics.updateEventItems();
-                  });
-                },
-              ),
-              DefaultTextStyle(
-                style: Theme.of(context).textTheme.body1,
-                child: AutoSizeText(
-                  leftNum.toString(),
-                  maxLines: 1,
-                  group: _autoSizeGroup,
-                  style: TextStyle(
-                      color: leftNum >= 0 ? Colors.grey : Colors.redAccent),
-                ),
-              )
-            ],
+                    statistics.updateEventItems();
+                  },
+                  height: 250,
+                  itemExtent: 36,
+                ).showModal(context);
+              },
+            ),
           )
         ],
       ));

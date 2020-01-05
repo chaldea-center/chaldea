@@ -163,18 +163,19 @@ class CraftDetailBasePage extends StatelessWidget {
                 child: Image(image: db.getIconImage(ce.skillIcon), height: 40),
               ),
               TableCellData(
-                  flex: 5,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(ce.skill),
-                      if (ce.skillMax?.isNotEmpty == true) ...[
-                        Divider(height: 2),
-                        Text(ce.skillMax),
-                      ]
-                    ],
-                  ))
+                flex: 5,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(ce.skill),
+                    if (ce.skillMax?.isNotEmpty == true) ...[
+                      Divider(height: 2),
+                      Text(ce.skillMax),
+                    ]
+                  ],
+                ),
+              )
             ],
           ),
           for (var i = 0; i < ce.eventIcons.length; i++)
