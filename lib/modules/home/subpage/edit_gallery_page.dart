@@ -21,7 +21,7 @@ class _EditGalleryPageState extends State<EditGalleryPage> {
             db.userData.galleries[name] = _selected;
             db.onAppUpdate();
           },
-          title: Text(item.titleBuilder(context)),
+          title: Text(item.title),
         ));
       }
     });
@@ -55,21 +55,20 @@ class GalleryItem {
 
   // instant part
   final String name;
-  final String Function(BuildContext context) titleBuilder;
+  final String title;
   final IconData icon;
   final WidgetBuilder builder;
   final bool isDetail;
 
   const GalleryItem(
       {@required this.name,
-      @required this.titleBuilder,
+      @required this.title,
       @required this.icon,
-      @required this.builder,
+      this.builder,
       this.isDetail = false})
       : assert(name != null),
-        assert(titleBuilder != null),
-        assert(icon != null),
-        assert(builder != null);
+        assert(title != null),
+        assert(icon != null);
 
   @override
   String toString() {

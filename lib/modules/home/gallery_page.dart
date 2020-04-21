@@ -4,9 +4,10 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/craft/craft_list_page.dart';
 import 'package:chaldea/modules/damage_calc/damage_calc_page.dart';
-import 'package:chaldea/modules/drop_calculator//drop_calculator_page.dart';
+import 'package:chaldea/modules/drop_calculator/drop_calculator_page.dart';
 import 'package:chaldea/modules/event/events_page.dart';
 import 'package:chaldea/modules/extras/ap_calc_page.dart';
+import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:flutter/foundation.dart';
@@ -15,8 +16,6 @@ import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
-
-import 'subpage/edit_gallery_page.dart';
 
 class GalleryPage extends StatefulWidget {
   @override
@@ -82,54 +81,64 @@ class _GalleryPageState extends State<GalleryPage> {
     resolveSliderImageUrls();
     kAllGalleryItems = {
       GalleryItem.servant: GalleryItem(
-          name: GalleryItem.servant,
-          titleBuilder: (context) => S.of(context).servant_title,
-          icon: Icons.people,
-          builder: (context) => ServantListPage()),
+        name: GalleryItem.servant,
+        title: S.of(context).servant_title,
+        icon: Icons.people,
+        builder: (context) => ServantListPage(),
+      ),
       GalleryItem.craft_essential: GalleryItem(
-          name: GalleryItem.craft_essential,
-          titleBuilder: (context) => S.of(context).craft_essential,
-          icon: Icons.extension,
-          builder: (context) => CraftListPage()),
+        name: GalleryItem.craft_essential,
+        title: S.of(context).craft_essential,
+        icon: Icons.extension,
+        builder: (context) => CraftListPage(),
+      ),
       GalleryItem.cmd_code: GalleryItem(
-          name: GalleryItem.cmd_code,
-          titleBuilder: (context) => S.of(context).cmd_code_title,
-          icon: Icons.stars,
-          builder: (context) => CmdCodeListPage()),
+        name: GalleryItem.cmd_code,
+        title: S.of(context).cmd_code_title,
+        icon: Icons.stars,
+        builder: (context) => CmdCodeListPage(),
+      ),
       GalleryItem.item: GalleryItem(
-          name: GalleryItem.item,
-          titleBuilder: (context) => S.of(context).item_title,
-          icon: Icons.category,
-          builder: (context) => ItemListPage()),
+        name: GalleryItem.item,
+        title: S.of(context).item_title,
+        icon: Icons.category,
+        builder: (context) => ItemListPage(),
+      ),
       GalleryItem.event: GalleryItem(
-          name: GalleryItem.event,
-          titleBuilder: (context) => S.of(context).event_title,
-          icon: Icons.event_available,
-          builder: (context) => EventListPage()),
+        name: GalleryItem.event,
+        title: S.of(context).event_title,
+        icon: Icons.event_available,
+        builder: (context) => EventListPage(),
+      ),
       GalleryItem.drop_calculator: GalleryItem(
-          name: GalleryItem.drop_calculator,
-          titleBuilder: (context) => S.of(context).drop_calculator,
-          icon: Icons.pin_drop,
-          builder: (context) => DropCalculatorPage()),
+        name: GalleryItem.drop_calculator,
+        title: S.of(context).drop_calculator,
+        icon: Icons.pin_drop,
+        builder: (context) => DropCalculatorPage(),
+      ),
       GalleryItem.calculator: GalleryItem(
-          name: GalleryItem.calculator,
-          titleBuilder: (context) => S.of(context).calculator,
-          icon: Icons.keyboard,
-          builder: (context) => DamageCalcPage(),
-          isDetail: true),
+        name: GalleryItem.calculator,
+        title: S.of(context).calculator,
+        icon: Icons.keyboard,
+        builder: (context) => DamageCalcPage(),
+        isDetail: true,
+      ),
       GalleryItem.ap_cal: GalleryItem(
         name: GalleryItem.ap_cal,
-        titleBuilder: (context) => 'AP计算',
+        title: 'AP计算',
         icon: Icons.directions_run,
         builder: (context) => APCalcPage(),
+        //
         isDetail: true,
       ),
       GalleryItem.more: GalleryItem(
-          name: GalleryItem.more,
-          titleBuilder: (context) => S.of(context).more,
-          icon: Icons.add,
-          builder: (context) => EditGalleryPage(galleries: kAllGalleryItems),
-          isDetail: true),
+        name: GalleryItem.more,
+        title: S.of(context).more,
+        icon: Icons.add,
+        builder: (context) => EditGalleryPage(galleries: kAllGalleryItems),
+        //fail
+        isDetail: true,
+      ),
     };
   }
 
@@ -154,7 +163,7 @@ class _GalleryPageState extends State<GalleryPage> {
                 child: Align(
                   alignment: Alignment.topCenter,
                   child: AutoSizeText(
-                    item.titleBuilder(context),
+                    item.title,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -162,8 +171,10 @@ class _GalleryPageState extends State<GalleryPage> {
             ],
           ),
           onPressed: () {
-            SplitRoute.popAndPush(context,
-                builder: item.builder, useDetail: item.isDetail);
+            if (item.builder != null) {
+              SplitRoute.popAndPush(context,
+                  builder: item.builder, useDetail: item.isDetail);
+            }
           },
         ));
       }
