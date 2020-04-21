@@ -1,7 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/drop_calculator/drop_calculator_page.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
 import 'item_detail_page.dart';
@@ -41,23 +40,24 @@ class ItemListPageState extends State<ItemListPage>
               icon: Icon(Icons.list),
               onPressed: () {
                 showDialog(
-                    context: context,
-                    child: SimpleDialog(
-                      title: Text('Choose plan'),
-                      children: List.generate(db.curUser.servantPlans.length,
-                          (index) {
-                        return ListTile(
-                          title: Text('Plan ${index + 1}'),
-                          selected: index == db.curUser.curSvtPlanNo,
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            db.curUser.curSvtPlanNo = index;
-                            db.itemStat.update();
-                            setState(() {});
-                          },
-                        );
-                      }),
-                    ));
+                  context: context,
+                  builder: (context) => SimpleDialog(
+                    title: Text('Choose plan'),
+                    children:
+                        List.generate(db.curUser.servantPlans.length, (index) {
+                      return ListTile(
+                        title: Text('Plan ${index + 1}'),
+                        selected: index == db.curUser.curSvtPlanNo,
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          db.curUser.curSvtPlanNo = index;
+                          db.itemStat.update();
+                          setState(() {});
+                        },
+                      );
+                    }),
+                  ),
+                );
               }),
           IconButton(
             icon: Icon(
@@ -79,6 +79,7 @@ class ItemListPageState extends State<ItemListPage>
                     params.objNums.add(-value);
                   }
                 });
+                params.sortByItem();
                 SplitRoute.push(
                   context,
                   builder: (context) => DropCalculatorPage(params: params),
@@ -130,17 +131,6 @@ class _ItemListTabState extends State<ItemListTab> {
         final node = FocusNode();
         final textController = TextEditingController(
             text: kThousandFormatter.format(db.curUser.items[key] ?? 0));
-        node.addListener(() {
-          // auto focus problem when deactivated->activated
-          for (var component in inputsManager.components) {
-            if (component.focusNode.hasFocus) {
-              return;
-            }
-          }
-          // if no one has focus
-          SchedulerBinding.instance.addPostFrameCallback(
-              (_) => FocusScope.of(context).requestFocus(_blankNode));
-        });
         inputsManager.components.add(InputComponent(
             data: item, controller: textController, focusNode: node));
       }
@@ -162,6 +152,7 @@ class _ItemListTabState extends State<ItemListTab> {
 
   @override
   void deactivate() {
+    FocusScope.of(context).requestFocus(_blankNode);
     db.saveUserData();
     super.deactivate();
   }

@@ -39,8 +39,7 @@ class KeepAliveBuilder extends StatefulWidget {
         super(key: key);
 
   @override
-  _KeepAliveBuilderState createState() =>
-      _KeepAliveBuilderState(wantKeepAlive);
+  _KeepAliveBuilderState createState() => _KeepAliveBuilderState(wantKeepAlive);
 }
 
 class _KeepAliveBuilderState extends State<KeepAliveBuilder>
@@ -57,4 +56,20 @@ class _KeepAliveBuilderState extends State<KeepAliveBuilder>
 
   @override
   bool get wantKeepAlive => _wantKeepAlive;
+}
+
+class AutoUnfocusBuilder extends StatelessWidget {
+  final WidgetBuilder builder;
+
+  AutoUnfocusBuilder({Key key, this.builder}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: builder(context),
+    );
+  }
 }

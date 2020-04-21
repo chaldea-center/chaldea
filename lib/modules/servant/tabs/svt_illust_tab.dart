@@ -80,9 +80,7 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
                                     placeholder: getPlaceholder(),
                                   ),
                               fullscreenDialog: true));
-                      setState(() {
-                        _tabController.animateTo(newIndex);
-                      });
+                      _tabController.animateTo(newIndex);
                     },
                     child: CachedNetworkImage(
                       imageUrl: url,

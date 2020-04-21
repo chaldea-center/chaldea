@@ -93,7 +93,7 @@ class CustomTableRow extends StatefulWidget {
 class _CustomTableRowState extends State<CustomTableRow> {
   /// first build without constraints, then calculated the max height
   /// of children, then rebuild to fit the constraints
-  BoxConstraints _maxConstraints;
+  BoxConstraints _calculatedConstraints;
   bool _needRebuild = true;
 
   @override
@@ -145,17 +145,17 @@ class _CustomTableRowState extends State<CustomTableRow> {
             _maxHeight = max(_maxHeight, box?.size?.height ?? _maxHeight);
           }
         });
-        if (_maxHeight > 0 && _maxHeight != _maxConstraints?.biggest?.height) {
+        if (_maxHeight > 0) {
           setState(() {
             _needRebuild = false;
-            _maxConstraints = BoxConstraints.expand(height: _maxHeight);
+            _calculatedConstraints = BoxConstraints.expand(height: _maxHeight);
           });
         }
       });
       return null;
     } else {
       _needRebuild = true;
-      return _maxConstraints;
+      return _calculatedConstraints;
     }
   }
 }

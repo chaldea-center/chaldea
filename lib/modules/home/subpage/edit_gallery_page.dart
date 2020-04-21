@@ -3,7 +3,7 @@ import 'package:chaldea/components/components.dart';
 class EditGalleryPage extends StatefulWidget {
   final Map<String, GalleryItem> galleries;
 
-  const EditGalleryPage({Key key, this.galleries}) : super(key: key);
+  EditGalleryPage({Key key, this.galleries}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _EditGalleryPageState();
@@ -47,6 +47,7 @@ class GalleryItem {
   static const String gacha = 'gacha';
   static const String calculator = 'calculator';
   static const String master_equip = 'master_equip';
+  static const String ap_cal = 'ap_cal';
   static const String backup = 'backup';
   static const String more = 'more';
 

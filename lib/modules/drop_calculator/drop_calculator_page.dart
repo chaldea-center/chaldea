@@ -7,7 +7,7 @@ import 'package:flutter_picker/flutter_picker.dart';
 class DropCalculatorPage extends StatefulWidget {
   final GLPKParams params;
 
-  const DropCalculatorPage({Key key, this.params}) : super(key: key);
+  DropCalculatorPage({Key key, this.params}) : super(key: key);
 
   @override
   _DropCalculatorPageState createState() => _DropCalculatorPageState();
@@ -313,16 +313,16 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                     onPressed: () {
                       showDialog(
                           context: context,
-                          child: SimpleCancelOkDialog(
-                            title: Text('Hints'),
-                            content: Text('计算结果仅供参考==\n'
-                                '>>>最低AP：\n过滤AP较低的free\n'
-                                '>>>掉落前n：\n仅限于单素材掉落在前n的关卡的合集\n'
-                                '以上筛选时将保证每个素材至少有一个关卡\n'
-                                '>>>目标：\n最低总次数或最低总AP为优化目标\n'
-                                '>>>版本：\n选择国服则国服未实装的素材将被踢出群\n'
-                                ''),
-                          ));
+                          builder: (_) => SimpleCancelOkDialog(
+                                title: Text('Hints'),
+                                content: Text('计算结果仅供参考==\n'
+                                    '>>>最低AP：\n过滤AP较低的free\n'
+                                    '>>>掉落前n：\n仅限于单素材掉落在前n的关卡的合集\n'
+                                    '以上筛选时将保证每个素材至少有一个关卡\n'
+                                    '>>>目标：\n最低总次数或最低总AP为优化目标\n'
+                                    '>>>版本：\n选择国服则国服未实装的素材将被踢出群\n'
+                                    ''),
+                              ));
                     })
               ],
             )

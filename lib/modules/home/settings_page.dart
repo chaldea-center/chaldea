@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 
 import 'subpage/about_page.dart';
 import 'subpage/account_page.dart';
-import 'subpage/lang_page.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -95,36 +94,18 @@ class _SettingsPageState extends State<SettingsPage> {
             children: <Widget>[
               ListTile(
                 title: Text(S.of(context).settings_language),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      S.of(context).language,
-                      style: TextStyle(color: Colors.black87),
-                    ),
-                    Icon(Icons.arrow_forward_ios)
-                  ],
-                ),
-                onTap: () {
-                  SplitRoute.popAndPush(context,
-                      builder: (context) => LanguagePage());
-                },
+                trailing: DropdownButton(
+                    underline: Divider(thickness: 0, color: Colors.transparent),
+                    value: S.of(context).language,
+                    items: LangCode.allEntries.keys.map((language) {
+                      return DropdownMenuItem(
+                          value: language, child: Text(language));
+                    }).toList(),
+                    onChanged: (language) {
+                      db.userData.language = language;
+                      db.onAppUpdate();
+                    }),
               ),
-//              // TODO: github issue
-//              ListTile(
-//                title: Text('Language'),
-//                trailing: DropdownButton(
-//                    underline: Divider(thickness: 0, color: Colors.transparent),
-//                    value: S.of(context).language,
-//                    items: LangCode.allEntries.keys.map((language) {
-//                      return DropdownMenuItem(
-//                          value: language, child: Text(language));
-//                    }).toList(),
-//                    onChanged: (language) {
-//                      db.userData.language = language;
-//                      db.onAppUpdate();
-//                    }),
-//              ),
               SwitchListTile.adaptive(
                   title: Text('使用移动数据下载'),
                   value: db.userData.useMobileNetwork ?? false,

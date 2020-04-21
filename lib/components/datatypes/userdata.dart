@@ -82,7 +82,7 @@ class UserData {
 
 @JsonSerializable(checked: true)
 class SvtFilterData {
-  bool favorite;
+  int favorite;
   String filterString;
   List<SvtCompare> sortKeys;
   List<bool> sortReversed;

@@ -4,6 +4,7 @@ import 'dart:math' show min;
 
 import 'package:chaldea/components/components.dart';
 import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:json_patch/json_patch.dart';
 import 'package:path/path.dart' show basename;
@@ -42,17 +43,18 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 title: Text('Clear userdata'),
                 onTap: () {
                   showDialog(
-                      context: context,
-                      child: SimpleCancelOkDialog(
-                        title: Text('Confirm'),
-                        content: Text('Delete userdata?'),
-                        onTapOk: () async {
-                          Fluttertoast.showToast(msg: 'cleaning userdata...');
-                          await db.clearData(user: true, game: false);
-                          setState(() {});
-                          Fluttertoast.showToast(msg: 'userdata cleared.');
-                        },
-                      ));
+                    context: context,
+                    builder: (_) => SimpleCancelOkDialog(
+                      title: Text('Confirm'),
+                      content: Text('Delete userdata?'),
+                      onTapOk: () async {
+                        Fluttertoast.showToast(msg: 'cleaning userdata...');
+                        await db.clearData(user: true, game: false);
+                        setState(() {});
+                        Fluttertoast.showToast(msg: 'userdata cleared.');
+                      },
+                    ),
+                  );
                 },
               ),
               ListTile(
@@ -60,21 +62,33 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 onTap: () {
                   showDialog(
                       context: context,
-                      child: SimpleCancelOkDialog(
-                        title: Text('Confirm'),
-                        content:
-                            Text('Backup userdata to\n${db.paths.savePath}'),
-                        onTapOk: () async {
-                          db.backupUserdata().then((fp) {
-                            showDialog(
-                                context: context,
-                                child: SimpleCancelOkDialog(
-                                  title: Text('Backup success'),
-                                  content: Text(fp),
-                                ));
-                          });
-                        },
-                      ));
+                      builder: (_) => SimpleCancelOkDialog(
+                            title: Text('Confirm'),
+                            content: Text(
+                                'Backup userdata to\n${db.paths.savePath}'),
+                            onTapOk: () async {
+                              final fp = db.backupUserdata();
+                              showInformDialog(context,
+                                  title: 'Backup success', content: fp);
+                            },
+                          ));
+                },
+              ),
+              ListTile(
+                title: Text('Import userdata'),
+                onTap: () async {
+                  try {
+                    final file = await FilePicker.getFile();
+                    if (file != null) {
+                      db.userData = UserData.fromJson(
+                          json.decode(file.readAsStringSync()));
+                      showToast(
+                          'successfully imported userdata:\n${file.path}');
+                      db.saveUserData();
+                    }
+                  } catch (e) {
+                    showToast('Import userdata failed! Error:\n$e');
+                  }
                 },
               ),
             ],
@@ -91,21 +105,22 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 onTap: () {
                   showDialog(
                       context: context,
-                      child: SimpleCancelOkDialog(
-                        title: Text('Confirm'),
-                        content: Text('reload default dataset?'),
-                        onTapOk: () async {
-                          Fluttertoast.showToast(
-                              msg: 'reloading gamedata...',
-                              toastLength: Toast.LENGTH_LONG);
-                          await db.loadZipAssets(kDefaultDatasetAssetKey,
-                              force: true);
-                          if (await db.loadGameData()) {
-                            Fluttertoast.showToast(msg: 'gamedata reloaded.');
-                          }
-                          setState(() {});
-                        },
-                      ));
+                      builder: (_) => SimpleCancelOkDialog(
+                            title: Text('Confirm'),
+                            content: Text('reload default dataset?'),
+                            onTapOk: () async {
+                              Fluttertoast.showToast(
+                                  msg: 'reloading gamedata...',
+                                  toastLength: Toast.LENGTH_LONG);
+                              await db.loadZipAssets(kDefaultDatasetAssetKey,
+                                  force: true);
+                              if (db.loadGameData()) {
+                                Fluttertoast.showToast(
+                                    msg: 'gamedata reloaded.');
+                              }
+                              setState(() {});
+                            },
+                          ));
                 },
               ),
               ListTile(
@@ -137,21 +152,52 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 onTap: () {
                   showDialog(
                       context: context,
-                      child: SimpleCancelOkDialog(
-                        title: Text('Confirm'),
-                        content: Text('clear then reload default dataset?'),
-                        onTapOk: () async {
-                          Fluttertoast.showToast(
-                              msg: 'clear & reloading',
-                              toastLength: Toast.LENGTH_LONG);
-                          await db.clearData(game: true);
-                          setState(() {});
-                          Fluttertoast.showToast(
-                              msg: 'Default dataset loaded.');
-                        },
-                      ));
+                      builder: (_) => SimpleCancelOkDialog(
+                            title: Text('Confirm'),
+                            content: Text('clear then reload default dataset?'),
+                            onTapOk: () async {
+                              Fluttertoast.showToast(
+                                  msg: 'clear & reloading',
+                                  toastLength: Toast.LENGTH_LONG);
+                              await db.clearData(game: true);
+                              setState(() {});
+                              Fluttertoast.showToast(
+                                  msg: 'Default dataset loaded.');
+                            },
+                          ));
                 },
-              )
+              ),
+              ListTile(
+                title: Text('Import gamedata(zip/json)'),
+                onTap: () async {
+                  try {
+                    final file = await FilePicker.getFile();
+                    if (file != null) {
+                      if (file.path.toLowerCase().endsWith('.zip')) {
+                        db.extractZip(file.readAsBytesSync().cast<int>(),
+                            db.paths.gameDataDir);
+                        db.loadGameData();
+                      } else if (file.path.toLowerCase().endsWith('.json')) {
+                        final newData = GameData.fromJson(
+                            jsonDecode(file.readAsStringSync()));
+                        if (newData.version != '0') {
+                          db.gameData = newData;
+                        } else {
+                          throw 'Invalid contents';
+                        }
+                      } else {
+                        throw 'unsupported file type';
+                      }
+                      showInformDialog(context,
+                          title: 'Import dataset successfully');
+                    }
+                  } catch (e) {
+                    showInformDialog(context,
+                        title: 'Import gamedata failed!',
+                        content: e.toString());
+                  }
+                },
+              ),
             ],
           ),
           TileGroup(
@@ -181,12 +227,12 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                                     msg: '$filename deleted.');
                                 break;
                               case 'extract':
-                                await db.extractZip(
+                                db.extractZip(
                                     File(cachedFiles[filename])
                                         .readAsBytesSync()
                                         .cast<int>(),
                                     db.paths.gameDataDir);
-                                await db.loadGameData();
+                                db.loadGameData();
                                 setState(() {});
                                 Fluttertoast.showToast(
                                     msg: '$filename extracted.');
@@ -328,7 +374,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
         var raf = file.openSync(mode: FileMode.write);
         raf.writeStringSync(json.encode(patched));
         raf.closeSync();
-        await db.loadGameData();
+        db.loadGameData();
         setState(() {});
         Fluttertoast.showToast(msg: 'patch success.');
         print('patched version: ${patched['version']}');

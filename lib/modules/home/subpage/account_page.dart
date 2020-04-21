@@ -115,31 +115,23 @@ class _AccountPageState extends State<AccountPage> {
     final canDelete = db.userData.users.length > 1;
     setState(() {
       showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-                title: Text('Delete ${db.userData.users[key].name}'),
-                content: canDelete
-                    ? null
-                    : Text('Cannot delete, at least one account!'),
-                actions: <Widget>[
-                  FlatButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: Text(S.of(context).cancel)),
-                  if (canDelete)
-                    FlatButton(
-                        onPressed: () {
-                          db.userData.users.remove(key);
-                          if (db.userData.curUsername == key) {
-                            db.userData.curUsername =
-                                db.userData.users.keys.first;
-                          }
-                          db.onAppUpdate();
-                          print('accounts: ${db.userData.users.keys.toList()}');
-                          Navigator.of(context).pop();
-                        },
-                        child: Text(S.of(context).ok)),
-                ],
-              ));
+        context: context,
+        builder: (context) => SimpleCancelOkDialog(
+          title: Text('Delete ${db.userData.users[key].name}'),
+          content:
+              canDelete ? null : Text('Cannot delete, at least one account!'),
+          onTapOk: canDelete
+              ? () {
+                  db.userData.users.remove(key);
+                  if (db.userData.curUsername == key) {
+                    db.userData.curUsername = db.userData.users.keys.first;
+                  }
+                  db.onAppUpdate();
+                  print('accounts: ${db.userData.users.keys.toList()}');
+                }
+              : null,
+        ),
+      );
     });
   }
 }

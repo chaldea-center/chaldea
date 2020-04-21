@@ -23,6 +23,7 @@ class ServantListPageState extends State<ServantListPage> {
     super.initState();
     filterData = db.userData.svtFilter;
     filterData.filterString = '';
+    filterData.favorite = 0;
   }
 
   @override
@@ -202,16 +203,15 @@ class ServantListPageState extends State<ServantListPage> {
               ),
               actions: <Widget>[
                 IconButton(
-                    icon: Icon(filterData.favorite == null
-                        ? Icons.star_half
-                        : filterData.favorite
-                            ? Icons.favorite
-                            : Icons.favorite_border),
+                    icon: Icon([
+                      Icons.remove_circle_outline,
+                      Icons.favorite,
+                      Icons.favorite_border
+                    ][filterData.favorite]),
+                    tooltip: ['All', 'Favorite', 'Others'][filterData.favorite],
                     onPressed: () {
                       setState(() {
-                        final favList = [null, true, false];
-                        filterData.favorite = favList[
-                            (favList.indexOf(filterData.favorite) + 1) % 3];
+                        filterData.favorite = (filterData.favorite + 1) % 3;
                       });
                     }),
                 IconButton(
@@ -236,9 +236,9 @@ class ServantListPageState extends State<ServantListPage> {
     List<Servant> shownList = [];
     beforeFiltrate();
     db.gameData.servants.forEach((no, svt) {
-      if (filterData.favorite == null ||
+      if (filterData.favorite == 0 ||
           filterData.favorite ==
-              (db.curUser.servants[no]?.curVal?.favorite ?? false)) {
+              ((db.curUser.servants[no]?.curVal?.favorite ?? false) ? 1 : 2)) {
         if (filtrateServant(svt)) {
           shownList.add(svt);
         }

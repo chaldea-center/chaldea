@@ -1,8 +1,8 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:package_info/package_info.dart';
@@ -20,12 +20,30 @@ class _AboutPageState extends State<AboutPage> {
     '效率剧场': 'https://sites.google.com/view/fgo-domus-aurea'
   };
 
+  final crashFile = File(db.paths.crashLog);
+  String crashLog;
+
+  @override
+  void initState() {
+    super.initState();
+    loadLog();
+  }
+
+  void loadLog() {
+    if (crashFile.existsSync()) {
+      crashLog = 'loading...';
+      crashFile.readAsLines().then((lines) {
+        crashLog =
+            lines.sublist(max(0, lines.length - 500), lines.length).join('\n');
+        setState(() {});
+      });
+    } else {
+      crashLog = 'no crash log found.';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final crashFile = File(db.paths.crashLog);
-    String crashLog = crashFile.existsSync()
-        ? crashFile.readAsStringSync()
-        : 'No crash log found';
     return Scaffold(
       appBar: AppBar(leading: BackButton(), title: Text('关于Chaldea')),
       body: ListView(
@@ -35,7 +53,7 @@ class _AboutPageState extends State<AboutPage> {
             footer: '若存在未标注的来源或侵权敬请告知',
             children: <Widget>[
               for (var ref in references.entries)
-                CustomTile(
+                ListTile(
                   title: Text(ref.key),
                   subtitle: AutoSizeText(ref.value, maxLines: 1),
                   onTap: () => jumpToLink(context, ref.key, ref.value),
@@ -55,29 +73,38 @@ class _AboutPageState extends State<AboutPage> {
                       body: '请附上出错页面截图.\n\n',
                       recipients: [kSupportTeamEmailAddress],
                       isHTML: true,
-                      attachmentPath:
-                          crashFile.existsSync() ? crashFile.path : null);
+                      attachmentPaths: [
+                        if (crashFile.existsSync()) crashFile.path,
+                      ]);
                   FlutterEmailSender.send(email);
                 },
               ),
               ListTile(title: Text('***@NGA')),
             ],
           ),
-          if (kDebugMode)
-            TileGroup(
-              header: 'Crash log (${crashFile.statSync().size ~/ 1000} KB)',
-              children: <Widget>[
-                ConstrainedBox(
-                  constraints: BoxConstraints(maxHeight: 300),
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: <Widget>[
-                      CustomTile(subtitle: Text(crashLog, maxLines: 200))
-                    ],
-                  ),
-                )
-              ],
-            ),
+          // if(kDebugMode)
+          TileGroup(
+            header: 'Crash log (${crashFile.statSync().size ~/ 1000} KB)',
+            children: <Widget>[
+              ListTile(
+                title: Text('Delete crash logs'),
+                onTap: () {
+                  crashFile.delete().then((_) {
+                    showToast('crash logs has been deleted.');
+                    loadLog();
+                    setState(() {});
+                  });
+                },
+              ),
+              ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: 500),
+                child: ListView(
+                  shrinkWrap: true,
+                  children: <Widget>[CustomTile(subtitle: Text(crashLog))],
+                ),
+              )
+            ],
+          ),
         ],
       ),
     );
@@ -86,7 +113,7 @@ class _AboutPageState extends State<AboutPage> {
   void jumpToLink(BuildContext context, String name, String link) {
     showDialog(
       context: context,
-      child: SimpleCancelOkDialog(
+      builder: (_) => SimpleCancelOkDialog(
         title: Text('跳转到 $name'),
         content:
             Text(link, style: TextStyle(decoration: TextDecoration.underline)),

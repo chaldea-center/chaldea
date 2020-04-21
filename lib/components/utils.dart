@@ -1,9 +1,30 @@
+import 'package:chaldea/components/components.dart';
+
 /// e.g. standalone functions
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 void showToast(String msg) {
   Fluttertoast.showToast(msg: msg);
+}
+
+void showInformDialog(BuildContext context, {String title, String content}) {
+  assert(title != null || content != null);
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: title == null ? null : Text(title),
+      content: content == null ? null : Text(content),
+      actions: <Widget>[
+        FlatButton(
+          child: Text(S.of(context).ok),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        )
+      ],
+    ),
+  );
 }
 
 typedef SheetBuilder = Widget Function(BuildContext, StateSetter);

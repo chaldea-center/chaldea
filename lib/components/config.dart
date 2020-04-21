@@ -48,18 +48,23 @@ class Database {
   }
 
   // data files operation
-  Future<bool> loadUserData() async {
-    userData = parseJson(
-        parser: () => UserData.fromJson(getJsonFromFile(
-              paths.userDataPath,
-              k: () => <String, dynamic>{},
-            )),
-        k: () => UserData());
-    print('appdata reloaded');
-    return true;
+  bool loadUserData() {
+    try {
+      final newData = UserData.fromJson(
+          getJsonFromFile(paths.userDataPath, k: () => <String, dynamic>{}));
+      userData?.dispose();
+      userData = newData;
+      print('userdata reloaded.');
+      return true;
+    } catch (e, s) {
+      userData ??= UserData(); // if not null, don't change data
+      print('load userdata error:\n$e\n$s');
+      showToast('ERROR load userdata\n$e');
+      return false;
+    }
   }
 
-  Future<bool> loadGameData() async {
+  bool loadGameData() {
     // TODO: use downloaded data if exist
     try {
       gameData = GameData.fromJson(getJsonFromFile(paths.gameDataFilepath));
@@ -74,40 +79,41 @@ class Database {
   }
 
   Future<Null> loadZipAssets(String assetKey,
-      {String extractDir, bool force = false}) async {
+      {String extractDir, bool force = false}) {
     extractDir ??= paths.gameDataDir;
     if (force || !Directory(extractDir).existsSync()) {
       //extract zip file
-      return rootBundle.load(assetKey).then((data) async {
-        await extractZip(data.buffer.asUint8List().cast<int>(), extractDir);
+      return rootBundle.load(assetKey).then((data) {
+        extractZip(data.buffer.asUint8List().cast<int>(), extractDir);
       }, onError: (e, s) {
         print('Error load assets: $assetKey\n$e');
         showToast('Error load assets: $assetKey\n$e');
       });
     }
+    return Future.value(null);
   }
 
-  Future<Null> saveUserData() {
-    return _saveJsonToFile(userData, paths.userDataPath);
+  void saveUserData() {
+    _saveJsonToFile(userData, paths.userDataPath);
   }
 
-  Future<String> backupUserdata() async {
+  String backupUserdata() {
     String timeStamp = DateFormat('yyyyMMddTHHmmss').format(DateTime.now());
     String filepath = join(paths.savePath, 'userdata-$timeStamp.json');
-    await _saveJsonToFile(userData, filepath);
+    _saveJsonToFile(userData, filepath);
     return filepath;
   }
 
   Future<void> clearData({bool user = false, bool game = false}) async {
     if (user) {
       _deleteFileOrDirectory(paths.userDataPath);
-      await loadUserData();
+      loadUserData();
     }
     if (game) {
       // to clear all history version or not?
       _deleteFileOrDirectory(paths.gameDataDir);
       await loadZipAssets(kDefaultDatasetAssetKey);
-      await loadGameData();
+      loadGameData();
     }
   }
 
@@ -140,13 +146,14 @@ class Database {
     return result;
   }
 
-  Future<Null> _saveJsonToFile(dynamic jsonData, String filepath) async {
+  void _saveJsonToFile(dynamic jsonData, String filepath) {
     try {
       final contents = json.encode(jsonData);
       File(filepath).writeAsStringSync(contents);
       // print('Saved "$relativePath"\n');
     } catch (e, s) {
       print('Error saving "$filepath"!\n$e\n$s');
+      showToast('Error saving "$filepath"!\n$e');
     }
   }
 
@@ -176,10 +183,19 @@ class Database {
     return result;
   }
 
-  Future<Null> extractZip(List<int> bytes, String path) async {
+  void extractZip(List<int> bytes, String path, {Function onError}) {
     Archive archive = ZipDecoder().decodeBytes(bytes);
     print('------------------------------------------------------------');
     print('Zip file has been extracted, directory tree ($path)}):');
+    if (archive.findFile(kGameDataFilename) == null) {
+      final exception =
+          FormatException('Archive file doesn\'t contain $kGameDataFilename');
+      if (onError != null) {
+        onError(exception);
+      } else {
+        throw exception;
+      }
+    }
     for (ArchiveFile file in archive) {
       String fullFilepath = join(path, file.name);
       if (file.isFile) {

@@ -116,7 +116,10 @@ class CraftDetailBasePage extends StatelessWidget {
                         children: [TableCellData(text: 'No. ${ce.no}')]),
                     CustomTableRow(children: [
                       TableCellData(text: '画师', isHeader: true),
-                      TableCellData(text: ce.illustrators.join(' & '), flex: 3)
+                      TableCellData(
+                          text: ce.illustrators.join(' & '),
+                          flex: 3,
+                          maxLines: 1)
                     ]),
                     CustomTableRow(children: [
                       TableCellData(text: '稀有度', isHeader: true),
@@ -126,9 +129,11 @@ class CraftDetailBasePage extends StatelessWidget {
                     ]),
                     CustomTableRow(children: [
                       TableCellData(text: 'ATK', isHeader: true),
-                      TableCellData(text: '${ce.atkMin}/${ce.atkMax}'),
+                      TableCellData(
+                          text: '${ce.atkMin}/${ce.atkMax}', maxLines: 1),
                       TableCellData(text: 'HP', isHeader: true),
-                      TableCellData(text: '${ce.hpMin}/${ce.hpMax}'),
+                      TableCellData(
+                          text: '${ce.hpMin}/${ce.hpMax}', maxLines: 1),
                     ])
                   ],
                 ),

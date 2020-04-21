@@ -23,6 +23,7 @@ class S implements WidgetsLocalizations {
 
   String get backup => "Backup to ...";
   String get backup_restore => "Backup & Restore";
+  String get calculator => "Calculator";
   String get cancel => "Cancel";
   String get cmd_code_title => "Command Code";
   String get craft_essential => "Craft Essential";
@@ -209,6 +210,8 @@ class $zh extends S {
   String get item_title => "素材";
   @override
   String get gallery_tab_name => "首页";
+  @override
+  String get calculator => "计算器";
   @override
   String get restore => "Restore";
   @override

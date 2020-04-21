@@ -1,7 +1,6 @@
 ///TODO: add transition animation and swipe support
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'config.dart' show db;
 
@@ -13,41 +12,39 @@ bool isTablet(BuildContext context) {
 }
 
 class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
+  static String _detailArguments = 'DETAIL';
   final WidgetBuilder builder;
-  final RouteSettings settings;
   bool tablet;
   FocusScopeNode node = FocusScopeNode();
 
   SplitRoute({@required this.builder, RouteSettings settings})
-      : settings = settings ?? RouteSettings(),
-        super(settings: settings ?? RouteSettings());
+      : super(settings: settings);
 
   ///if [builder] is null, just pop without push
   static Future popAndPush(BuildContext context,
-      {WidgetBuilder builder, bool isDetail = true}) {
+      {WidgetBuilder builder, bool useDetail = true}) {
     FocusScope.of(context).requestFocus(FocusNode());
-    Navigator.of(context).popUntil((route) => route.settings.isInitialRoute);
-    if (builder != null) {
-      return Navigator.of(context).push(SplitRoute(
-          builder: builder,
-          settings: RouteSettings(isInitialRoute: !isDetail)));
-    } else {
-      return Future.value(null);
-    }
+    Navigator.of(context)
+        .popUntil((route) => route.settings.arguments != _detailArguments);
+    if (builder == null) return Future.value();
+    return Navigator.of(context).push(SplitRoute(
+      builder: builder,
+      settings: useDetail ? RouteSettings(arguments: _detailArguments) : null,
+    ));
   }
 
   static Future push(BuildContext context,
-      {WidgetBuilder builder, bool isDetail = true}) {
+      {WidgetBuilder builder, bool useDetail = true}) {
     assert(builder != null);
     FocusScope.of(context).requestFocus(FocusNode());
     return Navigator.of(context).push(SplitRoute(
-        builder: builder, settings: RouteSettings(isInitialRoute: !isDetail)));
+      builder: builder,
+      settings: useDetail ? RouteSettings(arguments: _detailArguments) : null,
+    ));
   }
 
   static Widget createMasterPage(BuildContext context, Widget child) {
-    if (!isTablet(context)) {
-      return child;
-    }
+    if (!isTablet(context)) return child;
     return Row(
       children: <Widget>[
         Flexible(
@@ -63,7 +60,7 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
     );
   }
 
-  // DetailPage should not be created outside SplitRoute()
+  /// DetailPage should not be created outside SplitRoute()
   Widget createDetailPage(BuildContext context, Widget child) {
     final fullWidth = MediaQuery.of(context).size.width,
         masterWidth = fullWidth * kMasterRatio / 100,
@@ -87,15 +84,15 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
 
   @override
   Iterable<OverlayEntry> createOverlayEntries() sync* {
-    SystemChannels.textInput.invokeMethod('TextInput.hide');
+    // SystemChannels.textInput.invokeMethod('TextInput.hide');
     yield OverlayEntry(
         opaque: false,
         maintainState: true,
         builder: (context) {
           tablet = isTablet(context);
-          return settings.isInitialRoute
-              ? createMasterPage(context, builder(context))
-              : createDetailPage(context, builder(context));
+          return _isDetailRoute(settings)
+              ? createDetailPage(context, builder(context))
+              : createMasterPage(context, builder(context));
         });
   }
 
@@ -113,10 +110,14 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
   /// but this getter is called only once. thus the error is:
   /// when portrait to landscape, detail-page is still opaque(black master part)
   @override
-  bool get opaque => settings.isInitialRoute == true;
+  bool get opaque => !_isDetailRoute(settings) || !tablet;
 
   @override
   Duration get transitionDuration => Duration(milliseconds: 250);
+
+  static bool _isDetailRoute(RouteSettings settings) {
+    return settings?.arguments == _detailArguments;
+  }
 }
 
 class SplitViewBackButton extends StatelessWidget {

@@ -104,6 +104,19 @@ class GLPKParams {
     controllers?.clear();
   }
 
+  void sortByItem() {
+    final map = Map.fromIterables(objRows, objNums);
+    final getSortVal = (String key) {
+      return db.gameData.items[key]?.id ?? -1;
+    };
+    objRows.sort((a, b) {
+      return getSortVal(a) - getSortVal(b);
+    });
+    for (int i = 0; i < objRows.length; i++) {
+      objNums[i] = map[objRows[i]];
+    }
+  }
+
   GLPKParams copyWith({
     List<String> objRows,
     List<int> objNums,

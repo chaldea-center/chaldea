@@ -108,23 +108,24 @@ class ServantDetailPageState extends State<ServantDetailPage>
                 icon: Icon(Icons.list),
                 onPressed: () {
                   showDialog(
-                      context: context,
-                      child: SimpleDialog(
-                        title: Text('Choose plan'),
-                        children: List.generate(db.curUser.servantPlans.length,
-                            (index) {
-                          return ListTile(
-                            title: Text('Plan ${index + 1}'),
-                            selected: index == db.curUser.curSvtPlanNo,
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              db.curUser.curSvtPlanNo = index;
-                              this.setState(() {});
-                              db.itemStat.updateSvtItems();
-                            },
-                          );
-                        }),
-                      ));
+                    context: context,
+                    builder: (context) => SimpleDialog(
+                      title: Text('Choose plan'),
+                      children: List.generate(db.curUser.servantPlans.length,
+                          (index) {
+                        return ListTile(
+                          title: Text('Plan ${index + 1}'),
+                          selected: index == db.curUser.curSvtPlanNo,
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            db.curUser.curSvtPlanNo = index;
+                            this.setState(() {});
+                            db.itemStat.updateSvtItems();
+                          },
+                        );
+                      }),
+                    ),
+                  );
                 }),
           ],
         ),

@@ -450,7 +450,7 @@ class FilterOption<T> extends StatelessWidget {
             style: TextStyle(
                 color: selected
                     ? selectedTextColor
-                    : Theme.of(context).textTheme.title.color),
+                    : Theme.of(context).textTheme.headline5.color),
             child: child ?? Text(value.toString()),
           ),
           shape: ContinuousRectangleBorder(

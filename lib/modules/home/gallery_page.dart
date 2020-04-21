@@ -3,8 +3,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/craft/craft_list_page.dart';
+import 'package:chaldea/modules/damage_calc/damage_calc_page.dart';
 import 'package:chaldea/modules/drop_calculator//drop_calculator_page.dart';
 import 'package:chaldea/modules/event/events_page.dart';
+import 'package:chaldea/modules/extras/ap_calc_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:flutter/foundation.dart';
@@ -109,6 +111,19 @@ class _GalleryPageState extends State<GalleryPage> {
           titleBuilder: (context) => S.of(context).drop_calculator,
           icon: Icons.pin_drop,
           builder: (context) => DropCalculatorPage()),
+      GalleryItem.calculator: GalleryItem(
+          name: GalleryItem.calculator,
+          titleBuilder: (context) => S.of(context).calculator,
+          icon: Icons.keyboard,
+          builder: (context) => DamageCalcPage(),
+          isDetail: true),
+      GalleryItem.ap_cal: GalleryItem(
+        name: GalleryItem.ap_cal,
+        titleBuilder: (context) => 'AP计算',
+        icon: Icons.directions_run,
+        builder: (context) => APCalcPage(),
+        isDetail: true,
+      ),
       GalleryItem.more: GalleryItem(
           name: GalleryItem.more,
           titleBuilder: (context) => S.of(context).more,
@@ -120,6 +135,7 @@ class _GalleryPageState extends State<GalleryPage> {
 
   List<Widget> _getShownGalleries(BuildContext context) {
     List<Widget> _galleryItems = [];
+    ListTile();
     kAllGalleryItems.forEach((name, item) {
       if ((db.userData.galleries[name] ?? true) || name == GalleryItem.more) {
         _galleryItems.add(FlatButton(
@@ -147,7 +163,7 @@ class _GalleryPageState extends State<GalleryPage> {
           ),
           onPressed: () {
             SplitRoute.popAndPush(context,
-                builder: item.builder, isDetail: item.isDetail);
+                builder: item.builder, useDetail: item.isDetail);
           },
         ));
       }
@@ -162,18 +178,18 @@ class _GalleryPageState extends State<GalleryPage> {
         onTap: () {
           showDialog(
               context: context,
-              child: SimpleCancelOkDialog(
-                title: Text('Jump to Mooncell?'),
-                content: Text(link,
-                    style: TextStyle(decoration: TextDecoration.underline)),
-                onTapOk: () async {
-                  if (await canLaunch(link)) {
-                    launch(link);
-                  } else {
-                    showToast('Could not launch link:\n$link');
-                  }
-                },
-              ));
+              builder: (_) => SimpleCancelOkDialog(
+                    title: Text('Jump to Mooncell?'),
+                    content: Text(link,
+                        style: TextStyle(decoration: TextDecoration.underline)),
+                    onTapOk: () async {
+                      if (await canLaunch(link)) {
+                        launch(link);
+                      } else {
+                        showToast('Could not launch link:\n$link');
+                      }
+                    },
+                  ));
         },
         child: CachedNetworkImage(
           imageUrl: imgUrl,

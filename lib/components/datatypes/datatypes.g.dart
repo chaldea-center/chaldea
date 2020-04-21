@@ -1173,7 +1173,7 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
 SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
   return $checkedNew('SvtFilterData', json, () {
     final val = SvtFilterData(
-      favorite: $checkedConvert(json, 'favorite', (v) => v as bool),
+      favorite: $checkedConvert(json, 'favorite', (v) => v as int),
       sortKeys: $checkedConvert(
           json,
           'sortKeys',

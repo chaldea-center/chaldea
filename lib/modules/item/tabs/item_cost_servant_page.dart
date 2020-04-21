@@ -95,10 +95,8 @@ class ItemCostServantPage extends StatelessWidget {
                 text: formatNumToString(num, 'kilo'),
                 padding: EdgeInsets.only(right: 5, bottom: 16),
                 onTap: () {
-                  Navigator.of(context)
-                      .push(SplitRoute(
-                          builder: (context) => ServantDetailPage(svt)))
-                      .then((_) {});
+                  SplitRoute.push(context,
+                      builder: (context) => ServantDetailPage(svt));
                 },
               ),
             ),
