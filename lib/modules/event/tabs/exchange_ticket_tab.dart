@@ -80,7 +80,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                   Text(monthPlan[i] == 0 ? '' : monthPlan[i].toString()),
                   Divider(height: 1),
                   DefaultTextStyle(
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context).textTheme.body1,//TODO: body1->bodyText2
                     child: AutoSizeText(
                       leftNum.toString(),
                       maxLines: 1,
