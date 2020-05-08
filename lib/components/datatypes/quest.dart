@@ -52,10 +52,9 @@ class Enemy {
   String shownName;
   String className;
   int rank;
+  int hp;
 
   Enemy({this.name, this.shownName, this.className, this.rank, this.hp});
-
-  int hp;
 
   factory Enemy.fromJson(Map<String, dynamic> data) => _$EnemyFromJson(data);
 

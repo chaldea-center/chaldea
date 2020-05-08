@@ -1,4 +1,5 @@
 {
+  "@@locale": "zh",
   "language": "简体中文",
   "hello": "你好！Master!",
   "gallery_tab_name": "首页",

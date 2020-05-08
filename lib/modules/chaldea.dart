@@ -4,7 +4,6 @@ import 'package:catcher/core/catcher.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:chaldea/modules/home/home_page.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 class Chaldea extends StatefulWidget {
@@ -13,11 +12,13 @@ class Chaldea extends StatefulWidget {
 }
 
 class _ChaldeaState extends State<Chaldea> {
+  bool _initiated = false;
+
   void onAppUpdate() {
     setState(() {});
   }
 
-  Future<Null> initialApp() async {
+  Future<Null> initData() async {
     await db.initial();
     db.onAppUpdate = this.onAppUpdate;
     await db.loadZipAssets(kDefaultDatasetAssetKey);
@@ -25,14 +26,14 @@ class _ChaldeaState extends State<Chaldea> {
     db.loadUserData();
     db.itemStat.update();
     db.checkNetwork();
+    _initiated = true;
     setState(() {});
   }
 
   @override
   void initState() {
-    // show anything after data loaded in initial()!!!
     super.initState();
-    SchedulerBinding.instance.addPostFrameCallback((_) => initialApp());
+    initData();
   }
 
   @override
@@ -48,13 +49,11 @@ class _ChaldeaState extends State<Chaldea> {
         GlobalWidgetsLocalizations.delegate
       ],
       supportedLocales: S.delegate.supportedLocales,
-      localeResolutionCallback:
-          S.delegate.resolution(fallback: Locale('zh', '')),
       builder: (context, widget) {
         Catcher.addDefaultErrorWidget(showStacktrace: true);
         return widget;
       },
-      home: db.userData == null ? BlankPage() : HomePage(),
+      home: _initiated ? HomePage() : BlankPage(),
     );
   }
 }

@@ -274,7 +274,12 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
 
   Widget buildButtonBar() {
     final curVal = status.curVal;
-    State state = widget.parent ?? this;
+    // Missing canonical name for Reference to _State&Object&Diagnosticable
+    State state; // = widget.parent ?? this;
+    if (widget.parent != null)
+      state = widget.parent;
+    else
+      state = this;
     return Container(
       decoration: BoxDecoration(
           border: Border(top: Divider.createBorderSide(context, width: 0.5))),
@@ -296,16 +301,14 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                         (i) => DropdownMenuItem(
                             value: i + 1, child: Text('Lv. ${i + 1}'))),
                     onChanged: (v) {
-                      state.setState(
-                        () {
-                          curVal.favorite = plan.favorite = true;
-                          curVal.ascension = 4;
-                          for (var i = 0; i < 3; i++) {
-                            curVal.skills[i] = v;
-                            // plan.skills[i] = max(v, plan.skills[i]);
-                          }
-                        },
-                      );
+                      state.setState(() {
+                        curVal.favorite = plan.favorite = true;
+                        curVal.ascension = 4;
+                        for (var i = 0; i < 3; i++) {
+                          curVal.skills[i] = v;
+                          // plan.skills[i] = max(v, plan.skills[i]);
+                        }
+                      });
                       db.userData.broadcastUserUpdate();
                       db.itemStat.updateSvtItems();
                     },

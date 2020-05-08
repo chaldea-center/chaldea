@@ -20,3 +20,4 @@ Chaldea center.
  - performance: item stat update
  - event detail: add switch (including ticket page?).
  - item detail->events tab: tap to event detail page
+ - svt filter add >999

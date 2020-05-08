@@ -25,17 +25,20 @@ void main() async {
       Zone.current.handleUncaughtError(details.exception, details.stack);
     }
   };
-  runZoned(
-    () {
-      Catcher(Chaldea(), releaseConfig: catcherOptions);
-    },
-    zoneSpecification: ZoneSpecification(
+  if (kDebugMode)
+    runApp(Chaldea());
+  else
+    runZoned(
+      () {
+        Catcher(Chaldea(), releaseConfig: catcherOptions);
+      },
+      zoneSpecification: ZoneSpecification(
 //      print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
 //        // catch all print msg(line)
 //      },
-    ),
-    onError: (error, stackTrace) async {
-      // called in release mode
-    },
-  );
+          ),
+      onError: (error, stackTrace) async {
+        // called in release mode
+      },
+    );
 }

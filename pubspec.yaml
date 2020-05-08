@@ -26,28 +26,27 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  archive: ^2.0.11
+  after_layout: ^1.0.7+2
+  archive: ^2.0.13
   auto_size_text: ^2.1.0
-  cached_network_image: ^2.0.0
-  catcher: ^0.3.3
+  cached_network_image: ^2.1.0+1
+  catcher: ^0.3.6
   connectivity: ^0.4.8+2
   cupertino_icons: ^0.1.3
   dio: ^3.0.9
-  file_picker: ^1.6.1
+  file_picker: ^1.8.0+1
   flutter_email_sender: ^3.0.1
   flutter_picker: ^1.1.3
   flutter_swiper: ^1.1.6
   flutter_webview_plugin: ^0.3.11
   fluttertoast: ^4.0.1
-  intl: ^0.16.0
+  intl: ^0.16.1
   json_annotation: ^3.0.1
   json_patch: 2.0.0
-  logger: 0.8.3
-  package_info: ^0.4.0+16
-  path_provider: ^1.6.5
-  url_launcher: ^5.4.2
+  logger: 0.9.1
+  package_info: ^0.4.0+17
+  path_provider: ^1.6.7
+  url_launcher: ^5.4.5
 
 
 dev_dependencies:
@@ -83,7 +82,6 @@ flutter:
     - res/data/
     - res/img/
     - res/lib/
-    - res/values/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -110,3 +108,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+flutter_intl:
+  enabled: true
+  main_locale: zh

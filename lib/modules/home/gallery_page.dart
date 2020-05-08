@@ -75,9 +75,7 @@ class _GalleryPageState extends State<GalleryPage> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
+  void initData(BuildContext context) {
     resolveSliderImageUrls();
     kAllGalleryItems = {
       GalleryItem.servant: GalleryItem(
@@ -144,7 +142,6 @@ class _GalleryPageState extends State<GalleryPage> {
 
   List<Widget> _getShownGalleries(BuildContext context) {
     List<Widget> _galleryItems = [];
-    ListTile();
     kAllGalleryItems.forEach((name, item) {
       if ((db.userData.galleries[name] ?? true) || name == GalleryItem.more) {
         _galleryItems.add(FlatButton(
@@ -217,6 +214,7 @@ class _GalleryPageState extends State<GalleryPage> {
   @override
   Widget build(BuildContext context) {
     final sliderPages = _getSliderPages();
+    initData(context);
     return Scaffold(
         appBar: AppBar(
           title: Text("Chaldea"),

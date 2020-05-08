@@ -137,8 +137,12 @@ class Database {
       result = jsonDecode(contents);
       print('loaded json "$filepath".');
     } on FileSystemException catch (e) {
-      result = k == null ? null : k();
-      print('error loading "$filepath", use defailt value. Error:\n$e');
+      if (k != null) {
+        result = k == null ? null : k();
+        print('error loading "$filepath", use defailt value. Error:\n$e');
+      } else {
+        rethrow;
+      }
     } catch (e, s) {
       result = k == null ? null : k();
       print('error loading "$filepath", use defailt value. Error:\n$e\n$s');

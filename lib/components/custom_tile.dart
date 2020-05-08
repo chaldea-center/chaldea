@@ -186,21 +186,21 @@ class CustomTile extends StatelessWidget {
     if (tileTheme != null) {
       switch (tileTheme.style) {
         case ListTileStyle.drawer:
-          style = theme.textTheme.body2; //TODO: body2->bodyText1
+          style = theme.textTheme.bodyText1; //body2->bodyText1
           break;
         case ListTileStyle.list:
-          style = theme.textTheme.subhead;//TODO: subhead->subtitle1
+          style = theme.textTheme.subtitle1;//subhead->subtitle1
           break;
       }
     } else {
-      style = theme.textTheme.subhead;//TODO: subhead->headline6
+      style = theme.textTheme.headline6;//subhead->headline6
     }
     final Color color = _textColor(theme, tileTheme, style.color);
     return style.copyWith(color: color);
   }
 
   TextStyle _subtitleTextStyle(ThemeData theme, ListTileTheme tileTheme) {
-    final TextStyle style = theme.textTheme.body1;//TODO: body1->bodyText2
+    final TextStyle style = theme.textTheme.bodyText2;//body1->bodyText2
     final Color color =
         _textColor(theme, tileTheme, theme.textTheme.caption.color);
     return style.copyWith(color: color);
