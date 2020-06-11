@@ -1,7 +1,7 @@
 import 'package:chaldea/components/components.dart';
 
 import 'tabs/item_cost_servant_page.dart';
-import 'tabs/item_obtain_event.dart';
+import 'tabs/item_obtain_event_page.dart';
 import 'tabs/item_obtain_free_page.dart';
 
 class ItemDetailPage extends StatefulWidget {

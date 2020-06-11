@@ -44,26 +44,26 @@ class User {
 @JsonSerializable(checked: true)
 class ServantStatus {
   ServantPlan curVal;
-  List<bool> skillEnhanced; //length=3
-  int treasureDeviceEnhanced;
-  int treasureDeviceLv;
+  List<int> skillIndex; //length=3
+  int tdIndex;
+  int tdLv;
 
   ServantStatus({
     this.curVal,
-    this.skillEnhanced,
-    this.treasureDeviceEnhanced,
-    this.treasureDeviceLv,
+    this.skillIndex,
+    this.tdIndex,
+    this.tdLv,
   }) {
     curVal ??= ServantPlan();
-    skillEnhanced ??= List.filled(3, null);
-    // treasureDeviceEnhanced??=null;
-    treasureDeviceLv ??= 1;
+    skillIndex ??= List.filled(3, 0);
+    tdIndex ??= 0;
+    tdLv ??= 1;
   }
 
   void reset() {
-    treasureDeviceLv = 1;
-    treasureDeviceEnhanced = null;
-    skillEnhanced.fillRange(0, 3, null);
+    tdLv = 1;
+    tdIndex = 0;
+    skillIndex.fillRange(0, 3, 0);
     curVal.reset();
   }
 

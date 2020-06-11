@@ -19,6 +19,11 @@ T $checkedNew<T>(String className, Map map, T Function() constructor,
     {Map<String, String> fieldKeyMap}) {
   fieldKeyMap ??= const {};
   try {
+    // check non-null first, otherwise, every $checkedConvert calling
+    // in constructor will throw error "[] called on null"
+    if (map == null) {
+      throw ArgumentError.notNull('map');
+    }
     return constructor();
   } catch (error, stack) {
     String key;
@@ -29,13 +34,14 @@ T $checkedNew<T>(String className, Map map, T Function() constructor,
     } else if (error is DisallowedNullValueException) {
       key = error.keysWithNullValues.first;
     }
-    print(<String>[
-      '============= Exception when decode $className =============',
-      if (className != null) 'Could not create `$className`.',
-      if (key != null) 'There is a problem with "$key".',
-      '$error',
-      '----- stack -----\n$stack\n--------------'
-    ].join('\n'));
+    logger.e(
+        <String>[
+          '============= Exception when decode $className =============',
+          if (className != null) 'Could not create `$className`.',
+          if (key != null) 'There is a problem with "$key".',
+        ].join('\n'),
+        error,
+        stack);
     return null;
   }
 }

@@ -33,32 +33,27 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
           ],
         ),
         Divider(height: 1),
-        Expanded(
-            child: ListView(
-          children: divideTiles(getQuests()),
-        ))
+        Expanded(child: ListView(children: divideTiles(buildQuests())))
       ],
     );
   }
 
-  List<Widget> getQuests() {
+  List<Widget> buildQuests() {
     final glpk = db.gameData.glpk;
     int rowIndex = glpk.rowNames.indexOf(widget.itemKey);
     if (rowIndex < 0) {
-      return [ListTile(title: Text('no free'))];
+      return [ListTile(title: Text('no available free quests'))];
     }
     final apRates = glpk.matrix[rowIndex];
     List<List> tmp = [];
-    for (var i = 0; i < glpk.colNames.length; i++) {
+    for (var i = 0; i < glpk.jpMaxColNum; i++) {
       if (apRates[i] > 0) {
-        String name = glpk.colNames[i];
-        final apRate = apRates[i], dropRate = glpk.coeff[i] / apRates[i];
-        final quest = db.gameData.freeQuests[name];
-        String title = quest?.placeCn ?? name;
-        if (['后山', '群岛'].contains(title)) {
-          // 下总国后山&四章群岛 two quests
-          title = '$title-${quest.nameCn}';
-        }
+        String questName = glpk.colNames[i];
+        final  apRate = apRates[i], dropRate = glpk.costs[i] / apRates[i];
+        final dropRateString = (dropRate * 100).toStringAsFixed(2),
+            apRateString = apRate.toStringAsFixed(2);
+        final quest = db.gameData.freeQuests[questName];
+
         final child = ValueStatefulBuilder(
             value: false,
             builder: (context, state) {
@@ -66,14 +61,13 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   CustomTile(
-                    title: Text(title),
-                    subtitle: Text('cost ${glpk.coeff[i]}AP.  ' +
+                    title: Text(questName),
+                    subtitle: Text('cost ${glpk.costs[i]}AP.  ' +
                         (sortByAP
-                            ? '掉率 ${(dropRate * 100).toStringAsFixed(2)}%.'
-                            : '效率 ${apRate}AP/个.')),
-                    trailing: Text(sortByAP
-                        ? '${apRate}AP/个'
-                        : '${(dropRate * 100).toStringAsFixed(2)}%'),
+                            ? '掉率 $dropRateString%.'
+                            : '效率 $apRateString AP/个.')),
+                    trailing: Text(
+                        sortByAP ? '$apRateString AP/个' : '$dropRateString%'),
                     onTap: quest == null
                         ? null
                         : () {
@@ -82,7 +76,7 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
                             });
                           },
                   ),
-                  if (state.value) QuestCard(quest: quest)
+                  if (state.value && quest != null) QuestCard(quest: quest)
                 ],
               );
             });

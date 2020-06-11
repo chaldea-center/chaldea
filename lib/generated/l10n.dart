@@ -8,9 +8,9 @@ import 'intl/messages_all.dart';
 // Made by Localizely
 // **************************************************************************
 
-// ignore_for_files: non_constant_identifier_names
-// ignore_for_files: camel_case_types
-// ignore_for_files: prefer_single_quotes
+// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: camel_case_types
+// ignore_for_file: prefer_single_quotes
 
 class S {
   S();
@@ -19,8 +19,8 @@ class S {
     AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final String name = (locale.countryCode?.isEmpty ?? false) ? locale.languageCode : locale.toString();
-    final String localeName = Intl.canonicalizedLocale(name);
+    final name = (locale.countryCode?.isEmpty ?? false) ? locale.languageCode : locale.toString();
+    final localeName = Intl.canonicalizedLocale(name); 
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
       return S();
@@ -48,7 +48,6 @@ class S {
       args: [],
     );
   }
-
 
   String get gallery_tab_name {
     return Intl.message(
@@ -250,7 +249,7 @@ class S {
 
   String get edit {
     return Intl.message(
-      'Edit',
+      '编辑',
       name: 'edit',
       desc: '',
       args: [],
@@ -324,7 +323,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
 
   bool _isSupported(Locale locale) {
     if (locale != null) {
-      for (Locale supportedLocale in supportedLocales) {
+      for (var supportedLocale in supportedLocales) {
         if (supportedLocale.languageCode == locale.languageCode) {
           return true;
         }

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 
 class ItemObtainEventPage extends StatelessWidget {
@@ -13,10 +14,10 @@ class ItemObtainEventPage extends StatelessWidget {
     db.gameData.events.exchangeTickets.values.forEach((ticket) {
       int itemIndex = ticket.items.indexOf(itemKey);
       if (itemIndex >= 0 && ticket.isNotOutdated()) {
-        int itemNum = db.curUser.events.exchangeTickets[ticket.monthCn]
+        int itemNum = db.curUser.events.exchangeTickets[ticket.month]
             ?.elementAt(itemIndex);
         children.add(ListTile(
-          title: Text('交换券${ticket.monthCn}'),
+          title: Text('交换券${ticket.month}'),
           subtitle: Text(ticket.items.join('/')),
           trailing: Text('${itemNum ?? 0}/${ticket.days}'),
         ));
@@ -69,14 +70,15 @@ class ItemObtainEventPage extends StatelessWidget {
         if ((numShop != null || numLottery != null || hasExtra) &&
             limitEvent.isNotOutdated()) {
           children.add(ListTile(
-            title: Text(limitEvent.name),
+            title: AutoSizeText(limitEvent.name, maxFontSize: 15, maxLines: 2),
             trailing: Text(
               [
                 if (numShop != null) '商店 $numShop',
                 if (numLottery != null) '无限池 $numLottery*${plan?.lottery ?? 0}',
-                if (hasExtra) 'Extra 1*${(plan?.extra ?? {})[itemKey] ?? 0}',
-              ].join(' / '),
+                if (hasExtra) 'Extra ${(plan?.extra ?? {})[itemKey] ?? 0}',
+              ].join('\n'),
               style: plan?.enable == true ? highlight : null,
+              textAlign: TextAlign.right,
             ),
           ));
         }

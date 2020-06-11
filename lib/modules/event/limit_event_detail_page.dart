@@ -59,8 +59,9 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     if (event.lottery?.isNotEmpty == true) {
       children
         ..add(ListTile(
-          title: Text('无限池'),
-          subtitle: Text('共计池数'),
+          title: Text(event.lotteryLimit > 0 ? '有限池' : '无限池'),
+          subtitle: Text(
+              event.lotteryLimit > 0 ? '最多${event.lotteryLimit}池' : '共计池数'),
           trailing: SizedBox(
               width: 80,
               child: TextField(
@@ -85,13 +86,12 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
 
     // 商店任务点数
     if (grailNum + crystalNum > 0 || event.items != null) {
+      final Map<String, int> items = Map.from(event.items)
+        ..addAll({'圣杯': grailNum, '传承结晶': crystalNum})
+        ..removeWhere((key, value) => value <= 0);
       children
         ..add(ListTile(title: Text('商店&任务&点数')))
-        ..add(buildClassifiedItemList(
-            {'圣杯': grailNum, '传承结晶': crystalNum}
-              ..addAll(event.items ?? {})
-              ..removeWhere((k, v) => v <= 0),
-            onTap: onTapIcon));
+        ..add(buildClassifiedItemList(items, onTap: onTapIcon));
     }
 
     // 狩猎 无限池终本掉落等

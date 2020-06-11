@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:chaldea/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
@@ -18,7 +19,6 @@ class GLPKSolver {
   GLPKSolver();
 
   void stateChanged(bool state) {
-    print('state=$state');
     solverReady = state;
     onStateChanged.sink.add(solverReady);
   }
@@ -45,15 +45,11 @@ class GLPKSolver {
       print('launching...');
       _onWebViewStateChanged =
           flutterWebViewPlugin.onStateChanged.listen((state) async {
-        print('state changed: ${state.type}');
         if (state.type == WebViewState.finishLoad && solverReady != true) {
-          print('eval glpk...');
           await flutterWebViewPlugin.evalJavascript(
-              await rootBundle.loadString('res/lib/glpk.min.js'));
-          print('eval solver func...');
+              await rootBundle.loadString('res/js/glpk.min.js'));
           await flutterWebViewPlugin
-              .evalJavascript(await rootBundle.loadString('res/lib/solver.js'));
-          print('eval log...');
+              .evalJavascript(await rootBundle.loadString('res/js/solver.js'));
           await flutterWebViewPlugin.evalJavascript(
               '''add_log(`${DateTime.now().toString()}: Load libs finished.`)''');
           await flutterWebViewPlugin.evalJavascript(
@@ -73,10 +69,8 @@ class GLPKSolver {
         hidden: true,
       );
     } catch (e, s) {
-      print('initial js error:\n$e\n-----statck----\n$s');
-      FlutterError.dumpErrorToConsole(
-          FlutterErrorDetails(exception: e, stack: s));
-      showToast('ERROR: fail to initial solver.\n$e');
+      logger.e('initiate js error', e, s);
+      showToast('initiate js error\n$e');
     }
   }
 
@@ -89,119 +83,112 @@ class GLPKSolver {
     stateChanged(false);
     GLPKSolution solution;
     try {
-      final params2 = params.copyWith();
-      final filtratedData = preProcess(data: data, params: params2);
-      if (params2.objRows.length == 0) {
-        print('after pre processing, params has no valid rows.\n'
+      final params2 = GLPKParams.from(params);
+      final data2 = GLPKData.from(data);
+      preProcess(data: data2, params: params2);
+      if (params2.rows.length == 0) {
+        logger.d('after pre processing, params has no valid rows.\n'
             'params=${json.encode(params2)}');
+        showToast('Invalid inputs');
       } else {
-        print('modified params: ${json.encode(params2)}');
+//        print('modified params: ${json.encode(params2)}');
         String resultString = await flutterWebViewPlugin.evalJavascript(
-            '''solve_glpk( `${json.encode(filtratedData)}`,`${json.encode(params2)}`);''');
-        if (resultString?.isNotEmpty != true) {
+            '''solve_glpk( `${json.encode(data2)}`,`${json.encode(params2)}`);''');
+        final result = json.decode(resultString);
+        logger.v('result: $resultString');
+        if (result?.isNotEmpty != true) {
           throw 'evalJavascript return null!';
         }
-        solution = GLPKSolution.fromJson(Map.from(json.decode(resultString)));
+        solution = GLPKSolution.fromJson(Map.from(result));
         solution.sortByValue();
-        print('result: ${json.encode(solution)}');
         await flutterWebViewPlugin.evalJavascript(
             '''add_log(`${DateTime.now().toString()}: solve result: ${json.encode(solution)}`)''');
       }
     } catch (e, s) {
-      showToast('ERROR: failt to execute GLPK solver:\n$e');
-      FlutterError.dumpErrorToConsole(
-          FlutterErrorDetails(exception: e, stack: s));
+      logger.e('Execute GLPK solver failed', e, s);
+      showToast('Execute GLPK solver failed:\n$e');
+      rethrow;
+    } finally {
+      stateChanged(true);
     }
-    stateChanged(true);
     print('=========solving finished=========');
     return solution;
   }
 
-  /// modify [params] and return [newData] as a new copy of filtrated [data]
+  /// [data] and [params] must be copied instances. Modify them **in-place**
   GLPKData preProcess({GLPKData data, GLPKParams params}) {
-    print('pre processing...');
-    List<String> _columns;
+    print('pre processing GLPK data and params...');
 
-    // server, maxColNum
-    if (params.maxColNum > 0) {
-      _columns = data.colNames.sublist(0, params.maxColNum);
-    } else {
-      _columns = List.from(data.colNames);
-    }
+    // inside pre processing, use [params.objective] not [items] and [counts]
+    final objective = params.generateObjective();
 
-    // store filtrate results
-    Set<String> removeCols = {};
-    Set<String> retainCols = {};
+    // traverse originData rather new data
+    // remove unused rows
+    objective.removeWhere(
+        (key, value) => !data.rowNames.contains(key) || value <= 0);
+    List.from(data.rowNames).forEach((row) {
+      if (!objective.containsKey(row)) data.removeRow(row);
+    });
+
+    // remove unused quests
+    // free quests' index for different server
+    List<String> cols = data.colNames
+        .sublist(0, params.maxColNum > 0 ? params.maxColNum : data.jpMaxColNum);
+    params.extraCols.forEach((col) {
+      if (data.colNames.contains(col)) cols.add(col);
+    });
+    List.from(data.colNames).forEach((col) {
+      if (!cols.contains(col)) data.removeCol(col);
+    });
+
+    // now filtrate data's rows/cols
+    Set<String> removeCols = {}; // not fit minCost
+    Set<String> retainCols = {}; // at least one quest for every item
     Set<String> removeRows = {}; // no quest's drop contains the item.
 
-    Map<String, int> colIndexMap = {};
-    for (var i = 0; i < data.colNames.length; i++) {
-      colIndexMap[data.colNames[i]] = i;
+    for (int i = 0; i < data.colNames.length; i++) {
+      if (data.costs[i] < params.minCost) removeCols.add(data.colNames[i]);
     }
 
-    // minCoeff
-    for (int j = 0; j < _columns.length; j++) {
-      if (data.coeff[j] < params.minCoeff) {
-        removeCols.add(data.colNames[j]);
-      }
-    }
-
-    // maxSortOrder
-    int getSortValue(int rowIndex, String key) {
-      num value = data.matrix[rowIndex][colIndexMap[key]];
-      return value > 0 ? (value * 10).toInt() : 1000000;
-    }
-
-    for (int i = 0; i < params.objRows.length; i++) {
-      if (params.objNums[i] > 0) {
-        int rowIndex = data.rowNames.indexOf(params.objRows[i]);
-        final filtratedCols = _columns
-            .where((col) => data.matrix[rowIndex][colIndexMap[col]] > 0)
-            .toList()
-              ..sort((a, b) =>
-                  getSortValue(rowIndex, a) - getSortValue(rowIndex, b));
-        Set<String> cols = Set<String>.from(params.maxSortOrder > 0
-                ? filtratedCols.sublist(
-                    0, min(filtratedCols.length, params.maxSortOrder))
-                : filtratedCols)
-            .difference(removeCols);
-        if (cols.isEmpty) {
-          if (filtratedCols.isEmpty) {
-            // no any column(quest) contain the row key(item drop)
-            removeRows.add(params.objRows[i]);
-          } else {
-            // ensure at least one quest for every item
-            cols.add(filtratedCols.first);
-          }
+    for (String rowName in objective.keys) {
+      int row = data.rowNames.indexOf(rowName);
+      int minApRateCol = -1;
+      double minAPRateVal = double.infinity;
+      for (int j = 0; j < data.colNames.length; j++) {
+        double v = data.matrix[row][j];
+        if (!removeCols.contains(data.colNames[j]) && v > 0 && v < minAPRateVal) {
+          minApRateCol = j;
+          minAPRateVal = v;
         }
-        retainCols.addAll(cols);
+      }
+      if (minApRateCol < 0) {
+        // no column(cost>minCost) contains rowName
+        int retainCol = data.matrix[row].indexOf(data.matrix[row].reduce(max));
+        if (retainCol < 0)
+          removeRows.add(rowName);
+        else
+          retainCols.add(data.colNames[retainCol]);
+      } else {
+        // retain column with max drop rate/min ap rate
+        retainCols.add(data.colNames[minApRateCol]);
       }
     }
-    // create new data instance
-    for (var key in removeRows) {
-      params.remove(key);
-    }
-    if (params.objRows.length == 0) {
-      // no rows (glpk will raise error), need to check in caller
-      print('no valid objRows');
-      return data;
-    }
-    List<String> retainRowList = List.from(params.objRows),
-        retainColList = retainCols.toList();
-    final newData = GLPKData(
-      rowNames: retainRowList,
-      colNames: retainColList,
-      coeff: retainColList.map((col) => data.coeff[colIndexMap[col]]).toList(),
-      matrix: retainRowList.map((row) {
-        int rowIndex = data.rowNames.indexOf(row);
-        return retainColList
-            .map((col) => data.matrix[rowIndex][colIndexMap[col]])
-            .toList();
-      }).toList(),
-      cnMaxColNum: retainColList.length,
-    );
-    print('processed data: ${newData.rowNames.length} rows,'
-        ' ${newData.colNames.length} columns');
-    return newData;
+
+    // remove rows/cols above
+    objective.removeWhere((key, value) => removeRows.contains(key));
+    removeRows.forEach((element) => data.removeRow(element));
+    removeCols.forEach((element) {
+      if (!retainCols.contains(element)) data.removeCol(element);
+    });
+
+    params.rows = objective.keys.toList();
+    params.counts = objective.values.toList();
+
+    // no rows (glpk will raise error), need to check in caller
+    if (objective.length == 0) logger.d('no valid objRows');
+
+    logger.v('processed data: ${data.rowNames.length} rows,'
+        ' ${data.colNames.length} columns');
+    return data;
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/shared/quest_card.dart';
@@ -5,9 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 
 class DropCalculatorPage extends StatefulWidget {
-  final GLPKParams params;
+  final Map<String, int> objectiveMap;
 
-  DropCalculatorPage({Key key, this.params}) : super(key: key);
+  DropCalculatorPage({Key key, this.objectiveMap}) : super(key: key);
 
   @override
   _DropCalculatorPageState createState() => _DropCalculatorPageState();
@@ -31,6 +33,13 @@ class _DropCalculatorPageState extends State<DropCalculatorPage>
       appBar: AppBar(
         title: Text(S.of(context).drop_calculator),
         leading: BackButton(),
+        actions: [
+          IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: () {
+                onSolved(solution);
+              })
+        ],
         bottom: TabBar(
           controller: _tabController,
           tabs: [Tab(text: 'Input'), Tab(text: 'Output')],
@@ -48,33 +57,34 @@ class _DropCalculatorPageState extends State<DropCalculatorPage>
           controller: _tabController,
           children: [
             KeepAliveBuilder(
-              builder: (context) => DropCalcInputTab(
-                params: widget.params,
-                onSolved: (s) {
-                  if (s == null) {
-                    showToast('no solution');
-                  } else {
-                    setState(() {
-                      solution = s;
-                    });
-                    _tabController.index = 1;
-                  }
-                },
-              ),
-            ),
-            KeepAliveBuilder(builder: (context) => DropCalcOutputTab(solution)),
+                builder: (context) => DropCalcInputTab(
+                    objectiveMap: widget.objectiveMap, onSolved: onSolved)),
+            KeepAliveBuilder(
+                builder: (context) => DropCalcOutputTab(solution: solution))
           ],
         ),
       ),
     );
   }
+
+  void onSolved(GLPKSolution s) {
+    if (s == null) {
+      showToast('no solution');
+    } else {
+      setState(() {
+        solution = s;
+      });
+      _tabController.index = 1;
+    }
+  }
 }
 
 class DropCalcInputTab extends StatefulWidget {
-  final GLPKParams params;
+  final Map<String, int> objectiveMap;
+
   final void Function(GLPKSolution) onSolved;
 
-  const DropCalcInputTab({Key key, this.params, this.onSolved})
+  const DropCalcInputTab({Key key, this.objectiveMap, this.onSolved})
       : super(key: key);
 
   @override
@@ -89,23 +99,28 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
   @override
   void initState() {
     super.initState();
+    // init picker data
     db.gameData.items.keys.forEach((name) {
       final category = getItemCategory(name);
       if (category != null) {
         pickerData.putIfAbsent(getItemCategory(name), () => []).add(name);
       }
     });
-    params = db.userData.glpkParams..removeAll();
-    if (widget.params == null &&
-        pickerData.values.isNotEmpty &&
-        pickerData.values.first.length >= 2) {
-      params.addOne(pickerData.values.first.elementAt(0), 50);
-      params.addOne(pickerData.values.first.elementAt(1), 50);
+
+    // reset params
+    params = db.userData.glpkParams
+      ..removeAll()
+      ..enableControllers();
+    if (widget.objectiveMap == null) {
+      // if enter from home page, default to add two items
+      addAnItemNotInList();
+      addAnItemNotInList();
     } else {
-      params.objRows = widget.params.objRows;
-      params.objNums = widget.params.objNums;
+      // if enter from item list page
+      print('objMap: ${widget.objectiveMap}');
+      widget.objectiveMap.forEach((key, value) => params.addOne(key, value));
+      params.sortByItem();
     }
-    params.enableControllers();
     solver.initial();
   }
 
@@ -119,7 +134,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        if (params.objRows.isEmpty)
+        if (params.rows.isEmpty)
           ListTile(title: Center(child: Text('No item data, click + to add.'))),
         Expanded(child: _buildInputRows()),
         _buildButtonBar(),
@@ -129,74 +144,80 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
 
   Widget _buildInputRows() {
     return ListView.separated(
-      itemBuilder: (context, index) => ListTile(
-        leading: Padding(
-          padding: EdgeInsets.symmetric(vertical: 8),
-          child: GestureDetector(
-            onTap: () {
-              SplitRoute.push(
-                context,
-                builder: (context) => ItemDetailPage(params.objRows[index]),
-              );
-            },
-            child: Image(image: db.getIconImage(params.objRows[index])),
+      itemBuilder: (context, index) {
+        final item = params.rows[index];
+        return ListTile(
+          leading: Padding(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: GestureDetector(
+              onTap: () {
+                SplitRoute.push(
+                  context,
+                  builder: (context) => ItemDetailPage(item),
+                );
+              },
+              child: Image(image: db.getIconImage(item)),
+            ),
           ),
-        ),
-        title: Row(
-          children: <Widget>[
-            Expanded(
-              child: FlatButton(
-                  onPressed: () {
-                    final String itemKey = params.objRows[index];
-                    final String category = getItemCategory(itemKey);
-                    Picker(
-                      adapter:
-                          PickerDataAdapter<String>(pickerdata: [pickerData]),
-                      selecteds: [
-                        pickerData.keys.toList().indexOf(category),
-                        pickerData[category].indexOf(itemKey)
-                      ],
-                      height: 250,
-                      itemExtent: 48,
-                      changeToFirst: true,
-                      onConfirm: (Picker picker, List value) {
-                        print(picker.getSelectedValues());
-                        setState(() {
-                          params.objRows[index] =
-                              picker.getSelectedValues().last;
-                        });
-                      },
-                    ).showModal(context);
-                  },
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(params.objRows[index]),
-                  )),
-            ),
-            Expanded(
-              child: TextField(
-                controller: params.controllers[index],
-                keyboardType: TextInputType.number,
-                textAlign: TextAlign.center,
-                decoration: InputDecoration(isDense: true),
-                inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
-                onChanged: (s) {
-                  params.objNums[index] = int.tryParse(s) ?? 0;
-                },
+          title: Row(
+            children: <Widget>[
+              Expanded(
+                child: FlatButton(
+                    onPressed: () {
+                      final String category = getItemCategory(item);
+                      Picker(
+                        adapter:
+                            PickerDataAdapter<String>(pickerdata: [pickerData]),
+                        selecteds: [
+                          pickerData.keys.toList().indexOf(category),
+                          pickerData[category].indexOf(item)
+                        ],
+                        height: 250,
+                        itemExtent: 48,
+                        changeToFirst: true,
+                        onConfirm: (Picker picker, List value) {
+                          print('picker: ${picker.getSelectedValues()}');
+                          setState(() {
+                            String selected = picker.getSelectedValues().last;
+                            if (params.rows.contains(selected)) {
+                              showToast('$selected already in list');
+                            } else {
+                              params.rows[index] = selected;
+                            }
+                          });
+                        },
+                      ).showModal(context);
+                    },
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(item),
+                    )),
               ),
-            ),
-          ],
-        ),
-        trailing: IconButton(
-            icon: Icon(Icons.delete_outline, color: Colors.redAccent),
-            onPressed: () {
-              setState(() {
-                params.removeAt(index);
-              });
-            }),
-      ),
+              Expanded(
+                child: TextField(
+                  controller: params.controllers[index],
+                  keyboardType: TextInputType.number,
+                  textAlign: TextAlign.center,
+                  decoration: InputDecoration(isDense: true),
+                  inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                  onChanged: (s) {
+                    params.counts[index] = int.tryParse(s) ?? 0;
+                  },
+                ),
+              ),
+            ],
+          ),
+          trailing: IconButton(
+              icon: Icon(Icons.delete_outline, color: Colors.redAccent),
+              onPressed: () {
+                setState(() {
+                  params.remove(item);
+                });
+              }),
+        );
+      },
       separatorBuilder: (context, index) => Divider(height: 1, thickness: 0.5),
-      itemCount: params.objRows.length,
+      itemCount: params.rows.length,
     );
   }
 
@@ -215,43 +236,26 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               children: <Widget>[
                 Text('最低AP'),
                 DropdownButton(
-                    value: params.minCoeff,
+                    value: params.minCost,
                     items: List.generate(
                         20,
                         (i) => DropdownMenuItem(
                             value: i, child: Text(i.toString()))),
-                    onChanged: (v) => params.minCoeff = v),
+                    onChanged: (v) => params.minCost = v),
               ],
             ),
             Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: 4,
               children: <Widget>[
-                Text('掉落前'),
+                Text('优化'),
                 DropdownButton(
-                    value: [0, 1, 2, 4, 6, 8].contains(params.maxSortOrder)
-                        ? params.maxSortOrder
-                        : 0,
-                    items: List.generate(6, (i) {
-                      int v = [0, 1, 2, 4, 6, 8][i];
-                      return DropdownMenuItem(
-                          value: v, child: Text(v <= 0 ? 'ALL' : v.toString()));
-                    }),
-                    onChanged: (v) => params.maxSortOrder = v),
-              ],
-            ),
-            Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 4,
-              children: <Widget>[
-                Text('目标'),
-                DropdownButton(
-                    value: params.coeffPrio,
+                    value: params.costMinimize,
                     items: [
                       DropdownMenuItem(value: true, child: Text('AP')),
                       DropdownMenuItem(value: false, child: Text('次数'))
                     ],
-                    onChanged: (v) => params.coeffPrio = v),
+                    onChanged: (v) => params.costMinimize = v),
               ],
             ),
             Wrap(
@@ -269,6 +273,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                         v ? db.gameData.glpk.cnMaxColNum : -1),
               ],
             ),
+            //TODO: add extra event quests button and dialog page
             Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: 10,
@@ -280,7 +285,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                     ),
                     onPressed: () {
                       setState(() {
-                        params.addOne(db.gameData.glpk.rowNames?.first, 50);
+                        addAnItemNotInList();
                       });
                     }),
                 StreamBuilder(
@@ -306,10 +311,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                   },
                 ),
                 IconButton(
-                    icon: Icon(
-                      Icons.help,
-                      color: Colors.blueAccent,
-                    ),
+                    icon: Icon(Icons.help, color: Colors.blueAccent),
                     onPressed: () {
                       showDialog(
                           context: context,
@@ -332,6 +334,12 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     );
   }
 
+  void addAnItemNotInList([int n = 50]) {
+    final item = db.gameData.glpk.rowNames
+        .firstWhere((e) => !params.rows.contains(e), orElse: () => null);
+    params.addOne(item, n);
+  }
+
   String getItemCategory(String itemKey) {
     final item = db.gameData.items[itemKey];
     if (item.category == 1) {
@@ -347,8 +355,8 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
   }
 
   void solve() async {
-    if (sum(params.objNums) > 0) {
-      FocusScope.of(context).unfocus();
+    FocusScope.of(context).unfocus();
+    if (params.counts.reduce(max) > 0) {
       final solution =
           await solver.calculate(data: db.gameData.glpk, params: params);
       if (widget.onSolved != null) {
@@ -360,11 +368,16 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
   }
 }
 
-class DropCalcOutputTab extends StatelessWidget {
+class DropCalcOutputTab extends StatefulWidget {
   final GLPKSolution solution;
 
-  DropCalcOutputTab(this.solution);
+  const DropCalcOutputTab({Key key, this.solution}) : super(key: key);
 
+  @override
+  _DropCalcOutputTabState createState() => _DropCalcOutputTabState();
+}
+
+class _DropCalcOutputTabState extends State<DropCalcOutputTab> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -373,19 +386,14 @@ class DropCalcOutputTab extends StatelessWidget {
           decoration: BoxDecoration(
               border: Border(bottom: Divider.createBorderSide(context))),
           child: ListTile(
-            title: Text('Total Num: ${solution?.totalNum}'),
-            trailing: Text('Total AP: ${solution?.totalEff}'),
+            title: Text('Total Num: ${widget.solution?.totalNum}'),
+            trailing: Text('Total AP: ${widget.solution?.totalCost}'),
           ),
         ),
         Expanded(
             child: ListView(
-          children: solution?.variables?.map((variable) {
+          children: widget.solution?.variables?.map((variable) {
                 final quest = db.gameData.freeQuests[variable.name];
-                String title = quest?.placeCn ?? variable.name;
-                if (['后山', '群岛'].contains(title)) {
-                  // 下总国后山&四章群岛 two quests
-                  title = '$title-${quest.nameCn}';
-                }
                 return Container(
                   decoration: BoxDecoration(
                       border:
@@ -398,12 +406,12 @@ class DropCalcOutputTab extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             CustomTile(
-                              title: Text(title),
+                              title: Text(variable.name),
                               subtitle: Text(variable.detail.entries
                                   .map((e) => '${e.key}*${e.value}')
                                   .join(', ')),
-                              trailing: Text(
-                                  '${variable.value}*${variable.coeff} AP'),
+                              trailing:
+                                  Text('${variable.value}*${variable.cost} AP'),
                               onTap: quest == null
                                   ? null
                                   : () {
@@ -411,8 +419,7 @@ class DropCalcOutputTab extends StatelessWidget {
                                       state.updateState();
                                     },
                             ),
-                            if (state.value &&
-                                (quest?.battles?.length ?? 0) > 0)
+                            if (state.value && quest != null)
                               QuestCard(quest: quest),
                           ],
                         );

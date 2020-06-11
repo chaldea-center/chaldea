@@ -209,7 +209,6 @@ class SvtFilterData {
     '魔性',
     '超巨大',
     '天地(拟似除外)',
-    '拟似/亚从者'
   ];
   static const traitSpecialData = ['EA不特攻', '无特殊特性'];
 

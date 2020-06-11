@@ -1,5 +1,7 @@
 part of datatypes;
 
+enum SvtCompare { no, className, rarity, atk, hp }
+
 @JsonSerializable(checked: true)
 class Servant {
   // left avatar & model
@@ -13,6 +15,7 @@ class Servant {
   ItemCost itemCost;
   List<int> bondPoints;
   List<SvtProfileData> profiles;
+  List<VoiceTable> voices;
   int bondCraft;
   List<int> valentineCraft;
 
@@ -29,6 +32,7 @@ class Servant {
     this.itemCost,
     this.bondPoints,
     this.profiles,
+    this.voices,
     this.bondCraft,
     this.valentineCraft,
   });
@@ -73,52 +77,37 @@ class Servant {
     }
   }
 
-  Map<String, int> getAscensionCost({int cur = 0, target = 4}) {
-    Map<String, int> cost = {};
-    if (itemCost?.ascension == null) {
-      return cost;
-    }
-    for (int i = cur; i < target; i++) {
-      for (var item in itemCost.ascension[i]) {
-        cost[item.name] = (cost[item.name] ?? 0) + item.num;
-      }
-    }
-    return cost;
+  Map<String, int> getAscensionCost({int cur = 0, int target = 4}) {
+    if (itemCost.ascension.isEmpty) return {};
+    return sumDict(itemCost.ascension.sublist(cur, max(cur,target)));
   }
 
-  Map<String, int> getSkillCost(
-      {List<int> cur = const [1, 1, 1],
-      List<int> target = const [10, 10, 10]}) {
-    Map<String, int> cost = {};
-    if (itemCost?.skill == null) {
-      return cost;
-    }
+  Map<String, int> getSkillCost({List<int> cur, List<int> target}) {
+    if (itemCost.skill.isEmpty || itemCost.skill.first.isEmpty) return {};
+    cur ??= [1, 1, 1];
+    target ??= [10, 10, 10];
+    Map<String, int> items = {};
+
     for (int i = 0; i < 3; i++) {
+      // lv 1-10 -> 0-9
       for (int j = cur[i] - 1; j < target[i] - 1; j++) {
-        for (var item in itemCost.skill[j]) {
-          cost[item.name] = (cost[item.name] ?? 0) + item.num;
-        }
+        sumDict([items, itemCost.skill[j]], inPlace: true);
       }
     }
-    return cost;
+    return items;
   }
 
   Map<String, int> getDressCost({List<int> cur, List<int> target}) {
-    Map<String, int> cost = {};
-    if (itemCost?.dress == null) {
-      return cost;
-    }
+    Map<String, int> items = {};
     cur ??= List.generate(itemCost.dress.length, (i) => 0);
     target ??= List.generate(itemCost.dress.length, (i) => 1);
 
     for (int i = 0; i < itemCost.dress.length; i++) {
       for (int j = cur[i]; j < target[i]; j++) {
-        for (var item in itemCost.dress[i]) {
-          cost[item.name] = (cost[item.name] ?? 0) + item.num;
-        }
+        sumDict([items, itemCost.dress[i]], inPlace: true);
       }
     }
-    return cost;
+    return items;
   }
 
   int getClassSortIndex() {
@@ -168,11 +157,17 @@ class Servant {
   Map<String, dynamic> toJson() => _$ServantToJson(this);
 }
 
-enum SvtCompare { no, className, rarity, atk, hp }
-
 @JsonSerializable(checked: true)
 class ServantBaseInfo {
+  String name;
+  String nameJp;
+  String nameEn;
+  List<String> namesOther;
+  List<String> namesJpOther;
+  List<String> namesEnOther;
+  List<String> nicknames;
   String obtain;
+  List<String> obtains;
   int rarity;
   int rarity2;
   String weight;
@@ -183,20 +178,16 @@ class ServantBaseInfo {
   String attribute;
   bool isHumanoid;
   bool isWeakToEA;
-  String name;
-  String nameJp;
-  String nameEn;
-  String illustName;
-  List<String> nicknames;
+  bool isTDNS;
   List<String> cv;
   List<String> alignments;
   List<String> traits;
   Map<String, String> ability;
-  List<Map<String, String>> illust;
+  Map<String, String> illustrations;
   List<String> cards;
   Map<String, int> cardHits;
   Map<String, List<int>> cardHitsDamage;
-  Map<String, int> npRate;
+  Map<String, String> npRate;
   int atkMin;
   int hpMin;
   int atkMax;
@@ -205,17 +196,20 @@ class ServantBaseInfo {
   int hp90;
   int atk100;
   int hp100;
-  int starRate;
-  int deathRate;
-  int criticalRate;
-
-  factory ServantBaseInfo.fromJson(Map<String, dynamic> data) =>
-      _$ServantBaseInfoFromJson(data);
-
-  Map<String, dynamic> toJson() => _$ServantBaseInfoToJson(this);
+  String starRate;
+  String deathRate;
+  String criticalRate;
 
   ServantBaseInfo({
+    this.name,
+    this.nameJp,
+    this.nameEn,
+    this.namesOther,
+    this.namesJpOther,
+    this.namesEnOther,
+    this.nicknames,
     this.obtain,
+    this.obtains,
     this.rarity,
     this.rarity2,
     this.weight,
@@ -226,16 +220,12 @@ class ServantBaseInfo {
     this.attribute,
     this.isHumanoid,
     this.isWeakToEA,
-    this.name,
-    this.nameJp,
-    this.nameEn,
-    this.illustName,
-    this.nicknames,
+    this.isTDNS,
     this.cv,
     this.alignments,
     this.traits,
     this.ability,
-    this.illust,
+    this.illustrations,
     this.cards,
     this.cardHits,
     this.cardHitsDamage,
@@ -252,15 +242,16 @@ class ServantBaseInfo {
     this.deathRate,
     this.criticalRate,
   });
+
+  factory ServantBaseInfo.fromJson(Map<String, dynamic> data) =>
+      _$ServantBaseInfoFromJson(data);
+
+  Map<String, dynamic> toJson() => _$ServantBaseInfoToJson(this);
 }
 
 @JsonSerializable(checked: true)
 class TreasureDevice {
-  bool enhanced;
   String state;
-  String openTime;
-  String openCondition;
-  String opeQuest;
   String name;
   String nameJp;
   String upperName;
@@ -271,17 +262,8 @@ class TreasureDevice {
   String typeText;
   List<Effect> effects;
 
-  factory TreasureDevice.fromJson(Map<String, dynamic> data) =>
-      _$TreasureDeviceFromJson(data);
-
-  Map<String, dynamic> toJson() => _$TreasureDeviceToJson(this);
-
   TreasureDevice({
-    this.enhanced,
     this.state,
-    this.openTime,
-    this.openCondition,
-    this.opeQuest,
     this.name,
     this.nameJp,
     this.upperName,
@@ -292,15 +274,16 @@ class TreasureDevice {
     this.typeText,
     this.effects,
   });
+
+  factory TreasureDevice.fromJson(Map<String, dynamic> data) =>
+      _$TreasureDeviceFromJson(data);
+
+  Map<String, dynamic> toJson() => _$TreasureDeviceToJson(this);
 }
 
 @JsonSerializable(checked: true)
 class Skill {
   String state;
-  String openTime;
-  String openCondition;
-  String openQuest;
-  bool enhanced;
   String name;
   String nameJp;
   String rank;
@@ -308,16 +291,8 @@ class Skill {
   int cd;
   List<Effect> effects;
 
-  factory Skill.fromJson(Map<String, dynamic> data) => _$SkillFromJson(data);
-
-  Map<String, dynamic> toJson() => _$SkillToJson(this);
-
   Skill({
     this.state,
-    this.openTime,
-    this.openCondition,
-    this.openQuest,
-    this.enhanced,
     this.name,
     this.nameJp,
     this.rank,
@@ -325,32 +300,66 @@ class Skill {
     this.cd,
     this.effects,
   });
+
+  factory Skill.fromJson(Map<String, dynamic> data) => _$SkillFromJson(data);
+
+  Map<String, dynamic> toJson() => _$SkillToJson(this);
 }
 
 @JsonSerializable(checked: true)
 class Effect {
   String description;
-  String target;
-  String valueType;
-  List<dynamic> lvData;
+  List<String> lvData;
+
+  Effect({this.description, this.lvData});
 
   factory Effect.fromJson(Map<String, dynamic> data) => _$EffectFromJson(data);
 
   Map<String, dynamic> toJson() => _$EffectToJson(this);
-
-  Effect({this.description, this.target, this.valueType, this.lvData});
 }
 
 @JsonSerializable(checked: true)
 class SvtProfileData {
-  String profile;
-  String profileJp;
+  String title;
+  String description;
+  String descriptionJp;
   String condition;
 
-  SvtProfileData({this.profile, this.profileJp, this.condition});
+  SvtProfileData(
+      {this.title, this.description, this.descriptionJp, this.condition});
 
   factory SvtProfileData.fromJson(Map<String, dynamic> data) =>
       _$SvtProfileDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$SvtProfileDataToJson(this);
+}
+
+@JsonSerializable(checked: true)
+class VoiceTable {
+  String section;
+  List<VoiceRecord> table;
+
+  VoiceTable({this.section, this.table});
+
+  factory VoiceTable.fromJson(Map<String, dynamic> data) =>
+      _$VoiceTableFromJson(data);
+
+  Map<String, dynamic> toJson() => _$VoiceTableToJson(this);
+}
+
+@JsonSerializable(checked: true)
+class VoiceRecord {
+  String title;
+  String text;
+  String textJp;
+  String condition;
+  String voiceFile;
+
+  VoiceRecord(
+      {this.title, this.text, this.textJp, this.condition, this.voiceFile});
+
+  factory VoiceRecord.fromJson(Map<String, dynamic> data) =>
+      _$VoiceRecordFromJson(data);
+
+  Map<String, dynamic> toJson() => _$VoiceRecordToJson(this);
 }

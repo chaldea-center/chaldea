@@ -1,9 +1,9 @@
+import 'package:after_layout/after_layout.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/craft/craft_list_page.dart';
-import 'package:chaldea/modules/damage_calc/damage_calc_page.dart';
 import 'package:chaldea/modules/drop_calculator/drop_calculator_page.dart';
 import 'package:chaldea/modules/event/events_page.dart';
 import 'package:chaldea/modules/extras/ap_calc_page.dart';
@@ -22,8 +22,13 @@ class GalleryPage extends StatefulWidget {
   _GalleryPageState createState() => _GalleryPageState();
 }
 
-class _GalleryPageState extends State<GalleryPage> {
+class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
   Map<String, GalleryItem> kAllGalleryItems;
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    resolveSliderImageUrls();
+  }
 
   Future<Null> resolveSliderImageUrls({bool reload = false}) async {
     final srcUrl =
@@ -75,8 +80,7 @@ class _GalleryPageState extends State<GalleryPage> {
     }
   }
 
-  void initData(BuildContext context) {
-    resolveSliderImageUrls();
+  void updateGalleries(BuildContext context) {
     kAllGalleryItems = {
       GalleryItem.servant: GalleryItem(
         name: GalleryItem.servant,
@@ -114,13 +118,13 @@ class _GalleryPageState extends State<GalleryPage> {
         icon: Icons.pin_drop,
         builder: (context) => DropCalculatorPage(),
       ),
-      GalleryItem.calculator: GalleryItem(
-        name: GalleryItem.calculator,
-        title: S.of(context).calculator,
-        icon: Icons.keyboard,
-        builder: (context) => DamageCalcPage(),
-        isDetail: true,
-      ),
+//      GalleryItem.calculator: GalleryItem(
+//        name: GalleryItem.calculator,
+//        title: S.of(context).calculator,
+//        icon: Icons.keyboard,
+//        builder: (context) => DamageCalcPage(),
+//        isDetail: true,
+//      ),
       GalleryItem.ap_cal: GalleryItem(
         name: GalleryItem.ap_cal,
         title: 'AP计算',
@@ -138,6 +142,56 @@ class _GalleryPageState extends State<GalleryPage> {
         isDetail: true,
       ),
     };
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final sliderPages = _getSliderPages();
+    updateGalleries(context);
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Chaldea"),
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.refresh),
+                tooltip: 'Refresh sliders',
+                onPressed: () {
+                  resolveSliderImageUrls(reload: true);
+                }),
+          ],
+        ),
+        body: ListView(
+          children: <Widget>[
+            AspectRatio(
+              aspectRatio: 8 / 3,
+              child: sliderPages.isEmpty
+                  ? Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: Divider.createBorderSide(context, width: 0.5),
+                        ),
+                      ),
+                    )
+                  : Swiper(
+                      itemBuilder: (BuildContext context, int index) =>
+                          sliderPages[index],
+                      itemCount: sliderPages.length,
+                      autoplay: !kDebugMode && sliderPages.length > 1,
+                      pagination:
+                          SwiperPagination(margin: const EdgeInsets.all(1)),
+                      autoplayDelay: 5000,
+                    ),
+            ),
+            GridView.count(
+              crossAxisCount: 4,
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              childAspectRatio: 1,
+              children: _getShownGalleries(context),
+            ),
+            buildTestInfoPad()
+          ],
+        ));
   }
 
   List<Widget> _getShownGalleries(BuildContext context) {
@@ -209,56 +263,6 @@ class _GalleryPageState extends State<GalleryPage> {
       ));
     });
     return sliders;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final sliderPages = _getSliderPages();
-    initData(context);
-    return Scaffold(
-        appBar: AppBar(
-          title: Text("Chaldea"),
-          actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.refresh),
-                tooltip: 'Refresh sliders',
-                onPressed: () {
-                  resolveSliderImageUrls(reload: true);
-                }),
-          ],
-        ),
-        body: ListView(
-          children: <Widget>[
-            AspectRatio(
-              aspectRatio: 8 / 3,
-              child: sliderPages.isEmpty
-                  ? Container(
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: Divider.createBorderSide(context, width: 0.5),
-                        ),
-                      ),
-                    )
-                  : Swiper(
-                      itemBuilder: (BuildContext context, int index) =>
-                          sliderPages[index],
-                      itemCount: sliderPages.length,
-                      autoplay: !kDebugMode && sliderPages.length > 1,
-                      pagination:
-                          SwiperPagination(margin: const EdgeInsets.all(1)),
-                      autoplayDelay: 5000,
-                    ),
-            ),
-            GridView.count(
-              crossAxisCount: 4,
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              childAspectRatio: 1,
-              children: _getShownGalleries(context),
-            ),
-            buildTestInfoPad()
-          ],
-        ));
   }
 
   Widget buildTestInfoPad() {

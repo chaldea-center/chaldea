@@ -21,3 +21,7 @@ Chaldea center.
  - event detail: add switch (including ticket page?).
  - item detail->events tab: tap to event detail page
  - svt filter add >999
+
+
+ - svt traits auto added? 
+ - drop calc: setState?

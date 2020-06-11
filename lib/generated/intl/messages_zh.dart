@@ -29,7 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "cur_account" : MessageLookupByLibrary.simpleMessage("当前账号"),
     "delete" : MessageLookupByLibrary.simpleMessage("删除"),
     "drop_calculator" : MessageLookupByLibrary.simpleMessage("掉落速查"),
-    "edit" : MessageLookupByLibrary.simpleMessage("Edit"),
+    "edit" : MessageLookupByLibrary.simpleMessage("编辑"),
     "event_title" : MessageLookupByLibrary.simpleMessage("活动"),
     "gallery_tab_name" : MessageLookupByLibrary.simpleMessage("首页"),
     "hello" : MessageLookupByLibrary.simpleMessage("你好！Master!"),

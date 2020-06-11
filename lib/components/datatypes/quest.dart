@@ -3,27 +3,40 @@ part of datatypes;
 @JsonSerializable(checked: true)
 class Quest {
   String chapter;
+  String name;
   String nameJp;
-  String nameCn;
+  /// one place one quest: use place as key
+  /// one place two quests: place（name）
+  /// daily quests: name
+  String indexKey;
   int level;
   int bondPoint;
   int experience;
   int qp;
+  bool isFree;
+  bool hasChoice;
   List<Battle> battles;
+  Map<String, int> rewards;
 
-  String get placeJp => getValueInList(battles, 0)?.placeJp;
+  Quest({
+    this.chapter,
+    this.name,
+    this.nameJp,
+    this.indexKey,
+    this.level,
+    this.bondPoint,
+    this.experience,
+    this.qp,
+    this.isFree,
+    this.hasChoice,
+    this.battles,
+    this.rewards,
+  });
 
-  String get placeCn => getValueInList(battles, 0)?.placeCn;
+  String get placeJp => getListItem(battles, 0)?.placeJp;
 
-  Quest(
-      {this.chapter,
-      this.nameJp,
-      this.nameCn,
-      this.level,
-      this.bondPoint,
-      this.experience,
-      this.qp,
-      this.battles});
+  String get place => getListItem(battles, 0)?.place;
+
 
   factory Quest.fromJson(Map<String, dynamic> data) => _$QuestFromJson(data);
 
@@ -33,13 +46,12 @@ class Quest {
 @JsonSerializable(checked: true)
 class Battle {
   int ap;
+  String place;
   String placeJp;
-  String placeCn;
+  List<List<Enemy>> enemies; // wave_num*enemy_num
+  Map<String, int> drops;
 
-  /// wave_num*enemy_num
-  List<List<Enemy>> enemies;
-
-  Battle({this.ap, this.placeJp, this.placeCn, this.enemies});
+  Battle({this.ap, this.place, this.placeJp, this.enemies, this.drops});
 
   factory Battle.fromJson(Map<String, dynamic> data) => _$BattleFromJson(data);
 
@@ -48,11 +60,11 @@ class Battle {
 
 @JsonSerializable(checked: true)
 class Enemy {
-  String name;
-  String shownName;
-  String className;
-  int rank;
-  int hp;
+  List<String> name;
+  List<String> shownName;
+  List<String> className;
+  List<int> rank;
+  List<int> hp;
 
   Enemy({this.name, this.shownName, this.className, this.rank, this.hp});
 

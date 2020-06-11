@@ -21,7 +21,7 @@ Widget buildClassifiedItemList(Map<String, int> data,
                     child: ImageWithText(
                       onTap: onTap == null ? null : () => onTap(item.name),
                       image: Image(image: db.getIconImage(item.name)),
-                      text: formatNumToString(data[item.name], 'kilo'),
+                      text: formatNum(data[item.name], 'kilo'),
                       padding: EdgeInsets.only(right: 3),
                     ),
                   ))

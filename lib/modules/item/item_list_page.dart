@@ -70,19 +70,17 @@ class ItemListPageState extends State<ItemListPage>
           ),
           IconButton(
               icon: Icon(Icons.toys),
-              onPressed: () async {
-                GLPKParams params = GLPKParams();
+              onPressed: () {
+                Map<String,int> objective={};
                 db.itemStat.leftItems.forEach((itemKey, value) {
                   if (db.gameData.glpk.rowNames.contains(itemKey) &&
                       value < 0) {
-                    params.objRows.add(itemKey);
-                    params.objNums.add(-value);
+                    objective[itemKey]=-value;
                   }
                 });
-                params.sortByItem();
                 SplitRoute.push(
                   context,
-                  builder: (context) => DropCalculatorPage(params: params),
+                  builder: (context) => DropCalculatorPage(objectiveMap: objective),
                 );
               })
         ],
@@ -235,13 +233,13 @@ class _ItemListTabState extends State<ItemListTab> {
               Expanded(
                   flex: 1,
                   child: AutoSizeText(
-                    '共需 ${formatNumToString(statistics.svtItems[itemKey], "decimal")}',
+                    '共需 ${formatNum(statistics.svtItems[itemKey], "decimal")}',
                     maxLines: 1,
                   )),
               Expanded(
                   flex: 1,
                   child: AutoSizeText(
-                    '剩余 ${formatNumToString(statistics.leftItems[itemKey], "decimal")}',
+                    '剩余 ${formatNum(statistics.leftItems[itemKey], "decimal")}',
                     maxLines: 1,
                     style: highlightStyle,
                     minFontSize: 10,

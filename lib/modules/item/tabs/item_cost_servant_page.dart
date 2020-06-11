@@ -16,6 +16,7 @@ class ItemCostServantPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String num2str(int n) => formatNum(n ?? 0, 'kilo', 10000);
     return StreamBuilder<ItemStatistics>(
         initialData: db.itemStat,
         stream: db.itemStat.onUpdated.stream,
@@ -25,12 +26,12 @@ class ItemCostServantPage extends StatelessWidget {
           final details = statistics.svtItemDetail.getCountByItem(favorite);
           List<Widget> children = [
             CustomTile(
-              title: Text('剩余 ${statistics.leftItems[itemKey] ?? 0}\n'
-                  '拥有 ${db.curUser.items[itemKey] ?? 0} '
-                  '活动 ${statistics.eventItems[itemKey] ?? 0}'),
+              title: Text('剩余 ${num2str(statistics.leftItems[itemKey])}\n'
+                  '拥有 ${num2str(db.curUser.items[itemKey])} '
+                  '活动 ${num2str(statistics.eventItems[itemKey])}'),
               trailing: Text(
-                '共需 ${counts.summation[itemKey]}\n' +
-                    counts.values.map((v) => v[itemKey] ?? 0).join('/'),
+                '共需 ${num2str(counts.summation[itemKey])}\n' +
+                    counts.values.map((v) => num2str(v[itemKey])).join('/'),
                 textAlign: TextAlign.end,
               ),
             ),
@@ -42,8 +43,8 @@ class ItemCostServantPage extends StatelessWidget {
                 children: <Widget>[
                   CustomTile(
                     title: Text(['灵基再临', '技能升级', '灵衣开放'][i]),
-                    trailing: Text(formatNumToString(
-                        counts.values[i][itemKey], 'decimal')),
+                    trailing: Text(
+                        formatNum(counts.values[i][itemKey], 'decimal', 10000)),
                   ),
                   _buildSvtIconGrid(context, details.values[i][itemKey],
                       highlight: favorite == false),
@@ -92,7 +93,7 @@ class ItemCostServantPage extends StatelessWidget {
                   : null,
               child: ImageWithText(
                 image: Image(image: db.getIconImage(svt.icon)),
-                text: formatNumToString(num, 'kilo'),
+                text: formatNum(num, 'kilo', 10000),
                 padding: EdgeInsets.only(right: 5, bottom: 16),
                 onTap: () {
                   SplitRoute.push(context,

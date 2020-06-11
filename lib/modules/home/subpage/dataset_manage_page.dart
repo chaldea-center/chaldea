@@ -127,11 +127,11 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 title: Text('Download icons'),
                 onTap: () {
                   db.gameData.icons.forEach((name, icon) async {
-                    final filepath = join(db.paths.gameIconDir, icon.filename);
+                    final filepath = join(db.paths.gameIconDir, icon.originName);
                     if (!File(filepath).existsSync()) {
                       try {
                         Response response = await _dio.download(icon.url,
-                            join(db.paths.gameIconDir, icon.filename));
+                            join(db.paths.gameIconDir, icon.originName));
                         if (response.statusCode != 200) {
                           print('error $name, response: $response');
                           Fluttertoast.showToast(msg: '$name download failed');

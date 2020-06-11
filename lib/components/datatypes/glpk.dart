@@ -4,30 +4,54 @@ part of datatypes;
 class GLPKData {
   List<String> colNames; //quests, n
   List<String> rowNames; // items, m
-  List<int> coeff; // n
-  List<List<double>> matrix; //m*n
+  List<int> costs; // n
+  List<List<double>> matrix;
   int cnMaxColNum;
+  int jpMaxColNum;
 
   GLPKData({
     this.colNames,
     this.rowNames,
-    this.coeff,
+    this.costs,
     this.matrix,
     this.cnMaxColNum,
+    this.jpMaxColNum,
   });
 
-  /// don't edit on origin data, copied data preferred.
-  void removeColumn(String col) {
-    int index = colNames.indexOf(col);
-    colNames.removeAt(index);
-    coeff.removeAt(index);
-    matrix.forEach((row) => row.removeAt(index));
+  GLPKData.from(GLPKData other)
+      : colNames = List.from(other.colNames),
+        rowNames = List.from(other.rowNames),
+        costs = List.from(other.costs),
+        matrix = List.generate(
+            other.matrix.length, (index) => List.from(other.matrix[index])),
+        cnMaxColNum = other.cnMaxColNum,
+        jpMaxColNum = other.jpMaxColNum;
+
+  /// DON'T call the following methods on original data
+  void removeRow(String name) {
+    int index = rowNames.indexOf(name);
+    if (index >= 0) removeRowAt(index);
   }
 
-  void removeRow(String row) {
-    int index = rowNames.indexOf(row);
+  void removeRowAt(int index) {
+    assert(index >= 0 && index < rowNames.length);
     rowNames.removeAt(index);
     matrix.removeAt(index);
+  }
+
+  void removeCol(String name) {
+    int index = colNames.indexOf(name);
+    if (index >= 0)
+      removeColAt(index);
+    else
+      logger.w('GLPKData has no such column to remove: "$name"');
+  }
+
+  void removeColAt(int index) {
+    assert(index >= 0 && index < colNames.length);
+    colNames.removeAt(index);
+    costs.removeAt(index);
+    matrix.forEach((row) => row.removeAt(index));
   }
 
   factory GLPKData.fromJson(Map<String, dynamic> data) =>
@@ -39,100 +63,134 @@ class GLPKData {
 /// for solve_glpk(data_str and params_str)
 @JsonSerializable(checked: true)
 class GLPKParams {
+  /// if [controllers] is null, disabled. Removed controllers are temporary
+  /// stored in [_unusedControllers] and dispose them inside widget's dispose
   @JsonKey(ignore: true)
   List<TextEditingController> controllers;
-  int minCoeff;
-  int maxSortOrder;
-  bool coeffPrio;
+  @JsonKey(ignore: true)
+  List<TextEditingController> _unusedControllers = [];
+
+  /// items(X)-counts(b) in AX>=b, only generated before transferred to js
+  List<String> rows;
+  List<int> counts;
+
+  /// generated from [rows] and [counts], only used when processing data
+  /// before transferred to js
+//  Map<String, int> objective;
+
+  /// limit minimum coefficient of quest
+  int minCost;
+
+  /// linear programming target
+  /// true: minimum ap cost = sum(cost_i*x_i)
+  /// false: minimum battle num = sum(x_i)
+  /// transferred to js
+  bool costMinimize;
+
+  /// for free quests, [maxColNum] = [cnMaxColNum] or [jpMaxColNum]
   int maxColNum;
-  List<String> objRows;
-  List<int> objNums;
+
+  /// for event quests, [extraCols]>[jpMaxColNum]
+  List<String> extraCols;
+
+  /// If true, use ILP(simplex+intopt), else use simplex only
+  /// transferred to js
+  bool integerResult;
 
   GLPKParams({
-    this.minCoeff,
-    this.maxSortOrder,
-    this.coeffPrio,
+    this.rows,
+    this.counts,
+    this.minCost,
+    this.costMinimize,
     this.maxColNum,
-    this.objRows,
-    this.objNums,
+    this.extraCols,
+    this.integerResult,
   }) {
     // controllers ??= null;
-    minCoeff ??= 0;
-    maxSortOrder ??= 0;
-    coeffPrio ??= true;
+    rows ??= [];
+    counts ??= [];
+    assert(rows.length == counts.length);
+    minCost ??= 0;
+    costMinimize ??= true;
     maxColNum ??= -1;
-    objRows ??= [];
-    objNums ??= [];
+    extraCols ??= [];
+    integerResult ??= false;
   }
 
-  void enableControllers() {
-    assert(objRows.length == objNums.length);
-    controllers?.forEach((e) => e.dispose());
-    controllers?.clear();
-    if (controllers?.length != objNums.length) {
-      controllers = objNums
-          .map((e) => TextEditingController(text: e.toString()))
-          .toList();
+  GLPKParams.from(GLPKParams other)
+      : rows = List.from(other.rows),
+        counts = List.from(other.counts),
+        minCost = other.minCost,
+        costMinimize = other.costMinimize,
+        maxColNum = other.maxColNum,
+        extraCols = List.from(other.extraCols),
+        integerResult = other.integerResult;
+
+  Map<String, int> generateObjective() => Map.fromIterables(rows, counts);
+
+  void sortByItem() {
+    final _getSortVal = (String key) {
+      return db.gameData.items[key]?.id ?? -1;
+    };
+    final countsMap = Map.fromIterables(rows, counts);
+    final controllersMap =
+        controllers == null ? null : Map.fromIterables(rows, controllers);
+    rows.sort((a, b) => _getSortVal(a) - _getSortVal(b));
+    counts = rows.map((e) => countsMap[e]).toList();
+    if (controllers != null) {
+      controllers = rows.map((e) => controllersMap[e]).toList();
     }
   }
 
-  void addOne(String row, [int n = 0]) {
-    if (row != null) {
-      objRows.add(row);
-      objNums.add(n);
+  void enableControllers() {
+    if (controllers == null) {
+      controllers = [];
+      for (int i = 0; i < rows.length; i++) {
+        controllers.add(TextEditingController(text: counts[i].toString()));
+      }
+    }
+  }
+
+  void disableControllers() {
+    if (controllers != null) {
+      _unusedControllers.addAll(controllers);
+      controllers = null;
+    }
+  }
+
+  void dispose() {
+    controllers?.forEach((element) => element.dispose());
+    _unusedControllers.forEach((element) => element.dispose());
+    controllers = _unusedControllers = null;
+  }
+
+  void addOne(String item, [int n = 0]) {
+    final index = rows.indexOf(item);
+    if (index < 0) {
+      rows.add(item);
+      counts.add(n);
       controllers?.add(TextEditingController(text: n.toString()));
     }
   }
 
-  void remove(String obj) {
-    int removeIndex = objRows.indexOf(obj);
-    if (removeIndex >= 0) {
-      removeAt(removeIndex);
+  void remove(String item) {
+    final index = rows.indexOf(item);
+    if (index >= 0) {
+      rows.removeAt(index);
+      counts.removeAt(index);
+      if (controllers != null) {
+        _unusedControllers.add(controllers.removeAt(index));
+      }
     }
-  }
-
-  void removeAt(int index) {
-    objRows.removeAt(index);
-    objNums.removeAt(index);
-    controllers?.removeAt(index);
   }
 
   void removeAll() {
-    objRows.clear();
-    objNums.clear();
-    controllers?.forEach((e) => e.dispose());
-    controllers?.clear();
-  }
-
-  void sortByItem() {
-    final map = Map.fromIterables(objRows, objNums);
-    final getSortVal = (String key) {
-      return db.gameData.items[key]?.id ?? -1;
-    };
-    objRows.sort((a, b) {
-      return getSortVal(a) - getSortVal(b);
-    });
-    for (int i = 0; i < objRows.length; i++) {
-      objNums[i] = map[objRows[i]];
+    rows.clear();
+    counts.clear();
+    if (controllers != null) {
+      _unusedControllers.addAll(controllers);
+      controllers.clear();
     }
-  }
-
-  GLPKParams copyWith({
-    List<String> objRows,
-    List<int> objNums,
-    int minCoeff,
-    int maxSortOrder,
-    bool coeffPrio,
-    int maxColNum,
-  }) {
-    return GLPKParams(
-      objRows: objRows ?? List.from(this.objRows),
-      objNums: objNums ?? List.from(this.objNums),
-      minCoeff: minCoeff ?? this.minCoeff,
-      maxSortOrder: maxSortOrder ?? this.maxSortOrder,
-      coeffPrio: coeffPrio ?? this.coeffPrio,
-      maxColNum: maxColNum ?? this.maxColNum,
-    );
   }
 
   factory GLPKParams.fromJson(Map<String, dynamic> data) =>
@@ -143,14 +201,14 @@ class GLPKParams {
 
 @JsonSerializable()
 class GLPKSolution {
-  int totalEff;
+  int totalCost;
   int totalNum;
   List<GLPKVariable> variables;
 
-  GLPKSolution({this.totalEff, this.totalNum, this.variables});
+  GLPKSolution({this.totalCost, this.totalNum, this.variables});
 
   void clear() {
-    totalEff = null;
+    totalCost = null;
     totalNum = null;
     variables.clear();
   }
@@ -169,10 +227,12 @@ class GLPKSolution {
 class GLPKVariable {
   String name;
   int value;
-  int coeff;
+  int cost;
+
+  /// total item-num statistics from [value] times of quest [name]
   Map<String, int> detail;
 
-  GLPKVariable({this.name, this.value, this.coeff, this.detail});
+  GLPKVariable({this.name, this.value, this.cost, this.detail});
 
   factory GLPKVariable.fromJson(Map<String, dynamic> data) =>
       _$GLPKVariableFromJson(data);

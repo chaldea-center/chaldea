@@ -30,7 +30,7 @@ void showInformDialog(BuildContext context, {String title, String content}) {
 typedef SheetBuilder = Widget Function(BuildContext, StateSetter);
 
 void showSheet(BuildContext context,
-    {@required SheetBuilder builder, double size = 0.75}) {
+    {@required SheetBuilder builder, double size = 0.65}) {
   assert(size >= 0.25 && size <= 1);
 
   showModalBottomSheet(

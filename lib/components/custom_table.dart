@@ -58,14 +58,14 @@ class CustomTableRow extends StatefulWidget {
 
   CustomTableRow.fromTexts(
       {@required List<String> texts,
-      TableCellData defaultData,
+      TableCellData defaults,
       Color color,
       BorderSide side = kCustomTableSide})
       : this(
           children: texts
-              .map((text) => defaultData == null
+              .map((text) => defaults == null
                   ? TableCellData(text: text)
-                  : defaultData.copyWith(text: text))
+                  : defaults.copyWith(text: text))
               .toList(),
           color: color,
           side: side,
@@ -73,14 +73,14 @@ class CustomTableRow extends StatefulWidget {
 
   CustomTableRow.fromChildren(
       {@required List<Widget> children,
-      TableCellData defaultData,
+      TableCellData defaults,
       Color color,
       BorderSide side = kCustomTableSide})
       : this(
           children: children
-              .map((child) => defaultData == null
+              .map((child) => defaults == null
                   ? TableCellData(child: child)
-                  : defaultData.copyWith(child: child))
+                  : defaults.copyWith(child: child))
               .toList(),
           color: color,
           side: side,
@@ -109,8 +109,12 @@ class _CustomTableRowState extends State<CustomTableRow> {
             _child = cell.child;
           } else {
             _child = cell.maxLines == null
-                ? Text(cell.text)
-                : AutoSizeText(cell.text, maxLines: cell.maxLines);
+                ? Text(cell.text, textAlign: cell.textAlign)
+                : AutoSizeText(
+                    cell.text,
+                    maxLines: cell.maxLines,
+                    textAlign: cell.textAlign,
+                  );
           }
           return Flexible(
             key: cell._key,
@@ -168,6 +172,7 @@ class TableCellData {
   Color color;
   int maxLines;
   Alignment alignment;
+  TextAlign textAlign;
   EdgeInsets padding;
   bool fitHeight;
   GlobalKey _key;
@@ -182,6 +187,7 @@ class TableCellData {
       this.color,
       this.maxLines,
       this.alignment = Alignment.center,
+      this.textAlign,
       this.padding = const EdgeInsets.all(4),
       this.fitHeight})
       : assert(text == null || child == null) {
@@ -203,6 +209,8 @@ class TableCellData {
     List<int> maxLinesList,
     Alignment alignment,
     List<Alignment> alignmentList,
+    TextAlign textAlign,
+    List<TextAlign> textAlignList,
     EdgeInsets padding,
     List<EdgeInsets> paddingList,
     bool fitHeight,
@@ -215,6 +223,7 @@ class TableCellData {
     assert(color == null || colorList == null);
     assert(maxLines == null || maxLinesList == null);
     assert(alignment == null || alignmentList == null);
+    assert(textAlign == null || textAlignList == null);
     assert(padding == null || paddingList == null);
     assert(fitHeight == null || fitHeightList == null);
     assert([
@@ -239,6 +248,8 @@ class TableCellData {
       data.maxLines = maxLines ?? maxLinesList?.elementAt(index);
       data.alignment =
           alignment ?? alignmentList?.elementAt(index) ?? data.alignment;
+      data.textAlign =
+          textAlign ?? textAlignList?.elementAt(index) ?? data.textAlign;
       data.padding = padding ?? paddingList?.elementAt(index) ?? data.padding;
       data.fitHeight = fitHeight ?? fitHeightList?.elementAt(index);
       rowDataList[index] = data;
@@ -254,6 +265,7 @@ class TableCellData {
       Color color,
       int maxLines,
       Alignment alignment,
+      TextAlign textAlign,
       EdgeInsets padding,
       bool fitHeight}) {
     return TableCellData(
@@ -264,6 +276,7 @@ class TableCellData {
       color: color ?? this.color,
       maxLines: maxLines ?? this.maxLines,
       alignment: alignment ?? this.alignment,
+      textAlign: textAlign ?? this.textAlign,
       padding: padding ?? this.padding,
       fitHeight: fitHeight ?? this.fitHeight,
     );

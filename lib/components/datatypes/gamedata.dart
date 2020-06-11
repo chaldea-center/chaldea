@@ -8,9 +8,10 @@ class GameData {
   Map<int, CraftEssential> crafts;
   Map<int, CommandCode> cmdCodes;
   Map<String, Item> items;
-  Map<String, GameIcon> icons;
+  Map<String, IconResource> icons;
   Events events;
   Map<String, Quest> freeQuests;
+  Map<String,List<Quest>> svtQuests;
   GLPKData glpk;
 
   GameData({
@@ -22,6 +23,7 @@ class GameData {
     this.icons,
     this.events,
     this.freeQuests,
+    this.svtQuests,
     this.glpk,
   }) {
     version ??= '0';
@@ -32,6 +34,7 @@ class GameData {
     icons ??= {};
     events ??= Events();
     freeQuests ??= {};
+    svtQuests??={};
     glpk ??= GLPKData();
   }
 
@@ -42,31 +45,27 @@ class GameData {
 }
 
 @JsonSerializable(checked: true)
-class GameIcon {
-  String filename;
+class IconResource {
+  String name;
+  String originName;
   String url;
 
-  GameIcon({this.filename, this.url});
+  IconResource({this.name,this.originName, this.url});
 
-  factory GameIcon.fromJson(Map<String, dynamic> data) =>
-      _$GameIconFromJson(data);
+  factory IconResource.fromJson(Map<String, dynamic> data) =>
+      _$IconResourceFromJson(data);
 
-  Map<String, dynamic> toJson() => _$GameIconToJson(this);
+  Map<String, dynamic> toJson() => _$IconResourceToJson(this);
 }
 
 @JsonSerializable(checked: true)
 class ItemCost {
-  List<List<Item>> ascension;
-  List<List<Item>> skill;
-  List<List<Item>> dress;
+  List<Map<String, int>> ascension;
+  List<Map<String, int>> skill;
+  List<Map<String, int>> dress;
 
   List<String> dressName;
   List<String> dressNameJp;
-
-  factory ItemCost.fromJson(Map<String, dynamic> data) =>
-      _$ItemCostFromJson(data);
-
-  Map<String, dynamic> toJson() => _$ItemCostToJson(this);
 
   ItemCost({
     this.ascension,
@@ -75,27 +74,30 @@ class ItemCost {
     this.dressNameJp,
     this.dress,
   });
+
+  factory ItemCost.fromJson(Map<String, dynamic> data) =>
+      _$ItemCostFromJson(data);
+
+  Map<String, dynamic> toJson() => _$ItemCostToJson(this);
 }
 
 @JsonSerializable(checked: true)
 class Item {
   int id;
   String name;
-  @JsonKey(defaultValue: 0)
-  int rarity;
   int category;
   @JsonKey(defaultValue: 0)
-  int num;
+  int rarity;
 
-  Item({this.id, this.name, this.rarity = 0, this.category, this.num = 0});
+  Item({this.id, this.name, this.category, this.rarity = 0});
 
   Item copyWith({int id, String name, int rarity, int category, int num}) {
     return Item(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        rarity: rarity ?? this.rarity,
-        category: category ?? this.category,
-        num: num ?? this.num);
+      id: id ?? this.id,
+      name: name ?? this.name,
+      rarity: rarity ?? this.rarity,
+      category: category ?? this.category,
+    );
   }
 
   factory Item.fromJson(Map<String, dynamic> data) => _$ItemFromJson(data);

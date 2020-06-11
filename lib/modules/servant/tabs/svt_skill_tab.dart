@@ -41,10 +41,9 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
   }
 
   Widget buildSkill(int index) {
-    List<Skill> skillList = svt.activeSkills[index];
-    bool enhanced = status.skillEnhanced[index] ?? skillList[0].enhanced;
-    Skill skill = skillList[enhanced ? 1 : 0];
-
+    List<Skill> oneSkillList = svt.activeSkills[index];
+    Skill skill = oneSkillList[status.skillIndex[index]];
+    bool enhanced = skill.state.contains('强化后');
     return TileGroup(
       children: <Widget>[
         CustomTile(
@@ -56,11 +55,11 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                if (skillList.length > 1)
+                if (oneSkillList.length > 1)
                   GestureDetector(
                     onTap: () {
                       widget.parent?.setState(() {
-                        status.skillEnhanced[index] = !enhanced;
+                        status.skillIndex[index] = 1 - status.skillIndex[index];
                       });
                     },
                     child: Image(
@@ -91,35 +90,36 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
   }
 
   List<Widget> buildEffect(Effect effect) {
-    bool twoLine = effect.lvData.length == 10;
+    assert([1, 10].contains(effect.lvData.length));
+    int lines =
+        effect.lvData.length == 1 ? effect.lvData[0].length < 10 ? 0 : 1 : 2;
+
     return <Widget>[
       CustomTile(
           contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
           subtitle: Text(effect.description),
-          trailing: effect.lvData.length == 1
-              ? Text(formatNumToString(effect.lvData[0], effect.valueType))
-              : null),
-      if (effect.lvData.length > 1)
+          trailing: lines == 0 ? Text(effect.lvData[0]) : null),
+      if (lines > 0)
         CustomTile(
-            contentPadding:
-                EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
+            contentPadding: EdgeInsets.only(right: 24.0),
             title: GridView.count(
-              childAspectRatio: twoLine ? 3 : 6,
+              childAspectRatio: lines == 1 ? 2.7 * 5 : 2.7,
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              crossAxisCount: twoLine ? 5 : effect.lvData.length,
-              children: effect.lvData.asMap().keys.map((index) {
-                return Align(
+              crossAxisCount: lines == 1 ? 1 : 5,
+              children: List.generate(
+                effect.lvData.length,
+                (index) => Align(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    formatNumToString(effect.lvData[index], effect.valueType),
+                    effect.lvData[index],
                     style: TextStyle(
-                        fontSize: 13,
-                        color:
-                            [5, 9].contains(index) ? Colors.redAccent : null),
+                      fontSize: 14,
+                      color: [5, 9].contains(index) ? Colors.redAccent : null,
+                    ),
                   ),
-                );
-              }).toList(),
+                ),
+              ),
             )),
     ];
   }

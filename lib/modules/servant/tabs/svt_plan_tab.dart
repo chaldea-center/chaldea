@@ -66,7 +66,6 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
               plan
                 ..ascension = _end
                 ..favorite = true;
-//              widget.parent?.setState(() {});
               db.userData.broadcastUserUpdate();
               db.itemStat.updateSvtItems();
             },
@@ -84,9 +83,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     //skill part
     List<Widget> skillWidgets = [];
     for (int index = 0; index < svt.activeSkills.length; index++) {
-      List<Skill> skillList = svt.activeSkills[index];
-      bool enhanced = status.skillEnhanced[index] ?? skillList[0].enhanced;
-      Skill skill = skillList[enhanced ? 1 : 0];
+      Skill skill = svt.activeSkills[index][status.skillIndex[index]];
       skillWidgets.add(buildPlanRow(
         leading: Image(
           image: db.getIconImage(skill.icon),
@@ -160,11 +157,11 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         buildPlanRow(
           leading: Image(image: db.getIconImage('宝具强化'), height: 110 * 0.3),
           title: '宝具等级',
-          start: status.treasureDeviceLv,
+          start: status.tdLv,
           minVal: 1,
           maxVal: 5,
           onValueChanged: (_value, _) {
-            status.treasureDeviceLv = _value;
+            status.tdLv = _value;
             curVal.favorite = true;
             plan.favorite = true;
             db.userData.broadcastUserUpdate();

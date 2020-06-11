@@ -1,7 +1,7 @@
 import 'package:chaldea/components/components.dart';
 
 class LevelingCostPage extends StatefulWidget {
-  final List<List<Item>> costList;
+  final List<Map<String, int>> costList;
   final int curLv;
   final int targetLv;
   final String title;
@@ -21,34 +21,6 @@ class LevelingCostPage extends StatefulWidget {
 
 class LevelingCostPageState extends State<LevelingCostPage> {
   bool showAll = false;
-
-  Widget buildOneLevel(String title, List<Item> lvCost) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 3),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          CustomTile(
-            title: Text(title),
-            contentPadding: EdgeInsets.zero,
-          ),
-          GridView.count(
-            crossAxisCount: 6,
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            children: lvCost
-                .map((item) => ImageWithText(
-                      image: Image(image: db.getIconImage(item.name)),
-                      text: formatNumToString(item.num, 'kilo'),
-                      padding: EdgeInsets.only(right: 3),
-                    ))
-                .toList(),
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,4 +52,32 @@ class LevelingCostPageState extends State<LevelingCostPage> {
       ),
     );
   }
+  Widget buildOneLevel(String title, Map<String,int> lvCost) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 3),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          CustomTile(
+            title: Text(title),
+            contentPadding: EdgeInsets.zero,
+          ),
+          GridView.count(
+            crossAxisCount: 6,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            children: lvCost.entries
+                .map((entry) => ImageWithText(
+              image: Image(image: db.getIconImage(entry.key)),
+              text: formatNum(entry.value, 'kilo'),
+              padding: EdgeInsets.only(right: 3),
+            ))
+                .toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
 }

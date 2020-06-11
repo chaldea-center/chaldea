@@ -27,7 +27,7 @@ class _LimitEventTabState extends State<LimitEventTab> {
         final event = events[index];
         final plan = db.curUser.events.limitEvents;
         return ListTile(
-          title: AutoSizeText(event.name, maxLines: 1),
+          title: AutoSizeText(event.name, maxFontSize: 16, maxLines: 2),
           subtitle:
               AutoSizeText(event.startTimeJp.split(' ').first, maxLines: 1),
           trailing: Row(

@@ -1,14 +1,17 @@
 part of datatypes;
 
+enum CraftCompare { no, rarity, atk, hp }
+
 @JsonSerializable(checked: true)
 class CraftEssential {
   int no;
-  int rarity;
+  String mcLink;
   String name;
   String nameJp;
-  String mcLink;
+  List<String> nameOther;
+  int rarity;
   String icon;
-  String illust;
+  String illustration;
   List<String> illustrators;
   int cost;
   int hpMin;
@@ -23,18 +26,20 @@ class CraftEssential {
   String description;
   String descriptionJp;
   int category;
+  String categoryText;
   List<String> characters;
   int bond;
   int valentine;
 
   CraftEssential({
     this.no,
-    this.rarity,
+    this.mcLink,
     this.name,
     this.nameJp,
-    this.mcLink,
+    this.nameOther,
+    this.rarity,
     this.icon,
-    this.illust,
+    this.illustration,
     this.illustrators,
     this.cost,
     this.hpMin,
@@ -49,6 +54,7 @@ class CraftEssential {
     this.description,
     this.descriptionJp,
     this.category,
+    this.categoryText,
     this.characters,
     this.bond,
     this.valentine,
@@ -86,5 +92,3 @@ class CraftEssential {
 
   Map<String, dynamic> toJson() => _$CraftEssentialToJson(this);
 }
-
-enum CraftCompare { no, rarity, atk, hp }

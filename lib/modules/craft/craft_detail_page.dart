@@ -58,12 +58,10 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
                   if (db.gameData.crafts.containsKey(nextNo)) {
                     setState(() {
                       ce = db.gameData.crafts[nextNo];
-                      print('move to craft No.${ce.no}-${ce.name}');
                     });
                   } else {
                     Fluttertoast.showToast(
                         msg: '已经是${['第', '最后'][i]}一张',
-                        gravity: ToastGravity.BOTTOM,
                         toastLength: Toast.LENGTH_SHORT);
                   }
                 },
@@ -149,7 +147,7 @@ class CraftDetailBasePage extends StatelessWidget {
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => FullScreenImageSlider(
-                            imgUrls: [ce.illust],
+                            imgUrls: [db.getIconResource(ce.illustration).url],
                             enableDownload: db.runtimeData.enableDownload),
                         fullscreenDialog: true));
                   },

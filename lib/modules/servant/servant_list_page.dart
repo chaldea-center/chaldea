@@ -53,8 +53,8 @@ class ServantListPageState extends State<ServantListPage> {
         svt.info.name,
         svt.info.nameJp,
         svt.info.illustrator,
-        svt.info.illustName,
         ...svt.info.nicknames,
+        ...svt.info.traits
       ];
       svt?.treasureDevice?.forEach((td) {
         searchStrings.addAll([
@@ -95,8 +95,8 @@ class ServantListPageState extends State<ServantListPage> {
     Map<FilterGroupData, String> singleValuePair = {
       filterData.rarity: svt.info.rarity.toString(),
       filterData.obtain: svt.info.obtain,
-      filterData.npColor: getValueInList(svt.treasureDevice, 0)?.color,
-      filterData.npType: getValueInList(svt.treasureDevice, 0)?.category,
+      filterData.npColor: getListItem(svt.treasureDevice, 0)?.color,
+      filterData.npType: getListItem(svt.treasureDevice, 0)?.category,
       filterData.attribute: svt.info.attribute,
     };
     for (var entry in singleValuePair.entries) {
@@ -121,8 +121,7 @@ class ServantListPageState extends State<ServantListPage> {
     if (!filterData.trait.listValueFilter(svt.info.traits, compares: {
       '魔性': (o, v) => v.startsWith(o),
       '超巨大': (o, v) => v.startsWith(o),
-      '天地(拟似除外)': (o, v) => v == '天地从者',
-      '拟似/亚从者': (o, v) => v.contains('拟似从者') || v.contains('亚从者'),
+      '天地(拟似除外)': (o, v) => !svt.info.isTDNS,
       'EA不特攻': (o, v) => !svt.info.isWeakToEA,
       '无特殊特性': (o, v) => svt.info.traits.isEmpty,
     })) {
@@ -262,7 +261,7 @@ class ServantListPageState extends State<ServantListPage> {
           final status = db.curUser.servants[svt.no];
           String statusText = '';
           if (status?.curVal?.favorite == true) {
-            statusText = '${status.treasureDeviceLv}宝'
+            statusText = '${status.tdLv}宝'
                 '${status.curVal.ascension}-'
                 '${status.curVal.skills[0]}/'
                 '${status.curVal.skills[1]}/'
@@ -312,7 +311,7 @@ class ServantListPageState extends State<ServantListPage> {
           final status = db.curUser.servants[svt.no];
           String statusText;
           if (status?.curVal?.favorite == true) {
-            statusText = '${status.treasureDeviceLv}\n'
+            statusText = '${status.tdLv}\n'
                 '${status.curVal.ascension}-'
                 '${status.curVal.skills[0]}/'
                 '${status.curVal.skills[1]}/'

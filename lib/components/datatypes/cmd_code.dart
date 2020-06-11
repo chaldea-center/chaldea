@@ -1,14 +1,17 @@
 part of datatypes;
 
+enum CmdCodeCompare { no, rarity }
+
 @JsonSerializable(checked: true)
 class CommandCode {
   int no;
-  int rarity;
+  String mcLink;
   String name;
   String nameJp;
-  String mcLink;
+  List<String> nameOther;
+  int rarity;
   String icon;
-  String illust;
+  String illustration;
   List<String> illustrators;
   String skillIcon;
   String skill;
@@ -19,12 +22,13 @@ class CommandCode {
 
   CommandCode({
     this.no,
-    this.rarity,
+    this.mcLink,
     this.name,
     this.nameJp,
-    this.mcLink,
+    this.nameOther,
+    this.rarity,
     this.icon,
-    this.illust,
+    this.illustration,
     this.illustrators,
     this.skillIcon,
     this.skill,
@@ -60,5 +64,3 @@ class CommandCode {
 
   Map<String, dynamic> toJson() => _$CommandCodeToJson(this);
 }
-
-enum CmdCodeCompare { no, rarity }

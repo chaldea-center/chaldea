@@ -58,7 +58,6 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
                   if (db.gameData.cmdCodes.containsKey(nextNo)) {
                     setState(() {
                       code = db.gameData.cmdCodes[nextNo];
-                      print('move to cmd code No.${code.no}-${code.name}');
                     });
                   } else {
                     Fluttertoast.showToast(
@@ -132,7 +131,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => FullScreenImageSlider(
-                                      imgUrls: [code.illust],
+                                      imgUrls: [db.getIconResource(code.illustration).url],
                                       enableDownload:
                                           db.runtimeData.enableDownload),
                                   fullscreenDialog: true));

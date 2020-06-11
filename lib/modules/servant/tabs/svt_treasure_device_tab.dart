@@ -28,19 +28,15 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab> {
     if (svt.treasureDevice == null || svt.treasureDevice.length == 0) {
       return Container(child: Center(child: Text('No NobelPhantasm Data')));
     }
-    if (status.treasureDeviceEnhanced == null ||
-        status.treasureDeviceEnhanced >= svt.treasureDevice.length) {}
-    int tdNo = status.treasureDeviceEnhanced;
-    if (tdNo == null || tdNo < 0 || tdNo >= svt.treasureDevice.length) {
-      tdNo =
-          svt.treasureDevice.first.enhanced ? svt.treasureDevice.length - 1 : 0;
-    }
-    final td = svt.treasureDevice[tdNo];
+    if (status.tdIndex < 0 || status.tdIndex >= svt.treasureDevice.length)
+      status.tdIndex = 0;
+
+    final td = svt.treasureDevice[status.tdIndex];
     return ListView(
       children: <Widget>[
         TileGroup(
           children: <Widget>[
-            buildToggle(tdNo),
+            buildToggle(status.tdIndex),
             buildHeader(td),
             for (Effect e in td.effects) ...buildEffect(e)
           ],
@@ -61,29 +57,28 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab> {
           selectedColor: Colors.white,
           fillColor: Theme.of(context).primaryColor,
           children: svt.treasureDevice.map((td) {
-            String iconKey = td.state.contains('强化前')
-                ? '宝具未强化'
-                : td.state.contains('强化后') ? '宝具强化' : null;
+            Widget button;
+            if (td.state.contains('强化前') || td.state.contains('强化后')) {
+              final iconKey = td.state.contains('强化前') ? '宝具未强化' : '宝具强化';
+              button = Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Image(image: db.getIconImage(iconKey), height: 110 * 0.2),
+                  Text(td.state)
+                ],
+              );
+            } else {
+              button = Text(td.state);
+            }
             return Padding(
-              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-              child: iconKey == null
-                  ? Text(td.state)
-                  : Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Image(
-                            image: db.getIconImage(iconKey), height: 110 * 0.2),
-                        Text(td.state)
-                      ],
-                    ),
-            );
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                child: button);
           }).toList(),
-          isSelected: List.generate(svt.treasureDevice.length, (i) {
-            return selected == i;
-          }),
+          isSelected:
+              List.generate(svt.treasureDevice.length, (i) => selected == i),
           onPressed: (no) {
             setState(() {
-              status.treasureDeviceEnhanced = no;
+              status.tdIndex = no;
             });
           },
         ),
@@ -139,32 +134,30 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab> {
 
   List<Widget> buildEffect(Effect effect) {
     assert([1, 5].contains(effect.lvData.length), '$effect');
+    // avoid trailing too long
+    bool useTrailing = effect.lvData.length == 1 && effect.lvData[0].length < 10;
     return <Widget>[
       CustomTile(
-          contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
-          subtitle: Text(effect.description),
-          trailing: effect.lvData.length == 1
-              ? Text(formatNumToString(effect.lvData[0], effect.valueType))
-              : null),
-      if (effect.lvData.length > 1)
+        contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
+        subtitle: Text(effect.description),
+        trailing: useTrailing ? Text(effect.lvData[0]) : null,
+      ),
+      if (!useTrailing)
+        // Why use CustomTile here???
         CustomTile(
-            contentPadding:
-                EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
-            title: GridView.count(
-              childAspectRatio: 2.5,
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              crossAxisCount: 5,
-              children: List.generate(effect.lvData.length, (index) {
-                return Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    formatNumToString(effect.lvData[index], effect.valueType),
-                    style: TextStyle(fontSize: 14),
-                  ),
-                );
-              }),
-            ))
+          contentPadding: EdgeInsets.only(left: 16, right: 16),
+          title: GridView.count(
+            childAspectRatio: effect.lvData.length == 1 ? 2.7 * 5 : 2.7,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            crossAxisCount: effect.lvData.length,
+            children: effect.lvData
+                .map((e) => Align(
+                    alignment: Alignment.center,
+                    child: Text(e, style: TextStyle(fontSize: 14))))
+                .toList(),
+          ),
+        )
     ];
   }
 }

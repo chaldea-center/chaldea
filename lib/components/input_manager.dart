@@ -1,3 +1,4 @@
+import 'package:chaldea/components/components.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -57,7 +58,7 @@ class TextInputsManager<T> {
     final index = _observerList.indexOf(component);
     component.unSelect();
     if (index < 0) {
-      print('WARNING: focus node not in list!');
+      logger.e('WARNING: focus node not in list!');
     } else if (index == _observerList.length - 1) {
       FocusScope.of(context).unfocus();
     } else {

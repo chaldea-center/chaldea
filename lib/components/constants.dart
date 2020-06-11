@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:chaldea/components/input_manager.dart';
 import 'package:flutter/material.dart';
 
 //typedef
@@ -23,7 +26,7 @@ class LangCode {
   };
 
   static Locale getLocale(String code) =>
-      code == null ? null : allEntries[code];
+      allEntries.containsKey(code) ? allEntries[code] : allEntries.values.first;
 
   static List<String> get codes => allEntries.keys.toList();
 }
@@ -122,61 +125,53 @@ class ClassName {
 }
 
 //public functions
-String formatNumToString<T>(T number, [String style]) {
-  if (number is String || number is double) {
-    return '$number';
-  } else if (number is int) {
-    int num = number;
-    String prefix = num >= 0 ? '' : '-';
-    num = num >= 0 ? num : -num;
+String formatNum<T>(T number, [String style, num minVal = 0]) {
+  if (number is int) {
+    int abs = number.abs();
+    if (abs < minVal) return number.toString();
+    String prefix = number >= 0 ? '' : '-';
     String body;
     switch (style) {
       case 'percent':
         // return percent of num/100, num=1230->return 12.3%
-        body = num % 100 == 0 ? '${num ~/ 100}%' : '${num / 100.0}%';
+        body = abs % 100 == 0 ? '${abs ~/ 100}%' : '${abs / 100}%';
         break;
       case 'kilo':
-        if (num == 0) {
-          body = num.toString();
-        } else if (num % 1000000000 == 0) {
-          body = formatNumToString(num ~/ 1000000000, 'decimal') + 'G';
-        } else if (num % 1000000 == 0) {
-          body = formatNumToString(num ~/ 1000000, 'decimal') + 'M';
-        } else if (num % 1000 == 0) {
-          body = formatNumToString(num ~/ 1000, 'decimal') + 'K';
+        String _format(int number, int base) {
+          String s = (number / base).toString();
+          s = s.substring(0, min(5, s.length)).replaceAll(RegExp(r'\.0*$'), '');
+          s = s.replaceAll(RegExp(r'(?<=\.\d*?)0+'), '');
+          return s;
+        }
+        if (abs < 1000) {
+          body = abs.toString();
+        } else if (abs < 1000000) {
+          body = _format(abs, 1000) + 'K';
         } else {
-          body = formatNumToString(num, 'decimal');
+          body = _format(abs, 1000000) + 'M';
         }
         break;
       case 'decimal':
-        String s = '';
-        if (num == 0) {
-          body = num.toString();
-        } else {
-          List<String> list = [];
-          while (num > 0) {
-            list.insert(0, '${num % 1000}'.padLeft(3, '0'));
-            s = '${num % 1000}'.padLeft(3, '0') + ',$s';
-            num = num ~/ 1000;
-          }
-          list[0] = int.parse(list[0]).toString();
-          body = list.join(',');
-        }
+        body = kThousandFormatter.format(abs);
         break;
       default:
-        body = '$num';
+        body = abs.toString();
     }
     return prefix + body;
-  } else {
-    throw TypeError();
   }
+//  return number.toString();
 }
 
 num sum(Iterable<num> x) => x.fold(0, (p, c) => (p ?? 0) + (c ?? 0));
 
-Map<K, V> sumDict<K, V extends num>(Iterable<Map<K, V>> operands) {
-  Map<K, V> res = {};
-  for (var m in operands) {
+/// sum multiple maps, if [inPlace], add into the first element.
+/// throw error if sum in place of an empty list.
+Map<K, V> sumDict<K, V extends num>(Iterable<Map<K, V>> operands,
+    {bool inPlace = false}) {
+  final _operands = operands.toList();
+  Map<K, V> res = inPlace ? _operands.removeAt(0) : {};
+
+  for (var m in _operands) {
     m?.forEach((k, v) {
       // use "+ (v??0)" to allow v=null
       res[k] = (res[k] ?? 0) + v;
@@ -193,7 +188,7 @@ Map<K, V> multiplyDict<K, V extends num>(Map<K, V> d, V multiplier) {
   return res;
 }
 
-T getValueInList<T>(List<T> data, int index, [k()]) {
+T getListItem<T>(List<T> data, int index, [k()]) {
   if ((data?.length ?? 0) > index) {
     return data[index];
   } else {

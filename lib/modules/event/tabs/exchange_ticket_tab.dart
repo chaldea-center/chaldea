@@ -22,21 +22,21 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
   Widget build(BuildContext context) {
     final startDate = DateTime.now().subtract(Duration(days: 31 * 4));
     final tickets = db.gameData.events.exchangeTickets.values.toList()
-      ..retainWhere((e) => DateTime.parse(e.monthCn + '01').isAfter(startDate));
+      ..retainWhere((e) => DateTime.parse(e.month + '01').isAfter(startDate));
     tickets.sort((a, b) {
-      return (a.monthCn).compareTo(b.monthCn) * (widget.reverse ? -1 : 1);
+      return (a.month).compareTo(b.month) * (widget.reverse ? -1 : 1);
     });
 
     return ListView(
       children: divideTiles(
         tickets.map((ticket) {
           TextStyle plannedStyle;
-          if (sum(db.curUser.events.exchangeTickets[ticket.monthCn] ?? []) >
+          if (sum(db.curUser.events.exchangeTickets[ticket.month] ?? []) >
               0) {
             plannedStyle = TextStyle(color: Colors.blueAccent);
           }
           return ListTile(
-            title: Text(ticket.monthCn, style: plannedStyle),
+            title: Text(ticket.month, style: plannedStyle),
             subtitle: AutoSizeText(
               'JP: ${ticket.monthJp}\nmax: ${ticket.days}',
               maxLines: 2,
@@ -57,7 +57,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
 
   Widget buildTrailing(ExchangeTicket ticket, ItemStatistics statistics) {
     final monthPlan = db.curUser.events.exchangeTickets
-        .putIfAbsent(ticket.monthCn, () => [0, 0, 0]);
+        .putIfAbsent(ticket.month, () => [0, 0, 0]);
     List<Widget> trailingItems = [];
     for (var i = 0; i < 3; i++) {
       final iconKey = ticket.items[i];

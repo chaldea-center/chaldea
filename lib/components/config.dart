@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
+import 'package:chaldea/components/components.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -54,12 +55,12 @@ class Database {
           getJsonFromFile(paths.userDataPath, k: () => <String, dynamic>{}));
       userData?.dispose();
       userData = newData;
-      print('userdata reloaded.');
+      logger.d('userdata reloaded.');
       return true;
     } catch (e, s) {
       userData ??= UserData(); // if not null, don't change data
-      print('load userdata error:\n$e\n$s');
-      showToast('ERROR load userdata\n$e');
+      logger.e('Load userdata failed', e, s);
+      showToast('Load userdata failed\n$e');
       return false;
     }
   }
@@ -68,12 +69,12 @@ class Database {
     // TODO: use downloaded data if exist
     try {
       gameData = GameData.fromJson(getJsonFromFile(paths.gameDataFilepath));
-      print('gamedata reloaded, version ${gameData.version}.');
+      logger.d('game data reloaded, version ${gameData.version}.');
       return true;
     } catch (e, s) {
       gameData ??= GameData(); // if not null, don't change data
-      print('load game data error:\n$e\n$s');
-      showToast('ERROR load gamedata\n$e');
+      logger.e('Load game data failed', e, s);
+      showToast('Load game data failed\n$e');
       return false;
     }
   }
@@ -86,7 +87,7 @@ class Database {
       return rootBundle.load(assetKey).then((data) {
         extractZip(data.buffer.asUint8List().cast<int>(), extractDir);
       }, onError: (e, s) {
-        print('Error load assets: $assetKey\n$e');
+        logger.e('Load assets failed: $assetKey', e, s);
         showToast('Error load assets: $assetKey\n$e');
       });
     }
@@ -117,14 +118,34 @@ class Database {
     }
   }
 
-  ImageProvider getIconImage(String iconKey) {
-    if (gameData.icons.containsKey(iconKey)) {
-      return FileImage(
-          File(join(paths.gameIconDir, gameData.icons[iconKey].filename)));
-    } else {
-      print('no such icon: $iconKey');
-      return AssetImage('res/img/error.png');
+  IconResource getIconResource(String iconKey) {
+    final keys = [iconKey, iconKey + '.png', iconKey + '.jpg'];
+    for (var key in keys) {
+      if (gameData.icons.containsKey(key)) return gameData.icons[key];
     }
+    return null;
+  }
+
+  AssetImage _errorImage;
+
+  AssetImage get errorImage {
+    _errorImage ??= AssetImage('res/img/error.png');
+    return _errorImage;
+  }
+
+  ImageProvider getIconImage(String iconKey) {
+    final icon = getIconResource(iconKey);
+    if (icon == null) {
+      logger.e(
+        'no such icon: $iconKey',
+        ArgumentError.value(iconKey, 'iconKey'),
+        StackTrace.current,
+      );
+      return errorImage;
+    }
+    return FileImage(
+      File(join(paths.gameIconDir, icon.name)),
+    );
   }
 
   // assist methods
@@ -189,8 +210,8 @@ class Database {
 
   void extractZip(List<int> bytes, String path, {Function onError}) {
     Archive archive = ZipDecoder().decodeBytes(bytes);
-    print('------------------------------------------------------------');
-    print('Zip file has been extracted, directory tree ($path)}):');
+    print('──────────────── Extract zip file ────────────────────────────────');
+    print('extract zip file, directory tree "$path":');
     if (archive.findFile(kGameDataFilename) == null) {
       final exception =
           FormatException('Archive file doesn\'t contain $kGameDataFilename');
@@ -200,6 +221,7 @@ class Database {
         throw exception;
       }
     }
+    int iconCount = 0;
     for (ArchiveFile file in archive) {
       String fullFilepath = join(path, file.name);
       if (file.isFile) {
@@ -207,16 +229,20 @@ class Database {
         File(fullFilepath)
           ..createSync(recursive: true)
           ..writeAsBytesSync(data);
-        print('file: ${file.name}');
+        if (file.name.startsWith('icons/'))
+          iconCount += 1;
+        else
+          print('file: ${file.name}');
       } else {
         Directory(fullFilepath)..create(recursive: true);
         print('dir : ${file.name}');
       }
     }
-    print('end of zip tree.\n-----------------------------------------------');
+    print('icon files: total $iconCount files in "icons/"');
+    print('──────────────── End zip file ────────────────────────────────────');
   }
 
-  // internals
+  // singleton
   static final _db = new Database._internal();
 
   factory Database() => _db;

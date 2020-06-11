@@ -28,7 +28,8 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: svt.info.illust.length, vsync: this);
+    _tabController =
+        TabController(length: svt.info.illustrations.length, vsync: this);
     db.checkNetwork();
   }
 
@@ -49,47 +50,49 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final imageUrls = svt.info.illustrations.values
+        .map((e) => db.getIconResource(e).url)
+        .toList();
+
     return Column(
       children: <Widget>[
         TabBar(
             controller: _tabController,
             isScrollable: true,
-            tabs: svt.info.illust
-                .map((v) => Tab(
-                    child: Text(v['name'],
-                        style: TextStyle(color: Colors.black87))))
+            tabs: svt.info.illustrations.keys
+                .map((e) => Tab(
+                    child: Text(e, style: TextStyle(color: Colors.black87))))
                 .toList()),
         Expanded(
           child: TabBarView(
-              controller: _tabController,
-              children: List.generate(svt.info.illust.length, (i) {
-                final url = svt.info.illust[i]['url'];
-                return MyCachedImage(
-                  url: url,
-                  imageBuilder: (context, url) => GestureDetector(
-                    onTap: () async {
-                      int newIndex =
-                          await Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => FullScreenImageSlider(
-                                    imgUrls: svt.info.illust
-                                        .map((e) => e['url'])
-                                        .toList(),
-                                    initialPage: i,
-                                    enableDownload:
-                                        db.runtimeData.enableDownload,
-                                    placeholder: getPlaceholder(),
-                                  ),
-                              fullscreenDialog: true));
-                      _tabController.animateTo(newIndex);
-                    },
-                    child: CachedNetworkImage(
-                      imageUrl: url,
-                      placeholder: MyCachedImage.defaultIndicatorBuilder,
-                    ),
+            controller: _tabController,
+            children: List.generate(svt.info.illustrations.length, (index) {
+              return MyCachedImage(
+                url: imageUrls[index],
+                imageBuilder: (context, url) => GestureDetector(
+                  onTap: () async {
+                    int newIndex = await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => FullScreenImageSlider(
+                          imgUrls: imageUrls,
+                          initialPage: index,
+                          enableDownload: db.runtimeData.enableDownload,
+                          placeholder: getPlaceholder(),
+                        ),
+                        fullscreenDialog: true,
+                      ),
+                    );
+                    _tabController.animateTo(newIndex);
+                  },
+                  child: CachedNetworkImage(
+                    imageUrl: url,
+                    placeholder: MyCachedImage.defaultIndicatorBuilder,
                   ),
-                  placeholder: getPlaceholder(),
-                );
-              })),
+                ),
+                placeholder: getPlaceholder(),
+              );
+            }),
+          ),
         )
       ],
     );
