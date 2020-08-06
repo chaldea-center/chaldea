@@ -14,7 +14,7 @@ class IntRangeSlider extends RangeSlider {
       RangeLabels labels,
       Color activeColor,
       Color inactiveColor,
-      RangeSemanticFormatterCallback semanticFormatterCallback})
+      SemanticFormatterCallback semanticFormatterCallback})
       : super(
             key: key,
             values: values,

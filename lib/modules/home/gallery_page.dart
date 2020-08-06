@@ -10,6 +10,7 @@ import 'package:chaldea/modules/extras/ap_calc_page.dart';
 import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
+import 'package:chaldea/modules/statistics/game_statistics_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:html/dom.dart' as dom;
@@ -24,6 +25,9 @@ class GalleryPage extends StatefulWidget {
 
 class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
   Map<String, GalleryItem> kAllGalleryItems;
+  final GlobalKey<ServantListPageState> _svtKey = GlobalKey();
+  final GlobalKey<CraftListPageState> _craftKey = GlobalKey();
+  final GlobalKey<CmdCodeListPageState> _cmdKey = GlobalKey();
 
   @override
   void afterFirstLayout(BuildContext context) {
@@ -86,19 +90,19 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         name: GalleryItem.servant,
         title: S.of(context).servant_title,
         icon: Icons.people,
-        builder: (context) => ServantListPage(),
+        builder: (context) => ServantListPage(key: _svtKey),
       ),
       GalleryItem.craft_essential: GalleryItem(
         name: GalleryItem.craft_essential,
         title: S.of(context).craft_essential,
         icon: Icons.extension,
-        builder: (context) => CraftListPage(),
+        builder: (context) => CraftListPage(key: _craftKey),
       ),
       GalleryItem.cmd_code: GalleryItem(
         name: GalleryItem.cmd_code,
         title: S.of(context).cmd_code_title,
         icon: Icons.stars,
-        builder: (context) => CmdCodeListPage(),
+        builder: (context) => CmdCodeListPage(key: _cmdKey),
       ),
       GalleryItem.item: GalleryItem(
         name: GalleryItem.item,
@@ -130,7 +134,13 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         title: 'AP计算',
         icon: Icons.directions_run,
         builder: (context) => APCalcPage(),
-        //
+        isDetail: true,
+      ),
+      GalleryItem.statistics: GalleryItem(
+        name: GalleryItem.statistics,
+        title: '统计',
+        icon: Icons.analytics,
+        builder: (context) => GameStatisticsPage(),
         isDetail: true,
       ),
       GalleryItem.more: GalleryItem(
@@ -173,17 +183,15 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
                       ),
                     )
                   : Swiper(
-                      itemBuilder: (BuildContext context, int index) =>
-                          sliderPages[index],
+                      itemBuilder: (BuildContext context, int index) => sliderPages[index],
                       itemCount: sliderPages.length,
                       autoplay: !kDebugMode && sliderPages.length > 1,
-                      pagination:
-                          SwiperPagination(margin: const EdgeInsets.all(1)),
+                      pagination: SwiperPagination(margin: const EdgeInsets.all(1)),
                       autoplayDelay: 5000,
                     ),
             ),
             GridView.count(
-              crossAxisCount: 4,
+              crossAxisCount: isTablet(context) ? 3 : 4,
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               childAspectRatio: 1,
@@ -206,8 +214,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
                 flex: 6,
                 child: Align(
                     alignment: Alignment.bottomCenter,
-                    child: Icon(item.icon,
-                        size: 40, color: Theme.of(context).primaryColor)),
+                    child: Icon(item.icon, size: 40, color: Theme.of(context).primaryColor)),
               ),
               Expanded(
                 flex: 4,
@@ -216,6 +223,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
                   child: AutoSizeText(
                     item.title,
                     textAlign: TextAlign.center,
+//                    maxFontSize: 14,
                   ),
                 ),
               )
@@ -223,8 +231,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
           ),
           onPressed: () {
             if (item.builder != null) {
-              SplitRoute.popAndPush(context,
-                  builder: item.builder, useDetail: item.isDetail);
+              SplitRoute.popAndPush(context, builder: item.builder, useDetail: item.isDetail);
             }
           },
         ));
@@ -239,19 +246,19 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       sliders.add(GestureDetector(
         onTap: () {
           showDialog(
-              context: context,
-              builder: (_) => SimpleCancelOkDialog(
-                    title: Text('Jump to Mooncell?'),
-                    content: Text(link,
-                        style: TextStyle(decoration: TextDecoration.underline)),
-                    onTapOk: () async {
-                      if (await canLaunch(link)) {
-                        launch(link);
-                      } else {
-                        showToast('Could not launch link:\n$link');
-                      }
-                    },
-                  ));
+            context: context,
+            builder: (context) => SimpleCancelOkDialog(
+              title: Text('Jump to Mooncell?'),
+              content: Text(link, style: TextStyle(decoration: TextDecoration.underline)),
+              onTapOk: () async {
+                if (await canLaunch(link)) {
+                  launch(link);
+                } else {
+                  showToast('Could not launch link:\n$link');
+                }
+              },
+            ),
+          );
         },
         child: CachedNetworkImage(
           imageUrl: imgUrl,

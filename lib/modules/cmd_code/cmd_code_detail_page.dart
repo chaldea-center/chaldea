@@ -1,10 +1,10 @@
 import 'package:chaldea/components/components.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class CmdCodeDetailPage extends StatefulWidget {
   final CommandCode code;
+  final CommandCode Function(int, bool) onSwitch;
 
-  const CmdCodeDetailPage({Key key, this.code}) : super(key: key);
+  const CmdCodeDetailPage({Key key, this.code, this.onSwitch}) : super(key: key);
 
   @override
   _CmdCodeDetailPageState createState() => _CmdCodeDetailPageState();
@@ -54,16 +54,19 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
             for (var i = 0; i < 2; i++)
               RaisedButton(
                 onPressed: () {
-                  int nextNo = code.no + [-1, 1][i];
-                  if (db.gameData.cmdCodes.containsKey(nextNo)) {
-                    setState(() {
-                      code = db.gameData.cmdCodes[nextNo];
-                    });
+                  CommandCode nextCode;
+                  if (widget.onSwitch != null) {
+                    // if navigated from filter list, let filter list decide which is the next one
+                    nextCode = widget.onSwitch(code.no, i == 1);
                   } else {
-                    Fluttertoast.showToast(
-                        msg: '已经是${['第', '最后'][i]}一张',
-                        gravity: ToastGravity.BOTTOM,
-                        toastLength: Toast.LENGTH_SHORT);
+                    nextCode = db.gameData.cmdCodes[code.no + [-1, 1][i]];
+                  }
+                  if (nextCode == null) {
+                    showToast('已经是${['第', '最后'][i]}一张');
+                  } else {
+                    setState(() {
+                      code = nextCode;
+                    });
                   }
                 },
                 child: Text(['上一张', '下一张'][i]),
@@ -81,8 +84,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
   final CommandCode code;
   final bool useLangJp;
 
-  const CmdCodeDetailBasePage({Key key, this.code, this.useLangJp = false})
-      : super(key: key);
+  const CmdCodeDetailBasePage({Key key, this.code, this.useLangJp = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -91,8 +93,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
         children: <Widget>[
           CustomTableRow(children: [
             TableCellData(
-              child: Text(code.name,
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+              child: Text(code.name, style: TextStyle(fontWeight: FontWeight.bold)),
               isHeader: true,
             )
           ]),
@@ -111,12 +112,10 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                 child: CustomTable(
                   hideOutline: true,
                   children: <Widget>[
-                    CustomTableRow(
-                        children: [TableCellData(text: 'No. ${code.no}')]),
+                    CustomTableRow(children: [TableCellData(text: 'No. ${code.no}')]),
                     CustomTableRow(children: [
                       TableCellData(text: '画师', isHeader: true),
-                      TableCellData(
-                          text: code.illustrators.join(' & '), flex: 3)
+                      TableCellData(text: code.illustrators.join(' & '), flex: 3)
                     ]),
                     CustomTableRow(children: [
                       TableCellData(text: '稀有度', isHeader: true),
@@ -132,8 +131,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => FullScreenImageSlider(
                                       imgUrls: [db.getIconResource(code.illustration).url],
-                                      enableDownload:
-                                          db.runtimeData.enableDownload),
+                                      enableDownload: db.runtimeData.enableDownload),
                                   fullscreenDialog: true));
                             },
                           ),
@@ -146,20 +144,16 @@ class CmdCodeDetailBasePage extends StatelessWidget {
               ),
             ],
           ),
+          CustomTableRow(children: [TableCellData(text: '获取方式', isHeader: true)]),
           CustomTableRow(
-              children: [TableCellData(text: '获取方式', isHeader: true)]),
-          CustomTableRow(children: [
-            TableCellData(child: Text(code.obtain, textAlign: TextAlign.center))
-          ]),
-          CustomTableRow(
-              children: [TableCellData(text: '持有技能', isHeader: true)]),
+              children: [TableCellData(child: Text(code.obtain, textAlign: TextAlign.center))]),
+          CustomTableRow(children: [TableCellData(text: '持有技能', isHeader: true)]),
           CustomTableRow(
             children: [
               TableCellData(
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.all(6),
                 flex: 1,
-                child:
-                    Image(image: db.getIconImage(code.skillIcon), height: 40),
+                child: Image(image: db.getIconImage(code.skillIcon), height: 40),
               ),
               TableCellData(flex: 5, text: code.skill)
             ],

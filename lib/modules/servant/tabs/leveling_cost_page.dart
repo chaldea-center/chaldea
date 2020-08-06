@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/item/item_detail_page.dart';
 
 class LevelingCostPage extends StatefulWidget {
   final List<Map<String, int>> costList;
@@ -7,11 +10,7 @@ class LevelingCostPage extends StatefulWidget {
   final String title;
 
   const LevelingCostPage(
-      {Key key,
-      @required this.costList,
-      this.curLv = 0,
-      this.targetLv = 0,
-      this.title = ''})
+      {Key key, @required this.costList, this.curLv = 0, this.targetLv = 0, this.title = ''})
       : assert(curLv <= targetLv),
         super(key: key);
 
@@ -29,30 +28,44 @@ class LevelingCostPageState extends State<LevelingCostPage> {
     final int lva = _showAll ? 0 : widget.curLv + offset,
         lvb = _showAll ? widget.costList.length : widget.targetLv + offset;
     assert(0 <= lva && lvb <= widget.costList.length);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        centerTitle: true,
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(showAll ? Icons.pie_chart_outlined : Icons.pie_chart),
-              onPressed: () {
-                showAll = !showAll;
-                setState(() {});
-              })
-        ],
-      ),
-      body: ListView(
-        children: List.generate(lvb - lva, (i) {
-          return buildOneLevel(
-            'Lv.${lva + i - offset} → Lv.${lva + i - offset + 1}',
-            widget.costList[lva + i],
-          );
-        }),
+
+    final size = MediaQuery.of(context).size;
+    return AlertDialog(
+      backgroundColor: MyColors.setting_bg,
+      title: Center(child: Text(widget.title)),
+      contentPadding: EdgeInsets.zero,
+      titlePadding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      buttonPadding: EdgeInsets.zero,
+      actions: [
+        FlatButton(
+          minWidth: 120,
+          onPressed: () {
+            setState(() => showAll = !showAll);
+          },
+          child: Text(showAll ? 'SHOW LESS' : 'SHOW MORE'),
+        ),
+        FlatButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text('OK'),
+        )
+      ],
+      content: Container(
+        color: Colors.white,
+        width: min(380, size.width * 0.8),
+        child: ListView(
+          shrinkWrap: true,
+          children: List.generate(lvb - lva, (i) {
+            return buildOneLevel(
+              'Lv.${lva + i - offset} → Lv.${lva + i - offset + 1}',
+              widget.costList[lva + i],
+            );
+          }),
+        ),
       ),
     );
   }
-  Widget buildOneLevel(String title, Map<String,int> lvCost) {
+
+  Widget buildOneLevel(String title, Map<String, int> lvCost) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 3),
       child: Column(
@@ -61,23 +74,29 @@ class LevelingCostPageState extends State<LevelingCostPage> {
         children: <Widget>[
           CustomTile(
             title: Text(title),
-            contentPadding: EdgeInsets.zero,
+            contentPadding: EdgeInsets.symmetric(horizontal: 0),
           ),
           GridView.count(
             crossAxisCount: 6,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             children: lvCost.entries
-                .map((entry) => ImageWithText(
-              image: Image(image: db.getIconImage(entry.key)),
-              text: formatNum(entry.value, 'kilo'),
-              padding: EdgeInsets.only(right: 3),
-            ))
+                .map((entry) => Align(
+                      alignment: Alignment.centerLeft,
+                      child: ImageWithText(
+                        image: Image(image: db.getIconImage(entry.key)),
+                        text: formatNum(entry.value, 'kilo'),
+                        padding: EdgeInsets.only(right: 3),
+                        onTap: entry.key == 'QP'
+                            ? null
+                            : () => SplitRoute.popAndPush(context,
+                                builder: (context) => ItemDetailPage(entry.key)),
+                      ),
+                    ))
                 .toList(),
           ),
         ],
       ),
     );
   }
-
 }

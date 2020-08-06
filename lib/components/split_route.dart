@@ -7,8 +7,9 @@ import 'config.dart' show db;
 const int kMasterRatio = 38; // percentage
 
 bool isTablet(BuildContext context) {
-  return MediaQuery.of(context).size.width >=
-      (db.userData?.criticalWidth ?? 768);
+  final size = MediaQuery.of(context).size;
+  return size.width > size.height &&
+      size.width >= (db.userData?.criticalWidth ?? 768);
 }
 
 class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
@@ -67,8 +68,7 @@ class SplitRoute<T> extends TransitionRoute<T> with LocalHistoryRoute<T> {
         detailWidth = fullWidth - masterWidth;
     Widget detail = Container(
       decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
-          border: Border(left: BorderSide(width: 0))),
+          border: Border(left: BorderSide(color: Colors.grey, width: 0.1))),
       child: FocusScope(
         node: node,
         child: tablet

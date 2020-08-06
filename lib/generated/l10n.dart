@@ -8,12 +8,12 @@ import 'intl/messages_all.dart';
 // Made by Localizely
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names
-// ignore_for_file: camel_case_types
-// ignore_for_file: prefer_single_quotes
+// ignore_for_file: non_constant_identifier_names, lines_longer_than_80_chars
 
 class S {
   S();
+  
+  static S current;
   
   static const AppLocalizationDelegate delegate =
     AppLocalizationDelegate();
@@ -23,7 +23,9 @@ class S {
     final localeName = Intl.canonicalizedLocale(name); 
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
-      return S();
+      S.current = S();
+      
+      return S.current;
     });
   } 
 
@@ -31,168 +33,197 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `English`
   String get language {
     return Intl.message(
-      '简体中文',
+      'English',
       name: 'language',
       desc: '',
       args: [],
     );
   }
 
+  /// `Hello!`
   String get hello {
     return Intl.message(
-      '你好！Master!',
+      'Hello!',
       name: 'hello',
       desc: '',
       args: [],
     );
   }
 
+  /// `Home`
   String get gallery_tab_name {
     return Intl.message(
-      '首页',
+      'Home',
       name: 'gallery_tab_name',
       desc: '',
       args: [],
     );
   }
 
+  /// `Settings`
   String get settings_tab_name {
     return Intl.message(
-      '设置',
+      'Settings',
       name: 'settings_tab_name',
       desc: '',
       args: [],
     );
   }
 
+  /// `General`
   String get settings_general {
     return Intl.message(
-      '通用',
+      'General',
       name: 'settings_general',
       desc: '',
       args: [],
     );
   }
 
+  /// `Language`
   String get settings_language {
     return Intl.message(
-      '语言',
+      'Language',
       name: 'settings_language',
       desc: '',
       args: [],
     );
   }
 
+  /// `Data`
   String get settings_data {
     return Intl.message(
-      '数据',
+      'Data',
       name: 'settings_data',
       desc: '',
       args: [],
     );
   }
 
+  /// `Tutorial`
   String get settings_tutorial {
     return Intl.message(
-      '使用帮助',
+      'Tutorial',
       name: 'settings_tutorial',
       desc: '',
       args: [],
     );
   }
 
+  /// `Current Account`
   String get cur_account {
     return Intl.message(
-      '当前账号',
+      'Current Account',
       name: 'cur_account',
       desc: '',
       args: [],
     );
   }
 
+  /// `Cancel`
   String get cancel {
     return Intl.message(
-      '取消',
+      'Cancel',
       name: 'cancel',
       desc: '',
       args: [],
     );
   }
 
+  /// `OK`
   String get ok {
     return Intl.message(
-      '确定',
+      'OK',
       name: 'ok',
       desc: '',
       args: [],
     );
   }
 
+  /// `Rename`
   String get rename {
     return Intl.message(
-      '重命名',
+      'Rename',
       name: 'rename',
       desc: '',
       args: [],
     );
   }
 
+  /// `Invalid input value.`
   String get input_error {
     return Intl.message(
-      '无效输入值',
+      'Invalid input value.',
       name: 'input_error',
       desc: '',
       args: [],
     );
   }
 
+  /// `Delete`
   String get delete {
     return Intl.message(
-      '删除',
+      'Delete',
       name: 'delete',
       desc: '',
       args: [],
     );
   }
 
+  /// `New account`
   String get new_account {
     return Intl.message(
-      '新建账号',
+      'New account',
       name: 'new_account',
       desc: '',
       args: [],
     );
   }
 
+  /// `Server`
   String get server {
     return Intl.message(
-      '服务器',
+      'Server',
       name: 'server',
       desc: '',
       args: [],
     );
   }
 
+  /// `CN`
   String get server_cn {
     return Intl.message(
-      '国服',
+      'CN',
       name: 'server_cn',
       desc: '',
       args: [],
     );
   }
 
+  /// `JP`
   String get server_jp {
     return Intl.message(
-      '日服',
+      'JP',
       name: 'server_jp',
       desc: '',
       args: [],
     );
   }
 
+  /// `Backup & Restore`
+  String get backup_restore {
+    return Intl.message(
+      'Backup & Restore',
+      name: 'backup_restore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Backup to ...`
   String get backup {
     return Intl.message(
       'Backup to ...',
@@ -202,6 +233,7 @@ class S {
     );
   }
 
+  /// `Restore`
   String get restore {
     return Intl.message(
       'Restore',
@@ -211,90 +243,100 @@ class S {
     );
   }
 
+  /// `Servant`
   String get servant_title {
     return Intl.message(
-      '从者',
+      'Servant',
       name: 'servant_title',
       desc: '',
       args: [],
     );
   }
 
+  /// `Item`
   String get item_title {
     return Intl.message(
-      '素材',
+      'Item',
       name: 'item_title',
       desc: '',
       args: [],
     );
   }
 
+  /// `Event`
   String get event_title {
     return Intl.message(
-      '活动',
+      'Event',
       name: 'event_title',
       desc: '',
       args: [],
     );
   }
 
+  /// `Command Code`
   String get cmd_code_title {
     return Intl.message(
-      '纹章',
+      'Command Code',
       name: 'cmd_code_title',
       desc: '',
       args: [],
     );
   }
 
+  /// `Edit`
   String get edit {
     return Intl.message(
-      '编辑',
+      'Edit',
       name: 'edit',
       desc: '',
       args: [],
     );
   }
 
+  /// `More`
   String get more {
     return Intl.message(
-      '更多',
+      'More',
       name: 'more',
       desc: '',
       args: [],
     );
   }
 
+  /// `Servant`
   String get servant {
     return Intl.message(
-      '从者',
+      'Servant',
       name: 'servant',
       desc: '',
       args: [],
     );
   }
 
+  /// `Craft Essential`
   String get craft_essential {
     return Intl.message(
-      '概念礼装',
+      'Craft Essential',
       name: 'craft_essential',
       desc: '',
       args: [],
     );
   }
 
+  /// `Drop Calc`
   String get drop_calculator {
     return Intl.message(
-      '掉落速查',
+      'Drop Calc',
       name: 'drop_calculator',
       desc: '',
       args: [],
     );
   }
 
+  /// `Calculator`
   String get calculator {
     return Intl.message(
-      '计算器',
+      'Calculator',
       name: 'calculator',
       desc: '',
       args: [],
@@ -307,9 +349,9 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
 
   List<Locale> get supportedLocales {
     return const <Locale>[
-      Locale.fromSubtags(languageCode: 'zh'),
       Locale.fromSubtags(languageCode: 'en'),
       Locale.fromSubtags(languageCode: 'ja'),
+      Locale.fromSubtags(languageCode: 'zh'),
       Locale.fromSubtags(languageCode: 'zh', countryCode: 'TW'),
     ];
   }

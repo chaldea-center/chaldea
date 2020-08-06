@@ -16,6 +16,8 @@ class User {
   List<Map<int, ServantPlan>> servantPlans;
 
   Map<int, ServantPlan> get curSvtPlan => servantPlans[curSvtPlanNo];
+
+  /// user own items, key: item name, value: item count
   Map<String, int> items;
   EventPlans events;
 
@@ -67,8 +69,7 @@ class ServantStatus {
     curVal.reset();
   }
 
-  factory ServantStatus.fromJson(Map<String, dynamic> data) =>
-      _$ServantStatusFromJson(data);
+  factory ServantStatus.fromJson(Map<String, dynamic> data) => _$ServantStatusFromJson(data);
 
   Map<String, dynamic> toJson() => _$ServantStatusToJson(this);
 }
@@ -112,10 +113,29 @@ class ServantPlan {
     // grail = grail;
   }
 
-  factory ServantPlan.fromJson(Map<String, dynamic> data) =>
-      _$ServantPlanFromJson(data);
+  factory ServantPlan.fromJson(Map<String, dynamic> data) => _$ServantPlanFromJson(data);
 
   Map<String, dynamic> toJson() => _$ServantPlanToJson(this);
+
+  ServantPlan copyWith(bool favorite, int ascension, List<int> skills, List<int> dress, int grail) {
+    return ServantPlan(
+      favorite: favorite ?? this.favorite,
+      ascension: ascension ?? this.ascension,
+      skills: skills ?? this.skills,
+      dress: dress ?? this.dress,
+      grail: grail ?? this.grail,
+    );
+  }
+
+  void copyFrom(ServantPlan other) {
+    favorite = other.favorite;
+    ascension = other.ascension;
+    skills = List.from(other.skills);
+    dress = List.from(other.dress);
+    grail = other.grail;
+  }
+
+  static ServantPlan from(ServantPlan other) => ServantPlan()..copyFrom(other);
 }
 
 @JsonSerializable(checked: true)
@@ -134,8 +154,7 @@ class EventPlans {
     exchangeTickets ??= {};
   }
 
-  factory EventPlans.fromJson(Map<String, dynamic> data) =>
-      _$EventPlansFromJson(data);
+  factory EventPlans.fromJson(Map<String, dynamic> data) => _$EventPlansFromJson(data);
 
   Map<String, dynamic> toJson() => _$EventPlansToJson(this);
 }
@@ -154,8 +173,7 @@ class LimitEventPlan {
     extra ??= {};
   }
 
-  factory LimitEventPlan.fromJson(Map<String, dynamic> data) =>
-      _$LimitEventPlanFromJson(data);
+  factory LimitEventPlan.fromJson(Map<String, dynamic> data) => _$LimitEventPlanFromJson(data);
 
   Map<String, dynamic> toJson() => _$LimitEventPlanToJson(this);
 }

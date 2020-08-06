@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:catcher/catcher_plugin.dart';
+import 'package:catcher/catcher.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/chaldea.dart';
 import 'package:flutter/foundation.dart';

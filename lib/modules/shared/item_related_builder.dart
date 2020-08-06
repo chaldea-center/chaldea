@@ -1,18 +1,56 @@
 import 'package:chaldea/components/components.dart';
 
-Widget buildClassifiedItemList(Map<String, int> data,
-    {void onTap(String iconKey)}) {
-  final divided = divideItemsToGroups(data.keys.toList(), rarity: true);
+class CommonBuilder {
+  /// build a grid view with [ImageWithText] as its children.
+  /// The key and value of [data] are Servant/Item icon name and its' num or text
+  /// for image and text in [ImageWithText].
+  static Widget buildIconGridView(
+      {Map<String, dynamic> data,
+      int crossCount = 7,
+      void onTap(String key),
+      double childAspectRatio = 132 / 144,
+      bool scrollable = false}) {
+    return GridView.count(
+      childAspectRatio: childAspectRatio,
+      crossAxisCount: crossCount,
+      shrinkWrap: true,
+      physics: scrollable ? null : NeverScrollableScrollPhysics(),
+      children: data.entries
+          .map((entry) => Padding(
+                padding: EdgeInsets.symmetric(vertical: 2, horizontal: 1),
+                child: ImageWithText(
+                  onTap: onTap == null ? null : () => onTap(entry.key),
+                  image: Image(image: db.getIconImage(entry.key)),
+                  text: entry.key == Item.qp && entry.value is int
+                      ? formatNum(entry.value, 'kilo')
+                      : entry.value.toString(),
+                  padding: EdgeInsets.symmetric(horizontal: 3),
+                ),
+              ))
+          .toList(),
+    );
+  }
+}
+
+Widget buildClassifiedItemList({
+  @required Map<String, int> data,
+  void onTap(String iconKey),
+  bool divideCategory = true,
+  bool divideRarity = true,
+  int crossCount = 7,
+}) {
+  final divided = divideItemsToGroups(data.keys.toList(),
+      divideCategory: divideCategory, divideRarity: divideRarity);
   List<Widget> children = [];
   for (var key in divided.keys) {
     children.add(TileGroup(
-      header: getNameOfCategory(key ~/ 10, key % 10),
+      header: Item.getNameOfCategory(key ~/ 10, key % 10),
       padding: EdgeInsets.only(bottom: 0),
       children: <Widget>[
         GridView.count(
           padding: EdgeInsets.only(left: 10, top: 3, bottom: 3),
           childAspectRatio: 132 / 144,
-          crossAxisCount: 6,
+          crossAxisCount: crossCount,
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           children: divided[key]
@@ -21,7 +59,7 @@ Widget buildClassifiedItemList(Map<String, int> data,
                     child: ImageWithText(
                       onTap: onTap == null ? null : () => onTap(item.name),
                       image: Image(image: db.getIconImage(item.name)),
-                      text: formatNum(data[item.name], 'kilo'),
+                      text: formatNum(data[item.name]),
                       padding: EdgeInsets.only(right: 3),
                     ),
                   ))
@@ -37,14 +75,16 @@ Widget buildClassifiedItemList(Map<String, int> data,
   );
 }
 
+/// Divide list of items into groups according to [category] and/or [rarity].
+/// If [divideRarity] is set to false, only divide into [category] groups.
+/// The key of returned Map is [category] if [divideRarity], else [category]*10+[rarity]
 Map<int, List<Item>> divideItemsToGroups(List<String> items,
-    {bool category = true, bool rarity = false}) {
+    {bool divideCategory = true, bool divideRarity = true}) {
   Map<int, List<Item>> groups = {};
   for (String itemKey in items) {
     final item = db.gameData.items[itemKey];
     if (item != null) {
-      final groupKey =
-          (category ? item.category * 10 : 0) + (rarity ? item.rarity : 0);
+      final groupKey = (divideCategory ? item.category * 10 : 0) + (divideRarity ? item.rarity : 0);
       groups[groupKey] ??= [];
       groups[groupKey].add(item);
     }
@@ -53,19 +93,4 @@ Map<int, List<Item>> divideItemsToGroups(List<String> items,
   return Map.fromEntries(sortedKeys.map((key) {
     return MapEntry(key, groups[key]..sort((a, b) => a.id - b.id));
   }));
-}
-
-String getNameOfCategory(int category, int rarity) {
-  switch (category) {
-    case 1:
-      return ['素材', '铜素材', '银素材', '金素材', '稀有'][rarity];
-    case 2:
-      return ['技能石', '辉石', '魔石', '秘石'][rarity];
-    case 3:
-      return ['职阶棋子', 'Unknown', '银棋', '金像'][rarity];
-    case 4:
-      return '活动从者灵基再临素材';
-    default:
-      return '其他';
-  }
 }

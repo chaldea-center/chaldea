@@ -159,15 +159,14 @@ String formatNum<T>(T number, [String style, num minVal = 0]) {
     }
     return prefix + body;
   }
-//  return number.toString();
+  return number.toString();
 }
 
 num sum(Iterable<num> x) => x.fold(0, (p, c) => (p ?? 0) + (c ?? 0));
 
 /// sum multiple maps, if [inPlace], add into the first element.
 /// throw error if sum in place of an empty list.
-Map<K, V> sumDict<K, V extends num>(Iterable<Map<K, V>> operands,
-    {bool inPlace = false}) {
+Map<K, V> sumDict<K, V extends num>(Iterable<Map<K, V>> operands, {bool inPlace = false}) {
   final _operands = operands.toList();
   Map<K, V> res = inPlace ? _operands.removeAt(0) : {};
 
@@ -180,8 +179,8 @@ Map<K, V> sumDict<K, V extends num>(Iterable<Map<K, V>> operands,
   return res;
 }
 
-Map<K, V> multiplyDict<K, V extends num>(Map<K, V> d, V multiplier) {
-  Map<K, V> res = {};
+Map<K, V> multiplyDict<K, V extends num>(Map<K, V> d, V multiplier, {bool inPlace = false}) {
+  Map<K, V> res = inPlace ? d : {};
   d.forEach((k, v) {
     res[k] = v * multiplier;
   });

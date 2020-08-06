@@ -22,10 +22,8 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
   @override
   void initState() {
     super.initState();
-    event = db.gameData.events.limitEvents[widget.name] ??
-        LimitEvent(name: 'empty event');
-    plan = db.curUser.events.limitEvents
-        .putIfAbsent(event.name, () => LimitEventPlan());
+    event = db.gameData.events.limitEvents[widget.name] ?? LimitEvent(name: 'empty event');
+    plan = db.curUser.events.limitEvents.putIfAbsent(event.name, () => LimitEventPlan());
     if (event.lottery != null) {
       _lotteryController = TextEditingController(text: plan.lottery.toString());
     }
@@ -33,8 +31,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
       for (var name in event.extra.keys) {
         manager.components.add(InputComponent(
             data: name,
-            controller:
-                TextEditingController(text: plan.extra[name]?.toString()),
+            controller: TextEditingController(text: plan.extra[name]?.toString()),
             focusNode: FocusNode()));
       }
     }
@@ -60,8 +57,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
       children
         ..add(ListTile(
           title: Text(event.lotteryLimit > 0 ? '有限池' : '无限池'),
-          subtitle: Text(
-              event.lotteryLimit > 0 ? '最多${event.lotteryLimit}池' : '共计池数'),
+          subtitle: Text(event.lotteryLimit > 0 ? '最多${event.lotteryLimit}池' : '共计池数'),
           trailing: SizedBox(
               width: 80,
               child: TextField(
@@ -75,13 +71,13 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
                   isDense: true,
                 ),
                 controller: _lotteryController,
-                inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 onChanged: (v) {
                   plan.lottery = int.tryParse(v) ?? 0;
                 },
               )),
         ))
-        ..add(buildClassifiedItemList(event.lottery, onTap: onTapIcon));
+        ..add(buildClassifiedItemList(data: event.lottery, onTap: onTapIcon));
     }
 
     // 商店任务点数
@@ -91,7 +87,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
         ..removeWhere((key, value) => value <= 0);
       children
         ..add(ListTile(title: Text('商店&任务&点数')))
-        ..add(buildClassifiedItemList(items, onTap: onTapIcon));
+        ..add(buildClassifiedItemList(data: items, onTap: onTapIcon));
     }
 
     // 狩猎 无限池终本掉落等
@@ -111,8 +107,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     );
   }
 
-  Widget _buildExtraItems(
-      Map<String, String> data, Map<String, int> extraPlan) {
+  Widget _buildExtraItems(Map<String, String> data, Map<String, int> extraPlan) {
     manager.resetFocusList();
     List<Widget> children = [];
     data.forEach((itemKey, hint) {

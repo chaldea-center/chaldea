@@ -16,8 +16,7 @@ class ServantDetailPage extends StatefulWidget {
   State<StatefulWidget> createState() => ServantDetailPageState(svt);
 }
 
-class ServantDetailPageState extends State<ServantDetailPage>
-    with SingleTickerProviderStateMixin {
+class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerProviderStateMixin {
   Servant svt;
   TabController _tabController;
 
@@ -73,28 +72,33 @@ class ServantDetailPageState extends State<ServantDetailPage>
     db.saveUserData();
   }
 
-  Widget getObtainIcon() {
-    //{初始获得, 常驻, 剧情, 活动, 限定, 友情点召唤, 无法召唤}
-    final bgColor = {
+  List<Widget> getObtainBadges() {
+    // {初始获得, 常驻, 剧情, 活动, 限定, 友情点召唤, 无法召唤}
+    // {'活动赠送', '事前登录赠送', '初始获得', '友情点召唤', '期间限定', '通关报酬', '无法获得',
+    //   '圣晶石常驻', '剧情限定'}
+    const badgeColors = {
       "初始获得": Color(0xFFA6A6A6),
-      "常驻": Color(0xFF84B63C),
-      "剧情": Color(0xFFA443DF),
-      "活动": Color(0xFF4487DF),
-      "限定": Color(0xFFE7815C),
+      "圣晶石常驻": Color(0xFF84B63C),
+      "剧情限定": Color(0xFFA443DF),
+      "活动赠送": Color(0xFF4487DF),
+      "期间限定": Color(0xFFE7815C),
       "友情点召唤": Color(0xFFD19F76),
       "无法召唤": Color(0xFFA6A6A6)
-    }[svt.info.obtain];
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        border: Border.all(width: 0.5, color: bgColor),
-        borderRadius: BorderRadius.circular(6),
-        color: bgColor,
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        child: Text(svt.info.obtain, style: TextStyle(color: Colors.white)),
-      ),
-    );
+    };
+    return svt.info.obtains.map((obtain) {
+      final bgColor = badgeColors[obtain] ?? badgeColors['无法召唤'];
+      return DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border.all(width: 0.5, color: bgColor),
+          borderRadius: BorderRadius.circular(6),
+          color: bgColor,
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: Text(obtain, style: TextStyle(color: Colors.white, fontSize: 13)),
+        ),
+      );
+    }).toList();
   }
 
   @override
@@ -111,8 +115,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                     context: context,
                     builder: (context) => SimpleDialog(
                       title: Text('Choose plan'),
-                      children: List.generate(db.curUser.servantPlans.length,
-                          (index) {
+                      children: List.generate(db.curUser.servantPlans.length, (index) {
                         return ListTile(
                           title: Text('Plan ${index + 1}'),
                           selected: index == db.curUser.curSvtPlanNo,
@@ -131,90 +134,126 @@ class ServantDetailPageState extends State<ServantDetailPage>
         ),
         body: Column(
           children: <Widget>[
-            CustomTile(
-              alignment: CrossAxisAlignment.start,
-              leading: Image(
-                  image: db.getIconImage(svt.icon),
-                  fit: BoxFit.contain,
-                  height: 90),
-              titlePadding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              title: Text('No.${svt.no}\n${svt.info.className}'),
-              subtitle: Padding(
-                padding: EdgeInsets.symmetric(vertical: 6),
-                child: Wrap(
-                  spacing: 4,
-                  children: <Widget>[
-                    // more tags/info here
-                    getObtainIcon(),
-                  ],
-                ),
-              ),
-              trailing: Servant.unavailable.contains(svt.no)
-                  ? null
-                  : FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: IconTheme(
-                          data: Theme.of(context)
-                              .iconTheme
-                              .copyWith(color: Colors.black54),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              IconButton(
-                                icon: status.curVal.favorite
-                                    ? Icon(Icons.favorite,
-                                        color: Colors.redAccent)
-                                    : Icon(Icons.favorite_border),
-                                tooltip: '关注',
-                                onPressed: () {
-                                  setState(() {
-                                    status.curVal.favorite =
-                                        !status.curVal.favorite;
-                                  });
-                                  db.userData.broadcastUserUpdate();
-                                  db.itemStat.updateSvtItems();
-                                },
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.replay),
-                                tooltip: '重置',
-                                onPressed: () {
-                                  setState(() {
-                                    status.reset();
-                                    db.curUser.curSvtPlan[svt.no].reset();
-                                  });
-                                  db.userData.broadcastUserUpdate();
-                                  db.itemStat.updateSvtItems();
-                                },
-                              ),
-                            ],
-                          )),
-                    ),
-            ),
-            Container(
-              height: 36,
-              decoration: BoxDecoration(
-                  border: Border(bottom: Divider.createBorderSide(context))),
-              child: Center(
-                child: TabBar(
-                  controller: _tabController,
-                  labelColor: Colors.black87,
-                  labelPadding: kTabLabelPadding,
-                  unselectedLabelColor: Colors.grey,
-                  isScrollable: true,
-                  tabs: _builders.keys.map((name) => Tab(text: name)).toList(),
-                ),
-              ),
-            ),
+            _buildHeader(),
             Expanded(
               child: TabBarView(
                 controller: _tabController,
-                children: _builders.values
-                    .map((builder) => builder(context))
-                    .toList(),
+                children: _builders.values.map((builder) => builder(context)).toList(),
               ),
             )
           ],
         ));
+  }
+
+  Widget _buildHeader() {
+    final _tablet = isTablet(context);
+    final avatar = Image(image: db.getIconImage(svt.icon), fit: BoxFit.contain, height: 90);
+    final _iconConstraint = _tablet ? null : BoxConstraints.loose(Size.square(40));
+    final icons = [
+      if (!Servant.unavailable.contains(svt.no))
+        IconButton(
+          icon: status.curVal.favorite
+              ? Icon(Icons.favorite, color: Colors.redAccent)
+              : Icon(Icons.favorite_border, color: Colors.black54),
+          tooltip: '关注',
+          onPressed: () {
+            setState(() {
+              status.curVal.favorite = !status.curVal.favorite;
+            });
+            db.userData.broadcastUserUpdate();
+            db.itemStat.updateSvtItems();
+          },
+        ),
+      if (!Servant.unavailable.contains(svt.no))
+        IconButton(
+          icon: Icon(Icons.replay, color: Colors.black54),
+          tooltip: '重置',
+          constraints: _iconConstraint,
+          onPressed: () {
+            SimpleCancelOkDialog(
+              title: Text('Confirm to reset'),
+              onTapOk: () {
+                setState(() {
+                  status.reset();
+                  db.curUser.curSvtPlan[svt.no].reset();
+                });
+                db.userData.broadcastUserUpdate();
+                db.itemStat.updateSvtItems();
+              },
+            ).show(context);
+          },
+        )
+    ];
+
+    final tabbar = Container(
+      height: 36,
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: TabBar(
+          controller: _tabController,
+          labelColor: Colors.black87,
+          indicatorSize: TabBarIndicatorSize.label,
+          labelPadding: kTabLabelPadding,
+          unselectedLabelColor: Colors.grey,
+          isScrollable: true,
+          tabs: _builders.keys.map((name) => Tab(text: name)).toList(),
+        ),
+      ),
+    );
+
+    return DecoratedBox(
+      decoration: BoxDecoration(border: Border(bottom: Divider.createBorderSide(context))),
+      child: Column(
+        // Tile+TabBar@Tablet
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CustomTile(
+            alignment: CrossAxisAlignment.start,
+            leading: avatar,
+            titlePadding: EdgeInsets.only(left: 16),
+            title: Column(
+              // (text + badges + iconButtons) + TabBar@Phone)
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Row(
+                  // (text + badges) + iconButtons
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 8),
+                        child: Column(
+                          // text + badges
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('No.${svt.no}  ${svt.info.className}'),
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 6),
+                              child: Wrap(
+                                spacing: 3,
+                                runSpacing: 2,
+                                children: <Widget>[
+                                  // more tags/info here
+                                  ...getObtainBadges(),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                // tab bar
+                tabbar,
+              ],
+            ),
+            trailing: Column(mainAxisSize: MainAxisSize.min, children: icons),
+          ),
+        ],
+      ),
+    );
   }
 }

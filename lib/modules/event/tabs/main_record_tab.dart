@@ -33,23 +33,21 @@ class _MainRecordTabState extends State<MainRecordTab> {
         Expanded(
             child: ListView.separated(
                 itemCount: mainRecords.length,
-                separatorBuilder: (context, index) =>
-                    Divider(height: 1, indent: 16),
+                separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
                 itemBuilder: (context, index) {
-                  final chapter = mainRecords[index].chapter;
+                  final name = mainRecords[index].name;
                   final plan = db.curUser.events.mainRecords;
                   return ListTile(
-                    title: AutoSizeText(chapter, maxLines: 1, maxFontSize: 16),
-                    subtitle:
-                        AutoSizeText(mainRecords[index].title, maxLines: 1),
+                    title: AutoSizeText(name, maxLines: 1, maxFontSize: 16),
+                    subtitle: AutoSizeText(mainRecords[index].title, maxLines: 1),
                     trailing: Wrap(
                       children: List.generate(2, (i) {
                         return Switch.adaptive(
-                            value: plan[chapter]?.elementAt(i) ?? false,
+                            value: plan[name]?.elementAt(i) ?? false,
                             onChanged: (v) {
                               setState(() {
-                                plan[chapter] ??= List.filled(2, false);
-                                plan[chapter][i] = v;
+                                plan[name] ??= List.filled(2, false);
+                                plan[name][i] = v;
                                 db.itemStat.updateEventItems();
                               });
                             });
@@ -57,8 +55,7 @@ class _MainRecordTabState extends State<MainRecordTab> {
                     ),
                     onTap: () {
                       SplitRoute.popAndPush(context,
-                          builder: (context) =>
-                              MainRecordDetailPage(chapter: chapter));
+                          builder: (context) => MainRecordDetailPage(name: name));
                     },
                   );
                 }))

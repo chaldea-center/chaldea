@@ -10,8 +10,7 @@ class ItemListPage extends StatefulWidget {
   State<StatefulWidget> createState() => ItemListPageState();
 }
 
-class ItemListPageState extends State<ItemListPage>
-    with SingleTickerProviderStateMixin {
+class ItemListPageState extends State<ItemListPage> with SingleTickerProviderStateMixin {
   TabController _tabController;
   bool filtered = false;
   final List<int> categories = [1, 2, 3];
@@ -43,8 +42,7 @@ class ItemListPageState extends State<ItemListPage>
                   context: context,
                   builder: (context) => SimpleDialog(
                     title: Text('Choose plan'),
-                    children:
-                        List.generate(db.curUser.servantPlans.length, (index) {
+                    children: List.generate(db.curUser.servantPlans.length, (index) {
                       return ListTile(
                         title: Text('Plan ${index + 1}'),
                         selected: index == db.curUser.curSvtPlanNo,
@@ -60,8 +58,7 @@ class ItemListPageState extends State<ItemListPage>
                 );
               }),
           IconButton(
-            icon: Icon(
-                filtered ? Icons.check_circle : Icons.check_circle_outline),
+            icon: Icon(filtered ? Icons.check_circle : Icons.check_circle_outline),
             onPressed: () {
               setState(() {
                 filtered = !filtered;
@@ -71,11 +68,10 @@ class ItemListPageState extends State<ItemListPage>
           IconButton(
               icon: Icon(Icons.toys),
               onPressed: () {
-                Map<String,int> objective={};
+                Map<String, int> objective = {};
                 db.itemStat.leftItems.forEach((itemKey, value) {
-                  if (db.gameData.glpk.rowNames.contains(itemKey) &&
-                      value < 0) {
-                    objective[itemKey]=-value;
+                  if (db.gameData.glpk.rowNames.contains(itemKey) && value < 0) {
+                    objective[itemKey] = -value;
                   }
                 });
                 SplitRoute.push(
@@ -87,8 +83,7 @@ class ItemListPageState extends State<ItemListPage>
         bottom: TabBar(
           controller: _tabController,
           tabs: categories
-              .map(
-                  (category) => Tab(text: ['x', '普通素材', '技能石', '棋子'][category]))
+              .map((category) => Tab(text: ['x', '普通素材', '技能石', '棋子'][category]))
               .toList(),
           onTap: (_) {
             FocusScope.of(context).unfocus();
@@ -98,8 +93,7 @@ class ItemListPageState extends State<ItemListPage>
       body: TabBarView(
           controller: _tabController,
           children: categories
-              .map((category) =>
-                  ItemListTab(category: category, filtered: filtered))
+              .map((category) => ItemListTab(category: category, filtered: filtered))
               .toList()),
     );
   }
@@ -109,8 +103,7 @@ class ItemListTab extends StatefulWidget {
   final int category;
   final bool filtered;
 
-  const ItemListTab({Key key, this.category, this.filtered = false})
-      : super(key: key);
+  const ItemListTab({Key key, this.category, this.filtered = false}) : super(key: key);
 
   @override
   _ItemListTabState createState() => _ItemListTabState();
@@ -127,18 +120,16 @@ class _ItemListTabState extends State<ItemListTab> {
     db.gameData.items.forEach((key, item) {
       if (item.category == widget.category || key == qpKey) {
         final node = FocusNode();
-        final textController = TextEditingController(
-            text: kThousandFormatter.format(db.curUser.items[key] ?? 0));
-        inputsManager.components.add(InputComponent(
-            data: item, controller: textController, focusNode: node));
+        final textController =
+            TextEditingController(text: kThousandFormatter.format(db.curUser.items[key] ?? 0));
+        inputsManager.components
+            .add(InputComponent(data: item, controller: textController, focusNode: node));
       }
     });
     inputsManager.components.sort((a, b) => a.data.id - b.data.id);
-    int qpIndex =
-        inputsManager.components.indexWhere((e) => e.data.name == qpKey);
+    int qpIndex = inputsManager.components.indexWhere((e) => e.data.name == qpKey);
     if (qpIndex >= 0) {
-      inputsManager.components
-          .insert(0, inputsManager.components.removeAt(qpIndex));
+      inputsManager.components.insert(0, inputsManager.components.removeAt(qpIndex));
     }
   }
 
@@ -171,14 +162,12 @@ class _ItemListTabState extends State<ItemListTab> {
           }
           return ListView.separated(
               itemBuilder: (context, index) => children[index],
-              separatorBuilder: (context, index) =>
-                  Divider(height: 1, indent: 16),
+              separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
               itemCount: children.length);
         });
   }
 
-  Widget buildItemTile(
-      InputComponent<Item> component, ItemStatistics statistics) {
+  Widget buildItemTile(InputComponent<Item> component, ItemStatistics statistics) {
     final itemKey = component.data.name;
     bool isQp = itemKey == qpKey;
     bool enough = statistics.leftItems[itemKey] >= 0;
@@ -189,10 +178,8 @@ class _ItemListTabState extends State<ItemListTab> {
     inputsManager.addObserver(component);
     return StatefulBuilder(
       builder: (BuildContext context, setState2) {
-        bool enough =
-            statistics.leftItems[itemKey] >= 0; // update when text input
-        final highlightStyle =
-            TextStyle(color: enough ? null : Colors.redAccent);
+        bool enough = statistics.leftItems[itemKey] >= 0; // update when text input
+        final highlightStyle = TextStyle(color: enough ? null : Colors.redAccent);
         Widget textField = EnsureVisibleWhenFocused(
             child: TextField(
               maxLength: isQp ? 20 : 5,
@@ -203,12 +190,11 @@ class _ItemListTabState extends State<ItemListTab> {
               textInputAction: TextInputAction.next,
               decoration: InputDecoration(counterText: ''),
               inputFormatters: [
-                WhitelistingTextInputFormatter.digitsOnly,
+                FilteringTextInputFormatter.digitsOnly,
                 NumberInputFormatter(),
               ],
               onChanged: (v) {
-                db.curUser.items[itemKey] =
-                    int.tryParse(v.replaceAll(',', '')) ?? 0;
+                db.curUser.items[itemKey] = int.tryParse(v.replaceAll(',', '')) ?? 0;
                 statistics.updateLeftItems();
                 setState2(() {});
               },
@@ -223,10 +209,7 @@ class _ItemListTabState extends State<ItemListTab> {
         Widget title, subtitle;
         if (isQp) {
           title = Row(
-            children: <Widget>[
-              Text(itemKey + '  '),
-              Expanded(child: textField)
-            ],
+            children: <Widget>[Text(itemKey + '  '), Expanded(child: textField)],
           );
           subtitle = Row(
             children: <Widget>[
@@ -255,10 +238,8 @@ class _ItemListTabState extends State<ItemListTab> {
                   width: 40,
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: AutoSizeText(
-                        statistics.leftItems[itemKey].toString(),
-                        style: highlightStyle,
-                        maxLines: 1),
+                    child: AutoSizeText(statistics.leftItems[itemKey].toString(),
+                        style: highlightStyle, maxLines: 1),
                   )),
             ],
           );
@@ -275,22 +256,19 @@ class _ItemListTabState extends State<ItemListTab> {
                   width: 40,
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: AutoSizeText(
-                        (statistics.eventItems[itemKey] ?? 0).toString(),
-                        maxLines: 1),
+                    child:
+                        AutoSizeText((statistics.eventItems[itemKey] ?? 0).toString(), maxLines: 1),
                   )),
             ],
           );
         }
         return CustomTile(
-          onTap: () => SplitRoute.popAndPush(context,
-              builder: (context) => ItemDetailPage(itemKey)),
+          onTap: () =>
+              SplitRoute.popAndPush(context, builder: (context) => ItemDetailPage(itemKey)),
           leading: Image(image: db.getIconImage(itemKey), height: 110 * 0.5),
           title: title,
           subtitle: subtitle,
-          titlePadding: isQp
-              ? EdgeInsets.fromLTRB(16, 0, 0, 0)
-              : EdgeInsets.fromLTRB(16, 0, 16, 0),
+          titlePadding: isQp ? EdgeInsets.fromLTRB(16, 0, 0, 0) : EdgeInsets.fromLTRB(16, 0, 16, 0),
           trailing: isQp ? null : SizedBox(width: 50, child: textField),
         );
       },

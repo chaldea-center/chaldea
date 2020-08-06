@@ -52,7 +52,7 @@ class CustomTableRow extends StatefulWidget {
       {Key key, this.children, this.color, this.side = kCustomTableSide})
       : super(key: key) {
     children.forEach((cell) {
-      cell._key ??= GlobalKey();
+      cell.key ??= GlobalKey();
     });
   }
 
@@ -95,72 +95,77 @@ class _CustomTableRowState extends State<CustomTableRow> {
   /// of children, then rebuild to fit the constraints
   BoxConstraints _calculatedConstraints;
   bool _needRebuild = true;
+  bool _fit = false;
 
   @override
   Widget build(BuildContext context) {
-    final constraints = updateConstraints();
-    return Container(
-      constraints: constraints,
-      child: Row(
-        children: List.generate(widget.children.length, (index) {
-          final cell = widget.children[index];
-          Widget _child;
-          if (cell.child != null) {
-            _child = cell.child;
-          } else {
-            _child = cell.maxLines == null
-                ? Text(cell.text, textAlign: cell.textAlign)
-                : AutoSizeText(
-                    cell.text,
-                    maxLines: cell.maxLines,
-                    textAlign: cell.textAlign,
-                  );
-          }
-          return Flexible(
-            key: cell._key,
-            flex: cell.flex,
-            child: Container(
-              constraints: constraints,
-              decoration: BoxDecoration(
-                color: cell.color,
-                border: index > 0 ? Border(left: kCustomTableSide) : null,
-              ),
-              child: Align(
-                alignment: cell.alignment,
-                child: Padding(
-                  padding: cell.padding,
-                  child: _child,
-                ),
-              ),
+    BoxConstraints constraints;
+    if (_needRebuild) {
+      calculateConstraints();
+    } else {
+      constraints = _calculatedConstraints;
+    }
+
+    List<Widget> children = List.generate(widget.children.length, (index) {
+      final cell = widget.children[index];
+      Widget _child;
+      if (_needRebuild && cell.fitHeight == true) {
+        // if fitHeight, render the child at second frame
+        _child = Container();
+      } else {
+        if (cell.child != null) {
+          _child = cell.child;
+        } else {
+          _child = cell.maxLines == null
+              ? Text(cell.text, textAlign: cell.textAlign)
+              : AutoSizeText(
+                  cell.text,
+                  maxLines: cell.maxLines,
+                  textAlign: cell.textAlign,
+                );
+        }
+      }
+
+      return Flexible(
+        key: cell.key,
+        flex: cell.flex,
+        child: Container(
+          constraints: constraints,
+          decoration: BoxDecoration(
+            color: cell.color,
+            border: index > 0 ? Border(left: kCustomTableSide) : null,
+          ),
+          child: Align(
+            alignment: cell.alignment,
+            child: Padding(
+              padding: cell.padding,
+              child: _child,
             ),
-          );
-        }),
-      ),
-    );
+          ),
+        ),
+      );
+    });
+    if (!_needRebuild) _needRebuild = true;
+    return Container(constraints: constraints, child: Row(children: children));
   }
 
-  BoxConstraints updateConstraints() {
-    if (_needRebuild) {
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        double _maxHeight = -1;
-        widget.children.forEach((cell) {
-          if (cell.fitHeight != true) {
-            RenderBox box = cell._key.currentContext?.findRenderObject();
-            _maxHeight = max(_maxHeight, box?.size?.height ?? _maxHeight);
-          }
-        });
-        if (_maxHeight > 0) {
-          setState(() {
-            _needRebuild = false;
-            _calculatedConstraints = BoxConstraints.expand(height: _maxHeight);
-          });
+  void calculateConstraints() {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      double _maxHeight = -1;
+      widget.children.forEach((cell) {
+        if (cell.fitHeight != true) {
+          RenderBox box = cell.key.currentContext?.findRenderObject();
+          _maxHeight = max(_maxHeight, box?.size?.height ?? _maxHeight);
         }
       });
-      return null;
-    } else {
-      _needRebuild = true;
-      return _calculatedConstraints;
-    }
+      if (_maxHeight > 0) {
+        setState(() {
+          if (_fit) print('set to false');
+          _needRebuild = false;
+          _calculatedConstraints = BoxConstraints.expand(height: _maxHeight);
+        });
+      }
+    });
   }
 }
 
@@ -175,12 +180,13 @@ class TableCellData {
   TextAlign textAlign;
   EdgeInsets padding;
   bool fitHeight;
-  GlobalKey _key;
+  GlobalKey key;
 
   static const headerColor = Color.fromRGBO(234, 235, 238, 1);
 
   TableCellData(
-      {this.text,
+      {this.key,
+        this.text,
       this.child,
       this.flex = 1,
       this.isHeader,

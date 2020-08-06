@@ -4,9 +4,9 @@ import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';
 
 class MainRecordDetailPage extends StatefulWidget {
-  final String chapter;
+  final String name;
 
-  const MainRecordDetailPage({Key key, this.chapter}) : super(key: key);
+  const MainRecordDetailPage({Key key, this.name}) : super(key: key);
 
   @override
   _MainRecordDetailPageState createState() => _MainRecordDetailPageState();
@@ -15,11 +15,11 @@ class MainRecordDetailPage extends StatefulWidget {
 class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
   @override
   Widget build(BuildContext context) {
-    final record = db.gameData.events.mainRecords[widget.chapter];
-    final _onTap = (String itemKey) =>
-        SplitRoute.push(context, builder: (context) => ItemDetailPage(itemKey));
+    final record = db.gameData.events.mainRecords[widget.name];
+    final _onTap =
+        (String itemKey) => SplitRoute.push(context, builder: (context) => ItemDetailPage(itemKey));
     return Scaffold(
-      appBar: AppBar(leading: BackButton(), title: Text(widget.chapter)),
+      appBar: AppBar(leading: BackButton(), title: Text(widget.name)),
       body: ListView(
         children: <Widget>[
           CustomTile(
@@ -32,9 +32,9 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
             height: 1,
           ),
           ListTile(title: Text('固定掉落')),
-          buildClassifiedItemList(record.drops, onTap: _onTap),
+          buildClassifiedItemList(data: record.drops, onTap: _onTap),
           ListTile(title: Text('通关奖励')),
-          buildClassifiedItemList(record.rewards, onTap: _onTap)
+          buildClassifiedItemList(data: record.rewards, onTap: _onTap)
         ],
       ),
     );

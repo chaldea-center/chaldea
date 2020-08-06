@@ -42,36 +42,29 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
               ListTile(
                 title: Text('Clear userdata'),
                 onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (_) => SimpleCancelOkDialog(
-                      title: Text('Confirm'),
-                      content: Text('Delete userdata?'),
-                      onTapOk: () async {
-                        Fluttertoast.showToast(msg: 'cleaning userdata...');
-                        await db.clearData(user: true, game: false);
-                        setState(() {});
-                        Fluttertoast.showToast(msg: 'userdata cleared.');
-                      },
-                    ),
-                  );
+                  SimpleCancelOkDialog(
+                    title: Text('Confirm'),
+                    content: Text('Delete userdata?'),
+                    onTapOk: () async {
+                      showToast('cleaning userdata...');
+                      await db.clearData(user: true, game: false);
+                      setState(() {});
+                      showToast('userdata cleared.');
+                    },
+                  ).show(context);
                 },
               ),
               ListTile(
                 title: Text('Backup userdata'),
                 onTap: () {
-                  showDialog(
-                      context: context,
-                      builder: (_) => SimpleCancelOkDialog(
-                            title: Text('Confirm'),
-                            content: Text(
-                                'Backup userdata to\n${db.paths.savePath}'),
-                            onTapOk: () async {
-                              final fp = db.backupUserdata();
-                              showInformDialog(context,
-                                  title: 'Backup success', content: fp);
-                            },
-                          ));
+                  SimpleCancelOkDialog(
+                    title: Text('Confirm'),
+                    content: Text('Backup userdata to\n${db.paths.savePath}'),
+                    onTapOk: () async {
+                      final fp = db.backupUserdata();
+                      showInformDialog(context, title: 'Backup success', content: fp);
+                    },
+                  );
                 },
               ),
               ListTile(
@@ -80,10 +73,8 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                   try {
                     final file = await FilePicker.getFile();
                     if (file != null) {
-                      db.userData = UserData.fromJson(
-                          json.decode(file.readAsStringSync()));
-                      showToast(
-                          'successfully imported userdata:\n${file.path}');
+                      db.userData = UserData.fromJson(json.decode(file.readAsStringSync()));
+                      showToast('successfully imported userdata:\n${file.path}');
                       db.saveUserData();
                     }
                   } catch (e) {
@@ -103,24 +94,18 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
               ListTile(
                 title: Text('Reload default gamedata'),
                 onTap: () {
-                  showDialog(
-                      context: context,
-                      builder: (_) => SimpleCancelOkDialog(
-                            title: Text('Confirm'),
-                            content: Text('reload default dataset?'),
-                            onTapOk: () async {
-                              Fluttertoast.showToast(
-                                  msg: 'reloading gamedata...',
-                                  toastLength: Toast.LENGTH_LONG);
-                              await db.loadZipAssets(kDefaultDatasetAssetKey,
-                                  force: true);
-                              if (db.loadGameData()) {
-                                Fluttertoast.showToast(
-                                    msg: 'gamedata reloaded.');
-                              }
-                              setState(() {});
-                            },
-                          ));
+                  SimpleCancelOkDialog(
+                    title: Text('Confirm'),
+                    content: Text('reload default dataset?'),
+                    onTapOk: () async {
+                      showToast('reloading gamedata...', toastLength: Toast.LENGTH_LONG);
+                      await db.loadZipAssets(kDefaultDatasetAssetKey, force: true);
+                      if (db.loadGameData()) {
+                        showToast('gamedata reloaded.');
+                      }
+                      setState(() {});
+                    },
+                  ).show(context);
                 },
               ),
               ListTile(
@@ -130,17 +115,17 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                     final filepath = join(db.paths.gameIconDir, icon.originName);
                     if (!File(filepath).existsSync()) {
                       try {
-                        Response response = await _dio.download(icon.url,
-                            join(db.paths.gameIconDir, icon.originName));
+                        Response response = await _dio.download(
+                            icon.url, join(db.paths.gameIconDir, icon.originName));
                         if (response.statusCode != 200) {
                           print('error $name, response: $response');
-                          Fluttertoast.showToast(msg: '$name download failed');
+                          showToast('$name download failed');
                         } else {
                           print('downloaded icon $name');
                         }
                       } catch (e) {
                         print('download icon $name error: $e');
-                        Fluttertoast.showToast(msg: '$name download failed');
+                        showToast('$name download failed');
                       }
                     }
                   });
@@ -150,21 +135,16 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 title: Text('Clear and reload default data'),
                 subtitle: Text('including icons'),
                 onTap: () {
-                  showDialog(
-                      context: context,
-                      builder: (_) => SimpleCancelOkDialog(
-                            title: Text('Confirm'),
-                            content: Text('clear then reload default dataset?'),
-                            onTapOk: () async {
-                              Fluttertoast.showToast(
-                                  msg: 'clear & reloading',
-                                  toastLength: Toast.LENGTH_LONG);
-                              await db.clearData(game: true);
-                              setState(() {});
-                              Fluttertoast.showToast(
-                                  msg: 'Default dataset loaded.');
-                            },
-                          ));
+                  SimpleCancelOkDialog(
+                    title: Text('Confirm'),
+                    content: Text('clear then reload default dataset?'),
+                    onTapOk: () async {
+                      showToast('clear & reloading', toastLength: Toast.LENGTH_LONG);
+                      await db.clearData(game: true);
+                      setState(() {});
+                      showToast('Default dataset loaded.');
+                    },
+                  ).show(context);
                 },
               ),
               ListTile(
@@ -174,12 +154,10 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                     final file = await FilePicker.getFile();
                     if (file != null) {
                       if (file.path.toLowerCase().endsWith('.zip')) {
-                        db.extractZip(file.readAsBytesSync().cast<int>(),
-                            db.paths.gameDataDir);
+                        db.extractZip(file.readAsBytesSync().cast<int>(), db.paths.gameDataDir);
                         db.loadGameData();
                       } else if (file.path.toLowerCase().endsWith('.json')) {
-                        final newData = GameData.fromJson(
-                            jsonDecode(file.readAsStringSync()));
+                        final newData = GameData.fromJson(jsonDecode(file.readAsStringSync()));
                         if (newData.version != '0') {
                           db.gameData = newData;
                         } else {
@@ -188,13 +166,11 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                       } else {
                         throw 'unsupported file type';
                       }
-                      showInformDialog(context,
-                          title: 'Import dataset successfully');
+                      showInformDialog(context, title: 'Import dataset successfully');
                     }
                   } catch (e) {
                     showInformDialog(context,
-                        title: 'Import gamedata failed!',
-                        content: e.toString());
+                        title: 'Import gamedata failed!', content: e.toString());
                   }
                 },
               ),
@@ -210,11 +186,8 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                         title: Text(filename),
                         trailing: PopupMenuButton(
                           itemBuilder: (context) => [
-                            PopupMenuItem(
-                                value: 'delete',
-                                child: Text(S.of(context).delete)),
-                            PopupMenuItem(
-                                value: 'extract', child: Text('Extract'))
+                            PopupMenuItem(value: 'delete', child: Text(S.of(context).delete)),
+                            PopupMenuItem(value: 'extract', child: Text('Extract'))
                           ],
                           onSelected: (v) async {
                             switch (v) {
@@ -223,19 +196,15 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                                 setState(() {
                                   updateCachedDataFile();
                                 });
-                                Fluttertoast.showToast(
-                                    msg: '$filename deleted.');
+                                showToast('$filename deleted.');
                                 break;
                               case 'extract':
                                 db.extractZip(
-                                    File(cachedFiles[filename])
-                                        .readAsBytesSync()
-                                        .cast<int>(),
+                                    File(cachedFiles[filename]).readAsBytesSync().cast<int>(),
                                     db.paths.gameDataDir);
                                 db.loadGameData();
                                 setState(() {});
-                                Fluttertoast.showToast(
-                                    msg: '$filename extracted.');
+                                showToast('$filename extracted.');
                                 break;
                             }
                           },
@@ -305,9 +274,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
 
   void updateCachedDataFile() {
     cachedFiles.clear();
-    Directory(db.paths.datasetCacheDir)
-        .listSync(followLinks: false)
-        .forEach((entry) {
+    Directory(db.paths.datasetCacheDir).listSync(followLinks: false).forEach((entry) {
       if (entry.path.toLowerCase().endsWith('.zip')) {
         cachedFiles[basename(entry.path)] = entry.path;
       }
@@ -324,13 +291,13 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
           onlineVersions.sort();
           onlineVersions = onlineVersions.reversed.toList();
         });
-        Fluttertoast.showToast(msg: 'Online version list loaded');
+        showToast('Online version list loaded');
       } else {
-        Fluttertoast.showToast(msg: 'server error: ${response.statusCode}');
+        showToast('server error: ${response.statusCode}');
         print('---error, response---\n$response\n----------');
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: 'check online versions failed.');
+      showToast('check online versions failed.');
       print('check online versions error:\n$e');
     }
   }
@@ -342,45 +309,43 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
           options: Options(responseType: ResponseType.bytes));
       print(response.headers);
       if (response.statusCode == 200) {
-        File file =
-            File(join(db.paths.datasetCacheDir, 'dataset-$version.zip'));
+        File file = File(join(db.paths.datasetCacheDir, 'dataset-$version.zip'));
         var raf = file.openSync(mode: FileMode.write);
         raf.writeFromSync(response.data);
         raf.closeSync();
         setState(() {
           updateCachedDataFile();
         });
-        Fluttertoast.showToast(msg: 'Version $version downloaded');
+        showToast('Version $version downloaded');
       }
     } catch (e) {
       print('error download:\n$e');
-      Fluttertoast.showToast(msg: 'error download: $e');
+      showToast('error download: $e');
       rethrow;
     }
   }
 
   void patchVersion(String version) async {
     try {
-      Response response = await _dio.get('/patch',
-          queryParameters: {'from': db.gameData.version, 'to': version});
+      Response response =
+          await _dio.get('/patch', queryParameters: {'from': db.gameData.version, 'to': version});
       if (response.statusCode == 200) {
         var patch = response.data;
         print(
             'download patch: ${patch.toString().substring(0, min(200, patch.toString().length))}');
-        final patched = JsonPatch.apply(
-            db.getJsonFromFile(db.paths.gameDataFilepath),
-            List.castFrom(patch));
+        final patched =
+            JsonPatch.apply(db.getJsonFromFile(db.paths.gameDataFilepath), List.castFrom(patch));
         File file = File(db.paths.gameDataFilepath);
         var raf = file.openSync(mode: FileMode.write);
         raf.writeStringSync(json.encode(patched));
         raf.closeSync();
         db.loadGameData();
         setState(() {});
-        Fluttertoast.showToast(msg: 'patch success.');
+        showToast('patch success.');
         print('patched version: ${patched['version']}');
       }
     } catch (e, s) {
-      Fluttertoast.showToast(msg: 'patch data failed.');
+      showToast('patch data failed.');
       print('patch data error:\n$e');
       print('stack trace: \n$s');
       rethrow;

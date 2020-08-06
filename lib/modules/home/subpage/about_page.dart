@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -33,8 +32,7 @@ class _AboutPageState extends State<AboutPage> {
     if (crashFile.existsSync()) {
       crashLog = 'loading...';
       crashFile.readAsLines().then((lines) {
-        crashLog =
-            lines.sublist(max(0, lines.length - 500), lines.length).join('\n');
+        crashLog = lines.sublist(max(0, lines.length - 500), lines.length).join('\n');
         setState(() {});
       });
     } else {
@@ -111,20 +109,16 @@ class _AboutPageState extends State<AboutPage> {
   }
 
   void jumpToLink(BuildContext context, String name, String link) {
-    showDialog(
-      context: context,
-      builder: (_) => SimpleCancelOkDialog(
-        title: Text('跳转到 $name'),
-        content:
-            Text(link, style: TextStyle(decoration: TextDecoration.underline)),
-        onTapOk: () async {
-          if (await canLaunch(link)) {
-            launch(link);
-          } else {
-            Fluttertoast.showToast(msg: 'Could not launch uri: $link');
-          }
-        },
-      ),
-    );
+    SimpleCancelOkDialog(
+      title: Text('跳转到 $name'),
+      content: Text(link, style: TextStyle(decoration: TextDecoration.underline)),
+      onTapOk: () async {
+        if (await canLaunch(link)) {
+          launch(link);
+        } else {
+          showToast('Could not launch uri: $link');
+        }
+      },
+    ).show(context);
   }
 }

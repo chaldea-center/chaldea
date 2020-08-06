@@ -24,11 +24,9 @@ class _AccountPageState extends State<AccountPage> {
                     return InputCancelOkDialog(
                       title: S.of(context).new_account,
                       errorText: S.of(context).input_error,
-                      validate: (v) =>
-                          v == v.trim() && !db.userData.users.containsKey(v),
+                      validate: (v) => v == v.trim() && !db.userData.users.containsKey(v),
                       onSubmit: (v) {
-                        String newKey =
-                            DateTime.now().millisecondsSinceEpoch.toString();
+                        String newKey = DateTime.now().millisecondsSinceEpoch.toString();
                         db.userData.users[newKey] = User(name: v);
                         db.onAppUpdate();
                         print('Add account $v(key:$newKey)');
@@ -52,9 +50,7 @@ class _AccountPageState extends State<AccountPage> {
                   child: Icon(
                     Icons.check,
                     size: 18.0,
-                    color: _isCurUser
-                        ? Theme.of(context).primaryColor
-                        : Colors.transparent,
+                    color: _isCurUser ? Theme.of(context).primaryColor : Colors.transparent,
                   ),
                 ),
                 Text('${user.name} - ${user.server}')
@@ -63,10 +59,8 @@ class _AccountPageState extends State<AccountPage> {
             selected: _isCurUser,
             trailing: PopupMenuButton(
               itemBuilder: (BuildContext context) => [
-                PopupMenuItem(
-                    value: 'rename', child: Text(S.of(context).rename)),
-                PopupMenuItem(
-                    value: 'delete', child: Text(S.of(context).delete))
+                PopupMenuItem(value: 'rename', child: Text(S.of(context).rename)),
+                PopupMenuItem(value: 'delete', child: Text(S.of(context).delete))
               ],
               onSelected: (k) {
                 switch (k) {
@@ -114,24 +108,20 @@ class _AccountPageState extends State<AccountPage> {
     print('delete user key $key...');
     final canDelete = db.userData.users.length > 1;
     setState(() {
-      showDialog(
-        context: context,
-        builder: (context) => SimpleCancelOkDialog(
-          title: Text('Delete ${db.userData.users[key].name}'),
-          content:
-              canDelete ? null : Text('Cannot delete, at least one account!'),
-          onTapOk: canDelete
-              ? () {
-                  db.userData.users.remove(key);
-                  if (db.userData.curUsername == key) {
-                    db.userData.curUsername = db.userData.users.keys.first;
-                  }
-                  db.onAppUpdate();
-                  print('accounts: ${db.userData.users.keys.toList()}');
+      SimpleCancelOkDialog(
+        title: Text('Delete ${db.userData.users[key].name}'),
+        content: canDelete ? null : Text('Cannot delete, at least one account!'),
+        onTapOk: canDelete
+            ? () {
+                db.userData.users.remove(key);
+                if (db.userData.curUsername == key) {
+                  db.userData.curUsername = db.userData.users.keys.first;
                 }
-              : null,
-        ),
-      );
+                db.onAppUpdate();
+                print('accounts: ${db.userData.users.keys.toList()}');
+              }
+            : null,
+      ).show(context);
     });
   }
 }

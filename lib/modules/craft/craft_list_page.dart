@@ -1,16 +1,20 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/shared/filter_page.dart';
 
 import 'craft_detail_page.dart';
 import 'craft_filter_page.dart';
 
 class CraftListPage extends StatefulWidget {
+  CraftListPage({Key key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => CraftListPageState();
 }
 
 class CraftListPageState extends State<CraftListPage> {
   CraftFilterData filterData;
+  List<CraftEssential> shownList = [];
   TextEditingController _inputController = TextEditingController();
   FocusNode _inputFocusNode = FocusNode();
   ScrollController _scrollController = ScrollController();
@@ -39,15 +43,13 @@ class CraftListPageState extends State<CraftListPage> {
     __textFilter.setFilter(filterData.filterString);
     __binCategory = 0;
     for (int i = 0; i < CraftFilterData.categoryData.length; i++) {
-      if (filterData.category.options[CraftFilterData.categoryData[i]] ==
-          true) {
+      if (filterData.category.options[CraftFilterData.categoryData[i]] == true) {
         __binCategory += 1 << i;
       }
     }
     __binAtkHpType = 0;
     for (int i = 0; i < CraftFilterData.atkHpTypeData.length; i++) {
-      if (filterData.atkHpType.options[CraftFilterData.atkHpTypeData[i]] ==
-          true) {
+      if (filterData.atkHpType.options[CraftFilterData.atkHpTypeData[i]] == true) {
         __binAtkHpType += 1 << i;
       }
     }
@@ -78,18 +80,20 @@ class CraftListPageState extends State<CraftListPage> {
       return false;
     }
     if (__binAtkHpType > 0 &&
-        ((1 << ((ce.hpMax > 0 ? 1 : 0) + (ce.atkMax > 0 ? 2 : 0))) &
-                __binAtkHpType) ==
-            0) {
+        ((1 << ((ce.hpMax > 0 ? 1 : 0) + (ce.atkMax > 0 ? 2 : 0))) & __binAtkHpType) == 0) {
       return false;
     }
     return true;
   }
 
-  void onFilterChanged(CraftFilterData data) {
-    setState(() {
-      filterData = data;
-    });
+  bool onFilterChanged(CraftFilterData data) {
+    if (mounted) {
+      setState(() {
+        filterData = data;
+      });
+      return true;
+    }
+    return false;
   }
 
   @override
@@ -114,8 +118,7 @@ class CraftListPageState extends State<CraftListPage> {
                       filled: true,
                       contentPadding: EdgeInsets.zero,
                       border: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              width: 0, style: BorderStyle.none),
+                          borderSide: const BorderSide(width: 0, style: BorderStyle.none),
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       fillColor: Colors.white,
                       hintText: 'Search',
@@ -125,8 +128,8 @@ class CraftListPageState extends State<CraftListPage> {
                         icon: Icon(Icons.clear, size: 20),
                         onPressed: () {
                           setState(() {
-                            WidgetsBinding.instance.addPostFrameCallback(
-                                (_) => _inputController.clear());
+                            WidgetsBinding.instance
+                                .addPostFrameCallback((_) => _inputController.clear());
                             filterData.filterString = '';
                           });
                         },
@@ -145,33 +148,34 @@ class CraftListPageState extends State<CraftListPage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.filter_list),
-            onPressed: () => showFilterSheet(context),
+            onPressed: () => FilterPage.show(
+              context: context,
+              builder: (context) =>
+                  CraftFilterPage(filterData: filterData, onChanged: onFilterChanged),
+            ),
           )
         ],
       ),
       floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.arrow_upward),
-          onPressed: () => _scrollController.jumpTo(0)),
+          child: Icon(Icons.arrow_upward), onPressed: () => _scrollController.jumpTo(0)),
       body: buildOverview(),
     );
   }
 
   Widget buildOverview() {
-    List<CraftEssential> shownList = [];
+    shownList.clear();
     beforeFiltrate();
     db.gameData.crafts.forEach((no, ce) {
       if (filtrateCraft(ce)) {
         shownList.add(ce);
       }
     });
-    shownList.sort((a, b) => CraftEssential.compare(
-        a, b, filterData.sortKeys, filterData.sortReversed));
-    return filterData.useGrid
-        ? _buildGridView(shownList)
-        : _buildListView(shownList);
+    shownList
+        .sort((a, b) => CraftEssential.compare(a, b, filterData.sortKeys, filterData.sortReversed));
+    return filterData.useGrid ? _buildGridView() : _buildListView();
   }
 
-  Widget _buildListView(List<CraftEssential> shownList) {
+  Widget _buildListView() {
     return ListView.separated(
         physics: ScrollPhysics(),
         controller: _scrollController,
@@ -179,6 +183,17 @@ class CraftListPageState extends State<CraftListPage> {
         itemCount: shownList.length,
         itemBuilder: (context, index) {
           final ce = shownList[index];
+          String additionalText = '';
+          switch (filterData.sortKeys.first) {
+            case CraftCompare.atk:
+              additionalText = '  ATK ${ce.atkMax}';
+              break;
+            case CraftCompare.hp:
+              additionalText = '  HP ${ce.hpMax}';
+              break;
+            default:
+              break;
+          }
           return CustomTile(
             leading: Image(image: db.getIconImage(ce.icon), height: 65),
             title: AutoSizeText(ce.name, maxLines: 1),
@@ -186,19 +201,21 @@ class CraftListPageState extends State<CraftListPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 AutoSizeText(ce.nameJp ?? ce.name, maxLines: 1),
-                Text('No.${ce.no}')
+                Text('No.${ce.no.toString().padRight(4)}  $additionalText'),
               ],
             ),
             trailing: Icon(Icons.arrow_forward_ios),
             onTap: () {
-              SplitRoute.popAndPush(context,
-                  builder: (context) => CraftDetailPage(ce: ce));
+              SplitRoute.popAndPush(
+                context,
+                builder: (context) => CraftDetailPage(ce: ce, onSwitch: switchNext),
+              );
             },
           );
         });
   }
 
-  Widget _buildGridView(List<CraftEssential> shownList) {
+  Widget _buildGridView() {
     if (shownList.length % 5 == 0) {
       shownList.add(null);
     }
@@ -217,19 +234,27 @@ class CraftListPageState extends State<CraftListPage> {
                 child: GestureDetector(
                   child: Image(image: db.getIconImage(ce.icon)),
                   onTap: () {
-                    SplitRoute.popAndPush(context,
-                        builder: (context) => CraftDetailPage(ce: ce));
+                    SplitRoute.popAndPush(context, builder: (context) => CraftDetailPage(ce: ce));
                   },
                 )),
           );
         }).toList());
   }
 
-  void showFilterSheet(BuildContext context) {
-    showSheet(
-      context,
-      builder: (sheetContext, setSheetState) =>
-          CraftFilterPage(parent: this, filterData: filterData),
-    );
+  CraftEssential switchNext(int cur, bool next) {
+    if (shownList.length <= 0) return null;
+    for (int i = 0; i < shownList.length; i++) {
+      if (shownList[i].no == cur) {
+        int nextIndex = i + (next ? 1 : -1);
+        if (nextIndex < shownList.length && nextIndex >= 0) {
+          return shownList[nextIndex];
+        } else {
+          // if reach the end/head of list, return null
+          return null;
+        }
+      }
+    }
+    // if not found in list, return the first one
+    return shownList[0];
   }
 }

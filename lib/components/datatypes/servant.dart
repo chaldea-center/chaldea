@@ -19,6 +19,7 @@ class Servant {
   int bondCraft;
   List<int> valentineCraft;
 
+  // from data file not in code
   static const List<int> unavailable = [83, 149, 151, 152, 168, 240];
 
   Servant({
@@ -40,16 +41,16 @@ class Servant {
   /// [cur]=[target]=null: all
   /// [cur.favorite]=[target.favorite]=true
   /// else empty
-  Map<String, int> getAllCost(
-      {ServantPlan cur, ServantPlan target, bool all = false}) {
+  Map<String, int> getAllCost({ServantPlan cur, ServantPlan target, bool all = false}) {
     if (all) {
-      return sumDict([getAscensionCost(), getSkillCost(), getDressCost()]);
+      return sumDict([getAscensionCost(), getSkillCost(), getDressCost(), getGrailCost()]);
     }
     if (cur?.favorite == true && target?.favorite == true) {
       return sumDict([
         getAscensionCost(cur: cur.ascension, target: target.ascension),
         getSkillCost(cur: cur.skills, target: target.skills),
-        getDressCost(cur: cur.dress, target: target.dress)
+        getDressCost(cur: cur.dress, target: target.dress),
+        getGrailCost(cur: cur.grail, target: target.grail)
       ]);
     } else {
       return {};
@@ -58,6 +59,7 @@ class Servant {
 
   SvtParts<Map<String, int>> getAllCostParts(
       {ServantPlan cur, ServantPlan target, bool all = false}) {
+    // no grail?
     if (all) {
       return SvtParts(
         ascension: getAscensionCost(),
@@ -67,8 +69,7 @@ class Servant {
     }
     if (cur?.favorite == true && target?.favorite == true) {
       return SvtParts(
-        ascension:
-            getAscensionCost(cur: cur.ascension, target: target.ascension),
+        ascension: getAscensionCost(cur: cur.ascension, target: target.ascension),
         skill: getSkillCost(cur: cur.skills, target: target.skills),
         dress: getDressCost(cur: cur.dress, target: target.dress),
       );
@@ -79,7 +80,7 @@ class Servant {
 
   Map<String, int> getAscensionCost({int cur = 0, int target = 4}) {
     if (itemCost.ascension.isEmpty) return {};
-    return sumDict(itemCost.ascension.sublist(cur, max(cur,target)));
+    return sumDict(itemCost.ascension.sublist(cur, max(cur, target)));
   }
 
   Map<String, int> getSkillCost({List<int> cur, List<int> target}) {
@@ -99,15 +100,22 @@ class Servant {
 
   Map<String, int> getDressCost({List<int> cur, List<int> target}) {
     Map<String, int> items = {};
-    cur ??= List.generate(itemCost.dress.length, (i) => 0);
-    target ??= List.generate(itemCost.dress.length, (i) => 1);
+
+    cur ??= [];
+    target ??= [];
+    cur.length = target.length = itemCost.dress.length;
 
     for (int i = 0; i < itemCost.dress.length; i++) {
-      for (int j = cur[i]; j < target[i]; j++) {
+      for (int j = (cur[i] ?? 0); j < (target[i] ?? 1); j++) {
         sumDict([items, itemCost.dress[i]], inPlace: true);
       }
     }
     return items;
+  }
+
+  Map<String, int> getGrailCost({int cur = 0, int target}) {
+    target ??= [-1, 10, 9, 7, 5][this.info.rarity2];
+    return target > cur ? {Item.grail: target - cur} : {};
   }
 
   int getClassSortIndex() {
@@ -121,8 +129,7 @@ class Servant {
     }
   }
 
-  static int compare(Servant a, Servant b,
-      [List<SvtCompare> keys, List<bool> reversed]) {
+  static int compare(Servant a, Servant b, [List<SvtCompare> keys, List<bool> reversed]) {
     int res = 0;
     if (keys == null || keys.isEmpty) {
       keys = [SvtCompare.no];
@@ -151,8 +158,7 @@ class Servant {
     return res;
   }
 
-  factory Servant.fromJson(Map<String, dynamic> data) =>
-      _$ServantFromJson(data);
+  factory Servant.fromJson(Map<String, dynamic> data) => _$ServantFromJson(data);
 
   Map<String, dynamic> toJson() => _$ServantToJson(this);
 }
@@ -168,7 +174,11 @@ class ServantBaseInfo {
   List<String> nicknames;
   String obtain;
   List<String> obtains;
+
+  /// rarity 0-5, (小安-0, 玛修-4)
   int rarity;
+
+  /// actual rarity for COST etc. 1~5, (小安-2, 玛修-3)
   int rarity2;
   String weight;
   String height;
@@ -243,8 +253,7 @@ class ServantBaseInfo {
     this.criticalRate,
   });
 
-  factory ServantBaseInfo.fromJson(Map<String, dynamic> data) =>
-      _$ServantBaseInfoFromJson(data);
+  factory ServantBaseInfo.fromJson(Map<String, dynamic> data) => _$ServantBaseInfoFromJson(data);
 
   Map<String, dynamic> toJson() => _$ServantBaseInfoToJson(this);
 }
@@ -275,8 +284,7 @@ class TreasureDevice {
     this.effects,
   });
 
-  factory TreasureDevice.fromJson(Map<String, dynamic> data) =>
-      _$TreasureDeviceFromJson(data);
+  factory TreasureDevice.fromJson(Map<String, dynamic> data) => _$TreasureDeviceFromJson(data);
 
   Map<String, dynamic> toJson() => _$TreasureDeviceToJson(this);
 }
@@ -325,11 +333,9 @@ class SvtProfileData {
   String descriptionJp;
   String condition;
 
-  SvtProfileData(
-      {this.title, this.description, this.descriptionJp, this.condition});
+  SvtProfileData({this.title, this.description, this.descriptionJp, this.condition});
 
-  factory SvtProfileData.fromJson(Map<String, dynamic> data) =>
-      _$SvtProfileDataFromJson(data);
+  factory SvtProfileData.fromJson(Map<String, dynamic> data) => _$SvtProfileDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$SvtProfileDataToJson(this);
 }
@@ -341,8 +347,7 @@ class VoiceTable {
 
   VoiceTable({this.section, this.table});
 
-  factory VoiceTable.fromJson(Map<String, dynamic> data) =>
-      _$VoiceTableFromJson(data);
+  factory VoiceTable.fromJson(Map<String, dynamic> data) => _$VoiceTableFromJson(data);
 
   Map<String, dynamic> toJson() => _$VoiceTableToJson(this);
 }
@@ -355,11 +360,9 @@ class VoiceRecord {
   String condition;
   String voiceFile;
 
-  VoiceRecord(
-      {this.title, this.text, this.textJp, this.condition, this.voiceFile});
+  VoiceRecord({this.title, this.text, this.textJp, this.condition, this.voiceFile});
 
-  factory VoiceRecord.fromJson(Map<String, dynamic> data) =>
-      _$VoiceRecordFromJson(data);
+  factory VoiceRecord.fromJson(Map<String, dynamic> data) => _$VoiceRecordFromJson(data);
 
   Map<String, dynamic> toJson() => _$VoiceRecordToJson(this);
 }

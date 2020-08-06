@@ -74,14 +74,14 @@ class UserData {
   }
 
   // json_serializable
-  factory UserData.fromJson(Map<String, dynamic> data) =>
-      _$UserDataFromJson(data);
+  factory UserData.fromJson(Map<String, dynamic> data) => _$UserDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$UserDataToJson(this);
 }
 
 @JsonSerializable(checked: true)
 class SvtFilterData {
+  /// 0-all, 1-fav, 2-not fav
   int favorite;
   String filterString;
   List<SvtCompare> sortKeys;
@@ -89,6 +89,7 @@ class SvtFilterData {
   bool useGrid;
 
   bool hasDress;
+  FilterGroupData skillLevel;
   FilterGroupData rarity;
   FilterGroupData className;
   FilterGroupData obtain;
@@ -107,6 +108,7 @@ class SvtFilterData {
     this.sortReversed,
     this.useGrid,
     this.hasDress,
+    this.skillLevel,
     this.rarity,
     this.className,
     this.obtain,
@@ -125,6 +127,7 @@ class SvtFilterData {
     sortReversed ??= List.filled(sortKeys.length, true);
     useGrid ??= false;
     hasDress ??= false;
+    skillLevel ??= FilterGroupData();
     rarity ??= FilterGroupData();
     className ??= FilterGroupData();
     obtain ??= FilterGroupData();
@@ -139,6 +142,7 @@ class SvtFilterData {
   }
 
   List<FilterGroupData> get groupValues => [
+        skillLevel,
         rarity,
         className,
         obtain,
@@ -155,6 +159,7 @@ class SvtFilterData {
   void reset() {
     // sortKeys = List.generate(sortKeys.length, (i) => sortKeyData[i]);
     // sortReversed = List.filled(sortKeys.length, false);
+    hasDress = false;
     for (var group in groupValues) {
       group.reset();
     }
@@ -162,6 +167,7 @@ class SvtFilterData {
 
   // const data
   static const List<SvtCompare> sortKeyData = SvtCompare.values;
+  static const List<String> skillLevelData = ['<999', '≥999', '310'];
   static const List<String> rarityData = ['0', '1', '2', '3', '4', '5'];
   static const List<String> classesData = [
     'Saber',
@@ -179,14 +185,7 @@ class SvtFilterData {
     'Foreigner',
     'Beast'
   ];
-  static const List<String> obtainData = [
-    '剧情',
-    '活动',
-    '无法召唤',
-    '常驻',
-    '限定',
-    '友情点召唤'
-  ];
+  static const List<String> obtainData = ['剧情', '活动', '无法召唤', '常驻', '限定', '友情点召唤'];
   static const npColorData = ['Quick', 'Arts', 'Buster'];
   static const npTypeData = ['单体', '全体', '辅助'];
   static const attributeData = ['天', '地', '人', '星', '兽'];
@@ -209,12 +208,14 @@ class SvtFilterData {
     '魔性',
     '超巨大',
     '天地(拟似除外)',
+    '人科',
+    '魔兽型',
+    '活在当下的人类'
   ];
   static const traitSpecialData = ['EA不特攻', '无特殊特性'];
 
   // json_serializable
-  factory SvtFilterData.fromJson(Map<String, dynamic> data) =>
-      _$SvtFilterDataFromJson(data);
+  factory SvtFilterData.fromJson(Map<String, dynamic> data) => _$SvtFilterDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$SvtFilterDataToJson(this);
 }
@@ -281,8 +282,7 @@ class CraftFilterData {
   static const atkHpTypeData = ['NONE', 'HP', 'ATK', 'MIX'];
 
   // json_serializable
-  factory CraftFilterData.fromJson(Map<String, dynamic> data) =>
-      _$CraftFilterDataFromJson(data);
+  factory CraftFilterData.fromJson(Map<String, dynamic> data) => _$CraftFilterDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$CraftFilterDataToJson(this);
 }
@@ -352,17 +352,15 @@ class FilterGroupData {
 
   void reset() {
     options.clear();
+    matchAll = false;
+    invert = false;
   }
 
-  bool _customCompare(
-      String _optionKey, String _srcKey, CompareFilterKeyCallback _compare) {
-    return _compare == null
-        ? _optionKey == _srcKey
-        : _compare(_optionKey, _srcKey);
+  bool _customCompare(String _optionKey, String _srcKey, CompareFilterKeyCallback _compare) {
+    return _compare == null ? _optionKey == _srcKey : _compare(_optionKey, _srcKey);
   }
 
-  bool singleValueFilter(String value,
-      {Map<String, CompareFilterKeyCallback> compares}) {
+  bool singleValueFilter(String value, {Map<String, CompareFilterKeyCallback> compares}) {
     // ignore matchAll?
     options.removeWhere((k, v) => v != true);
     if (options.isEmpty) {
@@ -383,8 +381,7 @@ class FilterGroupData {
     return invert ? !result : result;
   }
 
-  bool listValueFilter(List<String> values,
-      {Map<String, CompareFilterKeyCallback> compares}) {
+  bool listValueFilter(List<String> values, {Map<String, CompareFilterKeyCallback> compares}) {
     compares ??= {};
     options.removeWhere((k, v) => v != true);
     if (options.isEmpty) {
@@ -394,9 +391,7 @@ class FilterGroupData {
     if (matchAll) {
       result = true;
       for (String option in options.keys) {
-        List<bool> tmp = values
-            .map((v) => _customCompare(option, v, compares[option]))
-            .toList();
+        List<bool> tmp = values.map((v) => _customCompare(option, v, compares[option])).toList();
         if (!tmp.contains(true)) {
           result = false;
           break;
@@ -405,9 +400,7 @@ class FilterGroupData {
     } else {
       result = false;
       for (String option in options.keys) {
-        List<bool> tmp = values
-            .map((v) => _customCompare(option, v, compares[option]))
-            .toList();
+        List<bool> tmp = values.map((v) => _customCompare(option, v, compares[option])).toList();
         if (tmp.contains(true)) {
           result = true;
           break;
@@ -417,8 +410,7 @@ class FilterGroupData {
     return invert ? !result : result;
   }
 
-  factory FilterGroupData.fromJson(Map<String, dynamic> data) =>
-      _$FilterGroupDataFromJson(data);
+  factory FilterGroupData.fromJson(Map<String, dynamic> data) => _$FilterGroupDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$FilterGroupDataToJson(this);
 

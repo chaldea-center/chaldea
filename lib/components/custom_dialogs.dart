@@ -1,3 +1,4 @@
+import 'package:chaldea/components/components.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
@@ -10,13 +11,7 @@ class InputCancelOkDialog extends StatefulWidget {
   final void Function(String) onSubmit;
 
   const InputCancelOkDialog(
-      {Key key,
-      this.title,
-      this.text,
-      this.hintText,
-      this.errorText,
-      this.validate,
-      this.onSubmit})
+      {Key key, this.title, this.text, this.hintText, this.errorText, this.validate, this.onSubmit})
       : super(key: key);
 
   @override
@@ -53,8 +48,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
         autofocus: true,
         autocorrect: false,
         decoration: InputDecoration(
-            hintText: widget.hintText,
-            errorText: validation ? null : "Invalid input."),
+            hintText: widget.hintText, errorText: validation ? null : "Invalid input."),
         onChanged: (v) {
           if (widget.validate != null) {
             setState(() {
@@ -97,8 +91,11 @@ class SimpleCancelOkDialog extends StatelessWidget {
   final VoidCallback onTapOk;
   final VoidCallback onTapCancel;
 
+  /// ignore if onTapCancel is not null
+  final bool hideCancel;
+
   const SimpleCancelOkDialog(
-      {Key key, this.title, this.content, this.onTapOk, this.onTapCancel})
+      {Key key, this.title, this.content, this.onTapOk, this.onTapCancel, this.hideCancel = false})
       : super(key: key);
 
   @override
@@ -107,15 +104,16 @@ class SimpleCancelOkDialog extends StatelessWidget {
       title: title,
       content: content,
       actions: <Widget>[
-        FlatButton(
-          child: Text(S.of(context).cancel),
-          onPressed: () {
-            Navigator.pop(context);
-            if (onTapCancel != null) {
-              onTapCancel();
-            }
-          },
-        ),
+        if (onTapCancel != null || !hideCancel)
+          FlatButton(
+            child: Text(S.of(context).cancel),
+            onPressed: () {
+              Navigator.pop(context);
+              if (onTapCancel != null) {
+                onTapCancel();
+              }
+            },
+          ),
         if (onTapOk != null)
           FlatButton(
             child: Text(S.of(context).ok),
@@ -126,5 +124,9 @@ class SimpleCancelOkDialog extends StatelessWidget {
           )
       ],
     );
+  }
+
+  void show(BuildContext context) {
+    showDialog(context: context, builder: (_) => this);
   }
 }

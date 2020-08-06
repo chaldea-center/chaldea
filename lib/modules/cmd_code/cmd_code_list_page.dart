@@ -1,16 +1,20 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/shared/filter_page.dart';
 
 import 'cmd_code_detail_page.dart';
 import 'cmd_code_filter_page.dart';
 
 class CmdCodeListPage extends StatefulWidget {
+  CmdCodeListPage({Key key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => CmdCodeListPageState();
 }
 
 class CmdCodeListPageState extends State<CmdCodeListPage> {
   CmdCodeFilterData filterData;
+  List<CommandCode> shownList = [];
   TextEditingController _inputController = TextEditingController();
   FocusNode _inputFocusNode = FocusNode();
   ScrollController _scrollController = ScrollController();
@@ -58,18 +62,21 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
       return false;
     }
     if (!filterData.obtain.singleValueFilter(code.obtain, compares: {
-      CmdCodeFilterData.obtainData[1]: (o, v) =>
-          v != CmdCodeFilterData.obtainData[0]
+      CmdCodeFilterData.obtainData[1]: (o, v) => v != CmdCodeFilterData.obtainData[0]
     })) {
       return false;
     }
     return true;
   }
 
-  void onFilterChanged(CmdCodeFilterData data) {
-    setState(() {
-      filterData = data;
-    });
+  bool onFilterChanged(CmdCodeFilterData data) {
+    if (mounted) {
+      setState(() {
+        filterData = data;
+      });
+      return true;
+    }
+    return false;
   }
 
   @override
@@ -94,8 +101,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
                       filled: true,
                       contentPadding: EdgeInsets.zero,
                       border: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              width: 0, style: BorderStyle.none),
+                          borderSide: const BorderSide(width: 0, style: BorderStyle.none),
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       fillColor: Colors.white,
                       hintText: 'Search',
@@ -105,8 +111,8 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
                         icon: Icon(Icons.clear, size: 20),
                         onPressed: () {
                           setState(() {
-                            WidgetsBinding.instance.addPostFrameCallback(
-                                (_) => _inputController.clear());
+                            WidgetsBinding.instance
+                                .addPostFrameCallback((_) => _inputController.clear());
                             filterData.filterString = '';
                           });
                         },
@@ -125,33 +131,34 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.filter_list),
-            onPressed: () => showFilterSheet(context),
-          )
+            onPressed: () => FilterPage.show(
+              context: context,
+              builder: (context) =>
+                  CmdCodeFilterPage(filterData: filterData, onChanged: onFilterChanged),
+            ),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.arrow_upward),
-          onPressed: () => _scrollController.jumpTo(0)),
+          child: Icon(Icons.arrow_upward), onPressed: () => _scrollController.jumpTo(0)),
       body: buildOverview(),
     );
   }
 
   Widget buildOverview() {
-    List<CommandCode> shownList = [];
+    shownList.clear();
     beforeFiltrate();
     db.gameData.cmdCodes.forEach((no, code) {
       if (filtrateCmdCode(code)) {
         shownList.add(code);
       }
     });
-    shownList.sort((a, b) => CommandCode.compare(
-        a, b, filterData.sortKeys, filterData.sortReversed));
-    return filterData.useGrid
-        ? _buildGridView(shownList)
-        : _buildListView(shownList);
+    shownList
+        .sort((a, b) => CommandCode.compare(a, b, filterData.sortKeys, filterData.sortReversed));
+    return filterData.useGrid ? _buildGridView() : _buildListView();
   }
 
-  Widget _buildListView(List<CommandCode> shownList) {
+  Widget _buildListView() {
     return ListView.separated(
         physics: ScrollPhysics(),
         controller: _scrollController,
@@ -172,13 +179,13 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
             trailing: Icon(Icons.arrow_forward_ios),
             onTap: () {
               SplitRoute.popAndPush(context,
-                  builder: (context) => CmdCodeDetailPage(code: code));
+                  builder: (context) => CmdCodeDetailPage(code: code, onSwitch: switchNext));
             },
           );
         });
   }
 
-  Widget _buildGridView(List<CommandCode> shownList) {
+  Widget _buildGridView() {
     if (shownList.length % 5 == 0) {
       shownList.add(null);
     }
@@ -198,7 +205,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
                 child: Image(image: db.getIconImage(code.icon)),
                 onTap: () {
                   SplitRoute.popAndPush(context,
-                      builder: (context) => CmdCodeDetailPage(code: code));
+                      builder: (context) => CmdCodeDetailPage(code: code, onSwitch: switchNext));
                 },
               ),
             ),
@@ -206,12 +213,20 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
         }).toList());
   }
 
-  void showFilterSheet(BuildContext context) {
-    showSheet(
-      context,
-      size: 0.6,
-      builder: (sheetContext, setSheetState) =>
-          CmdCodeFilterPage(parent: this, filterData: filterData),
-    );
+  CommandCode switchNext(int cur, bool next) {
+    if (shownList.length <= 0) return null;
+    for (int i = 0; i < shownList.length; i++) {
+      if (shownList[i].no == cur) {
+        int nextIndex = i + (next ? 1 : -1);
+        if (nextIndex < shownList.length && nextIndex >= 0) {
+          return shownList[nextIndex];
+        } else {
+          // if reach the end/head of list, return null
+          return null;
+        }
+      }
+    }
+    // if not found in list, return the first one
+    return shownList[0];
   }
 }

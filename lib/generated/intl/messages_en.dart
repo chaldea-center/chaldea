@@ -22,6 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "backup" : MessageLookupByLibrary.simpleMessage("Backup to ..."),
+    "backup_restore" : MessageLookupByLibrary.simpleMessage("Backup & Restore"),
     "calculator" : MessageLookupByLibrary.simpleMessage("Calculator"),
     "cancel" : MessageLookupByLibrary.simpleMessage("Cancel"),
     "cmd_code_title" : MessageLookupByLibrary.simpleMessage("Command Code"),
