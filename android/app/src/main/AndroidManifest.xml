@@ -11,6 +11,8 @@
         android:label="Chaldea"
         android:icon="@mipmap/ic_launcher"
         android:resizeableActivity="true"
+        android:allowBackup="true"
+        android:usesCleartextTraffic="true"
         android:supportsPictureInPicture="true">
         <activity
             android:name=".MainActivity"

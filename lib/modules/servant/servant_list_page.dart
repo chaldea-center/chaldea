@@ -71,7 +71,7 @@ class ServantListPageState extends State<ServantListPage> {
         ]);
       });
       svt?.activeSkills?.forEach((activeSkill) {
-        activeSkill.forEach((skill) {
+        activeSkill.skills.forEach((skill) {
           searchStrings
               .addAll([skill.name, skill.nameJp, for (var e in skill.effects) e.description]);
         });

@@ -62,7 +62,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Text(
-                      db.userData.users[db.userData.curUsername].name,
+                      db.userData.users[db.userData.curUserKey].name,
                       style: TextStyle(color: Colors.black87),
                     ),
                     Icon(Icons.arrow_forward_ios)

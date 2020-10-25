@@ -40,7 +40,7 @@ class _AccountPageState extends State<AccountPage> {
       body: TileGroup(
         children: db.userData.users.keys.map((userKey) {
           final user = db.userData.users[userKey];
-          final bool _isCurUser = userKey == db.userData.curUsername;
+          final bool _isCurUser = userKey == db.userData.curUserKey;
           return ListTile(
             title: Row(
               mainAxisSize: MainAxisSize.min,
@@ -76,7 +76,7 @@ class _AccountPageState extends State<AccountPage> {
               },
             ),
             onTap: () {
-              db.userData.curUsername = userKey;
+              db.userData.curUserKey = userKey;
               db.onAppUpdate();
             },
           );
@@ -114,8 +114,8 @@ class _AccountPageState extends State<AccountPage> {
         onTapOk: canDelete
             ? () {
                 db.userData.users.remove(key);
-                if (db.userData.curUsername == key) {
-                  db.userData.curUsername = db.userData.users.keys.first;
+                if (db.userData.curUserKey == key) {
+                  db.userData.curUserKey = db.userData.users.keys.first;
                 }
                 db.onAppUpdate();
                 print('accounts: ${db.userData.users.keys.toList()}');

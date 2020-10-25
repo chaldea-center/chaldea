@@ -14,6 +14,7 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
   TabController _tabController;
   bool filtered = false;
   final List<int> categories = [1, 2, 3];
+  List<TextEditingController> _itemRedundantControllers;
 
   @override
   void deactivate() {
@@ -25,6 +26,8 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
   void initState() {
     super.initState();
     _tabController = TabController(length: categories.length, vsync: this);
+    _itemRedundantControllers = List.generate(
+        3, (index) => TextEditingController(text: db.userData.itemAbundantValue[index].toString()));
     db.itemStat.update();
   }
 
@@ -66,18 +69,52 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
             },
           ),
           IconButton(
-              icon: Icon(Icons.toys),
+              icon: Icon(Icons.calculate),
               onPressed: () {
-                Map<String, int> objective = {};
-                db.itemStat.leftItems.forEach((itemKey, value) {
-                  if (db.gameData.glpk.rowNames.contains(itemKey) && value < 0) {
-                    objective[itemKey] = -value;
-                  }
-                });
-                SplitRoute.push(
-                  context,
-                  builder: (context) => DropCalculatorPage(objectiveMap: objective),
-                );
+                SimpleCancelOkDialog(
+                  title: Text('材料富余量'),
+                  content: Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: List.generate(
+                        3,
+                        (index) => Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text('铜银金'[index]),
+                                SizedBox(
+                                  width: 40,
+                                  child: TextField(
+                                    controller: _itemRedundantControllers[index],
+                                    keyboardType: TextInputType.number,
+                                    textAlign: TextAlign.center,
+                                    decoration: InputDecoration(isDense: true),
+                                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                    onChanged: (s) {
+                                      db.userData.itemAbundantValue[index] = int.tryParse(s) ?? 0;
+                                    },
+                                  ),
+                                )
+                              ],
+                            )),
+                  ),
+                  onTapOk: () {
+                    Map<String, int> objective = {};
+                    db.itemStat.leftItems.forEach((itemKey, value) {
+                      final rarity = db.gameData.items[itemKey]?.rarity ?? -1;
+                      if (rarity > 0 && rarity <= 3) {
+                        value -= db.userData.itemAbundantValue[rarity - 1];
+                      }
+                      if (db.gameData.glpk.rowNames.contains(itemKey) && value < 0) {
+                        objective[itemKey] = -value;
+                      }
+                    });
+                    SplitRoute.push(
+                      context,
+                      builder: (context) => DropCalculatorPage(objectiveMap: objective),
+                    );
+                  },
+                ).show(context);
               })
         ],
         bottom: TabBar(

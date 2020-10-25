@@ -109,8 +109,9 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                   adapter: NumberPickerAdapter(
                     data: [
                       NumberPickerColumn(
-                          items: List.generate(maxValue + 2, (i) => i == 0 ? 0 : maxValue + 1 - i),
-                          initValue: monthPlan[i]),
+                        items: List.generate(maxValue + 2, (i) => i == 0 ? 0 : maxValue + 1 - i),
+                        initValue: monthPlan[i],
+                      ),
                     ],
                   ),
                   onConfirm: (picker, values) {
@@ -129,7 +130,10 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
         ],
       ));
     }
-    return Row(mainAxisSize: MainAxisSize.min, children: trailingItems);
+    return FittedBox(
+      fit: BoxFit.contain,
+      child: Row(mainAxisSize: MainAxisSize.min, children: trailingItems),
+    );
   }
 
   Widget buildAll(List<ExchangeTicket> tickets, ItemStatistics statistics) {

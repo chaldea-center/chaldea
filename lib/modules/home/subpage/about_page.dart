@@ -14,6 +14,7 @@ class AboutPage extends StatefulWidget {
 
 class _AboutPageState extends State<AboutPage> {
   final references = const {
+    'TYPE-MOON/FGO PROJECT': 'https://www.fate-go.jp',
     'Mooncell': 'https://fgo.wiki',
     'NGA-FGO版块': 'https://bbs.nga.cn/thread.php?fid=540',
     '效率剧场': 'https://sites.google.com/view/fgo-domus-aurea'
@@ -46,6 +47,7 @@ class _AboutPageState extends State<AboutPage> {
       appBar: AppBar(leading: BackButton(), title: Text('关于Chaldea')),
       body: ListView(
         children: <Widget>[
+          // TODO: add a log+name+intro Card.
           TileGroup(
             header: '数据来源',
             footer: '若存在未标注的来源或侵权敬请告知',

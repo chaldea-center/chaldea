@@ -76,7 +76,7 @@ class _APCalcPageState extends State<APCalcPage> {
             width: 90,
             child: TextField(
               controller: controller,
-              maxLength: 3,
+              maxLength: 4,
               keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],

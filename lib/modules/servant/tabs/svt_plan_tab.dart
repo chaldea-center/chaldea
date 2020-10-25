@@ -31,8 +31,11 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     for (var i = 0; i < cur.skills.length; i++) {
       target.skills[i] = max(target.skills[i], cur.skills[i]);
     }
+    // this will fill null if new length is larger
     target.dress.length = cur.dress.length;
     for (var i = 0; i < cur.dress.length; i++) {
+      cur.dress[i] ??= 0;
+      target.dress[i] ??= 0;
       target.dress[i] = max(target.dress[i], cur.dress[i]);
     }
     target.grail = max(target.grail, cur.grail);
@@ -83,7 +86,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     //skill part
     List<Widget> skillWidgets = [];
     for (int index = 0; index < svt.activeSkills.length; index++) {
-      Skill skill = svt.activeSkills[index][status.skillIndex[index]];
+      Skill skill = svt.activeSkills[index].skills[status.skillIndex[index]];
       skillWidgets.add(buildPlanRow(
         leading: Image(
           image: db.getIconImage(skill.icon),
@@ -125,8 +128,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       }
       dressWidgets.add(buildPlanRow(
         leading: Image(image: db.getIconImage('灵衣开放权'), height: 110 * 0.3),
-        title: svt.itemCost.dressName[index],
-        subtitle: svt.itemCost.dressNameJp[index],
+        title: svt.itemCost.dressNameJp[index],
+        subtitle: svt.itemCost.dressName[index],
         start: curVal.dress[index],
         end: targetVal.dress[index],
         minVal: 0,

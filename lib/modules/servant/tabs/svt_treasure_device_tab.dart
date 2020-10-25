@@ -52,7 +52,7 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab> {
     return Center(
       child: Padding(
         padding: EdgeInsets.only(top: 8, bottom: 4),
-        child: ToggleButtons(
+        child: FittedBox(child: ToggleButtons(
           constraints: BoxConstraints(),
           selectedColor: Colors.white,
           fillColor: Theme.of(context).primaryColor,
@@ -75,13 +75,13 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab> {
                 child: button);
           }).toList(),
           isSelected:
-              List.generate(svt.treasureDevice.length, (i) => selected == i),
+          List.generate(svt.treasureDevice.length, (i) => selected == i),
           onPressed: (no) {
             setState(() {
               status.tdIndex = no;
             });
           },
-        ),
+        ),),
       ),
     );
   }

@@ -64,7 +64,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                       final fp = db.backupUserdata();
                       showInformDialog(context, title: 'Backup success', content: fp);
                     },
-                  );
+                  ).show(context);
                 },
               ),
               ListTile(

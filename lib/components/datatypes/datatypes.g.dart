@@ -691,11 +691,9 @@ Servant _$ServantFromJson(Map<String, dynamic> json) {
           json,
           'activeSkills',
           (v) => (v as List)
-              ?.map((e) => (e as List)
-                  ?.map((e) => e == null
-                      ? null
-                      : Skill.fromJson(e as Map<String, dynamic>))
-                  ?.toList())
+              ?.map((e) => e == null
+                  ? null
+                  : ActiveSkill.fromJson(e as Map<String, dynamic>))
               ?.toList()),
       passiveSkills: $checkedConvert(
           json,
@@ -914,6 +912,28 @@ Map<String, dynamic> _$TreasureDeviceToJson(TreasureDevice instance) =>
       'rank': instance.rank,
       'typeText': instance.typeText,
       'effects': instance.effects,
+    };
+
+ActiveSkill _$ActiveSkillFromJson(Map<String, dynamic> json) {
+  return $checkedNew('ActiveSkill', json, () {
+    final val = ActiveSkill(
+      cnState: $checkedConvert(json, 'cnState', (v) => v as int),
+      skills: $checkedConvert(
+          json,
+          'skills',
+          (v) => (v as List)
+              ?.map((e) =>
+                  e == null ? null : Skill.fromJson(e as Map<String, dynamic>))
+              ?.toList()),
+    );
+    return val;
+  });
+}
+
+Map<String, dynamic> _$ActiveSkillToJson(ActiveSkill instance) =>
+    <String, dynamic>{
+      'cnState': instance.cnState,
+      'skills': instance.skills,
     };
 
 Skill _$SkillFromJson(Map<String, dynamic> json) {
@@ -1220,7 +1240,7 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
                 (k, e) => MapEntry(k, e as bool),
               )),
       serverDomain: $checkedConvert(json, 'serverDomain', (v) => v as String),
-      curUsername: $checkedConvert(json, 'curUsername', (v) => v as String),
+      curUserKey: $checkedConvert(json, 'curUserKey', (v) => v as String),
       users: $checkedConvert(
           json,
           'users',
@@ -1266,7 +1286,7 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'sliderUrls': instance.sliderUrls,
       'galleries': instance.galleries,
       'serverDomain': instance.serverDomain,
-      'curUsername': instance.curUsername,
+      'curUserKey': instance.curUserKey,
       'users': instance.users,
       'testAllowDownload': instance.testAllowDownload,
       'svtFilter': instance.svtFilter,
@@ -1289,6 +1309,12 @@ SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
           (v) => (v as List)?.map((e) => e as bool)?.toList()),
       useGrid: $checkedConvert(json, 'useGrid', (v) => v as bool),
       hasDress: $checkedConvert(json, 'hasDress', (v) => v as bool),
+      skillLevel: $checkedConvert(
+          json,
+          'skillLevel',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
       rarity: $checkedConvert(
           json,
           'rarity',
@@ -1371,6 +1397,7 @@ Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
       'sortReversed': instance.sortReversed,
       'useGrid': instance.useGrid,
       'hasDress': instance.hasDress,
+      'skillLevel': instance.skillLevel,
       'rarity': instance.rarity,
       'className': instance.className,
       'obtain': instance.obtain,

@@ -12,7 +12,7 @@ class UserData {
   String serverDomain;
 
   // user-related game data
-  String curUsername;
+  String curUserKey;
   Map<String, User> users;
 
   List<String> get userNames => users.values.map((user) => user.name).toList();
@@ -29,6 +29,7 @@ class UserData {
 
   // glpk
   GLPKParams glpkParams;
+  List<int> itemAbundantValue;
 
   @JsonKey(ignore: true)
   StreamController<UserData> onUserUpdated = StreamController.broadcast();
@@ -49,12 +50,13 @@ class UserData {
     this.sliderUrls,
     this.galleries,
     this.serverDomain,
-    this.curUsername,
+    this.curUserKey,
     this.users,
     this.svtFilter,
     this.craftFilter,
     this.cmdCodeFilter,
     this.glpkParams,
+    this.itemAbundantValue,
   }) {
     // not initiate language: auto-change language if not set yet.
     String defaultName = 'default';
@@ -64,13 +66,14 @@ class UserData {
     galleries ??= {};
     serverDomain ??= 'http://chaldea.narumi.cc';
     users ??= {defaultName: User(name: defaultName)};
-    if (!users.containsKey(curUsername)) {
-      curUsername = users.keys.first;
+    if (!users.containsKey(curUserKey)) {
+      curUserKey = users.keys.first;
     }
     svtFilter ??= SvtFilterData();
     craftFilter ??= CraftFilterData();
     cmdCodeFilter ??= CmdCodeFilterData();
     glpkParams ??= GLPKParams();
+    itemAbundantValue ??= [0, 0, 0];
   }
 
   // json_serializable

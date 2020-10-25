@@ -81,7 +81,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     }
 
     // 商店任务点数
-    if (grailNum + crystalNum > 0 || event.items != null) {
+    if (grailNum + crystalNum > 0 || event.items?.isNotEmpty == true) {
       final Map<String, int> items = Map.from(event.items)
         ..addAll({'圣杯': grailNum, '传承结晶': crystalNum})
         ..removeWhere((key, value) => value <= 0);

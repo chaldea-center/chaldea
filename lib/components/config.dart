@@ -26,7 +26,7 @@ class Database {
   UserData userData;
   GameData gameData;
 
-  User get curUser => userData.users[userData.curUsername];
+  User get curUser => userData.users[userData.curUserKey];
 
   final ItemStatistics itemStat = ItemStatistics();
   final RuntimeData runtimeData = RuntimeData();

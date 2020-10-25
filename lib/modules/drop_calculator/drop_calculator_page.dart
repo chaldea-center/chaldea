@@ -34,13 +34,7 @@ class _DropCalculatorPageState extends State<DropCalculatorPage>
       appBar: AppBar(
         title: Text(S.of(context).drop_calculator),
         leading: BackButton(),
-        actions: [
-          IconButton(
-              icon: Icon(Icons.refresh),
-              onPressed: () {
-                onSolved(solution);
-              })
-        ],
+        actions: [],
         bottom: TabBar(
           controller: _tabController,
           tabs: [Tab(text: 'Input'), Tab(text: 'Output')],
@@ -276,6 +270,14 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               ],
             ),
             //TODO: add extra event quests button and dialog page
+            IconButton(
+              icon: Icon(Icons.sort),
+              onPressed: () {
+                setState(() {
+                  params.sortByItem();
+                });
+              },
+            ),
             Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: 10,

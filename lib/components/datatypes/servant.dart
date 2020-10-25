@@ -10,7 +10,7 @@ class Servant {
   String icon;
   ServantBaseInfo info;
   List<TreasureDevice> treasureDevice;
-  List<List<Skill>> activeSkills;
+  List<ActiveSkill> activeSkills;
   List<Skill> passiveSkills;
   ItemCost itemCost;
   List<int> bondPoints;
@@ -287,6 +287,17 @@ class TreasureDevice {
   factory TreasureDevice.fromJson(Map<String, dynamic> data) => _$TreasureDeviceFromJson(data);
 
   Map<String, dynamic> toJson() => _$TreasureDeviceToJson(this);
+}
+
+@JsonSerializable(checked: true)
+class ActiveSkill{
+  int cnState;
+  List<Skill> skills;
+  ActiveSkill({this.cnState,this.skills});
+
+  factory ActiveSkill.fromJson(Map<String, dynamic> data) => _$ActiveSkillFromJson(data);
+
+  Map<String, dynamic> toJson() => _$ActiveSkillToJson(this);
 }
 
 @JsonSerializable(checked: true)
