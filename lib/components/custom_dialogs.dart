@@ -126,7 +126,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
     );
   }
 
-  void show(BuildContext context) {
-    showDialog(context: context, builder: (_) => this);
+  Future show(BuildContext context) {
+    return showDialog(context: context, builder: (_) => this);
   }
 }

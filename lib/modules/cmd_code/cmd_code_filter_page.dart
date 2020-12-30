@@ -63,10 +63,10 @@ class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData> {
         ),
         FilterGroup(
           title: Text('分类'),
-          options: CmdCodeFilterData.obtainData,
-          values: filterData.obtain,
+          options: CmdCodeFilterData.categoryData,
+          values: filterData.category,
           onFilterChanged: (value) {
-            filterData.obtain = value;
+            filterData.category = value;
             update();
           },
         ),

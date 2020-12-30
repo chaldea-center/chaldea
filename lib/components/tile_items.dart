@@ -48,7 +48,7 @@ class SWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: MyColors.setting_tile,
+      color: AppColors.setting_tile,
       child: ListTile(
         leading: icon,
         title: Text(label),
@@ -70,7 +70,7 @@ class SModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: MyColors.setting_tile,
+      color: AppColors.setting_tile,
       child: ListTile(
         leading: icon,
         title: Text(label),
@@ -106,7 +106,7 @@ class SSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: MyColors.setting_tile,
+      color: AppColors.setting_tile,
       child: SwitchListTile(
         secondary: icon,
         title: Text(label),
@@ -172,7 +172,7 @@ class TileGroup extends StatelessWidget {
                 bottom: index == children.length - 1
                     ? Divider.createBorderSide(context, width: 0.5)
                     : BorderSide.none),
-            color: MyColors.setting_tile),
+            ),
         child: children[index],
       ),
     );

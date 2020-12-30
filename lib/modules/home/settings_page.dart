@@ -24,7 +24,6 @@ class _SettingsPageState extends State<SettingsPage> {
     language = S.of(context).language;
     return Scaffold(
       appBar: AppBar(title: Text(S.of(context).settings_tab_name)),
-      backgroundColor: MyColors.setting_bg,
       body: ListView(
         children: <Widget>[
           TileGroup(
@@ -32,6 +31,9 @@ class _SettingsPageState extends State<SettingsPage> {
             children: <Widget>[
               ListTile(
                 title: Text(S.of(context).settings_tutorial),
+                onTap: (){
+                  showToast('咕咕咕咕咕咕');
+                },
               ),
 //              ListTile(
 //                title: Text(S.of(context).server),
@@ -94,15 +96,16 @@ class _SettingsPageState extends State<SettingsPage> {
             children: <Widget>[
               ListTile(
                 title: Text(S.of(context).settings_language),
-                trailing: DropdownButton(
+                trailing: DropdownButton<Language>(
                     underline: Divider(thickness: 0, color: Colors.transparent),
-                    value: S.of(context).language,
-                    items: LangCode.allEntries.keys.map((language) {
+                    value: Language.getLanguage(S.of(context).language) ??
+                        Language.getLanguage(),
+                    items: Language.languages.map((lang) {
                       return DropdownMenuItem(
-                          value: language, child: Text(language));
+                          value: lang, child: Text(lang.name));
                     }).toList(),
-                    onChanged: (language) {
-                      db.userData.language = language;
+                    onChanged: (lang) {
+                      db.userData.language = lang.code;
                       db.onAppUpdate();
                     }),
               ),
@@ -126,35 +129,36 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ],
           ),
-          TileGroup(
-            header: 'Test(debug mode: ${kDebugMode ? 'on' : 'off'})',
-            children: <Widget>[
-              SwitchListTile.adaptive(
-                  title: Text('允许下载'),
-                  value: db.userData.testAllowDownload ?? true,
-                  onChanged: (v) async {
-                    db.userData.testAllowDownload = v;
-                    await db.checkNetwork();
-                    setState(() {});
-                  }),
-              ListTile(
-                title: Text('Master-Detail width'),
-                trailing: DropdownButtonHideUnderline(
-                  child: DropdownButton<double>(
-                    value: db.userData.criticalWidth ?? 768,
-                    items: <DropdownMenuItem<double>>[
-                      DropdownMenuItem(value: 768, child: Text('768')),
-                      DropdownMenuItem(value: 600, child: Text('600'))
-                    ],
-                    onChanged: (v) {
-                      db.userData.criticalWidth = v;
-                      db.onAppUpdate();
-                    },
+          if (kDebugMode)
+            TileGroup(
+              header: 'Test(debug mode: ${kDebugMode ? 'on' : 'off'})',
+              children: <Widget>[
+                SwitchListTile.adaptive(
+                    title: Text('允许下载'),
+                    value: db.userData.testAllowDownload ?? true,
+                    onChanged: (v) async {
+                      db.userData.testAllowDownload = v;
+                      await db.checkNetwork();
+                      setState(() {});
+                    }),
+                ListTile(
+                  title: Text('Master-Detail width'),
+                  trailing: DropdownButtonHideUnderline(
+                    child: DropdownButton<double>(
+                      value: db.userData.criticalWidth ?? 768,
+                      items: <DropdownMenuItem<double>>[
+                        DropdownMenuItem(value: 768, child: Text('768')),
+                        DropdownMenuItem(value: 600, child: Text('600'))
+                      ],
+                      onChanged: (v) {
+                        db.userData.criticalWidth = v;
+                        db.onAppUpdate();
+                      },
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
         ],
       ),
     );

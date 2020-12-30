@@ -14,6 +14,7 @@ export 'image_viewer.dart';
 export 'input_manager.dart';
 export 'int_range_slider.dart';
 export 'logger.dart';
+export 'query.dart';
 export 'split_route.dart';
 export 'tile_items.dart';
 export 'utils.dart';

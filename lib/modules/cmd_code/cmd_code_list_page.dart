@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/components/query.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
 
 import 'cmd_code_detail_page.dart';
@@ -19,7 +20,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
   FocusNode _inputFocusNode = FocusNode();
   ScrollController _scrollController = ScrollController();
 
-  TextFilter __textFilter = TextFilter();
+  Query __textFilter = Query();
 
   @override
   void initState() {
@@ -38,7 +39,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
 
   void beforeFiltrate() {
     filterData.filterString = filterData.filterString.trim();
-    __textFilter.setFilter(filterData.filterString);
+    __textFilter.parse(filterData.filterString);
   }
 
   bool filtrateCmdCode(CommandCode code) {
@@ -61,9 +62,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
     if (!filterData.rarity.singleValueFilter(code.rarity.toString())) {
       return false;
     }
-    if (!filterData.obtain.singleValueFilter(code.obtain, compares: {
-      CmdCodeFilterData.obtainData[1]: (o, v) => v != CmdCodeFilterData.obtainData[0]
-    })) {
+    if (!filterData.category.singleValueFilter(code.category, compare: (o,v)=>v.contains(o))) {
       return false;
     }
     return true;

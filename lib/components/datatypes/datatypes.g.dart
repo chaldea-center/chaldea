@@ -25,6 +25,8 @@ CommandCode _$CommandCodeFromJson(Map<String, dynamic> json) {
       description: $checkedConvert(json, 'description', (v) => v as String),
       descriptionJp: $checkedConvert(json, 'descriptionJp', (v) => v as String),
       obtain: $checkedConvert(json, 'obtain', (v) => v as String),
+      category: $checkedConvert(json, 'category', (v) => v as String),
+      categoryText: $checkedConvert(json, 'categoryText', (v) => v as String),
       characters: $checkedConvert(json, 'characters',
           (v) => (v as List)?.map((e) => e as String)?.toList()),
     );
@@ -48,6 +50,8 @@ Map<String, dynamic> _$CommandCodeToJson(CommandCode instance) =>
       'description': instance.description,
       'descriptionJp': instance.descriptionJp,
       'obtain': instance.obtain,
+      'category': instance.category,
+      'categoryText': instance.categoryText,
       'characters': instance.characters,
     };
 
@@ -79,7 +83,7 @@ CraftEssential _$CraftEssentialFromJson(Map<String, dynamic> json) {
           (v) => (v as List)?.map((e) => e as String)?.toList()),
       description: $checkedConvert(json, 'description', (v) => v as String),
       descriptionJp: $checkedConvert(json, 'descriptionJp', (v) => v as String),
-      category: $checkedConvert(json, 'category', (v) => v as int),
+      category: $checkedConvert(json, 'category', (v) => v as String),
       categoryText: $checkedConvert(json, 'categoryText', (v) => v as String),
       characters: $checkedConvert(json, 'characters',
           (v) => (v as List)?.map((e) => e as String)?.toList()),
@@ -1052,7 +1056,8 @@ User _$UserFromJson(Map<String, dynamic> json) {
   return $checkedNew('User', json, () {
     final val = User(
       name: $checkedConvert(json, 'name', (v) => v as String),
-      server: $checkedConvert(json, 'server', (v) => v as String),
+      server: $checkedConvert(
+          json, 'server', (v) => _$enumDecodeNullable(_$GameServerEnumMap, v)),
       servants: $checkedConvert(
           json,
           'servants',
@@ -1095,7 +1100,7 @@ User _$UserFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'name': instance.name,
-      'server': instance.server,
+      'server': _$GameServerEnumMap[instance.server],
       'servants': instance.servants?.map((k, e) => MapEntry(k.toString(), e)),
       'curSvtPlanNo': instance.curSvtPlanNo,
       'servantPlans': instance.servantPlans
@@ -1104,6 +1109,43 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'items': instance.items,
       'events': instance.events,
     };
+
+T _$enumDecode<T>(
+  Map<T, dynamic> enumValues,
+  dynamic source, {
+  T unknownValue,
+}) {
+  if (source == null) {
+    throw ArgumentError('A value must be provided. Supported values: '
+        '${enumValues.values.join(', ')}');
+  }
+
+  final value = enumValues.entries
+      .singleWhere((e) => e.value == source, orElse: () => null)
+      ?.key;
+
+  if (value == null && unknownValue == null) {
+    throw ArgumentError('`$source` is not one of the supported values: '
+        '${enumValues.values.join(', ')}');
+  }
+  return value ?? unknownValue;
+}
+
+T _$enumDecodeNullable<T>(
+  Map<T, dynamic> enumValues,
+  dynamic source, {
+  T unknownValue,
+}) {
+  if (source == null) {
+    return null;
+  }
+  return _$enumDecode<T>(enumValues, source, unknownValue: unknownValue);
+}
+
+const _$GameServerEnumMap = {
+  GameServer.jp: 'jp',
+  GameServer.cn: 'cn',
+};
 
 ServantStatus _$ServantStatusFromJson(Map<String, dynamic> json) {
   return $checkedNew('ServantStatus', json, () {
@@ -1275,6 +1317,8 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
           (v) => v == null
               ? null
               : GLPKParams.fromJson(v as Map<String, dynamic>)),
+      itemAbundantValue: $checkedConvert(json, 'itemAbundantValue',
+          (v) => (v as List)?.map((e) => e as int)?.toList()),
     );
     return val;
   });
@@ -1293,6 +1337,7 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'craftFilter': instance.craftFilter,
       'cmdCodeFilter': instance.cmdCodeFilter,
       'glpkParams': instance.glpkParams,
+      'itemAbundantValue': instance.itemAbundantValue,
     };
 
 SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
@@ -1411,38 +1456,6 @@ Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
       'traitSpecial': instance.traitSpecial,
     };
 
-T _$enumDecode<T>(
-  Map<T, dynamic> enumValues,
-  dynamic source, {
-  T unknownValue,
-}) {
-  if (source == null) {
-    throw ArgumentError('A value must be provided. Supported values: '
-        '${enumValues.values.join(', ')}');
-  }
-
-  final value = enumValues.entries
-      .singleWhere((e) => e.value == source, orElse: () => null)
-      ?.key;
-
-  if (value == null && unknownValue == null) {
-    throw ArgumentError('`$source` is not one of the supported values: '
-        '${enumValues.values.join(', ')}');
-  }
-  return value ?? unknownValue;
-}
-
-T _$enumDecodeNullable<T>(
-  Map<T, dynamic> enumValues,
-  dynamic source, {
-  T unknownValue,
-}) {
-  if (source == null) {
-    return null;
-  }
-  return _$enumDecode<T>(enumValues, source, unknownValue: unknownValue);
-}
-
 const _$SvtCompareEnumMap = {
   SvtCompare.no: 'no',
   SvtCompare.className: 'className',
@@ -1525,9 +1538,9 @@ CmdCodeFilterData _$CmdCodeFilterDataFromJson(Map<String, dynamic> json) {
           (v) => v == null
               ? null
               : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      obtain: $checkedConvert(
+      category: $checkedConvert(
           json,
-          'obtain',
+          'category',
           (v) => v == null
               ? null
               : FilterGroupData.fromJson(v as Map<String, dynamic>)),
@@ -1546,7 +1559,7 @@ Map<String, dynamic> _$CmdCodeFilterDataToJson(CmdCodeFilterData instance) =>
       'sortReversed': instance.sortReversed,
       'useGrid': instance.useGrid,
       'rarity': instance.rarity,
-      'obtain': instance.obtain,
+      'category': instance.category,
     };
 
 const _$CmdCodeCompareEnumMap = {

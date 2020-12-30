@@ -24,10 +24,13 @@ class _AccountPageState extends State<AccountPage> {
                     return InputCancelOkDialog(
                       title: S.of(context).new_account,
                       errorText: S.of(context).input_error,
-                      validate: (v) => v == v.trim() && !db.userData.users.containsKey(v),
+                      validate: (v) =>
+                          v == v.trim() && !db.userData.users.containsKey(v),
                       onSubmit: (v) {
-                        String newKey = DateTime.now().millisecondsSinceEpoch.toString();
+                        String newKey =
+                            DateTime.now().millisecondsSinceEpoch.toString();
                         db.userData.users[newKey] = User(name: v);
+                        db.userData.curUserKey = newKey;
                         db.onAppUpdate();
                         print('Add account $v(key:$newKey)');
                       },
@@ -50,17 +53,21 @@ class _AccountPageState extends State<AccountPage> {
                   child: Icon(
                     Icons.check,
                     size: 18.0,
-                    color: _isCurUser ? Theme.of(context).primaryColor : Colors.transparent,
+                    color: _isCurUser
+                        ? Theme.of(context).primaryColor
+                        : Colors.transparent,
                   ),
                 ),
-                Text('${user.name} - ${user.server}')
+                Text(user.name)
               ],
             ),
             selected: _isCurUser,
             trailing: PopupMenuButton(
               itemBuilder: (BuildContext context) => [
-                PopupMenuItem(value: 'rename', child: Text(S.of(context).rename)),
-                PopupMenuItem(value: 'delete', child: Text(S.of(context).delete))
+                PopupMenuItem(
+                    value: 'rename', child: Text(S.of(context).rename)),
+                PopupMenuItem(
+                    value: 'delete', child: Text(S.of(context).delete))
               ],
               onSelected: (k) {
                 switch (k) {
@@ -110,7 +117,8 @@ class _AccountPageState extends State<AccountPage> {
     setState(() {
       SimpleCancelOkDialog(
         title: Text('Delete ${db.userData.users[key].name}'),
-        content: canDelete ? null : Text('Cannot delete, at least one account!'),
+        content:
+            canDelete ? null : Text('Cannot delete, at least one account!'),
         onTapOk: canDelete
             ? () {
                 db.userData.users.remove(key);
@@ -123,5 +131,11 @@ class _AccountPageState extends State<AccountPage> {
             : null,
       ).show(context);
     });
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
+    db.saveUserData();
   }
 }

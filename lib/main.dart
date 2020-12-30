@@ -7,11 +7,12 @@ import 'package:chaldea/modules/chaldea.dart';
 import 'package:flutter/foundation.dart';
 
 void main() async {
+  // make sure flutter packages like path_provider is working now
   WidgetsFlutterBinding.ensureInitialized();
-  await db.paths.initRootPath();
-  FileHandler fileHandler = FileHandler(File(db.paths.crashLog));
+  await db.initial();
+  FileHandler crashFileHandler = FileHandler(File(db.paths.crashLog));
   final catcherOptions = CatcherOptions(SilentReportMode(), [
-    fileHandler,
+    crashFileHandler,
     ConsoleHandler(),
     ToastHandler(),
   ]);
@@ -28,17 +29,8 @@ void main() async {
   if (kDebugMode)
     runApp(Chaldea());
   else
-    runZoned(
-      () {
-        Catcher(Chaldea(), releaseConfig: catcherOptions);
-      },
-      zoneSpecification: ZoneSpecification(
-//      print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
-//        // catch all print msg(line)
-//      },
-          ),
-      onError: (error, stackTrace) async {
-        // called in release mode
-      },
-    );
+    Catcher(Chaldea(),
+        releaseConfig: catcherOptions,
+        enableLogger: true,
+        ensureInitialized: true);
 }

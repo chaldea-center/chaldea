@@ -22,7 +22,7 @@ class CommonBuilder {
                   onTap: onTap == null ? null : () => onTap(entry.key),
                   image: Image(image: db.getIconImage(entry.key)),
                   text: entry.key == Item.qp && entry.value is int
-                      ? formatNum(entry.value, 'kilo')
+                      ? formatNumber(entry.value, compact: true)
                       : entry.value.toString(),
                   padding: EdgeInsets.symmetric(horizontal: 3),
                 ),
@@ -59,7 +59,7 @@ Widget buildClassifiedItemList({
                     child: ImageWithText(
                       onTap: onTap == null ? null : () => onTap(item.name),
                       image: Image(image: db.getIconImage(item.name)),
-                      text: formatNum(data[item.name]),
+                      text: formatNumber(data[item.name]),
                       padding: EdgeInsets.only(right: 3),
                     ),
                   ))

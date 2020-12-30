@@ -43,10 +43,10 @@ class _HomePageState extends State<HomePage> {
               items: [
                 BottomNavigationBarItem(
                     icon: Icon(Icons.layers),
-                    title: Text(S.of(context).gallery_tab_name)),
+                    label: S.of(context).gallery_tab_name),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.settings),
-                    title: Text(S.of(context).settings_tab_name)),
+                    label: S.of(context).settings_tab_name),
               ],
               onTap: (index) => setState(() => _curIndex = index),
             ),

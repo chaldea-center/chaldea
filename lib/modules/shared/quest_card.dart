@@ -89,7 +89,7 @@ class QuestCard extends StatelessWidget {
       if (enemy == null) return Container();
       List<String> lines = [];
       for (int i = 0; i < enemy.hp.length; i++) {
-        lines.add(enemy.shownName[i] ?? enemy.name[i]);
+        lines.add(enemy.name[i] ?? enemy.shownName[i]);
         lines.add('${enemy.className[i]} ${enemy.hp[i]}');
       }
       lines.removeWhere((element) => element == null);

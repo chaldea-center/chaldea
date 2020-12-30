@@ -21,7 +21,7 @@ class ServantListPageState extends State<ServantListPage> {
   ScrollController _scrollController = ScrollController();
 
   //temp, calculate once build() called.
-  TextFilter __textFilter = TextFilter();
+  Query __textFilter = Query();
 
   @override
   void initState() {
@@ -45,7 +45,7 @@ class ServantListPageState extends State<ServantListPage> {
   }
 
   void beforeFiltrate() {
-    __textFilter.setFilter(filterData.filterString);
+    __textFilter.parse(filterData.filterString);
   }
 
   bool filtrateServant(Servant svt) {
@@ -72,8 +72,11 @@ class ServantListPageState extends State<ServantListPage> {
       });
       svt?.activeSkills?.forEach((activeSkill) {
         activeSkill.skills.forEach((skill) {
-          searchStrings
-              .addAll([skill.name, skill.nameJp, for (var e in skill.effects) e.description]);
+          searchStrings.addAll([
+            skill.name,
+            skill.nameJp,
+            for (var e in skill.effects) e.description
+          ]);
         });
       });
       if (!__textFilter.match(searchStrings.join('\t'))) {
@@ -91,14 +94,16 @@ class ServantListPageState extends State<ServantListPage> {
       final curSvtState = db.curUser.servants[svt.no]?.curVal;
       if (curSvtState?.favorite != true) return false;
       int lowestSkill = curSvtState.skills.reduce((a, b) => min(a, b));
-      if (!filterData.skillLevel
-          .singleValueFilter(SvtFilterData.skillLevelData[max(lowestSkill - 8, 0)])) {
+      if (!filterData.skillLevel.singleValueFilter(
+          SvtFilterData.skillLevelData[max(lowestSkill - 8, 0)])) {
         return false;
       }
     }
     // class name
-    if (!filterData.className.singleValueFilter(svt.info.className,
-        compares: {'Beast': (o, v) => v.startsWith(o), 'Caster': (o, v) => v.contains(o)})) {
+    if (!filterData.className.singleValueFilter(svt.info.className, compares: {
+      'Beast': (o, v) => v.startsWith(o),
+      'Caster': (o, v) => v.contains(o)
+    })) {
       return false;
     }
     // single value
@@ -122,7 +127,8 @@ class ServantListPageState extends State<ServantListPage> {
     // gender
     if (!filterData.gender.singleValueFilter(svt.info.gender, compares: {
       '其他': (optionKey, value) =>
-          value != SvtFilterData.genderData[0] && value != SvtFilterData.genderData[1]
+          value != SvtFilterData.genderData[0] &&
+          value != SvtFilterData.genderData[1]
     })) {
       return false;
     }
@@ -139,8 +145,10 @@ class ServantListPageState extends State<ServantListPage> {
     // traitSpecial
     final a = SvtFilterData.traitSpecialData;
     if (filterData.traitSpecial.options.containsValue(true) &&
-        !(filterData.traitSpecial.options[a[0]] == true && !svt.info.isWeakToEA) &&
-        !(filterData.traitSpecial.options[a[1]] == true && svt.info.traits.isEmpty)) {
+        !(filterData.traitSpecial.options[a[0]] == true &&
+            !svt.info.isWeakToEA) &&
+        !(filterData.traitSpecial.options[a[1]] == true &&
+            svt.info.traits.isEmpty)) {
       return false;
     }
     return true;
@@ -182,8 +190,10 @@ class ServantListPageState extends State<ServantListPage> {
                             filled: true,
                             contentPadding: EdgeInsets.zero,
                             border: OutlineInputBorder(
-                                borderSide: const BorderSide(width: 0, style: BorderStyle.none),
-                                borderRadius: BorderRadius.all(Radius.circular(10))),
+                                borderSide: const BorderSide(
+                                    width: 0, style: BorderStyle.none),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                             fillColor: Colors.white,
                             hintText: 'Search',
                             prefixIcon: Icon(Icons.search, size: 20),
@@ -192,8 +202,8 @@ class ServantListPageState extends State<ServantListPage> {
                               icon: Icon(Icons.clear, size: 20),
                               onPressed: () {
                                 setState(() {
-                                  WidgetsBinding.instance
-                                      .addPostFrameCallback((_) => _inputController.clear());
+                                  WidgetsBinding.instance.addPostFrameCallback(
+                                      (_) => _inputController.clear());
                                   filterData.filterString = '';
                                 });
                               },
@@ -226,8 +236,8 @@ class ServantListPageState extends State<ServantListPage> {
                   icon: Icon(Icons.filter_list),
                   onPressed: () => FilterPage.show(
                       context: context,
-                      builder: (context) =>
-                          ServantFilterPage(filterData: filterData, onChanged: onFilterChanged)),
+                      builder: (context) => ServantFilterPage(
+                          filterData: filterData, onChanged: onFilterChanged)),
                 )
               ],
             ),
@@ -246,14 +256,18 @@ class ServantListPageState extends State<ServantListPage> {
     beforeFiltrate();
     db.gameData.servants.forEach((no, svt) {
       if (filterData.favorite == 0 ||
-          filterData.favorite == ((db.curUser.servants[no]?.curVal?.favorite ?? false) ? 1 : 2)) {
+          filterData.favorite ==
+              ((db.curUser.servants[no]?.curVal?.favorite ?? false) ? 1 : 2)) {
         if (filtrateServant(svt)) {
           shownList.add(svt);
         }
       }
     });
-    shownList.sort((a, b) => Servant.compare(a, b, filterData.sortKeys, filterData.sortReversed));
-    return filterData.useGrid ? _buildGridView(shownList) : _buildListView(shownList);
+    shownList.sort((a, b) =>
+        Servant.compare(a, b, filterData.sortKeys, filterData.sortReversed));
+    return filterData.useGrid
+        ? _buildGridView(shownList)
+        : _buildListView(shownList);
   }
 
   Widget _buildListView(List<Servant> shownList) {
@@ -261,9 +275,15 @@ class ServantListPageState extends State<ServantListPage> {
         physics: ScrollPhysics(),
         controller: _scrollController,
         separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
-        itemCount: shownList.length,
+        itemCount: shownList.length + 1,
         itemBuilder: (context, index) {
-          final svt = shownList[index];
+          if (index == 0) {
+            return Center(
+              child: Text('Total ${shownList.length} results',
+                  style: Theme.of(context).tooltipTheme.textStyle),
+            );
+          }
+          final svt = shownList[index - 1];
           final status = db.curUser.servants[svt.no];
           String statusText = '';
           if (status?.curVal?.favorite == true) {
@@ -296,7 +316,8 @@ class ServantListPageState extends State<ServantListPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       AutoSizeText('${svt.info.nameJp}', maxLines: 1),
-                      Text('No.${svt.no} ${svt.info.className}  $additionalText')
+                      Text(
+                          'No.${svt.no} ${svt.info.className}  $additionalText')
                     ],
                   ),
                 ),
@@ -305,7 +326,8 @@ class ServantListPageState extends State<ServantListPage> {
             ),
             trailing: Icon(Icons.arrow_forward_ios),
             onTap: () {
-              SplitRoute.popAndPush(context, builder: (context) => ServantDetailPage(svt));
+              SplitRoute.popAndPush(context,
+                  builder: (context) => ServantDetailPage(svt));
             },
           );
         });
@@ -344,7 +366,8 @@ class ServantListPageState extends State<ServantListPage> {
                 alignment: AlignmentDirectional.bottomStart,
                 padding: EdgeInsets.fromLTRB(4, 0, 8, 0),
                 onTap: () {
-                  SplitRoute.popAndPush(context, builder: (context) => ServantDetailPage(svt));
+                  SplitRoute.popAndPush(context,
+                      builder: (context) => ServantDetailPage(svt));
                 },
               ),
             ),

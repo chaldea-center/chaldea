@@ -18,6 +18,8 @@ class CommandCode {
   String description;
   String descriptionJp;
   String obtain;
+  String category;
+  String categoryText;
   List<String> characters;
 
   CommandCode({
@@ -35,6 +37,8 @@ class CommandCode {
     this.description,
     this.descriptionJp,
     this.obtain,
+    this.category,
+    this.categoryText,
     this.characters,
   });
 

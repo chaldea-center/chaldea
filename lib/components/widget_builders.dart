@@ -1,3 +1,4 @@
+// @dart=2.12
 import 'package:flutter/material.dart';
 
 typedef ValueStatefulWidgetBuilder<T> = Widget Function(
@@ -7,9 +8,9 @@ class ValueStatefulBuilder<T> extends StatefulWidget {
   final T value;
   final ValueStatefulWidgetBuilder<T> builder;
 
-  const ValueStatefulBuilder({Key key, this.value, @required this.builder})
-      : assert(builder != null),
-        super(key: key);
+  const ValueStatefulBuilder(
+      {Key? key, required this.value, required this.builder})
+      : super(key: key);
 
   @override
   _ValueStatefulBuilderState<T> createState() =>
@@ -34,9 +35,8 @@ class KeepAliveBuilder extends StatefulWidget {
   final bool wantKeepAlive;
 
   const KeepAliveBuilder(
-      {Key key, @required this.builder, this.wantKeepAlive = true})
-      : assert(builder != null && wantKeepAlive != null),
-        super(key: key);
+      {Key? key, required this.builder, this.wantKeepAlive = true})
+      : super(key: key);
 
   @override
   _KeepAliveBuilderState createState() => _KeepAliveBuilderState(wantKeepAlive);
@@ -61,7 +61,7 @@ class _KeepAliveBuilderState extends State<KeepAliveBuilder>
 class AutoUnfocusBuilder extends StatelessWidget {
   final WidgetBuilder builder;
 
-  AutoUnfocusBuilder({Key key, this.builder}) : super(key: key);
+  AutoUnfocusBuilder({Key? key, required this.builder}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

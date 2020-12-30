@@ -81,7 +81,7 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
 
   Widget _buildDialog({Widget title, Widget content, List<Widget> actions = const []}) {
     return AlertDialog(
-      backgroundColor: MyColors.setting_bg,
+      backgroundColor: AppColors.setting_bg,
       title: Center(child: title),
       titlePadding: EdgeInsets.fromLTRB(24, 12, 24, 12),
       contentPadding: EdgeInsets.zero,

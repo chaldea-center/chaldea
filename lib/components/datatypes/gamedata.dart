@@ -26,7 +26,7 @@ class GameData {
     this.svtQuests,
     this.glpk,
   }) {
-    version ??= '0';
+    version ??= '';
     servants ??= {};
     crafts ??= {};
     cmdCodes ??= {};

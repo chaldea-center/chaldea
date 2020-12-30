@@ -16,7 +16,8 @@ class ItemCostServantPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String num2str(int n) => formatNum(n ?? 0, 'kilo', 10000);
+    // print(db.itemStat.svtItemDetail.allCountBySvt.skill);
+    String num2str(int n) => formatNumber(n ?? 0, compact: true, minVal: 10000);
     return StreamBuilder<ItemStatistics>(
         initialData: db.itemStat,
         stream: db.itemStat.onUpdated.stream,
@@ -43,7 +44,8 @@ class ItemCostServantPage extends StatelessWidget {
                 children: <Widget>[
                   CustomTile(
                     title: Text(['灵基再临', '技能升级', '灵衣开放'][i]),
-                    trailing: Text(formatNum(counts.values[i][itemKey], 'decimal', 10000)),
+                    trailing: Text(
+                        formatNumber(counts.values[i][itemKey], minVal: 10000)),
                   ),
                   _buildSvtIconGrid(context, details.values[i][itemKey],
                       highlight: favorite == false),
@@ -63,13 +65,15 @@ class ItemCostServantPage extends StatelessWidget {
         });
   }
 
-  Widget _buildSvtIconGrid(BuildContext context, Map<int, int> src, {bool highlight = false}) {
+  Widget _buildSvtIconGrid(BuildContext context, Map<int, int> src,
+      {bool highlight = false}) {
     List<Widget> children = [];
     var sortedSvts = sortSvts(src.keys.toList());
     sortedSvts.forEach((svtNo) {
       final svt = db.gameData.servants[svtNo];
       final num = src[svtNo];
-      bool showShadow = highlight && db.curUser.servants[svtNo]?.curVal?.favorite == true;
+      bool showShadow =
+          highlight && db.curUser.servants[svtNo]?.curVal?.favorite == true;
       if (num > 0) {
         children.add(
           Padding(
@@ -78,7 +82,10 @@ class ItemCostServantPage extends StatelessWidget {
               decoration: showShadow
                   ? BoxDecoration(
                       boxShadow: [
-                        BoxShadow(color: Colors.redAccent, blurRadius: 1.5, spreadRadius: 2),
+                        BoxShadow(
+                            color: Colors.redAccent,
+                            blurRadius: 1.5,
+                            spreadRadius: 2),
                       ],
                       borderRadius: BorderRadius.all(Radius.circular(3)),
                       shape: BoxShape.rectangle,
@@ -86,10 +93,11 @@ class ItemCostServantPage extends StatelessWidget {
                   : null,
               child: ImageWithText(
                 image: Image(image: db.getIconImage(svt.icon)),
-                text: formatNum(num, 'kilo', 10000),
+                text: formatNumber(num, compact: true, minVal: 10000),
                 padding: EdgeInsets.only(right: 5, bottom: 16),
                 onTap: () {
-                  SplitRoute.push(context, builder: (context) => ServantDetailPage(svt));
+                  SplitRoute.push(context,
+                      builder: (context) => ServantDetailPage(svt));
                 },
               ),
             ),
@@ -110,7 +118,8 @@ class ItemCostServantPage extends StatelessWidget {
     }
   }
 
-  List<Widget> buildSvtList(BuildContext context, SvtParts<Map<String, Map<int, int>>> stat) {
+  List<Widget> buildSvtList(
+      BuildContext context, SvtParts<Map<String, Map<int, int>>> stat) {
     List<Widget> children = [];
     sortSvts(stat.summation[itemKey].keys.toList()).forEach((svtNo) {
       final allNum = stat.summation[itemKey][svtNo];
@@ -132,7 +141,8 @@ class ItemCostServantPage extends StatelessWidget {
         ),
         trailing: Icon(Icons.arrow_forward_ios),
         onTap: () {
-          SplitRoute.push(context, builder: (context) => ServantDetailPage(svt));
+          SplitRoute.push(context,
+              builder: (context) => ServantDetailPage(svt));
         },
       ));
     });
@@ -153,8 +163,8 @@ class ItemCostServantPage extends StatelessWidget {
       sortKeys = [SvtCompare.rarity, SvtCompare.className, SvtCompare.no];
       sortReversed = [true, false, true];
     }
-    svts.sort((a, b) =>
-        Servant.compare(db.gameData.servants[a], db.gameData.servants[b], sortKeys, sortReversed));
+    svts.sort((a, b) => Servant.compare(db.gameData.servants[a],
+        db.gameData.servants[b], sortKeys, sortReversed));
     return svts;
   }
 }

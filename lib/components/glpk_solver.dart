@@ -94,8 +94,12 @@ class GLPKSolver {
 //        print('modified params: ${json.encode(params2)}');
         String resultString = await flutterWebViewPlugin.evalJavascript(
             '''solve_glpk( `${json.encode(data2)}`,`${json.encode(params2)}`);''');
-        final result = json.decode(resultString);
+        // TODO: why returned JSON stringify format uncertainly
+        resultString =
+            (resultString ?? '').replaceAll(RegExp(r'(^"+)|("+$)'), '');
+        resultString = resultString.replaceAll('\\"', '"');
         logger.v('result: $resultString');
+        final result = json.decode(resultString);
         if (result?.isNotEmpty != true) {
           throw 'evalJavascript return null!';
         }
@@ -156,7 +160,9 @@ class GLPKSolver {
       double minAPRateVal = double.infinity;
       for (int j = 0; j < data.colNames.length; j++) {
         double v = data.matrix[row][j];
-        if (!removeCols.contains(data.colNames[j]) && v > 0 && v < minAPRateVal) {
+        if (!removeCols.contains(data.colNames[j]) &&
+            v > 0 &&
+            v < minAPRateVal) {
           minApRateCol = j;
           minAPRateVal = v;
         }

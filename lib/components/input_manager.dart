@@ -2,7 +2,6 @@ import 'package:chaldea/components/components.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 
 class InputComponent<T> {
   T data;
@@ -88,11 +87,9 @@ class NumberInputFormatter extends TextInputFormatter {
     if (value == null) {
       return newValue;
     }
-    String newText = kThousandFormatter.format(value);
+    String newText = formatNumber(value);
     return newValue.copyWith(
         text: newText,
         selection: TextSelection.collapsed(offset: newText.length));
   }
 }
-
-final kThousandFormatter = NumberFormat('###,###.###');

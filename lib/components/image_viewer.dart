@@ -1,10 +1,11 @@
+// @dart=2.12
 import 'dart:math' show min;
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 import 'config.dart';
 
@@ -13,15 +14,15 @@ typedef Widget UriImageWidgetBuilder(BuildContext context, String url);
 class FullScreenImageSlider extends StatefulWidget {
   final List<String> imgUrls;
   final int initialPage;
-  final bool enableDownload;
-  final UriImageWidgetBuilder placeholder;
+  final bool? enableDownload;
+  final UriImageWidgetBuilder? placeholder;
 
   const FullScreenImageSlider(
-      {Key key,
-      this.imgUrls,
-      this.initialPage,
-      this.enableDownload,
-      this.placeholder})
+      {Key? key,
+        required this.imgUrls,
+        this.initialPage = 0,
+        this.enableDownload,
+        this.placeholder})
       : super(key: key);
 
   @override
@@ -29,7 +30,7 @@ class FullScreenImageSlider extends StatefulWidget {
 }
 
 class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
-  int _curIndex;
+  int _curIndex = 0;
 
   @override
   void initState() {
@@ -52,67 +53,70 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
             Navigator.of(context).pop(_curIndex);
             return false;
           },
-          child: Swiper(
+          child: CarouselSlider.builder(
+            itemCount: widget.imgUrls.length,
             itemBuilder: (BuildContext context, int index) => GestureDetector(
                 onTap: () => Navigator.of(context).pop(_curIndex),
-                child: MyCachedImage(
+                child: CachedImageWidget(
                   url: widget.imgUrls[index],
                   enableDownload: widget.enableDownload,
                   imageBuilder: (context, url) => CachedNetworkImage(
                     imageUrl: url,
-                    placeholder: MyCachedImage.defaultIndicatorBuilder,
+                    placeholder: CachedImageWidget.defaultIndicatorBuilder,
                     errorWidget: (context, url, error) => Center(
                       child: Text('Error loading network image.\n$error'),
                     ),
                   ),
                   placeholder: widget.placeholder,
                 )),
-            itemCount: widget.imgUrls.length,
-            autoplay: false,
-            loop: false,
-            index: _curIndex,
-            onIndexChanged: (newIndex) => _curIndex = newIndex,
+            options: CarouselOptions(
+                autoPlay: false,
+                height: MediaQuery.of(context).size.height,
+                viewportFraction: 1,
+                enableInfiniteScroll: false,
+                initialPage: _curIndex,
+                onPageChanged: (newIndex, _) => _curIndex = newIndex),
           )),
     );
   }
 }
 
-class MyCachedImage extends StatefulWidget {
+class CachedImageWidget extends StatefulWidget {
   final String url;
-  final bool enableDownload;
+  final bool? enableDownload;
   final UriImageWidgetBuilder imageBuilder;
-  final UriImageWidgetBuilder placeholder;
+  final UriImageWidgetBuilder? placeholder;
 
   static get defaultIndicatorBuilder {
     return (BuildContext context, String url) => LayoutBuilder(
-          builder: (context, constraints) {
-            final width = 0.3 *
-                min(constraints.biggest.width, constraints.biggest.height);
-            return Center(
-                child: SizedBox(
+      builder: (context, constraints) {
+        final width = 0.3 *
+            min(constraints.biggest.width, constraints.biggest.height);
+        return Center(
+            child: SizedBox(
               width: width,
               height: width,
               child: CircularProgressIndicator(),
             ));
-          },
-        );
+      },
+    );
   }
 
-  const MyCachedImage(
-      {Key key,
-      this.url,
-      this.enableDownload,
-      this.imageBuilder,
-      this.placeholder})
+  const CachedImageWidget(
+      {Key? key,
+        required this.url,
+        this.enableDownload,
+        required this.imageBuilder,
+        this.placeholder})
       : super(key: key);
 
   @override
-  _MyCachedImageState createState() => _MyCachedImageState();
+  _CachedImageWidgetState createState() => _CachedImageWidgetState();
 }
 
-class _MyCachedImageState extends State<MyCachedImage> {
-  final manager = DefaultCacheManager();
-  bool cached;
+class _CachedImageWidgetState extends State<CachedImageWidget> {
+  final manager = DefaultCacheManager(); //singleton
+  bool? cached;
 
   @override
   void initState() {
@@ -120,7 +124,7 @@ class _MyCachedImageState extends State<MyCachedImage> {
     manager.getFileFromCache(widget.url).then((info) {
       if (mounted) {
         setState(() {
-          cached = info != null;
+          cached = info != null; // ignore: unnecessary_null_comparison
         });
       }
     });
@@ -131,10 +135,10 @@ class _MyCachedImageState extends State<MyCachedImage> {
     return cached == null
         ? Container()
         : cached == true ||
-                (widget.enableDownload ?? db.runtimeData.enableDownload ?? true)
-            ? widget.imageBuilder(context, widget.url)
-            : widget.placeholder == null
-                ? Center(child: Text('Downloading disabled.'))
-                : widget.placeholder(context, widget.url);
+        (widget.enableDownload ?? db.runtimeData.enableDownload ?? true)
+        ? widget.imageBuilder(context, widget.url)
+        : widget.placeholder == null
+        ? Center(child: Text('Downloading disabled.'))
+        : widget.placeholder!(context, widget.url);
   }
 }

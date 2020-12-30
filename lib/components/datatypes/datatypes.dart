@@ -16,6 +16,7 @@ import 'package:meta/meta.dart';
 import '../config.dart' show db;
 import '../constants.dart';
 import '../logger.dart';
+import '../utils.dart';
 
 part 'cmd_code.dart';
 

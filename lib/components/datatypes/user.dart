@@ -5,7 +5,7 @@ part of datatypes;
 class User {
   @JsonKey(nullable: false)
   String name;
-  String server;
+  GameServer server;
 
   // plans
 

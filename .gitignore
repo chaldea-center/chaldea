@@ -1,8 +1,9 @@
-# custom
+# Custom
 res/data/dataset.zip
 /res/img/launcher_icon/
 /lib/test.dart
 /adb
+/lib/generated_plugin_registrant.dart
 
 # Miscellaneous
 *.class
@@ -28,6 +29,7 @@ res/data/dataset.zip
 
 # Flutter/Dart/Pub related
 **/doc/api/
+**/ios/Flutter/.last_build_id
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies

@@ -25,7 +25,7 @@ class CraftEssential {
   List<String> eventSkills;
   String description;
   String descriptionJp;
-  int category;
+  String category;
   String categoryText;
   List<String> characters;
   int bond;

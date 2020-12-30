@@ -49,7 +49,7 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
       children: [
         ListTile(
           leading: Image(image: db.getIconImage(Item.qp)),
-          title: Text(kThousandFormatter.format(allItemCost[Item.qp] ?? 0)),
+          title: Text(formatNumber(allItemCost[Item.qp] ?? 0)),
           onTap: () => SplitRoute.push(context, builder: (context) => ItemDetailPage(Item.qp)),
         ),
         buildClassifiedItemList(

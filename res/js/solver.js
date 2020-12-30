@@ -128,11 +128,7 @@ function solve_glpk(data_str, params_str) {
     var t1 = new Date().getTime();
     log(`Time: ${(t1 - t0) / 1000} s.`);
     log('---------- End Summary ----------');
-    return {
-        "totalCost": total_cost,
-        "totalNum": total_num,
-        "variables": variables
-    }
+    return JSON.stringify({"totalCost": total_cost,"totalNum": total_num,"variables": variables})
 }
 
 function add_log(a) {

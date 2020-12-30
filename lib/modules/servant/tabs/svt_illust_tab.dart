@@ -67,7 +67,7 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
           child: TabBarView(
             controller: _tabController,
             children: List.generate(svt.info.illustrations.length, (index) {
-              return MyCachedImage(
+              return CachedImageWidget(
                 url: imageUrls[index],
                 imageBuilder: (context, url) => GestureDetector(
                   onTap: () async {
@@ -86,7 +86,7 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
                   },
                   child: CachedNetworkImage(
                     imageUrl: url,
-                    placeholder: MyCachedImage.defaultIndicatorBuilder,
+                    placeholder: CachedImageWidget.defaultIndicatorBuilder,
                   ),
                 ),
                 placeholder: getPlaceholder(),

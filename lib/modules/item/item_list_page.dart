@@ -158,7 +158,7 @@ class _ItemListTabState extends State<ItemListTab> {
       if (item.category == widget.category || key == qpKey) {
         final node = FocusNode();
         final textController =
-            TextEditingController(text: kThousandFormatter.format(db.curUser.items[key] ?? 0));
+            TextEditingController(text: formatNumber(db.curUser.items[key] ?? 0));
         inputsManager.components
             .add(InputComponent(data: item, controller: textController, focusNode: node));
       }
@@ -223,7 +223,7 @@ class _ItemListTabState extends State<ItemListTab> {
               controller: component.controller,
               focusNode: component.focusNode,
               textAlign: TextAlign.center,
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next,
               decoration: InputDecoration(counterText: ''),
               inputFormatters: [
@@ -238,7 +238,7 @@ class _ItemListTabState extends State<ItemListTab> {
               onTap: () {
                 component.onTap(context);
               },
-              onSubmitted: (s) {
+              onEditingComplete: () {
                 inputsManager.moveNextFocus(context, component);
               },
             ),
@@ -253,13 +253,13 @@ class _ItemListTabState extends State<ItemListTab> {
               Expanded(
                   flex: 1,
                   child: AutoSizeText(
-                    '共需 ${formatNum(statistics.svtItems[itemKey], "decimal")}',
+                    '共需 ${formatNumber(statistics.svtItems[itemKey])}',
                     maxLines: 1,
                   )),
               Expanded(
                   flex: 1,
                   child: AutoSizeText(
-                    '剩余 ${formatNum(statistics.leftItems[itemKey], "decimal")}',
+                    '剩余 ${formatNumber(statistics.leftItems[itemKey])}',
                     maxLines: 1,
                     style: highlightStyle,
                     minFontSize: 10,

@@ -7,7 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:json_patch/json_patch.dart';
-import 'package:path/path.dart' show basename;
+import 'package:share/share.dart';
 
 class DatasetManagePage extends StatefulWidget {
   @override
@@ -23,7 +23,6 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
   @override
   void initState() {
     super.initState();
-    updateCachedDataFile();
   }
 
   @override
@@ -62,7 +61,18 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                     content: Text('Backup userdata to\n${db.paths.savePath}'),
                     onTapOk: () async {
                       final fp = db.backupUserdata();
-                      showInformDialog(context, title: 'Backup success', content: fp);
+                      showInformDialog(context,
+                          title: 'Backup success',
+                          content: fp,
+                          actions: [
+                            FlatButton(
+                              child: Text('Share'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                Share.shareFiles([fp]);
+                              },
+                            ),
+                          ]);
                     },
                   ).show(context);
                 },
@@ -71,10 +81,12 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 title: Text('Import userdata'),
                 onTap: () async {
                   try {
-                    final file = await FilePicker.getFile();
-                    if (file != null) {
-                      db.userData = UserData.fromJson(json.decode(file.readAsStringSync()));
-                      showToast('successfully imported userdata:\n${file.path}');
+                    final result = (await FilePicker.platform.pickFiles());
+                    if (result != null) {
+                      final path = result.files.single.path;
+                      db.userData = UserData.fromJson(
+                          json.decode(File(path).readAsStringSync()));
+                      showToast('successfully imported userdata:\n$path');
                       db.saveUserData();
                     }
                   } catch (e) {
@@ -98,8 +110,9 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                     title: Text('Confirm'),
                     content: Text('reload default dataset?'),
                     onTapOk: () async {
-                      showToast('reloading gamedata...', toastLength: Toast.LENGTH_LONG);
-                      await db.loadZipAssets(kDefaultDatasetAssetKey, force: true);
+                      showToast('reloading gamedata...',
+                          toastLength: Toast.LENGTH_LONG);
+                      await db.loadZipAssets(kDatasetAssetKey, force: true);
                       if (db.loadGameData()) {
                         showToast('gamedata reloaded.');
                       }
@@ -112,11 +125,12 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 title: Text('Download icons'),
                 onTap: () {
                   db.gameData.icons.forEach((name, icon) async {
-                    final filepath = join(db.paths.gameIconDir, icon.originName);
+                    final filepath =
+                        join(db.paths.gameIconDir, icon.originName);
                     if (!File(filepath).existsSync()) {
                       try {
-                        Response response = await _dio.download(
-                            icon.url, join(db.paths.gameIconDir, icon.originName));
+                        Response response = await _dio.download(icon.url,
+                            join(db.paths.gameIconDir, icon.originName));
                         if (response.statusCode != 200) {
                           print('error $name, response: $response');
                           showToast('$name download failed');
@@ -139,7 +153,8 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                     title: Text('Confirm'),
                     content: Text('clear then reload default dataset?'),
                     onTapOk: () async {
-                      showToast('clear & reloading', toastLength: Toast.LENGTH_LONG);
+                      showToast('clear & reloading',
+                          toastLength: Toast.LENGTH_LONG);
                       await db.clearData(game: true);
                       setState(() {});
                       showToast('Default dataset loaded.');
@@ -151,13 +166,16 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 title: Text('Import gamedata(zip/json)'),
                 onTap: () async {
                   try {
-                    final file = await FilePicker.getFile();
-                    if (file != null) {
+                    final result = await FilePicker.platform.pickFiles();
+                    if (result != null) {
+                      final file = File(result.files.single.path);
                       if (file.path.toLowerCase().endsWith('.zip')) {
-                        db.extractZip(file.readAsBytesSync().cast<int>(), db.paths.gameDataDir);
+                        db.extractZip(file.readAsBytesSync().cast<int>(),
+                            db.paths.gameDataDir);
                         db.loadGameData();
                       } else if (file.path.toLowerCase().endsWith('.json')) {
-                        final newData = GameData.fromJson(jsonDecode(file.readAsStringSync()));
+                        final newData = GameData.fromJson(
+                            jsonDecode(file.readAsStringSync()));
                         if (newData.version != '0') {
                           db.gameData = newData;
                         } else {
@@ -166,54 +184,20 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                       } else {
                         throw 'unsupported file type';
                       }
-                      showInformDialog(context, title: 'Import dataset successfully');
+                      showInformDialog(context,
+                          title: 'Import dataset successfully');
                     }
                   } catch (e) {
                     showInformDialog(context,
-                        title: 'Import gamedata failed!', content: e.toString());
+                        title: 'Import gamedata failed!',
+                        content: e.toString());
                   }
                 },
               ),
             ],
           ),
           TileGroup(
-            header: '已下载',
-            children: cachedFiles.isEmpty
-                ? [ListTile(title: Text('No cached datasets'))]
-                : <Widget>[
-                    for (var filename in cachedFiles.keys)
-                      ListTile(
-                        title: Text(filename),
-                        trailing: PopupMenuButton(
-                          itemBuilder: (context) => [
-                            PopupMenuItem(value: 'delete', child: Text(S.of(context).delete)),
-                            PopupMenuItem(value: 'extract', child: Text('Extract'))
-                          ],
-                          onSelected: (v) async {
-                            switch (v) {
-                              case 'delete':
-                                File(cachedFiles[filename]).deleteSync();
-                                setState(() {
-                                  updateCachedDataFile();
-                                });
-                                showToast('$filename deleted.');
-                                break;
-                              case 'extract':
-                                db.extractZip(
-                                    File(cachedFiles[filename]).readAsBytesSync().cast<int>(),
-                                    db.paths.gameDataDir);
-                                db.loadGameData();
-                                setState(() {});
-                                showToast('$filename extracted.');
-                                break;
-                            }
-                          },
-                        ),
-                      )
-                  ],
-          ),
-          TileGroup(
-            header: 'Online Versions',
+            header: 'Download',
             children: <Widget>[
               ListTile(
                 title: Text('Server'),
@@ -242,29 +226,12 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                     }),
               ),
               ListTile(
-                title: Center(child: Text('Check Online Versions')),
-                onTap: checkOnlineVersions,
+                title: Center(child: Text('Download Data')),
+                onTap: () {
+                  db.downloadGameData();
+                  db.onAppUpdate();
+                },
               ),
-              for (var version in onlineVersions)
-                ListTile(
-                  title: Text(version),
-                  trailing: Wrap(
-                    children: <Widget>[
-                      IconButton(
-                          icon: Icon(Icons.file_download),
-                          tooltip: 'Full',
-                          onPressed: () {
-                            downloadVersion(version);
-                          }),
-                      IconButton(
-                          icon: Icon(Icons.library_add),
-                          tooltip: 'Patch',
-                          onPressed: () {
-                            patchVersion(version);
-                          })
-                    ],
-                  ),
-                )
             ],
           )
         ],
@@ -272,69 +239,17 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
     );
   }
 
-  void updateCachedDataFile() {
-    cachedFiles.clear();
-    Directory(db.paths.datasetCacheDir).listSync(followLinks: false).forEach((entry) {
-      if (entry.path.toLowerCase().endsWith('.zip')) {
-        cachedFiles[basename(entry.path)] = entry.path;
-      }
-    });
-  }
-
-  void checkOnlineVersions() async {
-    try {
-      Response response = await _dio.get('/check_versions');
-      if (response.statusCode == 200) {
-        print('receive data: ${response.data}.');
-        setState(() {
-          onlineVersions = List.castFrom(response.data);
-          onlineVersions.sort();
-          onlineVersions = onlineVersions.reversed.toList();
-        });
-        showToast('Online version list loaded');
-      } else {
-        showToast('server error: ${response.statusCode}');
-        print('---error, response---\n$response\n----------');
-      }
-    } catch (e) {
-      showToast('check online versions failed.');
-      print('check online versions error:\n$e');
-    }
-  }
-
-  void downloadVersion(String version) async {
-    try {
-      Response response = await _dio.get('/download',
-          queryParameters: {'version': version},
-          options: Options(responseType: ResponseType.bytes));
-      print(response.headers);
-      if (response.statusCode == 200) {
-        File file = File(join(db.paths.datasetCacheDir, 'dataset-$version.zip'));
-        var raf = file.openSync(mode: FileMode.write);
-        raf.writeFromSync(response.data);
-        raf.closeSync();
-        setState(() {
-          updateCachedDataFile();
-        });
-        showToast('Version $version downloaded');
-      }
-    } catch (e) {
-      print('error download:\n$e');
-      showToast('error download: $e');
-      rethrow;
-    }
-  }
-
   void patchVersion(String version) async {
     try {
-      Response response =
-          await _dio.get('/patch', queryParameters: {'from': db.gameData.version, 'to': version});
+      Response response = await _dio.get('/patch',
+          queryParameters: {'from': db.gameData.version, 'to': version});
       if (response.statusCode == 200) {
         var patch = response.data;
         print(
             'download patch: ${patch.toString().substring(0, min(200, patch.toString().length))}');
-        final patched =
-            JsonPatch.apply(db.getJsonFromFile(db.paths.gameDataFilepath), List.castFrom(patch));
+        final patched = JsonPatch.apply(
+            db.getJsonFromFile(db.paths.gameDataFilepath),
+            List.castFrom(patch));
         File file = File(db.paths.gameDataFilepath);
         var raf = file.openSync(mode: FileMode.write);
         raf.writeStringSync(json.encode(patched));

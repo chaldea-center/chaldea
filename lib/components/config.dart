@@ -6,6 +6,7 @@ import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -36,12 +37,12 @@ class Database {
   PathManager get paths => _paths;
 
   // initialization
-  Future<Null> initial() async {
+  Future<void> initial() async {
     await paths.initRootPath();
-    Directory(paths.datasetCacheDir).createSync(recursive: true);
+    // Directory(paths.datasetCacheDir).createSync(recursive: true);
   }
 
-  Future<Null> checkNetwork() async {
+  Future<void> checkNetwork() async {
     final result = await Connectivity().checkConnectivity();
     runtimeData.enableDownload = (!kDebugMode ||
             db.userData.testAllowDownload) &&
@@ -79,6 +80,34 @@ class Database {
     }
   }
 
+  Future<void> downloadGameData([String url]) async {
+    url ??= db.userData.serverDomain + kDatasetServerPath;
+    Dio _dio = Dio();
+    try {
+      Response response = await _dio.get(url,
+          options: Options(responseType: ResponseType.bytes));
+      print(response.headers);
+      if (response.statusCode == 200) {
+        File file = File(join(db.paths.tempPath, 'dataset.zip'));
+        var raf = file.openSync(mode: FileMode.write);
+        raf.writeFromSync(response.data);
+        raf.closeSync();
+        extractZip(response.data, db.paths.gameDataDir);
+        if (db.loadGameData()) {
+          logger.i('Data downloaded! Version: ${db.gameData.version}');
+          showToast('Data downloaded! Version: ${db.gameData.version}');
+        } else {
+          logger.i('Invalid data content! Version: ${db.gameData.version}');
+          showToast('Invalid data content! Version: ${db.gameData.version}');
+        }
+      }
+    } catch (e) {
+      logger.w('Downloading error:\n$e');
+      showToast('Downloading error: $e');
+      rethrow;
+    }
+  }
+
   Future<Null> loadZipAssets(String assetKey,
       {String extractDir, bool force = false}) {
     extractDir ??= paths.gameDataDir;
@@ -113,7 +142,7 @@ class Database {
     if (game) {
       // to clear all history version or not?
       _deleteFileOrDirectory(paths.gameDataDir);
-      await loadZipAssets(kDefaultDatasetAssetKey);
+      await loadZipAssets(kDatasetAssetKey);
       loadGameData();
     }
   }
@@ -160,13 +189,13 @@ class Database {
     } on FileSystemException catch (e) {
       if (k != null) {
         result = k == null ? null : k();
-        print('error loading "$filepath", use defailt value. Error:\n$e');
+        print('error loading "$filepath", use default value. Error:\n$e');
       } else {
         rethrow;
       }
     } catch (e, s) {
       result = k == null ? null : k();
-      print('error loading "$filepath", use defailt value. Error:\n$e\n$s');
+      print('error loading "$filepath", use default value. Error:\n$e\n$s');
     }
     return result;
   }
@@ -251,11 +280,16 @@ class Database {
 }
 
 class PathManager {
+  /// [_appPath] game and user data
   static String _appPath;
+
+  /// [_savePath] backup userdata
   static String _savePath;
+
+  /// [_tempPath] files can be deleted
   static String _tempPath;
 
-  Future<Null> initRootPath() async {
+  Future<void> initRootPath() async {
     if (_appPath == null || _tempPath == null) {
       _appPath = (await getApplicationDocumentsDirectory()).path;
       _tempPath = (await getTemporaryDirectory()).path;

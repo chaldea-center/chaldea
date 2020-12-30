@@ -10,7 +10,11 @@ class LevelingCostPage extends StatefulWidget {
   final String title;
 
   const LevelingCostPage(
-      {Key key, @required this.costList, this.curLv = 0, this.targetLv = 0, this.title = ''})
+      {Key key,
+      @required this.costList,
+      this.curLv = 0,
+      this.targetLv = 0,
+      this.title = ''})
       : assert(curLv <= targetLv),
         super(key: key);
 
@@ -31,7 +35,7 @@ class LevelingCostPageState extends State<LevelingCostPage> {
 
     final size = MediaQuery.of(context).size;
     return AlertDialog(
-      backgroundColor: MyColors.setting_bg,
+      backgroundColor: AppColors.setting_bg,
       title: Center(child: Text(widget.title)),
       contentPadding: EdgeInsets.zero,
       titlePadding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -85,12 +89,13 @@ class LevelingCostPageState extends State<LevelingCostPage> {
                       alignment: Alignment.centerLeft,
                       child: ImageWithText(
                         image: Image(image: db.getIconImage(entry.key)),
-                        text: formatNum(entry.value, 'kilo'),
+                        text: formatNumber(entry.value, compact: true),
                         padding: EdgeInsets.only(right: 3),
                         onTap: entry.key == 'QP'
                             ? null
                             : () => SplitRoute.popAndPush(context,
-                                builder: (context) => ItemDetailPage(entry.key)),
+                                builder: (context) =>
+                                    ItemDetailPage(entry.key)),
                       ),
                     ))
                 .toList(),

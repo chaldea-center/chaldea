@@ -33,13 +33,16 @@ class _MainRecordTabState extends State<MainRecordTab> {
         Expanded(
             child: ListView.separated(
                 itemCount: mainRecords.length,
-                separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
+                separatorBuilder: (context, index) =>
+                    Divider(height: 1, indent: 16),
                 itemBuilder: (context, index) {
-                  final name = mainRecords[index].name;
+                  final record = mainRecords[index];
+                  final name = record.name;
                   final plan = db.curUser.events.mainRecords;
                   return ListTile(
-                    title: AutoSizeText(name, maxLines: 1, maxFontSize: 16),
-                    subtitle: AutoSizeText(mainRecords[index].title, maxLines: 1),
+                    title: AutoSizeText(record.chapter,
+                        maxLines: 1, maxFontSize: 16),
+                    subtitle: AutoSizeText(record.title, maxLines: 1),
                     trailing: Wrap(
                       children: List.generate(2, (i) {
                         return Switch.adaptive(
@@ -55,7 +58,8 @@ class _MainRecordTabState extends State<MainRecordTab> {
                     ),
                     onTap: () {
                       SplitRoute.popAndPush(context,
-                          builder: (context) => MainRecordDetailPage(name: name));
+                          builder: (context) =>
+                              MainRecordDetailPage(name: name));
                     },
                   );
                 }))

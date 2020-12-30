@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/components/query.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
 
 import 'craft_detail_page.dart';
@@ -20,8 +21,8 @@ class CraftListPageState extends State<CraftListPage> {
   ScrollController _scrollController = ScrollController();
 
   //temp, calculate once build() called.
-  int __binCategory, __binAtkHpType;
-  TextFilter __textFilter = TextFilter();
+  int __binAtkHpType;
+  Query __textFilter = Query();
 
   @override
   void initState() {
@@ -40,16 +41,12 @@ class CraftListPageState extends State<CraftListPage> {
 
   void beforeFiltrate() {
     filterData.filterString = filterData.filterString.trim();
-    __textFilter.setFilter(filterData.filterString);
-    __binCategory = 0;
-    for (int i = 0; i < CraftFilterData.categoryData.length; i++) {
-      if (filterData.category.options[CraftFilterData.categoryData[i]] == true) {
-        __binCategory += 1 << i;
-      }
-    }
+    __textFilter.parse(filterData.filterString);
+
     __binAtkHpType = 0;
     for (int i = 0; i < CraftFilterData.atkHpTypeData.length; i++) {
-      if (filterData.atkHpType.options[CraftFilterData.atkHpTypeData[i]] == true) {
+      if (filterData.atkHpType.options[CraftFilterData.atkHpTypeData[i]] ==
+          true) {
         __binAtkHpType += 1 << i;
       }
     }
@@ -76,11 +73,15 @@ class CraftListPageState extends State<CraftListPage> {
     if (!filterData.rarity.singleValueFilter(ce.rarity.toString())) {
       return false;
     }
-    if (__binCategory > 0 && ce.category & __binCategory == 0) {
+
+    if (!filterData.category
+        .singleValueFilter(ce.category, compare: (o, v) => v.contains(o))) {
       return false;
     }
     if (__binAtkHpType > 0 &&
-        ((1 << ((ce.hpMax > 0 ? 1 : 0) + (ce.atkMax > 0 ? 2 : 0))) & __binAtkHpType) == 0) {
+        ((1 << ((ce.hpMax > 0 ? 1 : 0) + (ce.atkMax > 0 ? 2 : 0))) &
+                __binAtkHpType) ==
+            0) {
       return false;
     }
     return true;
@@ -118,7 +119,8 @@ class CraftListPageState extends State<CraftListPage> {
                       filled: true,
                       contentPadding: EdgeInsets.zero,
                       border: OutlineInputBorder(
-                          borderSide: const BorderSide(width: 0, style: BorderStyle.none),
+                          borderSide: const BorderSide(
+                              width: 0, style: BorderStyle.none),
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       fillColor: Colors.white,
                       hintText: 'Search',
@@ -128,8 +130,8 @@ class CraftListPageState extends State<CraftListPage> {
                         icon: Icon(Icons.clear, size: 20),
                         onPressed: () {
                           setState(() {
-                            WidgetsBinding.instance
-                                .addPostFrameCallback((_) => _inputController.clear());
+                            WidgetsBinding.instance.addPostFrameCallback(
+                                (_) => _inputController.clear());
                             filterData.filterString = '';
                           });
                         },
@@ -150,14 +152,15 @@ class CraftListPageState extends State<CraftListPage> {
             icon: Icon(Icons.filter_list),
             onPressed: () => FilterPage.show(
               context: context,
-              builder: (context) =>
-                  CraftFilterPage(filterData: filterData, onChanged: onFilterChanged),
+              builder: (context) => CraftFilterPage(
+                  filterData: filterData, onChanged: onFilterChanged),
             ),
           )
         ],
       ),
       floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.arrow_upward), onPressed: () => _scrollController.jumpTo(0)),
+          child: Icon(Icons.arrow_upward),
+          onPressed: () => _scrollController.jumpTo(0)),
       body: buildOverview(),
     );
   }
@@ -170,8 +173,8 @@ class CraftListPageState extends State<CraftListPage> {
         shownList.add(ce);
       }
     });
-    shownList
-        .sort((a, b) => CraftEssential.compare(a, b, filterData.sortKeys, filterData.sortReversed));
+    shownList.sort((a, b) => CraftEssential.compare(
+        a, b, filterData.sortKeys, filterData.sortReversed));
     return filterData.useGrid ? _buildGridView() : _buildListView();
   }
 
@@ -208,7 +211,8 @@ class CraftListPageState extends State<CraftListPage> {
             onTap: () {
               SplitRoute.popAndPush(
                 context,
-                builder: (context) => CraftDetailPage(ce: ce, onSwitch: switchNext),
+                builder: (context) =>
+                    CraftDetailPage(ce: ce, onSwitch: switchNext),
               );
             },
           );
@@ -234,7 +238,8 @@ class CraftListPageState extends State<CraftListPage> {
                 child: GestureDetector(
                   child: Image(image: db.getIconImage(ce.icon)),
                   onTap: () {
-                    SplitRoute.popAndPush(context, builder: (context) => CraftDetailPage(ce: ce));
+                    SplitRoute.popAndPush(context,
+                        builder: (context) => CraftDetailPage(ce: ce));
                   },
                 )),
           );

@@ -64,7 +64,7 @@ class UserData {
     testAllowDownload ??= true;
     sliderUrls ??= {};
     galleries ??= {};
-    serverDomain ??= 'http://chaldea.narumi.cc';
+    serverDomain ??= kServerRoot;
     users ??= {defaultName: User(name: defaultName)};
     if (!users.containsKey(curUserKey)) {
       curUserKey = users.keys.first;
@@ -77,7 +77,8 @@ class UserData {
   }
 
   // json_serializable
-  factory UserData.fromJson(Map<String, dynamic> data) => _$UserDataFromJson(data);
+  factory UserData.fromJson(Map<String, dynamic> data) =>
+      _$UserDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$UserDataToJson(this);
 }
@@ -180,15 +181,22 @@ class SvtFilterData {
     'Caster',
     'Assassin',
     'Berserker',
-    'Shielder',
     'Ruler',
     'Avenger',
     'Alterego',
     'MoonCancer',
     'Foreigner',
+    'Shielder',
     'Beast'
   ];
-  static const List<String> obtainData = ['剧情', '活动', '无法召唤', '常驻', '限定', '友情点召唤'];
+  static const List<String> obtainData = [
+    '剧情',
+    '活动',
+    '无法召唤',
+    '常驻',
+    '限定',
+    '友情点召唤'
+  ];
   static const npColorData = ['Quick', 'Arts', 'Buster'];
   static const npTypeData = ['单体', '全体', '辅助'];
   static const attributeData = ['天', '地', '人', '星', '兽'];
@@ -218,7 +226,8 @@ class SvtFilterData {
   static const traitSpecialData = ['EA不特攻', '无特殊特性'];
 
   // json_serializable
-  factory SvtFilterData.fromJson(Map<String, dynamic> data) => _$SvtFilterDataFromJson(data);
+  factory SvtFilterData.fromJson(Map<String, dynamic> data) =>
+      _$SvtFilterDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$SvtFilterDataToJson(this);
 }
@@ -271,21 +280,21 @@ class CraftFilterData {
 
   // category: bin: 0b1111111111
   static const List<String> categoryData = [
-    '活动加成',
-    '达芬奇工坊',
-    '羁绊礼装',
-    '情人节礼装',
-    '纪念礼装',
-    'EXP礼装',
-    '卡池常驻',
+    '兑换',
     '活动奖励',
-    '期间限定',
-    '剧情限定'
+    'EXP卡',
+    '剧情限定',
+    '情人节',
+    '羁绊',
+    '纪念',
+    '卡池常驻',
+    '期间限定'
   ];
   static const atkHpTypeData = ['NONE', 'HP', 'ATK', 'MIX'];
 
   // json_serializable
-  factory CraftFilterData.fromJson(Map<String, dynamic> data) => _$CraftFilterDataFromJson(data);
+  factory CraftFilterData.fromJson(Map<String, dynamic> data) =>
+      _$CraftFilterDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$CraftFilterDataToJson(this);
 }
@@ -298,24 +307,24 @@ class CmdCodeFilterData {
   bool useGrid;
 
   FilterGroupData rarity;
-  FilterGroupData obtain;
+  FilterGroupData category;
 
   CmdCodeFilterData({
     this.sortKeys,
     this.sortReversed,
     this.useGrid,
     this.rarity,
-    this.obtain,
+    this.category,
   }) {
     filterString ??= '';
     sortKeys ??= List.generate(2, (i) => sortKeyData[i]);
     sortReversed ??= List.filled(sortKeys.length, true);
     useGrid ??= false;
     rarity ??= FilterGroupData();
-    obtain ??= FilterGroupData();
+    category ??= FilterGroupData();
   }
 
-  List<FilterGroupData> get groupValues => [rarity, obtain];
+  List<FilterGroupData> get groupValues => [rarity, category];
 
   void reset() {
     // sortKeys = List.generate(sortKeys.length, (i) => sortKeyData[i]);
@@ -330,7 +339,7 @@ class CmdCodeFilterData {
   static const List<String> rarityData = ['1', '2', '3', '4', '5'];
 
   // category: bin: 0b1111111111
-  static const List<String> obtainData = ['友情池常驻', '活动奖励'];
+  static const List<String> categoryData = ['友情池常驻', '活动奖励'];
 
   // json_serializable
   factory CmdCodeFilterData.fromJson(Map<String, dynamic> data) =>
@@ -359,32 +368,39 @@ class FilterGroupData {
     invert = false;
   }
 
-  bool _customCompare(String _optionKey, String _srcKey, CompareFilterKeyCallback _compare) {
-    return _compare == null ? _optionKey == _srcKey : _compare(_optionKey, _srcKey);
+  bool _customCompare(
+      String _optionKey, String _srcKey, CompareFilterKeyCallback _compare) {
+    return _compare == null
+        ? _optionKey == _srcKey
+        : _compare(_optionKey, _srcKey);
   }
 
-  bool singleValueFilter(String value, {Map<String, CompareFilterKeyCallback> compares}) {
+  bool singleValueFilter(String value,
+      {CompareFilterKeyCallback compare,
+      Map<String, CompareFilterKeyCallback> compares}) {
     // ignore matchAll?
+    assert(compare == null || compares == null);
     options.removeWhere((k, v) => v != true);
     if (options.isEmpty) {
       return true;
     }
     bool result;
-    if (compares == null) {
-      result = options.containsKey(value);
-    } else {
+    if (compare != null || compares != null) {
       result = false;
       for (var option in options.keys) {
-        if (_customCompare(option, value, compares[option])) {
+        if (_customCompare(option, value, compare ?? compares[option])) {
           result = true;
           break;
         }
       }
+    }else{
+      result = options.containsKey(value);
     }
     return invert ? !result : result;
   }
 
-  bool listValueFilter(List<String> values, {Map<String, CompareFilterKeyCallback> compares}) {
+  bool listValueFilter(List<String> values,
+      {Map<String, CompareFilterKeyCallback> compares}) {
     compares ??= {};
     options.removeWhere((k, v) => v != true);
     if (options.isEmpty) {
@@ -394,7 +410,9 @@ class FilterGroupData {
     if (matchAll) {
       result = true;
       for (String option in options.keys) {
-        List<bool> tmp = values.map((v) => _customCompare(option, v, compares[option])).toList();
+        List<bool> tmp = values
+            .map((v) => _customCompare(option, v, compares[option]))
+            .toList();
         if (!tmp.contains(true)) {
           result = false;
           break;
@@ -403,7 +421,9 @@ class FilterGroupData {
     } else {
       result = false;
       for (String option in options.keys) {
-        List<bool> tmp = values.map((v) => _customCompare(option, v, compares[option])).toList();
+        List<bool> tmp = values
+            .map((v) => _customCompare(option, v, compares[option]))
+            .toList();
         if (tmp.contains(true)) {
           result = true;
           break;
@@ -413,7 +433,8 @@ class FilterGroupData {
     return invert ? !result : result;
   }
 
-  factory FilterGroupData.fromJson(Map<String, dynamic> data) => _$FilterGroupDataFromJson(data);
+  factory FilterGroupData.fromJson(Map<String, dynamic> data) =>
+      _$FilterGroupDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$FilterGroupDataToJson(this);
 

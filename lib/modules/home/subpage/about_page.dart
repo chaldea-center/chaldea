@@ -69,7 +69,7 @@ class _AboutPageState extends State<AboutPage> {
                 onTap: () async {
                   final info = await PackageInfo.fromPlatform();
                   final Email email = Email(
-                      subject: '${info.appName} v${info.version} Freedback',
+                      subject: '${info.appName} v${info.version} Feedback',
                       body: '请附上出错页面截图.\n\n',
                       recipients: [kSupportTeamEmailAddress],
                       isHTML: true,
