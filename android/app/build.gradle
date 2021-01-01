@@ -39,10 +39,6 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
-    lintOptions {
-        disable 'InvalidPackage'
-    }
-
     defaultConfig {
         applicationId "cc.narumi.chaldea"
         minSdkVersion 16
@@ -52,17 +48,6 @@ android {
 
         resValue "string", "app_name", "Chaldea"
     }
-
-//    flavorDimensions "app"
-//    productFlavors {
-////        trial {
-////            applicationIdSuffix ".trial"
-////            resValue "string", "app_name", "Chaldea Trial"
-////        }
-////        product {
-////            resValue "string", "app_name", "Chaldea"
-////        }
-//    }
 
     signingConfigs {
         release {

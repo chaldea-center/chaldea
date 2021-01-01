@@ -296,8 +296,9 @@ class PathManager {
       if (Platform.isIOS) {
         _savePath = _appPath;
       } else {
+        // for android: dirs=[emulated storage, SD card]
         final dirs = await getExternalStorageDirectories();
-        _savePath = dirs[dirs.length > 1 ? 1 : 0].path;
+        _savePath = dirs[0].path;
       }
     }
   }

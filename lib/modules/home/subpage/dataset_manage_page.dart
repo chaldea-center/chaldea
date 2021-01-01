@@ -30,16 +30,16 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: Text('Dataset version control'),
+        title: Text('数据管理'),
         actions: <Widget>[],
       ),
       body: ListView(
         children: <Widget>[
           TileGroup(
-            header: 'Userdata',
+            header: '个人数据',
             children: <Widget>[
               ListTile(
-                title: Text('Clear userdata'),
+                title: Text('清除'),
                 onTap: () {
                   SimpleCancelOkDialog(
                     title: Text('Confirm'),
@@ -54,7 +54,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 },
               ),
               ListTile(
-                title: Text('Backup userdata'),
+                title: Text('备份'),
                 onTap: () {
                   SimpleCancelOkDialog(
                     title: Text('Confirm'),
@@ -78,7 +78,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 },
               ),
               ListTile(
-                title: Text('Import userdata'),
+                title: Text('导入'),
                 onTap: () async {
                   try {
                     final result = (await FilePicker.platform.pickFiles());
@@ -97,10 +97,10 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
             ],
           ),
           TileGroup(
-            header: 'GameData',
+            header: '游戏数据',
             children: <Widget>[
               ListTile(
-                title: Text('Current Version'),
+                title: Text('版本'),
                 trailing: Text(db.gameData.version),
               ),
               ListTile(
@@ -146,7 +146,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 },
               ),
               ListTile(
-                title: Text('Clear and reload default data'),
+                title: Text('Clear and reload all data'),
                 subtitle: Text('including icons'),
                 onTap: () {
                   SimpleCancelOkDialog(
@@ -163,7 +163,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 },
               ),
               ListTile(
-                title: Text('Import gamedata(zip/json)'),
+                title: Text('导入 (*.zip)'),
                 onTap: () async {
                   try {
                     final result = await FilePicker.platform.pickFiles();
@@ -200,7 +200,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
             header: 'Download',
             children: <Widget>[
               ListTile(
-                title: Text('Server'),
+                title: Text('Server(NotImplemented)'),
                 subtitle: Text(db.userData.serverDomain ?? 'none'),
                 trailing: IconButton(
                     icon: Icon(Icons.edit),
