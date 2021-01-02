@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 //const value
 const String kUserDataFilename = 'userdata.json';
 const String kGameDataFilename = 'dataset.json';
-const String kSupportTeamEmailAddress = 'support@narumi.cc';
+const String kSupportTeamEmailAddress = 'chaldea-support@narumi.cc';
 const String kDatasetAssetKey = 'res/data/dataset.zip';
 const String kDatasetServerPath = '/chaldea/dataset.zip';
 const String kServerRoot = 'http://localhost:8080';

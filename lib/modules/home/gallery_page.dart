@@ -6,7 +6,7 @@ import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/craft/craft_list_page.dart';
 import 'package:chaldea/modules/drop_calculator/drop_calculator_page.dart';
 import 'package:chaldea/modules/event/events_page.dart';
-import 'package:chaldea/modules/extras/ap_calc_page.dart';
+// import 'package:chaldea/modules/extras/ap_calc_page.dart';
 import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
@@ -129,13 +129,13 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
 //        builder: (context) => DamageCalcPage(),
 //        isDetail: true,
 //      ),
-      GalleryItem.ap_cal: GalleryItem(
-        name: GalleryItem.ap_cal,
-        title: 'AP计算',
-        icon: Icons.directions_run,
-        builder: (context) => APCalcPage(),
-        isDetail: true,
-      ),
+//       GalleryItem.ap_cal: GalleryItem(
+//         name: GalleryItem.ap_cal,
+//         title: 'AP计算',
+//         icon: Icons.directions_run,
+//         builder: (context) => APCalcPage(),
+//         isDetail: true,
+//       ),
       GalleryItem.statistics: GalleryItem(
         name: GalleryItem.statistics,
         title: '统计',
@@ -183,10 +183,12 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
                       ),
                     )
                   : Swiper(
-                      itemBuilder: (BuildContext context, int index) => sliderPages[index],
+                      itemBuilder: (BuildContext context, int index) =>
+                          sliderPages[index],
                       itemCount: sliderPages.length,
                       autoplay: !kDebugMode && sliderPages.length > 1,
-                      pagination: SwiperPagination(margin: const EdgeInsets.all(1)),
+                      pagination:
+                          SwiperPagination(margin: const EdgeInsets.all(1)),
                       autoplayDelay: 5000,
                     ),
             ),
@@ -197,7 +199,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
               childAspectRatio: 1,
               children: _getShownGalleries(context),
             ),
-            buildTestInfoPad()
+            if (kDebugMode) buildTestInfoPad()
           ],
         ));
   }
@@ -214,7 +216,8 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
                 flex: 6,
                 child: Align(
                     alignment: Alignment.bottomCenter,
-                    child: Icon(item.icon, size: 40, color: Theme.of(context).primaryColor)),
+                    child: Icon(item.icon,
+                        size: 40, color: Theme.of(context).primaryColor)),
               ),
               Expanded(
                 flex: 4,
@@ -231,7 +234,8 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
           ),
           onPressed: () {
             if (item.builder != null) {
-              SplitRoute.popAndPush(context, builder: item.builder, useDetail: item.isDetail);
+              SplitRoute.popAndPush(context,
+                  builder: item.builder, useDetail: item.isDetail);
             }
           },
         ));
@@ -249,7 +253,8 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
             context: context,
             builder: (context) => SimpleCancelOkDialog(
               title: Text('Jump to Mooncell?'),
-              content: Text(link, style: TextStyle(decoration: TextDecoration.underline)),
+              content: Text(link,
+                  style: TextStyle(decoration: TextDecoration.underline)),
               onTapOk: () async {
                 if (await canLaunch(link)) {
                   launch(link);

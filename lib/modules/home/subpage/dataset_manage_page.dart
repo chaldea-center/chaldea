@@ -37,6 +37,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
         children: <Widget>[
           TileGroup(
             header: '个人数据',
+            footer: '更新数据/版本/bug较多时，建议提前备份数据，卸载应用将导致内部备份丢失，及时转移到可靠的储存位置',
             children: <Widget>[
               ListTile(
                 title: Text('清除'),
@@ -58,7 +59,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 onTap: () {
                   SimpleCancelOkDialog(
                     title: Text('Confirm'),
-                    content: Text('Backup userdata to\n${db.paths.savePath}'),
+                    content: Text('Backup userdata to\n${Platform.isAndroid?db.paths.savePath:"Document Directory"}'),
                     onTapOk: () async {
                       final fp = db.backupUserdata();
                       showInformDialog(context,

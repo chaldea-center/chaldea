@@ -25,7 +25,8 @@ class _ChaldeaState extends State<Chaldea> {
       title: "Chaldea",
       debugShowCheckedModeBanner: false,
       navigatorKey: Catcher.navigatorKey,
-      locale: Language.getLanguage(db.userData?.language)?.locale,
+      locale: Language.getLanguage(db.userData?.language)?.locale ??
+          Language.chs.locale,
       localizationsDelegates: [
         S.delegate,
         GlobalMaterialLocalizations.delegate,
