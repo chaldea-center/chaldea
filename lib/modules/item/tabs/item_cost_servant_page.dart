@@ -96,8 +96,9 @@ class ItemCostServantPage extends StatelessWidget {
                 text: formatNumber(num, compact: true, minVal: 10000),
                 padding: EdgeInsets.only(right: 5, bottom: 16),
                 onTap: () {
-                  SplitRoute.push(context,
-                      builder: (context) => ServantDetailPage(svt));
+                  SplitRoute.push(
+                      context: context,
+                      builder: (context, _) => ServantDetailPage(svt));
                 },
               ),
             ),
@@ -109,7 +110,7 @@ class ItemCostServantPage extends StatelessWidget {
       return Container();
     } else {
       return GridView.count(
-        crossAxisCount: isTablet(context) ? 7 : 5,
+        crossAxisCount: SplitRoute.isSplit(context) ? 7 : 5,
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         padding: EdgeInsets.symmetric(horizontal: 16),
@@ -141,8 +142,10 @@ class ItemCostServantPage extends StatelessWidget {
         ),
         trailing: Icon(Icons.arrow_forward_ios),
         onTap: () {
-          SplitRoute.push(context,
-              builder: (context) => ServantDetailPage(svt));
+          SplitRoute.push(
+            context: context,
+            builder: (context, _) => ServantDetailPage(svt),
+          );
         },
       ));
     });

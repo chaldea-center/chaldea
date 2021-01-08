@@ -84,7 +84,8 @@ Map<int, List<Item>> divideItemsToGroups(List<String> items,
   for (String itemKey in items) {
     final item = db.gameData.items[itemKey];
     if (item != null) {
-      final groupKey = (divideCategory ? item.category * 10 : 0) + (divideRarity ? item.rarity : 0);
+      final groupKey = (divideCategory ? item.category * 10 : 0) +
+          (divideRarity ? item.rarity : 0);
       groups[groupKey] ??= [];
       groups[groupKey].add(item);
     }

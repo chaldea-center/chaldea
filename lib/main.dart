@@ -29,8 +29,11 @@ void main() async {
   if (kDebugMode)
     runApp(Chaldea());
   else
-    Catcher(Chaldea(),
-        releaseConfig: catcherOptions,
-        enableLogger: true,
-        ensureInitialized: true);
+    Catcher(
+      Chaldea(),
+      profileConfig: catcherOptions,
+      releaseConfig: catcherOptions,
+      enableLogger: true,
+      ensureInitialized: true,
+    );
 }

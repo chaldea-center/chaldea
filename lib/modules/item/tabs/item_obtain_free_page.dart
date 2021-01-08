@@ -49,7 +49,7 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
     for (var i = 0; i < glpk.jpMaxColNum; i++) {
       if (apRates[i] > 0) {
         String questName = glpk.colNames[i];
-        final  apRate = apRates[i], dropRate = glpk.costs[i] / apRates[i];
+        final apRate = apRates[i], dropRate = glpk.costs[i] / apRates[i];
         final dropRateString = (dropRate * 100).toStringAsFixed(2),
             apRateString = apRate.toStringAsFixed(2);
         final quest = db.gameData.freeQuests[questName];

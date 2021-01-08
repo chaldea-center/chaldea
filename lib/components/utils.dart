@@ -1,8 +1,9 @@
 // @dart=2.12
-import 'dart:math';
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'dart:math' show min;
+
 import 'package:chaldea/generated/l10n.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 /// Math related
@@ -37,11 +38,29 @@ String formatNumber(num number,
   return NumberFormat(pattern).format(number);
 }
 
+class NumberInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    if (newValue.selection.baseOffset == 0) {
+      return newValue;
+    }
+    int? value = int.tryParse(newValue.text);
+    if (value == null) {
+      return newValue;
+    }
+    String newText = formatNumber(value);
+    return newValue.copyWith(
+        text: newText,
+        selection: TextSelection.collapsed(offset: newText.length));
+  }
+}
+
 /// Sum a list of number, list item defaults to 0 if null
-T sum<T extends num>(Iterable<T?> x){
-  if(0 is T){
+T sum<T extends num>(Iterable<T?> x) {
+  if (0 is T) {
     return x.fold(0 as T, (p, c) => (p + (c ?? 0)) as T);
-  }else{
+  } else {
     return x.fold(0.0 as T, (p, c) => (p + (c ?? 0.0)) as T);
   }
 }
@@ -91,24 +110,6 @@ T? getListItem<T>(List<T>? data, int index, [k()?]) {
 
 /// Flutter related
 ///
-
-void showToast(
-  String msg, {
-  Toast? toastLength,
-  double? fontSize = 16.0,
-  ToastGravity? gravity,
-  Color? backgroundColor = Colors.grey,
-  Color? textColor,
-}) {
-  Fluttertoast.showToast(
-    msg: msg,
-    toastLength: toastLength,
-    fontSize: fontSize,
-    gravity: gravity,
-    backgroundColor: backgroundColor,
-    textColor: textColor,
-  );
-}
 
 void showInformDialog(BuildContext context,
     {String? title, String? content, List<Widget> actions = const []}) {

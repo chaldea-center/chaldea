@@ -15,7 +15,8 @@ class SHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(left: 16.0, top: 8.0, bottom: 4.0),
-      child: Text(label, style: style ?? TextStyle(color: Colors.black54, fontSize: 14.0)),
+      child: Text(label,
+          style: style ?? TextStyle(color: Colors.black54, fontSize: 14.0)),
     );
   }
 }
@@ -31,7 +32,8 @@ class SFooter extends StatelessWidget {
       padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 7.5),
       child: Text(
         label,
-        style: TextStyle(color: Color(0xFF777777), fontSize: 13.0, letterSpacing: -0.08),
+        style: TextStyle(
+            color: Color(0xFF777777), fontSize: 13.0, letterSpacing: -0.08),
       ),
     );
   }
@@ -43,7 +45,8 @@ class SWidget extends StatelessWidget {
   final Widget trailing;
   final VoidCallback callback;
 
-  const SWidget({Key key, this.label, this.icon, this.trailing, this.callback}) : super(key: key);
+  const SWidget({Key key, this.label, this.icon, this.trailing, this.callback})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +68,8 @@ class SModal extends StatelessWidget {
   final String value;
   final VoidCallback callback;
 
-  SModal({Key key, this.label, this.icon, this.value, this.callback}) : super(key: key);
+  SModal({Key key, this.label, this.icon, this.value, this.callback})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +126,8 @@ class SSelect extends StatelessWidget {
   final int selected;
   final ValueChanged<int> callback;
 
-  const SSelect({Key key, this.labels, this.selected, this.callback}) : super(key: key);
+  const SSelect({Key key, this.labels, this.selected, this.callback})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +163,8 @@ class TileGroup extends StatelessWidget {
   final String footer;
   final EdgeInsets padding;
 
-  const TileGroup({Key key, this.children, this.header, this.footer, this.padding})
+  const TileGroup(
+      {Key key, this.children, this.header, this.footer, this.padding})
       : super(key: key);
 
   @override
@@ -167,12 +173,12 @@ class TileGroup extends StatelessWidget {
       children.length,
       (index) => Container(
         decoration: BoxDecoration(
-            border: Border(
-                top: Divider.createBorderSide(context, width: 0.5),
-                bottom: index == children.length - 1
-                    ? Divider.createBorderSide(context, width: 0.5)
-                    : BorderSide.none),
-            ),
+          border: Border(
+              top: Divider.createBorderSide(context, width: 0.5),
+              bottom: index == children.length - 1
+                  ? Divider.createBorderSide(context, width: 0.5)
+                  : BorderSide.none),
+        ),
         child: children[index],
       ),
     );
@@ -252,7 +258,9 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
             final start = value;
             final end = widget.increasing == null
                 ? widget.end
-                : widget.increasing ? max(start, widget.end) : min(start, widget.end);
+                : widget.increasing
+                    ? max(start, widget.end)
+                    : min(start, widget.end);
             widget.onChanged(start, end);
           },
         ),
@@ -269,7 +277,9 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
             final end = value;
             final start = widget.increasing == null
                 ? widget.start
-                : widget.increasing ? min(widget.start, end) : max(widget.start, end);
+                : widget.increasing
+                    ? min(widget.start, end)
+                    : max(widget.start, end);
             widget.onChanged(start, end);
           },
         )
@@ -279,7 +289,9 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
 }
 
 List<Widget> divideTiles(Iterable<Widget> tiles,
-    {Widget divider = const Divider(height: 1.0), bool top = false, bool bottom = false}) {
+    {Widget divider = const Divider(height: 1.0),
+    bool top = false,
+    bool bottom = false}) {
   Iterator iterator = tiles.iterator;
   if (!iterator.moveNext()) {
     return [];

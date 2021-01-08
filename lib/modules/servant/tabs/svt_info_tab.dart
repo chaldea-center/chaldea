@@ -5,17 +5,24 @@ import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
 
 class SvtInfoTab extends SvtTabBaseWidget {
-  SvtInfoTab({Key key, ServantDetailPageState parent, Servant svt, ServantStatus status})
+  SvtInfoTab(
+      {Key key,
+      ServantDetailPageState parent,
+      Servant svt,
+      ServantStatus status})
       : super(key: key, parent: parent, svt: svt, status: status);
 
   @override
-  _SvtInfoTabState createState() => _SvtInfoTabState(parent: parent, svt: svt, plan: status);
+  _SvtInfoTabState createState() =>
+      _SvtInfoTabState(parent: parent, svt: svt, plan: status);
 }
 
-class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab> with SingleTickerProviderStateMixin {
+class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
+    with SingleTickerProviderStateMixin {
   TabController _tabController;
 
-  _SvtInfoTabState({ServantDetailPageState parent, Servant svt, ServantStatus plan})
+  _SvtInfoTabState(
+      {ServantDetailPageState parent, Servant svt, ServantStatus plan})
       : super(parent: parent, svt: svt, status: plan);
   bool useLangJp = false;
 
@@ -90,28 +97,38 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab> with SingleTickerProv
       child: CustomTable(
         children: <Widget>[
           CustomTableRow.fromChildren(
-            children: [Text(svt.info.name, style: TextStyle(fontWeight: FontWeight.bold))],
+            children: [
+              Text(svt.info.name, style: TextStyle(fontWeight: FontWeight.bold))
+            ],
             defaults: headerData,
           ),
-          CustomTableRow.fromTexts(texts: [svt.info.nameJp], defaults: contentData),
-          CustomTableRow.fromTexts(texts: [svt.info.nameEn], defaults: contentData),
           CustomTableRow.fromTexts(
-              texts: ['No.${svt.no}', svt.info.className], defaults: contentData),
+              texts: [svt.info.nameJp], defaults: contentData),
+          CustomTableRow.fromTexts(
+              texts: [svt.info.nameEn], defaults: contentData),
+          CustomTableRow.fromTexts(
+              texts: ['No.${svt.no}', svt.info.className],
+              defaults: contentData),
           CustomTableRow.fromTexts(texts: ['画师', '声优'], defaults: headerData),
           CustomTableRow.fromTexts(
-              texts: [svt.info.illustrator, svt.info.cv.join(', ')], defaults: contentData),
-          CustomTableRow.fromTexts(texts: ['性别', '身高', '体重'], defaults: headerData),
+              texts: [svt.info.illustrator, svt.info.cv.join(', ')],
+              defaults: contentData),
           CustomTableRow.fromTexts(
-              texts: [svt.info.gender, svt.info.height, svt.info.weight], defaults: contentData),
+              texts: ['性别', '身高', '体重'], defaults: headerData),
           CustomTableRow.fromTexts(
-              texts: ['筋力', '耐久', '敏捷', '魔力', '幸运', '宝具'], defaults: headerData),
+              texts: [svt.info.gender, svt.info.height, svt.info.weight],
+              defaults: contentData),
+          CustomTableRow.fromTexts(
+              texts: ['筋力', '耐久', '敏捷', '魔力', '幸运', '宝具'],
+              defaults: headerData),
           CustomTableRow.fromTexts(
               texts: ['strength', 'endurance', 'agility', 'mana', 'luck', 'np']
                   .map((e) => svt.info.ability[e])
                   .toList(),
               defaults: contentData),
           CustomTableRow.fromTexts(texts: ['特性'], defaults: headerData),
-          CustomTableRow.fromTexts(texts: [svt.info.traits.join(', ')], defaults: contentData),
+          CustomTableRow.fromTexts(
+              texts: [svt.info.traits.join(', ')], defaults: contentData),
           CustomTableRow(children: [
             TableCellData(text: '人形', isHeader: true, flex: 1),
             TableCellData(text: '被EA特攻', isHeader: true, flex: 2),
@@ -121,12 +138,15 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab> with SingleTickerProv
             TableCellData(text: svt.info.isHumanoid ? '是' : '否', flex: 1),
             TableCellData(text: svt.info.isWeakToEA ? '是' : '否', flex: 2),
             TableCellData(
-                text: svt.info.alignments.join('·'), flex: 2, textAlign: TextAlign.center),
+                text: svt.info.alignments.join('·'),
+                flex: 2,
+                textAlign: TextAlign.center),
             TableCellData(text: svt.info.attribute, flex: 1),
           ]),
           if (!Servant.unavailable.contains(svt.no)) ...[
             CustomTableRow.fromTexts(
-                texts: ['数值', '1级', '满级', '90级', '100级', 'MAX'], defaults: headerData),
+                texts: ['数值', '1级', '满级', '90级', '100级', 'MAX'],
+                defaults: headerData),
             CustomTableRow(children: [
               TableCellData(text: 'ATK', isHeader: true),
               TableCellData(text: svt.info.atkMin.toString()),
@@ -156,7 +176,8 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab> with SingleTickerProv
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: svt.info.cards
-                      .map((e) => Image(image: db.getIconImage(e), height: 110 * 0.4))
+                      .map((e) =>
+                          Image(image: db.getIconImage(e), height: 110 * 0.4))
                       .toList(),
                 ),
                 flex: 3,
@@ -180,39 +201,54 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab> with SingleTickerProv
                 texts: svt.info.npRate.keys.toList(),
                 defaults: TableCellData(isHeader: true, maxLines: 1)),
             CustomTableRow.fromTexts(texts: svt.info.npRate.values.toList()),
-            CustomTableRow.fromTexts(texts: ['出星率', '被即死率', '暴击权重'], defaults: headerData),
             CustomTableRow.fromTexts(
-              texts: [svt.info.starRate, svt.info.deathRate, svt.info.criticalRate],
+                texts: ['出星率', '被即死率', '暴击权重'], defaults: headerData),
+            CustomTableRow.fromTexts(
+              texts: [
+                svt.info.starRate,
+                svt.info.deathRate,
+                svt.info.criticalRate
+              ],
             ),
             if (svt.bondPoints != null) ...[
               CustomTableRow.fromTexts(texts: ['羁绊点数'], defaults: headerData),
               CustomTableRow.fromTexts(
                 texts: ['Lv.', '1', '2', '3', '4', '5'],
-                defaults: TableCellData(color: TableCellData.headerColor.withOpacity(0.3)),
+                defaults: TableCellData(
+                    color: TableCellData.headerColor.withOpacity(0.3)),
               ),
               CustomTableRow.fromTexts(
-                texts: ['点数', for (var i = 0; i < 5; i++) svt.bondPoints[i].toString()],
+                texts: [
+                  '点数',
+                  for (var i = 0; i < 5; i++) svt.bondPoints[i].toString()
+                ],
                 defaults: TableCellData(maxLines: 1),
               ),
               CustomTableRow.fromTexts(
                 texts: [
                   '累计',
-                  for (var i = 0; i < 5; i++) sum(svt.bondPoints.sublist(0, i + 1)).toString()
+                  for (var i = 0; i < 5; i++)
+                    sum(svt.bondPoints.sublist(0, i + 1)).toString()
                 ],
                 defaults: TableCellData(maxLines: 1),
               ),
               CustomTableRow.fromTexts(
                 texts: ['Lv.', '6', '7', '8', '9', '10'],
-                defaults: TableCellData(color: TableCellData.headerColor.withOpacity(0.3)),
+                defaults: TableCellData(
+                    color: TableCellData.headerColor.withOpacity(0.3)),
               ),
               CustomTableRow.fromTexts(
-                texts: ['点数', for (var i = 5; i < 10; i++) svt.bondPoints[i].toString()],
+                texts: [
+                  '点数',
+                  for (var i = 5; i < 10; i++) svt.bondPoints[i].toString()
+                ],
                 defaults: TableCellData(maxLines: 1),
               ),
               CustomTableRow.fromTexts(
                 texts: [
                   '累计',
-                  for (var i = 5; i < 10; i++) sum(svt.bondPoints.sublist(0, i + 1)).toString()
+                  for (var i = 5; i < 10; i++)
+                    sum(svt.bondPoints.sublist(0, i + 1)).toString()
                 ],
                 defaults: TableCellData(maxLines: 1),
               ),
@@ -227,7 +263,8 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab> with SingleTickerProv
     return ListView(
       children: List.generate(svt.profiles.length, (index) {
         final profile = svt.profiles[index];
-        String description = useLangJp ? profile.descriptionJp : profile.description;
+        String description =
+            useLangJp ? profile.descriptionJp : profile.description;
         if (description == null || description.isEmpty) {
           description = '???';
         }
@@ -249,7 +286,8 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab> with SingleTickerProv
 
   Widget buildBondCraftTab() {
     if (svt.bondCraft != null && svt.bondCraft > 0) {
-      return CraftDetailBasePage(ce: db.gameData.crafts[svt.bondCraft], useLangJp: useLangJp);
+      return CraftDetailBasePage(
+          ce: db.gameData.crafts[svt.bondCraft], useLangJp: useLangJp);
     } else {
       return Center(child: Text('无羁绊礼装'));
     }
@@ -260,7 +298,8 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab> with SingleTickerProv
       // mash has two valentine crafts
       return ListView.separated(
         itemBuilder: (context, index) => CraftDetailBasePage(
-            ce: db.gameData.crafts[svt.valentineCraft[index]], useLangJp: useLangJp),
+            ce: db.gameData.crafts[svt.valentineCraft[index]],
+            useLangJp: useLangJp),
         separatorBuilder: (context, index) => Divider(height: 20),
         itemCount: svt.valentineCraft.length,
       );

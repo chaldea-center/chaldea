@@ -1,4 +1,3 @@
-import 'package:chaldea/components/components.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +10,13 @@ class InputCancelOkDialog extends StatefulWidget {
   final void Function(String) onSubmit;
 
   const InputCancelOkDialog(
-      {Key key, this.title, this.text, this.hintText, this.errorText, this.validate, this.onSubmit})
+      {Key key,
+      this.title,
+      this.text,
+      this.hintText,
+      this.errorText,
+      this.validate,
+      this.onSubmit})
       : super(key: key);
 
   @override
@@ -48,7 +53,8 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
         autofocus: true,
         autocorrect: false,
         decoration: InputDecoration(
-            hintText: widget.hintText, errorText: validation ? null : "Invalid input."),
+            hintText: widget.hintText,
+            errorText: validation ? null : "Invalid input."),
         onChanged: (v) {
           if (widget.validate != null) {
             setState(() {
@@ -95,7 +101,12 @@ class SimpleCancelOkDialog extends StatelessWidget {
   final bool hideCancel;
 
   const SimpleCancelOkDialog(
-      {Key key, this.title, this.content, this.onTapOk, this.onTapCancel, this.hideCancel = false})
+      {Key key,
+      this.title,
+      this.content,
+      this.onTapOk,
+      this.onTapCancel,
+      this.hideCancel = false})
       : super(key: key);
 
   @override

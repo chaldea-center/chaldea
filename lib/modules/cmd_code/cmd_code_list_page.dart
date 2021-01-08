@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/query.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
 
 import 'cmd_code_detail_page.dart';
@@ -62,7 +61,8 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
     if (!filterData.rarity.singleValueFilter(code.rarity.toString())) {
       return false;
     }
-    if (!filterData.category.singleValueFilter(code.category, compare: (o,v)=>v.contains(o))) {
+    if (!filterData.category
+        .singleValueFilter(code.category, compare: (o, v) => v.contains(o))) {
       return false;
     }
     return true;
@@ -83,7 +83,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(S.of(context).cmd_code_title),
-        leading: SplitViewBackButton(),
+        leading: SplitMasterBackButton(),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(45),
           child: Theme(
@@ -100,7 +100,8 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
                       filled: true,
                       contentPadding: EdgeInsets.zero,
                       border: OutlineInputBorder(
-                          borderSide: const BorderSide(width: 0, style: BorderStyle.none),
+                          borderSide: const BorderSide(
+                              width: 0, style: BorderStyle.none),
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       fillColor: Colors.white,
                       hintText: 'Search',
@@ -110,8 +111,8 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
                         icon: Icon(Icons.clear, size: 20),
                         onPressed: () {
                           setState(() {
-                            WidgetsBinding.instance
-                                .addPostFrameCallback((_) => _inputController.clear());
+                            WidgetsBinding.instance.addPostFrameCallback(
+                                (_) => _inputController.clear());
                             filterData.filterString = '';
                           });
                         },
@@ -132,14 +133,15 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
             icon: Icon(Icons.filter_list),
             onPressed: () => FilterPage.show(
               context: context,
-              builder: (context) =>
-                  CmdCodeFilterPage(filterData: filterData, onChanged: onFilterChanged),
+              builder: (context) => CmdCodeFilterPage(
+                  filterData: filterData, onChanged: onFilterChanged),
             ),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.arrow_upward), onPressed: () => _scrollController.jumpTo(0)),
+          child: Icon(Icons.arrow_upward),
+          onPressed: () => _scrollController.jumpTo(0)),
       body: buildOverview(),
     );
   }
@@ -152,8 +154,8 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
         shownList.add(code);
       }
     });
-    shownList
-        .sort((a, b) => CommandCode.compare(a, b, filterData.sortKeys, filterData.sortReversed));
+    shownList.sort((a, b) => CommandCode.compare(
+        a, b, filterData.sortKeys, filterData.sortReversed));
     return filterData.useGrid ? _buildGridView() : _buildListView();
   }
 
@@ -177,8 +179,12 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
             ),
             trailing: Icon(Icons.arrow_forward_ios),
             onTap: () {
-              SplitRoute.popAndPush(context,
-                  builder: (context) => CmdCodeDetailPage(code: code, onSwitch: switchNext));
+              SplitRoute.push(
+                context: context,
+                builder: (context, _) =>
+                    CmdCodeDetailPage(code: code, onSwitch: switchNext),
+                popDetail: true,
+              );
             },
           );
         });
@@ -203,8 +209,12 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
               child: GestureDetector(
                 child: Image(image: db.getIconImage(code.icon)),
                 onTap: () {
-                  SplitRoute.popAndPush(context,
-                      builder: (context) => CmdCodeDetailPage(code: code, onSwitch: switchNext));
+                  SplitRoute.push(
+                    context: context,
+                    builder: (context, _) =>
+                        CmdCodeDetailPage(code: code, onSwitch: switchNext),
+                    popDetail: true,
+                  );
                 },
               ),
             ),

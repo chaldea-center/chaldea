@@ -52,36 +52,38 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab> {
     return Center(
       child: Padding(
         padding: EdgeInsets.only(top: 8, bottom: 4),
-        child: FittedBox(child: ToggleButtons(
-          constraints: BoxConstraints(),
-          selectedColor: Colors.white,
-          fillColor: Theme.of(context).primaryColor,
-          children: svt.treasureDevice.map((td) {
-            Widget button;
-            if (td.state.contains('强化前') || td.state.contains('强化后')) {
-              final iconKey = td.state.contains('强化前') ? '宝具未强化' : '宝具强化';
-              button = Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Image(image: db.getIconImage(iconKey), height: 110 * 0.2),
-                  Text(td.state)
-                ],
-              );
-            } else {
-              button = Text(td.state);
-            }
-            return Padding(
-                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                child: button);
-          }).toList(),
-          isSelected:
-          List.generate(svt.treasureDevice.length, (i) => selected == i),
-          onPressed: (no) {
-            setState(() {
-              status.tdIndex = no;
-            });
-          },
-        ),),
+        child: FittedBox(
+          child: ToggleButtons(
+            constraints: BoxConstraints(),
+            selectedColor: Colors.white,
+            fillColor: Theme.of(context).primaryColor,
+            children: svt.treasureDevice.map((td) {
+              Widget button;
+              if (td.state.contains('强化前') || td.state.contains('强化后')) {
+                final iconKey = td.state.contains('强化前') ? '宝具未强化' : '宝具强化';
+                button = Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Image(image: db.getIconImage(iconKey), height: 110 * 0.2),
+                    Text(td.state)
+                  ],
+                );
+              } else {
+                button = Text(td.state);
+              }
+              return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                  child: button);
+            }).toList(),
+            isSelected:
+                List.generate(svt.treasureDevice.length, (i) => selected == i),
+            onPressed: (no) {
+              setState(() {
+                status.tdIndex = no;
+              });
+            },
+          ),
+        ),
       ),
     );
   }
@@ -135,7 +137,8 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab> {
   List<Widget> buildEffect(Effect effect) {
     assert([1, 5].contains(effect.lvData.length), '$effect');
     // avoid trailing too long
-    bool useTrailing = effect.lvData.length == 1 && effect.lvData[0].length < 10;
+    bool useTrailing =
+        effect.lvData.length == 1 && effect.lvData[0].length < 10;
     return <Widget>[
       CustomTile(
         contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),

@@ -1,3 +1,8 @@
+# custom
+# use Info-{Debug/Profile/Release}.plist instead
+Runner/info.plist
+
+# default
 *.mode1v3
 *.mode2v3
 *.moved-aside

@@ -14,6 +14,7 @@ class _ChaldeaState extends State<Chaldea> {
   @override
   void initState() {
     super.initState();
+    SplitRoute.defaultMasterFillPageBuilder = (context) => BlankPage();
     db.onAppUpdate = () {
       setState(() {});
     };
@@ -33,10 +34,10 @@ class _ChaldeaState extends State<Chaldea> {
         GlobalWidgetsLocalizations.delegate
       ],
       supportedLocales: S.delegate.supportedLocales,
-      builder: (context, widget) {
+      builder: EasyLoading.init(builder: (context, widget) {
         Catcher.addDefaultErrorWidget(showStacktrace: true);
         return widget;
-      },
+      }),
       home: _ChaldeaHome(),
     );
   }
@@ -44,10 +45,10 @@ class _ChaldeaState extends State<Chaldea> {
 
 class _ChaldeaHome extends StatefulWidget {
   @override
-  __ChaldeaHomeState createState() => __ChaldeaHomeState();
+  _ChaldeaHomeState createState() => _ChaldeaHomeState();
 }
 
-class __ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
+class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
   bool _initiated = false;
 
   @override
@@ -56,6 +57,7 @@ class __ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
     print(db.paths.appPath);
     if (!db.loadGameData()) {
       await db.loadZipAssets(kDatasetAssetKey);
+      db.loadGameData();
       // await SimpleCancelOkDialog(
       //   title: Text('资源不存在或已损坏'),
       //   content: Text('是否重新下载?'),

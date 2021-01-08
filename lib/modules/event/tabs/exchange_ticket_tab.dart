@@ -87,8 +87,11 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           GestureDetector(
-            onTap: () => SplitRoute.popAndPush(context,
-                builder: (context) => ItemDetailPage(iconKey)),
+            onTap: () => SplitRoute.push(
+              context: context,
+              builder: (context, _) => ItemDetailPage(iconKey),
+              popDetail: true,
+            ),
             child: Image(image: db.getIconImage(iconKey), width: 42),
           ),
           SizedBox(
@@ -202,8 +205,11 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   GestureDetector(
-                    onTap: () => SplitRoute.popAndPush(context,
-                        builder: (context) => ItemDetailPage(iconKey)),
+                    onTap: () => SplitRoute.push(
+                      context: context,
+                      builder: (context, _) => ItemDetailPage(iconKey),
+                      popDetail: true,
+                    ),
                     child: Image(image: db.getIconImage(iconKey), width: 42),
                   ),
                   SizedBox(

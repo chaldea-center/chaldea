@@ -3,7 +3,9 @@ import 'package:chaldea/modules/shared/filter_page.dart';
 
 class CraftFilterPage extends FilterPage<CraftFilterData> {
   const CraftFilterPage(
-      {Key key, CraftFilterData filterData, bool Function(CraftFilterData) onChanged})
+      {Key key,
+      CraftFilterData filterData,
+      bool Function(CraftFilterData) onChanged})
       : super(key: key, onChanged: onChanged, filterData: filterData);
 
   @override
@@ -39,7 +41,8 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
             getSortButton<CraftCompare>(
               prefix: '${i + 1}',
               value: filterData.sortKeys[i],
-              items: Map.fromIterables(CraftFilterData.sortKeyData, ['序号', '星级', 'ATK', 'HP']),
+              items: Map.fromIterables(
+                  CraftFilterData.sortKeyData, ['序号', '星级', 'ATK', 'HP']),
               onSortAttr: (key) {
                 filterData.sortKeys[i] = key;
                 update();

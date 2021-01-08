@@ -25,7 +25,9 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
         leading: BackButton(),
         title: Text('统计'),
         actions: [],
-        bottom: TabBar(controller: _tabController, tabs: [Tab(text: '素材'), Tab(text: '从者')]),
+        bottom: TabBar(
+            controller: _tabController,
+            tabs: [Tab(text: '素材'), Tab(text: '从者')]),
       ),
       body: TabBarView(
         controller: _tabController,
@@ -50,14 +52,17 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
         ListTile(
           leading: Image(image: db.getIconImage(Item.qp)),
           title: Text(formatNumber(allItemCost[Item.qp] ?? 0)),
-          onTap: () => SplitRoute.push(context, builder: (context) => ItemDetailPage(Item.qp)),
+          onTap: () => SplitRoute.push(
+              context: context,
+              builder: (context, _) => ItemDetailPage(Item.qp)),
         ),
         buildClassifiedItemList(
           data: shownItems,
           divideRarity: false,
-          crossCount: isTablet(context) ? 10 : 7,
-          onTap: (itemKey) =>
-              SplitRoute.push(context, builder: (context) => ItemDetailPage(itemKey)),
+          crossCount: SplitRoute.isSplit(context) ? 7 : 7,
+          onTap: (itemKey) => SplitRoute.push(
+              context: context,
+              builder: (context, _) => ItemDetailPage(itemKey)),
         )
       ],
     );
@@ -76,7 +81,9 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
     db.curUser.servants.forEach((no, svtStat) {
       if (svtStat.curVal.favorite != true) return;
       final svt = db.gameData.servants[no];
-      sumDict([allItemCost, svt.getAllCost(cur: emptyPlan, target: svtStat.curVal)], inPlace: true);
+      sumDict(
+          [allItemCost, svt.getAllCost(cur: emptyPlan, target: svtStat.curVal)],
+          inPlace: true);
     });
   }
 }

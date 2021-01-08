@@ -5,6 +5,7 @@ class GLPKData {
   List<String> colNames; //quests, n
   List<String> rowNames; // items, m
   List<int> costs; // n
+  /// AP rate, m*n
   List<List<double>> matrix;
   int cnMaxColNum;
   int jpMaxColNum;
@@ -26,6 +27,11 @@ class GLPKData {
             other.matrix.length, (index) => List.from(other.matrix[index])),
         cnMaxColNum = other.cnMaxColNum,
         jpMaxColNum = other.jpMaxColNum;
+
+  List<double> columnAt(int colIndex) {
+    return List.generate(
+        rowNames.length, (rowIndex) => matrix[rowIndex][colIndex]);
+  }
 
   /// DON'T call the following methods on original data
   void removeRow(String name) {
@@ -97,6 +103,9 @@ class GLPKParams {
   /// transferred to js
   bool integerResult;
 
+  /// convert two key-value list to map
+  Map<String, int> get objective => Map.fromIterables(rows, counts);
+
   GLPKParams({
     this.rows,
     this.counts,
@@ -125,8 +134,6 @@ class GLPKParams {
         maxColNum = other.maxColNum,
         extraCols = List.from(other.extraCols),
         integerResult = other.integerResult;
-
-  Map<String, int> generateObjective() => Map.fromIterables(rows, counts);
 
   void sortByItem() {
     final _getSortVal = (String key) {

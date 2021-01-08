@@ -50,8 +50,11 @@ class _LimitEventTabState extends State<LimitEventTab> {
             ],
           ),
           onTap: () {
-            SplitRoute.popAndPush(context,
-                builder: (context) => LimitEventDetailPage(name: event.name));
+            SplitRoute.push(
+              context: context,
+              builder: (context, _) => LimitEventDetailPage(name: event.name),
+              popDetail: true,
+            );
           },
         );
       },

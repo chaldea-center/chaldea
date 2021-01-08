@@ -4,15 +4,21 @@ import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
 
 class SvtSkillTab extends SvtTabBaseWidget {
-  SvtSkillTab({Key key, ServantDetailPageState parent, Servant svt, ServantStatus status})
+  SvtSkillTab(
+      {Key key,
+      ServantDetailPageState parent,
+      Servant svt,
+      ServantStatus status})
       : super(key: key, parent: parent, svt: svt, status: status);
 
   @override
-  State<StatefulWidget> createState() => _SvtSkillTabState(parent: parent, svt: svt, plan: status);
+  State<StatefulWidget> createState() =>
+      _SvtSkillTabState(parent: parent, svt: svt, plan: status);
 }
 
 class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
-  _SvtSkillTabState({ServantDetailPageState parent, Servant svt, ServantStatus plan})
+  _SvtSkillTabState(
+      {ServantDetailPageState parent, Servant svt, ServantStatus plan})
       : super(parent: parent, svt: svt, status: plan);
 
   @override
@@ -24,10 +30,12 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
 
     return ListView(children: [
       SHeader('主动技能'),
-      for (var index = 0; index < svt.activeSkills.length; index++) buildSkill(index),
+      for (var index = 0; index < svt.activeSkills.length; index++)
+        buildSkill(index),
       if (svt.passiveSkills?.isNotEmpty == true) ...[
         SHeader('职阶技能'),
-        for (var index = 0; index < svt.passiveSkills.length; index++) buildPassiveSkill(index),
+        for (var index = 0; index < svt.passiveSkills.length; index++)
+          buildPassiveSkill(index),
       ]
     ]);
   }
@@ -39,7 +47,8 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
       children: <Widget>[
         CustomTile(
             contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
-            leading: Image(image: db.getIconImage(skill.icon), height: 110 * 0.3),
+            leading:
+                Image(image: db.getIconImage(skill.icon), height: 110 * 0.3),
             title: Text('${skill.name} ${skill.rank}'),
             subtitle: Text('${skill.nameJp} ${skill.rank}'),
             trailing: Row(
@@ -48,11 +57,13 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
                 for (int i = 1; i < activeSkill.skills.length; i++)
                   GestureDetector(
                     onTap: () {
-                      status.skillIndex[index] = status.skillIndex[index] == i ? i - 1 : i;
+                      status.skillIndex[index] =
+                          status.skillIndex[index] == i ? i - 1 : i;
                       widget.parent?.setState(() {});
                     },
                     child: Image(
-                      image: db.getIconImage(status.skillIndex[index] >= i ? '技能强化' : '技能未强化'),
+                      image: db.getIconImage(
+                          status.skillIndex[index] >= i ? '技能强化' : '技能未强化'),
                       height: 110 * 0.2,
                     ),
                   ),
@@ -80,7 +91,11 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
 
   List<Widget> buildEffect(Effect effect) {
     assert([1, 10].contains(effect.lvData.length));
-    int lines = effect.lvData.length == 1 ? effect.lvData[0].length < 10 ? 0 : 1 : 2;
+    int lines = effect.lvData.length == 1
+        ? effect.lvData[0].length < 10
+            ? 0
+            : 1
+        : 2;
 
     return <Widget>[
       CustomTile(

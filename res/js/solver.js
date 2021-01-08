@@ -26,8 +26,9 @@ function solve_glpk(data_str, params_str) {
     // other pre-processing should been done in main program.
     var enable_log = get_param(params, ' enableLog', true)
     function log(msg) {
-        if (enable_log)
-            console.log(msg)
+        // quickjs will raise "console" is not defined?
+        // if (enable_log)
+        //     console.log(msg)
     }
 
     // main solver
@@ -132,6 +133,6 @@ function solve_glpk(data_str, params_str) {
 }
 
 function add_log(a) {
-    document.getElementById('logs').innerHTML += '<p>' + a.toString() + '</p>';
+    // document.getElementById('logs').innerHTML += '<p>' + a.toString() + '</p>';
     return a.toString();
 }

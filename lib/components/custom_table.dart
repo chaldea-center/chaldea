@@ -241,7 +241,7 @@ class TableCellData {
       paddingList?.length,
       fitHeightList?.length
     ].toSet().every((e) => e == null || e == length));
-    final List<TableCellData> rowDataList = List()..length = length;
+    final List<TableCellData> rowDataList = []..length = length;
     for (int index = 0; index < rowDataList.length; index++) {
       final data = TableCellData(
         text: texts?.elementAt(index),

@@ -62,7 +62,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
                     nextCe = db.gameData.crafts[ce.no + [-1, 1][i]];
                   }
                   if (nextCe == null) {
-                    showToast('已经是${['第', '最后'][i]}一张');
+                    EasyLoading.showToast('已经是${['第', '最后'][i]}一张');
                   } else {
                     setState(() {
                       ce = nextCe;
@@ -84,7 +84,8 @@ class CraftDetailBasePage extends StatelessWidget {
   final CraftEssential ce;
   final bool useLangJp;
 
-  const CraftDetailBasePage({Key key, this.ce, this.useLangJp = false}) : super(key: key);
+  const CraftDetailBasePage({Key key, this.ce, this.useLangJp = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +95,8 @@ class CraftDetailBasePage extends StatelessWidget {
         children: <Widget>[
           CustomTableRow(children: [
             TableCellData(
-              child: Text(ce.name, style: TextStyle(fontWeight: FontWeight.bold)),
+              child:
+                  Text(ce.name, style: TextStyle(fontWeight: FontWeight.bold)),
               isHeader: true,
             )
           ]),
@@ -113,10 +115,14 @@ class CraftDetailBasePage extends StatelessWidget {
                 child: CustomTable(
                   hideOutline: true,
                   children: <Widget>[
-                    CustomTableRow(children: [TableCellData(text: 'No. ${ce.no}')]),
+                    CustomTableRow(
+                        children: [TableCellData(text: 'No. ${ce.no}')]),
                     CustomTableRow(children: [
                       TableCellData(text: '画师', isHeader: true),
-                      TableCellData(text: ce.illustrators.join(' & '), flex: 3, maxLines: 1)
+                      TableCellData(
+                          text: ce.illustrators.join(' & '),
+                          flex: 3,
+                          maxLines: 1)
                     ]),
                     CustomTableRow(children: [
                       TableCellData(text: '稀有度', isHeader: true),
@@ -126,9 +132,11 @@ class CraftDetailBasePage extends StatelessWidget {
                     ]),
                     CustomTableRow(children: [
                       TableCellData(text: 'ATK', isHeader: true),
-                      TableCellData(text: '${ce.atkMin}/${ce.atkMax}', maxLines: 1),
+                      TableCellData(
+                          text: '${ce.atkMin}/${ce.atkMax}', maxLines: 1),
                       TableCellData(text: 'HP', isHeader: true),
-                      TableCellData(text: '${ce.hpMin}/${ce.hpMax}', maxLines: 1),
+                      TableCellData(
+                          text: '${ce.hpMin}/${ce.hpMax}', maxLines: 1),
                     ])
                   ],
                 ),
@@ -153,7 +161,8 @@ class CraftDetailBasePage extends StatelessWidget {
               ),
             ],
           ),
-          CustomTableRow(children: [TableCellData(text: '持有技能', isHeader: true)]),
+          CustomTableRow(
+              children: [TableCellData(text: '持有技能', isHeader: true)]),
           CustomTableRow(
             children: [
               TableCellData(
@@ -184,9 +193,13 @@ class CraftDetailBasePage extends StatelessWidget {
                 TableCellData(
                   padding: EdgeInsets.all(6),
                   flex: 1,
-                  child: Image(image: db.getIconImage(ce.eventIcons[i]), height: 40),
+                  child: Image(
+                      image: db.getIconImage(ce.eventIcons[i]), height: 40),
                 ),
-                TableCellData(flex: 5, text: ce.eventSkills[i], alignment: Alignment.centerLeft)
+                TableCellData(
+                    flex: 5,
+                    text: ce.eventSkills[i],
+                    alignment: Alignment.centerLeft)
               ],
             ),
           CustomTableRow(children: [TableCellData(text: '解说', isHeader: true)]),

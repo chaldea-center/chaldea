@@ -31,26 +31,27 @@ class _HomePageState extends State<HomePage> {
           return Future.value(true);
         }
       },
-      child: SplitRoute.createMasterPage(
-          context,
-          Scaffold(
-            body: IndexedStack(
-              index: _curIndex,
-              children: <Widget>[GalleryPage(), SettingsPage()],
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-              currentIndex: _curIndex,
-              items: [
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.layers),
-                    label: S.of(context).gallery_tab_name),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.settings),
-                    label: S.of(context).settings_tab_name),
-              ],
-              onTap: (index) => setState(() => _curIndex = index),
-            ),
-          )),
+      child: SplitRoute.createMasterWidget(
+        context: context,
+        child: Scaffold(
+          body: IndexedStack(
+            index: _curIndex,
+            children: <Widget>[GalleryPage(), SettingsPage()],
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: _curIndex,
+            items: [
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.layers),
+                  label: S.of(context).gallery_tab_name),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.settings),
+                  label: S.of(context).settings_tab_name),
+            ],
+            onTap: (index) => setState(() => _curIndex = index),
+          ),
+        ),
+      ),
     );
   }
 }

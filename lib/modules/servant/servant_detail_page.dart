@@ -16,7 +16,8 @@ class ServantDetailPage extends StatefulWidget {
   State<StatefulWidget> createState() => ServantDetailPageState(svt);
 }
 
-class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerProviderStateMixin {
+class ServantDetailPageState extends State<ServantDetailPage>
+    with SingleTickerProviderStateMixin {
   Servant svt;
   TabController _tabController;
 
@@ -44,16 +45,14 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
     // _builders['语音'] = (context) => getDefaultTab('语音');
   }
 
+  /// just for test
   Widget getDefaultTab(String name) {
     return Center(
       child: FlatButton(
         child: Text(name),
         onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => BlankPage(showProgress: true),
-            ),
-          );
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => BlankPage()));
         },
       ),
     );
@@ -95,7 +94,8 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: Text(obtain, style: TextStyle(color: Colors.white, fontSize: 13)),
+          child:
+              Text(obtain, style: TextStyle(color: Colors.white, fontSize: 13)),
         ),
       );
     }).toList();
@@ -105,7 +105,11 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          leading: BackButton(),
+          leading: BackButton(
+            onPressed: () {
+              Navigator.of(context).maybePop();
+            },
+          ),
           title: Text(svt.info.name),
           actions: <Widget>[
             IconButton(
@@ -115,7 +119,8 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
                     context: context,
                     builder: (context) => SimpleDialog(
                       title: Text('Choose plan'),
-                      children: List.generate(db.curUser.servantPlans.length, (index) {
+                      children: List.generate(db.curUser.servantPlans.length,
+                          (index) {
                         return ListTile(
                           title: Text('Plan ${index + 1}'),
                           selected: index == db.curUser.curSvtPlanNo,
@@ -130,6 +135,39 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
                     ),
                   );
                 }),
+            if (!Servant.unavailable.contains(svt.no))
+              IconButton(
+                icon: status.curVal.favorite
+                    ? Icon(Icons.favorite, color: Colors.redAccent)
+                    : Icon(Icons.favorite),
+                tooltip: '关注',
+                onPressed: () {
+                  setState(() {
+                    status.curVal.favorite = !status.curVal.favorite;
+                  });
+                  db.userData.broadcastUserUpdate();
+                  db.itemStat.updateSvtItems();
+                },
+              ),
+            if (!Servant.unavailable.contains(svt.no))
+              IconButton(
+                icon: Icon(Icons.replay),
+                tooltip: '重置',
+                // constraints: _iconConstraint,
+                onPressed: () {
+                  SimpleCancelOkDialog(
+                    title: Text('Confirm to reset'),
+                    onTapOk: () {
+                      setState(() {
+                        status.reset();
+                        db.curUser.curSvtPlan[svt.no].reset();
+                      });
+                      db.userData.broadcastUserUpdate();
+                      db.itemStat.updateSvtItems();
+                    },
+                  ).show(context);
+                },
+              )
           ],
         ),
         body: Column(
@@ -138,7 +176,9 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
             Expanded(
               child: TabBarView(
                 controller: _tabController,
-                children: _builders.values.map((builder) => builder(context)).toList(),
+                children: _builders.values
+                    .map((builder) => builder(context))
+                    .toList(),
               ),
             )
           ],
@@ -146,44 +186,8 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
   }
 
   Widget _buildHeader() {
-    final _tablet = isTablet(context);
-    final avatar = Image(image: db.getIconImage(svt.icon), fit: BoxFit.contain, height: 90);
-    final _iconConstraint = _tablet ? null : BoxConstraints.loose(Size.square(40));
-    final icons = [
-      if (!Servant.unavailable.contains(svt.no))
-        IconButton(
-          icon: status.curVal.favorite
-              ? Icon(Icons.favorite, color: Colors.redAccent)
-              : Icon(Icons.favorite_border, color: Colors.black54),
-          tooltip: '关注',
-          onPressed: () {
-            setState(() {
-              status.curVal.favorite = !status.curVal.favorite;
-            });
-            db.userData.broadcastUserUpdate();
-            db.itemStat.updateSvtItems();
-          },
-        ),
-      if (!Servant.unavailable.contains(svt.no))
-        IconButton(
-          icon: Icon(Icons.replay, color: Colors.black54),
-          tooltip: '重置',
-          constraints: _iconConstraint,
-          onPressed: () {
-            SimpleCancelOkDialog(
-              title: Text('Confirm to reset'),
-              onTapOk: () {
-                setState(() {
-                  status.reset();
-                  db.curUser.curSvtPlan[svt.no].reset();
-                });
-                db.userData.broadcastUserUpdate();
-                db.itemStat.updateSvtItems();
-              },
-            ).show(context);
-          },
-        )
-    ];
+    final avatar = Image(
+        image: db.getIconImage(svt.icon), fit: BoxFit.contain, height: 90);
 
     final tabbar = Container(
       height: 36,
@@ -202,7 +206,8 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
     );
 
     return DecoratedBox(
-      decoration: BoxDecoration(border: Border(bottom: Divider.createBorderSide(context))),
+      decoration: BoxDecoration(
+          border: Border(bottom: Divider.createBorderSide(context))),
       child: Column(
         // Tile+TabBar@Tablet
         mainAxisSize: MainAxisSize.min,
@@ -250,7 +255,6 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
                 tabbar,
               ],
             ),
-            trailing: Column(mainAxisSize: MainAxisSize.min, children: icons),
           ),
         ],
       ),

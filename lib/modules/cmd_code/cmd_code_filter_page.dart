@@ -3,7 +3,9 @@ import 'package:chaldea/modules/shared/filter_page.dart';
 
 class CmdCodeFilterPage extends FilterPage<CmdCodeFilterData> {
   const CmdCodeFilterPage(
-      {Key key, CmdCodeFilterData filterData, bool Function(CmdCodeFilterData) onChanged})
+      {Key key,
+      CmdCodeFilterData filterData,
+      bool Function(CmdCodeFilterData) onChanged})
       : super(key: key, onChanged: onChanged, filterData: filterData);
 
   @override
@@ -39,7 +41,8 @@ class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData> {
             getSortButton<CmdCodeCompare>(
               prefix: '${i + 1}',
               value: filterData.sortKeys[i],
-              items: Map.fromIterables(CmdCodeFilterData.sortKeyData, ['序号', '星级']),
+              items: Map.fromIterables(
+                  CmdCodeFilterData.sortKeyData, ['序号', '星级']),
               onSortAttr: (key) {
                 filterData.sortKeys[i] = key;
                 update();

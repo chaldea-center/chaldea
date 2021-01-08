@@ -93,9 +93,12 @@ class LevelingCostPageState extends State<LevelingCostPage> {
                         padding: EdgeInsets.only(right: 3),
                         onTap: entry.key == 'QP'
                             ? null
-                            : () => SplitRoute.popAndPush(context,
-                                builder: (context) =>
-                                    ItemDetailPage(entry.key)),
+                            : () => SplitRoute.push(
+                                  context: context,
+                                  builder: (context, _) =>
+                                      ItemDetailPage(entry.key),
+                                  popDetail: true,
+                                ),
                       ),
                     ))
                 .toList(),

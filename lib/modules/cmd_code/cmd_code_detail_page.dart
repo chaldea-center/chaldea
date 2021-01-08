@@ -4,7 +4,8 @@ class CmdCodeDetailPage extends StatefulWidget {
   final CommandCode code;
   final CommandCode Function(int, bool) onSwitch;
 
-  const CmdCodeDetailPage({Key key, this.code, this.onSwitch}) : super(key: key);
+  const CmdCodeDetailPage({Key key, this.code, this.onSwitch})
+      : super(key: key);
 
   @override
   _CmdCodeDetailPageState createState() => _CmdCodeDetailPageState();
@@ -62,7 +63,7 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
                     nextCode = db.gameData.cmdCodes[code.no + [-1, 1][i]];
                   }
                   if (nextCode == null) {
-                    showToast('已经是${['第', '最后'][i]}一张');
+                    EasyLoading.showToast('已经是${['第', '最后'][i]}一张');
                   } else {
                     setState(() {
                       code = nextCode;
@@ -84,7 +85,8 @@ class CmdCodeDetailBasePage extends StatelessWidget {
   final CommandCode code;
   final bool useLangJp;
 
-  const CmdCodeDetailBasePage({Key key, this.code, this.useLangJp = false}) : super(key: key);
+  const CmdCodeDetailBasePage({Key key, this.code, this.useLangJp = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +95,8 @@ class CmdCodeDetailBasePage extends StatelessWidget {
         children: <Widget>[
           CustomTableRow(children: [
             TableCellData(
-              child: Text(code.name, style: TextStyle(fontWeight: FontWeight.bold)),
+              child: Text(code.name,
+                  style: TextStyle(fontWeight: FontWeight.bold)),
               isHeader: true,
             )
           ]),
@@ -112,10 +115,12 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                 child: CustomTable(
                   hideOutline: true,
                   children: <Widget>[
-                    CustomTableRow(children: [TableCellData(text: 'No. ${code.no}')]),
+                    CustomTableRow(
+                        children: [TableCellData(text: 'No. ${code.no}')]),
                     CustomTableRow(children: [
                       TableCellData(text: '画师', isHeader: true),
-                      TableCellData(text: code.illustrators.join(' & '), flex: 3)
+                      TableCellData(
+                          text: code.illustrators.join(' & '), flex: 3)
                     ]),
                     CustomTableRow(children: [
                       TableCellData(text: '稀有度', isHeader: true),
@@ -130,8 +135,14 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => FullScreenImageSlider(
-                                      imgUrls: [db.getIconResource(code.illustration).url],
-                                      enableDownload: db.runtimeData.enableDownload),
+                                          imgUrls: [
+                                            db
+                                                .getIconResource(
+                                                    code.illustration)
+                                                .url
+                                          ],
+                                          enableDownload:
+                                              db.runtimeData.enableDownload),
                                   fullscreenDialog: true));
                             },
                           ),
@@ -144,16 +155,20 @@ class CmdCodeDetailBasePage extends StatelessWidget {
               ),
             ],
           ),
-          CustomTableRow(children: [TableCellData(text: '获取方式', isHeader: true)]),
           CustomTableRow(
-              children: [TableCellData(child: Text(code.obtain, textAlign: TextAlign.center))]),
-          CustomTableRow(children: [TableCellData(text: '持有技能', isHeader: true)]),
+              children: [TableCellData(text: '获取方式', isHeader: true)]),
+          CustomTableRow(children: [
+            TableCellData(child: Text(code.obtain, textAlign: TextAlign.center))
+          ]),
+          CustomTableRow(
+              children: [TableCellData(text: '持有技能', isHeader: true)]),
           CustomTableRow(
             children: [
               TableCellData(
                 padding: EdgeInsets.all(6),
                 flex: 1,
-                child: Image(image: db.getIconImage(code.skillIcon), height: 40),
+                child:
+                    Image(image: db.getIconImage(code.skillIcon), height: 40),
               ),
               TableCellData(flex: 5, text: code.skill)
             ],

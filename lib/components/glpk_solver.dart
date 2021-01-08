@@ -3,74 +3,34 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:chaldea/components/components.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-
-import 'datatypes/datatypes.dart';
-import 'utils.dart' show showToast;
+import 'package:flutter_qjs/isolate.dart';
 
 class GLPKSolver {
-  final flutterWebViewPlugin = FlutterWebviewPlugin();
-  StreamSubscription<WebViewStateChanged> _onWebViewStateChanged;
-  StreamController<bool> onStateChanged = StreamController.broadcast();
-  bool solverReady = false;
+  final engine = IsolateQjs();
 
   GLPKSolver();
 
-  void stateChanged(bool state) {
-    solverReady = state;
-    onStateChanged.sink.add(solverReady);
-  }
-
   /// must call [dispose]!!!
   void dispose() {
-    onStateChanged.close();
-    _onWebViewStateChanged.cancel();
-    flutterWebViewPlugin.close();
-    flutterWebViewPlugin.dispose();
+    engine.close();
   }
 
   Future<Null> initial({VoidCallback callback}) async {
     // only load once
     // use callback to setState, not Future.
     print('=========loading js libs=========');
-    if (solverReady == true) {
-      print('closing...');
-      _onWebViewStateChanged?.cancel();
-      await flutterWebViewPlugin.close();
-    }
-    stateChanged(false);
     try {
-      print('launching...');
-      _onWebViewStateChanged =
-          flutterWebViewPlugin.onStateChanged.listen((state) async {
-        if (state.type == WebViewState.finishLoad && solverReady != true) {
-          await flutterWebViewPlugin.evalJavascript(
-              await rootBundle.loadString('res/js/glpk.min.js'));
-          await flutterWebViewPlugin
-              .evalJavascript(await rootBundle.loadString('res/js/solver.js'));
-          await flutterWebViewPlugin.evalJavascript(
-              '''add_log(`${DateTime.now().toString()}: Load libs finished.`)''');
-          await flutterWebViewPlugin.evalJavascript(
-              '''add_log(`${DateTime.now().toString()}: Load libs finished.`)''');
-          stateChanged(true);
-          print('=========js libs loaded.=========');
-          if (callback != null) {
-            callback();
-          }
-        }
-      });
-      await flutterWebViewPlugin.launch(
-        Uri.dataFromString(
-            '''<html><body><h3>Logs:</h3><div id="logs"></div></body></html>''',
-            mimeType: 'text/html',
-            parameters: {'charset': 'utf-8'}).toString(),
-        hidden: true,
-      );
+      print('loading glpk.min.js ...');
+      await engine.evaluate(await rootBundle.loadString('res/js/glpk.min.js'),
+          name: '<glpk.min.js>');
+      print('loading solver.js ...');
+      await engine.evaluate(await rootBundle.loadString('res/js/solver.js'),
+          name: '<solver.js>');
+      print('=========js libs loaded.=========');
     } catch (e, s) {
       logger.e('initiate js error', e, s);
-      showToast('initiate js error\n$e');
+      EasyLoading.showToast('initiate js error\n$e');
     }
   }
 
@@ -80,7 +40,6 @@ class GLPKSolver {
     // so only use simplex here
     assert(data != null && params != null);
     print('=========solving========\nparams="${json.encode(params)}"');
-    stateChanged(false);
     GLPKSolution solution;
     try {
       final params2 = GLPKParams.from(params);
@@ -89,42 +48,33 @@ class GLPKSolver {
       if (params2.rows.length == 0) {
         logger.d('after pre processing, params has no valid rows.\n'
             'params=${json.encode(params2)}');
-        showToast('Invalid inputs');
+        EasyLoading.showToast('Invalid inputs');
       } else {
 //        print('modified params: ${json.encode(params2)}');
-        String resultString = await flutterWebViewPlugin.evalJavascript(
+        String resultString = await engine.evaluate(
             '''solve_glpk( `${json.encode(data2)}`,`${json.encode(params2)}`);''');
-        // TODO: why returned JSON stringify format uncertainly
-        resultString =
-            (resultString ?? '').replaceAll(RegExp(r'(^"+)|("+$)'), '');
-        resultString = resultString.replaceAll('\\"', '"');
+        if (resultString?.isNotEmpty != true || resultString == 'null') {
+          throw 'qjsEngine return nothing!';
+        }
         logger.v('result: $resultString');
         final result = json.decode(resultString);
-        if (result?.isNotEmpty != true) {
-          throw 'evalJavascript return null!';
-        }
         solution = GLPKSolution.fromJson(Map.from(result));
         solution.sortByValue();
-        await flutterWebViewPlugin.evalJavascript(
-            '''add_log(`${DateTime.now().toString()}: solve result: ${json.encode(solution)}`)''');
       }
     } catch (e, s) {
       logger.e('Execute GLPK solver failed', e, s);
-      showToast('Execute GLPK solver failed:\n$e');
+      EasyLoading.showToast('Execute GLPK solver failed:\n$e');
       rethrow;
-    } finally {
-      stateChanged(true);
     }
     print('=========solving finished=========');
     return solution;
   }
 
-  /// [data] and [params] must be copied instances. Modify them **in-place**
+  /// [data] and [params] must be copied instances. Modify them **in-place** here
   GLPKData preProcess({GLPKData data, GLPKParams params}) {
     print('pre processing GLPK data and params...');
-
     // inside pre processing, use [params.objective] not [items] and [counts]
-    final objective = params.generateObjective();
+    final objective = params.objective;
 
     // traverse originData rather new data
     // remove unused rows
@@ -134,22 +84,38 @@ class GLPKSolver {
       if (!objective.containsKey(row)) data.removeRow(row);
     });
 
-    // remove unused quests
-    // free quests' index for different server
+    // free quests for different server
     List<String> cols = data.colNames
         .sublist(0, params.maxColNum > 0 ? params.maxColNum : data.jpMaxColNum);
+    // only append extra columns having drop data in gpk matrix
     params.extraCols.forEach((col) {
       if (data.colNames.contains(col)) cols.add(col);
     });
+
+    // remove unused quests
+    // create a new list since iterator will change the original values
     List.from(data.colNames).forEach((col) {
       if (!cols.contains(col)) data.removeCol(col);
     });
 
     // now filtrate data's rows/cols
     Set<String> removeCols = {}; // not fit minCost
-    Set<String> retainCols = {}; // at least one quest for every item
+    // at least one quest for every item, higher priority than removeRows
+    Set<String> retainCols = {};
     Set<String> removeRows = {}; // no quest's drop contains the item.
 
+    // remove cols don't contain any objective rows
+    for (int col = 0; col < data.colNames.length; col++) {
+      double apRateSum = sum(objective.keys.map((rowName) {
+        return data.matrix[data.rowNames.indexOf(rowName)][col];
+      }));
+      if (apRateSum == 0) {
+        // this col don't contain any objective rows
+        removeCols.add(data.colNames[col]);
+      }
+    }
+
+    // remove quests: ap<minCost
     for (int i = 0; i < data.colNames.length; i++) {
       if (data.costs[i] < params.minCost) removeCols.add(data.colNames[i]);
     }
@@ -160,22 +126,23 @@ class GLPKSolver {
       double minAPRateVal = double.infinity;
       for (int j = 0; j < data.colNames.length; j++) {
         double v = data.matrix[row][j];
-        if (!removeCols.contains(data.colNames[j]) &&
-            v > 0 &&
-            v < minAPRateVal) {
-          minApRateCol = j;
-          minAPRateVal = v;
+        if (!removeCols.contains(data.colNames[j]) && v > 0) {
+          if (v < minAPRateVal) {
+            // record min col
+            minApRateCol = j;
+            minAPRateVal = v;
+          }
         }
       }
       if (minApRateCol < 0) {
         // no column(cost>minCost) contains rowName
+        // then retain the column with max drop rate/min ap rate
         int retainCol = data.matrix[row].indexOf(data.matrix[row].reduce(max));
         if (retainCol < 0)
           removeRows.add(rowName);
         else
           retainCols.add(data.colNames[retainCol]);
       } else {
-        // retain column with max drop rate/min ap rate
         retainCols.add(data.colNames[minApRateCol]);
       }
     }

@@ -9,11 +9,16 @@ import 'leveling_cost_page.dart';
 import 'svt_tab_base.dart';
 
 class SvtPlanTab extends SvtTabBaseWidget {
-  SvtPlanTab({Key key, ServantDetailPageState parent, Servant svt, ServantStatus status})
+  SvtPlanTab(
+      {Key key,
+      ServantDetailPageState parent,
+      Servant svt,
+      ServantStatus status})
       : super(key: key, parent: parent, svt: svt, status: status);
 
   @override
-  State<StatefulWidget> createState() => _SvtPlanTabState(parent: parent, svt: svt, status: status);
+  State<StatefulWidget> createState() =>
+      _SvtPlanTabState(parent: parent, svt: svt, status: status);
 }
 
 class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
@@ -21,9 +26,11 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
   bool enhanceMode = false;
   ServantPlan enhancePlan;
 
-  ServantPlan get plan => db.curUser.curSvtPlan.putIfAbsent(this.svt.no, () => ServantPlan());
+  ServantPlan get plan =>
+      db.curUser.curSvtPlan.putIfAbsent(this.svt.no, () => ServantPlan());
 
-  _SvtPlanTabState({ServantDetailPageState parent, Servant svt, ServantStatus status})
+  _SvtPlanTabState(
+      {ServantDetailPageState parent, Servant svt, ServantStatus status})
       : super(parent: parent, svt: svt, status: status);
 
   void ensureTargetLarger(ServantPlan cur, ServantPlan target) {
@@ -234,10 +241,14 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       selector = RangeSelector<int>(
         start: start,
         end: end,
-        startItems: List.generate(maxVal - minVal + 1,
-            (index) => MapEntry(minVal + index, Text((minVal + index).toString()))),
-        endItems: List.generate(maxVal - minVal + 1,
-            (index) => MapEntry(minVal + index, Text((minVal + index).toString()))),
+        startItems: List.generate(
+            maxVal - minVal + 1,
+            (index) =>
+                MapEntry(minVal + index, Text((minVal + index).toString()))),
+        endItems: List.generate(
+            maxVal - minVal + 1,
+            (index) =>
+                MapEntry(minVal + index, Text((minVal + index).toString()))),
         onChanged: onValueChanged,
       );
     }
@@ -245,17 +256,22 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       contentPadding: EdgeInsets.fromLTRB(16, 4, 0, 4),
       leading: leading,
       title: title == null ? null : AutoSizeText(title, maxLines: 1),
-      subtitle: subtitle == null ? null : AutoSizeText(subtitle, maxLines: 1, minFontSize: 10),
+      subtitle: subtitle == null
+          ? null
+          : AutoSizeText(subtitle, maxLines: 1, minFontSize: 10),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           selector,
           IconButton(
             icon: Icon(Icons.info_outline,
-                color: detailPageBuilder == null ? Colors.grey : Colors.blueAccent),
+                color: detailPageBuilder == null
+                    ? Colors.grey
+                    : Colors.blueAccent),
             onPressed: detailPageBuilder == null
                 ? null
-                : () => showDialog(context: context, builder: detailPageBuilder),
+                : () =>
+                    showDialog(context: context, builder: detailPageBuilder),
           )
         ],
       ),
@@ -277,7 +293,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     }
 
     return Container(
-      decoration: BoxDecoration(border: Border(top: Divider.createBorderSide(context, width: 0.5))),
+      decoration: BoxDecoration(
+          border: Border(top: Divider.createBorderSide(context, width: 0.5))),
       child: Align(
         alignment: Alignment.centerRight,
         child: FittedBox(
@@ -291,7 +308,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                   enhanceMode = !enhanceMode;
                 }),
                 child: Text(enhanceMode ? 'Cancel' : '强化'),
-                color: enhanceMode ? Colors.grey : Theme.of(context).primaryColor,
+                color:
+                    enhanceMode ? Colors.grey : Theme.of(context).primaryColor,
               ),
               RaisedButton(
                 onPressed: enhanceMode
@@ -319,7 +337,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                                     // items = items + (-1)*enhanceItems
                                     sumDict([
                                       db.curUser.items,
-                                      multiplyDict(enhanceItems, -1, inPlace: true)
+                                      multiplyDict(enhanceItems, -1,
+                                          inPlace: true)
                                     ], inPlace: true);
                                     setState(() {
                                       curVal.copyFrom(enhancePlan);
@@ -336,10 +355,14 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                 color: Theme.of(context).primaryColor,
               ),
               DropdownButton(
-                value: Set.from(curVal.skills).length == 1 ? curVal.skills[0] : null,
+                value: Set.from(curVal.skills).length == 1
+                    ? curVal.skills[0]
+                    : null,
                 hint: Text('Lv. ≠'),
                 items: List.generate(
-                    10, (i) => DropdownMenuItem(value: i + 1, child: Text('Lv. ${i + 1}'))),
+                    10,
+                    (i) => DropdownMenuItem(
+                        value: i + 1, child: Text('Lv. ${i + 1}'))),
                 onChanged: (v) {
                   state.setState(() {
                     curVal.favorite = targetPlan.favorite = true;

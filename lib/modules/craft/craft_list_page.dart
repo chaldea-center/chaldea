@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/query.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
 
 import 'craft_detail_page.dart';
@@ -102,7 +101,7 @@ class CraftListPageState extends State<CraftListPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(S.of(context).craft_essential),
-        leading: SplitViewBackButton(),
+        leading: SplitMasterBackButton(),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(45),
           child: Theme(
@@ -209,10 +208,11 @@ class CraftListPageState extends State<CraftListPage> {
             ),
             trailing: Icon(Icons.arrow_forward_ios),
             onTap: () {
-              SplitRoute.popAndPush(
-                context,
-                builder: (context) =>
+              SplitRoute.push(
+                context: context,
+                builder: (context, _) =>
                     CraftDetailPage(ce: ce, onSwitch: switchNext),
+                popDetail: true,
               );
             },
           );
@@ -238,8 +238,12 @@ class CraftListPageState extends State<CraftListPage> {
                 child: GestureDetector(
                   child: Image(image: db.getIconImage(ce.icon)),
                   onTap: () {
-                    SplitRoute.popAndPush(context,
-                        builder: (context) => CraftDetailPage(ce: ce));
+                    SplitRoute.push(
+                      context: context,
+                      builder: (context, _) =>
+                          CraftDetailPage(ce: ce, onSwitch: switchNext),
+                      popDetail: true,
+                    );
                   },
                 )),
           );

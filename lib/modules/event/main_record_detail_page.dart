@@ -15,8 +15,8 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
   @override
   Widget build(BuildContext context) {
     final record = db.gameData.events.mainRecords[widget.name];
-    final _onTap = (String itemKey) =>
-        SplitRoute.push(context, builder: (context) => ItemDetailPage(itemKey));
+    final _onTap = (String itemKey) => SplitRoute.push(
+        context: context, builder: (context, _) => ItemDetailPage(itemKey));
     return Scaffold(
       appBar: AppBar(leading: BackButton(), title: Text(widget.name)),
       body: ListView(

@@ -31,8 +31,8 @@ class _SettingsPageState extends State<SettingsPage> {
             children: <Widget>[
               ListTile(
                 title: Text(S.of(context).settings_tutorial),
-                onTap: (){
-                  showToast('咕咕咕咕咕咕');
+                onTap: () {
+                  EasyLoading.showToast('咕咕咕咕咕咕');
                 },
               ),
 //              ListTile(
@@ -71,8 +71,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   ],
                 ),
                 onTap: () {
-                  SplitRoute.popAndPush(context,
-                      builder: (context) => AccountPage());
+                  SplitRoute.push(
+                    context: context,
+                    builder: (context, _) => AccountPage(),
+                    popDetail: true,
+                  );
                 },
               ),
               ListTile(
@@ -85,8 +88,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   ],
                 ),
                 onTap: () {
-                  SplitRoute.popAndPush(context,
-                      builder: (context) => DatasetManagePage());
+                  SplitRoute.push(
+                    context: context,
+                    builder: (context, _) => DatasetManagePage(),
+                    popDetail: true,
+                  );
                 },
               ),
             ],
@@ -124,8 +130,11 @@ class _SettingsPageState extends State<SettingsPage> {
             children: <Widget>[
               ListTile(
                 title: Text('关于Chaldea'),
-                onTap: () => SplitRoute.popAndPush(context,
-                    builder: (context) => AboutPage()),
+                onTap: () => SplitRoute.push(
+                  context: context,
+                  builder: (context, _) => AboutPage(),
+                  popDetail: true,
+                ),
               ),
             ],
           ),

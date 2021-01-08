@@ -6,10 +6,11 @@ abstract class FilterPage<T> extends StatefulWidget {
   final T filterData;
   final bool Function(T) onChanged;
 
-  const FilterPage({Key key, this.filterData, this.onChanged}) : super(key: key);
+  const FilterPage({Key key, this.filterData, this.onChanged})
+      : super(key: key);
 
   static void show({BuildContext context, WidgetBuilder builder}) {
-    if (isTablet(context)) {
+    if (SplitRoute.isSplit(context)) {
       showDialog(context: context, builder: builder);
     } else {
       showModalBottomSheet(
@@ -27,8 +28,8 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
   TextStyle textStyle = TextStyle(fontSize: 16);
   bool _useTabletView;
 
-  bool get useTabletView {
-    _useTabletView ??= isTablet(context);
+  bool get useSplitView {
+    _useTabletView ??= SplitRoute.isSplit(context);
     return _useTabletView;
   }
 
@@ -58,13 +59,15 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
     db.saveUserData();
   }
 
-  Widget buildAdaptive({Widget title, Widget content, List<Widget> actions = const []}) {
-    return useTabletView
+  Widget buildAdaptive(
+      {Widget title, Widget content, List<Widget> actions = const []}) {
+    return useSplitView
         ? _buildDialog(title: title, content: content, actions: actions)
         : _buildSheet(title: title, content: content, actions: actions);
   }
 
-  Widget _buildSheet({Widget title, Widget content, List<Widget> actions = const []}) {
+  Widget _buildSheet(
+      {Widget title, Widget content, List<Widget> actions = const []}) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -79,7 +82,8 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
     );
   }
 
-  Widget _buildDialog({Widget title, Widget content, List<Widget> actions = const []}) {
+  Widget _buildDialog(
+      {Widget title, Widget content, List<Widget> actions = const []}) {
     return AlertDialog(
       backgroundColor: AppColors.setting_bg,
       title: Center(child: title),
@@ -99,9 +103,11 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
   }
 
   List<Widget> getDefaultActions(
-      {VoidCallback onTapReset, bool showOk, List<Widget> extraActions = const []}) {
-    showOk ??= useTabletView;
-    if (useTabletView) {
+      {VoidCallback onTapReset,
+      bool showOk,
+      List<Widget> extraActions = const []}) {
+    showOk ??= useSplitView;
+    if (useSplitView) {
       return [
         ...extraActions,
         FlatButton(
@@ -119,7 +125,9 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
       return [
         ...extraActions,
         IconButton(icon: Icon(Icons.replay), onPressed: onTapReset),
-        if (showOk) IconButton(icon: Icon(Icons.done), onPressed: () => Navigator.pop(context))
+        if (showOk)
+          IconButton(
+              icon: Icon(Icons.done), onPressed: () => Navigator.pop(context))
       ];
     }
   }
@@ -131,7 +139,8 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
       child: ListView(
         padding: EdgeInsets.symmetric(vertical: 6),
         shrinkWrap: true,
-        children: divideTiles(children, divider: Divider(color: Colors.transparent, height: 5)),
+        children: divideTiles(children,
+            divider: Divider(color: Colors.transparent, height: 5)),
       ),
     );
   }
@@ -177,7 +186,10 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
     );
   }
 
-  Widget getToggleButton({List<String> texts, List<bool> isSelected, ValueChanged<int> onPressed}) {
+  Widget getToggleButton(
+      {List<String> texts,
+      List<bool> isSelected,
+      ValueChanged<int> onPressed}) {
     return ToggleButtons(
       constraints: BoxConstraints(minHeight: 30),
       selectedColor: Colors.white,
@@ -201,7 +213,8 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
       bool reversed = true,
       ValueChanged<bool> onSortDirectional}) {
     return DecoratedBox(
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 0, color: Colors.grey))),
+      decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(width: 0, color: Colors.grey))),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -211,7 +224,8 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
             isDense: true,
             value: value,
             items: items.entries
-                .map((e) => DropdownMenuItem(child: Text(e.value, style: textStyle), value: e.key))
+                .map((e) => DropdownMenuItem(
+                    child: Text(e.value, style: textStyle), value: e.key))
                 .toList(),
             onChanged: onSortAttr,
           )),
@@ -256,7 +270,8 @@ class FilterGroup extends StatelessWidget {
       : assert(values != null),
         super(key: key);
 
-  Widget _buildCheckbox(bool checked, String text, VoidCallback onTap, BuildContext context) {
+  Widget _buildCheckbox(
+      bool checked, String text, VoidCallback onTap, BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Row(
@@ -280,7 +295,8 @@ class FilterGroup extends StatelessWidget {
         children: <Widget>[
           if (title != null || showMatchAll || showInvert)
             CustomTile(
-              title: DefaultTextStyle.merge(child: title, style: TextStyle(fontSize: 14)),
+              title: DefaultTextStyle.merge(
+                  child: title, style: TextStyle(fontSize: 14)),
               contentPadding: EdgeInsets.zero,
               trailing: Row(
                 children: <Widget>[
@@ -307,7 +323,8 @@ class FilterGroup extends StatelessWidget {
               return FilterOption(
                   selected: values.options[key] ?? false,
                   value: key,
-                  child: optionBuilder == null ? Text('$key') : optionBuilder(key),
+                  child:
+                      optionBuilder == null ? Text('$key') : optionBuilder(key),
                   onChanged: (v) {
                     if (useRadio) {
                       values.options.clear();
@@ -366,7 +383,10 @@ class FilterOption<T> extends StatelessWidget {
             style: TextStyle(
                 color: selected
                     ? selectedTextColor
-                    : Theme.of(context).textTheme.headline5.color), //title->headline5
+                    : Theme.of(context)
+                        .textTheme
+                        .headline5
+                        .color), //title->headline5
             child: child ?? Text(value.toString()),
           ),
           shape: ContinuousRectangleBorder(

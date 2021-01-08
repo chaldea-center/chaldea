@@ -14,7 +14,8 @@ class ItemObtainEventPage extends StatelessWidget {
     db.gameData.events.exchangeTickets.values.forEach((ticket) {
       int itemIndex = ticket.items.indexOf(itemKey);
       if (itemIndex >= 0 && ticket.isNotOutdated()) {
-        int itemNum = db.curUser.events.exchangeTickets[ticket.month]?.elementAt(itemIndex);
+        int itemNum = db.curUser.events.exchangeTickets[ticket.month]
+            ?.elementAt(itemIndex);
         children.add(ListTile(
           title: Text('交换券${ticket.month}'),
           subtitle: Text(ticket.items.join('/')),
@@ -66,7 +67,8 @@ class ItemObtainEventPage extends StatelessWidget {
         final int numShop = (limitEvent.items ?? {})[itemKey],
             numLottery = (limitEvent.lottery ?? {})[itemKey];
         final bool hasExtra = limitEvent.extra?.containsKey(itemKey) == true;
-        if ((numShop != null || numLottery != null || hasExtra) && limitEvent.isNotOutdated()) {
+        if ((numShop != null || numLottery != null || hasExtra) &&
+            limitEvent.isNotOutdated()) {
           children.add(ListTile(
             title: AutoSizeText(limitEvent.name, maxFontSize: 15, maxLines: 2),
             trailing: Text(

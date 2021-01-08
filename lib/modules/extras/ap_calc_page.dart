@@ -69,7 +69,8 @@ class _APCalcPageState extends State<APCalcPage> {
               icon: Icon(Icons.remove),
               onPressed: () {
                 FocusScope.of(context).unfocus();
-                controller.text = ((int.tryParse(controller.text) ?? 0) - 1).toString();
+                controller.text =
+                    ((int.tryParse(controller.text) ?? 0) - 1).toString();
                 calcTime();
               }),
           SizedBox(
@@ -95,7 +96,8 @@ class _APCalcPageState extends State<APCalcPage> {
               icon: Icon(Icons.add),
               onPressed: () {
                 FocusScope.of(context).unfocus();
-                controller.text = ((int.tryParse(controller.text) ?? 0) + 1).toString();
+                controller.text =
+                    ((int.tryParse(controller.text) ?? 0) + 1).toString();
                 calcTime();
               })
         ],

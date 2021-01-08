@@ -1,6 +1,6 @@
 export 'package:chaldea/generated/l10n.dart';
 export 'package:flutter/material.dart';
-export 'package:path/path.dart' show join;
+export 'package:flutter_easyloading/flutter_easyloading.dart';
 
 export 'config.dart';
 export 'constants.dart';
@@ -11,7 +11,6 @@ export 'datatypes/datatypes.dart';
 export 'ensure_visible_when_focused.dart';
 export 'glpk_solver.dart';
 export 'image_viewer.dart';
-export 'input_manager.dart';
 export 'int_range_slider.dart';
 export 'logger.dart';
 export 'query.dart';

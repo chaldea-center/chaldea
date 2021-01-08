@@ -37,6 +37,11 @@ class _AboutPageState extends State<AboutPage> {
           appVersion = info.version;
         });
       });
+    }).catchError((e) {
+      // TODO: package_info only support android/ios, how to resolve in win?
+      setState(() {
+        appName = 'Chaldea';
+      });
     });
   }
 
@@ -59,7 +64,6 @@ class _AboutPageState extends State<AboutPage> {
       appBar: AppBar(leading: BackButton(), title: Text('关于Chaldea')),
       body: ListView(
         children: <Widget>[
-          // TODO: add a log+name+intro Card.
           Card(
             margin: EdgeInsets.all(0),
             child: Padding(
@@ -69,12 +73,13 @@ class _AboutPageState extends State<AboutPage> {
                 children: [
                   Image.asset(
                     'res/img/launcher_icon/app_icon_foreground.png',
-                    width: 120,),
+                    width: 120,
+                  ),
                   Text(
                     appName,
                     style: Theme.of(context).textTheme.headline6,
                   ),
-                  Text(appVersion)
+                  if (appVersion.isNotEmpty) Text('Version: $appVersion')
                 ],
               ),
             ),
@@ -100,21 +105,34 @@ class _AboutPageState extends State<AboutPage> {
             children: <Widget>[
               ListTile(
                 title: Text('Email'),
-                subtitle: AutoSizeText('请附上出错页面截图和截图', maxLines: 1),
+                subtitle: AutoSizeText('请附上出错页面截图和日志', maxLines: 1),
                 onTap: () async {
-                  final info = await PackageInfo.fromPlatform();
-                  final Email email = Email(
-                      subject: '${info.appName} v${info.version} Feedback',
-                      body: '请附上出错页面截图和日志.\n\n',
-                      recipients: [kSupportTeamEmailAddress],
-                      isHTML: true,
-                      attachmentPaths: [
-                        if (crashFile.existsSync()) crashFile.path,
-                      ]);
-                  FlutterEmailSender.send(email);
+                  if (Platform.isAndroid || Platform.isIOS) {
+                    final info = await PackageInfo.fromPlatform();
+                    final Email email = Email(
+                        subject: '${info.appName} v${info.version} Feedback',
+                        body: '请附上出错页面截图和日志.\n\n',
+                        recipients: [kSupportTeamEmailAddress],
+                        isHTML: true,
+                        attachmentPaths: [
+                          if (crashFile.existsSync()) crashFile.path,
+                        ]);
+                    FlutterEmailSender.send(email);
+                  } else {
+                    SimpleCancelOkDialog(
+                      title: Text('Send Feedback'),
+                      content: Text('请将出错页面的截图以及日志文件发送到以下邮箱:\n'
+                          '$kSupportTeamEmailAddress\n'
+                          '日志文件路径:\n${db.paths.crashLog}'),
+                    ).show(context);
+                  }
                 },
               ),
-              ListTile(title: Text('NGA')),
+              ListTile(
+                title: Text('NGA'),
+                onTap: () => jumpToLink(context, 'NGA-FGO',
+                    'https://bbs.nga.cn/read.php?tid=24926789'),
+              ),
             ],
           ),
           if (kDebugMode)
@@ -124,11 +142,13 @@ class _AboutPageState extends State<AboutPage> {
                 ListTile(
                   title: Text('Delete crash logs'),
                   onTap: () {
-                    crashFile.delete().then((_) {
-                      showToast('crash logs has been deleted.');
-                      loadLog();
-                      setState(() {});
-                    });
+                    if (crashFile.existsSync()) {
+                      crashFile.delete().then((_) {
+                        EasyLoading.showToast('crash logs has been deleted.');
+                        loadLog();
+                        setState(() {});
+                      });
+                    }
                   },
                 ),
                 ConstrainedBox(
@@ -154,7 +174,7 @@ class _AboutPageState extends State<AboutPage> {
         if (await canLaunch(link)) {
           launch(link);
         } else {
-          showToast('Could not launch uri: $link');
+          EasyLoading.showToast('Could not launch uri: $link');
         }
       },
     ).show(context);

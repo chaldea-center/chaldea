@@ -3,7 +3,9 @@ import 'package:chaldea/modules/shared/filter_page.dart';
 
 class ServantFilterPage extends FilterPage<SvtFilterData> {
   const ServantFilterPage(
-      {Key key, SvtFilterData filterData, bool Function(SvtFilterData) onChanged})
+      {Key key,
+      SvtFilterData filterData,
+      bool Function(SvtFilterData) onChanged})
       : super(key: key, onChanged: onChanged, filterData: filterData);
 
   @override
@@ -49,7 +51,8 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             getSortButton<SvtCompare>(
               prefix: '${i + 1}',
               value: filterData.sortKeys[i],
-              items: Map.fromIterables(SvtFilterData.sortKeyData, ['序号', '职阶', '星级', 'ATK', 'HP']),
+              items: Map.fromIterables(
+                  SvtFilterData.sortKeyData, ['序号', '职阶', '星级', 'ATK', 'HP']),
               onSortAttr: (key) {
                 filterData.sortKeys[i] = key;
                 update();
@@ -193,8 +196,8 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
                           child: Image(image: db.getIconImage(name)),
                           onTap: () {
                             if (index == 0) {
-                              SvtFilterData.classesData
-                                  .forEach((e) => filterData.className.options[e] = true);
+                              SvtFilterData.classesData.forEach((e) =>
+                                  filterData.className.options[e] = true);
                             } else {
                               filterData.className.options.clear();
                             }
@@ -212,10 +215,12 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
                       childAspectRatio: 1.2,
                       physics: NeverScrollableScrollPhysics(),
                       children: SvtFilterData.classesData.map((className) {
-                        final selected = filterData.className.options[className] ?? false;
+                        final selected =
+                            filterData.className.options[className] ?? false;
                         final color = selected ? '金卡' : '铜卡';
                         return GestureDetector(
-                          child: Image(image: db.getIconImage('$color$className')),
+                          child:
+                              Image(image: db.getIconImage('$color$className')),
                           onTap: () {
                             filterData.className.options[className] = !selected;
                             update();

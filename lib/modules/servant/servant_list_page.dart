@@ -173,7 +173,7 @@ class ServantListPageState extends State<ServantListPage> {
           return Scaffold(
             appBar: AppBar(
               title: Text(S.of(context).servant),
-              leading: SplitViewBackButton(),
+              leading: SplitMasterBackButton(),
               bottom: PreferredSize(
                 preferredSize: Size.fromHeight(45),
                 child: Theme(
@@ -326,8 +326,11 @@ class ServantListPageState extends State<ServantListPage> {
             ),
             trailing: Icon(Icons.arrow_forward_ios),
             onTap: () {
-              SplitRoute.popAndPush(context,
-                  builder: (context) => ServantDetailPage(svt));
+              SplitRoute.push(
+                context: context,
+                builder: (context, _) => ServantDetailPage(svt),
+                popDetail: true,
+              );
             },
           );
         });
@@ -366,8 +369,11 @@ class ServantListPageState extends State<ServantListPage> {
                 alignment: AlignmentDirectional.bottomStart,
                 padding: EdgeInsets.fromLTRB(4, 0, 8, 0),
                 onTap: () {
-                  SplitRoute.popAndPush(context,
-                      builder: (context) => ServantDetailPage(svt));
+                  SplitRoute.push(
+                    context: context,
+                    builder: (context, _) => ServantDetailPage(svt),
+                    popDetail: true,
+                  );
                 },
               ),
             ),

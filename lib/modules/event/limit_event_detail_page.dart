@@ -17,22 +17,23 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
   LimitEvent event;
   LimitEventPlan plan;
   TextEditingController _lotteryController;
-  TextInputsManager<String> manager = TextInputsManager();
+
+  Map<String, TextEditingController> _controllers = {};
 
   @override
   void initState() {
     super.initState();
-    event = db.gameData.events.limitEvents[widget.name] ?? LimitEvent(name: 'empty event');
-    plan = db.curUser.events.limitEvents.putIfAbsent(event.name, () => LimitEventPlan());
+    event = db.gameData.events.limitEvents[widget.name] ??
+        LimitEvent(name: 'empty event');
+    plan = db.curUser.events.limitEvents
+        .putIfAbsent(event.name, () => LimitEventPlan());
     if (event.lottery != null) {
       _lotteryController = TextEditingController(text: plan.lottery.toString());
     }
     if (event.extra != null) {
       for (var name in event.extra.keys) {
-        manager.components.add(InputComponent(
-            data: name,
-            controller: TextEditingController(text: plan.extra[name]?.toString()),
-            focusNode: FocusNode()));
+        _controllers[name] =
+            TextEditingController(text: plan.extra[name]?.toString());
       }
     }
   }
@@ -57,7 +58,8 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
       children
         ..add(ListTile(
           title: Text(event.lotteryLimit > 0 ? '有限池' : '无限池'),
-          subtitle: Text(event.lotteryLimit > 0 ? '最多${event.lotteryLimit}池' : '共计池数'),
+          subtitle: Text(
+              event.lotteryLimit > 0 ? '最多${event.lotteryLimit}池' : '共计池数'),
           trailing: SizedBox(
               width: 80,
               child: TextField(
@@ -107,12 +109,11 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     );
   }
 
-  Widget _buildExtraItems(Map<String, String> data, Map<String, int> extraPlan) {
-    manager.resetFocusList();
+  Widget _buildExtraItems(
+      Map<String, String> data, Map<String, int> extraPlan) {
     List<Widget> children = [];
     data.forEach((itemKey, hint) {
-      final component = manager.getComponentByData(itemKey);
-      manager.addObserver(component);
+      final controller = _controllers[itemKey];
       children.add(ListTile(
         leading: GestureDetector(
           onTap: () => onTapIcon(itemKey),
@@ -122,27 +123,24 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
         subtitle: Text(hint),
         trailing: SizedBox(
           width: 50,
-          child: EnsureVisibleWhenFocused(
-              child: TextField(
-                maxLength: 4,
-                controller: component.controller,
-                focusNode: component.focusNode,
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.number,
-                textInputAction: TextInputAction.next,
-                inputFormatters: [NumberInputFormatter()],
-                decoration: InputDecoration(counterText: ''),
-                onChanged: (v) {
-                  if (extraPlan != null) {
-                    extraPlan[itemKey] = int.tryParse(v) ?? 0;
-                  }
-                },
-                onTap: () => component.onTap(context),
-                onSubmitted: (_) {
-                  manager.moveNextFocus(context, component);
-                },
-              ),
-              focusNode: component.focusNode),
+          child: TextField(
+            maxLength: 4,
+            controller: controller,
+            textAlign: TextAlign.center,
+            keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.next,
+            inputFormatters: [NumberInputFormatter()],
+            decoration: InputDecoration(counterText: ''),
+            onChanged: (v) {
+              if (extraPlan != null) {
+                extraPlan[itemKey] = int.tryParse(v) ?? 0;
+              }
+            },
+            onSubmitted: (_) {},
+            onEditingComplete: () {
+              FocusScope.of(context).nextFocus();
+            },
+          ),
         ),
       ));
     });
@@ -150,13 +148,16 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
   }
 
   void onTapIcon(String itemKey) {
-    SplitRoute.push(context, builder: (context) => ItemDetailPage(itemKey));
+    SplitRoute.push(
+      context: context,
+      builder: (context, _) => ItemDetailPage(itemKey),
+    );
   }
 
   @override
   void dispose() {
     super.dispose();
     _lotteryController?.dispose();
-    manager.dispose();
+    _controllers.values.forEach((c) => c.dispose());
   }
 }

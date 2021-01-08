@@ -2,10 +2,10 @@
 import 'dart:math' show min;
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 
 import 'config.dart';
 
@@ -19,10 +19,10 @@ class FullScreenImageSlider extends StatefulWidget {
 
   const FullScreenImageSlider(
       {Key? key,
-        required this.imgUrls,
-        this.initialPage = 0,
-        this.enableDownload,
-        this.placeholder})
+      required this.imgUrls,
+      this.initialPage = 0,
+      this.enableDownload,
+      this.placeholder})
       : super(key: key);
 
   @override
@@ -89,25 +89,25 @@ class CachedImageWidget extends StatefulWidget {
 
   static get defaultIndicatorBuilder {
     return (BuildContext context, String url) => LayoutBuilder(
-      builder: (context, constraints) {
-        final width = 0.3 *
-            min(constraints.biggest.width, constraints.biggest.height);
-        return Center(
-            child: SizedBox(
+          builder: (context, constraints) {
+            final width = 0.3 *
+                min(constraints.biggest.width, constraints.biggest.height);
+            return Center(
+                child: SizedBox(
               width: width,
               height: width,
               child: CircularProgressIndicator(),
             ));
-      },
-    );
+          },
+        );
   }
 
   const CachedImageWidget(
       {Key? key,
-        required this.url,
-        this.enableDownload,
-        required this.imageBuilder,
-        this.placeholder})
+      required this.url,
+      this.enableDownload,
+      required this.imageBuilder,
+      this.placeholder})
       : super(key: key);
 
   @override
@@ -135,10 +135,10 @@ class _CachedImageWidgetState extends State<CachedImageWidget> {
     return cached == null
         ? Container()
         : cached == true ||
-        (widget.enableDownload ?? db.runtimeData.enableDownload ?? true)
-        ? widget.imageBuilder(context, widget.url)
-        : widget.placeholder == null
-        ? Center(child: Text('Downloading disabled.'))
-        : widget.placeholder!(context, widget.url);
+                (widget.enableDownload ?? db.runtimeData.enableDownload ?? true)
+            ? widget.imageBuilder(context, widget.url)
+            : widget.placeholder == null
+                ? Center(child: Text('Downloading disabled.'))
+                : widget.placeholder!(context, widget.url);
   }
 }

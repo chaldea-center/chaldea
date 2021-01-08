@@ -76,10 +76,10 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         }
         setState(() {});
         db.saveUserData();
-        showToast('Slides have been updated.');
+        EasyLoading.showToast('Slides have been updated.');
       } catch (e) {
         print('Error refresh slides:\n$e');
-        showToast('Error refresh slides:\n$e');
+        EasyLoading.showToast('Error refresh slides:\n$e');
       }
     }
   }
@@ -90,64 +90,65 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         name: GalleryItem.servant,
         title: S.of(context).servant_title,
         icon: Icons.people,
-        builder: (context) => ServantListPage(key: _svtKey),
+        builder: (context, _) => ServantListPage(key: _svtKey),
       ),
       GalleryItem.craft_essential: GalleryItem(
         name: GalleryItem.craft_essential,
         title: S.of(context).craft_essential,
         icon: Icons.extension,
-        builder: (context) => CraftListPage(key: _craftKey),
+        builder: (context, _) => CraftListPage(key: _craftKey),
       ),
       GalleryItem.cmd_code: GalleryItem(
         name: GalleryItem.cmd_code,
         title: S.of(context).cmd_code_title,
         icon: Icons.stars,
-        builder: (context) => CmdCodeListPage(key: _cmdKey),
+        builder: (context, _) => CmdCodeListPage(key: _cmdKey),
       ),
       GalleryItem.item: GalleryItem(
         name: GalleryItem.item,
         title: S.of(context).item_title,
         icon: Icons.category,
-        builder: (context) => ItemListPage(),
+        builder: (context, _) => ItemListPage(),
       ),
       GalleryItem.event: GalleryItem(
         name: GalleryItem.event,
         title: S.of(context).event_title,
         icon: Icons.event_available,
-        builder: (context) => EventListPage(),
+        builder: (context, _) => EventListPage(),
       ),
       GalleryItem.drop_calculator: GalleryItem(
         name: GalleryItem.drop_calculator,
         title: S.of(context).drop_calculator,
         icon: Icons.pin_drop,
-        builder: (context) => DropCalculatorPage(),
+        builder: (context, _) => DropCalculatorPage(),
+        isDetail: true,
       ),
 //      GalleryItem.calculator: GalleryItem(
 //        name: GalleryItem.calculator,
 //        title: S.of(context).calculator,
 //        icon: Icons.keyboard,
-//        builder: (context) => DamageCalcPage(),
+//        builder: (context,_) => DamageCalcPage(),
 //        isDetail: true,
 //      ),
 //       GalleryItem.ap_cal: GalleryItem(
 //         name: GalleryItem.ap_cal,
 //         title: 'AP计算',
 //         icon: Icons.directions_run,
-//         builder: (context) => APCalcPage(),
+//         builder: (context,_) => APCalcPage(),
 //         isDetail: true,
 //       ),
       GalleryItem.statistics: GalleryItem(
         name: GalleryItem.statistics,
         title: '统计',
         icon: Icons.analytics,
-        builder: (context) => GameStatisticsPage(),
+        builder: (context, _) => GameStatisticsPage(),
         isDetail: true,
       ),
       GalleryItem.more: GalleryItem(
         name: GalleryItem.more,
         title: S.of(context).more,
         icon: Icons.add,
-        builder: (context) => EditGalleryPage(galleries: kAllGalleryItems),
+        builder: (context, _) => EditGalleryPage(galleries: kAllGalleryItems),
         //fail
         isDetail: true,
       ),
@@ -193,7 +194,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
                     ),
             ),
             GridView.count(
-              crossAxisCount: isTablet(context) ? 3 : 4,
+              crossAxisCount: SplitRoute.isSplit(context) ? 4 : 4,
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               childAspectRatio: 1,
@@ -234,8 +235,12 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
           ),
           onPressed: () {
             if (item.builder != null) {
-              SplitRoute.popAndPush(context,
-                  builder: item.builder, useDetail: item.isDetail);
+              SplitRoute.push(
+                context: context,
+                builder: item.builder,
+                detail: item.isDetail,
+                popDetail: true,
+              );
             }
           },
         ));
@@ -252,14 +257,14 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
           showDialog(
             context: context,
             builder: (context) => SimpleCancelOkDialog(
-              title: Text('Jump to Mooncell?'),
+              title: Text('跳转到Mooncell?'),
               content: Text(link,
                   style: TextStyle(decoration: TextDecoration.underline)),
               onTapOk: () async {
                 if (await canLaunch(link)) {
                   launch(link);
                 } else {
-                  showToast('Could not launch link:\n$link');
+                  EasyLoading.showToast('Could not launch link:\n$link');
                 }
               },
             ),

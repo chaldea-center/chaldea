@@ -58,7 +58,7 @@ class GalleryItem {
   final String name;
   final String title;
   final IconData icon;
-  final WidgetBuilder builder;
+  final SplitLayoutBuilder builder;
   final bool isDetail;
 
   const GalleryItem(

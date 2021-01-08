@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'dart:math' show max, min;
 
 import 'package:flutter/material.dart';
 
@@ -25,7 +25,8 @@ class CustomTile extends StatelessWidget {
   final GestureLongPressCallback onLongPress;
 
   ///default values
-  static EdgeInsets defaultContentPadding = EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
+  static EdgeInsets defaultContentPadding =
+      EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
   static EdgeInsets defaultTitlePadding = EdgeInsets.symmetric(horizontal: 6.0);
 
   const CustomTile(
@@ -60,7 +61,8 @@ class CustomTile extends StatelessWidget {
       iconThemeData = IconThemeData(color: _iconColor(theme, tileTheme));
 
     Widget leadingIcon;
-    if (leading != null) leadingIcon = IconTheme.merge(data: iconThemeData, child: leading);
+    if (leading != null)
+      leadingIcon = IconTheme.merge(data: iconThemeData, child: leading);
 
     final TextStyle titleStyle = _titleTextStyle(theme, tileTheme);
     final Widget titleText = AnimatedDefaultTextStyle(
@@ -97,8 +99,10 @@ class CustomTile extends StatelessWidget {
     final EdgeInsets resolvedContentPadding = contentPadding ??
         tileTheme?.contentPadding ??
         EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
-    final EdgeInsets resolvedTitlePadding =
-        titlePadding ?? (leading == null ? EdgeInsets.zero : EdgeInsets.symmetric(horizontal: 6.0));
+    final EdgeInsets resolvedTitlePadding = titlePadding ??
+        (leading == null
+            ? EdgeInsets.zero
+            : EdgeInsets.symmetric(horizontal: 6.0));
     List<Widget> allElements = [
       leadingIcon,
       Expanded(
@@ -140,7 +144,8 @@ class CustomTile extends StatelessWidget {
   Color _iconColor(ThemeData theme, ListTileTheme tileTheme) {
     if (!enabled) return theme.disabledColor;
 
-    if (selected && tileTheme?.selectedColor != null) return tileTheme.selectedColor;
+    if (selected && tileTheme?.selectedColor != null)
+      return tileTheme.selectedColor;
 
     if (!selected && tileTheme?.iconColor != null) return tileTheme.iconColor;
 
@@ -148,16 +153,20 @@ class CustomTile extends StatelessWidget {
       case Brightness.light:
         return selected ? theme.primaryColor : Colors.black45;
       case Brightness.dark:
-        return selected ? theme.accentColor : null; // null - use current icon theme color
+        return selected
+            ? theme.accentColor
+            : null; // null - use current icon theme color
     }
     assert(theme.brightness != null);
     return null;
   }
 
-  Color _textColor(ThemeData theme, ListTileTheme tileTheme, Color defaultColor) {
+  Color _textColor(
+      ThemeData theme, ListTileTheme tileTheme, Color defaultColor) {
     if (!enabled) return theme.disabledColor;
 
-    if (selected && tileTheme?.selectedColor != null) return tileTheme.selectedColor;
+    if (selected && tileTheme?.selectedColor != null)
+      return tileTheme.selectedColor;
 
     if (!selected && tileTheme?.textColor != null) return tileTheme.textColor;
 
@@ -192,7 +201,8 @@ class CustomTile extends StatelessWidget {
 
   TextStyle _subtitleTextStyle(ThemeData theme, ListTileTheme tileTheme) {
     final TextStyle style = theme.textTheme.bodyText2; //body1->bodyText2
-    final Color color = _textColor(theme, tileTheme, theme.textTheme.caption.color);
+    final Color color =
+        _textColor(theme, tileTheme, theme.textTheme.caption.color);
     return style.copyWith(color: color);
   }
 }
@@ -231,8 +241,11 @@ class ImageWithText extends StatelessWidget {
               alignment: alignment,
               children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.fromLTRB(-min(0.0, padding.left), -min(0.0, padding.top),
-                      -min(0.0, padding.right), -min(0.0, padding.bottom)),
+                  padding: EdgeInsets.fromLTRB(
+                      -min(0.0, padding.left),
+                      -min(0.0, padding.top),
+                      -min(0.0, padding.right),
+                      -min(0.0, padding.bottom)),
                   child: Center(
                     widthFactor: 1,
                     heightFactor: 1,
@@ -241,10 +254,14 @@ class ImageWithText extends StatelessWidget {
                 ),
                 if (text != null)
                   Padding(
-                    padding: EdgeInsets.fromLTRB(max(0.0, padding.left), max(0.0, padding.top),
-                        max(0.0, padding.right), max(0.0, padding.bottom)),
+                    padding: EdgeInsets.fromLTRB(
+                        max(0.0, padding.left),
+                        max(0.0, padding.top),
+                        max(0.0, padding.right),
+                        max(0.0, padding.bottom)),
                     child: FittedBox(
-                      fit: BoxFit.fitWidth, //no effect if width is not constraint
+                      fit: BoxFit.fitWidth,
+                      //no effect if width is not constraint
                       child: Stack(
                         children: <Widget>[
                           Text(

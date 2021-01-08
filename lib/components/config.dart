@@ -4,19 +4,19 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
-import 'package:chaldea/components/components.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
-import 'package:path/path.dart';
+import 'package:path/path.dart' as pathlib;
 import 'package:path_provider/path_provider.dart';
 
 import 'constants.dart';
 import 'datatypes/datatypes.dart';
-import 'utils.dart';
+import 'logger.dart';
 
 /// app config:
 ///  - app database
@@ -43,10 +43,15 @@ class Database {
   }
 
   Future<void> checkNetwork() async {
-    final result = await Connectivity().checkConnectivity();
-    runtimeData.enableDownload = (!kDebugMode ||
-            db.userData.testAllowDownload) &&
-        (db.userData.useMobileNetwork || result != ConnectivityResult.mobile);
+    if (Platform.isAndroid || Platform.isIOS) {
+      // connectivity not support windows
+      final result = await Connectivity().checkConnectivity();
+      runtimeData.enableDownload = (!kDebugMode ||
+              db.userData.testAllowDownload) &&
+          (db.userData.useMobileNetwork || result != ConnectivityResult.mobile);
+    } else {
+      runtimeData.enableDownload = true;
+    }
   }
 
   // data files operation
@@ -61,7 +66,7 @@ class Database {
     } catch (e, s) {
       userData ??= UserData(); // if not null, don't change data
       logger.e('Load userdata failed', e, s);
-      showToast('Load userdata failed\n$e');
+      EasyLoading.showToast('Load userdata failed\n$e');
       return false;
     }
   }
@@ -75,7 +80,7 @@ class Database {
     } catch (e, s) {
       gameData ??= GameData(); // if not null, don't change data
       logger.e('Load game data failed', e, s);
-      showToast('Load game data failed\n$e');
+      EasyLoading.showToast('Load game data failed\n$e');
       return false;
     }
   }
@@ -88,22 +93,24 @@ class Database {
           options: Options(responseType: ResponseType.bytes));
       print(response.headers);
       if (response.statusCode == 200) {
-        File file = File(join(db.paths.tempPath, 'dataset.zip'));
+        File file = File(pathlib.join(db.paths.tempPath, 'dataset.zip'));
         var raf = file.openSync(mode: FileMode.write);
         raf.writeFromSync(response.data);
         raf.closeSync();
         extractZip(response.data, db.paths.gameDataDir);
         if (db.loadGameData()) {
           logger.i('Data downloaded! Version: ${db.gameData.version}');
-          showToast('Data downloaded! Version: ${db.gameData.version}');
+          EasyLoading.showToast(
+              'Data downloaded! Version: ${db.gameData.version}');
         } else {
           logger.i('Invalid data content! Version: ${db.gameData.version}');
-          showToast('Invalid data content! Version: ${db.gameData.version}');
+          EasyLoading.showToast(
+              'Invalid data content! Version: ${db.gameData.version}');
         }
       }
     } catch (e) {
       logger.w('Downloading error:\n$e');
-      showToast('Downloading error: $e');
+      EasyLoading.showToast('Downloading error: $e');
       rethrow;
     }
   }
@@ -117,7 +124,7 @@ class Database {
         extractZip(data.buffer.asUint8List().cast<int>(), extractDir);
       }, onError: (e, s) {
         logger.e('Load assets failed: $assetKey', e, s);
-        showToast('Error load assets: $assetKey\n$e');
+        EasyLoading.showToast('Error load assets: $assetKey\n$e');
       });
     }
     return Future.value(null);
@@ -129,7 +136,8 @@ class Database {
 
   String backupUserdata() {
     String timeStamp = DateFormat('yyyyMMddTHHmmss').format(DateTime.now());
-    String filepath = join(paths.savePath, 'userdata-$timeStamp.json');
+    String filepath =
+        pathlib.join(paths.userDataDir, 'userdata-$timeStamp.json');
     _saveJsonToFile(userData, filepath);
     return filepath;
   }
@@ -173,7 +181,7 @@ class Database {
       return errorImage;
     }
     return FileImage(
-      File(join(paths.gameIconDir, icon.name)),
+      File(pathlib.join(paths.gameIconDir, icon.name)),
     );
   }
 
@@ -182,32 +190,34 @@ class Database {
     // dynamic: json object can be Map or List.
     // However, json_serializable always use Map->Class
     dynamic result;
+    final file = File(filepath);
     try {
-      String contents = File(filepath).readAsStringSync();
-      result = jsonDecode(contents);
-      print('loaded json "$filepath".');
-    } on FileSystemException catch (e) {
-      if (k != null) {
-        result = k == null ? null : k();
-        print('error loading "$filepath", use default value. Error:\n$e');
-      } else {
-        rethrow;
+      if (file.existsSync()) {
+        String contents = file.readAsStringSync();
+        result = jsonDecode(contents);
+        print('loaded json "$filepath".');
       }
     } catch (e, s) {
-      result = k == null ? null : k();
       print('error loading "$filepath", use default value. Error:\n$e\n$s');
+      if (k == null) rethrow;
+    } finally {
+      if (result == null && k != null) {
+        print('Loading "$filepath", use default value.');
+        result = k();
+      }
     }
     return result;
   }
 
   void _saveJsonToFile(dynamic jsonData, String filepath) {
     try {
+      Directory(pathlib.dirname(filepath)).createSync(recursive: true);
       final contents = json.encode(jsonData);
       File(filepath).writeAsStringSync(contents);
       // print('Saved "$relativePath"\n');
     } catch (e, s) {
       print('Error saving "$filepath"!\n$e\n$s');
-      showToast('Error saving "$filepath"!\n$e');
+      EasyLoading.showToast('Error saving "$filepath"!\n$e');
     }
   }
 
@@ -237,8 +247,11 @@ class Database {
     return result;
   }
 
-  void extractZip(List<int> bytes, String path, {Function onError}) {
+  void extractZip(List<int> bytes, String path,
+      {Function onError, void Function(int, int) onProgress}) {
+    // TODO: make async? then showProgress can work
     Archive archive = ZipDecoder().decodeBytes(bytes);
+    final totalLength = archive.length;
     print('──────────────── Extract zip file ────────────────────────────────');
     print('extract zip file, directory tree "$path":');
     if (archive.findFile(kGameDataFilename) == null) {
@@ -251,8 +264,9 @@ class Database {
       }
     }
     int iconCount = 0;
+    int curProgress = 0;
     for (ArchiveFile file in archive) {
-      String fullFilepath = join(path, file.name);
+      String fullFilepath = pathlib.join(path, file.name);
       if (file.isFile) {
         List<int> data = file.content;
         File(fullFilepath)
@@ -265,6 +279,10 @@ class Database {
       } else {
         Directory(fullFilepath)..create(recursive: true);
         print('dir : ${file.name}');
+      }
+      curProgress++;
+      if (onProgress != null) {
+        onProgress(curProgress, totalLength);
       }
     }
     print('icon files: total $iconCount files in "icons/"');
@@ -280,26 +298,33 @@ class Database {
 }
 
 class PathManager {
-  /// [_appPath] game and user data
+  /// [_appPath] game data
   static String _appPath;
 
-  /// [_savePath] backup userdata
+  /// [_savePath] root path to save user-related data
   static String _savePath;
 
   /// [_tempPath] files can be deleted
   static String _tempPath;
 
   Future<void> initRootPath() async {
-    if (_appPath == null || _tempPath == null) {
+    if (_appPath != null && _tempPath != null) return;
+
+    if (Platform.isAndroid) {
       _appPath = (await getApplicationDocumentsDirectory()).path;
       _tempPath = (await getTemporaryDirectory()).path;
-      if (Platform.isIOS) {
-        _savePath = _appPath;
-      } else {
-        // for android: dirs=[emulated storage, SD card]
-        final dirs = await getExternalStorageDirectories();
-        _savePath = dirs[0].path;
-      }
+      // android: [emulated, external SD]
+      _savePath = (await getExternalStorageDirectories())[0].path;
+    } else if (Platform.isIOS) {
+      _appPath = (await getApplicationDocumentsDirectory()).path;
+      _tempPath = (await getTemporaryDirectory()).path;
+      _savePath = _appPath;
+    } else if (Platform.isWindows) {
+      _appPath = (await getApplicationSupportDirectory()).path;
+      _tempPath = (await getTemporaryDirectory()).path;
+      _savePath = _appPath;
+    } else {
+      throw UnimplementedError('Not supported for ${Platform.operatingSystem}');
     }
   }
 
@@ -309,17 +334,17 @@ class PathManager {
 
   String get tempPath => _tempPath;
 
-  String get userDataPath => join(_savePath, kUserDataFilename);
+  String get userDataDir => pathlib.join(_savePath, 'user');
 
-  String get gameDataDir => join(_appPath, 'dataset');
+  String get userDataPath => pathlib.join(userDataDir, kUserDataFilename);
 
-  String get gameDataFilepath => join(gameDataDir, kGameDataFilename);
+  String get gameDataDir => pathlib.join(_appPath, 'data');
 
-  String get gameIconDir => join(gameDataDir, 'icons');
+  String get gameDataFilepath => pathlib.join(gameDataDir, kGameDataFilename);
 
-  String get datasetCacheDir => join(_appPath, 'datasets');
+  String get gameIconDir => pathlib.join(gameDataDir, 'icons');
 
-  String get crashLog => join(_tempPath, 'crash.log');
+  String get crashLog => pathlib.join(_savePath, 'crash.log');
 
   static PathManager _instance = PathManager._internal();
 
