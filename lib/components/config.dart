@@ -308,7 +308,16 @@ class PathManager {
   static String _tempPath;
 
   Future<void> initRootPath() async {
-    if (_appPath != null && _tempPath != null) return;
+    if (_appPath != null && _savePath != null && _tempPath != null) return;
+    // final Map<String, Directory> _fps = {
+    //   'ApplicationDocuments': await getApplicationDocumentsDirectory(),
+    //   'Temporary': await getTemporaryDirectory(),
+    //   'ApplicationSupport': await getApplicationSupportDirectory(),
+    //   'Library': await getLibraryDirectory(),
+    // };
+    // for (var e in _fps.entries) {
+    //   print('${e.key}\n\t\t${e.value.path}');
+    // }
 
     if (Platform.isAndroid) {
       _appPath = (await getApplicationDocumentsDirectory()).path;
@@ -321,6 +330,12 @@ class PathManager {
       _savePath = _appPath;
     } else if (Platform.isWindows) {
       _appPath = (await getApplicationSupportDirectory()).path;
+      _tempPath = (await getTemporaryDirectory()).path;
+      _savePath = _appPath;
+    } else if (Platform.isMacOS) {
+      // /Users/<user>/Library/Containers/cc.narumi.chaldea/Data/Documents
+      _appPath = (await getApplicationDocumentsDirectory()).path;
+      // /Users/<user>/Library/Containers/cc.narumi.chaldea/Data/Library/Caches
       _tempPath = (await getTemporaryDirectory()).path;
       _savePath = _appPath;
     } else {

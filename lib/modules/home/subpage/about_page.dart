@@ -21,8 +21,26 @@ class _AboutPageState extends State<AboutPage> {
     'NGA-FGO版块': 'https://bbs.nga.cn/thread.php?fid=540',
     '效率剧场': 'https://sites.google.com/view/fgo-domus-aurea'
   };
-  String appName = '';
-  String appVersion = '';
+
+  /// PackageInfo: appName+version+buildNumber
+  ///  - Android/iOS: pass, if CFBundleDisplayName is not set, return [null]
+  ///  - Windows: Unimplemented
+  ///  - macOS: appName is null, buildNumber return 'version' not actual buildNumber
+  ///  TODO: how to retrieve correct value of windows and macOS?
+  String _appName;
+  String _appVersion;
+  String _buildNumber;
+
+  String get appName => _appName ?? kAppName;
+
+  String get fullVersion {
+    String s = _appVersion ?? '';
+    if (_buildNumber?.isNotEmpty == true && !Platform.isMacOS) {
+      s += '+$_buildNumber';
+    }
+    return s;
+  }
+
   final crashFile = File(db.paths.crashLog);
   String crashLog;
 
@@ -30,18 +48,17 @@ class _AboutPageState extends State<AboutPage> {
   void initState() {
     super.initState();
     loadLog();
+
     PackageInfo.fromPlatform().then((info) {
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         setState(() {
-          appName = info.appName;
-          appVersion = info.version;
+          _appName = info.appName;
+          _appVersion = info.version;
+          _buildNumber = info.buildNumber;
         });
       });
     }).catchError((e) {
-      // TODO: package_info only support android/ios, how to resolve in win?
-      setState(() {
-        appName = 'Chaldea';
-      });
+      setState(() {});
     });
   }
 
@@ -72,14 +89,14 @@ class _AboutPageState extends State<AboutPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'res/img/launcher_icon/app_icon_foreground.png',
+                    'res/img/launcher_icon/app_icon_logo.png',
                     width: 120,
                   ),
                   Text(
                     appName,
                     style: Theme.of(context).textTheme.headline6,
                   ),
-                  if (appVersion.isNotEmpty) Text('Version: $appVersion')
+                  if (fullVersion.isNotEmpty) Text('Version: $fullVersion')
                 ],
               ),
             ),

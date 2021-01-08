@@ -177,8 +177,10 @@ class SplitRoute<T extends Object?> extends TransitionRoute<T>
   void didPopNext(Route nextRoute) {
     super.didPopNext(nextRoute);
     // TODO: no effect
-    _scopeKey.currentState!.focusScopeNode.children
-        .forEach((node) => node.unfocus());
+    // if (_scopeKey.currentState != null) {
+    //   _scopeKey.currentState!.focusScopeNode.children
+    //       .forEach((node) => node.unfocus());
+    // }
   }
 
   /// make route transparent for detail page

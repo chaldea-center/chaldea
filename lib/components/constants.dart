@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 //typedef
 //const value
+const String kAppName = 'Chaldea';
 const String kUserDataFilename = 'userdata.json';
 const String kGameDataFilename = 'dataset.json';
 const String kSupportTeamEmailAddress = 'chaldea-support@narumi.cc';

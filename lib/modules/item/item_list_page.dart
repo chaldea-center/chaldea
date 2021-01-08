@@ -269,7 +269,7 @@ class _ItemListTabState extends State<ItemListTab> {
         Widget textField = TextField(
           maxLength: isQp ? 20 : 5,
           controller: group.controller,
-          // focusNode: group.focusNode,
+          focusNode: group.focusNode,
           textAlign: TextAlign.center,
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.next,
@@ -293,12 +293,6 @@ class _ItemListTabState extends State<ItemListTab> {
           },
           onEditingComplete: () {
             FocusScope.of(context).nextFocus();
-            // if (_shownGroups.last == group) {
-            //   group.focusNode.unfocus();
-            // } else {
-            //   FocusScope.of(context).requestFocus(
-            //       _shownGroups[_shownGroups.indexOf(group) + 1].focusNode);
-            // }
           },
         );
         Widget title, subtitle;
