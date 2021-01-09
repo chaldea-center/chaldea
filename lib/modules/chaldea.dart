@@ -1,4 +1,3 @@
-import 'package:after_layout/after_layout.dart';
 import 'package:catcher/core/catcher.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/blank_page.dart';
@@ -53,9 +52,17 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
 
   @override
   void afterFirstLayout(BuildContext context) async {
+    /// TODO: save gamedata version and app version into userdata
+    /// if app updated, check version and reload gamedata
     await db.initial();
+    await AppInfo.resolve();
     print(db.paths.appPath);
-    if (!db.loadGameData()) {
+    db.loadUserData();
+    bool gameDataLoadSuccess = db.loadGameData();
+    if (!gameDataLoadSuccess ||
+        db.userData.previousAppVersion != AppInfo.fullVersion) {
+      // load failed app maybe updated, reload default dataset
+      // TODO: if asset not exist? download from server
       await db.loadZipAssets(kDatasetAssetKey);
       db.loadGameData();
       // await SimpleCancelOkDialog(
@@ -68,7 +75,6 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
       //   },
       // ).show(context);
     }
-    db.loadUserData();
     db.itemStat.update();
     db.checkNetwork();
     _initiated = true;

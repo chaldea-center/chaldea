@@ -22,25 +22,6 @@ class _AboutPageState extends State<AboutPage> {
     '效率剧场': 'https://sites.google.com/view/fgo-domus-aurea'
   };
 
-  /// PackageInfo: appName+version+buildNumber
-  ///  - Android/iOS: pass, if CFBundleDisplayName is not set, return [null]
-  ///  - Windows: Unimplemented
-  ///  - macOS: appName is null, buildNumber return 'version' not actual buildNumber
-  ///  TODO: how to retrieve correct value of windows and macOS?
-  String _appName;
-  String _appVersion;
-  String _buildNumber;
-
-  String get appName => _appName ?? kAppName;
-
-  String get fullVersion {
-    String s = _appVersion ?? '';
-    if (_buildNumber?.isNotEmpty == true && !Platform.isMacOS) {
-      s += '+$_buildNumber';
-    }
-    return s;
-  }
-
   final crashFile = File(db.paths.crashLog);
   String crashLog;
 
@@ -48,18 +29,13 @@ class _AboutPageState extends State<AboutPage> {
   void initState() {
     super.initState();
     loadLog();
-
-    PackageInfo.fromPlatform().then((info) {
-      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-        setState(() {
-          _appName = info.appName;
-          _appVersion = info.version;
-          _buildNumber = info.buildNumber;
+    if (AppInfo.info == null) {
+      AppInfo.resolve().then((value) {
+        SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+          setState(() {});
         });
       });
-    }).catchError((e) {
-      setState(() {});
-    });
+    }
   }
 
   void loadLog() {
@@ -93,10 +69,11 @@ class _AboutPageState extends State<AboutPage> {
                     width: 120,
                   ),
                   Text(
-                    appName,
+                    AppInfo.appName,
                     style: Theme.of(context).textTheme.headline6,
                   ),
-                  if (fullVersion.isNotEmpty) Text('Version: $fullVersion')
+                  if (AppInfo.fullVersion.isNotEmpty)
+                    Text('Version: ${AppInfo.fullVersion}')
                 ],
               ),
             ),

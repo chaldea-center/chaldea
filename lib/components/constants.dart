@@ -1,5 +1,6 @@
 // @dart=2.12
 import 'package:flutter/material.dart';
+import 'package:package_info/package_info.dart';
 
 //typedef
 //const value
@@ -10,6 +11,39 @@ const String kSupportTeamEmailAddress = 'chaldea-support@narumi.cc';
 const String kDatasetAssetKey = 'res/data/dataset.zip';
 const String kDatasetServerPath = '/chaldea/dataset.zip';
 const String kServerRoot = 'http://localhost:8080';
+
+/// PackageInfo: appName+version+buildNumber
+///  - Android: support
+///  - for iOS/macOS:
+///   - if CF** keys not defined in info.plist, return null
+///   - if buildNumber not defined, return version instead
+///  - Windows: Not Support
+///  TODO: how to retrieve correct value of windows ?
+class AppInfo {
+  static PackageInfo? _info;
+
+  /// resolve when init app, so no need to check null or resolve every time
+  static Future<PackageInfo> resolve() async {
+    _info ??= await PackageInfo.fromPlatform().catchError((e) => PackageInfo());
+    return _info!;
+  }
+
+  static PackageInfo? get info => _info;
+
+  static String get appName {
+    if (_info?.appName?.isNotEmpty == true)
+      return _info!.appName;
+    else
+      return kAppName;
+  }
+
+  static String get fullVersion {
+    String s = '';
+    if (_info?.version?.isNotEmpty == true) s += _info!.version;
+    if (_info?.buildNumber?.isNotEmpty == true) s += '+' + _info!.buildNumber;
+    return s;
+  }
+}
 
 //const value in class
 class Language {

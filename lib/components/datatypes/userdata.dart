@@ -7,9 +7,11 @@ class UserData {
   String language;
 
   bool useMobileNetwork;
+  String sliderUpdateTime;
   Map<String, String> sliderUrls;
   Map<String, bool> galleries;
   String serverDomain;
+  String previousAppVersion;
 
   // user-related game data
   String curUserKey;
@@ -47,9 +49,11 @@ class UserData {
     this.criticalWidth,
     this.useMobileNetwork,
     this.testAllowDownload,
+    this.sliderUpdateTime,
     this.sliderUrls,
     this.galleries,
     this.serverDomain,
+    this.previousAppVersion,
     this.curUserKey,
     this.users,
     this.svtFilter,

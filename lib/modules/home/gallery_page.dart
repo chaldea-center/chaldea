@@ -1,4 +1,3 @@
-import 'package:after_layout/after_layout.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chaldea/components/components.dart';
@@ -6,6 +5,7 @@ import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/craft/craft_list_page.dart';
 import 'package:chaldea/modules/drop_calculator/drop_calculator_page.dart';
 import 'package:chaldea/modules/event/events_page.dart';
+
 // import 'package:chaldea/modules/extras/ap_calc_page.dart';
 import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
@@ -31,10 +31,22 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
 
   @override
   void afterFirstLayout(BuildContext context) {
+    if (db.userData.sliderUpdateTime?.isNotEmpty != true ||
+        db.userData.sliderUrls?.isEmpty == true) {
+      resolveSliderImageUrls();
+    } else {
+      DateTime lastTime = DateTime.parse(db.userData.sliderUpdateTime),
+          now = DateTime.now();
+      int dt = now.millisecondsSinceEpoch - lastTime.millisecondsSinceEpoch;
+      if (dt > 24 * 3600 * 1000) {
+        // more than 1 day
+        resolveSliderImageUrls();
+      }
+    }
     resolveSliderImageUrls();
   }
 
-  Future<Null> resolveSliderImageUrls({bool reload = false}) async {
+  Future<Null> resolveSliderImageUrls() async {
     final srcUrl =
         'https://fgo.wiki/w/%E6%A8%A1%E6%9D%BF:%E8%87%AA%E5%8A%A8%E5%8F%96%E5%80%BC%E8%BD%AE%E6%92%AD';
     String tryDecodeUrl(String url) {
@@ -56,31 +68,30 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       return url2;
     }
 
-    if (db.userData.sliderUrls.isEmpty || reload) {
-      try {
-        print('http GET from "$srcUrl" .....');
-        var response = await http.get(srcUrl);
-        print('----------- recieved http response ------------');
-        var body = parser.parse(response.body);
-        db.userData.sliderUrls.clear();
-        dom.Element element = body.getElementById('transImageBox');
-        for (var linkNode in element.getElementsByTagName('a')) {
-          String link = tryDecodeUrl(linkNode.attributes['href']);
-          var imgNodes = linkNode.getElementsByTagName('img');
-          if (imgNodes.isNotEmpty) {
-            var imgUrl = tryDecodeUrl(imgNodes.first.attributes['src']);
-            print('------resolved slider url------');
-            db.userData.sliderUrls[imgUrl] = link;
-            print('imgUrl= "$imgUrl"\nhref  = "$link"');
-          }
+    try {
+      print('http GET from "$srcUrl" .....');
+      var response = await http.get(srcUrl);
+      print('----------- recieved http response ------------');
+      var body = parser.parse(response.body);
+      db.userData.sliderUrls.clear();
+      dom.Element element = body.getElementById('transImageBox');
+      for (var linkNode in element.getElementsByTagName('a')) {
+        String link = tryDecodeUrl(linkNode.attributes['href']);
+        var imgNodes = linkNode.getElementsByTagName('img');
+        if (imgNodes.isNotEmpty) {
+          var imgUrl = tryDecodeUrl(imgNodes.first.attributes['src']);
+          print('------resolved slider url------');
+          db.userData.sliderUrls[imgUrl] = link;
+          db.userData.sliderUpdateTime = DateTime.now().toString();
+          print('imgUrl= "$imgUrl"\nhref  = "$link"');
         }
-        setState(() {});
-        db.saveUserData();
-        EasyLoading.showToast('Slides have been updated.');
-      } catch (e) {
-        print('Error refresh slides:\n$e');
-        EasyLoading.showToast('Error refresh slides:\n$e');
       }
+      setState(() {});
+      db.saveUserData();
+      EasyLoading.showToast('Slides have been updated.');
+    } catch (e) {
+      print('Error refresh slides:\n$e');
+      EasyLoading.showToast('Error refresh slides:\n$e');
     }
   }
 
@@ -167,7 +178,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
                 icon: Icon(Icons.refresh),
                 tooltip: 'Refresh sliders',
                 onPressed: () {
-                  resolveSliderImageUrls(reload: true);
+                  resolveSliderImageUrls();
                 }),
           ],
         ),

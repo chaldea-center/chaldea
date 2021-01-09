@@ -1269,6 +1269,8 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
           $checkedConvert(json, 'useMobileNetwork', (v) => v as bool),
       testAllowDownload:
           $checkedConvert(json, 'testAllowDownload', (v) => v as bool),
+      sliderUpdateTime:
+          $checkedConvert(json, 'sliderUpdateTime', (v) => v as String),
       sliderUrls: $checkedConvert(
           json,
           'sliderUrls',
@@ -1282,6 +1284,8 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
                 (k, e) => MapEntry(k, e as bool),
               )),
       serverDomain: $checkedConvert(json, 'serverDomain', (v) => v as String),
+      previousAppVersion:
+          $checkedConvert(json, 'previousAppVersion', (v) => v as String),
       curUserKey: $checkedConvert(json, 'curUserKey', (v) => v as String),
       users: $checkedConvert(
           json,
@@ -1327,9 +1331,11 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'language': instance.language,
       'useMobileNetwork': instance.useMobileNetwork,
+      'sliderUpdateTime': instance.sliderUpdateTime,
       'sliderUrls': instance.sliderUrls,
       'galleries': instance.galleries,
       'serverDomain': instance.serverDomain,
+      'previousAppVersion': instance.previousAppVersion,
       'curUserKey': instance.curUserKey,
       'users': instance.users,
       'testAllowDownload': instance.testAllowDownload,
