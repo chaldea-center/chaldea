@@ -112,7 +112,11 @@ T? getListItem<T>(List<T>? data, int index, [k()?]) {
 ///
 
 void showInformDialog(BuildContext context,
-    {String? title, String? content, List<Widget> actions = const []}) {
+    {String? title,
+    String? content,
+    List<Widget> actions = const [],
+    bool showOk = true,
+    bool showCancel = false}) {
   assert(title != null || content != null);
   showDialog(
     context: context,
@@ -120,12 +124,20 @@ void showInformDialog(BuildContext context,
       title: title == null ? null : Text(title),
       content: content == null ? null : Text(content),
       actions: <Widget>[
-        FlatButton(
-          child: Text(S.of(context).ok),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
+        if (showOk)
+          FlatButton(
+            child: Text(S.of(context).ok),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        if (showCancel)
+          FlatButton(
+            child: Text(S.of(context).cancel),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
         ...actions
       ],
     ),

@@ -60,7 +60,8 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
     db.loadUserData();
     bool gameDataLoadSuccess = db.loadGameData();
     if (!gameDataLoadSuccess ||
-        db.userData.previousAppVersion != AppInfo.fullVersion) {
+        AppInfo.fullVersion.compareTo(db.userData.previousAppVersion ?? '0') >
+            0) {
       // load failed app maybe updated, reload default dataset
       // TODO: if asset not exist? download from server
       await db.loadZipAssets(kDatasetAssetKey);

@@ -69,7 +69,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                           actions: [
                             if (Platform.isAndroid || Platform.isIOS)
                               FlatButton(
-                                child: Text('Share'),
+                                child: Text('分享'),
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                   Share.shareFiles([fp]);
@@ -98,6 +98,30 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                   }
                 },
               ),
+              ListTile(
+                title: Text('导入Guda数据'),
+                onTap: () async {
+                  showModalBottomSheet(
+                      context: context,
+                      builder: (context) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ListTile(
+                              leading: Icon(Icons.people),
+                              title: Text('从者数据'),
+                              onTap: () => importGudaData(false),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.category),
+                              title: Text('素材数据'),
+                              onTap: () => importGudaData(true),
+                            ),
+                          ],
+                        );
+                      });
+                },
+              ),
             ],
           ),
           TileGroup(
@@ -108,7 +132,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 trailing: Text(db.gameData.version),
               ),
               ListTile(
-                title: Text('Reload default gamedata'),
+                title: Text('重新载入预装版本'),
                 onTap: () {
                   SimpleCancelOkDialog(
                     title: Text('Confirm'),
@@ -152,8 +176,8 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                   },
                 ),
               ListTile(
-                title: Text('Clear and reload all data'),
-                subtitle: Text('including icons'),
+                title: Text('删除所有数据'),
+                subtitle: Text('包含用户数据、游戏数据、图片资源'),
                 onTap: () {
                   SimpleCancelOkDialog(
                     title: Text('Confirm'),
@@ -208,7 +232,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
             header: 'Download',
             children: <Widget>[
               ListTile(
-                title: Text('Server(NotImplemented)'),
+                title: Text('服务器(NotImplemented)'),
                 subtitle: Text(db.userData.serverDomain ?? 'none'),
                 trailing: IconButton(
                     icon: Icon(Icons.edit),
@@ -234,9 +258,9 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                     }),
               ),
               ListTile(
-                title: Center(child: Text('Download Data')),
+                title: Center(child: Text('下载资源')),
                 onTap: () {
-                  EasyLoading.showToast('Unimplemented');
+                  EasyLoading.showToast('NotImplemented');
                   // db.downloadGameData();
                   // db.onAppUpdate();
                 },
@@ -274,5 +298,124 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
       print('stack trace: \n$s');
       rethrow;
     }
+  }
+
+  void importGudaData(bool isItem) {
+    // pop bottom sheet first
+    Navigator.of(context).pop();
+
+    Future<List<List<String>>> _parseGudaData() async {
+      FilePickerCross filePickerCross =
+          await FilePickerCross.importFromStorage();
+      final content = File(filePickerCross.path).readAsStringSync();
+      List<String> lines = content.trim().split(';');
+      final mat = lines.map((e) => e.trim().split('/'));
+      return mat.where((e) => e.isNotEmpty).toList();
+    }
+
+    void updateGudaItems(List<List<String>> gudaData) {
+      final replaceKeys = {
+        "万死之毒针": "万死的毒针",
+        "震荡火药": "振荡火药",
+        "閑古鈴": "闲古铃",
+        "禍罪の矢尻": "祸罪之箭头",
+        "暁光炉心": "晓光炉心",
+        "九十九鏡": "九十九镜",
+        "真理の卵": "真理之卵"
+      };
+      for (var row in gudaData) {
+        if (row.isEmpty) continue;
+        String itemKey = row[1], itemNum = row[2];
+        itemKey = itemKey.replaceAll('金棋', '金像');
+        if (replaceKeys.containsKey(itemKey)) {
+          itemKey = replaceKeys[itemKey];
+        }
+        if (db.gameData.items.keys.contains(itemKey)) {
+          db.curUser.items[itemKey] = int.parse(itemNum);
+        } else {
+          print('Item $itemKey not found');
+        }
+      }
+      EasyLoading.showToast('导入素材数据成功');
+      print(db.curUser.items);
+    }
+
+    void updateGudaSevants(List<List<String>> gudaData) {
+      //            0 1  2 3  4 5 6 7  8  9
+      // 0  1   2   3 4  5 6  7 8 9 10 11 12
+      // 3/name/0  /1/4/ 4/10/2/5/4/9/ 85/92;
+      final lvs = [60, 65, 70, 75, 80, 85, 90, 92, 94, 96, 98, 100];
+      final startLvs = [65, 60, 65, 70, 80, 90];
+
+      for (var row in gudaData) {
+        int svtNo = int.parse(row[0]);
+        List<int> values =
+            List.generate(10, (index) => int.parse(row[index + 3]));
+        ServantPlan cur = ServantPlan(favorite: true),
+            target = ServantPlan(favorite: true);
+        cur
+          ..ascension = values[0]
+          ..skills = [values[2], values[4], values[6]];
+        target
+          ..ascension = values[1]
+          ..skills = [values[3], values[5], values[7]];
+        int rarity = db.gameData.servants[svtNo].info.rarity;
+        int startIndex = lvs.indexOf(startLvs[rarity]);
+        cur.grail = lvs.indexOf(values[8]) - startIndex;
+        target.grail = lvs.indexOf(values[9]) - startIndex;
+        db.curUser.servants[svtNo] = ServantStatus(curVal: cur);
+        db.curUser.curSvtPlan[svtNo] = target;
+      }
+      EasyLoading.showToast('导入从者数据成功');
+      print(db.curUser.servants);
+      print(db.curUser.curSvtPlan);
+    }
+
+    showInformDialog(
+      context,
+      title: '导入${isItem ? '素材' : '从者'}数据',
+      content: '更新：保留本地数据并用导入的数据更新(推荐)\n覆盖：清楚本地数据再导入数据',
+      showOk: false,
+      showCancel: true,
+      actions: [
+        FlatButton(
+            onPressed: () async {
+              try {
+                final gudaData = await _parseGudaData();
+                if (isItem) {
+                  updateGudaItems(gudaData);
+                } else {
+                  updateGudaSevants(gudaData);
+                }
+                Navigator.of(context).pop();
+              } on FileSelectionCanceledError {
+                // EasyLoading.showToast('cancelled');
+              } catch (e) {
+                EasyLoading.showToast('Import failed! Error:\n$e');
+              }
+            },
+            child: Text('更新')),
+        FlatButton(
+            onPressed: () async {
+              try {
+                final gudaData = await _parseGudaData();
+                if (isItem) {
+                  db.curUser.items.clear();
+                  updateGudaItems(gudaData);
+                } else {
+                  db.curUser.servants.clear();
+                  db.curUser.servants.clear();
+                  updateGudaSevants(gudaData);
+                }
+                Navigator.of(context).pop();
+              } on FileSelectionCanceledError {
+                // EasyLoading.showToast('cancelled');
+              } catch (e) {
+                EasyLoading.showToast('Import failed! Error:\n$e');
+              }
+            },
+            child: Text('覆盖')),
+      ],
+    );
   }
 }
