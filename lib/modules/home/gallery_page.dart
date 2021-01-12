@@ -43,7 +43,6 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         resolveSliderImageUrls();
       }
     }
-    resolveSliderImageUrls();
   }
 
   Future<Null> resolveSliderImageUrls() async {
