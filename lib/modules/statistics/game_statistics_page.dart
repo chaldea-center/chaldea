@@ -57,6 +57,7 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
               builder: (context, _) => ItemDetailPage(Item.qp)),
         ),
         buildClassifiedItemList(
+          context: context,
           data: shownItems,
           divideRarity: false,
           crossCount: SplitRoute.isSplit(context) ? 7 : 7,

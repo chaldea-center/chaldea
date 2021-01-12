@@ -36,23 +36,9 @@ class LevelingCostPageState extends State<LevelingCostPage> {
     final size = MediaQuery.of(context).size;
     return AlertDialog(
       backgroundColor: AppColors.setting_bg,
-      title: Center(child: Text(widget.title)),
       contentPadding: EdgeInsets.zero,
       titlePadding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      buttonPadding: EdgeInsets.zero,
-      actions: [
-        FlatButton(
-          minWidth: 120,
-          onPressed: () {
-            setState(() => showAll = !showAll);
-          },
-          child: Text(showAll ? 'SHOW LESS' : 'SHOW MORE'),
-        ),
-        FlatButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text('OK'),
-        )
-      ],
+      title: Center(child: Text(widget.title)),
       content: Container(
         color: Colors.white,
         width: min(380, size.width * 0.8),
@@ -66,6 +52,19 @@ class LevelingCostPageState extends State<LevelingCostPage> {
           }),
         ),
       ),
+      actions: [
+        FlatButton(
+          minWidth: 120,
+          onPressed: () {
+            setState(() => showAll = !showAll);
+          },
+          child: Text(showAll ? 'SHOW LESS' : 'SHOW MORE'),
+        ),
+        FlatButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text('OK'),
+        )
+      ],
     );
   }
 

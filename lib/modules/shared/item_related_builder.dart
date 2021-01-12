@@ -1,3 +1,4 @@
+//@dart=2.12
 import 'package:chaldea/components/components.dart';
 
 class CommonBuilder {
@@ -5,9 +6,9 @@ class CommonBuilder {
   /// The key and value of [data] are Servant/Item icon name and its' num or text
   /// for image and text in [ImageWithText].
   static Widget buildIconGridView(
-      {Map<String, dynamic> data,
+      {required Map<String, dynamic> data,
       int crossCount = 7,
-      void onTap(String key),
+      void onTap(String key)?,
       double childAspectRatio = 132 / 144,
       bool scrollable = false}) {
     return GridView.count(
@@ -33,38 +34,36 @@ class CommonBuilder {
 }
 
 Widget buildClassifiedItemList({
-  @required Map<String, int> data,
-  void onTap(String iconKey),
+  required BuildContext context,
+  required Map<String, int> data,
+  void onTap(String iconKey)?,
   bool divideCategory = true,
   bool divideRarity = true,
+  bool responsive = true,
   int crossCount = 7,
 }) {
   final divided = divideItemsToGroups(data.keys.toList(),
       divideCategory: divideCategory, divideRarity: divideRarity);
   List<Widget> children = [];
   for (var key in divided.keys) {
+    final gridChildren = divided[key]!.map((item) {
+      return ImageWithText(
+        onTap: onTap == null ? null : () => onTap(item.name),
+        image: Image(image: db.getIconImage(item.name)),
+        text: formatNumber(data[item.name]!),
+        padding: EdgeInsets.only(right: 3),
+      );
+    }).toList();
     children.add(TileGroup(
       header: Item.getNameOfCategory(key ~/ 10, key % 10),
       padding: EdgeInsets.only(bottom: 0),
       children: <Widget>[
-        GridView.count(
-          padding: EdgeInsets.only(left: 10, top: 3, bottom: 3),
-          childAspectRatio: 132 / 144,
-          crossAxisCount: crossCount,
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          children: divided[key]
-              .map((item) => Padding(
-                    padding: EdgeInsets.symmetric(vertical: 2, horizontal: 1),
-                    child: ImageWithText(
-                      onTap: onTap == null ? null : () => onTap(item.name),
-                      image: Image(image: db.getIconImage(item.name)),
-                      text: formatNumber(data[item.name]),
-                      padding: EdgeInsets.only(right: 3),
-                    ),
-                  ))
-              .toList(),
-        )
+        buildResponsiveGridWrap(
+          context: context,
+          children: gridChildren,
+          responsive: responsive,
+          crossCount: crossCount,
+        ),
       ],
     ));
   }
@@ -73,6 +72,45 @@ Widget buildClassifiedItemList({
     crossAxisAlignment: CrossAxisAlignment.start,
     children: children,
   );
+}
+
+/// Build Wrap for split view, otherwise GridView.
+///
+/// If not [responsive], just build GridView
+/// and [crossCount] is only used for GridView.
+Widget buildResponsiveGridWrap(
+    {required BuildContext context,
+    required List<Widget> children,
+    bool responsive = true,
+    int crossCount = 7}) {
+  bool useWrap = SplitRoute.isSplit(context) && responsive;
+  final _children = children
+      .map((child) => Padding(
+            padding: EdgeInsets.all(2),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: useWrap ? kGridIconSize : double.infinity,
+              ),
+              child: child,
+            ),
+          ))
+      .toList();
+  return useWrap
+      ? Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Wrap(
+            children: _children,
+            runSpacing: 3,
+          ),
+        )
+      : GridView.count(
+          padding: EdgeInsets.only(left: 10, top: 3, bottom: 3),
+          childAspectRatio: 132 / 144,
+          crossAxisCount: crossCount,
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          children: _children,
+        );
 }
 
 /// Divide list of items into groups according to [category] and/or [rarity].
@@ -87,11 +125,11 @@ Map<int, List<Item>> divideItemsToGroups(List<String> items,
       final groupKey = (divideCategory ? item.category * 10 : 0) +
           (divideRarity ? item.rarity : 0);
       groups[groupKey] ??= [];
-      groups[groupKey].add(item);
+      groups[groupKey]!.add(item);
     }
   }
   final sortedKeys = groups.keys.toList()..sort();
   return Map.fromEntries(sortedKeys.map((key) {
-    return MapEntry(key, groups[key]..sort((a, b) => a.id - b.id));
+    return MapEntry(key, groups[key]!..sort((a, b) => a.id - b.id));
   }));
 }

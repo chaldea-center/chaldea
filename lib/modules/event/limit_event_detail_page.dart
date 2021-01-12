@@ -79,7 +79,8 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
                 },
               )),
         ))
-        ..add(buildClassifiedItemList(data: event.lottery, onTap: onTapIcon));
+        ..add(buildClassifiedItemList(
+            context: context, data: event.lottery, onTap: onTapIcon));
     }
 
     // 商店任务点数
@@ -89,7 +90,8 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
         ..removeWhere((key, value) => value <= 0);
       children
         ..add(ListTile(title: Text('商店&任务&点数')))
-        ..add(buildClassifiedItemList(data: items, onTap: onTapIcon));
+        ..add(buildClassifiedItemList(
+            context: context, data: items, onTap: onTapIcon));
     }
 
     // 狩猎 无限池终本掉落等

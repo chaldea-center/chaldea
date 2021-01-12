@@ -12,6 +12,10 @@ const String kDatasetAssetKey = 'res/data/dataset.zip';
 const String kDatasetServerPath = '/chaldea/dataset.zip';
 const String kServerRoot = 'http://localhost:8080';
 
+/// For **Tablet mode** and cross-count is 7,
+/// grid view of servant and item icons won't fill full width
+const double kGridIconSize = 110 * 0.5 + 6;
+
 /// PackageInfo: appName+version+buildNumber
 ///  - Android: support
 ///  - for iOS/macOS:

@@ -23,9 +23,11 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
         children: <Widget>[
           Divider(height: 1),
           ListTile(title: Text('固定掉落')),
-          buildClassifiedItemList(data: record.drops, onTap: _onTap),
+          buildClassifiedItemList(
+              context: context, data: record.drops, onTap: _onTap),
           ListTile(title: Text('通关奖励')),
-          buildClassifiedItemList(data: record.rewards, onTap: _onTap)
+          buildClassifiedItemList(
+              context: context, data: record.rewards, onTap: _onTap)
         ],
       ),
     );

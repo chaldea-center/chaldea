@@ -1,5 +1,6 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/servant/servant_detail_page.dart';
+import 'package:chaldea/modules/shared/item_related_builder.dart';
 
 class ItemCostServantPage extends StatelessWidget {
   final String itemKey;
@@ -41,6 +42,7 @@ class ItemCostServantPage extends StatelessWidget {
             for (int i in [0, 1, 2]) {
               children.add(Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   CustomTile(
                     title: Text(['灵基再临', '技能升级', '灵衣开放'][i]),
@@ -75,47 +77,38 @@ class ItemCostServantPage extends StatelessWidget {
       bool showShadow =
           highlight && db.curUser.servants[svtNo]?.curVal?.favorite == true;
       if (num > 0) {
-        children.add(
-          Padding(
-            padding: EdgeInsets.all(3),
-            child: Container(
-              decoration: showShadow
-                  ? BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.redAccent,
-                            blurRadius: 1.5,
-                            spreadRadius: 2),
-                      ],
-                      borderRadius: BorderRadius.all(Radius.circular(3)),
-                      shape: BoxShape.rectangle,
-                    )
-                  : null,
-              child: ImageWithText(
-                image: Image(image: db.getIconImage(svt.icon)),
-                text: formatNumber(num, compact: true, minVal: 10000),
-                padding: EdgeInsets.only(right: 5, bottom: 16),
-                onTap: () {
-                  SplitRoute.push(
-                      context: context,
-                      builder: (context, _) => ServantDetailPage(svt));
-                },
-              ),
-            ),
+        children.add(Container(
+          decoration: showShadow
+              ? BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.redAccent,
+                      blurRadius: 1.5,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                  borderRadius: BorderRadius.all(Radius.circular(3)),
+                  shape: BoxShape.rectangle,
+                )
+              : null,
+          child: ImageWithText(
+            image: Image(image: db.getIconImage(svt.icon)),
+            text: formatNumber(num, compact: true, minVal: 10000),
+            padding: EdgeInsets.only(right: 5, bottom: 16),
+            onTap: () {
+              SplitRoute.push(
+                context: context,
+                builder: (context, _) => ServantDetailPage(svt),
+              );
+            },
           ),
-        );
+        ));
       }
     });
     if (children.isEmpty) {
       return Container();
     } else {
-      return GridView.count(
-        crossAxisCount: SplitRoute.isSplit(context) ? 7 : 5,
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        children: children,
-      );
+      return buildResponsiveGridWrap(context: context, children: children);
     }
   }
 
