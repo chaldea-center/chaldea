@@ -12,12 +12,13 @@ class CraftListPage extends StatefulWidget {
   State<StatefulWidget> createState() => CraftListPageState();
 }
 
-class CraftListPageState extends State<CraftListPage> {
+class CraftListPageState extends State<CraftListPage>
+    with DefaultScrollBarMixin {
   CraftFilterData filterData;
   List<CraftEssential> shownList = [];
   TextEditingController _inputController = TextEditingController();
   FocusNode _inputFocusNode = FocusNode();
-  ScrollController _scrollController = ScrollController();
+  ScrollController _scrollController;
 
   //temp, calculate once build() called.
   int __binAtkHpType;
@@ -26,6 +27,7 @@ class CraftListPageState extends State<CraftListPage> {
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     filterData = db.userData.craftFilter;
     filterData.filterString = '';
   }
@@ -174,7 +176,11 @@ class CraftListPageState extends State<CraftListPage> {
     });
     shownList.sort((a, b) => CraftEssential.compare(
         a, b, filterData.sortKeys, filterData.sortReversed));
-    return filterData.useGrid ? _buildGridView() : _buildListView();
+
+    return wrapDefaultScarollBar(
+      controller: _scrollController,
+      child: filterData.useGrid ? _buildGridView() : _buildListView(),
+    );
   }
 
   Widget _buildListView() {

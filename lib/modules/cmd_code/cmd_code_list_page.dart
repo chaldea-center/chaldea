@@ -12,12 +12,13 @@ class CmdCodeListPage extends StatefulWidget {
   State<StatefulWidget> createState() => CmdCodeListPageState();
 }
 
-class CmdCodeListPageState extends State<CmdCodeListPage> {
+class CmdCodeListPageState extends State<CmdCodeListPage>
+    with DefaultScrollBarMixin {
   CmdCodeFilterData filterData;
   List<CommandCode> shownList = [];
   TextEditingController _inputController = TextEditingController();
   FocusNode _inputFocusNode = FocusNode();
-  ScrollController _scrollController = ScrollController();
+  ScrollController _scrollController;
 
   Query __textFilter = Query();
 
@@ -26,6 +27,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
     super.initState();
     filterData = db.userData.cmdCodeFilter;
     filterData.filterString = '';
+    _scrollController = ScrollController();
   }
 
   @override
@@ -156,7 +158,10 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
     });
     shownList.sort((a, b) => CommandCode.compare(
         a, b, filterData.sortKeys, filterData.sortReversed));
-    return filterData.useGrid ? _buildGridView() : _buildListView();
+    return wrapDefaultScarollBar(
+      controller: _scrollController,
+      child: filterData.useGrid ? _buildGridView() : _buildListView(),
+    );
   }
 
   Widget _buildListView() {

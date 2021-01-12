@@ -12,7 +12,22 @@ class LimitEventTab extends StatefulWidget {
   _LimitEventTabState createState() => _LimitEventTabState();
 }
 
-class _LimitEventTabState extends State<LimitEventTab> {
+class _LimitEventTabState extends State<LimitEventTab>
+    with DefaultScrollBarMixin {
+  ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController?.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final events = db.gameData.events.limitEvents.values.toList();
@@ -20,44 +35,47 @@ class _LimitEventTabState extends State<LimitEventTab> {
       return (a.startTimeJp).compareTo(b.startTimeJp) *
           (widget.reverse ? -1 : 1);
     });
-    return ListView.separated(
-      itemCount: events.length,
-      separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
-      itemBuilder: (context, index) {
-        final event = events[index];
-        final plan = db.curUser.events.limitEvents;
-        return ListTile(
-          title: AutoSizeText(event.name, maxFontSize: 16, maxLines: 2),
-          subtitle:
-              AutoSizeText(event.startTimeJp.split(' ').first, maxLines: 1),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              if (event.extra?.isNotEmpty == true ||
-                  event.lottery?.isNotEmpty == true)
-                Icon(Icons.star, color: Colors.yellow[700]),
-              Switch.adaptive(
-                value: plan[event.name]?.enable ?? false,
-                onChanged: (v) => setState(
-                  () {
-                    plan
-                        .putIfAbsent(event.name, () => LimitEventPlan())
-                        .enable = v;
-                    db.itemStat.updateEventItems();
-                  },
-                ),
-              )
-            ],
-          ),
-          onTap: () {
-            SplitRoute.push(
-              context: context,
-              builder: (context, _) => LimitEventDetailPage(name: event.name),
-              popDetail: true,
-            );
-          },
-        );
-      },
+    return wrapDefaultScarollBar(
+      controller: _scrollController,
+      child: ListView.separated(
+        itemCount: events.length,
+        separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
+        itemBuilder: (context, index) {
+          final event = events[index];
+          final plan = db.curUser.events.limitEvents;
+          return ListTile(
+            title: AutoSizeText(event.name, maxFontSize: 16, maxLines: 2),
+            subtitle:
+                AutoSizeText(event.startTimeJp.split(' ').first, maxLines: 1),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                if (event.extra?.isNotEmpty == true ||
+                    event.lottery?.isNotEmpty == true)
+                  Icon(Icons.star, color: Colors.yellow[700]),
+                Switch.adaptive(
+                  value: plan[event.name]?.enable ?? false,
+                  onChanged: (v) => setState(
+                    () {
+                      plan
+                          .putIfAbsent(event.name, () => LimitEventPlan())
+                          .enable = v;
+                      db.itemStat.updateEventItems();
+                    },
+                  ),
+                )
+              ],
+            ),
+            onTap: () {
+              SplitRoute.push(
+                context: context,
+                builder: (context, _) => LimitEventDetailPage(name: event.name),
+                popDetail: true,
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

@@ -1,5 +1,6 @@
 // @dart=2.12
 import 'package:flutter/material.dart';
+import 'package:vs_scrollbar/vs_scrollbar.dart';
 
 typedef ValueStatefulWidgetBuilder<T> = Widget Function(
     BuildContext context, _ValueStatefulBuilderState<T> state);
@@ -70,6 +71,18 @@ class AutoUnfocusBuilder extends StatelessWidget {
         FocusScope.of(context).unfocus();
       },
       child: builder(context),
+    );
+  }
+}
+
+mixin DefaultScrollBarMixin<T extends StatefulWidget> on State<T> {
+  Widget wrapDefaultScarollBar(
+      {required ScrollController controller, required Widget child}) {
+    return VsScrollbar(
+      controller: controller,
+      radius: 2,
+      thickness: 4,
+      child: child,
     );
   }
 }

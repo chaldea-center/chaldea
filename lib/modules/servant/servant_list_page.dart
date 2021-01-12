@@ -14,11 +14,12 @@ class ServantListPage extends StatefulWidget {
   State<StatefulWidget> createState() => ServantListPageState();
 }
 
-class ServantListPageState extends State<ServantListPage> {
+class ServantListPageState extends State<ServantListPage>
+    with DefaultScrollBarMixin {
   SvtFilterData filterData;
   TextEditingController _inputController = TextEditingController();
   FocusNode _inputFocusNode = FocusNode();
-  ScrollController _scrollController = ScrollController();
+  ScrollController _scrollController;
 
   //temp, calculate once build() called.
   Query __textFilter = Query();
@@ -29,6 +30,7 @@ class ServantListPageState extends State<ServantListPage> {
     filterData = db.userData.svtFilter;
     filterData.filterString = '';
     filterData.favorite = 0;
+    _scrollController = ScrollController();
   }
 
   @override
@@ -265,9 +267,12 @@ class ServantListPageState extends State<ServantListPage> {
     });
     shownList.sort((a, b) =>
         Servant.compare(a, b, filterData.sortKeys, filterData.sortReversed));
-    return filterData.useGrid
-        ? _buildGridView(shownList)
-        : _buildListView(shownList);
+    return wrapDefaultScarollBar(
+      controller: _scrollController,
+      child: filterData.useGrid
+          ? _buildGridView(shownList)
+          : _buildListView(shownList),
+    );
   }
 
   Widget _buildListView(List<Servant> shownList) {

@@ -11,7 +11,7 @@ class ItemListPage extends StatefulWidget {
 }
 
 class ItemListPageState extends State<ItemListPage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, DefaultScrollBarMixin {
   TabController _tabController;
   bool filtered = false;
   final List<int> categories = [1, 2, 3];
@@ -177,16 +177,18 @@ class ItemListTab extends StatefulWidget {
   _ItemListTabState createState() => _ItemListTabState();
 }
 
-class _ItemListTabState extends State<ItemListTab> {
+class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
   // TextInputsManager<Item> inputsManager = TextInputsManager();
   final qpKey = 'QP';
 
   Map<Item, InputComponents<Item>> _allGroups = {};
   List<InputComponents<Item>> _shownGroups = [];
+  ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     db.gameData.items.forEach((key, item) {
       if (item.category == widget.category && key != qpKey) {
         _allGroups[item] = InputComponents(
@@ -215,7 +217,8 @@ class _ItemListTabState extends State<ItemListTab> {
 
   @override
   void dispose() {
-    _allGroups.values.forEach((element) => element.dispose());
+    _allGroups.values.forEach((element) => element?.dispose());
+    _scrollController?.dispose();
     super.dispose();
   }
 
@@ -247,11 +250,14 @@ class _ItemListTabState extends State<ItemListTab> {
               children.add(buildItemTile(group, stat));
             }
           }
-          return ListView.separated(
-            itemBuilder: (context, index) => children[index],
-            separatorBuilder: (context, index) =>
-                Divider(height: 1, indent: 16),
-            itemCount: children.length,
+          return wrapDefaultScarollBar(
+            controller: _scrollController,
+            child: ListView.separated(
+              itemBuilder: (context, index) => children[index],
+              separatorBuilder: (context, index) =>
+                  Divider(height: 1, indent: 16),
+              itemCount: children.length,
+            ),
           );
         });
   }

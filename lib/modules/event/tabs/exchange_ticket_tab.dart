@@ -16,8 +16,22 @@ class ExchangeTicketTab extends StatefulWidget {
   _ExchangeTicketTabState createState() => _ExchangeTicketTabState();
 }
 
-class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
+class _ExchangeTicketTabState extends State<ExchangeTicketTab>
+    with DefaultScrollBarMixin {
   final AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
+  ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController?.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,47 +44,50 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     return StreamBuilder<ItemStatistics>(
       initialData: db.itemStat,
       stream: db.itemStat.onUpdated.stream,
-      builder: (context, snapshot) => ListView(
-        children: divideTiles(
-          tickets.map((ticket) {
-            TextStyle plannedStyle = sum(
-                        db.curUser.events.exchangeTickets[ticket.month] ??
-                            <int>[]) >
-                    0
-                ? TextStyle(color: Colors.blueAccent)
-                : TextStyle();
-            return Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Expanded(
-                    flex: 1,
-                    child: ListTile(
-                      contentPadding: EdgeInsets.only(left: 12),
-                      title: AutoSizeText(ticket.month,
-                          maxLines: 1,
-                          maxFontSize: 16,
+      builder: (context, snapshot) => wrapDefaultScarollBar(
+        controller: _scrollController,
+        child: ListView(
+          children: divideTiles(
+            tickets.map((ticket) {
+              TextStyle plannedStyle = sum(
+                          db.curUser.events.exchangeTickets[ticket.month] ??
+                              <int>[]) >
+                      0
+                  ? TextStyle(color: Colors.blueAccent)
+                  : TextStyle();
+              return Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                      flex: 1,
+                      child: ListTile(
+                        contentPadding: EdgeInsets.only(left: 12),
+                        title: AutoSizeText(ticket.month,
+                            maxLines: 1,
+                            maxFontSize: 16,
+                            style: plannedStyle.copyWith(
+                                fontWeight: FontWeight.w600)),
+                        subtitle: AutoSizeText(
+                          '${ticket.monthJp}\nmax: ${ticket.days}',
+                          maxLines: 2,
+                          maxFontSize: 14,
                           style: plannedStyle.copyWith(
-                              fontWeight: FontWeight.w600)),
-                      subtitle: AutoSizeText(
-                        '${ticket.monthJp}\nmax: ${ticket.days}',
-                        maxLines: 2,
-                        maxFontSize: 14,
-                        style:
-                            plannedStyle.copyWith(fontStyle: FontStyle.italic),
-                        minFontSize: 6,
-                      ),
-                    )),
-                Expanded(
-                    flex: 3,
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: buildTrailing(ticket, snapshot.data),
-                    ))
-              ],
-            );
-          }),
-          divider: Divider(height: 1, indent: 16),
-        ).toList(),
+                              fontStyle: FontStyle.italic),
+                          minFontSize: 6,
+                        ),
+                      )),
+                  Expanded(
+                      flex: 3,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: buildTrailing(ticket, snapshot.data),
+                      ))
+                ],
+              );
+            }),
+            divider: Divider(height: 1, indent: 16),
+          ).toList(),
+        ),
       ),
     );
   }

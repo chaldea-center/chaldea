@@ -50,6 +50,7 @@ dependencies:
   path_provider: ^1.6.24
   share: '>=0.6.5+4 <2.0.0'
   url_launcher: ^5.7.10
+  vs_scrollbar: ^0.1.0
 
 
 dev_dependencies:
