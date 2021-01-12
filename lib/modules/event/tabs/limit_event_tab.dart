@@ -35,7 +35,7 @@ class _LimitEventTabState extends State<LimitEventTab>
       return (a.startTimeJp).compareTo(b.startTimeJp) *
           (widget.reverse ? -1 : 1);
     });
-    return wrapDefaultScarollBar(
+    return wrapDefaultScrollBar(
       controller: _scrollController,
       child: ListView.separated(
         itemCount: events.length,

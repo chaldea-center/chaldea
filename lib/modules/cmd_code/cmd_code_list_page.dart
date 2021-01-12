@@ -158,7 +158,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
     });
     shownList.sort((a, b) => CommandCode.compare(
         a, b, filterData.sortKeys, filterData.sortReversed));
-    return wrapDefaultScarollBar(
+    return wrapDefaultScrollBar(
       controller: _scrollController,
       child: filterData.useGrid ? _buildGridView() : _buildListView(),
     );

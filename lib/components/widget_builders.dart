@@ -76,7 +76,7 @@ class AutoUnfocusBuilder extends StatelessWidget {
 }
 
 mixin DefaultScrollBarMixin<T extends StatefulWidget> on State<T> {
-  Widget wrapDefaultScarollBar(
+  Widget wrapDefaultScrollBar(
       {required ScrollController controller, required Widget child}) {
     return VsScrollbar(
       controller: controller,

@@ -177,7 +177,7 @@ class CraftListPageState extends State<CraftListPage>
     shownList.sort((a, b) => CraftEssential.compare(
         a, b, filterData.sortKeys, filterData.sortReversed));
 
-    return wrapDefaultScarollBar(
+    return wrapDefaultScrollBar(
       controller: _scrollController,
       child: filterData.useGrid ? _buildGridView() : _buildListView(),
     );

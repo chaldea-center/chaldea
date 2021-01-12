@@ -44,7 +44,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab>
     return StreamBuilder<ItemStatistics>(
       initialData: db.itemStat,
       stream: db.itemStat.onUpdated.stream,
-      builder: (context, snapshot) => wrapDefaultScarollBar(
+      builder: (context, snapshot) => wrapDefaultScrollBar(
         controller: _scrollController,
         child: ListView(
           children: divideTiles(

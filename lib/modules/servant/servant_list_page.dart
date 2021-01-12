@@ -267,7 +267,7 @@ class ServantListPageState extends State<ServantListPage>
     });
     shownList.sort((a, b) =>
         Servant.compare(a, b, filterData.sortKeys, filterData.sortReversed));
-    return wrapDefaultScarollBar(
+    return wrapDefaultScrollBar(
       controller: _scrollController,
       child: filterData.useGrid
           ? _buildGridView(shownList)
