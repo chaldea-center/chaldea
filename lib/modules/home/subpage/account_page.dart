@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:chaldea/components/components.dart';
 
 class AccountPage extends StatefulWidget {
@@ -26,14 +28,7 @@ class _AccountPageState extends State<AccountPage> {
                       errorText: S.of(context).input_error,
                       validate: (v) =>
                           v == v.trim() && !db.userData.users.containsKey(v),
-                      onSubmit: (v) {
-                        String newKey =
-                            DateTime.now().millisecondsSinceEpoch.toString();
-                        db.userData.users[newKey] = User(name: v);
-                        db.userData.curUserKey = newKey;
-                        db.onAppUpdate();
-                        print('Add account $v(key:$newKey)');
-                      },
+                      onSubmit: addUser,
                     );
                   });
             },
@@ -66,13 +61,17 @@ class _AccountPageState extends State<AccountPage> {
               itemBuilder: (BuildContext context) => [
                 PopupMenuItem(
                     value: 'rename', child: Text(S.of(context).rename)),
+                PopupMenuItem(value: 'copy', child: Text('复制')),
                 PopupMenuItem(
-                    value: 'delete', child: Text(S.of(context).delete))
+                    value: 'delete', child: Text(S.of(context).delete)),
               ],
               onSelected: (k) {
                 switch (k) {
                   case 'rename':
                     renameUser(userKey);
+                    break;
+                  case 'copy':
+                    copyUser(userKey);
                     break;
                   case 'delete':
                     deleteUser(userKey);
@@ -92,6 +91,14 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
+  void addUser(String name) {
+    String newKey = DateTime.now().millisecondsSinceEpoch.toString();
+    db.userData.users[newKey] = User(name: name);
+    db.userData.curUserKey = newKey;
+    db.onAppUpdate();
+    logger.d('Add account $newKey(name:$name)');
+  }
+
   void renameUser(String key) {
     final user = db.userData.users[key];
     showDialog(
@@ -109,6 +116,21 @@ class _AccountPageState extends State<AccountPage> {
         },
       ),
     );
+  }
+
+  void copyUser(String key) {
+    int i = 2;
+    String newName;
+    String oldName = db.userData.users[key].name;
+    do {
+      newName = '$oldName ($i)';
+      i++;
+    } while (db.userData.users.values.any((user) => user.name == newName));
+    String newKey = DateTime.now().millisecondsSinceEpoch.toString();
+    db.userData.users[newKey] =
+        User.fromJson(json.decode(json.encode(db.userData.users[key])))
+          ..name = newName;
+    logger.d('Copy user $key($oldName)->$newKey($newName)');
   }
 
   void deleteUser(String key) {

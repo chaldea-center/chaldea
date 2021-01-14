@@ -251,7 +251,7 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
               children.add(buildItemTile(group, stat));
             }
           }
-          return wrapDefaultScarollBar(
+          return wrapDefaultScrollBar(
             controller: _scrollController,
             child: ListView.separated(
               controller: _scrollController,

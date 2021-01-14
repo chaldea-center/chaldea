@@ -118,11 +118,11 @@ class ServantDetailPageState extends State<ServantDetailPage>
                   showDialog(
                     context: context,
                     builder: (context) => SimpleDialog(
-                      title: Text('Choose plan'),
+                      title: Text('选择规划'),
                       children: List.generate(db.curUser.servantPlans.length,
                           (index) {
                         return ListTile(
-                          title: Text('Plan ${index + 1}'),
+                          title: Text('规划 ${index + 1}'),
                           selected: index == db.curUser.curSvtPlanNo,
                           onTap: () {
                             Navigator.of(context).pop();

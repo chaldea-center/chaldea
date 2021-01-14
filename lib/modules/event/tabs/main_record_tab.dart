@@ -46,7 +46,7 @@ class _MainRecordTabState extends State<MainRecordTab>
         ),
         Divider(thickness: 1),
         Expanded(
-          child: wrapDefaultScarollBar(
+          child: wrapDefaultScrollBar(
             controller: _scrollController,
             child: ListView.separated(
               controller: _scrollController,
