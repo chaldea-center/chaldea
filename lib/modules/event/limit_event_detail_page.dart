@@ -105,6 +105,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
         leading: BackButton(),
         title: AutoSizeText(widget.name ?? '', maxLines: 1),
       ),
+      floatingActionButton: FloatingActionButton(onPressed: () {  },child: Icon(Icons.archive_outlined),tooltip: '',),
       body: ListView(
         children: divideTiles(children),
       ),

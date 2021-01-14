@@ -47,6 +47,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab>
       builder: (context, snapshot) => wrapDefaultScarollBar(
         controller: _scrollController,
         child: ListView(
+          controller: _scrollController,
           children: divideTiles(
             tickets.map((ticket) {
               TextStyle plannedStyle = sum(

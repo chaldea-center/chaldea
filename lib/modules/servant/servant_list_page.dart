@@ -277,7 +277,6 @@ class ServantListPageState extends State<ServantListPage>
 
   Widget _buildListView(List<Servant> shownList) {
     return ListView.separated(
-        physics: ScrollPhysics(),
         controller: _scrollController,
         separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
         itemCount: shownList.length + 1,

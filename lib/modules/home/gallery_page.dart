@@ -133,20 +133,20 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         builder: (context, _) => DropCalculatorPage(),
         isDetail: true,
       ),
-//      GalleryItem.calculator: GalleryItem(
-//        name: GalleryItem.calculator,
-//        title: S.of(context).calculator,
-//        icon: Icons.keyboard,
-//        builder: (context,_) => DamageCalcPage(),
-//        isDetail: true,
-//      ),
-//       GalleryItem.ap_cal: GalleryItem(
-//         name: GalleryItem.ap_cal,
-//         title: 'AP计算',
-//         icon: Icons.directions_run,
-//         builder: (context,_) => APCalcPage(),
-//         isDetail: true,
-//       ),
+      // GalleryItem.calculator: GalleryItem(
+      //   name: GalleryItem.calculator,
+      //   title: S.of(context).calculator,
+      //   icon: Icons.keyboard,
+      //   builder: (context, _) => DamageCalcPage(),
+      //   isDetail: true,
+      // ),
+      // GalleryItem.ap_cal: GalleryItem(
+      //   name: GalleryItem.ap_cal,
+      //   title: 'AP计算',
+      //   icon: Icons.directions_run,
+      //   builder: (context, _) => APCalcPage(),
+      //   isDetail: true,
+      // ),
       GalleryItem.statistics: GalleryItem(
         name: GalleryItem.statistics,
         title: '统计',
@@ -162,6 +162,14 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         //fail
         isDetail: true,
       ),
+      // if (kDebugMode)
+      //   'Test': GalleryItem(
+      //     name: 'Test',
+      //     title: 'Test',
+      //     icon: Icons.adb,
+      //     builder: (context, _) => TestPage(),
+      //     isDetail: false,
+      //   ),
     };
   }
 

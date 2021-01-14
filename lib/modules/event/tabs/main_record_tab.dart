@@ -49,6 +49,7 @@ class _MainRecordTabState extends State<MainRecordTab>
           child: wrapDefaultScarollBar(
             controller: _scrollController,
             child: ListView.separated(
+              controller: _scrollController,
               itemCount: mainRecords.length,
               separatorBuilder: (context, index) =>
                   Divider(height: 1, indent: 16),

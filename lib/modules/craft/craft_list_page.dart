@@ -185,7 +185,6 @@ class CraftListPageState extends State<CraftListPage>
 
   Widget _buildListView() {
     return ListView.separated(
-        physics: ScrollPhysics(),
         controller: _scrollController,
         separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
         itemCount: shownList.length,

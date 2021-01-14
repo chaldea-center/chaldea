@@ -130,6 +130,7 @@ class ItemListPageState extends State<ItemListPage>
         ],
         bottom: TabBar(
           controller: _tabController,
+          physics: NeverScrollableScrollPhysics(),
           tabs: categories
               .map(
                   (category) => Tab(text: ['x', '普通素材', '技能石', '棋子'][category]))
@@ -253,6 +254,7 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
           return wrapDefaultScarollBar(
             controller: _scrollController,
             child: ListView.separated(
+              controller: _scrollController,
               itemBuilder: (context, index) => children[index],
               separatorBuilder: (context, index) =>
                   Divider(height: 1, indent: 16),
