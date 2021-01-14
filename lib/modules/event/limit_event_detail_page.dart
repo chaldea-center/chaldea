@@ -104,27 +104,29 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
       appBar: AppBar(
         leading: BackButton(),
         title: AutoSizeText(widget.name ?? '', maxLines: 1),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (plan?.enable != true) {
-            showInformDialog(context, content: '活动未列入规划');
-          } else {
-            SimpleCancelOkDialog(
-              title: Text('确定收取素材'),
-              content: Text('所有素材添加到素材仓库，并将该活动移出规划'),
-              onTapOk: () {
-                sumDict([db.curUser.items, event.getItems(plan)],
-                    inPlace: true);
-                plan.enable = false;
-                db.itemStat.updateEventItems();
-                setState(() {});
-              },
-            ).show(context);
-          }
-        },
-        child: Icon(Icons.archive_outlined),
-        tooltip: '收取素材',
+        actions: [
+          IconButton(
+            icon: Icon(Icons.archive_outlined),
+            tooltip: '收取素材',
+            onPressed: () {
+              if (plan?.enable != true) {
+                showInformDialog(context, content: '活动未列入规划');
+              } else {
+                SimpleCancelOkDialog(
+                  title: Text('确定收取素材'),
+                  content: Text('所有素材添加到素材仓库，并将该活动移出规划'),
+                  onTapOk: () {
+                    sumDict([db.curUser.items, event.getItems(plan)],
+                        inPlace: true);
+                    plan.enable = false;
+                    db.itemStat.updateEventItems();
+                    setState(() {});
+                  },
+                ).show(context);
+              }
+            },
+          ),
+        ],
       ),
       body: ListView(
         children: divideTiles(children),
