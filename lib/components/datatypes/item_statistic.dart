@@ -21,7 +21,7 @@ class ItemStatistics {
     onUpdated.sink.add(this);
   }
 
-  Future<Null> update({User user, bool shouldBroadcast = true}) {
+  Future<void> update({User user, bool shouldBroadcast = true}) {
     user ??= db.curUser;
     return Future(() {
       return updateSvtItems(user: user, shouldBroadcast: false);
@@ -30,7 +30,7 @@ class ItemStatistics {
         (_) => updateLeftItems(user: user, shouldBroadcast: shouldBroadcast));
   }
 
-  Future<Null> updateSvtItems({User user, bool shouldBroadcast = true}) {
+  Future<void> updateSvtItems({User user, bool shouldBroadcast = true}) {
     user ??= db.curUser;
     return Future(() {
       svtItemDetail.update(curStat: user.servants, targetPlan: user.curSvtPlan);
@@ -39,7 +39,7 @@ class ItemStatistics {
         (_) => updateLeftItems(user: user, shouldBroadcast: shouldBroadcast));
   }
 
-  Future<Null> updateEventItems({User user, bool shouldBroadcast = true}) {
+  Future<void> updateEventItems({User user, bool shouldBroadcast = true}) {
     user ??= db.curUser;
     return Future(() {
       eventItems = db.gameData.events.getAllItems(user.events);
@@ -48,7 +48,7 @@ class ItemStatistics {
         (_) => updateLeftItems(user: user, shouldBroadcast: shouldBroadcast));
   }
 
-  Future<Null> updateLeftItems({User user, bool shouldBroadcast = true}) {
+  Future<void> updateLeftItems({User user, bool shouldBroadcast = true}) {
     return Future(() {
       user ??= db.curUser;
       leftItems = sumDict([eventItems, user.items, multiplyDict(svtItems, -1)]);

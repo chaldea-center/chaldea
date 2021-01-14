@@ -19,6 +19,29 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
         context: context, builder: (context, _) => ItemDetailPage(itemKey));
     return Scaffold(
       appBar: AppBar(leading: BackButton(), title: Text(widget.name)),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          final plan = db.curUser.events.mainRecords[widget.name];
+          final record = db.gameData.events.mainRecords[widget.name];
+          if (plan == null || !plan.contains(true)) {
+            showInformDialog(context, content: '活动未列入规划');
+          } else {
+            SimpleCancelOkDialog(
+              title: Text('确定收取素材'),
+              content: Text('所有素材添加到素材仓库，并将该活动移出规划'),
+              onTapOk: () {
+                sumDict([db.curUser.items, record.getItems(plan)],
+                    inPlace: true);
+                plan.fillRange(0, plan.length, false);
+                db.itemStat.updateEventItems();
+                setState(() {});
+              },
+            ).show(context);
+          }
+        },
+        child: Icon(Icons.archive_outlined),
+        tooltip: '收取素材',
+      ),
       body: ListView(
         children: <Widget>[
           Divider(height: 1),

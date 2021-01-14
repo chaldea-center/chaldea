@@ -42,7 +42,7 @@ class _EventListPageState extends State<EventListPage>
       ),
       body: TabBarView(
         controller: _tabController,
-        physics: NeverScrollableScrollPhysics(),
+        // physics: NeverScrollableScrollPhysics(),
         children: <Widget>[
           KeepAliveBuilder(builder: (_) => LimitEventTab(reverse: reverse)),
           KeepAliveBuilder(builder: (_) => MainRecordTab(reverse: reverse)),

@@ -58,9 +58,8 @@ class _LimitEventTabState extends State<LimitEventTab>
                   value: plan[event.name]?.enable ?? false,
                   onChanged: (v) => setState(
                     () {
-                      plan
-                          .putIfAbsent(event.name, () => LimitEventPlan())
-                          .enable = v;
+                      plan.putIfAbsent(event.name, () => LimitEventPlan())
+                        ..enable = v;
                       db.itemStat.updateEventItems();
                     },
                   ),
