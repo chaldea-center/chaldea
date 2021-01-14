@@ -119,7 +119,6 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
       widget.objectiveMap.forEach((key, value) => params.addOne(key, value));
       params.sortByItem();
     }
-    solver.initial();
   }
 
   @override

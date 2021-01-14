@@ -7,7 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_qjs/isolate.dart';
 
 class GLPKSolver {
-  final engine = IsolateQjs();
+  final IsolateQjs engine = IsolateQjs();
+  bool _engineReady = false;
 
   GLPKSolver();
 
@@ -16,7 +17,8 @@ class GLPKSolver {
     engine.close();
   }
 
-  Future<Null> initial({VoidCallback callback}) async {
+  Future<void> _ensureEngine() async {
+    if (_engineReady) return;
     // only load once
     // use callback to setState, not Future.
     print('=========loading js libs=========');
@@ -29,15 +31,17 @@ class GLPKSolver {
           name: '<solver.js>');
       print('=========js libs loaded.=========');
     } catch (e, s) {
-      logger.e('initiate js error', e, s);
-      EasyLoading.showToast('initiate js error\n$e');
+      logger.e('initiate js libs error', e, s);
+      EasyLoading.showToast('initiation error\n$e');
     }
+    _engineReady = true;
   }
 
   Future<GLPKSolution> calculate({GLPKData data, GLPKParams params}) async {
     // if use integer GLPK (simplex then intopt),
     // it may run out of time and memory, then crash.
     // so only use simplex here
+    await _ensureEngine();
     assert(data != null && params != null);
     print('=========solving========\nparams="${json.encode(params)}"');
     GLPKSolution solution;
