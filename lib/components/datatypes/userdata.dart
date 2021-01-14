@@ -11,7 +11,9 @@ class UserData {
   Map<String, String> sliderUrls;
   Map<String, bool> galleries;
   String serverDomain;
-  String previousAppVersion;
+
+  /// use build number which should be increasing integer
+  int previousBuildNumber;
 
   // user-related game data
   String curUserKey;
@@ -53,7 +55,7 @@ class UserData {
     this.sliderUrls,
     this.galleries,
     this.serverDomain,
-    this.previousAppVersion,
+    this.previousBuildNumber,
     this.curUserKey,
     this.users,
     this.svtFilter,
@@ -397,7 +399,7 @@ class FilterGroupData {
           break;
         }
       }
-    }else{
+    } else {
       result = options.containsKey(value);
     }
     return invert ? !result : result;

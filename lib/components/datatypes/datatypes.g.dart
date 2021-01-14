@@ -1284,8 +1284,8 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
                 (k, e) => MapEntry(k, e as bool),
               )),
       serverDomain: $checkedConvert(json, 'serverDomain', (v) => v as String),
-      previousAppVersion:
-          $checkedConvert(json, 'previousAppVersion', (v) => v as String),
+      previousBuildNumber:
+          $checkedConvert(json, 'previousBuildNumber', (v) => v as int),
       curUserKey: $checkedConvert(json, 'curUserKey', (v) => v as String),
       users: $checkedConvert(
           json,
@@ -1335,7 +1335,7 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'sliderUrls': instance.sliderUrls,
       'galleries': instance.galleries,
       'serverDomain': instance.serverDomain,
-      'previousAppVersion': instance.previousAppVersion,
+      'previousBuildNumber': instance.previousBuildNumber,
       'curUserKey': instance.curUserKey,
       'users': instance.users,
       'testAllowDownload': instance.testAllowDownload,

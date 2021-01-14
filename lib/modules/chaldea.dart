@@ -60,12 +60,12 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
     db.loadUserData();
     bool gameDataLoadSuccess = db.loadGameData();
     if (!gameDataLoadSuccess ||
-        AppInfo.fullVersion.compareTo(db.userData.previousAppVersion ?? '0') >
-            0) {
+        AppInfo.buildNumber > (db.userData.previousBuildNumber ?? 0)) {
       /// load failed(json destroyed) or app updated, reload default dataset
       // TODO: if asset not exist? download from server
+      logger.i('reload default gamedata asset');
       await db.loadZipAssets(kDatasetAssetKey);
-      db.userData.previousAppVersion = AppInfo.fullVersion;
+      db.userData.previousBuildNumber = AppInfo.buildNumber;
       db.loadGameData();
       // await SimpleCancelOkDialog(
       //   title: Text('资源不存在或已损坏'),

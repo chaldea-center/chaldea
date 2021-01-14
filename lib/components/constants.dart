@@ -41,10 +41,14 @@ class AppInfo {
       return kAppName;
   }
 
+  static String get version => _info?.version ?? '';
+
+  static int get buildNumber => int.tryParse(_info?.buildNumber ?? '0') ?? 0;
+
   static String get fullVersion {
     String s = '';
-    if (_info?.version?.isNotEmpty == true) s += _info!.version;
-    if (_info?.buildNumber?.isNotEmpty == true) s += '+' + _info!.buildNumber;
+    s += version;
+    if (buildNumber > 0) s += '($buildNumber)';
     return s;
   }
 }

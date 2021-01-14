@@ -6,7 +6,6 @@ import 'package:chaldea/components/components.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutPage extends StatefulWidget {
@@ -102,9 +101,9 @@ class _AboutPageState extends State<AboutPage> {
                 subtitle: AutoSizeText('请附上出错页面截图和日志', maxLines: 1),
                 onTap: () async {
                   if (Platform.isAndroid || Platform.isIOS) {
-                    final info = await PackageInfo.fromPlatform();
                     final Email email = Email(
-                        subject: '${info.appName} v${info.version} Feedback',
+                        subject: '${AppInfo.appName} '
+                            'v${AppInfo.fullVersion} Feedback',
                         body: '请附上出错页面截图和日志.\n\n',
                         recipients: [kSupportTeamEmailAddress],
                         isHTML: true,
