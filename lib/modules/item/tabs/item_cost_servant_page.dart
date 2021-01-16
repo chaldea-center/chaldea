@@ -33,19 +33,23 @@ class ItemCostServantPage extends StatelessWidget {
                   '活动 ${num2str(statistics.eventItems[itemKey])}'),
               trailing: Text(
                 '共需 ${num2str(counts.summation[itemKey])}\n' +
-                    counts.values.map((v) => num2str(v[itemKey])).join('/'),
+                    counts
+                        .valuesIfGrail(itemKey)
+                        .map((v) => num2str(v[itemKey]))
+                        .join('/'),
                 textAlign: TextAlign.end,
               ),
             ),
           ];
           if (viewType == 0) {
-            for (int i in [0, 1, 2]) {
+            final _groups = itemKey == Item.grail ? [3] : [0, 1, 2];
+            for (int i in _groups) {
               children.add(Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   CustomTile(
-                    title: Text(['灵基再临', '技能升级', '灵衣开放'][i]),
+                    title: Text(['灵基再临', '技能升级', '灵衣开放', '圣杯转临'][i]),
                     trailing: Text(
                         formatNumber(counts.values[i][itemKey], minVal: 10000)),
                   ),
@@ -94,7 +98,7 @@ class ItemCostServantPage extends StatelessWidget {
           child: ImageWithText(
             image: Image(image: db.getIconImage(svt.icon)),
             text: formatNumber(num, compact: true, minVal: 10000),
-            padding: EdgeInsets.only(right: 5, bottom: 16),
+            padding: EdgeInsets.only(right: 3, bottom: 12),
             onTap: () {
               SplitRoute.push(
                 context: context,
@@ -125,12 +129,13 @@ class ItemCostServantPage extends StatelessWidget {
       final textStyle = _planned ? TextStyle(color: Colors.blueAccent) : null;
       final ascensionNum = stat.ascension[itemKey][svtNo] ?? 0,
           skillNum = stat.skill[itemKey][svtNo] ?? 0,
-          dressNum = stat.dress[itemKey][svtNo] ?? 0;
+          dressNum = stat.dress[itemKey][svtNo] ?? 0,
+          grailNum = stat.grailAscension[itemKey][svtNo] ?? 0;
       children.add(CustomTile(
         leading: Image(image: db.getIconImage(svt.icon), height: 144 * 0.4),
         title: Text('${svt.info.name}', style: textStyle),
         subtitle: Text(
-          '$allNum($ascensionNum/$skillNum/$dressNum)',
+          '$allNum($ascensionNum/$skillNum/$dressNum/$grailNum)',
           style: textStyle,
         ),
         trailing: Icon(Icons.arrow_forward_ios),

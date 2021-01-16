@@ -41,9 +41,11 @@ class Servant {
   /// [cur]=[target]=null: all
   /// [cur.favorite]=[target.favorite]=true
   /// else empty
-  Map<String, int> getAllCost({ServantPlan cur, ServantPlan target, bool all = false}) {
+  Map<String, int> getAllCost(
+      {ServantPlan cur, ServantPlan target, bool all = false}) {
     if (all) {
-      return sumDict([getAscensionCost(), getSkillCost(), getDressCost(), getGrailCost()]);
+      return sumDict(
+          [getAscensionCost(), getSkillCost(), getDressCost(), getGrailCost()]);
     }
     if (cur?.favorite == true && target?.favorite == true) {
       return sumDict([
@@ -62,16 +64,18 @@ class Servant {
     // no grail?
     if (all) {
       return SvtParts(
-        ascension: getAscensionCost(),
-        skill: getSkillCost(),
-        dress: getDressCost(),
-      );
+          ascension: getAscensionCost(),
+          skill: getSkillCost(),
+          dress: getDressCost(),
+          grailAscension: getGrailCost());
     }
     if (cur?.favorite == true && target?.favorite == true) {
       return SvtParts(
-        ascension: getAscensionCost(cur: cur.ascension, target: target.ascension),
+        ascension:
+            getAscensionCost(cur: cur.ascension, target: target.ascension),
         skill: getSkillCost(cur: cur.skills, target: target.skills),
         dress: getDressCost(cur: cur.dress, target: target.dress),
+        grailAscension: getGrailCost(cur: cur.grail, target: target.grail),
       );
     } else {
       return SvtParts(k: () => <String, int>{});
@@ -100,13 +104,16 @@ class Servant {
 
   Map<String, int> getDressCost({List<int> cur, List<int> target}) {
     Map<String, int> items = {};
-
-    cur ??= [];
-    target ??= [];
-    cur.length = target.length = itemCost.dress.length;
+    final n = itemCost.dress.length;
+    if (cur == null) cur = List.filled(n, 0, growable: true);
+    if (target == null) target = List.filled(n, 1, growable: true);
+    if (cur.length < n)
+      cur.addAll(List.filled(n - cur.length, 0, growable: true));
+    if (target.length < n)
+      target.addAll(List.filled(n - target.length, 0, growable: true));
 
     for (int i = 0; i < itemCost.dress.length; i++) {
-      for (int j = (cur[i] ?? 0); j < (target[i] ?? 1); j++) {
+      for (int j = cur[i]; j < target[i]; j++) {
         sumDict([items, itemCost.dress[i]], inPlace: true);
       }
     }
@@ -114,8 +121,8 @@ class Servant {
   }
 
   Map<String, int> getGrailCost({int cur = 0, int target}) {
-    target ??= [-1, 10, 9, 7, 5][this.info.rarity2];
-    return target > cur ? {Item.grail: target - cur} : {};
+    target ??= [10, 10, 10, 9, 7, 5][this.info.rarity2];
+    return target > cur ? {Item.grail: target - cur} : <String, int>{};
   }
 
   int getClassSortIndex() {
@@ -129,7 +136,8 @@ class Servant {
     }
   }
 
-  static int compare(Servant a, Servant b, [List<SvtCompare> keys, List<bool> reversed]) {
+  static int compare(Servant a, Servant b,
+      [List<SvtCompare> keys, List<bool> reversed]) {
     int res = 0;
     if (keys == null || keys.isEmpty) {
       keys = [SvtCompare.no];
@@ -158,7 +166,8 @@ class Servant {
     return res;
   }
 
-  factory Servant.fromJson(Map<String, dynamic> data) => _$ServantFromJson(data);
+  factory Servant.fromJson(Map<String, dynamic> data) =>
+      _$ServantFromJson(data);
 
   Map<String, dynamic> toJson() => _$ServantToJson(this);
 }
@@ -253,7 +262,8 @@ class ServantBaseInfo {
     this.criticalRate,
   });
 
-  factory ServantBaseInfo.fromJson(Map<String, dynamic> data) => _$ServantBaseInfoFromJson(data);
+  factory ServantBaseInfo.fromJson(Map<String, dynamic> data) =>
+      _$ServantBaseInfoFromJson(data);
 
   Map<String, dynamic> toJson() => _$ServantBaseInfoToJson(this);
 }
@@ -284,18 +294,21 @@ class TreasureDevice {
     this.effects,
   });
 
-  factory TreasureDevice.fromJson(Map<String, dynamic> data) => _$TreasureDeviceFromJson(data);
+  factory TreasureDevice.fromJson(Map<String, dynamic> data) =>
+      _$TreasureDeviceFromJson(data);
 
   Map<String, dynamic> toJson() => _$TreasureDeviceToJson(this);
 }
 
 @JsonSerializable(checked: true)
-class ActiveSkill{
+class ActiveSkill {
   int cnState;
   List<Skill> skills;
-  ActiveSkill({this.cnState,this.skills});
 
-  factory ActiveSkill.fromJson(Map<String, dynamic> data) => _$ActiveSkillFromJson(data);
+  ActiveSkill({this.cnState, this.skills});
+
+  factory ActiveSkill.fromJson(Map<String, dynamic> data) =>
+      _$ActiveSkillFromJson(data);
 
   Map<String, dynamic> toJson() => _$ActiveSkillToJson(this);
 }
@@ -344,9 +357,11 @@ class SvtProfileData {
   String descriptionJp;
   String condition;
 
-  SvtProfileData({this.title, this.description, this.descriptionJp, this.condition});
+  SvtProfileData(
+      {this.title, this.description, this.descriptionJp, this.condition});
 
-  factory SvtProfileData.fromJson(Map<String, dynamic> data) => _$SvtProfileDataFromJson(data);
+  factory SvtProfileData.fromJson(Map<String, dynamic> data) =>
+      _$SvtProfileDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$SvtProfileDataToJson(this);
 }
@@ -358,7 +373,8 @@ class VoiceTable {
 
   VoiceTable({this.section, this.table});
 
-  factory VoiceTable.fromJson(Map<String, dynamic> data) => _$VoiceTableFromJson(data);
+  factory VoiceTable.fromJson(Map<String, dynamic> data) =>
+      _$VoiceTableFromJson(data);
 
   Map<String, dynamic> toJson() => _$VoiceTableToJson(this);
 }
@@ -371,9 +387,11 @@ class VoiceRecord {
   String condition;
   String voiceFile;
 
-  VoiceRecord({this.title, this.text, this.textJp, this.condition, this.voiceFile});
+  VoiceRecord(
+      {this.title, this.text, this.textJp, this.condition, this.voiceFile});
 
-  factory VoiceRecord.fromJson(Map<String, dynamic> data) => _$VoiceRecordFromJson(data);
+  factory VoiceRecord.fromJson(Map<String, dynamic> data) =>
+      _$VoiceRecordFromJson(data);
 
   Map<String, dynamic> toJson() => _$VoiceRecordToJson(this);
 }

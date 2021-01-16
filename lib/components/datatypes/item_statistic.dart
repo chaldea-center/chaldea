@@ -99,7 +99,7 @@ class SvtCostItems {
       a.summation = sumDict(a.values);
       b = svt.getAllCostParts(all: true);
       b.summation = sumDict(b.values);
-      for (var i = 0; i < 4; i++) {
+      for (var i = 0; i < planCountBySvt.valuesWithSum.length; i++) {
         planCountBySvt.valuesWithSum[i][no] = a.valuesWithSum[i];
         allCountBySvt.valuesWithSum[i][no] = b.valuesWithSum[i];
       }
@@ -107,7 +107,7 @@ class SvtCostItems {
 
     // byItem
     for (String itemKey in db.gameData.items.keys) {
-      for (var i = 0; i < 3; i++) {
+      for (var i = 0; i < planCountBySvt.values.length; i++) {
         planCountBySvt.values[i].forEach((svtNo, cost) {
           planCountByItem.values[i].putIfAbsent(itemKey, () => {})[svtNo] =
               cost[itemKey] ?? 0;
@@ -124,7 +124,7 @@ class SvtCostItems {
     }
 
     // itemCounts
-    for (var i = 0; i < 4; i++) {
+    for (var i = 0; i < planItemCounts.valuesWithSum.length; i++) {
       for (String itemKey in db.gameData.items.keys) {
         planItemCounts.valuesWithSum[i][itemKey] =
             sum(planCountByItem.valuesWithSum[i][itemKey].values);
@@ -143,12 +143,15 @@ class SvtParts<T> {
   T ascension;
   T skill;
   T dress;
+  T grailAscension;
 
-  SvtParts({this.ascension, this.skill, this.dress, T k()}) {
+  SvtParts(
+      {this.ascension, this.skill, this.dress, this.grailAscension, T k()}) {
     if (k != null) {
       ascension ??= k();
       skill ??= k();
       dress ??= k();
+      grailAscension ??= k();
       summation ??= k();
     }
   }
@@ -158,15 +161,22 @@ class SvtParts<T> {
       ascension: f == null ? ascension : f(ascension),
       skill: f == null ? skill : f(skill),
       dress: f == null ? dress : f(dress),
+      grailAscension: f == null ? grailAscension : f(grailAscension),
     );
   }
 
-  List<T> get values => [ascension, skill, dress];
+  List<T> get values => [ascension, skill, dress, grailAscension];
 
-  List<T> get valuesWithSum => [ascension, skill, dress, summation];
+  List<T> valuesIfGrail(String key) {
+    return key == Item.grail ? [grailAscension] : [ascension, skill, dress];
+  }
+
+  List<T> get valuesWithSum =>
+      [ascension, skill, dress, grailAscension, summation];
 
   @override
   String toString() {
-    return '$runtimeType<$T>(\n  ascension:$ascension,\n  skill:$skill,\n  dress:$dress)';
+    return '$runtimeType<$T>(\n  ascension:$ascension,\n  skill:$skill,\n'
+        '  dress:$dress)\n  grailAscension:$grailAscension';
   }
 }

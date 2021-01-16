@@ -69,7 +69,8 @@ class ServantStatus {
     curVal.reset();
   }
 
-  factory ServantStatus.fromJson(Map<String, dynamic> data) => _$ServantStatusFromJson(data);
+  factory ServantStatus.fromJson(Map<String, dynamic> data) =>
+      _$ServantStatusFromJson(data);
 
   Map<String, dynamic> toJson() => _$ServantStatusToJson(this);
 }
@@ -113,11 +114,21 @@ class ServantPlan {
     // grail = grail;
   }
 
-  factory ServantPlan.fromJson(Map<String, dynamic> data) => _$ServantPlanFromJson(data);
+  void fixDressLength(int length, [int fill = 0]) {
+    if (length < dress.length) {
+      dress.length = length;
+    } else {
+      dress.addAll(List.filled(length - dress.length, fill));
+    }
+  }
+
+  factory ServantPlan.fromJson(Map<String, dynamic> data) =>
+      _$ServantPlanFromJson(data);
 
   Map<String, dynamic> toJson() => _$ServantPlanToJson(this);
 
-  ServantPlan copyWith(bool favorite, int ascension, List<int> skills, List<int> dress, int grail) {
+  ServantPlan copyWith(bool favorite, int ascension, List<int> skills,
+      List<int> dress, int grail) {
     return ServantPlan(
       favorite: favorite ?? this.favorite,
       ascension: ascension ?? this.ascension,
@@ -154,7 +165,8 @@ class EventPlans {
     exchangeTickets ??= {};
   }
 
-  factory EventPlans.fromJson(Map<String, dynamic> data) => _$EventPlansFromJson(data);
+  factory EventPlans.fromJson(Map<String, dynamic> data) =>
+      _$EventPlansFromJson(data);
 
   Map<String, dynamic> toJson() => _$EventPlansToJson(this);
 }
@@ -173,7 +185,8 @@ class LimitEventPlan {
     extra ??= {};
   }
 
-  factory LimitEventPlan.fromJson(Map<String, dynamic> data) => _$LimitEventPlanFromJson(data);
+  factory LimitEventPlan.fromJson(Map<String, dynamic> data) =>
+      _$LimitEventPlanFromJson(data);
 
   Map<String, dynamic> toJson() => _$LimitEventPlanToJson(this);
 }

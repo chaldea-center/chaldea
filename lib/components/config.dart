@@ -115,7 +115,7 @@ class Database {
     }
   }
 
-  Future<Null> loadZipAssets(String assetKey,
+  Future<void> loadZipAssets(String assetKey,
       {String extractDir, bool force = false}) {
     extractDir ??= paths.gameDataDir;
     if (force || !Directory(extractDir).existsSync()) {

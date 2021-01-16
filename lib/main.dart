@@ -30,7 +30,7 @@ void main() async {
     runApp(Chaldea());
   else
     Catcher(
-      Chaldea(),
+      rootWidget: Chaldea(),
       profileConfig: catcherOptions,
       releaseConfig: catcherOptions,
       enableLogger: true,

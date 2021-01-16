@@ -338,6 +338,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
       }
       EasyLoading.showToast('导入素材数据成功');
       print(db.curUser.items);
+      db.saveUserData();
     }
 
     void updateGudaSevants(List<List<String>> gudaData) {
@@ -349,16 +350,19 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
 
       for (var row in gudaData) {
         int svtNo = int.parse(row[0]);
+        final svt = db.gameData.servants[svtNo];
         List<int> values =
             List.generate(10, (index) => int.parse(row[index + 3]));
         ServantPlan cur = ServantPlan(favorite: true),
             target = ServantPlan(favorite: true);
         cur
           ..ascension = values[0]
-          ..skills = [values[2], values[4], values[6]];
+          ..skills = [values[2], values[4], values[6]]
+          ..dress = List.generate(svt.itemCost.dressName.length, (_) => 0);
         target
           ..ascension = values[1]
-          ..skills = [values[3], values[5], values[7]];
+          ..skills = [values[3], values[5], values[7]]
+          ..dress = List.generate(svt.itemCost.dressName.length, (_) => 0);
         int rarity = db.gameData.servants[svtNo].info.rarity;
         int startIndex = lvs.indexOf(startLvs[rarity]);
         cur.grail = lvs.indexOf(values[8]) - startIndex;
@@ -367,8 +371,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
         db.curUser.curSvtPlan[svtNo] = target;
       }
       EasyLoading.showToast('导入从者数据成功');
-      print(db.curUser.servants);
-      print(db.curUser.curSvtPlan);
+      db.saveUserData();
     }
 
     showInformDialog(

@@ -80,6 +80,7 @@ mixin DefaultScrollBarMixin<T extends StatefulWidget> on State<T> {
       {required ScrollController controller, required Widget child}) {
     return VsScrollbar(
       controller: controller,
+      scrollDirection: Axis.vertical,
       radius: 3,
       thickness: 6,
       child: child,

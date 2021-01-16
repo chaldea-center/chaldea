@@ -104,7 +104,7 @@ Widget buildResponsiveGridWrap(
           ),
         )
       : GridView.count(
-          padding: EdgeInsets.only(left: 10, top: 3, bottom: 3),
+          padding: EdgeInsets.only(left: 16, top: 3, bottom: 3, right: 10),
           childAspectRatio: 132 / 144,
           crossAxisCount: crossCount,
           shrinkWrap: true,

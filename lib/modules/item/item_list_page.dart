@@ -345,12 +345,16 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
                   )),
             ],
           );
+          List<int> _countsInSubTitle = statistics.svtItemDetail.planItemCounts
+              .valuesIfGrail(itemKey)
+              .map((e) => e[itemKey] ?? 0)
+              .toList();
           subtitle = Row(
             children: <Widget>[
               Expanded(
                   child: AutoSizeText(
                 '共需 ${statistics.svtItems[itemKey]}' +
-                    '(${statistics.svtItemDetail.planItemCounts.values.map((e) => e[itemKey] ?? 0).join("/")})',
+                    '(${_countsInSubTitle.join("/")})',
                 maxLines: 1,
               )),
               Text('活动'),
