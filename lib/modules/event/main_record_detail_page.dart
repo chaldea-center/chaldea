@@ -55,7 +55,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
               context: context, data: record.drops, onTap: _onTap),
           ListTile(title: Text('通关奖励')),
           buildClassifiedItemList(
-              context: context, data: record.rewards, onTap: _onTap)
+              context: context, data: record.rewardsWithRare, onTap: _onTap)
         ],
       ),
     );

@@ -42,8 +42,6 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
   Widget build(BuildContext context) {
     List<Widget> children = [];
     // 复刻
-    int grailNum = event.grail + (plan.rerun ? 0 : event.grail2crystal),
-        crystalNum = event.crystal + (plan.rerun ? event.grail2crystal : 0);
     if (event.grail2crystal > 0) {
       children.add(SwitchListTile.adaptive(
         title: Text('复刻活动'),
@@ -84,12 +82,11 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     }
 
     // 商店任务点数
-    if (grailNum + crystalNum > 0 || event.items?.isNotEmpty == true) {
-      final Map<String, int> items = Map.from(event.items)
-        ..addAll({'圣杯': grailNum, '传承结晶': crystalNum})
-        ..removeWhere((key, value) => value <= 0);
+    final Map<String, int> items = event.itemsWithRare(plan)
+      ..removeWhere((key, value) => value <= 0);
+    if (items.isNotEmpty) {
       children
-        ..add(ListTile(title: Text('商店&任务&点数')))
+        ..add(ListTile(title: Text('商店&任务&点数&关卡掉落奖励')))
         ..add(buildClassifiedItemList(
             context: context, data: items, onTap: onTapIcon));
     }

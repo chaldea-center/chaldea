@@ -31,7 +31,7 @@ class ItemObtainEventPage extends StatelessWidget {
         if (record.isNotOutdated()) {
           List<TextSpan> texts = [];
           bool hasDrop = record.drops.containsKey(itemKey),
-              hasReward = record.rewards.containsKey(itemKey);
+              hasReward = record.rewardsWithRare.containsKey(itemKey);
           if (hasDrop) {
             texts.add(TextSpan(
                 text: '掉落${record.drops[itemKey]}',
@@ -42,7 +42,7 @@ class ItemObtainEventPage extends StatelessWidget {
           }
           if (hasReward) {
             texts.add(TextSpan(
-                text: '奖励${record.rewards[itemKey]}',
+                text: '奖励${record.rewardsWithRare[itemKey]}',
                 style: plan?.elementAt(1) == true ? highlight : null));
           }
           if (texts.length > 0) {
@@ -64,7 +64,7 @@ class ItemObtainEventPage extends StatelessWidget {
       ..sort((a, b) => a.startTimeJp.compareTo(b.startTimeJp))
       ..forEach((limitEvent) {
         final plan = db.curUser.events.limitEvents[limitEvent.name];
-        final int numShop = (limitEvent.items ?? {})[itemKey],
+        final int numShop = (limitEvent.itemsWithRare(plan) ?? {})[itemKey],
             numLottery = (limitEvent.lottery ?? {})[itemKey];
         final bool hasExtra = limitEvent.extra?.containsKey(itemKey) == true;
         if ((numShop != null || numLottery != null || hasExtra) &&
@@ -73,7 +73,7 @@ class ItemObtainEventPage extends StatelessWidget {
             title: AutoSizeText(limitEvent.name, maxFontSize: 15, maxLines: 2),
             trailing: Text(
               [
-                if (numShop != null) '商店 $numShop',
+                if (numShop != null) '$numShop',
                 if (numLottery != null) '无限池 $numLottery*${plan?.lottery ?? 0}',
                 if (hasExtra) 'Extra ${(plan?.extra ?? {})[itemKey] ?? 0}',
               ].join('\n'),

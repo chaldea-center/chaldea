@@ -68,10 +68,16 @@ class LimitEvent {
     this.extra,
   }); //item-comment
 
-  factory LimitEvent.fromJson(Map<String, dynamic> data) =>
-      _$LimitEventFromJson(data);
-
-  Map<String, dynamic> toJson() => _$LimitEventToJson(this);
+  Map<String, int> itemsWithRare([LimitEventPlan plan]) {
+    return sumDict([
+      items,
+      {
+        Item.grail: grail + (plan?.rerun == false ? grail2crystal : 0),
+        Item.crystal: crystal + (plan?.rerun == false ? 0 : grail2crystal)
+      }
+    ])
+      ..removeWhere((key, value) => value <= 0);
+  }
 
   Map<String, int> getItems(LimitEventPlan plan) {
     if (plan == null || !plan.enable) {
@@ -82,7 +88,16 @@ class LimitEvent {
         : lottery?.isNotEmpty == true
             ? multiplyDict(lottery, plan.lottery)
             : {};
-    return sumDict([items, plan.extra, lotterySum]);
+    return sumDict([
+      items,
+      plan.extra,
+      lotterySum,
+      {
+        Item.grail: grail + (plan.rerun ? 0 : grail2crystal),
+        Item.crystal: crystal + (plan.rerun ? grail2crystal : 0)
+      }
+    ])
+      ..removeWhere((key, value) => value <= 0);
   }
 
   bool isNotOutdated([int dm = 1]) {
@@ -93,6 +108,11 @@ class LimitEvent {
       return true;
     }
   }
+
+  factory LimitEvent.fromJson(Map<String, dynamic> data) =>
+      _$LimitEventFromJson(data);
+
+  Map<String, dynamic> toJson() => _$LimitEventToJson(this);
 }
 
 @JsonSerializable(checked: true)
@@ -134,10 +154,23 @@ class MainRecord {
 
   Map<String, dynamic> toJson() => _$MainRecordToJson(this);
 
+  Map<String, int> get rewardsWithRare {
+    return sumDict([
+      rewards,
+      {Item.grail: grail, Item.crystal: crystal}
+    ])
+      ..removeWhere((key, value) => value <= 0);
+  }
+
   Map<String, int> getItems(List<bool> plan) {
     if (plan == null) return {};
     assert(plan.length == 2, 'incorrect main record plan: $plan');
-    return sumDict([if (plan[0]) drops, if (plan[1]) rewards]);
+    return sumDict([
+      if (plan[0]) drops,
+      if (plan[1]) rewards,
+      {Item.grail: grail, Item.crystal: crystal}
+    ])
+      ..removeWhere((key, value) => value <= 0);
   }
 
   bool isNotOutdated([int dm = 1]) {
