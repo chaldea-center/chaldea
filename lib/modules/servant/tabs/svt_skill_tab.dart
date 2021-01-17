@@ -42,7 +42,8 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
 
   Widget buildSkill(int index) {
     ActiveSkill activeSkill = svt.activeSkills[index];
-    Skill skill = activeSkill.skills[status.skillIndex[index]];
+    Skill skill =
+        activeSkill.skills[status.skillIndex[index] ?? activeSkill.cnState];
     return TileGroup(
       children: <Widget>[
         CustomTile(
@@ -63,7 +64,9 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
                     },
                     child: Image(
                       image: db.getIconImage(
-                          status.skillIndex[index] >= i ? '技能强化' : '技能未强化'),
+                          (status.skillIndex[index] ?? activeSkill.cnState) >= i
+                              ? '技能强化'
+                              : '技能未强化'),
                       height: 110 * 0.2,
                     ),
                   ),

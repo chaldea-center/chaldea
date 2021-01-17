@@ -91,7 +91,9 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     //skill part
     List<Widget> skillWidgets = [];
     for (int index = 0; index < svt.activeSkills.length; index++) {
-      Skill skill = svt.activeSkills[index].skills[status.skillIndex[index]];
+      final activeSkill = svt.activeSkills[index];
+      Skill skill =
+          activeSkill.skills[status.skillIndex[index] ?? activeSkill.cnState];
       skillWidgets.add(buildPlanRow(
         leading: Image(
           image: db.getIconImage(skill.icon),

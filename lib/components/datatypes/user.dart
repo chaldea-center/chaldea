@@ -46,6 +46,8 @@ class User {
 @JsonSerializable(checked: true)
 class ServantStatus {
   ServantPlan curVal;
+
+  /// null-not set, >=0 index
   List<int> skillIndex; //length=3
   int tdIndex;
   int tdLv;
@@ -57,7 +59,7 @@ class ServantStatus {
     this.tdLv,
   }) {
     curVal ??= ServantPlan();
-    skillIndex ??= List.filled(3, 0);
+    skillIndex ??= List.filled(3, null);
     tdIndex ??= 0;
     tdLv ??= 1;
   }

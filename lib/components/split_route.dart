@@ -102,7 +102,13 @@ class SplitRoute<T extends Object?> extends TransitionRoute<T>
           child: SizedBox(
             height: size.height,
             width: size.width * (100 - masterRatio) / 100,
-            child: scope,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                  border: Border(
+                      left: Divider.createBorderSide(context,
+                          width: 1, color: Colors.grey))),
+              child: scope,
+            ),
           ),
         );
       } else if (layout == SplitLayout.master) {

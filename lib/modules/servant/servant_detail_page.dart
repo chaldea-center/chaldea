@@ -139,7 +139,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
               IconButton(
                 icon: status.curVal.favorite
                     ? Icon(Icons.favorite, color: Colors.redAccent)
-                    : Icon(Icons.favorite),
+                    : Icon(Icons.favorite_border),
                 tooltip: '关注',
                 onPressed: () {
                   setState(() {
