@@ -298,59 +298,59 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           fit: BoxFit.contain,
           child: ButtonBar(
             children: <Widget>[
-              RaisedButton(
+              ElevatedButton(
                 onPressed: () => setState(() {
                   // reset enhance plan every time enter the enhance mode
                   enhancePlan = ServantPlan.from(curVal);
                   enhanceMode = !enhanceMode;
                 }),
-                child: Text(enhanceMode ? 'Cancel' : '强化'),
-                color:
-                    enhanceMode ? Colors.grey : Theme.of(context).primaryColor,
+                child: Text(enhanceMode ? S.of(context).cancel : '强化'),
+                style: ElevatedButton.styleFrom(
+                    primary: enhanceMode
+                        ? Colors.grey
+                        : Theme.of(context).primaryColor),
               ),
-              RaisedButton(
-                onPressed: enhanceMode
-                    ? () {
-                        final enhanceItems = Item.sortMapById(svt.getAllCost(
-                          cur: curVal..favorite = true,
-                          target: enhancePlan..favorite = true,
-                        ));
-                        bool hasItem = enhanceItems.length > 0 &&
-                            enhanceItems.values.reduce((a, b) => max(a, b)) > 0;
-                        showDialog(
-                          context: context,
-                          builder: (context) => SimpleCancelOkDialog(
-                            title: Text('强化将扣除以下素材'),
-                            content: Container(
-                              width: defaultDialogWidth(context),
-                              child: hasItem
-                                  ? CommonBuilder.buildIconGridView(
-                                      data: enhanceItems, crossCount: 6)
-                                  : Text('Nothing'),
-                            ),
-                            onTapOk: hasItem
-                                ? () {
-                                    // ensure cur svt is favorite
-                                    // items = items + (-1)*enhanceItems
-                                    sumDict([
-                                      db.curUser.items,
-                                      multiplyDict(enhanceItems, -1,
-                                          inPlace: true)
-                                    ], inPlace: true);
-                                    setState(() {
-                                      curVal.copyFrom(enhancePlan);
-                                      enhanceMode = !enhanceMode;
-                                    });
-                                    update();
-                                  }
-                                : null,
-                          ),
-                        );
-                      }
-                    : null,
-                child: Text('OK'),
-                color: Theme.of(context).primaryColor,
-              ),
+              if (enhanceMode)
+                ElevatedButton(
+                  onPressed: () {
+                    final enhanceItems = Item.sortMapById(svt.getAllCost(
+                      cur: curVal..favorite = true,
+                      target: enhancePlan..favorite = true,
+                    ));
+                    bool hasItem = enhanceItems.length > 0 &&
+                        enhanceItems.values.reduce((a, b) => max(a, b)) > 0;
+                    showDialog(
+                      context: context,
+                      builder: (context) => SimpleCancelOkDialog(
+                        title: Text('强化将扣除以下素材'),
+                        content: Container(
+                          width: defaultDialogWidth(context),
+                          child: hasItem
+                              ? CommonBuilder.buildIconGridView(
+                                  data: enhanceItems, crossCount: 6)
+                              : Text('Nothing'),
+                        ),
+                        onTapOk: hasItem
+                            ? () {
+                                // ensure cur svt is favorite
+                                // items = items + (-1)*enhanceItems
+                                sumDict([
+                                  db.curUser.items,
+                                  multiplyDict(enhanceItems, -1, inPlace: true)
+                                ], inPlace: true);
+                                setState(() {
+                                  curVal.copyFrom(enhancePlan);
+                                  enhanceMode = !enhanceMode;
+                                });
+                                update();
+                              }
+                            : null,
+                      ),
+                    );
+                  },
+                  child: Text(S.of(context).ok),
+                  // color: Theme.of(context).primaryColor,
+                ),
               DropdownButton(
                 value: Set.from(curVal.skills).length == 1
                     ? curVal.skills[0]

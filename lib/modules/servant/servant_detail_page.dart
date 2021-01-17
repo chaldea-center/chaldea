@@ -48,7 +48,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
   /// just for test
   Widget getDefaultTab(String name) {
     return Center(
-      child: FlatButton(
+      child: TextButton(
         child: Text(name),
         onPressed: () {
           Navigator.of(context)

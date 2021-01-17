@@ -53,7 +53,7 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
               isSelected: List.generate(2, (i) => useLangJp == (i == 1)),
             ),
             for (var i = 0; i < 2; i++)
-              RaisedButton(
+              ElevatedButton(
                 onPressed: () {
                   CommandCode nextCode;
                   if (widget.onSwitch != null) {
@@ -71,8 +71,8 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
                   }
                 },
                 child: Text(['上一张', '下一张'][i]),
-                color: Theme.of(context).primaryColor,
-                padding: EdgeInsets.symmetric(horizontal: 20),
+                style: ElevatedButton.styleFrom(
+                    textStyle: TextStyle(fontWeight: FontWeight.normal)),
               ),
           ])
         ],

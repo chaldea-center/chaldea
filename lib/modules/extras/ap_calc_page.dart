@@ -31,11 +31,9 @@ class _APCalcPageState extends State<APCalcPage> {
       _buildRow('Cur AP', _curCtrl),
       _buildRow('Max AP', _maxCtrl),
       ListTile(
-        title: RaisedButton(
+        title: ElevatedButton(
           onPressed: calcTime,
           child: Text('Calculate'),
-          color: Theme.of(context).primaryColor,
-          textColor: Colors.white,
         ),
       ),
       ListTile(

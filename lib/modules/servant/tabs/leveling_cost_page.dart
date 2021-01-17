@@ -53,14 +53,15 @@ class LevelingCostPageState extends State<LevelingCostPage> {
         ),
       ),
       actions: [
-        FlatButton(
-          minWidth: 120,
+        TextButton(
+          // minWidth: 120,
           onPressed: () {
             setState(() => showAll = !showAll);
           },
+          // style: TextButton.styleFrom(),
           child: Text(showAll ? 'SHOW LESS' : 'SHOW MORE'),
         ),
-        FlatButton(
+        TextButton(
           onPressed: () => Navigator.pop(context),
           child: Text('OK'),
         )

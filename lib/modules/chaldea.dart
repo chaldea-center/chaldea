@@ -52,11 +52,9 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
 
   @override
   void afterFirstLayout(BuildContext context) async {
-    /// TODO: save gamedata version and app version into userdata
     /// if app updated, check version and reload gamedata
     await db.initial();
     await AppInfo.resolve();
-    print(db.paths.appPath);
     db.loadUserData();
     bool gameDataLoadSuccess = db.loadGameData();
     if (!gameDataLoadSuccess ||
@@ -81,6 +79,9 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
     db.checkNetwork();
     _initiated = true;
     setState(() {});
+    logger.i('App version: ${AppInfo.appName} v${AppInfo.fullVersion}');
+    logger.i('appPath: ${db.paths.appPath}');
+    db.onAppUpdate();
   }
 
   @override

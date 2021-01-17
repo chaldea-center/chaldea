@@ -127,14 +127,14 @@ void showInformDialog(BuildContext context,
       content: content == null ? null : Text(content),
       actions: <Widget>[
         if (showOk)
-          FlatButton(
+          TextButton(
             child: Text(S.of(context).ok),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
         if (showCancel)
-          FlatButton(
+          TextButton(
             child: Text(S.of(context).cancel),
             onPressed: () {
               Navigator.of(context).pop();

@@ -299,10 +299,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                         addAnItemNotInList();
                       });
                     }),
-                RaisedButton(
-                  color: Theme.of(context).primaryColor,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
+                ElevatedButton(
                   onPressed: solve,
                   child: SizedBox(
                     width: 75,

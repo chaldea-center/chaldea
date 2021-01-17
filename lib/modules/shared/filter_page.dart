@@ -110,13 +110,13 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
     if (useSplitView) {
       return [
         ...extraActions,
-        FlatButton(
-          child: Text('RESET'),
-          textColor: Colors.redAccent,
+        TextButton(
+          child: Text('RESET', style: TextStyle(color: Colors.redAccent)),
+          // textColor: Colors.redAccent,
           onPressed: onTapReset,
         ),
         if (showOk)
-          FlatButton(
+          TextButton(
             child: Text('OK'),
             onPressed: () => Navigator.pop(context),
           ),
@@ -319,6 +319,7 @@ class FilterGroup extends StatelessWidget {
             ),
           Wrap(
             spacing: 6,
+            runSpacing: 3,
             children: options.map((key) {
               return FilterOption(
                   selected: values.options[key] ?? false,
@@ -368,33 +369,27 @@ class FilterOption<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final _selectedColor = selectedColor ?? Theme.of(context).primaryColor;
     return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: 36),
+      constraints: BoxConstraints(maxHeight: 30),
       child: ButtonTheme(
-        minWidth: 20,
-        height: 30,
-        child: FlatButton(
+        height: 20,
+        minWidth: 30,
+        child: OutlinedButton(
           onPressed: () {
             if (onChanged != null) {
               onChanged(!selected);
             }
           },
-          color: selected ? _selectedColor : unselectedColor,
-          child: DefaultTextStyle(
-            style: TextStyle(
-                color: selected
-                    ? selectedTextColor
-                    : Theme.of(context)
-                        .textTheme
-                        .headline5
-                        .color), //title->headline5
-            child: child ?? Text(value.toString()),
+          style: OutlinedButton.styleFrom(
+            primary: selected ? Colors.white : Colors.black,
+            backgroundColor: selected ? _selectedColor : unselectedColor,
+            // minimumSize: Size(6, 4),
+            // padding: EdgeInsets.symmetric(horizontal: 5),
+            textStyle: TextStyle(fontWeight: FontWeight.normal),
+            shape: ContinuousRectangleBorder(
+                borderRadius: BorderRadius.circular(3)),
           ),
-          shape: ContinuousRectangleBorder(
-              side: BorderSide(
-                color: selected ? _selectedColor : Colors.grey,
-                width: 0.5,
-              ),
-              borderRadius: BorderRadius.circular(3)),
+          child: child ?? Text(value.toString()),
+          // shape: ,
         ),
       ),
     );

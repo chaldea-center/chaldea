@@ -226,7 +226,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
     List<Widget> _galleryItems = [];
     kAllGalleryItems.forEach((name, item) {
       if ((db.userData.galleries[name] ?? true) || name == GalleryItem.more) {
-        _galleryItems.add(FlatButton(
+        _galleryItems.add(TextButton(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -234,8 +234,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
                 flex: 6,
                 child: Align(
                     alignment: Alignment.bottomCenter,
-                    child: Icon(item.icon,
-                        size: 40, color: Theme.of(context).primaryColor)),
+                    child: Icon(item.icon, size: 40)),
               ),
               Expanded(
                 flex: 4,
@@ -243,8 +242,10 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
                   alignment: Alignment.topCenter,
                   child: AutoSizeText(
                     item.title,
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.normal),
                     textAlign: TextAlign.center,
-//                    maxFontSize: 14,
+                    maxFontSize: 14,
                   ),
                 ),
               )

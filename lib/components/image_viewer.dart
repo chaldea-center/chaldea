@@ -93,11 +93,12 @@ class CachedImageWidget extends StatefulWidget {
             final width = 0.3 *
                 min(constraints.biggest.width, constraints.biggest.height);
             return Center(
-                child: SizedBox(
-              width: width,
-              height: width,
-              child: CircularProgressIndicator(),
-            ));
+              child: SizedBox(
+                width: width,
+                height: width,
+                child: CircularProgressIndicator(),
+              ),
+            );
           },
         );
   }

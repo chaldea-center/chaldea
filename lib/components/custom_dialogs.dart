@@ -69,11 +69,11 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
         },
       ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child: Text(S.of(context).cancel),
           onPressed: () => Navigator.pop(context),
         ),
-        FlatButton(
+        TextButton(
           child: Text(S.of(context).ok),
           onPressed: () {
             String _value = _controller.text;
@@ -116,7 +116,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
       content: content,
       actions: <Widget>[
         if (onTapCancel != null || !hideCancel)
-          FlatButton(
+          TextButton(
             child: Text(S.of(context).cancel),
             onPressed: () {
               Navigator.pop(context);
@@ -126,7 +126,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
             },
           ),
         if (onTapOk != null)
-          FlatButton(
+          TextButton(
             child: Text(S.of(context).ok),
             onPressed: () {
               Navigator.of(context).pop();

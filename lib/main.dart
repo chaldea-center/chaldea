@@ -10,6 +10,7 @@ void main() async {
   // make sure flutter packages like path_provider is working now
   WidgetsFlutterBinding.ensureInitialized();
   await db.initial();
+  db.loadUserData();
   FileHandler crashFileHandler = FileHandler(File(db.paths.crashLog));
   final catcherOptions = CatcherOptions(SilentReportMode(), [
     crashFileHandler,

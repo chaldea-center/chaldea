@@ -67,7 +67,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                           content: fp,
                           actions: [
                             if (Platform.isAndroid || Platform.isIOS)
-                              FlatButton(
+                              TextButton(
                                 child: Text('分享'),
                                 onPressed: () {
                                   Navigator.of(context).pop();
@@ -380,7 +380,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
       showOk: false,
       showCancel: true,
       actions: [
-        FlatButton(
+        TextButton(
             onPressed: () async {
               try {
                 final gudaData = await _parseGudaData();
@@ -397,7 +397,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
               }
             },
             child: Text('更新')),
-        FlatButton(
+        TextButton(
             onPressed: () async {
               try {
                 final gudaData = await _parseGudaData();

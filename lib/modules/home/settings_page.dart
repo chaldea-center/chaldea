@@ -102,17 +102,18 @@ class _SettingsPageState extends State<SettingsPage> {
               ListTile(
                 title: Text(S.of(context).settings_language),
                 trailing: DropdownButton<Language>(
-                    underline: Divider(thickness: 0, color: Colors.transparent),
-                    value: Language.getLanguage(S.of(context).language) ??
-                        Language.getLanguage(),
-                    items: Language.languages.map((lang) {
-                      return DropdownMenuItem(
-                          value: lang, child: Text(lang.name));
-                    }).toList(),
-                    onChanged: (lang) {
-                      db.userData.language = lang.code;
-                      db.onAppUpdate();
-                    }),
+                  underline: Divider(thickness: 0, color: Colors.transparent),
+                  value: Language.getLanguage(db.userData.language) ??
+                      Language.getLanguage(),
+                  items: Language.languages.map((lang) {
+                    return DropdownMenuItem(
+                        value: lang, child: Text(lang.name));
+                  }).toList(),
+                  onChanged: (lang) {
+                    db.userData.language = lang.code;
+                    db.onAppUpdate();
+                  },
+                ),
               ),
               SwitchListTile.adaptive(
                   title: Text('使用移动数据下载'),
