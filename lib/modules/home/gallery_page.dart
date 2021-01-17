@@ -11,7 +11,6 @@ import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:chaldea/modules/statistics/game_statistics_page.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
@@ -162,7 +161,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         //fail
         isDetail: true,
       ),
-      // if (kDebugMode)
+      // if (kDebugMode_)
       //   'Test': GalleryItem(
       //     name: 'Test',
       //     title: 'Test',
@@ -205,7 +204,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
                       itemBuilder: (BuildContext context, int index) =>
                           sliderPages[index],
                       itemCount: sliderPages.length,
-                      autoplay: !kDebugMode && sliderPages.length > 1,
+                      autoplay: !kDebugMode_ && sliderPages.length > 1,
                       pagination:
                           SwiperPagination(margin: const EdgeInsets.all(1)),
                       autoplayDelay: 5000,
@@ -218,7 +217,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
               childAspectRatio: 1,
               children: _getShownGalleries(context),
             ),
-            if (kDebugMode) buildTestInfoPad()
+            if (kDebugMode_) buildTestInfoPad()
           ],
         ));
   }

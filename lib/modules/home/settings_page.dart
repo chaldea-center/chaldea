@@ -1,6 +1,5 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/home/subpage/dataset_manage_page.dart';
-import 'package:flutter/foundation.dart';
 
 import 'subpage/about_page.dart';
 import 'subpage/account_page.dart';
@@ -138,9 +137,9 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ],
           ),
-          if (kDebugMode)
+          if (kDebugMode_)
             TileGroup(
-              header: 'Test(debug mode: ${kDebugMode ? 'on' : 'off'})',
+              header: 'Test(debug mode: ${kDebugMode_ ? 'on' : 'off'})',
               children: <Widget>[
                 SwitchListTile.adaptive(
                     title: Text('允许下载'),

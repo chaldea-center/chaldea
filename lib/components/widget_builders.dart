@@ -83,6 +83,7 @@ mixin DefaultScrollBarMixin<T extends StatefulWidget> on State<T> {
       scrollDirection: Axis.vertical,
       radius: 3,
       thickness: 6,
+      scrollbarTimeToFade: Duration(seconds: 2),
       child: child,
     );
   }

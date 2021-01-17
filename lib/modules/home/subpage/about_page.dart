@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -128,7 +127,7 @@ class _AboutPageState extends State<AboutPage> {
               ),
             ],
           ),
-          if (kDebugMode)
+          if (kDebugMode_)
             TileGroup(
               header: 'Crash log (${crashFile.statSync().size ~/ 1000} KB)',
               children: <Widget>[

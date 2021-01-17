@@ -1,4 +1,5 @@
 // @dart=2.12
+import 'dart:convert';
 import 'dart:math' show min;
 
 import 'package:chaldea/generated/l10n.dart';
@@ -42,6 +43,7 @@ class NumberInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
+    print(jsonEncode(newValue.text));
     if (newValue.selection.baseOffset == 0) {
       return newValue;
     }

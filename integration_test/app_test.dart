@@ -11,9 +11,10 @@ import 'package:integration_test/integration_test.dart';
 
 import 'package:chaldea/main.dart' as app;
 
-void main() => run(_testMain);
+void main() => _testMain();
 
 void _testMain() {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     app.main();

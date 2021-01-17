@@ -37,7 +37,7 @@ class _DropCalculatorPageState extends State<DropCalculatorPage>
         actions: [],
         bottom: TabBar(
           controller: _tabController,
-          tabs: [Tab(text: 'Input'), Tab(text: 'Output')],
+          tabs: [Tab(text: '素材'), Tab(text: 'Free本')],
           onTap: (_) {
             FocusScope.of(context).unfocus();
           },
@@ -387,8 +387,8 @@ class _DropCalcOutputTabState extends State<DropCalcOutputTab> {
           decoration: BoxDecoration(
               border: Border(bottom: Divider.createBorderSide(context))),
           child: ListTile(
-            title: Text('Total Num: ${widget.solution?.totalNum}'),
-            trailing: Text('Total AP: ${widget.solution?.totalCost}'),
+            title: Text('总次数: ${widget.solution?.totalNum}'),
+            trailing: Text('总AP: ${widget.solution?.totalCost}'),
           ),
         ),
         Expanded(

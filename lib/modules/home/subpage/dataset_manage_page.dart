@@ -5,7 +5,6 @@ import 'dart:math' show min;
 import 'package:chaldea/components/components.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
-import 'package:flutter/foundation.dart';
 import 'package:json_patch/json_patch.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:share/share.dart';
@@ -150,7 +149,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 },
               ),
               // TODO: disabled, download all images including illustration
-              if (kDebugMode)
+              if (kDebugMode_)
                 ListTile(
                   title: Text('Download icons'),
                   onTap: () {

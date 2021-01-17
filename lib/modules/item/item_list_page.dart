@@ -47,11 +47,11 @@ class ItemListPageState extends State<ItemListPage>
                 showDialog(
                   context: context,
                   builder: (context) => SimpleDialog(
-                    title: Text('Choose plan'),
+                    title: Text('选择规划'),
                     children:
                         List.generate(db.curUser.servantPlans.length, (index) {
                       return ListTile(
-                        title: Text('Plan ${index + 1}'),
+                        title: Text('规划 ${index + 1}'),
                         selected: index == db.curUser.curSvtPlanNo,
                         onTap: () {
                           Navigator.of(context).pop();
@@ -193,10 +193,13 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
     db.gameData.items.forEach((key, item) {
       if (item.category == widget.category && key != qpKey) {
         _allGroups[item] = InputComponents(
-            data: item,
-            focusNode: FocusNode(),
-            controller: TextEditingController(
-                text: formatNumber(db.curUser.items[key] ?? 0)));
+          data: item,
+          focusNode: FocusNode(),
+          controller: TextEditingController(
+            text: formatNumber(db.curUser.items[key] ?? 0,
+                groupSeparator: key == Item.qp ? ',' : null),
+          ),
+        );
       }
     });
     // sort by item id
@@ -284,12 +287,12 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
           decoration: InputDecoration(counterText: ''),
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp(r'-?[\d,]*')),
-            NumberInputFormatter(),
+            if (itemKey == Item.qp) NumberInputFormatter(),
           ],
           onChanged: (v) {
             db.curUser.items[itemKey] =
                 int.tryParse(v.replaceAll(',', '')) ?? 0;
-            statistics.updateLeftItems();
+            statistics.updateLeftItems(shouldBroadcast: false);
             setState2(() {});
           },
           onTap: () {

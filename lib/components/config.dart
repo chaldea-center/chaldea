@@ -46,7 +46,7 @@ class Database {
     if (Platform.isAndroid || Platform.isIOS) {
       // connectivity not support windows
       final result = await Connectivity().checkConnectivity();
-      runtimeData.enableDownload = (!kDebugMode ||
+      runtimeData.enableDownload = (!kDebugMode_ ||
               db.userData.testAllowDownload) &&
           (db.userData.useMobileNetwork || result != ConnectivityResult.mobile);
     } else {

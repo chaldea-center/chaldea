@@ -20,13 +20,13 @@ void main() async {
   FlutterError.onError = (details) {
     // only called in release mode?
     // if use Catcher, errors will be caught by Catcher not this handler.
-    if (kDebugMode) {
+    if (kDebugMode_) {
       FlutterError.dumpErrorToConsole(details);
     } else {
       Zone.current.handleUncaughtError(details.exception, details.stack);
     }
   };
-  if (kDebugMode)
+  if (kDebugMode_)
     runApp(Chaldea());
   else
     Catcher(
