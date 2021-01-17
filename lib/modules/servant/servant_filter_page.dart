@@ -65,7 +65,18 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             ),
         ]),
         FilterGroup(
-          title: Text('练度', style: textStyle),
+          title: Text('规划', style: textStyle),
+          options: SvtFilterData.planCompletionData,
+          values: filterData.planCompletion,
+          optionBuilder: (v) => Text(v == '0' ? '未满' : '已满'),
+          onFilterChanged: (value) {
+            // object should be the same, need not to update manually
+            filterData.planCompletion = value;
+            update();
+          },
+        ),
+        FilterGroup(
+          title: Text('技能练度', style: textStyle),
           options: SvtFilterData.skillLevelData,
           values: filterData.skillLevel,
           onFilterChanged: (value) {

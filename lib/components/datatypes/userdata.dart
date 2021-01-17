@@ -100,6 +100,7 @@ class SvtFilterData {
 
   bool hasDress;
   FilterGroupData skillLevel;
+  FilterGroupData planCompletion;
   FilterGroupData rarity;
   FilterGroupData className;
   FilterGroupData obtain;
@@ -119,6 +120,7 @@ class SvtFilterData {
     this.useGrid,
     this.hasDress,
     this.skillLevel,
+    this.planCompletion,
     this.rarity,
     this.className,
     this.obtain,
@@ -138,6 +140,7 @@ class SvtFilterData {
     useGrid ??= false;
     hasDress ??= false;
     skillLevel ??= FilterGroupData();
+    planCompletion ??= FilterGroupData();
     rarity ??= FilterGroupData();
     className ??= FilterGroupData();
     obtain ??= FilterGroupData();
@@ -178,6 +181,8 @@ class SvtFilterData {
   // const data
   static const List<SvtCompare> sortKeyData = SvtCompare.values;
   static const List<String> skillLevelData = ['<999', '≥999', '310'];
+  static const List<String> planCompletionData = ['0', '1'];
+
   static const List<String> rarityData = ['0', '1', '2', '3', '4', '5'];
   static const List<String> classesData = [
     'Saber',
@@ -227,7 +232,12 @@ class SvtFilterData {
     '天地(拟似除外)',
     '人科',
     '魔兽型',
-    '活在当下的人类'
+    '活在当下的人类',
+    '巨人',
+    '孩童从者',
+    '领域外生命',
+    '鬼',
+    '源氏'
   ];
   static const traitSpecialData = ['EA不特攻', '无特殊特性'];
 

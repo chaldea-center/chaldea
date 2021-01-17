@@ -1,4 +1,6 @@
 // @dart=2.12
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
@@ -54,6 +56,11 @@ class AppInfo {
     if (buildNumber > 0) s += '($buildNumber)';
     return s;
   }
+
+  /// currently supported mobile or desktop
+  static bool get isMobile => Platform.isAndroid || Platform.isIOS;
+
+  static bool get isDesktop => Platform.isMacOS || Platform.isWindows;
 }
 
 //const value in class

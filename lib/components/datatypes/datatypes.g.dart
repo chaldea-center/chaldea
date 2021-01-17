@@ -1366,6 +1366,12 @@ SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
           (v) => v == null
               ? null
               : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      planCompletion: $checkedConvert(
+          json,
+          'planCompletion',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
       rarity: $checkedConvert(
           json,
           'rarity',
@@ -1449,6 +1455,7 @@ Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
       'useGrid': instance.useGrid,
       'hasDress': instance.hasDress,
       'skillLevel': instance.skillLevel,
+      'planCompletion': instance.planCompletion,
       'rarity': instance.rarity,
       'className': instance.className,
       'obtain': instance.obtain,

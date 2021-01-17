@@ -130,7 +130,6 @@ class ItemListPageState extends State<ItemListPage>
         ],
         bottom: TabBar(
           controller: _tabController,
-          physics: NeverScrollableScrollPhysics(),
           tabs: categories
               .map(
                   (category) => Tab(text: ['x', '普通素材', '技能石', '棋子'][category]))
@@ -142,7 +141,7 @@ class ItemListPageState extends State<ItemListPage>
       ),
       body: TabBarView(
         // mostly, we focus on category 1 tab
-        physics: NeverScrollableScrollPhysics(),
+        physics: AppInfo.isMobile ? null :NeverScrollableScrollPhysics(),
         controller: _tabController,
         children: List.generate(
           categories.length,
@@ -383,9 +382,6 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
           title: title,
           focusNode: FocusNode(canRequestFocus: true, skipTraversal: true),
           subtitle: subtitle,
-          // titlePadding: isQp
-          //     ? EdgeInsets.fromLTRB(16, 0, 0, 0)
-          //     : EdgeInsets.fromLTRB(16, 0, 16, 0),
           trailing: isQp ? null : SizedBox(width: 50, child: textField),
         );
       },

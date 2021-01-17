@@ -47,7 +47,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
                   2,
                   (i) => Padding(
                         padding: EdgeInsets.all(6),
-                        child: Text(['中文', '日本語'][i]),
+                        child: Text(['中', '日'][i]),
                       )),
               isSelected: List.generate(2, (i) => useLangJp == (i == 1)),
             ),
@@ -150,11 +150,15 @@ class CraftDetailBasePage extends StatelessWidget {
                   title: Center(child: Text('查看卡面')),
                   contentPadding: EdgeInsets.zero,
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
                         builder: (context) => FullScreenImageSlider(
-                            imgUrls: [db.getIconResource(ce.illustration).url],
-                            enableDownload: db.runtimeData.enableDownload),
-                        fullscreenDialog: true));
+                          imgUrls: [db.getIconResource(ce.illustration).url],
+                          enableDownload: db.runtimeData.enableDownload,
+                        ),
+                        fullscreenDialog: true,
+                      ),
+                    );
                   },
                 ),
                 isHeader: true,

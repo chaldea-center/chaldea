@@ -121,6 +121,18 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                       });
                 },
               ),
+              ListTile(
+                title: Text('重置从者强化状态'),
+                subtitle: Text('宝具/技能恢复成国服强化状态'),
+                onTap: () {
+                  db.curUser.servants.forEach((svtNo, svt) {
+                    svt.tdIndex = 0;
+                    svt.skillIndex.fillRange(0, svt.skillIndex.length, null);
+                  });
+                  db.saveUserData();
+                  EasyLoading.showToast('已重置');
+                },
+              )
             ],
           ),
           TileGroup(

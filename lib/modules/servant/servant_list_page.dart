@@ -51,6 +51,8 @@ class ServantListPageState extends State<ServantListPage>
   }
 
   bool filtrateServant(Servant svt) {
+    final svtStat = db.curUser.servants[svt.no];
+    final svtPlan = db.curUser.curSvtPlan[svt.no];
     // input text filter
     if (filterData.filterString.trim().isNotEmpty) {
       List<String> searchStrings = [
@@ -90,10 +92,26 @@ class ServantListPageState extends State<ServantListPage>
         return false;
       }
     }
+    if (filterData.planCompletion.options.containsValue(true)) {
+      if (svtStat?.curVal?.favorite != true || svtPlan?.favorite != true)
+        return false;
+      bool planNotComplete = <bool>[
+        svtPlan.ascension > svtStat.curVal.ascension,
+        svtPlan.grail > svtStat.curVal.grail,
+        for (var i = 0; i < 3; i++)
+          svtPlan.skills[i] > svtStat.curVal.skills[i],
+        for (var i = 0;
+            i < min(svtPlan.dress.length, svtStat.curVal.dress.length);
+            i++)
+          svtPlan.dress[i] > svtStat.curVal.dress[i]
+      ].contains(true);
+      if (filterData.planCompletion.options[planNotComplete ? '0' : '1'] !=
+          true) return false;
+    }
     // svt data filter
     // skill level
     if (filterData.skillLevel.options.containsValue(true)) {
-      final curSvtState = db.curUser.servants[svt.no]?.curVal;
+      final curSvtState = svtStat?.curVal;
       if (curSvtState?.favorite != true) return false;
       int lowestSkill = curSvtState.skills.reduce((a, b) => min(a, b));
       if (!filterData.skillLevel.singleValueFilter(

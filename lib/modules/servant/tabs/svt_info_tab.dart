@@ -71,7 +71,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
                   2,
                   (i) => Padding(
                         padding: EdgeInsets.all(6),
-                        child: Text(['中文', '日本語'][i]),
+                        child: Text(['中', '日'][i]),
                       )),
               isSelected: List.generate(2, (i) => useLangJp == (i == 1)),
             ),

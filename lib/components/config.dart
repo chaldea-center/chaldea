@@ -43,7 +43,7 @@ class Database {
   }
 
   Future<void> checkNetwork() async {
-    if (Platform.isAndroid || Platform.isIOS) {
+    if (AppInfo.isMobile) {
       // connectivity not support windows
       final result = await Connectivity().checkConnectivity();
       runtimeData.enableDownload = (!kDebugMode_ ||
