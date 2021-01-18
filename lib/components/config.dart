@@ -298,7 +298,7 @@ class Database {
 }
 
 class PathManager {
-  /// [_appPath] game data
+  /// [_appPath] root path where app can access
   static String _appPath;
 
   /// [_savePath] root path to save user-related data
@@ -347,7 +347,7 @@ class PathManager {
 
   String get savePath => _savePath;
 
-  String get tempPath => _tempPath;
+  String get tempPath => pathlib.join(_appPath,'temp');
 
   String get userDataDir => pathlib.join(_savePath, 'user');
 

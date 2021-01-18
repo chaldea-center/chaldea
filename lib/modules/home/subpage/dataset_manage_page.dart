@@ -3,11 +3,13 @@ import 'dart:io';
 import 'dart:math' show min;
 
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/components/github_tool.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:json_patch/json_patch.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:share/share.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DatasetManagePage extends StatefulWidget {
   @override
@@ -143,6 +145,10 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 trailing: Text(db.gameData.version),
               ),
               ListTile(
+                title: Text('下载最新数据'),
+                onTap: downloadGamedata,
+              ),
+              ListTile(
                 title: Text('重新载入预装版本'),
                 onTap: () {
                   SimpleCancelOkDialog(
@@ -187,8 +193,12 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                   },
                 ),
               ListTile(
+                title: Text('导入 (dataset*.zip/.json)'),
+                onTap: importGamedata,
+              ),
+              ListTile(
                 title: Text('删除所有数据'),
-                subtitle: Text('包含用户数据、游戏数据、图片资源'),
+                subtitle: Text('包含用户数据、游戏数据、图片资源, 并加载默认资源'),
                 onTap: () {
                   SimpleCancelOkDialog(
                     title: Text('Confirm'),
@@ -203,81 +213,8 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                   ).show(context);
                 },
               ),
-              ListTile(
-                title: Text('导入 (dataset*.zip/.json)'),
-                onTap: () async {
-                  try {
-                    // final result = await FilePicker.platform.pickFiles();
-                    final result = await FilePickerCross.importFromStorage(
-                        type: FileTypeCross.custom, fileExtension: 'zip,json');
-                    final file = File(result.path);
-                    if (file.path.toLowerCase().endsWith('.zip')) {
-                      EasyLoading.showToast('Loading',
-                          maskType: EasyLoadingMaskType.black);
-                      db.extractZip(file.readAsBytesSync().cast<int>(),
-                          db.paths.gameDataDir);
-                      db.loadGameData();
-                    } else if (file.path.toLowerCase().endsWith('.json')) {
-                      final newData = GameData.fromJson(
-                          jsonDecode(file.readAsStringSync()));
-                      if (newData.version != '0') {
-                        db.gameData = newData;
-                      } else {
-                        throw FormatException('Invalid json contents');
-                      }
-                    } else {
-                      throw FormatException('unsupported file type');
-                    }
-                    showInformDialog(context,
-                        title: 'Import dataset successfully');
-                  } on FileSelectionCanceledError {} catch (e) {
-                    showInformDialog(context,
-                        title: 'Import gamedata failed!',
-                        content: e.toString());
-                  }
-                },
-              ),
             ],
           ),
-          TileGroup(
-            header: 'Download',
-            children: <Widget>[
-              ListTile(
-                title: Text('服务器(NotImplemented)'),
-                subtitle: Text(db.userData.serverDomain ?? 'none'),
-                trailing: IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => InputCancelOkDialog(
-                          title: 'Edit server',
-                          text: db.userData.serverDomain,
-                          errorText: S.of(context).input_error,
-                          onSubmit: (v) {
-                            v = v.trim();
-                            if (v.endsWith('/')) {
-                              v = v.substring(0, v.length - 1);
-                            }
-                            setState(() {
-                              db.userData.serverDomain = v;
-                              _dio.options.baseUrl = db.userData.serverDomain;
-                            });
-                          },
-                        ),
-                      );
-                    }),
-              ),
-              ListTile(
-                title: Center(child: Text('下载资源')),
-                onTap: () {
-                  EasyLoading.showToast('NotImplemented');
-                  // db.downloadGameData();
-                  // db.onAppUpdate();
-                },
-              ),
-            ],
-          )
         ],
       ),
     );
@@ -430,6 +367,90 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
             },
             child: Text('覆盖')),
       ],
+    );
+  }
+
+  Future<void> importGamedata() async {
+    try {
+      // final result = await FilePicker.platform.pickFiles();
+      final result = await FilePickerCross.importFromStorage(
+          type: FileTypeCross.custom, fileExtension: 'zip,json');
+      final file = File(result.path);
+      if (file.path.toLowerCase().endsWith('.zip')) {
+        EasyLoading.showToast('Loading', maskType: EasyLoadingMaskType.black);
+        db.extractZip(file.readAsBytesSync().cast<int>(), db.paths.gameDataDir);
+        db.loadGameData();
+      } else if (file.path.toLowerCase().endsWith('.json')) {
+        final newData = GameData.fromJson(jsonDecode(file.readAsStringSync()));
+        if (newData.version != '0') {
+          db.gameData = newData;
+        } else {
+          throw FormatException('Invalid json contents');
+        }
+      } else {
+        throw FormatException('unsupported file type');
+      }
+      showInformDialog(context, title: 'Import dataset successfully');
+    } on FileSelectionCanceledError {} catch (e) {
+      showInformDialog(context,
+          title: 'Import gamedata failed!', content: e.toString());
+    }
+  }
+
+  void downloadGamedata() {
+    void _downloadAsset([bool fullSize = true]) async {
+      final info = await GithubTool.latestDatasetRelease(fullSize);
+      Navigator.of(context).pop();
+      String fp = pathlib.join(
+          db.paths.tempPath, info.release.name + '-' + info.asset.name);
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => DownloadDialog(
+          url: info.asset.browserDownloadUrl,
+          savePath: fp,
+          fileSize: info.asset.size,
+          onComplete: () {
+            try {
+              db.extractZip(
+                  File(fp).readAsBytesSync().cast<int>(), db.paths.gameDataDir);
+              db.loadGameData();
+              Navigator.of(context).pop();
+              EasyLoading.showToast('成功导入资源');
+            } catch (e) {
+              EasyLoading.showToast('Error import dataset:\n$e');
+            }
+          },
+        ),
+      );
+    }
+
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: Text('完整数据包'),
+              subtitle: Text('包含文本和图片，较大，~25M'),
+              onTap: () => _downloadAsset(true),
+            ),
+            ListTile(
+              title: Text('文本数据包'),
+              subtitle: Text('不包含图片，较小，~5M'),
+              onTap: () => _downloadAsset(false),
+            ),
+            ListTile(
+              title: Text('前往下载页'),
+              subtitle: Text('下载后手动导入'),
+              onTap: () {
+                launch('https://github.com/narumishi/chaldea-dataset/releases');
+              },
+            )
+          ],
+        );
+      },
     );
   }
 }

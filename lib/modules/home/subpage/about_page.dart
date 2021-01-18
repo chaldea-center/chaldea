@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/components/github_tool.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -70,8 +71,27 @@ class _AboutPageState extends State<AboutPage> {
                     AppInfo.appName,
                     style: Theme.of(context).textTheme.headline6,
                   ),
-                  if (AppInfo.fullVersion.isNotEmpty)
-                    Text('Version: ${AppInfo.fullVersion}')
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 10,
+                    children: [
+                      if (AppInfo.fullVersion.isNotEmpty)
+                        Text('Version: ${AppInfo.fullVersion}'),
+                      ElevatedButton(
+                        onPressed: checkAppUpdate,
+                        child: Text('检查更新'),
+                        style: ElevatedButton.styleFrom(
+                          textStyle: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.normal,
+                              fontSize: 12),
+                          minimumSize: Size(10, 30),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                        ),
+                      )
+                    ],
+                  )
                 ],
               ),
             ),
@@ -170,5 +190,36 @@ class _AboutPageState extends State<AboutPage> {
         }
       },
     ).show(context);
+  }
+
+  Future<void> checkAppUpdate() async {
+    // android, windows: download github releases
+    if (Platform.isAndroid || Platform.isWindows) {
+      final info = await GithubTool.latestAppRelease();
+      String curVersion =
+          AppInfo.fullVersion.isEmpty ? 'Unknown' : AppInfo.fullVersion;
+      SimpleCancelOkDialog(
+        title: Text('应用更新'),
+        content: Text('当前版本: $curVersion\n'
+            '最新版本: ${info?.release?.name ?? "查询失败"}\n'
+            '跳转到浏览器下载'),
+        onTapOk: () {
+          if (info == null) {
+            launch('https://github.com/narumishi/chaldea/releases');
+          } else {
+            launch(info.asset.browserDownloadUrl);
+          }
+        },
+      ).show(context);
+    } else if (Platform.isIOS || Platform.isMacOS) {
+      // to App Store
+      SimpleCancelOkDialog(
+        title: Text('应用更新'),
+        content: Text('请在App Store检查版本更新'),
+        onTapOk: () {
+          launch('itms-apps://itunes.apple.com/app/id1548713491');
+        },
+      ).show(context);
+    }
   }
 }
