@@ -151,7 +151,7 @@ SPEC CHECKSUMS:
   flutter_qjs: 351b608d97711c8939aaba405af874e593ec2cb0
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
-  integration_test: 6eb66a19f7104200dcfdd62bc0077e1b09686e4f
+  integration_test: 5ed24a436eb7ec17b6a13046e9bf7ca4a404e59e
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96

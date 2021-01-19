@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:math' show min;
 
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/github_tool.dart';
+import 'package:chaldea/components/git_tool.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:json_patch/json_patch.dart';
