@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:chaldea/components/components.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -10,6 +12,7 @@ class APCalcPage extends StatefulWidget {
 class _APCalcPageState extends State<APCalcPage> {
   TextEditingController _curCtrl, _maxCtrl;
   String endTime;
+  bool showExtraHint = Random().nextDouble() > 0.7;
 
   @override
   void initState() {
@@ -28,8 +31,8 @@ class _APCalcPageState extends State<APCalcPage> {
   @override
   Widget build(BuildContext context) {
     final children = <Widget>[
-      _buildRow('Cur AP', _curCtrl),
-      _buildRow('Max AP', _maxCtrl),
+      _buildRow('现有AP', _curCtrl),
+      _buildRow('最大AP', _maxCtrl),
       ListTile(
         title: ElevatedButton(
           onPressed: calcTime,
@@ -37,20 +40,40 @@ class _APCalcPageState extends State<APCalcPage> {
         ),
       ),
       ListTile(
-        title: Text('AP full at'),
-        trailing: Text(endTime.toString()),
+        title: Center(
+          child: Text(
+            (endTime ?? '-').toString(),
+            style: TextStyle(fontSize: 20),
+          ),
+        ),
       ),
     ];
     return AutoUnfocusBuilder(
       builder: (context) => Scaffold(
         appBar: AppBar(
-          title: Text('AP Calculator'),
+          title: Text('AP溢出时间'),
           leading: BackButton(),
         ),
-        body: ListView.separated(
-          itemBuilder: (_, i) => children[i],
-          separatorBuilder: (_, i) => Divider(height: 1),
-          itemCount: children.length,
+        body: Column(
+          children: [
+            Expanded(
+              child: ListView.separated(
+                itemBuilder: (_, i) => children[i],
+                separatorBuilder: (_, i) => Divider(height: 1),
+                itemCount: children.length,
+              ),
+            ),
+            if (showExtraHint)
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.all(5),
+                  child: Text(
+                    '口算不及格的咕朗台.jpg',
+                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w100),
+                  ),
+                ),
+              )
+          ],
         ),
       ),
     );
@@ -75,7 +98,7 @@ class _APCalcPageState extends State<APCalcPage> {
             width: 90,
             child: TextField(
               controller: controller,
-              maxLength: 4,
+              maxLength: 5,
               keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
