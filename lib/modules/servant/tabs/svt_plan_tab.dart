@@ -33,16 +33,28 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       {ServantDetailPageState parent, Servant svt, ServantStatus status})
       : super(parent: parent, svt: svt, status: status);
 
+  /// valid range include start and end
+  int _ensureInRange(int v, int start, int end) {
+    v = v ?? start;
+    if (v < start) return start;
+    if (v > end) return end;
+    return v;
+  }
+
   void ensureTargetLarger(ServantPlan cur, ServantPlan target) {
+    // first ensure valid too
+    cur.ascension = _ensureInRange(cur.ascension, 0, 4);
     target.ascension = max(target.ascension, cur.ascension);
     for (var i = 0; i < cur.skills.length; i++) {
+      cur.skills[i] = _ensureInRange(cur.skills[i], 1, 10);
       target.skills[i] = max(target.skills[i], cur.skills[i]);
     }
     target.fixDressLength(cur.dress.length, 0);
     for (var i = 0; i < cur.dress.length; i++) {
-      cur.dress[i] ??= 0;
+      cur.dress[i] = _ensureInRange(cur.dress[i], 0, 1);
       target.dress[i] = max(target.dress[i] ?? 0, cur.dress[i]);
     }
+    cur.grail = _ensureInRange(cur.grail, 0, 10);
     target.grail = max(target.grail, cur.grail);
   }
 
@@ -161,6 +173,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     if (dressWidgets.length > 0) {
       children.add(TileGroup(header: '灵衣开放', children: dressWidgets));
     }
+
     children.add(TileGroup(
       header: '其他',
       children: <Widget>[
@@ -178,25 +191,27 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           },
           detailPageBuilder: null,
         ),
-        buildPlanRow(
-          leading: Image(image: db.getIconImage('圣杯'), height: 110 * 0.3),
-          title: '圣杯等级',
-          start: curVal.grail,
-          end: targetVal.grail,
-          minVal: 0,
-          maxVal: [0, 10, 10, 9, 7, 5][svt.info.rarity2],
-          onValueChanged: (_start, _end) {
-            curVal
-              ..grail = _start
-              ..favorite = true;
-            targetVal
-              ..grail = _end
-              ..favorite = true;
-            db.userData.broadcastUserUpdate();
-            db.itemStat.updateSvtItems();
-          },
-          detailPageBuilder: null,
-        )
+        if (svt.no != 1)
+          buildPlanRow(
+            leading: Image(image: db.getIconImage('圣杯'), height: 110 * 0.3),
+            title: '圣杯等级',
+            start: curVal.grail,
+            end: targetVal.grail,
+            minVal: 0,
+            maxVal: [10, 10, 10, 9, 7, 5][svt.info.rarity],
+            itemBuilder: (v) => Text(svt.getGrailLv(v).toString()),
+            onValueChanged: (_start, _end) {
+              curVal
+                ..grail = _start
+                ..favorite = true;
+              targetVal
+                ..grail = _end
+                ..favorite = true;
+              db.userData.broadcastUserUpdate();
+              db.itemStat.updateSvtItems();
+            },
+            detailPageBuilder: null,
+          )
       ],
     ));
 
@@ -216,12 +231,16 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     int end,
     int minVal,
     int maxVal,
+    Widget itemBuilder(int v),
     void Function(int, int) onValueChanged,
     WidgetBuilder detailPageBuilder,
   }) {
     assert(start != null && minVal <= start && start <= maxVal);
     if (end != null) {
       assert(start <= end && end <= maxVal);
+    }
+    if (itemBuilder == null) {
+      itemBuilder = (v) => Text(v.toString());
     }
     Widget selector;
     if (end == null) {
@@ -231,7 +250,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           maxVal - minVal + 1,
           (index) => DropdownMenuItem(
             value: minVal + index,
-            child: Text((minVal + index).toString()),
+            child: itemBuilder(minVal + index),
           ),
         ),
         // disable at enhance mode
@@ -242,14 +261,10 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         start: start,
         end: end,
         startEnabled: !enhanceMode,
-        startItems: List.generate(
-            maxVal - minVal + 1,
-            (index) =>
-                MapEntry(minVal + index, Text((minVal + index).toString()))),
-        endItems: List.generate(
-            maxVal - minVal + 1,
-            (index) =>
-                MapEntry(minVal + index, Text((minVal + index).toString()))),
+        startItems: List.generate(maxVal - minVal + 1,
+            (index) => MapEntry(minVal + index, itemBuilder(minVal + index))),
+        endItems: List.generate(maxVal - minVal + 1,
+            (index) => MapEntry(minVal + index, itemBuilder(minVal + index))),
         onChanged: onValueChanged,
       );
     }

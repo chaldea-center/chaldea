@@ -187,9 +187,21 @@ class CraftListPageState extends State<CraftListPage>
     return ListView.separated(
         controller: _scrollController,
         separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
-        itemCount: shownList.length,
+        itemCount: shownList.length + 2,
         itemBuilder: (context, index) {
-          final ce = shownList[index];
+          if (index == 0 || index == shownList.length + 1) {
+            return CustomTile(
+              contentPadding:
+                  index == 0 ? null : EdgeInsets.only(top: 8, bottom: 50),
+              subtitle: Center(
+                child: Text(
+                  'Total ${shownList.length} results',
+                  style: TextStyle(color: Colors.grey, fontSize: 14),
+                ),
+              ),
+            );
+          }
+          final ce = shownList[index - 1];
           String additionalText = '';
           switch (filterData.sortKeys.first) {
             case CraftCompare.atk:

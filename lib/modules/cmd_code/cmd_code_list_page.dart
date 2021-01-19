@@ -168,9 +168,21 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
     return ListView.separated(
         controller: _scrollController,
         separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
-        itemCount: shownList.length,
+        itemCount: shownList.length + 2,
         itemBuilder: (context, index) {
-          final code = shownList[index];
+          if (index == 0 || index == shownList.length + 1) {
+            return CustomTile(
+              contentPadding:
+                  index == 0 ? null : EdgeInsets.only(top: 8, bottom: 50),
+              subtitle: Center(
+                child: Text(
+                  'Total ${shownList.length} results',
+                  style: TextStyle(color: Colors.grey, fontSize: 14),
+                ),
+              ),
+            );
+          }
+          final code = shownList[index-1];
           return CustomTile(
             leading: Image(image: db.getIconImage(code.icon), height: 65),
             title: AutoSizeText(code.name, maxLines: 1),

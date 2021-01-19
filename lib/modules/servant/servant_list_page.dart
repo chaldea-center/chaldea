@@ -1,14 +1,19 @@
+import 'dart:convert';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
+import 'package:chaldea/modules/shared/list_page_share.dart';
 
 import 'servant_detail_page.dart';
 import 'servant_filter_page.dart';
 
 class ServantListPage extends StatefulWidget {
-  ServantListPage({Key key}) : super(key: key);
+  final bool planMode;
+
+  ServantListPage({Key key, this.planMode = false}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => ServantListPageState();
@@ -17,6 +22,7 @@ class ServantListPage extends StatefulWidget {
 class ServantListPageState extends State<ServantListPage>
     with DefaultScrollBarMixin {
   SvtFilterData filterData;
+  Set<Servant> hiddenPlanServants = {};
   TextEditingController _inputController = TextEditingController();
   FocusNode _inputFocusNode = FocusNode();
   ScrollController _scrollController;
@@ -29,7 +35,7 @@ class ServantListPageState extends State<ServantListPage>
     super.initState();
     filterData = db.userData.svtFilter;
     filterData.filterString = '';
-    filterData.favorite = 0;
+    filterData.favorite = widget.planMode ? 1 : 0;
     _scrollController = ScrollController();
   }
 
@@ -186,13 +192,14 @@ class ServantListPageState extends State<ServantListPage>
 
   @override
   Widget build(BuildContext context) {
-    //todo: hide/show floatingButton when scroll down/up
     return StreamBuilder(
         stream: db.userData.onUserUpdated.stream,
         builder: (context, snapshot) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(S.of(context).servant),
+              title: Text(widget.planMode
+                  ? '规划 ${db.curUser.curSvtPlanNo + 1}'
+                  : S.of(context).servant),
               leading: SplitMasterBackButton(),
               bottom: PreferredSize(
                 preferredSize: Size.fromHeight(45),
@@ -240,6 +247,14 @@ class ServantListPageState extends State<ServantListPage>
                 ),
               ),
               actions: <Widget>[
+                buildSwitchPlanButton(
+                  context: context,
+                  onChange: (index) {
+                    db.curUser.curSvtPlanNo = index;
+                    this.setState(() {});
+                    db.itemStat.updateSvtItems();
+                  },
+                ),
                 IconButton(
                     icon: Icon([
                       Icons.remove_circle_outline,
@@ -258,7 +273,20 @@ class ServantListPageState extends State<ServantListPage>
                       context: context,
                       builder: (context) => ServantFilterPage(
                           filterData: filterData, onChanged: onFilterChanged)),
-                )
+                ),
+                if (widget.planMode)
+                  PopupMenuButton(
+                    itemBuilder: (context) {
+                      return [
+                        PopupMenuItem(value: 'copy', child: Text('拷贝自其它规划')),
+                      ];
+                    },
+                    onSelected: (v) {
+                      if (v == 'copy') {
+                        copyPlan();
+                      }
+                    },
+                  ),
               ],
             ),
             floatingActionButton: FloatingActionButton(
@@ -271,8 +299,10 @@ class ServantListPageState extends State<ServantListPage>
         });
   }
 
+  List<Servant> shownList = [];
+
   Widget buildOverview() {
-    List<Servant> shownList = [];
+    shownList = [];
     beforeFiltrate();
     db.gameData.servants.forEach((no, svt) {
       if (filterData.favorite == 0 ||
@@ -287,78 +317,86 @@ class ServantListPageState extends State<ServantListPage>
         Servant.compare(a, b, filterData.sortKeys, filterData.sortReversed));
     return wrapDefaultScrollBar(
       controller: _scrollController,
-      child: filterData.useGrid
-          ? _buildGridView(shownList)
-          : _buildListView(shownList),
+      child: widget.planMode
+          ? _buildPlanListView()
+          : filterData.useGrid
+              ? _buildGridView()
+              : _buildListView(),
     );
   }
 
-  Widget _buildListView(List<Servant> shownList) {
+  Widget _buildListView() {
     return ListView.separated(
-        controller: _scrollController,
-        separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
-        itemCount: shownList.length + 1,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return Center(
-              child: Text('Total ${shownList.length} results',
-                  style: Theme.of(context).tooltipTheme.textStyle),
-            );
-          }
-          final svt = shownList[index - 1];
-          final status = db.curUser.servants[svt.no];
-          String statusText = '';
-          if (status?.curVal?.favorite == true) {
-            statusText = '${status.tdLv}宝'
-                '${status.curVal.ascension}-'
-                '${status.curVal.skills[0]}/'
-                '${status.curVal.skills[1]}/'
-                '${status.curVal.skills[2]}';
-          }
-
-          String additionalText = '';
-          switch (filterData.sortKeys.first) {
-            case SvtCompare.atk:
-              additionalText = '  ATK ${svt.info.atkMax ?? "——"}';
-              break;
-            case SvtCompare.hp:
-              additionalText = '  HP ${svt.info.hpMax ?? "——"}';
-              break;
-            default:
-              break;
-          }
+      controller: _scrollController,
+      separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
+      itemCount: shownList.length + 2,
+      itemBuilder: (context, index) {
+        if (index == 0 || index == shownList.length + 1) {
           return CustomTile(
-            leading: Image(image: db.getIconImage(svt.icon), height: 65),
-            title: AutoSizeText('${svt.info.name}', maxLines: 1),
-            subtitle: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      AutoSizeText('${svt.info.nameJp}', maxLines: 1),
-                      Text(
-                          'No.${svt.no} ${svt.info.className}  $additionalText')
-                    ],
-                  ),
-                ),
-                Text(statusText),
-              ],
+            contentPadding:
+                index == 0 ? null : EdgeInsets.only(top: 8, bottom: 50),
+            subtitle: Center(
+              child: Text(
+                'Total ${shownList.length} results',
+                style: TextStyle(color: Colors.grey, fontSize: 14),
+              ),
             ),
-            trailing: Icon(Icons.arrow_forward_ios),
-            onTap: () {
-              SplitRoute.push(
-                context: context,
-                builder: (context, _) => ServantDetailPage(svt),
-                popDetail: true,
-              );
-            },
           );
-        });
+        }
+        final svt = shownList[index - 1];
+        final status = db.curUser.servants[svt.no];
+        String statusText = '';
+        if (status?.curVal?.favorite == true) {
+          statusText = '${status.tdLv}宝'
+              '${status.curVal.ascension}-'
+              '${status.curVal.skills[0]}/'
+              '${status.curVal.skills[1]}/'
+              '${status.curVal.skills[2]}';
+        }
+
+        String additionalText = '';
+        switch (filterData.sortKeys.first) {
+          case SvtCompare.atk:
+            additionalText = '  ATK ${svt.info.atkMax ?? "——"}';
+            break;
+          case SvtCompare.hp:
+            additionalText = '  HP ${svt.info.hpMax ?? "——"}';
+            break;
+          default:
+            break;
+        }
+        return CustomTile(
+          leading: Image(image: db.getIconImage(svt.icon), height: 65),
+          title: AutoSizeText('${svt.info.name}', maxLines: 1),
+          subtitle: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    AutoSizeText('${svt.info.nameJp}', maxLines: 1),
+                    Text('No.${svt.no} ${svt.info.className}  $additionalText')
+                  ],
+                ),
+              ),
+              Text(statusText),
+            ],
+          ),
+          trailing: Icon(Icons.arrow_forward_ios),
+          onTap: () {
+            SplitRoute.push(
+              context: context,
+              builder: (context, _) => ServantDetailPage(svt),
+              popDetail: true,
+            );
+          },
+        );
+      },
+    );
   }
 
-  Widget _buildGridView(List<Servant> shownList) {
+  Widget _buildGridView() {
     // make sure the floating button not cover svt icon
     if (shownList.length % 5 == 0) {
       shownList.add(null);
@@ -401,5 +439,243 @@ class ServantListPageState extends State<ServantListPage>
             ),
           );
         }).toList());
+  }
+
+  Widget _buildPlanListView() {
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.separated(
+            controller: _scrollController,
+            separatorBuilder: (context, index) =>
+                Divider(height: 1, indent: 16),
+            itemCount: shownList.length + 2,
+            itemBuilder: (context, index) {
+              if (index == 0 || index == shownList.length + 1) {
+                int _hiddenNum = shownList
+                    .where((e) => hiddenPlanServants.contains(e))
+                    .length;
+                return CustomTile(
+                  contentPadding:
+                      index == 0 ? null : EdgeInsets.only(top: 8, bottom: 50),
+                  subtitle: Center(
+                    child: Text(
+                      'Total ${shownList.length} results' +
+                          (widget.planMode ? " ($_hiddenNum hidden)" : ""),
+                      style: TextStyle(color: Colors.grey, fontSize: 14),
+                    ),
+                  ),
+                );
+              }
+              final svt = shownList[index - 1];
+              Widget eyeWidget;
+              if (!isSvtFavorite(svt))
+                eyeWidget = Icon(Icons.remove_red_eye);
+              else {
+                final _hidden = hiddenPlanServants.contains(svt);
+                eyeWidget = GestureDetector(
+                  child: Icon(
+                    Icons.remove_red_eye,
+                    color: _hidden ? null : Colors.lightBlue,
+                  ),
+                  onTap: () {
+                    setState(() {
+                      if (_hidden)
+                        hiddenPlanServants.remove(svt);
+                      else
+                        hiddenPlanServants.add(svt);
+                    });
+                  },
+                );
+              }
+              return CustomTile(
+                leading: Image(image: db.getIconImage(svt.icon), height: 52),
+                subtitle: _getDetailTable(svt),
+                trailing: eyeWidget,
+                onTap: () {
+                  SplitRoute.push(
+                    context: context,
+                    builder: (context, _) => ServantDetailPage(svt),
+                    popDetail: true,
+                  );
+                },
+              );
+            },
+          ),
+        ),
+        _buildButtonBar(),
+      ],
+    );
+  }
+
+  Widget _getDetailTable(Servant svt) {
+    ServantPlan cur = db.curUser.servants[svt.no]?.curVal,
+        target = db.curUser.curSvtPlan[svt.no];
+    Widget _getItem(String label, int _c, int _t) {
+      bool highlight = _t > _c;
+      return RichText(
+        maxLines: 1,
+        text: TextSpan(
+          style: TextStyle(
+            fontSize: 12,
+            color: Colors.black54,
+            fontFamily: 'RobotoMono',
+          ),
+          text: label + ':',
+          children: [
+            TextSpan(
+              text: '$_c-$_t',
+              style: TextStyle(color: highlight ? Colors.redAccent : null),
+            )
+          ],
+        ),
+      );
+    }
+
+    if (cur?.favorite == true && target?.favorite != true) {
+      return Center(child: Text('请取消并重新关注该从者'));
+    }
+    if (cur?.favorite != true || target?.favorite != true) {
+      return Center(child: Text('未关注'));
+    }
+    if (hiddenPlanServants.contains(svt)) {
+      return Center(child: Text('已隐藏'));
+    }
+    cur.fixDressLength(svt.itemCost.dress.length);
+    target.fixDressLength(svt.itemCost.dress.length);
+    return Table(
+      // border: TableBorder.all(),
+      children: [
+        TableRow(children: [
+          _getItem('灵基 ', cur.ascension, target.ascension),
+          _getItem('圣杯 ', cur.grail, target.grail),
+          Container()
+        ]),
+        TableRow(children: [
+          for (int i = 0; i < 3; i++)
+            _getItem('技能${i + 1}', cur.skills[i], target.skills[i])
+        ]),
+        if (cur.dress.isNotEmpty)
+          for (int row = 0; row < cur.dress.length / 3; row++)
+            TableRow(
+              children: List.generate(3, (col) {
+                final dressIndex = row * 3 + col;
+                if (dressIndex >= cur.dress.length)
+                  return Container();
+                else
+                  return _getItem('灵衣${dressIndex + 1}', cur.dress[dressIndex],
+                      target.dress[dressIndex]);
+              }),
+            ),
+      ],
+    );
+  }
+
+  bool isSvtFavorite(Servant svt) {
+    return db.curUser.servants[svt.no]?.curVal?.favorite == true &&
+        db.curUser.curSvtPlan[svt.no]?.favorite == true;
+  }
+
+  int _planTargetAscension;
+  int _planTargetSkill;
+  int _planTargetDress;
+
+  Widget _buildButtonBar() {
+    return Container(
+      decoration:
+          BoxDecoration(border: Border(top: Divider.createBorderSide(context))),
+      child: ButtonBar(
+        alignment: MainAxisAlignment.start,
+        children: [
+          Text('规划'),
+          DropdownButton(
+            value: _planTargetAscension,
+            hint: Text('灵基'),
+            items: List.generate(
+                5, (i) => DropdownMenuItem(value: i, child: Text('灵基$i'))),
+            onChanged: (v) {
+              setState(() {
+                _planTargetAscension = v;
+                shownList.forEach((svt) {
+                  if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
+                    final cur = db.curUser.servants[svt.no].curVal,
+                        target = db.curUser.curSvtPlan[svt.no];
+                    target.ascension = max(cur.ascension, _planTargetAscension);
+                  }
+                });
+              });
+            },
+          ),
+          DropdownButton(
+            value: _planTargetSkill,
+            hint: Text('技能'),
+            items: List.generate(10,
+                (i) => DropdownMenuItem(value: i, child: Text('技能${i + 1}'))),
+            onChanged: (v) {
+              setState(() {
+                _planTargetSkill = v;
+                shownList.forEach((svt) {
+                  if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
+                    final cur = db.curUser.servants[svt.no].curVal,
+                        target = db.curUser.curSvtPlan[svt.no];
+                    for (int i = 0; i < 3; i++) {
+                      target.skills[i] =
+                          max(cur.skills[i], _planTargetSkill + 1);
+                    }
+                  }
+                });
+              });
+            },
+          ),
+          DropdownButton(
+            value: _planTargetDress,
+            hint: Text('灵衣'),
+            items: List.generate(
+                2,
+                (i) => DropdownMenuItem(
+                    value: i, child: Text('灵衣' + ['×', '√'][i]))),
+            onChanged: (v) {
+              setState(() {
+                _planTargetDress = v;
+                shownList.forEach((svt) {
+                  if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
+                    final cur = db.curUser.servants[svt.no].curVal,
+                        target = db.curUser.curSvtPlan[svt.no];
+                    for (int i = 0; i < target.dress.length; i++) {
+                      target.dress[i] = max(cur.dress[i], _planTargetDress);
+                    }
+                  }
+                });
+              });
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  void copyPlan() {
+    showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: Text('选择复制来源'),
+        children: List.generate(db.curUser.servantPlans.length, (index) {
+          bool isCur = index == db.curUser.curSvtPlanNo;
+          return ListTile(
+            title: Text('规划 ${index + 1} ' + (isCur ? '(当前)' : '')),
+            onTap: isCur
+                ? null
+                : () {
+                    db.curUser.curSvtPlan.clear();
+                    db.curUser.servantPlans[index].forEach((key, plan) {
+                      db.curUser.curSvtPlan[key] =
+                          ServantPlan.fromJson(jsonDecode(jsonEncode(plan)));
+                    });
+                    Navigator.of(context).pop();
+                  },
+          );
+        }),
+      ),
+    );
   }
 }

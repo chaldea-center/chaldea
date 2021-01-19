@@ -230,6 +230,8 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
       children: <Widget>[
         Divider(height: 1, thickness: 1),
         Wrap(
+          alignment: WrapAlignment.center,
+          runAlignment: WrapAlignment.center,
           crossAxisAlignment: WrapCrossAlignment.center,
           spacing: 10,
           children: <Widget>[
@@ -384,8 +386,8 @@ class _DropCalcOutputTabState extends State<DropCalcOutputTab> {
           decoration: BoxDecoration(
               border: Border(bottom: Divider.createBorderSide(context))),
           child: ListTile(
-            title: Text('总次数: ${widget.solution?.totalNum}'),
-            trailing: Text('总AP: ${widget.solution?.totalCost}'),
+            title: Text('总次数: ${widget.solution?.totalNum ?? "-"}'),
+            trailing: Text('总AP: ${widget.solution?.totalCost ?? "-"}'),
           ),
         ),
         Expanded(

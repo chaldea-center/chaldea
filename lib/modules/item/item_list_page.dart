@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/drop_calculator/drop_calculator_page.dart';
+import 'package:chaldea/modules/shared/list_page_share.dart';
 import 'package:flutter/services.dart';
 
 import 'item_detail_page.dart';
@@ -41,29 +42,14 @@ class ItemListPageState extends State<ItemListPage>
         title: Text(S.of(context).item_title),
         leading: SplitMasterBackButton(),
         actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.list),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => SimpleDialog(
-                    title: Text('选择规划'),
-                    children:
-                        List.generate(db.curUser.servantPlans.length, (index) {
-                      return ListTile(
-                        title: Text('规划 ${index + 1}'),
-                        selected: index == db.curUser.curSvtPlanNo,
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          db.curUser.curSvtPlanNo = index;
-                          db.itemStat.update();
-                          setState(() {});
-                        },
-                      );
-                    }),
-                  ),
-                );
-              }),
+          buildSwitchPlanButton(
+            context: context,
+            onChange: (index) {
+              db.curUser.curSvtPlanNo = index;
+              db.itemStat.update();
+              setState(() {});
+            },
+          ),
           IconButton(
             icon: Icon(
                 filtered ? Icons.check_circle : Icons.check_circle_outline),
@@ -141,7 +127,7 @@ class ItemListPageState extends State<ItemListPage>
       ),
       body: TabBarView(
         // mostly, we focus on category 1 tab
-        physics: AppInfo.isMobile ? null :NeverScrollableScrollPhysics(),
+        physics: AppInfo.isMobile ? null : NeverScrollableScrollPhysics(),
         controller: _tabController,
         children: List.generate(
           categories.length,

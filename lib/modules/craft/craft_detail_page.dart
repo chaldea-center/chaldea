@@ -166,6 +166,14 @@ class CraftDetailBasePage extends StatelessWidget {
             ],
           ),
           CustomTableRow(
+              children: [TableCellData(text: '礼装类别', isHeader: true)]),
+          CustomTableRow(children: [
+            TableCellData(
+              child: Text(ce.category +' - '+ ce.categoryText,
+                  textAlign: TextAlign.center),
+            )
+          ]),
+          CustomTableRow(
               children: [TableCellData(text: '持有技能', isHeader: true)]),
           CustomTableRow(
             children: [

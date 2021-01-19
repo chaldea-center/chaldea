@@ -124,8 +124,8 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 },
               ),
               ListTile(
-                title: Text('重置从者强化状态'),
-                subtitle: Text('宝具/技能恢复成国服强化状态'),
+                title: Text('重置从者强化本状态'),
+                subtitle: Text('宝具本/技能本恢复成国服状态'),
                 onTap: () {
                   db.curUser.servants.forEach((svtNo, svt) {
                     svt.tdIndex = 0;

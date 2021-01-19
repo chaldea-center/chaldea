@@ -125,6 +125,12 @@ class Servant {
     return target > cur ? {Item.grail: target - cur} : <String, int>{};
   }
 
+  int getGrailLv(int grail) {
+    final maxGrail = [10, 10, 10, 9, 7, 5][info.rarity];
+    if (grail == 0) return [65, 60, 65, 70, 80, 90][info.rarity];
+    return [100, 98, 96, 94, 92, 90, 85, 80, 75, 70][maxGrail - grail];
+  }
+
   int getClassSortIndex() {
     if (info.className == 'Grand Caster') {
       return SvtFilterData.classesData.indexWhere((v) => v == 'Caster');

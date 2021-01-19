@@ -5,7 +5,6 @@ import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/craft/craft_list_page.dart';
 import 'package:chaldea/modules/drop_calculator/drop_calculator_page.dart';
 import 'package:chaldea/modules/event/events_page.dart';
-
 import 'package:chaldea/modules/extras/ap_calc_page.dart';
 import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
@@ -124,6 +123,13 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         title: S.of(context).event_title,
         icon: Icons.event_available,
         builder: (context, _) => EventListPage(),
+      ),
+      GalleryItem.plan: GalleryItem(
+        name: GalleryItem.plan,
+        title: '规划',
+        icon: Icons.analytics,
+        builder: (context, _) => ServantListPage(planMode: true),
+        isDetail: false,
       ),
       GalleryItem.drop_calculator: GalleryItem(
         name: GalleryItem.drop_calculator,

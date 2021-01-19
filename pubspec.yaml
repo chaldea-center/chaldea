@@ -116,6 +116,13 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+  fonts:
+    - family: RobotoMono
+      fonts:
+        - asset: res/fonts/RobotoMono-VariableFont_wght.ttf
+        - asset: res/fonts/RobotoMono-Italic-VariableFont_wght.ttf
+          style: italic
+
 flutter_intl:
   enabled: true
 #  main_locale: zh

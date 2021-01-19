@@ -156,6 +156,7 @@ class SvtFilterData {
 
   List<FilterGroupData> get groupValues => [
         skillLevel,
+        planCompletion,
         rarity,
         className,
         obtain,

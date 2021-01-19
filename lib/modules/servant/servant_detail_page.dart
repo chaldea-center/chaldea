@@ -1,5 +1,6 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/blank_page.dart';
+import 'package:chaldea/modules/shared/list_page_share.dart';
 
 import 'tabs/svt_illust_tab.dart';
 import 'tabs/svt_info_tab.dart';
@@ -27,6 +28,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
 
   // store data
   ServantStatus status;
+
+  ServantPlan get plan =>
+      db.curUser.curSvtPlan.putIfAbsent(svt.no, () => ServantPlan());
 
   ServantDetailPageState(this.svt) {
     if (!Servant.unavailable.contains(svt.no)) {
@@ -112,30 +116,14 @@ class ServantDetailPageState extends State<ServantDetailPage>
           ),
           title: Text(svt.info.name),
           actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.list),
-                tooltip: '切换规划',
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => SimpleDialog(
-                      title: Text('选择规划'),
-                      children: List.generate(db.curUser.servantPlans.length,
-                          (index) {
-                        return ListTile(
-                          title: Text('规划 ${index + 1}'),
-                          selected: index == db.curUser.curSvtPlanNo,
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            db.curUser.curSvtPlanNo = index;
-                            this.setState(() {});
-                            db.itemStat.updateSvtItems();
-                          },
-                        );
-                      }),
-                    ),
-                  );
-                }),
+            buildSwitchPlanButton(
+              context: context,
+              onChange: (index) {
+                db.curUser.curSvtPlanNo = index;
+                this.setState(() {});
+                db.itemStat.updateSvtItems();
+              },
+            ),
             if (!Servant.unavailable.contains(svt.no))
               IconButton(
                 icon: status.curVal.favorite
@@ -144,7 +132,8 @@ class ServantDetailPageState extends State<ServantDetailPage>
                 tooltip: '关注',
                 onPressed: () {
                   setState(() {
-                    status.curVal.favorite = !status.curVal.favorite;
+                    plan.favorite =
+                        status.curVal.favorite = !status.curVal.favorite;
                   });
                   db.userData.broadcastUserUpdate();
                   db.itemStat.updateSvtItems();

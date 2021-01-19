@@ -33,7 +33,7 @@ class User {
     server ??= GameServer.cn;
     servants ??= {};
     curSvtPlanNo ??= 0;
-    servantPlans ??= List.generate(5, (i) => {});
+    servantPlans ??= List.generate(5, (i) => <int, ServantPlan>{});
     items ??= {};
     events ??= EventPlans();
   }
