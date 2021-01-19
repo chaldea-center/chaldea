@@ -234,12 +234,14 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             child: Text((minVal + index).toString()),
           ),
         ),
-        onChanged: (v) => onValueChanged(v, -1),
+        // disable at enhance mode
+        onChanged: enhanceMode ? null : (v) => onValueChanged(v, -1),
       );
     } else {
       selector = RangeSelector<int>(
         start: start,
         end: end,
+        startEnabled: !enhanceMode,
         startItems: List.generate(
             maxVal - minVal + 1,
             (index) =>
@@ -279,18 +281,89 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
 
   Widget buildButtonBar(ServantPlan targetPlan) {
     final curVal = status.curVal;
-    State state; // = widget.parent ?? this;
-    if (widget.parent != null)
-      state = widget.parent;
-    else
-      state = this;
-    void update() {
-      if (!enhanceMode) {
-        db.userData.broadcastUserUpdate();
-        db.itemStat.updateSvtItems();
-      }
+    List<Widget> buttons = [];
+    // 强化 or 取消
+    buttons.add(
+      ElevatedButton(
+        onPressed: () => setState(() {
+          // reset enhance plan every time enter the enhance mode
+          enhancePlan = ServantPlan.from(curVal);
+          enhanceMode = !enhanceMode;
+        }),
+        child: Text(enhanceMode ? S.of(context).cancel : '强化'),
+        style: ElevatedButton.styleFrom(
+            primary:
+                enhanceMode ? Colors.grey : Theme.of(context).primaryColor),
+      ),
+    );
+
+    // 确定
+    if (enhanceMode) {
+      buttons.add(ElevatedButton(
+        onPressed: _onEnhance,
+        child: Text(S.of(context).ok),
+      ));
     }
 
+    // Lv.x or ≠
+    bool skillLvEqual =
+        Set.from((enhanceMode ? targetPlan : curVal).skills).length == 1;
+    buttons.add(DropdownButton(
+      value:
+          skillLvEqual ? (enhanceMode ? targetPlan : curVal).skills[0] : null,
+      hint: Text('Lv. ≠'),
+      items: List.generate(10,
+          (i) => DropdownMenuItem(value: i + 1, child: Text('Lv. ${i + 1}'))),
+      onChanged: _onAllSkillLv,
+    ));
+
+    // max ↑
+    buttons.add(IconButton(
+      icon: Icon(Icons.vertical_align_top),
+      tooltip: '练度最大化(310)',
+      onPressed: () {
+        curVal.setMax(skill: 10);
+        targetPlan.setMax(skill: 10);
+        updateState();
+      },
+    ));
+
+    // 999
+    buttons.add(Stack(
+      alignment: AlignmentDirectional.bottomEnd,
+      children: <Widget>[
+        Padding(padding: EdgeInsets.fromLTRB(0, 0, 8, 4), child: Text('9')),
+        IconButton(
+          icon: Icon(Icons.trending_up),
+          tooltip: '规划最大化(999)',
+          onPressed: () {
+            targetPlan.setMax(skill: 9);
+            curVal.favorite = true;
+            for (int i = 0; i < 3; i++) {
+              curVal.skills[i] = min(curVal.skills[i], 9);
+            }
+            updateState();
+          },
+        ),
+      ],
+    ));
+
+    // 310
+    buttons.add(Stack(
+      alignment: AlignmentDirectional.bottomEnd,
+      children: <Widget>[
+        Padding(padding: EdgeInsets.fromLTRB(0, 0, 4, 4), child: Text('10')),
+        IconButton(
+          icon: Icon(Icons.trending_up),
+          tooltip: '规划最大化(310)',
+          onPressed: () {
+            curVal.favorite = true;
+            targetPlan.setMax(skill: 10);
+            updateState();
+          },
+        ),
+      ],
+    ));
     return Container(
       decoration: BoxDecoration(
           border: Border(top: Divider.createBorderSide(context, width: 0.5))),
@@ -298,140 +371,71 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         alignment: Alignment.centerRight,
         child: FittedBox(
           fit: BoxFit.contain,
-          child: ButtonBar(
-            children: <Widget>[
-              ElevatedButton(
-                onPressed: () => setState(() {
-                  // reset enhance plan every time enter the enhance mode
-                  enhancePlan = ServantPlan.from(curVal);
-                  enhanceMode = !enhanceMode;
-                }),
-                child: Text(enhanceMode ? S.of(context).cancel : '强化'),
-                style: ElevatedButton.styleFrom(
-                    primary: enhanceMode
-                        ? Colors.grey
-                        : Theme.of(context).primaryColor),
-              ),
-              if (enhanceMode)
-                ElevatedButton(
-                  onPressed: () {
-                    final enhanceItems = Item.sortMapById(svt.getAllCost(
-                      cur: curVal..favorite = true,
-                      target: enhancePlan..favorite = true,
-                    ));
-                    bool hasItem = enhanceItems.length > 0 &&
-                        enhanceItems.values.reduce((a, b) => max(a, b)) > 0;
-                    showDialog(
-                      context: context,
-                      builder: (context) => SimpleCancelOkDialog(
-                        title: Text('强化将扣除以下素材'),
-                        content: Container(
-                          width: defaultDialogWidth(context),
-                          child: hasItem
-                              ? CommonBuilder.buildIconGridView(
-                                  data: enhanceItems, crossCount: 6)
-                              : Text('Nothing'),
-                        ),
-                        onTapOk: hasItem
-                            ? () {
-                                // ensure cur svt is favorite
-                                // items = items + (-1)*enhanceItems
-                                sumDict([
-                                  db.curUser.items,
-                                  multiplyDict(enhanceItems, -1, inPlace: true)
-                                ], inPlace: true);
-                                setState(() {
-                                  curVal.copyFrom(enhancePlan);
-                                  enhanceMode = !enhanceMode;
-                                });
-                                update();
-                              }
-                            : null,
-                      ),
-                    );
-                  },
-                  child: Text(S.of(context).ok),
-                  // color: Theme.of(context).primaryColor,
-                ),
-              DropdownButton(
-                value: Set.from(curVal.skills).length == 1
-                    ? curVal.skills[0]
-                    : null,
-                hint: Text('Lv. ≠'),
-                items: List.generate(
-                    10,
-                    (i) => DropdownMenuItem(
-                        value: i + 1, child: Text('Lv. ${i + 1}'))),
-                onChanged: (v) {
-                  state.setState(() {
-                    curVal.favorite = targetPlan.favorite = true;
-                    curVal.ascension = 4;
-                    for (var i = 0; i < 3; i++) {
-                      curVal.skills[i] = v;
-                      // targetPlan.skills[i] = max(v, targetPlan.skills[i]);
-                    }
-                  });
-                  update();
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.vertical_align_top),
-                tooltip: '练度最大化(310)',
-                onPressed: () {
-                  state.setState(() {
-                    curVal.setMax(skill: 10);
-                    targetPlan.setMax(skill: 10);
-                  });
-                  update();
-                },
-              ),
-              Stack(
-                alignment: AlignmentDirectional.bottomEnd,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, 8, 4),
-                    child: Text('9'),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.trending_up),
-                    tooltip: '规划最大化(999)',
-                    onPressed: () {
-                      state.setState(() {
-                        targetPlan.setMax(skill: 9);
-                        curVal.favorite = true;
-                        for (int i = 0; i < 3; i++) {
-                          curVal.skills[i] = min(curVal.skills[i], 9);
-                        }
-                      });
-                      update();
-                    },
-                  ),
-                ],
-              ),
-              Stack(
-                alignment: AlignmentDirectional.bottomEnd,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, 4, 4),
-                    child: Text('10'),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.trending_up),
-                    tooltip: '规划最大化(310)',
-                    onPressed: () {
-                      state.setState(() {
-                        curVal.favorite = true;
-                        targetPlan.setMax(skill: 10);
-                      });
-                      update();
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
+          child: ButtonBar(children: buttons),
         ),
       ),
     );
+  }
+
+  void updateState() {
+    State state; // = widget.parent ?? this;
+    if (widget.parent != null)
+      state = widget.parent;
+    else
+      state = this;
+    state.setState(() {});
+    if (!enhanceMode) {
+      db.userData.broadcastUserUpdate();
+      db.itemStat.updateSvtItems();
+    }
+  }
+
+  void _onEnhance() {
+    final enhanceItems = Item.sortMapById(svt.getAllCost(
+      cur: status.curVal..favorite = true,
+      target: enhancePlan..favorite = true,
+    ));
+    bool hasItem = sum(enhanceItems.values) > 0;
+    showDialog(
+      context: context,
+      builder: (context) => SimpleCancelOkDialog(
+        title: Text('强化将扣除以下素材'),
+        content: Container(
+            width: defaultDialogWidth(context),
+            child: hasItem
+                ? CommonBuilder.buildIconGridView(
+                    data: enhanceItems, crossCount: 6)
+                : Text('Nothing')),
+        onTapOk: hasItem
+            ? () {
+                // ensure cur svt is favorite
+                // items = items + (-1)*enhanceItems
+                sumDict([db.curUser.items, multiplyDict(enhanceItems, -1)],
+                    inPlace: true);
+                status.curVal.copyFrom(enhancePlan);
+                enhanceMode = !enhanceMode;
+                updateState();
+              }
+            : null,
+      ),
+    );
+  }
+
+  void _onAllSkillLv(int lv) {
+    final cur = status.curVal, target = enhanceMode ? enhancePlan : plan;
+    cur.favorite = target.favorite = true;
+    if (enhanceMode) {
+      for (var i = 0; i < 3; i++) {
+        // don't downgrade skill when enhancement
+        target.skills[i] = max(lv, cur.skills[i]);
+      }
+    } else {
+      cur.ascension = 4;
+      for (var i = 0; i < 3; i++) {
+        cur.skills[i] = lv;
+        target.skills[i] = max(lv, target.skills[i]);
+      }
+    }
+    updateState();
   }
 }

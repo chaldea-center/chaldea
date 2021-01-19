@@ -220,6 +220,8 @@ class RangeSelector<T extends num> extends StatefulWidget {
   final T end;
   final List<MapEntry<T, Widget>> startItems;
   final List<MapEntry<T, Widget>> endItems;
+  final bool startEnabled;
+  final bool endEnabled;
   final void Function(T, T) onChanged;
 
   final bool increasing;
@@ -230,6 +232,8 @@ class RangeSelector<T extends num> extends StatefulWidget {
       this.end,
       this.startItems,
       this.endItems,
+      this.startEnabled = true,
+      this.endEnabled = true,
       this.increasing = true,
       this.onChanged})
       : super(key: key);
@@ -254,15 +258,17 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
                     child: entry.value,
                   ))
               .toList(),
-          onChanged: (value) {
-            final start = value;
-            final end = widget.increasing == null
-                ? widget.end
-                : widget.increasing
-                    ? max(start, widget.end)
-                    : min(start, widget.end);
-            widget.onChanged(start, end);
-          },
+          onChanged: widget.startEnabled
+              ? (value) {
+                  final start = value;
+                  final end = widget.increasing == null
+                      ? widget.end
+                      : widget.increasing
+                          ? max(start, widget.end)
+                          : min(start, widget.end);
+                  widget.onChanged(start, end);
+                }
+              : null,
         ),
         Text('   →   '),
         DropdownButton<T>(
@@ -273,15 +279,17 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
                     child: entry.value,
                   ))
               .toList(),
-          onChanged: (value) {
-            final end = value;
-            final start = widget.increasing == null
-                ? widget.start
-                : widget.increasing
-                    ? min(widget.start, end)
-                    : max(widget.start, end);
-            widget.onChanged(start, end);
-          },
+          onChanged: widget.endEnabled
+              ? (value) {
+                  final end = value;
+                  final start = widget.increasing == null
+                      ? widget.start
+                      : widget.increasing
+                          ? min(widget.start, end)
+                          : max(widget.start, end);
+                  widget.onChanged(start, end);
+                }
+              : null,
         )
       ],
     );

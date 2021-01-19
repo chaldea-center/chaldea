@@ -114,6 +114,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.list),
+                tooltip: '切换规划',
                 onPressed: () {
                   showDialog(
                     context: context,

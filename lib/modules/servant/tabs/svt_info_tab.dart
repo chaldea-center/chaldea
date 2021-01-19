@@ -210,48 +210,39 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
                 svt.info.criticalRate
               ],
             ),
-            if (svt.bondPoints != null) ...[
+            if (svt.bondPoints != null && svt.bondPoints.length > 0) ...[
               CustomTableRow.fromTexts(texts: ['羁绊点数'], defaults: headerData),
-              CustomTableRow.fromTexts(
-                texts: ['Lv.', '1', '2', '3', '4', '5'],
-                defaults: TableCellData(
-                    color: TableCellData.headerColor.withOpacity(0.3)),
-              ),
-              CustomTableRow.fromTexts(
-                texts: [
-                  '点数',
-                  for (var i = 0; i < 5; i++) svt.bondPoints[i].toString()
-                ],
-                defaults: TableCellData(maxLines: 1),
-              ),
-              CustomTableRow.fromTexts(
-                texts: [
-                  '累计',
-                  for (var i = 0; i < 5; i++)
-                    sum(svt.bondPoints.sublist(0, i + 1)).toString()
-                ],
-                defaults: TableCellData(maxLines: 1),
-              ),
-              CustomTableRow.fromTexts(
-                texts: ['Lv.', '6', '7', '8', '9', '10'],
-                defaults: TableCellData(
-                    color: TableCellData.headerColor.withOpacity(0.3)),
-              ),
-              CustomTableRow.fromTexts(
-                texts: [
-                  '点数',
-                  for (var i = 5; i < 10; i++) svt.bondPoints[i].toString()
-                ],
-                defaults: TableCellData(maxLines: 1),
-              ),
-              CustomTableRow.fromTexts(
-                texts: [
-                  '累计',
-                  for (var i = 5; i < 10; i++)
-                    sum(svt.bondPoints.sublist(0, i + 1)).toString()
-                ],
-                defaults: TableCellData(maxLines: 1),
-              ),
+              for (int row = 0; row < svt.bondPoints.length / 5; row++) ...[
+                CustomTableRow.fromTexts(
+                  texts: [
+                    'Lv.',
+                    for (int i = row * 5; i < row * 5 + 5; i++)
+                      (i + 1).toString()
+                  ],
+                  defaults: TableCellData(
+                      color: TableCellData.headerColor.withOpacity(0.5)),
+                ),
+                CustomTableRow.fromTexts(
+                  texts: [
+                    '点数',
+                    for (int i = row * 5; i < row * 5 + 5; i++)
+                      i >= svt.bondPoints.length
+                          ? '-'
+                          : svt.bondPoints[i].toString()
+                  ],
+                  defaults: TableCellData(maxLines: 1),
+                ),
+                CustomTableRow.fromTexts(
+                  texts: [
+                    '累计',
+                    for (int i = row * 5; i < row * 5 + 5; i++)
+                      i >= svt.bondPoints.length
+                          ? '-'
+                          : sum(svt.bondPoints.sublist(0, i + 1)).toString()
+                  ],
+                  defaults: TableCellData(maxLines: 1),
+                ),
+              ],
             ]
           ] //end available svts
         ],
