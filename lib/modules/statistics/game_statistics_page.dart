@@ -39,26 +39,40 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
     );
   }
 
+  bool includeCurItems = false;
+
   Widget _buildItemTab() {
     calculateItem();
-    final shownItems = Map<String, int>.from(allItemCost)
-      ..removeWhere((key, value) {
-        int group = (db.gameData.items[key]?.id ?? 0) ~/ 100;
-        return !(group >= 10 && group < 40) || value <= 0;
-      });
+    final shownItems =
+        sumDict([allItemCost, if (includeCurItems) db.curUser.items])
+          ..removeWhere((key, value) {
+            int group = (db.gameData.items[key]?.id ?? 0) ~/ 100;
+            return key != Item.qp &&
+                (!(group >= 10 && group < 40) || value <= 0);
+          });
     return ListView(
       padding: EdgeInsets.symmetric(vertical: 12),
       children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Checkbox(
+              value: includeCurItems,
+              onChanged: (v) => setState(() => includeCurItems = v),
+            ),
+            Text('计算现有素材')
+          ],
+        ),
         ListTile(
           leading: Image(image: db.getIconImage(Item.qp)),
-          title: Text(formatNumber(allItemCost[Item.qp] ?? 0)),
+          title: Text(formatNumber(shownItems[Item.qp] ?? 0)),
           onTap: () => SplitRoute.push(
               context: context,
               builder: (context, _) => ItemDetailPage(Item.qp)),
         ),
         buildClassifiedItemList(
           context: context,
-          data: shownItems,
+          data: shownItems..remove(Item.qp),
           divideRarity: false,
           crossCount: SplitRoute.isSplit(context) ? 7 : 7,
           onTap: (itemKey) => SplitRoute.push(
