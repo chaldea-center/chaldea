@@ -144,6 +144,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 title: Text('版本'),
                 trailing: Text(db.gameData.version),
               ),
+
               ListTile(
                 title: Text('下载最新数据'),
                 onTap: downloadGamedata,
@@ -212,6 +213,19 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                     },
                   ).show(context);
                 },
+              ),
+              ListTile(
+                title: Text('下载源'),
+                subtitle: Text('用于游戏数据和应用的更新'),
+                trailing: DropdownButton(
+                  value: db.userData.appDatasetUpdateSource ?? 0,
+                  items: [
+                    DropdownMenuItem(child: Text('源1'), value: 0),
+                    DropdownMenuItem(child: Text('源2'), value: 1),
+                  ],
+                  onChanged: (v) =>
+                      setState(() => db.userData.appDatasetUpdateSource = v),
+                ),
               ),
             ],
           ),
@@ -399,17 +413,19 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
 
   void downloadGamedata() {
     void _downloadAsset([bool fullSize = true]) async {
-      final info = await GithubTool.latestDatasetRelease(fullSize);
+      int source = db.userData.appDatasetUpdateSource ?? 0;
+      source = (source < 0 || source >= GitSource.values.length) ? 0 : source;
+      final gitTool = GitTool(GitSource.values[source]);
+      final release = await gitTool.latestDatasetRelease(fullSize);
       Navigator.of(context).pop();
       String fp = pathlib.join(
-          db.paths.tempPath, info.release.name + '-' + info.asset.name);
+          db.paths.tempPath, '${release?.name}-${release?.targetAsset?.name}');
       showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) => DownloadDialog(
-          url: info.asset.browserDownloadUrl,
+          url: release?.targetAsset?.browserDownloadUrl ?? '',
           savePath: fp,
-          fileSize: info.asset.size,
           onComplete: () {
             try {
               db.extractZip(
@@ -445,7 +461,8 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
               title: Text('前往下载页'),
               subtitle: Text('下载后手动导入'),
               onTap: () {
-                launch('https://github.com/narumishi/chaldea-dataset/releases');
+                launch(GitTool.getReleasePageUrl(
+                    db.userData.appDatasetUpdateSource, false));
               },
             )
           ],

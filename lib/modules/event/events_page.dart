@@ -27,7 +27,7 @@ class _EventListPageState extends State<EventListPage>
     return Scaffold(
       appBar: AppBar(
         title: Text(S.of(context).event_title),
-        leading: SplitMasterBackButton(),
+        leading: MasterBackButton(),
         actions: <Widget>[
           IconButton(
               icon: Icon(reverse

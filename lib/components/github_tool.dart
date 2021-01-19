@@ -5,70 +5,167 @@ import 'package:chaldea/components/components.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:github/github.dart';
+import 'package:github/github.dart' as github;
 import 'package:path/path.dart' as pathlib;
 
-/// specific [asset] in [release]
-class ReleaseInfo {
-  Release release;
-  ReleaseAsset asset;
+enum GitReleaseType { app, dataset }
 
-  ReleaseInfo(this.release, this.asset);
+class GitRelease {
+  int id;
+  String name;
+  String tagName;
+  String body;
+  DateTime createdAt;
+  List<GitAsset> assets;
+  GitAsset? targetAsset;
+
+  GitRelease(
+      {required this.id,
+      required this.name,
+      required this.tagName,
+      required this.body,
+      required this.createdAt,
+      required this.assets,
+      this.targetAsset});
+
+  GitRelease.fromGithub({required github.Release release})
+      : id = release.id,
+        name = release.name,
+        tagName = release.tagName,
+        body = release.body,
+        createdAt = release.createdAt,
+        assets = release.assets
+            .map((asset) => GitAsset(
+                name: asset.name, browserDownloadUrl: asset.browserDownloadUrl))
+            .toList();
+
+  GitRelease.fromGitee({required Map<String, dynamic> data})
+      : id = data['id'] ?? 0,
+        tagName = data['tag_name'] ?? '',
+        name = data['name'] ?? '',
+        body = data['body'] ?? '',
+        createdAt = DateTime.parse(data['created_at'] ?? '20200101'),
+        assets = List.generate(
+          data['assets']?.length ?? 0,
+          (index) => GitAsset(
+            name: data['assets'][index]['name'] ?? '',
+            browserDownloadUrl:
+                data['assets'][index]['browser_download_url'] ?? '',
+          ),
+        );
 }
 
-class GithubTool {
-  static Future<ReleaseInfo?> _latestReleaseAsset(
-      RepositorySlug slug, bool test(String assetName)) async {
-    final github = GitHub();
-    // tags: newest->oldest
-    final releases = await github.repositories.listReleases(slug).toList();
+class GitAsset {
+  String name;
+  String browserDownloadUrl;
+
+  GitAsset({required this.name, required this.browserDownloadUrl});
+}
+
+enum GitSource { github, gitee }
+
+const String _owner = 'narumishi';
+const String _appRepo = 'chaldea';
+const String _datasetRepo = 'chaldea-dataset';
+
+class GitTool {
+  GitSource source;
+
+  GitTool([this.source = GitSource.github]);
+
+  static String getReleasePageUrl(int? sourceIndex, bool appOrDataset) {
+    if (sourceIndex == null ||
+        sourceIndex < 0 ||
+        sourceIndex >= GitSource.values.length) sourceIndex = 0;
+    final source = GitSource.values[sourceIndex];
+    String repo = appOrDataset ? _appRepo : _datasetRepo;
+    switch (source) {
+      case GitSource.github:
+        return 'https://github.com/$_owner/$repo/releases';
+      case GitSource.gitee:
+        return 'https://gitee.com/$_owner/$repo/releases';
+    }
+  }
+
+  String get owner => _owner;
+
+  String get appRep => _appRepo;
+
+  String get datasetRepo => _datasetRepo;
+
+  Future<List<GitRelease>> resolveReleases(String repo) async {
+    List<GitRelease> releases = [];
+    if (source == GitSource.github) {
+      final slug = github.RepositorySlug(owner, repo);
+      final _github = github.GitHub();
+      // tags: newest->oldest
+      releases = (await _github.repositories.listReleases(slug).toList())
+          .map((e) => GitRelease.fromGithub(release: e))
+          .toList();
+    } else if (source == GitSource.gitee) {
+      // response: List<Release>
+      final response = await Dio().get(
+        'https://gitee.com/api/v5/repos/$owner/$repo/releases',
+        queryParameters: {'page': 0, 'per_page': 50},
+        options: Options(
+            contentType: 'application/json;charset=UTF-8',
+            responseType: ResponseType.json),
+      );
+      // don't use map().toList(), List<dynamic> is not subtype ...
+      releases = List.generate(response.data?.length ?? 0,
+          (index) => GitRelease.fromGitee(data: response.data[index]));
+    }
+    print('resolve ${releases.length} releases');
+    return releases;
+  }
+
+  GitRelease? _latestReleaseWhereAsset(
+      Iterable<GitRelease> releases, bool test(GitAsset asset)) {
     for (var release in releases) {
       for (var asset in release.assets) {
-        if (test(asset.name)) {
-          return ReleaseInfo(release, asset);
+        if (test(asset)) {
+          release.targetAsset = asset;
+          return release;
         }
       }
     }
   }
 
-  static Future<ReleaseInfo?> latestAppRelease() async {
+  Future<GitRelease?> latestAppRelease() async {
     if (Platform.isAndroid || Platform.isWindows) {
-      RepositorySlug slug = RepositorySlug('narumishi', 'chaldea');
+      final releases = await resolveReleases(appRep);
       String keyword = Platform.operatingSystem;
-      return _latestReleaseAsset(slug, (assetName) {
-        print(assetName);
-        return assetName.toLowerCase().contains(keyword);
+      return _latestReleaseWhereAsset(releases, (asset) {
+        return asset.name.toLowerCase().contains(keyword);
       });
     }
   }
 
-  static Future<ReleaseInfo?> latestDatasetRelease(
-      [bool fullSize = true]) async {
-    RepositorySlug slug = RepositorySlug('narumishi', 'chaldea-dataset');
-    return _latestReleaseAsset(
-      slug,
-      (assetName) =>
-          assetName.toLowerCase() ==
-          (fullSize ? 'dataset.zip' : 'dataset-text.zip'),
-    );
+  Future<GitRelease?> latestDatasetRelease([bool fullSize = true]) async {
+    final releases = await resolveReleases(datasetRepo);
+    return _latestReleaseWhereAsset(releases, (asset) {
+      return asset.name.toLowerCase() ==
+          (fullSize ? 'dataset.zip' : 'dataset-text.zip');
+    });
   }
+}
+
+/// specific [asset] in [release]
+class ReleaseInfo {
+  github.Release release;
+  github.ReleaseAsset asset;
+
+  ReleaseInfo(this.release, this.asset);
 }
 
 /// TODO: move to other place, more customizable
 class DownloadDialog extends StatefulWidget {
   final String url;
   final String savePath;
-
-  /// displayed if Dio cannot resolve file size
-  final int? fileSize;
   final VoidCallback? onComplete;
 
   const DownloadDialog(
-      {Key? key,
-      required this.url,
-      required this.savePath,
-      this.fileSize,
-      this.onComplete})
+      {Key? key, required this.url, required this.savePath, this.onComplete})
       : super(key: key);
 
   @override
@@ -92,6 +189,7 @@ class _DownloadDialogState extends State<DownloadDialog> {
 
   Future<void> startDownload() async {
     status = 0;
+    print('download from ${widget.url}');
     try {
       final response = await _dio.download(widget.url, widget.savePath,
           cancelToken: _cancelToken, onReceiveProgress: onReceiveProgress);
@@ -107,12 +205,7 @@ class _DownloadDialogState extends State<DownloadDialog> {
   void onReceiveProgress(int count, int total) {
     String statusText = status == 0 ? '下载中' : '下载完成';
     if (total < 0) {
-      if (widget.fileSize == null) {
-        progress = '$statusText...';
-      } else {
-        String size = _sizeInMB(widget.fileSize!);
-        progress = '共$size, $statusText...';
-      }
+      progress = '$statusText...';
     } else {
       String percent = formatNumber(count / total, percent: true);
       String size = _sizeInMB(total);
@@ -134,7 +227,8 @@ class _DownloadDialogState extends State<DownloadDialog> {
     final fn = pathlib.basename(widget.savePath);
     return AlertDialog(
       title: Text('下载'),
-      content: Text('文件名: $fn\n$progress'),
+      content:
+          widget.url.isNotEmpty ? Text('文件名: $fn\n$progress') : Text('查询失败,'),
       actions: [
         if (status <= 0)
           TextButton(
@@ -144,7 +238,8 @@ class _DownloadDialogState extends State<DownloadDialog> {
             },
             child: Text(S.of(context).cancel),
           ),
-        if (status < 0) TextButton(onPressed: startDownload, child: Text('下载')),
+        if (status < 0 && widget.url.isNotEmpty)
+          TextButton(onPressed: startDownload, child: Text('下载')),
         if (status > 0)
           TextButton(
             onPressed: () {

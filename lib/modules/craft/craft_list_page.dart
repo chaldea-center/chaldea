@@ -103,7 +103,7 @@ class CraftListPageState extends State<CraftListPage>
     return Scaffold(
       appBar: AppBar(
         title: Text(S.of(context).craft_essential),
-        leading: SplitMasterBackButton(),
+        leading: MasterBackButton(),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(45),
           child: Theme(
@@ -151,6 +151,7 @@ class CraftListPageState extends State<CraftListPage>
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.filter_list),
+            tooltip: '筛选',
             onPressed: () => FilterPage.show(
               context: context,
               builder: (context) => CraftFilterPage(

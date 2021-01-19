@@ -40,7 +40,7 @@ class ItemListPageState extends State<ItemListPage>
     return Scaffold(
       appBar: AppBar(
         title: Text(S.of(context).item_title),
-        leading: SplitMasterBackButton(),
+        leading: MasterBackButton(),
         actions: <Widget>[
           buildSwitchPlanButton(
             context: context,

@@ -11,6 +11,7 @@ class UserData {
   Map<String, String> sliderUrls;
   Map<String, bool> galleries;
   String serverDomain;
+  int appDatasetUpdateSource;
 
   /// use build number which should be increasing integer
   int previousBuildNumber;
@@ -55,6 +56,7 @@ class UserData {
     this.sliderUrls,
     this.galleries,
     this.serverDomain,
+    this.appDatasetUpdateSource,
     this.previousBuildNumber,
     this.curUserKey,
     this.users,
@@ -71,6 +73,7 @@ class UserData {
     sliderUrls ??= {};
     galleries ??= {};
     serverDomain ??= kServerRoot;
+    appDatasetUpdateSource ??= 0;
     users ??= {defaultName: User(name: defaultName)};
     if (!users.containsKey(curUserKey)) {
       curUserKey = users.keys.first;

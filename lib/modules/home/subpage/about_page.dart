@@ -195,19 +195,21 @@ class _AboutPageState extends State<AboutPage> {
   Future<void> checkAppUpdate() async {
     // android, windows: download github releases
     if (Platform.isAndroid || Platform.isWindows) {
-      final info = await GithubTool.latestAppRelease();
+      GitTool gitTool = GitTool(GitSource.gitee);
+      final release = await gitTool.latestAppRelease();
       String curVersion =
           AppInfo.fullVersion.isEmpty ? 'Unknown' : AppInfo.fullVersion;
       SimpleCancelOkDialog(
         title: Text('应用更新'),
         content: Text('当前版本: $curVersion\n'
-            '最新版本: ${info?.release?.name ?? "查询失败"}\n'
+            '最新版本: ${release.name ?? "查询失败"}\n'
             '跳转到浏览器下载'),
         onTapOk: () {
-          if (info == null) {
-            launch('https://github.com/narumishi/chaldea/releases');
+          if (release.targetAsset?.browserDownloadUrl?.isNotEmpty == true) {
+            launch(release.targetAsset.browserDownloadUrl);
           } else {
-            launch(info.asset.browserDownloadUrl);
+            launch(GitTool.getReleasePageUrl(
+                db.userData.appDatasetUpdateSource, true));
           }
         },
       ).show(context);

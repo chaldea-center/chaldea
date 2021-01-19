@@ -85,7 +85,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
     return Scaffold(
       appBar: AppBar(
         title: Text(S.of(context).cmd_code_title),
-        leading: SplitMasterBackButton(),
+        leading: MasterBackButton(),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(45),
           child: Theme(
@@ -133,6 +133,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.filter_list),
+            tooltip: '筛选',
             onPressed: () => FilterPage.show(
               context: context,
               builder: (context) => CmdCodeFilterPage(
@@ -182,7 +183,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
               ),
             );
           }
-          final code = shownList[index-1];
+          final code = shownList[index - 1];
           return CustomTile(
             leading: Image(image: db.getIconImage(code.icon), height: 65),
             title: AutoSizeText(code.name, maxLines: 1),

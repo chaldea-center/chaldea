@@ -200,7 +200,7 @@ class ServantListPageState extends State<ServantListPage>
               title: Text(widget.planMode
                   ? '规划 ${db.curUser.curSvtPlanNo + 1}'
                   : S.of(context).servant),
-              leading: SplitMasterBackButton(),
+              leading: MasterBackButton(),
               bottom: PreferredSize(
                 preferredSize: Size.fromHeight(45),
                 child: Theme(
@@ -269,6 +269,7 @@ class ServantListPageState extends State<ServantListPage>
                     }),
                 IconButton(
                   icon: Icon(Icons.filter_list),
+                  tooltip: '筛选',
                   onPressed: () => FilterPage.show(
                       context: context,
                       builder: (context) => ServantFilterPage(
