@@ -392,7 +392,10 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
       final file = File(result.path);
       if (file.path.toLowerCase().endsWith('.zip')) {
         EasyLoading.showToast('Loading', maskType: EasyLoadingMaskType.black);
-        db.extractZip(file.readAsBytesSync().cast<int>(), db.paths.gameDataDir);
+        await db.extractZip(
+          file.readAsBytesSync().cast<int>(),
+          db.paths.gameDataDir,
+        );
         db.loadGameData();
       } else if (file.path.toLowerCase().endsWith('.json')) {
         final newData = GameData.fromJson(jsonDecode(file.readAsStringSync()));
@@ -426,10 +429,12 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
         builder: (context) => DownloadDialog(
           url: release?.targetAsset?.browserDownloadUrl ?? '',
           savePath: fp,
-          onComplete: () {
+          onComplete: () async {
             try {
-              db.extractZip(
-                  File(fp).readAsBytesSync().cast<int>(), db.paths.gameDataDir);
+              await db.extractZip(
+                File(fp).readAsBytesSync().cast<int>(),
+                db.paths.gameDataDir,
+              );
               db.loadGameData();
               Navigator.of(context).pop();
               EasyLoading.showToast('成功导入资源');

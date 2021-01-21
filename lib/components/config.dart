@@ -101,7 +101,7 @@ class Database {
         var raf = file.openSync(mode: FileMode.write);
         raf.writeFromSync(response.data);
         raf.closeSync();
-        extractZip(response.data, db.paths.gameDataDir);
+        await extractZip(response.data, db.paths.gameDataDir);
         if (db.loadGameData()) {
           logger.i('Data downloaded! Version: ${db.gameData.version}');
           EasyLoading.showToast(
@@ -125,15 +125,14 @@ class Database {
     extractDir ??= paths.gameDataDir;
     if (force || !Directory(extractDir).existsSync()) {
       //extract zip file
-      await rootBundle.load(assetKey).then((data) {
-        extractZip(data.buffer.asUint8List().cast<int>(), extractDir);
-      }, onError: (e, s) {
+      final data = await rootBundle.load(assetKey).catchError((e, s) {
         logger.e('Load assets failed: $assetKey', e, s);
         EasyLoading.showToast('Error load assets: $assetKey\n$e');
       });
+      if (data != null)
+        await extractZip(data.buffer.asUint8List().cast<int>(), extractDir);
       t.elapsed();
     }
-    return Future.value(null);
   }
 
   void saveUserData() {
@@ -253,25 +252,30 @@ class Database {
     return result;
   }
 
-  void extractZip(List<int> bytes, String path,
-      {Function onError, void Function(int, int) onProgress}) {
-    // TODO: make async? then showProgress can work
+  Future<void> extractZip(List<int> bytes, String path,
+      {Function onError, void Function(int, int) onProgress}) async {
     final t = TimeCounter('extractZip');
+    final errorMsg =
+        await compute(_extractZipIsolate, {'bytes': bytes, 'path': path});
+    if (errorMsg != null) {
+      throw errorMsg;
+    }
+    t.elapsed();
+  }
+
+  static Future<String> _extractZipIsolate(Map<String, dynamic> message) async {
+    List<int> bytes = message['bytes'];
+    String path = message['path'];
     Archive archive = ZipDecoder().decodeBytes(bytes);
-    final totalLength = archive.length;
     print('──────────────── Extract zip file ────────────────────────────────');
     print('extract zip file, directory tree "$path":');
     if (archive.findFile(kGameDataFilename) == null) {
       final exception =
           FormatException('Archive file doesn\'t contain $kGameDataFilename');
-      if (onError != null) {
-        onError(exception);
-      } else {
-        throw exception;
-      }
+      print(exception);
+      return exception.toString();
     }
     int iconCount = 0;
-    int curProgress = 0;
     for (ArchiveFile file in archive) {
       String fullFilepath = pathlib.join(path, file.name);
       if (file.isFile) {
@@ -287,14 +291,10 @@ class Database {
         Directory(fullFilepath)..create(recursive: true);
         print('dir : ${file.name}');
       }
-      curProgress++;
-      if (onProgress != null) {
-        onProgress(curProgress, totalLength);
-      }
     }
     print('icon files: total $iconCount files in "icons/"');
     print('──────────────── End zip file ────────────────────────────────────');
-    t.elapsed();
+    return null;
   }
 
   // singleton
