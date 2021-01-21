@@ -7,13 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
+import 'logger.dart';
+
 /// Math related
 ///
 
 /// Format number
 ///
 /// If [compact] is true, other parameters are not used.
-String formatNumber(num number,
+String formatNumber(num? number,
     {bool compact = false,
     bool percent = false,
     bool omit = true,
@@ -21,8 +23,7 @@ String formatNumber(num number,
     String? groupSeparator = ',',
     num? minVal}) {
   assert(!compact || !percent);
-
-  if (minVal != null && number.abs() < minVal.abs()) {
+  if (number == null || (minVal != null && number.abs() < minVal.abs())) {
     return number.toString();
   }
 
@@ -176,4 +177,24 @@ double defaultDialogWidth(BuildContext context) {
 
 double defaultDialogHeight(BuildContext context) {
   return min(420, MediaQuery.of(context).size.width * 0.8);
+}
+
+/// other utils
+
+class TimeCounter {
+  String name;
+  final Stopwatch stopwatch = Stopwatch();
+
+  TimeCounter(this.name, {bool autostart = true}) {
+    if (autostart) stopwatch.start();
+  }
+
+  void start() {
+    stopwatch.start();
+  }
+
+  void elapsed() {
+    final d = stopwatch.elapsed.toString();
+    logger.d('Stopwatch - $name: $d');
+  }
 }

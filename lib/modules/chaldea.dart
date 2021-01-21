@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:catcher/core/catcher.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/blank_page.dart';
@@ -55,8 +57,8 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
     /// if app updated, check version and reload gamedata
     await db.initial();
     await AppInfo.resolve();
-    db.loadUserData();
-    bool gameDataLoadSuccess = db.loadGameData();
+    bool gameDataLoadSuccess =
+        File(db.paths.gameDataFilepath).existsSync() && db.loadGameData();
     if (!gameDataLoadSuccess ||
         AppInfo.buildNumber > (db.userData.previousBuildNumber ?? 0)) {
       /// load failed(json destroyed) or app updated, reload default dataset

@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
+import 'package:chaldea/components/components.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -73,9 +74,12 @@ class Database {
 
   bool loadGameData() {
     // TODO: use downloaded data if exist
+    final t = TimeCounter('loadGameData');
     try {
       gameData = GameData.fromJson(getJsonFromFile(paths.gameDataFilepath));
       logger.d('game data reloaded, version ${gameData.version}.');
+      db.onAppUpdate();
+      t.elapsed();
       return true;
     } catch (e, s) {
       gameData ??= GameData(); // if not null, don't change data
@@ -116,16 +120,18 @@ class Database {
   }
 
   Future<void> loadZipAssets(String assetKey,
-      {String extractDir, bool force = false}) {
+      {String extractDir, bool force = false}) async {
+    final t = TimeCounter('loadZipAssets($assetKey)');
     extractDir ??= paths.gameDataDir;
     if (force || !Directory(extractDir).existsSync()) {
       //extract zip file
-      return rootBundle.load(assetKey).then((data) {
+      await rootBundle.load(assetKey).then((data) {
         extractZip(data.buffer.asUint8List().cast<int>(), extractDir);
       }, onError: (e, s) {
         logger.e('Load assets failed: $assetKey', e, s);
         EasyLoading.showToast('Error load assets: $assetKey\n$e');
       });
+      t.elapsed();
     }
     return Future.value(null);
   }
@@ -250,6 +256,7 @@ class Database {
   void extractZip(List<int> bytes, String path,
       {Function onError, void Function(int, int) onProgress}) {
     // TODO: make async? then showProgress can work
+    final t = TimeCounter('extractZip');
     Archive archive = ZipDecoder().decodeBytes(bytes);
     final totalLength = archive.length;
     print('──────────────── Extract zip file ────────────────────────────────');
@@ -287,6 +294,7 @@ class Database {
     }
     print('icon files: total $iconCount files in "icons/"');
     print('──────────────── End zip file ────────────────────────────────────');
+    t.elapsed();
   }
 
   // singleton
@@ -347,7 +355,7 @@ class PathManager {
 
   String get savePath => _savePath;
 
-  String get tempPath => pathlib.join(_appPath,'temp');
+  String get tempPath => pathlib.join(_appPath, 'temp');
 
   String get userDataDir => pathlib.join(_savePath, 'user');
 

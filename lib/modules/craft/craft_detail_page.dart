@@ -169,7 +169,7 @@ class CraftDetailBasePage extends StatelessWidget {
               children: [TableCellData(text: '礼装类别', isHeader: true)]),
           CustomTableRow(children: [
             TableCellData(
-              child: Text(ce.category +' - '+ ce.categoryText,
+              child: Text(ce.category + ' - ' + ce.categoryText,
                   textAlign: TextAlign.center),
             )
           ]),
@@ -218,7 +218,8 @@ class CraftDetailBasePage extends StatelessWidget {
           CustomTableRow(
             children: [
               TableCellData(
-                text: useLangJp ? ce.descriptionJp : ce.description,
+                text: (useLangJp ? ce.descriptionJp : ce.description) ?? ''
+                    '',
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               )

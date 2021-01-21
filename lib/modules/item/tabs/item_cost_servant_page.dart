@@ -5,6 +5,11 @@ import 'package:chaldea/modules/shared/item_related_builder.dart';
 class ItemCostServantPage extends StatelessWidget {
   final String itemKey;
   final bool favorite;
+
+  /// [viewType] for svt cost tab
+  /// 0 - Header+Grid of ascension/skill/dress/grail,
+  /// 1 - grid of servants
+  /// 2 - list of servants
   final int viewType;
   final int sortType;
 
@@ -42,6 +47,7 @@ class ItemCostServantPage extends StatelessWidget {
             ),
           ];
           if (viewType == 0) {
+            // 0 ascension 1 skill 2 dress 3 grail
             final _groups = itemKey == Item.grail ? [3] : [0, 1, 2];
             for (int i in _groups) {
               children.add(Column(
@@ -50,8 +56,8 @@ class ItemCostServantPage extends StatelessWidget {
                 children: <Widget>[
                   CustomTile(
                     title: Text(['灵基再临', '技能升级', '灵衣开放', '圣杯转临'][i]),
-                    trailing: Text(
-                        formatNumber(counts.values[i][itemKey], minVal: 10000)),
+                    trailing: Text(formatNumber(counts.values[i][itemKey] ?? 0,
+                        minVal: 10000)),
                   ),
                   _buildSvtIconGrid(context, details.values[i][itemKey],
                       highlight: favorite == false),

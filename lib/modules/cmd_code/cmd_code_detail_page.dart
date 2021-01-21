@@ -178,7 +178,8 @@ class CmdCodeDetailBasePage extends StatelessWidget {
           CustomTableRow(
             children: [
               TableCellData(
-                text: useLangJp ? code.descriptionJp : code.description,
+                text: (useLangJp ? code.descriptionJp : code.description) ??
+                    '???',
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               )
