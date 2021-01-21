@@ -145,6 +145,13 @@ class _AboutPageState extends State<AboutPage> {
                 onTap: () => jumpToLink(context, 'NGA-FGO',
                     'https://bbs.nga.cn/read.php?tid=24926789'),
               ),
+              if(Platform.isIOS||Platform.isMacOS)
+              ListTile(
+                title: Text('App Store评分'),
+                onTap: (){
+                  launch('itms-apps://itunes.apple.com/app/id1548713491');
+                },
+              )
             ],
           ),
           if (kDebugMode_)
