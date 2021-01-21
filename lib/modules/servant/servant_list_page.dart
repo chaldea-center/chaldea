@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
 import 'package:chaldea/modules/shared/list_page_share.dart';
 
@@ -247,14 +248,6 @@ class ServantListPageState extends State<ServantListPage>
                 ),
               ),
               actions: <Widget>[
-                buildSwitchPlanButton(
-                  context: context,
-                  onChange: (index) {
-                    db.curUser.curSvtPlanNo = index;
-                    this.setState(() {});
-                    db.itemStat.updateSvtItems();
-                  },
-                ),
                 IconButton(
                     icon: Icon([
                       Icons.remove_circle_outline,
@@ -275,26 +268,39 @@ class ServantListPageState extends State<ServantListPage>
                       builder: (context) => ServantFilterPage(
                           filterData: filterData, onChanged: onFilterChanged)),
                 ),
-                if (widget.planMode)
-                  PopupMenuButton(
-                    itemBuilder: (context) {
-                      return [
-                        PopupMenuItem(value: 'copy', child: Text('拷贝自其它规划')),
-                      ];
-                    },
-                    onSelected: (v) {
-                      if (v == 'copy') {
-                        copyPlan();
-                      }
-                    },
-                  ),
+                PopupMenuButton(
+                  itemBuilder: (context) {
+                    return [
+                      PopupMenuItem(value: 'switch_plan', child: Text('切换规划')),
+                      if (widget.planMode)
+                        PopupMenuItem(
+                            value: 'copy_plan', child: Text('拷贝自其它规划')),
+                    ];
+                  },
+                  onSelected: (v) {
+                    if (v == 'copy_plan') {
+                      copyPlan();
+                    } else if (v == 'switch_plan') {
+                      onSwitchPlan(
+                          context: context,
+                          onChange: (index) {
+                            db.curUser.curSvtPlanNo = index;
+                            this.setState(() {});
+                            db.itemStat.updateSvtItems();
+                          });
+                    }
+                  },
+                ),
               ],
             ),
-            floatingActionButton: FloatingActionButton(
-                child: Icon(Icons.arrow_upward),
-                onPressed: () {
-                  _scrollController.jumpTo(0);
-                }),
+            floatingActionButton: widget.planMode
+                ? null
+                : FloatingActionButton(
+                    child: Icon(Icons.arrow_upward),
+                    onPressed: () {
+                      _scrollController.jumpTo(0);
+                    },
+                  ),
             body: buildOverview(),
           );
         });
@@ -332,6 +338,10 @@ class ServantListPageState extends State<ServantListPage>
       separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
       itemCount: shownList.length + 2,
       itemBuilder: (context, index) {
+        if (index == shownList.length + 1 && shownList.isEmpty) {
+          // if empty list, don't show count twice
+          return Container();
+        }
         if (index == 0 || index == shownList.length + 1) {
           return CustomTile(
             contentPadding:
@@ -582,75 +592,89 @@ class ServantListPageState extends State<ServantListPage>
   int _planTargetDress;
 
   Widget _buildButtonBar() {
+    final buttons = [
+      Text('规划'),
+      DropdownButton(
+        value: _planTargetAscension,
+        hint: Text('灵基'),
+        items: List.generate(
+            5, (i) => DropdownMenuItem(value: i, child: Text('灵基$i'))),
+        onChanged: (v) {
+          setState(() {
+            _planTargetAscension = v;
+            shownList.forEach((svt) {
+              if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
+                final cur = db.curUser.servants[svt.no].curVal,
+                    target = db.curUser.curSvtPlan[svt.no];
+                target.ascension = max(cur.ascension, _planTargetAscension);
+              }
+            });
+          });
+        },
+      ),
+      DropdownButton(
+        value: _planTargetSkill,
+        hint: Text('技能'),
+        items: List.generate(
+            10, (i) => DropdownMenuItem(value: i, child: Text('技能${i + 1}'))),
+        onChanged: (v) {
+          setState(() {
+            _planTargetSkill = v;
+            shownList.forEach((svt) {
+              if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
+                final cur = db.curUser.servants[svt.no].curVal,
+                    target = db.curUser.curSvtPlan[svt.no];
+                for (int i = 0; i < 3; i++) {
+                  target.skills[i] = max(cur.skills[i], _planTargetSkill + 1);
+                }
+              }
+            });
+          });
+        },
+      ),
+      DropdownButton(
+        value: _planTargetDress,
+        hint: Text('灵衣'),
+        items: List.generate(
+            2,
+            (i) =>
+                DropdownMenuItem(value: i, child: Text('灵衣' + ['×', '√'][i]))),
+        onChanged: (v) {
+          setState(() {
+            _planTargetDress = v;
+            shownList.forEach((svt) {
+              if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
+                final cur = db.curUser.servants[svt.no].curVal,
+                    target = db.curUser.curSvtPlan[svt.no];
+                for (int i = 0; i < target.dress.length; i++) {
+                  target.dress[i] = max(cur.dress[i], _planTargetDress);
+                }
+              }
+            });
+          });
+        },
+      ),
+      ElevatedButton(
+        onPressed: () {
+          db.itemStat.updateSvtItems();
+          SplitRoute.push(
+            context: context,
+            builder: (context, _) => ItemListPage(),
+            detail: false,
+          );
+        },
+        child: Text('→素材'),
+      ),
+    ];
     return Container(
-      decoration:
-          BoxDecoration(border: Border(top: Divider.createBorderSide(context))),
-      child: ButtonBar(
-        alignment: MainAxisAlignment.start,
-        children: [
-          Text('规划'),
-          DropdownButton(
-            value: _planTargetAscension,
-            hint: Text('灵基'),
-            items: List.generate(
-                5, (i) => DropdownMenuItem(value: i, child: Text('灵基$i'))),
-            onChanged: (v) {
-              setState(() {
-                _planTargetAscension = v;
-                shownList.forEach((svt) {
-                  if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
-                    final cur = db.curUser.servants[svt.no].curVal,
-                        target = db.curUser.curSvtPlan[svt.no];
-                    target.ascension = max(cur.ascension, _planTargetAscension);
-                  }
-                });
-              });
-            },
-          ),
-          DropdownButton(
-            value: _planTargetSkill,
-            hint: Text('技能'),
-            items: List.generate(10,
-                (i) => DropdownMenuItem(value: i, child: Text('技能${i + 1}'))),
-            onChanged: (v) {
-              setState(() {
-                _planTargetSkill = v;
-                shownList.forEach((svt) {
-                  if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
-                    final cur = db.curUser.servants[svt.no].curVal,
-                        target = db.curUser.curSvtPlan[svt.no];
-                    for (int i = 0; i < 3; i++) {
-                      target.skills[i] =
-                          max(cur.skills[i], _planTargetSkill + 1);
-                    }
-                  }
-                });
-              });
-            },
-          ),
-          DropdownButton(
-            value: _planTargetDress,
-            hint: Text('灵衣'),
-            items: List.generate(
-                2,
-                (i) => DropdownMenuItem(
-                    value: i, child: Text('灵衣' + ['×', '√'][i]))),
-            onChanged: (v) {
-              setState(() {
-                _planTargetDress = v;
-                shownList.forEach((svt) {
-                  if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
-                    final cur = db.curUser.servants[svt.no].curVal,
-                        target = db.curUser.curSvtPlan[svt.no];
-                    for (int i = 0; i < target.dress.length; i++) {
-                      target.dress[i] = max(cur.dress[i], _planTargetDress);
-                    }
-                  }
-                });
-              });
-            },
-          ),
-        ],
+      decoration: BoxDecoration(
+          border: Border(top: Divider.createBorderSide(context, width: 0.5))),
+      child: Align(
+        alignment: Alignment.center,
+        child: FittedBox(
+          fit: BoxFit.contain,
+          child: ButtonBar(children: buttons),
+        ),
       ),
     );
   }

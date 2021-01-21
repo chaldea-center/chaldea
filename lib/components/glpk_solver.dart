@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:chaldea/components/components.dart';
@@ -51,11 +52,11 @@ class WebviewJsEngine implements JsEngine<FlutterWebviewPlugin> {
 
   Future<bool> isopen() async {
     String s = await engine.evalJavascript('1+1');
-    if (s == '2') {
-      return true;
-    } else {
+    if (s != '2') {
       print('eval 1+1=$s, webview is closed');
+      return false;
     }
+    return true;
   }
 
   Future<void> init() async {
@@ -83,7 +84,7 @@ class WebviewJsEngine implements JsEngine<FlutterWebviewPlugin> {
 
 class GLPKSolver {
   // final JsEngine js = QjsEngine();
-  final JsEngine js = WebviewJsEngine();
+  final JsEngine js = Platform.isIOS ? WebviewJsEngine() : QjsEngine();
   bool _engineReady = false;
 
   GLPKSolver();

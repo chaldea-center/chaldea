@@ -168,12 +168,7 @@ class Database {
     return null;
   }
 
-  AssetImage _errorImage;
-
-  AssetImage get errorImage {
-    _errorImage ??= AssetImage('res/img/error.png');
-    return _errorImage;
-  }
+  final AssetImage errorImage = AssetImage('res/img/gudako.png');
 
   ImageProvider getIconImage(String iconKey) {
     final icon = getIconResource(iconKey);
