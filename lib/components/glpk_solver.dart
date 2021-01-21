@@ -83,7 +83,7 @@ class WebviewJsEngine implements JsEngine<FlutterWebviewPlugin> {
 }
 
 class GLPKSolver {
-  // final JsEngine js = QjsEngine();
+  // final JsEngine js = WebviewJsEngine();
   final JsEngine js = Platform.isIOS ? WebviewJsEngine() : QjsEngine();
   bool _engineReady = false;
 
