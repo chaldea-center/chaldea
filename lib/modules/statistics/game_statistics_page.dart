@@ -53,15 +53,11 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
     return ListView(
       padding: EdgeInsets.symmetric(vertical: 12),
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Checkbox(
-              value: includeCurItems,
-              onChanged: (v) => setState(() => includeCurItems = v),
-            ),
-            Text('计算现有素材')
-          ],
+        CheckboxListTile(
+          value: includeCurItems,
+          onChanged: (v) => setState(() => includeCurItems = v),
+          controlAffinity: ListTileControlAffinity.leading,
+          title: Text('包含现有素材'),
         ),
         ListTile(
           leading: Image(image: db.getIconImage(Item.qp)),

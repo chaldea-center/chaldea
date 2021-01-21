@@ -416,9 +416,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
 
   void downloadGamedata() {
     void _downloadAsset([bool fullSize = true]) async {
-      int source = db.userData.appDatasetUpdateSource ?? 0;
-      source = (source < 0 || source >= GitSource.values.length) ? 0 : source;
-      final gitTool = GitTool(GitSource.values[source]);
+      final gitTool = GitTool.fromIndex(db.userData.appDatasetUpdateSource);
       final release = await gitTool.latestDatasetRelease(fullSize);
       Navigator.of(context).pop();
       String fp = pathlib.join(

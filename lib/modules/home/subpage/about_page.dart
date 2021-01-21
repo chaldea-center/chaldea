@@ -145,13 +145,13 @@ class _AboutPageState extends State<AboutPage> {
                 onTap: () => jumpToLink(context, 'NGA-FGO',
                     'https://bbs.nga.cn/read.php?tid=24926789'),
               ),
-              if(Platform.isIOS||Platform.isMacOS)
-              ListTile(
-                title: Text('App Store评分'),
-                onTap: (){
-                  launch('itms-apps://itunes.apple.com/app/id1548713491');
-                },
-              )
+              if (Platform.isIOS || Platform.isMacOS)
+                ListTile(
+                  title: Text('App Store评分'),
+                  onTap: () {
+                    launch('itms-apps://itunes.apple.com/app/id1548713491');
+                  },
+                )
             ],
           ),
           if (kDebugMode_)
@@ -202,24 +202,28 @@ class _AboutPageState extends State<AboutPage> {
   Future<void> checkAppUpdate() async {
     // android, windows: download github releases
     if (Platform.isAndroid || Platform.isWindows) {
-      GitTool gitTool = GitTool(GitSource.gitee);
-      final release = await gitTool.latestAppRelease();
-      String curVersion =
-          AppInfo.fullVersion.isEmpty ? 'Unknown' : AppInfo.fullVersion;
-      SimpleCancelOkDialog(
-        title: Text('应用更新'),
-        content: Text('当前版本: $curVersion\n'
-            '最新版本: ${release.name ?? "查询失败"}\n'
-            '跳转到浏览器下载'),
-        onTapOk: () {
-          if (release.targetAsset?.browserDownloadUrl?.isNotEmpty == true) {
-            launch(release.targetAsset.browserDownloadUrl);
-          } else {
-            launch(GitTool.getReleasePageUrl(
-                db.userData.appDatasetUpdateSource, true));
-          }
-        },
-      ).show(context);
+      try {
+        GitTool gitTool = GitTool.fromIndex(db.userData.appDatasetUpdateSource);
+        final release = await gitTool.latestAppRelease();
+        String curVersion =
+            AppInfo.fullVersion.isEmpty ? 'Unknown' : AppInfo.fullVersion;
+        SimpleCancelOkDialog(
+          title: Text('应用更新'),
+          content: Text('当前版本: $curVersion\n'
+              '最新版本: ${release.name ?? "查询失败"}\n'
+              '跳转到浏览器下载'),
+          onTapOk: () {
+            if (release.targetAsset?.browserDownloadUrl?.isNotEmpty == true) {
+              launch(release.targetAsset.browserDownloadUrl);
+            } else {
+              launch(GitTool.getReleasePageUrl(
+                  db.userData.appDatasetUpdateSource, true));
+            }
+          },
+        ).show(context);
+      } catch (e) {
+        EasyLoading.showToast('Check update failed: $e');
+      }
     } else if (Platform.isIOS || Platform.isMacOS) {
       // to App Store
       SimpleCancelOkDialog(

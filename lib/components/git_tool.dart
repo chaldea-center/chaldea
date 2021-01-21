@@ -8,7 +8,11 @@ import 'package:flutter/scheduler.dart';
 import 'package:github/github.dart' as github;
 import 'package:path/path.dart' as pathlib;
 
-enum GitReleaseType { app, dataset }
+const String _owner = 'narumishi';
+const String _appRepo = 'chaldea';
+const String _datasetRepo = 'chaldea-dataset';
+
+enum GitSource { gitee, github }
 
 class GitRelease {
   int id;
@@ -62,16 +66,16 @@ class GitAsset {
   GitAsset({required this.name, required this.browserDownloadUrl});
 }
 
-enum GitSource { github, gitee }
-
-const String _owner = 'narumishi';
-const String _appRepo = 'chaldea';
-const String _datasetRepo = 'chaldea-dataset';
-
 class GitTool {
   GitSource source;
 
-  GitTool([this.source = GitSource.github]);
+  GitTool([this.source = GitSource.gitee]);
+
+  GitTool.fromIndex(int? index)
+      : source =
+            (index == null || index < 0 || index >= GitSource.values.length)
+                ? GitSource.values.first
+                : GitSource.values[index];
 
   static String getReleasePageUrl(int? sourceIndex, bool appOrDataset) {
     if (sourceIndex == null ||
