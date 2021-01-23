@@ -220,7 +220,7 @@ class CraftListPageState extends State<CraftListPage>
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                if (!MyLocale.isJP)
+                if (!Language.isJP)
                   AutoSizeText(ce.nameJp ?? ce.name, maxLines: 1),
                 Text('No.${ce.no.toString().padRight(4)}  $additionalText'),
               ],

@@ -190,7 +190,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                if (!MyLocale.isJP)
+                if (!Language.isJP)
                   AutoSizeText(code.nameJp ?? code.name, maxLines: 1),
                 Text('No.${code.no}')
               ],

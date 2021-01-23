@@ -52,8 +52,8 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
             contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
             leading:
                 Image(image: db.getIconImage(skill.icon), height: 110 * 0.3),
-            title: Text(MyLocale.isCN ? nameCn : nameJp),
-            subtitle: Text(MyLocale.isCN ? nameJp : nameCn),
+            title: Text(Language.isCN ? nameCn : nameJp),
+            subtitle: Text(Language.isCN ? nameJp : nameCn),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[

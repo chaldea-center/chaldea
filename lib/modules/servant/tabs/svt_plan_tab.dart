@@ -106,7 +106,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       Skill skill =
           activeSkill.skills[status.skillIndex[index] ?? activeSkill.cnState];
       String shownName =
-          MyLocale.isCN ? skill.name : (skill.nameJp ?? skill.name);
+          Language.isCN ? skill.name : (skill.nameJp ?? skill.name);
       skillWidgets.add(buildPlanRow(
         leading: Image(
           image: db.getIconImage(skill.icon),

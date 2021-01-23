@@ -19,7 +19,7 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
   void initState() {
     super.initState();
     code = widget.code;
-    useLangJp = !MyLocale.isCN;
+    useLangJp = !Language.isCN;
     db.checkNetwork();
   }
 

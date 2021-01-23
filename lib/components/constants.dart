@@ -67,7 +67,6 @@ class AppInfo {
 /// The global key passed to [MaterialApp], so you can access context anywhere
 final kAppKey = GlobalKey<NavigatorState>();
 
-//const value in class
 class Language {
   final String code;
   final String name;
@@ -75,38 +74,30 @@ class Language {
 
   const Language(this.code, this.name, this.locale);
 
-  static const chs = Language('chs', '简体中文', Locale('zh', ''));
-  static const cht = Language('cht', '繁體中文', Locale('zh', 'TW'));
-  static const jpn = Language('jpn', '日本語', Locale('ja', ''));
-  static const eng = Language('eng', 'English', Locale('en', ''));
+  static const chs = Language('zh', '简体中文', Locale('zh', ''));
+  static const cht = Language('zh_TW', '繁體中文', Locale('zh', 'TW'));
+  static const jpn = Language('ja', '日本語', Locale('ja', ''));
+  static const eng = Language('en', 'English', Locale('en', ''));
 
-  static List<Language> get languages => const [chs, cht, jpn, eng];
+  static List<Language> get supportLanguages => const [chs, cht, jpn, eng];
 
-  static Language? getLanguage([String? code]) {
-    if (code == null) {
-      return languages.first;
-    } else {
-      for (final c in languages) {
-        if (c.code == code) {
-          return c;
-        }
+  static Language? getLanguage(String? code) {
+    for (var lang in supportLanguages) {
+      if (lang.code == code) {
+        return lang;
       }
     }
   }
-}
 
-class MyLocale {
-  MyLocale._();
+  static String get currentLocaleCode => Intl.getCurrentLocale();
 
-  static String get locale => Intl.getCurrentLocale();
+  static bool get isCN => currentLocaleCode.startsWith('zh');
 
-  static bool get isCN => locale.toLowerCase().startsWith('zh');
+  static bool get isTW => currentLocaleCode == 'zh_TW';
 
-  static bool get isTW => locale == 'zh_TW';
+  static bool get isJP => currentLocaleCode.startsWith('ja');
 
-  static bool get isJP => locale.toLowerCase().startsWith('ja');
-
-  static bool get isEN => locale.toLowerCase().startsWith('en');
+  static bool get isEN => currentLocaleCode.startsWith('en');
 }
 
 enum GameServer { jp, cn }

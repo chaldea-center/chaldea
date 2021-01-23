@@ -382,7 +382,7 @@ class ServantListPageState extends State<ServantListPage>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    if (!MyLocale.isJP)
+                    if (!Language.isJP)
                       AutoSizeText(svt.info.nameJp, maxLines: 1),
                     Text('No.${svt.no} ${svt.info.className}  $additionalText')
                   ],

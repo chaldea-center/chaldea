@@ -29,7 +29,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
   @override
   void initState() {
     super.initState();
-    useLangJp = !MyLocale.isCN;
+    useLangJp = !Language.isCN;
     _tabController = TabController(length: 4, vsync: this);
   }
 

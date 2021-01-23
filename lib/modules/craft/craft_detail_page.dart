@@ -18,7 +18,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
   void initState() {
     super.initState();
     ce = widget.ce;
-    useLangJp = !MyLocale.isCN;
+    useLangJp = !Language.isCN;
     db.checkNetwork();
   }
 

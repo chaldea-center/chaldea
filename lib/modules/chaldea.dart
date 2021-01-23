@@ -24,11 +24,10 @@ class _ChaldeaState extends State<Chaldea> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Chaldea",
+      title: kAppName,
       debugShowCheckedModeBanner: false,
       navigatorKey: kAppKey,
-      locale: Language.getLanguage(db.userData?.language)?.locale ??
-          Language.chs.locale,
+      locale: Language.getLanguage(db.userData?.language)?.locale,
       localizationsDelegates: [
         S.delegate,
         GlobalMaterialLocalizations.delegate,
