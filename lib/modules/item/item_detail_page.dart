@@ -41,7 +41,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: Text(widget.itemKey),
+        title: Text(Item.localizedNameOf(widget.itemKey)),
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.view_carousel),

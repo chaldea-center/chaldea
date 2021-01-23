@@ -80,18 +80,23 @@ class SvtCostItems {
 
   void update(
       {Map<int, ServantStatus> curStat, Map<int, ServantPlan> targetPlan}) {
+    final bool updateAll = allCountBySvt == null ||
+        allCountByItem == null ||
+        allItemCounts == null;
     planCountBySvt = SvtParts(k: () => {});
-    allCountBySvt = SvtParts(k: () => {});
     planCountByItem = SvtParts(k: () => {});
-    allCountByItem = SvtParts(k: () => {});
     planItemCounts = SvtParts(k: () => {});
-    allItemCounts = SvtParts(k: () => {});
+    if (updateAll) {
+      allCountBySvt = SvtParts(k: () => {});
+      allCountByItem = SvtParts(k: () => {});
+      allItemCounts = SvtParts(k: () => {});
+    }
     // bySvt
     db.gameData.servants.forEach((no, svt) {
       final cur = curStat[no]?.curVal, target = targetPlan[no];
       // planned
       SvtParts<Map<String, int>> a, b;
-      if (cur?.favorite == true && target?.favorite == true) {
+      if (cur?.favorite == true) {
         a = svt.getAllCostParts(cur: cur, target: target);
       } else {
         a = SvtParts(k: () => {});
@@ -101,7 +106,9 @@ class SvtCostItems {
       b.summation = sumDict(b.values);
       for (var i = 0; i < planCountBySvt.valuesWithSum.length; i++) {
         planCountBySvt.valuesWithSum[i][no] = a.valuesWithSum[i];
-        allCountBySvt.valuesWithSum[i][no] = b.valuesWithSum[i];
+        if (updateAll) {
+          allCountBySvt.valuesWithSum[i][no] = b.valuesWithSum[i];
+        }
       }
     });
 
@@ -112,15 +119,19 @@ class SvtCostItems {
           planCountByItem.values[i].putIfAbsent(itemKey, () => {})[svtNo] =
               cost[itemKey] ?? 0;
         });
-        allCountBySvt.values[i].forEach((svtNo, cost) {
-          allCountByItem.values[i].putIfAbsent(itemKey, () => {})[svtNo] =
-              cost[itemKey] ?? 0;
-        });
+        if (updateAll) {
+          allCountBySvt.values[i].forEach((svtNo, cost) {
+            allCountByItem.values[i].putIfAbsent(itemKey, () => {})[svtNo] =
+                cost[itemKey] ?? 0;
+          });
+        }
       }
       planCountByItem.summation[itemKey] =
           sumDict(planCountByItem.values.map((e) => e[itemKey]));
-      allCountByItem.summation[itemKey] =
-          sumDict(allCountByItem.values.map((e) => e[itemKey]));
+      if (updateAll) {
+        allCountByItem.summation[itemKey] =
+            sumDict(allCountByItem.values.map((e) => e[itemKey]));
+      }
     }
 
     // itemCounts

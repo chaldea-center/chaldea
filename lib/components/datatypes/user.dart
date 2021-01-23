@@ -15,7 +15,21 @@ class User {
   /// Map<planNo, Map<SvtNo, SvtPlan>>
   List<Map<int, ServantPlan>> servantPlans;
 
-  Map<int, ServantPlan> get curSvtPlan => servantPlans[curSvtPlanNo];
+  Map<int, ServantPlan> get curSvtPlan {
+    if (curSvtPlanNo >= servantPlans.length) {
+      servantPlans.length = curSvtPlanNo + 1;
+      for (int index = 0; index < servantPlans.length; index++) {
+        servantPlans[index] ??= <int, ServantPlan>{};
+      }
+    }
+    return servantPlans[curSvtPlanNo];
+  }
+
+  ServantPlan svtPlanOf(int no) =>
+      curSvtPlan.putIfAbsent(no, () => ServantPlan());
+
+  ServantStatus svtStatusOf(int no) =>
+      servants.putIfAbsent(no, () => ServantStatus());
 
   /// user own items, key: item name, value: item count
   Map<String, int> items;

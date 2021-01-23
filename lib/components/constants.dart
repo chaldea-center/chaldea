@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:package_info/package_info.dart';
 
 const bool kDebugMode_ = kDebugMode && false;
@@ -94,6 +95,20 @@ class Language {
   }
 }
 
+class MyLocale {
+  MyLocale._();
+
+  static String get locale => Intl.getCurrentLocale();
+
+  static bool get isCN => locale.toLowerCase().startsWith('zh');
+
+  static bool get isTW => locale == 'zh_TW';
+
+  static bool get isJP => locale.toLowerCase().startsWith('ja');
+
+  static bool get isEN => locale.toLowerCase().startsWith('en');
+}
+
 enum GameServer { jp, cn }
 
 extension EnumValueToString on GameServer {
@@ -144,4 +159,11 @@ class ClassName {
         shielder,
         beast
       ];
+}
+
+String localizeGameNoun(String nameCn, String? nameJp, String? nameEn) {
+  final locale = Intl.getCurrentLocale().toLowerCase();
+  if (locale.startsWith('zh')) return nameCn;
+  if (locale.startsWith('en')) return nameEn ?? nameJp ?? nameCn;
+  return nameJp ?? nameCn;
 }

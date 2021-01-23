@@ -44,14 +44,16 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
     ActiveSkill activeSkill = svt.activeSkills[index];
     Skill skill =
         activeSkill.skills[status.skillIndex[index] ?? activeSkill.cnState];
+    String nameCn = '${skill.name} ${skill.rank}';
+    String nameJp = '${skill.nameJp} ${skill.rank}';
     return TileGroup(
       children: <Widget>[
         CustomTile(
             contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
             leading:
                 Image(image: db.getIconImage(skill.icon), height: 110 * 0.3),
-            title: Text('${skill.name} ${skill.rank}'),
-            subtitle: Text('${skill.nameJp} ${skill.rank}'),
+            title: Text(MyLocale.isCN ? nameCn : nameJp),
+            subtitle: Text(MyLocale.isCN ? nameJp : nameCn),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -94,39 +96,46 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
 
   List<Widget> buildEffect(Effect effect) {
     assert([1, 10].contains(effect.lvData.length));
-    int lines = effect.lvData.length == 1
-        ? effect.lvData[0].length < 10
-            ? 0
-            : 1
-        : 2;
+    int lines =
+        effect.lvData.length == 1 ? (effect.lvData[0].length < 10 ? 0 : 1) : 2;
+    int crossCount =
+        effect.lvData.length == 1 ? (effect.lvData[0].length < 10 ? 0 : 1) : 5;
 
     return <Widget>[
       CustomTile(
           contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
           subtitle: Text(effect.description),
-          trailing: lines == 0 ? Text(effect.lvData[0]) : null),
+          trailing: crossCount == 0 ? Text(effect.lvData[0]) : null),
       if (lines > 0)
-        CustomTile(
-            contentPadding: EdgeInsets.only(right: 24.0),
-            title: GridView.count(
-              childAspectRatio: lines == 1 ? 2.7 * 5 : 2.7,
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              crossAxisCount: lines == 1 ? 1 : 5,
-              children: List.generate(
-                effect.lvData.length,
-                (index) => Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    effect.lvData[index],
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: [5, 9].contains(index) ? Colors.redAccent : null,
-                    ),
-                  ),
-                ),
-              ),
-            )),
+        Padding(
+          padding: EdgeInsets.only(right: 24),
+          child: Table(
+            children: [
+              for (int row = 0; row < effect.lvData.length / crossCount; row++)
+                TableRow(
+                  children: List.generate(crossCount, (col) {
+                    int index = row * crossCount + col;
+                    if (index >= effect.lvData.length) return Container();
+                    return Align(
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: EdgeInsets.all(5),
+                        child: Text(
+                          effect.lvData[index],
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: index == 5 || index == 9
+                                ? Colors.redAccent
+                                : null,
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                )
+            ],
+          ),
+        ),
     ];
   }
 }

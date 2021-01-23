@@ -326,7 +326,12 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
         } else {
           title = Row(
             children: <Widget>[
-              Expanded(child: AutoSizeText(itemKey, maxLines: 1)),
+              Expanded(
+                child: AutoSizeText(
+                  Item.localizedNameOf(itemKey),
+                  maxLines: 1,
+                ),
+              ),
               Text(S.of(context).item_left),
               SizedBox(
                   width: 40,

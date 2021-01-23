@@ -26,8 +26,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
   bool enhanceMode = false;
   ServantPlan enhancePlan;
 
-  ServantPlan get plan =>
-      db.curUser.curSvtPlan.putIfAbsent(this.svt.no, () => ServantPlan());
+  ServantPlan get plan => db.curUser.svtPlanOf(svt.no);
 
   _SvtPlanTabState(
       {ServantDetailPageState parent, Servant svt, ServantStatus status})
@@ -106,12 +105,14 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       final activeSkill = svt.activeSkills[index];
       Skill skill =
           activeSkill.skills[status.skillIndex[index] ?? activeSkill.cnState];
+      String shownName =
+          MyLocale.isCN ? skill.name : (skill.nameJp ?? skill.name);
       skillWidgets.add(buildPlanRow(
         leading: Image(
           image: db.getIconImage(skill.icon),
           height: 110 * 0.3,
         ),
-        title: '${skill.name} ${skill.rank}',
+        title: '$shownName ${skill.rank}',
         start: curVal.skills[index],
         end: targetVal.skills[index],
         minVal: 1,

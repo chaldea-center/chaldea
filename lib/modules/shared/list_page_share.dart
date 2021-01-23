@@ -17,7 +17,7 @@ void onSwitchPlan(
       title: Text(S.of(context).select_plan),
       children: List.generate(db.curUser.servantPlans.length, (index) {
         return ListTile(
-          title: Text('${S.current.plan_title} ${index + 1}'),
+          title: Text(S.of(context).plan_x(index + 1)),
           selected: index == db.curUser.curSvtPlanNo,
           onTap: () {
             Navigator.of(context).pop();

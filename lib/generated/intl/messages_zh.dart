@@ -43,9 +43,11 @@ class MessageLookup extends MessageLookupByLibrary {
         'other': '已经到头了',
       })}";
 
-  static m9(total) => "总计: ${total}";
+  static m9(index) => "规划${index}";
 
-  static m10(total, hidden) => "总计: ${total} (隐藏: ${hidden})";
+  static m10(total) => "总计: ${total}";
+
+  static m11(total, hidden) => "总计: ${total} (隐藏: ${hidden})";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
 
@@ -276,6 +278,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "plan_max10": MessageLookupByLibrary.simpleMessage("规划最大化(310)"),
         "plan_max9": MessageLookupByLibrary.simpleMessage("规划最大化(999)"),
         "plan_title": MessageLookupByLibrary.simpleMessage("规划"),
+        "plan_x": m9,
         "previous_card": MessageLookupByLibrary.simpleMessage("上一张"),
         "query_failed": MessageLookupByLibrary.simpleMessage("查询失败"),
         "rarity": MessageLookupByLibrary.simpleMessage("稀有度"),
@@ -292,8 +295,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "reset_svt_enhance_state_hint":
             MessageLookupByLibrary.simpleMessage("宝具本/技能本恢复成国服状态"),
         "restore": MessageLookupByLibrary.simpleMessage("恢复"),
-        "search_result_count": m9,
-        "search_result_count_hide": m10,
+        "search_result_count": m10,
+        "search_result_count_hide": m11,
         "select_copy_plan_source":
             MessageLookupByLibrary.simpleMessage("选择复制来源"),
         "select_plan": MessageLookupByLibrary.simpleMessage("选择规划"),

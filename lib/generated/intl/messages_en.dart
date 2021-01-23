@@ -43,9 +43,11 @@ class MessageLookup extends MessageLookupByLibrary {
         'other': 'No more',
       })}";
 
-  static m9(total) => "Total ${total} results";
+  static m9(index) => "Plan ${index}";
 
-  static m10(total, hidden) => "Total ${total} results (${hidden} hidden)";
+  static m10(total) => "Total ${total} results";
+
+  static m11(total, hidden) => "Total ${total} results (${hidden} hidden)";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
 
@@ -139,7 +141,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "drop_calc_empty_hint":
             MessageLookupByLibrary.simpleMessage("Click + to add items"),
         "drop_calc_help_text": MessageLookupByLibrary.simpleMessage(
-            "The result is for reference only。\n>>>Minimum AP: filter quests with low AP cost, at leat one  quest for each material.\n>>>If select others than jp server, new items will be removed\n>>>Optimization: the lowest counts or AP cost of quests"),
+            "The result is for reference only\n>>>Minimum AP: filter quests with low AP cost, at leat one  quest for each material.\n>>>If server is not JP, new items will be removed\n>>>Optimization: the lowest counts or AP cost of quests"),
         "drop_calc_min_ap": MessageLookupByLibrary.simpleMessage("Min AP"),
         "drop_calc_optimize": MessageLookupByLibrary.simpleMessage("Optimize"),
         "drop_calc_solve": MessageLookupByLibrary.simpleMessage("Solve"),
@@ -320,6 +322,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "plan_max10": MessageLookupByLibrary.simpleMessage("Plan Max(310)"),
         "plan_max9": MessageLookupByLibrary.simpleMessage("Plan Max(999)"),
         "plan_title": MessageLookupByLibrary.simpleMessage("Plan"),
+        "plan_x": m9,
         "previous_card": MessageLookupByLibrary.simpleMessage("Previous"),
         "query_failed": MessageLookupByLibrary.simpleMessage("Query failed"),
         "rarity": MessageLookupByLibrary.simpleMessage("Rarity"),
@@ -338,8 +341,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "reset_svt_enhance_state_hint": MessageLookupByLibrary.simpleMessage(
             "Reset rank up of skills and nobel phantasm"),
         "restore": MessageLookupByLibrary.simpleMessage("Restore"),
-        "search_result_count": m9,
-        "search_result_count_hide": m10,
+        "search_result_count": m10,
+        "search_result_count_hide": m11,
         "select_copy_plan_source":
             MessageLookupByLibrary.simpleMessage("Select copy source"),
         "select_plan": MessageLookupByLibrary.simpleMessage("Select Plan"),

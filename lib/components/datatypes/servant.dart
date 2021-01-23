@@ -47,7 +47,8 @@ class Servant {
       return sumDict(
           [getAscensionCost(), getSkillCost(), getDressCost(), getGrailCost()]);
     }
-    if (cur?.favorite == true && target?.favorite == true) {
+    target ??= ServantPlan();
+    if (cur?.favorite == true) {
       return sumDict([
         getAscensionCost(cur: cur.ascension, target: target.ascension),
         getSkillCost(cur: cur.skills, target: target.skills),
@@ -64,12 +65,14 @@ class Servant {
     // no grail?
     if (all) {
       return SvtParts(
-          ascension: getAscensionCost(),
-          skill: getSkillCost(),
-          dress: getDressCost(),
-          grailAscension: getGrailCost());
+        ascension: getAscensionCost(),
+        skill: getSkillCost(),
+        dress: getDressCost(),
+        grailAscension: getGrailCost(),
+      );
     }
-    if (cur?.favorite == true && target?.favorite == true) {
+    target ??= ServantPlan();
+    if (cur?.favorite == true) {
       return SvtParts(
         ascension:
             getAscensionCost(cur: cur.ascension, target: target.ascension),
@@ -267,6 +270,8 @@ class ServantBaseInfo {
     this.deathRate,
     this.criticalRate,
   });
+
+  String get localizedName => localizeGameNoun(name, nameJp, nameEn);
 
   factory ServantBaseInfo.fromJson(Map<String, dynamic> data) =>
       _$ServantBaseInfoFromJson(data);

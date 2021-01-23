@@ -87,6 +87,12 @@ class Item {
   int id;
   String name;
 
+  /// may be null
+  String nameJp;
+  String nameEn;
+  String description;
+  String descriptionJp;
+
   /// category: 1-usual item(include crystal/grail), 2-skill gem, 3-ascension piece/monument,
   /// 4-event servants' ascension item, 5-special, now only QP
   int category;
@@ -95,12 +101,33 @@ class Item {
   @JsonKey(defaultValue: 0)
   int rarity;
 
-  Item({this.id, this.name, this.category, this.rarity = 0});
+  Item(
+      {this.id,
+      this.name,
+      this.nameJp,
+      this.nameEn,
+      this.description,
+      this.descriptionJp,
+      this.category,
+      this.rarity = 0});
 
-  Item copyWith({int id, String name, int rarity, int category, int num}) {
+  Item copyWith(
+      {int id,
+      String name,
+      String nameJp,
+      String nameEn,
+      String description,
+      String descriptionJp,
+      int rarity,
+      int category,
+      int num}) {
     return Item(
       id: id ?? this.id,
       name: name ?? this.name,
+      nameJp: nameJp ?? this.nameJp,
+      nameEn: nameEn ?? this.nameEn,
+      description: description ?? this.description,
+      descriptionJp: descriptionJp ?? this.descriptionJp,
       rarity: rarity ?? this.rarity,
       category: category ?? this.category,
     );
@@ -122,6 +149,16 @@ class Item {
   static getId(String key) {
     return db.gameData.items[key]?.id;
   }
+
+  static localizedNameOf(String name) {
+    // name could be jp/en?
+    if (db.gameData.items.containsKey(name)) {
+      return db.gameData.items[name].localizedName;
+    }
+    return name;
+  }
+
+  String get localizedName => localizeGameNoun(name, nameJp, nameEn);
 
   static List<String> sortListById(List<String> data, [bool inPlace = false]) {
     return (inPlace ? data : List.from(data))

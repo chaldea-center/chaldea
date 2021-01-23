@@ -29,8 +29,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
   // store data
   ServantStatus status;
 
-  ServantPlan get plan =>
-      db.curUser.curSvtPlan.putIfAbsent(svt.no, () => ServantPlan());
+  ServantPlan get plan => db.curUser.svtPlanOf(svt.no);
 
   ServantDetailPageState(this.svt) {
     if (!Servant.unavailable.contains(svt.no)) {
@@ -126,7 +125,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
               Navigator.of(context).maybePop();
             },
           ),
-          title: Text(svt.info.name),
+          title: Text(svt.info.localizedName),
           actions: <Widget>[
             buildSwitchPlanButton(
               context: context,
@@ -162,7 +161,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                     onTapOk: () {
                       setState(() {
                         status.reset();
-                        db.curUser.curSvtPlan[svt.no].reset();
+                        db.curUser.svtPlanOf(svt.no).reset();
                       });
                       db.userData.broadcastUserUpdate();
                       db.itemStat.updateSvtItems();

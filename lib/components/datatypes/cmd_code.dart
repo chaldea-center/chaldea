@@ -42,6 +42,8 @@ class CommandCode {
     this.characters,
   });
 
+  String get localizedName => localizeGameNoun(name, nameJp, null);
+
   static int compare(CommandCode a, CommandCode b,
       [List<CmdCodeCompare> keys, List<bool> reversed]) {
     int res = 0;

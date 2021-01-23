@@ -18,22 +18,17 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
   void initState() {
     super.initState();
     ce = widget.ce;
-    useLangJp = !Intl.getCurrentLocale().toLowerCase().startsWith('zh');
+    useLangJp = !MyLocale.isCN;
     db.checkNetwork();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: BackButton(),
-        title: Text(ce.name),
-      ),
+      appBar: AppBar(leading: BackButton(), title: Text(ce.localizedName)),
       body: Column(
         children: <Widget>[
-          Expanded(
-            child: CraftDetailBasePage(ce: ce, useLangJp: useLangJp),
-          ),
+          Expanded(child: CraftDetailBasePage(ce: ce, useLangJp: useLangJp)),
           ButtonBar(alignment: MainAxisAlignment.center, children: [
             ToggleButtons(
               constraints: BoxConstraints(),

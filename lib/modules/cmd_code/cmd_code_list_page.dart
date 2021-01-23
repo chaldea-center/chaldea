@@ -177,7 +177,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
                   index == 0 ? null : EdgeInsets.only(top: 8, bottom: 50),
               subtitle: Center(
                 child: Text(
-                  'Total ${shownList.length} results',
+                  S.of(context).search_result_count(shownList.length),
                   style: TextStyle(color: Colors.grey, fontSize: 14),
                 ),
               ),
@@ -186,11 +186,12 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
           final code = shownList[index - 1];
           return CustomTile(
             leading: Image(image: db.getIconImage(code.icon), height: 65),
-            title: AutoSizeText(code.name, maxLines: 1),
+            title: AutoSizeText(code.localizedName, maxLines: 1),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                AutoSizeText(code.nameJp ?? code.name, maxLines: 1),
+                if (!MyLocale.isJP)
+                  AutoSizeText(code.nameJp ?? code.name, maxLines: 1),
                 Text('No.${code.no}')
               ],
             ),

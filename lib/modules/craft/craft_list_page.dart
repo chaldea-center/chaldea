@@ -196,7 +196,7 @@ class CraftListPageState extends State<CraftListPage>
                   index == 0 ? null : EdgeInsets.only(top: 8, bottom: 50),
               subtitle: Center(
                 child: Text(
-                  'Total ${shownList.length} results',
+                  S.of(context).search_result_count(shownList.length),
                   style: TextStyle(color: Colors.grey, fontSize: 14),
                 ),
               ),
@@ -216,11 +216,12 @@ class CraftListPageState extends State<CraftListPage>
           }
           return CustomTile(
             leading: Image(image: db.getIconImage(ce.icon), height: 65),
-            title: AutoSizeText(ce.name, maxLines: 1),
+            title: AutoSizeText(ce.localizedName, maxLines: 1),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                AutoSizeText(ce.nameJp ?? ce.name, maxLines: 1),
+                if (!MyLocale.isJP)
+                  AutoSizeText(ce.nameJp ?? ce.name, maxLines: 1),
                 Text('No.${ce.no.toString().padRight(4)}  $additionalText'),
               ],
             ),

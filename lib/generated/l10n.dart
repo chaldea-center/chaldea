@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -1848,6 +1849,16 @@ class S {
       name: 'svt_info_tab_bond_story',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `规划{index}`
+  String plan_x(Object index) {
+    return Intl.message(
+      '规划$index',
+      name: 'plan_x',
+      desc: '',
+      args: [index],
     );
   }
 

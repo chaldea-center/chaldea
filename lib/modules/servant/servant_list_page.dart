@@ -59,7 +59,7 @@ class ServantListPageState extends State<ServantListPage>
 
   bool filtrateServant(Servant svt) {
     final svtStat = db.curUser.servants[svt.no];
-    final svtPlan = db.curUser.curSvtPlan[svt.no];
+    final svtPlan = db.curUser.svtPlanOf(svt.no);
     // input text filter
     if (filterData.filterString.trim().isNotEmpty) {
       List<String> searchStrings = [
@@ -100,8 +100,7 @@ class ServantListPageState extends State<ServantListPage>
       }
     }
     if (filterData.planCompletion.options.containsValue(true)) {
-      if (svtStat?.curVal?.favorite != true || svtPlan?.favorite != true)
-        return false;
+      if (svtStat?.curVal?.favorite != true) return false;
       bool planNotComplete = <bool>[
         svtPlan.ascension > svtStat.curVal.ascension,
         svtPlan.grail > svtStat.curVal.grail,
@@ -348,7 +347,7 @@ class ServantListPageState extends State<ServantListPage>
                 index == 0 ? null : EdgeInsets.only(top: 8, bottom: 50),
             subtitle: Center(
               child: Text(
-                'Total ${shownList.length} results',
+                S.of(context).search_result_count(shownList.length),
                 style: TextStyle(color: Colors.grey, fontSize: 14),
               ),
             ),
@@ -375,7 +374,7 @@ class ServantListPageState extends State<ServantListPage>
         }
         return CustomTile(
           leading: Image(image: db.getIconImage(svt.icon), height: 65),
-          title: AutoSizeText('${svt.info.name}', maxLines: 1),
+          title: AutoSizeText(svt.info.localizedName, maxLines: 1),
           subtitle: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -383,7 +382,8 @@ class ServantListPageState extends State<ServantListPage>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    AutoSizeText('${svt.info.nameJp}', maxLines: 1),
+                    if (!MyLocale.isJP)
+                      AutoSizeText(svt.info.nameJp, maxLines: 1),
                     Text('No.${svt.no} ${svt.info.className}  $additionalText')
                   ],
                 ),
@@ -520,7 +520,7 @@ class ServantListPageState extends State<ServantListPage>
 
   Widget _getDetailTable(Servant svt) {
     ServantPlan cur = db.curUser.servants[svt.no]?.curVal,
-        target = db.curUser.curSvtPlan[svt.no];
+        target = db.curUser.svtPlanOf(svt.no);
     Widget _getRange(int _c, int _t) {
       bool highlight = _t > _c;
       return Center(
@@ -538,10 +538,7 @@ class ServantListPageState extends State<ServantListPage>
       return Center(child: Text(header, maxLines: 1));
     }
 
-    if (cur?.favorite == true && target?.favorite != true) {
-      return Center(child: Text('请取消并重新关注该从者'));
-    }
-    if (cur?.favorite != true || target?.favorite != true) {
+    if (cur?.favorite != true) {
       return Center(child: Text(S.of(context).svt_not_planned));
     }
     if (hiddenPlanServants.contains(svt)) {
@@ -590,8 +587,7 @@ class ServantListPageState extends State<ServantListPage>
   }
 
   bool isSvtFavorite(Servant svt) {
-    return db.curUser.servants[svt.no]?.curVal?.favorite == true &&
-        db.curUser.curSvtPlan[svt.no]?.favorite == true;
+    return db.curUser.servants[svt.no]?.curVal?.favorite == true;
   }
 
   int _planTargetAscension;
@@ -613,7 +609,7 @@ class ServantListPageState extends State<ServantListPage>
             shownList.forEach((svt) {
               if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
                 final cur = db.curUser.servants[svt.no].curVal,
-                    target = db.curUser.curSvtPlan[svt.no];
+                    target = db.curUser.svtPlanOf(svt.no);
                 target.ascension = max(cur.ascension, _planTargetAscension);
               }
             });
@@ -633,7 +629,7 @@ class ServantListPageState extends State<ServantListPage>
             shownList.forEach((svt) {
               if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
                 final cur = db.curUser.servants[svt.no].curVal,
-                    target = db.curUser.curSvtPlan[svt.no];
+                    target = db.curUser.svtPlanOf(svt.no);
                 for (int i = 0; i < 3; i++) {
                   target.skills[i] = max(cur.skills[i], _planTargetSkill + 1);
                 }
@@ -655,7 +651,7 @@ class ServantListPageState extends State<ServantListPage>
             shownList.forEach((svt) {
               if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
                 final cur = db.curUser.servants[svt.no].curVal,
-                    target = db.curUser.curSvtPlan[svt.no];
+                    target = db.curUser.svtPlanOf(svt.no);
                 for (int i = 0; i < target.dress.length; i++) {
                   target.dress[i] = max(cur.dress[i], _planTargetDress);
                 }
@@ -697,7 +693,8 @@ class ServantListPageState extends State<ServantListPage>
         children: List.generate(db.curUser.servantPlans.length, (index) {
           bool isCur = index == db.curUser.curSvtPlanNo;
           return ListTile(
-            title: Text('${S.current.plan} ${index + 1} ' +
+            title: Text(S.of(context).plan_x(index + 1) +
+                ' ' +
                 (isCur ? '(${S.current.current_})' : '')),
             onTap: isCur
                 ? null

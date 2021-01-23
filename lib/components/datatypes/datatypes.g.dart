@@ -462,6 +462,10 @@ Item _$ItemFromJson(Map<String, dynamic> json) {
     final val = Item(
       id: $checkedConvert(json, 'id', (v) => v as int),
       name: $checkedConvert(json, 'name', (v) => v as String),
+      nameJp: $checkedConvert(json, 'nameJp', (v) => v as String),
+      nameEn: $checkedConvert(json, 'nameEn', (v) => v as String),
+      description: $checkedConvert(json, 'description', (v) => v as String),
+      descriptionJp: $checkedConvert(json, 'descriptionJp', (v) => v as String),
       category: $checkedConvert(json, 'category', (v) => v as int),
       rarity: $checkedConvert(json, 'rarity', (v) => v as int) ?? 0,
     );
@@ -472,6 +476,10 @@ Item _$ItemFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
+      'nameJp': instance.nameJp,
+      'nameEn': instance.nameEn,
+      'description': instance.description,
+      'descriptionJp': instance.descriptionJp,
       'category': instance.category,
       'rarity': instance.rarity,
     };

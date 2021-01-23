@@ -19,17 +19,14 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
   void initState() {
     super.initState();
     code = widget.code;
-    useLangJp = !Intl.getCurrentLocale().toLowerCase().startsWith('zh');
+    useLangJp = !MyLocale.isCN;
     db.checkNetwork();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: BackButton(),
-        title: Text(code.name),
-      ),
+      appBar: AppBar(leading: BackButton(), title: Text(code.localizedName)),
       body: Column(
         children: <Widget>[
           Expanded(

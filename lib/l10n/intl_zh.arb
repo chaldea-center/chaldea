@@ -181,6 +181,7 @@
   "select_copy_plan_source": "选择复制来源",
   "svt_info_tab_base": "基础资料",
   "svt_info_tab_bond_story": "羁绊故事",
+  "plan_x": "规划{index}",
   "bond_craft": "羁绊礼装",
   "valentine_craft": "情人节礼装",
   "info_cv": "声优",

@@ -49,26 +49,31 @@ class ItemCostServantPage extends StatelessWidget {
           ];
           if (viewType == 0) {
             // 0 ascension 1 skill 2 dress 3 grail
-            final _groups = itemKey == Item.grail ? [3] : [0, 1, 2];
-            for (int i in _groups) {
-              children.add(Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  CustomTile(
-                    title: Text([
-                      S.current.ascension_up,
-                      S.current.skill_up,
-                      S.current.dress_up,
-                      S.current.grail_up
-                    ][i]),
-                    trailing: Text(formatNumber(counts.values[i][itemKey] ?? 0,
-                        minVal: 10000)),
-                  ),
-                  _buildSvtIconGrid(context, details.values[i][itemKey],
-                      highlight: favorite == false),
-                ],
-              ));
+            final headers = [
+              S.current.ascension_up,
+              S.current.skill_up,
+              S.current.dress_up,
+              S.current.grail_up
+            ];
+            for (int i = 0; i < headers.length; i++) {
+              final _allSvtCounts =
+                  db.itemStat.svtItemDetail.allCountByItem.values[i][itemKey];
+              bool _hasSvt = _allSvtCounts?.values?.any((e) => e > 0) ?? false;
+              if (_hasSvt)
+                children.add(Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    CustomTile(
+                      title: Text(headers[i]),
+                      trailing: Text(formatNumber(
+                          counts.values[i][itemKey] ?? 0,
+                          minVal: 10000)),
+                    ),
+                    _buildSvtIconGrid(context, details.values[i][itemKey],
+                        highlight: favorite == false),
+                  ],
+                ));
             }
           } else if (viewType == 1) {
             children.add(_buildSvtIconGrid(context, details.summation[itemKey],

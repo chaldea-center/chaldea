@@ -135,32 +135,47 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab> {
   }
 
   List<Widget> buildEffect(Effect effect) {
-    assert([1, 5].contains(effect.lvData.length), '$effect');
-    // avoid trailing too long
-    bool useTrailing =
-        effect.lvData.length == 1 && effect.lvData[0].length < 10;
+    assert([1, 5].contains(effect.lvData.length));
+    int lines =
+        effect.lvData.length == 1 ? (effect.lvData[0].length < 10 ? 0 : 1) : 2;
+    int crossCount =
+        effect.lvData.length == 1 ? (effect.lvData[0].length < 10 ? 0 : 1) : 5;
+
     return <Widget>[
       CustomTile(
-        contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
-        subtitle: Text(effect.description),
-        trailing: useTrailing ? Text(effect.lvData[0]) : null,
-      ),
-      if (!useTrailing)
-        // Why use CustomTile here???
-        CustomTile(
-          contentPadding: EdgeInsets.only(left: 16, right: 16),
-          title: GridView.count(
-            childAspectRatio: effect.lvData.length == 1 ? 2.7 * 5 : 2.7,
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            crossAxisCount: effect.lvData.length,
-            children: effect.lvData
-                .map((e) => Align(
-                    alignment: Alignment.center,
-                    child: Text(e, style: TextStyle(fontSize: 14))))
-                .toList(),
+          contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
+          subtitle: Text(effect.description),
+          trailing: crossCount == 0 ? Text(effect.lvData[0]) : null),
+      if (lines > 0)
+        Padding(
+          padding: EdgeInsets.only(right: 24),
+          child: Table(
+            children: [
+              for (int row = 0; row < effect.lvData.length / crossCount; row++)
+                TableRow(
+                  children: List.generate(crossCount, (col) {
+                    int index = row * crossCount + col;
+                    if (index >= effect.lvData.length) return Container();
+                    return Align(
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: EdgeInsets.all(5),
+                        child: Text(
+                          effect.lvData[index],
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: index == 5 || index == 9
+                                ? Colors.redAccent
+                                : null,
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                )
+            ],
           ),
-        )
+        ),
     ];
   }
 }
