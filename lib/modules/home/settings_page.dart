@@ -78,7 +78,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               ),
               ListTile(
-                title: Text('数据管理'),
+                title: Text(S.of(context).settings_data_management),
                 trailing: Wrap(
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: <Widget>[
@@ -93,6 +93,25 @@ class _SettingsPageState extends State<SettingsPage> {
                     popDetail: true,
                   );
                 },
+              ),
+              ListTile(
+                title: Text(S.of(context).download_source),
+                subtitle: Text(S.of(context).download_source_hint),
+                trailing: DropdownButton(
+                  value: db.userData.appDatasetUpdateSource ?? 0,
+                  items: [
+                    DropdownMenuItem(
+                        child: Text(S.of(context).download_source_of(1)),
+                        value: 0),
+                    DropdownMenuItem(
+                        child: Text(S.of(context).download_source_of(2)),
+                        value: 1),
+                  ],
+                  onChanged: (v) => setState(() {
+                    db.userData.appDatasetUpdateSource = v;
+                    db.saveUserData();
+                  }),
+                ),
               ),
             ],
           ),
@@ -111,25 +130,28 @@ class _SettingsPageState extends State<SettingsPage> {
                   }).toList(),
                   onChanged: (lang) {
                     db.userData.language = lang.code;
+                    db.saveUserData();
                     db.onAppUpdate();
                   },
                 ),
               ),
               SwitchListTile.adaptive(
-                  title: Text('使用移动数据下载'),
+                  title: Text(S.of(context).settings_use_mobile_network),
                   value: db.userData.useMobileNetwork ?? false,
                   onChanged: (v) async {
                     db.userData.useMobileNetwork = v;
                     await db.checkNetwork();
+                    db.saveUserData();
                     setState(() {});
                   }),
             ],
           ),
           TileGroup(
-            header: 'About',
+            header: S.of(context).settings_about,
             children: <Widget>[
               ListTile(
-                title: Text('关于Chaldea'),
+                title: Text(MaterialLocalizations.of(context)
+                    .aboutListTileTitle(AppInfo.appName)),
                 onTap: () => SplitRoute.push(
                   context: context,
                   builder: (context, _) => AboutPage(),
@@ -143,7 +165,7 @@ class _SettingsPageState extends State<SettingsPage> {
               header: 'Test(debug mode: ${kDebugMode_ ? 'on' : 'off'})',
               children: <Widget>[
                 SwitchListTile.adaptive(
-                    title: Text('允许下载'),
+                    title: Text('Allow download'),
                     value: db.userData.testAllowDownload ?? true,
                     onChanged: (v) async {
                       db.userData.testAllowDownload = v;

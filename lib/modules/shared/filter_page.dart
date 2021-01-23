@@ -111,13 +111,14 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
       return [
         ...extraActions,
         TextButton(
-          child: Text('RESET', style: TextStyle(color: Colors.redAccent)),
+          child: Text(S.of(context).reset.toUpperCase(),
+              style: TextStyle(color: Colors.redAccent)),
           // textColor: Colors.redAccent,
           onPressed: onTapReset,
         ),
         if (showOk)
           TextButton(
-            child: Text('OK'),
+            child: Text(S.of(context).ok.toUpperCase()),
             onPressed: () => Navigator.pop(context),
           ),
       ];
@@ -166,7 +167,8 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
     );
   }
 
-  Widget getDisplayOptions({String header = '显示', List<Widget> children}) {
+  Widget getDisplayOptions({String header, List<Widget> children}) {
+    header ??= S.current.filter_shown_type;
     return Padding(
       padding: EdgeInsets.fromLTRB(12, 6, 12, 0),
       child: Column(

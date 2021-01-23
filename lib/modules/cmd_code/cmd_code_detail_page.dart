@@ -19,6 +19,7 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
   void initState() {
     super.initState();
     code = widget.code;
+    useLangJp = !Intl.getCurrentLocale().toLowerCase().startsWith('zh');
     db.checkNetwork();
   }
 
@@ -63,14 +64,15 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
                     nextCode = db.gameData.cmdCodes[code.no + [-1, 1][i]];
                   }
                   if (nextCode == null) {
-                    EasyLoading.showToast('已经是${['第', '最后'][i]}一张');
+                    EasyLoading.showToast(S.of(context).list_end_hint(i == 0));
                   } else {
                     setState(() {
                       code = nextCode;
                     });
                   }
                 },
-                child: Text(['上一张', '下一张'][i]),
+                child: Text(
+                    [S.of(context).previous_card, S.of(context).next_card][i]),
                 style: ElevatedButton.styleFrom(
                     textStyle: TextStyle(fontWeight: FontWeight.normal)),
               ),
@@ -104,10 +106,10 @@ class CmdCodeDetailBasePage extends StatelessWidget {
           CustomTableRow(
             children: [
               TableCellData(
-                child: Image(image: db.getIconImage(code.icon)),
+                child: Image(image: db.getIconImage(code.icon), height: 80),
                 flex: 1,
                 padding: EdgeInsets.all(8),
-                fitHeight: true,
+                fitHeight: false,
               ),
               TableCellData(
                 flex: 3,
@@ -118,31 +120,35 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                     CustomTableRow(
                         children: [TableCellData(text: 'No. ${code.no}')]),
                     CustomTableRow(children: [
-                      TableCellData(text: '画师', isHeader: true),
+                      TableCellData(
+                          text: S.of(context).illustrator, isHeader: true),
                       TableCellData(
                           text: code.illustrators.join(' & '), flex: 3)
                     ]),
                     CustomTableRow(children: [
-                      TableCellData(text: '稀有度', isHeader: true),
+                      TableCellData(text: S.of(context).rarity, isHeader: true),
                       TableCellData(text: code.rarity.toString(), flex: 3),
                     ]),
                     CustomTableRow(
                       children: [
                         TableCellData(
                           child: CustomTile(
-                            title: Center(child: Text('查看卡面')),
+                            title: Center(
+                                child: Text(S.of(context).view_illustration)),
                             contentPadding: EdgeInsets.zero,
                             onTap: () {
                               Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => FullScreenImageSlider(
+                                PageRouteBuilder(
+                                  opaque: false,
+                                  fullscreenDialog: true,
+                                  pageBuilder: (context, _, __) =>
+                                      FullScreenImageSlider(
                                     imgUrls: [
                                       db.getIconResource(code.illustration).url
                                     ],
                                     enableDownload:
                                         db.runtimeData.enableDownload,
                                   ),
-                                  fullscreenDialog: true,
                                 ),
                               );
                             },
@@ -156,13 +162,15 @@ class CmdCodeDetailBasePage extends StatelessWidget {
               ),
             ],
           ),
-          CustomTableRow(
-              children: [TableCellData(text: '获取方式', isHeader: true)]),
+          CustomTableRow(children: [
+            TableCellData(text: S.of(context).obtain_methods, isHeader: true)
+          ]),
           CustomTableRow(children: [
             TableCellData(child: Text(code.obtain, textAlign: TextAlign.center))
           ]),
-          CustomTableRow(
-              children: [TableCellData(text: '持有技能', isHeader: true)]),
+          CustomTableRow(children: [
+            TableCellData(text: S.of(context).skill, isHeader: true)
+          ]),
           CustomTableRow(
             children: [
               TableCellData(
@@ -174,7 +182,9 @@ class CmdCodeDetailBasePage extends StatelessWidget {
               TableCellData(flex: 5, text: code.skill)
             ],
           ),
-          CustomTableRow(children: [TableCellData(text: '解说', isHeader: true)]),
+          CustomTableRow(children: [
+            TableCellData(text: S.of(context).card_description, isHeader: true)
+          ]),
           CustomTableRow(
             children: [
               TableCellData(

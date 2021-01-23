@@ -11,9 +11,14 @@ class EventListPage extends StatefulWidget {
 
 class _EventListPageState extends State<EventListPage>
     with SingleTickerProviderStateMixin {
-  final tabNames = ['限时活动', '主线记录', '素材交换券'];
   TabController _tabController;
   bool reverse = true;
+
+  List<String> get tabNames => [
+        S.current.limited_event,
+        S.current.main_record,
+        S.current.exchange_ticket
+      ];
 
   @override
   void initState() {

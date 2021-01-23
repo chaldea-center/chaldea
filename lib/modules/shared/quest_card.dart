@@ -26,8 +26,8 @@ class QuestCard extends StatelessWidget {
                 child: AutoSizeText(
                   '${quest.chapter}\n'
                   '$questName\n'
-                  '羁绊 ${quest.bondPoint}  '
-                  '经验 ${quest.experience}',
+                  '${S.of(context).game_kizuna} ${quest.bondPoint}  '
+                  '${S.of(context).game_experience} ${quest.experience}',
                   maxLines: 3,
                   textAlign: TextAlign.center,
                 ),
@@ -74,7 +74,7 @@ class QuestCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text('掉落:  '),
+              Text(S.current.game_drop + ':  '),
               Expanded(child: _getDropsWidget(battle))
             ],
           ),

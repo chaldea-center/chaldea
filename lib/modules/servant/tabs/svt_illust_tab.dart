@@ -72,14 +72,15 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
                 imageBuilder: (context, url) => GestureDetector(
                   onTap: () async {
                     int newIndex = await Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => FullScreenImageSlider(
+                      PageRouteBuilder(
+                        opaque: false,
+                        fullscreenDialog: true,
+                        pageBuilder: (context, _, __) => FullScreenImageSlider(
                           imgUrls: imageUrls,
                           initialPage: index,
                           enableDownload: db.runtimeData.enableDownload,
                           placeholder: getPlaceholder(),
                         ),
-                        fullscreenDialog: true,
                       ),
                     );
                     _tabController.animateTo(newIndex);

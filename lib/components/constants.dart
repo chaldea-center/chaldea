@@ -63,6 +63,9 @@ class AppInfo {
   static bool get isDesktop => Platform.isMacOS || Platform.isWindows;
 }
 
+/// The global key passed to [MaterialApp], so you can access context anywhere
+final kAppKey = GlobalKey<NavigatorState>();
+
 //const value in class
 class Language {
   final String code;

@@ -38,7 +38,7 @@ class _EditGalleryPageState extends State<EditGalleryPage> {
 
 class GalleryItem {
   static const String servant = 'servant';
-  static const String craft_essential = 'craft';
+  static const String craft_essence = 'craft';
   static const String cmd_code = 'cmd_code';
   static const String item = 'item';
   static const String event = 'event';

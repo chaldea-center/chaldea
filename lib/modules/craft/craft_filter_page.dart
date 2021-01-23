@@ -21,13 +21,13 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
-      title: Text('Filter'),
+      title: Text(S.of(context).filter),
       actions: getDefaultActions(onTapReset: () {
         filterData.reset();
         update();
       }),
       content: getListViewBody(children: [
-        getGroup(header: '显示', children: [
+        getGroup(header: S.of(context).filter_sort, children: [
           getToggleButton(
               texts: ['List', 'Grid'],
               isSelected: [!filterData.useGrid, filterData.useGrid],
@@ -36,13 +36,17 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
                 update();
               }),
         ]), //end
-        getGroup(header: '排序', children: [
+        getGroup(header: S.of(context).filter_sort, children: [
           for (int i = 0; i < filterData.sortKeys.length; i++)
             getSortButton<CraftCompare>(
               prefix: '${i + 1}',
               value: filterData.sortKeys[i],
-              items: Map.fromIterables(
-                  CraftFilterData.sortKeyData, ['序号', '星级', 'ATK', 'HP']),
+              items: Map.fromIterables(CraftFilterData.sortKeyData, [
+                S.of(context).filter_sort_number,
+                S.of(context).filter_sort_rarity,
+                'ATK',
+                'HP'
+              ]),
               onSortAttr: (key) {
                 filterData.sortKeys[i] = key;
                 update();
@@ -55,17 +59,17 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
             )
         ]),
         FilterGroup(
-          title: Text('稀有度'),
+          title: Text(S.of(context).rarity),
           options: CraftFilterData.rarityData,
           values: filterData.rarity,
-          optionBuilder: (v) => Text('$v星'),
+          optionBuilder: (v) => Text('$v★'),
           onFilterChanged: (value) {
             filterData.rarity = value;
             update();
           },
         ),
         FilterGroup(
-          title: Text('分类'),
+          title: Text(S.of(context).filter_category),
           options: CraftFilterData.categoryData,
           values: filterData.category,
           onFilterChanged: (value) {
@@ -74,7 +78,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
           },
         ),
         FilterGroup(
-          title: Text('属性'),
+          title: Text(S.of(context).filter_atk_hp_type),
           options: CraftFilterData.atkHpTypeData,
           values: filterData.atkHpType,
           onFilterChanged: (value) {

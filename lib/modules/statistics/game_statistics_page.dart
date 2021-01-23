@@ -23,11 +23,12 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: Text('统计'),
+        title: Text(S.of(context).statistics_title),
         actions: [],
-        bottom: TabBar(
-            controller: _tabController,
-            tabs: [Tab(text: '素材'), Tab(text: '从者')]),
+        bottom: TabBar(controller: _tabController, tabs: [
+          Tab(text: S.of(context).item),
+          Tab(text: S.of(context).servant)
+        ]),
       ),
       body: TabBarView(
         controller: _tabController,
@@ -57,7 +58,7 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
           value: includeCurItems,
           onChanged: (v) => setState(() => includeCurItems = v),
           controlAffinity: ListTileControlAffinity.leading,
-          title: Text('包含现有素材'),
+          title: Text(S.of(context).statistics_include_checkbox),
         ),
         ListTile(
           leading: Image(image: db.getIconImage(Item.qp)),
@@ -93,8 +94,9 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
       if (svtStat.curVal.favorite != true) return;
       final svt = db.gameData.servants[no];
       sumDict(
-          [allItemCost, svt.getAllCost(cur: emptyPlan, target: svtStat.curVal)],
-          inPlace: true);
+        [allItemCost, svt.getAllCost(cur: emptyPlan, target: svtStat.curVal)],
+        inPlace: true,
+      );
     });
   }
 }

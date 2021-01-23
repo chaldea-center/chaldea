@@ -72,7 +72,7 @@ class ServantListPageState extends State<ServantListPage>
         ...svt.info.nicknames,
         ...svt.info.traits
       ];
-      svt?.treasureDevice?.forEach((td) {
+      svt?.nobelPhantasm?.forEach((td) {
         searchStrings.addAll([
           td.name,
           td.nameJp,
@@ -137,8 +137,8 @@ class ServantListPageState extends State<ServantListPage>
     Map<FilterGroupData, String> singleValuePair = {
       filterData.rarity: svt.info.rarity.toString(),
       filterData.obtain: svt.info.obtain,
-      filterData.npColor: getListItem(svt.treasureDevice, 0)?.color,
-      filterData.npType: getListItem(svt.treasureDevice, 0)?.category,
+      filterData.npColor: getListItem(svt.nobelPhantasm, 0)?.color,
+      filterData.npType: getListItem(svt.nobelPhantasm, 0)?.category,
       filterData.attribute: svt.info.attribute,
     };
     for (var entry in singleValuePair.entries) {
@@ -199,7 +199,7 @@ class ServantListPageState extends State<ServantListPage>
           return Scaffold(
             appBar: AppBar(
               title: Text(widget.planMode
-                  ? '规划 ${db.curUser.curSvtPlanNo + 1}'
+                  ? '${S.current.plan} ${db.curUser.curSvtPlanNo + 1}'
                   : S.of(context).servant),
               leading: MasterBackButton(),
               bottom: PreferredSize(
@@ -262,7 +262,7 @@ class ServantListPageState extends State<ServantListPage>
                     }),
                 IconButton(
                   icon: Icon(Icons.filter_list),
-                  tooltip: '筛选',
+                  tooltip: S.of(context).filter,
                   onPressed: () => FilterPage.show(
                       context: context,
                       builder: (context) => ServantFilterPage(
@@ -271,10 +271,13 @@ class ServantListPageState extends State<ServantListPage>
                 PopupMenuButton(
                   itemBuilder: (context) {
                     return [
-                      PopupMenuItem(value: 'switch_plan', child: Text('切换规划')),
+                      PopupMenuItem(
+                          value: 'switch_plan',
+                          child: Text(S.of(context).select_plan)),
                       if (widget.planMode)
                         PopupMenuItem(
-                            value: 'copy_plan', child: Text('拷贝自其它规划')),
+                            value: 'copy_plan',
+                            child: Text(S.of(context).copy_plan_menu)),
                     ];
                   },
                   onSelected: (v) {
@@ -282,12 +285,13 @@ class ServantListPageState extends State<ServantListPage>
                       copyPlan();
                     } else if (v == 'switch_plan') {
                       onSwitchPlan(
-                          context: context,
-                          onChange: (index) {
-                            db.curUser.curSvtPlanNo = index;
-                            this.setState(() {});
-                            db.itemStat.updateSvtItems();
-                          });
+                        context: context,
+                        onChange: (index) {
+                          db.curUser.curSvtPlanNo = index;
+                          this.setState(() {});
+                          db.itemStat.updateSvtItems();
+                        },
+                      );
                     }
                   },
                 ),
@@ -336,12 +340,8 @@ class ServantListPageState extends State<ServantListPage>
     return ListView.separated(
       controller: _scrollController,
       separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
-      itemCount: shownList.length + 2,
+      itemCount: shownList.length + (shownList.isEmpty ? 1 : 2),
       itemBuilder: (context, index) {
-        if (index == shownList.length + 1 && shownList.isEmpty) {
-          // if empty list, don't show count twice
-          return Container();
-        }
         if (index == 0 || index == shownList.length + 1) {
           return CustomTile(
             contentPadding:
@@ -358,11 +358,8 @@ class ServantListPageState extends State<ServantListPage>
         final status = db.curUser.servants[svt.no];
         String statusText = '';
         if (status?.curVal?.favorite == true) {
-          statusText = '${status.tdLv}宝'
-              '${status.curVal.ascension}-'
-              '${status.curVal.skills[0]}/'
-              '${status.curVal.skills[1]}/'
-              '${status.curVal.skills[2]}';
+          statusText =
+              '${status.curVal.ascension}-' + status.curVal.skills.join('/');
         }
 
         String additionalText = '';
@@ -460,7 +457,7 @@ class ServantListPageState extends State<ServantListPage>
             controller: _scrollController,
             separatorBuilder: (context, index) =>
                 Divider(height: 1, indent: 16),
-            itemCount: shownList.length + 2,
+            itemCount: shownList.length + (shownList.isEmpty ? 1 : 2),
             itemBuilder: (context, index) {
               if (index == 0 || index == shownList.length + 1) {
                 int _hiddenNum = shownList
@@ -471,8 +468,10 @@ class ServantListPageState extends State<ServantListPage>
                       index == 0 ? null : EdgeInsets.only(top: 8, bottom: 50),
                   subtitle: Center(
                     child: Text(
-                      'Total ${shownList.length} results' +
-                          (widget.planMode ? " ($_hiddenNum hidden)" : ""),
+                      widget.planMode
+                          ? S.of(context).search_result_count_hide(
+                              shownList.length, _hiddenNum)
+                          : S.of(context).search_result_count(shownList.length),
                       style: TextStyle(color: Colors.grey, fontSize: 14),
                     ),
                   ),
@@ -522,63 +521,71 @@ class ServantListPageState extends State<ServantListPage>
   Widget _getDetailTable(Servant svt) {
     ServantPlan cur = db.curUser.servants[svt.no]?.curVal,
         target = db.curUser.curSvtPlan[svt.no];
-    Widget _getItem(String label, int _c, int _t) {
+    Widget _getRange(int _c, int _t) {
       bool highlight = _t > _c;
-      return RichText(
-        maxLines: 1,
-        text: TextSpan(
+      return Center(
+        child: Text(
+          '$_c-$_t',
           style: TextStyle(
-            fontSize: 12,
-            color: Colors.black54,
-            fontFamily: 'RobotoMono',
+            color: highlight ? Colors.redAccent : null,
+            // decoration: TextDecoration.underline,
           ),
-          text: label + ':',
-          children: [
-            TextSpan(
-              text: '$_c-$_t',
-              style: TextStyle(color: highlight ? Colors.redAccent : null),
-            )
-          ],
         ),
       );
+    }
+
+    Widget _getHeader(String header) {
+      return Center(child: Text(header, maxLines: 1));
     }
 
     if (cur?.favorite == true && target?.favorite != true) {
       return Center(child: Text('请取消并重新关注该从者'));
     }
     if (cur?.favorite != true || target?.favorite != true) {
-      return Center(child: Text('未关注'));
+      return Center(child: Text(S.of(context).svt_not_planned));
     }
     if (hiddenPlanServants.contains(svt)) {
-      return Center(child: Text('已隐藏'));
+      return Center(child: Text(S.of(context).svt_plan_hidden));
     }
     cur.fixDressLength(svt.itemCost.dress.length);
     target.fixDressLength(svt.itemCost.dress.length);
-    return Table(
-      // border: TableBorder.all(),
-      children: [
-        TableRow(children: [
-          _getItem('灵基 ', cur.ascension, target.ascension),
-          _getItem('圣杯 ', cur.grail, target.grail),
-          Container()
-        ]),
-        TableRow(children: [
-          for (int i = 0; i < 3; i++)
-            _getItem('技能${i + 1}', cur.skills[i], target.skills[i])
-        ]),
-        if (cur.dress.isNotEmpty)
-          for (int row = 0; row < cur.dress.length / 3; row++)
-            TableRow(
-              children: List.generate(3, (col) {
-                final dressIndex = row * 3 + col;
-                if (dressIndex >= cur.dress.length)
-                  return Container();
-                else
-                  return _getItem('灵衣${dressIndex + 1}', cur.dress[dressIndex],
-                      target.dress[dressIndex]);
-              }),
-            ),
-      ],
+    return DefaultTextStyle(
+      style: TextStyle(
+        fontSize: 12,
+        color: Colors.black54,
+        fontFamily: 'RobotoMono',
+      ),
+      child: Table(
+        // border: TableBorder.all(),
+        children: [
+          TableRow(children: [
+            _getHeader(S.of(context).ascension + ':'),
+            _getRange(cur.ascension, target.ascension),
+            _getHeader(S.of(context).grail + ':'),
+            _getRange(cur.grail, target.grail),
+          ]),
+          TableRow(children: [
+            _getHeader(S.of(context).skill + ':'),
+            for (int i = 0; i < 3; i++)
+              _getRange(cur.skills[i], target.skills[i])
+          ]),
+          if (cur.dress.isNotEmpty)
+            for (int row = 0; row < cur.dress.length / 3; row++)
+              TableRow(
+                children: [
+                  _getHeader(S.of(context).dress + ':'),
+                  ...List.generate(3, (col) {
+                    final dressIndex = row * 3 + col;
+                    if (dressIndex >= cur.dress.length)
+                      return Container();
+                    else
+                      return _getRange(
+                          cur.dress[dressIndex], target.dress[dressIndex]);
+                  })
+                ],
+              ),
+        ],
+      ),
     );
   }
 
@@ -593,12 +600,13 @@ class ServantListPageState extends State<ServantListPage>
 
   Widget _buildButtonBar() {
     final buttons = [
-      Text('规划'),
       DropdownButton(
         value: _planTargetAscension,
-        hint: Text('灵基'),
+        hint: Text(S.of(context).ascension),
         items: List.generate(
-            5, (i) => DropdownMenuItem(value: i, child: Text('灵基$i'))),
+            5,
+            (i) => DropdownMenuItem(
+                value: i, child: Text('${S.current.ascension} $i'))),
         onChanged: (v) {
           setState(() {
             _planTargetAscension = v;
@@ -614,9 +622,11 @@ class ServantListPageState extends State<ServantListPage>
       ),
       DropdownButton(
         value: _planTargetSkill,
-        hint: Text('技能'),
+        hint: Text(S.of(context).skill),
         items: List.generate(
-            10, (i) => DropdownMenuItem(value: i, child: Text('技能${i + 1}'))),
+            10,
+            (i) => DropdownMenuItem(
+                value: i, child: Text('${S.current.skill} ${i + 1}'))),
         onChanged: (v) {
           setState(() {
             _planTargetSkill = v;
@@ -634,11 +644,11 @@ class ServantListPageState extends State<ServantListPage>
       ),
       DropdownButton(
         value: _planTargetDress,
-        hint: Text('灵衣'),
+        hint: Text(S.of(context).dress),
         items: List.generate(
             2,
-            (i) =>
-                DropdownMenuItem(value: i, child: Text('灵衣' + ['×', '√'][i]))),
+            (i) => DropdownMenuItem(
+                value: i, child: Text(S.of(context).dress + ['×', '√'][i]))),
         onChanged: (v) {
           setState(() {
             _planTargetDress = v;
@@ -663,7 +673,7 @@ class ServantListPageState extends State<ServantListPage>
             detail: false,
           );
         },
-        child: Text('→素材'),
+        child: Text('→' + S.of(context).item),
       ),
     ];
     return Container(
@@ -683,11 +693,12 @@ class ServantListPageState extends State<ServantListPage>
     showDialog(
       context: context,
       builder: (context) => SimpleDialog(
-        title: Text('选择复制来源'),
+        title: Text(S.of(context).select_copy_plan_source),
         children: List.generate(db.curUser.servantPlans.length, (index) {
           bool isCur = index == db.curUser.curSvtPlanNo;
           return ListTile(
-            title: Text('规划 ${index + 1} ' + (isCur ? '(当前)' : '')),
+            title: Text('${S.current.plan} ${index + 1} ' +
+                (isCur ? '(${S.current.current_})' : '')),
             onTap: isCur
                 ? null
                 : () {

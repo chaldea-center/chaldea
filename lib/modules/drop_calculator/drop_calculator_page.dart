@@ -37,7 +37,10 @@ class _DropCalculatorPageState extends State<DropCalculatorPage>
         actions: [],
         bottom: TabBar(
           controller: _tabController,
-          tabs: [Tab(text: '素材'), Tab(text: 'Free本')],
+          tabs: [
+            Tab(text: S.of(context).item),
+            Tab(text: S.of(context).free_quest)
+          ],
           onTap: (_) {
             FocusScope.of(context).unfocus();
           },
@@ -89,7 +92,8 @@ class DropCalcInputTab extends StatefulWidget {
   _DropCalcInputTabState createState() => _DropCalcInputTabState();
 }
 
-class _DropCalcInputTabState extends State<DropCalcInputTab> {
+class _DropCalcInputTabState extends State<DropCalcInputTab>
+    with AfterLayoutMixin {
   GLPKParams params;
   Map<String, List<String>> pickerData = {};
   final solver = GLPKSolver();
@@ -98,12 +102,6 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
   void initState() {
     super.initState();
     // init picker data
-    db.gameData.items.keys.forEach((name) {
-      final category = getItemCategory(name);
-      if (category != null) {
-        pickerData.putIfAbsent(getItemCategory(name), () => []).add(name);
-      }
-    });
 
     // reset params
     params = db.userData.glpkParams
@@ -122,6 +120,16 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
   }
 
   @override
+  void afterFirstLayout(BuildContext context) {
+    db.gameData.items.keys.forEach((name) {
+      final category = getItemCategory(name);
+      if (category != null) {
+        pickerData.putIfAbsent(getItemCategory(name), () => []).add(name);
+      }
+    });
+  }
+
+  @override
   void dispose() {
     solver.dispose();
     super.dispose();
@@ -132,7 +140,8 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     return Column(
       children: <Widget>[
         if (params.rows.isEmpty)
-          ListTile(title: Center(child: Text('No item data, click + to add.'))),
+          ListTile(
+              title: Center(child: Text(S.of(context).drop_calc_empty_hint))),
         Expanded(child: _buildInputRows()),
         _buildButtonBar(),
       ],
@@ -180,8 +189,9 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                           setState(() {
                             String selected = picker.getSelectedValues().last;
                             if (params.rows.contains(selected)) {
-                              EasyLoading.showToast(
-                                  '$selected already in list');
+                              EasyLoading.showToast(S
+                                  .of(context)
+                                  .item_already_exist_hint(selected));
                             } else {
                               params.rows[index] = selected;
                             }
@@ -239,7 +249,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: 4,
               children: <Widget>[
-                Text('最低AP'),
+                Text(S.of(context).drop_calc_min_ap),
                 DropdownButton(
                     value: params.minCost,
                     items: List.generate(
@@ -253,12 +263,14 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: 4,
               children: <Widget>[
-                Text('优化'),
+                Text(S.of(context).drop_calc_optimize),
                 DropdownButton(
                     value: params.costMinimize,
                     items: [
-                      DropdownMenuItem(value: true, child: Text('AP')),
-                      DropdownMenuItem(value: false, child: Text('次数'))
+                      DropdownMenuItem(
+                          value: true, child: Text(S.of(context).ap)),
+                      DropdownMenuItem(
+                          value: false, child: Text(S.of(context).counts))
                     ],
                     onChanged: (v) => params.costMinimize = v),
               ],
@@ -267,12 +279,13 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: 4,
               children: <Widget>[
-                Text('版本'),
                 DropdownButton(
                     value: params.maxColNum > 0,
                     items: [
-                      DropdownMenuItem(value: true, child: Text('国服')),
-                      DropdownMenuItem(value: false, child: Text('日服'))
+                      DropdownMenuItem(
+                          value: true, child: Text(S.of(context).server_cn)),
+                      DropdownMenuItem(
+                          value: false, child: Text(S.of(context).server_jp))
                     ],
                     onChanged: (v) => params.maxColNum =
                         v ? db.gameData.glpk.cnMaxColNum : -1),
@@ -307,7 +320,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                     width: 75,
                     child: Center(
                       child: Text(
-                        'Solve',
+                        S.of(context).drop_calc_solve,
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -317,13 +330,8 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                     icon: Icon(Icons.help, color: Colors.blueAccent),
                     onPressed: () {
                       SimpleCancelOkDialog(
-                        title: Text('Hints'),
-                        content: Text('计算结果仅供参考==\n'
-                            '>>>最低AP：\n过滤AP较低的free\n'
-                            '筛选时将保证每个素材至少有一个关卡\n'
-                            '>>>目标：\n最低总次数或最低总AP为优化目标\n'
-                            '>>>版本：\n选择国服则国服未实装的素材将被踢出群\n'
-                            ''),
+                        title: Text(S.of(context).help),
+                        content: Text(S.of(context).drop_calc_help_text),
                       ).show(context);
                     })
               ],
@@ -344,12 +352,17 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     final item = db.gameData.items[itemKey];
     if (item.category == 1) {
       if (item.rarity <= 3) {
-        return ['', '铜', '银', '金'][item.rarity] + '素材';
+        return [
+          'Unknown',
+          S.of(context).item_category_copper,
+          S.of(context).item_category_silver,
+          S.of(context).item_category_gold
+        ][item.rarity];
       }
     } else if (item.category == 2) {
-      return '技能石';
+      return S.of(context).item_category_gems;
     } else if (item.category == 3) {
-      return '棋子';
+      return S.of(context).item_category_ascension;
     }
     return null;
   }
@@ -363,7 +376,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
         widget.onSolved(solution);
       }
     } else {
-      EasyLoading.showToast('invalid inputs.');
+      EasyLoading.showToast(S.of(context).input_invalid_hint);
     }
   }
 }
@@ -386,8 +399,10 @@ class _DropCalcOutputTabState extends State<DropCalcOutputTab> {
           decoration: BoxDecoration(
               border: Border(bottom: Divider.createBorderSide(context))),
           child: ListTile(
-            title: Text('总次数: ${widget.solution?.totalNum ?? "-"}'),
-            trailing: Text('总AP: ${widget.solution?.totalCost ?? "-"}'),
+            title: Text(
+                '${S.current.total_counts}: ${widget.solution?.totalNum ?? "-"}'),
+            trailing: Text(
+                '${S.current.total_ap}: ${widget.solution?.totalCost ?? "-"}'),
           ),
         ),
         Expanded(

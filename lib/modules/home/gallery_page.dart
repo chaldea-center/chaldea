@@ -22,11 +22,6 @@ class GalleryPage extends StatefulWidget {
 }
 
 class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
-  Map<String, GalleryItem> kAllGalleryItems;
-  final GlobalKey<ServantListPageState> _svtKey = GlobalKey();
-  final GlobalKey<CraftListPageState> _craftKey = GlobalKey();
-  final GlobalKey<CmdCodeListPageState> _cmdKey = GlobalKey();
-
   @override
   void afterFirstLayout(BuildContext context) {
     if (db.userData.sliderUpdateTime?.isNotEmpty != true ||
@@ -92,25 +87,25 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
     }
   }
 
-  void updateGalleries(BuildContext context) {
-    kAllGalleryItems = {
+  Map<String, GalleryItem> get kAllGalleryItems {
+    return {
       GalleryItem.servant: GalleryItem(
         name: GalleryItem.servant,
         title: S.of(context).servant_title,
         icon: Icons.people,
-        builder: (context, _) => ServantListPage(key: _svtKey),
+        builder: (context, _) => ServantListPage(),
       ),
-      GalleryItem.craft_essential: GalleryItem(
-        name: GalleryItem.craft_essential,
-        title: S.of(context).craft_essential,
+      GalleryItem.craft_essence: GalleryItem(
+        name: GalleryItem.craft_essence,
+        title: S.of(context).craft_essence_title,
         icon: Icons.extension,
-        builder: (context, _) => CraftListPage(key: _craftKey),
+        builder: (context, _) => CraftListPage(),
       ),
       GalleryItem.cmd_code: GalleryItem(
         name: GalleryItem.cmd_code,
         title: S.of(context).cmd_code_title,
         icon: Icons.stars,
-        builder: (context, _) => CmdCodeListPage(key: _cmdKey),
+        builder: (context, _) => CmdCodeListPage(),
       ),
       GalleryItem.item: GalleryItem(
         name: GalleryItem.item,
@@ -126,14 +121,14 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       ),
       GalleryItem.plan: GalleryItem(
         name: GalleryItem.plan,
-        title: '规划',
+        title: S.of(context).plan_title,
         icon: Icons.analytics,
         builder: (context, _) => ServantListPage(planMode: true),
         isDetail: false,
       ),
       GalleryItem.drop_calculator: GalleryItem(
         name: GalleryItem.drop_calculator,
-        title: S.of(context).drop_calculator,
+        title: S.of(context).drop_calculator_short,
         icon: Icons.pin_drop,
         builder: (context, _) => DropCalculatorPage(),
         isDetail: true,
@@ -147,14 +142,14 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       // ),
       GalleryItem.ap_cal: GalleryItem(
         name: GalleryItem.ap_cal,
-        title: 'AP计算',
+        title: S.of(context).ap_calc_title,
         icon: Icons.directions_run,
         builder: (context, _) => APCalcPage(),
         isDetail: true,
       ),
       GalleryItem.statistics: GalleryItem(
         name: GalleryItem.statistics,
-        title: '统计',
+        title: S.of(context).statistics_title,
         icon: Icons.analytics,
         builder: (context, _) => GameStatisticsPage(),
         isDetail: true,
@@ -181,14 +176,13 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
   @override
   Widget build(BuildContext context) {
     final sliderPages = _getSliderPages();
-    updateGalleries(context);
     return Scaffold(
         appBar: AppBar(
           title: Text("Chaldea"),
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.refresh),
-                tooltip: 'Refresh sliders',
+                tooltip: S.of(context).tooltip_refresh_sliders,
                 onPressed: () {
                   resolveSliderImageUrls();
                 }),
@@ -281,7 +275,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
           showDialog(
             context: context,
             builder: (context) => SimpleCancelOkDialog(
-              title: Text('跳转到Mooncell?'),
+              title: Text(S.of(context).jump_to('Mooncell')),
               content: Text(link,
                   style: TextStyle(decoration: TextDecoration.underline)),
               onTapOk: () async {

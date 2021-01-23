@@ -44,8 +44,9 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     // 复刻
     if (event.grail2crystal > 0) {
       children.add(SwitchListTile.adaptive(
-        title: Text('复刻活动'),
-        subtitle: Text('圣杯替换为传承结晶 ${event.grail2crystal} 个'),
+        title: Text(S.of(context).rerun_event),
+        subtitle:
+            Text(S.of(context).event_rerun_replace_grail(event.grail2crystal)),
         value: plan.rerun,
         onChanged: (v) => setState(() => plan.rerun = v),
       ));
@@ -55,9 +56,12 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     if (event.lottery?.isNotEmpty == true) {
       children
         ..add(ListTile(
-          title: Text(event.lotteryLimit > 0 ? '有限池' : '无限池'),
-          subtitle: Text(
-              event.lotteryLimit > 0 ? '最多${event.lotteryLimit}池' : '共计池数'),
+          title: Text(event.lotteryLimit > 0
+              ? S.of(context).event_lottery_limited
+              : S.of(context).event_lottery_unlimited),
+          subtitle: event.lotteryLimit > 0
+              ? Text(S.of(context).event_lottery_limit_hint(event.lotteryLimit))
+              : null,
           trailing: SizedBox(
               width: 80,
               child: TextField(
@@ -67,7 +71,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
                 scrollPadding: EdgeInsets.zero,
                 decoration: InputDecoration(
                   counterText: '',
-                  suffixText: '池',
+                  suffixText: S.of(context).event_lottery_unit,
                   isDense: true,
                 ),
                 controller: _lotteryController,
@@ -86,7 +90,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
       ..removeWhere((key, value) => value <= 0);
     if (items.isNotEmpty) {
       children
-        ..add(ListTile(title: Text('商店&任务&点数&关卡掉落奖励')))
+        ..add(ListTile(title: Text(S.of(context).event_item_default)))
         ..add(buildClassifiedItemList(
             context: context, data: items, onTap: onTapIcon));
     }
@@ -94,7 +98,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     // 狩猎 无限池终本掉落等
     if (event.extra?.isNotEmpty == true) {
       children
-        ..add(ListTile(title: Text('Extra items')))
+        ..add(ListTile(title: Text(S.of(context).event_item_extra)))
         ..add(_buildExtraItems(event.extra, plan.extra));
     }
     return Scaffold(
@@ -104,14 +108,15 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
         actions: [
           IconButton(
             icon: Icon(Icons.archive_outlined),
-            tooltip: '收取素材',
+            tooltip: S.of(context).event_collect_items,
             onPressed: () {
               if (plan?.enable != true) {
-                showInformDialog(context, content: '活动未列入规划');
+                showInformDialog(context,
+                    content: S.of(context).event_not_planned);
               } else {
                 SimpleCancelOkDialog(
-                  title: Text('确定收取素材'),
-                  content: Text('所有素材添加到素材仓库，并将该活动移出规划'),
+                  title: Text(S.of(context).confirm),
+                  content: Text(S.of(context).event_collect_item_confirm),
                   onTapOk: () {
                     sumDict([db.curUser.items, event.getItems(plan)],
                         inPlace: true);

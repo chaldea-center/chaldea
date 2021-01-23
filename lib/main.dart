@@ -37,6 +37,7 @@ void main() async {
       releaseConfig: catcherOptions,
       enableLogger: true,
       ensureInitialized: true,
+      navigatorKey: kAppKey,
     );
 }
 

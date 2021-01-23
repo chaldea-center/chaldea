@@ -71,10 +71,10 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     List<Widget> children = [];
     if (svt.no != 1) {
       children.add(TileGroup(
-        header: '灵基再临',
+        header: S.of(context).ascension_up,
         children: <Widget>[
           buildPlanRow(
-            title: '灵基再临',
+            title: S.of(context).ascension_up,
             start: curVal.ascension,
             end: targetVal.ascension,
             minVal: 0,
@@ -91,7 +91,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             },
             detailPageBuilder: (context) => LevelingCostPage(
               costList: svt.itemCost.ascension,
-              title: '灵基再临',
+              title: S.of(context).ascension_up,
               curLv: curVal.ascension,
               targetLv: targetVal.ascension,
             ),
@@ -128,13 +128,14 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         },
         detailPageBuilder: (context) => LevelingCostPage(
           costList: svt.itemCost.skill,
-          title: '技能${index + 1} - ${skill.name}',
+          title: '${S.current.skill} ${index + 1} - ${skill.name}',
           curLv: curVal.skills[index],
           targetLv: targetVal.skills[index],
         ),
       ));
     }
-    children.add(TileGroup(header: '技能升级', children: skillWidgets));
+    children
+        .add(TileGroup(header: S.of(context).skill_up, children: skillWidgets));
 
     // dress part
     List<Widget> dressWidgets = [];
@@ -166,20 +167,20 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         },
         detailPageBuilder: (context) => LevelingCostPage(
           costList: [svt.itemCost.dress[index]],
-          title: '灵衣开放 - ${svt.itemCost.dressName[index]}',
+          title: '${S.current.dress_up} - ${svt.itemCost.dressName[index]}',
         ),
       ));
     }
     if (dressWidgets.length > 0) {
-      children.add(TileGroup(header: '灵衣开放', children: dressWidgets));
+      children.add(
+          TileGroup(header: S.of(context).dress_up, children: dressWidgets));
     }
 
     children.add(TileGroup(
-      header: '其他',
       children: <Widget>[
         buildPlanRow(
           leading: Image(image: db.getIconImage('宝具强化'), height: 110 * 0.3),
-          title: '宝具等级',
+          title: S.of(context).nobel_phantasm_level,
           start: status.tdLv,
           minVal: 1,
           maxVal: 5,
@@ -194,7 +195,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         if (svt.no != 1)
           buildPlanRow(
             leading: Image(image: db.getIconImage('圣杯'), height: 110 * 0.3),
-            title: '圣杯等级',
+            title: S.of(context).grail_up,
             start: curVal.grail,
             end: targetVal.grail,
             minVal: 0,
@@ -305,7 +306,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           enhancePlan = ServantPlan.from(curVal);
           enhanceMode = !enhanceMode;
         }),
-        child: Text(enhanceMode ? S.of(context).cancel : '强化'),
+        child: Text(enhanceMode ? S.of(context).cancel : S.of(context).enhance),
         style: ElevatedButton.styleFrom(
             primary:
                 enhanceMode ? Colors.grey : Theme.of(context).primaryColor),
@@ -335,7 +336,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     // max ↑
     buttons.add(IconButton(
       icon: Icon(Icons.vertical_align_top),
-      tooltip: '练度最大化(310)',
+      tooltip: S.of(context).skilled_max10,
       onPressed: () {
         curVal.setMax(skill: 10);
         targetPlan.setMax(skill: 10);
@@ -350,7 +351,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         Padding(padding: EdgeInsets.fromLTRB(0, 0, 8, 4), child: Text('9')),
         IconButton(
           icon: Icon(Icons.trending_up),
-          tooltip: '规划最大化(999)',
+          tooltip: S.of(context).plan_max9,
           onPressed: () {
             targetPlan.setMax(skill: 9);
             curVal.favorite = true;
@@ -370,7 +371,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         Padding(padding: EdgeInsets.fromLTRB(0, 0, 4, 4), child: Text('10')),
         IconButton(
           icon: Icon(Icons.trending_up),
-          tooltip: '规划最大化(310)',
+          tooltip: S.of(context).plan_max10,
           onPressed: () {
             curVal.favorite = true;
             targetPlan.setMax(skill: 10);
@@ -414,7 +415,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     showDialog(
       context: context,
       builder: (context) => SimpleCancelOkDialog(
-        title: Text('强化将扣除以下素材'),
+        title: Text(S.of(context).enhance_warning),
         content: Container(
             width: defaultDialogWidth(context),
             child: hasItem

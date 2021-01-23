@@ -9,7 +9,7 @@ class Servant {
   String mcLink;
   String icon;
   ServantBaseInfo info;
-  List<TreasureDevice> treasureDevice;
+  List<NobelPhantasm> nobelPhantasm;
   List<ActiveSkill> activeSkills;
   List<Skill> passiveSkills;
   ItemCost itemCost;
@@ -27,7 +27,7 @@ class Servant {
     this.mcLink,
     this.icon,
     this.info,
-    this.treasureDevice,
+    this.nobelPhantasm,
     this.activeSkills,
     this.passiveSkills,
     this.itemCost,
@@ -275,7 +275,7 @@ class ServantBaseInfo {
 }
 
 @JsonSerializable(checked: true)
-class TreasureDevice {
+class NobelPhantasm {
   String state;
   String name;
   String nameJp;
@@ -287,7 +287,7 @@ class TreasureDevice {
   String typeText;
   List<Effect> effects;
 
-  TreasureDevice({
+  NobelPhantasm({
     this.state,
     this.name,
     this.nameJp,
@@ -300,10 +300,10 @@ class TreasureDevice {
     this.effects,
   });
 
-  factory TreasureDevice.fromJson(Map<String, dynamic> data) =>
-      _$TreasureDeviceFromJson(data);
+  factory NobelPhantasm.fromJson(Map<String, dynamic> data) =>
+      _$NobelPhantasmFromJson(data);
 
-  Map<String, dynamic> toJson() => _$TreasureDeviceToJson(this);
+  Map<String, dynamic> toJson() => _$NobelPhantasmToJson(this);
 }
 
 @JsonSerializable(checked: true)

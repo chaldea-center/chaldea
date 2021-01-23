@@ -29,18 +29,18 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
     }
 
     return ListView(children: [
-      SHeader('主动技能'),
+      SHeader(S.of(context).active_skill),
       for (var index = 0; index < svt.activeSkills.length; index++)
-        buildSkill(index),
+        buildActiveSkill(index),
       if (svt.passiveSkills?.isNotEmpty == true) ...[
-        SHeader('职阶技能'),
+        SHeader(S.of(context).passive_skill),
         for (var index = 0; index < svt.passiveSkills.length; index++)
           buildPassiveSkill(index),
       ]
     ]);
   }
 
-  Widget buildSkill(int index) {
+  Widget buildActiveSkill(int index) {
     ActiveSkill activeSkill = svt.activeSkills[index];
     Skill skill =
         activeSkill.skills[status.skillIndex[index] ?? activeSkill.cnState];
@@ -85,7 +85,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
         CustomTile(
           contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
           leading: Image(image: db.getIconImage(skill.icon), height: 110 * 0.3),
-          title: Text('${skill.name} ${skill.rank}'),
+          title: Text('${skill.name} ${skill.rank ?? ""}'),
         ),
         for (Effect effect in skill.effects) ...buildEffect(effect),
       ],

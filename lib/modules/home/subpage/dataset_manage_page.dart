@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math' show min;
@@ -32,48 +33,59 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: Text('数据管理'),
+        title: Text(S.of(context).dataset_management),
         actions: <Widget>[],
       ),
       body: ListView(
         children: <Widget>[
           TileGroup(
-            header: '个人数据',
-            footer: '更新数据/版本/bug较多时，建议提前备份数据，卸载应用将导致内部备份丢失，及时转移到可靠的储存位置',
+            header: S.of(context).userdata,
+            footer: S.of(context).settings_userdata_footer,
             children: <Widget>[
               ListTile(
-                title: Text('清除'),
+                title: Text(S.of(context).clear),
                 onTap: () {
                   SimpleCancelOkDialog(
-                    title: Text('Confirm'),
-                    content: Text('Delete userdata?'),
+                    title: Text(S.of(context).clear_userdata),
                     onTapOk: () async {
-                      EasyLoading.showToast('cleaning userdata...');
                       await db.clearData(user: true, game: false);
-                      setState(() {});
-                      EasyLoading.showToast('userdata cleared.');
+                      db.onAppUpdate();
+                      EasyLoading.showToast(S.of(context).userdata_cleared);
                     },
                   ).show(context);
                 },
               ),
               ListTile(
-                title: Text('备份'),
+                title: Text(S.of(context).backup),
                 onTap: () {
                   SimpleCancelOkDialog(
-                    title: Text('Confirm'),
-                    content: Text('备份到此文件夹:\n${db.paths.userDataDir}'),
+                    title: Text(S.of(context).backup),
+                    content: Text(Platform.isIOS
+                        ? S.of(context).ios_app_path + '/user'
+                        : db.paths.userDataDir),
                     onTapOk: () async {
                       final fp = db.backupUserdata();
                       showInformDialog(context,
-                          title: 'Backup success',
+                          title: S.of(context).backup_success,
                           content: fp,
                           actions: [
                             if (Platform.isAndroid || Platform.isIOS)
                               TextButton(
-                                child: Text('分享'),
+                                child: Text(S.of(context).share),
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                   Share.shareFiles([fp]);
+                                },
+                              ),
+                            if (Platform.isMacOS || Platform.isWindows)
+                              TextButton(
+                                child: Text(S.of(context).open),
+                                onPressed: () {
+                                  Process.run(
+                                    Platform.isMacOS ? 'open' : 'start',
+                                    [db.paths.userDataDir],
+                                    runInShell: true,
+                                  );
                                 },
                               ),
                           ]);
@@ -82,7 +94,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 },
               ),
               ListTile(
-                title: Text('导入'),
+                title: Text(S.of(context).import_data),
                 onTap: () async {
                   try {
                     FilePickerCross result =
@@ -92,15 +104,15 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                     db.userData = UserData.fromJson(
                         json.decode(File(path).readAsStringSync()));
                     EasyLoading.showToast(
-                        'successfully imported userdata:\n$path');
+                        '${S.current.import_data_success}:\n$path');
                     db.saveUserData();
                   } on FileSelectionCanceledError {} catch (e) {
-                    EasyLoading.showToast('Import userdata failed! Error:\n$e');
+                    EasyLoading.showToast(S.of(context).import_data_error(e));
                   }
                 },
               ),
               ListTile(
-                title: Text('导入Guda数据'),
+                title: Text(S.of(context).import_guda_data),
                 onTap: () async {
                   showModalBottomSheet(
                       context: context,
@@ -110,12 +122,12 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                           children: [
                             ListTile(
                               leading: Icon(Icons.people),
-                              title: Text('从者数据'),
+                              title: Text(S.of(context).guda_servant_data),
                               onTap: () => importGudaData(false),
                             ),
                             ListTile(
                               leading: Icon(Icons.category),
-                              title: Text('素材数据'),
+                              title: Text(S.of(context).guda_item_data),
                               onTap: () => importGudaData(true),
                             ),
                           ],
@@ -124,108 +136,70 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 },
               ),
               ListTile(
-                title: Text('重置从者强化本状态'),
-                subtitle: Text('宝具本/技能本恢复成国服状态'),
+                title: Text(S.of(context).reset_svt_enhance_state),
+                subtitle: Text(S.of(context).reset_svt_enhance_state_hint),
                 onTap: () {
                   db.curUser.servants.forEach((svtNo, svt) {
                     svt.tdIndex = 0;
                     svt.skillIndex.fillRange(0, svt.skillIndex.length, null);
                   });
                   db.saveUserData();
-                  EasyLoading.showToast('已重置');
+                  EasyLoading.showToast(S.of(context).reset_success);
                 },
               )
             ],
           ),
           TileGroup(
-            header: '游戏数据',
+            header: S.of(context).gamedata,
             children: <Widget>[
               ListTile(
-                title: Text('版本'),
+                title: Text(S.of(context).version),
                 trailing: Text(db.gameData.version),
               ),
-
               ListTile(
-                title: Text('下载最新数据'),
+                title: Text(S.of(context).download_latest_gamedata),
                 onTap: downloadGamedata,
               ),
               ListTile(
-                title: Text('重新载入预装版本'),
+                title: Text(S.of(context).reload_default_gamedata),
                 onTap: () {
                   SimpleCancelOkDialog(
-                    title: Text('Confirm'),
-                    content: Text('reload default dataset?'),
+                    title: Text(S.of(context).reload_default_gamedata),
                     onTapOk: () async {
-                      EasyLoading.showToast('reloading gamedata...',
-                          duration: Duration(seconds: 4));
+                      var canceler = showMyProgress(status: 'reloading');
                       await db.loadZipAssets(kDatasetAssetKey, force: true);
+                      canceler();
                       if (db.loadGameData()) {
-                        EasyLoading.showToast('gamedata reloaded.');
+                        EasyLoading.showToast(
+                            S.of(context).reload_data_success);
                       }
-                      setState(() {});
+                      db.onAppUpdate();
                     },
                   ).show(context);
                 },
               ),
-              // TODO: disabled, download all images including illustration
-              if (kDebugMode_)
-                ListTile(
-                  title: Text('Download icons'),
-                  onTap: () {
-                    db.gameData.icons.forEach((name, icon) async {
-                      final filepath =
-                          pathlib.join(db.paths.gameIconDir, icon.originName);
-                      if (!File(filepath).existsSync()) {
-                        try {
-                          Response response =
-                              await _dio.download(icon.url, filepath);
-                          if (response.statusCode != 200) {
-                            print('error $name, response: $response');
-                            EasyLoading.showToast('$name download failed');
-                          } else {
-                            print('downloaded icon $name');
-                          }
-                        } catch (e) {
-                          print('download icon $name error: $e');
-                          EasyLoading.showToast('$name download failed');
-                        }
-                      }
-                    });
-                  },
-                ),
               ListTile(
-                title: Text('导入 (dataset*.zip/.json)'),
+                title:
+                    Text('${S.of(context).import_data} (dataset*.zip/.json)'),
                 onTap: importGamedata,
               ),
               ListTile(
-                title: Text('删除所有数据'),
-                subtitle: Text('包含用户数据、游戏数据、图片资源, 并加载默认资源'),
+                title: Text(S.of(context).delete_all_data),
+                subtitle: Text(S.of(context).delete_all_data_hint),
                 onTap: () {
                   SimpleCancelOkDialog(
-                    title: Text('Confirm'),
-                    content: Text('clear then reload default dataset?'),
+                    title: Text(S.of(context).delete_all_data),
                     onTapOk: () async {
-                      EasyLoading.showToast('clear & reloading',
-                          duration: Duration(seconds: 4));
-                      await db.clearData(game: true);
-                      setState(() {});
-                      EasyLoading.showToast('Default dataset loaded.');
+                      var canceler = showMyProgress(
+                          status: 'loading...',
+                          maskType: EasyLoadingMaskType.clear);
+                      db.clearData(game: true).then((_) {
+                        canceler();
+                        db.onAppUpdate();
+                      });
                     },
                   ).show(context);
                 },
-              ),
-              ListTile(
-                title: Text('下载源'),
-                subtitle: Text('用于游戏数据和应用的更新'),
-                trailing: DropdownButton(
-                  value: db.userData.appDatasetUpdateSource ?? 0,
-                  items: [
-                    DropdownMenuItem(child: Text('源1'), value: 0),
-                    DropdownMenuItem(child: Text('源2'), value: 1),
-                  ],
-                  onChanged: (v) =>
-                      setState(() => db.userData.appDatasetUpdateSource = v),
-                ),
               ),
             ],
           ),
@@ -298,7 +272,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
           print('Item $itemKey not found');
         }
       }
-      EasyLoading.showToast('导入素材数据成功');
+      EasyLoading.showToast(S.of(context).import_data_success);
       print(db.curUser.items);
       db.saveUserData();
     }
@@ -332,14 +306,16 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
         db.curUser.servants[svtNo] = ServantStatus(curVal: cur);
         db.curUser.curSvtPlan[svtNo] = target;
       }
-      EasyLoading.showToast('导入从者数据成功');
+      EasyLoading.showToast(S.of(context).import_data_success);
       db.saveUserData();
     }
 
     showInformDialog(
       context,
-      title: '导入${isItem ? '素材' : '从者'}数据',
-      content: '更新：保留本地数据并用导入的数据更新(推荐)\n覆盖：清楚本地数据再导入数据',
+      title: isItem
+          ? S.of(context).import_guda_items
+          : S.of(context).import_guda_servants,
+      content: S.of(context).import_guda_hint,
       showOk: false,
       showCancel: true,
       actions: [
@@ -359,7 +335,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 EasyLoading.showToast('Import failed! Error:\n$e');
               }
             },
-            child: Text('更新')),
+            child: Text(S.of(context).update)),
         TextButton(
             onPressed: () async {
               try {
@@ -379,19 +355,20 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 EasyLoading.showToast('Import failed! Error:\n$e');
               }
             },
-            child: Text('覆盖')),
+            child: Text(S.of(context).overwrite)),
       ],
     );
   }
 
   Future<void> importGamedata() async {
+    VoidCallback canceler;
     try {
       // final result = await FilePicker.platform.pickFiles();
       final result = await FilePickerCross.importFromStorage(
           type: FileTypeCross.custom, fileExtension: 'zip,json');
       final file = File(result.path);
       if (file.path.toLowerCase().endsWith('.zip')) {
-        EasyLoading.showToast('Loading', maskType: EasyLoadingMaskType.black);
+        canceler = showMyProgress(status: 'loading');
         await db.extractZip(
           file.readAsBytesSync().cast<int>(),
           db.paths.gameDataDir,
@@ -411,6 +388,8 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
     } on FileSelectionCanceledError {} catch (e) {
       showInformDialog(context,
           title: 'Import gamedata failed!', content: e.toString());
+    } finally {
+      canceler?.call();
     }
   }
 
@@ -428,6 +407,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
           url: release?.targetAsset?.browserDownloadUrl ?? '',
           savePath: fp,
           onComplete: () async {
+            var canceler = showMyProgress(status: 'loading');
             try {
               await db.extractZip(
                 File(fp).readAsBytesSync().cast<int>(),
@@ -435,9 +415,11 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
               );
               db.loadGameData();
               Navigator.of(context).pop();
-              EasyLoading.showToast('成功导入资源');
+              EasyLoading.showToast(S.of(context).import_data_success);
             } catch (e) {
-              EasyLoading.showToast('Error import dataset:\n$e');
+              EasyLoading.showToast(S.of(context).import_data_error(e));
+            } finally {
+              canceler();
             }
           },
         ),
@@ -451,18 +433,18 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: Text('完整数据包'),
-              subtitle: Text('包含文本和图片，较大，~25M'),
+              title: Text(S.of(context).dataset_type_entire),
+              subtitle: Text(S.of(context).dataset_type_entire_hint),
               onTap: () => _downloadAsset(true),
             ),
             ListTile(
-              title: Text('文本数据包'),
-              subtitle: Text('不包含图片，较小，~5M'),
+              title: Text(S.of(context).dataset_type_text),
+              subtitle: Text(S.of(context).dataset_type_text_hint),
               onTap: () => _downloadAsset(false),
             ),
             ListTile(
-              title: Text('前往下载页'),
-              subtitle: Text('下载后手动导入'),
+              title: Text(S.of(context).dataset_goto_download_page),
+              subtitle: Text(S.of(context).dataset_goto_download_page_hint),
               onTap: () {
                 launch(GitTool.getReleasePageUrl(
                     db.userData.appDatasetUpdateSource, false));

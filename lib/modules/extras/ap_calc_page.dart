@@ -31,12 +31,12 @@ class _APCalcPageState extends State<APCalcPage> {
   @override
   Widget build(BuildContext context) {
     final children = <Widget>[
-      _buildRow('现有AP', _curCtrl),
-      _buildRow('最大AP', _maxCtrl),
+      _buildRow(S.of(context).cur_ap, _curCtrl),
+      _buildRow(S.of(context).max_ap, _maxCtrl),
       ListTile(
         title: ElevatedButton(
           onPressed: calcTime,
-          child: Text('Calculate'),
+          child: Text(S.of(context).calculate),
         ),
       ),
       ListTile(
@@ -51,7 +51,7 @@ class _APCalcPageState extends State<APCalcPage> {
     return AutoUnfocusBuilder(
       builder: (context) => Scaffold(
         appBar: AppBar(
-          title: Text('AP溢出时间'),
+          title: Text(S.of(context).ap_overflow_time),
           leading: BackButton(),
         ),
         body: Column(
@@ -68,7 +68,7 @@ class _APCalcPageState extends State<APCalcPage> {
                 child: Padding(
                   padding: EdgeInsets.all(5),
                   child: Text(
-                    '口算不及格的咕朗台.jpg',
+                    S.of(context).ap_calc_page_joke,
                     style: TextStyle(fontSize: 10, fontWeight: FontWeight.w100),
                   ),
                 ),
@@ -133,6 +133,7 @@ class _APCalcPageState extends State<APCalcPage> {
     final now = DateTime.now();
     final end = now.add(duration);
     String day;
+    BackButton();
     switch (end.day - now.day) {
       case 0:
         day = 'Today';

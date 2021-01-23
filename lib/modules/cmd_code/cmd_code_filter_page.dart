@@ -21,13 +21,13 @@ class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData> {
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
-      title: Text('Filter'),
+      title: Text(S.of(context).filter),
       actions: getDefaultActions(onTapReset: () {
         filterData.reset();
         update();
       }),
       content: getListViewBody(children: [
-        getGroup(header: '显示', children: [
+        getGroup(header: S.of(context).filter_shown_type, children: [
           getToggleButton(
               texts: ['List', 'Grid'],
               isSelected: [!filterData.useGrid, filterData.useGrid],
@@ -36,13 +36,15 @@ class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData> {
                 update();
               }),
         ]),
-        getGroup(header: '排序', children: [
+        getGroup(header: S.of(context).filter_sort, children: [
           for (int i = 0; i < filterData.sortKeys.length; i++)
             getSortButton<CmdCodeCompare>(
               prefix: '${i + 1}',
               value: filterData.sortKeys[i],
-              items: Map.fromIterables(
-                  CmdCodeFilterData.sortKeyData, ['序号', '星级']),
+              items: Map.fromIterables(CmdCodeFilterData.sortKeyData, [
+                S.of(context).filter_sort_number,
+                S.of(context).filter_sort_rarity
+              ]),
               onSortAttr: (key) {
                 filterData.sortKeys[i] = key;
                 update();
@@ -55,17 +57,17 @@ class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData> {
             )
         ]),
         FilterGroup(
-          title: Text('稀有度'),
+          title: Text(S.of(context).rarity),
           options: CmdCodeFilterData.rarityData,
           values: filterData.rarity,
-          optionBuilder: (v) => Text('$v星'),
+          optionBuilder: (v) => Text('$v★'),
           onFilterChanged: (value) {
             filterData.rarity = value;
             update();
           },
         ),
         FilterGroup(
-          title: Text('分类'),
+          title: Text(S.of(context).filter_category),
           options: CmdCodeFilterData.categoryData,
           values: filterData.category,
           onFilterChanged: (value) {

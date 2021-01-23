@@ -15,7 +15,7 @@ class CraftListPage extends StatefulWidget {
 class CraftListPageState extends State<CraftListPage>
     with DefaultScrollBarMixin {
   CraftFilterData filterData;
-  List<CraftEssential> shownList = [];
+  List<CraftEssence> shownList = [];
   TextEditingController _inputController = TextEditingController();
   FocusNode _inputFocusNode = FocusNode();
   ScrollController _scrollController;
@@ -53,7 +53,7 @@ class CraftListPageState extends State<CraftListPage>
     }
   }
 
-  bool filtrateCraft(CraftEssential ce) {
+  bool filtrateCraft(CraftEssence ce) {
     if (filterData.filterString.isNotEmpty) {
       List<String> searchStrings = [
         ce.no.toString(),
@@ -102,7 +102,7 @@ class CraftListPageState extends State<CraftListPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).craft_essential),
+        title: Text(S.of(context).craft_essence),
         leading: MasterBackButton(),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(45),
@@ -151,7 +151,7 @@ class CraftListPageState extends State<CraftListPage>
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.filter_list),
-            tooltip: '筛选',
+            tooltip: S.of(context).filter,
             onPressed: () => FilterPage.show(
               context: context,
               builder: (context) => CraftFilterPage(
@@ -175,7 +175,7 @@ class CraftListPageState extends State<CraftListPage>
         shownList.add(ce);
       }
     });
-    shownList.sort((a, b) => CraftEssential.compare(
+    shownList.sort((a, b) => CraftEssence.compare(
         a, b, filterData.sortKeys, filterData.sortReversed));
 
     return wrapDefaultScrollBar(
@@ -188,7 +188,7 @@ class CraftListPageState extends State<CraftListPage>
     return ListView.separated(
         controller: _scrollController,
         separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
-        itemCount: shownList.length + 2,
+        itemCount: shownList.length + (shownList.isEmpty ? 1 : 2),
         itemBuilder: (context, index) {
           if (index == 0 || index == shownList.length + 1) {
             return CustomTile(
@@ -268,7 +268,7 @@ class CraftListPageState extends State<CraftListPage>
         }).toList());
   }
 
-  CraftEssential switchNext(int cur, bool next) {
+  CraftEssence switchNext(int cur, bool next) {
     if (shownList.length <= 0) return null;
     for (int i = 0; i < shownList.length; i++) {
       if (shownList[i].no == cur) {

@@ -38,10 +38,13 @@ class _MainRecordTabState extends State<MainRecordTab>
     return Column(
       children: <Widget>[
         CustomTile(
-          title: Text('章节'),
+          title: Text(S.of(context).main_record_chapter),
           trailing: Wrap(
             spacing: 10,
-            children: <Widget>[Text('主线掉落'), Text('主线奖励')],
+            children: <Widget>[
+              Text(S.of(context).main_record_fixed_drop),
+              Text(S.of(context).main_record_bonus)
+            ],
           ),
         ),
         Divider(thickness: 1),

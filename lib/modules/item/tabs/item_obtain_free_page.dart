@@ -24,12 +24,12 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
                 value: true,
                 groupValue: sortByAP,
                 onChanged: (v) => setState(() => sortByAP = v)),
-            Text('AP效率'),
+            Text(S.of(context).ap_efficiency),
             Radio(
                 value: false,
                 groupValue: sortByAP,
                 onChanged: (v) => setState(() => sortByAP = v)),
-            Text('掉率'),
+            Text(S.of(context).drop_rate),
           ],
         ),
         Divider(height: 1),
@@ -42,7 +42,7 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
     final glpk = db.gameData.glpk;
     int rowIndex = glpk.rowNames.indexOf(widget.itemKey);
     if (rowIndex < 0) {
-      return [ListTile(title: Text('no available free quests'))];
+      return [ListTile(title: Text(S.of(context).item_no_free_quests))];
     }
     final apRates = glpk.matrix[rowIndex];
     List<List> tmp = [];
@@ -64,17 +64,15 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
                     title: Text(questName),
                     subtitle: Text('cost ${glpk.costs[i]}AP.  ' +
                         (sortByAP
-                            ? '掉率 $dropRateString%.'
-                            : '效率 $apRateString AP/个.')),
+                            ? '${S.current.drop_rate} $dropRateString%.'
+                            : '${S.current.ap_efficiency} $apRateString AP.')),
                     trailing: Text(
-                        sortByAP ? '$apRateString AP/个' : '$dropRateString%'),
+                        sortByAP ? '$apRateString AP' : '$dropRateString%'),
                     onTap: quest == null
                         ? null
-                        : () {
-                            state.setState(() {
+                        : () => state.setState(() {
                               state.value = !state.value;
-                            });
-                          },
+                            }),
                   ),
                   if (state.value && quest != null) QuestCard(quest: quest)
                 ],

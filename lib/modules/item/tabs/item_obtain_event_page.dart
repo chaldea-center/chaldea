@@ -10,20 +10,22 @@ class ItemObtainEventPage extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> children = [];
     final highlight = TextStyle(color: Colors.blueAccent);
-    children.add(SHeader('素材交换券'));
+    children.add(SHeader(S.of(context).exchange_ticket));
     db.gameData.events.exchangeTickets.values.forEach((ticket) {
       int itemIndex = ticket.items.indexOf(itemKey);
       if (itemIndex >= 0 && ticket.isNotOutdated()) {
         int itemNum = db.curUser.events.exchangeTickets[ticket.month]
             ?.elementAt(itemIndex);
         children.add(ListTile(
-          title: Text('交换券${ticket.month}'),
+          title: Text(S.of(context).exchange_ticket_short +
+              ' ' +
+              ticket.month.toString()),
           subtitle: Text(ticket.items.join('/')),
           trailing: Text('${itemNum ?? 0}/${ticket.days}'),
         ));
       }
     });
-    children.add(SHeader('主线掉落与通关奖励'));
+    children.add(SHeader(S.of(context).main_record));
     db.gameData.events.mainRecords.values.toList()
       ..sort((a, b) => a.startTimeJp.compareTo(b.startTimeJp))
       ..forEach((record) {
@@ -34,7 +36,8 @@ class ItemObtainEventPage extends StatelessWidget {
               hasReward = record.rewardsWithRare.containsKey(itemKey);
           if (hasDrop) {
             texts.add(TextSpan(
-                text: '掉落${record.drops[itemKey]}',
+                text: S.of(context).main_record_fixed_drop_short +
+                    record.drops[itemKey].toString(),
                 style: plan?.elementAt(0) == true ? highlight : null));
           }
           if (hasDrop && hasReward) {
@@ -42,7 +45,8 @@ class ItemObtainEventPage extends StatelessWidget {
           }
           if (hasReward) {
             texts.add(TextSpan(
-                text: '奖励${record.rewardsWithRare[itemKey]}',
+                text: S.of(context).main_record_bonus_short +
+                    record.rewardsWithRare[itemKey].toString(),
                 style: plan?.elementAt(1) == true ? highlight : null));
           }
           if (texts.length > 0) {
@@ -59,7 +63,7 @@ class ItemObtainEventPage extends StatelessWidget {
           }
         }
       });
-    children.add(SHeader('限时活动'));
+    children.add(SHeader(S.of(context).limited_event));
     db.gameData.events.limitEvents.values.toList()
       ..sort((a, b) => a.startTimeJp.compareTo(b.startTimeJp))
       ..forEach((limitEvent) {
@@ -74,8 +78,10 @@ class ItemObtainEventPage extends StatelessWidget {
             trailing: Text(
               [
                 if (numShop != null) '$numShop',
-                if (numLottery != null) '无限池 $numLottery*${plan?.lottery ?? 0}',
-                if (hasExtra) 'Extra ${(plan?.extra ?? {})[itemKey] ?? 0}',
+                if (numLottery != null)
+                  '${S.current.event_lottery_unlimited} $numLottery*${plan?.lottery ?? 0}',
+                if (hasExtra)
+                  '${S.current.event_item_extra} ${(plan?.extra ?? {})[itemKey] ?? 0}',
               ].join('\n'),
               style: plan?.enable == true ? highlight : null,
               textAlign: TextAlign.right,

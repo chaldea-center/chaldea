@@ -26,7 +26,7 @@ class _ChaldeaState extends State<Chaldea> {
     return MaterialApp(
       title: "Chaldea",
       debugShowCheckedModeBanner: false,
-      navigatorKey: Catcher.navigatorKey,
+      navigatorKey: kAppKey,
       locale: Language.getLanguage(db.userData?.language)?.locale ??
           Language.chs.locale,
       localizationsDelegates: [
@@ -67,15 +67,6 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
       await db.loadZipAssets(kDatasetAssetKey);
       db.userData.previousBuildNumber = AppInfo.buildNumber;
       db.loadGameData();
-      // await SimpleCancelOkDialog(
-      //   title: Text('资源不存在或已损坏'),
-      //   content: Text('是否重新下载?'),
-      //   onTapOk: () async {
-      //     await db.downloadGameData();
-      //     db.itemStat.update();
-      //     setState(() {});
-      //   },
-      // ).show(context);
     }
     db.itemStat.update();
     db.checkNetwork();

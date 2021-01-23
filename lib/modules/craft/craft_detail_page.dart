@@ -1,8 +1,8 @@
 import 'package:chaldea/components/components.dart';
 
 class CraftDetailPage extends StatefulWidget {
-  final CraftEssential ce;
-  final CraftEssential Function(int, bool) onSwitch;
+  final CraftEssence ce;
+  final CraftEssence Function(int, bool) onSwitch;
 
   const CraftDetailPage({Key key, this.ce, this.onSwitch}) : super(key: key);
 
@@ -12,12 +12,13 @@ class CraftDetailPage extends StatefulWidget {
 
 class _CraftDetailPageState extends State<CraftDetailPage> {
   bool useLangJp = false;
-  CraftEssential ce;
+  CraftEssence ce;
 
   @override
   void initState() {
     super.initState();
     ce = widget.ce;
+    useLangJp = !Intl.getCurrentLocale().toLowerCase().startsWith('zh');
     db.checkNetwork();
   }
 
@@ -54,7 +55,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
             for (var i = 0; i < 2; i++)
               ElevatedButton(
                 onPressed: () {
-                  CraftEssential nextCe;
+                  CraftEssence nextCe;
                   if (widget.onSwitch != null) {
                     // if navigated from filter list, let filter list decide which is the next one
                     nextCe = widget.onSwitch(ce.no, i == 1);
@@ -62,14 +63,15 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
                     nextCe = db.gameData.crafts[ce.no + [-1, 1][i]];
                   }
                   if (nextCe == null) {
-                    EasyLoading.showToast('已经是${['第', '最后'][i]}一张');
+                    EasyLoading.showToast(S.of(context).list_end_hint(i == 0));
                   } else {
                     setState(() {
                       ce = nextCe;
                     });
                   }
                 },
-                child: Text(['上一张', '下一张'][i]),
+                child: Text(
+                    [S.of(context).previous_card, S.of(context).next_card][i]),
                 style: ElevatedButton.styleFrom(
                     textStyle: TextStyle(fontWeight: FontWeight.normal)),
               ),
@@ -81,7 +83,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
 }
 
 class CraftDetailBasePage extends StatelessWidget {
-  final CraftEssential ce;
+  final CraftEssence ce;
   final bool useLangJp;
 
   const CraftDetailBasePage({Key key, this.ce, this.useLangJp = false})
@@ -89,7 +91,6 @@ class CraftDetailBasePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-//    final ce = widget.ce, useLangJp = widget.useLangJp;
     return SingleChildScrollView(
       child: CustomTable(
         children: <Widget>[
@@ -104,10 +105,10 @@ class CraftDetailBasePage extends StatelessWidget {
           CustomTableRow(
             children: [
               TableCellData(
-                child: Image(image: db.getIconImage(ce.icon)),
+                child: Image(image: db.getIconImage(ce.icon), height: 80),
                 flex: 1,
                 padding: EdgeInsets.all(8),
-                fitHeight: true,
+                fitHeight: false,
               ),
               TableCellData(
                 flex: 3,
@@ -118,14 +119,15 @@ class CraftDetailBasePage extends StatelessWidget {
                     CustomTableRow(
                         children: [TableCellData(text: 'No. ${ce.no}')]),
                     CustomTableRow(children: [
-                      TableCellData(text: '画师', isHeader: true),
+                      TableCellData(
+                          text: S.of(context).illustrator, isHeader: true),
                       TableCellData(
                           text: ce.illustrators.join(' & '),
                           flex: 3,
                           maxLines: 1)
                     ]),
                     CustomTableRow(children: [
-                      TableCellData(text: '稀有度', isHeader: true),
+                      TableCellData(text: S.of(context).rarity, isHeader: true),
                       TableCellData(text: ce.rarity.toString()),
                       TableCellData(text: 'COST', isHeader: true),
                       TableCellData(text: ce.cost.toString()),
@@ -147,16 +149,17 @@ class CraftDetailBasePage extends StatelessWidget {
             children: [
               TableCellData(
                 child: CustomTile(
-                  title: Center(child: Text('查看卡面')),
+                  title: Center(child: Text(S.of(context).view_illustration)),
                   contentPadding: EdgeInsets.zero,
                   onTap: () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => FullScreenImageSlider(
+                      PageRouteBuilder(
+                        opaque: false,
+                        fullscreenDialog: true,
+                        pageBuilder: (context, _, __) => FullScreenImageSlider(
                           imgUrls: [db.getIconResource(ce.illustration).url],
                           enableDownload: db.runtimeData.enableDownload,
                         ),
-                        fullscreenDialog: true,
                       ),
                     );
                   },
@@ -165,16 +168,18 @@ class CraftDetailBasePage extends StatelessWidget {
               ),
             ],
           ),
-          CustomTableRow(
-              children: [TableCellData(text: '礼装类别', isHeader: true)]),
+          CustomTableRow(children: [
+            TableCellData(text: S.of(context).filter_category, isHeader: true)
+          ]),
           CustomTableRow(children: [
             TableCellData(
               child: Text(ce.category + ' - ' + ce.categoryText,
                   textAlign: TextAlign.center),
             )
           ]),
-          CustomTableRow(
-              children: [TableCellData(text: '持有技能', isHeader: true)]),
+          CustomTableRow(children: [
+            TableCellData(text: S.of(context).skill, isHeader: true)
+          ]),
           CustomTableRow(
             children: [
               TableCellData(
@@ -214,12 +219,13 @@ class CraftDetailBasePage extends StatelessWidget {
                     alignment: Alignment.centerLeft)
               ],
             ),
-          CustomTableRow(children: [TableCellData(text: '解说', isHeader: true)]),
+          CustomTableRow(children: [
+            TableCellData(text: S.of(context).card_description, isHeader: true)
+          ]),
           CustomTableRow(
             children: [
               TableCellData(
-                text: (useLangJp ? ce.descriptionJp : ce.description) ?? ''
-                    '',
+                text: (useLangJp ? ce.descriptionJp : ce.description) ?? '???',
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               )

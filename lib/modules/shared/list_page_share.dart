@@ -5,7 +5,7 @@ Widget buildSwitchPlanButton(
     {required BuildContext context, ValueChanged<int>? onChange}) {
   return IconButton(
       icon: Icon(Icons.list),
-      tooltip: '规划 ${db.curUser.curSvtPlanNo + 1}',
+      tooltip: '${S.current.plan_title} ${db.curUser.curSvtPlanNo + 1}',
       onPressed: () => onSwitchPlan(context: context, onChange: onChange));
 }
 
@@ -14,10 +14,10 @@ void onSwitchPlan(
   showDialog(
     context: context,
     builder: (context) => SimpleDialog(
-      title: Text('选择规划'),
+      title: Text(S.of(context).select_plan),
       children: List.generate(db.curUser.servantPlans.length, (index) {
         return ListTile(
-          title: Text('规划 ${index + 1}'),
+          title: Text('${S.current.plan_title} ${index + 1}'),
           selected: index == db.curUser.curSvtPlanNo,
           onTap: () {
             Navigator.of(context).pop();

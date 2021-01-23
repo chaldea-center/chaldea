@@ -21,13 +21,13 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
-      title: Text('Filter'),
+      title: Text(S.of(context).filter),
       actions: getDefaultActions(onTapReset: () {
         filterData.reset();
         update();
       }),
       content: getListViewBody(children: [
-        getGroup(header: '显示', children: [
+        getGroup(header: S.of(context).filter_shown_type, children: [
           getToggleButton(
               texts: ['List', 'Grid'],
               isSelected: [!filterData.useGrid, filterData.useGrid],
@@ -37,7 +37,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
               }),
           FilterOption(
             selected: filterData.hasDress,
-            value: '灵衣',
+            value: S.of(context).dress,
             onChanged: (v) {
               setState(() {
                 filterData.hasDress = v;
@@ -46,13 +46,18 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             },
           ),
         ]),
-        getGroup(header: '排序', children: [
+        getGroup(header: S.of(context).filter_sort, children: [
           for (int i = 0; i < filterData.sortKeys.length; i++)
             getSortButton<SvtCompare>(
               prefix: '${i + 1}',
               value: filterData.sortKeys[i],
-              items: Map.fromIterables(
-                  SvtFilterData.sortKeyData, ['序号', '职阶', '星级', 'ATK', 'HP']),
+              items: Map.fromIterables(SvtFilterData.sortKeyData, [
+                S.current.filter_sort_number,
+                S.current.filter_sort_class,
+                S.current.filter_sort_rarity,
+                'ATK',
+                'HP'
+              ]),
               onSortAttr: (key) {
                 filterData.sortKeys[i] = key;
                 update();
@@ -65,10 +70,12 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             ),
         ]),
         FilterGroup(
-          title: Text('规划', style: textStyle),
+          title: Text(S.of(context).plan, style: textStyle),
           options: SvtFilterData.planCompletionData,
           values: filterData.planCompletion,
-          optionBuilder: (v) => Text(v == '0' ? '未满' : '已满'),
+          optionBuilder: (v) => Text(v == '0'
+              ? S.of(context).filter_plan_not_reached
+              : S.of(context).filter_plan_reached),
           onFilterChanged: (value) {
             // object should be the same, need not to update manually
             filterData.planCompletion = value;
@@ -76,7 +83,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           },
         ),
         FilterGroup(
-          title: Text('技能练度', style: textStyle),
+          title: Text(S.of(context).filter_skill_lv, style: textStyle),
           options: SvtFilterData.skillLevelData,
           values: filterData.skillLevel,
           onFilterChanged: (value) {
@@ -87,10 +94,10 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         ),
         _buildClassFilter(),
         FilterGroup(
-          title: Text('稀有度', style: textStyle),
+          title: Text(S.of(context).filter_sort_rarity, style: textStyle),
           options: SvtFilterData.rarityData,
           values: filterData.rarity,
-          optionBuilder: (v) => Text('$v星'),
+          optionBuilder: (v) => Text('$v★'),
           onFilterChanged: (value) {
             // object should be the same, need not to update manually
             filterData.rarity = value;
@@ -98,7 +105,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           },
         ),
         FilterGroup(
-          title: Text('获取方式', style: textStyle),
+          title: Text(S.of(context).filter_obtain, style: textStyle),
           options: SvtFilterData.obtainData,
           values: filterData.obtain,
           onFilterChanged: (value) {
@@ -107,7 +114,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           },
         ),
         FilterGroup(
-          title: Text('宝具', style: textStyle),
+          title: Text(S.of(context).nobel_phantasm, style: textStyle),
           options: SvtFilterData.npColorData,
           values: filterData.npColor,
           onFilterChanged: (value) {
@@ -124,7 +131,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           },
         ),
         FilterGroup(
-          title: Text('阵营', style: textStyle),
+          title: Text(S.of(context).filter_attribute, style: textStyle),
           options: SvtFilterData.attributeData,
           values: filterData.attribute,
           onFilterChanged: (value) {
@@ -133,7 +140,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           },
         ),
         FilterGroup(
-          title: Text('属性', style: textStyle),
+          title: Text(S.of(context).info_alignment, style: textStyle),
           options: SvtFilterData.alignment1Data,
           values: filterData.alignment1,
           onFilterChanged: (value) {
@@ -150,7 +157,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           },
         ),
         FilterGroup(
-          title: Text('性别', style: textStyle),
+          title: Text(S.of(context).filter_gender, style: textStyle),
           options: SvtFilterData.genderData,
           values: filterData.gender,
           onFilterChanged: (value) {
@@ -159,7 +166,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           },
         ),
         FilterGroup(
-          title: Text('特性', style: textStyle),
+          title: Text(S.of(context).info_trait, style: textStyle),
           options: SvtFilterData.traitData,
           values: filterData.trait,
           showMatchAll: true,
@@ -170,7 +177,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           },
         ),
         FilterGroup(
-          title: Text('特殊特性', style: textStyle),
+          title: Text(S.of(context).filter_special_trait, style: textStyle),
           options: SvtFilterData.traitSpecialData,
           values: filterData.traitSpecial,
           onFilterChanged: (value) {
@@ -189,7 +196,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text('职阶', style: textStyle),
+          Text(S.of(context).filter_sort_class, style: textStyle),
           ConstrainedBox(
             constraints: BoxConstraints(maxWidth: 480),
             child: Row(

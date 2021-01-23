@@ -33,11 +33,12 @@ class ItemCostServantPage extends StatelessWidget {
           final details = statistics.svtItemDetail.getCountByItem(favorite);
           List<Widget> children = [
             CustomTile(
-              title: Text('剩余 ${num2str(statistics.leftItems[itemKey])}\n'
-                  '拥有 ${num2str(db.curUser.items[itemKey])} '
-                  '活动 ${num2str(statistics.eventItems[itemKey])}'),
+              title: Text(
+                  '${S.current.item_left} ${num2str(statistics.leftItems[itemKey])}\n'
+                  '${S.current.item_own} ${num2str(db.curUser.items[itemKey])} '
+                  '${S.current.item_total_demand} ${num2str(statistics.eventItems[itemKey])}'),
               trailing: Text(
-                '共需 ${num2str(counts.summation[itemKey])}\n' +
+                '${S.current.item_total_demand} ${num2str(counts.summation[itemKey])}\n' +
                     counts
                         .valuesIfGrail(itemKey)
                         .map((v) => num2str(v[itemKey]))
@@ -55,7 +56,12 @@ class ItemCostServantPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   CustomTile(
-                    title: Text(['灵基再临', '技能升级', '灵衣开放', '圣杯转临'][i]),
+                    title: Text([
+                      S.current.ascension_up,
+                      S.current.skill_up,
+                      S.current.dress_up,
+                      S.current.grail_up
+                    ][i]),
                     trailing: Text(formatNumber(counts.values[i][itemKey] ?? 0,
                         minVal: 10000)),
                   ),

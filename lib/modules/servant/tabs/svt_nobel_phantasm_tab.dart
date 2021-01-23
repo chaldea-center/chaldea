@@ -25,13 +25,13 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab> {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (svt.treasureDevice == null || svt.treasureDevice.length == 0) {
+    if (svt.nobelPhantasm == null || svt.nobelPhantasm.length == 0) {
       return Container(child: Center(child: Text('No NobelPhantasm Data')));
     }
-    if (status.tdIndex < 0 || status.tdIndex >= svt.treasureDevice.length)
+    if (status.tdIndex < 0 || status.tdIndex >= svt.nobelPhantasm.length)
       status.tdIndex = 0;
 
-    final td = svt.treasureDevice[status.tdIndex];
+    final td = svt.nobelPhantasm[status.tdIndex];
     return ListView(
       children: <Widget>[
         TileGroup(
@@ -46,7 +46,7 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab> {
   }
 
   Widget buildToggle(int selected) {
-    if (svt.treasureDevice.length <= 1) {
+    if (svt.nobelPhantasm.length <= 1) {
       return Container();
     }
     return Center(
@@ -57,7 +57,7 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab> {
             constraints: BoxConstraints(),
             selectedColor: Colors.white,
             fillColor: Theme.of(context).primaryColor,
-            children: svt.treasureDevice.map((td) {
+            children: svt.nobelPhantasm.map((td) {
               Widget button;
               if (td.state.contains('强化前') || td.state.contains('强化后')) {
                 final iconKey = td.state.contains('强化前') ? '宝具未强化' : '宝具强化';
@@ -76,7 +76,7 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab> {
                   child: button);
             }).toList(),
             isSelected:
-                List.generate(svt.treasureDevice.length, (i) => selected == i),
+                List.generate(svt.nobelPhantasm.length, (i) => selected == i),
             onPressed: (no) {
               setState(() {
                 status.tdIndex = no;
@@ -88,7 +88,7 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab> {
     );
   }
 
-  Widget buildHeader(TreasureDevice td) {
+  Widget buildHeader(NobelPhantasm td) {
     return CustomTile(
       leading: Column(
         children: <Widget>[

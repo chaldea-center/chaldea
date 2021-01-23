@@ -20,33 +20,33 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ja';
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-  static _notInlinedMessages(_) => <String, Function> {
-    "backup" : MessageLookupByLibrary.simpleMessage("Backup to ..."),
-    "cancel" : MessageLookupByLibrary.simpleMessage("Cancel"),
-    "craft_essential" : MessageLookupByLibrary.simpleMessage("概念礼装"),
-    "cur_account" : MessageLookupByLibrary.simpleMessage("アカウント"),
-    "delete" : MessageLookupByLibrary.simpleMessage("Delete"),
-    "edit" : MessageLookupByLibrary.simpleMessage("Edit"),
-    "event_title" : MessageLookupByLibrary.simpleMessage("Events"),
-    "gallery_tab_name" : MessageLookupByLibrary.simpleMessage("ホーム"),
-    "hello" : MessageLookupByLibrary.simpleMessage("こんにちは。"),
-    "input_error" : MessageLookupByLibrary.simpleMessage("Invalid input value."),
-    "item_title" : MessageLookupByLibrary.simpleMessage("Items"),
-    "language" : MessageLookupByLibrary.simpleMessage("日本語"),
-    "more" : MessageLookupByLibrary.simpleMessage("More"),
-    "new_account" : MessageLookupByLibrary.simpleMessage("New account"),
-    "ok" : MessageLookupByLibrary.simpleMessage("OK"),
-    "rename" : MessageLookupByLibrary.simpleMessage("Rename"),
-    "restore" : MessageLookupByLibrary.simpleMessage("Restore"),
-    "servant" : MessageLookupByLibrary.simpleMessage("サーバント"),
-    "servant_title" : MessageLookupByLibrary.simpleMessage("Servant"),
-    "server" : MessageLookupByLibrary.simpleMessage("Server"),
-    "server_cn" : MessageLookupByLibrary.simpleMessage("CN"),
-    "server_jp" : MessageLookupByLibrary.simpleMessage("JP"),
-    "settings_data" : MessageLookupByLibrary.simpleMessage("データ"),
-    "settings_general" : MessageLookupByLibrary.simpleMessage("一般"),
-    "settings_language" : MessageLookupByLibrary.simpleMessage("言語"),
-    "settings_tab_name" : MessageLookupByLibrary.simpleMessage("設定"),
-    "settings_tutorial" : MessageLookupByLibrary.simpleMessage("ヘルプ")
-  };
+
+  static _notInlinedMessages(_) => <String, Function>{
+        "backup": MessageLookupByLibrary.simpleMessage("Backup to ..."),
+        "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "craft_essence": MessageLookupByLibrary.simpleMessage("概念礼装"),
+        "cur_account": MessageLookupByLibrary.simpleMessage("アカウント"),
+        "delete": MessageLookupByLibrary.simpleMessage("Delete"),
+        "edit": MessageLookupByLibrary.simpleMessage("Edit"),
+        "event_title": MessageLookupByLibrary.simpleMessage("Events"),
+        "gallery_tab_name": MessageLookupByLibrary.simpleMessage("ホーム"),
+        "hello": MessageLookupByLibrary.simpleMessage("こんにちは。"),
+        "item_title": MessageLookupByLibrary.simpleMessage("Items"),
+        "language": MessageLookupByLibrary.simpleMessage("日本語"),
+        "more": MessageLookupByLibrary.simpleMessage("More"),
+        "new_account": MessageLookupByLibrary.simpleMessage("New account"),
+        "ok": MessageLookupByLibrary.simpleMessage("OK"),
+        "rename": MessageLookupByLibrary.simpleMessage("Rename"),
+        "restore": MessageLookupByLibrary.simpleMessage("Restore"),
+        "servant": MessageLookupByLibrary.simpleMessage("サーバント"),
+        "servant_title": MessageLookupByLibrary.simpleMessage("Servant"),
+        "server": MessageLookupByLibrary.simpleMessage("Server"),
+        "server_cn": MessageLookupByLibrary.simpleMessage("CN"),
+        "server_jp": MessageLookupByLibrary.simpleMessage("JP"),
+        "settings_data": MessageLookupByLibrary.simpleMessage("データ"),
+        "settings_general": MessageLookupByLibrary.simpleMessage("一般"),
+        "settings_language": MessageLookupByLibrary.simpleMessage("言語"),
+        "settings_tab_name": MessageLookupByLibrary.simpleMessage("設定"),
+        "settings_tutorial": MessageLookupByLibrary.simpleMessage("ヘルプ")
+      };
 }

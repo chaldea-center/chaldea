@@ -3,7 +3,7 @@ part of datatypes;
 enum CraftCompare { no, rarity, atk, hp }
 
 @JsonSerializable(checked: true)
-class CraftEssential {
+class CraftEssence {
   int no;
   String mcLink;
   String name;
@@ -31,7 +31,7 @@ class CraftEssential {
   int bond;
   int valentine;
 
-  CraftEssential({
+  CraftEssence({
     this.no,
     this.mcLink,
     this.name,
@@ -60,7 +60,7 @@ class CraftEssential {
     this.valentine,
   });
 
-  static int compare(CraftEssential a, CraftEssential b,
+  static int compare(CraftEssence a, CraftEssence b,
       [List<CraftCompare> keys, List<bool> reversed]) {
     int res = 0;
     if (keys == null || keys.isEmpty) {
@@ -87,8 +87,8 @@ class CraftEssential {
     return res;
   }
 
-  factory CraftEssential.fromJson(Map<String, dynamic> data) =>
-      _$CraftEssentialFromJson(data);
+  factory CraftEssence.fromJson(Map<String, dynamic> data) =>
+      _$CraftEssenceFromJson(data);
 
-  Map<String, dynamic> toJson() => _$CraftEssentialToJson(this);
+  Map<String, dynamic> toJson() => _$CraftEssenceToJson(this);
 }

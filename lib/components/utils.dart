@@ -1,7 +1,8 @@
 // @dart=2.12
-import 'dart:convert';
+import 'dart:async';
 import 'dart:math' show min;
 
+import 'package:chaldea/components/components.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,7 +45,6 @@ class NumberInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
-    print(jsonEncode(newValue.text));
     if (newValue.selection.baseOffset == 0) {
       return newValue;
     }
@@ -197,4 +197,22 @@ class TimeCounter {
     final d = stopwatch.elapsed.toString();
     logger.d('Stopwatch - $name: $d');
   }
+}
+
+VoidCallback showMyProgress(
+    {Duration period = const Duration(seconds: 1),
+    String? status,
+    EasyLoadingMaskType maskType = EasyLoadingMaskType.clear}) {
+  int counts = 0;
+  Timer.periodic(Duration(milliseconds: 25), (timer) {
+    counts += 1;
+    var progress = counts * 25.0 / period.inMilliseconds % 1.0;
+    if (counts < 0) {
+      timer.cancel();
+      EasyLoading.dismiss();
+    } else {
+      EasyLoading.showProgress(progress, status: status, maskType: maskType);
+    }
+  });
+  return () => counts = -100;
 }

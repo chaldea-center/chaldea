@@ -9,6 +9,7 @@ library datatypes;
 import 'dart:async';
 import 'dart:math';
 
+import 'package:chaldea/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
@@ -19,25 +20,14 @@ import '../logger.dart';
 import '../utils.dart';
 
 part 'cmd_code.dart';
-
-part 'craft_essential.dart';
-
+part 'craft_essence.dart';
 part 'datatypes.g.dart';
-
 part 'event.dart';
-
 part 'gamedata.dart';
-
 part 'glpk.dart';
-
 part 'item_statistic.dart';
-
 part 'quest.dart';
-
 part 'serializable_checker.dart';
-
 part 'servant.dart';
-
 part 'user.dart';
-
 part 'userdata.dart';

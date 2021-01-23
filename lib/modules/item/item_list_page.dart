@@ -65,8 +65,13 @@ class ItemListPageState extends State<ItemListPage>
         bottom: TabBar(
           controller: _tabController,
           tabs: categories
-              .map(
-                  (category) => Tab(text: ['x', '普通素材', '技能石', '棋子'][category]))
+              .map((category) => Tab(
+                      text: [
+                    'Unknown',
+                    S.of(context).item_category_usual,
+                    S.of(context).item_category_gems,
+                    S.of(context).item_category_ascension
+                  ][category]))
               .toList(),
           onTap: (_) {
             FocusScope.of(context).unfocus();
@@ -88,7 +93,7 @@ class ItemListPageState extends State<ItemListPage>
 
   void navToDropCalculator() {
     SimpleCancelOkDialog(
-      title: Text('材料富余量'),
+      title: Text(S.of(context).item_exceed),
       content: Wrap(
         spacing: 6,
         runSpacing: 6,
@@ -97,7 +102,11 @@ class ItemListPageState extends State<ItemListPage>
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('铜银金'[index]),
+                Text([
+                  S.current.copper,
+                  S.current.silver,
+                  S.current.gold
+                ][index]),
                 SizedBox(
                   width: 40,
                   child: TextField(
@@ -301,13 +310,13 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
               Expanded(
                   flex: 1,
                   child: AutoSizeText(
-                    '共需 ${formatNumber(statistics.svtItems[itemKey])}',
+                    '${S.current.item_total_demand} ${formatNumber(statistics.svtItems[itemKey])}',
                     maxLines: 1,
                   )),
               Expanded(
                   flex: 1,
                   child: AutoSizeText(
-                    '剩余 ${formatNumber(statistics.leftItems[itemKey])}',
+                    '${S.current.item_left} ${formatNumber(statistics.leftItems[itemKey])}',
                     maxLines: 1,
                     style: highlightStyle,
                     minFontSize: 10,
@@ -318,7 +327,7 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
           title = Row(
             children: <Widget>[
               Expanded(child: AutoSizeText(itemKey, maxLines: 1)),
-              Text('剩余'),
+              Text(S.of(context).item_left),
               SizedBox(
                   width: 40,
                   child: Align(
@@ -338,11 +347,11 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
             children: <Widget>[
               Expanded(
                   child: AutoSizeText(
-                '共需 ${statistics.svtItems[itemKey]}' +
+                '${S.current.item_total_demand} ${statistics.svtItems[itemKey]}' +
                     '(${_countsInSubTitle.join("/")})',
                 maxLines: 1,
               )),
-              Text('活动'),
+              Text(S.of(context).event_title),
               SizedBox(
                   width: 40,
                   child: Align(

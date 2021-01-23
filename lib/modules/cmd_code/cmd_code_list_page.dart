@@ -84,7 +84,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).cmd_code_title),
+        title: Text(S.of(context).command_code),
         leading: MasterBackButton(),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(45),
@@ -133,7 +133,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.filter_list),
-            tooltip: '筛选',
+            tooltip: S.of(context).filter,
             onPressed: () => FilterPage.show(
               context: context,
               builder: (context) => CmdCodeFilterPage(
@@ -169,7 +169,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
     return ListView.separated(
         controller: _scrollController,
         separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
-        itemCount: shownList.length + 2,
+        itemCount: shownList.length + (shownList.isEmpty ? 1 : 2),
         itemBuilder: (context, index) {
           if (index == 0 || index == shownList.length + 1) {
             return CustomTile(

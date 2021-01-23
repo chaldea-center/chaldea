@@ -55,9 +55,9 @@ Map<String, dynamic> _$CommandCodeToJson(CommandCode instance) =>
       'characters': instance.characters,
     };
 
-CraftEssential _$CraftEssentialFromJson(Map<String, dynamic> json) {
-  return $checkedNew('CraftEssential', json, () {
-    final val = CraftEssential(
+CraftEssence _$CraftEssenceFromJson(Map<String, dynamic> json) {
+  return $checkedNew('CraftEssence', json, () {
+    final val = CraftEssence(
       no: $checkedConvert(json, 'no', (v) => v as int),
       mcLink: $checkedConvert(json, 'mcLink', (v) => v as String),
       name: $checkedConvert(json, 'name', (v) => v as String),
@@ -94,7 +94,7 @@ CraftEssential _$CraftEssentialFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$CraftEssentialToJson(CraftEssential instance) =>
+Map<String, dynamic> _$CraftEssenceToJson(CraftEssence instance) =>
     <String, dynamic>{
       'no': instance.no,
       'mcLink': instance.mcLink,
@@ -316,7 +316,7 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
                     int.parse(k),
                     e == null
                         ? null
-                        : CraftEssential.fromJson(e as Map<String, dynamic>)),
+                        : CraftEssence.fromJson(e as Map<String, dynamic>)),
               )),
       cmdCodes: $checkedConvert(
           json,
@@ -683,13 +683,13 @@ Servant _$ServantFromJson(Map<String, dynamic> json) {
           (v) => v == null
               ? null
               : ServantBaseInfo.fromJson(v as Map<String, dynamic>)),
-      treasureDevice: $checkedConvert(
+      nobelPhantasm: $checkedConvert(
           json,
-          'treasureDevice',
+          'nobelPhantasm',
           (v) => (v as List)
               ?.map((e) => e == null
                   ? null
-                  : TreasureDevice.fromJson(e as Map<String, dynamic>))
+                  : NobelPhantasm.fromJson(e as Map<String, dynamic>))
               ?.toList()),
       activeSkills: $checkedConvert(
           json,
@@ -742,7 +742,7 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'mcLink': instance.mcLink,
       'icon': instance.icon,
       'info': instance.info,
-      'treasureDevice': instance.treasureDevice,
+      'nobelPhantasm': instance.nobelPhantasm,
       'activeSkills': instance.activeSkills,
       'passiveSkills': instance.passiveSkills,
       'itemCost': instance.itemCost,
@@ -880,9 +880,9 @@ Map<String, dynamic> _$ServantBaseInfoToJson(ServantBaseInfo instance) =>
       'criticalRate': instance.criticalRate,
     };
 
-TreasureDevice _$TreasureDeviceFromJson(Map<String, dynamic> json) {
-  return $checkedNew('TreasureDevice', json, () {
-    final val = TreasureDevice(
+NobelPhantasm _$NobelPhantasmFromJson(Map<String, dynamic> json) {
+  return $checkedNew('NobelPhantasm', json, () {
+    final val = NobelPhantasm(
       state: $checkedConvert(json, 'state', (v) => v as String),
       name: $checkedConvert(json, 'name', (v) => v as String),
       nameJp: $checkedConvert(json, 'nameJp', (v) => v as String),
@@ -904,7 +904,7 @@ TreasureDevice _$TreasureDeviceFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$TreasureDeviceToJson(TreasureDevice instance) =>
+Map<String, dynamic> _$NobelPhantasmToJson(NobelPhantasm instance) =>
     <String, dynamic>{
       'state': instance.state,
       'name': instance.name,

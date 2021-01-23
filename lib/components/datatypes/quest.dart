@@ -5,6 +5,7 @@ class Quest {
   String chapter;
   String name;
   String nameJp;
+
   /// one place one quest: use place as key
   /// one place two quests: place（name）
   /// daily quests: name
@@ -36,7 +37,6 @@ class Quest {
   String get placeJp => getListItem(battles, 0)?.placeJp;
 
   String get place => getListItem(battles, 0)?.place;
-
 
   factory Quest.fromJson(Map<String, dynamic> data) => _$QuestFromJson(data);
 

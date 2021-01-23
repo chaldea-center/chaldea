@@ -25,7 +25,7 @@ class _AccountPageState extends State<AccountPage> {
                   builder: (context) {
                     return InputCancelOkDialog(
                       title: S.of(context).new_account,
-                      errorText: S.of(context).input_error,
+                      errorText: S.of(context).input_invalid_hint,
                       validate: (v) =>
                           v == v.trim() && !db.userData.users.containsKey(v),
                       onSubmit: addUser,
@@ -61,7 +61,7 @@ class _AccountPageState extends State<AccountPage> {
               itemBuilder: (BuildContext context) => [
                 PopupMenuItem(
                     value: 'rename', child: Text(S.of(context).rename)),
-                PopupMenuItem(value: 'copy', child: Text('复制')),
+                PopupMenuItem(value: 'copy', child: Text(S.of(context).copy)),
                 PopupMenuItem(
                     value: 'delete', child: Text(S.of(context).delete)),
               ],
@@ -106,7 +106,7 @@ class _AccountPageState extends State<AccountPage> {
       builder: (context) => InputCancelOkDialog(
         title: '${S.of(context).rename} - ${user.name}',
         text: user.name,
-        errorText: S.of(context).input_error,
+        errorText: S.of(context).input_invalid_hint,
         validate: (v) {
           return v == v.trim() && !db.userData.userNames.contains(v);
         },

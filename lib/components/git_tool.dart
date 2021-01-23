@@ -57,6 +57,11 @@ class GitRelease {
                 data['assets'][index]['browser_download_url'] ?? '',
           ),
         );
+
+  @override
+  String toString() {
+    return '$runtimeType($name, targetAsset=${targetAsset?.name})';
+  }
 }
 
 class GitAsset {
@@ -119,16 +124,22 @@ class GitTool {
       releases = List.generate(response.data?.length ?? 0,
           (index) => GitRelease.fromGitee(data: response.data[index]));
     }
-    print('resolve ${releases.length} releases');
+    print('resolve ${releases.length} releases from $source');
     return releases;
   }
 
   GitRelease? _latestReleaseWhereAsset(
       Iterable<GitRelease> releases, bool test(GitAsset asset)) {
+    for (var release in releases)
+      for (var asset in release.assets)
+        if (test(asset)) {
+          release.targetAsset = asset;
+        }
     for (var release in releases) {
       for (var asset in release.assets) {
         if (test(asset)) {
           release.targetAsset = asset;
+          print('latest release: $release');
           return release;
         }
       }
@@ -207,7 +218,8 @@ class _DownloadDialogState extends State<DownloadDialog> {
   }
 
   void onReceiveProgress(int count, int total) {
-    String statusText = status == 0 ? '下载中' : '下载完成';
+    String statusText =
+        status == 0 ? S.current.downloading : S.current.downloaded;
     if (total < 0) {
       progress = '$statusText...';
     } else {
@@ -230,9 +242,10 @@ class _DownloadDialogState extends State<DownloadDialog> {
   Widget build(BuildContext context) {
     final fn = pathlib.basename(widget.savePath);
     return AlertDialog(
-      title: Text('下载'),
-      content:
-          widget.url.isNotEmpty ? Text('文件名: $fn\n$progress') : Text('查询失败,'),
+      title: Text(S.of(context).download),
+      content: widget.url.isNotEmpty
+          ? Text('${S.of(context).filename}: $fn\n$progress')
+          : Text(S.of(context).query_failed),
       actions: [
         if (status <= 0)
           TextButton(
@@ -243,7 +256,8 @@ class _DownloadDialogState extends State<DownloadDialog> {
             child: Text(S.of(context).cancel),
           ),
         if (status < 0 && widget.url.isNotEmpty)
-          TextButton(onPressed: startDownload, child: Text('下载')),
+          TextButton(
+              onPressed: startDownload, child: Text(S.of(context).download)),
         if (status > 0)
           TextButton(
             onPressed: () {
@@ -253,9 +267,11 @@ class _DownloadDialogState extends State<DownloadDialog> {
                 Navigator.of(context).pop();
               }
             },
-            child: Text('完成'),
+            child: Text(S.of(context).ok),
           )
       ],
     );
   }
 }
+
+class StaticS extends S {}

@@ -186,7 +186,7 @@ class TableCellData {
 
   TableCellData(
       {this.key,
-        this.text,
+      this.text,
       this.child,
       this.flex = 1,
       this.isHeader,
@@ -199,6 +199,7 @@ class TableCellData {
       : assert(text == null || child == null) {
     if (isHeader == true) {
       color = headerColor;
+      maxLines ??= 1;
     }
   }
 

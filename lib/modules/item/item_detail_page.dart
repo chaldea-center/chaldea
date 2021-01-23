@@ -52,7 +52,13 @@ class _ItemDetailPageState extends State<ItemDetailPage>
               }),
           IconButton(
               icon: Icon(Icons.sort),
-              tooltip: ['序号', '职阶', '稀有度'][sortType % 3] + '排序',
+              tooltip: S.of(context).filter_sort +
+                  '-' +
+                  [
+                    S.of(context).filter_sort_number,
+                    S.of(context).filter_sort_class,
+                    S.of(context).rarity
+                  ][sortType % 3],
               onPressed: () {
                 setState(() {
                   sortType = (sortType + 1) % 3;
