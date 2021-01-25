@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';
@@ -23,8 +24,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
   @override
   void initState() {
     super.initState();
-    event = db.gameData.events.limitEvents[widget.name] ??
-        LimitEvent(name: 'empty event');
+    event = db.gameData.events.limitEvents[widget.name];
     plan = db.curUser.events.limitEvents
         .putIfAbsent(event.name, () => LimitEventPlan());
     if (event.lottery != null) {
@@ -41,6 +41,8 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
+    if (event.bannerUrl?.isNotEmpty == true)
+      children.add(CachedNetworkImage(imageUrl: event.bannerUrl));
     // 复刻
     if (event.grail2crystal > 0) {
       children.add(SwitchListTile.adaptive(
@@ -104,7 +106,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: AutoSizeText(widget.name ?? '', maxLines: 1),
+        title: AutoSizeText(event.localizedName, maxLines: 1),
         actions: [
           IconButton(
             icon: Icon(Icons.archive_outlined),
@@ -130,9 +132,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
           ),
         ],
       ),
-      body: ListView(
-        children: divideTiles(children),
-      ),
+      body: ListView(children: divideTiles(children)),
     );
   }
 

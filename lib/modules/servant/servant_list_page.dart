@@ -478,26 +478,24 @@ class ServantListPageState extends State<ServantListPage>
                 );
               }
               final svt = shownList[index - 1];
-              Widget eyeWidget;
-              if (!isSvtFavorite(svt))
-                eyeWidget = Icon(Icons.remove_red_eye);
-              else {
-                final _hidden = hiddenPlanServants.contains(svt);
-                eyeWidget = GestureDetector(
-                  child: Icon(
-                    Icons.remove_red_eye,
-                    color: _hidden ? null : Colors.lightBlue,
-                  ),
-                  onTap: () {
-                    setState(() {
-                      if (_hidden)
-                        hiddenPlanServants.remove(svt);
-                      else
-                        hiddenPlanServants.add(svt);
-                    });
-                  },
-                );
-              }
+              final _hidden = hiddenPlanServants.contains(svt);
+              final eyeWidget = GestureDetector(
+                child: Icon(
+                  Icons.remove_red_eye,
+                  color:
+                      isSvtFavorite(svt) && !_hidden ? Colors.lightBlue : null,
+                ),
+                onTap: () {
+                  if (!isSvtFavorite(svt)) return;
+                  setState(() {
+                    if (_hidden)
+                      hiddenPlanServants.remove(svt);
+                    else
+                      hiddenPlanServants.add(svt);
+                  });
+                },
+              );
+
               return CustomTile(
                 leading: Image(image: db.getIconImage(svt.icon), height: 52),
                 subtitle: _getDetailTable(svt),

@@ -73,9 +73,9 @@ class _ItemDetailPageState extends State<ItemDetailPage>
               }),
         ],
         bottom: TabBar(controller: _tabController, tabs: [
-          Tab(text: 'Servants'),
-          Tab(text: 'Free'),
-          Tab(text: 'Events'),
+          Tab(text: S.of(context).servant),
+          Tab(text: S.of(context).free_quest),
+          Tab(text: S.of(context).event_title),
           // Tab(text: 'Interludes'),
         ]),
       ),

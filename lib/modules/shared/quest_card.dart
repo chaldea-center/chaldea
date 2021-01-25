@@ -13,6 +13,9 @@ class QuestCard extends StatelessWidget {
     String questName = '${quest.name}';
     if (quest.nameJp?.isNotEmpty == true)
       questName = questName + '/' + quest.nameJp;
+    String chapter =
+        db.gameData.events.mainRecords[quest.chapter]?.localizedName ??
+            quest.chapter;
     return Card(
       color: Colors.white,
       child: Padding(
@@ -24,7 +27,7 @@ class QuestCard extends StatelessWidget {
             [
               Center(
                 child: AutoSizeText(
-                  '${quest.chapter}\n'
+                  '$chapter\n'
                   '$questName\n'
                   '${S.of(context).game_kizuna} ${quest.bondPoint}  '
                   '${S.of(context).game_experience} ${quest.experience}',

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:chaldea/components/components.dart';
@@ -84,7 +83,7 @@ class WebviewJsEngine implements JsEngine<FlutterWebviewPlugin> {
 
 class GLPKSolver {
   // final JsEngine js = WebviewJsEngine();
-  final JsEngine js = Platform.isIOS ? WebviewJsEngine() : QjsEngine();
+  final JsEngine js = QjsEngine();
   bool _engineReady = false;
 
   GLPKSolver();

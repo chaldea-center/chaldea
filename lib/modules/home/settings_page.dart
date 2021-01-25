@@ -10,7 +10,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  String language;
   String user;
 
   @override
@@ -20,7 +19,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    language = S.of(context).language;
     return Scaffold(
       appBar: AppBar(title: Text(S.of(context).settings_tab_name)),
       body: ListView(
@@ -147,7 +145,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ],
           ),
           TileGroup(
-            header: S.of(context).settings_about,
+            header: S.of(context).about_app,
             children: <Widget>[
               ListTile(
                 title: Text(MaterialLocalizations.of(context)

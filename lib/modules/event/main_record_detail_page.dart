@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';
@@ -20,7 +21,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: Text(widget.name),
+        title: AutoSizeText(record.localizedName, maxLines: 1),
         actions: [
           IconButton(
             icon: Icon(Icons.archive_outlined),

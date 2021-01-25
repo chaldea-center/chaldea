@@ -68,6 +68,8 @@ class LimitEvent {
     this.extra,
   }); //item-comment
 
+  String get localizedName => localizeGameNoun(name, nameJp, null);
+
   Map<String, int> itemsWithRare([LimitEventPlan plan]) {
     return sumDict([
       items,
@@ -127,8 +129,6 @@ class MainRecord {
   int grail;
   int crystal;
   int grail2crystal;
-  String chapter;
-  String title;
   Map<String, int> drops;
   Map<String, int> rewards;
 
@@ -143,11 +143,35 @@ class MainRecord {
     this.grail,
     this.crystal,
     this.grail2crystal,
-    this.chapter,
-    this.title,
     this.drops,
     this.rewards,
   });
+
+  String get chapter => _splitChapterTitle(name)[0];
+
+  String get title => _splitChapterTitle(name)[1];
+
+  String get chapterJp => _splitChapterTitle(nameJp ?? name)[0];
+
+  String get titleJp => _splitChapterTitle(nameJp ?? name)[1];
+
+  String get localizedName => localizeGameNoun(name, nameJp, null);
+
+  String get localizedChapter => localizeGameNoun(chapter, chapterJp, null);
+
+  String get localizedTitle => localizeGameNoun(title, titleJp, null);
+
+  List<String> _splitChapterTitle(String longName) {
+    if (longName.startsWith('序')) {
+      return [longName, null];
+    } else if (longName.startsWith('Lostbelt')) {
+      final splits = longName.split(' ');
+      return [splits.sublist(0, 2).join(' '), splits.sublist(2).join(' ')];
+    } else {
+      final splits = longName.split(' ');
+      return [splits.sublist(0, 1).join(' '), splits.sublist(1).join(' ')];
+    }
+  }
 
   factory MainRecord.fromJson(Map<String, dynamic> data) =>
       _$MainRecordFromJson(data);

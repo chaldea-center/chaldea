@@ -42,8 +42,9 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
 
   Widget buildActiveSkill(int index) {
     ActiveSkill activeSkill = svt.activeSkills[index];
-    Skill skill =
-        activeSkill.skills[status.skillIndex[index] ?? activeSkill.cnState];
+    Skill skill = Servant.unavailable.contains(svt.no)
+        ? activeSkill.skills[0]
+        : activeSkill.skills[status.skillIndex[index] ?? activeSkill.cnState];
     String nameCn = '${skill.name} ${skill.rank}';
     String nameJp = '${skill.nameJp} ${skill.rank}';
     return TileGroup(

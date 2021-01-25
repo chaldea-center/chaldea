@@ -30,22 +30,25 @@ class _LimitEventTabState extends State<LimitEventTab>
 
   @override
   Widget build(BuildContext context) {
-    final events = db.gameData.events.limitEvents.values.toList();
-    events.sort((a, b) {
-      return (a.startTimeJp).compareTo(b.startTimeJp) *
+    final limitEvents = db.gameData.events.limitEvents;
+    final eventKeys = limitEvents.keys.toList();
+    eventKeys.sort((a, b) {
+      return (limitEvents[a].startTimeJp)
+              .compareTo(limitEvents[b].startTimeJp) *
           (widget.reverse ? -1 : 1);
     });
     return wrapDefaultScrollBar(
       controller: _scrollController,
       child: ListView.separated(
         controller: _scrollController,
-        itemCount: events.length,
+        itemCount: eventKeys.length,
         separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
         itemBuilder: (context, index) {
-          final event = events[index];
+          final event = limitEvents[eventKeys[index]];
           final plan = db.curUser.events.limitEvents;
           return ListTile(
-            title: AutoSizeText(event.name, maxFontSize: 16, maxLines: 2),
+            title:
+                AutoSizeText(event.localizedName, maxFontSize: 16, maxLines: 2),
             subtitle:
                 AutoSizeText(event.startTimeJp.split(' ').first, maxLines: 1),
             trailing: Row(
@@ -69,7 +72,8 @@ class _LimitEventTabState extends State<LimitEventTab>
             onTap: () {
               SplitRoute.push(
                 context: context,
-                builder: (context, _) => LimitEventDetailPage(name: event.name),
+                builder: (context, _) =>
+                    LimitEventDetailPage(name: eventKeys[index]),
                 popDetail: true,
               );
             },

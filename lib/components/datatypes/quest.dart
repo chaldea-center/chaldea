@@ -34,6 +34,8 @@ class Quest {
     this.rewards,
   });
 
+  String get localizedName => localizeGameNoun(name, nameJp, null);
+
   String get placeJp => getListItem(battles, 0)?.placeJp;
 
   String get place => getListItem(battles, 0)?.place;

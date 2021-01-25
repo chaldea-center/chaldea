@@ -29,11 +29,13 @@ class _MainRecordTabState extends State<MainRecordTab>
 
   @override
   Widget build(BuildContext context) {
-    var mainRecords = db.gameData.events.mainRecords.values.toList();
-    mainRecords.sort((a, b) => a.startTimeJp.compareTo(b.startTimeJp));
+    final mainRecords = db.gameData.events.mainRecords;
+    var mainRecordKeys = db.gameData.events.mainRecords.keys.toList();
+    mainRecordKeys.sort((a, b) =>
+        mainRecords[a].startTimeJp.compareTo(mainRecords[b].startTimeJp));
     if (widget.reverse) {
       // first three chapters has the same startTimeJp
-      mainRecords = mainRecords.reversed.toList();
+      mainRecordKeys = mainRecordKeys.reversed.toList();
     }
     return Column(
       children: <Widget>[
@@ -53,17 +55,19 @@ class _MainRecordTabState extends State<MainRecordTab>
             controller: _scrollController,
             child: ListView.separated(
               controller: _scrollController,
-              itemCount: mainRecords.length,
+              itemCount: mainRecordKeys.length,
               separatorBuilder: (context, index) =>
                   Divider(height: 1, indent: 16),
               itemBuilder: (context, index) {
-                final record = mainRecords[index];
+                final record = mainRecords[mainRecordKeys[index]];
                 final name = record.name;
                 final plan = db.curUser.events.mainRecords;
                 return ListTile(
-                  title: AutoSizeText(record.chapter,
+                  title: AutoSizeText(record.localizedChapter,
                       maxLines: 1, maxFontSize: 16),
-                  subtitle: AutoSizeText(record.title, maxLines: 1),
+                  subtitle: record.localizedTitle == null
+                      ? null
+                      : AutoSizeText(record.localizedTitle, maxLines: 1),
                   trailing: Wrap(
                     children: List.generate(2, (i) {
                       return Switch.adaptive(
@@ -80,7 +84,8 @@ class _MainRecordTabState extends State<MainRecordTab>
                   onTap: () {
                     SplitRoute.push(
                       context: context,
-                      builder: (context, _) => MainRecordDetailPage(name: name),
+                      builder: (context, _) =>
+                          MainRecordDetailPage(name: mainRecordKeys[index]),
                       popDetail: true,
                     );
                   },

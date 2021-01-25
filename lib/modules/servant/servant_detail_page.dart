@@ -1,5 +1,7 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/blank_page.dart';
+import 'package:chaldea/modules/servant/tabs/svt_voice_tab.dart';
 import 'package:chaldea/modules/shared/list_page_share.dart';
 
 import 'tabs/svt_illust_tab.dart';
@@ -43,10 +45,10 @@ class ServantDetailPageState extends State<ServantDetailPage>
           (context) => SvtTreasureDeviceTab(parent: this);
     }
     _builders[S.current.card_info] = (context) => SvtInfoTab(parent: this);
-
     _builders[S.current.illustration] = (context) => SvtIllustTab(parent: this);
-
-    // _builders[S.current.voice] = (context) => getDefaultTab('语音');
+    if (svt.voices?.isNotEmpty == true) {
+      _builders[S.current.voice] = (context) => SvtVoiceTab(parent: this);
+    }
   }
 
   /// just for test
@@ -89,6 +91,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
       "友情点召唤": Color(0xFFD19F76),
       "无法召唤": Color(0xFFA6A6A6)
     };
+    // TODO: obtains including some non-standard category
     final texts = {
       "初始获得": S.current.svt_obtain_initial,
       "圣晶石常驻": S.current.svt_obtain_permanent,
@@ -125,7 +128,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
               Navigator.of(context).maybePop();
             },
           ),
-          title: Text(svt.info.localizedName),
+          title: AutoSizeText(svt.info.localizedName, maxLines: 1),
           actions: <Widget>[
             buildSwitchPlanButton(
               context: context,

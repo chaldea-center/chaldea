@@ -143,15 +143,12 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     curVal.fixDressLength(svt.itemCost.dress.length, 0);
     targetVal.fixDressLength(svt.itemCost.dress.length, 0);
     for (int index = 0; index < svt.itemCost.dress.length; index++) {
-      // if (curVal.dress.length <= index) {
-      //   // dress number may increase in the future
-      //   curVal.dress.add(0);
-      //   targetVal.dress.add(0);
-      // }
+      final dressNameCn = svt.itemCost.dressName[index];
+      final dressNameJp = svt.itemCost.dressNameJp[index];
       dressWidgets.add(buildPlanRow(
         leading: Image(image: db.getIconImage('灵衣开放权'), height: 110 * 0.3),
-        title: svt.itemCost.dressNameJp[index],
-        subtitle: svt.itemCost.dressName[index],
+        title: Language.isCN ? dressNameCn : dressNameJp,
+        subtitle: Language.isCN ? dressNameJp : dressNameCn,
         start: curVal.dress[index],
         end: targetVal.dress[index],
         minVal: 0,

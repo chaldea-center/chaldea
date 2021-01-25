@@ -50,7 +50,7 @@ Widget buildClassifiedItemList({
       return ImageWithText(
         onTap: onTap == null ? null : () => onTap(item.name),
         image: Image(image: db.getIconImage(item.name)),
-        text: formatNumber(data[item.name]!),
+        text: formatNumber(data[item.name]!, compact: true),
         padding: EdgeInsets.only(right: 3),
       );
     }).toList();

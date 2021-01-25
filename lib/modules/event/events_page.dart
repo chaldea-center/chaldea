@@ -41,9 +41,10 @@ class _EventListPageState extends State<EventListPage>
               onPressed: () => setState(() => reverse = !reverse))
         ],
         bottom: TabBar(
-            controller: _tabController,
-            isScrollable: false,
-            tabs: tabNames.map((name) => Tab(text: name)).toList()),
+          controller: _tabController,
+          isScrollable: true,
+          tabs: tabNames.map((name) => Tab(text: name)).toList(),
+        ),
       ),
       body: TabBarView(
         controller: _tabController,

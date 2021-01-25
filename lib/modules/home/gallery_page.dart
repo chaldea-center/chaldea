@@ -217,7 +217,6 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
               childAspectRatio: 1,
               children: _getShownGalleries(context),
             ),
-            if (kDebugMode_) buildTestInfoPad()
           ],
         ));
   }
@@ -269,6 +268,10 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
 
   List<Widget> _getSliderPages() {
     List<Widget> sliders = [];
+    if (db.userData.sliderUrls.isEmpty) {
+      resolveSliderImageUrls();
+      return sliders;
+    }
     db.userData.sliderUrls.forEach((imgUrl, link) {
       sliders.add(GestureDetector(
         onTap: () {

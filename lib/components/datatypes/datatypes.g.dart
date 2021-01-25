@@ -236,8 +236,6 @@ MainRecord _$MainRecordFromJson(Map<String, dynamic> json) {
       grail: $checkedConvert(json, 'grail', (v) => v as int),
       crystal: $checkedConvert(json, 'crystal', (v) => v as int),
       grail2crystal: $checkedConvert(json, 'grail2crystal', (v) => v as int),
-      chapter: $checkedConvert(json, 'chapter', (v) => v as String),
-      title: $checkedConvert(json, 'title', (v) => v as String),
       drops: $checkedConvert(
           json,
           'drops',
@@ -267,8 +265,6 @@ Map<String, dynamic> _$MainRecordToJson(MainRecord instance) =>
       'grail': instance.grail,
       'crystal': instance.crystal,
       'grail2crystal': instance.grail2crystal,
-      'chapter': instance.chapter,
-      'title': instance.title,
       'drops': instance.drops,
       'rewards': instance.rewards,
     };

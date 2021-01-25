@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   file_chooser
+  flutter_audio_desktop
   flutter_qjs
   url_launcher_windows
 )

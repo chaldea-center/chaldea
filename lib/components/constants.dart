@@ -75,11 +75,10 @@ class Language {
   const Language(this.code, this.name, this.locale);
 
   static const chs = Language('zh', '简体中文', Locale('zh', ''));
-  static const cht = Language('zh_TW', '繁體中文', Locale('zh', 'TW'));
   static const jpn = Language('ja', '日本語', Locale('ja', ''));
   static const eng = Language('en', 'English', Locale('en', ''));
 
-  static List<Language> get supportLanguages => const [chs, cht, jpn, eng];
+  static List<Language> get supportLanguages => const [chs, jpn, eng];
 
   static Language? getLanguage(String? code) {
     for (var lang in supportLanguages) {
@@ -92,8 +91,6 @@ class Language {
   static String get currentLocaleCode => Intl.getCurrentLocale();
 
   static bool get isCN => currentLocaleCode.startsWith('zh');
-
-  static bool get isTW => currentLocaleCode == 'zh_TW';
 
   static bool get isJP => currentLocaleCode.startsWith('ja');
 

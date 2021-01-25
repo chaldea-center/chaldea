@@ -201,7 +201,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
                     },
                     child: Align(
                       alignment: Alignment.centerLeft,
-                      child: Text(item),
+                      child: Text(Item.localizedNameOf(item)),
                     )),
               ),
               SizedBox(
