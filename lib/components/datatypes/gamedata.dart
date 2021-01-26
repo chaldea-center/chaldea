@@ -11,7 +11,7 @@ class GameData {
   Map<String, IconResource> icons;
   Events events;
   Map<String, Quest> freeQuests;
-  Map<String, List<Quest>> svtQuests;
+  Map<int, List<Quest>> svtQuests;
   GLPKData glpk;
   Map<String, MysticCode> mysticCodes;
 

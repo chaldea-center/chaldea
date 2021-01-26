@@ -361,7 +361,7 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
           'svtQuests',
           (v) => (v as Map<String, dynamic>)?.map(
                 (k, e) => MapEntry(
-                    k,
+                    int.parse(k),
                     (e as List)
                         ?.map((e) => e == null
                             ? null
@@ -397,7 +397,7 @@ Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
       'icons': instance.icons,
       'events': instance.events,
       'freeQuests': instance.freeQuests,
-      'svtQuests': instance.svtQuests,
+      'svtQuests': instance.svtQuests?.map((k, e) => MapEntry(k.toString(), e)),
       'glpk': instance.glpk,
       'mysticCodes': instance.mysticCodes,
     };

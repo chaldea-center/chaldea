@@ -267,5 +267,7 @@
   "search_result_count": "Total {total} results",
   "search_result_count_hide": "Total {total} results ({hidden} hidden)",
   "mystic_code": "Mystic Code",
-  "level": "Level"
+  "level": "Level",
+  "no_servant_quest_hint": "There is no interlude or rank up quest",
+  "quest": "Quest"
 }

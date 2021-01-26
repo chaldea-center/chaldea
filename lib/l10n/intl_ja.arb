@@ -267,5 +267,7 @@
   "search_result_count": "合計：{total}",
   "search_result_count_hide": "合計：{total} (非表示: {hidden})",
   "mystic_code": "魔術礼装",
-  "level": "レベル"
+  "level": "レベル",
+  "no_servant_quest_hint": "幕間の物語や強化クエストはありません",
+  "quest": "クエスト"
 }

@@ -136,45 +136,44 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab> {
 
   List<Widget> buildEffect(Effect effect) {
     assert([1, 5].contains(effect.lvData.length));
-    int lines =
-        effect.lvData.length == 1 ? (effect.lvData[0].length < 10 ? 0 : 1) : 2;
     int crossCount =
         effect.lvData.length == 1 ? (effect.lvData[0].length < 10 ? 0 : 1) : 5;
-
     return <Widget>[
       CustomTile(
-          contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
-          subtitle: Text(effect.description),
-          trailing: crossCount == 0 ? Text(effect.lvData[0]) : null),
-      if (lines > 0)
-        Padding(
-          padding: EdgeInsets.only(right: 24),
-          child: Table(
-            children: [
-              for (int row = 0; row < effect.lvData.length / crossCount; row++)
-                TableRow(
-                  children: List.generate(crossCount, (col) {
-                    int index = row * crossCount + col;
-                    if (index >= effect.lvData.length) return Container();
-                    return Align(
-                      alignment: Alignment.center,
-                      child: Padding(
-                        padding: EdgeInsets.all(5),
-                        child: Text(
-                          effect.lvData[index],
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: index == 5 || index == 9
-                                ? Colors.redAccent
-                                : null,
-                          ),
+        contentPadding: EdgeInsets.fromLTRB(16, 6, crossCount == 0 ? 0 : 16, 6),
+        subtitle: crossCount == 0
+            ? Row(children: [
+                Expanded(child: Text(effect.description), flex: 4),
+                Expanded(child: Center(child: Text(effect.lvData[0])), flex: 1),
+              ])
+            : Text(effect.description),
+      ),
+      if (crossCount > 0)
+        Table(
+          children: [
+            for (int row = 0; row < effect.lvData.length / crossCount; row++)
+              TableRow(
+                children: List.generate(crossCount, (col) {
+                  int index = row * crossCount + col;
+                  if (index >= effect.lvData.length) return Container();
+                  return Align(
+                    alignment: Alignment.center,
+                    child: Padding(
+                      padding: EdgeInsets.all(5),
+                      child: Text(
+                        effect.lvData[index],
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: index == 5 || index == 9
+                              ? Colors.redAccent
+                              : null,
                         ),
                       ),
-                    );
-                  }),
-                )
-            ],
-          ),
+                    ),
+                  );
+                }),
+              )
+          ],
         ),
     ];
   }

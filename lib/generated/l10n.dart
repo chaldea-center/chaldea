@@ -2709,6 +2709,26 @@ class S {
       args: [],
     );
   }
+
+  /// `无幕间或强化关卡`
+  String get no_servant_quest_hint {
+    return Intl.message(
+      '无幕间或强化关卡',
+      name: 'no_servant_quest_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `关卡`
+  String get quest {
+    return Intl.message(
+      '关卡',
+      name: 'quest',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

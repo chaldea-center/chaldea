@@ -52,6 +52,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
             children: svt.voices.map((table) {
               return GFAccordion(
                   title: table.section,
+                  margin: EdgeInsets.symmetric(vertical: 3),
                   contentChild: Table(
                     border: TableBorder(
                         horizontalInside:

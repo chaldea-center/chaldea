@@ -266,5 +266,7 @@
   "search_result_count": "总计: {total}",
   "search_result_count_hide": "总计: {total} (隐藏: {hidden})",
   "mystic_code": "魔术礼装",
-  "level": "等级"
+  "level": "等级",
+  "no_servant_quest_hint": "无幕间或强化关卡",
+  "quest": "关卡"
 }
