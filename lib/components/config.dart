@@ -14,6 +14,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'constants.dart';
 import 'datatypes/datatypes.dart';
@@ -27,6 +28,7 @@ class Database {
   VoidCallback onAppUpdate;
   UserData userData;
   GameData gameData;
+  SharedPreferences prefs;
 
   User get curUser => userData.users[userData.curUserKey];
 
@@ -40,6 +42,7 @@ class Database {
   // initialization
   Future<void> initial() async {
     await paths.initRootPath();
+    prefs ??= await SharedPreferences.getInstance();
     // Directory(paths.datasetCacheDir).createSync(recursive: true);
   }
 

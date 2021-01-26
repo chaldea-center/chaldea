@@ -6,11 +6,12 @@ import 'package:chaldea/modules/craft/craft_list_page.dart';
 import 'package:chaldea/modules/drop_calculator/drop_calculator_page.dart';
 import 'package:chaldea/modules/event/events_page.dart';
 import 'package:chaldea/modules/extras/ap_calc_page.dart';
+import 'package:chaldea/modules/extras/mystic_code_page.dart';
 import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:chaldea/modules/statistics/game_statistics_page.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
@@ -49,13 +50,6 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         url2 = 'https:' + url;
       } else {
         url2 = 'https://fgo.wiki' + (url.startsWith('/') ? '' : '/') + url;
-      }
-      try {
-        url2 = Uri.decodeComponent(url2);
-      } catch (e) {
-        // print('decode url failed:\n $e');
-      } finally {
-        // print('url: "$url2"');
       }
       return url2;
     }
@@ -133,6 +127,13 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         builder: (context, _) => DropCalculatorPage(),
         isDetail: true,
       ),
+      GalleryItem.mystic_code: GalleryItem(
+        name: GalleryItem.mystic_code,
+        title: S.of(context).mystic_code,
+        icon: Icons.toys,
+        builder: (context, _) => MysticCodePage(),
+        isDetail: true,
+      ),
       // GalleryItem.calculator: GalleryItem(
       //   name: GalleryItem.calculator,
       //   title: S.of(context).calculator,
@@ -175,41 +176,20 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
 
   @override
   Widget build(BuildContext context) {
-    final sliderPages = _getSliderPages();
     return Scaffold(
         appBar: AppBar(
-          title: Text("Chaldea"),
+          title: Text(kAppName),
           actions: <Widget>[
             IconButton(
-                icon: Icon(Icons.refresh),
-                tooltip: S.of(context).tooltip_refresh_sliders,
-                onPressed: () {
-                  resolveSliderImageUrls();
-                }),
+              icon: Icon(Icons.refresh),
+              tooltip: S.of(context).tooltip_refresh_sliders,
+              onPressed: () => resolveSliderImageUrls(),
+            ),
           ],
         ),
         body: ListView(
           children: <Widget>[
-            AspectRatio(
-              aspectRatio: 8 / 3,
-              child: sliderPages.isEmpty
-                  ? Container(
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: Divider.createBorderSide(context, width: 0.5),
-                        ),
-                      ),
-                    )
-                  : Swiper(
-                      itemBuilder: (BuildContext context, int index) =>
-                          sliderPages[index],
-                      itemCount: sliderPages.length,
-                      autoplay: !kDebugMode_ && sliderPages.length > 1,
-                      pagination:
-                          SwiperPagination(margin: const EdgeInsets.all(1)),
-                      autoplayDelay: 5000,
-                    ),
-            ),
+            _buildCarousel(),
             GridView.count(
               crossAxisCount: SplitRoute.isSplit(context) ? 4 : 4,
               physics: NeverScrollableScrollPhysics(),
@@ -219,6 +199,29 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
             ),
           ],
         ));
+  }
+
+  Widget _buildCarousel() {
+    final sliderPages = _getSliderPages();
+    return sliderPages.isEmpty
+        ? AspectRatio(
+            aspectRatio: 8 / 3,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: Divider.createBorderSide(context, width: 0.5),
+                ),
+              ),
+            ),
+          )
+        : GFCarousel(
+            items: sliderPages,
+            aspectRatio: 8.0 / 3.0,
+            pagination: true,
+            autoPlay: sliderPages.length > 1,
+            autoPlayInterval: Duration(seconds: 5),
+            viewportFraction: 1.0,
+          );
   }
 
   List<Widget> _getShownGalleries(BuildContext context) {
@@ -282,10 +285,11 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
               content: Text(link,
                   style: TextStyle(decoration: TextDecoration.underline)),
               onTapOk: () async {
-                if (await canLaunch(link)) {
-                  launch(link);
+                final safeLink = Uri.encodeFull(link);
+                if (await canLaunch(safeLink)) {
+                  launch(safeLink);
                 } else {
-                  EasyLoading.showToast('Could not launch link:\n$link');
+                  EasyLoading.showToast('Could not launch link:\n$safeLink');
                 }
               },
             ),

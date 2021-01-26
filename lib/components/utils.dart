@@ -4,6 +4,7 @@ import 'dart:math' show min;
 
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -129,7 +130,7 @@ void showInformDialog(BuildContext context,
       actions: <Widget>[
         if (showOk)
           TextButton(
-            child: Text(S.of(context).ok),
+            child: Text(S.of(context).confirm),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -215,4 +216,32 @@ VoidCallback showMyProgress(
     }
   });
   return () => counts = -100;
+}
+
+Future<String?> resolveWikiFileUrl(String filename) async {
+  if (db.prefs.containsKey(filename)) {
+    return db.prefs.getString(filename);
+  }
+  final _dio = Dio();
+  try {
+    final response = await _dio.get(
+      'https://fgo.wiki/api.php',
+      queryParameters: {
+        "action": "query",
+        "format": "json",
+        "prop": "imageinfo",
+        "iiprop": "url",
+        "titles": "File:$filename"
+      },
+      options: Options(responseType: ResponseType.json),
+    );
+    final String url =
+        response.data['query']['pages'].values.first['imageinfo'][0]['url'];
+    print('wiki image/file url=$url');
+    db.prefs.setString(filename, url);
+    return url;
+  } catch (e) {
+    print(e);
+  }
+  return null;
 }

@@ -7,13 +7,38 @@ class User {
   String name;
   GameServer server;
 
-  // plans
-
   Map<int, ServantStatus> servants;
   int curSvtPlanNo;
 
   /// Map<planNo, Map<SvtNo, SvtPlan>>
   List<Map<int, ServantPlan>> servantPlans;
+
+  /// user own items, key: item name, value: item count
+  Map<String, int> items;
+  EventPlans events;
+  Map<String, int> mysticCodes;
+  bool isMasterGirl;
+
+  User({
+    @required this.name,
+    this.server,
+    this.servants,
+    this.curSvtPlanNo,
+    this.servantPlans,
+    this.items,
+    this.events,
+    this.mysticCodes,
+    this.isMasterGirl,
+  }) : assert(name != null && name.isNotEmpty) {
+    server ??= GameServer.cn;
+    servants ??= {};
+    curSvtPlanNo ??= 0;
+    servantPlans ??= List.generate(5, (i) => <int, ServantPlan>{});
+    items ??= {};
+    events ??= EventPlans();
+    mysticCodes ??= {};
+    isMasterGirl ??= true;
+  }
 
   Map<int, ServantPlan> get curSvtPlan {
     if (curSvtPlanNo >= servantPlans.length) {
@@ -30,27 +55,6 @@ class User {
 
   ServantStatus svtStatusOf(int no) =>
       servants.putIfAbsent(no, () => ServantStatus());
-
-  /// user own items, key: item name, value: item count
-  Map<String, int> items;
-  EventPlans events;
-
-  User({
-    @required this.name,
-    this.server,
-    this.servants,
-    this.curSvtPlanNo,
-    this.servantPlans,
-    this.items,
-    this.events,
-  }) : assert(name != null && name.isNotEmpty) {
-    server ??= GameServer.cn;
-    servants ??= {};
-    curSvtPlanNo ??= 0;
-    servantPlans ??= List.generate(5, (i) => <int, ServantPlan>{});
-    items ??= {};
-    events ??= EventPlans();
-  }
 
   factory User.fromJson(Map<String, dynamic> data) => _$UserFromJson(data);
 

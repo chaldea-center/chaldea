@@ -373,6 +373,16 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
           'glpk',
           (v) =>
               v == null ? null : GLPKData.fromJson(v as Map<String, dynamic>)),
+      mysticCodes: $checkedConvert(
+          json,
+          'mysticCodes',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(
+                    k,
+                    e == null
+                        ? null
+                        : MysticCode.fromJson(e as Map<String, dynamic>)),
+              )),
     );
     return val;
   });
@@ -389,6 +399,7 @@ Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
       'freeQuests': instance.freeQuests,
       'svtQuests': instance.svtQuests,
       'glpk': instance.glpk,
+      'mysticCodes': instance.mysticCodes,
     };
 
 IconResource _$IconResourceFromJson(Map<String, dynamic> json) {
@@ -566,6 +577,48 @@ Map<String, dynamic> _$GLPKVariableToJson(GLPKVariable instance) =>
       'value': instance.value,
       'cost': instance.cost,
       'detail': instance.detail,
+    };
+
+MysticCode _$MysticCodeFromJson(Map<String, dynamic> json) {
+  return $checkedNew('MysticCode', json, () {
+    final val = MysticCode(
+      name: $checkedConvert(json, 'name', (v) => v as String),
+      nameJp: $checkedConvert(json, 'nameJp', (v) => v as String),
+      description: $checkedConvert(json, 'description', (v) => v as String),
+      descriptionJp: $checkedConvert(json, 'descriptionJp', (v) => v as String),
+      icon1: $checkedConvert(json, 'icon1', (v) => v as String),
+      icon2: $checkedConvert(json, 'icon2', (v) => v as String),
+      image1: $checkedConvert(json, 'image1', (v) => v as String),
+      image2: $checkedConvert(json, 'image2', (v) => v as String),
+      obtains: $checkedConvert(json, 'obtains',
+          (v) => (v as List)?.map((e) => e as String)?.toList()),
+      expPoints: $checkedConvert(json, 'expPoints',
+          (v) => (v as List)?.map((e) => e as int)?.toList()),
+      skills: $checkedConvert(
+          json,
+          'skills',
+          (v) => (v as List)
+              ?.map((e) =>
+                  e == null ? null : Skill.fromJson(e as Map<String, dynamic>))
+              ?.toList()),
+    );
+    return val;
+  });
+}
+
+Map<String, dynamic> _$MysticCodeToJson(MysticCode instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'nameJp': instance.nameJp,
+      'description': instance.description,
+      'descriptionJp': instance.descriptionJp,
+      'icon1': instance.icon1,
+      'icon2': instance.icon2,
+      'image1': instance.image1,
+      'image2': instance.image2,
+      'obtains': instance.obtains,
+      'expPoints': instance.expPoints,
+      'skills': instance.skills,
     };
 
 Quest _$QuestFromJson(Map<String, dynamic> json) {
@@ -1097,6 +1150,13 @@ User _$UserFromJson(Map<String, dynamic> json) {
           (v) => v == null
               ? null
               : EventPlans.fromJson(v as Map<String, dynamic>)),
+      mysticCodes: $checkedConvert(
+          json,
+          'mysticCodes',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(k, e as int),
+              )),
+      isMasterGirl: $checkedConvert(json, 'isMasterGirl', (v) => v as bool),
     );
     return val;
   });
@@ -1112,6 +1172,8 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
           ?.toList(),
       'items': instance.items,
       'events': instance.events,
+      'mysticCodes': instance.mysticCodes,
+      'isMasterGirl': instance.isMasterGirl,
     };
 
 T _$enumDecode<T>(

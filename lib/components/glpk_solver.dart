@@ -7,8 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_qjs/isolate.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
-/// flutter_qjs crash in iOS12, comment entire [QjsEngine]
-/// and its import in pubspec.yaml
 abstract class JsEngine<T> {
   final T engine;
 
@@ -23,7 +21,7 @@ abstract class JsEngine<T> {
   void dispose();
 }
 
-/// using package flutter_js
+/// using package `flutter_qjs`
 class QjsEngine implements JsEngine<IsolateQjs> {
   final IsolateQjs engine = IsolateQjs();
 
@@ -40,10 +38,7 @@ class QjsEngine implements JsEngine<IsolateQjs> {
   }
 }
 
-/// using package flutter_webview_plugin
-///
-/// only use in iOS App Store release, because flutter_qjs may crash
-/// doesn't support desktop
+/// using package `flutter_webview_plugin`
 class WebviewJsEngine implements JsEngine<FlutterWebviewPlugin> {
   final FlutterWebviewPlugin engine = FlutterWebviewPlugin();
 

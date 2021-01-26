@@ -384,7 +384,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
       } else {
         throw FormatException('unsupported file type');
       }
-      showInformDialog(context, title: 'Import dataset successfully');
+      showInformDialog(context, title: S.of(context).import_data_success);
     } on FileSelectionCanceledError {} catch (e) {
       showInformDialog(context,
           title: 'Import gamedata failed!', content: e.toString());

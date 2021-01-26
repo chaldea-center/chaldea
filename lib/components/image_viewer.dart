@@ -2,10 +2,10 @@
 import 'dart:math' show min;
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:getwidget/components/carousel/gf_carousel.dart';
 
 import 'config.dart';
 
@@ -49,34 +49,37 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: WillPopScope(
-          onWillPop: () async {
-            Navigator.of(context).pop(_curIndex);
-            return false;
-          },
-          child: CarouselSlider.builder(
-            itemCount: widget.imgUrls.length,
-            itemBuilder: (BuildContext context, int index) => GestureDetector(
-                onTap: () => Navigator.of(context).pop(_curIndex),
-                child: CachedImageWidget(
-                  url: widget.imgUrls[index],
-                  enableDownload: widget.enableDownload,
-                  imageBuilder: (context, url) => CachedNetworkImage(
-                    imageUrl: url,
-                    placeholder: CachedImageWidget.defaultIndicatorBuilder,
-                    errorWidget: (context, url, error) => Center(
-                      child: Text('Error loading network image.\n$error'),
-                    ),
+        onWillPop: () async {
+          Navigator.of(context).pop(_curIndex);
+          return false;
+        },
+        child: GFCarousel(
+          items: List.generate(
+            widget.imgUrls.length,
+            (index) => GestureDetector(
+              onTap: () => Navigator.of(context).pop(_curIndex),
+              child: CachedImageWidget(
+                url: widget.imgUrls[index],
+                enableDownload: widget.enableDownload,
+                imageBuilder: (context, url) => CachedNetworkImage(
+                  imageUrl: url,
+                  placeholder: CachedImageWidget.defaultIndicatorBuilder,
+                  errorWidget: (context, url, error) => Center(
+                    child: Text('Error loading network image.\n$error'),
                   ),
-                  placeholder: widget.placeholder,
-                )),
-            options: CarouselOptions(
-                autoPlay: false,
-                height: MediaQuery.of(context).size.height,
-                viewportFraction: 1,
-                enableInfiniteScroll: false,
-                initialPage: _curIndex,
-                onPageChanged: (newIndex, _) => _curIndex = newIndex),
-          )),
+                ),
+                placeholder: widget.placeholder,
+              ),
+            ),
+          ),
+          autoPlay: false,
+          viewportFraction: 1.0,
+          height: MediaQuery.of(context).size.height,
+          enableInfiniteScroll: false,
+          initialPage: _curIndex,
+          onPageChanged: (v) => _curIndex = v,
+        ),
+      ),
     );
   }
 }

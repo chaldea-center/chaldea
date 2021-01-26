@@ -264,5 +264,7 @@
   "delete_all_data": "删除所有数据",
   "delete_all_data_hint": "包含用户数据、游戏数据、图片资源, 并加载默认资源",
   "search_result_count": "总计: {total}",
-  "search_result_count_hide": "总计: {total} (隐藏: {hidden})"
+  "search_result_count_hide": "总计: {total} (隐藏: {hidden})",
+  "mystic_code": "魔术礼装",
+  "level": "等级"
 }

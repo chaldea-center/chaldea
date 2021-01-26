@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:chaldea/components/components.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 
 class APCalcPage extends StatefulWidget {
   @override

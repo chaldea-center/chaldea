@@ -2689,6 +2689,26 @@ class S {
       args: [total, hidden],
     );
   }
+
+  /// `魔术礼装`
+  String get mystic_code {
+    return Intl.message(
+      '魔术礼装',
+      name: 'mystic_code',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `等级`
+  String get level {
+    return Intl.message(
+      '等级',
+      name: 'level',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

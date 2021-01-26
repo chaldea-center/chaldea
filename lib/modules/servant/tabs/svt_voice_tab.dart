@@ -2,11 +2,9 @@ import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart' as audio1;
 import 'package:chaldea/components/components.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter_audio_desktop/flutter_audio_desktop.dart' as audio2;
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
@@ -30,7 +28,6 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
       : super(parent: parent, svt: svt, status: plan);
   bool useLangJp = false;
   GeneralAudioPlayer audioPlayer;
-  SharedPreferences prefs;
 
   @override
   void initState() {
@@ -130,9 +127,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
       return;
     }
     audioPlayer ??= GeneralAudioPlayer();
-    prefs ??= await SharedPreferences.getInstance();
-    final String url = prefs.getString(record.voiceFile) ??
-        await _resolveImageUrl(record.voiceFile);
+    final String url = await resolveWikiFileUrl(record.voiceFile);
     if (!mounted) return;
     if (url == null) {
       EasyLoading.showToast('File not found: ${record.voiceFile}');
@@ -140,31 +135,6 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
     final file = await DefaultCacheManager().getSingleFile(url);
     if (!mounted) return;
     audioPlayer.play(file.path);
-  }
-
-  Future<String> _resolveImageUrl(String filename) async {
-    final _dio = Dio();
-    try {
-      final response = await _dio.get(
-        'https://fgo.wiki/api.php',
-        queryParameters: {
-          "action": "query",
-          "format": "json",
-          "prop": "imageinfo",
-          "iiprop": "url",
-          "titles": "File:$filename"
-        },
-        options: Options(responseType: ResponseType.json),
-      );
-      final String url =
-          response.data['query']['pages'].values.first['imageinfo'][0]['url'];
-      print('voice file url=$url');
-      prefs.setString(filename, url);
-      return url;
-    } catch (e) {
-      print(e);
-    }
-    return null;
   }
 }
 
