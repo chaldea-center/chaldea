@@ -98,16 +98,20 @@ class SimpleCancelOkDialog extends StatelessWidget {
   final VoidCallback onTapCancel;
 
   /// ignore if onTapCancel is not null
+  final bool hideOk;
   final bool hideCancel;
+  final List<Widget> actions;
 
-  const SimpleCancelOkDialog(
-      {Key key,
-      this.title,
-      this.content,
-      this.onTapOk,
-      this.onTapCancel,
-      this.hideCancel = false})
-      : super(key: key);
+  const SimpleCancelOkDialog({
+    Key key,
+    this.title,
+    this.content,
+    this.onTapOk,
+    this.onTapCancel,
+    this.hideOk = false,
+    this.hideCancel = false,
+    this.actions = const [],
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -125,14 +129,15 @@ class SimpleCancelOkDialog extends StatelessWidget {
               }
             },
           ),
-        if (onTapOk != null)
+        if (onTapOk != null || !hideOk)
           TextButton(
             child: Text(S.of(context).ok),
             onPressed: () {
               Navigator.of(context).pop();
               onTapOk();
             },
-          )
+          ),
+        ...actions
       ],
     );
   }

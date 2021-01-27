@@ -1,5 +1,7 @@
 // @dart=2.12
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'dart:math' show min;
 
 import 'package:chaldea/components/components.dart';
@@ -8,7 +10,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import 'git_tool.dart';
 import 'logger.dart';
 
 /// Math related
@@ -244,4 +248,83 @@ Future<String?> resolveWikiFileUrl(String filename) async {
     print(e);
   }
   return null;
+}
+
+void checkAppUpdate([bool background = true]) async {
+  const ignoreUpdateKey = 'ignoreAppUpdateVersion';
+  BuildContext context = kAppKey.currentContext!;
+  String? latestVersion;
+  String? releaseNote;
+  String? launchUrl;
+  try {
+    if (Platform.isIOS || Platform.isMacOS) {
+      final response = await Dio().get(
+          'http://itunes.apple.com/lookup?bundleId=$kPackageName',
+          options: Options(responseType: ResponseType.plain));
+      final jsonData = json.decode(response.data.toString().trim());
+      logger.d(jsonData);
+      final result = jsonData['results'][0];
+      latestVersion = result['version'];
+      releaseNote = result['releaseNotes'];
+      launchUrl = 'itms-apps://itunes.apple.com/app/id1548713491';
+    } else if (Platform.isAndroid || Platform.isWindows) {
+      GitTool gitTool = GitTool.fromIndex(db.userData.appDatasetUpdateSource);
+      final release = await gitTool.latestAppRelease();
+      latestVersion = release?.name;
+      // v1.x.y+z
+      if (latestVersion?.startsWith('v') == true)
+        latestVersion = latestVersion!.substring(1);
+      if (latestVersion?.contains('+') == true)
+        latestVersion = latestVersion!.split('+')[0];
+      releaseNote = release?.body;
+      if (release?.targetAsset?.browserDownloadUrl.isNotEmpty == true) {
+        launchUrl = release!.targetAsset!.browserDownloadUrl;
+      } else {
+        launchUrl =
+            GitTool.getReleasePageUrl(db.userData.appDatasetUpdateSource, true);
+      }
+    }
+  } catch (e) {
+    logger.e('Query update failed: $e');
+  }
+  if (latestVersion == null) {
+    logger.w('Failed to query app updates');
+    if (!background) {
+      SimpleCancelOkDialog(
+        title: Text(S.of(context).about_update_app),
+        content: Text(S.of(context).query_failed),
+        hideOk: true,
+      ).show(context);
+    }
+  } else if (latestVersion == AppInfo.version && background) {
+    logger.i('Already the latest version: $latestVersion');
+  } else if (db.prefs.getString(ignoreUpdateKey) == latestVersion &&
+      background) {
+    logger.i('Latest version: $latestVersion, ignore this update.');
+  } else {
+    logger.i('Release note: $releaseNote');
+    SimpleCancelOkDialog(
+      title: Text(S.of(context).about_update_app),
+      content: Text(
+        S.of(context).about_update_app_detail(AppInfo.version, latestVersion),
+      ),
+      hideOk: true,
+      actions: [
+        TextButton(
+          child: Text(S.of(context).update),
+          onPressed: launchUrl == null || latestVersion == AppInfo.version
+              ? null
+              : () => launch(launchUrl),
+        ),
+        if (latestVersion != AppInfo.version)
+          TextButton(
+            child: Text('Ignore this version'),
+            onPressed: () {
+              db.prefs.setString(ignoreUpdateKey, latestVersion);
+              Navigator.of(context).pop();
+            },
+          ),
+      ],
+    ).show(context);
+  }
 }

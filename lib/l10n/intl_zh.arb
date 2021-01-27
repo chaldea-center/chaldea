@@ -95,7 +95,7 @@
   "nga_fgo": "NGA-FGO",
   "about_appstore_rating": "App Store评分",
   "about_update_app": "应用更新",
-  "about_update_app_detail": "当前版本: {curVersion}\n最新版本: {newVersion}\n跳转到浏览器下载",
+  "about_update_app_detail": "当前版本: {curVersion}\n最新版本: {newVersion}",
   "about_update_app_alert_ios_mac": "请在App Store中检查更新",
   "item_left": "剩余",
   "item_own": "拥有",

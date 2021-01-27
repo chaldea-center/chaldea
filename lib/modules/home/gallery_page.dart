@@ -37,6 +37,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         resolveSliderImageUrls();
       }
     }
+    checkAppUpdate();
   }
 
   Future<Null> resolveSliderImageUrls() async {
@@ -91,7 +92,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       ),
       GalleryItem.craft_essence: GalleryItem(
         name: GalleryItem.craft_essence,
-        title: S.of(context).craft_essence_title,
+        title: S.of(context).craft_essence,
         icon: Icons.extension,
         builder: (context, _) => CraftListPage(),
       ),

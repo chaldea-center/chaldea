@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/git_tool.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -71,7 +70,7 @@ class _AboutPageState extends State<AboutPage> {
                     height: 120,
                     child: Image.asset(
                       'res/img/launcher_icon/app_icon_logo.png',
-                      width: 120,
+                      height: 120,
                     ),
                   ),
                   Text(
@@ -86,7 +85,7 @@ class _AboutPageState extends State<AboutPage> {
                         Text(
                             '${S.of(context).version}: ${AppInfo.fullVersion}'),
                       ElevatedButton(
-                        onPressed: checkAppUpdate,
+                        onPressed: () => checkAppUpdate(false),
                         child: Text(S.of(context).check_update),
                         style: ElevatedButton.styleFrom(
                           textStyle: TextStyle(
@@ -206,41 +205,5 @@ class _AboutPageState extends State<AboutPage> {
         }
       },
     ).show(context);
-  }
-
-  Future<void> checkAppUpdate() async {
-    // android, windows: download github releases
-    if (Platform.isAndroid || Platform.isWindows) {
-      try {
-        GitTool gitTool = GitTool.fromIndex(db.userData.appDatasetUpdateSource);
-        final release = await gitTool.latestAppRelease();
-        String curVersion =
-            AppInfo.fullVersion.isEmpty ? 'Unknown' : AppInfo.fullVersion;
-        SimpleCancelOkDialog(
-          title: Text(S.of(context).about_update_app),
-          content: Text(S.of(context).about_update_app_detail(
-              curVersion, release.name ?? S.of(context).query_failed)),
-          onTapOk: () {
-            if (release.targetAsset?.browserDownloadUrl?.isNotEmpty == true) {
-              launch(release.targetAsset.browserDownloadUrl);
-            } else {
-              launch(GitTool.getReleasePageUrl(
-                  db.userData.appDatasetUpdateSource, true));
-            }
-          },
-        ).show(context);
-      } catch (e) {
-        EasyLoading.showToast('Check update failed: $e');
-      }
-    } else if (Platform.isIOS || Platform.isMacOS) {
-      // to App Store
-      SimpleCancelOkDialog(
-        title: Text(S.of(context).about_update_app),
-        content: Text(S.of(context).about_update_app_alert_ios_mac),
-        onTapOk: () {
-          launch('itms-apps://itunes.apple.com/app/id1548713491');
-        },
-      ).show(context);
-    }
   }
 }

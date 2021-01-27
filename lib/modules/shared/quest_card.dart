@@ -1,12 +1,19 @@
+//@dart=2.12
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 
-class QuestCard extends StatelessWidget {
+class QuestCard extends StatefulWidget {
   final Quest quest;
 
-  const QuestCard({Key key, @required this.quest})
-      : assert(quest != null),
-        super(key: key);
+  const QuestCard({Key? key, required this.quest}) : super(key: key);
+
+  @override
+  _QuestCardState createState() => _QuestCardState();
+}
+
+class _QuestCardState extends State<QuestCard> {
+  Quest get quest => widget.quest;
+  bool showTrueName = false;
 
   @override
   Widget build(BuildContext context) {
@@ -25,14 +32,24 @@ class QuestCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: divideTiles(
             [
-              Center(
-                child: AutoSizeText(
-                  '$chapter\n'
-                  '$questName\n'
-                  '${S.of(context).game_kizuna} ${quest.bondPoint}  '
-                  '${S.of(context).game_experience} ${quest.experience}',
-                  maxLines: 3,
-                  textAlign: TextAlign.center,
+              CustomTile(
+                title: Center(
+                  child: AutoSizeText(
+                    '$chapter\n'
+                    '$questName\n'
+                    '${S.of(context).game_kizuna} ${quest.bondPoint}  '
+                    '${S.of(context).game_experience} ${quest.experience}',
+                    maxLines: 4,
+                    maxFontSize: 14,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                trailing: IconButton(
+                  icon: Icon(
+                    Icons.remove_red_eye_outlined,
+                    color: showTrueName ? Colors.blue : null,
+                  ),
+                  onPressed: () => setState(() => showTrueName = !showTrueName),
                 ),
               ),
               ..._buildBattles(quest.battles)
@@ -78,7 +95,7 @@ class QuestCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(S.current.game_drop + ':  '),
-              Expanded(child: _getDropsWidget(battle))
+              Expanded(child: drops)
             ],
           ),
         ));
@@ -87,17 +104,19 @@ class QuestCard extends StatelessWidget {
     return children;
   }
 
-  Widget _buildWave(List<Enemy> enemies) {
+  Widget _buildWave(List<Enemy?> enemies) {
     List<Widget> enemyWidgets = enemies.map((enemy) {
       if (enemy == null) return Container();
       List<String> lines = [];
       for (int i = 0; i < enemy.hp.length; i++) {
-        lines.add(enemy.name[i] ?? enemy.shownName[i]);
+        final String? name = showTrueName
+            ? enemy.name[i]
+            : (enemy.shownName[i] ?? enemy.name[i]);
+        if (name?.isNotEmpty == true) lines.add(name!);
         lines.add('${enemy.className[i]} ${enemy.hp[i]}');
       }
-      lines.removeWhere((element) => element == null);
       return AutoSizeText(lines.join('\n'),
-          maxFontSize: 14, maxLines: 2, textAlign: TextAlign.center);
+          maxFontSize: 14, textAlign: TextAlign.center);
     }).toList();
     while (enemyWidgets.length % 3 != 0) {
       enemyWidgets.add(Container());
@@ -116,9 +135,9 @@ class QuestCard extends StatelessWidget {
     );
   }
 
-  Widget _getDropsWidget(Battle battle) {
+  Widget? _getDropsWidget(Battle battle) {
     Map<String, String> dropTexts = {};
-    if (quest.isFree) {
+    if (widget.quest.isFree) {
       final glpk = db.gameData.glpk;
       int colIndex = glpk.colNames.indexOf(quest.indexKey);
 
@@ -142,6 +161,9 @@ class QuestCard extends StatelessWidget {
       });
     } else {
       battle.drops.forEach((key, value) => dropTexts[key] = '*$value');
+    }
+    if (dropTexts.isEmpty) {
+      return null;
     }
     return Wrap(
       spacing: 3,

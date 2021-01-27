@@ -2,7 +2,6 @@ import 'package:chaldea/components/components.dart';
 
 import '../servant_detail_page.dart';
 
-
 abstract class SvtTabBaseWidget extends StatefulWidget {
   final ServantDetailPageState parent;
   final Servant svt;
@@ -11,10 +10,8 @@ abstract class SvtTabBaseWidget extends StatefulWidget {
   SvtTabBaseWidget({Key key, this.parent, this.svt, this.status})
       : super(key: key);
 }
-mixin SvtBaseTabState<T extends SvtTabBaseWidget> on State<T> {
 
-}
-
+mixin SvtBaseTabState<T extends SvtTabBaseWidget> on State<T> {}
 
 abstract class SvtTabBaseState<T extends SvtTabBaseWidget> extends State<T>
     with AutomaticKeepAliveClientMixin {
@@ -27,7 +24,6 @@ abstract class SvtTabBaseState<T extends SvtTabBaseWidget> extends State<T>
     this.svt = svt ?? parent?.svt;
     this.status = status ?? parent?.status ?? ServantStatus();
   }
-
 
   @override
   bool get wantKeepAlive => true;

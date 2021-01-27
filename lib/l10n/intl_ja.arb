@@ -95,7 +95,7 @@
   "nga_fgo": "NGA-FGO",
   "about_appstore_rating": "App Storeに評価",
   "about_update_app": "アプリを更新",
-  "about_update_app_detail": "現在のバージョン：{curVersion} \n最新バージョン：{newVersion}\nブラウザにジャンプしてダウンロード",
+  "about_update_app_detail": "現在のバージョン：{curVersion} \n最新のバージョン：{newVersion}",
   "about_update_app_alert_ios_mac": "App Storeでアップデートを確認してください",
   "item_left": "残り",
   "item_own": "持って",
