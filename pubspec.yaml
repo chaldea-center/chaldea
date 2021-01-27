@@ -91,10 +91,11 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - res/img/launcher_icon/
     - res/data/
+    - res/img/launcher_icon/
     - res/img/
     - res/js/
+    - res/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

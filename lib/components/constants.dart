@@ -1,8 +1,10 @@
 // @dart=2.12
 import 'dart:io';
 
+import 'package:chaldea/components/components.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info/package_info.dart';
 
@@ -11,6 +13,7 @@ const bool kDebugMode_ = kDebugMode && false;
 //typedef
 //const value
 const String kAppName = 'Chaldea';
+const String kPackageName = 'cc.narumi.chaldea';
 const String kUserDataFilename = 'userdata.json';
 const String kGameDataFilename = 'dataset.json';
 const String kSupportTeamEmailAddress = 'chaldea-support@narumi.cc';
@@ -28,13 +31,24 @@ const double kGridIconSize = 110 * 0.5 + 6;
 ///   - if CF** keys not defined in info.plist, return null
 ///   - if buildNumber not defined, return version instead
 ///  - Windows: Not Support
-///  TODO: how to retrieve correct value of windows ?
 class AppInfo {
   static PackageInfo? _info;
 
   /// resolve when init app, so no need to check null or resolve every time
+  /// TODO: wait official support for windows
   static Future<PackageInfo> resolve() async {
-    _info ??= await PackageInfo.fromPlatform().catchError((e) => PackageInfo());
+    _info ??= await PackageInfo.fromPlatform().catchError((e) async {
+      final versionString = await rootBundle.loadString('res/VERSION');
+      final nameAndCode = versionString.split('+');
+      PackageInfo packageInfo = PackageInfo(
+        appName: kAppName,
+        packageName: kPackageName,
+        version: nameAndCode[0],
+        buildNumber: nameAndCode[1],
+      );
+      logger.i('Fail to read package info, asset instead: $nameAndCode');
+      return packageInfo;
+    });
     return _info!;
   }
 
