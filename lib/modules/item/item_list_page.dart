@@ -385,7 +385,7 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
             builder: (context, _) => ItemDetailPage(itemKey),
             popDetail: true,
           ),
-          leading: Image(image: db.getIconImage(itemKey), height: 110 * 0.5),
+          leading: db.getIconImage(itemKey, width: 55),
           title: title,
           focusNode: FocusNode(canRequestFocus: true, skipTraversal: true),
           subtitle: subtitle,

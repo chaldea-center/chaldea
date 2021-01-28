@@ -100,7 +100,7 @@ class CraftDetailBasePage extends StatelessWidget {
           CustomTableRow(
             children: [
               TableCellData(
-                child: Image(image: db.getIconImage(ce.icon), height: 80),
+                child: db.getIconImage(ce.icon, height: 80),
                 flex: 1,
                 padding: EdgeInsets.all(8),
                 fitHeight: false,
@@ -180,7 +180,7 @@ class CraftDetailBasePage extends StatelessWidget {
               TableCellData(
                 padding: EdgeInsets.all(6),
                 flex: 1,
-                child: Image(image: db.getIconImage(ce.skillIcon), height: 40),
+                child: db.getIconImage(ce.skillIcon, height: 40),
               ),
               TableCellData(
                 flex: 5,
@@ -205,8 +205,7 @@ class CraftDetailBasePage extends StatelessWidget {
                 TableCellData(
                   padding: EdgeInsets.all(6),
                   flex: 1,
-                  child: Image(
-                      image: db.getIconImage(ce.eventIcons[i]), height: 40),
+                  child: db.getIconImage(ce.eventIcons[i], height: 40),
                 ),
                 TableCellData(
                     flex: 5,

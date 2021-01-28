@@ -373,7 +373,7 @@ class ServantListPageState extends State<ServantListPage>
             break;
         }
         return CustomTile(
-          leading: Image(image: db.getIconImage(svt.icon), height: 65),
+          leading: db.getIconImage(svt.icon, width: 60),
           title: AutoSizeText(svt.info.localizedName, maxLines: 1),
           subtitle: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -431,7 +431,7 @@ class ServantListPageState extends State<ServantListPage>
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
               child: ImageWithText(
-                image: Image(image: db.getIconImage(svt.icon)),
+                image: db.getIconImage(svt.icon),
                 text: statusText,
                 fontSize: 11,
                 alignment: AlignmentDirectional.bottomStart,
@@ -497,7 +497,7 @@ class ServantListPageState extends State<ServantListPage>
               );
 
               return CustomTile(
-                leading: Image(image: db.getIconImage(svt.icon), height: 52),
+                leading: db.getIconImage(svt.icon, width: 48),
                 subtitle: _getDetailTable(svt),
                 trailing: eyeWidget,
                 onTap: () {

@@ -215,7 +215,7 @@ class CraftListPageState extends State<CraftListPage>
               break;
           }
           return CustomTile(
-            leading: Image(image: db.getIconImage(ce.icon), height: 65),
+            leading: db.getIconImage(ce.icon, width: 60),
             title: AutoSizeText(ce.localizedName, maxLines: 1),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,7 +255,7 @@ class CraftListPageState extends State<CraftListPage>
             child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
                 child: GestureDetector(
-                  child: Image(image: db.getIconImage(ce.icon)),
+                  child: db.getIconImage(ce.icon),
                   onTap: () {
                     SplitRoute.push(
                       context: context,

@@ -173,7 +173,7 @@ class Database {
 
   final AssetImage errorImage = AssetImage('res/img/gudako.png');
 
-  ImageProvider getIconImage(String iconKey) {
+  ImageProvider getIconProvider(String iconKey) {
     final icon = getIconResource(iconKey);
     if (icon == null) {
       logger.e(
@@ -186,6 +186,24 @@ class Database {
     return FileImage(
       File(pathlib.join(paths.gameIconDir, icon.name)),
     );
+  }
+
+  /// size of [Image] widget is zero before file is loaded to memory.
+  /// [wrapContainer] to ensure the placeholder
+  Widget getIconImage(String iconKey,
+      {double width, double height, BoxFit fit, bool wrapContainer = true}) {
+    final image = Image(
+      image: getIconProvider(iconKey),
+      width: width,
+      height: height,
+      fit: fit,
+      loadingBuilder: (context, child, loadingProgress) => Container(
+        width: width,
+        height: height,
+        child: child,
+      ),
+    );
+    return image;
   }
 
   // assist methods

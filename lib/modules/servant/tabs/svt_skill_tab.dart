@@ -51,8 +51,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
       children: <Widget>[
         CustomTile(
             contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
-            leading:
-                Image(image: db.getIconImage(skill.icon), height: 110 * 0.3),
+            leading: db.getIconImage(skill.icon, width: 33),
             title: Text(Language.isCN ? nameCn : nameJp),
             subtitle: Text(Language.isCN ? nameJp : nameCn),
             trailing: Row(
@@ -65,12 +64,11 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
                           status.skillIndex[index] == i ? i - 1 : i;
                       widget.parent?.setState(() {});
                     },
-                    child: Image(
-                      image: db.getIconImage(
-                          (status.skillIndex[index] ?? activeSkill.cnState) >= i
-                              ? '技能强化'
-                              : '技能未强化'),
-                      height: 110 * 0.2,
+                    child: db.getIconImage(
+                      (status.skillIndex[index] ?? activeSkill.cnState) >= i
+                          ? '技能强化'
+                          : '技能未强化',
+                      width: 22,
                     ),
                   ),
                 Text('   CD: ${skill.cd}→${skill.cd - 2}')
@@ -87,7 +85,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
       children: <Widget>[
         CustomTile(
           contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
-          leading: Image(image: db.getIconImage(skill.icon), height: 110 * 0.3),
+          leading: db.getIconImage(skill.icon, width: 33),
           title: Text('${skill.name} ${skill.rank ?? ""}'),
         ),
         for (Effect effect in skill.effects) ...buildEffect(effect),

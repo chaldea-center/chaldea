@@ -61,7 +61,7 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
           title: Text(S.of(context).statistics_include_checkbox),
         ),
         ListTile(
-          leading: Image(image: db.getIconImage(Item.qp)),
+          leading: db.getIconImage(Item.qp),
           title: Text(formatNumber(shownItems[Item.qp] ?? 0)),
           onTap: () => SplitRoute.push(
               context: context,

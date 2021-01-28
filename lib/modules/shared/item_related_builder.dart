@@ -21,7 +21,7 @@ class CommonBuilder {
                 padding: EdgeInsets.symmetric(vertical: 2, horizontal: 1),
                 child: ImageWithText(
                   onTap: onTap == null ? null : () => onTap(entry.key),
-                  image: Image(image: db.getIconImage(entry.key)),
+                  image: db.getIconImage(entry.key),
                   text: entry.key == Item.qp && entry.value is int
                       ? formatNumber(entry.value, compact: true)
                       : entry.value.toString(),
@@ -49,7 +49,7 @@ Widget buildClassifiedItemList({
     final gridChildren = divided[key]!.map((item) {
       return ImageWithText(
         onTap: onTap == null ? null : () => onTap(item.name),
-        image: Image(image: db.getIconImage(item.name)),
+        image: db.getIconImage(item.name),
         text: formatNumber(data[item.name]!, compact: true),
         padding: EdgeInsets.only(right: 3),
       );

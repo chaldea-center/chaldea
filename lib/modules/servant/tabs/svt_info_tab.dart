@@ -195,18 +195,15 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
                 texts: [S.current.info_cards], defaults: headerData),
             CustomTableRow(children: [
               TableCellData(
-                child: Image(
-                  image: db.getIconImage(svt.nobelPhantasm.first.color),
-                  height: 110 * 0.5,
-                ),
+                child:
+                    db.getIconImage(svt.nobelPhantasm.first.color, height: 55),
                 flex: 1,
               ),
               TableCellData(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: svt.info.cards
-                      .map((e) =>
-                          Image(image: db.getIconImage(e), height: 110 * 0.4))
+                      .map((e) => db.getIconImage(e, height: 44))
                       .toList(),
                 ),
                 flex: 3,

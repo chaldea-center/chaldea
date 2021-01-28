@@ -174,8 +174,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
 
   Widget _buildHeader() {
     return CustomTile(
-      leading: Image(
-          image: db.getIconImage(svt.icon), fit: BoxFit.contain, height: 65),
+      leading: db.getIconImage(svt.icon, fit: BoxFit.contain, height: 65),
       title: Text('No.${svt.no}  ${svt.info.className}'),
       titlePadding: EdgeInsets.only(left: 16),
       subtitle: Wrap(

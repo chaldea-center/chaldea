@@ -64,7 +64,7 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab> {
                 button = Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Image(image: db.getIconImage(iconKey), height: 110 * 0.2),
+                    db.getIconImage(iconKey, height: 22),
                     Text(td.state)
                   ],
                 );
@@ -92,10 +92,7 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab> {
     return CustomTile(
       leading: Column(
         children: <Widget>[
-          Image(
-            image: db.getIconImage(td.color),
-            width: 110 * 0.9,
-          ),
+          db.getIconImage(td.color, width: 99),
           ConstrainedBox(
             constraints: BoxConstraints(maxWidth: 110 * 0.9),
             child: Text(

@@ -113,7 +113,7 @@ class ItemCostServantPage extends StatelessWidget {
                 )
               : null,
           child: ImageWithText(
-            image: Image(image: db.getIconImage(svt.icon)),
+            image: db.getIconImage(svt.icon),
             text: formatNumber(num, compact: true, minVal: 10000),
             padding: EdgeInsets.only(right: 3, bottom: 12),
             onTap: () {
@@ -149,7 +149,7 @@ class ItemCostServantPage extends StatelessWidget {
           dressNum = stat.dress[itemKey][svtNo] ?? 0,
           grailNum = stat.grailAscension[itemKey][svtNo] ?? 0;
       children.add(CustomTile(
-        leading: Image(image: db.getIconImage(svt.icon), height: 144 * 0.4),
+        leading: db.getIconImage(svt.icon, width: 52),
         title: Text('${svt.info.name}', style: textStyle),
         subtitle: Text(
           '$allNum($ascensionNum/$skillNum/$dressNum/$grailNum)',

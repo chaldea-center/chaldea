@@ -52,15 +52,10 @@ class _MysticCodePageState extends State<MysticCodePage> {
                               : Colors.transparent)),
                   child: GestureDetector(
                     onTap: () => setState(() => selected = entry.key),
-                    child: SizedBox(
-                      width: 50,
-                      height: 50,
-                      child: Image(
-                        image: db.getIconImage(
-                            db.curUser.isMasterGirl ? code.icon2 : code.icon1),
-                        height: 50,
-                      ),
-                    ),
+                    child: db.getIconImage(
+                        db.curUser.isMasterGirl ? code.icon2 : code.icon1,
+                        width: 50,
+                        height: 50),
                   ),
                 ),
               );
@@ -188,8 +183,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
       children: <Widget>[
         CustomTile(
             contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
-            leading:
-                Image(image: db.getIconImage(skill.icon), height: 110 * 0.3),
+            leading: db.getIconImage(skill.icon, width: 32),
             title: Text(nameCn),
             trailing: Text('   CD: ${skill.cd}→${skill.cd - 2}')),
         for (Effect effect in skill.effects) ...buildEffect(effect)

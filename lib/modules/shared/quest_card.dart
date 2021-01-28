@@ -179,8 +179,7 @@ class _QuestCardState extends State<QuestCard> {
             .map((entry) => Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Image(
-                        image: db.getIconImage(entry.key), height: 110 * 0.25),
+                    db.getIconImage(entry.key, width: 28),
                     Text(entry.value, style: TextStyle(fontSize: 14))
                   ],
                 ))

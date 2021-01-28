@@ -108,10 +108,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       String shownName =
           Language.isCN ? skill.name : (skill.nameJp ?? skill.name);
       skillWidgets.add(buildPlanRow(
-        leading: Image(
-          image: db.getIconImage(skill.icon),
-          height: 110 * 0.3,
-        ),
+        leading: db.getIconImage(skill.icon, width: 33),
         title: '$shownName ${skill.rank}',
         start: curVal.skills[index],
         end: targetVal.skills[index],
@@ -146,7 +143,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       final dressNameCn = svt.itemCost.dressName[index];
       final dressNameJp = svt.itemCost.dressNameJp[index];
       dressWidgets.add(buildPlanRow(
-        leading: Image(image: db.getIconImage('灵衣开放权'), height: 110 * 0.3),
+        leading: db.getIconImage('灵衣开放权', width: 33),
         title: Language.isCN ? dressNameCn : dressNameJp,
         subtitle: Language.isCN ? dressNameJp : dressNameCn,
         start: curVal.dress[index],
@@ -177,7 +174,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     children.add(TileGroup(
       children: <Widget>[
         buildPlanRow(
-          leading: Image(image: db.getIconImage('宝具强化'), height: 110 * 0.3),
+          leading: db.getIconImage('宝具强化', width: 33),
           title: S.of(context).nobel_phantasm_level,
           start: status.tdLv,
           minVal: 1,
@@ -192,7 +189,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         ),
         if (svt.no != 1)
           buildPlanRow(
-            leading: Image(image: db.getIconImage('圣杯'), height: 110 * 0.3),
+            leading: db.getIconImage(Item.grail, width: 33),
             title: S.of(context).grail_up,
             start: curVal.grail,
             end: targetVal.grail,

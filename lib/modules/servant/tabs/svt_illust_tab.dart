@@ -34,16 +34,10 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
   }
 
   UriImageWidgetBuilder getPlaceholder() {
+    final _colors = ['黑', '铜', '铜', '银', '金', '金'];
     String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
-    return (context, url) => Image(
-          image: db.getIconImage('${capitalize(svt.info.className)}${[
-            '黑',
-            '铜',
-            '铜',
-            '银',
-            '金',
-            '金'
-          ][svt.info.rarity]}卡背'),
+    return (context, url) => db.getIconImage(
+          '${capitalize(svt.info.className)}${_colors[svt.info.rarity]}卡背',
         );
   }
 

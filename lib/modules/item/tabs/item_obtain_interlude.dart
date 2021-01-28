@@ -36,10 +36,8 @@ class ItemObtainInterludeTab extends StatelessWidget {
               titleChild: CustomTile(
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                leading: Image(
-                  image: db.getIconImage(db.gameData.servants[svtNo]!.icon),
-                  height: 40,
-                ),
+                leading: db.getIconImage(db.gameData.servants[svtNo]!.icon,
+                    width: 40),
                 subtitle: Text(quest.localizedName),
                 trailing: Text(
                   itemCount.toString(),

@@ -162,7 +162,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
             },
             child: Padding(
               padding: EdgeInsets.all(2),
-              child: Image(image: db.getIconImage(item)),
+              child: db.getIconImage(item),
             ),
           ),
           title: Row(

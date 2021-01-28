@@ -148,7 +148,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
       children.add(ListTile(
         leading: GestureDetector(
           onTap: () => onTapIcon(itemKey),
-          child: Image(image: db.getIconImage(itemKey), height: 110 * 0.5),
+          child: db.getIconImage(itemKey, width: 48),
         ),
         title: Text(itemKey),
         subtitle: Text(hint),

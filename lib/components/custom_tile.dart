@@ -208,7 +208,7 @@ class CustomTile extends StatelessWidget {
 }
 
 class ImageWithText extends StatelessWidget {
-  final Image image;
+  final Widget image;
   final String text;
   final double fontSize;
   final EdgeInsets padding;

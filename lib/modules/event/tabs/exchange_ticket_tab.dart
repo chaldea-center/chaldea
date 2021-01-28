@@ -110,7 +110,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab>
               builder: (context, _) => ItemDetailPage(iconKey),
               popDetail: true,
             ),
-            child: Image(image: db.getIconImage(iconKey), width: 42),
+            child: db.getIconImage(iconKey, width: 42),
           ),
           SizedBox(
             width: 36,
@@ -228,7 +228,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab>
                       builder: (context, _) => ItemDetailPage(iconKey),
                       popDetail: true,
                     ),
-                    child: Image(image: db.getIconImage(iconKey), width: 42),
+                    child: db.getIconImage(iconKey, width: 42),
                   ),
                   SizedBox(
                     width: 36,

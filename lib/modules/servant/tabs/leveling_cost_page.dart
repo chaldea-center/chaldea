@@ -88,7 +88,7 @@ class LevelingCostPageState extends State<LevelingCostPage> {
                 .map((entry) => Align(
                       alignment: Alignment.centerLeft,
                       child: ImageWithText(
-                        image: Image(image: db.getIconImage(entry.key)),
+                        image: db.getIconImage(entry.key),
                         text: formatNumber(entry.value, compact: true),
                         padding: EdgeInsets.only(right: 3),
                         onTap: entry.key == 'QP'

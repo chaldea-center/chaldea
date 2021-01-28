@@ -185,7 +185,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
           }
           final code = shownList[index - 1];
           return CustomTile(
-            leading: Image(image: db.getIconImage(code.icon), height: 65),
+            leading: db.getIconImage(code.icon, width: 60),
             title: AutoSizeText(code.localizedName, maxLines: 1),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,7 +225,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
               child: GestureDetector(
-                child: Image(image: db.getIconImage(code.icon)),
+                child: db.getIconImage(code.icon),
                 onTap: () {
                   SplitRoute.push(
                     context: context,
