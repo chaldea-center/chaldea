@@ -45,6 +45,8 @@
 		93CB6327259F163D00EFEE0F /* Info-Debug.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-Debug.plist"; sourceTree = "<group>"; };
 		93CB632A259F166B00EFEE0F /* Info-Profile.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-Profile.plist"; sourceTree = "<group>"; };
 		93D09B0625C013C70037A20F /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
+		93D09B2325C34AEB0037A20F /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
+		93D09B2425C34AEC0037A20F /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
 		97C146EE1CF9000F007C117D /* Runner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Runner.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -191,6 +193,7 @@
 				en,
 				Base,
 				"zh-Hans",
+				ja,
 			);
 			mainGroup = 97C146E51CF9000F007C117D;
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
@@ -307,6 +310,7 @@
 			children = (
 				97C146FB1CF9000F007C117D /* Base */,
 				938F6D7425BAA9C100C3A1F8 /* zh-Hans */,
+				93D09B2325C34AEB0037A20F /* ja */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -316,6 +320,7 @@
 			children = (
 				97C147001CF9000F007C117D /* Base */,
 				938F6D7525BAA9C100C3A1F8 /* zh-Hans */,
+				93D09B2425C34AEC0037A20F /* ja */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";

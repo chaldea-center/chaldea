@@ -135,7 +135,6 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
 
     Widget makeText(String text) {
       return Container(
-        color: Colors.blue,
         padding: EdgeInsets.symmetric(horizontal: 8),
         child: Center(
           child: AutoSizeText(

@@ -274,7 +274,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "search_result_count_hide" : m11,
     "select_copy_plan_source" : MessageLookupByLibrary.simpleMessage("コピー元を選択"),
     "select_plan" : MessageLookupByLibrary.simpleMessage("プランを選択"),
-    "servant" : MessageLookupByLibrary.simpleMessage("サーバント"),
+    "servant" : MessageLookupByLibrary.simpleMessage("サーヴァント"),
     "servant_title" : MessageLookupByLibrary.simpleMessage("サーヴァント"),
     "server" : MessageLookupByLibrary.simpleMessage("サーバー"),
     "server_cn" : MessageLookupByLibrary.simpleMessage("CN"),
