@@ -39,28 +39,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
       ),
       body: Column(
         children: [
-          Wrap(
-            children: mysticCodes.entries.map((entry) {
-              final code = entry.value;
-              return Padding(
-                padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                          color: selected == entry.key
-                              ? Colors.blue
-                              : Colors.transparent)),
-                  child: GestureDetector(
-                    onTap: () => setState(() => selected = entry.key),
-                    child: db.getIconImage(
-                        db.curUser.isMasterGirl ? code.icon2 : code.icon1,
-                        width: 50,
-                        height: 50),
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
+          buildScrollHeader(),
           Expanded(
               child: SingleChildScrollView(child: buildDetails(mysticCode))),
           Row(
@@ -88,8 +67,46 @@ class _MysticCodePageState extends State<MysticCodePage> {
     );
   }
 
+  Widget buildScrollHeader() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(Icons.keyboard_arrow_left, color: Colors.grey),
+        Expanded(
+          child: Container(
+            margin: EdgeInsets.symmetric(vertical: 10),
+            height: 50,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: mysticCodes.entries.map((entry) {
+                final code = entry.value;
+                return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                            color: selected == entry.key
+                                ? Colors.blue
+                                : Colors.transparent)),
+                    child: GestureDetector(
+                      onTap: () => setState(() => selected = entry.key),
+                      child: db.getIconImage(
+                          db.curUser.isMasterGirl ? code.icon2 : code.icon1,
+                          width: 50,
+                          height: 50),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+        Icon(Icons.keyboard_arrow_right, color: Colors.grey),
+      ],
+    );
+  }
+
   Widget buildDetails(MysticCode mysticCode) {
-    final urls = getImageUrl([mysticCode.image1, mysticCode.image2]);
     return CustomTable(
       children: <Widget>[
         CustomTableRow(children: [
@@ -137,31 +154,15 @@ class _MysticCodePageState extends State<MysticCodePage> {
           TableCellData(text: S.of(context).illustration, isHeader: true)
         ]),
         CustomTableRow(
-          children: [
-            TableCellData(
-              child: FittedBox(
-                child: SizedBox(
-                  height: 300,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      if (urls[0] != null)
-                        CachedNetworkImage(imageUrl: urls[0]),
-                      Container(width: 50),
-                      if (urls[1] != null) CachedNetworkImage(imageUrl: urls[1])
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
+          children: [TableCellData(child: buildCodeImages(mysticCode))],
         )
       ],
     );
   }
 
-  List<String?> getImageUrl(List<String> filenames) {
-    final urls = filenames.map((e) => db.prefs.getString(e)).toList();
+  List<String> getImageUrl(List<String> filenames) {
+    final List<String?> urls =
+        filenames.map((e) => db.prefs.getString(e)).toList();
     Future<void> _resolve() async {
       for (var fn in filenames) {
         if (db.prefs.getString(fn) == null) {
@@ -174,7 +175,39 @@ class _MysticCodePageState extends State<MysticCodePage> {
     if (urls.contains(null)) {
       _resolve().then((value) => setState(() {}));
     }
-    return urls;
+    return urls.where((e) => e != null).toList() as List<String>;
+  }
+
+  Widget buildCodeImages(MysticCode mysticCode) {
+    final urls = getImageUrl([mysticCode.image1, mysticCode.image2]);
+    if (urls.isEmpty) return Container(height: 300);
+    return FittedBox(
+      child: SizedBox(
+        height: 300,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            for (int i = 0; i < urls.length; i++)
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(PageRouteBuilder(
+                    fullscreenDialog: true,
+                    opaque: false,
+                    pageBuilder: (context, _, __) => FullScreenImageSlider(
+                      imgUrls: urls,
+                      initialPage: i,
+                    ),
+                  ));
+                },
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  child: CachedNetworkImage(imageUrl: urls[i]),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget buildSkill(Skill skill) {
@@ -183,7 +216,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
       children: <Widget>[
         CustomTile(
             contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
-            leading: db.getIconImage(skill.icon, width: 32),
+            leading: db.getIconImage(skill.icon, height: 32, width: 32),
             title: Text(nameCn),
             trailing: Text('   CD: ${skill.cd}→${skill.cd - 2}')),
         for (Effect effect in skill.effects) ...buildEffect(effect)

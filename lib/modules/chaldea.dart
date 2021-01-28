@@ -4,6 +4,7 @@ import 'package:catcher/core/catcher.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:chaldea/modules/home/home_page.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 class Chaldea extends StatefulWidget {
@@ -23,22 +24,27 @@ class _ChaldeaState extends State<Chaldea> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: kAppName,
-      debugShowCheckedModeBanner: false,
-      navigatorKey: kAppKey,
-      locale: Language.getLanguage(db.userData?.language)?.locale,
-      localizationsDelegates: [
-        S.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate
-      ],
-      supportedLocales: S.delegate.supportedLocales,
-      builder: EasyLoading.init(builder: (context, widget) {
-        Catcher.addDefaultErrorWidget(showStacktrace: true);
-        return widget;
-      }),
-      home: _ChaldeaHome(),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+      ),
+      child: MaterialApp(
+        title: kAppName,
+        debugShowCheckedModeBanner: false,
+        navigatorKey: kAppKey,
+        locale: Language.getLanguage(db.userData?.language)?.locale,
+        localizationsDelegates: [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate
+        ],
+        supportedLocales: S.delegate.supportedLocales,
+        builder: EasyLoading.init(builder: (context, widget) {
+          Catcher.addDefaultErrorWidget(showStacktrace: true);
+          return widget;
+        }),
+        home: _ChaldeaHome(),
+      ),
     );
   }
 }

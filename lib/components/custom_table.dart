@@ -105,7 +105,6 @@ class _CustomTableRowState extends State<CustomTableRow> {
     } else {
       constraints = _calculatedConstraints;
     }
-
     List<Widget> children = List.generate(widget.children.length, (index) {
       final cell = widget.children[index];
       Widget _child;
@@ -150,6 +149,13 @@ class _CustomTableRowState extends State<CustomTableRow> {
   }
 
   void calculateConstraints() {
+    // if all children don't need to fit, don't calculate
+    if (widget.children.where((data) => data.fitHeight == true).isEmpty) {
+      _needRebuild = false;
+      _calculatedConstraints = null;
+      return;
+    }
+
     SchedulerBinding.instance.addPostFrameCallback((_) {
       double _maxHeight = -1;
       widget.children.forEach((cell) {

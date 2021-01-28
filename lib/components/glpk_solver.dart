@@ -109,11 +109,12 @@ class GLPKSolver {
     // if use integer GLPK (simplex then intopt),
     // it may run out of time and memory, then crash.
     // so only use simplex here
-    await _ensureEngine();
-    assert(data != null && params != null);
-    print('=========solving========\nparams="${json.encode(params)}"');
     GLPKSolution solution;
     try {
+      assert(data != null && params != null);
+      await _ensureEngine();
+      print('=========solving========\nparams="${json.encode(params)}"');
+
       final params2 = GLPKParams.from(params);
       final data2 = GLPKData.from(data);
       _preProcess(data: data2, params: params2);

@@ -39,10 +39,13 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
     SystemChrome.setEnabledSystemUIOverlays([]);
   }
 
+  Future<void> resetSystemUI() async {
+    await SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+  }
+
   @override
   void dispose() {
     super.dispose();
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   }
 
   @override
@@ -50,6 +53,7 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
     return Scaffold(
       body: WillPopScope(
         onWillPop: () async {
+          await resetSystemUI();
           Navigator.of(context).pop(_curIndex);
           return false;
         },
@@ -57,7 +61,10 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
           items: List.generate(
             widget.imgUrls.length,
             (index) => GestureDetector(
-              onTap: () => Navigator.of(context).pop(_curIndex),
+              onTap: () async {
+                await resetSystemUI();
+                Navigator.of(context).pop(_curIndex);
+              },
               child: CachedImageWidget(
                 url: widget.imgUrls[index],
                 enableDownload: widget.enableDownload,

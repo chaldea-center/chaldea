@@ -97,12 +97,11 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
   GLPKParams params;
   Map<String, List<String>> pickerData = {};
   final solver = GLPKSolver();
+  bool running = false;
 
   @override
   void initState() {
     super.initState();
-    // init picker data
-
     // reset params
     params = db.userData.glpkParams
       ..removeAll()
@@ -315,7 +314,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
                       });
                     }),
                 ElevatedButton(
-                  onPressed: solve,
+                  onPressed: running ? null : solve,
                   child: SizedBox(
                     width: 75,
                     child: Center(
@@ -370,8 +369,12 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
   void solve() async {
     FocusScope.of(context).unfocus();
     if (params.counts.reduce(max) > 0) {
+      setState(() {
+        running = true;
+      });
       final solution =
           await solver.calculate(data: db.gameData.glpk, params: params);
+      running = false;
       if (widget.onSolved != null) {
         widget.onSolved(solution);
       }
