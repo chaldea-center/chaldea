@@ -245,23 +245,21 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
               children.add(buildItemTile(group, stat));
             }
           }
-          return wrapDefaultScrollBar(
+          Widget child = ListView.separated(
             controller: _scrollController,
-            child: ListView.separated(
-              controller: _scrollController,
-              itemBuilder: (context, index) => children[index],
-              separatorBuilder: (context, index) =>
-                  Divider(height: 1, indent: 16),
-              itemCount: children.length,
-            ),
+            itemBuilder: (context, index) => children[index],
+            separatorBuilder: (context, index) =>
+                Divider(height: 1, indent: 16),
+            itemCount: children.length,
           );
+          return wrapDefaultScrollBar(
+              controller: _scrollController, child: child);
         });
   }
 
   Widget buildItemTile(InputComponents group, ItemStatistics statistics) {
     final itemKey = group.data.name;
     bool isQp = itemKey == qpKey;
-
     return StatefulBuilder(
       builder: (BuildContext context, setState2) {
         // update when text input
@@ -273,7 +271,7 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
           controller: group.controller,
           focusNode: group.focusNode,
           textAlign: TextAlign.center,
-          keyboardType: TextInputType.text,
+          keyboardType: TextInputType.numberWithOptions(signed: true),
           textInputAction: TextInputAction.next,
           decoration: InputDecoration(counterText: ''),
           inputFormatters: [
@@ -294,7 +292,19 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
             }
           },
           onEditingComplete: () {
+            if (_shownGroups.indexOf(group) == _shownGroups.length - 1) {
+              FocusScope.of(context).unfocus();
+              return;
+            }
             FocusScope.of(context).nextFocus();
+            final curNode = FocusScope.of(context).focusedChild;
+            for (var _group in _shownGroups) {
+              if (_group.focusNode == curNode) {
+                _group.controller.selection = TextSelection(
+                    baseOffset: 0, extentOffset: _group.controller.text.length);
+                break;
+              }
+            }
           },
         );
         Widget title, subtitle;

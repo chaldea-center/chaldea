@@ -142,7 +142,7 @@ class Item {
 
   @override
   String toString() {
-    return 'Item($name, $num)';
+    return '$runtimeType($name)';
   }
 
   static const String qp = 'QP';

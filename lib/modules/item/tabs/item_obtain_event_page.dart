@@ -70,7 +70,7 @@ class ItemObtainEventPage extends StatelessWidget {
       ..sort((a, b) => a.startTimeJp.compareTo(b.startTimeJp))
       ..forEach((limitEvent) {
         final plan = db.curUser.events.limitEvents[limitEvent.name];
-        final int numShop = (limitEvent.itemsWithRare(plan) ?? {})[itemKey],
+        final int numShop = limitEvent.itemsWithRare(plan)[itemKey],
             numLottery = (limitEvent.lottery ?? {})[itemKey];
         final bool hasExtra = limitEvent.extra?.containsKey(itemKey) == true;
         if ((numShop != null || numLottery != null || hasExtra) &&
