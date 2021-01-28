@@ -103,10 +103,9 @@ class CmdCodeDetailBasePage extends StatelessWidget {
           CustomTableRow(
             children: [
               TableCellData(
-                child: db.getIconImage(code.icon, width: 75),
+                child: db.getIconImage(code.icon, height: 90),
                 flex: 1,
-                padding: EdgeInsets.all(8),
-                fitHeight: false,
+                padding: EdgeInsets.all(3),
               ),
               TableCellData(
                 flex: 3,

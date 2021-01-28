@@ -129,7 +129,8 @@ class ItemCostServantPage extends StatelessWidget {
     if (children.isEmpty) {
       return Container();
     } else {
-      return buildResponsiveGridWrap(context: context, children: children);
+      return buildResponsiveGridWrap(
+          context: context, children: children, crossCount: 6);
     }
   }
 

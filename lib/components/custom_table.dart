@@ -4,12 +4,15 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-const BorderSide kCustomTableSide =
-    BorderSide(color: Color.fromRGBO(162, 169, 177, 1), width: 0.5);
+const Divider kHorizontalDivider = Divider(
+    color: Color.fromRGBO(162, 169, 177, 1), thickness: 0.5, height: 0.5);
+const VerticalDivider kVerticalDivider = VerticalDivider(
+    color: Color.fromRGBO(162, 169, 177, 1), thickness: 0.5, width: 0.5);
 
 class CustomTable extends StatelessWidget {
   final List<Widget> children;
-  final BorderSide side;
+  final Divider horizontalDivider;
+  final VerticalDivider verticalDivider;
 
   /// could hide outline if table inside another table
   final bool hideOutline;
@@ -18,24 +21,37 @@ class CustomTable extends StatelessWidget {
       {Key key,
       this.children,
       this.hideOutline = false,
-      this.side = kCustomTableSide})
+      this.horizontalDivider = kHorizontalDivider,
+      this.verticalDivider = kVerticalDivider})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> _all = [];
+    for (int i = 0; i < children.length; i++) {
+      _all.add(children[i]);
+      if (i < children.length - 1) {
+        _all.add(horizontalDivider);
+      }
+    }
+    final outlineDecoration = hideOutline
+        ? null
+        : BoxDecoration(
+            border: Border.symmetric(
+              horizontal: BorderSide(
+                  color: horizontalDivider.color,
+                  width: horizontalDivider.thickness),
+              vertical: BorderSide(
+                  color: verticalDivider.color,
+                  width: verticalDivider.thickness),
+            ),
+          );
     return Container(
-      decoration: BoxDecoration(
-          border: hideOutline ? null : Border.fromBorderSide(side)),
+      decoration: outlineDecoration,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: List.generate(children.length, (index) {
-          return Container(
-            decoration:
-                BoxDecoration(border: index > 0 ? Border(top: side) : null),
-            child: children[index],
-          );
-        }),
+        children: _all,
       ),
     );
   }
@@ -46,10 +62,10 @@ class CustomTableRow extends StatefulWidget {
 
   /// background color of table row
   final Color color;
-  final BorderSide side;
+  final VerticalDivider divider;
 
   CustomTableRow(
-      {Key key, this.children, this.color, this.side = kCustomTableSide})
+      {Key key, this.children, this.color, this.divider = kVerticalDivider})
       : super(key: key) {
     children.forEach((cell) {
       cell.key ??= GlobalKey();
@@ -60,7 +76,7 @@ class CustomTableRow extends StatefulWidget {
       {@required List<String> texts,
       TableCellData defaults,
       Color color,
-      BorderSide side = kCustomTableSide})
+      VerticalDivider divider = kVerticalDivider})
       : this(
           children: texts
               .map((text) => defaults == null
@@ -68,14 +84,14 @@ class CustomTableRow extends StatefulWidget {
                   : defaults.copyWith(text: text))
               .toList(),
           color: color,
-          side: side,
+          divider: divider,
         );
 
   CustomTableRow.fromChildren(
       {@required List<Widget> children,
       TableCellData defaults,
       Color color,
-      BorderSide side = kCustomTableSide})
+      VerticalDivider divider = kVerticalDivider})
       : this(
           children: children
               .map((child) => defaults == null
@@ -83,7 +99,7 @@ class CustomTableRow extends StatefulWidget {
                   : defaults.copyWith(child: child))
               .toList(),
           color: color,
-          side: side,
+          divider: divider,
         );
 
   @override
@@ -105,7 +121,8 @@ class _CustomTableRowState extends State<CustomTableRow> {
     } else {
       constraints = _calculatedConstraints;
     }
-    List<Widget> children = List.generate(widget.children.length, (index) {
+    List<Widget> children = [];
+    for (int index = 0; index < widget.children.length; index++) {
       final cell = widget.children[index];
       Widget _child;
       if (_needRebuild && cell.fitHeight == true) {
@@ -115,25 +132,37 @@ class _CustomTableRowState extends State<CustomTableRow> {
         if (cell.child != null) {
           _child = cell.child;
         } else {
+          /// TODO: AutoSizeText supported here:
+          /// LayoutBuilder does not support returning intrinsic dimensions
+          /// see https://github.com/leisim/auto_size_text/issues/77
           _child = cell.maxLines == null
               ? Text(cell.text, textAlign: cell.textAlign)
-              : AutoSizeText(
-                  cell.text,
-                  maxLines: cell.maxLines,
-                  textAlign: cell.textAlign,
-                );
+              : cell.maxLines == 1
+                  ? FittedBox(
+                      child: Text(
+                        cell.text,
+                        maxLines: cell.maxLines,
+                        textAlign: cell.textAlign,
+                      ),
+                    )
+                  : AutoSizeText(
+                      cell.text,
+                      maxLines: cell.maxLines,
+                      textAlign: cell.textAlign,
+                    );
         }
       }
 
-      return Flexible(
+      children.add(Flexible(
         key: cell.key,
         flex: cell.flex,
         child: Container(
           constraints: constraints,
-          decoration: BoxDecoration(
-            color: cell.color,
-            border: index > 0 ? Border(left: kCustomTableSide) : null,
-          ),
+          color: cell.color,
+          // decoration: BoxDecoration(
+          //   color: ,
+          // border: index > 0 ? Border(left: kCustomTableSide) : null,
+          // ),
           child: Align(
             alignment: cell.alignment,
             child: Padding(
@@ -142,10 +171,17 @@ class _CustomTableRowState extends State<CustomTableRow> {
             ),
           ),
         ),
-      );
-    });
+      ));
+
+      if (index < widget.children.length - 1) {
+        children.add(widget.divider);
+      }
+    }
     if (!_needRebuild) _needRebuild = true;
-    return Container(constraints: constraints, child: Row(children: children));
+    return Container(
+      constraints: constraints,
+      child: IntrinsicHeight(child: Row(children: children)),
+    );
   }
 
   void calculateConstraints() {
@@ -185,6 +221,8 @@ class TableCellData {
   Alignment alignment;
   TextAlign textAlign;
   EdgeInsets padding;
+
+  /// TODO: whether to remove it?
   bool fitHeight;
   GlobalKey key;
 

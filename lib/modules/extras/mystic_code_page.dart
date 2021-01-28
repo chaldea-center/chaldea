@@ -106,6 +106,61 @@ class _MysticCodePageState extends State<MysticCodePage> {
     );
   }
 
+  Widget buildDetails2(MysticCode mysticCode) {
+    return CustomTable(
+      children: <Widget>[
+        CustomTableRow(children: [
+          TableCellData(
+            child: Text(mysticCode.name,
+                style: TextStyle(fontWeight: FontWeight.bold)),
+            isHeader: true,
+          )
+        ]),
+        CustomTableRow(children: [TableCellData(text: mysticCode.nameJp)]),
+        CustomTableRow(children: [
+          TableCellData(
+            text: mysticCode.description ?? '???',
+            alignment: Alignment.centerLeft,
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          ),
+        ]),
+        CustomTableRow(
+          children: [
+            TableCellData(
+              text: mysticCode.descriptionJp ?? '???',
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              // isHeader: true
+            ),
+          ],
+        ),
+        CustomTableRow(children: [
+          TableCellData(text: S.of(context).obtain_methods, isHeader: false)
+        ]),
+        // CustomTableRow(children: [
+        //   TableCellData(child: Text(mysticCode.obtains.join('\n')))
+        // ]),
+        // CustomTableRow(children: [
+        //   TableCellData(text: S.of(context).skill, isHeader: true)
+        // ]),
+        // CustomTableRow(children: [
+        //   TableCellData(
+        //     child: Column(
+        //       mainAxisSize: MainAxisSize.min,
+        //       children: mysticCode.skills.map((e) => buildSkill(e)).toList(),
+        //     ),
+        //   )
+        // ]),
+        // CustomTableRow(children: [
+        //   TableCellData(text: S.of(context).illustration, isHeader: true)
+        // ]),
+        // CustomTableRow(
+        //   children: [TableCellData(child: buildCodeImages(mysticCode))],
+        // )
+      ],
+    );
+  }
+
   Widget buildDetails(MysticCode mysticCode) {
     return CustomTable(
       children: <Widget>[
