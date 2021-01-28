@@ -42,7 +42,11 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
   Widget build(BuildContext context) {
     List<Widget> children = [];
     if (event.bannerUrl?.isNotEmpty == true)
-      children.add(CachedNetworkImage(imageUrl: event.bannerUrl));
+      children.add(GestureDetector(
+        onTap: () => jumpToExternalLinkAlert(
+            url: mooncellFullLink(widget.name), name: 'Mooncell'),
+        child: CachedNetworkImage(imageUrl: event.bannerUrl),
+      ));
     // 复刻
     if (event.grail2crystal > 0) {
       children.add(SwitchListTile.adaptive(

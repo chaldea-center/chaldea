@@ -37,6 +37,7 @@ class ItemObtainEventPage extends StatelessWidget {
           if (hasDrop) {
             texts.add(TextSpan(
                 text: S.of(context).main_record_fixed_drop_short +
+                    ' ' +
                     record.drops[itemKey].toString(),
                 style: plan?.elementAt(0) == true ? highlight : null));
           }
@@ -46,6 +47,7 @@ class ItemObtainEventPage extends StatelessWidget {
           if (hasReward) {
             texts.add(TextSpan(
                 text: S.of(context).main_record_bonus_short +
+                    ' ' +
                     record.rewardsWithRare[itemKey].toString(),
                 style: plan?.elementAt(1) == true ? highlight : null));
           }

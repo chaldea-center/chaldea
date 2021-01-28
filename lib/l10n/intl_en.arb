@@ -29,6 +29,7 @@
   "statistics_title": "Statistics",
   "tooltip_refresh_sliders": "Refresh sliders",
   "jump_to": "Jump to {site}",
+  "link": "link",
   "edit": "Edit",
   "more": "More",
   "servant": "Servant",
@@ -269,5 +270,6 @@
   "mystic_code": "Mystic Code",
   "level": "Level",
   "no_servant_quest_hint": "There is no interlude or rank up quest",
-  "quest": "Quest"
+  "quest": "Quest",
+  "interlude_and_rankup": "Interlude&Rank Up"
 }

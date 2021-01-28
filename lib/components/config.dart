@@ -76,13 +76,13 @@ class Database {
   }
 
   bool loadGameData() {
-    // TODO: use downloaded data if exist
     final t = TimeCounter('loadGameData');
     try {
       gameData = GameData.fromJson(getJsonFromFile(paths.gameDataFilepath));
       logger.d('game data reloaded, version ${gameData.version}.');
       db.onAppUpdate();
       t.elapsed();
+      itemStat.clear();
       return true;
     } catch (e, s) {
       gameData ??= GameData(); // if not null, don't change data

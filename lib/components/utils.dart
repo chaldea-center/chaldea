@@ -262,7 +262,7 @@ void checkAppUpdate([bool background = true]) async {
           'http://itunes.apple.com/lookup?bundleId=$kPackageName',
           options: Options(responseType: ResponseType.plain));
       final jsonData = json.decode(response.data.toString().trim());
-      logger.d(jsonData);
+      // logger.d(jsonData);
       final result = jsonData['results'][0];
       latestVersion = result['version'];
       releaseNote = result['releaseNotes'];
@@ -327,4 +327,30 @@ void checkAppUpdate([bool background = true]) async {
       ],
     ).show(context);
   }
+}
+
+Future<void> jumpToExternalLinkAlert(
+    {required String url, String? name}) async {
+  return showDialog(
+    context: kAppKey.currentContext!,
+    builder: (context) => SimpleCancelOkDialog(
+      title: Text(S.of(context).jump_to(name ?? S.of(context).link)),
+      content:
+          Text(url, style: TextStyle(decoration: TextDecoration.underline)),
+      onTapOk: () async {
+        final safeLink = Uri.encodeFull(url);
+        if (await canLaunch(safeLink)) {
+          launch(safeLink);
+        } else {
+          EasyLoading.showToast('Could not launch url:\n$safeLink');
+        }
+      },
+    ),
+  );
+}
+
+String mooncellFullLink(String title, {bool encode = false}) {
+  String link = 'https://fgo.wiki/w/$title';
+  if (encode) link = Uri.encodeFull(link);
+  return link;
 }

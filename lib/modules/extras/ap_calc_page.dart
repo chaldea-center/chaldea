@@ -11,7 +11,7 @@ class APCalcPage extends StatefulWidget {
 class _APCalcPageState extends State<APCalcPage> {
   TextEditingController _curCtrl, _maxCtrl;
   String endTime;
-  bool showExtraHint = Random().nextDouble() > 0.7;
+  bool showExtraHint = Random().nextDouble() > 0.5;
 
   @override
   void initState() {

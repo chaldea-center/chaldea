@@ -29,6 +29,7 @@
   "statistics_title": "統計",
   "tooltip_refresh_sliders": "ホームページを更新",
   "jump_to": "{site}にジャンプ",
+  "link": "リンク",
   "edit": "編集",
   "more": "もっと",
   "servant": "サーバント",
@@ -269,5 +270,6 @@
   "mystic_code": "魔術礼装",
   "level": "レベル",
   "no_servant_quest_hint": "幕間の物語や強化クエストはありません",
-  "quest": "クエスト"
+  "quest": "クエスト",
+  "interlude_and_rankup": "幕間・強化"
 }

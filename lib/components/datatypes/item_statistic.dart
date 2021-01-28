@@ -21,6 +21,14 @@ class ItemStatistics {
     onUpdated.sink.add(this);
   }
 
+  /// Clear statistic data, all data will be calculated again next calling.
+  /// After importing dataset, we should call this to refresh statistics.
+  void clear() {
+    svtItemDetail = SvtCostItems();
+    eventItems = {};
+    leftItems = {};
+  }
+
   Future<void> update({User user, bool shouldBroadcast = true}) {
     user ??= db.curUser;
     return Future(() {

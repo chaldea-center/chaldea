@@ -335,11 +335,13 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     buttons.add(IconButton(
       icon: Icon(Icons.vertical_align_top),
       tooltip: S.of(context).skilled_max10,
-      onPressed: () {
-        curVal.setMax(skill: 10);
-        targetPlan.setMax(skill: 10);
-        updateState();
-      },
+      onPressed: enhanceMode
+          ? null
+          : () {
+              curVal.setMax(skill: 10);
+              targetPlan.setMax(skill: 10);
+              updateState();
+            },
     ));
 
     // 999
@@ -350,14 +352,16 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         IconButton(
           icon: Icon(Icons.trending_up),
           tooltip: S.of(context).plan_max9,
-          onPressed: () {
-            targetPlan.setMax(skill: 9);
-            curVal.favorite = true;
-            for (int i = 0; i < 3; i++) {
-              curVal.skills[i] = min(curVal.skills[i], 9);
-            }
-            updateState();
-          },
+          onPressed: enhanceMode
+              ? null
+              : () {
+                  targetPlan.setMax(skill: 9);
+                  curVal.favorite = true;
+                  for (int i = 0; i < 3; i++) {
+                    curVal.skills[i] = min(curVal.skills[i], 9);
+                  }
+                  updateState();
+                },
         ),
       ],
     ));
@@ -370,11 +374,13 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         IconButton(
           icon: Icon(Icons.trending_up),
           tooltip: S.of(context).plan_max10,
-          onPressed: () {
-            curVal.favorite = true;
-            targetPlan.setMax(skill: 10);
-            updateState();
-          },
+          onPressed: enhanceMode
+              ? null
+              : () {
+                  curVal.favorite = true;
+                  targetPlan.setMax(skill: 10);
+                  updateState();
+                },
         ),
       ],
     ));

@@ -94,7 +94,7 @@ class _AboutPageState extends State<AboutPage> {
                               fontSize: 12),
                           minimumSize: Size(10, 30),
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
+                              borderRadius: BorderRadius.circular(16)),
                         ),
                       )
                     ],
@@ -114,7 +114,8 @@ class _AboutPageState extends State<AboutPage> {
                 ListTile(
                   title: Text(ref.key),
                   subtitle: AutoSizeText(ref.value, maxLines: 1),
-                  onTap: () => jumpToLink(context, ref.key, ref.value),
+                  onTap: () =>
+                      jumpToExternalLinkAlert(url: ref.value, name: ref.key),
                 ),
             ],
           ),
@@ -150,8 +151,9 @@ class _AboutPageState extends State<AboutPage> {
               ),
               ListTile(
                 title: Text(S.of(context).nga),
-                onTap: () => jumpToLink(context, S.of(context).nga_fgo,
-                    'https://bbs.nga.cn/read.php?tid=24926789'),
+                onTap: () => jumpToExternalLinkAlert(
+                    url: 'https://bbs.nga.cn/read.php?tid=24926789',
+                    name: S.of(context).nga_fgo),
               ),
               if (Platform.isIOS || Platform.isMacOS)
                 ListTile(
@@ -190,20 +192,5 @@ class _AboutPageState extends State<AboutPage> {
         ],
       ),
     );
-  }
-
-  void jumpToLink(BuildContext context, String name, String link) {
-    SimpleCancelOkDialog(
-      title: Text(S.of(context).jump_to(name)),
-      content:
-          Text(link, style: TextStyle(decoration: TextDecoration.underline)),
-      onTapOk: () async {
-        if (await canLaunch(link)) {
-          launch(link);
-        } else {
-          EasyLoading.showToast('Could not launch url: $link');
-        }
-      },
-    ).show(context);
   }
 }

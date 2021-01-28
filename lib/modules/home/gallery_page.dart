@@ -15,7 +15,6 @@ import 'package:getwidget/getwidget.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
-import 'package:url_launcher/url_launcher.dart';
 
 class GalleryPage extends StatefulWidget {
   @override
@@ -142,13 +141,14 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       //   builder: (context, _) => DamageCalcPage(),
       //   isDetail: true,
       // ),
-      GalleryItem.ap_cal: GalleryItem(
-        name: GalleryItem.ap_cal,
-        title: S.of(context).ap_calc_title,
-        icon: Icons.directions_run,
-        builder: (context, _) => APCalcPage(),
-        isDetail: true,
-      ),
+      if (kDebugMode_)
+        GalleryItem.ap_cal: GalleryItem(
+          name: GalleryItem.ap_cal,
+          title: S.of(context).ap_calc_title,
+          icon: Icons.directions_run,
+          builder: (context, _) => APCalcPage(),
+          isDetail: true,
+        ),
       GalleryItem.statistics: GalleryItem(
         name: GalleryItem.statistics,
         title: S.of(context).statistics_title,
@@ -278,24 +278,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
     }
     db.userData.sliderUrls.forEach((imgUrl, link) {
       sliders.add(GestureDetector(
-        onTap: () {
-          showDialog(
-            context: context,
-            builder: (context) => SimpleCancelOkDialog(
-              title: Text(S.of(context).jump_to('Mooncell')),
-              content: Text(link,
-                  style: TextStyle(decoration: TextDecoration.underline)),
-              onTapOk: () async {
-                final safeLink = Uri.encodeFull(link);
-                if (await canLaunch(safeLink)) {
-                  launch(safeLink);
-                } else {
-                  EasyLoading.showToast('Could not launch link:\n$safeLink');
-                }
-              },
-            ),
-          );
-        },
+        onTap: () => jumpToExternalLinkAlert(url: link, name: 'Mooncell'),
         child: CachedNetworkImage(
           imageUrl: imgUrl,
           placeholder: (context, url) => Center(

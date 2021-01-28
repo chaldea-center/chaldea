@@ -1,4 +1,6 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/item/tabs/item_obtain_interlude.dart';
 
 import 'tabs/item_cost_servant_page.dart';
 import 'tabs/item_obtain_event_page.dart';
@@ -27,7 +29,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -41,7 +43,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: Text(Item.localizedNameOf(widget.itemKey)),
+        title: AutoSizeText(Item.localizedNameOf(widget.itemKey), maxLines: 1),
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.view_carousel),
@@ -76,7 +78,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
           Tab(text: S.of(context).servant),
           Tab(text: S.of(context).free_quest),
           Tab(text: S.of(context).event_title),
-          // Tab(text: 'Interludes'),
+          Tab(text: S.of(context).interlude_and_rankup),
         ]),
       ),
       body: TabBarView(
@@ -89,6 +91,8 @@ class _ItemDetailPageState extends State<ItemDetailPage>
               sortType: sortType),
           ItemObtainFreeTab(itemKey: widget.itemKey),
           ItemObtainEventPage(itemKey: widget.itemKey),
+          ItemObtainInterludeTab(
+              itemKey: widget.itemKey, favorite: favorite, sortType: sortType)
           // Container(child: Center(child: Text('Interludes'))),
         ],
       ),

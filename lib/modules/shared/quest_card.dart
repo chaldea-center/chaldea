@@ -44,12 +44,12 @@ class _QuestCardState extends State<QuestCard> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                trailing: IconButton(
-                  icon: Icon(
+                trailing: GestureDetector(
+                  child: Icon(
                     Icons.remove_red_eye_outlined,
                     color: showTrueName ? Colors.blue : null,
                   ),
-                  onPressed: () => setState(() => showTrueName = !showTrueName),
+                  onTap: () => setState(() => showTrueName = !showTrueName),
                 ),
               ),
               ..._buildBattles(quest.battles)
@@ -115,8 +115,14 @@ class _QuestCardState extends State<QuestCard> {
         if (name?.isNotEmpty == true) lines.add(name!);
         lines.add('${enemy.className[i]} ${enemy.hp[i]}');
       }
-      return AutoSizeText(lines.join('\n'),
-          maxFontSize: 14, textAlign: TextAlign.center);
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: lines
+            .map((e) => AutoSizeText(e,
+                maxFontSize: 14, maxLines: 1, textAlign: TextAlign.center))
+            .toList(),
+      );
     }).toList();
     while (enemyWidgets.length % 3 != 0) {
       enemyWidgets.add(Container());
@@ -165,18 +171,21 @@ class _QuestCardState extends State<QuestCard> {
     if (dropTexts.isEmpty) {
       return null;
     }
-    return Wrap(
-      spacing: 3,
-      runSpacing: 4,
-      children: dropTexts.entries
-          .map((entry) => Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image(image: db.getIconImage(entry.key), height: 110 * 0.25),
-                  Text(entry.value, style: TextStyle(fontSize: 14))
-                ],
-              ))
-          .toList(),
+    return Center(
+      child: Wrap(
+        spacing: 3,
+        runSpacing: 4,
+        children: dropTexts.entries
+            .map((entry) => Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image(
+                        image: db.getIconImage(entry.key), height: 110 * 0.25),
+                    Text(entry.value, style: TextStyle(fontSize: 14))
+                  ],
+                ))
+            .toList(),
+      ),
     );
   }
 }

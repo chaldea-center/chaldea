@@ -4,7 +4,7 @@ import 'dart:math';
 
 import 'package:chaldea/components/components.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_qjs/isolate.dart';
+import 'package:flutter_qjs/flutter_qjs.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 abstract class JsEngine<T> {

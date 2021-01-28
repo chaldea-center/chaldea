@@ -29,6 +29,7 @@
   "statistics_title": "统计",
   "tooltip_refresh_sliders": "刷新首页图",
   "jump_to": "跳转到{site}",
+  "link": "链接",
   "edit": "编辑",
   "more": "更多",
   "servant": "从者",
@@ -268,5 +269,6 @@
   "mystic_code": "魔术礼装",
   "level": "等级",
   "no_servant_quest_hint": "无幕间或强化关卡",
-  "quest": "关卡"
+  "quest": "关卡",
+  "interlude_and_rankup": "幕间&强化"
 }
