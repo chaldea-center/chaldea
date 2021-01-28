@@ -74,12 +74,16 @@ class _ItemDetailPageState extends State<ItemDetailPage>
                 });
               }),
         ],
-        bottom: TabBar(controller: _tabController, tabs: [
-          Tab(text: S.of(context).servant),
-          Tab(text: S.of(context).free_quest),
-          Tab(text: S.of(context).event_title),
-          Tab(text: S.of(context).interlude_and_rankup),
-        ]),
+        bottom: TabBar(
+          controller: _tabController,
+          isScrollable: true,
+          tabs: [
+            Tab(text: S.of(context).servant),
+            Tab(text: S.of(context).free_quest),
+            Tab(text: S.of(context).event_title),
+            Tab(text: S.of(context).interlude_and_rankup),
+          ],
+        ),
       ),
       body: TabBarView(
         controller: _tabController,

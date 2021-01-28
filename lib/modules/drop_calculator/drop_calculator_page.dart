@@ -1,8 +1,10 @@
 import 'dart:math';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/shared/quest_card.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_picker/flutter_picker.dart';
@@ -96,6 +98,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
     with AfterLayoutMixin {
   GLPKParams params;
   Map<String, List<String>> pickerData = {};
+  List<PickerItem<String>> pickerAdapter = [];
   final solver = GLPKSolver();
   bool running = false;
 
@@ -123,8 +126,37 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
     db.gameData.items.keys.forEach((name) {
       final category = getItemCategory(name);
       if (category != null) {
-        pickerData.putIfAbsent(getItemCategory(name), () => []).add(name);
+        String localizedName = Item.localizedNameOf(name);
+        pickerData
+            .putIfAbsent(getItemCategory(name), () => [])
+            .add(localizedName);
       }
+    });
+
+    Widget makeText(String text) {
+      return Container(
+        color: Colors.blue,
+        padding: EdgeInsets.symmetric(horizontal: 8),
+        child: Center(
+          child: AutoSizeText(
+            text,
+            maxLines: 2,
+            maxFontSize: 15,
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    }
+
+    pickerData.forEach((category, items) {
+      pickerAdapter.add(PickerItem(
+        text: makeText(category),
+        value: category,
+        children: items
+            .map((e) =>
+                PickerItem(text: makeText(Item.localizedNameOf(e)), value: e))
+            .toList(),
+      ));
     });
   }
 
@@ -173,30 +205,35 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
                     focusNode: FocusNode(skipTraversal: true),
                     onPressed: () {
                       final String category = getItemCategory(item);
+                      final String localizedName = Item.localizedNameOf(item);
                       Picker(
-                        adapter:
-                            PickerDataAdapter<String>(pickerdata: [pickerData]),
+                        adapter: PickerDataAdapter<String>(data: pickerAdapter),
                         selecteds: [
                           pickerData.keys.toList().indexOf(category),
-                          pickerData[category].indexOf(item)
+                          pickerData[category].indexOf(localizedName)
                         ],
                         height: 250,
                         itemExtent: 48,
                         changeToFirst: true,
-                        onConfirm: (Picker picker, List value) {
+                        hideHeader: true,
+                        textScaleFactor: 0.7,
+                        cancelText: S.of(context).cancel,
+                        confirmText: S.of(context).confirm,
+                        onConfirm: (Picker picker, List<int> value) {
                           print('picker: ${picker.getSelectedValues()}');
                           setState(() {
                             String selected = picker.getSelectedValues().last;
                             if (params.rows.contains(selected)) {
                               EasyLoading.showToast(S
                                   .of(context)
-                                  .item_already_exist_hint(selected));
+                                  .item_already_exist_hint(
+                                      Item.localizedNameOf(selected)));
                             } else {
                               params.rows[index] = selected;
                             }
                           });
                         },
-                      ).showModal(context);
+                      ).showDialog(context);
                     },
                     child: Align(
                       alignment: Alignment.centerLeft,
