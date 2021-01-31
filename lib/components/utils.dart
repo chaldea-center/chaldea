@@ -302,7 +302,7 @@ void checkAppUpdate([bool background = true]) async {
       background) {
     logger.i('Latest version: $latestVersion, ignore this update.');
   } else {
-    logger.i('Release note: $releaseNote');
+    logger.i('Release note:\n$releaseNote');
     SimpleCancelOkDialog(
       title: Text(S.of(context).about_update_app),
       content: Text(

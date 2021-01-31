@@ -22,6 +22,7 @@ class GitRelease {
   DateTime createdAt;
   List<GitAsset> assets;
   GitAsset? targetAsset;
+  GitSource? source;
 
   GitRelease(
       {required this.id,
@@ -30,7 +31,8 @@ class GitRelease {
       required this.body,
       required this.createdAt,
       required this.assets,
-      this.targetAsset});
+      this.targetAsset,
+      this.source});
 
   GitRelease.fromGithub({required github.Release release})
       : id = release.id,
@@ -41,7 +43,8 @@ class GitRelease {
         assets = release.assets
             .map((asset) => GitAsset(
                 name: asset.name, browserDownloadUrl: asset.browserDownloadUrl))
-            .toList();
+            .toList(),
+        source = GitSource.github;
 
   GitRelease.fromGitee({required Map<String, dynamic> data})
       : id = data['id'] ?? 0,
@@ -56,11 +59,14 @@ class GitRelease {
             browserDownloadUrl:
                 data['assets'][index]['browser_download_url'] ?? '',
           ),
-        );
+        ),
+        source = GitSource.gitee;
 
   @override
   String toString() {
-    return '$runtimeType($name, targetAsset=${targetAsset?.name})';
+    final src = source?.toString().split('.').last;
+    return '$runtimeType($name, tagName=$tagName,'
+        ' targetAsset=${targetAsset?.name}, source=$src)';
   }
 }
 
@@ -102,6 +108,9 @@ class GitTool {
 
   String get datasetRepo => _datasetRepo;
 
+  /// For Gitee, release list is from old to new
+  /// For Github, release list is from new to old
+  /// sort list at last
   Future<List<GitRelease>> resolveReleases(String repo) async {
     List<GitRelease> releases = [];
     if (source == GitSource.github) {
@@ -124,22 +133,20 @@ class GitTool {
       releases = List.generate(response.data?.length ?? 0,
           (index) => GitRelease.fromGitee(data: response.data[index]));
     }
+    releases.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     print('resolve ${releases.length} releases from $source');
+    print(releases.map((e) => e.name).toList());
     return releases;
   }
 
   GitRelease? _latestReleaseWhereAsset(
       Iterable<GitRelease> releases, bool test(GitAsset asset)) {
-    for (var release in releases)
-      for (var asset in release.assets)
-        if (test(asset)) {
-          release.targetAsset = asset;
-        }
+    // since releases have been sorted, don't need to traverse all releases.
     for (var release in releases) {
       for (var asset in release.assets) {
         if (test(asset)) {
           release.targetAsset = asset;
-          print('latest release: $release');
+          logger.i('latest release: $release');
           return release;
         }
       }
