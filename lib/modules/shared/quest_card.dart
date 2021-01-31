@@ -107,21 +107,21 @@ class _QuestCardState extends State<QuestCard> {
   Widget _buildWave(List<Enemy?> enemies) {
     List<Widget> enemyWidgets = enemies.map((enemy) {
       if (enemy == null) return Container();
-      List<String> lines = [];
+      List<Widget> lines = [];
       for (int i = 0; i < enemy.hp.length; i++) {
         final String? name = showTrueName
             ? enemy.name[i]
             : (enemy.shownName[i] ?? enemy.name[i]);
-        if (name?.isNotEmpty == true) lines.add(name!);
-        lines.add('${enemy.className[i]} ${enemy.hp[i]}');
+        if (name?.isNotEmpty == true)
+          lines.add(AutoSizeText(name!,
+              maxFontSize: 14, maxLines: 1, textAlign: TextAlign.center));
+        lines.add(AutoSizeText('${enemy.className[i]} ${enemy.hp[i]}',
+            maxFontSize: 12, maxLines: 1, textAlign: TextAlign.center));
       }
       return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: lines
-            .map((e) => AutoSizeText(e,
-                maxFontSize: 14, maxLines: 1, textAlign: TextAlign.center))
-            .toList(),
+        children: lines,
       );
     }).toList();
     while (enemyWidgets.length % 3 != 0) {
