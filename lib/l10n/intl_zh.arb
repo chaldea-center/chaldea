@@ -269,6 +269,8 @@
   "mystic_code": "魔术礼装",
   "level": "等级",
   "no_servant_quest_hint": "无幕间或强化关卡",
+  "no_servant_quest_hint_subtitle": "点击♡查看所有从者任务",
   "quest": "关卡",
-  "interlude_and_rankup": "幕间&强化"
+  "interlude_and_rankup": "幕间&强化",
+  "ignore": "忽略"
 }

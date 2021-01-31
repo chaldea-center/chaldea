@@ -22,48 +22,39 @@ class ItemStatistics {
   }
 
   /// Clear statistic data, all data will be calculated again next calling.
-  /// After importing dataset, we should call this to refresh statistics.
+  /// After importing dataset, we should call this to clear, then call
+  /// [update] to refresh data.
   void clear() {
     svtItemDetail = SvtCostItems();
     eventItems = {};
     leftItems = {};
   }
 
-  Future<void> update({User user, bool shouldBroadcast = true}) {
+  void update({User user, bool shouldBroadcast = true}) {
     user ??= db.curUser;
-    return Future(() {
-      return updateSvtItems(user: user, shouldBroadcast: false);
-      // print('$runtimeType all updated.');
-    }).then((_) => updateEventItems(user: user, shouldBroadcast: false)).then(
-        (_) => updateLeftItems(user: user, shouldBroadcast: shouldBroadcast));
+    updateSvtItems(user: user, shouldBroadcast: false);
+    updateEventItems(user: user, shouldBroadcast: false);
+    updateLeftItems(user: user, shouldBroadcast: shouldBroadcast);
   }
 
-  Future<void> updateSvtItems({User user, bool shouldBroadcast = true}) {
+  void updateSvtItems({User user, bool shouldBroadcast = true}) {
     user ??= db.curUser;
-    return Future(() {
-      svtItemDetail.update(curStat: user.servants, targetPlan: user.curSvtPlan);
-      // print('$runtimeType svt part updated.');
-    }).then(
-        (_) => updateLeftItems(user: user, shouldBroadcast: shouldBroadcast));
+    svtItemDetail.update(curStat: user.servants, targetPlan: user.curSvtPlan);
+    updateLeftItems(user: user, shouldBroadcast: shouldBroadcast);
   }
 
-  Future<void> updateEventItems({User user, bool shouldBroadcast = true}) {
+  void updateEventItems({User user, bool shouldBroadcast = true}) {
     user ??= db.curUser;
-    return Future(() {
-      eventItems = db.gameData.events.getAllItems(user.events);
-      // print('$runtimeType event part updated.');
-    }).then(
-        (_) => updateLeftItems(user: user, shouldBroadcast: shouldBroadcast));
+    eventItems = db.gameData.events.getAllItems(user.events);
+    updateLeftItems(user: user, shouldBroadcast: shouldBroadcast);
   }
 
-  Future<void> updateLeftItems({User user, bool shouldBroadcast = true}) {
-    return Future(() {
-      user ??= db.curUser;
-      leftItems = sumDict([eventItems, user.items, multiplyDict(svtItems, -1)]);
-      if (shouldBroadcast) {
-        _broadcast();
-      }
-    });
+  void updateLeftItems({User user, bool shouldBroadcast = true}) {
+    user ??= db.curUser;
+    leftItems = sumDict([eventItems, user.items, multiplyDict(svtItems, -1)]);
+    if (shouldBroadcast) {
+      _broadcast();
+    }
   }
 }
 

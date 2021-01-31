@@ -71,6 +71,7 @@
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		81A90449FCF3F0014654683E /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		938F6D7625BAAA1200C3A1F8 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/MainMenu.strings"; sourceTree = "<group>"; };
+		93D09B6B25C6D1AA0037A20F /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/MainMenu.strings; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		9A3C6A61436C05AD515D5F89 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBA8A4A962B561DD2D409822 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
@@ -229,6 +230,7 @@
 				en,
 				Base,
 				"zh-Hans",
+				ja,
 			);
 			mainGroup = 33CC10E42044A3C60003C045;
 			productRefGroup = 33CC10EE2044A3C60003C045 /* Products */;
@@ -359,6 +361,7 @@
 			children = (
 				33CC10F52044A3C60003C045 /* Base */,
 				938F6D7625BAAA1200C3A1F8 /* zh-Hans */,
+				93D09B6B25C6D1AA0037A20F /* ja */,
 			);
 			name = MainMenu.xib;
 			path = Runner;

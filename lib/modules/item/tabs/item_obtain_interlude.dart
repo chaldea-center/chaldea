@@ -51,7 +51,12 @@ class ItemObtainInterludeTab extends StatelessWidget {
       }
     }
     if (children.isEmpty) {
-      children.add(ListTile(title: Text(S.of(context).no_servant_quest_hint)));
+      children.add(ListTile(
+        title: Text(S.of(context).no_servant_quest_hint),
+        subtitle: favorite
+            ? Text(S.of(context).no_servant_quest_hint_subtitle)
+            : null,
+      ));
     }
     return ListView(children: children);
   }

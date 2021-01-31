@@ -36,7 +36,7 @@ class ItemCostServantPage extends StatelessWidget {
               title: Text(
                   '${S.current.item_left} ${num2str(statistics.leftItems[itemKey])}\n'
                   '${S.current.item_own} ${num2str(db.curUser.items[itemKey])} '
-                  '${S.current.item_total_demand} ${num2str(statistics.eventItems[itemKey])}'),
+                  '${S.current.event_title} ${num2str(statistics.eventItems[itemKey])}'),
               trailing: Text(
                 '${S.current.item_total_demand} ${num2str(counts.summation[itemKey])}\n' +
                     counts

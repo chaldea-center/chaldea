@@ -318,7 +318,7 @@ void checkAppUpdate([bool background = true]) async {
         ),
         if (latestVersion != AppInfo.version)
           TextButton(
-            child: Text('Ignore this version'),
+            child: Text(S.of(context).ignore),
             onPressed: () {
               db.prefs.setString(ignoreUpdateKey, latestVersion);
               Navigator.of(context).pop();

@@ -83,6 +83,7 @@ class Database {
       db.onAppUpdate();
       t.elapsed();
       itemStat.clear();
+      itemStat.update();
       return true;
     } catch (e, s) {
       gameData ??= GameData(); // if not null, don't change data

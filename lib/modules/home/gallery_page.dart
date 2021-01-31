@@ -276,7 +276,8 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       resolveSliderImageUrls();
       return sliders;
     }
-    db.userData.sliderUrls.forEach((imgUrl, link) {
+    final urls = db.userData.sliderUrls;
+    urls.forEach((imgUrl, link) {
       sliders.add(GestureDetector(
         onTap: () => jumpToExternalLinkAlert(url: link, name: 'Mooncell'),
         child: CachedNetworkImage(

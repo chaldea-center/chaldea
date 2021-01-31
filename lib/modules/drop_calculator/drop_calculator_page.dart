@@ -106,17 +106,20 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
   void initState() {
     super.initState();
     // reset params
-    params = db.userData.glpkParams
+    db.userData.glpkParams ??= GLPKParams();
+    params = db.userData.glpkParams;
+    final Map<String, int> objective = widget.objectiveMap ?? params.objective;
+    params
       ..removeAll()
       ..enableControllers();
-    if (widget.objectiveMap == null) {
+    if (objective.isEmpty) {
       // if enter from home page, default to add two items
       addAnItemNotInList();
       addAnItemNotInList();
     } else {
       // if enter from item list page
-      print('objMap: ${widget.objectiveMap}');
-      widget.objectiveMap.forEach((key, value) => params.addOne(key, value));
+      print('objMap: $objective');
+      objective.forEach((key, value) => params.addOne(key, value));
       params.sortByItem();
     }
   }

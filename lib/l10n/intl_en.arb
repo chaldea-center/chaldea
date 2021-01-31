@@ -270,6 +270,8 @@
   "mystic_code": "Mystic Code",
   "level": "Level",
   "no_servant_quest_hint": "There is no interlude or rank up quest",
+  "no_servant_quest_hint_subtitle": "Click ♡ to view all servants' quests",
   "quest": "Quest",
-  "interlude_and_rankup": "Interlude&Rank Up"
+  "interlude_and_rankup": "Interlude & Rank Up",
+  "ignore": "Ignore"
 }

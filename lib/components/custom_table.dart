@@ -1,6 +1,5 @@
 import 'dart:math' show max;
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -135,21 +134,32 @@ class _CustomTableRowState extends State<CustomTableRow> {
           /// TODO: AutoSizeText supported here:
           /// LayoutBuilder does not support returning intrinsic dimensions
           /// see https://github.com/leisim/auto_size_text/issues/77
-          _child = cell.maxLines == null
-              ? Text(cell.text, textAlign: cell.textAlign)
-              : cell.maxLines == 1
-                  ? FittedBox(
-                      child: Text(
-                        cell.text,
-                        maxLines: cell.maxLines,
-                        textAlign: cell.textAlign,
-                      ),
-                    )
-                  : AutoSizeText(
-                      cell.text,
-                      maxLines: cell.maxLines,
-                      textAlign: cell.textAlign,
-                    );
+          if (cell.maxLines == null) {
+            _child = Text(cell.text, textAlign: cell.textAlign);
+          } else if (cell.maxLines == 1) {
+            _child = FittedBox(
+              child: Text(
+                cell.text,
+                maxLines: cell.maxLines,
+                textAlign: cell.textAlign,
+              ),
+            );
+          } else {
+            assert(false,
+                'CustomTable: maxLines=${cell.maxLines} > 1 not supported yet!!!');
+            _child = FittedBox(
+              child: Text(
+                cell.text,
+                maxLines: cell.maxLines,
+                textAlign: cell.textAlign,
+              ),
+            );
+            // _child = AutoSizeText(
+            //   cell.text,
+            //   maxLines: cell.maxLines,
+            //   textAlign: cell.textAlign,
+            // );
+          }
         }
       }
 
@@ -159,10 +169,6 @@ class _CustomTableRowState extends State<CustomTableRow> {
         child: Container(
           constraints: constraints,
           color: cell.color,
-          // decoration: BoxDecoration(
-          //   color: ,
-          // border: index > 0 ? Border(left: kCustomTableSide) : null,
-          // ),
           child: Align(
             alignment: cell.alignment,
             child: Padding(

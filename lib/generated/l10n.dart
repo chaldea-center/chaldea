@@ -2730,6 +2730,16 @@ class S {
     );
   }
 
+  /// `点击♡查看所有从者任务`
+  String get no_servant_quest_hint_subtitle {
+    return Intl.message(
+      '点击♡查看所有从者任务',
+      name: 'no_servant_quest_hint_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `关卡`
   String get quest {
     return Intl.message(
@@ -2745,6 +2755,16 @@ class S {
     return Intl.message(
       '幕间&强化',
       name: 'interlude_and_rankup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `忽略`
+  String get ignore {
+    return Intl.message(
+      '忽略',
+      name: 'ignore',
       desc: '',
       args: [],
     );
