@@ -75,6 +75,7 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
           onTap: (itemKey) => SplitRoute.push(
               context: context,
               builder: (context, _) => ItemDetailPage(itemKey)),
+          compact: false,
         )
       ],
     );

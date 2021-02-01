@@ -647,6 +647,8 @@ Quest _$QuestFromJson(Map<String, dynamic> json) {
           (v) => (v as Map<String, dynamic>)?.map(
                 (k, e) => MapEntry(k, e as int),
               )),
+      enhancement: $checkedConvert(json, 'enhancement', (v) => v as String),
+      conditions: $checkedConvert(json, 'conditions', (v) => v as String),
     );
     return val;
   });
@@ -665,6 +667,8 @@ Map<String, dynamic> _$QuestToJson(Quest instance) => <String, dynamic>{
       'hasChoice': instance.hasChoice,
       'battles': instance.battles,
       'rewards': instance.rewards,
+      'enhancement': instance.enhancement,
+      'conditions': instance.conditions,
     };
 
 Battle _$BattleFromJson(Map<String, dynamic> json) {

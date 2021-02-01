@@ -40,6 +40,7 @@
   "game_kizuna": "羁绊",
   "game_experience": "经验",
   "game_drop": "掉落",
+  "game_rewards": "通关奖励",
   "ap": "AP",
   "counts": "次数",
   "total_ap": "总AP",
@@ -272,5 +273,6 @@
   "no_servant_quest_hint_subtitle": "点击♡查看所有从者任务",
   "quest": "关卡",
   "interlude_and_rankup": "幕间&强化",
-  "ignore": "忽略"
+  "ignore": "忽略",
+  "quest_condition": "开放条件"
 }

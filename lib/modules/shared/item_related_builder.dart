@@ -41,6 +41,7 @@ Widget buildClassifiedItemList({
   bool divideRarity = true,
   bool responsive = true,
   int crossCount = 7,
+  bool compact = true,
 }) {
   final divided = divideItemsToGroups(data.keys.toList(),
       divideCategory: divideCategory, divideRarity: divideRarity);
@@ -50,7 +51,7 @@ Widget buildClassifiedItemList({
       return ImageWithText(
         onTap: onTap == null ? null : () => onTap(item.name),
         image: db.getIconImage(item.name),
-        text: formatNumber(data[item.name]!, compact: true),
+        text: formatNumber(data[item.name]!, compact: compact),
         padding: EdgeInsets.only(right: 3),
       );
     }).toList();

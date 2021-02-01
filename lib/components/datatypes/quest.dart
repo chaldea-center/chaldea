@@ -18,6 +18,8 @@ class Quest {
   bool hasChoice;
   List<Battle> battles;
   Map<String, int> rewards;
+  String enhancement;
+  String conditions;
 
   Quest({
     this.chapter,
@@ -32,6 +34,8 @@ class Quest {
     this.hasChoice,
     this.battles,
     this.rewards,
+    this.enhancement,
+    this.conditions,
   });
 
   String get localizedName => localizeNoun(name, nameJp, null);

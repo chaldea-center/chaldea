@@ -40,6 +40,7 @@
   "game_kizuna": "Bond",
   "game_experience": "Experience",
   "game_drop": "Drop",
+  "game_rewards": "Rewards",
   "ap": "AP",
   "counts": "Counts",
   "total_ap": "Total AP",
@@ -273,5 +274,6 @@
   "no_servant_quest_hint_subtitle": "Click ♡ to view all servants' quests",
   "quest": "Quest",
   "interlude_and_rankup": "Interlude & Rank Up",
-  "ignore": "Ignore"
+  "ignore": "Ignore",
+  "quest_condition": "Conditions"
 }

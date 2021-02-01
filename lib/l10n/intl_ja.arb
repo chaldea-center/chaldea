@@ -40,6 +40,7 @@
   "game_kizuna": "絆",
   "game_experience": "EXP",
   "game_drop": "ドロップ",
+  "game_rewards": "クリア報酬",
   "ap": "AP",
   "counts": "カウント",
   "total_ap": "合計AP",
@@ -273,5 +274,6 @@
   "no_servant_quest_hint_subtitle": "♡をクリックして、すべてのクエストを表示します",
   "quest": "クエスト",
   "interlude_and_rankup": "幕間・強化",
-  "ignore": "無視"
+  "ignore": "無視",
+  "quest_condition": "開放条件"
 }

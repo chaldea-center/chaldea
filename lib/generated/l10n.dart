@@ -435,6 +435,16 @@ class S {
     );
   }
 
+  /// `通关奖励`
+  String get game_rewards {
+    return Intl.message(
+      '通关奖励',
+      name: 'game_rewards',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `AP`
   String get ap {
     return Intl.message(
@@ -2765,6 +2775,16 @@ class S {
     return Intl.message(
       '忽略',
       name: 'ignore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `开放条件`
+  String get quest_condition {
+    return Intl.message(
+      '开放条件',
+      name: 'quest_condition',
       desc: '',
       args: [],
     );

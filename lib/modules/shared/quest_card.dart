@@ -87,20 +87,67 @@ class _QuestCardState extends State<QuestCard> {
         ));
       }
 
-      final drops = _getDropsWidget(battle);
-      if (drops != null)
+      if (battle.drops?.isNotEmpty == true)
         children.add(Padding(
           padding: EdgeInsets.only(top: 4),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(S.current.game_drop + ':  '),
-              Expanded(child: drops)
+              Expanded(child: _getDropsWidget(battle.drops))
             ],
           ),
         ));
     }
-
+    if (quest.rewards?.isNotEmpty == true)
+      children.add(Padding(
+        padding: EdgeInsets.only(top: 4),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(S.current.game_drop + ':  '),
+            Expanded(child: _getDropsWidget(quest.rewards))
+          ],
+        ),
+      ));
+    if (quest.enhancement?.isNotEmpty == true) {
+      Widget? enhanceIcon;
+      if (quest.enhancement.contains('强化')) {
+        if (quest.enhancement.startsWith('宝具')) {
+          enhanceIcon = db.getIconImage('宝具强化', height: 30);
+        } else if (quest.enhancement.startsWith('技能')) {
+          enhanceIcon = db.getIconImage('技能强化', height: 30);
+        }
+      }
+      children.add(Center(
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          // runAlignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            if (enhanceIcon != null)
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 3),
+                child: enhanceIcon,
+              ),
+            Text(quest.enhancement)
+          ],
+        ),
+      ));
+    }
+    if (quest.conditions?.isNotEmpty == true) {
+      children.add(Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Center(
+            child: Text(S.of(context).quest_condition,
+                style: TextStyle(fontWeight: FontWeight.w500)),
+          ),
+          Text(quest.conditions)
+        ],
+      ));
+    }
     return children;
   }
 
@@ -141,7 +188,7 @@ class _QuestCardState extends State<QuestCard> {
     );
   }
 
-  Widget? _getDropsWidget(Battle battle) {
+  Widget _getDropsWidget(Map<String, int> items) {
     Map<String, String> dropTexts = {};
     if (widget.quest.isFree) {
       final glpk = db.gameData.glpk;
@@ -149,7 +196,7 @@ class _QuestCardState extends State<QuestCard> {
 
       // not list in glpk
       if (colIndex < 0)
-        battle.drops.keys.forEach((element) => dropTexts[element] = '');
+        items.keys.forEach((element) => dropTexts[element] = '');
 
       Map<String, double> apRates = {};
       for (var i = 0; i < glpk.rowNames.length; i++) {
@@ -166,10 +213,7 @@ class _QuestCardState extends State<QuestCard> {
         dropTexts[entry.key] = '${v}AP';
       });
     } else {
-      battle.drops.forEach((key, value) => dropTexts[key] = '*$value');
-    }
-    if (dropTexts.isEmpty) {
-      return null;
+      items.forEach((key, value) => dropTexts[key] = '*$value');
     }
     return Center(
       child: Wrap(
@@ -179,7 +223,7 @@ class _QuestCardState extends State<QuestCard> {
             .map((entry) => Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    db.getIconImage(entry.key, width: 28),
+                    db.getIconImage(entry.key, height: 30),
                     Text(entry.value, style: TextStyle(fontSize: 14))
                   ],
                 ))
