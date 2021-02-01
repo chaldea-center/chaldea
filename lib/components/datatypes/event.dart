@@ -68,7 +68,7 @@ class LimitEvent {
     this.extra,
   }); //item-comment
 
-  String get localizedName => localizeGameNoun(name, nameJp, null);
+  String get localizedName => localizeNoun(name, nameJp, null);
 
   Map<String, int> itemsWithRare([LimitEventPlan plan]) {
     return sumDict([
@@ -155,11 +155,11 @@ class MainRecord {
 
   String get titleJp => _splitChapterTitle(nameJp ?? name)[1];
 
-  String get localizedName => localizeGameNoun(name, nameJp, null);
+  String get localizedName => localizeNoun(name, nameJp, null);
 
-  String get localizedChapter => localizeGameNoun(chapter, chapterJp, null);
+  String get localizedChapter => localizeNoun(chapter, chapterJp, null);
 
-  String get localizedTitle => localizeGameNoun(title, titleJp, null);
+  String get localizedTitle => localizeNoun(title, titleJp, null);
 
   List<String> _splitChapterTitle(String longName) {
     if (longName.startsWith('序')) {

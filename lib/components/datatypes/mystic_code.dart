@@ -30,7 +30,7 @@ class MysticCode {
     this.skills,
   });
 
-  String get localizedName => localizeGameNoun(name, nameJp, null);
+  String get localizedName => localizeNoun(name, nameJp, null);
 
   factory MysticCode.fromJson(Map<String, dynamic> data) =>
       _$MysticCodeFromJson(data);

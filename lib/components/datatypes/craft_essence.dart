@@ -60,7 +60,7 @@ class CraftEssence {
     this.valentine,
   });
 
-  String get localizedName => localizeGameNoun(name, nameJp, null);
+  String get localizedName => localizeNoun(name, nameJp, null);
 
   static int compare(CraftEssence a, CraftEssence b,
       [List<CraftCompare> keys, List<bool> reversed]) {

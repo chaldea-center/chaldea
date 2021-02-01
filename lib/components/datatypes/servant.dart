@@ -271,7 +271,7 @@ class ServantBaseInfo {
     this.criticalRate,
   });
 
-  String get localizedName => localizeGameNoun(name, nameJp, nameEn);
+  String get localizedName => localizeNoun(name, nameJp, nameEn);
 
   factory ServantBaseInfo.fromJson(Map<String, dynamic> data) =>
       _$ServantBaseInfoFromJson(data);

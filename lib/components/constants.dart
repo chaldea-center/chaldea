@@ -163,9 +163,13 @@ class ClassName {
       ];
 }
 
-String localizeGameNoun(String nameCn, String? nameJp, String? nameEn) {
-  final locale = Intl.getCurrentLocale().toLowerCase();
-  if (locale.startsWith('zh')) return nameCn;
-  if (locale.startsWith('en')) return nameEn ?? nameJp ?? nameCn;
-  return nameJp ?? nameCn;
+String? localizeNoun(String? nameCn, String? nameJp, String? nameEn,
+    [String? k]) {
+  String? name;
+  name = Language.isCN
+      ? nameCn
+      : Language.isEN
+          ? nameEn
+          : nameJp;
+  return name ?? nameJp ?? nameCn ?? k;
 }

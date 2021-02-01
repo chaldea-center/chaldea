@@ -161,7 +161,7 @@ class Item {
     return name;
   }
 
-  String get localizedName => localizeGameNoun(name, nameJp, nameEn);
+  String get localizedName => localizeNoun(name, nameJp, nameEn);
 
   static List<String> sortListById(List<String> data, [bool inPlace = false]) {
     return (inPlace ? data : List.from(data))
