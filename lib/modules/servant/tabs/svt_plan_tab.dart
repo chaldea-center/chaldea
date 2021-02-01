@@ -257,10 +257,10 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         start: start,
         end: end,
         startEnabled: !enhanceMode,
-        startItems: List.generate(maxVal - minVal + 1,
-            (index) => MapEntry(minVal + index, itemBuilder(minVal + index))),
-        endItems: List.generate(maxVal - minVal + 1,
-            (index) => MapEntry(minVal + index, itemBuilder(minVal + index))),
+        startItems:
+            List.generate(maxVal - minVal + 1, (index) => minVal + index),
+        endItems: List.generate(maxVal - minVal + 1, (index) => minVal + index),
+        itemBuilder: (context, v) => itemBuilder(v),
         onChanged: onValueChanged,
       );
     }

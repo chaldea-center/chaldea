@@ -13,7 +13,6 @@ export 'datatypes/datatypes.dart';
 export 'ensure_visible_when_focused.dart';
 export 'glpk_solver.dart';
 export 'image_viewer.dart';
-export 'int_range_slider.dart';
 export 'logger.dart';
 export 'query.dart';
 export 'split_route.dart';

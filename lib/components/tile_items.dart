@@ -1,3 +1,4 @@
+//@dart=2.12
 import 'dart:math' show max, min;
 
 import 'package:flutter/material.dart';
@@ -7,7 +8,7 @@ import 'constants.dart';
 
 class SHeader extends StatelessWidget {
   final String label;
-  final TextStyle style;
+  final TextStyle? style;
 
   SHeader(this.label, {this.style});
 
@@ -41,11 +42,12 @@ class SFooter extends StatelessWidget {
 
 class SWidget extends StatelessWidget {
   final String label;
-  final Icon icon;
-  final Widget trailing;
-  final VoidCallback callback;
+  final Icon? icon;
+  final Widget? trailing;
+  final VoidCallback? callback;
 
-  const SWidget({Key key, this.label, this.icon, this.trailing, this.callback})
+  const SWidget(
+      {Key? key, required this.label, this.icon, this.trailing, this.callback})
       : super(key: key);
 
   @override
@@ -64,11 +66,11 @@ class SWidget extends StatelessWidget {
 
 class SModal extends StatelessWidget {
   final String label;
-  final Icon icon;
-  final String value;
-  final VoidCallback callback;
+  final Icon? icon;
+  final String? value;
+  final VoidCallback? callback;
 
-  SModal({Key key, this.label, this.icon, this.value, this.callback})
+  SModal({Key? key, required this.label, this.icon, this.value, this.callback})
       : super(key: key);
 
   @override
@@ -81,10 +83,7 @@ class SModal extends StatelessWidget {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text(
-              value ?? "",
-              style: TextStyle(color: Colors.grey),
-            ),
+            Text(value ?? "", style: TextStyle(color: Colors.grey)),
             IconButton(
               icon: Icon(Icons.arrow_forward_ios),
               iconSize: 5.0,
@@ -100,11 +99,12 @@ class SModal extends StatelessWidget {
 
 class SSwitch extends StatelessWidget {
   final String label;
-  final Icon icon;
-  final bool value;
-  final ValueChanged<bool> callback;
+  final Icon? icon;
+  final bool? value;
+  final ValueChanged<bool>? callback;
 
-  const SSwitch({Key key, this.label, this.icon, this.value, this.callback})
+  const SSwitch(
+      {Key? key, required this.label, this.icon, this.value, this.callback})
       : super(key: key); //handle switch/tile value change
 
   @override
@@ -124,47 +124,45 @@ class SSwitch extends StatelessWidget {
 class SSelect extends StatelessWidget {
   final List<String> labels;
   final int selected;
-  final ValueChanged<int> callback;
+  final ValueChanged<int>? callback;
 
-  const SSelect({Key key, this.labels, this.selected, this.callback})
+  const SSelect(
+      {Key? key, this.labels = const [], this.selected = 0, this.callback})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return TileGroup(
-      children: labels
-          .asMap()
-          .map((index, label) {
-            return MapEntry(
-                index,
-                ListTile(
-                  title: Text(label),
-                  trailing: index == selected
-                      ? Icon(
-                          Icons.check,
-                          color: Theme.of(context).primaryColor,
-                        )
-                      : null,
-                  onTap: () {
-                    callback(index);
-                  },
-                ));
-          })
-          .values
-          .toList(),
-    );
+    List<Widget> children = [];
+    for (int index = 0; index < labels.length; index++) {
+      children.add(ListTile(
+        title: Text(labels[index]),
+        trailing: index == selected
+            ? Icon(Icons.check, color: Theme.of(context).primaryColor)
+            : null,
+        onTap: () {
+          if (callback != null) {
+            callback!(index);
+          }
+        },
+      ));
+    }
+    return TileGroup(children: children);
   }
 }
 
 /// [children] should be [SSwitch] or [SModal] or []
 class TileGroup extends StatelessWidget {
   final List<Widget> children;
-  final String header;
-  final String footer;
-  final EdgeInsets padding;
+  final String? header;
+  final String? footer;
+  final EdgeInsets? padding;
 
   const TileGroup(
-      {Key key, this.children, this.header, this.footer, this.padding})
+      {Key? key,
+      this.children = const [],
+      this.header,
+      this.footer,
+      this.padding})
       : super(key: key);
 
   @override
@@ -188,9 +186,9 @@ class TileGroup extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            if (header != null) SHeader(header),
+            if (header != null) SHeader(header!),
             ...group,
-            if (footer != null) SFooter(footer)
+            if (footer != null) SFooter(footer!)
           ]),
     );
   }
@@ -200,7 +198,7 @@ class TileGroup extends StatelessWidget {
 class SRadios extends StatefulWidget {
   final List<Widget> tiles;
 
-  const SRadios({Key key, this.tiles}) : super(key: key);
+  const SRadios({Key? key, this.tiles = const []}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _SRadiosState();
@@ -218,20 +216,22 @@ class _SRadiosState extends State<SRadios> {
 class RangeSelector<T extends num> extends StatefulWidget {
   final T start;
   final T end;
-  final List<MapEntry<T, Widget>> startItems;
-  final List<MapEntry<T, Widget>> endItems;
+  final List<T> startItems;
+  final List<T> endItems;
+  final Widget Function(BuildContext context, T value)? itemBuilder;
   final bool startEnabled;
   final bool endEnabled;
-  final void Function(T, T) onChanged;
+  final void Function(T, T)? onChanged;
 
   final bool increasing;
 
   RangeSelector(
-      {Key key,
-      this.start,
-      this.end,
-      this.startItems,
-      this.endItems,
+      {Key? key,
+      required this.start,
+      required this.end,
+      required this.startItems,
+      required this.endItems,
+      this.itemBuilder,
       this.startEnabled = true,
       this.endEnabled = true,
       this.increasing = true,
@@ -253,20 +253,23 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
         DropdownButton<T>(
           value: widget.start,
           items: widget.startItems
-              .map((entry) => DropdownMenuItem<T>(
-                    value: entry.key,
-                    child: entry.value,
+              .map((v) => DropdownMenuItem<T>(
+                    value: v,
+                    child: widget.itemBuilder == null
+                        ? Text(v.toString())
+                        : widget.itemBuilder!(context, v),
                   ))
               .toList(),
           onChanged: widget.startEnabled
               ? (value) {
+                  if (value == null) return;
                   final start = value;
-                  final end = widget.increasing == null
-                      ? widget.end
-                      : widget.increasing
-                          ? max(start, widget.end)
-                          : min(start, widget.end);
-                  widget.onChanged(start, end);
+                  final end = widget.increasing
+                      ? max(start, widget.end)
+                      : min(start, widget.end);
+                  if (widget.onChanged != null) {
+                    widget.onChanged!(start, end);
+                  }
                 }
               : null,
         ),
@@ -274,20 +277,23 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
         DropdownButton<T>(
           value: widget.end,
           items: widget.endItems
-              .map((entry) => DropdownMenuItem<T>(
-                    value: entry.key,
-                    child: entry.value,
+              .map((v) => DropdownMenuItem<T>(
+                    value: v,
+                    child: widget.itemBuilder == null
+                        ? Text(v.toString())
+                        : widget.itemBuilder!(context, v),
                   ))
               .toList(),
           onChanged: widget.endEnabled
               ? (value) {
+                  if (value == null) return;
                   final end = value;
-                  final start = widget.increasing == null
-                      ? widget.start
-                      : widget.increasing
-                          ? min(widget.start, end)
-                          : max(widget.start, end);
-                  widget.onChanged(start, end);
+                  final start = widget.increasing
+                      ? min(widget.start, end)
+                      : max(widget.start, end);
+                  if (widget.onChanged != null) {
+                    widget.onChanged!(start, end);
+                  }
                 }
               : null,
         )

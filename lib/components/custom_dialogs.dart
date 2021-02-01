@@ -1,16 +1,17 @@
+//@dart=2.12
 import 'package:chaldea/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
 class InputCancelOkDialog extends StatefulWidget {
-  final String title;
-  final String text;
-  final String hintText;
-  final String errorText;
-  final bool Function(String) validate;
-  final void Function(String) onSubmit;
+  final String? title;
+  final String? text;
+  final String? hintText;
+  final String? errorText;
+  final bool Function(String)? validate;
+  final ValueChanged<String>? onSubmit;
 
   const InputCancelOkDialog(
-      {Key key,
+      {Key? key,
       this.title,
       this.text,
       this.hintText,
@@ -30,11 +31,14 @@ class InputCancelOkDialog extends StatefulWidget {
 /// W/IInputConnectionWrapper(31507): getSelectedText on inactive InputConnection
 /// W/IInputConnectionWrapper(31507): endBatchEdit on inactive InputConnection
 class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
-  TextEditingController _controller;
+  TextEditingController? _controller;
   bool validation = true;
 
   bool _validate(String v) {
-    return widget.validate == null ? true : widget.validate(v);
+    if (widget.validate != null) {
+      return widget.validate!(v);
+    }
+    return true;
   }
 
   @override
@@ -44,10 +48,16 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
   }
 
   @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    validation = _validate(_controller.text);
+    validation = _validate(_controller!.text);
     return AlertDialog(
-      title: Text(widget.title),
+      title: widget.title == null ? null : Text(widget.title!),
       content: TextField(
         controller: _controller,
         autofocus: true,
@@ -64,7 +74,9 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
         },
         onSubmitted: (v) {
           FocusScope.of(context).unfocus();
-          widget.onSubmit(v);
+          if (widget.onSubmit != null) {
+            widget.onSubmit!(v);
+          }
           Navigator.pop(context);
         },
       ),
@@ -76,11 +88,13 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
         TextButton(
           child: Text(S.of(context).ok),
           onPressed: () {
-            String _value = _controller.text;
+            String _value = _controller!.text;
             validation = _validate(_value);
             setState(() {
-              if (validation && widget.onSubmit != null) {
-                widget.onSubmit(_value);
+              if (validation) {
+                if (widget.onSubmit != null) {
+                  widget.onSubmit!(_value);
+                }
                 Navigator.pop(context);
               }
             });
@@ -92,10 +106,10 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
 }
 
 class SimpleCancelOkDialog extends StatelessWidget {
-  final Widget title;
-  final Widget content;
-  final VoidCallback onTapOk;
-  final VoidCallback onTapCancel;
+  final Widget? title;
+  final Widget? content;
+  final VoidCallback? onTapOk;
+  final VoidCallback? onTapCancel;
 
   /// ignore if onTapCancel is not null
   final bool hideOk;
@@ -103,7 +117,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
   final List<Widget> actions;
 
   const SimpleCancelOkDialog({
-    Key key,
+    Key? key,
     this.title,
     this.content,
     this.onTapOk,
@@ -125,7 +139,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
               if (onTapCancel != null) {
-                onTapCancel();
+                onTapCancel!();
               }
             },
           ),
@@ -134,7 +148,9 @@ class SimpleCancelOkDialog extends StatelessWidget {
             child: Text(S.of(context).ok),
             onPressed: () {
               Navigator.of(context).pop();
-              onTapOk();
+              if (onTapOk != null) {
+                onTapOk!();
+              }
             },
           ),
         ...actions

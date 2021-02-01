@@ -1,3 +1,4 @@
+//@dart=2.12
 import 'dart:math' show max;
 
 import 'package:flutter/material.dart';
@@ -17,8 +18,8 @@ class CustomTable extends StatelessWidget {
   final bool hideOutline;
 
   const CustomTable(
-      {Key key,
-      this.children,
+      {Key? key,
+      required this.children,
       this.hideOutline = false,
       this.horizontalDivider = kHorizontalDivider,
       this.verticalDivider = kVerticalDivider})
@@ -38,11 +39,13 @@ class CustomTable extends StatelessWidget {
         : BoxDecoration(
             border: Border.symmetric(
               horizontal: BorderSide(
-                  color: horizontalDivider.color,
-                  width: horizontalDivider.thickness),
+                  color: horizontalDivider.color ?? kHorizontalDivider.color!,
+                  width: horizontalDivider.thickness ??
+                      kHorizontalDivider.thickness!),
               vertical: BorderSide(
-                  color: verticalDivider.color,
-                  width: verticalDivider.thickness),
+                  color: verticalDivider.color ?? kVerticalDivider.color!,
+                  width:
+                      verticalDivider.thickness ?? kVerticalDivider.thickness!),
             ),
           );
     return Container(
@@ -60,11 +63,14 @@ class CustomTableRow extends StatefulWidget {
   final List<TableCellData> children;
 
   /// background color of table row
-  final Color color;
+  final Color? color;
   final VerticalDivider divider;
 
   CustomTableRow(
-      {Key key, this.children, this.color, this.divider = kVerticalDivider})
+      {Key? key,
+      required this.children,
+      this.color,
+      this.divider = kVerticalDivider})
       : super(key: key) {
     children.forEach((cell) {
       cell.key ??= GlobalKey();
@@ -72,9 +78,9 @@ class CustomTableRow extends StatefulWidget {
   }
 
   CustomTableRow.fromTexts(
-      {@required List<String> texts,
-      TableCellData defaults,
-      Color color,
+      {required List<String> texts,
+      TableCellData? defaults,
+      Color? color,
       VerticalDivider divider = kVerticalDivider})
       : this(
           children: texts
@@ -87,9 +93,9 @@ class CustomTableRow extends StatefulWidget {
         );
 
   CustomTableRow.fromChildren(
-      {@required List<Widget> children,
-      TableCellData defaults,
-      Color color,
+      {required List<Widget> children,
+      TableCellData? defaults,
+      Color? color,
       VerticalDivider divider = kVerticalDivider})
       : this(
           children: children
@@ -108,13 +114,13 @@ class CustomTableRow extends StatefulWidget {
 class _CustomTableRowState extends State<CustomTableRow> {
   /// first build without constraints, then calculated the max height
   /// of children, then rebuild to fit the constraints
-  BoxConstraints _calculatedConstraints;
+  BoxConstraints? _calculatedConstraints;
   bool _needRebuild = true;
   bool _fit = false;
 
   @override
   Widget build(BuildContext context) {
-    BoxConstraints constraints;
+    BoxConstraints? constraints;
     if (_needRebuild) {
       calculateConstraints();
     } else {
@@ -123,23 +129,23 @@ class _CustomTableRowState extends State<CustomTableRow> {
     List<Widget> children = [];
     for (int index = 0; index < widget.children.length; index++) {
       final cell = widget.children[index];
-      Widget _child;
+      late Widget _child;
       if (_needRebuild && cell.fitHeight == true) {
         // if fitHeight, render the child at second frame
         _child = Container();
       } else {
         if (cell.child != null) {
-          _child = cell.child;
+          _child = cell.child!;
         } else {
           /// TODO: AutoSizeText supported here:
           /// LayoutBuilder does not support returning intrinsic dimensions
           /// see https://github.com/leisim/auto_size_text/issues/77
           if (cell.maxLines == null) {
-            _child = Text(cell.text, textAlign: cell.textAlign);
+            _child = Text(cell.text!, textAlign: cell.textAlign);
           } else if (cell.maxLines == 1) {
             _child = FittedBox(
               child: Text(
-                cell.text,
+                cell.text!,
                 maxLines: cell.maxLines,
                 textAlign: cell.textAlign,
               ),
@@ -149,7 +155,7 @@ class _CustomTableRowState extends State<CustomTableRow> {
                 'CustomTable: maxLines=${cell.maxLines} > 1 not supported yet!!!');
             _child = FittedBox(
               child: Text(
-                cell.text,
+                cell.text!,
                 maxLines: cell.maxLines,
                 textAlign: cell.textAlign,
               ),
@@ -198,12 +204,13 @@ class _CustomTableRowState extends State<CustomTableRow> {
       return;
     }
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
       double _maxHeight = -1;
       widget.children.forEach((cell) {
         if (cell.fitHeight != true) {
-          RenderBox box = cell.key.currentContext?.findRenderObject();
-          _maxHeight = max(_maxHeight, box?.size?.height ?? _maxHeight);
+          RenderBox? box =
+              cell.key?.currentContext?.findRenderObject() as RenderBox?;
+          _maxHeight = max(_maxHeight, box?.size.height ?? _maxHeight);
         }
       });
       if (_maxHeight > 0) {
@@ -218,62 +225,63 @@ class _CustomTableRowState extends State<CustomTableRow> {
 }
 
 class TableCellData {
-  String text;
-  Widget child;
+  String? text;
+  Widget? child;
   int flex;
   bool isHeader;
-  Color color;
-  int maxLines;
+  Color? color;
+  int? maxLines;
   Alignment alignment;
-  TextAlign textAlign;
+  TextAlign? textAlign;
   EdgeInsets padding;
 
   /// TODO: whether to remove it?
   bool fitHeight;
-  GlobalKey key;
+  GlobalKey? key;
 
   static const headerColor = Color.fromRGBO(234, 235, 238, 1);
 
-  TableCellData(
-      {this.key,
-      this.text,
-      this.child,
-      this.flex = 1,
-      this.isHeader,
-      this.color,
-      this.maxLines,
-      this.alignment = Alignment.center,
-      this.textAlign,
-      this.padding = const EdgeInsets.all(4),
-      this.fitHeight})
-      : assert(text == null || child == null) {
+  TableCellData({
+    this.key,
+    this.text,
+    this.child,
+    this.flex = 1,
+    this.isHeader = false,
+    this.color,
+    this.maxLines,
+    this.alignment = Alignment.center,
+    this.textAlign,
+    this.padding = const EdgeInsets.all(4),
+    this.fitHeight = false,
+  }) : assert(text == null || child == null) {
     if (isHeader == true) {
-      color = headerColor;
+      color ??= headerColor;
       maxLines ??= 1;
     }
   }
 
   static List<TableCellData> list({
-    List<String> texts,
-    List<Widget> children,
-    int flex,
-    List<int> flexList,
-    bool isHeader,
-    List<bool> isHeaderList,
-    Color color,
-    List<Color> colorList,
-    int maxLines,
-    List<int> maxLinesList,
-    Alignment alignment,
-    List<Alignment> alignmentList,
-    TextAlign textAlign,
-    List<TextAlign> textAlignList,
-    EdgeInsets padding,
-    List<EdgeInsets> paddingList,
-    bool fitHeight,
-    List<bool> fitHeightList,
+    List<String>? texts,
+    List<Widget>? children,
+    int? flex,
+    List<int>? flexList,
+    bool? isHeader,
+    List<bool>? isHeaderList,
+    Color? color,
+    List<Color>? colorList,
+    int? maxLines,
+    List<int>? maxLinesList,
+    Alignment? alignment,
+    List<Alignment>? alignmentList,
+    TextAlign? textAlign,
+    List<TextAlign>? textAlignList,
+    EdgeInsets? padding,
+    List<EdgeInsets>? paddingList,
+    bool? fitHeight,
+    List<bool>? fitHeightList,
   }) {
-    final length = (texts ?? children).length;
+    assert(texts == null || children == null);
+    final length = (texts ?? children)!.length;
     assert(texts == null || children == null);
     assert(flex == null || flexList == null);
     assert(isHeader == null || isHeaderList == null);
@@ -299,35 +307,42 @@ class TableCellData {
         child: children?.elementAt(index),
       );
       data.flex = flex ?? flexList?.elementAt(index) ?? data.flex;
-      data.color = (isHeader ?? isHeaderList?.elementAt(index) == true)
-          ? headerColor
-          : color ?? colorList?.elementAt(index);
-      data.maxLines = maxLines ?? maxLinesList?.elementAt(index);
+      data.color = color ?? colorList?.elementAt(index);
+      data.maxLines =
+          maxLines ?? maxLinesList?.elementAt(index) ?? data.maxLines;
+      if (isHeader ?? isHeaderList?.elementAt(index) == true) {
+        data.color ??= headerColor;
+        data.maxLines ??= 1;
+      }
       data.alignment =
           alignment ?? alignmentList?.elementAt(index) ?? data.alignment;
       data.textAlign =
           textAlign ?? textAlignList?.elementAt(index) ?? data.textAlign;
       data.padding = padding ?? paddingList?.elementAt(index) ?? data.padding;
-      data.fitHeight = fitHeight ?? fitHeightList?.elementAt(index);
+      data.fitHeight =
+          fitHeight ?? fitHeightList?.elementAt(index) ?? data.fitHeight;
       rowDataList[index] = data;
     }
     return rowDataList;
   }
 
   TableCellData copyWith(
-      {String text,
-      Widget child,
-      int flex,
-      bool isHeader,
-      Color color,
-      int maxLines,
-      Alignment alignment,
-      TextAlign textAlign,
-      EdgeInsets padding,
-      bool fitHeight}) {
+      {String? text,
+      Widget? child,
+      int? flex,
+      bool? isHeader,
+      Color? color,
+      int? maxLines,
+      Alignment? alignment,
+      TextAlign? textAlign,
+      EdgeInsets? padding,
+      bool? fitHeight}) {
+    text ??= this.text;
+    child ??= this.child;
+    assert(text == null || child == null);
     return TableCellData(
-      text: text ?? this.text,
-      child: child ?? this.child,
+      text: text,
+      child: child,
       flex: flex ?? this.flex,
       isHeader: isHeader ?? this.isHeader,
       color: color ?? this.color,

@@ -1,28 +1,29 @@
+//@dart=2.12
 import 'dart:math' show max, min;
 
 import 'package:flutter/material.dart';
 
 /// modified from [ListTile].
 class CustomTile extends StatelessWidget {
-  final Widget leading;
-  final Widget title;
-  final Widget subtitle;
-  final Widget trailing;
-  final Widget trailingIcon;
+  final Widget? leading;
+  final Widget? title;
+  final Widget? subtitle;
+  final Widget? trailing;
+  final Widget? trailingIcon;
 
   /// default: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0)
-  final EdgeInsets contentPadding;
+  final EdgeInsets? contentPadding;
 
   /// default: if leading is null, EdgeInsets.symmetric(horizontal: 6.0)
   /// if not null, EdgeInsets.zero
-  final EdgeInsets titlePadding;
-  final BoxConstraints constraints;
-  final Color color;
+  final EdgeInsets? titlePadding;
+  final BoxConstraints? constraints;
+  final Color? color;
   final CrossAxisAlignment alignment;
   final bool enabled;
   final bool selected;
-  final GestureTapCallback onTap;
-  final GestureLongPressCallback onLongPress;
+  final GestureTapCallback? onTap;
+  final GestureLongPressCallback? onLongPress;
 
   ///default values
   static EdgeInsets defaultContentPadding =
@@ -30,7 +31,7 @@ class CustomTile extends StatelessWidget {
   static EdgeInsets defaultTitlePadding = EdgeInsets.symmetric(horizontal: 6.0);
 
   const CustomTile(
-      {Key key,
+      {Key? key,
       this.leading,
       this.title,
       this.subtitle,
@@ -45,10 +46,7 @@ class CustomTile extends StatelessWidget {
       this.selected = false,
       this.onTap,
       this.onLongPress})
-      : assert(alignment != null),
-        assert(enabled != null),
-        assert(selected != null),
-        super(key: key);
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -56,55 +54,59 @@ class CustomTile extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final ListTileTheme tileTheme = ListTileTheme.of(context);
 
-    IconThemeData iconThemeData;
+    IconThemeData? iconThemeData;
     if (leading != null || trailing != null || trailingIcon != null)
       iconThemeData = IconThemeData(color: _iconColor(theme, tileTheme));
 
-    Widget leadingIcon;
+    Widget? leadingIcon;
     if (leading != null)
-      leadingIcon = IconTheme.merge(data: iconThemeData, child: leading);
+      leadingIcon = IconTheme.merge(data: iconThemeData!, child: leading!);
 
-    final TextStyle titleStyle = _titleTextStyle(theme, tileTheme);
-    final Widget titleText = AnimatedDefaultTextStyle(
-      style: titleStyle,
-      duration: kThemeChangeDuration,
-      child: title ?? const SizedBox(),
-    );
+    final TextStyle? titleStyle = _titleTextStyle(theme, tileTheme);
+    final Widget titleText = titleStyle == null
+        ? title ?? const SizedBox()
+        : AnimatedDefaultTextStyle(
+            style: titleStyle,
+            duration: kThemeChangeDuration,
+            child: title ?? const SizedBox(),
+          );
 
-    Widget subtitleText;
-    TextStyle subtitleStyle;
+    Widget? subtitleText;
+    TextStyle? subtitleStyle;
     if (subtitle != null) {
       subtitleStyle = _subtitleTextStyle(theme, tileTheme);
-      subtitleText = AnimatedDefaultTextStyle(
-        style: subtitleStyle,
-        duration: kThemeChangeDuration,
-        child: subtitle,
-      );
+      subtitleText = subtitleStyle == null
+          ? subtitle!
+          : AnimatedDefaultTextStyle(
+              style: subtitleStyle,
+              duration: kThemeChangeDuration,
+              child: subtitle!,
+            );
     }
 
     List<Widget> trailingIcons = [];
     if (trailing != null) {
       trailingIcons.add(IconTheme.merge(
-        data: iconThemeData.copyWith(color: theme.buttonColor),
-        child: trailing,
+        data: iconThemeData!.copyWith(color: theme.buttonColor),
+        child: trailing!,
       ));
     }
     if (trailingIcon != null) {
       trailingIcons.add(IconTheme.merge(
-        data: iconThemeData.copyWith(color: theme.buttonColor),
-        child: trailingIcon,
+        data: iconThemeData!.copyWith(color: theme.buttonColor),
+        child: trailingIcon!,
       ));
     }
 
-    final EdgeInsets resolvedContentPadding = contentPadding ??
-        tileTheme?.contentPadding ??
+    final EdgeInsetsGeometry resolvedContentPadding = contentPadding ??
+        tileTheme.contentPadding ??
         EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
     final EdgeInsets resolvedTitlePadding = titlePadding ??
         (leading == null
             ? EdgeInsets.zero
             : EdgeInsets.symmetric(horizontal: 6.0));
     List<Widget> allElements = [
-      leadingIcon,
+      if (leadingIcon != null) leadingIcon,
       Expanded(
         flex: 1,
         child: Padding(
@@ -118,7 +120,6 @@ class CustomTile extends StatelessWidget {
       ),
       ...trailingIcons
     ];
-    allElements.removeWhere((item) => item == null);
     return InkWell(
       onTap: enabled ? onTap : null,
       onLongPress: enabled ? onLongPress : null,
@@ -141,13 +142,13 @@ class CustomTile extends StatelessWidget {
     );
   }
 
-  Color _iconColor(ThemeData theme, ListTileTheme tileTheme) {
+  Color? _iconColor(ThemeData theme, ListTileTheme? tileTheme) {
     if (!enabled) return theme.disabledColor;
 
     if (selected && tileTheme?.selectedColor != null)
-      return tileTheme.selectedColor;
+      return tileTheme?.selectedColor;
 
-    if (!selected && tileTheme?.iconColor != null) return tileTheme.iconColor;
+    if (!selected && tileTheme?.iconColor != null) return tileTheme?.iconColor;
 
     switch (theme.brightness) {
       case Brightness.light:
@@ -157,18 +158,16 @@ class CustomTile extends StatelessWidget {
             ? theme.accentColor
             : null; // null - use current icon theme color
     }
-    assert(theme.brightness != null);
-    return null;
   }
 
-  Color _textColor(
-      ThemeData theme, ListTileTheme tileTheme, Color defaultColor) {
+  Color? _textColor(
+      ThemeData theme, ListTileTheme? tileTheme, Color? defaultColor) {
     if (!enabled) return theme.disabledColor;
 
     if (selected && tileTheme?.selectedColor != null)
-      return tileTheme.selectedColor;
+      return tileTheme?.selectedColor;
 
-    if (!selected && tileTheme?.textColor != null) return tileTheme.textColor;
+    if (!selected && tileTheme?.textColor != null) return tileTheme?.textColor;
 
     if (selected) {
       switch (theme.brightness) {
@@ -181,8 +180,8 @@ class CustomTile extends StatelessWidget {
     return defaultColor;
   }
 
-  TextStyle _titleTextStyle(ThemeData theme, ListTileTheme tileTheme) {
-    TextStyle style;
+  TextStyle? _titleTextStyle(ThemeData theme, ListTileTheme? tileTheme) {
+    TextStyle? style;
     if (tileTheme != null) {
       switch (tileTheme.style) {
         case ListTileStyle.drawer:
@@ -195,30 +194,30 @@ class CustomTile extends StatelessWidget {
     } else {
       style = theme.textTheme.headline6; //subhead->headline6
     }
-    final Color color = _textColor(theme, tileTheme, style.color);
-    return style.copyWith(color: color);
+    final Color? color = _textColor(theme, tileTheme, style?.color);
+    return style?.copyWith(color: color);
   }
 
-  TextStyle _subtitleTextStyle(ThemeData theme, ListTileTheme tileTheme) {
-    final TextStyle style = theme.textTheme.bodyText2; //body1->bodyText2
-    final Color color =
-        _textColor(theme, tileTheme, theme.textTheme.caption.color);
-    return style.copyWith(color: color);
+  TextStyle? _subtitleTextStyle(ThemeData theme, ListTileTheme tileTheme) {
+    final TextStyle? style = theme.textTheme.bodyText2; //body1->bodyText2
+    final Color? color =
+        _textColor(theme, tileTheme, theme.textTheme.caption?.color);
+    return style?.copyWith(color: color);
   }
 }
 
 class ImageWithText extends StatelessWidget {
   final Widget image;
-  final String text;
-  final double fontSize;
+  final String? text;
+  final double? fontSize;
   final EdgeInsets padding;
 
   final AlignmentDirectional alignment;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   ImageWithText(
-      {Key key,
-      this.image,
+      {Key? key,
+      required this.image,
       this.text,
       this.fontSize,
       this.padding = EdgeInsets.zero,
@@ -265,7 +264,7 @@ class ImageWithText extends StatelessWidget {
                       child: Stack(
                         children: <Widget>[
                           Text(
-                            text,
+                            text!,
                             style: TextStyle(
                               fontSize: fontSize,
                               fontWeight: FontWeight.bold,
@@ -276,7 +275,7 @@ class ImageWithText extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            text,
+                            text!,
                             style: TextStyle(
                               fontSize: fontSize,
                               fontWeight: FontWeight.bold,

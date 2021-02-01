@@ -1,3 +1,4 @@
+//@dart=2.12
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';
@@ -9,13 +10,19 @@ class GameStatisticsPage extends StatefulWidget {
 
 class _GameStatisticsPageState extends State<GameStatisticsPage>
     with SingleTickerProviderStateMixin {
-  TabController _tabController;
-  Map<String, int> allItemCost;
+  TabController? _tabController;
+  Map<String, int>? allItemCost;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController?.dispose();
+    super.dispose();
   }
 
   @override
@@ -56,7 +63,9 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
       children: [
         CheckboxListTile(
           value: includeCurItems,
-          onChanged: (v) => setState(() => includeCurItems = v),
+          onChanged: (v) => setState(() {
+            if (v != null) includeCurItems = v;
+          }),
           controlAffinity: ListTileControlAffinity.leading,
           title: Text(S.of(context).statistics_include_checkbox),
         ),
@@ -93,7 +102,7 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
     final emptyPlan = ServantPlan(favorite: true);
     db.curUser.servants.forEach((no, svtStat) {
       if (svtStat.curVal.favorite != true) return;
-      final svt = db.gameData.servants[no];
+      final svt = db.gameData.servants[no]!;
       sumDict(
         [allItemCost, svt.getAllCost(cur: emptyPlan, target: svtStat.curVal)],
         inPlace: true,

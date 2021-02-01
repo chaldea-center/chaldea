@@ -312,9 +312,11 @@ void checkAppUpdate([bool background = true]) async {
       actions: [
         TextButton(
           child: Text(S.of(context).update),
-          onPressed: launchUrl == null || latestVersion == AppInfo.version
-              ? null
-              : () => launch(launchUrl),
+          onPressed: () {
+            if (launchUrl != null && latestVersion != AppInfo.version) {
+              launch(launchUrl);
+            }
+          },
         ),
         if (latestVersion != AppInfo.version)
           TextButton(

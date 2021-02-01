@@ -1,10 +1,10 @@
+//@dart=2.12
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
-import 'package:chaldea/components/components.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -19,18 +19,26 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'constants.dart';
 import 'datatypes/datatypes.dart';
 import 'logger.dart';
+import 'utils.dart';
 
 /// app config:
 ///  - app database
 ///  - user database
 class Database {
-  /// setState for root StatefulWidget
-  VoidCallback onAppUpdate;
-  UserData userData;
-  GameData gameData;
-  SharedPreferences prefs;
+  /// setState for root [MaterialApp]
+  VoidCallback onAppUpdate = () {};
+  UserData userData = UserData();
+  GameData gameData = GameData();
+  SharedPreferences? _prefs;
 
-  User get curUser => userData.users[userData.curUserKey];
+  SharedPreferences get prefs => _prefs!;
+
+  User get curUser {
+    if (!userData.users.containsKey(userData.curUserKey)) {
+      userData.curUserKey = userData.users.keys.first;
+    }
+    return userData.users[userData.curUserKey]!;
+  }
 
   final ItemStatistics itemStat = ItemStatistics();
   final RuntimeData runtimeData = RuntimeData();
@@ -42,7 +50,7 @@ class Database {
   // initialization
   Future<void> initial() async {
     await paths.initRootPath();
-    prefs ??= await SharedPreferences.getInstance();
+    _prefs ??= await SharedPreferences.getInstance();
     // Directory(paths.datasetCacheDir).createSync(recursive: true);
   }
 
@@ -63,12 +71,11 @@ class Database {
     try {
       final newData = UserData.fromJson(
           getJsonFromFile(paths.userDataPath, k: () => <String, dynamic>{}));
-      userData?.dispose();
+      userData.dispose();
       userData = newData;
       logger.d('userdata reloaded.');
       return true;
     } catch (e, s) {
-      userData ??= UserData(); // if not null, don't change data
       logger.e('Load userdata failed', e, s);
       EasyLoading.showToast('Load userdata failed\n$e');
       return false;
@@ -80,20 +87,19 @@ class Database {
     try {
       gameData = GameData.fromJson(getJsonFromFile(paths.gameDataFilepath));
       logger.d('game data reloaded, version ${gameData.version}.');
-      db.onAppUpdate();
+      db.onAppUpdate.call();
       t.elapsed();
       itemStat.clear();
       itemStat.update();
       return true;
     } catch (e, s) {
-      gameData ??= GameData(); // if not null, don't change data
       logger.e('Load game data failed', e, s);
       EasyLoading.showToast('Load game data failed\n$e');
       return false;
     }
   }
 
-  Future<void> downloadGameData([String url]) async {
+  Future<void> downloadGameData([String? url]) async {
     url ??= db.userData.serverDomain + kDatasetServerPath;
     Dio _dio = Dio();
     try {
@@ -124,12 +130,12 @@ class Database {
   }
 
   Future<void> loadZipAssets(String assetKey,
-      {String extractDir, bool force = false}) async {
+      {String? extractDir, bool force = false}) async {
     final t = TimeCounter('loadZipAssets($assetKey)');
     extractDir ??= paths.gameDataDir;
     if (force || !Directory(extractDir).existsSync()) {
       //extract zip file
-      final data = await rootBundle.load(assetKey).catchError((e, s) {
+      final ByteData? data = await rootBundle.load(assetKey).catchError((e, s) {
         logger.e('Load assets failed: $assetKey', e, s);
         EasyLoading.showToast('Error load assets: $assetKey\n$e');
       });
@@ -164,7 +170,7 @@ class Database {
     }
   }
 
-  IconResource getIconResource(String iconKey) {
+  IconResource? getIconResource(String iconKey) {
     final keys = [iconKey, iconKey + '.png', iconKey + '.jpg'];
     for (var key in keys) {
       if (gameData.icons.containsKey(key)) return gameData.icons[key];
@@ -192,7 +198,7 @@ class Database {
   /// size of [Image] widget is zero before file is loaded to memory.
   /// [wrapContainer] to ensure the placeholder
   Widget getIconImage(String iconKey,
-      {double width, double height, BoxFit fit, bool wrapContainer = true}) {
+      {double? width, double? height, BoxFit? fit, bool wrapContainer = true}) {
     final image = Image(
       image: getIconProvider(iconKey),
       width: width,
@@ -208,7 +214,7 @@ class Database {
   }
 
   // assist methods
-  dynamic getJsonFromFile(String filepath, {dynamic k()}) {
+  dynamic getJsonFromFile(String filepath, {dynamic k()?}) {
     // dynamic: json object can be Map or List.
     // However, json_serializable always use Map->Class
     dynamic result;
@@ -258,8 +264,8 @@ class Database {
     }
   }
 
-  T parseJson<T>({T parser(), T k()}) {
-    T result;
+  T? parseJson<T>({required T parser(), T k()?}) {
+    T? result;
     try {
       result = parser();
     } catch (e, s) {
@@ -270,7 +276,7 @@ class Database {
   }
 
   Future<void> extractZip(List<int> bytes, String path,
-      {Function onError, void Function(int, int) onProgress}) async {
+      {Function? onError, void Function(int, int)? onProgress}) async {
     final t = TimeCounter('extractZip');
     final errorMsg =
         await compute(_extractZipIsolate, {'bytes': bytes, 'path': path});
@@ -280,7 +286,8 @@ class Database {
     t.elapsed();
   }
 
-  static Future<String> _extractZipIsolate(Map<String, dynamic> message) async {
+  static Future<String?> _extractZipIsolate(
+      Map<String, dynamic> message) async {
     List<int> bytes = message['bytes'];
     String path = message['path'];
     Archive archive = ZipDecoder().decodeBytes(bytes);
@@ -324,13 +331,13 @@ class Database {
 
 class PathManager {
   /// [_appPath] root path where app can access
-  static String _appPath;
+  static String? _appPath;
 
   /// [_savePath] root path to save user-related data
-  static String _savePath;
+  static String? _savePath;
 
   /// [_tempPath] files can be deleted
-  static String _tempPath;
+  static String? _tempPath;
 
   Future<void> initRootPath() async {
     if (_appPath != null && _savePath != null && _tempPath != null) return;
@@ -368,23 +375,23 @@ class PathManager {
     }
   }
 
-  String get appPath => _appPath;
+  String get appPath => _appPath!;
 
-  String get savePath => _savePath;
+  String get savePath => _savePath!;
 
-  String get tempPath => pathlib.join(_appPath, 'temp');
+  String get tempPath => pathlib.join(_appPath!, 'temp');
 
-  String get userDataDir => pathlib.join(_savePath, 'user');
+  String get userDataDir => pathlib.join(_savePath!, 'user');
 
   String get userDataPath => pathlib.join(userDataDir, kUserDataFilename);
 
-  String get gameDataDir => pathlib.join(_appPath, 'data');
+  String get gameDataDir => pathlib.join(_appPath!, 'data');
 
   String get gameDataFilepath => pathlib.join(gameDataDir, kGameDataFilename);
 
   String get gameIconDir => pathlib.join(gameDataDir, 'icons');
 
-  String get crashLog => pathlib.join(_savePath, 'crash.log');
+  String get crashLog => pathlib.join(_savePath!, 'crash.log');
 
   static PathManager _instance = PathManager._internal();
 

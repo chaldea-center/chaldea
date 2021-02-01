@@ -1,3 +1,4 @@
+//@dart=2.12
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
@@ -27,9 +28,9 @@ class QjsEngine implements JsEngine<IsolateQjs> {
 
   QjsEngine();
 
-  Future<void> init() => null;
+  Future<void> init() async => null;
 
-  Future<String> eval(String command, {String name}) async {
+  Future<String> eval(String command, {String? name}) async {
     return (await engine.evaluate(command, name: name)).toString();
   }
 
@@ -66,7 +67,7 @@ class WebviewJsEngine implements JsEngine<FlutterWebviewPlugin> {
     }
   }
 
-  Future<String> eval(String command, {String name}) async {
+  Future<String> eval(String command, {String? name}) async {
     return engine.evalJavascript(command);
   }
 
@@ -105,13 +106,13 @@ class GLPKSolver {
     _engineReady = true;
   }
 
-  Future<GLPKSolution> calculate({GLPKData data, GLPKParams params}) async {
+  Future<GLPKSolution?> calculate(
+      {required GLPKData data, required GLPKParams params}) async {
     // if use integer GLPK (simplex then intopt),
     // it may run out of time and memory, then crash.
     // so only use simplex here
-    GLPKSolution solution;
+    GLPKSolution? solution;
     try {
-      assert(data != null && params != null);
       await _ensureEngine();
       print('=========solving========\nparams="${json.encode(params)}"');
 
@@ -126,8 +127,9 @@ class GLPKSolver {
 //        print('modified params: ${json.encode(params2)}');
         String resultString = await js.eval(
             '''solve_glpk( `${json.encode(data2)}`,`${json.encode(params2)}`);''');
+        resultString = resultString.trim();
         logger.v('result: $resultString');
-        if (resultString?.isNotEmpty != true || resultString == 'null') {
+        if (resultString.isNotEmpty != true || resultString == 'null') {
           throw 'qjsEngine return nothing!';
         }
         var result;
@@ -156,7 +158,7 @@ class GLPKSolver {
 }
 
 /// [data] and [params] must be copied instances. Modify them **in-place** here
-GLPKData _preProcess({GLPKData data, GLPKParams params}) {
+GLPKData _preProcess({required GLPKData data, required GLPKParams params}) {
   print('pre processing GLPK data and params...');
   // inside pre processing, use [params.objective] not [items] and [counts]
   final objective = params.objective;

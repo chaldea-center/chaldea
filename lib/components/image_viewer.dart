@@ -146,7 +146,7 @@ class _CachedImageWidgetState extends State<CachedImageWidget> {
     return cached == null
         ? Container()
         : cached == true ||
-                (widget.enableDownload ?? db.runtimeData.enableDownload ?? true)
+                (widget.enableDownload ?? db.runtimeData.enableDownload)
             ? widget.imageBuilder(context, widget.url)
             : widget.placeholder == null
                 ? Center(child: Text('Downloading disabled.'))
