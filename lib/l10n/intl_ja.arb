@@ -275,5 +275,9 @@
   "quest": "クエスト",
   "interlude_and_rankup": "幕間・強化",
   "ignore": "無視",
-  "quest_condition": "開放条件"
+  "quest_condition": "開放条件",
+  "free_efficiency": "フリー効率",
+  "efficiency": "効率",
+  "calc_weight": "重み",
+  "words_separate": "{a}{b}"
 }

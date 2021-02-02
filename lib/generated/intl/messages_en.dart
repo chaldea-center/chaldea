@@ -43,6 +43,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m11(total, hidden) => "Total ${total} results (${hidden} hidden)";
 
+  static m12(a, b) => "${a} ${b}";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "about_app" : MessageLookupByLibrary.simpleMessage("About"),
@@ -68,6 +70,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "backup" : MessageLookupByLibrary.simpleMessage("Backup"),
     "backup_success" : MessageLookupByLibrary.simpleMessage("Backup successfully"),
     "bond_craft" : MessageLookupByLibrary.simpleMessage("Bond Craft"),
+    "calc_weight" : MessageLookupByLibrary.simpleMessage("Wight"),
     "calculate" : MessageLookupByLibrary.simpleMessage("Calculate"),
     "calculator" : MessageLookupByLibrary.simpleMessage("Calculator"),
     "cancel" : MessageLookupByLibrary.simpleMessage("Cancel"),
@@ -117,6 +120,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "drop_calculator_short" : MessageLookupByLibrary.simpleMessage("Drop Calc"),
     "drop_rate" : MessageLookupByLibrary.simpleMessage("Drop rate"),
     "edit" : MessageLookupByLibrary.simpleMessage("Edit"),
+    "efficiency" : MessageLookupByLibrary.simpleMessage("Efficiency"),
     "enhance" : MessageLookupByLibrary.simpleMessage("Enhance"),
     "enhance_warning" : MessageLookupByLibrary.simpleMessage("The following items will be consumed for enhancement"),
     "event_collect_item_confirm" : MessageLookupByLibrary.simpleMessage("All items will be added to bag and remove the event out of plan"),
@@ -150,6 +154,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "filter_sort_number" : MessageLookupByLibrary.simpleMessage("No"),
     "filter_sort_rarity" : MessageLookupByLibrary.simpleMessage("Rarity"),
     "filter_special_trait" : MessageLookupByLibrary.simpleMessage("Special Trait"),
+    "free_efficiency" : MessageLookupByLibrary.simpleMessage("Free Efficiency"),
     "free_quest" : MessageLookupByLibrary.simpleMessage("Free Quest"),
     "gallery_tab_name" : MessageLookupByLibrary.simpleMessage("Home"),
     "game_drop" : MessageLookupByLibrary.simpleMessage("Drop"),
@@ -319,6 +324,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "version" : MessageLookupByLibrary.simpleMessage("Version"),
     "view_illustration" : MessageLookupByLibrary.simpleMessage("View Illustration"),
     "voice" : MessageLookupByLibrary.simpleMessage("Voice"),
+    "words_separate" : m12,
     "yes" : MessageLookupByLibrary.simpleMessage("Yes")
   };
 }

@@ -43,6 +43,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m11(total, hidden) => "总计: ${total} (隐藏: ${hidden})";
 
+  static m12(a, b) => "${a}${b}";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "about_app" : MessageLookupByLibrary.simpleMessage("关于"),
@@ -68,6 +70,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "backup" : MessageLookupByLibrary.simpleMessage("备份"),
     "backup_success" : MessageLookupByLibrary.simpleMessage("备份成功"),
     "bond_craft" : MessageLookupByLibrary.simpleMessage("羁绊礼装"),
+    "calc_weight" : MessageLookupByLibrary.simpleMessage("权重"),
     "calculate" : MessageLookupByLibrary.simpleMessage("计算"),
     "calculator" : MessageLookupByLibrary.simpleMessage("计算器"),
     "cancel" : MessageLookupByLibrary.simpleMessage("取消"),
@@ -117,6 +120,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "drop_calculator_short" : MessageLookupByLibrary.simpleMessage("掉落速查"),
     "drop_rate" : MessageLookupByLibrary.simpleMessage("掉率"),
     "edit" : MessageLookupByLibrary.simpleMessage("编辑"),
+    "efficiency" : MessageLookupByLibrary.simpleMessage("效率"),
     "enhance" : MessageLookupByLibrary.simpleMessage("强化"),
     "enhance_warning" : MessageLookupByLibrary.simpleMessage("强化将扣除以下素材"),
     "event_collect_item_confirm" : MessageLookupByLibrary.simpleMessage("所有素材添加到素材仓库，并将该活动移出规划"),
@@ -150,6 +154,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "filter_sort_number" : MessageLookupByLibrary.simpleMessage("序号"),
     "filter_sort_rarity" : MessageLookupByLibrary.simpleMessage("星级"),
     "filter_special_trait" : MessageLookupByLibrary.simpleMessage("特殊特性"),
+    "free_efficiency" : MessageLookupByLibrary.simpleMessage("Free效率"),
     "free_quest" : MessageLookupByLibrary.simpleMessage("Free本"),
     "gallery_tab_name" : MessageLookupByLibrary.simpleMessage("首页"),
     "game_drop" : MessageLookupByLibrary.simpleMessage("掉落"),
@@ -319,6 +324,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "version" : MessageLookupByLibrary.simpleMessage("版本"),
     "view_illustration" : MessageLookupByLibrary.simpleMessage("查看卡面"),
     "voice" : MessageLookupByLibrary.simpleMessage("语音"),
+    "words_separate" : m12,
     "yes" : MessageLookupByLibrary.simpleMessage("是")
   };
 }

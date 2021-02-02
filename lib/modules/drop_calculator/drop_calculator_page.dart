@@ -2,17 +2,20 @@ import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/drop_calculator/drop_calc_filter_dialog.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
-import 'package:chaldea/modules/shared/quest_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 
-class DropCalculatorPage extends StatefulWidget {
-  final Map<String, int> objectiveMap;
+import 'quest_efficiency_tab.dart';
+import 'quest_plan_tab.dart';
 
-  DropCalculatorPage({Key key, this.objectiveMap}) : super(key: key);
+class DropCalculatorPage extends StatefulWidget {
+  final Map<String, int> objectiveCounts;
+
+  DropCalculatorPage({Key key, this.objectiveCounts}) : super(key: key);
 
   @override
   _DropCalculatorPageState createState() => _DropCalculatorPageState();
@@ -22,12 +25,20 @@ class _DropCalculatorPageState extends State<DropCalculatorPage>
     with SingleTickerProviderStateMixin {
   GLPKSolution solution;
   TabController _tabController;
-  final _blankNode = FocusNode();
+  FocusNode _blankNode;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
+    _blankNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _tabController?.dispose();
+    _blankNode?.dispose();
   }
 
   @override
@@ -36,12 +47,24 @@ class _DropCalculatorPageState extends State<DropCalculatorPage>
       appBar: AppBar(
         title: Text(S.of(context).drop_calculator),
         leading: BackButton(),
-        actions: [],
+        actions: [
+          IconButton(
+            icon: Icon(Icons.help_outline),
+            tooltip: S.of(context).help,
+            onPressed: () {
+              SimpleCancelOkDialog(
+                title: Text(S.of(context).help),
+                content: Text(S.of(context).drop_calc_help_text),
+              ).show(context);
+            },
+          )
+        ],
         bottom: TabBar(
           controller: _tabController,
           tabs: [
             Tab(text: S.of(context).item),
-            Tab(text: S.of(context).free_quest)
+            Tab(text: S.of(context).plan),
+            Tab(text: S.of(context).efficiency)
           ],
           onTap: (_) {
             FocusScope.of(context).unfocus();
@@ -58,9 +81,12 @@ class _DropCalculatorPageState extends State<DropCalculatorPage>
           children: [
             KeepAliveBuilder(
                 builder: (context) => DropCalcInputTab(
-                    objectiveMap: widget.objectiveMap, onSolved: onSolved)),
+                    objectiveCounts: widget.objectiveCounts,
+                    onSolved: onSolved)),
             KeepAliveBuilder(
-                builder: (context) => DropCalcOutputTab(solution: solution))
+                builder: (context) => QuestPlanTab(solution: solution)),
+            KeepAliveBuilder(
+                builder: (context) => QuestEfficiencyTab(solution: solution))
           ],
         ),
       ),
@@ -76,30 +102,32 @@ class _DropCalculatorPageState extends State<DropCalculatorPage>
       });
       // if change tab index immediately, the second tab won't re-render
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-        _tabController.index = 1;
+        if (solution.destination > 0 && solution.destination < 3) {
+          _tabController.index = solution.destination;
+        } else {
+          _tabController.index = 1;
+        }
       });
     }
   }
 }
 
 class DropCalcInputTab extends StatefulWidget {
-  final Map<String, int> objectiveMap;
-
+  final Map<String, int> objectiveCounts;
   final void Function(GLPKSolution) onSolved;
 
-  const DropCalcInputTab({Key key, this.objectiveMap, this.onSolved})
+  const DropCalcInputTab({Key key, this.objectiveCounts, this.onSolved})
       : super(key: key);
 
   @override
   _DropCalcInputTabState createState() => _DropCalcInputTabState();
 }
 
-class _DropCalcInputTabState extends State<DropCalcInputTab>
-    with AfterLayoutMixin {
+class _DropCalcInputTabState extends State<DropCalcInputTab> {
   GLPKParams params;
   Map<String, List<String>> pickerData = {};
   List<PickerItem<String>> pickerAdapter = [];
-  final solver = GLPKSolver();
+  final GLPKSolver solver = GLPKSolver();
   bool running = false;
 
   @override
@@ -108,7 +136,8 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
     // reset params
     db.userData.glpkParams ??= GLPKParams();
     params = db.userData.glpkParams;
-    final Map<String, int> objective = widget.objectiveMap ?? params.objective;
+    final Map<String, int> objective =
+        widget.objectiveCounts ?? params.objectiveCounts;
     params
       ..removeAll()
       ..enableControllers();
@@ -122,10 +151,8 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
       objective.forEach((key, value) => params.addOne(key, value));
       params.sortByItem();
     }
-  }
 
-  @override
-  void afterFirstLayout(BuildContext context) {
+    // picker
     db.gameData.items.keys.forEach((name) {
       final category = getItemCategory(name);
       if (category != null) {
@@ -160,6 +187,8 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
             .toList(),
       ));
     });
+
+    solver.ensureEngine();
   }
 
   @override
@@ -172,6 +201,23 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
+        ListTile(
+          title: Text(S.of(context).item),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: 65,
+                child: Center(
+                  child: Text(planOrEff
+                      ? S.of(context).counts
+                      : S.of(context).calc_weight),
+                ),
+              ),
+              IconButton(icon: Icon(Icons.delete), onPressed: null)
+            ],
+          ),
+        ),
         if (params.rows.isEmpty)
           ListTile(
               title: Center(child: Text(S.of(context).drop_calc_empty_hint))),
@@ -198,73 +244,83 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
               child: db.getIconImage(item),
             ),
           ),
-          title: Row(
-            children: <Widget>[
-              Expanded(
-                flex: 4,
-                child: MaterialButton(
-                    padding: EdgeInsets.symmetric(horizontal: 6),
-                    focusNode: FocusNode(skipTraversal: true),
-                    onPressed: () {
-                      final String category = getItemCategory(item);
-                      final String localizedName = Item.localizedNameOf(item);
-                      Picker(
-                        adapter: PickerDataAdapter<String>(data: pickerAdapter),
-                        selecteds: [
-                          pickerData.keys.toList().indexOf(category),
-                          pickerData[category].indexOf(localizedName)
-                        ],
-                        height: 250,
-                        itemExtent: 48,
-                        changeToFirst: true,
-                        hideHeader: true,
-                        textScaleFactor: 0.7,
-                        cancelText: S.of(context).cancel,
-                        confirmText: S.of(context).confirm,
-                        onConfirm: (Picker picker, List<int> value) {
-                          print('picker: ${picker.getSelectedValues()}');
-                          setState(() {
-                            String selected = picker.getSelectedValues().last;
-                            if (params.rows.contains(selected)) {
-                              EasyLoading.showToast(S
-                                  .of(context)
-                                  .item_already_exist_hint(
-                                      Item.localizedNameOf(selected)));
-                            } else {
-                              params.rows[index] = selected;
-                            }
-                          });
-                        },
-                      ).showDialog(context);
-                    },
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(Item.localizedNameOf(item)),
-                    )),
-              ),
+          title: MaterialButton(
+              padding: EdgeInsets.symmetric(horizontal: 6),
+              focusNode: FocusNode(skipTraversal: true),
+              onPressed: () {
+                final String category = getItemCategory(item);
+                final String localizedName = Item.localizedNameOf(item);
+                Picker(
+                  adapter: PickerDataAdapter<String>(data: pickerAdapter),
+                  selecteds: [
+                    pickerData.keys.toList().indexOf(category),
+                    pickerData[category].indexOf(localizedName)
+                  ],
+                  height: 250,
+                  itemExtent: 48,
+                  changeToFirst: true,
+                  hideHeader: true,
+                  textScaleFactor: 0.7,
+                  cancelText: S.of(context).cancel,
+                  confirmText: S.of(context).confirm,
+                  onConfirm: (Picker picker, List<int> value) {
+                    print('picker: ${picker.getSelectedValues()}');
+                    setState(() {
+                      String selected = picker.getSelectedValues().last;
+                      if (params.rows.contains(selected)) {
+                        EasyLoading.showToast(S
+                            .of(context)
+                            .item_already_exist_hint(
+                                Item.localizedNameOf(selected)));
+                      } else {
+                        params.rows[index] = selected;
+                      }
+                    });
+                  },
+                ).showDialog(context);
+              },
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(Item.localizedNameOf(item)),
+              )),
+          subtitle: planOrEff
+              ? Text(S.current
+                  .words_separate(S.current.calc_weight, params.weights[index]))
+              : Text(S.current
+                  .words_separate(S.current.counts, params.counts[index])),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
               SizedBox(
                 width: 65,
                 child: TextField(
-                  controller: params.controllers[index],
-                  keyboardType: TextInputType.number,
+                  controller: planOrEff
+                      ? params.countControllers[index]
+                      : params.weightControllers[index],
+                  keyboardType: TextInputType.numberWithOptions(
+                      signed: true, decimal: true),
                   textAlign: TextAlign.center,
                   decoration: InputDecoration(isDense: true),
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   onChanged: (s) {
-                    params.counts[index] = int.tryParse(s) ?? 0;
+                    if (planOrEff) {
+                      params.counts[index] = int.tryParse(s) ?? 0;
+                    } else {
+                      params.weights[index] = double.tryParse(s) ?? 1.0;
+                    }
                   },
                 ),
               ),
+              IconButton(
+                  icon: Icon(Icons.delete_outline, color: Colors.redAccent),
+                  focusNode: FocusNode(skipTraversal: true),
+                  onPressed: () {
+                    setState(() {
+                      params.remove(item);
+                    });
+                  })
             ],
           ),
-          trailing: IconButton(
-              icon: Icon(Icons.delete_outline, color: Colors.redAccent),
-              focusNode: FocusNode(skipTraversal: true),
-              onPressed: () {
-                setState(() {
-                  params.remove(item);
-                });
-              }),
         );
       },
       separatorBuilder: (context, index) => Divider(height: 1, thickness: 0.5),
@@ -276,7 +332,6 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
     return ButtonBar(
       alignment: MainAxisAlignment.center,
       children: <Widget>[
-        Divider(height: 1, thickness: 1),
         Wrap(
           alignment: WrapAlignment.center,
           runAlignment: WrapAlignment.center,
@@ -287,51 +342,34 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: 4,
               children: <Widget>[
-                Text(S.of(context).drop_calc_min_ap),
                 DropdownButton(
-                    value: params.minCost,
-                    items: List.generate(
-                        20,
-                        (i) => DropdownMenuItem(
-                            value: i, child: Text(i.toString()))),
-                    onChanged: (v) => params.minCost = v),
-              ],
-            ),
-            Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 4,
-              children: <Widget>[
-                Text(S.of(context).drop_calc_optimize),
-                DropdownButton(
-                    value: params.costMinimize,
+                    value: planOrEff,
                     items: [
                       DropdownMenuItem(
-                          value: true, child: Text(S.of(context).ap)),
+                          value: true, child: Text(S.of(context).plan)),
                       DropdownMenuItem(
-                          value: false, child: Text(S.of(context).counts))
+                          value: false, child: Text(S.of(context).efficiency))
                     ],
-                    onChanged: (v) => params.costMinimize = v),
+                    onChanged: (v) =>
+                        setState(() => planOrEff = v ?? planOrEff)),
               ],
             ),
-            Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 4,
-              children: <Widget>[
-                DropdownButton(
-                    value: params.maxColNum > 0,
-                    items: [
-                      DropdownMenuItem(
-                          value: true, child: Text(S.of(context).server_cn)),
-                      DropdownMenuItem(
-                          value: false, child: Text(S.of(context).server_jp))
-                    ],
-                    onChanged: (v) => params.maxColNum =
-                        v ? db.gameData.glpk.cnMaxColNum : -1),
-              ],
-            ),
+            IconButton(
+                icon: Icon(Icons.filter_alt),
+                color: Theme.of(context).primaryColor,
+                tooltip: S.of(context).filter,
+                onPressed: () async {
+                  await showDialog(
+                      context: context,
+                      builder: (context) =>
+                          DropCalcFilterDialog(params: params));
+                  setState(() {});
+                }),
             //TODO: add extra event quests button and dialog page
             IconButton(
               icon: Icon(Icons.sort),
+              tooltip: S.of(context).filter_sort,
+              color: Theme.of(context).primaryColor,
               onPressed: () {
                 setState(() {
                   params.sortByItem();
@@ -347,6 +385,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
                       Icons.add_circle,
                       color: Theme.of(context).primaryColor,
                     ),
+                    tooltip: 'Add row',
                     onPressed: () {
                       setState(() {
                         addAnItemNotInList();
@@ -354,24 +393,8 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
                     }),
                 ElevatedButton(
                   onPressed: running ? null : solve,
-                  child: SizedBox(
-                    width: 75,
-                    child: Center(
-                      child: Text(
-                        S.of(context).drop_calc_solve,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
+                  child: Text(S.of(context).drop_calc_solve),
                 ),
-                IconButton(
-                    icon: Icon(Icons.help, color: Colors.blueAccent),
-                    onPressed: () {
-                      SimpleCancelOkDialog(
-                        title: Text(S.of(context).help),
-                        content: Text(S.of(context).drop_calc_help_text),
-                      ).show(context);
-                    })
               ],
             )
           ],
@@ -391,19 +414,21 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
     if (item.category == 1) {
       if (item.rarity <= 3) {
         return [
-          'Unknown',
-          S.of(context).item_category_copper,
-          S.of(context).item_category_silver,
-          S.of(context).item_category_gold
+          null,
+          S.current.item_category_copper,
+          S.current.item_category_silver,
+          S.current.item_category_gold
         ][item.rarity];
       }
     } else if (item.category == 2) {
-      return S.of(context).item_category_gems;
+      return S.current.item_category_gems;
     } else if (item.category == 3) {
-      return S.of(context).item_category_ascension;
+      return S.current.item_category_ascension;
     }
     return null;
   }
+
+  bool planOrEff = true;
 
   void solve() async {
     FocusScope.of(context).unfocus();
@@ -414,78 +439,12 @@ class _DropCalcInputTabState extends State<DropCalcInputTab>
       final solution =
           await solver.calculate(data: db.gameData.glpk, params: params);
       running = false;
+      solution.destination = planOrEff ? 1 : 2;
       if (widget.onSolved != null) {
         widget.onSolved(solution);
       }
     } else {
       EasyLoading.showToast(S.of(context).input_invalid_hint);
     }
-  }
-}
-
-class DropCalcOutputTab extends StatefulWidget {
-  final GLPKSolution solution;
-
-  const DropCalcOutputTab({Key key, this.solution}) : super(key: key);
-
-  @override
-  _DropCalcOutputTabState createState() => _DropCalcOutputTabState();
-}
-
-class _DropCalcOutputTabState extends State<DropCalcOutputTab> {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Container(
-          decoration: BoxDecoration(
-              border: Border(bottom: Divider.createBorderSide(context))),
-          child: ListTile(
-            title: Text(
-                '${S.current.total_counts}: ${widget.solution?.totalNum ?? "-"}'),
-            trailing: Text(
-                '${S.current.total_ap}: ${widget.solution?.totalCost ?? "-"}'),
-          ),
-        ),
-        Expanded(
-            child: ListView(
-          children: widget.solution?.variables?.map((variable) {
-                final quest = db.gameData.freeQuests[variable.name];
-                return Container(
-                  decoration: BoxDecoration(
-                      border:
-                          Border(bottom: Divider.createBorderSide(context))),
-                  child: ValueStatefulBuilder<bool>(
-                      value: false,
-                      builder: (context, state) {
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            CustomTile(
-                              title: Text(variable.name),
-                              subtitle: Text(variable.detail.entries
-                                  .map((e) => '${e.key}*${e.value}')
-                                  .join(', ')),
-                              trailing:
-                                  Text('${variable.value}*${variable.cost} AP'),
-                              onTap: quest == null
-                                  ? null
-                                  : () {
-                                      state.value = !state.value;
-                                      state.updateState();
-                                    },
-                            ),
-                            if (state.value && quest != null)
-                              QuestCard(quest: quest),
-                          ],
-                        );
-                      }),
-                );
-              })?.toList() ??
-              [],
-        ))
-      ],
-    );
   }
 }

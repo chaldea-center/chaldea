@@ -80,13 +80,16 @@ class WebviewJsEngine implements JsEngine<FlutterWebviewPlugin> {
 class GLPKSolver {
   // final JsEngine js = WebviewJsEngine();
   final JsEngine js = QjsEngine();
-  bool _engineReady = false;
+  Completer? _initCompleter;
 
   GLPKSolver();
 
   /// ensure libs loaded
-  Future<void> _ensureEngine() async {
-    if (_engineReady) return;
+  Future<void> ensureEngine() async {
+    if (_initCompleter != null) {
+      return await _initCompleter!.future;
+    }
+    _initCompleter = Completer();
     // only load once
     // use callback to setState, not Future.
     await js.init();
@@ -102,27 +105,33 @@ class GLPKSolver {
     } catch (e, s) {
       logger.e('initiate js libs error', e, s);
       EasyLoading.showToast('initiation error\n$e');
+      _initCompleter!.completeError(e);
     }
-    _engineReady = true;
+    _initCompleter!.complete();
   }
 
+  /// two part: glpk linear programming +(then) efficiency sort
   Future<GLPKSolution?> calculate(
       {required GLPKData data, required GLPKParams params}) async {
     // if use integer GLPK (simplex then intopt),
     // it may run out of time and memory, then crash.
     // so only use simplex here
-    GLPKSolution? solution;
-    try {
-      await _ensureEngine();
-      print('=========solving========\nparams="${json.encode(params)}"');
+    GLPKSolution solution = GLPKSolution();
+    final params2 = GLPKParams.from(params);
+    final data2 = GLPKData.from(data);
+    _preProcess(data: data2, params: params2);
 
-      final params2 = GLPKParams.from(params);
-      final data2 = GLPKData.from(data);
-      _preProcess(data: data2, params: params2);
+    try {
+      await ensureEngine();
+      print('=========solving========\nparams="${json.encode(params)}"');
       if (params2.rows.length == 0) {
         logger.d('after pre processing, params has no valid rows.\n'
             'params=${json.encode(params2)}');
         EasyLoading.showToast('Invalid inputs');
+      } else if (params2.weights.reduce(max) <= 0) {
+        logger.d('after pre processing, params has no positive weights.\n'
+            'params=${json.encode(params2)}');
+        EasyLoading.showToast('At least one weight >0');
       } else {
 //        print('modified params: ${json.encode(params2)}');
         String resultString = await js.eval(
@@ -140,15 +149,46 @@ class GLPKSolver {
               'JsonDecodeError(error=$e)\njsonString:$result');
         }
         solution = GLPKSolution.fromJson(Map.from(result));
-        solution.sortByValue();
+        solution.sortCountVars();
       }
     } catch (e, s) {
       logger.e('Execute GLPK solver failed', e, s);
       EasyLoading.showToast('Execute GLPK solver failed:\n$e');
-      rethrow;
+      if (kDebugMode_) {
+        rethrow;
+      }
     }
+    _solveEfficiency(solution, params2, data2);
     print('=========solving finished=========');
     return solution;
+  }
+
+  void _solveEfficiency(
+      GLPKSolution solution, GLPKParams params, GLPKData data) {
+    Map<String, double> objectiveWeights = params.objectiveWeights;
+    objectiveWeights.removeWhere((key, value) => value <= 0);
+
+    for (int col = 0; col < data.colNames.length; col++) {
+      if (col >= data.jpMaxColNum) continue;
+      String questKey = data.colNames[col];
+      Map<String, double> dropWeights = {};
+      for (int row = 0; row < data.rowNames.length; row++) {
+        String itemKey = data.rowNames[row];
+        if (objectiveWeights.keys.contains(itemKey) &&
+            data.matrix[row][col] > 0) {
+          dropWeights[itemKey] =
+              (params.useAP20 ?? true ? 20 : data.costs[col]) /
+                  data.matrix[row][col] *
+                  objectiveWeights[itemKey]!;
+          sortDict(dropWeights, reversed: true, inPlace: true);
+        }
+      }
+      if (dropWeights.isNotEmpty) {
+        solution.weightVars
+            .add(GLPKVariable(name: questKey, detail: dropWeights));
+      }
+    }
+    solution.sortWeightVars();
   }
 
   /// must call [dispose]!!!
@@ -161,7 +201,7 @@ class GLPKSolver {
 GLPKData _preProcess({required GLPKData data, required GLPKParams params}) {
   print('pre processing GLPK data and params...');
   // inside pre processing, use [params.objective] not [items] and [counts]
-  final objective = params.objective;
+  final objective = params.objectiveCounts;
 
   // traverse originData rather new data
   // remove unused rows

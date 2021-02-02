@@ -137,7 +137,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
           TextButton(
             child: Text(S.of(context).cancel),
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.of(context).pop(false);
               if (onTapCancel != null) {
                 onTapCancel!();
               }
@@ -147,7 +147,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
           TextButton(
             child: Text(S.of(context).ok),
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.of(context).pop(true);
               if (onTapOk != null) {
                 onTapOk!();
               }
@@ -158,6 +158,8 @@ class SimpleCancelOkDialog extends StatelessWidget {
     );
   }
 
+  /// pop true when click ok, and false when click cancel,
+  /// other values can also be popped by actions
   Future show(BuildContext context) {
     return showDialog(context: context, builder: (_) => this);
   }

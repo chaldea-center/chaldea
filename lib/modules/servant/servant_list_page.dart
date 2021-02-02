@@ -260,7 +260,7 @@ class ServantListPageState extends State<ServantListPage>
                       });
                     }),
                 IconButton(
-                  icon: Icon(Icons.filter_list),
+                  icon: Icon(Icons.filter_alt),
                   tooltip: S.of(context).filter,
                   onPressed: () => FilterPage.show(
                       context: context,

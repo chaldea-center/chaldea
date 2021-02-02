@@ -107,6 +107,29 @@ Map<K, V> multiplyDict<K, V extends num>(Map<K, V> d, V multiplier,
   return res;
 }
 
+/// [reversed] is used only when [compare] is null for default num values sort
+Map<K, V> sortDict<K, V>(Map<K, V> d,
+    {bool reversed = false,
+    int compare(MapEntry<K, V> a, MapEntry<K, V> b)?,
+    bool inPlace = false}) {
+  List<MapEntry<K, V>> entries = d.entries.toList();
+  entries.sort((a, b) {
+    if (compare != null) return compare(a, b);
+    if (a.value is num && b.value is num) {
+      return (a.value as num).compareTo(b.value as num) * (reversed ? -1 : 1);
+    }
+    throw ArgumentError('must provide "compare" when values is not num');
+  });
+  final sorted = Map.fromEntries(entries);
+  if (inPlace) {
+    d.clear();
+    d.addEntries(entries);
+    return d;
+  } else {
+    return sorted;
+  }
+}
+
 /// If invalid index or null data passed, return default value.
 T? getListItem<T>(List<T>? data, int index, [k()?]) {
   if (data == null || data.length <= index) {

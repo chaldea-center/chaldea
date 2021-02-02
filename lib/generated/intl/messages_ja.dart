@@ -43,6 +43,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m11(total, hidden) => "合計：${total} (非表示: ${hidden})";
 
+  static m12(a, b) => "${a}${b}";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "about_app" : MessageLookupByLibrary.simpleMessage("ついて"),
@@ -68,6 +70,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "backup" : MessageLookupByLibrary.simpleMessage("バックアップ"),
     "backup_success" : MessageLookupByLibrary.simpleMessage("バックアップは成功しました"),
     "bond_craft" : MessageLookupByLibrary.simpleMessage("絆礼装"),
+    "calc_weight" : MessageLookupByLibrary.simpleMessage("重み"),
     "calculate" : MessageLookupByLibrary.simpleMessage("計算する"),
     "calculator" : MessageLookupByLibrary.simpleMessage("電卓"),
     "cancel" : MessageLookupByLibrary.simpleMessage("キャセル"),
@@ -117,6 +120,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "drop_calculator_short" : MessageLookupByLibrary.simpleMessage("ドロップ"),
     "drop_rate" : MessageLookupByLibrary.simpleMessage("ドロップ率"),
     "edit" : MessageLookupByLibrary.simpleMessage("編集"),
+    "efficiency" : MessageLookupByLibrary.simpleMessage("効率"),
     "enhance" : MessageLookupByLibrary.simpleMessage("強化"),
     "enhance_warning" : MessageLookupByLibrary.simpleMessage("強化すると、次の資アイテムが差し引かれます"),
     "event_collect_item_confirm" : MessageLookupByLibrary.simpleMessage("すべてのアイテムを倉庫に追加し、プランからイベントを削除します"),
@@ -150,6 +154,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "filter_sort_number" : MessageLookupByLibrary.simpleMessage("番号"),
     "filter_sort_rarity" : MessageLookupByLibrary.simpleMessage("スター"),
     "filter_special_trait" : MessageLookupByLibrary.simpleMessage("特殊特性"),
+    "free_efficiency" : MessageLookupByLibrary.simpleMessage("フリー効率"),
     "free_quest" : MessageLookupByLibrary.simpleMessage("フリークエスト"),
     "gallery_tab_name" : MessageLookupByLibrary.simpleMessage("ホーム"),
     "game_drop" : MessageLookupByLibrary.simpleMessage("ドロップ"),
@@ -319,6 +324,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "version" : MessageLookupByLibrary.simpleMessage("バージョン"),
     "view_illustration" : MessageLookupByLibrary.simpleMessage("カードの画像を表示"),
     "voice" : MessageLookupByLibrary.simpleMessage("ボイス"),
+    "words_separate" : m12,
     "yes" : MessageLookupByLibrary.simpleMessage("はい")
   };
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/drop_calculator/drop_calculator_page.dart';
@@ -53,6 +55,7 @@ class ItemListPageState extends State<ItemListPage>
           IconButton(
             icon: Icon(
                 filtered ? Icons.check_circle : Icons.check_circle_outline),
+            tooltip: '仅显示不足',
             onPressed: () {
               setState(() {
                 filtered = !filtered;
@@ -60,7 +63,10 @@ class ItemListPageState extends State<ItemListPage>
             },
           ),
           IconButton(
-              icon: Icon(Icons.calculate), onPressed: navToDropCalculator)
+            icon: Icon(Icons.calculate),
+            tooltip: S.of(context).drop_calculator,
+            onPressed: navToDropCalculator,
+          )
         ],
         bottom: TabBar(
           controller: _tabController,
@@ -92,6 +98,20 @@ class ItemListPageState extends State<ItemListPage>
   }
 
   void navToDropCalculator() {
+    Map<String, int> _getObjective() {
+      Map<String, int> objective = {};
+      db.itemStat.leftItems.forEach((itemKey, value) {
+        final rarity = db.gameData.items[itemKey]?.rarity ?? -1;
+        if (rarity > 0 && rarity <= 3) {
+          value -= db.userData.itemAbundantValue[rarity - 1];
+        }
+        if (db.gameData.glpk.rowNames.contains(itemKey) && value < 0) {
+          objective[itemKey] = -value;
+        }
+      });
+      return objective;
+    }
+
     SimpleCancelOkDialog(
       title: Text(S.of(context).item_exceed),
       content: Wrap(
@@ -126,20 +146,14 @@ class ItemListPageState extends State<ItemListPage>
         ],
       ),
       onTapOk: () {
-        Map<String, int> objective = {};
-        db.itemStat.leftItems.forEach((itemKey, value) {
-          final rarity = db.gameData.items[itemKey]?.rarity ?? -1;
-          if (rarity > 0 && rarity <= 3) {
-            value -= db.userData.itemAbundantValue[rarity - 1];
-          }
-          if (db.gameData.glpk.rowNames.contains(itemKey) && value < 0) {
-            objective[itemKey] = -value;
-          }
+        Timer(Duration(milliseconds: 500), () {
+          SplitRoute.push(
+            context: context,
+            popDetail: true,
+            builder: (context, _) =>
+                DropCalculatorPage(objectiveCounts: _getObjective()),
+          );
         });
-        SplitRoute.push(
-          context: context,
-          builder: (context, _) => DropCalculatorPage(objectiveMap: objective),
-        );
       },
     ).show(context);
   }

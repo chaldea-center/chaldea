@@ -275,5 +275,9 @@
   "quest": "Quest",
   "interlude_and_rankup": "Interlude & Rank Up",
   "ignore": "Ignore",
-  "quest_condition": "Conditions"
+  "quest_condition": "Conditions",
+  "free_efficiency": "Free Efficiency",
+  "efficiency": "Efficiency",
+  "calc_weight": "Wight",
+  "words_separate": "{a} {b}"
 }

@@ -94,47 +94,62 @@ class _QuestCardState extends State<QuestCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(S.current.game_drop + ':  '),
-              Expanded(child: _getDropsWidget(battle.drops))
+              Expanded(
+                child: Center(
+                  child: _getDropsWidget(battle.drops, quest.isFree),
+                ),
+              )
             ],
           ),
         ));
     }
-    if (quest.rewards?.isNotEmpty == true)
+    Widget? rewardsWidget, enhanceWidget;
+    if (quest.rewards?.isNotEmpty == true) {
+      rewardsWidget = _getDropsWidget(quest.rewards, false);
+    }
+    if (quest.enhancement?.isNotEmpty == true) {
+      Widget? enhanceIcon;
+      if (quest.enhancement.startsWith('宝具')) {
+        enhanceIcon = db.getIconImage('宝具强化', height: 30);
+      } else if (quest.enhancement.startsWith('技能')) {
+        enhanceIcon = db.getIconImage('技能强化', height: 30);
+      }
+      enhanceWidget = Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          if (enhanceIcon != null)
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 3),
+              child: enhanceIcon,
+            ),
+          Text(quest.enhancement)
+        ],
+      );
+    }
+    if (rewardsWidget != null || enhanceWidget != null)
       children.add(Padding(
         padding: EdgeInsets.only(top: 4),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Text(S.current.game_drop + ':  '),
-            Expanded(child: _getDropsWidget(quest.rewards))
-          ],
-        ),
-      ));
-    if (quest.enhancement?.isNotEmpty == true) {
-      Widget? enhanceIcon;
-      if (quest.enhancement.contains('强化')) {
-        if (quest.enhancement.startsWith('宝具')) {
-          enhanceIcon = db.getIconImage('宝具强化', height: 30);
-        } else if (quest.enhancement.startsWith('技能')) {
-          enhanceIcon = db.getIconImage('技能强化', height: 30);
-        }
-      }
-      children.add(Center(
-        child: Wrap(
-          alignment: WrapAlignment.center,
-          // runAlignment: WrapAlignment.center,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            if (enhanceIcon != null)
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 3),
-                child: enhanceIcon,
+            Text(S.current.game_rewards + ':  '),
+            Expanded(
+              child: Center(
+                child: Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 6,
+                  runSpacing: 4,
+                  children: [
+                    if (rewardsWidget != null) rewardsWidget,
+                    if (enhanceWidget != null) enhanceWidget
+                  ],
+                ),
               ),
-            Text(quest.enhancement)
+            )
           ],
         ),
       ));
-    }
     if (quest.conditions?.isNotEmpty == true) {
       children.add(Column(
         mainAxisSize: MainAxisSize.min,
@@ -188,9 +203,10 @@ class _QuestCardState extends State<QuestCard> {
     );
   }
 
-  Widget _getDropsWidget(Map<String, int> items) {
+  /// only drops of free quest useApRate
+  Widget _getDropsWidget(Map<String, int> items, bool useApRate) {
     Map<String, String> dropTexts = {};
-    if (widget.quest.isFree) {
+    if (useApRate) {
       final glpk = db.gameData.glpk;
       int colIndex = glpk.colNames.indexOf(quest.indexKey);
 
@@ -215,20 +231,18 @@ class _QuestCardState extends State<QuestCard> {
     } else {
       items.forEach((key, value) => dropTexts[key] = '*$value');
     }
-    return Center(
-      child: Wrap(
-        spacing: 3,
-        runSpacing: 4,
-        children: dropTexts.entries
-            .map((entry) => Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    db.getIconImage(entry.key, height: 30),
-                    Text(entry.value, style: TextStyle(fontSize: 14))
-                  ],
-                ))
-            .toList(),
-      ),
+    return Wrap(
+      spacing: 3,
+      runSpacing: 4,
+      children: dropTexts.entries
+          .map((entry) => Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  db.getIconImage(entry.key, height: 30),
+                  Text(entry.value, style: TextStyle(fontSize: 14))
+                ],
+              ))
+          .toList(),
     );
   }
 }

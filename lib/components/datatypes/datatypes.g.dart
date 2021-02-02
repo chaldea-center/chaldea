@@ -520,12 +520,15 @@ GLPKParams _$GLPKParamsFromJson(Map<String, dynamic> json) {
           json, 'rows', (v) => (v as List)?.map((e) => e as String)?.toList()),
       counts: $checkedConvert(
           json, 'counts', (v) => (v as List)?.map((e) => e as int)?.toList()),
+      weights: $checkedConvert(json, 'weights',
+          (v) => (v as List)?.map((e) => (e as num)?.toDouble())?.toList()),
       minCost: $checkedConvert(json, 'minCost', (v) => v as int),
       costMinimize: $checkedConvert(json, 'costMinimize', (v) => v as bool),
       maxColNum: $checkedConvert(json, 'maxColNum', (v) => v as int),
       extraCols: $checkedConvert(json, 'extraCols',
           (v) => (v as List)?.map((e) => e as String)?.toList()),
       integerResult: $checkedConvert(json, 'integerResult', (v) => v as bool),
+      useAP20: $checkedConvert(json, 'useAP20', (v) => v as bool),
     );
     return val;
   });
@@ -535,18 +538,25 @@ Map<String, dynamic> _$GLPKParamsToJson(GLPKParams instance) =>
     <String, dynamic>{
       'rows': instance.rows,
       'counts': instance.counts,
+      'weights': instance.weights,
       'minCost': instance.minCost,
       'costMinimize': instance.costMinimize,
       'maxColNum': instance.maxColNum,
       'extraCols': instance.extraCols,
       'integerResult': instance.integerResult,
+      'useAP20': instance.useAP20,
     };
 
 GLPKSolution _$GLPKSolutionFromJson(Map<String, dynamic> json) {
   return GLPKSolution(
+    destination: json['destination'] as int,
     totalCost: json['totalCost'] as int,
     totalNum: json['totalNum'] as int,
-    variables: (json['variables'] as List)
+    countVars: (json['countVars'] as List)
+        ?.map((e) =>
+            e == null ? null : GLPKVariable.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+    weightVars: (json['weightVars'] as List)
         ?.map((e) =>
             e == null ? null : GLPKVariable.fromJson(e as Map<String, dynamic>))
         ?.toList(),
@@ -555,28 +565,31 @@ GLPKSolution _$GLPKSolutionFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$GLPKSolutionToJson(GLPKSolution instance) =>
     <String, dynamic>{
+      'destination': instance.destination,
       'totalCost': instance.totalCost,
       'totalNum': instance.totalNum,
-      'variables': instance.variables,
+      'countVars': instance.countVars,
+      'weightVars': instance.weightVars,
     };
 
-GLPKVariable _$GLPKVariableFromJson(Map<String, dynamic> json) {
-  return GLPKVariable(
+GLPKVariable<T> _$GLPKVariableFromJson<T>(Map<String, dynamic> json) {
+  return GLPKVariable<T>(
     name: json['name'] as String,
-    value: json['value'] as int,
+    value: _Converter<T>().fromJson(json['value']),
     cost: json['cost'] as int,
     detail: (json['detail'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e as int),
+      (k, e) => MapEntry(k, _Converter<T>().fromJson(e)),
     ),
   );
 }
 
-Map<String, dynamic> _$GLPKVariableToJson(GLPKVariable instance) =>
+Map<String, dynamic> _$GLPKVariableToJson<T>(GLPKVariable<T> instance) =>
     <String, dynamic>{
       'name': instance.name,
-      'value': instance.value,
+      'value': _Converter<T>().toJson(instance.value),
       'cost': instance.cost,
-      'detail': instance.detail,
+      'detail': instance.detail
+          ?.map((k, e) => MapEntry(k, _Converter<T>().toJson(e))),
     };
 
 MysticCode _$MysticCodeFromJson(Map<String, dynamic> json) {

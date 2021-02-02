@@ -274,5 +274,9 @@
   "quest": "关卡",
   "interlude_and_rankup": "幕间&强化",
   "ignore": "忽略",
-  "quest_condition": "开放条件"
+  "quest_condition": "开放条件",
+  "free_efficiency": "Free效率",
+  "efficiency": "效率",
+  "calc_weight": "权重",
+  "words_separate": "{a}{b}"
 }

@@ -2789,6 +2789,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Free效率`
+  String get free_efficiency {
+    return Intl.message(
+      'Free效率',
+      name: 'free_efficiency',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `效率`
+  String get efficiency {
+    return Intl.message(
+      '效率',
+      name: 'efficiency',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `权重`
+  String get calc_weight {
+    return Intl.message(
+      '权重',
+      name: 'calc_weight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{a}{b}`
+  String words_separate(Object a, Object b) {
+    return Intl.message(
+      '$a$b',
+      name: 'words_separate',
+      desc: '',
+      args: [a, b],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

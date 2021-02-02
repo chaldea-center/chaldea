@@ -5,7 +5,7 @@ class GLPKData {
   List<String> colNames; //quests, n
   List<String> rowNames; // items, m
   List<int> costs; // n
-  /// AP rate, m*n
+  /// AP rate, m*n. 0 if not dropped
   List<List<double>> matrix;
   int cnMaxColNum;
   int jpMaxColNum;
@@ -69,16 +69,19 @@ class GLPKData {
 /// for solve_glpk(data_str and params_str)
 @JsonSerializable(checked: true)
 class GLPKParams {
-  /// if [controllers] is null, disabled. Removed controllers are temporary
+  /// if [countControllers] is null, disabled. Removed controllers are temporary
   /// stored in [_unusedControllers] and dispose them inside widget's dispose
   @JsonKey(ignore: true)
-  List<TextEditingController> controllers;
+  List<TextEditingController> countControllers;
+  @JsonKey(ignore: true)
+  List<TextEditingController> weightControllers;
   @JsonKey(ignore: true)
   List<TextEditingController> _unusedControllers = [];
 
   /// items(X)-counts(b) in AX>=b, only generated before transferred to js
   List<String> rows;
   List<int> counts;
+  List<double> weights;
 
   /// generated from [rows] and [counts], only used when processing data
   /// before transferred to js
@@ -103,81 +106,114 @@ class GLPKParams {
   /// transferred to js
   bool integerResult;
 
+  bool useAP20;
+
   /// convert two key-value list to map
-  Map<String, int> get objective => Map.fromIterables(rows, counts);
+  Map<String, int> get objectiveCounts => Map.fromIterables(rows, counts);
+
+  Map<String, double> get objectiveWeights => Map.fromIterables(rows, weights);
 
   GLPKParams({
     this.rows,
     this.counts,
+    this.weights,
     this.minCost,
     this.costMinimize,
     this.maxColNum,
     this.extraCols,
     this.integerResult,
+    this.useAP20,
   }) {
     // controllers ??= null;
     rows ??= [];
     counts ??= [];
+    weights ??= [];
+    counts.length = rows.length;
+    weights.length = rows.length;
+    for (int i = 0; i < rows.length; i++) {
+      counts[i] ??= 0;
+      weights[i] ??= 1.0;
+    }
     assert(rows.length == counts.length);
     minCost ??= 0;
     costMinimize ??= true;
     maxColNum ??= -1;
     extraCols ??= [];
     integerResult ??= false;
+    useAP20 ??= true;
   }
 
   GLPKParams.from(GLPKParams other)
       : rows = List.from(other.rows),
         counts = List.from(other.counts),
+        weights = List.from(other.weights),
         minCost = other.minCost,
         costMinimize = other.costMinimize,
         maxColNum = other.maxColNum,
         extraCols = List.from(other.extraCols),
-        integerResult = other.integerResult;
+        integerResult = other.integerResult,
+        useAP20 = other.useAP20;
 
   void sortByItem() {
+    // rows,counts,weights,countControllers,weightControllers
     final _getSortVal = (String key) {
       return db.gameData.items[key]?.id ?? -1;
     };
-    final countsMap = Map.fromIterables(rows, counts);
-    final controllersMap =
-        controllers == null ? null : Map.fromIterables(rows, controllers);
-    rows.sort((a, b) => _getSortVal(a) - _getSortVal(b));
-    counts = rows.map((e) => countsMap[e]).toList();
-    if (controllers != null) {
-      controllers = rows.map((e) => controllersMap[e]).toList();
+    final int length = rows.length;
+    List<int> indices = List.generate(length, (index) => index);
+    indices.sort((a, b) => _getSortVal(rows[a]) - _getSortVal(rows[b]));
+    rows = List.generate(length, (index) => rows[indices[index]]);
+    counts = List.generate(length, (index) => counts[indices[index]]);
+    weights = List.generate(length, (index) => weights[indices[index]]);
+    if (countControllers != null) {
+      countControllers =
+          List.generate(length, (index) => countControllers[indices[index]]);
+    }
+    if (weightControllers != null) {
+      weightControllers =
+          List.generate(length, (index) => weightControllers[indices[index]]);
     }
   }
 
   void enableControllers() {
-    if (controllers == null) {
-      controllers = [];
+    if (countControllers == null) {
+      countControllers = [];
       for (int i = 0; i < rows.length; i++) {
-        controllers.add(TextEditingController(text: counts[i].toString()));
+        countControllers.add(TextEditingController(text: counts[i].toString()));
+      }
+    }
+    if (weightControllers == null) {
+      weightControllers = [];
+      for (int i = 0; i < rows.length; i++) {
+        weightControllers
+            .add(TextEditingController(text: weights[i].toString()));
       }
     }
   }
 
   void disableControllers() {
-    if (controllers != null) {
-      _unusedControllers.addAll(controllers);
-      controllers = null;
-    }
+    _unusedControllers..addAll(countControllers)..addAll(weightControllers);
+    countControllers = weightControllers = null;
   }
 
   void dispose() {
-    controllers?.forEach((element) => element.dispose());
-    _unusedControllers.forEach((element) => element.dispose());
-    controllers = _unusedControllers = null;
+    countControllers?.forEach((e) => e?.dispose());
+    weightControllers?.forEach((e) => e?.dispose());
+    _unusedControllers?.forEach((e) => e?.dispose());
+    countControllers = weightControllers = null;
   }
 
-  void addOne(String item, [int n = 0]) {
+  bool addOne(String item, [int count = 0, double weight = 1.0]) {
     final index = rows.indexOf(item);
     if (index < 0) {
       rows.add(item);
-      counts.add(n);
-      controllers?.add(TextEditingController(text: n.toString()));
+      counts.add(count);
+      weights.add(weight);
+      countControllers?.add(TextEditingController(text: count.toString()));
+      weightControllers?.add(TextEditingController(text: weight.toString()));
+      return true;
     }
+    return false;
   }
 
   void remove(String item) {
@@ -185,8 +221,10 @@ class GLPKParams {
     if (index >= 0) {
       rows.removeAt(index);
       counts.removeAt(index);
-      if (controllers != null) {
-        _unusedControllers.add(controllers.removeAt(index));
+      weights.removeAt(index);
+      if (countControllers != null) {
+        _unusedControllers.add(countControllers.removeAt(index));
+        _unusedControllers.add(weightControllers.removeAt(index));
       }
     }
   }
@@ -194,9 +232,11 @@ class GLPKParams {
   void removeAll() {
     rows.clear();
     counts.clear();
-    if (controllers != null) {
-      _unusedControllers.addAll(controllers);
-      controllers.clear();
+    weights.clear();
+    if (countControllers != null) {
+      _unusedControllers..addAll(countControllers)..addAll(weightControllers);
+      countControllers.clear();
+      weightControllers.clear();
     }
   }
 
@@ -208,20 +248,40 @@ class GLPKParams {
 
 @JsonSerializable()
 class GLPKSolution {
+  /// 0-glpk plan, 1-efficiency
+  int destination = 0;
   int totalCost;
   int totalNum;
-  List<GLPKVariable> variables;
 
-  GLPKSolution({this.totalCost, this.totalNum, this.variables});
+  //int
+  List<GLPKVariable> countVars;
+
+  //double
+  List<GLPKVariable> weightVars;
+
+  GLPKSolution(
+      {this.destination = 0,
+      this.totalCost,
+      this.totalNum,
+      this.countVars,
+      this.weightVars}) {
+    countVars ??= [];
+    weightVars ??= [];
+  }
 
   void clear() {
     totalCost = null;
     totalNum = null;
-    variables.clear();
+    countVars.clear();
   }
 
-  void sortByValue() {
-    variables.sort((a, b) => b.value - a.value);
+  void sortCountVars() {
+    countVars.sort((a, b) => b.value - a.value);
+  }
+
+  void sortWeightVars() {
+    weightVars.sort((a, b) => sum(b.detail.values as Iterable<double>)
+        .compareTo(sum(a.detail.values as Iterable<double>)));
   }
 
   factory GLPKSolution.fromJson(Map<String, dynamic> data) =>
@@ -231,18 +291,35 @@ class GLPKSolution {
 }
 
 @JsonSerializable()
-class GLPKVariable {
+class GLPKVariable<T> {
   String name;
-  int value;
+  @_Converter()
+  T value;
   int cost;
 
   /// total item-num statistics from [value] times of quest [name]
-  Map<String, int> detail;
+  @_Converter()
+  Map<String, T> detail;
 
   GLPKVariable({this.name, this.value, this.cost, this.detail});
 
   factory GLPKVariable.fromJson(Map<String, dynamic> data) =>
-      _$GLPKVariableFromJson(data);
+      _$GLPKVariableFromJson<T>(data);
 
-  Map<String, dynamic> toJson() => _$GLPKVariableToJson(this);
+  Map<String, dynamic> toJson() => _$GLPKVariableToJson<T>(this);
+}
+
+/// basic [String,int,double,null] converter for generic types
+class _Converter<T> implements JsonConverter<T, Object> {
+  const _Converter();
+
+  @override
+  T fromJson(Object json) {
+    return json as T;
+  }
+
+  @override
+  num toJson(T object) {
+    return object as num;
+  }
 }
