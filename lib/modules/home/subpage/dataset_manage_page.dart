@@ -7,6 +7,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/git_tool.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:json_patch/json_patch.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:share/share.dart';
@@ -182,6 +183,11 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 title:
                     Text('${S.of(context).import_data} (dataset*.zip/.json)'),
                 onTap: importGamedata,
+              ),
+              ListTile(
+                title: Text(S.of(context).clear_cache),
+                subtitle: Text(S.of(context).clear_cache_hint),
+                onTap: clearCache,
               ),
               ListTile(
                 title: Text(S.of(context).delete_all_data),
@@ -454,5 +460,11 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
         );
       },
     );
+  }
+
+  Future<void> clearCache()async{
+    db.prefs.clear();
+    await DefaultCacheManager().emptyCache();
+    EasyLoading.showToast(S.current.clear_cache_finish);
   }
 }

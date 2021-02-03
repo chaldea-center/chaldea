@@ -24,6 +24,7 @@
  - event detail: add switch (including ticket page?).
  - item detail->events tab: tap to event detail page
  - svt traits auto added? 
+ - voice: mac and ios? not support wav file
 
 ## [Windows] package_info/device_info only support android/ios
 Catcher plugin will invoke platform info and raise MissingPluginException at startup.

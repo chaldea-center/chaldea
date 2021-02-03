@@ -297,7 +297,11 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              CustomTile(title: Text(profile.title)),
+              CustomTile(
+                title: Text(profile.title),
+                subtitle:
+                    profile.condition == null ? null : Text(profile.condition),
+              ),
               CustomTile(subtitle: Text(description)),
             ],
           ),

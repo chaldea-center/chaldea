@@ -2829,6 +2829,36 @@ class S {
       args: [a, b],
     );
   }
+
+  /// `清除缓存`
+  String get clear_cache {
+    return Intl.message(
+      '清除缓存',
+      name: 'clear_cache',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `包括卡面语音等`
+  String get clear_cache_hint {
+    return Intl.message(
+      '包括卡面语音等',
+      name: 'clear_cache_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `缓存已清理`
+  String get clear_cache_finish {
+    return Intl.message(
+      '缓存已清理',
+      name: 'clear_cache_finish',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

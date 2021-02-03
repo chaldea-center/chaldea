@@ -279,5 +279,8 @@
   "free_efficiency": "フリー効率",
   "efficiency": "効率",
   "calc_weight": "重み",
-  "words_separate": "{a}{b}"
+  "words_separate": "{a}{b}",
+  "clear_cache": "キャッシュを消去",
+  "clear_cache_hint": "イラスト、ボイスなど",
+  "clear_cache_finish": "キャッシュがクリアされました"
 }

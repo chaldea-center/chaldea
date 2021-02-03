@@ -33,12 +33,21 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
     db.checkNetwork();
   }
 
-  UriImageWidgetBuilder getPlaceholder() {
+  Widget placeholder(BuildContext context, String url) {
     final _colors = ['黑', '铜', '铜', '银', '金', '金'];
     String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
-    return (context, url) => db.getIconImage(
-          '${capitalize(svt.info.className)}${_colors[svt.info.rarity]}卡背',
-        );
+    String key = '${capitalize(svt.info.className)}'
+        '${_colors[svt.info.rarity]}卡背';
+    if (svt.no == 285) {
+      // 泳装杀生院
+      key += '2';
+    } else if (svt.no == 1) {
+      //玛修
+      key = '普通金卡背';
+    } else if (svt.info.className.toLowerCase().startsWith('beast')) {
+      key = '普通黑卡背';
+    }
+    return db.getIconImage(key);
   }
 
   @override
@@ -73,7 +82,7 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
                           imgUrls: imageUrls,
                           initialPage: index,
                           enableDownload: db.runtimeData.enableDownload,
-                          placeholder: getPlaceholder(),
+                          placeholder: placeholder,
                         ),
                       ),
                     );
@@ -84,7 +93,7 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
                     placeholder: CachedImageWidget.defaultIndicatorBuilder,
                   ),
                 ),
-                placeholder: getPlaceholder(),
+                placeholder: placeholder,
               );
             }),
           ),

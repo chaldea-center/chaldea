@@ -57,12 +57,15 @@ class Database {
   Future<void> checkNetwork() async {
     if (AppInfo.isMobile) {
       // connectivity not support windows
-      final result = await Connectivity().checkConnectivity();
-      runtimeData.enableDownload = (!kDebugMode_ ||
-              db.userData.testAllowDownload) &&
-          (db.userData.useMobileNetwork || result != ConnectivityResult.mobile);
+      if (db.userData.useMobileNetwork) {
+        runtimeData.enableDownload = true;
+      } else {
+        final result = await Connectivity().checkConnectivity();
+        runtimeData.enableDownload = result == ConnectivityResult.wifi;
+      }
     } else {
-      runtimeData.enableDownload = true;
+      runtimeData.enableDownload =
+          kDebugMode ? db.userData.useMobileNetwork : true;
     }
   }
 

@@ -144,6 +144,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                                     ],
                                     enableDownload:
                                         db.runtimeData.enableDownload,
+                                    placeholder: placeholder,
                                   ),
                                 ),
                               );
@@ -193,5 +194,22 @@ class CmdCodeDetailBasePage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget placeholder(BuildContext context, String url) {
+    String color;
+    switch (code?.rarity) {
+      case 5:
+      case 4:
+        color = '金';
+        break;
+      case 1:
+      case 2:
+        color = '铜';
+        break;
+      default:
+        color = '银';
+    }
+    return db.getIconImage('礼装$color卡背');
   }
 }
