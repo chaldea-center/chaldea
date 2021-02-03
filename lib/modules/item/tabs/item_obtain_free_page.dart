@@ -24,12 +24,18 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
                 value: true,
                 groupValue: sortByAP,
                 onChanged: (v) => setState(() => sortByAP = v)),
-            Text(S.of(context).ap_efficiency),
+            GestureDetector(
+              onTap: () => setState(() => sortByAP = true),
+              child: Text(S.of(context).ap_efficiency),
+            ),
             Radio(
                 value: false,
                 groupValue: sortByAP,
                 onChanged: (v) => setState(() => sortByAP = v)),
-            Text(S.of(context).drop_rate),
+            GestureDetector(
+              onTap: () => setState(() => sortByAP = false),
+              child: Text(S.of(context).drop_rate),
+            ),
           ],
         ),
         Divider(height: 1),
