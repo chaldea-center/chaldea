@@ -344,6 +344,8 @@ class Skill {
     this.effects,
   });
 
+  String get localizedName => localizeNoun(name, nameJp, null);
+
   factory Skill.fromJson(Map<String, dynamic> data) => _$SkillFromJson(data);
 
   Map<String, dynamic> toJson() => _$SkillToJson(this);

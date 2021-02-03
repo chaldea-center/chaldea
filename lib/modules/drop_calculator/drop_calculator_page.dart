@@ -125,6 +125,7 @@ class DropCalcInputTab extends StatefulWidget {
 
 class _DropCalcInputTabState extends State<DropCalcInputTab> {
   GLPKParams params;
+  // category - itemKey
   Map<String, List<String>> pickerData = {};
   List<PickerItem<String>> pickerAdapter = [];
   final GLPKSolver solver = GLPKSolver();
@@ -156,10 +157,9 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     db.gameData.items.keys.forEach((name) {
       final category = getItemCategory(name);
       if (category != null) {
-        String localizedName = Item.localizedNameOf(name);
         pickerData
             .putIfAbsent(getItemCategory(name), () => [])
-            .add(localizedName);
+            .add(name);
       }
     });
 
@@ -249,12 +249,11 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               focusNode: FocusNode(skipTraversal: true),
               onPressed: () {
                 final String category = getItemCategory(item);
-                final String localizedName = Item.localizedNameOf(item);
                 Picker(
                   adapter: PickerDataAdapter<String>(data: pickerAdapter),
                   selecteds: [
                     pickerData.keys.toList().indexOf(category),
-                    pickerData[category].indexOf(localizedName)
+                    pickerData[category].indexOf(item)
                   ],
                   height: 250,
                   itemExtent: 48,

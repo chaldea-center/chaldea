@@ -126,7 +126,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         },
         detailPageBuilder: (context) => LevelingCostPage(
           costList: svt.itemCost.skill,
-          title: '${S.current.skill} ${index + 1} - ${skill.name}',
+          title: '${S.current.skill} ${index + 1} - ${skill.localizedName}',
           curLv: curVal.skills[index],
           targetLv: targetVal.skills[index],
         ),

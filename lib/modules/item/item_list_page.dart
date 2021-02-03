@@ -57,6 +57,7 @@ class ItemListPageState extends State<ItemListPage>
                 filtered ? Icons.check_circle : Icons.check_circle_outline),
             tooltip: '仅显示不足',
             onPressed: () {
+              FocusScope.of(context).unfocus();
               setState(() {
                 filtered = !filtered;
               });
@@ -65,7 +66,10 @@ class ItemListPageState extends State<ItemListPage>
           IconButton(
             icon: Icon(Icons.calculate),
             tooltip: S.of(context).drop_calculator,
-            onPressed: navToDropCalculator,
+            onPressed: () {
+              FocusScope.of(context).unfocus();
+              navToDropCalculator();
+            },
           )
         ],
         bottom: TabBar(
@@ -394,11 +398,14 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
         }
 
         return ListTile(
-          onTap: () => SplitRoute.push(
-            context: context,
-            builder: (context, _) => ItemDetailPage(itemKey),
-            popDetail: true,
-          ),
+          onTap: () {
+            FocusScope.of(context).unfocus();
+            SplitRoute.push(
+              context: context,
+              builder: (context, _) => ItemDetailPage(itemKey),
+              popDetail: true,
+            );
+          },
           leading: db.getIconImage(itemKey, width: 55),
           title: title,
           focusNode: FocusNode(canRequestFocus: true, skipTraversal: true),

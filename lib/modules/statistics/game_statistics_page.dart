@@ -52,12 +52,11 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
   Widget _buildItemTab() {
     calculateItem();
     final shownItems =
-        sumDict([allItemCost, if (includeCurItems) db.curUser.items])
-          ..removeWhere((key, value) {
-            int group = (db.gameData.items[key]?.id ?? 0) ~/ 100;
-            return key != Item.qp &&
-                (!(group >= 10 && group < 40) || value <= 0);
-          });
+        sumDict([allItemCost, if (includeCurItems) db.curUser.items]);
+    shownItems.removeWhere((key, value) {
+      int group = (db.gameData.items[key]?.id ?? 0) ~/ 100;
+      return key != Item.qp && (!(group >= 10 && group < 40) || value <= 0);
+    });
     return ListView(
       padding: EdgeInsets.symmetric(vertical: 12),
       children: [
@@ -69,12 +68,13 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
           controlAffinity: ListTileControlAffinity.leading,
           title: Text(S.of(context).statistics_include_checkbox),
         ),
-        ListTile(
-          leading: db.getIconImage(Item.qp),
+        CustomTile(
+          leading: db.getIconImage(Item.qp, height: kGridIconSize),
           title: Text(formatNumber(shownItems[Item.qp] ?? 0)),
           onTap: () => SplitRoute.push(
-              context: context,
-              builder: (context, _) => ItemDetailPage(Item.qp)),
+            context: context,
+            builder: (context, _) => ItemDetailPage(Item.qp),
+          ),
         ),
         buildClassifiedItemList(
           context: context,
@@ -82,8 +82,9 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
           divideRarity: false,
           crossCount: SplitRoute.isSplit(context) ? 7 : 7,
           onTap: (itemKey) => SplitRoute.push(
-              context: context,
-              builder: (context, _) => ItemDetailPage(itemKey)),
+            context: context,
+            builder: (context, _) => ItemDetailPage(itemKey),
+          ),
           compact: false,
         )
       ],

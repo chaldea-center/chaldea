@@ -28,7 +28,7 @@ class _QuestCardState extends State<QuestCard> {
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: divideTiles(
             [
@@ -79,9 +79,8 @@ class _QuestCardState extends State<QuestCard> {
       for (int j = 0; j < battle.enemies.length; j++) {
         children.add(Row(
           crossAxisAlignment: CrossAxisAlignment.center,
-          textBaseline: TextBaseline.ideographic,
           children: <Widget>[
-            Text('  ${j + 1}  '),
+            Text('   ${j + 1}   '),
             Expanded(child: _buildWave(battle.enemies[j]))
           ],
         ));
@@ -89,9 +88,9 @@ class _QuestCardState extends State<QuestCard> {
 
       if (battle.drops?.isNotEmpty == true)
         children.add(Padding(
-          padding: EdgeInsets.only(top: 4),
+          padding: EdgeInsets.symmetric(vertical: 3),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Text(S.current.game_drop + ':  '),
               Expanded(
@@ -103,9 +102,18 @@ class _QuestCardState extends State<QuestCard> {
           ),
         ));
     }
-    Widget? rewardsWidget, enhanceWidget;
     if (quest.rewards?.isNotEmpty == true) {
-      rewardsWidget = _getDropsWidget(quest.rewards, false);
+      children.add(Padding(
+        padding: EdgeInsets.symmetric(vertical: 3),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text(S.current.game_rewards + ':  '),
+            Expanded(
+                child: Center(child: _getDropsWidget(quest.rewards, false)))
+          ],
+        ),
+      ));
     }
     if (quest.enhancement?.isNotEmpty == true) {
       Widget? enhanceIcon;
@@ -114,42 +122,18 @@ class _QuestCardState extends State<QuestCard> {
       } else if (quest.enhancement.startsWith('技能')) {
         enhanceIcon = db.getIconImage('技能强化', height: 30);
       }
-      enhanceWidget = Row(
+      children.add(Row(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (enhanceIcon != null)
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 3),
-              child: enhanceIcon,
-            ),
-          Text(quest.enhancement)
+                padding: EdgeInsets.symmetric(vertical: 3), child: enhanceIcon),
+          Flexible(child: AutoSizeText(quest.enhancement, maxLines: 2))
         ],
-      );
-    }
-    if (rewardsWidget != null || enhanceWidget != null)
-      children.add(Padding(
-        padding: EdgeInsets.only(top: 4),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Text(S.current.game_rewards + ':  '),
-            Expanded(
-              child: Center(
-                child: Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 6,
-                  runSpacing: 4,
-                  children: [
-                    if (rewardsWidget != null) rewardsWidget,
-                    if (enhanceWidget != null) enhanceWidget
-                  ],
-                ),
-              ),
-            )
-          ],
-        ),
       ));
+    }
+
     if (quest.conditions?.isNotEmpty == true) {
       children.add(Column(
         mainAxisSize: MainAxisSize.min,
@@ -159,7 +143,7 @@ class _QuestCardState extends State<QuestCard> {
             child: Text(S.of(context).quest_condition,
                 style: TextStyle(fontWeight: FontWeight.w500)),
           ),
-          Text(quest.conditions)
+          Text(quest.conditions, textAlign: TextAlign.center)
         ],
       ));
     }

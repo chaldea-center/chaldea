@@ -38,6 +38,14 @@ class Quest {
     this.conditions,
   });
 
+  String  localizedKey(String key){
+    if (key == place) {
+      return localizedPlace;
+    } else {
+      return '$localizedPlace ($localizedName)';
+    }
+  }
+
   String get localizedName => localizeNoun(name, nameJp, null);
 
   String get localizedPlace => localizeNoun(place, placeJp, null);

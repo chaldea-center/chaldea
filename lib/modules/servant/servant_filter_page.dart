@@ -97,7 +97,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           title: Text(S.of(context).filter_sort_rarity, style: textStyle),
           options: SvtFilterData.rarityData,
           values: filterData.rarity,
-          optionBuilder: (v) => Text('$v★'),
+          optionBuilder: (v) => Text('$v☆'),
           onFilterChanged: (value) {
             // object should be the same, need not to update manually
             filterData.rarity = value;

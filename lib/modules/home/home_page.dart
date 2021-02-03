@@ -19,6 +19,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
+        db.saveUserData();
         if (Platform.isAndroid) {
           if (Navigator.of(context).canPop()) {
             return Future.value(true);

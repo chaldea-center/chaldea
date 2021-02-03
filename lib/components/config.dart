@@ -170,18 +170,25 @@ class Database {
     }
   }
 
-  IconResource? getIconResource(String iconKey) {
-    final keys = [iconKey, iconKey + '.png', iconKey + '.jpg'];
-    for (var key in keys) {
-      if (gameData.icons.containsKey(key)) return gameData.icons[key];
+  IconResource? getIconResource(String iconKey, {bool? preferPng}) {
+    final suffixes = preferPng == null
+        ? ['', '.jpg', '.png']
+        : preferPng == true
+            ? ['.png', '', '.jpg']
+            : ['.jpg', '', '.png'];
+    for (var suffix in suffixes) {
+      String key = iconKey + suffix;
+      if (gameData.icons.containsKey(key)) {
+        return gameData.icons[key];
+      }
     }
     return null;
   }
 
   final AssetImage errorImage = AssetImage('res/img/gudako.png');
 
-  ImageProvider getIconProvider(String iconKey) {
-    final icon = getIconResource(iconKey);
+  ImageProvider getIconProvider(String iconKey, {bool? preferPng}) {
+    final icon = getIconResource(iconKey, preferPng: preferPng);
     if (icon == null) {
       logger.e(
         'no such icon: $iconKey',
@@ -197,10 +204,16 @@ class Database {
 
   /// size of [Image] widget is zero before file is loaded to memory.
   /// [wrapContainer] to ensure the placeholder
-  Widget getIconImage(String iconKey,
-      {double? width, double? height, BoxFit? fit, bool wrapContainer = true}) {
+  Widget getIconImage(
+    String iconKey, {
+    double? width,
+    double? height,
+    BoxFit? fit,
+    bool wrapContainer = true,
+    bool? preferPng,
+  }) {
     final image = Image(
-      image: getIconProvider(iconKey),
+      image: getIconProvider(iconKey, preferPng: preferPng),
       width: width,
       height: height,
       fit: fit,

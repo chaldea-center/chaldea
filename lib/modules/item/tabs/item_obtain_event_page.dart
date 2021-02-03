@@ -53,8 +53,8 @@ class ItemObtainEventPage extends StatelessWidget {
           }
           if (texts.length > 0) {
             children.add(ListTile(
-              title: Text(record.chapter),
-              subtitle: Text(record.title),
+              title: Text(record.localizedChapter),
+              subtitle: Text(record.localizedTitle),
               trailing: RichText(
                 text: TextSpan(
                   children: texts,
@@ -76,7 +76,7 @@ class ItemObtainEventPage extends StatelessWidget {
         if ((numShop != null || numLottery != null || hasExtra) &&
             limitEvent.isNotOutdated()) {
           children.add(ListTile(
-            title: AutoSizeText(limitEvent.name, maxFontSize: 15, maxLines: 2),
+            title: AutoSizeText(limitEvent.localizedName, maxFontSize: 15, maxLines: 2),
             trailing: Text(
               [
                 if (numShop != null) '$numShop',

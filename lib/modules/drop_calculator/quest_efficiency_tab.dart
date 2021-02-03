@@ -36,7 +36,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   CustomTile(
-                    title: Text(questKey),
+                    title: Text(quest?.localizedKey(questKey) ?? questKey),
                     subtitle: Text(drops.entries.map((e) {
                       String v = e.value.toStringAsFixed(3);
                       while (v.contains('.') && v[v.length - 1] == '0') {
@@ -74,7 +74,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
 
   Widget _buildButtonBar() {
     Set<String> itemSet = {};
-    double height = Theme.of(context).iconTheme.size ?? 36;
+    double height = Theme.of(context).iconTheme.size ?? 48;
     widget.solution?.weightVars.forEach((variable) {
       variable.detail.forEach((key, value) {
         if (value > 0) {
@@ -95,7 +95,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
           });
         },
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 3),
+          padding: EdgeInsets.symmetric(horizontal: 5),
           child: Stack(
             alignment: Alignment.bottomRight,
             children: [

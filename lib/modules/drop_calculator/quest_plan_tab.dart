@@ -16,7 +16,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
   Widget build(BuildContext context) {
     List<Widget> children = [];
     widget.solution?.countVars?.forEach((variable) {
-      final quest = db.gameData.freeQuests[variable.name];
+      final Quest? quest = db.gameData.freeQuests[variable.name];
       children.add(Container(
         decoration: BoxDecoration(
             border: Border(bottom: Divider.createBorderSide(context))),
@@ -28,9 +28,10 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   CustomTile(
-                    title: Text(variable.name),
+                    title: Text(
+                        quest?.localizedKey(variable.name) ?? variable.name),
                     subtitle: Text(variable.detail.entries
-                        .map((e) => '${e.key}*${e.value}')
+                        .map((e) => '${Item.localizedNameOf(e.key)}*${e.value}')
                         .join(', ')),
                     trailing: Text('${variable.value}*${variable.cost} AP'),
                     onTap: quest == null
