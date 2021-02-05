@@ -139,6 +139,14 @@ T? getListItem<T>(List<T>? data, int index, [k()?]) {
   }
 }
 
+String b64(String source, [bool decode = true]) {
+  if (decode) {
+    return utf8.decode(base64Decode(source));
+  } else {
+    return base64Encode(utf8.encode(source));
+  }
+}
+
 /// Flutter related
 ///
 

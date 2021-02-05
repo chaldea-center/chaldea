@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:catcher/catcher.dart';
-import 'package:catcher/model/platform_type.dart';
+import 'package:chaldea/components/catcher_universal.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/chaldea.dart';
 import 'package:flutter/foundation.dart';
@@ -12,11 +12,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await db.initial();
   db.loadUserData();
-  FileHandler crashFileHandler = FileHandler(File(db.paths.crashLog));
-  final catcherOptions = CatcherOptions(ForceSilentReportMode(), [
-    crashFileHandler,
-    ConsoleHandler(),
-    ToastHandler(),
+  final catcherOptions = CatcherOptions(PageReportModeCross(), [
+    FileHandlerCross(File(db.paths.crashLog)),
+    ConsoleHandlerCross(),
+    ToastHandlerCross(),
+    if (!kDebugMode) kEmailAutoHandlerCross,
   ]);
 
   FlutterError.onError = (details) {
@@ -28,32 +28,13 @@ void main() async {
       Zone.current.handleUncaughtError(details.exception, details.stack);
     }
   };
-  if (kDebugMode)
-    runApp(Chaldea());
-  else
-    Catcher(
-      rootWidget: Chaldea(),
-      profileConfig: catcherOptions,
-      releaseConfig: catcherOptions,
-      enableLogger: true,
-      ensureInitialized: true,
-      navigatorKey: kAppKey,
-    );
-}
-
-/// Catcher doesn't support desktop, so override it.
-class ForceSilentReportMode extends ReportMode {
-  @override
-  void requestAction(Report report, BuildContext context) {
-    // no action needed, request is automatically accepted
-    super.onActionConfirmed(report);
-  }
-
-  @override
-  List<PlatformType> getSupportedPlatforms() => [
-        PlatformType.Web,
-        PlatformType.Android,
-        PlatformType.iOS,
-        PlatformType.Unknown
-      ];
+  Catcher(
+    rootWidget: Chaldea(),
+    debugConfig: catcherOptions,
+    profileConfig: catcherOptions,
+    releaseConfig: catcherOptions,
+    enableLogger: true,
+    ensureInitialized: true,
+    navigatorKey: kAppKey,
+  );
 }

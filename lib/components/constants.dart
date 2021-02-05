@@ -1,12 +1,13 @@
 // @dart=2.12
 import 'dart:io';
 
-import 'package:chaldea/components/components.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info/package_info.dart';
+
+import 'logger.dart';
 
 const bool kDebugMode_ = kDebugMode && false;
 
