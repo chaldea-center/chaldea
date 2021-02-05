@@ -13,22 +13,35 @@ class QuestEfficiencyTab extends StatefulWidget {
 }
 
 class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
+  Set<String> allItems = {};
+  Set<String> filterItems = {};
+  bool matchAll = true;
+
   @override
   Widget build(BuildContext context) {
+    widget.solution?.weightVars.forEach((variable) {
+      variable.detail.forEach((key, value) {
+        if (value > 0) {
+          allItems.add(key);
+        }
+      });
+    });
+    filterItems.removeWhere((element) => !allItems.contains(element));
+
     List<Widget> children = [];
     widget.solution?.weightVars?.forEach((variable) {
       final String questKey = variable.name;
       final Map<String, double> drops = variable.detail as Map<String, double>;
       final Quest? quest = db.gameData.freeQuests[questKey];
-      if (filterItems.isNotEmpty &&
-          sum<double>(filterItems.map((e) => drops[e])) <= 0) {
-        // no filter item contained
-        return;
-      }
-      children.add(Container(
-        decoration: BoxDecoration(
-            border: Border(bottom: Divider.createBorderSide(context))),
-        child: ValueStatefulBuilder<bool>(
+      if (filterItems.isEmpty ||
+          (matchAll &&
+              filterItems.every((e) => variable.detail.containsKey(e))) ||
+          (!matchAll &&
+              filterItems.any((e) => variable.detail.containsKey(e)))) {
+        children.add(Container(
+          decoration: BoxDecoration(
+              border: Border(bottom: Divider.createBorderSide(context))),
+          child: ValueStatefulBuilder<bool>(
             value: false,
             builder: (context, state) {
               return Column(
@@ -55,8 +68,10 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
                   if (state.value && quest != null) QuestCard(quest: quest),
                 ],
               );
-            }),
-      ));
+            },
+          ),
+        ));
+      }
     });
     return Column(
       children: [
@@ -70,19 +85,9 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
     );
   }
 
-  Set<String> filterItems = {};
-
   Widget _buildButtonBar() {
-    Set<String> itemSet = {};
     double height = Theme.of(context).iconTheme.size ?? 48;
-    widget.solution?.weightVars.forEach((variable) {
-      variable.detail.forEach((key, value) {
-        if (value > 0) {
-          itemSet.add(key);
-        }
-      });
-    });
-    List<String> items = Item.sortListById(itemSet.toList());
+    List<String> items = Item.sortListById(allItems.toList());
     List<Widget> children = [];
     items.forEach((itemKey) {
       children.add(GestureDetector(
@@ -114,12 +119,12 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         IconButton(
-          icon: Icon(Icons.filter_alt),
+          icon: Icon(matchAll ? Icons.add_box : Icons.add_box_outlined),
           color: Theme.of(context).primaryColor,
-          tooltip: 'Clear Filter',
+          tooltip: 'Match All',
           onPressed: () {
             setState(() {
-              filterItems.clear();
+              matchAll = !matchAll;
             });
           },
         ),

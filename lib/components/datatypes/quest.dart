@@ -38,9 +38,13 @@ class Quest {
     this.conditions,
   });
 
-  String  localizedKey(String key){
+  /// [key] is [indexKey] which is used as map key
+  String localizedKey([String key]) {
+    key ??= indexKey;
     if (key == place) {
       return localizedPlace;
+    } else if (place == '迦勒底之门' && name.contains('修炼场')) {
+      return localizedName;
     } else {
       return '$localizedPlace ($localizedName)';
     }

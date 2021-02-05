@@ -25,20 +25,17 @@ class _DropCalculatorPageState extends State<DropCalculatorPage>
     with SingleTickerProviderStateMixin {
   GLPKSolution solution;
   TabController _tabController;
-  FocusNode _blankNode;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    _blankNode = FocusNode();
   }
 
   @override
   void dispose() {
     super.dispose();
     _tabController?.dispose();
-    _blankNode?.dispose();
   }
 
   @override
@@ -73,7 +70,7 @@ class _DropCalculatorPageState extends State<DropCalculatorPage>
       ),
       body: GestureDetector(
         onTap: () {
-          FocusScope.of(context).requestFocus(_blankNode);
+          FocusScope.of(context).unfocus();
         },
         behavior: HitTestBehavior.translucent,
         child: TabBarView(
@@ -125,6 +122,7 @@ class DropCalcInputTab extends StatefulWidget {
 
 class _DropCalcInputTabState extends State<DropCalcInputTab> {
   GLPKParams params;
+
   // category - itemKey
   Map<String, List<String>> pickerData = {};
   List<PickerItem<String>> pickerAdapter = [];
@@ -157,9 +155,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     db.gameData.items.keys.forEach((name) {
       final category = getItemCategory(name);
       if (category != null) {
-        pickerData
-            .putIfAbsent(getItemCategory(name), () => [])
-            .add(name);
+        pickerData.putIfAbsent(getItemCategory(name), () => []).add(name);
       }
     });
 
@@ -231,7 +227,9 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     return ListView.separated(
       itemBuilder: (context, index) {
         final item = params.rows[index];
-        return ListTile(
+        return CustomTile(
+          contentPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+          // titlePadding: EdgeInsets.symmetric(vertical: 0),
           leading: GestureDetector(
             onTap: () {
               SplitRoute.push(
@@ -240,48 +238,44 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               );
             },
             child: Padding(
-              padding: EdgeInsets.all(2),
-              child: db.getIconImage(item),
+              padding: EdgeInsets.symmetric(horizontal: 6),
+              child: db.getIconImage(item, height: 48),
             ),
           ),
-          title: MaterialButton(
-              padding: EdgeInsets.symmetric(horizontal: 6),
-              focusNode: FocusNode(skipTraversal: true),
-              onPressed: () {
-                final String category = getItemCategory(item);
-                Picker(
-                  adapter: PickerDataAdapter<String>(data: pickerAdapter),
-                  selecteds: [
-                    pickerData.keys.toList().indexOf(category),
-                    pickerData[category].indexOf(item)
-                  ],
-                  height: 250,
-                  itemExtent: 48,
-                  changeToFirst: true,
-                  hideHeader: true,
-                  textScaleFactor: 0.7,
-                  cancelText: S.of(context).cancel,
-                  confirmText: S.of(context).confirm,
-                  onConfirm: (Picker picker, List<int> value) {
-                    print('picker: ${picker.getSelectedValues()}');
-                    setState(() {
-                      String selected = picker.getSelectedValues().last;
-                      if (params.rows.contains(selected)) {
-                        EasyLoading.showToast(S
-                            .of(context)
-                            .item_already_exist_hint(
-                                Item.localizedNameOf(selected)));
-                      } else {
-                        params.rows[index] = selected;
-                      }
-                    });
-                  },
-                ).showDialog(context);
-              },
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(Item.localizedNameOf(item)),
-              )),
+          title: GestureDetector(
+            onTap: () {
+              final String category = getItemCategory(item);
+              Picker(
+                adapter: PickerDataAdapter<String>(data: pickerAdapter),
+                selecteds: [
+                  pickerData.keys.toList().indexOf(category),
+                  pickerData[category].indexOf(item)
+                ],
+                height: 250,
+                itemExtent: 48,
+                changeToFirst: true,
+                hideHeader: true,
+                textScaleFactor: 0.7,
+                cancelText: S.of(context).cancel,
+                confirmText: S.of(context).confirm,
+                onConfirm: (Picker picker, List<int> value) {
+                  print('picker: ${picker.getSelectedValues()}');
+                  setState(() {
+                    String selected = picker.getSelectedValues().last;
+                    if (params.rows.contains(selected)) {
+                      EasyLoading.showToast(S
+                          .of(context)
+                          .item_already_exist_hint(
+                              Item.localizedNameOf(selected)));
+                    } else {
+                      params.rows[index] = selected;
+                    }
+                  });
+                },
+              ).showDialog(context);
+            },
+            child: Text(Item.localizedNameOf(item)),
+          ),
           subtitle: planOrEff
               ? Text(S.current
                   .words_separate(S.current.calc_weight, params.weights[index]))
@@ -299,6 +293,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                   keyboardType: TextInputType.numberWithOptions(
                       signed: true, decimal: true),
                   textAlign: TextAlign.center,
+                  // textInputAction: TextInputAction.next,
                   decoration: InputDecoration(isDense: true),
                   // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   onChanged: (s) {
