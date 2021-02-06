@@ -499,8 +499,9 @@ GLPKData _$GLPKDataFromJson(Map<String, dynamic> json) {
     matrix: (json['matrix'] as List)
         ?.map((e) => (e as List)?.map((e) => (e as num)?.toDouble())?.toList())
         ?.toList(),
-    cnMaxColNum: json['cnMaxColNum'] as int,
-    jpMaxColNum: json['jpMaxColNum'] as int,
+    freeCounts: (json['freeCounts'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(k, e as int),
+    ),
   );
 }
 
@@ -509,8 +510,7 @@ Map<String, dynamic> _$GLPKDataToJson(GLPKData instance) => <String, dynamic>{
       'rowNames': instance.rowNames,
       'costs': instance.costs,
       'matrix': instance.matrix,
-      'cnMaxColNum': instance.cnMaxColNum,
-      'jpMaxColNum': instance.jpMaxColNum,
+      'freeCounts': instance.freeCounts,
     };
 
 GLPKParams _$GLPKParamsFromJson(Map<String, dynamic> json) {

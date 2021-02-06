@@ -7,16 +7,18 @@ class GLPKData {
   List<int> costs; // n
   /// AP rate, m*n. 0 if not dropped
   List<List<double>> matrix;
-  int cnMaxColNum;
-  int jpMaxColNum;
+
+  /// From new to old, the first is jp
+  Map<String, int> freeCounts;
+
+  int get jpMaxColNum => freeCounts.values.first;
 
   GLPKData({
     this.colNames,
     this.rowNames,
     this.costs,
     this.matrix,
-    this.cnMaxColNum,
-    this.jpMaxColNum,
+    this.freeCounts,
   });
 
   GLPKData.from(GLPKData other)
@@ -25,8 +27,7 @@ class GLPKData {
         costs = List.from(other.costs),
         matrix = List.generate(
             other.matrix.length, (index) => List.from(other.matrix[index])),
-        cnMaxColNum = other.cnMaxColNum,
-        jpMaxColNum = other.jpMaxColNum;
+        freeCounts = other.freeCounts;
 
   List<double> columnAt(int colIndex) {
     return List.generate(

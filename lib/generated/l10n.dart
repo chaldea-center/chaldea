@@ -2430,20 +2430,20 @@ class S {
     );
   }
 
-  /// `导入从者数据`
+  /// `导入Guda从者数据`
   String get import_guda_servants {
     return Intl.message(
-      '导入从者数据',
+      '导入Guda从者数据',
       name: 'import_guda_servants',
       desc: '',
       args: [],
     );
   }
 
-  /// `导入素材数据`
+  /// `导入Guda素材数据`
   String get import_guda_items {
     return Intl.message(
-      '导入素材数据',
+      '导入Guda素材数据',
       name: 'import_guda_items',
       desc: '',
       args: [],
@@ -2460,20 +2460,20 @@ class S {
     );
   }
 
-  /// `从者数据`
+  /// `Guda从者数据`
   String get guda_servant_data {
     return Intl.message(
-      '从者数据',
+      'Guda从者数据',
       name: 'guda_servant_data',
       desc: '',
       args: [],
     );
   }
 
-  /// `素材数据`
+  /// `Guda素材数据`
   String get guda_item_data {
     return Intl.message(
-      '素材数据',
+      'Guda素材数据',
       name: 'guda_item_data',
       desc: '',
       args: [],

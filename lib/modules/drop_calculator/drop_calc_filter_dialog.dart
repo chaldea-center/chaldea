@@ -15,6 +15,9 @@ class _DropCalcFilterDialogState extends State<DropCalcFilterDialog> {
   @override
   Widget build(BuildContext context) {
     final params = widget.params;
+    if (!db.gameData.glpk.freeCounts.values.contains(params.maxColNum)) {
+      params.maxColNum = -1;
+    }
     return SimpleDialog(
       title: Text(S.of(context).filter),
       children: [
@@ -28,17 +31,16 @@ class _DropCalcFilterDialogState extends State<DropCalcFilterDialog> {
           ),
         ),
         ListTile(
-          title: Text(S.of(context).server),
-          trailing: DropdownButton<bool>(
-            value: params.maxColNum > 0,
+          title: Text('Free进度'),
+          trailing: DropdownButton<int>(
+            value: params.maxColNum,
             items: [
-              DropdownMenuItem(
-                  value: true, child: Text(S.of(context).server_cn)),
-              DropdownMenuItem(
-                  value: false, child: Text(S.of(context).server_jp))
+              DropdownMenuItem(value: -1, child: Text('日服')),
+              for (var entry in db.gameData.glpk.freeCounts.entries)
+                DropdownMenuItem(value: entry.value, child: Text(entry.key)),
             ],
-            onChanged: (v) => setState(() => params.maxColNum =
-                v == true ? db.gameData.glpk.cnMaxColNum : -1),
+            onChanged: (v) =>
+                setState(() => params.maxColNum = v ?? params.maxColNum),
           ),
         ),
         ListTile(

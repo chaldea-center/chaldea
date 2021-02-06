@@ -97,43 +97,29 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
               ListTile(
                 title: Text(S.of(context).import_data),
                 onTap: () async {
-                  try {
-                    FilePickerCross result =
-                        await FilePickerCross.importFromStorage(
-                            type: FileTypeCross.custom, fileExtension: 'json');
-                    final path = result.path;
-                    db.userData = UserData.fromJson(
-                        json.decode(File(path).readAsStringSync()));
-                    EasyLoading.showToast(
-                        '${S.current.import_data_success}:\n$path');
-                    db.saveUserData();
-                  } on FileSelectionCanceledError {} catch (e) {
-                    EasyLoading.showToast(S.of(context).import_data_error(e));
-                  }
-                },
-              ),
-              ListTile(
-                title: Text(S.of(context).import_guda_data),
-                onTap: () async {
                   showModalBottomSheet(
-                      context: context,
-                      builder: (context) {
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ListTile(
-                              leading: Icon(Icons.people),
-                              title: Text(S.of(context).guda_servant_data),
-                              onTap: () => importGudaData(false),
-                            ),
-                            ListTile(
-                              leading: Icon(Icons.category),
-                              title: Text(S.of(context).guda_item_data),
-                              onTap: () => importGudaData(true),
-                            ),
-                          ],
-                        );
-                      });
+                    context: context,
+                    builder: (context) => Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ListTile(
+                          leading: Icon(Icons.people),
+                          title: Text(S.of(context).userdata),
+                          onTap: importUserData,
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.people),
+                          title: Text(S.of(context).guda_servant_data),
+                          onTap: () => importGudaData(false),
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.category),
+                          title: Text(S.of(context).guda_item_data),
+                          onTap: () => importGudaData(true),
+                        ),
+                      ],
+                    ),
+                  );
                 },
               ),
               ListTile(
@@ -239,6 +225,21 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
       print('patch data error:\n$e');
       print('stack trace: \n$s');
       rethrow;
+    }
+  }
+
+  void importUserData() async {
+    Navigator.of(context).pop();
+    try {
+      FilePickerCross result = await FilePickerCross.importFromStorage(
+          type: FileTypeCross.custom, fileExtension: 'json');
+      final path = result.path;
+      db.userData =
+          UserData.fromJson(json.decode(File(path).readAsStringSync()));
+      EasyLoading.showToast('${S.current.import_data_success}:\n$path');
+      db.saveUserData();
+    } on FileSelectionCanceledError {} catch (e) {
+      EasyLoading.showToast(S.of(context).import_data_error(e));
     }
   }
 
@@ -462,7 +463,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
     );
   }
 
-  Future<void> clearCache()async{
+  Future<void> clearCache() async {
     db.prefs.clear();
     await DefaultCacheManager().emptyCache();
     EasyLoading.showToast(S.current.clear_cache_finish);
