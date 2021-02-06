@@ -337,17 +337,16 @@ void checkAppUpdate([bool background = true]) async {
     SimpleCancelOkDialog(
       title: Text(S.of(context).about_update_app),
       content: Text(
-        S.of(context).about_update_app_detail(AppInfo.version, latestVersion),
+        S.of(context).about_update_app_detail(
+            AppInfo.version, latestVersion, releaseNote),
       ),
       hideOk: true,
       actions: [
         TextButton(
           child: Text(S.of(context).update),
-          onPressed: () {
-            if (launchUrl != null && latestVersion != AppInfo.version) {
-              launch(launchUrl);
-            }
-          },
+          onPressed: latestVersion == AppInfo.version && launchUrl != null
+              ? null
+              : () => launch(launchUrl!),
         ),
         if (latestVersion != AppInfo.version)
           TextButton(

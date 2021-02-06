@@ -145,6 +145,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
               ),
               ListTile(
                 title: Text(S.of(context).download_latest_gamedata),
+                subtitle: Text('为确保兼容性，更新前请升级至最新版APP'),
                 onTap: downloadGamedata,
               ),
               ListTile(

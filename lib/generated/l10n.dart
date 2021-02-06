@@ -1005,13 +1005,13 @@ class S {
     );
   }
 
-  /// `当前版本: {curVersion}\n最新版本: {newVersion}`
-  String about_update_app_detail(Object curVersion, Object newVersion) {
+  /// `当前版本: {curVersion}\n最新版本: {newVersion}\n更新内容:\n{releaseNote}`
+  String about_update_app_detail(Object curVersion, Object newVersion, Object releaseNote) {
     return Intl.message(
-      '当前版本: $curVersion\n最新版本: $newVersion',
+      '当前版本: $curVersion\n最新版本: $newVersion\n更新内容:\n$releaseNote',
       name: 'about_update_app_detail',
       desc: '',
-      args: [curVersion, newVersion],
+      args: [curVersion, newVersion, releaseNote],
     );
   }
 

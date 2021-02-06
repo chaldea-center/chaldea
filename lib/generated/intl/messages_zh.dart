@@ -21,7 +21,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m0(email, logPath) => "请将出错页面的截图以及日志文件发送到以下邮箱:\n ${email}\n日志文件路径: ${logPath}";
 
-  static m1(curVersion, newVersion) => "当前版本: ${curVersion}\n最新版本: ${newVersion}";
+  static m1(curVersion, newVersion, releaseNote) => "当前版本: ${curVersion}\n最新版本: ${newVersion}\n更新内容:\n${releaseNote}";
 
   static m2(name) => "源${name}";
 

@@ -12,11 +12,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await db.initial();
   db.loadUserData();
+  final File crashFile = File(db.paths.crashLog);
   final catcherOptions = CatcherOptions(PageReportModeCross(), [
-    FileHandlerCross(File(db.paths.crashLog)),
+    FileHandlerCross(crashFile),
     ConsoleHandlerCross(),
     ToastHandlerCross(),
-    if (!kDebugMode) kEmailAutoHandlerCross,
+    if (!kDebugMode_) kEmailAutoHandlerCross(attachments: [crashFile]),
   ]);
 
   FlutterError.onError = (details) {

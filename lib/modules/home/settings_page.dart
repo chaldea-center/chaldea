@@ -1,5 +1,6 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/home/subpage/dataset_manage_page.dart';
+import 'package:flutter/foundation.dart';
 
 import 'subpage/about_page.dart';
 import 'subpage/account_page.dart';
@@ -156,6 +157,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   popDetail: true,
                 ),
               ),
+              if (kDebugMode)
+                ListTile(
+                  title: Text('Generate Error'),
+                  onTap: () {
+                    throw FormatException('generated error');
+                  },
+                )
             ],
           ),
           if (kDebugMode_)

@@ -21,7 +21,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m0(email, logPath) => "エラーページのスクリーンショットとログファイルをこのメールボックスに送信してください：\n${email}\nログファイルパス：${logPath}";
 
-  static m1(curVersion, newVersion) => "現在のバージョン：${curVersion} \n最新のバージョン：${newVersion}";
+  static m1(curVersion, newVersion, releaseNote) => "現在のバージョン：${curVersion} \n最新のバージョン：${newVersion}\n詳細:\n${releaseNote}";
 
   static m2(name) => "ソース${name}";
 
