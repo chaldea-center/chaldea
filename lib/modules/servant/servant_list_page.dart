@@ -58,7 +58,7 @@ class ServantListPageState extends State<ServantListPage>
   }
 
   bool filtrateServant(Servant svt) {
-    final svtStat = db.curUser.servants[svt.no];
+    final svtStat = db.curUser.svtStatusOf(svt.no);
     final svtPlan = db.curUser.svtPlanOf(svt.no);
     // input text filter
     if (filterData.filterString.trim().isNotEmpty) {
@@ -317,7 +317,7 @@ class ServantListPageState extends State<ServantListPage>
     db.gameData.servants.forEach((no, svt) {
       if (filterData.favorite == 0 ||
           filterData.favorite ==
-              ((db.curUser.servants[no]?.curVal?.favorite ?? false) ? 1 : 2)) {
+              ((db.curUser.svtStatusOf(no).curVal.favorite ?? false) ? 1 : 2)) {
         if (filtrateServant(svt)) {
           shownList.add(svt);
         }
@@ -354,9 +354,9 @@ class ServantListPageState extends State<ServantListPage>
           );
         }
         final svt = shownList[index - 1];
-        final status = db.curUser.servants[svt.no];
+        final status = db.curUser.svtStatusOf(svt.no);
         String statusText = '';
-        if (status?.curVal?.favorite == true) {
+        if (status.curVal.favorite == true) {
           statusText =
               '${status.curVal.ascension}-' + status.curVal.skills.join('/');
         }
@@ -418,9 +418,9 @@ class ServantListPageState extends State<ServantListPage>
           if (svt == null) {
             return Container();
           }
-          final status = db.curUser.servants[svt.no];
+          final status = db.curUser.svtStatusOf(svt.no);
           String statusText;
-          if (status?.curVal?.favorite == true) {
+          if (status.curVal.favorite) {
             statusText = '${status.tdLv}\n'
                 '${status.curVal.ascension}-'
                 '${status.curVal.skills[0]}/'
@@ -517,7 +517,7 @@ class ServantListPageState extends State<ServantListPage>
   }
 
   Widget _getDetailTable(Servant svt) {
-    ServantPlan cur = db.curUser.servants[svt.no]?.curVal,
+    ServantPlan cur = db.curUser.svtStatusOf(svt.no).curVal,
         target = db.curUser.svtPlanOf(svt.no);
     Widget _getRange(int _c, int _t) {
       bool highlight = _t > _c;
@@ -585,7 +585,7 @@ class ServantListPageState extends State<ServantListPage>
   }
 
   bool isSvtFavorite(Servant svt) {
-    return db.curUser.servants[svt.no]?.curVal?.favorite == true;
+    return db.curUser.svtStatusOf(svt.no).curVal.favorite;
   }
 
   int _planTargetAscension;
@@ -606,7 +606,7 @@ class ServantListPageState extends State<ServantListPage>
             _planTargetAscension = v;
             shownList.forEach((svt) {
               if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
-                final cur = db.curUser.servants[svt.no].curVal,
+                final cur = db.curUser.svtStatusOf(svt.no).curVal,
                     target = db.curUser.svtPlanOf(svt.no);
                 target.ascension = max(cur.ascension, _planTargetAscension);
               }
@@ -626,7 +626,7 @@ class ServantListPageState extends State<ServantListPage>
             _planTargetSkill = v;
             shownList.forEach((svt) {
               if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
-                final cur = db.curUser.servants[svt.no].curVal,
+                final cur = db.curUser.svtStatusOf(svt.no).curVal,
                     target = db.curUser.svtPlanOf(svt.no);
                 for (int i = 0; i < 3; i++) {
                   target.skills[i] = max(cur.skills[i], _planTargetSkill + 1);
@@ -648,7 +648,7 @@ class ServantListPageState extends State<ServantListPage>
             _planTargetDress = v;
             shownList.forEach((svt) {
               if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
-                final cur = db.curUser.servants[svt.no].curVal,
+                final cur = db.curUser.svtStatusOf(svt.no).curVal,
                     target = db.curUser.svtPlanOf(svt.no);
                 for (int i = 0; i < target.dress.length; i++) {
                   target.dress[i] = max(cur.dress[i], _planTargetDress);

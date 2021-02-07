@@ -414,6 +414,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
         builder: (context) => DownloadDialog(
           url: release?.targetAsset?.browserDownloadUrl ?? '',
           savePath: fp,
+          notes: release?.body,
           onComplete: () async {
             var canceler = showMyProgress(status: 'loading');
             try {

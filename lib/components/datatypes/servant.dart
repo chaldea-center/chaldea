@@ -86,6 +86,8 @@ class Servant {
   }
 
   Map<String, int> getAscensionCost({int cur = 0, int target = 4}) {
+    cur = fixValidRange(cur ?? 0, 0, 4);
+    target = fixValidRange(target ?? 4, 0, 4);
     if (itemCost.ascension.isEmpty) return {};
     return sumDict(itemCost.ascension.sublist(cur, max(cur, target)));
   }
@@ -97,6 +99,8 @@ class Servant {
     Map<String, int> items = {};
 
     for (int i = 0; i < 3; i++) {
+      cur[i] = fixValidRange(cur[i] ?? 1, 1, 10);
+      target[i] = fixValidRange(target[i] ?? 10, 1, 10);
       // lv 1-10 -> 0-9
       for (int j = cur[i] - 1; j < target[i] - 1; j++) {
         sumDict([items, itemCost.skill[j]], inPlace: true);
@@ -107,15 +111,17 @@ class Servant {
 
   Map<String, int> getDressCost({List<int> cur, List<int> target}) {
     Map<String, int> items = {};
-    final n = itemCost.dress.length;
-    if (cur == null) cur = List.filled(n, 0, growable: true);
-    if (target == null) target = List.filled(n, 1, growable: true);
-    if (cur.length < n)
-      cur.addAll(List.filled(n - cur.length, 0, growable: true));
-    if (target.length < n)
-      target.addAll(List.filled(n - target.length, 0, growable: true));
+    final dressNum = itemCost.dress.length;
+    if (cur == null) cur = List.filled(dressNum, 0, growable: true);
+    if (target == null) target = List.filled(dressNum, 1, growable: true);
+    if (cur.length < dressNum)
+      cur.addAll(List.filled(dressNum - cur.length, 0, growable: true));
+    if (target.length < dressNum)
+      target.addAll(List.filled(dressNum - target.length, 0, growable: true));
 
-    for (int i = 0; i < itemCost.dress.length; i++) {
+    for (int i = 0; i < dressNum; i++) {
+      cur[i] = fixValidRange(cur[i] ?? 0, 0, 1);
+      target[i] = fixValidRange(target[i] ?? 1, 0, 1);
       for (int j = cur[i]; j < target[i]; j++) {
         sumDict([items, itemCost.dress[i]], inPlace: true);
       }
@@ -124,7 +130,10 @@ class Servant {
   }
 
   Map<String, int> getGrailCost({int cur = 0, int target}) {
-    target ??= [10, 10, 10, 9, 7, 5][this.info.rarity2];
+    final maxVal = [10, 10, 10, 9, 7, 5][this.info.rarity2];
+    cur = fixValidRange(cur ?? 0, 0, maxVal);
+    target = fixValidRange(target ?? maxVal, 0, maxVal);
+
     return target > cur ? {Item.grail: target - cur} : <String, int>{};
   }
 

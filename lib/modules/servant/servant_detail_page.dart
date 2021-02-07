@@ -73,7 +73,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
     // TODO: why state re-created after fullscreen page popped?
     super.initState();
     _tabController = TabController(length: _builders.length, vsync: this);
-    status = db.curUser.servants.putIfAbsent(svt.no, () => ServantStatus());
+    status = db.curUser.svtStatusOf(svt.no);
   }
 
   @override

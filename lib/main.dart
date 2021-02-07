@@ -17,7 +17,7 @@ void main() async {
     FileHandlerCross(crashFile),
     ConsoleHandlerCross(),
     ToastHandlerCross(),
-    if (!kDebugMode_) kEmailAutoHandlerCross(attachments: [crashFile]),
+    if (!kDebugMode) kEmailAutoHandlerCross(attachments: [crashFile]),
   ]);
 
   FlutterError.onError = (details) {

@@ -2,7 +2,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math' show min;
+import 'dart:math' show max, min;
 
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -146,6 +146,17 @@ String b64(String source, [bool decode = true]) {
     return base64Encode(utf8.encode(source));
   }
 }
+
+T fixValidRange<T extends num>(T value, [T? minVal, T? maxVal]) {
+  if (minVal != null) {
+    value = max(value, minVal);
+  }
+  if (maxVal != null) {
+    value = min(value, maxVal);
+  }
+  return value;
+}
+
 
 /// Flutter related
 ///

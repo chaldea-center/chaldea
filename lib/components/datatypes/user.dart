@@ -51,10 +51,10 @@ class User {
   }
 
   ServantPlan svtPlanOf(int no) =>
-      curSvtPlan.putIfAbsent(no, () => ServantPlan());
+      curSvtPlan.putIfAbsent(no, () => ServantPlan())..validate();
 
   ServantStatus svtStatusOf(int no) =>
-      servants.putIfAbsent(no, () => ServantStatus());
+      servants.putIfAbsent(no, () => ServantStatus())..curVal.validate();
 
   factory User.fromJson(Map<String, dynamic> data) => _$UserFromJson(data);
 
@@ -135,11 +135,23 @@ class ServantPlan {
   }
 
   void fixDressLength(int length, [int fill = 0]) {
-    if (length < dress.length) {
-      dress.length = length;
-    } else {
-      dress.addAll(List.filled(length - dress.length, fill));
+    dress.length = length;
+    for (int i = 0; i < dress.length; i++) {
+      dress[i] ??= fill;
     }
+  }
+
+  void validate() {
+    ascension = fixValidRange(ascension ?? 0, 0, 4);
+    skills ??= [1, 1, 1];
+    for (int i = 0; i < skills.length; i++) {
+      skills[i] = fixValidRange(skills[i], 1, 10);
+    }
+    dress ??= [];
+    for (int i = 0; i < dress.length; i++) {
+      dress[i] = fixValidRange(dress[i], 0, 1);
+    }
+    grail = fixValidRange(grail ?? 0, 0);
   }
 
   factory ServantPlan.fromJson(Map<String, dynamic> data) =>

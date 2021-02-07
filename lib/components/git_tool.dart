@@ -182,12 +182,17 @@ class ReleaseInfo {
 
 /// TODO: move to other place, more customizable
 class DownloadDialog extends StatefulWidget {
-  final String url;
+  final String? url;
   final String savePath;
+  final String? notes;
   final VoidCallback? onComplete;
 
   const DownloadDialog(
-      {Key? key, required this.url, required this.savePath, this.onComplete})
+      {Key? key,
+      required this.url,
+      required this.savePath,
+      this.notes,
+      this.onComplete})
       : super(key: key);
 
   @override
@@ -196,7 +201,7 @@ class DownloadDialog extends StatefulWidget {
 
 class _DownloadDialogState extends State<DownloadDialog> {
   final CancelToken _cancelToken = CancelToken();
-  String progress = '';
+  String progress = '-';
   int status = -1;
   Dio _dio = Dio();
 
@@ -225,15 +230,13 @@ class _DownloadDialogState extends State<DownloadDialog> {
   }
 
   void onReceiveProgress(int count, int total) {
-    String statusText =
-        status == 0 ? S.current.downloading : S.current.downloaded;
     if (total < 0) {
-      progress = '$statusText...';
+      progress = _sizeInMB(count);
     } else {
       String percent = formatNumber(count / total, percent: true);
       String size = _sizeInMB(total);
       String downSize = _sizeInMB(count);
-      progress = '$statusText: $downSize/$size ($percent)';
+      progress = '$downSize/$size ($percent)';
     }
     setState(() {});
   }
@@ -248,11 +251,23 @@ class _DownloadDialogState extends State<DownloadDialog> {
   @override
   Widget build(BuildContext context) {
     final fn = pathlib.basename(widget.savePath);
+    final headerStyle = TextStyle(fontWeight: FontWeight.bold);
     return AlertDialog(
       title: Text(S.of(context).download),
-      content: widget.url.isNotEmpty
-          ? Text('${S.of(context).filename}: $fn\n$progress')
-          : Text(S.of(context).query_failed),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('${S.current.filename}:', style: headerStyle),
+          Text(fn),
+          if (widget.notes != null) Text('更新内容:', style: headerStyle),
+          if (widget.notes != null) Text(widget.notes!),
+          Text('下载进度:', style: headerStyle),
+          widget.url?.isNotEmpty == true
+              ? Text(progress)
+              : Text(S.of(context).query_failed)
+        ],
+      ),
       actions: [
         if (status <= 0)
           TextButton(
@@ -262,7 +277,7 @@ class _DownloadDialogState extends State<DownloadDialog> {
             },
             child: Text(S.of(context).cancel),
           ),
-        if (status < 0 && widget.url.isNotEmpty)
+        if (status < 0 && widget.url?.isNotEmpty == true)
           TextButton(
               onPressed: startDownload, child: Text(S.of(context).download)),
         if (status > 0)
