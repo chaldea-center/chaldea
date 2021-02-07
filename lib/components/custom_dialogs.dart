@@ -143,6 +143,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
               }
             },
           ),
+        ...actions,
         if (onTapOk != null || !hideOk)
           TextButton(
             child: Text(S.of(context).ok),
@@ -153,7 +154,6 @@ class SimpleCancelOkDialog extends StatelessWidget {
               }
             },
           ),
-        ...actions
       ],
     );
   }

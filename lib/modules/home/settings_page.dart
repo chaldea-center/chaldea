@@ -170,14 +170,6 @@ class _SettingsPageState extends State<SettingsPage> {
             TileGroup(
               header: 'Test(debug mode: ${kDebugMode_ ? 'on' : 'off'})',
               children: <Widget>[
-                SwitchListTile.adaptive(
-                    title: Text('Allow download'),
-                    value: db.userData.testAllowDownload ?? true,
-                    onChanged: (v) async {
-                      db.userData.testAllowDownload = v;
-                      await db.checkNetwork();
-                      setState(() {});
-                    }),
                 ListTile(
                   title: Text('Master-Detail width'),
                   trailing: DropdownButtonHideUnderline(

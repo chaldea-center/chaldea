@@ -9,9 +9,21 @@ import 'package:logging/logging.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 import 'package:mailer/src/entities/attachment.dart';
+import 'package:path/path.dart' as pathlib;
 
+import 'config.dart';
 import 'constants.dart';
 import 'utils.dart';
+
+class SilentReportModeCross extends SilentReportMode {
+  @override
+  List<PlatformType> getSupportedPlatforms() => PlatformType.values.toList();
+}
+
+class DialogReportModeCross extends DialogReportMode {
+  @override
+  List<PlatformType> getSupportedPlatforms() => PlatformType.values.toList();
+}
 
 class PageReportModeCross extends PageReportMode {
   PageReportModeCross({bool showStackTrace = true})
@@ -84,10 +96,12 @@ class ToastHandlerCross extends ReportHandler {
 class EmailAutoHandlerCross extends EmailAutoHandler {
   final Logger _logger = Logger("EmailAutoHandler");
   final List<File> attachments;
+  final bool screenshot;
 
   EmailAutoHandlerCross(String smtpHost, int smtpPort, String senderEmail,
       String senderName, String senderPassword, List<String> recipients,
-      {bool enableSsl = false,
+      {this.screenshot = false,
+      bool enableSsl = false,
       bool enableDeviceParameters = true,
       bool enableApplicationParameters = true,
       bool enableStackTrace = true,
@@ -113,7 +127,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
   List<PlatformType> getSupportedPlatforms() => PlatformType.values.toList();
 
   @override
-  Future<bool> handle(Report error) {
+  Future<bool> handle(Report error) async {
     return _sendMail(error);
   }
 
@@ -128,7 +142,14 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
             .where((file) => file.existsSync())
             .map((e) => FileAttachment(e))
             .toList();
-
+      if (screenshot) {
+        String shotFn = pathlib.join(db.paths.appPath, 'crash.png');
+        File shotFile = await db.screenshotController?.capture(
+            path: shotFn, pixelRatio: 1.5, delay: Duration(seconds: 2));
+        if (shotFile?.existsSync() == true) {
+          message.attachments.add(FileAttachment(shotFile));
+        }
+      }
       if (sendHtml) {
         message.html = _setupHtmlMessageText(report);
       }
@@ -259,10 +280,11 @@ EmailAutoHandlerCross kEmailAutoHandlerCross(
       'smtp.qiye.aliyun.com',
       465,
       b64('Y2hhbGRlYS1jbGllbnRAbmFydW1pLmNj'),
-      'Chaldea Feedback',
+      'Chaldea Crash',
       b64('Q2hhbGRlYUBjbGllbnQ='),
       [kSupportTeamEmailAddress],
       attachments: attachments,
+      screenshot: true,
       enableSsl: true,
       printLogs: true,
     );

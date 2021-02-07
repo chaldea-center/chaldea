@@ -151,11 +151,12 @@ class ServantPlan {
     for (int i = 0; i < dress.length; i++) {
       dress[i] = fixValidRange(dress[i], 0, 1);
     }
+    // check grail max limit when used
     grail = fixValidRange(grail ?? 0, 0);
   }
 
   factory ServantPlan.fromJson(Map<String, dynamic> data) =>
-      _$ServantPlanFromJson(data);
+      _$ServantPlanFromJson(data)..validate();
 
   Map<String, dynamic> toJson() => _$ServantPlanToJson(this);
 

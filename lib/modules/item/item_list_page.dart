@@ -159,6 +159,16 @@ class ItemListPageState extends State<ItemListPage>
           );
         });
       },
+      actions: [
+        TextButton(
+          onPressed: () {
+            _itemRedundantControllers?.forEach((e) => e.text = '');
+            db.userData.itemAbundantValue
+                .fillRange(0, db.userData.itemAbundantValue.length, 0);
+          },
+          child: Text(S.of(context).clear),
+        )
+      ],
     ).show(context);
   }
 }

@@ -25,7 +25,6 @@ class UserData {
   //test
   @JsonKey(ignore: true)
   double criticalWidth;
-  bool testAllowDownload;
 
   //filters, ItemFilterDat to be done
   SvtFilterData svtFilter;
@@ -51,7 +50,6 @@ class UserData {
     this.language,
     this.criticalWidth,
     this.useMobileNetwork,
-    this.testAllowDownload,
     this.sliderUpdateTime,
     this.sliderUrls,
     this.galleries,
@@ -69,7 +67,6 @@ class UserData {
     // not initiate language: auto-change language if not set yet.
     String defaultName = 'default';
     useMobileNetwork ??= false;
-    testAllowDownload ??= true;
     sliderUrls ??= {};
     galleries ??= {};
     serverDomain ??= kServerRoot;

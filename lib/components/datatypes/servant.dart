@@ -133,6 +133,7 @@ class Servant {
     final maxVal = [10, 10, 10, 9, 7, 5][this.info.rarity2];
     cur = fixValidRange(cur ?? 0, 0, maxVal);
     target = fixValidRange(target ?? maxVal, 0, maxVal);
+    target = max(cur, target);
 
     return target > cur ? {Item.grail: target - cur} : <String, int>{};
   }

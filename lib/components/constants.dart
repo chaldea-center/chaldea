@@ -66,6 +66,8 @@ class AppInfo {
 
   static int get buildNumber => int.tryParse(_info?.buildNumber ?? '0') ?? 0;
 
+  static String get packageName => info?.packageName ?? kPackageName;
+
   static String get fullVersion {
     String s = '';
     s += version;

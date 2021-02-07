@@ -63,7 +63,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                     title: Text(S.of(context).backup),
                     content: Text(Platform.isIOS
                         ? S.of(context).ios_app_path + '/user'
-                        : db.paths.userDataDir),
+                        : db.paths.userDir),
                     onTapOk: () async {
                       final fp = db.backupUserdata();
                       showInformDialog(context,
@@ -84,7 +84,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                                 onPressed: () {
                                   Process.run(
                                     Platform.isMacOS ? 'open' : 'start',
-                                    [db.paths.userDataDir],
+                                    [db.paths.userDir],
                                     runInShell: true,
                                   );
                                 },
@@ -155,7 +155,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                     title: Text(S.of(context).reload_default_gamedata),
                     onTapOk: () async {
                       var canceler = showMyProgress(status: 'reloading');
-                      await db.loadZipAssets(kDatasetAssetKey, force: true);
+                      await db.loadZipAssets(kDatasetAssetKey);
                       canceler();
                       if (db.loadGameData()) {
                         EasyLoading.showToast(
@@ -210,9 +210,8 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
         print(
             'download patch: ${patch.toString().substring(0, min(200, patch.toString().length))}');
         final patched = JsonPatch.apply(
-            db.getJsonFromFile(db.paths.gameDataFilepath),
-            List.castFrom(patch));
-        File file = File(db.paths.gameDataFilepath);
+            db.getJsonFromFile(db.paths.gameDataPath), List.castFrom(patch));
+        File file = File(db.paths.gameDataPath);
         var raf = file.openSync(mode: FileMode.write);
         raf.writeStringSync(json.encode(patched));
         raf.closeSync();
@@ -379,7 +378,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
         canceler = showMyProgress(status: 'loading');
         await db.extractZip(
           file.readAsBytesSync().cast<int>(),
-          db.paths.gameDataDir,
+          db.paths.gameDir,
         );
         db.loadGameData();
       } else if (file.path.toLowerCase().endsWith('.json')) {
@@ -407,7 +406,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
       final release = await gitTool.latestDatasetRelease(fullSize);
       Navigator.of(context).pop();
       String fp = pathlib.join(
-          db.paths.tempPath, '${release?.name}-${release?.targetAsset?.name}');
+          db.paths.tempDir, '${release?.name}-${release?.targetAsset?.name}');
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -420,7 +419,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
             try {
               await db.extractZip(
                 File(fp).readAsBytesSync().cast<int>(),
-                db.paths.gameDataDir,
+                db.paths.gameDir,
               );
               db.loadGameData();
               Navigator.of(context).pop();
@@ -468,6 +467,9 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
   Future<void> clearCache() async {
     db.prefs.clear();
     await DefaultCacheManager().emptyCache();
+    Directory(db.paths.tempDir)
+      ..deleteSync(recursive: true)
+      ..createSync(recursive: true);
     EasyLoading.showToast(S.current.clear_cache_finish);
   }
 }

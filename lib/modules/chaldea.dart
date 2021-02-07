@@ -1,21 +1,42 @@
 import 'dart:io';
 
-import 'package:catcher/core/catcher.dart';
+import 'package:catcher/catcher.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:chaldea/modules/home/home_page.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:screenshot/screenshot.dart';
 
 class Chaldea extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _ChaldeaState();
 }
 
-class _ChaldeaState extends State<Chaldea> {
+class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
+  String userdataBackup;
+
+  _ChaldeaState() {
+    if (File(db.paths.userDataPath).existsSync() && !db.loadUserData()) {
+      userdataBackup = db.backupUserdata();
+    }
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    if (userdataBackup != null) {
+      showInformDialog(
+        kAppKey.currentContext,
+        title: 'Userdata damaged',
+        content: 'A backup is created:\n $userdataBackup',
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    db.screenshotController = ScreenshotController();
     SplitRoute.defaultMasterFillPageBuilder = (context) => BlankPage();
     db.onAppUpdate = () {
       setState(() {});
@@ -28,22 +49,25 @@ class _ChaldeaState extends State<Chaldea> {
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
       ),
-      child: MaterialApp(
-        title: kAppName,
-        debugShowCheckedModeBanner: false,
-        navigatorKey: kAppKey,
-        locale: Language.getLanguage(db.userData?.language)?.locale,
-        localizationsDelegates: [
-          S.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate
-        ],
-        supportedLocales: S.delegate.supportedLocales,
-        builder: EasyLoading.init(builder: (context, widget) {
-          Catcher.addDefaultErrorWidget(showStacktrace: true);
-          return widget;
-        }),
-        home: _ChaldeaHome(),
+      child: Screenshot(
+        controller: db.screenshotController,
+        child: MaterialApp(
+          title: kAppName,
+          debugShowCheckedModeBanner: false,
+          navigatorKey: kAppKey,
+          locale: Language.getLanguage(db.userData?.language)?.locale,
+          localizationsDelegates: [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          builder: (context, widget) {
+            Catcher.addDefaultErrorWidget(showStacktrace: true);
+            return FlutterEasyLoading(child: widget);
+          },
+          home: _ChaldeaHome(),
+        ),
       ),
     );
   }
@@ -62,10 +86,8 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
     /// if app updated, check version and reload gamedata
     bool gameDataLoadSuccess = false;
     try {
-      await db.initial();
-      await AppInfo.resolve();
       if (AppInfo.buildNumber > (db.userData.previousBuildNumber ?? 0) ||
-          !File(db.paths.gameDataFilepath).existsSync() ||
+          !File(db.paths.gameDataPath).existsSync() ||
           !db.loadGameData()) {
         /// load failed(json destroyed) or app updated, reload default dataset
         // TODO: if asset not exist? download from server
@@ -81,7 +103,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
       logger.e('initiate app error.', e, s);
     }
     if (!gameDataLoadSuccess) {
-      showInformDialog(context, title: '加载数据错误', content: '请在设置中重新加载默认数据');
+      showInformDialog(context, title: '加载数据错误', content: '请尝试在设置中重新加载默认数据');
     }
     _initiated = true;
     setState(() {});

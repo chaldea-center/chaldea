@@ -11,8 +11,6 @@ class _MysticCodePageState extends State<MysticCodePage> {
   Map<String, MysticCode> get mysticCodes => db.gameData.mysticCodes;
   String selected = db.gameData.mysticCodes.keys.first;
 
-  // bool useGirl = true;
-
   @override
   void initState() {
     super.initState();

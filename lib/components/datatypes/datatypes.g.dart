@@ -1350,8 +1350,6 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
       language: $checkedConvert(json, 'language', (v) => v as String),
       useMobileNetwork:
           $checkedConvert(json, 'useMobileNetwork', (v) => v as bool),
-      testAllowDownload:
-          $checkedConvert(json, 'testAllowDownload', (v) => v as bool),
       sliderUpdateTime:
           $checkedConvert(json, 'sliderUpdateTime', (v) => v as String),
       sliderUrls: $checkedConvert(
@@ -1424,7 +1422,6 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'previousBuildNumber': instance.previousBuildNumber,
       'curUserKey': instance.curUserKey,
       'users': instance.users,
-      'testAllowDownload': instance.testAllowDownload,
       'svtFilter': instance.svtFilter,
       'craftFilter': instance.craftFilter,
       'cmdCodeFilter': instance.cmdCodeFilter,

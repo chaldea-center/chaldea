@@ -15,7 +15,7 @@ part of datatypes;
 ///   * free to apply check=true to game data related classes.
 ///   * update the function code if package json_annotation updated.
 ///     currently modified from json_annotation-3.0.1
-T $checkedNew<T>(String className, Map map, T Function() constructor,
+T $checkedNew2<T>(String className, Map map, T Function() constructor,
     {Map<String, String> fieldKeyMap}) {
   fieldKeyMap ??= const {};
   try {
@@ -46,7 +46,7 @@ T $checkedNew<T>(String className, Map map, T Function() constructor,
   }
 }
 
-T $checkedConvert<T>(Map map, String key, T Function(Object) castFunc) {
+T $checkedConvert2<T>(Map map, String key, T Function(Object) castFunc) {
   try {
     return castFunc(map[key]);
   } on CheckedFromJsonException {

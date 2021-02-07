@@ -14,6 +14,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:path_provider/path_provider.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'constants.dart';
@@ -30,6 +31,7 @@ class Database {
   UserData userData = UserData();
   GameData gameData = GameData();
   SharedPreferences? _prefs;
+  ScreenshotController? screenshotController;
 
   SharedPreferences get prefs => _prefs!;
 
@@ -50,8 +52,8 @@ class Database {
   // initialization
   Future<void> initial() async {
     await paths.initRootPath();
+    await AppInfo.resolve();
     _prefs ??= await SharedPreferences.getInstance();
-    // Directory(paths.datasetCacheDir).createSync(recursive: true);
   }
 
   Future<void> checkNetwork() async {
@@ -88,7 +90,7 @@ class Database {
   bool loadGameData() {
     final t = TimeCounter('loadGameData');
     try {
-      gameData = GameData.fromJson(getJsonFromFile(paths.gameDataFilepath));
+      gameData = GameData.fromJson(getJsonFromFile(paths.gameDataPath));
       logger.d('game data reloaded, version ${gameData.version}.');
       db.onAppUpdate.call();
       t.elapsed();
@@ -110,11 +112,11 @@ class Database {
           options: Options(responseType: ResponseType.bytes));
       print(response.headers);
       if (response.statusCode == 200) {
-        File file = File(pathlib.join(db.paths.tempPath, 'dataset.zip'));
+        File file = File(pathlib.join(db.paths.tempDir, 'dataset.zip'));
         var raf = file.openSync(mode: FileMode.write);
         raf.writeFromSync(response.data);
         raf.closeSync();
-        await extractZip(response.data, db.paths.gameDataDir);
+        await extractZip(response.data, db.paths.gameDir);
         if (db.loadGameData()) {
           logger.i('Data downloaded! Version: ${db.gameData.version}');
           EasyLoading.showToast(
@@ -132,20 +134,17 @@ class Database {
     }
   }
 
-  Future<void> loadZipAssets(String assetKey,
-      {String? extractDir, bool force = false}) async {
+  Future<void> loadZipAssets(String assetKey, {String? extractDir}) async {
     final t = TimeCounter('loadZipAssets($assetKey)');
-    extractDir ??= paths.gameDataDir;
-    if (force || !Directory(extractDir).existsSync()) {
-      //extract zip file
-      final ByteData? data = await rootBundle.load(assetKey).catchError((e, s) {
-        logger.e('Load assets failed: $assetKey', e, s);
-        EasyLoading.showToast('Error load assets: $assetKey\n$e');
-      });
-      if (data != null)
-        await extractZip(data.buffer.asUint8List().cast<int>(), extractDir);
-      t.elapsed();
-    }
+    extractDir ??= paths.gameDir;
+    //extract zip file
+    final ByteData? data = await rootBundle.load(assetKey).catchError((e, s) {
+      logger.e('Load assets failed: $assetKey', e, s);
+      EasyLoading.showToast('Error load assets: $assetKey\n$e');
+    });
+    if (data != null)
+      await extractZip(data.buffer.asUint8List().cast<int>(), extractDir);
+    t.elapsed();
   }
 
   void saveUserData() {
@@ -154,8 +153,7 @@ class Database {
 
   String backupUserdata() {
     String timeStamp = DateFormat('yyyyMMddTHHmmss').format(DateTime.now());
-    String filepath =
-        pathlib.join(paths.userDataDir, 'userdata-$timeStamp.json');
+    String filepath = pathlib.join(paths.userDir, 'userdata-$timeStamp.json');
     _saveJsonToFile(userData, filepath);
     return filepath;
   }
@@ -167,7 +165,7 @@ class Database {
     }
     if (game) {
       // to clear all history version or not?
-      _deleteFileOrDirectory(paths.gameDataDir);
+      _deleteFileOrDirectory(paths.gameDir);
       await loadZipAssets(kDatasetAssetKey);
       loadGameData();
     }
@@ -349,14 +347,11 @@ class PathManager {
   /// [_appPath] root path where app can access
   static String? _appPath;
 
-  /// [_savePath] root path to save user-related data
-  static String? _savePath;
-
   /// [_tempPath] files can be deleted
   static String? _tempPath;
 
   Future<void> initRootPath() async {
-    if (_appPath != null && _savePath != null && _tempPath != null) return;
+    if (_appPath != null && _tempPath != null) return;
     // final Map<String, Directory> _fps = {
     //   'ApplicationDocuments': await getApplicationDocumentsDirectory(),
     //   'Temporary': await getTemporaryDirectory(),
@@ -368,46 +363,47 @@ class PathManager {
     // }
 
     if (Platform.isAndroid) {
-      _appPath = (await getApplicationDocumentsDirectory()).path;
-      _tempPath = (await getTemporaryDirectory()).path;
+      // don't use getApplicationDocumentsDirectory, it is hidden to user.
       // android: [emulated, external SD]
-      _savePath = (await getExternalStorageDirectories())[0].path;
+      _appPath = (await getExternalStorageDirectories())[0].path;
+      _tempPath = (await getTemporaryDirectory()).path;
     } else if (Platform.isIOS) {
       _appPath = (await getApplicationDocumentsDirectory()).path;
       _tempPath = (await getTemporaryDirectory()).path;
-      _savePath = _appPath;
     } else if (Platform.isWindows) {
       _appPath = (await getApplicationSupportDirectory()).path;
       _tempPath = (await getTemporaryDirectory()).path;
-      _savePath = _appPath;
     } else if (Platform.isMacOS) {
       // /Users/<user>/Library/Containers/cc.narumi.chaldea/Data/Documents
       _appPath = (await getApplicationDocumentsDirectory()).path;
       // /Users/<user>/Library/Containers/cc.narumi.chaldea/Data/Library/Caches
       _tempPath = (await getTemporaryDirectory()).path;
-      _savePath = _appPath;
     } else {
       throw UnimplementedError('Not supported for ${Platform.operatingSystem}');
+    }
+
+    for (String dir in [userDir, gameDir, tempDir]) {
+      Directory(dir).createSync(recursive: true);
     }
   }
 
   String get appPath => _appPath!;
 
-  String get savePath => _savePath!;
+  String get tempDir => pathlib.join(_appPath!, 'temp');
 
-  String get tempPath => pathlib.join(_appPath!, 'temp');
+  String get userDir => pathlib.join(_appPath!, 'user');
 
-  String get userDataDir => pathlib.join(_savePath!, 'user');
+  String get gameDir => pathlib.join(_appPath!, 'data');
 
-  String get userDataPath => pathlib.join(userDataDir, kUserDataFilename);
+  String get userDataPath => pathlib.join(userDir, kUserDataFilename);
 
-  String get gameDataDir => pathlib.join(_appPath!, 'data');
+  String get gameDataPath => pathlib.join(gameDir, kGameDataFilename);
 
-  String get gameDataFilepath => pathlib.join(gameDataDir, kGameDataFilename);
+  String get gameIconDir => pathlib.join(gameDir, 'icons');
 
-  String get gameIconDir => pathlib.join(gameDataDir, 'icons');
+  String get crashLog => pathlib.join(_appPath!, 'crash.log');
 
-  String get crashLog => pathlib.join(_savePath!, 'crash.log');
+  String get datasetVersionFile => pathlib.join(gameDir, 'VERSION');
 
   static PathManager _instance = PathManager._internal();
 
