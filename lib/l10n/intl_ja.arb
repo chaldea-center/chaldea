@@ -282,5 +282,6 @@
   "words_separate": "{a}{b}",
   "clear_cache": "キャッシュを消去",
   "clear_cache_hint": "イラスト、ボイスなど",
-  "clear_cache_finish": "キャッシュがクリアされました"
+  "clear_cache_finish": "キャッシュがクリアされました",
+  "join_beta": "ベータ版に参加する"
 }

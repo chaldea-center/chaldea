@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/home/subpage/dataset_manage_page.dart';
 import 'package:flutter/foundation.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'subpage/about_page.dart';
 import 'subpage/account_page.dart';
@@ -157,6 +160,12 @@ class _SettingsPageState extends State<SettingsPage> {
                   popDetail: true,
                 ),
               ),
+              if (Platform.isIOS)
+                ListTile(
+                  title: Text(S.of(context).join_beta),
+                  onTap: () =>
+                      launch('https://testflight.apple.com/join/HSyZttrr'),
+                ),
               if (kDebugMode)
                 ListTile(
                   title: Text('Generate Error'),

@@ -233,6 +233,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "item_own" : MessageLookupByLibrary.simpleMessage("Owned"),
     "item_title" : MessageLookupByLibrary.simpleMessage("Item"),
     "item_total_demand" : MessageLookupByLibrary.simpleMessage("Total"),
+    "join_beta" : MessageLookupByLibrary.simpleMessage("Join Beta Program"),
     "jump_to" : m7,
     "language" : MessageLookupByLibrary.simpleMessage("English"),
     "level" : MessageLookupByLibrary.simpleMessage("Level"),

@@ -2859,6 +2859,16 @@ class S {
       args: [],
     );
   }
+
+  /// `加入Beta版`
+  String get join_beta {
+    return Intl.message(
+      '加入Beta版',
+      name: 'join_beta',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -131,7 +131,15 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
     return _sendMail(error);
   }
 
+  Report _lastSentReport;
+
   Future<bool> _sendMail(Report report) async {
+    // don't send email repeatedly
+    if (report.error.toString() == _lastSentReport?.error?.toString() &&
+        report.stackTrace.toString() ==
+            _lastSentReport?.stackTrace?.toString()) {
+      return true;
+    }
     try {
       final message = new Message()
         ..from = new Address(this.senderEmail, this.senderName)
@@ -157,6 +165,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
 
       var result = await send(message, _setupSmtpServer());
       if (result != null) {
+        _lastSentReport = report;
         _printLog("Email result: mail: ${result.mail} "
             "sending start time: ${result.messageSendingStart} "
             "sending end time: ${result?.messageSendingEnd}");

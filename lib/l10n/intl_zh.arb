@@ -281,5 +281,6 @@
   "words_separate": "{a}{b}",
   "clear_cache": "清除缓存",
   "clear_cache_hint": "包括卡面语音等",
-  "clear_cache_finish": "缓存已清理"
+  "clear_cache_finish": "缓存已清理",
+  "join_beta": "加入Beta版"
 }

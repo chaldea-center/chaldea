@@ -282,5 +282,6 @@
   "words_separate": "{a} {b}",
   "clear_cache": "Clear cache",
   "clear_cache_hint": "Including illustrations, voices",
-  "clear_cache_finish": "Cache cleared"
+  "clear_cache_finish": "Cache cleared",
+  "join_beta": "Join Beta Program"
 }

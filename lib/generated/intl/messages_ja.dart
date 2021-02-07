@@ -233,6 +233,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "item_own" : MessageLookupByLibrary.simpleMessage("持って"),
     "item_title" : MessageLookupByLibrary.simpleMessage("アイテム"),
     "item_total_demand" : MessageLookupByLibrary.simpleMessage("合計"),
+    "join_beta" : MessageLookupByLibrary.simpleMessage("ベータ版に参加する"),
     "jump_to" : m7,
     "language" : MessageLookupByLibrary.simpleMessage("日本語"),
     "level" : MessageLookupByLibrary.simpleMessage("レベル"),

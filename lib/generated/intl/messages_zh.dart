@@ -233,6 +233,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "item_own" : MessageLookupByLibrary.simpleMessage("拥有"),
     "item_title" : MessageLookupByLibrary.simpleMessage("素材"),
     "item_total_demand" : MessageLookupByLibrary.simpleMessage("共需"),
+    "join_beta" : MessageLookupByLibrary.simpleMessage("加入Beta版"),
     "jump_to" : m7,
     "language" : MessageLookupByLibrary.simpleMessage("简体中文"),
     "level" : MessageLookupByLibrary.simpleMessage("等级"),
