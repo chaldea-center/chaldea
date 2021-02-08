@@ -73,9 +73,9 @@ class _AboutPageState extends State<AboutPage> {
                     crossAxisAlignment: WrapCrossAlignment.center,
                     spacing: 10,
                     children: [
-                      if (AppInfo.fullVersion.isNotEmpty)
+                      if (AppInfo.fullVersion2.isNotEmpty)
                         Text(
-                            '${S.of(context).version}: ${AppInfo.fullVersion}'),
+                            '${S.of(context).version}: ${AppInfo.fullVersion2}'),
                       ElevatedButton(
                         onPressed: () => checkAppUpdate(false),
                         child: Text(S.of(context).check_update),
@@ -122,7 +122,7 @@ class _AboutPageState extends State<AboutPage> {
                   if (Platform.isAndroid || Platform.isIOS) {
                     final Email email = Email(
                         subject: '${AppInfo.appName} '
-                            'v${AppInfo.fullVersion} ${S.of(context).about_feedback}',
+                            'v${AppInfo.fullVersion2} ${S.of(context).about_feedback}',
                         body: S.of(context).about_email_subtitle + '\n\n',
                         recipients: [kSupportTeamEmailAddress],
                         isHTML: true,

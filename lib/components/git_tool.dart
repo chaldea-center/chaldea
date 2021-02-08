@@ -1,18 +1,72 @@
 //@dart=2.12
 import 'dart:io';
 
-import 'package:chaldea/components/components.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:github/github.dart' as github;
 import 'package:path/path.dart' as pathlib;
+
+import 'logger.dart';
+import 'utils.dart';
 
 const String _owner = 'narumishi';
 const String _appRepo = 'chaldea';
 const String _datasetRepo = 'chaldea-dataset';
 
 enum GitSource { gitee, github }
+
+class Version {
+  /// valid format:
+  ///   - v1.2.3+4,'v' and +4 is optional
+  ///   - 1.2.3.4, windows format
+  static final RegExp _fullVersionRegex =
+      RegExp(r'^v?(\d+)\.(\d+)\.(\d+)(?:[+.](\d+))?$', caseSensitive: false);
+  final int major;
+  final int minor;
+  final int patch;
+  final int? build;
+
+  Version(this.major, this.minor, this.patch, [this.build]);
+
+  String get version => '$major.$minor.$patch';
+
+  String get fullVersion => version + (build == null ? '' : '+$build');
+
+  bool equalTo(String other) {
+    Version? _other = Version.tryParse(other);
+    if (_other == null) return false;
+    if (major == _other.major &&
+        minor == _other.minor &&
+        patch == _other.patch) {
+      return build == null || _other.build == null || build == _other.build;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  String toString() {
+    return '$runtimeType($major, $minor, $patch${build == null ? "" : ", $build"})';
+  }
+
+  static Version? tryParse(String versionString, [int? build]) {
+    versionString = versionString.trim();
+    if (!_fullVersionRegex.hasMatch(versionString)) {
+      logger.e(ArgumentError.value(
+          versionString, 'versionString', 'Invalid version format'));
+      return null;
+    }
+    Match match = _fullVersionRegex.firstMatch(versionString)!;
+    int major = int.parse(match.group(1)!);
+    int minor = int.parse(match.group(2)!);
+    int patch = int.parse(match.group(3)!);
+    int? _build = int.tryParse(match.group(4) ?? '');
+    return Version(major, minor, patch, build ?? _build);
+  }
+}
 
 class GitRelease {
   int id;

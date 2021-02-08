@@ -157,7 +157,6 @@ T fixValidRange<T extends num>(T value, [T? minVal, T? maxVal]) {
   return value;
 }
 
-
 /// Flutter related
 ///
 
@@ -295,29 +294,33 @@ Future<String?> resolveWikiFileUrl(String filename) async {
 void checkAppUpdate([bool background = true]) async {
   const ignoreUpdateKey = 'ignoreAppUpdateVersion';
   BuildContext context = kAppKey.currentContext!;
-  String? latestVersion;
+  String? versionString;
   String? releaseNote;
   String? launchUrl;
   try {
     if (Platform.isIOS || Platform.isMacOS) {
-      final response = await Dio().get(
-          'http://itunes.apple.com/lookup?bundleId=$kPackageName',
-          options: Options(responseType: ResponseType.plain));
+      launchUrl = 'itms-apps://itunes.apple.com/app/id1548713491';
+      // use https and set UA, or the fetched info may be outdated
+      final response = await Dio()
+          .get('https://itunes.apple.com/lookup?bundleId=$kPackageName',
+              options: Options(responseType: ResponseType.plain, headers: {
+                'User-Agent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
+                    " AppleWebKit/537.36 (KHTML, like Gecko)"
+                    " Chrome/88.0.4324.146"
+                    " Safari/537.36 Edg/88.0.705.62"
+              }));
       final jsonData = json.decode(response.data.toString().trim());
       // logger.d(jsonData);
       final result = jsonData['results'][0];
-      latestVersion = result['version'];
+      versionString = result['version'];
       releaseNote = result['releaseNotes'];
-      launchUrl = 'itms-apps://itunes.apple.com/app/id1548713491';
     } else if (Platform.isAndroid || Platform.isWindows) {
       GitTool gitTool = GitTool.fromIndex(db.userData.appDatasetUpdateSource);
       final release = await gitTool.latestAppRelease();
-      latestVersion = release?.name;
+      versionString = release?.name;
+      if (versionString?.startsWith('v') == true)
+        versionString = versionString!.substring(1);
       // v1.x.y+z
-      if (latestVersion?.startsWith('v') == true)
-        latestVersion = latestVersion!.substring(1);
-      if (latestVersion?.contains('+') == true)
-        latestVersion = latestVersion!.split('+')[0];
       releaseNote = release?.body;
       if (release?.targetAsset?.browserDownloadUrl.isNotEmpty == true) {
         launchUrl = release!.targetAsset!.browserDownloadUrl;
@@ -329,7 +332,7 @@ void checkAppUpdate([bool background = true]) async {
   } catch (e) {
     logger.e('Query update failed: $e');
   }
-  if (latestVersion == null) {
+  if (versionString == null) {
     logger.w('Failed to query app updates');
     if (!background) {
       SimpleCancelOkDialog(
@@ -338,38 +341,45 @@ void checkAppUpdate([bool background = true]) async {
         hideOk: true,
       ).show(context);
     }
-  } else if (latestVersion == AppInfo.version && background) {
-    logger.i('Already the latest version: $latestVersion');
-  } else if (db.prefs.getString(ignoreUpdateKey) == latestVersion &&
-      background) {
-    logger.i('Latest version: $latestVersion, ignore this update.');
-  } else {
-    logger.i('Release note:\n$releaseNote');
-    SimpleCancelOkDialog(
-      title: Text(S.of(context).about_update_app),
-      content: Text(
-        S.of(context).about_update_app_detail(
-            AppInfo.version, latestVersion, releaseNote),
-      ),
-      hideOk: true,
-      actions: [
-        TextButton(
-          child: Text(S.of(context).update),
-          onPressed: latestVersion == AppInfo.version && launchUrl != null
-              ? null
-              : () => launch(launchUrl!),
-        ),
-        if (latestVersion != AppInfo.version)
-          TextButton(
-            child: Text(S.of(context).ignore),
-            onPressed: () {
-              db.prefs.setString(ignoreUpdateKey, latestVersion);
-              Navigator.of(context).pop();
-            },
-          ),
-      ],
-    ).show(context);
+    return;
   }
+
+  Version? version = Version.tryParse(versionString);
+  bool isVersionEqual = version?.equalTo(AppInfo.fullVersion) == true;
+  if (isVersionEqual && background) {
+    logger.i('Already the latest version: ${version?.fullVersion}');
+    return;
+  }
+
+  if (db.prefs.getString(ignoreUpdateKey) == versionString && background) {
+    logger.i('Latest version: $versionString, ignore this update.');
+    return;
+  }
+  logger.i('Release note:\n$releaseNote');
+  SimpleCancelOkDialog(
+    title: Text(S.of(context).about_update_app),
+    content: Text(
+      S.of(context).about_update_app_detail(
+          AppInfo.fullVersion, versionString, releaseNote),
+    ),
+    hideOk: true,
+    actions: [
+      TextButton(
+        child: Text(S.of(context).update),
+        onPressed: isVersionEqual || launchUrl == null
+            ? null
+            : () => launch(launchUrl!),
+      ),
+      if (!isVersionEqual)
+        TextButton(
+          child: Text(S.of(context).ignore),
+          onPressed: () {
+            db.prefs.setString(ignoreUpdateKey, versionString);
+            Navigator.of(context).pop();
+          },
+        ),
+    ],
+  ).show(context);
 }
 
 Future<void> jumpToExternalLinkAlert(

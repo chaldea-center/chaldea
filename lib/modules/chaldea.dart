@@ -105,6 +105,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
         logger.i('reload default gamedata asset');
         await db.loadZipAssets(kDatasetAssetKey);
         db.userData.previousBuildNumber = AppInfo.buildNumber;
+        db.saveUserData();
         gameDataLoadSuccess = db.loadGameData();
       } else {
         gameDataLoadSuccess = true;

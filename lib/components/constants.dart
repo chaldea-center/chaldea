@@ -128,10 +128,18 @@ class AppInfo {
 
   static String get packageName => info?.packageName ?? kPackageName;
 
+  /// e.g. 1.2.3+4
   static String get fullVersion {
     String s = '';
     s += version;
-    if (buildNumber > 0) s += '($buildNumber)';
+    if (buildNumber > 0) s += '+$buildNumber';
+    return s;
+  }
+  /// e.g. 1.2.3 (4)
+  static String get fullVersion2 {
+    String s = '';
+    s += version;
+    if (buildNumber > 0) s += ' ($buildNumber)';
     return s;
   }
 
