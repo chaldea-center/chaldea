@@ -3,6 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  connectivity_plus_windows
   file_chooser
   flutter_audio_desktop
   flutter_qjs

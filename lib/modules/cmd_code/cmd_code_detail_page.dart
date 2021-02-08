@@ -20,7 +20,6 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
     super.initState();
     code = widget.code;
     useLangJp = !Language.isCN;
-    db.checkNetwork();
   }
 
   @override
@@ -142,8 +141,9 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                                     imgUrls: [
                                       db.getIconResource(code.illustration).url
                                     ],
-                                    enableDownload:
-                                        db.runtimeData.enableDownload,
+                                    downloadEnabled:
+                                        db.userData.downloadEnabled,
+                                    connectivity: db.connectivity,
                                     placeholder: placeholder,
                                   ),
                                 ),

@@ -5,7 +5,7 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +30,10 @@ class Database {
   VoidCallback onAppUpdate = () {};
   UserData userData = UserData();
   GameData gameData = GameData();
-  SharedPreferences? _prefs;
+
+  /// Controller of [Screenshot] widget which set root [MaterialApp] as child
   ScreenshotController? screenshotController;
+  SharedPreferences? _prefs;
 
   SharedPreferences get prefs => _prefs!;
 
@@ -49,26 +51,38 @@ class Database {
 
   PathManager get paths => _paths;
 
-  // initialization
+  ConnectivityResult? _connectivity;
+
+  ConnectivityResult get connectivity => _connectivity!;
+
+  /// You should always check for connectivity status when your app is resumed
+  Future<ConnectivityResult> checkConnectivity() async {
+    _connectivity = await Connectivity().checkConnectivity();
+    return _connectivity!;
+  }
+
+  // initialization before startup
   Future<void> initial() async {
     await paths.initRootPath();
     await AppInfo.resolve();
     _prefs ??= await SharedPreferences.getInstance();
+    await checkConnectivity();
+    Connectivity().onConnectivityChanged.listen((result) {
+      _connectivity = result;
+    });
   }
 
-  Future<void> checkNetwork() async {
+  Future<bool> networkAvailable() async {
     if (AppInfo.isMobile) {
-      // connectivity not support windows
-      if (db.userData.useMobileNetwork) {
-        runtimeData.enableDownload = true;
+      final result = await Connectivity().checkConnectivity();
+      if (result == ConnectivityResult.mobile ||
+          result == ConnectivityResult.wifi) {
+        return true;
       } else {
-        final result = await Connectivity().checkConnectivity();
-        runtimeData.enableDownload = result == ConnectivityResult.wifi;
+        return false;
       }
-    } else {
-      runtimeData.enableDownload =
-          kDebugMode ? db.userData.useMobileNetwork : true;
     }
+    return true;
   }
 
   // data files operation
@@ -413,7 +427,7 @@ class PathManager {
 }
 
 class RuntimeData {
-  bool enableDownload = false;
+  // bool enableDownload = false;
 //  final ItemStatistics itemStatistics = ItemStatistics();
 }
 

@@ -6,7 +6,7 @@ import FlutterMacOS
 import Foundation
 
 import audioplayers
-import connectivity_macos
+import connectivity_plus_macos
 import file_chooser
 import flutter_qjs
 import package_info

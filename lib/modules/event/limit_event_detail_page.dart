@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';
@@ -45,7 +44,11 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
       children.add(GestureDetector(
         onTap: () => jumpToExternalLinkAlert(
             url: mooncellFullLink(widget.name), name: 'Mooncell'),
-        child: CachedNetworkImage(imageUrl: event.bannerUrl),
+        child: CachedImage(
+          imageUrl: event.bannerUrl,
+          connectivity: db.connectivity,
+          downloadEnabled: db.userData.downloadEnabled,
+        ),
       ));
     // 复刻
     if (event.grail2crystal > 0) {

@@ -76,7 +76,8 @@ class ItemObtainEventPage extends StatelessWidget {
         if ((numShop != null || numLottery != null || hasExtra) &&
             limitEvent.isNotOutdated()) {
           children.add(ListTile(
-            title: AutoSizeText(limitEvent.localizedName, maxFontSize: 15, maxLines: 2),
+            title: AutoSizeText(limitEvent.localizedName,
+                maxFontSize: 15, maxLines: 2),
             trailing: Text(
               [
                 if (numShop != null) '$numShop',

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 /// This package is platform-compatibility fix for catcher.
 /// If official support is release, this should be removed.
@@ -15,20 +16,14 @@ import 'config.dart';
 import 'constants.dart';
 import 'utils.dart';
 
+export 'page_report_mode_cross.dart';
+
 class SilentReportModeCross extends SilentReportMode {
   @override
   List<PlatformType> getSupportedPlatforms() => PlatformType.values.toList();
 }
 
 class DialogReportModeCross extends DialogReportMode {
-  @override
-  List<PlatformType> getSupportedPlatforms() => PlatformType.values.toList();
-}
-
-class PageReportModeCross extends PageReportMode {
-  PageReportModeCross({bool showStackTrace = true})
-      : super(showStackTrace: showStackTrace);
-
   @override
   List<PlatformType> getSupportedPlatforms() => PlatformType.values.toList();
 }
@@ -131,13 +126,15 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
     return _sendMail(error);
   }
 
-  Report _lastSentReport;
+  Map<String, List<Report>> _sentReports = {};
 
   Future<bool> _sendMail(Report report) async {
     // don't send email repeatedly
-    if (report.error.toString() == _lastSentReport?.error?.toString() &&
-        report.stackTrace.toString() ==
-            _lastSentReport?.stackTrace?.toString()) {
+    String contact = db.userData.contactInfo?.trim() ?? '';
+    List<Report> _cachedReports = _sentReports.putIfAbsent(contact, () => []);
+    if (_cachedReports.any((element) =>
+        report.error.toString() == element.error.toString() &&
+        report.stackTrace.toString() == element.stackTrace.toString())) {
       return true;
     }
     try {
@@ -146,10 +143,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
         ..recipients.addAll(recipients)
         ..subject = _getEmailTitle(report)
         ..text = _setupRawMessageText(report)
-        ..attachments = attachments
-            .where((file) => file.existsSync())
-            .map((e) => FileAttachment(e))
-            .toList();
+        ..attachments = _getAttachments(attachments);
       if (screenshot) {
         String shotFn = pathlib.join(db.paths.appPath, 'crash.png');
         File shotFile = await db.screenshotController?.capture(
@@ -165,7 +159,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
 
       var result = await send(message, _setupSmtpServer());
       if (result != null) {
-        _lastSentReport = report;
+        _cachedReports.add(report);
         _printLog("Email result: mail: ${result.mail} "
             "sending start time: ${result.messageSendingStart} "
             "sending end time: ${result?.messageSendingEnd}");
@@ -178,6 +172,22 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
       _printLog(exception.toString());
       return false;
     }
+  }
+
+  List<Attachment> _getAttachments(List<File> files) {
+    List<Attachment> attachments = [];
+    for (File file in files) {
+      if (file.existsSync()) {
+        // set file limit less than 1MB
+        if (file.lengthSync() > 1024 * 1024) {
+          String s = file.readAsStringSync();
+          s.substring(s.length - min(s.length, 1000 * 1000), s.length);
+          file.writeAsStringSync(s);
+        }
+        attachments.add(FileAttachment(file));
+      }
+    }
+    return attachments;
   }
 
   SmtpServer _setupSmtpServer() {
@@ -203,12 +213,22 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
       buffer.write("<hr><br>");
     }
 
+    if (db.userData.contactInfo?.isNotEmpty == true) {
+      buffer.write("<h2>Contact information:</h2>");
+      buffer.write("${db.userData.contactInfo}<br><br>");
+    }
+
     buffer.write("<h2>Error:</h2>");
     buffer.write(report.error.toString());
+    buffer.write(report.errorDetails?.exceptionAsString() ?? '');
     buffer.write("<hr><br>");
     if (enableStackTrace) {
       buffer.write("<h2>Stack trace:</h2>");
       buffer.write(report.stackTrace.toString().replaceAll("\n", "<br>"));
+      if (report.stackTrace?.toString()?.trim()?.isNotEmpty != true) {
+        buffer.write(
+            report.errorDetails.stack.toString().replaceAll('\n', '<br>'));
+      }
       buffer.write("<hr><br>");
     }
     if (enableDeviceParameters) {
@@ -242,6 +262,9 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
     if (emailHeader != null && emailHeader.length > 0) {
       buffer.write(emailHeader);
       buffer.write("\n\n");
+    }
+    if (db.userData.contactInfo?.isNotEmpty == true) {
+      buffer.write('Contact information: ${db.userData.contactInfo}\n\n');
     }
 
     buffer.write("Error:\n");

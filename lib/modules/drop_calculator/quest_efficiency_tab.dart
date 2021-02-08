@@ -19,6 +19,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
 
   @override
   Widget build(BuildContext context) {
+    allItems.clear();
     widget.solution?.weightVars.forEach((variable) {
       variable.detail.forEach((key, value) {
         if (value > 0) {

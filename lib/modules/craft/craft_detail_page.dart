@@ -19,7 +19,6 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
     super.initState();
     ce = widget.ce;
     useLangJp = !Language.isCN;
-    db.checkNetwork();
   }
 
   @override
@@ -152,7 +151,8 @@ class CraftDetailBasePage extends StatelessWidget {
                         fullscreenDialog: true,
                         pageBuilder: (context, _, __) => FullScreenImageSlider(
                           imgUrls: [db.getIconResource(ce.illustration).url],
-                          enableDownload: db.runtimeData.enableDownload,
+                          downloadEnabled: db.userData.downloadEnabled,
+                          connectivity: db.connectivity,
                           placeholder: placeholder,
                         ),
                       ),

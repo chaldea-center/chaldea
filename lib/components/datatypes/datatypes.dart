@@ -10,6 +10,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:chaldea/generated/l10n.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';

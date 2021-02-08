@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/craft/craft_list_page.dart';
@@ -280,12 +279,11 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
     urls.forEach((imgUrl, link) {
       sliders.add(GestureDetector(
         onTap: () => jumpToExternalLinkAlert(url: link, name: 'Mooncell'),
-        child: CachedNetworkImage(
+        child: CachedImage(
           imageUrl: imgUrl,
-          placeholder: (context, url) => Center(
-            child: CircularProgressIndicator(),
-          ),
-          errorWidget: (context, url, error) => Icon(Icons.error),
+          connectivity: db.connectivity,
+          downloadEnabled: true,
+          errorWidget: (context, url, error) => Container(),
         ),
       ));
     });

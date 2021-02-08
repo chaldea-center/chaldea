@@ -142,7 +142,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   value: db.userData.useMobileNetwork ?? false,
                   onChanged: (v) async {
                     db.userData.useMobileNetwork = v;
-                    await db.checkNetwork();
                     db.saveUserData();
                     setState(() {});
                   }),

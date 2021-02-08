@@ -32,7 +32,7 @@ dependencies:
   cached_network_image: ^2.5.0
   catcher:
     path: ../AndroidStudioProjects/catcher
-  connectivity: ^3.0.0-nullsafety.3
+  connectivity_plus: ^0.8.0
   cupertino_icons: ^1.0.1+1
   dio: ^3.0.10
   flutter_audio_desktop: ^0.0.8

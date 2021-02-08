@@ -1,5 +1,4 @@
 //@dart=2.12
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chaldea/components/components.dart';
 
 class MysticCodePage extends StatefulWidget {
@@ -249,12 +248,18 @@ class _MysticCodePageState extends State<MysticCodePage> {
                     pageBuilder: (context, _, __) => FullScreenImageSlider(
                       imgUrls: urls,
                       initialPage: i,
+                      downloadEnabled: db.userData.downloadEnabled,
+                      connectivity: db.connectivity,
                     ),
                   ));
                 },
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: CachedNetworkImage(imageUrl: urls[i]),
+                  child: CachedImage(
+                    imageUrl: urls[i],
+                    downloadEnabled: db.userData.downloadEnabled,
+                    connectivity: db.connectivity,
+                  ),
                 ),
               ),
           ],

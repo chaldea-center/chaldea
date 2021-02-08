@@ -41,6 +41,17 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     db.onAppUpdate = () {
       setState(() {});
     };
+    SystemChannels.lifecycle.setMessageHandler((msg) async {
+      debugPrint('SystemChannels> $msg');
+      if (msg == AppLifecycleState.resumed.toString()) {
+        // Actions when app is resumed
+        db.checkConnectivity();
+      } else if (msg == AppLifecycleState.inactive.toString()) {
+        db.saveUserData();
+        debugPrint('save userdata before being inactive');
+      }
+      return null;
+    });
   }
 
   @override
@@ -98,7 +109,6 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
       } else {
         gameDataLoadSuccess = true;
       }
-      db.checkNetwork();
     } catch (e, s) {
       logger.e('initiate app error.', e, s);
     }

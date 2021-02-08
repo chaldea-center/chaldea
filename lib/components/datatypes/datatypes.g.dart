@@ -1406,6 +1406,7 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
               : GLPKParams.fromJson(v as Map<String, dynamic>)),
       itemAbundantValue: $checkedConvert(json, 'itemAbundantValue',
           (v) => (v as List)?.map((e) => e as int)?.toList()),
+      contactInfo: $checkedConvert(json, 'contactInfo', (v) => v as String),
     );
     return val;
   });
@@ -1427,6 +1428,7 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'cmdCodeFilter': instance.cmdCodeFilter,
       'glpkParams': instance.glpkParams,
       'itemAbundantValue': instance.itemAbundantValue,
+      'contactInfo': instance.contactInfo,
     };
 
 SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {

@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';
@@ -56,7 +55,11 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
             GestureDetector(
               onTap: () => jumpToExternalLinkAlert(
                   url: mooncellFullLink(widget.name), name: 'Mooncell'),
-              child: CachedNetworkImage(imageUrl: record.bannerUrl),
+              child: CachedImage(
+                imageUrl: record.bannerUrl,
+                connectivity: db.connectivity,
+                downloadEnabled: db.userData.downloadEnabled,
+              ),
             ),
           ListTile(title: Text(S.of(context).main_record_fixed_drop)),
           buildClassifiedItemList(

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chaldea/components/components.dart';
 
 import '../servant_detail_page.dart';
@@ -30,7 +29,6 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
     super.initState();
     _tabController =
         TabController(length: svt.info.illustrations.length, vsync: this);
-    db.checkNetwork();
   }
 
   Widget placeholder(BuildContext context, String url) {
@@ -70,30 +68,28 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
           child: TabBarView(
             controller: _tabController,
             children: List.generate(svt.info.illustrations.length, (index) {
-              return CachedImageWidget(
-                url: imageUrls[index],
-                imageBuilder: (context, url) => GestureDetector(
-                  onTap: () async {
-                    int newIndex = await Navigator.of(context).push(
-                      PageRouteBuilder(
-                        opaque: false,
-                        fullscreenDialog: true,
-                        pageBuilder: (context, _, __) => FullScreenImageSlider(
-                          imgUrls: imageUrls,
-                          initialPage: index,
-                          enableDownload: db.runtimeData.enableDownload,
-                          placeholder: placeholder,
-                        ),
-                      ),
-                    );
-                    _tabController.animateTo(newIndex);
-                  },
-                  child: CachedNetworkImage(
-                    imageUrl: url,
-                    placeholder: CachedImageWidget.defaultIndicatorBuilder,
-                  ),
+              return GestureDetector(
+                onTap: () async {
+                  int newIndex =
+                      await Navigator.of(context).push(PageRouteBuilder(
+                    opaque: false,
+                    fullscreenDialog: true,
+                    pageBuilder: (context, _, __) => FullScreenImageSlider(
+                      imgUrls: imageUrls,
+                      initialPage: index,
+                      downloadEnabled: db.userData.downloadEnabled,
+                      connectivity: db.connectivity,
+                      placeholder: placeholder,
+                    ),
+                  ));
+                  if (newIndex != null) _tabController.animateTo(newIndex);
+                },
+                child: CachedImage(
+                  imageUrl: imageUrls[index],
+                  placeholder: placeholder,
+                  connectivity: db.connectivity,
+                  downloadEnabled: db.userData.downloadEnabled,
                 ),
-                placeholder: placeholder,
               );
             }),
           ),

@@ -34,6 +34,8 @@ const double kGridIconSize = 110 * 0.5 + 6;
 ///   - if buildNumber not defined, return version instead
 ///  - Windows: Not Support
 class AppInfo {
+  AppInfo._();
+
   static PackageInfo? _info;
   static String? _uniqueId;
 

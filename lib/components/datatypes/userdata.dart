@@ -35,6 +35,9 @@ class UserData {
   GLPKParams glpkParams;
   List<int> itemAbundantValue;
 
+  // extra
+  String contactInfo;
+
   @JsonKey(ignore: true)
   StreamController<UserData> onUserUpdated = StreamController.broadcast();
 
@@ -44,6 +47,14 @@ class UserData {
 
   void dispose() {
     onUserUpdated.close();
+  }
+
+  bool get downloadEnabled {
+    // return useMobileNetwork ?? true;
+    if (useMobileNetwork || db.connectivity == ConnectivityResult.wifi) {
+      return true;
+    }
+    return false;
   }
 
   UserData({
@@ -63,6 +74,7 @@ class UserData {
     this.cmdCodeFilter,
     this.glpkParams,
     this.itemAbundantValue,
+    this.contactInfo,
   }) {
     // not initiate language: auto-change language if not set yet.
     String defaultName = 'default';

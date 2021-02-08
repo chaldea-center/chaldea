@@ -134,7 +134,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     super.initState();
     // reset params
     db.userData.glpkParams ??= GLPKParams();
-    params = db.userData.glpkParams;
+    params = db.userData.glpkParams..validate();
     final Map<String, int> objective =
         widget.objectiveCounts ?? params.objectiveCounts;
     params

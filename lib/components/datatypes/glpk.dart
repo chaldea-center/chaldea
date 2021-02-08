@@ -155,6 +155,30 @@ class GLPKParams {
         integerResult = other.integerResult,
         useAP20 = other.useAP20;
 
+  void validate() {
+    // Need to remove item, so from end to start
+    rows ??= [];
+    counts ??= [];
+    weights ??= [];
+    counts.length = weights.length = rows.length;
+    for (int i = rows.length - 1; i >= 0; i--) {
+      if (!db.gameData.glpk.rowNames.contains(rows[i])) {
+        removeAt(i);
+      } else {
+        weights[i] ??= 1;
+        if (weights[i] < 0) weights[i] = 1;
+        counts[i] ??= 0;
+        if (counts[i] < 0) counts[i] = 0;
+      }
+    }
+    minCost ??= 0;
+    costMinimize ??= true;
+    maxColNum ??= -1;
+    extraCols ??= [];
+    integerResult ??= false;
+    useAP20 ??= true;
+  }
+
   void sortByItem() {
     // rows,counts,weights,countControllers,weightControllers
     final _getSortVal = (String key) {
@@ -218,8 +242,11 @@ class GLPKParams {
   }
 
   void remove(String item) {
-    final index = rows.indexOf(item);
-    if (index >= 0) {
+    return removeAt(rows.indexOf(item));
+  }
+
+  void removeAt(int index) {
+    if (index >= 0 && index < rows.length) {
       rows.removeAt(index);
       counts.removeAt(index);
       weights.removeAt(index);

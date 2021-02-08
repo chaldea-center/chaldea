@@ -2,6 +2,8 @@
 import 'dart:math' show min;
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chaldea/components/components.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -9,21 +11,23 @@ import 'package:getwidget/components/carousel/gf_carousel.dart';
 
 import 'config.dart';
 
-typedef Widget UriImageWidgetBuilder(BuildContext context, String? url);
-
 class FullScreenImageSlider extends StatefulWidget {
   final List<String?> imgUrls;
   final int initialPage;
-  final bool? enableDownload;
-  final UriImageWidgetBuilder? placeholder;
+  final ConnectivityResult? connectivity;
+  final bool? downloadEnabled;
+  final PlaceholderWidgetBuilder? placeholder;
+  final LoadingErrorWidgetBuilder? errorWidget;
 
-  const FullScreenImageSlider(
-      {Key? key,
-      required this.imgUrls,
-      this.initialPage = 0,
-      this.enableDownload,
-      this.placeholder})
-      : super(key: key);
+  const FullScreenImageSlider({
+    Key? key,
+    required this.imgUrls,
+    this.initialPage = 0,
+    this.connectivity,
+    this.downloadEnabled,
+    this.placeholder,
+    this.errorWidget,
+  }) : super(key: key);
 
   @override
   _FullScreenImageSliderState createState() => _FullScreenImageSliderState();
@@ -65,17 +69,11 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
           body: GFCarousel(
             items: List.generate(
               widget.imgUrls.length,
-              (index) => CachedImageWidget(
-                url: widget.imgUrls[index],
-                enableDownload: widget.enableDownload,
-                imageBuilder: (context, url) => CachedNetworkImage(
-                  imageUrl: url,
-                  placeholder: CachedImageWidget.defaultIndicatorBuilder,
-                  errorWidget: (context, url, error) => Center(
-                    child: Text('Error loading network image.\n$error'),
-                  ),
-                ),
+              (index) => CachedImage(
+                imageUrl: widget.imgUrls[index],
                 placeholder: widget.placeholder,
+                connectivity: widget.connectivity,
+                downloadEnabled: widget.downloadEnabled,
               ),
             ),
             autoPlay: false,
@@ -91,67 +89,213 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
   }
 }
 
-class CachedImageWidget extends StatefulWidget {
-  final String? url;
-  final bool? enableDownload;
-  final UriImageWidgetBuilder imageBuilder;
-  final UriImageWidgetBuilder? placeholder;
+class CachedImage extends StatefulWidget {
+  final String? imageUrl;
+  final ImageWidgetBuilder? imageBuilder;
+  final PlaceholderWidgetBuilder? placeholder;
+  final ProgressIndicatorBuilder? progressIndicatorBuilder;
+  final LoadingErrorWidgetBuilder? errorWidget;
 
-  static get defaultIndicatorBuilder {
-    return (BuildContext context, String url) => LayoutBuilder(
-          builder: (context, constraints) {
-            final width = 0.3 *
-                min(constraints.biggest.width, constraints.biggest.height);
-            return Center(
-              child: SizedBox(
-                width: width,
-                height: width,
-                child: CircularProgressIndicator(),
-              ),
-            );
-          },
-        );
-  }
+  /// [ConnectivityResult.none] or others
+  final ConnectivityResult? connectivity;
 
-  const CachedImageWidget(
-      {Key? key,
-      required this.url,
-      this.enableDownload,
-      required this.imageBuilder,
-      this.placeholder})
-      : super(key: key);
+  /// If false, only use already cached image or placeholder.
+  /// Default to true if omitted
+  final bool? downloadEnabled;
+
+  final Map<String, String>? httpHeaders;
+  final Duration fadeOutDuration;
+  final Curve fadeOutCurve;
+  final Duration fadeInDuration;
+  final Curve fadeInCurve;
+  final double? width;
+  final double? height;
+  final BoxFit? fit;
+  final AlignmentGeometry alignment;
+  final ImageRepeat repeat;
+  final bool matchTextDirection;
+  final BaseCacheManager? cacheManager;
+  final bool useOldImageOnUrlChange;
+  final Color? color;
+  final FilterQuality filterQuality;
+  final BlendMode? colorBlendMode;
+  final Duration? placeholderFadeInDuration;
+  final int? memCacheWidth;
+  final int? memCacheHeight;
+  final String? cacheKey;
+  final int? maxWidthDiskCache;
+  final int? maxHeightDiskCache;
+
+  CachedImage({
+    Key? key,
+    required this.imageUrl,
+    this.imageBuilder,
+    this.placeholder,
+    this.progressIndicatorBuilder,
+    this.errorWidget,
+    this.connectivity,
+    this.downloadEnabled,
+    this.httpHeaders,
+    this.fadeOutDuration = const Duration(milliseconds: 1000),
+    this.fadeOutCurve = Curves.easeOut,
+    this.fadeInDuration = const Duration(milliseconds: 500),
+    this.fadeInCurve = Curves.easeIn,
+    this.width,
+    this.height,
+    this.fit,
+    this.alignment = Alignment.center,
+    this.repeat = ImageRepeat.noRepeat,
+    this.matchTextDirection = false,
+    this.cacheManager,
+    this.useOldImageOnUrlChange = false,
+    this.color,
+    this.filterQuality = FilterQuality.low,
+    this.colorBlendMode,
+    this.placeholderFadeInDuration,
+    this.memCacheWidth,
+    this.memCacheHeight,
+    this.cacheKey,
+    this.maxWidthDiskCache,
+    this.maxHeightDiskCache,
+  }) : super(key: key);
 
   @override
-  _CachedImageWidgetState createState() => _CachedImageWidgetState();
+  _CachedImageState createState() => _CachedImageState();
+
+  /// If download is available, use [CircularProgressIndicator].
+  /// Otherwise, use an empty Container.
+  static Widget defaultProgressPlaceholder(BuildContext context, String? url) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double width =
+            0.3 * min(constraints.biggest.width, constraints.biggest.height);
+        width = min(width, 200);
+        return Center(
+          child: SizedBox(
+            width: width,
+            height: width,
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+    );
+  }
+
+  static Widget defaultErrorWidget(
+      BuildContext context, String? url, dynamic error) {
+    return Padding(
+      padding: EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Image(image: db.errorImage),
+          if (error != null) Text(error.toString()),
+          if (url != null) Text(url)
+        ],
+      ),
+    );
+  }
 }
 
-class _CachedImageWidgetState extends State<CachedImageWidget> {
-  final manager = DefaultCacheManager(); //singleton
-  bool? cached;
+class _CachedImageState extends State<CachedImage> {
+  bool cached = false;
+  BaseCacheManager? cacheManager;
+  String? cacheKey;
 
   @override
   void initState() {
-    super.initState();
-    if (widget.url?.isNotEmpty == true) {
-      manager.getFileFromCache(widget.url).then((info) {
-        if (mounted) {
+    cacheManager = widget.cacheManager ?? DefaultCacheManager();
+    cacheKey = widget.cacheKey ?? widget.imageUrl;
+    if (cacheKey?.isNotEmpty == true)
+      cacheManager!.getFileFromCache(cacheKey).then((FileInfo? info) {
+        if (mounted)
           setState(() {
-            cached = info != null; // ignore: unnecessary_null_comparison
+            cached = info?.file?.existsSync() == true;
           });
-        }
       });
-    }
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return cached == null
-        ? Container()
-        : cached == true ||
-                (widget.enableDownload ?? db.runtimeData.enableDownload)
-            ? widget.imageBuilder(context, widget.url)
-            : widget.placeholder == null
-                ? Center(child: Text('Downloading disabled.'))
-                : widget.placeholder!(context, widget.url);
+    bool usePlaceholder = true;
+    late Widget child;
+    if (widget.imageUrl?.isNotEmpty != true) {
+      usePlaceholder = true;
+    } else if (cached ||
+        (widget.downloadEnabled != false &&
+            widget.connectivity != ConnectivityResult.none)) {
+      // use CachedNetworkImage
+      usePlaceholder = false;
+    } else {
+      usePlaceholder = true;
+    }
+
+    Widget Function(BuildContext, String?) placeholder = widget.placeholder ??
+        (canDownload()
+            ? CachedImage.defaultProgressPlaceholder
+            : (_, __) => Container());
+    if (usePlaceholder) {
+      child = placeholder(context, widget.imageUrl);
+    } else {
+      child = CachedNetworkImage(
+        imageUrl: widget.imageUrl,
+        httpHeaders: widget.httpHeaders,
+        imageBuilder: widget.imageBuilder,
+        placeholder: placeholder,
+        progressIndicatorBuilder: widget.progressIndicatorBuilder,
+        errorWidget: widget.errorWidget ?? CachedImage.defaultErrorWidget,
+        fadeOutDuration: widget.fadeOutDuration,
+        fadeOutCurve: widget.fadeOutCurve,
+        fadeInDuration: widget.fadeInDuration,
+        fadeInCurve: widget.fadeInCurve,
+        width: widget.width,
+        height: widget.height,
+        fit: widget.fit,
+        alignment: widget.alignment,
+        repeat: widget.repeat,
+        matchTextDirection: widget.matchTextDirection,
+        cacheManager: widget.cacheManager,
+        useOldImageOnUrlChange: widget.useOldImageOnUrlChange,
+        color: widget.color,
+        filterQuality: widget.filterQuality,
+        colorBlendMode: widget.colorBlendMode,
+        placeholderFadeInDuration: widget.placeholderFadeInDuration,
+        memCacheWidth: widget.memCacheWidth,
+        memCacheHeight: widget.memCacheHeight,
+        cacheKey: widget.cacheKey,
+        maxWidthDiskCache: widget.maxWidthDiskCache,
+        maxHeightDiskCache: widget.maxHeightDiskCache,
+      );
+    }
+
+    return GestureDetector(
+      onLongPress: () {
+        SimpleCancelOkDialog(
+          title: Text(S.of(context).clear_cache),
+          content: Text(cacheKey ?? ''),
+          onTapOk: () async {
+            await cacheManager?.emptyCache();
+            setState(() {
+              cached = false;
+            });
+          },
+        ).show(context);
+      },
+      child: child,
+    );
+  }
+
+  bool canDownload() {
+    if (widget.connectivity == ConnectivityResult.none) {
+      return false;
+    }
+    //widget.connectivity == ConnectivityResult.wifi ||
+    if (widget.downloadEnabled != false) {
+      return true;
+    }
+    return false;
   }
 }
