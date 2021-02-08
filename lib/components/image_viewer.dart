@@ -9,10 +9,10 @@ import 'package:getwidget/components/carousel/gf_carousel.dart';
 
 import 'config.dart';
 
-typedef Widget UriImageWidgetBuilder(BuildContext context, String url);
+typedef Widget UriImageWidgetBuilder(BuildContext context, String? url);
 
 class FullScreenImageSlider extends StatefulWidget {
-  final List<String> imgUrls;
+  final List<String?> imgUrls;
   final int initialPage;
   final bool? enableDownload;
   final UriImageWidgetBuilder? placeholder;
@@ -50,22 +50,22 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: WillPopScope(
-        onWillPop: () async {
+    return WillPopScope(
+      onWillPop: () async {
+        await resetSystemUI();
+        Navigator.of(context).pop(_curIndex);
+        return false;
+      },
+      child: GestureDetector(
+        onTap: () async {
           await resetSystemUI();
           Navigator.of(context).pop(_curIndex);
-          return false;
         },
-        child: GFCarousel(
-          items: List.generate(
-            widget.imgUrls.length,
-            (index) => GestureDetector(
-              onTap: () async {
-                await resetSystemUI();
-                Navigator.of(context).pop(_curIndex);
-              },
-              child: CachedImageWidget(
+        child: Scaffold(
+          body: GFCarousel(
+            items: List.generate(
+              widget.imgUrls.length,
+              (index) => CachedImageWidget(
                 url: widget.imgUrls[index],
                 enableDownload: widget.enableDownload,
                 imageBuilder: (context, url) => CachedNetworkImage(
@@ -78,13 +78,13 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
                 placeholder: widget.placeholder,
               ),
             ),
+            autoPlay: false,
+            viewportFraction: 1.0,
+            height: MediaQuery.of(context).size.height,
+            enableInfiniteScroll: false,
+            initialPage: _curIndex,
+            onPageChanged: (v) => _curIndex = v,
           ),
-          autoPlay: false,
-          viewportFraction: 1.0,
-          height: MediaQuery.of(context).size.height,
-          enableInfiniteScroll: false,
-          initialPage: _curIndex,
-          onPageChanged: (v) => _curIndex = v,
         ),
       ),
     );
@@ -92,7 +92,7 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
 }
 
 class CachedImageWidget extends StatefulWidget {
-  final String url;
+  final String? url;
   final bool? enableDownload;
   final UriImageWidgetBuilder imageBuilder;
   final UriImageWidgetBuilder? placeholder;
@@ -132,13 +132,15 @@ class _CachedImageWidgetState extends State<CachedImageWidget> {
   @override
   void initState() {
     super.initState();
-    manager.getFileFromCache(widget.url).then((info) {
-      if (mounted) {
-        setState(() {
-          cached = info != null; // ignore: unnecessary_null_comparison
-        });
-      }
-    });
+    if (widget.url?.isNotEmpty == true) {
+      manager.getFileFromCache(widget.url).then((info) {
+        if (mounted) {
+          setState(() {
+            cached = info != null; // ignore: unnecessary_null_comparison
+          });
+        }
+      });
+    }
   }
 
   @override

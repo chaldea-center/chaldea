@@ -1,6 +1,7 @@
 // @dart=2.12
 import 'dart:io';
 
+import 'package:device_info/device_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -34,6 +35,7 @@ const double kGridIconSize = 110 * 0.5 + 6;
 ///  - Windows: Not Support
 class AppInfo {
   static PackageInfo? _info;
+  static String? _uniqueId;
 
   /// resolve when init app, so no need to check null or resolve every time
   /// TODO: wait official support for windows
@@ -50,6 +52,62 @@ class AppInfo {
       logger.i('Fail to read package info, asset instead: $nameAndCode');
       return packageInfo;
     });
+    final deviceInfoPlugin = DeviceInfoPlugin();
+    if (Platform.isAndroid) {
+      _uniqueId = (await deviceInfoPlugin.androidInfo).androidId;
+    } else if (Platform.isIOS) {
+      _uniqueId = (await deviceInfoPlugin.iosInfo).identifierForVendor;
+    } else if (Platform.isWindows) {
+      // reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v "ProductId"
+      // Output:
+      // HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion
+      //     ProductId    REG_SZ    XXXXX-XXXXX-XXXXX-XXXXX
+      final result = await Process.run(
+        'reg',
+        [
+          'query',
+          r'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion',
+          '/v',
+          'ProductId'
+        ],
+        runInShell: true,
+      );
+      String resultString = result.stdout.toString().trim();
+      print('Windows Product Id query:\n$resultString');
+      if (resultString.contains('ProductId') &&
+          resultString.contains('REG_SZ')) {
+        _uniqueId = resultString.split(RegExp(r'\s+')).last;
+      }
+    } else if (Platform.isMacOS) {
+      // https://stackoverflow.com/a/944103
+      // ioreg -rd1 -c IOPlatformExpertDevice | awk '/IOPlatformUUID/ { split($0, line, "\""); printf("%s\n", line[4]); }'
+      // the filter is shell feature so it's not used
+      // Output containing:
+      //  "IOPlatformUUID" = "8-4-4-4-12 standard uuid"
+      // need to parse output
+      final result = await Process.run(
+        'ioreg',
+        [
+          '-rd1',
+          '-c',
+          'IOPlatformExpertDevice',
+        ],
+        runInShell: true,
+      );
+      for (String line in result.stdout.toString().split('\n')) {
+        if (line.contains('IOPlatformUUID')) {
+          final _uuid =
+              RegExp(r'[0-9a-zA-Z\-]{35,36}').firstMatch(line)?.group(0);
+          if (_uuid != null && _uuid.isNotEmpty) {
+            _uniqueId = _uuid;
+            break;
+          }
+        }
+      }
+    } else {
+      throw UnimplementedError(Platform.operatingSystem);
+    }
+    logger.i('Unique ID: $_uniqueId');
     return _info!;
   }
 
@@ -74,6 +132,8 @@ class AppInfo {
     if (buildNumber > 0) s += '($buildNumber)';
     return s;
   }
+
+  static String? get uniqueId => _uniqueId;
 
   /// currently supported mobile or desktop
   static bool get isMobile => Platform.isAndroid || Platform.isIOS;
