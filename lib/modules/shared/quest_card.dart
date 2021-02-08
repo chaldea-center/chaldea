@@ -63,17 +63,23 @@ class _QuestCardState extends State<QuestCard> {
 
   List<Widget> _buildBattles(List<Battle> battles) {
     List<Widget> children = [];
+    String? lastPlace, lastPlaceJp;
     for (int i = 0; i < battles.length; i++) {
       final battle = battles[i];
-      String place = battle.place;
-      if (battle.placeJp?.isNotEmpty == true)
-        place = place + '/' + battle.placeJp;
+      String? place =
+          battle.place?.isNotEmpty == true ? battle.place : lastPlace;
+      String? placeJp =
+          battle.placeJp?.isNotEmpty == true ? battle.placeJp : lastPlaceJp;
+      lastPlace = place;
+      lastPlaceJp = placeJp;
+      String shownPlace = place ?? '';
+      if (placeJp != null) shownPlace += '/' + placeJp;
       children.add(Row(children: <Widget>[
         Text('  ${i + 1}/${battles.length}  '),
         Expanded(flex: 1, child: Center(child: Text('AP ${battle.ap}'))),
         Expanded(
           flex: 4,
-          child: Center(child: AutoSizeText('$place', maxLines: 1)),
+          child: Center(child: AutoSizeText(shownPlace, maxLines: 1)),
         ),
       ]));
       for (int j = 0; j < battle.enemies.length; j++) {
@@ -162,7 +168,11 @@ class _QuestCardState extends State<QuestCard> {
           lines.add(AutoSizeText(name!,
               maxFontSize: 14, maxLines: 1, textAlign: TextAlign.center));
         lines.add(AutoSizeText('${enemy.className[i]} ${enemy.hp[i]}',
-            maxFontSize: 12, maxLines: 1, textAlign: TextAlign.center));
+            maxFontSize: 12,
+            // ensure HP is shown completely
+            minFontSize: 4,
+            maxLines: 1,
+            textAlign: TextAlign.center));
       }
       return Column(
         mainAxisSize: MainAxisSize.min,
