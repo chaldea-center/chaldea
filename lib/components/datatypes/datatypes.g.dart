@@ -522,6 +522,8 @@ GLPKParams _$GLPKParamsFromJson(Map<String, dynamic> json) {
           json, 'counts', (v) => (v as List)?.map((e) => e as int)?.toList()),
       weights: $checkedConvert(json, 'weights',
           (v) => (v as List)?.map((e) => (e as num)?.toDouble())?.toList()),
+      blacklist: $checkedConvert(json, 'blacklist',
+          (v) => (v as List)?.map((e) => e as String)?.toSet()),
       minCost: $checkedConvert(json, 'minCost', (v) => v as int),
       costMinimize: $checkedConvert(json, 'costMinimize', (v) => v as bool),
       maxColNum: $checkedConvert(json, 'maxColNum', (v) => v as int),
@@ -539,6 +541,7 @@ Map<String, dynamic> _$GLPKParamsToJson(GLPKParams instance) =>
       'rows': instance.rows,
       'counts': instance.counts,
       'weights': instance.weights,
+      'blacklist': instance.blacklist?.toList(),
       'minCost': instance.minCost,
       'costMinimize': instance.costMinimize,
       'maxColNum': instance.maxColNum,
@@ -1241,8 +1244,10 @@ ServantStatus _$ServantStatusFromJson(Map<String, dynamic> json) {
               : ServantPlan.fromJson(v as Map<String, dynamic>)),
       skillIndex: $checkedConvert(json, 'skillIndex',
           (v) => (v as List)?.map((e) => e as int)?.toList()),
-      tdIndex: $checkedConvert(json, 'tdIndex', (v) => v as int),
+      npIndex: $checkedConvert(json, 'npIndex', (v) => v as int),
+      npLv: $checkedConvert(json, 'npLv', (v) => v as int),
       tdLv: $checkedConvert(json, 'tdLv', (v) => v as int),
+      priority: $checkedConvert(json, 'priority', (v) => v as int),
     );
     return val;
   });
@@ -1251,9 +1256,11 @@ ServantStatus _$ServantStatusFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$ServantStatusToJson(ServantStatus instance) =>
     <String, dynamic>{
       'curVal': instance.curVal,
-      'skillIndex': instance.skillIndex,
-      'tdIndex': instance.tdIndex,
+      'npLv': instance.npLv,
       'tdLv': instance.tdLv,
+      'skillIndex': instance.skillIndex,
+      'npIndex': instance.npIndex,
+      'priority': instance.priority,
     };
 
 ServantPlan _$ServantPlanFromJson(Map<String, dynamic> json) {

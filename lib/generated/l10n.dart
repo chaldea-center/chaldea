@@ -2869,6 +2869,96 @@ class S {
       args: [],
     );
   }
+
+  /// `黑名单`
+  String get blacklist {
+    return Intl.message(
+      '黑名单',
+      name: 'blacklist',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `加入黑名单`
+  String get add_to_blacklist {
+    return Intl.message(
+      '加入黑名单',
+      name: 'add_to_blacklist',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `移出黑名单`
+  String get remove_from_blacklist {
+    return Intl.message(
+      '移出黑名单',
+      name: 'remove_from_blacklist',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Free进度`
+  String get free_progress {
+    return Intl.message(
+      'Free进度',
+      name: 'free_progress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `日服最新`
+  String get free_progress_newest {
+    return Intl.message(
+      '日服最新',
+      name: 'free_progress_newest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `规划目标`
+  String get plan_objective {
+    return Intl.message(
+      '规划目标',
+      name: 'plan_objective',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `效率类型`
+  String get efficiency_type {
+    return Intl.message(
+      '效率类型',
+      name: 'efficiency_type',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `20AP效率`
+  String get efficiency_type_ap {
+    return Intl.message(
+      '20AP效率',
+      name: 'efficiency_type_ap',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `每场掉率`
+  String get efficiency_type_drop {
+    return Intl.message(
+      '每场掉率',
+      name: 'efficiency_type_drop',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

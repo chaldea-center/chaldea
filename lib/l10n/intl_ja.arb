@@ -283,5 +283,14 @@
   "clear_cache": "キャッシュを消去",
   "clear_cache_hint": "イラスト、ボイスなど",
   "clear_cache_finish": "キャッシュがクリアされました",
-  "join_beta": "ベータ版に参加する"
+  "join_beta": "ベータ版に参加する",
+  "blacklist": "ブラックリスト",
+  "add_to_blacklist": "ブラックリストに追加",
+  "remove_from_blacklist": "ブラックリストから削除",
+  "free_progress": "クエスト",
+  "free_progress_newest": "最新",
+  "plan_objective": "プラン目標",
+  "efficiency_type": "効率タイプ",
+  "efficiency_type_ap": "20AP効率",
+  "efficiency_type_drop": "ドロップ率"
 }

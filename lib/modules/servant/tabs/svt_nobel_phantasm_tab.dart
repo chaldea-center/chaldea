@@ -28,15 +28,15 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab> {
     if (svt.nobelPhantasm == null || svt.nobelPhantasm.length == 0) {
       return Container(child: Center(child: Text('No NobelPhantasm Data')));
     }
-    if (status.tdIndex < 0 || status.tdIndex >= svt.nobelPhantasm.length)
-      status.tdIndex = 0;
+    if (status.npIndex < 0 || status.npIndex >= svt.nobelPhantasm.length)
+      status.npIndex = 0;
 
-    final td = svt.nobelPhantasm[status.tdIndex];
+    final td = svt.nobelPhantasm[status.npIndex];
     return ListView(
       children: <Widget>[
         TileGroup(
           children: <Widget>[
-            buildToggle(status.tdIndex),
+            buildToggle(status.npIndex),
             buildHeader(td),
             for (Effect e in td.effects) ...buildEffect(e)
           ],
@@ -79,7 +79,7 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab> {
                 List.generate(svt.nobelPhantasm.length, (i) => selected == i),
             onPressed: (no) {
               setState(() {
-                status.tdIndex = no;
+                status.npIndex = no;
               });
             },
           ),

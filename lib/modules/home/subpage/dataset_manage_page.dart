@@ -127,7 +127,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 subtitle: Text(S.of(context).reset_svt_enhance_state_hint),
                 onTap: () {
                   db.curUser.servants.forEach((svtNo, svt) {
-                    svt.tdIndex = 0;
+                    svt.npIndex = 0;
                     svt.skillIndex.fillRange(0, svt.skillIndex.length, null);
                   });
                   db.saveUserData();

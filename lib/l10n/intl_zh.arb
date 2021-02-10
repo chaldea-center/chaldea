@@ -282,5 +282,14 @@
   "clear_cache": "清除缓存",
   "clear_cache_hint": "包括卡面语音等",
   "clear_cache_finish": "缓存已清理",
-  "join_beta": "加入Beta版"
+  "join_beta": "加入Beta版",
+  "blacklist": "黑名单",
+  "add_to_blacklist": "加入黑名单",
+  "remove_from_blacklist": "移出黑名单",
+  "free_progress": "Free进度",
+  "free_progress_newest": "日服最新",
+  "plan_objective": "规划目标",
+  "efficiency_type": "效率类型",
+  "efficiency_type_ap": "20AP效率",
+  "efficiency_type_drop": "每场掉率"
 }

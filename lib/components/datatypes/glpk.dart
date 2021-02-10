@@ -83,6 +83,7 @@ class GLPKParams {
   List<String> rows;
   List<int> counts;
   List<double> weights;
+  Set<String> blacklist;
 
   /// generated from [rows] and [counts], only used when processing data
   /// before transferred to js
@@ -118,6 +119,7 @@ class GLPKParams {
     this.rows,
     this.counts,
     this.weights,
+    this.blacklist,
     this.minCost,
     this.costMinimize,
     this.maxColNum,
@@ -136,6 +138,7 @@ class GLPKParams {
       weights[i] ??= 1.0;
     }
     assert(rows.length == counts.length);
+    blacklist ??= Set();
     minCost ??= 0;
     costMinimize ??= true;
     maxColNum ??= -1;
@@ -148,6 +151,7 @@ class GLPKParams {
       : rows = List.from(other.rows),
         counts = List.from(other.counts),
         weights = List.from(other.weights),
+        blacklist = Set.from(other.blacklist),
         minCost = other.minCost,
         costMinimize = other.costMinimize,
         maxColNum = other.maxColNum,
@@ -171,6 +175,7 @@ class GLPKParams {
         if (counts[i] < 0) counts[i] = 0;
       }
     }
+    blacklist ??= Set();
     minCost ??= 0;
     costMinimize ??= true;
     maxColNum ??= -1;
@@ -286,6 +291,9 @@ class GLPKSolution {
 
   //double
   List<GLPKVariable> weightVars;
+
+  @JsonKey(ignore: true)
+  GLPKParams params;
 
   GLPKSolution(
       {this.destination = 0,

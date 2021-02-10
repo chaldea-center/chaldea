@@ -64,29 +64,40 @@ class User {
 @JsonSerializable(checked: true)
 class ServantStatus {
   ServantPlan curVal;
+  int npLv;
 
-  /// null-not set, >=0 index
-  List<int> skillIndex; //length=3
-  int tdIndex;
+  @Deprecated('Use "npLv" instead')
   int tdLv;
+
+  /// null-not set, >=0 index, sorted from non-enhanced to enhanced
+  List<int> skillIndex; //length=3
+  /// default 0, origin order in wiki
+  int npIndex;
+
+  /// priority 0-5
+  int priority;
 
   ServantStatus({
     this.curVal,
     this.skillIndex,
-    this.tdIndex,
+    this.npIndex,
+    this.npLv,
     this.tdLv,
+    this.priority,
   }) {
     curVal ??= ServantPlan();
-    skillIndex ??= List.filled(3, null);
-    tdIndex ??= 0;
-    tdLv ??= 1;
+    npLv ??= tdLv ?? 1; // ignore: deprecated_member_use_from_same_package
+    skillIndex ??= <int>[]..length = 3;
+    npIndex ??= 0;
+    priority ??= 0;
   }
 
   void reset() {
-    tdLv = 1;
-    tdIndex = 0;
-    skillIndex.fillRange(0, 3, 0);
     curVal.reset();
+    skillIndex.fillRange(0, 3, 0);
+    npIndex = 0;
+    npLv = 1;
+    priority = 0;
   }
 
   factory ServantStatus.fromJson(Map<String, dynamic> data) =>

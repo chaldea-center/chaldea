@@ -434,6 +434,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
           await solver.calculate(data: db.gameData.glpk, params: params);
       running = false;
       solution.destination = planOrEff ? 1 : 2;
+      solution.params = params;
       if (widget.onSolved != null) {
         widget.onSolved(solution);
       }

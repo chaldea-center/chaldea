@@ -176,11 +176,11 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         buildPlanRow(
           leading: db.getIconImage('宝具强化', width: 33),
           title: S.of(context).nobel_phantasm_level,
-          start: status.tdLv,
+          start: status.npLv,
           minVal: 1,
           maxVal: 5,
           onValueChanged: (_value, _) {
-            status.tdLv = _value;
+            status.npLv = _value;
             curVal.favorite = true;
             plan.favorite = true;
             db.userData.broadcastUserUpdate();

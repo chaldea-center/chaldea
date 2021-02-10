@@ -422,7 +422,7 @@ class ServantListPageState extends State<ServantListPage>
           final status = db.curUser.svtStatusOf(svt.no);
           String statusText;
           if (status.curVal.favorite) {
-            statusText = '${status.tdLv}\n'
+            statusText = '${status.npLv}\n'
                 '${status.curVal.ascension}-'
                 '${status.curVal.skills[0]}/'
                 '${status.curVal.skills[1]}/'

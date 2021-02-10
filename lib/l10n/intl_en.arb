@@ -283,5 +283,14 @@
   "clear_cache": "Clear cache",
   "clear_cache_hint": "Including illustrations, voices",
   "clear_cache_finish": "Cache cleared",
-  "join_beta": "Join Beta Program"
+  "join_beta": "Join Beta Program",
+  "blacklist": "Blacklist",
+  "add_to_blacklist": "Add to blacklist",
+  "remove_from_blacklist": "Remove from blacklist",
+  "free_progress": "Quest Limit",
+  "free_progress_newest": "Latest(JP)",
+  "plan_objective": "Plan Objective",
+  "efficiency_type": "Efficient",
+  "efficiency_type_ap": "20AP Rate",
+  "efficiency_type_drop": "Drop Rate"
 }

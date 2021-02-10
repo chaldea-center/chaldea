@@ -219,6 +219,11 @@ GLPKData _preProcess({required GLPKData data, required GLPKParams params}) {
     if (data.colNames.contains(col)) cols.add(col);
   });
 
+  // remove quests in blacklist
+  params.blacklist.forEach((col) {
+    data.removeCol(col);
+  });
+
   // remove unused quests
   // create a new list since iterator will change the original values
   List.from(data.colNames).forEach((col) {
