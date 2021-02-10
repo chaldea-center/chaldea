@@ -58,7 +58,6 @@ dependencies:
   share: '>=0.6.5+4 <2.0.0'
   shared_preferences: '>=0.5.12+4 <2.0.0'
   url_launcher: ^6.0.0-nullsafety.6
-  vs_scrollbar: ^0.1.2
 
 dev_dependencies:
   flutter_test:

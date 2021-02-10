@@ -12,8 +12,7 @@ class CmdCodeListPage extends StatefulWidget {
   State<StatefulWidget> createState() => CmdCodeListPageState();
 }
 
-class CmdCodeListPageState extends State<CmdCodeListPage>
-    with DefaultScrollBarMixin {
+class CmdCodeListPageState extends State<CmdCodeListPage> {
   CmdCodeFilterData filterData;
   List<CommandCode> shownList = [];
   TextEditingController _inputController = TextEditingController();
@@ -159,7 +158,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
     });
     shownList.sort((a, b) => CommandCode.compare(
         a, b, filterData.sortKeys, filterData.sortReversed));
-    return wrapDefaultScrollBar(
+    return Scrollbar(
       controller: _scrollController,
       child: filterData.useGrid ? _buildGridView() : _buildListView(),
     );

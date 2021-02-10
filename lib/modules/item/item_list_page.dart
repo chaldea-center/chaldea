@@ -17,7 +17,7 @@ class ItemListPage extends StatefulWidget {
 }
 
 class ItemListPageState extends State<ItemListPage>
-    with SingleTickerProviderStateMixin, DefaultScrollBarMixin {
+    with SingleTickerProviderStateMixin {
   TabController _tabController;
   bool filtered = false;
   final List<int> categories = [1, 2, 3];
@@ -264,7 +264,7 @@ class ItemListTab extends StatefulWidget {
   _ItemListTabState createState() => _ItemListTabState();
 }
 
-class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
+class _ItemListTabState extends State<ItemListTab> {
   // TextInputsManager<Item> inputsManager = TextInputsManager();
   final qpKey = 'QP';
 
@@ -355,8 +355,7 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
           separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
           itemCount: children.length,
         );
-        return wrapDefaultScrollBar(
-            controller: _scrollController, child: child);
+        return Scrollbar(controller: _scrollController, child: child);
       },
     );
     Widget actionBar;

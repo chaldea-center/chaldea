@@ -15,8 +15,7 @@ class ExchangeTicketTab extends StatefulWidget {
   _ExchangeTicketTabState createState() => _ExchangeTicketTabState();
 }
 
-class _ExchangeTicketTabState extends State<ExchangeTicketTab>
-    with DefaultScrollBarMixin {
+class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
   final AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
   ScrollController _scrollController;
 
@@ -43,7 +42,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab>
     return StreamBuilder<ItemStatistics>(
       initialData: db.itemStat,
       stream: db.itemStat.onUpdated.stream,
-      builder: (context, snapshot) => wrapDefaultScrollBar(
+      builder: (context, snapshot) => Scrollbar(
         controller: _scrollController,
         child: ListView(
           controller: _scrollController,

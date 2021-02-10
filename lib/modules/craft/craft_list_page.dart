@@ -12,8 +12,7 @@ class CraftListPage extends StatefulWidget {
   State<StatefulWidget> createState() => CraftListPageState();
 }
 
-class CraftListPageState extends State<CraftListPage>
-    with DefaultScrollBarMixin {
+class CraftListPageState extends State<CraftListPage> {
   CraftFilterData filterData;
   List<CraftEssence> shownList = [];
   TextEditingController _inputController = TextEditingController();
@@ -178,7 +177,7 @@ class CraftListPageState extends State<CraftListPage>
     shownList.sort((a, b) => CraftEssence.compare(
         a, b, filterData.sortKeys, filterData.sortReversed));
 
-    return wrapDefaultScrollBar(
+    return Scrollbar(
       controller: _scrollController,
       child: filterData.useGrid ? _buildGridView() : _buildListView(),
     );

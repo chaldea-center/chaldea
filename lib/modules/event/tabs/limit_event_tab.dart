@@ -12,8 +12,7 @@ class LimitEventTab extends StatefulWidget {
   _LimitEventTabState createState() => _LimitEventTabState();
 }
 
-class _LimitEventTabState extends State<LimitEventTab>
-    with DefaultScrollBarMixin {
+class _LimitEventTabState extends State<LimitEventTab> {
   ScrollController _scrollController;
 
   @override
@@ -37,7 +36,7 @@ class _LimitEventTabState extends State<LimitEventTab>
               .compareTo(limitEvents[b].startTimeJp) *
           (widget.reverse ? -1 : 1);
     });
-    return wrapDefaultScrollBar(
+    return Scrollbar(
       controller: _scrollController,
       child: ListView.separated(
         controller: _scrollController,

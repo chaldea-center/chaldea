@@ -11,8 +11,7 @@ class MainRecordTab extends StatefulWidget {
   _MainRecordTabState createState() => _MainRecordTabState();
 }
 
-class _MainRecordTabState extends State<MainRecordTab>
-    with DefaultScrollBarMixin {
+class _MainRecordTabState extends State<MainRecordTab> {
   ScrollController _scrollController;
 
   @override
@@ -51,7 +50,7 @@ class _MainRecordTabState extends State<MainRecordTab>
         ),
         Divider(thickness: 1),
         Expanded(
-          child: wrapDefaultScrollBar(
+          child: Scrollbar(
             controller: _scrollController,
             child: ListView.separated(
               controller: _scrollController,

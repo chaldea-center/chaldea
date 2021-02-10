@@ -21,8 +21,7 @@ class ServantListPage extends StatefulWidget {
   State<StatefulWidget> createState() => ServantListPageState();
 }
 
-class ServantListPageState extends State<ServantListPage>
-    with DefaultScrollBarMixin {
+class ServantListPageState extends State<ServantListPage> {
   SvtFilterData filterData;
   Set<Servant> hiddenPlanServants = {};
   TextEditingController _inputController = TextEditingController();
@@ -327,7 +326,7 @@ class ServantListPageState extends State<ServantListPage>
     });
     shownList.sort((a, b) =>
         Servant.compare(a, b, filterData.sortKeys, filterData.sortReversed));
-    return wrapDefaultScrollBar(
+    return Scrollbar(
       controller: _scrollController,
       child: widget.planMode
           ? _buildPlanListView()
