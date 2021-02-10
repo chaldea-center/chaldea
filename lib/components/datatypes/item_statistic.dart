@@ -39,7 +39,11 @@ class ItemStatistics {
 
   void updateSvtItems({User user, bool shouldBroadcast = true}) {
     user ??= db.curUser;
-    svtItemDetail.update(curStat: user.servants, targetPlan: user.curSvtPlan);
+    // priority is shared cross users!
+    final Map<int, ServantStatus> priorityFiltered = Map.fromEntries(
+        user.servants.entries.where((entry) => db.userData.svtFilter.priority
+            .singleValueFilter(entry.value.priority.toString())));
+    svtItemDetail.update(curStat: priorityFiltered, targetPlan: user.curSvtPlan);
     updateLeftItems(user: user, shouldBroadcast: shouldBroadcast);
   }
 

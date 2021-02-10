@@ -135,6 +135,7 @@ class ServantListPageState extends State<ServantListPage>
     }
     // single value
     Map<FilterGroupData, String> singleValuePair = {
+      filterData.priority: svtStat.priority.toString(),
       filterData.rarity: svt.info.rarity.toString(),
       filterData.obtain: svt.info.obtain,
       filterData.npColor: getListItem(svt.nobelPhantasm, 0)?.color,
@@ -597,11 +598,17 @@ class ServantListPageState extends State<ServantListPage>
     final buttons = [
       DropdownButton(
         value: _planTargetAscension,
+        icon: Container(),
         hint: Text(S.of(context).ascension),
         items: List.generate(
-            5,
-            (i) => DropdownMenuItem(
-                value: i, child: Text('${S.current.ascension} $i'))),
+          5,
+          (i) => DropdownMenuItem(
+            value: i,
+            child: Text(
+              S.current.words_separate(S.current.ascension, '$i'),
+            ),
+          ),
+        ),
         onChanged: (v) {
           setState(() {
             _planTargetAscension = v;
@@ -617,11 +624,19 @@ class ServantListPageState extends State<ServantListPage>
       ),
       DropdownButton(
         value: _planTargetSkill,
+        icon: Container(),
         hint: Text(S.of(context).skill),
-        items: List.generate(
-            10,
-            (i) => DropdownMenuItem(
-                value: i, child: Text('${S.current.skill} ${i + 1}'))),
+        items: List.generate(11, (i) {
+          if (i == 0) {
+            return DropdownMenuItem(value: i, child: Text('x + 1'));
+          } else {
+            return DropdownMenuItem(
+              value: i,
+              child:
+                  Text(S.current.words_separate(S.current.skill, i.toString())),
+            );
+          }
+        }),
         onChanged: (v) {
           setState(() {
             _planTargetSkill = v;
@@ -630,7 +645,11 @@ class ServantListPageState extends State<ServantListPage>
                 final cur = db.curUser.svtStatusOf(svt.no).curVal,
                     target = db.curUser.svtPlanOf(svt.no);
                 for (int i = 0; i < 3; i++) {
-                  target.skills[i] = max(cur.skills[i], _planTargetSkill + 1);
+                  if (v == 0) {
+                    target.skills[i] = min(10, cur.skills[i] + 1);
+                  } else {
+                    target.skills[i] = max(cur.skills[i], _planTargetSkill + 1);
+                  }
                 }
               }
             });
@@ -639,6 +658,7 @@ class ServantListPageState extends State<ServantListPage>
       ),
       DropdownButton(
         value: _planTargetDress,
+        icon: Container(),
         hint: Text(S.of(context).dress),
         items: List.generate(
             2,

@@ -2959,6 +2959,26 @@ class S {
       args: [],
     );
   }
+
+  /// `优先级`
+  String get priority {
+    return Intl.message(
+      '优先级',
+      name: 'priority',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `仅显示不足`
+  String get item_only_show_lack {
+    return Intl.message(
+      '仅显示不足',
+      name: 'item_only_show_lack',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

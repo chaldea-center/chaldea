@@ -4,8 +4,8 @@ import 'package:chaldea/components/components.dart';
 import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
 
-class SvtTreasureDeviceTab extends SvtTabBaseWidget {
-  SvtTreasureDeviceTab(
+class SvtNobelPhantasmTab extends SvtTabBaseWidget {
+  SvtNobelPhantasmTab(
       {Key key,
       ServantDetailPageState parent,
       Servant svt,
@@ -13,12 +13,12 @@ class SvtTreasureDeviceTab extends SvtTabBaseWidget {
       : super(key: key, parent: parent, svt: svt, status: status);
 
   @override
-  _SvtTreasureDeviceTabState createState() =>
-      _SvtTreasureDeviceTabState(parent: parent, svt: svt, plan: status);
+  _SvtNobelPhantasmTabState createState() =>
+      _SvtNobelPhantasmTabState(parent: parent, svt: svt, plan: status);
 }
 
-class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab> {
-  _SvtTreasureDeviceTabState(
+class _SvtNobelPhantasmTabState extends SvtTabBaseState<SvtNobelPhantasmTab> {
+  _SvtNobelPhantasmTabState(
       {ServantDetailPageState parent, Servant svt, ServantStatus plan})
       : super(parent: parent, svt: svt, status: plan);
 
@@ -28,8 +28,8 @@ class _SvtTreasureDeviceTabState extends SvtTabBaseState<SvtTreasureDeviceTab> {
     if (svt.nobelPhantasm == null || svt.nobelPhantasm.length == 0) {
       return Container(child: Center(child: Text('No NobelPhantasm Data')));
     }
-    if (status.npIndex < 0 || status.npIndex >= svt.nobelPhantasm.length)
-      status.npIndex = 0;
+    status.npIndex =
+        fixValidRange(status.npIndex ?? 0, 0, svt.nobelPhantasm.length - 1);
 
     final td = svt.nobelPhantasm[status.npIndex];
     return ListView(

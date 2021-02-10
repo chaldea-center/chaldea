@@ -29,15 +29,17 @@ void main() async {
     localizationOptions: _getCatcherLocalizationOptions(),
     handleSilentError: false,
   );
-
-  Catcher(
-    rootWidget: Chaldea(),
-    debugConfig: catcherOptions,
-    profileConfig: catcherOptions,
-    releaseConfig: catcherOptions,
-    enableLogger: true,
-    navigatorKey: kAppKey,
-  );
+  if (kDebugMode)
+    runApp(Chaldea());
+  else
+    Catcher(
+      rootWidget: Chaldea(),
+      debugConfig: catcherOptions,
+      profileConfig: catcherOptions,
+      releaseConfig: catcherOptions,
+      enableLogger: true,
+      navigatorKey: kAppKey,
+    );
 }
 
 Map<String, dynamic> _getCatcherCustomParameters() {

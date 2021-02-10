@@ -43,7 +43,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
     }
     if (svt.nobelPhantasm?.isNotEmpty == true) {
       _builders[S.current.nobel_phantasm] =
-          (context) => SvtTreasureDeviceTab(parent: this);
+          (context) => SvtNobelPhantasmTab(parent: this);
     }
     _builders[S.current.card_info] = (context) => SvtInfoTab(parent: this);
     _builders[S.current.illustration] = (context) => SvtIllustTab(parent: this);
@@ -184,6 +184,30 @@ class ServantDetailPageState extends State<ServantDetailPage>
           // more tags/info here
           ...getObtainBadges(),
         ],
+      ),
+      trailing: Tooltip(
+        message: S.of(context).priority,
+        child: DropdownButton<int>(
+          value: status.priority,
+          items: List.generate(5, (index) {
+            final icons = [
+              Icons.looks_5_outlined,
+              Icons.looks_4_outlined,
+              Icons.looks_3_outlined,
+              Icons.looks_two_outlined,
+              Icons.looks_one_outlined,
+            ];
+            return DropdownMenuItem(
+                value: 5 - index,
+                child: Icon(
+                  icons[index],
+                  color: Colors.black54,
+                ));
+          }),
+          onChanged: (v) => setState(() => status.priority = v),
+          underline: Container(),
+          icon: Container(),
+        ),
       ),
     );
   }

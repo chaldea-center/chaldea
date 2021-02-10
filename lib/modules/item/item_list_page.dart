@@ -56,9 +56,19 @@ class ItemListPageState extends State<ItemListPage>
             },
           ),
           IconButton(
+            icon: Icon(Icons.low_priority),
+            tooltip: S.of(context).priority,
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => ItemFilterDialog(),
+              );
+            },
+          ),
+          IconButton(
             icon: Icon(
                 filtered ? Icons.check_circle : Icons.check_circle_outline),
-            tooltip: '仅显示不足',
+            tooltip: S.of(context).item_only_show_lack,
             onPressed: () {
               FocusScope.of(context).unfocus();
               setState(() {
@@ -173,6 +183,60 @@ class ItemListPageState extends State<ItemListPage>
         )
       ],
     ).show(context);
+  }
+}
+
+class ItemFilterDialog extends StatefulWidget {
+  @override
+  _ItemFilterDialogState createState() => _ItemFilterDialogState();
+}
+
+class _ItemFilterDialogState extends State<ItemFilterDialog> {
+  @override
+  Widget build(BuildContext context) {
+    final priorityFilter = db.userData.svtFilter.priority;
+    return AlertDialog(
+      title: Text(S.of(context).priority),
+      actions: [
+        TextButton(
+            onPressed: () {
+              setState(() {
+                priorityFilter.reset();
+              });
+              db.itemStat.updateSvtItems();
+            },
+            child: Text(S.of(context).clear.toUpperCase())),
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(S.of(context).confirm.toUpperCase()),
+        )
+      ],
+      contentPadding: EdgeInsets.symmetric(horizontal: 6),
+      content: Container(
+        // constraints: BoxConstraints(maxWidth: 200),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(5, (index) {
+            int priority = 5 - index;
+            bool checked = priorityFilter.options[priority.toString()] ?? false;
+            return CheckboxListTile(
+              value: checked,
+              title: Text('${S.current.priority} $priority'),
+              controlAffinity: ListTileControlAffinity.leading,
+              // dense: true,
+              onChanged: (v) {
+                setState(() {
+                  priorityFilter.options[priority.toString()] = v;
+                });
+                db.itemStat.updateSvtItems();
+              },
+            );
+          }),
+        ),
+      ),
+    );
   }
 }
 
@@ -403,16 +467,18 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
                 child: AutoSizeText(
                   Item.localizedNameOf(itemKey),
                   maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              Text(S.of(context).item_left),
+              Text(S.of(context).item_left, style: TextStyle(fontSize: 14)),
               SizedBox(
-                  width: 40,
+                  width: 36,
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: AutoSizeText(
                         statistics.leftItems[itemKey].toString(),
                         minFontSize: 6,
+                        maxFontSize: 14,
                         style: highlightStyle,
                         maxLines: 1),
                   )),
@@ -426,18 +492,19 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
             children: <Widget>[
               Expanded(
                   child: AutoSizeText(
-                '${S.current.item_total_demand} ${statistics.svtItems[itemKey]}' +
+                '${statistics.svtItems[itemKey]}' +
                     '(${_countsInSubTitle.join("/")})',
                 maxLines: 1,
               )),
-              Text(S.of(context).event_title),
+              Text(S.of(context).event_title, style: TextStyle(fontSize: 14)),
               SizedBox(
-                  width: 40,
+                  width: 36,
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: AutoSizeText(
                         (statistics.eventItems[itemKey] ?? 0).toString(),
                         minFontSize: 6,
+                        maxFontSize: 14,
                         maxLines: 1),
                   )),
             ],
@@ -453,6 +520,8 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
               popDetail: true,
             );
           },
+          horizontalTitleGap: 8,
+          contentPadding: EdgeInsets.symmetric(horizontal: 6),
           leading: db.getIconImage(itemKey, width: 55),
           title: title,
           focusNode: FocusNode(canRequestFocus: true, skipTraversal: true),

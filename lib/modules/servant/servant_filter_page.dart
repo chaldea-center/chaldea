@@ -92,6 +92,16 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             update();
           },
         ),
+        FilterGroup(
+          title: Text('Priority', style: textStyle),
+          options: SvtFilterData.priorityData,
+          values: filterData.priority,
+          onFilterChanged: (value) {
+            // object should be the same, need not to update manually
+            filterData.priority = value;
+            update();
+          },
+        ),
         _buildClassFilter(),
         FilterGroup(
           title: Text(S.of(context).filter_sort_rarity, style: textStyle),

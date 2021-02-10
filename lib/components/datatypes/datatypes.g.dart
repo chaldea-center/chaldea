@@ -1242,11 +1242,11 @@ ServantStatus _$ServantStatusFromJson(Map<String, dynamic> json) {
           (v) => v == null
               ? null
               : ServantPlan.fromJson(v as Map<String, dynamic>)),
+      npLv: $checkedConvert(json, 'npLv', (v) => v as int),
+      tdLv: $checkedConvert(json, 'tdLv', (v) => v as int),
       skillIndex: $checkedConvert(json, 'skillIndex',
           (v) => (v as List)?.map((e) => e as int)?.toList()),
       npIndex: $checkedConvert(json, 'npIndex', (v) => v as int),
-      npLv: $checkedConvert(json, 'npLv', (v) => v as int),
-      tdLv: $checkedConvert(json, 'tdLv', (v) => v as int),
       priority: $checkedConvert(json, 'priority', (v) => v as int),
     );
     return val;
@@ -1452,15 +1452,21 @@ SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
           (v) => (v as List)?.map((e) => e as bool)?.toList()),
       useGrid: $checkedConvert(json, 'useGrid', (v) => v as bool),
       hasDress: $checkedConvert(json, 'hasDress', (v) => v as bool),
+      planCompletion: $checkedConvert(
+          json,
+          'planCompletion',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
       skillLevel: $checkedConvert(
           json,
           'skillLevel',
           (v) => v == null
               ? null
               : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      planCompletion: $checkedConvert(
+      priority: $checkedConvert(
           json,
-          'planCompletion',
+          'priority',
           (v) => v == null
               ? null
               : FilterGroupData.fromJson(v as Map<String, dynamic>)),
@@ -1546,8 +1552,9 @@ Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
       'sortReversed': instance.sortReversed,
       'useGrid': instance.useGrid,
       'hasDress': instance.hasDress,
-      'skillLevel': instance.skillLevel,
       'planCompletion': instance.planCompletion,
+      'skillLevel': instance.skillLevel,
+      'priority': instance.priority,
       'rarity': instance.rarity,
       'className': instance.className,
       'obtain': instance.obtain,

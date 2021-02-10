@@ -74,30 +74,36 @@ class ServantStatus {
   /// default 0, origin order in wiki
   int npIndex;
 
-  /// priority 0-5
+  /// priority 1-5
   int priority;
 
   ServantStatus({
     this.curVal,
-    this.skillIndex,
-    this.npIndex,
     this.npLv,
     this.tdLv,
+    this.skillIndex,
+    this.npIndex,
     this.priority,
   }) {
+    validate();
+  }
+
+  void validate() {
     curVal ??= ServantPlan();
-    npLv ??= tdLv ?? 1; // ignore: deprecated_member_use_from_same_package
-    skillIndex ??= <int>[]..length = 3;
+    curVal.validate();
+    // ignore: deprecated_member_use_from_same_package
+    npLv = fixValidRange(npLv ?? tdLv ?? 1, 1, 5);
     npIndex ??= 0;
-    priority ??= 0;
+    skillIndex ??= <int>[]..length = 3;
+    priority = fixValidRange(priority ?? 1, 1, 5);
   }
 
   void reset() {
     curVal.reset();
-    skillIndex.fillRange(0, 3, 0);
-    npIndex = 0;
     npLv = 1;
-    priority = 0;
+    skillIndex.fillRange(0, 3, null);
+    npIndex = 0;
+    priority = 1;
   }
 
   factory ServantStatus.fromJson(Map<String, dynamic> data) =>

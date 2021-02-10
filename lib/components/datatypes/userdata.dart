@@ -111,8 +111,9 @@ class SvtFilterData {
   bool useGrid;
 
   bool hasDress;
-  FilterGroupData skillLevel;
   FilterGroupData planCompletion;
+  FilterGroupData skillLevel;
+  FilterGroupData priority;
   FilterGroupData rarity;
   FilterGroupData className;
   FilterGroupData obtain;
@@ -131,8 +132,9 @@ class SvtFilterData {
     this.sortReversed,
     this.useGrid,
     this.hasDress,
-    this.skillLevel,
     this.planCompletion,
+    this.skillLevel,
+    this.priority,
     this.rarity,
     this.className,
     this.obtain,
@@ -151,8 +153,9 @@ class SvtFilterData {
     sortReversed ??= List.filled(sortKeys.length, true);
     useGrid ??= false;
     hasDress ??= false;
-    skillLevel ??= FilterGroupData();
     planCompletion ??= FilterGroupData();
+    skillLevel ??= FilterGroupData();
+    priority ??= FilterGroupData();
     rarity ??= FilterGroupData();
     className ??= FilterGroupData();
     obtain ??= FilterGroupData();
@@ -169,6 +172,7 @@ class SvtFilterData {
   List<FilterGroupData> get groupValues => [
         skillLevel,
         planCompletion,
+        priority,
         rarity,
         className,
         obtain,
@@ -195,6 +199,7 @@ class SvtFilterData {
   static const List<SvtCompare> sortKeyData = SvtCompare.values;
   static const List<String> skillLevelData = ['<999', '≥999', '310'];
   static const List<String> planCompletionData = ['0', '1'];
+  static const List<String> priorityData = ['1', '2', '3', '4', '5'];
 
   static const List<String> rarityData = ['0', '1', '2', '3', '4', '5'];
   static const List<String> classesData = [

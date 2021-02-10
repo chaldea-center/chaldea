@@ -292,5 +292,7 @@
   "plan_objective": "プラン目標",
   "efficiency_type": "効率タイプ",
   "efficiency_type_ap": "20AP効率",
-  "efficiency_type_drop": "ドロップ率"
+  "efficiency_type_drop": "ドロップ率",
+  "priority": "優先順位",
+  "item_only_show_lack": "不足しているのみ"
 }

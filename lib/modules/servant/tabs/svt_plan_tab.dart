@@ -2,6 +2,7 @@ import 'dart:math' show max, min;
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';
 
 import '../servant_detail_page.dart';
@@ -63,6 +64,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     if (svt.activeSkills == null) {
       return Center(child: Text('Nothing'));
     }
+    status.validate();
     final curVal = status.curVal;
     final targetVal = enhanceMode ? enhancePlan : plan;
     ensureTargetLarger(curVal, targetVal);
@@ -349,16 +351,21 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         IconButton(
           icon: Icon(Icons.trending_up),
           tooltip: S.of(context).plan_max9,
-          onPressed: enhanceMode
-              ? null
-              : () {
-                  targetPlan.setMax(skill: 9);
-                  curVal.favorite = true;
-                  for (int i = 0; i < 3; i++) {
-                    curVal.skills[i] = min(curVal.skills[i], 9);
-                  }
-                  updateState();
-                },
+          onPressed: () {
+            curVal.favorite = true;
+            targetPlan.setMax(skill: 9);
+            for (int i = 0; i < 3; i++) {
+              if (enhanceMode) {
+                // cur cannot change in enhance mode, change target to ensure target>cur
+                targetPlan.skills[i] =
+                    max(curVal.skills[i], targetPlan.skills[i]);
+              } else {
+                // change cur to ensure cur<=target
+                curVal.skills[i] = min(curVal.skills[i], 9);
+              }
+            }
+            updateState();
+          },
         ),
       ],
     ));
@@ -371,13 +378,11 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         IconButton(
           icon: Icon(Icons.trending_up),
           tooltip: S.of(context).plan_max10,
-          onPressed: enhanceMode
-              ? null
-              : () {
-                  curVal.favorite = true;
-                  targetPlan.setMax(skill: 10);
-                  updateState();
-                },
+          onPressed: () {
+            curVal.favorite = true;
+            targetPlan.setMax(skill: 10);
+            updateState();
+          },
         ),
       ],
     ));
@@ -412,28 +417,50 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       cur: status.curVal..favorite = true,
       target: enhancePlan..favorite = true,
     ));
+    List<Widget> children = [];
+    enhanceItems.forEach((itemKey, number) {
+      children.add(ImageWithText(
+        onTap: () => SplitRoute.push(
+            context: context, builder: (context, _) => ItemDetailPage(itemKey)),
+        image: db.getIconImage(itemKey),
+        text: formatNumber(number, compact: true),
+        padding: EdgeInsets.only(right: 3),
+      ));
+    });
     bool hasItem = sum(enhanceItems.values) > 0;
     showDialog(
       context: context,
-      builder: (context) => SimpleCancelOkDialog(
+      builder: (context) => AlertDialog(
         title: Text(S.of(context).enhance_warning),
+        contentPadding: EdgeInsets.symmetric(horizontal: 8),
         content: Container(
-            width: defaultDialogWidth(context),
-            child: hasItem
-                ? CommonBuilder.buildIconGridView(
-                    data: enhanceItems, crossCount: 6)
-                : Text('Nothing')),
-        onTapOk: hasItem
-            ? () {
-                // ensure cur svt is favorite
-                // items = items + (-1)*enhanceItems
+          width: defaultDialogWidth(context),
+          child: hasItem
+              ? buildResponsiveGridWrap(
+                  context: context, children: children, responsive: false)
+              : Text('Nothing'),
+        ),
+        actions: [
+          TextButton(
+            child: Text(S.of(context).cancel),
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+          ),
+          TextButton(
+            child: Text(S.of(context).confirm),
+            onPressed: () {
+              if (hasItem) {
                 sumDict([db.curUser.items, multiplyDict(enhanceItems, -1)],
                     inPlace: true);
                 status.curVal.copyFrom(enhancePlan);
                 enhanceMode = !enhanceMode;
                 updateState();
               }
-            : null,
+              Navigator.of(context).pop(true);
+            },
+          ),
+        ],
       ),
     );
   }

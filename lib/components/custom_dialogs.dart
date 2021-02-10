@@ -146,7 +146,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
         ...actions,
         if (onTapOk != null || !hideOk)
           TextButton(
-            child: Text(S.of(context).ok),
+            child: Text(S.of(context).confirm),
             onPressed: () {
               Navigator.of(context).pop(true);
               if (onTapOk != null) {

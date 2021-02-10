@@ -60,7 +60,6 @@ dependencies:
   url_launcher: ^6.0.0-nullsafety.6
   vs_scrollbar: ^0.1.2
 
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

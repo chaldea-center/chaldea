@@ -9,7 +9,7 @@ abstract class FilterPage<T> extends StatefulWidget {
   const FilterPage({Key key, this.filterData, this.onChanged})
       : super(key: key);
 
-  static void show({BuildContext context, WidgetBuilder builder}) {
+  static void show({@required BuildContext context,@required WidgetBuilder builder}) {
     if (SplitRoute.isSplit(context)) {
       showDialog(context: context, builder: builder);
     } else {

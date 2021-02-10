@@ -23,6 +23,7 @@ class CustomTile extends StatelessWidget {
   final bool enabled;
   final bool selected;
   final GestureTapCallback? onTap;
+  final FocusNode? focusNode;
   final GestureLongPressCallback? onLongPress;
 
   ///default values
@@ -44,6 +45,7 @@ class CustomTile extends StatelessWidget {
       this.alignment = CrossAxisAlignment.center,
       this.enabled = true,
       this.selected = false,
+      this.focusNode,
       this.onTap,
       this.onLongPress})
       : super(key: key);
@@ -123,6 +125,8 @@ class CustomTile extends StatelessWidget {
     return InkWell(
       onTap: enabled ? onTap : null,
       onLongPress: enabled ? onLongPress : null,
+      canRequestFocus: enabled,
+      focusNode: focusNode,
       child: Semantics(
         enabled: enabled,
         selected: selected,

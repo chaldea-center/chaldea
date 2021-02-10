@@ -291,5 +291,7 @@
   "plan_objective": "规划目标",
   "efficiency_type": "效率类型",
   "efficiency_type_ap": "20AP效率",
-  "efficiency_type_drop": "每场掉率"
+  "efficiency_type_drop": "每场掉率",
+  "priority": "优先级",
+  "item_only_show_lack": "仅显示不足"
 }

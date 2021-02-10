@@ -292,5 +292,7 @@
   "plan_objective": "Plan Objective",
   "efficiency_type": "Efficient",
   "efficiency_type_ap": "20AP Rate",
-  "efficiency_type_drop": "Drop Rate"
+  "efficiency_type_drop": "Drop Rate",
+  "priority": "Priority",
+  "item_only_show_lack": "Only show lacked"
 }

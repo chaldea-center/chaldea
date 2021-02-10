@@ -5,7 +5,6 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
-import 'package:catcher/catcher.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -307,17 +306,12 @@ class Database {
     void Function(int, int)? onProgress,
   }) async {
     final t = TimeCounter('extractZip');
-    await compute(_extractZipIsolate, {
-      'bytes': bytes,
-      'fp': fp,
-      'savePath': savePath
-    }).onError((error, stackTrace) {
-      if (onError == null) {
-        Catcher.reportCheckedError(error, stackTrace);
-      } else {
-        onError(error, stackTrace);
-      }
-    });
+    final message = {'bytes': bytes, 'fp': fp, 'savePath': savePath};
+    if (onError == null) {
+      await compute(_extractZipIsolate, message);
+    } else {
+      await compute(_extractZipIsolate, message).onError(onError);
+    }
     t.elapsed();
   }
 
@@ -328,8 +322,7 @@ class Database {
 
     late List<int> resolvedBytes;
     if ([bytes, fp].where((e) => e != null).length != 1) {
-      throw ArgumentError(
-          'You can/must only pass one parameter of bytes,fp');
+      throw ArgumentError('You can/must only pass one parameter of bytes,fp');
     }
     if (bytes != null) {
       resolvedBytes = bytes;
