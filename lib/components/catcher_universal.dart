@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
@@ -126,6 +127,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
     return _sendMail(error);
   }
 
+  /// maintain list for every contact if contact changed
   Map<String, List<Report>> _sentReports = {};
 
   Future<bool> _sendMail(Report report) async {
@@ -202,56 +204,76 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
     if (emailTitle != null && emailTitle.length > 0) {
       return emailTitle;
     } else {
-      return "Error report: >> ${report.error} <<";
+      return "[${AppInfo.fullVersion}] Error: ${report.error}";
     }
   }
 
   String _setupHtmlMessageText(Report report) {
+    final escape = HtmlEscape().convert;
     StringBuffer buffer = StringBuffer("");
     if (emailHeader != null && emailHeader.length > 0) {
-      buffer.write(emailHeader);
-      buffer.write("<hr><br>");
+      buffer.write(escape(emailHeader));
+      buffer.write("<hr>");
     }
+    buffer.write('<style>h3{margin:0.2em 0;}</style>');
 
     if (db.userData.contactInfo?.isNotEmpty == true) {
-      buffer.write("<h2>Contact information:</h2>");
-      buffer.write("${db.userData.contactInfo}<br><br>");
+      buffer.write("<h3>Contact:</h3>");
+      buffer.write("${escape(db.userData.contactInfo)}<br>");
+    }
+    buffer.write("<h3>Summary:</h3>");
+    final dataVerFile = File(db.paths.datasetVersionFile);
+    Map<String, dynamic> summary = {
+      'appVersion': '${AppInfo.appName} v${AppInfo.fullVersion}',
+      'datasetVersion': dataVerFile.existsSync()
+          ? dataVerFile.readAsStringSync()
+          : "Not detected",
+      'os': '${Platform.operatingSystem} ${Platform.operatingSystemVersion}',
+    };
+    for (var entry in summary.entries) {
+      buffer.write("<b>${entry.key}</b>: ${escape(entry.value)}<br>");
+    }
+    buffer.write('<hr>');
+
+    buffer.write("<h3>Error:</h3>");
+    buffer.write(escape(report.error.toString()));
+    if (report.error.toString().trim().isEmpty) {
+      buffer.write(escape(report.errorDetails.exceptionAsString()));
+    }
+    buffer.write("<hr>");
+
+    if (enableStackTrace) {
+      buffer.write("<h3>Stack trace:</h3>");
+      buffer
+          .write(escape(report.stackTrace.toString()).replaceAll("\n", "<br>"));
+      if (report.stackTrace?.toString()?.trim()?.isNotEmpty != true) {
+        buffer.write(escape(report.errorDetails.stack.toString())
+            .replaceAll('\n', '<br>'));
+      }
+      buffer.write("<hr>");
     }
 
-    buffer.write("<h2>Error:</h2>");
-    buffer.write(report.error.toString());
-    buffer.write(report.errorDetails?.exceptionAsString() ?? '');
-    buffer.write("<hr><br>");
-    if (enableStackTrace) {
-      buffer.write("<h2>Stack trace:</h2>");
-      buffer.write(report.stackTrace.toString().replaceAll("\n", "<br>"));
-      if (report.stackTrace?.toString()?.trim()?.isNotEmpty != true) {
-        buffer.write(
-            report.errorDetails.stack.toString().replaceAll('\n', '<br>'));
-      }
-      buffer.write("<hr><br>");
-    }
     if (enableDeviceParameters) {
-      buffer.write("<h2>Device parameters:</h2>");
+      buffer.write("<h3>Device parameters:</h3>");
       for (var entry in report.deviceParameters.entries) {
-        buffer.write("<b>${entry.key}</b>: ${entry.value}<br>");
+        buffer.write("<b>${entry.key}</b>: ${escape(entry.value)}<br>");
       }
-      buffer.write("<hr><br>");
+      buffer.write("<hr>");
     }
     if (enableApplicationParameters) {
-      buffer.write("<h2>Application parameters:</h2>");
+      buffer.write("<h3>Application parameters:</h3>");
       for (var entry in report.applicationParameters.entries) {
-        buffer.write("<b>${entry.key}</b>: ${entry.value}<br>");
+        buffer.write("<b>${entry.key}</b>: ${escape(entry.value)}<br>");
       }
-      buffer.write("<br><br>");
+      buffer.write("<hr>");
     }
 
     if (enableCustomParameters) {
-      buffer.write("<h2>Custom parameters:</h2>");
+      buffer.write("<h3>Custom parameters:</h3>");
       for (var entry in report.customParameters.entries) {
-        buffer.write("<b>${entry.key}</b>: ${entry.value}<br>");
+        buffer.write("<b>${entry.key}</b>: ${escape(entry.value)}<br>");
       }
-      buffer.write("<br><br>");
+      buffer.write("<hr>");
     }
 
     return buffer.toString();
@@ -264,7 +286,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
       buffer.write("\n\n");
     }
     if (db.userData.contactInfo?.isNotEmpty == true) {
-      buffer.write('Contact information: ${db.userData.contactInfo}\n\n');
+      buffer.write('Contact: ${db.userData.contactInfo}\n\n');
     }
 
     buffer.write("Error:\n");

@@ -44,6 +44,7 @@ class _QuestCardState extends State<QuestCard> {
                     textAlign: TextAlign.center,
                   ),
                 ),
+                contentPadding: EdgeInsets.fromLTRB(16, 8, 0, 8),
                 trailing: GestureDetector(
                   child: Icon(
                     Icons.remove_red_eye_outlined,

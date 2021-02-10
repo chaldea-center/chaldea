@@ -288,7 +288,6 @@ Future<String?> resolveWikiFileUrl(String filename) async {
   } catch (e) {
     print(e);
   }
-  return null;
 }
 
 void checkAppUpdate([bool background = true]) async {

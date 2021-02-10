@@ -171,8 +171,6 @@ class _PageWidgetState extends State<_PageWidget> {
       final items = widget.report.stackTrace.toString().split("\n");
       if (widget.report.errorDetails?.exception != null)
         items.insert(0, widget.report.errorDetails.exceptionAsString());
-      if (widget.report.errorDetails?.stack != null)
-        items.insert(0, widget.report.errorDetails.stack.toString());
       return SizedBox(
         height: 300.0,
         child: ListView.builder(

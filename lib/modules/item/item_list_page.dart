@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/drop_calculator/drop_calculator_page.dart';
 import 'package:chaldea/modules/shared/list_page_share.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
 import 'item_detail_page.dart';
@@ -213,7 +216,16 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
       if (item.category == widget.category && key != qpKey) {
         _allGroups[item] = InputComponents(
           data: item,
-          focusNode: FocusNode(),
+          focusNode: FocusNode(
+              debugLabel: 'FocusNode_$item',
+              onKey: (node, event) {
+                if (event.character == '\n' || event.character == '\t') {
+                  print('${jsonEncode(event.character)} - ${node.debugLabel}');
+                  moveToNext(node);
+                  return true;
+                }
+                return false;
+              }),
           controller: TextEditingController(
             text: formatNumber(db.curUser.items[key] ?? 0,
                 groupSeparator: key == Item.qp ? ',' : null),
@@ -258,33 +270,64 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<ItemStatistics>(
-        initialData: db.itemStat,
-        stream: db.itemStat.onUpdated.stream,
-        builder: (context, snapshot) {
-          List<Widget> children = [];
-          final stat = snapshot.data;
-          _shownGroups.clear();
-          for (var group in _allGroups.values) {
-            if (!widget.filtered ||
-                group.data.name == qpKey ||
-                stat.leftItems[group.data.name] < 0) {
-              _shownGroups.add(group);
-              children.add(buildItemTile(group, stat));
-            }
+    Widget listView = StreamBuilder<ItemStatistics>(
+      initialData: db.itemStat,
+      stream: db.itemStat.onUpdated.stream,
+      builder: (context, snapshot) {
+        List<Widget> children = [];
+        final stat = snapshot.data;
+        _shownGroups.clear();
+        for (var group in _allGroups.values) {
+          if (!widget.filtered ||
+              group.data.name == qpKey ||
+              stat.leftItems[group.data.name] < 0) {
+            _shownGroups.add(group);
+            children.add(buildItemTile(group, stat));
           }
-          Widget child = ListView.separated(
-            controller: _scrollController,
-            itemBuilder: (context, index) => children[index],
-            separatorBuilder: (context, index) =>
-                Divider(height: 1, indent: 16),
-            itemCount: children.length,
-          );
-          return wrapDefaultScrollBar(
-              controller: _scrollController, child: child);
-        });
+        }
+        Widget child = ListView.separated(
+          controller: _scrollController,
+          itemBuilder: (context, index) => children[index],
+          separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
+          itemCount: children.length,
+        );
+        return wrapDefaultScrollBar(
+            controller: _scrollController, child: child);
+      },
+    );
+    Widget actionBar;
+    if (Platform.isIOS || Platform.isAndroid) {
+      actionBar = Row(
+        children: [
+          IconButton(
+            onPressed: () => moveToNext(
+              _shownGroups
+                  .firstWhere((group) => group.focusNode.hasFocus)
+                  ?.focusNode,
+              true,
+            ),
+            icon: Icon(Icons.keyboard_arrow_up, color: Colors.grey),
+          ),
+          IconButton(
+            onPressed: () => moveToNext(_shownGroups
+                .firstWhere((group) => group.focusNode.hasFocus)
+                ?.focusNode),
+            icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey),
+          )
+        ],
+      );
+    }
+    return actionBar == null
+        ? listView
+        : Column(children: [Expanded(child: listView), actionBar]);
   }
 
+  /// Android: next call complete
+  /// Android Emulator: catch "\n"&"\t", no complete or submit
+  /// iOS: only move among the nodes already in viewport,
+  ///       not the updated viewport by auto scroll
+  /// Windows:
+  /// macOS: catch "\t", enter to complete and submit
   Widget buildItemTile(InputComponents group, ItemStatistics statistics) {
     final itemKey = group.data.name;
     bool isQp = itemKey == qpKey;
@@ -319,20 +362,12 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
                   baseOffset: 0, extentOffset: group.controller.text.length);
             }
           },
+          onSubmitted: (s) {
+            print('onSubmit: ${group.focusNode.debugLabel}');
+          },
           onEditingComplete: () {
-            if (_shownGroups.indexOf(group) == _shownGroups.length - 1) {
-              FocusScope.of(context).unfocus();
-              return;
-            }
-            FocusScope.of(context).nextFocus();
-            final curNode = FocusScope.of(context).focusedChild;
-            for (var _group in _shownGroups) {
-              if (_group.focusNode == curNode) {
-                _group.controller.selection = TextSelection(
-                    baseOffset: 0, extentOffset: _group.controller.text.length);
-                break;
-              }
-            }
+            print('onComplete: ${group.focusNode.debugLabel}');
+            moveToNext(group.focusNode);
           },
         );
         Widget title, subtitle;
@@ -377,6 +412,7 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
                     alignment: Alignment.centerRight,
                     child: AutoSizeText(
                         statistics.leftItems[itemKey].toString(),
+                        minFontSize: 6,
                         style: highlightStyle,
                         maxLines: 1),
                   )),
@@ -401,6 +437,7 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
                     alignment: Alignment.centerRight,
                     child: AutoSizeText(
                         (statistics.eventItems[itemKey] ?? 0).toString(),
+                        minFontSize: 6,
                         maxLines: 1),
                   )),
             ],
@@ -424,5 +461,23 @@ class _ItemListTabState extends State<ItemListTab> with DefaultScrollBarMixin {
         );
       },
     );
+  }
+
+  void moveToNext(FocusNode node, [bool reversed = false]) {
+    int dx = reversed ? -1 : 1;
+    int curIndex = _shownGroups.indexWhere((group) => group.focusNode == node);
+    int nextIndex = curIndex + dx;
+    if (curIndex < 0 || nextIndex < 0 || nextIndex >= _shownGroups.length) {
+      FocusScope.of(context).unfocus();
+      return;
+    }
+    final nextGroup = _shownGroups[nextIndex];
+    FocusScope.of(context).requestFocus(nextGroup.focusNode);
+    // set selection at next frame, so that auto scroll to make focus visible
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      // next frame, the next node is primary focus
+      nextGroup.controller.selection = TextSelection(
+          baseOffset: 0, extentOffset: nextGroup.controller.text.length);
+    });
   }
 }

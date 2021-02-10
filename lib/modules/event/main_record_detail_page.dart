@@ -59,6 +59,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
                 imageUrl: record.bannerUrl,
                 connectivity: db.connectivity,
                 downloadEnabled: db.userData.downloadEnabled,
+                placeholder: (_, __) => Container(),
               ),
             ),
           ListTile(title: Text(S.of(context).main_record_fixed_drop)),

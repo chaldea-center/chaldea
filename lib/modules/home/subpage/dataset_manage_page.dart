@@ -376,10 +376,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
       final file = File(result.path);
       if (file.path.toLowerCase().endsWith('.zip')) {
         canceler = showMyProgress(status: 'loading');
-        await db.extractZip(
-          file.readAsBytesSync().cast<int>(),
-          db.paths.gameDir,
-        );
+        await db.extractZip(fp: file.path, savePath: db.paths.gameDir);
         db.loadGameData();
       } else if (file.path.toLowerCase().endsWith('.json')) {
         final newData = GameData.fromJson(jsonDecode(file.readAsStringSync()));
@@ -417,10 +414,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
           onComplete: () async {
             var canceler = showMyProgress(status: 'loading');
             try {
-              await db.extractZip(
-                File(fp).readAsBytesSync().cast<int>(),
-                db.paths.gameDir,
-              );
+              await db.extractZip(fp: fp, savePath: db.paths.gameDir);
               db.loadGameData();
               Navigator.of(context).pop();
               EasyLoading.showToast(S.of(context).import_data_success);

@@ -1,5 +1,6 @@
 //@dart=2.12
 import 'package:chaldea/components/components.dart';
+import 'package:flutter/cupertino.dart';
 
 class MysticCodePage extends StatefulWidget {
   @override
@@ -225,7 +226,11 @@ class _MysticCodePageState extends State<MysticCodePage> {
     }
 
     if (urls.contains(null)) {
-      _resolve().then((value) => setState(() {}));
+      _resolve().then((value) {
+        if (mounted) {
+          setState(() {});
+        }
+      });
     }
     return urls.where((e) => e != null).toList() as List<String>;
   }

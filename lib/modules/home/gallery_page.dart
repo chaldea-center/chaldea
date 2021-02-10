@@ -10,6 +10,7 @@ import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:chaldea/modules/statistics/game_statistics_page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
@@ -197,6 +198,8 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
               childAspectRatio: 1,
               children: _getShownGalleries(context),
             ),
+            if(kDebugMode)
+              buildTestInfoPad(),
           ],
         ));
   }

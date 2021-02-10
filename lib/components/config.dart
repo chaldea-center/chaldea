@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
+import 'package:catcher/catcher.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -130,7 +131,7 @@ class Database {
         var raf = file.openSync(mode: FileMode.write);
         raf.writeFromSync(response.data);
         raf.closeSync();
-        await extractZip(response.data, db.paths.gameDir);
+        await extractZip(bytes: response.data, savePath: db.paths.gameDir);
         if (db.loadGameData()) {
           logger.i('Data downloaded! Version: ${db.gameData.version}');
           EasyLoading.showToast(
@@ -149,16 +150,10 @@ class Database {
   }
 
   Future<void> loadZipAssets(String assetKey, {String? extractDir}) async {
-    final t = TimeCounter('loadZipAssets($assetKey)');
     extractDir ??= paths.gameDir;
-    //extract zip file
-    final ByteData? data = await rootBundle.load(assetKey).catchError((e, s) {
-      logger.e('Load assets failed: $assetKey', e, s);
-      EasyLoading.showToast('Error load assets: $assetKey\n$e');
-    });
-    if (data != null)
-      await extractZip(data.buffer.asUint8List().cast<int>(), extractDir);
-    t.elapsed();
+    final bytes =
+        (await rootBundle.load(assetKey)).buffer.asUint8List().cast<int>();
+    await extractZip(bytes: bytes, savePath: extractDir);
   }
 
   void saveUserData() {
@@ -303,33 +298,54 @@ class Database {
     return result;
   }
 
-  Future<void> extractZip(List<int> bytes, String path,
-      {Function? onError, void Function(int, int)? onProgress}) async {
+  /// You must provide one and only one parameter of [bytes] or [assetKey] or [fp]
+  Future<void> extractZip({
+    List<int>? bytes,
+    String? fp,
+    required String savePath,
+    Function(dynamic error, dynamic stackTrace)? onError,
+    void Function(int, int)? onProgress,
+  }) async {
     final t = TimeCounter('extractZip');
-    final errorMsg =
-        await compute(_extractZipIsolate, {'bytes': bytes, 'path': path});
-    if (errorMsg != null) {
-      throw errorMsg;
-    }
+    await compute(_extractZipIsolate, {
+      'bytes': bytes,
+      'fp': fp,
+      'savePath': savePath
+    }).onError((error, stackTrace) {
+      if (onError == null) {
+        Catcher.reportCheckedError(error, stackTrace);
+      } else {
+        onError(error, stackTrace);
+      }
+    });
     t.elapsed();
   }
 
-  static Future<String?> _extractZipIsolate(
-      Map<String, dynamic> message) async {
-    List<int> bytes = message['bytes'];
-    String path = message['path'];
-    Archive archive = ZipDecoder().decodeBytes(bytes);
+  static Future<void> _extractZipIsolate(Map<String, dynamic> message) async {
+    String savePath = message['savePath']!;
+    List<int>? bytes = message['bytes'];
+    String? fp = message['fp'];
+
+    late List<int> resolvedBytes;
+    if ([bytes, fp].where((e) => e != null).length != 1) {
+      throw ArgumentError(
+          'You can/must only pass one parameter of bytes,fp');
+    }
+    if (bytes != null) {
+      resolvedBytes = bytes;
+    }
+    if (fp != null) {
+      resolvedBytes = File(fp).readAsBytesSync().cast<int>();
+    }
+    Archive archive = ZipDecoder().decodeBytes(resolvedBytes);
     print('──────────────── Extract zip file ────────────────────────────────');
-    print('extract zip file, directory tree "$path":');
+    print('extract zip file, directory tree "$savePath":');
     if (archive.findFile(kGameDataFilename) == null) {
-      final exception =
-          FormatException('Archive file doesn\'t contain $kGameDataFilename');
-      print(exception);
-      return exception.toString();
+      throw FormatException('Archive file doesn\'t contain $kGameDataFilename');
     }
     int iconCount = 0;
     for (ArchiveFile file in archive) {
-      String fullFilepath = pathlib.join(path, file.name);
+      String fullFilepath = pathlib.join(savePath, file.name);
       if (file.isFile) {
         List<int> data = file.content;
         File(fullFilepath)
@@ -346,7 +362,6 @@ class Database {
     }
     print('icon files: total $iconCount files in "icons/"');
     print('──────────────── End zip file ────────────────────────────────────');
-    return null;
   }
 
   // singleton

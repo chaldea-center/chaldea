@@ -169,7 +169,7 @@ class CachedImage extends StatefulWidget {
       builder: (context, constraints) {
         double width =
             0.3 * min(constraints.biggest.width, constraints.biggest.height);
-        width = min(width, 200);
+        width = min(width, 100);
         return Center(
           child: SizedBox(
             width: width,

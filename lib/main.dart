@@ -4,6 +4,7 @@ import 'package:catcher/catcher.dart';
 import 'package:chaldea/components/catcher_universal.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/chaldea.dart';
+import 'package:flutter/foundation.dart';
 
 void main() async {
   // make sure flutter packages like path_provider is working now
@@ -13,19 +14,22 @@ void main() async {
   final File crashFile = File(db.paths.crashLog),
       userdataFile = File(db.paths.userDataPath);
   final catcherOptions = CatcherOptions(
-      // when error occurs when building:
-      // DialogReportMode will keep generating error and you can do nothing
-      // PageReportMode will generate error repeatedly for about 3 times.
-      PageReportModeCross(),
-      [
-        FileHandlerCross(crashFile),
-        ConsoleHandlerCross(),
-        ToastHandlerCross(),
-        if (!kDebugMode_)
-          kEmailAutoHandlerCross(attachments: [crashFile, userdataFile]),
-      ],
-      customParameters: _getCatcherCustomParameters(),
-      localizationOptions: _getCatcherLocalizationOptions());
+    // when error occurs when building:
+    // DialogReportMode will keep generating error and you can do nothing
+    // PageReportMode will generate error repeatedly for about 3 times.
+    kDebugMode ? SilentReportModeCross() : PageReportModeCross(),
+    [
+      FileHandlerCross(crashFile),
+      ConsoleHandlerCross(),
+      ToastHandlerCross(),
+      if (!kDebugMode)
+        kEmailAutoHandlerCross(attachments: [crashFile, userdataFile]),
+    ],
+    customParameters: _getCatcherCustomParameters(),
+    localizationOptions: _getCatcherLocalizationOptions(),
+    handleSilentError: false,
+  );
+
   Catcher(
     rootWidget: Chaldea(),
     debugConfig: catcherOptions,
@@ -47,10 +51,6 @@ Map<String, dynamic> _getCatcherCustomParameters() {
       'packageName': AppInfo.packageName
     });
   }
-  final versionFile = File(db.paths.datasetVersionFile);
-  customParameters['datasetVersion'] = versionFile.existsSync()
-      ? versionFile.readAsStringSync()
-      : 'Not detected';
   return customParameters;
 }
 

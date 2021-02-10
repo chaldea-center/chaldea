@@ -76,15 +76,19 @@ class AutoUnfocusBuilder extends StatelessWidget {
 }
 
 mixin DefaultScrollBarMixin<T extends StatefulWidget> on State<T> {
-  Widget wrapDefaultScrollBar(
-      {required ScrollController controller, required Widget child}) {
+  Widget wrapDefaultScrollBar({
+    required ScrollController controller,
+    required Widget child,
+    bool isAlwaysShown = false,
+  }) {
     return VsScrollbar(
       controller: controller,
       scrollDirection: Axis.vertical,
-      radius: 3,
-      thickness: 6,
-      scrollbarTimeToFade: Duration(seconds: 2),
+      radius: 8,
+      thickness: 8,
+      scrollbarTimeToFade: Duration(seconds: 3),
       child: child,
+      isAlwaysShown: isAlwaysShown,
     );
   }
 }

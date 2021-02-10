@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:catcher/catcher.dart';
@@ -57,9 +58,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-      ),
+      value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
       child: Screenshot(
         controller: db.screenshotController,
         child: MaterialApp(
@@ -69,8 +68,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
           locale: Language.getLanguage(db.userData?.language)?.locale,
           localizationsDelegates: [
             S.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate
+            ...GlobalMaterialLocalizations.delegates,
           ],
           supportedLocales: S.delegate.supportedLocales,
           builder: (context, widget) {
@@ -91,10 +89,15 @@ class _ChaldeaHome extends StatefulWidget {
 
 class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
   bool _initiated = false;
+  bool _showProgress = false;
 
   @override
   void afterFirstLayout(BuildContext context) async {
-    /// if app updated, check version and reload gamedata
+    // ensure image is shown on screen
+    await precacheImage(AssetImage("res/img/chaldea.png"), context);
+    await Future.delayed(Duration(milliseconds: 100));
+
+    // if app updated, reload gamedata
     bool gameDataLoadSuccess = false;
     try {
       if (AppInfo.buildNumber > (db.userData.previousBuildNumber ?? 0) ||
@@ -103,6 +106,9 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
         /// load failed(json destroyed) or app updated, reload default dataset
         // TODO: if asset not exist? download from server
         logger.i('reload default gamedata asset');
+        setState(() {
+          _showProgress = true;
+        });
         await db.loadZipAssets(kDatasetAssetKey);
         db.userData.previousBuildNumber = AppInfo.buildNumber;
         db.saveUserData();
@@ -125,6 +131,8 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
 
   @override
   Widget build(BuildContext context) {
-    return _initiated ? HomePage() : BlankPage();
+    return _initiated
+        ? HomePage()
+        : BlankPage(showProgress: _showProgress, reserveProgressSpace: true);
   }
 }

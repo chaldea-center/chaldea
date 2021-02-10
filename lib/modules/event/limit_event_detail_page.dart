@@ -48,6 +48,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
           imageUrl: event.bannerUrl,
           connectivity: db.connectivity,
           downloadEnabled: db.userData.downloadEnabled,
+          placeholder: (_, __) => Container(),
         ),
       ));
     // 复刻
