@@ -92,7 +92,7 @@ class Database {
           getJsonFromFile(paths.userDataPath, k: () => <String, dynamic>{}));
       userData.dispose();
       userData = newData;
-      logger.d('userdata reloaded.');
+      logger.d('userdata loaded.');
       return true;
     } catch (e, s) {
       logger.e('Load userdata failed', e, s);
@@ -105,7 +105,7 @@ class Database {
     final t = TimeCounter('loadGameData');
     try {
       gameData = GameData.fromJson(getJsonFromFile(paths.gameDataPath));
-      logger.d('game data reloaded, version ${gameData.version}.');
+      logger.d('game data loaded, version ${gameData.version}.');
       db.onAppUpdate.call();
       t.elapsed();
       itemStat.clear();
