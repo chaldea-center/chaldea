@@ -22,6 +22,7 @@ const String kSupportTeamEmailAddress = 'chaldea-support@narumi.cc';
 const String kDatasetAssetKey = 'res/data/dataset.zip';
 const String kDatasetServerPath = '/chaldea/dataset.zip';
 const String kServerRoot = 'http://localhost:8080';
+const String kAppStoreLink = 'itms-apps://itunes.apple.com/app/id1548713491';
 
 /// For **Tablet mode** and cross-count is 7,
 /// grid view of servant and item icons won't fill full width
@@ -135,6 +136,7 @@ class AppInfo {
     if (buildNumber > 0) s += '+$buildNumber';
     return s;
   }
+
   /// e.g. 1.2.3 (4)
   static String get fullVersion2 {
     String s = '';

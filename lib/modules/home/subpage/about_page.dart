@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -71,24 +72,25 @@ class _AboutPageState extends State<AboutPage> {
                   ),
                   Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
-                    spacing: 10,
+                    spacing: 3,
                     children: [
-                      if (AppInfo.fullVersion2.isNotEmpty)
-                        Text(
-                            '${S.of(context).version}: ${AppInfo.fullVersion2}'),
-                      ElevatedButton(
-                        onPressed: () => checkAppUpdate(false),
-                        child: Text(S.of(context).check_update),
-                        style: ElevatedButton.styleFrom(
-                          textStyle: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.normal,
-                              fontSize: 12),
-                          minimumSize: Size(10, 30),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16)),
-                        ),
-                      )
+                      Text('${S.of(context).version}: ${AppInfo.fullVersion2}'),
+                      if (db.runtimeData.appUpgradable)
+                        Text(' ⃰', style: TextStyle(color: Colors.red)),
+                      if (!Platform.isIOS && !Platform.isMacOS || kDebugMode)
+                        ElevatedButton(
+                          onPressed: () => checkAppUpdate(false),
+                          child: Text(S.of(context).check_update),
+                          style: ElevatedButton.styleFrom(
+                            textStyle: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 12),
+                            minimumSize: Size(10, 30),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16)),
+                          ),
+                        )
                     ],
                   )
                 ],

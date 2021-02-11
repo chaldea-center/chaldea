@@ -435,8 +435,7 @@ class PathManager {
 }
 
 class RuntimeData {
-  // bool enableDownload = false;
-//  final ItemStatistics itemStatistics = ItemStatistics();
+  bool appUpgradable = false;
 }
 
 Database db = new Database();

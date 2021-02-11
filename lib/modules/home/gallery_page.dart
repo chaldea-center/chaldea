@@ -198,8 +198,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
               childAspectRatio: 1,
               children: _getShownGalleries(context),
             ),
-            if(kDebugMode)
-              buildTestInfoPad(),
+            if (kDebugMode) buildTestInfoPad(),
           ],
         ));
   }

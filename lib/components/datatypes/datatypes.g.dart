@@ -1372,8 +1372,7 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
                 (k, e) => MapEntry(k, e as bool),
               )),
       serverDomain: $checkedConvert(json, 'serverDomain', (v) => v as String),
-      appDatasetUpdateSource:
-          $checkedConvert(json, 'appDatasetUpdateSource', (v) => v as int),
+      updateSource: $checkedConvert(json, 'updateSource', (v) => v as int),
       previousBuildNumber:
           $checkedConvert(json, 'previousBuildNumber', (v) => v as int),
       curUserKey: $checkedConvert(json, 'curUserKey', (v) => v as String),
@@ -1426,7 +1425,7 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'sliderUrls': instance.sliderUrls,
       'galleries': instance.galleries,
       'serverDomain': instance.serverDomain,
-      'appDatasetUpdateSource': instance.appDatasetUpdateSource,
+      'updateSource': instance.updateSource,
       'previousBuildNumber': instance.previousBuildNumber,
       'curUserKey': instance.curUserKey,
       'users': instance.users,
@@ -1574,6 +1573,7 @@ const _$SvtCompareEnumMap = {
   SvtCompare.rarity: 'rarity',
   SvtCompare.atk: 'atk',
   SvtCompare.hp: 'hp',
+  SvtCompare.priority: 'priority',
 };
 
 CraftFilterData _$CraftFilterDataFromJson(Map<String, dynamic> json) {

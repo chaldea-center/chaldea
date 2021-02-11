@@ -7,6 +7,7 @@ import 'dart:math' show max, min;
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -298,7 +299,6 @@ void checkAppUpdate([bool background = true]) async {
   String? launchUrl;
   try {
     if (Platform.isIOS || Platform.isMacOS) {
-      launchUrl = 'itms-apps://itunes.apple.com/app/id1548713491';
       // use https and set UA, or the fetched info may be outdated
       final response = await Dio()
           .get('https://itunes.apple.com/lookup?bundleId=$kPackageName',
@@ -314,7 +314,7 @@ void checkAppUpdate([bool background = true]) async {
       versionString = result['version'];
       releaseNote = result['releaseNotes'];
     } else if (Platform.isAndroid || Platform.isWindows) {
-      GitTool gitTool = GitTool.fromIndex(db.userData.appDatasetUpdateSource);
+      GitTool gitTool = GitTool.fromIndex(db.userData.updateSource);
       final release = await gitTool.latestAppRelease();
       versionString = release?.name;
       if (versionString?.startsWith('v') == true)
@@ -325,7 +325,7 @@ void checkAppUpdate([bool background = true]) async {
         launchUrl = release!.targetAsset!.browserDownloadUrl;
       } else {
         launchUrl =
-            GitTool.getReleasePageUrl(db.userData.appDatasetUpdateSource, true);
+            GitTool.getReleasePageUrl(db.userData.updateSource, true);
       }
     }
   } catch (e) {
@@ -344,17 +344,36 @@ void checkAppUpdate([bool background = true]) async {
   }
 
   Version? version = Version.tryParse(versionString);
-  bool isVersionEqual = version?.equalTo(AppInfo.fullVersion) == true;
-  if (isVersionEqual && background) {
-    logger.i('Already the latest version: ${version?.fullVersion}');
+  Version? curVer = Version.tryParse(AppInfo.fullVersion);
+  bool appUpgradable = version != null && curVer != null && version > curVer;
+  db.runtimeData.appUpgradable = appUpgradable;
+  if (!kDebugMode && (Platform.isIOS || Platform.isMacOS)) {
+    // Guideline 2.4.5(vii) - Performance
+    // The Mac App Store provides customers with notifications of updates
+    // pending for all apps delivered through the App Store, and allows the
+    // user to update applications through the Mac App Store app. You should
+    // not provide additional update checks or updates through your app.
+    if (!background) {
+      launch(kAppStoreLink);
+    }
     return;
   }
 
-  if (db.prefs.getString(ignoreUpdateKey) == versionString && background) {
+  // android & windows
+  // no update
+  if (background && !appUpgradable) {
+    logger.i('No update: fetched=${version?.fullVersion}, '
+        'cur=${curVer?.fullVersion}');
+    return;
+  }
+  // upgradable, ignore
+  if (background && db.prefs.getString(ignoreUpdateKey) == versionString) {
     logger.i('Latest version: $versionString, ignore this update.');
     return;
   }
+
   logger.i('Release note:\n$releaseNote');
+  // background&&upgradable, user-click
   SimpleCancelOkDialog(
     title: Text(S.of(context).about_update_app),
     content: Text(
@@ -365,11 +384,11 @@ void checkAppUpdate([bool background = true]) async {
     actions: [
       TextButton(
         child: Text(S.of(context).update),
-        onPressed: isVersionEqual || launchUrl == null
+        onPressed: !appUpgradable || launchUrl == null
             ? null
             : () => launch(launchUrl!),
       ),
-      if (!isVersionEqual)
+      if (appUpgradable)
         TextButton(
           child: Text(S.of(context).ignore),
           onPressed: () {

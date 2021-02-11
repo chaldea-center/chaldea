@@ -18,7 +18,21 @@ const String _datasetRepo = 'chaldea-dataset';
 
 enum GitSource { gitee, github }
 
-class Version {
+// for most enum
+extension GitSourceExtension on GitSource {
+  String toShortString() => this.toString().split('.').last;
+
+  String toTitleString() {
+    String s = this.toShortString();
+    if (s.length > 1) {
+      return s[0].toUpperCase() + s.substring(1);
+    } else {
+      return s;
+    }
+  }
+}
+
+class Version extends Comparable<Version> {
   /// valid format:
   ///   - v1.2.3+4,'v' and +4 is optional
   ///   - 1.2.3.4, windows format
@@ -66,6 +80,35 @@ class Version {
     int? _build = int.tryParse(match.group(4) ?? '');
     return Version(major, minor, patch, build ?? _build);
   }
+
+  @override
+  int compareTo(Version other) {
+    // build(nullable) than major/minor/patch
+    if (build != null && other.build != null && build != other.build) {
+      return build!.compareTo(other.build!);
+    } else {
+      if (major != other.major) return major.compareTo(other.major);
+      if (minor != other.minor) return minor.compareTo(other.minor);
+      if (patch != other.patch) return patch.compareTo(other.patch);
+      return 0;
+    }
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is Version && compareTo(other) == 0;
+  }
+
+  bool operator <(Version other) => compareTo(other) < 0;
+
+  bool operator <=(Version other) => compareTo(other) <= 0;
+
+  bool operator >(Version other) => compareTo(other) > 0;
+
+  bool operator >=(Version other) => compareTo(other) >= 0;
+
+  @override
+  int get hashCode => toString().hashCode;
 }
 
 class GitRelease {

@@ -1,12 +1,14 @@
 import 'dart:io';
 
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/components/git_tool.dart';
 import 'package:chaldea/modules/home/subpage/dataset_manage_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'subpage/about_page.dart';
 import 'subpage/account_page.dart';
+import 'subpage/update_source_page.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -99,21 +101,23 @@ class _SettingsPageState extends State<SettingsPage> {
               ListTile(
                 title: Text(S.of(context).download_source),
                 subtitle: Text(S.of(context).download_source_hint),
-                trailing: DropdownButton(
-                  value: db.userData.appDatasetUpdateSource ?? 0,
-                  items: [
-                    DropdownMenuItem(
-                        child: Text(S.of(context).download_source_of(1)),
-                        value: 0),
-                    DropdownMenuItem(
-                        child: Text(S.of(context).download_source_of(2)),
-                        value: 1),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(GitSource.values[db.userData.updateSource]
+                        .toTitleString()),
+                    Icon(Icons.arrow_forward_ios),
                   ],
-                  onChanged: (v) => setState(() {
-                    db.userData.appDatasetUpdateSource = v;
-                    db.saveUserData();
-                  }),
                 ),
+                onTap: () {
+                  SplitRoute.push(
+                    context: context,
+                    builder: (context, _) => UpdateSourcePage(),
+                    detail: true,
+                    popDetail: true,
+                  );
+                },
               ),
             ],
           ),
