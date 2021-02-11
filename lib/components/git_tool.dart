@@ -314,9 +314,18 @@ class _DownloadDialogState extends State<DownloadDialog> {
   Future<void> startDownload() async {
     status = 0;
     print('download from ${widget.url}');
+    final t0 = DateTime.now();
+    if (widget.url?.isNotEmpty != true) {
+      print('url cannot be null or empty');
+      return;
+    }
     try {
-      final response = await _dio.download(widget.url, widget.savePath,
-          cancelToken: _cancelToken, onReceiveProgress: onReceiveProgress);
+      final response = await _dio.download(
+        widget.url!,
+        widget.savePath,
+        cancelToken: _cancelToken,
+        onReceiveProgress: onReceiveProgress,
+      );
       onDownloadComplete(response);
     } on DioError catch (e) {
       if (e.type != DioErrorType.CANCEL) {
@@ -324,6 +333,8 @@ class _DownloadDialogState extends State<DownloadDialog> {
         rethrow;
       }
     }
+    logger.i('Download time usage:'
+        ' ${DateTime.now().difference(t0).inMilliseconds}');
   }
 
   void onReceiveProgress(int count, int total) {
@@ -366,14 +377,13 @@ class _DownloadDialogState extends State<DownloadDialog> {
         ],
       ),
       actions: [
-        if (status <= 0)
-          TextButton(
-            onPressed: () {
-              _cancelToken.cancel('user canceled');
-              Navigator.of(context).pop();
-            },
-            child: Text(S.of(context).cancel),
-          ),
+        TextButton(
+          onPressed: () {
+            _cancelToken.cancel('user canceled');
+            Navigator.of(context).pop();
+          },
+          child: Text(S.of(context).cancel),
+        ),
         if (status < 0 && widget.url?.isNotEmpty == true)
           TextButton(
               onPressed: startDownload, child: Text(S.of(context).download)),
