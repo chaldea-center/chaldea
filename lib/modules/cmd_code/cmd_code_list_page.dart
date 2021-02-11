@@ -156,8 +156,8 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
         shownList.add(code);
       }
     });
-    shownList.sort((a, b) => CommandCode.compare(
-        a, b, filterData.sortKeys, filterData.sortReversed));
+    shownList.sort((a, b) => CommandCode.compare(a, b,
+        keys: filterData.sortKeys, reversed: filterData.sortReversed));
     return Scrollbar(
       controller: _scrollController,
       child: filterData.useGrid ? _buildGridView() : _buildListView(),

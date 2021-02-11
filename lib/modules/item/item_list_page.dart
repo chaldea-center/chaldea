@@ -389,7 +389,7 @@ class _ItemListTabState extends State<ItemListTab> {
   /// Android Emulator: catch "\n"&"\t", no complete or submit
   /// iOS: only move among the nodes already in viewport,
   ///       not the updated viewport by auto scroll
-  /// Windows:
+  /// Windows: catch "\t", enter = click listTile
   /// macOS: catch "\t", enter to complete and submit
   Widget buildItemTile(InputComponents group, ItemStatistics statistics) {
     final itemKey = group.data.name;

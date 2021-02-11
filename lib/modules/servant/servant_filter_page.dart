@@ -56,7 +56,8 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
                 S.current.filter_sort_class,
                 S.current.filter_sort_rarity,
                 'ATK',
-                'HP'
+                'HP',
+                S.current.priority
               ]),
               onSortAttr: (key) {
                 filterData.sortKeys[i] = key;
@@ -93,7 +94,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           },
         ),
         FilterGroup(
-          title: Text('Priority', style: textStyle),
+          title: Text(S.of(context).priority, style: textStyle),
           options: SvtFilterData.priorityData,
           values: filterData.priority,
           onFilterChanged: (value) {

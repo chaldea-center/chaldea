@@ -174,8 +174,8 @@ class CraftListPageState extends State<CraftListPage> {
         shownList.add(ce);
       }
     });
-    shownList.sort((a, b) => CraftEssence.compare(
-        a, b, filterData.sortKeys, filterData.sortReversed));
+    shownList.sort((a, b) => CraftEssence.compare(a, b,
+        keys: filterData.sortKeys, reversed: filterData.sortReversed));
 
     return Scrollbar(
       controller: _scrollController,

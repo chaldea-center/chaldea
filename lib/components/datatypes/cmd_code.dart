@@ -45,7 +45,7 @@ class CommandCode {
   String get localizedName => localizeNoun(name, nameJp, null);
 
   static int compare(CommandCode a, CommandCode b,
-      [List<CmdCodeCompare> keys, List<bool> reversed]) {
+      {List<CmdCodeCompare> keys, List<bool> reversed}) {
     int res = 0;
     if (keys == null || keys.isEmpty) {
       keys = [CmdCodeCompare.no];

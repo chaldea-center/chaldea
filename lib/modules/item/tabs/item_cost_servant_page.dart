@@ -182,8 +182,9 @@ class ItemCostServantPage extends StatelessWidget {
       sortKeys = [SvtCompare.rarity, SvtCompare.className, SvtCompare.no];
       sortReversed = [true, false, true];
     }
-    svts.sort((a, b) => Servant.compare(db.gameData.servants[a],
-        db.gameData.servants[b], sortKeys, sortReversed));
+    svts.sort((a, b) => Servant.compare(
+        db.gameData.servants[a], db.gameData.servants[b],
+        keys: sortKeys, reversed: sortReversed, user: db.curUser));
     return svts;
   }
 }

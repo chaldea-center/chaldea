@@ -63,7 +63,7 @@ class CraftEssence {
   String get localizedName => localizeNoun(name, nameJp, null);
 
   static int compare(CraftEssence a, CraftEssence b,
-      [List<CraftCompare> keys, List<bool> reversed]) {
+      {List<CraftCompare> keys, List<bool> reversed}) {
     int res = 0;
     if (keys == null || keys.isEmpty) {
       keys = [CraftCompare.no];

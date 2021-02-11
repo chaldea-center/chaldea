@@ -80,7 +80,7 @@ class _DropCalcFilterDialogState extends State<DropCalcFilterDialog> {
           contentChild: Column(
             children: params.blacklist.map((key) {
               String shownName =
-                  db.gameData.freeQuests[key]?.localizedPlace ?? key;
+                  db.gameData.freeQuests[key]?.localizedKey() ?? key;
               return ListTile(
                 title: Text(shownName),
                 trailing: IconButton(

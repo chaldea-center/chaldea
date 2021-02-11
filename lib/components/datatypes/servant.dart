@@ -1,6 +1,6 @@
 part of datatypes;
 
-enum SvtCompare { no, className, rarity, atk, hp }
+enum SvtCompare { no, className, rarity, atk, hp, priority }
 
 @JsonSerializable(checked: true)
 class Servant {
@@ -156,7 +156,7 @@ class Servant {
   }
 
   static int compare(Servant a, Servant b,
-      [List<SvtCompare> keys, List<bool> reversed]) {
+      {List<SvtCompare> keys, List<bool> reversed, User user}) {
     int res = 0;
     if (keys == null || keys.isEmpty) {
       keys = [SvtCompare.no];
@@ -178,6 +178,10 @@ class Servant {
           break;
         case SvtCompare.hp:
           r = (a.info?.hpMax ?? 0) - (b.info?.hpMax ?? 0);
+          break;
+        case SvtCompare.priority:
+          final aa = user?.svtStatusOf(a.no), bb = user?.svtStatusOf(b.no);
+          r = (aa?.priority ?? 1) - (bb?.priority ?? 1);
           break;
       }
       res = res * 1000 + ((reversed?.elementAt(i) ?? false) ? -r : r);

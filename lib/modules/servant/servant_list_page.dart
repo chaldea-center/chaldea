@@ -324,8 +324,10 @@ class ServantListPageState extends State<ServantListPage> {
         }
       }
     });
-    shownList.sort((a, b) =>
-        Servant.compare(a, b, filterData.sortKeys, filterData.sortReversed));
+    shownList.sort((a, b) => Servant.compare(a, b,
+        keys: filterData.sortKeys,
+        reversed: filterData.sortReversed,
+        user: db.curUser));
     return Scrollbar(
       controller: _scrollController,
       child: widget.planMode
