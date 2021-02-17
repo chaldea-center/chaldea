@@ -15,6 +15,7 @@ import 'package:path/path.dart' as pathlib;
 
 import 'config.dart';
 import 'constants.dart';
+import 'device_app_info.dart';
 import 'utils.dart';
 
 export 'page_report_mode_cross.dart';

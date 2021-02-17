@@ -7,6 +7,7 @@ export 'after_layout.dart';
 export 'config.dart';
 export 'constants.dart';
 export 'custom_dialogs.dart';
+export 'device_app_info.dart';
 export 'custom_table.dart';
 export 'custom_tile.dart';
 export 'datatypes/datatypes.dart';

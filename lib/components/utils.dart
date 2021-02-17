@@ -246,22 +246,20 @@ class TimeCounter {
   }
 }
 
-VoidCallback showMyProgress(
+Future<void> Function() showMyProgress(
     {Duration period = const Duration(seconds: 1),
     String? status,
     EasyLoadingMaskType maskType = EasyLoadingMaskType.clear}) {
   int counts = 0;
-  Timer.periodic(Duration(milliseconds: 25), (timer) {
+  final timer = Timer.periodic(Duration(milliseconds: 25), (timer) {
     counts += 1;
     var progress = counts * 25.0 / period.inMilliseconds % 1.0;
-    if (counts < 0) {
-      timer.cancel();
-      EasyLoading.dismiss();
-    } else {
-      EasyLoading.showProgress(progress, status: status, maskType: maskType);
-    }
+    EasyLoading.showProgress(progress, status: status, maskType: maskType);
   });
-  return () => counts = -100;
+  return () {
+    timer.cancel();
+    return EasyLoading.dismiss();
+  };
 }
 
 Future<String?> resolveWikiFileUrl(String filename) async {
@@ -324,8 +322,7 @@ void checkAppUpdate([bool background = true]) async {
       if (release?.targetAsset?.browserDownloadUrl.isNotEmpty == true) {
         launchUrl = release!.targetAsset!.browserDownloadUrl;
       } else {
-        launchUrl =
-            GitTool.getReleasePageUrl(db.userData.updateSource, true);
+        launchUrl = GitTool.getReleasePageUrl(db.userData.updateSource, true);
       }
     }
   } catch (e) {

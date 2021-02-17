@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'subpage/about_page.dart';
 import 'subpage/account_page.dart';
+import 'subpage/feedback_page.dart';
 import 'subpage/update_source_page.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -171,6 +172,14 @@ class _SettingsPageState extends State<SettingsPage> {
                   onTap: () =>
                       launch('https://testflight.apple.com/join/HSyZttrr'),
                 ),
+              ListTile(title: Text(S.of(context).about_feedback),onTap: (){
+                SplitRoute.push(
+                  context: context,
+                  builder: (context, _) => FeedbackPage(),
+                  detail: true,
+                  popDetail: true,
+                );
+              },),
               if (kDebugMode)
                 ListTile(
                   title: Text('Generate Error'),

@@ -224,12 +224,14 @@ class _ImageAnalysisPageState extends State<ImageAnalysisPage> {
         var data = jsonDecode(response.data);
         String title = data['success'] == true ? '上传成功' : '上传失败';
         String content = data['msg'].toString();
+        canceler();
         showInformDialog(context, title: title, content: content);
       }
     }).onError((error, stackTrace) {
       print(error);
+      canceler();
       showInformDialog(context, content: error.toString());
-    }).whenComplete(() => canceler());
+    });
   }
 
   void _fetchResult() async {

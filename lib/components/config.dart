@@ -19,6 +19,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'constants.dart';
 import 'datatypes/datatypes.dart';
+import 'device_app_info.dart';
 import 'logger.dart';
 import 'utils.dart';
 

@@ -367,7 +367,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
   }
 
   Future<void> importGamedata() async {
-    VoidCallback canceler;
+    var canceler;
     try {
       // final result = await FilePicker.platform.pickFiles();
       final result = await FilePickerCross.importFromStorage(
@@ -416,11 +416,12 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
               await db.extractZip(fp: fp, savePath: db.paths.gameDir);
               db.loadGameData();
               Navigator.of(context).pop();
+              canceler();
               EasyLoading.showToast(S.of(context).import_data_success);
             } catch (e) {
+              canceler();
               EasyLoading.showToast(S.of(context).import_data_error(e));
             } finally {
-              canceler();
             }
           },
         ),
