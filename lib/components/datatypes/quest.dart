@@ -39,11 +39,10 @@ class Quest {
   });
 
   /// [key] is [indexKey] which is used as map key
-  String localizedKey([String key]) {
-    key ??= indexKey;
-    if (key == place) {
+  String get localizedKey {
+    if (indexKey == place) {
       return localizedPlace;
-    } else if (place == '迦勒底之门' && name.contains('修炼场')) {
+    } else if (chapter.contains('每日任务')) {
       return localizedName;
     } else {
       return '$localizedPlace ($localizedName)';
@@ -57,6 +56,19 @@ class Quest {
   String get placeJp => getListItem(battles, 0)?.placeJp;
 
   String get place => getListItem(battles, 0)?.place;
+
+  static String shortChapterOf(String chapter) {
+    if (chapter.contains('每日任务')) {
+      return '每日任务';
+    }else if (chapter.contains('特异点')){
+      // 第一部
+      return chapter.split(' ').last;
+    } else if (chapter.toLowerCase().contains('lostbelt')) {
+      return chapter.split(' ')[2];
+    } else {
+      return chapter.split(' ')[0];
+    }
+  }
 
   factory Quest.fromJson(Map<String, dynamic> data) => _$QuestFromJson(data);
 

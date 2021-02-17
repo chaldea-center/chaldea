@@ -50,7 +50,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   CustomTile(
-                    title: Text(quest?.localizedKey(questKey) ?? questKey),
+                    title: Text(quest?.localizedKey ?? questKey),
                     subtitle: Text(drops.entries.map((e) {
                       String v = e.value.toStringAsFixed(3);
                       while (v.contains('.') && v[v.length - 1] == '0') {
@@ -122,7 +122,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
         IconButton(
           icon: Icon(matchAll ? Icons.add_box : Icons.add_box_outlined),
           color: Theme.of(context).primaryColor,
-          tooltip: 'Match All',
+          tooltip: matchAll ? 'Contains All' : 'Contains One',
           onPressed: () {
             setState(() {
               matchAll = !matchAll;

@@ -79,6 +79,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "card_description" : MessageLookupByLibrary.simpleMessage("解说"),
     "card_info" : MessageLookupByLibrary.simpleMessage("资料"),
     "check_update" : MessageLookupByLibrary.simpleMessage("检查更新"),
+    "choose_quest_hint" : MessageLookupByLibrary.simpleMessage("选择Free本"),
     "clear" : MessageLookupByLibrary.simpleMessage("清除"),
     "clear_cache" : MessageLookupByLibrary.simpleMessage("清除缓存"),
     "clear_cache_finish" : MessageLookupByLibrary.simpleMessage("缓存已清理"),

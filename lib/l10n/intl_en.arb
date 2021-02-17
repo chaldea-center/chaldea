@@ -296,5 +296,6 @@
   "priority": "Priority",
   "item_only_show_lack": "Only show lacked",
   "image_analysis": "Image analysis",
-  "upload": "Upload"
+  "upload": "Upload",
+  "choose_quest_hint": "Choose Free Quest"
 }

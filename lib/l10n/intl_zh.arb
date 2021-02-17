@@ -295,5 +295,6 @@
   "priority": "优先级",
   "item_only_show_lack": "仅显示不足",
   "image_analysis": "图像解析",
-  "upload": "上传"
+  "upload": "上传",
+  "choose_quest_hint": "选择Free本"
 }

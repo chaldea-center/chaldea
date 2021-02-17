@@ -79,6 +79,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "card_description" : MessageLookupByLibrary.simpleMessage("解説"),
     "card_info" : MessageLookupByLibrary.simpleMessage("資料"),
     "check_update" : MessageLookupByLibrary.simpleMessage("更新の確認"),
+    "choose_quest_hint" : MessageLookupByLibrary.simpleMessage("フリークエストを選択"),
     "clear" : MessageLookupByLibrary.simpleMessage("クリア"),
     "clear_cache" : MessageLookupByLibrary.simpleMessage("キャッシュを消去"),
     "clear_cache_finish" : MessageLookupByLibrary.simpleMessage("キャッシュがクリアされました"),

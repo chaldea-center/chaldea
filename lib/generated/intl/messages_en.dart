@@ -79,6 +79,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "card_description" : MessageLookupByLibrary.simpleMessage("Description"),
     "card_info" : MessageLookupByLibrary.simpleMessage("Info"),
     "check_update" : MessageLookupByLibrary.simpleMessage("Check update"),
+    "choose_quest_hint" : MessageLookupByLibrary.simpleMessage("Choose Free Quest"),
     "clear" : MessageLookupByLibrary.simpleMessage("Clear"),
     "clear_cache" : MessageLookupByLibrary.simpleMessage("Clear cache"),
     "clear_cache_finish" : MessageLookupByLibrary.simpleMessage("Cache cleared"),

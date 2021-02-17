@@ -9,6 +9,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 
+import 'free_quest_query_tab.dart';
 import 'quest_efficiency_tab.dart';
 import 'quest_plan_tab.dart';
 
@@ -29,7 +30,7 @@ class _DropCalculatorPageState extends State<DropCalculatorPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -61,7 +62,8 @@ class _DropCalculatorPageState extends State<DropCalculatorPage>
           tabs: [
             Tab(text: S.of(context).item),
             Tab(text: S.of(context).plan),
-            Tab(text: S.of(context).efficiency)
+            Tab(text: S.of(context).efficiency),
+            Tab(text: S.of(context).free_quest)
           ],
           onTap: (_) {
             FocusScope.of(context).unfocus();
@@ -83,7 +85,8 @@ class _DropCalculatorPageState extends State<DropCalculatorPage>
             KeepAliveBuilder(
                 builder: (context) => QuestPlanTab(solution: solution)),
             KeepAliveBuilder(
-                builder: (context) => QuestEfficiencyTab(solution: solution))
+                builder: (context) => QuestEfficiencyTab(solution: solution)),
+            KeepAliveBuilder(builder: (context) => FreeQuestQueryTab())
           ],
         ),
       ),
@@ -137,9 +140,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     params = db.userData.glpkParams..validate();
     final Map<String, int> objective =
         widget.objectiveCounts ?? params.objectiveCounts;
-    params
-      ..removeAll()
-      ..enableControllers();
+    params.enableControllers();
     if (objective.isEmpty) {
       // if enter from home page, default to add two items
       addAnItemNotInList();
@@ -190,6 +191,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
   @override
   void dispose() {
     solver.dispose();
+    params.disableControllers();
     super.dispose();
   }
 

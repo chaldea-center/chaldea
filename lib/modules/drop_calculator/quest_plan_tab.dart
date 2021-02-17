@@ -29,7 +29,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                 children: <Widget>[
                   CustomTile(
                     title: Text(
-                        quest?.localizedKey(variable.name) ?? variable.name),
+                        quest?.localizedKey ?? variable.name),
                     subtitle: Text(variable.detail.entries
                         .map((e) => '${Item.localizedNameOf(e.key)}*${e.value}')
                         .join(', ')),

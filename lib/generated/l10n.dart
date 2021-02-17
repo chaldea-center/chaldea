@@ -2999,6 +2999,16 @@ class S {
       args: [],
     );
   }
+
+  /// `选择Free本`
+  String get choose_quest_hint {
+    return Intl.message(
+      '选择Free本',
+      name: 'choose_quest_hint',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

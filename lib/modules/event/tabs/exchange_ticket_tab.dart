@@ -165,7 +165,6 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
       ));
     }
     return FittedBox(
-      fit: BoxFit.contain,
       child: Row(mainAxisSize: MainAxisSize.min, children: trailingItems),
     );
   }
