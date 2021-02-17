@@ -1,12 +1,15 @@
 // @dart=2.12
 import 'dart:io';
 
+import 'package:chaldea/components/config.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info/package_info.dart';
+import 'package:path/path.dart' as pathlib;
+import 'package:uuid/uuid.dart';
 
 import 'logger.dart';
 
@@ -21,7 +24,7 @@ const String kGameDataFilename = 'dataset.json';
 const String kSupportTeamEmailAddress = 'chaldea-support@narumi.cc';
 const String kDatasetAssetKey = 'res/data/dataset.zip';
 const String kDatasetServerPath = '/chaldea/dataset.zip';
-const String kServerRoot = 'http://localhost:8080';
+const String kServerRoot = 'http://chaldea.narumi.cc:8083';
 const String kAppStoreLink = 'itms-apps://itunes.apple.com/app/id1548713491';
 
 /// For **Tablet mode** and cross-count is 7,
@@ -110,6 +113,16 @@ class AppInfo {
     } else {
       throw UnimplementedError(Platform.operatingSystem);
     }
+    if (_uniqueId?.isNotEmpty != true) {
+      var uuidFile = File(pathlib.join(db.paths.appPath, '.uuid'));
+      if (uuidFile.existsSync()) {
+        _uniqueId = uuidFile.readAsStringSync();
+      }
+      if (_uniqueId?.isNotEmpty != true) {
+        _uniqueId = Uuid().v1();
+        uuidFile.writeAsStringSync(_uniqueId!);
+      }
+    }
     logger.i('Unique ID: $_uniqueId');
     return _info!;
   }
@@ -145,7 +158,7 @@ class AppInfo {
     return s;
   }
 
-  static String? get uniqueId => _uniqueId;
+  static String get uniqueId => _uniqueId!;
 
   /// currently supported mobile or desktop
   static bool get isMobile => Platform.isAndroid || Platform.isIOS;

@@ -48,6 +48,7 @@ dependencies:
   github: ^7.0.4
   hive: ^1.4.4+1
   html: ^0.14.0+4
+  image: ^2.1.19
   intl: ^0.17.0-nullsafety.2
   json_annotation: ^3.1.1
   json_patch: ^2.1.0
@@ -58,6 +59,7 @@ dependencies:
   share: '>=0.6.5+4 <2.0.0'
   shared_preferences: '>=0.5.12+4 <2.0.0'
   url_launcher: ^6.0.0-nullsafety.6
+  uuid: ^2.2.2
 
 dev_dependencies:
   flutter_test:

@@ -294,5 +294,7 @@
   "efficiency_type_ap": "20AP Rate",
   "efficiency_type_drop": "Drop Rate",
   "priority": "Priority",
-  "item_only_show_lack": "Only show lacked"
+  "item_only_show_lack": "Only show lacked",
+  "image_analysis": "Image analysis",
+  "upload": "Upload"
 }

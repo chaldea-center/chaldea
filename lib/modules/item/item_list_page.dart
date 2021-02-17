@@ -359,22 +359,29 @@ class _ItemListTabState extends State<ItemListTab> {
       },
     );
     Widget actionBar;
-    if (Platform.isIOS || Platform.isAndroid) {
+    // keyboard is shown and mobile view
+    if (MediaQuery.of(context).viewInsets.bottom > 0 &&
+        (Platform.isIOS || Platform.isAndroid)) {
       actionBar = Row(
         children: [
           IconButton(
-            onPressed: () => moveToNext(
-              _shownGroups
-                  .firstWhere((group) => group.focusNode.hasFocus)
-                  ?.focusNode,
-              true,
-            ),
+            onPressed: () {
+              int focused =
+                  _shownGroups.indexWhere((e) => e.focusNode.hasFocus);
+              if (focused >= 0) {
+                moveToNext(_shownGroups[focused].focusNode, true);
+              }
+            },
             icon: Icon(Icons.keyboard_arrow_up, color: Colors.grey),
           ),
           IconButton(
-            onPressed: () => moveToNext(_shownGroups
-                .firstWhere((group) => group.focusNode.hasFocus)
-                ?.focusNode),
+            onPressed: () {
+              int focused =
+                  _shownGroups.indexWhere((e) => e.focusNode.hasFocus);
+              if (focused >= 0) {
+                moveToNext(_shownGroups[focused].focusNode);
+              }
+            },
             icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey),
           )
         ],

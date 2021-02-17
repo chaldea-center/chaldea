@@ -141,14 +141,16 @@ class _SettingsPageState extends State<SettingsPage> {
                   },
                 ),
               ),
-              SwitchListTile.adaptive(
+              if (Platform.isAndroid && Platform.isIOS)
+                SwitchListTile.adaptive(
                   title: Text(S.of(context).settings_use_mobile_network),
                   value: db.userData.useMobileNetwork ?? false,
                   onChanged: (v) async {
                     db.userData.useMobileNetwork = v;
                     db.saveUserData();
                     setState(() {});
-                  }),
+                  },
+                ),
             ],
           ),
           TileGroup(

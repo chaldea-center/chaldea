@@ -10,7 +10,7 @@ class UserData {
   String sliderUpdateTime;
   Map<String, String> sliderUrls;
   Map<String, bool> galleries;
-  String serverDomain;
+  String serverRoot;
   int updateSource;
 
   /// use build number which should be increasing integer
@@ -64,7 +64,7 @@ class UserData {
     this.sliderUpdateTime,
     this.sliderUrls,
     this.galleries,
-    this.serverDomain,
+    this.serverRoot,
     this.updateSource,
     this.previousBuildNumber,
     this.curUserKey,
@@ -81,7 +81,7 @@ class UserData {
     useMobileNetwork ??= false;
     sliderUrls ??= {};
     galleries ??= {};
-    serverDomain ??= kServerRoot;
+    serverRoot ??= kServerRoot;
     updateSource =
         fixValidRange(updateSource ?? 0, 0, GitSource.values.length - 1);
 

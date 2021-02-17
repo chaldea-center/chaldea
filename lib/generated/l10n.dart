@@ -2979,6 +2979,26 @@ class S {
       args: [],
     );
   }
+
+  /// `图像解析`
+  String get image_analysis {
+    return Intl.message(
+      '图像解析',
+      name: 'image_analysis',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `上传`
+  String get upload {
+    return Intl.message(
+      '上传',
+      name: 'upload',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

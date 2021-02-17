@@ -5,6 +5,7 @@ import 'package:chaldea/modules/craft/craft_list_page.dart';
 import 'package:chaldea/modules/drop_calculator/drop_calculator_page.dart';
 import 'package:chaldea/modules/event/events_page.dart';
 import 'package:chaldea/modules/extras/ap_calc_page.dart';
+import 'package:chaldea/modules/extras/image_analysis_page.dart';
 import 'package:chaldea/modules/extras/mystic_code_page.dart';
 import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
@@ -116,7 +117,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       GalleryItem.plan: GalleryItem(
         name: GalleryItem.plan,
         title: S.of(context).plan_title,
-        icon: Icons.analytics,
+        icon: Icons.article_outlined,
         builder: (context, _) => ServantListPage(planMode: true),
         isDetail: false,
       ),
@@ -156,6 +157,13 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         builder: (context, _) => GameStatisticsPage(),
         isDetail: true,
       ),
+      GalleryItem.image_analysis: GalleryItem(
+        name: GalleryItem.image_analysis,
+        title: S.of(context).image_analysis,
+        icon: Icons.image_search,
+        builder: (context, _) => ImageAnalysisPage(),
+        isDetail: true,
+      ),
       GalleryItem.more: GalleryItem(
         name: GalleryItem.more,
         title: S.of(context).more,
@@ -164,14 +172,6 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         //fail
         isDetail: true,
       ),
-      // if (kDebugMode_)
-      //   'Test': GalleryItem(
-      //     name: 'Test',
-      //     title: 'Test',
-      //     icon: Icons.adb,
-      //     builder: (context, _) => TestPage(),
-      //     isDetail: false,
-      //   ),
     };
   }
 

@@ -22,8 +22,6 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
   Map<String, String> cachedFiles = {};
   List<String> onlineVersions = [];
 
-  Dio _dio = Dio(BaseOptions(baseUrl: db.userData.serverDomain));
-
   @override
   void initState() {
     super.initState();
@@ -201,7 +199,9 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
     );
   }
 
+  /// server not supported yet
   void patchVersion(String version) async {
+    Dio _dio = Dio(BaseOptions(baseUrl: db.userData.serverRoot));
     try {
       Response response = await _dio.get('/patch',
           queryParameters: {'from': db.gameData.version, 'to': version});
@@ -448,8 +448,8 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
               title: Text(S.of(context).dataset_goto_download_page),
               subtitle: Text(S.of(context).dataset_goto_download_page_hint),
               onTap: () {
-                launch(GitTool.getReleasePageUrl(
-                    db.userData.updateSource, false));
+                launch(
+                    GitTool.getReleasePageUrl(db.userData.updateSource, false));
               },
             )
           ],

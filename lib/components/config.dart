@@ -119,7 +119,7 @@ class Database {
   }
 
   Future<void> downloadGameData([String? url]) async {
-    url ??= db.userData.serverDomain + kDatasetServerPath;
+    url ??= db.userData.serverRoot + kDatasetServerPath;
     Dio _dio = Dio();
     try {
       Response response = await _dio.get(url,
@@ -195,6 +195,12 @@ class Database {
   }
 
   final AssetImage errorImage = AssetImage('res/img/gudako.png');
+
+  File? getIconFile(String iconKey, {bool? preferPng}) {
+    final icon = getIconResource(iconKey, preferPng: preferPng);
+    if (icon == null) return null;
+    return File(pathlib.join(paths.gameIconDir, icon.name));
+  }
 
   ImageProvider getIconProvider(String iconKey, {bool? preferPng}) {
     final icon = getIconResource(iconKey, preferPng: preferPng);
@@ -436,6 +442,7 @@ class PathManager {
 
 class RuntimeData {
   bool appUpgradable = false;
+  List<File> itemRecognizeImageFiles = [];
 }
 
 Database db = new Database();
