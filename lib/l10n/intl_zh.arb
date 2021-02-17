@@ -255,7 +255,7 @@
   "download_source": "下载源",
   "download_source_of": "源{name}",
   "download_source_hint": "游戏数据和应用更新",
-  "reset_svt_enhance_state": "重置从者强化本状态",
+  "reset_svt_enhance_state": "重置强化本状态",
   "reset_svt_enhance_state_hint": "宝具本/技能本恢复成国服状态",
   "reset_success": "已重置",
   "gamedata": "游戏数据",

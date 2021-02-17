@@ -293,7 +293,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "rerun_event" : MessageLookupByLibrary.simpleMessage("复刻活动"),
     "reset" : MessageLookupByLibrary.simpleMessage("重置"),
     "reset_success" : MessageLookupByLibrary.simpleMessage("已重置"),
-    "reset_svt_enhance_state" : MessageLookupByLibrary.simpleMessage("重置从者强化本状态"),
+    "reset_svt_enhance_state" : MessageLookupByLibrary.simpleMessage("重置强化本状态"),
     "reset_svt_enhance_state_hint" : MessageLookupByLibrary.simpleMessage("宝具本/技能本恢复成国服状态"),
     "restore" : MessageLookupByLibrary.simpleMessage("恢复"),
     "search_result_count" : m10,

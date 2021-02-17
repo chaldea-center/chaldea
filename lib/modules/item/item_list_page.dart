@@ -359,8 +359,8 @@ class _ItemListTabState extends State<ItemListTab> {
       },
     );
     Widget actionBar;
-    // keyboard is shown and mobile view
-    if (MediaQuery.of(context).viewInsets.bottom > 0 &&
+    // keyboard is shown and mobile view, cannot detect floating keyboard
+    if (MediaQuery.of(context).viewInsets.bottom > 20 &&
         (Platform.isIOS || Platform.isAndroid)) {
       actionBar = Row(
         children: [

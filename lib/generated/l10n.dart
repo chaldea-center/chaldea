@@ -2590,10 +2590,10 @@ class S {
     );
   }
 
-  /// `重置从者强化本状态`
+  /// `重置强化本状态`
   String get reset_svt_enhance_state {
     return Intl.message(
-      '重置从者强化本状态',
+      '重置强化本状态',
       name: 'reset_svt_enhance_state',
       desc: '',
       args: [],

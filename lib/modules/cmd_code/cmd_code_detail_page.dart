@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CmdCodeDetailPage extends StatefulWidget {
   final CommandCode code;
@@ -25,7 +26,19 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(leading: BackButton(), title: Text(code.localizedName)),
+      appBar: AppBar(
+        leading: BackButton(),
+        title: Text(code.localizedName),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.link),
+            tooltip: S.of(context).jump_to('Mooncell'),
+            onPressed: () {
+              launch(mooncellFullLink(code.mcLink, encode: true));
+            },
+          )
+        ],
+      ),
       body: Column(
         children: <Widget>[
           Expanded(

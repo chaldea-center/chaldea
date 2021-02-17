@@ -4,6 +4,7 @@ import 'package:chaldea/modules/blank_page.dart';
 import 'package:chaldea/modules/servant/tabs/svt_quest_tab.dart';
 import 'package:chaldea/modules/servant/tabs/svt_voice_tab.dart';
 import 'package:chaldea/modules/shared/list_page_share.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'tabs/svt_illust_tab.dart';
 import 'tabs/svt_info_tab.dart';
@@ -91,16 +92,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
               Navigator.of(context).maybePop();
             },
           ),
+          titleSpacing: 0,
           title: AutoSizeText(svt.info.localizedName, maxLines: 1),
           actions: <Widget>[
-            buildSwitchPlanButton(
-              context: context,
-              onChange: (index) {
-                db.curUser.curSvtPlanNo = index;
-                this.setState(() {});
-                db.itemStat.updateSvtItems();
-              },
-            ),
             if (!Servant.unavailable.contains(svt.no))
               IconButton(
                 icon: status.curVal.favorite
@@ -116,25 +110,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                   db.itemStat.updateSvtItems();
                 },
               ),
-            if (!Servant.unavailable.contains(svt.no))
-              IconButton(
-                icon: Icon(Icons.replay),
-                tooltip: S.of(context).reset,
-                // constraints: _iconConstraint,
-                onPressed: () {
-                  SimpleCancelOkDialog(
-                    title: Text(S.of(context).reset),
-                    onTapOk: () {
-                      setState(() {
-                        status.reset();
-                        db.curUser.svtPlanOf(svt.no).reset();
-                      });
-                      db.userData.broadcastUserUpdate();
-                      db.itemStat.updateSvtItems();
-                    },
-                  ).show(context);
-                },
-              )
+            _popupButton,
           ],
         ),
         body: Column(
@@ -170,6 +146,63 @@ class ServantDetailPageState extends State<ServantDetailPage>
             )
           ],
         ));
+  }
+
+  Widget get _popupButton {
+    return PopupMenuButton(
+      itemBuilder: (context) {
+        return [
+          PopupMenuItem(
+            child: Text(S.of(context).select_plan),
+            value: 'plan',
+          ),
+          if (!Servant.unavailable.contains(svt.no))
+            PopupMenuItem<String>(
+              child: Text(S.of(context).reset),
+              value: 'reset',
+            ),
+          if (!Servant.unavailable.contains(svt.no))
+            PopupMenuItem<String>(
+              child: Text(S.of(context).reset_svt_enhance_state),
+              value: 'reset_enhance',
+            ),
+          PopupMenuItem<String>(
+            child: Text(S.of(context).jump_to('Mooncell')),
+            value: 'jump_mc',
+          ),
+        ];
+      },
+      onSelected: (select) {
+        if (select == 'plan') {
+          onSwitchPlan(
+            context: context,
+            onChange: (index) {
+              db.curUser.curSvtPlanNo = index;
+              setState(() {});
+              db.itemStat.updateSvtItems();
+            },
+          );
+        } else if (select == 'reset') {
+          SimpleCancelOkDialog(
+            title: Text(S.of(context).reset),
+            onTapOk: () {
+              setState(() {
+                status.reset();
+                db.curUser.svtPlanOf(svt.no).reset();
+              });
+              db.userData.broadcastUserUpdate();
+              db.itemStat.updateSvtItems();
+            },
+          ).show(context);
+        } else if (select == 'reset_enhance') {
+          setState(() {
+            status.resetEnhancement();
+          });
+        } else if (select == 'jump_mc') {
+          launch(mooncellFullLink(svt.mcLink, encode: true));
+        }
+      },
+    );
   }
 
   Widget _buildHeader() {

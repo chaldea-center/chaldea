@@ -124,9 +124,8 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 title: Text(S.of(context).reset_svt_enhance_state),
                 subtitle: Text(S.of(context).reset_svt_enhance_state_hint),
                 onTap: () {
-                  db.curUser.servants.forEach((svtNo, svt) {
-                    svt.npIndex = 0;
-                    svt.skillIndex.fillRange(0, svt.skillIndex.length, null);
+                  db.curUser.servants.forEach((svtNo, svtStatus) {
+                    svtStatus.resetEnhancement();
                   });
                   db.saveUserData();
                   EasyLoading.showToast(S.of(context).reset_success);

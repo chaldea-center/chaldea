@@ -101,9 +101,13 @@ class ServantStatus {
   void reset() {
     curVal.reset();
     npLv = 1;
+    priority = 1;
+    resetEnhancement();
+  }
+
+  void resetEnhancement(){
     skillIndex.fillRange(0, 3, null);
     npIndex = 0;
-    priority = 1;
   }
 
   factory ServantStatus.fromJson(Map<String, dynamic> data) =>
