@@ -18,6 +18,7 @@ class ItemDetailPage extends StatefulWidget {
 class _ItemDetailPageState extends State<ItemDetailPage>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
+  int curTab = 0;
 
   // svt tab
   bool favorite = true;
@@ -30,6 +31,11 @@ class _ItemDetailPageState extends State<ItemDetailPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
+    _tabController.addListener(() {
+      setState(() {
+        curTab = _tabController.index;
+      });
+    });
   }
 
   @override
@@ -44,35 +50,11 @@ class _ItemDetailPageState extends State<ItemDetailPage>
       appBar: AppBar(
         leading: BackButton(),
         title: AutoSizeText(Item.localizedNameOf(widget.itemKey), maxLines: 1),
+        centerTitle: false,
         actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.view_carousel),
-              onPressed: () {
-                setState(() {
-                  viewType = (viewType + 1) % 3;
-                });
-              }),
-          IconButton(
-              icon: Icon(Icons.sort),
-              tooltip: S.of(context).filter_sort +
-                  '-' +
-                  [
-                    S.of(context).filter_sort_number,
-                    S.of(context).filter_sort_class,
-                    S.of(context).rarity
-                  ][sortType % 3],
-              onPressed: () {
-                setState(() {
-                  sortType = (sortType + 1) % 3;
-                });
-              }),
-          IconButton(
-              icon: Icon(favorite ? Icons.favorite : Icons.favorite_border),
-              onPressed: () {
-                setState(() {
-                  favorite = !favorite;
-                });
-              }),
+          if (curTab == 0) viewTypeButton,
+          if (curTab == 0 || curTab == 3) sortButton,
+          favoriteButton,
         ],
         bottom: TabBar(
           controller: _tabController,
@@ -89,17 +71,63 @@ class _ItemDetailPageState extends State<ItemDetailPage>
         controller: _tabController,
         children: <Widget>[
           ItemCostServantPage(
-              itemKey: widget.itemKey,
-              favorite: favorite,
-              viewType: viewType,
-              sortType: sortType),
+            itemKey: widget.itemKey,
+            favorite: favorite,
+            viewType: viewType,
+            sortType: sortType,
+          ),
           ItemObtainFreeTab(itemKey: widget.itemKey),
-          ItemObtainEventPage(itemKey: widget.itemKey),
+          ItemObtainEventPage(
+            itemKey: widget.itemKey,
+            favorite: favorite,
+          ),
           ItemObtainInterludeTab(
               itemKey: widget.itemKey, favorite: favorite, sortType: sortType)
           // Container(child: Center(child: Text('Interludes'))),
         ],
       ),
+    );
+  }
+
+  Widget get favoriteButton {
+    return IconButton(
+      icon: Icon(favorite ? Icons.favorite : Icons.favorite_border),
+      tooltip: S.of(context).favorite,
+      onPressed: () {
+        setState(() {
+          favorite = !favorite;
+        });
+      },
+    );
+  }
+
+  Widget get viewTypeButton {
+    return IconButton(
+      icon: Icon(Icons.view_carousel),
+      tooltip: S.of(context).filter_shown_type,
+      onPressed: () {
+        setState(() {
+          viewType = (viewType + 1) % 3;
+        });
+      },
+    );
+  }
+
+  Widget get sortButton {
+    return IconButton(
+      icon: Icon(Icons.sort),
+      tooltip: S.of(context).filter_sort +
+          '-' +
+          [
+            S.of(context).filter_sort_number,
+            S.of(context).filter_sort_class,
+            S.of(context).rarity
+          ][sortType % 3],
+      onPressed: () {
+        setState(() {
+          sortType = (sortType + 1) % 3;
+        });
+      },
     );
   }
 }

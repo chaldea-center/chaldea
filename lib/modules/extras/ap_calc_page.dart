@@ -58,7 +58,7 @@ class _APCalcPageState extends State<APCalcPage> {
             Expanded(
               child: ListView.separated(
                 itemBuilder: (_, i) => children[i],
-                separatorBuilder: (_, i) => Divider(height: 1),
+                separatorBuilder: (_, i) => kDefaultDivider,
                 itemCount: children.length,
               ),
             ),

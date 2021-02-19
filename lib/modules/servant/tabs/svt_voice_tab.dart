@@ -4,7 +4,6 @@ import 'package:audioplayers/audioplayers.dart' as audio1;
 import 'package:chaldea/components/components.dart';
 import 'package:flutter_audio_desktop/flutter_audio_desktop.dart' as audio2;
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:getwidget/getwidget.dart';
 
 import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
@@ -47,13 +46,16 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
     return Column(
       children: [
         Expanded(
-          child: ListView(
+          child: ListView.separated(
             shrinkWrap: true,
-            children: svt.voices.map((table) {
-              return GFAccordion(
-                  title: table.section,
-                  margin: EdgeInsets.symmetric(vertical: 3),
-                  contentChild: Table(
+            itemBuilder: (context, index) {
+              final table = svt.voices[index];
+              return SimpleAccordion(
+                headerBuilder: (context, expanded) =>
+                    ListTile(title: Text(table.section)),
+                contentBuilder: (context) => Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Table(
                     border: TableBorder(
                         horizontalInside:
                             Divider.createBorderSide(context, width: 1)),
@@ -65,9 +67,11 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
                       2: FixedColumnWidth(33.0)
                     },
                   ),
-                  collapsedIcon: Icon(Icons.keyboard_arrow_down_rounded),
-                  expandedIcon: Icon(Icons.keyboard_arrow_up_rounded));
-            }).toList(),
+                ),
+              );
+            },
+            separatorBuilder: (context, index) => kDefaultDivider,
+            itemCount: svt.voices.length,
           ),
         ),
         _buildButtonBar()

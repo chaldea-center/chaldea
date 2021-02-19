@@ -25,6 +25,7 @@ class _QuestCardState extends State<QuestCard> {
             quest.chapter;
     return Card(
       color: Colors.white,
+      elevation: 0,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         child: Column(

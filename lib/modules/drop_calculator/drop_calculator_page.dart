@@ -216,10 +216,12 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
             ],
           ),
         ),
+        kDefaultDivider,
         if (params.rows.isEmpty)
           ListTile(
               title: Center(child: Text(S.of(context).drop_calc_empty_hint))),
         Expanded(child: _buildInputRows()),
+        kDefaultDivider,
         _buildButtonBar(),
       ],
     );
@@ -319,7 +321,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
           ),
         );
       },
-      separatorBuilder: (context, index) => Divider(height: 1, thickness: 0.5),
+      separatorBuilder: (context, index) => kDefaultDivider,
       itemCount: params.rows.length,
     );
   }
@@ -339,15 +341,16 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               spacing: 4,
               children: <Widget>[
                 DropdownButton(
-                    value: planOrEff,
-                    items: [
-                      DropdownMenuItem(
-                          value: true, child: Text(S.of(context).plan)),
-                      DropdownMenuItem(
-                          value: false, child: Text(S.of(context).efficiency))
-                    ],
-                    onChanged: (v) =>
-                        setState(() => planOrEff = v ?? planOrEff)),
+                  value: planOrEff,
+                  isDense: true,
+                  items: [
+                    DropdownMenuItem(
+                        value: true, child: Text(S.of(context).plan)),
+                    DropdownMenuItem(
+                        value: false, child: Text(S.of(context).efficiency))
+                  ],
+                  onChanged: (v) => setState(() => planOrEff = v ?? planOrEff),
+                ),
               ],
             ),
             IconButton(

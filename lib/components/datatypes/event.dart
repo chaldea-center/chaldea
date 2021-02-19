@@ -51,6 +51,12 @@ class LimitEvent {
   Map<String, int> lottery;
   Map<String, String> extra;
 
+  String get indexKey {
+    return db.gameData.events.limitEvents.entries
+        .firstWhere((event) => event.value.nameJp == nameJp)
+        .key;
+  }
+
   LimitEvent({
     this.name,
     this.nameJp,

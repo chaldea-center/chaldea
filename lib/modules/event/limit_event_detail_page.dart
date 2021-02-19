@@ -115,6 +115,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
       appBar: AppBar(
         leading: BackButton(),
         title: AutoSizeText(event.localizedName, maxLines: 1),
+        titleSpacing: 0,
         actions: [
           IconButton(
             icon: Icon(Icons.archive_outlined),

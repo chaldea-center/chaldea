@@ -22,6 +22,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
       appBar: AppBar(
         leading: BackButton(),
         title: AutoSizeText(record.localizedName, maxLines: 1),
+        titleSpacing: 0,
         actions: [
           IconButton(
             icon: Icon(Icons.archive_outlined),

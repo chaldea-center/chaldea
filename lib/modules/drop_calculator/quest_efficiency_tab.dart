@@ -80,7 +80,9 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
           title: Text(S.of(context).quest),
           trailing: Text(S.of(context).efficiency),
         ),
+        kDefaultDivider,
         Expanded(child: ListView(children: children)),
+        kDefaultDivider,
         _buildButtonBar(),
       ],
     );

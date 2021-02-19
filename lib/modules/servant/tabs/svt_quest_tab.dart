@@ -1,7 +1,6 @@
 //@dart=2.12
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/quest_card.dart';
-import 'package:getwidget/components/accordian/gf_accordian.dart';
 
 import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
@@ -31,16 +30,15 @@ class _SvtQuestTabState extends SvtTabBaseState<SvtQuestTab> {
       return ListTile(title: Text(S.of(context).no_servant_quest_hint));
     }
     final List<Quest> quests = db.gameData.svtQuests[svt.no]!;
-    return ListView(
-      children: quests.map((quest) {
-        return GFAccordion(
-          title: quest.localizedName,
-          margin: EdgeInsets.symmetric(vertical: 3),
-          // titlePadding: EdgeInsets.zero,
-          // contentPadding: EdgeInsets.zero,
-          contentChild: QuestCard(quest: quest),
-        );
-      }).toList(),
+
+    return ListView.separated(
+      itemBuilder: (context, index) => SimpleAccordion(
+        headerBuilder: (context, expanded) =>
+            ListTile(title: Text(quests[index].localizedName)),
+        contentBuilder: (context) => QuestCard(quest: quests[index]),
+      ),
+      separatorBuilder: (context, index) => kDefaultDivider,
+      itemCount: quests.length,
     );
   }
 }
