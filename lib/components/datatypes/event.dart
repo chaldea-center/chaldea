@@ -52,8 +52,11 @@ class LimitEvent {
   Map<String, String> extra;
 
   String get indexKey {
+    if (db.gameData.events.limitEvents.containsKey(name)) {
+      return name;
+    }
     return db.gameData.events.limitEvents.entries
-        .firstWhere((event) => event.value.nameJp == nameJp)
+        .firstWhere((event) => event.value.name == name)
         .key;
   }
 
@@ -77,13 +80,11 @@ class LimitEvent {
   String get localizedName => localizeNoun(name, nameJp, null);
 
   Map<String, int> itemsWithRare([LimitEventPlan plan]) {
-    return sumDict([
-      items,
-      {
+    return Map.from(items)
+      ..addAll({
         Item.grail: grail + (plan?.rerun == false ? grail2crystal : 0),
         Item.crystal: crystal + (plan?.rerun == false ? 0 : grail2crystal)
-      }
-    ])
+      })
       ..removeWhere((key, value) => value <= 0);
   }
 
@@ -138,6 +139,16 @@ class MainRecord {
   Map<String, int> drops;
   Map<String, int> rewards;
 
+  String get indexKey {
+    if (db.gameData.events.mainRecords.containsKey(name)) {
+      return name;
+    } else {
+      return db.gameData.events.mainRecords.entries
+          .firstWhere((element) => element.value.nameJp == nameJp)
+          .key;
+    }
+  }
+
   MainRecord({
     this.name,
     this.nameJp,
@@ -185,10 +196,8 @@ class MainRecord {
   Map<String, dynamic> toJson() => _$MainRecordToJson(this);
 
   Map<String, int> get rewardsWithRare {
-    return sumDict([
-      rewards,
-      {Item.grail: grail, Item.crystal: crystal}
-    ])
+    return Map.from(rewards)
+      ..addAll({Item.grail: grail, Item.crystal: crystal})
       ..removeWhere((key, value) => value <= 0);
   }
 

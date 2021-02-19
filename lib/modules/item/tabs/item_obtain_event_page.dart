@@ -1,6 +1,9 @@
 //@dart=2.12
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/event/limit_event_detail_page.dart';
+import 'package:chaldea/modules/event/main_record_detail_page.dart';
+import 'package:chaldea/modules/event/tabs/exchange_ticket_tab.dart';
 
 class ItemObtainEventPage extends StatefulWidget {
   final String itemKey;
@@ -66,6 +69,14 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
         children.add(ListTile(
           title:
               AutoSizeText(event.localizedName, maxFontSize: 15, maxLines: 2),
+          onTap: () {
+            SplitRoute.push(
+              context: context,
+              builder: (context, _) =>
+                  LimitEventDetailPage(name: event.indexKey),
+              detail: true,
+            );
+          },
           trailing: Text(
             texts.join('\n'),
             style: planned ? highlight : null,
@@ -97,13 +108,18 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
         if (!widget.favorite || planned) {
           //show
           int itemNum = plan?.elementAt(itemIndex) ?? 0;
-          children.add(ListTile(
-            title: Text('${S.current.exchange_ticket_short} ${ticket.month}'),
-            subtitle: Text(ticket.items.join('/')),
-            trailing: Text(
-              '$itemNum/${ticket.days}',
-              style: planned ? highlight : null,
+          children.add(SimpleAccordion(
+            headerBuilder: (context, _) => ListTile(
+              title: Text('${S.current.exchange_ticket_short} ${ticket.month}'),
+              subtitle: Text(ticket.items.join('/')),
+              trailing: Text(
+                '$itemNum/${ticket.days}',
+                style: planned ? highlight : null,
+              ),
             ),
+            contentBuilder: (context) => ExchangeTicketTab(month: ticket.month),
+            expandIconBuilder: (_, __) => Container(),
+            disableAnimation: true,
           ));
         }
       }
@@ -130,6 +146,14 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
           children.add(ListTile(
             title: Text(record.localizedChapter),
             subtitle: Text(record.localizedTitle),
+            onTap: () {
+              SplitRoute.push(
+                context: context,
+                builder: (context, _) =>
+                    MainRecordDetailPage(name: record.indexKey),
+                detail: true,
+              );
+            },
             trailing: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

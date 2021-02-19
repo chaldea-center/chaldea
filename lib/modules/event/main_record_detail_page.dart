@@ -13,6 +13,15 @@ class MainRecordDetailPage extends StatefulWidget {
 }
 
 class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
+  List<bool> plan;
+
+  @override
+  void initState() {
+    super.initState();
+    plan = db.curUser.events.mainRecords
+        .putIfAbsent(widget.name, () => [false, false]);
+  }
+
   @override
   Widget build(BuildContext context) {
     final record = db.gameData.events.mainRecords[widget.name];
@@ -63,10 +72,28 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
                 placeholder: (_, __) => Container(),
               ),
             ),
-          ListTile(title: Text(S.of(context).main_record_fixed_drop)),
+          SwitchListTile.adaptive(
+            title: Text(S.of(context).main_record_fixed_drop),
+            value: plan[0],
+            onChanged: (v) {
+              setState(() {
+                plan[0] = v;
+              });
+              db.itemStat.updateEventItems();
+            },
+          ),
           buildClassifiedItemList(
               context: context, data: record.drops, onTap: _onTap),
-          ListTile(title: Text(S.of(context).main_record_bonus)),
+          SwitchListTile.adaptive(
+            title: Text(S.of(context).main_record_bonus),
+            value: plan[1],
+            onChanged: (v) {
+              setState(() {
+                plan[1] = v;
+              });
+              db.itemStat.updateEventItems();
+            },
+          ),
           buildClassifiedItemList(
               context: context, data: record.rewardsWithRare, onTap: _onTap)
         ],

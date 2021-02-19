@@ -12,6 +12,7 @@ class SimpleAccordion extends StatefulWidget {
   final void Function(bool expanded)? expandCallback;
   final bool canTapOnHeader;
   final AccordionHeaderBuilder? expandIconBuilder;
+  final bool disableAnimation;
 
   const SimpleAccordion({
     Key? key,
@@ -21,6 +22,7 @@ class SimpleAccordion extends StatefulWidget {
     this.expandCallback,
     this.canTapOnHeader = true,
     this.expandIconBuilder,
+    this.disableAnimation = false,
   }) : super(key: key);
 
   @override
@@ -60,28 +62,29 @@ class _SimpleAccordionState extends State<SimpleAccordion> {
     if (widget.canTapOnHeader) {
       header = InkWell(onTap: toggle, child: header);
     }
+    Widget content;
+    if (widget.disableAnimation) {
+      content = expanded ? widget.contentBuilder(context) : Container();
+    } else {
+      content = AnimatedCrossFade(
+        firstChild: Container(height: 0.0),
+        secondChild: widget.contentBuilder(context),
+        firstCurve: const Interval(0.0, 0.6, curve: Curves.fastOutSlowIn),
+        secondCurve: const Interval(0.4, 1.0, curve: Curves.fastOutSlowIn),
+        sizeCurve: Curves.fastOutSlowIn,
+        crossFadeState:
+            expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+        duration: const Duration(milliseconds: 200),
+      );
+    }
 
     return Padding(
       padding: expanded ? EdgeInsets.only(bottom: 6) : EdgeInsets.zero,
       child: Material(
-        elevation: expanded ? 4 : 0,
+        elevation: expanded ? 2 : 0,
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            header,
-            AnimatedCrossFade(
-              firstChild: Container(height: 0.0),
-              secondChild: widget.contentBuilder(context),
-              firstCurve: const Interval(0.0, 0.6, curve: Curves.fastOutSlowIn),
-              secondCurve:
-                  const Interval(0.4, 1.0, curve: Curves.fastOutSlowIn),
-              sizeCurve: Curves.fastOutSlowIn,
-              crossFadeState: expanded
-                  ? CrossFadeState.showSecond
-                  : CrossFadeState.showFirst,
-              duration: const Duration(milliseconds: 200),
-            ),
-          ],
+          children: [header, content],
         ),
       ),
     );

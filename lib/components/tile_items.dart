@@ -156,40 +156,47 @@ class TileGroup extends StatelessWidget {
   final String? header;
   final String? footer;
   final EdgeInsets? padding;
+  final Widget divider;
 
-  const TileGroup(
-      {Key? key,
-      this.children = const [],
-      this.header,
-      this.footer,
-      this.padding})
-      : super(key: key);
+  const TileGroup({
+    Key? key,
+    this.children = const [],
+    this.header,
+    this.footer,
+    this.padding,
+    this.divider = const Divider(height: 0.5, thickness: 0.5),
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> group = List.generate(
-      children.length,
-      (index) => Container(
-        decoration: BoxDecoration(
-          border: Border(
-              top: Divider.createBorderSide(context, width: 0.5),
-              bottom: index == children.length - 1
-                  ? Divider.createBorderSide(context, width: 0.5)
-                  : BorderSide.none),
-        ),
-        child: children[index],
-      ),
-    );
+    List<Widget> group = [divider];
+    children.forEach((child) {
+      group..add(child)..add(divider);
+    });
+    // final List<Widget> group = List.generate(
+    //   children.length,
+    //   (index) => Container(
+    //     decoration: BoxDecoration(
+    //       border: Border(
+    //           top: Divider.createBorderSide(context, width: 0.5),
+    //           bottom: index == children.length - 1
+    //               ? Divider.createBorderSide(context, width: 0.5)
+    //               : BorderSide.none),
+    //     ),
+    //     child: children[index],
+    //   ),
+    // );
     return Padding(
       padding: padding ?? EdgeInsets.only(bottom: 8),
       child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            if (header != null) SHeader(header!),
-            ...group,
-            if (footer != null) SFooter(footer!)
-          ]),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          if (header != null) SHeader(header!),
+          ...group,
+          if (footer != null) SFooter(footer!)
+        ],
+      ),
     );
   }
 }

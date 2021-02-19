@@ -8,8 +8,10 @@ import 'package:flutter_picker/Picker.dart';
 
 class ExchangeTicketTab extends StatefulWidget {
   final bool reverse;
+  final String month;
 
-  const ExchangeTicketTab({Key key, this.reverse}) : super(key: key);
+  const ExchangeTicketTab({Key key, this.reverse, this.month})
+      : super(key: key);
 
   @override
   _ExchangeTicketTabState createState() => _ExchangeTicketTabState();
@@ -33,9 +35,12 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
 
   @override
   Widget build(BuildContext context) {
-    final startDate = DateTime.now().subtract(Duration(days: 31 * 4));
-    final tickets = db.gameData.events.exchangeTickets.values.toList()
-      ..retainWhere((e) => DateTime.parse(e.month + '01').isAfter(startDate));
+    if (widget.month != null) {}
+    // final startDate = DateTime.now().subtract(Duration(days: 31 * 4));
+    final tickets = widget.month == null
+        ? db.gameData.events.exchangeTickets.values.toList()
+        : [db.gameData.events.exchangeTickets[widget.month]];
+    // ..retainWhere((e) => DateTime.parse(e.month + '01').isAfter(startDate));
     tickets.sort((a, b) {
       return (a.month).compareTo(b.month) * (widget.reverse ? -1 : 1);
     });
@@ -46,6 +51,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
         controller: _scrollController,
         child: ListView(
           controller: _scrollController,
+          shrinkWrap: widget.month != null,
           children: divideTiles(
             tickets.map((ticket) {
               TextStyle plannedStyle = sum(

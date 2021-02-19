@@ -75,10 +75,9 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       }
       setState(() {});
       db.saveUserData();
-      EasyLoading.showToast('Slides have been updated.');
     } catch (e) {
       print('Error refresh slides:\n$e');
-      EasyLoading.showToast('Error refresh slides:\n$e');
+      EasyLoading.showError('Slides:\n$e');
     }
   }
 

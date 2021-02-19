@@ -51,6 +51,16 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
           placeholder: (_, __) => Container(),
         ),
       ));
+    children.add(SwitchListTile.adaptive(
+      title: Text('Open'),
+      value: plan.enable,
+      onChanged: (v) {
+        setState(() {
+          plan.enable = v;
+        });
+        db.itemStat.updateEventItems();
+      },
+    ));
     // 复刻
     if (event.grail2crystal > 0) {
       children.add(SwitchListTile.adaptive(
