@@ -1353,6 +1353,8 @@ Map<String, dynamic> _$LimitEventPlanToJson(LimitEventPlan instance) =>
 
 UserData _$UserDataFromJson(Map<String, dynamic> json) {
   return $checkedNew('UserData', json, () {
+    $checkKeys(json,
+        requiredKeys: const ['users'], disallowNullValues: const ['users']);
     final val = UserData(
       language: $checkedConvert(json, 'language', (v) => v as String),
       useMobileNetwork:
@@ -1418,24 +1420,34 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
-      'language': instance.language,
-      'useMobileNetwork': instance.useMobileNetwork,
-      'sliderUpdateTime': instance.sliderUpdateTime,
-      'sliderUrls': instance.sliderUrls,
-      'galleries': instance.galleries,
-      'serverRoot': instance.serverRoot,
-      'updateSource': instance.updateSource,
-      'previousBuildNumber': instance.previousBuildNumber,
-      'curUserKey': instance.curUserKey,
-      'users': instance.users,
-      'svtFilter': instance.svtFilter,
-      'craftFilter': instance.craftFilter,
-      'cmdCodeFilter': instance.cmdCodeFilter,
-      'glpkParams': instance.glpkParams,
-      'itemAbundantValue': instance.itemAbundantValue,
-      'contactInfo': instance.contactInfo,
-    };
+Map<String, dynamic> _$UserDataToJson(UserData instance) {
+  final val = <String, dynamic>{
+    'language': instance.language,
+    'useMobileNetwork': instance.useMobileNetwork,
+    'sliderUpdateTime': instance.sliderUpdateTime,
+    'sliderUrls': instance.sliderUrls,
+    'galleries': instance.galleries,
+    'serverRoot': instance.serverRoot,
+    'updateSource': instance.updateSource,
+    'previousBuildNumber': instance.previousBuildNumber,
+    'curUserKey': instance.curUserKey,
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('users', instance.users);
+  val['svtFilter'] = instance.svtFilter;
+  val['craftFilter'] = instance.craftFilter;
+  val['cmdCodeFilter'] = instance.cmdCodeFilter;
+  val['glpkParams'] = instance.glpkParams;
+  val['itemAbundantValue'] = instance.itemAbundantValue;
+  val['contactInfo'] = instance.contactInfo;
+  return val;
+}
 
 SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
   return $checkedNew('SvtFilterData', json, () {

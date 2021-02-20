@@ -7,13 +7,14 @@ import 'package:dio/dio.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:path/path.dart' as pathlib;
 
-class ImageAnalysisPage extends StatefulWidget {
+class ImportScreenshotPage extends StatefulWidget {
+  ImportScreenshotPage({Key? key}) : super(key: key);
+
   @override
-  _ImageAnalysisPageState createState() => _ImageAnalysisPageState();
+  ImportScreenshotPageState createState() => ImportScreenshotPageState();
 }
 
-class _ImageAnalysisPageState extends State<ImageAnalysisPage> {
-  // List<File> imageFiles = [];
+class ImportScreenshotPageState extends State<ImportScreenshotPage> {
   Map<String, int> output = {};
   late Dio _dio;
   late List<File> imageFiles;
@@ -32,45 +33,33 @@ class _ImageAnalysisPageState extends State<ImageAnalysisPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(S.of(context).image_analysis),
-        leading: BackButton(),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.download_rounded),
-            onPressed: _importImages,
-            tooltip: '导入截图',
-          )
-        ],
-      ),
-      body: LayoutBuilder(builder: (context, constraints) {
-        return Column(
-          children: [
-            Expanded(
-                child: Column(
-              children: [
-                if (imageFiles.isNotEmpty)
-                  Expanded(
-                    child: ListView(
-                      children: imageFiles.map((e) {
-                        return Container(
-                          width: constraints.biggest.width,
-                          padding: EdgeInsets.only(bottom: 6),
-                          child: Image.file(e, fit: BoxFit.fitWidth),
-                        );
-                      }).toList(),
-                    ),
+    return LayoutBuilder(builder: (context, constraints) {
+      return Column(
+        children: [
+          Expanded(
+              child: Column(
+            children: [
+              if (imageFiles.isNotEmpty)
+                Expanded(
+                  child: ListView(
+                    children: imageFiles.map((e) {
+                      return Container(
+                        width: constraints.biggest.width,
+                        padding: EdgeInsets.only(bottom: 6),
+                        child: Image.file(e, fit: BoxFit.fitWidth),
+                      );
+                    }).toList(),
                   ),
-                if (output.isNotEmpty) Expanded(child: _itemList()),
-                if (imageFiles.isEmpty && output.isEmpty) Center()
-              ],
-            )),
-            _buildButtonBar(),
-          ],
-        );
-      }),
-    );
+                ),
+              if (output.isNotEmpty) Expanded(child: _itemList()),
+              if (imageFiles.isEmpty && output.isEmpty) Center()
+            ],
+          )),
+          kDefaultDivider,
+          _buildButtonBar(),
+        ],
+      );
+    });
   }
 
   String? preferItem;
@@ -85,6 +74,7 @@ class _ImageAnalysisPageState extends State<ImageAnalysisPage> {
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
       alignment: WrapAlignment.center,
+      spacing: 6,
       children: [
         IconButton(
           onPressed: () => showInformDialog(
@@ -113,19 +103,20 @@ class _ImageAnalysisPageState extends State<ImageAnalysisPage> {
                 value: e, child: Text(Item.localizedNameOf(e)));
           }).toList(),
           value: preferItem,
-          hint: Text('首张图片包含'),
+          hint: Text('首张图片包含',style: TextStyle(fontSize: 15),),
+          isDense: true,
           onChanged: (s) {
             setState(() {
               preferItem = s;
             });
           },
         ),
-        TextButton(
+        ElevatedButton(
             onPressed: imageFiles.isEmpty ? null : _uploadScreenshots,
             child: Text(S.of(context).upload)),
-        TextButton(
+        ElevatedButton(
             onPressed: _fetchResult, child: Text(S.of(context).download)),
-        TextButton(
+        ElevatedButton(
           onPressed: output.isEmpty
               ? null
               : () {
@@ -185,7 +176,8 @@ class _ImageAnalysisPageState extends State<ImageAnalysisPage> {
     return ListView(children: children);
   }
 
-  void _importImages() async {
+  void importImages() async {
+
     FilePickerCross.importMultipleFromStorage(type: FileTypeCross.image)
         .then((value) {
       output.clear();
@@ -194,7 +186,7 @@ class _ImageAnalysisPageState extends State<ImageAnalysisPage> {
       if (mounted) {
         setState(() {});
       }
-    }).onError((error, stackTrace) {
+    }).catchError((error, stackTrace) {
       if (!(error is FileSelectionCanceledError)) {
         print(error.toString());
         print(stackTrace.toString());
@@ -227,7 +219,7 @@ class _ImageAnalysisPageState extends State<ImageAnalysisPage> {
         canceler();
         showInformDialog(context, title: title, content: content);
       }
-    }).onError((error, stackTrace) {
+    }).catchError((error, stackTrace) {
       print(error);
       canceler();
       showInformDialog(context, content: error.toString());

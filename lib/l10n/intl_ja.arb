@@ -240,8 +240,8 @@
   "import_data_success": "インポートは成功しました",
   "import_data_error": "インポートに失敗しました、エラー:\n{error}",
   "import_guda_data": "Gudaデータをインポート",
-  "import_guda_servants": "Gudaサーヴァントデータをインポート",
-  "import_guda_items": "Gudaアイテムデータをインポート",
+  "import_guda_servants": "サーヴァントをインポート",
+  "import_guda_items": "Gudaアイテムをインポート",
   "import_guda_hint": "更新：保留本地数据并用导入的数据更新(推荐)\n覆盖：清楚本地数据再导入数据",
   "guda_servant_data": "Gudaサーヴァントデータ",
   "guda_item_data": "Gudaアイテムデータ",
@@ -297,5 +297,6 @@
   "item_only_show_lack": "不足しているのみ",
   "image_analysis": "画像分析",
   "upload": "アップロード",
-  "choose_quest_hint": "フリークエストを選択"
+  "choose_quest_hint": "フリークエストを選択",
+  "item_screenshot": "アイテムキャプチャー"
 }

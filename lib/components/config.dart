@@ -317,7 +317,7 @@ class Database {
     if (onError == null) {
       await compute(_extractZipIsolate, message);
     } else {
-      await compute(_extractZipIsolate, message).onError(onError);
+      await compute(_extractZipIsolate, message).catchError(onError);
     }
     t.elapsed();
   }

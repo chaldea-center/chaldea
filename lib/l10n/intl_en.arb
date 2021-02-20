@@ -240,8 +240,8 @@
   "import_data_success": "Import data successfully",
   "import_data_error": "Import failed. Error:\n{error}",
   "import_guda_data": "Import Guda Data",
-  "import_guda_servants": "Import Guda Servant data",
-  "import_guda_items": "Import Guda Item Data",
+  "import_guda_servants": "Import Servant",
+  "import_guda_items": "Import Item",
   "import_guda_hint": "Update：remain current userdata and update(Recommended)\nOverride：clear userdata then updatee",
   "guda_servant_data": "Guda Servant Data",
   "guda_item_data": "Guda Item Data",
@@ -297,5 +297,6 @@
   "item_only_show_lack": "Only show lacked",
   "image_analysis": "Image analysis",
   "upload": "Upload",
-  "choose_quest_hint": "Choose Free Quest"
+  "choose_quest_hint": "Choose Free Quest",
+  "item_screenshot": "Item Screenshot"
 }

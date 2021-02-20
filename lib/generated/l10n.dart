@@ -2420,30 +2420,30 @@ class S {
     );
   }
 
-  /// `导入Guda数据`
+  /// `导入Guda`
   String get import_guda_data {
     return Intl.message(
-      '导入Guda数据',
+      '导入Guda',
       name: 'import_guda_data',
       desc: '',
       args: [],
     );
   }
 
-  /// `导入Guda从者数据`
+  /// `导入从者`
   String get import_guda_servants {
     return Intl.message(
-      '导入Guda从者数据',
+      '导入从者',
       name: 'import_guda_servants',
       desc: '',
       args: [],
     );
   }
 
-  /// `导入Guda素材数据`
+  /// `导入素材`
   String get import_guda_items {
     return Intl.message(
-      '导入Guda素材数据',
+      '导入素材',
       name: 'import_guda_items',
       desc: '',
       args: [],
@@ -3005,6 +3005,16 @@ class S {
     return Intl.message(
       '选择Free本',
       name: 'choose_quest_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `素材截图`
+  String get item_screenshot {
+    return Intl.message(
+      '素材截图',
+      name: 'item_screenshot',
       desc: '',
       args: [],
     );

@@ -50,7 +50,9 @@ class GalleryItem {
   static const String master_equip = 'master_equip';
   static const String ap_cal = 'ap_cal';
   static const String statistics = 'statistics';
-  static const String image_analysis = 'image_analysis';
+
+  // static const String image_analysis = 'image_analysis';
+  static const String import_data = 'import_data';
   static const String backup = 'backup';
   static const String more = 'more';
 

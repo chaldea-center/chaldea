@@ -108,7 +108,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
       if (mounted) {
         setState(() {});
       }
-    }).onError((error, stackTrace) {
+    }).catchError((error, stackTrace) {
       if (!(error is FileSelectionCanceledError)) {
         print(error.toString());
         print(stackTrace.toString());

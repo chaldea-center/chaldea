@@ -52,7 +52,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
         ),
       ));
     children.add(SwitchListTile.adaptive(
-      title: Text('Open'),
+      title: Text(S.of(context).plan),
       value: plan.enable,
       onChanged: (v) {
         setState(() {

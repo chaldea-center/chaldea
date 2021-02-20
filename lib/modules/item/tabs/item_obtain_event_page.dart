@@ -43,7 +43,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
       final plan = db.curUser.events.limitEvents[event.indexKey];
 
       List<String> texts = [];
-      bool hasEventItems = event.items.containsKey(widget.itemKey);
+      bool hasEventItems = event.itemsWithRare(plan).containsKey(widget.itemKey);
       bool hasLotteryItems = event.lottery.containsKey(widget.itemKey);
       bool hasExtraItems = event.extra.containsKey(widget.itemKey);
       bool planned = plan?.enable == true;
@@ -53,7 +53,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
       if ((!widget.favorite || planned)) {
         if (hasEventItems)
           texts.add('${S.current.event_title}'
-              ' ${event.items[widget.itemKey]}');
+              ' ${event.itemsWithRare(plan)[widget.itemKey]}');
         if (hasLotteryItems) {
           String prefix = event.lotteryLimit > 0
               ? S.current.event_lottery_limited

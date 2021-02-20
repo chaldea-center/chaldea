@@ -94,31 +94,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
               ),
               ListTile(
                 title: Text(S.of(context).import_data),
-                onTap: () async {
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (context) => Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ListTile(
-                          leading: Icon(Icons.people),
-                          title: Text(S.of(context).userdata),
-                          onTap: importUserData,
-                        ),
-                        ListTile(
-                          leading: Icon(Icons.people),
-                          title: Text(S.of(context).guda_servant_data),
-                          onTap: () => importGudaData(false),
-                        ),
-                        ListTile(
-                          leading: Icon(Icons.category),
-                          title: Text(S.of(context).guda_item_data),
-                          onTap: () => importGudaData(true),
-                        ),
-                      ],
-                    ),
-                  );
-                },
+                onTap: importUserData,
               ),
               ListTile(
                 title: Text(S.of(context).reset_svt_enhance_state),
@@ -228,7 +204,6 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
   }
 
   void importUserData() async {
-    Navigator.of(context).pop();
     try {
       FilePickerCross result = await FilePickerCross.importFromStorage(
           type: FileTypeCross.custom, fileExtension: 'json');
@@ -237,133 +212,10 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
           UserData.fromJson(json.decode(File(path).readAsStringSync()));
       EasyLoading.showToast('${S.current.import_data_success}:\n$path');
       db.saveUserData();
+      db.onAppUpdate();
     } on FileSelectionCanceledError {} catch (e) {
-      EasyLoading.showToast(S.of(context).import_data_error(e));
+      EasyLoading.showError(S.of(context).import_data_error(e));
     }
-  }
-
-  void importGudaData(bool isItem) {
-    // pop bottom sheet first
-    Navigator.of(context).pop();
-
-    Future<List<List<String>>> _parseGudaData() async {
-      FilePickerCross filePickerCross =
-          await FilePickerCross.importFromStorage();
-      final content = File(filePickerCross.path).readAsStringSync();
-      List<String> lines = content.trim().split(';');
-      final mat = lines.map((e) => e.trim().split('/'));
-      return mat.where((e) => e.isNotEmpty).toList();
-    }
-
-    void updateGudaItems(List<List<String>> gudaData) {
-      final replaceKeys = {
-        "万死之毒针": "万死的毒针",
-        "震荡火药": "振荡火药",
-        "閑古鈴": "闲古铃",
-        "禍罪の矢尻": "祸罪之箭头",
-        "暁光炉心": "晓光炉心",
-        "九十九鏡": "九十九镜",
-        "真理の卵": "真理之卵"
-      };
-      for (var row in gudaData) {
-        if (row.isEmpty) continue;
-        String itemKey = row[1], itemNum = row[2];
-        itemKey = itemKey.replaceAll('金棋', '金像');
-        if (replaceKeys.containsKey(itemKey)) {
-          itemKey = replaceKeys[itemKey];
-        }
-        if (db.gameData.items.keys.contains(itemKey)) {
-          db.curUser.items[itemKey] = int.parse(itemNum);
-        } else {
-          print('Item $itemKey not found');
-        }
-      }
-      EasyLoading.showToast(S.of(context).import_data_success);
-      print(db.curUser.items);
-      db.saveUserData();
-    }
-
-    void updateGudaSevants(List<List<String>> gudaData) {
-      //            0 1  2 3  4 5 6 7  8  9
-      // 0  1   2   3 4  5 6  7 8 9 10 11 12
-      // 3/name/0  /1/4/ 4/10/2/5/4/9/ 85/92;
-      final lvs = [60, 65, 70, 75, 80, 85, 90, 92, 94, 96, 98, 100];
-      final startLvs = [65, 60, 65, 70, 80, 90];
-
-      for (var row in gudaData) {
-        int svtNo = int.parse(row[0]);
-        final svt = db.gameData.servants[svtNo];
-        List<int> values =
-            List.generate(10, (index) => int.parse(row[index + 3]));
-        ServantPlan cur = ServantPlan(favorite: true),
-            target = ServantPlan(favorite: true);
-        cur
-          ..ascension = values[0]
-          ..skills = [values[2], values[4], values[6]]
-          ..dress = List.generate(svt.itemCost.dressName.length, (_) => 0);
-        target
-          ..ascension = values[1]
-          ..skills = [values[3], values[5], values[7]]
-          ..dress = List.generate(svt.itemCost.dressName.length, (_) => 0);
-        int rarity = db.gameData.servants[svtNo].info.rarity;
-        int startIndex = lvs.indexOf(startLvs[rarity]);
-        cur.grail = lvs.indexOf(values[8]) - startIndex;
-        target.grail = lvs.indexOf(values[9]) - startIndex;
-        db.curUser.servants[svtNo] = ServantStatus(curVal: cur);
-        db.curUser.curSvtPlan[svtNo] = target;
-      }
-      EasyLoading.showToast(S.of(context).import_data_success);
-      db.saveUserData();
-    }
-
-    showInformDialog(
-      context,
-      title: isItem
-          ? S.of(context).import_guda_items
-          : S.of(context).import_guda_servants,
-      content: S.of(context).import_guda_hint,
-      showOk: false,
-      showCancel: true,
-      actions: [
-        TextButton(
-            onPressed: () async {
-              try {
-                final gudaData = await _parseGudaData();
-                if (isItem) {
-                  updateGudaItems(gudaData);
-                } else {
-                  updateGudaSevants(gudaData);
-                }
-                Navigator.of(context).pop();
-              } on FileSelectionCanceledError {
-                // EasyLoading.showToast('cancelled');
-              } catch (e) {
-                EasyLoading.showToast('Import failed! Error:\n$e');
-              }
-            },
-            child: Text(S.of(context).update)),
-        TextButton(
-            onPressed: () async {
-              try {
-                final gudaData = await _parseGudaData();
-                if (isItem) {
-                  db.curUser.items.clear();
-                  updateGudaItems(gudaData);
-                } else {
-                  db.curUser.servants.clear();
-                  db.curUser.servants.clear();
-                  updateGudaSevants(gudaData);
-                }
-                Navigator.of(context).pop();
-              } on FileSelectionCanceledError {
-                // EasyLoading.showToast('cancelled');
-              } catch (e) {
-                EasyLoading.showToast('Import failed! Error:\n$e');
-              }
-            },
-            child: Text(S.of(context).overwrite)),
-      ],
-    );
   }
 
   Future<void> importGamedata() async {
@@ -421,8 +273,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
             } catch (e) {
               canceler();
               EasyLoading.showToast(S.of(context).import_data_error(e));
-            } finally {
-            }
+            } finally {}
           },
         ),
       );

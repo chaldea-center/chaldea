@@ -18,6 +18,8 @@ class UserData {
 
   // user-related game data
   String curUserKey;
+
+  @JsonKey(required: true,disallowNullValue: true)
   Map<String, User> users;
 
   List<String> get userNames => users.values.map((user) => user.name).toList();
