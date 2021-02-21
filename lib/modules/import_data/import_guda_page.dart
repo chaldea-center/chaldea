@@ -51,7 +51,7 @@ class ImportGudaPageState extends State<ImportGudaPage> {
             if (v == true) {
               SimpleCancelOkDialog(
                 title: Text(S.of(context).confirm),
-                content: Text('Clear data before import it'),
+                content: Text('清除已有素材/从者数据'),
                 onTapOk: () {
                   setState(() => clearData = true);
                 },

@@ -31,7 +31,7 @@ dependencies:
   auto_size_text: ^2.1.0
   cached_network_image: ^2.5.0
   catcher:
-    path: ../AndroidStudioProjects/catcher
+    path: ../catcher
   connectivity_plus: ^0.8.0
   cupertino_icons: ^1.0.1+1
   dio: ^3.0.10
@@ -41,23 +41,23 @@ dependencies:
   flutter_email_sender: ^4.0.0
   flutter_picker: ^1.1.5
   file_picker_cross: ^4.2.7
-  flutter_qjs: 0.3.3
+  flutter_qjs:
+    path: ../flutter_qjs
   flutter_webview_plugin: ^0.3.11
-  flutter_staggered_grid_view: ^0.4.0-nullsafety.2
   getwidget: ^1.2.4
   github: ^7.0.4
   hive: ^1.4.4+1
   html: ^0.14.0+4
   image: ^2.1.19
-  intl: ^0.17.0-nullsafety.2
+  intl: ^0.17.0
   json_annotation: ^3.1.1
   json_patch: ^2.1.0
   logger: ^1.0.0-nullsafety.0
   package_info: ^0.4.3+2
-  path_provider: ^1.6.24
-  screenshot: ^0.2.0
+  path_provider: ^2.0.0-nullsafety.1
+  screenshot: ^1.0.0-nullsafety.1
   share: '>=0.6.5+4 <2.0.0'
-  shared_preferences: '>=0.5.12+4 <2.0.0'
+  shared_preferences: ^2.0.0-nullsafety.1
   url_launcher: ^6.0.0-nullsafety.6
   uuid: ^2.2.2
 
@@ -67,6 +67,9 @@ dev_dependencies:
   build_runner: ^1.11.0
   json_serializable: ^3.5.1
   flutter_launcher_icons: ^0.8.1
+
+dependency_overrides:
+  path_provider: ^2.0.0-nullsafety.1
 
 flutter_icons:
   #  image_path: "assets/images/icon-128x128.png"

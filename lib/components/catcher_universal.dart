@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 
 /// This package is platform-compatibility fix for catcher.
 /// If official support is release, this should be removed.
@@ -149,10 +150,11 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
         ..attachments = _getAttachments(attachments);
       if (screenshot) {
         String shotFn = pathlib.join(db.paths.appPath, 'crash.png');
-        File shotFile = await db.screenshotController?.capture(
-            path: shotFn, pixelRatio: 1.5, delay: Duration(seconds: 2));
-        if (shotFile?.existsSync() == true) {
-          message.attachments.add(FileAttachment(shotFile));
+        Uint8List shotBinary = await db.screenshotController
+            ?.capture(pixelRatio: 1.5, delay: Duration(seconds: 2));
+        if (shotBinary != null) {
+          File(shotFn).writeAsBytesSync(shotBinary, flush: true);
+          message.attachments.add(FileAttachment(File(shotFn)));
         }
       }
       if (sendHtml) {

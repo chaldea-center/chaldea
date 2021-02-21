@@ -223,7 +223,6 @@ class GLPKParams {
 
   void disableControllers() {
     _unusedControllers..addAll(countControllers)..addAll(weightControllers);
-    countControllers = weightControllers = null;
   }
 
   void dispose() {

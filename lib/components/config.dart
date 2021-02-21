@@ -376,11 +376,8 @@ class PathManager {
   /// [_appPath] root path where app can access
   static String? _appPath;
 
-  /// [_tempPath] files can be deleted
-  static String? _tempPath;
-
   Future<void> initRootPath() async {
-    if (_appPath != null && _tempPath != null) return;
+    if (_appPath != null) return;
     // final Map<String, Directory> _fps = {
     //   'ApplicationDocuments': await getApplicationDocumentsDirectory(),
     //   'Temporary': await getTemporaryDirectory(),
@@ -394,35 +391,38 @@ class PathManager {
     if (Platform.isAndroid) {
       // don't use getApplicationDocumentsDirectory, it is hidden to user.
       // android: [emulated, external SD]
-      _appPath = (await getExternalStorageDirectories())[0].path;
-      _tempPath = (await getTemporaryDirectory()).path;
+      _appPath = (await getExternalStorageDirectories())?.elementAt(0).path;
+      // _tempPath = (await getTemporaryDirectory())?.path;
     } else if (Platform.isIOS) {
-      _appPath = (await getApplicationDocumentsDirectory()).path;
-      _tempPath = (await getTemporaryDirectory()).path;
+      _appPath = (await getApplicationDocumentsDirectory())?.path;
+      // _tempPath = (await getTemporaryDirectory())?.path;
     } else if (Platform.isWindows) {
-      _appPath = (await getApplicationSupportDirectory()).path;
-      _tempPath = (await getTemporaryDirectory()).path;
+      _appPath = (await getApplicationSupportDirectory())?.path;
+      // _tempPath = (await getTemporaryDirectory())?.path;
     } else if (Platform.isMacOS) {
       // /Users/<user>/Library/Containers/cc.narumi.chaldea/Data/Documents
-      _appPath = (await getApplicationDocumentsDirectory()).path;
+      _appPath = (await getApplicationDocumentsDirectory())?.path;
       // /Users/<user>/Library/Containers/cc.narumi.chaldea/Data/Library/Caches
-      _tempPath = (await getTemporaryDirectory()).path;
+      // _tempPath = (await getTemporaryDirectory())?.path;
     } else {
       throw UnimplementedError('Not supported for ${Platform.operatingSystem}');
     }
+    if (_appPath == null) {
+      throw OSError('Cannot resolve document folder');
+    }
 
-    for (String dir in [userDir, gameDir, tempDir]) {
+    for (String dir in [userDir, gameDir, tempDir, gameIconDir]) {
       Directory(dir).createSync(recursive: true);
     }
   }
 
   String get appPath => _appPath!;
 
-  String get tempDir => pathlib.join(_appPath!, 'temp');
+  String get gameDir => pathlib.join(_appPath!, 'data');
 
   String get userDir => pathlib.join(_appPath!, 'user');
 
-  String get gameDir => pathlib.join(_appPath!, 'data');
+  String get tempDir => pathlib.join(_appPath!, 'temp');
 
   String get userDataPath => pathlib.join(userDir, kUserDataFilename);
 

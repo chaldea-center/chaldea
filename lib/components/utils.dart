@@ -296,8 +296,9 @@ void checkAppUpdate([bool background = true]) async {
   String? releaseNote;
   String? launchUrl;
   try {
-    if (Platform.isIOS || Platform.isMacOS) {
+    if (Platform.isIOS) {
       // use https and set UA, or the fetched info may be outdated
+      // this http request always return iOS version result
       final response = await Dio()
           .get('https://itunes.apple.com/lookup?bundleId=$kPackageName',
               options: Options(responseType: ResponseType.plain, headers: {
@@ -306,6 +307,7 @@ void checkAppUpdate([bool background = true]) async {
                     " Chrome/88.0.4324.146"
                     " Safari/537.36 Edg/88.0.705.62"
               }));
+      print(response.data);
       final jsonData = json.decode(response.data.toString().trim());
       // logger.d(jsonData);
       final result = jsonData['results'][0];
@@ -324,6 +326,8 @@ void checkAppUpdate([bool background = true]) async {
       } else {
         launchUrl = GitTool.getReleasePageUrl(db.userData.updateSource, true);
       }
+    } else if (Platform.isMacOS) {
+      // not supported yet
     }
   } catch (e) {
     logger.e('Query update failed: $e');
@@ -389,7 +393,7 @@ void checkAppUpdate([bool background = true]) async {
         TextButton(
           child: Text(S.of(context).ignore),
           onPressed: () {
-            db.prefs.setString(ignoreUpdateKey, versionString);
+            db.prefs.setString(ignoreUpdateKey, versionString!);
             Navigator.of(context).pop();
           },
         ),
