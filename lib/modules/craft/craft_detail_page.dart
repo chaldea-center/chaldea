@@ -12,14 +12,14 @@ class CraftDetailPage extends StatefulWidget {
 }
 
 class _CraftDetailPageState extends State<CraftDetailPage> {
-  bool useLangJp = false;
+  bool useLangCn = false;
   CraftEssence ce;
 
   @override
   void initState() {
     super.initState();
     ce = widget.ce;
-    useLangJp = !Language.isCN;
+    useLangCn = Language.isCN;
   }
 
   @override
@@ -40,7 +40,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
       ),
       body: Column(
         children: <Widget>[
-          Expanded(child: CraftDetailBasePage(ce: ce, useLangJp: useLangJp)),
+          Expanded(child: CraftDetailBasePage(ce: ce, useLangCn: useLangCn)),
           ButtonBar(alignment: MainAxisAlignment.center, children: [
             ToggleButtons(
               constraints: BoxConstraints(),
@@ -48,7 +48,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
               fillColor: Theme.of(context).primaryColor,
               onPressed: (i) {
                 setState(() {
-                  useLangJp = i == 1;
+                  useLangCn = i == 0;
                 });
               },
               children: List.generate(
@@ -57,7 +57,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
                         padding: EdgeInsets.all(6),
                         child: Text(['中', '日'][i]),
                       )),
-              isSelected: List.generate(2, (i) => useLangJp == (i == 1)),
+              isSelected: List.generate(2, (i) => useLangCn == (i == 0)),
             ),
             for (var i = 0; i < 2; i++)
               ElevatedButton(
@@ -91,9 +91,9 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
 
 class CraftDetailBasePage extends StatelessWidget {
   final CraftEssence ce;
-  final bool useLangJp;
+  final bool useLangCn;
 
-  const CraftDetailBasePage({Key key, this.ce, this.useLangJp = false})
+  const CraftDetailBasePage({Key key, this.ce, this.useLangCn = false})
       : super(key: key);
 
   @override
@@ -233,7 +233,7 @@ class CraftDetailBasePage extends StatelessWidget {
           CustomTableRow(
             children: [
               TableCellData(
-                text: (useLangJp ? ce.descriptionJp : ce.description) ?? '???',
+                text: (useLangCn ? ce.description : ce.descriptionJp) ?? '???',
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               )

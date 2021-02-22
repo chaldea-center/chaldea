@@ -1,3 +1,4 @@
+//@dart=2.12
 import 'dart:math';
 
 import 'package:chaldea/components/components.dart';
@@ -9,8 +10,8 @@ class APCalcPage extends StatefulWidget {
 }
 
 class _APCalcPageState extends State<APCalcPage> {
-  TextEditingController _curCtrl, _maxCtrl;
-  String endTime;
+  late TextEditingController _curCtrl, _maxCtrl;
+  String? endTime;
   bool showExtraHint = Random().nextDouble() > 0.5;
 
   @override
@@ -132,7 +133,6 @@ class _APCalcPageState extends State<APCalcPage> {
     final now = DateTime.now();
     final end = now.add(duration);
     String day;
-    BackButton();
     switch (end.day - now.day) {
       case 0:
         day = 'Today';

@@ -25,13 +25,13 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
   _SvtVoiceTabState(
       {ServantDetailPageState parent, Servant svt, ServantStatus plan})
       : super(parent: parent, svt: svt, status: plan);
-  bool useLangJp = false;
+  bool useLangCn = false;
   GeneralAudioPlayer audioPlayer;
 
   @override
   void initState() {
     super.initState();
-    useLangJp = !Language.isCN;
+    useLangCn = Language.isCN;
   }
 
   @override
@@ -85,7 +85,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
         Text(record.title, style: TextStyle(fontWeight: FontWeight.bold)),
         Padding(
           padding: EdgeInsets.symmetric(vertical: 3),
-          child: Text((useLangJp ? record.textJp : record.text) ??
+          child: Text((useLangCn ? record.text : record.textJp) ??
               record.textJp ??
               record.text ??
               '???'),
@@ -111,16 +111,17 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
           fillColor: Theme.of(context).primaryColor,
           onPressed: (i) {
             setState(() {
-              useLangJp = i == 1;
+              useLangCn = i == 0;
             });
           },
           children: List.generate(
-              2,
-              (i) => Padding(
-                    padding: EdgeInsets.all(6),
-                    child: Text(['中', '日'][i]),
-                  )),
-          isSelected: List.generate(2, (i) => useLangJp == (i == 1)),
+            2,
+            (i) => Padding(
+              padding: EdgeInsets.all(6),
+              child: Text(['中', '日'][i]),
+            ),
+          ),
+          isSelected: List.generate(2, (i) => useLangCn == (i == 0)),
         ),
       ],
     );

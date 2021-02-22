@@ -24,12 +24,12 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
   _SvtInfoTabState(
       {ServantDetailPageState parent, Servant svt, ServantStatus plan})
       : super(parent: parent, svt: svt, status: plan);
-  bool useLangJp = false;
+  bool useLangCn = false;
 
   @override
   void initState() {
     super.initState();
-    useLangJp = !Language.isCN;
+    useLangCn = Language.isCN;
     _tabController = TabController(length: 4, vsync: this);
   }
 
@@ -70,7 +70,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
               fillColor: Theme.of(context).primaryColor,
               onPressed: (i) {
                 setState(() {
-                  useLangJp = i == 1;
+                  useLangCn = i == 0;
                 });
               },
               children: List.generate(
@@ -79,7 +79,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
                         padding: EdgeInsets.all(6),
                         child: Text(['中', '日'][i]),
                       )),
-              isSelected: List.generate(2, (i) => useLangJp == (i == 1)),
+              isSelected: List.generate(2, (i) => useLangCn == (i == 0)),
             ),
           ],
         ),
@@ -286,7 +286,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
       children: List.generate(svt.profiles.length, (index) {
         final profile = svt.profiles[index];
         String description =
-            useLangJp ? profile.descriptionJp : profile.description;
+            useLangCn ? profile.description : profile.descriptionJp;
         if (description == null || description.isEmpty) {
           description = '???';
         }
@@ -313,7 +313,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
   Widget buildBondCraftTab() {
     if (svt.bondCraft != null && svt.bondCraft > 0) {
       return CraftDetailBasePage(
-          ce: db.gameData.crafts[svt.bondCraft], useLangJp: useLangJp);
+          ce: db.gameData.crafts[svt.bondCraft], useLangCn: useLangCn);
     } else {
       return Center(child: Text(S.of(context).hint_no_bond_craft));
     }
@@ -325,7 +325,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
       return ListView.separated(
         itemBuilder: (context, index) => CraftDetailBasePage(
             ce: db.gameData.crafts[svt.valentineCraft[index]],
-            useLangJp: useLangJp),
+            useLangCn: useLangCn),
         separatorBuilder: (context, index) => Divider(height: 20),
         itemCount: svt.valentineCraft.length,
       );

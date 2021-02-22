@@ -189,6 +189,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
     return SimpleAccordion(
       expanded: true,
       headerBuilder: (context, expanded) => ListTile(
+        leading: Icon(Icons.event),
         title: title,
         horizontalTitleGap: 0,
       ),

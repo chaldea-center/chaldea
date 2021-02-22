@@ -191,7 +191,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
   @override
   void dispose() {
     solver.dispose();
-    params.disableControllers();
+    params.dispose();
     super.dispose();
   }
 

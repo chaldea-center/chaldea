@@ -265,9 +265,6 @@ class ItemListTab extends StatefulWidget {
 }
 
 class _ItemListTabState extends State<ItemListTab> {
-  // TextInputsManager<Item> inputsManager = TextInputsManager();
-  final qpKey = 'QP';
-
   Map<Item, InputComponents<Item>> _allGroups = {};
   List<InputComponents<Item>> _shownGroups = [];
   ScrollController _scrollController;
@@ -277,7 +274,7 @@ class _ItemListTabState extends State<ItemListTab> {
     super.initState();
     _scrollController = ScrollController();
     db.gameData.items.forEach((key, item) {
-      if (item.category == widget.category && key != qpKey) {
+      if (item.category == widget.category && key != Item.qp) {
         _allGroups[item] = InputComponents(
           data: item,
           focusNode: FocusNode(
@@ -290,10 +287,7 @@ class _ItemListTabState extends State<ItemListTab> {
                 }
                 return false;
               }),
-          controller: TextEditingController(
-            text: formatNumber(db.curUser.items[key] ?? 0,
-                groupSeparator: key == Item.qp ? ',' : null),
-          ),
+          controller: TextEditingController(),
         );
       }
     });
@@ -304,12 +298,11 @@ class _ItemListTabState extends State<ItemListTab> {
     sortedEntries.insert(
         0,
         MapEntry(
-          db.gameData.items[qpKey],
+          db.gameData.items[Item.qp],
           InputComponents(
-              data: db.gameData.items[qpKey],
+              data: db.gameData.items[Item.qp],
               focusNode: FocusNode(),
-              controller: TextEditingController(
-                  text: formatNumber(db.curUser.items[qpKey] ?? 0))),
+              controller: TextEditingController()),
         ));
     _allGroups = Map.fromEntries(sortedEntries);
   }
@@ -338,24 +331,25 @@ class _ItemListTabState extends State<ItemListTab> {
       initialData: db.itemStat,
       stream: db.itemStat.onUpdated.stream,
       builder: (context, snapshot) {
+        setTextController();
         List<Widget> children = [];
         final stat = snapshot.data;
         _shownGroups.clear();
         for (var group in _allGroups.values) {
           if (!widget.filtered ||
-              group.data.name == qpKey ||
+              group.data.name == Item.qp ||
               stat.leftItems[group.data.name] < 0) {
             _shownGroups.add(group);
             children.add(buildItemTile(group, stat));
           }
         }
-        Widget child = ListView.separated(
+        Widget _listView = ListView.separated(
           controller: _scrollController,
           itemBuilder: (context, index) => children[index],
           separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
           itemCount: children.length,
         );
-        return Scrollbar(controller: _scrollController, child: child);
+        return Scrollbar(controller: _scrollController, child: _listView);
       },
     );
     Widget actionBar;
@@ -392,6 +386,17 @@ class _ItemListTabState extends State<ItemListTab> {
         : Column(children: [Expanded(child: listView), actionBar]);
   }
 
+  void setTextController() {
+    _allGroups.forEach((item, group) {
+      // when will controller be null? should never
+      if (group.controller != null) {
+        final text = formatNumber(db.curUser.items[item.name] ?? 0,
+            groupSeparator: item.name == Item.qp ? ',' : null);
+        group.controller.value = group.controller.value.copyWith(text: text);
+      }
+    });
+  }
+
   /// Android: next call complete
   /// Android Emulator: catch "\n"&"\t", no complete or submit
   /// iOS: only move among the nodes already in viewport,
@@ -400,141 +405,132 @@ class _ItemListTabState extends State<ItemListTab> {
   /// macOS: catch "\t", enter to complete and submit
   Widget buildItemTile(InputComponents group, ItemStatistics statistics) {
     final itemKey = group.data.name;
-    bool isQp = itemKey == qpKey;
-    return StatefulBuilder(
-      builder: (BuildContext context, setState2) {
-        // update when text input
-        bool enough = statistics.leftItems[itemKey] >= 0;
-        final highlightStyle =
-            TextStyle(color: enough ? null : Colors.redAccent);
-        Widget textField = TextField(
-          maxLength: isQp ? 20 : 5,
-          controller: group.controller,
-          focusNode: group.focusNode,
-          textAlign: TextAlign.center,
-          keyboardType: TextInputType.numberWithOptions(signed: true),
-          textInputAction: TextInputAction.next,
-          decoration: InputDecoration(counterText: ''),
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'-?[\d,]*')),
-            if (itemKey == Item.qp) NumberInputFormatter(),
-          ],
-          onChanged: (v) {
-            db.curUser.items[itemKey] =
-                int.tryParse(v.replaceAll(',', '')) ?? 0;
-            statistics.updateLeftItems(shouldBroadcast: false);
-            setState2(() {});
-          },
-          onTap: () {
-            // select all text at first tap
-            if (!group.focusNode.hasFocus && group.controller != null) {
-              group.controller.selection = TextSelection(
-                  baseOffset: 0, extentOffset: group.controller.text.length);
-            }
-          },
-          onSubmitted: (s) {
-            print('onSubmit: ${group.focusNode.debugLabel}');
-          },
-          onEditingComplete: () {
-            print('onComplete: ${group.focusNode.debugLabel}');
-            moveToNext(group.focusNode);
-          },
-        );
-        Widget title, subtitle;
-        if (isQp) {
-          title = Row(
-            children: <Widget>[
-              Text(itemKey + '  '),
-              Expanded(child: textField)
-            ],
-          );
-          subtitle = Row(
-            children: <Widget>[
-              Expanded(
-                  flex: 1,
-                  child: AutoSizeText(
-                    '${S.current.item_total_demand} ${formatNumber(statistics.svtItems[itemKey])}',
-                    maxLines: 1,
-                  )),
-              Expanded(
-                  flex: 1,
-                  child: AutoSizeText(
-                    '${S.current.item_left} ${formatNumber(statistics.leftItems[itemKey])}',
-                    maxLines: 1,
-                    style: highlightStyle,
-                    minFontSize: 10,
-                  ))
-            ],
-          );
-        } else {
-          title = Row(
-            children: <Widget>[
-              Expanded(
-                child: AutoSizeText(
-                  Item.localizedNameOf(itemKey),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              Text(S.of(context).item_left, style: TextStyle(fontSize: 14)),
-              SizedBox(
-                  width: 36,
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: AutoSizeText(
-                        statistics.leftItems[itemKey].toString(),
-                        minFontSize: 6,
-                        maxFontSize: 14,
-                        style: highlightStyle,
-                        maxLines: 1),
-                  )),
-            ],
-          );
-          List<int> _countsInSubTitle = statistics.svtItemDetail.planItemCounts
-              .valuesIfGrail(itemKey)
-              .map((e) => e[itemKey] ?? 0)
-              .toList();
-          subtitle = Row(
-            children: <Widget>[
-              Expanded(
-                  child: AutoSizeText(
-                '${statistics.svtItems[itemKey]}' +
-                    '(${_countsInSubTitle.join("/")})',
+    bool isQp = itemKey == Item.qp;
+
+    // update when text input
+    bool enough = statistics.leftItems[itemKey] >= 0;
+    final highlightStyle = TextStyle(color: enough ? null : Colors.redAccent);
+    Widget textField = TextField(
+      maxLength: isQp ? 20 : 5,
+      controller: group.controller,
+      focusNode: group.focusNode,
+      textAlign: TextAlign.center,
+      keyboardType: TextInputType.numberWithOptions(signed: true),
+      textInputAction: TextInputAction.next,
+      decoration: InputDecoration(counterText: ''),
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(RegExp(r'-?[\d,]*')),
+        if (itemKey == Item.qp) NumberInputFormatter(),
+      ],
+      onChanged: (v) {
+        db.curUser.items[itemKey] = int.tryParse(v.replaceAll(',', '')) ?? 0;
+        statistics.updateLeftItems(shouldBroadcast: true);
+        // setState2(() {});
+      },
+      onTap: () {
+        // select all text at first tap
+        if (!group.focusNode.hasFocus && group.controller != null) {
+          group.controller.selection = TextSelection(
+              baseOffset: 0, extentOffset: group.controller.text.length);
+        }
+      },
+      onSubmitted: (s) {
+        print('onSubmit: ${group.focusNode.debugLabel}');
+      },
+      onEditingComplete: () {
+        print('onComplete: ${group.focusNode.debugLabel}');
+        moveToNext(group.focusNode);
+      },
+    );
+    Widget title, subtitle;
+    if (isQp) {
+      title = Row(
+        children: <Widget>[Text(itemKey + '  '), Expanded(child: textField)],
+      );
+      subtitle = Row(
+        children: <Widget>[
+          Expanded(
+              flex: 1,
+              child: AutoSizeText(
+                '${S.current.item_total_demand} ${formatNumber(statistics.svtItems[itemKey])}',
                 maxLines: 1,
               )),
-              Text(S.of(context).event_title, style: TextStyle(fontSize: 14)),
-              SizedBox(
-                  width: 36,
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: AutoSizeText(
-                        (statistics.eventItems[itemKey] ?? 0).toString(),
-                        minFontSize: 6,
-                        maxFontSize: 14,
-                        maxLines: 1),
-                  )),
-            ],
-          );
-        }
+          Expanded(
+              flex: 1,
+              child: AutoSizeText(
+                '${S.current.item_left} ${formatNumber(statistics.leftItems[itemKey])}',
+                maxLines: 1,
+                style: highlightStyle,
+                minFontSize: 10,
+              ))
+        ],
+      );
+    } else {
+      title = Row(
+        children: <Widget>[
+          Expanded(
+            child: AutoSizeText(
+              Item.localizedNameOf(itemKey),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          Text(S.of(context).item_left, style: TextStyle(fontSize: 14)),
+          SizedBox(
+              width: 36,
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: AutoSizeText(statistics.leftItems[itemKey].toString(),
+                    minFontSize: 6,
+                    maxFontSize: 14,
+                    style: highlightStyle,
+                    maxLines: 1),
+              )),
+        ],
+      );
+      List<int> _countsInSubTitle = statistics.svtItemDetail.planItemCounts
+          .valuesIfGrail(itemKey)
+          .map((e) => e[itemKey] ?? 0)
+          .toList();
+      subtitle = Row(
+        children: <Widget>[
+          Expanded(
+              child: AutoSizeText(
+            '${statistics.svtItems[itemKey]}' +
+                '(${_countsInSubTitle.join("/")})',
+            maxLines: 1,
+          )),
+          Text(S.of(context).event_title, style: TextStyle(fontSize: 14)),
+          SizedBox(
+              width: 36,
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: AutoSizeText(
+                    (statistics.eventItems[itemKey] ?? 0).toString(),
+                    minFontSize: 6,
+                    maxFontSize: 14,
+                    maxLines: 1),
+              )),
+        ],
+      );
+    }
 
-        return ListTile(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-            SplitRoute.push(
-              context: context,
-              builder: (context, _) => ItemDetailPage(itemKey),
-              popDetail: true,
-            );
-          },
-          horizontalTitleGap: 8,
-          contentPadding: EdgeInsets.symmetric(horizontal: 6),
-          leading: db.getIconImage(itemKey, width: 55),
-          title: title,
-          focusNode: FocusNode(canRequestFocus: true, skipTraversal: true),
-          subtitle: subtitle,
-          trailing: isQp ? null : SizedBox(width: 50, child: textField),
+    return ListTile(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        SplitRoute.push(
+          context: context,
+          builder: (context, _) => ItemDetailPage(itemKey),
+          popDetail: true,
         );
       },
+      horizontalTitleGap: 8,
+      contentPadding: EdgeInsets.symmetric(horizontal: 6),
+      leading: db.getIconImage(itemKey, width: 55),
+      title: title,
+      focusNode: FocusNode(canRequestFocus: true, skipTraversal: true),
+      subtitle: subtitle,
+      trailing: isQp ? null : SizedBox(width: 50, child: textField),
     );
   }
 

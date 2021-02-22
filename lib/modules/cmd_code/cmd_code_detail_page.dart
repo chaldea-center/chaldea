@@ -1,11 +1,12 @@
+//@dart=2.12
 import 'package:chaldea/components/components.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CmdCodeDetailPage extends StatefulWidget {
   final CommandCode code;
-  final CommandCode Function(int, bool) onSwitch;
+  final CommandCode Function(int, bool)? onSwitch;
 
-  const CmdCodeDetailPage({Key key, this.code, this.onSwitch})
+  const CmdCodeDetailPage({Key? key, required this.code, this.onSwitch})
       : super(key: key);
 
   @override
@@ -13,14 +14,14 @@ class CmdCodeDetailPage extends StatefulWidget {
 }
 
 class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
-  bool useLangJp = false;
-  CommandCode code;
+  bool useLangCn = false;
+  late CommandCode code;
 
   @override
   void initState() {
     super.initState();
     code = widget.code;
-    useLangJp = !Language.isCN;
+    useLangCn = Language.isCN;
   }
 
   @override
@@ -42,7 +43,7 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
       body: Column(
         children: <Widget>[
           Expanded(
-            child: CmdCodeDetailBasePage(code: code, useLangJp: useLangJp),
+            child: CmdCodeDetailBasePage(code: code, useLangCn: useLangCn),
           ),
           ButtonBar(alignment: MainAxisAlignment.center, children: [
             ToggleButtons(
@@ -51,7 +52,7 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
               fillColor: Theme.of(context).primaryColor,
               onPressed: (i) {
                 setState(() {
-                  useLangJp = i == 1;
+                  useLangCn = i == 0;
                 });
               },
               children: List.generate(
@@ -60,15 +61,15 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
                         padding: EdgeInsets.all(6),
                         child: Text(['中', '日'][i]),
                       )),
-              isSelected: List.generate(2, (i) => useLangJp == (i == 1)),
+              isSelected: List.generate(2, (i) => useLangCn == (i == 0)),
             ),
             for (var i = 0; i < 2; i++)
               ElevatedButton(
                 onPressed: () {
-                  CommandCode nextCode;
+                  CommandCode? nextCode;
                   if (widget.onSwitch != null) {
                     // if navigated from filter list, let filter list decide which is the next one
-                    nextCode = widget.onSwitch(code.no, i == 1);
+                    nextCode = widget.onSwitch!(code.no, i == 1);
                   } else {
                     nextCode = db.gameData.cmdCodes[code.no + [-1, 1][i]];
                   }
@@ -76,7 +77,7 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
                     EasyLoading.showToast(S.of(context).list_end_hint(i == 0));
                   } else {
                     setState(() {
-                      code = nextCode;
+                      code = nextCode!;
                     });
                   }
                 },
@@ -94,9 +95,10 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
 
 class CmdCodeDetailBasePage extends StatelessWidget {
   final CommandCode code;
-  final bool useLangJp;
+  final bool useLangCn;
 
-  const CmdCodeDetailBasePage({Key key, this.code, this.useLangJp = false})
+  const CmdCodeDetailBasePage(
+      {Key? key, required this.code, this.useLangCn = false})
       : super(key: key);
 
   @override
@@ -152,7 +154,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                                   pageBuilder: (context, _, __) =>
                                       FullScreenImageSlider(
                                     imgUrls: [
-                                      db.getIconResource(code.illustration).url
+                                      db.getIconResource(code.illustration)?.url
                                     ],
                                     downloadEnabled:
                                         db.userData.downloadEnabled,
@@ -197,7 +199,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
           CustomTableRow(
             children: [
               TableCellData(
-                text: (useLangJp ? code.descriptionJp : code.description) ??
+                text: (useLangCn ? code.description : code.descriptionJp) ??
                     '???',
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -211,7 +213,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
 
   Widget placeholder(BuildContext context, String url) {
     String color;
-    switch (code?.rarity) {
+    switch (code.rarity) {
       case 5:
       case 4:
         color = '金';
