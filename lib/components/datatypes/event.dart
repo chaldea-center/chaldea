@@ -109,12 +109,12 @@ class LimitEvent {
       ..removeWhere((key, value) => value <= 0);
   }
 
-  bool isNotOutdated([int dm = 1]) {
+  bool isOutdated([int dm = 1]) {
     if (startTimeCn?.isNotEmpty == true) {
       final endDate = DateTime.now().subtract(Duration(days: 31 * dm));
-      return DateTime.parse(startTimeCn).isAfter(endDate);
+      return DateTime.parse(startTimeCn).isBefore(endDate);
     } else {
-      return true;
+      return false;
     }
   }
 
@@ -212,12 +212,12 @@ class MainRecord {
       ..removeWhere((key, value) => value <= 0);
   }
 
-  bool isNotOutdated([int dm = 1]) {
+  bool isOutdated([int dm = 1]) {
     if (startTimeCn?.isNotEmpty == true) {
       final endDate = DateTime.now().subtract(Duration(days: 31 * dm));
-      return DateTime.parse(startTimeCn).isAfter(endDate);
+      return DateTime.parse(startTimeCn).isBefore(endDate);
     } else {
-      return true;
+      return false;
     }
   }
 }
@@ -225,7 +225,7 @@ class MainRecord {
 @JsonSerializable(checked: true)
 class ExchangeTicket {
   int days;
-  String month; //202001
+  String month; //2020-01
   String monthJp;
   List<String> items;
 
@@ -246,8 +246,8 @@ class ExchangeTicket {
     return result;
   }
 
-  bool isNotOutdated([int months = 4]) {
+  bool isOutdated([int months = 4]) {
     final startDate = DateTime.now().subtract(Duration(days: 31 * months));
-    return DateTime.parse(month + '-01').isAfter(startDate);
+    return DateTime.parse(month + '-01').isBefore(startDate);
   }
 }

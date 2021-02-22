@@ -8,9 +8,13 @@ import 'package:chaldea/modules/event/tabs/exchange_ticket_tab.dart';
 class ItemObtainEventPage extends StatefulWidget {
   final String itemKey;
   final bool favorite;
+  final bool filtrateOutdated;
 
   const ItemObtainEventPage(
-      {Key? key, required this.itemKey, this.favorite = false})
+      {Key? key,
+      required this.itemKey,
+      this.favorite = false,
+      this.filtrateOutdated = true})
       : super(key: key);
 
   @override
@@ -35,6 +39,13 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
     );
   }
 
+  bool _whetherToShow(bool planned, bool outdated) {
+    if (planned) return true;
+    if (widget.favorite) return false;
+    if (widget.filtrateOutdated && outdated) return false;
+    return true;
+  }
+
   Widget get _limitEventAccordion {
     List<Widget> children = [];
     final limitEvents = db.gameData.events.limitEvents.values.toList();
@@ -46,44 +57,43 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
           event.itemsWithRare(plan).containsKey(widget.itemKey);
       bool hasLotteryItems = event.lottery.containsKey(widget.itemKey);
       bool hasExtraItems = event.extra.containsKey(widget.itemKey);
+      // don't contain this item
       if (!hasEventItems && !hasLotteryItems && !hasExtraItems) {
         return;
       }
-      if ((!widget.favorite || plan.enable)) {
-        if (hasEventItems)
-          texts.add('${S.current.event_title}'
-              ' ${event.itemsWithRare(plan)[widget.itemKey]}');
-        if (hasLotteryItems) {
-          String prefix = event.lotteryLimit > 0
-              ? S.current.event_lottery_limited
-              : S.current.event_lottery_unlimited;
-          prefix = prefix.split(' ').first; // english word too long
-          texts.add('$prefix'
-              ' ${event.lottery[widget.itemKey]}*${plan.lottery ?? 0}');
-        }
-        if (hasExtraItems) {
-          texts.add('${S.current.event_item_extra}'
-              ' ${plan.extra[widget.itemKey] ?? 0}');
-        }
-        children.add(ListTile(
-          title:
-              AutoSizeText(event.localizedName, maxFontSize: 15, maxLines: 2),
-          onTap: () {
-            SplitRoute.push(
-              context: context,
-              builder: (context, _) =>
-                  LimitEventDetailPage(name: event.indexKey),
-              detail: true,
-            );
-          },
-          trailing: Text(
-            texts.join('\n'),
-            style: plan.enable ? highlight : null,
-            textAlign: TextAlign.right,
-          ),
-        ));
-        //
+      if (!_whetherToShow(plan.enable, event.isOutdated())) {
+        return;
       }
+      if (hasEventItems)
+        texts.add('${S.current.event_title}'
+            ' ${event.itemsWithRare(plan)[widget.itemKey]}');
+      if (hasLotteryItems) {
+        String prefix = event.lotteryLimit > 0
+            ? S.current.event_lottery_limited
+            : S.current.event_lottery_unlimited;
+        prefix = prefix.split(' ').first; // english word too long
+        texts.add('$prefix'
+            ' ${event.lottery[widget.itemKey]}*${plan.lottery ?? 0}');
+      }
+      if (hasExtraItems) {
+        texts.add('${S.current.event_item_extra}'
+            ' ${plan.extra[widget.itemKey] ?? 0}');
+      }
+      children.add(ListTile(
+        title: AutoSizeText(event.localizedName, maxFontSize: 15, maxLines: 2),
+        onTap: () {
+          SplitRoute.push(
+            context: context,
+            builder: (context, _) => LimitEventDetailPage(name: event.indexKey),
+            detail: true,
+          );
+        },
+        trailing: Text(
+          texts.join('\n'),
+          style: plan.enable ? highlight : null,
+          textAlign: TextAlign.right,
+        ),
+      ));
     });
     return _getAccordion(
       title: Text(S.of(context).limited_event),
@@ -99,30 +109,32 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
     exchangeTickets.sort((a, b) => b.month.compareTo(a.month));
     exchangeTickets.forEach((ticket) {
       int itemIndex = ticket.items.indexOf(widget.itemKey);
-      if (itemIndex >= 0) {
-        // if favorite&& some item is not 0->show
-        // if not fav, show
-        final plan = db.curUser.events.exchangeTicketOf(ticket.month);
-        bool planned = sum(plan) > 0;
-        if (!widget.favorite || planned) {
-          //show
-          int itemNum = plan.elementAt(itemIndex);
-          children.add(SimpleAccordion(
-            expanded: false,
-            headerBuilder: (context, _) => ListTile(
-              title: Text('${S.current.exchange_ticket_short} ${ticket.month}'),
-              subtitle: Text(ticket.items.join('/')),
-              trailing: Text(
-                '$itemNum/${ticket.days}',
-                style: planned ? highlight : null,
-              ),
-            ),
-            contentBuilder: (context) => ExchangeTicketTab(month: ticket.month),
-            expandIconBuilder: (_, __) => Container(),
-            disableAnimation: true,
-          ));
-        }
+      if (itemIndex < 0) {
+        return;
       }
+
+      final plan = db.curUser.events.exchangeTicketOf(ticket.month);
+      bool planned = sum(plan) > 0;
+
+      if (!_whetherToShow(planned, ticket.isOutdated())) {
+        return;
+      }
+
+      int itemNum = plan.elementAt(itemIndex);
+      children.add(SimpleAccordion(
+        expanded: false,
+        headerBuilder: (context, _) => ListTile(
+          title: Text('${S.current.exchange_ticket_short} ${ticket.month}'),
+          subtitle: Text(ticket.items.join('/')),
+          trailing: Text(
+            '$itemNum/${ticket.days}',
+            style: planned ? highlight : null,
+          ),
+        ),
+        contentBuilder: (context) => ExchangeTicketTab(month: ticket.month),
+        expandIconBuilder: (_, __) => Container(),
+        disableAnimation: true,
+      ));
     });
     return _getAccordion(
       title: Text(S.of(context).exchange_ticket),
@@ -137,43 +149,46 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
     // new to old
     mainRecords.sort((a, b) => b.startTimeJp.compareTo(a.startTimeJp));
     mainRecords.forEach((record) {
-      bool hasRewards = record.rewards.containsKey(widget.itemKey);
       bool hasDrop = record.drops.containsKey(widget.itemKey);
-      if (hasRewards || hasDrop) {
-        final plan = db.curUser.events.mainRecordOf(record.indexKey);
-        bool planned = plan.contains(true);
-        if (!widget.favorite || planned) {
-          children.add(ListTile(
-            title: Text(record.localizedChapter),
-            subtitle: Text(record.localizedTitle),
-            onTap: () {
-              SplitRoute.push(
-                context: context,
-                builder: (context, _) =>
-                    MainRecordDetailPage(name: record.indexKey),
-                detail: true,
-              );
-            },
-            trailing: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (hasDrop)
-                  Text(
-                    '${S.current.main_record_fixed_drop_short}'
-                    ' ${record.drops[widget.itemKey]}',
-                    style: planned ? highlight : null,
-                  ),
-                if (hasRewards)
-                  Text(
-                    '${S.current.main_record_bonus_short}'
-                    ' ${record.rewards[widget.itemKey]}',
-                    style: planned ? highlight : null,
-                  ),
-              ],
-            ),
-          ));
-        }
+      bool hasRewards = record.rewards.containsKey(widget.itemKey);
+      if (!hasDrop && !hasRewards) {
+        return;
       }
+      final plan = db.curUser.events.mainRecordOf(record.indexKey);
+      bool planned = plan.contains(true);
+      if (!_whetherToShow(planned, record.isOutdated())) {
+        return;
+      }
+
+      children.add(ListTile(
+        title: Text(record.localizedChapter),
+        subtitle: Text(record.localizedTitle),
+        onTap: () {
+          SplitRoute.push(
+            context: context,
+            builder: (context, _) =>
+                MainRecordDetailPage(name: record.indexKey),
+            detail: true,
+          );
+        },
+        trailing: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (hasDrop)
+              Text(
+                '${S.current.main_record_fixed_drop_short}'
+                ' ${record.drops[widget.itemKey]}',
+                style: planned ? highlight : null,
+              ),
+            if (hasRewards)
+              Text(
+                '${S.current.main_record_bonus_short}'
+                ' ${record.rewards[widget.itemKey]}',
+                style: planned ? highlight : null,
+              ),
+          ],
+        ),
+      ));
     });
     return _getAccordion(
       title: Text(S.of(context).main_record),

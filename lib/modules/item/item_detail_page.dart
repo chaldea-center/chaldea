@@ -20,10 +20,17 @@ class _ItemDetailPageState extends State<ItemDetailPage>
   TabController _tabController;
   int curTab = 0;
 
-  // svt tab
+  // all
   bool favorite = true;
+
+  // svt
   int viewType = 0;
+
+  // svt, quest
   int sortType = 0;
+
+  // event
+  bool filtrateOutdated = true;
 
   //free tab
 
@@ -54,6 +61,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
         actions: <Widget>[
           if (curTab == 0) viewTypeButton,
           if (curTab == 0 || curTab == 3) sortButton,
+          if (curTab == 2) filterOutdatedButton,
           favoriteButton,
         ],
         bottom: TabBar(
@@ -80,6 +88,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
           ItemObtainEventPage(
             itemKey: widget.itemKey,
             favorite: favorite,
+            filtrateOutdated:filtrateOutdated
           ),
           ItemObtainInterludeTab(
               itemKey: widget.itemKey, favorite: favorite, sortType: sortType)
@@ -126,6 +135,18 @@ class _ItemDetailPageState extends State<ItemDetailPage>
       onPressed: () {
         setState(() {
           sortType = (sortType + 1) % 3;
+        });
+      },
+    );
+  }
+
+  Widget get filterOutdatedButton {
+    return IconButton(
+      icon: Icon(filtrateOutdated ? Icons.timer : Icons.timer_off),
+      tooltip: 'Outdated',
+      onPressed: () {
+        setState(() {
+          filtrateOutdated = !filtrateOutdated;
         });
       },
     );
