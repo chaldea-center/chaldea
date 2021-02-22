@@ -404,7 +404,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
 
   void addAnItemNotInList([int n = 50]) {
     final item = db.gameData.glpk.rowNames
-        .firstWhere((e) => !params.rows.contains(e), orElse: () => null);
+        .firstWhereOrNull((e) => !params.rows.contains(e));
     params.addOne(item, n);
   }
 

@@ -105,7 +105,7 @@ class ServantStatus {
     resetEnhancement();
   }
 
-  void resetEnhancement(){
+  void resetEnhancement() {
     skillIndex.fillRange(0, 3, null);
     npIndex = 0;
   }
@@ -218,6 +218,15 @@ class EventPlans {
     mainRecords ??= {};
     exchangeTickets ??= {};
   }
+
+  LimitEventPlan limitEventOf(String indexKey) =>
+      limitEvents.putIfAbsent(indexKey, () => LimitEventPlan());
+
+  List<bool> mainRecordOf(String indexKey) =>
+      mainRecords.putIfAbsent(indexKey, () => [false, false]);
+
+  List<int> exchangeTicketOf(String indexKey) =>
+      exchangeTickets.putIfAbsent(indexKey, () => [0, 0, 0]);
 
   factory EventPlans.fromJson(Map<String, dynamic> data) =>
       _$EventPlansFromJson(data);

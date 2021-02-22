@@ -40,17 +40,16 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
     final limitEvents = db.gameData.events.limitEvents.values.toList();
     limitEvents.sort((a, b) => b.startTimeJp.compareTo(a.startTimeJp));
     limitEvents.forEach((event) {
-      final plan = db.curUser.events.limitEvents[event.indexKey];
-
+      final plan = db.curUser.events.limitEventOf(event.indexKey);
       List<String> texts = [];
-      bool hasEventItems = event.itemsWithRare(plan).containsKey(widget.itemKey);
+      bool hasEventItems =
+          event.itemsWithRare(plan).containsKey(widget.itemKey);
       bool hasLotteryItems = event.lottery.containsKey(widget.itemKey);
       bool hasExtraItems = event.extra.containsKey(widget.itemKey);
-      bool planned = plan?.enable == true;
       if (!hasEventItems && !hasLotteryItems && !hasExtraItems) {
         return;
       }
-      if ((!widget.favorite || planned)) {
+      if ((!widget.favorite || plan.enable)) {
         if (hasEventItems)
           texts.add('${S.current.event_title}'
               ' ${event.itemsWithRare(plan)[widget.itemKey]}');
@@ -60,11 +59,11 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
               : S.current.event_lottery_unlimited;
           prefix = prefix.split(' ').first; // english word too long
           texts.add('$prefix'
-              ' ${event.lottery[widget.itemKey]}*${plan?.lottery ?? 0}');
+              ' ${event.lottery[widget.itemKey]}*${plan.lottery ?? 0}');
         }
         if (hasExtraItems) {
           texts.add('${S.current.event_item_extra}'
-              ' ${plan?.extra[widget.itemKey] ?? 0}');
+              ' ${plan.extra[widget.itemKey] ?? 0}');
         }
         children.add(ListTile(
           title:
@@ -79,7 +78,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
           },
           trailing: Text(
             texts.join('\n'),
-            style: planned ? highlight : null,
+            style: plan.enable ? highlight : null,
             textAlign: TextAlign.right,
           ),
         ));
@@ -103,12 +102,13 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
       if (itemIndex >= 0) {
         // if favorite&& some item is not 0->show
         // if not fav, show
-        final plan = db.curUser.events.exchangeTickets[ticket.month];
-        bool planned = plan != null && sum(plan) > 0;
+        final plan = db.curUser.events.exchangeTicketOf(ticket.month);
+        bool planned = sum(plan) > 0;
         if (!widget.favorite || planned) {
           //show
-          int itemNum = plan?.elementAt(itemIndex) ?? 0;
+          int itemNum = plan.elementAt(itemIndex);
           children.add(SimpleAccordion(
+            expanded: false,
             headerBuilder: (context, _) => ListTile(
               title: Text('${S.current.exchange_ticket_short} ${ticket.month}'),
               subtitle: Text(ticket.items.join('/')),
@@ -140,8 +140,8 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
       bool hasRewards = record.rewards.containsKey(widget.itemKey);
       bool hasDrop = record.drops.containsKey(widget.itemKey);
       if (hasRewards || hasDrop) {
-        final plan = db.curUser.events.mainRecords[record.name];
-        bool planned = plan != null && plan.contains(true);
+        final plan = db.curUser.events.mainRecordOf(record.indexKey);
+        bool planned = plan.contains(true);
         if (!widget.favorite || planned) {
           children.add(ListTile(
             title: Text(record.localizedChapter),
@@ -187,6 +187,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
       required List<Widget> children,
       required bool expanded}) {
     return SimpleAccordion(
+      expanded: true,
       headerBuilder: (context, expanded) => ListTile(
         title: title,
         horizontalTitleGap: 0,

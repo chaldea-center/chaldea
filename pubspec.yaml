@@ -58,7 +58,7 @@ dependencies:
   screenshot: ^1.0.0-nullsafety.1
   share: '>=0.6.5+4 <2.0.0'
   shared_preferences: ^2.0.0-nullsafety.1
-  url_launcher: ^6.0.0-nullsafety.6
+  url_launcher: ^6.0.0-nullsafety.7
   uuid: ^2.2.2
 
 dev_dependencies:

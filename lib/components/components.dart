@@ -12,6 +12,7 @@ export 'custom_tile.dart';
 export 'datatypes/datatypes.dart';
 export 'device_app_info.dart';
 export 'ensure_visible_when_focused.dart';
+export 'extensions.dart';
 export 'glpk_solver.dart';
 export 'image_viewer.dart';
 export 'logger.dart';

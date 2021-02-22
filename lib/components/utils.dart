@@ -373,7 +373,9 @@ void checkAppUpdate([bool background = true]) async {
     return;
   }
 
+  releaseNote = releaseNote?.replaceAll('\r\n', '\n');
   logger.i('Release note:\n$releaseNote');
+
   // background&&upgradable, user-click
   SimpleCancelOkDialog(
     title: Text(S.of(context).about_update_app),

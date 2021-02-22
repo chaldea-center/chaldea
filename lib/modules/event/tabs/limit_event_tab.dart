@@ -44,7 +44,7 @@ class _LimitEventTabState extends State<LimitEventTab> {
         separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
         itemBuilder: (context, index) {
           final event = limitEvents[eventKeys[index]];
-          final plan = db.curUser.events.limitEvents;
+          final plan = db.curUser.events.limitEventOf(event.indexKey);
           return ListTile(
             title:
                 AutoSizeText(event.localizedName, maxFontSize: 16, maxLines: 2),
@@ -57,11 +57,10 @@ class _LimitEventTabState extends State<LimitEventTab> {
                     event.lottery?.isNotEmpty == true)
                   Icon(Icons.star, color: Colors.yellow[700]),
                 Switch.adaptive(
-                  value: plan[event.name]?.enable ?? false,
+                  value: plan.enable,
                   onChanged: (v) => setState(
                     () {
-                      plan.putIfAbsent(event.name, () => LimitEventPlan())
-                        ..enable = v;
+                      plan.enable = v;
                       db.itemStat.updateEventItems();
                     },
                   ),

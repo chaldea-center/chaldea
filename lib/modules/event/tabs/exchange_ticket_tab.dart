@@ -54,39 +54,40 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
           shrinkWrap: widget.month != null,
           children: divideTiles(
             tickets.map((ticket) {
-              TextStyle plannedStyle = sum(
-                          db.curUser.events.exchangeTickets[ticket.month] ??
-                              <int>[]) >
-                      0
-                  ? TextStyle(color: Colors.blueAccent)
-                  : TextStyle();
+              bool planned =
+                  sum(db.curUser.events.exchangeTicketOf(ticket.month)) > 0;
               return Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Expanded(
-                      flex: 1,
-                      child: ListTile(
-                        contentPadding: EdgeInsets.only(left: 12),
-                        title: AutoSizeText(ticket.month,
-                            maxLines: 1,
-                            maxFontSize: 16,
-                            style: plannedStyle.copyWith(
-                                fontWeight: FontWeight.w600)),
-                        subtitle: AutoSizeText(
-                          '${ticket.monthJp}\nmax: ${ticket.days}',
-                          maxLines: 2,
-                          maxFontSize: 14,
-                          style: plannedStyle.copyWith(
-                              fontStyle: FontStyle.italic),
-                          minFontSize: 6,
-                        ),
-                      )),
+                    flex: 1,
+                    child: ListTile(
+                      contentPadding: EdgeInsets.only(left: 12),
+                      title: AutoSizeText(
+                        ticket.month,
+                        maxLines: 1,
+                        maxFontSize: 16,
+                        style: TextStyle(
+                            color: planned ? Colors.blueAccent : null,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      subtitle: AutoSizeText(
+                        '${ticket.monthJp}\nmax: ${ticket.days}',
+                        maxLines: 2,
+                        maxFontSize: 14,
+                        style: TextStyle(
+                            color: planned ? Colors.blueAccent[100] : null),
+                        minFontSize: 6,
+                      ),
+                    ),
+                  ),
                   Expanded(
-                      flex: 3,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: buildTrailing(ticket, snapshot.data),
-                      ))
+                    flex: 3,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: buildTrailing(ticket, snapshot.data),
+                    ),
+                  )
                 ],
               );
             }),
@@ -98,8 +99,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
   }
 
   Widget buildTrailing(ExchangeTicket ticket, ItemStatistics statistics) {
-    final monthPlan = db.curUser.events.exchangeTickets
-        .putIfAbsent(ticket.month, () => [0, 0, 0]);
+    final monthPlan = db.curUser.events.exchangeTicketOf(ticket.month);
     List<Widget> trailingItems = [];
     for (var i = 0; i < 3; i++) {
       final iconKey = ticket.items[i];

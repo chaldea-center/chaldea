@@ -144,7 +144,7 @@ class MainRecord {
       return name;
     } else {
       return db.gameData.events.mainRecords.entries
-          .firstWhere((element) => element.value.nameJp == nameJp)
+          .firstWhere((element) => element.value.name == name)
           .key;
     }
   }
@@ -225,7 +225,7 @@ class MainRecord {
 @JsonSerializable(checked: true)
 class ExchangeTicket {
   int days;
-  String month; //2020/01
+  String month; //202001
   String monthJp;
   List<String> items;
 

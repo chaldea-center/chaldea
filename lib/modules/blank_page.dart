@@ -14,8 +14,8 @@ class BlankPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      double imgWidth=min(270, constraints.biggest.width * 0.5);
-      double imgHeight=min(270, constraints.biggest.height * 0.5);
+      double imgWidth = min(270, constraints.biggest.width * 0.5);
+      double imgHeight = min(270, constraints.biggest.height * 0.5);
       double progressSize = 50;
       progressSize = min(100, progressSize);
       return Scaffold(

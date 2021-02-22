@@ -18,8 +18,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
   @override
   void initState() {
     super.initState();
-    plan = db.curUser.events.mainRecords
-        .putIfAbsent(widget.name, () => [false, false]);
+    plan = db.curUser.events.mainRecordOf(widget.name);
   }
 
   @override
@@ -37,9 +36,9 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
             icon: Icon(Icons.archive_outlined),
             tooltip: S.of(context).event_collect_items,
             onPressed: () {
-              final plan = db.curUser.events.mainRecords[widget.name];
+              final plan = db.curUser.events.mainRecordOf(widget.name);
               final record = db.gameData.events.mainRecords[widget.name];
-              if (plan == null || !plan.contains(true)) {
+              if (!plan.contains(true)) {
                 showInformDialog(context,
                     content: S.of(context).event_not_planned);
               } else {

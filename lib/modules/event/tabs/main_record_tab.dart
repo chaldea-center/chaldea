@@ -48,7 +48,7 @@ class _MainRecordTabState extends State<MainRecordTab> {
             ],
           ),
         ),
-        Divider(thickness: 1),
+        kDefaultDivider,
         Expanded(
           child: Scrollbar(
             controller: _scrollController,
@@ -59,8 +59,7 @@ class _MainRecordTabState extends State<MainRecordTab> {
                   Divider(height: 1, indent: 16),
               itemBuilder: (context, index) {
                 final record = mainRecords[mainRecordKeys[index]];
-                final name = record.name;
-                final plan = db.curUser.events.mainRecords;
+                final plan = db.curUser.events.mainRecordOf(record.indexKey);
                 return ListTile(
                   title: AutoSizeText(record.localizedChapter,
                       maxLines: 1, maxFontSize: 16),
@@ -70,11 +69,10 @@ class _MainRecordTabState extends State<MainRecordTab> {
                   trailing: Wrap(
                     children: List.generate(2, (i) {
                       return Switch.adaptive(
-                          value: plan[name]?.elementAt(i) ?? false,
+                          value: plan[i],
                           onChanged: (v) {
                             setState(() {
-                              plan[name] ??= List.filled(2, false);
-                              plan[name][i] = v;
+                              plan[i] = v;
                               db.itemStat.updateEventItems();
                             });
                           });
