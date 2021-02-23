@@ -381,7 +381,7 @@ void checkAppUpdate([bool background = true]) async {
     title: Text(S.of(context).about_update_app),
     content: Text(
       S.of(context).about_update_app_detail(
-          AppInfo.fullVersion, versionString, releaseNote),
+          AppInfo.fullVersion, versionString, releaseNote ?? '-'),
     ),
     hideOk: true,
     actions: [

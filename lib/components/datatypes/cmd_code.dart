@@ -1,3 +1,4 @@
+//@dart=2.9
 part of datatypes;
 
 enum CmdCodeCompare { no, rarity }

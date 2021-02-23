@@ -1,3 +1,4 @@
+//@dart=2.9
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/tabs/item_obtain_interlude.dart';

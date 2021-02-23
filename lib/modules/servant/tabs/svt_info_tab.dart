@@ -1,3 +1,4 @@
+//@dart=2.9
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/craft/craft_detail_page.dart';
 

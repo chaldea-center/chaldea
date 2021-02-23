@@ -1,3 +1,4 @@
+//@dart=2.9
 part of datatypes;
 
 enum SvtCompare { no, className, rarity, atk, hp, priority }

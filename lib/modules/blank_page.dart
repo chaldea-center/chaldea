@@ -29,7 +29,10 @@ class BlankPage extends StatelessWidget {
                   maxWidth: imgWidth,
                   maxHeight: imgHeight,
                 ),
-                child: Image(image: AssetImage("res/img/chaldea.png")),
+                child: Image(
+                  image: AssetImage("res/img/chaldea.png"),
+                  filterQuality: FilterQuality.high,
+                ),
               ),
 
               /// If show progress

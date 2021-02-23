@@ -1,3 +1,4 @@
+//@dart=2.9
 /// App settings and users data
 part of datatypes;
 

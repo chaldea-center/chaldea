@@ -1,3 +1,4 @@
+//@dart=2.9
 /// combine all JsonSerializable classes in one library.
 /// run in terminal [flutter packages pub run build_runner build/watch]
 ///

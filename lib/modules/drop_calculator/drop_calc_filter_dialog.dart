@@ -1,6 +1,5 @@
 //@dart=2.12
 import 'package:chaldea/components/components.dart';
-import 'package:getwidget/components/accordian/gf_accordian.dart';
 
 class DropCalcFilterDialog extends StatefulWidget {
   final GLPKParams params;
@@ -69,32 +68,28 @@ class _DropCalcFilterDialogState extends State<DropCalcFilterDialog> {
             onChanged: (v) => setState(() => params.useAP20 = v),
           ),
         ),
-        // TODO: gf_accordion.dart line 160, remove width: MediaQuery.of(context).size.width
-        GFAccordion(
-          titlePadding: EdgeInsets.all(0),
-          margin: EdgeInsets.symmetric(vertical: 0),
-          titleChild: ListTile(
-            title: Text(S.of(context).blacklist),
-            trailing: Text(params.blacklist.length.toString()),
-          ),
-          contentChild: Column(
-            children: params.blacklist.map((key) {
-              String shownName =
-                  db.gameData.freeQuests[key]?.localizedKey ?? key;
-              return ListTile(
-                title: Text(shownName),
-                trailing: IconButton(
-                    icon: Icon(Icons.clear),
-                    tooltip: S.of(context).remove_from_blacklist,
-                    onPressed: () {
-                      setState(() {
-                        params.blacklist.remove(key);
-                      });
-                    }),
-              );
-            }).toList(),
-          ),
-        ),
+        SimpleAccordion(
+            headerBuilder: (context, _) => ListTile(
+                  title: Text(S.of(context).blacklist),
+                  trailing: Text(params.blacklist.length.toString()),
+                ),
+            contentBuilder: (context) => Column(
+                  children: params.blacklist.map((key) {
+                    String shownName =
+                        db.gameData.freeQuests[key]?.localizedKey ?? key;
+                    return ListTile(
+                      title: Text(shownName),
+                      trailing: IconButton(
+                          icon: Icon(Icons.clear),
+                          tooltip: S.of(context).remove_from_blacklist,
+                          onPressed: () {
+                            setState(() {
+                              params.blacklist.remove(key);
+                            });
+                          }),
+                    );
+                  }).toList(),
+                )),
         Center(
           child: IconButton(
             icon: Icon(Icons.close),

@@ -1,3 +1,4 @@
+//@dart=2.9
 import 'package:chaldea/components/components.dart';
 import 'package:url_launcher/url_launcher.dart';
 

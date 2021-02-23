@@ -1,3 +1,4 @@
+//@dart=2.9
 import 'package:catcher/catcher.dart';
 import 'package:catcher/model/platform_type.dart';
 import 'package:catcher/model/report_mode.dart';
