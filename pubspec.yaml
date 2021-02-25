@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.1.11+17
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -28,7 +28,7 @@ dependencies:
 
   archive: ^2.0.13
   audioplayers: ^0.17.3
-  auto_size_text: ^2.1.0
+  auto_size_text: ^3.0.0-nullsafety.0
   cached_network_image: ^2.5.0
   catcher:
     path: ../catcher
@@ -45,7 +45,6 @@ dependencies:
   flutter_webview_plugin: ^0.3.11
   getwidget: ^1.2.4
   github: ^7.0.4
-  hive: ^1.4.4+1
   html: ^0.14.0+4
   image: ^2.1.19
   intl: ^0.17.0
@@ -65,25 +64,19 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^1.11.0
   json_serializable: ^3.5.1
-  flutter_launcher_icons: ^0.8.1
-  intl_utils: ^1.9.0
+  # flutter_launcher_icons: ^0.8.1
 
 dependency_overrides:
   path_provider: ^2.0.0-nullsafety.1
-  intl_translation:
-    git:
-      url: https://github.com/nt4f04uNd/intl_translation
-  analyzer: 0.40.1
 
-
-flutter_icons:
-  #  image_path: "assets/images/icon-128x128.png"
-  ios: true # can specify file name here e.g. "My-Launcher-Icon"
-  image_path_ios: "res/img/launcher_icon/ic_ios.png"
-  android: true # can specify file name here e.g. "ic_launcher"
-  image_path_android: "res/img/launcher_icon/ic_android_foreground.png"
-#  adaptive_icon_background: "#FFFFFF" # only available for Android 8.0 devices and above
-#  adaptive_icon_foreground: "res/img/launcher_icon/ic_android_foreground.png" # only available for Android 8.0 devices and above
+#flutter_icons:
+#  #  image_path: "assets/images/icon-128x128.png"
+#  ios: true # can specify file name here e.g. "My-Launcher-Icon"
+#  image_path_ios: "res/img/launcher_icon/ic_ios.png"
+#  android: true # can specify file name here e.g. "ic_launcher"
+#  image_path_android: "res/img/launcher_icon/ic_android_foreground.png"
+##  adaptive_icon_background: "#FFFFFF" # only available for Android 8.0 devices and above
+##  adaptive_icon_foreground: "res/img/launcher_icon/ic_android_foreground.png" # only available for Android 8.0 devices and above
 
 
 # For information on the generic Dart part of this file, see the

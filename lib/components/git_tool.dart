@@ -115,7 +115,7 @@ class GitRelease {
   int id;
   String name;
   String tagName;
-  String body;
+  String? body;
   DateTime createdAt;
   List<GitAsset> assets;
   GitAsset? targetAsset;
@@ -132,15 +132,17 @@ class GitRelease {
       this.source});
 
   GitRelease.fromGithub({required github.Release release})
-      : id = release.id,
-        name = release.name,
-        tagName = release.tagName,
+      : id = release.id!,
+        name = release.name!,
+        tagName = release.tagName!,
         body = release.body,
-        createdAt = release.createdAt,
+        createdAt = release.createdAt ?? DateTime.fromMillisecondsSinceEpoch(0),
         assets = release.assets
-            .map((asset) => GitAsset(
-                name: asset.name, browserDownloadUrl: asset.browserDownloadUrl))
-            .toList(),
+                ?.map((asset) => GitAsset(
+                    name: asset.name!,
+                    browserDownloadUrl: asset.browserDownloadUrl))
+                .toList() ??
+            [],
         source = GitSource.github;
 
   GitRelease.fromGitee({required Map<String, dynamic> data})
@@ -169,7 +171,7 @@ class GitRelease {
 
 class GitAsset {
   String name;
-  String browserDownloadUrl;
+  String? browserDownloadUrl;
 
   GitAsset({required this.name, required this.browserDownloadUrl});
 }

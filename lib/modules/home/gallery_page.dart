@@ -58,7 +58,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
 
     try {
       print('http GET from "$srcUrl" .....');
-      var response = await http.get(srcUrl);
+      var response = await http.get(Uri.parse(srcUrl));
       print('----------- recieved http response ------------');
       var body = parser.parse(response.body);
       db.userData.sliderUrls.clear();

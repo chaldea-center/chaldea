@@ -321,7 +321,7 @@ void checkAppUpdate([bool background = true]) async {
         versionString = versionString!.substring(1);
       // v1.x.y+z
       releaseNote = release?.body;
-      if (release?.targetAsset?.browserDownloadUrl.isNotEmpty == true) {
+      if (release?.targetAsset?.browserDownloadUrl?.isNotEmpty == true) {
         launchUrl = release!.targetAsset!.browserDownloadUrl;
       } else {
         launchUrl = GitTool.getReleasePageUrl(db.userData.updateSource, true);

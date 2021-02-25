@@ -193,6 +193,18 @@ class CmdCodeDetailBasePage extends StatelessWidget {
               TableCellData(flex: 5, text: code.skill)
             ],
           ),
+          CustomTableRow(
+              children: [TableCellData(text: '出场角色', isHeader: true)]),
+          CustomTableRow(children: [
+            TableCellData(
+              child: Text(
+                code.characters?.isNotEmpty == true
+                    ? code.characters.join(', ')
+                    : '-',
+                textAlign: TextAlign.center,
+              ),
+            )
+          ]),
           CustomTableRow(children: [
             TableCellData(text: S.of(context).card_description, isHeader: true)
           ]),

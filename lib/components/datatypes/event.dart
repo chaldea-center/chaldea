@@ -93,19 +93,12 @@ class LimitEvent {
     if (plan == null || !plan.enable) {
       return {};
     }
-    Map<String, int> lotterySum = lotteryLimit > 0
-        ? multiplyDict(lottery, lotteryLimit)
-        : lottery?.isNotEmpty == true
-            ? multiplyDict(lottery, plan.lottery)
-            : {};
+    Map<String, int> lotterySum =
+        lottery?.isNotEmpty == true ? multiplyDict(lottery, plan.lottery) : {};
     return sumDict([
-      items,
-      plan.extra,
+      itemsWithRare(plan),
+      plan.extra..removeWhere((key, value) => !extra.containsKey(key)),
       lotterySum,
-      {
-        Item.grail: grail + (plan.rerun ? 0 : grail2crystal),
-        Item.crystal: crystal + (plan.rerun ? grail2crystal : 0)
-      }
     ])
       ..removeWhere((key, value) => value <= 0);
   }
@@ -207,8 +200,7 @@ class MainRecord {
     assert(plan.length == 2, 'incorrect main record plan: $plan');
     return sumDict([
       if (plan[0]) drops,
-      if (plan[1]) rewards,
-      {Item.grail: grail, Item.crystal: crystal}
+      if (plan[1]) rewardsWithRare,
     ])
       ..removeWhere((key, value) => value <= 0);
   }

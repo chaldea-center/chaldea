@@ -228,6 +228,18 @@ class CraftDetailBasePage extends StatelessWidget {
                 )
               ],
             ),
+          CustomTableRow(
+              children: [TableCellData(text: '出场角色', isHeader: true)]),
+          CustomTableRow(children: [
+            TableCellData(
+              child: Text(
+                ce.characters?.isNotEmpty == true
+                    ? ce.characters.join(', ')
+                    : '-',
+                textAlign: TextAlign.center,
+              ),
+            )
+          ]),
           CustomTableRow(children: [
             TableCellData(text: S.of(context).card_description, isHeader: true)
           ]),

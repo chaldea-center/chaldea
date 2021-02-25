@@ -394,14 +394,14 @@ class PathManager {
       _appPath = (await getExternalStorageDirectories())?.elementAt(0).path;
       // _tempPath = (await getTemporaryDirectory())?.path;
     } else if (Platform.isIOS) {
-      _appPath = (await getApplicationDocumentsDirectory())?.path;
+      _appPath = (await getApplicationDocumentsDirectory()).path;
       // _tempPath = (await getTemporaryDirectory())?.path;
     } else if (Platform.isWindows) {
-      _appPath = (await getApplicationSupportDirectory())?.path;
+      _appPath = (await getApplicationSupportDirectory()).path;
       // _tempPath = (await getTemporaryDirectory())?.path;
     } else if (Platform.isMacOS) {
       // /Users/<user>/Library/Containers/cc.narumi.chaldea/Data/Documents
-      _appPath = (await getApplicationDocumentsDirectory())?.path;
+      _appPath = (await getApplicationDocumentsDirectory()).path;
       // /Users/<user>/Library/Containers/cc.narumi.chaldea/Data/Library/Caches
       // _tempPath = (await getTemporaryDirectory())?.path;
     } else {

@@ -69,27 +69,28 @@ class _DropCalcFilterDialogState extends State<DropCalcFilterDialog> {
           ),
         ),
         SimpleAccordion(
-            headerBuilder: (context, _) => ListTile(
-                  title: Text(S.of(context).blacklist),
-                  trailing: Text(params.blacklist.length.toString()),
-                ),
-            contentBuilder: (context) => Column(
-                  children: params.blacklist.map((key) {
-                    String shownName =
-                        db.gameData.freeQuests[key]?.localizedKey ?? key;
-                    return ListTile(
-                      title: Text(shownName),
-                      trailing: IconButton(
-                          icon: Icon(Icons.clear),
-                          tooltip: S.of(context).remove_from_blacklist,
-                          onPressed: () {
-                            setState(() {
-                              params.blacklist.remove(key);
-                            });
-                          }),
-                    );
-                  }).toList(),
-                )),
+          headerBuilder: (context, _) => ListTile(
+            title: Text(S.of(context).blacklist),
+            trailing: Text(params.blacklist.length.toString()),
+          ),
+          contentBuilder: (context) => Column(
+            children: params.blacklist.map((key) {
+              String shownName =
+                  db.gameData.freeQuests[key]?.localizedKey ?? key;
+              return ListTile(
+                title: Text(shownName),
+                trailing: IconButton(
+                    icon: Icon(Icons.clear),
+                    tooltip: S.of(context).remove_from_blacklist,
+                    onPressed: () {
+                      setState(() {
+                        params.blacklist.remove(key);
+                      });
+                    }),
+              );
+            }).toList(),
+          ),
+        ),
         Center(
           child: IconButton(
             icon: Icon(Icons.close),

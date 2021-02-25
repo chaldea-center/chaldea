@@ -80,7 +80,8 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
           onPressed: () => showInformDialog(
             context,
             title: S.of(context).help,
-            content: '1. 目前仅可解析素材信息，仅国服日服经过测试\n'
+            content: '0. 实验功能，请注意备份用户数据!!!\n'
+                '1. 目前仅可解析素材信息，仅国服日服经过测试\n'
                 '2. 使用方法: \n'
                 ' - 点击右上角可同时导入多张截图\n'
                 ' - 选择"首张"图片中出现的一个素材(加快服务器定位分析)\n'
@@ -103,7 +104,7 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
                 value: e, child: Text(Item.localizedNameOf(e)));
           }).toList(),
           value: preferItem,
-          hint: Text('首张图片包含',style: TextStyle(fontSize: 15),),
+          hint: Text('首张图片包含', style: TextStyle(fontSize: 15)),
           isDense: true,
           onChanged: (s) {
             setState(() {
@@ -127,15 +128,17 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
                     actions: [
                       TextButton(
                           onPressed: () {
-                            db.curUser.items
-                              ..clear()
-                              ..addAll(output);
+                            db.curUser.items..addAll(output);
+                            db.itemStat.updateLeftItems();
                             Navigator.of(context).pop();
                           },
                           child: Text('仅更新')),
                       TextButton(
                           onPressed: () {
-                            db.curUser.items.addAll(output);
+                            db.curUser.items
+                              ..clear()
+                              ..addAll(output);
+                            db.itemStat.updateLeftItems();
                             Navigator.of(context).pop();
                           },
                           child: Text('清空并更新')),
@@ -177,7 +180,6 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
   }
 
   void importImages() async {
-
     FilePickerCross.importMultipleFromStorage(type: FileTypeCross.image)
         .then((value) {
       output.clear();
@@ -227,17 +229,21 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
   }
 
   void _fetchResult() async {
-    final response = await _dio
-        .get('/downloadItemResult', queryParameters: {'key': AppInfo.uniqueId});
-    Map data = jsonDecode(response.data);
-    if (!mounted) return;
-    if (data['success'] == true) {
-      output = Map<String, int>.from(data['msg']);
-      output = Item.sortMapById(output);
-      print(output);
-      setState(() {});
-    } else {
-      showInformDialog(context, content: data['msg'].toString());
+    try {
+      final response = await _dio.get('/downloadItemResult',
+          queryParameters: {'key': AppInfo.uniqueId});
+      Map data = jsonDecode(response.data);
+      if (!mounted) return;
+      if (data['success'] == true) {
+        output = Map<String, int>.from(data['msg']);
+        output = Item.sortMapById(output);
+        print(output);
+        setState(() {});
+      } else {
+        showInformDialog(context, content: data['msg'].toString());
+      }
+    } catch (e) {
+      showInformDialog(context, title: 'Error', content: e.toString());
     }
   }
 }

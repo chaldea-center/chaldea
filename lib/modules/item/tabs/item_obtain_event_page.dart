@@ -22,7 +22,6 @@ class ItemObtainEventPage extends StatefulWidget {
 }
 
 class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
-  final highlight = TextStyle(color: Colors.blueAccent);
   List<bool> expandedList = [true, true, true];
 
   @override
@@ -44,6 +43,17 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
     if (widget.favorite) return false;
     if (widget.filtrateOutdated && outdated) return false;
     return true;
+  }
+
+  TextStyle? _textStyle([bool highlight = false, bool outdated = false]) {
+    if (!highlight && !outdated) return null;
+    return TextStyle(
+      color: highlight
+          ? Colors.blueAccent
+          : outdated
+              ? Colors.grey
+              : null,
+    );
   }
 
   Widget get _limitEventAccordion {
@@ -80,7 +90,10 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
             ' ${plan.extra[widget.itemKey] ?? 0}');
       }
       children.add(ListTile(
-        title: AutoSizeText(event.localizedName, maxFontSize: 15, maxLines: 2),
+        title: AutoSizeText(event.localizedName,
+            maxFontSize: 15,
+            maxLines: 2,
+            style: _textStyle(false, event.isOutdated())),
         onTap: () {
           SplitRoute.push(
             context: context,
@@ -90,7 +103,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
         },
         trailing: Text(
           texts.join('\n'),
-          style: plan.enable ? highlight : null,
+          style: _textStyle(plan.enable, event.isOutdated()),
           textAlign: TextAlign.right,
         ),
       ));
@@ -124,11 +137,14 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
       children.add(SimpleAccordion(
         expanded: false,
         headerBuilder: (context, _) => ListTile(
-          title: Text('${S.current.exchange_ticket_short} ${ticket.month}'),
-          subtitle: Text(ticket.items.join('/')),
+          title: Text(
+            '${S.current.exchange_ticket_short} ${ticket.month}',
+            style: _textStyle(false, ticket.isOutdated()),
+          ),
+          subtitle: AutoSizeText(ticket.items.join('/'), maxLines: 1),
           trailing: Text(
             '$itemNum/${ticket.days}',
-            style: planned ? highlight : null,
+            style: _textStyle(false, planned),
           ),
         ),
         contentBuilder: (context) => ExchangeTicketTab(month: ticket.month),
@@ -161,8 +177,17 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
       }
 
       children.add(ListTile(
-        title: Text(record.localizedChapter),
-        subtitle: Text(record.localizedTitle),
+        title: AutoSizeText(
+          record.localizedChapter,
+          maxLines: 1,
+          style: _textStyle(false, record.isOutdated()),
+        ),
+        subtitle: AutoSizeText(
+          record.localizedTitle,
+          maxLines: 1,
+          style: _textStyle(false, record.isOutdated())
+              ?.copyWith(color: Colors.grey[400]),
+        ),
         onTap: () {
           SplitRoute.push(
             context: context,
@@ -178,13 +203,13 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
               Text(
                 '${S.current.main_record_fixed_drop_short}'
                 ' ${record.drops[widget.itemKey]}',
-                style: planned ? highlight : null,
+                style: _textStyle(false, record.isOutdated()),
               ),
             if (hasRewards)
               Text(
                 '${S.current.main_record_bonus_short}'
                 ' ${record.rewards[widget.itemKey]}',
-                style: planned ? highlight : null,
+                style: _textStyle(planned, record.isOutdated()),
               ),
           ],
         ),
@@ -210,6 +235,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
       ),
       contentBuilder: (context) => ListView.separated(
         shrinkWrap: true,
+        physics: ClampingScrollPhysics(),
         itemBuilder: (context, index) => children[index],
         itemCount: children.length,
         separatorBuilder: (context, index) => kDefaultDivider,
