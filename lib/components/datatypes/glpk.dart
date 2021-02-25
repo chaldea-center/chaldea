@@ -207,18 +207,18 @@ class GLPKParams {
   }
 
   void enableControllers() {
-    if (countControllers == null) {
-      countControllers = [];
-      for (int i = 0; i < rows.length; i++) {
-        countControllers.add(TextEditingController(text: counts[i].toString()));
-      }
+    if (countControllers?.length == rows.length &&
+        countControllers?.length == weightControllers?.length) {
+      return;
     }
-    if (weightControllers == null) {
-      weightControllers = [];
-      for (int i = 0; i < rows.length; i++) {
-        weightControllers
-            .add(TextEditingController(text: weights[i].toString()));
-      }
+
+    countControllers = [];
+    for (int i = 0; i < rows.length; i++) {
+      countControllers.add(TextEditingController(text: counts[i].toString()));
+    }
+    weightControllers = [];
+    for (int i = 0; i < rows.length; i++) {
+      weightControllers.add(TextEditingController(text: weights[i].toString()));
     }
   }
 
