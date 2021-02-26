@@ -217,20 +217,27 @@ class GLPKParams {
       countControllers.add(TextEditingController(text: counts[i].toString()));
     }
     weightControllers = [];
-    for (int i = 0; i < rows.length; i++) {
+    for (int i = 0; i < weights.length; i++) {
       weightControllers.add(TextEditingController(text: weights[i].toString()));
     }
   }
 
   void disableControllers() {
     _unusedControllers..addAll(countControllers)..addAll(weightControllers);
+    countControllers = weightControllers = null;
   }
 
   void dispose() {
     countControllers?.forEach((e) => e?.dispose());
     weightControllers?.forEach((e) => e?.dispose());
-    _unusedControllers?.forEach((e) => e?.dispose());
+    _unusedControllers.forEach((e) => e.dispose());
     countControllers = weightControllers = null;
+    _unusedControllers.clear();
+  }
+
+  void disposeUnused() {
+    _unusedControllers.forEach((e) => e.dispose());
+    _unusedControllers.clear();
   }
 
   bool addOne(String item, [int count = 0, double weight = 1.0]) {

@@ -136,22 +136,21 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
   @override
   void initState() {
     super.initState();
-    // reset params
-    db.userData.glpkParams ??= GLPKParams();
-    params = db.userData.glpkParams..validate();
-    final Map<String, int> objective =
-        widget.objectiveCounts ?? params.objectiveCounts;
+    // ensure every time [params] is a new instance
+    params = GLPKParams.from(db.userData.glpkParams ?? GLPKParams());
     params.enableControllers();
-    if (objective.isEmpty) {
-      // if enter from home page, default to add two items
-      addAnItemNotInList();
-      addAnItemNotInList();
-    } else {
-      // if enter from item list page
-      print('objMap: $objective');
-      objective.forEach((key, value) => params.addOne(key, value));
-      params.sortByItem();
+    if (widget.objectiveCounts != null) {
+      params.removeAll();
+      widget.objectiveCounts
+          .forEach((key, count) => params.addOne(key, count, 1.0));
     }
+    if (params.rows.isEmpty) {
+      addAnItemNotInList();
+      addAnItemNotInList();
+    }
+    params.sortByItem();
+    // update userdata at last
+    db.userData.glpkParams = params;
 
     // picker
     db.gameData.items.keys.forEach((name) {
