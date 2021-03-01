@@ -1,12 +1,14 @@
-//@dart=2.9
+//@dart=2.12
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/summon/summon_detail_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CraftDetailPage extends StatefulWidget {
   final CraftEssence ce;
-  final CraftEssence Function(int, bool) onSwitch;
+  final CraftEssence Function(int, bool)? onSwitch;
 
-  const CraftDetailPage({Key key, this.ce, this.onSwitch}) : super(key: key);
+  const CraftDetailPage({Key? key, required this.ce, this.onSwitch})
+      : super(key: key);
 
   @override
   _CraftDetailPageState createState() => _CraftDetailPageState();
@@ -14,7 +16,8 @@ class CraftDetailPage extends StatefulWidget {
 
 class _CraftDetailPageState extends State<CraftDetailPage> {
   bool useLangCn = false;
-  CraftEssence ce;
+
+  late CraftEssence ce;
 
   @override
   void initState() {
@@ -41,7 +44,12 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
       ),
       body: Column(
         children: <Widget>[
-          Expanded(child: CraftDetailBasePage(ce: ce, useLangCn: useLangCn)),
+          Expanded(
+              child: CraftDetailBasePage(
+            ce: ce,
+            useLangCn: useLangCn,
+            showSummon: true,
+          )),
           ButtonBar(alignment: MainAxisAlignment.center, children: [
             ToggleButtons(
               constraints: BoxConstraints(),
@@ -63,10 +71,10 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
             for (var i = 0; i < 2; i++)
               ElevatedButton(
                 onPressed: () {
-                  CraftEssence nextCe;
+                  CraftEssence? nextCe;
                   if (widget.onSwitch != null) {
                     // if navigated from filter list, let filter list decide which is the next one
-                    nextCe = widget.onSwitch(ce.no, i == 1);
+                    nextCe = widget.onSwitch!(ce.no, i == 1);
                   } else {
                     nextCe = db.gameData.crafts[ce.no + [-1, 1][i]];
                   }
@@ -74,7 +82,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
                     EasyLoading.showToast(S.of(context).list_end_hint(i == 0));
                   } else {
                     setState(() {
-                      ce = nextCe;
+                      ce = nextCe!;
                     });
                   }
                 },
@@ -93,12 +101,18 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
 class CraftDetailBasePage extends StatelessWidget {
   final CraftEssence ce;
   final bool useLangCn;
+  final bool showSummon;
 
-  const CraftDetailBasePage({Key key, this.ce, this.useLangCn = false})
+  const CraftDetailBasePage(
+      {Key? key,
+      required this.ce,
+      this.useLangCn = false,
+      this.showSummon = false})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final summons = getPickupSummons();
     return SingleChildScrollView(
       child: CustomTable(
         children: <Widget>[
@@ -164,7 +178,7 @@ class CraftDetailBasePage extends StatelessWidget {
                         opaque: false,
                         fullscreenDialog: true,
                         pageBuilder: (context, _, __) => FullScreenImageSlider(
-                          imgUrls: [db.getIconResource(ce.illustration).url],
+                          imgUrls: [db.getIconResource(ce.illustration)?.url],
                           downloadEnabled: db.userData.downloadEnabled,
                           connectivity: db.connectivity,
                           placeholder: placeholder,
@@ -252,14 +266,50 @@ class CraftDetailBasePage extends StatelessWidget {
               )
             ],
           ),
+          if (showSummon && summons.isNotEmpty) ...[
+            CustomTableRow(children: [
+              TableCellData(text: S.current.summon, isHeader: true)
+            ]),
+            CustomTableRow(children: [
+              TableCellData(
+                  child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (var summon in summons)
+                    ListTile(
+                      title: Text(summon.localizedName, maxLines: 1),
+                      dense: true,
+                      visualDensity: VisualDensity.compact,
+                      onTap: () {
+                        SplitRoute.push(
+                          context: context,
+                          builder: (context, _) =>
+                              SummonDetailPage(summon: summon),
+                        );
+                      },
+                    )
+                ],
+              ))
+            ])
+          ]
         ],
       ),
     );
   }
 
+  List<Summon> getPickupSummons() {
+    List<Summon> summons = [];
+    db.gameData.summons.forEach((key, summon) {
+      if (summon.allCrafts().contains(ce.no)) {
+        summons.add(summon);
+      }
+    });
+    return summons;
+  }
+
   Widget placeholder(BuildContext context, String url) {
     String color;
-    switch (ce?.rarity) {
+    switch (ce.rarity) {
       case 5:
       case 4:
         color = '金';
