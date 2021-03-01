@@ -255,7 +255,7 @@ class ImageWithText extends StatelessWidget {
                     child: image,
                   ),
                 ),
-                if (text != null)
+                if (text?.isNotEmpty==true)
                   Padding(
                     padding: EdgeInsets.fromLTRB(
                         max(0.0, padding.left),

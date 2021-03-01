@@ -321,6 +321,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "skilled_max10" : MessageLookupByLibrary.simpleMessage("Skills Max(310)"),
     "statistics_include_checkbox" : MessageLookupByLibrary.simpleMessage("Including owned items"),
     "statistics_title" : MessageLookupByLibrary.simpleMessage("Statistics"),
+    "summon" : MessageLookupByLibrary.simpleMessage("Summon"),
+    "summon_title" : MessageLookupByLibrary.simpleMessage("Summons"),
     "svt_info_tab_base" : MessageLookupByLibrary.simpleMessage("Basic Info"),
     "svt_info_tab_bond_story" : MessageLookupByLibrary.simpleMessage("Lore"),
     "svt_not_planned" : MessageLookupByLibrary.simpleMessage("Not favorite"),

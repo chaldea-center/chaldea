@@ -298,5 +298,7 @@
   "image_analysis": "画像分析",
   "upload": "アップロード",
   "choose_quest_hint": "フリークエストを選択",
-  "item_screenshot": "アイテムキャプチャー"
+  "item_screenshot": "アイテムキャプチャー",
+  "summon": "ガチャ",
+  "summon_title": "ガチャ"
 }

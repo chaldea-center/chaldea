@@ -9,6 +9,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -262,8 +263,15 @@ Future<void> Function() showMyProgress(
   };
 }
 
+void safeSetState(VoidCallback callback){
+  SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+    callback();
+  });
+}
+
 Future<String?> resolveWikiFileUrl(String filename) async {
   if (db.prefs.containsKey(filename)) {
+    // print('prefs: $filename -> ${db.prefs.getString(filename)}');
     return db.prefs.getString(filename);
   }
   final _dio = Dio();
@@ -281,7 +289,7 @@ Future<String?> resolveWikiFileUrl(String filename) async {
     );
     final String url =
         response.data['query']['pages'].values.first['imageinfo'][0]['url'];
-    print('wiki image/file url=$url');
+    print('wiki image/file url $filename ->  $url');
     db.prefs.setString(filename, url);
     return url;
   } catch (e) {

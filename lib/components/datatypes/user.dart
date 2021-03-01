@@ -18,6 +18,7 @@ class User {
   Map<String, int> items;
   EventPlans events;
   Map<String, int> mysticCodes;
+  Set<String> plannedSummons;
   bool isMasterGirl;
 
   User({
@@ -29,6 +30,7 @@ class User {
     this.items,
     this.events,
     this.mysticCodes,
+    this.plannedSummons,
     this.isMasterGirl,
   }) : assert(name != null && name.isNotEmpty) {
     server ??= GameServer.cn;
@@ -38,6 +40,7 @@ class User {
     items ??= {};
     events ??= EventPlans();
     mysticCodes ??= {};
+    plannedSummons ??= <String>{};
     isMasterGirl ??= true;
   }
 

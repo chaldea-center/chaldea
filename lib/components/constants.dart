@@ -108,7 +108,7 @@ class ClassName {
       ];
 }
 
-String? localizeNoun(String? nameCn, String? nameJp, String? nameEn,
+String localizeNoun(String? nameCn, String? nameJp, String? nameEn,
     [String? k]) {
   String? name;
   name = Language.isCN
@@ -116,5 +116,8 @@ String? localizeNoun(String? nameCn, String? nameJp, String? nameEn,
       : Language.isEN
           ? nameEn
           : nameJp;
-  return name ?? nameJp ?? nameCn ?? k;
+  name ??= nameJp ?? nameCn ?? k;
+  // assert(name != null,
+  //     'null for every localized value: $nameCn,$nameJp,$nameEn,$k');
+  return name??'';
 }

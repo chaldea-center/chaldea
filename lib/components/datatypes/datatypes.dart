@@ -18,6 +18,7 @@ import 'package:meta/meta.dart';
 
 import '../config.dart' show db;
 import '../constants.dart';
+import '../extensions.dart';
 import '../git_tool.dart';
 import '../logger.dart';
 import '../utils.dart';
@@ -43,6 +44,8 @@ part 'quest.dart';
 part 'serializable_checker.dart';
 
 part 'servant.dart';
+
+part 'summon.dart';
 
 part 'user.dart';
 

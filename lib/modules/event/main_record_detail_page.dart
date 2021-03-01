@@ -7,7 +7,7 @@ import 'package:chaldea/modules/shared/item_related_builder.dart';
 class MainRecordDetailPage extends StatefulWidget {
   final String name;
 
-  const MainRecordDetailPage({Key key, this.name}) : super(key: key);
+  const MainRecordDetailPage({Key key, @required this.name}) : super(key: key);
 
   @override
   _MainRecordDetailPageState createState() => _MainRecordDetailPageState();

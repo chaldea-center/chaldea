@@ -1,5 +1,5 @@
-//@dart=2.9
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// @dart=2.9
 
 part of datatypes;
 
@@ -384,6 +384,16 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
                         ? null
                         : MysticCode.fromJson(e as Map<String, dynamic>)),
               )),
+      summons: $checkedConvert(
+          json,
+          'summons',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(
+                    k,
+                    e == null
+                        ? null
+                        : Summon.fromJson(e as Map<String, dynamic>)),
+              )),
     );
     return val;
   });
@@ -401,6 +411,7 @@ Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
       'svtQuests': instance.svtQuests?.map((k, e) => MapEntry(k.toString(), e)),
       'glpk': instance.glpk,
       'mysticCodes': instance.mysticCodes,
+      'summons': instance.summons,
     };
 
 IconResource _$IconResourceFromJson(Map<String, dynamic> json) {
@@ -1130,6 +1141,111 @@ Map<String, dynamic> _$VoiceRecordToJson(VoiceRecord instance) =>
       'voiceFile': instance.voiceFile,
     };
 
+Summon _$SummonFromJson(Map<String, dynamic> json) {
+  return $checkedNew('Summon', json, () {
+    final val = Summon(
+      mcLink: $checkedConvert(json, 'mcLink', (v) => v as String),
+      name: $checkedConvert(json, 'name', (v) => v as String),
+      nameJp: $checkedConvert(json, 'nameJp', (v) => v as String),
+      startTimeJp: $checkedConvert(json, 'startTimeJp', (v) => v as String),
+      endTimeJp: $checkedConvert(json, 'endTimeJp', (v) => v as String),
+      startTimeCn: $checkedConvert(json, 'startTimeCn', (v) => v as String),
+      endTimeCn: $checkedConvert(json, 'endTimeCn', (v) => v as String),
+      bannerUrl: $checkedConvert(json, 'bannerUrl', (v) => v as String),
+      bannerUrlJp: $checkedConvert(json, 'bannerUrlJp', (v) => v as String),
+      associatedEvents: $checkedConvert(json, 'associatedEvents',
+          (v) => (v as List)?.map((e) => e as String)?.toList()),
+      associatedSummons: $checkedConvert(json, 'associatedSummons',
+          (v) => (v as List)?.map((e) => e as String)?.toList()),
+      luckyBag: $checkedConvert(json, 'luckyBag', (v) => v as int),
+      classPickUp: $checkedConvert(json, 'classPickUp', (v) => v as bool),
+      roll11: $checkedConvert(json, 'roll11', (v) => v as bool),
+      dataList: $checkedConvert(
+          json,
+          'dataList',
+          (v) => (v as List)
+              ?.map((e) => e == null
+                  ? null
+                  : SummonData.fromJson(e as Map<String, dynamic>))
+              ?.toList()),
+    );
+    return val;
+  });
+}
+
+Map<String, dynamic> _$SummonToJson(Summon instance) => <String, dynamic>{
+      'mcLink': instance.mcLink,
+      'name': instance.name,
+      'nameJp': instance.nameJp,
+      'startTimeJp': instance.startTimeJp,
+      'endTimeJp': instance.endTimeJp,
+      'startTimeCn': instance.startTimeCn,
+      'endTimeCn': instance.endTimeCn,
+      'bannerUrl': instance.bannerUrl,
+      'bannerUrlJp': instance.bannerUrlJp,
+      'associatedEvents': instance.associatedEvents,
+      'associatedSummons': instance.associatedSummons,
+      'luckyBag': instance.luckyBag,
+      'classPickUp': instance.classPickUp,
+      'roll11': instance.roll11,
+      'dataList': instance.dataList,
+    };
+
+SummonData _$SummonDataFromJson(Map<String, dynamic> json) {
+  return $checkedNew('SummonData', json, () {
+    final val = SummonData(
+      name: $checkedConvert(json, 'name', (v) => v as String),
+      svts: $checkedConvert(
+          json,
+          'svts',
+          (v) => (v as List)
+              ?.map((e) => e == null
+                  ? null
+                  : SummonDataBlock.fromJson(e as Map<String, dynamic>))
+              ?.toList()),
+      crafts: $checkedConvert(
+          json,
+          'crafts',
+          (v) => (v as List)
+              ?.map((e) => e == null
+                  ? null
+                  : SummonDataBlock.fromJson(e as Map<String, dynamic>))
+              ?.toList()),
+    );
+    return val;
+  });
+}
+
+Map<String, dynamic> _$SummonDataToJson(SummonData instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'svts': instance.svts,
+      'crafts': instance.crafts,
+    };
+
+SummonDataBlock _$SummonDataBlockFromJson(Map<String, dynamic> json) {
+  return $checkedNew('SummonDataBlock', json, () {
+    final val = SummonDataBlock(
+      isSvt: $checkedConvert(json, 'isSvt', (v) => v as bool),
+      rarity: $checkedConvert(json, 'rarity', (v) => v as int),
+      weight: $checkedConvert(json, 'weight', (v) => (v as num)?.toDouble()),
+      display: $checkedConvert(json, 'display', (v) => v as bool),
+      ids: $checkedConvert(
+          json, 'ids', (v) => (v as List)?.map((e) => e as int)?.toList()),
+    );
+    return val;
+  });
+}
+
+Map<String, dynamic> _$SummonDataBlockToJson(SummonDataBlock instance) =>
+    <String, dynamic>{
+      'isSvt': instance.isSvt,
+      'rarity': instance.rarity,
+      'weight': instance.weight,
+      'display': instance.display,
+      'ids': instance.ids,
+    };
+
 User _$UserFromJson(Map<String, dynamic> json) {
   return $checkedNew('User', json, () {
     final val = User(
@@ -1177,6 +1293,8 @@ User _$UserFromJson(Map<String, dynamic> json) {
           (v) => (v as Map<String, dynamic>)?.map(
                 (k, e) => MapEntry(k, e as int),
               )),
+      plannedSummons: $checkedConvert(json, 'plannedSummons',
+          (v) => (v as List)?.map((e) => e as String)?.toSet()),
       isMasterGirl: $checkedConvert(json, 'isMasterGirl', (v) => v as bool),
     );
     return val;
@@ -1194,6 +1312,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'items': instance.items,
       'events': instance.events,
       'mysticCodes': instance.mysticCodes,
+      'plannedSummons': instance.plannedSummons?.toList(),
       'isMasterGirl': instance.isMasterGirl,
     };
 

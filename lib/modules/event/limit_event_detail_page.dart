@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 class LimitEventDetailPage extends StatefulWidget {
   final String name;
 
-  const LimitEventDetailPage({Key key, this.name}) : super(key: key);
+  const LimitEventDetailPage({Key key, @required this.name}) : super(key: key);
 
   @override
   _LimitEventDetailPageState createState() => _LimitEventDetailPageState();

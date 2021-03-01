@@ -205,6 +205,8 @@ class ServantBaseInfo {
   List<String> namesJpOther;
   List<String> namesEnOther;
   List<String> nicknames;
+
+  /// {'活动', '初始获得', '剧情', '常驻', '限定', '无法召唤', '友情点召唤'}
   String obtain;
   List<String> obtains;
 

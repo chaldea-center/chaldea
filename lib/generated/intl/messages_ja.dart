@@ -321,6 +321,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "skilled_max10" : MessageLookupByLibrary.simpleMessage("スキルレベル最大化する(310)"),
     "statistics_include_checkbox" : MessageLookupByLibrary.simpleMessage("既存のアイテムを含める"),
     "statistics_title" : MessageLookupByLibrary.simpleMessage("統計"),
+    "summon" : MessageLookupByLibrary.simpleMessage("ガチャ"),
+    "summon_title" : MessageLookupByLibrary.simpleMessage("ガチャ"),
     "svt_info_tab_base" : MessageLookupByLibrary.simpleMessage("ステータス"),
     "svt_info_tab_bond_story" : MessageLookupByLibrary.simpleMessage("プロファイル"),
     "svt_not_planned" : MessageLookupByLibrary.simpleMessage("フォローされていません"),

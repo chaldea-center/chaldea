@@ -12,6 +12,7 @@ import 'package:chaldea/modules/import_data/import_data_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:chaldea/modules/statistics/game_statistics_page.dart';
+import 'package:chaldea/modules/summon/summon_list_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:html/dom.dart' as dom;
@@ -150,6 +151,13 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
           builder: (context, _) => APCalcPage(),
           isDetail: true,
         ),
+      GalleryItem.gacha: GalleryItem(
+        name: GalleryItem.gacha,
+        title: S.of(context).summon_title,
+        icon: Icons.anchor,
+        builder: (context, _) => SummonListPage(),
+        isDetail: true,
+      ),
       GalleryItem.statistics: GalleryItem(
         name: GalleryItem.statistics,
         title: S.of(context).statistics_title,

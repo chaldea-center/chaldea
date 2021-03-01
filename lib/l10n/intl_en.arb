@@ -298,5 +298,7 @@
   "image_analysis": "Image analysis",
   "upload": "Upload",
   "choose_quest_hint": "Choose Free Quest",
-  "item_screenshot": "Item Screenshot"
+  "item_screenshot": "Item Screenshot",
+  "summon": "Summon",
+  "summon_title": "Summons"
 }

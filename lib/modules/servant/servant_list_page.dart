@@ -650,7 +650,7 @@ class ServantListPageState extends State<ServantListPage> {
                   if (v == 0) {
                     target.skills[i] = min(10, cur.skills[i] + 1);
                   } else {
-                    target.skills[i] = max(cur.skills[i], _planTargetSkill + 1);
+                    target.skills[i] = max(cur.skills[i], _planTargetSkill);
                   }
                 }
               }

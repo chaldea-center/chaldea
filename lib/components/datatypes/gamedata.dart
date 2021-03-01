@@ -15,6 +15,7 @@ class GameData {
   Map<int, List<Quest>> svtQuests;
   GLPKData glpk;
   Map<String, MysticCode> mysticCodes;
+  Map<String, Summon> summons;
 
   GameData({
     this.version,
@@ -28,6 +29,7 @@ class GameData {
     this.svtQuests,
     this.glpk,
     this.mysticCodes,
+    this.summons,
   }) {
     version ??= '0';
     servants ??= {};
@@ -40,6 +42,7 @@ class GameData {
     svtQuests ??= {};
     glpk ??= GLPKData();
     mysticCodes ??= {};
+    summons ??= {};
   }
 
   factory GameData.fromJson(Map<String, dynamic> data) =>

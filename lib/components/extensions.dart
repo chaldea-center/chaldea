@@ -19,3 +19,22 @@ extension FirstWhereOrNull<E> on Iterable<E> {
     }
   }
 }
+
+extension DateTimeEnhance on DateTime {
+  static DateTime? tryParse(String? formattedString) {
+    if (formattedString == null) return null;
+    var date = DateTime.tryParse(formattedString);
+    if (date != null) return date;
+    // replace 2020-2-2 to 2020-02-02
+    final _reg = RegExp(r'^([+-]?\d{4})-?(\d{1,2})-?(\d{1,2})');
+    final match = _reg.firstMatch(formattedString);
+    if (match != null) {
+      String year = match.group(1)!;
+      String month = match.group(2)!.padLeft(2, '0');
+      String day = match.group(3)!.padLeft(2, '0');
+      // print('replace ${match.group(0)} to ${'$year-$month-$day'}');
+      return DateTime.tryParse(
+          formattedString.replaceFirst(match.group(0)!, '$year-$month-$day'));
+    }
+  }
+}

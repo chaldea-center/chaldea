@@ -297,5 +297,7 @@
   "image_analysis": "图像解析",
   "upload": "上传",
   "choose_quest_hint": "选择Free本",
-  "item_screenshot": "素材截图"
+  "item_screenshot": "素材截图",
+  "summon": "卡池",
+  "summon_title": "卡池一览"
 }

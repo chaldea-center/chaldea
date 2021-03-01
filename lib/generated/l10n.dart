@@ -3019,6 +3019,26 @@ class S {
       args: [],
     );
   }
+
+  /// `卡池`
+  String get summon {
+    return Intl.message(
+      '卡池',
+      name: 'summon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `卡池一览`
+  String get summon_title {
+    return Intl.message(
+      '卡池一览',
+      name: 'summon_title',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

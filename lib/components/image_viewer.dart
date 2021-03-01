@@ -91,6 +91,7 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
 
 class CachedImage extends StatefulWidget {
   final String? imageUrl;
+  final bool isMCFile;
   final ImageWidgetBuilder? imageBuilder;
   final PlaceholderWidgetBuilder? placeholder;
   final ProgressIndicatorBuilder? progressIndicatorBuilder;
@@ -129,6 +130,7 @@ class CachedImage extends StatefulWidget {
   CachedImage({
     Key? key,
     required this.imageUrl,
+    this.isMCFile = false,
     this.imageBuilder,
     this.placeholder,
     this.progressIndicatorBuilder,
@@ -203,18 +205,40 @@ class _CachedImageState extends State<CachedImage> {
   bool cached = false;
   BaseCacheManager? cacheManager;
   String? cacheKey;
+  String? realUrl;
 
   @override
   void initState() {
-    cacheManager = widget.cacheManager ?? DefaultCacheManager();
-    cacheKey = widget.cacheKey ?? widget.imageUrl;
-    if (cacheKey?.isNotEmpty == true)
-      cacheManager!.getFileFromCache(cacheKey).then((FileInfo? info) {
-        if (mounted)
-          setState(() {
-            cached = info?.file?.existsSync() == true;
+    if (widget.imageUrl != null) {
+      if (widget.isMCFile) {
+        if (db.prefs.containsKey(widget.imageUrl!)) {
+          realUrl = db.prefs.getString(widget.imageUrl!);
+        } else {
+          resolveWikiFileUrl(widget.imageUrl!).then((url) {
+            // safeSetState(() {
+            if (url != null && mounted) {
+              setState(() {
+                realUrl = url;
+              });
+            }
+            // });
           });
-      });
+        }
+      } else {
+        realUrl = widget.imageUrl;
+        cacheManager = widget.cacheManager ?? DefaultCacheManager();
+        cacheKey = widget.cacheKey ?? realUrl;
+        cacheManager!.getFileFromCache(cacheKey).then((FileInfo? info) {
+          // safeSetState(() {
+          if (mounted) {
+            setState(() {
+              cached = info?.file?.existsSync() == true;
+            });
+          }
+          // });
+        });
+      }
+    }
     super.initState();
   }
 
@@ -222,7 +246,7 @@ class _CachedImageState extends State<CachedImage> {
   Widget build(BuildContext context) {
     bool usePlaceholder = true;
     late Widget child;
-    if (widget.imageUrl?.isNotEmpty != true) {
+    if (realUrl?.isNotEmpty != true) {
       usePlaceholder = true;
     } else if (cached ||
         (widget.downloadEnabled != false &&
@@ -238,10 +262,10 @@ class _CachedImageState extends State<CachedImage> {
             ? CachedImage.defaultProgressPlaceholder
             : (_, __) => Container());
     if (usePlaceholder) {
-      child = placeholder(context, widget.imageUrl);
+      child = placeholder(context, realUrl ?? widget.imageUrl);
     } else {
       child = CachedNetworkImage(
-        imageUrl: widget.imageUrl,
+        imageUrl: realUrl,
         httpHeaders: widget.httpHeaders,
         imageBuilder: widget.imageBuilder,
         placeholder: placeholder,

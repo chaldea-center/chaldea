@@ -321,6 +321,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "skilled_max10" : MessageLookupByLibrary.simpleMessage("练度最大化(310)"),
     "statistics_include_checkbox" : MessageLookupByLibrary.simpleMessage("包含现有素材"),
     "statistics_title" : MessageLookupByLibrary.simpleMessage("统计"),
+    "summon" : MessageLookupByLibrary.simpleMessage("卡池"),
+    "summon_title" : MessageLookupByLibrary.simpleMessage("卡池一览"),
     "svt_info_tab_base" : MessageLookupByLibrary.simpleMessage("基础资料"),
     "svt_info_tab_bond_story" : MessageLookupByLibrary.simpleMessage("羁绊故事"),
     "svt_not_planned" : MessageLookupByLibrary.simpleMessage("未关注"),
