@@ -109,6 +109,8 @@ class SummonData {
   List<SummonDataBlock> svts;
   List<SummonDataBlock> crafts;
 
+  List<SummonDataBlock> get allBlocks => []..addAll(svts)..addAll(crafts);
+
   SummonData({this.name, this.svts, this.crafts});
 
   factory SummonData.fromJson(Map<String, dynamic> data) =>

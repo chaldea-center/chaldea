@@ -187,16 +187,7 @@ class CachedImage extends StatefulWidget {
       BuildContext context, String? url, dynamic error) {
     return Padding(
       padding: EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Image(image: db.errorImage),
-          if (error != null) Text(error.toString()),
-          if (url != null) Text(url)
-        ],
-      ),
+      child: Image(image: db.errorImage),
     );
   }
 }
@@ -206,23 +197,20 @@ class _CachedImageState extends State<CachedImage> {
       widget.cacheManager ?? DefaultCacheManager();
 
   String? getRealUrl() {
-    if (widget.imageUrl == null) return null;
-    if (widget.isMCFile) {
-      if (db.prefs.containsKey(widget.imageUrl!)) {
-        return db.prefs.getString(widget.imageUrl!);
-      } else {
-        resolveWikiFileUrl(widget.imageUrl!).then((url) {
-          // safeSetState(() {
-          if (url != null && mounted) {
-            setState(() {
-              // url saved to prefs
-            });
-          }
-          // });
-        });
-      }
+    if (!widget.isMCFile) return widget.imageUrl;
+    if (db.prefs.containsKey(widget.imageUrl!)) {
+      return db.prefs.getString(widget.imageUrl!);
+    } else {
+      resolveWikiFileUrl(widget.imageUrl!).then((url) {
+        // safeSetState(() {
+        if (url != null && mounted) {
+          setState(() {
+            // url saved to prefs
+          });
+        }
+        // });
+      });
     }
-    return widget.imageUrl;
   }
 
   @override

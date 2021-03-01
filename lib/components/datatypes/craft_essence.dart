@@ -32,6 +32,8 @@ class CraftEssence {
   int bond;
   int valentine;
 
+  String toString() => mcLink;
+
   CraftEssence({
     this.no,
     this.mcLink,

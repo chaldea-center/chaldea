@@ -23,6 +23,8 @@ class Servant {
   // from data file not in code
   static const List<int> unavailable = [83, 149, 151, 152, 168, 240];
 
+  String toString() => mcLink;
+
   Servant({
     this.no,
     this.mcLink,

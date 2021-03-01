@@ -63,18 +63,20 @@ class GalleryItem {
   final String name;
   final String title;
   final IconData icon;
+  final Widget child;
   final SplitLayoutBuilder builder;
   final bool isDetail;
 
   const GalleryItem(
       {@required this.name,
       @required this.title,
-      @required this.icon,
+      this.icon,
+      this.child,
       this.builder,
       this.isDetail = false})
       : assert(name != null),
         assert(title != null),
-        assert(icon != null);
+        assert(icon != null || child != null);
 
   @override
   String toString() {

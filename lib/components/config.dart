@@ -180,7 +180,8 @@ class Database {
     }
   }
 
-  IconResource? getIconResource(String iconKey, {bool? preferPng}) {
+  IconResource? getIconResource(String? iconKey, {bool? preferPng}) {
+    if (iconKey == null) return null;
     final suffixes = preferPng == null
         ? ['', '.jpg', '.png']
         : preferPng == true
@@ -203,7 +204,7 @@ class Database {
     return File(pathlib.join(paths.gameIconDir, icon.name));
   }
 
-  ImageProvider getIconProvider(String iconKey, {bool? preferPng}) {
+  ImageProvider getIconProvider(String? iconKey, {bool? preferPng}) {
     final icon = getIconResource(iconKey, preferPng: preferPng);
     if (icon == null) {
       logger.e(
@@ -221,7 +222,7 @@ class Database {
   /// size of [Image] widget is zero before file is loaded to memory.
   /// [wrapContainer] to ensure the placeholder
   Widget getIconImage(
-    String iconKey, {
+    String? iconKey, {
     double? width,
     double? height,
     BoxFit? fit,

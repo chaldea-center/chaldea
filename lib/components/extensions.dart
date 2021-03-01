@@ -38,3 +38,25 @@ extension DateTimeEnhance on DateTime {
     }
   }
 }
+
+extension TrimString on String {
+  String trimChar(String chars) {
+    return this.trimCharLeft(chars).trimCharRight(chars);
+  }
+
+  String trimCharLeft(String chars) {
+    String s = this;
+    while (s.isNotEmpty && chars.contains(s[0])) {
+      s = s.substring(1);
+    }
+    return s;
+  }
+
+  String trimCharRight(String chars) {
+    String s = this;
+    while (s.isNotEmpty && chars.contains(s[s.length - 1])) {
+      s = s.substring(0, s.length - 1);
+    }
+    return s;
+  }
+}

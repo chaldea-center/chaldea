@@ -14,6 +14,7 @@ import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:chaldea/modules/statistics/game_statistics_page.dart';
 import 'package:chaldea/modules/summon/summon_list_page.dart';
 import 'package:flutter/foundation.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
@@ -154,7 +155,10 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       GalleryItem.gacha: GalleryItem(
         name: GalleryItem.gacha,
         title: S.of(context).summon_title,
-        icon: Icons.anchor,
+        child: Padding(
+          padding: EdgeInsets.all(2),
+          child: FaIcon(FontAwesomeIcons.chessKing, size: 36),
+        ),
         builder: (context, _) => SummonListPage(),
         isDetail: false,
       ),
@@ -245,8 +249,11 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
               Expanded(
                 flex: 6,
                 child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Icon(item.icon, size: 40)),
+                  alignment: Alignment.bottomCenter,
+                  child: item.child == null
+                      ? Icon(item.icon, size: 40)
+                      : item.child,
+                ),
               ),
               Expanded(
                 flex: 4,

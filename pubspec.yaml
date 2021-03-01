@@ -35,14 +35,15 @@ dependencies:
   connectivity_plus: ^0.8.0
   cupertino_icons: ^1.0.1+1
   dio: ^3.0.10
+  file_picker_cross: ^4.2.7
   flutter_audio_desktop: ^0.0.8
   flutter_cache_manager: ^2.1.1
   flutter_easyloading: ^2.2.2
   flutter_email_sender: ^4.0.0
   flutter_picker: ^1.1.5
-  file_picker_cross: ^4.2.7
   flutter_qjs: ^0.3.6
   flutter_webview_plugin: ^0.3.11
+  font_awesome_flutter: ^9.0.0-nullsafety
   getwidget: ^1.2.4
   github: ^7.0.4
   html: ^0.14.0+4

@@ -31,6 +31,7 @@ class _SummonListPageState extends State<SummonListPage> {
       appBar: AppBar(
         title: Text(S.of(context).summon_title),
         leading: MasterBackButton(),
+        titleSpacing: 0,
         actions: [
           IconButton(
               icon: Icon(showOutdated ? Icons.timer_off : Icons.timer),
@@ -92,6 +93,7 @@ class _SummonListPageState extends State<SummonListPage> {
           onTap: () {
             SplitRoute.push(
               context: context,
+              popDetail: true,
               builder: (context, _) => SummonDetailPage(
                 summon: summon,
                 summonList: shownSummons,

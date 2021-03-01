@@ -4,6 +4,8 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/event/limit_event_detail_page.dart';
 import 'package:chaldea/modules/event/main_record_detail_page.dart';
 import 'package:chaldea/modules/servant/servant_detail_page.dart';
+import 'package:chaldea/modules/summon/summon_simulator_page.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:getwidget/getwidget.dart';
 
 class SummonDetailPage extends StatefulWidget {
@@ -69,7 +71,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     for (String? url in [summon.bannerUrl, summon.bannerUrlJp]) {
       if (url?.isNotEmpty == true) {
         banners.add(CachedImage(
-          imageUrl: summon.bannerUrl ?? summon.bannerUrlJp,
+          imageUrl: url,
           imageBuilder: (context, image) =>
               FittedBox(child: Image(image: image)),
           isMCFile: true,
@@ -80,14 +82,18 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     return ListView(
       children: [
         if (banners.isNotEmpty)
-          GFCarousel(
-            items: banners,
-            autoPlay: true,
-            aspectRatio: 8 / 3,
-            viewportFraction: 1.0,
-            enableInfiniteScroll: banners.length > 1,
+          GestureDetector(
+            onTap: () =>
+                jumpToExternalLinkAlert(url: mooncellFullLink(summon.mcLink)),
+            child: GFCarousel(
+              items: banners,
+              autoPlay: false,
+              aspectRatio: 8 / 3,
+              viewportFraction: 1.0,
+              enableInfiniteScroll: banners.length > 1,
+            ),
           ),
-        SHeader('卡池时间'),
+        SHeader('卡池详情'),
         ListTile(
           title: Text(
               '日服: ${summon.startTimeJp ?? "?"} ~ ${summon.endTimeJp ?? "?"}\n'
@@ -291,10 +297,29 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     return ButtonBar(
       alignment: MainAxisAlignment.center,
       children: [
-        ElevatedButton(onPressed: () => moveNext(true), child: Text('上一个')),
-        if (summon.dataList.isNotEmpty)
-          ElevatedButton(onPressed: () {}, child: Text('抽卡模拟器')),
-        ElevatedButton(onPressed: () => moveNext(), child: Text('下一个')),
+        IconButton(
+          icon: FaIcon(FontAwesomeIcons.chevronCircleLeft),
+          color: Colors.blueAccent,
+          tooltip: '上一个',
+          onPressed: () => moveNext(true),
+        ),
+        ElevatedButton(
+            onPressed: summon.dataList.isEmpty
+                ? null
+                : () {
+                    SplitRoute.push(
+                      context: context,
+                      builder: (context, _) =>
+                          SummonSimulatorPage(summon: summon),
+                    );
+                  },
+            child: Text('抽卡模拟器')),
+        IconButton(
+          icon: FaIcon(FontAwesomeIcons.chevronCircleRight),
+          color: Colors.blueAccent,
+          tooltip: '下一个',
+          onPressed: () => moveNext(),
+        )
       ],
     );
   }
