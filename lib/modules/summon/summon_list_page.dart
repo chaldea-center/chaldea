@@ -13,6 +13,8 @@ class _SummonListPageState extends State<SummonListPage> {
   late ScrollController _scrollController;
   late List<Summon> summons;
   bool showImage = false;
+  bool showOutdated = false;
+  List<Summon> shownSummons = [];
 
   @override
   void initState() {
@@ -21,15 +23,14 @@ class _SummonListPageState extends State<SummonListPage> {
     summons = db.gameData.summons.values.toList();
   }
 
-  bool showOutdated = false;
-
   @override
   Widget build(BuildContext context) {
-    final shownSummons = summons.where((e) => !e.isOutdated()).toList();
+    shownSummons =
+        showOutdated ? summons : summons.where((e) => !e.isOutdated()).toList();
     return Scaffold(
       appBar: AppBar(
         title: Text(S.of(context).summon_title),
-        leading: BackButton(),
+        leading: MasterBackButton(),
         actions: [
           IconButton(
               icon: Icon(showOutdated ? Icons.timer_off : Icons.timer),
@@ -72,6 +73,7 @@ class _SummonListPageState extends State<SummonListPage> {
             summon.localizedName,
             maxLines: 2,
             maxFontSize: 16,
+            style: TextStyle(color: summon.isOutdated() ? Colors.grey : null),
           ),
           trailing: IconButton(
             icon: Icon(
@@ -79,19 +81,21 @@ class _SummonListPageState extends State<SummonListPage> {
               color: planned ? Colors.redAccent : null,
             ),
             onPressed: () {
-              setState(() {
-                if (planned) {
-                  db.curUser.plannedSummons.remove(summon.indexKey);
-                } else {
-                  db.curUser.plannedSummons.add(summon.indexKey);
-                }
-              });
+              if (planned) {
+                db.curUser.plannedSummons.remove(summon.indexKey);
+              } else {
+                db.curUser.plannedSummons.add(summon.indexKey);
+              }
+              db.onAppUpdate();
             },
           ),
           onTap: () {
             SplitRoute.push(
               context: context,
-              builder: (context, _) => SummonDetailPage(summon: summon),
+              builder: (context, _) => SummonDetailPage(
+                summon: summon,
+                summonList: shownSummons,
+              ),
             );
           },
         ),

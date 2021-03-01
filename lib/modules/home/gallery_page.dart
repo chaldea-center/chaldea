@@ -156,7 +156,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         title: S.of(context).summon_title,
         icon: Icons.anchor,
         builder: (context, _) => SummonListPage(),
-        isDetail: true,
+        isDetail: false,
       ),
       GalleryItem.statistics: GalleryItem(
         name: GalleryItem.statistics,

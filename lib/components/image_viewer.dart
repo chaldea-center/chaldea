@@ -202,43 +202,31 @@ class CachedImage extends StatefulWidget {
 }
 
 class _CachedImageState extends State<CachedImage> {
-  bool cached = false;
-  BaseCacheManager? cacheManager;
-  String? cacheKey;
-  String? realUrl;
+  BaseCacheManager get cacheManager =>
+      widget.cacheManager ?? DefaultCacheManager();
 
-  @override
-  void initState() {
-    if (widget.imageUrl != null) {
-      if (widget.isMCFile) {
-        if (db.prefs.containsKey(widget.imageUrl!)) {
-          realUrl = db.prefs.getString(widget.imageUrl!);
-        } else {
-          resolveWikiFileUrl(widget.imageUrl!).then((url) {
-            // safeSetState(() {
-            if (url != null && mounted) {
-              setState(() {
-                realUrl = url;
-              });
-            }
-            // });
-          });
-        }
+  String? getRealUrl() {
+    if (widget.imageUrl == null) return null;
+    if (widget.isMCFile) {
+      if (db.prefs.containsKey(widget.imageUrl!)) {
+        return db.prefs.getString(widget.imageUrl!);
       } else {
-        realUrl = widget.imageUrl;
-        cacheManager = widget.cacheManager ?? DefaultCacheManager();
-        cacheKey = widget.cacheKey ?? realUrl;
-        cacheManager!.getFileFromCache(cacheKey).then((FileInfo? info) {
+        resolveWikiFileUrl(widget.imageUrl!).then((url) {
           // safeSetState(() {
-          if (mounted) {
+          if (url != null && mounted) {
             setState(() {
-              cached = info?.file?.existsSync() == true;
+              // url saved to prefs
             });
           }
           // });
         });
       }
     }
+    return widget.imageUrl;
+  }
+
+  @override
+  void initState() {
     super.initState();
   }
 
@@ -246,11 +234,11 @@ class _CachedImageState extends State<CachedImage> {
   Widget build(BuildContext context) {
     bool usePlaceholder = true;
     late Widget child;
+    String? realUrl = getRealUrl();
     if (realUrl?.isNotEmpty != true) {
       usePlaceholder = true;
-    } else if (cached ||
-        (widget.downloadEnabled != false &&
-            widget.connectivity != ConnectivityResult.none)) {
+    } else if (widget.downloadEnabled != false &&
+        widget.connectivity != ConnectivityResult.none) {
       // use CachedNetworkImage
       usePlaceholder = false;
     } else {
@@ -294,22 +282,29 @@ class _CachedImageState extends State<CachedImage> {
         maxHeightDiskCache: widget.maxHeightDiskCache,
       );
     }
+    if (realUrl != null)
+      child = GestureDetector(
+        onLongPress: () {
+          SimpleCancelOkDialog(
+            title: Text(S.of(context).clear_cache),
+            content: Text(realUrl),
+            onTapOk: () async {
+              /// clear cache in filesystem
+              await cacheManager.removeFile(realUrl);
 
-    return GestureDetector(
-      onLongPress: () {
-        SimpleCancelOkDialog(
-          title: Text(S.of(context).clear_cache),
-          content: Text(cacheKey ?? ''),
-          onTapOk: () async {
-            await cacheManager?.emptyCache();
-            setState(() {
-              cached = false;
-            });
-          },
-        ).show(context);
-      },
-      child: child,
-    );
+              /// This will clear all cached images in memory
+              /// enhance: `imageCache.evict(key)` or `ImageProvider.evict()`
+              imageCache?.clear();
+
+              if (mounted) {
+                setState(() {});
+              }
+            },
+          ).show(context);
+        },
+        child: child,
+      );
+    return child;
   }
 
   bool canDownload() {

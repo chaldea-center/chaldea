@@ -8,21 +8,28 @@ import 'package:getwidget/getwidget.dart';
 
 class SummonDetailPage extends StatefulWidget {
   final Summon summon;
+  final List<Summon>? summonList;
 
-  const SummonDetailPage({Key? key, required this.summon}) : super(key: key);
+  const SummonDetailPage({Key? key, required this.summon, this.summonList})
+      : super(key: key);
 
   @override
   _SummonDetailPageState createState() => _SummonDetailPageState();
 }
 
 class _SummonDetailPageState extends State<SummonDetailPage> {
-  Summon get summon => widget.summon;
+  late Summon summon;
   int curIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    if (showOverview) curIndex = -1;
+    summon = widget.summon;
+    init();
+  }
+
+  void init() {
+    curIndex = showOverview ? -1 : 0;
   }
 
   @override
@@ -51,15 +58,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         children: [
           Expanded(child: listView),
           kDefaultDivider,
-          ButtonBar(
-            alignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(onPressed: () {}, child: Text('上一个')),
-              if (summon.dataList.isNotEmpty)
-                ElevatedButton(onPressed: () {}, child: Text('抽卡模拟器')),
-              ElevatedButton(onPressed: () {}, child: Text('下一个')),
-            ],
-          )
+          buttonBar,
         ],
       ),
     );
@@ -286,5 +285,31 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         ],
       ),
     );
+  }
+
+  Widget get buttonBar {
+    return ButtonBar(
+      alignment: MainAxisAlignment.center,
+      children: [
+        ElevatedButton(onPressed: () => moveNext(true), child: Text('上一个')),
+        if (summon.dataList.isNotEmpty)
+          ElevatedButton(onPressed: () {}, child: Text('抽卡模拟器')),
+        ElevatedButton(onPressed: () => moveNext(), child: Text('下一个')),
+      ],
+    );
+  }
+
+  void moveNext([reversed = false]) {
+    final list = widget.summonList ?? db.gameData.summons.values.toList();
+    int index = list.indexOf(summon);
+    if (index >= 0) {
+      int nextIndex = index + (reversed ? -1 : 1);
+      if (nextIndex >= 0 && nextIndex < list.length) {
+        setState(() {
+          summon = list[nextIndex];
+          init();
+        });
+      }
+    }
   }
 }
