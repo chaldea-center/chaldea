@@ -192,23 +192,28 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   Widget get dropdownButton {
     List<DropdownMenuItem<int>> items = [];
     items.addAll(summon.dataList.map((e) => DropdownMenuItem(
-          child: Text(e.name ?? '-', maxLines: 1),
+          child: AutoSizeText(e.name ?? '-', maxLines: 2, maxFontSize: 14),
           value: summon.dataList.indexOf(e),
         )));
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: 14),
       child: Row(
         children: [
-          Text('日替 ', style: TextStyle(color: Colors.redAccent)),
+          Text('日替  ', style: TextStyle(color: Colors.redAccent)),
           Flexible(
-            child: DropdownButton<int>(
-              value: curIndex,
-              items: items,
-              onChanged: (v) {
-                curIndex = v ?? curIndex;
-                reset();
-              },
-              isExpanded: true,
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border(bottom: Divider.createBorderSide(context))),
+              child: DropdownButton<int>(
+                value: curIndex,
+                items: items,
+                underline: Container(),
+                onChanged: (v) {
+                  curIndex = v ?? curIndex;
+                  reset();
+                },
+                isExpanded: true,
+              ),
             ),
           )
         ],

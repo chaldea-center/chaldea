@@ -315,6 +315,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
     Directory(db.paths.tempDir)
       ..deleteSync(recursive: true)
       ..createSync(recursive: true);
+    imageCache?.clear();
     EasyLoading.showToast(S.current.clear_cache_finish);
   }
 }

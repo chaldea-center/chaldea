@@ -79,38 +79,41 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         ));
       }
     }
-    return ListView(
-      children: [
-        if (banners.isNotEmpty)
-          GestureDetector(
-            onTap: () =>
-                jumpToExternalLinkAlert(url: mooncellFullLink(summon.mcLink)),
-            child: GFCarousel(
-              items: banners,
-              autoPlay: false,
-              aspectRatio: 8 / 3,
-              viewportFraction: 1.0,
-              enableInfiniteScroll: banners.length > 1,
-            ),
+    List<Widget> children = [
+      if (banners.isNotEmpty)
+        GestureDetector(
+          onTap: () =>
+              jumpToExternalLinkAlert(url: mooncellFullLink(summon.mcLink)),
+          child: GFCarousel(
+            items: banners,
+            autoPlay: false,
+            aspectRatio: 8 / 3,
+            viewportFraction: 1.0,
+            enableInfiniteScroll: banners.length > 1,
           ),
-        SHeader('卡池详情'),
-        ListTile(
-          title: Text(
-              '日服: ${summon.startTimeJp ?? "?"} ~ ${summon.endTimeJp ?? "?"}\n'
-              '国服: ${summon.startTimeCn ?? "?"} ~ ${summon.endTimeCn ?? "?"}'),
         ),
-        if (summon.dataList.length > 1) dropdownButton,
-        if (summon.dataList.isNotEmpty) gachaDetails,
-        if (summon.associatedEvents.isNotEmpty) ...[
-          SHeader('关联活动'),
-          for (String event in summon.associatedEvents) associateEvent(event)
-        ],
-        if (summon.associatedSummons.isNotEmpty) ...[
-          SHeader('关联卡池'),
-          for (String _summon in summon.associatedSummons)
-            associateSummon(_summon)
-        ],
+      SHeader('卡池详情'),
+      ListTile(
+        title: Text(
+            '日服: ${summon.startTimeJp ?? "?"} ~ ${summon.endTimeJp ?? "?"}\n'
+            '国服: ${summon.startTimeCn ?? "?"} ~ ${summon.endTimeCn ?? "?"}'),
+      ),
+      if (summon.dataList.length > 1) dropdownButton,
+      if (summon.dataList.isNotEmpty) gachaDetails,
+      if (summon.associatedEvents.isNotEmpty) ...[
+        SHeader('关联活动'),
+        for (String event in summon.associatedEvents) associateEvent(event)
       ],
+      if (summon.associatedSummons.isNotEmpty) ...[
+        SHeader('关联卡池'),
+        for (String _summon in summon.associatedSummons)
+          associateSummon(_summon)
+      ],
+    ];
+    return ListView.separated(
+      itemBuilder: (context, index) => children[index],
+      separatorBuilder: (context, _) => kDefaultDivider,
+      itemCount: children.length,
     );
   }
 
@@ -165,7 +168,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
       ));
     }
     items.addAll(summon.dataList.map((e) => DropdownMenuItem(
-          child: Text(e.name ?? '-', maxLines: 1),
+          child: AutoSizeText(e.name ?? '-', maxLines: 2, maxFontSize: 14),
           value: summon.dataList.indexOf(e),
         )));
     return Padding(
@@ -174,15 +177,20 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         children: [
           Text('日替 '),
           Flexible(
-            child: DropdownButton<int>(
-              value: curIndex,
-              items: items,
-              onChanged: (v) {
-                setState(() {
-                  curIndex = v ?? curIndex;
-                });
-              },
-              isExpanded: true,
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border(bottom: Divider.createBorderSide(context))),
+              child: DropdownButton<int>(
+                value: curIndex,
+                items: items,
+                underline: Container(),
+                onChanged: (v) {
+                  setState(() {
+                    curIndex = v ?? curIndex;
+                  });
+                },
+                isExpanded: true,
+              ),
             ),
           )
         ],

@@ -47,6 +47,7 @@ class ItemListPageState extends State<ItemListPage>
       appBar: AppBar(
         title: Text(S.of(context).item_title),
         leading: MasterBackButton(),
+        titleSpacing: 0,
         actions: <Widget>[
           buildSwitchPlanButton(
             context: context,
@@ -108,8 +109,11 @@ class ItemListPageState extends State<ItemListPage>
         controller: _tabController,
         children: List.generate(
           categories.length,
-          (index) =>
-              ItemListTab(category: categories[index], filtered: filtered),
+          (index) => ItemListTab(
+            category: categories[index],
+            filtered: filtered,
+            showSet999: true,
+          ),
         ),
       ),
     );
@@ -152,10 +156,14 @@ class ItemListPageState extends State<ItemListPage>
                     keyboardType: TextInputType.number,
                     textAlign: TextAlign.center,
                     decoration: InputDecoration(isDense: true),
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     onChanged: (s) {
-                      db.userData.itemAbundantValue[index] =
-                          int.tryParse(s) ?? 0;
+                      if (s == '-') {
+                        db.userData.itemAbundantValue[index] = 0;
+                      } else {
+                        db.userData.itemAbundantValue[index] =
+                            int.tryParse(s) ??
+                                db.userData.itemAbundantValue[index];
+                      }
                     },
                   ),
                 )
@@ -257,8 +265,10 @@ class InputComponents<T> {
 class ItemListTab extends StatefulWidget {
   final int category;
   final bool filtered;
+  final bool showSet999;
 
-  const ItemListTab({Key key, this.category, this.filtered = false})
+  const ItemListTab(
+      {Key key, this.category, this.filtered = false, this.showSet999})
       : super(key: key);
 
   @override
@@ -326,6 +336,18 @@ class _ItemListTabState extends State<ItemListTab> {
     super.deactivate();
   }
 
+  void setAll999() {
+    SimpleCancelOkDialog(
+      content: Text('本页所有素材均设为999'),
+      onTapOk: () {
+        _shownGroups.forEach((group) {
+          db.curUser.items[group.data.name] = 999;
+        });
+        db.itemStat.updateLeftItems();
+      },
+    ).show(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget listView = StreamBuilder<ItemStatistics>(
@@ -343,6 +365,14 @@ class _ItemListTabState extends State<ItemListTab> {
             _shownGroups.add(group);
             children.add(buildItemTile(group, stat));
           }
+        }
+        if (widget.showSet999) {
+          children.add(Center(
+            child: TextButton(
+              onPressed: setAll999,
+              child: Text('  >>> SET ALL 999 <<<  '),
+            ),
+          ));
         }
         Widget _listView = ListView.separated(
           controller: _scrollController,
@@ -393,11 +423,19 @@ class _ItemListTabState extends State<ItemListTab> {
       if (group.controller != null) {
         final text = formatNumber(db.curUser.items[item.name] ?? 0,
             groupSeparator: item.name == Item.qp ? ',' : null);
-        group.controller.value = group.controller.value.copyWith(text: text);
+        if (text == '0' &&
+            group.focusNode.hasFocus &&
+            (group.controller.text == '-' || group.controller.text == '')) {
+          // don't set '-' to '0'
+        } else {
+          group.controller.value = group.controller.value.copyWith(text: text);
+        }
       }
     });
   }
 
+  /// TextField behaves different from platforms
+  ///
   /// Android: next call complete
   /// Android Emulator: catch "\n"&"\t", no complete or submit
   /// iOS: only move among the nodes already in viewport,
@@ -419,12 +457,18 @@ class _ItemListTabState extends State<ItemListTab> {
       keyboardType: TextInputType.numberWithOptions(signed: true),
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(counterText: ''),
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp(r'-?[\d,]*')),
-        if (itemKey == Item.qp) NumberInputFormatter(),
-      ],
+      // inputFormatters: [
+      // FilteringTextInputFormatter.allow(RegExp(r'-?[\d,]*')),
+      // if (itemKey == Item.qp) NumberInputFormatter(),
+      // ],
       onChanged: (v) {
-        db.curUser.items[itemKey] = int.tryParse(v.replaceAll(',', '')) ?? 0;
+        if (v == '-' || v == '') {
+          /// don't change '-' to '0' in [setTextController]
+          db.curUser.items[itemKey] = 0;
+        } else {
+          db.curUser.items[itemKey] =
+              int.tryParse(v.replaceAll(',', '')) ?? db.curUser.items[itemKey];
+        }
         statistics.updateLeftItems(shouldBroadcast: true);
         // setState2(() {});
       },

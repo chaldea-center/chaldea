@@ -143,7 +143,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   },
                 ),
               ),
-              if (Platform.isAndroid && Platform.isIOS)
+              if (Platform.isAndroid || Platform.isIOS)
                 SwitchListTile.adaptive(
                   title: Text(S.of(context).settings_use_mobile_network),
                   value: db.userData.useMobileNetwork ?? false,
