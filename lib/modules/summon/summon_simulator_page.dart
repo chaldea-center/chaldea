@@ -335,7 +335,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           );
         },
         child: ImageWithText(
-          image: db.getIconImage(obj.icon, height: 58),
+          image: db.getIconImage(obj.icon, width: 50),
           text: text,
           // padding: EdgeInsets.only(bottom: 16),
         ),

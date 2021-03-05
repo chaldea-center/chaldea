@@ -12,7 +12,7 @@ const String kAppName = 'Chaldea';
 const String kPackageName = 'cc.narumi.chaldea';
 const String kUserDataFilename = 'userdata.json';
 const String kGameDataFilename = 'dataset.json';
-const String kSupportTeamEmailAddress = 'chaldea-support@narumi.cc';
+const String kSupportTeamEmailAddress = 'chaldea@narumi.cc';
 const String kDatasetAssetKey = 'res/data/dataset.zip';
 const String kDatasetServerPath = '/chaldea/dataset.zip';
 const String kServerRoot = 'http://chaldea.narumi.cc:8083';
@@ -119,5 +119,14 @@ String localizeNoun(String? nameCn, String? nameJp, String? nameEn,
   name ??= nameJp ?? nameCn ?? k;
   // assert(name != null,
   //     'null for every localized value: $nameCn,$nameJp,$nameEn,$k');
-  return name??'';
+  return name ?? '';
+}
+
+class Constants {
+  Constants._();
+
+  static int iconWidth = 132;
+  static int iconHeight = 144;
+  static double iconAspectRatio = iconWidth / iconHeight;
+  static int skillIconSize = 110;
 }

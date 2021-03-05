@@ -341,7 +341,8 @@ class _ItemListTabState extends State<ItemListTab> {
       content: Text('本页所有素材均设为999'),
       onTapOk: () {
         _shownGroups.forEach((group) {
-          db.curUser.items[group.data.name] = 999;
+          if (group.data.name != Item.qp)
+            db.curUser.items[group.data.name] = 999;
         });
         db.itemStat.updateLeftItems();
       },
@@ -384,6 +385,7 @@ class _ItemListTabState extends State<ItemListTab> {
       },
     );
     Widget actionBar;
+    // TODO: not shown actually
     // keyboard is shown and mobile view, cannot detect floating keyboard
     if (MediaQuery.of(context).viewInsets.bottom > 20 &&
         (Platform.isIOS || Platform.isAndroid)) {

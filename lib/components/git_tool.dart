@@ -12,11 +12,12 @@ import 'package:path/path.dart' as pathlib;
 import 'logger.dart';
 import 'utils.dart';
 
-const String _owner = 'narumishi';
+const String _owner = 'chaldea-center';
 const String _appRepo = 'chaldea';
 const String _datasetRepo = 'chaldea-dataset';
 
-enum GitSource { gitee, github }
+/// [GitSource.gitee] deprecated
+enum GitSource { github, gitee }
 
 // for most enum
 extension GitSourceExtension on GitSource {
@@ -179,7 +180,7 @@ class GitAsset {
 class GitTool {
   GitSource source;
 
-  GitTool([this.source = GitSource.gitee]);
+  GitTool([this.source = GitSource.github]);
 
   GitTool.fromIndex(int? index)
       : source =

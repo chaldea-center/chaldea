@@ -100,27 +100,28 @@ class _SettingsPageState extends State<SettingsPage> {
                   );
                 },
               ),
-              ListTile(
-                title: Text(S.of(context).download_source),
-                subtitle: Text(S.of(context).download_source_hint),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(GitSource.values[db.userData.updateSource]
-                        .toTitleString()),
-                    Icon(Icons.arrow_forward_ios),
-                  ],
+              if (kDebugMode)
+                ListTile(
+                  title: Text(S.of(context).download_source),
+                  subtitle: Text(S.of(context).download_source_hint),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(GitSource.values[db.userData.updateSource]
+                          .toTitleString()),
+                      Icon(Icons.arrow_forward_ios),
+                    ],
+                  ),
+                  onTap: () {
+                    SplitRoute.push(
+                      context: context,
+                      builder: (context, _) => UpdateSourcePage(),
+                      detail: true,
+                      popDetail: true,
+                    );
+                  },
                 ),
-                onTap: () {
-                  SplitRoute.push(
-                    context: context,
-                    builder: (context, _) => UpdateSourcePage(),
-                    detail: true,
-                    popDetail: true,
-                  );
-                },
-              ),
             ],
           ),
           TileGroup(
@@ -173,14 +174,17 @@ class _SettingsPageState extends State<SettingsPage> {
                   onTap: () =>
                       launch('https://testflight.apple.com/join/HSyZttrr'),
                 ),
-              ListTile(title: Text(S.of(context).about_feedback),onTap: (){
-                SplitRoute.push(
-                  context: context,
-                  builder: (context, _) => FeedbackPage(),
-                  detail: true,
-                  popDetail: true,
-                );
-              },),
+              ListTile(
+                title: Text(S.of(context).about_feedback),
+                onTap: () {
+                  SplitRoute.push(
+                    context: context,
+                    builder: (context, _) => FeedbackPage(),
+                    detail: true,
+                    popDetail: true,
+                  );
+                },
+              ),
               if (kDebugMode)
                 ListTile(
                   title: Text('Generate Error'),

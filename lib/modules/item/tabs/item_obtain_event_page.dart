@@ -144,7 +144,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
           subtitle: AutoSizeText(ticket.items.join('/'), maxLines: 1),
           trailing: Text(
             '$itemNum/${ticket.days}',
-            style: _textStyle(false, planned),
+            style: _textStyle(planned, ticket.isOutdated()),
           ),
         ),
         contentBuilder: (context) => ExchangeTicketTab(month: ticket.month),
@@ -203,7 +203,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
               Text(
                 '${S.current.main_record_fixed_drop_short}'
                 ' ${record.drops[widget.itemKey]}',
-                style: _textStyle(false, record.isOutdated()),
+                style: _textStyle(planned, record.isOutdated()),
               ),
             if (hasRewards)
               Text(

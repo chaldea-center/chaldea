@@ -70,9 +70,6 @@ class ServantStatus {
   ServantPlan curVal;
   int npLv;
 
-  @Deprecated('Use "npLv" instead')
-  int tdLv;
-
   /// null-not set, >=0 index, sorted from non-enhanced to enhanced
   List<int> skillIndex; //length=3
   /// default 0, origin order in wiki
@@ -84,7 +81,6 @@ class ServantStatus {
   ServantStatus({
     this.curVal,
     this.npLv,
-    this.tdLv,
     this.skillIndex,
     this.npIndex,
     this.priority,
@@ -95,8 +91,7 @@ class ServantStatus {
   void validate() {
     curVal ??= ServantPlan();
     curVal.validate();
-    // ignore: deprecated_member_use_from_same_package
-    npLv = fixValidRange(npLv ?? tdLv ?? 1, 1, 5);
+    npLv = fixValidRange(npLv ?? 1, 1, 5);
     npIndex ??= 0;
     skillIndex ??= <int>[]..length = 3;
     priority = fixValidRange(priority ?? 1, 1, 5);

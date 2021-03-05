@@ -1363,7 +1363,6 @@ ServantStatus _$ServantStatusFromJson(Map<String, dynamic> json) {
               ? null
               : ServantPlan.fromJson(v as Map<String, dynamic>)),
       npLv: $checkedConvert(json, 'npLv', (v) => v as int),
-      tdLv: $checkedConvert(json, 'tdLv', (v) => v as int),
       skillIndex: $checkedConvert(json, 'skillIndex',
           (v) => (v as List)?.map((e) => e as int)?.toList()),
       npIndex: $checkedConvert(json, 'npIndex', (v) => v as int),
@@ -1377,7 +1376,6 @@ Map<String, dynamic> _$ServantStatusToJson(ServantStatus instance) =>
     <String, dynamic>{
       'curVal': instance.curVal,
       'npLv': instance.npLv,
-      'tdLv': instance.tdLv,
       'skillIndex': instance.skillIndex,
       'npIndex': instance.npIndex,
       'priority': instance.priority,

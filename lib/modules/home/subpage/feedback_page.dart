@@ -127,8 +127,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
     var canceler = showMyProgress(status: 'Sending');
     try {
       final message = Message()
-        ..from =
-            Address(b64('Y2hhbGRlYS1jbGllbnRAbmFydW1pLmNj'), 'Chaldea Feedback')
+        ..from = Address('chaldea-client@narumi.cc', 'Chaldea Feedback')
         ..recipients.add(kSupportTeamEmailAddress)
         ..subject = 'Chaldea v${AppInfo.fullVersion2} Feedback';
 
@@ -143,7 +142,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
             SmtpServer('smtp.qiye.aliyun.com',
                 port: 465,
                 ssl: true,
-                username: b64('Y2hhbGRlYS1jbGllbnRAbmFydW1pLmNj'),
+                username: 'chaldea-client@narumi.cc',
                 password: b64('Q2hhbGRlYUBjbGllbnQ=')));
         logger.i(result.toString());
       } else {

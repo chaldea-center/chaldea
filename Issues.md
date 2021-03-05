@@ -3,12 +3,6 @@
 ## TODO
 >**New features:**
  - add transition animation and swipe support
- - clear cache:
-     - FilePickerCross cached files
-     - CachedNetworkImage (flutter_cache_manager)
-     - voice files
-     - temp directory
-     - SharePreference?
 
 >**Bug fix:**
  - ImageWithText: image pos shift with alignment

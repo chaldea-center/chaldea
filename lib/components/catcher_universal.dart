@@ -337,9 +337,9 @@ EmailAutoHandlerCross kEmailAutoHandlerCross(
     EmailAutoHandlerCross(
       'smtp.qiye.aliyun.com',
       465,
-      b64('Y2hhbGRlYS1jbGllbnRAbmFydW1pLmNj'),
+      'chaldea-client@narumi.cc',
       'Chaldea Crash',
-      b64('Q2hhbGRlYUBjbGllbnQ='),
+      b64('Q2hhbGRlYUBjbGllbnQ='), //Chaldea@client
       [kSupportTeamEmailAddress],
       attachments: attachments,
       screenshot: true,
