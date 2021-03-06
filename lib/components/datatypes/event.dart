@@ -33,10 +33,31 @@ class Events {
     });
     return sumDict(resultList);
   }
+
+  Map<String, EventBase> get allEvents {
+    return Map<String, EventBase>()..addAll(limitEvents)..addAll(mainRecords);
+  }
+}
+
+abstract class EventBase {
+  String name;
+  String nameJp;
+  String startTimeJp;
+  String endTimeJp;
+  String startTimeCn;
+  String endTimeCn;
+  String bannerUrl;
+  int grail;
+  int crystal;
+  int grail2crystal;
+
+  String get indexKey;
+
+  String get localizedName;
 }
 
 @JsonSerializable(checked: true)
-class LimitEvent {
+class LimitEvent extends EventBase {
   String name;
   String nameJp;
   String startTimeJp;
@@ -103,13 +124,9 @@ class LimitEvent {
       ..removeWhere((key, value) => value <= 0);
   }
 
-  bool isOutdated([int dm = 1]) {
-    if (startTimeCn?.isNotEmpty == true) {
-      final endDate = DateTime.now().subtract(Duration(days: 31 * dm));
-      return DateTime.parse(startTimeCn).isBefore(endDate);
-    } else {
-      return false;
-    }
+  bool isOutdated() {
+    return checkEventOutdated(
+        timeJp: startTimeJp?.toDateTime(), timeCn: startTimeCn?.toDateTime());
   }
 
   factory LimitEvent.fromJson(Map<String, dynamic> data) =>
@@ -119,7 +136,7 @@ class LimitEvent {
 }
 
 @JsonSerializable(checked: true)
-class MainRecord {
+class MainRecord extends EventBase {
   String name;
   String nameJp;
   String startTimeJp;
@@ -205,20 +222,16 @@ class MainRecord {
       ..removeWhere((key, value) => value <= 0);
   }
 
-  bool isOutdated([int dm = 1]) {
-    if (startTimeCn?.isNotEmpty == true) {
-      final endDate = DateTime.now().subtract(Duration(days: 31 * dm));
-      return DateTime.parse(startTimeCn).isBefore(endDate);
-    } else {
-      return false;
-    }
+  bool isOutdated() {
+    return checkEventOutdated(
+        timeJp: startTimeJp?.toDateTime(), timeCn: startTimeCn?.toDateTime());
   }
 }
 
 @JsonSerializable(checked: true)
 class ExchangeTicket {
   int days;
-  String month; //2020-01
+  String month; //format: 2020-01
   String monthJp;
   List<String> items;
 
@@ -240,7 +253,10 @@ class ExchangeTicket {
   }
 
   bool isOutdated([int months = 4]) {
-    final startDate = DateTime.now().subtract(Duration(days: 31 * months));
-    return DateTime.parse(month + '-01').isBefore(startDate);
+    return checkEventOutdated(
+      timeJp: DateTime.parse('${monthJp}01'.replaceAll('-', '')),
+      timeCn: DateTime.parse('${month}01'.replaceAll('-', '')),
+      duration: Duration(days: 31*months),
+    );
   }
 }

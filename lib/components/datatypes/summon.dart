@@ -68,12 +68,9 @@ class Summon {
   String get localizedName => localizeNoun(name, nameJp, null);
 
   bool isOutdated() {
-    DateTime start = DateTimeEnhance.tryParse(startTimeCn);
-    DateTime end = DateTimeEnhance.tryParse(endTimeCn);
-    DateTime now = DateTime.now();
-    if (end != null && end.isBefore(now)) return true;
-    if (start != null && now.difference(start).inDays > 30) return true;
-    return false;
+    return checkEventOutdated(
+        timeJp: startTimeJp?.toDateTime(),
+        timeCn: startTimeCn?.toDateTime());
   }
 
   bool hasSinglePickupSvt(int id) {

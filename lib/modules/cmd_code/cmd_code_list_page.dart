@@ -185,7 +185,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
           }
           final code = shownList[index - 1];
           return CustomTile(
-            leading: db.getIconImage(code.icon, width: 60),
+            leading: db.getIconImage(code.icon, width: 56),
             title: AutoSizeText(code.localizedName, maxLines: 1),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

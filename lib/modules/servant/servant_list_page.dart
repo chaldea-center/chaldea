@@ -194,121 +194,119 @@ class ServantListPageState extends State<ServantListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: db.userData.onUserUpdated.stream,
-        builder: (context, snapshot) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text(widget.planMode
-                  ? '${S.current.plan} ${db.curUser.curSvtPlanNo + 1}'
-                  : S.of(context).servant),
-              leading: MasterBackButton(),
-              bottom: PreferredSize(
-                preferredSize: Size.fromHeight(45),
-                child: Theme(
-                  data: Theme.of(context).copyWith(primaryColor: Colors.grey),
-                  child: Container(
-                      height: 45,
-                      padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                      child: TextField(
-                        focusNode: _inputFocusNode,
-                        controller: _inputController,
-                        style: TextStyle(fontSize: 14),
-                        decoration: InputDecoration(
-                            isDense: true,
-                            filled: true,
-                            contentPadding: EdgeInsets.zero,
-                            border: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    width: 0, style: BorderStyle.none),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10))),
-                            fillColor: Colors.white,
-                            hintText: 'Search',
-                            prefixIcon: Icon(Icons.search, size: 20),
-                            suffixIcon: IconButton(
-                              padding: EdgeInsets.zero,
-                              icon: Icon(Icons.clear, size: 20),
-                              onPressed: () {
-                                setState(() {
-                                  WidgetsBinding.instance.addPostFrameCallback(
-                                      (_) => _inputController.clear());
-                                  filterData.filterString = '';
-                                });
-                              },
-                            )),
-                        onChanged: (s) {
-                          setState(() {
-                            filterData.filterString = s;
-                          });
-                        },
-                        onSubmitted: (s) {
-                          FocusScope.of(context).unfocus();
-                        },
-                      )),
-                ),
-              ),
-              actions: <Widget>[
-                IconButton(
-                    icon: Icon([
-                      Icons.remove_circle_outline,
-                      Icons.favorite,
-                      Icons.favorite_border
-                    ][filterData.favorite]),
-                    tooltip: ['All', 'Favorite', 'Others'][filterData.favorite],
-                    onPressed: () {
+    return db.itemStat.makeBuilder((context, snapshot) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(widget.planMode
+              ? '${S.current.plan} ${db.curUser.curSvtPlanNo + 1}'
+              : S.of(context).servant),
+          leading: MasterBackButton(),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(45),
+            child: Theme(
+              data: Theme.of(context).copyWith(primaryColor: Colors.grey),
+              child: Container(
+                  height: 45,
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                  child: TextField(
+                    focusNode: _inputFocusNode,
+                    controller: _inputController,
+                    style: TextStyle(fontSize: 14),
+                    decoration: InputDecoration(
+                        isDense: true,
+                        filled: true,
+                        contentPadding: EdgeInsets.zero,
+                        border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                width: 0, style: BorderStyle.none),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        fillColor: Colors.white,
+                        hintText: 'Search',
+                        prefixIcon: Icon(Icons.search, size: 20),
+                        suffixIcon: IconButton(
+                          padding: EdgeInsets.zero,
+                          icon: Icon(Icons.clear, size: 20),
+                          onPressed: () {
+                            setState(() {
+                              WidgetsBinding.instance.addPostFrameCallback(
+                                  (_) => _inputController.clear());
+                              filterData.filterString = '';
+                            });
+                          },
+                        )),
+                    onChanged: (s) {
                       setState(() {
-                        filterData.favorite = (filterData.favorite + 1) % 3;
+                        filterData.filterString = s;
                       });
-                    }),
-                IconButton(
-                  icon: Icon(Icons.filter_alt),
-                  tooltip: S.of(context).filter,
-                  onPressed: () => FilterPage.show(
-                      context: context,
-                      builder: (context) => ServantFilterPage(
-                          filterData: filterData, onChanged: onFilterChanged)),
-                ),
-                PopupMenuButton(
-                  itemBuilder: (context) {
-                    return [
-                      PopupMenuItem(
-                          value: 'switch_plan',
-                          child: Text(S.of(context).select_plan)),
-                      if (widget.planMode)
-                        PopupMenuItem(
-                            value: 'copy_plan',
-                            child: Text(S.of(context).copy_plan_menu)),
-                    ];
-                  },
-                  onSelected: (v) {
-                    if (v == 'copy_plan') {
-                      copyPlan();
-                    } else if (v == 'switch_plan') {
-                      onSwitchPlan(
-                        context: context,
-                        onChange: (index) {
-                          db.curUser.curSvtPlanNo = index;
-                          this.setState(() {});
-                          db.itemStat.updateSvtItems();
-                        },
-                      );
-                    }
-                  },
-                ),
-              ],
-            ),
-            floatingActionButton: widget.planMode
-                ? null
-                : FloatingActionButton(
-                    child: Icon(Icons.arrow_upward),
-                    onPressed: () {
-                      _scrollController.jumpTo(0);
                     },
-                  ),
-            body: buildOverview(),
-          );
-        });
+                    onSubmitted: (s) {
+                      FocusScope.of(context).unfocus();
+                    },
+                  )),
+            ),
+          ),
+          actions: <Widget>[
+            IconButton(
+                icon: Icon([
+                  Icons.remove_circle_outline,
+                  Icons.favorite,
+                  Icons.favorite_border
+                ][filterData.favorite]),
+                tooltip: ['All', 'Favorite', 'Others'][filterData.favorite],
+                onPressed: () {
+                  setState(() {
+                    filterData.favorite = (filterData.favorite + 1) % 3;
+                  });
+                }),
+            IconButton(
+              icon: Icon(Icons.filter_alt),
+              tooltip: S.of(context).filter,
+              onPressed: () => FilterPage.show(
+                  context: context,
+                  builder: (context) => ServantFilterPage(
+                      filterData: filterData, onChanged: onFilterChanged)),
+            ),
+            PopupMenuButton(
+              itemBuilder: (context) {
+                return [
+                  PopupMenuItem(
+                      value: 'switch_plan',
+                      child: Text(S.of(context).select_plan)),
+                  if (widget.planMode)
+                    PopupMenuItem(
+                        value: 'copy_plan',
+                        child: Text(S.of(context).copy_plan_menu)),
+                ];
+              },
+              onSelected: (v) {
+                if (v == 'copy_plan') {
+                  copyPlan();
+                } else if (v == 'switch_plan') {
+                  onSwitchPlan(
+                    context: context,
+                    onChange: (index) {
+                      db.curUser.curSvtPlanNo = index;
+                      this.setState(() {});
+                      db.itemStat.updateSvtItems();
+                    },
+                  );
+                }
+              },
+            ),
+          ],
+        ),
+        floatingActionButton: widget.planMode
+            ? null
+            : FloatingActionButton(
+                child: Icon(Icons.arrow_upward),
+                onPressed: () {
+                  _scrollController.jumpTo(0);
+                },
+              ),
+        body: buildOverview(),
+      );
+    });
   }
 
   List<Servant> shownList = [];
@@ -377,7 +375,7 @@ class ServantListPageState extends State<ServantListPage> {
             break;
         }
         return CustomTile(
-          leading: db.getIconImage(svt.icon, width: 60),
+          leading: db.getIconImage(svt.icon, width: 56),
           title: AutoSizeText(svt.info.localizedName, maxLines: 1),
           subtitle: Row(
             crossAxisAlignment: CrossAxisAlignment.center,

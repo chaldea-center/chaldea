@@ -263,7 +263,7 @@ Future<void> Function() showMyProgress(
   };
 }
 
-void safeSetState(VoidCallback callback){
+void safeSetState(VoidCallback callback) {
   SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
     callback();
   });
@@ -435,4 +435,15 @@ String mooncellFullLink(String title, {bool encode = false}) {
   String link = 'https://fgo.wiki/w/$title';
   if (encode) link = Uri.encodeFull(link);
   return link;
+}
+
+bool checkEventOutdated(
+    {DateTime? timeJp, DateTime? timeCn, Duration? duration}) {
+  duration ??= Duration(days: 27);
+  if (db.curUser.msProgress <= 0) {
+    return DateTime.now().checkOutdated(timeCn, duration);
+  } else {
+    return DateTime.fromMillisecondsSinceEpoch(db.curUser.msProgress)
+        .checkOutdated(timeJp, duration);
+  }
 }

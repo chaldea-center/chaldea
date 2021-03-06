@@ -37,6 +37,20 @@ extension DateTimeEnhance on DateTime {
           formattedString.replaceFirst(match.group(0)!, '$year-$month-$day'));
     }
   }
+
+  /// [this] is reference time, check [dateTime] outdated or not
+  /// If [duration] is provided, compare [dateTime]-[duration] ~ this
+  bool checkOutdated(DateTime? dateTime, [Duration? duration]) {
+    if (dateTime == null) return false;
+    if (duration != null) dateTime = dateTime.add(duration);
+    return this.isAfter(dateTime);
+  }
+}
+
+extension StringToDateTime on String {
+  DateTime? toDateTime() {
+    return DateTimeEnhance.tryParse(this);
+  }
 }
 
 extension TrimString on String {

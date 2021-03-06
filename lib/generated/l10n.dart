@@ -2320,30 +2320,30 @@ class S {
     );
   }
 
-  /// `清除`
+  /// `清空`
   String get clear {
     return Intl.message(
-      '清除',
+      '清空',
       name: 'clear',
       desc: '',
       args: [],
     );
   }
 
-  /// `清除用户数据`
+  /// `清空用户数据`
   String get clear_userdata {
     return Intl.message(
-      '清除用户数据',
+      '清空用户数据',
       name: 'clear_userdata',
       desc: '',
       args: [],
     );
   }
 
-  /// `用户数据已清除`
+  /// `用户数据已清空`
   String get userdata_cleared {
     return Intl.message(
-      '用户数据已清除',
+      '用户数据已清空',
       name: 'userdata_cleared',
       desc: '',
       args: [],

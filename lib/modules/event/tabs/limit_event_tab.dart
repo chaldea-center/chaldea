@@ -46,11 +46,19 @@ class _LimitEventTabState extends State<LimitEventTab> {
         itemBuilder: (context, index) {
           final event = limitEvents[eventKeys[index]];
           final plan = db.curUser.events.limitEventOf(event.indexKey);
+          bool outdated = event.isOutdated();
           return ListTile(
-            title:
-                AutoSizeText(event.localizedName, maxFontSize: 16, maxLines: 2),
-            subtitle:
-                AutoSizeText(event.startTimeJp.split(' ').first, maxLines: 1),
+            title: AutoSizeText(
+              event.localizedName,
+              maxFontSize: 16,
+              maxLines: 2,
+              style: outdated ? TextStyle(color: Colors.grey) : null,
+            ),
+            subtitle: AutoSizeText(
+              event.startTimeJp.split(' ').first,
+              maxLines: 1,
+              style: outdated ? TextStyle(color: Colors.grey[400]) : null,
+            ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[

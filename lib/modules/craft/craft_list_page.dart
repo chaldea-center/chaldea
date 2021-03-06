@@ -215,7 +215,7 @@ class CraftListPageState extends State<CraftListPage> {
               break;
           }
           return CustomTile(
-            leading: db.getIconImage(ce.icon, width: 60),
+            leading: db.getIconImage(ce.icon, width: 56),
             title: AutoSizeText(ce.localizedName, maxLines: 1),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

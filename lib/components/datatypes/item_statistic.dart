@@ -44,7 +44,8 @@ class ItemStatistics {
     final Map<int, ServantStatus> priorityFiltered = Map.fromEntries(
         user.servants.entries.where((entry) => db.userData.svtFilter.priority
             .singleValueFilter(entry.value.priority.toString())));
-    svtItemDetail.update(curStat: priorityFiltered, targetPlan: user.curSvtPlan);
+    svtItemDetail.update(
+        curStat: priorityFiltered, targetPlan: user.curSvtPlan);
     updateLeftItems(user: user, shouldBroadcast: shouldBroadcast);
   }
 
@@ -60,6 +61,14 @@ class ItemStatistics {
     if (shouldBroadcast) {
       _broadcast();
     }
+  }
+
+  Widget makeBuilder(AsyncWidgetBuilder<ItemStatistics> builder) {
+    return StreamBuilder<ItemStatistics>(
+      initialData: db.itemStat,
+      stream: db.itemStat.onUpdated.stream,
+      builder: builder,
+    );
   }
 }
 

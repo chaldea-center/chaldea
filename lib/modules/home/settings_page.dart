@@ -2,7 +2,6 @@
 import 'dart:io';
 
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/git_tool.dart';
 import 'package:chaldea/modules/home/subpage/dataset_manage_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -10,7 +9,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'subpage/about_page.dart';
 import 'subpage/account_page.dart';
 import 'subpage/feedback_page.dart';
-import 'subpage/update_source_page.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -100,28 +98,37 @@ class _SettingsPageState extends State<SettingsPage> {
                   );
                 },
               ),
-              if (kDebugMode)
-                ListTile(
-                  title: Text(S.of(context).download_source),
-                  subtitle: Text(S.of(context).download_source_hint),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(GitSource.values[db.userData.updateSource]
-                          .toTitleString()),
-                      Icon(Icons.arrow_forward_ios),
-                    ],
-                  ),
-                  onTap: () {
-                    SplitRoute.push(
-                      context: context,
-                      builder: (context, _) => UpdateSourcePage(),
-                      detail: true,
-                      popDetail: true,
-                    );
-                  },
-                ),
+              // if (kDebugMode)
+              //   ListTile(
+              //     title: Text(S.of(context).download_source),
+              //     subtitle: Text(S.of(context).download_source_hint),
+              //     trailing: Row(
+              //       mainAxisSize: MainAxisSize.min,
+              //       crossAxisAlignment: CrossAxisAlignment.center,
+              //       children: [
+              //         Text(GitSource.values[db.userData.updateSource]
+              //             .toTitleString()),
+              //         Icon(Icons.arrow_forward_ios),
+              //       ],
+              //     ),
+              //     onTap: () {
+              //       SplitRoute.push(
+              //         context: context,
+              //         builder: (context, _) => UpdateSourcePage(),
+              //         detail: true,
+              //         popDetail: true,
+              //       );
+              //     },
+              //   ),
+            ],
+          ),
+          TileGroup(
+            header: '进度',
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: progressDropdown,
+              ),
             ],
           ),
           TileGroup(
@@ -144,16 +151,16 @@ class _SettingsPageState extends State<SettingsPage> {
                   },
                 ),
               ),
-              if (Platform.isAndroid || Platform.isIOS)
-                SwitchListTile.adaptive(
-                  title: Text(S.of(context).settings_use_mobile_network),
-                  value: db.userData.useMobileNetwork ?? false,
-                  onChanged: (v) async {
-                    db.userData.useMobileNetwork = v;
-                    db.saveUserData();
-                    setState(() {});
-                  },
-                ),
+              // if (Platform.isAndroid || Platform.isIOS)
+              //   SwitchListTile.adaptive(
+              //     title: Text(S.of(context).settings_use_mobile_network),
+              //     value: db.userData.useMobileNetwork ?? true,
+              //     onChanged: (v) async {
+              //       db.userData.useMobileNetwork = v;
+              //       db.saveUserData();
+              //       setState(() {});
+              //     },
+              //   ),
             ],
           ),
           TileGroup(
@@ -225,5 +232,60 @@ class _SettingsPageState extends State<SettingsPage> {
   void deactivate() {
     super.deactivate();
     db.saveUserData();
+  }
+
+  Widget get progressDropdown {
+    Map<DateTime, EventBase> events = {};
+    db.gameData.events.allEvents.forEach((key, event) {
+      final DateTime startTime = event.startTimeJp?.toDateTime();
+      if (startTime != null && !events.containsValue(startTime)) {
+        events[startTime] = event;
+      }
+    });
+    List<DateTime> sortedDates = events.keys.toList()
+      ..sort((a, b) => b.compareTo(a));
+    if (db.curUser.msProgress > 0) {
+      db.curUser.msProgress = sortedDates
+              .firstWhereOrNull((e) =>
+                  e.millisecondsSinceEpoch > 0 &&
+                  e.millisecondsSinceEpoch <= db.curUser.msProgress)
+              ?.millisecondsSinceEpoch ??
+          -1;
+    } else {
+      db.curUser.msProgress = fixValidRange(db.curUser.msProgress, -2, -1);
+    }
+
+    final items = <DropdownMenuItem<int>>[
+      DropdownMenuItem(
+        value: -1,
+        child: Text('日服'),
+      ),
+      DropdownMenuItem(
+        value: -2,
+        child: Text('简中服'),
+      ),
+    ];
+    items.addAll(sortedDates.map((date) => DropdownMenuItem(
+          value: date.millisecondsSinceEpoch,
+          child: Text(events[date].localizedName),
+        )));
+    if (db.curUser.msProgress > 0) {
+      db.curUser.msProgress = items
+              .firstWhereOrNull(
+                  (e) => e.value > 0 && e.value <= db.curUser.msProgress)
+              ?.value ??
+          -1;
+    }
+    return DropdownButton<int>(
+      value: db.curUser.msProgress,
+      isExpanded: true,
+      items: items,
+      underline: Container(),
+      onChanged: (v) {
+        setState(() {
+          db.curUser.msProgress = v;
+        });
+      },
+    );
   }
 }

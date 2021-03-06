@@ -53,11 +53,8 @@ class UserData {
   }
 
   bool get downloadEnabled {
-    // return useMobileNetwork ?? true;
-    if (useMobileNetwork || db.connectivity == ConnectivityResult.wifi) {
-      return true;
-    }
-    return false;
+    // return useMobileNetwork || db.connectivity == ConnectivityResult.wifi;
+    return true;
   }
 
   UserData({
@@ -81,7 +78,7 @@ class UserData {
   }) {
     // not initiate language: auto-change language if not set yet.
     String defaultName = 'default';
-    useMobileNetwork ??= false;
+    useMobileNetwork ??= true;
     sliderUrls ??= {};
     galleries ??= {};
     serverRoot ??= kServerRoot;

@@ -36,8 +36,6 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.month != null) {}
-    // final startDate = DateTime.now().subtract(Duration(days: 31 * 4));
     final tickets = widget.month == null
         ? db.gameData.events.exchangeTickets.values.toList()
         : [db.gameData.events.exchangeTickets[widget.month]];
@@ -45,57 +43,64 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     tickets.sort((a, b) {
       return (a.month).compareTo(b.month) * (widget.reverse ? -1 : 1);
     });
-    return StreamBuilder<ItemStatistics>(
-      initialData: db.itemStat,
-      stream: db.itemStat.onUpdated.stream,
-      builder: (context, snapshot) => Scrollbar(
-        controller: _scrollController,
-        child: ListView(
+    return db.itemStat.makeBuilder((context, snapshot) => Scrollbar(
           controller: _scrollController,
-          shrinkWrap: widget.month != null,
-          children: divideTiles(
-            tickets.map((ticket) {
-              bool planned =
-                  sum(db.curUser.events.exchangeTicketOf(ticket.month)) > 0;
-              return Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: ListTile(
-                      contentPadding: EdgeInsets.only(left: 12),
-                      title: AutoSizeText(
-                        ticket.month,
-                        maxLines: 1,
-                        maxFontSize: 16,
-                        style: TextStyle(
-                            color: planned ? Colors.blueAccent : null,
-                            fontWeight: FontWeight.w600),
-                      ),
-                      subtitle: AutoSizeText(
-                        '${ticket.monthJp}\nmax: ${ticket.days}',
-                        maxLines: 2,
-                        maxFontSize: 14,
-                        style: TextStyle(
-                            color: planned ? Colors.blueAccent[100] : null),
-                        minFontSize: 6,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: buildTrailing(ticket, snapshot.data),
-                    ),
-                  )
-                ],
-              );
-            }),
-            divider: Divider(height: 1, indent: 16),
-          ).toList(),
+          child: ListView(
+            controller: _scrollController,
+            shrinkWrap: widget.month != null,
+            children: divideTiles(
+              tickets.map((ticket) => buildOneMonth(ticket)),
+              divider: Divider(height: 1, indent: 16),
+            ).toList(),
+          ),
+        ));
+  }
+
+  Widget buildOneMonth(ExchangeTicket ticket) {
+    bool planned = sum(db.curUser.events.exchangeTicketOf(ticket.month)) > 0;
+    bool outdated = ticket.isOutdated();
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Expanded(
+          flex: 1,
+          child: ListTile(
+            contentPadding: EdgeInsets.only(left: 12),
+            title: AutoSizeText(
+              ticket.month,
+              maxLines: 1,
+              maxFontSize: 16,
+              style: TextStyle(
+                color: planned
+                    ? Colors.blueAccent
+                    : outdated
+                        ? Colors.grey
+                        : null,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            subtitle: AutoSizeText(
+              '${ticket.monthJp}\nmax: ${ticket.days}',
+              maxLines: 2,
+              maxFontSize: 14,
+              style: TextStyle(
+                  color: planned
+                      ? Colors.blueAccent[100]
+                      : outdated
+                          ? Colors.grey[400]
+                          : null),
+              minFontSize: 6,
+            ),
+          ),
         ),
-      ),
+        Expanded(
+          flex: 3,
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: buildTrailing(ticket, db.itemStat),
+          ),
+        )
+      ],
     );
   }
 

@@ -21,6 +21,9 @@ class User {
   Set<String> plannedSummons;
   bool isMasterGirl;
 
+  /// milliseconds of event's startTimeJP
+  int msProgress;
+
   User({
     @required this.name,
     this.server,
@@ -32,6 +35,7 @@ class User {
     this.mysticCodes,
     this.plannedSummons,
     this.isMasterGirl,
+    this.msProgress,
   }) : assert(name != null && name.isNotEmpty) {
     server ??= GameServer.cn;
     servants ??= {};
@@ -42,6 +46,7 @@ class User {
     mysticCodes ??= {};
     plannedSummons ??= <String>{};
     isMasterGirl ??= true;
+    msProgress ??= -1;
   }
 
   Map<int, ServantPlan> get curSvtPlan {

@@ -351,39 +351,35 @@ class _ItemListTabState extends State<ItemListTab> {
 
   @override
   Widget build(BuildContext context) {
-    Widget listView = StreamBuilder<ItemStatistics>(
-      initialData: db.itemStat,
-      stream: db.itemStat.onUpdated.stream,
-      builder: (context, snapshot) {
-        setTextController();
-        List<Widget> children = [];
-        final stat = snapshot.data;
-        _shownGroups.clear();
-        for (var group in _allGroups.values) {
-          if (!widget.filtered ||
-              group.data.name == Item.qp ||
-              stat.leftItems[group.data.name] < 0) {
-            _shownGroups.add(group);
-            children.add(buildItemTile(group, stat));
-          }
+    Widget listView = db.itemStat.makeBuilder((context, snapshot) {
+      setTextController();
+      List<Widget> children = [];
+      final stat = snapshot.data;
+      _shownGroups.clear();
+      for (var group in _allGroups.values) {
+        if (!widget.filtered ||
+            group.data.name == Item.qp ||
+            stat.leftItems[group.data.name] < 0) {
+          _shownGroups.add(group);
+          children.add(buildItemTile(group, stat));
         }
-        if (widget.showSet999) {
-          children.add(Center(
-            child: TextButton(
-              onPressed: setAll999,
-              child: Text('  >>> SET ALL 999 <<<  '),
-            ),
-          ));
-        }
-        Widget _listView = ListView.separated(
-          controller: _scrollController,
-          itemBuilder: (context, index) => children[index],
-          separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
-          itemCount: children.length,
-        );
-        return Scrollbar(controller: _scrollController, child: _listView);
-      },
-    );
+      }
+      if (widget.showSet999) {
+        children.add(Center(
+          child: TextButton(
+            onPressed: setAll999,
+            child: Text('  >>> SET ALL 999 <<<  '),
+          ),
+        ));
+      }
+      Widget _listView = ListView.separated(
+        controller: _scrollController,
+        itemBuilder: (context, index) => children[index],
+        separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
+        itemCount: children.length,
+      );
+      return Scrollbar(controller: _scrollController, child: _listView);
+    });
     Widget actionBar;
     // TODO: not shown actually
     // keyboard is shown and mobile view, cannot detect floating keyboard
