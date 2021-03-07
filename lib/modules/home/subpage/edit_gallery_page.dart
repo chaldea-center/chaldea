@@ -1,10 +1,10 @@
-//@dart=2.9
+//@dart=2.12
 import 'package:chaldea/components/components.dart';
 
 class EditGalleryPage extends StatefulWidget {
   final Map<String, GalleryItem> galleries;
 
-  EditGalleryPage({Key key, this.galleries}) : super(key: key);
+  EditGalleryPage({Key? key, this.galleries = const {}}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _EditGalleryPageState();
@@ -14,7 +14,7 @@ class _EditGalleryPageState extends State<EditGalleryPage> {
   @override
   Widget build(BuildContext context) {
     List<Widget> tiles = [];
-    widget.galleries?.forEach((name, item) {
+    widget.galleries.forEach((name, item) {
       if (name != GalleryItem.more) {
         tiles.add(SwitchListTile.adaptive(
           value: db.userData.galleries[name] ?? true,
@@ -62,21 +62,19 @@ class GalleryItem {
   // instant part
   final String name;
   final String title;
-  final IconData icon;
-  final Widget child;
-  final SplitLayoutBuilder builder;
+  final IconData? icon;
+  final Widget? child;
+  final SplitLayoutBuilder? builder;
   final bool isDetail;
 
-  const GalleryItem(
-      {@required this.name,
-      @required this.title,
-      this.icon,
-      this.child,
-      this.builder,
-      this.isDetail = false})
-      : assert(name != null),
-        assert(title != null),
-        assert(icon != null || child != null);
+  const GalleryItem({
+    required this.name,
+    required this.title,
+    this.icon,
+    this.child,
+     this.builder,
+    this.isDetail = false,
+  }) : assert(icon != null || child != null);
 
   @override
   String toString() {

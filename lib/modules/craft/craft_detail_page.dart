@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class CraftDetailPage extends StatefulWidget {
   final CraftEssence ce;
-  final CraftEssence Function(int, bool)? onSwitch;
+  final CraftEssence? Function(int, bool)? onSwitch;
 
   const CraftDetailPage({Key? key, required this.ce, this.onSwitch})
       : super(key: key);

@@ -1,24 +1,19 @@
-//@dart=2.9
+//@dart=2.12
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
 
 class CraftFilterPage extends FilterPage<CraftFilterData> {
-  const CraftFilterPage(
-      {Key key,
-      CraftFilterData filterData,
-      bool Function(CraftFilterData) onChanged})
-      : super(key: key, onChanged: onChanged, filterData: filterData);
+  const CraftFilterPage({
+    Key? key,
+    required CraftFilterData filterData,
+    ValueChanged<CraftFilterData>? onChanged,
+  }) : super(key: key, onChanged: onChanged, filterData: filterData);
 
   @override
   _CraftFilterPageState createState() => _CraftFilterPageState();
 }
 
 class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
-  @override
-  void initiate() {
-    filterData = widget.filterData ?? CraftFilterData();
-  }
-
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(

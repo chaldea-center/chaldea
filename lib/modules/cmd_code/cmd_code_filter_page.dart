@@ -1,24 +1,19 @@
-//@dart=2.9
+//@dart=2.12
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
 
 class CmdCodeFilterPage extends FilterPage<CmdCodeFilterData> {
-  const CmdCodeFilterPage(
-      {Key key,
-      CmdCodeFilterData filterData,
-      bool Function(CmdCodeFilterData) onChanged})
-      : super(key: key, onChanged: onChanged, filterData: filterData);
+  const CmdCodeFilterPage({
+    Key? key,
+    required CmdCodeFilterData filterData,
+    ValueChanged<CmdCodeFilterData>? onChanged,
+  }) : super(key: key, onChanged: onChanged, filterData: filterData);
 
   @override
   _CmdCodeFilterPageState createState() => _CmdCodeFilterPageState();
 }
 
 class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData> {
-  @override
-  void initiate() {
-    filterData = widget.filterData ?? CmdCodeFilterData();
-  }
-
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(

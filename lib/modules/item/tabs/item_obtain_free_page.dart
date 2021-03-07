@@ -1,11 +1,11 @@
-//@dart=2.9
+//@dart=2.12
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/quest_card.dart';
 
 class ItemObtainFreeTab extends StatefulWidget {
   final String itemKey;
 
-  const ItemObtainFreeTab({Key key, this.itemKey}) : super(key: key);
+  const ItemObtainFreeTab({Key? key, required this.itemKey}) : super(key: key);
 
   @override
   _ItemObtainFreeTabState createState() => _ItemObtainFreeTabState();
@@ -21,18 +21,20 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Radio(
-                value: true,
-                groupValue: sortByAP,
-                onChanged: (v) => setState(() => sortByAP = v)),
+            Radio<bool>(
+              value: true,
+              groupValue: sortByAP,
+              onChanged: (v) => setState(() => sortByAP = v ?? sortByAP),
+            ),
             GestureDetector(
               onTap: () => setState(() => sortByAP = true),
               child: Text(S.of(context).ap_efficiency),
             ),
-            Radio(
-                value: false,
-                groupValue: sortByAP,
-                onChanged: (v) => setState(() => sortByAP = v)),
+            Radio<bool>(
+              value: false,
+              groupValue: sortByAP,
+              onChanged: (v) => setState(() => sortByAP = v ?? sortByAP),
+            ),
             GestureDetector(
               onTap: () => setState(() => sortByAP = false),
               child: Text(S.of(context).drop_rate),
@@ -61,14 +63,14 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
             apRateString = apRate.toStringAsFixed(2);
         final quest = db.gameData.freeQuests[questName];
 
-        final child = ValueStatefulBuilder(
+        final child = ValueStatefulBuilder<bool>(
             value: false,
             builder: (context, state) {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   CustomTile(
-                    title: Text(quest.localizedKey),
+                    title: Text(quest?.localizedKey ?? questName),
                     subtitle: Text('cost ${glpk.costs[i]}AP.  ' +
                         (sortByAP
                             ? '${S.current.drop_rate} $dropRateString%.'

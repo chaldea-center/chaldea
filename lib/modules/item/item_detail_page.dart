@@ -1,4 +1,4 @@
-//@dart=2.9
+//@dart=2.12
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/tabs/item_obtain_interlude.dart';
@@ -10,7 +10,7 @@ import 'tabs/item_obtain_free_page.dart';
 class ItemDetailPage extends StatefulWidget {
   final String itemKey;
 
-  const ItemDetailPage(this.itemKey, {Key key}) : super(key: key);
+  const ItemDetailPage({Key? key, required this.itemKey}) : super(key: key);
 
   @override
   _ItemDetailPageState createState() => _ItemDetailPageState();
@@ -18,7 +18,7 @@ class ItemDetailPage extends StatefulWidget {
 
 class _ItemDetailPageState extends State<ItemDetailPage>
     with SingleTickerProviderStateMixin {
-  TabController _tabController;
+  late TabController _tabController;
   int curTab = 0;
 
   // all
@@ -87,10 +87,9 @@ class _ItemDetailPageState extends State<ItemDetailPage>
           ),
           ItemObtainFreeTab(itemKey: widget.itemKey),
           ItemObtainEventPage(
-            itemKey: widget.itemKey,
-            favorite: favorite,
-            filtrateOutdated:filtrateOutdated
-          ),
+              itemKey: widget.itemKey,
+              favorite: favorite,
+              filtrateOutdated: filtrateOutdated),
           ItemObtainInterludeTab(
               itemKey: widget.itemKey, favorite: favorite, sortType: sortType)
           // Container(child: Center(child: Text('Interludes'))),

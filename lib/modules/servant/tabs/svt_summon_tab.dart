@@ -7,12 +7,12 @@ import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
 
 class SvtSummonTab extends SvtTabBaseWidget {
-  SvtSummonTab(
-      {Key? key,
-      ServantDetailPageState? parent,
-      Servant? svt,
-      ServantStatus? status})
-      : super(key: key, parent: parent, svt: svt, status: status);
+  SvtSummonTab({
+    Key? key,
+    ServantDetailPageState? parent,
+    Servant? svt,
+    ServantStatus? status,
+  }) : super(key: key, parent: parent, svt: svt, status: status);
 
   @override
   _SvtSummonTabState createState() =>

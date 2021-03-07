@@ -1,4 +1,4 @@
-//@dart=2.9
+//@dart=2.12
 import 'dart:convert';
 import 'dart:math';
 import 'dart:ui';
@@ -16,18 +16,18 @@ import 'servant_filter_page.dart';
 class ServantListPage extends StatefulWidget {
   final bool planMode;
 
-  ServantListPage({Key key, this.planMode = false}) : super(key: key);
+  ServantListPage({Key? key, this.planMode = false}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => ServantListPageState();
 }
 
 class ServantListPageState extends State<ServantListPage> {
-  SvtFilterData filterData;
+  SvtFilterData get filterData => db.userData.svtFilter;
   Set<Servant> hiddenPlanServants = {};
-  TextEditingController _inputController = TextEditingController();
-  FocusNode _inputFocusNode = FocusNode();
-  ScrollController _scrollController;
+  late TextEditingController _inputController;
+  late FocusNode _inputFocusNode;
+  late ScrollController _scrollController;
 
   //temp, calculate once build() called.
   Query __textFilter = Query();
@@ -35,10 +35,11 @@ class ServantListPageState extends State<ServantListPage> {
   @override
   void initState() {
     super.initState();
-    filterData = db.userData.svtFilter;
     filterData.filterString = '';
     filterData.favorite = widget.planMode ? 1 : 0;
+    _inputController = TextEditingController();
     _scrollController = ScrollController();
+    _inputFocusNode = FocusNode();
   }
 
   @override
@@ -73,7 +74,7 @@ class ServantListPageState extends State<ServantListPage> {
         ...svt.info.nicknames,
         ...svt.info.traits
       ];
-      svt?.nobelPhantasm?.forEach((td) {
+      svt.nobelPhantasm?.forEach((td) {
         searchStrings.addAll([
           td.name,
           td.nameJp,
@@ -82,7 +83,7 @@ class ServantListPageState extends State<ServantListPage> {
           for (var e in td.effects) e.description
         ]);
       });
-      svt?.activeSkills?.forEach((activeSkill) {
+      svt.activeSkills?.forEach((activeSkill) {
         activeSkill.skills.forEach((skill) {
           searchStrings.addAll([
             skill.name,
@@ -101,7 +102,7 @@ class ServantListPageState extends State<ServantListPage> {
       }
     }
     if (filterData.planCompletion.options.containsValue(true)) {
-      if (svtStat?.curVal?.favorite != true) return false;
+      if (svtStat.curVal?.favorite != true) return false;
       bool planNotComplete = <bool>[
         svtPlan.ascension > svtStat.curVal.ascension,
         svtPlan.grail > svtStat.curVal.grail,
@@ -118,8 +119,8 @@ class ServantListPageState extends State<ServantListPage> {
     // svt data filter
     // skill level
     if (filterData.skillLevel.options.containsValue(true)) {
-      final curSvtState = svtStat?.curVal;
-      if (curSvtState?.favorite != true) return false;
+      final curSvtState = svtStat.curVal;
+      if (curSvtState.favorite != true) return false;
       int lowestSkill = curSvtState.skills.reduce((a, b) => min(a, b));
       if (!filterData.skillLevel.singleValueFilter(
           SvtFilterData.skillLevelData[max(lowestSkill - 8, 0)])) {
@@ -134,7 +135,7 @@ class ServantListPageState extends State<ServantListPage> {
       return false;
     }
     // single value
-    Map<FilterGroupData, String> singleValuePair = {
+    Map<FilterGroupData, String?> singleValuePair = {
       filterData.priority: svtStat.priority.toString(),
       filterData.rarity: svt.info.rarity.toString(),
       filterData.obtain: svt.info.obtain,
@@ -182,14 +183,10 @@ class ServantListPageState extends State<ServantListPage> {
     return true;
   }
 
-  bool onFilterChanged(SvtFilterData data) {
+  void onFilterChanged(SvtFilterData data) {
     if (mounted) {
-      setState(() {
-        filterData = data;
-      });
-      return true;
+      setState(() {});
     }
-    return false;
   }
 
   @override
@@ -229,7 +226,7 @@ class ServantListPageState extends State<ServantListPage> {
                           icon: Icon(Icons.clear, size: 20),
                           onPressed: () {
                             setState(() {
-                              WidgetsBinding.instance.addPostFrameCallback(
+                              WidgetsBinding.instance!.addPostFrameCallback(
                                   (_) => _inputController.clear());
                               filterData.filterString = '';
                             });
@@ -408,47 +405,47 @@ class ServantListPageState extends State<ServantListPage> {
 
   Widget _buildGridView() {
     // make sure the floating button not cover svt icon
-    if (shownList.length % 5 == 0) {
-      shownList.add(null);
+    List<Widget> children = [];
+    for (var svt in shownList) {
+      final status = db.curUser.svtStatusOf(svt.no);
+      String? statusText;
+      if (status.curVal.favorite) {
+        statusText = '${status.npLv}\n'
+            '${status.curVal.ascension}-'
+            '${status.curVal.skills[0]}/'
+            '${status.curVal.skills[1]}/'
+            '${status.curVal.skills[2]}';
+      }
+      children.add(Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+          child: ImageWithText(
+            image: db.getIconImage(svt.icon),
+            text: statusText,
+            fontSize: 11,
+            alignment: AlignmentDirectional.bottomStart,
+            padding: EdgeInsets.fromLTRB(4, 0, 8, 0),
+            onTap: () {
+              SplitRoute.push(
+                context: context,
+                builder: (context, _) => ServantDetailPage(svt),
+                popDetail: true,
+              );
+            },
+          ),
+        ),
+      ));
+    }
+    if (children.length % 5 == 0) {
+      children.add(Container());
     }
     return GridView.count(
-        crossAxisCount: 5,
-        childAspectRatio: 1,
-        controller: _scrollController,
-        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-        children: shownList.map((svt) {
-          if (svt == null) {
-            return Container();
-          }
-          final status = db.curUser.svtStatusOf(svt.no);
-          String statusText;
-          if (status.curVal.favorite) {
-            statusText = '${status.npLv}\n'
-                '${status.curVal.ascension}-'
-                '${status.curVal.skills[0]}/'
-                '${status.curVal.skills[1]}/'
-                '${status.curVal.skills[2]}';
-          }
-          return Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
-              child: ImageWithText(
-                image: db.getIconImage(svt.icon),
-                text: statusText,
-                fontSize: 11,
-                alignment: AlignmentDirectional.bottomStart,
-                padding: EdgeInsets.fromLTRB(4, 0, 8, 0),
-                onTap: () {
-                  SplitRoute.push(
-                    context: context,
-                    builder: (context, _) => ServantDetailPage(svt),
-                    popDetail: true,
-                  );
-                },
-              ),
-            ),
-          );
-        }).toList());
+      crossAxisCount: 5,
+      childAspectRatio: 1,
+      controller: _scrollController,
+      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+      children: children,
+    );
   }
 
   Widget _buildPlanListView() {
@@ -457,8 +454,7 @@ class ServantListPageState extends State<ServantListPage> {
         Expanded(
           child: ListView.separated(
             controller: _scrollController,
-            separatorBuilder: (context, index) =>
-                Divider(height: 1, indent: 16),
+            separatorBuilder: (context, index) => kDefaultDivider,
             itemCount: shownList.length + (shownList.isEmpty ? 1 : 2),
             itemBuilder: (context, index) {
               if (index == 0 || index == shownList.length + 1) {
@@ -467,7 +463,7 @@ class ServantListPageState extends State<ServantListPage> {
                     .length;
                 return CustomTile(
                   contentPadding:
-                      index == 0 ? null : EdgeInsets.only(top: 8, bottom: 50),
+                      index == 0 ? null : EdgeInsets.only(top: 8, bottom: 36),
                   subtitle: Center(
                     child: Text(
                       widget.planMode
@@ -502,6 +498,8 @@ class ServantListPageState extends State<ServantListPage> {
                 leading: db.getIconImage(svt.icon, width: 48),
                 subtitle: _getDetailTable(svt),
                 trailing: eyeWidget,
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 16, vertical: 3),
                 onTap: () {
                   SplitRoute.push(
                     context: context,
@@ -538,7 +536,7 @@ class ServantListPageState extends State<ServantListPage> {
       return Center(child: Text(header, maxLines: 1));
     }
 
-    if (cur?.favorite != true) {
+    if (cur.favorite != true) {
       return Center(child: Text(S.of(context).svt_not_planned));
     }
     if (hiddenPlanServants.contains(svt)) {
@@ -590,13 +588,13 @@ class ServantListPageState extends State<ServantListPage> {
     return db.curUser.svtStatusOf(svt.no).curVal.favorite;
   }
 
-  int _planTargetAscension;
-  int _planTargetSkill;
-  int _planTargetDress;
+  int? _planTargetAscension;
+  int? _planTargetSkill;
+  int? _planTargetDress;
 
   Widget _buildButtonBar() {
     final buttons = [
-      DropdownButton(
+      DropdownButton<int>(
         value: _planTargetAscension,
         icon: Container(),
         hint: Text(S.of(context).ascension),
@@ -612,17 +610,18 @@ class ServantListPageState extends State<ServantListPage> {
         onChanged: (v) {
           setState(() {
             _planTargetAscension = v;
+            if (_planTargetAscension == null) return;
             shownList.forEach((svt) {
               if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
                 final cur = db.curUser.svtStatusOf(svt.no).curVal,
                     target = db.curUser.svtPlanOf(svt.no);
-                target.ascension = max(cur.ascension, _planTargetAscension);
+                target.ascension = max(cur.ascension, _planTargetAscension!);
               }
             });
           });
         },
       ),
-      DropdownButton(
+      DropdownButton<int>(
         value: _planTargetSkill,
         icon: Container(),
         hint: Text(S.of(context).skill),
@@ -640,6 +639,7 @@ class ServantListPageState extends State<ServantListPage> {
         onChanged: (v) {
           setState(() {
             _planTargetSkill = v;
+            if (_planTargetSkill == null) return;
             shownList.forEach((svt) {
               if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
                 final cur = db.curUser.svtStatusOf(svt.no).curVal,
@@ -648,7 +648,7 @@ class ServantListPageState extends State<ServantListPage> {
                   if (v == 0) {
                     target.skills[i] = min(10, cur.skills[i] + 1);
                   } else {
-                    target.skills[i] = max(cur.skills[i], _planTargetSkill);
+                    target.skills[i] = max(cur.skills[i], _planTargetSkill!);
                   }
                 }
               }
@@ -656,7 +656,7 @@ class ServantListPageState extends State<ServantListPage> {
           });
         },
       ),
-      DropdownButton(
+      DropdownButton<int>(
         value: _planTargetDress,
         icon: Container(),
         hint: Text(S.of(context).dress),
@@ -667,12 +667,13 @@ class ServantListPageState extends State<ServantListPage> {
         onChanged: (v) {
           setState(() {
             _planTargetDress = v;
+            if (_planTargetDress == null) return;
             shownList.forEach((svt) {
               if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
                 final cur = db.curUser.svtStatusOf(svt.no).curVal,
                     target = db.curUser.svtPlanOf(svt.no);
                 for (int i = 0; i < target.dress.length; i++) {
-                  target.dress[i] = max(cur.dress[i], _planTargetDress);
+                  target.dress[i] = max(cur.dress[i], _planTargetDress!);
                 }
               }
             });

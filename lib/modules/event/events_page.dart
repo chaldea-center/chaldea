@@ -1,4 +1,4 @@
-//@dart=2.9
+//@dart=2.12
 import 'package:chaldea/components/components.dart';
 
 import 'tabs/exchange_ticket_tab.dart';
@@ -12,8 +12,9 @@ class EventListPage extends StatefulWidget {
 
 class _EventListPageState extends State<EventListPage>
     with SingleTickerProviderStateMixin {
-  TabController _tabController;
-  bool reverse = true;
+  late TabController _tabController;
+  bool reversed = true;
+  bool showOutdated = false;
 
   List<String> get tabNames => [
         S.current.limited_event,
@@ -33,13 +34,25 @@ class _EventListPageState extends State<EventListPage>
     return Scaffold(
       appBar: AppBar(
         title: Text(S.of(context).event_title),
+        centerTitle: true,
+        titleSpacing: 0,
         leading: MasterBackButton(),
         actions: <Widget>[
           IconButton(
-              icon: Icon(reverse
-                  ? Icons.keyboard_arrow_up
-                  : Icons.keyboard_arrow_down),
-              onPressed: () => setState(() => reverse = !reverse))
+            onPressed: () {
+              setState(() {
+                showOutdated = !showOutdated;
+              });
+            },
+            tooltip: 'Outdated',
+            icon: Icon(showOutdated ? Icons.timer_off : Icons.timer),
+          ),
+          IconButton(
+            icon: Icon(
+                reversed ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down),
+            tooltip: 'Reversed',
+            onPressed: () => setState(() => reversed = !reversed),
+          )
         ],
         bottom: TabBar(
           controller: _tabController,
@@ -52,9 +65,15 @@ class _EventListPageState extends State<EventListPage>
         // desktop: direction of drag may be confused
         physics: AppInfo.isMobile ? null : NeverScrollableScrollPhysics(),
         children: <Widget>[
-          KeepAliveBuilder(builder: (_) => LimitEventTab(reverse: reverse)),
-          KeepAliveBuilder(builder: (_) => MainRecordTab(reverse: reverse)),
-          KeepAliveBuilder(builder: (_) => ExchangeTicketTab(reverse: reverse)),
+          KeepAliveBuilder(
+              builder: (_) =>
+                  LimitEventTab(reverse: reversed, showOutdated: showOutdated)),
+          KeepAliveBuilder(
+              builder: (_) => MainRecordTab(
+                  reversed: reversed, showOutdated: showOutdated)),
+          KeepAliveBuilder(
+              builder: (_) => ExchangeTicketTab(
+                  reverse: reversed, showOutdated: showOutdated)),
         ],
       ),
     );
@@ -63,6 +82,7 @@ class _EventListPageState extends State<EventListPage>
   @override
   void deactivate() {
     super.deactivate();
+    _tabController.dispose();
     db.saveUserData();
   }
 }

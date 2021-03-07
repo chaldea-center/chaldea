@@ -54,6 +54,41 @@ abstract class EventBase {
   String get indexKey;
 
   String get localizedName;
+
+  static List<T> sortEvents<T extends EventBase>(List<T> events,
+  {bool reversed = false,bool inPlace=true}) {
+    List<T> jpEvents =
+        events.where((e) => e.startTimeJp?.toDateTime() != null).toList();
+    final cnEvents = events.where((e) => !jpEvents.contains(e));
+    jpEvents.sort((a, b) =>
+        a.startTimeJp.toDateTime().compareTo(b.startTimeJp.toDateTime()));
+    cnEvents.forEach((e) {
+      final curDate = e.startTimeCn?.toDateTime();
+      if (curDate == null) {
+        jpEvents.add(e);
+        return;
+      }
+      for (int i = 0; i < jpEvents.length; i++) {
+        final date = jpEvents[i].startTimeCn?.toDateTime();
+        if (date == null) {
+          continue;
+        }
+        if (date.compareTo(curDate) >= 0) {
+          jpEvents.insert(i, e);
+          return;
+        }
+      }
+      jpEvents.add(e);
+    });
+    if(reversed) {
+      jpEvents = jpEvents.reversed.toList();
+    }
+    if(inPlace){
+      events.setAll(0, jpEvents);
+      return events;
+    }
+    return jpEvents;
+  }
 }
 
 @JsonSerializable(checked: true)
@@ -78,8 +113,8 @@ class LimitEvent extends EventBase {
       return name;
     }
     return db.gameData.events.limitEvents.entries
-        .firstWhere((event) => event.value.name == name)
-        .key;
+        .firstWhereOrNull((event) => event.value == this)
+        ?.key;
   }
 
   LimitEvent({
@@ -256,7 +291,7 @@ class ExchangeTicket {
     return checkEventOutdated(
       timeJp: DateTime.parse('${monthJp}01'.replaceAll('-', '')),
       timeCn: DateTime.parse('${month}01'.replaceAll('-', '')),
-      duration: Duration(days: 31*months),
+      duration: Duration(days: 31 * months),
     );
   }
 }

@@ -1,4 +1,4 @@
-//@dart=2.9
+//@dart=2.12
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/servant/servant_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';
@@ -15,7 +15,7 @@ class ItemCostServantPage extends StatelessWidget {
   final int sortType;
 
   ItemCostServantPage({
-    @required this.itemKey,
+    required this.itemKey,
     this.favorite = true,
     this.viewType = 0,
     this.sortType = 0,
@@ -24,17 +24,18 @@ class ItemCostServantPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // print(db.itemStat.svtItemDetail.allCountBySvt.skill);
-    String num2str(int n) => formatNumber(n ?? 0, compact: true, minVal: 10000);
+    String num2str(int? n) =>
+        formatNumber(n ?? 0, compact: true, minVal: 10000);
     return db.itemStat.makeBuilder((context, snapshot) {
-      final statistics = snapshot.data;
-      final counts = statistics.svtItemDetail.getItemCounts(favorite);
-      final details = statistics.svtItemDetail.getCountByItem(favorite);
+      final stat = db.itemStat;
+      final counts = stat.svtItemDetail.getItemCounts(favorite);
+      final details = stat.svtItemDetail.getCountByItem(favorite);
       List<Widget> children = [
         CustomTile(
           title: Text(
-              '${S.current.item_left} ${num2str(statistics.leftItems[itemKey])}\n'
+              '${S.current.item_left} ${num2str(stat.leftItems[itemKey])}\n'
               '${S.current.item_own} ${num2str(db.curUser.items[itemKey])} '
-              '${S.current.event_title} ${num2str(statistics.eventItems[itemKey])}'),
+              '${S.current.event_title} ${num2str(stat.eventItems[itemKey])}'),
           trailing: Text(
             '${S.current.item_total_demand} ${num2str(counts.summation[itemKey])}\n' +
                 counts
@@ -56,7 +57,7 @@ class ItemCostServantPage extends StatelessWidget {
         for (int i = 0; i < headers.length; i++) {
           final _allSvtCounts =
               db.itemStat.svtItemDetail.allCountByItem.values[i][itemKey];
-          bool _hasSvt = _allSvtCounts?.values?.any((e) => e > 0) ?? false;
+          bool _hasSvt = _allSvtCounts?.values.any((e) => e > 0) ?? false;
           if (_hasSvt)
             children.add(Column(
               mainAxisSize: MainAxisSize.min,
@@ -85,13 +86,14 @@ class ItemCostServantPage extends StatelessWidget {
     });
   }
 
-  Widget _buildSvtIconGrid(BuildContext context, Map<int, int> src,
+  Widget _buildSvtIconGrid(BuildContext context, Map<int, int>? src,
       {bool highlight = false}) {
+    src ??= {};
     List<Widget> children = [];
     var sortedSvts = sortSvts(src.keys.toList());
     sortedSvts.forEach((svtNo) {
-      final svt = db.gameData.servants[svtNo];
-      final num = src[svtNo];
+      final svt = db.gameData.servants[svtNo]!;
+      final num = src![svtNo]!;
       bool showShadow =
           highlight && db.curUser.svtStatusOf(svtNo).curVal.favorite;
       if (num > 0) {
@@ -132,20 +134,23 @@ class ItemCostServantPage extends StatelessWidget {
   }
 
   List<Widget> buildSvtList(
-      BuildContext context, SvtParts<Map<String, Map<int, int>>> stat) {
+      BuildContext context, SvtParts<Map<String, Map<int, int>>> details) {
     List<Widget> children = [];
-    sortSvts(stat.summation[itemKey].keys.toList()).forEach((svtNo) {
-      final allNum = stat.summation[itemKey][svtNo];
+    if (!details.summation.containsKey(itemKey)) {
+      return children;
+    }
+    sortSvts(details.summation[itemKey]!.keys.toList()).forEach((svtNo) {
+      final allNum = details.summation[itemKey]?[svtNo] ?? 0;
       if (allNum <= 0) {
         return;
       }
-      final svt = db.gameData.servants[svtNo];
+      final svt = db.gameData.servants[svtNo]!;
       bool _planned = db.curUser.svtStatusOf(svtNo).curVal.favorite;
       final textStyle = _planned ? TextStyle(color: Colors.blueAccent) : null;
-      final ascensionNum = stat.ascension[itemKey][svtNo] ?? 0,
-          skillNum = stat.skill[itemKey][svtNo] ?? 0,
-          dressNum = stat.dress[itemKey][svtNo] ?? 0,
-          grailNum = stat.grailAscension[itemKey][svtNo] ?? 0;
+      final ascensionNum = details.ascension[itemKey]?[svtNo] ?? 0,
+          skillNum = details.skill[itemKey]?[svtNo] ?? 0,
+          dressNum = details.dress[itemKey]?[svtNo] ?? 0,
+          grailNum = details.grailAscension[itemKey]?[svtNo] ?? 0;
       children.add(CustomTile(
         leading: db.getIconImage(svt.icon, width: 52),
         title: Text('${svt.info.name}', style: textStyle),

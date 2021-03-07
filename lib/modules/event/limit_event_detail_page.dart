@@ -1,4 +1,4 @@
-//@dart=2.9
+//@dart=2.12
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
@@ -6,26 +6,25 @@ import 'package:chaldea/modules/shared/item_related_builder.dart';
 import 'package:flutter/services.dart';
 
 class LimitEventDetailPage extends StatefulWidget {
-  final String name;
+  final LimitEvent event;
 
-  const LimitEventDetailPage({Key key, @required this.name}) : super(key: key);
+  const LimitEventDetailPage({Key? key, required this.event}) : super(key: key);
 
   @override
   _LimitEventDetailPageState createState() => _LimitEventDetailPageState();
 }
 
 class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
-  LimitEvent event;
-  LimitEventPlan plan;
-  TextEditingController _lotteryController;
+  LimitEvent get event => widget.event;
 
+  LimitEventPlan get plan => db.curUser.events.limitEventOf(event.indexKey);
+
+  late TextEditingController _lotteryController;
   Map<String, TextEditingController> _controllers = {};
 
   @override
   void initState() {
     super.initState();
-    event = db.gameData.events.limitEvents[widget.name];
-    plan = db.curUser.events.limitEventOf(event.indexKey);
     if (event.lottery != null) {
       _lotteryController = TextEditingController(text: plan.lottery.toString());
     }
@@ -43,7 +42,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     if (event.bannerUrl?.isNotEmpty == true)
       children.add(GestureDetector(
         onTap: () => jumpToExternalLinkAlert(
-            url: mooncellFullLink(widget.name), name: 'Mooncell'),
+            url: mooncellFullLink(widget.event.indexKey), name: 'Mooncell'),
         child: CachedImage(
           imageUrl: event.bannerUrl,
           connectivity: db.connectivity,
@@ -131,7 +130,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
             icon: Icon(Icons.archive_outlined),
             tooltip: S.of(context).event_collect_items,
             onPressed: () {
-              if (plan?.enable != true) {
+              if (!plan.enable) {
                 showInformDialog(context,
                     content: S.of(context).event_not_planned);
               } else {
@@ -178,9 +177,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
             inputFormatters: [NumberInputFormatter()],
             decoration: InputDecoration(counterText: ''),
             onChanged: (v) {
-              if (extraPlan != null) {
-                extraPlan[itemKey] = int.tryParse(v) ?? 0;
-              }
+              extraPlan[itemKey] = int.tryParse(v) ?? 0;
             },
             onSubmitted: (_) {},
             onEditingComplete: () {
@@ -196,14 +193,14 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
   void onTapIcon(String itemKey) {
     SplitRoute.push(
       context: context,
-      builder: (context, _) => ItemDetailPage(itemKey),
+      builder: (context, _) => ItemDetailPage(itemKey: itemKey),
     );
   }
 
   @override
   void dispose() {
     super.dispose();
-    _lotteryController?.dispose();
+    _lotteryController.dispose();
     _controllers.values.forEach((c) => c.dispose());
   }
 }

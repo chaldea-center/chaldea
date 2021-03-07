@@ -73,7 +73,7 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
           title: Text(formatNumber(shownItems[Item.qp] ?? 0)),
           onTap: () => SplitRoute.push(
             context: context,
-            builder: (context, _) => ItemDetailPage(Item.qp),
+            builder: (context, _) => ItemDetailPage(itemKey: Item.qp),
           ),
         ),
         buildClassifiedItemList(
@@ -83,7 +83,7 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
           crossCount: SplitRoute.isSplit(context) ? 7 : 7,
           onTap: (itemKey) => SplitRoute.push(
             context: context,
-            builder: (context, _) => ItemDetailPage(itemKey),
+            builder: (context, _) => ItemDetailPage(itemKey: itemKey),
           ),
           compact: false,
         )

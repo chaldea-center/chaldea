@@ -1,4 +1,4 @@
-//@dart=2.9
+//@dart=2.12
 import 'dart:convert';
 
 import 'package:chaldea/components/components.dart';
@@ -9,8 +9,6 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-  List<String> accounts;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +36,6 @@ class _AccountPageState extends State<AccountPage> {
       ),
       body: TileGroup(
         children: db.userData.users.keys.map((userKey) {
-          final user = db.userData.users[userKey];
           final bool _isCurUser = userKey == db.userData.curUserKey;
           return ListTile(
             title: Row(
@@ -54,7 +51,7 @@ class _AccountPageState extends State<AccountPage> {
                         : Colors.transparent,
                   ),
                 ),
-                Text(user.name)
+                Text(db.curUser.name)
               ],
             ),
             selected: _isCurUser,
@@ -101,18 +98,17 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   void renameUser(String key) {
-    final user = db.userData.users[key];
     showDialog(
       context: context,
       builder: (context) => InputCancelOkDialog(
-        title: '${S.of(context).rename} - ${user.name}',
-        text: user.name,
+        title: '${S.of(context).rename} - ${db.curUser.name}',
+        text: db.curUser.name,
         errorText: S.of(context).input_invalid_hint,
         validate: (v) {
           return v == v.trim() && !db.userData.userNames.contains(v);
         },
         onSubmit: (v) {
-          user.name = v;
+          db.curUser.name = v;
           db.onAppUpdate();
         },
       ),
@@ -122,7 +118,7 @@ class _AccountPageState extends State<AccountPage> {
   void copyUser(String key) {
     int i = 2;
     String newName;
-    String oldName = db.userData.users[key].name;
+    String oldName = db.userData.users[key]!.name;
     do {
       newName = '$oldName ($i)';
       i++;
@@ -137,9 +133,16 @@ class _AccountPageState extends State<AccountPage> {
   void deleteUser(String key) {
     print('delete user key $key...');
     final canDelete = db.userData.users.length > 1;
-    setState(() {
+    if (!db.userData.users.containsKey(key)) {
       SimpleCancelOkDialog(
-        title: Text('Delete ${db.userData.users[key].name}'),
+        content: Text('User key $key not found'),
+      ).show(context);
+      return;
+    }
+    setState(() {
+      final user = db.userData.users[key]!;
+      SimpleCancelOkDialog(
+        title: Text('Delete ${user.name}'),
         content:
             canDelete ? null : Text('Cannot delete, at least one account!'),
         onTapOk: canDelete

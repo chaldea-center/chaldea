@@ -1,4 +1,4 @@
-//@dart=2.9
+//@dart=2.12
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/craft/craft_detail_page.dart';
 
@@ -6,12 +6,12 @@ import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
 
 class SvtInfoTab extends SvtTabBaseWidget {
-  SvtInfoTab(
-      {Key key,
-      ServantDetailPageState parent,
-      Servant svt,
-      ServantStatus status})
-      : super(key: key, parent: parent, svt: svt, status: status);
+  SvtInfoTab({
+    Key? key,
+    ServantDetailPageState? parent,
+    Servant? svt,
+    ServantStatus? status,
+  }) : super(key: key, parent: parent, svt: svt, status: status);
 
   @override
   _SvtInfoTabState createState() =>
@@ -20,10 +20,10 @@ class SvtInfoTab extends SvtTabBaseWidget {
 
 class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
     with SingleTickerProviderStateMixin {
-  TabController _tabController;
+  late TabController _tabController;
 
   _SvtInfoTabState(
-      {ServantDetailPageState parent, Servant svt, ServantStatus plan})
+      {ServantDetailPageState? parent, Servant? svt, ServantStatus? plan})
       : super(parent: parent, svt: svt, status: plan);
   bool useLangCn = false;
 
@@ -140,7 +140,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
           ], defaults: headerData),
           CustomTableRow.fromTexts(
               texts: ['strength', 'endurance', 'agility', 'mana', 'luck', 'np']
-                  .map((e) => svt.info.ability[e])
+                  .map((e) => svt.info.ability[e] ?? '?')
                   .toList(),
               defaults: contentData),
           CustomTableRow.fromTexts(
@@ -218,7 +218,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
                   text: svt.info.cardHits[card] == 0
                       ? '   -'
                       : '   ${svt.info.cardHits[card]} Hits '
-                          '(${svt.info.cardHitsDamage[card].join(', ')})',
+                          '(${svt.info.cardHitsDamage[card]?.join(', ')})',
                   flex: 5,
                   alignment: Alignment.centerLeft,
                 )
@@ -287,10 +287,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
       children: List.generate(svt.profiles.length, (index) {
         final profile = svt.profiles[index];
         String description =
-            useLangCn ? profile.description : profile.descriptionJp;
-        if (description == null || description.isEmpty) {
-          description = '???';
-        }
+            (useLangCn ? profile.description : profile.descriptionJp) ?? '???';
         return Card(
           margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           color: Theme.of(context).cardColor.withOpacity(0.975),
@@ -313,8 +310,12 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
 
   Widget buildBondCraftTab() {
     if (svt.bondCraft != null && svt.bondCraft > 0) {
-      return CraftDetailBasePage(
-          ce: db.gameData.crafts[svt.bondCraft], useLangCn: useLangCn);
+      final ce = db.gameData.crafts[svt.bondCraft];
+      if (ce == null) {
+        return Container();
+      } else {
+        return CraftDetailBasePage(ce: ce, useLangCn: useLangCn);
+      }
     } else {
       return Center(child: Text(S.of(context).hint_no_bond_craft));
     }
@@ -324,9 +325,11 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
     if (svt.valentineCraft?.isNotEmpty == true) {
       // mash has two valentine crafts
       return ListView.separated(
-        itemBuilder: (context, index) => CraftDetailBasePage(
-            ce: db.gameData.crafts[svt.valentineCraft[index]],
-            useLangCn: useLangCn),
+        itemBuilder: (context, index) {
+          final ce = db.gameData.crafts[svt.valentineCraft[index]];
+          if (ce == null) return Container();
+          return CraftDetailBasePage(ce: ce, useLangCn: useLangCn);
+        },
         separatorBuilder: (context, index) => Divider(height: 20),
         itemCount: svt.valentineCraft.length,
       );

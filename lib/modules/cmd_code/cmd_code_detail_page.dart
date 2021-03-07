@@ -4,7 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class CmdCodeDetailPage extends StatefulWidget {
   final CommandCode code;
-  final CommandCode Function(int, bool)? onSwitch;
+  final CommandCode? Function(int, bool)? onSwitch;
 
   const CmdCodeDetailPage({Key? key, required this.code, this.onSwitch})
       : super(key: key);

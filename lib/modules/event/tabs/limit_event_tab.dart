@@ -1,4 +1,4 @@
-//@dart=2.9
+//@dart=2.12
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 
@@ -6,15 +6,20 @@ import '../limit_event_detail_page.dart';
 
 class LimitEventTab extends StatefulWidget {
   final bool reverse;
+  final bool showOutdated;
 
-  const LimitEventTab({Key key, this.reverse = false}) : super(key: key);
+  const LimitEventTab(
+      {Key? key, this.reverse = false, this.showOutdated = false})
+      : super(key: key);
 
   @override
   _LimitEventTabState createState() => _LimitEventTabState();
 }
 
 class _LimitEventTabState extends State<LimitEventTab> {
-  ScrollController _scrollController;
+  late ScrollController _scrollController;
+
+  Map<String, LimitEvent> get limitEvents => db.gameData.events.limitEvents;
 
   @override
   void initState() {
@@ -25,26 +30,26 @@ class _LimitEventTabState extends State<LimitEventTab> {
   @override
   void dispose() {
     super.dispose();
-    _scrollController?.dispose();
+    _scrollController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final limitEvents = db.gameData.events.limitEvents;
-    final eventKeys = limitEvents.keys.toList();
-    eventKeys.sort((a, b) {
-      return (limitEvents[a].startTimeJp)
-              .compareTo(limitEvents[b].startTimeJp) *
-          (widget.reverse ? -1 : 1);
-    });
+    List<LimitEvent> events = limitEvents.values.toList();
+    if (!widget.showOutdated) {
+      events.removeWhere((e) =>
+          e.isOutdated() && !db.curUser.events.limitEventOf(e.indexKey).enable);
+    }
+    EventBase.sortEvents(events, reversed: widget.reverse);
+
     return Scrollbar(
       controller: _scrollController,
       child: ListView.separated(
         controller: _scrollController,
-        itemCount: eventKeys.length,
-        separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
+        itemCount: events.length,
+        separatorBuilder: (context, index) => kDefaultDivider,
         itemBuilder: (context, index) {
-          final event = limitEvents[eventKeys[index]];
+          final event = events[index];
           final plan = db.curUser.events.limitEventOf(event.indexKey);
           bool outdated = event.isOutdated();
           return ListTile(
@@ -67,20 +72,17 @@ class _LimitEventTabState extends State<LimitEventTab> {
                   Icon(Icons.star, color: Colors.yellow[700]),
                 Switch.adaptive(
                   value: plan.enable,
-                  onChanged: (v) => setState(
-                    () {
-                      plan.enable = v;
-                      db.itemStat.updateEventItems();
-                    },
-                  ),
+                  onChanged: (v) => setState(() {
+                    plan.enable = v;
+                    db.itemStat.updateEventItems();
+                  }),
                 )
               ],
             ),
             onTap: () {
               SplitRoute.push(
                 context: context,
-                builder: (context, _) =>
-                    LimitEventDetailPage(name: eventKeys[index]),
+                builder: (context, _) => LimitEventDetailPage(event: event),
                 popDetail: true,
               );
             },

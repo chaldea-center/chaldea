@@ -1,4 +1,4 @@
-//@dart=2.9
+//@dart=2.12
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/blank_page.dart';
@@ -26,14 +26,14 @@ class ServantDetailPage extends StatefulWidget {
 class ServantDetailPageState extends State<ServantDetailPage>
     with SingleTickerProviderStateMixin {
   Servant svt;
-  TabController _tabController;
+  late TabController _tabController;
 
 //  List<String> _tabNames = ['规划', '技能', '宝具', '特攻', '卡池', '礼装', '语音', '卡面'];
   // 特攻, 卡池,礼装,语音,卡面
   Map<String, WidgetBuilder> _builders = {};
 
   // store data
-  ServantStatus status;
+  ServantStatus get status => db.curUser.svtStatusOf(svt.no);
 
   ServantPlan get plan => db.curUser.svtPlanOf(svt.no);
 
@@ -80,12 +80,12 @@ class ServantDetailPageState extends State<ServantDetailPage>
     // TODO: why state re-created after fullscreen page popped?
     super.initState();
     _tabController = TabController(length: _builders.length, vsync: this);
-    status = db.curUser.svtStatusOf(svt.no);
   }
 
   @override
   void deactivate() {
     super.deactivate();
+    _tabController.dispose();
     db.saveUserData();
   }
 
@@ -275,7 +275,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
       "无法召唤": S.current.svt_obtain_unavailable
     };
     return svt.info.obtains.map((obtain) {
-      final bgColor = badgeColors[obtain] ?? badgeColors['无法召唤'];
+      final bgColor = badgeColors[obtain] ?? badgeColors['无法召唤']!;
       final String shownText = texts[obtain] ?? obtain;
       return DecoratedBox(
         decoration: BoxDecoration(

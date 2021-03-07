@@ -1,4 +1,4 @@
-//@dart=2.9
+//@dart=2.12
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 
@@ -6,12 +6,12 @@ import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
 
 class SvtNobelPhantasmTab extends SvtTabBaseWidget {
-  SvtNobelPhantasmTab(
-      {Key key,
-      ServantDetailPageState parent,
-      Servant svt,
-      ServantStatus status})
-      : super(key: key, parent: parent, svt: svt, status: status);
+  SvtNobelPhantasmTab({
+    Key? key,
+    ServantDetailPageState? parent,
+    Servant? svt,
+    ServantStatus? status,
+  }) : super(key: key, parent: parent, svt: svt, status: status);
 
   @override
   _SvtNobelPhantasmTabState createState() =>
@@ -20,7 +20,7 @@ class SvtNobelPhantasmTab extends SvtTabBaseWidget {
 
 class _SvtNobelPhantasmTabState extends SvtTabBaseState<SvtNobelPhantasmTab> {
   _SvtNobelPhantasmTabState(
-      {ServantDetailPageState parent, Servant svt, ServantStatus plan})
+      {ServantDetailPageState? parent, Servant? svt, ServantStatus? plan})
       : super(parent: parent, svt: svt, status: plan);
 
   @override

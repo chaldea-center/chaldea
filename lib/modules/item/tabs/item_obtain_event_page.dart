@@ -97,7 +97,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
         onTap: () {
           SplitRoute.push(
             context: context,
-            builder: (context, _) => LimitEventDetailPage(name: event.indexKey),
+            builder: (context, _) => LimitEventDetailPage(event: event),
             detail: true,
           );
         },
@@ -191,8 +191,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
         onTap: () {
           SplitRoute.push(
             context: context,
-            builder: (context, _) =>
-                MainRecordDetailPage(name: record.indexKey),
+            builder: (context, _) => MainRecordDetailPage(record: record),
             detail: true,
           );
         },

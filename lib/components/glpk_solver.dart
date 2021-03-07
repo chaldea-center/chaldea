@@ -111,7 +111,7 @@ class GLPKSolver {
   }
 
   /// two part: glpk linear programming +(then) efficiency sort
-  Future<GLPKSolution?> calculate(
+  Future<GLPKSolution> calculate(
       {required GLPKData data, required GLPKParams params}) async {
     // if use integer GLPK (simplex then intopt),
     // it may run out of time and memory, then crash.

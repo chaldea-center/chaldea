@@ -1,4 +1,4 @@
-//@dart=2.9
+//@dart=2.12
 import 'dart:math';
 
 import 'package:chaldea/components/components.dart';
@@ -11,8 +11,8 @@ class LevelingCostPage extends StatefulWidget {
   final String title;
 
   const LevelingCostPage(
-      {Key key,
-      @required this.costList,
+      {Key? key,
+      required this.costList,
       this.curLv = 0,
       this.targetLv = 0,
       this.title = ''})
@@ -97,7 +97,7 @@ class LevelingCostPageState extends State<LevelingCostPage> {
                             : () => SplitRoute.push(
                                   context: context,
                                   builder: (context, _) =>
-                                      ItemDetailPage(entry.key),
+                                      ItemDetailPage(itemKey: entry.key),
                                   popDetail: true,
                                 ),
                       ),

@@ -1,4 +1,4 @@
-//@dart=2.9
+//@dart=2.12
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -8,11 +8,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_picker/Picker.dart';
 
 class ExchangeTicketTab extends StatefulWidget {
+  /// If only show ONE month
+  final String? month;
   final bool reverse;
-  final String month;
+  final bool showOutdated;
 
-  const ExchangeTicketTab({Key key, this.reverse, this.month})
-      : super(key: key);
+  const ExchangeTicketTab({
+    Key? key,
+    this.month,
+    this.reverse = false,
+    this.showOutdated = false,
+  }) : super(key: key);
 
   @override
   _ExchangeTicketTabState createState() => _ExchangeTicketTabState();
@@ -20,7 +26,7 @@ class ExchangeTicketTab extends StatefulWidget {
 
 class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
   final AutoSizeGroup _autoSizeGroup = AutoSizeGroup();
-  ScrollController _scrollController;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
@@ -31,15 +37,27 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
   @override
   void dispose() {
     super.dispose();
-    _scrollController?.dispose();
+    _scrollController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final tickets = widget.month == null
-        ? db.gameData.events.exchangeTickets.values.toList()
-        : [db.gameData.events.exchangeTickets[widget.month]];
-    // ..retainWhere((e) => DateTime.parse(e.month + '01').isAfter(startDate));
+    if (widget.month != null) {
+      final ticket = db.gameData.events.exchangeTickets[widget.month];
+      if (ticket == null) {
+        return ListTile(title: Text('${widget.month} NOT FOUND'));
+      }
+      return buildOneMonth(ticket);
+    }
+    final tickets = db.gameData.events.exchangeTickets.values.toList();
+    if (!widget.showOutdated) {
+      tickets.removeWhere((ticket) {
+        if (!ticket.isOutdated()) return false;
+        final plan = db.curUser.events.exchangeTicketOf(ticket.month);
+        if (plan.any((e) => e > 0)) return false;
+        return true;
+      });
+    }
     tickets.sort((a, b) {
       return (a.month).compareTo(b.month) * (widget.reverse ? -1 : 1);
     });
@@ -117,7 +135,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
           GestureDetector(
             onTap: () => SplitRoute.push(
               context: context,
-              builder: (context, _) => ItemDetailPage(iconKey),
+              builder: (context, _) => ItemDetailPage(itemKey: iconKey),
               popDetail: true,
             ),
             child: db.getIconImage(iconKey, width: 42),
@@ -133,7 +151,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                   DefaultTextStyle(
                     style: Theme.of(context)
                         .textTheme
-                        .bodyText2, //body1->bodyText2
+                        .bodyText2!, //body1->bodyText2
                     child: AutoSizeText(
                       leftNum.toString(),
                       maxLines: 1,

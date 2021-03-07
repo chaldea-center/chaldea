@@ -5,7 +5,7 @@ import 'package:chaldea/components/components.dart';
 
 abstract class FilterPage<T> extends StatefulWidget {
   final T filterData;
-  final bool Function(T)? onChanged;
+  final ValueChanged<T>? onChanged;
 
   const FilterPage({Key? key, required this.filterData, this.onChanged})
       : super(key: key);
@@ -25,7 +25,7 @@ abstract class FilterPage<T> extends StatefulWidget {
 }
 
 abstract class FilterPageState<T> extends State<FilterPage<T>> {
-  late T filterData;
+  T get filterData => widget.filterData;
 
   TextStyle textStyle = TextStyle(fontSize: 16);
   bool? _useTabletView;
@@ -35,22 +35,9 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
     return _useTabletView!;
   }
 
-  /// must initiate [filterDate]
-  void initiate();
-
-  @override
-  void initState() {
-    super.initState();
-    initiate();
-  }
-
   void update() {
     if (widget.onChanged != null) {
-      if (!widget.onChanged!(filterData)) {
-        // currently, pass a GlobalKey to filter_list_page to avoid state lose
-        print('parent disposed! pop filter!');
-        Navigator.of(context).pop();
-      }
+      widget.onChanged!(filterData);
     }
     setState(() {});
   }

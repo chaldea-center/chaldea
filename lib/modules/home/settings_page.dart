@@ -1,4 +1,4 @@
-//@dart=2.9
+//@dart=2.12
 import 'dart:io';
 
 import 'package:chaldea/components/components.dart';
@@ -16,8 +16,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  String user;
-
   @override
   void initState() {
     super.initState();
@@ -67,7 +65,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Text(
-                      db.userData.users[db.userData.curUserKey].name,
+                      db.curUser.name,
                       style: TextStyle(color: Colors.black87),
                     ),
                     Icon(Icons.arrow_forward_ios)
@@ -145,6 +143,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         value: lang, child: Text(lang.name));
                   }).toList(),
                   onChanged: (lang) {
+                    if (lang == null) return;
                     db.userData.language = lang.code;
                     db.saveUserData();
                     db.onAppUpdate();
@@ -237,7 +236,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget get progressDropdown {
     Map<DateTime, EventBase> events = {};
     db.gameData.events.allEvents.forEach((key, event) {
-      final DateTime startTime = event.startTimeJp?.toDateTime();
+      final DateTime? startTime = event.startTimeJp?.toDateTime();
       if (startTime != null && !events.containsValue(startTime)) {
         events[startTime] = event;
       }
@@ -267,12 +266,12 @@ class _SettingsPageState extends State<SettingsPage> {
     ];
     items.addAll(sortedDates.map((date) => DropdownMenuItem(
           value: date.millisecondsSinceEpoch,
-          child: Text(events[date].localizedName),
+          child: Text(events[date]!.localizedName),
         )));
     if (db.curUser.msProgress > 0) {
       db.curUser.msProgress = items
               .firstWhereOrNull(
-                  (e) => e.value > 0 && e.value <= db.curUser.msProgress)
+                  (e) => e.value! > 0 && e.value! <= db.curUser.msProgress)
               ?.value ??
           -1;
     }

@@ -119,14 +119,14 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
 
   Widget associateEvent(String name) {
     name = name.replaceAll('_', ' ');
-    dynamic event;
+    EventBase? event;
     SplitLayoutBuilder? builder;
     if (db.gameData.events.limitEvents.containsKey(name)) {
       event = db.gameData.events.limitEvents[name]!;
-      builder = (context, _) => LimitEventDetailPage(name: name);
+      builder = (_, __) => LimitEventDetailPage(event: event as LimitEvent);
     } else if (db.gameData.events.mainRecords.containsKey(name)) {
       event = db.gameData.events.mainRecords[name]!;
-      builder = (context, _) => MainRecordDetailPage(name: name);
+      builder = (_, __) => MainRecordDetailPage(record: event as MainRecord);
     }
 
     return ListTile(

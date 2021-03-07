@@ -1,5 +1,4 @@
-//@dart=2.9
-import 'dart:convert';
+//@dart=2.12
 import 'dart:io';
 
 import 'package:chaldea/components/components.dart';
@@ -63,70 +62,6 @@ class _UpdateSourcePageState extends State<UpdateSourcePage> {
         }).toList(),
       ),
     );
-  }
-
-  void addUser(String name) {
-    String newKey = DateTime.now().millisecondsSinceEpoch.toString();
-    db.userData.users[newKey] = User(name: name);
-    db.userData.curUserKey = newKey;
-    db.onAppUpdate();
-    logger.d('Add account $newKey(name:$name)');
-  }
-
-  void renameUser(String key) {
-    final user = db.userData.users[key];
-    showDialog(
-      context: context,
-      builder: (context) => InputCancelOkDialog(
-        title: '${S.of(context).rename} - ${user.name}',
-        text: user.name,
-        errorText: S.of(context).input_invalid_hint,
-        validate: (v) {
-          return v == v.trim() && !db.userData.userNames.contains(v);
-        },
-        onSubmit: (v) {
-          user.name = v;
-          db.onAppUpdate();
-        },
-      ),
-    );
-  }
-
-  void copyUser(String key) {
-    int i = 2;
-    String newName;
-    String oldName = db.userData.users[key].name;
-    do {
-      newName = '$oldName ($i)';
-      i++;
-    } while (db.userData.users.values.any((user) => user.name == newName));
-    String newKey = DateTime.now().millisecondsSinceEpoch.toString();
-    db.userData.users[newKey] =
-        User.fromJson(json.decode(json.encode(db.userData.users[key])))
-          ..name = newName;
-    logger.d('Copy user $key($oldName)->$newKey($newName)');
-  }
-
-  void deleteUser(String key) {
-    print('delete user key $key...');
-    final canDelete = db.userData.users.length > 1;
-    setState(() {
-      SimpleCancelOkDialog(
-        title: Text('Delete ${db.userData.users[key].name}'),
-        content:
-            canDelete ? null : Text('Cannot delete, at least one account!'),
-        onTapOk: canDelete
-            ? () {
-                db.userData.users.remove(key);
-                if (db.userData.curUserKey == key) {
-                  db.userData.curUserKey = db.userData.users.keys.first;
-                }
-                db.onAppUpdate();
-                print('accounts: ${db.userData.users.keys.toList()}');
-              }
-            : null,
-      ).show(context);
-    });
   }
 
   @override

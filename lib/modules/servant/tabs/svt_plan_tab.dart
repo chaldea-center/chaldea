@@ -1,4 +1,4 @@
-//@dart=2.9
+//@dart=2.12
 import 'dart:math' show max, min;
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -11,12 +11,12 @@ import 'leveling_cost_page.dart';
 import 'svt_tab_base.dart';
 
 class SvtPlanTab extends SvtTabBaseWidget {
-  SvtPlanTab(
-      {Key key,
-      ServantDetailPageState parent,
-      Servant svt,
-      ServantStatus status})
-      : super(key: key, parent: parent, svt: svt, status: status);
+  SvtPlanTab({
+    Key? key,
+    ServantDetailPageState? parent,
+    Servant? svt,
+    ServantStatus? status,
+  }) : super(key: key, parent: parent, svt: svt, status: status);
 
   @override
   State<StatefulWidget> createState() =>
@@ -26,16 +26,16 @@ class SvtPlanTab extends SvtTabBaseWidget {
 class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
   /// in edit mode, change skill lv_a to lv_b and take out the items
   bool enhanceMode = false;
-  ServantPlan enhancePlan;
+  ServantPlan enhancePlan = ServantPlan();
 
   ServantPlan get plan => db.curUser.svtPlanOf(svt.no);
 
   _SvtPlanTabState(
-      {ServantDetailPageState parent, Servant svt, ServantStatus status})
+      {ServantDetailPageState? parent, Servant? svt, ServantStatus? status})
       : super(parent: parent, svt: svt, status: status);
 
   /// valid range include start and end
-  int _ensureInRange(int v, int start, int end) {
+  int _ensureInRange(int? v, int start, int end) {
     v = v ?? start;
     if (v < start) return start;
     if (v > end) return end;
@@ -223,18 +223,18 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
   }
 
   Widget buildPlanRow({
-    Widget leading,
-    String title,
-    String subtitle,
-    int start,
-    int end,
-    int minVal,
-    int maxVal,
-    Widget itemBuilder(int v),
-    void Function(int, int) onValueChanged,
-    WidgetBuilder detailPageBuilder,
+    Widget? leading,
+    String? title,
+    String? subtitle,
+    required int start,
+    int? end,
+    required int minVal,
+    required int maxVal,
+    Widget itemBuilder(int v)?,
+    required void onValueChanged(int start, int end),
+    WidgetBuilder? detailPageBuilder,
   }) {
-    assert(start != null && minVal <= start && start <= maxVal);
+    assert(minVal <= start && start <= maxVal);
     if (end != null) {
       assert(start <= end && end <= maxVal);
     }
@@ -243,17 +243,21 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     }
     Widget selector;
     if (end == null) {
-      selector = DropdownButton(
+      selector = DropdownButton<int>(
         value: start,
         items: List.generate(
           maxVal - minVal + 1,
           (index) => DropdownMenuItem(
             value: minVal + index,
-            child: itemBuilder(minVal + index),
+            child: itemBuilder!(minVal + index),
           ),
         ),
         // disable at enhance mode
-        onChanged: enhanceMode ? null : (v) => onValueChanged(v, -1),
+        onChanged: enhanceMode
+            ? null
+            : (v) {
+                if (v != null) onValueChanged(v, -1);
+              },
       );
     } else {
       selector = RangeSelector<int>(
@@ -263,7 +267,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         startItems:
             List.generate(maxVal - minVal + 1, (index) => minVal + index),
         endItems: List.generate(maxVal - minVal + 1, (index) => minVal + index),
-        itemBuilder: (context, v) => itemBuilder(v),
+        itemBuilder: (context, v) => itemBuilder!(v),
         onChanged: onValueChanged,
       );
     }
@@ -401,16 +405,11 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
   }
 
   void updateState() {
-    State state; // = widget.parent ?? this;
-    if (widget.parent != null)
-      state = widget.parent;
-    else
-      state = this;
-    state.setState(() {});
     if (!enhanceMode) {
       db.userData.broadcastUserUpdate();
       db.itemStat.updateSvtItems();
     }
+    db.onAppUpdate();
   }
 
   void _onEnhance() {
@@ -422,7 +421,9 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     enhanceItems.forEach((itemKey, number) {
       children.add(ImageWithText(
         onTap: () => SplitRoute.push(
-            context: context, builder: (context, _) => ItemDetailPage(itemKey)),
+          context: context,
+          builder: (context, _) => ItemDetailPage(itemKey: itemKey),
+        ),
         image: db.getIconImage(itemKey),
         text: formatNumber(number, compact: true),
         padding: EdgeInsets.only(right: 3),
@@ -439,7 +440,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           child: hasItem
               ? buildResponsiveGridWrap(
                   context: context, children: children, responsive: false)
-              : Text('Nothing'),
+              : ListTile(title: Text('Nothing')),
         ),
         actions: [
           TextButton(
@@ -466,7 +467,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     );
   }
 
-  void _onAllSkillLv(int lv) {
+  void _onAllSkillLv(int? lv) {
+    if (lv == null) return;
     final cur = status.curVal, target = enhanceMode ? enhancePlan : plan;
     cur.favorite = target.favorite = true;
     if (enhanceMode) {

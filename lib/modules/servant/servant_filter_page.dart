@@ -1,24 +1,19 @@
-//@dart=2.9
+//@dart=2.12
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
 
 class ServantFilterPage extends FilterPage<SvtFilterData> {
-  const ServantFilterPage(
-      {Key key,
-      SvtFilterData filterData,
-      bool Function(SvtFilterData) onChanged})
-      : super(key: key, onChanged: onChanged, filterData: filterData);
+  const ServantFilterPage({
+    Key? key,
+    required SvtFilterData filterData,
+    ValueChanged<SvtFilterData>? onChanged,
+  }) : super(key: key, onChanged: onChanged, filterData: filterData);
 
   @override
   _ServantFilterPageState createState() => _ServantFilterPageState();
 }
 
 class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
-  @override
-  void initiate() {
-    filterData = widget.filterData ?? SvtFilterData();
-  }
-
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
@@ -71,6 +66,19 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
               },
             ),
         ]),
+        _buildClassFilter(),
+        FilterGroup(
+          title: Text(S.of(context).filter_sort_rarity, style: textStyle),
+          options: SvtFilterData.rarityData,
+          values: filterData.rarity,
+          optionBuilder: (v) => Text('$v☆'),
+          onFilterChanged: (value) {
+            // object should be the same, need not to update manually
+            filterData.rarity = value;
+            update();
+          },
+        ),
+
         FilterGroup(
           title: Text(S.of(context).plan, style: textStyle),
           options: SvtFilterData.planCompletionData,
@@ -101,18 +109,6 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           onFilterChanged: (value) {
             // object should be the same, need not to update manually
             filterData.priority = value;
-            update();
-          },
-        ),
-        _buildClassFilter(),
-        FilterGroup(
-          title: Text(S.of(context).filter_sort_rarity, style: textStyle),
-          options: SvtFilterData.rarityData,
-          values: filterData.rarity,
-          optionBuilder: (v) => Text('$v☆'),
-          onFilterChanged: (value) {
-            // object should be the same, need not to update manually
-            filterData.rarity = value;
             update();
           },
         ),

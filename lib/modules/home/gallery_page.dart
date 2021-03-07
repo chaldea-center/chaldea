@@ -1,4 +1,4 @@
-//@dart=2.9
+//@dart=2.12
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
@@ -46,7 +46,8 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
   Future<Null> resolveSliderImageUrls() async {
     final srcUrl =
         'https://fgo.wiki/w/%E6%A8%A1%E6%9D%BF:%E8%87%AA%E5%8A%A8%E5%8F%96%E5%80%BC%E8%BD%AE%E6%92%AD';
-    String tryDecodeUrl(String url) {
+    String? tryDecodeUrl(String? url) {
+      if (url == null) return null;
       String url2;
       if (url.toLowerCase().startsWith(RegExp(r'http|fgo.wiki'))) {
         url2 = url;
@@ -66,14 +67,15 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       db.userData.sliderUrls.clear();
       dom.Element element = body.getElementById('transImageBox');
       for (var linkNode in element.getElementsByTagName('a')) {
-        String link = tryDecodeUrl(linkNode.attributes['href']);
+        String? link = tryDecodeUrl(linkNode.attributes['href']);
         var imgNodes = linkNode.getElementsByTagName('img');
         if (imgNodes.isNotEmpty) {
-          var imgUrl = tryDecodeUrl(imgNodes.first.attributes['src']);
-          print('------resolved slider url------');
-          db.userData.sliderUrls[imgUrl] = link;
-          db.userData.sliderUpdateTime = DateTime.now().toString();
-          print('imgUrl= "$imgUrl"\nhref  = "$link"');
+          String? imgUrl = tryDecodeUrl(imgNodes.first.attributes['src']);
+          if (link != null && imgUrl != null) {
+            db.userData.sliderUrls[imgUrl] = link;
+            db.userData.sliderUpdateTime = DateTime.now().toString();
+            print('imgUrl= "$imgUrl"\nhref  = "$link"');
+          }
         }
       }
       setState(() {});
@@ -274,7 +276,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
             if (item.builder != null) {
               SplitRoute.push(
                 context: context,
-                builder: item.builder,
+                builder: item.builder!,
                 detail: item.isDetail,
                 popDetail: true,
               );

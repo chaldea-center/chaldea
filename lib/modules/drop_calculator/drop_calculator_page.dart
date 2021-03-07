@@ -1,4 +1,4 @@
-//@dart=2.9
+//@dart=2.12
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -17,7 +17,8 @@ import 'quest_plan_tab.dart';
 class DropCalculatorPage extends StatefulWidget {
   final Map<String, int> objectiveCounts;
 
-  DropCalculatorPage({Key key, this.objectiveCounts}) : super(key: key);
+  DropCalculatorPage({Key? key, this.objectiveCounts = const {}})
+      : super(key: key);
 
   @override
   _DropCalculatorPageState createState() => _DropCalculatorPageState();
@@ -25,8 +26,8 @@ class DropCalculatorPage extends StatefulWidget {
 
 class _DropCalculatorPageState extends State<DropCalculatorPage>
     with SingleTickerProviderStateMixin {
-  GLPKSolution solution;
-  TabController _tabController;
+  GLPKSolution? solution;
+  late TabController _tabController;
 
   @override
   void initState() {
@@ -37,7 +38,7 @@ class _DropCalculatorPageState extends State<DropCalculatorPage>
   @override
   void dispose() {
     super.dispose();
-    _tabController?.dispose();
+    _tabController.dispose();
   }
 
   @override
@@ -94,7 +95,7 @@ class _DropCalculatorPageState extends State<DropCalculatorPage>
     );
   }
 
-  void onSolved(GLPKSolution s) {
+  void onSolved(GLPKSolution? s) {
     if (s == null) {
       EasyLoading.showToast('no solution');
     } else {
@@ -102,9 +103,9 @@ class _DropCalculatorPageState extends State<DropCalculatorPage>
         solution = s;
       });
       // if change tab index immediately, the second tab won't re-render
-      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-        if (solution.destination > 0 && solution.destination < 3) {
-          _tabController.index = solution.destination;
+      SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+        if (solution!.destination > 0 && solution!.destination < 3) {
+          _tabController.index = solution!.destination;
         } else {
           _tabController.index = 1;
         }
@@ -114,10 +115,10 @@ class _DropCalculatorPageState extends State<DropCalculatorPage>
 }
 
 class DropCalcInputTab extends StatefulWidget {
-  final Map<String, int> objectiveCounts;
-  final void Function(GLPKSolution) onSolved;
+  final Map<String, int>? objectiveCounts;
+  final ValueChanged<GLPKSolution>? onSolved;
 
-  const DropCalcInputTab({Key key, this.objectiveCounts, this.onSolved})
+  const DropCalcInputTab({Key? key, this.objectiveCounts, this.onSolved})
       : super(key: key);
 
   @override
@@ -125,7 +126,7 @@ class DropCalcInputTab extends StatefulWidget {
 }
 
 class _DropCalcInputTabState extends State<DropCalcInputTab> {
-  GLPKParams params;
+  late GLPKParams params;
 
   // category - itemKey
   Map<String, List<String>> pickerData = {};
@@ -141,7 +142,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     params.enableControllers();
     if (widget.objectiveCounts != null) {
       params.removeAll();
-      widget.objectiveCounts
+      widget.objectiveCounts!
           .forEach((key, count) => params.addOne(key, count, 1.0));
     }
     if (params.rows.isEmpty) {
@@ -156,7 +157,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     db.gameData.items.keys.forEach((name) {
       final category = getItemCategory(name);
       if (category != null) {
-        pickerData.putIfAbsent(getItemCategory(name), () => []).add(name);
+        pickerData.putIfAbsent(category, () => []).add(name);
       }
     });
 
@@ -238,7 +239,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
             onTap: () {
               SplitRoute.push(
                 context: context,
-                builder: (context, _) => ItemDetailPage(item),
+                builder: (context, _) => ItemDetailPage(itemKey: item),
               );
             },
             child: Padding(
@@ -248,12 +249,13 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
           ),
           title: GestureDetector(
             onTap: () {
-              final String category = getItemCategory(item);
+              final String? category = getItemCategory(item);
+              if (category == null) return;
               Picker(
                 adapter: PickerDataAdapter<String>(data: pickerAdapter),
                 selecteds: [
                   pickerData.keys.toList().indexOf(category),
-                  pickerData[category].indexOf(item)
+                  pickerData[category]!.indexOf(item)
                 ],
                 height: 250,
                 itemExtent: 48,
@@ -340,7 +342,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: 4,
               children: <Widget>[
-                DropdownButton(
+                DropdownButton<bool>(
                   value: planOrEff,
                   isDense: true,
                   items: [
@@ -408,11 +410,12 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     params.addOne(item, n);
   }
 
-  String getItemCategory(String itemKey) {
+  String? getItemCategory(String itemKey) {
     final item = db.gameData.items[itemKey];
+    if (item == null) return null;
     if (item.category == 1) {
       if (item.rarity <= 3) {
-        return [
+        return <String?>[
           null,
           S.current.item_category_copper,
           S.current.item_category_silver,
@@ -441,7 +444,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
       solution.destination = planOrEff ? 1 : 2;
       solution.params = params;
       if (widget.onSolved != null) {
-        widget.onSolved(solution);
+        widget.onSolved!(solution);
       }
     } else {
       EasyLoading.showToast(S.of(context).input_invalid_hint);

@@ -1,4 +1,4 @@
-//@dart=2.9
+//@dart=2.12
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
@@ -7,27 +7,30 @@ import 'cmd_code_detail_page.dart';
 import 'cmd_code_filter_page.dart';
 
 class CmdCodeListPage extends StatefulWidget {
-  CmdCodeListPage({Key key}) : super(key: key);
+  CmdCodeListPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => CmdCodeListPageState();
 }
 
 class CmdCodeListPageState extends State<CmdCodeListPage> {
-  CmdCodeFilterData filterData;
+  CmdCodeFilterData get filterData => db.userData.cmdCodeFilter;
+
+  /// if null, insert an empty container for gridview
   List<CommandCode> shownList = [];
-  TextEditingController _inputController = TextEditingController();
-  FocusNode _inputFocusNode = FocusNode();
-  ScrollController _scrollController;
+  late TextEditingController _inputController;
+  late ScrollController _scrollController;
+  late FocusNode _inputFocusNode;
 
   Query __textFilter = Query();
 
   @override
   void initState() {
     super.initState();
-    filterData = db.userData.cmdCodeFilter;
     filterData.filterString = '';
+    _inputController = TextEditingController();
     _scrollController = ScrollController();
+    _inputFocusNode = FocusNode();
   }
 
   @override
@@ -70,14 +73,10 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
     return true;
   }
 
-  bool onFilterChanged(CmdCodeFilterData data) {
+  void onFilterChanged(CmdCodeFilterData data) {
     if (mounted) {
-      setState(() {
-        filterData = data;
-      });
-      return true;
+      setState(() {});
     }
-    return false;
   }
 
   @override
@@ -113,7 +112,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
                         icon: Icon(Icons.clear, size: 20),
                         onPressed: () {
                           setState(() {
-                            WidgetsBinding.instance.addPostFrameCallback(
+                            WidgetsBinding.instance!.addPostFrameCallback(
                                 (_) => _inputController.clear());
                             filterData.filterString = '';
                           });
@@ -209,38 +208,38 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
   }
 
   Widget _buildGridView() {
-    if (shownList.length % 5 == 0) {
-      shownList.add(null);
+    List<Widget> children = [];
+    for (var code in shownList) {
+      children.add(Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+          child: GestureDetector(
+            child: db.getIconImage(code.icon),
+            onTap: () {
+              SplitRoute.push(
+                context: context,
+                builder: (context, _) =>
+                    CmdCodeDetailPage(code: code, onSwitch: switchNext),
+                popDetail: true,
+              );
+            },
+          ),
+        ),
+      ));
+    }
+    if (children.length % 5 == 0) {
+      children.add(Container());
     }
     return GridView.count(
-        crossAxisCount: 5,
-        childAspectRatio: 1,
-        controller: _scrollController,
-        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-        children: shownList.map((code) {
-          if (code == null) {
-            return Container();
-          }
-          return Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
-              child: GestureDetector(
-                child: db.getIconImage(code.icon),
-                onTap: () {
-                  SplitRoute.push(
-                    context: context,
-                    builder: (context, _) =>
-                        CmdCodeDetailPage(code: code, onSwitch: switchNext),
-                    popDetail: true,
-                  );
-                },
-              ),
-            ),
-          );
-        }).toList());
+      crossAxisCount: 5,
+      childAspectRatio: 1,
+      controller: _scrollController,
+      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+      children: children,
+    );
   }
 
-  CommandCode switchNext(int cur, bool next) {
+  CommandCode? switchNext(int cur, bool next) {
     if (shownList.length <= 0) return null;
     for (int i = 0; i < shownList.length; i++) {
       if (shownList[i].no == cur) {

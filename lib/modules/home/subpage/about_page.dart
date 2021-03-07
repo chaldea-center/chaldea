@@ -1,12 +1,12 @@
-//@dart=2.9
+//@dart=2.12
 import 'dart:io';
-import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'feedback_page.dart';
 
 class AboutPage extends StatefulWidget {
   @override
@@ -23,25 +23,10 @@ class _AboutPageState extends State<AboutPage> {
       };
 
   final crashFile = File(db.paths.crashLog);
-  String crashLog;
 
   @override
   void initState() {
     super.initState();
-    loadLog();
-  }
-
-  void loadLog() {
-    if (crashFile.existsSync()) {
-      crashLog = 'loading...';
-      crashFile.readAsLines().then((lines) {
-        crashLog =
-            lines.sublist(max(0, lines.length - 500), lines.length).join('\n');
-        setState(() {});
-      });
-    } else {
-      crashLog = 'no crash log found.';
-    }
   }
 
   @override
@@ -119,29 +104,12 @@ class _AboutPageState extends State<AboutPage> {
             children: <Widget>[
               ListTile(
                 title: Text('Email'),
-                subtitle: AutoSizeText(S.of(context).about_email_subtitle,
-                    maxLines: 1),
-                onTap: () async {
-                  if (Platform.isAndroid || Platform.isIOS) {
-                    final Email email = Email(
-                        subject: '${AppInfo.appName} '
-                            'v${AppInfo.fullVersion2} ${S.of(context).about_feedback}',
-                        body: S.of(context).about_email_subtitle + '\n\n',
-                        recipients: [kSupportTeamEmailAddress],
-                        isHTML: true,
-                        attachmentPaths: [
-                          if (crashFile.existsSync()) crashFile.path,
-                        ]);
-                    FlutterEmailSender.send(email);
-                  } else {
-                    SimpleCancelOkDialog(
-                      title: Text(S.of(context).about_feedback),
-                      content: Text(
-                        S.of(context).about_email_dialog(
-                            kSupportTeamEmailAddress, db.paths.crashLog),
-                      ),
-                    ).show(context);
-                  }
+                onTap: () {
+                  SplitRoute.push(
+                    context: context,
+                    builder: (context, _) => FeedbackPage(),
+                    detail: true,
+                  );
                 },
               ),
               ListTile(
@@ -159,31 +127,6 @@ class _AboutPageState extends State<AboutPage> {
                 )
             ],
           ),
-          if (kDebugMode_)
-            TileGroup(
-              header: 'Crash log (${crashFile.statSync().size ~/ 1000} KB)',
-              children: <Widget>[
-                ListTile(
-                  title: Text('Delete crash logs'),
-                  onTap: () {
-                    if (crashFile.existsSync()) {
-                      crashFile.delete().then((_) {
-                        EasyLoading.showToast('crash logs has been deleted.');
-                        loadLog();
-                        setState(() {});
-                      });
-                    }
-                  },
-                ),
-                ConstrainedBox(
-                  constraints: BoxConstraints(maxHeight: 500),
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: <Widget>[CustomTile(subtitle: Text(crashLog))],
-                  ),
-                )
-              ],
-            ),
         ],
       ),
     );

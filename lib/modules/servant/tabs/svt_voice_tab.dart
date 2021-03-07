@@ -1,4 +1,4 @@
-//@dart=2.9
+//@dart=2.12
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart' as audio1;
@@ -10,12 +10,12 @@ import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
 
 class SvtVoiceTab extends SvtTabBaseWidget {
-  SvtVoiceTab(
-      {Key key,
-      ServantDetailPageState parent,
-      Servant svt,
-      ServantStatus status})
-      : super(key: key, parent: parent, svt: svt, status: status);
+  SvtVoiceTab({
+    Key? key,
+    ServantDetailPageState? parent,
+    Servant? svt,
+    ServantStatus? status,
+  }) : super(key: key, parent: parent, svt: svt, status: status);
 
   @override
   _SvtVoiceTabState createState() =>
@@ -24,10 +24,10 @@ class SvtVoiceTab extends SvtTabBaseWidget {
 
 class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
   _SvtVoiceTabState(
-      {ServantDetailPageState parent, Servant svt, ServantStatus plan})
+      {ServantDetailPageState? parent, Servant? svt, ServantStatus? plan})
       : super(parent: parent, svt: svt, status: plan);
   bool useLangCn = false;
-  GeneralAudioPlayer audioPlayer;
+  GeneralAudioPlayer? audioPlayer;
 
   @override
   void initState() {
@@ -134,20 +134,20 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
       return;
     }
     audioPlayer ??= GeneralAudioPlayer();
-    final String url = await resolveWikiFileUrl(record.voiceFile);
+    final String? url = await resolveWikiFileUrl(record.voiceFile);
     if (!mounted) return;
     if (url == null) {
       EasyLoading.showToast('File not found: ${record.voiceFile}');
     }
     final file = await DefaultCacheManager().getSingleFile(url);
     if (!mounted) return;
-    audioPlayer.play(file.path);
+    audioPlayer?.play(file.path);
   }
 }
 
 class GeneralAudioPlayer {
-  audio1.AudioPlayer player1;
-  audio2.AudioPlayer player2;
+  audio1.AudioPlayer? player1;
+  audio2.AudioPlayer? player2;
 
   GeneralAudioPlayer() {
     if (usePlayer1) {
@@ -162,35 +162,35 @@ class GeneralAudioPlayer {
   /// [path] must be local path
   Future<void> play(String path) async {
     if (usePlayer1) {
-      await player1.stop();
-      await player1.play(path, isLocal: true);
+      await player1!.stop();
+      await player1!.play(path, isLocal: true);
     } else {
-      if (player2.isPlaying) {
-        await player2.stop();
+      if (player2!.isPlaying) {
+        await player2!.stop();
       }
-      if ((await player2.load(path)) == true) {
-        await player2.play();
+      if ((await player2!.load(path)) == true) {
+        await player2!.play();
       }
     }
   }
 
   Future<void> stop() async {
     if (usePlayer1) {
-      await player1.stop();
+      await player1!.stop();
     } else {
-      await player2.stop();
+      await player2!.stop();
     }
   }
 
   Future<void> pause() async {
     if (usePlayer1) {
-      await player1.pause();
+      await player1!.pause();
     } else {
-      await player2.pause();
+      await player2!.pause();
     }
   }
 
   void dispose() {
-    if (usePlayer1) player1.dispose();
+    if (usePlayer1) player1?.dispose();
   }
 }

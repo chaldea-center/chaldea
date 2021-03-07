@@ -1,16 +1,16 @@
-//@dart=2.9
+//@dart=2.12
 import 'package:chaldea/components/components.dart';
 
 import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
 
 class SvtIllustTab extends SvtTabBaseWidget {
-  SvtIllustTab(
-      {Key key,
-      ServantDetailPageState parent,
-      Servant svt,
-      ServantStatus status})
-      : super(key: key, parent: parent, svt: svt, status: status);
+  SvtIllustTab({
+    Key? key,
+    ServantDetailPageState? parent,
+    Servant? svt,
+    ServantStatus? status,
+  }) : super(key: key, parent: parent, svt: svt, status: status);
 
   @override
   _SvtIllustTabState createState() =>
@@ -19,10 +19,10 @@ class SvtIllustTab extends SvtTabBaseWidget {
 
 class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
     with SingleTickerProviderStateMixin {
-  TabController _tabController;
+  late TabController _tabController;
 
   _SvtIllustTabState(
-      {ServantDetailPageState parent, Servant svt, ServantStatus plan})
+      {ServantDetailPageState? parent, Servant? svt, ServantStatus? plan})
       : super(parent: parent, svt: svt, status: plan);
 
   @override
@@ -53,7 +53,7 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
   Widget build(BuildContext context) {
     super.build(context);
     final imageUrls = svt.info.illustrations.values
-        .map((e) => db.getIconResource(e).url)
+        .map((e) => db.getIconResource(e)?.url)
         .toList();
 
     return Column(
@@ -71,7 +71,7 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
             children: List.generate(svt.info.illustrations.length, (index) {
               return GestureDetector(
                 onTap: () async {
-                  int newIndex =
+                  int? newIndex =
                       await Navigator.of(context).push(PageRouteBuilder(
                     opaque: false,
                     fullscreenDialog: true,
@@ -83,7 +83,9 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
                       placeholder: placeholder,
                     ),
                   ));
-                  if (newIndex != null) _tabController.animateTo(newIndex);
+                  if (newIndex != null) {
+                    _tabController.animateTo(newIndex);
+                  }
                 },
                 child: CachedImage(
                   imageUrl: imageUrls[index],

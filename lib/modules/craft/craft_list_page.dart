@@ -1,4 +1,4 @@
-//@dart=2.9
+//@dart=2.12
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
@@ -7,28 +7,29 @@ import 'craft_detail_page.dart';
 import 'craft_filter_page.dart';
 
 class CraftListPage extends StatefulWidget {
-  CraftListPage({Key key}) : super(key: key);
+  CraftListPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => CraftListPageState();
 }
 
 class CraftListPageState extends State<CraftListPage> {
-  CraftFilterData filterData;
+  CraftFilterData get filterData => db.userData.craftFilter;
   List<CraftEssence> shownList = [];
-  TextEditingController _inputController = TextEditingController();
-  FocusNode _inputFocusNode = FocusNode();
-  ScrollController _scrollController;
+  late TextEditingController _inputController;
+  late ScrollController _scrollController;
+  late FocusNode _inputFocusNode;
 
   //temp, calculate once build() called.
-  int __binAtkHpType;
+  int __binAtkHpType = 0;
   Query __textFilter = Query();
 
   @override
   void initState() {
     super.initState();
+    _inputController = TextEditingController();
     _scrollController = ScrollController();
-    filterData = db.userData.craftFilter;
+    _inputFocusNode = FocusNode();
     filterData.filterString = '';
   }
 
@@ -88,14 +89,10 @@ class CraftListPageState extends State<CraftListPage> {
     return true;
   }
 
-  bool onFilterChanged(CraftFilterData data) {
+  void onFilterChanged(CraftFilterData data) {
     if (mounted) {
-      setState(() {
-        filterData = data;
-      });
-      return true;
+      setState(() {});
     }
-    return false;
   }
 
   @override
@@ -131,7 +128,7 @@ class CraftListPageState extends State<CraftListPage> {
                         icon: Icon(Icons.clear, size: 20),
                         onPressed: () {
                           setState(() {
-                            WidgetsBinding.instance.addPostFrameCallback(
+                            WidgetsBinding.instance!.addPostFrameCallback(
                                 (_) => _inputController.clear());
                             filterData.filterString = '';
                           });
@@ -239,37 +236,37 @@ class CraftListPageState extends State<CraftListPage> {
   }
 
   Widget _buildGridView() {
+    List<Widget> children = [];
+    for (var ce in shownList) {
+      children.add(Center(
+        child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+            child: GestureDetector(
+              child: db.getIconImage(ce.icon),
+              onTap: () {
+                SplitRoute.push(
+                  context: context,
+                  builder: (context, _) =>
+                      CraftDetailPage(ce: ce, onSwitch: switchNext),
+                  popDetail: true,
+                );
+              },
+            )),
+      ));
+    }
     if (shownList.length % 5 == 0) {
-      shownList.add(null);
+      children.add(Container());
     }
     return GridView.count(
-        crossAxisCount: 5,
-        childAspectRatio: 1,
-        controller: _scrollController,
-        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-        children: shownList.map((ce) {
-          if (ce == null) {
-            return Container();
-          }
-          return Center(
-            child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
-                child: GestureDetector(
-                  child: db.getIconImage(ce.icon),
-                  onTap: () {
-                    SplitRoute.push(
-                      context: context,
-                      builder: (context, _) =>
-                          CraftDetailPage(ce: ce, onSwitch: switchNext),
-                      popDetail: true,
-                    );
-                  },
-                )),
-          );
-        }).toList());
+      crossAxisCount: 5,
+      childAspectRatio: 1,
+      controller: _scrollController,
+      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+      children: children,
+    );
   }
 
-  CraftEssence switchNext(int cur, bool next) {
+  CraftEssence? switchNext(int cur, bool next) {
     if (shownList.length <= 0) return null;
     for (int i = 0; i < shownList.length; i++) {
       if (shownList[i].no == cur) {

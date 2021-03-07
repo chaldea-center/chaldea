@@ -1,19 +1,22 @@
-//@dart=2.9
+//@dart=2.12
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/event/main_record_detail_page.dart';
 
 class MainRecordTab extends StatefulWidget {
-  final bool reverse;
+  final bool reversed;
+  final bool showOutdated;
 
-  const MainRecordTab({Key key, this.reverse}) : super(key: key);
+  const MainRecordTab(
+      {Key? key, this.reversed = false, this.showOutdated = false})
+      : super(key: key);
 
   @override
   _MainRecordTabState createState() => _MainRecordTabState();
 }
 
 class _MainRecordTabState extends State<MainRecordTab> {
-  ScrollController _scrollController;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
@@ -24,27 +27,30 @@ class _MainRecordTabState extends State<MainRecordTab> {
   @override
   void dispose() {
     super.dispose();
-    _scrollController?.dispose();
+    _scrollController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final mainRecords = db.gameData.events.mainRecords;
-    var mainRecordKeys = db.gameData.events.mainRecords.keys.toList();
-    mainRecordKeys.sort((a, b) =>
-        mainRecords[a].startTimeJp.compareTo(mainRecords[b].startTimeJp));
-    if (widget.reverse) {
-      // first three chapters has the same startTimeJp
-      mainRecordKeys = mainRecordKeys.reversed.toList();
+    List<MainRecord> mainRecords =
+        db.gameData.events.mainRecords.values.toList();
+    if (!widget.showOutdated) {
+      mainRecords.removeWhere((e) {
+        final plan = db.curUser.events.mainRecordOf(e.indexKey);
+        return e.isOutdated() && !plan.contains(true);
+      });
     }
+    // first three chapters has the same startTimeJp
+    EventBase.sortEvents(mainRecords, reversed: widget.reversed);
     return Column(
       children: <Widget>[
         CustomTile(
           title: Text(S.of(context).main_record_chapter),
-          trailing: Wrap(
-            spacing: 10,
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(S.of(context).main_record_fixed_drop),
+              Padding(padding: EdgeInsets.only(right: 6)),
               Text(S.of(context).main_record_bonus)
             ],
           ),
@@ -55,11 +61,11 @@ class _MainRecordTabState extends State<MainRecordTab> {
             controller: _scrollController,
             child: ListView.separated(
               controller: _scrollController,
-              itemCount: mainRecordKeys.length,
+              itemCount: mainRecords.length,
               separatorBuilder: (context, index) =>
                   Divider(height: 1, indent: 16),
               itemBuilder: (context, index) {
-                final record = mainRecords[mainRecordKeys[index]];
+                final record = mainRecords[index];
                 final plan = db.curUser.events.mainRecordOf(record.indexKey);
                 bool outdated = record.isOutdated();
                 return ListTile(
@@ -94,7 +100,7 @@ class _MainRecordTabState extends State<MainRecordTab> {
                     SplitRoute.push(
                       context: context,
                       builder: (context, _) =>
-                          MainRecordDetailPage(name: mainRecordKeys[index]),
+                          MainRecordDetailPage(record: record),
                       popDetail: true,
                     );
                   },

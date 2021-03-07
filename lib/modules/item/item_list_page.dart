@@ -1,4 +1,4 @@
-//@dart=2.9
+//@dart=2.12
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -19,14 +19,15 @@ class ItemListPage extends StatefulWidget {
 
 class ItemListPageState extends State<ItemListPage>
     with SingleTickerProviderStateMixin {
-  TabController _tabController;
   bool filtered = false;
   final List<int> categories = [1, 2, 3];
-  List<TextEditingController> _itemRedundantControllers;
+  late TabController _tabController;
+  late List<TextEditingController> _itemRedundantControllers;
 
   @override
   void deactivate() {
     super.deactivate();
+    _tabController.dispose();
     db.saveUserData();
   }
 
@@ -184,7 +185,7 @@ class ItemListPageState extends State<ItemListPage>
       actions: [
         TextButton(
           onPressed: () {
-            _itemRedundantControllers?.forEach((e) => e.text = '');
+            _itemRedundantControllers.forEach((e) => e.text = '');
             db.userData.itemAbundantValue
                 .fillRange(0, db.userData.itemAbundantValue.length, 0);
           },
@@ -252,12 +253,13 @@ class _ItemFilterDialogState extends State<ItemFilterDialog> {
 class InputComponents<T> {
   T data;
   FocusNode focusNode;
-  TextEditingController controller;
+  TextEditingController? controller;
 
-  InputComponents({this.data, this.focusNode, this.controller});
+  InputComponents(
+      {required this.data, required this.focusNode, required this.controller});
 
   void dispose() {
-    focusNode?.dispose();
+    focusNode.dispose();
     controller?.dispose();
   }
 }
@@ -267,9 +269,12 @@ class ItemListTab extends StatefulWidget {
   final bool filtered;
   final bool showSet999;
 
-  const ItemListTab(
-      {Key key, this.category, this.filtered = false, this.showSet999})
-      : super(key: key);
+  const ItemListTab({
+    Key? key,
+    required this.category,
+    this.filtered = false,
+    this.showSet999 = false,
+  }) : super(key: key);
 
   @override
   _ItemListTabState createState() => _ItemListTabState();
@@ -278,7 +283,7 @@ class ItemListTab extends StatefulWidget {
 class _ItemListTabState extends State<ItemListTab> {
   Map<Item, InputComponents<Item>> _allGroups = {};
   List<InputComponents<Item>> _shownGroups = [];
-  ScrollController _scrollController;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
@@ -309,9 +314,9 @@ class _ItemListTabState extends State<ItemListTab> {
     sortedEntries.insert(
         0,
         MapEntry(
-          db.gameData.items[Item.qp],
+          db.gameData.items[Item.qp]!,
           InputComponents(
-              data: db.gameData.items[Item.qp],
+              data: db.gameData.items[Item.qp]!,
               focusNode: FocusNode(),
               controller: TextEditingController()),
         ));
@@ -320,13 +325,13 @@ class _ItemListTabState extends State<ItemListTab> {
 
   @override
   void dispose() {
-    _allGroups.values.forEach((element) => element?.dispose());
-    _scrollController?.dispose();
+    _allGroups.values.forEach((group) => group.dispose());
+    _scrollController.dispose();
     super.dispose();
   }
 
   void unfocusAll() {
-    _allGroups.values.forEach((element) => element.focusNode?.unfocus());
+    _allGroups.values.forEach((group) => group.focusNode.unfocus());
   }
 
   @override
@@ -354,14 +359,13 @@ class _ItemListTabState extends State<ItemListTab> {
     Widget listView = db.itemStat.makeBuilder((context, snapshot) {
       setTextController();
       List<Widget> children = [];
-      final stat = snapshot.data;
       _shownGroups.clear();
       for (var group in _allGroups.values) {
         if (!widget.filtered ||
             group.data.name == Item.qp ||
-            stat.leftItems[group.data.name] < 0) {
+            (db.itemStat.leftItems[group.data.name] ?? 0) < 0) {
           _shownGroups.add(group);
-          children.add(buildItemTile(group, stat));
+          children.add(buildItemTile(group));
         }
       }
       if (widget.showSet999) {
@@ -380,7 +384,7 @@ class _ItemListTabState extends State<ItemListTab> {
       );
       return Scrollbar(controller: _scrollController, child: _listView);
     });
-    Widget actionBar;
+    Widget? actionBar;
     // TODO: not shown actually
     // keyboard is shown and mobile view, cannot detect floating keyboard
     if (MediaQuery.of(context).viewInsets.bottom > 20 &&
@@ -423,10 +427,11 @@ class _ItemListTabState extends State<ItemListTab> {
             groupSeparator: item.name == Item.qp ? ',' : null);
         if (text == '0' &&
             group.focusNode.hasFocus &&
-            (group.controller.text == '-' || group.controller.text == '')) {
+            (group.controller!.text == '-' || group.controller!.text == '')) {
           // don't set '-' to '0'
         } else {
-          group.controller.value = group.controller.value.copyWith(text: text);
+          group.controller!.value =
+              group.controller!.value.copyWith(text: text);
         }
       }
     });
@@ -440,12 +445,12 @@ class _ItemListTabState extends State<ItemListTab> {
   ///       not the updated viewport by auto scroll
   /// Windows: catch "\t", enter = click listTile
   /// macOS: catch "\t", enter to complete and submit
-  Widget buildItemTile(InputComponents group, ItemStatistics statistics) {
+  Widget buildItemTile(InputComponents group) {
     final itemKey = group.data.name;
     bool isQp = itemKey == Item.qp;
 
     // update when text input
-    bool enough = statistics.leftItems[itemKey] >= 0;
+    bool enough = (db.itemStat.leftItems[itemKey] ?? 0) >= 0;
     final highlightStyle = TextStyle(color: enough ? null : Colors.redAccent);
     Widget textField = TextField(
       maxLength: isQp ? 20 : 5,
@@ -467,14 +472,14 @@ class _ItemListTabState extends State<ItemListTab> {
           db.curUser.items[itemKey] =
               int.tryParse(v.replaceAll(',', '')) ?? db.curUser.items[itemKey];
         }
-        statistics.updateLeftItems(shouldBroadcast: true);
+        db.itemStat.updateLeftItems(shouldBroadcast: true);
         // setState2(() {});
       },
       onTap: () {
         // select all text at first tap
         if (!group.focusNode.hasFocus && group.controller != null) {
-          group.controller.selection = TextSelection(
-              baseOffset: 0, extentOffset: group.controller.text.length);
+          group.controller!.selection = TextSelection(
+              baseOffset: 0, extentOffset: group.controller!.text.length);
         }
       },
       onSubmitted: (s) {
@@ -495,13 +500,14 @@ class _ItemListTabState extends State<ItemListTab> {
           Expanded(
               flex: 1,
               child: AutoSizeText(
-                '${S.current.item_total_demand} ${formatNumber(statistics.svtItems[itemKey])}',
+                '${S.current.item_total_demand}'
+                ' ${formatNumber(db.itemStat.svtItems[itemKey])}',
                 maxLines: 1,
               )),
           Expanded(
               flex: 1,
               child: AutoSizeText(
-                '${S.current.item_left} ${formatNumber(statistics.leftItems[itemKey])}',
+                '${S.current.item_left} ${formatNumber(db.itemStat.leftItems[itemKey])}',
                 maxLines: 1,
                 style: highlightStyle,
                 minFontSize: 10,
@@ -523,7 +529,7 @@ class _ItemListTabState extends State<ItemListTab> {
               width: 36,
               child: Align(
                 alignment: Alignment.centerRight,
-                child: AutoSizeText(statistics.leftItems[itemKey].toString(),
+                child: AutoSizeText(db.itemStat.leftItems[itemKey].toString(),
                     minFontSize: 6,
                     maxFontSize: 14,
                     style: highlightStyle,
@@ -531,25 +537,26 @@ class _ItemListTabState extends State<ItemListTab> {
               )),
         ],
       );
-      List<int> _countsInSubTitle = statistics.svtItemDetail.planItemCounts
+      List<int> _countsInSubTitle = db.itemStat.svtItemDetail.planItemCounts
           .valuesIfGrail(itemKey)
           .map((e) => e[itemKey] ?? 0)
           .toList();
       subtitle = Row(
         children: <Widget>[
           Expanded(
-              child: AutoSizeText(
-            '${statistics.svtItems[itemKey]}' +
-                '(${_countsInSubTitle.join("/")})',
-            maxLines: 1,
-          )),
+            child: AutoSizeText(
+              '${db.itemStat.svtItems[itemKey]}'
+              '(${_countsInSubTitle.join("/")})',
+              maxLines: 1,
+            ),
+          ),
           Text(S.of(context).event_title, style: TextStyle(fontSize: 14)),
           SizedBox(
               width: 36,
               child: Align(
                 alignment: Alignment.centerRight,
                 child: AutoSizeText(
-                    (statistics.eventItems[itemKey] ?? 0).toString(),
+                    (db.itemStat.eventItems[itemKey] ?? 0).toString(),
                     minFontSize: 6,
                     maxFontSize: 14,
                     maxLines: 1),
@@ -563,7 +570,7 @@ class _ItemListTabState extends State<ItemListTab> {
         FocusScope.of(context).unfocus();
         SplitRoute.push(
           context: context,
-          builder: (context, _) => ItemDetailPage(itemKey),
+          builder: (context, _) => ItemDetailPage(itemKey: itemKey),
           popDetail: true,
         );
       },
@@ -588,10 +595,10 @@ class _ItemListTabState extends State<ItemListTab> {
     final nextGroup = _shownGroups[nextIndex];
     FocusScope.of(context).requestFocus(nextGroup.focusNode);
     // set selection at next frame, so that auto scroll to make focus visible
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
       // next frame, the next node is primary focus
-      nextGroup.controller.selection = TextSelection(
-          baseOffset: 0, extentOffset: nextGroup.controller.text.length);
+      nextGroup.controller!.selection = TextSelection(
+          baseOffset: 0, extentOffset: nextGroup.controller!.text.length);
     });
   }
 }

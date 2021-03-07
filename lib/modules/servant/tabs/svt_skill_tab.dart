@@ -1,16 +1,16 @@
-//@dart=2.9
+//@dart=2.12
 import 'package:chaldea/components/components.dart';
 
 import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
 
 class SvtSkillTab extends SvtTabBaseWidget {
-  SvtSkillTab(
-      {Key key,
-      ServantDetailPageState parent,
-      Servant svt,
-      ServantStatus status})
-      : super(key: key, parent: parent, svt: svt, status: status);
+  SvtSkillTab({
+    Key? key,
+    ServantDetailPageState? parent,
+    Servant? svt,
+    ServantStatus? status,
+  }) : super(key: key, parent: parent, svt: svt, status: status);
 
   @override
   State<StatefulWidget> createState() =>
@@ -19,7 +19,7 @@ class SvtSkillTab extends SvtTabBaseWidget {
 
 class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
   _SvtSkillTabState(
-      {ServantDetailPageState parent, Servant svt, ServantStatus plan})
+      {ServantDetailPageState? parent, Servant? svt, ServantStatus? plan})
       : super(parent: parent, svt: svt, status: plan);
 
   @override
