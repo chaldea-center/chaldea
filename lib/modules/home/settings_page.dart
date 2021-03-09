@@ -146,7 +146,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     if (lang == null) return;
                     db.userData.language = lang.code;
                     db.saveUserData();
-                    db.onAppUpdate();
+                    db.notifyAppUpdate();
                   },
                 ),
               ),
@@ -215,7 +215,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ],
                       onChanged: (v) {
                         db.userData.criticalWidth = v;
-                        db.onAppUpdate();
+                        db.notifyAppUpdate();
                       },
                     ),
                   ),

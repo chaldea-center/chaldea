@@ -88,7 +88,7 @@ class _SvtSummonTabState extends SvtTabBaseState<SvtSummonTab> {
           } else {
             db.curUser.plannedSummons.add(summon.indexKey);
           }
-          db.onAppUpdate();
+          db.notifyAppUpdate();
         },
       ),
       onTap: () {

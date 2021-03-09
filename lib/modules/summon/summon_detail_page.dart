@@ -51,7 +51,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
               } else {
                 db.curUser.plannedSummons.add(summon.indexKey);
               }
-              db.onAppUpdate();
+              db.notifyAppUpdate();
             },
           ),
         ],

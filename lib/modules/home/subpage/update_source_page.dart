@@ -55,7 +55,7 @@ class _UpdateSourcePageState extends State<UpdateSourcePage> {
             ),
             onTap: () {
               db.userData.updateSource = index;
-              db.onAppUpdate();
+              db.notifyAppUpdate();
             },
             horizontalTitleGap: 0,
           );

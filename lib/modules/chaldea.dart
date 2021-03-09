@@ -40,7 +40,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     super.initState();
     db.screenshotController = ScreenshotController();
     SplitRoute.defaultMasterFillPageBuilder = (context) => BlankPage();
-    db.onAppUpdate = () {
+    db.notifyAppUpdate = () {
       setState(() {});
     };
     SystemChannels.lifecycle.setMessageHandler((msg) async {
@@ -127,7 +127,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
     setState(() {});
     logger.i('App version: ${AppInfo.appName} v${AppInfo.fullVersion}');
     logger.i('appPath: ${db.paths.appPath}');
-    db.onAppUpdate();
+    db.notifyAppUpdate();
   }
 
   @override

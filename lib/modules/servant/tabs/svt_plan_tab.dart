@@ -409,7 +409,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       db.userData.broadcastUserUpdate();
       db.itemStat.updateSvtItems();
     }
-    db.onAppUpdate();
+    db.notifyAppUpdate();
   }
 
   void _onEnhance() {

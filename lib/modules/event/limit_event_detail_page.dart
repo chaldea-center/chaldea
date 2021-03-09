@@ -51,8 +51,8 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
           placeholder: (_, __) => Container(),
         ),
       ));
-    children.add(db.itemStat.wrapStreamBuilder(
-      (context, _) => SwitchListTile.adaptive(
+    children.add(db.streamBuilder(
+      (context) => SwitchListTile.adaptive(
         title: Text(S.of(context).plan),
         value: plan.enable,
         onChanged: (v) {
@@ -65,8 +65,8 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     ));
     // 复刻
     if (event.grail2crystal > 0) {
-      children.add(db.itemStat.wrapStreamBuilder(
-        (context, _) => SwitchListTile.adaptive(
+      children.add(db.streamBuilder(
+        (context) => SwitchListTile.adaptive(
           title: Text(S.of(context).rerun_event),
           subtitle: Text(
               S.of(context).event_rerun_replace_grail(event.grail2crystal)),

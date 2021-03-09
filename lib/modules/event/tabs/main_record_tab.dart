@@ -86,8 +86,8 @@ class _MainRecordTabState extends State<MainRecordTab> {
                         ),
                   trailing: Wrap(
                     children: List.generate(2, (i) {
-                      return db.itemStat.wrapStreamBuilder(
-                        (context, _) => Switch.adaptive(
+                      return db.streamBuilder(
+                        (context) => Switch.adaptive(
                           value: plan[i],
                           onChanged: (v) {
                             setState(() {

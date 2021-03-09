@@ -5,22 +5,11 @@ part of datatypes;
 class ItemStatistics {
   SvtCostItems svtItemDetail = SvtCostItems();
 
-  //todo: replace
-  StreamController<ItemStatistics> onUpdated = StreamController.broadcast();
-
   Map<String, int> get svtItems => svtItemDetail.planItemCounts.summation;
   Map<String, int> eventItems;
   Map<String, int> leftItems;
 
   ItemStatistics();
-
-  void dispose() {
-    onUpdated.close();
-  }
-
-  void _broadcast() {
-    onUpdated.sink.add(this);
-  }
 
   /// Clear statistic data, all data will be calculated again next calling.
   /// After importing dataset, we should call this to clear, then call
@@ -59,16 +48,8 @@ class ItemStatistics {
     user ??= db.curUser;
     leftItems = sumDict([eventItems, user.items, multiplyDict(svtItems, -1)]);
     if (shouldBroadcast) {
-      _broadcast();
+      db.notifyDbUpdate();
     }
-  }
-
-  Widget wrapStreamBuilder(AsyncWidgetBuilder<ItemStatistics> builder) {
-    return StreamBuilder<ItemStatistics>(
-      initialData: db.itemStat,
-      stream: db.itemStat.onUpdated.stream,
-      builder: builder,
-    );
   }
 }
 

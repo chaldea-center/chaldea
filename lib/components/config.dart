@@ -28,7 +28,7 @@ import 'utils.dart';
 ///  - user database
 class Database {
   /// setState for root [MaterialApp]
-  VoidCallback onAppUpdate = () {};
+  VoidCallback notifyAppUpdate = () {};
   UserData userData = UserData();
   GameData gameData = GameData();
 
@@ -47,6 +47,27 @@ class Database {
 
   final ItemStatistics itemStat = ItemStatistics();
   final RuntimeData runtimeData = RuntimeData();
+
+  /// broadcast when user data updated
+  /// It is used across the whole app lifecycle, so should not close it.
+  StreamController<Database> broadcast = StreamController.broadcast();
+
+  void notifyDbUpdate() {
+    this.broadcast.sink.add(this);
+  }
+
+  /// widgets depending on database which may change
+  Widget streamBuilder(WidgetBuilder builder) {
+    return StreamBuilder<Database>(
+      initialData: db,
+      stream: db.broadcast.stream,
+      builder: (context, snapshot) => builder(context),
+    );
+  }
+
+  void dispose() {
+    this.broadcast.close();
+  }
 
   static PathManager _paths = PathManager();
 
@@ -107,10 +128,10 @@ class Database {
     try {
       gameData = GameData.fromJson(getJsonFromFile(paths.gameDataPath));
       logger.d('game data loaded, version ${gameData.version}.');
-      db.onAppUpdate.call();
       t.elapsed();
       itemStat.clear();
       itemStat.update();
+      db.notifyAppUpdate();
       return true;
     } catch (e, s) {
       logger.e('Load game data failed', e, s);

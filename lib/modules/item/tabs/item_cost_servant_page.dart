@@ -26,7 +26,7 @@ class ItemCostServantPage extends StatelessWidget {
     // print(db.itemStat.svtItemDetail.allCountBySvt.skill);
     String num2str(int? n) =>
         formatNumber(n ?? 0, compact: true, minVal: 10000);
-    return db.itemStat.wrapStreamBuilder((context, snapshot) {
+    return db.streamBuilder((context) {
       final stat = db.itemStat;
       final counts = stat.svtItemDetail.getItemCounts(favorite);
       final details = stat.svtItemDetail.getCountByItem(favorite);

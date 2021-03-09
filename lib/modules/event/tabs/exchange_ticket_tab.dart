@@ -61,8 +61,8 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     tickets.sort((a, b) {
       return (a.month).compareTo(b.month) * (widget.reverse ? -1 : 1);
     });
-    return db.itemStat.wrapStreamBuilder(
-      (context, _) => Scrollbar(
+    return db.streamBuilder(
+      (context) => Scrollbar(
         controller: _scrollController,
         child: ListView(
           controller: _scrollController,

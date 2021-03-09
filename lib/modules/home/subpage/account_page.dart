@@ -81,7 +81,7 @@ class _AccountPageState extends State<AccountPage> {
             ),
             onTap: () {
               db.userData.curUserKey = userKey;
-              db.onAppUpdate();
+              db.notifyAppUpdate();
             },
           );
         }).toList(),
@@ -93,7 +93,7 @@ class _AccountPageState extends State<AccountPage> {
     String newKey = DateTime.now().millisecondsSinceEpoch.toString();
     db.userData.users[newKey] = User(name: name);
     db.userData.curUserKey = newKey;
-    db.onAppUpdate();
+    db.notifyAppUpdate();
     logger.d('Add account $newKey(name:$name)');
   }
 
@@ -109,7 +109,7 @@ class _AccountPageState extends State<AccountPage> {
         },
         onSubmit: (v) {
           db.curUser.name = v;
-          db.onAppUpdate();
+          db.notifyAppUpdate();
         },
       ),
     );
@@ -151,7 +151,7 @@ class _AccountPageState extends State<AccountPage> {
                 if (db.userData.curUserKey == key) {
                   db.userData.curUserKey = db.userData.users.keys.first;
                 }
-                db.onAppUpdate();
+                db.notifyAppUpdate();
                 print('accounts: ${db.userData.users.keys.toList()}');
               }
             : null,

@@ -20,7 +20,7 @@ class _EditGalleryPageState extends State<EditGalleryPage> {
           value: db.userData.galleries[name] ?? true,
           onChanged: (bool _selected) {
             db.userData.galleries[name] = _selected;
-            db.onAppUpdate();
+            db.notifyAppUpdate();
           },
           title: Text(item.title),
         ));

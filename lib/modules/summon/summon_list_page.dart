@@ -87,7 +87,7 @@ class _SummonListPageState extends State<SummonListPage> {
               } else {
                 db.curUser.plannedSummons.add(summon.indexKey);
               }
-              db.onAppUpdate();
+              db.notifyAppUpdate();
             },
           ),
           onTap: () {

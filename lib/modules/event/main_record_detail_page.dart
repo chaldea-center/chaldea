@@ -68,8 +68,8 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
                 placeholder: (_, __) => Container(),
               ),
             ),
-          db.itemStat.wrapStreamBuilder(
-            (context, _) => SwitchListTile.adaptive(
+          db.streamBuilder(
+            (context) => SwitchListTile.adaptive(
               title: Text(S.of(context).main_record_fixed_drop),
               value: plan[0],
               onChanged: (v) {
@@ -82,8 +82,8 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
           ),
           buildClassifiedItemList(
               context: context, data: widget.record.drops, onTap: _onTap),
-          db.itemStat.wrapStreamBuilder(
-            (context, _) => SwitchListTile.adaptive(
+          db.streamBuilder(
+            (context) => SwitchListTile.adaptive(
               title: Text(S.of(context).main_record_bonus),
               value: plan[1],
               onChanged: (v) {
