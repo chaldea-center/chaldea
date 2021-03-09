@@ -82,8 +82,8 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     List<Widget> children = [
       if (banners.isNotEmpty)
         GestureDetector(
-          onTap: () =>
-              jumpToExternalLinkAlert(url: mooncellFullLink(summon.mcLink)),
+          onTap: () => jumpToExternalLinkAlert(
+              url: MooncellUtil.fullLink(summon.mcLink)),
           child: GFCarousel(
             items: banners,
             autoPlay: false,

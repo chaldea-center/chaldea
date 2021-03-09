@@ -14,7 +14,7 @@ abstract class JsEngine<T> {
   JsEngine(this.engine);
 
   /// init if needed
-  Future<void> init();
+  Future<void> init([Function? callback]);
 
   /// JSON.stringify returned object
   Future<String> eval(String command, {String name});
@@ -28,7 +28,9 @@ class QjsEngine implements JsEngine<IsolateQjs> {
 
   QjsEngine();
 
-  Future<void> init() async => null;
+  Future<void> init([Function? callback]) async {
+    if (callback != null) await callback();
+  }
 
   Future<String> eval(String command, {String? name}) async {
     return (await engine.evaluate(command, name: name)).toString();
@@ -54,7 +56,7 @@ class WebviewJsEngine implements JsEngine<FlutterWebviewPlugin> {
     return true;
   }
 
-  Future<void> init() async {
+  Future<void> init([Function? callback]) async {
     if (await isopen()) return;
     await engine.launch(
       Uri.dataFromString('''<html><body></body></html>''',
@@ -64,6 +66,9 @@ class WebviewJsEngine implements JsEngine<FlutterWebviewPlugin> {
     while (true) {
       if (await isopen()) break;
       await Future.delayed(Duration(seconds: 1));
+    }
+    if (callback != null) {
+      await callback();
     }
   }
 
@@ -120,10 +125,11 @@ class GLPKSolver {
     final params2 = GLPKParams.from(params);
     final data2 = GLPKData.from(data);
     _preProcess(data: data2, params: params2);
+    data2.weeklyMissionData=[];
 
     try {
       await ensureEngine();
-      print('=========solving========\nparams="${json.encode(params)}"');
+      print('=========solving========\nparams="${json.encode(params)}\n${json.encode(data2)}"');
       if (params2.rows.length == 0) {
         logger.d('after pre processing, params has no valid rows.\n'
             'params=${json.encode(params2)}');
@@ -135,7 +141,7 @@ class GLPKSolver {
       } else {
 //        print('modified params: ${json.encode(params2)}');
         String resultString = await js.eval(
-            '''solve_glpk( `${json.encode(data2)}`,`${json.encode(params2)}`);''');
+            '''solve_glpk( `${json.encode(data2)}`,`${json.encode(params2)}`)''');
         resultString = resultString.trim();
         logger.v('result: $resultString');
         if (resultString.isNotEmpty != true || resultString == 'null') {

@@ -205,7 +205,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
             status.resetEnhancement();
           });
         } else if (select == 'jump_mc') {
-          launch(mooncellFullLink(svt.mcLink, encode: true));
+          launch(MooncellUtil.fullLink(svt.mcLink, encode: true));
         }
       },
     );

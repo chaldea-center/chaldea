@@ -17,6 +17,7 @@ export 'extensions.dart';
 export 'glpk_solver.dart';
 export 'image_viewer.dart';
 export 'logger.dart';
+export 'mooncell_util.dart';
 export 'query.dart';
 export 'simple_accordion.dart';
 export 'split_route.dart';

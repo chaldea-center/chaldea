@@ -9,8 +9,12 @@ class GLPKData {
   /// AP rate, m*n. 0 if not dropped
   List<List<double>> matrix;
 
+  /// free quest counts of every progress/chapter
   /// From new to old, the first is jp
   Map<String, int> freeCounts;
+
+  ///
+  List<WeeklyMissionQuest> weeklyMissionData;
 
   int get jpMaxColNum => freeCounts.values.first;
 
@@ -20,6 +24,7 @@ class GLPKData {
     this.costs,
     this.matrix,
     this.freeCounts,
+    this.weeklyMissionData,
   });
 
   GLPKData.from(GLPKData other)
@@ -28,7 +33,10 @@ class GLPKData {
         costs = List.from(other.costs),
         matrix = List.generate(
             other.matrix.length, (index) => List.from(other.matrix[index])),
-        freeCounts = other.freeCounts;
+        freeCounts = other.freeCounts,
+        weeklyMissionData = other.weeklyMissionData
+            .map((e) => WeeklyMissionQuest.fromJson(jsonDecode(jsonEncode(e))))
+            .toList();
 
   List<double> columnAt(int colIndex) {
     return List.generate(
@@ -66,6 +74,48 @@ class GLPKData {
       _$GLPKDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$GLPKDataToJson(this);
+}
+
+@JsonSerializable(checked: true)
+class WeeklyMissionQuest {
+  String chapter;
+  String place;
+  String placeJp;
+  int ap;
+  Map<String, int> servantTraits;
+  Map<String, int> enemyTraits;
+  List<String> servants;
+  List<String> battlefields;
+
+  Map<String, int> get allTraits {
+    Map<String, int> result = Map();
+    servantTraits.forEach((key, value) {
+      result['从者_$key'] = value;
+    });
+    enemyTraits.forEach((key, value) {
+      result['小怪_$key'] = value;
+    });
+    battlefields.forEach((key) {
+      result['场地_$key'] = 1;
+    });
+    return result;
+  }
+
+  WeeklyMissionQuest({
+    this.chapter,
+    this.place,
+    this.placeJp,
+    this.ap,
+    this.enemyTraits,
+    this.servantTraits,
+    this.servants,
+    this.battlefields,
+  });
+
+  factory WeeklyMissionQuest.fromJson(Map<String, dynamic> data) =>
+      _$WeeklyMissionQuestFromJson(data);
+
+  Map<String, dynamic> toJson() => _$WeeklyMissionQuestToJson(this);
 }
 
 /// for solve_glpk(data_str and params_str)
@@ -365,4 +415,57 @@ class _Converter<T> implements JsonConverter<T, Object> {
   num toJson(T object) {
     return object as num;
   }
+}
+
+/// min c'x
+///   Ax>=b
+@JsonSerializable()
+class BasicGLPKParams {
+  List<String> colNames; //n
+  List<String> rowNames; //m
+  List<List<num>> AMat; // m*n
+  List<num> bVec; //m
+  List<num> cVec; //n
+  bool integer;
+
+  BasicGLPKParams({
+    this.colNames,
+    this.rowNames,
+    this.AMat,
+    this.bVec,
+    this.cVec,
+    this.integer,
+  }) {
+    colNames ??= [];
+    rowNames ??= [];
+    AMat ??= [];
+    bVec ??= [];
+    cVec ??= [];
+    integer ??= false;
+  }
+
+  void addRow(String rowName, List<num> rowOfA, num b) {
+    rowNames.add(rowName);
+    AMat.add(rowOfA);
+    bVec.add(b);
+  }
+
+  void removeCol(int index) {
+    colNames.removeAt(index);
+    cVec.removeAt(index);
+    AMat.forEach((row) {
+      row.removeAt(index);
+    });
+  }
+
+  void removeRow(int index) {
+    rowNames.removeAt(index);
+    AMat.removeAt(index);
+    bVec.removeAt(index);
+  }
+
+  factory BasicGLPKParams.fromJson(Map<String, dynamic> data) =>
+      _$BasicGLPKParamsFromJson(data);
+
+  Map<String, dynamic> toJson() => _$BasicGLPKParamsToJson(this);
 }

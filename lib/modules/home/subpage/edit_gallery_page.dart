@@ -47,6 +47,7 @@ class GalleryItem {
   static const String drop_calculator = 'drop_calculator';
   static const String mystic_code = 'mystic_code';
   static const String gacha = 'gacha';
+  static const String weekly_mission = 'weekly_mission';
   static const String calculator = 'calculator';
   static const String master_equip = 'master_equip';
   static const String ap_cal = 'ap_cal';

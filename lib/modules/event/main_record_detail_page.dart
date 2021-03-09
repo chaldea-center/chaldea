@@ -59,7 +59,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
           if (widget.record.bannerUrl?.isNotEmpty == true)
             GestureDetector(
               onTap: () => jumpToExternalLinkAlert(
-                  url: mooncellFullLink(widget.record.indexKey),
+                  url: MooncellUtil.fullLink(widget.record.indexKey),
                   name: 'Mooncell'),
               child: CachedImage(
                 imageUrl: widget.record.bannerUrl,

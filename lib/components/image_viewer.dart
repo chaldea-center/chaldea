@@ -201,7 +201,7 @@ class _CachedImageState extends State<CachedImage> {
     if (db.prefs.containsKey(widget.imageUrl!)) {
       return db.prefs.getString(widget.imageUrl!);
     } else {
-      resolveWikiFileUrl(widget.imageUrl!).then((url) {
+      MooncellUtil.resolveFileUrl(widget.imageUrl!).then((url) {
         // safeSetState(() {
         if (url != null && mounted) {
           setState(() {

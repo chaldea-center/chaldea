@@ -310,9 +310,7 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
 }
 
 List<Widget> divideTiles(Iterable<Widget> tiles,
-    {Widget divider = const Divider(height: 1.0),
-    bool top = false,
-    bool bottom = false}) {
+    {Widget divider = kDefaultDivider, bool top = false, bool bottom = false}) {
   Iterator iterator = tiles.iterator;
   if (!iterator.moveNext()) {
     return [];

@@ -43,7 +43,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
           decoration: BoxDecoration(
               border: Border(bottom: Divider.createBorderSide(context))),
           child: ValueStatefulBuilder<bool>(
-            value: false,
+            initValue: false,
             builder: (context, state) {
               return Column(
                 mainAxisSize: MainAxisSize.min,

@@ -134,7 +134,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
       return;
     }
     audioPlayer ??= GeneralAudioPlayer();
-    final String? url = await resolveWikiFileUrl(record.voiceFile);
+    final String? url = await MooncellUtil.resolveFileUrl(record.voiceFile);
     if (!mounted) return;
     if (url == null) {
       EasyLoading.showToast('File not found: ${record.voiceFile}');

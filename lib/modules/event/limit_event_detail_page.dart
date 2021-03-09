@@ -42,7 +42,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     if (event.bannerUrl?.isNotEmpty == true)
       children.add(GestureDetector(
         onTap: () => jumpToExternalLinkAlert(
-            url: mooncellFullLink(widget.event.indexKey), name: 'Mooncell'),
+            url: MooncellUtil.fullLink(widget.event.indexKey), name: 'Mooncell'),
         child: CachedImage(
           imageUrl: event.bannerUrl,
           connectivity: db.connectivity,

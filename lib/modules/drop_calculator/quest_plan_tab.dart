@@ -21,7 +21,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
         decoration: BoxDecoration(
             border: Border(bottom: Divider.createBorderSide(context))),
         child: ValueStatefulBuilder<bool>(
-            value: false,
+            initValue: false,
             builder: (context, state) {
               return Column(
                 mainAxisSize: MainAxisSize.min,

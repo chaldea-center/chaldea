@@ -269,34 +269,6 @@ void safeSetState(VoidCallback callback) {
   });
 }
 
-Future<String?> resolveWikiFileUrl(String filename) async {
-  if (db.prefs.containsKey(filename)) {
-    // print('prefs: $filename -> ${db.prefs.getString(filename)}');
-    return db.prefs.getString(filename);
-  }
-  final _dio = Dio();
-  try {
-    final response = await _dio.get(
-      'https://fgo.wiki/api.php',
-      queryParameters: {
-        "action": "query",
-        "format": "json",
-        "prop": "imageinfo",
-        "iiprop": "url",
-        "titles": "File:$filename"
-      },
-      options: Options(responseType: ResponseType.json),
-    );
-    final String url =
-        response.data['query']['pages'].values.first['imageinfo'][0]['url'];
-    print('wiki image/file url $filename ->  $url');
-    db.prefs.setString(filename, url);
-    return url;
-  } catch (e) {
-    print(e);
-  }
-}
-
 void checkAppUpdate([bool background = true]) async {
   const ignoreUpdateKey = 'ignoreAppUpdateVersion';
   BuildContext context = kAppKey.currentContext!;
@@ -431,12 +403,6 @@ Future<void> jumpToExternalLinkAlert(
   );
 }
 
-String mooncellFullLink(String title, {bool encode = false}) {
-  String link = 'https://fgo.wiki/w/$title';
-  if (encode) link = Uri.encodeFull(link);
-  return link;
-}
-
 bool checkEventOutdated(
     {DateTime? timeJp, DateTime? timeCn, Duration? duration}) {
   duration ??= Duration(days: 27);
@@ -446,4 +412,18 @@ bool checkEventOutdated(
     return DateTime.fromMillisecondsSinceEpoch(db.curUser.msProgress)
         .checkOutdated(timeJp, duration);
   }
+}
+
+String _fullChars =
+    '０１２３４５６７８９ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ－、\u3000／';
+String _halfChars =
+    '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-, /';
+
+Map<String, String> _fullHalfMap =
+    Map.fromIterables(_fullChars.split(''), _halfChars.split(''));
+
+String fullToHalf(String s) {
+  String s2 = s.replaceAllMapped(RegExp(r'[０-９Ａ-Ｚ－／　]'),
+      (match) => _fullHalfMap[match.group(0)!] ?? match.group(0)!);
+  return s2;
 }

@@ -514,6 +514,11 @@ GLPKData _$GLPKDataFromJson(Map<String, dynamic> json) {
     freeCounts: (json['freeCounts'] as Map<String, dynamic>)?.map(
       (k, e) => MapEntry(k, e as int),
     ),
+    weeklyMissionData: (json['weeklyMissionData'] as List)
+        ?.map((e) => e == null
+            ? null
+            : WeeklyMissionQuest.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
   );
 }
 
@@ -523,6 +528,47 @@ Map<String, dynamic> _$GLPKDataToJson(GLPKData instance) => <String, dynamic>{
       'costs': instance.costs,
       'matrix': instance.matrix,
       'freeCounts': instance.freeCounts,
+      'weeklyMissionData': instance.weeklyMissionData,
+    };
+
+WeeklyMissionQuest _$WeeklyMissionQuestFromJson(Map<String, dynamic> json) {
+  return $checkedNew('WeeklyMissionQuest', json, () {
+    final val = WeeklyMissionQuest(
+      chapter: $checkedConvert(json, 'chapter', (v) => v as String),
+      place: $checkedConvert(json, 'place', (v) => v as String),
+      placeJp: $checkedConvert(json, 'placeJp', (v) => v as String),
+      ap: $checkedConvert(json, 'ap', (v) => v as int),
+      enemyTraits: $checkedConvert(
+          json,
+          'enemyTraits',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(k, e as int),
+              )),
+      servantTraits: $checkedConvert(
+          json,
+          'servantTraits',
+          (v) => (v as Map<String, dynamic>)?.map(
+                (k, e) => MapEntry(k, e as int),
+              )),
+      servants: $checkedConvert(json, 'servants',
+          (v) => (v as List)?.map((e) => e as String)?.toList()),
+      battlefields: $checkedConvert(json, 'battlefields',
+          (v) => (v as List)?.map((e) => e as String)?.toList()),
+    );
+    return val;
+  });
+}
+
+Map<String, dynamic> _$WeeklyMissionQuestToJson(WeeklyMissionQuest instance) =>
+    <String, dynamic>{
+      'chapter': instance.chapter,
+      'place': instance.place,
+      'placeJp': instance.placeJp,
+      'ap': instance.ap,
+      'enemyTraits': instance.enemyTraits,
+      'servantTraits': instance.servantTraits,
+      'servants': instance.servants,
+      'battlefields': instance.battlefields,
     };
 
 GLPKParams _$GLPKParamsFromJson(Map<String, dynamic> json) {
@@ -605,6 +651,29 @@ Map<String, dynamic> _$GLPKVariableToJson<T>(GLPKVariable<T> instance) =>
       'cost': instance.cost,
       'detail': instance.detail
           ?.map((k, e) => MapEntry(k, _Converter<T>().toJson(e))),
+    };
+
+BasicGLPKParams _$BasicGLPKParamsFromJson(Map<String, dynamic> json) {
+  return BasicGLPKParams(
+    colNames: (json['colNames'] as List)?.map((e) => e as String)?.toList(),
+    rowNames: (json['rowNames'] as List)?.map((e) => e as String)?.toList(),
+    bVec: (json['b'] as List)?.map((e) => e as num)?.toList(),
+    cVec: (json['c'] as List)?.map((e) => e as num)?.toList(),
+    AMat: (json['A'] as List)
+        ?.map((e) => (e as List)?.map((e) => e as num)?.toList())
+        ?.toList(),
+    integer: json['integer'] as bool,
+  );
+}
+
+Map<String, dynamic> _$BasicGLPKParamsToJson(BasicGLPKParams instance) =>
+    <String, dynamic>{
+      'colNames': instance.colNames,
+      'rowNames': instance.rowNames,
+      'b': instance.bVec,
+      'c': instance.cVec,
+      'A': instance.AMat,
+      'integer': instance.integer,
     };
 
 MysticCode _$MysticCodeFromJson(Map<String, dynamic> json) {
@@ -1296,6 +1365,7 @@ User _$UserFromJson(Map<String, dynamic> json) {
       plannedSummons: $checkedConvert(json, 'plannedSummons',
           (v) => (v as List)?.map((e) => e as String)?.toSet()),
       isMasterGirl: $checkedConvert(json, 'isMasterGirl', (v) => v as bool),
+      msProgress: $checkedConvert(json, 'msProgress', (v) => v as int),
     );
     return val;
   });
@@ -1314,6 +1384,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'mysticCodes': instance.mysticCodes,
       'plannedSummons': instance.plannedSummons?.toList(),
       'isMasterGirl': instance.isMasterGirl,
+      'msProgress': instance.msProgress,
     };
 
 T _$enumDecode<T>(

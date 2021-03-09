@@ -220,7 +220,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
       for (var fn in filenames) {
         if (db.prefs.getString(fn) == null) {
           //use await to ensure every image only resolve once
-          await resolveWikiFileUrl(fn);
+          await MooncellUtil.resolveFileUrl(fn);
         }
       }
     }

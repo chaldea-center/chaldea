@@ -5,16 +5,16 @@ typedef ValueStatefulWidgetBuilder<T> = Widget Function(
     BuildContext context, _ValueStatefulBuilderState<T> state);
 
 class ValueStatefulBuilder<T> extends StatefulWidget {
-  final T value;
+  final T initValue;
   final ValueStatefulWidgetBuilder<T> builder;
 
   const ValueStatefulBuilder(
-      {Key? key, required this.value, required this.builder})
+      {Key? key, required this.initValue, required this.builder})
       : super(key: key);
 
   @override
   _ValueStatefulBuilderState<T> createState() =>
-      _ValueStatefulBuilderState<T>(value);
+      _ValueStatefulBuilderState<T>(initValue);
 }
 
 class _ValueStatefulBuilderState<T> extends State<ValueStatefulBuilder<T>> {

@@ -13,6 +13,7 @@ import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:chaldea/modules/statistics/game_statistics_page.dart';
 import 'package:chaldea/modules/summon/summon_list_page.dart';
+import 'package:chaldea/modules/weekly_mission/weekly_mission_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:getwidget/getwidget.dart';
@@ -163,6 +164,16 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         ),
         builder: (context, _) => SummonListPage(),
         isDetail: false,
+      ),
+      GalleryItem.weekly_mission: GalleryItem(
+        name: GalleryItem.weekly_mission,
+        title: '周常任务',
+        child: Padding(
+          padding: EdgeInsets.all(2),
+          child: FaIcon(FontAwesomeIcons.tasks, size: 36),
+        ),
+        builder: (context, _) => WeeklyMissionPage(),
+        isDetail: true,
       ),
       GalleryItem.statistics: GalleryItem(
         name: GalleryItem.statistics,

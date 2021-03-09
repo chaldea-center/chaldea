@@ -64,7 +64,7 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
         final quest = db.gameData.freeQuests[questName];
 
         final child = ValueStatefulBuilder<bool>(
-            value: false,
+            initValue: false,
             builder: (context, state) {
               return Column(
                 mainAxisSize: MainAxisSize.min,

@@ -45,6 +45,19 @@ class GameData {
     summons ??= {};
   }
 
+  Quest getFreeQuest(String key) {
+    if (freeQuests.containsKey(key)) return freeQuests[key];
+    for (var quest in freeQuests.values) {
+      if (key.contains(quest.place) && key.contains(quest.name)) {
+        return quest;
+      }
+      if (fullToHalf(quest.indexKey) == fullToHalf(key)) {
+        return quest;
+      }
+    }
+    return null;
+  }
+
   factory GameData.fromJson(Map<String, dynamic> data) =>
       _$GameDataFromJson(data);
 
