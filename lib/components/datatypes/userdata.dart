@@ -41,22 +41,6 @@ class UserData {
   // extra
   String contactInfo;
 
-  @JsonKey(ignore: true)
-  StreamController<UserData> onUserUpdated = StreamController.broadcast();
-
-  void broadcastUserUpdate() {
-    onUserUpdated.sink.add(this);
-  }
-
-  void dispose() {
-    onUserUpdated.close();
-  }
-
-  bool get downloadEnabled {
-    // return useMobileNetwork || db.connectivity == ConnectivityResult.wifi;
-    return true;
-  }
-
   UserData({
     this.language,
     this.criticalWidth,
@@ -82,8 +66,6 @@ class UserData {
     sliderUrls ??= {};
     galleries ??= {};
     serverRoot ??= kServerRoot;
-    // updateSource =
-    //     fixValidRange(updateSource ?? 0, 0, GitSource.values.length - 1);
     updateSource = fixValidRange(updateSource ?? 0, 0, 0);
 
     users ??= {defaultName: User(name: defaultName)};

@@ -156,8 +156,6 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                                     imgUrls: [
                                       db.getIconResource(code.illustration)?.url
                                     ],
-                                    downloadEnabled:
-                                        db.userData.downloadEnabled,
                                     connectivity: db.connectivity,
                                     placeholder: placeholder,
                                   ),

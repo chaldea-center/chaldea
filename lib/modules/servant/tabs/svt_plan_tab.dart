@@ -88,7 +88,6 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
               targetVal
                 ..ascension = _end
                 ..favorite = true;
-              db.userData.broadcastUserUpdate();
               db.itemStat.updateSvtItems();
             },
             detailPageBuilder: (context) => LevelingCostPage(
@@ -124,7 +123,6 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           targetVal
             ..skills[index] = _end
             ..favorite = true;
-          db.userData.broadcastUserUpdate();
           db.itemStat.updateSvtItems();
         },
         detailPageBuilder: (context) => LevelingCostPage(
@@ -160,7 +158,6 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           targetVal
             ..dress[index] = _end
             ..favorite = true;
-          db.userData.broadcastUserUpdate();
           db.itemStat.updateSvtItems();
         },
         detailPageBuilder: (context) => LevelingCostPage(
@@ -186,7 +183,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             status.npLv = _value;
             curVal.favorite = true;
             plan.favorite = true;
-            db.userData.broadcastUserUpdate();
+            db.notifyDbUpdate();
           },
           detailPageBuilder: null,
         ),
@@ -206,7 +203,6 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
               targetVal
                 ..grail = _end
                 ..favorite = true;
-              db.userData.broadcastUserUpdate();
               db.itemStat.updateSvtItems();
             },
             detailPageBuilder: null,
@@ -406,10 +402,9 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
 
   void updateState() {
     if (!enhanceMode) {
-      db.userData.broadcastUserUpdate();
       db.itemStat.updateSvtItems();
+      db.notifyDbUpdate();
     }
-    db.notifyAppUpdate();
   }
 
   void _onEnhance() {

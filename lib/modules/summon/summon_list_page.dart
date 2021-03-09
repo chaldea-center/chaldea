@@ -106,7 +106,6 @@ class _SummonListPageState extends State<SummonListPage> {
             imageUrl: summon.bannerUrl ?? summon.bannerUrlJp,
             isMCFile: true,
             connectivity: db.connectivity,
-            downloadEnabled: db.userData.downloadEnabled,
             placeholder: (context, _) => Container(),
           ),
       ],

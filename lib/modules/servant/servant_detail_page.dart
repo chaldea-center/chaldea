@@ -112,7 +112,6 @@ class ServantDetailPageState extends State<ServantDetailPage>
                     plan.favorite =
                         status.curVal.favorite = !status.curVal.favorite;
                   });
-                  db.userData.broadcastUserUpdate();
                   db.itemStat.updateSvtItems();
                 },
               ),
@@ -196,7 +195,6 @@ class ServantDetailPageState extends State<ServantDetailPage>
                 status.reset();
                 db.curUser.svtPlanOf(svt.no).reset();
               });
-              db.userData.broadcastUserUpdate();
               db.itemStat.updateSvtItems();
             },
           ).show(context);

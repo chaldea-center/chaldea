@@ -253,7 +253,6 @@ class _MysticCodePageState extends State<MysticCodePage> {
                     pageBuilder: (context, _, __) => FullScreenImageSlider(
                       imgUrls: urls,
                       initialPage: i,
-                      downloadEnabled: db.userData.downloadEnabled,
                       connectivity: db.connectivity,
                     ),
                   ));
@@ -262,7 +261,6 @@ class _MysticCodePageState extends State<MysticCodePage> {
                   padding: EdgeInsets.symmetric(horizontal: 15),
                   child: CachedImage(
                     imageUrl: urls[i],
-                    downloadEnabled: db.userData.downloadEnabled,
                     connectivity: db.connectivity,
                   ),
                 ),

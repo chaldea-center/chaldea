@@ -51,7 +51,7 @@ class _AccountPageState extends State<AccountPage> {
                         : Colors.transparent,
                   ),
                 ),
-                Text(db.curUser.name)
+                Text(db.userData.users[userKey]!.name)
               ],
             ),
             selected: _isCurUser,
@@ -81,7 +81,7 @@ class _AccountPageState extends State<AccountPage> {
             ),
             onTap: () {
               db.userData.curUserKey = userKey;
-              db.notifyAppUpdate();
+              updateData();
             },
           );
         }).toList(),
@@ -93,22 +93,23 @@ class _AccountPageState extends State<AccountPage> {
     String newKey = DateTime.now().millisecondsSinceEpoch.toString();
     db.userData.users[newKey] = User(name: name);
     db.userData.curUserKey = newKey;
-    db.notifyAppUpdate();
+    updateData();
     logger.d('Add account $newKey(name:$name)');
   }
 
   void renameUser(String key) {
+    final user = db.userData.users[key]!;
     showDialog(
       context: context,
       builder: (context) => InputCancelOkDialog(
-        title: '${S.of(context).rename} - ${db.curUser.name}',
-        text: db.curUser.name,
+        title: '${S.of(context).rename} - ${user.name}',
+        text: user.name,
         errorText: S.of(context).input_invalid_hint,
         validate: (v) {
           return v == v.trim() && !db.userData.userNames.contains(v);
         },
         onSubmit: (v) {
-          db.curUser.name = v;
+          user.name = v;
           db.notifyAppUpdate();
         },
       ),
@@ -151,12 +152,17 @@ class _AccountPageState extends State<AccountPage> {
                 if (db.userData.curUserKey == key) {
                   db.userData.curUserKey = db.userData.users.keys.first;
                 }
-                db.notifyAppUpdate();
+                updateData();
                 print('accounts: ${db.userData.users.keys.toList()}');
               }
             : null,
       ).show(context);
     });
+  }
+
+  void updateData(){
+    db.itemStat.update();
+    db.notifyAppUpdate();
   }
 
   @override

@@ -47,7 +47,6 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
         child: CachedImage(
           imageUrl: event.bannerUrl,
           connectivity: db.connectivity,
-          downloadEnabled: db.userData.downloadEnabled,
           placeholder: (_, __) => Container(),
         ),
       ));

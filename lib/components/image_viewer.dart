@@ -73,7 +73,6 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
                 imageUrl: widget.imgUrls[index],
                 placeholder: widget.placeholder,
                 connectivity: widget.connectivity,
-                downloadEnabled: widget.downloadEnabled,
               ),
             ),
             autoPlay: false,
@@ -99,10 +98,6 @@ class CachedImage extends StatefulWidget {
 
   /// [ConnectivityResult.none] or others
   final ConnectivityResult? connectivity;
-
-  /// If false, only use already cached image or placeholder.
-  /// Default to true if omitted
-  final bool? downloadEnabled;
 
   final Map<String, String>? httpHeaders;
   final Duration fadeOutDuration;
@@ -136,7 +131,6 @@ class CachedImage extends StatefulWidget {
     this.progressIndicatorBuilder,
     this.errorWidget,
     this.connectivity,
-    this.downloadEnabled,
     this.httpHeaders,
     this.fadeOutDuration = const Duration(milliseconds: 1000),
     this.fadeOutCurve = Curves.easeOut,
@@ -225,8 +219,7 @@ class _CachedImageState extends State<CachedImage> {
     String? realUrl = getRealUrl();
     if (realUrl?.isNotEmpty != true) {
       usePlaceholder = true;
-    } else if (widget.downloadEnabled != false &&
-        widget.connectivity != ConnectivityResult.none) {
+    } else if (canDownload()) {
       // use CachedNetworkImage
       usePlaceholder = false;
     } else {
@@ -296,13 +289,6 @@ class _CachedImageState extends State<CachedImage> {
   }
 
   bool canDownload() {
-    if (widget.connectivity == ConnectivityResult.none) {
-      return false;
-    }
-    //widget.connectivity == ConnectivityResult.wifi ||
-    if (widget.downloadEnabled != false) {
-      return true;
-    }
-    return false;
+    return (widget.connectivity ?? db.connectivity) != ConnectivityResult.none;
   }
 }

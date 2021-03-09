@@ -78,7 +78,6 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
                     pageBuilder: (context, _, __) => FullScreenImageSlider(
                       imgUrls: imageUrls,
                       initialPage: index,
-                      downloadEnabled: db.userData.downloadEnabled,
                       connectivity: db.connectivity,
                       placeholder: placeholder,
                     ),
@@ -91,7 +90,6 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
                   imageUrl: imageUrls[index],
                   placeholder: placeholder,
                   connectivity: db.connectivity,
-                  downloadEnabled: db.userData.downloadEnabled,
                 ),
               );
             }),

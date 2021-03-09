@@ -64,7 +64,6 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
               child: CachedImage(
                 imageUrl: widget.record.bannerUrl,
                 connectivity: db.connectivity,
-                downloadEnabled: db.userData.downloadEnabled,
                 placeholder: (_, __) => Container(),
               ),
             ),

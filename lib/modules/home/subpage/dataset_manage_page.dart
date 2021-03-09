@@ -48,7 +48,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                     title: Text(S.of(context).clear_userdata),
                     onTapOk: () async {
                       await db.clearData(user: true, game: false);
-                      db.notifyAppUpdate();
+                      db.notifyDbUpdate(true);
                       EasyLoading.showToast(S.of(context).userdata_cleared);
                     },
                   ).show(context);
@@ -134,7 +134,6 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                         EasyLoading.showToast(
                             S.of(context).reload_data_success);
                       }
-                      db.notifyAppUpdate();
                     },
                   ).show(context);
                 },
@@ -159,10 +158,8 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                       var canceler = showMyProgress(
                           status: 'loading...',
                           maskType: EasyLoadingMaskType.clear);
-                      db.clearData(game: true).then((_) {
-                        canceler();
-                        db.notifyAppUpdate();
-                      });
+                      await db.clearData(game: true);
+                      canceler();
                     },
                   ).show(context);
                 },
@@ -212,7 +209,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
           UserData.fromJson(json.decode(File(path).readAsStringSync()));
       EasyLoading.showToast('${S.current.import_data_success}:\n$path');
       db.saveUserData();
-      db.notifyAppUpdate();
+      db.notifyDbUpdate(true);
     } on FileSelectionCanceledError {} catch (e) {
       EasyLoading.showError(S.of(context).import_data_error(e));
     }

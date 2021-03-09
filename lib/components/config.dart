@@ -52,7 +52,12 @@ class Database {
   /// It is used across the whole app lifecycle, so should not close it.
   StreamController<Database> broadcast = StreamController.broadcast();
 
-  void notifyDbUpdate() {
+  void notifyDbUpdate([bool recalculateItemStat = false]) {
+    if (recalculateItemStat) {
+      this.itemStat
+        ..clear()
+        ..update();
+    }
     this.broadcast.sink.add(this);
   }
 
@@ -94,25 +99,11 @@ class Database {
     });
   }
 
-  Future<bool> networkAvailable() async {
-    if (AppInfo.isMobile) {
-      final result = await Connectivity().checkConnectivity();
-      if (result == ConnectivityResult.mobile ||
-          result == ConnectivityResult.wifi) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-    return true;
-  }
-
   // data files operation
   bool loadUserData() {
     try {
       final newData = UserData.fromJson(
           getJsonFromFile(paths.userDataPath, k: () => <String, dynamic>{}));
-      userData.dispose();
       userData = newData;
       logger.d('userdata loaded.');
       return true;
@@ -192,6 +183,9 @@ class Database {
     if (user) {
       _deleteFileOrDirectory(paths.userDataPath);
       loadUserData();
+      db.itemStat
+        ..clear()
+        ..update();
     }
     if (game) {
       // to clear all history version or not?
