@@ -86,14 +86,17 @@ class _MainRecordTabState extends State<MainRecordTab> {
                         ),
                   trailing: Wrap(
                     children: List.generate(2, (i) {
-                      return Switch.adaptive(
+                      return db.itemStat.wrapStreamBuilder(
+                        (context, _) => Switch.adaptive(
                           value: plan[i],
                           onChanged: (v) {
                             setState(() {
                               plan[i] = v;
                               db.itemStat.updateEventItems();
                             });
-                          });
+                          },
+                        ),
+                      );
                     }).toList(),
                   ),
                   onTap: () {

@@ -61,17 +61,19 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     tickets.sort((a, b) {
       return (a.month).compareTo(b.month) * (widget.reverse ? -1 : 1);
     });
-    return db.itemStat.makeBuilder((context, snapshot) => Scrollbar(
+    return db.itemStat.wrapStreamBuilder(
+      (context, _) => Scrollbar(
+        controller: _scrollController,
+        child: ListView(
           controller: _scrollController,
-          child: ListView(
-            controller: _scrollController,
-            shrinkWrap: widget.month != null,
-            children: divideTiles(
-              tickets.map((ticket) => buildOneMonth(ticket)),
-              divider: Divider(height: 1, indent: 16),
-            ).toList(),
-          ),
-        ));
+          shrinkWrap: widget.month != null,
+          children: divideTiles(
+            tickets.map((ticket) => buildOneMonth(ticket)),
+            divider: Divider(height: 1, indent: 16),
+          ).toList(),
+        ),
+      ),
+    );
   }
 
   Widget buildOneMonth(ExchangeTicket ticket) {

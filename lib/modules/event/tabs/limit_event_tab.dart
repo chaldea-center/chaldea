@@ -70,12 +70,14 @@ class _LimitEventTabState extends State<LimitEventTab> {
                 if (event.extra?.isNotEmpty == true ||
                     event.lottery?.isNotEmpty == true)
                   Icon(Icons.star, color: Colors.yellow[700]),
-                Switch.adaptive(
-                  value: plan.enable,
-                  onChanged: (v) => setState(() {
-                    plan.enable = v;
-                    db.itemStat.updateEventItems();
-                  }),
+                db.itemStat.wrapStreamBuilder(
+                  (context, _) => Switch.adaptive(
+                    value: plan.enable,
+                    onChanged: (v) => setState(() {
+                      plan.enable = v;
+                      db.itemStat.updateEventItems();
+                    }),
+                  ),
                 )
               ],
             ),

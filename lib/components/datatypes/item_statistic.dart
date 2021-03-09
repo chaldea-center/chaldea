@@ -63,7 +63,7 @@ class ItemStatistics {
     }
   }
 
-  Widget makeBuilder(AsyncWidgetBuilder<ItemStatistics> builder) {
+  Widget wrapStreamBuilder(AsyncWidgetBuilder<ItemStatistics> builder) {
     return StreamBuilder<ItemStatistics>(
       initialData: db.itemStat,
       stream: db.itemStat.onUpdated.stream,

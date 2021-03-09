@@ -112,14 +112,14 @@ packages:
       name: built_value
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "8.0.0"
+    version: "8.0.2"
   cached_network_image:
     dependency: "direct main"
     description:
       name: cached_network_image
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.5.0"
+    version: "2.5.1"
   catcher:
     dependency: "direct main"
     description:
@@ -322,7 +322,7 @@ packages:
       name: file_picker
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.1.6"
+    version: "2.1.7"
   file_picker_cross:
     dependency: "direct main"
     description:
@@ -348,7 +348,7 @@ packages:
       name: flutter_audio_desktop
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.0.8"
+    version: "0.0.9"
   flutter_blurhash:
     dependency: transitive
     description:
@@ -362,7 +362,7 @@ packages:
       name: flutter_cache_manager
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.1.1"
+    version: "2.1.2"
   flutter_easyloading:
     dependency: "direct main"
     description:
@@ -664,7 +664,7 @@ packages:
       name: pedantic
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.10.0"
+    version: "1.11.0"
   petitparser:
     dependency: transitive
     description:
@@ -823,14 +823,14 @@ packages:
       name: sqflite
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.3.2+3"
+    version: "2.0.0+2"
   sqflite_common:
     dependency: transitive
     description:
       name: sqflite_common
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.3+1"
+    version: "2.0.0+1"
   stack_trace:
     dependency: transitive
     description:
@@ -865,7 +865,7 @@ packages:
       name: synchronized
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.2.0+2"
+    version: "3.0.0"
   term_glyph:
     dependency: transitive
     description:
@@ -994,4 +994,4 @@ packages:
     version: "3.1.0"
 sdks:
   dart: ">=2.12.0-259.9.beta <3.0.0"
-  flutter: ">=1.22.2"
+  flutter: ">=1.24.0-10"

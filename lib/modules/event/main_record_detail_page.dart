@@ -68,27 +68,31 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
                 placeholder: (_, __) => Container(),
               ),
             ),
-          SwitchListTile.adaptive(
-            title: Text(S.of(context).main_record_fixed_drop),
-            value: plan[0],
-            onChanged: (v) {
-              setState(() {
-                plan[0] = v;
-              });
-              db.itemStat.updateEventItems();
-            },
+          db.itemStat.wrapStreamBuilder(
+            (context, _) => SwitchListTile.adaptive(
+              title: Text(S.of(context).main_record_fixed_drop),
+              value: plan[0],
+              onChanged: (v) {
+                setState(() {
+                  plan[0] = v;
+                });
+                db.itemStat.updateEventItems();
+              },
+            ),
           ),
           buildClassifiedItemList(
               context: context, data: widget.record.drops, onTap: _onTap),
-          SwitchListTile.adaptive(
-            title: Text(S.of(context).main_record_bonus),
-            value: plan[1],
-            onChanged: (v) {
-              setState(() {
-                plan[1] = v;
-              });
-              db.itemStat.updateEventItems();
-            },
+          db.itemStat.wrapStreamBuilder(
+            (context, _) => SwitchListTile.adaptive(
+              title: Text(S.of(context).main_record_bonus),
+              value: plan[1],
+              onChanged: (v) {
+                setState(() {
+                  plan[1] = v;
+                });
+                db.itemStat.updateEventItems();
+              },
+            ),
           ),
           buildClassifiedItemList(
             context: context,

@@ -42,7 +42,8 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     if (event.bannerUrl?.isNotEmpty == true)
       children.add(GestureDetector(
         onTap: () => jumpToExternalLinkAlert(
-            url: MooncellUtil.fullLink(widget.event.indexKey), name: 'Mooncell'),
+            url: MooncellUtil.fullLink(widget.event.indexKey),
+            name: 'Mooncell'),
         child: CachedImage(
           imageUrl: event.bannerUrl,
           connectivity: db.connectivity,
@@ -50,24 +51,28 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
           placeholder: (_, __) => Container(),
         ),
       ));
-    children.add(SwitchListTile.adaptive(
-      title: Text(S.of(context).plan),
-      value: plan.enable,
-      onChanged: (v) {
-        setState(() {
-          plan.enable = v;
-        });
-        db.itemStat.updateEventItems();
-      },
+    children.add(db.itemStat.wrapStreamBuilder(
+      (context, _) => SwitchListTile.adaptive(
+        title: Text(S.of(context).plan),
+        value: plan.enable,
+        onChanged: (v) {
+          setState(() {
+            plan.enable = v;
+          });
+          db.itemStat.updateEventItems();
+        },
+      ),
     ));
     // 复刻
     if (event.grail2crystal > 0) {
-      children.add(SwitchListTile.adaptive(
-        title: Text(S.of(context).rerun_event),
-        subtitle:
-            Text(S.of(context).event_rerun_replace_grail(event.grail2crystal)),
-        value: plan.rerun,
-        onChanged: (v) => setState(() => plan.rerun = v),
+      children.add(db.itemStat.wrapStreamBuilder(
+        (context, _) => SwitchListTile.adaptive(
+          title: Text(S.of(context).rerun_event),
+          subtitle: Text(
+              S.of(context).event_rerun_replace_grail(event.grail2crystal)),
+          value: plan.rerun,
+          onChanged: (v) => setState(() => plan.rerun = v),
+        ),
       ));
     }
 
@@ -97,6 +102,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 onChanged: (v) {
                   plan.lottery = int.tryParse(v) ?? 0;
+                  db.itemStat.updateEventItems();
                 },
               )),
         ))
@@ -178,6 +184,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
             decoration: InputDecoration(counterText: ''),
             onChanged: (v) {
               extraPlan[itemKey] = int.tryParse(v) ?? 0;
+              db.itemStat.updateEventItems();
             },
             onSubmitted: (_) {},
             onEditingComplete: () {

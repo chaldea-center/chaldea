@@ -191,8 +191,8 @@ class ServantListPageState extends State<ServantListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return db.itemStat.makeBuilder((context, snapshot) {
-      return Scaffold(
+    return db.itemStat.wrapStreamBuilder(
+      (context, _) => Scaffold(
         appBar: AppBar(
           title: Text(widget.planMode
               ? '${S.current.plan} ${db.curUser.curSvtPlanNo + 1}'
@@ -302,8 +302,8 @@ class ServantListPageState extends State<ServantListPage> {
                 },
               ),
         body: buildOverview(),
-      );
-    });
+      ),
+    );
   }
 
   List<Servant> shownList = [];

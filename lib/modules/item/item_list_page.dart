@@ -356,7 +356,7 @@ class _ItemListTabState extends State<ItemListTab> {
 
   @override
   Widget build(BuildContext context) {
-    Widget listView = db.itemStat.makeBuilder((context, snapshot) {
+    Widget listView = db.itemStat.wrapStreamBuilder((context, snapshot) {
       setTextController();
       List<Widget> children = [];
       _shownGroups.clear();
