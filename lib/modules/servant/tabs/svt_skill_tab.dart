@@ -63,7 +63,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
                     onTap: () {
                       status.skillIndex[index] =
                           status.skillIndex[index] == i ? i - 1 : i;
-                      widget.parent?.setState(() {});
+                      ((widget.parent ?? this) as State).setState(() {});
                     },
                     child: db.getIconImage(
                       (status.skillIndex[index] ?? activeSkill.cnState) >= i

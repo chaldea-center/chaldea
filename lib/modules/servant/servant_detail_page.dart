@@ -102,18 +102,20 @@ class ServantDetailPageState extends State<ServantDetailPage>
           title: AutoSizeText(svt.info.localizedName, maxLines: 1),
           actions: <Widget>[
             if (!Servant.unavailable.contains(svt.no))
-              IconButton(
-                icon: status.curVal.favorite
-                    ? Icon(Icons.favorite, color: Colors.redAccent)
-                    : Icon(Icons.favorite_border),
-                tooltip: S.of(context).favorite,
-                onPressed: () {
-                  setState(() {
-                    plan.favorite =
-                        status.curVal.favorite = !status.curVal.favorite;
-                  });
-                  db.itemStat.updateSvtItems();
-                },
+              db.streamBuilder(
+                (context) => IconButton(
+                  icon: status.curVal.favorite
+                      ? Icon(Icons.favorite, color: Colors.redAccent)
+                      : Icon(Icons.favorite_border),
+                  tooltip: S.of(context).favorite,
+                  onPressed: () {
+                    setState(() {
+                      plan.favorite =
+                          status.curVal.favorite = !status.curVal.favorite;
+                    });
+                    db.itemStat.updateSvtItems();
+                  },
+                ),
               ),
             _popupButton,
           ],
@@ -222,28 +224,30 @@ class ServantDetailPageState extends State<ServantDetailPage>
           ...getObtainBadges(),
         ],
       ),
-      trailing: Tooltip(
-        message: S.of(context).priority,
-        child: DropdownButton<int>(
-          value: status.priority,
-          items: List.generate(5, (index) {
-            final icons = [
-              Icons.looks_5_outlined,
-              Icons.looks_4_outlined,
-              Icons.looks_3_outlined,
-              Icons.looks_two_outlined,
-              Icons.looks_one_outlined,
-            ];
-            return DropdownMenuItem(
-                value: 5 - index,
-                child: Icon(
-                  icons[index],
-                  color: Colors.black54,
-                ));
-          }),
-          onChanged: (v) => setState(() => status.priority = v),
-          underline: Container(),
-          icon: Container(),
+      trailing: db.streamBuilder(
+        (context) => Tooltip(
+          message: S.of(context).priority,
+          child: DropdownButton<int>(
+            value: status.priority,
+            items: List.generate(5, (index) {
+              final icons = [
+                Icons.looks_5_outlined,
+                Icons.looks_4_outlined,
+                Icons.looks_3_outlined,
+                Icons.looks_two_outlined,
+                Icons.looks_one_outlined,
+              ];
+              return DropdownMenuItem(
+                  value: 5 - index,
+                  child: Icon(
+                    icons[index],
+                    color: Colors.black54,
+                  ));
+            }),
+            onChanged: (v) => setState(() => status.priority = v),
+            underline: Container(),
+            icon: Container(),
+          ),
         ),
       ),
     );

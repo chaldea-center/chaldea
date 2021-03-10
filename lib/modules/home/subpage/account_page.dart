@@ -20,16 +20,17 @@ class _AccountPageState extends State<AccountPage> {
             icon: Icon(Icons.add),
             onPressed: () {
               showDialog(
-                  context: context,
-                  builder: (context) {
-                    return InputCancelOkDialog(
-                      title: S.of(context).new_account,
-                      errorText: S.of(context).input_invalid_hint,
-                      validate: (v) =>
-                          v == v.trim() && !db.userData.users.containsKey(v),
-                      onSubmit: addUser,
-                    );
-                  });
+                context: context,
+                builder: (context) {
+                  return InputCancelOkDialog(
+                    title: S.of(context).new_account,
+                    errorText: S.of(context).input_invalid_hint,
+                    validate: (v) =>
+                        v == v.trim() && !db.userData.users.containsKey(v),
+                    onSubmit: addUser,
+                  );
+                },
+              );
             },
           )
         ],
@@ -37,6 +38,7 @@ class _AccountPageState extends State<AccountPage> {
       body: TileGroup(
         children: db.userData.users.keys.map((userKey) {
           final bool _isCurUser = userKey == db.userData.curUserKey;
+          int index = db.userData.users.keys.toList().indexOf(userKey);
           return ListTile(
             title: Row(
               mainAxisSize: MainAxisSize.min,
@@ -58,10 +60,24 @@ class _AccountPageState extends State<AccountPage> {
             trailing: PopupMenuButton(
               itemBuilder: (BuildContext context) => [
                 PopupMenuItem(
-                    value: 'rename', child: Text(S.of(context).rename)),
+                  value: 'rename',
+                  child: Text(S.of(context).rename),
+                ),
+                PopupMenuItem(
+                  value: 'move_up',
+                  child: Text('上移'),
+                  enabled: index != 0,
+                ),
+                PopupMenuItem(
+                  value: 'move_down',
+                  child: Text('下移'),
+                  enabled: index != db.userData.users.length - 1,
+                ),
                 PopupMenuItem(value: 'copy', child: Text(S.of(context).copy)),
                 PopupMenuItem(
-                    value: 'delete', child: Text(S.of(context).delete)),
+                  value: 'delete',
+                  child: Text(S.of(context).delete),
+                ),
               ],
               onSelected: (k) {
                 switch (k) {
@@ -73,6 +89,12 @@ class _AccountPageState extends State<AccountPage> {
                     break;
                   case 'delete':
                     deleteUser(userKey);
+                    break;
+                  case 'move_up':
+                    moveUser(userKey, -1);
+                    break;
+                  case 'move_down':
+                    moveUser(userKey, 1);
                     break;
                   default:
                     break;
@@ -114,6 +136,17 @@ class _AccountPageState extends State<AccountPage> {
         },
       ),
     );
+  }
+
+  void moveUser(String key, int dx) {
+    final keys = db.userData.users.keys.toList();
+    int curIndex = keys.indexOf(key);
+    int nextIndex = curIndex + dx;
+    nextIndex = fixValidRange(nextIndex, 0, keys.length - 1);
+    keys.insert(nextIndex, keys.removeAt(curIndex));
+    db.userData.users =
+        Map.fromIterable(keys, value: (k) => db.userData.users[k]!);
+    setState(() {});
   }
 
   void copyUser(String key) {
@@ -160,7 +193,7 @@ class _AccountPageState extends State<AccountPage> {
     });
   }
 
-  void updateData(){
+  void updateData() {
     db.itemStat.update();
     db.notifyAppUpdate();
   }

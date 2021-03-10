@@ -21,13 +21,16 @@ class ItemStatistics {
   }
 
   void update({User user, bool shouldBroadcast = true}) {
+    final t = TimeCounter('update')..start();
     user ??= db.curUser;
     updateSvtItems(user: user, shouldBroadcast: false);
     updateEventItems(user: user, shouldBroadcast: false);
     updateLeftItems(user: user, shouldBroadcast: shouldBroadcast);
+    t.elapsed();
   }
 
   void updateSvtItems({User user, bool shouldBroadcast = true}) {
+    final t = TimeCounter('updateSvtItems')..start();
     user ??= db.curUser;
     // priority is shared cross users!
     final Map<int, ServantStatus> priorityFiltered = Map.fromEntries(
@@ -36,20 +39,25 @@ class ItemStatistics {
     svtItemDetail.update(
         curStat: priorityFiltered, targetPlan: user.curSvtPlan);
     updateLeftItems(user: user, shouldBroadcast: shouldBroadcast);
+    t.elapsed();
   }
 
   void updateEventItems({User user, bool shouldBroadcast = true}) {
+    final t = TimeCounter('updateEventItems')..start();
     user ??= db.curUser;
     eventItems = db.gameData.events.getAllItems(user.events);
     updateLeftItems(user: user, shouldBroadcast: shouldBroadcast);
+    t.elapsed();
   }
 
   void updateLeftItems({User user, bool shouldBroadcast = true}) {
+    final t = TimeCounter('updateLeftItems')..start();
     user ??= db.curUser;
     leftItems = sumDict([eventItems, user.items, multiplyDict(svtItems, -1)]);
     if (shouldBroadcast) {
       db.notifyDbUpdate();
     }
+    t.elapsed();
   }
 }
 

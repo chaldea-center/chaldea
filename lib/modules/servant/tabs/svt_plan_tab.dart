@@ -88,7 +88,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
               targetVal
                 ..ascension = _end
                 ..favorite = true;
-              db.itemStat.updateSvtItems();
+              updateState();
             },
             detailPageBuilder: (context) => LevelingCostPage(
               costList: svt.itemCost.ascension,
@@ -123,7 +123,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           targetVal
             ..skills[index] = _end
             ..favorite = true;
-          db.itemStat.updateSvtItems();
+          updateState();
         },
         detailPageBuilder: (context) => LevelingCostPage(
           costList: svt.itemCost.skill,
@@ -158,7 +158,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           targetVal
             ..dress[index] = _end
             ..favorite = true;
-          db.itemStat.updateSvtItems();
+          updateState();
         },
         detailPageBuilder: (context) => LevelingCostPage(
           costList: [svt.itemCost.dress[index]],
@@ -203,18 +203,20 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
               targetVal
                 ..grail = _end
                 ..favorite = true;
-              db.itemStat.updateSvtItems();
+              updateState();
             },
             detailPageBuilder: null,
           )
       ],
     ));
 
-    return Column(
-      children: <Widget>[
-        Expanded(child: ListView(children: children)),
-        buildButtonBar(targetVal),
-      ],
+    return db.streamBuilder(
+      (context) => Column(
+        children: <Widget>[
+          Expanded(child: ListView(children: children)),
+          buildButtonBar(targetVal),
+        ],
+      ),
     );
   }
 
@@ -403,7 +405,6 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
   void updateState() {
     if (!enhanceMode) {
       db.itemStat.updateSvtItems();
-      db.notifyDbUpdate();
     }
   }
 
