@@ -40,16 +40,16 @@ class _SummonListPageState extends State<SummonListPage> {
                   showOutdated = !showOutdated;
                 });
               }),
-          IconButton(
-            icon: Icon(showImage
-                ? Icons.image_outlined
-                : Icons.image_not_supported_outlined),
-            onPressed: () {
-              setState(() {
-                showImage = !showImage;
-              });
-            },
-          ),
+          // IconButton(
+          //   icon: Icon(showImage
+          //       ? Icons.image_outlined
+          //       : Icons.image_not_supported_outlined),
+          //   onPressed: () {
+          //     setState(() {
+          //       showImage = !showImage;
+          //     });
+          //   },
+          // ),
         ],
       ),
       body: Scrollbar(
@@ -76,19 +76,21 @@ class _SummonListPageState extends State<SummonListPage> {
             maxFontSize: 16,
             style: TextStyle(color: summon.isOutdated() ? Colors.grey : null),
           ),
-          trailing: IconButton(
-            icon: Icon(
-              planned ? Icons.favorite : Icons.favorite_outline,
-              color: planned ? Colors.redAccent : null,
+          trailing: db.streamBuilder(
+            (context) => IconButton(
+              icon: Icon(
+                planned ? Icons.favorite : Icons.favorite_outline,
+                color: planned ? Colors.redAccent : null,
+              ),
+              onPressed: () {
+                if (planned) {
+                  db.curUser.plannedSummons.remove(summon.indexKey);
+                } else {
+                  db.curUser.plannedSummons.add(summon.indexKey);
+                }
+                db.notifyDbUpdate();
+              },
             ),
-            onPressed: () {
-              if (planned) {
-                db.curUser.plannedSummons.remove(summon.indexKey);
-              } else {
-                db.curUser.plannedSummons.add(summon.indexKey);
-              }
-              db.notifyAppUpdate();
-            },
           ),
           onTap: () {
             SplitRoute.push(

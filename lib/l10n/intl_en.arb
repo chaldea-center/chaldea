@@ -264,8 +264,6 @@
   "reload_default_gamedata": "Reload default",
   "reloading_data": "Importing",
   "reload_data_success": "Import successfully",
-  "delete_all_data": "Delete all data",
-  "delete_all_data_hint": "Including userdata, gamedata, images then reload default",
   "search_result_count": "Total {total} results",
   "search_result_count_hide": "Total {total} results ({hidden} hidden)",
   "mystic_code": "Mystic Code",

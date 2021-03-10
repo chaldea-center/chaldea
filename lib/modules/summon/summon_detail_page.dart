@@ -43,16 +43,18 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         title: AutoSizeText(summon.localizedName, maxLines: 1),
         titleSpacing: 0,
         actions: [
-          IconButton(
-            icon: Icon(planned ? Icons.favorite : Icons.favorite_outline),
-            onPressed: () {
-              if (planned) {
-                db.curUser.plannedSummons.remove(summon.indexKey);
-              } else {
-                db.curUser.plannedSummons.add(summon.indexKey);
-              }
-              db.notifyAppUpdate();
-            },
+          db.streamBuilder(
+            (context) => IconButton(
+              icon: Icon(planned ? Icons.favorite : Icons.favorite_outline),
+              onPressed: () {
+                if (planned) {
+                  db.curUser.plannedSummons.remove(summon.indexKey);
+                } else {
+                  db.curUser.plannedSummons.add(summon.indexKey);
+                }
+                db.notifyDbUpdate();
+              },
+            ),
           ),
         ],
       ),
@@ -312,16 +314,19 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           onPressed: () => moveNext(true),
         ),
         ElevatedButton(
-            onPressed: summon.dataList.isEmpty
-                ? null
-                : () {
-                    SplitRoute.push(
-                      context: context,
-                      builder: (context, _) =>
-                          SummonSimulatorPage(summon: summon),
-                    );
-                  },
-            child: Text('抽卡模拟器')),
+          onPressed: summon.dataList.isEmpty
+              ? null
+              : () {
+                  SplitRoute.push(
+                    context: context,
+                    builder: (context, _) => SummonSimulatorPage(
+                      summon: summon,
+                      initIndex: curIndex,
+                    ),
+                  );
+                },
+          child: Text('抽卡模拟器'),
+        ),
         IconButton(
           icon: FaIcon(FontAwesomeIcons.chevronCircleRight),
           color: Colors.blueAccent,

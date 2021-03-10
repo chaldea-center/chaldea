@@ -105,8 +105,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "dataset_type_text" : MessageLookupByLibrary.simpleMessage("テキストデータパッケージ"),
     "dataset_type_text_hint" : MessageLookupByLibrary.simpleMessage("テキストのみ、約5M"),
     "delete" : MessageLookupByLibrary.simpleMessage("削除"),
-    "delete_all_data" : MessageLookupByLibrary.simpleMessage("すべてのデータを削除"),
-    "delete_all_data_hint" : MessageLookupByLibrary.simpleMessage("ユーザーデータ、ゲームデータ、画像リソースを含め、デフォルトのリソースを読み込む"),
     "download" : MessageLookupByLibrary.simpleMessage("ダウンロード"),
     "download_complete" : MessageLookupByLibrary.simpleMessage("ダウンロード完了"),
     "download_latest_gamedata" : MessageLookupByLibrary.simpleMessage("最新のデータをダウンロード"),

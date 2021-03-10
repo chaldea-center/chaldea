@@ -9,8 +9,10 @@ import 'package:getwidget/getwidget.dart';
 
 class SummonSimulatorPage extends StatefulWidget {
   final Summon summon;
+  final int initIndex;
 
-  SummonSimulatorPage({Key? key, required this.summon}) : super(key: key);
+  SummonSimulatorPage({Key? key, required this.summon, this.initIndex = 0})
+      : super(key: key);
 
   @override
   _SummonSimulatorPageState createState() => _SummonSimulatorPageState();
@@ -33,6 +35,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   @override
   void initState() {
     super.initState();
+    curIndex = max(0, widget.initIndex);
     double acc = 0; //max 100
     for (var block in [...data.svts, ...data.crafts]) {
       for (int i = 0; i < block.ids.length; i++) {

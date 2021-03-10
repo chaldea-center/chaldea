@@ -105,8 +105,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "dataset_type_text" : MessageLookupByLibrary.simpleMessage("Text dataset"),
     "dataset_type_text_hint" : MessageLookupByLibrary.simpleMessage("Only texts, ~5M"),
     "delete" : MessageLookupByLibrary.simpleMessage("Delete"),
-    "delete_all_data" : MessageLookupByLibrary.simpleMessage("Delete all data"),
-    "delete_all_data_hint" : MessageLookupByLibrary.simpleMessage("Including userdata, gamedata, images then reload default"),
     "download" : MessageLookupByLibrary.simpleMessage("Download"),
     "download_complete" : MessageLookupByLibrary.simpleMessage("Downloaded"),
     "download_latest_gamedata" : MessageLookupByLibrary.simpleMessage("Download latest"),

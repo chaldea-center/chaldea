@@ -151,7 +151,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
         ..attachments = _getAttachments(attachments);
       if (screenshot) {
         String shotFn = pathlib.join(db.paths.appPath, 'crash.png');
-        Uint8List shotBinary = await db.screenshotController
+        Uint8List shotBinary = await db.runtimeData.screenshotController
             ?.capture(pixelRatio: 1.5, delay: Duration(seconds: 2));
         if (shotBinary != null) {
           File(shotFn).writeAsBytesSync(shotBinary, flush: true);

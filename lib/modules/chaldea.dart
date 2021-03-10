@@ -38,7 +38,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   @override
   void initState() {
     super.initState();
-    db.screenshotController = ScreenshotController();
+    db.runtimeData.screenshotController = ScreenshotController();
     SplitRoute.defaultMasterFillPageBuilder = (context) => BlankPage();
     db.notifyAppUpdate = () {
       setState(() {});
@@ -61,7 +61,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
       child: Screenshot(
-        controller: db.screenshotController,
+        controller: db.runtimeData.screenshotController,
         child: MaterialApp(
           title: kAppName,
           debugShowCheckedModeBanner: false,

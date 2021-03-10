@@ -264,8 +264,6 @@
   "reload_default_gamedata": "プリインストールされたバージョンをリロードします",
   "reloading_data": "インポート中",
   "reload_data_success": "インポートに成功しました",
-  "delete_all_data": "すべてのデータを削除",
-  "delete_all_data_hint": "ユーザーデータ、ゲームデータ、画像リソースを含め、デフォルトのリソースを読み込む",
   "search_result_count": "合計：{total}",
   "search_result_count_hide": "合計：{total} (非表示: {hidden})",
   "mystic_code": "魔術礼装",

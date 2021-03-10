@@ -2670,26 +2670,6 @@ class S {
     );
   }
 
-  /// `删除所有数据`
-  String get delete_all_data {
-    return Intl.message(
-      '删除所有数据',
-      name: 'delete_all_data',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `包含用户数据、游戏数据、图片资源, 并加载默认资源`
-  String get delete_all_data_hint {
-    return Intl.message(
-      '包含用户数据、游戏数据、图片资源, 并加载默认资源',
-      name: 'delete_all_data_hint',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `总计: {total}`
   String search_result_count(Object total) {
     return Intl.message(

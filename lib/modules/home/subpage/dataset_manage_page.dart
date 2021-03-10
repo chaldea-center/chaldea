@@ -148,22 +148,6 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 subtitle: Text(S.of(context).clear_cache_hint),
                 onTap: clearCache,
               ),
-              ListTile(
-                title: Text(S.of(context).delete_all_data),
-                subtitle: Text(S.of(context).delete_all_data_hint),
-                onTap: () {
-                  SimpleCancelOkDialog(
-                    title: Text(S.of(context).delete_all_data),
-                    onTapOk: () async {
-                      var canceler = showMyProgress(
-                          status: 'loading...',
-                          maskType: EasyLoadingMaskType.clear);
-                      await db.clearData(game: true);
-                      canceler();
-                    },
-                  ).show(context);
-                },
-              ),
             ],
           ),
         ],

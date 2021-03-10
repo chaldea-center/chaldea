@@ -32,8 +32,6 @@ class Database {
   UserData userData = UserData();
   GameData gameData = GameData();
 
-  /// Controller of [Screenshot] widget which set root [MaterialApp] as child
-  ScreenshotController? screenshotController;
   SharedPreferences? _prefs;
 
   SharedPreferences get prefs => _prefs!;
@@ -460,6 +458,9 @@ class PathManager {
 class RuntimeData {
   bool appUpgradable = false;
   List<File> itemRecognizeImageFiles = [];
+
+  /// Controller of [Screenshot] widget which set root [MaterialApp] as child
+  ScreenshotController? screenshotController;
 }
 
 Database db = new Database();
