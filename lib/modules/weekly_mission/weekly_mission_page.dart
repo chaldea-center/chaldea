@@ -268,6 +268,7 @@ class _WeeklyMissionPageState extends State<WeeklyMissionPage>
     for (var mission in missions) {
       children.add(ListTile(
         leading: IconButton(
+          constraints: BoxConstraints(minHeight: 48, minWidth: 36),
           onPressed: () {
             setState(() {
               missions.remove(mission);
@@ -277,7 +278,7 @@ class _WeeklyMissionPageState extends State<WeeklyMissionPage>
           color: Colors.redAccent,
         ),
         horizontalTitleGap: 0,
-        contentPadding: EdgeInsets.symmetric(horizontal: 8),
+        contentPadding: EdgeInsets.only(right: 8),
         title: AutoSizeText(
           mission.getTargets().join(' or '),
           maxLines: 2,
@@ -484,6 +485,8 @@ class __InputGroupState extends State<_InputGroup> {
       mainAxisSize: MainAxisSize.min,
       children: [
         IconButton(
+          padding: EdgeInsets.zero,
+          constraints: BoxConstraints(minWidth: 24, minHeight: 24),
           icon: Icon(
             Icons.indeterminate_check_box,
             color: minusEnabled ? Colors.blueAccent : null,
@@ -506,7 +509,7 @@ class __InputGroupState extends State<_InputGroup> {
               enabledBorder: OutlineInputBorder(),
               focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.blueAccent)),
-              contentPadding: EdgeInsets.symmetric(vertical: 8),
+              contentPadding: EdgeInsets.symmetric(vertical: 4),
             ),
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             keyboardType: TextInputType.number,
@@ -517,6 +520,8 @@ class __InputGroupState extends State<_InputGroup> {
           ),
         ),
         IconButton(
+          padding: EdgeInsets.zero,
+          constraints: BoxConstraints(minWidth: 24, minHeight: 24),
           icon: Icon(
             Icons.add_box,
             color: plusEnabled ? Colors.blueAccent : null,

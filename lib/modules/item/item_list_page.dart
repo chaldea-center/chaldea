@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
@@ -430,8 +431,16 @@ class _ItemListTabState extends State<ItemListTab> {
             (group.controller!.text == '-' || group.controller!.text == '')) {
           // don't set '-' to '0'
         } else {
-          group.controller!.value =
-              group.controller!.value.copyWith(text: text);
+          final selection = group.controller!.value.selection;
+          TextSelection? newSelection;
+          if (selection.isValid) {
+            newSelection = selection.copyWith(
+              baseOffset: min(selection.baseOffset, text.length),
+              extentOffset: min(selection.extentOffset, text.length),
+            );
+          }
+          group.controller!.value = group.controller!.value
+              .copyWith(text: text, selection: newSelection);
         }
       }
     });
@@ -472,7 +481,7 @@ class _ItemListTabState extends State<ItemListTab> {
           db.curUser.items[itemKey] =
               int.tryParse(v.replaceAll(',', '')) ?? db.curUser.items[itemKey];
         }
-        db.itemStat.updateLeftItems(shouldBroadcast: true);
+        db.itemStat.updateLeftItems();
         // setState2(() {});
       },
       onTap: () {
