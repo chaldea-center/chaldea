@@ -140,12 +140,30 @@ class _WeeklyMissionPageState extends State<WeeklyMissionPage>
                 onTap(key, checked);
               });
             };
+      Widget child = Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: Text(_removePrefix(key)),
+      );
       if (checked) {
         children.add(ElevatedButton(
-            onPressed: onPressed, child: Text(_removePrefix(key))));
+          onPressed: onPressed,
+          child: child,
+          style: ElevatedButton.styleFrom(
+            minimumSize: Size(48, 24),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            padding: EdgeInsets.symmetric(),
+          ),
+        ));
       } else {
         children.add(OutlinedButton(
-            onPressed: onPressed, child: Text(_removePrefix(key))));
+          onPressed: onPressed,
+          child: child,
+          style: OutlinedButton.styleFrom(
+            minimumSize: Size(48, 24),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            padding: EdgeInsets.symmetric(),
+          ),
+        ));
       }
     });
     return Container(

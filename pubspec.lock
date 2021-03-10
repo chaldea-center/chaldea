@@ -348,7 +348,7 @@ packages:
       name: flutter_audio_desktop
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.0.9"
+    version: "0.1.0"
   flutter_blurhash:
     dependency: transitive
     description:

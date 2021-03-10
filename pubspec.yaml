@@ -36,7 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.1+1
   dio: ^3.0.10
   file_picker_cross: ^4.2.7
-  flutter_audio_desktop: ^0.0.8
+  flutter_audio_desktop: ^0.1.0
   flutter_cache_manager: ^2.1.1
   flutter_easyloading: ^2.2.2
   flutter_email_sender: ^4.0.0
