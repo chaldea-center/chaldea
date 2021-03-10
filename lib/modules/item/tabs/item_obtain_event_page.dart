@@ -26,16 +26,18 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> children = [
-      _limitEventAccordion,
-      _ticketAccordion,
-      _mainRecordAccordion
-    ];
-    return ListView.separated(
-      itemBuilder: (context, index) => children[index],
-      separatorBuilder: (context, index) => kDefaultDivider,
-      itemCount: children.length,
-    );
+    return db.streamBuilder((context) {
+      List<Widget> children = [
+        _limitEventAccordion,
+        _ticketAccordion,
+        _mainRecordAccordion
+      ];
+      return ListView.separated(
+        itemBuilder: (context, index) => children[index],
+        separatorBuilder: (context, index) => kDefaultDivider,
+        itemCount: children.length,
+      );
+    });
   }
 
   bool _whetherToShow(bool planned, bool outdated) {

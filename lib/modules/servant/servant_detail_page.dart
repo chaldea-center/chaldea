@@ -109,10 +109,8 @@ class ServantDetailPageState extends State<ServantDetailPage>
                       : Icon(Icons.favorite_border),
                   tooltip: S.of(context).favorite,
                   onPressed: () {
-                    setState(() {
-                      plan.favorite =
-                          status.curVal.favorite = !status.curVal.favorite;
-                    });
+                    plan.favorite =
+                        status.curVal.favorite = !status.curVal.favorite;
                     db.itemStat.updateSvtItems();
                   },
                 ),
@@ -244,7 +242,10 @@ class ServantDetailPageState extends State<ServantDetailPage>
                     color: Colors.black54,
                   ));
             }),
-            onChanged: (v) => setState(() => status.priority = v),
+            onChanged: (v) {
+              status.priority = v;
+              db.notifyDbUpdate();
+            },
             underline: Container(),
             icon: Container(),
           ),

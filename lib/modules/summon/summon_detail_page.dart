@@ -36,7 +36,6 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    bool planned = db.curUser.plannedSummons.contains(summon.indexKey);
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
@@ -44,17 +43,21 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         titleSpacing: 0,
         actions: [
           db.streamBuilder(
-            (context) => IconButton(
-              icon: Icon(planned ? Icons.favorite : Icons.favorite_outline),
-              onPressed: () {
-                if (planned) {
-                  db.curUser.plannedSummons.remove(summon.indexKey);
-                } else {
-                  db.curUser.plannedSummons.add(summon.indexKey);
-                }
-                db.notifyDbUpdate();
-              },
-            ),
+            (context) {
+              bool planned =
+                  db.curUser.plannedSummons.contains(summon.indexKey);
+              return IconButton(
+                icon: Icon(planned ? Icons.favorite : Icons.favorite_outline),
+                onPressed: () {
+                  if (planned) {
+                    db.curUser.plannedSummons.remove(summon.indexKey);
+                  } else {
+                    db.curUser.plannedSummons.add(summon.indexKey);
+                  }
+                  db.notifyDbUpdate();
+                },
+              );
+            },
           ),
         ],
       ),

@@ -65,7 +65,6 @@ class _SummonListPageState extends State<SummonListPage> {
   }
 
   Widget getSummonTile(Summon summon) {
-    final planned = db.curUser.plannedSummons.contains(summon.indexKey);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -77,20 +76,24 @@ class _SummonListPageState extends State<SummonListPage> {
             style: TextStyle(color: summon.isOutdated() ? Colors.grey : null),
           ),
           trailing: db.streamBuilder(
-            (context) => IconButton(
-              icon: Icon(
-                planned ? Icons.favorite : Icons.favorite_outline,
-                color: planned ? Colors.redAccent : null,
-              ),
-              onPressed: () {
-                if (planned) {
-                  db.curUser.plannedSummons.remove(summon.indexKey);
-                } else {
-                  db.curUser.plannedSummons.add(summon.indexKey);
-                }
-                db.notifyDbUpdate();
-              },
-            ),
+            (context) {
+              final planned =
+                  db.curUser.plannedSummons.contains(summon.indexKey);
+              return IconButton(
+                icon: Icon(
+                  planned ? Icons.favorite : Icons.favorite_outline,
+                  color: planned ? Colors.redAccent : null,
+                ),
+                onPressed: () {
+                  if (planned) {
+                    db.curUser.plannedSummons.remove(summon.indexKey);
+                  } else {
+                    db.curUser.plannedSummons.add(summon.indexKey);
+                  }
+                  db.notifyDbUpdate();
+                },
+              );
+            },
           ),
           onTap: () {
             SplitRoute.push(

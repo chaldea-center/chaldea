@@ -47,7 +47,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
       if (ticket == null) {
         return ListTile(title: Text('${widget.month} NOT FOUND'));
       }
-      return buildOneMonth(ticket);
+      return db.streamBuilder((context) => buildOneMonth(ticket));
     }
     final tickets = db.gameData.events.exchangeTickets.values.toList();
     if (!widget.showOutdated) {

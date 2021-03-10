@@ -72,9 +72,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
               title: Text(S.of(context).main_record_fixed_drop),
               value: plan[0],
               onChanged: (v) {
-                setState(() {
-                  plan[0] = v;
-                });
+                plan[0] = v;
                 db.itemStat.updateEventItems();
               },
             ),
@@ -86,9 +84,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
               title: Text(S.of(context).main_record_bonus),
               value: plan[1],
               onChanged: (v) {
-                setState(() {
-                  plan[1] = v;
-                });
+                plan[1] = v;
                 db.itemStat.updateEventItems();
               },
             ),

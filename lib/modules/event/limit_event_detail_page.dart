@@ -55,9 +55,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
         title: Text(S.of(context).plan),
         value: plan.enable,
         onChanged: (v) {
-          setState(() {
-            plan.enable = v;
-          });
+          plan.enable = v;
           db.itemStat.updateEventItems();
         },
       ),
@@ -70,7 +68,13 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
           subtitle: Text(
               S.of(context).event_rerun_replace_grail(event.grail2crystal)),
           value: plan.rerun,
-          onChanged: (v) => setState(() => plan.rerun = v),
+          onChanged: (v) {
+            plan.rerun = v;
+            db.notifyDbUpdate();
+            setState(() {
+              // update grail and crystal num
+            });
+          },
         ),
       ));
     }

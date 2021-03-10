@@ -90,10 +90,8 @@ class _MainRecordTabState extends State<MainRecordTab> {
                         (context) => Switch.adaptive(
                           value: plan[i],
                           onChanged: (v) {
-                            setState(() {
-                              plan[i] = v;
-                              db.itemStat.updateEventItems();
-                            });
+                            plan[i] = v;
+                            db.itemStat.updateEventItems();
                           },
                         ),
                       );
