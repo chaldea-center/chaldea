@@ -33,6 +33,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         content: 'A backup is created:\n $userdataBackup',
       );
     }
+    launchStatistics();
   }
 
   @override

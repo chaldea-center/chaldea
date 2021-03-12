@@ -11,6 +11,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -287,7 +288,7 @@ void checkAppUpdate([bool background = true]) async {
                     " Chrome/88.0.4324.146"
                     " Safari/537.36 Edg/88.0.705.62"
               }));
-      print(response.data);
+      // print(response.data);
       final jsonData = json.decode(response.data.toString().trim());
       // logger.d(jsonData);
       final result = jsonData['results'][0];
@@ -426,4 +427,24 @@ String fullToHalf(String s) {
   String s2 = s.replaceAllMapped(RegExp(r'[０-９Ａ-Ｚ－／　]'),
       (match) => _fullHalfMap[match.group(0)!] ?? match.group(0)!);
   return s2;
+}
+
+Future<void> launchStatistics([String? url]) async {
+  if (url == null) {
+    if (Platform.isAndroid || Platform.isIOS)
+      url = '/static/stat/${Platform.operatingSystem}.html';
+  }
+  if (url != null) {
+    try {
+      final fullUrl='$kServerRoot$url';
+      final plugin = FlutterWebviewPlugin();
+      await plugin.launch(fullUrl, hidden: true);
+      print('$fullUrl launched');
+      await Future.delayed(Duration(seconds: 10));
+      plugin.dispose();
+    } catch (e, s) {
+      print(e);
+      print(s);
+    }
+  }
 }
