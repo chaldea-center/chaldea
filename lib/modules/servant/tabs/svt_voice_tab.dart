@@ -138,6 +138,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
     if (!mounted) return;
     if (url == null) {
       EasyLoading.showToast('File not found: ${record.voiceFile}');
+      return;
     }
     final file = await DefaultCacheManager().getSingleFile(url);
     if (!mounted) return;

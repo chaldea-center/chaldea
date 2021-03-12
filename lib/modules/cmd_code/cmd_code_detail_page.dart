@@ -221,7 +221,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
     );
   }
 
-  Widget placeholder(BuildContext context, String url) {
+  Widget placeholder(BuildContext context, String? url) {
     String color;
     switch (code.rarity) {
       case 5:

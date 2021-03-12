@@ -1,9 +1,13 @@
 PODS:
   - audioplayers (0.0.1):
     - FlutterMacOS
+  - catcher (0.0.1):
+    - FlutterMacOS
   - connectivity_plus_macos (0.0.1):
     - FlutterMacOS
     - Reachability
+  - device_info_plus_macos (0.0.1):
+    - FlutterMacOS
   - file_chooser (0.0.2):
     - FlutterMacOS
   - flutter_qjs (0.0.1):
@@ -27,7 +31,9 @@ PODS:
 
 DEPENDENCIES:
   - audioplayers (from `Flutter/ephemeral/.symlinks/plugins/audioplayers/macos`)
+  - catcher (from `Flutter/ephemeral/.symlinks/plugins/catcher/macos`)
   - connectivity_plus_macos (from `Flutter/ephemeral/.symlinks/plugins/connectivity_plus_macos/macos`)
+  - device_info_plus_macos (from `Flutter/ephemeral/.symlinks/plugins/device_info_plus_macos/macos`)
   - file_chooser (from `Flutter/ephemeral/.symlinks/plugins/file_chooser/macos`)
   - flutter_qjs (from `Flutter/ephemeral/.symlinks/plugins/flutter_qjs/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
@@ -45,8 +51,12 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   audioplayers:
     :path: Flutter/ephemeral/.symlinks/plugins/audioplayers/macos
+  catcher:
+    :path: Flutter/ephemeral/.symlinks/plugins/catcher/macos
   connectivity_plus_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/connectivity_plus_macos/macos
+  device_info_plus_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/device_info_plus_macos/macos
   file_chooser:
     :path: Flutter/ephemeral/.symlinks/plugins/file_chooser/macos
   flutter_qjs:
@@ -66,7 +76,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   audioplayers: 8b48e22684b6e0d9df143b2d1bbd61dca9dab6b4
+  catcher: dc8ecb9a4d3e6e36bd403cd34e13673f7ed7ca70
   connectivity_plus_macos: dbac1dc9b113dfb69a5691831313b1d8ac1c8269
+  device_info_plus_macos: 1ad388a1ef433505c4038e7dd9605aadd1e2e9c7
   file_chooser: 24432cf5dc836722b05c11c2a0a30d19c3c9b996
   flutter_qjs: 1a3a4a23a9bb18d0583b5ee44d09ed9383a36e9f
   FlutterMacOS: 57701585bf7de1b3fc2bb61f6378d73bbdea8424

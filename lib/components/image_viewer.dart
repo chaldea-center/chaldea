@@ -88,6 +88,11 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
   }
 }
 
+typedef PlaceholderWidgetBuilder = Widget Function(
+  BuildContext context,
+  String? url,
+);
+
 class CachedImage extends StatefulWidget {
   final String? imageUrl;
   final bool isMCFile;
@@ -107,7 +112,7 @@ class CachedImage extends StatefulWidget {
   final double? width;
   final double? height;
   final BoxFit? fit;
-  final AlignmentGeometry alignment;
+  final Alignment alignment;
   final ImageRepeat repeat;
   final bool matchTextDirection;
   final BaseCacheManager? cacheManager;
@@ -234,7 +239,7 @@ class _CachedImageState extends State<CachedImage> {
       child = placeholder(context, realUrl ?? widget.imageUrl);
     } else {
       child = CachedNetworkImage(
-        imageUrl: realUrl,
+        imageUrl: realUrl!,
         httpHeaders: widget.httpHeaders,
         imageBuilder: widget.imageBuilder,
         placeholder: placeholder,

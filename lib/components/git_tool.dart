@@ -6,7 +6,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:github/github.dart' as github;
 import 'package:path/path.dart' as pathlib;
 
 import 'logger.dart';
@@ -132,19 +131,21 @@ class GitRelease {
       this.targetAsset,
       this.source});
 
-  GitRelease.fromGithub({required github.Release release})
-      : id = release.id!,
-        name = release.name!,
-        tagName = release.tagName!,
-        body = release.body,
-        createdAt = release.createdAt ?? DateTime.fromMillisecondsSinceEpoch(0),
-        assets = release.assets
-                ?.map((asset) => GitAsset(
-                    name: asset.name!,
-                    browserDownloadUrl: asset.browserDownloadUrl))
-                .toList() ??
-            [],
-        source = GitSource.github;
+  GitRelease.fromGithub({required Map<String, dynamic> data})
+      : id = data['id'] ?? 0,
+        tagName = data['tag_name'] ?? '',
+        name = data['name'] ?? '',
+        body = data['body'] ?? '',
+        createdAt = DateTime.parse(data['created_at'] ?? '20200101'),
+        assets = List.generate(
+          data['assets']?.length ?? 0,
+          (index) => GitAsset(
+            name: data['assets'][index]['name'] ?? '',
+            browserDownloadUrl:
+                data['assets'][index]['browser_download_url'] ?? '',
+          ),
+        ),
+        source = GitSource.gitee;
 
   GitRelease.fromGitee({required Map<String, dynamic> data})
       : id = data['id'] ?? 0,
@@ -214,12 +215,15 @@ class GitTool {
   Future<List<GitRelease>> resolveReleases(String repo) async {
     List<GitRelease> releases = [];
     if (source == GitSource.github) {
-      final slug = github.RepositorySlug(owner, repo);
-      final _github = github.GitHub();
-      // tags: newest->oldest
-      releases = (await _github.repositories.listReleases(slug).toList())
-          .map((e) => GitRelease.fromGithub(release: e))
-          .toList();
+      final response = await Dio().get(
+        'https://api.github.com/repos/$owner/$repo/releases',
+        options: Options(
+            contentType: 'application/json;charset=UTF-8',
+            responseType: ResponseType.json),
+      );
+      // don't use map().toList(), List<dynamic> is not subtype ...
+      releases = List.generate(response.data?.length ?? 0,
+              (index) => GitRelease.fromGitee(data: response.data[index]));
     } else if (source == GitSource.gitee) {
       // response: List<Release>
       final response = await Dio().get(
@@ -272,13 +276,6 @@ class GitTool {
   }
 }
 
-/// specific [asset] in [release]
-class ReleaseInfo {
-  github.Release release;
-  github.ReleaseAsset asset;
-
-  ReleaseInfo(this.release, this.asset);
-}
 
 /// TODO: move to other place, more customizable
 class DownloadDialog extends StatefulWidget {
@@ -331,7 +328,7 @@ class _DownloadDialogState extends State<DownloadDialog> {
       );
       onDownloadComplete(response);
     } on DioError catch (e) {
-      if (e.type != DioErrorType.CANCEL) {
+      if (e.type != DioErrorType.cancel) {
         EasyLoading.showError(e.toString());
         rethrow;
       }

@@ -72,21 +72,21 @@ class ImportGudaPageState extends State<ImportGudaPage> {
   }
 
   void importGudaFile() async {
-    FilePickerCross? filePickerCross =
-        await FilePickerCross.importFromStorage().catchError((e) => null);
-    if (filePickerCross == null) // ignore: unnecessary_null_comparison
-      return null;
-
-    gudaData = File(filePickerCross.path).readAsStringSync();
-    int cellNum = gudaData!.trim().split(';').first.split('/').length;
-    itemOrSvt = cellNum == 3
-        ? true
-        : cellNum == 13
-            ? false
-            : null;
-
-    if (mounted) {
-      setState(() {});
+    try {
+      FilePickerCross filePickerCross =
+          await FilePickerCross.importFromStorage();
+      gudaData = File(filePickerCross.path).readAsStringSync();
+      int cellNum = gudaData!.trim().split(';').first.split('/').length;
+      itemOrSvt = cellNum == 3
+          ? true
+          : cellNum == 13
+              ? false
+              : null;
+      if (mounted) {
+        setState(() {});
+      }
+    } catch (e) {
+      return;
     }
   }
 

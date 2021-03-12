@@ -306,7 +306,7 @@ class CraftDetailBasePage extends StatelessWidget {
     return summons;
   }
 
-  Widget placeholder(BuildContext context, String url) {
+  Widget placeholder(BuildContext context, String? url) {
     String color;
     switch (ce.rarity) {
       case 5:

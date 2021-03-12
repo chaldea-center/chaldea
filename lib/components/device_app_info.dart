@@ -1,7 +1,7 @@
 //@dart=2.12
 import 'dart:io';
 
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
 import 'package:path/path.dart' as pathlib;
@@ -179,7 +179,7 @@ class AppInfo {
   static PackageInfo? get info => _packageInfo;
 
   static String get appName {
-    if (_packageInfo?.appName?.isNotEmpty == true)
+    if (_packageInfo?.appName.isNotEmpty == true)
       return _packageInfo!.appName;
     else
       return kAppName;

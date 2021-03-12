@@ -32,7 +32,7 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
         TabController(length: svt.info.illustrations.length, vsync: this);
   }
 
-  Widget placeholder(BuildContext context, String url) {
+  Widget placeholder(BuildContext context, String? url) {
     final _colors = ['黑', '铜', '铜', '银', '金', '金'];
     String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
     String key = '${capitalize(svt.info.className)}'
