@@ -87,17 +87,6 @@ class _AboutPageState extends State<AboutPage> {
             title: Text(S.of(context).about_app_declaration_text),
           ),
           TileGroup(
-            children: [
-              ListTile(
-                title: Text(S.of(context).project_homepage),
-                subtitle: Text(kProjectHomepage),
-                onTap: () {
-                  launch(kProjectHomepage);
-                },
-              ),
-            ],
-          ),
-          TileGroup(
             header: S.of(context).about_data_source,
             footer: S.of(context).about_data_source_footer,
             children: <Widget>[
@@ -133,9 +122,23 @@ class _AboutPageState extends State<AboutPage> {
                 ListTile(
                   title: Text(S.of(context).about_appstore_rating),
                   onTap: () {
-                    launch('itms-apps://itunes.apple.com/app/id1548713491');
+                    launch(kAppStoreLink);
                   },
-                )
+                ),
+              if (Platform.isAndroid)
+                ListTile(
+                  title: Text('Google Play Store'),
+                  onTap: () {
+                    launch(kGooglePlayLink);
+                  },
+                ),
+              ListTile(
+                title: Text(S.of(context).project_homepage),
+                subtitle: Text(kProjectHomepage),
+                onTap: () {
+                  launch(kProjectHomepage);
+                },
+              ),
             ],
           ),
         ],
