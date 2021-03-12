@@ -157,6 +157,8 @@ class TileGroup extends StatelessWidget {
   final String? footer;
   final EdgeInsets? padding;
   final Widget divider;
+  final bool innerDivider;
+  final Color? tileColor;
 
   const TileGroup({
     Key? key,
@@ -165,14 +167,18 @@ class TileGroup extends StatelessWidget {
     this.footer,
     this.padding,
     this.divider = const Divider(height: 0.5, thickness: 0.5),
+    this.innerDivider = true,
+    this.tileColor = Colors.white,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> group = [divider];
-    children.forEach((child) {
-      group..add(child)..add(divider);
-    });
+    List<Widget> group;
+    if (innerDivider) {
+      group = divideTiles(children, divider: divider, top: true, bottom: true);
+    } else {
+      group = [divider, ...children, divider];
+    }
     // final List<Widget> group = List.generate(
     //   children.length,
     //   (index) => Container(
@@ -193,7 +199,10 @@ class TileGroup extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           if (header != null) SHeader(header!),
-          ...group,
+          Material(
+            color: tileColor,
+            child: Column(mainAxisSize: MainAxisSize.min, children: group),
+          ),
           if (footer != null) SFooter(footer!)
         ],
       ),

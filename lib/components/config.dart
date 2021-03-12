@@ -457,10 +457,15 @@ class PathManager {
 
 class RuntimeData {
   bool appUpgradable = false;
+  double? criticalWidth;
   List<File> itemRecognizeImageFiles = [];
 
   /// Controller of [Screenshot] widget which set root [MaterialApp] as child
   ScreenshotController? screenshotController;
+
+  String? get contactInfo => db.prefs.getString('contactInfo');
+
+  set contactInfo(String? s) => db.prefs.setString('contactInfo', s ?? '');
 }
 
 Database db = new Database();

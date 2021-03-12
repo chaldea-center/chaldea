@@ -181,6 +181,20 @@ class _SettingsPageState extends State<SettingsPage> {
                   onTap: () =>
                       launch('https://testflight.apple.com/join/HSyZttrr'),
                 ),
+              if (Platform.isIOS || Platform.isMacOS)
+                ListTile(
+                  title: Text(S.of(context).about_appstore_rating),
+                  onTap: () {
+                    launch(kAppStoreLink);
+                  },
+                ),
+              if (Platform.isAndroid)
+                ListTile(
+                  title: Text('Google Play Store'),
+                  onTap: () {
+                    launch(kGooglePlayLink);
+                  },
+                ),
               ListTile(
                 title: Text(S.of(context).about_feedback),
                 onTap: () {
@@ -192,30 +206,29 @@ class _SettingsPageState extends State<SettingsPage> {
                   );
                 },
               ),
-              if (kDebugMode)
+            ],
+          ),
+          if (kDebugMode)
+            TileGroup(
+              header: 'Test(debug mode: ${kDebugMode ? 'on' : 'off'})',
+              children: <Widget>[
                 ListTile(
                   title: Text('Generate Error'),
                   onTap: () {
                     throw FormatException('generated error');
                   },
-                )
-            ],
-          ),
-          if (kDebugMode_)
-            TileGroup(
-              header: 'Test(debug mode: ${kDebugMode_ ? 'on' : 'off'})',
-              children: <Widget>[
+                ),
                 ListTile(
                   title: Text('Master-Detail width'),
                   trailing: DropdownButtonHideUnderline(
                     child: DropdownButton<double>(
-                      value: db.userData.criticalWidth ?? 768,
+                      value: db.runtimeData.criticalWidth ?? 768,
                       items: <DropdownMenuItem<double>>[
                         DropdownMenuItem(value: 768, child: Text('768')),
                         DropdownMenuItem(value: 600, child: Text('600'))
                       ],
                       onChanged: (v) {
-                        db.userData.criticalWidth = v;
+                        db.runtimeData.criticalWidth = v;
                         db.notifyAppUpdate();
                       },
                     ),

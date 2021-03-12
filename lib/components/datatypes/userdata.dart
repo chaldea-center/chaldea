@@ -7,7 +7,6 @@ class UserData {
   // app settings
   String language;
 
-  bool useMobileNetwork;
   String sliderUpdateTime;
   Map<String, String> sliderUrls;
   Map<String, bool> galleries;
@@ -25,10 +24,6 @@ class UserData {
 
   List<String> get userNames => users.values.map((user) => user.name).toList();
 
-  //test
-  @JsonKey(ignore: true)
-  double criticalWidth;
-
   //filters, ItemFilterDat to be done
   SvtFilterData svtFilter;
   CraftFilterData craftFilter;
@@ -38,13 +33,8 @@ class UserData {
   GLPKParams glpkParams;
   List<int> itemAbundantValue;
 
-  // extra
-  String contactInfo;
-
   UserData({
     this.language,
-    this.criticalWidth,
-    this.useMobileNetwork,
     this.sliderUpdateTime,
     this.sliderUrls,
     this.galleries,
@@ -58,11 +48,9 @@ class UserData {
     this.cmdCodeFilter,
     this.glpkParams,
     this.itemAbundantValue,
-    this.contactInfo,
   }) {
     // not initiate language: auto-change language if not set yet.
     String defaultName = 'default';
-    useMobileNetwork ??= true;
     sliderUrls ??= {};
     galleries ??= {};
     serverRoot ??= kServerRoot;

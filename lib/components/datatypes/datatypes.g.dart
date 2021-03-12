@@ -565,8 +565,8 @@ Map<String, dynamic> _$WeeklyMissionQuestToJson(WeeklyMissionQuest instance) =>
       'place': instance.place,
       'placeJp': instance.placeJp,
       'ap': instance.ap,
-      'enemyTraits': instance.enemyTraits,
       'servantTraits': instance.servantTraits,
+      'enemyTraits': instance.enemyTraits,
       'servants': instance.servants,
       'battlefields': instance.battlefields,
     };
@@ -657,11 +657,11 @@ BasicGLPKParams _$BasicGLPKParamsFromJson(Map<String, dynamic> json) {
   return BasicGLPKParams(
     colNames: (json['colNames'] as List)?.map((e) => e as String)?.toList(),
     rowNames: (json['rowNames'] as List)?.map((e) => e as String)?.toList(),
-    bVec: (json['b'] as List)?.map((e) => e as num)?.toList(),
-    cVec: (json['c'] as List)?.map((e) => e as num)?.toList(),
-    AMat: (json['A'] as List)
+    AMat: (json['AMat'] as List)
         ?.map((e) => (e as List)?.map((e) => e as num)?.toList())
         ?.toList(),
+    bVec: (json['bVec'] as List)?.map((e) => e as num)?.toList(),
+    cVec: (json['cVec'] as List)?.map((e) => e as num)?.toList(),
     integer: json['integer'] as bool,
   );
 }
@@ -670,9 +670,9 @@ Map<String, dynamic> _$BasicGLPKParamsToJson(BasicGLPKParams instance) =>
     <String, dynamic>{
       'colNames': instance.colNames,
       'rowNames': instance.rowNames,
-      'b': instance.bVec,
-      'c': instance.cVec,
-      'A': instance.AMat,
+      'AMat': instance.AMat,
+      'bVec': instance.bVec,
+      'cVec': instance.cVec,
       'integer': instance.integer,
     };
 
@@ -1546,8 +1546,6 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
         requiredKeys: const ['users'], disallowNullValues: const ['users']);
     final val = UserData(
       language: $checkedConvert(json, 'language', (v) => v as String),
-      useMobileNetwork:
-          $checkedConvert(json, 'useMobileNetwork', (v) => v as bool),
       sliderUpdateTime:
           $checkedConvert(json, 'sliderUpdateTime', (v) => v as String),
       sliderUrls: $checkedConvert(
@@ -1603,7 +1601,6 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
               : GLPKParams.fromJson(v as Map<String, dynamic>)),
       itemAbundantValue: $checkedConvert(json, 'itemAbundantValue',
           (v) => (v as List)?.map((e) => e as int)?.toList()),
-      contactInfo: $checkedConvert(json, 'contactInfo', (v) => v as String),
     );
     return val;
   });
@@ -1612,7 +1609,6 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$UserDataToJson(UserData instance) {
   final val = <String, dynamic>{
     'language': instance.language,
-    'useMobileNetwork': instance.useMobileNetwork,
     'sliderUpdateTime': instance.sliderUpdateTime,
     'sliderUrls': instance.sliderUrls,
     'galleries': instance.galleries,
@@ -1634,7 +1630,6 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) {
   val['cmdCodeFilter'] = instance.cmdCodeFilter;
   val['glpkParams'] = instance.glpkParams;
   val['itemAbundantValue'] = instance.itemAbundantValue;
-  val['contactInfo'] = instance.contactInfo;
   return val;
 }
 

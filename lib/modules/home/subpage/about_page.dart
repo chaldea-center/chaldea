@@ -6,8 +6,6 @@ import 'package:chaldea/components/components.dart';
 import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'feedback_page.dart';
-
 class AboutPage extends StatefulWidget {
   @override
   _AboutPageState createState() => _AboutPageState();
@@ -100,40 +98,10 @@ class _AboutPageState extends State<AboutPage> {
             ],
           ),
           TileGroup(
-            header: S.of(context).about_feedback,
-            children: <Widget>[
+            header: S.of(context).project_homepage,
+            children: [
               ListTile(
-                title: Text(S.of(context).about_feedback),
-                onTap: () {
-                  SplitRoute.push(
-                    context: context,
-                    builder: (context, _) => FeedbackPage(),
-                    detail: true,
-                  );
-                },
-              ),
-              ListTile(
-                title: Text(S.of(context).nga),
-                onTap: () => jumpToExternalLinkAlert(
-                    url: 'https://bbs.nga.cn/read.php?tid=24926789',
-                    name: S.of(context).nga_fgo),
-              ),
-              if (Platform.isIOS || Platform.isMacOS)
-                ListTile(
-                  title: Text(S.of(context).about_appstore_rating),
-                  onTap: () {
-                    launch(kAppStoreLink);
-                  },
-                ),
-              if (Platform.isAndroid)
-                ListTile(
-                  title: Text('Google Play Store'),
-                  onTap: () {
-                    launch(kGooglePlayLink);
-                  },
-                ),
-              ListTile(
-                title: Text(S.of(context).project_homepage),
+                title: Text('Github'),
                 subtitle: Text(kProjectHomepage),
                 onTap: () {
                   launch(kProjectHomepage);

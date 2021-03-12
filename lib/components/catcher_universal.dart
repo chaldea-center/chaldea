@@ -12,7 +12,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:logging/logging.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
-import 'package:mailer/src/entities/attachment.dart';
+import 'package:mailer/src/entities/attachment.dart'; // ignore: implementation_imports
 import 'package:path/path.dart' as pathlib;
 
 import 'config.dart';
@@ -133,9 +133,11 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
   /// maintain list for every contact if contact changed
   Map<String, List<Report>> _sentReports = {};
 
+  String get contactInfo => db.runtimeData.contactInfo;
+
   Future<bool> _sendMail(Report report) async {
     // don't send email repeatedly
-    String contact = db.userData.contactInfo?.trim() ?? '';
+    String contact = contactInfo?.trim() ?? '';
     List<Report> _cachedReports = _sentReports.putIfAbsent(contact, () => []);
     if (_cachedReports.any((element) =>
         report.error.toString() == element.error.toString() &&
@@ -221,9 +223,9 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
     }
     buffer.write('<style>h3{margin:0.2em 0;}</style>');
 
-    if (db.userData.contactInfo?.isNotEmpty == true) {
+    if (contactInfo?.isNotEmpty == true) {
       buffer.write("<h3>Contact:</h3>");
-      buffer.write("${escape(db.userData.contactInfo)}<br>");
+      buffer.write("${escape(contactInfo)}<br>");
     }
     buffer.write("<h3>Summary:</h3>");
     final dataVerFile = File(db.paths.datasetVersionFile);
@@ -289,8 +291,8 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
       buffer.write(emailHeader);
       buffer.write("\n\n");
     }
-    if (db.userData.contactInfo?.isNotEmpty == true) {
-      buffer.write('Contact: ${db.userData.contactInfo}\n\n');
+    if (contactInfo?.isNotEmpty == true) {
+      buffer.write('Contact: $contactInfo\n\n');
     }
 
     buffer.write("Error:\n");

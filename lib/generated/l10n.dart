@@ -3039,6 +3039,56 @@ class S {
       args: [],
     );
   }
+
+  /// `联系方式(可选)`
+  String get feedback_contact {
+    return Intl.message(
+      '联系方式(可选)',
+      name: 'feedback_contact',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `反馈与建议`
+  String get feedback_content_hint {
+    return Intl.message(
+      '反馈与建议',
+      name: 'feedback_content_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `添加崩溃日志`
+  String get feedback_add_crash_log {
+    return Intl.message(
+      '添加崩溃日志',
+      name: 'feedback_add_crash_log',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `添加图像或文件附件`
+  String get feedback_add_attachments {
+    return Intl.message(
+      '添加图像或文件附件',
+      name: 'feedback_add_attachments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `发送`
+  String get feedback_send {
+    return Intl.message(
+      '发送',
+      name: 'feedback_send',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

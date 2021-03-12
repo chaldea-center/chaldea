@@ -61,7 +61,7 @@ class _PageWidgetState extends State<_PageWidget> {
   @override
   void initState() {
     _textEditingController =
-        TextEditingController(text: db.userData.contactInfo);
+        TextEditingController(text: db.runtimeData.contactInfo);
     super.initState();
   }
 
@@ -128,7 +128,7 @@ class _PageWidgetState extends State<_PageWidget> {
               hintText: '我们会尽快给您答复',
             ),
             onChanged: (s) {
-              db.userData.contactInfo = s;
+              db.runtimeData.contactInfo = s;
             },
           ),
           const Padding(

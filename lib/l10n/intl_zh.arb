@@ -299,5 +299,10 @@
   "summon": "卡池",
   "summon_title": "卡池一览",
   "master_mission": "御主任务",
-  "project_homepage": "项目主页"
+  "project_homepage": "项目主页",
+  "feedback_contact": "联系方式(可选)",
+  "feedback_content_hint": "反馈与建议",
+  "feedback_add_crash_log": "添加崩溃日志",
+  "feedback_add_attachments": "添加图像或文件附件",
+  "feedback_send": "发送"
 }

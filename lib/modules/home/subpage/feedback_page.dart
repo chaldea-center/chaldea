@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 import 'package:path/path.dart' as pathlib;
+import 'package:url_launcher/url_launcher.dart';
 
 class FeedbackPage extends StatefulWidget {
   @override
@@ -43,57 +44,132 @@ class _FeedbackPageState extends State<FeedbackPage> {
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 8),
         children: [
-          Padding(padding: EdgeInsets.only(top: 20)),
-          TextField(
-            controller: contactController,
-            decoration: InputDecoration(
-                labelText: '联系方式(可选)', border: OutlineInputBorder()
-                // prefix: Icon(Icons.mail_outline),
+          Padding(padding: EdgeInsets.only(top: 8)),
+          TileGroup(
+            header: 'Github',
+            children: [
+              ListTile(
+                title: Text(S.of(context).project_homepage),
+                subtitle: Text(kProjectHomepage),
+                onTap: () => jumpToExternalLinkAlert(
+                  url: '$kProjectHomepage/issues',
+                  name: 'Github',
                 ),
-            maxLines: 1,
-          ),
-          Padding(padding: EdgeInsets.only(top: 20)),
-          SizedBox(
-            height: 200,
-            child: TextField(
-              controller: bodyController,
-              decoration: InputDecoration(
-                labelText: '反馈与建议',
-                border: OutlineInputBorder(),
-                alignLabelWithHint: true,
               ),
-              expands: true,
-              maxLines: null,
-              textAlignVertical: TextAlignVertical.top,
-            ),
+            ],
           ),
-          CheckboxListTile(
-            title: Text('添加崩溃日志'),
-            value: attachLog,
-            onChanged: (v) {
-              setState(() {
-                attachLog = v ?? attachLog;
-              });
-            },
+          TileGroup(
+            header: 'NGA',
+            children: [
+              ListTile(
+                title: Text(S.of(context).nga),
+                onTap: () => jumpToExternalLinkAlert(
+                  url: 'https://bbs.nga.cn/read.php?tid=24926789',
+                  name: S.of(context).nga_fgo,
+                ),
+              ),
+            ],
           ),
-          ListTile(
-            title: Text('添加图像或文件'),
-            onTap: _addAttachments,
+          TileGroup(
+            header: 'Email',
+            children: [
+              ListTile(
+                title: Text('Email'),
+                subtitle: Text(kSupportTeamEmailAddress),
+                onTap: () async {
+                  String subject =
+                      '$kAppName (${AppInfo.fullVersion}) Feedback';
+                  String body = "OS: ${Platform.operatingSystem}"
+                      " ${Platform.operatingSystemVersion}<br><br>";
+                  final uri = Uri(
+                      scheme: 'mailto',
+                      path: kSupportTeamEmailAddress,
+                      query: 'subject=$subject&body=$body');
+                  print(uri);
+                  if (await canLaunch(uri.toString())) {
+                    launch(uri.toString());
+                  } else {
+                    SimpleCancelOkDialog(
+                      title: Text('Send email to'),
+                      content: Text(kSupportTeamEmailAddress),
+                    ).show(context);
+                  }
+                },
+              ),
+            ],
           ),
-          for (String fp in attachFiles)
-            ListTile(
-              leading: Icon(Icons.attach_file),
-              title: Text(pathlib.basename(fp)),
-              trailing: IconButton(
-                icon: Icon(Icons.clear),
-                onPressed: () {
+          TileGroup(
+            header: S.of(context).about_feedback,
+            // divider: Container(),
+            innerDivider: false,
+            children: [
+              Padding(padding: EdgeInsets.only(top: 8)),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: TextField(
+                  controller: contactController,
+                  decoration: InputDecoration(
+                    labelText: S.of(context).feedback_contact,
+                    border: OutlineInputBorder(),
+                    // prefix: Icon(Icons.mail_outline),
+                  ),
+                  maxLines: 1,
+                ),
+              ),
+              Padding(padding: EdgeInsets.only(top: 20)),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                height: 200,
+                child: TextField(
+                  controller: bodyController,
+                  decoration: InputDecoration(
+                    labelText: S.of(context).feedback_content_hint,
+                    border: OutlineInputBorder(),
+                    alignLabelWithHint: true,
+                  ),
+                  expands: true,
+                  maxLines: null,
+                  textAlignVertical: TextAlignVertical.top,
+                ),
+              ),
+              CheckboxListTile(
+                title: Text(S.of(context).feedback_add_crash_log),
+                value: attachLog,
+                onChanged: (v) {
                   setState(() {
-                    attachFiles.remove(fp);
+                    attachLog = v ?? attachLog;
                   });
                 },
               ),
-            ),
-          ElevatedButton(onPressed: sendEmail, child: Text('Send'))
+              ListTile(
+                title: Text(S.of(context).feedback_add_attachments),
+                onTap: _addAttachments,
+              ),
+              for (String fp in attachFiles)
+                ListTile(
+                  leading: Icon(Icons.attach_file),
+                  title: Text(pathlib.basename(fp)),
+                  trailing: IconButton(
+                    icon: Icon(Icons.clear),
+                    onPressed: () {
+                      setState(() {
+                        attachFiles.remove(fp);
+                      });
+                    },
+                  ),
+                ),
+              SizedBox(
+                width: double.infinity,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: ElevatedButton(
+                    onPressed: sendEmail,
+                    child: Text(S.of(context).feedback_send),
+                  ),
+                ),
+              )
+            ],
+          ),
         ],
       ),
     );
