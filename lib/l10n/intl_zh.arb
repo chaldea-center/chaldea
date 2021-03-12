@@ -42,9 +42,9 @@
   "game_drop": "掉落",
   "game_rewards": "通关奖励",
   "ap": "AP",
-  "counts": "次数",
+  "counts": "计数",
   "total_ap": "总AP",
-  "total_counts": "总次数",
+  "total_counts": "总数",
   "drop_calculator": "掉落速查",
   "drop_calculator_short": "掉落速查",
   "calculator": "计算器",
@@ -297,5 +297,7 @@
   "choose_quest_hint": "选择Free本",
   "item_screenshot": "素材截图",
   "summon": "卡池",
-  "summon_title": "卡池一览"
+  "summon_title": "卡池一览",
+  "master_mission": "御主任务",
+  "project_homepage": "项目主页"
 }

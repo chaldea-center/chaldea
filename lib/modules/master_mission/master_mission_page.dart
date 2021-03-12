@@ -6,12 +6,12 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/quest_card.dart';
 import 'package:flutter/services.dart';
 
-class WeeklyMissionPage extends StatefulWidget {
+class MasterMissionPage extends StatefulWidget {
   @override
-  _WeeklyMissionPageState createState() => _WeeklyMissionPageState();
+  _MasterMissionPageState createState() => _MasterMissionPageState();
 }
 
-class _WeeklyMissionPageState extends State<WeeklyMissionPage>
+class _MasterMissionPageState extends State<MasterMissionPage>
     with SingleTickerProviderStateMixin {
   List<WeeklyMissionQuest> get srcData => db.gameData.glpk.weeklyMissionData;
 
@@ -54,7 +54,7 @@ class _WeeklyMissionPageState extends State<WeeklyMissionPage>
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: Text('周常规划'),
+        title: Text(S.of(context).master_mission),
         centerTitle: true,
         actions: [popupMenu],
         bottom: TabBar(

@@ -356,9 +356,9 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               ],
             ),
             IconButton(
-                icon: Icon(Icons.filter_alt),
+                icon: Icon(Icons.settings),
                 color: Theme.of(context).primaryColor,
-                tooltip: S.of(context).filter,
+                tooltip: S.of(context).settings_tab_name,
                 onPressed: () async {
                   await showDialog(
                       context: context,

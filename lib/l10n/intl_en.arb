@@ -298,5 +298,7 @@
   "choose_quest_hint": "Choose Free Quest",
   "item_screenshot": "Item Screenshot",
   "summon": "Summon",
-  "summon_title": "Summons"
+  "summon_title": "Summons",
+  "master_mission": "Master Mission",
+  "project_homepage": "Project Homepage"
 }

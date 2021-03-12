@@ -10,10 +10,10 @@ import 'package:chaldea/modules/extras/mystic_code_page.dart';
 import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
 import 'package:chaldea/modules/import_data/import_data_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
+import 'package:chaldea/modules/master_mission/master_mission_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:chaldea/modules/statistics/game_statistics_page.dart';
 import 'package:chaldea/modules/summon/summon_list_page.dart';
-import 'package:chaldea/modules/weekly_mission/weekly_mission_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:getwidget/getwidget.dart';
@@ -133,6 +133,16 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         builder: (context, _) => DropCalculatorPage(),
         isDetail: true,
       ),
+      GalleryItem.weekly_mission: GalleryItem(
+        name: GalleryItem.weekly_mission,
+        title: S.of(context).master_mission,
+        child: Padding(
+          padding: EdgeInsets.all(2),
+          child: FaIcon(FontAwesomeIcons.tasks, size: 36),
+        ),
+        builder: (context, _) => MasterMissionPage(),
+        isDetail: true,
+      ),
       GalleryItem.mystic_code: GalleryItem(
         name: GalleryItem.mystic_code,
         title: S.of(context).mystic_code,
@@ -164,16 +174,6 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         ),
         builder: (context, _) => SummonListPage(),
         isDetail: false,
-      ),
-      GalleryItem.weekly_mission: GalleryItem(
-        name: GalleryItem.weekly_mission,
-        title: '周常任务',
-        child: Padding(
-          padding: EdgeInsets.all(2),
-          child: FaIcon(FontAwesomeIcons.tasks, size: 36),
-        ),
-        builder: (context, _) => WeeklyMissionPage(),
-        isDetail: true,
       ),
       GalleryItem.statistics: GalleryItem(
         name: GalleryItem.statistics,

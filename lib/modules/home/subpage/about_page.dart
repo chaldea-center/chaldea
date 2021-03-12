@@ -87,6 +87,17 @@ class _AboutPageState extends State<AboutPage> {
             title: Text(S.of(context).about_app_declaration_text),
           ),
           TileGroup(
+            children: [
+              ListTile(
+                title: Text(S.of(context).project_homepage),
+                subtitle: Text(kProjectHomepage),
+                onTap: () {
+                  launch(kProjectHomepage);
+                },
+              ),
+            ],
+          ),
+          TileGroup(
             header: S.of(context).about_data_source,
             footer: S.of(context).about_data_source_footer,
             children: <Widget>[
@@ -103,7 +114,7 @@ class _AboutPageState extends State<AboutPage> {
             header: S.of(context).about_feedback,
             children: <Widget>[
               ListTile(
-                title: Text('Email'),
+                title: Text(S.of(context).about_feedback),
                 onTap: () {
                   SplitRoute.push(
                     context: context,

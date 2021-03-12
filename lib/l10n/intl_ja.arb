@@ -298,5 +298,7 @@
   "choose_quest_hint": "フリークエストを選択",
   "item_screenshot": "アイテムキャプチャー",
   "summon": "ガチャ",
-  "summon_title": "ガチャ"
+  "summon_title": "ガチャ",
+  "master_mission": "マスターミッション",
+  "project_homepage": "プロジェクトホームページ"
 }

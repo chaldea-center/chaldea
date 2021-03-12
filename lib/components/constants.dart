@@ -17,6 +17,8 @@ const String kDatasetAssetKey = 'res/data/dataset.zip';
 const String kDatasetServerPath = '/chaldea/dataset.zip';
 const String kServerRoot = 'http://chaldea.narumi.cc:8083';
 const String kAppStoreLink = 'itms-apps://itunes.apple.com/app/id1548713491';
+const String kProjectHomepage = 'https://github.com/chaldea-center/chaldea.git';
+
 
 /// For **Tablet mode** and cross-count is 7,
 /// grid view of servant and item icons won't fill full width

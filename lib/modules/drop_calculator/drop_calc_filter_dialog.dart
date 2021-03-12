@@ -19,7 +19,7 @@ class _DropCalcFilterDialogState extends State<DropCalcFilterDialog> {
       params.maxColNum = -1;
     }
     return SimpleDialog(
-      title: Text(S.of(context).filter),
+      title: Text(S.of(context).settings_tab_name),
       children: [
         ListTile(
           title: Text(S.of(context).drop_calc_min_ap),

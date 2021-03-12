@@ -134,6 +134,7 @@ class _SettingsPageState extends State<SettingsPage> {
             children: <Widget>[
               ListTile(
                 title: Text(S.of(context).settings_language),
+                subtitle: Language.isEN ? null : Text('Language'),
                 trailing: DropdownButton<Language>(
                   underline: Divider(thickness: 0, color: Colors.transparent),
                   value: Language.getLanguage(

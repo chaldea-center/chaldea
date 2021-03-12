@@ -455,10 +455,10 @@ class S {
     );
   }
 
-  /// `次数`
+  /// `计数`
   String get counts {
     return Intl.message(
-      '次数',
+      '计数',
       name: 'counts',
       desc: '',
       args: [],
@@ -475,10 +475,10 @@ class S {
     );
   }
 
-  /// `总次数`
+  /// `总数`
   String get total_counts {
     return Intl.message(
-      '总次数',
+      '总数',
       name: 'total_counts',
       desc: '',
       args: [],
@@ -3015,6 +3015,26 @@ class S {
     return Intl.message(
       '卡池一览',
       name: 'summon_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `御主任务`
+  String get master_mission {
+    return Intl.message(
+      '御主任务',
+      name: 'master_mission',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `项目主页`
+  String get project_homepage {
+    return Intl.message(
+      '项目主页',
+      name: 'project_homepage',
       desc: '',
       args: [],
     );

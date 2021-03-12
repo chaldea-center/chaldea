@@ -62,8 +62,6 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
     });
   }
 
-  String? preferItem;
-
   Widget _buildButtonBar() {
     List<String> validItems = [];
     db.gameData.items.forEach((itemKey, item) {
@@ -84,12 +82,11 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
                 '1. 目前仅可解析素材信息，仅国服日服经过测试\n'
                 '2. 使用方法: \n'
                 ' - 点击右上角可同时导入多张截图\n'
-                ' - 选择"首张"图片中出现的一个素材(加快服务器定位分析)\n'
-                ' - 上传成功后等待几分钟下载结果导入\n'
+                ' - 上传成功后喝口茶再下载结果导入\n'
                 '3. 注意事项\n'
                 ' - 单次上传有大小限制，否则会出现413错误，请分多次上传下载\n'
-                ' - 所有截图保证尺寸一致，无分屏/裁剪/拼接/滤镜/长截屏等操作\n'
-                ' - 素材框务必完全显示, 否则对应素材可能解析失败\n'
+                ' - 截图尽量别做修改，滤镜禁止\n'
+                ' - 素材框务必完全显示, 否则对应素材可能识别不到\n'
                 ' - 解析精度有限，下载结果后可自行修正\n'
                 ' - 解析结果保留24h, 24h后可能删除\n'
                 ' - 服务器目前无法保证长期可用，若无法使用请检查新版本或联系本人\n',
@@ -97,20 +94,6 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
           icon: Icon(Icons.help),
           tooltip: S.of(context).help,
           color: Colors.blue,
-        ),
-        DropdownButton<String>(
-          items: validItems.map((e) {
-            return DropdownMenuItem(
-                value: e, child: Text(Item.localizedNameOf(e)));
-          }).toList(),
-          value: preferItem,
-          hint: Text('首张图片包含', style: TextStyle(fontSize: 15)),
-          isDense: true,
-          onChanged: (s) {
-            setState(() {
-              preferItem = s;
-            });
-          },
         ),
         ElevatedButton(
             onPressed: imageFiles.isEmpty ? null : _uploadScreenshots,
@@ -202,36 +185,43 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
     if (imageFiles.isEmpty) {
       return;
     }
-    Map<String, dynamic> map = Map();
-    map['userKey'] = AppInfo.uniqueId;
-    for (var file in imageFiles) {
-      map[pathlib.basename(file.path)] =
-          await MultipartFile.fromFile(file.path);
-    }
-    if (preferItem != null) {
-      map['preferItem'] = preferItem;
-    }
-    var formData = FormData.fromMap(map);
-    var canceler = showMyProgress(status: 'Uploading');
-    _dio.post('/recognizeItems', data: formData).then((response) {
-      if (response.statusCode == 200) {
-        var data = jsonDecode(response.data);
-        String title = data['success'] == true ? '上传成功' : '上传失败';
-        String content = data['msg'].toString();
-        canceler();
-        showInformDialog(context, title: title, content: content);
+    Function? canceler;
+    try {
+      final response1 = await _dio.get('/requestNewTask',
+          queryParameters: {'userKey': AppInfo.uniqueId});
+      final data1=jsonDecode(response1.data);
+      if (data1['success'] != true) {
+        showInformDialog(context, content: data1['msg']);
+        return;
       }
-    }).catchError((error, stackTrace) {
-      print(error);
+
+      Map<String, dynamic> map = Map();
+      map['userKey'] = AppInfo.uniqueId;
+      for (var file in imageFiles) {
+        map[pathlib.basename(file.path)] =
+            await MultipartFile.fromFile(file.path);
+      }
+      var formData = FormData.fromMap(map);
+      canceler = showMyProgress(status: 'Uploading');
+      final response2=await _dio.post('/recognizeItems', data: formData);
+      var data2 = jsonDecode(response2.data);
+      String title = data2['success'] == true ? '上传成功' : '上传失败';
+      String content = data2['msg'].toString();
       canceler();
-      showInformDialog(context, content: error.toString());
-    });
+      showInformDialog(context, title: title, content: content);
+    } catch (e, s) {
+      print(e);
+      print(s);
+      showInformDialog(context, content: e.toString());
+    } finally {
+      canceler?.call();
+    }
   }
 
   void _fetchResult() async {
     try {
       final response = await _dio.get('/downloadItemResult',
-          queryParameters: {'key': AppInfo.uniqueId});
+          queryParameters: {'userKey': AppInfo.uniqueId});
       Map data = jsonDecode(response.data);
       if (!mounted) return;
       if (data['success'] == true) {
