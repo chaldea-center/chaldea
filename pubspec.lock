@@ -39,9 +39,11 @@ packages:
   audioplayers:
     dependency: "direct main"
     description:
-      name: audioplayers
-      url: "https://pub.flutter-io.cn"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "32738a347c319c10c35fa9b2fec9de4493c16754"
+      url: "https://github.com/luanpotter/audioplayers.git"
+    source: git
     version: "0.17.4"
   auto_size_text:
     dependency: "direct main"
@@ -123,9 +125,9 @@ packages:
   catcher:
     dependency: "direct main"
     description:
-      path: "../catcher"
-      relative: true
-    source: path
+      name: catcher
+      url: "https://pub.flutter-io.cn"
+    source: hosted
     version: "0.6.1"
   characters:
     dependency: transitive
@@ -354,9 +356,11 @@ packages:
   file_picker_cross:
     dependency: "direct main"
     description:
-      path: "../file_picker_cross"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "27f3ab35febbf4a4603210781f4e8079a9c7752c"
+      url: "https://gitlab.com/testapp-system/file_picker_cross.git"
+    source: git
     version: "4.2.9"
   fixnum:
     dependency: transitive
@@ -376,7 +380,7 @@ packages:
       name: flutter_audio_desktop
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.1.0"
+    version: "0.0.8"
   flutter_blurhash:
     dependency: transitive
     description:

@@ -164,10 +164,10 @@ class GeneralAudioPlayer {
       await player1!.stop();
       await player1!.play(path, isLocal: true);
     } else {
-      if (player2!.audio.isPlaying) {
+      if (player2!.isPlaying) {
         await player2!.stop();
       }
-      await player2!.load(audio2.AudioSource.fromFile(File(path)));
+      await player2!.load(path);
       await player2!.play();
     }
   }

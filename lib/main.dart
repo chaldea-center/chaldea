@@ -13,6 +13,9 @@ void main() async {
 
   final File crashFile = File(db.paths.crashLog),
       userdataFile = File(db.paths.userDataPath);
+  if (!crashFile.existsSync()) {
+    crashFile.writeAsString('chaldea.crash.log\n');
+  }
   final catcherOptions = CatcherOptions(
     // when error occurs when building:
     // DialogReportMode will keep generating error and you can do nothing

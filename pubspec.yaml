@@ -27,18 +27,20 @@ dependencies:
     sdk: flutter
 
   archive: ^3.1.2
-  audioplayers: ^0.17.4
+  audioplayers:
+    git:
+      url: https://github.com/luanpotter/audioplayers.git
   auto_size_text: ^3.0.0-nullsafety.0
   cached_network_image: ^3.0.0-nullsafety
-  catcher:
-    path: ../catcher
+  catcher: ^0.6.1
   connectivity_plus: ^1.0.0
   cupertino_icons: ^1.0.2
   device_info_plus: ^1.0.0
   dio: ^4.0.0-beta6
   file_picker_cross:
-    path: ../file_picker_cross
-  flutter_audio_desktop: ^0.1.0
+    git:
+      url: https://gitlab.com/testapp-system/file_picker_cross.git
+  flutter_audio_desktop: 0.0.8
   flutter_cache_manager: ^3.0.0-nullsafety.1
   flutter_easyloading: ^3.0.0
   flutter_email_sender: ^5.0.0
