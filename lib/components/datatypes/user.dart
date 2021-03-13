@@ -53,6 +53,14 @@ class User {
     return servantPlans[curSvtPlanNo];
   }
 
+  void ensurePlanLarger() {
+    curSvtPlan.forEach((key, plan) {
+      if (plan.favorite) {
+        plan.validate(servants[key]?.curVal);
+      }
+    });
+  }
+
   ServantPlan svtPlanOf(int no) =>
       curSvtPlan.putIfAbsent(no, () => ServantPlan())..validate();
 
@@ -165,16 +173,16 @@ class ServantPlan {
     fillListValue(dress, length, (_) => fill);
   }
 
-  void validate() {
-    ascension = fixValidRange(ascension, 0, 4);
+  void validate([ServantPlan? lowerPlan]) {
+    ascension = fixValidRange(ascension, lowerPlan?.ascension ?? 0, 4);
     for (int i = 0; i < skills.length; i++) {
-      skills[i] = fixValidRange(skills[i], 1, 10);
+      skills[i] = fixValidRange(skills[i], lowerPlan?.skills[i] ?? 1, 10);
     }
     for (int i = 0; i < dress.length; i++) {
-      dress[i] = fixValidRange(dress[i], 0, 1);
+      dress[i] = fixValidRange(dress[i], lowerPlan?.dress.getOrNull(i) ?? 0, 1);
     }
     // check grail max limit when used
-    grail = fixValidRange(grail, 0);
+    grail = fixValidRange(grail, lowerPlan?.grail ?? 0);
   }
 
   factory ServantPlan.fromJson(Map<String, dynamic> data) =>

@@ -283,7 +283,7 @@ class ServantListPageState extends State<ServantListPage> {
                     context: context,
                     onChange: (index) {
                       db.curUser.curSvtPlanNo = index;
-                      this.setState(() {});
+                      db.curUser.ensurePlanLarger();
                       db.itemStat.updateSvtItems();
                     },
                   );
@@ -308,6 +308,7 @@ class ServantListPageState extends State<ServantListPage> {
   List<Servant> shownList = [];
 
   Widget buildOverview() {
+    db.curUser.ensurePlanLarger();
     shownList = [];
     beforeFiltrate();
     db.gameData.servants.forEach((no, svt) {
@@ -723,6 +724,7 @@ class ServantListPageState extends State<ServantListPage> {
                       db.curUser.curSvtPlan[key] =
                           ServantPlan.fromJson(jsonDecode(jsonEncode(plan)));
                     });
+                    db.curUser.ensurePlanLarger();
                     Navigator.of(context).pop();
                   },
           );

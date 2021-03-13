@@ -182,7 +182,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
             context: context,
             onChange: (index) {
               db.curUser.curSvtPlanNo = index;
-              setState(() {});
+              db.curUser.ensurePlanLarger();
               db.itemStat.updateSvtItems();
             },
           );
