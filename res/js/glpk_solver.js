@@ -42,9 +42,9 @@ function glpk_solver(params_str) {
   let params = JSON.parse(params_str)
   let col_names = get_param(params, 'colNames'); //n
   let row_names = get_param(params, 'rowNames');//m
-  let b = get_param(params, 'b');//m
-  let c = get_param(params, 'c');//n
-  let A = get_param(params, 'A');
+  let b = get_param(params, 'bVec');//m
+  let c = get_param(params, 'cVec');//n
+  let A = get_param(params, 'AMat');
   let integer = get_param(params, 'integer', false);
 
   // solver

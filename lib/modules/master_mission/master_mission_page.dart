@@ -44,7 +44,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
       await engine.eval(await rootBundle.loadString('res/js/glpk.min.js'),
           name: '<glpk.min.js>');
       await engine.eval(await rootBundle.loadString('res/js/glpk_solver.js'),
-          name: 'solver.js');
+          name: 'glpk_solver.js');
     });
   }
 
