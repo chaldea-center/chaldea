@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/craft/craft_detail_page.dart';
 
@@ -112,7 +111,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
           CustomTableRow.fromTexts(
               texts: [svt.info.nameJp], defaults: contentData),
           CustomTableRow.fromTexts(
-              texts: [svt.info.nameEn], defaults: contentData),
+              texts: [svt.info.nameEn ?? '-'], defaults: contentData),
           CustomTableRow.fromTexts(
               texts: ['No.${svt.no}', svt.info.className],
               defaults: contentData),
@@ -241,7 +240,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
                 svt.info.criticalRate
               ],
             ),
-            if (svt.bondPoints != null && svt.bondPoints.length > 0) ...[
+            if (svt.bondPoints.length > 0) ...[
               CustomTableRow.fromTexts(
                   texts: [S.current.info_bond_points], defaults: headerData),
               for (int row = 0; row < svt.bondPoints.length / 5; row++) ...[
@@ -287,7 +286,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
       children: List.generate(svt.profiles.length, (index) {
         final profile = svt.profiles[index];
         String description =
-            (useLangCn ? profile.description : profile.descriptionJp) ?? '???';
+            useLangCn ? profile.description : profile.descriptionJp;
         return Card(
           margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           color: Theme.of(context).cardColor.withOpacity(0.975),
@@ -298,7 +297,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
               CustomTile(
                 title: Text(profile.title),
                 subtitle:
-                    profile.condition == null ? null : Text(profile.condition),
+                    profile.condition == null ? null : Text(profile.condition!),
               ),
               CustomTile(subtitle: Text(description)),
             ],
@@ -309,7 +308,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
   }
 
   Widget buildBondCraftTab() {
-    if (svt.bondCraft != null && svt.bondCraft > 0) {
+    if (svt.bondCraft > 0) {
       final ce = db.gameData.crafts[svt.bondCraft];
       if (ce == null) {
         return Container();
@@ -322,7 +321,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
   }
 
   Widget buildValentineCraftTab() {
-    if (svt.valentineCraft?.isNotEmpty == true) {
+    if (svt.valentineCraft.isNotEmpty == true) {
       // mash has two valentine crafts
       return ListView.separated(
         itemBuilder: (context, index) {

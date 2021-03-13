@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/event/limit_event_detail_page.dart';
@@ -61,7 +60,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
   Widget get _limitEventAccordion {
     List<Widget> children = [];
     final limitEvents = db.gameData.events.limitEvents.values.toList();
-    limitEvents.sort((a, b) => b.startTimeJp.compareTo(a.startTimeJp));
+    EventBase.sortEvents(limitEvents, reversed: true);
     limitEvents.forEach((event) {
       final plan = db.curUser.events.limitEventOf(event.indexKey);
       List<String> texts = [];
@@ -85,7 +84,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
             : S.current.event_lottery_unlimited;
         prefix = prefix.split(' ').first; // english word too long
         texts.add('$prefix'
-            ' ${event.lottery[widget.itemKey]}*${plan.lottery ?? 0}');
+            ' ${event.lottery[widget.itemKey]}*${plan.lottery}');
       }
       if (hasExtraItems) {
         texts.add('${S.current.event_item_extra}'
@@ -165,7 +164,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
     List<Widget> children = [];
     final mainRecords = db.gameData.events.mainRecords.values.toList();
     // new to old
-    mainRecords.sort((a, b) => b.startTimeJp.compareTo(a.startTimeJp));
+    EventBase.sortEvents(mainRecords, reversed: true);
     mainRecords.forEach((record) {
       bool hasDrop = record.drops.containsKey(widget.itemKey);
       bool hasRewards = record.rewards.containsKey(widget.itemKey);

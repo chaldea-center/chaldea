@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.2.2+22
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -47,10 +47,10 @@ dependencies:
   flutter_webview_plugin: ^0.3.11
   font_awesome_flutter: ^9.0.0-nullsafety
   getwidget: ^2.0.0-nullsafety.3
-  html: ^0.14.0+4
+  html: ^0.15.0
   image: ^3.0.0
   intl: ^0.17.0
-  json_annotation: ^3.1.1
+  json_annotation: ^4.0.0
   json_patch: ^2.1.0
   logger: ^1.0.0-nullsafety.0
   package_info: ^2.0.0
@@ -65,7 +65,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^1.11.0
-  json_serializable: ^3.5.1
+  json_serializable: ^4.0.2
   # flutter_launcher_icons: ^0.8.1
 
 dependency_overrides:

@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:chaldea/components/components.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -117,7 +116,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
         CustomTableRow(children: [TableCellData(text: mysticCode.nameJp)]),
         CustomTableRow(children: [
           TableCellData(
-            text: mysticCode.description ?? '???',
+            text: mysticCode.description,
             alignment: Alignment.centerLeft,
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           ),
@@ -125,7 +124,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
         CustomTableRow(
           children: [
             TableCellData(
-              text: mysticCode.descriptionJp ?? '???',
+              text: mysticCode.descriptionJp,
               alignment: Alignment.centerLeft,
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               // isHeader: true
@@ -172,7 +171,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
         CustomTableRow(children: [TableCellData(text: mysticCode.nameJp)]),
         CustomTableRow(children: [
           TableCellData(
-            text: mysticCode.description ?? '???',
+            text: mysticCode.description,
             alignment: Alignment.centerLeft,
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           ),
@@ -180,7 +179,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
         CustomTableRow(
           children: [
             TableCellData(
-              text: mysticCode.descriptionJp ?? '???',
+              text: mysticCode.descriptionJp,
               alignment: Alignment.centerLeft,
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             ),

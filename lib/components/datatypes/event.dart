@@ -1,4 +1,3 @@
-//@dart=2.9
 part of datatypes;
 
 @JsonSerializable(checked: true)
@@ -7,11 +6,11 @@ class Events {
   Map<String, MainRecord> mainRecords; //key: event.chapter
   Map<String, ExchangeTicket> exchangeTickets; //key: event.monthCn
 
-  Events({this.limitEvents, this.mainRecords, this.exchangeTickets}) {
-    limitEvents ??= {};
-    mainRecords ??= {};
-    exchangeTickets ??= {};
-  }
+  Events({
+    required this.limitEvents,
+    required this.mainRecords,
+    required this.exchangeTickets,
+  });
 
   factory Events.fromJson(Map<String, dynamic> data) => _$EventsFromJson(data);
 
@@ -40,28 +39,28 @@ class Events {
 }
 
 abstract class EventBase {
-  String name;
-  String nameJp;
-  String startTimeJp;
-  String endTimeJp;
-  String startTimeCn;
-  String endTimeCn;
-  String bannerUrl;
-  int grail;
-  int crystal;
-  int grail2crystal;
+  late String name;
+  late String nameJp;
+  String? startTimeJp;
+  String? endTimeJp;
+  String? startTimeCn;
+  String? endTimeCn;
+  String? bannerUrl;
+  late int grail;
+  late int crystal;
+  late int grail2crystal;
 
   String get indexKey;
 
   String get localizedName;
 
   static List<T> sortEvents<T extends EventBase>(List<T> events,
-  {bool reversed = false,bool inPlace=true}) {
+      {bool reversed = false, bool inPlace = true}) {
     List<T> jpEvents =
         events.where((e) => e.startTimeJp?.toDateTime() != null).toList();
     final cnEvents = events.where((e) => !jpEvents.contains(e));
     jpEvents.sort((a, b) =>
-        a.startTimeJp.toDateTime().compareTo(b.startTimeJp.toDateTime()));
+        a.startTimeJp!.toDateTime()!.compareTo(b.startTimeJp!.toDateTime()!));
     cnEvents.forEach((e) {
       final curDate = e.startTimeCn?.toDateTime();
       if (curDate == null) {
@@ -80,10 +79,10 @@ abstract class EventBase {
       }
       jpEvents.add(e);
     });
-    if(reversed) {
+    if (reversed) {
       jpEvents = jpEvents.reversed.toList();
     }
-    if(inPlace){
+    if (inPlace) {
       events.setAll(0, jpEvents);
       return events;
     }
@@ -95,11 +94,11 @@ abstract class EventBase {
 class LimitEvent extends EventBase {
   String name;
   String nameJp;
-  String startTimeJp;
-  String endTimeJp;
-  String startTimeCn;
-  String endTimeCn;
-  String bannerUrl;
+  String? startTimeJp;
+  String? endTimeJp;
+  String? startTimeCn;
+  String? endTimeCn;
+  String? bannerUrl;
   int grail;
   int crystal;
   int grail2crystal;
@@ -113,30 +112,30 @@ class LimitEvent extends EventBase {
       return name;
     }
     return db.gameData.events.limitEvents.entries
-        .firstWhereOrNull((event) => event.value == this)
-        ?.key;
+        .firstWhere((event) => event.value == this)
+        .key;
   }
 
   LimitEvent({
-    this.name,
-    this.nameJp,
+    required this.name,
+    required this.nameJp,
     this.startTimeJp,
     this.endTimeJp,
     this.startTimeCn,
     this.endTimeCn,
     this.bannerUrl,
-    this.grail,
-    this.crystal,
-    this.grail2crystal,
-    this.items,
-    this.lotteryLimit,
-    this.lottery,
-    this.extra,
+    required this.grail,
+    required this.crystal,
+    required this.grail2crystal,
+    required this.items,
+    required this.lotteryLimit,
+    required this.lottery,
+    required this.extra,
   }); //item-comment
 
   String get localizedName => localizeNoun(name, nameJp, null);
 
-  Map<String, int> itemsWithRare([LimitEventPlan plan]) {
+  Map<String, int> itemsWithRare([LimitEventPlan? plan]) {
     return Map.from(items)
       ..addAll({
         Item.grail: grail + (plan?.rerun == false ? grail2crystal : 0),
@@ -145,12 +144,12 @@ class LimitEvent extends EventBase {
       ..removeWhere((key, value) => value <= 0);
   }
 
-  Map<String, int> getItems(LimitEventPlan plan) {
+  Map<String, int> getItems(LimitEventPlan? plan) {
     if (plan == null || !plan.enable) {
       return {};
     }
     Map<String, int> lotterySum =
-        lottery?.isNotEmpty == true ? multiplyDict(lottery, plan.lottery) : {};
+        lottery.isNotEmpty == true ? multiplyDict(lottery, plan.lottery) : {};
     return sumDict([
       itemsWithRare(plan),
       plan.extra..removeWhere((key, value) => !extra.containsKey(key)),
@@ -174,11 +173,11 @@ class LimitEvent extends EventBase {
 class MainRecord extends EventBase {
   String name;
   String nameJp;
-  String startTimeJp;
-  String endTimeJp;
-  String startTimeCn;
-  String endTimeCn;
-  String bannerUrl;
+  String? startTimeJp;
+  String? endTimeJp;
+  String? startTimeCn;
+  String? endTimeCn;
+  String? bannerUrl;
   int grail;
   int crystal;
   int grail2crystal;
@@ -196,27 +195,27 @@ class MainRecord extends EventBase {
   }
 
   MainRecord({
-    this.name,
-    this.nameJp,
+    required this.name,
+    required this.nameJp,
     this.startTimeJp,
     this.endTimeJp,
     this.startTimeCn,
     this.endTimeCn,
     this.bannerUrl,
-    this.grail,
-    this.crystal,
-    this.grail2crystal,
-    this.drops,
-    this.rewards,
+    required this.grail,
+    required this.crystal,
+    required this.grail2crystal,
+    required this.drops,
+    required this.rewards,
   });
 
   String get chapter => _splitChapterTitle(name)[0];
 
   String get title => _splitChapterTitle(name)[1];
 
-  String get chapterJp => _splitChapterTitle(nameJp ?? name)[0];
+  String get chapterJp => _splitChapterTitle(nameJp)[0];
 
-  String get titleJp => _splitChapterTitle(nameJp ?? name)[1];
+  String get titleJp => _splitChapterTitle(nameJp)[1];
 
   String get localizedName => localizeNoun(name, nameJp, null);
 
@@ -226,7 +225,7 @@ class MainRecord extends EventBase {
 
   List<String> _splitChapterTitle(String longName) {
     if (longName.startsWith('序')) {
-      return [longName, null];
+      return [longName, ''];
     } else if (longName.startsWith('Lostbelt')) {
       final splits = longName.split(' ');
       return [splits.sublist(0, 2).join(' '), splits.sublist(2).join(' ')];
@@ -247,7 +246,7 @@ class MainRecord extends EventBase {
       ..removeWhere((key, value) => value <= 0);
   }
 
-  Map<String, int> getItems(List<bool> plan) {
+  Map<String, int> getItems(List<bool>? plan) {
     if (plan == null) return {};
     assert(plan.length == 2, 'incorrect main record plan: $plan');
     return sumDict([
@@ -270,14 +269,19 @@ class ExchangeTicket {
   String monthJp;
   List<String> items;
 
-  ExchangeTicket({this.days, this.month, this.monthJp, this.items});
+  ExchangeTicket({
+    required this.days,
+    required this.month,
+    required this.monthJp,
+    required this.items,
+  });
 
   factory ExchangeTicket.fromJson(Map<String, dynamic> data) =>
       _$ExchangeTicketFromJson(data);
 
   Map<String, dynamic> toJson() => _$ExchangeTicketToJson(this);
 
-  Map<String, int> getItems(List<int> plan) {
+  Map<String, int> getItems(List<int>? plan) {
     if (plan == null) return {};
     assert(plan.length == 3, 'incorrect main record plan: $plan');
     Map<String, int> result = {};

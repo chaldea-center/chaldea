@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'dart:io';
 
 import 'package:chaldea/components/components.dart';
@@ -20,7 +19,7 @@ class _UpdateSourcePageState extends State<UpdateSourcePage> {
       ),
       body: TileGroup(
         children: List.generate(GitSource.values.length, (index) {
-          final bool _isCur = index == db.userData.updateSource;
+          final bool _isCur = index == 0;
           String source = GitSource.values[index].toTitleString();
           return ListTile(
             leading: Icon(
@@ -54,7 +53,6 @@ class _UpdateSourcePageState extends State<UpdateSourcePage> {
               ],
             ),
             onTap: () {
-              db.userData.updateSource = index;
               db.notifyAppUpdate();
             },
             horizontalTitleGap: 0,

@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/summon/summon_detail_page.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -219,7 +218,7 @@ class CraftDetailBasePage extends StatelessWidget {
                     Text(ce.skill),
                     if (ce.skillMax?.isNotEmpty == true) ...[
                       Divider(height: 6),
-                      Text(ce.skillMax),
+                      Text(ce.skillMax!),
                     ]
                   ],
                 ),
@@ -246,9 +245,7 @@ class CraftDetailBasePage extends StatelessWidget {
           CustomTableRow(children: [
             TableCellData(
               child: Text(
-                ce.characters?.isNotEmpty == true
-                    ? ce.characters.join(', ')
-                    : '-',
+                ce.characters.isNotEmpty ? ce.characters.join(', ') : '-',
                 textAlign: TextAlign.center,
               ),
             )

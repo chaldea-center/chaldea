@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
@@ -30,10 +29,10 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
   @override
   void afterFirstLayout(BuildContext context) {
     if (db.userData.sliderUpdateTime?.isNotEmpty != true ||
-        db.userData.sliderUrls?.isEmpty == true) {
+        db.userData.sliderUrls.isEmpty) {
       resolveSliderImageUrls();
     } else {
-      DateTime lastTime = DateTime.parse(db.userData.sliderUpdateTime),
+      DateTime lastTime = DateTime.parse(db.userData.sliderUpdateTime!),
           now = DateTime.now();
       int dt = now.millisecondsSinceEpoch - lastTime.millisecondsSinceEpoch;
       if (dt > 24 * 3600 * 1000) {
@@ -66,7 +65,8 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       print('----------- recieved http response ------------');
       var body = parser.parse(response.body);
       db.userData.sliderUrls.clear();
-      dom.Element element = body.getElementById('transImageBox');
+      dom.Element? element = body.getElementById('transImageBox');
+      if (element == null) return;
       for (var linkNode in element.getElementsByTagName('a')) {
         String? link = tryDecodeUrl(linkNode.attributes['href']);
         var imgNodes = linkNode.getElementsByTagName('img');

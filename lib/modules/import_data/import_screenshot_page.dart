@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'dart:convert';
 import 'dart:io';
 
@@ -189,7 +188,7 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
     try {
       final response1 = await _dio.get('/requestNewTask',
           queryParameters: {'userKey': AppInfo.uniqueId});
-      final data1=jsonDecode(response1.data);
+      final data1 = jsonDecode(response1.data);
       if (data1['success'] != true) {
         showInformDialog(context, content: data1['msg']);
         return;
@@ -203,7 +202,7 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
       }
       var formData = FormData.fromMap(map);
       canceler = showMyProgress(status: 'Uploading');
-      final response2=await _dio.post('/recognizeItems', data: formData);
+      final response2 = await _dio.post('/recognizeItems', data: formData);
       var data2 = jsonDecode(response2.data);
       String title = data2['success'] == true ? '上传成功' : '上传失败';
       String content = data2['msg'].toString();

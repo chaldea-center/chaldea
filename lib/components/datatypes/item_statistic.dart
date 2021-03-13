@@ -1,13 +1,12 @@
-//@dart=2.9
 /// statistics of items
 part of datatypes;
 
 class ItemStatistics {
   SvtCostItems svtItemDetail = SvtCostItems();
 
-  Map<String, int> get svtItems => svtItemDetail.planItemCounts.summation;
-  Map<String, int> eventItems;
-  Map<String, int> leftItems;
+  Map<String, int> get svtItems => svtItemDetail.planItemCounts.summation!;
+  Map<String, int> eventItems = {};
+  Map<String, int> leftItems = {};
 
   ItemStatistics();
 
@@ -20,33 +19,31 @@ class ItemStatistics {
     leftItems = {};
   }
 
-  void update({User user, bool shouldBroadcast = true}) {
-    user ??= db.curUser;
-    updateSvtItems(user: user, shouldBroadcast: false);
-    updateEventItems(user: user, shouldBroadcast: false);
-    updateLeftItems(user: user, shouldBroadcast: shouldBroadcast);
+  void update({bool shouldBroadcast = true}) {
+    updateSvtItems(shouldBroadcast: false);
+    updateEventItems(shouldBroadcast: false);
+    updateLeftItems(shouldBroadcast: shouldBroadcast);
   }
 
-  void updateSvtItems({User user, bool shouldBroadcast = true}) {
-    user ??= db.curUser;
+  void updateSvtItems({bool shouldBroadcast = true}) {
     // priority is shared cross users!
-    final Map<int, ServantStatus> priorityFiltered = Map.fromEntries(
-        user.servants.entries.where((entry) => db.userData.svtFilter.priority
+    final Map<int, ServantStatus> priorityFiltered = Map.fromEntries(db
+        .curUser.servants.entries
+        .where((entry) => db.userData.svtFilter.priority
             .singleValueFilter(entry.value.priority.toString())));
     svtItemDetail.update(
-        curStat: priorityFiltered, targetPlan: user.curSvtPlan);
-    updateLeftItems(user: user, shouldBroadcast: shouldBroadcast);
+        curStat: priorityFiltered, targetPlan: db.curUser.curSvtPlan);
+    updateLeftItems(shouldBroadcast: shouldBroadcast);
   }
 
-  void updateEventItems({User user, bool shouldBroadcast = true}) {
-    user ??= db.curUser;
-    eventItems = db.gameData.events.getAllItems(user.events);
-    updateLeftItems(user: user, shouldBroadcast: shouldBroadcast);
+  void updateEventItems({bool shouldBroadcast = true}) {
+    eventItems = db.gameData.events.getAllItems(db.curUser.events);
+    updateLeftItems(shouldBroadcast: shouldBroadcast);
   }
 
-  void updateLeftItems({User user, bool shouldBroadcast = true}) {
-    user ??= db.curUser;
-    leftItems = sumDict([eventItems, user.items, multiplyDict(svtItems, -1)]);
+  void updateLeftItems({bool shouldBroadcast = true}) {
+    leftItems =
+        sumDict([eventItems, db.curUser.items, multiplyDict(svtItems, -1)]);
     if (shouldBroadcast) {
       db.notifyDbUpdate();
     }
@@ -55,32 +52,34 @@ class ItemStatistics {
 
 class SvtCostItems {
   //Map<SvtNo, List<Map<ItemKey,num>>>
-  SvtParts<Map<int, Map<String, int>>> planCountBySvt, allCountBySvt;
+  SvtParts<Map<int, Map<String, int>>> planCountBySvt = SvtParts(k: () => {}),
+      allCountBySvt = SvtParts(k: () => {});
 
   SvtParts<Map<int, Map<String, int>>> getCountBySvt([bool planned = true]) =>
       planned ? planCountBySvt : allCountBySvt;
 
   // Map<ItemKey, List<Map<SvtNo, num>>>
-  SvtParts<Map<String, Map<int, int>>> planCountByItem, allCountByItem;
+  SvtParts<Map<String, Map<int, int>>> planCountByItem = SvtParts(k: () => {}),
+      allCountByItem = SvtParts(k: () => {});
 
   SvtParts<Map<String, Map<int, int>>> getCountByItem([bool planned = true]) =>
       planned ? planCountByItem : allCountByItem;
 
   // Map<ItemKey, num>
-  SvtParts<Map<String, int>> planItemCounts, allItemCounts;
+  SvtParts<Map<String, int>> planItemCounts = SvtParts(k: () => {}),
+      allItemCounts = SvtParts(k: () => {});
 
   SvtParts<Map<String, int>> getItemCounts([bool planned = true]) =>
       planned ? planItemCounts : allItemCounts;
+  bool _needUpdateAll = true;
 
   void update(
-      {Map<int, ServantStatus> curStat, Map<int, ServantPlan> targetPlan}) {
-    final bool updateAll = allCountBySvt == null ||
-        allCountByItem == null ||
-        allItemCounts == null;
+      {required Map<int, ServantStatus> curStat,
+      required Map<int, ServantPlan> targetPlan}) {
     planCountBySvt = SvtParts(k: () => {});
     planCountByItem = SvtParts(k: () => {});
     planItemCounts = SvtParts(k: () => {});
-    if (updateAll) {
+    if (_needUpdateAll) {
       allCountBySvt = SvtParts(k: () => {});
       allCountByItem = SvtParts(k: () => {});
       allItemCounts = SvtParts(k: () => {});
@@ -100,7 +99,7 @@ class SvtCostItems {
       b.summation = sumDict(b.values);
       for (var i = 0; i < planCountBySvt.valuesWithSum.length; i++) {
         planCountBySvt.valuesWithSum[i][no] = a.valuesWithSum[i];
-        if (updateAll) {
+        if (_needUpdateAll) {
           allCountBySvt.valuesWithSum[i][no] = b.valuesWithSum[i];
         }
       }
@@ -113,17 +112,17 @@ class SvtCostItems {
           planCountByItem.values[i].putIfAbsent(itemKey, () => {})[svtNo] =
               cost[itemKey] ?? 0;
         });
-        if (updateAll) {
+        if (_needUpdateAll) {
           allCountBySvt.values[i].forEach((svtNo, cost) {
             allCountByItem.values[i].putIfAbsent(itemKey, () => {})[svtNo] =
                 cost[itemKey] ?? 0;
           });
         }
       }
-      planCountByItem.summation[itemKey] =
+      planCountByItem.summation![itemKey] =
           sumDict(planCountByItem.values.map((e) => e[itemKey]));
-      if (updateAll) {
-        allCountByItem.summation[itemKey] =
+      if (_needUpdateAll) {
+        allCountByItem.summation![itemKey] =
             sumDict(allCountByItem.values.map((e) => e[itemKey]));
       }
     }
@@ -132,41 +131,54 @@ class SvtCostItems {
     for (var i = 0; i < planItemCounts.valuesWithSum.length; i++) {
       for (String itemKey in db.gameData.items.keys) {
         planItemCounts.valuesWithSum[i][itemKey] =
-            sum(planCountByItem.valuesWithSum[i][itemKey].values);
+            sum(planCountByItem.valuesWithSum[i][itemKey]?.values ?? <int>[]);
         allItemCounts.valuesWithSum[i][itemKey] =
-            sum(allCountByItem.valuesWithSum[i][itemKey].values);
+            sum(allCountByItem.valuesWithSum[i][itemKey]?.values ?? <int>[]);
       }
     }
+    _needUpdateAll = false;
   }
 }
 
 /// replace with List(3)
 class SvtParts<T> {
   /// used only if [T] extends [num]
-  T summation;
+  T? summation;
 
   T ascension;
   T skill;
   T dress;
   T grailAscension;
 
-  SvtParts(
-      {this.ascension, this.skill, this.dress, this.grailAscension, T k()}) {
-    if (k != null) {
-      ascension ??= k();
-      skill ??= k();
-      dress ??= k();
-      grailAscension ??= k();
-      summation ??= k();
-    }
-  }
+  SvtParts({
+    T? ascension,
+    T? skill,
+    T? dress,
+    T? grailAscension,
+    T? summation,
+    T k()?,
+  })  : assert(ascension != null &&
+                skill != null &&
+                dress != null &&
+                grailAscension != null ||
+            k != null),
+        ascension = ascension ?? k!(),
+        skill = skill ?? k!(),
+        dress = dress ?? k!(),
+        grailAscension = grailAscension ?? k!(),
+        summation = summation ?? k?.call();
 
-  SvtParts<T2> copyWith<T2>([T2 f(T e)]) {
+  SvtParts<T2> copyWith<T2>([T2 f(T e)?]) {
     return SvtParts<T2>(
-      ascension: f == null ? ascension : f(ascension),
-      skill: f == null ? skill : f(skill),
-      dress: f == null ? dress : f(dress),
-      grailAscension: f == null ? grailAscension : f(grailAscension),
+      ascension: f == null ? ascension as T2 : f(ascension),
+      skill: f == null ? skill as T2 : f(skill),
+      dress: f == null ? dress as T2 : f(dress),
+      grailAscension: f == null ? grailAscension as T2 : f(grailAscension),
+      summation: f == null
+          ? summation as T2?
+          : summation != null
+              ? f(summation!)
+              : null,
     );
   }
 
@@ -176,8 +188,9 @@ class SvtParts<T> {
     return key == Item.grail ? [grailAscension] : [ascension, skill, dress];
   }
 
+  /// calculate [summation] before using!!!
   List<T> get valuesWithSum =>
-      [ascension, skill, dress, grailAscension, summation];
+      [ascension, skill, dress, grailAscension, summation!];
 
   @override
   String toString() {

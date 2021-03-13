@@ -1,4 +1,3 @@
-//@dart=2.9
 /// combine all JsonSerializable classes in one library.
 /// run in terminal [flutter packages pub run build_runner build/watch]
 ///
@@ -13,7 +12,6 @@ import 'dart:math';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:meta/meta.dart';
 
 import '../config.dart' show db;
 import '../constants.dart';
@@ -38,8 +36,6 @@ part 'item_statistic.dart';
 part 'mystic_code.dart';
 
 part 'quest.dart';
-
-part 'serializable_checker.dart';
 
 part 'servant.dart';
 

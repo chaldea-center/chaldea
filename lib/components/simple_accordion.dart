@@ -1,5 +1,3 @@
-//@dart=2.12
-
 import 'package:flutter/material.dart';
 
 typedef AccordionHeaderBuilder = Widget Function(

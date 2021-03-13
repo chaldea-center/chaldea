@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:chaldea/components/components.dart';
 
 class EditGalleryPage extends StatefulWidget {
@@ -73,7 +72,7 @@ class GalleryItem {
     required this.title,
     this.icon,
     this.child,
-     this.builder,
+    this.builder,
     this.isDetail = false,
   }) : assert(icon != null || child != null);
 

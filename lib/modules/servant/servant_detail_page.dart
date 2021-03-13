@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/blank_page.dart';
@@ -41,10 +40,10 @@ class ServantDetailPageState extends State<ServantDetailPage>
     if (!Servant.unavailable.contains(svt.no)) {
       _builders[S.current.plan] = (context) => SvtPlanTab(parent: this);
     }
-    if (svt.activeSkills?.isNotEmpty == true) {
+    if (svt.activeSkills.isNotEmpty) {
       _builders[S.current.skill] = (context) => SvtSkillTab(parent: this);
     }
-    if (svt.nobelPhantasm?.isNotEmpty == true) {
+    if (svt.nobelPhantasm.isNotEmpty) {
       _builders[S.current.nobel_phantasm] =
           (context) => SvtNobelPhantasmTab(parent: this);
     }
@@ -54,7 +53,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
         !['活动', '初始获得', '无法召唤', '友情点召唤'].contains(svt.info.obtain)) {
       _builders[S.current.summon] = (context) => SvtSummonTab(parent: this);
     }
-    if (svt.voices?.isNotEmpty == true) {
+    if (svt.voices.isNotEmpty) {
       _builders[S.current.voice] = (context) => SvtVoiceTab(parent: this);
     }
     if (!Servant.unavailable.contains(svt.no)) {
@@ -243,7 +242,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                   ));
             }),
             onChanged: (v) {
-              status.priority = v;
+              status.priority = v ?? status.priority;
               db.notifyDbUpdate();
             },
             underline: Container(),

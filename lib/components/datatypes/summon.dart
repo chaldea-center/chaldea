@@ -1,17 +1,16 @@
-//@dart=2.9
 part of datatypes;
 
 @JsonSerializable(checked: true)
 class Summon {
   String mcLink;
   String name;
-  String nameJp;
-  String startTimeJp;
-  String endTimeJp;
-  String startTimeCn;
-  String endTimeCn;
-  String bannerUrl;
-  String bannerUrlJp;
+  String? nameJp;
+  String? startTimeJp;
+  String? endTimeJp;
+  String? startTimeCn;
+  String? endTimeCn;
+  String? bannerUrl;
+  String? bannerUrlJp;
   List<String> associatedEvents;
   List<String> associatedSummons;
 
@@ -48,8 +47,8 @@ class Summon {
   }
 
   Summon({
-    this.mcLink,
-    this.name,
+    required this.mcLink,
+    required this.name,
     this.nameJp,
     this.startTimeJp,
     this.endTimeJp,
@@ -57,20 +56,19 @@ class Summon {
     this.endTimeCn,
     this.bannerUrl,
     this.bannerUrlJp,
-    this.associatedEvents,
-    this.associatedSummons,
-    this.luckyBag,
-    this.classPickUp,
-    this.roll11,
-    this.dataList,
+    required this.associatedEvents,
+    required this.associatedSummons,
+    required this.luckyBag,
+    required this.classPickUp,
+    required this.roll11,
+    required this.dataList,
   });
 
   String get localizedName => localizeNoun(name, nameJp, null);
 
   bool isOutdated() {
     return checkEventOutdated(
-        timeJp: startTimeJp?.toDateTime(),
-        timeCn: startTimeCn?.toDateTime());
+        timeJp: startTimeJp?.toDateTime(), timeCn: startTimeCn?.toDateTime());
   }
 
   bool hasSinglePickupSvt(int id) {
@@ -108,7 +106,11 @@ class SummonData {
 
   List<SummonDataBlock> get allBlocks => []..addAll(svts)..addAll(crafts);
 
-  SummonData({this.name, this.svts, this.crafts});
+  SummonData({
+    required this.name,
+    required this.svts,
+    required this.crafts,
+  });
 
   factory SummonData.fromJson(Map<String, dynamic> data) =>
       _$SummonDataFromJson(data);
@@ -125,11 +127,11 @@ class SummonDataBlock {
   List<int> ids;
 
   SummonDataBlock({
-    this.isSvt,
-    this.rarity,
-    this.weight,
-    this.display,
-    this.ids,
+    required this.isSvt,
+    required this.rarity,
+    required this.weight,
+    required this.display,
+    required this.ids,
   });
 
   factory SummonDataBlock.fromJson(Map<String, dynamic> data) =>

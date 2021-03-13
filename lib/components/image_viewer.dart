@@ -1,4 +1,3 @@
-// @dart=2.12
 import 'dart:math' show min;
 
 import 'package:cached_network_image/cached_network_image.dart';

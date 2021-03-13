@@ -1,4 +1,3 @@
-//@dart=2.9
 part of datatypes;
 
 @JsonSerializable()
@@ -19,12 +18,12 @@ class GLPKData {
   int get jpMaxColNum => freeCounts.values.first;
 
   GLPKData({
-    this.colNames,
-    this.rowNames,
-    this.costs,
-    this.matrix,
-    this.freeCounts,
-    this.weeklyMissionData,
+    required this.colNames,
+    required this.rowNames,
+    required this.costs,
+    required this.matrix,
+    required this.freeCounts,
+    required this.weeklyMissionData,
   });
 
   GLPKData.from(GLPKData other)
@@ -102,14 +101,14 @@ class WeeklyMissionQuest {
   }
 
   WeeklyMissionQuest({
-    this.chapter,
-    this.place,
-    this.placeJp,
-    this.ap,
-    this.enemyTraits,
-    this.servantTraits,
-    this.servants,
-    this.battlefields,
+    required this.chapter,
+    required this.place,
+    required this.placeJp,
+    required this.ap,
+    required this.enemyTraits,
+    required this.servantTraits,
+    required this.servants,
+    required this.battlefields,
   });
 
   factory WeeklyMissionQuest.fromJson(Map<String, dynamic> data) =>
@@ -124,9 +123,9 @@ class GLPKParams {
   /// if [countControllers] is null, disabled. Removed controllers are temporary
   /// stored in [_unusedControllers] and dispose them inside widget's dispose
   @JsonKey(ignore: true)
-  List<TextEditingController> countControllers;
+  List<TextEditingController>? countControllers;
   @JsonKey(ignore: true)
-  List<TextEditingController> weightControllers;
+  List<TextEditingController>? weightControllers;
   @JsonKey(ignore: true)
   List<TextEditingController> _unusedControllers = [];
 
@@ -167,35 +166,29 @@ class GLPKParams {
   Map<String, double> get objectiveWeights => Map.fromIterables(rows, weights);
 
   GLPKParams({
-    this.rows,
-    this.counts,
-    this.weights,
-    this.blacklist,
-    this.minCost,
-    this.costMinimize,
-    this.maxColNum,
-    this.extraCols,
-    this.integerResult,
-    this.useAP20,
-  }) {
+    List<String>? rows,
+    List<int>? counts,
+    List<double>? weights,
+    Set<String>? blacklist,
+    int? minCost = 0,
+    bool? costMinimize = true,
+    int? maxColNum = -1,
+    List<String>? extraCols,
+    bool? integerResult = false,
+    bool? useAP20 = true,
+  })  : rows = rows ?? [],
+        counts = counts ?? [],
+        weights = weights ?? [],
+        blacklist = blacklist ?? Set(),
+        minCost = minCost ?? 0,
+        costMinimize = costMinimize ?? true,
+        maxColNum = maxColNum ?? -1,
+        extraCols = extraCols ?? [],
+        integerResult = integerResult ?? false,
+        useAP20 = useAP20 ?? true {
     // controllers ??= null;
-    rows ??= [];
-    counts ??= [];
-    weights ??= [];
-    counts.length = rows.length;
-    weights.length = rows.length;
-    for (int i = 0; i < rows.length; i++) {
-      counts[i] ??= 0;
-      weights[i] ??= 1.0;
-    }
-    assert(rows.length == counts.length);
-    blacklist ??= Set();
-    minCost ??= 0;
-    costMinimize ??= true;
-    maxColNum ??= -1;
-    extraCols ??= [];
-    integerResult ??= false;
-    useAP20 ??= true;
+    fillListValue(this.counts, this.rows.length, (_) => 0);
+    fillListValue(this.weights, this.rows.length, (_) => 1.0);
   }
 
   GLPKParams.from(GLPKParams other)
@@ -212,27 +205,15 @@ class GLPKParams {
 
   void validate() {
     // Need to remove item, so from end to start
-    rows ??= [];
-    counts ??= [];
-    weights ??= [];
     counts.length = weights.length = rows.length;
     for (int i = rows.length - 1; i >= 0; i--) {
       if (!db.gameData.glpk.rowNames.contains(rows[i])) {
         removeAt(i);
       } else {
-        weights[i] ??= 1;
         if (weights[i] < 0) weights[i] = 1;
-        counts[i] ??= 0;
         if (counts[i] < 0) counts[i] = 0;
       }
     }
-    blacklist ??= Set();
-    minCost ??= 0;
-    costMinimize ??= true;
-    maxColNum ??= -1;
-    extraCols ??= [];
-    integerResult ??= false;
-    useAP20 ??= true;
   }
 
   void sortByItem() {
@@ -248,11 +229,11 @@ class GLPKParams {
     weights = List.generate(length, (index) => weights[indices[index]]);
     if (countControllers != null) {
       countControllers =
-          List.generate(length, (index) => countControllers[indices[index]]);
+          List.generate(length, (index) => countControllers![indices[index]]);
     }
     if (weightControllers != null) {
       weightControllers =
-          List.generate(length, (index) => weightControllers[indices[index]]);
+          List.generate(length, (index) => weightControllers![indices[index]]);
     }
   }
 
@@ -264,22 +245,25 @@ class GLPKParams {
 
     countControllers = [];
     for (int i = 0; i < rows.length; i++) {
-      countControllers.add(TextEditingController(text: counts[i].toString()));
+      countControllers!.add(TextEditingController(text: counts[i].toString()));
     }
     weightControllers = [];
     for (int i = 0; i < weights.length; i++) {
-      weightControllers.add(TextEditingController(text: weights[i].toString()));
+      weightControllers!
+          .add(TextEditingController(text: weights[i].toString()));
     }
   }
 
   void disableControllers() {
-    _unusedControllers..addAll(countControllers)..addAll(weightControllers);
+    _unusedControllers
+      ..addAll(countControllers ?? [])
+      ..addAll(weightControllers ?? []);
     countControllers = weightControllers = null;
   }
 
   void dispose() {
-    countControllers?.forEach((e) => e?.dispose());
-    weightControllers?.forEach((e) => e?.dispose());
+    countControllers?.forEach((e) => e.dispose());
+    weightControllers?.forEach((e) => e.dispose());
     _unusedControllers.forEach((e) => e.dispose());
     countControllers = weightControllers = null;
     _unusedControllers.clear();
@@ -313,8 +297,8 @@ class GLPKParams {
       counts.removeAt(index);
       weights.removeAt(index);
       if (countControllers != null) {
-        _unusedControllers.add(countControllers.removeAt(index));
-        _unusedControllers.add(weightControllers.removeAt(index));
+        _unusedControllers.add(countControllers!.removeAt(index));
+        _unusedControllers.add(weightControllers!.removeAt(index));
       }
     }
   }
@@ -324,9 +308,11 @@ class GLPKParams {
     counts.clear();
     weights.clear();
     if (countControllers != null) {
-      _unusedControllers..addAll(countControllers)..addAll(weightControllers);
-      countControllers.clear();
-      weightControllers.clear();
+      _unusedControllers
+        ..addAll(countControllers ?? [])
+        ..addAll(weightControllers ?? []);
+      countControllers!.clear();
+      weightControllers!.clear();
     }
   }
 
@@ -340,8 +326,8 @@ class GLPKParams {
 class GLPKSolution {
   /// 0-glpk plan, 1-efficiency
   int destination = 0;
-  int totalCost;
-  int totalNum;
+  int? totalCost;
+  int? totalNum;
 
   //int
   List<GLPKVariable> countVars;
@@ -350,17 +336,17 @@ class GLPKSolution {
   List<GLPKVariable> weightVars;
 
   @JsonKey(ignore: true)
-  GLPKParams params;
+  GLPKParams? params;
 
-  GLPKSolution(
-      {this.destination = 0,
-      this.totalCost,
-      this.totalNum,
-      this.countVars,
-      this.weightVars}) {
-    countVars ??= [];
-    weightVars ??= [];
-  }
+  GLPKSolution({
+    int? destination = 0,
+    this.totalCost,
+    this.totalNum,
+    List<GLPKVariable>? countVars,
+    List<GLPKVariable>? weightVars,
+  })  : destination = destination ?? 0,
+        countVars = countVars ?? [],
+        weightVars = weightVars ?? [];
 
   void clear() {
     totalCost = null;
@@ -394,7 +380,13 @@ class GLPKVariable<T> {
   @_Converter()
   Map<String, T> detail;
 
-  GLPKVariable({this.name, this.value, this.cost, this.detail});
+  GLPKVariable({
+    required this.name,
+    required T value,
+    required this.cost,
+    Map<String, T>? detail,
+  })  : value = value,
+        detail = detail ?? {};
 
   factory GLPKVariable.fromJson(Map<String, dynamic> data) =>
       _$GLPKVariableFromJson<T>(data);
@@ -423,26 +415,24 @@ class _Converter<T> implements JsonConverter<T, Object> {
 class BasicGLPKParams {
   List<String> colNames; //n
   List<String> rowNames; //m
-  List<List<num>> AMat; // m*n
+  List<List<num>> AMat; // ignore: non_constant_identifier_names, // m*n
   List<num> bVec; //m
   List<num> cVec; //n
   bool integer;
 
   BasicGLPKParams({
-    this.colNames,
-    this.rowNames,
-    this.AMat,
-    this.bVec,
-    this.cVec,
-    this.integer,
-  }) {
-    colNames ??= [];
-    rowNames ??= [];
-    AMat ??= [];
-    bVec ??= [];
-    cVec ??= [];
-    integer ??= false;
-  }
+    List<String>? colNames,
+    List<String>? rowNames,
+    List<List<num>>? AMat, // ignore: non_constant_identifier_names
+    List<num>? bVec,
+    List<num>? cVec,
+    bool? integer,
+  })  : colNames = colNames ?? [],
+        rowNames = rowNames ?? [],
+        AMat = AMat ?? [],
+        bVec = bVec ?? [],
+        cVec = cVec ?? [],
+        integer = integer ?? false;
 
   void addRow(String rowName, List<num> rowOfA, num b) {
     rowNames.add(rowName);

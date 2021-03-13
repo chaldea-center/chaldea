@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
 
@@ -56,7 +55,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
                 S.current.priority
               ]),
               onSortAttr: (key) {
-                filterData.sortKeys[i] = key;
+                filterData.sortKeys[i] = key ?? filterData.sortKeys[i];
                 update();
               },
               reversed: filterData.sortReversed[i],
@@ -78,7 +77,6 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             update();
           },
         ),
-
         FilterGroup(
           title: Text(S.of(context).plan, style: textStyle),
           options: SvtFilterData.planCompletionData,

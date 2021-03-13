@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'dart:io';
 
 import 'package:chaldea/components/components.dart';
@@ -296,7 +295,7 @@ class _SettingsPageState extends State<SettingsPage> {
       underline: Container(),
       onChanged: (v) {
         setState(() {
-          db.curUser.msProgress = v;
+          db.curUser.msProgress = v ?? db.curUser.msProgress;
         });
       },
     );

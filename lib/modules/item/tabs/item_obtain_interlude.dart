@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/quest_card.dart';
 
@@ -96,7 +95,7 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
       sortReversed = [true, false, true];
     }
     svts.sort((a, b) => Servant.compare(
-        db.gameData.servants[a], db.gameData.servants[b],
+        db.gameData.servants[a]!, db.gameData.servants[b]!,
         keys: sortKeys, reversed: sortReversed, user: db.curUser));
     return svts;
   }

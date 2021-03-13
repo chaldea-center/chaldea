@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:chaldea/components/components.dart';
 
 class DropCalcFilterDialog extends StatefulWidget {
@@ -27,7 +26,8 @@ class _DropCalcFilterDialogState extends State<DropCalcFilterDialog> {
             value: params.minCost,
             items: List.generate(20,
                 (i) => DropdownMenuItem(value: i, child: Text(i.toString()))),
-            onChanged: (v) => setState(() => params.minCost = v),
+            onChanged: (v) =>
+                setState(() => params.minCost = v ?? params.minCost),
           ),
         ),
         ListTile(
@@ -52,7 +52,8 @@ class _DropCalcFilterDialogState extends State<DropCalcFilterDialog> {
               DropdownMenuItem(value: true, child: Text(S.of(context).ap)),
               DropdownMenuItem(value: false, child: Text(S.of(context).counts))
             ],
-            onChanged: (v) => setState(() => params.costMinimize = v),
+            onChanged: (v) =>
+                setState(() => params.costMinimize = v ?? params.costMinimize),
           ),
         ),
         ListTile(
@@ -65,7 +66,8 @@ class _DropCalcFilterDialogState extends State<DropCalcFilterDialog> {
               DropdownMenuItem(
                   value: false, child: Text(S.of(context).efficiency_type_drop))
             ],
-            onChanged: (v) => setState(() => params.useAP20 = v),
+            onChanged: (v) =>
+                setState(() => params.useAP20 = v ?? params.useAP20),
           ),
         ),
         SimpleAccordion(

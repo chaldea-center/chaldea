@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 
@@ -19,7 +18,7 @@ class _QuestCardState extends State<QuestCard> {
   Widget build(BuildContext context) {
     String questName = '${quest.name}';
     if (quest.nameJp?.isNotEmpty == true)
-      questName = questName + '/' + quest.nameJp;
+      questName = questName + '/' + quest.nameJp!;
     String chapter =
         db.gameData.events.mainRecords[quest.chapter]?.localizedName ??
             quest.chapter;
@@ -68,8 +67,7 @@ class _QuestCardState extends State<QuestCard> {
     String? lastPlace, lastPlaceJp;
     for (int i = 0; i < battles.length; i++) {
       final battle = battles[i];
-      String? place =
-          battle.place?.isNotEmpty == true ? battle.place : lastPlace;
+      String? place = battle.place.isNotEmpty ? battle.place : lastPlace;
       String? placeJp =
           battle.placeJp?.isNotEmpty == true ? battle.placeJp : lastPlaceJp;
       lastPlace = place;
@@ -94,7 +92,7 @@ class _QuestCardState extends State<QuestCard> {
         ));
       }
 
-      if (battle.drops?.isNotEmpty == true)
+      if (battle.drops.isNotEmpty)
         children.add(Padding(
           padding: EdgeInsets.symmetric(vertical: 3),
           child: Row(
@@ -110,7 +108,7 @@ class _QuestCardState extends State<QuestCard> {
           ),
         ));
     }
-    if (quest.rewards?.isNotEmpty == true) {
+    if (quest.rewards.isNotEmpty) {
       children.add(Padding(
         padding: EdgeInsets.symmetric(vertical: 3),
         child: Row(
@@ -125,9 +123,9 @@ class _QuestCardState extends State<QuestCard> {
     }
     if (quest.enhancement?.isNotEmpty == true) {
       Widget? enhanceIcon;
-      if (quest.enhancement.startsWith('宝具')) {
+      if (quest.enhancement!.startsWith('宝具')) {
         enhanceIcon = db.getIconImage('宝具强化', height: 30);
-      } else if (quest.enhancement.startsWith('技能')) {
+      } else if (quest.enhancement!.startsWith('技能')) {
         enhanceIcon = db.getIconImage('技能强化', height: 30);
       }
       children.add(Row(
@@ -137,7 +135,7 @@ class _QuestCardState extends State<QuestCard> {
           if (enhanceIcon != null)
             Padding(
                 padding: EdgeInsets.symmetric(vertical: 3), child: enhanceIcon),
-          Flexible(child: AutoSizeText(quest.enhancement, maxLines: 2))
+          Flexible(child: AutoSizeText(quest.enhancement!, maxLines: 2))
         ],
       ));
     }
@@ -151,7 +149,7 @@ class _QuestCardState extends State<QuestCard> {
             child: Text(S.of(context).quest_condition,
                 style: TextStyle(fontWeight: FontWeight.w500)),
           ),
-          Text(quest.conditions, textAlign: TextAlign.center)
+          Text(quest.conditions!, textAlign: TextAlign.center)
         ],
       ));
     }
@@ -204,7 +202,7 @@ class _QuestCardState extends State<QuestCard> {
     Map<String, String> dropTexts = {};
     if (useApRate) {
       final glpk = db.gameData.glpk;
-      int colIndex = glpk.colNames.indexOf(quest.indexKey);
+      int colIndex = glpk.colNames.indexOf(quest.indexKey ?? '-');
 
       // not list in glpk
       if (colIndex < 0)

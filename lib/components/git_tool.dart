@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'dart:io';
 
 import 'package:chaldea/generated/l10n.dart';
@@ -223,7 +222,7 @@ class GitTool {
       );
       // don't use map().toList(), List<dynamic> is not subtype ...
       releases = List.generate(response.data?.length ?? 0,
-              (index) => GitRelease.fromGitee(data: response.data[index]));
+          (index) => GitRelease.fromGitee(data: response.data[index]));
     } else if (source == GitSource.gitee) {
       // response: List<Release>
       final response = await Dio().get(
@@ -275,7 +274,6 @@ class GitTool {
     });
   }
 }
-
 
 /// TODO: move to other place, more customizable
 class DownloadDialog extends StatefulWidget {

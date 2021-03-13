@@ -1,4 +1,3 @@
-//@dart=2.9
 part of datatypes;
 
 enum SvtCompare { no, className, rarity, atk, hp, priority }
@@ -26,26 +25,26 @@ class Servant {
   String toString() => mcLink;
 
   Servant({
-    this.no,
-    this.mcLink,
-    this.icon,
-    this.info,
-    this.nobelPhantasm,
-    this.activeSkills,
-    this.passiveSkills,
-    this.itemCost,
-    this.bondPoints,
-    this.profiles,
-    this.voices,
-    this.bondCraft,
-    this.valentineCraft,
+    required this.no,
+    required this.mcLink,
+    required this.icon,
+    required this.info,
+    required this.nobelPhantasm,
+    required this.activeSkills,
+    required this.passiveSkills,
+    required this.itemCost,
+    required this.bondPoints,
+    required this.profiles,
+    required this.voices,
+    required this.bondCraft,
+    required this.valentineCraft,
   });
 
   /// [cur]=[target]=null: all
   /// [cur.favorite]=[target.favorite]=true
   /// else empty
   Map<String, int> getAllCost(
-      {ServantPlan cur, ServantPlan target, bool all = false}) {
+      {ServantPlan? cur, ServantPlan? target, bool all = false}) {
     if (all) {
       return sumDict(
           [getAscensionCost(), getSkillCost(), getDressCost(), getGrailCost()]);
@@ -53,7 +52,7 @@ class Servant {
     target ??= ServantPlan();
     if (cur?.favorite == true) {
       return sumDict([
-        getAscensionCost(cur: cur.ascension, target: target.ascension),
+        getAscensionCost(cur: cur!.ascension, target: target.ascension),
         getSkillCost(cur: cur.skills, target: target.skills),
         getDressCost(cur: cur.dress, target: target.dress),
         getGrailCost(cur: cur.grail, target: target.grail)
@@ -64,7 +63,7 @@ class Servant {
   }
 
   SvtParts<Map<String, int>> getAllCostParts(
-      {ServantPlan cur, ServantPlan target, bool all = false}) {
+      {ServantPlan? cur, ServantPlan? target, bool all = false}) {
     // no grail?
     if (all) {
       return SvtParts(
@@ -78,7 +77,7 @@ class Servant {
     if (cur?.favorite == true) {
       return SvtParts(
         ascension:
-            getAscensionCost(cur: cur.ascension, target: target.ascension),
+            getAscensionCost(cur: cur!.ascension, target: target.ascension),
         skill: getSkillCost(cur: cur.skills, target: target.skills),
         dress: getDressCost(cur: cur.dress, target: target.dress),
         grailAscension: getGrailCost(cur: cur.grail, target: target.grail),
@@ -89,21 +88,21 @@ class Servant {
   }
 
   Map<String, int> getAscensionCost({int cur = 0, int target = 4}) {
-    cur = fixValidRange(cur ?? 0, 0, 4);
-    target = fixValidRange(target ?? 4, 0, 4);
+    cur = fixValidRange(cur, 0, 4);
+    target = fixValidRange(target, 0, 4);
     if (itemCost.ascension.isEmpty) return {};
     return sumDict(itemCost.ascension.sublist(cur, max(cur, target)));
   }
 
-  Map<String, int> getSkillCost({List<int> cur, List<int> target}) {
+  Map<String, int> getSkillCost({List<int>? cur, List<int>? target}) {
     if (itemCost.skill.isEmpty || itemCost.skill.first.isEmpty) return {};
     cur ??= [1, 1, 1];
     target ??= [10, 10, 10];
     Map<String, int> items = {};
 
     for (int i = 0; i < 3; i++) {
-      cur[i] = fixValidRange(cur[i] ?? 1, 1, 10);
-      target[i] = fixValidRange(target[i] ?? 10, 1, 10);
+      cur[i] = fixValidRange(cur[i], 1, 10);
+      target[i] = fixValidRange(target[i], 1, 10);
       // lv 1-10 -> 0-9
       for (int j = cur[i] - 1; j < target[i] - 1; j++) {
         sumDict([items, itemCost.skill[j]], inPlace: true);
@@ -112,7 +111,7 @@ class Servant {
     return items;
   }
 
-  Map<String, int> getDressCost({List<int> cur, List<int> target}) {
+  Map<String, int> getDressCost({List<int>? cur, List<int>? target}) {
     Map<String, int> items = {};
     final dressNum = itemCost.dress.length;
     if (cur == null) cur = List.filled(dressNum, 0, growable: true);
@@ -123,8 +122,8 @@ class Servant {
       target.addAll(List.filled(dressNum - target.length, 0, growable: true));
 
     for (int i = 0; i < dressNum; i++) {
-      cur[i] = fixValidRange(cur[i] ?? 0, 0, 1);
-      target[i] = fixValidRange(target[i] ?? 1, 0, 1);
+      cur[i] = fixValidRange(cur[i], 0, 1);
+      target[i] = fixValidRange(target[i], 0, 1);
       for (int j = cur[i]; j < target[i]; j++) {
         sumDict([items, itemCost.dress[i]], inPlace: true);
       }
@@ -132,9 +131,9 @@ class Servant {
     return items;
   }
 
-  Map<String, int> getGrailCost({int cur = 0, int target}) {
+  Map<String, int> getGrailCost({int cur = 0, int? target}) {
     final maxVal = [10, 10, 10, 9, 7, 5][this.info.rarity2];
-    cur = fixValidRange(cur ?? 0, 0, maxVal);
+    cur = fixValidRange(cur, 0, maxVal);
     target = fixValidRange(target ?? maxVal, 0, maxVal);
     target = max(cur, target);
 
@@ -159,7 +158,7 @@ class Servant {
   }
 
   static int compare(Servant a, Servant b,
-      {List<SvtCompare> keys, List<bool> reversed, User user}) {
+      {List<SvtCompare>? keys, List<bool>? reversed, User? user}) {
     int res = 0;
     if (keys == null || keys.isEmpty) {
       keys = [SvtCompare.no];
@@ -177,10 +176,10 @@ class Servant {
           r = a.info.rarity - b.info.rarity;
           break;
         case SvtCompare.atk:
-          r = (a.info?.atkMax ?? 0) - (b.info?.atkMax ?? 0);
+          r = (a.info.atkMax) - (b.info.atkMax);
           break;
         case SvtCompare.hp:
-          r = (a.info?.hpMax ?? 0) - (b.info?.hpMax ?? 0);
+          r = (a.info.hpMax) - (b.info.hpMax);
           break;
         case SvtCompare.priority:
           final aa = user?.svtStatusOf(a.no), bb = user?.svtStatusOf(b.no);
@@ -202,7 +201,7 @@ class Servant {
 class ServantBaseInfo {
   String name;
   String nameJp;
-  String nameEn;
+  String? nameEn;
   List<String> namesOther;
   List<String> namesJpOther;
   List<String> namesEnOther;
@@ -248,46 +247,46 @@ class ServantBaseInfo {
   String criticalRate;
 
   ServantBaseInfo({
-    this.name,
-    this.nameJp,
-    this.nameEn,
-    this.namesOther,
-    this.namesJpOther,
-    this.namesEnOther,
-    this.nicknames,
-    this.obtain,
-    this.obtains,
-    this.rarity,
-    this.rarity2,
-    this.weight,
-    this.height,
-    this.gender,
-    this.illustrator,
-    this.className,
-    this.attribute,
-    this.isHumanoid,
-    this.isWeakToEA,
-    this.isTDNS,
-    this.cv,
-    this.alignments,
-    this.traits,
-    this.ability,
-    this.illustrations,
-    this.cards,
-    this.cardHits,
-    this.cardHitsDamage,
-    this.npRate,
-    this.atkMin,
-    this.hpMin,
-    this.atkMax,
-    this.hpMax,
-    this.atk90,
-    this.hp90,
-    this.atk100,
-    this.hp100,
-    this.starRate,
-    this.deathRate,
-    this.criticalRate,
+    required this.name,
+    required this.nameJp,
+    required this.nameEn,
+    required this.namesOther,
+    required this.namesJpOther,
+    required this.namesEnOther,
+    required this.nicknames,
+    required this.obtain,
+    required this.obtains,
+    required this.rarity,
+    required this.rarity2,
+    required this.weight,
+    required this.height,
+    required this.gender,
+    required this.illustrator,
+    required this.className,
+    required this.attribute,
+    required this.isHumanoid,
+    required this.isWeakToEA,
+    required this.isTDNS,
+    required this.cv,
+    required this.alignments,
+    required this.traits,
+    required this.ability,
+    required this.illustrations,
+    required this.cards,
+    required this.cardHits,
+    required this.cardHitsDamage,
+    required this.npRate,
+    required this.atkMin,
+    required this.hpMin,
+    required this.atkMax,
+    required this.hpMax,
+    required this.atk90,
+    required this.hp90,
+    required this.atk100,
+    required this.hp100,
+    required this.starRate,
+    required this.deathRate,
+    required this.criticalRate,
   });
 
   String get localizedName => localizeNoun(name, nameJp, nameEn);
@@ -307,21 +306,21 @@ class NobelPhantasm {
   String upperNameJp;
   String color;
   String category;
-  String rank;
+  String? rank;
   String typeText;
   List<Effect> effects;
 
   NobelPhantasm({
-    this.state,
-    this.name,
-    this.nameJp,
-    this.upperName,
-    this.upperNameJp,
-    this.color,
-    this.category,
+    required this.state,
+    required this.name,
+    required this.nameJp,
+    required this.upperName,
+    required this.upperNameJp,
+    required this.color,
+    required this.category,
     this.rank,
-    this.typeText,
-    this.effects,
+    required this.typeText,
+    required this.effects,
   });
 
   factory NobelPhantasm.fromJson(Map<String, dynamic> data) =>
@@ -335,7 +334,7 @@ class ActiveSkill {
   int cnState;
   List<Skill> skills;
 
-  ActiveSkill({this.cnState, this.skills});
+  ActiveSkill({required this.cnState, required this.skills});
 
   factory ActiveSkill.fromJson(Map<String, dynamic> data) =>
       _$ActiveSkillFromJson(data);
@@ -347,20 +346,20 @@ class ActiveSkill {
 class Skill {
   String state;
   String name;
-  String nameJp;
-  String rank;
+  String? nameJp;
+  String? rank;
   String icon;
   int cd;
   List<Effect> effects;
 
   Skill({
-    this.state,
-    this.name,
-    this.nameJp,
-    this.rank,
-    this.icon,
-    this.cd,
-    this.effects,
+    required this.state,
+    required this.name,
+    required this.nameJp,
+    required this.rank,
+    required this.icon,
+    required this.cd,
+    required this.effects,
   });
 
   String get localizedName => localizeNoun(name, nameJp, null);
@@ -375,7 +374,7 @@ class Effect {
   String description;
   List<String> lvData;
 
-  Effect({this.description, this.lvData});
+  Effect({required this.description, required this.lvData});
 
   factory Effect.fromJson(Map<String, dynamic> data) => _$EffectFromJson(data);
 
@@ -387,10 +386,14 @@ class SvtProfileData {
   String title;
   String description;
   String descriptionJp;
-  String condition;
+  String? condition;
 
-  SvtProfileData(
-      {this.title, this.description, this.descriptionJp, this.condition});
+  SvtProfileData({
+    required this.title,
+    required this.description,
+    required this.descriptionJp,
+    this.condition,
+  });
 
   factory SvtProfileData.fromJson(Map<String, dynamic> data) =>
       _$SvtProfileDataFromJson(data);
@@ -403,7 +406,7 @@ class VoiceTable {
   String section;
   List<VoiceRecord> table;
 
-  VoiceTable({this.section, this.table});
+  VoiceTable({required this.section, required this.table});
 
   factory VoiceTable.fromJson(Map<String, dynamic> data) =>
       _$VoiceTableFromJson(data);
@@ -414,13 +417,18 @@ class VoiceTable {
 @JsonSerializable(checked: true)
 class VoiceRecord {
   String title;
-  String text;
-  String textJp;
-  String condition;
+  String? text;
+  String? textJp;
+  String? condition;
   String voiceFile;
 
-  VoiceRecord(
-      {this.title, this.text, this.textJp, this.condition, this.voiceFile});
+  VoiceRecord({
+    required this.title,
+    required this.text,
+    required this.textJp,
+    this.condition,
+    required this.voiceFile,
+  });
 
   factory VoiceRecord.fromJson(Map<String, dynamic> data) =>
       _$VoiceRecordFromJson(data);

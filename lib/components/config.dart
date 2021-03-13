@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -130,7 +129,7 @@ class Database {
   }
 
   Future<void> downloadGameData([String? url]) async {
-    url ??= db.userData.serverRoot + kDatasetServerPath;
+    url ??= db.userData.serverRoot ?? kServerRoot + kDatasetServerPath;
     Dio _dio = Dio();
     try {
       Response response = await _dio.get(url,

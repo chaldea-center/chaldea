@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'dart:math' show max, min;
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -53,7 +52,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     target.fixDressLength(cur.dress.length, 0);
     for (var i = 0; i < cur.dress.length; i++) {
       cur.dress[i] = _ensureInRange(cur.dress[i], 0, 1);
-      target.dress[i] = max(target.dress[i] ?? 0, cur.dress[i]);
+      target.dress[i] = max(target.dress[i], cur.dress[i]);
     }
     cur.grail = _ensureInRange(cur.grail, 0, 10);
     target.grail = max(target.grail, cur.grail);
@@ -63,8 +62,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
   Widget build(BuildContext context) {
     super.build(context);
     return db.streamBuilder((context) {
-      if (svt.activeSkills == null) {
-        return Center(child: Text('Nothing'));
+      if (svt.activeSkills.isEmpty) {
+        return Center(child: Text('${svt.info.localizedName} has no skills'));
       }
       status.validate();
       final curVal = status.curVal;

@@ -157,7 +157,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
 
   /// server not supported yet
   void patchVersion(String version) async {
-    Dio _dio = Dio(BaseOptions(baseUrl: db.userData.serverRoot));
+    Dio _dio = Dio(BaseOptions(baseUrl: db.userData.serverRoot ?? kServerRoot));
     try {
       Response response = await _dio.get('/patch',
           queryParameters: {'from': db.gameData.version, 'to': version});
@@ -231,7 +231,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
 
   void downloadGamedata() {
     void _downloadAsset([bool fullSize = true]) async {
-      final gitTool = GitTool.fromIndex(db.userData.updateSource);
+      final gitTool = GitTool.fromIndex(0);
       final release = await gitTool.latestDatasetRelease(fullSize);
       Navigator.of(context).pop();
       String fp = pathlib.join(
@@ -280,8 +280,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
               title: Text(S.of(context).dataset_goto_download_page),
               subtitle: Text(S.of(context).dataset_goto_download_page_hint),
               onTap: () {
-                launch(
-                    GitTool.getReleasePageUrl(db.userData.updateSource, false));
+                launch(GitTool.getReleasePageUrl(0, false));
               },
             )
           ],

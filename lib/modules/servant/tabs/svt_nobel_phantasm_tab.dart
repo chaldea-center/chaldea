@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 
@@ -26,11 +25,11 @@ class _SvtNobelPhantasmTabState extends SvtTabBaseState<SvtNobelPhantasmTab> {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (svt.nobelPhantasm == null || svt.nobelPhantasm.length == 0) {
+    if (svt.nobelPhantasm.length == 0) {
       return Container(child: Center(child: Text('No NobelPhantasm Data')));
     }
     status.npIndex =
-        fixValidRange(status.npIndex ?? 0, 0, svt.nobelPhantasm.length - 1);
+        fixValidRange(status.npIndex, 0, svt.nobelPhantasm.length - 1);
 
     final td = svt.nobelPhantasm[status.npIndex];
     return ListView(

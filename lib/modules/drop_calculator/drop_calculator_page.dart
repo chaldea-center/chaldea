@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -138,7 +137,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
   void initState() {
     super.initState();
     // ensure every time [params] is a new instance
-    params = GLPKParams.from(db.userData.glpkParams ?? GLPKParams());
+    params = GLPKParams.from(db.userData.glpkParams);
     params.enableControllers();
     if (widget.objectiveCounts != null) {
       params.removeAll();
@@ -294,8 +293,8 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                 width: 65,
                 child: TextField(
                   controller: planOrEff
-                      ? params.countControllers[index]
-                      : params.weightControllers[index],
+                      ? params.countControllers![index]
+                      : params.weightControllers![index],
                   keyboardType: TextInputType.numberWithOptions(
                       signed: true, decimal: true),
                   textAlign: TextAlign.center,
@@ -407,7 +406,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
   void addAnItemNotInList([int n = 50]) {
     final item = db.gameData.glpk.rowNames
         .firstWhereOrNull((e) => !params.rows.contains(e));
-    params.addOne(item, n);
+    if (item != null) params.addOne(item, n);
   }
 
   String? getItemCategory(String itemKey) {

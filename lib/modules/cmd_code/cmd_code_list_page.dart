@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
@@ -67,7 +66,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
       return false;
     }
     if (!filterData.category
-        .singleValueFilter(code.category, compare: (o, v) => v.contains(o))) {
+        .singleValueFilter(code.category, compare: (o, v) => v?.contains(o))) {
       return false;
     }
     return true;
@@ -189,8 +188,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                if (!Language.isJP)
-                  AutoSizeText(code.nameJp ?? code.name, maxLines: 1),
+                if (!Language.isJP) AutoSizeText(code.nameJp, maxLines: 1),
                 Text('No.${code.no}')
               ],
             ),

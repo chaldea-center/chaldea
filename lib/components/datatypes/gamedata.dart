@@ -1,4 +1,3 @@
-//@dart=2.9
 /// Servant data
 part of datatypes;
 
@@ -18,44 +17,39 @@ class GameData {
   Map<String, Summon> summons;
 
   GameData({
-    this.version,
-    this.servants,
-    this.crafts,
-    this.cmdCodes,
-    this.items,
-    this.icons,
-    this.events,
-    this.freeQuests,
-    this.svtQuests,
-    this.glpk,
-    this.mysticCodes,
-    this.summons,
-  }) {
-    version ??= '0';
-    servants ??= {};
-    crafts ??= {};
-    cmdCodes ??= {};
-    items ??= {};
-    icons ??= {};
-    events ??= Events();
-    freeQuests ??= {};
-    svtQuests ??= {};
-    glpk ??= GLPKData();
-    mysticCodes ??= {};
-    summons ??= {};
-  }
+    this.version = '0',
+    this.servants = const {},
+    this.crafts = const {},
+    this.cmdCodes = const {},
+    this.items = const {},
+    this.icons = const {},
+    Events? events,
+    this.freeQuests = const {},
+    this.svtQuests = const {},
+    GLPKData? glpk,
+    this.mysticCodes = const {},
+    this.summons = const {},
+  })  : events = events ??
+            Events(limitEvents: {}, mainRecords: {}, exchangeTickets: {}),
+        glpk = glpk ??
+            GLPKData(
+                colNames: [],
+                rowNames: [],
+                costs: [],
+                matrix: [],
+                freeCounts: {},
+                weeklyMissionData: []);
 
-  Quest getFreeQuest(String key) {
-    if (freeQuests.containsKey(key)) return freeQuests[key];
+  Quest? getFreeQuest(String key) {
+    if (freeQuests.containsKey(key)) return freeQuests[key]!;
     for (var quest in freeQuests.values) {
-      if (key.contains(quest.place) && key.contains(quest.name)) {
+      if (key.contains(quest.place!) && key.contains(quest.name)) {
         return quest;
       }
-      if (fullToHalf(quest.indexKey) == fullToHalf(key)) {
+      if (fullToHalf(quest.indexKey!) == fullToHalf(key)) {
         return quest;
       }
     }
-    return null;
   }
 
   factory GameData.fromJson(Map<String, dynamic> data) =>
@@ -68,9 +62,9 @@ class GameData {
 class IconResource {
   String name;
   String originName;
-  String url;
+  String? url;
 
-  IconResource({this.name, this.originName, this.url});
+  IconResource({required this.name, required this.originName, this.url});
 
   factory IconResource.fromJson(Map<String, dynamic> data) =>
       _$IconResourceFromJson(data);
@@ -88,11 +82,11 @@ class ItemCost {
   List<String> dressNameJp;
 
   ItemCost({
-    this.ascension,
-    this.skill,
-    this.dressName,
-    this.dressNameJp,
-    this.dress,
+    required this.ascension,
+    required this.skill,
+    required this.dressName,
+    required this.dressNameJp,
+    required this.dress,
   });
 
   factory ItemCost.fromJson(Map<String, dynamic> data) =>
@@ -108,10 +102,10 @@ class Item {
   String name;
 
   /// may be null
-  String nameJp;
-  String nameEn;
-  String description;
-  String descriptionJp;
+  String? nameJp;
+  String? nameEn;
+  String? description;
+  String? descriptionJp;
 
   /// category: 1-usual item(include crystal/grail), 2-skill gem, 3-ascension piece/monument,
   /// 4-event servants' ascension item, 5-special, now only QP
@@ -121,26 +115,28 @@ class Item {
   @JsonKey(defaultValue: 0)
   int rarity;
 
-  Item(
-      {this.id,
-      this.name,
-      this.nameJp,
-      this.nameEn,
-      this.description,
-      this.descriptionJp,
-      this.category,
-      this.rarity = 0});
+  Item({
+    required this.id,
+    required this.name,
+    this.nameJp,
+    this.nameEn,
+    this.description,
+    this.descriptionJp,
+    required this.category,
+    required this.rarity,
+  });
 
-  Item copyWith(
-      {int id,
-      String name,
-      String nameJp,
-      String nameEn,
-      String description,
-      String descriptionJp,
-      int rarity,
-      int category,
-      int num}) {
+  Item copyWith({
+    int? id,
+    String? name,
+    String? nameJp,
+    String? nameEn,
+    String? description,
+    String? descriptionJp,
+    int? rarity,
+    int? category,
+    int? num,
+  }) {
     return Item(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -172,10 +168,7 @@ class Item {
 
   static localizedNameOf(String name) {
     // name could be jp/en?
-    if (db.gameData.items.containsKey(name)) {
-      return db.gameData.items[name].localizedName;
-    }
-    return name;
+    return db.gameData.items[name]?.localizedName ?? name;
   }
 
   String get localizedName => localizeNoun(name, nameJp, nameEn);

@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -239,7 +238,7 @@ class _ItemFilterDialogState extends State<ItemFilterDialog> {
               // dense: true,
               onChanged: (v) {
                 setState(() {
-                  priorityFilter.options[priority.toString()] = v;
+                  priorityFilter.options[priority.toString()] = v!;
                 });
                 db.itemStat.updateSvtItems();
               },
@@ -478,8 +477,9 @@ class _ItemListTabState extends State<ItemListTab> {
           /// don't change '-' to '0' in [setTextController]
           db.curUser.items[itemKey] = 0;
         } else {
-          db.curUser.items[itemKey] =
-              int.tryParse(v.replaceAll(',', '')) ?? db.curUser.items[itemKey];
+          db.curUser.items[itemKey] = int.tryParse(v.replaceAll(',', '')) ??
+              db.curUser.items[itemKey] ??
+              0;
         }
         db.itemStat.updateLeftItems();
         // setState2(() {});

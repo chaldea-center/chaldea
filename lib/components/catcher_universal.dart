@@ -1,4 +1,3 @@
-//@dart=2.9
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -8,7 +7,6 @@ import 'dart:typed_data';
 /// If official support is release, this should be removed.
 import 'package:catcher/catcher.dart';
 import 'package:catcher/model/platform_type.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:logging/logging.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
@@ -21,76 +19,6 @@ import 'device_app_info.dart';
 import 'utils.dart';
 
 export 'page_report_mode_cross.dart';
-
-class SilentReportModeCross extends SilentReportMode {
-  @override
-  List<PlatformType> getSupportedPlatforms() => PlatformType.values.toList();
-}
-
-class DialogReportModeCross extends DialogReportMode {
-  @override
-  List<PlatformType> getSupportedPlatforms() => PlatformType.values.toList();
-}
-
-class FileHandlerCross extends FileHandler {
-  FileHandlerCross(File file,
-      {bool enableDeviceParameters = true,
-      bool enableApplicationParameters = true,
-      bool enableStackTrace = true,
-      bool enableCustomParameters = true,
-      bool printLogs = false})
-      : super(file,
-            enableDeviceParameters: enableDeviceParameters,
-            enableApplicationParameters: enableApplicationParameters,
-            enableStackTrace: enableStackTrace,
-            enableCustomParameters: enableCustomParameters,
-            printLogs: printLogs);
-
-  @override
-  List<PlatformType> getSupportedPlatforms() => PlatformType.values.toList();
-}
-
-class ConsoleHandlerCross extends ConsoleHandler {
-  ConsoleHandlerCross(
-      {bool enableDeviceParameters = true,
-      bool enableApplicationParameters = true,
-      bool enableStackTrace = true,
-      bool enableCustomParameters = true})
-      : super(
-            enableDeviceParameters: enableDeviceParameters,
-            enableApplicationParameters: enableApplicationParameters,
-            enableStackTrace: enableStackTrace,
-            enableCustomParameters: enableCustomParameters);
-
-  @override
-  List<PlatformType> getSupportedPlatforms() => PlatformType.values.toList();
-}
-
-class ToastHandlerCross extends ReportHandler {
-  final Duration duration;
-  final EasyLoadingToastPosition toastPosition;
-  final String customMessage;
-
-  ToastHandlerCross({this.duration, this.toastPosition, this.customMessage});
-
-  @override
-  Future<bool> handle(Report error) async {
-    EasyLoading.showToast(_getErrorMessage(error),
-        duration: duration, toastPosition: toastPosition);
-    return true;
-  }
-
-  String _getErrorMessage(Report error) {
-    if (customMessage != null && customMessage.length > 0) {
-      return customMessage;
-    } else {
-      return "Error occurred: ${error.error}";
-    }
-  }
-
-  @override
-  List<PlatformType> getSupportedPlatforms() => PlatformType.values.toList();
-}
 
 class EmailAutoHandlerCross extends EmailAutoHandler {
   final Logger _logger = Logger("EmailAutoHandler");
@@ -105,8 +33,8 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
       bool enableApplicationParameters = true,
       bool enableStackTrace = true,
       bool enableCustomParameters = true,
-      String emailTitle,
-      String emailHeader,
+      String? emailTitle,
+      String? emailHeader,
       this.attachments = const [],
       bool sendHtml = true,
       bool printLogs = false})
@@ -133,7 +61,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
   /// maintain list for every contact if contact changed
   Map<String, List<Report>> _sentReports = {};
 
-  String get contactInfo => db.runtimeData.contactInfo;
+  String? get contactInfo => db.runtimeData.contactInfo;
 
   Future<bool> _sendMail(Report report) async {
     // don't send email repeatedly
@@ -153,7 +81,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
         ..attachments = _getAttachments(attachments);
       if (screenshot) {
         String shotFn = pathlib.join(db.paths.appPath, 'crash.png');
-        Uint8List shotBinary = await db.runtimeData.screenshotController
+        Uint8List? shotBinary = await db.runtimeData.screenshotController
             ?.capture(pixelRatio: 1.5, delay: Duration(seconds: 2));
         if (shotBinary != null) {
           File(shotFn).writeAsBytesSync(shotBinary, flush: true);
@@ -166,14 +94,10 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
       _printLog("Sending email...");
 
       var result = await send(message, _setupSmtpServer());
-      if (result != null) {
-        _cachedReports.add(report);
-        _printLog("Email result: mail: ${result.mail} "
-            "sending start time: ${result.messageSendingStart} "
-            "sending end time: ${result?.messageSendingEnd}");
-      } else {
-        _printLog("Result is empty - failed to send email");
-      }
+      _cachedReports.add(report);
+      _printLog("Email result: mail: ${result.mail} "
+          "sending start time: ${result.messageSendingStart} "
+          "sending end time: ${result.messageSendingEnd}");
       return true;
     } catch (stacktrace, exception) {
       _printLog(stacktrace.toString());
@@ -206,8 +130,8 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
         password: senderPassword);
   }
 
-  String _getEmailTitle(Report report) {
-    if (emailTitle != null && emailTitle.length > 0) {
+  String? _getEmailTitle(Report report) {
+    if (emailTitle?.isNotEmpty == true) {
       return emailTitle;
     } else {
       return "[${AppInfo.fullVersion}] Error: ${report.error}";
@@ -217,15 +141,15 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
   String _setupHtmlMessageText(Report report) {
     final escape = HtmlEscape().convert;
     StringBuffer buffer = StringBuffer("");
-    if (emailHeader != null && emailHeader.length > 0) {
-      buffer.write(escape(emailHeader));
+    if (emailHeader?.isNotEmpty == true) {
+      buffer.write(escape(emailHeader!));
       buffer.write("<hr>");
     }
     buffer.write('<style>h3{margin:0.2em 0;}</style>');
 
     if (contactInfo?.isNotEmpty == true) {
       buffer.write("<h3>Contact:</h3>");
-      buffer.write("${escape(contactInfo)}<br>");
+      buffer.write("${escape(contactInfo!)}<br>");
     }
     buffer.write("<h3>Summary:</h3>");
     final dataVerFile = File(db.paths.datasetVersionFile);
@@ -243,8 +167,8 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
 
     buffer.write("<h3>Error:</h3>");
     buffer.write(escape(report.error.toString()));
-    if (report.error.toString().trim().isEmpty) {
-      buffer.write(escape(report.errorDetails.exceptionAsString()));
+    if (report.error.toString().trim().isEmpty && report.errorDetails != null) {
+      buffer.write(escape(report.errorDetails!.exceptionAsString()));
     }
     buffer.write("<hr>");
 
@@ -252,8 +176,9 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
       buffer.write("<h3>Stack trace:</h3>");
       buffer
           .write(escape(report.stackTrace.toString()).replaceAll("\n", "<br>"));
-      if (report.stackTrace?.toString()?.trim()?.isNotEmpty != true) {
-        buffer.write(escape(report.errorDetails.stack.toString())
+      if (report.stackTrace?.toString().trim().isNotEmpty != true &&
+          report.errorDetails != null) {
+        buffer.write(escape(report.errorDetails!.stack.toString())
             .replaceAll('\n', '<br>'));
       }
       buffer.write("<hr>");
@@ -287,7 +212,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
 
   String _setupRawMessageText(Report report) {
     StringBuffer buffer = StringBuffer("");
-    if (emailHeader != null && emailHeader.length > 0) {
+    if (emailHeader?.isNotEmpty == true) {
       buffer.write(emailHeader);
       buffer.write("\n\n");
     }

@@ -1,4 +1,3 @@
-// @dart=2.12
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:flutter/material.dart';
 

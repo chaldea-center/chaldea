@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
 
@@ -44,7 +43,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
                 'HP'
               ]),
               onSortAttr: (key) {
-                filterData.sortKeys[i] = key;
+                filterData.sortKeys[i] = key ?? filterData.sortKeys[i];
                 update();
               },
               reversed: filterData.sortReversed[i],

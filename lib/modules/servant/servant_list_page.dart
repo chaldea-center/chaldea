@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'dart:convert';
 import 'dart:math';
 import 'dart:ui';
@@ -74,7 +73,7 @@ class ServantListPageState extends State<ServantListPage> {
         ...svt.info.nicknames,
         ...svt.info.traits
       ];
-      svt.nobelPhantasm?.forEach((td) {
+      svt.nobelPhantasm.forEach((td) {
         searchStrings.addAll([
           td.name,
           td.nameJp,
@@ -83,11 +82,11 @@ class ServantListPageState extends State<ServantListPage> {
           for (var e in td.effects) e.description
         ]);
       });
-      svt.activeSkills?.forEach((activeSkill) {
+      svt.activeSkills.forEach((activeSkill) {
         activeSkill.skills.forEach((skill) {
           searchStrings.addAll([
             skill.name,
-            skill.nameJp,
+            skill.nameJp ?? '',
             for (var e in skill.effects) e.description
           ]);
         });
@@ -97,12 +96,12 @@ class ServantListPageState extends State<ServantListPage> {
       }
     }
     if (filterData.hasDress) {
-      if ((svt.itemCost?.dressName?.length ?? 0) <= 0) {
+      if ((svt.itemCost.dressName.length) <= 0) {
         return false;
       }
     }
     if (filterData.planCompletion.options.containsValue(true)) {
-      if (svtStat.curVal?.favorite != true) return false;
+      if (svtStat.curVal.favorite != true) return false;
       bool planNotComplete = <bool>[
         svtPlan.ascension > svtStat.curVal.ascension,
         svtPlan.grail > svtStat.curVal.grail,
@@ -129,8 +128,8 @@ class ServantListPageState extends State<ServantListPage> {
     }
     // class name
     if (!filterData.className.singleValueFilter(svt.info.className, compares: {
-      'Beast': (o, v) => v.startsWith(o),
-      'Caster': (o, v) => v.contains(o)
+      'Beast': (o, v) => v?.startsWith(o) ?? false,
+      'Caster': (o, v) => v?.contains(o) ?? false
     })) {
       return false;
     }
@@ -163,8 +162,8 @@ class ServantListPageState extends State<ServantListPage> {
     }
     // trait
     if (!filterData.trait.listValueFilter(svt.info.traits, compares: {
-      '魔性': (o, v) => v.startsWith(o),
-      '超巨大': (o, v) => v.startsWith(o),
+      '魔性': (o, v) => v?.startsWith(o) ?? false,
+      '超巨大': (o, v) => v?.startsWith(o) ?? false,
       '天地(拟似除外)': (o, v) => !svt.info.isTDNS,
       'EA不特攻': (o, v) => !svt.info.isWeakToEA,
       '无特殊特性': (o, v) => svt.info.traits.isEmpty,
@@ -314,7 +313,7 @@ class ServantListPageState extends State<ServantListPage> {
     db.gameData.servants.forEach((no, svt) {
       if (filterData.favorite == 0 ||
           filterData.favorite ==
-              ((db.curUser.svtStatusOf(no).curVal.favorite ?? false) ? 1 : 2)) {
+              ((db.curUser.svtStatusOf(no).curVal.favorite) ? 1 : 2)) {
         if (filtrateServant(svt)) {
           shownList.add(svt);
         }
@@ -363,10 +362,10 @@ class ServantListPageState extends State<ServantListPage> {
         String additionalText = '';
         switch (filterData.sortKeys.first) {
           case SvtCompare.atk:
-            additionalText = '  ATK ${svt.info.atkMax ?? "——"}';
+            additionalText = '  ATK ${svt.info.atkMax}';
             break;
           case SvtCompare.hp:
-            additionalText = '  HP ${svt.info.hpMax ?? "——"}';
+            additionalText = '  HP ${svt.info.hpMax}';
             break;
           default:
             break;

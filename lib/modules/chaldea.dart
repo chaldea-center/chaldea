@@ -1,4 +1,3 @@
-//@dart=2.9
 import 'dart:async';
 import 'dart:io';
 
@@ -16,7 +15,7 @@ class Chaldea extends StatefulWidget {
 }
 
 class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
-  String userdataBackup;
+  String? userdataBackup;
 
   _ChaldeaState() {
     if (File(db.paths.userDataPath).existsSync() && !db.loadUserData()) {
@@ -28,7 +27,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   void afterFirstLayout(BuildContext context) {
     if (userdataBackup != null) {
       showInformDialog(
-        kAppKey.currentContext,
+        kAppKey.currentContext!,
         title: 'Userdata damaged',
         content: 'A backup is created:\n $userdataBackup',
       );
@@ -62,12 +61,12 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
       child: Screenshot(
-        controller: db.runtimeData.screenshotController,
+        controller: db.runtimeData.screenshotController!,
         child: MaterialApp(
           title: kAppName,
           debugShowCheckedModeBanner: false,
           navigatorKey: kAppKey,
-          locale: Language.getLanguage(db.userData?.language)?.locale,
+          locale: Language.getLanguage(db.userData.language)?.locale,
           localizationsDelegates: [
             S.delegate,
             ...GlobalMaterialLocalizations.delegates,

@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:chaldea/components/components.dart';
 
 import '../servant_detail_page.dart';
@@ -25,7 +24,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (svt.activeSkills?.isNotEmpty != true) {
+    if (svt.activeSkills.isNotEmpty != true) {
       return Center(child: Text('Nothing'));
     }
 
@@ -33,7 +32,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
       SHeader(S.of(context).active_skill),
       for (var index = 0; index < svt.activeSkills.length; index++)
         buildActiveSkill(index),
-      if (svt.passiveSkills?.isNotEmpty == true) ...[
+      if (svt.passiveSkills.isNotEmpty == true) ...[
         SHeader(S.of(context).passive_skill),
         for (var index = 0; index < svt.passiveSkills.length; index++)
           buildPassiveSkill(index),

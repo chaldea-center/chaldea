@@ -1,4 +1,3 @@
-//@dart=2.9
 part of datatypes;
 
 enum CmdCodeCompare { no, rarity }
@@ -16,37 +15,37 @@ class CommandCode {
   List<String> illustrators;
   String skillIcon;
   String skill;
-  String description;
-  String descriptionJp;
+  String? description;
+  String? descriptionJp;
   String obtain;
   String category;
   String categoryText;
   List<String> characters;
 
   CommandCode({
-    this.no,
-    this.mcLink,
-    this.name,
-    this.nameJp,
-    this.nameOther,
-    this.rarity,
-    this.icon,
-    this.illustration,
-    this.illustrators,
-    this.skillIcon,
-    this.skill,
+    required this.no,
+    required this.mcLink,
+    required this.name,
+    required this.nameJp,
+    this.nameOther = const [],
+    required this.rarity,
+    required this.icon,
+    required this.illustration,
+    this.illustrators = const [],
+    required this.skillIcon,
+    required this.skill,
     this.description,
     this.descriptionJp,
-    this.obtain,
-    this.category,
-    this.categoryText,
-    this.characters,
+    required this.obtain,
+    required this.category,
+    required this.categoryText,
+    this.characters = const [],
   });
 
   String get localizedName => localizeNoun(name, nameJp, null);
 
   static int compare(CommandCode a, CommandCode b,
-      {List<CmdCodeCompare> keys, List<bool> reversed}) {
+      {List<CmdCodeCompare>? keys, List<bool>? reversed}) {
     int res = 0;
     if (keys == null || keys.isEmpty) {
       keys = [CmdCodeCompare.no];

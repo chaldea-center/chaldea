@@ -1,5 +1,3 @@
-// @dart=2.12
-
 /// Match string with query patterns.
 ///
 /// Supports 3 kinds of query pattern:

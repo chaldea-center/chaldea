@@ -1,4 +1,3 @@
-// @dart=2.12
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -57,14 +56,6 @@ class Language {
   static bool get isJP => currentLocaleCode.startsWith('ja');
 
   static bool get isEN => currentLocaleCode.startsWith('en');
-}
-
-enum GameServer { jp, cn }
-
-extension EnumValueToString on GameServer {
-  String toValueString() {
-    return this.toString().split('.').last;
-  }
 }
 
 class AppColors {

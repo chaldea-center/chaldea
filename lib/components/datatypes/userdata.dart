@@ -1,25 +1,22 @@
-//@dart=2.9
 /// App settings and users data
 part of datatypes;
 
 @JsonSerializable(checked: true)
 class UserData {
   // app settings
-  String language;
+  String? language;
 
-  String sliderUpdateTime;
+  String? sliderUpdateTime;
   Map<String, String> sliderUrls;
   Map<String, bool> galleries;
-  String serverRoot;
-  int updateSource;
+  String? serverRoot;
 
   /// use build number which should be increasing integer
-  int previousBuildNumber;
+  int? previousBuildNumber;
 
   // user-related game data
   String curUserKey;
 
-  @JsonKey(required: true, disallowNullValue: true)
   Map<String, User> users;
 
   List<String> get userNames => users.values.map((user) => user.name).toList();
@@ -36,35 +33,35 @@ class UserData {
   UserData({
     this.language,
     this.sliderUpdateTime,
-    this.sliderUrls,
-    this.galleries,
+    Map<String, String>? sliderUrls,
+    Map<String, bool>? galleries,
     this.serverRoot,
-    this.updateSource,
     this.previousBuildNumber,
-    this.curUserKey,
-    this.users,
-    this.svtFilter,
-    this.craftFilter,
-    this.cmdCodeFilter,
-    this.glpkParams,
-    this.itemAbundantValue,
-  }) {
+    String? curUserKey,
+    Map<String, User>? users,
+    SvtFilterData? svtFilter,
+    CraftFilterData? craftFilter,
+    CmdCodeFilterData? cmdCodeFilter,
+    GLPKParams? glpkParams,
+    List<int>? itemAbundantValue,
+  })  : sliderUrls = sliderUrls ?? {},
+        galleries = galleries ?? {},
+        curUserKey = curUserKey ?? 'default',
+        users = users ?? {},
+        svtFilter = svtFilter ?? SvtFilterData(),
+        craftFilter = craftFilter ?? CraftFilterData(),
+        cmdCodeFilter = cmdCodeFilter ?? CmdCodeFilterData(),
+        glpkParams = glpkParams ?? GLPKParams(),
+        itemAbundantValue =
+            itemAbundantValue ?? List.generate(3, (index) => 0) {
     // not initiate language: auto-change language if not set yet.
-    String defaultName = 'default';
-    sliderUrls ??= {};
-    galleries ??= {};
-    serverRoot ??= kServerRoot;
-    updateSource = fixValidRange(updateSource ?? 0, 0, 0);
-
-    users ??= {defaultName: User(name: defaultName)};
-    if (!users.containsKey(curUserKey)) {
-      curUserKey = users.keys.first;
+    if (this.users.isEmpty) {
+      String defaultName = 'default';
+      this.users[defaultName] = User(name: defaultName);
     }
-    svtFilter ??= SvtFilterData();
-    craftFilter ??= CraftFilterData();
-    cmdCodeFilter ??= CmdCodeFilterData();
-    glpkParams ??= GLPKParams();
-    itemAbundantValue ??= [0, 0, 0];
+    if (!this.users.containsKey(curUserKey)) {
+      this.curUserKey = this.users.keys.first;
+    }
   }
 
   // json_serializable
@@ -100,46 +97,48 @@ class SvtFilterData {
   FilterGroupData traitSpecial;
 
   SvtFilterData({
-    this.favorite,
-    this.sortKeys,
-    this.sortReversed,
-    this.useGrid,
-    this.hasDress,
-    this.planCompletion,
-    this.skillLevel,
-    this.priority,
-    this.rarity,
-    this.className,
-    this.obtain,
-    this.npColor,
-    this.npType,
-    this.attribute,
-    this.alignment1,
-    this.alignment2,
-    this.gender,
-    this.trait,
-    this.traitSpecial,
-  }) {
-    favorite ??= null; //null-all,false-not fav,true-fav
-    filterString ??= '';
-    sortKeys ??= List.generate(3, (i) => sortKeyData[i]);
-    sortReversed ??= List.filled(sortKeys.length, true);
-    useGrid ??= false;
-    hasDress ??= false;
-    planCompletion ??= FilterGroupData();
-    skillLevel ??= FilterGroupData();
-    priority ??= FilterGroupData();
-    rarity ??= FilterGroupData();
-    className ??= FilterGroupData();
-    obtain ??= FilterGroupData();
-    npColor ??= FilterGroupData();
-    npType ??= FilterGroupData();
-    attribute ??= FilterGroupData();
-    alignment1 ??= FilterGroupData();
-    alignment2 ??= FilterGroupData();
-    gender ??= FilterGroupData();
-    trait ??= FilterGroupData();
-    traitSpecial ??= FilterGroupData();
+    int? favorite,
+    List<SvtCompare>? sortKeys,
+    List<bool>? sortReversed,
+    bool? useGrid,
+    bool? hasDress,
+    FilterGroupData? planCompletion,
+    FilterGroupData? skillLevel,
+    FilterGroupData? priority,
+    FilterGroupData? rarity,
+    FilterGroupData? className,
+    FilterGroupData? obtain,
+    FilterGroupData? npColor,
+    FilterGroupData? npType,
+    FilterGroupData? attribute,
+    FilterGroupData? alignment1,
+    FilterGroupData? alignment2,
+    FilterGroupData? gender,
+    FilterGroupData? trait,
+    FilterGroupData? traitSpecial,
+  })  : filterString = '',
+        favorite = favorite ?? 0,
+        sortKeys = sortKeys ?? List.generate(3, (i) => sortKeyData[i]),
+        sortReversed = sortReversed ?? List.generate(3, (index) => true),
+        useGrid = useGrid ?? false,
+        hasDress = hasDress ?? false,
+        planCompletion = planCompletion ?? FilterGroupData(),
+        skillLevel = skillLevel ?? FilterGroupData(),
+        priority = priority ?? FilterGroupData(),
+        rarity = rarity ?? FilterGroupData(),
+        className = className ?? FilterGroupData(),
+        obtain = obtain ?? FilterGroupData(),
+        npColor = npColor ?? FilterGroupData(),
+        npType = npType ?? FilterGroupData(),
+        attribute = attribute ?? FilterGroupData(),
+        alignment1 = alignment1 ?? FilterGroupData(),
+        alignment2 = alignment2 ?? FilterGroupData(),
+        gender = gender ?? FilterGroupData(),
+        trait = trait ?? FilterGroupData(),
+        traitSpecial = traitSpecial ?? FilterGroupData() {
+    this.favorite = fixValidRange(this.favorite, 0, 2);
+    fillListValue(this.sortKeys, 3, (i) => sortKeyData[i]);
+    fillListValue(this.sortReversed, 3, (_) => true);
   }
 
   List<FilterGroupData> get groupValues => [
@@ -251,20 +250,21 @@ class CraftFilterData {
   FilterGroupData atkHpType;
 
   CraftFilterData({
-    this.sortKeys,
-    this.sortReversed,
-    this.useGrid,
-    this.rarity,
-    this.category,
-    this.atkHpType,
-  }) {
-    filterString ??= '';
-    sortKeys ??= List.generate(2, (i) => sortKeyData[i]);
-    sortReversed ??= List.filled(sortKeys.length, true);
-    useGrid ??= false;
-    rarity ??= FilterGroupData();
-    category ??= FilterGroupData();
-    atkHpType ??= FilterGroupData();
+    List<CraftCompare>? sortKeys,
+    List<bool>? sortReversed,
+    bool? useGrid,
+    FilterGroupData? rarity,
+    FilterGroupData? category,
+    FilterGroupData? atkHpType,
+  })  : filterString = '',
+        sortKeys = sortKeys ?? List.generate(2, (index) => sortKeyData[index]),
+        sortReversed = sortReversed ?? List.filled(2, true, growable: true),
+        useGrid = useGrid ?? false,
+        rarity = rarity ?? FilterGroupData(),
+        category = category ?? FilterGroupData(),
+        atkHpType = atkHpType ?? FilterGroupData() {
+    fillListValue(this.sortKeys, 2, (i) => sortKeyData[i]);
+    fillListValue(this.sortReversed, 2, (_) => true);
   }
 
   List<FilterGroupData> get groupValues => [
@@ -317,18 +317,19 @@ class CmdCodeFilterData {
   FilterGroupData category;
 
   CmdCodeFilterData({
-    this.sortKeys,
-    this.sortReversed,
-    this.useGrid,
-    this.rarity,
-    this.category,
-  }) {
-    filterString ??= '';
-    sortKeys ??= List.generate(2, (i) => sortKeyData[i]);
-    sortReversed ??= List.filled(sortKeys.length, true);
-    useGrid ??= false;
-    rarity ??= FilterGroupData();
-    category ??= FilterGroupData();
+    List<CmdCodeCompare>? sortKeys,
+    List<bool>? sortReversed,
+    bool? useGrid,
+    FilterGroupData? rarity,
+    FilterGroupData? category,
+  })  : filterString = '',
+        sortKeys = sortKeys ?? List.generate(2, (index) => sortKeyData[index]),
+        sortReversed = sortReversed ?? List.filled(2, true, growable: true),
+        useGrid = useGrid ?? false,
+        rarity = rarity ?? FilterGroupData(),
+        category = category ?? FilterGroupData() {
+    fillListValue(this.sortKeys, 2, (i) => sortKeyData[i]);
+    fillListValue(this.sortReversed, 2, (_) => true);
   }
 
   List<FilterGroupData> get groupValues => [rarity, category];
@@ -355,7 +356,7 @@ class CmdCodeFilterData {
   Map<String, dynamic> toJson() => _$CmdCodeFilterDataToJson(this);
 }
 
-typedef bool CompareFilterKeyCallback(String option, String value);
+typedef bool? CompareFilterKeyCallback(String option, String? value);
 
 @JsonSerializable(checked: true)
 class FilterGroupData {
@@ -363,11 +364,13 @@ class FilterGroupData {
   bool invert;
   Map<String, bool> options;
 
-  FilterGroupData({this.matchAll, this.invert, this.options}) {
-    matchAll ??= false;
-    invert ??= false;
-    options ??= {};
-  }
+  FilterGroupData({
+    bool? matchAll,
+    bool? invert,
+    Map<String, bool>? options,
+  })  : matchAll = matchAll ?? false,
+        invert = invert ?? false,
+        options = options ?? {};
 
   void reset() {
     options.clear();
@@ -375,16 +378,16 @@ class FilterGroupData {
     invert = false;
   }
 
-  bool _customCompare(
-      String _optionKey, String _srcKey, CompareFilterKeyCallback _compare) {
+  bool _customCompare(String _optionKey, String? _srcKey,
+      [CompareFilterKeyCallback? _compare]) {
     return _compare == null
         ? _optionKey == _srcKey
-        : _compare(_optionKey, _srcKey);
+        : _compare(_optionKey, _srcKey) ?? false;
   }
 
-  bool singleValueFilter(String value,
-      {CompareFilterKeyCallback compare,
-      Map<String, CompareFilterKeyCallback> compares}) {
+  bool singleValueFilter(String? value,
+      {CompareFilterKeyCallback? compare,
+      Map<String, CompareFilterKeyCallback>? compares}) {
     // ignore matchAll?
     assert(compare == null || compares == null);
     options.removeWhere((k, v) => v != true);
@@ -395,7 +398,7 @@ class FilterGroupData {
     if (compare != null || compares != null) {
       result = false;
       for (var option in options.keys) {
-        if (_customCompare(option, value, compare ?? compares[option])) {
+        if (_customCompare(option, value, compare ?? compares![option])) {
           result = true;
           break;
         }
@@ -407,7 +410,7 @@ class FilterGroupData {
   }
 
   bool listValueFilter(List<String> values,
-      {Map<String, CompareFilterKeyCallback> compares}) {
+      {Map<String, CompareFilterKeyCallback>? compares}) {
     compares ??= {};
     options.removeWhere((k, v) => v != true);
     if (options.isEmpty) {
@@ -418,7 +421,7 @@ class FilterGroupData {
       result = true;
       for (String option in options.keys) {
         List<bool> tmp = values
-            .map((v) => _customCompare(option, v, compares[option]))
+            .map((v) => _customCompare(option, v, compares![option]))
             .toList();
         if (!tmp.contains(true)) {
           result = false;
@@ -429,7 +432,7 @@ class FilterGroupData {
       result = false;
       for (String option in options.keys) {
         List<bool> tmp = values
-            .map((v) => _customCompare(option, v, compares[option]))
+            .map((v) => _customCompare(option, v, compares![option]))
             .toList();
         if (tmp.contains(true)) {
           result = true;

@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
@@ -125,11 +124,12 @@ class GLPKSolver {
     final params2 = GLPKParams.from(params);
     final data2 = GLPKData.from(data);
     _preProcess(data: data2, params: params2);
-    data2.weeklyMissionData=[];
+    data2.weeklyMissionData = [];
 
     try {
       await ensureEngine();
-      print('=========solving========\nparams="${json.encode(params)}\n${json.encode(data2)}"');
+      print(
+          '=========solving========\nparams="${json.encode(params)}\n${json.encode(data2)}"');
       if (params2.rows.length == 0) {
         logger.d('after pre processing, params has no valid rows.\n'
             'params=${json.encode(params2)}');
@@ -182,16 +182,15 @@ class GLPKSolver {
         String itemKey = data.rowNames[row];
         if (objectiveWeights.keys.contains(itemKey) &&
             data.matrix[row][col] > 0) {
-          dropWeights[itemKey] =
-              (params.useAP20 ?? true ? 20 : data.costs[col]) /
-                  data.matrix[row][col] *
-                  objectiveWeights[itemKey]!;
+          dropWeights[itemKey] = (params.useAP20 ? 20 : data.costs[col]) /
+              data.matrix[row][col] *
+              objectiveWeights[itemKey]!;
           sortDict(dropWeights, reversed: true, inPlace: true);
         }
       }
       if (dropWeights.isNotEmpty) {
-        solution.weightVars
-            .add(GLPKVariable(name: questKey, detail: dropWeights));
+        solution.weightVars.add(GLPKVariable<double>(
+            name: questKey, detail: dropWeights, value: 0, cost: 0));
       }
     }
     solution.sortWeightVars();

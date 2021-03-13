@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'dart:math' show max, min;
 
 import 'package:flutter/material.dart';
@@ -255,7 +254,7 @@ class ImageWithText extends StatelessWidget {
                     child: image,
                   ),
                 ),
-                if (text?.isNotEmpty==true)
+                if (text?.isNotEmpty == true)
                   Padding(
                     padding: EdgeInsets.fromLTRB(
                         max(0.0, padding.left),

@@ -1,4 +1,3 @@
-//@dart=2.9
 part of datatypes;
 
 enum CraftCompare { no, rarity, atk, hp }
@@ -19,13 +18,13 @@ class CraftEssence {
   int hpMax;
   int atkMin;
   int atkMax;
-  String skillIcon;
+  String? skillIcon;
   String skill;
-  String skillMax;
+  String? skillMax;
   List<String> eventIcons;
   List<String> eventSkills;
-  String description;
-  String descriptionJp;
+  String? description;
+  String? descriptionJp;
   String category;
   String categoryText;
   List<String> characters;
@@ -35,38 +34,38 @@ class CraftEssence {
   String toString() => mcLink;
 
   CraftEssence({
-    this.no,
-    this.mcLink,
-    this.name,
-    this.nameJp,
-    this.nameOther,
-    this.rarity,
-    this.icon,
-    this.illustration,
-    this.illustrators,
-    this.cost,
-    this.hpMin,
-    this.hpMax,
-    this.atkMin,
-    this.atkMax,
-    this.skillIcon,
-    this.skill,
-    this.skillMax,
-    this.eventIcons,
-    this.eventSkills,
-    this.description,
-    this.descriptionJp,
-    this.category,
-    this.categoryText,
-    this.characters,
-    this.bond,
-    this.valentine,
+    required this.no,
+    required this.mcLink,
+    required this.name,
+    required this.nameJp,
+    required this.nameOther,
+    required this.rarity,
+    required this.icon,
+    required this.illustration,
+    required this.illustrators,
+    required this.cost,
+    required this.hpMin,
+    required this.hpMax,
+    required this.atkMin,
+    required this.atkMax,
+    required this.skillIcon,
+    required this.skill,
+    required this.skillMax,
+    required this.eventIcons,
+    required this.eventSkills,
+    required this.description,
+    required this.descriptionJp,
+    required this.category,
+    required this.categoryText,
+    required this.characters,
+    required this.bond,
+    required this.valentine,
   });
 
   String get localizedName => localizeNoun(name, nameJp, null);
 
   static int compare(CraftEssence a, CraftEssence b,
-      {List<CraftCompare> keys, List<bool> reversed}) {
+      {List<CraftCompare>? keys, List<bool>? reversed}) {
     int res = 0;
     if (keys == null || keys.isEmpty) {
       keys = [CraftCompare.no];

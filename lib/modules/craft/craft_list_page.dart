@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
@@ -64,7 +63,7 @@ class CraftListPageState extends State<CraftListPage> {
         ...ce.illustrators,
         ...ce.characters,
         ce.skill,
-        ce.skillMax,
+        ce.skillMax ?? '',
         ...ce.eventSkills,
         ...ce.characters
       ];
@@ -76,8 +75,8 @@ class CraftListPageState extends State<CraftListPage> {
       return false;
     }
 
-    if (!filterData.category
-        .singleValueFilter(ce.category, compare: (o, v) => v.contains(o))) {
+    if (!filterData.category.singleValueFilter(ce.category,
+        compare: (o, v) => v?.contains(o) ?? false)) {
       return false;
     }
     if (__binAtkHpType > 0 &&
@@ -217,8 +216,7 @@ class CraftListPageState extends State<CraftListPage> {
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                if (!Language.isJP)
-                  AutoSizeText(ce.nameJp ?? ce.name, maxLines: 1),
+                if (!Language.isJP) AutoSizeText(ce.nameJp, maxLines: 1),
                 Text('No.${ce.no.toString().padRight(4)}  $additionalText'),
               ],
             ),

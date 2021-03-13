@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/servant/servant_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';
@@ -37,7 +36,7 @@ class ItemCostServantPage extends StatelessWidget {
               '${S.current.item_own} ${num2str(db.curUser.items[itemKey])} '
               '${S.current.event_title} ${num2str(stat.eventItems[itemKey])}'),
           trailing: Text(
-            '${S.current.item_total_demand} ${num2str(counts.summation[itemKey])}\n' +
+            '${S.current.item_total_demand} ${num2str(counts.summation![itemKey])}\n' +
                 counts
                     .valuesIfGrail(itemKey)
                     .map((v) => num2str(v[itemKey]))
@@ -74,7 +73,7 @@ class ItemCostServantPage extends StatelessWidget {
             ));
         }
       } else if (viewType == 1) {
-        children.add(_buildSvtIconGrid(context, details.summation[itemKey],
+        children.add(_buildSvtIconGrid(context, details.summation![itemKey],
             highlight: favorite == false));
       } else {
         children.addAll(buildSvtList(context, details));
@@ -136,11 +135,11 @@ class ItemCostServantPage extends StatelessWidget {
   List<Widget> buildSvtList(
       BuildContext context, SvtParts<Map<String, Map<int, int>>> details) {
     List<Widget> children = [];
-    if (!details.summation.containsKey(itemKey)) {
+    if (!details.summation!.containsKey(itemKey)) {
       return children;
     }
-    sortSvts(details.summation[itemKey]!.keys.toList()).forEach((svtNo) {
-      final allNum = details.summation[itemKey]?[svtNo] ?? 0;
+    sortSvts(details.summation![itemKey]!.keys.toList()).forEach((svtNo) {
+      final allNum = details.summation![itemKey]?[svtNo] ?? 0;
       if (allNum <= 0) {
         return;
       }
@@ -185,7 +184,7 @@ class ItemCostServantPage extends StatelessWidget {
       sortReversed = [true, false, true];
     }
     svts.sort((a, b) => Servant.compare(
-        db.gameData.servants[a], db.gameData.servants[b],
+        db.gameData.servants[a]!, db.gameData.servants[b]!,
         keys: sortKeys, reversed: sortReversed, user: db.curUser));
     return svts;
   }

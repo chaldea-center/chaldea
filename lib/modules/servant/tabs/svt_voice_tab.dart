@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart' as audio1;
@@ -92,9 +91,8 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
               '???'),
         ),
         IconButton(
-          onPressed: record.voiceFile?.isNotEmpty == true
-              ? () => onPlayVoice(record)
-              : null,
+          onPressed:
+              record.voiceFile.isNotEmpty ? () => onPlayVoice(record) : null,
           icon: Icon(Icons.play_circle_outline),
           color: Colors.blue,
         ),
@@ -129,7 +127,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
   }
 
   Future<void> onPlayVoice(VoiceRecord record) async {
-    if (record.voiceFile?.isNotEmpty != true) {
+    if (record.voiceFile.isEmpty) {
       // check before call and set button disabled
       return;
     }

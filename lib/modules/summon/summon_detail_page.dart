@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/event/limit_event_detail_page.dart';
@@ -173,7 +172,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
       ));
     }
     items.addAll(summon.dataList.map((e) => DropdownMenuItem(
-          child: AutoSizeText(e.name ?? '-', maxLines: 2, maxFontSize: 14),
+          child: AutoSizeText(e.name, maxLines: 2, maxFontSize: 14),
           value: summon.dataList.indexOf(e),
         )));
     return Padding(
@@ -207,7 +206,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     if (curIndex < 0) {
       return gachaOverview;
     }
-    final data = summon.dataList[curIndex]!;
+    final data = summon.dataList[curIndex];
 
     List<Widget> children = [];
     data.svts.forEach((block) {

@@ -1,4 +1,3 @@
-//@dart=2.9
 import 'package:catcher/catcher.dart';
 import 'package:catcher/model/platform_type.dart';
 import 'package:catcher/model/report_mode.dart';
@@ -13,20 +12,22 @@ class PageReportModeCross extends ReportMode {
 
   PageReportModeCross({
     this.showStackTrace = true,
-  }) : assert(showStackTrace != null, "showStackTrace can't be null");
+  });
 
   @override
-  Future<void> requestAction(Report report, BuildContext context) async {
-    await Future<void>.delayed(Duration.zero);
-    String predict = report.error?.toString() ?? '';
-    predict += report.stackTrace?.toString() ?? '';
-    if (predict.trim().isNotEmpty) {
-      Navigator.push<void>(
-        context,
-        MaterialPageRoute(builder: (context) => _PageWidget(this, report)),
-      );
-    } else {
-      print('Empty report caught, skip request action and handling');
+  Future<void> requestAction(Report report, BuildContext? context) async {
+    if (context != null) {
+      await Future<void>.delayed(Duration.zero);
+      String predict = report.error?.toString() ?? '';
+      predict += report.stackTrace?.toString() ?? '';
+      if (predict.trim().isNotEmpty) {
+        Navigator.push<void>(
+          context,
+          MaterialPageRoute(builder: (context) => _PageWidget(this, report)),
+        );
+      } else {
+        print('Empty report caught, skip request action and handling');
+      }
     }
   }
 
@@ -46,7 +47,7 @@ class _PageWidget extends StatefulWidget {
   const _PageWidget(
     this.pageReportMode,
     this.report, {
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -56,7 +57,7 @@ class _PageWidget extends StatefulWidget {
 }
 
 class _PageWidgetState extends State<_PageWidget> {
-  TextEditingController _textEditingController;
+  late TextEditingController _textEditingController;
 
   @override
   void initState() {
@@ -171,7 +172,7 @@ class _PageWidgetState extends State<_PageWidget> {
     if (widget.pageReportMode.showStackTrace) {
       final items = widget.report.stackTrace.toString().split("\n");
       if (widget.report.errorDetails?.exception != null)
-        items.insert(0, widget.report.errorDetails.exceptionAsString());
+        items.insert(0, widget.report.errorDetails!.exceptionAsString());
       return SizedBox(
         height: 300.0,
         child: ListView.builder(

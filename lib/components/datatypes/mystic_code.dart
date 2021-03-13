@@ -1,4 +1,3 @@
-//@dart=2.9
 part of datatypes;
 
 @JsonSerializable(checked: true)
@@ -18,17 +17,17 @@ class MysticCode {
   List<Skill> skills;
 
   MysticCode({
-    this.name,
-    this.nameJp,
-    this.description,
-    this.descriptionJp,
-    this.icon1,
-    this.icon2,
-    this.image1,
-    this.image2,
-    this.obtains,
-    this.expPoints,
-    this.skills,
+    required this.name,
+    required this.nameJp,
+    required this.description,
+    required this.descriptionJp,
+    required this.icon1,
+    required this.icon2,
+    required this.image1,
+    required this.image2,
+    required this.obtains,
+    required this.expPoints,
+    required this.skills,
   });
 
   String get localizedName => localizeNoun(name, nameJp, null);

@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
@@ -63,6 +62,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
                   name: 'Mooncell'),
               child: CachedImage(
                 imageUrl: widget.record.bannerUrl,
+                isMCFile: true,
                 connectivity: db.connectivity,
                 placeholder: (_, __) => Container(),
               ),

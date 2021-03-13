@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/quest_card.dart';
 
@@ -15,7 +14,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
-    widget.solution?.countVars?.forEach((variable) {
+    widget.solution?.countVars.forEach((variable) {
       final Quest? quest = db.gameData.freeQuests[variable.name];
       children.add(Container(
         decoration: BoxDecoration(
@@ -28,8 +27,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   CustomTile(
-                    title: Text(
-                        quest?.localizedKey ?? variable.name),
+                    title: Text(quest?.localizedKey ?? variable.name),
                     subtitle: Text(variable.detail.entries
                         .map((e) => '${Item.localizedNameOf(e.key)}*${e.value}')
                         .join(', ')),
@@ -40,11 +38,11 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                     },
                   ),
                   if (state.value && widget.solution?.params != null)
-                    widget.solution!.params.blacklist.contains(variable.name)
+                    widget.solution!.params!.blacklist.contains(variable.name)
                         ? TextButton.icon(
                             onPressed: () {
                               setState(() {
-                                widget.solution!.params.blacklist
+                                widget.solution!.params!.blacklist
                                     .remove(variable.name);
                               });
                             },
@@ -57,7 +55,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                         : TextButton.icon(
                             onPressed: () {
                               setState(() {
-                                widget.solution!.params.blacklist
+                                widget.solution!.params!.blacklist
                                     .add(variable.name);
                               });
                             },

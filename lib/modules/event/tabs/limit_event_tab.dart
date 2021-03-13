@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 
@@ -60,15 +59,14 @@ class _LimitEventTabState extends State<LimitEventTab> {
               style: outdated ? TextStyle(color: Colors.grey) : null,
             ),
             subtitle: AutoSizeText(
-              event.startTimeJp.split(' ').first,
+              event.startTimeJp?.split(' ').first ?? '',
               maxLines: 1,
               style: outdated ? TextStyle(color: Colors.grey[400]) : null,
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                if (event.extra?.isNotEmpty == true ||
-                    event.lottery?.isNotEmpty == true)
+                if (event.extra.isNotEmpty || event.lottery.isNotEmpty)
                   Icon(Icons.star, color: Colors.yellow[700]),
                 db.streamBuilder(
                   (context) => Switch.adaptive(

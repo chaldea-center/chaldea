@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -195,7 +194,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   Widget get dropdownButton {
     List<DropdownMenuItem<int>> items = [];
     items.addAll(summon.dataList.map((e) => DropdownMenuItem(
-          child: AutoSizeText(e.name ?? '-', maxLines: 2, maxFontSize: 14),
+          child: AutoSizeText(e.name, maxLines: 2, maxFontSize: 14),
           value: summon.dataList.indexOf(e),
         )));
     return Padding(

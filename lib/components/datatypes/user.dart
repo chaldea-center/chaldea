@@ -1,12 +1,9 @@
-//@dart=2.9
 // userdata: plan etc.
 part of datatypes;
 
 @JsonSerializable(checked: true)
 class User {
-  @JsonKey(nullable: false)
   String name;
-  GameServer server;
 
   Map<int, ServantStatus> servants;
   int curSvtPlanNo;
@@ -25,37 +22,34 @@ class User {
   int msProgress;
 
   User({
-    @required this.name,
-    this.server,
-    this.servants,
-    this.curSvtPlanNo,
-    this.servantPlans,
-    this.items,
-    this.events,
-    this.mysticCodes,
-    this.plannedSummons,
-    this.isMasterGirl,
-    this.msProgress,
-  }) : assert(name != null && name.isNotEmpty) {
-    server ??= GameServer.cn;
-    servants ??= {};
-    curSvtPlanNo ??= 0;
-    servantPlans ??= List.generate(5, (i) => <int, ServantPlan>{});
-    items ??= {};
-    events ??= EventPlans();
-    mysticCodes ??= {};
-    plannedSummons ??= <String>{};
-    isMasterGirl ??= true;
-    msProgress ??= -1;
+    String? name,
+    Map<int, ServantStatus>? servants,
+    int? curSvtPlanNo,
+    List<Map<int, ServantPlan>>? servantPlans,
+    Map<String, int>? items,
+    EventPlans? events,
+    Map<String, int>? mysticCodes,
+    Set<String>? plannedSummons,
+    bool? isMasterGirl,
+    int? msProgress,
+  })  : name = name?.isNotEmpty == true ? name! : 'default',
+        servants = servants ?? {},
+        curSvtPlanNo = curSvtPlanNo ?? 0,
+        servantPlans = servantPlans ?? [],
+        items = items ?? {},
+        events = events ?? EventPlans(),
+        mysticCodes = mysticCodes ?? {},
+        plannedSummons = plannedSummons ?? <String>{},
+        isMasterGirl = isMasterGirl ?? true,
+        msProgress = msProgress ?? -1 {
+    this.curSvtPlanNo =
+        fixValidRange(this.curSvtPlanNo, 0, this.servantPlans.length);
+    fillListValue(this.servantPlans, max(5, this.servantPlans.length),
+        (_) => <int, ServantPlan>{});
   }
 
   Map<int, ServantPlan> get curSvtPlan {
-    if (curSvtPlanNo >= servantPlans.length) {
-      servantPlans.length = curSvtPlanNo + 1;
-      for (int index = 0; index < servantPlans.length; index++) {
-        servantPlans[index] ??= <int, ServantPlan>{};
-      }
-    }
+    curSvtPlanNo = fixValidRange(curSvtPlanNo, 0, servantPlans.length - 1);
     return servantPlans[curSvtPlanNo];
   }
 
@@ -76,7 +70,7 @@ class ServantStatus {
   int npLv;
 
   /// null-not set, >=0 index, sorted from non-enhanced to enhanced
-  List<int> skillIndex; //length=3
+  List<int?> skillIndex; //length=3
   /// default 0, origin order in wiki
   int npIndex;
 
@@ -84,22 +78,29 @@ class ServantStatus {
   int priority;
 
   ServantStatus({
-    this.curVal,
-    this.npLv,
-    this.skillIndex,
-    this.npIndex,
-    this.priority,
-  }) {
+    ServantPlan? curVal,
+    int? npLv,
+    List<int?>? skillIndex,
+    int? npIndex,
+    int? priority,
+  })  : curVal = curVal ?? ServantPlan(),
+        npLv = npLv ?? 1,
+        skillIndex = List.generate(3, (index) => skillIndex?.getOrNull(index)),
+        npIndex = npIndex ?? 0,
+        priority = priority ?? 1 {
     validate();
   }
 
   void validate() {
-    curVal ??= ServantPlan();
     curVal.validate();
-    npLv = fixValidRange(npLv ?? 1, 1, 5);
-    npIndex ??= 0;
-    skillIndex ??= <int>[]..length = 3;
-    priority = fixValidRange(priority ?? 1, 1, 5);
+    npLv = fixValidRange(npLv, 1, 5);
+    npIndex = fixValidRange(npIndex, 0);
+    for (int i = 0; i < 3; i++) {
+      if (skillIndex[i] != null) {
+        skillIndex[i] = fixValidRange(skillIndex[i]!, 0);
+      }
+    }
+    priority = fixValidRange(priority, 1, 5);
   }
 
   void reset() {
@@ -129,17 +130,18 @@ class ServantPlan {
   int grail;
 
   ServantPlan({
-    this.favorite,
-    this.ascension,
-    this.skills,
-    this.dress,
-    this.grail,
-  }) {
-    favorite ??= false;
-    ascension ??= 0;
-    skills ??= List.filled(3, 1);
-    dress ??= [];
-    grail ??= 0;
+    bool? favorite,
+    int? ascension,
+    List<int>? skills,
+    List<int>? dress,
+    int? grail,
+  })  : favorite = favorite ?? false,
+        ascension = ascension ?? 0,
+        skills = List.generate(3, (index) => skills?.getOrNull(index) ?? 0),
+        dress = List.generate(
+            dress?.length ?? 0, (index) => dress?.getOrNull(index) ?? 0),
+        grail = grail ?? 0 {
+    validate();
   }
 
   void reset() {
@@ -160,24 +162,19 @@ class ServantPlan {
   }
 
   void fixDressLength(int length, [int fill = 0]) {
-    dress.length = length;
-    for (int i = 0; i < dress.length; i++) {
-      dress[i] ??= fill;
-    }
+    fillListValue(dress, length, (_) => fill);
   }
 
   void validate() {
-    ascension = fixValidRange(ascension ?? 0, 0, 4);
-    skills ??= [1, 1, 1];
+    ascension = fixValidRange(ascension, 0, 4);
     for (int i = 0; i < skills.length; i++) {
       skills[i] = fixValidRange(skills[i], 1, 10);
     }
-    dress ??= [];
     for (int i = 0; i < dress.length; i++) {
       dress[i] = fixValidRange(dress[i], 0, 1);
     }
     // check grail max limit when used
-    grail = fixValidRange(grail ?? 0, 0);
+    grail = fixValidRange(grail, 0);
   }
 
   factory ServantPlan.fromJson(Map<String, dynamic> data) =>
@@ -185,8 +182,13 @@ class ServantPlan {
 
   Map<String, dynamic> toJson() => _$ServantPlanToJson(this);
 
-  ServantPlan copyWith(bool favorite, int ascension, List<int> skills,
-      List<int> dress, int grail) {
+  ServantPlan copyWith({
+    bool? favorite,
+    int? ascension,
+    List<int>? skills,
+    List<int>? dress,
+    int? grail,
+  }) {
     return ServantPlan(
       favorite: favorite ?? this.favorite,
       ascension: ascension ?? this.ascension,
@@ -217,11 +219,13 @@ class EventPlans {
   ///{'monthCn': [num1, num2, num3]}
   Map<String, List<int>> exchangeTickets;
 
-  EventPlans({this.limitEvents, this.mainRecords, this.exchangeTickets}) {
-    limitEvents ??= {};
-    mainRecords ??= {};
-    exchangeTickets ??= {};
-  }
+  EventPlans({
+    Map<String, LimitEventPlan>? limitEvents,
+    Map<String, List<bool>>? mainRecords,
+    Map<String, List<int>>? exchangeTickets,
+  })  : limitEvents = limitEvents ?? {},
+        mainRecords = mainRecords ?? {},
+        exchangeTickets = exchangeTickets ?? {};
 
   LimitEventPlan limitEventOf(String indexKey) =>
       limitEvents.putIfAbsent(indexKey, () => LimitEventPlan());
@@ -245,12 +249,15 @@ class LimitEventPlan {
   int lottery;
   Map<String, int> extra;
 
-  LimitEventPlan({this.enable, this.rerun, this.lottery, this.extra}) {
-    enable ??= false;
-    rerun ??= true;
-    lottery ??= 0;
-    extra ??= {};
-  }
+  LimitEventPlan({
+    bool? enable,
+    bool? rerun,
+    int? lottery,
+    Map<String, int>? extra,
+  })  : enable = enable ?? true,
+        rerun = rerun ?? true,
+        lottery = lottery ?? 0,
+        extra = extra ?? {};
 
   factory LimitEventPlan.fromJson(Map<String, dynamic> data) =>
       _$LimitEventPlanFromJson(data);

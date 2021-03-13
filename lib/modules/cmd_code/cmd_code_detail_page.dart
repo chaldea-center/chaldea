@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:chaldea/components/components.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -196,7 +195,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
           CustomTableRow(children: [
             TableCellData(
               child: Text(
-                code.characters?.isNotEmpty == true
+                code.characters.isNotEmpty == true
                     ? code.characters.join(', ')
                     : '-',
                 textAlign: TextAlign.center,

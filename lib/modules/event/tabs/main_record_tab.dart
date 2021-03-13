@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/event/main_record_detail_page.dart';
@@ -75,15 +74,11 @@ class _MainRecordTabState extends State<MainRecordTab> {
                     maxFontSize: 16,
                     style: outdated ? TextStyle(color: Colors.grey) : null,
                   ),
-                  subtitle: record.localizedTitle == null
-                      ? null
-                      : AutoSizeText(
-                          record.localizedTitle,
-                          maxLines: 1,
-                          style: outdated
-                              ? TextStyle(color: Colors.grey[400])
-                              : null,
-                        ),
+                  subtitle: AutoSizeText(
+                    record.localizedTitle,
+                    maxLines: 1,
+                    style: outdated ? TextStyle(color: Colors.grey[400]) : null,
+                  ),
                   trailing: Wrap(
                     children: List.generate(2, (i) {
                       return db.streamBuilder(

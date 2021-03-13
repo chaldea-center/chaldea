@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';

@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/quest_card.dart';
 
@@ -30,7 +29,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
     filterItems.removeWhere((element) => !allItems.contains(element));
 
     List<Widget> children = [];
-    widget.solution?.weightVars?.forEach((variable) {
+    widget.solution?.weightVars.forEach((variable) {
       final String questKey = variable.name;
       final Map<String, double> drops = variable.detail as Map<String, double>;
       final Quest? quest = db.gameData.freeQuests[questKey];

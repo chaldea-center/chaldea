@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
@@ -25,14 +24,10 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
   @override
   void initState() {
     super.initState();
-    if (event.lottery != null) {
-      _lotteryController = TextEditingController(text: plan.lottery.toString());
-    }
-    if (event.extra != null) {
-      for (var name in event.extra.keys) {
-        _controllers[name] =
-            TextEditingController(text: plan.extra[name]?.toString());
-      }
+    _lotteryController = TextEditingController(text: plan.lottery.toString());
+    for (var name in event.extra.keys) {
+      _controllers[name] =
+          TextEditingController(text: plan.extra[name]?.toString());
     }
   }
 
@@ -46,6 +41,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
             name: 'Mooncell'),
         child: CachedImage(
           imageUrl: event.bannerUrl,
+          isMCFile: true,
           connectivity: db.connectivity,
           placeholder: (_, __) => Container(),
         ),
@@ -80,7 +76,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     }
 
     // 无限池
-    if (event.lottery?.isNotEmpty == true) {
+    if (event.lottery.isNotEmpty == true) {
       children
         ..add(ListTile(
           title: Text(event.lotteryLimit > 0
@@ -124,7 +120,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     }
 
     // 狩猎 无限池终本掉落等
-    if (event.extra?.isNotEmpty == true) {
+    if (event.extra.isNotEmpty == true) {
       children
         ..add(ListTile(title: Text(S.of(context).event_item_extra)))
         ..add(_buildExtraItems(event.extra, plan.extra));

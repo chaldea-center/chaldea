@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:chaldea/generated/l10n.dart';
 import 'package:flutter/material.dart';
 

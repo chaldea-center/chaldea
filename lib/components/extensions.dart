@@ -1,4 +1,3 @@
-//@dart=2.12
 /// Some convenient extensions on build-in classes
 
 extension GetOrNull<T> on List<T> {

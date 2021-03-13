@@ -1,20 +1,24 @@
-// @dart=2.12
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math' show max, min;
 
-import 'package:chaldea/components/components.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'config.dart' show db;
+import 'constants.dart';
+import 'custom_dialogs.dart';
+import 'device_app_info.dart';
+import 'extensions.dart';
 import 'git_tool.dart';
 import 'logger.dart';
 
@@ -160,6 +164,19 @@ T fixValidRange<T extends num>(T value, [T? minVal, T? maxVal]) {
   return value;
 }
 
+void fillListValue<T>(List<T> list, int length, T fill(int index)) {
+  if (length <= list.length) {
+    list.length = length;
+  } else {
+    list.addAll(
+        List.generate(length - list.length, (i) => fill(list.length + i)));
+  }
+  // fill null if T is nullable
+  for (int i = 0; i < length; i++) {
+    list[i] ??= fill(i);
+  }
+}
+
 /// Flutter related
 ///
 
@@ -295,7 +312,7 @@ void checkAppUpdate([bool background = true]) async {
       versionString = result['version'];
       releaseNote = result['releaseNotes'];
     } else if (Platform.isAndroid || Platform.isWindows) {
-      GitTool gitTool = GitTool.fromIndex(db.userData.updateSource);
+      GitTool gitTool = GitTool.fromIndex(0);
       final release = await gitTool.latestAppRelease();
       versionString = release?.name;
       if (versionString?.startsWith('v') == true)
@@ -305,7 +322,7 @@ void checkAppUpdate([bool background = true]) async {
       if (release?.targetAsset?.browserDownloadUrl?.isNotEmpty == true) {
         launchUrl = release!.targetAsset!.browserDownloadUrl;
       } else {
-        launchUrl = GitTool.getReleasePageUrl(db.userData.updateSource, true);
+        launchUrl = GitTool.getReleasePageUrl(0, true);
       }
     } else if (Platform.isMacOS) {
       // not supported yet
@@ -436,7 +453,7 @@ Future<void> launchStatistics([String? url]) async {
   }
   if (url != null) {
     try {
-      final fullUrl='$kServerRoot$url';
+      final fullUrl = '$kServerRoot$url';
       final plugin = FlutterWebviewPlugin();
       await plugin.launch(fullUrl, hidden: true);
       print('$fullUrl launched');
