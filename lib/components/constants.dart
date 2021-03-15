@@ -1,4 +1,3 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -19,6 +18,8 @@ const String kAppStoreLink = 'itms-apps://itunes.apple.com/app/id1548713491';
 const String kGooglePlayLink =
     'https://play.google.com/store/apps/details?id=cc.narumi.chaldea';
 const String kProjectHomepage = 'https://github.com/chaldea-center/chaldea';
+const String kDatasetHomepage =
+    'https://github.com/chaldea-center/chaldea-dataset';
 
 /// For **Tablet mode** and cross-count is 7,
 /// grid view of servant and item icons won't fill full width

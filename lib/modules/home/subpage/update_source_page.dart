@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/git_tool.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class UpdateSourcePage extends StatefulWidget {
   @override
@@ -18,46 +15,27 @@ class _UpdateSourcePageState extends State<UpdateSourcePage> {
         leading: BackButton(),
       ),
       body: TileGroup(
-        children: List.generate(GitSource.values.length, (index) {
-          final bool _isCur = index == 0;
-          String source = GitSource.values[index].toTitleString();
-          return ListTile(
-            leading: Icon(
-              Icons.check,
-              // size: 18.0,
-              color:
-                  _isCur ? Theme.of(context).primaryColor : Colors.transparent,
-            ),
-            title: Text(source),
-            selected: _isCur,
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    launch(GitTool.getReleasePageUrl(index, false));
-                  },
-                  child: Text('DATA'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    // macOS has App Store version and Developer distribution
-                    if (Platform.isIOS) {
-                      launch(kAppStoreLink);
-                    } else {
-                      launch(GitTool.getReleasePageUrl(index, true));
-                    }
-                  },
-                  child: Text('APP'),
-                )
-              ],
-            ),
-            onTap: () {
-              db.notifyAppUpdate();
-            },
+        scrollable: true,
+        children: [
+          ListTile(
+            leading: FaIcon(FontAwesomeIcons.github),
+            title: Text('Chaldea APP @Github'),
+            subtitle: Text('$kProjectHomepage/releases'),
             horizontalTitleGap: 0,
-          );
-        }).toList(),
+            onTap: () {
+              jumpToExternalLinkAlert(url: '$kProjectHomepage/releases');
+            },
+          ),
+          ListTile(
+            leading: FaIcon(FontAwesomeIcons.github),
+            title: Text('Dataset @Github'),
+            subtitle: Text('$kDatasetHomepage/releases'),
+            horizontalTitleGap: 0,
+            onTap: () {
+              jumpToExternalLinkAlert(url: '$kDatasetHomepage/releases');
+            },
+          ),
+        ],
       ),
     );
   }

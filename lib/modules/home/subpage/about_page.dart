@@ -106,6 +106,12 @@ class _AboutPageState extends State<AboutPage> {
                   launch(kProjectHomepage);
                 },
               ),
+              ListTile(
+                title: Text('❤️ Support me'),
+                onTap: () {
+                  launch(kProjectHomepage + '/wiki/Support');
+                },
+              )
             ],
           ),
         ],

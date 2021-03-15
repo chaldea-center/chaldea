@@ -74,22 +74,25 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
       spacing: 6,
       children: [
         IconButton(
-          onPressed: () => showInformDialog(
-            context,
-            title: S.of(context).help,
-            content: '0. 实验功能，请注意备份用户数据!!!\n'
-                '1. 目前仅可解析素材信息，仅国服日服经过测试\n'
-                '2. 使用方法: \n'
-                ' - 点击右上角可同时导入多张截图\n'
-                ' - 上传成功后喝口茶再下载结果导入\n'
-                '3. 注意事项\n'
-                ' - 单次上传有大小限制，否则会出现413错误，请分多次上传下载\n'
-                ' - 截图尽量别做修改，滤镜禁止\n'
-                ' - 素材框务必完全显示, 否则对应素材可能识别不到\n'
-                ' - 解析精度有限，下载结果后可自行修正\n'
-                ' - 解析结果保留24h, 24h后可能删除\n'
-                ' - 服务器目前无法保证长期可用，若无法使用请检查新版本或联系本人\n',
-          ),
+          onPressed: () => SimpleCancelOkDialog(
+            title: Text(S.of(context).help),
+            hideCancel: true,
+            content: SingleChildScrollView(
+              child: Text('0. 实验功能，请注意备份用户数据!!!\n'
+                  '1. 目前仅可解析素材信息，仅国服日服经过测试\n'
+                  '2. 使用方法: \n'
+                  ' - 点击右上角可同时导入多张截图\n'
+                  ' - 上传成功后喝口茶再下载结果导入\n'
+                  '3. 如识别结果偏差很大，请在反馈中描述下这种偏差，如后两位未能识别等\n'
+                  '4. 注意事项\n'
+                  ' - 单次上传有大小限制，否则会出现413错误，请分多次上传下载\n'
+                  ' - 截图尽量别做修改，滤镜禁止\n'
+                  ' - 素材框务必完全显示, 否则对应素材可能识别不到\n'
+                  ' - 解析精度有限，下载结果后可自行修正\n'
+                  ' - 解析结果保留24h, 24h后可能删除\n'
+                  ' - 服务器目前无法保证长期可用，若无法使用请检查新版本或提交反馈\n'),
+            ),
+          ).show(context),
           icon: Icon(Icons.help),
           tooltip: S.of(context).help,
           color: Colors.blue,

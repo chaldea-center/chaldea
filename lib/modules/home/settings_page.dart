@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'subpage/about_page.dart';
 import 'subpage/account_page.dart';
 import 'subpage/feedback_page.dart';
+import 'subpage/update_source_page.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -95,28 +96,19 @@ class _SettingsPageState extends State<SettingsPage> {
                   );
                 },
               ),
-              // if (kDebugMode)
-              //   ListTile(
-              //     title: Text(S.of(context).download_source),
-              //     subtitle: Text(S.of(context).download_source_hint),
-              //     trailing: Row(
-              //       mainAxisSize: MainAxisSize.min,
-              //       crossAxisAlignment: CrossAxisAlignment.center,
-              //       children: [
-              //         Text(GitSource.values[db.userData.updateSource]
-              //             .toTitleString()),
-              //         Icon(Icons.arrow_forward_ios),
-              //       ],
-              //     ),
-              //     onTap: () {
-              //       SplitRoute.push(
-              //         context: context,
-              //         builder: (context, _) => UpdateSourcePage(),
-              //         detail: true,
-              //         popDetail: true,
-              //       );
-              //     },
-              //   ),
+              ListTile(
+                title: Text(S.of(context).download_source),
+                subtitle: Text(S.of(context).download_source_hint),
+                trailing: Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  SplitRoute.push(
+                    context: context,
+                    builder: (context, _) => UpdateSourcePage(),
+                    detail: true,
+                    popDetail: true,
+                  );
+                },
+              ),
             ],
           ),
           TileGroup(

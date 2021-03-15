@@ -12,7 +12,10 @@ class _SummonListPageState extends State<SummonListPage> {
   late List<Summon> summons;
   bool showImage = false;
   bool showOutdated = false;
-  List<Summon> shownSummons = [];
+  bool favorite = false;
+  List<Summon> _shownSummons = [];
+
+  Set<String> get plans => db.curUser.plannedSummons;
 
   @override
   void initState() {
@@ -23,8 +26,14 @@ class _SummonListPageState extends State<SummonListPage> {
 
   @override
   Widget build(BuildContext context) {
-    shownSummons =
-        showOutdated ? summons : summons.where((e) => !e.isOutdated()).toList();
+    _shownSummons = summons.where((e) {
+      if (plans.contains(e.indexKey)) return true;
+      if (!favorite) {
+        return showOutdated || !e.isOutdated();
+      } else {
+        return false;
+      }
+    }).toList();
     return Scaffold(
       appBar: AppBar(
         title: Text(S.of(context).summon_title),
@@ -32,12 +41,21 @@ class _SummonListPageState extends State<SummonListPage> {
         titleSpacing: 0,
         actions: [
           IconButton(
-              icon: Icon(showOutdated ? Icons.timer_off : Icons.timer),
-              onPressed: () {
-                setState(() {
-                  showOutdated = !showOutdated;
-                });
-              }),
+            icon: Icon(showOutdated ? Icons.timer_off : Icons.timer),
+            onPressed: () {
+              setState(() {
+                showOutdated = !showOutdated;
+              });
+            },
+          ),
+          IconButton(
+            icon: Icon(favorite ? Icons.favorite : Icons.favorite_outline),
+            onPressed: () {
+              setState(() {
+                favorite = !favorite;
+              });
+            },
+          ),
           // IconButton(
           //   icon: Icon(showImage
           //       ? Icons.image_outlined
@@ -54,9 +72,9 @@ class _SummonListPageState extends State<SummonListPage> {
         controller: _scrollController,
         child: ListView.separated(
           controller: _scrollController,
-          itemBuilder: (context, index) => getSummonTile(shownSummons[index]),
+          itemBuilder: (context, index) => getSummonTile(_shownSummons[index]),
           separatorBuilder: (context, index) => kDefaultDivider,
-          itemCount: shownSummons.length,
+          itemCount: _shownSummons.length,
         ),
       ),
     );
@@ -99,7 +117,7 @@ class _SummonListPageState extends State<SummonListPage> {
               popDetail: true,
               builder: (context, _) => SummonDetailPage(
                 summon: summon,
-                summonList: shownSummons,
+                summonList: _shownSummons,
               ),
             );
           },

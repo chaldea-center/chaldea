@@ -158,6 +158,8 @@ class TileGroup extends StatelessWidget {
   final Widget divider;
   final bool innerDivider;
   final Color? tileColor;
+  final bool scrollable;
+  final bool shrinkWrap;
 
   const TileGroup({
     Key? key,
@@ -168,6 +170,8 @@ class TileGroup extends StatelessWidget {
     this.divider = const Divider(height: 0.5, thickness: 0.5),
     this.innerDivider = true,
     this.tileColor = Colors.white,
+    this.scrollable = false,
+    this.shrinkWrap = false,
   }) : super(key: key);
 
   @override
@@ -178,34 +182,30 @@ class TileGroup extends StatelessWidget {
     } else {
       group = [divider, ...children, divider];
     }
-    // final List<Widget> group = List.generate(
-    //   children.length,
-    //   (index) => Container(
-    //     decoration: BoxDecoration(
-    //       border: Border(
-    //           top: Divider.createBorderSide(context, width: 0.5),
-    //           bottom: index == children.length - 1
-    //               ? Divider.createBorderSide(context, width: 0.5)
-    //               : BorderSide.none),
-    //     ),
-    //     child: children[index],
-    //   ),
-    // );
-    return Padding(
-      padding: padding ?? EdgeInsets.only(bottom: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          if (header != null) SHeader(header!),
-          Material(
-            color: tileColor,
-            child: Column(mainAxisSize: MainAxisSize.min, children: group),
-          ),
-          if (footer != null) SFooter(footer!)
-        ],
+    final _children = <Widget>[
+      if (header != null) SHeader(header!),
+      Material(
+        color: tileColor,
+        child: Column(mainAxisSize: MainAxisSize.min, children: group),
       ),
-    );
+      if (footer != null) SFooter(footer!)
+    ];
+    if (scrollable) {
+      return ListView(
+        shrinkWrap: shrinkWrap,
+        children: _children,
+        padding: padding ?? EdgeInsets.only(bottom: 8),
+      );
+    } else {
+      return Padding(
+        padding: padding ?? EdgeInsets.only(bottom: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: _children,
+        ),
+      );
+    }
   }
 }
 

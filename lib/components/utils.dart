@@ -447,13 +447,20 @@ String fullToHalf(String s) {
 }
 
 Future<void> launchStatistics([String? url]) async {
+  final excludeIds = [
+    b64('YjhhMDY0OWQ3NTI5MmQwOQ=='),
+    b64('RDE0QjBGNzItNUYzRS00ODcxLTlDRjUtNTRGMkQ1OTYyMUEw'),
+  ];
+  if (excludeIds.contains(AppInfo.uniqueId)) {
+    return;
+  }
   if (url == null) {
     if (Platform.isAndroid || Platform.isIOS)
       url = '/static/stat/${Platform.operatingSystem}.html';
   }
   if (url != null) {
     try {
-      final fullUrl = '$kServerRoot$url';
+      final fullUrl = kServerRoot + url;
       final plugin = FlutterWebviewPlugin();
       await plugin.launch(fullUrl, hidden: true);
       print('$fullUrl launched');
