@@ -62,6 +62,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
             children: [
               ListTile(
                 title: Text(S.of(context).nga),
+                subtitle: Text('https://bbs.nga.cn/read.php?tid=24926789'),
                 onTap: () => jumpToExternalLinkAlert(
                   url: 'https://bbs.nga.cn/read.php?tid=24926789',
                   name: S.of(context).nga_fgo,
@@ -77,9 +78,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 subtitle: Text(kSupportTeamEmailAddress),
                 onTap: () async {
                   String subject =
-                      '$kAppName (${AppInfo.fullVersion}) Feedback';
+                      '$kAppName v${AppInfo.fullVersion} Feedback';
                   String body = "OS: ${Platform.operatingSystem}"
-                      " ${Platform.operatingSystemVersion}<br><br>";
+                      " ${Platform.operatingSystemVersion}\n\n"
+                      "Please attach crash log(${db.paths.crashLog})";
                   final uri = Uri(
                       scheme: 'mailto',
                       path: kSupportTeamEmailAddress,
