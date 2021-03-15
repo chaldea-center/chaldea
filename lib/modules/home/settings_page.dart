@@ -199,7 +199,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ],
           ),
-          if (kDebugMode)
+          if (kDebugMode_)
             TileGroup(
               header: 'Test(debug mode: ${kDebugMode ? 'on' : 'off'})',
               children: <Widget>[

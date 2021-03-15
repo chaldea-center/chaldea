@@ -2,6 +2,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';
+import 'package:chaldea/modules/summon/summon_detail_page.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class MainRecordDetailPage extends StatefulWidget {
   final MainRecord record;
@@ -15,6 +17,19 @@ class MainRecordDetailPage extends StatefulWidget {
 
 class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
   List<bool> get plan => db.curUser.events.mainRecordOf(widget.record.indexKey);
+  List<Summon> _associatedSummons = [];
+
+  @override
+  void initState() {
+    super.initState();
+    db.gameData.summons.values.forEach((summon) {
+      for (var eventName in summon.associatedEvents) {
+        if (widget.record.isSameEvent(eventName)) {
+          _associatedSummons.add(summon);
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +92,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
               },
             ),
           ),
+          kDefaultDivider,
           buildClassifiedItemList(
               context: context, data: widget.record.drops, onTap: _onTap),
           db.streamBuilder(
@@ -89,11 +105,36 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
               },
             ),
           ),
+          kDefaultDivider,
           buildClassifiedItemList(
             context: context,
             data: widget.record.rewardsWithRare,
             onTap: _onTap,
-          )
+          ),
+          if (_associatedSummons.isNotEmpty) ...[
+            ListTile(
+              // leading: Icon(Icons.double_arrow),
+              // horizontalTitleGap: 0,
+              title: Text(S.of(context).summon),
+            ),
+            TileGroup(
+              children: _associatedSummons
+                  .map((e) => ListTile(
+                      leading: FaIcon(
+                        FontAwesomeIcons.chessQueen,
+                        color: Colors.blue,
+                      ),
+                      title: Text(e.localizedName),
+                      horizontalTitleGap: 0,
+                      onTap: () {
+                        SplitRoute.push(
+                          context: context,
+                          builder: (_, __) => SummonDetailPage(summon: e),
+                        );
+                      }))
+                  .toList(),
+            ),
+          ]
         ],
       ),
     );

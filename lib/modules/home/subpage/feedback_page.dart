@@ -77,8 +77,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 title: Text('Email'),
                 subtitle: Text(kSupportTeamEmailAddress),
                 onTap: () async {
-                  String subject =
-                      '$kAppName v${AppInfo.fullVersion} Feedback';
+                  String subject = '$kAppName v${AppInfo.fullVersion} Feedback';
                   String body = "OS: ${Platform.operatingSystem}"
                       " ${Platform.operatingSystemVersion}\n\n"
                       "Please attach crash log(${db.paths.crashLog})";
@@ -142,6 +141,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   });
                 },
               ),
+              Divider(height: 1, thickness: 0.5, indent: 16, endIndent: 16),
               ListTile(
                 title: Text(S.of(context).feedback_add_attachments),
                 onTap: _addAttachments,

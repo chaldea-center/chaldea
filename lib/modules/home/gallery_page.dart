@@ -62,7 +62,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
     try {
       print('http GET from "$srcUrl" .....');
       var response = await http.get(Uri.parse(srcUrl));
-      print('----------- recieved http response ------------');
+      print('----------- received http response ------------');
       var body = parser.parse(response.body);
       db.userData.sliderUrls.clear();
       dom.Element? element = body.getElementById('transImageBox');
@@ -170,7 +170,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         title: S.of(context).summon_title,
         child: Padding(
           padding: EdgeInsets.all(2),
-          child: FaIcon(FontAwesomeIcons.chessKing, size: 36),
+          child: FaIcon(FontAwesomeIcons.chessQueen, size: 36),
         ),
         builder: (context, _) => SummonListPage(),
         isDetail: false,

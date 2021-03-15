@@ -88,6 +88,13 @@ abstract class EventBase {
     }
     return jpEvents;
   }
+
+  bool isSameEvent(String? name) {
+    if (name?.replaceAll('_', ' ') == indexKey.replaceAll('_', ' ')) {
+      return true;
+    }
+    return false;
+  }
 }
 
 @JsonSerializable(checked: true)

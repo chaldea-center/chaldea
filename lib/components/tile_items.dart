@@ -158,6 +158,7 @@ class TileGroup extends StatelessWidget {
   final Widget divider;
   final bool innerDivider;
   final Color? tileColor;
+  final CrossAxisAlignment crossAxisAlignment;
   final bool scrollable;
   final bool shrinkWrap;
 
@@ -170,6 +171,7 @@ class TileGroup extends StatelessWidget {
     this.divider = const Divider(height: 0.5, thickness: 0.5),
     this.innerDivider = true,
     this.tileColor = Colors.white,
+    this.crossAxisAlignment = CrossAxisAlignment.start,
     this.scrollable = false,
     this.shrinkWrap = false,
   }) : super(key: key);
@@ -186,7 +188,11 @@ class TileGroup extends StatelessWidget {
       if (header != null) SHeader(header!),
       Material(
         color: tileColor,
-        child: Column(mainAxisSize: MainAxisSize.min, children: group),
+        child: Column(
+          crossAxisAlignment: crossAxisAlignment,
+          mainAxisSize: MainAxisSize.min,
+          children: group,
+        ),
       ),
       if (footer != null) SFooter(footer!)
     ];
@@ -200,7 +206,7 @@ class TileGroup extends StatelessWidget {
       return Padding(
         padding: padding ?? EdgeInsets.only(bottom: 8),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: crossAxisAlignment,
           mainAxisSize: MainAxisSize.min,
           children: _children,
         ),

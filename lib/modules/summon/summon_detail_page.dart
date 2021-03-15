@@ -134,8 +134,13 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     }
 
     return ListTile(
-      leading: Icon(Icons.event),
+      leading: Icon(
+        Icons.event,
+        color: builder == null ? null : Colors.blue,
+      ),
       title: Text(event?.localizedName ?? name),
+      horizontalTitleGap: 0,
+      dense: true,
       onTap: builder == null
           ? null
           : () => SplitRoute.push(context: context, builder: builder!),
@@ -146,8 +151,13 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     name = name.replaceAll('_', ' ');
     Summon? _summon = db.gameData.summons[name];
     return ListTile(
-      leading: Icon(Icons.anchor),
+      leading: FaIcon(
+        FontAwesomeIcons.chessQueen,
+        color: _summon == null ? null : Colors.blue,
+      ),
+      dense: true,
       title: Text(_summon?.localizedName ?? name),
+      horizontalTitleGap: 0,
       onTap: _summon == null
           ? null
           : () => SplitRoute.push(

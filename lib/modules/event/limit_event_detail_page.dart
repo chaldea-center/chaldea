@@ -2,7 +2,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';
+import 'package:chaldea/modules/summon/summon_detail_page.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LimitEventDetailPage extends StatefulWidget {
   final LimitEvent event;
@@ -21,6 +23,8 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
   late TextEditingController _lotteryController;
   Map<String, TextEditingController> _controllers = {};
 
+  List<Summon> _associatedSummons = [];
+
   @override
   void initState() {
     super.initState();
@@ -29,6 +33,13 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
       _controllers[name] =
           TextEditingController(text: plan.extra[name]?.toString());
     }
+    db.gameData.summons.values.forEach((summon) {
+      for (var eventName in summon.associatedEvents) {
+        if (event.isSameEvent(eventName)) {
+          _associatedSummons.add(summon);
+        }
+      }
+    });
   }
 
   @override
@@ -79,6 +90,8 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     if (event.lottery.isNotEmpty == true) {
       children
         ..add(ListTile(
+          leading: Icon(Icons.double_arrow),
+          horizontalTitleGap: 0,
           title: Text(event.lotteryLimit > 0
               ? S.of(context).event_lottery_limited
               : S.of(context).event_lottery_unlimited),
@@ -114,7 +127,11 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
       ..removeWhere((key, value) => value <= 0);
     if (items.isNotEmpty) {
       children
-        ..add(ListTile(title: Text(S.of(context).event_item_default)))
+        ..add(ListTile(
+          leading: Icon(Icons.double_arrow),
+          horizontalTitleGap: 0,
+          title: Text(S.of(context).event_item_default),
+        ))
         ..add(buildClassifiedItemList(
             context: context, data: items, onTap: onTapIcon));
     }
@@ -122,8 +139,39 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     // 狩猎 无限池终本掉落等
     if (event.extra.isNotEmpty == true) {
       children
-        ..add(ListTile(title: Text(S.of(context).event_item_extra)))
+        ..add(ListTile(
+          leading: Icon(Icons.double_arrow),
+          horizontalTitleGap: 0,
+          title: Text(S.of(context).event_item_extra),
+        ))
         ..add(_buildExtraItems(event.extra, plan.extra));
+    }
+
+    // summons
+    if (_associatedSummons.isNotEmpty) {
+      children
+        ..add(ListTile(
+          leading: Icon(Icons.double_arrow),
+          horizontalTitleGap: 0,
+          title: Text(S.of(context).summon),
+        ))
+        ..add(TileGroup(
+          children: _associatedSummons
+              .map((e) => ListTile(
+                  leading: FaIcon(
+                    FontAwesomeIcons.chessQueen,
+                    color: Colors.blue,
+                  ),
+                  title: Text(e.localizedName),
+                  horizontalTitleGap: 0,
+                  onTap: () {
+                    SplitRoute.push(
+                      context: context,
+                      builder: (_, __) => SummonDetailPage(summon: e),
+                    );
+                  }))
+              .toList(),
+        ));
     }
     return Scaffold(
       appBar: AppBar(
@@ -193,7 +241,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
         ),
       ));
     });
-    return TileGroup(children: children);
+    return TileGroup(padding: EdgeInsets.zero, children: children);
   }
 
   void onTapIcon(String itemKey) {

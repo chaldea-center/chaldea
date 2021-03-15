@@ -78,11 +78,12 @@ Widget buildClassifiedItemList({
 ///
 /// If not [responsive], just build GridView
 /// and [crossCount] is only used for GridView.
-Widget buildResponsiveGridWrap(
-    {required BuildContext context,
-    required List<Widget> children,
-    bool responsive = true,
-    int crossCount = 7}) {
+Widget buildResponsiveGridWrap({
+  required BuildContext context,
+  required List<Widget> children,
+  bool responsive = true,
+  int crossCount = 7,
+}) {
   bool useWrap = SplitRoute.isSplit(context) && responsive;
   final _children = children
       .map((child) => Padding(
