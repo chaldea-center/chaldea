@@ -153,7 +153,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                                   pageBuilder: (context, _, __) =>
                                       FullScreenImageSlider(
                                     imgUrls: [
-                                      db.getIconResource(code.illustration)?.url
+                                      db.getIconFullKey(code.illustration)
                                     ],
                                     connectivity: db.connectivity,
                                     placeholder: placeholder,

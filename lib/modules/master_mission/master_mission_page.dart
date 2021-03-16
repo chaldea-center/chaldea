@@ -277,11 +277,11 @@ class _MasterMissionPageState extends State<MasterMissionPage>
           color: Colors.redAccent,
         ),
         horizontalTitleGap: 0,
-        contentPadding: EdgeInsets.only(right: 8),
+        contentPadding: EdgeInsets.symmetric(horizontal: 8),
         title: AutoSizeText(
           mission.getTargets().join(' or '),
           maxLines: 2,
-          maxFontSize: 16,
+          maxFontSize: 14,
         ),
         trailing: _InputGroup(
           controller: mission.controller!,
@@ -505,9 +505,9 @@ class __InputGroupState extends State<_InputGroup> {
             controller: widget.controller,
             decoration: InputDecoration(
               isDense: true,
-              enabledBorder: OutlineInputBorder(),
-              focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blueAccent)),
+              // enabledBorder: OutlineInputBorder(),
+              // focusedBorder: OutlineInputBorder(
+              //     borderSide: BorderSide(color: Colors.blueAccent)),
               contentPadding: EdgeInsets.symmetric(vertical: 4),
             ),
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],

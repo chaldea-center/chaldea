@@ -2,6 +2,7 @@ export 'package:chaldea/generated/l10n.dart';
 export 'package:flutter/material.dart';
 export 'package:flutter_easyloading/flutter_easyloading.dart';
 export 'package:intl/intl.dart' hide TextDirection;
+export 'package:path/path.dart' show join;
 
 export 'after_layout.dart';
 export 'config.dart';

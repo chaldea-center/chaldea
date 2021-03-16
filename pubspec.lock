@@ -712,7 +712,7 @@ packages:
     source: hosted
     version: "2.0.0"
   pool:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: pool
       url: "https://pub.flutter-io.cn"
@@ -884,6 +884,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.1.0"
+  string_validator:
+    dependency: "direct main"
+    description:
+      name: string_validator
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.3.0"
   synchronized:
     dependency: transitive
     description:

@@ -295,12 +295,7 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
                 (k, e) => MapEntry(k, Item.fromJson(e as Map<String, dynamic>)),
               )),
       icons: $checkedConvert(
-          json,
-          'icons',
-          (v) => (v as Map<String, dynamic>).map(
-                (k, e) => MapEntry(
-                    k, IconResource.fromJson(e as Map<String, dynamic>)),
-              )),
+          json, 'icons', (v) => Map<String, String>.from(v as Map)),
       events: $checkedConvert(json, 'events',
           (v) => v == null ? null : Events.fromJson(v as Map<String, dynamic>)),
       freeQuests: $checkedConvert(
@@ -357,24 +352,6 @@ Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
       'glpk': instance.glpk,
       'mysticCodes': instance.mysticCodes,
       'summons': instance.summons,
-    };
-
-IconResource _$IconResourceFromJson(Map<String, dynamic> json) {
-  return $checkedNew('IconResource', json, () {
-    final val = IconResource(
-      name: $checkedConvert(json, 'name', (v) => v as String),
-      originName: $checkedConvert(json, 'originName', (v) => v as String),
-      url: $checkedConvert(json, 'url', (v) => v as String?),
-    );
-    return val;
-  });
-}
-
-Map<String, dynamic> _$IconResourceToJson(IconResource instance) =>
-    <String, dynamic>{
-      'name': instance.name,
-      'originName': instance.originName,
-      'url': instance.url,
     };
 
 ItemCost _$ItemCostFromJson(Map<String, dynamic> json) {

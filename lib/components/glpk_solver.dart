@@ -124,7 +124,6 @@ class GLPKSolver {
     final params2 = GLPKParams.from(params);
     final data2 = GLPKData.from(data);
     _preProcess(data: data2, params: params2);
-    data2.weeklyMissionData = [];
 
     try {
       await ensureEngine();

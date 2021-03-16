@@ -7,11 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:getwidget/components/carousel/gf_carousel.dart';
+import 'package:string_validator/string_validator.dart' as validator;
 
 import 'config.dart';
 
 class FullScreenImageSlider extends StatefulWidget {
   final List<String?> imgUrls;
+  final bool? isMcFile;
   final int initialPage;
   final ConnectivityResult? connectivity;
   final bool? downloadEnabled;
@@ -21,6 +23,7 @@ class FullScreenImageSlider extends StatefulWidget {
   const FullScreenImageSlider({
     Key? key,
     required this.imgUrls,
+    this.isMcFile,
     this.initialPage = 0,
     this.connectivity,
     this.downloadEnabled,
@@ -70,6 +73,7 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
               widget.imgUrls.length,
               (index) => CachedImage(
                 imageUrl: widget.imgUrls[index],
+                isMCFile: widget.isMcFile,
                 placeholder: widget.placeholder,
                 connectivity: widget.connectivity,
               ),
@@ -94,7 +98,10 @@ typedef PlaceholderWidgetBuilder = Widget Function(
 
 class CachedImage extends StatefulWidget {
   final String? imageUrl;
-  final bool isMCFile;
+
+  /// If [isMCFile] is null, check it is a valid url
+  final bool? isMCFile;
+  final String? saveDir;
   final ImageWidgetBuilder? imageBuilder;
   final PlaceholderWidgetBuilder? placeholder;
   final ProgressIndicatorBuilder? progressIndicatorBuilder;
@@ -129,7 +136,8 @@ class CachedImage extends StatefulWidget {
   CachedImage({
     Key? key,
     required this.imageUrl,
-    this.isMCFile = false,
+    this.isMCFile,
+    this.saveDir,
     this.imageBuilder,
     this.placeholder,
     this.progressIndicatorBuilder,
@@ -195,18 +203,20 @@ class _CachedImageState extends State<CachedImage> {
       widget.cacheManager ?? DefaultCacheManager();
 
   String? getRealUrl() {
-    if (!widget.isMCFile) return widget.imageUrl;
+    if (widget.imageUrl == null) return null;
+    bool isMCFile = widget.isMCFile ?? !validator.isURL(widget.imageUrl!);
+    if (!isMCFile) return widget.imageUrl;
+
     if (db.prefs.containsKey(widget.imageUrl!)) {
       return db.prefs.getString(widget.imageUrl!);
     } else {
-      MooncellUtil.resolveFileUrl(widget.imageUrl!).then((url) {
-        // safeSetState(() {
+      String? savePath;
+      if (widget.saveDir != null)
+        savePath = join(widget.saveDir!, widget.imageUrl!);
+      MooncellUtil.resolveFileUrl(widget.imageUrl!, savePath).then((url) {
         if (url != null && mounted) {
-          setState(() {
-            // url saved to prefs
-          });
+          setState(() {});
         }
-        // });
       });
     }
   }

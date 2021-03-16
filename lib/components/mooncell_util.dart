@@ -1,8 +1,11 @@
 import 'package:chaldea/components/components.dart';
 import 'package:dio/dio.dart';
+import 'package:pool/pool.dart';
 
 class MooncellUtil {
   MooncellUtil._();
+
+  static Pool _pool = Pool(50);
 
   static String domain = 'https://fgo.wiki';
 
@@ -39,31 +42,39 @@ class MooncellUtil {
     return link;
   }
 
-  static Future<String?> resolveFileUrl(String filename) async {
+  /// If [savePath] is provided, the file will be downloaded
+  static Future<String?> resolveFileUrl(String filename,
+      [String? savePath]) async {
     if (db.prefs.containsKey(filename)) {
       // print('prefs: $filename -> ${db.prefs.getString(filename)}');
       return db.prefs.getString(filename);
     }
-    final _dio = Dio();
-    try {
-      final response = await _dio.get(
-        'https://fgo.wiki/api.php',
-        queryParameters: {
-          "action": "query",
-          "format": "json",
-          "prop": "imageinfo",
-          "iiprop": "url",
-          "titles": "File:$filename"
-        },
-        options: Options(responseType: ResponseType.json),
-      );
-      final String url =
-          response.data['query']['pages'].values.first['imageinfo'][0]['url'];
-      print('wiki image/file url $filename ->  $url');
-      db.prefs.setString(filename, url);
-      return url;
-    } catch (e) {
-      print(e);
-    }
+    return _pool.withResource<String?>(() async {
+      final _dio = Dio();
+      try {
+        final response = await _dio.get(
+          'https://fgo.wiki/api.php',
+          queryParameters: {
+            "action": "query",
+            "format": "json",
+            "prop": "imageinfo",
+            "iiprop": "url",
+            "titles": "File:$filename"
+          },
+          options: Options(responseType: ResponseType.json),
+        );
+        final String? url =
+            response.data['query']['pages'].values.first['imageinfo'][0]['url'];
+        if (url?.isNotEmpty == true) {
+          db.prefs.setString(filename, url!);
+          if (savePath != null) {
+            await _dio.download(url, savePath);
+          }
+        }
+        return url;
+      } catch (e) {
+        logger.e('error download $filename', e);
+      }
+    });
   }
 }

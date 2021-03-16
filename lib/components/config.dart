@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
+import 'package:chaldea/components/components.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -192,7 +193,7 @@ class Database {
     }
   }
 
-  IconResource? getIconResource(String? iconKey, {bool? preferPng}) {
+  String? getIconFullKey(String? iconKey, {bool? preferPng}) {
     if (iconKey == null) return null;
     final suffixes = preferPng == null
         ? ['', '.jpg', '.png']
@@ -202,57 +203,60 @@ class Database {
     for (var suffix in suffixes) {
       String key = iconKey + suffix;
       if (gameData.icons.containsKey(key)) {
-        return gameData.icons[key];
+        return key;
       }
     }
-    return null;
+    logger.d('Icon $iconKey not found');
+    return iconKey;
   }
 
   final AssetImage errorImage = AssetImage('res/img/gudako.png');
 
-  File? getIconFile(String iconKey, {bool? preferPng}) {
-    final icon = getIconResource(iconKey, preferPng: preferPng);
-    if (icon == null) return null;
-    return File(pathlib.join(paths.gameIconDir, icon.name));
-  }
-
-  ImageProvider getIconProvider(String? iconKey, {bool? preferPng}) {
-    final icon = getIconResource(iconKey, preferPng: preferPng);
-    if (icon == null) {
-      logger.e(
-        'no such icon: $iconKey',
-        ArgumentError.value(iconKey, 'iconKey'),
-        StackTrace.current,
-      );
-      return errorImage;
-    }
-    return FileImage(
-      File(pathlib.join(paths.gameIconDir, icon.name)),
-    );
-  }
-
+  /// Only call this when [iconKey] SHOULD be saved to icon dir.
+  /// If just want to use network image, use [CachedImage] instead.
+  ///
   /// size of [Image] widget is zero before file is loaded to memory.
-  /// [wrapContainer] to ensure the placeholder
+  /// wrap Container to ensure the placeholder size
   Widget getIconImage(
     String? iconKey, {
     double? width,
     double? height,
     BoxFit? fit,
-    bool wrapContainer = true,
     bool? preferPng,
   }) {
-    final image = Image(
-      image: getIconProvider(iconKey, preferPng: preferPng),
-      width: width,
-      height: height,
-      fit: fit,
-      loadingBuilder: (context, child, loadingProgress) => Container(
+    if (iconKey == null) {
+      return Image(
+        image: errorImage,
         width: width,
         height: height,
-        child: child,
-      ),
-    );
-    return image;
+        fit: fit,
+      );
+    }
+    String iconName = getIconFullKey(iconKey, preferPng: preferPng)!;
+    File iconFile = File(pathlib.join(paths.gameIconDir, iconName));
+    if (iconFile.existsSync()) {
+      return Image(
+        image: FileImage(iconFile),
+        width: width,
+        height: height,
+        fit: fit,
+        loadingBuilder: (context, child, loadingProgress) => Container(
+          width: width,
+          height: height,
+          child: child,
+        ),
+      );
+    } else {
+      return CachedImage(
+        imageUrl: iconName,
+        saveDir: db.paths.gameIconDir,
+        width: width,
+        height: height,
+        fit: fit,
+        isMCFile: !(iconName.contains('http') || iconName.contains('fgo.wiki')),
+        placeholder: (_, __) => Container(width: width, height: height),
+      );
+    }
   }
 
   // assist methods

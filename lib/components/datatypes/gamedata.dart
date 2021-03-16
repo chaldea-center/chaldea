@@ -8,7 +8,7 @@ class GameData {
   Map<int, CraftEssence> crafts;
   Map<int, CommandCode> cmdCodes;
   Map<String, Item> items;
-  Map<String, IconResource> icons;
+  Map<String, String?> icons;
   Events events;
   Map<String, Quest> freeQuests;
   Map<int, List<Quest>> svtQuests;
@@ -56,20 +56,6 @@ class GameData {
       _$GameDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$GameDataToJson(this);
-}
-
-@JsonSerializable(checked: true)
-class IconResource {
-  String name;
-  String originName;
-  String? url;
-
-  IconResource({required this.name, required this.originName, this.url});
-
-  factory IconResource.fromJson(Map<String, dynamic> data) =>
-      _$IconResourceFromJson(data);
-
-  Map<String, dynamic> toJson() => _$IconResourceToJson(this);
 }
 
 @JsonSerializable(checked: true)

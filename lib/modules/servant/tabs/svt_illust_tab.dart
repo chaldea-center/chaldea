@@ -52,7 +52,7 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
   Widget build(BuildContext context) {
     super.build(context);
     final imageUrls = svt.info.illustrations.values
-        .map((e) => db.getIconResource(e)?.url)
+        .map((e) => db.getIconFullKey(e))
         .toList();
 
     return Column(
