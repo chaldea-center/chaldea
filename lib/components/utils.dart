@@ -311,19 +311,18 @@ void checkAppUpdate([bool background = true]) async {
       final result = jsonData['results'][0];
       versionString = result['version'];
       releaseNote = result['releaseNotes'];
-    } else if (Platform.isAndroid || Platform.isWindows) {
+    } else if (Platform.isAndroid || Platform.isWindows || kDebugMode) {
       GitTool gitTool = GitTool.fromIndex(0);
-      final release = await gitTool.latestAppRelease();
+      String? keyword = kDebugMode ? 'windows' : null;
+      final release = await gitTool.latestAppRelease(keyword);
       versionString = release?.name;
       if (versionString?.startsWith('v') == true)
         versionString = versionString!.substring(1);
       // v1.x.y+z
       releaseNote = release?.body;
-      if (release?.targetAsset?.browserDownloadUrl?.isNotEmpty == true) {
-        launchUrl = release!.targetAsset!.browserDownloadUrl;
-      } else {
-        launchUrl = GitTool.getReleasePageUrl(0, true);
-      }
+      // launchUrl = release!.htmlUrl
+      // launchUrl = release!.targetAsset!.browserDownloadUrl;
+      launchUrl = GitTool.getReleasePageUrl(0, true);
     } else if (Platform.isMacOS) {
       // not supported yet
     }
@@ -345,7 +344,7 @@ void checkAppUpdate([bool background = true]) async {
   Version? version = Version.tryParse(versionString);
   Version? curVer = Version.tryParse(AppInfo.fullVersion);
   bool appUpgradable = version != null && curVer != null && version > curVer;
-  db.runtimeData.appUpgradable = appUpgradable;
+  db.runtimeData.upgradableVersion = appUpgradable ? version : null;
   if (!kDebugMode && (Platform.isIOS || Platform.isMacOS)) {
     // Guideline 2.4.5(vii) - Performance
     // The Mac App Store provides customers with notifications of updates

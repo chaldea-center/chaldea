@@ -55,11 +55,15 @@ class _AboutPageState extends State<AboutPage> {
                   ),
                   Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
+                    alignment: WrapAlignment.center,
                     spacing: 3,
                     children: [
                       Text('${S.of(context).version}: ${AppInfo.fullVersion2}'),
-                      if (db.runtimeData.appUpgradable)
-                        Text(' ⃰', style: TextStyle(color: Colors.red)),
+                      if (db.runtimeData.upgradableVersion != null)
+                        Text(
+                          '(${db.runtimeData.upgradableVersion?.version} ↑)',
+                          style: TextStyle(color: Colors.red),
+                        ),
                       if (!Platform.isIOS && !Platform.isMacOS || kDebugMode)
                         ElevatedButton(
                           onPressed: () => checkAppUpdate(false),
@@ -73,9 +77,9 @@ class _AboutPageState extends State<AboutPage> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16)),
                           ),
-                        )
+                        ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
@@ -107,7 +111,7 @@ class _AboutPageState extends State<AboutPage> {
                 },
               ),
               ListTile(
-                title: Text('❤️ Support me'),
+                title: Text('Support Chaldea'),
                 onTap: () {
                   launch(kProjectHomepage + '/wiki/Support');
                 },

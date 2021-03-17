@@ -20,6 +20,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'constants.dart';
 import 'datatypes/datatypes.dart';
 import 'device_app_info.dart';
+import 'git_tool.dart';
 import 'logger.dart';
 import 'utils.dart';
 
@@ -459,7 +460,7 @@ class PathManager {
 }
 
 class RuntimeData {
-  bool appUpgradable = false;
+  Version? upgradableVersion;
   double? criticalWidth;
   List<File> itemRecognizeImageFiles = [];
 

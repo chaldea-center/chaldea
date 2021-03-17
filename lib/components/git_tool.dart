@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -116,19 +117,22 @@ class GitRelease {
   String tagName;
   String? body;
   DateTime createdAt;
+  String? htmlUrl;
   List<GitAsset> assets;
   GitAsset? targetAsset;
   GitSource? source;
 
-  GitRelease(
-      {required this.id,
-      required this.name,
-      required this.tagName,
-      required this.body,
-      required this.createdAt,
-      required this.assets,
-      this.targetAsset,
-      this.source});
+  GitRelease({
+    required this.id,
+    required this.name,
+    required this.tagName,
+    required this.body,
+    required this.createdAt,
+    required this.htmlUrl,
+    required this.assets,
+    this.targetAsset,
+    this.source,
+  });
 
   GitRelease.fromGithub({required Map<String, dynamic> data})
       : id = data['id'] ?? 0,
@@ -136,6 +140,7 @@ class GitRelease {
         name = data['name'] ?? '',
         body = data['body'] ?? '',
         createdAt = DateTime.parse(data['created_at'] ?? '20200101'),
+        htmlUrl = data['html_url'],
         assets = List.generate(
           data['assets']?.length ?? 0,
           (index) => GitAsset(
@@ -208,8 +213,8 @@ class GitTool {
 
   String get datasetRepo => _datasetRepo;
 
-  /// For Gitee, release list is from old to new
   /// For Github, release list is from new to old
+  /// For Gitee, release list is mostly from old to new
   /// sort list at last
   Future<List<GitRelease>> resolveReleases(String repo) async {
     List<GitRelease> releases = [];
@@ -221,8 +226,11 @@ class GitTool {
             responseType: ResponseType.json),
       );
       // don't use map().toList(), List<dynamic> is not subtype ...
-      releases = List.generate(response.data?.length ?? 0,
-          (index) => GitRelease.fromGitee(data: response.data[index]));
+      releases = List.generate(
+        response.data?.length ?? 0,
+        (index) => GitRelease.fromGithub(data: response.data[index])
+          ..htmlUrl ??= 'https://github.com/$owner/$repo/releases',
+      );
     } else if (source == GitSource.gitee) {
       // response: List<Release>
       final response = await Dio().get(
@@ -233,8 +241,11 @@ class GitTool {
             responseType: ResponseType.json),
       );
       // don't use map().toList(), List<dynamic> is not subtype ...
-      releases = List.generate(response.data?.length ?? 0,
-          (index) => GitRelease.fromGitee(data: response.data[index]));
+      releases = List.generate(
+        response.data?.length ?? 0,
+        (index) => GitRelease.fromGitee(data: response.data[index])
+          ..htmlUrl ??= 'https://gitee.com/$owner/$repo/releases',
+      );
     }
     releases.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     print('resolve ${releases.length} releases from $source');
@@ -256,12 +267,12 @@ class GitTool {
     }
   }
 
-  Future<GitRelease?> latestAppRelease() async {
-    if (Platform.isAndroid || Platform.isWindows) {
+  Future<GitRelease?> latestAppRelease([String? keyword]) async {
+    if (Platform.isAndroid || Platform.isWindows || kDebugMode) {
       final releases = await resolveReleases(appRep);
-      String keyword = Platform.operatingSystem;
+      keyword ??= Platform.operatingSystem;
       return _latestReleaseWhereAsset(releases, (asset) {
-        return asset.name.toLowerCase().contains(keyword);
+        return asset.name.toLowerCase().contains(keyword!);
       });
     }
   }
