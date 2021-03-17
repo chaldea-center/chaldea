@@ -399,6 +399,27 @@ void checkAppUpdate([bool background = true]) async {
             Navigator.of(context).pop();
           },
         ),
+      if (Platform.isAndroid)
+        TextButton(
+          child: Text('Google Play'),
+          onPressed: () {
+            launch(kGooglePlayLink);
+          },
+        ),
+      if (Platform.isIOS || Platform.isMacOS)
+        TextButton(
+          child: Text('App Store'),
+          onPressed: () {
+            launch(kAppStoreLink);
+          },
+        ),
+      if (Platform.isWindows)
+        TextButton(
+          child: Text('Github Release'),
+          onPressed: () {
+            launch(kProjectHomepage + '/releases');
+          },
+        ),
     ],
   ).show(context);
 }
