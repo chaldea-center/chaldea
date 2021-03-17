@@ -45,9 +45,9 @@ class MooncellUtil {
   /// If [savePath] is provided, the file will be downloaded
   static Future<String?> resolveFileUrl(String filename,
       [String? savePath]) async {
-    if (db.prefs.containsKey(filename)) {
+    if (db.prefs.containsRealUrl(filename)) {
       // print('prefs: $filename -> ${db.prefs.getString(filename)}');
-      return db.prefs.getString(filename);
+      return db.prefs.getRealUrl(filename);
     }
     return _pool.withResource<String?>(() async {
       final _dio = Dio();
@@ -66,11 +66,12 @@ class MooncellUtil {
         final String? url =
             response.data['query']['pages'].values.first['imageinfo'][0]['url'];
         if (url?.isNotEmpty == true) {
-          db.prefs.setString(filename, url!);
+          db.prefs.setRealUrl(filename, url!);
           if (savePath != null) {
             await _dio.download(url, savePath);
           }
         }
+        print('mc file: $filename -> $url');
         return url;
       } catch (e) {
         logger.e('error download $filename', e);

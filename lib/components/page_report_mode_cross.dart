@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'config.dart';
+import 'shared_prefs.dart';
 
 class PageReportModeCross extends ReportMode {
   final bool showStackTrace;
@@ -61,8 +62,8 @@ class _PageWidgetState extends State<_PageWidget> {
 
   @override
   void initState() {
-    _textEditingController =
-        TextEditingController(text: db.runtimeData.contactInfo);
+    _textEditingController = TextEditingController(
+        text: db.prefs.getRealUrl(SharedPrefs.contactInfo));
     super.initState();
   }
 
@@ -129,7 +130,7 @@ class _PageWidgetState extends State<_PageWidget> {
               hintText: '我们会尽快给您答复',
             ),
             onChanged: (s) {
-              db.runtimeData.contactInfo = s;
+              db.prefs.setRealUrl(SharedPrefs.contactInfo, s);
             },
           ),
           const Padding(

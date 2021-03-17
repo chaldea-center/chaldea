@@ -21,6 +21,7 @@ import 'device_app_info.dart';
 import 'extensions.dart';
 import 'git_tool.dart';
 import 'logger.dart';
+import 'shared_prefs.dart';
 
 /// Math related
 ///
@@ -288,7 +289,6 @@ void safeSetState(VoidCallback callback) {
 }
 
 void checkAppUpdate([bool background = true]) async {
-  const ignoreUpdateKey = 'ignoreAppUpdateVersion';
   BuildContext context = kAppKey.currentContext!;
   String? versionString;
   String? releaseNote;
@@ -365,7 +365,9 @@ void checkAppUpdate([bool background = true]) async {
     return;
   }
   // upgradable, ignore
-  if (background && db.prefs.getString(ignoreUpdateKey) == versionString) {
+  if (background &&
+      db.prefs.instance.getString(SharedPrefs.ignoreAppVersion) ==
+          versionString) {
     logger.i('Latest version: $versionString, ignore this update.');
     return;
   }
@@ -392,7 +394,8 @@ void checkAppUpdate([bool background = true]) async {
         TextButton(
           child: Text(S.of(context).ignore),
           onPressed: () {
-            db.prefs.setString(ignoreUpdateKey, versionString!);
+            db.prefs.instance
+                .setString(SharedPrefs.ignoreAppVersion, versionString!);
             Navigator.of(context).pop();
           },
         ),

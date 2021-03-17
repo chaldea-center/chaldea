@@ -290,7 +290,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
   }
 
   Future<void> clearCache() async {
-    db.prefs.clear();
+    db.prefs.instance.clear();
     await DefaultCacheManager().emptyCache();
     Directory(db.paths.tempDir)
       ..deleteSync(recursive: true)

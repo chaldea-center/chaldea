@@ -206,9 +206,9 @@ class _CachedImageState extends State<CachedImage> {
     if (widget.imageUrl == null) return null;
     bool isMCFile = widget.isMCFile ?? !validator.isURL(widget.imageUrl!);
     if (!isMCFile) return widget.imageUrl;
-
-    if (db.prefs.containsKey(widget.imageUrl!)) {
-      return db.prefs.getString(widget.imageUrl!);
+    String? url = db.prefs.getRealUrl(widget.imageUrl!);
+    if (url != null) {
+      return url;
     } else {
       String? savePath;
       if (widget.saveDir != null)
@@ -277,28 +277,29 @@ class _CachedImageState extends State<CachedImage> {
         maxHeightDiskCache: widget.maxHeightDiskCache,
       );
     }
-    if (realUrl != null)
-      child = GestureDetector(
-        onLongPress: () {
-          SimpleCancelOkDialog(
-            title: Text(S.of(context).clear_cache),
-            content: Text(realUrl),
-            onTapOk: () async {
-              /// clear cache in filesystem
-              await cacheManager.removeFile(realUrl);
-
-              /// This will clear all cached images in memory
-              /// enhance: `imageCache.evict(key)` or `ImageProvider.evict()`
-              imageCache?.clear();
-
-              if (mounted) {
-                setState(() {});
-              }
-            },
-          ).show(context);
-        },
-        child: child,
-      );
+    // if (realUrl != null)
+    //   child = GestureDetector(
+    //     onLongPress: () {
+    //       SimpleCancelOkDialog(
+    //         title: Text(S.of(context).clear_cache),
+    //         content: Text(realUrl),
+    //         onTapOk: () async {
+    //           /// clear cache in filesystem
+    //           /// will cause error
+    //           await cacheManager.removeFile(realUrl);
+    //
+    //           /// This will clear all cached images in memory
+    //           /// enhance: `imageCache.evict(key)` or `ImageProvider.evict()`
+    //           imageCache?.clear();
+    //
+    //           if (mounted) {
+    //             setState(() {});
+    //           }
+    //         },
+    //       ).show(context);
+    //     },
+    //     child: child,
+    //   );
     return child;
   }
 

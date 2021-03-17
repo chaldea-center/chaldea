@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:catcher/catcher.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/git_tool.dart';
+import 'package:chaldea/components/shared_prefs.dart';
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:chaldea/modules/home/home_page.dart';
 import 'package:flutter/scheduler.dart';
@@ -102,8 +103,10 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
 
     // if app updated, reload gamedata
     bool gameDataLoadSuccess = false;
+    final previousVersion = Version.tryParse(
+        db.prefs.instance.getString(SharedPrefs.previousVersion) ?? '');
     bool justUpdated =
-        AppInfo.buildNumber > (db.prefs.getInt('previousBuild') ?? 0);
+        previousVersion == null || previousVersion < AppInfo.versionClass;
     try {
       if (justUpdated ||
           !File(db.paths.gameDataPath).existsSync() ||
@@ -115,7 +118,8 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
           _showProgress = true;
         });
         await db.loadZipAssets(kDatasetAssetKey);
-        db.prefs.setInt('previousBuild', AppInfo.buildNumber);
+        db.prefs.instance
+            .setString(SharedPrefs.previousVersion, AppInfo.fullVersion);
         db.saveUserData();
         gameDataLoadSuccess = db.loadGameData();
       } else {

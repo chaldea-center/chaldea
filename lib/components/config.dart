@@ -15,13 +15,13 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'constants.dart';
 import 'datatypes/datatypes.dart';
 import 'device_app_info.dart';
 import 'git_tool.dart';
 import 'logger.dart';
+import 'shared_prefs.dart';
 import 'utils.dart';
 
 /// app config:
@@ -33,9 +33,7 @@ class Database {
   UserData userData = UserData();
   GameData gameData = GameData();
 
-  SharedPreferences? _prefs;
-
-  SharedPreferences get prefs => _prefs!;
+  SharedPrefs prefs = SharedPrefs();
 
   User get curUser {
     if (!userData.users.containsKey(userData.curUserKey)) {
@@ -91,7 +89,7 @@ class Database {
   Future<void> initial() async {
     await paths.initRootPath();
     await AppInfo.resolve();
-    _prefs ??= await SharedPreferences.getInstance();
+    await prefs.initiate();
     await checkConnectivity();
     Connectivity().onConnectivityChanged.listen((result) {
       _connectivity = result;
@@ -466,10 +464,6 @@ class RuntimeData {
 
   /// Controller of [Screenshot] widget which set root [MaterialApp] as child
   ScreenshotController? screenshotController;
-
-  String? get contactInfo => db.prefs.getString('contactInfo');
-
-  set contactInfo(String? s) => db.prefs.setString('contactInfo', s ?? '');
 }
 
 Database db = new Database();

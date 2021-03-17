@@ -16,6 +16,7 @@ import 'package:path/path.dart' as pathlib;
 import 'config.dart';
 import 'constants.dart';
 import 'device_app_info.dart';
+import 'shared_prefs.dart';
 import 'utils.dart';
 
 export 'page_report_mode_cross.dart';
@@ -61,7 +62,8 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
   /// maintain list for every contact if contact changed
   Map<String, List<Report>> _sentReports = {};
 
-  String? get contactInfo => db.runtimeData.contactInfo;
+  String? get contactInfo =>
+      db.prefs.instance.getString(SharedPrefs.contactInfo);
 
   Future<bool> _sendMail(Report report) async {
     // don't send email repeatedly

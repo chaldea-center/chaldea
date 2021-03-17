@@ -8,6 +8,7 @@ import 'package:uuid/uuid.dart';
 
 import 'config.dart' show db;
 import 'constants.dart';
+import 'git_tool.dart';
 import 'logger.dart';
 
 class AppInfo {
@@ -183,6 +184,8 @@ class AppInfo {
     else
       return kAppName;
   }
+
+  static Version get versionClass => Version.tryParse(fullVersion)!;
 
   static String get version => _packageInfo?.version ?? '';
 
