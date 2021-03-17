@@ -390,7 +390,7 @@ class ServantListPageState extends State<ServantListPage> {
               Text(statusText),
             ],
           ),
-          trailing: Icon(Icons.arrow_forward_ios),
+          // trailing: Icon(Icons.arrow_forward_ios),
           onTap: () {
             SplitRoute.push(
               context: context,

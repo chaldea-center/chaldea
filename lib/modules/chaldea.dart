@@ -3,8 +3,10 @@ import 'dart:io';
 
 import 'package:catcher/catcher.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/components/git_tool.dart';
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:chaldea/modules/home/home_page.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:screenshot/screenshot.dart';
@@ -100,8 +102,10 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
 
     // if app updated, reload gamedata
     bool gameDataLoadSuccess = false;
+    bool justUpdated =
+        AppInfo.buildNumber > (db.prefs.getInt('previousBuild') ?? 0);
     try {
-      if (AppInfo.buildNumber > (db.userData.previousBuildNumber ?? 0) ||
+      if (justUpdated ||
           !File(db.paths.gameDataPath).existsSync() ||
           !db.loadGameData()) {
         /// load failed(json destroyed) or app updated, reload default dataset
@@ -111,7 +115,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
           _showProgress = true;
         });
         await db.loadZipAssets(kDatasetAssetKey);
-        db.userData.previousBuildNumber = AppInfo.buildNumber;
+        db.prefs.setInt('previousBuild', AppInfo.buildNumber);
         db.saveUserData();
         gameDataLoadSuccess = db.loadGameData();
       } else {
@@ -128,6 +132,19 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
     logger.i('App version: ${AppInfo.appName} v${AppInfo.fullVersion}');
     logger.i('appPath: ${db.paths.appPath}');
     db.notifyAppUpdate();
+    if (justUpdated) {
+      GitTool().getReleaseNote().then((releaseNote) {
+        if (releaseNote?.isNotEmpty == true) {
+          SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+            SimpleCancelOkDialog(
+              title: Text(AppInfo.fullVersion2),
+              content: Text(releaseNote!.replaceAll('\r\n', '\n')),
+              hideCancel: true,
+            ).show(kAppKey.currentContext!);
+          });
+        }
+      });
+    }
   }
 
   @override

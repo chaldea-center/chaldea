@@ -8,6 +8,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:path/path.dart' as pathlib;
 
+import 'device_app_info.dart';
+import 'extensions.dart';
 import 'logger.dart';
 import 'utils.dart';
 
@@ -218,38 +220,41 @@ class GitTool {
   /// sort list at last
   Future<List<GitRelease>> resolveReleases(String repo) async {
     List<GitRelease> releases = [];
-    if (source == GitSource.github) {
-      final response = await Dio().get(
-        'https://api.github.com/repos/$owner/$repo/releases',
-        options: Options(
-            contentType: 'application/json;charset=UTF-8',
-            responseType: ResponseType.json),
-      );
-      // don't use map().toList(), List<dynamic> is not subtype ...
-      releases = List.generate(
-        response.data?.length ?? 0,
-        (index) => GitRelease.fromGithub(data: response.data[index])
-          ..htmlUrl ??= 'https://github.com/$owner/$repo/releases',
-      );
-    } else if (source == GitSource.gitee) {
-      // response: List<Release>
-      final response = await Dio().get(
-        'https://gitee.com/api/v5/repos/$owner/$repo/releases',
-        queryParameters: {'page': 0, 'per_page': 50},
-        options: Options(
-            contentType: 'application/json;charset=UTF-8',
-            responseType: ResponseType.json),
-      );
-      // don't use map().toList(), List<dynamic> is not subtype ...
-      releases = List.generate(
-        response.data?.length ?? 0,
-        (index) => GitRelease.fromGitee(data: response.data[index])
-          ..htmlUrl ??= 'https://gitee.com/$owner/$repo/releases',
-      );
+    try {
+      if (source == GitSource.github) {
+        final response = await Dio().get(
+          'https://api.github.com/repos/$owner/$repo/releases',
+          options: Options(
+              contentType: 'application/json;charset=UTF-8',
+              responseType: ResponseType.json),
+        );
+        // don't use map().toList(), List<dynamic> is not subtype ...
+        releases = List.generate(
+          response.data?.length ?? 0,
+          (index) => GitRelease.fromGithub(data: response.data[index])
+            ..htmlUrl ??= 'https://github.com/$owner/$repo/releases',
+        );
+      } else if (source == GitSource.gitee) {
+        // response: List<Release>
+        final response = await Dio().get(
+          'https://gitee.com/api/v5/repos/$owner/$repo/releases',
+          queryParameters: {'page': 0, 'per_page': 50},
+          options: Options(
+              contentType: 'application/json;charset=UTF-8',
+              responseType: ResponseType.json),
+        );
+        // don't use map().toList(), List<dynamic> is not subtype ...
+        releases = List.generate(
+          response.data?.length ?? 0,
+          (index) => GitRelease.fromGitee(data: response.data[index])
+            ..htmlUrl ??= 'https://gitee.com/$owner/$repo/releases',
+        );
+      }
+    } finally {
+      releases.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      print('resolve ${releases.length} releases from $source');
+      print(releases.map((e) => e.name).toList());
     }
-    releases.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    print('resolve ${releases.length} releases from $source');
-    print(releases.map((e) => e.name).toList());
     return releases;
   }
 
@@ -283,6 +288,15 @@ class GitTool {
       return asset.name.toLowerCase() ==
           (fullSize ? 'dataset.zip' : 'dataset-text.zip');
     });
+  }
+
+  Future<String?> getReleaseNote([bool test(GitRelease release)?]) async {
+    final releases = await resolveReleases(_appRepo);
+    if (test == null) {
+      test = (release) =>
+          Version.tryParse(release.name)?.build == AppInfo.buildNumber;
+    }
+    return releases.firstWhereOrNull((release) => test!(release))?.body;
   }
 }
 

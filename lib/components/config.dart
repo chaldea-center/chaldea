@@ -207,7 +207,7 @@ class Database {
         return key;
       }
     }
-    logger.d('Icon $iconKey not found');
+    // logger.d('Icon $iconKey not found');
     return iconKey;
   }
 
