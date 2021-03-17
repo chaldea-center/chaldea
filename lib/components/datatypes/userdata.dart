@@ -10,9 +10,7 @@ class UserData {
   Map<String, String> sliderUrls;
   Map<String, bool> galleries;
   String? serverRoot;
-
-  /// use build number which should be increasing integer
-  int? previousBuildNumber;
+  int updateSource;
 
   // user-related game data
   String curUserKey;
@@ -36,7 +34,7 @@ class UserData {
     Map<String, String>? sliderUrls,
     Map<String, bool>? galleries,
     this.serverRoot,
-    this.previousBuildNumber,
+    int? updateSource,
     String? curUserKey,
     Map<String, User>? users,
     SvtFilterData? svtFilter,
@@ -46,6 +44,8 @@ class UserData {
     List<int>? itemAbundantValue,
   })  : sliderUrls = sliderUrls ?? {},
         galleries = galleries ?? {},
+        updateSource =
+            fixValidRange(updateSource ?? 0, 0, GitSource.values.length),
         curUserKey = curUserKey ?? 'default',
         users = users ?? {},
         svtFilter = svtFilter ?? SvtFilterData(),

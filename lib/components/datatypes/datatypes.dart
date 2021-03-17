@@ -16,6 +16,7 @@ import 'package:json_annotation/json_annotation.dart';
 import '../config.dart' show db;
 import '../constants.dart';
 import '../extensions.dart';
+import '../git_tool.dart';
 import '../logger.dart';
 import '../utils.dart';
 

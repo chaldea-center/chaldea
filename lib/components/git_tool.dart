@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:chaldea/components/components.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -19,21 +20,17 @@ const String _datasetRepo = 'chaldea-dataset';
 
 /// [GitSource.gitee] deprecated
 enum GitSource { github, gitee }
+enum GitSource2 { github, gitee }
 
-// for most enum
 extension GitSourceExtension on GitSource {
-  String toShortString() => this.toString().split('.').last;
+  String toShortString() => EnumUtil.shortString(this);
 
-  String toTitleString() {
-    String s = this.toShortString();
-    if (s.length > 1) {
-      return s[0].toUpperCase() + s.substring(1);
-    } else {
-      return s;
-    }
-  }
+  String toTitleString() => EnumUtil.titled(this);
 }
 
+/// When comparison, [build] will be ignored:
+///   - on iOS, cannot fetch [build] from server api
+///   - on Android, split-abi will change [build] from 25 to 1025/2025/4025
 class Version extends Comparable<Version> {
   /// valid format:
   ///   - v1.2.3+4,'v' and +4 is optional
@@ -51,6 +48,7 @@ class Version extends Comparable<Version> {
 
   String get fullVersion => version + (build == null ? '' : '+$build');
 
+  /// compare [build] here
   bool equalTo(String other) {
     Version? _other = Version.tryParse(other);
     if (_other == null) return false;
@@ -85,15 +83,14 @@ class Version extends Comparable<Version> {
 
   @override
   int compareTo(Version other) {
-    // build(nullable) than major/minor/patch
-    if (build != null && other.build != null && build != other.build) {
-      return build!.compareTo(other.build!);
-    } else {
-      if (major != other.major) return major.compareTo(other.major);
-      if (minor != other.minor) return minor.compareTo(other.minor);
-      if (patch != other.patch) return patch.compareTo(other.patch);
-      return 0;
-    }
+    // build(nullable) then major/minor/patch
+    // if (build != null && other.build != null && build != other.build) {
+    //   return build!.compareTo(other.build!);
+    // }
+    if (major != other.major) return major.compareTo(other.major);
+    if (minor != other.minor) return minor.compareTo(other.minor);
+    if (patch != other.patch) return patch.compareTo(other.patch);
+    return 0;
   }
 
   @override
@@ -280,6 +277,10 @@ class GitTool {
         return asset.name.toLowerCase().contains(keyword!);
       });
     }
+  }
+
+  String releasesPage(String repo) {
+    return 'https://${source.toShortString()}.com/$owner/$repo/releases';
   }
 
   Future<GitRelease?> latestDatasetRelease([bool fullSize = true]) async {

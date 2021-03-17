@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/components/git_tool.dart';
 import 'package:chaldea/modules/home/subpage/dataset_manage_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -36,78 +37,69 @@ class _SettingsPageState extends State<SettingsPage> {
                   EasyLoading.showToast('咕咕咕咕咕咕');
                 },
               ),
-//              ListTile(
-//                title: Text(S.of(context).server),
-//                trailing: DropdownButtonHideUnderline(
-//                  child: DropdownButton<String>(
-//                    value: db.userData.users[db.userData.curUsername].server ??
-//                        GameServer.jp,
-//                    items: <DropdownMenuItem<String>>[
-//                      DropdownMenuItem(
-//                        value: GameServer.cn,
-//                        child: Text(S.of(context).server_cn),
-//                      ),
-//                      DropdownMenuItem(
-//                        value: GameServer.jp,
-//                        child: Text(S.of(context).server_jp),
-//                      )
-//                    ],
-//                    onChanged: (v) {
-//                      db.userData.users[db.userData.curUsername].server = v;
-//                      db.onAppUpdate();
-//                    },
-//                  ),
-//                ),
-//              ),
-              ListTile(
-                title: Text(S.of(context).cur_account),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      db.curUser.name,
-                      style: TextStyle(color: Colors.black87),
-                    ),
-                    Icon(Icons.arrow_forward_ios)
-                  ],
+              db.streamBuilder(
+                (context) => ListTile(
+                  title: Text(S.of(context).cur_account),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        db.curUser.name,
+                        style: TextStyle(color: Colors.black87),
+                      ),
+                      Icon(Icons.arrow_forward_ios)
+                    ],
+                  ),
+                  onTap: () {
+                    SplitRoute.push(
+                      context: context,
+                      builder: (context, _) => AccountPage(),
+                      popDetail: true,
+                    );
+                  },
                 ),
-                onTap: () {
-                  SplitRoute.push(
-                    context: context,
-                    builder: (context, _) => AccountPage(),
-                    popDetail: true,
-                  );
-                },
               ),
-              ListTile(
-                title: Text(S.of(context).settings_data_management),
-                trailing: Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: <Widget>[
-                    Text(db.gameData.version),
-                    Icon(Icons.arrow_forward_ios)
-                  ],
+              db.streamBuilder(
+                (context) => ListTile(
+                  title: Text(S.of(context).settings_data_management),
+                  trailing: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: <Widget>[
+                      Text(db.gameData.version),
+                      Icon(Icons.arrow_forward_ios)
+                    ],
+                  ),
+                  onTap: () {
+                    SplitRoute.push(
+                      context: context,
+                      builder: (context, _) => DatasetManagePage(),
+                      popDetail: true,
+                    );
+                  },
                 ),
-                onTap: () {
-                  SplitRoute.push(
-                    context: context,
-                    builder: (context, _) => DatasetManagePage(),
-                    popDetail: true,
-                  );
-                },
               ),
-              ListTile(
-                title: Text(S.of(context).download_source),
-                subtitle: Text(S.of(context).download_source_hint),
-                trailing: Icon(Icons.arrow_forward_ios),
-                onTap: () {
-                  SplitRoute.push(
-                    context: context,
-                    builder: (context, _) => UpdateSourcePage(),
-                    detail: true,
-                    popDetail: true,
-                  );
-                },
+              db.streamBuilder(
+                (context) => ListTile(
+                  title: Text(S.of(context).download_source),
+                  subtitle: Text(S.of(context).download_source_hint),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(GitSource.values[db.userData.updateSource]
+                          .toTitleString()),
+                      Icon(Icons.arrow_forward_ios),
+                    ],
+                  ),
+                  onTap: () {
+                    SplitRoute.push(
+                      context: context,
+                      builder: (context, _) => UpdateSourcePage(),
+                      detail: true,
+                      popDetail: true,
+                    );
+                  },
+                ),
               ),
             ],
           ),

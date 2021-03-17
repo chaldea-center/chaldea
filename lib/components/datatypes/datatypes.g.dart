@@ -1367,8 +1367,7 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
                 (k, e) => MapEntry(k, e as bool),
               )),
       serverRoot: $checkedConvert(json, 'serverRoot', (v) => v as String?),
-      previousBuildNumber:
-          $checkedConvert(json, 'previousBuildNumber', (v) => v as int?),
+      updateSource: $checkedConvert(json, 'updateSource', (v) => v as int?),
       curUserKey: $checkedConvert(json, 'curUserKey', (v) => v as String?),
       users: $checkedConvert(
           json,
@@ -1413,7 +1412,7 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'sliderUrls': instance.sliderUrls,
       'galleries': instance.galleries,
       'serverRoot': instance.serverRoot,
-      'previousBuildNumber': instance.previousBuildNumber,
+      'updateSource': instance.updateSource,
       'curUserKey': instance.curUserKey,
       'users': instance.users,
       'svtFilter': instance.svtFilter,

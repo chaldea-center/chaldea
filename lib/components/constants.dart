@@ -125,3 +125,22 @@ class Constants {
   static double iconAspectRatio = iconWidth / iconHeight;
   static int skillIconSize = 110;
 }
+
+class EnumUtil {
+  EnumUtil._();
+
+  static shortString(Object enumObj) {
+    assert(enumObj.toString().contains('.'),
+        'The provided object "$enumObj" is not an enum.');
+    return enumObj.toString().split('.').last;
+  }
+
+  static titled(Object enumObj) {
+    String s = shortString(enumObj);
+    if (s.length > 1) {
+      return s[0].toUpperCase() + s.substring(1);
+    } else {
+      return s;
+    }
+  }
+}

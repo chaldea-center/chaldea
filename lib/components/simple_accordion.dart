@@ -80,6 +80,7 @@ class _SimpleAccordionState extends State<SimpleAccordion> {
       padding: expanded ? EdgeInsets.only(bottom: 6) : EdgeInsets.zero,
       child: Material(
         elevation: expanded ? 2 : 0,
+        color: Material.of(context)?.color,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [header, content],
