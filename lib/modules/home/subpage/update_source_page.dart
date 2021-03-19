@@ -1,6 +1,7 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/git_tool.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:path/path.dart' as pathlib;
 import 'package:url_launcher/url_launcher.dart';
 
 class UpdateSourcePage extends StatefulWidget {
@@ -18,11 +19,38 @@ class _UpdateSourcePageState extends State<UpdateSourcePage> {
       ),
       body: ListView(
         children: [
+          // TileGroup(
+          //   children: [
+          //     SwitchListTile.adaptive(
+          //       value: false,
+          //       onChanged: (v){
+          //         // db.userData;
+          //       },
+          //       title: Text('Auto Update'),
+          //       subtitle: Text('only dataset'),
+          //       controlAffinity: ListTileControlAffinity.trailing,
+          //     ),
+          //   ],
+          // ),
           TileGroup(
-            header: 'Git - In-App dataset upgrade',
+            header: 'Git - In-App dataset update',
             children: [
-              choice(0),
-              choice(1),
+              sourceAccordion(
+                source: GitSource.github,
+                subtitle: '连接可能受阻',
+              ),
+              sourceAccordion(
+                source: GitSource.gitee,
+                subtitle: '更新可能不及时',
+              ),
+            ],
+          ),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 8,
+            children: [
+              // ElevatedButton(onPressed: () {}, child: Text('应用更新')),
+              ElevatedButton(onPressed: downloadGamedata, child: Text('资源包更新')),
             ],
           ),
           TileGroup(
@@ -57,18 +85,16 @@ class _UpdateSourcePageState extends State<UpdateSourcePage> {
     );
   }
 
-  Widget choice(int index) {
-    final gitTool = GitTool.fromIndex(index);
+  Widget sourceAccordion({required GitSource source, String? subtitle}) {
+    final gitTool = GitTool(source);
     return SimpleAccordion(
       canTapOnHeader: false,
       headerBuilder: (BuildContext context, bool expanded) {
         return RadioListTile<int>(
-          value: index,
+          value: source.toIndex(),
           groupValue: db.userData.updateSource,
-          title: Text(gitTool.source.toTitleString()),
-          subtitle: Text(gitTool.source == GitSource.github
-              ? 'Github may be blocked sometimes'
-              : 'May be outdated'),
+          title: Text(source.toTitleString()),
+          subtitle: subtitle == null ? null : Text(subtitle),
           onChanged: (v) {
             setState(() {
               if (v != null) {
@@ -81,27 +107,98 @@ class _UpdateSourcePageState extends State<UpdateSourcePage> {
         );
       },
       contentBuilder: (BuildContext context) {
-        List<Widget> children = [];
-        for (String repo in ['chaldea', 'chaldea-dataset']) {
-          final url = gitTool.releasesPage(repo);
-          children.add(ListTile(
-            leading: Icon(gitTool.source == GitSource.github
-                ? FontAwesomeIcons.github
-                : FontAwesomeIcons.git),
-            dense: true,
-            contentPadding: EdgeInsets.only(left: 20, right: 8),
-            // horizontalTitleGap: 0,
-            title: Text(repo),
-            subtitle: Text(url),
-            onTap: () {
-              launch(url);
-            },
-          ));
-        }
         return Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: children,
+          children: [
+            ListTile(
+              leading: Icon(source == GitSource.github
+                  ? FontAwesomeIcons.github
+                  : FontAwesomeIcons.git),
+              dense: true,
+              contentPadding: EdgeInsets.only(left: 20, right: 8),
+              // horizontalTitleGap: 0,
+              title: Text('Chaldea app'),
+              subtitle: Text(gitTool.appReleaseUrl),
+              onTap: () {
+                jumpToExternalLinkAlert(url: gitTool.appReleaseUrl);
+              },
+            ),
+            ListTile(
+              leading: Icon(source == GitSource.github
+                  ? FontAwesomeIcons.github
+                  : FontAwesomeIcons.git),
+              dense: true,
+              contentPadding: EdgeInsets.only(left: 20, right: 8),
+              // horizontalTitleGap: 0,
+              title: Text('Dataset'),
+              subtitle: Text(gitTool.datasetReleaseUrl),
+              onTap: () {
+                jumpToExternalLinkAlert(url: gitTool.datasetReleaseUrl);
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  void downloadGamedata() {
+    final gitTool = GitTool.fromDb();
+    void _downloadAsset([bool fullSize = true]) async {
+      final release = await gitTool.latestDatasetRelease(fullSize);
+      Navigator.of(context).pop();
+      String fp = pathlib.join(
+          db.paths.tempDir, '${release?.name}-${release?.targetAsset?.name}');
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => DownloadDialog(
+          url: release?.targetAsset?.browserDownloadUrl ?? '',
+          savePath: fp,
+          notes: release?.body,
+          confirmText: S.of(context).import_data.toUpperCase(),
+          onComplete: () async {
+            var canceler = showMyProgress(status: 'loading');
+            try {
+              await db.extractZip(fp: fp, savePath: db.paths.gameDir);
+              db.loadGameData();
+              Navigator.of(context).pop();
+              canceler();
+              EasyLoading.showToast(S.of(context).import_data_success);
+            } catch (e) {
+              canceler();
+              EasyLoading.showToast(S.of(context).import_data_error(e));
+            } finally {}
+          },
+        ),
+      );
+    }
+
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: Text(S.of(context).dataset_type_entire),
+              subtitle: Text(S.of(context).dataset_type_entire_hint),
+              onTap: () => _downloadAsset(true),
+            ),
+            ListTile(
+              title: Text(S.of(context).dataset_type_text),
+              subtitle: Text(S.of(context).dataset_type_text_hint),
+              onTap: () => _downloadAsset(false),
+            ),
+            ListTile(
+              title: Text(S.of(context).dataset_goto_download_page),
+              subtitle: Text(S.of(context).dataset_goto_download_page_hint),
+              onTap: () {
+                launch(gitTool.datasetReleaseUrl);
+              },
+            )
+          ],
         );
       },
     );

@@ -137,7 +137,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
     logger.i('appPath: ${db.paths.appPath}');
     db.notifyAppUpdate();
     if (justUpdated) {
-      GitTool().getReleaseNote().then((releaseNote) {
+      GitTool.fromDb().appReleaseNote().then((releaseNote) {
         if (releaseNote?.isNotEmpty == true) {
           SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
             SimpleCancelOkDialog(
@@ -147,7 +147,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
             ).show(kAppKey.currentContext!);
           });
         }
-      });
+      }).onError((error, stackTrace) => null);
     }
   }
 

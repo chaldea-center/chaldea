@@ -5,7 +5,6 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:path/path.dart' as pathlib;
 
@@ -14,18 +13,17 @@ import 'extensions.dart';
 import 'logger.dart';
 import 'utils.dart';
 
-const String _owner = 'chaldea-center';
-const String _appRepo = 'chaldea';
-const String _datasetRepo = 'chaldea-dataset';
-
-/// [GitSource.gitee] deprecated
 enum GitSource { github, gitee }
-enum GitSource2 { github, gitee }
 
 extension GitSourceExtension on GitSource {
   String toShortString() => EnumUtil.shortString(this);
 
   String toTitleString() => EnumUtil.titled(this);
+
+  int toIndex() => GitSource.values.indexOf(this);
+
+  static GitSource fromIndex(int index) =>
+      GitSource.values.getOrNull(index) ?? GitSource.values.first;
 }
 
 /// When comparison, [build] will be ignored:
@@ -182,45 +180,52 @@ class GitAsset {
 }
 
 class GitTool {
-  GitSource source;
+  final GitSource source;
+  late String owner;
+  late String appRepo;
+  late String datasetRepo;
 
-  GitTool([this.source = GitSource.github]);
-
-  GitTool.fromIndex(int? index)
-      : source =
-            (index == null || index < 0 || index >= GitSource.values.length)
-                ? GitSource.values.first
-                : GitSource.values[index];
-
-  static String getReleasePageUrl(int? sourceIndex, bool appOrDataset) {
-    if (sourceIndex == null ||
-        sourceIndex < 0 ||
-        sourceIndex >= GitSource.values.length) sourceIndex = 0;
-    final source = GitSource.values[sourceIndex];
-    String repo = appOrDataset ? _appRepo : _datasetRepo;
+  GitTool([this.source = GitSource.github]) {
     switch (source) {
       case GitSource.github:
-        return 'https://github.com/$_owner/$repo/releases';
+        owner = 'chaldea-center';
+        appRepo = 'chaldea';
+        datasetRepo = 'chaldea-dataset';
+        break;
       case GitSource.gitee:
-        return 'https://gitee.com/$_owner/$repo/releases';
+        owner = 'chaldea-center';
+        appRepo = 'chaldea';
+        datasetRepo = 'chaldea-dataset';
+        break;
     }
   }
 
-  String get owner => _owner;
+  static GitTool fromDb() {
+    return GitTool(GitSource.values.getOrNull(db.userData.updateSource) ??
+        GitSource.values.first);
+  }
 
-  String get appRep => _appRepo;
+  String get appReleaseUrl {
+    return 'https://${source.toShortString()}.com/$owner/$appRepo/releases';
+  }
 
-  String get datasetRepo => _datasetRepo;
+  String get datasetReleaseUrl {
+    return 'https://${source.toShortString()}.com/$owner/$datasetRepo/releases';
+  }
+
+  Future<List<GitRelease>> get appReleases => _resolveReleases(appRepo);
+
+  Future<List<GitRelease>> get datasetReleases => _resolveReleases(datasetRepo);
 
   /// For Github, release list is from new to old
-  /// For Gitee, release list is mostly from old to new
+  /// For Gitee, release list is from old to new
   /// sort list at last
-  Future<List<GitRelease>> resolveReleases(String repo) async {
+  Future<List<GitRelease>> _resolveReleases(String _repo) async {
     List<GitRelease> releases = [];
     try {
       if (source == GitSource.github) {
         final response = await Dio().get(
-          'https://api.github.com/repos/$owner/$repo/releases',
+          'https://api.github.com/repos/$owner/$_repo/releases',
           options: Options(
               contentType: 'application/json;charset=UTF-8',
               responseType: ResponseType.json),
@@ -229,12 +234,12 @@ class GitTool {
         releases = List.generate(
           response.data?.length ?? 0,
           (index) => GitRelease.fromGithub(data: response.data[index])
-            ..htmlUrl ??= 'https://github.com/$owner/$repo/releases',
+            ..htmlUrl ??= 'https://github.com/$owner/$_repo/releases',
         );
       } else if (source == GitSource.gitee) {
         // response: List<Release>
         final response = await Dio().get(
-          'https://gitee.com/api/v5/repos/$owner/$repo/releases',
+          'https://gitee.com/api/v5/repos/$owner/$_repo/releases',
           queryParameters: {'page': 0, 'per_page': 50},
           options: Options(
               contentType: 'application/json;charset=UTF-8',
@@ -244,7 +249,7 @@ class GitTool {
         releases = List.generate(
           response.data?.length ?? 0,
           (index) => GitRelease.fromGitee(data: response.data[index])
-            ..htmlUrl ??= 'https://gitee.com/$owner/$repo/releases',
+            ..htmlUrl ??= 'https://gitee.com/$owner/$_repo/releases',
         );
       }
     } finally {
@@ -255,49 +260,58 @@ class GitTool {
     return releases;
   }
 
-  GitRelease? _latestReleaseWhereAsset(
-      Iterable<GitRelease> releases, bool test(GitAsset asset)) {
+  GitRelease? _latestReleaseWhereAsset(Iterable<GitRelease> releases,
+      {bool testRelease(GitRelease release)?,
+      bool testAsset(GitAsset asset)?}) {
     // since releases have been sorted, don't need to traverse all releases.
-    for (var release in releases) {
-      for (var asset in release.assets) {
-        if (test(asset)) {
-          release.targetAsset = asset;
-          logger.i('latest release: $release');
-          return release;
-        }
-      }
+    if (testRelease != null) {
+      releases = releases.where((release) => testRelease(release));
     }
-  }
-
-  Future<GitRelease?> latestAppRelease([String? keyword]) async {
-    if (Platform.isAndroid || Platform.isWindows || kDebugMode) {
-      final releases = await resolveReleases(appRep);
-      keyword ??= Platform.operatingSystem;
-      return _latestReleaseWhereAsset(releases, (asset) {
-        return asset.name.toLowerCase().contains(keyword!);
+    if (testAsset != null) {
+      releases = releases.where((release) {
+        for (var asset in release.assets) {
+          if (testAsset(asset)) {
+            release.targetAsset = asset;
+            return true;
+          }
+        }
+        return false;
       });
     }
+    if (releases.isNotEmpty) {
+      return releases.first;
+    }
+    return null;
   }
 
-  String releasesPage(String repo) {
-    return 'https://${source.toShortString()}.com/$owner/$repo/releases';
+  Future<GitRelease?> latestAppRelease([bool test(GitAsset asset)?]) async {
+    if (test == null)
+      test = (asset) =>
+          asset.name.toLowerCase().contains(Platform.operatingSystem);
+    if (Platform.isAndroid || Platform.isWindows || kDebugMode) {
+      final releases = await appReleases;
+      return _latestReleaseWhereAsset(releases, testAsset: test);
+    }
   }
 
   Future<GitRelease?> latestDatasetRelease([bool fullSize = true]) async {
-    final releases = await resolveReleases(datasetRepo);
-    return _latestReleaseWhereAsset(releases, (asset) {
+    final releases = await datasetReleases;
+    return _latestReleaseWhereAsset(releases, testAsset: (asset) {
       return asset.name.toLowerCase() ==
           (fullSize ? 'dataset.zip' : 'dataset-text.zip');
     });
   }
 
-  Future<String?> getReleaseNote([bool test(GitRelease release)?]) async {
-    final releases = await resolveReleases(_appRepo);
-    if (test == null) {
-      test = (release) =>
-          Version.tryParse(release.name)?.build == AppInfo.buildNumber;
-    }
-    return releases.firstWhereOrNull((release) => test!(release))?.body;
+  Future<String?> appReleaseNote([bool test(GitRelease release)?]) async {
+    if (test == null)
+      test =
+          (release) => Version.tryParse(release.name) == AppInfo.versionClass;
+    return (await appReleases).firstWhereOrNull(test)?.body;
+  }
+
+  Future<String?> datasetReleaseNote([bool test(GitRelease release)?]) async {
+    if (test == null) test = (release) => release.name == db.gameData.version;
+    return (await datasetReleases).firstWhereOrNull(test)?.body;
   }
 }
 
@@ -307,14 +321,16 @@ class DownloadDialog extends StatefulWidget {
   final String savePath;
   final String? notes;
   final VoidCallback? onComplete;
+  final String? confirmText;
 
-  const DownloadDialog(
-      {Key? key,
-      required this.url,
-      required this.savePath,
-      this.notes,
-      this.onComplete})
-      : super(key: key);
+  const DownloadDialog({
+    Key? key,
+    required this.url,
+    required this.savePath,
+    this.notes,
+    this.onComplete,
+    this.confirmText,
+  }) : super(key: key);
 
   @override
   _DownloadDialogState createState() => _DownloadDialogState();
@@ -323,6 +339,8 @@ class DownloadDialog extends StatefulWidget {
 class _DownloadDialogState extends State<DownloadDialog> {
   final CancelToken _cancelToken = CancelToken();
   String progress = '-';
+
+  /// -1:not start, 0:started, 1:completed
   int status = -1;
   Dio _dio = Dio();
 
@@ -336,13 +354,14 @@ class _DownloadDialogState extends State<DownloadDialog> {
   }
 
   Future<void> startDownload() async {
-    status = 0;
     print('download from ${widget.url}');
     final t0 = DateTime.now();
     if (widget.url?.isNotEmpty != true) {
-      print('url cannot be null or empty');
+      EasyLoading.showToast('url cannot be null or empty');
       return;
     }
+    status = 0;
+    setState(() {});
     try {
       final response = await _dio.download(
         widget.url!,
@@ -375,9 +394,7 @@ class _DownloadDialogState extends State<DownloadDialog> {
 
   void onDownloadComplete(Response response) {
     status = 1;
-    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
-      if (mounted) setState(() {});
-    });
+    if (mounted) setState(() {});
   }
 
   @override
@@ -408,9 +425,13 @@ class _DownloadDialogState extends State<DownloadDialog> {
           },
           child: Text(S.of(context).cancel),
         ),
-        if (status < 0 && widget.url?.isNotEmpty == true)
+        if (status < 1)
           TextButton(
-              onPressed: startDownload, child: Text(S.of(context).download)),
+            onPressed: status < 0 && widget.url?.isNotEmpty == true
+                ? startDownload
+                : null,
+            child: Text(S.of(context).download),
+          ),
         if (status > 0)
           TextButton(
             onPressed: () {
@@ -420,7 +441,7 @@ class _DownloadDialogState extends State<DownloadDialog> {
                 Navigator.of(context).pop();
               }
             },
-            child: Text(S.of(context).ok),
+            child: Text(widget.confirmText ?? S.of(context).confirm),
           )
       ],
     );

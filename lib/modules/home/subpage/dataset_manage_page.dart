@@ -4,14 +4,11 @@ import 'dart:io';
 import 'dart:math' show min;
 
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/git_tool.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:json_patch/json_patch.dart';
-import 'package:path/path.dart' as pathlib;
 import 'package:share/share.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class DatasetManagePage extends StatefulWidget {
   @override
@@ -116,11 +113,11 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 title: Text(S.of(context).version),
                 trailing: Text(db.gameData.version),
               ),
-              ListTile(
-                title: Text(S.of(context).download_latest_gamedata),
-                subtitle: Text('为确保兼容性，更新前请升级至最新版APP'),
-                onTap: downloadGamedata,
-              ),
+              // ListTile(
+              //   title: Text(S.of(context).download_latest_gamedata),
+              //   subtitle: Text('为确保兼容性，更新前请升级至最新版APP'),
+              //   onTap: downloadGamedata,
+              // ),
               ListTile(
                 title: Text(S.of(context).reload_default_gamedata),
                 onTap: () {
@@ -227,66 +224,6 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
     } finally {
       canceler?.call();
     }
-  }
-
-  void downloadGamedata() {
-    void _downloadAsset([bool fullSize = true]) async {
-      final gitTool = GitTool.fromIndex(0);
-      final release = await gitTool.latestDatasetRelease(fullSize);
-      Navigator.of(context).pop();
-      String fp = pathlib.join(
-          db.paths.tempDir, '${release?.name}-${release?.targetAsset?.name}');
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => DownloadDialog(
-          url: release?.targetAsset?.browserDownloadUrl ?? '',
-          savePath: fp,
-          notes: release?.body,
-          onComplete: () async {
-            var canceler = showMyProgress(status: 'loading');
-            try {
-              await db.extractZip(fp: fp, savePath: db.paths.gameDir);
-              db.loadGameData();
-              Navigator.of(context).pop();
-              canceler();
-              EasyLoading.showToast(S.of(context).import_data_success);
-            } catch (e) {
-              canceler();
-              EasyLoading.showToast(S.of(context).import_data_error(e));
-            } finally {}
-          },
-        ),
-      );
-    }
-
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: Text(S.of(context).dataset_type_entire),
-              subtitle: Text(S.of(context).dataset_type_entire_hint),
-              onTap: () => _downloadAsset(true),
-            ),
-            ListTile(
-              title: Text(S.of(context).dataset_type_text),
-              subtitle: Text(S.of(context).dataset_type_text_hint),
-              onTap: () => _downloadAsset(false),
-            ),
-            ListTile(
-              title: Text(S.of(context).dataset_goto_download_page),
-              subtitle: Text(S.of(context).dataset_goto_download_page_hint),
-              onTap: () {
-                launch(GitTool.getReleasePageUrl(0, false));
-              },
-            )
-          ],
-        );
-      },
-    );
   }
 
   Future<void> clearCache() async {

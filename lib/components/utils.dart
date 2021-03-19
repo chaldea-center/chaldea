@@ -294,7 +294,19 @@ void checkAppUpdate([bool background = true]) async {
   String? releaseNote;
   String? launchUrl;
   try {
-    if (Platform.isIOS) {
+    if (Platform.isAndroid || Platform.isWindows || kDebugMode) {
+      GitTool gitTool = GitTool.fromDb();
+      final release =
+          await gitTool.latestAppRelease(kDebugMode ? (asset) => true : null);
+      versionString = release?.name;
+      if (versionString?.startsWith('v') == true)
+        versionString = versionString!.substring(1);
+      // v1.x.y+z
+      releaseNote = release?.body;
+      // launchUrl = release!.htmlUrl
+      // launchUrl = release!.targetAsset!.browserDownloadUrl;
+      launchUrl = gitTool.appReleaseUrl;
+    } else if (Platform.isIOS) {
       // use https and set UA, or the fetched info may be outdated
       // this http request always return iOS version result
       final response = await Dio()
@@ -311,23 +323,11 @@ void checkAppUpdate([bool background = true]) async {
       final result = jsonData['results'][0];
       versionString = result['version'];
       releaseNote = result['releaseNotes'];
-    } else if (Platform.isAndroid || Platform.isWindows || kDebugMode) {
-      GitTool gitTool = GitTool.fromIndex(0);
-      String? keyword = kDebugMode ? 'windows' : null;
-      final release = await gitTool.latestAppRelease(keyword);
-      versionString = release?.name;
-      if (versionString?.startsWith('v') == true)
-        versionString = versionString!.substring(1);
-      // v1.x.y+z
-      releaseNote = release?.body;
-      // launchUrl = release!.htmlUrl
-      // launchUrl = release!.targetAsset!.browserDownloadUrl;
-      launchUrl = GitTool.getReleasePageUrl(0, true);
     } else if (Platform.isMacOS) {
       // not supported yet
     }
-  } catch (e) {
-    logger.e('Query update failed: $e');
+  } catch (e, s) {
+    logger.e('Query update failed: $e', e, s);
   }
   if (versionString == null) {
     logger.w('Failed to query app updates');
@@ -378,9 +378,11 @@ void checkAppUpdate([bool background = true]) async {
   // background&&upgradable, user-click
   SimpleCancelOkDialog(
     title: Text(S.of(context).about_update_app),
-    content: Text(
-      S.of(context).about_update_app_detail(
-          AppInfo.fullVersion, versionString, releaseNote ?? '-'),
+    content: SingleChildScrollView(
+      child: Text(
+        S.of(context).about_update_app_detail(
+            AppInfo.fullVersion, versionString, releaseNote ?? '-'),
+      ),
     ),
     hideOk: true,
     actions: [

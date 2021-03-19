@@ -10,6 +10,7 @@ class MainFlutterWindow: NSWindow {
 
     RegisterGeneratedPlugins(registry: flutterViewController)
 
+    level = NSWindow.Level.floating
     super.awakeFromNib()
   }
 }
