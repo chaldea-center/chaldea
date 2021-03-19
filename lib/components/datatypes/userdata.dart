@@ -13,7 +13,7 @@ class UserData {
   int updateSource;
 
   // user-related game data
-  String curUserKey;
+  String _curUserKey;
 
   Map<String, User> users;
 
@@ -46,7 +46,7 @@ class UserData {
         galleries = galleries ?? {},
         updateSource =
             fixValidRange(updateSource ?? 0, 0, GitSource.values.length),
-        curUserKey = curUserKey ?? 'default',
+        _curUserKey = curUserKey ?? 'default',
         users = users ?? {},
         svtFilter = svtFilter ?? SvtFilterData(),
         craftFilter = craftFilter ?? CraftFilterData(),
@@ -59,8 +59,17 @@ class UserData {
       String defaultName = 'default';
       this.users[defaultName] = User(name: defaultName);
     }
-    if (!this.users.containsKey(curUserKey)) {
-      this.curUserKey = this.users.keys.first;
+    if (!this.users.containsKey(_curUserKey)) {
+      this._curUserKey = this.users.keys.first;
+    }
+  }
+
+  String get curUserKey => _curUserKey;
+
+  set curUserKey(String key) {
+    if (users.containsKey(key)) {
+      _curUserKey = key;
+      db.gameData.updateUserDuplicatedServants();
     }
   }
 

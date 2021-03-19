@@ -37,7 +37,7 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
               quest: quest,
               itemCount: itemCount,
               favorite: svtFavorite,
-              svt: db.gameData.servants[svtNo]!,
+              svt: db.gameData.servantsWithUser[svtNo]!,
             ));
           }
         }
@@ -95,7 +95,7 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
       sortReversed = [true, false, true];
     }
     svts.sort((a, b) => Servant.compare(
-        db.gameData.servants[a]!, db.gameData.servants[b]!,
+        db.gameData.servantsWithUser[a]!, db.gameData.servantsWithUser[b]!,
         keys: sortKeys, reversed: sortReversed, user: db.curUser));
     return svts;
   }

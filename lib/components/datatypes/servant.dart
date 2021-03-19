@@ -6,6 +6,8 @@ enum SvtCompare { no, className, rarity, atk, hp, priority }
 class Servant {
   // left avatar & model
   int no;
+  @JsonKey(ignore: true)
+  int originNo;
   String mcLink;
   String icon;
   ServantBaseInfo info;
@@ -38,7 +40,13 @@ class Servant {
     required this.voices,
     required this.bondCraft,
     required this.valentineCraft,
-  });
+  }) : originNo = no;
+
+  Servant duplicate(int newNo) {
+    return Servant.fromJson(deepCopy(this))
+      ..no = newNo
+      ..originNo = originNo;
+  }
 
   /// [cur]=[target]=null: all
   /// [cur.favorite]=[target.favorite]=true

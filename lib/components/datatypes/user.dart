@@ -21,6 +21,9 @@ class User {
   /// milliseconds of event's startTimeJP
   int msProgress;
 
+  // <svt_no_for_user, origin_svt_user>
+  Map<int, int> duplicatedServants;
+
   User({
     String? name,
     Map<int, ServantStatus>? servants,
@@ -32,6 +35,7 @@ class User {
     Set<String>? plannedSummons,
     bool? isMasterGirl,
     int? msProgress,
+    Map<int, int>? duplicatedServants,
   })  : name = name?.isNotEmpty == true ? name! : 'default',
         servants = servants ?? {},
         curSvtPlanNo = curSvtPlanNo ?? 0,
@@ -41,7 +45,8 @@ class User {
         mysticCodes = mysticCodes ?? {},
         plannedSummons = plannedSummons ?? <String>{},
         isMasterGirl = isMasterGirl ?? true,
-        msProgress = msProgress ?? -1 {
+        msProgress = msProgress ?? -1,
+        duplicatedServants = duplicatedServants ?? {} {
     this.curSvtPlanNo =
         fixValidRange(this.curSvtPlanNo, 0, this.servantPlans.length);
     fillListValue(this.servantPlans, max(5, this.servantPlans.length),
@@ -51,6 +56,19 @@ class User {
   Map<int, ServantPlan> get curSvtPlan {
     curSvtPlanNo = fixValidRange(curSvtPlanNo, 0, servantPlans.length - 1);
     return servantPlans[curSvtPlanNo];
+  }
+
+  Servant addDuplicatedForServant(Servant svt) {
+    for (int no = svt.originNo * 1000 + 1; no < svt.originNo * 1000 + 999; no++) {
+      if (!db.gameData.servantsWithUser.containsKey(no)) {
+        duplicatedServants[no] = svt.originNo;
+        final newSvt=svt.duplicate(no);
+        db.gameData.servantsWithUser[no]=newSvt;
+        return newSvt;
+        // return
+      }
+    }
+    return svt;
   }
 
   void ensurePlanLarger() {

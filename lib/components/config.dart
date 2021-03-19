@@ -102,6 +102,7 @@ class Database {
       final newData = UserData.fromJson(
           getJsonFromFile(paths.userDataPath, k: () => <String, dynamic>{}));
       userData = newData;
+      gameData.updateUserDuplicatedServants();
       logger.d('userdata loaded.');
       return true;
     } catch (e, s) {
@@ -110,11 +111,12 @@ class Database {
       return false;
     }
   }
-
   bool loadGameData() {
     final t = TimeCounter('loadGameData');
     try {
       gameData = GameData.fromJson(getJsonFromFile(paths.gameDataPath));
+      // userdata is loaded before gamedata, safe to use curUser
+      gameData.updateUserDuplicatedServants();
       logger.d('game data loaded, version ${gameData.version}.');
       t.elapsed();
       itemStat.clear();

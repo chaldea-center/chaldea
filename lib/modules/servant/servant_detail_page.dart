@@ -174,6 +174,15 @@ class ServantDetailPageState extends State<ServantDetailPage>
             child: Text(S.of(context).jump_to('Mooncell')),
             value: 'jump_mc',
           ),
+          PopupMenuItem<String>(
+            child: Text('生成2号机'),
+            value: 'duplicate_svt',
+          ),
+          if (svt.no != svt.originNo)
+            PopupMenuItem<String>(
+              child: Text('销毁2号机'),
+              value: 'delete_duplicated',
+            ),
         ];
       },
       onSelected: (select) {
@@ -203,6 +212,27 @@ class ServantDetailPageState extends State<ServantDetailPage>
           });
         } else if (select == 'jump_mc') {
           launch(MooncellUtil.fullLink(svt.mcLink, encode: true));
+        } else if (select == 'duplicate_svt') {
+          final newSvt = db.curUser.addDuplicatedForServant(svt);
+          print('add ${newSvt.no}');
+          if (newSvt == svt) {
+            SimpleCancelOkDialog(
+              title: Text('复制从者失败'),
+              content: Text('同一从者超过999个上限'),
+            ).show(context);
+          } else {
+            SplitRoute.push(
+              context: context,
+              builder: (context, _) => ServantDetailPage(newSvt),
+              detail: true,
+            );
+            db.notifyDbUpdate();
+          }
+        } else if (select == 'delete_duplicated') {
+          db.curUser.duplicatedServants.remove(svt.no);
+          db.gameData.updateUserDuplicatedServants();
+          db.notifyDbUpdate();
+          Navigator.pop(context);
         }
       },
     );

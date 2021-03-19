@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-const bool kDebugMode_ = kDebugMode && false;
+const bool kDebugMode_ = kDebugMode && true;
 
 //typedef
 //const value

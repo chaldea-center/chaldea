@@ -311,7 +311,7 @@ class ServantListPageState extends State<ServantListPage> {
     db.curUser.ensurePlanLarger();
     shownList = [];
     beforeFiltrate();
-    db.gameData.servants.forEach((no, svt) {
+    db.gameData.servantsWithUser.forEach((no, svt) {
       if (filterData.favorite == 0 ||
           filterData.favorite ==
               ((db.curUser.svtStatusOf(no).curVal.favorite) ? 1 : 2)) {

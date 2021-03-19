@@ -1215,6 +1215,12 @@ User _$UserFromJson(Map<String, dynamic> json) {
           (v) => (v as List<dynamic>?)?.map((e) => e as String).toSet()),
       isMasterGirl: $checkedConvert(json, 'isMasterGirl', (v) => v as bool?),
       msProgress: $checkedConvert(json, 'msProgress', (v) => v as int?),
+      duplicatedServants: $checkedConvert(
+          json,
+          'duplicatedServants',
+          (v) => (v as Map<String, dynamic>?)?.map(
+                (k, e) => MapEntry(int.parse(k), e as int),
+              )),
     );
     return val;
   });
@@ -1233,6 +1239,8 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'plannedSummons': instance.plannedSummons.toList(),
       'isMasterGirl': instance.isMasterGirl,
       'msProgress': instance.msProgress,
+      'duplicatedServants':
+          instance.duplicatedServants.map((k, e) => MapEntry(k.toString(), e)),
     };
 
 ServantStatus _$ServantStatusFromJson(Map<String, dynamic> json) {
@@ -1413,13 +1421,13 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'galleries': instance.galleries,
       'serverRoot': instance.serverRoot,
       'updateSource': instance.updateSource,
-      'curUserKey': instance.curUserKey,
       'users': instance.users,
       'svtFilter': instance.svtFilter,
       'craftFilter': instance.craftFilter,
       'cmdCodeFilter': instance.cmdCodeFilter,
       'glpkParams': instance.glpkParams,
       'itemAbundantValue': instance.itemAbundantValue,
+      'curUserKey': instance.curUserKey,
     };
 
 SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {

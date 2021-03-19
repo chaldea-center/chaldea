@@ -102,7 +102,7 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
     final emptyPlan = ServantPlan(favorite: true);
     db.curUser.servants.forEach((no, svtStat) {
       if (svtStat.curVal.favorite != true) return;
-      final svt = db.gameData.servants[no]!;
+      final svt = db.gameData.servantsWithUser[no]!;
       sumDict(
         [allItemCost, svt.getAllCost(cur: emptyPlan, target: svtStat.curVal)],
         inPlace: true,

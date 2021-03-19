@@ -72,6 +72,10 @@ class NumberInputFormatter extends TextInputFormatter {
   }
 }
 
+dynamic deepCopy(dynamic obj) {
+  return jsonDecode(jsonEncode(obj));
+}
+
 /// Sum a list of number, list item defaults to 0 if null
 T sum<T extends num>(Iterable<T?> x) {
   if (0 is T) {

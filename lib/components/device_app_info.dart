@@ -165,7 +165,7 @@ class AppInfo {
         uuidFile.writeAsStringSync(_uniqueId!);
       }
     }
-    logger.i('Unique ID: $_uniqueId');
+    // logger.i('Unique ID: $_uniqueId');
   }
 
   /// resolve when init app, so no need to check null or resolve every time

@@ -16,6 +16,9 @@ class GameData {
   Map<String, MysticCode> mysticCodes;
   Map<String, Summon> summons;
 
+  @JsonKey(ignore: true)
+  Map<int, Servant> servantsWithUser;
+
   GameData({
     this.version = '0',
     this.servants = const {},
@@ -38,7 +41,20 @@ class GameData {
                 costs: [],
                 matrix: [],
                 freeCounts: {},
-                weeklyMissionData: []);
+                weeklyMissionData: []),
+        servantsWithUser = Map.of(servants);
+
+  void updateUserDuplicatedServants([Map<int, int>? duplicated]) {
+    duplicated ??= db.curUser.duplicatedServants;
+    servantsWithUser = Map.of(servants);
+    duplicated.forEach((duplicatedSvtNo, originSvtNo) {
+      if (!servants.containsKey(duplicatedSvtNo) &&
+          servants.containsKey(originSvtNo)) {
+        servantsWithUser[duplicatedSvtNo] =
+            servants[originSvtNo]!.duplicate(duplicatedSvtNo);
+      }
+    });
+  }
 
   Quest? getFreeQuest(String key) {
     if (freeQuests.containsKey(key)) return freeQuests[key]!;

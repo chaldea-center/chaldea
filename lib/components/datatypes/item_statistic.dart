@@ -85,7 +85,7 @@ class SvtCostItems {
       allItemCounts = SvtParts(k: () => {});
     }
     // bySvt
-    db.gameData.servants.forEach((no, svt) {
+    db.gameData.servantsWithUser.forEach((no, svt) {
       final cur = curStat[no]?.curVal, target = targetPlan[no];
       // planned
       SvtParts<Map<String, int>> a, b;

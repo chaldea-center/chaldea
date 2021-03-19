@@ -91,7 +91,7 @@ class ItemCostServantPage extends StatelessWidget {
     List<Widget> children = [];
     var sortedSvts = sortSvts(src.keys.toList());
     sortedSvts.forEach((svtNo) {
-      final svt = db.gameData.servants[svtNo]!;
+      final svt = db.gameData.servantsWithUser[svtNo]!;
       final num = src![svtNo]!;
       bool showShadow =
           highlight && db.curUser.svtStatusOf(svtNo).curVal.favorite;
@@ -143,7 +143,7 @@ class ItemCostServantPage extends StatelessWidget {
       if (allNum <= 0) {
         return;
       }
-      final svt = db.gameData.servants[svtNo]!;
+      final svt = db.gameData.servantsWithUser[svtNo]!;
       bool _planned = db.curUser.svtStatusOf(svtNo).curVal.favorite;
       final textStyle = _planned ? TextStyle(color: Colors.blueAccent) : null;
       final ascensionNum = details.ascension[itemKey]?[svtNo] ?? 0,
@@ -184,7 +184,7 @@ class ItemCostServantPage extends StatelessWidget {
       sortReversed = [true, false, true];
     }
     svts.sort((a, b) => Servant.compare(
-        db.gameData.servants[a]!, db.gameData.servants[b]!,
+        db.gameData.servantsWithUser[a]!, db.gameData.servantsWithUser[b]!,
         keys: sortKeys, reversed: sortReversed, user: db.curUser));
     return svts;
   }
