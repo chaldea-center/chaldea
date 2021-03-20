@@ -25,7 +25,9 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
 
   int totalQuartz = 0;
   int totalTimes = 0;
-  List newAdded = []; //List of Servant or Craft
+  int _curHistory = -1;
+  List<List> history = [];
+
   Map<dynamic, int> allSummons = {};
 
   // [(card1,0),(card2,0.4),...,(cardN,99.0)]
@@ -52,7 +54,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     setState(() {
       totalTimes = 0;
       totalQuartz = 0;
-      newAdded.clear();
+      // newAdded.clear();
+      history.clear();
       allSummons.clear();
     });
   }
@@ -181,11 +184,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       contentBuilder: (context) => Padding(
         padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
         child: Center(
-          child: Wrap(
-            children: counts,
-            // spacing: 6,
-            // runSpacing: 6,
-          ),
+          child: Wrap(children: counts),
         ),
       ),
     );
@@ -258,6 +257,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   }
 
   Widget curResult() {
+    if (history.isEmpty) return Container();
+
     Widget _buildRow(List rowItems) {
       return Row(
         mainAxisSize: MainAxisSize.min,
@@ -265,22 +266,69 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       );
     }
 
-    List<Widget> rows = [];
-    rows.add(_buildRow(newAdded.sublist(0, min(6, newAdded.length))));
-    if (newAdded.length > 6)
-      rows.add(_buildRow(newAdded.sublist(6, newAdded.length)));
-    Widget child = Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: rows,
+    Widget _buildOneHistory(List data) {
+      List<Widget> rows = [];
+      rows.add(_buildRow(data.sublist(0, min(6, data.length))));
+      if (data.length > 6) rows.add(_buildRow(data.sublist(6, data.length)));
+      Widget child = Padding(
+        padding: EdgeInsets.symmetric(vertical: 8),
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: rows,
+          ),
         ),
-      ),
+      );
+      if (data.isNotEmpty)
+        child = FittedBox(
+          child: child,
+          fit: BoxFit.scaleDown,
+        );
+      return child;
+    }
+
+    if (_curHistory < 0 || _curHistory >= history.length)
+      _curHistory = history.length - 1;
+    return Column(
+      children: [
+        Row(
+          children: [
+            IconButton(
+              onPressed: _curHistory == 0
+                  ? null
+                  : () {
+                      setState(() {
+                        _curHistory -= 1;
+                      });
+                    },
+              icon: Icon(Icons.keyboard_arrow_left),
+            ),
+            Expanded(
+              child: AspectRatio(
+                aspectRatio: 10 / 4,
+                child: _buildOneHistory(history[_curHistory]),
+              ),
+            ),
+            IconButton(
+              onPressed: _curHistory == history.length - 1
+                  ? null
+                  : () {
+                      setState(() {
+                        _curHistory += 1;
+                      });
+                    },
+              icon: Icon(Icons.keyboard_arrow_right),
+            ),
+          ],
+        ),
+        Text(
+          '${_curHistory + 1}/${history.length}',
+          style: Theme.of(context).textTheme.caption,
+        ),
+        Padding(padding: EdgeInsets.only(bottom: 6)),
+      ],
     );
-    if (newAdded.isNotEmpty) child = FittedBox(child: child);
-    return child;
   }
 
   Widget get gacha1 {
@@ -339,20 +387,21 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
         child: ImageWithText(
           image: db.getIconImage(obj.icon, width: 50),
           text: text,
-          // padding: EdgeInsets.only(bottom: 16),
         ),
       ),
     );
   }
 
   void startGacha(int times, int quartz) {
-    newAdded = summonWithGuarantee(times);
-    newAdded.shuffle();
+    List newAdded = summonWithGuarantee(times);
+    newAdded.shuffle(random);
     newAdded.forEach((element) {
       allSummons[element] = (allSummons[element] ?? 0) + 1;
     });
+    history.add(newAdded);
     totalTimes += times;
     totalQuartz += quartz;
+    _curHistory = history.length - 1;
     setState(() {});
   }
 
