@@ -14,9 +14,9 @@ import 'quest_efficiency_tab.dart';
 import 'quest_plan_tab.dart';
 
 class DropCalculatorPage extends StatefulWidget {
-  final Map<String, int> objectiveCounts;
+  final Map<String, int>? objectiveCounts;
 
-  DropCalculatorPage({Key? key, this.objectiveCounts = const {}})
+  DropCalculatorPage({Key? key, this.objectiveCounts})
       : super(key: key);
 
   @override

@@ -7,18 +7,23 @@ class MysticCodePage extends StatefulWidget {
 }
 
 class _MysticCodePageState extends State<MysticCodePage> {
-  Map<String, MysticCode> get mysticCodes => db.gameData.mysticCodes;
-  String selected = db.gameData.mysticCodes.keys.first;
+  List<String> codes = db.gameData.mysticCodes.keys.toList();
+  int _curIndex = 0;
+
+  String get _curCodeName => codes[_curIndex];
+  late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
   }
 
   @override
   Widget build(BuildContext context) {
-    final MysticCode mysticCode = mysticCodes[selected]!;
-    final int _level = db.curUser.mysticCodes[selected] ?? 10;
+    if (db.gameData.mysticCodes.isEmpty) return Container();
+    final MysticCode mysticCode = db.gameData.mysticCodes[_curCodeName]!;
+    final int _level = db.curUser.mysticCodes[_curCodeName] ?? 10;
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
@@ -50,7 +55,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
                 child: Slider(
                   value: _level.toDouble(),
                   onChanged: (v) => setState(
-                      () => db.curUser.mysticCodes[selected] = v.toInt()),
+                      () => db.curUser.mysticCodes[_curCodeName] = v.toInt()),
                   min: 1.0,
                   max: 10.0,
                   divisions: 9,
@@ -68,25 +73,29 @@ class _MysticCodePageState extends State<MysticCodePage> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Icon(Icons.keyboard_arrow_left, color: Colors.grey),
+        IconButton(
+          onPressed: () => _scrollTo(-1),
+          icon: Icon(Icons.keyboard_arrow_left, color: Colors.grey),
+        ),
         Expanded(
           child: Container(
             margin: EdgeInsets.symmetric(vertical: 10),
             height: 50,
             child: ListView(
+              controller: _scrollController,
               scrollDirection: Axis.horizontal,
-              children: mysticCodes.entries.map((entry) {
-                final code = entry.value;
+              children: List.generate(codes.length, (index) {
+                final code = db.gameData.mysticCodes[codes[index]]!;
                 return Padding(
                   padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
                   child: Container(
                     decoration: BoxDecoration(
                         border: Border.all(
-                            color: selected == entry.key
+                            color: _curIndex == index
                                 ? Colors.blue
                                 : Colors.transparent)),
                     child: GestureDetector(
-                      onTap: () => setState(() => selected = entry.key),
+                      onTap: () => setState(() => _curIndex = index),
                       child: db.getIconImage(
                           db.curUser.isMasterGirl ? code.icon2 : code.icon1,
                           width: 50,
@@ -98,9 +107,25 @@ class _MysticCodePageState extends State<MysticCodePage> {
             ),
           ),
         ),
-        Icon(Icons.keyboard_arrow_right, color: Colors.grey),
+        IconButton(
+          onPressed: () => _scrollTo(1),
+          icon: Icon(Icons.keyboard_arrow_right, color: Colors.grey),
+        ),
       ],
     );
+  }
+
+  void _scrollTo(int dx) {
+    _curIndex = fixValidRange(_curIndex + dx, 0, codes.length - 1);
+    setState(() {});
+    if (codes.length > 1) {
+      final length = _scrollController.position.maxScrollExtent -
+          _scrollController.position.minScrollExtent;
+      final offset = length / (codes.length - 1) * _curIndex +
+          _scrollController.position.minScrollExtent;
+      _scrollController.animateTo(offset,
+          duration: Duration(milliseconds: 200), curve: Curves.easeOut);
+    }
   }
 
   Widget buildDetails2(MysticCode mysticCode) {
@@ -327,5 +352,11 @@ class _MysticCodePageState extends State<MysticCodePage> {
           ),
         ),
     ];
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
   }
 }

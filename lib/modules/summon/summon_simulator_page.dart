@@ -169,10 +169,12 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
 
   Widget accResultOf(bool isSvt, int rarity) {
     List<Widget> counts = [];
+    int totalCount = 0;
     allSummons.forEach((key, value) {
       if ((isSvt && key is Servant && key.info.rarity == rarity) ||
           (!isSvt && key is CraftEssence && key.rarity == rarity)) {
         counts.add(_cardIcon(key, value.toString()));
+        totalCount += value;
       }
     });
     return SimpleAccordion(
@@ -180,6 +182,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       headerBuilder: (context, _) => ListTile(
         dense: true,
         title: Text('获得的★$rarity${isSvt ? "英灵" : "礼装"}'),
+        trailing: Text(totalCount.toString()),
       ),
       contentBuilder: (context) => Padding(
         padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
