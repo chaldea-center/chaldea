@@ -90,6 +90,7 @@ class SvtFilterData {
   bool useGrid;
 
   bool hasDress;
+  bool isUserDefineSvt;
   FilterGroupData planCompletion;
   FilterGroupData skillLevel;
   FilterGroupData priority;
@@ -111,6 +112,7 @@ class SvtFilterData {
     List<bool>? sortReversed,
     bool? useGrid,
     bool? hasDress,
+    bool? isUserDefineSvt,
     FilterGroupData? planCompletion,
     FilterGroupData? skillLevel,
     FilterGroupData? priority,
@@ -131,6 +133,7 @@ class SvtFilterData {
         sortReversed = sortReversed ?? List.generate(3, (index) => true),
         useGrid = useGrid ?? false,
         hasDress = hasDress ?? false,
+        isUserDefineSvt = isUserDefineSvt ?? false,
         planCompletion = planCompletion ?? FilterGroupData(),
         skillLevel = skillLevel ?? FilterGroupData(),
         priority = priority ?? FilterGroupData(),
@@ -171,6 +174,7 @@ class SvtFilterData {
     // sortKeys = List.generate(sortKeys.length, (i) => sortKeyData[i]);
     // sortReversed = List.filled(sortKeys.length, false);
     hasDress = false;
+    isUserDefineSvt = false;
     for (var group in groupValues) {
       group.reset();
     }

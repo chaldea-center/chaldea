@@ -174,10 +174,11 @@ class ServantDetailPageState extends State<ServantDetailPage>
             child: Text(S.of(context).jump_to('Mooncell')),
             value: 'jump_mc',
           ),
-          PopupMenuItem<String>(
-            child: Text('生成2号机'),
-            value: 'duplicate_svt',
-          ),
+          if (!Servant.unavailable.contains(svt.originNo))
+            PopupMenuItem<String>(
+              child: Text('生成2号机'),
+              value: 'duplicate_svt',
+            ),
           if (svt.no != svt.originNo)
             PopupMenuItem<String>(
               child: Text('销毁2号机'),

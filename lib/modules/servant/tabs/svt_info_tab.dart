@@ -113,7 +113,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
           CustomTableRow.fromTexts(
               texts: [svt.info.nameEn ?? '-'], defaults: contentData),
           CustomTableRow.fromTexts(
-              texts: ['No.${svt.no}', svt.info.className],
+              texts: ['No.${svt.originNo}', svt.info.className],
               defaults: contentData),
           CustomTableRow.fromTexts(
               texts: [S.current.illustrator, S.current.info_cv],

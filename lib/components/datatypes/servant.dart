@@ -175,7 +175,8 @@ class Servant {
       int r;
       switch (keys[i]) {
         case SvtCompare.no:
-          r = a.no - b.no;
+          r = a.originNo - b.originNo;
+          if (r == 0) r = a.no - b.no;
           break;
         case SvtCompare.className:
           r = a.getClassSortIndex() - b.getClassSortIndex();
@@ -194,7 +195,7 @@ class Servant {
           r = (aa?.priority ?? 1) - (bb?.priority ?? 1);
           break;
       }
-      res = res * 1000 + ((reversed?.elementAt(i) ?? false) ? -r : r);
+      res = res * 1000000 + ((reversed?.elementAt(i) ?? false) ? -r : r);
     }
     return res;
   }

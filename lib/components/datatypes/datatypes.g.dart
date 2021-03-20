@@ -1444,6 +1444,8 @@ SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
           (v) => (v as List<dynamic>?)?.map((e) => e as bool).toList()),
       useGrid: $checkedConvert(json, 'useGrid', (v) => v as bool?),
       hasDress: $checkedConvert(json, 'hasDress', (v) => v as bool?),
+      isUserDefineSvt:
+          $checkedConvert(json, 'isUserDefineSvt', (v) => v as bool?),
       planCompletion: $checkedConvert(
           json,
           'planCompletion',
@@ -1543,6 +1545,7 @@ Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
       'sortReversed': instance.sortReversed,
       'useGrid': instance.useGrid,
       'hasDress': instance.hasDress,
+      'isUserDefineSvt': instance.isUserDefineSvt,
       'planCompletion': instance.planCompletion,
       'skillLevel': instance.skillLevel,
       'priority': instance.priority,

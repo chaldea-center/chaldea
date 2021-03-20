@@ -100,6 +100,11 @@ class ServantListPageState extends State<ServantListPage> {
         return false;
       }
     }
+    if (filterData.isUserDefineSvt) {
+      if (svt.originNo == svt.no) {
+        return false;
+      }
+    }
     if (filterData.planCompletion.options.containsValue(true)) {
       if (svtStat.curVal.favorite != true) return false;
       bool planNotComplete = <bool>[

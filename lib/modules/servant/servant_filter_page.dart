@@ -40,6 +40,16 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
               });
             },
           ),
+          FilterOption(
+            selected: filterData.isUserDefineSvt,
+            value: '2号机',
+            onChanged: (v) {
+              setState(() {
+                filterData.isUserDefineSvt = v;
+                update();
+              });
+            },
+          ),
         ]),
         getGroup(header: S.of(context).filter_sort, children: [
           for (int i = 0; i < filterData.sortKeys.length; i++)
