@@ -20,6 +20,8 @@ import '../git_tool.dart';
 import '../logger.dart';
 import '../utils.dart';
 
+part 'bili_response.dart';
+
 part 'cmd_code.dart';
 
 part 'craft_essence.dart';

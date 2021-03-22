@@ -70,6 +70,28 @@ class UserData {
     if (users.containsKey(key)) {
       _curUserKey = key;
       db.gameData.updateUserDuplicatedServants();
+      validate();
+    }
+  }
+
+  User get curUser {
+    if (users.isEmpty) {
+      users['default'] = User(name: 'default');
+    }
+    if (!users.containsKey(curUserKey)) {
+      curUserKey = users.keys.first;
+    }
+    return users[curUserKey]!;
+  }
+
+  void validate() {
+    if (db.gameData.servants.isNotEmpty) {
+      curUser.servants.removeWhere(
+          (key, value) => !db.gameData.servantsWithUser.containsKey(key));
+      curUser.servantPlans.forEach((plans) {
+        plans.removeWhere(
+            (key, value) => !db.gameData.servantsWithUser.containsKey(key));
+      });
     }
   }
 

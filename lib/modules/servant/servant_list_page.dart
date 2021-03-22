@@ -427,7 +427,7 @@ class ServantListPageState extends State<ServantListPage> {
           child: ImageWithText(
             image: db.getIconImage(svt.icon),
             text: statusText,
-            fontSize: 11,
+            textStyle: TextStyle(fontSize: 11),
             alignment: AlignmentDirectional.bottomStart,
             padding: EdgeInsets.fromLTRB(4, 0, 8, 0),
             onTap: () {

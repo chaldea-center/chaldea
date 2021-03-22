@@ -8,6 +8,10 @@ class Servant {
   int no;
   @JsonKey(ignore: true)
   int originNo;
+
+  /// the real identity [svtId] in game database
+  /// default -1 for [Servant.unavailable]
+  int svtId;
   String mcLink;
   String icon;
   ServantBaseInfo info;
@@ -28,6 +32,7 @@ class Servant {
 
   Servant({
     required this.no,
+    required this.svtId,
     required this.mcLink,
     required this.icon,
     required this.info,

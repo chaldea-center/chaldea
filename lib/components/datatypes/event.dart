@@ -39,6 +39,7 @@ class Events {
 }
 
 abstract class EventBase {
+  late String mcLink;
   late String name;
   late String nameJp;
   String? startTimeJp;
@@ -50,7 +51,7 @@ abstract class EventBase {
   late int crystal;
   late int grail2crystal;
 
-  String get indexKey;
+  String get indexKey => mcLink;
 
   String get localizedName;
 
@@ -101,6 +102,7 @@ abstract class EventBase {
 class LimitEvent extends EventBase {
   String name;
   String nameJp;
+  String mcLink;
   String? startTimeJp;
   String? endTimeJp;
   String? startTimeCn;
@@ -114,16 +116,8 @@ class LimitEvent extends EventBase {
   Map<String, int> lottery;
   Map<String, String> extra;
 
-  String get indexKey {
-    if (db.gameData.events.limitEvents.containsKey(name)) {
-      return name;
-    }
-    return db.gameData.events.limitEvents.entries
-        .firstWhere((event) => event.value == this)
-        .key;
-  }
-
   LimitEvent({
+    required this.mcLink,
     required this.name,
     required this.nameJp,
     this.startTimeJp,
@@ -178,6 +172,7 @@ class LimitEvent extends EventBase {
 
 @JsonSerializable(checked: true)
 class MainRecord extends EventBase {
+  String mcLink;
   String name;
   String nameJp;
   String? startTimeJp;
@@ -191,17 +186,8 @@ class MainRecord extends EventBase {
   Map<String, int> drops;
   Map<String, int> rewards;
 
-  String get indexKey {
-    if (db.gameData.events.mainRecords.containsKey(name)) {
-      return name;
-    } else {
-      return db.gameData.events.mainRecords.entries
-          .firstWhere((element) => element.value.name == name)
-          .key;
-    }
-  }
-
   MainRecord({
+    required this.mcLink,
     required this.name,
     required this.nameJp,
     this.startTimeJp,

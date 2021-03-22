@@ -6,6 +6,103 @@ part of datatypes;
 // JsonSerializableGenerator
 // **************************************************************************
 
+BiliResponse _$BiliResponseFromJson(Map<String, dynamic> json) {
+  return BiliResponse(
+    userItem: (json['userItem'] as List<dynamic>)
+        .map((e) => UserItem.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    userSvt: (json['userSvt'] as List<dynamic>)
+        .map((e) => UserSvt.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    userSvtStorage: (json['userSvtStorage'] as List<dynamic>)
+        .map((e) => UserSvt.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    userSvtCollection: (json['userSvtCollection'] as List<dynamic>)
+        .map((e) => UserSvtCollection.fromJson(e as Map<String, dynamic>))
+        .toList(),
+  );
+}
+
+Map<String, dynamic> _$BiliResponseToJson(BiliResponse instance) =>
+    <String, dynamic>{
+      'userItem': instance.userItem,
+      'userSvt': instance.userSvt,
+      'userSvtStorage': instance.userSvtStorage,
+      'userSvtCollection': instance.userSvtCollection,
+    };
+
+UserItem _$UserItemFromJson(Map<String, dynamic> json) {
+  return UserItem(
+    itemId: json['itemId'] as String,
+    num: json['num'] as String,
+  );
+}
+
+Map<String, dynamic> _$UserItemToJson(UserItem instance) => <String, dynamic>{
+      'itemId': instance.itemId,
+      'num': instance.num,
+    };
+
+UserSvt _$UserSvtFromJson(Map<String, dynamic> json) {
+  return UserSvt(
+    id: json['id'] as String,
+    svtId: json['svtId'] as String,
+    limitCount: json['limitCount'] as String,
+    lv: json['lv'] as String,
+    exp: json['exp'] as String,
+    adjustHp: json['adjustHp'] as String,
+    adjustAtk: json['adjustAtk'] as String,
+    skillLv1: json['skillLv1'] as String,
+    skillLv2: json['skillLv2'] as String,
+    skillLv3: json['skillLv3'] as String,
+    treasureDeviceLv1: json['treasureDeviceLv1'] as String,
+    exceedCount: json['exceedCount'] as String,
+    createdAt: json['createdAt'] as String,
+    updatedAt: json['updatedAt'] as String,
+    isLock: json['isLock'] as String,
+    hp: json['hp'] as int,
+    atk: json['atk'] as int,
+  );
+}
+
+Map<String, dynamic> _$UserSvtToJson(UserSvt instance) => <String, dynamic>{
+      'id': instance.id,
+      'svtId': instance.svtId,
+      'limitCount': instance.limitCount,
+      'lv': instance.lv,
+      'exp': instance.exp,
+      'adjustHp': instance.adjustHp,
+      'adjustAtk': instance.adjustAtk,
+      'skillLv1': instance.skillLv1,
+      'skillLv2': instance.skillLv2,
+      'skillLv3': instance.skillLv3,
+      'treasureDeviceLv1': instance.treasureDeviceLv1,
+      'exceedCount': instance.exceedCount,
+      'createdAt': instance.createdAt.toIso8601String(),
+      'updatedAt': instance.updatedAt.toIso8601String(),
+      'isLock': instance.isLock,
+      'hp': instance.hp,
+      'atk': instance.atk,
+    };
+
+UserSvtCollection _$UserSvtCollectionFromJson(Map<String, dynamic> json) {
+  return UserSvtCollection(
+    svtId: json['svtId'] as String,
+    friendship: json['friendship'] as String,
+    friendshipRank: json['friendshipRank'] as String,
+    costumeIds:
+        (json['costumeIds'] as List<dynamic>).map((e) => e as int).toList(),
+  );
+}
+
+Map<String, dynamic> _$UserSvtCollectionToJson(UserSvtCollection instance) =>
+    <String, dynamic>{
+      'svtId': instance.svtId,
+      'friendship': instance.friendship,
+      'friendshipRank': instance.friendshipRank,
+      'costumeIds': instance.costumeIds,
+    };
+
 CommandCode _$CommandCodeFromJson(Map<String, dynamic> json) {
   return $checkedNew('CommandCode', json, () {
     final val = CommandCode(
@@ -164,6 +261,7 @@ Map<String, dynamic> _$EventsToJson(Events instance) => <String, dynamic>{
 LimitEvent _$LimitEventFromJson(Map<String, dynamic> json) {
   return $checkedNew('LimitEvent', json, () {
     final val = LimitEvent(
+      mcLink: $checkedConvert(json, 'mcLink', (v) => v as String),
       name: $checkedConvert(json, 'name', (v) => v as String),
       nameJp: $checkedConvert(json, 'nameJp', (v) => v as String),
       startTimeJp: $checkedConvert(json, 'startTimeJp', (v) => v as String?),
@@ -190,6 +288,7 @@ Map<String, dynamic> _$LimitEventToJson(LimitEvent instance) =>
     <String, dynamic>{
       'name': instance.name,
       'nameJp': instance.nameJp,
+      'mcLink': instance.mcLink,
       'startTimeJp': instance.startTimeJp,
       'endTimeJp': instance.endTimeJp,
       'startTimeCn': instance.startTimeCn,
@@ -207,6 +306,7 @@ Map<String, dynamic> _$LimitEventToJson(LimitEvent instance) =>
 MainRecord _$MainRecordFromJson(Map<String, dynamic> json) {
   return $checkedNew('MainRecord', json, () {
     final val = MainRecord(
+      mcLink: $checkedConvert(json, 'mcLink', (v) => v as String),
       name: $checkedConvert(json, 'name', (v) => v as String),
       nameJp: $checkedConvert(json, 'nameJp', (v) => v as String),
       startTimeJp: $checkedConvert(json, 'startTimeJp', (v) => v as String?),
@@ -228,6 +328,7 @@ MainRecord _$MainRecordFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$MainRecordToJson(MainRecord instance) =>
     <String, dynamic>{
+      'mcLink': instance.mcLink,
       'name': instance.name,
       'nameJp': instance.nameJp,
       'startTimeJp': instance.startTimeJp,
@@ -396,6 +497,7 @@ Item _$ItemFromJson(Map<String, dynamic> json) {
   return $checkedNew('Item', json, () {
     final val = Item(
       id: $checkedConvert(json, 'id', (v) => v as int),
+      itemId: $checkedConvert(json, 'itemId', (v) => v as int),
       name: $checkedConvert(json, 'name', (v) => v as String),
       nameJp: $checkedConvert(json, 'nameJp', (v) => v as String?),
       nameEn: $checkedConvert(json, 'nameEn', (v) => v as String?),
@@ -411,6 +513,7 @@ Item _$ItemFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
       'id': instance.id,
+      'itemId': instance.itemId,
       'name': instance.name,
       'nameJp': instance.nameJp,
       'nameEn': instance.nameEn,
@@ -733,6 +836,7 @@ Servant _$ServantFromJson(Map<String, dynamic> json) {
   return $checkedNew('Servant', json, () {
     final val = Servant(
       no: $checkedConvert(json, 'no', (v) => v as int),
+      svtId: $checkedConvert(json, 'svtId', (v) => v as int),
       mcLink: $checkedConvert(json, 'mcLink', (v) => v as String),
       icon: $checkedConvert(json, 'icon', (v) => v as String),
       info: $checkedConvert(json, 'info',
@@ -781,6 +885,7 @@ Servant _$ServantFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'no': instance.no,
+      'svtId': instance.svtId,
       'mcLink': instance.mcLink,
       'icon': instance.icon,
       'info': instance.info,

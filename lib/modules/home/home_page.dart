@@ -55,4 +55,18 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  void test() {
+    Map<Servant, String> stat = {};
+    db.gameData.servants.forEach((key, svt) {
+      if (Servant.unavailable.contains(svt.no)) return;
+      String v = '${svt.info.hpMax}-${svt.info.atkMax}';
+      Servant? a = stat.entries.firstWhereOrNull((e) => e.value == v)?.key;
+      if (a != null) {
+        print('same: ${a.mcLink}, ${svt.mcLink}: $v');
+      } else {
+        stat[svt] = v;
+      }
+    });
+  }
 }

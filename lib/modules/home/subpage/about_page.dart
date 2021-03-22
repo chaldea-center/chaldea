@@ -16,7 +16,8 @@ class _AboutPageState extends State<AboutPage> {
         'Mooncell': 'https://fgo.wiki',
         'NGA-FGO': 'https://bbs.nga.cn/thread.php?fid=540',
         S.current.fgo_domus_aurea:
-            'https://sites.google.com/view/fgo-domus-aurea'
+            'https://sites.google.com/view/fgo-domus-aurea',
+        '茹西教王的理想鄉': 'http://kazemai.github.io/fgo-vz/'
       };
 
   final crashFile = File(db.paths.crashLog);

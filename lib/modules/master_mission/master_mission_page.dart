@@ -291,8 +291,11 @@ class _MasterMissionPageState extends State<MasterMissionPage>
     }
     return SimpleAccordion(
       expanded: true,
-      headerBuilder: (context, _) =>
-          ListTile(leading: Icon(Icons.list), title: Text('任务列表')),
+      headerBuilder: (context, _) => ListTile(
+        leading: Icon(Icons.list),
+        title: Text('任务列表'),
+        horizontalTitleGap: 0,
+      ),
       contentBuilder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: divideTiles(children),
@@ -346,6 +349,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
         leading: Icon(Icons.list_alt),
         title: Text('Solution'),
         trailing: Text('$totalAP AP'),
+        horizontalTitleGap: 0,
       ),
       contentBuilder: (context) => Column(
         mainAxisSize: MainAxisSize.min,

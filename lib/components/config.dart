@@ -35,12 +35,7 @@ class Database {
 
   SharedPrefs prefs = SharedPrefs();
 
-  User get curUser {
-    if (!userData.users.containsKey(userData.curUserKey)) {
-      userData.curUserKey = userData.users.keys.first;
-    }
-    return userData.users[userData.curUserKey]!;
-  }
+  User get curUser => userData.curUser;
 
   final ItemStatistics itemStat = ItemStatistics();
   final RuntimeData runtimeData = RuntimeData();
@@ -103,6 +98,7 @@ class Database {
           getJsonFromFile(paths.userDataPath, k: () => <String, dynamic>{}));
       userData = newData;
       gameData.updateUserDuplicatedServants();
+      userData.validate();
       logger.d('userdata loaded.');
       return true;
     } catch (e, s) {
@@ -111,12 +107,14 @@ class Database {
       return false;
     }
   }
+
   bool loadGameData() {
     final t = TimeCounter('loadGameData');
     try {
       gameData = GameData.fromJson(getJsonFromFile(paths.gameDataPath));
       // userdata is loaded before gamedata, safe to use curUser
       gameData.updateUserDuplicatedServants();
+      userData.validate();
       logger.d('game data loaded, version ${gameData.version}.');
       t.elapsed();
       itemStat.clear();

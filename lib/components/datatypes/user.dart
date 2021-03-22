@@ -58,17 +58,28 @@ class User {
     return servantPlans[curSvtPlanNo];
   }
 
-  Servant addDuplicatedForServant(Servant svt) {
-    for (int no = svt.originNo * 1000 + 1; no < svt.originNo * 1000 + 999; no++) {
+  Servant addDuplicatedForServant(Servant svt,[int? newNo]) {
+    for (int no = svt.originNo * 1000 + 1;
+        no < svt.originNo * 1000 + 999;
+        no++) {
       if (!db.gameData.servantsWithUser.containsKey(no)) {
         duplicatedServants[no] = svt.originNo;
-        final newSvt=svt.duplicate(no);
-        db.gameData.servantsWithUser[no]=newSvt;
+        final newSvt = svt.duplicate(no);
+        db.gameData.servantsWithUser[no] = newSvt;
         return newSvt;
         // return
       }
     }
     return svt;
+  }
+
+  void removeDuplicatedServant(int svtNo) {
+    duplicatedServants.remove(svtNo);
+    servants.remove(svtNo);
+    servantPlans.forEach((plans) {
+      plans.remove(svtNo);
+    });
+    db.gameData.updateUserDuplicatedServants();
   }
 
   void ensurePlanLarger() {

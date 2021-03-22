@@ -74,6 +74,10 @@ class _AccountPageState extends State<AccountPage> {
                 ),
                 PopupMenuItem(value: 'copy', child: Text(S.of(context).copy)),
                 PopupMenuItem(
+                  value: 'clear',
+                  child: Text(S.of(context).clear),
+                ),
+                PopupMenuItem(
                   value: 'delete',
                   child: Text(S.of(context).delete),
                 ),
@@ -85,6 +89,9 @@ class _AccountPageState extends State<AccountPage> {
                     break;
                   case 'copy':
                     copyUser(userKey);
+                    break;
+                  case 'clear':
+                    clearUser(userKey);
                     break;
                   case 'delete':
                     deleteUser(userKey);
@@ -161,6 +168,22 @@ class _AccountPageState extends State<AccountPage> {
         User.fromJson(json.decode(json.encode(db.userData.users[key])))
           ..name = newName;
     logger.d('Copy user $key($oldName)->$newKey($newName)');
+  }
+
+  void clearUser(String key) {
+    final user = db.userData.users[key]!;
+    user.servants.clear();
+    user.duplicatedServants.clear();
+    user.items.clear();
+    user.events.mainRecords.clear();
+    user.events.limitEvents.clear();
+    user.events.exchangeTickets.clear();
+    user.servantPlans.forEach((e) => e.clear());
+    user.mysticCodes.clear();
+    user.plannedSummons.clear();
+    user.msProgress = -1;
+    db.gameData.updateUserDuplicatedServants();
+    db.notifyDbUpdate();
   }
 
   void deleteUser(String key) {

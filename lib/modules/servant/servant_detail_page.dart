@@ -230,8 +230,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
             db.notifyDbUpdate();
           }
         } else if (select == 'delete_duplicated') {
-          db.curUser.duplicatedServants.remove(svt.no);
-          db.gameData.updateUserDuplicatedServants();
+          db.curUser.removeDuplicatedServant(svt.no);
           db.notifyDbUpdate();
           Navigator.pop(context);
         }

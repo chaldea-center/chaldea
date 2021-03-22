@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/import_data/import_http_response.dart';
 
 import 'import_guda_page.dart';
 import 'import_screenshot_page.dart';
@@ -13,13 +14,14 @@ class _ImportDataPageState extends State<ImportDataPage>
   late TabController _tabController;
   int curTab = 0;
 
-  GlobalKey<ImportScreenshotPageState> key1 = GlobalKey();
-  GlobalKey<ImportGudaPageState> key2 = GlobalKey();
+  GlobalKey<ImportHttpResponseState> keyHttp = GlobalKey();
+  GlobalKey<ImportScreenshotPageState> keyScreenshot = GlobalKey();
+  GlobalKey<ImportGudaPageState> keyGuda = GlobalKey();
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(() {
       curTab = _tabController.index;
     });
@@ -41,6 +43,7 @@ class _ImportDataPageState extends State<ImportDataPage>
         bottom: TabBar(
           controller: _tabController,
           tabs: [
+            Tab(text: 'HTTP响应'),
             Tab(text: S.of(context).item_screenshot),
             Tab(text: S.of(context).import_guda_data)
           ],
@@ -50,8 +53,10 @@ class _ImportDataPageState extends State<ImportDataPage>
         controller: _tabController,
         children: [
           KeepAliveBuilder(
-              builder: (context) => ImportScreenshotPage(key: key1)),
-          KeepAliveBuilder(builder: (context) => ImportGudaPage(key: key2)),
+              builder: (context) => ImportHttpResponse(key: keyHttp)),
+          KeepAliveBuilder(
+              builder: (context) => ImportScreenshotPage(key: keyScreenshot)),
+          KeepAliveBuilder(builder: (context) => ImportGudaPage(key: keyGuda)),
         ],
       ),
     );
@@ -64,10 +69,18 @@ class _ImportDataPageState extends State<ImportDataPage>
   }
 
   void _importImages() {
-    if (curTab == 0) {
-      key1.currentState?.importImages();
-    } else if (curTab == 1) {
-      key2.currentState?.importGudaFile();
+    switch (curTab) {
+      case 0:
+        keyHttp.currentState?.importResponseBody();
+        break;
+      case 1:
+        keyScreenshot.currentState?.importImages();
+        break;
+      case 2:
+        keyGuda.currentState?.importGudaFile();
+        break;
+      default:
+        break;
     }
   }
 }

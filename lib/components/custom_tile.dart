@@ -212,21 +212,24 @@ class CustomTile extends StatelessWidget {
 class ImageWithText extends StatelessWidget {
   final Widget image;
   final String? text;
-  final double? fontSize;
   final EdgeInsets padding;
-
+  final double? width;
+  final TextAlign? textAlign;
+  final TextStyle? textStyle;
   final AlignmentDirectional alignment;
   final VoidCallback? onTap;
 
-  ImageWithText(
-      {Key? key,
-      required this.image,
-      this.text,
-      this.fontSize,
-      this.padding = EdgeInsets.zero,
-      this.alignment = AlignmentDirectional.bottomEnd,
-      this.onTap})
-      : super(key: key);
+  ImageWithText({
+    Key? key,
+    required this.image,
+    this.text,
+    this.padding = EdgeInsets.zero,
+    this.width,
+    this.alignment = AlignmentDirectional.bottomEnd,
+    this.textAlign,
+    this.textStyle,
+    this.onTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -234,6 +237,9 @@ class ImageWithText extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
 //        print('${constraints.biggest},${constraints.smallest}');
+        TextStyle _style = textStyle ?? TextStyle();
+        _style =
+            _style.copyWith(fontWeight: _style.fontWeight ?? FontWeight.bold);
         return GestureDetector(
           onTap: onTap,
           child: Center(
@@ -242,7 +248,7 @@ class ImageWithText extends StatelessWidget {
             child: Stack(
               alignment: alignment,
               children: <Widget>[
-                Padding(
+                applyWidth(Padding(
                   padding: EdgeInsets.fromLTRB(
                       -min(0.0, padding.left),
                       -min(0.0, padding.top),
@@ -253,46 +259,78 @@ class ImageWithText extends StatelessWidget {
                     heightFactor: 1,
                     child: image,
                   ),
-                ),
+                )),
                 if (text?.isNotEmpty == true)
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(
-                        max(0.0, padding.left),
-                        max(0.0, padding.top),
-                        max(0.0, padding.right),
-                        max(0.0, padding.bottom)),
-                    child: FittedBox(
-                      fit: BoxFit.fitWidth,
-                      //no effect if width is not constraint
-                      child: Stack(
-                        children: <Widget>[
-                          Text(
-                            text!,
-                            style: TextStyle(
-                              fontSize: fontSize,
-                              fontWeight: FontWeight.bold,
-                              foreground: Paint()
-                                ..style = PaintingStyle.stroke
-                                ..strokeWidth = 3
-                                ..color = Colors.white,
-                            ),
-                          ),
-                          Text(
-                            text!,
-                            style: TextStyle(
-                              fontSize: fontSize,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )
-                        ],
+                  applyWidth(
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(
+                          max(0.0, padding.left),
+                          max(0.0, padding.top),
+                          max(0.0, padding.right),
+                          max(0.0, padding.bottom)),
+                      child: paintOutline(
+                        text: text!,
+                        textAlign: textAlign,
+                        textStyle: textStyle,
                       ),
                     ),
+                    boxFit: BoxFit.scaleDown,
                   )
               ],
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget applyWidth(Widget child, {BoxFit? boxFit}) {
+    if (width != null && width! > 0.0) {
+      if (boxFit != null) {
+        return Container(
+          constraints: BoxConstraints(maxWidth: width!),
+          child: FittedBox(
+            child: child,
+            fit: boxFit,
+          ),
+        );
+      } else {
+        return Container(
+          constraints: BoxConstraints(maxWidth: width!),
+          child: child,
+        );
+      }
+    } else {
+      return child;
+    }
+  }
+
+  static Widget paintOutline({
+    required String text,
+    TextAlign? textAlign,
+    TextStyle? textStyle,
+  }) {
+    TextStyle _style = textStyle ?? TextStyle();
+    return Stack(
+      children: <Widget>[
+        Text(
+          text,
+          textAlign: textAlign,
+          style: _style.copyWith(
+            foreground: _style.foreground ?? Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 3
+              ..color = Colors.white,
+          ),
+        ),
+        Text(
+          text,
+          textAlign: textAlign,
+          style: _style.foreground == null
+              ? _style
+              : _style.copyWith(foreground: null),
+        )
+      ],
     );
   }
 }

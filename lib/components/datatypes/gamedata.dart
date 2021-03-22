@@ -101,6 +101,7 @@ class ItemCost {
 class Item {
   /// id: 4-digit number, X-Y-ZZ = X category & Y rarity & ZZ order number
   int id;
+  int itemId;
   String name;
 
   /// may be null
@@ -119,6 +120,7 @@ class Item {
 
   Item({
     required this.id,
+    required this.itemId,
     required this.name,
     this.nameJp,
     this.nameEn,
@@ -130,6 +132,7 @@ class Item {
 
   Item copyWith({
     int? id,
+    int? itemId,
     String? name,
     String? nameJp,
     String? nameEn,
@@ -141,6 +144,7 @@ class Item {
   }) {
     return Item(
       id: id ?? this.id,
+      itemId: itemId ?? this.itemId,
       name: name ?? this.name,
       nameJp: nameJp ?? this.nameJp,
       nameEn: nameEn ?? this.nameEn,
