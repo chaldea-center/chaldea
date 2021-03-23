@@ -24,7 +24,11 @@ Chaldea is inspired from the iOS app [Guda](https://apps.apple.com/sg/app/guda/i
   - compare free quest efficiency by define items' weight
   - master mission/weekly mission solver, customization is supported
 - summon/gacha simulator
-- import items data from game screenshots (realized on server side)
+- import user data
+    - import item and servant data from captured https traffic when login to CN server(Bilibili)
+    - import item data from game screenshots (realized on server side)
+    - from `Guda` exported data
+
 
 ## Support Platforms
 

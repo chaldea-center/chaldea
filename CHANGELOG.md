@@ -1,3 +1,10 @@
+## 1.3.2
+- support duplicated servants
+- CN server: import decrypted HTTPS response body to resolve data of servants and items
+
+## 1.3.1
+- decrease app size by removing most icons from assets, downloaded to icon folder when used
+
 ## 1.3.0
 - [BREAKING CHANGE] null safety migration, upgrade to flutter 2
 - downgrade `flutter_audio_desktop 0.1.0` to version `0.0.8`, which will cause stuck in Windows with `file_picker_cross` together
