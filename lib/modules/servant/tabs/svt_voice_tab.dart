@@ -178,7 +178,7 @@ class GeneralAudioPlayer {
       await player1!.play(path, isLocal: true);
     } else {
       await player2!.stop();
-      await player2!.open(audio2.Media.file(File(path)), autoStart: true);
+      await player2!.open(await audio2.Media.file(File(path)), autoStart: true);
     }
   }
 

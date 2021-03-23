@@ -34,7 +34,9 @@ dependencies:
   connectivity_plus: ^1.0.0
   cupertino_icons: ^1.0.2
   device_info_plus: ^1.0.0
-  dart_vlc: ^0.0.2
+  dart_vlc:
+    git:
+      url: https://github.com/alexmercerind/dart_vlc
   dio: ^4.0.0-prev3
   file_picker_cross:
     git:

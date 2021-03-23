@@ -66,8 +66,8 @@ class _UpdateSourcePageState extends State<UpdateSourcePage> {
             ],
           ),
           TileGroup(
-            header: 'Temporary',
-            footer: 'Installer for Android/Windows/macOS',
+            header: S.of(context).backup,
+            footer: 'Installer for Android/Windows/macOS.',
             children: [
               ListTile(
                 leading: Icon(Icons.cloud_circle, size: 28),

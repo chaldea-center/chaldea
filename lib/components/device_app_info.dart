@@ -121,7 +121,7 @@ class AppInfo {
         runInShell: true,
       );
       String resultString = result.stdout.toString().trim();
-      print('Windows Product Id query:\n$resultString');
+      // print('Windows Product Id query:\n$resultString');
       if (resultString.contains('ProductId') &&
           resultString.contains('REG_SZ')) {
         _uniqueId = resultString.split(RegExp(r'\s+')).last;

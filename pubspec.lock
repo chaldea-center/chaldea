@@ -256,9 +256,11 @@ packages:
   dart_vlc:
     dependency: "direct main"
     description:
-      name: dart_vlc
-      url: "https://pub.flutter-io.cn"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: c7966b9123ce7a02478f4421492fd0847e8739e4
+      url: "https://github.com/alexmercerind/dart_vlc"
+    source: git
     version: "0.0.2"
   dbus:
     dependency: transitive
