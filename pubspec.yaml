@@ -34,13 +34,14 @@ dependencies:
   connectivity_plus: ^1.0.0
   cupertino_icons: ^1.0.2
   device_info_plus: ^1.0.0
-  dart_vlc:
-    git:
-      url: https://github.com/alexmercerind/dart_vlc
+  #  dart_vlc:
+  #    git:
+  #      url: https://github.com/alexmercerind/dart_vlc
   dio: ^4.0.0-prev3
   file_picker_cross:
     git:
       url: https://gitlab.com/testapp-system/file_picker_cross.git
+  flutter_audio_desktop: 0.0.8
   flutter_cache_manager: ^3.0.0-nullsafety.2
   flutter_easyloading: ^3.0.0
   flutter_email_sender: ^5.0.0
