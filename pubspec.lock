@@ -39,12 +39,10 @@ packages:
   audioplayers:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "32738a347c319c10c35fa9b2fec9de4493c16754"
-      url: "https://github.com/luanpotter/audioplayers.git"
-    source: git
-    version: "0.17.4"
+      name: audioplayers
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.18.1"
   auto_size_text:
     dependency: "direct main"
     description:

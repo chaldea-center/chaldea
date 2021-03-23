@@ -304,5 +304,13 @@
   "feedback_content_hint": "反馈与建议",
   "feedback_add_crash_log": "添加崩溃日志",
   "feedback_add_attachments": "添加图像或文件附件",
-  "feedback_send": "发送"
+  "feedback_send": "发送",
+  "update_dataset": "更新资源包",
+  "github_source_hint": "连接可能受阻",
+  "gitee_source_hint": "更新可能不及时",
+  "event_progress": "进度",
+  "progress_jp": "日服",
+  "progress_cn": "简中服",
+  "create_duplicated_svt": "生成2号机",
+  "remove_duplicated_svt": "销毁2号机"
 }

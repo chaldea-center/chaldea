@@ -176,12 +176,12 @@ class ServantDetailPageState extends State<ServantDetailPage>
           ),
           if (!Servant.unavailable.contains(svt.originNo))
             PopupMenuItem<String>(
-              child: Text('生成2号机'),
+              child: Text(S.current.create_duplicated_svt),
               value: 'duplicate_svt',
             ),
           if (svt.no != svt.originNo)
             PopupMenuItem<String>(
-              child: Text('销毁2号机'),
+              child: Text(S.current.remove_duplicated_svt),
               value: 'delete_duplicated',
             ),
         ];

@@ -47,23 +47,23 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
 
   @override
   Widget build(BuildContext context) {
-    if (response == null)
-      return SingleChildScrollView(
-        child: Center(child: Text('\nimport response body first\n')),
-      );
     _shownSvts.clear();
     return Column(
       children: [
         Expanded(
-          child: ListView(
-            children: [
-              itemsAccordion,
-              kDefaultDivider,
-              svtAccordion(false),
-              kDefaultDivider,
-              svtAccordion(true),
-            ],
-          ),
+          child: response == null
+              ? SingleChildScrollView(
+                  child: Center(child: Text('\n点击帮助以查看如何导入HTTPS响应内容\n')),
+                )
+              : ListView(
+                  children: [
+                    itemsAccordion,
+                    kDefaultDivider,
+                    svtAccordion(false),
+                    kDefaultDivider,
+                    svtAccordion(true),
+                  ],
+                ),
         ),
         kDefaultDivider,
         buttonBar
@@ -81,7 +81,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
         image: db.getIconImage(item.indexKey!, width: _with),
         text: item.num.toString(),
         width: _with,
-        padding: EdgeInsets.only(right: 2,bottom: 3),
+        padding: EdgeInsets.only(right: 2, bottom: 3),
       ));
     });
     return SimpleAccordion(
@@ -125,7 +125,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
 
         String text = '宝具${svt.treasureDeviceLv1} '
             '圣杯${svt.exceedCount} ';
-        text+='灵基${svt.limitCount}  Lv.${svt.lv}\n';
+        text += '灵基${svt.limitCount}  Lv.${svt.lv}\n';
         if (db.gameData.servants[svt.indexKey]!.itemCost.dress.isEmpty) {
           text += '\n';
         } else {
@@ -177,17 +177,17 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
           children: [
             child,
             // if (!_isLocked && svt.isLock)
-              Icon(
-                Icons.lock,
-                size: 13,
-                color: Colors.white,
-              ),
+            Icon(
+              Icons.lock,
+              size: 13,
+              color: Colors.white,
+            ),
             // if (!_isLocked && svt.isLock)
-              Icon(
-                Icons.lock,
-                size: 12,
-                color: Colors.yellow[900],
-              ),
+            Icon(
+              Icons.lock,
+              size: 12,
+              color: Colors.yellow[900],
+            ),
           ],
         );
         if (hidden) {
@@ -260,6 +260,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
           children: [
             IconButton(
               onPressed: showHelp,
+              tooltip: S.current.help,
               icon: Icon(
                 Icons.help,
                 color: Colors.blue,
@@ -316,6 +317,8 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
               for (var group in servants) {
                 for (var svt in group) {
                   if (!_shownSvts.contains(svt)) continue;
+                  if (!_includeSvt && !svt.inStorage) continue;
+                  if (!_includeSvtStorage && svt.inStorage) continue;
 
                   ServantStatus status;
                   if (_alreadyAdded.contains(svt.indexKey!)) {
@@ -376,6 +379,11 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
   }
 
   void importResponseBody() async {
+    ignoreSvts.clear();
+    collectionMap.clear();
+    servants.clear();
+    items.clear();
+    _shownSvts.clear();
     try {
       FilePickerCross filePickerCross =
           await FilePickerCross.importFromStorage();
@@ -445,9 +453,6 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
           return d;
         });
       });
-      if (mounted) {
-        setState(() {});
-      }
     } on FileSelectionCanceledError {} catch (e, s) {
       logger.e('fail to load http response', e, s);
       if (mounted)
@@ -455,6 +460,10 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
           title: Text('Error'),
           content: Text('$e\n请确保保存为UTF8编码文本文件，文件内容未更改'),
         ).show(context);
+    } finally {
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 
@@ -464,10 +473,13 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
       title: Text(S.of(context).help),
       content: SingleChildScrollView(
         child: Text("""通过拦截并解析游戏在登陆时向客户端发送的包含账户信息的HTTPS响应导入素材和从者信息。
-HTTPS通信是经过加密的，解析需要在本机或电脑通过Charles/Fiddler(PC)或Stream(iOS)等工具伪造证书服务器并安装其提供的证书以实现解密。
-因此在导入结束后及时取消信任或删除证书以保障设备安全。
-Android 7.0及以上设备因系统不再信任用户证书，请在Android 6及以下的模拟器中进行上述操作。
-详细教程可见https://b23.tv/xxxxxx"""),
+BGO客户端与服务器之间的HTTPS通信是经过加密的，解密需要在本机或电脑通过Charles/Fiddler(PC)或Stream(iOS)等工具伪造证书服务器并安装其提供的证书以实现。
+因此在导入结束后请及时取消信任或删除证书以保障设备安全。
+本软件源码已开源，不涉及https捕获解密等过程，只将以上工具导出的结果解析，不做其他用途。
+Android 7.0及以上设备因系统不再信任用户证书，请在Android 6及以下的设备或模拟器中进行上述操作。
+详细教程可见https://b23.tv/xxxxxx
+考虑到可能会规划国服未实装的从者，因此导入时不会清除已有数据，而是覆盖更新。
+仅确认了国服导入方法，如有解包大佬知晓如何解析日服数据，恳请指点迷津"""),
       ),
     ).show(context);
   }

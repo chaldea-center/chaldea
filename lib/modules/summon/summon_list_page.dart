@@ -42,6 +42,7 @@ class _SummonListPageState extends State<SummonListPage> {
         actions: [
           IconButton(
             icon: Icon(showOutdated ? Icons.timer_off : Icons.timer),
+            tooltip: 'Outdated',
             onPressed: () {
               setState(() {
                 showOutdated = !showOutdated;
@@ -50,6 +51,7 @@ class _SummonListPageState extends State<SummonListPage> {
           ),
           IconButton(
             icon: Icon(favorite ? Icons.favorite : Icons.favorite_outline),
+            tooltip: S.current.favorite,
             onPressed: () {
               setState(() {
                 favorite = !favorite;

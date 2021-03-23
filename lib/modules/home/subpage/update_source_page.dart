@@ -33,15 +33,24 @@ class _UpdateSourcePageState extends State<UpdateSourcePage> {
           //   ],
           // ),
           TileGroup(
+            children: [
+              ListTile(
+                title: Text(S.current.version),
+                subtitle: Text(S.current.gamedata),
+                trailing: Text(db.gameData.version),
+              )
+            ],
+          ),
+          TileGroup(
             header: 'Git - In-App dataset update',
             children: [
               sourceAccordion(
                 source: GitSource.github,
-                subtitle: '连接可能受阻',
+                subtitle: S.current.github_source_hint,
               ),
               sourceAccordion(
                 source: GitSource.gitee,
-                subtitle: '更新可能不及时',
+                subtitle: S.current.gitee_source_hint,
               ),
             ],
           ),
@@ -50,12 +59,15 @@ class _UpdateSourcePageState extends State<UpdateSourcePage> {
             spacing: 8,
             children: [
               // ElevatedButton(onPressed: () {}, child: Text('应用更新')),
-              ElevatedButton(onPressed: downloadGamedata, child: Text('资源包更新')),
+              ElevatedButton(
+                onPressed: downloadGamedata,
+                child: Text(S.current.update_dataset),
+              ),
             ],
           ),
           TileGroup(
             header: 'Temporary',
-            footer: '',
+            footer: 'Installer for Android/Windows/macOS',
             children: [
               ListTile(
                 leading: Icon(Icons.cloud_circle, size: 28),

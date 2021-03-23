@@ -104,7 +104,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ],
           ),
           TileGroup(
-            header: '进度',
+            header: S.current.event_progress,
             children: [
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
@@ -254,11 +254,11 @@ class _SettingsPageState extends State<SettingsPage> {
     final items = <DropdownMenuItem<int>>[
       DropdownMenuItem(
         value: -1,
-        child: Text('日服'),
+        child: Text(S.current.progress_jp),
       ),
       DropdownMenuItem(
         value: -2,
-        child: Text('简中服'),
+        child: Text(S.current.progress_cn),
       ),
     ];
     items.addAll(sortedDates.map((date) => DropdownMenuItem(

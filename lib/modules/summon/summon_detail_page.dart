@@ -47,6 +47,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
                   db.curUser.plannedSummons.contains(summon.indexKey);
               return IconButton(
                 icon: Icon(planned ? Icons.favorite : Icons.favorite_outline),
+                tooltip: S.current.favorite,
                 onPressed: () {
                   if (planned) {
                     db.curUser.plannedSummons.remove(summon.indexKey);

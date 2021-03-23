@@ -3101,6 +3101,86 @@ class S {
       args: [],
     );
   }
+
+  /// `更新资源包`
+  String get update_dataset {
+    return Intl.message(
+      '更新资源包',
+      name: 'update_dataset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `连接可能受阻`
+  String get github_source_hint {
+    return Intl.message(
+      '连接可能受阻',
+      name: 'github_source_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `更新可能不及时`
+  String get gitee_source_hint {
+    return Intl.message(
+      '更新可能不及时',
+      name: 'gitee_source_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `进度`
+  String get event_progress {
+    return Intl.message(
+      '进度',
+      name: 'event_progress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `日服`
+  String get progress_jp {
+    return Intl.message(
+      '日服',
+      name: 'progress_jp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `简中服`
+  String get progress_cn {
+    return Intl.message(
+      '简中服',
+      name: 'progress_cn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `生成2号机`
+  String get create_duplicated_svt {
+    return Intl.message(
+      '生成2号机',
+      name: 'create_duplicated_svt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `销毁2号机`
+  String get remove_duplicated_svt {
+    return Intl.message(
+      '销毁2号机',
+      name: 'remove_duplicated_svt',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

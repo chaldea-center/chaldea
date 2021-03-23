@@ -305,5 +305,13 @@
   "feedback_content_hint": "フィードバックと提案",
   "feedback_add_crash_log": "クラッシュログを追加",
   "feedback_add_attachments": "画像とファイルを追加",
-  "feedback_send": "送信"
+  "feedback_send": "送信",
+  "update_dataset": "ゲームデータを更新",
+  "github_source_hint": "",
+  "gitee_source_hint": "更新が遅れる可能性があります",
+  "event_progress": "現在のイベント",
+  "progress_jp": "日本サーバー",
+  "progress_cn": "中国サーバー",
+  "create_duplicated_svt": "2号機を生成",
+  "remove_duplicated_svt": "2号機を削除"
 }
