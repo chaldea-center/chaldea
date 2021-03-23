@@ -1,8 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart' as audio1;
 import 'package:chaldea/components/components.dart';
-import 'package:flutter_audio_desktop/flutter_audio_desktop.dart' as audio2;
+import 'package:dart_vlc/dart_vlc.dart' as audio2;
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import '../servant_detail_page.dart';
@@ -146,33 +147,43 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
 
 class GeneralAudioPlayer {
   audio1.AudioPlayer? player1;
-  audio2.AudioPlayer? player2;
+  audio2.Player? player2;
+
+  Completer<void>? _completer;
 
   GeneralAudioPlayer() {
+    ensurePlayer();
+  }
+
+  Future<void> ensurePlayer() async {
+    if (_completer != null) {
+      return _completer!.future;
+    }
+    _completer = Completer();
     if (usePlayer1) {
       player1 = audio1.AudioPlayer();
     } else {
-      player2 = audio2.AudioPlayer();
+      player2 = await audio2.Player.create(id: 14680);
     }
+    _completer!.complete();
   }
 
   bool get usePlayer1 => !Platform.isWindows;
 
   /// [path] must be local path
   Future<void> play(String path) async {
+    await ensurePlayer();
     if (usePlayer1) {
       await player1!.stop();
       await player1!.play(path, isLocal: true);
     } else {
-      if (player2!.isPlaying) {
-        await player2!.stop();
-      }
-      await player2!.load(path);
-      await player2!.play();
+      await player2!.stop();
+      await player2!.open(audio2.Media.file(File(path)), autoStart: true);
     }
   }
 
   Future<void> stop() async {
+    await ensurePlayer();
     if (usePlayer1) {
       await player1!.stop();
     } else {
@@ -181,6 +192,7 @@ class GeneralAudioPlayer {
   }
 
   Future<void> pause() async {
+    await ensurePlayer();
     if (usePlayer1) {
       await player1!.pause();
     } else {

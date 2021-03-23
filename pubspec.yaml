@@ -30,49 +30,46 @@ dependencies:
   audioplayers: ^0.18.1
   auto_size_text: ^3.0.0-nullsafety.0
   cached_network_image: ^3.0.0-nullsafety
-  catcher: ^0.6.1
+  catcher: ^0.6.3
   connectivity_plus: ^1.0.0
   cupertino_icons: ^1.0.2
   device_info_plus: ^1.0.0
-  dio: ^4.0.0-beta6
+  dart_vlc: ^0.0.2
+  dio: ^4.0.0-prev3
   file_picker_cross:
     git:
       url: https://gitlab.com/testapp-system/file_picker_cross.git
-  flutter_audio_desktop: 0.0.8
-  flutter_cache_manager: ^3.0.0-nullsafety.1
+  flutter_cache_manager: ^3.0.0-nullsafety.2
   flutter_easyloading: ^3.0.0
   flutter_email_sender: ^5.0.0
   flutter_picker: ^2.0.0
   flutter_qjs: ^0.3.6
   flutter_webview_plugin: ^0.3.11
-  font_awesome_flutter: ^9.0.0-nullsafety
-  getwidget: ^2.0.0-nullsafety.3
+  font_awesome_flutter: ^9.0.0
+  getwidget: ^2.0.0-nullsafety.4
   html: ^0.15.0
-  image: ^3.0.0
+  image: ^3.0.2
   intl: ^0.17.0
-  json_annotation: ^4.0.0
+  json_annotation: ^4.0.1
   json_patch: ^2.1.0
-  logger: ^1.0.0-nullsafety.0
+  logger: ^1.0.0
   package_info: ^2.0.0
   path_provider: ^2.0.1
   pool: ^1.5.0
   screenshot: ^1.0.0-nullsafety.1
   share: ^2.0.1
-  shared_preferences: ^2.0.4
+  shared_preferences: ^2.0.5
   string_validator: ^0.3.0
   url_launcher: ^6.0.2
-  uuid: ^3.0.1
+  uuid: ^3.0.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^1.11.0
-  json_serializable: ^4.0.2
+  json_serializable: ^4.1.0
   # flutter_launcher_icons: ^0.8.1
 
-dependency_overrides:
-  path_provider: ^2.0.1
-  uuid: ^3.0.1
 
 #flutter_icons:
 #  #  image_path: "assets/images/icon-128x128.png"

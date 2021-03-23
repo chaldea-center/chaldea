@@ -5,8 +5,8 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   catcher
   connectivity_plus_windows
+  dart_vlc
   file_chooser
-  flutter_audio_desktop
   flutter_qjs
   url_launcher_windows
 )
