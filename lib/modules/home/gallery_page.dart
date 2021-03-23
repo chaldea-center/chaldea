@@ -13,12 +13,12 @@ import 'package:chaldea/modules/master_mission/master_mission_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:chaldea/modules/statistics/game_statistics_page.dart';
 import 'package:chaldea/modules/summon/summon_list_page.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
-import 'package:http/http.dart' as http;
 
 class GalleryPage extends StatefulWidget {
   @override
@@ -41,50 +41,6 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       }
     }
     checkAppUpdate();
-  }
-
-  Future<Null> resolveSliderImageUrls() async {
-    final srcUrl =
-        'https://fgo.wiki/w/%E6%A8%A1%E6%9D%BF:%E8%87%AA%E5%8A%A8%E5%8F%96%E5%80%BC%E8%BD%AE%E6%92%AD';
-    String? tryDecodeUrl(String? url) {
-      if (url == null) return null;
-      String url2;
-      if (url.toLowerCase().startsWith(RegExp(r'http|fgo.wiki'))) {
-        url2 = url;
-      } else if (url.toLowerCase().startsWith('//fgo.wiki')) {
-        url2 = 'https:' + url;
-      } else {
-        url2 = 'https://fgo.wiki' + (url.startsWith('/') ? '' : '/') + url;
-      }
-      return url2;
-    }
-
-    try {
-      print('http GET from "$srcUrl" .....');
-      var response = await http.get(Uri.parse(srcUrl));
-      print('----------- received http response ------------');
-      var body = parser.parse(response.body);
-      db.userData.sliderUrls.clear();
-      dom.Element? element = body.getElementById('transImageBox');
-      if (element == null) return;
-      for (var linkNode in element.getElementsByTagName('a')) {
-        String? link = tryDecodeUrl(linkNode.attributes['href']);
-        var imgNodes = linkNode.getElementsByTagName('img');
-        if (imgNodes.isNotEmpty) {
-          String? imgUrl = tryDecodeUrl(imgNodes.first.attributes['src']);
-          if (link != null && imgUrl != null) {
-            db.userData.sliderUrls[imgUrl] = link;
-            db.userData.sliderUpdateTime = DateTime.now().toString();
-            print('imgUrl= "$imgUrl"\nhref  = "$link"');
-          }
-        }
-      }
-      setState(() {});
-      db.saveUserData();
-    } catch (e) {
-      print('Error refresh slides:\n$e');
-      EasyLoading.showError('Slides:\n$e');
-    }
   }
 
   Map<String, GalleryItem> get kAllGalleryItems {
@@ -341,5 +297,54 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
             ),
           ]),
         ));
+  }
+
+  Future<Null> resolveSliderImageUrls() async {
+    Map<String, String> _getImageLinks(dom.Element? element, Uri uri) {
+      Map<String, String> _result = {};
+      if (element == null) return _result;
+      for (var linkNode in element.getElementsByTagName('a')) {
+        String? link = linkNode.attributes['href'];
+        var imgNodes = linkNode.getElementsByTagName('img');
+        if (imgNodes.isNotEmpty) {
+          String? imgUrl = imgNodes.first.attributes['src'];
+          if (link != null && imgUrl != null) {
+            imgUrl = uri.resolve(imgUrl).toString();
+            link = uri.resolve(link).toString();
+            _result[imgUrl] = link;
+            print('imgUrl= "$imgUrl"\nhref  = "$link"');
+          }
+        }
+      }
+      return _result;
+    }
+
+    Map<String, String> result = {};
+    try {
+      final _dio = Dio();
+      // mc slides
+      final mcUrl =
+          'https://fgo.wiki/w/%E6%A8%A1%E6%9D%BF:%E8%87%AA%E5%8A%A8%E5%8F%96%E5%80%BC%E8%BD%AE%E6%92%AD';
+      var mcParser = parser.parse((await _dio.get(mcUrl)).data.toString());
+      var mcElement = mcParser.getElementById('transImageBox');
+      result.addAll(_getImageLinks(mcElement, Uri.parse(mcUrl)));
+
+      // jp slides
+      final jpUrl = 'http://view.fate-go.jp';
+      var jpParser = parser.parse((await _dio.get(jpUrl)).data.toString());
+      var jpElement = jpParser.getElementsByClassName('slide').getOrNull(0);
+      result.addAll(_getImageLinks(jpElement, Uri.parse(jpUrl)));
+    } catch (e, s) {
+      logger.e('Error refresh slides', e, s);
+    } finally {
+      if (result.isNotEmpty) {
+        db.userData.sliderUrls = result;
+        db.userData.sliderUpdateTime = DateTime.now().toString();
+      }
+      if (mounted) {
+        setState(() {});
+        db.saveUserData();
+      }
+    }
   }
 }
