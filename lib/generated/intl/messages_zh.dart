@@ -318,6 +318,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "server" : MessageLookupByLibrary.simpleMessage("服务器"),
     "server_cn" : MessageLookupByLibrary.simpleMessage("国服"),
     "server_jp" : MessageLookupByLibrary.simpleMessage("日服"),
+    "setting_auto_rotate" : MessageLookupByLibrary.simpleMessage("自动旋转"),
     "settings_data" : MessageLookupByLibrary.simpleMessage("数据"),
     "settings_data_management" : MessageLookupByLibrary.simpleMessage("数据管理"),
     "settings_general" : MessageLookupByLibrary.simpleMessage("通用"),

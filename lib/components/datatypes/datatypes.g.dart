@@ -1481,6 +1481,7 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
               )),
       serverRoot: $checkedConvert(json, 'serverRoot', (v) => v as String?),
       updateSource: $checkedConvert(json, 'updateSource', (v) => v as int?),
+      autorotate: $checkedConvert(json, 'autorotate', (v) => v as bool?),
       curUserKey: $checkedConvert(json, 'curUserKey', (v) => v as String?),
       users: $checkedConvert(
           json,
@@ -1526,6 +1527,7 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'galleries': instance.galleries,
       'serverRoot': instance.serverRoot,
       'updateSource': instance.updateSource,
+      'autorotate': instance.autorotate,
       'users': instance.users,
       'svtFilter': instance.svtFilter,
       'craftFilter': instance.craftFilter,

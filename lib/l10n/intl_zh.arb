@@ -312,5 +312,6 @@
   "progress_jp": "日服",
   "progress_cn": "简中服",
   "create_duplicated_svt": "生成2号机",
-  "remove_duplicated_svt": "销毁2号机"
+  "remove_duplicated_svt": "销毁2号机",
+  "setting_auto_rotate": "自动旋转"
 }

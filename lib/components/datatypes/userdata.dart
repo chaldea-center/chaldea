@@ -1,6 +1,7 @@
 /// App settings and users data
 part of datatypes;
 
+
 @JsonSerializable(checked: true)
 class UserData {
   // app settings
@@ -11,6 +12,7 @@ class UserData {
   Map<String, bool> galleries;
   String? serverRoot;
   int updateSource;
+  bool autorotate;
 
   // user-related game data
   String _curUserKey;
@@ -35,6 +37,7 @@ class UserData {
     Map<String, bool>? galleries,
     this.serverRoot,
     int? updateSource,
+    bool? autorotate,
     String? curUserKey,
     Map<String, User>? users,
     SvtFilterData? svtFilter,
@@ -46,6 +49,7 @@ class UserData {
         galleries = galleries ?? {},
         updateSource =
             fixValidRange(updateSource ?? 0, 0, GitSource.values.length),
+        autorotate = autorotate ?? false,
         _curUserKey = curUserKey ?? 'default',
         users = users ?? {},
         svtFilter = svtFilter ?? SvtFilterData(),

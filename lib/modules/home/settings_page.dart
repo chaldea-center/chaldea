@@ -84,7 +84,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   subtitle: Text(S.of(context).download_source_hint),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(GitSource.values[db.userData.updateSource]
                           .toTitleString()),
@@ -134,6 +133,15 @@ class _SettingsPageState extends State<SettingsPage> {
                   },
                 ),
               ),
+              if (AppInfo.isMobile)
+                SwitchListTile.adaptive(
+                  value: db.userData.autorotate,
+                  title: Text(S.current.setting_auto_rotate),
+                  onChanged: (v) {
+                    db.userData.autorotate = v;
+                    db.notifyAppUpdate();
+                  },
+                ),
               // if (Platform.isAndroid || Platform.isIOS)
               //   SwitchListTile.adaptive(
               //     title: Text(S.of(context).settings_use_mobile_network),

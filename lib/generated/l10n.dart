@@ -3181,6 +3181,16 @@ class S {
       args: [],
     );
   }
+
+  /// `自动旋转`
+  String get setting_auto_rotate {
+    return Intl.message(
+      '自动旋转',
+      name: 'setting_auto_rotate',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

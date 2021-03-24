@@ -313,5 +313,6 @@
   "progress_jp": "日本サーバー",
   "progress_cn": "中国サーバー",
   "create_duplicated_svt": "2号機を生成",
-  "remove_duplicated_svt": "2号機を削除"
+  "remove_duplicated_svt": "2号機を削除",
+  "setting_auto_rotate": "自動回転"
 }

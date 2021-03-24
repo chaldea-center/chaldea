@@ -21,6 +21,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   String? userdataBackup;
 
   _ChaldeaState() {
+    // if failed to load userdata, backup and alert user
     if (File(db.paths.userDataPath).existsSync() && !db.loadUserData()) {
       userdataBackup = db.backupUserdata();
     }
@@ -44,8 +45,10 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     db.runtimeData.screenshotController = ScreenshotController();
     SplitRoute.defaultMasterFillPageBuilder = (context) => BlankPage();
     db.notifyAppUpdate = () {
+      setPreferredOrientations();
       setState(() {});
     };
+
     SystemChannels.lifecycle.setMessageHandler((msg) async {
       debugPrint('SystemChannels> $msg');
       if (msg == AppLifecycleState.resumed.toString()) {
@@ -57,6 +60,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
       }
       return null;
     });
+    setPreferredOrientations();
   }
 
   @override
@@ -83,6 +87,15 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         ),
       ),
     );
+  }
+
+  void setPreferredOrientations() {
+    if (!AppInfo.isMobile) return;
+    if (db.userData.autorotate) {
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    } else {
+      SystemChrome.setPreferredOrientations([]);
+    }
   }
 }
 
