@@ -79,12 +79,6 @@ class _EventListPageState extends State<EventListPage>
   }
 
   @override
-  void deactivate() {
-    super.deactivate();
-    db.saveUserData();
-  }
-
-  @override
   void dispose() {
     super.dispose();
     _tabController.dispose();

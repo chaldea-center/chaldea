@@ -91,8 +91,17 @@ class Database {
     });
   }
 
+  /// Automatically save user data when:
+  /// - A repeating timer every 30 seconds and userdata has been changed
+  /// - when app becomes [AppLifecycleState.inactive]
+  Timer? _autoSaveTimer;
+  String? _lastSavedUserData;
+
   // data files operation
   bool loadUserData() {
+    _autoSaveTimer?.cancel();
+    _autoSaveTimer = null;
+    bool result;
     try {
       final newData = UserData.fromJson(
           getJsonFromFile(paths.userDataPath, k: () => <String, dynamic>{}));
@@ -100,12 +109,20 @@ class Database {
       gameData.updateUserDuplicatedServants();
       userData.validate();
       logger.d('userdata loaded.');
-      return true;
+      result = true;
+      _lastSavedUserData = jsonEncode(userData);
     } catch (e, s) {
       logger.e('Load userdata failed', e, s);
       EasyLoading.showToast('Load userdata failed\n$e');
-      return false;
+      result = false;
     }
+    _autoSaveTimer = Timer.periodic(Duration(seconds: 30), (timer) {
+      String curData = jsonEncode(userData);
+      if (_lastSavedUserData == null || curData != _lastSavedUserData) {
+        saveUserData();
+      }
+    });
+    return result;
   }
 
   bool loadGameData() {

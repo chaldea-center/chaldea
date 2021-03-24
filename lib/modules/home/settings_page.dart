@@ -224,12 +224,6 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  @override
-  void deactivate() {
-    super.deactivate();
-    db.saveUserData();
-  }
-
   Widget get progressDropdown {
     Map<DateTime, EventBase> events = {};
     db.gameData.events.allEvents.forEach((key, event) {

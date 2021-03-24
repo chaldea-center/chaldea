@@ -215,10 +215,4 @@ class _UpdateSourcePageState extends State<UpdateSourcePage> {
       },
     );
   }
-
-  @override
-  void deactivate() {
-    super.deactivate();
-    db.saveUserData();
-  }
 }

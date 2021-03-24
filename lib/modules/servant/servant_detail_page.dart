@@ -82,10 +82,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
   }
 
   @override
-  void deactivate() {
-    super.deactivate();
+  void dispose() {
+    super.dispose();
     _tabController.dispose();
-    db.saveUserData();
   }
 
   @override

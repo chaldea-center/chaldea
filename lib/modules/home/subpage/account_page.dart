@@ -219,10 +219,4 @@ class _AccountPageState extends State<AccountPage> {
     db.itemStat.update();
     db.notifyAppUpdate();
   }
-
-  @override
-  void deactivate() {
-    super.deactivate();
-    db.saveUserData();
-  }
 }

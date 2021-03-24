@@ -49,11 +49,6 @@ class ServantListPageState extends State<ServantListPage> {
     super.dispose();
   }
 
-  @override
-  void deactivate() {
-    super.deactivate();
-  }
-
   void beforeFiltrate() {
     __textFilter.parse(filterData.filterString);
   }

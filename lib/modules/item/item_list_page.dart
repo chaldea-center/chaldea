@@ -25,10 +25,9 @@ class ItemListPageState extends State<ItemListPage>
   late List<TextEditingController> _itemRedundantControllers;
 
   @override
-  void deactivate() {
-    super.deactivate();
+  void dispose() {
+    super.dispose();
     _tabController.dispose();
-    db.saveUserData();
   }
 
   @override
@@ -337,7 +336,6 @@ class _ItemListTabState extends State<ItemListTab> {
   @override
   void deactivate() {
     unfocusAll();
-    db.saveUserData();
     super.deactivate();
   }
 

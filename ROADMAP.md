@@ -1,12 +1,19 @@
 # ROADMAP
 
 ## New feature
+- Servant
+  - [ ] battle model/avatar
+  - [ ] HP/ATK curve
 - [ ] Master Mission: 
   - [ ] support **and** / **or** inside one mission
   - [ ] related quests, sorted by mission target counts
 - [ ] Experience cards and qp cost when leveling up
 - [ ] Patch dataset.json online
 - [ ] ~~damage/NP calculation - GIVE UP~~
+
+## Enhancement
+- [ ] add version for userdata, convert if necessary
+
 
 ## Performance
 - [ ] update itemStat in Isolate
