@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -473,31 +472,4 @@ String fullToHalf(String s) {
   String s2 = s.replaceAllMapped(RegExp(r'[０-９Ａ-Ｚ－／　]'),
       (match) => _fullHalfMap[match.group(0)!] ?? match.group(0)!);
   return s2;
-}
-
-Future<void> launchStatistics([String? url]) async {
-  final excludeIds = [
-    b64('YjhhMDY0OWQ3NTI5MmQwOQ=='),
-    b64('RDE0QjBGNzItNUYzRS00ODcxLTlDRjUtNTRGMkQ1OTYyMUEw'),
-  ];
-  if (excludeIds.contains(AppInfo.uniqueId)) {
-    return;
-  }
-  if (url == null) {
-    if (Platform.isAndroid || Platform.isIOS)
-      url = '/static/stat/${Platform.operatingSystem}.html';
-  }
-  if (url != null) {
-    try {
-      final fullUrl = kServerRoot + url;
-      final plugin = FlutterWebviewPlugin();
-      await plugin.launch(fullUrl, hidden: true);
-      print('$fullUrl launched');
-      await Future.delayed(Duration(seconds: 10));
-      plugin.dispose();
-    } catch (e, s) {
-      print(e);
-      print(s);
-    }
-  }
 }

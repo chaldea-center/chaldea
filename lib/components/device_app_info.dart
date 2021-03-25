@@ -128,7 +128,8 @@ class AppInfo {
       }
     } else if (Platform.isMacOS) {
       // https://stackoverflow.com/a/944103
-      // ioreg -rd1 -c IOPlatformExpertDevice | awk '/IOPlatformUUID/ { split($0, line, "\""); printf("%s\n", line[4]); }'
+      // However, IOPlatformUUID will change every boot, use IOPlatformSerialNumber instead
+      // ioreg -rd1 -c IOPlatformExpertDevice | awk '/IOPlatformSerialNumber/ { split($0, line, "\""); printf("%s\n", line[4]); }'
       // the filter is shell feature so it's not used
       // Output containing:
       //  "IOPlatformUUID" = "8-4-4-4-12 standard uuid"
@@ -143,12 +144,15 @@ class AppInfo {
         runInShell: true,
       );
       for (String line in result.stdout.toString().split('\n')) {
-        if (line.contains('IOPlatformUUID')) {
-          final _uuid =
-              RegExp(r'[0-9a-zA-Z\-]{35,36}').firstMatch(line)?.group(0);
-          if (_uuid != null && _uuid.isNotEmpty) {
-            _uniqueId = _uuid;
-            break;
+        if (line.contains('IOPlatformSerialNumber')) {
+          final _snMatches =
+              RegExp(r'[0-9a-zA-Z\-]+').allMatches(line).toList();
+          if (_snMatches.isNotEmpty) {
+            final _sn = _snMatches.last.group(0);
+            if (_sn != null) {
+              _uniqueId = _sn;
+              break;
+            }
           }
         }
       }
@@ -187,6 +191,7 @@ class AppInfo {
 
   static Version get versionClass => Version.tryParse(fullVersion)!;
 
+  /// e.g. "1.2.3"
   static String get version => _packageInfo?.version ?? '';
 
   static int get buildNumber =>
@@ -194,7 +199,7 @@ class AppInfo {
 
   static String get packageName => info?.packageName ?? kPackageName;
 
-  /// e.g. 1.2.3+4
+  /// e.g. "1.2.3+4"
   static String get fullVersion {
     String s = '';
     s += version;
@@ -202,7 +207,7 @@ class AppInfo {
     return s;
   }
 
-  /// e.g. 1.2.3 (4)
+  /// e.g. "1.2.3 (4)"
   static String get fullVersion2 {
     String s = '';
     s += version;

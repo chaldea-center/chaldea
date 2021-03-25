@@ -248,7 +248,7 @@ class ImageWithText extends StatelessWidget {
             child: Stack(
               alignment: alignment,
               children: <Widget>[
-                applyWidth(Padding(
+                applyConstraints(Padding(
                   padding: EdgeInsets.fromLTRB(
                       -min(0.0, padding.left),
                       -min(0.0, padding.top),
@@ -261,7 +261,7 @@ class ImageWithText extends StatelessWidget {
                   ),
                 )),
                 if (text?.isNotEmpty == true)
-                  applyWidth(
+                  applyConstraints(
                     Padding(
                       padding: EdgeInsets.fromLTRB(
                           max(0.0, padding.left),
@@ -271,7 +271,7 @@ class ImageWithText extends StatelessWidget {
                       child: paintOutline(
                         text: text!,
                         textAlign: textAlign,
-                        textStyle: textStyle,
+                        textStyle: _style,
                       ),
                     ),
                     boxFit: BoxFit.scaleDown,
@@ -284,25 +284,17 @@ class ImageWithText extends StatelessWidget {
     );
   }
 
-  Widget applyWidth(Widget child, {BoxFit? boxFit}) {
-    if (width != null && width! > 0.0) {
-      if (boxFit != null) {
-        return Container(
-          constraints: BoxConstraints(maxWidth: width!),
-          child: FittedBox(
-            child: child,
-            fit: boxFit,
-          ),
-        );
-      } else {
-        return Container(
-          constraints: BoxConstraints(maxWidth: width!),
-          child: child,
-        );
-      }
-    } else {
-      return child;
+  Widget applyConstraints(Widget child, {BoxFit? boxFit}) {
+    if (boxFit != null) {
+      child = FittedBox(fit: boxFit, child: child);
     }
+    if (width != null && width! > 0.0) {
+      return Container(
+        constraints: BoxConstraints(maxWidth: width!),
+        child: child,
+      );
+    }
+    return child;
   }
 
   static Widget paintOutline({

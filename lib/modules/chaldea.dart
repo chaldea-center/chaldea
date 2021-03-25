@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:catcher/catcher.dart';
+import 'package:chaldea/components/bdtj.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/git_tool.dart';
 import 'package:chaldea/components/shared_prefs.dart';
@@ -36,7 +37,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         content: 'A backup is created:\n $userdataBackup',
       );
     }
-    launchStatistics();
+    reportBdtj();
   }
 
   @override

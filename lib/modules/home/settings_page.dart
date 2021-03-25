@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:chaldea/components/bdtj.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/git_tool.dart';
 import 'package:chaldea/modules/home/subpage/dataset_manage_page.dart';
@@ -204,10 +205,8 @@ class _SettingsPageState extends State<SettingsPage> {
               header: 'Test(debug mode: ${kDebugMode ? 'on' : 'off'})',
               children: <Widget>[
                 ListTile(
-                  title: Text('Generate Error'),
-                  onTap: () {
-                    throw FormatException('generated error');
-                  },
+                  title: Text('Test Func'),
+                  onTap: _testFunc,
                 ),
                 ListTile(
                   title: Text('Master-Detail width'),
@@ -286,4 +285,8 @@ class _SettingsPageState extends State<SettingsPage> {
       },
     );
   }
+}
+
+void _testFunc() async {
+  reportBdtj();
 }
