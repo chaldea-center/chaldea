@@ -209,17 +209,25 @@ class Database {
     }
   }
 
-  String? getIconFullKey(String? iconKey, {bool? preferPng}) {
+  String? getIconFullKey(String? iconKey,
+      {bool? preferPng, bool withBorder = true}) {
     if (iconKey == null) return null;
-    final suffixes = preferPng == null
-        ? ['', '.jpg', '.png']
-        : preferPng == true
-            ? ['.png', '', '.jpg']
-            : ['.jpg', '', '.png'];
-    for (var suffix in suffixes) {
-      String key = iconKey + suffix;
-      if (gameData.icons.containsKey(key)) {
-        return key;
+    if (iconKey.endsWith('.png') || iconKey.endsWith('.jpg')) {
+      iconKey = iconKey.substring(0, iconKey.length - 4);
+    }
+    List<String> keys =
+        withBorder ? [iconKey + '(有框)', iconKey] : [iconKey, iconKey + '(有框)'];
+    for (String key in keys) {
+      final suffixes = preferPng == null
+          ? ['', '.jpg', '.png']
+          : preferPng == true
+              ? ['.png', '', '.jpg']
+              : ['.jpg', '', '.png'];
+      for (var suffix in suffixes) {
+        String fullKey = key + suffix;
+        if (gameData.icons.containsKey(fullKey)) {
+          return fullKey;
+        }
       }
     }
     // logger.d('Icon $iconKey not found');
@@ -239,6 +247,7 @@ class Database {
     double? height,
     BoxFit? fit,
     bool? preferPng,
+    bool withBorder = true,
   }) {
     if (iconKey == null) {
       return Image(
@@ -248,7 +257,8 @@ class Database {
         fit: fit,
       );
     }
-    String iconName = getIconFullKey(iconKey, preferPng: preferPng)!;
+    String iconName =
+        getIconFullKey(iconKey, preferPng: preferPng, withBorder: withBorder)!;
     File iconFile = File(pathlib.join(paths.gameIconDir, iconName));
     if (iconFile.existsSync()) {
       return Image(

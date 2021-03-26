@@ -164,9 +164,13 @@ class Item {
     return '$runtimeType($name)';
   }
 
-  static const String qp = 'QP';
   static const String grail = '圣杯';
   static const String crystal = '传承结晶';
+  static const String qp = 'QP';
+  static const String mana = '魔力棱镜';
+  static const String rarePri = '稀有魔力棱镜';
+  static const String hufu = '呼符';
+  static const String quartz = '圣晶石';
 
   static getId(String key) {
     return db.gameData.items[key]?.id;
@@ -196,7 +200,7 @@ class Item {
     switch (category) {
       case 0:
       // not specific
-      case 1:
+      case ItemCategory.item:
         // usual items
         return [
           S.current.item_category_usual,
@@ -205,7 +209,7 @@ class Item {
           S.current.item_category_gold,
           S.current.item_category_special,
         ][rarity];
-      case 2:
+      case ItemCategory.gem:
         // gems
         return [
           S.current.item_category_gems,
@@ -213,7 +217,7 @@ class Item {
           S.current.item_category_magic_gem,
           S.current.item_category_secret_gem
         ][rarity];
-      case 3:
+      case ItemCategory.ascension:
         // pieces & monuments
         return [
           S.current.item_category_ascension,
@@ -221,11 +225,21 @@ class Item {
           S.current.item_category_piece,
           S.current.item_category_monument,
         ][rarity];
-      case 4:
+      case ItemCategory.event:
         // event
         return S.current.item_category_event_svt_ascension;
       default:
         return S.current.item_category_others;
     }
   }
+}
+
+class ItemCategory {
+  const ItemCategory._();
+
+  static const gem = 1;
+  static const item = 2;
+  static const ascension = 3;
+  static const event = 4;
+  static const special = 5;
 }

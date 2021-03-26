@@ -20,7 +20,11 @@ class ItemListPage extends StatefulWidget {
 class ItemListPageState extends State<ItemListPage>
     with SingleTickerProviderStateMixin {
   bool filtered = false;
-  final List<int> categories = [1, 2, 3];
+  final List<int> categories = [
+    ItemCategory.item,
+    ItemCategory.gem,
+    ItemCategory.ascension
+  ];
   late TabController _tabController;
   late List<TextEditingController> _itemRedundantControllers;
 

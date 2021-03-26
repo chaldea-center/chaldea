@@ -62,12 +62,6 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
   }
 
   Widget _buildButtonBar() {
-    List<String> validItems = [];
-    db.gameData.items.forEach((itemKey, item) {
-      if ([1, 2, 3].contains(item.category)) {
-        validItems.add(itemKey);
-      }
-    });
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
       alignment: WrapAlignment.center,

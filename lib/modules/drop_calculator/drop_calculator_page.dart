@@ -412,7 +412,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
   String? getItemCategory(String itemKey) {
     final item = db.gameData.items[itemKey];
     if (item == null) return null;
-    if (item.category == 1) {
+    if (item.category == ItemCategory.item) {
       if (item.rarity <= 3) {
         return <String?>[
           null,
@@ -421,9 +421,9 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
           S.current.item_category_gold
         ][item.rarity];
       }
-    } else if (item.category == 2) {
+    } else if (item.category == ItemCategory.gem) {
       return S.current.item_category_gems;
-    } else if (item.category == 3) {
+    } else if (item.category == ItemCategory.ascension) {
       return S.current.item_category_ascension;
     }
     return null;

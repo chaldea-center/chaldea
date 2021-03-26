@@ -8,17 +8,20 @@ part of datatypes;
 
 BiliResponse _$BiliResponseFromJson(Map<String, dynamic> json) {
   return BiliResponse(
-    userItem: (json['userItem'] as List<dynamic>)
-        .map((e) => UserItem.fromJson(e as Map<String, dynamic>))
+    userItem: (json['userItem'] as List<dynamic>?)
+        ?.map((e) => UserItem.fromJson(e as Map<String, dynamic>))
         .toList(),
-    userSvt: (json['userSvt'] as List<dynamic>)
-        .map((e) => UserSvt.fromJson(e as Map<String, dynamic>))
+    userSvt: (json['userSvt'] as List<dynamic>?)
+        ?.map((e) => UserSvt.fromJson(e as Map<String, dynamic>))
         .toList(),
-    userSvtStorage: (json['userSvtStorage'] as List<dynamic>)
-        .map((e) => UserSvt.fromJson(e as Map<String, dynamic>))
+    userSvtStorage: (json['userSvtStorage'] as List<dynamic>?)
+        ?.map((e) => UserSvt.fromJson(e as Map<String, dynamic>))
         .toList(),
-    userSvtCollection: (json['userSvtCollection'] as List<dynamic>)
-        .map((e) => UserSvtCollection.fromJson(e as Map<String, dynamic>))
+    userSvtCollection: (json['userSvtCollection'] as List<dynamic>?)
+        ?.map((e) => UserSvtCollection.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    userGame: (json['userGame'] as List<dynamic>?)
+        ?.map((e) => UserGame.fromJson(e as Map<String, dynamic>))
         .toList(),
   );
 }
@@ -29,6 +32,7 @@ Map<String, dynamic> _$BiliResponseToJson(BiliResponse instance) =>
       'userSvt': instance.userSvt,
       'userSvtStorage': instance.userSvtStorage,
       'userSvtCollection': instance.userSvtCollection,
+      'userGame': instance.userGame,
     };
 
 UserItem _$UserItemFromJson(Map<String, dynamic> json) {
@@ -101,6 +105,52 @@ Map<String, dynamic> _$UserSvtCollectionToJson(UserSvtCollection instance) =>
       'friendship': instance.friendship,
       'friendshipRank': instance.friendshipRank,
       'costumeIds': instance.costumeIds,
+    };
+
+UserGame _$UserGameFromJson(Map<String, dynamic> json) {
+  return UserGame(
+    id: json['id'] as String,
+    userId: json['userId'] as String,
+    appname: json['appname'] as String,
+    name: json['name'] as String,
+    birthDay: json['birthDay'] as String,
+    actMax: json['actMax'] as String,
+    genderType: json['genderType'] as String,
+    lv: json['lv'] as String,
+    exp: json['exp'] as String,
+    qp: json['qp'] as String,
+    costMax: json['costMax'] as String,
+    friendCode: json['friendCode'] as String,
+    freeStone: json['freeStone'] as String,
+    chargeStone: json['chargeStone'] as String,
+    mana: json['mana'] as String,
+    rarePri: json['rarePri'] as String,
+    createdAt: json['createdAt'] as String,
+    message: json['message'] as String,
+    stone: json['stone'] as int,
+  );
+}
+
+Map<String, dynamic> _$UserGameToJson(UserGame instance) => <String, dynamic>{
+      'id': instance.id,
+      'userId': instance.userId,
+      'appname': instance.appname,
+      'name': instance.name,
+      'birthDay': instance.birthDay.toIso8601String(),
+      'actMax': instance.actMax,
+      'genderType': instance.genderType,
+      'lv': instance.lv,
+      'exp': instance.exp,
+      'qp': instance.qp,
+      'costMax': instance.costMax,
+      'friendCode': instance.friendCode,
+      'freeStone': instance.freeStone,
+      'chargeStone': instance.chargeStone,
+      'mana': instance.mana,
+      'rarePri': instance.rarePri,
+      'createdAt': instance.createdAt.toIso8601String(),
+      'message': instance.message,
+      'stone': instance.stone,
     };
 
 CommandCode _$CommandCodeFromJson(Map<String, dynamic> json) {

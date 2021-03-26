@@ -1,18 +1,39 @@
 part of datatypes;
 
+// ignore: unused_element
+int _toInt(dynamic v, [int? k]) {
+  if (v is int) {
+    return v;
+  } else if (v is String) {
+    return k == null ? int.parse(v) : int.tryParse(v) ?? k;
+  } else if (v is double) {
+    return v.toInt();
+  } else {
+    throw TypeError();
+  }
+}
+
 @JsonSerializable()
 class BiliResponse {
   List<UserItem> userItem;
   List<UserSvt> userSvt;
   List<UserSvt> userSvtStorage;
   List<UserSvtCollection> userSvtCollection;
+  List<UserGame> userGame;
 
   BiliResponse({
-    required this.userItem,
-    required this.userSvt,
-    required this.userSvtStorage,
-    required this.userSvtCollection,
-  });
+    List<UserItem>? userItem,
+    List<UserSvt>? userSvt,
+    List<UserSvt>? userSvtStorage,
+    List<UserSvtCollection>? userSvtCollection,
+    List<UserGame>? userGame,
+  })  : userItem = userItem ?? [],
+        userSvt = userSvt ?? [],
+        userSvtStorage = userSvtStorage ?? [],
+        userSvtCollection = userSvtCollection ?? [],
+        userGame = userGame ?? [];
+
+  UserGame? get firstUser => userGame.getOrNull(0);
 
   factory BiliResponse.fromJson(Map<String, dynamic> data) =>
       _$BiliResponseFromJson(data);
@@ -184,4 +205,75 @@ class UserSvtCollection {
       _$UserSvtCollectionFromJson(data);
 
   Map<String, dynamic> toJson() => _$UserSvtCollectionToJson(this);
+}
+
+@JsonSerializable()
+class UserGame {
+  int id;
+  String userId;
+
+  // String usk;
+  String appname;
+  String name;
+  DateTime birthDay;
+  int actMax;
+  int genderType;
+  int lv;
+  int exp;
+  int qp;
+  int costMax;
+  int friendCode;
+
+  // int favoriteUserSvtId;
+  int freeStone;
+  int chargeStone;
+  int mana;
+  int rarePri;
+
+  // DateTime zerotime;
+  DateTime createdAt;
+  String message;
+  int stone;
+
+  UserGame({
+    required String id,
+    required this.userId,
+    required this.appname,
+    required this.name,
+    required String birthDay,
+    required String actMax,
+    required String genderType,
+    required String lv,
+    required String exp,
+    required String qp,
+    required String costMax,
+    required String friendCode,
+    required String freeStone,
+    required String chargeStone,
+    required String mana,
+    required String rarePri,
+    required String createdAt,
+    required this.message,
+    required this.stone,
+  })   : id = int.parse(id),
+        birthDay =
+            DateTime.fromMillisecondsSinceEpoch(int.parse(birthDay) * 1000),
+        actMax = int.parse(actMax),
+        genderType = int.parse(genderType),
+        lv = int.parse(lv),
+        exp = int.parse(exp),
+        qp = int.parse(qp),
+        costMax = int.parse(costMax),
+        friendCode = int.parse(friendCode),
+        freeStone = int.parse(freeStone),
+        chargeStone = int.parse(chargeStone),
+        mana = int.parse(mana),
+        rarePri = int.parse(rarePri),
+        createdAt =
+            DateTime.fromMillisecondsSinceEpoch(int.parse(createdAt) * 1000);
+
+  factory UserGame.fromJson(Map<String, dynamic> data) =>
+      _$UserGameFromJson(data);
+
+  Map<String, dynamic> toJson() => _$UserGameToJson(this);
 }

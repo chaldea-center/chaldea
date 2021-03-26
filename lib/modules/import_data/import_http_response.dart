@@ -63,6 +63,8 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
               : LayoutBuilder(
                   builder: (context, constraints) => ListView(
                     children: [
+                      if (response!.firstUser != null) userInfoAccordion,
+                      kDefaultDivider,
                       itemsAccordion,
                       kDefaultDivider,
                       svtAccordion(false, constraints),
@@ -84,6 +86,46 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
 
   final double _with = 56;
   final double _height = 56 / Constants.iconAspectRatio; // ignore: unused_field
+
+  Widget get userInfoAccordion {
+    final user = response!.firstUser!;
+    return SimpleAccordion(
+      expanded: true,
+      headerBuilder: (context, _) => ListTile(
+        leading: Icon(Icons.supervised_user_circle),
+        title: Text('账号信息'),
+      ),
+      contentBuilder: (context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: divideTiles([
+          ListTile(
+            title: Text('用户名'),
+            trailing: Text(user.name),
+          ),
+          ListTile(
+            title: Text('性别'),
+            trailing: Text(user.genderType == 1 ? '咕哒夫' : '咕哒子'),
+          ),
+          ListTile(
+            title: Text('用户ID'),
+            trailing: Text(formatNumber(user.friendCode)),
+          ),
+          ListTile(
+            title: Text('QP'),
+            trailing: Text(formatNumber(user.qp)),
+          ),
+          ListTile(
+            title: Text('魔力棱镜'),
+            trailing: Text(formatNumber(user.mana)),
+          ),
+          ListTile(
+            title: Text('稀有魔力棱镜'),
+            trailing: Text(formatNumber(user.rarePri)),
+          ),
+        ]),
+      ),
+    );
+  }
 
   Widget get itemsAccordion {
     List<Widget> children = [];
@@ -119,6 +161,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
   }
 
   Widget svtAccordion(bool inStorage, BoxConstraints constraints) {
+    int crossCount = max(2, constraints.maxWidth ~/ 210);
     List<Widget> children = [];
     final _textStyle = TextStyle(
         fontSize: 11, color: DefaultTextStyle.of(context).style.color);
@@ -166,8 +209,11 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Padding(padding: EdgeInsets.only(left: 6)),
-            db.getIconImage(db.gameData.servants[svt.indexKey]!.icon,
-                height: _height, width: _with),
+            db.getIconImage(
+              db.gameData.servants[svt.indexKey]!.icon,
+              height: _height,
+              width: min(_with, constraints.maxWidth / crossCount * 0.25),
+            ),
             Expanded(
               child: Align(
                 alignment: Alignment.bottomLeft,
@@ -232,7 +278,6 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
       }
     }
 
-    int crossCount = max(1, constraints.maxWidth ~/ 210);
     return SimpleAccordion(
       expanded: true,
       canTapOnHeader: false,
@@ -311,8 +356,8 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
     );
   }
 
-  void didImportData() {
-    showDialog(
+  void didImportData() async {
+    String? key = await showDialog<String?>(
       context: context,
       builder: (context) {
         List<Widget> children = [];
@@ -322,60 +367,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
             horizontalTitleGap: 0,
             title: Text(db.userData.users[key]!.name),
             onTap: () {
-              final user = db.userData.users[key]!;
-              if (_includeItem) {
-                user.items.clear();
-                items.forEach((item) {
-                  user.items[item.indexKey!] = item.num;
-                });
-              }
-              // 不删除原本信息
-              // 记录1号机。1号机使用Servant.no, 2-n号机使用UserSvt.id
-              HashSet<int> _alreadyAdded = HashSet();
-              for (var group in servants) {
-                for (var svt in group) {
-                  if (!_shownSvts.contains(svt)) continue;
-                  if (!_includeSvt && !svt.inStorage) continue;
-                  if (!_includeSvtStorage && svt.inStorage) continue;
-
-                  ServantStatus status;
-                  if (_alreadyAdded.contains(svt.indexKey!)) {
-                    user.duplicatedServants[svt.id] = svt.indexKey!;
-                    status = user.svtStatusOf(svt.id);
-                  } else {
-                    status = user.svtStatusOf(svt.indexKey!);
-                  }
-                  _alreadyAdded.add(svt.indexKey!);
-
-                  status.npLv = svt.treasureDeviceLv1;
-                  status.curVal.favorite = true;
-                  status.curVal
-                    ..ascension = svt.limitCount
-                    ..skills = [svt.skillLv1, svt.skillLv2, svt.skillLv3]
-                    ..grail = svt.exceedCount;
-
-                  final costumeVals =
-                      collectionMap[svt.svtId]!.costumeIdsTo01();
-                  // should always be non-null
-                  if (status.curVal.dress.length < costumeVals.length) {
-                    status.curVal.dress.addAll(List.generate(
-                        costumeVals.length - status.curVal.dress.length,
-                        (index) => 0));
-                  }
-                  status.curVal.dress
-                      .setRange(0, costumeVals.length, costumeVals);
-                }
-              }
-
-              // finish
-              db.userData.curUserKey = key;
-              db.notifyAppUpdate();
-              Navigator.pop(context);
-              SimpleCancelOkDialog(
-                hideCancel: true,
-                title: Text(S.current.import_data_success),
-                content: Text('已切换到账户 ${user.name}'),
-              ).show(context);
+              Navigator.of(context).pop(key);
             },
           ));
         }
@@ -394,23 +386,84 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
         );
       },
     );
+    if (!db.userData.users.containsKey(key)) return;
+
+    final user = db.userData.users[key]!;
+    user.isMasterGirl = response!.firstUser!.genderType == 2;
+    if (_includeItem) {
+      // user.items.clear();
+      if (response!.firstUser != null) {
+        user.items[Item.qp] = response!.firstUser!.qp;
+        user.items[Item.mana] = response!.firstUser!.mana;
+        user.items[Item.rarePri] = response!.firstUser!.rarePri;
+      }
+      items.forEach((item) {
+        user.items[item.indexKey!] = item.num;
+      });
+    }
+    // 不删除原本信息
+    // 记录1号机。1号机使用Servant.no, 2-n号机使用UserSvt.id
+    HashSet<int> _alreadyAdded = HashSet();
+    for (var group in servants) {
+      for (var svt in group) {
+        if (!_shownSvts.contains(svt)) continue;
+        if (!_includeSvt && !svt.inStorage) continue;
+        if (!_includeSvtStorage && svt.inStorage) continue;
+
+        ServantStatus status;
+        if (_alreadyAdded.contains(svt.indexKey!)) {
+          user.duplicatedServants[svt.id] = svt.indexKey!;
+          status = user.svtStatusOf(svt.id);
+        } else {
+          status = user.svtStatusOf(svt.indexKey!);
+        }
+        _alreadyAdded.add(svt.indexKey!);
+
+        status.npLv = svt.treasureDeviceLv1;
+        status.curVal.favorite = true;
+        status.curVal
+          ..ascension = svt.limitCount
+          ..skills = [svt.skillLv1, svt.skillLv2, svt.skillLv3]
+          ..grail = svt.exceedCount;
+
+        final costumeVals = collectionMap[svt.svtId]!.costumeIdsTo01();
+        // should always be non-null
+        if (status.curVal.dress.length < costumeVals.length) {
+          status.curVal.dress.addAll(List.generate(
+              costumeVals.length - status.curVal.dress.length, (index) => 0));
+        }
+        status.curVal.dress.setRange(0, costumeVals.length, costumeVals);
+      }
+    }
+
+    // finish
+    db.userData.curUserKey = key!;
+    db.notifyAppUpdate();
+    SimpleCancelOkDialog(
+      hideCancel: true,
+      title: Text(S.current.import_data_success),
+      content: Text('已切换到账户 ${user.name}'),
+    ).show(context);
   }
 
   void importResponseBody() async {
-    ignoreSvts.clear();
-    collectionMap.clear();
-    servants.clear();
-    items.clear();
-    _shownSvts.clear();
     try {
       FilePickerCross filePickerCross =
           await FilePickerCross.importFromStorage();
       String body =
           Uri.decodeFull(File(filePickerCross.path).readAsStringSync());
-      response =
+      BiliResponse _response =
           BiliResponse.fromJson(jsonDecode(b64(body))['cache']['replaced']);
+
+      // clear before import
+      ignoreSvts.clear();
+      collectionMap.clear();
+      servants.clear();
+      items.clear();
+      _shownSvts.clear();
+
       // items
-      response!.userItem.forEach((item) {
+      _response.userItem.forEach((item) {
         if (itemIdMap.containsKey(item.itemId)) {
           item.indexKey = itemIdMap[item.itemId]!.name;
           items.add(item);
@@ -420,11 +473,11 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
 
       // svt
       collectionMap.clear();
-      response!.userSvt.forEach((svt) {
+      _response.userSvt.forEach((svt) {
         if (svtIdMap.containsKey(svt.svtId)) {
           svt.indexKey = svtIdMap[svt.svtId]!.originNo;
           svt.inStorage = false;
-          collectionMap[svt.svtId] = response!.userSvtCollection
+          collectionMap[svt.svtId] = _response.userSvtCollection
               .firstWhere((element) => element.svtId == svt.svtId);
           final group = servants.firstWhereOrNull(
               (group) => group.any((element) => element.svtId == svt.svtId));
@@ -436,11 +489,11 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
         }
       });
       // svtStorage
-      response!.userSvtStorage.forEach((svt) {
+      _response.userSvtStorage.forEach((svt) {
         if (svtIdMap.containsKey(svt.svtId)) {
           svt.indexKey = svtIdMap[svt.svtId]!.originNo;
           svt.inStorage = true;
-          collectionMap[svt.svtId] = response!.userSvtCollection
+          collectionMap[svt.svtId] = _response.userSvtCollection
               .firstWhere((element) => element.svtId == svt.svtId);
           final group = servants.firstWhereOrNull(
               (group) => group.any((element) => element.svtId == svt.svtId));
@@ -471,15 +524,18 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
           return d;
         });
       });
+      // assign last
+      response = _response;
     } on FileSelectionCanceledError {} catch (e, s) {
       logger.e('fail to load http response', e, s);
       if (mounted)
         SimpleCancelOkDialog(
           title: Text('Error'),
-          content: Text('''$e\n\n请确保选择的是正确的HTTPS请求，其URL为
+          content: Text('''$e\n\n请检查以下步骤是否正确：
+- 所捕获的URL为：
 https://line3-s2-xxx-fate.bilibiligame.net/rongame_beta//rgfate/60_1001/ac.php?_userId=xxxxxx&_key=toplogin
-其中数字及xxx可能随着地区、所在服务器和好友码而不同
-确保保存为UTF8编码文本文件，且文件内容未更改'''),
+其中域名前缀、数字及xxx可能随着地区、所在服务器和用户ID而不同
+- 确保保存的文件编码为UTF8(默认)且已解码，内容为ey开头的英文+数字，且内容未手动更改'''),
         ).show(context);
     } finally {
       if (mounted) {
