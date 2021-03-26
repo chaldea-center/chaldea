@@ -140,9 +140,13 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
     );
   }
 
-  Widget getGroup({String? header, List<Widget> children = const []}) {
+  Widget getGroup({
+    String? header,
+    List<Widget> children = const [],
+    EdgeInsetsGeometry padding = const EdgeInsets.symmetric(horizontal: 12),
+  }) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 12),
+      padding: padding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -152,7 +156,8 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
               contentPadding: EdgeInsets.zero,
             ),
           Wrap(
-            spacing: 8,
+            spacing: 6,
+            runSpacing: 3,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: children,
           )
@@ -179,25 +184,6 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
           )
         ],
       ),
-    );
-  }
-
-  Widget getToggleButton(
-      {required List<String> texts,
-      required List<bool> isSelected,
-      ValueChanged<int>? onPressed}) {
-    return ToggleButtons(
-      constraints: BoxConstraints(minHeight: 30),
-      selectedColor: Colors.white,
-      fillColor: Theme.of(context).primaryColor,
-      children: texts
-          .map((e) => Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                child: Text(e),
-              ))
-          .toList(),
-      isSelected: isSelected,
-      onPressed: onPressed,
     );
   }
 
@@ -257,20 +243,25 @@ class FilterGroup extends StatelessWidget {
   final bool useRadio;
   final void Function(FilterGroupData optionData)? onFilterChanged;
 
-  FilterGroup(
-      {Key? key,
-      this.title,
-      required this.options,
-      required this.values,
-      this.optionBuilder,
-      this.showMatchAll = false,
-      this.showInvert = false,
-      this.useRadio = false,
-      this.onFilterChanged})
-      : super(key: key);
+  final bool combined;
+  final EdgeInsetsGeometry padding;
+
+  FilterGroup({
+    Key? key,
+    this.title,
+    required this.options,
+    required this.values,
+    this.optionBuilder,
+    this.showMatchAll = false,
+    this.showInvert = false,
+    this.useRadio = false,
+    this.onFilterChanged,
+    this.combined = false,
+    this.padding = const EdgeInsets.symmetric(horizontal: 12),
+  }) : super(key: key);
 
   Widget _buildCheckbox(
-      bool checked, String text, VoidCallback onTap, BuildContext context) {
+      BuildContext context, bool checked, String text, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Row(
@@ -287,60 +278,74 @@ class FilterGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-      child: Column(
+    List<Widget> _optionChildren = [];
+    for (int index = 0; index < options.length; index++) {
+      String key = options[index];
+      _optionChildren.add(FilterOption(
+        selected: values.options[key] ?? false,
+        value: key,
+        child: optionBuilder == null ? Text('$key') : optionBuilder!(key),
+        borderRadius: combined
+            ? BorderRadius.horizontal(
+                left: Radius.circular(index == 0 ? 3 : 0),
+                right: Radius.circular(index == options.length - 1 ? 3 : 0),
+              )
+            : BorderRadius.circular(3),
+        onChanged: (v) {
+          if (useRadio) {
+            values.options.clear();
+            values.options[key] = true;
+          } else {
+            values.options[key] = v;
+            values.options.removeWhere((k, v) => v != true);
+          }
+          if (onFilterChanged != null) {
+            onFilterChanged!(values);
+          }
+        },
+      ));
+    }
+
+    Widget child = Wrap(
+      spacing: combined ? 0 : 6,
+      runSpacing: 3,
+      children: _optionChildren,
+    );
+
+    if (title != null) {
+      child = Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          if (title != null || showMatchAll || showInvert)
-            CustomTile(
-              title: DefaultTextStyle.merge(
-                  child: title!, style: TextStyle(fontSize: 14)),
-              contentPadding: EdgeInsets.zero,
-              trailing: Row(
-                children: <Widget>[
-                  if (showMatchAll)
-                    _buildCheckbox(values.matchAll, 'Match All', () {
-                      values.matchAll = !values.matchAll;
-                      if (onFilterChanged != null) {
-                        onFilterChanged!(values);
-                      }
-                    }, context),
-                  if (showInvert)
-                    _buildCheckbox(values.invert, 'Invert', () {
-                      values.invert = !values.invert;
-                      if (onFilterChanged != null) {
-                        onFilterChanged!(values);
-                      }
-                    }, context)
-                ],
-              ),
-            ),
-          Wrap(
-            spacing: 6,
-            runSpacing: 3,
-            children: options.map((key) {
-              return FilterOption(
-                  selected: values.options[key] ?? false,
-                  value: key,
-                  child: optionBuilder == null
-                      ? Text('$key')
-                      : optionBuilder!(key),
-                  onChanged: (v) {
-                    if (useRadio) {
-                      values.options.clear();
-                    }
-                    values.options[key] = v;
-                    values.options.removeWhere((k, v) => v != true);
+          CustomTile(
+            title: DefaultTextStyle.merge(
+                child: title!, style: TextStyle(fontSize: 14)),
+            contentPadding: EdgeInsets.zero,
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                if (showMatchAll)
+                  _buildCheckbox(context, values.matchAll, 'Match All', () {
+                    values.matchAll = !values.matchAll;
                     if (onFilterChanged != null) {
                       onFilterChanged!(values);
                     }
-                  });
-            }).toList(),
-          )
+                  }),
+                if (showInvert)
+                  _buildCheckbox(context, values.invert, 'Invert', () {
+                    values.invert = !values.invert;
+                    if (onFilterChanged != null) {
+                      onFilterChanged!(values);
+                    }
+                  })
+              ],
+            ),
+          ),
+          child,
         ],
-      ),
-    );
+      );
+    }
+
+    return Padding(padding: padding, child: child);
   }
 }
 
@@ -352,6 +357,7 @@ class FilterOption<T> extends StatelessWidget {
   final Color? selectedColor;
   final Color? unselectedColor;
   final Color? selectedTextColor;
+  final BorderRadius borderRadius;
 
   FilterOption({
     Key? key,
@@ -362,6 +368,7 @@ class FilterOption<T> extends StatelessWidget {
     this.selectedColor,
     this.unselectedColor,
     this.selectedTextColor = Colors.white,
+    this.borderRadius = const BorderRadius.all(Radius.circular(3)),
   }) : super(key: key);
 
   @override
@@ -372,6 +379,7 @@ class FilterOption<T> extends StatelessWidget {
       child: ButtonTheme(
         height: 20,
         minWidth: 30,
+        padding: EdgeInsets.zero,
         child: OutlinedButton(
           onPressed: () {
             if (onChanged != null) {
@@ -384,8 +392,7 @@ class FilterOption<T> extends StatelessWidget {
             // minimumSize: Size(6, 4),
             // padding: EdgeInsets.symmetric(horizontal: 5),
             textStyle: TextStyle(fontWeight: FontWeight.normal),
-            shape: ContinuousRectangleBorder(
-                borderRadius: BorderRadius.circular(3)),
+            shape: ContinuousRectangleBorder(borderRadius: borderRadius),
           ),
           child: child ?? Text(value.toString()),
           // shape: ,

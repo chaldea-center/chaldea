@@ -176,7 +176,9 @@ class CraftListPageState extends State<CraftListPage> {
 
     return Scrollbar(
       controller: _scrollController,
-      child: filterData.useGrid ? _buildGridView() : _buildListView(),
+      child: filterData.display.isRadioVal('Grid')
+          ? _buildGridView()
+          : _buildListView(),
     );
   }
 
@@ -255,12 +257,17 @@ class CraftListPageState extends State<CraftListPage> {
     if (shownList.length % 5 == 0) {
       children.add(Container());
     }
-    return GridView.count(
-      crossAxisCount: 5,
-      childAspectRatio: 1,
-      controller: _scrollController,
-      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-      children: children,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        int crossCount = constraints.maxWidth ~/ 72;
+        return GridView.count(
+          crossAxisCount: crossCount,
+          childAspectRatio: 1,
+          controller: _scrollController,
+          padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+          children: children,
+        );
+      },
     );
   }
 

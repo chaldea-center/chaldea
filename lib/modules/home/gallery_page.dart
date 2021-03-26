@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
@@ -159,29 +161,37 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(kAppName),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.refresh),
-              tooltip: S.of(context).tooltip_refresh_sliders,
-              onPressed: () => resolveSliderImageUrls(),
-            ),
-          ],
-        ),
-        body: ListView(
-          children: <Widget>[
-            _buildCarousel(),
-            GridView.count(
-              crossAxisCount: SplitRoute.isSplit(context) ? 4 : 4,
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              childAspectRatio: 1,
-              children: _getShownGalleries(context),
-            ),
-            if (kDebugMode) buildTestInfoPad(),
-          ],
-        ));
+      appBar: AppBar(
+        title: Text(kAppName),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.refresh),
+            tooltip: S.of(context).tooltip_refresh_sliders,
+            onPressed: () => resolveSliderImageUrls(),
+          ),
+        ],
+      ),
+      body: ListView(
+        children: <Widget>[
+          _buildCarousel(),
+          _buildGalleries(),
+          if (kDebugMode) buildTestInfoPad(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGalleries() {
+    return LayoutBuilder(builder: (context, constraints) {
+      int crossCount = max(2, constraints.maxWidth ~/ 75);
+      return GridView.count(
+        crossAxisCount: crossCount,
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        childAspectRatio: 1,
+        children: _getShownGalleries(context),
+      );
+    });
   }
 
   Widget _buildCarousel() {

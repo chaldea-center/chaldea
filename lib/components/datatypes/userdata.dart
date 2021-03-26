@@ -1,7 +1,6 @@
 /// App settings and users data
 part of datatypes;
 
-
 @JsonSerializable(checked: true)
 class UserData {
   // app settings
@@ -111,12 +110,14 @@ class SvtFilterData {
   /// 0-all, 1-fav, 2-not fav
   int favorite;
   String filterString;
+
+  FilterGroupData display;
   List<SvtCompare> sortKeys;
   List<bool> sortReversed;
-  bool useGrid;
 
   bool hasDress;
-  bool isUserDefineSvt;
+  FilterGroupData svtDuplicated;
+
   FilterGroupData planCompletion;
   FilterGroupData skillLevel;
   FilterGroupData priority;
@@ -134,11 +135,11 @@ class SvtFilterData {
 
   SvtFilterData({
     int? favorite,
+    FilterGroupData? display,
     List<SvtCompare>? sortKeys,
     List<bool>? sortReversed,
-    bool? useGrid,
     bool? hasDress,
-    bool? isUserDefineSvt,
+    FilterGroupData? svtDuplicated,
     FilterGroupData? planCompletion,
     FilterGroupData? skillLevel,
     FilterGroupData? priority,
@@ -155,11 +156,11 @@ class SvtFilterData {
     FilterGroupData? traitSpecial,
   })  : filterString = '',
         favorite = favorite ?? 0,
+        display = display ?? FilterGroupData(options: {'List': true}),
         sortKeys = sortKeys ?? List.generate(3, (i) => sortKeyData[i]),
         sortReversed = sortReversed ?? List.generate(3, (index) => true),
-        useGrid = useGrid ?? false,
         hasDress = hasDress ?? false,
-        isUserDefineSvt = isUserDefineSvt ?? false,
+        svtDuplicated = svtDuplicated ?? FilterGroupData(),
         planCompletion = planCompletion ?? FilterGroupData(),
         skillLevel = skillLevel ?? FilterGroupData(),
         priority = priority ?? FilterGroupData(),
@@ -180,6 +181,8 @@ class SvtFilterData {
   }
 
   List<FilterGroupData> get groupValues => [
+        // display,  // don't reset list/grid view
+        svtDuplicated,
         skillLevel,
         planCompletion,
         priority,
@@ -200,7 +203,6 @@ class SvtFilterData {
     // sortKeys = List.generate(sortKeys.length, (i) => sortKeyData[i]);
     // sortReversed = List.filled(sortKeys.length, false);
     hasDress = false;
-    isUserDefineSvt = false;
     for (var group in groupValues) {
       group.reset();
     }
@@ -280,15 +282,17 @@ class SvtFilterData {
 @JsonSerializable(checked: true)
 class CraftFilterData {
   String filterString;
+
+  FilterGroupData display;
   List<CraftCompare> sortKeys;
   List<bool> sortReversed;
-  bool useGrid;
 
   FilterGroupData rarity;
   FilterGroupData category;
   FilterGroupData atkHpType;
 
   CraftFilterData({
+    FilterGroupData? display,
     List<CraftCompare>? sortKeys,
     List<bool>? sortReversed,
     bool? useGrid,
@@ -296,9 +300,9 @@ class CraftFilterData {
     FilterGroupData? category,
     FilterGroupData? atkHpType,
   })  : filterString = '',
+        display = display ?? FilterGroupData(options: {'List': true}),
         sortKeys = sortKeys ?? List.generate(2, (index) => sortKeyData[index]),
         sortReversed = sortReversed ?? List.filled(2, true, growable: true),
-        useGrid = useGrid ?? false,
         rarity = rarity ?? FilterGroupData(),
         category = category ?? FilterGroupData(),
         atkHpType = atkHpType ?? FilterGroupData() {
@@ -307,6 +311,7 @@ class CraftFilterData {
   }
 
   List<FilterGroupData> get groupValues => [
+        // display,
         rarity,
         category,
         atkHpType,
@@ -348,23 +353,25 @@ class CraftFilterData {
 @JsonSerializable(checked: true)
 class CmdCodeFilterData {
   String filterString;
+
+  FilterGroupData display;
   List<CmdCodeCompare> sortKeys;
   List<bool> sortReversed;
-  bool useGrid;
 
   FilterGroupData rarity;
   FilterGroupData category;
 
   CmdCodeFilterData({
+    FilterGroupData? display,
     List<CmdCodeCompare>? sortKeys,
     List<bool>? sortReversed,
     bool? useGrid,
     FilterGroupData? rarity,
     FilterGroupData? category,
   })  : filterString = '',
+        display = display ?? FilterGroupData(options: {'List': true}),
         sortKeys = sortKeys ?? List.generate(2, (index) => sortKeyData[index]),
         sortReversed = sortReversed ?? List.filled(2, true, growable: true),
-        useGrid = useGrid ?? false,
         rarity = rarity ?? FilterGroupData(),
         category = category ?? FilterGroupData() {
     fillListValue(this.sortKeys, 2, (i) => sortKeyData[i]);
@@ -411,6 +418,8 @@ class FilterGroupData {
         invert = invert ?? false,
         options = options ?? {};
 
+  bool isRadioVal(String v) => options[v] == true;
+
   void reset() {
     options.clear();
     matchAll = false;
@@ -424,7 +433,7 @@ class FilterGroupData {
         : _compare(_optionKey, _srcKey) ?? false;
   }
 
-  bool singleValueFilter(String? value,
+  bool singleValueFilter(dynamic value,
       {CompareFilterKeyCallback? compare,
       Map<String, CompareFilterKeyCallback>? compares}) {
     // ignore matchAll?

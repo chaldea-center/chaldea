@@ -23,34 +23,41 @@ class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData> {
       }),
       content: getListViewBody(children: [
         getGroup(header: S.of(context).filter_shown_type, children: [
-          getToggleButton(
-              texts: ['List', 'Grid'],
-              isSelected: [!filterData.useGrid, filterData.useGrid],
-              onPressed: (i) {
-                filterData.useGrid = i == 1;
-                update();
-              }),
+          FilterGroup(
+            useRadio: true,
+            padding: EdgeInsets.only(right: 12),
+            options: ['List', 'Grid'],
+            values: filterData.display,
+            combined: true,
+            onFilterChanged: (v) {
+              filterData.display = v;
+              update();
+            },
+          ),
         ]),
-        getGroup(header: S.of(context).filter_sort, children: [
-          for (int i = 0; i < filterData.sortKeys.length; i++)
-            getSortButton<CmdCodeCompare>(
-              prefix: '${i + 1}',
-              value: filterData.sortKeys[i],
-              items: Map.fromIterables(CmdCodeFilterData.sortKeyData, [
-                S.of(context).filter_sort_number,
-                S.of(context).filter_sort_rarity
-              ]),
-              onSortAttr: (key) {
-                filterData.sortKeys[i] = key ?? filterData.sortKeys[i];
-                update();
-              },
-              reversed: filterData.sortReversed[i],
-              onSortDirectional: (reversed) {
-                filterData.sortReversed[i] = reversed;
-                update();
-              },
-            )
-        ]),
+        getGroup(
+          header: S.of(context).filter_sort,
+          children: [
+            for (int i = 0; i < filterData.sortKeys.length; i++)
+              getSortButton<CmdCodeCompare>(
+                prefix: '${i + 1}',
+                value: filterData.sortKeys[i],
+                items: Map.fromIterables(CmdCodeFilterData.sortKeyData, [
+                  S.of(context).filter_sort_number,
+                  S.of(context).filter_sort_rarity
+                ]),
+                onSortAttr: (key) {
+                  filterData.sortKeys[i] = key ?? filterData.sortKeys[i];
+                  update();
+                },
+                reversed: filterData.sortReversed[i],
+                onSortDirectional: (reversed) {
+                  filterData.sortReversed[i] = reversed;
+                  update();
+                },
+              )
+          ],
+        ),
         FilterGroup(
           title: Text(S.of(context).rarity),
           options: CmdCodeFilterData.rarityData,

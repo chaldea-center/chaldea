@@ -1,5 +1,6 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
+import 'package:flutter/cupertino.dart';
 
 class ServantFilterPage extends FilterPage<SvtFilterData> {
   const ServantFilterPage({
@@ -22,35 +23,44 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         update();
       }),
       content: getListViewBody(children: [
-        getGroup(header: S.of(context).filter_shown_type, children: [
-          getToggleButton(
-              texts: ['List', 'Grid'],
-              isSelected: [!filterData.useGrid, filterData.useGrid],
-              onPressed: (i) {
-                filterData.useGrid = i == 1;
+        getGroup(
+          header: S.of(context).filter_shown_type,
+          children: [
+            FilterGroup(
+              useRadio: true,
+              padding: EdgeInsets.zero,
+              options: ['List', 'Grid'],
+              values: filterData.display,
+              combined: true,
+              onFilterChanged: (v) {
+                filterData.display = v;
                 update();
-              }),
-          FilterOption(
-            selected: filterData.hasDress,
-            value: S.of(context).dress,
-            onChanged: (v) {
-              setState(() {
-                filterData.hasDress = v;
-                update();
-              });
-            },
-          ),
-          FilterOption(
-            selected: filterData.isUserDefineSvt,
-            value: '2号机',
-            onChanged: (v) {
-              setState(() {
-                filterData.isUserDefineSvt = v;
-                update();
-              });
-            },
-          ),
-        ]),
+              },
+            ),
+            FilterGroup(
+              options: ['1', '2'],
+              values: filterData.svtDuplicated,
+              optionBuilder: (v) => Text(v == '1' ? '初号机' : '2号机'),
+              combined: true,
+              onFilterChanged: (v) {
+                setState(() {
+                  filterData.svtDuplicated = v;
+                  update();
+                });
+              },
+            ),
+            FilterOption(
+              selected: filterData.hasDress,
+              value: S.of(context).dress,
+              onChanged: (v) {
+                setState(() {
+                  filterData.hasDress = v;
+                  update();
+                });
+              },
+            ),
+          ],
+        ),
         getGroup(header: S.of(context).filter_sort, children: [
           for (int i = 0; i < filterData.sortKeys.length; i++)
             getSortButton<SvtCompare>(

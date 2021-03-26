@@ -1591,6 +1591,12 @@ SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
   return $checkedNew('SvtFilterData', json, () {
     final val = SvtFilterData(
       favorite: $checkedConvert(json, 'favorite', (v) => v as int?),
+      display: $checkedConvert(
+          json,
+          'display',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
       sortKeys: $checkedConvert(
           json,
           'sortKeys',
@@ -1599,10 +1605,13 @@ SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
               .toList()),
       sortReversed: $checkedConvert(json, 'sortReversed',
           (v) => (v as List<dynamic>?)?.map((e) => e as bool).toList()),
-      useGrid: $checkedConvert(json, 'useGrid', (v) => v as bool?),
       hasDress: $checkedConvert(json, 'hasDress', (v) => v as bool?),
-      isUserDefineSvt:
-          $checkedConvert(json, 'isUserDefineSvt', (v) => v as bool?),
+      svtDuplicated: $checkedConvert(
+          json,
+          'svtDuplicated',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
       planCompletion: $checkedConvert(
           json,
           'planCompletion',
@@ -1698,11 +1707,11 @@ Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
     <String, dynamic>{
       'favorite': instance.favorite,
       'filterString': instance.filterString,
+      'display': instance.display,
       'sortKeys': instance.sortKeys.map((e) => _$SvtCompareEnumMap[e]).toList(),
       'sortReversed': instance.sortReversed,
-      'useGrid': instance.useGrid,
       'hasDress': instance.hasDress,
-      'isUserDefineSvt': instance.isUserDefineSvt,
+      'svtDuplicated': instance.svtDuplicated,
       'planCompletion': instance.planCompletion,
       'skillLevel': instance.skillLevel,
       'priority': instance.priority,
@@ -1757,6 +1766,12 @@ const _$SvtCompareEnumMap = {
 CraftFilterData _$CraftFilterDataFromJson(Map<String, dynamic> json) {
   return $checkedNew('CraftFilterData', json, () {
     final val = CraftFilterData(
+      display: $checkedConvert(
+          json,
+          'display',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
       sortKeys: $checkedConvert(
           json,
           'sortKeys',
@@ -1765,7 +1780,6 @@ CraftFilterData _$CraftFilterDataFromJson(Map<String, dynamic> json) {
               .toList()),
       sortReversed: $checkedConvert(json, 'sortReversed',
           (v) => (v as List<dynamic>?)?.map((e) => e as bool).toList()),
-      useGrid: $checkedConvert(json, 'useGrid', (v) => v as bool?),
       rarity: $checkedConvert(
           json,
           'rarity',
@@ -1794,10 +1808,10 @@ CraftFilterData _$CraftFilterDataFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$CraftFilterDataToJson(CraftFilterData instance) =>
     <String, dynamic>{
       'filterString': instance.filterString,
+      'display': instance.display,
       'sortKeys':
           instance.sortKeys.map((e) => _$CraftCompareEnumMap[e]).toList(),
       'sortReversed': instance.sortReversed,
-      'useGrid': instance.useGrid,
       'rarity': instance.rarity,
       'category': instance.category,
       'atkHpType': instance.atkHpType,
@@ -1813,6 +1827,12 @@ const _$CraftCompareEnumMap = {
 CmdCodeFilterData _$CmdCodeFilterDataFromJson(Map<String, dynamic> json) {
   return $checkedNew('CmdCodeFilterData', json, () {
     final val = CmdCodeFilterData(
+      display: $checkedConvert(
+          json,
+          'display',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
       sortKeys: $checkedConvert(
           json,
           'sortKeys',
@@ -1821,7 +1841,6 @@ CmdCodeFilterData _$CmdCodeFilterDataFromJson(Map<String, dynamic> json) {
               .toList()),
       sortReversed: $checkedConvert(json, 'sortReversed',
           (v) => (v as List<dynamic>?)?.map((e) => e as bool).toList()),
-      useGrid: $checkedConvert(json, 'useGrid', (v) => v as bool?),
       rarity: $checkedConvert(
           json,
           'rarity',
@@ -1844,10 +1863,10 @@ CmdCodeFilterData _$CmdCodeFilterDataFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$CmdCodeFilterDataToJson(CmdCodeFilterData instance) =>
     <String, dynamic>{
       'filterString': instance.filterString,
+      'display': instance.display,
       'sortKeys':
           instance.sortKeys.map((e) => _$CmdCodeCompareEnumMap[e]).toList(),
       'sortReversed': instance.sortReversed,
-      'useGrid': instance.useGrid,
       'rarity': instance.rarity,
       'category': instance.category,
     };

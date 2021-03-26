@@ -23,13 +23,17 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
       }),
       content: getListViewBody(children: [
         getGroup(header: S.of(context).filter_sort, children: [
-          getToggleButton(
-              texts: ['List', 'Grid'],
-              isSelected: [!filterData.useGrid, filterData.useGrid],
-              onPressed: (i) {
-                filterData.useGrid = i == 1;
-                update();
-              }),
+          FilterGroup(
+            useRadio: true,
+            padding: EdgeInsets.only(right: 12),
+            options: ['List', 'Grid'],
+            values: filterData.display,
+            combined: true,
+            onFilterChanged: (v) {
+              filterData.display = v;
+              update();
+            },
+          ),
         ]), //end
         getGroup(header: S.of(context).filter_sort, children: [
           for (int i = 0; i < filterData.sortKeys.length; i++)

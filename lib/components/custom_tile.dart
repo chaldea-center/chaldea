@@ -212,22 +212,26 @@ class CustomTile extends StatelessWidget {
 class ImageWithText extends StatelessWidget {
   final Widget image;
   final String? text;
+  final Widget Function(TextStyle style)? textBuilder;
   final EdgeInsets padding;
   final double? width;
   final TextAlign? textAlign;
   final TextStyle? textStyle;
   final AlignmentDirectional alignment;
+  final double? shadowSize;
   final VoidCallback? onTap;
 
   ImageWithText({
     Key? key,
     required this.image,
     this.text,
+    this.textBuilder,
     this.padding = EdgeInsets.zero,
     this.width,
     this.alignment = AlignmentDirectional.bottomEnd,
     this.textAlign,
     this.textStyle,
+    this.shadowSize,
     this.onTap,
   }) : super(key: key);
 
@@ -236,7 +240,6 @@ class ImageWithText extends StatelessWidget {
     //TODO: fix image pos shift with different alignment
     return LayoutBuilder(
       builder: (context, constraints) {
-//        print('${constraints.biggest},${constraints.smallest}');
         TextStyle _style = textStyle ?? TextStyle();
         _style =
             _style.copyWith(fontWeight: _style.fontWeight ?? FontWeight.bold);
@@ -260,7 +263,7 @@ class ImageWithText extends StatelessWidget {
                     child: image,
                   ),
                 )),
-                if (text?.isNotEmpty == true)
+                if (text?.isNotEmpty == true || textBuilder != null)
                   applyConstraints(
                     Padding(
                       padding: EdgeInsets.fromLTRB(
@@ -269,9 +272,11 @@ class ImageWithText extends StatelessWidget {
                           max(0.0, padding.right),
                           max(0.0, padding.bottom)),
                       child: paintOutline(
-                        text: text!,
+                        text: text,
+                        builder: textBuilder,
                         textAlign: textAlign,
                         textStyle: _style,
+                        shadowSize: shadowSize,
                       ),
                     ),
                     boxFit: BoxFit.scaleDown,
@@ -297,23 +302,38 @@ class ImageWithText extends StatelessWidget {
     return child;
   }
 
+  static TextStyle toGlowStyle([TextStyle? style, double? shadowSize]) {
+    style ??= TextStyle();
+    return style.copyWith(
+      foreground: style.foreground ?? Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = shadowSize ?? 3
+        ..color = Colors.white,
+    );
+  }
+
   static Widget paintOutline({
-    required String text,
+    String? text,
+    Widget builder(TextStyle style)?,
     TextAlign? textAlign,
     TextStyle? textStyle,
+    double? shadowSize,
   }) {
+    assert(text != null || builder != null);
+    assert(text == null || builder == null);
     TextStyle _style = textStyle ?? TextStyle();
-    return Stack(
-      children: <Widget>[
+    List<Widget> children;
+    if (builder != null) {
+      children = [
+        builder(toGlowStyle(_style, shadowSize)),
+        builder(_style),
+      ];
+    } else {
+      children = [
         Text(
-          text,
+          text!,
           textAlign: textAlign,
-          style: _style.copyWith(
-            foreground: _style.foreground ?? Paint()
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 3
-              ..color = Colors.white,
-          ),
+          style: toGlowStyle(textStyle, shadowSize),
         ),
         Text(
           text,
@@ -322,7 +342,8 @@ class ImageWithText extends StatelessWidget {
               ? _style
               : _style.copyWith(foreground: null),
         )
-      ],
-    );
+      ];
+    }
+    return Stack(children: children);
   }
 }
