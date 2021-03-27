@@ -89,12 +89,13 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                   SimpleCancelOkDialog(
                     title: Text(S.of(context).reload_default_gamedata),
                     onTapOk: () async {
-                      var canceler = showMyProgress(status: 'reloading');
+                      EasyLoading.show(status: 'reloading');
                       await db.loadZipAssets(kDatasetAssetKey);
-                      canceler();
                       if (db.loadGameData()) {
-                        EasyLoading.showToast(
+                        EasyLoading.showSuccess(
                             S.of(context).reload_data_success);
+                      } else {
+                        EasyLoading.showError('Failed');
                       }
                     },
                   ).show(context);
@@ -162,14 +163,13 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
   }
 
   Future<void> importGamedata() async {
-    var canceler;
     try {
       // final result = await FilePicker.platform.pickFiles();
       final result = await FilePickerCross.importFromStorage(
           type: FileTypeCross.custom, fileExtension: 'zip,json');
       final file = File(result.path);
       if (file.path.toLowerCase().endsWith('.zip')) {
-        canceler = showMyProgress(status: 'loading');
+        EasyLoading.show(status: 'loading');
         await db.extractZip(fp: file.path, savePath: db.paths.gameDir);
         db.loadGameData();
       } else if (file.path.toLowerCase().endsWith('.json')) {
@@ -182,12 +182,11 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
       } else {
         throw FormatException('unsupported file type');
       }
-      showInformDialog(context, title: S.of(context).import_data_success);
+      EasyLoading.showSuccess(S.of(context).import_data_success);
     } on FileSelectionCanceledError {} catch (e) {
+      EasyLoading.dismiss();
       showInformDialog(context,
           title: 'Import gamedata failed!', content: e.toString());
-    } finally {
-      canceler?.call();
     }
   }
 

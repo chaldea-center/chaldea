@@ -269,22 +269,6 @@ class TimeCounter {
   }
 }
 
-Future<void> Function() showMyProgress(
-    {Duration period = const Duration(seconds: 1),
-    String? status,
-    EasyLoadingMaskType maskType = EasyLoadingMaskType.clear}) {
-  int counts = 0;
-  final timer = Timer.periodic(Duration(milliseconds: 25), (timer) {
-    counts += 1;
-    var progress = counts * 25.0 / period.inMilliseconds % 1.0;
-    EasyLoading.showProgress(progress, status: status, maskType: maskType);
-  });
-  return () {
-    timer.cancel();
-    return EasyLoading.dismiss();
-  };
-}
-
 void safeSetState(VoidCallback callback) {
   SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
     callback();

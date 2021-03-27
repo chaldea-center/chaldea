@@ -171,16 +171,14 @@ class _UpdateSourcePageState extends State<UpdateSourcePage> {
           notes: release?.body,
           confirmText: S.of(context).import_data.toUpperCase(),
           onComplete: () async {
-            var canceler = showMyProgress(status: 'loading');
+            EasyLoading.show(status: 'loading');
             try {
               await db.extractZip(fp: fp, savePath: db.paths.gameDir);
               db.loadGameData();
               Navigator.of(context).pop();
-              canceler();
-              EasyLoading.showToast(S.of(context).import_data_success);
+              EasyLoading.showSuccess(S.of(context).import_data_success);
             } catch (e) {
-              canceler();
-              EasyLoading.showToast(S.of(context).import_data_error(e));
+              EasyLoading.showError(S.of(context).import_data_error(e));
             } finally {}
           },
         ),

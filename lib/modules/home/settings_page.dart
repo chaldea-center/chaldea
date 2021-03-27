@@ -180,7 +180,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               if (Platform.isAndroid)
                 ListTile(
-                  title: Text('Google Play Store'),
+                  title: Text('Rate on Google Play Store'),
                   onTap: () {
                     launch(kGooglePlayLink);
                   },

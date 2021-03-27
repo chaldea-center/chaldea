@@ -201,7 +201,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
       EasyLoading.showToast('请填写反馈内容或添加附件');
       return;
     }
-    var canceler = showMyProgress(status: 'Sending');
+    EasyLoading.show(status: 'Sending');
     try {
       final message = Message()
         ..from = Address('chaldea-client@narumi.cc', 'Chaldea Feedback')
@@ -225,12 +225,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
       } else {
         await Future.delayed(Duration(seconds: 3));
       }
-      canceler();
       EasyLoading.showSuccess('Sent');
     } catch (error, stacktrace) {
       print(error.toString());
       print(stacktrace.toString());
-      canceler();
       EasyLoading.showError(error.toString());
     }
   }

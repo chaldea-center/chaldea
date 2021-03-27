@@ -181,7 +181,6 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
     if (imageFiles.isEmpty) {
       return;
     }
-    Function? canceler;
     try {
       final response1 = await _dio.get('/requestNewTask',
           queryParameters: {'userKey': AppInfo.uniqueId});
@@ -198,19 +197,18 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
             await MultipartFile.fromFile(file.path);
       }
       var formData = FormData.fromMap(map);
-      canceler = showMyProgress(status: 'Uploading');
+      EasyLoading.show(status: 'Uploading');
       final response2 = await _dio.post('/recognizeItems', data: formData);
       var data2 = jsonDecode(response2.data);
       String title = data2['success'] == true ? '上传成功' : '上传失败';
       String content = data2['msg'].toString();
-      canceler();
       showInformDialog(context, title: title, content: content);
     } catch (e, s) {
       print(e);
       print(s);
       showInformDialog(context, content: e.toString());
     } finally {
-      canceler?.call();
+      EasyLoading.dismiss();
     }
   }
 

@@ -225,9 +225,15 @@ class _MasterMissionPageState extends State<MasterMissionPage>
         PopupMenuItem(value: 1, child: Text('国服本周')),
       ],
       onSelected: (v) async {
-        var canceler = showMyProgress();
-        final wikitext = await MooncellUtil.pageContent('首页/御主任务数据');
-        canceler();
+        EasyLoading.show();
+        String wikitext;
+        try {
+          wikitext = await MooncellUtil.pageContent('首页/御主任务数据');
+        } catch (e) {
+          EasyLoading.showError(e.toString());
+          return;
+        }
+        EasyLoading.showSuccess('success');
         String prefix = ['jp', 'cn'][v];
         missions.clear();
         String? _getContent(String key) {
@@ -257,7 +263,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
             }
           }
         }
-        setState(() {});
+        if (mounted) setState(() {});
       },
     );
   }
