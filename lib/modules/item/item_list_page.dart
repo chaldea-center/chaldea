@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
@@ -425,24 +424,21 @@ class _ItemListTabState extends State<ItemListTab> {
     _allGroups.forEach((item, group) {
       // when will controller be null? should never
       if (group.controller != null) {
+        if (group.focusNode.hasPrimaryFocus) {
+          return;
+        }
         final text = formatNumber(db.curUser.items[item.name] ?? 0,
             groupSeparator: item.name == Item.qp ? ',' : null);
-        if (text == '0' &&
-            group.focusNode.hasFocus &&
-            (group.controller!.text == '-' || group.controller!.text == '')) {
-          // don't set '-' to '0'
-        } else {
-          final selection = group.controller!.value.selection;
-          TextSelection? newSelection;
-          if (selection.isValid) {
-            newSelection = selection.copyWith(
-              baseOffset: min(selection.baseOffset, text.length),
-              extentOffset: min(selection.extentOffset, text.length),
-            );
-          }
-          group.controller!.value = group.controller!.value
-              .copyWith(text: text, selection: newSelection);
+        final selection = group.controller!.value.selection;
+        TextSelection? newSelection;
+        if (selection.isValid) {
+          newSelection = selection.copyWith(
+            baseOffset: min(selection.baseOffset, text.length),
+            extentOffset: min(selection.extentOffset, text.length),
+          );
         }
+        group.controller!.value = group.controller!.value
+            .copyWith(text: text, selection: newSelection);
       }
     });
   }

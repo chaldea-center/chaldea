@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 

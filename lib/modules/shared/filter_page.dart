@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:chaldea/components/components.dart';
 
 abstract class FilterPage<T> extends StatefulWidget {

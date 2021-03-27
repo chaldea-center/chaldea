@@ -1,3 +1,5 @@
+export 'dart:math' show min, max;
+
 export 'package:chaldea/generated/l10n.dart';
 export 'package:flutter/material.dart';
 export 'package:flutter_easyloading/flutter_easyloading.dart';

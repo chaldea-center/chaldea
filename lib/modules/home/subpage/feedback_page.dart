@@ -195,6 +195,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
   }
 
   void sendEmail() async {
+    print('pixelRatio=${MediaQuery.of(context).devicePixelRatio}');
     if (bodyController.text.trim().isEmpty &&
         attachFiles.isEmpty &&
         !attachLog) {
@@ -209,18 +210,34 @@ class _FeedbackPageState extends State<FeedbackPage> {
         ..subject = 'Chaldea v${AppInfo.fullVersion2} Feedback';
 
       message.html = _emailBody();
-      [db.paths.crashLog, ...attachFiles].forEach((fp) {
+      File crashFile = File(db.paths.crashLog);
+      if (crashFile.existsSync()) {
+        String content = crashFile.readAsStringSync();
+        message.attachments.add(StringAttachment(
+          content.substring(
+              max(0, content.length - 1024 * 1024 * 2), content.length),
+          fileName: 'crash.log',
+        ));
+      }
+      attachFiles.forEach((fp) {
         var file = File(fp);
-        if (file.existsSync()) message.attachments.add(FileAttachment(file));
+        if (file.existsSync()) {
+          message.attachments.add(FileAttachment(file));
+        }
       });
       if (!kDebugMode) {
         final result = await send(
-            message,
-            SmtpServer('smtp.qiye.aliyun.com',
-                port: 465,
-                ssl: true,
-                username: 'chaldea-client@narumi.cc',
-                password: b64('Q2hhbGRlYUBjbGllbnQ=')));
+          message,
+          SmtpServer(
+            'smtp.qiye.aliyun.com',
+            port: 465,
+            ssl: true,
+            username: 'chaldea-client@narumi.cc',
+            password: b64(
+              'Q2hhbGRlYUBjbGllbnQ=',
+            ),
+          ),
+        );
         logger.i(result.toString());
       } else {
         await Future.delayed(Duration(seconds: 3));
@@ -250,21 +267,25 @@ class _FeedbackPageState extends State<FeedbackPage> {
           ? dataVerFile.readAsStringSync()
           : "Not detected",
       'os': '${Platform.operatingSystem} ${Platform.operatingSystemVersion}',
+      'id': AppInfo.uniqueId,
     };
     for (var entry in summary.entries) {
-      buffer.write("<b>${entry.key}</b>: ${escape(entry.value)}<br>");
+      buffer
+          .write("<b>${entry.key}</b>: ${escape(entry.value.toString())}<br>");
     }
     buffer.write('<hr>');
 
     buffer.write("<h3>Device parameters:</h3>");
     for (var entry in AppInfo.deviceParams.entries) {
-      buffer.write("<b>${entry.key}</b>: ${escape(entry.value)}<br>");
+      buffer
+          .write("<b>${entry.key}</b>: ${escape(entry.value.toString())}<br>");
     }
     buffer.write("<hr>");
 
     buffer.write("<h3>Application parameters:</h3>");
     for (var entry in AppInfo.appParams.entries) {
-      buffer.write("<b>${entry.key}</b>: ${escape(entry.value)}<br>");
+      buffer
+          .write("<b>${entry.key}</b>: ${escape(entry.value.toString())}<br>");
     }
     buffer.write("<hr>");
 

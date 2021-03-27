@@ -1,5 +1,3 @@
-import 'dart:math' show min;
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';

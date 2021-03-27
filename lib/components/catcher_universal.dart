@@ -7,6 +7,7 @@ import 'dart:typed_data';
 /// If official support is release, this should be removed.
 import 'package:catcher/catcher.dart';
 import 'package:catcher/model/platform_type.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:logging/logging.dart';
 import 'package:mailer/mailer.dart';
@@ -110,8 +111,11 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
         ..attachments = _getAttachments(attachments);
       if (screenshot) {
         String shotFn = pathlib.join(db.paths.appPath, 'crash.png');
-        Uint8List? shotBinary = await db.runtimeData.screenshotController
-            ?.capture(pixelRatio: 1.5, delay: Duration(seconds: 2));
+        Uint8List? shotBinary =
+            await db.runtimeData.screenshotController?.capture(
+          pixelRatio: MediaQuery.of(kAppKey.currentContext!).devicePixelRatio,
+          delay: Duration(seconds: 2),
+        );
         if (shotBinary != null) {
           File(shotFn).writeAsBytesSync(shotBinary, flush: true);
           message.attachments.add(FileAttachment(File(shotFn)));
@@ -190,7 +194,8 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
       'os': '${Platform.operatingSystem} ${Platform.operatingSystemVersion}',
     };
     for (var entry in summary.entries) {
-      buffer.write("<b>${entry.key}</b>: ${escape(entry.value)}<br>");
+      buffer
+          .write("<b>${entry.key}</b>: ${escape(entry.value.toString())}<br>");
     }
     buffer.write('<hr>');
 
@@ -216,14 +221,16 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
     if (enableDeviceParameters) {
       buffer.write("<h3>Device parameters:</h3>");
       for (var entry in report.deviceParameters.entries) {
-        buffer.write("<b>${entry.key}</b>: ${escape(entry.value)}<br>");
+        buffer.write(
+            "<b>${entry.key}</b>: ${escape(entry.value.toString())}<br>");
       }
       buffer.write("<hr>");
     }
     if (enableApplicationParameters) {
       buffer.write("<h3>Application parameters:</h3>");
       for (var entry in report.applicationParameters.entries) {
-        buffer.write("<b>${entry.key}</b>: ${escape(entry.value)}<br>");
+        buffer.write(
+            "<b>${entry.key}</b>: ${escape(entry.value.toString())}<br>");
       }
       buffer.write("<hr>");
     }
@@ -231,7 +238,8 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
     if (enableCustomParameters) {
       buffer.write("<h3>Custom parameters:</h3>");
       for (var entry in report.customParameters.entries) {
-        buffer.write("<b>${entry.key}</b>: ${escape(entry.value)}<br>");
+        buffer.write(
+            "<b>${entry.key}</b>: ${escape(entry.value.toString())}<br>");
       }
       buffer.write("<hr>");
     }

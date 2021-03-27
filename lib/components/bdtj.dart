@@ -5,6 +5,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 const _hjs = 'https://hm.baidu.com/hm.js?';
@@ -42,7 +43,7 @@ Future<void> reportBdtj({String? bdId}) async {
     b64('MDAzNzgtNDAwMDAtMDAwMDEtQUE5Mjc='), // windows
   ];
 
-  if (excludeIds.contains(AppInfo.uniqueId)) {
+  if (kDebugMode || excludeIds.contains(AppInfo.uniqueId)) {
     return;
   }
 
