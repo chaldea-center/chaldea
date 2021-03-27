@@ -202,10 +202,14 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
       content: Text(backupPaths.join('\n\n')),
       onTapOk: () async {
         final fp = db.backupUserdata();
+        String hint = '临时备份已保存在：\n$fp';
+        if (AppInfo.isMobile) {
+          hint += '\n删除应用将可能导致临时备份被删除，建议手动备份到外部可靠储存位置！';
+        }
         showInformDialog(
           context,
           title: S.of(context).backup,
-          content: '''临时备份已保存在：\n$fp\n删除应用将可能导致临时备份被删除，强烈建议备份到外部可靠储存位置！''',
+          content: hint,
           actions: [
             if (Platform.isAndroid || Platform.isIOS)
               TextButton(

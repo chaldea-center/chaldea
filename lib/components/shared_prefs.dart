@@ -18,8 +18,8 @@ class SharedPrefs {
     return instance.getString(_addUrlPrefix(key));
   }
 
-  void setRealUrl(String key, String value) {
-    instance.setString(_addUrlPrefix(key), value);
+  Future<bool> setRealUrl(String key, String value) {
+    return instance.setString(_addUrlPrefix(key), value);
   }
 
   bool containsRealUrl(String key) {

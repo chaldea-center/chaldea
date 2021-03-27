@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chaldea/components/components.dart';
 import 'package:dio/dio.dart';
 import 'package:pool/pool.dart';
@@ -71,9 +73,18 @@ class MooncellUtil {
         final String? url =
             response.data['query']['pages'].values.first['imageinfo'][0]['url'];
         if (url?.isNotEmpty == true) {
-          db.prefs.setRealUrl(filename, url!);
+          await db.prefs.setRealUrl(filename, url!);
           if (savePath != null) {
-            await _dio.download(url, savePath);
+            Response fileResponse = await _dio.get(url,
+                options: Options(responseType: ResponseType.bytes));
+            if (fileResponse.statusCode == 200) {
+              File file = File(savePath);
+              await file.writeAsBytes(fileResponse.data, flush: true);
+              logger.i('downloaded $url to $savePath');
+            } else {
+              throw HttpException('HTTP ${fileResponse.statusCode}',
+                  uri: Uri.tryParse(url));
+            }
           }
         }
         print('mc file: $filename -> $url');

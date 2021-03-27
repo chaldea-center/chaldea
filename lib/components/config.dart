@@ -299,7 +299,6 @@ class Database {
         width: width,
         height: height,
         fit: fit,
-        isMCFile: !(iconName.contains('http') || iconName.contains('fgo.wiki')),
         placeholder: (_, __) => Container(width: width, height: height),
       );
     }
