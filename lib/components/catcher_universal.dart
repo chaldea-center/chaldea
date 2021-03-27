@@ -7,6 +7,7 @@ import 'dart:typed_data';
 /// If official support is release, this should be removed.
 import 'package:catcher/catcher.dart';
 import 'package:catcher/model/platform_type.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:logging/logging.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
@@ -20,6 +21,32 @@ import 'shared_prefs.dart';
 import 'utils.dart';
 
 export 'page_report_mode_cross.dart';
+
+class ToastHandlerCross extends ReportHandler {
+  final Duration? duration;
+  final EasyLoadingToastPosition? toastPosition;
+  final String? customMessage;
+
+  ToastHandlerCross({this.duration, this.toastPosition, this.customMessage});
+
+  @override
+  Future<bool> handle(Report error) async {
+    EasyLoading.showToast(_getErrorMessage(error),
+        duration: duration, toastPosition: toastPosition);
+    return true;
+  }
+
+  String _getErrorMessage(Report error) {
+    if (customMessage != null && customMessage!.length > 0) {
+      return customMessage!;
+    } else {
+      return "Error occurred: ${error.error}";
+    }
+  }
+
+  @override
+  List<PlatformType> getSupportedPlatforms() => PlatformType.values.toList();
+}
 
 class EmailAutoHandlerCross extends EmailAutoHandler {
   final Logger _logger = Logger("EmailAutoHandler");

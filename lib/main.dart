@@ -24,7 +24,7 @@ void main() async {
     [
       FileHandler(crashFile),
       ConsoleHandler(),
-      ToastHandler(),
+      ToastHandlerCross(),
       if (!kDebugMode)
         kEmailAutoHandlerCross(attachments: [crashFile, userdataFile]),
     ],

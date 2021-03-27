@@ -33,12 +33,19 @@ class PageReportModeCross extends ReportMode {
   }
 
   @override
-  List<PlatformType> getSupportedPlatforms() => PlatformType.values.toList();
-
-  @override
   bool isContextRequired() {
     return true;
   }
+
+  @override
+  List<PlatformType> getSupportedPlatforms() => [
+        PlatformType.android,
+        PlatformType.iOS,
+        PlatformType.web,
+        PlatformType.linux,
+        PlatformType.macOS,
+        PlatformType.windows,
+      ];
 }
 
 class _PageWidget extends StatefulWidget {
@@ -62,9 +69,9 @@ class _PageWidgetState extends State<_PageWidget> {
 
   @override
   void initState() {
+    super.initState();
     _textEditingController = TextEditingController(
         text: db.prefs.getRealUrl(SharedPrefs.contactInfo));
-    super.initState();
   }
 
   @override
@@ -126,8 +133,7 @@ class _PageWidgetState extends State<_PageWidget> {
             controller: _textEditingController,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.email),
-              labelText: '联系方式(可选)',
-              hintText: '我们会尽快给您答复',
+              labelText: 'Contact information (Optional)',
             ),
             onChanged: (s) {
               db.prefs.setRealUrl(SharedPrefs.contactInfo, s);
@@ -171,9 +177,12 @@ class _PageWidgetState extends State<_PageWidget> {
 
   Widget _getStackTraceWidget() {
     if (widget.pageReportMode.showStackTrace) {
-      final items = widget.report.stackTrace.toString().split("\n");
-      if (widget.report.errorDetails?.exception != null)
-        items.insert(0, widget.report.errorDetails!.exceptionAsString());
+      final List<String> items = [
+        if (widget.report.error != null) widget.report.error.toString(),
+        if (widget.report.error == null && widget.report.errorDetails != null)
+          widget.report.errorDetails.toString(),
+        ...widget.report.stackTrace.toString().split("\n"),
+      ];
       return SizedBox(
         height: 300.0,
         child: ListView.builder(
