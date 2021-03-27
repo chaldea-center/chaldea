@@ -13,6 +13,7 @@
 
 ## Enhancement
 - [ ] add version for userdata, convert if necessary
+- [ ] custom SharedPreferences with prefix
 
 
 ## Performance

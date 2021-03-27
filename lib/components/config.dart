@@ -230,11 +230,13 @@ class Database {
   String? getIconFullKey(String? iconKey,
       {bool? preferPng, bool withBorder = true}) {
     if (iconKey == null) return null;
+    String modifiedKey = iconKey;
     if (iconKey.endsWith('.png') || iconKey.endsWith('.jpg')) {
-      iconKey = iconKey.substring(0, iconKey.length - 4);
+      modifiedKey = iconKey.substring(0, iconKey.length - 4);
     }
-    List<String> keys =
-        withBorder ? [iconKey + '(有框)', iconKey] : [iconKey, iconKey + '(有框)'];
+    List<String> keys = withBorder
+        ? [modifiedKey + '(有框)', modifiedKey]
+        : [modifiedKey, modifiedKey + '(有框)'];
     for (String key in keys) {
       final suffixes = preferPng == null
           ? ['', '.jpg', '.png']

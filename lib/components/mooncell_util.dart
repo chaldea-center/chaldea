@@ -42,6 +42,8 @@ class MooncellUtil {
     return link;
   }
 
+  static Map<String, Future<String?>> _resolveUrlTasks = {};
+
   /// If [savePath] is provided, the file will be downloaded
   static Future<String?> resolveFileUrl(String filename,
       [String? savePath]) async {
@@ -49,7 +51,10 @@ class MooncellUtil {
       // print('prefs: $filename -> ${db.prefs.getString(filename)}');
       return db.prefs.getRealUrl(filename);
     }
-    return _pool.withResource<String?>(() async {
+    if (_resolveUrlTasks.containsKey(filename)) {
+      return _resolveUrlTasks[filename]!;
+    }
+    final future = _pool.withResource<String?>(() async {
       final _dio = Dio();
       try {
         final response = await _dio.get(
@@ -75,7 +80,11 @@ class MooncellUtil {
         return url;
       } catch (e) {
         logger.e('error download $filename', e);
+      } finally {
+        _resolveUrlTasks.remove(filename);
       }
     });
+    _resolveUrlTasks[filename] = future;
+    return future;
   }
 }

@@ -51,10 +51,7 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final imageUrls = svt.info.illustrations.values
-        .map((e) => db.getIconFullKey(e))
-        .toList();
-
+    final imageUrls = svt.info.illustrations.values.toList();
     return Column(
       children: <Widget>[
         TabBar(
