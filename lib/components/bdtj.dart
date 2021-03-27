@@ -12,7 +12,8 @@ const _hgif = 'https://hm.baidu.com/hm.gif?';
 
 const _kBDID = '9de65dbb7a214ca258974c37c5e060d2';
 
-Future<void> _launchStaticUrl(String url) async {
+@deprecated
+Future<void> launchStaticUrl(String url) async {
   final plugin = FlutterWebviewPlugin();
   await plugin.launch(url, hidden: true);
   print('$url launched');
@@ -35,8 +36,10 @@ String? _getUserAgent() {
 
 Future<void> reportBdtj({String? bdId}) async {
   final excludeIds = [
-    b64('YjhhMDY0OWQ3NTI5MmQwOQ=='),
-    b64('QzAyQ1cwTUNNTDdM'),
+    b64('YjhhMDY0OWQ3NTI5MmQwOQ=='), // android
+    b64('RDE0QjBGNzItNUYzRS00ODcxLTlDRjUtNTRGMkQ1OTYyMUEw'), //ios
+    b64('QzAyQ1cwTUNNTDdM'), //macos
+    b64('MDAzNzgtNDAwMDAtMDAwMDEtQUE5Mjc='), // windows
   ];
 
   if (excludeIds.contains(AppInfo.uniqueId)) {
@@ -44,10 +47,10 @@ Future<void> reportBdtj({String? bdId}) async {
   }
 
   try {
-    if (Platform.isIOS || Platform.isAndroid) {
-      _launchStaticUrl(_constructUrl());
-      return;
-    }
+    // if (Platform.isIOS || Platform.isAndroid) {
+    //   _launchStaticUrl(_constructUrl());
+    //   return;
+    // }
     String url = _constructUrl(server: 'http://chaldea.narumi.cc');
     bdId ??= _kBDID;
     final String hjs = _hjs + bdId;

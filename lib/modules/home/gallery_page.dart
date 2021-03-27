@@ -353,7 +353,6 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       }
       if (mounted) {
         setState(() {});
-        db.saveUserData();
       }
     }
   }

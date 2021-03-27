@@ -41,12 +41,6 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
     setState(() {});
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    db.saveUserData();
-  }
-
   Widget buildAdaptive(
       {Widget? title,
       required Widget content,

@@ -135,7 +135,6 @@ class ImportGudaPageState extends State<ImportGudaPage> {
       }
       db.curUser.items.addAll(items);
       print(db.curUser.items);
-      db.saveUserData();
       EasyLoading.showSuccess(S.of(context).import_data_success);
     } catch (e) {
       EasyLoading.showError('Invalid Guda Item format');
@@ -190,7 +189,6 @@ class ImportGudaPageState extends State<ImportGudaPage> {
       }
       db.curUser.servants.addAll(statuses);
       db.curUser.curSvtPlan.addAll(plans);
-      db.saveUserData();
       EasyLoading.showToast(S.of(context).import_data_success);
     } catch (e) {
       EasyLoading.showError('Invalid Guda servant format');

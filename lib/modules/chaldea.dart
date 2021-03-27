@@ -11,6 +11,7 @@ import 'package:chaldea/modules/home/home_page.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:screenshot/screenshot.dart';
 
 class Chaldea extends StatefulWidget {
@@ -21,15 +22,36 @@ class Chaldea extends StatefulWidget {
 class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   String? userdataBackup;
 
-  _ChaldeaState() {
+  _ChaldeaState();
+
+  @override
+  void afterFirstLayout(BuildContext context) async {
+    if (Platform.isAndroid) {
+      final String externalBackupDir =
+          join('/storage/emulated/0/backup', kPackageName, 'user');
+      if (!(await Permission.storage.isGranted)) {
+        var confirmed = await SimpleCancelOkDialog(
+          title: Text('Storage Permission'),
+          content: Text('用户数据备份储存于临时目录(${db.paths.userDir})\n'
+              '删除应用(及后续计划构建号变更升级时！)将导致备份消失，建议开启储存访问权限以备份至($externalBackupDir})\n'
+              'Android 11用户需要额外在权限设置里"允许管理所有文件"'),
+        ).show(kAppKey.currentContext!);
+        if (confirmed == true) {
+          logger.i('request storage permission');
+          await Permission.storage.request();
+        }
+      }
+      logger.d('storage permission: ${await Permission.storage.status}');
+      if(await Permission.storage.isGranted) {
+        db.paths.userDataExternalBackup = externalBackupDir;
+      }
+    }
+
     // if failed to load userdata, backup and alert user
     if (File(db.paths.userDataPath).existsSync() && !db.loadUserData()) {
       userdataBackup = db.backupUserdata();
     }
-  }
 
-  @override
-  void afterFirstLayout(BuildContext context) {
     if (userdataBackup != null) {
       showInformDialog(
         kAppKey.currentContext!,
@@ -37,7 +59,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         content: 'A backup is created:\n $userdataBackup',
       );
     }
-    reportBdtj();
+    Future.delayed(Duration(seconds: 5)).then((_) => reportBdtj());
   }
 
   @override

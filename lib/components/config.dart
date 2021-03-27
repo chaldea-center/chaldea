@@ -184,12 +184,30 @@ class Database {
 
   void saveUserData() {
     _saveJsonToFile(userData, paths.userDataPath);
+    if (paths.userDataExternalBackup != null) {
+      try {
+        _saveJsonToFile(
+            userData, join(paths.userDataExternalBackup!, kUserDataFilename));
+      } catch (e, s) {
+        paths.userDataExternalBackup = null;
+        logger.w('save to external storage failed', e, s);
+      }
+    }
   }
 
   String backupUserdata() {
     String timeStamp = DateFormat('yyyyMMddTHHmmss').format(DateTime.now());
-    String filepath = pathlib.join(paths.userDir, 'userdata-$timeStamp.json');
+    String filename = 'userdata-$timeStamp.json';
+    String filepath = join(paths.userDir, filename);
     _saveJsonToFile(userData, filepath);
+    if (paths.userDataExternalBackup != null) {
+      try {
+        _saveJsonToFile(
+            userData, join(paths.userDataExternalBackup!, filename));
+      } catch (e, s) {
+        logger.w('save to external storage failed', e, s);
+      }
+    }
     return filepath;
   }
 
@@ -417,7 +435,8 @@ class Database {
 
 class PathManager {
   /// [_appPath] root path where app can access
-  static String? _appPath;
+  String? _appPath;
+  String? userDataExternalBackup;
 
   Future<void> initRootPath() async {
     if (_appPath != null) return;
@@ -434,7 +453,7 @@ class PathManager {
     if (Platform.isAndroid) {
       // don't use getApplicationDocumentsDirectory, it is hidden to user.
       // android: [emulated, external SD]
-      _appPath = (await getExternalStorageDirectories())?.elementAt(0).path;
+      _appPath = (await getExternalStorageDirectories())![0].path;
       // _tempPath = (await getTemporaryDirectory())?.path;
     } else if (Platform.isIOS) {
       _appPath = (await getApplicationDocumentsDirectory()).path;

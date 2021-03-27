@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:chaldea/components/bdtj.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/git_tool.dart';
 import 'package:chaldea/modules/home/subpage/dataset_manage_page.dart';
@@ -129,7 +128,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   onChanged: (lang) {
                     if (lang == null) return;
                     db.userData.language = lang.code;
-                    db.saveUserData();
                     db.notifyAppUpdate();
                   },
                 ),
@@ -288,5 +286,5 @@ class _SettingsPageState extends State<SettingsPage> {
 }
 
 void _testFunc() async {
-  reportBdtj();
+  throw 'Generated error';
 }

@@ -53,41 +53,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
               ),
               ListTile(
                 title: Text(S.of(context).backup),
-                onTap: () {
-                  SimpleCancelOkDialog(
-                    title: Text(S.of(context).backup),
-                    content: Text(Platform.isIOS
-                        ? S.of(context).ios_app_path + '/user'
-                        : db.paths.userDir),
-                    onTapOk: () async {
-                      final fp = db.backupUserdata();
-                      showInformDialog(context,
-                          title: S.of(context).backup_success,
-                          content: fp,
-                          actions: [
-                            if (Platform.isAndroid || Platform.isIOS)
-                              TextButton(
-                                child: Text(S.of(context).share),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                  Share.shareFiles([fp]);
-                                },
-                              ),
-                            if (Platform.isMacOS || Platform.isWindows)
-                              TextButton(
-                                child: Text(S.of(context).open),
-                                onPressed: () {
-                                  Process.run(
-                                    Platform.isMacOS ? 'open' : 'start',
-                                    [db.paths.userDir],
-                                    runInShell: true,
-                                  );
-                                },
-                              ),
-                          ]);
-                    },
-                  ).show(context);
-                },
+                onTap: backupUserData,
               ),
               ListTile(
                 title: Text(S.of(context).import_data),
@@ -100,7 +66,6 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                   db.curUser.servants.forEach((svtNo, svtStatus) {
                     svtStatus.resetEnhancement();
                   });
-                  db.saveUserData();
                   EasyLoading.showToast(S.of(context).reset_success);
                 },
               )
@@ -224,6 +189,48 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
     } finally {
       canceler?.call();
     }
+  }
+
+  Future backupUserData() async {
+    List<String> backupPaths = [
+      Platform.isIOS ? S.of(context).ios_app_path + '/user' : db.paths.userDir
+    ];
+    if (db.paths.userDataExternalBackup != null) {
+      backupPaths.add(db.paths.userDataExternalBackup!);
+    }
+    return SimpleCancelOkDialog(
+      title: Text(S.of(context).backup),
+      content: Text(backupPaths.join('\n\n')),
+      onTapOk: () async {
+        final fp = db.backupUserdata();
+        showInformDialog(
+          context,
+          title: S.of(context).backup,
+          content: '''临时备份已保存在：\n$fp\n删除应用将可能导致临时备份被删除，强烈建议备份到外部可靠储存位置！''',
+          actions: [
+            if (Platform.isAndroid || Platform.isIOS)
+              TextButton(
+                child: Text(S.of(context).share),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Share.shareFiles([fp]);
+                },
+              ),
+            if (Platform.isMacOS || Platform.isWindows)
+              TextButton(
+                child: Text(S.of(context).open),
+                onPressed: () {
+                  Process.run(
+                    Platform.isMacOS ? 'open' : 'start',
+                    [db.paths.userDir],
+                    runInShell: true,
+                  );
+                },
+              ),
+          ],
+        );
+      },
+    ).show(context);
   }
 
   Future<void> clearCache() async {

@@ -296,9 +296,10 @@ void checkAppUpdate([bool background = true]) async {
   String? versionString;
   String? releaseNote;
   String? launchUrl;
+
+  GitTool gitTool = GitTool.fromDb();
   try {
     if (Platform.isAndroid || Platform.isWindows || kDebugMode) {
-      GitTool gitTool = GitTool.fromDb();
       final release =
           await gitTool.latestAppRelease(kDebugMode ? (asset) => true : null);
       versionString = release?.name;
@@ -420,9 +421,9 @@ void checkAppUpdate([bool background = true]) async {
         ),
       if (Platform.isWindows)
         TextButton(
-          child: Text('Github Release'),
+          child: Text('${gitTool.source.toTitleString()} Release'),
           onPressed: () {
-            launch(kProjectHomepage + '/releases');
+            launch(gitTool.appReleaseUrl);
           },
         ),
     ],
