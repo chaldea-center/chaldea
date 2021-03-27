@@ -9,7 +9,7 @@
 
 Chaldea is a cross-platform tool for [Fate/Grand Order](https://www.fate-go.jp) to help masters planning their trip of taking back the future. 
 
-Chaldea is inspired from the iOS app [Guda](https://apps.apple.com/sg/app/guda/id1229055088) and WeChat mini program [FGO material program](https://github.com/lacus87/fgo). And dataset resources are based on the Chinese FGO wiki [Mooncell](https://fgo.wiki).
+Chaldea is inspired from the iOS app [Guda](https://apps.apple.com/sg/app/guda/id1229055088) and WeChat mini program [FGO material programe](https://github.com/lacus87/fgo). And dataset resources are based on the Chinese FGO wiki [Mooncell](https://fgo.wiki).
 
 ## Features
 

@@ -114,6 +114,8 @@ class SimpleCancelOkDialog extends StatelessWidget {
   final bool hideOk;
   final bool hideCancel;
   final List<Widget> actions;
+  final bool scrollable;
+  final bool wrapActionsInRow;
 
   const SimpleCancelOkDialog({
     Key? key,
@@ -124,36 +126,51 @@ class SimpleCancelOkDialog extends StatelessWidget {
     this.hideOk = false,
     this.hideCancel = false,
     this.actions = const [],
+    this.scrollable = false,
+    this.wrapActionsInRow = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> children = <Widget>[
+      if (onTapCancel != null || !hideCancel)
+        TextButton(
+          child: Text(S.of(context).cancel),
+          onPressed: () {
+            Navigator.of(context).pop(false);
+            if (onTapCancel != null) {
+              onTapCancel!();
+            }
+          },
+        ),
+      ...actions,
+      if (onTapOk != null || !hideOk)
+        TextButton(
+          child: Text(S.of(context).confirm),
+          onPressed: () {
+            Navigator.of(context).pop(true);
+            if (onTapOk != null) {
+              onTapOk!();
+            }
+          },
+        ),
+    ];
+    if (wrapActionsInRow) {
+      children = [
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: children,
+          ),
+        ),
+      ];
+    }
     return AlertDialog(
       title: title,
       content: content,
-      actions: <Widget>[
-        if (onTapCancel != null || !hideCancel)
-          TextButton(
-            child: Text(S.of(context).cancel),
-            onPressed: () {
-              Navigator.of(context).pop(false);
-              if (onTapCancel != null) {
-                onTapCancel!();
-              }
-            },
-          ),
-        ...actions,
-        if (onTapOk != null || !hideOk)
-          TextButton(
-            child: Text(S.of(context).confirm),
-            onPressed: () {
-              Navigator.of(context).pop(true);
-              if (onTapOk != null) {
-                onTapOk!();
-              }
-            },
-          ),
-      ],
+      scrollable: scrollable,
+      actions: children,
     );
   }
 

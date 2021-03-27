@@ -373,6 +373,7 @@ void checkAppUpdate([bool background = true]) async {
       ),
     ),
     hideOk: true,
+    wrapActionsInRow: true,
     actions: [
       TextButton(
         child: Text(S.of(context).update),

@@ -185,12 +185,10 @@ class Database {
   void saveUserData() {
     _saveJsonToFile(userData, paths.userDataPath);
     if (paths.userDataExternalBackup != null) {
-      try {
-        _saveJsonToFile(
-            userData, join(paths.userDataExternalBackup!, kUserDataFilename));
-      } catch (e, s) {
+      if (!_saveJsonToFile(
+          userData, join(paths.userDataExternalBackup!, kUserDataFilename))) {
         paths.userDataExternalBackup = null;
-        logger.w('save to external storage failed', e, s);
+        logger.w('save to external storage failed');
       }
     }
   }
@@ -201,11 +199,10 @@ class Database {
     String filepath = join(paths.userDir, filename);
     _saveJsonToFile(userData, filepath);
     if (paths.userDataExternalBackup != null) {
-      try {
-        _saveJsonToFile(
-            userData, join(paths.userDataExternalBackup!, filename));
-      } catch (e, s) {
-        logger.w('save to external storage failed', e, s);
+      if (!_saveJsonToFile(
+          userData, join(paths.userDataExternalBackup!, filename))) {
+        paths.userDataExternalBackup = null;
+        logger.w('save to external storage failed');
       }
     }
     return filepath;
@@ -328,16 +325,18 @@ class Database {
     return result;
   }
 
-  void _saveJsonToFile(dynamic jsonData, String filepath) {
+  bool _saveJsonToFile(dynamic jsonData, String filepath) {
     try {
       Directory(pathlib.dirname(filepath)).createSync(recursive: true);
       final contents = json.encode(jsonData);
       File(filepath).writeAsStringSync(contents);
       // print('Saved "$relativePath"\n');
+      return true;
     } catch (e, s) {
-      print('Error saving "$filepath"!\n$e\n$s');
+      logger.e('error save json to $filepath', e, s);
       EasyLoading.showToast('Error saving "$filepath"!\n$e');
     }
+    return false;
   }
 
   void _deleteFileOrDirectory(String path) {

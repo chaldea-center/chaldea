@@ -48,7 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "about_app" : MessageLookupByLibrary.simpleMessage("About"),
-    "about_app_declaration_text" : MessageLookupByLibrary.simpleMessage("The data used in this application comes from game Fate/GO and the following websites. The copyright of the original texts, pictures and voices of game belongs to TYPE MOON/FGO PROJECT.\n\nThe design of program is based on the WeChat mini program \"Material Planning\" and the iOS application \"Guda\".\n"),
+    "about_app_declaration_text" : MessageLookupByLibrary.simpleMessage("The data used in this application comes from game Fate/GO and the following websites. The copyright of the original texts, pictures and voices of game belongs to TYPE MOON/FGO PROJECT.\n\nThe design of program is based on the WeChat mini program \"Material Programe\" and the iOS application \"Guda\".\n"),
     "about_appstore_rating" : MessageLookupByLibrary.simpleMessage("App Store Rating"),
     "about_data_source" : MessageLookupByLibrary.simpleMessage("Data source"),
     "about_data_source_footer" : MessageLookupByLibrary.simpleMessage("Please inform us if there is unmarked source or infringement."),
