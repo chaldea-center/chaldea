@@ -420,6 +420,10 @@ class FilterGroupData {
 
   bool isRadioVal(String v) => options[v] == true;
 
+  bool isEmpty(Iterable<String> keys) {
+    return keys.map((e) => options[e] ?? false).toSet().length == 1;
+  }
+
   void reset() {
     options.clear();
     matchAll = false;

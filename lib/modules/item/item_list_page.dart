@@ -61,7 +61,13 @@ class ItemListPageState extends State<ItemListPage>
             },
           ),
           IconButton(
-            icon: Icon(Icons.low_priority),
+            icon: Icon(
+              Icons.low_priority,
+              color: db.userData.svtFilter.priority
+                      .isEmpty('12345'.split(''))
+                  ? null
+                  : Colors.yellowAccent,
+            ),
             tooltip: S.of(context).priority,
             onPressed: () {
               showDialog(
