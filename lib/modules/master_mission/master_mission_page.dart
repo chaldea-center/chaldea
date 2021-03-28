@@ -240,10 +240,14 @@ class _MasterMissionPageState extends State<MasterMissionPage>
           final splits = wikitext.split(key);
           if (splits.length >= 2) {
             String? result =
-                RegExp(r'(?<=>)[^<>]*(?=<)').firstMatch(splits[1])?.group(0);
+                RegExp(r'(?<=\>)[^<>]*(?=\<)').firstMatch(splits[1])?.group(0);
             // print(result);
             return result?.trim();
           }
+        }
+
+        String _removeBrackets(String s) {
+          return s.replaceAll(RegExp(r'[「」『』]'), '');
         }
 
         for (int i = 1; i < 7; i++) {
@@ -253,9 +257,11 @@ class _MasterMissionPageState extends State<MasterMissionPage>
             final mission = WeeklyFilterData.from(filterData)..reset();
             for (var trait in targets!.split(',')) {
               trait = trait.trim();
-              if (mission.checked.containsKey(trait)) {
-                mission.checked[trait] = true;
-                mission.controller = TextEditingController(text: count);
+              for (var key in mission.checked.keys) {
+                if (_removeBrackets(key) == _removeBrackets(trait)) {
+                  mission.checked[key] = true;
+                  mission.controller = TextEditingController(text: count);
+                }
               }
             }
             if (mission.isNotEmpty) {
