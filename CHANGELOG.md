@@ -1,3 +1,10 @@
+## 1.3.4
+- master mission enhancement
+- NEW: experience card cost calculation
+
+## 1.3.3
+- bug fix
+
 ## 1.3.2
 - support duplicated servants
 - CN server: import decrypted HTTPS response body to resolve data of servants and items

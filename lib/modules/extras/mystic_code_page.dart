@@ -1,5 +1,6 @@
 import 'package:chaldea/components/components.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class MysticCodePage extends StatefulWidget {
   @override
@@ -32,9 +33,11 @@ class _MysticCodePageState extends State<MysticCodePage> {
           TextButton(
             onPressed: () => setState(
                 () => db.curUser.isMasterGirl = !db.curUser.isMasterGirl),
-            child: Text(
-              db.curUser.isMasterGirl ? '♀' : '♂',
-              style: TextStyle(color: Colors.white, fontSize: 18),
+            child: FaIcon(
+              db.curUser.isMasterGirl
+                  ? FontAwesomeIcons.venus
+                  : FontAwesomeIcons.mars,
+              color: Colors.white,
             ),
           )
         ],

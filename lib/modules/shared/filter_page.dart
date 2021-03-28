@@ -61,7 +61,7 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
           title: title,
           actions: actions,
         ),
-        content
+        Flexible(child: content),
       ],
     );
   }

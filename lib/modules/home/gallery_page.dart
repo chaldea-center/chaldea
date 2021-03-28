@@ -5,6 +5,7 @@ import 'package:chaldea/modules/craft/craft_list_page.dart';
 import 'package:chaldea/modules/drop_calculator/drop_calculator_page.dart';
 import 'package:chaldea/modules/event/events_page.dart';
 import 'package:chaldea/modules/extras/ap_calc_page.dart';
+import 'package:chaldea/modules/extras/exp_card_cost_page.dart';
 import 'package:chaldea/modules/extras/mystic_code_page.dart';
 import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
 import 'package:chaldea/modules/import_data/import_data_page.dart';
@@ -41,6 +42,16 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       }
     }
     checkAppUpdate();
+  }
+
+  Widget faIcon(IconData icon){
+    return  Padding(
+      padding: EdgeInsets.all(2),
+      child: FaIcon(
+        icon,
+        size: 36,
+      ),
+    );
   }
 
   Map<String, GalleryItem> get kAllGalleryItems {
@@ -92,17 +103,14 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       GalleryItem.weekly_mission: GalleryItem(
         name: GalleryItem.weekly_mission,
         title: S.of(context).master_mission,
-        child: Padding(
-          padding: EdgeInsets.all(2),
-          child: FaIcon(FontAwesomeIcons.tasks, size: 36),
-        ),
+        child: faIcon(FontAwesomeIcons.tasks),
         builder: (context, _) => MasterMissionPage(),
         isDetail: true,
       ),
       GalleryItem.mystic_code: GalleryItem(
         name: GalleryItem.mystic_code,
         title: S.of(context).mystic_code,
-        icon: Icons.toys,
+        child: faIcon(FontAwesomeIcons.tshirt),
         builder: (context, _) => MysticCodePage(),
         isDetail: true,
       ),
@@ -113,6 +121,14 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       //   builder: (context, _) => DamageCalcPage(),
       //   isDetail: true,
       // ),
+      GalleryItem.gacha: GalleryItem(
+        name: GalleryItem.gacha,
+        title: S.of(context).summon_title,
+        child: faIcon(FontAwesomeIcons.chessQueen),
+        builder: (context, _) => SummonListPage(),
+        isDetail: false,
+      ),
+
       if (kDebugMode_)
         GalleryItem.ap_cal: GalleryItem(
           name: GalleryItem.ap_cal,
@@ -121,15 +137,12 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
           builder: (context, _) => APCalcPage(),
           isDetail: true,
         ),
-      GalleryItem.gacha: GalleryItem(
-        name: GalleryItem.gacha,
-        title: S.of(context).summon_title,
-        child: Padding(
-          padding: EdgeInsets.all(2),
-          child: FaIcon(FontAwesomeIcons.chessQueen, size: 36),
-        ),
-        builder: (context, _) => SummonListPage(),
-        isDetail: false,
+      GalleryItem.exp_card: GalleryItem(
+        name: GalleryItem.exp_card,
+        title: '狗粮需求',
+        icon: Icons.rice_bowl,
+        builder: (context, _) => ExpCardCostPage(),
+        isDetail: true,
       ),
       GalleryItem.statistics: GalleryItem(
         name: GalleryItem.statistics,
@@ -254,7 +267,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
                 builder: item.builder!,
                 detail: item.isDetail,
                 popDetail: true,
-              );
+              )?.then((value) => db.saveUserData());
             }
           },
         ));

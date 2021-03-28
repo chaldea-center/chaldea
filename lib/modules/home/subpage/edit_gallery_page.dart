@@ -49,6 +49,7 @@ class GalleryItem {
   static const String weekly_mission = 'weekly_mission';
   static const String calculator = 'calculator';
   static const String master_equip = 'master_equip';
+  static const String exp_card = 'exp_card';
   static const String ap_cal = 'ap_cal';
   static const String statistics = 'statistics';
 

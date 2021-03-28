@@ -56,7 +56,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
         title: Text(S.of(context).master_mission),
         centerTitle: true,
         actions: [
-          IconButton(onPressed: showHelp, icon: Icon(Icons.help)),
+          IconButton(onPressed: showHelp, icon: Icon(Icons.help_outline)),
           popupMenu,
         ],
         bottom: TabBar(
