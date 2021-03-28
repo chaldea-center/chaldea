@@ -132,7 +132,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                       TableCellData(
                           text: S.of(context).illustrator, isHeader: true),
                       TableCellData(
-                          text: code.illustrators.join(' & '), flex: 3)
+                          text: code.localizedIllustrators, flex: 3)
                     ]),
                     CustomTableRow(children: [
                       TableCellData(text: S.of(context).rarity, isHeader: true),

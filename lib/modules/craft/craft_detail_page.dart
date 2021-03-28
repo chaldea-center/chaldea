@@ -142,7 +142,7 @@ class CraftDetailBasePage extends StatelessWidget {
                       TableCellData(
                           text: S.of(context).illustrator, isHeader: true),
                       TableCellData(
-                          text: ce.illustrators.join(' & '),
+                          text: ce.localizedIllustrators,
                           flex: 3,
                           maxLines: 1)
                     ]),

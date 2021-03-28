@@ -4,6 +4,7 @@ enum CmdCodeCompare { no, rarity }
 
 @JsonSerializable(checked: true)
 class CommandCode {
+  int gameId;
   int no;
   String mcLink;
   String name;
@@ -13,6 +14,7 @@ class CommandCode {
   String icon;
   String illustration;
   List<String> illustrators;
+  String? illustratorsJp;
   String skillIcon;
   String skill;
   String? description;
@@ -23,6 +25,7 @@ class CommandCode {
   List<String> characters;
 
   CommandCode({
+    required this.gameId,
     required this.no,
     required this.mcLink,
     required this.name,
@@ -32,6 +35,7 @@ class CommandCode {
     required this.icon,
     required this.illustration,
     this.illustrators = const [],
+    this.illustratorsJp,
     required this.skillIcon,
     required this.skill,
     this.description,
@@ -43,6 +47,9 @@ class CommandCode {
   });
 
   String get localizedName => localizeNoun(name, nameJp, null);
+
+  String get localizedIllustrators =>
+      localizeNoun(illustrators.join(' & '), illustratorsJp, null);
 
   static int compare(CommandCode a, CommandCode b,
       {List<CmdCodeCompare>? keys, List<bool>? reversed}) {

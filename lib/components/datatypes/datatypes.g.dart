@@ -156,6 +156,7 @@ Map<String, dynamic> _$UserGameToJson(UserGame instance) => <String, dynamic>{
 CommandCode _$CommandCodeFromJson(Map<String, dynamic> json) {
   return $checkedNew('CommandCode', json, () {
     final val = CommandCode(
+      gameId: $checkedConvert(json, 'gameId', (v) => v as int),
       no: $checkedConvert(json, 'no', (v) => v as int),
       mcLink: $checkedConvert(json, 'mcLink', (v) => v as String),
       name: $checkedConvert(json, 'name', (v) => v as String),
@@ -167,6 +168,8 @@ CommandCode _$CommandCodeFromJson(Map<String, dynamic> json) {
       illustration: $checkedConvert(json, 'illustration', (v) => v as String),
       illustrators: $checkedConvert(json, 'illustrators',
           (v) => (v as List<dynamic>).map((e) => e as String).toList()),
+      illustratorsJp:
+          $checkedConvert(json, 'illustratorsJp', (v) => v as String?),
       skillIcon: $checkedConvert(json, 'skillIcon', (v) => v as String),
       skill: $checkedConvert(json, 'skill', (v) => v as String),
       description: $checkedConvert(json, 'description', (v) => v as String?),
@@ -184,6 +187,7 @@ CommandCode _$CommandCodeFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$CommandCodeToJson(CommandCode instance) =>
     <String, dynamic>{
+      'gameId': instance.gameId,
       'no': instance.no,
       'mcLink': instance.mcLink,
       'name': instance.name,
@@ -193,6 +197,7 @@ Map<String, dynamic> _$CommandCodeToJson(CommandCode instance) =>
       'icon': instance.icon,
       'illustration': instance.illustration,
       'illustrators': instance.illustrators,
+      'illustratorsJp': instance.illustratorsJp,
       'skillIcon': instance.skillIcon,
       'skill': instance.skill,
       'description': instance.description,
@@ -206,6 +211,7 @@ Map<String, dynamic> _$CommandCodeToJson(CommandCode instance) =>
 CraftEssence _$CraftEssenceFromJson(Map<String, dynamic> json) {
   return $checkedNew('CraftEssence', json, () {
     final val = CraftEssence(
+      gameId: $checkedConvert(json, 'gameId', (v) => v as int),
       no: $checkedConvert(json, 'no', (v) => v as int),
       mcLink: $checkedConvert(json, 'mcLink', (v) => v as String),
       name: $checkedConvert(json, 'name', (v) => v as String),
@@ -217,6 +223,8 @@ CraftEssence _$CraftEssenceFromJson(Map<String, dynamic> json) {
       illustration: $checkedConvert(json, 'illustration', (v) => v as String),
       illustrators: $checkedConvert(json, 'illustrators',
           (v) => (v as List<dynamic>).map((e) => e as String).toList()),
+      illustratorsJp:
+          $checkedConvert(json, 'illustratorsJp', (v) => v as String?),
       cost: $checkedConvert(json, 'cost', (v) => v as int),
       hpMin: $checkedConvert(json, 'hpMin', (v) => v as int),
       hpMax: $checkedConvert(json, 'hpMax', (v) => v as int),
@@ -245,6 +253,7 @@ CraftEssence _$CraftEssenceFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$CraftEssenceToJson(CraftEssence instance) =>
     <String, dynamic>{
+      'gameId': instance.gameId,
       'no': instance.no,
       'mcLink': instance.mcLink,
       'name': instance.name,
@@ -254,6 +263,7 @@ Map<String, dynamic> _$CraftEssenceToJson(CraftEssence instance) =>
       'icon': instance.icon,
       'illustration': instance.illustration,
       'illustrators': instance.illustrators,
+      'illustratorsJp': instance.illustratorsJp,
       'cost': instance.cost,
       'hpMin': instance.hpMin,
       'hpMax': instance.hpMax,
@@ -953,6 +963,7 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
 ServantBaseInfo _$ServantBaseInfoFromJson(Map<String, dynamic> json) {
   return $checkedNew('ServantBaseInfo', json, () {
     final val = ServantBaseInfo(
+      gameId: $checkedConvert(json, 'gameId', (v) => v as int),
       name: $checkedConvert(json, 'name', (v) => v as String),
       nameJp: $checkedConvert(json, 'nameJp', (v) => v as String),
       nameEn: $checkedConvert(json, 'nameEn', (v) => v as String?),
@@ -973,6 +984,8 @@ ServantBaseInfo _$ServantBaseInfoFromJson(Map<String, dynamic> json) {
       height: $checkedConvert(json, 'height', (v) => v as String),
       gender: $checkedConvert(json, 'gender', (v) => v as String),
       illustrator: $checkedConvert(json, 'illustrator', (v) => v as String),
+      illustratorJp:
+          $checkedConvert(json, 'illustratorJp', (v) => v as String?),
       className: $checkedConvert(json, 'className', (v) => v as String),
       attribute: $checkedConvert(json, 'attribute', (v) => v as String),
       isHumanoid: $checkedConvert(json, 'isHumanoid', (v) => v as bool),
@@ -980,6 +993,7 @@ ServantBaseInfo _$ServantBaseInfoFromJson(Map<String, dynamic> json) {
       isTDNS: $checkedConvert(json, 'isTDNS', (v) => v as bool),
       cv: $checkedConvert(json, 'cv',
           (v) => (v as List<dynamic>).map((e) => e as String).toList()),
+      cvJp: $checkedConvert(json, 'cvJp', (v) => v as String?),
       alignments: $checkedConvert(json, 'alignments',
           (v) => (v as List<dynamic>).map((e) => e as String).toList()),
       traits: $checkedConvert(json, 'traits',
@@ -1019,6 +1033,7 @@ ServantBaseInfo _$ServantBaseInfoFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$ServantBaseInfoToJson(ServantBaseInfo instance) =>
     <String, dynamic>{
+      'gameId': instance.gameId,
       'name': instance.name,
       'nameJp': instance.nameJp,
       'nameEn': instance.nameEn,
@@ -1034,12 +1049,14 @@ Map<String, dynamic> _$ServantBaseInfoToJson(ServantBaseInfo instance) =>
       'height': instance.height,
       'gender': instance.gender,
       'illustrator': instance.illustrator,
+      'illustratorJp': instance.illustratorJp,
       'className': instance.className,
       'attribute': instance.attribute,
       'isHumanoid': instance.isHumanoid,
       'isWeakToEA': instance.isWeakToEA,
       'isTDNS': instance.isTDNS,
       'cv': instance.cv,
+      'cvJp': instance.cvJp,
       'alignments': instance.alignments,
       'traits': instance.traits,
       'ability': instance.ability,

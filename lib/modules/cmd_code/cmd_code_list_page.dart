@@ -54,6 +54,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
         code.mcLink,
         code.obtain,
         ...code.illustrators,
+        code.illustratorsJp ?? '',
         ...code.characters,
         code.skill,
         ...code.characters

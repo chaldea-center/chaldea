@@ -4,6 +4,7 @@ enum CraftCompare { no, rarity, atk, hp }
 
 @JsonSerializable(checked: true)
 class CraftEssence {
+  int gameId;
   int no;
   String mcLink;
   String name;
@@ -13,6 +14,7 @@ class CraftEssence {
   String icon;
   String illustration;
   List<String> illustrators;
+  String? illustratorsJp;
   int cost;
   int hpMin;
   int hpMax;
@@ -34,6 +36,7 @@ class CraftEssence {
   String toString() => mcLink;
 
   CraftEssence({
+    required this.gameId,
     required this.no,
     required this.mcLink,
     required this.name,
@@ -43,6 +46,7 @@ class CraftEssence {
     required this.icon,
     required this.illustration,
     required this.illustrators,
+    required this.illustratorsJp,
     required this.cost,
     required this.hpMin,
     required this.hpMax,
@@ -63,6 +67,9 @@ class CraftEssence {
   });
 
   String get localizedName => localizeNoun(name, nameJp, null);
+
+  String get localizedIllustrators =>
+      localizeNoun(illustrators.join(' & '), illustratorsJp, null);
 
   static int compare(CraftEssence a, CraftEssence b,
       {List<CraftCompare>? keys, List<bool>? reversed}) {

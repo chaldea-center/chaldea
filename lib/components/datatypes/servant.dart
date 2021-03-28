@@ -213,6 +213,7 @@ class Servant {
 
 @JsonSerializable(checked: true)
 class ServantBaseInfo {
+  int gameId;
   String name;
   String nameJp;
   String? nameEn;
@@ -234,12 +235,14 @@ class ServantBaseInfo {
   String height;
   String gender;
   String illustrator;
+  String? illustratorJp;
   String className;
   String attribute;
   bool isHumanoid;
   bool isWeakToEA;
   bool isTDNS;
   List<String> cv;
+  String? cvJp;
   List<String> alignments;
   List<String> traits;
   Map<String, String> ability;
@@ -261,6 +264,7 @@ class ServantBaseInfo {
   String criticalRate;
 
   ServantBaseInfo({
+    required this.gameId,
     required this.name,
     required this.nameJp,
     required this.nameEn,
@@ -276,12 +280,14 @@ class ServantBaseInfo {
     required this.height,
     required this.gender,
     required this.illustrator,
+    required this.illustratorJp,
     required this.className,
     required this.attribute,
     required this.isHumanoid,
     required this.isWeakToEA,
     required this.isTDNS,
     required this.cv,
+    required this.cvJp,
     required this.alignments,
     required this.traits,
     required this.ability,
@@ -304,6 +310,11 @@ class ServantBaseInfo {
   });
 
   String get localizedName => localizeNoun(name, nameJp, nameEn);
+
+  String get localizedIllustrator =>
+      localizeNoun(illustrator, illustratorJp, null);
+
+  String get localizedCV => localizeNoun(cv.join(' & '), cvJp, null);
 
   factory ServantBaseInfo.fromJson(Map<String, dynamic> data) =>
       _$ServantBaseInfoFromJson(data);

@@ -61,9 +61,11 @@ class ServantListPageState extends State<ServantListPage> {
         svt.no.toString(),
         svt.mcLink,
         ...svt.info.cv,
+        svt.info.cvJp ?? '',
         svt.info.name,
         svt.info.nameJp,
         svt.info.illustrator,
+        svt.info.illustratorJp ?? '',
         ...svt.info.nicknames,
         ...svt.info.traits
       ];

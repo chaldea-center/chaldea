@@ -119,7 +119,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
               texts: [S.current.illustrator, S.current.info_cv],
               defaults: headerData),
           CustomTableRow.fromTexts(
-              texts: [svt.info.illustrator, svt.info.cv.join(', ')],
+              texts: [svt.info.localizedIllustrator, svt.info.localizedCV],
               defaults: contentData),
           CustomTableRow.fromTexts(texts: [
             S.current.info_gender,

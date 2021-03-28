@@ -61,6 +61,7 @@ class CraftListPageState extends State<CraftListPage> {
         ce.nameJp,
         ce.mcLink,
         ...ce.illustrators,
+        ce.illustratorsJp ?? '',
         ...ce.characters,
         ce.skill,
         ce.skillMax ?? '',
