@@ -55,7 +55,10 @@ class _MasterMissionPageState extends State<MasterMissionPage>
         leading: BackButton(),
         title: Text(S.of(context).master_mission),
         centerTitle: true,
-        actions: [popupMenu],
+        actions: [
+          IconButton(onPressed: showHelp, icon: Icon(Icons.help)),
+          popupMenu,
+        ],
         bottom: TabBar(
           controller: _tabController,
           isScrollable: true,
@@ -75,6 +78,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
           actionBar,
           taskList,
           solutionList,
+          relatedQuests,
         ]),
       ),
     );
@@ -277,6 +281,11 @@ class _MasterMissionPageState extends State<MasterMissionPage>
   Widget get taskList {
     List<Widget> children = [];
     for (var mission in missions) {
+      VoidCallback _onPressAddAll = () {
+        setState(() {
+          mission.useAnd = !mission.useAnd;
+        });
+      };
       children.add(ListTile(
         leading: IconButton(
           constraints: BoxConstraints(minHeight: 48, minWidth: 36),
@@ -291,13 +300,30 @@ class _MasterMissionPageState extends State<MasterMissionPage>
         horizontalTitleGap: 0,
         contentPadding: EdgeInsets.symmetric(horizontal: 8),
         title: AutoSizeText(
-          mission.getTargets().join(' or '),
+          mission.getTargets().join(', '),
           maxLines: 2,
           maxFontSize: 14,
         ),
-        trailing: _InputGroup(
-          controller: mission.controller!,
-          minVal: 0,
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (mission.useAnd)
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(minimumSize: Size(36, 36)),
+                onPressed: _onPressAddAll,
+                child: Text('且'),
+              ),
+            if (!mission.useAnd)
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(minimumSize: Size(36, 36)),
+                onPressed: _onPressAddAll,
+                child: Text('或'),
+              ),
+            _InputGroup(
+              controller: mission.controller!,
+              minVal: 0,
+            )
+          ],
         ),
       ));
     }
@@ -318,37 +344,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
   Widget get solutionList {
     List<Widget> children = [];
     solution.forEach((weeklyQuest, value) {
-      Quest? quest;
-      quest = db.gameData.getFreeQuest(weeklyQuest.place);
-      Map<String, int> counts = {};
-      weeklyQuest.allTraits.forEach((key, value) {
-        if (missions.any((element) => element.checked[key] == true)) {
-          counts[key] = value;
-        }
-      });
-      String countsString =
-          counts.entries.map((e) => '${e.key}×${e.value}').join(', ');
-      final child = ValueStatefulBuilder<bool>(
-          initValue: false,
-          builder: (context, state) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                CustomTile(
-                  title: Text(quest?.localizedKey ?? weeklyQuest.place),
-                  subtitle: AutoSizeText(
-                    countsString,
-                    maxFontSize: 14,
-                  ),
-                  trailing: Text('${weeklyQuest.ap}AP×$value'),
-                  onTap: quest == null
-                      ? null
-                      : () => state.setState(() => state.value = !state.value),
-                ),
-                if (state.value && quest != null) QuestCard(quest: quest)
-              ],
-            );
-          });
+      final child = _oneQuest(weeklyQuest: weeklyQuest, questTimes: value);
       children.add(child);
     });
     double totalAP = 0;
@@ -370,8 +366,91 @@ class _MasterMissionPageState extends State<MasterMissionPage>
     );
   }
 
+  Widget get relatedQuests {
+    List<Widget> children = [];
+    Map<String, double> allCounts = {};
+    for (int col = 0; col < params.colNames.length; col++) {
+      num count = sum(params.getCol(col));
+      if (count > 0) allCounts[params.colNames[col]] = count / params.cVec[col];
+    }
+    List<String> cols = allCounts.keys.toList();
+    cols.sort((a, b) => (allCounts[b]! - allCounts[a]!).sign.toInt());
+    for (var colName in cols) {
+      children.add(_oneQuest(
+        weeklyQuest: srcData.firstWhere((e) => e.place == colName),
+        eff: allCounts[colName],
+      ));
+    }
+    return SimpleAccordion(
+      expanded: true,
+      headerBuilder: (context, _) => ListTile(
+        leading: Icon(Icons.list_alt),
+        title: Text('关联关卡'),
+        horizontalTitleGap: 0,
+      ),
+      contentBuilder: (context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: divideTiles(children),
+      ),
+    );
+  }
+
+  Widget _oneQuest({
+    required WeeklyMissionQuest weeklyQuest,
+    num? questTimes,
+    num? eff,
+  }) {
+    Quest? quest;
+    quest = db.gameData.getFreeQuest(weeklyQuest.place);
+    Map<String, int> counts = {};
+    weeklyQuest.allTraits.forEach((key, value) {
+      if (missions.any((element) => element.checked[key] == true)) {
+        counts[key] = value;
+      }
+    });
+    String countsString =
+        counts.entries.map((e) => '${e.key}×${e.value}').join(', ');
+    String trailingString = '${weeklyQuest.ap}AP';
+    if (questTimes != null) trailingString += '×$questTimes';
+    return ValueStatefulBuilder<bool>(
+      initValue: false,
+      builder: (context, state) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            CustomTile(
+              title: Text(quest?.localizedKey ?? weeklyQuest.place),
+              subtitle: AutoSizeText(
+                countsString,
+                maxFontSize: 14,
+              ),
+              trailing: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(trailingString),
+                  if (eff != null)
+                    Text(
+                      eff.toStringAsFixed(2) + '/AP',
+                      style: TextStyle(color: Colors.grey, fontSize: 13),
+                    )
+                ],
+              ),
+              onTap: quest == null
+                  ? null
+                  : () => state.setState(() => state.value = !state.value),
+            ),
+            if (state.value && quest != null) QuestCard(quest: quest)
+          ],
+        );
+      },
+    );
+  }
+
+  BasicGLPKParams params = BasicGLPKParams();
+
   void solve() async {
-    final params = BasicGLPKParams();
+    params = BasicGLPKParams();
     params.colNames
         .addAll(db.gameData.glpk.weeklyMissionData.map((e) => e.place));
     params.cVec.addAll(db.gameData.glpk.weeklyMissionData.map((e) => e.ap));
@@ -387,6 +466,10 @@ class _MasterMissionPageState extends State<MasterMissionPage>
         params.removeCol(i);
       }
     }
+    if (params.rowNames.isEmpty || params.colNames.isEmpty) {
+      EasyLoading.showError('无符合条件关卡');
+      return;
+    }
     // call js
     final result = await engine.eval('''glpk_solver(`${jsonEncode(params)}`)''',
         name: 'solver_caller');
@@ -398,10 +481,22 @@ class _MasterMissionPageState extends State<MasterMissionPage>
     });
     print(result);
   }
+
+  void showHelp() {
+    SimpleCancelOkDialog(
+      title: Text(S.current.help),
+      content: Text("""注意：无法得知一个关卡X既有属性A又有属性B的敌人数目。只能知晓关卡X共有a个属性A，b个属性B。
+例：关卡X共有2个属性A，4个属性B，9个属性C
+“或”：2+4+9=15
+“且”：min(2,4,9)=2
+"""),
+    ).show(context);
+  }
 }
 
 class WeeklyFilterData {
   Map<String, bool> checked = {};
+  bool useAnd = false;
 
   // 从者_trait: trait
   Set<String> servantTraits = {};
@@ -440,10 +535,12 @@ class WeeklyFilterData {
 
   void reset() {
     checked.updateAll((key, value) => false);
+    useAnd = false;
   }
 
   WeeklyFilterData.from(WeeklyFilterData other)
       : checked = Map.from(other.checked),
+        useAnd = other.useAnd,
         servantTraits = Set.from(other.servantTraits),
         enemyTraits = Set.from(other.enemyTraits),
         battlefields = Set.from(other.battlefields),
@@ -456,12 +553,20 @@ class WeeklyFilterData {
   List<num> get rowOfA {
     List<num> row = [];
     for (var quest in db.gameData.glpk.weeklyMissionData) {
-      int count = 0;
+      int? count;
       final questTraits = quest.allTraits;
       checked.forEach((key, value) {
-        if (value) count += questTraits[key] ?? 0;
+        if (value) {
+          if (useAnd) {
+            count ??= questTraits[key] ?? 0;
+            count = min(count!, questTraits[key] ?? 0);
+          } else {
+            count ??= 0;
+            count = count! + (questTraits[key] ?? 0);
+          }
+        }
       });
-      row.add(count);
+      row.add(count!);
     }
     return row;
   }

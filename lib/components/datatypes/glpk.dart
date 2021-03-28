@@ -434,6 +434,10 @@ class BasicGLPKParams {
         cVec = cVec ?? [],
         integer = integer ?? false;
 
+  List<num> getCol(int index) {
+    return AMat.map((e) => e[index]).toList();
+  }
+
   void addRow(String rowName, List<num> rowOfA, num b) {
     rowNames.add(rowName);
     AMat.add(rowOfA);
