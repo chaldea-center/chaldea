@@ -14,8 +14,7 @@ import 'quest_plan_tab.dart';
 class DropCalculatorPage extends StatefulWidget {
   final Map<String, int>? objectiveCounts;
 
-  DropCalculatorPage({Key? key, this.objectiveCounts})
-      : super(key: key);
+  DropCalculatorPage({Key? key, this.objectiveCounts}) : super(key: key);
 
   @override
   _DropCalculatorPageState createState() => _DropCalculatorPageState();
@@ -141,10 +140,11 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
       params.removeAll();
       widget.objectiveCounts!
           .forEach((key, count) => params.addOne(key, count, 1.0));
-    }
-    if (params.rows.isEmpty) {
-      addAnItemNotInList();
-      addAnItemNotInList();
+    } else {
+      if (params.rows.isEmpty) {
+        addAnItemNotInList();
+        addAnItemNotInList();
+      }
     }
     params.sortByItem();
     // update userdata at last

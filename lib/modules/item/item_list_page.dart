@@ -63,8 +63,7 @@ class ItemListPageState extends State<ItemListPage>
           IconButton(
             icon: Icon(
               Icons.low_priority,
-              color: db.userData.svtFilter.priority
-                      .isEmpty('12345'.split(''))
+              color: db.userData.svtFilter.priority.isEmpty('12345'.split(''))
                   ? null
                   : Colors.yellowAccent,
             ),
@@ -102,8 +101,8 @@ class ItemListPageState extends State<ItemListPage>
               .map((category) => Tab(
                       text: [
                     'Unknown',
-                    S.of(context).item_category_usual,
                     S.of(context).item_category_gems,
+                    S.of(context).item_category_usual,
                     S.of(context).item_category_ascension
                   ][category]))
               .toList(),
