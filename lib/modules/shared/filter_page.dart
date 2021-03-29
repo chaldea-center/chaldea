@@ -15,7 +15,13 @@ abstract class FilterPage<T> extends StatefulWidget {
       showModalBottomSheet(
         context: context,
         isScrollControlled: true,
-        builder: (context) => builder(context),
+        builder: (context) => LayoutBuilder(builder: (context, constraints) {
+          return ConstrainedBox(
+            constraints:
+                constraints.copyWith(maxHeight: constraints.maxHeight * 0.6),
+            child: builder(context),
+          );
+        }),
       );
     }
   }
@@ -57,6 +63,7 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
       children: [
         AppBar(
           elevation: 0,
+          toolbarHeight: 40,
           leading: BackButton(),
           title: title,
           actions: actions,

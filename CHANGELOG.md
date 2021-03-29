@@ -1,3 +1,10 @@
+## 1.3.5
+- bug fix
+- auto backup userdata to /backup and external storage in Android if possible
+- ignore errors in UserData.from and return null
+- cannot download icon because of filename is treated as url
+- fix Podfile and android storage permission
+
 ## 1.3.4
 - master mission enhancement
 - NEW: experience card cost calculation
