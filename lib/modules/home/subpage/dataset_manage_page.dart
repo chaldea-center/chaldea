@@ -193,17 +193,23 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
     List<String> backupPaths = [
       Platform.isIOS ? S.of(context).ios_app_path + '/user' : db.paths.userDir
     ];
-    if (db.paths.userDataExternalBackup != null) {
-      backupPaths.add(db.paths.userDataExternalBackup!);
+    if (db.paths.externalAppPath != null) {
+      backupPaths.add(db.paths.externalAppPath!);
     }
     return SimpleCancelOkDialog(
       title: Text(S.of(context).backup),
       content: Text(backupPaths.join('\n\n')),
       onTapOk: () async {
-        final fp = db.backupUserdata();
-        String hint = '临时备份已保存在：\n$fp';
-        if (AppInfo.isMobile) {
-          hint += '\n删除应用将可能导致临时备份被删除，建议手动备份到外部可靠储存位置！';
+        final fps = db.backupUserdata();
+        String hint='';
+        if(fps.isEmpty) {
+          hint += '备份失败';
+        }else{
+          hint+= '临时备份已保存于：\n${fps[0]}\n';
+          if(fps.length>=2){
+            hint+='外部备份已保存于：\n${fps[0]}\n';
+          }
+          hint += '删除应用(以及升级时可能)将导致临时备份被删除，建议手动备份到外部可靠储存位置！';
         }
         showInformDialog(
           context,
@@ -215,7 +221,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                 child: Text(S.of(context).share),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  Share.shareFiles([fp]);
+                  Share.shareFiles(fps);
                 },
               ),
             if (Platform.isMacOS || Platform.isWindows)

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 
 class ExpCardCostPage extends StatefulWidget {
@@ -86,11 +87,20 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
         Text('等级规划'),
         TextButton(
           onPressed: () {
+            data.lvs.sort();
             showModalBottomSheet(
               context: context,
               isScrollControlled: true,
-              builder: (context) => lvRangeSelector,
-            );
+              builder: (context) {
+                return LayoutBuilder(builder: (context, constraints) {
+                  return ConstrainedBox(
+                    constraints: constraints.copyWith(
+                        maxHeight: constraints.maxHeight * 0.6),
+                    child: ExpLvRangeSelector(data: data),
+                  );
+                });
+              },
+            ).whenComplete(() => setState(() {}));
           },
           child: Text('${data.startLv}->${data.endLv}'),
         ),
@@ -104,89 +114,16 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
     );
   }
 
-  Widget get lvRangeSelector {
-    data.lvs.sort();
-    Widget grid = StatefulBuilder(
-      builder: (context, stateSetter) {
-        List<Widget> children = [];
-        for (int i = 1; i <= 100; i++) {
-          VoidCallback _onTapLv = () {
-            data.clickAt(i);
-            setState(() {});
-            stateSetter(() {});
-          };
-          Widget child;
-          if (i == data.startLv || i == data.endLv) {
-            child = ElevatedButton(
-              onPressed: _onTapLv,
-              child: Text(i.toString()),
-              style: ElevatedButton.styleFrom(minimumSize: Size(36, 10)),
-            );
-          } else if (i > data.startLv && i < data.endLv) {
-            child = ElevatedButton(
-              onPressed: _onTapLv,
-              child: Text(i.toString()),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(36, 10),
-                primary: Colors.lightBlue[300],
-              ),
-            );
-          } else {
-            child = OutlinedButton(
-              onPressed: _onTapLv,
-              child: Text(i.toString()),
-              style: OutlinedButton.styleFrom(
-                minimumSize: Size(36, 10),
-                // primary: Colors.lightBlue[400],
-              ),
-            );
-          }
-          children.add(FittedBox(
-            fit: BoxFit.scaleDown,
-            child: child,
-          ));
-        }
-        return LayoutBuilder(builder: (context, constraints) {
-          int crossCount = constraints.maxWidth ~/ 40 ~/ 5 * 5;
-          return GridView.builder(
-            shrinkWrap: true,
-            padding: EdgeInsets.fromLTRB(4, 0, 4, 8),
-            // physics: NeverScrollableScrollPhysics(),
-            gridDelegate:
-                SliverGridDelegateWithFixedCrossAxisCountAndFixedHeight(
-              crossAxisCount: max(5, crossCount),
-              height: 24,
-              crossAxisSpacing: 2,
-            ),
-            itemBuilder: (context, index) => children[index],
-            itemCount: children.length,
-          );
-        });
-      },
-    );
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        AppBar(
-          toolbarHeight: 36,
-          leading: BackButton(),
-          title: Text(
-            '选择起始和目标等级',
-            style: TextStyle(fontSize: 16),
-          ),
-        ),
-        Flexible(child: grid),
-      ],
-    );
-  }
-
   Widget _cardIcon(String name) {
-    return CachedImage(
-      imageUrl: name,
-      isMCFile: true,
-      saveDir: db.paths.gameIconDir,
-      width: 132 * 0.2,
-      height: 144 * 0.2,
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 2),
+      child: CachedImage(
+        imageUrl: name,
+        isMCFile: true,
+        saveDir: db.paths.gameIconDir,
+        width: 132 * 0.2,
+        height: 144 * 0.2,
+      ),
     );
   }
 
@@ -204,13 +141,18 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
         ],
       )
     ];
-    Widget _valToWidget(String val) {
+    Widget _valToWidget(String val, [bool header = false]) {
       if (val == '0' || val.isEmpty) return Container();
       return Center(
         child: FittedBox(
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 3),
-            child: Text(val),
+            child: Text(
+              val,
+              style: TextStyle(
+                fontWeight: header ? FontWeight.bold : null,
+              ),
+            ),
           ),
           fit: BoxFit.scaleDown,
         ),
@@ -221,12 +163,12 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
       rows.add(TableRow(
         decoration: index == 0 ? BoxDecoration(color: Colors.grey[200]) : null,
         children: [
-          _valToWidget(data.stages[index]),
-          _valToWidget(data.exp5Stages[index].toString()),
-          _valToWidget(data.exp4Stages[index].toString()),
-          _valToWidget(data.exp3Stages[index].toString()),
-          _valToWidget(formatNumber(data.qpStages[index])),
-          _valToWidget(formatNumber(data.grailStages[index])),
+          _valToWidget(data.stages[index], index == 0),
+          _valToWidget(data.exp5Stages[index].toString(), index == 0),
+          _valToWidget(data.exp4Stages[index].toString(), index == 0),
+          _valToWidget(data.exp3Stages[index].toString(), index == 0),
+          _valToWidget(formatNumber(data.qpStages[index]), index == 0),
+          _valToWidget(formatNumber(data.grailStages[index]), index == 0),
         ],
       ));
     }
@@ -239,6 +181,109 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
         4: FlexColumnWidth(2),
       },
       children: rows,
+    );
+  }
+}
+
+class ExpLvRangeSelector extends StatefulWidget {
+  final ExpUpData data;
+
+  const ExpLvRangeSelector({Key? key, required this.data}) : super(key: key);
+
+  @override
+  _ExpLvRangeSelectorState createState() => _ExpLvRangeSelectorState();
+}
+
+class _ExpLvRangeSelectorState extends State<ExpLvRangeSelector> {
+  ExpUpData get data => widget.data;
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> children = [];
+    for (int i = 1; i <= 100; i++) {
+      VoidCallback _onTapLv = () {
+        data.clickAt(i);
+        setState(() {});
+      };
+      Widget child;
+      Widget text = AutoSizeText(
+        i.toString(),
+        maxFontSize: 24,
+        minFontSize: 12,
+        maxLines: 1,
+        style: AppInfo.isMobile ? TextStyle(fontSize: 24) : null,
+      );
+      Size buttonSize = Size(36, 24);
+      if (i == data.startLv || i == data.endLv) {
+        child = ElevatedButton(
+          onPressed: _onTapLv,
+          child: text,
+          style: ElevatedButton.styleFrom(
+            fixedSize: buttonSize,
+            padding: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+          ),
+        );
+      } else if (i > data.startLv && i < data.endLv) {
+        child = ElevatedButton(
+          onPressed: _onTapLv,
+          child: text,
+          style: ElevatedButton.styleFrom(
+            fixedSize: buttonSize,
+            elevation: 0,
+            padding: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+            primary: Colors.lightBlue[300],
+          ),
+        );
+      } else {
+        child = OutlinedButton(
+          onPressed: _onTapLv,
+          child: text,
+          style: OutlinedButton.styleFrom(
+            fixedSize: buttonSize,
+            padding: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+          ),
+        );
+      }
+      if (AppInfo.isDesktop) {
+        child = Padding(
+          padding: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+          child: child,
+        );
+      }
+      children.add(FittedBox(
+        fit: BoxFit.contain,
+        child: child,
+      ));
+    }
+    Widget grid = LayoutBuilder(builder: (context, constraints) {
+      int crossCount = constraints.maxWidth ~/ 40 ~/ 5 * 5;
+      crossCount = max(5, crossCount);
+      return GridView.count(
+        shrinkWrap: true,
+        crossAxisCount: crossCount,
+        padding: EdgeInsets.fromLTRB(4, 8, 4, 24),
+        childAspectRatio: 40 / 24,
+        children: children,
+      );
+    });
+    return Material(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AppBar(
+            toolbarHeight: 36,
+            leading: BackButton(),
+            centerTitle: true,
+            title: Text(
+              '选择起始和目标等级',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+          Flexible(child: grid),
+          Padding(padding: EdgeInsets.only(bottom: 24)),
+        ],
+      ),
     );
   }
 }

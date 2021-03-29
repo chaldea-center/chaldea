@@ -44,7 +44,7 @@ class SplitRoute<T extends Object?> extends TransitionRoute<T>
   /// GlobalKey to access state
   final GlobalKey<_SplitRouteScopeState<T>> _scopeKey = GlobalKey();
 
-  static Future<T?>? push<T extends Object?>({
+  static Future<T?> push<T extends Object?>({
     required BuildContext context,
     required SplitLayoutBuilder builder,
     bool popDetail = false,
@@ -57,10 +57,11 @@ class SplitRoute<T extends Object?> extends TransitionRoute<T>
       pop(context, true);
     }
     return navigator.push(SplitRoute(
-        builder: builder,
-        detail: detail,
-        masterRatio: masterRatio,
-        settings: settings));
+      builder: builder,
+      detail: detail,
+      masterRatio: masterRatio,
+      settings: settings,
+    ));
   }
 
   /// Pop all top detail routes

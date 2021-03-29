@@ -267,7 +267,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
                 builder: item.builder!,
                 detail: item.isDetail,
                 popDetail: true,
-              )?.then((value) => db.saveUserData());
+              ).then((value) => db.saveUserData());
             }
           },
         ));

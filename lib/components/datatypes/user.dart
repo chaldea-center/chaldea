@@ -291,7 +291,7 @@ class LimitEventPlan {
     bool? rerun,
     int? lottery,
     Map<String, int>? extra,
-  })  : enable = enable ?? true,
+  })  : enable = enable ?? false,
         rerun = rerun ?? true,
         lottery = lottery ?? 0,
         extra = extra ?? {};

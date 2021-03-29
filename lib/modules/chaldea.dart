@@ -20,7 +20,7 @@ class Chaldea extends StatefulWidget {
 }
 
 class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
-  String? userdataBackup;
+  List<String>? userdataBackup;
 
   _ChaldeaState();
 
@@ -28,13 +28,13 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   void afterFirstLayout(BuildContext context) async {
     if (Platform.isAndroid) {
       final String externalBackupDir =
-          join('/storage/emulated/0/backup', kPackageName, 'user');
+          join('/storage/emulated/0/', kPackageName);
       if (!(await Permission.storage.isGranted)) {
         var confirmed = await SimpleCancelOkDialog(
           title: Text('Storage Permission'),
           content: Text('用户数据备份储存于临时目录(${db.paths.userDir})\n'
               '删除应用(及后续计划构建号变更升级时！)将导致备份消失，建议开启储存访问权限以备份至($externalBackupDir})\n'
-              'Android 11用户需要额外在权限设置里"允许管理所有文件"'),
+              'Android 11用户(非GooglePlay版)需要额外在权限设置里"允许管理所有文件"'),
         ).show(kAppKey.currentContext!);
         if (confirmed == true) {
           logger.i('request storage permission');
@@ -42,21 +42,22 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         }
       }
       logger.d('storage permission: ${await Permission.storage.status}');
-      if(await Permission.storage.isGranted) {
-        db.paths.userDataExternalBackup = externalBackupDir;
+      if (await Permission.storage.isGranted) {
+        db.paths.externalAppPath = externalBackupDir;
+        print(db.paths.externalAppPath);
       }
     }
 
     // if failed to load userdata, backup and alert user
     if (File(db.paths.userDataPath).existsSync() && !db.loadUserData()) {
-      userdataBackup = db.backupUserdata();
+      userdataBackup = db.backupUserdata(disk: true, memory: false);
     }
 
     if (userdataBackup != null) {
       showInformDialog(
         kAppKey.currentContext!,
         title: 'Userdata damaged',
-        content: 'A backup is created:\n $userdataBackup',
+        content: 'A backup is created:\n ${userdataBackup!.join('\n')}',
       );
     }
     Future.delayed(Duration(seconds: 5)).then((_) => reportBdtj());

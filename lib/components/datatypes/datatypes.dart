@@ -11,7 +11,9 @@ import 'dart:math';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:flutter/material.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:json_annotation/json_annotation.dart'
+    hide $checkedNew, $checkedConvert, CheckedFromJsonException;
+import 'package:json_annotation/src/allowed_keys_helpers.dart'; // ignore: implementation_imports
 
 import '../config.dart' show db;
 import '../constants.dart';
@@ -21,6 +23,8 @@ import '../logger.dart';
 import '../utils.dart';
 
 part 'bili_response.dart';
+
+part 'checked_helpers.dart';
 
 part 'cmd_code.dart';
 

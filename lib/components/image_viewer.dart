@@ -202,7 +202,7 @@ class _CachedImageState extends State<CachedImage> {
 
   String? getRealUrl() {
     if (widget.imageUrl == null) return null;
-    bool isMCFile = widget.isMCFile ?? !validator.isURL(widget.imageUrl!);
+    bool isMCFile = widget.isMCFile ?? !_isValidUrl(widget.imageUrl!);
     if (!isMCFile) return widget.imageUrl;
     String? url = db.prefs.getRealUrl(widget.imageUrl!);
     if (url != null) {
@@ -239,9 +239,13 @@ class _CachedImageState extends State<CachedImage> {
     }
 
     Widget Function(BuildContext, String?) placeholder = widget.placeholder ??
-        (canDownload()
-            ? CachedImage.defaultProgressPlaceholder
-            : (_, __) => Container());
+        (context, url) => Container(
+              width: widget.width,
+              height: widget.height,
+              child: canDownload()
+                  ? CachedImage.defaultProgressPlaceholder(context, url)
+                  : Container(),
+            );
     if (usePlaceholder) {
       child = placeholder(context, realUrl ?? widget.imageUrl);
     } else {
@@ -303,5 +307,20 @@ class _CachedImageState extends State<CachedImage> {
 
   bool canDownload() {
     return (widget.connectivity ?? db.connectivity) != ConnectivityResult.none;
+  }
+}
+
+bool _isValidUrl(String str) {
+  if (validator.isURL(str)) {
+    str = str.toLowerCase();
+    if (str.endsWith('.png') ||
+        str.endsWith('.jpg') ||
+        str.endsWith('.mp3') ||
+        str.endsWith('.wav')) {
+      return str.contains('/');
+    }
+    return true;
+  } else {
+    return false;
   }
 }

@@ -183,29 +183,68 @@ class Database {
   }
 
   void saveUserData() {
-    _saveJsonToFile(userData, paths.userDataPath);
-    if (paths.userDataExternalBackup != null) {
-      if (!_saveJsonToFile(
-          userData, join(paths.userDataExternalBackup!, kUserDataFilename))) {
-        paths.userDataExternalBackup = null;
-        logger.w('save to external storage failed');
+    bool shouldBackup = false;
+
+    _saveJsonToFile(userData, paths.userDataPath, onError: (e, s) {
+      logger.e('error save userdata to ${paths.userDataPath}', e, s);
+      EasyLoading.showToast('Error saving userdata!\n$e');
+    });
+
+    int? lastDateInt = prefs.instance.getInt('lastSavedDate');
+    DateTime now = DateTime.now();
+    if (lastDateInt == null) {
+      shouldBackup = true;
+    } else {
+      DateTime _lastDate = DateTime.fromMillisecondsSinceEpoch(lastDateInt);
+      if (now.month != _lastDate.month || now.day != _lastDate.day) {
+        shouldBackup = true;
       }
+    }
+    if (shouldBackup) {
+      backupUserdata();
+      prefs.instance.setInt('lastSavedDate', now.millisecondsSinceEpoch);
     }
   }
 
-  String backupUserdata() {
+  List<String> backupUserdata({bool disk = false, bool memory = true}) {
     String timeStamp = DateFormat('yyyyMMddTHHmmss').format(DateTime.now());
-    String filename = 'userdata-$timeStamp.json';
-    String filepath = join(paths.userDir, filename);
-    _saveJsonToFile(userData, filepath);
-    if (paths.userDataExternalBackup != null) {
-      if (!_saveJsonToFile(
-          userData, join(paths.userDataExternalBackup!, filename))) {
-        paths.userDataExternalBackup = null;
-        logger.w('save to external storage failed');
+    String filename = '$timeStamp.json';
+
+    List<String> _saved = [];
+    File _lastSavedFile = File(paths.userDataPath);
+    List objs = [
+      if (disk && _lastSavedFile.existsSync()) _lastSavedFile,
+      if (memory) userData,
+    ];
+    for (var obj in objs) {
+      String filenameWithPrefix = (obj is File ? 'd' : 'm') + filename;
+      _saveJsonToFile(
+        obj,
+        join(paths.userDataBackupDir, filenameWithPrefix),
+        onError: (e, s) {
+          logger.e('error save backup to ${paths.userDataBackupDir}', e, s);
+          EasyLoading.showError(
+              'Error saving to "${paths.userDataBackupDir}"!\n$e');
+        },
+        onSuccess: (fp) => _saved.add(fp),
+      );
+
+      if (paths.externalAppPath != null) {
+        final _externalFp =
+            join(paths.externalAppPath!, 'backup', filenameWithPrefix);
+        logger.i('ready to write into $_externalFp');
+        _saveJsonToFile(
+          obj,
+          _externalFp,
+          onError: (e, s) {
+            logger.e('error save backup to $_externalFp', e, s);
+            paths.externalAppPath = null;
+          },
+          onSuccess: (fp) => _saved.add(fp),
+        );
       }
     }
-    return filepath;
+    return _saved;
   }
 
   Future<void> clearData({bool user = false, bool game = false}) async {
@@ -325,18 +364,22 @@ class Database {
     return result;
   }
 
-  bool _saveJsonToFile(dynamic jsonData, String filepath) {
+  void _saveJsonToFile(dynamic jsonDataOrFile, String filepath,
+      {void onError(Object e, StackTrace s)?, void onSuccess(String fp)?}) {
     try {
       Directory(pathlib.dirname(filepath)).createSync(recursive: true);
-      final contents = json.encode(jsonData);
+      final contents = jsonDataOrFile is File
+          ? jsonDataOrFile.readAsStringSync()
+          : json.encode(jsonDataOrFile);
       File(filepath).writeAsStringSync(contents);
-      // print('Saved "$relativePath"\n');
-      return true;
     } catch (e, s) {
-      logger.e('error save json to $filepath', e, s);
-      EasyLoading.showToast('Error saving "$filepath"!\n$e');
+      if (onError != null) {
+        return onError(e, s);
+      }
+      rethrow;
     }
-    return false;
+    if (onSuccess != null) onSuccess(filepath);
+    // print('Saved "$relativePath"\n');
   }
 
   void _deleteFileOrDirectory(String path) {
@@ -436,7 +479,7 @@ class Database {
 class PathManager {
   /// [_appPath] root path where app can access
   String? _appPath;
-  String? userDataExternalBackup;
+  String? externalAppPath;
 
   Future<void> initRootPath() async {
     if (_appPath != null) return;
@@ -487,6 +530,8 @@ class PathManager {
   String get tempDir => pathlib.join(_appPath!, 'temp');
 
   String get userDataPath => pathlib.join(userDir, kUserDataFilename);
+
+  String get userDataBackupDir => pathlib.join(appPath, 'backup');
 
   String get gameDataPath => pathlib.join(gameDir, kGameDataFilename);
 
