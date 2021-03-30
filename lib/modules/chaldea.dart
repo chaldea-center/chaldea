@@ -32,9 +32,11 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
       if (!(await Permission.storage.isGranted)) {
         var confirmed = await SimpleCancelOkDialog(
           title: Text('Storage Permission'),
-          content: Text('用户数据备份储存于临时目录(${db.paths.userDir})\n'
-              '删除应用(及后续计划构建号变更升级时！)将导致备份消失，建议开启储存访问权限以备份至($externalBackupDir})\n'
-              'Android 11用户(非GooglePlay版)需要额外在权限设置里"允许管理所有文件"'),
+          content: Text(
+            '用户数据备份储存于临时目录(${db.paths.userDir})\n'
+            '删除应用(及后续计划构建号变更升级时！)将导致备份消失，建议开启储存访问权限以备份至($externalBackupDir})\n'
+            // 'Android 11用户(非GooglePlay版)需要额外在权限设置里"允许管理所有文件"',
+          ),
         ).show(kAppKey.currentContext!);
         if (confirmed == true) {
           logger.i('request storage permission');

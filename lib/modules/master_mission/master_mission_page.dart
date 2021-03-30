@@ -303,19 +303,28 @@ class _MasterMissionPageState extends State<MasterMissionPage>
           mission.getTargets().join(', '),
           maxLines: 2,
           maxFontSize: 14,
+          style: TextStyle(color: mission.valid ? null : Colors.grey),
         ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (mission.useAnd)
               ElevatedButton(
-                style: ElevatedButton.styleFrom(minimumSize: Size(36, 36)),
+                style: ElevatedButton.styleFrom(
+                  fixedSize: Size(24, 24),
+                  minimumSize: Size(24, 24),
+                  padding: EdgeInsets.all(2),
+                ),
                 onPressed: _onPressAddAll,
                 child: Text('且'),
               ),
             if (!mission.useAnd)
               OutlinedButton(
-                style: OutlinedButton.styleFrom(minimumSize: Size(36, 36)),
+                style: OutlinedButton.styleFrom(
+                  fixedSize: Size(24, 24),
+                  minimumSize: Size(24, 24),
+                  padding: EdgeInsets.all(2),
+                ),
                 onPressed: _onPressAddAll,
                 child: Text('或'),
               ),
@@ -457,7 +466,8 @@ class _MasterMissionPageState extends State<MasterMissionPage>
     params.integer = true;
     for (var mission in missions) {
       var row = mission.rowOfA;
-      if (row.any((e) => e > 0)) {
+      mission.valid = row.any((e) => e > 0);
+      if (mission.valid) {
         params.addRow(mission.getTargets().join(','), row, mission.count);
       }
     }
@@ -487,14 +497,16 @@ class _MasterMissionPageState extends State<MasterMissionPage>
       title: Text(S.current.help),
       content: Text("""注意：无法得知一个关卡X既有属性A又有属性B的敌人数目。只能知晓关卡X共有a个属性A，b个属性B。
 例：关卡X共有2个属性A，4个属性B，9个属性C
-“或”：2+4+9=15
-“且”：min(2,4,9)=2
+“或”：2+4+9=15, 几乎都有关卡可以满足
+“且”：min(2,4,9)=2, 此时极大可能将没有关卡可以满足条件而忽略，相应任务会变灰
 """),
     ).show(context);
   }
 }
 
 class WeeklyFilterData {
+  /// if no quest satisfies the mission, then this mission is invalid
+  bool valid = true;
   Map<String, bool> checked = {};
   bool useAnd = false;
 

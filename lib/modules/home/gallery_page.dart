@@ -20,6 +20,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
+import 'package:string_validator/string_validator.dart';
 
 class GalleryPage extends StatefulWidget {
   @override
@@ -44,8 +45,8 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
     checkAppUpdate();
   }
 
-  Widget faIcon(IconData icon){
-    return  Padding(
+  Widget faIcon(IconData icon) {
+    return Padding(
       padding: EdgeInsets.all(2),
       child: FaIcon(
         icon,
@@ -284,13 +285,27 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
     }
     final urls = db.userData.sliderUrls;
     urls.forEach((imgUrl, link) {
-      sliders.add(GestureDetector(
-        onTap: () => jumpToExternalLinkAlert(url: link, name: 'Mooncell'),
-        child: CachedImage(
+      Widget child;
+      if (isURL(imgUrl)) {
+        child = CachedImage(
           imageUrl: imgUrl,
           connectivity: db.connectivity,
           errorWidget: (context, url, error) => Container(),
-        ),
+        );
+      } else {
+        child = AspectRatio(
+          aspectRatio: 8 / 3,
+          child: FittedBox(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+              child: Text(imgUrl),
+            ),
+          ),
+        );
+      }
+      sliders.add(GestureDetector(
+        onTap: () => jumpToExternalLinkAlert(url: link),
+        child: child,
       ));
     });
     return sliders;
@@ -327,14 +342,18 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       for (var linkNode in element.getElementsByTagName('a')) {
         String? link = linkNode.attributes['href'];
         var imgNodes = linkNode.getElementsByTagName('img');
+        if (link == null) continue;
+        print('link=$link');
         if (imgNodes.isNotEmpty) {
           String? imgUrl = imgNodes.first.attributes['src'];
-          if (link != null && imgUrl != null) {
+          if (imgUrl != null) {
             imgUrl = uri.resolve(imgUrl).toString();
             link = uri.resolve(link).toString();
             _result[imgUrl] = link;
-            print('imgUrl= "$imgUrl"\nhref  = "$link"');
+            // print('imgUrl= "$imgUrl"\nhref  = "$link"');
           }
+        } else if (linkNode.text.isNotEmpty) {
+          _result[linkNode.text] = link;
         }
       }
       return _result;
@@ -355,6 +374,15 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       var jpParser = parser.parse((await _dio.get(jpUrl)).data.toString());
       var jpElement = jpParser.getElementsByClassName('slide').getOrNull(0);
       result.addAll(_getImageLinks(jpElement, Uri.parse(jpUrl)));
+
+      final announceUrl =
+          'https://gitee.com/chaldea-center/chaldea/wikis/pages/wiki?wiki_title=Announcement&parent=&version_id=master&sort_id=3819789&info_id=1327454&extname=.md';
+      final annContent = (await _dio.get(announceUrl)).data;
+      print(annContent.runtimeType);
+      print(annContent['wiki']['content_html']);
+      var announceParser = parser.parse(annContent['wiki']['content_html']);
+      var announceElement = announceParser.body;
+      result.addAll(_getImageLinks(announceElement, Uri.parse(announceUrl)));
     } catch (e, s) {
       logger.e('Error refresh slides', e, s);
     } finally {

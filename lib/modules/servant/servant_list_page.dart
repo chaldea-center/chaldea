@@ -431,7 +431,7 @@ class ServantListPageState extends State<ServantListPage> {
                           )
                         ],
                       ),
-                      child: db.getIconImage('宝具强化', width: 11, height: 11),
+                      child: db.getIconImage('宝具强化', width: 13, height: 13),
                     ),
                   ),
                   TextSpan(text: status.npLv.toString()),

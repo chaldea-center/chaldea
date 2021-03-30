@@ -257,7 +257,7 @@ class _ExpLvRangeSelectorState extends State<ExpLvRangeSelector> {
     }
     Widget grid = LayoutBuilder(builder: (context, constraints) {
       int crossCount = constraints.maxWidth ~/ 40 ~/ 5 * 5;
-      crossCount = max(5, crossCount);
+      crossCount = max(10, crossCount);
       return GridView.count(
         shrinkWrap: true,
         crossAxisCount: crossCount,
@@ -281,7 +281,6 @@ class _ExpLvRangeSelectorState extends State<ExpLvRangeSelector> {
             ),
           ),
           Flexible(child: grid),
-          Padding(padding: EdgeInsets.only(bottom: 24)),
         ],
       ),
     );

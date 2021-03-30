@@ -66,6 +66,7 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
           toolbarHeight: 40,
           leading: BackButton(),
           title: title,
+          centerTitle: true,
           actions: actions,
         ),
         Flexible(child: content),
