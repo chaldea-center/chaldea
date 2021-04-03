@@ -148,7 +148,20 @@ class _UpdateSourcePageState extends State<UpdateSourcePage> {
               onTap: () {
                 jumpToExternalLinkAlert(url: gitTool.datasetReleaseUrl);
               },
-            )
+            ),
+            ListTile(
+              leading: Icon(source == GitSource.github
+                  ? FontAwesomeIcons.github
+                  : FontAwesomeIcons.git),
+              dense: true,
+              contentPadding: EdgeInsets.only(left: 20, right: 8),
+              // horizontalTitleGap: 0,
+              title: Text('FFO data'),
+              subtitle: Text(gitTool.ffoDataReleaseUrl),
+              onTap: () {
+                jumpToExternalLinkAlert(url: gitTool.ffoDataReleaseUrl);
+              },
+            ),
           ],
         );
       },

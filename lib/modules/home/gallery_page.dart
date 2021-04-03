@@ -7,6 +7,7 @@ import 'package:chaldea/modules/event/events_page.dart';
 import 'package:chaldea/modules/extras/ap_calc_page.dart';
 import 'package:chaldea/modules/extras/exp_card_cost_page.dart';
 import 'package:chaldea/modules/extras/mystic_code_page.dart';
+import 'package:chaldea/modules/ffo/ffo_page.dart';
 import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
 import 'package:chaldea/modules/import_data/import_data_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
@@ -129,7 +130,13 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         builder: (context, _) => SummonListPage(),
         isDetail: false,
       ),
-
+      GalleryItem.ffo: GalleryItem(
+        name: GalleryItem.ffo,
+        title: 'Freedom Order',
+        child: faIcon(FontAwesomeIcons.puzzlePiece),
+        builder: (context, _) => FreedomOrderPage(),
+        isDetail: true,
+      ),
       if (kDebugMode_)
         GalleryItem.ap_cal: GalleryItem(
           name: GalleryItem.ap_cal,
@@ -365,24 +372,31 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       // mc slides
       final mcUrl =
           'https://fgo.wiki/w/%E6%A8%A1%E6%9D%BF:%E8%87%AA%E5%8A%A8%E5%8F%96%E5%80%BC%E8%BD%AE%E6%92%AD';
-      var mcParser = parser.parse((await _dio.get(mcUrl)).data.toString());
-      var mcElement = mcParser.getElementById('transImageBox');
-      result.addAll(_getImageLinks(mcElement, Uri.parse(mcUrl)));
+      final task1 = _dio.get(mcUrl).then((response) {
+        var mcParser = parser.parse(response.data.toString());
+        var mcElement = mcParser.getElementById('transImageBox');
+        result.addAll(_getImageLinks(mcElement, Uri.parse(mcUrl)));
+      });
 
       // jp slides
       final jpUrl = 'http://view.fate-go.jp';
-      var jpParser = parser.parse((await _dio.get(jpUrl)).data.toString());
-      var jpElement = jpParser.getElementsByClassName('slide').getOrNull(0);
-      result.addAll(_getImageLinks(jpElement, Uri.parse(jpUrl)));
+      final task2 = _dio.get(jpUrl).then((response) {
+        var jpParser = parser.parse(response.data.toString());
+        var jpElement = jpParser.getElementsByClassName('slide').getOrNull(0);
+        result.addAll(_getImageLinks(jpElement, Uri.parse(jpUrl)));
+      });
 
       final announceUrl =
           'https://gitee.com/chaldea-center/chaldea/wikis/pages/wiki?wiki_title=Announcement&parent=&version_id=master&sort_id=3819789&info_id=1327454&extname=.md';
-      final annContent = (await _dio.get(announceUrl)).data;
-      print(annContent.runtimeType);
-      print(annContent['wiki']['content_html']);
-      var announceParser = parser.parse(annContent['wiki']['content_html']);
-      var announceElement = announceParser.body;
-      result.addAll(_getImageLinks(announceElement, Uri.parse(announceUrl)));
+      final task3 = _dio.get(announceUrl).then((response) {
+        final annContent = response.data;
+        // print(annContent.runtimeType);
+        // print(annContent['wiki']['content_html']);
+        var announceParser = parser.parse(annContent['wiki']['content_html']);
+        var announceElement = announceParser.body;
+        result.addAll(_getImageLinks(announceElement, Uri.parse(announceUrl)));
+      });
+      await Future.wait([task1, task2, task3]);
     } catch (e, s) {
       logger.e('Error refresh slides', e, s);
     } finally {

@@ -40,14 +40,14 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CheckboxWithText(
+              CheckboxWithLabel(
                 value: use5,
                 onChanged: (v) => setState(() {
                   use5 = v ?? use5;
                 }),
                 label: Text('五星狗粮'),
               ),
-              CheckboxWithText(
+              CheckboxWithLabel(
                 value: sameClass,
                 onChanged: (v) => setState(() {
                   sameClass = v ?? sameClass;

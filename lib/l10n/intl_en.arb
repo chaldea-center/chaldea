@@ -314,5 +314,15 @@
   "progress_cn": "Simplified Chinese Server",
   "create_duplicated_svt": "Create duplicated",
   "remove_duplicated_svt": "Remove duplicated",
-  "setting_auto_rotate": "Auto Rotate"
+  "setting_auto_rotate": "Auto Rotate",
+  "ffo_missing_data_hint": "Please download or import FFO data first↗",
+  "ffo_crop": "Crop",
+  "ffo_same_svt": "Same Servant",
+  "ffo_head": "Head",
+  "ffo_body": "Body",
+  "ffo_background": "Background",
+  "save": "Save",
+  "saved": "Saved",
+  "save_to_photos": "Save to Photos",
+  "backup_data_alert": "Timely backup wanted"
 }

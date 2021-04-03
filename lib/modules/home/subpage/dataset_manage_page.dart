@@ -201,13 +201,13 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
       content: Text(backupPaths.join('\n\n')),
       onTapOk: () async {
         final fps = db.backupUserdata();
-        String hint='';
-        if(fps.isEmpty) {
+        String hint = '';
+        if (fps.isEmpty) {
           hint += '备份失败';
-        }else{
-          hint+= '临时备份已保存于：\n${fps[0]}\n';
-          if(fps.length>=2){
-            hint+='外部备份已保存于：\n${fps[0]}\n';
+        } else {
+          hint += '临时备份已保存于：\n${fps[0]}\n';
+          if (fps.length >= 2) {
+            hint += '外部备份已保存于：\n${fps[0]}\n';
           }
           hint += '删除应用(以及升级时可能)将导致临时备份被删除，建议手动备份到外部可靠储存位置！';
         }
@@ -228,11 +228,7 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
               TextButton(
                 child: Text(S.of(context).open),
                 onPressed: () {
-                  Process.run(
-                    Platform.isMacOS ? 'open' : 'start',
-                    [db.paths.userDir],
-                    runInShell: true,
-                  );
+                  openDesktopPath(db.paths.userDir);
                 },
               ),
           ],

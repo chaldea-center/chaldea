@@ -13,7 +13,6 @@ const _hgif = 'https://hm.baidu.com/hm.gif?';
 
 const _kBDID = '9de65dbb7a214ca258974c37c5e060d2';
 
-@deprecated
 Future<void> launchStaticUrl(String url) async {
   final plugin = FlutterWebviewPlugin();
   await plugin.launch(url, hidden: true);
@@ -48,10 +47,10 @@ Future<void> reportBdtj({String? bdId}) async {
   }
 
   try {
-    // if (Platform.isIOS || Platform.isAndroid) {
-    //   _launchStaticUrl(_constructUrl());
-    //   return;
-    // }
+    if (Platform.isIOS || Platform.isAndroid) {
+      launchStaticUrl(_constructUrl());
+      return;
+    }
     String url = _constructUrl(server: 'http://chaldea.narumi.cc');
     bdId ??= _kBDID;
     final String hjs = _hjs + bdId;

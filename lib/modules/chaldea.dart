@@ -34,8 +34,8 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
           title: Text('Storage Permission'),
           content: Text(
             '用户数据备份储存于临时目录(${db.paths.userDir})\n'
-            '删除应用(及后续计划构建号变更升级时！)将导致备份消失，建议开启储存访问权限以备份至($externalBackupDir})\n'
-            // 'Android 11用户(非GooglePlay版)需要额外在权限设置里"允许管理所有文件"',
+            '删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更 '
+            '将导致临时备份消失，建议开启储存访问权限以备份至($externalBackupDir})\n',
           ),
         ).show(kAppKey.currentContext!);
         if (confirmed == true) {
@@ -175,7 +175,8 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
     logger.i('App version: ${AppInfo.appName} v${AppInfo.fullVersion}');
     logger.i('appPath: ${db.paths.appPath}');
     db.notifyAppUpdate();
-    if (justUpdated) {
+    // macOS审核太啰嗦了
+    if (justUpdated && !Platform.isMacOS) {
       GitTool.fromDb().appReleaseNote().then((releaseNote) {
         if (releaseNote?.isNotEmpty == true) {
           SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {

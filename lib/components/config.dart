@@ -444,9 +444,9 @@ class Database {
     Archive archive = ZipDecoder().decodeBytes(resolvedBytes);
     print('──────────────── Extract zip file ────────────────────────────────');
     print('extract zip file, directory tree "$savePath":');
-    if (archive.findFile(kGameDataFilename) == null) {
-      throw FormatException('Archive file doesn\'t contain $kGameDataFilename');
-    }
+    // if (archive.findFile(kGameDataFilename) == null) {
+    //    throw FormatException('Archive file doesn\'t contain $kGameDataFilename');
+    // }
     int iconCount = 0;
     for (ArchiveFile file in archive) {
       String fullFilepath = pathlib.join(savePath, file.name);
@@ -455,7 +455,7 @@ class Database {
         File(fullFilepath)
           ..createSync(recursive: true)
           ..writeAsBytesSync(data);
-        if (file.name.startsWith('icons/'))
+        if (file.name.endsWith('.png') || file.name.endsWith('.jpg'))
           iconCount += 1;
         else
           print('file: ${file.name}');
@@ -464,7 +464,7 @@ class Database {
         print('dir : ${file.name}');
       }
     }
-    print('icon files: total $iconCount files in "icons/"');
+    print('image files: total $iconCount files');
     print('──────────────── End zip file ────────────────────────────────────');
   }
 

@@ -314,5 +314,15 @@
   "progress_cn": "中国サーバー",
   "create_duplicated_svt": "2号機を生成",
   "remove_duplicated_svt": "2号機を削除",
-  "setting_auto_rotate": "自動回転"
+  "setting_auto_rotate": "自動回転",
+  "ffo_missing_data_hint": "最初にFFOリソースをダウンロードまたはインポートしてください↗",
+  "ffo_crop": "切り抜く ",
+  "ffo_same_svt": "同じサーヴァント",
+  "ffo_head": "頭",
+  "ffo_body": "体",
+  "ffo_background": "背景",
+  "save": "保存",
+  "saved": "保存しました",
+  "save_to_photos": "アルバムに保存",
+  "backup_data_alert": "Timely backup wanted"
 }

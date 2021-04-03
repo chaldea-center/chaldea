@@ -11,7 +11,6 @@ import 'package:path/path.dart' as pathlib;
 import 'device_app_info.dart';
 import 'extensions.dart';
 import 'logger.dart';
-import 'utils.dart';
 
 enum GitSource { github, gitee }
 
@@ -213,6 +212,10 @@ class GitTool {
     return 'https://${source.toShortString()}.com/$owner/$datasetRepo/releases';
   }
 
+  String get ffoDataReleaseUrl {
+    return '$appReleaseUrl/ffo-data';
+  }
+
   Future<List<GitRelease>> get appReleases => _resolveReleases(appRepo);
 
   Future<List<GitRelease>> get datasetReleases => _resolveReleases(datasetRepo);
@@ -254,8 +257,8 @@ class GitTool {
       }
     } finally {
       releases.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      print('resolve ${releases.length} releases from $source');
-      print(releases.map((e) => e.name).toList());
+      // print('resolve ${releases.length} releases from $source');
+      // print(releases.map((e) => e.name).toList());
     }
     return releases;
   }
@@ -363,6 +366,7 @@ class _DownloadDialogState extends State<DownloadDialog> {
     status = 0;
     setState(() {});
     try {
+      Directory(pathlib.dirname(widget.savePath)).createSync(recursive: true);
       final response = await _dio.download(
         widget.url!,
         widget.savePath,
@@ -384,7 +388,7 @@ class _DownloadDialogState extends State<DownloadDialog> {
     if (total < 0) {
       progress = _sizeInMB(count);
     } else {
-      String percent = formatNumber(count / total, percent: true);
+      String percent = (count / total * 100).toStringAsFixed(2) + '%';
       String size = _sizeInMB(total);
       String downSize = _sizeInMB(count);
       progress = '$downSize/$size ($percent)';
@@ -413,7 +417,7 @@ class _DownloadDialogState extends State<DownloadDialog> {
           if (widget.notes != null) Text(widget.notes!),
           Text('下载进度:', style: headerStyle),
           widget.url?.isNotEmpty == true
-              ? Text(progress)
+              ? Text(progress, style: TextStyle(fontFamily: 'RobotoMono'))
               : Text(S.of(context).query_failed)
         ],
       ),

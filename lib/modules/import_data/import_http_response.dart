@@ -327,7 +327,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
                 color: Colors.blue,
               ),
             ),
-            CheckboxWithText(
+            CheckboxWithLabel(
               value: _isLocked,
               onChanged: (v) {
                 setState(() {
@@ -336,7 +336,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
               },
               label: Text('仅锁定'),
             ),
-            CheckboxWithText(
+            CheckboxWithLabel(
               value: _allowDuplicated,
               onChanged: (v) {
                 setState(() {

@@ -238,54 +238,50 @@ class ImageWithText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //TODO: fix image pos shift with different alignment
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        TextStyle _style = textStyle ?? TextStyle();
-        _style =
-            _style.copyWith(fontWeight: _style.fontWeight ?? FontWeight.bold);
-        return GestureDetector(
-          onTap: onTap,
-          child: Center(
-            widthFactor: 1,
-            heightFactor: 1,
-            child: Stack(
-              alignment: alignment,
-              children: <Widget>[
-                applyConstraints(Padding(
+
+    TextStyle _style = textStyle ?? TextStyle();
+    _style = _style.copyWith(fontWeight: _style.fontWeight ?? FontWeight.bold);
+    return GestureDetector(
+      onTap: onTap,
+      child: Center(
+        widthFactor: 1,
+        heightFactor: 1,
+        child: Stack(
+          alignment: alignment,
+          children: <Widget>[
+            applyConstraints(Padding(
+              padding: EdgeInsets.fromLTRB(
+                  -min(0.0, padding.left),
+                  -min(0.0, padding.top),
+                  -min(0.0, padding.right),
+                  -min(0.0, padding.bottom)),
+              child: Center(
+                widthFactor: 1,
+                heightFactor: 1,
+                child: image,
+              ),
+            )),
+            if (text?.isNotEmpty == true || textBuilder != null)
+              applyConstraints(
+                Padding(
                   padding: EdgeInsets.fromLTRB(
-                      -min(0.0, padding.left),
-                      -min(0.0, padding.top),
-                      -min(0.0, padding.right),
-                      -min(0.0, padding.bottom)),
-                  child: Center(
-                    widthFactor: 1,
-                    heightFactor: 1,
-                    child: image,
+                      max(0.0, padding.left),
+                      max(0.0, padding.top),
+                      max(0.0, padding.right),
+                      max(0.0, padding.bottom)),
+                  child: paintOutline(
+                    text: text,
+                    builder: textBuilder,
+                    textAlign: textAlign,
+                    textStyle: _style,
+                    shadowSize: shadowSize,
                   ),
-                )),
-                if (text?.isNotEmpty == true || textBuilder != null)
-                  applyConstraints(
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(
-                          max(0.0, padding.left),
-                          max(0.0, padding.top),
-                          max(0.0, padding.right),
-                          max(0.0, padding.bottom)),
-                      child: paintOutline(
-                        text: text,
-                        builder: textBuilder,
-                        textAlign: textAlign,
-                        textStyle: _style,
-                        shadowSize: shadowSize,
-                      ),
-                    ),
-                    boxFit: BoxFit.scaleDown,
-                  )
-              ],
-            ),
-          ),
-        );
-      },
+                ),
+                boxFit: BoxFit.scaleDown,
+              )
+          ],
+        ),
+      ),
     );
   }
 

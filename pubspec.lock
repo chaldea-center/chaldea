@@ -42,7 +42,7 @@ packages:
       name: audioplayers
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.18.2"
+    version: "0.18.3"
   auto_size_text:
     dependency: "direct main"
     description:
@@ -126,7 +126,7 @@ packages:
       name: catcher
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.6.3"
+    version: "0.6.5"
   characters:
     dependency: transitive
     description:
@@ -246,6 +246,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.17.0"
+  csv:
+    dependency: "direct main"
+    description:
+      name: csv
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "5.0.0"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -548,6 +555,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.0.2"
+  image_gallery_saver:
+    dependency: "direct main"
+    description:
+      name: image_gallery_saver
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.6.8"
   intl:
     dependency: "direct main"
     description:
@@ -610,7 +624,7 @@ packages:
       name: mailer
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.0.0"
+    version: "5.0.0"
   matcher:
     dependency: transitive
     description:
@@ -653,6 +667,48 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.0"
+  package_info_plus:
+    dependency: transitive
+    description:
+      name: package_info_plus
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.0"
+  package_info_plus_linux:
+    dependency: transitive
+    description:
+      name: package_info_plus_linux
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.0"
+  package_info_plus_macos:
+    dependency: transitive
+    description:
+      name: package_info_plus_macos
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.0"
+  package_info_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: package_info_plus_platform_interface
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.0"
+  package_info_plus_web:
+    dependency: transitive
+    description:
+      name: package_info_plus_web
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.0"
+  package_info_plus_windows:
+    dependency: transitive
+    description:
+      name: package_info_plus_windows
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.0"
   path:
     dependency: transitive
     description:
@@ -785,7 +841,7 @@ packages:
       name: sentry
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.1.0-nullsafety.1"
+    version: "5.0.0"
   share:
     dependency: "direct main"
     description:
@@ -937,7 +993,7 @@ packages:
       name: test_api
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.2.19"
+    version: "0.3.0"
   timing:
     dependency: transitive
     description:
@@ -958,7 +1014,7 @@ packages:
       name: universal_io
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.3"
+    version: "2.0.4"
   url_launcher:
     dependency: "direct main"
     description:

@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -8,7 +9,6 @@ import 'dart:typed_data';
 import 'package:catcher/catcher.dart';
 import 'package:catcher/model/platform_type.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:logging/logging.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
@@ -18,30 +18,29 @@ import 'package:path/path.dart' as pathlib;
 import 'config.dart';
 import 'constants.dart';
 import 'device_app_info.dart';
+import 'logger.dart';
 import 'shared_prefs.dart';
 import 'utils.dart';
 
 export 'page_report_mode_cross.dart';
 
-class ToastHandlerCross extends ReportHandler {
-  final Duration? duration;
-  final EasyLoadingToastPosition? toastPosition;
-  final String? customMessage;
-
-  ToastHandlerCross({this.duration, this.toastPosition, this.customMessage});
+class SilentReportFilterMode extends ReportMode {
+  HashSet<String> _caughtErrors = HashSet();
 
   @override
-  Future<bool> handle(Report error) async {
-    EasyLoading.showToast(_getErrorMessage(error),
-        duration: duration, toastPosition: toastPosition);
-    return true;
-  }
-
-  String _getErrorMessage(Report error) {
-    if (customMessage != null && customMessage!.length > 0) {
-      return customMessage!;
+  void requestAction(Report report, BuildContext? context) {
+    // no action needed, request is automatically accepted
+    String s = '';
+    s += report.error.toString();
+    s += report.errorDetails.toString();
+    s += report.stackTrace.toString();
+    if (!_caughtErrors.contains(s)) {
+      super.onActionConfirmed(report);
+      _caughtErrors.add(s);
     } else {
-      return "Error occurred: ${error.error}";
+      logger.w('ignore duplicated error', report.error ?? report.errorDetails,
+          report.stackTrace);
+      super.onActionRejected(report);
     }
   }
 
@@ -83,7 +82,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
   List<PlatformType> getSupportedPlatforms() => PlatformType.values.toList();
 
   @override
-  Future<bool> handle(Report error) async {
+  Future<bool> handle(Report error, BuildContext? context) async {
     return _sendMail(error);
   }
 

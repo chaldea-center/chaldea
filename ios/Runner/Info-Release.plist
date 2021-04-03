@@ -62,6 +62,8 @@
 	<false/>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Chaldea needs to import data and export backup</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Export FFO picture to photos</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 </dict>

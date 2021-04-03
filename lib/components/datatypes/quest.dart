@@ -78,7 +78,7 @@ class Quest {
 @JsonSerializable(checked: true)
 class Battle {
   int ap;
-  String place;
+  String? place;
   String? placeJp;
   List<List<Enemy>> enemies; // wave_num*enemy_num
   Map<String, int> drops;

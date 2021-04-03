@@ -3191,6 +3191,106 @@ class S {
       args: [],
     );
   }
+
+  /// `请先下载或导入FFO资源包↗`
+  String get ffo_missing_data_hint {
+    return Intl.message(
+      '请先下载或导入FFO资源包↗',
+      name: 'ffo_missing_data_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `裁剪`
+  String get ffo_crop {
+    return Intl.message(
+      '裁剪',
+      name: 'ffo_crop',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `同一从者`
+  String get ffo_same_svt {
+    return Intl.message(
+      '同一从者',
+      name: 'ffo_same_svt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `头部`
+  String get ffo_head {
+    return Intl.message(
+      '头部',
+      name: 'ffo_head',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `身体`
+  String get ffo_body {
+    return Intl.message(
+      '身体',
+      name: 'ffo_body',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `背景`
+  String get ffo_background {
+    return Intl.message(
+      '背景',
+      name: 'ffo_background',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `保存`
+  String get save {
+    return Intl.message(
+      '保存',
+      name: 'save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已保存`
+  String get saved {
+    return Intl.message(
+      '已保存',
+      name: 'saved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `保存到相册`
+  String get save_to_photos {
+    return Intl.message(
+      '保存到相册',
+      name: 'save_to_photos',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `及！时！备！份！`
+  String get backup_data_alert {
+    return Intl.message(
+      '及！时！备！份！',
+      name: 'backup_data_alert',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

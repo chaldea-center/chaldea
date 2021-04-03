@@ -313,5 +313,15 @@
   "progress_cn": "简中服",
   "create_duplicated_svt": "生成2号机",
   "remove_duplicated_svt": "销毁2号机",
-  "setting_auto_rotate": "自动旋转"
+  "setting_auto_rotate": "自动旋转",
+  "ffo_missing_data_hint": "请先下载或导入FFO资源包↗",
+  "ffo_crop": "裁剪",
+  "ffo_same_svt": "同一从者",
+  "ffo_head": "头部",
+  "ffo_body": "身体",
+  "ffo_background": "背景",
+  "save": "保存",
+  "saved": "已保存",
+  "save_to_photos": "保存到相册",
+  "backup_data_alert": "及！时！备！份！"
 }

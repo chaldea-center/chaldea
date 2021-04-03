@@ -20,11 +20,11 @@ void main() async {
     // when error occurs when building:
     // DialogReportMode will keep generating error and you can do nothing
     // PageReportMode will generate error repeatedly for about 3 times.
-    kDebugMode ? SilentReportMode() : PageReportMode(),
+    SilentReportFilterMode(),
     [
       FileHandler(crashFile),
       ConsoleHandler(),
-      ToastHandlerCross(),
+      ToastHandler(),
       if (!kDebugMode)
         kEmailAutoHandlerCross(attachments: [crashFile, userdataFile]),
     ],
@@ -42,6 +42,7 @@ void main() async {
       releaseConfig: catcherOptions,
       enableLogger: true,
       navigatorKey: kAppKey,
+      ensureInitialized: true,
     );
 }
 

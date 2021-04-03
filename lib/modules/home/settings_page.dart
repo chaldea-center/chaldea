@@ -62,7 +62,7 @@ class _SettingsPageState extends State<SettingsPage> {
               db.streamBuilder(
                 (context) => ListTile(
                   title: Text(S.of(context).settings_data_management),
-                 subtitle: Text('及！时！备！份！'),
+                 subtitle: Text(S.current.backup_data_alert),
                   trailing: Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: <Widget>[

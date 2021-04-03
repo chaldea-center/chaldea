@@ -459,3 +459,16 @@ String fullToHalf(String s) {
       (match) => _fullHalfMap[match.group(0)!] ?? match.group(0)!);
   return s2;
 }
+
+Future<ProcessResult> openDesktopPath(String fp) {
+  if (Platform.isMacOS || Platform.isWindows) {
+    return Process.run(
+      Platform.isMacOS ? 'open' : 'start',
+      [fp],
+      runInShell: true,
+    );
+  } else {
+    throw ArgumentError.value(
+        Platform.operatingSystem, 'OS', 'open path only supported in desktop');
+  }
+}

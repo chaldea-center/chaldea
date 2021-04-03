@@ -67,7 +67,7 @@ class _QuestCardState extends State<QuestCard> {
     String? lastPlace, lastPlaceJp;
     for (int i = 0; i < battles.length; i++) {
       final battle = battles[i];
-      String? place = battle.place.isNotEmpty ? battle.place : lastPlace;
+      String? place = battle.place?.isNotEmpty==true ? battle.place : lastPlace;
       String? placeJp =
           battle.placeJp?.isNotEmpty == true ? battle.placeJp : lastPlaceJp;
       lastPlace = place;
