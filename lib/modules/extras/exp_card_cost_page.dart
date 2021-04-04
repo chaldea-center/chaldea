@@ -30,6 +30,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
               ).show(context);
             },
             icon: Icon(Icons.help_outline),
+            tooltip: S.current.help,
           ),
         ],
       ),

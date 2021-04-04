@@ -4,7 +4,6 @@ import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/craft/craft_list_page.dart';
 import 'package:chaldea/modules/drop_calculator/drop_calculator_page.dart';
 import 'package:chaldea/modules/event/events_page.dart';
-import 'package:chaldea/modules/extras/ap_calc_page.dart';
 import 'package:chaldea/modules/extras/exp_card_cost_page.dart';
 import 'package:chaldea/modules/extras/mystic_code_page.dart';
 import 'package:chaldea/modules/ffo/ffo_page.dart';
@@ -137,14 +136,14 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         builder: (context, _) => FreedomOrderPage(),
         isDetail: true,
       ),
-      if (kDebugMode_)
-        GalleryItem.ap_cal: GalleryItem(
-          name: GalleryItem.ap_cal,
-          title: S.of(context).ap_calc_title,
-          icon: Icons.directions_run,
-          builder: (context, _) => APCalcPage(),
-          isDetail: true,
-        ),
+      // if (kDebugMode_)
+      //   GalleryItem.ap_cal: GalleryItem(
+      //     name: GalleryItem.ap_cal,
+      //     title: S.of(context).ap_calc_title,
+      //     icon: Icons.directions_run,
+      //     builder: (context, _) => APCalcPage(),
+      //     isDetail: true,
+      //   ),
       GalleryItem.exp_card: GalleryItem(
         name: GalleryItem.exp_card,
         title: '狗粮需求',
@@ -375,7 +374,10 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       final task1 = _dio.get(mcUrl).then((response) {
         var mcParser = parser.parse(response.data.toString());
         var mcElement = mcParser.getElementById('transImageBox');
-        result.addAll(_getImageLinks(mcElement, Uri.parse(mcUrl)));
+        return _getImageLinks(mcElement, Uri.parse(mcUrl));
+      }).catchError((e, s) {
+        logger.e('parse mc slides failed', e, s);
+        return <String, String>{};
       });
 
       // jp slides
@@ -383,7 +385,10 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       final task2 = _dio.get(jpUrl).then((response) {
         var jpParser = parser.parse(response.data.toString());
         var jpElement = jpParser.getElementsByClassName('slide').getOrNull(0);
-        result.addAll(_getImageLinks(jpElement, Uri.parse(jpUrl)));
+        return _getImageLinks(jpElement, Uri.parse(jpUrl));
+      }).catchError((e, s) {
+        logger.e('parse jp slides failed', e, s);
+        return <String, String>{};
       });
 
       final announceUrl =
@@ -394,9 +399,13 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         // print(annContent['wiki']['content_html']);
         var announceParser = parser.parse(annContent['wiki']['content_html']);
         var announceElement = announceParser.body;
-        result.addAll(_getImageLinks(announceElement, Uri.parse(announceUrl)));
+        return _getImageLinks(announceElement, Uri.parse(announceUrl));
+      }).catchError((e, s) {
+        logger.e('parse gitee announce slides failed', e, s);
+        return <String, String>{};
       });
-      await Future.wait([task1, task2, task3]);
+      Future.forEach<Future<Map<String, String>>>(
+          [task1, task2, task3], (e) async => result.addAll(await e));
     } catch (e, s) {
       logger.e('Error refresh slides', e, s);
     } finally {

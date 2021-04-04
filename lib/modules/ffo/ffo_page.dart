@@ -52,7 +52,10 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
         leading: BackButton(),
         title: Text('Freedom Order'),
         centerTitle: true,
-        actions: [importButton],
+        actions: [
+          helpButton,
+          importButton,
+        ],
       ),
       body: Column(
         children: [
@@ -115,14 +118,22 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
                   label: Text(S.current.ffo_same_svt),
                   onChanged: (v) async {
                     sameSvt = v ?? sameSvt;
-                    await setPart(headPart, 1);
-                    await setPart(headPart, 2);
-                    await drawCanvas();
+                    if (sameSvt) {
+                      FFOPart? _part = [headPart, bodyPart, landPart]
+                          .firstWhereOrNull((e) => e != null);
+                      await setPart(_part);
+                      await drawCanvas();
+                    }
                     setState(() {});
                   },
                 ),
                 ElevatedButton(
-                  onPressed: imgData == null ? null : saveImage,
+                  onPressed: (headPart == null &&
+                              bodyPart == null &&
+                              landPart == null) ||
+                          imgData == null
+                      ? null
+                      : saveImage,
                   child: Text(S.current.save),
                 )
               ],
@@ -130,6 +141,27 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget get helpButton {
+    return IconButton(
+      onPressed: () {
+        SimpleCancelOkDialog(
+          scrollable: true,
+          title: Text(S.current.help),
+          content:
+              Text("""1.初次使用请点击右上角导入按钮，从gitee/github releases下载ffo-data资源包并导入
+2.可自定义任意头部、身体、背景，注意部分从者可能没有某些部件，如boss龙娘
+3.功能说明
+  - 裁剪：不显示超出背景框的部分
+  - 同一从者：头部/身体/背景使用同一从者资源
+  - 保存：保存PNG图片，移动端可选择是否导入到相册
+4.解包数据来源于icyalala@NGA，稍作修正，从者编号可能与其他来源有所不同（主要是乌冬从者）"""),
+        ).show(context);
+      },
+      icon: Icon(Icons.help_outline),
+      tooltip: S.current.help,
     );
   }
 
@@ -172,13 +204,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
       onTap: () {
         final clearBtn = TextButton(
           onPressed: () async {
-            if (sameSvt) {
-              await setPart(null, 0);
-              await setPart(null, 1);
-              await setPart(null, 2);
-            } else {
-              await setPart(null, where);
-            }
+            await setPart(null, sameSvt ? null : where);
             await drawCanvas();
             Navigator.of(context).pop();
           },
@@ -194,19 +220,17 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
           Widget child = ImageWithText(
             width: 54,
             text: idString,
-            image: Image.file(file),
+            image: Container(
+              width: 54,
+              height: 54,
+              child: Image.file(file, fit: BoxFit.contain),
+            ),
             textStyle: TextStyle(fontSize: 12),
           );
           child = GestureDetector(
             child: child,
             onTap: () async {
-              if (sameSvt) {
-                await setPart(svt, 0);
-                await setPart(svt, 1);
-                await setPart(svt, 2);
-              } else {
-                await setPart(svt, where);
-              }
+              await setPart(svt, sameSvt ? null : where);
               await drawCanvas();
               Navigator.pop(context);
             },
@@ -230,7 +254,14 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
     );
   }
 
-  Future<void> setPart(FFOPart? svt, int where) async {
+  /// if [where] is null, set all parts
+  Future<void> setPart(FFOPart? svt, [int? where]) async {
+    if (where == null) {
+      await setPart(svt, 0);
+      await setPart(svt, 1);
+      await setPart(svt, 2);
+      return;
+    }
     if (svt == null) {
       switch (where) {
         case 0:
@@ -431,7 +462,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
   Future<ui.Image?> _loadImage(String fp) async {
     final _f = File(fp);
     if (!_f.existsSync()) {
-      print('$fp not exist');
+      // print('$fp not exist');
       return null;
     }
     final stream = FileImage(_f).resolve(ImageConfiguration.empty);
