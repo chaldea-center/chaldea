@@ -2,20 +2,26 @@ library ffo;
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/git_tool.dart';
+import 'package:chaldea/components/split_route.dart';
 import 'package:csv/csv.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
-import 'package:image/image.dart' as IMAGE;
+import 'package:flutter/foundation.dart';
+import 'package:image/image.dart' as imgLib;
 import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:path/path.dart' show dirname;
 import 'package:url_launcher/url_launcher.dart';
 
 part 'ffo_data.dart';
 
 part 'ffo_download_dialog.dart';
+
+part 'ffo_summon_page.dart';
 
 String get _baseDir => join(db.paths.appPath, 'ffo');
 
@@ -25,19 +31,10 @@ class FreedomOrderPage extends StatefulWidget {
 }
 
 class _FreedomOrderPageState extends State<FreedomOrderPage> {
-  bool crop = false;
-  bool sameSvt = false;
-
-  // 1024x1024
-  // 512*720
-  FFOPart? headPart;
-  FFOPart? bodyPart;
-  FFOPart? landPart;
-
   Map<int, FFOPart> parts = {};
-  final List<ui.Image?> images = List.filled(8, null, growable: false);
 
-  Uint8List? imgData;
+  FFOParams params = FFOParams();
+  bool sameSvt = false;
 
   @override
   void initState() {
@@ -68,19 +65,14 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
           if (parts.isNotEmpty)
             Expanded(
               child: Center(
-                child: imgData == null
-                    ? null
-                    : FittedBox(
-                        fit: BoxFit.contain,
-                        child: Container(
-                          // decoration: BoxDecoration(border: Border.all()),
-                          width: 1024,
-                          height: 1024,
-                          child: Image.memory(
-                            imgData!,
-                          ),
-                        ),
-                      ),
+                child: FittedBox(
+                  fit: BoxFit.contain,
+                  child: FFOCardWidget(
+                    params: params,
+                    width: params.cropNormalizedSize ? 512 : 1024,
+                    height: params.cropNormalizedSize ? 720 : 1024,
+                  ),
+                ),
               ),
             ),
           Padding(
@@ -104,38 +96,52 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
               runSpacing: 6,
               children: [
                 CheckboxWithLabel(
-                  value: crop,
+                  value: params.cropNormalizedSize,
                   label: Text(S.current.ffo_crop),
-                  onChanged: (v) {
-                    setState(() {
-                      crop = v ?? crop;
-                    });
-                    drawCanvas();
+                  onChanged: (v) async {
+                    if (v != null) {
+                      params.cropNormalizedSize = v;
+                      await params.imageData;
+                    }
+                    setState(() {});
+                    drawImage();
                   },
                 ),
                 CheckboxWithLabel(
                   value: sameSvt,
                   label: Text(S.current.ffo_same_svt),
                   onChanged: (v) async {
-                    sameSvt = v ?? sameSvt;
-                    if (sameSvt) {
-                      FFOPart? _part = [headPart, bodyPart, landPart]
-                          .firstWhereOrNull((e) => e != null);
-                      await setPart(_part);
-                      await drawCanvas();
-                    }
+                    if (v == null) return;
+                    sameSvt = v;
                     setState(() {});
+
+                    if (sameSvt) {
+                      FFOPart? _part =
+                          params.parts.firstWhereOrNull((e) => e != null);
+                      await params.setPart(_part);
+                      await drawImage();
+                    }
                   },
                 ),
                 ElevatedButton(
-                  onPressed: (headPart == null &&
-                              bodyPart == null &&
-                              landPart == null) ||
-                          imgData == null
+                  onPressed: params.isEmpty || params.cachedImageData == null
                       ? null
-                      : saveImage,
+                      : () => params.saveTo(context).catchError((e, s) {
+                            EasyLoading.showError('Save picture failed!\n$e');
+                            logger.e('save picture failed', e, s);
+                          }),
                   child: Text(S.current.save),
-                )
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    SplitRoute.push(
+                      context: context,
+                      builder: (context, _) => FFOSummonPage(partsDta: parts),
+                      detail: true,
+                    );
+                  },
+                  child: Text(S.current.summon),
+                ),
               ],
             ),
           ),
@@ -156,8 +162,9 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
 3.功能说明
   - 裁剪：不显示超出背景框的部分
   - 同一从者：头部/身体/背景使用同一从者资源
-  - 保存：保存PNG图片，移动端可选择是否导入到相册
-4.解包数据来源于icyalala@NGA，稍作修正，从者编号可能与其他来源有所不同（主要是乌冬从者）"""),
+  - 保存：保存PNG图片，移动端可选择是否导入到相册，抽卡页面可单击卡牌全屏/长按保存
+4.解包数据来源于icyalala@NGA，稍作修正，从者编号可能与其他来源有所不同（主要是乌冬从者）
+5.使用Gitee下载源时两个压缩包均需下载导入"""),
         ).show(context);
       },
       icon: Icon(Icons.help_outline),
@@ -182,12 +189,20 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
 
   Widget partChooser(int where) {
     assert(where >= 0 && where < 3);
-    final FFOPart? _part = [headPart, bodyPart, landPart][where];
+    final FFOPart? _part = params.parts[where];
     String partName = [
       S.current.ffo_head,
       S.current.ffo_body,
       S.current.ffo_background
     ][where];
+    File iconFile = File(join(
+        _baseDir,
+        'UI',
+        [
+          'icon_servant_head_on.png',
+          'icon_servant_body_on.png',
+          'icon_servant_bg_on.png'
+        ][where]));
     return InkWell(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -198,14 +213,25 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
                   File(join(_baseDir, 'Sprite',
                       'icon_servant_${padSvtId(_part.svtId)}.png')),
                   height: 72),
-          Text(partName),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.file(
+                iconFile,
+                width: 16,
+                height: 16,
+                errorBuilder: (context, e, s) => Container(),
+              ),
+              Text(partName),
+            ],
+          ),
         ],
       ),
       onTap: () {
         final clearBtn = TextButton(
           onPressed: () async {
-            await setPart(null, sameSvt ? null : where);
-            await drawCanvas();
+            await params.setPart(null, sameSvt ? null : where);
+            await drawImage();
             Navigator.of(context).pop();
           },
           child: Text(S.current.clear),
@@ -228,10 +254,13 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
             textStyle: TextStyle(fontSize: 12),
           );
           child = GestureDetector(
-            child: child,
+            child: Padding(
+              padding: EdgeInsets.all(2),
+              child: child,
+            ),
             onTap: () async {
-              await setPart(svt, sameSvt ? null : where);
-              await drawCanvas();
+              await params.setPart(svt, sameSvt ? null : where);
+              await drawImage();
               Navigator.pop(context);
             },
           );
@@ -241,210 +270,33 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
           hideOk: true,
           title: Text('Choose $partName'),
           actions: [clearBtn],
-          content: SingleChildScrollView(
-            child: Wrap(
-              spacing: 3,
-              runSpacing: 3,
-              alignment: WrapAlignment.center,
-              children: children.reversed.toList(),
-            ),
-          ),
+          content: Builder(builder: (context) {
+            final size = MediaQuery.of(context).size;
+            return SizedBox.fromSize(
+              size: size,
+              child: GridView.count(
+                crossAxisCount: (MediaQuery.of(context).size.width - 128) ~/ 56,
+                children: children,
+              ),
+            );
+          }),
         ).show(context);
       },
     );
   }
 
-  /// if [where] is null, set all parts
-  Future<void> setPart(FFOPart? svt, [int? where]) async {
-    if (where == null) {
-      await setPart(svt, 0);
-      await setPart(svt, 1);
-      await setPart(svt, 2);
-      return;
-    }
-    if (svt == null) {
-      switch (where) {
-        case 0:
-          headPart = null;
-          images[_HEAD_FRONT_5] = null;
-          images[_HEAD_BACK_2] = null;
-          break;
-        case 1:
-          bodyPart = null;
-          images[_BODY_FRONT_6] = null;
-          images[_BODY_MIDDLE_4] = null;
-          images[_BODY_BACK_1] = null;
-          images[_BODY_BACK2_3] = null;
-          break;
-        case 2:
-          landPart = null;
-          images[_LAND_0] = null;
-          images[_LAND_FRONT_7] = null;
-          break;
-        default:
-          throw 'part=$where, not in 0,1,2';
-      }
-    } else {
-      String strId = padSvtId(svt.svtId);
-      switch (where) {
-        case 0:
-          headPart = svt;
-          images[_HEAD_FRONT_5] = await _loadImage(
-              join(_baseDir, 'Head', 'sv${strId}_head_front.png'));
-          images[_HEAD_BACK_2] = await _loadImage(
-              join(_baseDir, 'Head', 'sv${strId}_head_back.png'));
-          break;
-        case 1:
-          bodyPart = svt;
-          images[_BODY_FRONT_6] = await _loadImage(
-              join(_baseDir, 'Body', 'sv${strId}_body_front.png'));
-          images[_BODY_MIDDLE_4] = await _loadImage(
-              join(_baseDir, 'Body', 'sv${strId}_body_middle.png'));
-          images[_BODY_BACK_1] = await _loadImage(
-              join(_baseDir, 'Body', 'sv${strId}_body_back.png'));
-          images[_BODY_BACK2_3] = await _loadImage(
-              join(_baseDir, 'Body', 'sv${strId}_body_back2.png'));
-          break;
-        case 2:
-          landPart = svt;
-          images[_LAND_0] =
-              await _loadImage(join(_baseDir, 'Land', 'bg_$strId.png'));
-          images[_LAND_FRONT_7] =
-              await _loadImage(join(_baseDir, 'Land', 'bg_${strId}_front.png'));
-          break;
-        default:
-          throw 'part=$where, not in 0,1,2';
-      }
-    }
-  }
-
-  // drawing
-  Future<void> drawCanvas() async {
-    final recorder = ui.PictureRecorder();
-    final canvas =
-        Canvas(recorder, Rect.fromPoints(Offset(0, 0), Offset(1024, 1024)));
-
-    double headScale = 1;
-    if (headPart != null && bodyPart != null && headPart!.scale != 0) {
-      headScale = bodyPart!.scale / headPart!.scale;
-    }
-
-    bool flip = false;
-    if ((headPart?.direction == 0 && bodyPart?.direction == 2) ||
-        (headPart?.direction == 2 && bodyPart?.direction == 0)) {
-      flip = true;
-    }
-
-    int headX2 =
-        (bodyPart?.headX2 == 0 ? bodyPart?.headX : bodyPart?.headX2) ?? 512;
-    int headY2 =
-        (bodyPart?.headY2 == 0 ? bodyPart?.headY : bodyPart?.headY2) ?? 512;
-
-    // draw
-    if (crop) {
-      canvas.clipRect(
-          Rect.fromCenter(center: Offset(512, 512), width: 512, height: 720));
-    }
-    if (images[_LAND_0] != null) {
-      canvas.drawImage(images[_LAND_0]!,
-          Offset((1024 - 512) / 2, (1024 - 720) / 2), Paint());
-    }
-    if (images[_BODY_BACK_1] != null) {
-      _drawImage(
-        canvas: canvas,
-        img: images[_BODY_BACK_1]!,
-      );
-    }
-    if (images[_HEAD_BACK_2] != null) {
-      _drawImage(
-        canvas: canvas,
-        img: images[_HEAD_BACK_2]!,
-        flip: flip,
-        scale: headScale,
-        x: headX2 - 512,
-        y: headY2 - 512,
-      );
-    }
-    if (images[_BODY_BACK2_3] != null) {
-      _drawImage(
-        canvas: canvas,
-        img: images[_BODY_BACK2_3]!,
-      );
-    }
-    if (images[_BODY_MIDDLE_4] != null) {
-      _drawImage(
-        canvas: canvas,
-        img: images[_BODY_MIDDLE_4]!,
-      );
-    }
-    if (images[_HEAD_FRONT_5] != null) {
-      _drawImage(
-        canvas: canvas,
-        img: images[_HEAD_FRONT_5]!,
-        flip: flip,
-        scale: headScale,
-        x: headX2 - 512,
-        y: headY2 - 512,
-      );
-    }
-
-    if (images[_BODY_FRONT_6] != null) {
-      _drawImage(
-        canvas: canvas,
-        img: images[_BODY_FRONT_6]!,
-        // direction: headPart?.direction ?? 0,
-      );
-    }
-
-    if (images[_LAND_FRONT_7] != null) {
-      canvas.drawImage(images[_LAND_FRONT_7]!,
-          Offset((1024 - 512) / 2, (1024 - 720) / 2), Paint());
-    }
-    final picture = recorder.endRecording();
-    ui.Image img = await picture.toImage(1024, 1024);
-    final byteData = await img.toByteData(format: ui.ImageByteFormat.png);
-    imgData = byteData?.buffer.asUint8List();
+  Future<void> drawImage() async {
+    final imgData = await params.imageData;
     if (imgData != null) {
-      await precacheImage(MemoryImage(imgData!), context);
+      await precacheImage(MemoryImage(imgData), context);
     }
     if (mounted) setState(() {});
   }
 
-  void _drawImage({
-    required Canvas canvas,
-    required ui.Image img,
-    bool flip = false,
-    double scale = 1,
-    int x = 0,
-    int y = 0,
-  }) {
-    double x2 = scale == 1 ? x.toDouble() : x - ((scale - 1) / 2 * img.width);
-    double y2 = scale == 1 ? y.toDouble() : y - ((scale - 1) / 2 * img.height);
-    int orgX = x;
-    // render
-    if (flip) {
-      canvas.save();
-      canvas.translate(img.width + orgX * 2, 0);
-      canvas.scale(-1, 1);
-    }
-    if (scale == 1) {
-      canvas.drawImage(img, Offset(x2, y2), Paint());
-    } else {
-      canvas.drawImageRect(
-        img,
-        Rect.fromLTWH(0, 0, img.width.toDouble(), img.height.toDouble()),
-        Rect.fromLTWH(x2, y2, img.width * scale, img.height * scale),
-        Paint(),
-      );
-    }
-    if (flip) {
-      canvas.restore();
-    }
-  }
-
   // load and save
   void loadCSV() {
-    final csvFile = File(join(_baseDir, 'ServantDB-Parts.csv'));
+    parts.clear();
+    final csvFile = File(join(_baseDir, 'CSV', 'ServantDB-Parts.csv'));
     if (!csvFile.existsSync()) return;
     CsvToListConverter(eol: '\n')
         .convert(csvFile.readAsStringSync().replaceAll('\r\n', '\n'))
@@ -457,64 +309,5 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
       parts[item.id] = item;
     });
     print('loaded csv: ${parts.length}');
-  }
-
-  Future<ui.Image?> _loadImage(String fp) async {
-    final _f = File(fp);
-    if (!_f.existsSync()) {
-      // print('$fp not exist');
-      return null;
-    }
-    final stream = FileImage(_f).resolve(ImageConfiguration.empty);
-    final Completer<ui.Image> completer = Completer();
-    stream.addListener(ImageStreamListener((info, _) {
-      completer.complete(info.image);
-    }, onError: (e, s) {
-      EasyLoading.showError(e.toString());
-      logger.e('load ui.Image error', e, s);
-      completer.complete(null);
-    }));
-    return completer.future;
-  }
-
-  Future<void> saveImage() async {
-    final img = IMAGE.decodePng(imgData!.cast<int>());
-    final img2 =
-        IMAGE.copyCrop(img!, (1024 - 512) ~/ 2, (1024 - 720) ~/ 2, 512, 720);
-    String dir = join(db.paths.appPath, 'ffo_output');
-    Directory(dir).createSync(recursive: true);
-    String fp = join(dir,
-        '${headPart?.svtId ?? 0}-${bodyPart?.svtId ?? 0}-${landPart?.svtId ?? 0}.png');
-    final file = File(fp);
-    await file.writeAsBytes(IMAGE.encodePng(img2));
-    SimpleCancelOkDialog(
-      title: Text(S.current.saved),
-      content: Text(fp),
-      hideCancel: true,
-      actions: [
-        if (Platform.isMacOS || Platform.isWindows)
-          TextButton(
-            onPressed: () {
-              openDesktopPath(dir);
-            },
-            child: Text(S.current.open),
-          ),
-        if (Platform.isAndroid || Platform.isIOS)
-          TextButton(
-            onPressed: () async {
-              final result = await ImageGallerySaver.saveFile(fp);
-              logger.i('save to gallery: $result');
-              if (result['isSuccess'] == true) {
-                EasyLoading.showSuccess('Saved to Photos');
-                Navigator.pop(context);
-              } else {
-                EasyLoading.showError(
-                    'Save to Photos failed\n${result["errorMessage"]}');
-              }
-            },
-            child: Text(S.current.save_to_photos),
-          ),
-      ],
-    ).show(context);
   }
 }

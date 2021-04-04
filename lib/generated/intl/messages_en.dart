@@ -265,6 +265,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "limited_event" : MessageLookupByLibrary.simpleMessage("Limited Event"),
     "link" : MessageLookupByLibrary.simpleMessage("link"),
     "list_end_hint" : m8,
+    "long_press_to_save_hint" : MessageLookupByLibrary.simpleMessage("Long press to save"),
     "main_record" : MessageLookupByLibrary.simpleMessage("Main Record"),
     "main_record_bonus" : MessageLookupByLibrary.simpleMessage("Bonus"),
     "main_record_bonus_short" : MessageLookupByLibrary.simpleMessage("Bonus"),

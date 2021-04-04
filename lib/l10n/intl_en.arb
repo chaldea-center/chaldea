@@ -324,5 +324,6 @@
   "save": "Save",
   "saved": "Saved",
   "save_to_photos": "Save to Photos",
-  "backup_data_alert": "Timely backup wanted"
+  "backup_data_alert": "Timely backup wanted",
+  "long_press_to_save_hint": "Long press to save"
 }

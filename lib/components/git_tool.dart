@@ -142,7 +142,7 @@ class GitRelease {
           (index) => GitAsset(
             name: data['assets'][index]['name'] ?? '',
             browserDownloadUrl:
-                data['assets'][index]['browser_download_url'] ?? '',
+                data['assets'][index]['browser_download_url'],
           ),
         ),
         source = GitSource.gitee;
@@ -158,7 +158,7 @@ class GitRelease {
           (index) => GitAsset(
             name: data['assets'][index]['name'] ?? '',
             browserDownloadUrl:
-                data['assets'][index]['browser_download_url'] ?? '',
+                data['assets'][index]['browser_download_url'],
           ),
         ),
         source = GitSource.gitee;

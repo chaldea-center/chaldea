@@ -323,5 +323,6 @@
   "save": "保存",
   "saved": "已保存",
   "save_to_photos": "保存到相册",
-  "backup_data_alert": "及！时！备！份！"
+  "backup_data_alert": "及！时！备！份！",
+  "long_press_to_save_hint": "长按保存"
 }

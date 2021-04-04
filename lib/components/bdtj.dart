@@ -22,7 +22,7 @@ Future<void> launchStaticUrl(String url) async {
 }
 
 String _constructUrl({String? server, String? platform}) {
-  return '${server ?? kServerRoot}/bdtj/${platform ?? Platform.operatingSystem}/${AppInfo.version}';
+  return '${server ?? kServerRoot}/bdtj/${platform ?? Platform.operatingSystem}/${Language.currentLocaleCode}/${AppInfo.version}';
   // return 'http://localhost:8083/bdtj/${Platform.operatingSystem}/${AppInfo.version}';
 }
 
@@ -46,6 +46,7 @@ Future<void> reportBdtj({String? bdId}) async {
     return;
   }
 
+  // TODO: invalid, ignored by bdtj
   try {
     if (Platform.isIOS || Platform.isAndroid) {
       launchStaticUrl(_constructUrl());

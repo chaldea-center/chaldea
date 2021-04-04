@@ -9,6 +9,47 @@ import 'package:string_validator/string_validator.dart' as validator;
 
 import 'config.dart';
 
+class FullscreenWidget extends StatefulWidget {
+  final WidgetBuilder builder;
+
+  const FullscreenWidget({Key? key, required this.builder}) : super(key: key);
+
+  Future<T?> push<T>(BuildContext context, [bool opaque = false]) {
+    return Navigator.of(context).push<T>(PageRouteBuilder(
+      fullscreenDialog: true,
+      opaque: opaque,
+      pageBuilder: (context, _, __) => this,
+    ));
+  }
+
+  @override
+  _FullscreenWidgetState createState() => _FullscreenWidgetState();
+}
+
+class _FullscreenWidgetState extends State<FullscreenWidget> {
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setEnabledSystemUIOverlays([]);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pop(context);
+      },
+      child: widget.builder(context),
+    );
+  }
+}
+
 class FullScreenImageSlider extends StatefulWidget {
   final List<String?> imgUrls;
   final bool? isMcFile;

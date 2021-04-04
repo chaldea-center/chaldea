@@ -265,6 +265,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "limited_event" : MessageLookupByLibrary.simpleMessage("限时活动"),
     "link" : MessageLookupByLibrary.simpleMessage("链接"),
     "list_end_hint" : m8,
+    "long_press_to_save_hint" : MessageLookupByLibrary.simpleMessage("长按保存"),
     "main_record" : MessageLookupByLibrary.simpleMessage("主线记录"),
     "main_record_bonus" : MessageLookupByLibrary.simpleMessage("通关奖励"),
     "main_record_bonus_short" : MessageLookupByLibrary.simpleMessage("奖励"),

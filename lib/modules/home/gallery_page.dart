@@ -132,7 +132,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       GalleryItem.ffo: GalleryItem(
         name: GalleryItem.ffo,
         title: 'Freedom Order',
-        child: faIcon(FontAwesomeIcons.puzzlePiece),
+        child: faIcon(FontAwesomeIcons.cubes),
         builder: (context, _) => FreedomOrderPage(),
         isDetail: true,
       ),

@@ -3291,6 +3291,16 @@ class S {
       args: [],
     );
   }
+
+  /// `长按保存`
+  String get long_press_to_save_hint {
+    return Intl.message(
+      '长按保存',
+      name: 'long_press_to_save_hint',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

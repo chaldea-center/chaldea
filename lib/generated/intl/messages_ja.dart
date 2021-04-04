@@ -265,6 +265,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "limited_event" : MessageLookupByLibrary.simpleMessage("期間限定イベント"),
     "link" : MessageLookupByLibrary.simpleMessage("リンク"),
     "list_end_hint" : m8,
+    "long_press_to_save_hint" : MessageLookupByLibrary.simpleMessage("長押しして保存"),
     "main_record" : MessageLookupByLibrary.simpleMessage("シナリオ"),
     "main_record_bonus" : MessageLookupByLibrary.simpleMessage("報酬"),
     "main_record_bonus_short" : MessageLookupByLibrary.simpleMessage("報酬"),
