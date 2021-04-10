@@ -15,6 +15,8 @@
 - [ ] add version for userdata, convert if necessary
 - [ ] custom SharedPreferences with prefix
 - [ ] move `Servant.unavailable` to dataset.json
+- [x] NP Lv.5 for low rarity and event servants
+- [ ] ocr for skills
 
 ## Performance
 - [ ] update itemStat in Isolate

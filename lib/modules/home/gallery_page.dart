@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/craft/craft_list_page.dart';
-import 'package:chaldea/modules/drop_calculator/drop_calculator_page.dart';
+import 'package:chaldea/modules/free_quest_calculator/free_calculator_page.dart';
 import 'package:chaldea/modules/event/events_page.dart';
 import 'package:chaldea/modules/extras/exp_card_cost_page.dart';
 import 'package:chaldea/modules/extras/mystic_code_page.dart';
@@ -94,11 +94,11 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         builder: (context, _) => ServantListPage(planMode: true),
         isDetail: false,
       ),
-      GalleryItem.drop_calculator: GalleryItem(
-        name: GalleryItem.drop_calculator,
-        title: S.of(context).drop_calculator_short,
+      GalleryItem.free_calculator: GalleryItem(
+        name: GalleryItem.free_calculator,
+        title: S.of(context).free_quest_calculator_short,
         icon: Icons.pin_drop,
-        builder: (context, _) => DropCalculatorPage(),
+        builder: (context, _) => FreeQuestCalculatorPage(),
         isDetail: true,
       ),
       GalleryItem.weekly_mission: GalleryItem(
@@ -185,7 +185,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
           IconButton(
             icon: Icon(Icons.refresh),
             tooltip: S.of(context).tooltip_refresh_sliders,
-            onPressed: () => resolveSliderImageUrls(),
+            onPressed: () => resolveSliderImageUrls(true),
           ),
         ],
       ),
@@ -341,7 +341,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         ));
   }
 
-  Future<Null> resolveSliderImageUrls() async {
+  Future<Null> resolveSliderImageUrls([bool showToast = false]) async {
     Map<String, String> _getImageLinks(dom.Element? element, Uri uri) {
       Map<String, String> _result = {};
       if (element == null) return _result;
@@ -404,10 +404,16 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         logger.e('parse gitee announce slides failed', e, s);
         return <String, String>{};
       });
-      Future.forEach<Future<Map<String, String>>>(
+      await Future.forEach<Future<Map<String, String>>>(
           [task1, task2, task3], (e) async => result.addAll(await e));
+      if (showToast) {
+        EasyLoading.showSuccess('slides updated');
+      }
     } catch (e, s) {
       logger.e('Error refresh slides', e, s);
+      if (showToast) {
+        EasyLoading.showError('update slides failed\n$e');
+      }
     } finally {
       if (result.isNotEmpty) {
         db.userData.sliderUrls = result;

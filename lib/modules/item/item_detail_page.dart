@@ -62,7 +62,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
           if (curTab == 0) viewTypeButton,
           if (curTab == 0 || curTab == 3) sortButton,
           if (curTab == 2) filterOutdatedButton,
-          favoriteButton,
+          if (curTab == 0 || curTab == 3) favoriteButton,
         ],
         bottom: TabBar(
           controller: _tabController,
@@ -86,9 +86,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
           ),
           ItemObtainFreeTab(itemKey: widget.itemKey),
           ItemObtainEventPage(
-              itemKey: widget.itemKey,
-              favorite: favorite,
-              filtrateOutdated: filtrateOutdated),
+              itemKey: widget.itemKey, filtrateOutdated: filtrateOutdated),
           ItemObtainInterludeTab(
               itemKey: widget.itemKey, favorite: favorite, sortType: sortType)
           // Container(child: Center(child: Text('Interludes'))),

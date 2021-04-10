@@ -497,21 +497,21 @@ class S {
     );
   }
 
-  /// `掉落速查`
-  String get drop_calculator {
+  /// `Free速查`
+  String get free_quest_calculator {
     return Intl.message(
-      '掉落速查',
-      name: 'drop_calculator',
+      'Free速查',
+      name: 'free_quest_calculator',
       desc: '',
       args: [],
     );
   }
 
-  /// `掉落速查`
-  String get drop_calculator_short {
+  /// `Free速查`
+  String get free_quest_calculator_short {
     return Intl.message(
-      '掉落速查',
-      name: 'drop_calculator_short',
+      'Free速查',
+      name: 'free_quest_calculator_short',
       desc: '',
       args: [],
     );
@@ -3297,6 +3297,26 @@ class S {
     return Intl.message(
       '长按保存',
       name: 'long_press_to_save_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `全选`
+  String get filter_match_all {
+    return Intl.message(
+      '全选',
+      name: 'filter_match_all',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `反选`
+  String get filter_revert {
+    return Intl.message(
+      '反选',
+      name: 'filter_revert',
       desc: '',
       args: [],
     );

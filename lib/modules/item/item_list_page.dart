@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/drop_calculator/drop_calculator_page.dart';
+import 'package:chaldea/modules/free_quest_calculator/free_calculator_page.dart';
 import 'package:chaldea/modules/shared/list_page_share.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -88,7 +88,7 @@ class ItemListPageState extends State<ItemListPage>
           ),
           IconButton(
             icon: Icon(Icons.calculate),
-            tooltip: S.of(context).drop_calculator,
+            tooltip: S.of(context).free_quest_calculator,
             onPressed: () {
               FocusScope.of(context).unfocus();
               navToDropCalculator();
@@ -185,7 +185,7 @@ class ItemListPageState extends State<ItemListPage>
             context: context,
             popDetail: true,
             builder: (context, _) =>
-                DropCalculatorPage(objectiveCounts: _getObjective()),
+                FreeQuestCalculatorPage(objectiveCounts: _getObjective()),
           );
         });
       },
@@ -456,7 +456,7 @@ class _ItemListTabState extends State<ItemListTab> {
   ///       not the updated viewport by auto scroll
   /// Windows: catch "\t", enter = click listTile
   /// macOS: catch "\t", enter to complete and submit
-  Widget buildItemTile(InputComponents group) {
+  Widget buildItemTile(InputComponents<Item> group) {
     final itemKey = group.data.name;
     bool isQp = itemKey == Item.qp;
 
@@ -496,6 +496,17 @@ class _ItemListTabState extends State<ItemListTab> {
       },
       onSubmitted: (s) {
         print('onSubmit: ${group.focusNode.debugLabel}');
+        // move scrollbar for ios
+        if (Platform.isIOS) {
+          final index = _shownGroups.indexOf(group);
+          if (index < 0) return;
+          final start = _scrollController.position.minScrollExtent,
+              end = _scrollController.position.maxScrollExtent;
+          final newOffset =
+              _scrollController.offset + (end - start) / _shownGroups.length;
+          _scrollController.animateTo(min(end, newOffset),
+              duration: Duration(milliseconds: 200), curve: Curves.easeOut);
+        }
       },
       onEditingComplete: () {
         print('onComplete: ${group.focusNode.debugLabel}');

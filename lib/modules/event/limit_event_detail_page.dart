@@ -54,7 +54,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
           imageUrl: event.bannerUrl,
           isMCFile: true,
           connectivity: db.connectivity,
-          placeholder: (_, __) => Container(),
+          placeholder: (_, __) => AspectRatio(aspectRatio: 8 / 3),
         ),
       ));
     children.add(db.streamBuilder(

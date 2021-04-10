@@ -62,7 +62,7 @@ class _SettingsPageState extends State<SettingsPage> {
               db.streamBuilder(
                 (context) => ListTile(
                   title: Text(S.of(context).settings_data_management),
-                 subtitle: Text(S.current.backup_data_alert),
+                  subtitle: Text(S.current.backup_data_alert),
                   trailing: Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: <Widget>[
@@ -133,7 +133,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   },
                 ),
               ),
-              if (AppInfo.isMobile)
+              if (AppInfo.isMobile && SplitRoute.isSplit(context))
                 SwitchListTile.adaptive(
                   value: db.userData.autorotate,
                   title: Text(S.current.setting_auto_rotate),

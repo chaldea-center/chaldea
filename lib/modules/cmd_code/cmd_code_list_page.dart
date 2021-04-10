@@ -67,7 +67,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
       return false;
     }
     if (!filterData.category
-        .singleValueFilter(code.category, compare: (o, v) => v?.contains(o))) {
+        .singleValueFilter(code.category, defaultCompare: (o, v) => v?.contains(o))) {
       return false;
     }
     return true;

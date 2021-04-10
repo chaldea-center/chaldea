@@ -79,7 +79,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
                 imageUrl: widget.record.bannerUrl,
                 isMCFile: true,
                 connectivity: db.connectivity,
-                placeholder: (_, __) => Container(),
+                placeholder: (_, __) => AspectRatio(aspectRatio: 8 / 3),
               ),
             ),
           db.streamBuilder(

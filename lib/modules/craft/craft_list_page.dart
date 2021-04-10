@@ -77,7 +77,7 @@ class CraftListPageState extends State<CraftListPage> {
     }
 
     if (!filterData.category.singleValueFilter(ce.category,
-        compare: (o, v) => v?.contains(o) ?? false)) {
+        defaultCompare: (o, v) => v?.contains(o) ?? false)) {
       return false;
     }
     if (__binAtkHpType > 0 &&

@@ -1,26 +1,27 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/drop_calculator/drop_calc_filter_dialog.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 
-import 'free_quest_query_tab.dart';
+import 'free_calc_filter_dialog.dart';
 import 'quest_efficiency_tab.dart';
 import 'quest_plan_tab.dart';
+import 'quest_query_tab.dart';
 
-class DropCalculatorPage extends StatefulWidget {
+class FreeQuestCalculatorPage extends StatefulWidget {
   final Map<String, int>? objectiveCounts;
 
-  DropCalculatorPage({Key? key, this.objectiveCounts}) : super(key: key);
+  FreeQuestCalculatorPage({Key? key, this.objectiveCounts}) : super(key: key);
 
   @override
-  _DropCalculatorPageState createState() => _DropCalculatorPageState();
+  _FreeQuestCalculatorPageState createState() =>
+      _FreeQuestCalculatorPageState();
 }
 
-class _DropCalculatorPageState extends State<DropCalculatorPage>
+class _FreeQuestCalculatorPageState extends State<FreeQuestCalculatorPage>
     with SingleTickerProviderStateMixin {
   GLPKSolution? solution;
   late TabController _tabController;
@@ -41,7 +42,7 @@ class _DropCalculatorPageState extends State<DropCalculatorPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).drop_calculator),
+        title: Text(S.of(context).free_quest_calculator),
         leading: BackButton(),
         actions: [
           IconButton(
@@ -57,6 +58,7 @@ class _DropCalculatorPageState extends State<DropCalculatorPage>
         ],
         bottom: TabBar(
           controller: _tabController,
+          isScrollable: !Language.isCN,
           tabs: [
             Tab(text: S.of(context).item),
             Tab(text: S.of(context).plan),
@@ -199,6 +201,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
       children: <Widget>[
         ListTile(
           title: Text(S.of(context).item),
+          contentPadding: EdgeInsets.only(left: 18, right: 8),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -210,7 +213,18 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                       : S.of(context).calc_weight),
                 ),
               ),
-              IconButton(icon: Icon(Icons.delete), onPressed: null)
+              IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: () {
+                    SimpleCancelOkDialog(
+                      title: Text('Clear ALL'),
+                      onTapOk: () {
+                        setState(() {
+                          params.removeAll();
+                        });
+                      },
+                    ).show(context);
+                  })
             ],
           ),
         ),
@@ -360,7 +374,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                   await showDialog(
                       context: context,
                       builder: (context) =>
-                          DropCalcFilterDialog(params: params));
+                          FreeCalcFilterDialog(params: params));
                   setState(() {});
                 }),
             //TODO: add extra event quests button and dialog page

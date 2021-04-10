@@ -6,13 +6,11 @@ import 'package:chaldea/modules/event/tabs/exchange_ticket_tab.dart';
 
 class ItemObtainEventPage extends StatefulWidget {
   final String itemKey;
-  final bool favorite;
   final bool filtrateOutdated;
 
   const ItemObtainEventPage(
       {Key? key,
       required this.itemKey,
-      this.favorite = false,
       this.filtrateOutdated = true})
       : super(key: key);
 
@@ -41,7 +39,6 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
 
   bool _whetherToShow(bool planned, bool outdated) {
     if (planned) return true;
-    if (widget.favorite) return false;
     if (widget.filtrateOutdated && outdated) return false;
     return true;
   }

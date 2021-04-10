@@ -12,7 +12,6 @@ import 'package:chaldea/components/split_route.dart';
 import 'package:csv/csv.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flutter/foundation.dart';
-import 'package:image/image.dart' as imgLib;
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:path/path.dart' show dirname;
 import 'package:url_launcher/url_launcher.dart';
@@ -43,6 +42,12 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    params.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -65,14 +70,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
           if (parts.isNotEmpty)
             Expanded(
               child: Center(
-                child: FittedBox(
-                  fit: BoxFit.contain,
-                  child: FFOCardWidget(
-                    params: params,
-                    width: params.cropNormalizedSize ? 512 : 1024,
-                    height: params.cropNormalizedSize ? 720 : 1024,
-                  ),
-                ),
+                child: FFOCardWidget(params: params),
               ),
             ),
           Padding(
@@ -101,10 +99,8 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
                   onChanged: (v) async {
                     if (v != null) {
                       params.cropNormalizedSize = v;
-                      await params.imageData;
                     }
                     setState(() {});
-                    drawImage();
                   },
                 ),
                 CheckboxWithLabel(
@@ -113,18 +109,16 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
                   onChanged: (v) async {
                     if (v == null) return;
                     sameSvt = v;
-                    setState(() {});
-
                     if (sameSvt) {
                       FFOPart? _part =
                           params.parts.firstWhereOrNull((e) => e != null);
                       await params.setPart(_part);
-                      await drawImage();
                     }
+                    setState(() {});
                   },
                 ),
                 ElevatedButton(
-                  onPressed: params.isEmpty || params.cachedImageData == null
+                  onPressed: params.isEmpty
                       ? null
                       : () => params.saveTo(context).catchError((e, s) {
                             EasyLoading.showError('Save picture failed!\n$e');
@@ -231,8 +225,8 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
         final clearBtn = TextButton(
           onPressed: () async {
             await params.setPart(null, sameSvt ? null : where);
-            await drawImage();
             Navigator.of(context).pop();
+            setState(() {});
           },
           child: Text(S.current.clear),
         );
@@ -260,8 +254,8 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
             ),
             onTap: () async {
               await params.setPart(svt, sameSvt ? null : where);
-              await drawImage();
               Navigator.pop(context);
+              setState(() {});
             },
           );
           children.add(child);
@@ -283,14 +277,6 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
         ).show(context);
       },
     );
-  }
-
-  Future<void> drawImage() async {
-    final imgData = await params.imageData;
-    if (imgData != null) {
-      await precacheImage(MemoryImage(imgData), context);
-    }
-    if (mounted) setState(() {});
   }
 
   // load and save

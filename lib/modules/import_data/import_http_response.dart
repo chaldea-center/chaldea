@@ -468,7 +468,16 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
           items.add(item);
         }
       });
-      items.sort((a, b) => a.itemId - b.itemId);
+      items.sort((a, b) {
+        if (a.indexKey != null && b.indexKey != null) {
+          return db.gameData.items[a.indexKey!]!.id -
+              db.gameData.items[b.indexKey!]!.id;
+        } else if (a.indexKey == null && b.indexKey == null) {
+          return a.itemId - b.itemId;
+        } else {
+          return 0;
+        }
+      });
 
       // svt
       collectionMap.clear();
@@ -504,8 +513,8 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
         }
       });
       servants.sort((a, b) {
-        final aa = db.gameData.servants[a.first.indexKey]!;
-        final bb = db.gameData.servants[b.first.indexKey]!;
+        final aa = db.gameData.servants[a.first.indexKey];
+        final bb = db.gameData.servants[b.first.indexKey];
         return Servant.compare(aa, bb,
             keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no],
             reversed: [true, false, false]);

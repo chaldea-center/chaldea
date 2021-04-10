@@ -45,8 +45,8 @@
   "counts": "计数",
   "total_ap": "总AP",
   "total_counts": "总数",
-  "drop_calculator": "掉落速查",
-  "drop_calculator_short": "掉落速查",
+  "free_quest_calculator": "Free速查",
+  "free_quest_calculator_short": "Free速查",
   "calculator": "计算器",
   "download": "下载",
   "downloading": "下载中",
@@ -324,5 +324,7 @@
   "saved": "已保存",
   "save_to_photos": "保存到相册",
   "backup_data_alert": "及！时！备！份！",
-  "long_press_to_save_hint": "长按保存"
+  "long_press_to_save_hint": "长按保存",
+  "filter_match_all": "全选",
+  "filter_revert": "反选"
 }

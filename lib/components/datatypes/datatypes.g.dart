@@ -841,7 +841,7 @@ Battle _$BattleFromJson(Map<String, dynamic> json) {
   return $checkedNew('Battle', json, () {
     final val = Battle(
       ap: $checkedConvert(json, 'ap', (v) => v as int),
-      place: $checkedConvert(json, 'place', (v) => v as String),
+      place: $checkedConvert(json, 'place', (v) => v as String?),
       placeJp: $checkedConvert(json, 'placeJp', (v) => v as String?),
       enemies: $checkedConvert(
           json,
@@ -1400,11 +1400,9 @@ User _$UserFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'name': instance.name,
-      'servants': instance.servants.map((k, e) => MapEntry(k.toString(), e)),
+      'servants': User._servantsToJson(instance.servants),
       'curSvtPlanNo': instance.curSvtPlanNo,
-      'servantPlans': instance.servantPlans
-          .map((e) => e.map((k, e) => MapEntry(k.toString(), e)))
-          .toList(),
+      'servantPlans': User._servantPlansToJson(instance.servantPlans),
       'items': instance.items,
       'events': instance.events,
       'mysticCodes': instance.mysticCodes,
@@ -1707,12 +1705,6 @@ SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
           (v) => v == null
               ? null
               : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      traitSpecial: $checkedConvert(
-          json,
-          'traitSpecial',
-          (v) => v == null
-              ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
     );
     $checkedConvert(
         json, 'filterString', (v) => val.filterString = v as String);
@@ -1742,7 +1734,6 @@ Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
       'alignment2': instance.alignment2,
       'gender': instance.gender,
       'trait': instance.trait,
-      'traitSpecial': instance.traitSpecial,
     };
 
 K _$enumDecode<K, V>(

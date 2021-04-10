@@ -5,10 +5,12 @@ part of datatypes;
 class User {
   String name;
 
+  @JsonKey(toJson: _servantsToJson)
   Map<int, ServantStatus> servants;
   int curSvtPlanNo;
 
   /// Map<planNo, Map<SvtNo, SvtPlan>>
+  @JsonKey(toJson: _servantPlansToJson)
   List<Map<int, ServantPlan>> servantPlans;
 
   /// user own items, key: item name, value: item count
@@ -58,7 +60,7 @@ class User {
     return servantPlans[curSvtPlanNo];
   }
 
-  Servant addDuplicatedForServant(Servant svt,[int? newNo]) {
+  Servant addDuplicatedForServant(Servant svt, [int? newNo]) {
     for (int no = svt.originNo * 1000 + 1;
         no < svt.originNo * 1000 + 999;
         no++) {
@@ -93,12 +95,44 @@ class User {
   ServantPlan svtPlanOf(int no) =>
       curSvtPlan.putIfAbsent(no, () => ServantPlan())..validate();
 
-  ServantStatus svtStatusOf(int no) =>
-      servants.putIfAbsent(no, () => ServantStatus())..curVal.validate();
+  ServantStatus svtStatusOf(int no) {
+    final status = servants.putIfAbsent(no, () => ServantStatus())
+      ..curVal.validate();
+    final svt = db.gameData.servantsWithUser[no];
+
+    if (svt != null &&
+        status.isEmptyIgnoreFavorite && // TODO: replace with isEmpty
+        (svt.info.rarity <= 3 || svt.info.obtain == '活动')) {
+      status.npLv = 5;
+    }
+    return status;
+  }
 
   factory User.fromJson(Map<String, dynamic> data) => _$UserFromJson(data);
 
-  Map<String, dynamic> toJson() => _$UserToJson(this);
+  Map<String, dynamic> toJson() {
+    final _userJson = _$UserToJson(this);
+    (_userJson['servants']! as Map<String, ServantStatus>)
+        .removeWhere((key, value) => value.isEmpty);
+    (_userJson['servantPlans']! as List<Map<String, ServantPlan>>)
+        .forEach((plans) {
+      plans.removeWhere((key, plan) => plan.isEmpty);
+    });
+    return _userJson;
+  }
+
+  static Map<String, dynamic> _servantsToJson(Map<int, ServantStatus> data) {
+    return data.map<String, ServantStatus>((k, e) => MapEntry(k.toString(), e))
+      ..removeWhere((key, value) => value.isEmpty);
+  }
+
+  static List<Map<String, dynamic>> _servantPlansToJson(
+      List<Map<int, ServantPlan>> data) {
+    return data
+        .map((e) => e.map((k, e) => MapEntry(k.toString(), e))
+          ..removeWhere((key, value) => value.isEmpty))
+        .toList();
+  }
 }
 
 @JsonSerializable(checked: true)
@@ -152,6 +186,20 @@ class ServantStatus {
     npIndex = 0;
   }
 
+  bool get isEmpty {
+    return curVal.isEmpty &&
+        (npLv == 1 || npLv == 5) &&
+        priority == 1 &&
+        skillIndex.every((e) => e == null) &&
+        npIndex == 0;
+  }
+
+  bool get isEmptyIgnoreFavorite {
+    return curVal.isEmptyIgnoreFavorite &&
+        (npLv == 1 || npLv == 5) &&
+        priority == 1;
+  }
+
   factory ServantStatus.fromJson(Map<String, dynamic> data) =>
       _$ServantStatusFromJson(data);
 
@@ -187,6 +235,21 @@ class ServantPlan {
     skills.fillRange(0, 3, 1);
     dress.fillRange(0, dress.length, 0);
     grail = 0;
+  }
+
+  bool get isEmpty {
+    return favorite == false &&
+        ascension == 0 &&
+        skills.every((e) => e == 1) &&
+        dress.every((e) => e == 0) &&
+        grail == 0;
+  }
+
+  bool get isEmptyIgnoreFavorite {
+    return ascension == 0 &&
+        skills.every((e) => e == 1) &&
+        dress.every((e) => e == 0) &&
+        grail == 0;
   }
 
   void setMax({int skill = 10}) {

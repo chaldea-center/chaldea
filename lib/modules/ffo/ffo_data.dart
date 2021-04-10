@@ -55,47 +55,32 @@ class FFOParams {
   FFOPart? headPart;
   FFOPart? bodyPart;
   FFOPart? landPart;
-  bool _clipOverflow;
+  bool _clipOverflow; // not used
+  bool cropNormalizedSize;
 
-  bool _cropNormalizedSize;
   final List<ui.Image?> images = List.filled(8, null, growable: false);
-  Uint8List? _cachedImageData;
 
-  Uint8List? get cachedImageData => _cachedImageData;
-  Completer<Uint8List?> _completer = Completer();
-
-  Future<Uint8List?> get imageData => _completer.future;
+  StreamController<FFOParams> onChanged = StreamController.broadcast();
 
   FFOParams({
     this.headPart,
     this.bodyPart,
     this.landPart,
     bool clipOverflow = false,
-    bool cropNormalizedSize = false,
-  })  : _clipOverflow = clipOverflow,
-        _cropNormalizedSize = cropNormalizedSize {
+    this.cropNormalizedSize = false,
+  }) : _clipOverflow = clipOverflow {
     init();
   }
 
   Future<void> init() async {
-    await _setPart(headPart, 0, false);
-    await _setPart(bodyPart, 1, false);
-    await _setPart(landPart, 2, false);
-    await _renderCard(false);
+    await _setPart(headPart, 0);
+    await _setPart(bodyPart, 1);
+    await _setPart(landPart, 2);
+    onChanged.sink.add(this);
   }
 
-  bool get clipOverflow => _clipOverflow;
-
-  set clipOverflow(bool value) {
-    _clipOverflow = value;
-    _renderCard();
-  }
-
-  bool get cropNormalizedSize => _cropNormalizedSize;
-
-  set cropNormalizedSize(bool value) {
-    _cropNormalizedSize = value;
-    _renderCard();
+  void dispose() {
+    onChanged.close();
   }
 
   List<FFOPart?> get parts => [headPart, bodyPart, landPart];
@@ -106,19 +91,21 @@ class FFOParams {
   /// If [where] is null, set all parts
   Future<void> setPart(FFOPart? svt, [int? where]) async {
     if (where != null) {
-      await _setPart(svt, where, true);
+      await _setPart(svt, where);
+      onChanged.sink.add(this);
     } else {
       await setParts(head: svt, body: svt, land: svt);
     }
   }
 
   Future<void> setParts({FFOPart? head, FFOPart? body, FFOPart? land}) async {
-    await _setPart(head, 0, false);
-    await _setPart(body, 1, false);
-    await _setPart(land, 2, true);
+    await _setPart(head, 0);
+    await _setPart(body, 1);
+    await _setPart(land, 2);
+    onChanged.sink.add(this);
   }
 
-  Future<void> _setPart(FFOPart? svt, int where, [bool render = true]) async {
+  Future<void> _setPart(FFOPart? svt, int where) async {
     // wait the previous render completed
     if (svt == null) {
       switch (where) {
@@ -174,21 +161,13 @@ class FFOParams {
           throw 'part=$where, not in 0,1,2';
       }
     }
-    if (render) {
-      await _renderCard();
-    }
   }
 
-  Future<Uint8List?> _renderCard([bool wait = true]) async {
-    if (wait && !_completer.isCompleted) {
-      await _completer.future;
+  void drawCanvas(Canvas canvas) {
+    if (cropNormalizedSize) {
+      canvas.clipRect(Rect.fromLTWH(0, 0, 512, 720));
+      canvas.translate((512 - 1024) / 2, (720 - 1024) / 2);
     }
-    if (_completer.isCompleted) {
-      _completer = Completer();
-    }
-    final recorder = ui.PictureRecorder();
-    final canvas =
-        Canvas(recorder, Rect.fromPoints(Offset(0, 0), Offset(1024, 1024)));
 
     double headScale = 1;
     if (headPart != null && bodyPart != null && headPart!.scale != 0) {
@@ -207,7 +186,7 @@ class FFOParams {
         (bodyPart?.headY2 == 0 ? bodyPart?.headY : bodyPart?.headY2) ?? 512;
 
     // draw
-    if (clipOverflow) {
+    if (_clipOverflow) {
       canvas.clipRect(
           Rect.fromCenter(center: Offset(512, 512), width: 512, height: 720));
     }
@@ -266,22 +245,6 @@ class FFOParams {
       canvas.drawImage(images[_LAND_FRONT_7]!,
           Offset((1024 - 512) / 2, (1024 - 720) / 2), Paint());
     }
-    final picture = recorder.endRecording();
-    ui.Image img = await picture.toImage(1024, 1024);
-    Uint8List? data = (await img.toByteData(format: ui.ImageByteFormat.png))
-        ?.buffer
-        .asUint8List();
-    if (cropNormalizedSize && data != null) {
-      final img = imgLib.decodePng(data);
-      if (img != null) {
-        final cropped = imgLib.copyCrop(
-            img, (1024 - 512) ~/ 2, (1024 - 720) ~/ 2, 512, 720);
-        data = Uint8List.fromList(imgLib.encodePng(cropped));
-      }
-    }
-    _cachedImageData = data;
-    _completer.complete(_cachedImageData);
-    return _cachedImageData;
   }
 
   void _drawImage({
@@ -334,20 +297,32 @@ class FFOParams {
     return completer.future;
   }
 
+  Size get canvasSize =>
+      cropNormalizedSize ? const Size(512, 720) : const Size(1024, 1024);
+
   Future<void> saveTo(BuildContext context, [String? fp]) async {
     fp ??= join(db.paths.appPath, 'ffo_output',
         parts.map((e) => e?.svtId ?? 0).join('-') + '.png');
 
-    imgLib.Image? img = imgLib.decodePng((await imageData)!.cast<int>());
-    if (img == null) {
-      return Future.error(FormatException('decode png failed'));
-    }
-    if (!_cropNormalizedSize) {
-      img =
-          imgLib.copyCrop(img, (1024 - 512) ~/ 2, (1024 - 720) ~/ 2, 512, 720);
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(
+      recorder,
+      Rect.fromPoints(
+          Offset(0, 0), Offset(canvasSize.width, canvasSize.height)),
+    );
+    drawCanvas(canvas);
+    final picture = recorder.endRecording();
+    ui.Image img = await picture.toImage(
+        canvasSize.width.toInt(), canvasSize.height.toInt());
+    ByteData? data = (await img.toByteData(format: ui.ImageByteFormat.png));
+    if (data == null) {
+      SimpleCancelOkDialog(
+        title: Text('Save failed'),
+      ).show(context);
+      return;
     }
     final file = File(fp)..createSync(recursive: true);
-    await file.writeAsBytes(imgLib.encodePng(img));
+    await file.writeAsBytes(data.buffer.asUint8List());
     await SimpleCancelOkDialog(
       title: Text(S.current.saved),
       content: Text(fp),
@@ -382,10 +357,10 @@ class FFOParams {
 
 class FFOCardWidget extends StatefulWidget {
   final FFOParams params;
-  final double? width;
-  final double? height;
+  final BoxFit fit;
 
-  const FFOCardWidget({Key? key, required this.params, this.width, this.height})
+  const FFOCardWidget(
+      {Key? key, required this.params, this.fit = BoxFit.contain})
       : super(key: key);
 
   @override
@@ -395,33 +370,50 @@ class FFOCardWidget extends StatefulWidget {
 class _FFOCardWidgetState extends State<FFOCardWidget> {
   @override
   Widget build(BuildContext context) {
-    if (widget.params._completer.isCompleted == false) {
-      widget.params._completer.future.then((value) {
-        safeSetState(() {
-          if (mounted) {
-            setState(() {});
-          }
-        });
-      });
-    }
-    if (widget.params._cachedImageData != null) {
-      Widget image = Image.memory(
-        widget.params._cachedImageData!,
-        width: widget.width,
-        height: widget.height,
-      );
-      if (widget.width != null || widget.height != null) {
-        image = Container(
-          width: widget.width,
-          height: widget.height,
-          child: image,
+    return StreamBuilder(
+      stream: widget.params.onChanged.stream,
+      builder: (context, snapshot) {
+        // print('stream builder');
+        return FittedBox(
+          fit: widget.fit,
+          child: CustomPaint(
+            size: widget.params.canvasSize,
+            painter: FFOPainter(widget.params),
+          ),
         );
-      }
-      return image;
-    }
-    return Container(
-      width: widget.width,
-      height: widget.height,
+      },
     );
+  }
+}
+
+class FFOPainter extends CustomPainter {
+  FFOParams params;
+
+  FFOPainter(this.params);
+
+  List<ui.Image?>? _cachedImages;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    params.drawCanvas(canvas);
+    _cachedImages = List.of(params.images);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    if (oldDelegate is! FFOPainter) return true;
+    if (oldDelegate.params.cropNormalizedSize != params.cropNormalizedSize ||
+        oldDelegate.params._clipOverflow != params._clipOverflow ||
+        oldDelegate.params.headPart != params.headPart ||
+        oldDelegate.params.bodyPart != params.bodyPart ||
+        oldDelegate.params.landPart != params.landPart) {
+      return true;
+    }
+    for (var i = 0; i < params.images.length; i++) {
+      if (_cachedImages == null || _cachedImages![i] != params.images[i]) {
+        return true;
+      }
+    }
+    return false;
   }
 }

@@ -45,6 +45,8 @@
   "counts": "カウント",
   "total_ap": "合計AP",
   "total_counts": "合計カウント",
+  "free_quest_calculator": "フリークエスト",
+  "free_quest_calculator_short": "フリークエスト",
   "drop_calculator": "ドロップ",
   "drop_calculator_short": "ドロップ",
   "calculator": "電卓",
@@ -325,5 +327,7 @@
   "saved": "保存しました",
   "save_to_photos": "アルバムに保存",
   "backup_data_alert": "Timely backup wanted",
-  "long_press_to_save_hint": "長押しして保存"
+  "long_press_to_save_hint": "長押しして保存",
+  "filter_match_all": "すべて選択",
+  "filter_revert": "逆選挙"
 }

@@ -1,16 +1,16 @@
 import 'package:chaldea/components/components.dart';
 
-class DropCalcFilterDialog extends StatefulWidget {
+class FreeCalcFilterDialog extends StatefulWidget {
   final GLPKParams params;
 
-  const DropCalcFilterDialog({Key? key, required this.params})
+  const FreeCalcFilterDialog({Key? key, required this.params})
       : super(key: key);
 
   @override
-  _DropCalcFilterDialogState createState() => _DropCalcFilterDialogState();
+  _FreeCalcFilterDialogState createState() => _FreeCalcFilterDialogState();
 }
 
-class _DropCalcFilterDialogState extends State<DropCalcFilterDialog> {
+class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
   @override
   Widget build(BuildContext context) {
     final params = widget.params;

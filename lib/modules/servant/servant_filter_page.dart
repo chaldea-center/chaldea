@@ -202,15 +202,6 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             update();
           },
         ),
-        FilterGroup(
-          title: Text(S.of(context).filter_special_trait, style: textStyle),
-          options: SvtFilterData.traitSpecialData,
-          values: filterData.traitSpecial,
-          onFilterChanged: (value) {
-            filterData.traitSpecial = value;
-            update();
-          },
-        ),
       ]),
     );
   }

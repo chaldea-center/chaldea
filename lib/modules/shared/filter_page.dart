@@ -324,14 +324,16 @@ class FilterGroup extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 if (showMatchAll)
-                  _buildCheckbox(context, values.matchAll, 'Match All', () {
+                  _buildCheckbox(
+                      context, values.matchAll, S.current.filter_match_all, () {
                     values.matchAll = !values.matchAll;
                     if (onFilterChanged != null) {
                       onFilterChanged!(values);
                     }
                   }),
                 if (showInvert)
-                  _buildCheckbox(context, values.invert, 'Invert', () {
+                  _buildCheckbox(
+                      context, values.invert, S.current.filter_revert, () {
                     values.invert = !values.invert;
                     if (onFilterChanged != null) {
                       onFilterChanged!(values);

@@ -131,7 +131,6 @@ class SvtFilterData {
   FilterGroupData alignment2;
   FilterGroupData gender;
   FilterGroupData trait;
-  FilterGroupData traitSpecial;
 
   SvtFilterData({
     int? favorite,
@@ -153,7 +152,6 @@ class SvtFilterData {
     FilterGroupData? alignment2,
     FilterGroupData? gender,
     FilterGroupData? trait,
-    FilterGroupData? traitSpecial,
   })  : filterString = '',
         favorite = favorite ?? 0,
         display = display ?? FilterGroupData(options: {'List': true}),
@@ -173,8 +171,7 @@ class SvtFilterData {
         alignment1 = alignment1 ?? FilterGroupData(),
         alignment2 = alignment2 ?? FilterGroupData(),
         gender = gender ?? FilterGroupData(),
-        trait = trait ?? FilterGroupData(),
-        traitSpecial = traitSpecial ?? FilterGroupData() {
+        trait = trait ?? FilterGroupData() {
     this.favorite = fixValidRange(this.favorite, 0, 2);
     fillListValue(this.sortKeys, 3, (i) => sortKeyData[i]);
     fillListValue(this.sortReversed, 3, (_) => true);
@@ -196,7 +193,7 @@ class SvtFilterData {
         alignment2,
         gender,
         trait,
-        traitSpecial
+        // traitSpecial
       ];
 
   void reset() {
@@ -254,10 +251,11 @@ class SvtFilterData {
     '罗马',
     '亚瑟',
     '阿尔托莉雅脸',
+    'EA不特攻',
     '所爱之人',
     '希腊神话男性',
     '人类的威胁',
-    '阿尔戈号的相关者',
+    '阿耳戈船相关人员',
     '魔性',
     '超巨大',
     '天地(拟似除外)',
@@ -270,7 +268,6 @@ class SvtFilterData {
     '鬼',
     '源氏'
   ];
-  static const traitSpecialData = ['EA不特攻', '无特殊特性'];
 
   // json_serializable
   factory SvtFilterData.fromJson(Map<String, dynamic> data) =>
@@ -435,20 +432,21 @@ class FilterGroupData {
         : _compare(_optionKey, _srcKey) ?? false;
   }
 
-  bool singleValueFilter(dynamic value,
-      {CompareFilterKeyCallback? compare,
-      Map<String, CompareFilterKeyCallback>? compares}) {
+  bool singleValueFilter(
+    dynamic value, {
+    CompareFilterKeyCallback? defaultCompare,
+    Map<String, CompareFilterKeyCallback> compares = const {},
+  }) {
     // ignore matchAll?
-    assert(compare == null || compares == null);
     options.removeWhere((k, v) => v != true);
     if (options.isEmpty) {
       return true;
     }
     bool result;
-    if (compare != null || compares != null) {
+    if (defaultCompare != null || compares.isNotEmpty) {
       result = false;
       for (var option in options.keys) {
-        if (_customCompare(option, value, compare ?? compares![option])) {
+        if (_customCompare(option, value, compares[option] ?? defaultCompare)) {
           result = true;
           break;
         }
@@ -459,9 +457,11 @@ class FilterGroupData {
     return invert ? !result : result;
   }
 
-  bool listValueFilter(List<String> values,
-      {Map<String, CompareFilterKeyCallback>? compares}) {
-    compares ??= {};
+  bool listValueFilter(
+    List<String> values, {
+    CompareFilterKeyCallback? defaultCompare,
+    Map<String, CompareFilterKeyCallback> compares = const {},
+  }) {
     options.removeWhere((k, v) => v != true);
     if (options.isEmpty) {
       return true;
@@ -471,7 +471,8 @@ class FilterGroupData {
       result = true;
       for (String option in options.keys) {
         List<bool> tmp = values
-            .map((v) => _customCompare(option, v, compares![option]))
+            .map((v) =>
+                _customCompare(option, v, compares[option] ?? defaultCompare))
             .toList();
         if (!tmp.contains(true)) {
           result = false;
@@ -482,7 +483,8 @@ class FilterGroupData {
       result = false;
       for (String option in options.keys) {
         List<bool> tmp = values
-            .map((v) => _customCompare(option, v, compares![option]))
+            .map((v) =>
+                _customCompare(option, v, compares[option] ?? defaultCompare))
             .toList();
         if (tmp.contains(true)) {
           result = true;

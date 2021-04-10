@@ -161,22 +161,14 @@ class ServantListPageState extends State<ServantListPage> {
       return false;
     }
     // trait
-    if (!filterData.trait.listValueFilter(svt.info.traits, compares: {
-      '魔性': (o, v) => v?.startsWith(o) ?? false,
-      '超巨大': (o, v) => v?.startsWith(o) ?? false,
-      '天地(拟似除外)': (o, v) => !svt.info.isTDNS,
-      'EA不特攻': (o, v) => !svt.info.isWeakToEA,
-      '无特殊特性': (o, v) => svt.info.traits.isEmpty,
-    })) {
-      return false;
-    }
-    // traitSpecial
-    final a = SvtFilterData.traitSpecialData;
-    if (filterData.traitSpecial.options.containsValue(true) &&
-        !(filterData.traitSpecial.options[a[0]] == true &&
-            !svt.info.isWeakToEA) &&
-        !(filterData.traitSpecial.options[a[1]] == true &&
-            svt.info.traits.isEmpty)) {
+    if (!filterData.trait.listValueFilter(
+      svt.info.traits,
+      defaultCompare: (o, v) => v?.contains(o) ?? false,
+      compares: {
+        '天地(拟似除外)': (o, v) => !svt.info.isTDNS,
+        'EA不特攻': (o, v) => !svt.info.isWeakToEA,
+      },
+    )) {
       return false;
     }
     return true;
@@ -355,12 +347,42 @@ class ServantListPageState extends State<ServantListPage> {
         }
         final svt = shownList[index - 1];
         final status = db.curUser.svtStatusOf(svt.no);
-        String statusText = '';
+        Widget? statusText;
         if (status.curVal.favorite == true) {
-          statusText =
-              '${status.curVal.ascension}-' + status.curVal.skills.join('/');
+          statusText = Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              // Row(
+              //   mainAxisSize: MainAxisSize.min,
+              //   children: [
+              //     db.getIconImage('宝具强化', width: 16, height: 16),
+              //     Text(status.npLv.toString()),
+              //   ],
+              // ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // db.getIconImage('技能强化', width: 16, height: 16),
+                  Text(status.curVal.ascension.toString() + '-'),
+                  Text(status.curVal.skills.join('/')),
+                ],
+              ),
+              if (status.curVal.dress.isNotEmpty)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    db.getIconImage('灵衣开放权', width: 16, height: 16),
+                    Text(status.curVal.dress.join('/')),
+                  ],
+                ),
+            ],
+          );
+          statusText = DefaultTextStyle(
+            style: TextStyle(color: Colors.grey, fontSize: 14),
+            child: statusText,
+          );
         }
-
         String additionalText = '';
         switch (filterData.sortKeys.first) {
           case SvtCompare.atk:
@@ -375,22 +397,14 @@ class ServantListPageState extends State<ServantListPage> {
         return CustomTile(
           leading: db.getIconImage(svt.icon, width: 56),
           title: AutoSizeText(svt.info.localizedName, maxLines: 1),
-          subtitle: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    if (!Language.isJP)
-                      AutoSizeText(svt.info.nameJp, maxLines: 1),
-                    Text('No.${svt.no} ${svt.info.className}  $additionalText')
-                  ],
-                ),
-              ),
-              Text(statusText),
+              if (!Language.isJP) AutoSizeText(svt.info.nameJp, maxLines: 1),
+              Text('No.${svt.no} ${svt.info.className}  $additionalText')
             ],
           ),
+          trailing: statusText,
           // trailing: Icon(Icons.arrow_forward_ios),
           onTap: () {
             SplitRoute.push(

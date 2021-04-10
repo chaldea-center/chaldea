@@ -45,8 +45,8 @@
   "counts": "Counts",
   "total_ap": "Total AP",
   "total_counts": "Total counts",
-  "drop_calculator": "Drop Calculator",
-  "drop_calculator_short": "Drop Calc",
+  "free_quest_calculator": "Free Quest",
+  "free_quest_calculator_short": "Free Quest",
   "calculator": "Calculator",
   "download": "Download",
   "downloading": "Downloading",
@@ -325,5 +325,7 @@
   "saved": "Saved",
   "save_to_photos": "Save to Photos",
   "backup_data_alert": "Timely backup wanted",
-  "long_press_to_save_hint": "Long press to save"
+  "long_press_to_save_hint": "Long press to save",
+  "filter_match_all": "Match All",
+  "filter_revert": "Revert"
 }

@@ -28,7 +28,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   void afterFirstLayout(BuildContext context) async {
     if (Platform.isAndroid) {
       final String externalBackupDir =
-          join('/storage/emulated/0/', kPackageName);
+          join('/storage/emulated/0/', AppInfo.packageName);
       if (!(await Permission.storage.isGranted)) {
         var confirmed = await SimpleCancelOkDialog(
           title: Text('Storage Permission'),
@@ -117,10 +117,10 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
 
   void setPreferredOrientations() {
     if (!AppInfo.isMobile) return;
-    if (db.userData.autorotate) {
-      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    } else {
+    if (db.userData.autorotate && SplitRoute.isSplit(context)) {
       SystemChrome.setPreferredOrientations([]);
+    } else {
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     }
   }
 }

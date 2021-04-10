@@ -43,7 +43,7 @@ class GalleryItem {
   static const String item = 'item';
   static const String event = 'event';
   static const String plan = 'plan';
-  static const String drop_calculator = 'drop_calculator';
+  static const String free_calculator = 'free_calculator';
   static const String mystic_code = 'mystic_code';
   static const String gacha = 'gacha';
   static const String ffo = 'ffo';

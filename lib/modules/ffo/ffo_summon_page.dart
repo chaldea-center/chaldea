@@ -14,16 +14,37 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
   List<List<FFOParams>> history = [];
 
   @override
+  void dispose() {
+    super.dispose();
+    _disposeHistory();
+  }
+
+  void _disposeHistory() {
+    history.forEach((group) {
+      group.forEach((element) {
+        element.dispose();
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     _curHistory = fixValidRange(_curHistory, 0, history.length - 1);
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
         title: Text('Freedom Order Summon'),
+        titleSpacing: 0,
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              history.clear();
+              _curHistory = -1;
+              setState(() {});
+              _disposeHistory();
+            },
             icon: Icon(Icons.replay),
+            tooltip: S.current.reset,
           )
         ],
       ),
@@ -62,8 +83,13 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
           onTap: () {
             drawSummon(ten ? 10 : 1);
           },
-          child: Image.file(File(join(
-              _baseDir, 'UI', ten ? 'btn_summon_10.png' : 'btn_summon_01.png'))),
+          child: Image.file(
+            File(join(_baseDir, 'UI',
+                ten ? 'btn_summon_10.png' : 'btn_summon_01.png')),
+            errorBuilder: (context, _, __) {
+              return db.getIconImage(ten ? '召唤10次按钮.png' : '召唤1次按钮.png');
+            },
+          ),
         ),
       );
     }
@@ -175,11 +201,7 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
   }
 
   Widget _buildCard(FFOParams params) {
-    final image = FFOCardWidget(
-      params: params,
-      width: 512,
-      height: 720,
-    );
+    final image = FFOCardWidget(params: params);
     void _showSave() {
       SimpleCancelOkDialog(
         scrollable: true,
