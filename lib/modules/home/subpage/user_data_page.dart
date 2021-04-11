@@ -202,72 +202,82 @@ class _UserDataPageState extends State<UserDataPage> {
 
   Future<void> uploadToServer() async {
     if (!checkUserPwd()) return;
-    await catchErrorAsync(() async {
-      var rawResp = await db.serverDio.post('/user/uploadBackup', data: {
-        HttpParamKeys.username: db.prefs.username,
-        HttpParamKeys.password: db.prefs.password,
-        HttpParamKeys.body: jsonEncode(db.userData),
-      });
-      final resp = ChaldeaResponse.fromResponse(rawResp.data);
-      if (!resp.success) {
-        resp.showMsg(context);
-        return;
-      }
-      EasyLoading.showSuccess('Uploaded');
-    });
+    await catchErrorAsync(
+      () async {
+        EasyLoading.show(status: 'uploading');
+        var rawResp = await db.serverDio.post('/user/uploadBackup', data: {
+          HttpParamKeys.username: db.prefs.username,
+          HttpParamKeys.password: db.prefs.password,
+          HttpParamKeys.body: jsonEncode(db.userData),
+        });
+        final resp = ChaldeaResponse.fromResponse(rawResp.data);
+        if (!resp.success) {
+          resp.showMsg(context);
+          return;
+        }
+      },
+      onSuccess: () => EasyLoading.showSuccess('Uploaded'),
+      onError: (e, s) => EasyLoading.showError(e.toString()),
+    );
   }
 
   Future<void> downloadFromServer() async {
     if (!checkUserPwd()) return;
-    await catchErrorAsync(() async {
-      var rawResp = await db.serverDio.post('/user/listBackups', data: {
-        HttpParamKeys.username: db.prefs.username,
-        HttpParamKeys.password: db.prefs.password,
-      });
-      final resp = ChaldeaResponse.fromResponse(rawResp.data);
-      if (!resp.success) {
-        resp.showMsg(context);
-        return;
-      }
-      Map<String, int> body = Map.from(resp.body ?? {});
-      String? fn = await SimpleDialog(
-        title: Text(S.current.userdata_download_choose_backup),
-        children: [
-          if (body.isEmpty) ListTile(title: Text('No backup found')),
-          for (var entry in body.entries)
-            ListTile(
-              title: Text(entry.key),
-              subtitle: Text(
-                  DateTime.fromMillisecondsSinceEpoch(entry.value * 1000)
-                      .toString()),
-              onTap: () {
-                Navigator.pop(context, entry.key);
+    await catchErrorAsync(
+      () async {
+        var rawResp = await db.serverDio.post('/user/listBackups', data: {
+          HttpParamKeys.username: db.prefs.username,
+          HttpParamKeys.password: db.prefs.password,
+        });
+        final resp = ChaldeaResponse.fromResponse(rawResp.data);
+        if (!resp.success) {
+          resp.showMsg(context);
+          return;
+        }
+        Map<String, int> body = Map.from(resp.body ?? {});
+        String? fn = await SimpleDialog(
+          title: Text(S.current.userdata_download_choose_backup),
+          children: [
+            if (body.isEmpty) ListTile(title: Text('No backup found')),
+            for (var entry in body.entries)
+              ListTile(
+                title: Text(entry.key),
+                subtitle: Text(
+                    DateTime.fromMillisecondsSinceEpoch(entry.value * 1000)
+                        .toString()),
+                onTap: () {
+                  Navigator.pop(context, entry.key);
+                },
+              ),
+            IconButton(
+              onPressed: () {
+                Navigator.pop(context);
               },
-            ),
-          IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.clear),
-          )
-        ],
-      ).showDialog(context);
-      if (fn == null) return;
-      var rawResp2 = await db.serverDio.post('/user/downloadBackup', data: {
-        HttpParamKeys.username: db.prefs.username,
-        HttpParamKeys.password: db.prefs.password,
-        'bak': fn,
-      });
-      final resp2 = ChaldeaResponse.fromResponse(rawResp2.data);
-      if (!resp2.success) {
-        resp2.showMsg(context);
-        return;
-      }
-      final userdata = UserData.fromJson(jsonDecode(resp2.body));
-      db.backupUserdata(disk: true, memory: true);
-      db.userData = userdata;
-      db.saveUserData();
-      EasyLoading.showSuccess('Import $fn');
-    });
+              icon: Icon(Icons.clear),
+            )
+          ],
+        ).showDialog(context);
+        if (fn == null) return;
+        EasyLoading.show(status: 'Downloading');
+        var rawResp2 = await db.serverDio.post('/user/downloadBackup', data: {
+          HttpParamKeys.username: db.prefs.username,
+          HttpParamKeys.password: db.prefs.password,
+          'bak': fn,
+        });
+        final resp2 = ChaldeaResponse.fromResponse(rawResp2.data);
+        if (!resp2.success) {
+          resp2.showMsg(context);
+          return;
+        }
+        final userdata = UserData.fromJson(jsonDecode(resp2.body));
+        db.backupUserdata(disk: true, memory: true);
+        db.userData = userdata;
+        db.saveUserData();
+        db.itemStat.update();
+        db.notifyAppUpdate();
+        EasyLoading.showSuccess('Import $fn');
+      },
+      onError: (e, s) => EasyLoading.showError(e.toString()),
+    );
   }
 }

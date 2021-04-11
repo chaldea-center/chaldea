@@ -473,22 +473,28 @@ Future<ProcessResult> openDesktopPath(String fp) {
   }
 }
 
-void catchErrorSync(Function callback, [bool showError = true]) {
+void catchErrorSync(
+  Function callback, {
+  VoidCallback? onSuccess,
+  void onError(e, s)?,
+}) {
   try {
     callback();
-  } catch (e) {
-    if (showError) {
-      EasyLoading.showError(e.toString());
-    }
+    if (onSuccess != null) onSuccess();
+  } catch (e, s) {
+    if (onError != null) onError(e, s);
   }
 }
 
-Future<void> catchErrorAsync(Function callback, [bool showError = true]) async{
+Future<void> catchErrorAsync(
+  Function callback, {
+  VoidCallback? onSuccess,
+  void onError(e, s)?,
+}) async {
   try {
-   await callback();
-  } catch (e) {
-    if (showError) {
-      EasyLoading.showError(e.toString());
-    }
+    await callback();
+    if (onSuccess != null) onSuccess();
+  } catch (e, s) {
+    if (onError != null) onError(e, s);
   }
 }

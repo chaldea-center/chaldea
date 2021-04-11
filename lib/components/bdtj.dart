@@ -21,9 +21,8 @@ Future<void> launchStaticUrl(String url) async {
   plugin.dispose();
 }
 
-String _constructUrl({String? server, String? platform}) {
-  return '${server ?? kServerRoot}/bdtj/${platform ?? Platform.operatingSystem}/${Language.currentLocaleCode}/${AppInfo.version}';
-  // return 'http://localhost:8083/bdtj/${Platform.operatingSystem}/${AppInfo.version}';
+String _constructUrl({String? platform}) {
+  return '$kServerRoot/bdtj/${Language.currentLocaleCode}/${platform ?? Platform.operatingSystem}/${AppInfo.version}';
 }
 
 String? _getUserAgent() {
@@ -52,7 +51,7 @@ Future<void> reportBdtj({String? bdId}) async {
       launchStaticUrl(_constructUrl());
       return;
     }
-    String url = _constructUrl(server: 'http://chaldea.narumi.cc');
+    String url = _constructUrl();
     bdId ??= _kBDID;
     final String hjs = _hjs + bdId;
 
@@ -61,15 +60,15 @@ Future<void> reportBdtj({String? bdId}) async {
 
     final cookieJar = PersistCookieJar();
     final cookies = await cookieJar.loadForRequest(Uri.parse(hjs));
-    String? hca = cookies
+    String? hca() => cookies
         .firstWhereOrNull((c) => c.name.trim() == 'HMACCOUNT_BFESS')
         ?.value;
 
-    bool fresh = hca == null;
+    bool fresh = hca() == null;
     bool first = true;
 
-    int sn = random.nextInt(7000) + 300;
     final genMap = () {
+      print('bdtj: fresh=$fresh, first=$first');
       final Map<String, dynamic> _param = {
         // 'hca':null,
         'cc': 1,
@@ -82,30 +81,40 @@ Future<void> reportBdtj({String? bdId}) async {
         'ja': 0,
         'ln': Intl.getCurrentLocale(),
         'lo': 0,
-        'lt': DateTime.now().millisecondsSinceEpoch ~/ 1000,
         'rnd':
             (random.nextInt(90000) + 10000) * 100000 + random.nextInt(100000),
         'si': bdId,
         'v': '1.2.80',
         'lv': fresh ? 1 : 2,
-        'sn': sn += random.nextInt(100) + 20,
+        'sn': fresh
+            ? 1917
+            : first
+                ? 2091
+                : 2096,
+
+        /// wrong
         'r': 0,
         'ww': size.width,
         // 'ct':null,
         'u': url,
         // 'tt':null,
       };
-      if (!fresh && first) {
-        _param['hca'] = hca;
+      if (!fresh) {
+        _param['lt'] = DateTime.now().millisecondsSinceEpoch ~/ 1000;
       }
       if (!fresh && first) {
-        _param['ep'] = '72000,${15000 + random.nextInt(6000)}';
+        _param['hca'] = hca();
+      }
+      if (!fresh && first) {
+        _param['ep'] = '5207,2678';
+
+        /// wrong
       }
       _param['et'] = _param['ep'] == null ? 0 : 3;
       if (fresh || !first) {
         _param['ct'] = '!!';
       }
-      if (!first) {
+      if (fresh || !first) {
         _param['uu'] = 'Chaldea ${Platform.operatingSystem}';
       }
       logger.i(_param);
@@ -114,9 +123,9 @@ Future<void> reportBdtj({String? bdId}) async {
     final _dio = Dio(BaseOptions(headers: {'User-Agent': _getUserAgent()}));
     _dio.interceptors.add(CookieManager(cookieJar));
     await _dio.get(hjs);
-    first = false;
     String gifUrl1 =
         Uri.parse(_hgif).replace(queryParameters: genMap()).toString();
+    first = false;
     var gif1 = _dio.get(gifUrl1);
     await Future.delayed(Duration(milliseconds: 66));
     String gifUrl2 =

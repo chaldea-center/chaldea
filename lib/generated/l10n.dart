@@ -2512,21 +2512,21 @@ class S {
     );
   }
 
-  /// `完整数据包`
-  String get dataset_type_entire {
+  /// `图片数据包`
+  String get dataset_type_image {
     return Intl.message(
-      '完整数据包',
-      name: 'dataset_type_entire',
+      '图片数据包',
+      name: 'dataset_type_image',
       desc: '',
       args: [],
     );
   }
 
-  /// `包含文本和图片，~25M`
-  String get dataset_type_entire_hint {
+  /// `仅包含图片，~25M`
+  String get dataset_type_image_hint {
     return Intl.message(
-      '包含文本和图片，~25M',
-      name: 'dataset_type_entire_hint',
+      '仅包含图片，~25M',
+      name: 'dataset_type_image_hint',
       desc: '',
       args: [],
     );

@@ -203,8 +203,8 @@ class _GameDataPageState extends State<GameDataPage> {
 
   void downloadGamedata() {
     final gitTool = GitTool.fromDb();
-    void _downloadAsset([bool fullSize = true]) async {
-      final release = await gitTool.latestDatasetRelease(fullSize);
+    void _downloadAsset(bool icons) async {
+      final release = await gitTool.latestDatasetRelease(icons);
       Navigator.of(context).pop();
       String fp = pathlib.join(
           db.paths.tempDir, '${release?.name}-${release?.targetAsset?.name}');
@@ -238,14 +238,14 @@ class _GameDataPageState extends State<GameDataPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: Text(S.of(context).dataset_type_entire),
-              subtitle: Text(S.of(context).dataset_type_entire_hint),
-              onTap: () => _downloadAsset(true),
-            ),
-            ListTile(
               title: Text(S.of(context).dataset_type_text),
               subtitle: Text(S.of(context).dataset_type_text_hint),
               onTap: () => _downloadAsset(false),
+            ),
+            ListTile(
+              title: Text(S.of(context).dataset_type_image),
+              subtitle: Text(S.of(context).dataset_type_image_hint),
+              onTap: () => _downloadAsset(true),
             ),
             ListTile(
               title: Text(S.of(context).dataset_goto_download_page),

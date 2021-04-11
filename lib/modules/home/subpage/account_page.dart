@@ -216,7 +216,10 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   void updateData() {
-    db.itemStat.update();
-    db.notifyAppUpdate();
+    setState(() {});
+    Future.delayed(Duration(seconds: 1), () {
+      db.itemStat.update();
+      db.notifyAppUpdate();
+    });
   }
 }

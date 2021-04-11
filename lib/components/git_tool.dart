@@ -141,8 +141,7 @@ class GitRelease {
           data['assets']?.length ?? 0,
           (index) => GitAsset(
             name: data['assets'][index]['name'] ?? '',
-            browserDownloadUrl:
-                data['assets'][index]['browser_download_url'],
+            browserDownloadUrl: data['assets'][index]['browser_download_url'],
           ),
         ),
         source = GitSource.gitee;
@@ -157,8 +156,7 @@ class GitRelease {
           data['assets']?.length ?? 0,
           (index) => GitAsset(
             name: data['assets'][index]['name'] ?? '',
-            browserDownloadUrl:
-                data['assets'][index]['browser_download_url'],
+            browserDownloadUrl: data['assets'][index]['browser_download_url'],
           ),
         ),
         source = GitSource.gitee;
@@ -297,11 +295,11 @@ class GitTool {
     }
   }
 
-  Future<GitRelease?> latestDatasetRelease([bool fullSize = true]) async {
+  Future<GitRelease?> latestDatasetRelease([bool icons = false]) async {
     final releases = await datasetReleases;
     return _latestReleaseWhereAsset(releases, testAsset: (asset) {
       return asset.name.toLowerCase() ==
-          (fullSize ? 'dataset.zip' : 'dataset-text.zip');
+          (icons ? 'dataset-icons.zip' : 'dataset-text.zip');
     });
   }
 
