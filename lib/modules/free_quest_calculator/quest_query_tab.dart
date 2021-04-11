@@ -76,7 +76,7 @@ class _FreeQuestQueryTabState extends State<FreeQuestQueryTab> {
             changeToFirst: true,
             hideHeader: true,
             textScaleFactor: 0.7,
-            height: 250,
+            height: min(200, MediaQuery.of(context).size.height - 200),
             itemExtent: 48,
             cancelText: S.of(context).cancel,
             confirmText: S.of(context).confirm,

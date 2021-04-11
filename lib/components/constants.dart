@@ -144,3 +144,12 @@ class EnumUtil {
     }
   }
 }
+
+class HttpParamKeys {
+  HttpParamKeys._();
+
+  static const username = 'username';
+  static const password = 'password';
+  static const newPassword = 'newPassword';
+  static const body = 'body';
+}

@@ -32,6 +32,8 @@ class Database {
   VoidCallback notifyAppUpdate = () {};
   UserData userData = UserData();
   GameData gameData = GameData();
+  Dio serverDio = Dio(
+      BaseOptions(baseUrl: kDebugMode ? 'http://localhost:8083' : kServerRoot));
 
   SharedPrefs prefs = SharedPrefs();
 

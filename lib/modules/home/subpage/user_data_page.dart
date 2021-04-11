@@ -3,18 +3,18 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/home/subpage/login_page.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:json_patch/json_patch.dart';
 import 'package:share/share.dart';
 
-class DatasetManagePage extends StatefulWidget {
+class UserDataPage extends StatefulWidget {
   @override
-  _DatasetManagePageState createState() => _DatasetManagePageState();
+  _UserDataPageState createState() => _UserDataPageState();
 }
 
-class _DatasetManagePageState extends State<DatasetManagePage> {
+class _UserDataPageState extends State<UserDataPage> {
   Map<String, String> cachedFiles = {};
   List<String> onlineVersions = [];
 
@@ -28,30 +28,31 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: Text(S.of(context).dataset_management),
+        title: Text(S.of(context).userdata),
         actions: <Widget>[],
       ),
       body: ListView(
         children: <Widget>[
           TileGroup(
-            header: S.of(context).userdata,
+            header: S.of(context).userdata + '(Local)',
             footer: S.of(context).settings_userdata_footer,
             children: <Widget>[
-              ListTile(
-                title: Text(S.of(context).clear),
-                onTap: () {
-                  SimpleCancelOkDialog(
-                    title: Text(S.of(context).clear_userdata),
-                    onTapOk: () async {
-                      await db.clearData(user: true, game: false);
-                      db.notifyDbUpdate(true);
-                      EasyLoading.showToast(S.of(context).userdata_cleared);
-                    },
-                  ).show(context);
-                },
-              ),
+              // ListTile(
+              //   title: Text(S.of(context).clear),
+              //   onTap: () {
+              //     SimpleCancelOkDialog(
+              //       title: Text(S.of(context).clear_userdata),
+              //       onTapOk: () async {
+              //         await db.clearData(user: true, game: false);
+              //         db.notifyDbUpdate(true);
+              //         EasyLoading.showToast(S.of(context).userdata_cleared);
+              //       },
+              //     ).show(context);
+              //   },
+              // ),
               ListTile(
                 title: Text(S.of(context).backup),
+                subtitle: Text(db.paths.userDataBackupDir),
                 onTap: backupUserData,
               ),
               ListTile(
@@ -67,48 +68,19 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
                   });
                   EasyLoading.showToast(S.of(context).reset_success);
                 },
-              )
+              ),
             ],
           ),
           TileGroup(
-            header: S.of(context).gamedata,
-            children: <Widget>[
+            header: S.current.userdata_sync + '(Server)',
+            children: [
               ListTile(
-                title: Text(S.of(context).version),
-                trailing: Text(db.gameData.version),
-              ),
-              // ListTile(
-              //   title: Text(S.of(context).download_latest_gamedata),
-              //   subtitle: Text('为确保兼容性，更新前请升级至最新版APP'),
-              //   onTap: downloadGamedata,
-              // ),
-              ListTile(
-                title: Text(S.of(context).reload_default_gamedata),
-                onTap: () {
-                  SimpleCancelOkDialog(
-                    title: Text(S.of(context).reload_default_gamedata),
-                    onTapOk: () async {
-                      EasyLoading.show(status: 'reloading');
-                      await db.loadZipAssets(kDatasetAssetKey);
-                      if (db.loadGameData()) {
-                        EasyLoading.showSuccess(
-                            S.of(context).reload_data_success);
-                      } else {
-                        EasyLoading.showError('Failed');
-                      }
-                    },
-                  ).show(context);
-                },
+                title: Text(S.current.userdata_upload_backup),
+                onTap: uploadToServer,
               ),
               ListTile(
-                title:
-                    Text('${S.of(context).import_data} (dataset*.zip/.json)'),
-                onTap: importGamedata,
-              ),
-              ListTile(
-                title: Text(S.of(context).clear_cache),
-                subtitle: Text(S.of(context).clear_cache_hint),
-                onTap: clearCache,
+                title: Text(S.current.userdata_download_backup),
+                onTap: downloadFromServer,
               ),
             ],
           ),
@@ -161,34 +133,6 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
     }
   }
 
-  Future<void> importGamedata() async {
-    try {
-      // final result = await FilePicker.platform.pickFiles();
-      final result = await FilePickerCross.importFromStorage(
-          type: FileTypeCross.custom, fileExtension: 'zip,json');
-      final file = File(result.path);
-      if (file.path.toLowerCase().endsWith('.zip')) {
-        EasyLoading.show(status: 'loading');
-        await db.extractZip(fp: file.path, savePath: db.paths.gameDir);
-        db.loadGameData();
-      } else if (file.path.toLowerCase().endsWith('.json')) {
-        final newData = GameData.fromJson(jsonDecode(file.readAsStringSync()));
-        if (newData.version != '0') {
-          db.gameData = newData;
-        } else {
-          throw FormatException('Invalid json contents');
-        }
-      } else {
-        throw FormatException('unsupported file type');
-      }
-      EasyLoading.showSuccess(S.of(context).import_data_success);
-    } on FileSelectionCanceledError {} catch (e) {
-      EasyLoading.dismiss();
-      showInformDialog(context,
-          title: 'Import gamedata failed!', content: e.toString());
-    }
-  }
-
   Future backupUserData() async {
     List<String> backupPaths = [
       Platform.isIOS ? S.of(context).ios_app_path + '/user' : db.paths.userDir
@@ -237,13 +181,93 @@ class _DatasetManagePageState extends State<DatasetManagePage> {
     ).show(context);
   }
 
-  Future<void> clearCache() async {
-    db.prefs.instance.clear();
-    await DefaultCacheManager().emptyCache();
-    Directory(db.paths.tempDir)
-      ..deleteSync(recursive: true)
-      ..createSync(recursive: true);
-    imageCache?.clear();
-    EasyLoading.showToast(S.current.clear_cache_finish);
+  bool checkUserPwd() {
+    if (db.prefs.username?.isNotEmpty != true ||
+        db.prefs.password?.isNotEmpty != true) {
+      SimpleCancelOkDialog(
+        content: Text(S.current.login_first_hint),
+        onTapOk: () {
+          SplitRoute.push(
+            context: context,
+            builder: (context, _) => LoginPage(),
+            detail: true,
+          );
+        },
+      ).show(context);
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  Future<void> uploadToServer() async {
+    if (!checkUserPwd()) return;
+    await catchErrorAsync(() async {
+      var rawResp = await db.serverDio.post('/user/uploadBackup', data: {
+        HttpParamKeys.username: db.prefs.username,
+        HttpParamKeys.password: db.prefs.password,
+        HttpParamKeys.body: jsonEncode(db.userData),
+      });
+      final resp = ChaldeaResponse.fromResponse(rawResp.data);
+      if (!resp.success) {
+        resp.showMsg(context);
+        return;
+      }
+      EasyLoading.showSuccess('Uploaded');
+    });
+  }
+
+  Future<void> downloadFromServer() async {
+    if (!checkUserPwd()) return;
+    await catchErrorAsync(() async {
+      var rawResp = await db.serverDio.post('/user/listBackups', data: {
+        HttpParamKeys.username: db.prefs.username,
+        HttpParamKeys.password: db.prefs.password,
+      });
+      final resp = ChaldeaResponse.fromResponse(rawResp.data);
+      if (!resp.success) {
+        resp.showMsg(context);
+        return;
+      }
+      Map<String, int> body = Map.from(resp.body ?? {});
+      String? fn = await SimpleDialog(
+        title: Text(S.current.userdata_download_choose_backup),
+        children: [
+          if (body.isEmpty) ListTile(title: Text('No backup found')),
+          for (var entry in body.entries)
+            ListTile(
+              title: Text(entry.key),
+              subtitle: Text(
+                  DateTime.fromMillisecondsSinceEpoch(entry.value * 1000)
+                      .toString()),
+              onTap: () {
+                Navigator.pop(context, entry.key);
+              },
+            ),
+          IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.clear),
+          )
+        ],
+      ).showDialog(context);
+      if (fn == null) return;
+      var rawResp2 = await db.serverDio.post('/user/downloadBackup', data: {
+        HttpParamKeys.username: db.prefs.username,
+        HttpParamKeys.password: db.prefs.password,
+        'bak': fn,
+      });
+      final resp2 = ChaldeaResponse.fromResponse(rawResp2.data);
+      if (!resp2.success) {
+        resp2.showMsg(context);
+        return;
+      }
+      final userdata = UserData.fromJson(jsonDecode(resp2.body));
+      db.backupUserdata(disk: true, memory: true);
+      db.userData = userdata;
+      db.saveUserData();
+      EasyLoading.showSuccess('Import $fn');
+    });
   }
 }

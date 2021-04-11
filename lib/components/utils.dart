@@ -472,3 +472,23 @@ Future<ProcessResult> openDesktopPath(String fp) {
         Platform.operatingSystem, 'OS', 'open path only supported in desktop');
   }
 }
+
+void catchErrorSync(Function callback, [bool showError = true]) {
+  try {
+    callback();
+  } catch (e) {
+    if (showError) {
+      EasyLoading.showError(e.toString());
+    }
+  }
+}
+
+Future<void> catchErrorAsync(Function callback, [bool showError = true]) async{
+  try {
+   await callback();
+  } catch (e) {
+    if (showError) {
+      EasyLoading.showError(e.toString());
+    }
+  }
+}

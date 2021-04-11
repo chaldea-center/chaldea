@@ -6,6 +6,8 @@ class SharedPrefs {
   static const String previousVersion = 'previousVersion';
   static const String ignoreAppVersion = 'ignoreAppVersion';
   static const String contactInfo = 'contactInfo';
+  static const String userName = 'userName';
+  static const String userPwd = 'userPwd';
 
   Future<void> initiate() async {
     instance = await SharedPreferences.getInstance();
@@ -25,4 +27,8 @@ class SharedPrefs {
   bool containsRealUrl(String key) {
     return instance.containsKey(_addUrlPrefix(key));
   }
+
+  String? get username => instance.getString(userName);
+
+  String? get password => instance.getString(userPwd);
 }

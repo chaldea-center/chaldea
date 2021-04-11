@@ -2652,6 +2652,16 @@ class S {
     );
   }
 
+  /// `为确保兼容性，更新前请升级至最新版APP`
+  String get download_latest_gamedata_hint {
+    return Intl.message(
+      '为确保兼容性，更新前请升级至最新版APP',
+      name: 'download_latest_gamedata_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `重新载入预装版本`
   String get reload_default_gamedata {
     return Intl.message(
@@ -3317,6 +3327,196 @@ class S {
     return Intl.message(
       '反选',
       name: 'filter_revert',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `未登录`
+  String get login_state_not_login {
+    return Intl.message(
+      '未登录',
+      name: 'login_state_not_login',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请先登陆`
+  String get login_first_hint {
+    return Intl.message(
+      '请先登陆',
+      name: 'login_first_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `登陆`
+  String get login_login {
+    return Intl.message(
+      '登陆',
+      name: 'login_login',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `登出`
+  String get login_logout {
+    return Intl.message(
+      '登出',
+      name: 'login_logout',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `用户名`
+  String get login_username {
+    return Intl.message(
+      '用户名',
+      name: 'login_username',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `密码`
+  String get login_password {
+    return Intl.message(
+      '密码',
+      name: 'login_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `新密码`
+  String get login_new_password {
+    return Intl.message(
+      '新密码',
+      name: 'login_new_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `修改密码`
+  String get login_change_password {
+    return Intl.message(
+      '修改密码',
+      name: 'login_change_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `注册`
+  String get login_signup {
+    return Intl.message(
+      '注册',
+      name: 'login_signup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `十分简易的系统，仅用于备份数据到服务器并实现多设备同步\n极mei低you安全性保证，请务必不要使用常用密码！！！`
+  String get login_hint_text {
+    return Intl.message(
+      '十分简易的系统，仅用于备份数据到服务器并实现多设备同步\n极mei低you安全性保证，请务必不要使用常用密码！！！',
+      name: 'login_hint_text',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `只能包含字母与数字，字母开头，不少于4位`
+  String get login_username_error {
+    return Intl.message(
+      '只能包含字母与数字，字母开头，不少于4位',
+      name: 'login_username_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `只能包含字母与数字，不少于4位`
+  String get login_password_error {
+    return Intl.message(
+      '只能包含字母与数字，不少于4位',
+      name: 'login_password_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `不能与旧密码相同`
+  String get login_password_error_same_as_old {
+    return Intl.message(
+      '不能与旧密码相同',
+      name: 'login_password_error_same_as_old',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `成功`
+  String get success {
+    return Intl.message(
+      '成功',
+      name: 'success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `失败`
+  String get failed {
+    return Intl.message(
+      '失败',
+      name: 'failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `同步数据`
+  String get userdata_sync {
+    return Intl.message(
+      '同步数据',
+      name: 'userdata_sync',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `上传备份`
+  String get userdata_upload_backup {
+    return Intl.message(
+      '上传备份',
+      name: 'userdata_upload_backup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `下载备份`
+  String get userdata_download_backup {
+    return Intl.message(
+      '下载备份',
+      name: 'userdata_download_backup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `选择一个备份`
+  String get userdata_download_choose_backup {
+    return Intl.message(
+      '选择一个备份',
+      name: 'userdata_download_choose_backup',
       desc: '',
       args: [],
     );

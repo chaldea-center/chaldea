@@ -268,7 +268,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                   pickerData.keys.toList().indexOf(category),
                   pickerData[category]!.indexOf(item)
                 ],
-                height: 250,
+                height: min(150, MediaQuery.of(context).size.height - 200),
                 itemExtent: 48,
                 changeToFirst: true,
                 hideHeader: true,

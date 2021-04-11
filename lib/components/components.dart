@@ -21,6 +21,7 @@ export 'image_viewer.dart';
 export 'logger.dart';
 export 'mooncell_util.dart';
 export 'query.dart';
+export 'shared_prefs.dart';
 export 'simple_accordion.dart';
 export 'split_route.dart';
 export 'tile_items.dart';

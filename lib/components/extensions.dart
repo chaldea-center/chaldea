@@ -1,3 +1,6 @@
+import 'package:chaldea/components/components.dart' hide showDialog;
+import 'package:flutter/material.dart' as material;
+
 /// Some convenient extensions on build-in classes
 
 extension GetOrNull<T> on List<T> {
@@ -71,5 +74,11 @@ extension TrimString on String {
       s = s.substring(0, s.length - 1);
     }
     return s;
+  }
+}
+
+extension DialogShowMethod on Widget {
+  Future<T?> showDialog<T>(BuildContext context) {
+    return material.showDialog<T>(context: context, builder: (context) => this);
   }
 }

@@ -167,6 +167,8 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                 Picker(
                   title:
                       Text('${ticket.month} ${Item.localizedNameOf(iconKey)}'),
+                  itemExtent: 36,
+                  height: min(200, MediaQuery.of(context).size.height - 220),
                   hideHeader: true,
                   cancelText: S.of(context).cancel,
                   confirmText: S.of(context).confirm,
@@ -187,7 +189,6 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                     }
                     statistics.updateEventItems();
                   },
-                  itemExtent: 36,
                 ).showDialog(context);
               },
             ),

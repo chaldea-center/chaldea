@@ -1,15 +1,16 @@
 import 'dart:io';
 
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/git_tool.dart';
-import 'package:chaldea/modules/home/subpage/dataset_manage_page.dart';
+import 'package:chaldea/components/shared_prefs.dart';
+import 'package:chaldea/modules/home/subpage/login_page.dart';
+import 'package:chaldea/modules/home/subpage/user_data_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'subpage/about_page.dart';
 import 'subpage/account_page.dart';
 import 'subpage/feedback_page.dart';
-import 'subpage/update_source_page.dart';
+import 'subpage/game_data_page.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -29,14 +30,14 @@ class _SettingsPageState extends State<SettingsPage> {
       body: ListView(
         children: <Widget>[
           TileGroup(
+            header: 'User',
+            children: [
+              db.streamBuilder((context) => userTile),
+            ],
+          ),
+          TileGroup(
             header: S.of(context).settings_data,
             children: <Widget>[
-              ListTile(
-                title: Text(S.of(context).settings_tutorial),
-                onTap: () {
-                  EasyLoading.showToast('咕咕咕咕咕咕');
-                },
-              ),
               db.streamBuilder(
                 (context) => ListTile(
                   title: Text(S.of(context).cur_account),
@@ -61,19 +62,13 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               db.streamBuilder(
                 (context) => ListTile(
-                  title: Text(S.of(context).settings_data_management),
+                  title: Text(S.of(context).userdata),
                   subtitle: Text(S.current.backup_data_alert),
-                  trailing: Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: <Widget>[
-                      Text(db.gameData.version),
-                      Icon(Icons.arrow_forward_ios)
-                    ],
-                  ),
+                  trailing: Icon(Icons.arrow_forward_ios),
                   onTap: () {
                     SplitRoute.push(
                       context: context,
-                      builder: (context, _) => DatasetManagePage(),
+                      builder: (context, _) => UserDataPage(),
                       popDetail: true,
                     );
                   },
@@ -81,20 +76,18 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               db.streamBuilder(
                 (context) => ListTile(
-                  title: Text(S.of(context).download_source),
-                  subtitle: Text(S.of(context).download_source_hint),
+                  title: Text(S.of(context).gamedata),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(GitSource.values[db.userData.updateSource]
-                          .toTitleString()),
+                      Text(db.gameData.version),
                       Icon(Icons.arrow_forward_ios),
                     ],
                   ),
                   onTap: () {
                     SplitRoute.push(
                       context: context,
-                      builder: (context, _) => UpdateSourcePage(),
+                      builder: (context, _) => GameDataPage(),
                       detail: true,
                       popDetail: true,
                     );
@@ -165,6 +158,12 @@ class _SettingsPageState extends State<SettingsPage> {
                   builder: (context, _) => AboutPage(),
                   popDetail: true,
                 ),
+              ),
+              ListTile(
+                title: Text(S.of(context).settings_tutorial),
+                onTap: () {
+                  EasyLoading.showToast('咕咕咕咕咕咕');
+                },
               ),
               if (Platform.isIOS)
                 ListTile(
@@ -281,6 +280,28 @@ class _SettingsPageState extends State<SettingsPage> {
         setState(() {
           db.curUser.msProgress = v ?? db.curUser.msProgress;
         });
+      },
+    );
+  }
+
+  Widget get userTile {
+    String? userName = db.prefs.instance.getString(SharedPrefs.userName);
+    String? userPwd = db.prefs.instance.getString(SharedPrefs.userPwd);
+    String trailing;
+    if (userName == null || userPwd == null) {
+      trailing = S.current.login_state_not_login;
+    } else {
+      trailing = userName;
+    }
+    return ListTile(
+      title: Text(S.current.login_username),
+      trailing: Text(trailing),
+      onTap: () async {
+        SplitRoute.push(
+          context: context,
+          builder: (context, _) => LoginPage(),
+          detail: true,
+        );
       },
     );
   }

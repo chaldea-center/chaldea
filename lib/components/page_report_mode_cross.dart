@@ -71,7 +71,7 @@ class _PageWidgetState extends State<_PageWidget> {
   void initState() {
     super.initState();
     _textEditingController = TextEditingController(
-        text: db.prefs.getRealUrl(SharedPrefs.contactInfo));
+        text: db.prefs.instance.getString(SharedPrefs.contactInfo));
   }
 
   @override
@@ -136,7 +136,7 @@ class _PageWidgetState extends State<_PageWidget> {
               labelText: 'Contact information (Optional)',
             ),
             onChanged: (s) {
-              db.prefs.setRealUrl(SharedPrefs.contactInfo, s);
+              db.prefs.instance.setString(SharedPrefs.contactInfo, s);
             },
           ),
           const Padding(

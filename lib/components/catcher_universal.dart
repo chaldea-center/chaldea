@@ -1,13 +1,15 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 import 'dart:typed_data';
+
+import 'package:archive/archive_io.dart';
 
 /// This package is platform-compatibility fix for catcher.
 /// If official support is release, this should be removed.
 import 'package:catcher/catcher.dart';
 import 'package:catcher/model/platform_type.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:mailer/mailer.dart';
@@ -97,7 +99,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
     String contact = contactInfo?.trim() ?? '';
     List<Report> _cachedReports = _sentReports.putIfAbsent(contact, () => []);
     if (_cachedReports.any((element) =>
-        report.error.toString() == element.error.toString() &&
+        // report.error.toString() == element.error.toString() &&
         report.stackTrace.toString() == element.stackTrace.toString())) {
       return true;
     }
@@ -107,13 +109,13 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
         ..recipients.addAll(recipients)
         ..subject = _getEmailTitle(report)
         ..text = _setupRawMessageText(report)
-        ..attachments = _getAttachments(attachments);
+        ..attachments = _archiveAttachments(attachments);
       if (screenshot) {
         String shotFn = pathlib.join(db.paths.appPath, 'crash.png');
         Uint8List? shotBinary =
             await db.runtimeData.screenshotController?.capture(
           pixelRatio: MediaQuery.of(kAppKey.currentContext!).devicePixelRatio,
-          delay: Duration(seconds: 2),
+          delay: Duration(milliseconds: 500),
         );
         if (shotBinary != null) {
           File(shotFn).writeAsBytesSync(shotBinary, flush: true);
@@ -124,6 +126,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
         message.html = _setupHtmlMessageText(report);
       }
       _printLog("Sending email...");
+      if (kDebugMode) return true;
 
       var result = await send(message, _setupSmtpServer());
       _cachedReports.add(report);
@@ -135,23 +138,25 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
       _printLog(stacktrace.toString());
       _printLog(exception.toString());
       return false;
+    } finally {
+      // var f = File(archiveTmpFp);
+      // if (f.existsSync()) f.deleteSync();
     }
   }
 
-  List<Attachment> _getAttachments(List<File> files) {
-    List<Attachment> attachments = [];
+  String get archiveTmpFp => '${db.paths.tempDir}/.tmp_attach.zip';
+
+  List<Attachment> _archiveAttachments(List<File> files) {
+    files = files.where((f) => f.existsSync()).toList();
+    if (files.isEmpty) return [];
+
+    var encoder = ZipFileEncoder();
+    encoder.create(archiveTmpFp);
     for (File file in files) {
-      if (file.existsSync()) {
-        // set file limit less than 1MB
-        if (file.lengthSync() > 1024 * 1024) {
-          String s = file.readAsStringSync();
-          s.substring(s.length - min(s.length, 1000 * 1000), s.length);
-          file.writeAsStringSync(s);
-        }
-        attachments.add(FileAttachment(file));
-      }
+      encoder.addFile(file);
     }
-    return attachments;
+    encoder.close();
+    return [FileAttachment(File(archiveTmpFp), fileName: 'attachment.zip')];
   }
 
   SmtpServer _setupSmtpServer() {

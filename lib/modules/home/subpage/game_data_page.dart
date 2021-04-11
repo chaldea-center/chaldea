@@ -1,20 +1,25 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/git_tool.dart';
+import 'package:file_picker_cross/file_picker_cross.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:url_launcher/url_launcher.dart';
 
-class UpdateSourcePage extends StatefulWidget {
+class GameDataPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _UpdateSourcePageState();
+  State<StatefulWidget> createState() => _GameDataPageState();
 }
 
-class _UpdateSourcePageState extends State<UpdateSourcePage> {
+class _GameDataPageState extends State<GameDataPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).download_source),
+        title: Text(S.of(context).gamedata),
         leading: BackButton(),
       ),
       body: ListView(
@@ -42,7 +47,7 @@ class _UpdateSourcePageState extends State<UpdateSourcePage> {
             ],
           ),
           TileGroup(
-            header: 'Git - In-App dataset update',
+            header: S.current.download_source,
             children: [
               sourceAccordion(
                 source: GitSource.github,
@@ -54,19 +59,47 @@ class _UpdateSourcePageState extends State<UpdateSourcePage> {
               ),
             ],
           ),
-          Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 8,
-            children: [
-              // ElevatedButton(onPressed: () {}, child: Text('应用更新')),
-              ElevatedButton(
-                onPressed: downloadGamedata,
-                child: Text(S.current.update_dataset),
+
+          TileGroup(
+            header: S.of(context).gamedata,
+            children: <Widget>[
+              ListTile(
+                title: Text(S.of(context).download_latest_gamedata),
+                subtitle: Text(S.current.download_latest_gamedata_hint),
+                onTap: downloadGamedata,
+              ),
+              ListTile(
+                title: Text(S.of(context).reload_default_gamedata),
+                onTap: () {
+                  SimpleCancelOkDialog(
+                    title: Text(S.of(context).reload_default_gamedata),
+                    onTapOk: () async {
+                      EasyLoading.show(status: 'reloading');
+                      await db.loadZipAssets(kDatasetAssetKey);
+                      if (db.loadGameData()) {
+                        EasyLoading.showSuccess(
+                            S.of(context).reload_data_success);
+                      } else {
+                        EasyLoading.showError('Failed');
+                      }
+                    },
+                  ).show(context);
+                },
+              ),
+              ListTile(
+                title:
+                    Text('${S.of(context).import_data} (dataset*.zip/.json)'),
+                onTap: importGamedata,
+              ),
+              ListTile(
+                title: Text(S.of(context).clear_cache),
+                subtitle: Text(S.of(context).clear_cache_hint),
+                onTap: clearCache,
               ),
             ],
           ),
           TileGroup(
-            header: S.of(context).backup,
+            header: 'TEMP',
             footer: 'Installer for Android/Windows/macOS.',
             children: [
               ListTile(
@@ -225,5 +258,42 @@ class _UpdateSourcePageState extends State<UpdateSourcePage> {
         );
       },
     );
+  }
+
+  Future<void> importGamedata() async {
+    try {
+      // final result = await FilePicker.platform.pickFiles();
+      final result = await FilePickerCross.importFromStorage(
+          type: FileTypeCross.custom, fileExtension: 'zip,json');
+      final file = File(result.path);
+      if (file.path.toLowerCase().endsWith('.zip')) {
+        EasyLoading.show(status: 'loading');
+        await db.extractZip(fp: file.path, savePath: db.paths.gameDir);
+        db.loadGameData();
+      } else if (file.path.toLowerCase().endsWith('.json')) {
+        final newData = GameData.fromJson(jsonDecode(file.readAsStringSync()));
+        if (newData.version != '0') {
+          db.gameData = newData;
+        } else {
+          throw FormatException('Invalid json contents');
+        }
+      } else {
+        throw FormatException('unsupported file type');
+      }
+      EasyLoading.showSuccess(S.of(context).import_data_success);
+    } on FileSelectionCanceledError {} catch (e) {
+      EasyLoading.dismiss();
+      showInformDialog(context,
+          title: 'Import gamedata failed!', content: e.toString());
+    }
+  }
+
+  Future<void> clearCache() async {
+    await DefaultCacheManager().emptyCache();
+    Directory(db.paths.tempDir)
+      ..deleteSync(recursive: true)
+      ..createSync(recursive: true);
+    imageCache?.clear();
+    EasyLoading.showToast(S.current.clear_cache_finish);
   }
 }
