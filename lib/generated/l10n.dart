@@ -3602,11 +3602,11 @@ class S {
     );
   }
 
-  /// `重启以更新应用`
-  String get restart_to_upgrade {
+  /// `重启以更新应用，若更新失败，请手动复制source文件夹到destination`
+  String get restart_to_upgrade_hint {
     return Intl.message(
-      '重启以更新应用',
-      name: 'restart_to_upgrade',
+      '重启以更新应用，若更新失败，请手动复制source文件夹到destination',
+      name: 'restart_to_upgrade_hint',
       desc: '',
       args: [],
     );

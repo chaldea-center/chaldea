@@ -310,29 +310,52 @@ class AutoUpdateUtil {
       if (exeFp == null) {
         throw OSError('file chaldea.exe not found');
       }
-      Directory srcDir = Directory(dirname(exeFp));
-      Directory destDir = Directory(dirname(Platform.resolvedExecutable));
-      Directory backupDir = Directory(join(destDir.path, 'chaldea.old'));
-      final _t = FileSystemEntity.typeSync(backupDir.path);
-      if (_t != FileSystemEntityType.directory &&
-          _t != FileSystemEntityType.notFound) {
-        backupDir.deleteSync(recursive: true);
-      }
 
-      _copyOrMoveDirectory(
-        destDir,
-        backupDir,
-        move: true,
-        test: (entity) =>
-            !entity.absolute.path.startsWith(backupDir.absolute.path),
-      );
-      _copyOrMoveDirectory(srcDir, destDir, move: true);
+      String srcDir = absolute(dirname(exeFp));
+      String destDir = absolute(dirname(Platform.resolvedExecutable));
+      String backupDir = destDir + '.old';
+      _deleteFileOrDir(backupDir);
+      Directory(backupDir).createSync(recursive: true);
+      String logFp = absolute(join(destDir, 'upgrade.log'));
+
+      String cmdFp = _generateCMD(srcDir, destDir, backupDir, logFp);
       SimpleCancelOkDialog(
         title: Text(S.current.update),
-        content: Text(S.current.restart_to_upgrade),
-        hideCancel: true,
-      ).showDialog(kAppKey.currentContext!);
+        content: Text('${S.current.restart_to_upgrade_hint}\n'
+            '**source**:\n$srcDir\n'
+            '**destination**:\n$destDir\n'
+            '**backup**:\n$backupDir\n'
+            'log:\n$logFp\n'
+            'upgrade script:\n$cmdFp'),
+        scrollable: true,
+        onTapOk: () async {
+          db.saveUserData();
+          await Future.delayed(Duration(seconds: 1));
+          Process.start(cmdFp, [], mode: ProcessStartMode.detached);
+        },
+      ).showDialog();
     }
+  }
+
+  String _generateCMD(
+      String srcDir, String destDir, String backupDir, String logFp) {
+    if (!File(logFp).existsSync()) File(logFp).createSync(recursive: true);
+    StringBuffer buffer = StringBuffer();
+    void _writeln(String command) {
+      buffer.writeln('$command >>"$logFp" 2>&1');
+    }
+
+    _writeln('echo ready to kill chaldea.exe PID=$pid');
+    _writeln('taskkill /F /PID $pid');
+    _writeln('echo backup dest "$destDir" to backup "$backupDir"');
+    _writeln('xcopy "$destDir" "$backupDir" /E /Y');
+    _writeln('echo copy src "$srcDir" to dest "$destDir"');
+    _writeln('xcopy "$srcDir" "$destDir" /E /Y');
+    _writeln('echo restart chaldea.exe');
+    buffer.writeln('"${join(destDir, 'chaldea.exe')}"');
+    String cmdFp = absolute(join(db.paths.tempDir, 'upgrade.cmd'));
+    File(cmdFp)..writeAsStringSync(buffer.toString());
+    return cmdFp;
   }
 
   Future<bool> _checkSHA1(String fp, String? checksum,
@@ -351,32 +374,6 @@ class AutoUpdateUtil {
       }
     }
     return validSHA1;
-  }
-
-  void _copyOrMoveDirectory(
-    Directory src,
-    Directory dest, {
-    bool move = false,
-    bool test(FileSystemEntity entity)?,
-  }) {
-    dest.createSync(recursive: true);
-    for (FileSystemEntity entity in src.listSync(recursive: true)) {
-      if (test != null && !test(entity)) continue;
-      if (entity is Directory) {
-        var newDirectory =
-            Directory(join(dest.absolute.path, basename(entity.path)));
-        newDirectory.createSync();
-        _copyOrMoveDirectory(entity.absolute, newDirectory,
-            move: move, test: test);
-      } else if (entity is File) {
-        String newPath = join(dest.path, basename(entity.path));
-        if (move) {
-          entity.renameSync(newPath);
-        } else {
-          entity.copySync(newPath);
-        }
-      }
-    }
   }
 
   void _deleteFileOrDir(String fp) {

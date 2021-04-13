@@ -340,7 +340,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "reset_success" : MessageLookupByLibrary.simpleMessage("已重置"),
     "reset_svt_enhance_state" : MessageLookupByLibrary.simpleMessage("重置强化本状态"),
     "reset_svt_enhance_state_hint" : MessageLookupByLibrary.simpleMessage("宝具本/技能本恢复成国服状态"),
-    "restart_to_upgrade" : MessageLookupByLibrary.simpleMessage("重启以更新应用"),
+    "restart_to_upgrade_hint" : MessageLookupByLibrary.simpleMessage("重启以更新应用，若更新失败，请手动复制source文件夹到destination"),
     "restore" : MessageLookupByLibrary.simpleMessage("恢复"),
     "save" : MessageLookupByLibrary.simpleMessage("保存"),
     "save_to_photos" : MessageLookupByLibrary.simpleMessage("保存到相册"),

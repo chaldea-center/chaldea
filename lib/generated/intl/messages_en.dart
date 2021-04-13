@@ -340,7 +340,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "reset_success" : MessageLookupByLibrary.simpleMessage("Reset successfully"),
     "reset_svt_enhance_state" : MessageLookupByLibrary.simpleMessage("Reset servant enhancements"),
     "reset_svt_enhance_state_hint" : MessageLookupByLibrary.simpleMessage("Reset rank up of skills and nobel phantasm"),
-    "restart_to_upgrade" : MessageLookupByLibrary.simpleMessage("Restart to upgrade"),
+    "restart_to_upgrade_hint" : MessageLookupByLibrary.simpleMessage("Restart to upgrade. If the update fails, please manually copy the source folder to destination"),
     "restore" : MessageLookupByLibrary.simpleMessage("Restore"),
     "save" : MessageLookupByLibrary.simpleMessage("Save"),
     "save_to_photos" : MessageLookupByLibrary.simpleMessage("Save to Photos"),

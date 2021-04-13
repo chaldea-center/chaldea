@@ -358,5 +358,5 @@
   "release_page": "ウェブサイト",
   "auto_update": "自動更新",
   "support_chaldea": "Support Chaldea",
-  "restart_to_upgrade": "再起動してアプリを更新します"
+  "restart_to_upgrade_hint": "再起動してアプリを更新します。更新に失敗した場合は、ソースフォルダをコピー先に手動でコピーしてください"
 }

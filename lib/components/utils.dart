@@ -10,6 +10,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'config.dart' show db;
@@ -352,5 +353,31 @@ Future<void> catchErrorAsync(
     if (onSuccess != null) onSuccess();
   } catch (e, s) {
     if (onError != null) onError(e, s);
+  }
+}
+
+void copyOrMoveDirectory(
+  Directory src,
+  Directory dest, {
+  bool move = false,
+  bool test(FileSystemEntity entity)?,
+}) {
+  dest.createSync(recursive: true);
+  for (FileSystemEntity entity in src.listSync()) {
+    if (test != null && !test(entity)) continue;
+    if (entity is Directory) {
+      var newDirectory =
+          Directory(join(dest.absolute.path, basename(entity.path)));
+      newDirectory.createSync();
+      copyOrMoveDirectory(entity.absolute, newDirectory,
+          move: move, test: test);
+    } else if (entity is File) {
+      String newPath = join(dest.path, basename(entity.path));
+      if (move) {
+        entity.renameSync(newPath);
+      } else {
+        entity.copySync(newPath);
+      }
+    }
   }
 }

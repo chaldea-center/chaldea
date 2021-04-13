@@ -355,5 +355,5 @@
   "release_page": "下载页",
   "auto_update": "自动更新",
   "support_chaldea": "支持与捐赠",
-  "restart_to_upgrade": "重启以更新应用"
+  "restart_to_upgrade_hint": "重启以更新应用，若更新失败，请手动复制source文件夹到destination"
 }

@@ -340,7 +340,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "reset_success" : MessageLookupByLibrary.simpleMessage("リセットしました"),
     "reset_svt_enhance_state" : MessageLookupByLibrary.simpleMessage("サーヴァント強化状态をリセット"),
     "reset_svt_enhance_state_hint" : MessageLookupByLibrary.simpleMessage("宝具/スキル強化"),
-    "restart_to_upgrade" : MessageLookupByLibrary.simpleMessage("再起動してアプリを更新します"),
+    "restart_to_upgrade_hint" : MessageLookupByLibrary.simpleMessage("再起動してアプリを更新します。更新に失敗した場合は、ソースフォルダをコピー先に手動でコピーしてください"),
     "restore" : MessageLookupByLibrary.simpleMessage("復元"),
     "save" : MessageLookupByLibrary.simpleMessage("保存"),
     "save_to_photos" : MessageLookupByLibrary.simpleMessage("アルバムに保存"),

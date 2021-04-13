@@ -356,5 +356,5 @@
   "release_page": "Release Page",
   "auto_update": "Auto Update",
   "support_chaldea": "Support Chaldea",
-  "restart_to_upgrade": "Restart to upgrade"
+  "restart_to_upgrade_hint": "Restart to upgrade. If the update fails, please manually copy the source folder to destination"
 }
