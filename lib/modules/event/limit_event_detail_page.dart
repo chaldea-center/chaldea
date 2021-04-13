@@ -197,7 +197,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
                     db.itemStat.updateEventItems();
                     setState(() {});
                   },
-                ).show(context);
+                ).showDialog(context);
               }
             },
           ),

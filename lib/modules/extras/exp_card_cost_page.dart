@@ -27,7 +27,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
                 title: Text(S.current.help),
                 content: Text('''1.QP计算可能不准确，仅供参考。按每20个狗粮计算
 2.如80->90，只计算80级时的再临(圣杯转临)所消耗的QP(圣杯)'''),
-              ).show(context);
+              ).showDialog(context);
             },
             icon: Icon(Icons.help_outline),
             tooltip: S.current.help,

@@ -2,11 +2,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/craft/craft_list_page.dart';
-import 'package:chaldea/modules/free_quest_calculator/free_calculator_page.dart';
 import 'package:chaldea/modules/event/events_page.dart';
 import 'package:chaldea/modules/extras/exp_card_cost_page.dart';
 import 'package:chaldea/modules/extras/mystic_code_page.dart';
+import 'package:chaldea/modules/extras/updates.dart';
 import 'package:chaldea/modules/ffo/ffo_page.dart';
+import 'package:chaldea/modules/free_quest_calculator/free_calculator_page.dart';
 import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
 import 'package:chaldea/modules/import_data/import_data_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
@@ -42,7 +43,12 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         resolveSliderImageUrls();
       }
     }
-    checkAppUpdate();
+    Future.delayed(Duration(seconds: 2)).then((_) async {
+      await AutoUpdateUtil().checkAppUpdate(
+          background: true, download: db.userData.autoUpdateApp);
+      await Future.delayed(Duration(seconds: 2));
+      await AutoUpdateUtil().autoUpdateDataset();
+    });
   }
 
   Widget faIcon(IconData icon) {

@@ -31,13 +31,10 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
           join('/storage/emulated/0/', AppInfo.packageName);
       if (!(await Permission.storage.isGranted)) {
         var confirmed = await SimpleCancelOkDialog(
-          title: Text('Storage Permission'),
-          content: Text(
-            '用户数据备份储存于临时目录(${db.paths.userDir})\n'
-            '删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更 '
-            '将导致临时备份消失，建议开启储存访问权限以备份至($externalBackupDir})\n',
-          ),
-        ).show(kAppKey.currentContext!);
+          title: Text(S.current.storage_permission_title),
+          content: Text(S.current
+              .storage_permission_content(db.paths.userDir, externalBackupDir)),
+        ).showDialog(kAppKey.currentContext!);
         if (confirmed == true) {
           logger.i('request storage permission');
           await Permission.storage.request();
@@ -117,6 +114,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
 
   void setPreferredOrientations() {
     if (!AppInfo.isMobile) return;
+    if (!mounted) return;
     if (db.userData.autorotate && SplitRoute.isSplit(context)) {
       SystemChrome.setPreferredOrientations([]);
     } else {
@@ -168,7 +166,9 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
       logger.e('initiate app error.', e, s);
     }
     if (!gameDataLoadSuccess) {
-      showInformDialog(context, title: '加载数据错误', content: '请尝试在设置中重新加载默认数据');
+      showInformDialog(context,
+          title: S.current.load_dataset_error,
+          content: S.current.load_dataset_error_hint);
     }
     _initiated = true;
     setState(() {});
@@ -184,7 +184,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
               title: Text(AppInfo.fullVersion2),
               content: Text(releaseNote!.replaceAll('\r\n', '\n')),
               hideCancel: true,
-            ).show(kAppKey.currentContext!);
+            ).showDialog(kAppKey.currentContext!);
           });
         }
       }).onError((error, stackTrace) => null);

@@ -318,7 +318,7 @@ class FFOParams {
     if (data == null) {
       SimpleCancelOkDialog(
         title: Text('Save failed'),
-      ).show(context);
+      ).showDialog(context);
       return;
     }
     final file = File(fp)..createSync(recursive: true);
@@ -338,7 +338,7 @@ class FFOParams {
         if (Platform.isAndroid || Platform.isIOS)
           TextButton(
             onPressed: () async {
-              final result = await ImageGallerySaver.saveFile(fp);
+              final result = await ImageGallerySaver.saveFile(fp!);
               logger.i('save to gallery: $result');
               if (result['isSuccess'] == true) {
                 EasyLoading.showSuccess('Saved to Photos');
@@ -351,7 +351,7 @@ class FFOParams {
             child: Text(S.current.save_to_photos),
           ),
       ],
-    ).show(context);
+    ).showDialog(context);
   }
 }
 

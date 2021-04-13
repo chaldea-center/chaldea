@@ -99,12 +99,12 @@ class Database {
   String? _lastSavedUserData;
 
   // data files operation
-  bool loadUserData() {
+  bool loadUserData([UserData? data]) {
     _autoSaveTimer?.cancel();
     _autoSaveTimer = null;
     bool result;
     try {
-      final newData = UserData.fromJson(
+      final newData =data?? UserData.fromJson(
           getJsonFromFile(paths.userDataPath, k: () => <String, dynamic>{}));
       userData = newData;
       gameData.updateUserDuplicatedServants();
@@ -126,10 +126,11 @@ class Database {
     return result;
   }
 
-  bool loadGameData() {
+  bool loadGameData([GameData? data]) {
     final t = TimeCounter('loadGameData');
     try {
-      gameData = GameData.fromJson(getJsonFromFile(paths.gameDataPath));
+      gameData =
+          data ?? GameData.fromJson(getJsonFromFile(paths.gameDataPath));
       // userdata is loaded before gamedata, safe to use curUser
       gameData.updateUserDuplicatedServants();
       userData.validate();
@@ -278,8 +279,8 @@ class Database {
       final suffixes = preferPng == null
           ? ['', '.jpg', '.png']
           : preferPng == true
-              ? ['.png', '', '.jpg']
-              : ['.jpg', '', '.png'];
+          ? ['.png', '', '.jpg']
+          : ['.jpg', '', '.png'];
       for (var suffix in suffixes) {
         String fullKey = key + suffix;
         if (gameData.icons.containsKey(fullKey)) {
@@ -417,14 +418,14 @@ class Database {
     Function(dynamic error, dynamic stackTrace)? onError,
     void Function(int, int)? onProgress,
   }) async {
-    final t = TimeCounter('extractZip');
+    // final t = TimeCounter('extractZip');
     final message = {'bytes': bytes, 'fp': fp, 'savePath': savePath};
     if (onError == null) {
       await compute(_extractZipIsolate, message);
     } else {
       await compute(_extractZipIsolate, message).catchError(onError);
     }
-    t.elapsed();
+    // t.elapsed();
   }
 
   static Future<void> _extractZipIsolate(Map<String, dynamic> message) async {

@@ -43,7 +43,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m11(total, hidden) => "合計：${total} (非表示: ${hidden})";
 
-  static m12(a, b) => "${a}${b}";
+  static m12(tempDir, externalBackupDir) => "ユーザーデータのバックアップは一時(\$${tempDir})に保存されます\nアプリの削除/他のアーキテクチャのインストール（例えば、arm64-v8aからarmeabi-v7aへ ）/将来のビルド番号の変更、ユーザーデータと一時バックアップが削除されます。外部ストレージ(\$externalBackupDir})にバックアップするためのストレージ権限を有効にすることを強くお勧めします ";
+
+  static m13(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
@@ -68,6 +70,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ascension" : MessageLookupByLibrary.simpleMessage("霊基"),
     "ascension_short" : MessageLookupByLibrary.simpleMessage("霊基"),
     "ascension_up" : MessageLookupByLibrary.simpleMessage("霊基再臨"),
+    "auto_update" : MessageLookupByLibrary.simpleMessage("自動更新"),
     "backup" : MessageLookupByLibrary.simpleMessage("バックアップ"),
     "backup_data_alert" : MessageLookupByLibrary.simpleMessage("Timely backup wanted"),
     "backup_success" : MessageLookupByLibrary.simpleMessage("バックアップは成功しました"),
@@ -236,6 +239,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "info_weak_to_ea" : MessageLookupByLibrary.simpleMessage("EAに特攻"),
     "info_weight" : MessageLookupByLibrary.simpleMessage("体重"),
     "input_invalid_hint" : MessageLookupByLibrary.simpleMessage("入力が無効です"),
+    "install" : MessageLookupByLibrary.simpleMessage("インスト"),
     "interlude_and_rankup" : MessageLookupByLibrary.simpleMessage("幕間・強化"),
     "ios_app_path" : MessageLookupByLibrary.simpleMessage("\"ファイル\"アプリ/このiPhone内/Chaldea"),
     "item" : MessageLookupByLibrary.simpleMessage("アイテム"),
@@ -269,6 +273,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "limited_event" : MessageLookupByLibrary.simpleMessage("期間限定イベント"),
     "link" : MessageLookupByLibrary.simpleMessage("リンク"),
     "list_end_hint" : m8,
+    "load_dataset_error" : MessageLookupByLibrary.simpleMessage("読み取りエラー"),
+    "load_dataset_error_hint" : MessageLookupByLibrary.simpleMessage("設定-ゲームデータでデフォルトのリソースをリロードしてください"),
     "login_change_password" : MessageLookupByLibrary.simpleMessage("パスワードを変更する"),
     "login_first_hint" : MessageLookupByLibrary.simpleMessage("最初にログインしてください"),
     "login_hint_text" : MessageLookupByLibrary.simpleMessage("サーバーにデータをバックアップし、マルチデバイス同期を実現するためにのみ使用されるシンプルなシステム\nセキュリティの保証はありません。一般的なパスワードは使用しないでください！！！"),
@@ -322,6 +328,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "quest" : MessageLookupByLibrary.simpleMessage("クエスト"),
     "quest_condition" : MessageLookupByLibrary.simpleMessage("開放条件"),
     "rarity" : MessageLookupByLibrary.simpleMessage("レアリティ"),
+    "release_page" : MessageLookupByLibrary.simpleMessage("ウェブサイト"),
     "reload_data_success" : MessageLookupByLibrary.simpleMessage("インポートに成功しました"),
     "reload_default_gamedata" : MessageLookupByLibrary.simpleMessage("プリインストールされたバージョンをリロードします"),
     "reloading_data" : MessageLookupByLibrary.simpleMessage("インポート中"),
@@ -333,6 +340,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "reset_success" : MessageLookupByLibrary.simpleMessage("リセットしました"),
     "reset_svt_enhance_state" : MessageLookupByLibrary.simpleMessage("サーヴァント強化状态をリセット"),
     "reset_svt_enhance_state_hint" : MessageLookupByLibrary.simpleMessage("宝具/スキル強化"),
+    "restart_to_upgrade" : MessageLookupByLibrary.simpleMessage("再起動してアプリを更新します"),
     "restore" : MessageLookupByLibrary.simpleMessage("復元"),
     "save" : MessageLookupByLibrary.simpleMessage("保存"),
     "save_to_photos" : MessageLookupByLibrary.simpleMessage("アルバムに保存"),
@@ -362,9 +370,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "skilled_max10" : MessageLookupByLibrary.simpleMessage("スキルレベル最大化する(310)"),
     "statistics_include_checkbox" : MessageLookupByLibrary.simpleMessage("既存のアイテムを含める"),
     "statistics_title" : MessageLookupByLibrary.simpleMessage("統計"),
+    "storage_permission_content" : m12,
+    "storage_permission_title" : MessageLookupByLibrary.simpleMessage("ストレージ権限"),
     "success" : MessageLookupByLibrary.simpleMessage("成功"),
     "summon" : MessageLookupByLibrary.simpleMessage("ガチャ"),
     "summon_title" : MessageLookupByLibrary.simpleMessage("ガチャ"),
+    "support_chaldea" : MessageLookupByLibrary.simpleMessage("Support Chaldea"),
     "svt_info_tab_base" : MessageLookupByLibrary.simpleMessage("ステータス"),
     "svt_info_tab_bond_story" : MessageLookupByLibrary.simpleMessage("プロファイル"),
     "svt_not_planned" : MessageLookupByLibrary.simpleMessage("フォローされていません"),
@@ -392,7 +403,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "version" : MessageLookupByLibrary.simpleMessage("バージョン"),
     "view_illustration" : MessageLookupByLibrary.simpleMessage("カードの画像を表示"),
     "voice" : MessageLookupByLibrary.simpleMessage("ボイス"),
-    "words_separate" : m12,
+    "words_separate" : m13,
     "yes" : MessageLookupByLibrary.simpleMessage("はい")
   };
 }

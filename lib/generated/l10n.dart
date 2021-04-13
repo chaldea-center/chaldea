@@ -3521,6 +3521,96 @@ class S {
       args: [],
     );
   }
+
+  /// `储存权限`
+  String get storage_permission_title {
+    return Intl.message(
+      '储存权限',
+      name: 'storage_permission_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `用户数据备份储存于临时目录(${tempDir})\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至(${externalBackupDir}})`
+  String storage_permission_content(Object tempDir, Object externalBackupDir) {
+    return Intl.message(
+      '用户数据备份储存于临时目录(\$$tempDir)\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至(\$$externalBackupDir})',
+      name: 'storage_permission_content',
+      desc: '',
+      args: [tempDir, externalBackupDir],
+    );
+  }
+
+  /// `加载数据出错`
+  String get load_dataset_error {
+    return Intl.message(
+      '加载数据出错',
+      name: 'load_dataset_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请在设置-游戏数据中重新加载默认资源`
+  String get load_dataset_error_hint {
+    return Intl.message(
+      '请在设置-游戏数据中重新加载默认资源',
+      name: 'load_dataset_error_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `安装`
+  String get install {
+    return Intl.message(
+      '安装',
+      name: 'install',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `下载页`
+  String get release_page {
+    return Intl.message(
+      '下载页',
+      name: 'release_page',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `自动更新`
+  String get auto_update {
+    return Intl.message(
+      '自动更新',
+      name: 'auto_update',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `支持与捐赠`
+  String get support_chaldea {
+    return Intl.message(
+      '支持与捐赠',
+      name: 'support_chaldea',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `重启以更新应用`
+  String get restart_to_upgrade {
+    return Intl.message(
+      '重启以更新应用',
+      name: 'restart_to_upgrade',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

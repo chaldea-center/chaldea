@@ -50,6 +50,11 @@ class _GameDataPageState extends State<GameDataPage> {
             header: S.current.download_source,
             children: [
               sourceAccordion(
+                source: GitSource.server,
+                subtitle: 'Chaldea server',
+                hideContent: true,
+              ),
+              sourceAccordion(
                 source: GitSource.github,
                 subtitle: S.current.github_source_hint,
               ),
@@ -63,6 +68,15 @@ class _GameDataPageState extends State<GameDataPage> {
           TileGroup(
             header: S.of(context).gamedata,
             children: <Widget>[
+              SwitchListTile.adaptive(
+                value: db.userData.autoUpdateDataset,
+                title: Text(S.current.auto_update),
+                onChanged: (v) {
+                  setState(() {
+                    db.userData.autoUpdateDataset = v;
+                  });
+                },
+              ),
               ListTile(
                 title: Text(S.of(context).download_latest_gamedata),
                 subtitle: Text(S.current.download_latest_gamedata_hint),
@@ -83,7 +97,7 @@ class _GameDataPageState extends State<GameDataPage> {
                         EasyLoading.showError('Failed');
                       }
                     },
-                  ).show(context);
+                  ).showDialog(context);
                 },
               ),
               ListTile(
@@ -130,28 +144,29 @@ class _GameDataPageState extends State<GameDataPage> {
     );
   }
 
-  Widget sourceAccordion({required GitSource source, String? subtitle}) {
+  Widget sourceAccordion(
+      {required GitSource source, String? subtitle, bool hideContent = false}) {
     final gitTool = GitTool(source);
+    Widget radio = RadioListTile<int>(
+      value: source.toIndex(),
+      groupValue: db.userData.downloadSource,
+      title: Text(source.toTitleString()),
+      subtitle: subtitle == null ? null : Text(subtitle),
+      onChanged: (v) {
+        setState(() {
+          if (v != null) {
+            db.userData.downloadSource = v;
+            db.notifyDbUpdate();
+          }
+        });
+      },
+      controlAffinity: ListTileControlAffinity.leading,
+    );
+    if (hideContent) return radio;
     return SimpleAccordion(
       canTapOnHeader: false,
-      headerBuilder: (BuildContext context, bool expanded) {
-        return RadioListTile<int>(
-          value: source.toIndex(),
-          groupValue: db.userData.updateSource,
-          title: Text(source.toTitleString()),
-          subtitle: subtitle == null ? null : Text(subtitle),
-          onChanged: (v) {
-            setState(() {
-              if (v != null) {
-                db.userData.updateSource = v;
-                db.notifyDbUpdate();
-              }
-            });
-          },
-          controlAffinity: ListTileControlAffinity.leading,
-        );
-      },
-      contentBuilder: (BuildContext context) {
+      headerBuilder: (context, expanded) => radio,
+      contentBuilder: (context) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -204,7 +219,7 @@ class _GameDataPageState extends State<GameDataPage> {
   void downloadGamedata() {
     final gitTool = GitTool.fromDb();
     void _downloadAsset(bool icons) async {
-      final release = await gitTool.latestDatasetRelease(icons);
+      final release = await gitTool.latestDatasetRelease(icons: icons);
       Navigator.of(context).pop();
       String fp = pathlib.join(
           db.paths.tempDir, '${release?.name}-${release?.targetAsset?.name}');

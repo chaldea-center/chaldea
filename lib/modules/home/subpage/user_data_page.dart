@@ -178,7 +178,7 @@ class _UserDataPageState extends State<UserDataPage> {
           ],
         );
       },
-    ).show(context);
+    ).showDialog(context);
   }
 
   bool checkUserPwd() {
@@ -193,7 +193,7 @@ class _UserDataPageState extends State<UserDataPage> {
             detail: true,
           );
         },
-      ).show(context);
+      ).showDialog(context);
       return false;
     } else {
       return true;
@@ -271,7 +271,7 @@ class _UserDataPageState extends State<UserDataPage> {
         }
         final userdata = UserData.fromJson(jsonDecode(resp2.body));
         db.backupUserdata(disk: true, memory: true);
-        db.userData = userdata;
+        db.loadUserData(userdata);
         db.saveUserData();
         db.itemStat.update();
         db.notifyAppUpdate();

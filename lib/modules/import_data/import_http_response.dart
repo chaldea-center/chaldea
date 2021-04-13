@@ -442,7 +442,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
       hideCancel: true,
       title: Text(S.current.import_data_success),
       content: Text('已切换到账户 ${user.name}'),
-    ).show(context);
+    ).showDialog(context);
   }
 
   void importResponseBody() async {
@@ -544,7 +544,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
 https://line3-s2-xxx-fate.bilibiligame.net/rongame_beta//rgfate/60_1001/ac.php?_userId=xxxxxx&_key=toplogin
 其中域名前缀、数字及xxx可能随着地区、所在服务器和用户ID而不同
 - 确保保存的文件编码为UTF8(默认)且已解码，内容为ey开头的英文+数字，且内容未手动更改'''),
-        ).show(context);
+        ).showDialog(context);
     } finally {
       if (mounted) {
         setState(() {});
@@ -592,6 +592,6 @@ Android 7.0及以上设备因系统不再信任用户证书，请在Android 6及
           child: Text('Win+Android'),
         ),
       ],
-    ).show(context);
+    ).showDialog(context);
   }
 }

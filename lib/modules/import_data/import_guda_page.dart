@@ -57,7 +57,7 @@ class ImportGudaPageState extends State<ImportGudaPage> {
                 onTapCancel: () {
                   setState(() => clearData = false);
                 },
-              ).show(context);
+              ).showDialog(context);
             } else {
               setState(() {
                 clearData = v ?? clearData;

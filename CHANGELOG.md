@@ -1,3 +1,15 @@
+## 1.3.8
+- support auto update for app and dataset
+- add chaldea server as default download source 
+
+## 1.3.7
+- sync user data with server on multiple device
+- fix FFO render speed issue
+ 
+## 1.3.6
+- Fate/Freedom Order
+  - free assembly and random gacha
+
 ## 1.3.5
 - bug fix
 - auto backup userdata to /backup and external storage in Android if possible

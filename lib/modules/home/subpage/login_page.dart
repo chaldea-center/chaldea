@@ -214,7 +214,7 @@ class _LoginPageState extends State<LoginPage> {
     db.notifyDbUpdate();
     SimpleCancelOkDialog(
       content: Text('Logged out'),
-    ).show(context);
+    ).showDialog(context);
   }
 
   Future<void> doSignUp() async {
@@ -258,6 +258,7 @@ class _LoginPageState extends State<LoginPage> {
   void _saveUserInfo(String name, String pwd) {
     db.prefs.instance.setString(SharedPrefs.userName, name);
     db.prefs.instance.setString(SharedPrefs.userPwd, b64(pwd, false));
+    db.notifyDbUpdate();
   }
 }
 
@@ -287,6 +288,6 @@ class ChaldeaResponse {
     return SimpleCancelOkDialog(
       title: Text(title),
       content: Text(content),
-    ).show(context);
+    ).showDialog(context);
   }
 }

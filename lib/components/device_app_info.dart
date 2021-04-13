@@ -199,6 +199,16 @@ class AppInfo {
 
   static String get packageName => info?.packageName ?? kPackageName;
 
+  static ABIType get abi {
+    if (!Platform.isAndroid) return ABIType.unknown;
+    if (buildNumber <= 100) return ABIType.unknown;
+    String buildStr = buildNumber.toString();
+    if (buildStr.startsWith('10')) return ABIType.armeabi_v7a;
+    if (buildStr.startsWith('20')) return ABIType.arm64_v8a;
+    if (buildStr.startsWith('40')) return ABIType.x86_64;
+    return ABIType.arm64_v8a;
+  }
+
   /// e.g. "1.2.3+4"
   static String get fullVersion {
     String s = '';
@@ -209,10 +219,15 @@ class AppInfo {
 
   /// e.g. "1.2.3 (4)"
   static String get fullVersion2 {
-    String s = '';
-    s += version;
-    if (buildNumber > 0) s += ' ($buildNumber)';
-    return s;
+    StringBuffer buffer = StringBuffer(version);
+    if (buildNumber > 0) {
+      buffer.write(' ($buildNumber');
+      if (abi != ABIType.unknown) {
+        buffer.write(', ${EnumUtil.shortString(abi)}');
+      }
+      buffer.write(')');
+    }
+    return buffer.toString();
   }
 
   static String get uniqueId => _uniqueId!;
@@ -221,4 +236,26 @@ class AppInfo {
   static bool get isMobile => Platform.isAndroid || Platform.isIOS;
 
   static bool get isDesktop => Platform.isMacOS || Platform.isWindows;
+}
+
+enum ABIType {
+  unknown,
+  arm64_v8a,
+  armeabi_v7a,
+  x86_64,
+}
+
+extension ABITypeToString on ABIType{
+  String toStandardString(){
+    switch(this){
+      case ABIType.unknown:
+        return 'unknown';
+      case ABIType.arm64_v8a:
+        return 'arm64-v8a';
+      case ABIType.armeabi_v7a:
+        return 'armeabi-v7a';
+      case ABIType.x86_64:
+        return 'x86_64';
+    }
+  }
 }

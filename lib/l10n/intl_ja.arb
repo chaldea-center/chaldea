@@ -349,5 +349,14 @@
   "userdata_sync": "同期データ",
   "userdata_upload_backup": "アップロードバックアップ",
   "userdata_download_backup": "ダウンロードのバックアップ",
-  "userdata_download_choose_backup": "バックアップを選択"
+  "userdata_download_choose_backup": "バックアップを選択",
+  "storage_permission_title": "ストレージ権限",
+  "storage_permission_content": "ユーザーデータのバックアップは一時(${tempDir})に保存されます\nアプリの削除/他のアーキテクチャのインストール（例えば、arm64-v8aからarmeabi-v7aへ ）/将来のビルド番号の変更、ユーザーデータと一時バックアップが削除されます。外部ストレージ($externalBackupDir})にバックアップするためのストレージ権限を有効にすることを強くお勧めします ",
+  "load_dataset_error": "読み取りエラー",
+  "load_dataset_error_hint": "設定-ゲームデータでデフォルトのリソースをリロードしてください",
+  "install": "インスト",
+  "release_page": "ウェブサイト",
+  "auto_update": "自動更新",
+  "support_chaldea": "Support Chaldea",
+  "restart_to_upgrade": "再起動してアプリを更新します"
 }

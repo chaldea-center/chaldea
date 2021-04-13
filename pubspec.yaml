@@ -32,6 +32,7 @@ dependencies:
   cached_network_image: ^3.0.0
   catcher: ^0.6.5
   connectivity_plus: ^1.0.0
+  crypto: ^3.0.1
   csv: ^5.0.0
   cupertino_icons: ^1.0.2
   device_info_plus: ^1.0.0
@@ -54,11 +55,12 @@ dependencies:
   getwidget: ^2.0.0-nullsafety.4
   html: ^0.15.0
   image: ^3.0.2
-  image_gallery_saver: ^1.6.8
+  image_gallery_saver: ^1.6.9
   intl: ^0.17.0
   json_annotation: ^4.0.1
   json_patch: ^2.1.0
   logger: ^1.0.0
+  open_file: ^3.1.0
   package_info: ^2.0.0
   path_provider: ^2.0.1
   permission_handler: ^6.1.1

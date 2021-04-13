@@ -199,7 +199,7 @@ class ItemListPageState extends State<ItemListPage>
           child: Text(S.of(context).clear),
         )
       ],
-    ).show(context);
+    ).showDialog(context);
   }
 }
 
@@ -357,7 +357,7 @@ class _ItemListTabState extends State<ItemListTab> {
         });
         db.itemStat.updateLeftItems();
       },
-    ).show(context);
+    ).showDialog(context);
   }
 
   @override

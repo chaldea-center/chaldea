@@ -192,7 +192,7 @@ class _AccountPageState extends State<AccountPage> {
     if (!db.userData.users.containsKey(key)) {
       SimpleCancelOkDialog(
         content: Text('User key $key not found'),
-      ).show(context);
+      ).showDialog(context);
       return;
     }
     setState(() {
@@ -211,7 +211,7 @@ class _AccountPageState extends State<AccountPage> {
                 print('accounts: ${db.userData.users.keys.toList()}');
               }
             : null,
-      ).show(context);
+      ).showDialog(context);
     });
   }
 

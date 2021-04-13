@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:chaldea/components/components.dart';
@@ -12,7 +13,7 @@ import 'device_app_info.dart';
 import 'extensions.dart';
 import 'logger.dart';
 
-enum GitSource { github, gitee }
+enum GitSource { server, github, gitee }
 
 extension GitSourceExtension on GitSource {
   String toShortString() => EnumUtil.shortString(this);
@@ -66,8 +67,9 @@ class Version extends Comparable<Version> {
   static Version? tryParse(String versionString, [int? build]) {
     versionString = versionString.trim();
     if (!_fullVersionRegex.hasMatch(versionString)) {
-      logger.e(ArgumentError.value(
-          versionString, 'versionString', 'Invalid version format'));
+      if (versionString.isNotEmpty)
+        logger.e(ArgumentError.value(
+            versionString, 'versionString', 'Invalid version format'));
       return null;
     }
     Match match = _fullVersionRegex.firstMatch(versionString)!;
@@ -116,6 +118,7 @@ class GitRelease {
   String? htmlUrl;
   List<GitAsset> assets;
   GitAsset? targetAsset;
+  GitAsset? targetSHA1Asset;
   GitSource? source;
 
   GitRelease({
@@ -127,6 +130,7 @@ class GitRelease {
     required this.htmlUrl,
     required this.assets,
     this.targetAsset,
+    this.targetSHA1Asset,
     this.source,
   });
 
@@ -184,6 +188,7 @@ class GitTool {
 
   GitTool([this.source = GitSource.github]) {
     switch (source) {
+      case GitSource.server:
       case GitSource.github:
         owner = 'chaldea-center';
         appRepo = 'chaldea';
@@ -198,15 +203,21 @@ class GitTool {
   }
 
   static GitTool fromDb() {
-    return GitTool(GitSource.values.getOrNull(db.userData.updateSource) ??
-        GitSource.values.first);
+    return GitTool(GitSource.values.getOrNull(db.userData.downloadSource) ??
+        GitSource.server);
   }
 
   String get appReleaseUrl {
+    if (source == GitSource.server) {
+      return 'https://github.com/$owner/$appRepo/releases';
+    }
     return 'https://${source.toShortString()}.com/$owner/$appRepo/releases';
   }
 
   String get datasetReleaseUrl {
+    if (source == GitSource.server) {
+      return 'https://github.com/$owner/$datasetRepo/releases';
+    }
     return 'https://${source.toShortString()}.com/$owner/$datasetRepo/releases';
   }
 
@@ -224,18 +235,28 @@ class GitTool {
   Future<List<GitRelease>> _resolveReleases(String _repo) async {
     List<GitRelease> releases = [];
     try {
-      if (source == GitSource.github) {
+      if (source == GitSource.github || source == GitSource.server) {
+        String url = source == GitSource.server
+            ? '$kServerRoot/githubapi/repos/$owner/$_repo/releases'
+            : 'https://api.github.com/repos/$owner/$_repo/releases';
         final response = await Dio().get(
-          'https://api.github.com/repos/$owner/$_repo/releases',
-          options: Options(
-              contentType: 'application/json;charset=UTF-8',
-              responseType: ResponseType.json),
+          url,
+          options: Options(responseType: ResponseType.plain),
         );
+        final map =
+            response.data is String ? jsonDecode(response.data) : response.data;
         // don't use map().toList(), List<dynamic> is not subtype ...
         releases = List.generate(
-          response.data?.length ?? 0,
-          (index) => GitRelease.fromGithub(data: response.data[index])
-            ..htmlUrl ??= 'https://github.com/$owner/$_repo/releases',
+          map?.length ?? 0,
+          (index) => GitRelease.fromGithub(data: map[index])
+            ..htmlUrl ??= 'https://github.com/$owner/$_repo/releases'
+            ..assets.forEach((asset) {
+              if (source == GitSource.server &&
+                  asset.browserDownloadUrl != null) {
+                asset.browserDownloadUrl = '$kServerRoot/githubasset'
+                    '?url=${Uri.encodeFull(asset.browserDownloadUrl!)}';
+              }
+            }),
         );
       } else if (source == GitSource.gitee) {
         // response: List<Release>
@@ -273,6 +294,8 @@ class GitTool {
         for (var asset in release.assets) {
           if (testAsset(asset)) {
             release.targetAsset = asset;
+            release.targetSHA1Asset = release.assets
+                .firstWhereOrNull((e) => e.name == asset.name + '.sha1');
             return true;
           }
         }
@@ -286,21 +309,49 @@ class GitTool {
   }
 
   Future<GitRelease?> latestAppRelease([bool test(GitAsset asset)?]) async {
-    if (test == null)
-      test = (asset) =>
-          asset.name.toLowerCase().contains(Platform.operatingSystem);
+    if (test == null) {
+      test = (asset) {
+        String assetName = asset.name.toLowerCase();
+        if (!assetName.contains(Platform.operatingSystem)) {
+          return false;
+        }
+        if (!Platform.isAndroid || kDebugMode) {
+          return true;
+        }
+        // If Android, need to check architecture
+        // arch     build
+        // v7a      10xx
+        // v8a      20xx
+        // x86_64   40xx
+        final abi = AppInfo.abi;
+        return abi != ABIType.unknown &&
+            assetName.contains(abi.toStandardString());
+      };
+    }
     if (Platform.isAndroid || Platform.isWindows || kDebugMode) {
       final releases = await appReleases;
       return _latestReleaseWhereAsset(releases, testAsset: test);
     }
   }
 
-  Future<GitRelease?> latestDatasetRelease([bool icons = false]) async {
+  Future<GitRelease?> latestDatasetRelease(
+      {bool icons = false, bool testRelease(GitRelease release)?}) async {
     final releases = await datasetReleases;
-    return _latestReleaseWhereAsset(releases, testAsset: (asset) {
-      return asset.name.toLowerCase() ==
-          (icons ? 'dataset-icons.zip' : 'dataset-text.zip');
-    });
+    if (testRelease == null) {
+      testRelease = (release) {
+        Version? minVersion =
+            Version.tryParse(release.name.split('-').getOrNull(1) ?? '');
+        return minVersion != null && minVersion <= AppInfo.versionClass;
+      };
+    }
+    return _latestReleaseWhereAsset(
+      releases,
+      testRelease: testRelease,
+      testAsset: (asset) {
+        return asset.name.toLowerCase() ==
+            (icons ? 'dataset-icons.zip' : 'dataset-text.zip');
+      },
+    );
   }
 
   Future<String?> appReleaseNote([bool test(GitRelease release)?]) async {

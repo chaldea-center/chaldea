@@ -210,7 +210,7 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
         onTapOk: () {
           params.saveTo(context);
         },
-      ).show(context);
+      ).showDialog(context);
     }
 
     return Padding(

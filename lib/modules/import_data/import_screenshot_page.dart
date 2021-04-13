@@ -86,7 +86,7 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
                   ' - 解析结果保留24h, 24h后可能删除\n'
                   ' - 服务器目前无法保证长期可用，若无法使用请检查新版本或提交反馈\n'),
             ),
-          ).show(context),
+          ).showDialog(context),
           icon: Icon(Icons.help),
           tooltip: S.of(context).help,
           color: Colors.blue,
@@ -122,7 +122,7 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
                           },
                           child: Text('清空并更新')),
                     ],
-                  ).show(context);
+                  ).showDialog(context);
                 },
           child: Text('更新素材库存'),
         ),

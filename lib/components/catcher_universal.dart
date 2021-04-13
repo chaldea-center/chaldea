@@ -192,7 +192,8 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
     final dataVerFile = File(db.paths.datasetVersionFile);
     Map<String, dynamic> summary = {
       'appVersion': '${AppInfo.appName} v${AppInfo.fullVersion}',
-      'datasetVersion': dataVerFile.existsSync()
+      'datasetMemory': db.gameData.version,
+      'datasetStorage': dataVerFile.existsSync()
           ? dataVerFile.readAsStringSync()
           : "Not detected",
       'os': '${Platform.operatingSystem} ${Platform.operatingSystemVersion}',

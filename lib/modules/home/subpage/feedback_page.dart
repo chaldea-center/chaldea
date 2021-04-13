@@ -92,7 +92,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     SimpleCancelOkDialog(
                       title: Text('Send email to'),
                       content: Text(kSupportTeamEmailAddress),
-                    ).show(context);
+                    ).showDialog(context);
                   }
                 },
               ),

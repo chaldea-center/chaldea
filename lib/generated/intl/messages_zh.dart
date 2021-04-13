@@ -43,7 +43,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m11(total, hidden) => "总计: ${total} (隐藏: ${hidden})";
 
-  static m12(a, b) => "${a}${b}";
+  static m12(tempDir, externalBackupDir) => "用户数据备份储存于临时目录(\$${tempDir})\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至(\$${externalBackupDir}})";
+
+  static m13(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
@@ -68,6 +70,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ascension" : MessageLookupByLibrary.simpleMessage("灵基"),
     "ascension_short" : MessageLookupByLibrary.simpleMessage("灵基"),
     "ascension_up" : MessageLookupByLibrary.simpleMessage("灵基再临"),
+    "auto_update" : MessageLookupByLibrary.simpleMessage("自动更新"),
     "backup" : MessageLookupByLibrary.simpleMessage("备份"),
     "backup_data_alert" : MessageLookupByLibrary.simpleMessage("及！时！备！份！"),
     "backup_success" : MessageLookupByLibrary.simpleMessage("备份成功"),
@@ -236,6 +239,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "info_weak_to_ea" : MessageLookupByLibrary.simpleMessage("被EA特攻"),
     "info_weight" : MessageLookupByLibrary.simpleMessage("体重"),
     "input_invalid_hint" : MessageLookupByLibrary.simpleMessage("输入无效"),
+    "install" : MessageLookupByLibrary.simpleMessage("安装"),
     "interlude_and_rankup" : MessageLookupByLibrary.simpleMessage("幕间&强化"),
     "ios_app_path" : MessageLookupByLibrary.simpleMessage("\"文件\"应用/我的iPhone/Chaldea"),
     "item" : MessageLookupByLibrary.simpleMessage("素材"),
@@ -269,6 +273,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "limited_event" : MessageLookupByLibrary.simpleMessage("限时活动"),
     "link" : MessageLookupByLibrary.simpleMessage("链接"),
     "list_end_hint" : m8,
+    "load_dataset_error" : MessageLookupByLibrary.simpleMessage("加载数据出错"),
+    "load_dataset_error_hint" : MessageLookupByLibrary.simpleMessage("请在设置-游戏数据中重新加载默认资源"),
     "login_change_password" : MessageLookupByLibrary.simpleMessage("修改密码"),
     "login_first_hint" : MessageLookupByLibrary.simpleMessage("请先登陆"),
     "login_hint_text" : MessageLookupByLibrary.simpleMessage("十分简易的系统，仅用于备份数据到服务器并实现多设备同步\n极mei低you安全性保证，请务必不要使用常用密码！！！"),
@@ -322,6 +328,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "quest" : MessageLookupByLibrary.simpleMessage("关卡"),
     "quest_condition" : MessageLookupByLibrary.simpleMessage("开放条件"),
     "rarity" : MessageLookupByLibrary.simpleMessage("稀有度"),
+    "release_page" : MessageLookupByLibrary.simpleMessage("下载页"),
     "reload_data_success" : MessageLookupByLibrary.simpleMessage("导入成功"),
     "reload_default_gamedata" : MessageLookupByLibrary.simpleMessage("重新载入预装版本"),
     "reloading_data" : MessageLookupByLibrary.simpleMessage("导入中"),
@@ -333,6 +340,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "reset_success" : MessageLookupByLibrary.simpleMessage("已重置"),
     "reset_svt_enhance_state" : MessageLookupByLibrary.simpleMessage("重置强化本状态"),
     "reset_svt_enhance_state_hint" : MessageLookupByLibrary.simpleMessage("宝具本/技能本恢复成国服状态"),
+    "restart_to_upgrade" : MessageLookupByLibrary.simpleMessage("重启以更新应用"),
     "restore" : MessageLookupByLibrary.simpleMessage("恢复"),
     "save" : MessageLookupByLibrary.simpleMessage("保存"),
     "save_to_photos" : MessageLookupByLibrary.simpleMessage("保存到相册"),
@@ -362,9 +370,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "skilled_max10" : MessageLookupByLibrary.simpleMessage("练度最大化(310)"),
     "statistics_include_checkbox" : MessageLookupByLibrary.simpleMessage("包含现有素材"),
     "statistics_title" : MessageLookupByLibrary.simpleMessage("统计"),
+    "storage_permission_content" : m12,
+    "storage_permission_title" : MessageLookupByLibrary.simpleMessage("储存权限"),
     "success" : MessageLookupByLibrary.simpleMessage("成功"),
     "summon" : MessageLookupByLibrary.simpleMessage("卡池"),
     "summon_title" : MessageLookupByLibrary.simpleMessage("卡池一览"),
+    "support_chaldea" : MessageLookupByLibrary.simpleMessage("支持与捐赠"),
     "svt_info_tab_base" : MessageLookupByLibrary.simpleMessage("基础资料"),
     "svt_info_tab_bond_story" : MessageLookupByLibrary.simpleMessage("羁绊故事"),
     "svt_not_planned" : MessageLookupByLibrary.simpleMessage("未关注"),
@@ -392,7 +403,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "version" : MessageLookupByLibrary.simpleMessage("版本"),
     "view_illustration" : MessageLookupByLibrary.simpleMessage("查看卡面"),
     "voice" : MessageLookupByLibrary.simpleMessage("语音"),
-    "words_separate" : m12,
+    "words_separate" : m13,
     "yes" : MessageLookupByLibrary.simpleMessage("是")
   };
 }

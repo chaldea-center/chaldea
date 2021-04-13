@@ -10,7 +10,9 @@ class UserData {
   Map<String, String> sliderUrls;
   Map<String, bool> galleries;
   String? serverRoot;
-  int updateSource;
+  int downloadSource;
+  bool autoUpdateApp;
+  bool autoUpdateDataset;
   bool autorotate;
 
   // user-related game data
@@ -35,7 +37,9 @@ class UserData {
     Map<String, String>? sliderUrls,
     Map<String, bool>? galleries,
     this.serverRoot,
-    int? updateSource,
+    int? downloadSource,
+    bool? autoUpdateApp,
+    bool? autoUpdateDataset,
     bool? autorotate,
     String? curUserKey,
     Map<String, User>? users,
@@ -46,8 +50,10 @@ class UserData {
     List<int>? itemAbundantValue,
   })  : sliderUrls = sliderUrls ?? {},
         galleries = galleries ?? {},
-        updateSource =
-            fixValidRange(updateSource ?? 0, 0, GitSource.values.length),
+        downloadSource = fixValidRange(downloadSource ?? GitSource.server.index,
+            0, GitSource.values.length),
+        autoUpdateApp = autoUpdateApp ?? true,
+        autoUpdateDataset = autoUpdateDataset ?? true,
         autorotate = autorotate ?? false,
         _curUserKey = curUserKey ?? 'default',
         users = users ?? {},

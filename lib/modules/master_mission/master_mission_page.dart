@@ -195,7 +195,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
                   solution.clear();
                 });
               },
-            ).show(context);
+            ).showDialog(context);
           },
           child: Text(
             S.of(context).clear,
@@ -500,7 +500,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
 “或”：2+4+9=15, 几乎都有关卡可以满足
 “且”：min(2,4,9)=2, 此时极大可能将没有关卡可以满足条件而忽略，相应任务会变灰
 """),
-    ).show(context);
+    ).showDialog(context);
   }
 }
 

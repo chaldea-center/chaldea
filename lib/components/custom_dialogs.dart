@@ -173,10 +173,4 @@ class SimpleCancelOkDialog extends StatelessWidget {
       actions: children,
     );
   }
-
-  /// pop true when click ok, and false when click cancel,
-  /// other values can also be popped by actions
-  Future<T?> show<T>(BuildContext context) {
-    return showDialog<T>(context: context, builder: (_) => this);
-  }
 }

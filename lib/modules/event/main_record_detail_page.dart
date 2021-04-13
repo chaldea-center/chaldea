@@ -62,7 +62,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
                     db.itemStat.updateEventItems();
                     setState(() {});
                   },
-                ).show(context);
+                ).showDialog(context);
               }
             },
           ),

@@ -78,7 +78,9 @@ extension TrimString on String {
 }
 
 extension DialogShowMethod on Widget {
-  Future<T?> showDialog<T>(BuildContext context) {
+  Future<T?> showDialog<T>([BuildContext? context]) {
+    context ??= kAppKey.currentContext;
+    if (context == null) return Future.value();
     return material.showDialog<T>(context: context, builder: (context) => this);
   }
 }

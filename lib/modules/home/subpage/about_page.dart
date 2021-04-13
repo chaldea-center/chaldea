@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/extras/updates.dart';
 import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -67,7 +68,8 @@ class _AboutPageState extends State<AboutPage> {
                         ),
                       if (!Platform.isIOS && !Platform.isMacOS || kDebugMode)
                         ElevatedButton(
-                          onPressed: () => checkAppUpdate(false),
+                          onPressed: () => AutoUpdateUtil().checkAppUpdate(
+                              background: false, download: false),
                           child: Text(S.of(context).check_update),
                           style: ElevatedButton.styleFrom(
                             textStyle: TextStyle(
@@ -89,6 +91,9 @@ class _AboutPageState extends State<AboutPage> {
             title: Text(S.of(context).about_app_declaration_text),
           ),
           TileGroup(
+            children: [],
+          ),
+          TileGroup(
             header: S.of(context).about_data_source,
             footer: S.of(context).about_data_source_footer,
             children: <Widget>[
@@ -102,17 +107,26 @@ class _AboutPageState extends State<AboutPage> {
             ],
           ),
           TileGroup(
-            header: S.of(context).project_homepage,
+            header: 'APP',
             children: [
+              SwitchListTile.adaptive(
+                value: db.userData.autoUpdateApp,
+                title: Text(S.current.auto_update),
+                onChanged: (v) {
+                  setState(() {
+                    db.userData.autoUpdateApp = v;
+                  });
+                },
+              ),
               ListTile(
-                title: Text('Github'),
+                title: Text(S.current.project_homepage + ' - Github'),
                 subtitle: Text(kProjectHomepage),
                 onTap: () {
                   launch(kProjectHomepage);
                 },
               ),
               ListTile(
-                title: Text('Support Chaldea'),
+                title: Text(S.current.support_chaldea),
                 onTap: () {
                   launch(kProjectHomepage + '/wiki/Support');
                 },

@@ -5,7 +5,6 @@ import 'dart:math' show max, min;
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -16,11 +15,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'config.dart' show db;
 import 'constants.dart';
 import 'custom_dialogs.dart';
-import 'device_app_info.dart';
 import 'extensions.dart';
-import 'git_tool.dart';
 import 'logger.dart';
-import 'shared_prefs.dart';
 
 /// Math related
 ///
@@ -273,146 +269,6 @@ void safeSetState(VoidCallback callback) {
   SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
     callback();
   });
-}
-
-void checkAppUpdate([bool background = true]) async {
-  BuildContext context = kAppKey.currentContext!;
-  String? versionString;
-  String? releaseNote;
-  String? launchUrl;
-
-  GitTool gitTool = GitTool.fromDb();
-  try {
-    if (Platform.isAndroid || Platform.isWindows || kDebugMode) {
-      final release =
-          await gitTool.latestAppRelease(kDebugMode ? (asset) => true : null);
-      versionString = release?.name;
-      if (versionString?.startsWith('v') == true)
-        versionString = versionString!.substring(1);
-      // v1.x.y+z
-      releaseNote = release?.body;
-      // launchUrl = release!.htmlUrl
-      // launchUrl = release!.targetAsset!.browserDownloadUrl;
-      launchUrl = gitTool.appReleaseUrl;
-    } else if (Platform.isIOS) {
-      // use https and set UA, or the fetched info may be outdated
-      // this http request always return iOS version result
-      final response = await Dio()
-          .get('https://itunes.apple.com/lookup?bundleId=$kPackageName',
-              options: Options(responseType: ResponseType.plain, headers: {
-                'User-Agent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
-                    " AppleWebKit/537.36 (KHTML, like Gecko)"
-                    " Chrome/88.0.4324.146"
-                    " Safari/537.36 Edg/88.0.705.62"
-              }));
-      // print(response.data);
-      final jsonData = json.decode(response.data.toString().trim());
-      // logger.d(jsonData);
-      final result = jsonData['results'][0];
-      versionString = result['version'];
-      releaseNote = result['releaseNotes'];
-    } else if (Platform.isMacOS) {
-      // not supported yet
-    }
-  } catch (e, s) {
-    logger.e('Query update failed: $e', e, s);
-  }
-  if (versionString == null) {
-    logger.w('Failed to query app updates');
-    if (!background) {
-      SimpleCancelOkDialog(
-        title: Text(S.of(context).about_update_app),
-        content: Text(S.of(context).query_failed),
-        hideOk: true,
-      ).show(context);
-    }
-    return;
-  }
-
-  Version? version = Version.tryParse(versionString);
-  Version? curVer = Version.tryParse(AppInfo.fullVersion);
-  bool appUpgradable = version != null && curVer != null && version > curVer;
-  db.runtimeData.upgradableVersion = appUpgradable ? version : null;
-  if (!kDebugMode && (Platform.isIOS || Platform.isMacOS)) {
-    // Guideline 2.4.5(vii) - Performance
-    // The Mac App Store provides customers with notifications of updates
-    // pending for all apps delivered through the App Store, and allows the
-    // user to update applications through the Mac App Store app. You should
-    // not provide additional update checks or updates through your app.
-    if (!background) {
-      launch(kAppStoreLink);
-    }
-    return;
-  }
-
-  // android & windows
-  // no update
-  if (background && !appUpgradable) {
-    logger.i('No update: fetched=${version?.fullVersion}, '
-        'cur=${curVer?.fullVersion}');
-    return;
-  }
-  // upgradable, ignore
-  if (background &&
-      db.prefs.instance.getString(SharedPrefs.ignoreAppVersion) ==
-          versionString) {
-    logger.i('Latest version: $versionString, ignore this update.');
-    return;
-  }
-
-  releaseNote = releaseNote?.replaceAll('\r\n', '\n');
-  logger.i('Release note:\n$releaseNote');
-
-  // background&&upgradable, user-click
-  SimpleCancelOkDialog(
-    title: Text(S.of(context).about_update_app),
-    content: SingleChildScrollView(
-      child: Text(
-        S.of(context).about_update_app_detail(
-            AppInfo.fullVersion, versionString, releaseNote ?? '-'),
-      ),
-    ),
-    hideOk: true,
-    wrapActionsInRow: true,
-    actions: [
-      TextButton(
-        child: Text(S.of(context).update),
-        onPressed: !appUpgradable || launchUrl == null
-            ? null
-            : () => launch(launchUrl!),
-      ),
-      if (appUpgradable)
-        TextButton(
-          child: Text(S.of(context).ignore),
-          onPressed: () {
-            db.prefs.instance
-                .setString(SharedPrefs.ignoreAppVersion, versionString!);
-            Navigator.of(context).pop();
-          },
-        ),
-      if (Platform.isAndroid)
-        TextButton(
-          child: Text('Google Play'),
-          onPressed: () {
-            launch(kGooglePlayLink);
-          },
-        ),
-      if (Platform.isIOS || Platform.isMacOS)
-        TextButton(
-          child: Text('App Store'),
-          onPressed: () {
-            launch(kAppStoreLink);
-          },
-        ),
-      if (Platform.isWindows)
-        TextButton(
-          child: Text('${gitTool.source.toTitleString()} Release'),
-          onPressed: () {
-            launch(gitTool.appReleaseUrl);
-          },
-        ),
-    ],
-  ).show(context);
 }
 
 Future<void> jumpToExternalLinkAlert(

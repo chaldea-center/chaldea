@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/shared_prefs.dart';
+import 'package:chaldea/modules/extras/updates.dart';
 import 'package:chaldea/modules/home/subpage/login_page.dart';
 import 'package:chaldea/modules/home/subpage/user_data_page.dart';
 import 'package:flutter/foundation.dart';
@@ -153,6 +154,9 @@ class _SettingsPageState extends State<SettingsPage> {
               ListTile(
                 title: Text(MaterialLocalizations.of(context)
                     .aboutListTileTitle(AppInfo.appName)),
+                trailing: db.runtimeData.upgradableVersion == null
+                    ? null
+                    : Text(db.runtimeData.upgradableVersion!.version+' ↑',style: TextStyle(),),
                 onTap: () => SplitRoute.push(
                   context: context,
                   builder: (context, _) => AboutPage(),
@@ -180,7 +184,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               if (Platform.isAndroid)
                 ListTile(
-                  title: Text('Rate on Google Play Store'),
+                  title: Text('Rate on Google Play'),
                   onTap: () {
                     launch(kGooglePlayLink);
                   },
@@ -308,5 +312,7 @@ class _SettingsPageState extends State<SettingsPage> {
 }
 
 void _testFunc() async {
-  throw 'Generated error';
+  // throw 'Generated error';
+  await AutoUpdateUtil().autoUpdateDataset();
+  print('finish');
 }

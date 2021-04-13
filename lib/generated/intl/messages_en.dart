@@ -43,7 +43,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m11(total, hidden) => "Total ${total} results (${hidden} hidden)";
 
-  static m12(a, b) => "${a} ${b}";
+  static m12(tempDir, externalBackupDir) => "User data backup is stored in a temporary directory(\$${tempDir})\nDelete the app/install other architecture installer (e.g. from arm64-v8a to armeabi-v7a)/changes to the build number in future will result in deletion of user data and temporary backups. It is highly recommended to enable storage permissions to back up to (\$externalBackupDir})";
+
+  static m13(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
@@ -68,6 +70,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ascension" : MessageLookupByLibrary.simpleMessage("Ascension"),
     "ascension_short" : MessageLookupByLibrary.simpleMessage("Ascen"),
     "ascension_up" : MessageLookupByLibrary.simpleMessage("Ascension"),
+    "auto_update" : MessageLookupByLibrary.simpleMessage("Auto Update"),
     "backup" : MessageLookupByLibrary.simpleMessage("Backup"),
     "backup_data_alert" : MessageLookupByLibrary.simpleMessage("Timely backup wanted"),
     "backup_success" : MessageLookupByLibrary.simpleMessage("Backup successfully"),
@@ -236,6 +239,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "info_weak_to_ea" : MessageLookupByLibrary.simpleMessage("Weak to EA"),
     "info_weight" : MessageLookupByLibrary.simpleMessage("Weight"),
     "input_invalid_hint" : MessageLookupByLibrary.simpleMessage("Invalid inputs"),
+    "install" : MessageLookupByLibrary.simpleMessage("Install"),
     "interlude_and_rankup" : MessageLookupByLibrary.simpleMessage("Interlude & Rank Up"),
     "ios_app_path" : MessageLookupByLibrary.simpleMessage("\"Files\" app/On My iPhone/Chaldea"),
     "item" : MessageLookupByLibrary.simpleMessage("Item"),
@@ -269,6 +273,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "limited_event" : MessageLookupByLibrary.simpleMessage("Limited Event"),
     "link" : MessageLookupByLibrary.simpleMessage("link"),
     "list_end_hint" : m8,
+    "load_dataset_error" : MessageLookupByLibrary.simpleMessage("Error loading dataset"),
+    "load_dataset_error_hint" : MessageLookupByLibrary.simpleMessage("Please reload default gamedata in Settings-Gamedata"),
     "login_change_password" : MessageLookupByLibrary.simpleMessage("Change Password"),
     "login_first_hint" : MessageLookupByLibrary.simpleMessage("Please login first"),
     "login_hint_text" : MessageLookupByLibrary.simpleMessage("A simple account system for userdata backup to server and multi-device synchronization\nNO security guarantee, PLEASE DON\'T set frequently used passwords!!!"),
@@ -322,6 +328,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "quest" : MessageLookupByLibrary.simpleMessage("Quest"),
     "quest_condition" : MessageLookupByLibrary.simpleMessage("Conditions"),
     "rarity" : MessageLookupByLibrary.simpleMessage("Rarity"),
+    "release_page" : MessageLookupByLibrary.simpleMessage("Release Page"),
     "reload_data_success" : MessageLookupByLibrary.simpleMessage("Import successfully"),
     "reload_default_gamedata" : MessageLookupByLibrary.simpleMessage("Reload default"),
     "reloading_data" : MessageLookupByLibrary.simpleMessage("Importing"),
@@ -333,6 +340,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "reset_success" : MessageLookupByLibrary.simpleMessage("Reset successfully"),
     "reset_svt_enhance_state" : MessageLookupByLibrary.simpleMessage("Reset servant enhancements"),
     "reset_svt_enhance_state_hint" : MessageLookupByLibrary.simpleMessage("Reset rank up of skills and nobel phantasm"),
+    "restart_to_upgrade" : MessageLookupByLibrary.simpleMessage("Restart to upgrade"),
     "restore" : MessageLookupByLibrary.simpleMessage("Restore"),
     "save" : MessageLookupByLibrary.simpleMessage("Save"),
     "save_to_photos" : MessageLookupByLibrary.simpleMessage("Save to Photos"),
@@ -362,9 +370,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "skilled_max10" : MessageLookupByLibrary.simpleMessage("Skills Max(310)"),
     "statistics_include_checkbox" : MessageLookupByLibrary.simpleMessage("Including owned items"),
     "statistics_title" : MessageLookupByLibrary.simpleMessage("Statistics"),
+    "storage_permission_content" : m12,
+    "storage_permission_title" : MessageLookupByLibrary.simpleMessage("Storage Permission"),
     "success" : MessageLookupByLibrary.simpleMessage("Success"),
     "summon" : MessageLookupByLibrary.simpleMessage("Summon"),
     "summon_title" : MessageLookupByLibrary.simpleMessage("Summons"),
+    "support_chaldea" : MessageLookupByLibrary.simpleMessage("Support Chaldea"),
     "svt_info_tab_base" : MessageLookupByLibrary.simpleMessage("Basic Info"),
     "svt_info_tab_bond_story" : MessageLookupByLibrary.simpleMessage("Lore"),
     "svt_not_planned" : MessageLookupByLibrary.simpleMessage("Not favorite"),
@@ -392,7 +403,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "version" : MessageLookupByLibrary.simpleMessage("Version"),
     "view_illustration" : MessageLookupByLibrary.simpleMessage("View Illustration"),
     "voice" : MessageLookupByLibrary.simpleMessage("Voice"),
-    "words_separate" : m12,
+    "words_separate" : m13,
     "yes" : MessageLookupByLibrary.simpleMessage("Yes")
   };
 }

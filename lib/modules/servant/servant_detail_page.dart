@@ -205,7 +205,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
               });
               db.itemStat.updateSvtItems();
             },
-          ).show(context);
+          ).showDialog(context);
         } else if (select == 'reset_enhance') {
           setState(() {
             status.resetEnhancement();
@@ -219,7 +219,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
             SimpleCancelOkDialog(
               title: Text('复制从者失败'),
               content: Text('同一从者超过999个上限'),
-            ).show(context);
+            ).showDialog(context);
           } else {
             SplitRoute.push(
               context: context,

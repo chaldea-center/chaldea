@@ -1545,7 +1545,10 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
                 (k, e) => MapEntry(k, e as bool),
               )),
       serverRoot: $checkedConvert(json, 'serverRoot', (v) => v as String?),
-      updateSource: $checkedConvert(json, 'updateSource', (v) => v as int?),
+      downloadSource: $checkedConvert(json, 'downloadSource', (v) => v as int?),
+      autoUpdateApp: $checkedConvert(json, 'autoUpdateApp', (v) => v as bool?),
+      autoUpdateDataset:
+          $checkedConvert(json, 'autoUpdateDataset', (v) => v as bool?),
       autorotate: $checkedConvert(json, 'autorotate', (v) => v as bool?),
       curUserKey: $checkedConvert(json, 'curUserKey', (v) => v as String?),
       users: $checkedConvert(
@@ -1591,7 +1594,9 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'sliderUrls': instance.sliderUrls,
       'galleries': instance.galleries,
       'serverRoot': instance.serverRoot,
-      'updateSource': instance.updateSource,
+      'downloadSource': instance.downloadSource,
+      'autoUpdateApp': instance.autoUpdateApp,
+      'autoUpdateDataset': instance.autoUpdateDataset,
       'autorotate': instance.autorotate,
       'users': instance.users,
       'svtFilter': instance.svtFilter,

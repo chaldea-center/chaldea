@@ -159,7 +159,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
   - 保存：保存PNG图片，移动端可选择是否导入到相册，抽卡页面可单击卡牌全屏/长按保存
 4.解包数据来源于icyalala@NGA，稍作修正，从者编号可能与其他来源有所不同（主要是乌冬从者）
 5.使用Gitee下载源时两个压缩包均需下载导入"""),
-        ).show(context);
+        ).showDialog(context);
       },
       icon: Icon(Icons.help_outline),
       tooltip: S.current.help,
@@ -274,7 +274,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
               ),
             );
           }),
-        ).show(context);
+        ).showDialog(context);
       },
     );
   }

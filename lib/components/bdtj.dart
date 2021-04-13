@@ -25,7 +25,7 @@ String _constructUrl({String? platform}) {
   return '$kServerRoot/bdtj/${Language.currentLocaleCode}/${platform ?? Platform.operatingSystem}/${AppInfo.version}';
 }
 
-String? _getUserAgent() {
+String? getDefaultUserAgent() {
   if (Platform.isWindows) {
     return ' Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36 Edg/89.0.774.54';
   } else if (Platform.isMacOS) {
@@ -120,7 +120,7 @@ Future<void> reportBdtj({String? bdId}) async {
       logger.i(_param);
       return _param.map((key, value) => MapEntry(key, value.toString()));
     };
-    final _dio = Dio(BaseOptions(headers: {'User-Agent': _getUserAgent()}));
+    final _dio = Dio(BaseOptions(headers: {'User-Agent': getDefaultUserAgent()}));
     _dio.interceptors.add(CookieManager(cookieJar));
     await _dio.get(hjs);
     String gifUrl1 =

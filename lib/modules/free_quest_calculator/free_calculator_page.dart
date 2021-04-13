@@ -52,7 +52,7 @@ class _FreeQuestCalculatorPageState extends State<FreeQuestCalculatorPage>
               SimpleCancelOkDialog(
                 title: Text(S.of(context).help),
                 content: Text(S.of(context).drop_calc_help_text),
-              ).show(context);
+              ).showDialog(context);
             },
           )
         ],
@@ -223,7 +223,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                           params.removeAll();
                         });
                       },
-                    ).show(context);
+                    ).showDialog(context);
                   })
             ],
           ),
