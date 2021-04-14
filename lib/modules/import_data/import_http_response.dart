@@ -50,13 +50,16 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
     _shownSvts.clear();
     return Column(
       children: [
+        Padding(padding: EdgeInsets.only(top: 6)),
         Expanded(
           child: response == null
-              ? SingleChildScrollView(
-                  padding: EdgeInsets.all(8),
-                  child: Center(
-                      child: Text('点击右上角导入解密的HTTPS响应包以导入账户数据\n'
-                          '点击帮助以查看如何捕获并解密HTTPS响应内容')),
+              ? Column(
+                  children: [
+                    Padding(padding: EdgeInsets.only(top: 8)),
+                    if (!Language.isCN)
+                      Text('Only Simplified Chinese server is supported yet'),
+                    if (!Language.isCN) Text(S.current.import_http_body_hint),
+                  ],
                 )
               : LayoutBuilder(
                   builder: (context, constraints) => ListView(
@@ -75,7 +78,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
         kDefaultDivider,
         buttonBar,
         Text(
-          '点击从者可隐藏/取消隐藏该从者',
+          S.current.import_http_body_hint_hide,
           style: TextStyle(color: Colors.grey, fontSize: 13),
         )
       ],
@@ -333,7 +336,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
                   _isLocked = v ?? _isLocked;
                 });
               },
-              label: Text('仅锁定'),
+              label: Text(S.current.import_http_body_locked),
             ),
             CheckboxWithLabel(
               value: _allowDuplicated,
@@ -342,11 +345,11 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
                   _allowDuplicated = v ?? _allowDuplicated;
                 });
               },
-              label: Text('允许2号机'),
+              label: Text(S.current.import_http_body_duplicated),
             ),
             ElevatedButton(
               onPressed: response == null ? null : didImportData,
-              child: Text('导入到'),
+              child: Text(S.current.import_data),
             )
           ],
         )
@@ -377,7 +380,8 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
         ));
         return SimpleDialog(
           title: Text(
-            '导入${items.length}个素材, ${servants.length}从者到',
+            S.current.import_http_body_target_account_header(
+                items.length, servants.length),
             style: TextStyle(fontSize: 16),
           ),
           children: divideTiles(children, top: true),
@@ -440,7 +444,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
     SimpleCancelOkDialog(
       hideCancel: true,
       title: Text(S.current.import_data_success),
-      content: Text('已切换到账户 ${user.name}'),
+      content: Text(S.current.import_http_body_success_switch(user.name)),
     ).showDialog(context);
   }
 

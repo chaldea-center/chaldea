@@ -152,7 +152,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       //   ),
       GalleryItem.exp_card: GalleryItem(
         name: GalleryItem.exp_card,
-        title: '狗粮需求',
+        title: S.current.exp_card_title,
         icon: Icons.rice_bowl,
         builder: (context, _) => ExpCardCostPage(),
         isDetail: true,
@@ -411,7 +411,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         return <String, String>{};
       });
       await Future.forEach<Future<Map<String, String>>>(
-          [task3, task1, task2], (e) async => result.addAll(await e));
+          [task1, task3, task2], (e) async => result.addAll(await e));
       if (showToast) {
         EasyLoading.showSuccess('slides updated');
       }

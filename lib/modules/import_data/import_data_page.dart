@@ -42,8 +42,9 @@ class _ImportDataPageState extends State<ImportDataPage>
         ],
         bottom: TabBar(
           controller: _tabController,
+          isScrollable: !Language.isCN,
           tabs: [
-            Tab(text: 'HTTP响应'),
+            Tab(text: 'HTTP'),
             Tab(text: S.of(context).item_screenshot),
             Tab(text: S.of(context).import_guda_data)
           ],

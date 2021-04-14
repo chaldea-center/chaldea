@@ -18,7 +18,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: Text('狗粮需求'),
+        title: Text(S.current.exp_card_title),
         actions: [
           IconButton(
             onPressed: () {
@@ -46,14 +46,14 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
                 onChanged: (v) => setState(() {
                   use5 = v ?? use5;
                 }),
-                label: Text('五星狗粮'),
+                label: Text(S.current.exp_card_rarity5),
               ),
               CheckboxWithLabel(
                 value: sameClass,
                 onChanged: (v) => setState(() {
                   sameClass = v ?? sameClass;
                 }),
-                label: Text('相同职阶'),
+                label: Text(S.current.exp_card_same_class),
               ),
             ],
           ),
@@ -76,7 +76,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
           items: List.generate(
             6,
             (index) => DropdownMenuItem(
-              child: Text('${5 - index}星'),
+              child: Text('${5 - index}☆'),
               value: 5 - index,
             ),
           ),
@@ -85,7 +85,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
           }),
         ),
         Padding(padding: EdgeInsets.only(right: 10)),
-        Text('等级规划'),
+        Text(S.current.exp_card_plan_lv),
         TextButton(
           onPressed: () {
             data.lvs.sort();
@@ -275,9 +275,10 @@ class _ExpLvRangeSelectorState extends State<ExpLvRangeSelector> {
           AppBar(
             toolbarHeight: 36,
             leading: BackButton(),
+            titleSpacing: 0,
             centerTitle: true,
             title: Text(
-              '选择起始和目标等级',
+              S.current.exp_card_select_lvs,
               style: TextStyle(fontSize: 16),
             ),
           ),

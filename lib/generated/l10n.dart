@@ -3532,10 +3532,10 @@ class S {
     );
   }
 
-  /// `用户数据备份储存于临时目录(${tempDir})\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至(${externalBackupDir}})`
+  /// `用户数据备份储存于临时目录({tempDir})\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至({externalBackupDir}})`
   String storage_permission_content(Object tempDir, Object externalBackupDir) {
     return Intl.message(
-      '用户数据备份储存于临时目录(\$$tempDir)\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至(\$$externalBackupDir})',
+      '用户数据备份储存于临时目录($tempDir)\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至($externalBackupDir})',
       name: 'storage_permission_content',
       desc: '',
       args: [tempDir, externalBackupDir],
@@ -3607,6 +3607,116 @@ class S {
     return Intl.message(
       '重启以更新应用，若更新失败，请手动复制source文件夹到destination',
       name: 'restart_to_upgrade_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `仅锁定`
+  String get import_http_body_locked {
+    return Intl.message(
+      '仅锁定',
+      name: 'import_http_body_locked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `允许2号机`
+  String get import_http_body_duplicated {
+    return Intl.message(
+      '允许2号机',
+      name: 'import_http_body_duplicated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `点击右上角导入解密的HTTPS响应包以导入账户数据\n点击帮助以查看如何捕获并解密HTTPS响应内容`
+  String get import_http_body_hint {
+    return Intl.message(
+      '点击右上角导入解密的HTTPS响应包以导入账户数据\n点击帮助以查看如何捕获并解密HTTPS响应内容',
+      name: 'import_http_body_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `点击从者可隐藏/取消隐藏该从者`
+  String get import_http_body_hint_hide {
+    return Intl.message(
+      '点击从者可隐藏/取消隐藏该从者',
+      name: 'import_http_body_hint_hide',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `导入{itemNum}个素材,{svtNum}从者到`
+  String import_http_body_target_account_header(Object itemNum, Object svtNum) {
+    return Intl.message(
+      '导入$itemNum个素材,$svtNum从者到',
+      name: 'import_http_body_target_account_header',
+      desc: '',
+      args: [itemNum, svtNum],
+    );
+  }
+
+  /// `已切换到账号{account}`
+  String import_http_body_success_switch(Object account) {
+    return Intl.message(
+      '已切换到账号$account',
+      name: 'import_http_body_success_switch',
+      desc: '',
+      args: [account],
+    );
+  }
+
+  /// `狗粮需求`
+  String get exp_card_title {
+    return Intl.message(
+      '狗粮需求',
+      name: 'exp_card_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `五星狗粮`
+  String get exp_card_rarity5 {
+    return Intl.message(
+      '五星狗粮',
+      name: 'exp_card_rarity5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `相同职阶`
+  String get exp_card_same_class {
+    return Intl.message(
+      '相同职阶',
+      name: 'exp_card_same_class',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `等级规划`
+  String get exp_card_plan_lv {
+    return Intl.message(
+      '等级规划',
+      name: 'exp_card_plan_lv',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `选择起始和目标等级`
+  String get exp_card_select_lvs {
+    return Intl.message(
+      '选择起始和目标等级',
+      name: 'exp_card_select_lvs',
       desc: '',
       args: [],
     );
