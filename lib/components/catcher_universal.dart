@@ -11,6 +11,7 @@ import 'package:catcher/catcher.dart';
 import 'package:catcher/model/platform_type.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart';
 import 'package:logging/logging.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
@@ -109,15 +110,9 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
         ..text = _setupRawMessageText(report)
         ..attachments = _archiveAttachments(attachments);
       if (screenshot) {
-        String shotFn = pathlib.join(db.paths.appPath, 'crash.png');
-        Uint8List? shotBinary =
-            await db.runtimeData.screenshotController?.capture(
-          pixelRatio: MediaQuery.of(kAppKey.currentContext!).devicePixelRatio,
-          delay: Duration(milliseconds: 500),
-        );
-        if (shotBinary != null) {
-          File(shotFn).writeAsBytesSync(shotBinary, flush: true);
-          message.attachments.add(FileAttachment(File(shotFn)));
+        final shot = await _captureScreenshot();
+        if (shot != null) {
+          message.attachments.add(shot);
         }
       }
       if (sendHtml) {
@@ -155,6 +150,20 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
     }
     encoder.close();
     return [FileAttachment(File(archiveTmpFp), fileName: 'attachment.zip')];
+  }
+
+  Future<Attachment?> _captureScreenshot() async {
+    String shotFn = pathlib.join(db.paths.appPath, 'crash.jpg');
+    Uint8List? shotBinary = await db.runtimeData.screenshotController?.capture(
+      pixelRatio: MediaQuery.of(kAppKey.currentContext!).devicePixelRatio,
+      delay: Duration(milliseconds: 500),
+    );
+    if (shotBinary == null) return null;
+    final img = decodePng(shotBinary);
+    if (img == null) return null;
+    final f = File(shotFn);
+    await f.writeAsBytes(encodeJpg(img, quality: 60), flush: true);
+    return FileAttachment(f);
   }
 
   SmtpServer _setupSmtpServer() {

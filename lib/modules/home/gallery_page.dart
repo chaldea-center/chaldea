@@ -411,7 +411,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         return <String, String>{};
       });
       await Future.forEach<Future<Map<String, String>>>(
-          [task1, task2, task3], (e) async => result.addAll(await e));
+          [task3, task1, task2], (e) async => result.addAll(await e));
       if (showToast) {
         EasyLoading.showSuccess('slides updated');
       }
