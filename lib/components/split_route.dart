@@ -76,7 +76,8 @@ class SplitRoute<T extends Object?> extends TransitionRoute<T>
   }
 
   /// check current size to use split view or not
-  static bool isSplit(BuildContext context) {
+  static bool isSplit(BuildContext? context) {
+    if (context == null) return false;
     final size = MediaQuery.of(context).size;
     return size.width > size.height && size.width >= 768;
   }
