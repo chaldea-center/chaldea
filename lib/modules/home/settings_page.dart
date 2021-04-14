@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/shared_prefs.dart';
-import 'package:chaldea/modules/extras/updates.dart';
+import 'package:chaldea/components/method_channel_chaldea.dart';
 import 'package:chaldea/modules/home/subpage/login_page.dart';
 import 'package:chaldea/modules/home/subpage/user_data_page.dart';
 import 'package:flutter/foundation.dart';
@@ -19,6 +16,10 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  bool get alwaysOnTop => db.prefs.instance.getBool('alwaysOnTop') ?? false;
+
+  set alwaysOnTop(bool v) => db.prefs.instance.setBool('alwaysOnTop', v);
+
   @override
   void initState() {
     super.initState();
@@ -136,6 +137,16 @@ class _SettingsPageState extends State<SettingsPage> {
                     db.notifyAppUpdate();
                   },
                 ),
+              if (Platform.isMacOS)
+                SwitchListTile.adaptive(
+                  value: alwaysOnTop,
+                  title: Text('Always On Top'),
+                  onChanged: (v) async {
+                    alwaysOnTop = v;
+                    MethodChannelChaldea.setAlwaysOnTop(v);
+                    setState(() {});
+                  },
+                ),
               // if (Platform.isAndroid || Platform.isIOS)
               //   SwitchListTile.adaptive(
               //     title: Text(S.of(context).settings_use_mobile_network),
@@ -156,7 +167,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     .aboutListTileTitle(AppInfo.appName)),
                 trailing: db.runtimeData.upgradableVersion == null
                     ? null
-                    : Text(db.runtimeData.upgradableVersion!.version+' ↑',style: TextStyle(),),
+                    : Text(
+                        db.runtimeData.upgradableVersion!.version + ' ↑',
+                        style: TextStyle(),
+                      ),
                 onTap: () => SplitRoute.push(
                   context: context,
                   builder: (context, _) => AboutPage(),
@@ -202,7 +216,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ],
           ),
-          if (kDebugMode_)
+          if (kDebugMode)
             TileGroup(
               header: 'Test(debug mode: ${kDebugMode ? 'on' : 'off'})',
               children: <Widget>[
@@ -289,8 +303,8 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget get userTile {
-    String? userName = db.prefs.instance.getString(SharedPrefs.userName);
-    String? userPwd = db.prefs.instance.getString(SharedPrefs.userPwd);
+    String? userName = db.prefs.userName.get();
+    String? userPwd = db.prefs.userPwd.get();
     String trailing;
     if (userName == null || userPwd == null) {
       trailing = S.current.login_state_not_login;
@@ -313,6 +327,16 @@ class _SettingsPageState extends State<SettingsPage> {
 
 void _testFunc() async {
   // throw 'Generated error';
-  await AutoUpdateUtil().autoUpdateDataset();
-  print('finish');
+  void _a<T>() {
+    print('T is $T');
+    if (T == String) print('T=String');
+    if (T == int) print('T=int');
+    if (T == dynamic) print('T=dynamic');
+    if (T == Null) print('T=Null');
+    if (T == List) print('T=List');
+  }
+
+  _a();
+  _a<List>();
+  _a<List<String>>();
 }

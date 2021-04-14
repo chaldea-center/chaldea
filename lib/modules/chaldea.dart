@@ -1,11 +1,10 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:catcher/catcher.dart';
 import 'package:chaldea/components/bdtj.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/git_tool.dart';
-import 'package:chaldea/components/shared_prefs.dart';
+import 'package:chaldea/components/method_channel_chaldea.dart';
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:chaldea/modules/home/home_page.dart';
 import 'package:flutter/scheduler.dart';
@@ -45,6 +44,9 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         db.paths.externalAppPath = externalBackupDir;
         print(db.paths.externalAppPath);
       }
+    } else if (Platform.isMacOS) {
+      MethodChannelChaldea.setAlwaysOnTop(
+          db.prefs.instance.getBool('alwaysOnTop') ?? false);
     }
 
     // if failed to load userdata, backup and alert user
@@ -140,8 +142,8 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
 
     // if app updated, reload gamedata
     bool gameDataLoadSuccess = false;
-    final previousVersion = Version.tryParse(
-        db.prefs.instance.getString(SharedPrefs.previousVersion) ?? '');
+    final previousVersion =
+        Version.tryParse(db.prefs.previousVersion.get() ?? '');
     bool justUpdated =
         previousVersion == null || previousVersion < AppInfo.versionClass;
     try {
@@ -155,8 +157,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
           _showProgress = true;
         });
         await db.loadZipAssets(kDatasetAssetKey);
-        db.prefs.instance
-            .setString(SharedPrefs.previousVersion, AppInfo.fullVersion);
+        db.prefs.previousVersion.set(AppInfo.fullVersion);
         db.saveUserData();
         gameDataLoadSuccess = db.loadGameData();
       } else {

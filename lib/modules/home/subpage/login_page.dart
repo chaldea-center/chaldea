@@ -25,16 +25,15 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     super.initState();
-    _nameController = TextEditingController(
-        text: db.prefs.instance.getString(SharedPrefs.userName))
+    _nameController = TextEditingController(text: db.prefs.userName.get())
       ..addListener(() {
         setState(() {});
       });
-    _pwdController = TextEditingController(
-        text: _decode(db.prefs.instance.getString(SharedPrefs.userPwd)))
-      ..addListener(() {
-        setState(() {});
-      });
+    _pwdController =
+        TextEditingController(text: _decode(db.prefs.userPwd.get()))
+          ..addListener(() {
+            setState(() {});
+          });
     _newPwdController = TextEditingController()
       ..addListener(() {
         setState(() {});
@@ -209,8 +208,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void doLogout() {
-    db.prefs.instance.remove(SharedPrefs.userName);
-    db.prefs.instance.remove(SharedPrefs.userPwd);
+    db.prefs.userName.remove();
+    db.prefs.userPwd.remove();
     db.notifyDbUpdate();
     SimpleCancelOkDialog(
       content: Text('Logged out'),
@@ -256,8 +255,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _saveUserInfo(String name, String pwd) {
-    db.prefs.instance.setString(SharedPrefs.userName, name);
-    db.prefs.instance.setString(SharedPrefs.userPwd, b64(pwd, false));
+    db.prefs.userName.set(name);
+    db.prefs.userPwd.set(b64(pwd, false));
     db.notifyDbUpdate();
   }
 }

@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'config.dart';
-import 'shared_prefs.dart';
 
 class PageReportModeCross extends ReportMode {
   final bool showStackTrace;
@@ -70,8 +69,8 @@ class _PageWidgetState extends State<_PageWidget> {
   @override
   void initState() {
     super.initState();
-    _textEditingController = TextEditingController(
-        text: db.prefs.instance.getString(SharedPrefs.contactInfo));
+    _textEditingController =
+        TextEditingController(text: db.prefs.contactInfo.get());
   }
 
   @override
@@ -136,7 +135,7 @@ class _PageWidgetState extends State<_PageWidget> {
               labelText: 'Contact information (Optional)',
             ),
             onChanged: (s) {
-              db.prefs.instance.setString(SharedPrefs.contactInfo, s);
+              db.prefs.contactInfo.set(s);
             },
           ),
           const Padding(

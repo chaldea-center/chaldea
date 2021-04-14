@@ -1,3 +1,4 @@
+export 'dart:io' show Platform, File, Directory;
 export 'dart:math' show min, max;
 
 export 'package:chaldea/generated/l10n.dart';

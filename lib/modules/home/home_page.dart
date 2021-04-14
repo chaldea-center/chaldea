@@ -1,7 +1,5 @@
-import 'dart:io';
-
 import 'package:chaldea/components/components.dart';
-import 'package:flutter/services.dart';
+import 'package:chaldea/components/method_channel_chaldea.dart';
 
 import 'gallery_page.dart';
 import 'settings_page.dart';
@@ -12,7 +10,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _androidAppRetain = const MethodChannel("cc.narumi.chaldea");
   int _curIndex = 0;
 
   @override
@@ -24,7 +21,7 @@ class _HomePageState extends State<HomePage> {
           if (Navigator.of(context).canPop()) {
             return Future.value(true);
           } else {
-            _androidAppRetain.invokeMethod("sendBackground");
+            MethodChannelChaldea.sendBackground();
             print('sendBackground');
             return Future.value(false);
           }

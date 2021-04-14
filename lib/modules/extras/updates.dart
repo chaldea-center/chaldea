@@ -147,8 +147,7 @@ class AutoUpdateUtil {
               'cur=${AppInfo.fullVersion2}');
           return;
         }
-        if (db.prefs.instance.getString(SharedPrefs.ignoreAppVersion) ==
-            version!.version) {
+        if (db.prefs.ignoreAppVersion.get() == version!.version) {
           logger.i('Latest version: $version, ignore this update.');
           return;
         }
@@ -243,8 +242,7 @@ class AutoUpdateUtil {
           TextButton(
             child: Text(S.current.ignore),
             onPressed: () {
-              db.prefs.instance
-                  .setString(SharedPrefs.ignoreAppVersion, version!.version);
+              db.prefs.ignoreAppVersion.set(version!.version);
               Navigator.of(context).pop();
             },
           ),
@@ -331,7 +329,7 @@ class AutoUpdateUtil {
         onTapOk: () async {
           db.saveUserData();
           await Future.delayed(Duration(seconds: 1));
-          Process.start(cmdFp, [], mode: ProcessStartMode.detached);
+          Process.start(cmdFp, ['>>"$logFp"', '2>&1'], mode: ProcessStartMode.detached);
         },
       ).showDialog();
     }
@@ -342,7 +340,8 @@ class AutoUpdateUtil {
     if (!File(logFp).existsSync()) File(logFp).createSync(recursive: true);
     StringBuffer buffer = StringBuffer();
     void _writeln(String command) {
-      buffer.writeln('$command >>"$logFp" 2>&1');
+      // buffer.writeln('$command >>"$logFp" 2>&1');
+      buffer.writeln(command);
     }
 
     _writeln('echo ready to kill chaldea.exe PID=$pid');

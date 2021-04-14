@@ -9,7 +9,7 @@ import io.flutter.plugin.common.MethodChannel
 
 
 class MainActivity : FlutterActivity() {
-    private val _channel = "cc.narumi.chaldea"
+    private val _channel = "chaldea.narumi.cc/chaldea"
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 //        GeneratedPluginRegistrant.registerWith(flutterEngine)
