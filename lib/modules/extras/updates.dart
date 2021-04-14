@@ -130,7 +130,7 @@ class AutoUpdateUtil {
       // if (kDebugMode) upgradable = true;
       db.runtimeData.upgradableVersion = upgradable ? version : null;
 
-      if (kReleaseMode && (Platform.isIOS || Platform.isMacOS)) {
+      if (kReleaseMode && (Platform.isIOS || AppInfo.isMacStoreApp)) {
         // Guideline 2.4.5(vii) - Performance
         // The Mac App Store provides customers with notifications of updates
         // pending for all apps delivered through the App Store, and allows the
@@ -329,7 +329,8 @@ class AutoUpdateUtil {
         onTapOk: () async {
           db.saveUserData();
           await Future.delayed(Duration(seconds: 1));
-          Process.start(cmdFp, ['>>"$logFp"', '2>&1'], mode: ProcessStartMode.detached);
+          Process.start(cmdFp, ['>>"$logFp"', '2>&1'],
+              mode: ProcessStartMode.detached);
         },
       ).showDialog();
     }

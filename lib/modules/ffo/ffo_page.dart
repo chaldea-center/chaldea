@@ -12,6 +12,7 @@ import 'package:csv/csv.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path/path.dart' show dirname;
 import 'package:url_launcher/url_launcher.dart';
 

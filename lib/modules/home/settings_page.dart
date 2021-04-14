@@ -1,5 +1,6 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/method_channel_chaldea.dart';
+import 'package:chaldea/modules/_test_page.dart';
 import 'package:chaldea/modules/home/subpage/login_page.dart';
 import 'package:chaldea/modules/home/subpage/user_data_page.dart';
 import 'package:flutter/foundation.dart';
@@ -222,7 +223,7 @@ class _SettingsPageState extends State<SettingsPage> {
               children: <Widget>[
                 ListTile(
                   title: Text('Test Func'),
-                  onTap: _testFunc,
+                  onTap: testFunction,
                 ),
                 ListTile(
                   title: Text('Master-Detail width'),
@@ -323,20 +324,4 @@ class _SettingsPageState extends State<SettingsPage> {
       },
     );
   }
-}
-
-void _testFunc() async {
-  // throw 'Generated error';
-  void _a<T>() {
-    print('T is $T');
-    if (T == String) print('T=String');
-    if (T == int) print('T=int');
-    if (T == dynamic) print('T=dynamic');
-    if (T == Null) print('T=Null');
-    if (T == List) print('T=List');
-  }
-
-  _a();
-  _a<List>();
-  _a<List<String>>();
 }

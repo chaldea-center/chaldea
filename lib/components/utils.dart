@@ -317,19 +317,6 @@ String fullToHalf(String s) {
   return s2;
 }
 
-Future<ProcessResult> openDesktopPath(String fp) {
-  if (Platform.isMacOS || Platform.isWindows) {
-    return Process.run(
-      Platform.isMacOS ? 'open' : 'start',
-      [fp],
-      runInShell: true,
-    );
-  } else {
-    throw ArgumentError.value(
-        Platform.operatingSystem, 'OS', 'open path only supported in desktop');
-  }
-}
-
 void catchErrorSync(
   Function callback, {
   VoidCallback? onSuccess,

@@ -7,6 +7,7 @@ import 'package:chaldea/modules/home/subpage/login_page.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:json_patch/json_patch.dart';
+import 'package:open_file/open_file.dart';
 import 'package:share/share.dart';
 
 class UserDataPage extends StatefulWidget {
@@ -172,7 +173,7 @@ class _UserDataPageState extends State<UserDataPage> {
               TextButton(
                 child: Text(S.of(context).open),
                 onPressed: () {
-                  openDesktopPath(db.paths.userDir);
+                  OpenFile.open(db.paths.userDir);
                 },
               ),
           ],

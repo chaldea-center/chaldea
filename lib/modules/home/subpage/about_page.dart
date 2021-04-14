@@ -64,7 +64,8 @@ class _AboutPageState extends State<AboutPage> {
                           '(${db.runtimeData.upgradableVersion?.version} ↑)',
                           style: TextStyle(color: Colors.red),
                         ),
-                      if (!Platform.isIOS && !Platform.isMacOS || kDebugMode)
+                      if (!Platform.isIOS && !AppInfo.isMacStoreApp ||
+                          kDebugMode)
                         ElevatedButton(
                           onPressed: () => AutoUpdateUtil().checkAppUpdate(
                               background: false, download: false),
@@ -107,15 +108,16 @@ class _AboutPageState extends State<AboutPage> {
           TileGroup(
             header: 'APP',
             children: [
-              SwitchListTile.adaptive(
-                value: db.userData.autoUpdateApp,
-                title: Text(S.current.auto_update),
-                onChanged: (v) {
-                  setState(() {
-                    db.userData.autoUpdateApp = v;
-                  });
-                },
-              ),
+              if (!Platform.isIOS && !AppInfo.isMacStoreApp)
+                SwitchListTile.adaptive(
+                  value: db.userData.autoUpdateApp,
+                  title: Text(S.current.auto_update),
+                  onChanged: (v) {
+                    setState(() {
+                      db.userData.autoUpdateApp = v;
+                    });
+                  },
+                ),
               ListTile(
                 title: Text(S.current.project_homepage + ' - Github'),
                 subtitle: Text(kProjectHomepage),

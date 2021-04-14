@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:crypto/crypto.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
-import 'package:path/path.dart' as pathlib;
+import 'package:path/path.dart' as p;
 import 'package:uuid/uuid.dart';
 
 import 'config.dart' show db;
@@ -16,6 +18,7 @@ class AppInfo {
 
   static PackageInfo? _packageInfo;
   static String? _uniqueId;
+  static MacAppType _macAppType = MacAppType.unknown;
 
   static final Map<String, dynamic> deviceParams = {};
   static final Map<String, dynamic> appParams = {};
@@ -84,7 +87,7 @@ class AppInfo {
     _packageInfo = Platform.isWindows
         ? await _loadApplicationInfoFromAsset()
         : await PackageInfo.fromPlatform()
-            .catchError((e) => _loadApplicationInfoFromAsset());
+        .catchError((e) => _loadApplicationInfoFromAsset());
     appParams["version"] = _packageInfo?.version;
     appParams["appName"] = _packageInfo?.appName;
     appParams["buildNumber"] = _packageInfo?.buildNumber;
@@ -129,7 +132,8 @@ class AppInfo {
       // print('Windows Product Id query:\n$resultString');
       if (resultString.contains('ProductId') &&
           resultString.contains('REG_SZ')) {
-        _uniqueId = resultString.split(RegExp(r'\s+')).last;
+        final productId = resultString.split(RegExp(r'\s+')).last;
+        _uniqueId = md5.convert(utf8.encode(productId)).toString();
       }
     } else if (Platform.isMacOS) {
       // https://stackoverflow.com/a/944103
@@ -151,11 +155,11 @@ class AppInfo {
       for (String line in result.stdout.toString().split('\n')) {
         if (line.contains('IOPlatformSerialNumber')) {
           final _snMatches =
-              RegExp(r'[0-9a-zA-Z\-]+').allMatches(line).toList();
+          RegExp(r'[0-9a-zA-Z\-]+').allMatches(line).toList();
           if (_snMatches.isNotEmpty) {
             final _sn = _snMatches.last.group(0);
             if (_sn != null) {
-              _uniqueId = _sn;
+              _uniqueId = md5.convert(utf8.encode(_sn)).toString();
               break;
             }
           }
@@ -165,7 +169,7 @@ class AppInfo {
       throw UnimplementedError(Platform.operatingSystem);
     }
     if (_uniqueId?.isNotEmpty != true) {
-      var uuidFile = File(pathlib.join(db.paths.appPath, '.uuid'));
+      var uuidFile = File(p.join(db.paths.appPath, '.uuid'));
       if (uuidFile.existsSync()) {
         _uniqueId = uuidFile.readAsStringSync();
       }
@@ -183,6 +187,29 @@ class AppInfo {
     await _loadDeviceInfo();
     await _loadApplicationInfo();
     await _loadUniqueId();
+    _checkMacAppType();
+  }
+
+  static void _checkMacAppType() {
+    if (!Platform.isMacOS) {
+      _macAppType = MacAppType.notMacApp;
+    } else {
+      final String executable = Platform.resolvedExecutable;
+      print(executable);
+      final String fpStore =
+          p.absolute(p.dirname(executable), '../_MASReceipt/receipt');
+      final String fpNotarized =
+          p.absolute(p.dirname(executable), '../CodeResources');
+      print('${File(fpStore).existsSync()}:$fpStore');
+      print('${File(fpNotarized).existsSync()}:$fpNotarized');
+      if (File(fpStore).existsSync()) {
+        _macAppType = MacAppType.store;
+      } else if (File(fpNotarized).existsSync()) {
+        _macAppType = MacAppType.notarized;
+      } else {
+        _macAppType = MacAppType.debug;
+      }
+    }
   }
 
   static PackageInfo? get info => _packageInfo;
@@ -241,6 +268,18 @@ class AppInfo {
   static bool get isMobile => Platform.isAndroid || Platform.isIOS;
 
   static bool get isDesktop => Platform.isMacOS || Platform.isWindows;
+
+  static MacAppType get macAppType => _macAppType;
+
+  static bool get isMacStoreApp => _macAppType == MacAppType.store;
+}
+
+enum MacAppType {
+  unknown,
+  store,
+  notarized,
+  debug,
+  notMacApp,
 }
 
 enum ABIType {

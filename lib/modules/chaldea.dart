@@ -177,7 +177,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
     logger.i('appPath: ${db.paths.appPath}');
     db.notifyAppUpdate();
     // macOS审核太啰嗦了
-    if (justUpdated && !Platform.isMacOS) {
+    if (justUpdated && !AppInfo.isMacStoreApp) {
       GitTool.fromDb().appReleaseNote().then((releaseNote) {
         if (releaseNote?.isNotEmpty == true) {
           SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {

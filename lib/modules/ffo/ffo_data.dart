@@ -331,7 +331,7 @@ class FFOParams {
         if (Platform.isMacOS || Platform.isWindows)
           TextButton(
             onPressed: () {
-              openDesktopPath(dirname(fp!));
+              OpenFile.open(dirname(fp!));
             },
             child: Text(S.current.open),
           ),
