@@ -15,11 +15,11 @@ class MethodChannelChaldea {
   ///
   /// only available on macOS
   static Future<void> setAlwaysOnTop(bool onTop) async {
-    return kMethodChannel.invokeMethod(
+    return kMethodChannel.invokeMethod<bool?>(
       'alwaysOnTop',
       <String, dynamic>{
         'onTop': onTop,
       },
-    );
+    ).then((value) => print('alwaysOnTop success = $value'));
   }
 }

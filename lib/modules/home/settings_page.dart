@@ -137,7 +137,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     db.notifyAppUpdate();
                   },
                 ),
-              if (Platform.isMacOS)
+              if (Platform.isMacOS || Platform.isWindows)
                 SwitchListTile.adaptive(
                   value: alwaysOnTop,
                   title: Text('Always On Top'),

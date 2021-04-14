@@ -9,12 +9,12 @@ class MainFlutterWindow: NSWindow {
     self.setFrame(windowFrame, display: true)
 
     RegisterGeneratedPlugins(registry: flutterViewController)
-
-    initFlutterMethodChannel()
+    configMethodChannel()
+    
     super.awakeFromNib()
   }
     
-  func initFlutterMethodChannel() {
+  func configMethodChannel() {
     let controller:FlutterViewController = self.contentViewController as! FlutterViewController;
     let channel = FlutterMethodChannel(
       name:"chaldea.narumi.cc/chaldea",
@@ -25,13 +25,14 @@ class MainFlutterWindow: NSWindow {
         switch call.method {
           case "alwaysOnTop":
             let onTop: Bool? = (call.arguments as? [String: Any])?["onTop"] as? Bool
-            print("set always on top: \(onTop ??? "nil")")
-            if onTop == true {
-              self.level = NSWindow.Level.floating
-            }else if onTop == false {
-              self.level = NSWindow.Level.normal
+            if onTop == nil {
+              print("[macos] set alwaysOnTop: nil")
+              result(false)
+            }else{
+              print("[macos] set alwaysOnTop: \(onTop!)")
+              self.level = onTop! ? NSWindow.Level.floating : NSWindow.Level.normal
+              result(true);
             }
-            result(onTop);
           default:
             result(FlutterMethodNotImplemented)
       }

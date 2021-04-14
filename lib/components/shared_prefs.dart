@@ -3,11 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SharedPrefs {
   late SharedPreferences instance;
 
-  // static const String previousVersion = 'previousVersion';
-  // static const String ignoreAppVersion = 'ignoreAppVersion';
-  // static const String contactInfo = 'contactInfo';
-  // static const String userName = 'userName';
-  // static const String userPwd = 'userPwd';
   SharedPrefItem<String> previousVersion = SharedPrefItem._('previousVersion');
   SharedPrefItem<String> ignoreAppVersion =
       SharedPrefItem._('ignoreAppVersion');

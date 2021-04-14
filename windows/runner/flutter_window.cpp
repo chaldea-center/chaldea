@@ -3,6 +3,8 @@
 #include <optional>
 
 #include "flutter/generated_plugin_registrant.h"
+#include "flutter/method_channel.h"
+#include "flutter/standard_method_codec.h"
 
 FlutterWindow::FlutterWindow(RunLoop* run_loop,
                              const flutter::DartProject& project)
@@ -26,6 +28,7 @@ bool FlutterWindow::OnCreate() {
     return false;
   }
   RegisterPlugins(flutter_controller_->engine());
+  ConfigMethodChannel(flutter_controller_->engine());
   run_loop_->RegisterFlutterInstance(flutter_controller_->engine());
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
   return true;
@@ -61,4 +64,38 @@ FlutterWindow::MessageHandler(HWND hwnd, UINT const message,
   }
 
   return Win32Window::MessageHandler(hwnd, message, wparam, lparam);
+}
+
+void FlutterWindow::ConfigMethodChannel(flutter::FlutterEngine* engine)
+{
+  const flutter::StandardMethodCodec& codec = flutter::StandardMethodCodec::GetInstance();
+  flutter::MethodChannel chaldea_channel(engine->messenger(), "chaldea.narumi.cc/chaldea", &codec);
+  chaldea_channel.SetMethodCallHandler([this](
+    const flutter::MethodCall<flutter::EncodableValue>& call,
+    std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result)
+    {
+      std::cout << ">>>>>>>> Inside windows method call" << std::endl;
+      if (call.method_name().compare("alwaysOnTop") == 0) {
+        const auto* arguments = std::get_if<flutter::EncodableMap>(call.arguments());
+        auto encodedOnTop = arguments->find(flutter::EncodableValue("onTop"));
+        if (encodedOnTop != arguments->end()) {
+          auto onTop = std::get<bool>(encodedOnTop->second);
+          std::cout << "[windows] set alwaysOnTop=" << onTop << std::endl;
+          auto flag = onTop ? HWND_TOPMOST : HWND_NOTOPMOST;
+          SetWindowPos(
+            GetHandle(), flag,
+            0, 0,
+            0, 0,
+            SWP_DRAWFRAME | SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+          result->Success(flutter::EncodableValue(true));
+        }
+        else {
+          result->Success(flutter::EncodableValue(false));
+        }
+      }
+      else {
+        result->NotImplemented();
+      }
+    });
+
 }
