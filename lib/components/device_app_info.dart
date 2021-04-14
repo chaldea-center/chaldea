@@ -81,22 +81,27 @@ class AppInfo {
   ///  - Windows: Not Support
   static Future<void> _loadApplicationInfo() async {
     ///Only android, iOS and macOS are implemented
-    _packageInfo = await PackageInfo.fromPlatform().catchError((e) async {
-      final versionString = await rootBundle.loadString('res/VERSION');
-      final nameAndCode = versionString.split('+');
-      PackageInfo packageInfo = PackageInfo(
-        appName: kAppName,
-        packageName: kPackageName,
-        version: nameAndCode[0],
-        buildNumber: nameAndCode[1],
-      );
-      logger.i('Fail to read package info, asset instead: $nameAndCode');
-      return packageInfo;
-    });
+    _packageInfo = Platform.isWindows
+        ? await _loadApplicationInfoFromAsset()
+        : await PackageInfo.fromPlatform()
+            .catchError((e) => _loadApplicationInfoFromAsset());
     appParams["version"] = _packageInfo?.version;
     appParams["appName"] = _packageInfo?.appName;
     appParams["buildNumber"] = _packageInfo?.buildNumber;
     appParams["packageName"] = _packageInfo?.packageName;
+  }
+
+  static Future<PackageInfo> _loadApplicationInfoFromAsset() async {
+    final versionString = await rootBundle.loadString('res/VERSION');
+    final nameAndCode = versionString.split('+');
+    PackageInfo packageInfo = PackageInfo(
+      appName: kAppName,
+      packageName: kPackageName,
+      version: nameAndCode[0],
+      buildNumber: nameAndCode[1],
+    );
+    logger.i('Fail to read package info, asset instead: $nameAndCode');
+    return packageInfo;
   }
 
   static Future<void> _loadUniqueId() async {
@@ -245,9 +250,9 @@ enum ABIType {
   x86_64,
 }
 
-extension ABITypeToString on ABIType{
-  String toStandardString(){
-    switch(this){
+extension ABITypeToString on ABIType {
+  String toStandardString() {
+    switch (this) {
       case ABIType.unknown:
         return 'unknown';
       case ABIType.arm64_v8a:

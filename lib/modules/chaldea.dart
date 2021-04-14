@@ -44,7 +44,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         db.paths.externalAppPath = externalBackupDir;
         print(db.paths.externalAppPath);
       }
-    } else if (Platform.isMacOS) {
+    } else if (Platform.isMacOS || Platform.isWindows) {
       MethodChannelChaldea.setAlwaysOnTop(
           db.prefs.instance.getBool('alwaysOnTop') ?? false);
     }
