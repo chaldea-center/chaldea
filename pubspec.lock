@@ -590,13 +590,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "4.0.1"
-  json_patch:
-    dependency: "direct main"
-    description:
-      name: json_patch
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "2.1.0+1"
   json_serializable:
     dependency: "direct dev"
     description:
@@ -828,6 +821,20 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.0"
+  rfc_6901:
+    dependency: transitive
+    description:
+      name: rfc_6901
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.0"
+  rfc_6902:
+    dependency: "direct main"
+    description:
+      name: rfc_6902
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.0"
   rxdart:
     dependency: transitive
     description:

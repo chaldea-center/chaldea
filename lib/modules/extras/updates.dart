@@ -9,6 +9,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path/path.dart';
+import 'package:rfc_6902/rfc_6902.dart' as jsonpatch;
 import 'package:url_launcher/url_launcher.dart';
 
 class AutoUpdateUtil {
@@ -23,6 +24,8 @@ class AutoUpdateUtil {
 
   BuildContext get context => kAppKey.currentContext!;
 
+  /// download dataset-text.zip and unzip it to reload
+  @deprecated
   Future<void> autoUpdateDataset() async {
     version = null; //1.2.3
     releaseNote = null;
@@ -76,6 +79,61 @@ class AutoUpdateUtil {
       }
     } catch (e, s) {
       logger.e('error update dataset', e, s);
+    }
+  }
+
+  /// get json patch from server
+  static Future<void> patchGameData() async {
+    String _parseDatasetVersion(String releaseName) {
+      return releaseName.split('-').first;
+    }
+
+    try {
+      if (db.connectivity == ConnectivityResult.none) return;
+      final git = GitTool(GitSource.server);
+      final releases = await git.datasetReleases;
+
+      final latestRelease = await git.latestDatasetRelease(releases: releases);
+      final curRelease = releases.firstWhereOrNull((release) =>
+          _parseDatasetVersion(release.name) == db.gameData.version);
+      if (latestRelease == null || curRelease == null) {
+        logger.d('fetch dataset version failed');
+        return;
+      }
+      if (_parseDatasetVersion(latestRelease.name)
+              .compareTo(db.gameData.version) <=
+          0) {
+        logger.d('no newer dataset');
+        return;
+      }
+
+      final dio = Dio(BaseOptions(baseUrl: kServerRoot));
+      final rawResp = await dio.get('/patchDataset', queryParameters: {
+        'from': curRelease.tagName,
+        'to': latestRelease.tagName
+      });
+      final resp = ChaldeaResponse.fromResponse(rawResp.data);
+
+      if (resp.success) {
+        final patchJson = jsonDecode(resp.body);
+        final curData = jsonDecode(jsonEncode(db.gameData));
+        dynamic newData = jsonpatch.JsonPatch(patchJson).applyTo(curData);
+        final gameData = GameData.fromJson(jsonDecode(jsonEncode(newData)));
+        String previousVersion = db.gameData.version;
+        if (gameData.version.compareTo(previousVersion) > 0) {
+          if (db.loadGameData(gameData)) {
+            File(db.paths.gameDataPath)
+                .writeAsStringSync(jsonEncode(db.gameData));
+            logger.i(
+                'update dataset from $previousVersion to ${db.gameData.version}');
+            EasyLoading.showInfo('Update dataset to ${db.gameData.version}');
+          }
+        }
+      } else {
+        logger.e('get patch failed: ${resp.msg}');
+      }
+    } catch (e, s) {
+      logger.e('error patching dataset', e, s);
     }
   }
 

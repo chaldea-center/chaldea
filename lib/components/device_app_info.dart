@@ -195,13 +195,10 @@ class AppInfo {
       _macAppType = MacAppType.notMacApp;
     } else {
       final String executable = Platform.resolvedExecutable;
-      print(executable);
       final String fpStore =
           p.absolute(p.dirname(executable), '../_MASReceipt/receipt');
       final String fpNotarized =
           p.absolute(p.dirname(executable), '../CodeResources');
-      print('${File(fpStore).existsSync()}:$fpStore');
-      print('${File(fpNotarized).existsSync()}:$fpNotarized');
       if (File(fpStore).existsSync()) {
         _macAppType = MacAppType.store;
       } else if (File(fpNotarized).existsSync()) {

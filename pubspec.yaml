@@ -58,13 +58,13 @@ dependencies:
   image_gallery_saver: ^1.6.9
   intl: ^0.17.0
   json_annotation: ^4.0.1
-  json_patch: ^2.1.0
   logger: ^1.0.0
   open_file: ^3.1.0
   package_info: ^2.0.0
   path_provider: ^2.0.1
   permission_handler: ^6.1.1
   pool: ^1.5.0
+  rfc_6902: ^0.1.0
   screenshot: ^1.0.0-nullsafety.1
   share: ^2.0.1
   shared_preferences: ^2.0.5

@@ -21,7 +21,8 @@ class _FfoDownloadDialogState extends State<FfoDownloadDialog> {
     gitTool = GitTool.fromDb();
     gitTool
         .latestAppRelease(
-            (asset) => asset.name.contains('ffo') || asset.name.contains('zip'))
+            test: (asset) =>
+                asset.name.contains('ffo') || asset.name.contains('zip'))
         .then((_release) {
       release = _release;
       release?.assets.forEach((asset) {

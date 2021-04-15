@@ -307,7 +307,8 @@ class GitTool {
     return null;
   }
 
-  Future<GitRelease?> latestAppRelease([bool test(GitAsset asset)?]) async {
+  Future<GitRelease?> latestAppRelease(
+      {bool test(GitAsset asset)?, List<GitRelease>? releases}) async {
     if (test == null) {
       test = (asset) {
         String assetName = asset.name.toLowerCase();
@@ -328,14 +329,17 @@ class GitTool {
       };
     }
     if (Platform.isAndroid || Platform.isWindows || kDebugMode) {
-      final releases = await appReleases;
+      releases ??= await appReleases;
       return _latestReleaseWhereAsset(releases, testAsset: test);
     }
   }
 
-  Future<GitRelease?> latestDatasetRelease(
-      {bool icons = false, bool testRelease(GitRelease release)?}) async {
-    final releases = await datasetReleases;
+  Future<GitRelease?> latestDatasetRelease({
+    bool icons = false,
+    bool testRelease(GitRelease release)?,
+    List<GitRelease>? releases,
+  }) async {
+    releases ??= await datasetReleases;
     if (testRelease == null) {
       testRelease = (release) {
         Version? minVersion =

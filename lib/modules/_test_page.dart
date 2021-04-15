@@ -3,4 +3,5 @@ import 'package:path/path.dart' as p; // ignore: unused_import
 
 void testFunction() async {
   //
+  print('test finish');
 }

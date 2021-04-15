@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:chaldea/components/components.dart';
 
 class LoginPage extends StatefulWidget {
@@ -258,35 +256,5 @@ class _LoginPageState extends State<LoginPage> {
     db.prefs.userName.set(name);
     db.prefs.userPwd.set(b64(pwd, false));
     db.notifyDbUpdate();
-  }
-}
-
-class ChaldeaResponse {
-  bool success;
-  String? msg;
-  dynamic body;
-
-  ChaldeaResponse({this.success = false, this.msg, this.body});
-
-  static ChaldeaResponse fromResponse(dynamic data) {
-    try {
-      var map = jsonDecode(data);
-      return ChaldeaResponse(
-          success: map['success'] ?? false, msg: map['msg'], body: map['body']);
-    } catch (e, s) {
-      logger.e('parse ChaldeaResponse error', e, s);
-      return ChaldeaResponse();
-    }
-  }
-
-  Future showMsg(BuildContext context, {String? title, bool showBody = false}) {
-    title ??= 'Result';
-    title += ' ' + (success ? S.current.success : S.current.failed);
-    String content = msg.toString();
-    if (showBody) content += '\n$body';
-    return SimpleCancelOkDialog(
-      title: Text(title),
-      content: Text(content),
-    ).showDialog(context);
   }
 }

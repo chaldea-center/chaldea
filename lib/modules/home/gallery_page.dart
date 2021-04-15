@@ -44,10 +44,10 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       }
     }
     Future.delayed(Duration(seconds: 2)).then((_) async {
+      await AutoUpdateUtil.patchGameData();
+      await Future.delayed(Duration(seconds: 2));
       await AutoUpdateUtil().checkAppUpdate(
           background: true, download: db.userData.autoUpdateApp);
-      await Future.delayed(Duration(seconds: 2));
-      await AutoUpdateUtil().autoUpdateDataset();
     });
   }
 

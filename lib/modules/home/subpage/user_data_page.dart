@@ -4,9 +4,7 @@ import 'dart:io';
 
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/home/subpage/login_page.dart';
-import 'package:dio/dio.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
-import 'package:json_patch/json_patch.dart';
 import 'package:open_file/open_file.dart';
 import 'package:share/share.dart';
 
@@ -88,35 +86,6 @@ class _UserDataPageState extends State<UserDataPage> {
         ],
       ),
     );
-  }
-
-  /// server not supported yet
-  void patchVersion(String version) async {
-    Dio _dio = Dio(BaseOptions(baseUrl: db.userData.serverRoot ?? kServerRoot));
-    try {
-      Response response = await _dio.get('/patch',
-          queryParameters: {'from': db.gameData.version, 'to': version});
-      if (response.statusCode == 200) {
-        var patch = response.data;
-        print(
-            'download patch: ${patch.toString().substring(0, min(200, patch.toString().length))}');
-        final patched = JsonPatch.apply(
-            db.getJsonFromFile(db.paths.gameDataPath), List.castFrom(patch));
-        File file = File(db.paths.gameDataPath);
-        var raf = file.openSync(mode: FileMode.write);
-        raf.writeStringSync(json.encode(patched));
-        raf.closeSync();
-        db.loadGameData();
-        setState(() {});
-        EasyLoading.showToast('patch success.');
-        print('patched version: ${patched['version']}');
-      }
-    } catch (e, s) {
-      EasyLoading.showToast('patch data failed.');
-      print('patch data error:\n$e');
-      print('stack trace: \n$s');
-      rethrow;
-    }
   }
 
   void importUserData() async {
