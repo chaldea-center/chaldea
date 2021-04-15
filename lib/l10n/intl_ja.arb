@@ -369,5 +369,10 @@
   "exp_card_rarity5": "星5カード",
   "exp_card_same_class": "同じクラス",
   "exp_card_plan_lv": "Lv.",
-  "exp_card_select_lvs": "レベルの範囲を選択"
+  "exp_card_select_lvs": "レベルの範囲を選択",
+  "patch_gamedata": "ゲームデータを更新",
+  "patch_gamedata_hint": "パッチのみ",
+  "patch_gamedata_error_already_latest": "すでに最新バージョン",
+  "download_full_gamedata": "最新のデータをダウンロード",
+  "download_full_gamedata_hint": "フルzipデータパッケージ"
 }

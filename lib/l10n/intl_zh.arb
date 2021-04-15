@@ -366,5 +366,10 @@
   "exp_card_rarity5": "五星狗粮",
   "exp_card_same_class": "相同职阶",
   "exp_card_plan_lv": "等级规划",
-  "exp_card_select_lvs": "选择起始和目标等级"
+  "exp_card_select_lvs": "选择起始和目标等级",
+  "patch_gamedata": "更新游戏数据",
+  "patch_gamedata_hint": "打补丁",
+  "patch_gamedata_error_already_latest": "已经是最新数据",
+  "download_full_gamedata": "下载最新数据",
+  "download_full_gamedata_hint": "完整zip数据包"
 }

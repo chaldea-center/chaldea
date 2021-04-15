@@ -83,13 +83,21 @@ class AutoUpdateUtil {
   }
 
   /// get json patch from server
-  static Future<void> patchGameData() async {
+  static Future<void> patchGameData({void onError(e, s)?}) async {
     String _parseDatasetVersion(String releaseName) {
       return releaseName.split('-').first;
     }
 
+    void _reportResult(dynamic e, [StackTrace? s]) {
+      logger.e('fail to patch', e, s);
+      if (onError != null) onError(e, s);
+    }
+
     try {
-      if (db.connectivity == ConnectivityResult.none) return;
+      if (db.connectivity == ConnectivityResult.none) {
+        _reportResult('no network');
+        return;
+      }
       final git = GitTool(GitSource.server);
       final releases = await git.datasetReleases;
 
@@ -97,13 +105,13 @@ class AutoUpdateUtil {
       final curRelease = releases.firstWhereOrNull((release) =>
           _parseDatasetVersion(release.name) == db.gameData.version);
       if (latestRelease == null || curRelease == null) {
-        logger.d('fetch dataset version failed');
+        _reportResult('fetch dataset version failed');
         return;
       }
       if (_parseDatasetVersion(latestRelease.name)
               .compareTo(db.gameData.version) <=
           0) {
-        logger.d('no newer dataset');
+        _reportResult(S.current.patch_gamedata_error_already_latest);
         return;
       }
 
@@ -130,10 +138,10 @@ class AutoUpdateUtil {
           }
         }
       } else {
-        logger.e('get patch failed: ${resp.msg}');
+        _reportResult(resp.msg);
       }
     } catch (e, s) {
-      logger.e('error patching dataset', e, s);
+      _reportResult(e, s);
     }
   }
 

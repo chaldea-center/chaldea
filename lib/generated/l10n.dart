@@ -3721,6 +3721,56 @@ class S {
       args: [],
     );
   }
+
+  /// `更新游戏数据`
+  String get patch_gamedata {
+    return Intl.message(
+      '更新游戏数据',
+      name: 'patch_gamedata',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `打补丁`
+  String get patch_gamedata_hint {
+    return Intl.message(
+      '打补丁',
+      name: 'patch_gamedata_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已经是最新数据`
+  String get patch_gamedata_error_already_latest {
+    return Intl.message(
+      '已经是最新数据',
+      name: 'patch_gamedata_error_already_latest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `下载最新数据`
+  String get download_full_gamedata {
+    return Intl.message(
+      '下载最新数据',
+      name: 'download_full_gamedata',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `完整zip数据包`
+  String get download_full_gamedata_hint {
+    return Intl.message(
+      '完整zip数据包',
+      name: 'download_full_gamedata_hint',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

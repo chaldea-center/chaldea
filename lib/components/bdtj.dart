@@ -36,8 +36,8 @@ Future<void> reportBdtj({String? bdId}) async {
   final excludeIds = [
     b64('YjhhMDY0OWQ3NTI5MmQwOQ=='), // android
     b64('RDE0QjBGNzItNUYzRS00ODcxLTlDRjUtNTRGMkQ1OTYyMUEw'), //ios
-    b64('QzAyQ1cwTUNNTDdM'), //macos
-    b64('MDAzNzgtNDAwMDAtMDAwMDEtQUE5Mjc='), // windows
+    'QzAyQ1cwTUNNTDdM', //macos
+    'MDAzNzgtNDAwMDAtMDAwMDEtQUE5Mjc=', // windows
   ];
 
   if (kDebugMode || excludeIds.contains(AppInfo.uniqueId)) {
@@ -88,8 +88,8 @@ Future<void> reportBdtj({String? bdId}) async {
         'sn': fresh
             ? 1917
             : first
-                ? 2091
-                : 2096,
+            ? 2091
+            : 2096,
 
         /// wrong
         'r': 0,
@@ -119,7 +119,8 @@ Future<void> reportBdtj({String? bdId}) async {
       logger.i(_param);
       return _param.map((key, value) => MapEntry(key, value.toString()));
     };
-    final _dio = Dio(BaseOptions(headers: {'User-Agent': getDefaultUserAgent()}));
+    final _dio =
+        Dio(BaseOptions(headers: {'User-Agent': getDefaultUserAgent()}));
     _dio.interceptors.add(CookieManager(cookieJar));
     await _dio.get(hjs);
     String gifUrl1 =

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/git_tool.dart';
+import 'package:chaldea/modules/extras/updates.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -66,6 +67,7 @@ class _GameDataPageState extends State<GameDataPage> {
 
           TileGroup(
             header: S.of(context).gamedata,
+            footer: S.current.download_latest_gamedata_hint,
             children: <Widget>[
               SwitchListTile.adaptive(
                 value: db.userData.autoUpdateDataset,
@@ -75,11 +77,6 @@ class _GameDataPageState extends State<GameDataPage> {
                     db.userData.autoUpdateDataset = v;
                   });
                 },
-              ),
-              ListTile(
-                title: Text(S.of(context).download_latest_gamedata),
-                subtitle: Text(S.current.download_latest_gamedata_hint),
-                onTap: downloadGamedata,
               ),
               ListTile(
                 title: Text(S.of(context).reload_default_gamedata),
@@ -98,6 +95,20 @@ class _GameDataPageState extends State<GameDataPage> {
                     },
                   ).showDialog(context);
                 },
+              ),
+              ListTile(
+                title: Text(S.current.patch_gamedata),
+                subtitle: Text(S.current.patch_gamedata_hint),
+                onTap: () {
+                  AutoUpdateUtil.patchGameData(onError: (e, s) {
+                    EasyLoading.showError(e.toString());
+                  });
+                },
+              ),
+              ListTile(
+                title: Text(S.current.download_full_gamedata),
+                subtitle: Text(S.current.download_full_gamedata_hint),
+                onTap: downloadGamedata,
               ),
               ListTile(
                 title:

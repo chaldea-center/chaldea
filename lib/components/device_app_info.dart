@@ -1,7 +1,6 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:crypto/crypto.dart';
+import 'package:chaldea/components/components.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
@@ -87,7 +86,7 @@ class AppInfo {
     _packageInfo = Platform.isWindows
         ? await _loadApplicationInfoFromAsset()
         : await PackageInfo.fromPlatform()
-        .catchError((e) => _loadApplicationInfoFromAsset());
+            .catchError((e) => _loadApplicationInfoFromAsset());
     appParams["version"] = _packageInfo?.version;
     appParams["appName"] = _packageInfo?.appName;
     appParams["buildNumber"] = _packageInfo?.buildNumber;
@@ -133,7 +132,7 @@ class AppInfo {
       if (resultString.contains('ProductId') &&
           resultString.contains('REG_SZ')) {
         final productId = resultString.split(RegExp(r'\s+')).last;
-        _uniqueId = md5.convert(utf8.encode(productId)).toString();
+        _uniqueId = b64(productId, false);
       }
     } else if (Platform.isMacOS) {
       // https://stackoverflow.com/a/944103
@@ -155,11 +154,11 @@ class AppInfo {
       for (String line in result.stdout.toString().split('\n')) {
         if (line.contains('IOPlatformSerialNumber')) {
           final _snMatches =
-          RegExp(r'[0-9a-zA-Z\-]+').allMatches(line).toList();
+              RegExp(r'[0-9a-zA-Z\-]+').allMatches(line).toList();
           if (_snMatches.isNotEmpty) {
             final _sn = _snMatches.last.group(0);
             if (_sn != null) {
-              _uniqueId = md5.convert(utf8.encode(_sn)).toString();
+              _uniqueId = b64(_sn, false);
               break;
             }
           }

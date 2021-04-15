@@ -367,5 +367,10 @@
   "exp_card_rarity5": "5☆ Card",
   "exp_card_same_class": "Same Class",
   "exp_card_plan_lv": "Levels",
-  "exp_card_select_lvs": "Select level range"
+  "exp_card_select_lvs": "Select level range",
+  "patch_gamedata": "Patch Gamedata",
+  "patch_gamedata_hint": "Only patch downloaded",
+  "patch_gamedata_error_already_latest": "Already the latest version",
+  "download_full_gamedata": "Download latest Gamedata",
+  "download_full_gamedata_hint": "Full size zip file"
 }
