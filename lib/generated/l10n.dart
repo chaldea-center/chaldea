@@ -1642,11 +1642,21 @@ class S {
     );
   }
 
-  /// `材料富余量`
-  String get item_exceed {
+  /// `计算规划前，可以设置不同材料的富余量(仅用于Free本规划)`
+  String get item_exceed_hint {
     return Intl.message(
-      '材料富余量',
-      name: 'item_exceed',
+      '计算规划前，可以设置不同材料的富余量(仅用于Free本规划)',
+      name: 'item_exceed_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `规划Free本`
+  String get planning_free_quest_btn {
+    return Intl.message(
+      '规划Free本',
+      name: 'planning_free_quest_btn',
       desc: '',
       args: [],
     );

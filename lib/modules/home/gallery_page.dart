@@ -208,6 +208,9 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
   Widget _buildGalleries() {
     return LayoutBuilder(builder: (context, constraints) {
       int crossCount = max(2, constraints.maxWidth ~/ 75);
+      if (crossCount > 4) {
+        crossCount = crossCount * 0.8 ~/ 1;
+      }
       return GridView.count(
         crossAxisCount: crossCount,
         physics: NeverScrollableScrollPhysics(),

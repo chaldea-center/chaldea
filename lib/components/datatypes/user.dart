@@ -86,9 +86,7 @@ class User {
 
   void ensurePlanLarger() {
     curSvtPlan.forEach((key, plan) {
-      if (plan.favorite) {
-        plan.validate(servants[key]?.curVal);
-      }
+      plan.validate(servants[key]?.curVal);
     });
   }
 

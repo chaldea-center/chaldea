@@ -133,6 +133,32 @@ class _AboutPageState extends State<AboutPage> {
               )
             ],
           ),
+          TileGroup(
+            header: MaterialLocalizations.of(context).licensesPageTitle,
+            children: [
+              ListTile(
+                title: Text(
+                    MaterialLocalizations.of(context).viewLicensesButtonLabel),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, _, __) => LicensePage(
+                        applicationName: AppInfo.appName,
+                        applicationVersion: AppInfo.fullVersion2,
+                        applicationIcon: Image.asset(
+                          'res/img/launcher_icon/app_icon_logo.png',
+                          height: 120,
+                        ),
+                        applicationLegalese:
+                            'Copyright © 2021 cc.narumi.\nAll rights reserved.',
+                      ),
+                    ),
+                  );
+                },
+              )
+            ],
+          )
         ],
       ),
     );

@@ -89,7 +89,7 @@ class AutoUpdateUtil {
     }
 
     void _reportResult(dynamic e, [StackTrace? s]) {
-      logger.e('fail to patch', e, s);
+      logger.e('fail to patch: $e', null, s);
       if (onError != null) onError(e, s);
     }
 

@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'extensions.dart';
+
 const bool kDebugMode_ = kDebugMode && true;
 
 //typedef
@@ -43,11 +45,12 @@ class Language {
   static List<Language> get supportLanguages => const [chs, jpn, eng];
 
   static Language? getLanguage(String? code) {
-    for (var lang in supportLanguages) {
-      if (lang.code == code) {
-        return lang;
-      }
-    }
+    if (code == null) return null;
+    Language? language =
+        supportLanguages.firstWhereOrNull((lang) => lang.code == code);
+    language ??= supportLanguages
+        .firstWhereOrNull((lang) => code.startsWith(lang.locale.languageCode));
+    return language;
   }
 
   static String get currentLocaleCode => Intl.getCurrentLocale();

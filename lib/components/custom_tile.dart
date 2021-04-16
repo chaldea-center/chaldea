@@ -213,6 +213,7 @@ class ImageWithText extends StatelessWidget {
   final Widget image;
   final String? text;
   final Widget Function(TextStyle style)? textBuilder;
+  final bool outlined;
   final EdgeInsets padding;
   final double? width;
   final TextAlign? textAlign;
@@ -226,12 +227,13 @@ class ImageWithText extends StatelessWidget {
     required this.image,
     this.text,
     this.textBuilder,
+    this.outlined = true,
     this.padding = EdgeInsets.zero,
     this.width,
     this.alignment = AlignmentDirectional.bottomEnd,
     this.textAlign,
     this.textStyle,
-    this.shadowSize,
+    this.shadowSize = 3,
     this.onTap,
   }) : super(key: key);
 
@@ -300,12 +302,15 @@ class ImageWithText extends StatelessWidget {
 
   static TextStyle toGlowStyle([TextStyle? style, double? shadowSize]) {
     style ??= TextStyle();
-    return style.copyWith(
-      foreground: style.foreground ?? Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = shadowSize ?? 3
-        ..color = Colors.white,
-    );
+    if (shadowSize == null)
+      return style;
+    else
+      return style.copyWith(
+        foreground: style.foreground ?? Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = shadowSize
+          ..color = Colors.white,
+      );
   }
 
   static Widget paintOutline({

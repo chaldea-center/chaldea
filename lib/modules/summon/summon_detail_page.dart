@@ -125,7 +125,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
   Widget associateEvent(String name) {
     name = name.replaceAll('_', ' ');
     EventBase? event;
-    SplitLayoutBuilder? builder;
+    SplitPageBuilder? builder;
     if (db.gameData.events.limitEvents.containsKey(name)) {
       event = db.gameData.events.limitEvents[name]!;
       builder = (_, __) => LimitEventDetailPage(event: event as LimitEvent);
@@ -303,7 +303,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           Padding(
             padding: EdgeInsets.only(top: 6, right: 6),
             child: ImageWithText(
-              image: db.getIconImage(svt.icon, height: 64),
+              image: db.getIconImage(svt.icon, height: 64, width: 56),
               text: svt.info.obtain.replaceAll('常驻', ''),
             ),
           ),

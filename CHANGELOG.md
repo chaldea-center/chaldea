@@ -1,3 +1,9 @@
+## 1.3.9
+- rewrite `SplitRoute`, now support animation and swipe back gesture
+- fix MediaQuery in root widget
+- show curPlanNo on Switch Plan IconButton
+- add license page
+
 ## 1.3.8
 - support auto update for app and dataset
 - add chaldea server as default download source 
@@ -38,7 +44,7 @@
 ## 1.2.1
 - [NEW FEATURE] add weekly mission(master mission) planning
 - add event progress setting
-  - used for events' outdate check
+  - used for events' outdated check
   - the progress setting of drop calculator and master mission is individual 
 - remove gitee download source, now only support github releases
 - fix text input bugs
@@ -52,19 +58,19 @@
 - fix QP and grail statistics
 
 ## 1.1.11
-- [NEW FEATURE] recognization of item screenshots
-- add free quest query in drop caculator
+- [NEW FEATURE] recognition of item screenshots
+- add free quest query in drop calculator
 
 ## 1.1.10
 - Happy Lunar New Year
 - support servant priority
-- drop caculator support blacklist
+- drop calculator support blacklist
 
 ## 1.1.9
 - feedback improvement
 
 ## 1.1.8
-- add free quest effeciency comparison
+- add free quest efficiency comparison
 
 ## 1.1.7
 - add mystic codes, servant voices and servant quests(interlude and rank up quests)

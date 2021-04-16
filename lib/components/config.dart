@@ -73,7 +73,8 @@ class Database {
 
   ConnectivityResult? _connectivity;
 
-  ConnectivityResult get connectivity => _connectivity!;
+  ConnectivityResult get connectivity =>
+      _connectivity ?? ConnectivityResult.none;
 
   /// You should always check for connectivity status when your app is resumed
   Future<ConnectivityResult> checkConnectivity() async {
@@ -104,8 +105,9 @@ class Database {
     _autoSaveTimer = null;
     bool result;
     try {
-      final newData =data?? UserData.fromJson(
-          getJsonFromFile(paths.userDataPath, k: () => <String, dynamic>{}));
+      final newData = data ??
+          UserData.fromJson(getJsonFromFile(paths.userDataPath,
+              k: () => <String, dynamic>{}));
       userData = newData;
       gameData.updateUserDuplicatedServants();
       userData.validate();
@@ -129,8 +131,7 @@ class Database {
   bool loadGameData([GameData? data]) {
     final t = TimeCounter('loadGameData');
     try {
-      gameData =
-          data ?? GameData.fromJson(getJsonFromFile(paths.gameDataPath));
+      gameData = data ?? GameData.fromJson(getJsonFromFile(paths.gameDataPath));
       // userdata is loaded before gamedata, safe to use curUser
       gameData.updateUserDuplicatedServants();
       userData.validate();

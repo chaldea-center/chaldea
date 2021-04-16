@@ -67,7 +67,7 @@ class GalleryItem {
   final String title;
   final IconData? icon;
   final Widget? child;
-  final SplitLayoutBuilder? builder;
+  final SplitPageBuilder? builder;
   final bool isDetail;
 
   const GalleryItem({

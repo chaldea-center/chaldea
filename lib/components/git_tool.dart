@@ -351,8 +351,9 @@ class GitTool {
       releases,
       testRelease: testRelease,
       testAsset: (asset) {
-        return asset.name.toLowerCase() ==
-            (icons ? 'dataset-icons.zip' : 'dataset-text.zip');
+        return asset.name
+            .toLowerCase()
+            .startsWith((icons ? 'dataset-icon' : 'dataset-text'));
       },
     );
   }

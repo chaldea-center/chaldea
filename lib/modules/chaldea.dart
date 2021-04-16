@@ -20,8 +20,69 @@ class Chaldea extends StatefulWidget {
 
 class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   List<String>? userdataBackup;
+  final GlobalKey<_ChaldeaHomeState> _homeKey = GlobalKey();
 
   _ChaldeaState();
+
+  void onAppUpdate() {
+    if (!mounted) return;
+    _homeKey.currentState?._onAppUpdate();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    db.notifyAppUpdate = onAppUpdate;
+    db.runtimeData.screenshotController = ScreenshotController();
+    SplitRoute.defaultMasterFillPageBuilder = (context) => BlankPage();
+
+    SystemChannels.lifecycle.setMessageHandler((msg) async {
+      debugPrint('SystemChannels> $msg');
+      if (msg == AppLifecycleState.resumed.toString()) {
+        // Actions when app is resumed
+        db.checkConnectivity();
+      } else if (msg == AppLifecycleState.inactive.toString()) {
+        db.saveUserData();
+        debugPrint('save userdata before being inactive');
+      }
+      return null;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+      child: Screenshot(
+        controller: db.runtimeData.screenshotController!,
+        child: MaterialApp(
+          title: kAppName,
+          debugShowCheckedModeBanner: false,
+          navigatorKey: kAppKey,
+          locale: Language.getLanguage(db.userData.language)?.locale,
+          localizationsDelegates: [
+            S.delegate,
+            ...GlobalMaterialLocalizations.delegates,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          theme: ThemeData(
+              pageTransitionsTheme: PageTransitionsTheme(builders: {
+            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+            TargetPlatform.linux: CupertinoPageTransitionsBuilder(),
+            TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+            TargetPlatform.windows: CupertinoPageTransitionsBuilder(),
+          })),
+          builder: (context, widget) {
+            Catcher.addDefaultErrorWidget(showStacktrace: true);
+            return FlutterEasyLoading(child: widget);
+          },
+          home: _ChaldeaHome(key: _homeKey),
+        ),
+      ),
+    );
+  }
 
   @override
   void afterFirstLayout(BuildContext context) async {
@@ -63,69 +124,11 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     }
     Future.delayed(Duration(seconds: 5)).then((_) => reportBdtj());
   }
-
-  @override
-  void initState() {
-    super.initState();
-    db.runtimeData.screenshotController = ScreenshotController();
-    SplitRoute.defaultMasterFillPageBuilder = (context) => BlankPage();
-    db.notifyAppUpdate = () {
-      setPreferredOrientations();
-      setState(() {});
-    };
-
-    SystemChannels.lifecycle.setMessageHandler((msg) async {
-      debugPrint('SystemChannels> $msg');
-      if (msg == AppLifecycleState.resumed.toString()) {
-        // Actions when app is resumed
-        db.checkConnectivity();
-      } else if (msg == AppLifecycleState.inactive.toString()) {
-        db.saveUserData();
-        debugPrint('save userdata before being inactive');
-      }
-      return null;
-    });
-    setPreferredOrientations();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-      child: Screenshot(
-        controller: db.runtimeData.screenshotController!,
-        child: MaterialApp(
-          title: kAppName,
-          debugShowCheckedModeBanner: false,
-          navigatorKey: kAppKey,
-          locale: Language.getLanguage(db.userData.language)?.locale,
-          localizationsDelegates: [
-            S.delegate,
-            ...GlobalMaterialLocalizations.delegates,
-          ],
-          supportedLocales: S.delegate.supportedLocales,
-          builder: (context, widget) {
-            Catcher.addDefaultErrorWidget(showStacktrace: true);
-            return FlutterEasyLoading(child: widget);
-          },
-          home: _ChaldeaHome(),
-        ),
-      ),
-    );
-  }
-
-  void setPreferredOrientations() {
-    if (!AppInfo.isMobile) return;
-    if (!mounted) return;
-    if (db.userData.autorotate && SplitRoute.isSplit(context)) {
-      SystemChrome.setPreferredOrientations([]);
-    } else {
-      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    }
-  }
 }
 
 class _ChaldeaHome extends StatefulWidget {
+  _ChaldeaHome({Key? key}) : super(key: key);
+
   @override
   _ChaldeaHomeState createState() => _ChaldeaHomeState();
 }
@@ -192,10 +195,26 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
     }
   }
 
+  /// place some operations that need a [MaterialApp] like ancestor
+  /// e.g. [MediaQuery.of]
+  void _onAppUpdate() {
+    if (!mounted) return;
+    setPreferredOrientations();
+  }
+
   @override
   Widget build(BuildContext context) {
     return _initiated
         ? HomePage()
         : BlankPage(showProgress: _showProgress, reserveProgressSpace: true);
+  }
+
+  void setPreferredOrientations() {
+    if (!AppInfo.isMobile) return;
+    if (db.userData.autorotate && SplitRoute.isSplit(context)) {
+      SystemChrome.setPreferredOrientations([]);
+    } else {
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    }
   }
 }

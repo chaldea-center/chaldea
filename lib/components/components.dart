@@ -25,7 +25,7 @@ export 'query.dart';
 export 'server_api.dart';
 export 'shared_prefs.dart';
 export 'simple_accordion.dart';
-export 'split_route.dart';
+export 'split_route/split_route.dart';
 export 'tile_items.dart';
 export 'utils.dart';
 export 'widget_builders.dart';

@@ -206,54 +206,58 @@ class _ExpLvRangeSelectorState extends State<ExpLvRangeSelector> {
         data.clickAt(i);
         setState(() {});
       };
-      Widget child;
-      Widget text = AutoSizeText(
-        i.toString(),
-        maxFontSize: 24,
-        minFontSize: 12,
-        maxLines: 1,
-        style: AppInfo.isMobile ? TextStyle(fontSize: 24) : null,
+      Widget btn;
+      Widget text = Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        child: SizedBox(
+          width: 48,
+          height: 32,
+          child: Center(
+            child: AutoSizeText(
+              i.toString(),
+              maxFontSize: 48,
+              minFontSize: 12,
+              maxLines: 1,
+              style: TextStyle(fontSize: 48),
+            ),
+          ),
+        ),
       );
-      Size buttonSize = Size(36, 24);
+      Size buttonSize = Size(48, 48);
       if (i == data.startLv || i == data.endLv) {
-        child = ElevatedButton(
+        btn = ElevatedButton(
           onPressed: _onTapLv,
           child: text,
           style: ElevatedButton.styleFrom(
-            fixedSize: buttonSize,
-            padding: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+            minimumSize: buttonSize,
           ),
         );
       } else if (i > data.startLv && i < data.endLv) {
-        child = ElevatedButton(
+        btn = ElevatedButton(
           onPressed: _onTapLv,
           child: text,
           style: ElevatedButton.styleFrom(
-            fixedSize: buttonSize,
+            minimumSize: buttonSize,
             elevation: 0,
-            padding: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
             primary: Colors.lightBlue[300],
           ),
         );
       } else {
-        child = OutlinedButton(
+        btn = OutlinedButton(
           onPressed: _onTapLv,
           child: text,
           style: OutlinedButton.styleFrom(
-            fixedSize: buttonSize,
-            padding: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+            minimumSize: buttonSize,
           ),
         );
       }
-      if (AppInfo.isDesktop) {
-        child = Padding(
-          padding: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-          child: child,
-        );
-      }
+      btn = Padding(
+        padding: EdgeInsets.symmetric(horizontal: 2, vertical: 3),
+        child: btn,
+      );
       children.add(FittedBox(
         fit: BoxFit.contain,
-        child: child,
+        child: btn,
       ));
     }
     Widget grid = LayoutBuilder(builder: (context, constraints) {
@@ -263,7 +267,7 @@ class _ExpLvRangeSelectorState extends State<ExpLvRangeSelector> {
         shrinkWrap: true,
         crossAxisCount: crossCount,
         padding: EdgeInsets.fromLTRB(4, 8, 4, 24),
-        childAspectRatio: 40 / 24,
+        childAspectRatio: 48 / 28,
         children: children,
       );
     });

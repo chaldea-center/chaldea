@@ -14,15 +14,15 @@ class CheckboxWithLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Checkbox(value: value, onChanged: onChanged),
-        InkWell(
-          child: label,
-          onTap: onChanged == null ? null : () => onChanged!(!value),
-        )
-      ],
+    return InkWell(
+      onTap: onChanged == null ? null : () => onChanged!(!value),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Checkbox(value: value, onChanged: onChanged),
+          label,
+        ],
+      ),
     );
   }
 }

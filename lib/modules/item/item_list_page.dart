@@ -85,14 +85,6 @@ class ItemListPageState extends State<ItemListPage>
               });
             },
           ),
-          IconButton(
-            icon: Icon(Icons.calculate),
-            tooltip: S.of(context).free_quest_calculator,
-            onPressed: () {
-              FocusScope.of(context).unfocus();
-              navToDropCalculator();
-            },
-          )
         ],
         bottom: TabBar(
           controller: _tabController,
@@ -110,18 +102,37 @@ class ItemListPageState extends State<ItemListPage>
           },
         ),
       ),
-      body: TabBarView(
-        // mostly, we focus on category 1 tab
-        physics: AppInfo.isMobile ? null : NeverScrollableScrollPhysics(),
-        controller: _tabController,
-        children: List.generate(
-          categories.length,
-          (index) => ItemListTab(
-            category: categories[index],
-            filtered: filtered,
-            showSet999: true,
+      body: Column(
+        children: [
+          Expanded(
+            child: TabBarView(
+              // mostly, we focus on category 1 tab
+              physics: AppInfo.isMobile ? null : NeverScrollableScrollPhysics(),
+              controller: _tabController,
+              children: List.generate(
+                categories.length,
+                (index) => ItemListTab(
+                  category: categories[index],
+                  filtered: filtered,
+                  showSet999: true,
+                ),
+              ),
+            ),
           ),
-        ),
+          kDefaultDivider,
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: ElevatedButton.icon(
+              icon: Icon(Icons.calculate_outlined),
+              label: Text(S.current.planning_free_quest_btn),
+              style: ElevatedButton.styleFrom(),
+              onPressed: () {
+                FocusScope.of(context).unfocus();
+                navToDropCalculator();
+              },
+            ),
+          )
+        ],
       ),
     );
   }
@@ -142,7 +153,11 @@ class ItemListPageState extends State<ItemListPage>
     }
 
     SimpleCancelOkDialog(
-      title: Text(S.of(context).item_exceed),
+      title: Text(
+        S.current.item_exceed_hint,
+        style: TextStyle(fontSize: 16),
+      ),
+      confirmText: S.current.plan,
       content: Wrap(
         spacing: 6,
         runSpacing: 6,
@@ -191,7 +206,7 @@ class ItemListPageState extends State<ItemListPage>
       actions: [
         TextButton(
           onPressed: () {
-            _itemRedundantControllers.forEach((e) => e.text = '');
+            _itemRedundantControllers.forEach((e) => e.text = '0');
             db.userData.itemAbundantValue
                 .fillRange(0, db.userData.itemAbundantValue.length, 0);
           },
