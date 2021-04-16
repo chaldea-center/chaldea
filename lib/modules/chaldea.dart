@@ -66,14 +66,6 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
             ...GlobalMaterialLocalizations.delegates,
           ],
           supportedLocales: S.delegate.supportedLocales,
-          theme: ThemeData(
-              pageTransitionsTheme: PageTransitionsTheme(builders: {
-            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-            TargetPlatform.linux: CupertinoPageTransitionsBuilder(),
-            TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
-            TargetPlatform.windows: CupertinoPageTransitionsBuilder(),
-          })),
           builder: (context, widget) {
             Catcher.addDefaultErrorWidget(showStacktrace: true);
             return FlutterEasyLoading(child: widget);
