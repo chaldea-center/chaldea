@@ -29,6 +29,7 @@ class ServantListPageState extends State<ServantListPage> {
 
   //temp, calculate once build() called.
   Query __textFilter = Query();
+  int? _selectedSvtNo;
 
   @override
   void initState() {
@@ -322,8 +323,8 @@ class ServantListPageState extends State<ServantListPage> {
       child: widget.planMode
           ? _buildPlanListView()
           : filterData.display.isRadioVal('Grid')
-              ? _buildGridView()
-              : _buildListView(),
+          ? _buildGridView()
+          : _buildListView(),
     );
   }
 
@@ -405,14 +406,8 @@ class ServantListPageState extends State<ServantListPage> {
             ],
           ),
           trailing: statusText,
-          // trailing: Icon(Icons.arrow_forward_ios),
-          onTap: () {
-            SplitRoute.push(
-              context: context,
-              builder: (context, _) => ServantDetailPage(svt),
-              popDetail: true,
-            );
-          },
+          selected: SplitRoute.isSplit(context) && _selectedSvtNo == svt.no,
+          onTap: () => _onTapSvt(svt),
         );
       },
     );
@@ -458,13 +453,7 @@ class ServantListPageState extends State<ServantListPage> {
             textStyle: TextStyle(fontSize: 11, color: Colors.black),
             alignment: AlignmentDirectional.bottomStart,
             padding: EdgeInsets.fromLTRB(4, 0, 8, 0),
-            onTap: () {
-              SplitRoute.push(
-                context: context,
-                builder: (context, _) => ServantDetailPage(svt),
-                popDetail: true,
-              );
-            },
+            onTap: () => _onTapSvt(svt),
           ),
         ),
       ));
@@ -537,15 +526,11 @@ class ServantListPageState extends State<ServantListPage> {
                 leading: db.getIconImage(svt.icon, width: 48),
                 subtitle: _getDetailTable(svt),
                 trailing: eyeWidget,
+                selected:
+                    SplitRoute.isSplit(context) && _selectedSvtNo == svt.no,
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 16, vertical: 3),
-                onTap: () {
-                  SplitRoute.push(
-                    context: context,
-                    builder: (context, _) => ServantDetailPage(svt),
-                    popDetail: true,
-                  );
-                },
+                onTap: () => _onTapSvt(svt),
               );
             },
           ),
@@ -553,6 +538,17 @@ class ServantListPageState extends State<ServantListPage> {
         _buildButtonBar(),
       ],
     );
+  }
+
+  void _onTapSvt(Servant svt) {
+    SplitRoute.push(
+      context: context,
+      builder: (context, _) => ServantDetailPage(svt),
+      popDetail: true,
+    );
+    setState(() {
+      _selectedSvtNo = svt.no;
+    });
   }
 
   Widget _getDetailTable(Servant svt) {

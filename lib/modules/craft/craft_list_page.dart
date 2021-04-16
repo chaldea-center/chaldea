@@ -22,6 +22,7 @@ class CraftListPageState extends State<CraftListPage> {
   //temp, calculate once build() called.
   int __binAtkHpType = 0;
   Query __textFilter = Query();
+  int? _selectedNo;
 
   @override
   void initState() {
@@ -224,6 +225,7 @@ class CraftListPageState extends State<CraftListPage> {
               ],
             ),
             trailing: Icon(Icons.arrow_forward_ios),
+            selected: SplitRoute.isSplit(context) && _selectedNo == ce.no,
             onTap: () {
               SplitRoute.push(
                 context: context,
@@ -231,6 +233,9 @@ class CraftListPageState extends State<CraftListPage> {
                     CraftDetailPage(ce: ce, onSwitch: switchNext),
                 popDetail: true,
               );
+              setState(() {
+                _selectedNo = ce.no;
+              });
             },
           );
         });
@@ -251,6 +256,9 @@ class CraftListPageState extends State<CraftListPage> {
                       CraftDetailPage(ce: ce, onSwitch: switchNext),
                   popDetail: true,
                 );
+                setState(() {
+                  _selectedNo = ce.no;
+                });
               },
             )),
       ));
@@ -273,11 +281,18 @@ class CraftListPageState extends State<CraftListPage> {
   }
 
   CraftEssence? switchNext(int cur, bool next) {
+    void _setSelected(int index) {
+      setState(() {
+        _selectedNo = shownList[index].no;
+      });
+    }
+
     if (shownList.length <= 0) return null;
     for (int i = 0; i < shownList.length; i++) {
       if (shownList[i].no == cur) {
         int nextIndex = i + (next ? 1 : -1);
         if (nextIndex < shownList.length && nextIndex >= 0) {
+          _setSelected(nextIndex);
           return shownList[nextIndex];
         } else {
           // if reach the end/head of list, return null
@@ -286,6 +301,7 @@ class CraftListPageState extends State<CraftListPage> {
       }
     }
     // if not found in list, return the first one
+    _setSelected(0);
     return shownList[0];
   }
 }

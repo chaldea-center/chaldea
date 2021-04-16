@@ -22,6 +22,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
   late FocusNode _inputFocusNode;
 
   Query __textFilter = Query();
+  int? _selectedNo;
 
   @override
   void initState() {
@@ -66,8 +67,8 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
     if (!filterData.rarity.singleValueFilter(code.rarity.toString())) {
       return false;
     }
-    if (!filterData.category
-        .singleValueFilter(code.category, defaultCompare: (o, v) => v?.contains(o))) {
+    if (!filterData.category.singleValueFilter(code.category,
+        defaultCompare: (o, v) => v?.contains(o))) {
       return false;
     }
     return true;
@@ -196,6 +197,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
               ],
             ),
             trailing: Icon(Icons.arrow_forward_ios),
+            selected: SplitRoute.isSplit(context) && _selectedNo == code.no,
             onTap: () {
               SplitRoute.push(
                 context: context,
@@ -203,6 +205,9 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
                     CmdCodeDetailPage(code: code, onSwitch: switchNext),
                 popDetail: true,
               );
+              setState(() {
+                _selectedNo = code.no;
+              });
             },
           );
         });
@@ -223,6 +228,9 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
                     CmdCodeDetailPage(code: code, onSwitch: switchNext),
                 popDetail: true,
               );
+              setState(() {
+                _selectedNo = code.no;
+              });
             },
           ),
         ),
@@ -246,11 +254,18 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
   }
 
   CommandCode? switchNext(int cur, bool next) {
+    void _setSelected(int index) {
+      setState(() {
+        _selectedNo = shownList[index].no;
+      });
+    }
+
     if (shownList.length <= 0) return null;
     for (int i = 0; i < shownList.length; i++) {
       if (shownList[i].no == cur) {
         int nextIndex = i + (next ? 1 : -1);
         if (nextIndex < shownList.length && nextIndex >= 0) {
+          _setSelected(nextIndex);
           return shownList[nextIndex];
         } else {
           // if reach the end/head of list, return null
@@ -259,6 +274,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
       }
     }
     // if not found in list, return the first one
+    _setSelected(0);
     return shownList[0];
   }
 }

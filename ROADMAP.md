@@ -7,8 +7,8 @@
 - [x] Master Mission: 
   - [x] support **and** / **or** inside one mission
   - [x] related quests, sorted by mission target counts
-- [ ] Experience cards and qp cost when leveling up
-- [ ] Patch dataset.json online
+- [x] Experience cards and qp cost when leveling up
+- [x] Patch dataset.json online
 - [ ] ~~damage/NP calculation - GIVE UP~~
 
 ## Enhancement
@@ -20,7 +20,7 @@
 
 ## Performance
 - [ ] update itemStat in Isolate
-- [ ] save userdata periodically, rather manually call it
+- [x] save userdata periodically, rather manually call it
 
 ## Bug fix - long term
 - [ ] `SplitRoute` currently all detail routes is transparent even not in split mode
@@ -37,5 +37,6 @@
 毫无艺术细胞，有生之年
 - [ ] Dark mode
 - [ ] Animation
-    - [ ] transition animation of `SplitRoute`
-    - [ ] support swipe to back
+    - [x] transition animation of `SplitRoute`
+      - [ ] custom transition
+    - [x] support swipe to back
