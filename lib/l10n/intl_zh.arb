@@ -372,5 +372,7 @@
   "patch_gamedata_hint": "打补丁",
   "patch_gamedata_error_already_latest": "已经是最新数据",
   "download_full_gamedata": "下载最新数据",
-  "download_full_gamedata_hint": "完整zip数据包"
+  "download_full_gamedata_hint": "完整zip数据包",
+  "svt_reset_plan": "重置规划",
+  "svt_switch_slider_dropdown": "切换滑动条/下拉框"
 }

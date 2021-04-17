@@ -26,6 +26,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
     with SingleTickerProviderStateMixin {
   Servant svt;
   late TabController _tabController;
+  late SharedPrefItem<bool> svtPlanSliderMode;
 
 //  List<String> _tabNames = ['规划', '技能', '宝具', '特攻', '卡池', '礼装', '语音', '卡面'];
   // 特攻, 卡池,礼装,语音,卡面
@@ -79,6 +80,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
     // TODO: why state re-created after fullscreen page popped?
     super.initState();
     _tabController = TabController(length: _builders.length, vsync: this);
+    svtPlanSliderMode = SharedPrefItem('svtPlanSliderMode');
   }
 
   @override
@@ -166,6 +168,11 @@ class ServantDetailPageState extends State<ServantDetailPage>
             ),
           if (!Servant.unavailable.contains(svt.no))
             PopupMenuItem<String>(
+              child: Text(S.current.svt_reset_plan),
+              value: 'reset_plan',
+            ),
+          if (!Servant.unavailable.contains(svt.no))
+            PopupMenuItem<String>(
               child: Text(S.of(context).reset_svt_enhance_state),
               value: 'reset_enhance',
             ),
@@ -182,6 +189,11 @@ class ServantDetailPageState extends State<ServantDetailPage>
             PopupMenuItem<String>(
               child: Text(S.current.remove_duplicated_svt),
               value: 'delete_duplicated',
+            ),
+          if (_tabController.index == 0)
+            PopupMenuItem<String>(
+              child: Text(S.current.svt_switch_slider_dropdown),
+              value: 'switch_slider_dropdown',
             ),
         ];
       },
@@ -206,6 +218,15 @@ class ServantDetailPageState extends State<ServantDetailPage>
               db.itemStat.updateSvtItems();
             },
           ).showDialog(context);
+        } else if (select == 'reset_plan') {
+          setState(() {
+            plan
+              ..ascension = status.curVal.ascension
+              ..skills = List.of(status.curVal.skills)
+              ..dress = List.of(status.curVal.dress)
+              ..grail = status.curVal.grail;
+          });
+          db.itemStat.updateSvtItems();
         } else if (select == 'reset_enhance') {
           setState(() {
             status.resetEnhancement();
@@ -232,6 +253,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
           db.curUser.removeDuplicatedServant(svt.no);
           db.notifyDbUpdate();
           Navigator.pop(context);
+        } else if (select == 'switch_slider_dropdown') {
+          svtPlanSliderMode.set(!(svtPlanSliderMode.get() ?? false));
+          setState(() {});
         }
       },
     );

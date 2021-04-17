@@ -468,6 +468,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_obtain_story": MessageLookupByLibrary.simpleMessage("剧情限定"),
         "svt_obtain_unavailable": MessageLookupByLibrary.simpleMessage("无法召唤"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("已隐藏"),
+        "svt_reset_plan": MessageLookupByLibrary.simpleMessage("重置规划"),
+        "svt_switch_slider_dropdown":
+            MessageLookupByLibrary.simpleMessage("切换滑动条/下拉框"),
         "tooltip_refresh_sliders":
             MessageLookupByLibrary.simpleMessage("刷新首页图"),
         "total_ap": MessageLookupByLibrary.simpleMessage("总AP"),

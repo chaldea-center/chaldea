@@ -6,7 +6,7 @@
 
 part of split_route;
 
-const double _kBackGestureWidth = 40.0;
+const double _kBackGestureWidth = 20.0;
 const double _kMinFlingVelocity = 1.0; // Screen widths per second.
 
 const int _kMaxDroppedSwipePageForwardAnimationTime = 800; // Milliseconds.

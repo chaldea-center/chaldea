@@ -88,6 +88,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: Wrap(
+              alignment: WrapAlignment.center,
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: 6,
               runSpacing: 6,
@@ -110,7 +111,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
                     sameSvt = v;
                     if (sameSvt) {
                       FFOPart? _part =
-                          params.parts.firstWhereOrNull((e) => e != null);
+                      params.parts.firstWhereOrNull((e) => e != null);
                       await params.setPart(_part);
                     }
                     setState(() {});
@@ -120,9 +121,9 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
                   onPressed: params.isEmpty
                       ? null
                       : () => params.saveTo(context).catchError((e, s) {
-                            EasyLoading.showError('Save picture failed!\n$e');
-                            logger.e('save picture failed', e, s);
-                          }),
+                    EasyLoading.showError('Save picture failed!\n$e');
+                    logger.e('save picture failed', e, s);
+                  }),
                   child: Text(S.current.save),
                 ),
                 ElevatedButton(

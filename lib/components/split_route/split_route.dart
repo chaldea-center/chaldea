@@ -80,14 +80,18 @@ class SplitRoute<T> extends __PageRoute<T>
     this.masterRatio = kSplitMasterRatio,
     this.title,
     this.transitionDuration = const Duration(milliseconds: 400),
+    Duration? reverseTransitionDuration,
     RouteSettings? settings,
     this.maintainState = true,
     bool fullscreenDialog = false,
-  })  : assert(builder != null),
+  })
+      : assert(builder != null),
         assert(masterRatio > 0 && masterRatio < 100),
         assert(maintainState != null),
         assert(fullscreenDialog != null),
         opaque = opaque ?? !detail,
+        reverseTransitionDuration =
+            reverseTransitionDuration ?? transitionDuration,
         super(settings: settings, fullscreenDialog: fullscreenDialog);
 
   @override
@@ -104,6 +108,9 @@ class SplitRoute<T> extends __PageRoute<T>
 
   @override
   Duration transitionDuration;
+
+  @override
+  Duration reverseTransitionDuration;
 
   /// wrap master page here
   @override
@@ -186,7 +193,7 @@ class SplitRoute<T> extends __PageRoute<T>
 
   /// Pop all top detail routes
   ///
-  /// return the number of popped detail page ONLY WHEN [popDetail]
+  /// return the number of popped pages
   static int pop(BuildContext context, [bool popDetails = false]) {
     // whether to store all values returned by routes?
     if (popDetails) {
@@ -200,9 +207,8 @@ class SplitRoute<T> extends __PageRoute<T>
       });
       return n;
     } else {
-      /// always return 0 even if popped one route
-      Navigator.of(context).pop();
-      return 1;
+      Navigator.of(context).maybePop();
+      return 1; // maybe 0 route popped
     }
   }
 
@@ -227,8 +233,10 @@ class SplitRoute<T> extends __PageRoute<T>
       builder: builder,
       detail: detail,
       masterRatio: masterRatio,
-      transitionDuration:
-          (popDetail && n > 0) ? Duration() : Duration(milliseconds: 400),
+      transitionDuration: (detail && popDetail && n > 0)
+          ? Duration()
+          : Duration(milliseconds: 400),
+      reverseTransitionDuration: Duration(milliseconds: 400),
       settings: settings,
       title: title,
     ));

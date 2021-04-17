@@ -3781,6 +3781,26 @@ class S {
       args: [],
     );
   }
+
+  /// `重置规划`
+  String get svt_reset_plan {
+    return Intl.message(
+      '重置规划',
+      name: 'svt_reset_plan',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `切换滑动条/下拉框`
+  String get svt_switch_slider_dropdown {
+    return Intl.message(
+      '切换滑动条/下拉框',
+      name: 'svt_switch_slider_dropdown',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

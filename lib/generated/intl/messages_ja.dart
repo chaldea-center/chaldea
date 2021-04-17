@@ -498,6 +498,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_obtain_story": MessageLookupByLibrary.simpleMessage("スト限"),
         "svt_obtain_unavailable": MessageLookupByLibrary.simpleMessage("召喚不可"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("非表示"),
+        "svt_reset_plan": MessageLookupByLibrary.simpleMessage("プランをリセット"),
+        "svt_switch_slider_dropdown":
+            MessageLookupByLibrary.simpleMessage("Slider/Dropdownを切り替え"),
         "tooltip_refresh_sliders":
             MessageLookupByLibrary.simpleMessage("ホームページを更新"),
         "total_ap": MessageLookupByLibrary.simpleMessage("合計AP"),

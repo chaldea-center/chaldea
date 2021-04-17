@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../servant_detail_page.dart';
 import 'leveling_cost_page.dart';
@@ -23,12 +26,12 @@ class SvtPlanTab extends SvtTabBaseWidget {
 class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
   /// in edit mode, change skill lv_a to lv_b and take out the items
   bool enhanceMode = false;
+
   ServantPlan enhancePlan = ServantPlan();
 
   ServantPlan get plan => db.curUser.svtPlanOf(svt.no);
 
-  _SvtPlanTabState(
-      {ServantDetailPageState? parent, Servant? svt, ServantStatus? status})
+  _SvtPlanTabState({ServantDetailPageState? parent, Servant? svt, ServantStatus? status})
       : super(parent: parent, svt: svt, status: status);
 
   /// valid range include start and end
@@ -57,7 +60,13 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    bool sliderMode = widget.parent?.svtPlanSliderMode.get() ?? false;
     super.build(context);
     return db.streamBuilder((context) {
       if (svt.activeSkills.isEmpty) {
@@ -74,6 +83,18 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           header: S.of(context).ascension_up,
           children: <Widget>[
             buildPlanRow(
+              useSlider: sliderMode,
+              leading: Container(
+                width: 33,
+                height: 33,
+                child: Center(
+                  child: FaIcon(
+                    FontAwesomeIcons.seedling,
+                    size: 28,
+                    color: Colors.lightGreen,
+                  ),
+                ),
+              ),
               title: S.of(context).ascension_up,
               start: curVal.ascension,
               end: targetVal.ascension,
@@ -104,10 +125,11 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       for (int index = 0; index < svt.activeSkills.length; index++) {
         final activeSkill = svt.activeSkills[index];
         Skill skill =
-            activeSkill.skills[status.skillIndex[index] ?? activeSkill.cnState];
+        activeSkill.skills[status.skillIndex[index] ?? activeSkill.cnState];
         String shownName =
-            Language.isCN ? skill.name : (skill.nameJp ?? skill.name);
+        Language.isCN ? skill.name : (skill.nameJp ?? skill.name);
         skillWidgets.add(buildPlanRow(
+          useSlider: sliderMode,
           leading: db.getIconImage(skill.icon, width: 33),
           title: '$shownName ${skill.rank}',
           start: curVal.skills[index],
@@ -142,6 +164,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         final dressNameCn = svt.itemCost.dressName[index];
         final dressNameJp = svt.itemCost.dressNameJp[index];
         dressWidgets.add(buildPlanRow(
+          useSlider: false,
           leading: db.getIconImage('灵衣开放权', width: 33),
           title: Language.isCN ? dressNameCn : dressNameJp,
           subtitle: Language.isCN ? dressNameJp : dressNameCn,
@@ -172,11 +195,13 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       children.add(TileGroup(
         children: <Widget>[
           buildPlanRow(
+            useSlider: sliderMode,
             leading: db.getIconImage('宝具强化', width: 33),
             title: S.of(context).nobel_phantasm_level,
             start: status.npLv,
             minVal: 1,
             maxVal: 5,
+            trailingLabelFormatter: (a, b) => '   $a   ',
             onValueChanged: (_value, _) {
               status.npLv = _value;
               curVal.favorite = true;
@@ -187,13 +212,16 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           ),
           if (svt.no != 1)
             buildPlanRow(
+              useSlider: sliderMode,
               leading: db.getIconImage(Item.grail, width: 33),
               title: S.of(context).grail_up,
               start: curVal.grail,
               end: targetVal.grail,
               minVal: 0,
               maxVal: [10, 10, 10, 9, 7, 5][svt.info.rarity],
-              itemBuilder: (v) => Text(svt.getGrailLv(v).toString()),
+              labelFormatter: (v) => svt.getGrailLv(v).toString(),
+              trailingLabelFormatter: (a, b) =>
+                  '${svt.getGrailLv(a)}->${svt.getGrailLv(b!).toString().padRight(3)}',
               onValueChanged: (_start, _end) {
                 curVal
                   ..grail = _start
@@ -225,71 +253,131 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     int? end,
     required int minVal,
     required int maxVal,
-    Widget itemBuilder(int v)?,
+    String labelFormatter(int v)?,
+    String trailingLabelFormatter(int a, int? b)?,
     required void onValueChanged(int start, int end),
+    bool useSlider = false,
     WidgetBuilder? detailPageBuilder,
   }) {
     assert(minVal <= start && start <= maxVal);
     if (end != null) {
       assert(start <= end && end <= maxVal);
     }
-    if (itemBuilder == null) {
-      itemBuilder = (v) => Text(v.toString());
+    if (labelFormatter == null) {
+      labelFormatter = (v) => v.toString();
     }
-    Widget selector;
-    if (end == null) {
-      selector = DropdownButton<int>(
-        value: start,
-        items: List.generate(
-          maxVal - minVal + 1,
-          (index) => DropdownMenuItem(
-            value: minVal + index,
-            child: itemBuilder!(minVal + index),
-          ),
-        ),
-        // disable at enhance mode
-        onChanged: enhanceMode
+    if (trailingLabelFormatter == null) {
+      trailingLabelFormatter = (a, b) {
+        String s = labelFormatter!(a).padLeft(2);
+        if (b != null) s += '->' + labelFormatter(b).padRight(2);
+        return s;
+      };
+    }
+    Widget trailingIcon = IconButton(
+      icon: Icon(Icons.info_outline,
+          color: detailPageBuilder == null ? Colors.grey : Colors.blueAccent),
+      onPressed: detailPageBuilder == null
+          ? null
+          : () => showDialog(context: context, builder: detailPageBuilder),
+    );
+    if (useSlider) {
+      Widget slider;
+      if (end == null) {
+        slider = Slider(
+          min: minVal.toDouble(),
+          max: maxVal.toDouble(),
+          divisions: (maxVal - minVal).round(),
+          value: start.toDouble(),
+          label: labelFormatter(start),
+          onChanged: (v) {
+            onValueChanged(v.round(), -1);
+          },
+        );
+      } else {
+        slider = RangeSlider(
+          min: minVal.toDouble(),
+          max: maxVal.toDouble(),
+          divisions: (maxVal - minVal).round(),
+          values: RangeValues(start.toDouble(), end.toDouble()),
+          labels: RangeLabels(labelFormatter(start), labelFormatter(end)),
+          onChanged: (v) {
+            onValueChanged(v.start.round(), v.end.round());
+          },
+        );
+      }
+      return CustomTile(
+        contentPadding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+        titlePadding: EdgeInsets.zero,
+        leading: leading,
+        title: title == null
             ? null
-            : (v) {
-                if (v != null) onValueChanged(v, -1);
-              },
+            : Padding(
+                padding: EdgeInsets.only(left: 6, top: 4),
+                child: AutoSizeText(title, maxLines: 1),
+              ),
+        subtitle: SliderTheme(
+          data: SliderThemeData(
+            trackHeight: 1.6,
+            valueIndicatorShape: PaddleSliderValueIndicatorShape(),
+            rangeValueIndicatorShape: PaddleRangeSliderValueIndicatorShape(),
+            rangeTickMarkShape:
+                RoundRangeSliderTickMarkShape(tickMarkRadius: 1.2),
+            tickMarkShape: RoundSliderTickMarkShape(tickMarkRadius: 1.2),
+            activeTickMarkColor: Colors.grey[200],
+            thumbShape: RoundSliderThumbShape(enabledThumbRadius: 5),
+            rangeThumbShape: RoundRangeSliderThumbShape(enabledThumbRadius: 5),
+          ),
+          child: Container(height: 23, child: slider),
+        ),
+        trailing: Text(trailingLabelFormatter(start, end),
+            style: TextStyle(fontFamily: 'RobotoMono')),
+        trailingIcon: trailingIcon,
       );
     } else {
-      selector = RangeSelector<int>(
-        start: start,
-        end: end,
-        startEnabled: !enhanceMode,
-        startItems:
-            List.generate(maxVal - minVal + 1, (index) => minVal + index),
-        endItems: List.generate(maxVal - minVal + 1, (index) => minVal + index),
-        itemBuilder: (context, v) => itemBuilder!(v),
-        onChanged: onValueChanged,
+      Widget selector;
+      if (end == null) {
+        selector = DropdownButton<int>(
+          value: start,
+          items: List.generate(
+            maxVal - minVal + 1,
+            (index) => DropdownMenuItem(
+              value: minVal + index,
+              child: Text(labelFormatter!(minVal + index)),
+            ),
+          ),
+          // disable at enhance mode
+          onChanged: enhanceMode
+              ? null
+              : (v) {
+                  if (v != null) onValueChanged(v, -1);
+                },
+        );
+      } else {
+        selector = RangeSelector<int>(
+          start: start,
+          end: end,
+          startEnabled: !enhanceMode,
+          startItems:
+              List.generate(maxVal - minVal + 1, (index) => minVal + index),
+          endItems:
+              List.generate(maxVal - minVal + 1, (index) => minVal + index),
+          itemBuilder: (context, v) => Text(labelFormatter!(v)),
+          onChanged: onValueChanged,
+        );
+      }
+      return CustomTile(
+        contentPadding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+        leading: leading,
+        title: title == null ? null : AutoSizeText(title, maxLines: 1),
+        subtitle: subtitle == null
+            ? null
+            : AutoSizeText(subtitle, maxLines: 1, minFontSize: 10),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[selector, trailingIcon],
+        ),
       );
     }
-    return CustomTile(
-      contentPadding: EdgeInsets.fromLTRB(16, 4, 0, 4),
-      leading: leading,
-      title: title == null ? null : AutoSizeText(title, maxLines: 1),
-      subtitle: subtitle == null
-          ? null
-          : AutoSizeText(subtitle, maxLines: 1, minFontSize: 10),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          selector,
-          IconButton(
-            icon: Icon(Icons.info_outline,
-                color: detailPageBuilder == null
-                    ? Colors.grey
-                    : Colors.blueAccent),
-            onPressed: detailPageBuilder == null
-                ? null
-                : () =>
-                    showDialog(context: context, builder: detailPageBuilder),
-          )
-        ],
-      ),
-    );
   }
 
   Widget buildButtonBar(ServantPlan targetPlan) {
@@ -306,7 +394,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         child: Text(enhanceMode ? S.of(context).cancel : S.of(context).enhance),
         style: ElevatedButton.styleFrom(
             primary:
-                enhanceMode ? Colors.grey : Theme.of(context).primaryColor),
+            enhanceMode ? Colors.grey : Theme.of(context).primaryColor),
       ),
     );
 
@@ -323,10 +411,10 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         Set.from((enhanceMode ? targetPlan : curVal).skills).length == 1;
     buttons.add(DropdownButton(
       value:
-          skillLvEqual ? (enhanceMode ? targetPlan : curVal).skills[0] : null,
+      skillLvEqual ? (enhanceMode ? targetPlan : curVal).skills[0] : null,
       hint: Text('Lv. ≠'),
       items: List.generate(10,
-          (i) => DropdownMenuItem(value: i + 1, child: Text('Lv. ${i + 1}'))),
+              (i) => DropdownMenuItem(value: i + 1, child: Text('Lv. ${i + 1}'))),
       onChanged: _onAllSkillLv,
     ));
 
@@ -337,10 +425,10 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       onPressed: enhanceMode
           ? null
           : () {
-              curVal.setMax(skill: 10);
-              targetPlan.setMax(skill: 10);
-              updateState();
-            },
+        curVal.setMax(skill: 10);
+        targetPlan.setMax(skill: 10);
+        updateState();
+      },
     ));
 
     // 999
@@ -399,8 +487,14 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     );
   }
 
+  Timer? _delayUpdateTimer;
+
   void updateState() {
-    db.itemStat.updateSvtItems();
+    _delayUpdateTimer?.cancel();
+    _delayUpdateTimer = Timer(Duration(seconds: 2), () {
+      db.itemStat.updateSvtItems();
+    });
+    setState(() {});
   }
 
   void _onEnhance() {
@@ -430,7 +524,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           width: defaultDialogWidth(context),
           child: hasItem
               ? buildResponsiveGridWrap(
-                  context: context, children: children, responsive: false)
+              context: context, children: children, responsive: false)
               : ListTile(title: Text('Nothing')),
         ),
         actions: [

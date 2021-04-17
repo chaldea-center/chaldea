@@ -6,7 +6,7 @@ class UserData {
   // app settings
   String? language;
 
-  String? sliderUpdateTime;
+  int? slidesUpdateTime;
   Map<String, String> sliderUrls;
   Map<String, bool> galleries;
   String? serverRoot;
@@ -33,7 +33,7 @@ class UserData {
 
   UserData({
     this.language,
-    this.sliderUpdateTime,
+    this.slidesUpdateTime,
     Map<String, String>? sliderUrls,
     Map<String, bool>? galleries,
     this.serverRoot,

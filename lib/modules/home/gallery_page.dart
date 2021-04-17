@@ -31,14 +31,14 @@ class GalleryPage extends StatefulWidget {
 class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
   @override
   void afterFirstLayout(BuildContext context) {
-    if (db.userData.sliderUpdateTime?.isNotEmpty != true ||
+    if (db.userData.slidesUpdateTime == null ||
         db.userData.sliderUrls.isEmpty) {
       resolveSliderImageUrls();
     } else {
-      DateTime lastTime = DateTime.parse(db.userData.sliderUpdateTime!),
+      DateTime lastTime = DateTime.fromMillisecondsSinceEpoch(
+              db.userData.slidesUpdateTime! * 1000),
           now = DateTime.now();
-      int dt = now.millisecondsSinceEpoch - lastTime.millisecondsSinceEpoch;
-      if (dt > 24 * 3600 * 1000) {
+      if (now.difference(lastTime).inHours > 24) {
         // more than 1 day
         resolveSliderImageUrls();
       }
@@ -426,7 +426,8 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
     } finally {
       if (result.isNotEmpty) {
         db.userData.sliderUrls = result;
-        db.userData.sliderUpdateTime = DateTime.now().toString();
+        db.userData.slidesUpdateTime =
+            DateTime.now().millisecondsSinceEpoch ~/ 1000;
       }
       if (mounted) {
         setState(() {});

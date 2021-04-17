@@ -208,7 +208,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "exp_card_same_class":
             MessageLookupByLibrary.simpleMessage("Same Class"),
         "exp_card_select_lvs":
-            MessageLookupByLibrary.simpleMessage("Select level range"),
+            MessageLookupByLibrary.simpleMessage("Select Level Range"),
         "exp_card_title": MessageLookupByLibrary.simpleMessage("Exp Card"),
         "failed": MessageLookupByLibrary.simpleMessage("Failed"),
         "favorite": MessageLookupByLibrary.simpleMessage("Favorite"),
@@ -551,6 +551,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_obtain_unavailable":
             MessageLookupByLibrary.simpleMessage("Unavailable"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("Hidden"),
+        "svt_reset_plan": MessageLookupByLibrary.simpleMessage("Reset Plan"),
+        "svt_switch_slider_dropdown":
+            MessageLookupByLibrary.simpleMessage("Switch Slider/Dropdown"),
         "tooltip_refresh_sliders":
             MessageLookupByLibrary.simpleMessage("Refresh sliders"),
         "total_ap": MessageLookupByLibrary.simpleMessage("Total AP"),

@@ -1530,8 +1530,8 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
   return $checkedNew('UserData', json, () {
     final val = UserData(
       language: $checkedConvert(json, 'language', (v) => v as String?),
-      sliderUpdateTime:
-          $checkedConvert(json, 'sliderUpdateTime', (v) => v as String?),
+      slidesUpdateTime:
+          $checkedConvert(json, 'slidesUpdateTime', (v) => v as int?),
       sliderUrls: $checkedConvert(
           json,
           'sliderUrls',
@@ -1588,9 +1588,10 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
+Map<String, dynamic> _$UserDataToJson(UserData instance) =>
+    <String, dynamic>{
       'language': instance.language,
-      'sliderUpdateTime': instance.sliderUpdateTime,
+      'slidesUpdateTime': instance.slidesUpdateTime,
       'sliderUrls': instance.sliderUrls,
       'galleries': instance.galleries,
       'serverRoot': instance.serverRoot,

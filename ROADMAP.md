@@ -4,6 +4,7 @@
 - [ ] Servant
   - [ ] battle model/avatar
   - [ ] HP/ATK curve
+  - [ ] crafts and cmd codes that have appeared in
 - [x] Master Mission: 
   - [x] support **and** / **or** inside one mission
   - [x] related quests, sorted by mission target counts

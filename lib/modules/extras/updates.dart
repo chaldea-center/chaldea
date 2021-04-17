@@ -104,8 +104,12 @@ class AutoUpdateUtil {
       final latestRelease = await git.latestDatasetRelease(releases: releases);
       final curRelease = releases.firstWhereOrNull((release) =>
           _parseDatasetVersion(release.name) == db.gameData.version);
-      if (latestRelease == null || curRelease == null) {
-        _reportResult('fetch dataset version failed');
+      if (curRelease == null) {
+        _reportResult('cannot find current version on server');
+        return;
+      }
+      if (latestRelease == null) {
+        _reportResult('no available newer version');
         return;
       }
       if (_parseDatasetVersion(latestRelease.name)

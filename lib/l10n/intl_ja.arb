@@ -375,5 +375,7 @@
   "patch_gamedata_hint": "パッチのみ",
   "patch_gamedata_error_already_latest": "すでに最新バージョン",
   "download_full_gamedata": "最新のデータをダウンロード",
-  "download_full_gamedata_hint": "フルzipデータパッケージ"
+  "download_full_gamedata_hint": "フルzipデータパッケージ",
+  "svt_reset_plan": "プランをリセット",
+  "svt_switch_slider_dropdown": "Slider/Dropdownを切り替え"
 }

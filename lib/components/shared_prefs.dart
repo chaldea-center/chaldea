@@ -3,16 +3,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SharedPrefs {
   late SharedPreferences instance;
 
-  SharedPrefItem<String> previousVersion = SharedPrefItem._('previousVersion');
-  SharedPrefItem<String> ignoreAppVersion =
-      SharedPrefItem._('ignoreAppVersion');
-  SharedPrefItem<String> contactInfo = SharedPrefItem._('contactInfo');
-  SharedPrefItem<String> userName = SharedPrefItem._('userName');
-  SharedPrefItem<String> userPwd = SharedPrefItem._('userPwd');
+  SharedPrefItem<String> previousVersion = SharedPrefItem('previousVersion');
+  SharedPrefItem<String> ignoreAppVersion = SharedPrefItem('ignoreAppVersion');
+  SharedPrefItem<String> contactInfo = SharedPrefItem('contactInfo');
+  SharedPrefItem<String> userName = SharedPrefItem('userName');
+  SharedPrefItem<String> userPwd = SharedPrefItem('userPwd');
 
   Future<void> initiate() async {
     instance = await SharedPreferences.getInstance();
     SharedPrefItem._instance = instance;
+  }
+
+  SharedPrefItem<T> getItem<T>(String key) {
+    return SharedPrefItem<T>(key);
   }
 
   /// url
@@ -38,7 +41,7 @@ class SharedPrefItem<T> {
   final String key;
   final String _type;
 
-  SharedPrefItem._(this.key)
+  SharedPrefItem(this.key)
       : assert(!T.toString().endsWith('?')),
         _type = T.toString();
 

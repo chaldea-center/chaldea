@@ -187,6 +187,7 @@ class _SettingsPageState extends State<SettingsPage> {
               if (Platform.isIOS)
                 ListTile(
                   title: Text(S.of(context).join_beta),
+                  trailing: Text('TestFlight'),
                   onTap: () =>
                       launch('https://testflight.apple.com/join/HSyZttrr'),
                 ),

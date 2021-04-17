@@ -67,10 +67,12 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
   ExpUpData data = ExpUpData();
 
   Widget get selector {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Wrap(
+      alignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 4,
       children: [
-        Padding(padding: EdgeInsets.only(right: 16)),
+        Text(S.current.words_separate(S.current.servant, S.current.rarity)),
         DropdownButton<int>(
           value: data.rarity,
           items: List.generate(
@@ -84,7 +86,6 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
             data.rarity = v ?? data.rarity;
           }),
         ),
-        Padding(padding: EdgeInsets.only(right: 10)),
         Text(S.current.exp_card_plan_lv),
         TextButton(
           onPressed: () {
