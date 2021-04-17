@@ -25,9 +25,11 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   _ChaldeaState();
 
   void onAppUpdate() {
-    if (!mounted) return;
-    _homeKey.currentState?._onAppUpdate();
-    setState(() {});
+    Future.delayed(Duration(milliseconds: 200), () {
+      if (!mounted) return;
+      _homeKey.currentState?._onAppUpdate();
+      setState(() {});
+    });
   }
 
   @override

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
@@ -31,7 +29,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
 
   ServantPlan get plan => db.curUser.svtPlanOf(svt.no);
 
-  _SvtPlanTabState({ServantDetailPageState? parent, Servant? svt, ServantStatus? status})
+  _SvtPlanTabState(
+      {ServantDetailPageState? parent, Servant? svt, ServantStatus? status})
       : super(parent: parent, svt: svt, status: status);
 
   /// valid range include start and end
@@ -125,9 +124,9 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       for (int index = 0; index < svt.activeSkills.length; index++) {
         final activeSkill = svt.activeSkills[index];
         Skill skill =
-        activeSkill.skills[status.skillIndex[index] ?? activeSkill.cnState];
+            activeSkill.skills[status.skillIndex[index] ?? activeSkill.cnState];
         String shownName =
-        Language.isCN ? skill.name : (skill.nameJp ?? skill.name);
+            Language.isCN ? skill.name : (skill.nameJp ?? skill.name);
         skillWidgets.add(buildPlanRow(
           useSlider: sliderMode,
           leading: db.getIconImage(skill.icon, width: 33),
@@ -317,15 +316,15 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
               ),
         subtitle: SliderTheme(
           data: SliderThemeData(
-            trackHeight: 1.6,
+            trackHeight: 2,
             valueIndicatorShape: PaddleSliderValueIndicatorShape(),
             rangeValueIndicatorShape: PaddleRangeSliderValueIndicatorShape(),
             rangeTickMarkShape:
                 RoundRangeSliderTickMarkShape(tickMarkRadius: 1.2),
             tickMarkShape: RoundSliderTickMarkShape(tickMarkRadius: 1.2),
             activeTickMarkColor: Colors.grey[200],
-            thumbShape: RoundSliderThumbShape(enabledThumbRadius: 5),
-            rangeThumbShape: RoundRangeSliderThumbShape(enabledThumbRadius: 5),
+            thumbShape: RoundSliderThumbShape(enabledThumbRadius: 6),
+            rangeThumbShape: RoundRangeSliderThumbShape(enabledThumbRadius: 6),
           ),
           child: Container(height: 23, child: slider),
         ),
@@ -394,7 +393,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         child: Text(enhanceMode ? S.of(context).cancel : S.of(context).enhance),
         style: ElevatedButton.styleFrom(
             primary:
-            enhanceMode ? Colors.grey : Theme.of(context).primaryColor),
+                enhanceMode ? Colors.grey : Theme.of(context).primaryColor),
       ),
     );
 
@@ -411,10 +410,10 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         Set.from((enhanceMode ? targetPlan : curVal).skills).length == 1;
     buttons.add(DropdownButton(
       value:
-      skillLvEqual ? (enhanceMode ? targetPlan : curVal).skills[0] : null,
+          skillLvEqual ? (enhanceMode ? targetPlan : curVal).skills[0] : null,
       hint: Text('Lv. ≠'),
       items: List.generate(10,
-              (i) => DropdownMenuItem(value: i + 1, child: Text('Lv. ${i + 1}'))),
+          (i) => DropdownMenuItem(value: i + 1, child: Text('Lv. ${i + 1}'))),
       onChanged: _onAllSkillLv,
     ));
 
@@ -425,10 +424,10 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       onPressed: enhanceMode
           ? null
           : () {
-        curVal.setMax(skill: 10);
-        targetPlan.setMax(skill: 10);
-        updateState();
-      },
+              curVal.setMax(skill: 10);
+              targetPlan.setMax(skill: 10);
+              updateState();
+            },
     ));
 
     // 999
@@ -487,13 +486,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     );
   }
 
-  Timer? _delayUpdateTimer;
-
   void updateState() {
-    _delayUpdateTimer?.cancel();
-    _delayUpdateTimer = Timer(Duration(seconds: 2), () {
-      db.itemStat.updateSvtItems();
-    });
+    db.itemStat.updateSvtItems(lapse: Duration(seconds: 1));
     setState(() {});
   }
 
@@ -524,7 +518,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           width: defaultDialogWidth(context),
           child: hasItem
               ? buildResponsiveGridWrap(
-              context: context, children: children, responsive: false)
+                  context: context, children: children, responsive: false)
               : ListTile(title: Text('Nothing')),
         ),
         actions: [

@@ -1,6 +1,8 @@
 /// statistics of items
 part of datatypes;
 
+const _kItemUpdateLapse = Duration(seconds: 0);
+
 class ItemStatistics {
   SvtCostItems svtItemDetail = SvtCostItems();
 
@@ -19,29 +21,67 @@ class ItemStatistics {
     leftItems = {};
   }
 
-  void update({bool shouldBroadcast = true}) {
-    updateSvtItems(shouldBroadcast: false);
-    updateEventItems(shouldBroadcast: false);
-    updateLeftItems(shouldBroadcast: shouldBroadcast);
+  Timer? _topTimer;
+  Timer? _svtTimer;
+  Timer? _eventTimer;
+
+  Timer? _setTimer(Duration? lapse, VoidCallback callback) {
+    if (lapse == null) {
+      // don't use Timer(Duration.zero,callback), maybe next microtask
+      callback();
+      return null;
+    } else {
+      return Timer(lapse, callback);
+    }
   }
 
-  void updateSvtItems({bool shouldBroadcast = true}) {
-    // priority is shared cross users!
-    final Map<int, ServantStatus> priorityFiltered = Map.fromEntries(db
-        .curUser.servants.entries
-        .where((entry) => db.userData.svtFilter.priority
-            .singleValueFilter(entry.value.priority.toString())));
-    svtItemDetail.update(
-        curStat: priorityFiltered, targetPlan: db.curUser.curSvtPlan);
-    updateLeftItems(shouldBroadcast: shouldBroadcast);
+  Future<void> update(
+      {bool shouldBroadcast = true,
+      Duration? lapse = _kItemUpdateLapse}) async {
+    VoidCallback callback = () async {
+      await updateSvtItems(shouldBroadcast: false, lapse: null);
+      await updateEventItems(shouldBroadcast: false, lapse: null);
+      await updateLeftItems(shouldBroadcast: shouldBroadcast, lapse: null);
+    };
+    _topTimer?.cancel();
+    _svtTimer?.cancel();
+    _eventTimer?.cancel();
+
+    _topTimer = _setTimer(lapse, callback);
   }
 
-  void updateEventItems({bool shouldBroadcast = true}) {
-    eventItems = db.gameData.events.getAllItems(db.curUser.events);
-    updateLeftItems(shouldBroadcast: shouldBroadcast);
+  Future<void> updateSvtItems(
+      {bool shouldBroadcast = true,
+      Duration? lapse = _kItemUpdateLapse}) async {
+    _svtTimer?.cancel();
+    VoidCallback callback = () async {
+      // priority is shared cross users!
+      final Map<int, ServantStatus> priorityFiltered = Map.fromEntries(db
+          .curUser.servants.entries
+          .where((entry) => db.userData.svtFilter.priority
+              .singleValueFilter(entry.value.priority.toString())));
+      svtItemDetail.update(
+          curStat: priorityFiltered, targetPlan: db.curUser.curSvtPlan);
+      await updateLeftItems(shouldBroadcast: shouldBroadcast);
+    };
+    _svtTimer = _setTimer(lapse, callback);
   }
 
-  void updateLeftItems({bool shouldBroadcast = true}) {
+  Future<void> updateEventItems(
+      {bool shouldBroadcast = true,
+      Duration? lapse = _kItemUpdateLapse}) async {
+    VoidCallback callback = () async {
+      eventItems = db.gameData.events.getAllItems(db.curUser.events);
+      await updateLeftItems(shouldBroadcast: shouldBroadcast);
+    };
+    _eventTimer = _setTimer(lapse, callback);
+  }
+
+  Future<void> updateLeftItems(
+      {bool shouldBroadcast = true, Duration? lapse}) async {
+    if (lapse != null) {
+      await Future.delayed(lapse);
+    }
     leftItems =
         sumDict([eventItems, db.curUser.items, multiplyDict(svtItems, -1)]);
     if (shouldBroadcast) {
@@ -177,8 +217,8 @@ class SvtParts<T> {
       summation: f == null
           ? summation as T2?
           : summation != null
-              ? f(summation!)
-              : null,
+          ? f(summation!)
+          : null,
     );
   }
 
