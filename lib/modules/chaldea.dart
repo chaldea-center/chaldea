@@ -46,6 +46,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         db.checkConnectivity();
       } else if (msg == AppLifecycleState.inactive.toString()) {
         db.saveUserData();
+        db.cfg.close();
         debugPrint('save userdata before being inactive');
       }
       return null;
@@ -99,9 +100,12 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         db.paths.externalAppPath = externalBackupDir;
         print(db.paths.externalAppPath);
       }
-    } else if (Platform.isMacOS || Platform.isWindows) {
-      MethodChannelChaldea.setAlwaysOnTop(
-          db.prefs.instance.getBool('alwaysOnTop') ?? false);
+    }
+    if (Platform.isMacOS || Platform.isWindows) {
+      MethodChannelChaldea.setAlwaysOnTop();
+    }
+    if (Platform.isWindows) {
+      MethodChannelChaldea.setWindowPos();
     }
 
     // if failed to load userdata, backup and alert user

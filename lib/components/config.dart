@@ -5,12 +5,14 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/components/method_channel_chaldea.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:path_provider/path_provider.dart';
@@ -35,6 +37,7 @@ class Database {
   Dio serverDio = Dio(BaseOptions(baseUrl: kServerRoot));
 
   SharedPrefs prefs = SharedPrefs();
+  late Box cfg;
 
   User get curUser => userData.curUser;
 
@@ -85,12 +88,15 @@ class Database {
   // initialization before startup
   Future<void> initial() async {
     await paths.initRootPath();
+    Hive.init(paths.configDir);
     await AppInfo.resolve();
     await prefs.initiate();
+    cfg = await Hive.openBox('cfg');
     await checkConnectivity();
     Connectivity().onConnectivityChanged.listen((result) {
       _connectivity = result;
     });
+    MethodChannelChaldea.configMethodChannel();
   }
 
   /// Automatically save user data when:
@@ -531,6 +537,8 @@ class PathManager {
   String get userDir => pathlib.join(_appPath!, 'user');
 
   String get tempDir => pathlib.join(_appPath!, 'temp');
+
+  String get configDir => pathlib.join(_appPath!, 'config');
 
   String get userDataPath => pathlib.join(userDir, kUserDataFilename);
 

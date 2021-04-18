@@ -3,6 +3,8 @@
 
 #include <flutter/dart_project.h>
 #include <flutter/flutter_view_controller.h>
+#include <flutter/method_channel.h>
+#include <flutter/standard_method_codec.h>
 
 #include <memory>
 
@@ -18,6 +20,7 @@ class FlutterWindow : public Win32Window {
                          const flutter::DartProject& project);
   virtual ~FlutterWindow();
 
+
  protected:
   // Win32Window:
   bool OnCreate() override;
@@ -25,6 +28,8 @@ class FlutterWindow : public Win32Window {
   LRESULT MessageHandler(HWND window, UINT const message, WPARAM const wparam,
                          LPARAM const lparam) noexcept override;
   void ConfigMethodChannel(flutter::FlutterEngine* engine);
+
+  std::unique_ptr<flutter::MethodChannel<flutter::EncodableValue>> chaldea_channel;
 
  private:
   // The run loop driving events for this window.

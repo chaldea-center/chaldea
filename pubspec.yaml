@@ -53,6 +53,8 @@ dependencies:
   flutter_webview_plugin: ^0.3.11
   font_awesome_flutter: ^9.0.0
   getwidget: ^2.0.0-nullsafety.4
+  hive: ^2.0.3
+  hive_flutter: ^1.0.0
   html: ^0.15.0
   image: ^3.0.2
   image_gallery_saver: ^1.6.9

@@ -17,9 +17,9 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  bool get alwaysOnTop => db.prefs.instance.getBool('alwaysOnTop') ?? false;
+  bool get alwaysOnTop => db.cfg.get('alwaysOnTop') ?? false;
 
-  set alwaysOnTop(bool v) => db.prefs.instance.setBool('alwaysOnTop', v);
+  set alwaysOnTop(bool v) => db.cfg.put('alwaysOnTop', v);
 
   @override
   void initState() {
