@@ -33,6 +33,7 @@ class MainFlutterWindow: NSWindow {
               self.level = onTop! ? NSWindow.Level.floating : NSWindow.Level.normal
               result(true);
             }
+            break
           default:
             result(FlutterMethodNotImplemented)
       }

@@ -28,6 +28,8 @@
 - [ ] `audioplayers` not support `wav` file on iOS and macOS
 - [ ] iOS only, move among a list of FocusNode may fail when outside viewport, won't auto scroll
 - [ ] catch close action and save userdata for desktop
+  - [x] windows, but not always success
+  - [ ] macOS
 
 ## Docs
 - [ ] Tutorials

@@ -1,3 +1,10 @@
+## 1.3.10
+- svt plan tab (actions in popup menu):
+  - reset plan
+  - switch slider/dropdown mode
+- set initial frame center align and remember window position
+  - only windows implemented
+
 ## 1.3.9
 - rewrite `SplitRoute`, now support animation and swipe back gesture
 - fix MediaQuery in root widget
