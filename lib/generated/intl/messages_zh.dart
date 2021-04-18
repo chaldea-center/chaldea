@@ -46,16 +46,18 @@ class MessageLookup extends MessageLookupByLibrary {
             'other': '已经到头了',
           })}";
 
-  static m11(index) => "规划${index}";
+  static m11(version) => "已更新数据版本至${version}";
 
-  static m12(total) => "总计: ${total}";
+  static m12(index) => "规划${index}";
 
-  static m13(total, hidden) => "总计: ${total} (隐藏: ${hidden})";
+  static m13(total) => "总计: ${total}";
 
-  static m14(tempDir, externalBackupDir) =>
+  static m14(total, hidden) => "总计: ${total} (隐藏: ${hidden})";
+
+  static m15(tempDir, externalBackupDir) =>
       "用户数据备份储存于临时目录(${tempDir})\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至(${externalBackupDir}})";
 
-  static m15(a, b) => "${a}${b}";
+  static m16(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
 
@@ -164,6 +166,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "efficiency_type_drop": MessageLookupByLibrary.simpleMessage("每场掉率"),
         "enhance": MessageLookupByLibrary.simpleMessage("强化"),
         "enhance_warning": MessageLookupByLibrary.simpleMessage("强化将扣除以下素材"),
+        "error_no_network": MessageLookupByLibrary.simpleMessage("无网络连接"),
         "event_collect_item_confirm":
             MessageLookupByLibrary.simpleMessage("所有素材添加到素材仓库，并将该活动移出规划"),
         "event_collect_items": MessageLookupByLibrary.simpleMessage("收取素材"),
@@ -380,13 +383,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "patch_gamedata": MessageLookupByLibrary.simpleMessage("更新游戏数据"),
         "patch_gamedata_error_already_latest":
             MessageLookupByLibrary.simpleMessage("已经是最新数据"),
+        "patch_gamedata_error_no_compatible":
+            MessageLookupByLibrary.simpleMessage("找不到兼容此APP版本的数据版本"),
+        "patch_gamedata_error_unknown_version":
+            MessageLookupByLibrary.simpleMessage(
+                "服务器不存在当前版本，无法使用补丁方式更新，请下载完整数据包"),
         "patch_gamedata_hint": MessageLookupByLibrary.simpleMessage("打补丁"),
+        "patch_gamedata_success_to": m11,
         "plan": MessageLookupByLibrary.simpleMessage("规划"),
         "plan_max10": MessageLookupByLibrary.simpleMessage("规划最大化(310)"),
         "plan_max9": MessageLookupByLibrary.simpleMessage("规划最大化(999)"),
         "plan_objective": MessageLookupByLibrary.simpleMessage("规划目标"),
         "plan_title": MessageLookupByLibrary.simpleMessage("规划"),
-        "plan_x": m11,
+        "plan_x": m12,
         "planning_free_quest_btn":
             MessageLookupByLibrary.simpleMessage("规划Free本"),
         "previous_card": MessageLookupByLibrary.simpleMessage("上一张"),
@@ -419,8 +428,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "save": MessageLookupByLibrary.simpleMessage("保存"),
         "save_to_photos": MessageLookupByLibrary.simpleMessage("保存到相册"),
         "saved": MessageLookupByLibrary.simpleMessage("已保存"),
-        "search_result_count": m12,
-        "search_result_count_hide": m13,
+        "search_result_count": m13,
+        "search_result_count_hide": m14,
         "select_copy_plan_source":
             MessageLookupByLibrary.simpleMessage("选择复制来源"),
         "select_plan": MessageLookupByLibrary.simpleMessage("选择规划"),
@@ -449,7 +458,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "statistics_include_checkbox":
             MessageLookupByLibrary.simpleMessage("包含现有素材"),
         "statistics_title": MessageLookupByLibrary.simpleMessage("统计"),
-        "storage_permission_content": m14,
+        "storage_permission_content": m15,
         "storage_permission_title":
             MessageLookupByLibrary.simpleMessage("储存权限"),
         "success": MessageLookupByLibrary.simpleMessage("成功"),
@@ -490,7 +499,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "version": MessageLookupByLibrary.simpleMessage("版本"),
         "view_illustration": MessageLookupByLibrary.simpleMessage("查看卡面"),
         "voice": MessageLookupByLibrary.simpleMessage("语音"),
-        "words_separate": m15,
+        "words_separate": m16,
         "yes": MessageLookupByLibrary.simpleMessage("是")
       };
 }

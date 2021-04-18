@@ -186,6 +186,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
               title: Text(AppInfo.fullVersion2),
               content: Text(releaseNote!.replaceAll('\r\n', '\n')),
               hideCancel: true,
+              scrollable: true,
             ).showDialog(kAppKey.currentContext!);
           });
         }

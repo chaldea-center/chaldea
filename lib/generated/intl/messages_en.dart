@@ -46,16 +46,18 @@ class MessageLookup extends MessageLookupByLibrary {
             'other': 'No more',
           })}";
 
-  static m11(index) => "Plan ${index}";
+  static m11(version) => "Updated dataset to ${version}";
 
-  static m12(total) => "Total ${total} results";
+  static m12(index) => "Plan ${index}";
 
-  static m13(total, hidden) => "Total ${total} results (${hidden} hidden)";
+  static m13(total) => "Total ${total} results";
 
-  static m14(tempDir, externalBackupDir) =>
+  static m14(total, hidden) => "Total ${total} results (${hidden} hidden)";
+
+  static m15(tempDir, externalBackupDir) =>
       "User data backup is stored in a temporary directory(${tempDir})\nDelete the app/install other architecture installer (e.g. from arm64-v8a to armeabi-v7a)/changes to the build number in future will result in deletion of user data and temporary backups. It is highly recommended to enable storage permissions to back up to (${externalBackupDir}})";
 
-  static m15(a, b) => "${a} ${b}";
+  static m16(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
 
@@ -182,6 +184,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "enhance": MessageLookupByLibrary.simpleMessage("Enhance"),
         "enhance_warning": MessageLookupByLibrary.simpleMessage(
             "The following items will be consumed for enhancement"),
+        "error_no_network": MessageLookupByLibrary.simpleMessage("No internet"),
         "event_collect_item_confirm": MessageLookupByLibrary.simpleMessage(
             "All items will be added to bag and remove the event out of plan"),
         "event_collect_items":
@@ -450,15 +453,22 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Patch Gamedata"),
         "patch_gamedata_error_already_latest":
             MessageLookupByLibrary.simpleMessage("Already the latest version"),
+        "patch_gamedata_error_no_compatible":
+            MessageLookupByLibrary.simpleMessage(
+                "No compatible version with current app version"),
+        "patch_gamedata_error_unknown_version":
+            MessageLookupByLibrary.simpleMessage(
+                "Cannot found current version on server, please download full size package"),
         "patch_gamedata_hint":
             MessageLookupByLibrary.simpleMessage("Only patch downloaded"),
+        "patch_gamedata_success_to": m11,
         "plan": MessageLookupByLibrary.simpleMessage("Plan"),
         "plan_max10": MessageLookupByLibrary.simpleMessage("Plan Max(310)"),
         "plan_max9": MessageLookupByLibrary.simpleMessage("Plan Max(999)"),
         "plan_objective":
             MessageLookupByLibrary.simpleMessage("Plan Objective"),
         "plan_title": MessageLookupByLibrary.simpleMessage("Plan"),
-        "plan_x": m11,
+        "plan_x": m12,
         "planning_free_quest_btn":
             MessageLookupByLibrary.simpleMessage("Planning Free Quests"),
         "previous_card": MessageLookupByLibrary.simpleMessage("Previous"),
@@ -498,8 +508,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "save_to_photos":
             MessageLookupByLibrary.simpleMessage("Save to Photos"),
         "saved": MessageLookupByLibrary.simpleMessage("Saved"),
-        "search_result_count": m12,
-        "search_result_count_hide": m13,
+        "search_result_count": m13,
+        "search_result_count_hide": m14,
         "select_copy_plan_source":
             MessageLookupByLibrary.simpleMessage("Select copy source"),
         "select_plan": MessageLookupByLibrary.simpleMessage("Select Plan"),
@@ -530,7 +540,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "statistics_include_checkbox":
             MessageLookupByLibrary.simpleMessage("Including owned items"),
         "statistics_title": MessageLookupByLibrary.simpleMessage("Statistics"),
-        "storage_permission_content": m14,
+        "storage_permission_content": m15,
         "storage_permission_title":
             MessageLookupByLibrary.simpleMessage("Storage Permission"),
         "success": MessageLookupByLibrary.simpleMessage("Success"),
@@ -579,7 +589,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "view_illustration":
             MessageLookupByLibrary.simpleMessage("View Illustration"),
         "voice": MessageLookupByLibrary.simpleMessage("Voice"),
-        "words_separate": m15,
+        "words_separate": m16,
         "yes": MessageLookupByLibrary.simpleMessage("Yes")
       };
 }

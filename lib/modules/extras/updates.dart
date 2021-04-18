@@ -84,7 +84,7 @@ class AutoUpdateUtil {
 
   /// get json patch from server
   static Future<void> patchGameData({void onError(e, s)?}) async {
-    String _parseDatasetVersion(String releaseName) {
+    String _dataVersion(String releaseName) {
       return releaseName.split('-').first;
     }
 
@@ -95,27 +95,26 @@ class AutoUpdateUtil {
 
     try {
       if (db.connectivity == ConnectivityResult.none) {
-        _reportResult('no network');
+        _reportResult(S.current.error_no_network);
         return;
       }
       final git = GitTool(GitSource.server);
       final releases = await git.datasetReleases;
 
       final latestRelease = await git.latestDatasetRelease(releases: releases);
-      final curRelease = releases.firstWhereOrNull((release) =>
-          _parseDatasetVersion(release.name) == db.gameData.version);
-      if (curRelease == null) {
-        _reportResult('cannot find current version on server');
-        return;
-      }
       if (latestRelease == null) {
-        _reportResult('no available newer version');
+        _reportResult(S.current.patch_gamedata_error_no_compatible);
         return;
       }
-      if (_parseDatasetVersion(latestRelease.name)
-              .compareTo(db.gameData.version) <=
+      if (db.gameData.version.compareTo(_dataVersion(latestRelease.name)) >=
           0) {
         _reportResult(S.current.patch_gamedata_error_already_latest);
+        return;
+      }
+      final curRelease = releases.firstWhereOrNull(
+          (release) => _dataVersion(release.name) == db.gameData.version);
+      if (curRelease == null) {
+        _reportResult(S.current.patch_gamedata_error_unknown_version);
         return;
       }
 
@@ -138,7 +137,8 @@ class AutoUpdateUtil {
                 .writeAsStringSync(jsonEncode(db.gameData));
             logger.i(
                 'update dataset from $previousVersion to ${db.gameData.version}');
-            EasyLoading.showInfo('Update dataset to ${db.gameData.version}');
+            EasyLoading.showInfo(
+                S.current.patch_gamedata_success_to(db.gameData.version));
           }
         }
       } else {
@@ -237,7 +237,7 @@ class AutoUpdateUtil {
         SimpleCancelOkDialog(
           title: Text('Error'),
           content: Text('$e\n$s'),
-        ).showDialog();
+        ).showDialog(null);
       }
     } finally {
       //
@@ -331,7 +331,7 @@ class AutoUpdateUtil {
                   onTapOk: () {
                     _installUpdate(fpInstaller);
                   },
-                ).showDialog();
+                ).showDialog(null);
               }
             },
           ),
@@ -346,7 +346,7 @@ class AutoUpdateUtil {
             },
           ),
       ],
-    ).showDialog();
+    ).showDialog(null);
   }
 
   Future<void> _installUpdate(String fp) async {
@@ -402,7 +402,7 @@ class AutoUpdateUtil {
           Process.start(cmdFp, ['>>"$logFp"', '2>&1'],
               mode: ProcessStartMode.detached);
         },
-      ).showDialog();
+      ).showDialog(null);
     }
   }
 

@@ -101,7 +101,7 @@ class _GameDataPageState extends State<GameDataPage> {
                 subtitle: Text(S.current.patch_gamedata_hint),
                 onTap: () {
                   AutoUpdateUtil.patchGameData(onError: (e, s) {
-                    EasyLoading.showError(e.toString());
+                    EasyLoading.showInfo(e.toString());
                   });
                 },
               ),
@@ -184,7 +184,7 @@ class _GameDataPageState extends State<GameDataPage> {
             ListTile(
               leading: Icon(source == GitSource.github
                   ? FontAwesomeIcons.github
-                  : FontAwesomeIcons.git),
+                  : FontAwesomeIcons.gitAlt),
               dense: true,
               contentPadding: EdgeInsets.only(left: 20, right: 8),
               // horizontalTitleGap: 0,
@@ -197,7 +197,7 @@ class _GameDataPageState extends State<GameDataPage> {
             ListTile(
               leading: Icon(source == GitSource.github
                   ? FontAwesomeIcons.github
-                  : FontAwesomeIcons.git),
+                  : FontAwesomeIcons.gitAlt),
               dense: true,
               contentPadding: EdgeInsets.only(left: 20, right: 8),
               // horizontalTitleGap: 0,
@@ -210,7 +210,7 @@ class _GameDataPageState extends State<GameDataPage> {
             ListTile(
               leading: Icon(source == GitSource.github
                   ? FontAwesomeIcons.github
-                  : FontAwesomeIcons.git),
+                  : FontAwesomeIcons.gitAlt),
               dense: true,
               contentPadding: EdgeInsets.only(left: 20, right: 8),
               // horizontalTitleGap: 0,

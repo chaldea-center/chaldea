@@ -46,16 +46,18 @@ class MessageLookup extends MessageLookupByLibrary {
             'other': '最後のもの',
           })}";
 
-  static m11(index) => "プラン${index}";
+  static m11(version) => "データバージョンが${version}に更新されました";
 
-  static m12(total) => "合計：${total}";
+  static m12(index) => "プラン${index}";
 
-  static m13(total, hidden) => "合計：${total} (非表示: ${hidden})";
+  static m13(total) => "合計：${total}";
 
-  static m14(tempDir, externalBackupDir) =>
+  static m14(total, hidden) => "合計：${total} (非表示: ${hidden})";
+
+  static m15(tempDir, externalBackupDir) =>
       "ユーザーデータのバックアップは一時(${tempDir})に保存されます\nアプリの削除/他のアーキテクチャのインストール（例えば、arm64-v8aからarmeabi-v7aへ ）/将来のビルド番号の変更、ユーザーデータと一時バックアップが削除されます。外部ストレージ(${externalBackupDir}})にバックアップするためのストレージ権限を有効にすることを強くお勧めします ";
 
-  static m15(a, b) => "${a}${b}";
+  static m16(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
 
@@ -169,6 +171,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "enhance": MessageLookupByLibrary.simpleMessage("強化"),
         "enhance_warning":
             MessageLookupByLibrary.simpleMessage("強化すると、次の資アイテムが差し引かれます"),
+        "error_no_network":
+            MessageLookupByLibrary.simpleMessage("インターネットに接続できません"),
         "event_collect_item_confirm": MessageLookupByLibrary.simpleMessage(
             "すべてのアイテムを倉庫に追加し、プランからイベントを削除します"),
         "event_collect_items": MessageLookupByLibrary.simpleMessage("アイテムの収集"),
@@ -405,13 +409,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "patch_gamedata": MessageLookupByLibrary.simpleMessage("ゲームデータを更新"),
         "patch_gamedata_error_already_latest":
             MessageLookupByLibrary.simpleMessage("すでに最新バージョン"),
+        "patch_gamedata_error_no_compatible":
+            MessageLookupByLibrary.simpleMessage(
+                "このAPPバージョンと互換性のあるデータバージョンが見つかりません"),
+        "patch_gamedata_error_unknown_version":
+            MessageLookupByLibrary.simpleMessage(
+                "サーバーの現在のバージョンが存在せず、パッチを適用して更新することはできません。完全なデータパッケージをダウンロードしてください。"),
         "patch_gamedata_hint": MessageLookupByLibrary.simpleMessage("パッチのみ"),
+        "patch_gamedata_success_to": m11,
         "plan": MessageLookupByLibrary.simpleMessage("プラン"),
         "plan_max10": MessageLookupByLibrary.simpleMessage("プラン最大化する(310)"),
         "plan_max9": MessageLookupByLibrary.simpleMessage("プラン最大化する(999)"),
         "plan_objective": MessageLookupByLibrary.simpleMessage("プラン目標"),
         "plan_title": MessageLookupByLibrary.simpleMessage("プラン"),
-        "plan_x": m11,
+        "plan_x": m12,
         "planning_free_quest_btn":
             MessageLookupByLibrary.simpleMessage("フリークエストを計画する"),
         "previous_card": MessageLookupByLibrary.simpleMessage("前のカード"),
@@ -447,8 +458,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "save": MessageLookupByLibrary.simpleMessage("保存"),
         "save_to_photos": MessageLookupByLibrary.simpleMessage("アルバムに保存"),
         "saved": MessageLookupByLibrary.simpleMessage("保存しました"),
-        "search_result_count": m12,
-        "search_result_count_hide": m13,
+        "search_result_count": m13,
+        "search_result_count_hide": m14,
         "select_copy_plan_source":
             MessageLookupByLibrary.simpleMessage("コピー元を選択"),
         "select_plan": MessageLookupByLibrary.simpleMessage("プランを選択"),
@@ -478,7 +489,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "statistics_include_checkbox":
             MessageLookupByLibrary.simpleMessage("既存のアイテムを含める"),
         "statistics_title": MessageLookupByLibrary.simpleMessage("統計"),
-        "storage_permission_content": m14,
+        "storage_permission_content": m15,
         "storage_permission_title":
             MessageLookupByLibrary.simpleMessage("ストレージ権限"),
         "success": MessageLookupByLibrary.simpleMessage("成功"),
@@ -522,7 +533,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "version": MessageLookupByLibrary.simpleMessage("バージョン"),
         "view_illustration": MessageLookupByLibrary.simpleMessage("カードの画像を表示"),
         "voice": MessageLookupByLibrary.simpleMessage("ボイス"),
-        "words_separate": m15,
+        "words_separate": m16,
         "yes": MessageLookupByLibrary.simpleMessage("はい")
       };
 }

@@ -1,8 +1,6 @@
 /// statistics of items
 part of datatypes;
 
-const _kItemUpdateLapse = Duration(seconds: 0);
-
 class ItemStatistics {
   SvtCostItems svtItemDetail = SvtCostItems();
 
@@ -35,9 +33,7 @@ class ItemStatistics {
     }
   }
 
-  Future<void> update(
-      {bool shouldBroadcast = true,
-      Duration? lapse = _kItemUpdateLapse}) async {
+  Future<void> update({bool shouldBroadcast = true, Duration? lapse}) async {
     VoidCallback callback = () async {
       await updateSvtItems(shouldBroadcast: false, lapse: null);
       await updateEventItems(shouldBroadcast: false, lapse: null);
@@ -51,8 +47,7 @@ class ItemStatistics {
   }
 
   Future<void> updateSvtItems(
-      {bool shouldBroadcast = true,
-      Duration? lapse = _kItemUpdateLapse}) async {
+      {bool shouldBroadcast = true, Duration? lapse}) async {
     _svtTimer?.cancel();
     VoidCallback callback = () async {
       // priority is shared cross users!
@@ -68,8 +63,7 @@ class ItemStatistics {
   }
 
   Future<void> updateEventItems(
-      {bool shouldBroadcast = true,
-      Duration? lapse = _kItemUpdateLapse}) async {
+      {bool shouldBroadcast = true, Duration? lapse}) async {
     VoidCallback callback = () async {
       eventItems = db.gameData.events.getAllItems(db.curUser.events);
       await updateLeftItems(shouldBroadcast: shouldBroadcast);

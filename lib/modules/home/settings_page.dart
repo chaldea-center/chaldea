@@ -181,7 +181,8 @@ class _SettingsPageState extends State<SettingsPage> {
               ListTile(
                 title: Text(S.of(context).settings_tutorial),
                 onTap: () {
-                  EasyLoading.showToast('咕咕咕咕咕咕');
+                  EasyLoading.showToast(
+                      Language.isCN ? '咕咕咕咕咕咕' : "Not implemented");
                 },
               ),
               if (Platform.isIOS)

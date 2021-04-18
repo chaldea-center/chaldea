@@ -91,8 +91,8 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                 color: planned
                     ? Colors.blueAccent
                     : outdated
-                        ? Colors.grey
-                        : null,
+                    ? Colors.grey
+                    : null,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -104,8 +104,8 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                   color: planned
                       ? Colors.blueAccent[100]
                       : outdated
-                          ? Colors.grey[400]
-                          : null),
+                      ? Colors.grey[400]
+                      : null),
               minFontSize: 6,
             ),
           ),

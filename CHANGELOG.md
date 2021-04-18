@@ -1,3 +1,6 @@
+## 1.3.11
+- log to file
+
 ## 1.3.10
 - svt plan tab (actions in popup menu):
   - reset plan

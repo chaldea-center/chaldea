@@ -3762,6 +3762,46 @@ class S {
     );
   }
 
+  /// `找不到兼容此APP版本的数据版本`
+  String get patch_gamedata_error_no_compatible {
+    return Intl.message(
+      '找不到兼容此APP版本的数据版本',
+      name: 'patch_gamedata_error_no_compatible',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `服务器不存在当前版本，无法使用补丁方式更新，请下载完整数据包`
+  String get patch_gamedata_error_unknown_version {
+    return Intl.message(
+      '服务器不存在当前版本，无法使用补丁方式更新，请下载完整数据包',
+      name: 'patch_gamedata_error_unknown_version',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已更新数据版本至{version}`
+  String patch_gamedata_success_to(Object version) {
+    return Intl.message(
+      '已更新数据版本至$version',
+      name: 'patch_gamedata_success_to',
+      desc: '',
+      args: [version],
+    );
+  }
+
+  /// `无网络连接`
+  String get error_no_network {
+    return Intl.message(
+      '无网络连接',
+      name: 'error_no_network',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `下载最新数据`
   String get download_full_gamedata {
     return Intl.message(

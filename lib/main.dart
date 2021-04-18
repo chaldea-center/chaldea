@@ -9,8 +9,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await db.initial();
 
-  final File crashFile = File(db.paths.crashLog),
-      userdataFile = File(db.paths.userDataPath);
+  final File crashFile = File(db.paths.crashLog);
+  rollLogFiles(crashFile.path, 3, 10 * 1024 * 1024);
   if (!crashFile.existsSync()) {
     crashFile.writeAsString('chaldea.crash.log\n');
   }
@@ -23,7 +23,11 @@ void main() async {
       FileHandler(crashFile),
       ConsoleHandler(),
       ToastHandler(),
-      kEmailAutoHandlerCross(attachments: [crashFile, userdataFile]),
+      kEmailAutoHandlerCross(attachments: [
+        crashFile,
+        File(db.paths.userDataPath),
+        File(db.paths.appLog),
+      ]),
     ],
     customParameters: _getCatcherCustomParameters(),
     localizationOptions: _getCatcherLocalizationOptions(),
@@ -37,7 +41,7 @@ void main() async {
       debugConfig: catcherOptions,
       profileConfig: catcherOptions,
       releaseConfig: catcherOptions,
-      enableLogger: true,
+      enableLogger: kDebugMode,
       navigatorKey: kAppKey,
       ensureInitialized: true,
     );
@@ -47,7 +51,7 @@ Map<String, dynamic> _getCatcherCustomParameters() {
   Map<String, dynamic> customParameters = {};
   if (Platform.isWindows) {
     customParameters.addAll(<String, dynamic>{
-      'systemName': 'Windows',
+      'system': 'windows ' + Platform.operatingSystemVersion,
       'version': AppInfo.version,
       'appName': AppInfo.appName,
       'buildNumber': AppInfo.buildNumber,

@@ -68,6 +68,13 @@ class _UserDataPageState extends State<UserDataPage> {
                   EasyLoading.showToast(S.of(context).reset_success);
                 },
               ),
+              if (Platform.isMacOS || Platform.isWindows)
+                ListTile(
+                  title: Text('Open Folder'),
+                  onTap: () {
+                    OpenFile.open(db.paths.appPath);
+                  },
+                )
             ],
           ),
           TileGroup(
@@ -243,8 +250,7 @@ class _UserDataPageState extends State<UserDataPage> {
         db.backupUserdata(disk: true, memory: true);
         db.loadUserData(userdata);
         db.saveUserData();
-        db.itemStat.update();
-        db.notifyAppUpdate();
+        db.itemStat.update().then((_) => db.notifyAppUpdate());
         EasyLoading.showSuccess('Import $fn');
       },
       onError: (e, s) => EasyLoading.showError(e.toString()),

@@ -24,7 +24,6 @@ import 'device_app_info.dart';
 import 'git_tool.dart';
 import 'logger.dart';
 import 'shared_prefs.dart';
-import 'utils.dart';
 
 /// app config:
 ///  - app database
@@ -48,11 +47,10 @@ class Database {
   /// It is used across the whole app lifecycle, so should not close it.
   StreamController<Database> broadcast = StreamController.broadcast();
 
-  void notifyDbUpdate([bool recalculateItemStat = false]) {
+  Future<void> notifyDbUpdate([bool recalculateItemStat = false]) async {
     if (recalculateItemStat) {
-      this.itemStat
-        ..clear()
-        ..update();
+      itemStat.clear();
+      await itemStat.update();
     }
     this.broadcast.sink.add(this);
   }
@@ -135,17 +133,16 @@ class Database {
   }
 
   bool loadGameData([GameData? data]) {
-    final t = TimeCounter('loadGameData');
+    // final t = TimeCounter('loadGameData');
     try {
       gameData = data ?? GameData.fromJson(getJsonFromFile(paths.gameDataPath));
       // userdata is loaded before gamedata, safe to use curUser
       gameData.updateUserDuplicatedServants();
       userData.validate();
       logger.d('game data loaded, version ${gameData.version}.');
-      t.elapsed();
+      // t.elapsed();
       itemStat.clear();
-      itemStat.update();
-      db.notifyAppUpdate();
+      itemStat.update().then((_) => db.notifyAppUpdate());
       return true;
     } catch (e, s) {
       logger.e('Load game data failed', e, s);
@@ -513,6 +510,39 @@ class PathManager {
     } else if (Platform.isWindows) {
       _appPath = (await getApplicationSupportDirectory()).path;
       // _tempPath = (await getTemporaryDirectory())?.path;
+      // set link:
+      // in old version windows, it may need admin permission, so it may fail
+      try {
+        String exeFolder = pathlib.dirname(Platform.resolvedExecutable);
+        String linkPath = pathlib.join(exeFolder, 'userdata');
+        Link link = Link(linkPath);
+        DateTime now = DateTime.now();
+        switch (FileSystemEntity.typeSync(linkPath)) {
+          case FileSystemEntityType.notFound:
+            break;
+          case FileSystemEntityType.file:
+            File(linkPath).renameSync(
+                linkPath + '.bak${now.millisecondsSinceEpoch ~/ 1000}');
+            break;
+          case FileSystemEntityType.directory:
+            Directory(linkPath).renameSync(
+                linkPath + '.bak${now.millisecondsSinceEpoch ~/ 1000}');
+            break;
+          case FileSystemEntityType.link:
+            if (FileSystemEntity.identicalSync(
+                link.resolveSymbolicLinksSync(), _appPath!)) {
+              // pass
+            } else {
+              link.update(_appPath!);
+            }
+            break;
+        }
+        if (!link.existsSync()) {
+          link.createSync(_appPath!, recursive: true);
+        }
+      } catch (e, s) {
+        logger.e('make link failed', e, s);
+      }
     } else if (Platform.isMacOS) {
       // /Users/<user>/Library/Containers/cc.narumi.chaldea/Data/Documents
       _appPath = (await getApplicationDocumentsDirectory()).path;
@@ -524,10 +554,10 @@ class PathManager {
     if (_appPath == null) {
       throw OSError('Cannot resolve document folder');
     }
-
-    for (String dir in [userDir, gameDir, tempDir, gameIconDir]) {
+    for (String dir in [userDir, gameDir, tempDir, gameIconDir, logDir]) {
       Directory(dir).createSync(recursive: true);
     }
+    initiateLoggerPath(appLog);
   }
 
   String get appPath => _appPath!;
@@ -548,7 +578,11 @@ class PathManager {
 
   String get gameIconDir => pathlib.join(gameDir, 'icons');
 
-  String get crashLog => pathlib.join(_appPath!, 'crash.log');
+  String get logDir => pathlib.join(_appPath!, 'logs');
+
+  String get appLog => pathlib.join(logDir, 'log.log');
+
+  String get crashLog => pathlib.join(logDir, 'crash.log');
 
   String get datasetVersionFile => pathlib.join(gameDir, 'VERSION');
 

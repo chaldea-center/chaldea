@@ -207,7 +207,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
   }
 
   Widget _buildGalleries() {
-    return LayoutBuilder(builder: (context, constraints) {
+    Widget grid = LayoutBuilder(builder: (context, constraints) {
       int crossCount = max(2, constraints.maxWidth ~/ 75);
       return GridView.count(
         crossAxisCount: crossCount,
@@ -217,6 +217,27 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         children: _getShownGalleries(context),
       );
     });
+    if (db.gameData.version.length < 2) {
+      grid = GestureDetector(
+        onTap: () {
+          SimpleCancelOkDialog(
+            title: Text('Gamedata Error'),
+            content: Text(S.current.reload_default_gamedata),
+            onTapOk: () async {
+              await db.loadZipAssets(kDatasetAssetKey);
+              db.loadGameData();
+            },
+          ).showDialog(context);
+        },
+        child: AbsorbPointer(
+          child: Opacity(
+            opacity: 0.5,
+            child: grid,
+          ),
+        ),
+      );
+    }
+    return grid;
   }
 
   Widget _buildCarousel() {
