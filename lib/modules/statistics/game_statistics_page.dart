@@ -2,6 +2,8 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';
 
+import 'statistics_servant_tab.dart';
+
 class GameStatisticsPage extends StatefulWidget {
   @override
   _GameStatisticsPageState createState() => _GameStatisticsPageState();
@@ -9,7 +11,7 @@ class GameStatisticsPage extends StatefulWidget {
 
 class _GameStatisticsPageState extends State<GameStatisticsPage>
     with SingleTickerProviderStateMixin {
-  TabController? _tabController;
+  late TabController _tabController;
   Map<String, int>? allItemCost;
 
   @override
@@ -20,7 +22,7 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
 
   @override
   void dispose() {
-    _tabController?.dispose();
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -40,7 +42,7 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
         controller: _tabController,
         children: [
           KeepAliveBuilder(builder: (context) => _buildItemTab()),
-          KeepAliveBuilder(builder: (context) => _buildSvtTab())
+          KeepAliveBuilder(builder: (context) => StatisticServantTab())
         ],
       ),
     );
@@ -90,19 +92,13 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
     );
   }
 
-  Widget _buildSvtTab() {
-    return Center(
-      child: Text('To do'),
-    );
-  }
-
   void calculateItem() {
     if (allItemCost != null) return;
     allItemCost = {};
     final emptyPlan = ServantPlan(favorite: true);
     db.curUser.servants.forEach((no, svtStat) {
       if (svtStat.curVal.favorite != true) return;
-      if(!db.gameData.servantsWithUser.containsKey(no)){
+      if (!db.gameData.servantsWithUser.containsKey(no)) {
         print('No $no: ${db.gameData.servantsWithUser.length}');
       }
       final svt = db.gameData.servantsWithUser[no]!;
