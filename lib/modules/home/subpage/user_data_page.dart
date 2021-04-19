@@ -250,7 +250,8 @@ class _UserDataPageState extends State<UserDataPage> {
         db.backupUserdata(disk: true, memory: true);
         db.loadUserData(userdata);
         db.saveUserData();
-        db.itemStat.update().then((_) => db.notifyAppUpdate());
+        db.itemStat.update();
+        db.notifyAppUpdate();
         EasyLoading.showSuccess('Import $fn');
       },
       onError: (e, s) => EasyLoading.showError(e.toString()),

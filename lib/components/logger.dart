@@ -21,7 +21,7 @@ void initiateLoggerPath(String fp) {
     filter: ProductionFilter(),
     printer: PrettyPrinter(
         methodCount: 2, colors: false, printEmojis: false, printTime: true),
-    output: FileOutput(file: File(fp)),
+    output: MultiOutput([ConsoleOutput(), FileOutput(file: File(fp))]),
     level: kDebugMode ? null : Level.debug,
   );
 }

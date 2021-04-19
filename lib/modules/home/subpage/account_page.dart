@@ -215,9 +215,9 @@ class _AccountPageState extends State<AccountPage> {
     });
   }
 
-  void updateData() {
+  void updateData() async {
     setState(() {});
-    db.itemStat.update(lapse: Duration(seconds: 1));
+    await db.itemStat.update(lapse: Duration(seconds: 1), withFuture: true);
     db.notifyAppUpdate();
   }
 }

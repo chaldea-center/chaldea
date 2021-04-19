@@ -50,7 +50,7 @@ class Database {
   Future<void> notifyDbUpdate([bool recalculateItemStat = false]) async {
     if (recalculateItemStat) {
       itemStat.clear();
-      await itemStat.update();
+      itemStat.update();
     }
     this.broadcast.sink.add(this);
   }
@@ -142,7 +142,8 @@ class Database {
       logger.d('game data loaded, version ${gameData.version}.');
       // t.elapsed();
       itemStat.clear();
-      itemStat.update().then((_) => db.notifyAppUpdate());
+      itemStat.update();
+      db.notifyAppUpdate();
       return true;
     } catch (e, s) {
       logger.e('Load game data failed', e, s);

@@ -22,6 +22,7 @@ class ItemStatistics {
   Timer? _topTimer;
   Timer? _svtTimer;
   Timer? _eventTimer;
+  Timer? _leftTimer;
 
   Timer? _setTimer(Duration? lapse, VoidCallback callback) {
     if (lapse == null) {
@@ -33,23 +34,30 @@ class ItemStatistics {
     }
   }
 
-  Future<void> update({bool shouldBroadcast = true, Duration? lapse}) async {
-    VoidCallback callback = () async {
-      await updateSvtItems(shouldBroadcast: false, lapse: null);
-      await updateEventItems(shouldBroadcast: false, lapse: null);
-      await updateLeftItems(shouldBroadcast: shouldBroadcast, lapse: null);
-    };
-    _topTimer?.cancel();
-    _svtTimer?.cancel();
-    _eventTimer?.cancel();
+  /// Update [itemState] after duration [lapse]
+  ///
+  Future<void> update(
+      {bool shouldBroadcast = true, Duration? lapse, bool withFuture = false}) {
+    void callback() {
+      updateSvtItems(shouldBroadcast: false);
+      updateEventItems(shouldBroadcast: false);
+      updateLeftItems(shouldBroadcast: shouldBroadcast);
+    }
 
-    _topTimer = _setTimer(lapse, callback);
+    // usually await this future to notify app update
+    if (lapse != null && withFuture) {
+      return Future.delayed(lapse, callback);
+    } else {
+      _topTimer?.cancel();
+      _svtTimer?.cancel();
+      _eventTimer?.cancel();
+      _topTimer = _setTimer(lapse, callback);
+      return Future.value();
+    }
   }
 
-  Future<void> updateSvtItems(
-      {bool shouldBroadcast = true, Duration? lapse}) async {
-    _svtTimer?.cancel();
-    VoidCallback callback = () async {
+  void updateSvtItems({bool shouldBroadcast = true, Duration? lapse}) {
+    void callback() {
       // priority is shared cross users!
       final Map<int, ServantStatus> priorityFiltered = Map.fromEntries(db
           .curUser.servants.entries
@@ -57,30 +65,36 @@ class ItemStatistics {
               .singleValueFilter(entry.value.priority.toString())));
       svtItemDetail.update(
           curStat: priorityFiltered, targetPlan: db.curUser.curSvtPlan);
-      await updateLeftItems(shouldBroadcast: shouldBroadcast);
-    };
+      updateLeftItems(shouldBroadcast: shouldBroadcast);
+    }
+
+    _svtTimer?.cancel();
+    _leftTimer?.cancel();
     _svtTimer = _setTimer(lapse, callback);
   }
 
-  Future<void> updateEventItems(
-      {bool shouldBroadcast = true, Duration? lapse}) async {
-    VoidCallback callback = () async {
+  void updateEventItems({bool shouldBroadcast = true, Duration? lapse}) {
+    void callback() {
       eventItems = db.gameData.events.getAllItems(db.curUser.events);
-      await updateLeftItems(shouldBroadcast: shouldBroadcast);
-    };
+      updateLeftItems(shouldBroadcast: shouldBroadcast);
+    }
+
+    _eventTimer?.cancel();
+    _leftTimer?.cancel();
     _eventTimer = _setTimer(lapse, callback);
   }
 
-  Future<void> updateLeftItems(
-      {bool shouldBroadcast = true, Duration? lapse}) async {
-    if (lapse != null) {
-      await Future.delayed(lapse);
+  void updateLeftItems({bool shouldBroadcast = true, Duration? lapse}) {
+    void callback() {
+      leftItems =
+          sumDict([eventItems, db.curUser.items, multiplyDict(svtItems, -1)]);
+      if (shouldBroadcast) {
+        db.notifyDbUpdate();
+      }
     }
-    leftItems =
-        sumDict([eventItems, db.curUser.items, multiplyDict(svtItems, -1)]);
-    if (shouldBroadcast) {
-      db.notifyDbUpdate();
-    }
+
+    _leftTimer?.cancel();
+    _leftTimer = _setTimer(lapse, callback);
   }
 }
 
