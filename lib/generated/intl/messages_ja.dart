@@ -79,6 +79,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("App Storeでアップデートを確認してください"),
         "about_update_app_detail": m1,
         "active_skill": MessageLookupByLibrary.simpleMessage("保有スキル"),
+        "add": MessageLookupByLibrary.simpleMessage("追加"),
         "add_to_blacklist": MessageLookupByLibrary.simpleMessage("ブラックリストに追加"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
         "ap_calc_page_joke":
@@ -388,6 +389,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_record_fixed_drop_short":
             MessageLookupByLibrary.simpleMessage("ドロップ"),
         "master_mission": MessageLookupByLibrary.simpleMessage("マスターミッション"),
+        "master_mission_related_quest":
+            MessageLookupByLibrary.simpleMessage("関連クエスト"),
+        "master_mission_solution": MessageLookupByLibrary.simpleMessage("対策"),
+        "master_mission_tasklist":
+            MessageLookupByLibrary.simpleMessage("ミッション"),
         "max_ap": MessageLookupByLibrary.simpleMessage("最大のAP"),
         "more": MessageLookupByLibrary.simpleMessage("もっと"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("魔術礼装"),

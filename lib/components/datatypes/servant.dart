@@ -28,7 +28,20 @@ class Servant {
   // from data file not in code
   static const List<int> unavailable = [83, 149, 151, 152, 168, 240];
 
-  String toString() => mcLink;
+  String toString() => '$runtimeType($mcLink)';
+
+  String get stdClassName {
+    String clsName;
+    if (info.className.startsWith('Beast'))
+      clsName = 'Beast';
+    else if (info.className.contains('Caster'))
+      clsName = 'Caster';
+    else
+      clsName = info.className;
+    assert(SvtFilterData.classesData.contains(clsName),
+        'svt class name: $clsName');
+    return clsName;
+  }
 
   Servant({
     required this.no,

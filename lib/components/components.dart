@@ -7,6 +7,8 @@ export 'package:flutter_easyloading/flutter_easyloading.dart';
 export 'package:intl/intl.dart' show Intl, DateFormat;
 export 'package:path/path.dart' show join;
 
+export 'localized/localized.dart';
+export 'localized/localized_base.dart';
 export 'after_layout.dart';
 export 'config.dart';
 export 'constants.dart';

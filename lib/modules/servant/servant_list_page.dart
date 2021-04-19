@@ -128,10 +128,7 @@ class ServantListPageState extends State<ServantListPage> {
       }
     }
     // class name
-    if (!filterData.className.singleValueFilter(svt.info.className, compares: {
-      'Beast': (o, v) => v?.startsWith(o) ?? false,
-      'Caster': (o, v) => v?.contains(o) ?? false
-    })) {
+    if (!filterData.className.singleValueFilter(svt.stdClassName)) {
       return false;
     }
     // single value

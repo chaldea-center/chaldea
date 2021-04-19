@@ -231,6 +231,7 @@
   "userdata": "Userdata",
   "settings_userdata_footer": "Backup userdata before upgrading application, and move backups to safe locations outside app's document folder",
   "clear": "Clear",
+  "add": "Add",
   "clear_userdata": "Clear Userdata",
   "userdata_cleared": "Userdata cleared",
   "share": "Share",
@@ -381,5 +382,8 @@
   "svt_reset_plan": "Reset Plan",
   "svt_switch_slider_dropdown": "Switch Slider/Dropdown",
   "characters_in_card": "Characters",
-  "svt_related_cards": "Related Cards"
+  "svt_related_cards": "Related Cards",
+  "master_mission_tasklist": "Missions",
+  "master_mission_solution": "Solution",
+  "master_mission_related_quest": "Related Quests"
 }

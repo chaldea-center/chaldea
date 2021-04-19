@@ -80,6 +80,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please check update in App Store"),
         "about_update_app_detail": m1,
         "active_skill": MessageLookupByLibrary.simpleMessage("Active Skill"),
+        "add": MessageLookupByLibrary.simpleMessage("Add"),
         "add_to_blacklist":
             MessageLookupByLibrary.simpleMessage("Add to blacklist"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
@@ -430,6 +431,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Drops"),
         "master_mission":
             MessageLookupByLibrary.simpleMessage("Master Mission"),
+        "master_mission_related_quest":
+            MessageLookupByLibrary.simpleMessage("Related Quests"),
+        "master_mission_solution":
+            MessageLookupByLibrary.simpleMessage("Solution"),
+        "master_mission_tasklist":
+            MessageLookupByLibrary.simpleMessage("Missions"),
         "max_ap": MessageLookupByLibrary.simpleMessage("Maximum AP"),
         "more": MessageLookupByLibrary.simpleMessage("More"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("Mystic Code"),

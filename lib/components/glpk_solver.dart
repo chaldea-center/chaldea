@@ -126,8 +126,7 @@ class GLPKSolver {
 
     try {
       await ensureEngine();
-      print(
-          '=========solving========\nparams="${json.encode(params)}\n${json.encode(data2)}"');
+      print('=========solving========\nparams=${json.encode(params)}');
       if (params2.rows.length == 0) {
         logger.d('after pre processing, params has no valid rows.\n'
             'params=${json.encode(params2)}');

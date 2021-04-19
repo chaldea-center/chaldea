@@ -60,6 +60,12 @@ class Language {
   static bool get isJP => currentLocaleCode.startsWith('ja');
 
   static bool get isEN => currentLocaleCode.startsWith('en');
+
+  static Language get current => isJP
+      ? jpn
+      : isEN
+      ? eng
+      : chs;
 }
 
 class AppColors {

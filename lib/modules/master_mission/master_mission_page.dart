@@ -5,6 +5,12 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/quest_card.dart';
 import 'package:flutter/services.dart';
 
+final localized = LocalizedGroups.masterMission;
+
+String _convertLocalized(String key) {
+  return key.split('_').map((e) => localized.localizedOf(e)).join('_');
+}
+
 class MasterMissionPage extends StatefulWidget {
   @override
   _MasterMissionPageState createState() => _MasterMissionPageState();
@@ -14,13 +20,13 @@ class _MasterMissionPageState extends State<MasterMissionPage>
     with SingleTickerProviderStateMixin {
   List<WeeklyMissionQuest> get srcData => db.gameData.glpk.weeklyMissionData;
 
-  List<String> tabNames = const [
-    '一般特性',
-    '从者职阶',
-    '从者特性',
-    '小怪职阶',
-    '小怪特性',
-    '场地特性'
+  List<Localized> tabNames = const [
+    Localized(chs: '一般特性', jpn: '', eng: 'General Trait'),
+    Localized(chs: '从者职阶', jpn: '', eng: 'Servant Class'),
+    Localized(chs: '从者特性', jpn: '', eng: 'Servant Trait'),
+    Localized(chs: '小怪职阶', jpn: '', eng: 'Enemy Class'),
+    Localized(chs: '小怪特性', jpn: '', eng: 'Enemy Trait'),
+    Localized(chs: '场地特性', jpn: '', eng: 'Battle Field'),
   ];
   List<String> classTypes = const ['剑阶', '弓阶', '枪阶', '骑阶', '术阶', '杀阶', '狂阶'];
   late TabController _tabController;
@@ -56,13 +62,16 @@ class _MasterMissionPageState extends State<MasterMissionPage>
         title: Text(S.of(context).master_mission),
         centerTitle: true,
         actions: [
-          IconButton(onPressed: showHelp, icon: Icon(Icons.help_outline)),
+          IconButton(
+              onPressed: showHelp,
+              tooltip: S.current.help,
+              icon: Icon(Icons.help_outline)),
           popupMenu,
         ],
         bottom: TabBar(
           controller: _tabController,
           isScrollable: true,
-          tabs: tabNames.map((e) => Tab(text: e)).toList(),
+          tabs: tabNames.map((e) => Tab(text: e.localized)).toList(),
           onTap: (index) {
             setState(() {
               _showFilters =
@@ -145,7 +154,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
             };
       Widget child = Padding(
         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        child: Text(_removePrefix(key)),
+        child: Text(localized.localizedOf(_removePrefix(key))),
       );
       if (checked) {
         children.add(ElevatedButton(
@@ -212,7 +221,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
                   });
                 }
               : null,
-          child: Text('添加'),
+          child: Text(S.current.add),
         ),
         ElevatedButton(
           onPressed: missions.isNotEmpty ? solve : null,
@@ -300,7 +309,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
         horizontalTitleGap: 0,
         contentPadding: EdgeInsets.symmetric(horizontal: 8),
         title: AutoSizeText(
-          mission.getTargets().join(', '),
+          mission.getLocalizedTargets().join(', '),
           maxLines: 2,
           maxFontSize: 14,
           style: TextStyle(color: mission.valid ? null : Colors.grey),
@@ -311,22 +320,24 @@ class _MasterMissionPageState extends State<MasterMissionPage>
             if (mission.useAnd)
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  fixedSize: Size(24, 24),
-                  minimumSize: Size(24, 24),
+                  fixedSize: Size(36, 24),
+                  minimumSize: Size(36, 24),
                   padding: EdgeInsets.all(2),
                 ),
                 onPressed: _onPressAddAll,
-                child: Text('且'),
+                child:
+                    Text(Localized(chs: '且', eng: 'AND', jpn: 'AND').localized),
               ),
             if (!mission.useAnd)
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
-                  fixedSize: Size(24, 24),
-                  minimumSize: Size(24, 24),
+                  fixedSize: Size(36, 24),
+                  minimumSize: Size(36, 24),
                   padding: EdgeInsets.all(2),
                 ),
                 onPressed: _onPressAddAll,
-                child: Text('或'),
+                child:
+                    Text(Localized(chs: '或', eng: 'OR', jpn: 'OR').localized),
               ),
             _InputGroup(
               controller: mission.controller!,
@@ -340,7 +351,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
       expanded: true,
       headerBuilder: (context, _) => ListTile(
         leading: Icon(Icons.list),
-        title: Text('任务列表'),
+        title: Text(S.current.master_mission_tasklist),
         horizontalTitleGap: 0,
       ),
       contentBuilder: (context) => Column(
@@ -364,7 +375,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
       expanded: true,
       headerBuilder: (context, _) => ListTile(
         leading: Icon(Icons.list_alt),
-        title: Text('Solution'),
+        title: Text(S.current.master_mission_solution),
         trailing: Text('$totalAP AP'),
         horizontalTitleGap: 0,
       ),
@@ -394,7 +405,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
       expanded: true,
       headerBuilder: (context, _) => ListTile(
         leading: Icon(Icons.list_alt),
-        title: Text('关联关卡'),
+        title: Text(S.current.master_mission_related_quest),
         horizontalTitleGap: 0,
       ),
       contentBuilder: (context) => Column(
@@ -417,8 +428,9 @@ class _MasterMissionPageState extends State<MasterMissionPage>
         counts[key] = value;
       }
     });
-    String countsString =
-        counts.entries.map((e) => '${e.key}×${e.value}').join(', ');
+    String countsString = counts.entries
+        .map((e) => '${_convertLocalized(e.key)}×${e.value}')
+        .join(', ');
     String trailingString = '${weeklyQuest.ap}AP';
     if (questTimes != null) trailingString += '×$questTimes';
     return ValueStatefulBuilder<bool>(
@@ -477,7 +489,8 @@ class _MasterMissionPageState extends State<MasterMissionPage>
       }
     }
     if (params.rowNames.isEmpty || params.colNames.isEmpty) {
-      EasyLoading.showError('无符合条件关卡');
+      EasyLoading.showError('No quest');
+      setState(() {});
       return;
     }
     // call js
@@ -560,6 +573,13 @@ class WeeklyFilterData {
 
   List<String> getTargets() {
     return checked.keys.where((key) => checked[key] == true).toList();
+  }
+
+  List<String> getLocalizedTargets() {
+    return checked.keys
+        .where((key) => checked[key] == true)
+        .map((e) => _convertLocalized(e))
+        .toList();
   }
 
   List<num> get rowOfA {

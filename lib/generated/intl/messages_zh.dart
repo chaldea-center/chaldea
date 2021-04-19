@@ -79,6 +79,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("请在App Store中检查更新"),
         "about_update_app_detail": m1,
         "active_skill": MessageLookupByLibrary.simpleMessage("持有技能"),
+        "add": MessageLookupByLibrary.simpleMessage("添加"),
         "add_to_blacklist": MessageLookupByLibrary.simpleMessage("加入黑名单"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
         "ap_calc_page_joke":
@@ -362,6 +363,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_record_fixed_drop_short":
             MessageLookupByLibrary.simpleMessage("掉落"),
         "master_mission": MessageLookupByLibrary.simpleMessage("御主任务"),
+        "master_mission_related_quest":
+            MessageLookupByLibrary.simpleMessage("关联关卡"),
+        "master_mission_solution": MessageLookupByLibrary.simpleMessage("方案"),
+        "master_mission_tasklist": MessageLookupByLibrary.simpleMessage("任务列表"),
         "max_ap": MessageLookupByLibrary.simpleMessage("最大AP"),
         "more": MessageLookupByLibrary.simpleMessage("更多"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("魔术礼装"),

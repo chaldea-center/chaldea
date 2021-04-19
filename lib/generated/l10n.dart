@@ -2352,6 +2352,16 @@ class S {
     );
   }
 
+  /// `添加`
+  String get add {
+    return Intl.message(
+      '添加',
+      name: 'add',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `清空用户数据`
   String get clear_userdata {
     return Intl.message(
@@ -3857,6 +3867,36 @@ class S {
     return Intl.message(
       '出场礼装/纹章',
       name: 'svt_related_cards',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `任务列表`
+  String get master_mission_tasklist {
+    return Intl.message(
+      '任务列表',
+      name: 'master_mission_tasklist',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `方案`
+  String get master_mission_solution {
+    return Intl.message(
+      '方案',
+      name: 'master_mission_solution',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `关联关卡`
+  String get master_mission_related_quest {
+    return Intl.message(
+      '关联关卡',
+      name: 'master_mission_related_quest',
       desc: '',
       args: [],
     );

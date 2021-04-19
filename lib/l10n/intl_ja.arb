@@ -233,6 +233,7 @@
   "userdata": "ユーザーデータ",
   "settings_userdata_footer": "更新数据/版本/bug较多时，建议提前备份数据，卸载应用将导致内部备份丢失，及时转移到可靠的储存位置",
   "clear": "クリア",
+  "add": "追加",
   "clear_userdata": "ユーザーデータをクリア",
   "userdata_cleared": "ユーザーデータがクリアされました",
   "share": "共有",
@@ -383,5 +384,8 @@
   "svt_reset_plan": "プランをリセット",
   "svt_switch_slider_dropdown": "Slider/Dropdownを切り替え",
   "characters_in_card": "キャラクター",
-  "svt_related_cards": "関連カード"
+  "svt_related_cards": "関連カード",
+  "master_mission_tasklist": "ミッション",
+  "master_mission_solution": "対策",
+  "master_mission_related_quest": "関連クエスト"
 }

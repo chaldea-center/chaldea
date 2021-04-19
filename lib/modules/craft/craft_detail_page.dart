@@ -244,7 +244,7 @@ class CraftDetailBasePage extends StatelessWidget {
           CustomTableRow(children: [
             TableCellData(
               child: Text(
-                ce.characters.isNotEmpty ? ce.characters.join(', ') : '-',
+                localizeCharacters(ce.characters),
                 textAlign: TextAlign.center,
               ),
             )
@@ -290,6 +290,15 @@ class CraftDetailBasePage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String localizeCharacters(List<String> characters) {
+    if (characters.isEmpty) return '-';
+    return characters.map((e) {
+      final svt =
+          db.gameData.servants.values.firstWhereOrNull((s) => s.mcLink == e);
+      return svt?.info.localizedName ?? e;
+    }).join(', ');
   }
 
   List<Summon> getPickupSummons() {
