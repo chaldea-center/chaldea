@@ -280,28 +280,25 @@ class CraftListPageState extends State<CraftListPage> {
     );
   }
 
-  CraftEssence? switchNext(int cur, bool next) {
-    void _setSelected(int index) {
+  CraftEssence? switchNext(CraftEssence cur, bool next) {
+    void _setSelected(CraftEssence _ce) {
       setState(() {
-        _selectedNo = shownList[index].no;
+        _selectedNo = _ce.no;
       });
     }
 
     if (shownList.length <= 0) return null;
-    for (int i = 0; i < shownList.length; i++) {
-      if (shownList[i].no == cur) {
-        int nextIndex = i + (next ? 1 : -1);
-        if (nextIndex < shownList.length && nextIndex >= 0) {
-          _setSelected(nextIndex);
-          return shownList[nextIndex];
-        } else {
-          // if reach the end/head of list, return null
-          return null;
-        }
+
+    if (shownList.contains(cur)) {
+      CraftEssence? nextCe =
+          Utils.findNextOrPrevious<CraftEssence>(shownList, cur, next);
+      if (nextCe != null) {
+        _setSelected(nextCe);
       }
+      return nextCe;
+    } else {
+      _setSelected(shownList.first);
+      return shownList.first;
     }
-    // if not found in list, return the first one
-    _setSelected(0);
-    return shownList[0];
   }
 }

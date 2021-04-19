@@ -308,9 +308,12 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
               icon: Icon(Icons.keyboard_arrow_left),
             ),
             Expanded(
-              child: AspectRatio(
-                aspectRatio: 10 / 4,
-                child: _buildOneHistory(history[_curHistory]),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: 128),
+                child: AspectRatio(
+                  aspectRatio: 5 / 2 * 132 / 144,
+                  child: _buildOneHistory(history[_curHistory]),
+                ),
               ),
             ),
             IconButton(

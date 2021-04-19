@@ -323,7 +323,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         IconButton(
           icon: FaIcon(FontAwesomeIcons.chevronCircleLeft),
           color: Colors.blueAccent,
-          tooltip: '上一个',
+          tooltip: S.current.previous_card,
           onPressed: () => moveNext(true),
         ),
         ElevatedButton(
@@ -338,12 +338,12 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
                     ),
                   );
                 },
-          child: Text('抽卡模拟器'),
+          child: Text(S.current.summon),
         ),
         IconButton(
           icon: FaIcon(FontAwesomeIcons.chevronCircleRight),
           color: Colors.blueAccent,
-          tooltip: '下一个',
+          tooltip: S.current.next_card,
           onPressed: () => moveNext(),
         )
       ],

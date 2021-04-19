@@ -101,6 +101,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
         "card_description": MessageLookupByLibrary.simpleMessage("解说"),
         "card_info": MessageLookupByLibrary.simpleMessage("资料"),
+        "characters_in_card": MessageLookupByLibrary.simpleMessage("出场角色"),
         "check_update": MessageLookupByLibrary.simpleMessage("检查更新"),
         "choose_quest_hint": MessageLookupByLibrary.simpleMessage("选择Free本"),
         "clear": MessageLookupByLibrary.simpleMessage("清空"),
@@ -477,6 +478,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_obtain_story": MessageLookupByLibrary.simpleMessage("剧情限定"),
         "svt_obtain_unavailable": MessageLookupByLibrary.simpleMessage("无法召唤"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("已隐藏"),
+        "svt_related_cards": MessageLookupByLibrary.simpleMessage("出场礼装/纹章"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("重置规划"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("切换滑动条/下拉框"),

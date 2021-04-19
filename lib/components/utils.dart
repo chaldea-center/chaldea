@@ -368,3 +368,14 @@ void copyOrMoveDirectory(
     }
   }
 }
+
+class Utils {
+  static T? findNextOrPrevious<T>(List<T> list, T cur, bool next) {
+    int curIndex = list.indexOf(cur);
+    if (curIndex < 0) return null;
+    int nextIndex = curIndex + (next ? 1 : -1);
+    if (nextIndex >= 0 && nextIndex < list.length) {
+      return list[nextIndex];
+    }
+  }
+}

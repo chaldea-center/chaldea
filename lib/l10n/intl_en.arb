@@ -257,7 +257,7 @@
   "download_source": "Download source",
   "download_source_of": "Source {name}",
   "download_source_hint": "update dataset and app",
-  "reset_svt_enhance_state": "Reset servant enhancements",
+  "reset_svt_enhance_state": "Reset skill/NP enhancements",
   "reset_svt_enhance_state_hint": "Reset rank up of skills and nobel phantasm",
   "reset_success": "Reset successfully",
   "gamedata": "Gamedata",
@@ -379,5 +379,7 @@
   "download_full_gamedata": "Download latest Gamedata",
   "download_full_gamedata_hint": "Full size zip file",
   "svt_reset_plan": "Reset Plan",
-  "svt_switch_slider_dropdown": "Switch Slider/Dropdown"
+  "svt_switch_slider_dropdown": "Switch Slider/Dropdown",
+  "characters_in_card": "Characters",
+  "svt_related_cards": "Related Cards"
 }

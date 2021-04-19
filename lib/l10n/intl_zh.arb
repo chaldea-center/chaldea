@@ -378,5 +378,7 @@
   "download_full_gamedata": "下载最新数据",
   "download_full_gamedata_hint": "完整zip数据包",
   "svt_reset_plan": "重置规划",
-  "svt_switch_slider_dropdown": "切换滑动条/下拉框"
+  "svt_switch_slider_dropdown": "切换滑动条/下拉框",
+  "characters_in_card": "出场角色",
+  "svt_related_cards": "出场礼装/纹章"
 }

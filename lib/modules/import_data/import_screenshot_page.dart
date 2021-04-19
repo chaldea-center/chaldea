@@ -35,24 +35,26 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
       return Column(
         children: [
           Expanded(
-              child: Column(
-            children: [
-              if (imageFiles.isNotEmpty)
-                Expanded(
-                  child: ListView(
-                    children: imageFiles.map((e) {
-                      return Container(
-                        width: constraints.biggest.width,
-                        padding: EdgeInsets.only(bottom: 6),
-                        child: Image.file(e, fit: BoxFit.fitWidth),
-                      );
-                    }).toList(),
+            child: Column(
+              children: [
+                Text('Low accuracy, not adapt non 16:9 device'),
+                if (imageFiles.isNotEmpty)
+                  Expanded(
+                    child: ListView(
+                      children: imageFiles.map((e) {
+                        return Container(
+                          width: constraints.biggest.width,
+                          padding: EdgeInsets.only(bottom: 6),
+                          child: Image.file(e, fit: BoxFit.fitWidth),
+                        );
+                      }).toList(),
+                    ),
                   ),
-                ),
-              if (output.isNotEmpty) Expanded(child: _itemList()),
-              if (imageFiles.isEmpty && output.isEmpty) Center()
-            ],
-          )),
+                if (output.isNotEmpty) Expanded(child: _itemList()),
+                if (imageFiles.isEmpty && output.isEmpty) Center()
+              ],
+            ),
+          ),
           kDefaultDivider,
           _buildButtonBar(),
         ],

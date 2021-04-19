@@ -3,7 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class CmdCodeDetailPage extends StatefulWidget {
   final CommandCode code;
-  final CommandCode? Function(int, bool)? onSwitch;
+  final CommandCode? Function(CommandCode, bool)? onSwitch;
 
   const CmdCodeDetailPage({Key? key, required this.code, this.onSwitch})
       : super(key: key);
@@ -68,7 +68,7 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
                   CommandCode? nextCode;
                   if (widget.onSwitch != null) {
                     // if navigated from filter list, let filter list decide which is the next one
-                    nextCode = widget.onSwitch!(code.no, i == 1);
+                    nextCode = widget.onSwitch!(code, i == 1);
                   } else {
                     nextCode = db.gameData.cmdCodes[code.no + [-1, 1][i]];
                   }
@@ -131,8 +131,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                     CustomTableRow(children: [
                       TableCellData(
                           text: S.of(context).illustrator, isHeader: true),
-                      TableCellData(
-                          text: code.localizedIllustrators, flex: 3)
+                      TableCellData(text: code.localizedIllustrators, flex: 3)
                     ]),
                     CustomTableRow(children: [
                       TableCellData(text: S.of(context).rarity, isHeader: true),
@@ -152,9 +151,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                                   fullscreenDialog: true,
                                   pageBuilder: (context, _, __) =>
                                       FullScreenImageSlider(
-                                    imgUrls: [
-                                      code.illustration
-                                    ],
+                                        imgUrls: [code.illustration],
                                     connectivity: db.connectivity,
                                     placeholder: placeholder,
                                   ),
@@ -190,8 +187,9 @@ class CmdCodeDetailBasePage extends StatelessWidget {
               TableCellData(flex: 5, text: code.skill)
             ],
           ),
-          CustomTableRow(
-              children: [TableCellData(text: '出场角色', isHeader: true)]),
+          CustomTableRow(children: [
+            TableCellData(text: S.current.characters_in_card, isHeader: true)
+          ]),
           CustomTableRow(children: [
             TableCellData(
               child: Text(

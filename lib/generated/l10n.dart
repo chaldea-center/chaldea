@@ -3841,6 +3841,26 @@ class S {
       args: [],
     );
   }
+
+  /// `出场角色`
+  String get characters_in_card {
+    return Intl.message(
+      '出场角色',
+      name: 'characters_in_card',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `出场礼装/纹章`
+  String get svt_related_cards {
+    return Intl.message(
+      '出场礼装/纹章',
+      name: 'svt_related_cards',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

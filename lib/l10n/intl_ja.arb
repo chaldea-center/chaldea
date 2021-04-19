@@ -381,5 +381,7 @@
   "download_full_gamedata": "最新のデータをダウンロード",
   "download_full_gamedata_hint": "フルzipデータパッケージ",
   "svt_reset_plan": "プランをリセット",
-  "svt_switch_slider_dropdown": "Slider/Dropdownを切り替え"
+  "svt_switch_slider_dropdown": "Slider/Dropdownを切り替え",
+  "characters_in_card": "キャラクター",
+  "svt_related_cards": "関連カード"
 }

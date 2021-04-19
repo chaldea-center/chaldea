@@ -88,6 +88,7 @@ class ItemListPageState extends State<ItemListPage>
         ],
         bottom: TabBar(
           controller: _tabController,
+          isScrollable: Language.isEN,
           tabs: categories
               .map((category) => Tab(
                       text: [

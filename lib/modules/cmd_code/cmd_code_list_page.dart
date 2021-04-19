@@ -253,28 +253,24 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
     );
   }
 
-  CommandCode? switchNext(int cur, bool next) {
-    void _setSelected(int index) {
+  CommandCode? switchNext(CommandCode cur, bool next) {
+    void _setSelected(CommandCode _code) {
       setState(() {
-        _selectedNo = shownList[index].no;
+        _selectedNo = _code.no;
       });
     }
 
-    if (shownList.length <= 0) return null;
-    for (int i = 0; i < shownList.length; i++) {
-      if (shownList[i].no == cur) {
-        int nextIndex = i + (next ? 1 : -1);
-        if (nextIndex < shownList.length && nextIndex >= 0) {
-          _setSelected(nextIndex);
-          return shownList[nextIndex];
-        } else {
-          // if reach the end/head of list, return null
-          return null;
-        }
+    if (shownList.isEmpty) return null;
+    if (shownList.contains(cur)) {
+      CommandCode? nextCode =
+          Utils.findNextOrPrevious<CommandCode>(shownList, cur, next);
+      if (nextCode != null) {
+        _setSelected(nextCode);
       }
+      return nextCode;
+    } else {
+      _setSelected(shownList.first);
+      return shownList.first;
     }
-    // if not found in list, return the first one
-    _setSelected(0);
-    return shownList[0];
   }
 }

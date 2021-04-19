@@ -102,6 +102,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cancel": MessageLookupByLibrary.simpleMessage("キャセル"),
         "card_description": MessageLookupByLibrary.simpleMessage("解説"),
         "card_info": MessageLookupByLibrary.simpleMessage("資料"),
+        "characters_in_card": MessageLookupByLibrary.simpleMessage("キャラクター"),
         "check_update": MessageLookupByLibrary.simpleMessage("更新の確認"),
         "choose_quest_hint": MessageLookupByLibrary.simpleMessage("フリークエストを選択"),
         "clear": MessageLookupByLibrary.simpleMessage("クリア"),
@@ -509,6 +510,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_obtain_story": MessageLookupByLibrary.simpleMessage("スト限"),
         "svt_obtain_unavailable": MessageLookupByLibrary.simpleMessage("召喚不可"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("非表示"),
+        "svt_related_cards": MessageLookupByLibrary.simpleMessage("関連カード"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("プランをリセット"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Slider/Dropdownを切り替え"),

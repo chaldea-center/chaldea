@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/cmd_code/cmd_code_detail_page.dart';
 import 'package:chaldea/modules/craft/craft_detail_page.dart';
 
 import '../servant_detail_page.dart';
@@ -30,7 +31,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
   void initState() {
     super.initState();
     useLangCn = Language.isCN;
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
   }
 
   @override
@@ -54,7 +55,8 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
                   S.of(context).svt_info_tab_base,
                   S.of(context).svt_info_tab_bond_story,
                   S.of(context).bond_craft,
-                  S.of(context).valentine_craft
+                  S.of(context).valentine_craft,
+                  S.of(context).svt_related_cards,
                 ]
                     .map((tabName) => Tab(
                             child: Text(
@@ -88,7 +90,8 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
             buildBaseInfoTab(),
             buildProfileTab(),
             buildBondCraftTab(),
-            buildValentineCraftTab()
+            buildValentineCraftTab(),
+            buildRelatedCards(),
           ]),
         ),
       ],
@@ -335,5 +338,80 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
     } else {
       return Center(child: Text(S.of(context).hint_no_valentine_craft));
     }
+  }
+
+  List<CraftEssence>? crafts;
+  List<CommandCode>? codes;
+
+  Widget buildRelatedCards() {
+    List<Widget> craftChildren = [];
+    crafts ??= db.gameData.crafts.values
+        .where((e) => e.characters.contains(svt.mcLink))
+        .toList();
+    crafts!.forEach((ce) {
+      if (ce.characters.contains(svt.mcLink)) {
+        craftChildren.add(ListTile(
+          leading: ImageWithText(
+              image:
+                  db.getIconImage(ce.icon, height: 45, width: 45 / 144 * 132)),
+          title: Text(ce.localizedName),
+          onTap: () {
+            SplitRoute.push(
+              context: context,
+              builder: (context, _) => CraftDetailPage(
+                ce: ce,
+                onSwitch: (cur, next) =>
+                    Utils.findNextOrPrevious<CraftEssence>(crafts!, cur, next),
+              ),
+              detail: true,
+            );
+          },
+        ));
+      }
+    });
+
+    codes ??= db.gameData.cmdCodes.values
+        .where((e) => e.characters.contains(svt.mcLink))
+        .toList();
+    List<Widget> codeChildren = [];
+    codes!.forEach((code) {
+      if (code.characters.contains(svt.mcLink)) {
+        codeChildren.add(ListTile(
+          leading: ImageWithText(
+              image: db.getIconImage(code.icon,
+                  height: 45, width: 45 / 144 * 132)),
+          title: Text(code.localizedName),
+          onTap: () {
+            SplitRoute.push(
+              context: context,
+              builder: (context, _) => CmdCodeDetailPage(
+                code: code,
+                onSwitch: (cur, next) =>
+                    Utils.findNextOrPrevious<CommandCode>(codes!, cur, next),
+              ),
+              detail: true,
+            );
+          },
+        ));
+      }
+    });
+    return ListView(
+      children: [
+        if (craftChildren.isEmpty && codeChildren.isEmpty)
+          ListTile(
+            title: Text('No related craft essence or command code'),
+          ),
+        if (craftChildren.isNotEmpty)
+          TileGroup(
+            header: S.current.craft_essence,
+            children: craftChildren,
+          ),
+        if (codeChildren.isNotEmpty)
+          TileGroup(
+            header: S.current.command_code,
+            children: codeChildren,
+          )
+      ],
+    );
   }
 }

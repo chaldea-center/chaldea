@@ -4,7 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class CraftDetailPage extends StatefulWidget {
   final CraftEssence ce;
-  final CraftEssence? Function(int, bool)? onSwitch;
+  final CraftEssence? Function(CraftEssence, bool)? onSwitch;
 
   const CraftDetailPage({Key? key, required this.ce, this.onSwitch})
       : super(key: key);
@@ -73,7 +73,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
                   CraftEssence? nextCe;
                   if (widget.onSwitch != null) {
                     // if navigated from filter list, let filter list decide which is the next one
-                    nextCe = widget.onSwitch!(ce.no, i == 1);
+                    nextCe = widget.onSwitch!(ce, i == 1);
                   } else {
                     nextCe = db.gameData.crafts[ce.no + [-1, 1][i]];
                   }
@@ -142,9 +142,7 @@ class CraftDetailBasePage extends StatelessWidget {
                       TableCellData(
                           text: S.of(context).illustrator, isHeader: true),
                       TableCellData(
-                          text: ce.localizedIllustrators,
-                          flex: 3,
-                          maxLines: 1)
+                          text: ce.localizedIllustrators, flex: 3, maxLines: 1)
                     ]),
                     CustomTableRow(children: [
                       TableCellData(text: S.of(context).rarity, isHeader: true),
@@ -240,8 +238,9 @@ class CraftDetailBasePage extends StatelessWidget {
                 )
               ],
             ),
-          CustomTableRow(
-              children: [TableCellData(text: '出场角色', isHeader: true)]),
+          CustomTableRow(children: [
+            TableCellData(text: S.current.characters_in_card, isHeader: true)
+          ]),
           CustomTableRow(children: [
             TableCellData(
               child: Text(
