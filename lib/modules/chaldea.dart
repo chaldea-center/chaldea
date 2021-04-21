@@ -120,7 +120,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         content: 'A backup is created:\n ${userdataBackup!.join('\n')}',
       );
     }
-    Future.delayed(Duration(seconds: 5)).then((_) => reportBdtj());
+    Future.delayed(Duration(seconds: 5)).then((_) => sendStat());
   }
 }
 

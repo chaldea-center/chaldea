@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:chaldea/components/components.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
@@ -32,7 +33,8 @@ String? getDefaultUserAgent() {
   }
 }
 
-Future<void> reportBdtj({String? bdId}) async {
+Future<void> _reportBdtj({String? bdId}) async {
+  if (db.connectivity == ConnectivityResult.none) return;
   final excludeIds = [
     b64('YjhhMDY0OWQ3NTI5MmQwOQ=='), // android
     b64('RDE0QjBGNzItNUYzRS00ODcxLTlDRjUtNTRGMkQ1OTYyMUEw'), //ios
@@ -43,7 +45,7 @@ Future<void> reportBdtj({String? bdId}) async {
   if (kDebugMode || excludeIds.contains(AppInfo.uniqueId)) {
     return;
   }
-
+  sendStat();
   // TODO: invalid, ignored by bdtj
   try {
     if (Platform.isIOS || Platform.isAndroid) {
@@ -81,7 +83,7 @@ Future<void> reportBdtj({String? bdId}) async {
         'ln': Intl.getCurrentLocale(),
         'lo': 0,
         'rnd':
-            (random.nextInt(90000) + 10000) * 100000 + random.nextInt(100000),
+        (random.nextInt(90000) + 10000) * 100000 + random.nextInt(100000),
         'si': bdId,
         'v': '1.2.80',
         'lv': fresh ? 1 : 2,
@@ -120,19 +122,60 @@ Future<void> reportBdtj({String? bdId}) async {
       return _param.map((key, value) => MapEntry(key, value.toString()));
     };
     final _dio =
-        Dio(BaseOptions(headers: {'User-Agent': getDefaultUserAgent()}));
+    Dio(BaseOptions(headers: {'User-Agent': getDefaultUserAgent()}));
     _dio.interceptors.add(CookieManager(cookieJar));
     await _dio.get(hjs);
     String gifUrl1 =
-        Uri.parse(_hgif).replace(queryParameters: genMap()).toString();
+    Uri.parse(_hgif).replace(queryParameters: genMap()).toString();
     first = false;
     var gif1 = _dio.get(gifUrl1);
     await Future.delayed(Duration(milliseconds: 66));
     String gifUrl2 =
-        Uri.parse(_hgif).replace(queryParameters: genMap()).toString();
+    Uri.parse(_hgif).replace(queryParameters: genMap()).toString();
     var gif2 = _dio.get(gifUrl2);
     await Future.wait([gif1, gif2]);
   } catch (e, s) {
     logger.e('bdtj failed', e, s);
   }
+}
+
+Future<void> sendStat() async {
+  if (db.connectivity == ConnectivityResult.none) return;
+  String size = '';
+  if (kAppKey.currentContext != null) {
+    final mq = MediaQuery.of(kAppKey.currentContext!);
+    int w = (mq.size.width * mq.devicePixelRatio).round();
+    int h = (mq.size.height * mq.devicePixelRatio).round();
+    size = '${w}x$h';
+  }
+  String zone = 'unknown';
+  try {
+    final Response cipRes = await Dio().get('http://cip.cc',
+        options: Options(
+          contentType: 'text/plain',
+          headers: {'User-Agent': 'curl/7.71.1'},
+        ));
+    zone = cipRes.data.toString().trim().split('\n')[1].split(':')[1].trim();
+  } catch (e, s) {
+    logger.e('fetch cip failed', e, s);
+  }
+  // await Dio(BaseOptions(baseUrl: 'http://localhost:8083'))
+  await db.serverDio.get('/analytics', queryParameters: {
+    'id': AppInfo.uniqueId,
+    'os': Platform.operatingSystem,
+    'os_ver': Platform.operatingSystemVersion,
+    'app': AppInfo.packageName,
+    'app_ver': AppInfo.version,
+    'lang': Language.current.code,
+    'locale': Intl.systemLocale,
+    'data_ver': db.gameData.version,
+    'abi': AppInfo.abi.toStandardString(),
+    'mac': EnumUtil.shortString(AppInfo.macAppType),
+    'time': DateTime.now().millisecondsSinceEpoch ~/ 1000,
+    'size': size,
+    'zone': zone,
+  }).catchError((e, s) {
+    logger.e('report analytics failed', e, s);
+  });
+  _reportBdtj();
 }
