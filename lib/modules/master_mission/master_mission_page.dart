@@ -546,6 +546,18 @@ class WeeklyFilterData {
         battlefields.add('场地_$key');
       });
     }
+    int _getIndex(String key) => LocalizedGroups.masterMission.values
+        .indexWhere((e) => e.chs == key.split('_').last);
+    Set<String> _sort(Set<String> keys) {
+      print('sort');
+      final list = keys.toList();
+      list.sort((a, b) => _getIndex(a) - _getIndex(b));
+      return list.toSet();
+    }
+
+    servantTraits = _sort(servantTraits);
+    enemyTraits = _sort(enemyTraits);
+    battlefields = _sort(battlefields);
     generalTraits = servantTraits
         .map((e) => _removePrefix(e))
         .where((e) => enemyTraits.contains('小怪_$e'))

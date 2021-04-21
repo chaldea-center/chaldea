@@ -281,11 +281,11 @@ Future<void> jumpToExternalLinkAlert(
       content:
           Text(url, style: TextStyle(decoration: TextDecoration.underline)),
       onTapOk: () async {
-        final safeLink = Uri.encodeFull(url);
+        final safeLink = Uri.tryParse(url).toString();
         if (await canLaunch(safeLink)) {
           launch(safeLink);
         } else {
-          EasyLoading.showToast('Could not launch url:\n$safeLink');
+          EasyLoading.showToast('Could not launch url:\n$url');
         }
       },
     ),

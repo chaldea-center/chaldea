@@ -45,7 +45,9 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
     }
     Future.delayed(Duration(seconds: 2)).then((_) async {
       if (kDebugMode) return;
-      await AutoUpdateUtil.patchGameData();
+      if (db.userData.autoUpdateDataset) {
+        await AutoUpdateUtil.patchGameData();
+      }
       await Future.delayed(Duration(seconds: 2));
       await AutoUpdateUtil().checkAppUpdate(
           background: true, download: db.userData.autoUpdateApp);
@@ -397,8 +399,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
     try {
       final _dio = Dio();
       // mc slides
-      final mcUrl =
-          'https://fgo.wiki/w/%E6%A8%A1%E6%9D%BF:%E8%87%AA%E5%8A%A8%E5%8F%96%E5%80%BC%E8%BD%AE%E6%92%AD';
+      final mcUrl = 'https://fgo.wiki/w/模板:自动取值轮播';
       final task1 = _dio.get(mcUrl).then((response) {
         var mcParser = parser.parse(response.data.toString());
         var mcElement = mcParser.getElementById('transImageBox');

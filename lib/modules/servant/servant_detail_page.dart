@@ -232,7 +232,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
             status.resetEnhancement();
           });
         } else if (select == 'jump_mc') {
-          launch(MooncellUtil.fullLink(svt.mcLink, encode: true));
+          launch(MooncellUtil.fullLink(svt.mcLink));
         } else if (select == 'duplicate_svt') {
           final newSvt = db.curUser.addDuplicatedForServant(svt);
           print('add ${newSvt.no}');

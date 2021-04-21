@@ -34,7 +34,7 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
             icon: Icon(Icons.link),
             tooltip: S.of(context).jump_to('Mooncell'),
             onPressed: () {
-              launch(MooncellUtil.fullLink(code.mcLink, encode: true));
+              launch(MooncellUtil.fullLink(code.mcLink));
             },
           )
         ],

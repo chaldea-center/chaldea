@@ -36,7 +36,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
             icon: Icon(Icons.link),
             tooltip: S.of(context).jump_to('Mooncell'),
             onPressed: () {
-              launch(MooncellUtil.fullLink(ce.mcLink, encode: true));
+              launch(MooncellUtil.fullLink(ce.mcLink));
             },
           )
         ],

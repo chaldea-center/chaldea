@@ -25,7 +25,6 @@ class AutoUpdateUtil {
   BuildContext get context => kAppKey.currentContext!;
 
   /// download dataset-text.zip and unzip it to reload
-  @deprecated
   Future<void> autoUpdateDataset() async {
     version = null; //1.2.3
     releaseNote = null;
@@ -106,15 +105,18 @@ class AutoUpdateUtil {
         _reportResult(S.current.patch_gamedata_error_no_compatible);
         return;
       }
-      if (db.gameData.version.compareTo(_dataVersion(latestRelease.name)) >=
-          0) {
+      int newer =
+          db.gameData.version.compareTo(_dataVersion(latestRelease.name));
+      if (newer >= 0) {
         _reportResult(S.current.patch_gamedata_error_already_latest);
         return;
       }
       final curRelease = releases.firstWhereOrNull(
           (release) => _dataVersion(release.name) == db.gameData.version);
       if (curRelease == null) {
+        print('cur version not found in server: ${db.gameData.version}');
         _reportResult(S.current.patch_gamedata_error_unknown_version);
+        AutoUpdateUtil().autoUpdateDataset();
         return;
       }
 

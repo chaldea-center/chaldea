@@ -5,6 +5,7 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:catcher/core/catcher.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/git_tool.dart';
 import 'package:csv/csv.dart';
@@ -111,7 +112,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
                     sameSvt = v;
                     if (sameSvt) {
                       FFOPart? _part =
-                      params.parts.firstWhereOrNull((e) => e != null);
+                          params.parts.firstWhereOrNull((e) => e != null);
                       await params.setPart(_part);
                     }
                     setState(() {});
@@ -121,9 +122,9 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
                   onPressed: params.isEmpty
                       ? null
                       : () => params.saveTo(context).catchError((e, s) {
-                    EasyLoading.showError('Save picture failed!\n$e');
-                    logger.e('save picture failed', e, s);
-                  }),
+                            EasyLoading.showError('Save picture failed!\n$e');
+                            logger.e('save picture failed', e, s);
+                          }),
                   child: Text(S.current.save),
                 ),
                 ElevatedButton(
@@ -281,19 +282,29 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
 
   // load and save
   void loadCSV() {
-    parts.clear();
     final csvFile = File(join(_baseDir, 'CSV', 'ServantDB-Parts.csv'));
     if (!csvFile.existsSync()) return;
-    CsvToListConverter(eol: '\n')
-        .convert(csvFile.readAsStringSync().replaceAll('\r\n', '\n'))
-        .forEach((row) {
-      if (row[0] == 'id') {
-        assert(row.length == 10, row.toString());
-        return;
-      }
-      final item = FFOPart.fromList(row);
-      parts[item.id] = item;
-    });
-    print('loaded csv: ${parts.length}');
+    try {
+      parts.clear();
+      CsvToListConverter(eol: '\n')
+          .convert(csvFile.readAsStringSync().replaceAll('\r\n', '\n'))
+          .forEach((row) {
+        if (row[0] == 'id') {
+          assert(row.length == 10, row.toString());
+          return;
+        }
+        final item = FFOPart.fromList(row);
+        parts[item.id] = item;
+      });
+      print('loaded csv: ${parts.length}');
+    } catch (e, s) {
+      logger.e('load FFO data failed', e, s);
+      logger.e(csvFile.readAsStringSync());
+      SimpleCancelOkDialog(
+        title: Text('Load FFO data error'),
+        content: Text('$e\nTry to import data again'),
+      ).showDialog(context);
+      Catcher.reportCheckedError(e, s);
+    }
   }
 }

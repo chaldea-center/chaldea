@@ -38,10 +38,9 @@ class MooncellUtil {
     return '';
   }
 
-  static String fullLink(String title, {bool encode = false}) {
+  static String fullLink(String title) {
     String link = '$domain/w/$title';
-    if (encode) link = Uri.encodeFull(link);
-    return link;
+    return Uri.parse(link).toString();
   }
 
   static Map<String, Future<String?>> _resolveUrlTasks = {};
