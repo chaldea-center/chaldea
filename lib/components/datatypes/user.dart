@@ -16,6 +16,9 @@ class User {
   /// user own items, key: item name, value: item count
   Map<String, int> items;
   EventPlans events;
+
+  /// ce id: status. status=0,1,2
+  Map<int, int> crafts;
   Map<String, int> mysticCodes;
   Set<String> plannedSummons;
   bool isMasterGirl;
@@ -33,17 +36,20 @@ class User {
     List<Map<int, ServantPlan>>? servantPlans,
     Map<String, int>? items,
     EventPlans? events,
+    Map<int, int>? crafts,
     Map<String, int>? mysticCodes,
     Set<String>? plannedSummons,
     bool? isMasterGirl,
     int? msProgress,
     Map<int, int>? duplicatedServants,
-  })  : name = name?.isNotEmpty == true ? name! : 'default',
+  })
+      : name = name?.isNotEmpty == true ? name! : 'default',
         servants = servants ?? {},
         curSvtPlanNo = curSvtPlanNo ?? 0,
         servantPlans = servantPlans ?? [],
         items = items ?? {},
         events = events ?? EventPlans(),
+        crafts = crafts ?? {},
         mysticCodes = mysticCodes ?? {},
         plannedSummons = plannedSummons ?? <String>{},
         isMasterGirl = isMasterGirl ?? true,

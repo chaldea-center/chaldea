@@ -87,6 +87,10 @@ class CraftListPageState extends State<CraftListPage> {
             0) {
       return false;
     }
+    if (!filterData.status
+        .singleValueFilter((db.curUser.crafts[ce.no] ?? 0).toString())) {
+      return false;
+    }
     return true;
   }
 
@@ -129,8 +133,7 @@ class CraftListPageState extends State<CraftListPage> {
                         icon: Icon(Icons.clear, size: 20),
                         onPressed: () {
                           setState(() {
-                            WidgetsBinding.instance!.addPostFrameCallback(
-                                (_) => _inputController.clear());
+                            _inputController.text = '';
                             filterData.filterString = '';
                           });
                         },
@@ -161,7 +164,7 @@ class CraftListPageState extends State<CraftListPage> {
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.arrow_upward),
           onPressed: () => _scrollController.jumpTo(0)),
-      body: buildOverview(),
+      body: db.streamBuilder((context) => buildOverview()),
     );
   }
 

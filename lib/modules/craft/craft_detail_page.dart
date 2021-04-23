@@ -27,11 +27,27 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    int status = db.curUser.crafts[ce.no] ?? 0;
+    status = fixValidRange(status, 0, 2);
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
         title: Text(ce.localizedName),
         actions: [
+          IconButton(
+            tooltip: ['未遭遇', '已遭遇', '已契约'][status],
+            onPressed: () {
+              setState(() {
+                db.curUser.crafts[ce.no] = (status + 1) % 3;
+              });
+              db.notifyDbUpdate();
+            },
+            icon: status == 1
+                ? Icon(Icons.favorite)
+                : status == 2
+                ? Icon(Icons.favorite, color: Colors.redAccent)
+                : Icon(Icons.favorite_outline),
+          ),
           IconButton(
             icon: Icon(Icons.link),
             tooltip: S.of(context).jump_to('Mooncell'),
@@ -45,10 +61,10 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
         children: <Widget>[
           Expanded(
               child: CraftDetailBasePage(
-            ce: ce,
-            useLangCn: useLangCn,
-            showSummon: true,
-          )),
+                ce: ce,
+                useLangCn: useLangCn,
+                showSummon: true,
+              )),
           ButtonBar(alignment: MainAxisAlignment.center, children: [
             ToggleButtons(
               constraints: BoxConstraints(),
@@ -61,10 +77,10 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
               },
               children: List.generate(
                   2,
-                  (i) => Padding(
-                        padding: EdgeInsets.all(6),
-                        child: Text(['中', '日'][i]),
-                      )),
+                      (i) => Padding(
+                    padding: EdgeInsets.all(6),
+                    child: Text(['中', '日'][i]),
+                  )),
               isSelected: List.generate(2, (i) => useLangCn == (i == 0)),
             ),
             for (var i = 0; i < 2; i++)

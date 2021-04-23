@@ -101,6 +101,8 @@ class UserData {
         plans.removeWhere(
             (key, value) => !db.gameData.servantsWithUser.containsKey(key));
       });
+      curUser.crafts
+          .removeWhere((key, value) => !const [0, 1, 2].contains(value));
     }
   }
 
@@ -293,6 +295,7 @@ class CraftFilterData {
   FilterGroupData rarity;
   FilterGroupData category;
   FilterGroupData atkHpType;
+  FilterGroupData status;
 
   CraftFilterData({
     FilterGroupData? display,
@@ -301,22 +304,26 @@ class CraftFilterData {
     FilterGroupData? rarity,
     FilterGroupData? category,
     FilterGroupData? atkHpType,
+    FilterGroupData? status,
   })  : filterString = '',
         display = display ?? FilterGroupData(options: {'List': true}),
         sortKeys = sortKeys ?? List.generate(2, (index) => sortKeyData[index]),
         sortReversed = sortReversed ?? List.filled(2, true, growable: true),
         rarity = rarity ?? FilterGroupData(),
         category = category ?? FilterGroupData(),
-        atkHpType = atkHpType ?? FilterGroupData() {
+        atkHpType = atkHpType ?? FilterGroupData(),
+        status = status ?? FilterGroupData() {
     fillListValue(this.sortKeys, 2, (i) => sortKeyData[i]);
     fillListValue(this.sortReversed, 2, (_) => true);
   }
 
-  List<FilterGroupData> get groupValues => [
+  List<FilterGroupData> get groupValues =>
+      [
         // display,
         rarity,
         category,
         atkHpType,
+        status,
       ];
 
   void reset() {
@@ -344,6 +351,7 @@ class CraftFilterData {
     '期间限定'
   ];
   static const atkHpTypeData = ['NONE', 'HP', 'ATK', 'MIX'];
+  static const statusData = ['0', '1', '2'];
 
   // json_serializable
   factory CraftFilterData.fromJson(Map<String, dynamic> data) =>

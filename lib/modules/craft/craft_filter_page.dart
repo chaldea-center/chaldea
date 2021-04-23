@@ -85,6 +85,18 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
             update();
           },
         ),
+        FilterGroup(
+          title: Text('Status'),
+          options: CraftFilterData.statusData,
+          values: filterData.status,
+          optionBuilder: (v) {
+            return Text(['未遭遇', '已遭遇', '已契约'][int.parse(v)]);
+          },
+          onFilterChanged: (value) {
+            filterData.status = value;
+            update();
+          },
+        ),
       ]),
     );
   }

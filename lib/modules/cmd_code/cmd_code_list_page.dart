@@ -113,8 +113,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
                         icon: Icon(Icons.clear, size: 20),
                         onPressed: () {
                           setState(() {
-                            WidgetsBinding.instance!.addPostFrameCallback(
-                                (_) => _inputController.clear());
+                            _inputController.text = '';
                             filterData.filterString = '';
                           });
                         },

@@ -9,6 +9,7 @@ import 'package:chaldea/modules/extras/updates.dart';
 import 'package:chaldea/modules/ffo/ffo_page.dart';
 import 'package:chaldea/modules/free_quest_calculator/free_calculator_page.dart';
 import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
+import 'package:chaldea/modules/home/subpage/game_data_page.dart';
 import 'package:chaldea/modules/import_data/import_data_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/master_mission/master_mission_page.dart';
@@ -198,12 +199,25 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
           ),
         ],
       ),
-      body: ListView(
-        children: <Widget>[
-          _buildCarousel(),
-          _buildGalleries(),
-          if (kDebugMode) buildTestInfoPad(),
-        ],
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return ListView(
+            children: <Widget>[
+              ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildCarousel(),
+                    _buildGalleries(),
+                  ],
+                ),
+              ),
+              _buildNotifications(),
+              if (kDebugMode) buildTestInfoPad(),
+            ],
+          );
+        },
       ),
     );
   }
@@ -453,5 +467,46 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         setState(() {});
       }
     }
+  }
+
+  double _cachedIconsRatio = -1;
+
+  Widget _buildNotifications() {
+    List<Widget> children = [];
+    if (_cachedIconsRatio < 0) {
+      int total = db.gameData.servants.length +
+          db.gameData.crafts.length +
+          db.gameData.cmdCodes.length +
+          300;
+      int cached = Directory(db.paths.gameIconDir).listSync().length;
+      _cachedIconsRatio = cached / total;
+      print('$cached/$total');
+    }
+    if (_cachedIconsRatio >= 0 && _cachedIconsRatio < 0.7) {
+      children.add(ListTile(
+        leading: Text(''),
+        title: Text('Download icons'),
+        subtitle: Text(
+            'About ${(_cachedIconsRatio * 100).toStringAsFixed(0)}% downloaded'),
+        trailing: Icon(Icons.chevron_right),
+        onTap: () {
+          SplitRoute.push(
+            context: context,
+            builder: (context, _) => GameDataPage(),
+            detail: true,
+          );
+        },
+      ));
+    }
+    if (children.isEmpty) return Container();
+    return SimpleAccordion(
+      expanded: false,
+      headerBuilder: (context, _) => ListTile(
+          leading: Icon(Icons.notifications), title: Text('Notifications')),
+      contentBuilder: (context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: children,
+      ),
+    );
   }
 }

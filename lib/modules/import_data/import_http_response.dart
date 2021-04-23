@@ -2,7 +2,6 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/datatypes/datatypes.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -18,15 +17,17 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
   bool _includeItem = true;
   bool _includeSvt = true;
   bool _includeSvtStorage = true;
+  bool _includeCraft = true;
   bool _isLocked = true;
   bool _allowDuplicated = false;
 
-  // mapping, from gamedata
+  // mapping, from gamedata, key=game id
   late final Map<int, Servant> svtIdMap;
+  late final Map<int, CraftEssence> craftIdMap;
   late final Map<int, Item> itemIdMap;
 
-  // from response
-  Map<int, UserSvtCollection> collectionMap = {};
+  // from response,key=game id
+  Map<int, UserSvtCollection> cardCollections = {};
 
   // data
   BiliResponse? response;
@@ -34,12 +35,16 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
   List<UserItem> items = [];
   Set<int> ignoreSvts = {};
 
+  Map<int, int> crafts = {}; // craft.no: status
+
   HashSet<UserSvt> _shownSvts = HashSet();
 
   @override
   void initState() {
     super.initState();
     svtIdMap = db.gameData.servants.map((key, svt) => MapEntry(svt.svtId, svt));
+    craftIdMap =
+        db.gameData.crafts.map((key, craft) => MapEntry(craft.gameId, craft));
     itemIdMap = db.gameData.items
         .map((key, item) => MapEntry(item.itemId, item))
           ..removeWhere((key, value) => key < 0);
@@ -71,6 +76,8 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
                       svtAccordion(false, constraints),
                       kDefaultDivider,
                       svtAccordion(true, constraints),
+                      kDefaultDivider,
+                      craftAccordion,
                     ],
                   ),
                 ),
@@ -185,7 +192,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
           text += '\n';
         } else {
           text +=
-              '灵衣 ${collectionMap[svt.svtId]!.costumeIdsTo01().join('/')}\n';
+              '灵衣 ${cardCollections[svt.svtId]!.costumeIdsTo01().join('/')}\n';
         }
         text += '技能 ${svt.skillLv1}/${svt.skillLv2}/${svt.skillLv3}\n';
 
@@ -311,6 +318,32 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
     );
   }
 
+  Widget get craftAccordion {
+    return SimpleAccordion(
+      expanded: true,
+      canTapOnHeader: false,
+      disableAnimation: true,
+      headerBuilder: (context, _) => CheckboxListTile(
+        value: _includeCraft,
+        title: Text('礼装图鉴'),
+        controlAffinity: ListTileControlAffinity.leading,
+        onChanged: (v) => setState(() {
+          _includeCraft = v ?? _includeCraft;
+        }),
+      ),
+      contentBuilder: (context) {
+        final notMeet = crafts.values.where((v) => v == 0).length;
+        final meet = crafts.values.where((v) => v == 1).length;
+        final own = crafts.values.where((v) => v == 2).length;
+        return ListTile(
+          leading: Text(''),
+          title: Text(
+              '已契约: $own\n已遭遇: $meet\n未遭遇: $notMeet\n总计:   ${crafts.length}'),
+        );
+      },
+    );
+  }
+
   Widget get buttonBar {
     return ButtonBar(
       alignment: MainAxisAlignment.center,
@@ -403,6 +436,9 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
         user.items[item.indexKey!] = item.num;
       });
     }
+    if (_includeCraft) {
+      user.crafts = Map.of(crafts);
+    }
     // 不删除原本信息
     // 记录1号机。1号机使用Servant.no, 2-n号机使用UserSvt.id
     HashSet<int> _alreadyAdded = HashSet();
@@ -428,7 +464,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
           ..skills = [svt.skillLv1, svt.skillLv2, svt.skillLv3]
           ..grail = svt.exceedCount;
 
-        final costumeVals = collectionMap[svt.svtId]!.costumeIdsTo01();
+        final costumeVals = cardCollections[svt.svtId]!.costumeIdsTo01();
         // should always be non-null
         if (status.curVal.dress.length < costumeVals.length) {
           status.curVal.dress.addAll(List.generate(
@@ -459,9 +495,10 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
 
       // clear before import
       ignoreSvts.clear();
-      collectionMap.clear();
+      cardCollections.clear();
       servants.clear();
       items.clear();
+      crafts.clear();
       _shownSvts.clear();
 
       // items
@@ -482,14 +519,17 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
         }
       });
 
+      // collections
+      cardCollections = Map.fromEntries(
+          _response.userSvtCollection.map((e) => MapEntry(e.svtId, e)));
+
       // svt
-      collectionMap.clear();
       _response.userSvt.forEach((svt) {
         if (svtIdMap.containsKey(svt.svtId)) {
           svt.indexKey = svtIdMap[svt.svtId]!.originNo;
           svt.inStorage = false;
-          collectionMap[svt.svtId] = _response.userSvtCollection
-              .firstWhere((element) => element.svtId == svt.svtId);
+          // cardCollections[svt.svtId] = _response.userSvtCollection
+          //     .firstWhere((element) => element.svtId == svt.svtId);
           final group = servants.firstWhereOrNull(
               (group) => group.any((element) => element.svtId == svt.svtId));
           if (group == null) {
@@ -504,8 +544,8 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
         if (svtIdMap.containsKey(svt.svtId)) {
           svt.indexKey = svtIdMap[svt.svtId]!.originNo;
           svt.inStorage = true;
-          collectionMap[svt.svtId] = _response.userSvtCollection
-              .firstWhere((element) => element.svtId == svt.svtId);
+          // cardCollections[svt.svtId] = _response.userSvtCollection
+          //     .firstWhere((element) => element.svtId == svt.svtId);
           final group = servants.firstWhereOrNull(
               (group) => group.any((element) => element.svtId == svt.svtId));
           if (group == null) {
@@ -535,6 +575,12 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
           return d;
         });
       });
+      // crafts
+      crafts = craftIdMap.map((gameId, craft) {
+        int status = cardCollections[gameId]?.status ?? 0;
+        return MapEntry(craft.no, status);
+      });
+
       // assign last
       response = _response;
     } on FileSelectionCanceledError {} catch (e, s) {

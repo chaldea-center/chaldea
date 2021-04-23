@@ -7,7 +7,7 @@ import 'package:pool/pool.dart';
 class MooncellUtil {
   MooncellUtil._();
 
-  static Pool _pool = Pool(50);
+  static Pool _pool = Pool(20);
 
   static String domain = 'https://fgo.wiki';
 

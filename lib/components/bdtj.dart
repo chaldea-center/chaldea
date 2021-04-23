@@ -33,8 +33,7 @@ String? getDefaultUserAgent() {
   }
 }
 
-Future<void> _reportBdtj({String? bdId}) async {
-  if (db.connectivity == ConnectivityResult.none) return;
+bool skipReport() {
   final excludeIds = [
     b64('YjhhMDY0OWQ3NTI5MmQwOQ=='), // android
     b64('RDE0QjBGNzItNUYzRS00ODcxLTlDRjUtNTRGMkQ1OTYyMUEw'), //ios
@@ -43,9 +42,14 @@ Future<void> _reportBdtj({String? bdId}) async {
   ];
 
   if (kDebugMode || excludeIds.contains(AppInfo.uniqueId)) {
-    return;
+    return true;
   }
-  sendStat();
+  return false;
+}
+
+Future<void> _reportBdtj({String? bdId}) async {
+  if (db.connectivity == ConnectivityResult.none) return;
+  if (skipReport()) return;
   // TODO: invalid, ignored by bdtj
   try {
     if (Platform.isIOS || Platform.isAndroid) {
@@ -83,7 +87,7 @@ Future<void> _reportBdtj({String? bdId}) async {
         'ln': Intl.getCurrentLocale(),
         'lo': 0,
         'rnd':
-        (random.nextInt(90000) + 10000) * 100000 + random.nextInt(100000),
+            (random.nextInt(90000) + 10000) * 100000 + random.nextInt(100000),
         'si': bdId,
         'v': '1.2.80',
         'lv': fresh ? 1 : 2,
@@ -122,16 +126,16 @@ Future<void> _reportBdtj({String? bdId}) async {
       return _param.map((key, value) => MapEntry(key, value.toString()));
     };
     final _dio =
-    Dio(BaseOptions(headers: {'User-Agent': getDefaultUserAgent()}));
+        Dio(BaseOptions(headers: {'User-Agent': getDefaultUserAgent()}));
     _dio.interceptors.add(CookieManager(cookieJar));
     await _dio.get(hjs);
     String gifUrl1 =
-    Uri.parse(_hgif).replace(queryParameters: genMap()).toString();
+        Uri.parse(_hgif).replace(queryParameters: genMap()).toString();
     first = false;
     var gif1 = _dio.get(gifUrl1);
     await Future.delayed(Duration(milliseconds: 66));
     String gifUrl2 =
-    Uri.parse(_hgif).replace(queryParameters: genMap()).toString();
+        Uri.parse(_hgif).replace(queryParameters: genMap()).toString();
     var gif2 = _dio.get(gifUrl2);
     await Future.wait([gif1, gif2]);
   } catch (e, s) {

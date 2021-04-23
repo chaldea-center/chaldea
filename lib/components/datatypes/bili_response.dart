@@ -16,6 +16,8 @@ int _toInt(dynamic v, [int? k]) {
 @JsonSerializable()
 class BiliResponse {
   List<UserItem> userItem;
+
+  /// svt: including servant and craft essence
   List<UserSvt> userSvt;
   List<UserSvt> userSvtStorage;
   List<UserSvtCollection> userSvtCollection;
@@ -153,7 +155,7 @@ class UserSvt {
     required String isLock,
     required int hp,
     required int atk,
-  })   : id = int.parse(id),
+  })  : id = int.parse(id),
         svtId = int.parse(svtId),
         limitCount = int.parse(limitCount),
         lv = int.parse(lv),
@@ -179,9 +181,39 @@ class UserSvt {
   Map<String, dynamic> toJson() => _$UserSvtToJson(this);
 }
 
+//  {
+//             "userId": "100106535477",
+//             "svtId": "103200",
+//             "status": "1",
+//             "maxLv": "0",
+//             "maxHp": "0",
+//             "maxAtk": "0",
+//             "maxLimitCount": "0",
+//             "skillLv1": "1",
+//             "skillLv2": "1",
+//             "skillLv3": "1",
+//             "treasureDeviceLv1": "1",
+//             "treasureDeviceLv2": "1",
+//             "treasureDeviceLv3": "1",
+//             "svtCommonFlag": "0",
+//             "flag": "0",
+//             "friendship": "0",
+//             "friendshipRank": "0",
+//             "friendshipExceedCount": "0",
+//             "voicePlayed": "0",
+//             "voicePlayed2": "0",
+//             "tdPlayed": [],
+//             "getNum": "0",
+//             "costumeIds": [],
+//             "updatedAt": "1568449630",
+//             "createdAt": "1568449630"
+//         },
 @JsonSerializable()
 class UserSvtCollection {
   int svtId;
+
+  /// 1-已遭遇, 2-已契约
+  int status;
   int friendship;
   int friendshipRank;
 
@@ -190,10 +222,12 @@ class UserSvtCollection {
 
   UserSvtCollection({
     required String svtId,
+    required String status,
     required String friendship,
     required String friendshipRank,
     required this.costumeIds,
-  })   : svtId = int.parse(svtId),
+  })  : svtId = int.parse(svtId),
+        status = int.parse(status),
         friendship = int.parse(friendship),
         friendshipRank = int.parse(friendshipRank);
 
@@ -255,7 +289,7 @@ class UserGame {
     required String createdAt,
     required this.message,
     required this.stone,
-  })   : id = int.parse(id),
+  })  : id = int.parse(id),
         birthDay =
             DateTime.fromMillisecondsSinceEpoch(int.parse(birthDay) * 1000),
         actMax = int.parse(actMax),

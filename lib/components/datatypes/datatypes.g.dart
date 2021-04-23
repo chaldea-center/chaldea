@@ -92,6 +92,7 @@ Map<String, dynamic> _$UserSvtToJson(UserSvt instance) => <String, dynamic>{
 UserSvtCollection _$UserSvtCollectionFromJson(Map<String, dynamic> json) {
   return UserSvtCollection(
     svtId: json['svtId'] as String,
+    status: json['status'] as String,
     friendship: json['friendship'] as String,
     friendshipRank: json['friendshipRank'] as String,
     costumeIds:
@@ -102,6 +103,7 @@ UserSvtCollection _$UserSvtCollectionFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$UserSvtCollectionToJson(UserSvtCollection instance) =>
     <String, dynamic>{
       'svtId': instance.svtId,
+      'status': instance.status,
       'friendship': instance.friendship,
       'friendshipRank': instance.friendshipRank,
       'costumeIds': instance.costumeIds,
@@ -1377,6 +1379,12 @@ User _$UserFromJson(Map<String, dynamic> json) {
           (v) => v == null
               ? null
               : EventPlans.fromJson(v as Map<String, dynamic>)),
+      crafts: $checkedConvert(
+          json,
+          'crafts',
+          (v) => (v as Map<String, dynamic>?)?.map(
+                (k, e) => MapEntry(int.parse(k), e as int),
+              )),
       mysticCodes: $checkedConvert(
           json,
           'mysticCodes',
@@ -1398,13 +1406,15 @@ User _$UserFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
+Map<String, dynamic> _$UserToJson(User instance) =>
+    <String, dynamic>{
       'name': instance.name,
       'servants': User._servantsToJson(instance.servants),
       'curSvtPlanNo': instance.curSvtPlanNo,
       'servantPlans': User._servantPlansToJson(instance.servantPlans),
       'items': instance.items,
       'events': instance.events,
+      'crafts': instance.crafts.map((k, e) => MapEntry(k.toString(), e)),
       'mysticCodes': instance.mysticCodes,
       'plannedSummons': instance.plannedSummons.toList(),
       'isMasterGirl': instance.isMasterGirl,
@@ -1588,8 +1598,7 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$UserDataToJson(UserData instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'language': instance.language,
       'slidesUpdateTime': instance.slidesUpdateTime,
       'sliderUrls': instance.sliderUrls,

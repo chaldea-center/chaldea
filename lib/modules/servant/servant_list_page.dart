@@ -216,8 +216,7 @@ class ServantListPageState extends State<ServantListPage> {
                           icon: Icon(Icons.clear, size: 20),
                           onPressed: () {
                             setState(() {
-                              WidgetsBinding.instance!.addPostFrameCallback(
-                                  (_) => _inputController.clear());
+                              _inputController.text = '';
                               filterData.filterString = '';
                             });
                           },
