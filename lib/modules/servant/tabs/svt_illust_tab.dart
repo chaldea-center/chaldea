@@ -48,6 +48,19 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
     return db.getIconImage(key);
   }
 
+  String _localize(String s) {
+    return s.replaceFirstMapped(RegExp(r'第(.)阶段'), (match) {
+      final n = match.group(1);
+      print(match.group(0));
+      return LocalizedText(chs: '第$n阶段', jpn: '第$n段階 ', eng: 'Stage $n')
+          .localized;
+    }).replaceFirst(
+      '愚人节',
+      LocalizedText(chs: '愚人节', jpn: 'エイプリルフール', eng: "April Fools' Day")
+          .localized,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -59,7 +72,8 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
             isScrollable: true,
             tabs: svt.info.illustrations.keys
                 .map((e) => Tab(
-                    child: Text(e, style: TextStyle(color: Colors.black87))))
+                    child: Text(_localize(e),
+                        style: TextStyle(color: Colors.black87))))
                 .toList()),
         Expanded(
           child: TabBarView(

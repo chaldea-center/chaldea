@@ -173,7 +173,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "drop_calc_empty_hint":
             MessageLookupByLibrary.simpleMessage("Click + to add items"),
         "drop_calc_help_text": MessageLookupByLibrary.simpleMessage(
-            "The result is for reference only\n>>>Minimum AP: filter quests with low AP cost, at leat one  quest for each material.\n>>>If server is not JP, new items will be removed\n>>>Optimization: the lowest counts or AP cost of quests"),
+            "The result is for reference only\n- Planning/efficiency:\n   - Planning: Set the count of items for planning\n   - Efficiency: Set the weight of each item\n- Min AP: Filter quests with lower AP, but ensure that at least one quest for each item\n- Quest Limit: items that have not been installed in this progress will be removed from the plan\n- Planning goals (planning only): minimum AP, minimum count of battles\n- Efficiency type (efficiency only): per 20AP drop rate or per quest drop rate\n- Blacklist (planning page only): quest blacklist\n- Click the item name to switch the item, click icon to view details"),
         "drop_calc_min_ap": MessageLookupByLibrary.simpleMessage("Min AP"),
         "drop_calc_optimize": MessageLookupByLibrary.simpleMessage("Optimize"),
         "drop_calc_solve": MessageLookupByLibrary.simpleMessage("Solve"),

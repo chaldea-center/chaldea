@@ -30,6 +30,7 @@
 - [ ] catch close action and save userdata for desktop
   - [x] windows, but not always success
   - [ ] macOS
+- RenderEditable bug: https://github.com/flutter/flutter/issues/80226
 
 ## Docs
 - [ ] Tutorials

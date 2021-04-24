@@ -3,6 +3,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/craft/craft_list_page.dart';
 import 'package:chaldea/modules/event/events_page.dart';
+import 'package:chaldea/modules/extras/cv_illustrator_list.dart';
 import 'package:chaldea/modules/extras/exp_card_cost_page.dart';
 import 'package:chaldea/modules/extras/mystic_code_page.dart';
 import 'package:chaldea/modules/extras/updates.dart';
@@ -144,6 +145,20 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         title: 'Freedom Order',
         child: faIcon(FontAwesomeIcons.cubes),
         builder: (context, _) => FreedomOrderPage(),
+        isDetail: true,
+      ),
+      'cv_list': GalleryItem(
+        name: 'cv_list',
+        title: S.current.info_cv,
+        icon: Icons.settings_voice,
+        builder: (context, _) => CvListPage(),
+        isDetail: true,
+      ),
+      'illustrator_list': GalleryItem(
+        name: 'illustrator_list',
+        title: S.current.illustrator,
+        child: faIcon(FontAwesomeIcons.paintBrush),
+        builder: (context, _) => IllustratorListPage(),
         isDetail: true,
       ),
       // if (kDebugMode_)
@@ -477,7 +492,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       int total = db.gameData.servants.length +
           db.gameData.crafts.length +
           db.gameData.cmdCodes.length +
-          300;
+          321;
       int cached = Directory(db.paths.gameIconDir).listSync().length;
       _cachedIconsRatio = cached / total;
       print('$cached/$total');

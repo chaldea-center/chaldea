@@ -50,6 +50,8 @@ class _FreeQuestCalculatorPageState extends State<FreeQuestCalculatorPage>
             tooltip: S.of(context).help,
             onPressed: () {
               SimpleCancelOkDialog(
+                scrollable: true,
+                hideCancel: true,
                 title: Text(S.of(context).help),
                 content: Text(S.of(context).drop_calc_help_text),
               ).showDialog(context);
@@ -258,8 +260,9 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               child: db.getIconImage(item, height: 48),
             ),
           ),
-          title: GestureDetector(
-            onTap: () {
+          title: TextButton(
+            child: Text(Item.localizedNameOf(item)),
+            onPressed: () {
               final String? category = getItemCategory(item);
               if (category == null) return;
               Picker(
@@ -291,7 +294,6 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                 },
               ).showDialog(context);
             },
-            child: Text(Item.localizedNameOf(item)),
           ),
           subtitle: planOrEff
               ? Text(S.current

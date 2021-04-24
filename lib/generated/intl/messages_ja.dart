@@ -160,7 +160,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "drop_calc_empty_hint":
             MessageLookupByLibrary.simpleMessage("＋をクリックしてアイテムを追加"),
         "drop_calc_help_text": MessageLookupByLibrary.simpleMessage(
-            "计算结果仅供参考\n>>>最低AP：\n过滤AP较低的free, 但保证每个素材至少有一个关卡\n>>>选择国服则未实装的素材将被移除\n>>>优化：最低总次数或最低总AP\n"),
+            "計算結果は参考用です\n- プラン/効率：\n   -プラン：計画する材料の数を設定\n   -効率：各材料の重みを設定\n- 最低AP：低いAPでスキップしますが、各アイテムに少なくとも1つのクエストがあることを確認します\n- クエストプログレス：このプログレスでインストールされていないアイテムはプランから削除されます\n- プラン目標（プランページのみ）：最小AP、最小回数\n- 効率タイプ（効率ページのみ）：20APドロップ率ごとまたはゲームドロップ率ごと\n- ブラックリスト（プランページのみ）：クエストブラックリスト\n- 材料名をクリックして材料を切り替え、アイコンをクリックして材料の詳細を表示します "),
         "drop_calc_min_ap": MessageLookupByLibrary.simpleMessage("最低AP"),
         "drop_calc_optimize": MessageLookupByLibrary.simpleMessage("最適化"),
         "drop_calc_solve": MessageLookupByLibrary.simpleMessage("解決する"),

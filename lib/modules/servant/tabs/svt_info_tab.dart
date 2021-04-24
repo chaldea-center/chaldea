@@ -291,6 +291,26 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
   }
 
   Widget buildProfileTab() {
+    String _localize(String s) {
+      return s
+          .replaceFirst(
+            '角色详情',
+            LocalizedText(chs: '角色详情', jpn: 'キャラクター詳細', eng: 'Character Info')
+                .localized,
+          )
+          .replaceFirst(
+            '个人资料',
+            LocalizedText(chs: '个人资料', jpn: 'プロフィール', eng: 'Profile ')
+                .localized,
+          )
+          .replaceFirst(
+            '愚人节资料',
+            LocalizedText(
+                    chs: '愚人节资料', jpn: 'エイプリルフール', eng: "April Fools' Day")
+                .localized,
+          );
+    }
+
     return ListView(
       children: List.generate(svt.profiles.length, (index) {
         final profile = svt.profiles[index];
@@ -304,7 +324,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               CustomTile(
-                title: Text(profile.title),
+                title: Text(_localize(profile.title)),
                 subtitle:
                     profile.condition == null ? null : Text(profile.condition!),
               ),

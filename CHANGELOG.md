@@ -1,5 +1,8 @@
 ## 1.3.11
+- NEW: servant statistics, craft favorites, CV and illustrator list
 - log to file
+- l10n
+- fix patch fails
 
 ## 1.3.10
 - svt plan tab (actions in popup menu):

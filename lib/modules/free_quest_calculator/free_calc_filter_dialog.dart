@@ -76,21 +76,23 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
             trailing: Text(params.blacklist.length.toString()),
           ),
           contentBuilder: (context) => Column(
-            children: params.blacklist.map((key) {
+            children: divideTiles(params.blacklist.map((key) {
               String shownName =
                   db.gameData.freeQuests[key]?.localizedKey ?? key;
               return ListTile(
                 title: Text(shownName),
+                dense: true,
                 trailing: IconButton(
-                    icon: Icon(Icons.clear),
-                    tooltip: S.of(context).remove_from_blacklist,
-                    onPressed: () {
-                      setState(() {
-                        params.blacklist.remove(key);
-                      });
-                    }),
+                  icon: Icon(Icons.clear),
+                  tooltip: S.of(context).remove_from_blacklist,
+                  onPressed: () {
+                    setState(() {
+                      params.blacklist.remove(key);
+                    });
+                  },
+                ),
               );
-            }).toList(),
+            })),
           ),
         ),
         Center(

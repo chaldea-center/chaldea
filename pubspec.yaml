@@ -62,6 +62,7 @@ dependencies:
   intl: ^0.17.0
   json_annotation: ^4.0.1
   logger: ^1.0.0
+  lpinyin: ^2.0.1
   open_file: ^3.1.0
   package_info: ^2.0.0
   path_provider: ^2.0.1
