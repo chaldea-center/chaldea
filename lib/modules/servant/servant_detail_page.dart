@@ -319,19 +319,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
       "友情点召唤": Color(0xFFD19F76),
       "无法召唤": Color(0xFFA6A6A6)
     };
-    // TODO: obtains including some non-standard category
-    final texts = {
-      "初始获得": S.current.svt_obtain_initial,
-      "圣晶石常驻": S.current.svt_obtain_permanent,
-      "剧情限定": S.current.svt_obtain_story,
-      "活动赠送": S.current.svt_obtain_event,
-      "期间限定": S.current.svt_obtain_limited,
-      "友情点召唤": S.current.svt_obtain_friend_point,
-      "无法召唤": S.current.svt_obtain_unavailable
-    };
     return svt.info.obtains.map((obtain) {
       final bgColor = badgeColors[obtain] ?? badgeColors['无法召唤']!;
-      final String shownText = texts[obtain] ?? obtain;
+      final String shownText = Localized.svtFilter.of(obtain);
       return DecoratedBox(
         decoration: BoxDecoration(
           border: Border.all(width: 0.5, color: bgColor),

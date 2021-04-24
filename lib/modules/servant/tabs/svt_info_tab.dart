@@ -129,9 +129,11 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
             S.current.info_height,
             S.current.info_weight
           ], defaults: headerData),
-          CustomTableRow.fromTexts(
-              texts: [svt.info.gender, svt.info.height, svt.info.weight],
-              defaults: contentData),
+          CustomTableRow.fromTexts(texts: [
+            Localized.gender.of(svt.info.gender),
+            svt.info.height,
+            svt.info.weight
+          ], defaults: contentData),
           CustomTableRow.fromTexts(texts: [
             S.current.info_strength,
             S.current.info_endurance,
@@ -147,8 +149,9 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
               defaults: contentData),
           CustomTableRow.fromTexts(
               texts: [S.current.info_trait], defaults: headerData),
-          CustomTableRow.fromTexts(
-              texts: [svt.info.traits.join(', ')], defaults: contentData),
+          CustomTableRow.fromTexts(texts: [
+            svt.info.traits.map((e) => Localized.svtFilter.of(e)).join(', ')
+          ], defaults: contentData),
           CustomTableRow(children: [
             TableCellData(text: S.current.info_human, isHeader: true, flex: 1),
             TableCellData(
@@ -164,10 +167,13 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
                 text: svt.info.isWeakToEA ? S.current.yes : S.current.no,
                 flex: 2),
             TableCellData(
-                text: svt.info.alignments.join('·'),
+                text: svt.info.alignments
+                    .map((e) => Localized.svtFilter.of(e))
+                    .join('·'),
                 flex: 2,
                 textAlign: TextAlign.center),
-            TableCellData(text: svt.info.attribute, flex: 1),
+            TableCellData(
+                text: Localized.svtFilter.of(svt.info.attribute), flex: 1),
           ]),
           if (!Servant.unavailable.contains(svt.no)) ...[
             CustomTableRow.fromTexts(texts: [

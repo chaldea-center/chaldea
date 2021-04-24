@@ -145,6 +145,7 @@ Future<void> _reportBdtj({String? bdId}) async {
 
 Future<void> sendStat() async {
   if (db.connectivity == ConnectivityResult.none) return;
+  if (skipReport()) return;
   String size = '';
   if (kAppKey.currentContext != null) {
     final mq = MediaQuery.of(kAppKey.currentContext!);

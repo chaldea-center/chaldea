@@ -217,21 +217,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   );
                 },
               ),
-              ListTile(
-                title: Text('Contribute to Chaldea'),
-                subtitle: Text('e.g. Translation'),
-                onTap: () {
-                  SimpleCancelOkDialog(
-                    title: Text('Contribute to Chaldea'),
-                    content: Text(
-                        '- Add English/Japanese Translation of some game-related words like "servant","Palingenesis"\n'
-                        // '- \n'
-                        '\nIf you want to contribute, please contact me through email:\n'
-                        '$kSupportTeamEmailAddress'),
-                    scrollable: true,
-                  ).showDialog(context);
-                },
-              )
             ],
           ),
           if (kDebugMode)

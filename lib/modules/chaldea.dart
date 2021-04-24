@@ -183,7 +183,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
         if (releaseNote?.isNotEmpty == true) {
           SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
             SimpleCancelOkDialog(
-              title: Text(AppInfo.fullVersion2),
+              title: Text(AppInfo.fullVersion),
               content: Text(releaseNote!.replaceAll('\r\n', '\n')),
               hideCancel: true,
               scrollable: true,

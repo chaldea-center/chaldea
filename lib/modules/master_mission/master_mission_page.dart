@@ -5,10 +5,10 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/quest_card.dart';
 import 'package:flutter/services.dart';
 
-final localized = LocalizedGroups.masterMission;
+final localized = Localized.masterMission;
 
 String _convertLocalized(String key) {
-  return key.split('_').map((e) => localized.localizedOf(e)).join('_');
+  return key.split('_').map((e) => localized.of(e)).join('_');
 }
 
 class MasterMissionPage extends StatefulWidget {
@@ -20,13 +20,13 @@ class _MasterMissionPageState extends State<MasterMissionPage>
     with SingleTickerProviderStateMixin {
   List<WeeklyMissionQuest> get srcData => db.gameData.glpk.weeklyMissionData;
 
-  List<Localized> tabNames = const [
-    Localized(chs: '一般特性', jpn: '', eng: 'General Trait'),
-    Localized(chs: '从者职阶', jpn: '', eng: 'Servant Class'),
-    Localized(chs: '从者特性', jpn: '', eng: 'Servant Trait'),
-    Localized(chs: '小怪职阶', jpn: '', eng: 'Enemy Class'),
-    Localized(chs: '小怪特性', jpn: '', eng: 'Enemy Trait'),
-    Localized(chs: '场地特性', jpn: '', eng: 'Battle Field'),
+  List<LocalizedText> tabNames = const [
+    LocalizedText(chs: '一般特性', jpn: '', eng: 'General Trait'),
+    LocalizedText(chs: '从者职阶', jpn: '', eng: 'Servant Class'),
+    LocalizedText(chs: '从者特性', jpn: '', eng: 'Servant Trait'),
+    LocalizedText(chs: '小怪职阶', jpn: '', eng: 'Enemy Class'),
+    LocalizedText(chs: '小怪特性', jpn: '', eng: 'Enemy Trait'),
+    LocalizedText(chs: '场地特性', jpn: '', eng: 'Battle Field'),
   ];
   List<String> classTypes = const ['剑阶', '弓阶', '枪阶', '骑阶', '术阶', '杀阶', '狂阶'];
   late TabController _tabController;
@@ -154,7 +154,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
             };
       Widget child = Padding(
         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        child: Text(localized.localizedOf(_removePrefix(key))),
+        child: Text(localized.of(_removePrefix(key))),
       );
       if (checked) {
         children.add(ElevatedButton(
@@ -325,8 +325,8 @@ class _MasterMissionPageState extends State<MasterMissionPage>
                   padding: EdgeInsets.all(2),
                 ),
                 onPressed: _onPressAddAll,
-                child:
-                    Text(Localized(chs: '且', eng: 'AND', jpn: 'AND').localized),
+                child: Text(
+                    LocalizedText(chs: '且', eng: 'AND', jpn: 'AND').localized),
               ),
             if (!mission.useAnd)
               OutlinedButton(
@@ -336,8 +336,8 @@ class _MasterMissionPageState extends State<MasterMissionPage>
                   padding: EdgeInsets.all(2),
                 ),
                 onPressed: _onPressAddAll,
-                child:
-                    Text(Localized(chs: '或', eng: 'OR', jpn: 'OR').localized),
+                child: Text(
+                    LocalizedText(chs: '或', eng: 'OR', jpn: 'OR').localized),
               ),
             _InputGroup(
               controller: mission.controller!,
@@ -546,10 +546,9 @@ class WeeklyFilterData {
         battlefields.add('场地_$key');
       });
     }
-    int _getIndex(String key) => LocalizedGroups.masterMission.values
+    int _getIndex(String key) => Localized.masterMission.values
         .indexWhere((e) => e.chs == key.split('_').last);
     Set<String> _sort(Set<String> keys) {
-      print('sort');
       final list = keys.toList();
       list.sort((a, b) => _getIndex(a) - _getIndex(b));
       return list.toSet();

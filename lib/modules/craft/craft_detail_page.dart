@@ -35,7 +35,8 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
         title: Text(ce.localizedName),
         actions: [
           IconButton(
-            tooltip: ['未遭遇', '已遭遇', '已契约'][status],
+            tooltip:
+                Localized.craftFilter.of(CraftFilterData.statusTexts[status]),
             onPressed: () {
               setState(() {
                 db.curUser.crafts[ce.no] = (status + 1) % 3;
@@ -61,10 +62,10 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
         children: <Widget>[
           Expanded(
               child: CraftDetailBasePage(
-                ce: ce,
-                useLangCn: useLangCn,
-                showSummon: true,
-              )),
+            ce: ce,
+            useLangCn: useLangCn,
+            showSummon: true,
+          )),
           ButtonBar(alignment: MainAxisAlignment.center, children: [
             ToggleButtons(
               constraints: BoxConstraints(),
@@ -77,10 +78,10 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
               },
               children: List.generate(
                   2,
-                      (i) => Padding(
-                    padding: EdgeInsets.all(6),
-                    child: Text(['中', '日'][i]),
-                  )),
+                  (i) => Padding(
+                        padding: EdgeInsets.all(6),
+                        child: Text(['中', '日'][i]),
+                      )),
               isSelected: List.generate(2, (i) => useLangCn == (i == 0)),
             ),
             for (var i = 0; i < 2; i++)
@@ -208,7 +209,10 @@ class CraftDetailBasePage extends StatelessWidget {
           ]),
           CustomTableRow(children: [
             TableCellData(
-              child: Text(ce.category + ' - ' + ce.categoryText,
+              child: Text(
+                  Localized.craftFilter.of(ce.category) +
+                      ' - ' +
+                      ce.categoryText,
                   textAlign: TextAlign.center),
             )
           ]),

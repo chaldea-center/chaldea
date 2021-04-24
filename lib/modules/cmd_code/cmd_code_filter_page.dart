@@ -72,6 +72,7 @@ class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData> {
           title: Text(S.of(context).filter_category),
           options: CmdCodeFilterData.categoryData,
           values: filterData.category,
+          optionBuilder: (v) => Text(Localized.craftFilter.of(v)),
           onFilterChanged: (value) {
             filterData.category = value;
             update();

@@ -40,7 +40,8 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             FilterGroup(
               options: ['1', '2'],
               values: filterData.svtDuplicated,
-              optionBuilder: (v) => Text(v == '1' ? '初号机' : '2号机'),
+              optionBuilder: (v) =>
+                  Text(Localized.svtFilter.of(v == '1' ? '初号机' : '2号机')),
               combined: true,
               onFilterChanged: (v) {
                 setState(() {
@@ -134,6 +135,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           title: Text(S.of(context).filter_obtain, style: textStyle),
           options: SvtFilterData.obtainData,
           values: filterData.obtain,
+          optionBuilder: (v) => Text(Localized.svtFilter.of(v)),
           onFilterChanged: (value) {
             filterData.obtain = value;
             update();
@@ -151,6 +153,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         FilterGroup(
           values: filterData.npType,
           options: SvtFilterData.npTypeData,
+          optionBuilder: (v) => Text(Localized.svtFilter.of(v)),
           onFilterChanged: (value) {
             filterData.npType = value;
             update();
@@ -160,6 +163,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           title: Text(S.of(context).filter_attribute, style: textStyle),
           options: SvtFilterData.attributeData,
           values: filterData.attribute,
+          optionBuilder: (v) => Text(Localized.svtFilter.of(v)),
           onFilterChanged: (value) {
             filterData.attribute = value;
             update();
@@ -169,6 +173,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           title: Text(S.of(context).info_alignment, style: textStyle),
           options: SvtFilterData.alignment1Data,
           values: filterData.alignment1,
+          optionBuilder: (v) => Text(Localized.svtFilter.of(v)),
           onFilterChanged: (value) {
             filterData.alignment1 = value;
             update();
@@ -177,6 +182,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         FilterGroup(
           values: filterData.alignment2,
           options: SvtFilterData.alignment2Data,
+          optionBuilder: (v) => Text(Localized.svtFilter.of(v)),
           onFilterChanged: (value) {
             filterData.alignment2 = value;
             update();
@@ -186,6 +192,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           title: Text(S.of(context).filter_gender, style: textStyle),
           options: SvtFilterData.genderData,
           values: filterData.gender,
+          optionBuilder: (v) => Text(Localized.gender.of(v)),
           onFilterChanged: (value) {
             filterData.gender = value;
             update();
@@ -195,6 +202,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           title: Text(S.of(context).info_trait, style: textStyle),
           options: SvtFilterData.traitData,
           values: filterData.trait,
+          optionBuilder: (v) => Text(Localized.svtFilter.of(v)),
           showMatchAll: true,
           showInvert: true,
           onFilterChanged: (value) {

@@ -71,6 +71,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
           title: Text(S.of(context).filter_category),
           options: CraftFilterData.categoryData,
           values: filterData.category,
+          optionBuilder: (v) => Text(Localized.craftFilter.of(v)),
           onFilterChanged: (value) {
             filterData.category = value;
             update();
@@ -87,10 +88,11 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
         ),
         FilterGroup(
           title: Text('Status'),
-          options: CraftFilterData.statusData,
+          options: ['0', '1', '2'],
           values: filterData.status,
           optionBuilder: (v) {
-            return Text(['未遭遇', '已遭遇', '已契约'][int.parse(v)]);
+            return Text(Localized.craftFilter
+                .of(CraftFilterData.statusTexts[int.parse(v)]));
           },
           onFilterChanged: (value) {
             filterData.status = value;

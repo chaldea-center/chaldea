@@ -254,6 +254,7 @@ class SvtFilterData {
     '龙',
     '骑乘',
     '神性',
+    '人型',
     '猛兽',
     '王',
     '罗马',
@@ -351,7 +352,7 @@ class CraftFilterData {
     '期间限定'
   ];
   static const atkHpTypeData = ['NONE', 'HP', 'ATK', 'MIX'];
-  static const statusData = ['0', '1', '2'];
+  static const statusTexts = ['未遭遇', '已遭遇', '已契约'];
 
   // json_serializable
   factory CraftFilterData.fromJson(Map<String, dynamic> data) =>

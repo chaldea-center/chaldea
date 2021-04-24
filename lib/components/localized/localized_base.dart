@@ -3,7 +3,7 @@ import 'package:chaldea/components/extensions.dart';
 
 export 'package:chaldea/components/constants.dart' show Language;
 
-class Localized {
+class LocalizedText {
   final String chs;
   final String? _jpn;
   final String? _eng;
@@ -12,7 +12,7 @@ class Localized {
 
   String get eng => _eng?.isNotEmpty == true ? _eng! : jpn;
 
-  const Localized({
+  const LocalizedText({
     required this.chs,
     required String? jpn,
     required String? eng,
@@ -48,18 +48,18 @@ class Localized {
 class LocalizedGroup {
   final Language primaryLanguage;
 
-  final List<Localized> values;
+  final List<LocalizedText> values;
 
   const LocalizedGroup(
     this.values, {
     this.primaryLanguage = Language.chs,
   });
 
-  String localizedOf(String v) {
-    return of(v)?.localized ?? v;
+  String of(String v) {
+    return instanceOf(v)?.localized ?? v;
   }
 
-  Localized? of(String v, [Language? primary]) {
+  LocalizedText? instanceOf(String v, [Language? primary]) {
     primary ??= primaryLanguage;
     return values.firstWhereOrNull((e) => e.of(primary!) == v);
   }

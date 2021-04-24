@@ -130,6 +130,21 @@ class _AboutPageState extends State<AboutPage> {
                 onTap: () {
                   launch(kProjectHomepage + '/wiki/Support');
                 },
+              ),
+              ListTile(
+                title: Text('Contribute to Chaldea'),
+                subtitle: Text('e.g. Translation'),
+                onTap: () {
+                  SimpleCancelOkDialog(
+                    title: Text('Contribute to Chaldea'),
+                    content: Text(
+                        '- Add English/Japanese translation of some game-related words like "servant","Palingenesis"\n'
+                        // '- \n'
+                        '\nIf you are willing to contribute, please contact me through email:\n'
+                        '$kSupportTeamEmailAddress'),
+                    scrollable: true,
+                  ).showDialog(context);
+                },
               )
             ],
           ),
