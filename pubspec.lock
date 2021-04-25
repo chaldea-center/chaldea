@@ -687,7 +687,7 @@ packages:
       name: open_file
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.1.0"
+    version: "3.2.0"
   package_config:
     dependency: transitive
     description:
@@ -799,14 +799,14 @@ packages:
       name: permission_handler
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.1.1"
+    version: "7.0.0"
   permission_handler_platform_interface:
     dependency: transitive
     description:
       name: permission_handler_platform_interface
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.1.1"
+    version: "3.3.0"
   petitparser:
     dependency: transitive
     description:
@@ -1112,7 +1112,7 @@ packages:
       name: uuid
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.0.3"
+    version: "3.0.4"
   vector_math:
     dependency: transitive
     description:

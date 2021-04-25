@@ -33,8 +33,8 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    // TODO: when Google Play accept permission MANAGE_EXTERNAL_STORAGE, change compileVersion and targetSdkVersion to 30
-    compileSdkVersion 29
+    // TODO: when Google Play accept permission MANAGE_EXTERNAL_STORAGE, remove requestLegacyExternalStorage
+    compileSdkVersion 30
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -43,7 +43,7 @@ android {
     defaultConfig {
         applicationId "cc.narumi.chaldea"
         minSdkVersion 23
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
 

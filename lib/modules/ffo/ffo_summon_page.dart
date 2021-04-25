@@ -111,6 +111,7 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
 
   void drawSummon(int counts) async {
     final svts = widget.partsDta.values.toList();
+    if (svts.isEmpty) return;
     history.add(List.generate(
       counts,
       (index) => FFOParams(

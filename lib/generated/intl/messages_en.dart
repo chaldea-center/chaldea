@@ -142,9 +142,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "dataset_management":
             MessageLookupByLibrary.simpleMessage("Data Management"),
         "dataset_type_image":
-            MessageLookupByLibrary.simpleMessage("Image dataset"),
+            MessageLookupByLibrary.simpleMessage("Icon dataset"),
         "dataset_type_image_hint":
-            MessageLookupByLibrary.simpleMessage("Only images, ~25M"),
+            MessageLookupByLibrary.simpleMessage("Only icons, ~25M"),
         "dataset_type_text":
             MessageLookupByLibrary.simpleMessage("Text dataset"),
         "dataset_type_text_hint":

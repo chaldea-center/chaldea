@@ -7,6 +7,7 @@ import 'package:chaldea/components/git_tool.dart';
 import 'package:chaldea/components/method_channel_chaldea.dart';
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:chaldea/modules/home/home_page.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -82,24 +83,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   @override
   void afterFirstLayout(BuildContext context) async {
     if (Platform.isAndroid) {
-      final String externalBackupDir =
-          join('/storage/emulated/0/', AppInfo.packageName);
-      if (!(await Permission.storage.isGranted)) {
-        var confirmed = await SimpleCancelOkDialog(
-          title: Text(S.current.storage_permission_title),
-          content: Text(S.current
-              .storage_permission_content(db.paths.userDir, externalBackupDir)),
-        ).showDialog(kAppKey.currentContext!);
-        if (confirmed == true) {
-          logger.i('request storage permission');
-          await Permission.storage.request();
-        }
-      }
-      logger.d('storage permission: ${await Permission.storage.status}');
-      if (await Permission.storage.isGranted) {
-        db.paths.externalAppPath = externalBackupDir;
-        print(db.paths.externalAppPath);
-      }
+      await _setupAndroidPermission().onError((error, stackTrace) => null);
     }
     if (Platform.isMacOS || Platform.isWindows) {
       MethodChannelChaldea.setAlwaysOnTop();
@@ -121,6 +105,33 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
       );
     }
     Future.delayed(Duration(seconds: 5)).then((_) => sendStat());
+  }
+
+  Future<void> _setupAndroidPermission() async {
+    if (!Platform.isAndroid) return;
+    int? sdkInt = (await DeviceInfoPlugin().androidInfo).version.sdkInt;
+    if (sdkInt == null) return;
+    final String externalBackupDir =
+        join('/storage/emulated/0/', AppInfo.packageName);
+    Permission permission =
+        sdkInt >= 30 ? Permission.manageExternalStorage : Permission.storage;
+    if (!await permission.isPermanentlyDenied && !await permission.isGranted) {
+      var confirmed = await SimpleCancelOkDialog(
+        title: Text(S.current.storage_permission_title),
+        content: Text(S.current
+            .storage_permission_content(db.paths.userDir, externalBackupDir)),
+      ).showDialog(kAppKey.currentContext!);
+      if (confirmed == true) {
+        logger.i('request storage permission');
+        await permission.request();
+      }
+    }
+    logger.d(
+        'storage permission $permission: ${await Permission.storage.status}');
+    if (await permission.isGranted) {
+      db.paths.externalAppPath = externalBackupDir;
+      print(db.paths.externalAppPath);
+    }
   }
 }
 
