@@ -321,9 +321,9 @@ class _ItemListTabState extends State<ItemListTab> {
                 if (event.character == '\n' || event.character == '\t') {
                   print('${jsonEncode(event.character)} - ${node.debugLabel}');
                   moveToNext(node);
-                  return true;
+                  return KeyEventResult.handled;
                 }
-                return false;
+                return KeyEventResult.ignored;
               }),
           controller: TextEditingController(),
         );

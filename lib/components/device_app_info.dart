@@ -18,6 +18,7 @@ class AppInfo {
   static PackageInfo? _packageInfo;
   static String? _uniqueId;
   static MacAppType _macAppType = MacAppType.unknown;
+  static int? _androidSdk;
 
   static final Map<String, dynamic> deviceParams = {};
   static final Map<String, dynamic> appParams = {};
@@ -59,6 +60,8 @@ class AppInfo {
     deviceParams["versionSdk"] = androidDeviceInfo.version.sdkInt;
     deviceParams["versionSecurityPatch"] =
         androidDeviceInfo.version.securityPatch;
+
+    _androidSdk = androidDeviceInfo.version.sdkInt;
   }
 
   static void _loadIosParameters(IosDeviceInfo iosInfo) {
@@ -236,6 +239,8 @@ class AppInfo {
     if (buildStr.startsWith('40')) return ABIType.x86_64;
     return ABIType.arm64_v8a;
   }
+
+  static int? get androidSdk => _androidSdk;
 
   /// e.g. "1.2.3+4"
   static String get fullVersion {

@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -72,9 +73,11 @@ class _LoginPageState extends State<LoginPage> {
                     obscurePwd = !obscurePwd;
                   });
                 },
-                icon: Icon(
-                  Icons.remove_red_eye,
-                  color: obscurePwd ? Colors.grey : null,
+                icon: FaIcon(
+                  obscurePwd
+                      ? FontAwesomeIcons.solidEyeSlash
+                      : FontAwesomeIcons.solidEye,
+                  size: 20,
                 ),
               ),
             ),
@@ -192,6 +195,7 @@ class _LoginPageState extends State<LoginPage> {
     String pwd = _pwdController.text;
     if (isLoginAvailable(name, pwd)) {
       await catchErrorAsync(() async {
+        EasyLoading.show(maskType: EasyLoadingMaskType.clear);
         var rawResp = await db.serverDio.post('/user/login', data: {
           HttpParamKeys.username: name,
           HttpParamKeys.password: b64(pwd, false)
@@ -202,6 +206,7 @@ class _LoginPageState extends State<LoginPage> {
         }
         resp.showMsg(context, title: S.current.login_login);
       });
+      EasyLoading.dismiss();
     }
   }
 
@@ -219,6 +224,7 @@ class _LoginPageState extends State<LoginPage> {
     String pwd = _pwdController.text;
     if (isLoginAvailable(name, pwd)) {
       await catchErrorAsync(() async {
+        EasyLoading.show(maskType: EasyLoadingMaskType.clear);
         var rawResp = await db.serverDio.post('/user/signup', data: {
           HttpParamKeys.username: name,
           HttpParamKeys.password: b64(pwd, false)
@@ -229,6 +235,7 @@ class _LoginPageState extends State<LoginPage> {
         }
         resp.showMsg(context, title: S.current.login_signup);
       });
+      EasyLoading.dismiss();
     }
   }
 
@@ -238,6 +245,7 @@ class _LoginPageState extends State<LoginPage> {
     String newPwd = _newPwdController.text;
     if (isChangePasswordAvailable(name, pwd, newPwd)) {
       await catchErrorAsync(() async {
+        EasyLoading.show(maskType: EasyLoadingMaskType.clear);
         var rawResp = await db.serverDio.post('/user/changePassword', data: {
           HttpParamKeys.username: name,
           HttpParamKeys.password: b64(pwd, false),
@@ -249,6 +257,7 @@ class _LoginPageState extends State<LoginPage> {
         }
         resp.showMsg(context, title: S.current.login_change_password);
       });
+      EasyLoading.dismiss();
     }
   }
 

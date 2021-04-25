@@ -1,13 +1,12 @@
 import 'dart:async';
 
 import 'package:catcher/catcher.dart';
-import 'package:chaldea/components/bdtj.dart';
+import 'package:chaldea/components/analytics.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/git_tool.dart';
 import 'package:chaldea/components/method_channel_chaldea.dart';
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:chaldea/modules/home/home_page.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -109,7 +108,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
 
   Future<void> _setupAndroidPermission() async {
     if (!Platform.isAndroid) return;
-    int? sdkInt = (await DeviceInfoPlugin().androidInfo).version.sdkInt;
+    int? sdkInt = AppInfo.androidSdk;
     if (sdkInt == null) return;
     final String externalBackupDir =
         join('/storage/emulated/0/', AppInfo.packageName);

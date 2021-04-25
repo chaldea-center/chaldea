@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:intl/intl_standalone.dart';
 
 const _hjs = 'https://hm.baidu.com/hm.js?';
 const _hgif = 'https://hm.baidu.com/hm.gif?';
@@ -45,6 +46,53 @@ bool skipReport() {
     return true;
   }
   return false;
+}
+
+Future<void> sendStat() async {
+  if (db.connectivity == ConnectivityResult.none) return;
+  // if (skipReport()) return;
+
+  String size = '';
+  if (kAppKey.currentContext != null) {
+    final mq = MediaQuery.of(kAppKey.currentContext!);
+    // use logical pixel, don't multiple devicePixelRatio
+    int w = (mq.size.width).round();
+    int h = (mq.size.height).round();
+    size = '${w}x$h';
+  }
+  String zone = 'unknown';
+  try {
+    final Response cipRes = await Dio().get('http://cip.cc',
+        options: Options(
+          contentType: 'text/plain',
+          headers: {'User-Agent': 'curl/7.71.1'},
+        ));
+    zone = cipRes.data.toString().trim().split('\n')[1].split(':')[1].trim();
+  } catch (e, s) {
+    logger.e('fetch cip failed', e, s);
+  }
+  // await Dio(BaseOptions(baseUrl: 'http://localhost:8083'))
+  //     .get('/analytics', queryParameters: {
+  await db.serverDio.get('/analytics', queryParameters: {
+    'id': AppInfo.uniqueId,
+    'os': Platform.operatingSystem,
+    'os_ver': Platform.isAndroid
+        ? AppInfo.androidSdk ?? Platform.operatingSystemVersion
+        : Platform.operatingSystemVersion,
+    'app': AppInfo.packageName,
+    'app_ver': AppInfo.version,
+    'lang': Language.current.code,
+    'locale': await findSystemLocale(),
+    'data_ver': db.gameData.version,
+    'abi': AppInfo.abi.toStandardString(),
+    'mac': EnumUtil.shortString(AppInfo.macAppType),
+    'time': DateTime.now().millisecondsSinceEpoch ~/ 1000,
+    'size': size,
+    'zone': zone,
+  }).catchError((e, s) {
+    logger.e('report analytics failed', e, s);
+  });
+  _reportBdtj();
 }
 
 Future<void> _reportBdtj({String? bdId}) async {
@@ -94,8 +142,8 @@ Future<void> _reportBdtj({String? bdId}) async {
         'sn': fresh
             ? 1917
             : first
-            ? 2091
-            : 2096,
+                ? 2091
+                : 2096,
 
         /// wrong
         'r': 0,
@@ -141,46 +189,4 @@ Future<void> _reportBdtj({String? bdId}) async {
   } catch (e, s) {
     logger.e('bdtj failed', e, s);
   }
-}
-
-Future<void> sendStat() async {
-  if (db.connectivity == ConnectivityResult.none) return;
-  if (skipReport()) return;
-  String size = '';
-  if (kAppKey.currentContext != null) {
-    final mq = MediaQuery.of(kAppKey.currentContext!);
-    int w = (mq.size.width * mq.devicePixelRatio).round();
-    int h = (mq.size.height * mq.devicePixelRatio).round();
-    size = '${w}x$h';
-  }
-  String zone = 'unknown';
-  try {
-    final Response cipRes = await Dio().get('http://cip.cc',
-        options: Options(
-          contentType: 'text/plain',
-          headers: {'User-Agent': 'curl/7.71.1'},
-        ));
-    zone = cipRes.data.toString().trim().split('\n')[1].split(':')[1].trim();
-  } catch (e, s) {
-    logger.e('fetch cip failed', e, s);
-  }
-  // await Dio(BaseOptions(baseUrl: 'http://localhost:8083'))
-  await db.serverDio.get('/analytics', queryParameters: {
-    'id': AppInfo.uniqueId,
-    'os': Platform.operatingSystem,
-    'os_ver': Platform.operatingSystemVersion,
-    'app': AppInfo.packageName,
-    'app_ver': AppInfo.version,
-    'lang': Language.current.code,
-    'locale': Intl.systemLocale,
-    'data_ver': db.gameData.version,
-    'abi': AppInfo.abi.toStandardString(),
-    'mac': EnumUtil.shortString(AppInfo.macAppType),
-    'time': DateTime.now().millisecondsSinceEpoch ~/ 1000,
-    'size': size,
-    'zone': zone,
-  }).catchError((e, s) {
-    logger.e('report analytics failed', e, s);
-  });
-  _reportBdtj();
 }
