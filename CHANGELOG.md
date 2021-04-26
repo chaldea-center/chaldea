@@ -1,3 +1,8 @@
+## 1.3.12
+- fix android app auto-update
+- fix windows userdata link
+- add bug page
+
 ## 1.3.11
 - NEW: servant statistics, craft favorites, CV and illustrator list
 - log to file
