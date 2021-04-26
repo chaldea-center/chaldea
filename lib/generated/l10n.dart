@@ -3782,10 +3782,10 @@ class S {
     );
   }
 
-  /// `服务器不存在当前版本，无法使用补丁方式更新，请下载完整数据包`
+  /// `服务器不存在当前版本，下载完整版资源ing`
   String get patch_gamedata_error_unknown_version {
     return Intl.message(
-      '服务器不存在当前版本，无法使用补丁方式更新，请下载完整数据包',
+      '服务器不存在当前版本，下载完整版资源ing',
       name: 'patch_gamedata_error_unknown_version',
       desc: '',
       args: [],

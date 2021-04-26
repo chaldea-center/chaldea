@@ -421,7 +421,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "このAPPバージョンと互換性のあるデータバージョンが見つかりません"),
         "patch_gamedata_error_unknown_version":
             MessageLookupByLibrary.simpleMessage(
-                "サーバーの現在のバージョンが存在せず、パッチを適用して更新することはできません。完全なデータパッケージをダウンロードしてください。"),
+                "サーバーの現在のバージョンが存在せず、完全なデータパッケージをダウンロード"),
         "patch_gamedata_hint": MessageLookupByLibrary.simpleMessage("パッチのみ"),
         "patch_gamedata_success_to": m11,
         "plan": MessageLookupByLibrary.simpleMessage("プラン"),

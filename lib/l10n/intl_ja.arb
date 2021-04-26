@@ -376,7 +376,7 @@
   "patch_gamedata_hint": "パッチのみ",
   "patch_gamedata_error_already_latest": "すでに最新バージョン",
   "patch_gamedata_error_no_compatible": "このAPPバージョンと互換性のあるデータバージョンが見つかりません",
-  "patch_gamedata_error_unknown_version": "サーバーの現在のバージョンが存在せず、パッチを適用して更新することはできません。完全なデータパッケージをダウンロードしてください。",
+  "patch_gamedata_error_unknown_version": "サーバーの現在のバージョンが存在せず、完全なデータパッケージをダウンロード",
   "patch_gamedata_success_to": "データバージョンが{version}に更新されました",
   "error_no_network": "インターネットに接続できません",
   "download_full_gamedata": "最新のデータをダウンロード",

@@ -61,12 +61,14 @@ class _SimpleAccordionState extends State<SimpleAccordion> {
       header = InkWell(onTap: toggle, child: header);
     }
     Widget content;
+    Widget secondChild =
+        expanded ? widget.contentBuilder(context) : Container();
     if (widget.disableAnimation) {
-      content = expanded ? widget.contentBuilder(context) : Container();
+      content = expanded ? secondChild : Container();
     } else {
       content = AnimatedCrossFade(
         firstChild: Container(height: 0.0),
-        secondChild: widget.contentBuilder(context),
+        secondChild: secondChild,
         firstCurve: const Interval(0.0, 0.6, curve: Curves.fastOutSlowIn),
         secondCurve: const Interval(0.4, 1.0, curve: Curves.fastOutSlowIn),
         sizeCurve: Curves.fastOutSlowIn,

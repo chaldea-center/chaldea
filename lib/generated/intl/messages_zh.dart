@@ -392,8 +392,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "patch_gamedata_error_no_compatible":
             MessageLookupByLibrary.simpleMessage("找不到兼容此APP版本的数据版本"),
         "patch_gamedata_error_unknown_version":
-            MessageLookupByLibrary.simpleMessage(
-                "服务器不存在当前版本，无法使用补丁方式更新，请下载完整数据包"),
+            MessageLookupByLibrary.simpleMessage("服务器不存在当前版本，下载完整版资源ing"),
         "patch_gamedata_hint": MessageLookupByLibrary.simpleMessage("打补丁"),
         "patch_gamedata_success_to": m11,
         "plan": MessageLookupByLibrary.simpleMessage("规划"),

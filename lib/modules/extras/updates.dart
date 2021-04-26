@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -82,7 +83,8 @@ class AutoUpdateUtil {
   }
 
   /// get json patch from server
-  static Future<void> patchGameData({void onError(e, s)?}) async {
+  static Future<void> patchGameData(
+      {bool background = true, void onError(e, s)?}) async {
     String _dataVersion(String releaseName) {
       return releaseName.split('-').first;
     }
@@ -92,6 +94,7 @@ class AutoUpdateUtil {
       if (onError != null) onError(e, s);
     }
 
+    if (!background) EasyLoading.showInfo('patching');
     try {
       if (db.connectivity == ConnectivityResult.none) {
         _reportResult(S.current.error_no_network);
@@ -106,13 +109,13 @@ class AutoUpdateUtil {
         return;
       }
       int newer =
-          db.gameData.version.compareTo(_dataVersion(latestRelease.name));
+      db.gameData.version.compareTo(_dataVersion(latestRelease.name));
       if (newer >= 0) {
         _reportResult(S.current.patch_gamedata_error_already_latest);
         return;
       }
       final curRelease = releases.firstWhereOrNull(
-          (release) => _dataVersion(release.name) == db.gameData.version);
+              (release) => _dataVersion(release.name) == db.gameData.version);
       if (curRelease == null) {
         print('cur version not found in server: ${db.gameData.version}');
         _reportResult(S.current.patch_gamedata_error_unknown_version);
@@ -151,13 +154,16 @@ class AutoUpdateUtil {
     }
   }
 
-  Future<void> checkAppUpdate(
-      {bool background = true, bool download = false}) async {
+  Future<void> checkAppUpdate({bool background = true, bool download = false}) async {
     version = null; //1.2.3
     releaseNote = null;
     launchUrl = null; // release page, not download url
+    if (!background) EasyLoading.show(maskType: EasyLoadingMaskType.clear);
 
     try {
+      if (!background) {
+        db.prefs.ignoreAppVersion.remove();
+      }
       if (db.connectivity == ConnectivityResult.none) {
         if (background)
           return;
@@ -188,17 +194,22 @@ class AutoUpdateUtil {
         version = Version.tryParse(release?.name ?? '');
         releaseNote = release?.body;
         launchUrl = release?.htmlUrl;
+        print(version);
       }
       releaseNote = releaseNote?.replaceAll('\r\n', '\n');
       logger.i('Release note:\n$releaseNote');
 
-      upgradable = version != null && version! > AppInfo.versionClass;
-      if (Platform.isAndroid &&
-          version?.build != null &&
-          version!.build! <= AppInfo.buildNumber) {
-        // ensure build is growable for android multi-arch
-        upgradable = false;
+      if (Platform.isAndroid) {
+        await Dio(BaseOptions(connectTimeout: 3000))
+            .get("$kGooglePlayLink&hl=en")
+            .then((response) =>
+                db.runtimeData.googlePlayAccess = response.statusCode == 200)
+            .onError((e, s) {
+          return db.runtimeData.googlePlayAccess = false;
+        });
       }
+
+      upgradable = version != null && version! > AppInfo.versionClass;
       // if (kDebugMode) upgradable = true;
       db.runtimeData.upgradableVersion = upgradable ? version : null;
 
@@ -242,7 +253,7 @@ class AutoUpdateUtil {
         ).showDialog(null);
       }
     } finally {
-      //
+      EasyLoading.dismiss();
     }
   }
 
@@ -279,6 +290,7 @@ class AutoUpdateUtil {
   }
 
   Future<void> _showDialog({String? fpInstaller}) async {
+    EasyLoading.dismiss();
     return SimpleCancelOkDialog(
       title: Text(S.current.about_update_app),
       content: SingleChildScrollView(
@@ -291,6 +303,14 @@ class AutoUpdateUtil {
       hideOk: true,
       wrapActionsInRow: true,
       actions: [
+        if (upgradable)
+          TextButton(
+            child: Text(S.current.ignore),
+            onPressed: () {
+              db.prefs.ignoreAppVersion.set(version!.version);
+              Navigator.of(context).pop();
+            },
+          ),
         if (Platform.isAndroid)
           TextButton(
             child: Text('Google Play'),
@@ -309,14 +329,6 @@ class AutoUpdateUtil {
           TextButton(
             child: Text(S.current.release_page),
             onPressed: launchUrl == null ? null : () => launch(launchUrl!),
-          ),
-        if (upgradable)
-          TextButton(
-            child: Text(S.current.ignore),
-            onPressed: () {
-              db.prefs.ignoreAppVersion.set(version!.version);
-              Navigator.of(context).pop();
-            },
           ),
         if (upgradable && fpInstaller != null)
           TextButton(
@@ -374,8 +386,8 @@ class AutoUpdateUtil {
       String? exeFp = Directory(extractFolder)
           .listSync()
           .firstWhereOrNull((element) =>
-              FileSystemEntity.isFileSync(element.path) &&
-              basename(element.path).toLowerCase() == 'chaldea.exe')
+      FileSystemEntity.isFileSync(element.path) &&
+          basename(element.path).toLowerCase() == 'chaldea.exe')
           ?.path;
       if (exeFp == null) {
         throw OSError('file chaldea.exe not found');
@@ -408,8 +420,7 @@ class AutoUpdateUtil {
     }
   }
 
-  String _generateCMD(
-      String srcDir, String destDir, String backupDir, String logFp) {
+  String _generateCMD(String srcDir, String destDir, String backupDir, String logFp) {
     if (!File(logFp).existsSync()) File(logFp).createSync(recursive: true);
     StringBuffer buffer = StringBuffer();
     void _writeln(String command) {

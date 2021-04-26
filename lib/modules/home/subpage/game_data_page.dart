@@ -79,6 +79,28 @@ class _GameDataPageState extends State<GameDataPage> {
                 },
               ),
               ListTile(
+                title: Text(S.current.patch_gamedata),
+                subtitle: Text(S.current.patch_gamedata_hint),
+                onTap: () async {
+                  await AutoUpdateUtil.patchGameData(
+                    background: false,
+                    onError: (e, s) {
+                      EasyLoading.showInfo(e.toString());
+                    },
+                  );
+                },
+              ),
+              ListTile(
+                title: Text(S.current.download_full_gamedata),
+                subtitle: Text(S.current.download_full_gamedata_hint),
+                onTap: downloadGamedata,
+              ),
+              ListTile(
+                title:
+                    Text('${S.of(context).import_data} (dataset*.zip/.json)'),
+                onTap: importGamedata,
+              ),
+              ListTile(
                 title: Text(S.of(context).reload_default_gamedata),
                 onTap: () {
                   SimpleCancelOkDialog(
@@ -95,25 +117,6 @@ class _GameDataPageState extends State<GameDataPage> {
                     },
                   ).showDialog(context);
                 },
-              ),
-              ListTile(
-                title: Text(S.current.patch_gamedata),
-                subtitle: Text(S.current.patch_gamedata_hint),
-                onTap: () {
-                  AutoUpdateUtil.patchGameData(onError: (e, s) {
-                    EasyLoading.showInfo(e.toString());
-                  });
-                },
-              ),
-              ListTile(
-                title: Text(S.current.download_full_gamedata),
-                subtitle: Text(S.current.download_full_gamedata_hint),
-                onTap: downloadGamedata,
-              ),
-              ListTile(
-                title:
-                    Text('${S.of(context).import_data} (dataset*.zip/.json)'),
-                onTap: importGamedata,
               ),
               ListTile(
                 title: Text(S.of(context).clear_cache),

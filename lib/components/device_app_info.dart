@@ -255,7 +255,7 @@ class AppInfo {
     StringBuffer buffer = StringBuffer(version);
     if (buildNumber > 0) {
       buffer.write(' ($buildNumber');
-      if (abi != ABIType.unknown) {
+      if (Platform.isAndroid) {
         buffer.write(', ${EnumUtil.shortString(abi)}');
       }
       buffer.write(')');

@@ -15,6 +15,7 @@ const String kGameDataFilename = 'dataset.json';
 const String kSupportTeamEmailAddress = 'chaldea@narumi.cc';
 const String kDatasetAssetKey = 'res/data/dataset.zip';
 const String kDatasetServerPath = '/chaldea/dataset.zip';
+// const String kServerRoot = 'http://localhost:8083';
 const String kServerRoot = 'http://chaldea.narumi.cc';
 const String kAppStoreLink = 'itms-apps://itunes.apple.com/app/id1548713491';
 const String kGooglePlayLink =

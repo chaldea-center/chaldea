@@ -312,18 +312,15 @@ class GitTool {
     if (test == null) {
       test = (asset) {
         String assetName = asset.name.toLowerCase();
-        if (!assetName.contains(Platform.operatingSystem)) {
-          return false;
-        }
-        if (!Platform.isAndroid || kDebugMode) {
-          return true;
+        if (!Platform.isAndroid) {
+          return assetName.contains(Platform.operatingSystem);
         }
         // If Android, need to check architecture
         // arch     build
         // v7a      10xx
         // v8a      20xx
         // x86_64   40xx
-        final abi = AppInfo.abi;
+        final abi = kDebugMode ? ABIType.arm64_v8a : AppInfo.abi;
         return abi != ABIType.unknown &&
             assetName.contains(abi.toStandardString());
       };

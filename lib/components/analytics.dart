@@ -48,9 +48,9 @@ bool skipReport() {
   return false;
 }
 
-Future<void> sendStat() async {
+Future<void> sendStat([bool test = false]) async {
   if (db.connectivity == ConnectivityResult.none) return;
-  // if (skipReport()) return;
+  if (!test && skipReport()) return;
 
   String size = '';
   if (kAppKey.currentContext != null) {

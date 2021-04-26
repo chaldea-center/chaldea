@@ -284,8 +284,8 @@ class Database {
       final suffixes = preferPng == null
           ? ['', '.jpg', '.png']
           : preferPng == true
-          ? ['.png', '', '.jpg']
-          : ['.jpg', '', '.png'];
+              ? ['.png', '', '.jpg']
+              : ['.jpg', '', '.png'];
       for (var suffix in suffixes) {
         String fullKey = key + suffix;
         if (gameData.icons.containsKey(fullKey)) {
@@ -598,6 +598,7 @@ class RuntimeData {
   Version? upgradableVersion;
   double? criticalWidth;
   List<File> itemRecognizeImageFiles = [];
+  bool googlePlayAccess = false;
 
   /// Controller of [Screenshot] widget which set root [MaterialApp] as child
   ScreenshotController? screenshotController;

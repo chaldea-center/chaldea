@@ -84,8 +84,7 @@ class SplitRoute<T> extends __PageRoute<T>
     RouteSettings? settings,
     this.maintainState = true,
     bool fullscreenDialog = false,
-  })
-      : assert(builder != null),
+  })  : assert(builder != null),
         assert(masterRatio > 0 && masterRatio < 100),
         assert(maintainState != null),
         assert(fullscreenDialog != null),
@@ -180,7 +179,7 @@ class SplitRoute<T> extends __PageRoute<T>
   static bool isSplit(BuildContext? context) {
     if (context == null) return false;
     final size = MediaQuery.of(context).size;
-    return size.width > size.height && size.width >= 768;
+    return size.width > size.height && size.width >= 720;
   }
 
   SplitLayout getLayout(BuildContext context) {

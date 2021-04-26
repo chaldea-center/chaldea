@@ -374,7 +374,7 @@
   "patch_gamedata_hint": "Only patch downloaded",
   "patch_gamedata_error_already_latest": "Already the latest version",
   "patch_gamedata_error_no_compatible": "No compatible version with current app version",
-  "patch_gamedata_error_unknown_version": "Cannot found current version on server, please download full size package",
+  "patch_gamedata_error_unknown_version": "Cannot found current version on server, downloading full size package",
   "patch_gamedata_success_to": "Updated dataset to {version}",
   "error_no_network": "No internet",
   "download_full_gamedata": "Download latest Gamedata",

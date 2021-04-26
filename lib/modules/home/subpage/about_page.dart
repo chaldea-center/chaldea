@@ -35,62 +35,44 @@ class _AboutPageState extends State<AboutPage> {
               .aboutListTileTitle(AppInfo.appName))),
       body: ListView(
         children: <Widget>[
-          Card(
-            margin: EdgeInsets.all(0),
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 120,
-                    child: Image.asset(
-                      'res/img/launcher_icon/app_icon_logo.png',
-                      height: 120,
-                    ),
-                  ),
-                  Text(
-                    AppInfo.appName,
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    alignment: WrapAlignment.center,
-                    spacing: 3,
-                    children: [
-                      Text('${S.of(context).version}: ${AppInfo.fullVersion2}'),
-                      if (db.runtimeData.upgradableVersion != null)
-                        Text(
-                          '(${db.runtimeData.upgradableVersion?.version} ↑)',
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      if (!Platform.isIOS && !AppInfo.isMacStoreApp ||
-                          kDebugMode)
-                        ElevatedButton(
-                          onPressed: () => AutoUpdateUtil().checkAppUpdate(
-                              background: false, download: false),
-                          child: Text(S.of(context).check_update),
-                          style: ElevatedButton.styleFrom(
-                            textStyle: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 12),
-                            minimumSize: Size(10, 30),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16)),
-                          ),
-                        ),
-                    ],
-                  ),
-                ],
-              ),
+          _AboutProgram(
+            name: AppInfo.appName,
+            version: AppInfo.fullVersion2,
+            icon: SizedBox(
+              height: 120,
+              child: Image.asset('res/img/launcher_icon/app_icon_logo.png',
+                  height: 120),
             ),
+            legalese: 'Copyright © 2021 cc.narumi.\nAll rights reserved.',
           ),
+          if (!Platform.isIOS && !AppInfo.isMacStoreApp || kDebugMode)
+            TileGroup(
+              header: S.current.update,
+              children: [
+                ListTile(
+                  title: Text(S.current.check_update),
+                  trailing: db.runtimeData.upgradableVersion != null
+                      ? Text(db.runtimeData.upgradableVersion!.version + '↑',
+                          style: TextStyle(color: Colors.redAccent))
+                      : null,
+                  onTap: () {
+                    AutoUpdateUtil().checkAppUpdate(background: false);
+                  },
+                ),
+                if (!Platform.isIOS && !AppInfo.isMacStoreApp)
+                  SwitchListTile.adaptive(
+                    value: db.userData.autoUpdateApp,
+                    title: Text(S.current.auto_update),
+                    onChanged: (v) {
+                      setState(() {
+                        db.userData.autoUpdateApp = v;
+                      });
+                    },
+                  ),
+              ],
+            ),
           ListTile(
             title: Text(S.of(context).about_app_declaration_text),
-          ),
-          TileGroup(
-            children: [],
           ),
           TileGroup(
             header: S.of(context).about_data_source,
@@ -106,20 +88,10 @@ class _AboutPageState extends State<AboutPage> {
             ],
           ),
           TileGroup(
-            header: 'APP',
+            header: 'Project',
             children: [
-              if (!Platform.isIOS && !AppInfo.isMacStoreApp)
-                SwitchListTile.adaptive(
-                  value: db.userData.autoUpdateApp,
-                  title: Text(S.current.auto_update),
-                  onChanged: (v) {
-                    setState(() {
-                      db.userData.autoUpdateApp = v;
-                    });
-                  },
-                ),
               ListTile(
-                title: Text(S.current.project_homepage + ' - Github'),
+                title: Text('Starring on Github'),
                 subtitle: Text(kProjectHomepage),
                 onTap: () {
                   launch(kProjectHomepage);
@@ -175,6 +147,55 @@ class _AboutPageState extends State<AboutPage> {
             ],
           )
         ],
+      ),
+    );
+  }
+}
+
+class _AboutProgram extends StatelessWidget {
+  const _AboutProgram({
+    Key? key,
+    required this.name,
+    required this.version,
+    this.icon,
+    this.legalese,
+  }) : super(key: key);
+
+  final String name;
+  final String version;
+  final Widget? icon;
+  final String? legalese;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: AppColors.setting_tile,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 24.0),
+        child: Column(
+          children: <Widget>[
+            if (icon != null)
+              IconTheme(data: Theme.of(context).iconTheme, child: icon!),
+            Text(
+              name,
+              style: Theme.of(context).textTheme.headline5,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 6),
+            Text(
+              version,
+              style: Theme.of(context).textTheme.bodyText2,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              legalese ?? '',
+              style: Theme.of(context).textTheme.caption,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+          ],
+        ),
       ),
     );
   }

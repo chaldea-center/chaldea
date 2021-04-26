@@ -150,7 +150,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       'cv_list': GalleryItem(
         name: 'cv_list',
         title: S.current.info_cv,
-        icon: Icons.settings_voice,
+        icon: Icons.keyboard_voice,
         builder: (context, _) => CvListPage(),
         isDetail: true,
       ),
@@ -488,18 +488,18 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
 
   Widget _buildNotifications() {
     List<Widget> children = [];
-    if (_cachedIconsRatio < 0) {
+    if (_cachedIconsRatio < 0.7) {
       int total = db.gameData.servants.length +
           db.gameData.crafts.length +
           db.gameData.cmdCodes.length +
           321;
       int cached = Directory(db.paths.gameIconDir).listSync().length;
       _cachedIconsRatio = cached / total;
-      print('$cached/$total');
     }
-    if (_cachedIconsRatio >= 0 && _cachedIconsRatio < 0.7) {
+    // print('$cached/$total');
+    if (_cachedIconsRatio >= 0 && _cachedIconsRatio < 0.8) {
       children.add(ListTile(
-        leading: Text(''),
+        leading: Icon(Icons.image),
         title: Text('Download icons'),
         subtitle: Text(
             'About ${(_cachedIconsRatio * 100).toStringAsFixed(0)}% downloaded'),

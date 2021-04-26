@@ -467,7 +467,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "No compatible version with current app version"),
         "patch_gamedata_error_unknown_version":
             MessageLookupByLibrary.simpleMessage(
-                "Cannot found current version on server, please download full size package"),
+                "Cannot found current version on server, downloading full size package"),
         "patch_gamedata_hint":
             MessageLookupByLibrary.simpleMessage("Only patch downloaded"),
         "patch_gamedata_success_to": m11,
