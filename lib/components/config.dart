@@ -518,7 +518,7 @@ class PathManager {
         String linkPath = pathlib.join(exeFolder, 'userdata');
         Link link = Link(linkPath);
         DateTime now = DateTime.now();
-        switch (FileSystemEntity.typeSync(linkPath)) {
+        switch (FileSystemEntity.typeSync(linkPath, followLinks: false)) {
           case FileSystemEntityType.notFound:
             break;
           case FileSystemEntityType.file:
