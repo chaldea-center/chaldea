@@ -14,7 +14,7 @@ class _EditGalleryPageState extends State<EditGalleryPage> {
   Widget build(BuildContext context) {
     List<Widget> tiles = [];
     widget.galleries.forEach((name, item) {
-      if (name != GalleryItem.more) {
+      if (name != GalleryItem.more && name != GalleryItem.bug) {
         tiles.add(SwitchListTile.adaptive(
           value: db.userData.galleries[name] ?? true,
           onChanged: (bool _selected) {
@@ -47,6 +47,8 @@ class GalleryItem {
   static const String mystic_code = 'mystic_code';
   static const String gacha = 'gacha';
   static const String ffo = 'ffo';
+  static const String cv_list = 'cv_list';
+  static const String illustrator_list = 'illustrator_list';
 
   static const String weekly_mission = 'weekly_mission';
   static const String calculator = 'calculator';
@@ -59,6 +61,7 @@ class GalleryItem {
   static const String import_data = 'import_data';
   static const String backup = 'backup';
   static const String more = 'more';
+  static const String bug = 'bug';
 
 //  static Map<String, GalleryItem> allItems;
 

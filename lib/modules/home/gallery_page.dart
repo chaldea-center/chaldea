@@ -9,6 +9,7 @@ import 'package:chaldea/modules/extras/mystic_code_page.dart';
 import 'package:chaldea/modules/extras/updates.dart';
 import 'package:chaldea/modules/ffo/ffo_page.dart';
 import 'package:chaldea/modules/free_quest_calculator/free_calculator_page.dart';
+import 'package:chaldea/modules/home/bug_page.dart';
 import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
 import 'package:chaldea/modules/home/subpage/game_data_page.dart';
 import 'package:chaldea/modules/import_data/import_data_page.dart';
@@ -147,15 +148,15 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         builder: (context, _) => FreedomOrderPage(),
         isDetail: true,
       ),
-      'cv_list': GalleryItem(
-        name: 'cv_list',
+      GalleryItem.cv_list: GalleryItem(
+        name: GalleryItem.cv_list,
         title: S.current.info_cv,
         icon: Icons.keyboard_voice,
         builder: (context, _) => CvListPage(),
         isDetail: true,
       ),
-      'illustrator_list': GalleryItem(
-        name: 'illustrator_list',
+      GalleryItem.illustrator_list: GalleryItem(
+        name: GalleryItem.illustrator_list,
         title: S.current.illustrator,
         child: faIcon(FontAwesomeIcons.paintBrush),
         builder: (context, _) => IllustratorListPage(),
@@ -188,6 +189,14 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         title: S.of(context).import_data,
         icon: Icons.cloud_download,
         builder: (context, _) => ImportDataPage(),
+        isDetail: true,
+      ),
+      GalleryItem.bug: GalleryItem(
+        name: GalleryItem.bug,
+        title: 'BUG',
+        icon: Icons.bug_report_outlined,
+        builder: (context, _) => BugAnnouncePage(),
+        //fail
         isDetail: true,
       ),
       GalleryItem.more: GalleryItem(
@@ -297,7 +306,9 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
   List<Widget> _getShownGalleries(BuildContext context) {
     List<Widget> _galleryItems = [];
     kAllGalleryItems.forEach((name, item) {
-      if ((db.userData.galleries[name] ?? true) || name == GalleryItem.more) {
+      if ((db.userData.galleries[name] ?? true) ||
+          name == GalleryItem.more ||
+          name == GalleryItem.bug) {
         _galleryItems.add(TextButton(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
