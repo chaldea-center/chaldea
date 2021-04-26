@@ -51,7 +51,6 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
   String _localize(String s) {
     return s.replaceFirstMapped(RegExp(r'第(.)阶段'), (match) {
       final n = match.group(1);
-      print(match.group(0));
       return LocalizedText(chs: '第$n阶段', jpn: '第$n段階 ', eng: 'Stage $n')
           .localized;
     }).replaceFirst(

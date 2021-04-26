@@ -37,19 +37,6 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
                 update();
               },
             ),
-            FilterGroup(
-              options: ['1', '2'],
-              values: filterData.svtDuplicated,
-              optionBuilder: (v) =>
-                  Text(Localized.svtFilter.of(v == '1' ? '初号机' : '2号机')),
-              combined: true,
-              onFilterChanged: (v) {
-                setState(() {
-                  filterData.svtDuplicated = v;
-                  update();
-                });
-              },
-            ),
             FilterOption(
               selected: filterData.hasDress,
               value: S.of(context).dress,
@@ -61,6 +48,22 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
               },
             ),
           ],
+        ),
+        FilterGroup(
+          title: Text(LocalizedText(
+                  chs: '重复从者', jpn: '重複サーバント', eng: 'Duplicated Servant')
+              .localized),
+          options: ['1', '2'],
+          values: filterData.svtDuplicated,
+          optionBuilder: (v) =>
+              Text(Localized.svtFilter.of(v == '1' ? '初号机' : '2号机')),
+          combined: true,
+          onFilterChanged: (v) {
+            setState(() {
+              filterData.svtDuplicated = v;
+              update();
+            });
+          },
         ),
         getGroup(header: S.of(context).filter_sort, children: [
           for (int i = 0; i < filterData.sortKeys.length; i++)

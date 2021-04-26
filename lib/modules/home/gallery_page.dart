@@ -524,6 +524,15 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         },
       ));
     }
+    if (!Language.isCN) {
+      children.add(ListTile(
+        title: Text('If your language is English or Japanese'),
+        subtitle: Text('You can send feedback to let me know/vote:\n'
+            ' - which part of localization is the most important for you\n'
+            ' - any translation mistake\n'
+            '\nThanks. And collaboration is welcome.'),
+      ));
+    }
     if (children.isEmpty) return Container();
     return SimpleAccordion(
       expanded: false,
@@ -531,7 +540,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
           leading: Icon(Icons.notifications), title: Text('Notifications')),
       contentBuilder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
-        children: children,
+        children: divideTiles(children),
       ),
     );
   }

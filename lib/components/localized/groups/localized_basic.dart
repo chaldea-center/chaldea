@@ -94,6 +94,9 @@ final _localizedSvtFilter = LocalizedGroup([
   LocalizedText(chs: '领域外生命', jpn: '', eng: 'Existence Outside the Domain'),
   LocalizedText(chs: '鬼', jpn: '鬼', eng: 'Oni'),
   LocalizedText(chs: '源氏', jpn: '', eng: 'Genji'),
+  LocalizedText(chs: '机械', jpn: '機械', eng: 'Mechanical'),
+  LocalizedText(chs: '妖精', jpn: '妖精', eng: 'Fairy'),
+
   LocalizedText(chs: '伊莉雅', jpn: 'イリヤ', eng: 'Illya'),
   LocalizedText(chs: '织田信长', jpn: '', eng: 'Nobunaga'),
   LocalizedText(chs: '酒吞童子', jpn: '', eng: 'Shuten Dōji	'),

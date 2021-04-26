@@ -275,7 +275,9 @@ class SvtFilterData {
     '孩童从者',
     '领域外生命',
     '鬼',
-    '源氏'
+    '源氏',
+    '机械',
+    '妖精'
   ];
 
   // json_serializable
@@ -318,8 +320,7 @@ class CraftFilterData {
     fillListValue(this.sortReversed, 2, (_) => true);
   }
 
-  List<FilterGroupData> get groupValues =>
-      [
+  List<FilterGroupData> get groupValues => [
         // display,
         rarity,
         category,
