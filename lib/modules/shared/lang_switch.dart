@@ -32,8 +32,8 @@ class _ProfileLangSwitchState extends State<ProfileLangSwitch> {
       options: Language.supportLanguages.map((e) => e.code).toList(),
       optionBuilder: (code) {
         return SizedBox(
-          width: 28,
-          height: 24,
+          width: 32,
+          height: 32,
           child: Center(
               child: Text({
             Language.chs.code: '中',

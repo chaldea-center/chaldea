@@ -395,7 +395,7 @@ class FilterOption<T> extends StatelessWidget {
           minimumSize: shrinkWrap ? Size(2, 2) : null,
           padding: shrinkWrap ? EdgeInsets.all(0) : null,
           textStyle: TextStyle(fontWeight: FontWeight.normal),
-          // tapTargetSize: tapTargetSize,
+          tapTargetSize: shrinkWrap ? MaterialTapTargetSize.shrinkWrap : null,
           shape: ContinuousRectangleBorder(borderRadius: borderRadius),
         ),
         child: child ?? Text(value.toString()),

@@ -24,6 +24,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
+import 'package:permission_handler/permission_handler.dart';
 import 'package:string_validator/string_validator.dart';
 
 class GalleryPage extends StatefulWidget {
@@ -33,7 +34,7 @@ class GalleryPage extends StatefulWidget {
 
 class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
   @override
-  void afterFirstLayout(BuildContext context) {
+  void afterFirstLayout(BuildContext context) async {
     if (db.userData.slidesUpdateTime == null ||
         db.userData.sliderUrls.isEmpty) {
       resolveSliderImageUrls();
@@ -46,6 +47,16 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         resolveSliderImageUrls();
       }
     }
+
+    _hasPermission = true;
+    if (!Platform.isAndroid) return;
+    int? sdkInt = AppInfo.androidSdk;
+    if (sdkInt == null) return;
+    permission =
+        sdkInt >= 30 ? Permission.manageExternalStorage : Permission.storage;
+    _hasPermission = await permission.isGranted;
+    if (mounted) setState(() {});
+
     Future.delayed(Duration(seconds: 2)).then((_) async {
       if (kDebugMode) return;
       if (db.userData.autoUpdateDataset) {
@@ -499,6 +510,13 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
 
   Widget _buildNotifications() {
     List<Widget> children = [];
+    if (!_hasPermission) {
+      children.add(ListTile(
+        title: Text(S.current.storage_permission_title),
+        leading: Icon(Icons.warning_rounded),
+        onTap: _setupAndroidPermission,
+      ));
+    }
     if (_cachedIconsRatio < 0.7) {
       int total = db.gameData.servants.length +
           db.gameData.crafts.length +
@@ -513,7 +531,9 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         leading: Icon(Icons.image),
         title: Text('Download icons'),
         subtitle: Text(
-            'About ${(_cachedIconsRatio * 100).toStringAsFixed(0)}% downloaded'),
+            'About ${(_cachedIconsRatio * 100).toStringAsFixed(0)}% downloaded'
+            '\nGoto ${S.current.download_full_gamedata}'),
+        isThreeLine: true,
         trailing: Icon(Icons.chevron_right),
         onTap: () {
           SplitRoute.push(
@@ -537,11 +557,39 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
     return SimpleAccordion(
       expanded: false,
       headerBuilder: (context, _) => ListTile(
-          leading: Icon(Icons.notifications), title: Text('Notifications')),
+        leading: Icon(Icons.notifications, color: Colors.blue),
+        title: Text('Notifications'),
+        tileColor: Colors.white,
+      ),
       contentBuilder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: divideTiles(children),
       ),
     );
+  }
+
+  bool _hasPermission = true;
+  Permission permission = Permission.storage;
+
+  Future<void> _setupAndroidPermission() async {
+    final String externalBackupDir =
+        join('/storage/emulated/0/', AppInfo.packageName);
+    var confirmed = await SimpleCancelOkDialog(
+      title: Text(S.current.storage_permission_title),
+      content: Text(S.current
+          .storage_permission_content(db.paths.userDir, externalBackupDir)),
+    ).showDialog(kAppKey.currentContext!);
+    if (confirmed == true) {
+      logger.i('request storage permission');
+      await permission.request();
+    }
+    logger.d(
+        'storage permission $permission: ${await Permission.storage.status}');
+    _hasPermission = await permission.isGranted;
+    if (_hasPermission) {
+      db.paths.externalAppPath = externalBackupDir;
+      print(db.paths.externalAppPath);
+    }
+    if (mounted) setState(() {});
   }
 }
