@@ -248,7 +248,9 @@ class _GameDataPageState extends State<GameDataPage> {
             EasyLoading.show(status: 'loading');
             try {
               await db.extractZip(fp: fp, savePath: db.paths.gameDir);
-              db.loadGameData();
+              if (!db.loadGameData()) {
+                throw 'Load GameData failed, maybe incompatible with current app version';
+              }
               Navigator.of(context).pop();
               EasyLoading.showSuccess(S.of(context).import_data_success);
             } catch (e) {
@@ -295,9 +297,12 @@ class _GameDataPageState extends State<GameDataPage> {
           type: FileTypeCross.custom, fileExtension: 'zip,json');
       final file = File(result.path);
       if (file.path.toLowerCase().endsWith('.zip')) {
-        EasyLoading.show(status: 'loading');
+        EasyLoading.show(
+            status: 'loading', maskType: EasyLoadingMaskType.clear);
         await db.extractZip(fp: file.path, savePath: db.paths.gameDir);
-        db.loadGameData();
+        if (!db.loadGameData()) {
+          throw 'Load GameData failed, maybe incompatible with current app version';
+        }
       } else if (file.path.toLowerCase().endsWith('.json')) {
         final newData = GameData.fromJson(jsonDecode(file.readAsStringSync()));
         if (newData.version != '0') {

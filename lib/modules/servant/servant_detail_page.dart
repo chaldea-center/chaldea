@@ -41,7 +41,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
     if (!Servant.unavailable.contains(svt.no)) {
       _builders[S.current.plan] = (context) => SvtPlanTab(parent: this);
     }
-    if (svt.activeSkills.isNotEmpty) {
+    if (svt.lActiveSkills.isNotEmpty) {
       _builders[S.current.skill] = (context) => SvtSkillTab(parent: this);
     }
     if (svt.nobelPhantasm.isNotEmpty) {
@@ -180,6 +180,10 @@ class ServantDetailPageState extends State<ServantDetailPage>
             child: Text(S.of(context).jump_to('Mooncell')),
             value: 'jump_mc',
           ),
+          PopupMenuItem<String>(
+            child: Text(S.of(context).jump_to('Fandom')),
+            value: 'jump_fandom',
+          ),
           if (!Servant.unavailable.contains(svt.originNo))
             PopupMenuItem<String>(
               child: Text(S.current.create_duplicated_svt),
@@ -233,6 +237,8 @@ class ServantDetailPageState extends State<ServantDetailPage>
           });
         } else if (select == 'jump_mc') {
           launch(MooncellUtil.fullLink(svt.mcLink));
+        } else if (select == 'jump_fandom') {
+          launch(MooncellUtil.fandomFullLink(svt.info.nameEn));
         } else if (select == 'duplicate_svt') {
           final newSvt = db.curUser.addDuplicatedForServant(svt);
           print('add ${newSvt.no}');

@@ -16,10 +16,15 @@ class Servant {
   String icon;
   ServantBaseInfo info;
   List<NobelPhantasm> nobelPhantasm;
+  List<NobelPhantasm> nobelPhantasmEn;
   List<ActiveSkill> activeSkills;
+  List<ActiveSkill> activeSkillsEn;
   List<Skill> passiveSkills;
+  List<Skill> passiveSkillsEn;
   ItemCost itemCost;
   List<int> bondPoints;
+
+  /// 0:default, 1-6:profile 1-6, 7:april fool's
   List<SvtProfileData> profiles;
   List<VoiceTable> voices;
   int bondCraft;
@@ -43,6 +48,12 @@ class Servant {
     return clsName;
   }
 
+  List<ActiveSkill> get lActiveSkills =>
+      Language.isEN ? activeSkillsEn : activeSkills;
+
+  List<Skill> get lPassiveSkills =>
+      Language.isEN ? passiveSkillsEn : passiveSkills;
+
   Servant({
     required this.no,
     required this.svtId,
@@ -50,8 +61,11 @@ class Servant {
     required this.icon,
     required this.info,
     required this.nobelPhantasm,
+    required this.nobelPhantasmEn,
     required this.activeSkills,
+    required this.activeSkillsEn,
     required this.passiveSkills,
+    required this.passiveSkillsEn,
     required this.itemCost,
     required this.bondPoints,
     required this.profiles,
@@ -233,7 +247,7 @@ class ServantBaseInfo {
   int gameId;
   String name;
   String nameJp;
-  String? nameEn;
+  String nameEn;
   List<String> namesOther;
   List<String> namesJpOther;
   List<String> namesEnOther;
@@ -253,6 +267,7 @@ class ServantBaseInfo {
   String gender;
   String illustrator;
   String? illustratorJp;
+  String? illustratorEn;
   String className;
   String attribute;
   bool isHumanoid;
@@ -260,6 +275,7 @@ class ServantBaseInfo {
   bool isTDNS;
   List<String> cv;
   String? cvJp;
+  String? cvEn;
   List<String> alignments;
   List<String> traits;
   Map<String, String> ability;
@@ -298,6 +314,7 @@ class ServantBaseInfo {
     required this.gender,
     required this.illustrator,
     required this.illustratorJp,
+    required this.illustratorEn,
     required this.className,
     required this.attribute,
     required this.isHumanoid,
@@ -305,6 +322,7 @@ class ServantBaseInfo {
     required this.isTDNS,
     required this.cv,
     required this.cvJp,
+    required this.cvEn,
     required this.alignments,
     required this.traits,
     required this.ability,
@@ -328,10 +346,10 @@ class ServantBaseInfo {
 
   String get localizedName => localizeNoun(name, nameJp, nameEn);
 
-  String get localizedIllustrator =>
-      localizeNoun(illustrator, illustratorJp, null);
+  String get lIllustrator =>
+      localizeNoun(illustrator, illustratorJp, illustratorEn);
 
-  String get localizedCV => localizeNoun(cv.join(' & '), cvJp, null);
+  String get lCV => localizeNoun(cv.join(' & '), cvJp, cvEn);
 
   factory ServantBaseInfo.fromJson(Map<String, dynamic> data) =>
       _$ServantBaseInfoFromJson(data);
@@ -360,7 +378,7 @@ class NobelPhantasm {
     required this.upperNameJp,
     required this.color,
     required this.category,
-    this.rank,
+    required this.rank,
     required this.typeText,
     required this.effects,
   });
@@ -425,17 +443,26 @@ class Effect {
 
 @JsonSerializable(checked: true)
 class SvtProfileData {
-  String title;
-  String description;
-  String descriptionJp;
+  String? title;
+  String? description;
+  String? descriptionJp;
+  String? descriptionEn;
   String? condition;
+  String? conditionEn;
 
   SvtProfileData({
     required this.title,
     required this.description,
     required this.descriptionJp,
-    this.condition,
+    required this.descriptionEn,
+    required this.condition,
+    required this.conditionEn,
   });
+
+  String get lDescription =>
+      localizeNoun(description, descriptionJp, descriptionEn, '???');
+
+  String get lCondition => localizeNoun(condition, null, conditionEn);
 
   factory SvtProfileData.fromJson(Map<String, dynamic> data) =>
       _$SvtProfileDataFromJson(data);

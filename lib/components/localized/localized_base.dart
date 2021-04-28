@@ -23,7 +23,15 @@ class LocalizedText {
     return _values.first;
   }
 
-  String of(Language primary) {
+  static String of({
+    required String chs,
+    required String? jpn,
+    required String? eng,
+  }) {
+    return LocalizedText(chs: chs, jpn: jpn, eng: eng).localized;
+  }
+
+  String ofPrimary(Language primary) {
     switch (primary) {
       case Language.jpn:
         return jpn;
@@ -61,6 +69,6 @@ class LocalizedGroup {
 
   LocalizedText? instanceOf(String v, [Language? primary]) {
     primary ??= primaryLanguage;
-    return values.firstWhereOrNull((e) => e.of(primary!) == v);
+    return values.firstWhereOrNull((e) => e.ofPrimary(primary!) == v);
   }
 }

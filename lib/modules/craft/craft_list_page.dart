@@ -60,14 +60,17 @@ class CraftListPageState extends State<CraftListPage> {
         ce.no.toString(),
         ce.name,
         ce.nameJp,
+        ce.nameEn,
         ce.mcLink,
         ...ce.illustrators,
         ce.illustratorsJp ?? '',
+        ce.illustratorsEn ?? '',
         ...ce.characters,
         ce.skill,
         ce.skillMax ?? '',
+        ce.skillEn ?? '',
+        ce.skillMaxEn ?? '',
         ...ce.eventSkills,
-        ...ce.characters
       ];
       if (!__textFilter.match(searchStrings.join('\t'))) {
         return false;

@@ -9,16 +9,20 @@ class CommandCode {
   String mcLink;
   String name;
   String nameJp;
+  String nameEn;
   List<String> nameOther;
   int rarity;
   String icon;
   String illustration;
   List<String> illustrators;
   String? illustratorsJp;
+  String? illustratorsEn;
   String skillIcon;
   String skill;
+  String skillEn;
   String? description;
   String? descriptionJp;
+  String? descriptionEn;
   String obtain;
   String category;
   String categoryText;
@@ -30,26 +34,35 @@ class CommandCode {
     required this.mcLink,
     required this.name,
     required this.nameJp,
-    this.nameOther = const [],
+    required this.nameEn,
+    required this.nameOther,
     required this.rarity,
     required this.icon,
     required this.illustration,
-    this.illustrators = const [],
-    this.illustratorsJp,
+    required this.illustrators,
+    required this.illustratorsJp,
+    required this.illustratorsEn,
     required this.skillIcon,
     required this.skill,
-    this.description,
-    this.descriptionJp,
+    required this.skillEn,
+    required this.description,
+    required this.descriptionJp,
+    required this.descriptionEn,
     required this.obtain,
     required this.category,
     required this.categoryText,
-    this.characters = const [],
+    required this.characters,
   });
 
-  String get localizedName => localizeNoun(name, nameJp, null);
+  String get localizedName => localizeNoun(name, nameJp, nameEn);
 
   String get localizedIllustrators =>
-      localizeNoun(illustrators.join(' & '), illustratorsJp, null);
+      localizeNoun(illustrators.join(' & '), illustratorsJp, illustratorsEn);
+
+  String get lSkill => localizeNoun(skill, null, skillEn);
+
+  String get lDescription =>
+      localizeNoun(description, descriptionJp, descriptionEn);
 
   static int compare(CommandCode a, CommandCode b,
       {List<CmdCodeCompare>? keys, List<bool>? reversed}) {

@@ -10,6 +10,7 @@ class MooncellUtil {
   static Pool _pool = Pool(20);
 
   static String domain = 'https://fgo.wiki';
+  static String fandomDomain = 'https://fategrandorder.fandom.com';
 
   static Dio get _dio => Dio(BaseOptions(baseUrl: domain));
 
@@ -43,6 +44,11 @@ class MooncellUtil {
     return Uri.parse(link).toString();
   }
 
+  static String fandomFullLink(String title) {
+    String link = '$fandomDomain/wiki/$title';
+    return Uri.parse(link).toString();
+  }
+
   static Map<String, Future<String?>> _resolveUrlTasks = {};
 
   /// If [savePath] is provided, the file will be downloaded
@@ -57,15 +63,19 @@ class MooncellUtil {
     }
     final future = _pool.withResource<String?>(() async {
       final _dio = Dio();
+      bool fandomFile = filename.startsWith('fandom.');
+      String api = fandomFile
+          ? 'https://fategrandorder.fandom.com/api.php'
+          : 'https://fgo.wiki/api.php';
       try {
         final response = await _dio.get(
-          'https://fgo.wiki/api.php',
+          api,
           queryParameters: {
             "action": "query",
             "format": "json",
             "prop": "imageinfo",
             "iiprop": "url",
-            "titles": "File:$filename"
+            "titles": "File:" + (fandomFile ? filename.substring(7) : filename)
           },
           options: Options(responseType: ResponseType.json),
         );

@@ -245,61 +245,71 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     return ListView.separated(
       itemBuilder: (context, index) {
         final item = params.rows[index];
+        Widget leading = GestureDetector(
+          onTap: () {
+            SplitRoute.push(
+              context: context,
+              builder: (context, _) => ItemDetailPage(itemKey: item),
+            );
+          },
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 6),
+            child: db.getIconImage(item, height: 48),
+          ),
+        );
+        Widget title = TextButton(
+          style: TextButton.styleFrom(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              minimumSize: Size(48, 28),
+              padding: EdgeInsets.symmetric(horizontal: 8)),
+          child: Text(Item.localizedNameOf(item)),
+          onPressed: () {
+            final String? category = getItemCategory(item);
+            if (category == null) return;
+            Picker(
+              adapter: PickerDataAdapter<String>(data: pickerAdapter),
+              selecteds: [
+                pickerData.keys.toList().indexOf(category),
+                pickerData[category]!.indexOf(item)
+              ],
+              height: min(150, MediaQuery.of(context).size.height - 200),
+              itemExtent: 48,
+              changeToFirst: true,
+              hideHeader: true,
+              textScaleFactor: 0.7,
+              cancelText: S.of(context).cancel,
+              confirmText: S.of(context).confirm,
+              onConfirm: (Picker picker, List<int> value) {
+                print('picker: ${picker.getSelectedValues()}');
+                setState(() {
+                  String selected = picker.getSelectedValues().last;
+                  if (params.rows.contains(selected)) {
+                    EasyLoading.showToast(S.of(context).item_already_exist_hint(
+                        Item.localizedNameOf(selected)));
+                  } else {
+                    params.rows[index] = selected;
+                  }
+                });
+              },
+            ).showDialog(context);
+          },
+        );
+        Widget subtitle = Padding(
+          padding: EdgeInsets.only(left: 8),
+          child: Text(
+            planOrEff
+                ? S.current.words_separate(
+                    S.current.calc_weight, params.weights[index])
+                : S.current
+                    .words_separate(S.current.counts, params.counts[index]),
+          ),
+        );
         return CustomTile(
           contentPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-          // titlePadding: EdgeInsets.symmetric(vertical: 0),
-          leading: GestureDetector(
-            onTap: () {
-              SplitRoute.push(
-                context: context,
-                builder: (context, _) => ItemDetailPage(itemKey: item),
-              );
-            },
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 6),
-              child: db.getIconImage(item, height: 48),
-            ),
-          ),
-          title: TextButton(
-            child: Text(Item.localizedNameOf(item)),
-            onPressed: () {
-              final String? category = getItemCategory(item);
-              if (category == null) return;
-              Picker(
-                adapter: PickerDataAdapter<String>(data: pickerAdapter),
-                selecteds: [
-                  pickerData.keys.toList().indexOf(category),
-                  pickerData[category]!.indexOf(item)
-                ],
-                height: min(150, MediaQuery.of(context).size.height - 200),
-                itemExtent: 48,
-                changeToFirst: true,
-                hideHeader: true,
-                textScaleFactor: 0.7,
-                cancelText: S.of(context).cancel,
-                confirmText: S.of(context).confirm,
-                onConfirm: (Picker picker, List<int> value) {
-                  print('picker: ${picker.getSelectedValues()}');
-                  setState(() {
-                    String selected = picker.getSelectedValues().last;
-                    if (params.rows.contains(selected)) {
-                      EasyLoading.showToast(S
-                          .of(context)
-                          .item_already_exist_hint(
-                              Item.localizedNameOf(selected)));
-                    } else {
-                      params.rows[index] = selected;
-                    }
-                  });
-                },
-              ).showDialog(context);
-            },
-          ),
-          subtitle: planOrEff
-              ? Text(S.current
-                  .words_separate(S.current.calc_weight, params.weights[index]))
-              : Text(S.current
-                  .words_separate(S.current.counts, params.counts[index])),
+          titlePadding: EdgeInsets.only(right: 6),
+          leading: leading,
+          title: title,
+          subtitle: subtitle,
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [

@@ -114,7 +114,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
           CustomTableRow.fromTexts(
               texts: [svt.info.nameJp], defaults: contentData),
           CustomTableRow.fromTexts(
-              texts: [svt.info.nameEn ?? '-'], defaults: contentData),
+              texts: [svt.info.nameEn], defaults: contentData),
           CustomTableRow.fromTexts(
               texts: ['No.${svt.originNo}', svt.info.className],
               defaults: contentData),
@@ -122,7 +122,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
               texts: [S.current.illustrator, S.current.info_cv],
               defaults: headerData),
           CustomTableRow.fromTexts(
-              texts: [svt.info.localizedIllustrator, svt.info.localizedCV],
+              texts: [svt.info.lIllustrator, svt.info.lCV],
               defaults: contentData),
           CustomTableRow.fromTexts(texts: [
             S.current.info_gender,
@@ -291,49 +291,52 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
   }
 
   Widget buildProfileTab() {
-    String _localize(String s) {
-      return s
-          .replaceFirst(
-            '角色详情',
-            LocalizedText(chs: '角色详情', jpn: 'キャラクター詳細', eng: 'Character Info')
-                .localized,
-          )
-          .replaceFirst(
-            '个人资料',
-            LocalizedText(chs: '个人资料', jpn: 'プロフィール', eng: 'Profile ')
-                .localized,
-          )
-          .replaceFirst(
-            '愚人节资料',
-            LocalizedText(
-                    chs: '愚人节资料', jpn: 'エイプリルフール', eng: "April Fools' Day")
-                .localized,
-          );
-    }
+    List<Widget> children = [];
+    for (int index = 0; index < svt.profiles.length; index++) {
+      final profile = svt.profiles[index];
+      if (profile.descriptionJp?.isNotEmpty != true &&
+          profile.description?.isNotEmpty != true) {
+        continue;
+      }
+      String title;
+      if (profile.title != null) {
+        title = profile.title!;
+      } else {
+        switch (index) {
+          case 0:
+            title = LocalizedText.of(
+                chs: '角色详情', jpn: 'キャラクター詳細', eng: 'Character Profile');
+            break;
+          case 7:
+            title = LocalizedText.of(
+                chs: '愚人节资料', jpn: 'エイプリルフール', eng: "April Fools' Day");
+            break;
+          default:
+            title =
+                LocalizedText.of(chs: '个人资料', jpn: 'プロフィール', eng: 'Profile ') +
+                    index.toString();
+            break;
+        }
+      }
 
-    return ListView(
-      children: List.generate(svt.profiles.length, (index) {
-        final profile = svt.profiles[index];
-        String description =
-            useLangCn ? profile.description : profile.descriptionJp;
-        return Card(
-          margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          color: Theme.of(context).cardColor.withOpacity(0.975),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              CustomTile(
-                title: Text(_localize(profile.title)),
-                subtitle:
-                    profile.condition == null ? null : Text(profile.condition!),
-              ),
-              CustomTile(subtitle: Text(description)),
-            ],
-          ),
-        );
-      }).toList(),
-    );
+      children.add(Card(
+        margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        color: Theme.of(context).cardColor.withOpacity(0.975),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            CustomTile(
+              title: Text(title),
+              subtitle:
+                  profile.lCondition.isEmpty ? null : Text(profile.lCondition),
+            ),
+            CustomTile(subtitle: Text(profile.lDescription)),
+          ],
+        ),
+      ));
+    }
+    return ListView(children: children);
   }
 
   Widget buildBondCraftTab() {

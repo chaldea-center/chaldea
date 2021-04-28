@@ -140,6 +140,7 @@ class CraftDetailBasePage extends StatelessWidget {
             )
           ]),
           CustomTableRow(children: [TableCellData(text: ce.nameJp)]),
+          CustomTableRow(children: [TableCellData(text: ce.nameEn)]),
           CustomTableRow(
             children: [
               TableCellData(
@@ -233,10 +234,10 @@ class CraftDetailBasePage extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(ce.skill),
-                    if (ce.skillMax?.isNotEmpty == true) ...[
+                    Text(ce.lSkill),
+                    if (ce.lSkillMax.isNotEmpty) ...[
                       Divider(height: 6),
-                      Text(ce.skillMax!),
+                      Text(ce.lSkillMax),
                     ]
                   ],
                 ),
@@ -275,7 +276,7 @@ class CraftDetailBasePage extends StatelessWidget {
           CustomTableRow(
             children: [
               TableCellData(
-                text: (useLangCn ? ce.description : ce.descriptionJp) ?? '???',
+                text: ce.lDescription,
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               )

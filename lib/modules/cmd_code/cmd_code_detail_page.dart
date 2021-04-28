@@ -113,6 +113,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
             )
           ]),
           CustomTableRow(children: [TableCellData(text: code.nameJp)]),
+          CustomTableRow(children: [TableCellData(text: code.nameEn)]),
           CustomTableRow(
             children: [
               TableCellData(
@@ -184,7 +185,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                 flex: 1,
                 child: db.getIconImage(code.skillIcon, height: 45),
               ),
-              TableCellData(flex: 5, text: code.skill)
+              TableCellData(flex: 5, text: code.lSkill)
             ],
           ),
           CustomTableRow(children: [
@@ -193,9 +194,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
           CustomTableRow(children: [
             TableCellData(
               child: Text(
-                code.characters.isNotEmpty == true
-                    ? code.characters.join(', ')
-                    : '-',
+                localizeCharacters(code.characters),
                 textAlign: TextAlign.center,
               ),
             )
@@ -206,8 +205,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
           CustomTableRow(
             children: [
               TableCellData(
-                text: (useLangCn ? code.description : code.descriptionJp) ??
-                    '???',
+                text: code.lDescription,
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               )
@@ -233,5 +231,14 @@ class CmdCodeDetailBasePage extends StatelessWidget {
         color = '银';
     }
     return db.getIconImage('礼装$color卡背');
+  }
+
+  String localizeCharacters(List<String> characters) {
+    if (characters.isEmpty) return '-';
+    return characters.map((e) {
+      final svt =
+          db.gameData.servants.values.firstWhereOrNull((s) => s.mcLink == e);
+      return svt?.info.localizedName ?? e;
+    }).join(', ');
   }
 }

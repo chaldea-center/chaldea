@@ -63,14 +63,17 @@ class ServantListPageState extends State<ServantListPage> {
         svt.mcLink,
         ...svt.info.cv,
         svt.info.cvJp ?? '',
+        svt.info.cvEn ?? '',
         svt.info.name,
         svt.info.nameJp,
+        svt.info.nameEn,
         svt.info.illustrator,
         svt.info.illustratorJp ?? '',
+        svt.info.illustratorEn ?? '',
         ...svt.info.nicknames,
         ...svt.info.traits
       ];
-      svt.nobelPhantasm.forEach((td) {
+      [...svt.nobelPhantasm, ...svt.nobelPhantasmEn].forEach((td) {
         searchStrings.addAll([
           td.name,
           td.nameJp,
@@ -79,7 +82,7 @@ class ServantListPageState extends State<ServantListPage> {
           for (var e in td.effects) e.description
         ]);
       });
-      svt.activeSkills.forEach((activeSkill) {
+      [...svt.activeSkills, ...svt.activeSkillsEn].forEach((activeSkill) {
         activeSkill.skills.forEach((skill) {
           searchStrings.addAll([
             skill.name,
@@ -87,6 +90,13 @@ class ServantListPageState extends State<ServantListPage> {
             for (var e in skill.effects) e.description
           ]);
         });
+      });
+      [...svt.passiveSkills, ...svt.passiveSkillsEn].forEach((skill) {
+        searchStrings.addAll([
+          skill.name,
+          skill.nameJp ?? '',
+          for (var e in skill.effects) e.description
+        ]);
       });
       if (!__textFilter.match(searchStrings.join('\t'))) {
         return false;
@@ -319,8 +329,8 @@ class ServantListPageState extends State<ServantListPage> {
       child: widget.planMode
           ? _buildPlanListView()
           : filterData.display.isRadioVal('Grid')
-          ? _buildGridView()
-          : _buildListView(),
+              ? _buildGridView()
+              : _buildListView(),
     );
   }
 

@@ -68,7 +68,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     bool sliderMode = widget.parent?.svtPlanSliderMode.get() ?? false;
     super.build(context);
     return db.streamBuilder((context) {
-      if (svt.activeSkills.isEmpty) {
+      if (svt.lActiveSkills.isEmpty) {
         return Center(child: Text('${svt.info.localizedName} has no skills'));
       }
       status.validate();
@@ -121,8 +121,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
 
       //skill part
       List<Widget> skillWidgets = [];
-      for (int index = 0; index < svt.activeSkills.length; index++) {
-        final activeSkill = svt.activeSkills[index];
+      for (int index = 0; index < svt.lActiveSkills.length; index++) {
+        final activeSkill = svt.lActiveSkills[index];
         Skill skill =
             activeSkill.skills[status.skillIndex[index] ?? activeSkill.cnState];
         String shownName =

@@ -9,12 +9,14 @@ class CraftEssence {
   String mcLink;
   String name;
   String nameJp;
+  String nameEn;
   List<String> nameOther;
   int rarity;
   String icon;
   String illustration;
   List<String> illustrators;
   String? illustratorsJp;
+  String? illustratorsEn;
   int cost;
   int hpMin;
   int hpMax;
@@ -23,10 +25,13 @@ class CraftEssence {
   String? skillIcon;
   String skill;
   String? skillMax;
+  String? skillEn;
+  String? skillMaxEn;
   List<String> eventIcons;
   List<String> eventSkills;
   String? description;
   String? descriptionJp;
+  String? descriptionEn;
   String category;
   String categoryText;
   List<String> characters;
@@ -41,12 +46,14 @@ class CraftEssence {
     required this.mcLink,
     required this.name,
     required this.nameJp,
+    required this.nameEn,
     required this.nameOther,
     required this.rarity,
     required this.icon,
     required this.illustration,
     required this.illustrators,
     required this.illustratorsJp,
+    required this.illustratorsEn,
     required this.cost,
     required this.hpMin,
     required this.hpMax,
@@ -55,10 +62,13 @@ class CraftEssence {
     required this.skillIcon,
     required this.skill,
     required this.skillMax,
+    required this.skillEn,
+    required this.skillMaxEn,
     required this.eventIcons,
     required this.eventSkills,
     required this.description,
     required this.descriptionJp,
+    required this.descriptionEn,
     required this.category,
     required this.categoryText,
     required this.characters,
@@ -66,10 +76,17 @@ class CraftEssence {
     required this.valentine,
   });
 
-  String get localizedName => localizeNoun(name, nameJp, null);
+  String get localizedName => localizeNoun(name, nameJp, nameEn);
 
   String get localizedIllustrators =>
-      localizeNoun(illustrators.join(' & '), illustratorsJp, null);
+      localizeNoun(illustrators.join(' & '), illustratorsJp, illustratorsEn);
+
+  String get lSkill => localizeNoun(skill, null, skillEn);
+
+  String get lSkillMax => localizeNoun(skillMax, null, skillMaxEn);
+
+  String get lDescription =>
+      localizeNoun(description, descriptionJp, descriptionEn);
 
   static int compare(CraftEssence a, CraftEssence b,
       {List<CraftCompare>? keys, List<bool>? reversed}) {

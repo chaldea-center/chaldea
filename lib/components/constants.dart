@@ -65,8 +65,8 @@ class Language {
   static Language get current => isJP
       ? jpn
       : isEN
-      ? eng
-      : chs;
+          ? eng
+          : chs;
 }
 
 class AppColors {
@@ -119,8 +119,8 @@ String localizeNoun(String? nameCn, String? nameJp, String? nameEn,
   name = Language.isCN
       ? nameCn
       : Language.isEN
-      ? nameEn
-      : nameJp;
+          ? nameEn
+          : nameJp;
   name ??= nameJp ?? nameCn ?? k;
   // assert(name != null,
   //     'null for every localized value: $nameCn,$nameJp,$nameEn,$k');

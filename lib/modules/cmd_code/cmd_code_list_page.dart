@@ -52,13 +52,15 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
         code.no.toString(),
         code.name,
         code.nameJp,
+        code.nameEn,
         code.mcLink,
         code.obtain,
         ...code.illustrators,
         code.illustratorsJp ?? '',
+        code.illustratorsEn ?? '',
         ...code.characters,
         code.skill,
-        ...code.characters
+        code.skillEn,
       ];
       if (!__textFilter.match(searchStrings.join('\t'))) {
         return false;

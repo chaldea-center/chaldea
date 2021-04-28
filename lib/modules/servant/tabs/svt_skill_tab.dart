@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/components/localized/localized_base.dart';
 
 import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
@@ -24,36 +25,36 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (svt.activeSkills.isNotEmpty != true) {
+    if (svt.lActiveSkills.isNotEmpty != true) {
       return Center(child: Text('Nothing'));
     }
 
     return ListView(children: [
       SHeader(S.of(context).active_skill),
-      for (var index = 0; index < svt.activeSkills.length; index++)
+      for (var index = 0; index < svt.lActiveSkills.length; index++)
         buildActiveSkill(index),
-      if (svt.passiveSkills.isNotEmpty == true) ...[
+      if (svt.lPassiveSkills.isNotEmpty == true) ...[
         SHeader(S.of(context).passive_skill),
-        for (var index = 0; index < svt.passiveSkills.length; index++)
+        for (var index = 0; index < svt.lPassiveSkills.length; index++)
           buildPassiveSkill(index),
       ]
     ]);
   }
 
   Widget buildActiveSkill(int index) {
-    ActiveSkill activeSkill = svt.activeSkills[index];
+    ActiveSkill activeSkill = svt.lActiveSkills[index];
     Skill skill = Servant.unavailable.contains(svt.no)
         ? activeSkill.skills[0]
         : activeSkill.skills[status.skillIndex[index] ?? activeSkill.cnState];
-    String nameCn = '${skill.name} ${skill.rank}';
+    String name = '${skill.name} ${skill.rank}';
     String nameJp = '${skill.nameJp} ${skill.rank}';
     return TileGroup(
       children: <Widget>[
         CustomTile(
             contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
             leading: db.getIconImage(skill.icon, width: 33),
-            title: Text(Language.isCN ? nameCn : nameJp),
-            subtitle: Text(Language.isCN ? nameJp : nameCn),
+            title: Text(Language.isJP ? nameJp : name),
+            subtitle: Language.isCN ? Text(nameJp) : null,
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -80,13 +81,13 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
   }
 
   Widget buildPassiveSkill(int index) {
-    Skill skill = svt.passiveSkills[index];
+    Skill skill = svt.lPassiveSkills[index];
     return TileGroup(
       children: <Widget>[
         CustomTile(
           contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
-          leading: db.getIconImage(skill.icon, width: 33),
-          title: Text('${skill.name} ${skill.rank ?? ""}'),
+          leading: db.getIconImage(skill.icon, width: 33, height: 33),
+          title: Text('${skill.localizedName} ${skill.rank ?? ""}'),
         ),
         for (Effect effect in skill.effects) ...buildEffect(effect),
       ],
@@ -94,17 +95,21 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
   }
 
   List<Widget> buildEffect(Effect effect) {
-    assert([1, 10].contains(effect.lvData.length));
-    int crossCount =
-        effect.lvData.length == 1 ? (effect.lvData[0].length < 10 ? 0 : 1) : 5;
-
+    assert([0, 1, 10].contains(effect.lvData.length));
+    int crossCount = effect.lvData.length > 1
+        ? 5
+        : effect.lvData.length == 1 && effect.lvData.first.length >= 10
+            ? 1
+            : 0;
     return <Widget>[
       CustomTile(
         contentPadding: EdgeInsets.fromLTRB(16, 6, crossCount == 0 ? 0 : 16, 6),
         subtitle: crossCount == 0
             ? Row(children: [
                 Expanded(child: Text(effect.description), flex: 4),
-                Expanded(child: Center(child: Text(effect.lvData[0])), flex: 1),
+                if (effect.lvData.isNotEmpty)
+                  Expanded(
+                      child: Center(child: Text(effect.lvData[0])), flex: 1),
               ])
             : Text(effect.description),
       ),

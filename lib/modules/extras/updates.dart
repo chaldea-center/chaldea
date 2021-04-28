@@ -69,10 +69,14 @@ class AutoUpdateUtil {
         _deleteFileOrDir(bak);
         File(db.paths.gameDataPath).renameSync(bak);
         File(datasetFp).renameSync(db.paths.gameDataPath);
-        db.loadGameData();
-        logger.i('update dataset from $previousVer to ${db.gameData.version}');
-        EasyLoading.showToast(
-            'update dataset from $previousVer to ${db.gameData.version}');
+        if (db.loadGameData()) {
+          logger
+              .i('update dataset from $previousVer to ${db.gameData.version}');
+          EasyLoading.showToast(
+              'update dataset from $previousVer to ${db.gameData.version}');
+        } else {
+          throw 'Load GameData failed, maybe incompatible with current app version';
+        }
       } else {
         logger.w('version mismatch release name: ${release?.name},'
             ' real version: ${gameData.version}');
@@ -144,6 +148,8 @@ class AutoUpdateUtil {
                 'update dataset from $previousVersion to ${db.gameData.version}');
             EasyLoading.showInfo(
                 S.current.patch_gamedata_success_to(db.gameData.version));
+          } else {
+            throw 'Load GameData failed, maybe incompatible with current app version';
           }
         }
       } else {
