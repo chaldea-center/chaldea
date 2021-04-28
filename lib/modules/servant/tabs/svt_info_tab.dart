@@ -1,6 +1,7 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/cmd_code/cmd_code_detail_page.dart';
 import 'package:chaldea/modules/craft/craft_detail_page.dart';
+import 'package:chaldea/modules/shared/lang_switch.dart';
 
 import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
@@ -25,12 +26,11 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
   _SvtInfoTabState(
       {ServantDetailPageState? parent, Servant? svt, ServantStatus? plan})
       : super(parent: parent, svt: svt, status: plan);
-  bool useLangCn = false;
+  Language? lang;
 
   @override
   void initState() {
     super.initState();
-    useLangCn = Language.isCN;
     _tabController = TabController(length: 5, vsync: this);
   }
 
@@ -66,22 +66,13 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
                     .toList(),
               ),
             ),
-            ToggleButtons(
-              constraints: BoxConstraints(),
-              selectedColor: Colors.white,
-              fillColor: Theme.of(context).primaryColor,
-              onPressed: (i) {
+            ProfileLangSwitch(
+              primary: lang,
+              onChanged: (v) {
                 setState(() {
-                  useLangCn = i == 0;
+                  lang = v;
                 });
               },
-              children: List.generate(
-                  2,
-                  (i) => Padding(
-                        padding: EdgeInsets.all(6),
-                        child: Text(['中', '日'][i]),
-                      )),
-              isSelected: List.generate(2, (i) => useLangCn == (i == 0)),
             ),
           ],
         ),
@@ -294,8 +285,9 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
     List<Widget> children = [];
     for (int index = 0; index < svt.profiles.length; index++) {
       final profile = svt.profiles[index];
-      if (profile.descriptionJp?.isNotEmpty != true &&
-          profile.description?.isNotEmpty != true) {
+      if (profile.description?.isNotEmpty != true &&
+          profile.descriptionJp?.isNotEmpty != true &&
+          profile.descriptionEn?.isNotEmpty != true) {
         continue;
       }
       String title;
@@ -318,7 +310,9 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
             break;
         }
       }
-
+      String condition = LocalizedText(
+              chs: profile.condition, jpn: null, eng: profile.conditionEn)
+          .ofPrimary(lang ?? Language.current);
       children.add(Card(
         margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         color: Theme.of(context).cardColor.withOpacity(0.975),
@@ -328,10 +322,15 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
           children: <Widget>[
             CustomTile(
               title: Text(title),
-              subtitle:
-                  profile.lCondition.isEmpty ? null : Text(profile.lCondition),
+              subtitle: condition.isEmpty ? null : Text(condition),
             ),
-            CustomTile(subtitle: Text(profile.lDescription)),
+            CustomTile(
+              subtitle: Text((LocalizedText(
+                      chs: profile.description,
+                      jpn: profile.descriptionJp,
+                      eng: profile.descriptionEn)
+                  .ofPrimary(lang ?? Language.current))),
+            ),
           ],
         ),
       ));
@@ -345,7 +344,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
       if (ce == null) {
         return Container();
       } else {
-        return CraftDetailBasePage(ce: ce, useLangCn: useLangCn);
+        return CraftDetailBasePage(ce: ce, lang: lang);
       }
     } else {
       return Center(child: Text(S.of(context).hint_no_bond_craft));
@@ -359,7 +358,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
         itemBuilder: (context, index) {
           final ce = db.gameData.crafts[svt.valentineCraft[index]];
           if (ce == null) return Container();
-          return CraftDetailBasePage(ce: ce, useLangCn: useLangCn);
+          return CraftDetailBasePage(ce: ce, lang: lang);
         },
         separatorBuilder: (context, index) => Divider(height: 20),
         itemCount: svt.valentineCraft.length,

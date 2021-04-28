@@ -241,6 +241,7 @@ class FilterGroup extends StatelessWidget {
   final bool showMatchAll;
   final bool showInvert;
   final bool useRadio;
+  final bool shrinkWrap;
   final void Function(FilterGroupData optionData)? onFilterChanged;
 
   final bool combined;
@@ -255,6 +256,7 @@ class FilterGroup extends StatelessWidget {
     this.showMatchAll = false,
     this.showInvert = false,
     this.useRadio = false,
+    this.shrinkWrap = false,
     this.onFilterChanged,
     this.combined = false,
     this.padding = const EdgeInsets.symmetric(horizontal: 12),
@@ -285,6 +287,7 @@ class FilterGroup extends StatelessWidget {
         selected: values.options[key] ?? false,
         value: key,
         child: optionBuilder == null ? Text('$key') : optionBuilder!(key),
+        shrinkWrap: shrinkWrap,
         borderRadius: combined
             ? BorderRadius.horizontal(
                 left: Radius.circular(index == 0 ? 3 : 0),
@@ -360,6 +363,7 @@ class FilterOption<T> extends StatelessWidget {
   final Color? unselectedColor;
   final Color? selectedTextColor;
   final BorderRadius borderRadius;
+  final bool shrinkWrap;
 
   FilterOption({
     Key? key,
@@ -371,6 +375,7 @@ class FilterOption<T> extends StatelessWidget {
     this.unselectedColor,
     this.selectedTextColor = Colors.white,
     this.borderRadius = const BorderRadius.all(Radius.circular(3)),
+    this.shrinkWrap = false,
   }) : super(key: key);
 
   @override
@@ -378,27 +383,23 @@ class FilterOption<T> extends StatelessWidget {
     final _selectedColor = selectedColor ?? Theme.of(context).primaryColor;
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: 30),
-      child: ButtonTheme(
-        height: 20,
-        minWidth: 30,
-        padding: EdgeInsets.zero,
-        child: OutlinedButton(
-          onPressed: () {
-            if (onChanged != null) {
-              onChanged!(!selected);
-            }
-          },
-          style: OutlinedButton.styleFrom(
-            primary: selected ? Colors.white : Colors.black,
-            backgroundColor: selected ? _selectedColor : unselectedColor,
-            // minimumSize: Size(6, 4),
-            // padding: EdgeInsets.symmetric(horizontal: 5),
-            textStyle: TextStyle(fontWeight: FontWeight.normal),
-            shape: ContinuousRectangleBorder(borderRadius: borderRadius),
-          ),
-          child: child ?? Text(value.toString()),
-          // shape: ,
+      child: OutlinedButton(
+        onPressed: () {
+          if (onChanged != null) {
+            onChanged!(!selected);
+          }
+        },
+        style: OutlinedButton.styleFrom(
+          primary: selected ? Colors.white : Colors.black,
+          backgroundColor: selected ? _selectedColor : unselectedColor,
+          minimumSize: shrinkWrap ? Size(2, 2) : null,
+          padding: shrinkWrap ? EdgeInsets.all(0) : null,
+          textStyle: TextStyle(fontWeight: FontWeight.normal),
+          // tapTargetSize: tapTargetSize,
+          shape: ContinuousRectangleBorder(borderRadius: borderRadius),
         ),
+        child: child ?? Text(value.toString()),
+        // shape: ,
       ),
     );
   }

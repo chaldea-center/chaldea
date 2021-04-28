@@ -58,6 +58,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
         leading: BackButton(),
         title: AutoSizeText(Item.localizedNameOf(widget.itemKey), maxLines: 1),
         centerTitle: false,
+        titleSpacing: 0,
         actions: <Widget>[
           if (curTab == 0) viewTypeButton,
           if (curTab == 0 || curTab == 3) sortButton,

@@ -113,14 +113,15 @@ class ClassName {
       ];
 }
 
-T localizeNoun<T>(T? nameCn, T? nameJp, T? nameEn, [T k()?]) {
-  T? name;
-  name = Language.isCN
-      ? nameCn
-      : Language.isEN
-          ? nameEn
-          : nameJp;
-  name ??= nameJp ?? nameCn ?? k?.call();
+T localizeNoun<T>(T? nameCn, T? nameJp, T? nameEn,
+    {T k()?, Language? primary}) {
+  primary ??= Language.current;
+  List<T?> names = primary == Language.chs
+      ? [nameCn, nameJp, nameEn]
+      : primary == Language.eng
+          ? [nameEn, nameJp, nameCn]
+          : [nameJp, nameCn, nameEn];
+  T? name = names[0] ?? names[1] ?? names[2] ?? k?.call();
   // assert(name != null,
   //     'null for every localized value: $nameCn,$nameJp,$nameEn,$k');
   if (T == String) {

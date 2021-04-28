@@ -29,5 +29,11 @@ class Localized {
         LocalizedText(chs: '未遭遇', jpn: '', eng: ''),
         LocalizedText(chs: '已遭遇', jpn: '', eng: ''),
         LocalizedText(chs: '已契约', jpn: '', eng: ''),
+        LocalizedText(chs: '普通概念礼装', jpn: '', eng: 'General CE'),
+        LocalizedText(chs: '纪念概念礼装', jpn: '', eng: 'Gift CE'),
+        LocalizedText(chs: '概念礼装EXP卡', jpn: '', eng: 'EXP CE'),
+        LocalizedText(chs: '魔力棱镜兑换概念礼装', jpn: '', eng: 'Mana Prism Shop CE'),
+        LocalizedText(chs: '情人节概念礼装', jpn: '', eng: 'Valentine CE'),
+        LocalizedText(chs: '羁绊概念礼装', jpn: '', eng: 'Bond CE'),
       ]);
 }

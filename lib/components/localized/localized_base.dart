@@ -4,19 +4,22 @@ import 'package:chaldea/components/extensions.dart';
 export 'package:chaldea/components/constants.dart' show Language;
 
 class LocalizedText {
-  final String chs;
+  final String? _chs;
   final String? _jpn;
   final String? _eng;
+
+  String get chs => _chs ?? '';
 
   String get jpn => _jpn?.isNotEmpty == true ? _jpn! : chs;
 
   String get eng => _eng?.isNotEmpty == true ? _eng! : jpn;
 
   const LocalizedText({
-    required this.chs,
+    required String? chs,
     required String? jpn,
     required String? eng,
-  })  : _jpn = jpn,
+  })  : _chs = chs,
+        _jpn = jpn,
         _eng = eng;
 
   String get localized {

@@ -1,3 +1,8 @@
+## 1.4.0
+- English content from fandom
+  - servant, craft essence, command code
+  - not support: event, summon, mystic code, quest
+
 ## 1.3.12
 - fix android app auto-update
 - fix windows userdata link

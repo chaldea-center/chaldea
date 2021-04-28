@@ -1,4 +1,6 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/shared/lang_switch.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CmdCodeDetailPage extends StatefulWidget {
@@ -13,14 +15,14 @@ class CmdCodeDetailPage extends StatefulWidget {
 }
 
 class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
-  bool useLangCn = false;
+  late Language lang;
   late CommandCode code;
 
   @override
   void initState() {
     super.initState();
     code = widget.code;
-    useLangCn = Language.isCN;
+    lang = Language.current;
   }
 
   @override
@@ -28,56 +30,16 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: Text(code.localizedName),
+        title: AutoSizeText(code.localizedName, maxLines: 1),
+        titleSpacing: 0,
         actions: [_popupButton],
       ),
       body: Column(
         children: <Widget>[
           Expanded(
-            child: CmdCodeDetailBasePage(code: code, useLangCn: useLangCn),
+            child: CmdCodeDetailBasePage(code: code, lang: lang),
           ),
-          ButtonBar(alignment: MainAxisAlignment.center, children: [
-            ToggleButtons(
-              constraints: BoxConstraints(),
-              selectedColor: Colors.white,
-              fillColor: Theme.of(context).primaryColor,
-              onPressed: (i) {
-                setState(() {
-                  useLangCn = i == 0;
-                });
-              },
-              children: List.generate(
-                  2,
-                  (i) => Padding(
-                        padding: EdgeInsets.all(6),
-                        child: Text(['中', '日'][i]),
-                      )),
-              isSelected: List.generate(2, (i) => useLangCn == (i == 0)),
-            ),
-            for (var i = 0; i < 2; i++)
-              ElevatedButton(
-                onPressed: () {
-                  CommandCode? nextCode;
-                  if (widget.onSwitch != null) {
-                    // if navigated from filter list, let filter list decide which is the next one
-                    nextCode = widget.onSwitch!(code, i == 1);
-                  } else {
-                    nextCode = db.gameData.cmdCodes[code.no + [-1, 1][i]];
-                  }
-                  if (nextCode == null) {
-                    EasyLoading.showToast(S.of(context).list_end_hint(i == 0));
-                  } else {
-                    setState(() {
-                      code = nextCode!;
-                    });
-                  }
-                },
-                child: Text(
-                    [S.of(context).previous_card, S.of(context).next_card][i]),
-                style: ElevatedButton.styleFrom(
-                    textStyle: TextStyle(fontWeight: FontWeight.normal)),
-              ),
-          ])
+          _buttonBar,
         ],
       ),
     );
@@ -106,14 +68,49 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
       },
     );
   }
+
+  Widget get _buttonBar {
+    return ButtonBar(alignment: MainAxisAlignment.center, children: [
+      ProfileLangSwitch(
+        primary: lang,
+        onChanged: (v) {
+          setState(() {
+            lang = v;
+          });
+        },
+      ),
+      for (var i = 0; i < 2; i++)
+        ElevatedButton(
+          onPressed: () {
+            CommandCode? nextCode;
+            if (widget.onSwitch != null) {
+              // if navigated from filter list, let filter list decide which is the next one
+              nextCode = widget.onSwitch!(code, i == 1);
+            } else {
+              nextCode = db.gameData.cmdCodes[code.no + [-1, 1][i]];
+            }
+            if (nextCode == null) {
+              EasyLoading.showToast(S.of(context).list_end_hint(i == 0));
+            } else {
+              setState(() {
+                code = nextCode!;
+              });
+            }
+          },
+          child:
+              Text([S.of(context).previous_card, S.of(context).next_card][i]),
+          style: ElevatedButton.styleFrom(
+              textStyle: TextStyle(fontWeight: FontWeight.normal)),
+        ),
+    ]);
+  }
 }
 
 class CmdCodeDetailBasePage extends StatelessWidget {
   final CommandCode code;
-  final bool useLangCn;
+  final Language? lang;
 
-  const CmdCodeDetailBasePage(
-      {Key? key, required this.code, this.useLangCn = false})
+  const CmdCodeDetailBasePage({Key? key, required this.code, this.lang})
       : super(key: key);
 
   @override
@@ -221,7 +218,9 @@ class CmdCodeDetailBasePage extends StatelessWidget {
           CustomTableRow(
             children: [
               TableCellData(
-                text: code.lDescription,
+                text: localizeNoun(
+                    code.description, code.descriptionJp, code.descriptionEn,
+                    k: () => '???', primary: lang),
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               )
@@ -253,7 +252,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
     if (characters.isEmpty) return '-';
     return characters.map((e) {
       final svt =
-          db.gameData.servants.values.firstWhereOrNull((s) => s.mcLink == e);
+      db.gameData.servants.values.firstWhereOrNull((s) => s.mcLink == e);
       return svt?.info.localizedName ?? e;
     }).join(', ');
   }

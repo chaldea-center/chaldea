@@ -526,9 +526,9 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
     }
     if (!Language.isCN) {
       children.add(ListTile(
-        title: Text('If your language is English or Japanese'),
+        title: Text('For English/Japanese user'),
         subtitle: Text('You can send feedback to let me know/vote:\n'
-            ' - which part of localization is the most important for you\n'
+            ' - which part of localization should be improved first\n'
             ' - any translation mistake\n'
             '\nThanks. And collaboration is welcome.'),
       ));
