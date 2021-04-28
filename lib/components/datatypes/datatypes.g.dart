@@ -985,8 +985,7 @@ Servant _$ServantFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$ServantToJson(Servant instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'no': instance.no,
       'svtId': instance.svtId,
       'mcLink': instance.mcLink,
@@ -1041,8 +1040,10 @@ ServantBaseInfo _$ServantBaseInfoFromJson(Map<String, dynamic> json) {
       isTDNS: $checkedConvert(json, 'isTDNS', (v) => v as bool),
       cv: $checkedConvert(json, 'cv',
           (v) => (v as List<dynamic>).map((e) => e as String).toList()),
-      cvJp: $checkedConvert(json, 'cvJp', (v) => v as String?),
-      cvEn: $checkedConvert(json, 'cvEn', (v) => v as String?),
+      cvJp: $checkedConvert(json, 'cvJp',
+          (v) => (v as List<dynamic>).map((e) => e as String).toList()),
+      cvEn: $checkedConvert(json, 'cvEn',
+          (v) => (v as List<dynamic>).map((e) => e as String).toList()),
       alignments: $checkedConvert(json, 'alignments',
           (v) => (v as List<dynamic>).map((e) => e as String).toList()),
       traits: $checkedConvert(json, 'traits',

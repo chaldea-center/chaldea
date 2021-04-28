@@ -274,8 +274,8 @@ class ServantBaseInfo {
   bool isWeakToEA;
   bool isTDNS;
   List<String> cv;
-  String? cvJp;
-  String? cvEn;
+  List<String> cvJp;
+  List<String> cvEn;
   List<String> alignments;
   List<String> traits;
   Map<String, String> ability;
@@ -349,7 +349,8 @@ class ServantBaseInfo {
   String get lIllustrator =>
       localizeNoun(illustrator, illustratorJp, illustratorEn);
 
-  String get lCV => localizeNoun(cv.join(' & '), cvJp, cvEn);
+  List<String> get lCV =>
+      localizeNoun<List<String>>(cv, cvJp, cvEn, () => <String>[]);
 
   factory ServantBaseInfo.fromJson(Map<String, dynamic> data) =>
       _$ServantBaseInfoFromJson(data);
@@ -460,7 +461,7 @@ class SvtProfileData {
   });
 
   String get lDescription =>
-      localizeNoun(description, descriptionJp, descriptionEn, '???');
+      localizeNoun(description, descriptionJp, descriptionEn, () => '???');
 
   String get lCondition => localizeNoun(condition, null, conditionEn);
 

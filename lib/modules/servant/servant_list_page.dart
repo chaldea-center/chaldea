@@ -62,8 +62,8 @@ class ServantListPageState extends State<ServantListPage> {
         svt.no.toString(),
         svt.mcLink,
         ...svt.info.cv,
-        svt.info.cvJp ?? '',
-        svt.info.cvEn ?? '',
+        ...svt.info.cvJp,
+        ...svt.info.cvEn,
         svt.info.name,
         svt.info.nameJp,
         svt.info.nameEn,
@@ -296,8 +296,16 @@ class ServantListPageState extends State<ServantListPage> {
             ? null
             : FloatingActionButton(
                 child: Icon(Icons.arrow_upward),
-                onPressed: () {
+          onPressed: () async {
                   _scrollController.jumpTo(0);
+                  for (var svt in shownList.sublist(10)) {
+                    print('push ${svt.mcLink}');
+                    SplitRoute.push(
+                        context: context,
+                        builder: (ctx, _) => ServantDetailPage(svt));
+                    await Future.delayed(Duration(milliseconds: 400));
+                    Navigator.pop(context);
+                  }
                 },
               ),
         body: buildOverview(),

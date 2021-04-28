@@ -113,18 +113,20 @@ class ClassName {
       ];
 }
 
-String localizeNoun(String? nameCn, String? nameJp, String? nameEn,
-    [String? k]) {
-  String? name;
+T localizeNoun<T>(T? nameCn, T? nameJp, T? nameEn, [T k()?]) {
+  T? name;
   name = Language.isCN
       ? nameCn
       : Language.isEN
           ? nameEn
           : nameJp;
-  name ??= nameJp ?? nameCn ?? k;
+  name ??= nameJp ?? nameCn ?? k?.call();
   // assert(name != null,
   //     'null for every localized value: $nameCn,$nameJp,$nameEn,$k');
-  return name ?? '';
+  if (T == String) {
+    return name ?? '' as T;
+  }
+  return name!;
 }
 
 class Constants {

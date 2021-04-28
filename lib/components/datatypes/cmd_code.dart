@@ -56,7 +56,7 @@ class CommandCode {
 
   String get localizedName => localizeNoun(name, nameJp, nameEn);
 
-  String get localizedIllustrators =>
+  String get lIllustrators =>
       localizeNoun(illustrators.join(' & '), illustratorsJp, illustratorsEn);
 
   String get lSkill => localizeNoun(skill, null, skillEn);

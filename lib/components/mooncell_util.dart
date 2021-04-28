@@ -89,14 +89,14 @@ class MooncellUtil {
             if (fileResponse.statusCode == 200) {
               File file = File(savePath);
               await file.writeAsBytes(fileResponse.data, flush: true);
-              logger.i('downloaded $url to $savePath');
+              // logger.i('downloaded $url to $savePath');
             } else {
               throw HttpException('HTTP ${fileResponse.statusCode}',
                   uri: Uri.tryParse(url));
             }
           }
         }
-        print('mc file: $filename -> $url');
+        // print('mc file: $filename -> $url');
         return url;
       } catch (e) {
         logger.e('error download $filename', e);

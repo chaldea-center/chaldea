@@ -29,15 +29,7 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
       appBar: AppBar(
         leading: BackButton(),
         title: Text(code.localizedName),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.link),
-            tooltip: S.of(context).jump_to('Mooncell'),
-            onPressed: () {
-              launch(MooncellUtil.fullLink(code.mcLink));
-            },
-          )
-        ],
+        actions: [_popupButton],
       ),
       body: Column(
         children: <Widget>[
@@ -90,6 +82,30 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
       ),
     );
   }
+
+  Widget get _popupButton {
+    return PopupMenuButton(
+      itemBuilder: (context) {
+        return [
+          PopupMenuItem<String>(
+            child: Text(S.of(context).jump_to('Mooncell')),
+            value: 'jump_mc',
+          ),
+          PopupMenuItem<String>(
+            child: Text(S.of(context).jump_to('Fandom')),
+            value: 'jump_fandom',
+          ),
+        ];
+      },
+      onSelected: (select) {
+        if (select == 'jump_mc') {
+          launch(MooncellUtil.fullLink(code.mcLink));
+        } else if (select == 'jump_fandom') {
+          launch(MooncellUtil.fandomFullLink(code.nameEn));
+        }
+      },
+    );
+  }
 }
 
 class CmdCodeDetailBasePage extends StatelessWidget {
@@ -132,7 +148,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                     CustomTableRow(children: [
                       TableCellData(
                           text: S.of(context).illustrator, isHeader: true),
-                      TableCellData(text: code.localizedIllustrators, flex: 3)
+                      TableCellData(text: code.lIllustrators, flex: 3)
                     ]),
                     CustomTableRow(children: [
                       TableCellData(text: S.of(context).rarity, isHeader: true),

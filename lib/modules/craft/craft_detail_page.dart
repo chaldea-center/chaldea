@@ -46,16 +46,10 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
             icon: status == 1
                 ? Icon(Icons.favorite)
                 : status == 2
-                ? Icon(Icons.favorite, color: Colors.redAccent)
-                : Icon(Icons.favorite_outline),
+                    ? Icon(Icons.favorite, color: Colors.redAccent)
+                    : Icon(Icons.favorite_outline),
           ),
-          IconButton(
-            icon: Icon(Icons.link),
-            tooltip: S.of(context).jump_to('Mooncell'),
-            onPressed: () {
-              launch(MooncellUtil.fullLink(ce.mcLink));
-            },
-          )
+          _popupButton,
         ],
       ),
       body: Column(
@@ -112,6 +106,30 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
       ),
     );
   }
+
+  Widget get _popupButton {
+    return PopupMenuButton(
+      itemBuilder: (context) {
+        return [
+          PopupMenuItem<String>(
+            child: Text(S.of(context).jump_to('Mooncell')),
+            value: 'jump_mc',
+          ),
+          PopupMenuItem<String>(
+            child: Text(S.of(context).jump_to('Fandom')),
+            value: 'jump_fandom',
+          ),
+        ];
+      },
+      onSelected: (select) {
+        if (select == 'jump_mc') {
+          launch(MooncellUtil.fullLink(ce.mcLink));
+        } else if (select == 'jump_fandom') {
+          launch(MooncellUtil.fandomFullLink(ce.nameEn));
+        }
+      },
+    );
+  }
 }
 
 class CraftDetailBasePage extends StatelessWidget {
@@ -160,7 +178,7 @@ class CraftDetailBasePage extends StatelessWidget {
                       TableCellData(
                           text: S.of(context).illustrator, isHeader: true),
                       TableCellData(
-                          text: ce.localizedIllustrators, flex: 3, maxLines: 1)
+                          text: ce.lIllustrators, flex: 3, maxLines: 1)
                     ]),
                     CustomTableRow(children: [
                       TableCellData(text: S.of(context).rarity, isHeader: true),

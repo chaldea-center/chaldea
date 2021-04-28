@@ -78,8 +78,8 @@ class CraftEssence {
 
   String get localizedName => localizeNoun(name, nameJp, nameEn);
 
-  String get localizedIllustrators =>
-      localizeNoun(illustrators.join(' & '), illustratorsJp, illustratorsEn);
+  String get lIllustrators =>
+      localizeNoun(illustrators.join(', '), illustratorsJp, illustratorsEn);
 
   String get lSkill => localizeNoun(skill, null, skillEn);
 

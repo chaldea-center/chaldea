@@ -20,14 +20,17 @@ class _CvListPageState extends State<CvListPage> {
     super.initState();
     _scrollController = ScrollController();
     for (var svt in db.gameData.servants.values) {
-      if (svt.info.cv.isEmpty) {
+      List<String> cvs = svt.info.lCV;
+      if (cvs.isEmpty) cvs = svt.info.cv;
+      if (cvs.isEmpty) {
         cvMap.putIfAbsent(unknown, () => []).add(svt);
       }
-      for (var cv in svt.info.cv) {
+      for (var cv in cvs) {
         cvMap.putIfAbsent(cv, () => []).add(svt);
       }
     }
     cvMap = sortDict<String, List<Servant>>(cvMap, compare: (a, b) {
+      if (Language.isEN) return a.key.compareTo(b.key);
       return PinyinHelper.getPinyin(a.key)
           .compareTo(PinyinHelper.getPinyin(b.key));
     });
@@ -102,23 +105,19 @@ class _IllustratorListPageState extends State<IllustratorListPage> {
     super.initState();
     _scrollController = ScrollController();
     db.gameData.servants.values.forEach((svt) {
-      svtMap.putIfAbsent(svt.info.illustrator, () => []).add(svt);
+      svtMap.putIfAbsent(svt.info.lIllustrator, () => []).add(svt);
     });
     db.gameData.crafts.values.forEach((craft) {
-      if (craft.illustrators.isEmpty) {
-        craftMap.putIfAbsent(unknown, () => []).add(craft);
-      }
-      craft.illustrators.forEach((illustrator) {
-        craftMap.putIfAbsent(illustrator, () => []).add(craft);
-      });
+      String illus = craft.lIllustrators;
+      if (illus.isEmpty) illus = craft.illustrators.join(', ');
+      if (illus.isEmpty) illus = unknown;
+      craftMap.putIfAbsent(illus, () => []).add(craft);
     });
     db.gameData.cmdCodes.values.forEach((code) {
-      if (code.illustrators.isEmpty) {
-        codeMap.putIfAbsent(unknown, () => []).add(code);
-      }
-      code.illustrators.forEach((illustrator) {
-        codeMap.putIfAbsent(illustrator, () => []).add(code);
-      });
+      String illus = code.lIllustrators;
+      if (illus.isEmpty) illus = code.illustrators.join(', ');
+      if (illus.isEmpty) illus = unknown;
+      codeMap.putIfAbsent(illus, () => []).add(code);
     });
 
     illustrators
@@ -127,6 +126,7 @@ class _IllustratorListPageState extends State<IllustratorListPage> {
       ..addAll(codeMap.keys);
     illustrators = illustrators.toSet().toList();
     illustrators.sort((a, b) {
+      if (Language.isEN) return a.compareTo(b);
       return PinyinHelper.getPinyin(a).compareTo(PinyinHelper.getPinyin(b));
     });
   }
