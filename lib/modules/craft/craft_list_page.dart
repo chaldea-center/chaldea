@@ -15,6 +15,8 @@ class CraftListPage extends StatefulWidget {
 class CraftListPageState extends State<CraftListPage> {
   CraftFilterData get filterData => db.userData.craftFilter;
   List<CraftEssence> shownList = [];
+
+  bool _showSearch = false;
   late TextEditingController _inputController;
   late ScrollController _scrollController;
   late FocusNode _inputFocusNode;
@@ -109,49 +111,8 @@ class CraftListPageState extends State<CraftListPage> {
       appBar: AppBar(
         title: Text(S.of(context).craft_essence),
         leading: MasterBackButton(),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(45),
-          child: Theme(
-            data: Theme.of(context).copyWith(primaryColor: Colors.grey),
-            child: Container(
-                height: 45,
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
-                child: TextField(
-                  focusNode: _inputFocusNode,
-                  controller: _inputController,
-                  style: TextStyle(fontSize: 14),
-                  decoration: InputDecoration(
-                      isDense: true,
-                      filled: true,
-                      contentPadding: EdgeInsets.zero,
-                      border: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              width: 0, style: BorderStyle.none),
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      fillColor: Colors.white,
-                      hintText: 'Search',
-                      prefixIcon: Icon(Icons.search, size: 20),
-                      suffixIcon: IconButton(
-                        padding: EdgeInsets.zero,
-                        icon: Icon(Icons.clear, size: 20),
-                        onPressed: () {
-                          setState(() {
-                            _inputController.text = '';
-                            filterData.filterString = '';
-                          });
-                        },
-                      )),
-                  onChanged: (s) {
-                    setState(() {
-                      filterData.filterString = s;
-                    });
-                  },
-                  onSubmitted: (s) {
-                    FocusScope.of(context).unfocus();
-                  },
-                )),
-          ),
-        ),
+        bottom: _showSearch ? _searchBar : null,
+        titleSpacing: 0,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.filter_alt),
@@ -161,13 +122,69 @@ class CraftListPageState extends State<CraftListPage> {
               builder: (context) => CraftFilterPage(
                   filterData: filterData, onChanged: onFilterChanged),
             ),
-          )
+          ),
+          IconButton(
+            onPressed: () {
+              setState(() {
+                _showSearch = !_showSearch;
+                if (!_showSearch)
+                  filterData.filterString = _inputController.text = '';
+              });
+            },
+            icon: Icon(Icons.search),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.arrow_upward),
           onPressed: () => _scrollController.jumpTo(0)),
       body: db.streamBuilder((context) => buildOverview()),
+    );
+  }
+
+  PreferredSizeWidget get _searchBar {
+    return PreferredSize(
+      preferredSize: Size.fromHeight(45),
+      child: Theme(
+        data: Theme.of(context).copyWith(primaryColor: Colors.grey),
+        child: Container(
+            height: 45,
+            padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+            child: TextField(
+              focusNode: _inputFocusNode,
+              controller: _inputController,
+              style: TextStyle(fontSize: 14),
+              decoration: InputDecoration(
+                  isDense: true,
+                  filled: true,
+                  contentPadding: EdgeInsets.zero,
+                  border: OutlineInputBorder(
+                      borderSide:
+                          const BorderSide(width: 0, style: BorderStyle.none),
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  fillColor: Colors.white,
+                  hintText: 'Search',
+                  prefixIcon: Icon(Icons.search, size: 20),
+                  suffixIcon: IconButton(
+                    padding: EdgeInsets.zero,
+                    icon: Icon(Icons.clear, size: 20),
+                    onPressed: () {
+                      setState(() {
+                        _inputController.text = '';
+                        filterData.filterString = '';
+                      });
+                    },
+                  )),
+              onChanged: (s) {
+                setState(() {
+                  filterData.filterString = s;
+                });
+              },
+              onSubmitted: (s) {
+                FocusScope.of(context).unfocus();
+              },
+            )),
+      ),
     );
   }
 
@@ -253,21 +270,22 @@ class CraftListPageState extends State<CraftListPage> {
       children.add(AspectRatio(
         aspectRatio: 132 / 144,
         child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
-            child: GestureDetector(
-              child: db.getIconImage(ce.icon),
-              onTap: () {
-                SplitRoute.push(
-                  context: context,
-                  builder: (context, _) =>
-                      CraftDetailPage(ce: ce, onSwitch: switchNext),
-                  popDetail: true,
-                );
-                setState(() {
-                  _selectedNo = ce.no;
-                });
-              },
-            )),
+          padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+          child: GestureDetector(
+            child: db.getIconImage(ce.icon),
+            onTap: () {
+              SplitRoute.push(
+                context: context,
+                builder: (context, _) =>
+                    CraftDetailPage(ce: ce, onSwitch: switchNext),
+                popDetail: true,
+              );
+              setState(() {
+                _selectedNo = ce.no;
+              });
+            },
+          ),
+        ),
       ));
     }
     if (shownList.length % 5 == 0) {
