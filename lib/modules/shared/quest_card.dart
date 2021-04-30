@@ -12,7 +12,13 @@ class QuestCard extends StatefulWidget {
 
 class _QuestCardState extends State<QuestCard> {
   Quest get quest => widget.quest;
-  bool showTrueName = false;
+  late bool showTrueName;
+
+  @override
+  void initState() {
+    super.initState();
+    showTrueName = !Language.isCN;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -179,12 +185,14 @@ class _QuestCardState extends State<QuestCard> {
       if (enemy == null) return Container();
       List<Widget> lines = [];
       for (int i = 0; i < enemy.hp.length; i++) {
-        final String? name = showTrueName
+        final String? name = getEnemyName(showTrueName
             ? enemy.name[i]
-            : (enemy.shownName[i] ?? enemy.name[i]);
+            : (enemy.shownName[i] ?? enemy.name[i]));
         if (name?.isNotEmpty == true)
           lines.add(AutoSizeText(name!,
-              maxFontSize: 14, maxLines: 1, textAlign: TextAlign.center));
+              maxFontSize: 14,
+              maxLines: Language.isCN ? 1 : 2,
+              textAlign: TextAlign.center));
         lines.add(Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -268,5 +276,18 @@ class _QuestCardState extends State<QuestCard> {
               ))
           .toList(),
     );
+  }
+
+  static String? getEnemyName(String? name) {
+    if (name == null) return null;
+    String name2 = Localized.enemy.of(name.split(' ').first);
+    if (name == name2) {
+      name2 = db.gameData.servants.values
+              .firstWhereOrNull((svt) => svt.mcLink == name)
+              ?.info
+              .localizedName ??
+          name2;
+    }
+    return name2;
   }
 }

@@ -35,7 +35,13 @@
 ## Docs
 - [ ] Tutorials
 - [ ] English/Japanese Translation - **Help Wanted**
-- [ ] English/Japanese Game Data - possible?
+- [ ] English/Japanese Game Data
+  - [x] Servant
+  - [x] CE/Command Code
+  - [ ] Mystic Code
+  - [ ] Event
+  - [ ] Summon
+  - [ ] Quest
 
 ## UI
 毫无艺术细胞，有生之年

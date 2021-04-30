@@ -250,7 +250,8 @@ class CraftListPageState extends State<CraftListPage> {
   Widget _buildGridView() {
     List<Widget> children = [];
     for (var ce in shownList) {
-      children.add(Center(
+      children.add(AspectRatio(
+        aspectRatio: 132 / 144,
         child: Padding(
             padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
             child: GestureDetector(
@@ -277,7 +278,7 @@ class CraftListPageState extends State<CraftListPage> {
         int crossCount = constraints.maxWidth ~/ 72;
         return GridView.count(
           crossAxisCount: crossCount,
-          childAspectRatio: 1,
+          childAspectRatio: 130 / 144,
           controller: _scrollController,
           padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
           children: children,

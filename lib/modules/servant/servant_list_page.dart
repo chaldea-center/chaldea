@@ -296,7 +296,7 @@ class ServantListPageState extends State<ServantListPage> {
             ? null
             : FloatingActionButton(
                 child: Icon(Icons.arrow_upward),
-          onPressed: () async {
+                onPressed: () async {
                   _scrollController.jumpTo(0);
                   for (var svt in shownList.sublist(10)) {
                     print('push ${svt.mcLink}');
@@ -432,41 +432,46 @@ class ServantListPageState extends State<ServantListPage> {
     List<Widget> children = [];
     for (var svt in shownList) {
       final status = db.curUser.svtStatusOf(svt.no);
-      children.add(Center(
+      Widget Function(TextStyle)? textBuilder;
+      if (status.curVal.favorite) {
+        textBuilder = (style) {
+          return RichText(
+            text: TextSpan(text: '', style: style, children: [
+              WidgetSpan(
+                style: style,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.white,
+                        blurRadius: 3,
+                        spreadRadius: 1,
+                      )
+                    ],
+                  ),
+                  child: db.getIconImage('宝具强化', width: 13, height: 13),
+                ),
+              ),
+              TextSpan(text: status.npLv.toString()),
+              TextSpan(
+                  text: '\n${status.curVal.ascension}-' +
+                      status.curVal.skills.join('/'))
+            ]),
+          );
+        };
+      }
+      children.add(AspectRatio(
+        aspectRatio: 132 / 144,
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
           child: ImageWithText(
             image: db.getIconImage(svt.icon),
             shadowSize: 4,
-            textBuilder: (style) {
-              return RichText(
-                text: TextSpan(text: '', style: style, children: [
-                  WidgetSpan(
-                    style: style,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.white,
-                            blurRadius: 3,
-                            spreadRadius: 1,
-                          )
-                        ],
-                      ),
-                      child: db.getIconImage('宝具强化', width: 13, height: 13),
-                    ),
-                  ),
-                  TextSpan(text: status.npLv.toString()),
-                  TextSpan(
-                      text: '\n${status.curVal.ascension}-' +
-                          status.curVal.skills.join('/'))
-                ]),
-              );
-            },
+            textBuilder: textBuilder,
             textStyle: TextStyle(fontSize: 11, color: Colors.black),
             alignment: AlignmentDirectional.bottomStart,
-            padding: EdgeInsets.fromLTRB(4, 0, 8, 0),
+            padding: EdgeInsets.fromLTRB(2, 0, 0, 2),
             onTap: () => _onTapSvt(svt),
           ),
         ),
@@ -481,7 +486,7 @@ class ServantListPageState extends State<ServantListPage> {
         int crossCount = constraints.maxWidth ~/ 72;
         return GridView.count(
           crossAxisCount: crossCount,
-          childAspectRatio: 1,
+          childAspectRatio: 130 / 144,
           controller: _scrollController,
           padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
           children: children,

@@ -48,8 +48,8 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
             icon: status == 1
                 ? Icon(Icons.favorite)
                 : status == 2
-                ? Icon(Icons.favorite, color: Colors.redAccent)
-                : Icon(Icons.favorite_outline),
+                    ? Icon(Icons.favorite, color: Colors.redAccent)
+                    : Icon(Icons.favorite_outline),
           ),
           _popupButton,
         ],
@@ -57,11 +57,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
       body: Column(
         children: <Widget>[
           Expanded(
-              child: CraftDetailBasePage(
-                ce: ce,
-            lang: lang,
-            showSummon: true,
-          )),
+              child: CraftDetailBasePage(ce: ce, lang: lang, showSummon: true)),
           ButtonBar(alignment: MainAxisAlignment.center, children: [
             ProfileLangSwitch(
               primary: lang,
@@ -143,7 +139,7 @@ class CraftDetailBasePage extends StatelessWidget {
           CustomTableRow(children: [
             TableCellData(
               child:
-              Text(ce.name, style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(ce.name, style: TextStyle(fontWeight: FontWeight.bold)),
               isHeader: true,
             )
           ]),
@@ -298,23 +294,23 @@ class CraftDetailBasePage extends StatelessWidget {
             CustomTableRow(children: [
               TableCellData(
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      for (var summon in summons)
-                        ListTile(
-                          title: Text(summon.localizedName, maxLines: 1),
-                          dense: true,
-                          visualDensity: VisualDensity.compact,
-                          onTap: () {
-                            SplitRoute.push(
-                              context: context,
-                              builder: (context, _) =>
-                                  SummonDetailPage(summon: summon),
-                            );
-                          },
-                        )
-                    ],
-                  ))
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (var summon in summons)
+                    ListTile(
+                      title: Text(summon.localizedName, maxLines: 1),
+                      dense: true,
+                      visualDensity: VisualDensity.compact,
+                      onTap: () {
+                        SplitRoute.push(
+                          context: context,
+                          builder: (context, _) =>
+                              SummonDetailPage(summon: summon),
+                        );
+                      },
+                    )
+                ],
+              ))
             ])
           ]
         ],
@@ -326,7 +322,7 @@ class CraftDetailBasePage extends StatelessWidget {
     if (characters.isEmpty) return '-';
     return characters.map((e) {
       final svt =
-      db.gameData.servants.values.firstWhereOrNull((s) => s.mcLink == e);
+          db.gameData.servants.values.firstWhereOrNull((s) => s.mcLink == e);
       return svt?.info.localizedName ?? e;
     }).join(', ');
   }

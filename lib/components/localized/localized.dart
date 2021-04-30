@@ -4,6 +4,8 @@ import 'localized_base.dart';
 
 part 'groups/localized_basic.dart';
 
+part 'groups/localized_enemy.dart';
+
 part 'groups/localized_master_mission.dart';
 
 class Localized {
@@ -36,4 +38,6 @@ class Localized {
         LocalizedText(chs: '情人节概念礼装', jpn: '', eng: 'Valentine CE'),
         LocalizedText(chs: '羁绊概念礼装', jpn: '', eng: 'Bond CE'),
       ]);
+
+  static LocalizedGroup get enemy => _enemy;
 }

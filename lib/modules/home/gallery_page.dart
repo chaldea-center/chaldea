@@ -522,7 +522,9 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
           db.gameData.crafts.length +
           db.gameData.cmdCodes.length +
           321;
-      int cached = Directory(db.paths.gameIconDir).listSync().length;
+      final iconDir = Directory(db.paths.gameIconDir);
+      int cached = 0;
+      if (iconDir.existsSync()) cached = iconDir.listSync().length;
       _cachedIconsRatio = cached / total;
     }
     // print('$cached/$total');

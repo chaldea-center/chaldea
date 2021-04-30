@@ -71,7 +71,7 @@ class ItemListPageState extends State<ItemListPage>
               showDialog(
                 context: context,
                 builder: (context) => ItemFilterDialog(),
-              );
+              ).then((_) => setState(() {}));
             },
           ),
           IconButton(

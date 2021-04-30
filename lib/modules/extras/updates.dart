@@ -64,6 +64,7 @@ class AutoUpdateUtil {
       final gameData = GameData.fromJson(
           Map.from(jsonDecode(File(datasetFp).readAsStringSync())));
       if (gameData.version.compareTo(db.gameData.version) > 0) {
+        await alertReload();
         String previousVer = db.gameData.version;
         String bak = db.paths.gameDataPath + '.bak';
         _deleteFileOrDir(bak);
@@ -113,13 +114,13 @@ class AutoUpdateUtil {
         return;
       }
       int newer =
-      db.gameData.version.compareTo(_dataVersion(latestRelease.name));
+          db.gameData.version.compareTo(_dataVersion(latestRelease.name));
       if (newer >= 0) {
         _reportResult(S.current.patch_gamedata_error_already_latest);
         return;
       }
       final curRelease = releases.firstWhereOrNull(
-              (release) => _dataVersion(release.name) == db.gameData.version);
+          (release) => _dataVersion(release.name) == db.gameData.version);
       if (curRelease == null) {
         print('cur version not found in server: ${db.gameData.version}');
         _reportResult(S.current.patch_gamedata_error_unknown_version);
@@ -141,6 +142,7 @@ class AutoUpdateUtil {
         final gameData = GameData.fromJson(jsonDecode(jsonEncode(newData)));
         String previousVersion = db.gameData.version;
         if (gameData.version.compareTo(previousVersion) > 0) {
+          await alertReload();
           if (db.loadGameData(gameData)) {
             File(db.paths.gameDataPath)
                 .writeAsStringSync(jsonEncode(db.gameData));
@@ -160,7 +162,8 @@ class AutoUpdateUtil {
     }
   }
 
-  Future<void> checkAppUpdate({bool background = true, bool download = false}) async {
+  Future<void> checkAppUpdate(
+      {bool background = true, bool download = false}) async {
     version = null; //1.2.3
     releaseNote = null;
     launchUrl = null; // release page, not download url
@@ -295,16 +298,29 @@ class AutoUpdateUtil {
     }
   }
 
+  static Future<void> alertReload() async {
+    await SimpleCancelOkDialog(
+      title: Text(S.current.update_dataset),
+      content: Text('Ready to reload dataset'),
+    ).showDialog(null);
+    Navigator.of(kAppKey.currentContext!).popUntil((route) => route.isFirst);
+    await Future.delayed(Duration(milliseconds: 600));
+  }
+
   Future<void> _showDialog({String? fpInstaller}) async {
     EasyLoading.dismiss();
+    String content = '';
+    if (fpInstaller != null)
+      content += LocalizedText.of(
+          chs: '安装包已下载\n',
+          jpn: 'インストールパッケージがダウンロードされました\n',
+          eng: 'Installer is downloaded\n');
+    content += S.current.about_update_app_detail(
+        AppInfo.fullVersion, (version?.version).toString(), releaseNote ?? '-');
     return SimpleCancelOkDialog(
       title: Text(S.current.about_update_app),
       content: SingleChildScrollView(
-        child: Text(
-          (fpInstaller != null ? '安装包已下载\n' : '') +
-              S.current.about_update_app_detail(AppInfo.fullVersion,
-                  (version?.version).toString(), releaseNote ?? '-'),
-        ),
+        child: Text(content),
       ),
       hideOk: true,
       wrapActionsInRow: true,
@@ -347,7 +363,12 @@ class AutoUpdateUtil {
               } else {
                 SimpleCancelOkDialog(
                   title: Text('Warning'),
-                  content: Text('安装包未通过校验，仍然安装？'),
+                  content: Text(LocalizedText.of(
+                    chs: '安装包未通过校验，仍然安装？',
+                    jpn: 'インストールパッケージは検証に失敗しましたが、それでもインストールしますか？',
+                    eng:
+                        'The installer failed the checksum verification, still install it?',
+                  )),
                   onTapOk: () {
                     _installUpdate(fpInstaller);
                   },
@@ -360,7 +381,10 @@ class AutoUpdateUtil {
             child: Text(S.current.update),
             onPressed: () async {
               Navigator.pop(context);
-              EasyLoading.showToast('后台下载中...');
+              EasyLoading.showToast(LocalizedText.of(
+                  chs: '后台下载中...',
+                  jpn: 'バックグラウンドでダウンロード...',
+                  eng: 'Downloading in the background... '));
               await Future.delayed(Duration(milliseconds: 500));
               await startDownload(background: false);
             },
@@ -377,7 +401,10 @@ class AutoUpdateUtil {
       // await InstallPlugin.installApk(saveFp, AppInfo.packageName);
     } else if (Platform.isMacOS) {
       SimpleCancelOkDialog(
-        content: Text('请解压并替换原程序'),
+        content: Text(LocalizedText.of(
+            chs: '请解压并替换原程序',
+            jpn: '元のプログラムを解凍して置き換えてください',
+            eng: 'Please unzip and replace the original app')),
         hideCancel: true,
       ).showDialog(kAppKey.currentContext!);
       final result = await OpenFile.open(dirname(fp));
@@ -392,8 +419,8 @@ class AutoUpdateUtil {
       String? exeFp = Directory(extractFolder)
           .listSync()
           .firstWhereOrNull((element) =>
-      FileSystemEntity.isFileSync(element.path) &&
-          basename(element.path).toLowerCase() == 'chaldea.exe')
+              FileSystemEntity.isFileSync(element.path) &&
+              basename(element.path).toLowerCase() == 'chaldea.exe')
           ?.path;
       if (exeFp == null) {
         throw OSError('file chaldea.exe not found');
@@ -426,7 +453,8 @@ class AutoUpdateUtil {
     }
   }
 
-  String _generateCMD(String srcDir, String destDir, String backupDir, String logFp) {
+  String _generateCMD(
+      String srcDir, String destDir, String backupDir, String logFp) {
     if (!File(logFp).existsSync()) File(logFp).createSync(recursive: true);
     StringBuffer buffer = StringBuffer();
     void _writeln(String command) {

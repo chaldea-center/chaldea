@@ -30,8 +30,13 @@ class LocalizedText {
     required String chs,
     required String? jpn,
     required String? eng,
+    Language? primary,
   }) {
-    return LocalizedText(chs: chs, jpn: jpn, eng: eng).localized;
+    final text = LocalizedText(chs: chs, jpn: jpn, eng: eng);
+    if (primary == null)
+      return text.localized;
+    else
+      return text.ofPrimary(primary);
   }
 
   String ofPrimary(Language primary) {

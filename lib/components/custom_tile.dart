@@ -233,7 +233,7 @@ class ImageWithText extends StatelessWidget {
     this.alignment = AlignmentDirectional.bottomEnd,
     this.textAlign,
     this.textStyle,
-    this.shadowSize = 3,
+    this.shadowSize = 2,
     this.onTap,
   }) : super(key: key);
 
@@ -245,44 +245,37 @@ class ImageWithText extends StatelessWidget {
     _style = _style.copyWith(fontWeight: _style.fontWeight ?? FontWeight.bold);
     return GestureDetector(
       onTap: onTap,
-      child: Center(
-        widthFactor: 1,
-        heightFactor: 1,
-        child: Stack(
-          alignment: alignment,
-          children: <Widget>[
-            applyConstraints(Padding(
-              padding: EdgeInsets.fromLTRB(
-                  -min(0.0, padding.left),
-                  -min(0.0, padding.top),
-                  -min(0.0, padding.right),
-                  -min(0.0, padding.bottom)),
-              child: Center(
-                widthFactor: 1,
-                heightFactor: 1,
-                child: image,
-              ),
-            )),
-            if (text?.isNotEmpty == true || textBuilder != null)
-              applyConstraints(
-                Padding(
-                  padding: EdgeInsets.fromLTRB(
-                      max(0.0, padding.left),
-                      max(0.0, padding.top),
-                      max(0.0, padding.right),
-                      max(0.0, padding.bottom)),
-                  child: paintOutline(
-                    text: text,
-                    builder: textBuilder,
-                    textAlign: textAlign,
-                    textStyle: _style,
-                    shadowSize: shadowSize,
-                  ),
+      child: Stack(
+        alignment: alignment,
+        children: <Widget>[
+          applyConstraints(Padding(
+            // if pad < 0
+            padding: EdgeInsets.fromLTRB(
+                -min(0.0, padding.left),
+                -min(0.0, padding.top),
+                -min(0.0, padding.right),
+                -min(0.0, padding.bottom)),
+            child: image,
+          )),
+          if (text?.isNotEmpty == true || textBuilder != null)
+            applyConstraints(
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                    max(0.0, padding.left),
+                    max(0.0, padding.top),
+                    max(0.0, padding.right),
+                    max(0.0, padding.bottom)),
+                child: paintOutline(
+                  text: text,
+                  builder: textBuilder,
+                  textAlign: textAlign,
+                  textStyle: _style,
+                  shadowSize: shadowSize,
                 ),
-                boxFit: BoxFit.scaleDown,
-              )
-          ],
-        ),
+              ),
+              boxFit: BoxFit.scaleDown,
+            )
+        ],
       ),
     );
   }
@@ -306,11 +299,10 @@ class ImageWithText extends StatelessWidget {
       return style;
     else
       return style.copyWith(
-        foreground: style.foreground ?? Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = shadowSize
-          ..color = Colors.white,
-      );
+          foreground: style.foreground ?? Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = shadowSize
+            ..color = Colors.white);
   }
 
   static Widget paintOutline({

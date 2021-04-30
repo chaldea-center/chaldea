@@ -181,7 +181,8 @@ class _UserDataPageState extends State<UserDataPage> {
     if (!checkUserPwd()) return;
     await catchErrorAsync(
       () async {
-        EasyLoading.show(status: 'uploading');
+        EasyLoading.show(
+            status: 'uploading', maskType: EasyLoadingMaskType.clear);
         var rawResp = await db.serverDio.post('/user/uploadBackup', data: {
           HttpParamKeys.username: db.prefs.userName.get(),
           HttpParamKeys.password: db.prefs.userPwd.get(),
@@ -235,7 +236,8 @@ class _UserDataPageState extends State<UserDataPage> {
           ],
         ).showDialog(context);
         if (fn == null) return;
-        EasyLoading.show(status: 'Downloading');
+        EasyLoading.show(
+            status: 'Downloading', maskType: EasyLoadingMaskType.clear);
         var rawResp2 = await db.serverDio.post('/user/downloadBackup', data: {
           HttpParamKeys.username: db.prefs.userName.get(),
           HttpParamKeys.password: db.prefs.userPwd.get(),
