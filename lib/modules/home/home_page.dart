@@ -46,7 +46,10 @@ class _HomePageState extends State<HomePage> {
                   icon: Icon(Icons.settings),
                   label: S.of(context).settings_tab_name),
             ],
-            onTap: (index) => setState(() => _curIndex = index),
+            onTap: (index) {
+              if (_curIndex != index) db.saveUserData();
+              setState(() => _curIndex = index);
+            },
           ),
         ),
       ),

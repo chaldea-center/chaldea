@@ -438,7 +438,6 @@ Map<String, dynamic> _$MainRecordToJson(MainRecord instance) =>
 ExchangeTicket _$ExchangeTicketFromJson(Map<String, dynamic> json) {
   return $checkedNew('ExchangeTicket', json, () {
     final val = ExchangeTicket(
-      days: $checkedConvert(json, 'days', (v) => v as int?),
       monthJp: $checkedConvert(json, 'monthJp', (v) => v as String),
       items: $checkedConvert(json, 'items',
           (v) => (v as List<dynamic>).map((e) => e as String).toList()),
@@ -455,7 +454,6 @@ Map<String, dynamic> _$ExchangeTicketToJson(ExchangeTicket instance) =>
       'items': instance.items,
       'monthCn': instance.monthCn,
       'monthEn': instance.monthEn,
-      'days': instance.days,
     };
 
 GameData _$GameDataFromJson(Map<String, dynamic> json) {
@@ -1478,16 +1476,15 @@ User _$UserFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$UserToJson(User instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'name': instance.name,
       'server': _$GameServerEnumMap[instance.server],
       'servants': User._servantsToJson(instance.servants),
-      'curSvtPlanNo': instance.curSvtPlanNo,
       'servantPlans': User._servantPlansToJson(instance.servantPlans),
+      'curSvtPlanNo': instance.curSvtPlanNo,
       'items': instance.items,
       'events': instance.events,
-      'crafts': instance.crafts.map((k, e) => MapEntry(k.toString(), e)),
+      'crafts': User._craftsPlanToJson(instance.crafts),
       'mysticCodes': instance.mysticCodes,
       'plannedSummons': instance.plannedSummons.toList(),
       'isMasterGirl': instance.isMasterGirl,
@@ -1624,9 +1621,10 @@ EventPlans _$EventPlansFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$EventPlansToJson(EventPlans instance) =>
     <String, dynamic>{
-      'limitEvents': instance.limitEvents,
-      'mainRecords': instance.mainRecords,
-      'exchangeTickets': instance.exchangeTickets,
+      'limitEvents': EventPlans._limitEventsToJson(instance.limitEvents),
+      'mainRecords': EventPlans._mainRecordsToJson(instance.mainRecords),
+      'exchangeTickets':
+          EventPlans._exchangeTicketsToJson(instance.exchangeTickets),
     };
 
 LimitEventPlan _$LimitEventPlanFromJson(Map<String, dynamic> json) {

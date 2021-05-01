@@ -38,21 +38,47 @@ extension GameServerUtil on GameServer {
 @JsonSerializable(checked: true)
 class User {
   String name;
-  GameServer server;
+
+  GameServer? _server;
+
+  GameServer get server {
+    if (_server == null) {
+      Language lang =
+          Language.getLanguage(db.userData.language) ?? Language.current;
+      switch (lang) {
+        case Language.eng:
+          _server = GameServer.en;
+          break;
+        case Language.jpn:
+          _server = GameServer.jp;
+          break;
+        case Language.chs:
+          _server = GameServer.cn;
+          break;
+        default:
+          _server = GameServer.cn;
+          break;
+      }
+    }
+    return _server!;
+  }
+
+  set server(GameServer value) => _server = value;
 
   @JsonKey(toJson: _servantsToJson)
   Map<int, ServantStatus> servants;
-  int curSvtPlanNo;
 
   /// Map<planNo, Map<SvtNo, SvtPlan>>
   @JsonKey(toJson: _servantPlansToJson)
   List<Map<int, ServantPlan>> servantPlans;
+  int curSvtPlanNo;
 
   /// user own items, key: item name, value: item count
   Map<String, int> items;
   EventPlans events;
 
   /// ce id: status. status=0,1,2
+  @JsonKey(toJson: _craftsPlanToJson)
   Map<int, int> crafts;
   Map<String, int> mysticCodes;
   Set<String> plannedSummons;
@@ -78,8 +104,9 @@ class User {
     bool? isMasterGirl,
     int? msProgress,
     Map<int, int>? duplicatedServants,
-  })  : name = name?.isNotEmpty == true ? name! : 'default',
-        server = server ?? GameServer.jp,
+  })
+      : name = name?.isNotEmpty == true ? name! : 'default',
+        _server = server,
         servants = servants ?? {},
         curSvtPlanNo = curSvtPlanNo ?? 0,
         servantPlans = servantPlans ?? [],
@@ -150,28 +177,26 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> data) => _$UserFromJson(data);
 
-  Map<String, dynamic> toJson() {
-    final _userJson = _$UserToJson(this);
-    (_userJson['servants']! as Map<String, ServantStatus>)
-        .removeWhere((key, value) => value.isEmpty);
-    (_userJson['servantPlans']! as List<Map<String, ServantPlan>>)
-        .forEach((plans) {
-      plans.removeWhere((key, plan) => plan.isEmpty);
-    });
-    return _userJson;
-  }
+  Map<String, dynamic> toJson() => _$UserToJson(this);
 
-  static Map<String, dynamic> _servantsToJson(Map<int, ServantStatus> data) {
-    return data.map<String, ServantStatus>((k, e) => MapEntry(k.toString(), e))
+  // can be sorted before saving
+  static Map<String, ServantStatus> _servantsToJson(
+      Map<int, ServantStatus> data) {
+    return data.map((k, e) => MapEntry(k.toString(), e))
       ..removeWhere((key, value) => value.isEmpty);
   }
 
-  static List<Map<String, dynamic>> _servantPlansToJson(
+  static List<Map<String, ServantPlan>> _servantPlansToJson(
       List<Map<int, ServantPlan>> data) {
     return data
         .map((e) => e.map((k, e) => MapEntry(k.toString(), e))
           ..removeWhere((key, value) => value.isEmpty))
         .toList();
+  }
+
+  static Map<String, int> _craftsPlanToJson(Map<int, int> data) {
+    return data.map((k, e) => MapEntry(k.toString(), e))
+      ..removeWhere((key, value) => value == 0);
   }
 }
 
@@ -357,12 +382,15 @@ class ServantPlan {
 
 @JsonSerializable(checked: true)
 class EventPlans {
+  @JsonKey(toJson: _limitEventsToJson)
   Map<String, LimitEventPlan> limitEvents;
 
   /// {'chapter 1': [drops_switch,rewards_switch]}
+  @JsonKey(toJson: _mainRecordsToJson)
   Map<String, List<bool>> mainRecords;
 
   ///{'monthCn': [num1, num2, num3]}
+  @JsonKey(toJson: _exchangeTicketsToJson)
   Map<String, List<int>> exchangeTickets;
 
   EventPlans({
@@ -370,8 +398,12 @@ class EventPlans {
     Map<String, List<bool>>? mainRecords,
     Map<String, List<int>>? exchangeTickets,
   })  : limitEvents = limitEvents ?? {},
-        mainRecords = mainRecords ?? {},
-        exchangeTickets = exchangeTickets ?? {};
+        mainRecords = Map.fromIterable((mainRecords ?? {}).entries,
+            value: (v) => List.generate(
+                2, (index) => (v as List<bool>).getOrNull(index) ?? false)),
+        exchangeTickets = Map.fromIterable((exchangeTickets ?? {}).entries,
+            value: (v) => List.generate(
+                3, (index) => (v as List<int>).getOrNull(index) ?? 0));
 
   LimitEventPlan limitEventOf(String indexKey) =>
       limitEvents.putIfAbsent(indexKey, () => LimitEventPlan());
@@ -386,6 +418,23 @@ class EventPlans {
       _$EventPlansFromJson(data);
 
   Map<String, dynamic> toJson() => _$EventPlansToJson(this);
+
+  static Map<String, LimitEventPlan> _limitEventsToJson(
+      Map<String, LimitEventPlan> data) {
+    return Map.of(data)..removeWhere((key, value) => value.isEmpty);
+  }
+
+  static Map<String, List<bool>> _mainRecordsToJson(
+      Map<String, List<bool>> data) {
+    return Map<String, List<bool>>.of(data)
+      ..removeWhere((key, value) => value.every((e) => e == false));
+  }
+
+  static Map<String, List<int>> _exchangeTicketsToJson(
+      Map<String, List<int>> data) {
+    return Map.of(data)
+      ..removeWhere((key, value) => value.every((e) => e == 0));
+  }
 }
 
 @JsonSerializable(checked: true)
@@ -404,6 +453,13 @@ class LimitEventPlan {
         rerun = rerun ?? true,
         lottery = lottery ?? 0,
         extra = extra ?? {};
+
+  bool get isEmpty {
+    return !enable &&
+        rerun &&
+        lottery == 0 &&
+        (extra.isEmpty || extra.values.every((e) => e == 0));
+  }
 
   factory LimitEventPlan.fromJson(Map<String, dynamic> data) =>
       _$LimitEventPlanFromJson(data);

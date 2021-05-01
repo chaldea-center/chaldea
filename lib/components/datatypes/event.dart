@@ -279,6 +279,7 @@ class MainRecord extends EventBase {
 class ExchangeTicket {
   String monthJp; //format: 2020-01
   List<String> items;
+
   @JsonKey(ignore: true)
   DateTime dateJp;
   @JsonKey(ignore: true)
@@ -299,10 +300,9 @@ class ExchangeTicket {
   }
 
   ExchangeTicket({
-    int? days,
     required this.monthJp,
     required this.items,
-    // don't import this two month
+    // don't import but export these two
     String? monthCn,
     String? monthEn,
   })  : dateJp = monthToDate(monthJp),
