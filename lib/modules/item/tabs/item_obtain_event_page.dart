@@ -117,14 +117,14 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
     List<Widget> children = [];
     final exchangeTickets = db.gameData.events.exchangeTickets.values.toList();
     // from new to old
-    exchangeTickets.sort((a, b) => b.month.compareTo(a.month));
+    exchangeTickets.sort((a, b) => b.curDate.compareTo(a.curDate));
     exchangeTickets.forEach((ticket) {
       int itemIndex = ticket.items.indexOf(widget.itemKey);
       if (itemIndex < 0) {
         return;
       }
 
-      final plan = db.curUser.events.exchangeTicketOf(ticket.month);
+      final plan = db.curUser.events.exchangeTicketOf(ticket.monthJp);
       bool planned = sum(plan) > 0;
 
       if (!_whetherToShow(planned, ticket.isOutdated())) {
@@ -136,16 +136,16 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
         expanded: false,
         headerBuilder: (context, _) => ListTile(
           title: Text(
-            '${S.current.exchange_ticket_short} ${ticket.month}',
-            style: _textStyle(false, ticket.isOutdated()),
-          ),
-          subtitle: AutoSizeText(ticket.items.join('/'), maxLines: 1),
-          trailing: Text(
-            '$itemNum/${ticket.days}',
-            style: _textStyle(planned, ticket.isOutdated()),
-          ),
-        ),
-        contentBuilder: (context) => ExchangeTicketTab(month: ticket.month),
+                '${S.current.exchange_ticket_short} ${ticket.dateToStr()}',
+                style: _textStyle(false, ticket.isOutdated()),
+              ),
+              subtitle: AutoSizeText(ticket.items.join('/'), maxLines: 1),
+              trailing: Text(
+                '$itemNum/${ticket.days}',
+                style: _textStyle(planned, ticket.isOutdated()),
+              ),
+            ),
+        contentBuilder: (context) => ExchangeTicketTab(monthJp: ticket.monthJp),
         expandIconBuilder: (_, __) => Container(),
         disableAnimation: true,
       ));

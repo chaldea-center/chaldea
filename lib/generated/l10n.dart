@@ -3182,10 +3182,10 @@ class S {
     );
   }
 
-  /// `简中服`
+  /// `国服`
   String get progress_cn {
     return Intl.message(
-      '简中服',
+      '国服',
       name: 'progress_cn',
       desc: '',
       args: [],

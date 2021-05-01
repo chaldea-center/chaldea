@@ -26,7 +26,7 @@ class Events {
     });
     final startDate = DateTime.now().subtract(Duration(days: 31 * 4));
     exchangeTickets.forEach((name, event) {
-      if (DateTime.parse(event.month + '01').isAfter(startDate)) {
+      if (event.curDate.isAfter(startDate)) {
         resultList.add(event.getItems(eventPlans.exchangeTickets[name]));
       }
     });
@@ -271,19 +271,70 @@ class MainRecord extends EventBase {
   }
 }
 
+///  Exchange Ticket starts from:
+///    * jp = (2017, 08)
+///    * cn = (2018, 11), +15
+///    * en = (2019, 08), +24, with additional 2019-7 not included
 @JsonSerializable(checked: true)
 class ExchangeTicket {
-  int days;
-  String month; //format: 2020-01
-  String monthJp;
+  String monthJp; //format: 2020-01
   List<String> items;
+  @JsonKey(ignore: true)
+  DateTime dateJp;
+  @JsonKey(ignore: true)
+  DateTime dateCn;
+  @JsonKey(ignore: true)
+  DateTime dateEn;
+
+  @JsonKey(name: 'monthCn')
+  String get monthCn => dateToStr(dateCn);
+
+  @JsonKey(ignore: false)
+  String get monthEn => dateToStr(dateEn);
+
+  int get days {
+    return DateTime(curDate.year, curDate.month + 1, 0, 1)
+        .difference(curDate)
+        .inDays;
+  }
 
   ExchangeTicket({
-    required this.days,
-    required this.month,
+    int? days,
     required this.monthJp,
     required this.items,
-  });
+    // don't import this two month
+    String? monthCn,
+    String? monthEn,
+  })  : dateJp = monthToDate(monthJp),
+        dateCn = monthToDate(monthJp, 15),
+        dateEn = monthToDate(monthJp, 24);
+
+  DateTime get curDate {
+    switch (db.curUser.server) {
+      case GameServer.jp:
+        return dateJp;
+      case GameServer.cn:
+        return dateCn;
+      case GameServer.en:
+        return dateEn;
+    }
+  }
+
+  String dateToStr([DateTime? date]) {
+    date ??= curDate;
+    return '${date.year}-${date.month.toString().padLeft(2, "0")}';
+  }
+
+  /// [monthString] format: 2020-01
+  static DateTime monthToDate(String monthString, [int dMonth = 0]) {
+    assert(RegExp(r'^\d+\-\d+$').hasMatch(monthString),
+        'Invalid ticket date format: $monthString');
+    int year = int.parse(monthString.split('-')[0]);
+    int month = int.parse(monthString.split('-')[1]);
+    year += (month - 1 + dMonth) ~/ 12;
+    month = (month - 1 + dMonth) % 12 + 1;
+    return DateTime(year, month);
+  }
 
   factory ExchangeTicket.fromJson(Map<String, dynamic> data) =>
       _$ExchangeTicketFromJson(data);
@@ -301,10 +352,6 @@ class ExchangeTicket {
   }
 
   bool isOutdated([int months = 4]) {
-    return checkEventOutdated(
-      timeJp: DateTime.parse('${monthJp}01'.replaceAll('-', '')),
-      timeCn: DateTime.parse('${month}01'.replaceAll('-', '')),
-      duration: Duration(days: 31 * months),
-    );
+    return DateTime.now().checkOutdated(curDate, Duration(days: months * 31));
   }
 }

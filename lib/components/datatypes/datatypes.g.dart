@@ -439,10 +439,11 @@ ExchangeTicket _$ExchangeTicketFromJson(Map<String, dynamic> json) {
   return $checkedNew('ExchangeTicket', json, () {
     final val = ExchangeTicket(
       days: $checkedConvert(json, 'days', (v) => v as int),
-      month: $checkedConvert(json, 'month', (v) => v as String),
       monthJp: $checkedConvert(json, 'monthJp', (v) => v as String),
       items: $checkedConvert(json, 'items',
           (v) => (v as List<dynamic>).map((e) => e as String).toList()),
+      monthCn: $checkedConvert(json, 'monthCn', (v) => v as String?),
+      monthEn: $checkedConvert(json, 'monthEn', (v) => v as String?),
     );
     return val;
   });
@@ -451,9 +452,10 @@ ExchangeTicket _$ExchangeTicketFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$ExchangeTicketToJson(ExchangeTicket instance) =>
     <String, dynamic>{
       'days': instance.days,
-      'month': instance.month,
       'monthJp': instance.monthJp,
       'items': instance.items,
+      'monthCn': instance.monthCn,
+      'monthEn': instance.monthEn,
     };
 
 GameData _$GameDataFromJson(Map<String, dynamic> json) {
@@ -853,8 +855,7 @@ Quest _$QuestFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$QuestToJson(Quest instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$QuestToJson(Quest instance) => <String, dynamic>{
       'chapter': instance.chapter,
       'name': instance.name,
       'nameJp': instance.nameJp,
@@ -894,8 +895,7 @@ Battle _$BattleFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$BattleToJson(Battle instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$BattleToJson(Battle instance) => <String, dynamic>{
       'ap': instance.ap,
       'place': instance.place,
       'placeJp': instance.placeJp,
@@ -1420,6 +1420,8 @@ User _$UserFromJson(Map<String, dynamic> json) {
   return $checkedNew('User', json, () {
     final val = User(
       name: $checkedConvert(json, 'name', (v) => v as String?),
+      server: $checkedConvert(
+          json, 'server', (v) => _$enumDecodeNullable(_$GameServerEnumMap, v)),
       servants: $checkedConvert(
           json,
           'servants',
@@ -1476,8 +1478,10 @@ User _$UserFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
+Map<String, dynamic> _$UserToJson(User instance) =>
+    <String, dynamic>{
       'name': instance.name,
+      'server': _$GameServerEnumMap[instance.server],
       'servants': User._servantsToJson(instance.servants),
       'curSvtPlanNo': instance.curSvtPlanNo,
       'servantPlans': User._servantPlansToJson(instance.servantPlans),
@@ -1491,6 +1495,49 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'duplicatedServants':
           instance.duplicatedServants.map((k, e) => MapEntry(k.toString(), e)),
     };
+
+K _$enumDecode<K, V>(
+  Map<K, V> enumValues,
+  Object? source, {
+  K? unknownValue,
+}) {
+  if (source == null) {
+    throw ArgumentError(
+      'A value must be provided. Supported values: '
+      '${enumValues.values.join(', ')}',
+    );
+  }
+
+  return enumValues.entries.singleWhere(
+    (e) => e.value == source,
+    orElse: () {
+      if (unknownValue == null) {
+        throw ArgumentError(
+          '`$source` is not one of the supported values: '
+          '${enumValues.values.join(', ')}',
+        );
+      }
+      return MapEntry(unknownValue, enumValues.values.first);
+    },
+  ).key;
+}
+
+K? _$enumDecodeNullable<K, V>(
+  Map<K, V> enumValues,
+  dynamic source, {
+  K? unknownValue,
+}) {
+  if (source == null) {
+    return null;
+  }
+  return _$enumDecode<K, V>(enumValues, source, unknownValue: unknownValue);
+}
+
+const _$GameServerEnumMap = {
+  GameServer.jp: 'jp',
+  GameServer.cn: 'cn',
+  GameServer.en: 'en',
+};
 
 ServantStatus _$ServantStatusFromJson(Map<String, dynamic> json) {
   return $checkedNew('ServantStatus', json, () {
@@ -1819,32 +1866,6 @@ Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
       'gender': instance.gender,
       'trait': instance.trait,
     };
-
-K _$enumDecode<K, V>(
-  Map<K, V> enumValues,
-  Object? source, {
-  K? unknownValue,
-}) {
-  if (source == null) {
-    throw ArgumentError(
-      'A value must be provided. Supported values: '
-      '${enumValues.values.join(', ')}',
-    );
-  }
-
-  return enumValues.entries.singleWhere(
-    (e) => e.value == source,
-    orElse: () {
-      if (unknownValue == null) {
-        throw ArgumentError(
-          '`$source` is not one of the supported values: '
-          '${enumValues.values.join(', ')}',
-        );
-      }
-      return MapEntry(unknownValue, enumValues.values.first);
-    },
-  ).key;
-}
 
 const _$SvtCompareEnumMap = {
   SvtCompare.no: 'no',

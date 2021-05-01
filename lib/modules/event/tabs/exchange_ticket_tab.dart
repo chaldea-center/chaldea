@@ -6,13 +6,13 @@ import 'package:flutter_picker/Picker.dart';
 
 class ExchangeTicketTab extends StatefulWidget {
   /// If only show ONE month
-  final String? month;
+  final String? monthJp;
   final bool reverse;
   final bool showOutdated;
 
   const ExchangeTicketTab({
     Key? key,
-    this.month,
+    this.monthJp,
     this.reverse = false,
     this.showOutdated = false,
   }) : super(key: key);
@@ -39,10 +39,10 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.month != null) {
-      final ticket = db.gameData.events.exchangeTickets[widget.month];
+    if (widget.monthJp != null) {
+      final ticket = db.gameData.events.exchangeTickets[widget.monthJp];
       if (ticket == null) {
-        return ListTile(title: Text('${widget.month} NOT FOUND'));
+        return ListTile(title: Text('${widget.monthJp} NOT FOUND'));
       }
       return db.streamBuilder((context) => buildOneMonth(ticket));
     }
@@ -50,20 +50,19 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     if (!widget.showOutdated) {
       tickets.removeWhere((ticket) {
         if (!ticket.isOutdated()) return false;
-        final plan = db.curUser.events.exchangeTicketOf(ticket.month);
+        final plan = db.curUser.events.exchangeTicketOf(ticket.monthJp);
         if (plan.any((e) => e > 0)) return false;
         return true;
       });
     }
-    tickets.sort((a, b) {
-      return (a.month).compareTo(b.month) * (widget.reverse ? -1 : 1);
-    });
+    tickets.sort(
+        (a, b) => a.dateJp.compareTo(b.dateJp) * (widget.reverse ? -1 : 1));
     return db.streamBuilder(
       (context) => Scrollbar(
         controller: _scrollController,
         child: ListView(
           controller: _scrollController,
-          shrinkWrap: widget.month != null,
+          shrinkWrap: widget.monthJp != null,
           children: divideTiles(
             tickets.map((ticket) => buildOneMonth(ticket)),
             divider: Divider(height: 1, indent: 16),
@@ -74,7 +73,8 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
   }
 
   Widget buildOneMonth(ExchangeTicket ticket) {
-    bool planned = sum(db.curUser.events.exchangeTicketOf(ticket.month)) > 0;
+    bool planned =
+        db.curUser.events.exchangeTicketOf(ticket.monthJp).any((e) => e > 0);
     bool outdated = ticket.isOutdated();
     return Row(
       mainAxisSize: MainAxisSize.max,
@@ -84,15 +84,15 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
           child: ListTile(
             contentPadding: EdgeInsets.only(left: 12),
             title: AutoSizeText(
-              ticket.month,
+              ticket.dateToStr(),
               maxLines: 1,
               maxFontSize: 16,
               style: TextStyle(
                 color: planned
                     ? Colors.blueAccent
                     : outdated
-                    ? Colors.grey
-                    : null,
+                        ? Colors.grey
+                        : null,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -104,8 +104,8 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                   color: planned
                       ? Colors.blueAccent[100]
                       : outdated
-                      ? Colors.grey[400]
-                      : null),
+                          ? Colors.grey[400]
+                          : null),
               minFontSize: 6,
             ),
           ),
@@ -122,11 +122,12 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
   }
 
   Widget buildTrailing(ExchangeTicket ticket, ItemStatistics statistics) {
-    final monthPlan = db.curUser.events.exchangeTicketOf(ticket.month);
+    final monthPlan = db.curUser.events.exchangeTicketOf(ticket.monthJp);
     List<Widget> trailingItems = [];
     for (var i = 0; i < 3; i++) {
       final iconKey = ticket.items[i];
       int leftNum = statistics.leftItems[iconKey] ?? 0;
+      monthPlan[i] = fixValidRange(monthPlan[i], 0, ticket.days);
       final int maxValue = ticket.days - sum(monthPlan.getRange(0, i));
       trailingItems.add(Row(
         mainAxisSize: MainAxisSize.min,
@@ -137,7 +138,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
               builder: (context, _) => ItemDetailPage(itemKey: iconKey),
               // if month specified, it's a widget somewhere, don't pop detail
               // if month is null, it's a tab of events in master layout
-              popDetail: widget.month == null,
+              popDetail: widget.monthJp == null,
             ),
             child: db.getIconImage(iconKey, width: 42),
           ),
@@ -165,8 +166,8 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
               ),
               onPressed: () {
                 Picker(
-                  title:
-                      Text('${ticket.month} ${Item.localizedNameOf(iconKey)}'),
+                  title: Text(
+                      '${ticket.dateToStr()} ${Item.localizedNameOf(iconKey)}'),
                   itemExtent: 36,
                   height: min(200, MediaQuery.of(context).size.height - 220),
                   hideHeader: true,

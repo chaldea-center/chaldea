@@ -141,7 +141,7 @@
   "input_invalid_hint": "入力が無効です",
   "limited_event": "期間限定イベント",
   "main_record": "シナリオ",
-  "exchange_ticket": "アイテム交換券",
+  "exchange_ticket": "素材交換券",
   "exchange_ticket_short": "交換券",
   "rerun_event": "復刻イベント",
   "event_rerun_replace_grail": "聖杯は伝承結晶に置き換える{n}個",

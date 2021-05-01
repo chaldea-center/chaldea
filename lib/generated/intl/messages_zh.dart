@@ -405,7 +405,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("规划Free本"),
         "previous_card": MessageLookupByLibrary.simpleMessage("上一张"),
         "priority": MessageLookupByLibrary.simpleMessage("优先级"),
-        "progress_cn": MessageLookupByLibrary.simpleMessage("简中服"),
+        "progress_cn": MessageLookupByLibrary.simpleMessage("国服"),
         "progress_jp": MessageLookupByLibrary.simpleMessage("日服"),
         "project_homepage": MessageLookupByLibrary.simpleMessage("项目主页"),
         "query_failed": MessageLookupByLibrary.simpleMessage("查询失败"),

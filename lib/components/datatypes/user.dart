@@ -1,9 +1,44 @@
 // userdata: plan etc.
 part of datatypes;
 
+enum GameServer {
+  jp,
+  cn,
+  en,
+}
+
+extension GameServerUtil on GameServer {
+  String get localized {
+    switch (this) {
+      case GameServer.jp:
+        return LocalizedText.of(
+            chs: '日服', jpn: 'Japanese Server', eng: 'Japanese');
+      case GameServer.cn:
+        return LocalizedText.of(
+            chs: '国服', jpn: 'Chinese Server', eng: 'Chinese (Simplified)');
+      case GameServer.en:
+        return LocalizedText.of(
+            chs: '美服', jpn: 'English (NA)', eng: 'English (NA)');
+    }
+  }
+
+  String get localizedShort {
+    switch (this) {
+      case GameServer.jp:
+        return LocalizedText.of(chs: '日服', jpn: 'Japanese', eng: 'Japanese');
+      case GameServer.cn:
+        return LocalizedText.of(
+            chs: '国服', jpn: 'Chinese Server', eng: 'Chinese');
+      case GameServer.en:
+        return LocalizedText.of(chs: '美服', jpn: 'English', eng: 'English');
+    }
+  }
+}
+
 @JsonSerializable(checked: true)
 class User {
   String name;
+  GameServer server;
 
   @JsonKey(toJson: _servantsToJson)
   Map<int, ServantStatus> servants;
@@ -31,6 +66,7 @@ class User {
 
   User({
     String? name,
+    GameServer? server,
     Map<int, ServantStatus>? servants,
     int? curSvtPlanNo,
     List<Map<int, ServantPlan>>? servantPlans,
@@ -42,8 +78,8 @@ class User {
     bool? isMasterGirl,
     int? msProgress,
     Map<int, int>? duplicatedServants,
-  })
-      : name = name?.isNotEmpty == true ? name! : 'default',
+  })  : name = name?.isNotEmpty == true ? name! : 'default',
+        server = server ?? GameServer.jp,
         servants = servants ?? {},
         curSvtPlanNo = curSvtPlanNo ?? 0,
         servantPlans = servantPlans ?? [],

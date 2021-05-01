@@ -192,7 +192,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_progress": MessageLookupByLibrary.simpleMessage("現在のイベント"),
         "event_rerun_replace_grail": m4,
         "event_title": MessageLookupByLibrary.simpleMessage("イベント"),
-        "exchange_ticket": MessageLookupByLibrary.simpleMessage("アイテム交換券"),
+        "exchange_ticket": MessageLookupByLibrary.simpleMessage("素材交換券"),
         "exchange_ticket_short": MessageLookupByLibrary.simpleMessage("交換券"),
         "exp_card_plan_lv": MessageLookupByLibrary.simpleMessage("Lv."),
         "exp_card_rarity5": MessageLookupByLibrary.simpleMessage("星5種火"),
