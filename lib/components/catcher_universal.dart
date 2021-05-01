@@ -1,12 +1,11 @@
+/// This package is platform-compatibility fix for catcher.
+/// If official support is release, this should be removed.
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:archive/archive_io.dart';
-
-/// This package is platform-compatibility fix for catcher.
-/// If official support is release, this should be removed.
 import 'package:catcher/catcher.dart';
 import 'package:catcher/model/platform_type.dart';
 import 'package:flutter/foundation.dart';
@@ -36,7 +35,7 @@ class SilentReportFilterMode extends ReportMode {
     s += report.error.toString();
     s += report.errorDetails.toString();
     s += report.stackTrace.toString();
-    if (!_caughtErrors.contains(s)) {
+    if (!ignoreKnownError(report, s) && !_caughtErrors.contains(s)) {
       super.onActionConfirmed(report);
       _caughtErrors.add(s);
     } else {
@@ -44,6 +43,18 @@ class SilentReportFilterMode extends ReportMode {
           report.stackTrace);
       super.onActionRejected(report);
     }
+  }
+
+  bool ignoreKnownError(Report report, String s) {
+    if (s.contains('''
+#0      _StringBase.substring (dart:core-patch/string_patch.dart:399)
+#1      TextRange.textBefore (dart:ui/text.dart:2750)
+#2      RenderEditable.delete (package:flutter/src/rendering/editable.dart:1119)
+#3      _DeleteTextAction.invoke (package:flutter/src/widgets/default_text_editing_actions.dart:88)
+#4      ActionDispatcher.invokeAction (package:flutter/src/widgets/actions.dart:517)''')) {
+      return true;
+    }
+    return false;
   }
 
   @override
@@ -88,21 +99,17 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
     return _sendMail(error);
   }
 
-  /// maintain list for every contact if contact changed
-  Map<String, List<Report>> _sentReports = {};
+  /// store html message
+  Set<String> _sentReports = Set();
 
   String? get contactInfo => db.prefs.contactInfo.get();
 
   Future<bool> _sendMail(Report report) async {
-    // don't send email repeatedly
-    String contact = contactInfo?.trim() ?? '';
-    List<Report> _cachedReports = _sentReports.putIfAbsent(contact, () => []);
-    if (_cachedReports.any((element) =>
-        // report.error.toString() == element.error.toString() &&
-        report.stackTrace.toString() == element.stackTrace.toString())) {
-      return true;
-    }
     try {
+      String htmlMsg = _setupHtmlMessageText(report);
+      // don't send email repeatedly
+      if (_sentReports.contains(htmlMsg)) return true;
+
       final message = new Message()
         ..from = new Address(this.senderEmail, this.senderName)
         ..recipients.addAll(recipients)
@@ -116,13 +123,15 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
         }
       }
       if (sendHtml) {
-        message.html = _setupHtmlMessageText(report);
+        message.html = htmlMsg;
       }
       _printLog("Sending email...");
       if (kDebugMode) return true;
 
+      _sentReports.add(htmlMsg);
+      // wait a moment to let other handlers finish, e.g. FileHandler
+      await Future.delayed(Duration(seconds: 3));
       var result = await send(message, _setupSmtpServer());
-      _cachedReports.add(report);
       _printLog("Email result: mail: ${result.mail} "
           "sending start time: ${result.messageSendingStart} "
           "sending end time: ${result.messageSendingEnd}");
@@ -155,7 +164,8 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
   Future<Attachment?> _captureScreenshot() async {
     String shotFn = pathlib.join(db.paths.appPath, 'crash.jpg');
     Uint8List? shotBinary = await db.runtimeData.screenshotController?.capture(
-      pixelRatio: MediaQuery.of(kAppKey.currentContext!).devicePixelRatio,
+      pixelRatio:
+          MediaQuery.of(kAppKey.currentContext!).devicePixelRatio * 0.75,
       delay: Duration(milliseconds: 500),
     );
     if (shotBinary == null) return null;

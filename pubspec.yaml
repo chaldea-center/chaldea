@@ -61,6 +61,7 @@ dependencies:
   image_gallery_saver: ^1.6.9
   intl: ^0.17.0
   json_annotation: ^4.0.1
+  kana_kit: ^2.0.0
   logger: ^1.0.0
   lpinyin: ^2.0.1
   open_file: ^3.2.0

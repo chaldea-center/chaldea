@@ -56,25 +56,27 @@ class CraftListPageState extends State<CraftListPage> {
     }
   }
 
+  Map<CraftEssence, String> searchMap = {};
+
   bool filtrateCraft(CraftEssence ce) {
-    if (filterData.filterString.isNotEmpty) {
+    if (!searchMap.containsKey(ce)) {
       List<String> searchStrings = [
         ce.no.toString(),
-        ce.name,
-        ce.nameJp,
-        ce.nameEn,
         ce.mcLink,
-        ...ce.illustrators,
-        ce.illustratorsJp ?? '',
-        ce.illustratorsEn ?? '',
-        ...ce.characters,
+        ...Utils.getSearchAlphabets(ce.name, ce.nameJp, ce.nameEn),
+        ...Utils.getSearchAlphabetsForList(ce.illustrators,
+            [ce.illustratorsJp ?? ''], [ce.illustratorsEn ?? '']),
+        ...Utils.getSearchAlphabetsForList(ce.characters),
         ce.skill,
         ce.skillMax ?? '',
         ce.skillEn ?? '',
         ce.skillMaxEn ?? '',
         ...ce.eventSkills,
       ];
-      if (!__textFilter.match(searchStrings.join('\t'))) {
+      searchMap[ce] = searchStrings.join('\t');
+    }
+    if (filterData.filterString.isNotEmpty) {
+      if (!__textFilter.match(searchMap[ce]!)) {
         return false;
       }
     }

@@ -48,23 +48,25 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
     __textFilter.parse(filterData.filterString);
   }
 
+  Map<CommandCode, String> searchMap = {};
+
   bool filtrateCmdCode(CommandCode code) {
-    if (filterData.filterString.isNotEmpty) {
+    if (!searchMap.containsKey(code)) {
       List<String> searchStrings = [
         code.no.toString(),
-        code.name,
-        code.nameJp,
-        code.nameEn,
         code.mcLink,
-        code.obtain,
-        ...code.illustrators,
-        code.illustratorsJp ?? '',
-        code.illustratorsEn ?? '',
-        ...code.characters,
+        ...Utils.getSearchAlphabets(code.name, code.nameJp, code.nameEn),
+        ...Utils.getSearchAlphabetsForList(code.illustrators,
+            [code.illustratorsJp ?? ''], [code.illustratorsEn ?? '']),
+        ...Utils.getSearchAlphabetsForList(code.characters),
         code.skill,
         code.skillEn,
+        code.obtain,
       ];
-      if (!__textFilter.match(searchStrings.join('\t'))) {
+      searchMap[code] = searchStrings.join('\t');
+    }
+    if (filterData.filterString.isNotEmpty) {
+      if (!__textFilter.match(searchMap[code]!)) {
         return false;
       }
     }

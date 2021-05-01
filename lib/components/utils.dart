@@ -10,6 +10,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
+import 'package:kana_kit/kana_kit.dart';
+import 'package:lpinyin/lpinyin.dart';
 import 'package:path/path.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -379,6 +381,56 @@ class Utils {
     SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
       callback();
     });
+  }
+
+  static KanaKit kanaKit = KanaKit();
+
+  /// To lowercase alphabet:
+  ///   * Chinese->Pinyin
+  ///   * Japanese->Romaji
+  static String toAlphabet(String text, {Language? lang}) {
+    lang ??= Language.current;
+    if (lang == Language.chs) {
+      return PinyinHelper.getPinyinE(text).toLowerCase();
+    } else if (lang == Language.jpn) {
+      return kanaKit.toRomaji(text).toLowerCase();
+    } else {
+      return text.toLowerCase();
+    }
+  }
+
+  static List<String> getSearchAlphabets(String? textCn,
+      [String? textJp, String? textEn]) {
+    List<String> list = [];
+    if (textEn != null) list.add(textEn);
+    if (textCn != null)
+      list.addAll([
+        textCn,
+        PinyinHelper.getPinyinE(textCn, separator: ''),
+        PinyinHelper.getShortPinyin(textCn)
+      ]);
+    // kanji to Romaji?
+    if (textJp != null) list.addAll([textJp, kanaKit.toRomaji(textJp)]);
+    return list;
+  }
+
+  static List<String> getSearchAlphabetsForList(List<String>? textsCn,
+      [List<String>? textsJp, List<String>? textsEn]) {
+    List<String> list = [];
+    if (textsEn != null) list.addAll(textsEn);
+    if (textsCn != null)
+      for (var text in textsCn) {
+        list.addAll([
+          text,
+          PinyinHelper.getPinyinE(text, separator: ''),
+          PinyinHelper.getShortPinyin(text)
+        ]);
+      }
+    if (textsJp != null)
+      for (var text in textsJp) {
+        list.addAll([text, kanaKit.toRomaji(text)]);
+      }
+    return list;
   }
 }
 

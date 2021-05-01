@@ -56,24 +56,23 @@ class ServantListPageState extends State<ServantListPage> {
     __textFilter.parse(filterData.filterString);
   }
 
+  Map<Servant, String> searchMap = {};
+
   bool filtrateServant(Servant svt) {
     final svtStat = db.curUser.svtStatusOf(svt.no);
     final svtPlan = db.curUser.svtPlanOf(svt.no);
     // input text filter
-    if (filterData.filterString.trim().isNotEmpty) {
+    if (!searchMap.containsKey(svt)) {
       List<String> searchStrings = [
         svt.no.toString(),
         svt.mcLink,
-        ...svt.info.cv,
-        ...svt.info.cvJp,
-        ...svt.info.cvEn,
-        svt.info.name,
-        svt.info.nameJp,
-        svt.info.nameEn,
-        svt.info.illustrator,
-        svt.info.illustratorJp ?? '',
-        svt.info.illustratorEn ?? '',
-        ...svt.info.nicknames,
+        ...Utils.getSearchAlphabets(
+            svt.info.name, svt.info.nameJp, svt.info.nameEn),
+        ...Utils.getSearchAlphabetsForList(svt.info.nicknames),
+        ...Utils.getSearchAlphabetsForList(
+            svt.info.cv, svt.info.cvJp, svt.info.cvEn),
+        ...Utils.getSearchAlphabets(svt.info.illustrator,
+            svt.info.illustratorJp, svt.info.illustratorEn),
         ...svt.info.traits
       ];
       [...svt.nobelPhantasm, ...svt.nobelPhantasmEn].forEach((td) {
@@ -101,7 +100,10 @@ class ServantListPageState extends State<ServantListPage> {
           for (var e in skill.effects) e.description
         ]);
       });
-      if (!__textFilter.match(searchStrings.join('\t'))) {
+      searchMap[svt] = searchStrings.join('\t');
+    }
+    if (filterData.filterString.trim().isNotEmpty) {
+      if (!__textFilter.match(searchMap[svt]!)) {
         return false;
       }
     }
@@ -122,8 +124,8 @@ class ServantListPageState extends State<ServantListPage> {
         for (var i = 0; i < 3; i++)
           svtPlan.skills[i] > svtStat.curVal.skills[i],
         for (var i = 0;
-        i < min(svtPlan.dress.length, svtStat.curVal.dress.length);
-        i++)
+            i < min(svtPlan.dress.length, svtStat.curVal.dress.length);
+            i++)
           svtPlan.dress[i] > svtStat.curVal.dress[i]
       ].contains(true);
       if (filterData.planCompletion.options[planNotComplete ? '0' : '1'] !=
@@ -265,14 +267,14 @@ class ServantListPageState extends State<ServantListPage> {
         floatingActionButton: widget.planMode
             ? null
             : FloatingActionButton(
-          child: Icon(Icons.arrow_upward),
-          onPressed: () async {
-            _scrollController.jumpTo(0);
-            for (var svt in shownList.sublist(10)) {
-              print('push ${svt.mcLink}');
-              SplitRoute.push(
-                  context: context,
-                  builder: (ctx, _) => ServantDetailPage(svt));
+                child: Icon(Icons.arrow_upward),
+                onPressed: () async {
+                  _scrollController.jumpTo(0);
+                  for (var svt in shownList.sublist(10)) {
+                    print('push ${svt.mcLink}');
+                    SplitRoute.push(
+                        context: context,
+                        builder: (ctx, _) => ServantDetailPage(svt));
                     await Future.delayed(Duration(milliseconds: 400));
                     Navigator.pop(context);
                   }
@@ -303,7 +305,7 @@ class ServantListPageState extends State<ServantListPage> {
                   contentPadding: EdgeInsets.zero,
                   border: OutlineInputBorder(
                       borderSide:
-                      const BorderSide(width: 0, style: BorderStyle.none),
+                          const BorderSide(width: 0, style: BorderStyle.none),
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   fillColor: Colors.white,
                   hintText: 'Search',
@@ -356,8 +358,8 @@ class ServantListPageState extends State<ServantListPage> {
       child: widget.planMode
           ? _buildPlanListView()
           : filterData.display.isRadioVal('Grid')
-          ? _buildGridView()
-          : _buildListView(),
+              ? _buildGridView()
+              : _buildListView(),
     );
   }
 
@@ -370,7 +372,7 @@ class ServantListPageState extends State<ServantListPage> {
         if (index == 0 || index == shownList.length + 1) {
           return CustomTile(
             contentPadding:
-            index == 0 ? null : EdgeInsets.only(top: 8, bottom: 50),
+                index == 0 ? null : EdgeInsets.only(top: 8, bottom: 50),
             subtitle: Center(
               child: Text(
                 S.of(context).search_result_count(shownList.length),
@@ -529,12 +531,12 @@ class ServantListPageState extends State<ServantListPage> {
                     .length;
                 return CustomTile(
                   contentPadding:
-                  index == 0 ? null : EdgeInsets.only(top: 8, bottom: 36),
+                      index == 0 ? null : EdgeInsets.only(top: 8, bottom: 36),
                   subtitle: Center(
                     child: Text(
                       widget.planMode
                           ? S.of(context).search_result_count_hide(
-                          shownList.length, _hiddenNum)
+                              shownList.length, _hiddenNum)
                           : S.of(context).search_result_count(shownList.length),
                       style: TextStyle(color: Colors.grey, fontSize: 14),
                     ),
@@ -547,7 +549,7 @@ class ServantListPageState extends State<ServantListPage> {
                 child: Icon(
                   Icons.remove_red_eye,
                   color:
-                  isSvtFavorite(svt) && !_hidden ? Colors.lightBlue : null,
+                      isSvtFavorite(svt) && !_hidden ? Colors.lightBlue : null,
                 ),
                 onTap: () {
                   if (!isSvtFavorite(svt)) return;
@@ -565,9 +567,9 @@ class ServantListPageState extends State<ServantListPage> {
                 subtitle: _getDetailTable(svt),
                 trailing: eyeWidget,
                 selected:
-                SplitRoute.isSplit(context) && _selectedSvtNo == svt.no,
+                    SplitRoute.isSplit(context) && _selectedSvtNo == svt.no,
                 contentPadding:
-                EdgeInsets.symmetric(horizontal: 16, vertical: 3),
+                    EdgeInsets.symmetric(horizontal: 16, vertical: 3),
                 onTap: () => _onTapSvt(svt),
               );
             },
@@ -705,7 +707,7 @@ class ServantListPageState extends State<ServantListPage> {
             return DropdownMenuItem(
               value: i,
               child:
-              Text(S.current.words_separate(S.current.skill, i.toString())),
+                  Text(S.current.words_separate(S.current.skill, i.toString())),
             );
           }
         }),
@@ -792,14 +794,14 @@ class ServantListPageState extends State<ServantListPage> {
             onTap: isCur
                 ? null
                 : () {
-              db.curUser.curSvtPlan.clear();
-              db.curUser.servantPlans[index].forEach((key, plan) {
-                db.curUser.curSvtPlan[key] =
-                    ServantPlan.fromJson(jsonDecode(jsonEncode(plan)));
-              });
-              db.curUser.ensurePlanLarger();
-              Navigator.of(context).pop();
-            },
+                    db.curUser.curSvtPlan.clear();
+                    db.curUser.servantPlans[index].forEach((key, plan) {
+                      db.curUser.curSvtPlan[key] =
+                          ServantPlan.fromJson(jsonDecode(jsonEncode(plan)));
+                    });
+                    db.curUser.ensurePlanLarger();
+                    Navigator.of(context).pop();
+                  },
           );
         }),
       ),

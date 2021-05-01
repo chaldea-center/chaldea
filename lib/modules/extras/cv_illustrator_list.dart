@@ -2,7 +2,6 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/cmd_code/cmd_code_detail_page.dart';
 import 'package:chaldea/modules/craft/craft_detail_page.dart';
 import 'package:chaldea/modules/servant/servant_detail_page.dart';
-import 'package:lpinyin/lpinyin.dart';
 
 const String unknown = '---';
 
@@ -29,11 +28,11 @@ class _CvListPageState extends State<CvListPage> {
         cvMap.putIfAbsent(cv, () => []).add(svt);
       }
     }
-    cvMap = sortDict<String, List<Servant>>(cvMap, compare: (a, b) {
-      if (Language.isEN) return a.key.compareTo(b.key);
-      return PinyinHelper.getPinyin(a.key)
-          .compareTo(PinyinHelper.getPinyin(b.key));
-    });
+    cvMap = sortDict<String, List<Servant>>(
+      cvMap,
+      compare: (a, b) =>
+          Utils.toAlphabet(a.key).compareTo(Utils.toAlphabet(b.key)),
+    );
   }
 
   @override
@@ -124,10 +123,8 @@ class _IllustratorListPageState extends State<IllustratorListPage> {
       ..addAll(craftMap.keys)
       ..addAll(codeMap.keys);
     illustrators = illustrators.toSet().toList();
-    illustrators.sort((a, b) {
-      if (Language.isEN) return a.compareTo(b);
-      return PinyinHelper.getPinyin(a).compareTo(PinyinHelper.getPinyin(b));
-    });
+    illustrators
+        .sort((a, b) => Utils.toAlphabet(a).compareTo(Utils.toAlphabet(b)));
   }
 
   @override
