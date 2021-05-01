@@ -9,6 +9,7 @@ class FreeQuestQueryTab extends StatefulWidget {
 }
 
 class _FreeQuestQueryTabState extends State<FreeQuestQueryTab> {
+  late ScrollController _scrollController;
   List<PickerItem<String>> pickerData = [];
   String? chapter;
   String? questKey;
@@ -16,6 +17,7 @@ class _FreeQuestQueryTabState extends State<FreeQuestQueryTab> {
 
   @override
   void initState() {
+    _scrollController = ScrollController();
     db.gameData.freeQuests.forEach((key, quest) {
       _categorizedData.putIfAbsent(quest.chapter, () => <String>[]).add(key);
     });
@@ -50,8 +52,15 @@ class _FreeQuestQueryTabState extends State<FreeQuestQueryTab> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
+      controller: _scrollController,
       children: [
         questPicker,
         questKey == null || !db.gameData.freeQuests.containsKey(questKey)
@@ -70,9 +79,9 @@ class _FreeQuestQueryTabState extends State<FreeQuestQueryTab> {
             selecteds: chapter == null || questKey == null
                 ? null
                 : [
-                    _categorizedData.keys.toList().indexOf(chapter!),
-                    _categorizedData[chapter]!.indexOf(questKey!)
-                  ],
+              _categorizedData.keys.toList().indexOf(chapter!),
+              _categorizedData[chapter]!.indexOf(questKey!)
+            ],
             changeToFirst: true,
             hideHeader: true,
             textScaleFactor: 0.7,
@@ -91,9 +100,12 @@ class _FreeQuestQueryTabState extends State<FreeQuestQueryTab> {
         },
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-          child: Text(chapter == null || questKey == null
-              ? S.of(context).choose_quest_hint
-              : '$chapter / ${db.gameData.freeQuests[questKey]?.localizedKey}'),
+          child: Text(
+            chapter == null || questKey == null
+                ? S.of(context).choose_quest_hint
+                : '${Localized.chapter.of(chapter!)} / ${db.gameData.freeQuests[questKey]?.localizedKey}',
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );

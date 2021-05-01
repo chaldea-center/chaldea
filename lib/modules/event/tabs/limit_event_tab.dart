@@ -41,54 +41,51 @@ class _LimitEventTabState extends State<LimitEventTab> {
     }
     EventBase.sortEvents(events, reversed: widget.reverse);
 
-    return Scrollbar(
+    return ListView.separated(
       controller: _scrollController,
-      child: ListView.separated(
-        controller: _scrollController,
-        itemCount: events.length,
-        separatorBuilder: (context, index) => kDefaultDivider,
-        itemBuilder: (context, index) {
-          final event = events[index];
-          final plan = db.curUser.events.limitEventOf(event.indexKey);
-          bool outdated = event.isOutdated();
-          return ListTile(
-            title: AutoSizeText(
-              event.localizedName,
-              maxFontSize: 16,
-              maxLines: 2,
-              style: outdated ? TextStyle(color: Colors.grey) : null,
-            ),
-            subtitle: AutoSizeText(
-              event.startTimeJp?.split(' ').first ?? '',
-              maxLines: 1,
-              style: outdated ? TextStyle(color: Colors.grey[400]) : null,
-            ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                if (event.extra.isNotEmpty || event.lottery.isNotEmpty)
-                  Icon(Icons.star, color: Colors.yellow[700]),
-                db.streamBuilder(
-                  (context) => Switch.adaptive(
-                    value: plan.enable,
-                    onChanged: (v) => setState(() {
-                      plan.enable = v;
-                      db.itemStat.updateEventItems();
-                    }),
-                  ),
-                )
-              ],
-            ),
-            onTap: () {
-              SplitRoute.push(
-                context: context,
-                builder: (context, _) => LimitEventDetailPage(event: event),
-                popDetail: true,
-              );
-            },
-          );
-        },
-      ),
+      itemCount: events.length,
+      separatorBuilder: (context, index) => kDefaultDivider,
+      itemBuilder: (context, index) {
+        final event = events[index];
+        final plan = db.curUser.events.limitEventOf(event.indexKey);
+        bool outdated = event.isOutdated();
+        return ListTile(
+          title: AutoSizeText(
+            event.localizedName,
+            maxFontSize: 16,
+            maxLines: 2,
+            style: outdated ? TextStyle(color: Colors.grey) : null,
+          ),
+          subtitle: AutoSizeText(
+            event.startTimeJp?.split(' ').first ?? '',
+            maxLines: 1,
+            style: outdated ? TextStyle(color: Colors.grey[400]) : null,
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              if (event.extra.isNotEmpty || event.lottery.isNotEmpty)
+                Icon(Icons.star, color: Colors.yellow[700]),
+              db.streamBuilder(
+                (context) => Switch.adaptive(
+                  value: plan.enable,
+                  onChanged: (v) => setState(() {
+                    plan.enable = v;
+                    db.itemStat.updateEventItems();
+                  }),
+                ),
+              )
+            ],
+          ),
+          onTap: () {
+            SplitRoute.push(
+              context: context,
+              builder: (context, _) => LimitEventDetailPage(event: event),
+              popDetail: true,
+            );
+          },
+        );
+      },
     );
   }
 }

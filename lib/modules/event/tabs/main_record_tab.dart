@@ -56,65 +56,62 @@ class _MainRecordTabState extends State<MainRecordTab> {
         ),
         kDefaultDivider,
         Expanded(
-          child: Scrollbar(
+          child: ListView.separated(
             controller: _scrollController,
-            child: ListView.separated(
-              controller: _scrollController,
-              itemCount: mainRecords.length,
-              separatorBuilder: (context, index) =>
-                  Divider(height: 1, indent: 16),
-              itemBuilder: (context, index) {
-                final record = mainRecords[index];
-                final plan = db.curUser.events.mainRecordOf(record.indexKey);
-                bool outdated = record.isOutdated();
-                Widget? title, subtitle;
-                if (Language.isEN) {
-                  title = AutoSizeText(
-                    Localized.chapter.of(record.name),
-                    maxLines: 2,
-                    maxFontSize: 16,
-                    style: outdated ? TextStyle(color: Colors.grey) : null,
-                  );
-                } else {
-                  title = AutoSizeText(
-                    record.localizedChapter,
-                    maxLines: 1,
-                    maxFontSize: 16,
-                    style: outdated ? TextStyle(color: Colors.grey) : null,
-                  );
-                  subtitle = AutoSizeText(
-                    record.localizedTitle,
-                    maxLines: 1,
-                    style: outdated ? TextStyle(color: Colors.grey[400]) : null,
-                  );
-                }
-                return ListTile(
-                  title: title,
-                  subtitle: subtitle,
-                  trailing: Wrap(
-                    children: List.generate(2, (i) {
-                      return db.streamBuilder(
-                        (context) => Switch.adaptive(
-                          value: plan[i],
-                          onChanged: (v) {
-                            plan[i] = v;
-                            db.itemStat.updateEventItems();
-                          },
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                  onTap: () {
-                    SplitRoute.push(
-                      context: context,
-                      builder: (context, _) =>
-                          MainRecordDetailPage(record: record),
-                      popDetail: true,
-                    );
-                  },
+            itemCount: mainRecords.length,
+            separatorBuilder: (context, index) =>
+                Divider(height: 1, indent: 16),
+            itemBuilder: (context, index) {
+              final record = mainRecords[index];
+              final plan = db.curUser.events.mainRecordOf(record.indexKey);
+              bool outdated = record.isOutdated();
+              Widget? title, subtitle;
+              if (Language.isEN) {
+                title = AutoSizeText(
+                  Localized.chapter.of(record.name),
+                  maxLines: 2,
+                  maxFontSize: 16,
+                  style: outdated ? TextStyle(color: Colors.grey) : null,
                 );
-              },
-            ),
+              } else {
+                title = AutoSizeText(
+                  record.localizedChapter,
+                  maxLines: 1,
+                  maxFontSize: 16,
+                  style: outdated ? TextStyle(color: Colors.grey) : null,
+                );
+                subtitle = AutoSizeText(
+                  record.localizedTitle,
+                  maxLines: 1,
+                  style: outdated ? TextStyle(color: Colors.grey[400]) : null,
+                );
+              }
+              return ListTile(
+                title: title,
+                subtitle: subtitle,
+                trailing: Wrap(
+                  children: List.generate(2, (i) {
+                    return db.streamBuilder(
+                      (context) => Switch.adaptive(
+                        value: plan[i],
+                        onChanged: (v) {
+                          plan[i] = v;
+                          db.itemStat.updateEventItems();
+                        },
+                      ),
+                    );
+                  }).toList(),
+                ),
+                onTap: () {
+                  SplitRoute.push(
+                    context: context,
+                    builder: (context, _) =>
+                        MainRecordDetailPage(record: record),
+                    popDetail: true,
+                  );
+                },
+              );
+            },
           ),
         )
       ],

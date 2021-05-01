@@ -62,6 +62,9 @@ class Quest {
   String? get placeEn => battles.getOrNull(0)?.placeEn;
 
   static String shortChapterOf(String chapter) {
+    if (Language.isEN) {
+      return Localized.chapter.of(chapter).split(':').first;
+    }
     if (chapter.contains('每日任务')) {
       return '每日任务';
     } else if (chapter.contains('特异点')) {

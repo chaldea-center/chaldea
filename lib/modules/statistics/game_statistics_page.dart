@@ -41,6 +41,7 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
       body: TabBarView(
         controller: _tabController,
         children: [
+          // [PrimaryScrollerController]
           KeepAliveBuilder(builder: (context) => _buildItemTab()),
           KeepAliveBuilder(builder: (context) => StatisticServantTab())
         ],

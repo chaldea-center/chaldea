@@ -13,6 +13,8 @@ class ImportHttpResponse extends StatefulWidget {
 }
 
 class ImportHttpResponseState extends State<ImportHttpResponse> {
+  late ScrollController _scrollController;
+
   // settings
   bool _includeItem = true;
   bool _includeSvt = true;
@@ -42,6 +44,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     svtIdMap = db.gameData.servants.map((key, svt) => MapEntry(svt.svtId, svt));
     craftIdMap =
         db.gameData.crafts.map((key, craft) => MapEntry(craft.gameId, craft));
@@ -58,16 +61,19 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
         Padding(padding: EdgeInsets.only(top: 6)),
         Expanded(
           child: response == null
-              ? Column(
-                  children: [
-                    Padding(padding: EdgeInsets.only(top: 8)),
-                    if (!Language.isCN)
-                      Text('Only Simplified Chinese server is supported yet'),
-                    if (!Language.isCN) Text(S.current.import_http_body_hint),
-                  ],
+              ? Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Column(
+                    children: [
+                      if (!Language.isCN)
+                        Text('Only Simplified Chinese server is supported yet'),
+                      if (!Language.isCN) Text(S.current.import_http_body_hint),
+                    ],
+                  ),
                 )
               : LayoutBuilder(
                   builder: (context, constraints) => ListView(
+                    controller: _scrollController,
                     children: [
                       if (response!.firstUser != null) userInfoAccordion,
                       kDefaultDivider,
@@ -79,8 +85,8 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
                       kDefaultDivider,
                       craftAccordion,
                     ],
-                  ),
                 ),
+          ),
         ),
         kDefaultDivider,
         buttonBar,
@@ -192,7 +198,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
           text += '\n';
         } else {
           text +=
-              '灵衣 ${cardCollections[svt.svtId]!.costumeIdsTo01().join('/')}\n';
+          '灵衣 ${cardCollections[svt.svtId]!.costumeIdsTo01().join('/')}\n';
         }
         text += '技能 ${svt.skillLv1}/${svt.skillLv2}/${svt.skillLv3}\n';
 
@@ -351,7 +357,8 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
       children: [
         Wrap(
           spacing: 6,
-          runSpacing: 6,
+          runSpacing: 3,
+          alignment: WrapAlignment.center,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             IconButton(
@@ -487,11 +494,11 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
   void importResponseBody() async {
     try {
       FilePickerCross filePickerCross =
-          await FilePickerCross.importFromStorage();
+      await FilePickerCross.importFromStorage();
       String body =
-          Uri.decodeFull(File(filePickerCross.path).readAsStringSync());
+      Uri.decodeFull(File(filePickerCross.path).readAsStringSync());
       BiliResponse _response =
-          BiliResponse.fromJson(jsonDecode(b64(body))['cache']['replaced']);
+      BiliResponse.fromJson(jsonDecode(b64(body))['cache']['replaced']);
 
       // clear before import
       ignoreSvts.clear();
@@ -531,7 +538,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
           // cardCollections[svt.svtId] = _response.userSvtCollection
           //     .firstWhere((element) => element.svtId == svt.svtId);
           final group = servants.firstWhereOrNull(
-              (group) => group.any((element) => element.svtId == svt.svtId));
+                  (group) => group.any((element) => element.svtId == svt.svtId));
           if (group == null) {
             servants.add([svt]);
           } else {
@@ -547,7 +554,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
           // cardCollections[svt.svtId] = _response.userSvtCollection
           //     .firstWhere((element) => element.svtId == svt.svtId);
           final group = servants.firstWhereOrNull(
-              (group) => group.any((element) => element.svtId == svt.svtId));
+                  (group) => group.any((element) => element.svtId == svt.svtId));
           if (group == null) {
             servants.add([svt]);
           } else {

@@ -30,6 +30,9 @@ class _ValueStatefulBuilderState<T> extends State<ValueStatefulBuilder<T>> {
   Widget build(BuildContext context) => widget.builder(context, this);
 }
 
+/// Make sure all keep-alive widgets won't share the [PrimaryScrollController]
+/// If will, assign a unique [ScrollController] to every (at least n-1)
+/// scrollable widget who will use [PrimaryScrollController] by default
 class KeepAliveBuilder extends StatefulWidget {
   final WidgetBuilder builder;
   final bool wantKeepAlive;

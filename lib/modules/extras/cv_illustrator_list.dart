@@ -46,7 +46,6 @@ class _CvListPageState extends State<CvListPage> {
       ),
       body: Scrollbar(
         controller: _scrollController,
-        isAlwaysShown: true,
         child: ListView.separated(
           controller: _scrollController,
           padding: EdgeInsets.only(bottom: 16),
@@ -139,7 +138,6 @@ class _IllustratorListPageState extends State<IllustratorListPage> {
         title: Text(S.current.illustrator),
       ),
       body: Scrollbar(
-        isAlwaysShown: true,
         controller: _scrollController,
         child: ListView.separated(
           controller: _scrollController,

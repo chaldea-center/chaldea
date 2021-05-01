@@ -261,21 +261,40 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
           );
           children.add(child);
         });
-        SimpleCancelOkDialog(
-          hideOk: true,
-          title: Text('Choose $partName'),
-          actions: [clearBtn],
-          content: Builder(builder: (context) {
-            final size = MediaQuery.of(context).size;
-            return SizedBox.fromSize(
-              size: size,
-              child: GridView.count(
-                crossAxisCount: (MediaQuery.of(context).size.width - 128) ~/ 56,
+        showModalBottomSheet(
+          context: context,
+          builder: (context) => Scaffold(
+            appBar: AppBar(
+              leading: BackButton(),
+              title: Text('Choose $partName'),
+              actions: [clearBtn],
+            ),
+            body: LayoutBuilder(builder: (context, constraints) {
+              print(constraints);
+              return GridView.count(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                crossAxisCount: constraints.maxWidth ~/ 56,
                 children: children,
-              ),
-            );
-          }),
-        ).showDialog(context);
+              );
+            }),
+          ),
+          isScrollControlled: true,
+        );
+        // SimpleCancelOkDialog(
+        //   hideOk: true,
+        //   title: Text('Choose $partName'),
+        //   actions: [clearBtn],
+        //   content: Builder(builder: (context) {
+        //     final size = MediaQuery.of(context).size;
+        //     return SizedBox.fromSize(
+        //       size: size,
+        //       child: GridView.count(
+        //         crossAxisCount: (MediaQuery.of(context).size.width - 128) ~/ 56,
+        //         children: children,
+        //       ),
+        //     );
+        //   }),
+        // ).showDialog(context);
       },
     );
   }

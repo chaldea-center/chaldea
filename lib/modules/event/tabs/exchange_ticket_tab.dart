@@ -58,16 +58,13 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     tickets.sort(
         (a, b) => a.dateJp.compareTo(b.dateJp) * (widget.reverse ? -1 : 1));
     return db.streamBuilder(
-      (context) => Scrollbar(
+      (context) => ListView(
         controller: _scrollController,
-        child: ListView(
-          controller: _scrollController,
-          shrinkWrap: widget.monthJp != null,
-          children: divideTiles(
-            tickets.map((ticket) => buildOneMonth(ticket)),
-            divider: Divider(height: 1, indent: 16),
-          ).toList(),
-        ),
+        shrinkWrap: widget.monthJp != null,
+        children: divideTiles(
+          tickets.map((ticket) => buildOneMonth(ticket)),
+          divider: Divider(height: 1, indent: 16),
+        ).toList(),
       ),
     );
   }

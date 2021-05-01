@@ -11,6 +11,20 @@ class QuestPlanTab extends StatefulWidget {
 }
 
 class _QuestPlanTabState extends State<QuestPlanTab> {
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
@@ -40,31 +54,31 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                   if (state.value && widget.solution?.params != null)
                     widget.solution!.params!.blacklist.contains(variable.name)
                         ? TextButton.icon(
-                            onPressed: () {
-                              setState(() {
-                                widget.solution!.params!.blacklist
-                                    .remove(variable.name);
-                              });
-                            },
-                            icon: Icon(Icons.clear, color: Colors.black),
-                            label: Text(
-                              S.of(context).remove_from_blacklist,
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          )
+                      onPressed: () {
+                        setState(() {
+                          widget.solution!.params!.blacklist
+                              .remove(variable.name);
+                        });
+                      },
+                      icon: Icon(Icons.clear, color: Colors.black),
+                      label: Text(
+                        S.of(context).remove_from_blacklist,
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    )
                         : TextButton.icon(
-                            onPressed: () {
-                              setState(() {
-                                widget.solution!.params!.blacklist
-                                    .add(variable.name);
-                              });
-                            },
-                            icon: Icon(Icons.add, color: Colors.redAccent),
-                            label: Text(
-                              S.of(context).add_to_blacklist,
-                              style: TextStyle(color: Colors.redAccent),
-                            ),
-                          ),
+                      onPressed: () {
+                        setState(() {
+                          widget.solution!.params!.blacklist
+                              .add(variable.name);
+                        });
+                      },
+                      icon: Icon(Icons.add, color: Colors.redAccent),
+                      label: Text(
+                        S.of(context).add_to_blacklist,
+                        style: TextStyle(color: Colors.redAccent),
+                      ),
+                    ),
                   if (state.value && quest != null) QuestCard(quest: quest),
                 ],
               );
@@ -83,7 +97,12 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                 '${S.current.total_ap}: ${widget.solution?.totalCost ?? "-"}'),
           ),
         ),
-        Expanded(child: ListView(children: children))
+        Expanded(
+          child: ListView(
+            controller: _scrollController,
+            children: children,
+          ),
+        )
       ],
     );
   }

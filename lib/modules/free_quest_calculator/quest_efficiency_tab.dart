@@ -12,9 +12,23 @@ class QuestEfficiencyTab extends StatefulWidget {
 }
 
 class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
+  late ScrollController _scrollController;
+
   Set<String> allItems = {};
   Set<String> filterItems = {};
   bool matchAll = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,9 +75,9 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
                     onTap: quest == null
                         ? null
                         : () {
-                            state.value = !state.value;
-                            state.updateState();
-                          },
+                      state.value = !state.value;
+                      state.updateState();
+                    },
                   ),
                   if (state.value && quest != null) QuestCard(quest: quest),
                 ],
@@ -80,7 +94,8 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
           trailing: Text(S.of(context).efficiency),
         ),
         kDefaultDivider,
-        Expanded(child: ListView(children: children)),
+        Expanded(
+            child: ListView(controller: _scrollController, children: children)),
         kDefaultDivider,
         _buildButtonBar(),
       ],

@@ -22,7 +22,7 @@ class _FfoDownloadDialogState extends State<FfoDownloadDialog> {
     gitTool
         .latestAppRelease(
             test: (asset) =>
-                asset.name.contains('ffo') || asset.name.contains('zip'))
+                asset.name.contains('ffo') && asset.name.contains('zip'))
         .then((_release) {
       release = _release;
       release?.assets.forEach((asset) {

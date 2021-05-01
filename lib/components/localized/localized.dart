@@ -104,7 +104,7 @@ class Localized {
         LocalizedText(
             chs: '亚种特异点Ⅳ 禁忌降临庭园 塞勒姆',
             jpn: '亜種特異点Ⅳ 禁忌降臨庭園 セイレム',
-            eng: 'Pseudo-Singularity IV: The Forbidden Advent Garden, Salem'),
+            eng: 'Pseudo Singularity IV: The Forbidden Advent Garden, Salem'),
         LocalizedText(
             chs: '亚种特异点Ⅰ 恶性隔绝魔境 新宿 新宿幻灵事件',
             jpn: '亜種特異点Ⅰ 悪性隔絶魔境 新宿 新宿幻霊事件',

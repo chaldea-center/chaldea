@@ -252,8 +252,10 @@ class GitTool {
             ..assets.forEach((asset) {
               if (source == GitSource.server &&
                   asset.browserDownloadUrl != null) {
-                asset.browserDownloadUrl = '$kServerRoot/githubasset'
-                    '?url=${Uri.encodeFull(asset.browserDownloadUrl!)}';
+                asset.browserDownloadUrl = Uri.parse('$kServerRoot/githubasset')
+                    .replace(queryParameters: {
+                  'url': asset.browserDownloadUrl
+                }).toString();
               }
             }),
         );

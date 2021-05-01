@@ -9,8 +9,21 @@ class ImportGudaPage extends StatefulWidget {
 }
 
 class ImportGudaPageState extends State<ImportGudaPage> {
+  late ScrollController _scrollController;
   String? gudaData;
   bool? itemOrSvt;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +32,7 @@ class ImportGudaPageState extends State<ImportGudaPage> {
       children: [
         Expanded(
           child: SingleChildScrollView(
+            controller: _scrollController,
             padding: EdgeInsets.symmetric(horizontal: 8),
             child: Text(gudaData ?? ''),
           ),
@@ -38,8 +52,8 @@ class ImportGudaPageState extends State<ImportGudaPage> {
           child: Text(itemOrSvt == null
               ? S.current.import_data
               : itemOrSvt == true
-                  ? S.current.import_guda_items
-                  : S.current.import_guda_servants),
+              ? S.current.import_guda_items
+              : S.current.import_guda_servants),
           onPressed: itemOrSvt == null ? null : _import,
         ),
         Checkbox(
@@ -71,14 +85,14 @@ class ImportGudaPageState extends State<ImportGudaPage> {
   void importGudaFile() async {
     try {
       FilePickerCross filePickerCross =
-          await FilePickerCross.importFromStorage();
+      await FilePickerCross.importFromStorage();
       gudaData = File(filePickerCross.path).readAsStringSync();
       int cellNum = gudaData!.trim().split(';').first.split('/').length;
       itemOrSvt = cellNum == 3
           ? true
           : cellNum == 13
-              ? false
-              : null;
+          ? false
+          : null;
       if (mounted) {
         setState(() {});
       }
@@ -90,7 +104,7 @@ class ImportGudaPageState extends State<ImportGudaPage> {
   List<List<String>> _splitTable(String content) {
     List<String> lines = content.trim().split(';');
     final table =
-        lines.map((row) => row.trim().split('/').map((e) => e.trim()).toList());
+    lines.map((row) => row.trim().split('/').map((e) => e.trim()).toList());
     return table.where((e) => e.isNotEmpty).toList();
   }
 
@@ -163,7 +177,7 @@ class ImportGudaPageState extends State<ImportGudaPage> {
         if (svt == null) continue;
 
         List<int> values =
-            List.generate(10, (index) => int.parse(row[index + 3]));
+        List.generate(10, (index) => int.parse(row[index + 3]));
         ServantPlan cur = ServantPlan(favorite: true),
             target = ServantPlan(favorite: true);
         cur

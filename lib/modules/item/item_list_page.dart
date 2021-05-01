@@ -403,7 +403,7 @@ class _ItemListTabState extends State<ItemListTab> {
         separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
         itemCount: children.length,
       );
-      return Scrollbar(controller: _scrollController, child: _listView);
+      return _listView;
     });
     Widget? actionBar;
     // TODO: not shown actually

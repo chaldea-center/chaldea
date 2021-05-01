@@ -126,6 +126,7 @@ class DropCalcInputTab extends StatefulWidget {
 }
 
 class _DropCalcInputTabState extends State<DropCalcInputTab> {
+  late ScrollController _scrollController;
   late GLPKParams params;
 
   // category - itemKey
@@ -137,6 +138,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     // ensure every time [params] is a new instance
     params = GLPKParams.from(db.userData.glpkParams);
     params.enableControllers();
@@ -182,7 +184,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
         value: category,
         children: items
             .map((e) =>
-                PickerItem(text: makeText(Item.localizedNameOf(e)), value: e))
+            PickerItem(text: makeText(Item.localizedNameOf(e)), value: e))
             .toList(),
       ));
     });
@@ -194,6 +196,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
   void dispose() {
     solver.dispose();
     params.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -243,6 +246,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
 
   Widget _buildInputRows() {
     return ListView.separated(
+      controller: _scrollController,
       itemBuilder: (context, index) {
         final item = params.rows[index];
         Widget leading = GestureDetector(
@@ -299,9 +303,9 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
           child: Text(
             planOrEff
                 ? S.current.words_separate(
-                    S.current.calc_weight, params.weights[index])
+                S.current.calc_weight, params.weights[index])
                 : S.current
-                    .words_separate(S.current.counts, params.counts[index]),
+                .words_separate(S.current.counts, params.counts[index]),
           ),
         );
         return CustomTile(
@@ -462,7 +466,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
         running = true;
       });
       final solution =
-          await solver.calculate(data: db.gameData.glpk, params: params);
+      await solver.calculate(data: db.gameData.glpk, params: params);
       running = false;
       solution.destination = planOrEff ? 1 : 2;
       solution.params = params;

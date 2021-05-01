@@ -45,7 +45,7 @@ class _QuestCardState extends State<QuestCard> {
                     children: [
                       AutoSizeText(
                         chapter,
-                        maxLines: 1,
+                        maxLines: 2,
                         maxFontSize: 14,
                         minFontSize: 6,
                         textAlign: TextAlign.center,

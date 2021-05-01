@@ -13,12 +13,15 @@ class ImportScreenshotPage extends StatefulWidget {
 }
 
 class ImportScreenshotPageState extends State<ImportScreenshotPage> {
+  late ScrollController _scrollController;
   Map<String, int> output = {};
   late Dio _dio;
   late List<File> imageFiles;
 
   @override
   void initState() {
+    super.initState();
+    _scrollController = ScrollController();
     imageFiles = db.runtimeData.itemRecognizeImageFiles;
     _dio = Dio(BaseOptions(
       // baseUrl: 'http://localhost:8083',
@@ -26,7 +29,12 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
       sendTimeout: 600 * 1000,
       receiveTimeout: 600 * 1000,
     ));
-    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
   }
 
   @override
@@ -41,6 +49,7 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
                 if (imageFiles.isNotEmpty)
                   Expanded(
                     child: ListView(
+                      controller: _scrollController,
                       children: imageFiles.map((e) {
                         return Container(
                           width: constraints.biggest.width,
@@ -72,21 +81,20 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
           onPressed: () => SimpleCancelOkDialog(
             title: Text(S.of(context).help),
             hideCancel: true,
-            content: SingleChildScrollView(
-              child: Text('0. 实验功能，请注意备份用户数据!!!\n'
-                  '1. 目前仅可解析素材信息，仅国服日服经过测试\n'
-                  '2. 使用方法: \n'
-                  ' - 点击右上角可同时导入多张截图\n'
-                  ' - 上传成功后喝口茶再下载结果导入\n'
-                  '3. 如识别结果偏差很大，请在反馈中描述下这种偏差，如后两位未能识别等\n'
-                  '4. 注意事项\n'
-                  ' - 单次上传有大小限制，否则会出现413错误，请分多次上传下载\n'
-                  ' - 截图尽量别做修改，滤镜禁止\n'
-                  ' - 素材框务必完全显示, 否则对应素材可能识别不到\n'
-                  ' - 解析精度有限，下载结果后可自行修正\n'
-                  ' - 解析结果保留24h, 24h后可能删除\n'
-                  ' - 服务器目前无法保证长期可用，若无法使用请检查新版本或提交反馈\n'),
-            ),
+            scrollable: true,
+            content: Text('0. 实验功能，请注意备份用户数据!!!\n'
+                '1. 目前仅可解析素材信息，仅国服日服经过测试\n'
+                '2. 使用方法: \n'
+                ' - 点击右上角可同时导入多张截图\n'
+                ' - 上传成功后喝口茶再下载结果导入\n'
+                '3. 如识别结果偏差很大，请在反馈中描述下这种偏差，如后两位未能识别等\n'
+                '4. 注意事项\n'
+                ' - 单次上传有大小限制，否则会出现413错误，请分多次上传下载\n'
+                ' - 截图尽量别做修改，滤镜禁止\n'
+                ' - 素材框务必完全显示, 否则对应素材可能识别不到\n'
+                ' - 解析精度有限，下载结果后可自行修正\n'
+                ' - 解析结果保留24h, 24h后可能删除\n'
+                ' - 服务器目前无法保证长期可用，若无法使用请检查新版本或提交反馈\n'),
           ).showDialog(context),
           icon: Icon(Icons.help),
           tooltip: S.of(context).help,
@@ -101,20 +109,20 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
           onPressed: output.isEmpty
               ? null
               : () {
-                  SimpleCancelOkDialog(
-                    title: Text('更新素材库存'),
-                    content: Text('仅更新: 仅更新已识别的素材\n清空并更新: 清空所有素材数据再更新'),
-                    hideOk: true,
-                    actions: [
-                      TextButton(
-                          onPressed: () {
-                            db.curUser.items..addAll(output);
-                            db.itemStat.updateLeftItems();
-                            Navigator.of(context).pop();
-                          },
-                          child: Text('仅更新')),
-                      TextButton(
-                          onPressed: () {
+            SimpleCancelOkDialog(
+              title: Text('更新素材库存'),
+              content: Text('仅更新: 仅更新已识别的素材\n清空并更新: 清空所有素材数据再更新'),
+              hideOk: true,
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      db.curUser.items..addAll(output);
+                      db.itemStat.updateLeftItems();
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('仅更新')),
+                TextButton(
+                    onPressed: () {
                             db.curUser.items
                               ..clear()
                               ..addAll(output);
@@ -125,7 +133,8 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
                     ],
                   ).showDialog(context);
                 },
-          child: Text('更新素材库存'),
+          child: Text(
+              LocalizedText.of(chs: '更新素材', jpn: '更新素材', eng: 'Update Items')),
         ),
       ],
     );
@@ -195,7 +204,7 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
       map['userKey'] = AppInfo.uniqueId;
       for (var file in imageFiles) {
         map[pathlib.basename(file.path)] =
-            await MultipartFile.fromFile(file.path);
+        await MultipartFile.fromFile(file.path);
       }
       var formData = FormData.fromMap(map);
       EasyLoading.show(status: 'Uploading');

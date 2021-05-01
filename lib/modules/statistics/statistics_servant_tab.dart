@@ -8,6 +8,7 @@ class StatisticServantTab extends StatefulWidget {
 }
 
 class _StatisticServantTabState extends State<StatisticServantTab> {
+  late ScrollController _scrollController;
   List<int> rarityTotal = List.filled(6, 0);
   List<int> rarityOwn = List.filled(6, 0);
   List<int> rarity999 = List.filled(6, 0);
@@ -30,6 +31,18 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
   }
 
   Map<String, int> svtClassCount = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +87,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
       ),
     ));
     return ListView(
+      controller: _scrollController,
       children: divideTiles(children),
       padding: EdgeInsets.symmetric(vertical: 6),
     );
@@ -151,19 +165,19 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
   String? selectedPie;
 
   List<Color> get palette => [
-        // Color(0xFFCC0000),
-        Color(0xFFCC6600),
-        Color(0xFFCCCC00),
-        Color(0xFF66CC00),
-        Color(0xFF00CC00),
-        Color(0xFF00CC66),
-        Color(0xFF00CCCC),
-        Color(0xFF0066CC),
-        Color(0xFF0000CC),
-        // Color(0xFF6600CC),
-        // Color(0xFFCC00CC),
-        // Color(0xFFCC0066),
-      ].reversed.toList();
+    // Color(0xFFCC0000),
+    Color(0xFFCC6600),
+    Color(0xFFCCCC00),
+    Color(0xFF66CC00),
+    Color(0xFF00CC00),
+    Color(0xFF00CC66),
+    Color(0xFF00CCCC),
+    Color(0xFF0066CC),
+    Color(0xFF0000CC),
+    // Color(0xFF6600CC),
+    // Color(0xFFCC00CC),
+    // Color(0xFFCC0066),
+  ].reversed.toList();
 
   Widget pieChart() {
     _calcServantClass();
@@ -205,8 +219,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
     );
   }
 
-  PieChartSectionData _pieSection(
-      String clsName, int count, int total, double mag, Color? color) {
+  PieChartSectionData _pieSection(String clsName, int count, int total, double mag, Color? color) {
     bool selected = selectedPie == clsName;
     double ratio = count / total;
     double posRatio = ratio < 0.05 ? 1.2 : 1;
