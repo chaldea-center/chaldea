@@ -196,28 +196,45 @@ class _MysticCodePageState extends State<MysticCodePage> {
             isHeader: true,
           )
         ]),
-        CustomTableRow(children: [TableCellData(text: mysticCode.nameJp)]),
+        CustomTableRow(
+          children: [
+            TableCellData(
+              child: Text(mysticCode.nameJp,
+                  style: TextStyle(fontWeight: FontWeight.w500)),
+            )
+          ],
+        ),
+        CustomTableRow(
+          children: [
+            TableCellData(
+              child: Text(mysticCode.nameEn,
+                  style: TextStyle(fontWeight: FontWeight.w500)),
+            )
+          ],
+          // color: TableCellData.headerColor.withAlpha(120),
+        ),
         CustomTableRow(children: [
           TableCellData(
-            text: mysticCode.description,
+            text: mysticCode.lDescription,
             alignment: Alignment.centerLeft,
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           ),
         ]),
-        CustomTableRow(
-          children: [
-            TableCellData(
-              text: mysticCode.descriptionJp,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-            ),
-          ],
-        ),
+        if (!Language.isJP)
+          CustomTableRow(
+            children: [
+              TableCellData(
+                text: mysticCode.descriptionJp,
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              ),
+            ],
+          ),
         CustomTableRow(children: [
           TableCellData(text: S.of(context).obtain_methods, isHeader: true)
         ]),
         CustomTableRow(children: [
-          TableCellData(child: Text(mysticCode.obtains.join('\n')))
+          TableCellData(child: Text(mysticCode.lObtains.join('\n')))
         ]),
         CustomTableRow(children: [
           TableCellData(text: S.of(context).skill, isHeader: true)
@@ -299,13 +316,12 @@ class _MysticCodePageState extends State<MysticCodePage> {
   }
 
   Widget buildSkill(Skill skill) {
-    String nameCn = skill.name;
     return TileGroup(
       children: <Widget>[
         CustomTile(
             contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
             leading: db.getIconImage(skill.icon, height: 32, width: 32),
-            title: Text(nameCn),
+            title: Text(skill.localizedName),
             trailing: Text('   CD: ${skill.cd}→${skill.cd - 2}')),
         for (Effect effect in skill.effects) ...buildEffect(effect)
       ],
@@ -322,7 +338,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
     return <Widget>[
       CustomTile(
           contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
-          subtitle: Text(effect.description),
+          subtitle: Text(effect.lDescription),
           trailing: crossCount == 0 ? Text(effect.lvData[0]) : null),
       if (lines > 0)
         Padding(

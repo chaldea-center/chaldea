@@ -2542,10 +2542,10 @@ class S {
     );
   }
 
-  /// `仅包含图片，~25M`
+  /// `仅包含图片，~20M`
   String get dataset_type_image_hint {
     return Intl.message(
-      '仅包含图片，~25M',
+      '仅包含图片，~20M',
       name: 'dataset_type_image_hint',
       desc: '',
       args: [],

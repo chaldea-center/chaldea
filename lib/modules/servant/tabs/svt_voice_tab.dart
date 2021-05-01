@@ -50,7 +50,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
               final table = svt.voices[index];
               return SimpleAccordion(
                 headerBuilder: (context, expanded) =>
-                    ListTile(title: Text(table.section)),
+                    ListTile(title: Text(_getLocalizedText(table.section))),
                 contentBuilder: (context) => Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Table(
@@ -80,7 +80,8 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
   List<TableRow> _buildVoiceRows(VoiceTable table) {
     return table.table.map((record) {
       return TableRow(children: [
-        Text(record.title, style: TextStyle(fontWeight: FontWeight.bold)),
+        Text(_getLocalizedText(record.title),
+            style: TextStyle(fontWeight: FontWeight.bold)),
         Padding(
           padding: EdgeInsets.symmetric(vertical: 3),
           child: Text((useLangCn ? record.text : record.textJp) ??
@@ -96,6 +97,14 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
         ),
       ]);
     }).toList();
+  }
+
+  String _getLocalizedText(String text) {
+    final match = RegExp(r'^(.+?)(\d*)$').firstMatch(text);
+    if (match == null || match.groupCount < 2) return _localizedVoices.of(text);
+    String prefix = match.group(1)!.trim(), digit = match.group(2)!;
+    String v = _localizedVoices.of(prefix) + ' ' + digit;
+    return v;
   }
 
   Widget _buildButtonBar() {
@@ -131,6 +140,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
     }
     audioPlayer ??= GeneralAudioPlayer();
     final String? url = await MooncellUtil.resolveFileUrl(record.voiceFile);
+    print('${record.voiceFile}  -> $url');
     if (!mounted) return;
     if (url == null) {
       EasyLoading.showToast('File not found: ${record.voiceFile}');
@@ -149,6 +159,12 @@ class GeneralAudioPlayer {
   GeneralAudioPlayer() {
     if (usePlayer1) {
       player1 = audio1.AudioPlayer();
+      player1!.onPlayerError.listen((event) {
+        EasyLoading.showError(LocalizedText.of(
+            chs: '$event\n可能是不受支持的格式',
+            jpn: '$event\nサポートされていない形式かもしれ',
+            eng: '$event\nMay be an unsupported format'));
+      });
     } else {
       player2 = audio2.AudioPlayer();
     }
@@ -190,3 +206,32 @@ class GeneralAudioPlayer {
     if (usePlayer1) player1?.dispose();
   }
 }
+
+LocalizedGroup get _localizedVoices => LocalizedGroup([
+      LocalizedText(chs: '战斗', jpn: '', eng: 'Battle'),
+      LocalizedText(chs: '开始', jpn: '', eng: 'Battle Start'),
+      LocalizedText(chs: '技能', jpn: '', eng: 'Skill'),
+      LocalizedText(chs: '指令卡', jpn: '', eng: 'Attack Selected'),
+      LocalizedText(chs: '宝具卡', jpn: '', eng: 'NP Selected'),
+      LocalizedText(chs: '攻击', jpn: '', eng: 'Attack'),
+      LocalizedText(chs: '宝具', jpn: '', eng: 'Noble Phantasm'),
+      LocalizedText(chs: '受击', jpn: '', eng: 'Damage'),
+      LocalizedText(chs: '无法战斗', jpn: '', eng: 'Defeated'),
+      LocalizedText(chs: '胜利', jpn: '', eng: 'Battle Finish'),
+      LocalizedText(chs: '召唤和强化', jpn: '', eng: 'Summon and Leveling'),
+      LocalizedText(chs: '召唤', jpn: '', eng: 'Summoned'),
+      LocalizedText(chs: '升级', jpn: '', eng: 'Level Up'),
+      LocalizedText(chs: '灵基再临', jpn: '', eng: 'Ascension'),
+      LocalizedText(chs: '个人空间', jpn: '', eng: 'My Room'),
+      LocalizedText(chs: '羁绊', jpn: '', eng: 'Bond'),
+      LocalizedText(chs: '羁绊 Lv.', jpn: '', eng: 'Bond Lv.'),
+      LocalizedText(chs: '对话', jpn: '', eng: 'Dialogue'),
+      LocalizedText(chs: '喜欢的东西', jpn: '', eng: 'Something you Like'),
+      LocalizedText(chs: '讨厌的东西', jpn: '', eng: 'Something you Hate'),
+      LocalizedText(chs: '关于圣杯', jpn: '', eng: 'About the Holy Grail'),
+      LocalizedText(chs: '活动举行中', jpn: '', eng: 'During an Event'),
+      LocalizedText(chs: '生日', jpn: '', eng: 'Birthday'),
+      LocalizedText(chs: '灵衣', jpn: '', eng: 'Costume'),
+      LocalizedText(chs: '灵衣开放', jpn: '', eng: 'Costume Unlock'),
+      LocalizedText(chs: '灵衣相关', jpn: '', eng: 'Costume Related'),
+    ]);

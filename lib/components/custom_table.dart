@@ -173,7 +173,7 @@ class _CustomTableRowState extends State<CustomTableRow> {
         flex: cell.flex,
         child: Container(
           constraints: constraints,
-          color: cell.color,
+          color: cell.color ?? widget.color,
           child: Align(
             alignment: cell.alignment,
             child: Padding(

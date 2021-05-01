@@ -135,7 +135,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "dataset_type_image":
             MessageLookupByLibrary.simpleMessage("画像データパッケージ"),
         "dataset_type_image_hint":
-            MessageLookupByLibrary.simpleMessage("画像のみ、約25M"),
+            MessageLookupByLibrary.simpleMessage("画像のみ、約20M"),
         "dataset_type_text":
             MessageLookupByLibrary.simpleMessage("テキストデータパッケージ"),
         "dataset_type_text_hint":

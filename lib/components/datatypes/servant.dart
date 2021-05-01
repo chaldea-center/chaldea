@@ -408,6 +408,7 @@ class Skill {
   String state;
   String name;
   String? nameJp;
+  String? nameEn;
   String? rank;
   String icon;
   int cd;
@@ -417,13 +418,14 @@ class Skill {
     required this.state,
     required this.name,
     required this.nameJp,
+    required this.nameEn,
     required this.rank,
     required this.icon,
     required this.cd,
     required this.effects,
   });
 
-  String get localizedName => localizeNoun(name, nameJp, null);
+  String get localizedName => localizeNoun(name, nameJp, nameEn);
 
   factory Skill.fromJson(Map<String, dynamic> data) => _$SkillFromJson(data);
 
@@ -433,9 +435,16 @@ class Skill {
 @JsonSerializable(checked: true)
 class Effect {
   String description;
+  String? descriptionEn;
   List<String> lvData;
 
-  Effect({required this.description, required this.lvData});
+  Effect({
+    required this.description,
+    required this.descriptionEn,
+    required this.lvData,
+  });
+
+  String get lDescription => localizeNoun(description, null, descriptionEn);
 
   factory Effect.fromJson(Map<String, dynamic> data) => _$EffectFromJson(data);
 

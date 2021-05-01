@@ -249,7 +249,7 @@
   "update": "更新",
   "overwrite": "覆盖",
   "dataset_type_image": "图片数据包",
-  "dataset_type_image_hint": "仅包含图片，~25M",
+  "dataset_type_image_hint": "仅包含图片，~20M",
   "dataset_type_text": "文本数据包",
   "dataset_type_text_hint": "不包含图片，~5M",
   "dataset_goto_download_page": "前往下载页",

@@ -252,7 +252,7 @@
   "update": "更新",
   "overwrite": "上書き",
   "dataset_type_image": "画像データパッケージ",
-  "dataset_type_image_hint": "画像のみ、約25M",
+  "dataset_type_image_hint": "画像のみ、約20M",
   "dataset_type_text": "テキストデータパッケージ",
   "dataset_type_text_hint": "テキストのみ、約5M",
   "dataset_goto_download_page": "ダウンロードページに移動",

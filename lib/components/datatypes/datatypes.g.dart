@@ -788,14 +788,19 @@ MysticCode _$MysticCodeFromJson(Map<String, dynamic> json) {
     final val = MysticCode(
       name: $checkedConvert(json, 'name', (v) => v as String),
       nameJp: $checkedConvert(json, 'nameJp', (v) => v as String),
+      nameEn: $checkedConvert(json, 'nameEn', (v) => v as String),
       description: $checkedConvert(json, 'description', (v) => v as String),
       descriptionJp: $checkedConvert(json, 'descriptionJp', (v) => v as String),
+      descriptionEn:
+          $checkedConvert(json, 'descriptionEn', (v) => v as String?),
       icon1: $checkedConvert(json, 'icon1', (v) => v as String),
       icon2: $checkedConvert(json, 'icon2', (v) => v as String),
       image1: $checkedConvert(json, 'image1', (v) => v as String),
       image2: $checkedConvert(json, 'image2', (v) => v as String),
       obtains: $checkedConvert(json, 'obtains',
           (v) => (v as List<dynamic>).map((e) => e as String).toList()),
+      obtainsEn: $checkedConvert(json, 'obtainsEn',
+          (v) => (v as List<dynamic>?)?.map((e) => e as String).toList()),
       expPoints: $checkedConvert(json, 'expPoints',
           (v) => (v as List<dynamic>).map((e) => e as int).toList()),
       skills: $checkedConvert(
@@ -813,13 +818,16 @@ Map<String, dynamic> _$MysticCodeToJson(MysticCode instance) =>
     <String, dynamic>{
       'name': instance.name,
       'nameJp': instance.nameJp,
+      'nameEn': instance.nameEn,
       'description': instance.description,
       'descriptionJp': instance.descriptionJp,
+      'descriptionEn': instance.descriptionEn,
       'icon1': instance.icon1,
       'icon2': instance.icon2,
       'image1': instance.image1,
       'image2': instance.image2,
       'obtains': instance.obtains,
+      'obtainsEn': instance.obtainsEn,
       'expPoints': instance.expPoints,
       'skills': instance.skills,
     };
@@ -1206,6 +1214,7 @@ Skill _$SkillFromJson(Map<String, dynamic> json) {
       state: $checkedConvert(json, 'state', (v) => v as String),
       name: $checkedConvert(json, 'name', (v) => v as String),
       nameJp: $checkedConvert(json, 'nameJp', (v) => v as String?),
+      nameEn: $checkedConvert(json, 'nameEn', (v) => v as String?),
       rank: $checkedConvert(json, 'rank', (v) => v as String?),
       icon: $checkedConvert(json, 'icon', (v) => v as String),
       cd: $checkedConvert(json, 'cd', (v) => v as int),
@@ -1220,10 +1229,12 @@ Skill _$SkillFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$SkillToJson(Skill instance) => <String, dynamic>{
+Map<String, dynamic> _$SkillToJson(Skill instance) =>
+    <String, dynamic>{
       'state': instance.state,
       'name': instance.name,
       'nameJp': instance.nameJp,
+      'nameEn': instance.nameEn,
       'rank': instance.rank,
       'icon': instance.icon,
       'cd': instance.cd,
@@ -1234,6 +1245,8 @@ Effect _$EffectFromJson(Map<String, dynamic> json) {
   return $checkedNew('Effect', json, () {
     final val = Effect(
       description: $checkedConvert(json, 'description', (v) => v as String),
+      descriptionEn:
+          $checkedConvert(json, 'descriptionEn', (v) => v as String?),
       lvData: $checkedConvert(json, 'lvData',
           (v) => (v as List<dynamic>).map((e) => e as String).toList()),
     );
@@ -1241,8 +1254,10 @@ Effect _$EffectFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$EffectToJson(Effect instance) => <String, dynamic>{
+Map<String, dynamic> _$EffectToJson(Effect instance) =>
+    <String, dynamic>{
       'description': instance.description,
+      'descriptionEn': instance.descriptionEn,
       'lvData': instance.lvData,
     };
 

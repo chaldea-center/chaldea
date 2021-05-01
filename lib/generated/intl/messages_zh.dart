@@ -132,7 +132,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "dataset_management": MessageLookupByLibrary.simpleMessage("数据管理"),
         "dataset_type_image": MessageLookupByLibrary.simpleMessage("图片数据包"),
         "dataset_type_image_hint":
-            MessageLookupByLibrary.simpleMessage("仅包含图片，~25M"),
+            MessageLookupByLibrary.simpleMessage("仅包含图片，~20M"),
         "dataset_type_text": MessageLookupByLibrary.simpleMessage("文本数据包"),
         "dataset_type_text_hint":
             MessageLookupByLibrary.simpleMessage("不包含图片，~5M"),

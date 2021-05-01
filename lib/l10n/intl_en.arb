@@ -250,7 +250,7 @@
   "update": "Update",
   "overwrite": "Override",
   "dataset_type_image": "Icon dataset",
-  "dataset_type_image_hint": "Only icons, ~25M",
+  "dataset_type_image_hint": "Only icons, ~20M",
   "dataset_type_text": "Text dataset",
   "dataset_type_text_hint": "Only texts, ~5M",
   "dataset_goto_download_page": "Goto download webpage",
