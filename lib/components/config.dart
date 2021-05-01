@@ -424,7 +424,11 @@ class Database {
     void Function(int, int)? onProgress,
   }) async {
     // final t = TimeCounter('extractZip');
-    final message = {'bytes': bytes, 'fp': fp, 'savePath': savePath};
+    if ([bytes, fp].where((e) => e != null).length != 1) {
+      throw ArgumentError('You can/must only pass one parameter of bytes,fp');
+    }
+    if (fp != null) bytes = await File(fp).readAsBytes();
+    final message = {'bytes': bytes, 'savePath': savePath};
     if (onError == null) {
       await compute(_extractZipIsolate, message);
     } else {
@@ -435,20 +439,9 @@ class Database {
 
   static Future<void> _extractZipIsolate(Map<String, dynamic> message) async {
     String savePath = message['savePath']!;
-    List<int>? bytes = message['bytes'];
-    String? fp = message['fp'];
+    List<int> bytes = message['bytes']!;
 
-    late List<int> resolvedBytes;
-    if ([bytes, fp].where((e) => e != null).length != 1) {
-      throw ArgumentError('You can/must only pass one parameter of bytes,fp');
-    }
-    if (bytes != null) {
-      resolvedBytes = bytes;
-    }
-    if (fp != null) {
-      resolvedBytes = File(fp).readAsBytesSync().cast<int>();
-    }
-    Archive archive = ZipDecoder().decodeBytes(resolvedBytes);
+    Archive archive = ZipDecoder().decodeBytes(bytes);
     print('──────────────── Extract zip file ────────────────────────────────');
     print('extract zip file, directory tree "$savePath":');
     // if (archive.findFile(kGameDataFilename) == null) {

@@ -45,13 +45,13 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
-    if (event.bannerUrl?.isNotEmpty == true)
+    if (event.lBannerUrl != null)
       children.add(GestureDetector(
         onTap: () => jumpToExternalLinkAlert(
             url: MooncellUtil.fullLink(widget.event.indexKey),
             name: 'Mooncell'),
         child: CachedImage(
-          imageUrl: event.bannerUrl,
+          imageUrl: event.lBannerUrl,
           isMCFile: true,
           connectivity: db.connectivity,
           placeholder: (_, __) => AspectRatio(aspectRatio: 8 / 3),

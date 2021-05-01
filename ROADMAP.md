@@ -39,9 +39,9 @@
   - [x] Servant
   - [x] CE/Command Code
   - [ ] Mystic Code
-  - [ ] Event
+  - [x] Event
   - [ ] Summon
-  - [ ] Quest
+  - [x] Quest
 
 ## UI
 毫无艺术细胞，有生之年

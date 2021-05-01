@@ -1,6 +1,20 @@
-import 'package:chaldea/components/components.dart'; // ignore: unused_import
-import 'package:path/path.dart' as p; // ignore: unused_import
+// ignore_for_file: unused_element,unused_import
+import 'package:chaldea/components/components.dart';
+import 'package:path/path.dart' as p;
 
 void testFunction() async {
   return;
+}
+
+String _makeLocalizedDart(String chs, String jpn, String eng) {
+  return " LocalizedText(chs: '$chs', jpn: '$jpn', eng: '$eng'),";
+}
+
+Future _reloadDebugDataset() async {
+  await db.extractZip(
+    fp: r'/Users/narumi/Projects/chaldea-project/mcparser/output/dataset-text.zip',
+    savePath: db.paths.gameDir,
+  );
+  db.loadGameData();
+  EasyLoading.showSuccess('Reloaded');
 }

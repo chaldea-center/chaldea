@@ -1683,10 +1683,10 @@ class S {
   }
 
   /// `灵衣开放`
-  String get dress_up {
+  String get costume_unlock {
     return Intl.message(
       '灵衣开放',
-      name: 'dress_up',
+      name: 'costume_unlock',
       desc: '',
       args: [],
     );
@@ -1773,10 +1773,10 @@ class S {
   }
 
   /// `灵衣`
-  String get dress {
+  String get costume {
     return Intl.message(
       '灵衣',
-      name: 'dress',
+      name: 'costume',
       desc: '',
       args: [],
     );

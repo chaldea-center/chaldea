@@ -22,12 +22,11 @@ class _QuestCardState extends State<QuestCard> {
 
   @override
   Widget build(BuildContext context) {
-    String questName = '${quest.name}';
-    if (quest.nameJp?.isNotEmpty == true)
-      questName = questName + '/' + quest.nameJp!;
-    String chapter =
-        db.gameData.events.mainRecords[quest.chapter]?.localizedName ??
-            quest.chapter;
+    String questName = [
+      quest.localizedName,
+      if (!Language.isJP && quest.nameJp != null) quest.nameJp!
+    ].join('/');
+    String chapter = Localized.chapter.of(quest.chapter);
     return Card(
       color: Colors.white,
       elevation: 0,
@@ -40,14 +39,36 @@ class _QuestCardState extends State<QuestCard> {
             [
               CustomTile(
                 title: Center(
-                  child: AutoSizeText(
-                    '$chapter\n'
-                    '$questName\n'
-                    '${S.of(context).game_kizuna} ${quest.bondPoint}  '
-                    '${S.of(context).game_experience} ${quest.experience}',
-                    maxLines: 4,
-                    maxFontSize: 14,
-                    textAlign: TextAlign.center,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      AutoSizeText(
+                        chapter,
+                        maxLines: 1,
+                        maxFontSize: 14,
+                        minFontSize: 6,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      AutoSizeText(
+                        questName,
+                        maxLines: 1,
+                        maxFontSize: 14,
+                        minFontSize: 6,
+                        textAlign: TextAlign.center,
+                        // style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      AutoSizeText(
+                        '${S.of(context).game_kizuna} ${quest.bondPoint}  '
+                        '${S.of(context).game_experience} ${quest.experience}',
+                        maxLines: 1,
+                        maxFontSize: 14,
+                        minFontSize: 6,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.caption,
+                      ),
+                    ],
                   ),
                 ),
                 contentPadding: EdgeInsets.fromLTRB(16, 8, 0, 8),
@@ -70,23 +91,31 @@ class _QuestCardState extends State<QuestCard> {
 
   List<Widget> _buildBattles(List<Battle> battles) {
     List<Widget> children = [];
-    String? lastPlace, lastPlaceJp;
+    Battle? lastBattle;
     for (int i = 0; i < battles.length; i++) {
       final battle = battles[i];
-      String? place =
-          battle.place?.isNotEmpty == true ? battle.place : lastPlace;
-      String? placeJp =
-          battle.placeJp?.isNotEmpty == true ? battle.placeJp : lastPlaceJp;
-      lastPlace = place;
-      lastPlaceJp = placeJp;
-      String shownPlace = place ?? '';
-      if (placeJp != null) shownPlace += '/' + placeJp;
+      String? place = battle.place ?? lastBattle?.place;
+      String? placeJp = battle.placeJp ?? lastBattle?.placeJp;
+      String? placeEn = battle.placeEn ?? lastBattle?.placeJp;
+      lastBattle = battle;
+      String shownPlace =
+          LocalizedText.of(chs: place ?? '', jpn: placeJp, eng: placeEn);
+      if (placeJp != null && placeJp != shownPlace) shownPlace += '/' + placeJp;
+      if (shownPlace == '迦勒底之门')
+        shownPlace =
+            LocalizedText.of(chs: '迦勒底之门', jpn: 'カルデアゲート', eng: 'Chaldea Gate');
       children.add(Row(children: <Widget>[
         Text('  ${i + 1}/${battles.length}  '),
         Expanded(flex: 1, child: Center(child: Text('AP ${battle.ap}'))),
         Expanded(
           flex: 4,
-          child: Center(child: AutoSizeText(shownPlace, maxLines: 1)),
+          child: Center(
+            child: AutoSizeText(
+              shownPlace,
+              maxLines: 1,
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ),
         ),
       ]));
       for (int j = 0; j < battle.enemies.length; j++) {
@@ -172,12 +201,37 @@ class _QuestCardState extends State<QuestCard> {
     '杀': 'Assassin',
     '狂': 'Berserker',
     '仇': 'Avenger',
+    '裁': 'Ruler',
+    '月': 'Mooncancer',
+    '分': 'Alterego',
+    '降': 'Foreigner',
     // '月外分盾'
   };
 
   Widget _getClassIcon(String clsName) {
     if (!_clasIcons.containsKey(clsName)) return Container();
     return db.getIconImage('金卡${_clasIcons[clsName]}', width: 16);
+  }
+
+  String _localizeClassName(String clsName) {
+    if (Language.isCN)
+      return clsName;
+    else
+      return {
+            '剑': '剣',
+            '弓': '弓',
+            '枪': '槍',
+            '骑': '騎',
+            '术': '術',
+            '杀': '殺',
+            '狂': '狂',
+            '仇': '讐',
+            '裁': '裁',
+            '月': '月',
+            '分': '分',
+            '降': '降',
+          }[clsName] ??
+          clsName;
   }
 
   Widget _buildWave(List<Enemy?> enemies) {
@@ -201,7 +255,7 @@ class _QuestCardState extends State<QuestCard> {
               _getClassIcon(enemy.className[i]),
             Flexible(
               child: AutoSizeText(
-                '${enemy.className[i]} ${enemy.hp[i]}',
+                '${_localizeClassName(enemy.className[i])} ${enemy.hp[i]}',
                 maxFontSize: 12,
                 // ensure HP is shown completely
                 minFontSize: 1,

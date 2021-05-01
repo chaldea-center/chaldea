@@ -39,7 +39,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             ),
             FilterOption(
               selected: filterData.hasDress,
-              value: S.of(context).dress,
+              value: S.of(context).costume,
               onChanged: (v) {
                 setState(() {
                   filterData.hasDress = v;

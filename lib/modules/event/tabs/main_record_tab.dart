@@ -67,18 +67,30 @@ class _MainRecordTabState extends State<MainRecordTab> {
                 final record = mainRecords[index];
                 final plan = db.curUser.events.mainRecordOf(record.indexKey);
                 bool outdated = record.isOutdated();
-                return ListTile(
-                  title: AutoSizeText(
+                Widget? title, subtitle;
+                if (Language.isEN) {
+                  title = AutoSizeText(
+                    Localized.chapter.of(record.name),
+                    maxLines: 2,
+                    maxFontSize: 16,
+                    style: outdated ? TextStyle(color: Colors.grey) : null,
+                  );
+                } else {
+                  title = AutoSizeText(
                     record.localizedChapter,
                     maxLines: 1,
                     maxFontSize: 16,
                     style: outdated ? TextStyle(color: Colors.grey) : null,
-                  ),
-                  subtitle: AutoSizeText(
+                  );
+                  subtitle = AutoSizeText(
                     record.localizedTitle,
                     maxLines: 1,
                     style: outdated ? TextStyle(color: Colors.grey[400]) : null,
-                  ),
+                  );
+                }
+                return ListTile(
+                  title: title,
+                  subtitle: subtitle,
                   trailing: Wrap(
                     children: List.generate(2, (i) {
                       return db.streamBuilder(

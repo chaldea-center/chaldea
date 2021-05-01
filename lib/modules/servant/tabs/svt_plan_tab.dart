@@ -182,13 +182,14 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           },
           detailPageBuilder: (context) => LevelingCostPage(
             costList: [svt.itemCost.dress[index]],
-            title: '${S.current.dress_up} - ${svt.itemCost.dressName[index]}',
+            title:
+                '${S.current.costume_unlock} - ${svt.itemCost.dressName[index]}',
           ),
         ));
       }
       if (dressWidgets.length > 0) {
-        children.add(
-            TileGroup(header: S.of(context).dress_up, children: dressWidgets));
+        children.add(TileGroup(
+            header: S.of(context).costume_unlock, children: dressWidgets));
       }
 
       children.add(TileGroup(

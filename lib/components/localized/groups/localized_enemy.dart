@@ -191,7 +191,7 @@ final _enemy = LocalizedGroup([
   LocalizedText(chs: '卡夫拉斯芬克斯', jpn: '', eng: 'Khafre Sphinx'),
   LocalizedText(chs: '伊夫利塔', jpn: '', eng: 'Efreet'),
   LocalizedText(chs: '花之邪神', jpn: '', eng: 'Evil God of the Flower'),
-  LocalizedText(chs: '大寄居蟹', jpn: '', eng: 'Giant Hermit'),
+  LocalizedText(chs: '大寄居蟹', jpn: '', eng: 'Giant Hermit Crab'),
   LocalizedText(chs: '毒寄居蟹', jpn: '', eng: 'Poisonous Hermit Crab'),
   LocalizedText(chs: '千年寄居蟹', jpn: '', eng: 'Millennium Hermit Crab'),
   LocalizedText(chs: '破坏兽', jpn: '', eng: 'Razrushat'),

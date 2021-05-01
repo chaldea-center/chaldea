@@ -36,6 +36,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
     final _onTap = (String itemKey) => SplitRoute.push(
         context: context,
         builder: (context, _) => ItemDetailPage(itemKey: itemKey));
+
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
@@ -70,13 +71,13 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
       ),
       body: ListView(
         children: <Widget>[
-          if (widget.record.bannerUrl?.isNotEmpty == true)
+          if (widget.record.lBannerUrl != null)
             GestureDetector(
               onTap: () => jumpToExternalLinkAlert(
                   url: MooncellUtil.fullLink(widget.record.indexKey),
                   name: 'Mooncell'),
               child: CachedImage(
-                imageUrl: widget.record.bannerUrl,
+                imageUrl: widget.record.lBannerUrl,
                 isMCFile: true,
                 connectivity: db.connectivity,
                 placeholder: (_, __) => AspectRatio(aspectRatio: 8 / 3),

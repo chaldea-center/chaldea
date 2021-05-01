@@ -118,6 +118,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "copper": MessageLookupByLibrary.simpleMessage("銅"),
         "copy": MessageLookupByLibrary.simpleMessage("コピー"),
         "copy_plan_menu": MessageLookupByLibrary.simpleMessage("他のプランからコピー"),
+        "costume": MessageLookupByLibrary.simpleMessage("霊衣"),
+        "costume_unlock": MessageLookupByLibrary.simpleMessage("霊衣開放"),
         "counts": MessageLookupByLibrary.simpleMessage("カウント"),
         "craft_essence": MessageLookupByLibrary.simpleMessage("概念礼装"),
         "craft_essence_title": MessageLookupByLibrary.simpleMessage("概念礼装"),
@@ -155,8 +157,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "download_source_of": m2,
         "downloaded": MessageLookupByLibrary.simpleMessage("ダウンロード済み"),
         "downloading": MessageLookupByLibrary.simpleMessage("ダウンロード"),
-        "dress": MessageLookupByLibrary.simpleMessage("霊衣"),
-        "dress_up": MessageLookupByLibrary.simpleMessage("霊衣開放"),
         "drop_calc_empty_hint":
             MessageLookupByLibrary.simpleMessage("＋をクリックしてアイテムを追加"),
         "drop_calc_help_text": MessageLookupByLibrary.simpleMessage(

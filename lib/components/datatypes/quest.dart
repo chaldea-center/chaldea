@@ -5,6 +5,7 @@ class Quest {
   String chapter;
   String name;
   String? nameJp;
+  String? nameEn;
 
   /// one place one quest: use place as key
   /// one place two quests: place（name）
@@ -24,8 +25,9 @@ class Quest {
   Quest({
     required this.chapter,
     required this.name,
-    this.nameJp,
-    this.indexKey,
+    required this.nameEn,
+    required this.nameJp,
+    required this.indexKey,
     required this.level,
     required this.bondPoint,
     required this.experience,
@@ -34,8 +36,8 @@ class Quest {
     required this.hasChoice,
     required this.battles,
     required this.rewards,
-    this.enhancement,
-    this.conditions,
+    required this.enhancement,
+    required this.conditions,
   });
 
   /// [key] is [indexKey] which is used as map key
@@ -49,13 +51,15 @@ class Quest {
     }
   }
 
-  String get localizedName => localizeNoun(name, nameJp, null);
+  String get localizedName => localizeNoun(name, nameJp, nameEn);
 
-  String get localizedPlace => localizeNoun(place, placeJp, null);
+  String get localizedPlace => localizeNoun(place, placeJp, placeEn);
+
+  String? get place => battles.getOrNull(0)?.place;
 
   String? get placeJp => battles.getOrNull(0)?.placeJp;
 
-  String? get place => battles.getOrNull(0)?.place;
+  String? get placeEn => battles.getOrNull(0)?.placeEn;
 
   static String shortChapterOf(String chapter) {
     if (chapter.contains('每日任务')) {
@@ -80,13 +84,15 @@ class Battle {
   int ap;
   String? place;
   String? placeJp;
+  String? placeEn;
   List<List<Enemy>> enemies; // wave_num*enemy_num
   Map<String, int> drops;
 
   Battle({
     required this.ap,
     required this.place,
-    this.placeJp,
+    required this.placeJp,
+    required this.placeEn,
     required this.enemies,
     required this.drops,
   });

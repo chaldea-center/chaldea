@@ -78,7 +78,6 @@ final _localizedSvtFilter = LocalizedGroup([
   LocalizedText(chs: 'EA不特攻', jpn: '', eng: 'NOT Weak to Enuma Elish	'),
   LocalizedText(chs: '所爱之人', jpn: '愛する者', eng: "Brynhildr's Beloved"),
   LocalizedText(chs: '希腊神话系男性', jpn: 'ギリシャ神話系男性', eng: 'Greek Mythology Males'),
-  LocalizedText(chs: '希腊神话男性', jpn: 'ギリシャ神話系男性', eng: 'Greek Mythology Males'),
   LocalizedText(chs: '人类的威胁', jpn: '人類の脅威', eng: 'Threat to Humanity'),
   LocalizedText(chs: '阿耳戈船相关人员', jpn: 'アルゴー号ゆかりの者', eng: 'Argo-Related'),
   LocalizedText(chs: '魔性', jpn: '魔性', eng: 'Demonic'),
@@ -94,6 +93,7 @@ final _localizedSvtFilter = LocalizedGroup([
   LocalizedText(chs: '领域外生命', jpn: '', eng: 'Existence Outside the Domain'),
   LocalizedText(chs: '鬼', jpn: '鬼', eng: 'Oni'),
   LocalizedText(chs: '源氏', jpn: '', eng: 'Genji'),
+  LocalizedText(chs: '持有灵衣者', jpn: '霊衣を持つ者', eng: 'Costume-Owning'),
   LocalizedText(chs: '机械', jpn: '機械', eng: 'Mechanical'),
   LocalizedText(chs: '妖精', jpn: '妖精', eng: 'Fairy'),
 

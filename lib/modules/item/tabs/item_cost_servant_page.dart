@@ -50,7 +50,7 @@ class ItemCostServantPage extends StatelessWidget {
         final headers = [
           S.current.ascension_up,
           S.current.skill_up,
-          S.current.dress_up,
+          S.current.costume_unlock,
           S.current.grail_up
         ];
         for (int i = 0; i < headers.length; i++) {

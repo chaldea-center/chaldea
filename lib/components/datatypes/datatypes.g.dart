@@ -348,11 +348,13 @@ LimitEvent _$LimitEventFromJson(Map<String, dynamic> json) {
       mcLink: $checkedConvert(json, 'mcLink', (v) => v as String),
       name: $checkedConvert(json, 'name', (v) => v as String),
       nameJp: $checkedConvert(json, 'nameJp', (v) => v as String),
+      nameEn: $checkedConvert(json, 'nameEn', (v) => v as String?),
       startTimeJp: $checkedConvert(json, 'startTimeJp', (v) => v as String?),
       endTimeJp: $checkedConvert(json, 'endTimeJp', (v) => v as String?),
       startTimeCn: $checkedConvert(json, 'startTimeCn', (v) => v as String?),
       endTimeCn: $checkedConvert(json, 'endTimeCn', (v) => v as String?),
       bannerUrl: $checkedConvert(json, 'bannerUrl', (v) => v as String?),
+      bannerUrlJp: $checkedConvert(json, 'bannerUrlJp', (v) => v as String?),
       grail: $checkedConvert(json, 'grail', (v) => v as int),
       crystal: $checkedConvert(json, 'crystal', (v) => v as int),
       grail2crystal: $checkedConvert(json, 'grail2crystal', (v) => v as int),
@@ -372,12 +374,14 @@ Map<String, dynamic> _$LimitEventToJson(LimitEvent instance) =>
     <String, dynamic>{
       'name': instance.name,
       'nameJp': instance.nameJp,
+      'nameEn': instance.nameEn,
       'mcLink': instance.mcLink,
       'startTimeJp': instance.startTimeJp,
       'endTimeJp': instance.endTimeJp,
       'startTimeCn': instance.startTimeCn,
       'endTimeCn': instance.endTimeCn,
       'bannerUrl': instance.bannerUrl,
+      'bannerUrlJp': instance.bannerUrlJp,
       'grail': instance.grail,
       'crystal': instance.crystal,
       'grail2crystal': instance.grail2crystal,
@@ -393,11 +397,13 @@ MainRecord _$MainRecordFromJson(Map<String, dynamic> json) {
       mcLink: $checkedConvert(json, 'mcLink', (v) => v as String),
       name: $checkedConvert(json, 'name', (v) => v as String),
       nameJp: $checkedConvert(json, 'nameJp', (v) => v as String),
+      nameEn: $checkedConvert(json, 'nameEn', (v) => v as String?),
       startTimeJp: $checkedConvert(json, 'startTimeJp', (v) => v as String?),
       endTimeJp: $checkedConvert(json, 'endTimeJp', (v) => v as String?),
       startTimeCn: $checkedConvert(json, 'startTimeCn', (v) => v as String?),
       endTimeCn: $checkedConvert(json, 'endTimeCn', (v) => v as String?),
       bannerUrl: $checkedConvert(json, 'bannerUrl', (v) => v as String?),
+      bannerUrlJp: $checkedConvert(json, 'bannerUrlJp', (v) => v as String?),
       grail: $checkedConvert(json, 'grail', (v) => v as int),
       crystal: $checkedConvert(json, 'crystal', (v) => v as int),
       grail2crystal: $checkedConvert(json, 'grail2crystal', (v) => v as int),
@@ -415,11 +421,13 @@ Map<String, dynamic> _$MainRecordToJson(MainRecord instance) =>
       'mcLink': instance.mcLink,
       'name': instance.name,
       'nameJp': instance.nameJp,
+      'nameEn': instance.nameEn,
       'startTimeJp': instance.startTimeJp,
       'endTimeJp': instance.endTimeJp,
       'startTimeCn': instance.startTimeCn,
       'endTimeCn': instance.endTimeCn,
       'bannerUrl': instance.bannerUrl,
+      'bannerUrlJp': instance.bannerUrlJp,
       'grail': instance.grail,
       'crystal': instance.crystal,
       'grail2crystal': instance.grail2crystal,
@@ -821,6 +829,7 @@ Quest _$QuestFromJson(Map<String, dynamic> json) {
     final val = Quest(
       chapter: $checkedConvert(json, 'chapter', (v) => v as String),
       name: $checkedConvert(json, 'name', (v) => v as String),
+      nameEn: $checkedConvert(json, 'nameEn', (v) => v as String?),
       nameJp: $checkedConvert(json, 'nameJp', (v) => v as String?),
       indexKey: $checkedConvert(json, 'indexKey', (v) => v as String?),
       level: $checkedConvert(json, 'level', (v) => v as int),
@@ -844,10 +853,12 @@ Quest _$QuestFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$QuestToJson(Quest instance) => <String, dynamic>{
+Map<String, dynamic> _$QuestToJson(Quest instance) =>
+    <String, dynamic>{
       'chapter': instance.chapter,
       'name': instance.name,
       'nameJp': instance.nameJp,
+      'nameEn': instance.nameEn,
       'indexKey': instance.indexKey,
       'level': instance.level,
       'bondPoint': instance.bondPoint,
@@ -867,6 +878,7 @@ Battle _$BattleFromJson(Map<String, dynamic> json) {
       ap: $checkedConvert(json, 'ap', (v) => v as int),
       place: $checkedConvert(json, 'place', (v) => v as String?),
       placeJp: $checkedConvert(json, 'placeJp', (v) => v as String?),
+      placeEn: $checkedConvert(json, 'placeEn', (v) => v as String?),
       enemies: $checkedConvert(
           json,
           'enemies',
@@ -882,10 +894,12 @@ Battle _$BattleFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$BattleToJson(Battle instance) => <String, dynamic>{
+Map<String, dynamic> _$BattleToJson(Battle instance) =>
+    <String, dynamic>{
       'ap': instance.ap,
       'place': instance.place,
       'placeJp': instance.placeJp,
+      'placeEn': instance.placeEn,
       'enemies': instance.enemies,
       'drops': instance.drops,
     };

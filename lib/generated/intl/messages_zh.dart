@@ -116,6 +116,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "copper": MessageLookupByLibrary.simpleMessage("铜"),
         "copy": MessageLookupByLibrary.simpleMessage("复制"),
         "copy_plan_menu": MessageLookupByLibrary.simpleMessage("拷贝自其它规划"),
+        "costume": MessageLookupByLibrary.simpleMessage("灵衣"),
+        "costume_unlock": MessageLookupByLibrary.simpleMessage("灵衣开放"),
         "counts": MessageLookupByLibrary.simpleMessage("计数"),
         "craft_essence": MessageLookupByLibrary.simpleMessage("概念礼装"),
         "craft_essence_title": MessageLookupByLibrary.simpleMessage("概念礼装"),
@@ -151,8 +153,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "download_source_of": m2,
         "downloaded": MessageLookupByLibrary.simpleMessage("已下载"),
         "downloading": MessageLookupByLibrary.simpleMessage("下载中"),
-        "dress": MessageLookupByLibrary.simpleMessage("灵衣"),
-        "dress_up": MessageLookupByLibrary.simpleMessage("灵衣开放"),
         "drop_calc_empty_hint":
             MessageLookupByLibrary.simpleMessage("点击 + 添加素材"),
         "drop_calc_help_text": MessageLookupByLibrary.simpleMessage(

@@ -127,6 +127,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "copy": MessageLookupByLibrary.simpleMessage("Copy"),
         "copy_plan_menu":
             MessageLookupByLibrary.simpleMessage("Copy from other plan"),
+        "costume": MessageLookupByLibrary.simpleMessage("Costume"),
+        "costume_unlock":
+            MessageLookupByLibrary.simpleMessage("Costume Unlock"),
         "counts": MessageLookupByLibrary.simpleMessage("Counts"),
         "craft_essence": MessageLookupByLibrary.simpleMessage("Craft Essence"),
         "craft_essence_title": MessageLookupByLibrary.simpleMessage("Craft"),
@@ -167,9 +170,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "download_source_of": m2,
         "downloaded": MessageLookupByLibrary.simpleMessage("Downloaded"),
         "downloading": MessageLookupByLibrary.simpleMessage("Downloading"),
-        "dress": MessageLookupByLibrary.simpleMessage("Dress"),
-        "dress_up":
-            MessageLookupByLibrary.simpleMessage("Spiritron Dress Unlock"),
         "drop_calc_empty_hint":
             MessageLookupByLibrary.simpleMessage("Click + to add items"),
         "drop_calc_help_text": MessageLookupByLibrary.simpleMessage(

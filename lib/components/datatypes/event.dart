@@ -42,18 +42,23 @@ abstract class EventBase {
   late String mcLink;
   late String name;
   late String nameJp;
+  late String? nameEn;
   String? startTimeJp;
   String? endTimeJp;
   String? startTimeCn;
   String? endTimeCn;
   String? bannerUrl;
+  String? bannerUrlJp;
   late int grail;
   late int crystal;
   late int grail2crystal;
 
   String get indexKey => mcLink;
 
-  String get localizedName;
+  String get localizedName => localizeNoun(name, nameJp, nameEn);
+
+  String? get lBannerUrl =>
+      Language.isCN ? bannerUrl ?? bannerUrlJp : bannerUrlJp ?? bannerUrl;
 
   static List<T> sortEvents<T extends EventBase>(List<T> events,
       {bool reversed = false, bool inPlace = true}) {
@@ -102,12 +107,14 @@ abstract class EventBase {
 class LimitEvent extends EventBase {
   String name;
   String nameJp;
+  String? nameEn;
   String mcLink;
   String? startTimeJp;
   String? endTimeJp;
   String? startTimeCn;
   String? endTimeCn;
   String? bannerUrl;
+  String? bannerUrlJp;
   int grail;
   int crystal;
   int grail2crystal;
@@ -120,11 +127,13 @@ class LimitEvent extends EventBase {
     required this.mcLink,
     required this.name,
     required this.nameJp,
-    this.startTimeJp,
-    this.endTimeJp,
-    this.startTimeCn,
-    this.endTimeCn,
-    this.bannerUrl,
+    required this.nameEn,
+    required this.startTimeJp,
+    required this.endTimeJp,
+    required this.startTimeCn,
+    required this.endTimeCn,
+    required this.bannerUrl,
+    required this.bannerUrlJp,
     required this.grail,
     required this.crystal,
     required this.grail2crystal,
@@ -133,8 +142,6 @@ class LimitEvent extends EventBase {
     required this.lottery,
     required this.extra,
   }); //item-comment
-
-  String get localizedName => localizeNoun(name, nameJp, null);
 
   Map<String, int> itemsWithRare([LimitEventPlan? plan]) {
     return Map.from(items)
@@ -175,11 +182,13 @@ class MainRecord extends EventBase {
   String mcLink;
   String name;
   String nameJp;
+  String? nameEn;
   String? startTimeJp;
   String? endTimeJp;
   String? startTimeCn;
   String? endTimeCn;
   String? bannerUrl;
+  String? bannerUrlJp;
   int grail;
   int crystal;
   int grail2crystal;
@@ -190,11 +199,13 @@ class MainRecord extends EventBase {
     required this.mcLink,
     required this.name,
     required this.nameJp,
-    this.startTimeJp,
-    this.endTimeJp,
-    this.startTimeCn,
-    this.endTimeCn,
-    this.bannerUrl,
+    required this.nameEn,
+    required this.startTimeJp,
+    required this.endTimeJp,
+    required this.startTimeCn,
+    required this.endTimeCn,
+    required this.bannerUrl,
+    required this.bannerUrlJp,
     required this.grail,
     required this.crystal,
     required this.grail2crystal,
@@ -210,7 +221,12 @@ class MainRecord extends EventBase {
 
   String get titleJp => _splitChapterTitle(nameJp)[1];
 
-  String get localizedName => localizeNoun(name, nameJp, null);
+  String get localizedName {
+    if (Language.isEN) {
+      return localizeNoun(name, nameJp, Localized.chapter.of(name));
+    }
+    return localizeNoun(name, nameJp, null);
+  }
 
   String get localizedChapter => localizeNoun(chapter, chapterJp, null);
 

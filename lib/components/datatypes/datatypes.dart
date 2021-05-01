@@ -22,6 +22,7 @@ import '../extensions.dart';
 import '../git_tool.dart';
 import '../logger.dart';
 import '../utils.dart';
+import '../localized/localized.dart';
 
 part 'bili_response.dart';
 

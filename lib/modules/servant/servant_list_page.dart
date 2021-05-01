@@ -637,7 +637,7 @@ class ServantListPageState extends State<ServantListPage> {
             for (int row = 0; row < cur.dress.length / 3; row++)
               TableRow(
                 children: [
-                  _getHeader(S.of(context).dress + ':'),
+                  _getHeader(S.of(context).costume + ':'),
                   ...List.generate(3, (col) {
                     final dressIndex = row * 3 + col;
                     if (dressIndex >= cur.dress.length)
@@ -728,11 +728,11 @@ class ServantListPageState extends State<ServantListPage> {
       DropdownButton<int>(
         value: _planTargetDress,
         icon: Container(),
-        hint: Text(S.of(context).dress),
+        hint: Text(S.of(context).costume),
         items: List.generate(
             2,
             (i) => DropdownMenuItem(
-                value: i, child: Text(S.of(context).dress + ['×', '√'][i]))),
+                value: i, child: Text(S.of(context).costume + ['×', '√'][i]))),
         onChanged: (v) {
           setState(() {
             _planTargetDress = v;
