@@ -100,12 +100,9 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
               minVal: 0,
               maxVal: 4,
               onValueChanged: (_start, _end) {
-                curVal
-                  ..ascension = _start
-                  ..favorite = true;
-                targetVal
-                  ..ascension = _end
-                  ..favorite = true;
+                status.favorite = true;
+                curVal.ascension = _start;
+                targetVal.ascension = _end;
                 updateState();
               },
               detailPageBuilder: (context) => LevelingCostPage(
@@ -136,12 +133,9 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           minVal: 1,
           maxVal: 10,
           onValueChanged: (_start, _end) {
-            curVal
-              ..skills[index] = _start
-              ..favorite = true;
-            targetVal
-              ..skills[index] = _end
-              ..favorite = true;
+            status.favorite = true;
+            curVal.skills[index] = _start;
+            targetVal.skills[index] = _end;
             updateState();
           },
           detailPageBuilder: (context) => LevelingCostPage(
@@ -172,12 +166,9 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           minVal: 0,
           maxVal: 1,
           onValueChanged: (_start, _end) {
-            curVal
-              ..dress[index] = _start
-              ..favorite = true;
-            targetVal
-              ..dress[index] = _end
-              ..favorite = true;
+            status.favorite = true;
+            curVal.dress[index] = _start;
+            targetVal.dress[index] = _end;
             updateState();
           },
           detailPageBuilder: (context) => LevelingCostPage(
@@ -204,8 +195,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             trailingLabelFormatter: (a, b) => '   $a   ',
             onValueChanged: (_value, _) {
               status.npLv = _value;
-              curVal.favorite = true;
-              plan.favorite = true;
+              status.favorite = true;
               db.notifyDbUpdate();
             },
             detailPageBuilder: null,
@@ -223,12 +213,9 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
               trailingLabelFormatter: (a, b) =>
                   '${svt.getGrailLv(a)}->${svt.getGrailLv(b!).toString().padRight(3)}',
               onValueChanged: (_start, _end) {
-                curVal
-                  ..grail = _start
-                  ..favorite = true;
-                targetVal
-                  ..grail = _end
-                  ..favorite = true;
+                status.favorite = true;
+                curVal.grail = _start;
+                targetVal.grail = _end;
                 updateState();
               },
               detailPageBuilder: null,
@@ -440,7 +427,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           icon: Icon(Icons.trending_up),
           tooltip: S.of(context).plan_max9,
           onPressed: () {
-            curVal.favorite = true;
+            status.favorite = true;
             targetPlan.setMax(skill: 9);
             for (int i = 0; i < 3; i++) {
               if (enhanceMode) {
@@ -467,7 +454,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           icon: Icon(Icons.trending_up),
           tooltip: S.of(context).plan_max10,
           onPressed: () {
-            curVal.favorite = true;
+            status.favorite = true;
             targetPlan.setMax(skill: 10);
             updateState();
           },
@@ -498,7 +485,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
   void _onEnhance() {
     final enhanceItems = Item.sortMapById(svt.getAllCost(
       cur: status.curVal..favorite = true,
-      target: enhancePlan..favorite = true,
+      target: enhancePlan,
     ));
     List<Widget> children = [];
     enhanceItems.forEach((itemKey, number) {

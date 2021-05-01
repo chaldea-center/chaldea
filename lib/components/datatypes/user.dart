@@ -177,6 +177,10 @@ class User {
 
 @JsonSerializable(checked: true)
 class ServantStatus {
+  bool get favorite => curVal.favorite;
+
+  set favorite(bool v) => curVal.favorite = v;
+
   ServantPlan curVal;
   int npLv;
 
@@ -189,6 +193,7 @@ class ServantStatus {
   int priority;
 
   ServantStatus({
+    bool? favorite,
     ServantPlan? curVal,
     int? npLv,
     List<int?>? skillIndex,
@@ -248,6 +253,7 @@ class ServantStatus {
 
 @JsonSerializable(checked: true)
 class ServantPlan {
+  /// TODO: how to remove it and use [ServantStatus.favorite] instead?
   bool favorite;
   int ascension;
   List<int> skills; // length 3

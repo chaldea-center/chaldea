@@ -93,8 +93,7 @@ class ItemCostServantPage extends StatelessWidget {
     sortedSvts.forEach((svtNo) {
       final svt = db.gameData.servantsWithUser[svtNo]!;
       final num = src![svtNo]!;
-      bool showShadow =
-          highlight && db.curUser.svtStatusOf(svtNo).curVal.favorite;
+      bool showShadow = highlight && db.curUser.svtStatusOf(svtNo).favorite;
       if (num > 0) {
         children.add(Container(
           decoration: showShadow
@@ -144,7 +143,7 @@ class ItemCostServantPage extends StatelessWidget {
         return;
       }
       final svt = db.gameData.servantsWithUser[svtNo]!;
-      bool _planned = db.curUser.svtStatusOf(svtNo).curVal.favorite;
+      bool _planned = db.curUser.svtStatusOf(svtNo).favorite;
       final textStyle = _planned ? TextStyle(color: Colors.blueAccent) : null;
       final ascensionNum = details.ascension[itemKey]?[svtNo] ?? 0,
           skillNum = details.skill[itemKey]?[svtNo] ?? 0,

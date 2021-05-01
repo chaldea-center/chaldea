@@ -114,7 +114,7 @@ class ServantListPageState extends State<ServantListPage> {
       return false;
     }
     if (filterData.planCompletion.options.containsValue(true)) {
-      if (svtStat.curVal.favorite != true) return false;
+      if (!svtStat.favorite) return false;
       bool planNotComplete = <bool>[
         svtPlan.ascension > svtStat.curVal.ascension,
         svtPlan.grail > svtStat.curVal.grail,
@@ -132,7 +132,7 @@ class ServantListPageState extends State<ServantListPage> {
     // skill level
     if (filterData.skillLevel.options.containsValue(true)) {
       final curSvtState = svtStat.curVal;
-      if (curSvtState.favorite != true) return false;
+      if (!svtStat.favorite) return false;
       int lowestSkill = curSvtState.skills.reduce((a, b) => min(a, b));
       if (!filterData.skillLevel.singleValueFilter(
           SvtFilterData.skillLevelData[max(lowestSkill - 8, 0)])) {
@@ -337,7 +337,7 @@ class ServantListPageState extends State<ServantListPage> {
     db.gameData.servantsWithUser.forEach((no, svt) {
       if (filterData.favorite == 0 ||
           filterData.favorite ==
-              ((db.curUser.svtStatusOf(no).curVal.favorite) ? 1 : 2)) {
+              ((db.curUser.svtStatusOf(no).favorite) ? 1 : 2)) {
         if (filtrateServant(svt)) {
           shownList.add(svt);
         }
@@ -378,7 +378,7 @@ class ServantListPageState extends State<ServantListPage> {
         final svt = shownList[index - 1];
         final status = db.curUser.svtStatusOf(svt.no);
         Widget? statusText;
-        if (status.curVal.favorite == true) {
+        if (status.favorite) {
           statusText = Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -448,7 +448,7 @@ class ServantListPageState extends State<ServantListPage> {
     for (var svt in shownList) {
       final status = db.curUser.svtStatusOf(svt.no);
       Widget Function(TextStyle)? textBuilder;
-      if (status.curVal.favorite) {
+      if (status.favorite) {
         textBuilder = (style) {
           return RichText(
             text: TextSpan(text: '', style: style, children: [
@@ -586,8 +586,8 @@ class ServantListPageState extends State<ServantListPage> {
   }
 
   Widget _getDetailTable(Servant svt) {
-    ServantPlan cur = db.curUser.svtStatusOf(svt.no).curVal,
-        target = db.curUser.svtPlanOf(svt.no);
+    ServantStatus status = db.curUser.svtStatusOf(svt.no);
+    ServantPlan cur = status.curVal, target = db.curUser.svtPlanOf(svt.no);
     Widget _getRange(int _c, int _t) {
       bool highlight = _t > _c;
       return Center(
@@ -605,7 +605,7 @@ class ServantListPageState extends State<ServantListPage> {
       return Center(child: Text(header, maxLines: 1));
     }
 
-    if (cur.favorite != true) {
+    if (!status.favorite) {
       return Center(child: Text(S.of(context).svt_not_planned));
     }
     if (hiddenPlanServants.contains(svt)) {
@@ -654,7 +654,7 @@ class ServantListPageState extends State<ServantListPage> {
   }
 
   bool isSvtFavorite(Servant svt) {
-    return db.curUser.svtStatusOf(svt.no).curVal.favorite;
+    return db.curUser.svtStatusOf(svt.no).favorite;
   }
 
   int? _planTargetAscension;

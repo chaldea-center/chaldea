@@ -104,13 +104,12 @@ class ServantDetailPageState extends State<ServantDetailPage>
             if (!Servant.unavailable.contains(svt.no))
               db.streamBuilder(
                 (context) => IconButton(
-                  icon: status.curVal.favorite
+                  icon: status.favorite
                       ? Icon(Icons.favorite, color: Colors.redAccent)
                       : Icon(Icons.favorite_border),
                   tooltip: S.of(context).favorite,
                   onPressed: () {
-                    plan.favorite =
-                        status.curVal.favorite = !status.curVal.favorite;
+                    status.favorite = !status.favorite;
                     db.itemStat.updateSvtItems();
                   },
                 ),

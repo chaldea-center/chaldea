@@ -23,7 +23,7 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
     List<Widget> children = [];
     final sortedServants = sortSvts(db.gameData.svtQuests.keys.toList());
     for (int svtNo in sortedServants) {
-      bool svtFavorite = db.curUser.svtPlanOf(svtNo).favorite;
+      bool svtFavorite = db.curUser.svtStatusOf(svtNo).favorite;
       if (!widget.favorite || svtFavorite) {
         final quests = db.gameData.svtQuests[svtNo];
         for (var quest in quests!) {

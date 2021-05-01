@@ -20,7 +20,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
         if (Servant.unavailable.contains(no)) return;
         rarityTotal[svt.info.rarity] += 1;
         final stat = db.curUser.svtStatusOf(no);
-        if (stat.curVal.favorite) {
+        if (stat.favorite) {
           rarityOwn[svt.info.rarity] += 1;
         }
         if (stat.curVal.skills.every((e) => e >= 9)) {
@@ -147,7 +147,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
         SvtFilterData.classesData.sublist(0, 7)..add(otherClass),
         value: (_) => 0);
     db.gameData.servants.values.forEach((svt) {
-      if (db.curUser.svtStatusOf(svt.no).curVal.favorite) {
+      if (db.curUser.svtStatusOf(svt.no).favorite) {
         if (raritySelected.contains(true) && !raritySelected[svt.info.rarity])
           return;
         if (svtClassCount.containsKey(svt.stdClassName)) {

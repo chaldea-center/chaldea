@@ -438,7 +438,7 @@ Map<String, dynamic> _$MainRecordToJson(MainRecord instance) =>
 ExchangeTicket _$ExchangeTicketFromJson(Map<String, dynamic> json) {
   return $checkedNew('ExchangeTicket', json, () {
     final val = ExchangeTicket(
-      days: $checkedConvert(json, 'days', (v) => v as int),
+      days: $checkedConvert(json, 'days', (v) => v as int?),
       monthJp: $checkedConvert(json, 'monthJp', (v) => v as String),
       items: $checkedConvert(json, 'items',
           (v) => (v as List<dynamic>).map((e) => e as String).toList()),
@@ -451,11 +451,11 @@ ExchangeTicket _$ExchangeTicketFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$ExchangeTicketToJson(ExchangeTicket instance) =>
     <String, dynamic>{
-      'days': instance.days,
       'monthJp': instance.monthJp,
       'items': instance.items,
       'monthCn': instance.monthCn,
       'monthEn': instance.monthEn,
+      'days': instance.days,
     };
 
 GameData _$GameDataFromJson(Map<String, dynamic> json) {
@@ -1542,6 +1542,7 @@ const _$GameServerEnumMap = {
 ServantStatus _$ServantStatusFromJson(Map<String, dynamic> json) {
   return $checkedNew('ServantStatus', json, () {
     final val = ServantStatus(
+      favorite: $checkedConvert(json, 'favorite', (v) => v as bool?),
       curVal: $checkedConvert(
           json,
           'curVal',
@@ -1560,6 +1561,7 @@ ServantStatus _$ServantStatusFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$ServantStatusToJson(ServantStatus instance) =>
     <String, dynamic>{
+      'favorite': instance.favorite,
       'curVal': instance.curVal,
       'npLv': instance.npLv,
       'skillIndex': instance.skillIndex,

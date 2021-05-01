@@ -465,7 +465,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
         _alreadyAdded.add(svt.indexKey!);
 
         status.npLv = svt.treasureDeviceLv1;
-        status.curVal.favorite = true;
+        status.favorite = true;
         status.curVal
           ..ascension = svt.limitCount
           ..skills = [svt.skillLv1, svt.skillLv2, svt.skillLv3]

@@ -98,7 +98,7 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
     allItemCost = {};
     final emptyPlan = ServantPlan(favorite: true);
     db.curUser.servants.forEach((no, svtStat) {
-      if (svtStat.curVal.favorite != true) return;
+      if (!svtStat.favorite) return;
       if (!db.gameData.servantsWithUser.containsKey(no)) {
         print('No $no: ${db.gameData.servantsWithUser.length}');
       }

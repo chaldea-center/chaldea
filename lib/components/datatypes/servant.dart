@@ -81,7 +81,7 @@ class Servant {
   }
 
   /// [cur]=[target]=null: all
-  /// [cur.favorite]=[target.favorite]=true
+  /// [cur.favorite]=true
   /// else empty
   Map<String, int> getAllCost(
       {ServantPlan? cur, ServantPlan? target, bool all = false}) {
