@@ -17,11 +17,11 @@ class BugAnnouncePage extends StatelessWidget {
       contentEn: 'Any suggestion is welcomed.\n',
     ),
     _BugDetail(
-        title: '输入框删除问题',
-        content: '主要存在于Android，等待官方修复',
-        titleEn: 'Deletion in input field',
+        title: '输入框操作过快问题',
+        content: '主要存在于从者等列表页的搜索框，等待官方修复，暂时通过增加延时来规避这一bug',
+        titleEn: 'Input/delete too fast in input field',
         contentEn:
-            'On Android, deletion may cause error, wait for official fix',
+            'Mostly happens on search box in servant and other list page, wait for official fix. Currently fixed by adding delay.',
         link: 'https://github.com/flutter/flutter/issues/80226'),
   ];
 

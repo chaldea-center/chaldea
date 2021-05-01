@@ -196,14 +196,11 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
       buffer.write("${escape(contactInfo!)}<br>");
     }
     buffer.write("<h3>Summary:</h3>");
-    final dataVerFile = File(db.paths.datasetVersionFile);
     Map<String, dynamic> summary = {
-      'appVersion': '${AppInfo.appName} v${AppInfo.fullVersion}',
+      'appVersion': '${AppInfo.appName} v${AppInfo.fullVersion2}',
       'datasetMemory': db.gameData.version,
-      'datasetStorage': dataVerFile.existsSync()
-          ? dataVerFile.readAsStringSync()
-          : "Not detected",
       'os': '${Platform.operatingSystem} ${Platform.operatingSystemVersion}',
+      'lang': Language.current,
     };
     for (var entry in summary.entries) {
       buffer

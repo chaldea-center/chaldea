@@ -142,6 +142,8 @@ class CraftListPageState extends State<CraftListPage> {
     );
   }
 
+  final _onSearchTimer = DelayedTimer(Duration(milliseconds: 250));
+
   PreferredSizeWidget get _searchBar {
     return PreferredSize(
       preferredSize: Size.fromHeight(45),
@@ -176,8 +178,11 @@ class CraftListPageState extends State<CraftListPage> {
                     },
                   )),
               onChanged: (s) {
-                setState(() {
-                  filterData.filterString = s;
+                _onSearchTimer.delayed(() {
+                  if (mounted)
+                    setState(() {
+                      filterData.filterString = s;
+                    });
                 });
               },
               onSubmitted: (s) {

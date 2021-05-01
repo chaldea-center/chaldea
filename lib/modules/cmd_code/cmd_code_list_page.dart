@@ -121,6 +121,8 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
     );
   }
 
+  final _onSearchTimer = DelayedTimer(Duration(milliseconds: 250));
+
   PreferredSizeWidget get _searchBar {
     return PreferredSize(
       preferredSize: Size.fromHeight(45),
@@ -155,8 +157,11 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
                     },
                   )),
               onChanged: (s) {
-                setState(() {
-                  filterData.filterString = s;
+                _onSearchTimer.delayed(() {
+                  if (mounted)
+                    setState(() {
+                      filterData.filterString = s;
+                    });
                 });
               },
               onSubmitted: (s) {

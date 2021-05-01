@@ -266,12 +266,6 @@ class TimeCounter {
   }
 }
 
-void safeSetState(VoidCallback callback) {
-  SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
-    callback();
-  });
-}
-
 Future<void> jumpToExternalLinkAlert(
     {required String url, String? name}) async {
   return showDialog(
@@ -370,6 +364,8 @@ void copyOrMoveDirectory(
 }
 
 class Utils {
+  Utils._();
+
   static T? findNextOrPrevious<T>(List<T> list, T cur, bool next) {
     int curIndex = list.indexOf(cur);
     if (curIndex < 0) return null;
@@ -377,5 +373,27 @@ class Utils {
     if (nextIndex >= 0 && nextIndex < list.length) {
       return list[nextIndex];
     }
+  }
+
+  static void addPostFrameCallback(VoidCallback callback) {
+    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+      callback();
+    });
+  }
+}
+
+class DelayedTimer {
+  Duration duration;
+
+  Timer? _timer;
+
+  Timer? get timer => _timer;
+
+  DelayedTimer(this.duration);
+
+  /// If want to call [setState], remember to check [mounted]
+  Timer delayed(void Function() callback) {
+    _timer?.cancel();
+    return _timer = Timer(duration, callback);
   }
 }

@@ -67,6 +67,11 @@ class Language {
       : isEN
           ? eng
           : chs;
+
+  @override
+  String toString() {
+    return "$runtimeType('$code', '$name')";
+  }
 }
 
 class AppColors {
