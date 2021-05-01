@@ -9,7 +9,7 @@ import 'package:chaldea/modules/extras/mystic_code_page.dart';
 import 'package:chaldea/modules/extras/updates.dart';
 import 'package:chaldea/modules/ffo/ffo_page.dart';
 import 'package:chaldea/modules/free_quest_calculator/free_calculator_page.dart';
-import 'package:chaldea/modules/home/bug_page.dart';
+import 'package:chaldea/modules/home/subpage/bug_page.dart';
 import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
 import 'package:chaldea/modules/home/subpage/game_data_page.dart';
 import 'package:chaldea/modules/import_data/import_data_page.dart';
@@ -544,15 +544,6 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
             detail: true,
           );
         },
-      ));
-    }
-    if (!Language.isCN) {
-      children.add(ListTile(
-        title: Text('For English/Japanese user'),
-        subtitle: Text('You can send feedback to let me know/vote:\n'
-            ' - which part of localization should be improved first\n'
-            ' - any translation mistake\n'
-            '\nThanks. And collaboration is welcome.'),
       ));
     }
     if (children.isEmpty) return Container();

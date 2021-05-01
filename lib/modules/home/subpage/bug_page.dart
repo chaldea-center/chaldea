@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BugAnnouncePage extends StatelessWidget {
   final List<_BugDetail> bugs = [
@@ -7,23 +8,21 @@ class BugAnnouncePage extends StatelessWidget {
       content: '但无法短时间内解决，如有其他bug请反馈',
       titleEn: 'Bugs in Current Version',
       contentEn:
-          'cannot be fixed currently. If there is other bugs, please send feedback.',
+          'cannot be fixed immediately. If there is any other bug, please send feedback.',
     ),
     _BugDetail(
-      title: '滚动条错误',
-      content: '主要存在于桌面端，当一个页面存在多个标签页(Tab)时，请勿拖动滚动条。使用滚轮或直接拖拽页面',
-      titleEn: 'Scrollbar error',
-      contentEn:
-          'On desktop version, don\'t drag scrollbar if there are multiple tabs. Please use mouse or drag page body instead',
+      title: '翻译错误/不全',
+      content: '欢迎纠错/提供翻译',
+      titleEn: 'Translations',
+      contentEn: 'Any suggestion is welcomed.\n',
     ),
     _BugDetail(
-      title: '输入框删除问题',
-      content:
-          '主要存在于Android，等待官方修复\nhttps://github.com/flutter/flutter/issues/80226',
-      titleEn: 'Deletion in input field',
-      contentEn:
-          'On Android, deletion may cause error, wait for official fix\nhttps://github.com/flutter/flutter/issues/80226',
-    ),
+        title: '输入框删除问题',
+        content: '主要存在于Android，等待官方修复',
+        titleEn: 'Deletion in input field',
+        contentEn:
+            'On Android, deletion may cause error, wait for official fix',
+        link: 'https://github.com/flutter/flutter/issues/80226'),
   ];
 
   @override
@@ -46,7 +45,21 @@ class BugAnnouncePage extends StatelessWidget {
             headerBuilder: (ctx, _) =>
                 ListTile(title: Text('$index. ${bug.getTitle()}')),
             contentBuilder: (ctx) => ListTile(
-              subtitle: Text(bug.getContent()),
+              subtitle: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(bug.getContent()),
+                  if (bug.link != null)
+                    TextButton(
+                      onPressed: () {
+                        launch(bug.link!);
+                      },
+                      child: Text(bug.link!),
+                      style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                    )
+                ],
+              ),
             ),
           );
         },
@@ -62,12 +75,14 @@ class _BugDetail {
   final String content;
   final String? titleEn;
   final String? contentEn;
+  final String? link;
 
   _BugDetail({
     required this.title,
     required this.content,
     required this.titleEn,
     required this.contentEn,
+    this.link,
   });
 
   String getTitle() {

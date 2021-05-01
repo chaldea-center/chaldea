@@ -60,6 +60,9 @@ The game dataset which should be place at `res/data/dataset.zip` is maintained i
 
 You can download the latest dataset from the release page then import it in app, or just check update inside app's setting page.
 
+Note that the dataset version defines the minimal app version.
+E.g. 20210502-1.4.0 means that the dataset is created at 2021/05/02 and requires Chaldea app version >= 1.4.0
+
 
 ## Troubleshooting
 
@@ -72,3 +75,4 @@ If you have any bug report, feature request, question or want to contribute to t
 - open an [issue](https://github.com/chaldea-center/chaldea/issues/new)
 - pull request or join the collaboration
 - Email: chaldea@narumi.cc
+- [![Twitter](https://img.shields.io/twitter/url?label=Twitter&style=social&url=https%3A%2F%2Ftwitter.com%2Fnarumi147)](https://twitter.com/narumi147)

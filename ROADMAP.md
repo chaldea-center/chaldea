@@ -4,7 +4,7 @@
 - [ ] Servant
   - [ ] battle model/avatar
   - [ ] HP/ATK curve
-  - [ ] crafts and cmd codes that have appeared in
+  - [x] crafts and cmd codes that have appeared in
 - [x] Master Mission: 
   - [x] support **and** / **or** inside one mission
   - [x] related quests, sorted by mission target counts
@@ -25,12 +25,19 @@
 
 ## Bug fix - long term
 - [ ] `SplitRoute` currently all detail routes is transparent even not in split mode
-- [ ] `audioplayers` not support `wav` file on iOS and macOS
+- [ ] `audioplayers` not support `wav`/`ogg` file on iOS and macOS
+- [ ] audio format not fully supported
+  | Format | Android | iOS/macOS | Windows |
+  |:------:|:-------:|:---------:|:-------:|
+  |  mp3   |    ✔    |     ✔     |    ✔    |
+  |  wav   |    ✔    |     ❌    |    ✔    |
+  |  ogg   |    ✔    |     ❌    |    ❌    |
+  |  ogx   |    ✔    |     ❌    |    ❌    |
 - [ ] iOS only, move among a list of FocusNode may fail when outside viewport, won't auto scroll
 - [ ] catch close action and save userdata for desktop
   - [x] windows, but not always success
   - [ ] macOS
-- RenderEditable bug: https://github.com/flutter/flutter/issues/80226
+- [ ] RenderEditable bug: https://github.com/flutter/flutter/issues/80226
 
 ## Docs
 - [ ] Tutorials
@@ -38,7 +45,7 @@
 - [ ] English/Japanese Game Data
   - [x] Servant
   - [x] CE/Command Code
-  - [ ] Mystic Code
+  - [x] Mystic Code
   - [x] Event
   - [ ] Summon
   - [x] Quest

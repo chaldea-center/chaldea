@@ -1,7 +1,10 @@
 ## 1.4.0
-- English content from fandom
-  - servant, craft essence, command code
-  - not support: event, summon, mystic code, quest
+- [BREAKING CHANGE] Exchange ticket now use monthJp as index, days per month depends on GameServer
+- English localization almost supported(data from fandom)
+  - servant, craft essence, command code, event, mystic code, quest
+  - not support: summon
+- fix scrollbar issue
+- servant statistics: fix empty PieChartData
 
 ## 1.3.12
 - fix android app auto-update
