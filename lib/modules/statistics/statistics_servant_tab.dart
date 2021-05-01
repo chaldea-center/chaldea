@@ -168,6 +168,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
   Widget pieChart() {
     _calcServantClass();
     int total = sum(svtClassCount.values);
+    if (total <= 0) return Container();
     final iter = palette.iterator;
     return LayoutBuilder(
       builder: (context, constraints) {
