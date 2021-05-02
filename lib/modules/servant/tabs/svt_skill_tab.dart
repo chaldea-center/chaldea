@@ -24,7 +24,6 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     if (svt.lActiveSkills.isNotEmpty != true) {
       return Center(child: Text('Nothing'));
     }

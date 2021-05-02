@@ -137,6 +137,7 @@ final _localizedMasterMission = LocalizedGroup([
   LocalizedText(chs: '奥林波斯兵系', jpn: '', eng: 'Olympian Soldier'),
 
   // fields
+  LocalizedText(chs: '场地', jpn: 'フィールド', eng: 'Field'),
   LocalizedText(chs: '燃烧', jpn: '炎上', eng: 'Flaming'),
   LocalizedText(chs: '都市', jpn: '都市', eng: 'City'),
   LocalizedText(chs: '城市', jpn: '街', eng: 'Street'), // not verified

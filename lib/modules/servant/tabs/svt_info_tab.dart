@@ -42,7 +42,6 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Column(
       children: <Widget>[
         Row(

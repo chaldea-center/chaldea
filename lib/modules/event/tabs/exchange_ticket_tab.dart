@@ -62,9 +62,31 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
         controller: _scrollController,
         shrinkWrap: widget.monthJp != null,
         children: divideTiles(
-          tickets.map((ticket) => buildOneMonth(ticket)),
+          [
+            hintText,
+            for (var ticket in tickets) buildOneMonth(ticket),
+          ],
           divider: Divider(height: 1, indent: 16),
         ).toList(),
+      ),
+    );
+  }
+
+  Widget get hintText {
+    String curServer = db.curUser.server.localized;
+    return Card(
+      child: Center(
+        child: Padding(
+          padding: EdgeInsets.all(2),
+          child: Text(
+            LocalizedText.of(
+                chs: '月份采用$curServer\n在设置中可更改所在服务器',
+                jpn: '現在のサーバー：$curServer\n[設定]で変更できます ',
+                eng: 'Current Server: $curServer\nchange it in Settings'),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.caption,
+          ),
+        ),
       ),
     );
   }
@@ -94,9 +116,11 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
               ),
             ),
             subtitle: AutoSizeText(
-              '${ticket.monthJp}\nmax: ${ticket.days}',
+              db.curUser.server == GameServer.jp
+                  ? 'max: ${ticket.days}'
+                  : 'JP ${ticket.monthJp}\nmax: ${ticket.days}',
               maxLines: 2,
-              maxFontSize: 14,
+              maxFontSize: 12,
               style: TextStyle(
                   color: planned
                       ? Colors.blueAccent[100]

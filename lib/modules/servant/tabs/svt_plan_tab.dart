@@ -66,7 +66,6 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
   @override
   Widget build(BuildContext context) {
     bool sliderMode = widget.parent?.svtPlanSliderMode.get() ?? false;
-    super.build(context);
     return db.streamBuilder((context) {
       if (svt.lActiveSkills.isEmpty) {
         return Center(child: Text('${svt.info.localizedName} has no skills'));

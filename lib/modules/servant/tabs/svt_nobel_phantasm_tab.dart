@@ -28,7 +28,6 @@ class _SvtNobelPhantasmTabState extends SvtTabBaseState<SvtNobelPhantasmTab> {
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     if (nobelPhantasms.length == 0) {
       return Container(child: Center(child: Text('No NobelPhantasm Data')));
     }

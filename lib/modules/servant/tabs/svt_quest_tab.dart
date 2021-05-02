@@ -24,7 +24,6 @@ class _SvtQuestTabState extends SvtTabBaseState<SvtQuestTab> {
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     if (db.gameData.svtQuests[svt.no]?.isNotEmpty != true) {
       return ListTile(title: Text(S.of(context).no_servant_quest_hint));
     }

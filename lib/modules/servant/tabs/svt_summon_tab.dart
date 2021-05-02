@@ -48,7 +48,6 @@ class _SvtSummonTabState extends SvtTabBaseState<SvtSummonTab> {
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     if (shownSummons.isEmpty) {
       return ListTile(title: Text('无关联卡池'));
     }
