@@ -81,6 +81,13 @@ class SilentReportFilterMode extends ReportMode {
   List<PlatformType> getSupportedPlatforms() => PlatformType.values.toList();
 }
 
+class ToastHandler2 extends ToastHandler {
+  @override
+  List<PlatformType> getSupportedPlatforms() {
+    return PlatformType.values.toList();
+  }
+}
+
 class EmailAutoHandlerCross extends EmailAutoHandler {
   final Logger _logger = Logger("EmailAutoHandler");
   final List<File> attachments;

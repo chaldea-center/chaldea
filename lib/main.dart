@@ -22,7 +22,7 @@ void main() async {
     [
       FileHandler(crashFile),
       ConsoleHandler(),
-      ToastHandler(),
+      ToastHandler2(),
       kEmailAutoHandlerCross(attachments: [
         crashFile,
         File(db.paths.userDataPath),
