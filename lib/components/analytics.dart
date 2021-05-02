@@ -170,7 +170,7 @@ Future<void> _reportBdtj({String? bdId}) async {
       if (fresh || !first) {
         _param['uu'] = 'Chaldea ${Platform.operatingSystem}';
       }
-      logger.i(_param);
+      // logger.i(_param);
       return _param.map((key, value) => MapEntry(key, value.toString()));
     };
     final _dio =

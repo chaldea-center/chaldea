@@ -70,7 +70,8 @@ class _UserDataPageState extends State<UserDataPage> {
               ),
               if (Platform.isMacOS || Platform.isWindows)
                 ListTile(
-                  title: Text('Open Folder'),
+                  title: Text(LocalizedText.of(
+                      chs: '打开目录', jpn: 'フォルダを開く', eng: 'Open Folder')),
                   onTap: () {
                     OpenFile.open(db.paths.appPath);
                   },

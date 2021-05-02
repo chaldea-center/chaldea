@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
 
@@ -168,7 +167,7 @@ class ServantListPageState extends State<ServantListPage> {
     // gender
     if (!filterData.gender.singleValueFilter(svt.info.gender, compares: {
       '其他': (optionKey, value) =>
-      value != SvtFilterData.genderData[0] &&
+          value != SvtFilterData.genderData[0] &&
           value != SvtFilterData.genderData[1]
     })) {
       return false;
@@ -198,9 +197,12 @@ class ServantListPageState extends State<ServantListPage> {
     return db.streamBuilder(
           (context) => Scaffold(
         appBar: AppBar(
-          title: Text(widget.planMode
-              ? '${S.current.plan} ${db.curUser.curSvtPlanNo + 1}'
-              : S.of(context).servant),
+          title: AutoSizeText(
+            widget.planMode
+                ? '${S.current.plan} ${db.curUser.curSvtPlanNo + 1}'
+                : S.of(context).servant,
+            maxLines: 1,
+          ),
           leading: MasterBackButton(),
           titleSpacing: 0,
           bottom: _showSearch ? _searchBar : null,
@@ -269,15 +271,9 @@ class ServantListPageState extends State<ServantListPage> {
             : FloatingActionButton(
                 child: Icon(Icons.arrow_upward),
                 onPressed: () async {
-                  _scrollController.jumpTo(0);
-                  for (var svt in shownList.sublist(10)) {
-                    print('push ${svt.mcLink}');
-                    SplitRoute.push(
-                        context: context,
-                        builder: (ctx, _) => ServantDetailPage(svt));
-                    await Future.delayed(Duration(milliseconds: 400));
-                    Navigator.pop(context);
-                  }
+                  _scrollController.animateTo(0,
+                      duration: Duration(milliseconds: 600),
+                      curve: Curves.easeOut);
                 },
               ),
         body: buildOverview(),
@@ -432,7 +428,11 @@ class ServantListPageState extends State<ServantListPage> {
         }
         return CustomTile(
           leading: db.getIconImage(svt.icon, width: 56),
-          title: AutoSizeText(svt.info.localizedName, maxLines: 1),
+          title: AutoSizeText(
+            svt.info.localizedName,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[

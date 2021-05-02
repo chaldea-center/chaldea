@@ -7,13 +7,13 @@ class LevelingCostPage extends StatefulWidget {
   final int targetLv;
   final String title;
 
-  const LevelingCostPage(
-      {Key? key,
-      required this.costList,
-      this.curLv = 0,
-      this.targetLv = 0,
-      this.title = ''})
-      : assert(curLv <= targetLv),
+  const LevelingCostPage({
+    Key? key,
+    required this.costList,
+    this.curLv = 0,
+    this.targetLv = 0,
+    this.title = '',
+  })  : assert(curLv <= targetLv),
         super(key: key);
 
   @override
@@ -76,31 +76,36 @@ class LevelingCostPageState extends State<LevelingCostPage> {
         children: <Widget>[
           CustomTile(
             title: Text(title),
+            subtitle: lvCost.isEmpty
+                ? Text(LocalizedText.of(
+                    chs: '不消耗素材', jpn: '素材消費なし', eng: 'No item consumption'))
+                : null,
             contentPadding: EdgeInsets.symmetric(horizontal: 0),
           ),
-          GridView.count(
-            crossAxisCount: 6,
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            children: lvCost.entries
-                .map((entry) => Align(
-                      alignment: Alignment.centerLeft,
-                      child: ImageWithText(
-                        image: db.getIconImage(entry.key, preferPng: false),
-                        text: formatNumber(entry.value, compact: true),
-                        padding: EdgeInsets.only(right: 3),
-                        onTap: entry.key == 'QP'
-                            ? null
-                            : () => SplitRoute.push(
-                                  context: context,
-                                  builder: (context, _) =>
-                                      ItemDetailPage(itemKey: entry.key),
-                                  popDetail: true,
-                                ),
-                      ),
-                    ))
-                .toList(),
-          ),
+          if (lvCost.isNotEmpty)
+            GridView.count(
+              crossAxisCount: 6,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              children: lvCost.entries
+                  .map((entry) => Align(
+                        alignment: Alignment.centerLeft,
+                        child: ImageWithText(
+                          image: db.getIconImage(entry.key, preferPng: false),
+                          text: formatNumber(entry.value, compact: true),
+                          padding: EdgeInsets.only(right: 3),
+                          onTap: entry.key == 'QP'
+                              ? null
+                              : () => SplitRoute.push(
+                                    context: context,
+                                    builder: (context, _) =>
+                                        ItemDetailPage(itemKey: entry.key),
+                                    popDetail: true,
+                                  ),
+                        ),
+                      ))
+                  .toList(),
+            ),
         ],
       ),
     );

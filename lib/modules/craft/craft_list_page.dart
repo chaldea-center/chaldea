@@ -139,7 +139,8 @@ class CraftListPageState extends State<CraftListPage> {
       ),
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.arrow_upward),
-          onPressed: () => _scrollController.jumpTo(0)),
+          onPressed: () => _scrollController.animateTo(0,
+              duration: Duration(milliseconds: 600), curve: Curves.easeOut)),
       body: db.streamBuilder((context) => buildOverview()),
     );
   }

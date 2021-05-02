@@ -99,7 +99,11 @@ class ServantDetailPageState extends State<ServantDetailPage>
             },
           ),
           titleSpacing: 0,
-          title: AutoSizeText(svt.info.localizedName, maxLines: 1),
+          title: AutoSizeText(
+            svt.info.localizedName,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
           actions: <Widget>[
             if (!Servant.unavailable.contains(svt.no))
               db.streamBuilder(

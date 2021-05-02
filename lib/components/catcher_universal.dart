@@ -15,7 +15,7 @@ import 'package:logging/logging.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 import 'package:mailer/src/entities/attachment.dart'; // ignore: implementation_imports
-import 'package:path/path.dart' as pathlib;
+import 'package:path/path.dart' as p;
 
 import 'config.dart';
 import 'constants.dart';
@@ -24,6 +24,8 @@ import 'logger.dart';
 import 'utils.dart';
 
 export 'page_report_mode_cross.dart';
+
+String get dumpsFp => p.join(db.paths.logDir, 'dumps.log');
 
 class SilentReportFilterMode extends ReportMode {
   HashSet<String> _caughtErrors = HashSet();
@@ -36,6 +38,7 @@ class SilentReportFilterMode extends ReportMode {
     s += report.errorDetails.toString();
     s += report.stackTrace.toString();
     if (!ignoreKnownError(report, s) && !_caughtErrors.contains(s)) {
+      // dumpWidgetTree(s);
       super.onActionConfirmed(report);
       _caughtErrors.add(s);
     } else {
@@ -46,6 +49,8 @@ class SilentReportFilterMode extends ReportMode {
   }
 
   bool ignoreKnownError(Report report, String s) {
+    // TextField changes too fast
+    // https://github.com/flutter/flutter/issues/80226
     if (s.contains('''
 #0      _StringBase.substring (dart:core-patch/string_patch.dart:399)
 #1      TextRange.textBefore (dart:ui/text.dart:2750)
@@ -55,6 +60,21 @@ class SilentReportFilterMode extends ReportMode {
       return true;
     }
     return false;
+  }
+
+  // not work in release mode
+  void dumpWidgetTree(String msg) {
+    StringBuffer buffer = StringBuffer();
+    buffer.writeln('Logging Time: ${DateTime.now().toIso8601String()}');
+    buffer.writeln(msg);
+    buffer.writeln('\n=============== Start dump widget tree ==============\n');
+    buffer.write(WidgetsBinding.instance?.renderViewElement?.toStringDeep() ??
+        '<no tree currently mounted>');
+    buffer.writeln('\n=============== widget tree dumped ==================');
+    File(dumpsFp)
+      ..createSync(recursive: true)
+      ..writeAsStringSync(buffer.toString(), flush: true);
+    logger.d('dump widget tree info to file');
   }
 
   @override
@@ -99,8 +119,9 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
     return _sendMail(error);
   }
 
-  /// store html message
-  Set<String> _sentReports = Set();
+  /// store html message, this should have the same effect with
+  /// [SilentReportFilterMode._caughtErrors]
+  HashSet<String> _sentReports = HashSet();
 
   String? get contactInfo => db.prefs.contactInfo.get();
 
@@ -115,7 +136,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
         ..recipients.addAll(recipients)
         ..subject = _getEmailTitle(report)
         ..text = _setupRawMessageText(report)
-        ..attachments = _archiveAttachments(attachments);
+        ..attachments = _archiveAttachments([...attachments, File(dumpsFp)]);
       if (screenshot) {
         final shot = await _captureScreenshot();
         if (shot != null) {
@@ -162,7 +183,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
   }
 
   Future<Attachment?> _captureScreenshot() async {
-    String shotFn = pathlib.join(db.paths.appPath, 'crash.jpg');
+    String shotFn = p.join(db.paths.appPath, 'crash.jpg');
     Uint8List? shotBinary = await db.runtimeData.screenshotController?.capture(
       pixelRatio:
           MediaQuery.of(kAppKey.currentContext!).devicePixelRatio * 0.75,

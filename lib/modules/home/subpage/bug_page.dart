@@ -8,7 +8,7 @@ class BugAnnouncePage extends StatelessWidget {
       content: '但无法短时间内解决，如有其他bug请反馈',
       titleEn: 'Bugs in Current Version',
       contentEn:
-          'cannot be fixed immediately. If there is any other bug, please send feedback.',
+          'Cannot be fixed immediately. If there is any other bug, please send feedback.',
     ),
     _BugDetail(
       title: '翻译错误/不全',
@@ -18,10 +18,10 @@ class BugAnnouncePage extends StatelessWidget {
     ),
     _BugDetail(
         title: '输入框操作过快问题',
-        content: '主要存在于从者等列表页的搜索框，等待官方修复，暂时通过增加延时来规避这一bug',
+        content: '主要存在于从者等列表页的搜索框，等待官方修复',
         titleEn: 'Input/delete too fast in input field',
         contentEn:
-            'Mostly happens on search box in servant and other list page, wait for official fix. Currently fixed by adding delay.',
+            'Mostly happens on search box in servant/craft list page, wait for official fix.',
         link: 'https://github.com/flutter/flutter/issues/80226'),
   ];
 
@@ -36,9 +36,11 @@ class BugAnnouncePage extends StatelessWidget {
         itemBuilder: (ctx, index) {
           final bug = bugs[index];
           if (index == 0) {
-            return ListTile(
-              title: Text(bug.getTitle()),
-              subtitle: Text(bug.getContent()),
+            return Card(
+              child: ListTile(
+                title: Center(child: Text(bug.getTitle())),
+                subtitle: Text(bug.getContent()),
+              ),
             );
           }
           return SimpleAccordion(
