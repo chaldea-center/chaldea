@@ -123,9 +123,11 @@ packages:
   catcher:
     dependency: "direct main"
     description:
-      name: catcher
-      url: "https://pub.flutter-io.cn"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "8d8566e4d13ab0c04b5bffd1f7e4fe4cbb081ca8"
+      url: "https://github.com/narumishi/catcher.git"
+    source: git
     version: "0.6.5"
   characters:
     dependency: transitive

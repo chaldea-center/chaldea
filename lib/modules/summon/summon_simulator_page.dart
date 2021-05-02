@@ -24,7 +24,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   SummonData get data => summon.dataList[curIndex];
 
   int totalQuartz = 0;
-  int totalTimes = 0;
+  int totalPulls = 0;
   int _curHistory = -1;
   List<List> history = [];
 
@@ -52,9 +52,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
 
   void reset() {
     setState(() {
-      totalTimes = 0;
+      totalPulls = 0;
       totalQuartz = 0;
-      // newAdded.clear();
       history.clear();
       allSummons.clear();
     });
@@ -137,7 +136,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
             expanded: true,
             headerBuilder: (context, _) => ListTile(
               dense: true,
-              title: Text('抽卡结果'),
+              title: Text(
+                  LocalizedText.of(chs: '抽卡结果', jpn: 'ガチャ結果', eng: 'Results')),
             ),
             contentBuilder: (context) => curResult(),
           ),
@@ -146,7 +146,10 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           kDefaultDivider,
           Center(
             child: Text(
-              '仅供娱乐, 如有雷同, 纯属巧合',
+              LocalizedText.of(
+                  chs: '仅供娱乐, 如有雷同, 纯属巧合',
+                  jpn: '娯楽のみ',
+                  eng: 'Just for entertainment'),
               style: TextStyle(color: Colors.grey),
             ),
           )
@@ -156,14 +159,30 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   }
 
   Widget get statisticHint {
-    return ListTile(
-      title: Text('共计: $totalTimes抽'
+    double suits = (totalQuartz / 167);
+    String title, subtitle;
+    int extraLeft = 9 - totalPulls % 11;
+    if (Language.isCN) {
+      title = '共计: $totalPulls抽'
           ' $totalQuartz石'
-          '(${(totalQuartz / 167).toStringAsFixed(2)}单,'
-          ' ${(totalQuartz / 167 * 518).toStringAsFixed(0)}RMB)'),
-      subtitle: summon.luckyBag == 0 && summon.roll11
-          ? Text('还有${9 - totalTimes % 11}次即可获得1次额外召唤')
-          : null,
+          '(${suits.toStringAsFixed(2)}单,'
+          ' ${(suits * 518).round()}RMB)';
+      subtitle = '剩余$extraLeft次获得额外召唤';
+    } else if (Language.isJP) {
+      suits = (totalQuartz / 168);
+      title = '合計: $totalPulls回'
+          ' $totalQuartz石'
+          '(${suits.toStringAsFixed(2)}×10000'
+          ' ${(suits * 10000).round()}円)';
+      subtitle = 'あと$extraLeft回で1回ボーナス召喚';
+    } else {
+      title = 'Total $totalPulls Pulls $totalQuartz SQ'
+          ' (${suits.toStringAsFixed(2)}×100=\$${(suits * 100).round()})';
+      subtitle = '$extraLeft more pulls to get 1 extra summon';
+    }
+    return ListTile(
+      title: Text(title),
+      subtitle: summon.luckyBag == 0 && summon.roll11 ? Text(subtitle) : null,
     );
   }
 
@@ -181,7 +200,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       expanded: rarity > 3,
       headerBuilder: (context, _) => ListTile(
         dense: true,
-        title: Text('获得的★$rarity${isSvt ? "英灵" : "礼装"}'),
+        title: Text('★$rarity ' +
+            (isSvt ? S.current.servant : S.current.craft_essence)),
         trailing: Text(totalCount.toString()),
       ),
       contentBuilder: (context) => Padding(
@@ -196,14 +216,20 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   Widget get dropdownButton {
     List<DropdownMenuItem<int>> items = [];
     items.addAll(summon.dataList.map((e) => DropdownMenuItem(
-          child: AutoSizeText(e.name, maxLines: 2, maxFontSize: 14),
+          child: AutoSizeText(
+            e.name,
+            maxLines: 2,
+            maxFontSize: 14,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           value: summon.dataList.indexOf(e),
         )));
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 14),
       child: Row(
         children: [
-          Text('日替  ', style: TextStyle(color: Colors.redAccent)),
+          Text(LocalizedText.of(chs: '日替: ', jpn: '日替: ', eng: 'Daily: '),
+              style: TextStyle(color: Colors.redAccent)),
           Flexible(
             child: Container(
               decoration: BoxDecoration(
@@ -226,24 +252,33 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   }
 
   Widget get details {
-    String formatWeight(double w) {
-      return double.parse(w.toStringAsFixed(5)).toString();
-    }
-
     List<Widget> svtRow = [];
     data.svts.forEach((block) {
       if (block.ids.isEmpty || !block.display) return; // should always not
-      String weight = formatWeight(block.weight / block.ids.length);
+      double weight = block.weight / block.ids.length;
       block.ids.forEach((id) {
-        svtRow.add(_cardIcon(db.gameData.servants[id]!, '$weight%'));
+        Servant? svt = db.gameData.servants[id];
+        if (svt == null) return;
+        svtRow.add(buildSummonCard(
+          context: context,
+          card: svt,
+          weight: weight,
+          showCategory: true,
+        ));
       });
     });
     List<Widget> craftRow = [];
     data.crafts.forEach((block) {
       if (block.ids.isEmpty || !block.display) return; // should always not
-      String weight = formatWeight(block.weight / block.ids.length);
+      double weight = block.weight / block.ids.length;
       block.ids.forEach((id) {
-        craftRow.add(_cardIcon(db.gameData.crafts[id]!, '$weight%'));
+        CraftEssence? ce = db.gameData.crafts[id];
+        if (ce == null) return;
+        craftRow.add(buildSummonCard(
+          context: context,
+          card: ce,
+          weight: weight,
+        ));
       });
     });
     return Padding(
@@ -342,7 +377,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     int gachaNum = 1;
     if (!summon.roll11) {
       iconKey = '召唤1次按钮.png';
-    } else if (totalTimes % 11 == 9) {
+    } else if (totalPulls % 11 == 9) {
       iconKey = '日服召唤按钮_2次.png';
       gachaNum = 2;
     } else {
@@ -405,7 +440,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       allSummons[element] = (allSummons[element] ?? 0) + 1;
     });
     history.add(newAdded);
-    totalTimes += times;
+    totalPulls += times;
     totalQuartz += quartz;
     _curHistory = history.length - 1;
     setState(() {});
@@ -550,4 +585,47 @@ class _SliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(covariant _SliverPersistentHeaderDelegate oldDelegate) {
     return oldDelegate.height != height || oldDelegate.child != child;
   }
+}
+
+String _removeDoubleTrailing(double weight) {
+  return double.parse(weight.toStringAsFixed(5))
+      .toString()
+      .replaceFirst(RegExp(r'\.0+$'), '');
+}
+
+Widget buildSummonCard(
+    {required BuildContext context,
+    required dynamic card,
+    double? weight,
+    bool showCategory = false}) {
+  List<String> texts = [];
+  if (weight != null) {
+    texts.add(_removeDoubleTrailing(weight) + '%');
+  }
+  if (showCategory && card is Servant) {
+    texts.add(Localized.svtFilter.of(card.info.obtain.replaceAll('常驻', '')));
+  }
+
+  return Padding(
+    padding: EdgeInsets.symmetric(horizontal: 3, vertical: 3),
+    child: InkWell(
+      onTap: () {
+        SplitRoute.push(
+          context: context,
+          builder: (context, _) {
+            if (card is Servant) return ServantDetailPage(card);
+            if (card is CraftEssence) return CraftDetailPage(ce: card);
+            throw 'obj must be Servant or CraftEssence: ${card.runtimeType}';
+          },
+        );
+      },
+      child: ImageWithText(
+        image: db.getIconImage(card.icon, width: 56, height: 56 / 132 * 144),
+        text: texts.join('\n'),
+        width: 56,
+        textAlign: TextAlign.right,
+        padding: EdgeInsets.only(bottom: 2, left: 15),
+      ),
+    ),
+  );
 }

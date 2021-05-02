@@ -195,7 +195,7 @@ class ServantListPageState extends State<ServantListPage> {
   @override
   Widget build(BuildContext context) {
     return db.streamBuilder(
-          (context) => Scaffold(
+      (context) => Scaffold(
         appBar: AppBar(
           title: AutoSizeText(
             widget.planMode
@@ -236,6 +236,7 @@ class ServantListPageState extends State<ServantListPage> {
                 });
               },
               icon: Icon(Icons.search),
+              tooltip: 'Search',
             ),
             PopupMenuButton(
               itemBuilder: (context) {

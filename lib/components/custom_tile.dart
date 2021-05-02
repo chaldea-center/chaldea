@@ -233,7 +233,7 @@ class ImageWithText extends StatelessWidget {
     this.alignment = AlignmentDirectional.bottomEnd,
     this.textAlign,
     this.textStyle,
-    this.shadowSize = 2,
+    this.shadowSize = 3,
     this.onTap,
   }) : super(key: key);
 

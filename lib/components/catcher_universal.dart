@@ -33,33 +33,50 @@ class SilentReportFilterMode extends ReportMode {
   @override
   void requestAction(Report report, BuildContext? context) {
     // no action needed, request is automatically accepted
-    String s = '';
-    s += report.error.toString();
-    s += report.errorDetails.toString();
-    s += report.stackTrace.toString();
+    StringBuffer buffer = StringBuffer();
+    buffer.writeln(report.error);
+    buffer.writeln(report.errorDetails);
+    buffer.writeln(report.stackTrace);
+    String s = buffer.toString();
     if (!ignoreKnownError(report, s) && !_caughtErrors.contains(s)) {
       // dumpWidgetTree(s);
       super.onActionConfirmed(report);
       _caughtErrors.add(s);
     } else {
-      logger.w('ignore duplicated error', report.error ?? report.errorDetails,
-          report.stackTrace);
+      logger.w('ignore duplicated/known error',
+          report.error ?? report.errorDetails, report.stackTrace);
       super.onActionRejected(report);
     }
   }
 
   bool ignoreKnownError(Report report, String s) {
+    s = _removeStackTraceLineNumber(s);
     // TextField changes too fast
     // https://github.com/flutter/flutter/issues/80226
-    if (s.contains('''
-#0      _StringBase.substring (dart:core-patch/string_patch.dart:399)
-#1      TextRange.textBefore (dart:ui/text.dart:2750)
-#2      RenderEditable.delete (package:flutter/src/rendering/editable.dart:1119)
-#3      _DeleteTextAction.invoke (package:flutter/src/widgets/default_text_editing_actions.dart:88)
-#4      ActionDispatcher.invokeAction (package:flutter/src/widgets/actions.dart:517)''')) {
-      return true;
+    print(s);
+    if (report.error.toString().startsWith('RangeError: Value not in range')) {
+      if (_removeStackTraceLineNumber(report.stackTrace.toString()).contains(
+          '''#0      _StringBase.substring (dart:core-patch/string_patch.dart)
+#1      TextRange.textBefore (dart:ui/text.dart)
+#2      RenderEditable.delete (package:flutter/src/rendering/editable.dart)
+#3      _DeleteTextAction.invoke (package:flutter/src/widgets/default_text_editing_actions.dart)
+#4      ActionDispatcher.invokeAction (package:flutter/src/widgets/actions.dart)
+#5      ShortcutManager.handleKeypress (package:flutter/src/widgets/shortcuts.dart)
+#6      _ShortcutsState._handleOnKey (package:flutter/src/widgets/shortcuts.dart)
+#7      FocusManager._handleRawKeyEvent (package:flutter/src/widgets/focus_manager.dart)
+#8      RawKeyboard._handleKeyEvent (package:flutter/src/services/raw_keyboard.dart)
+''')) {
+        logger.e('ignore the bug by TextField changing too fast');
+        return true;
+      }
     }
     return false;
+  }
+
+  /// In release mode, StackTrace won't offer offset
+  /// This should only called for develop
+  String _removeStackTraceLineNumber(String s) {
+    return s.replaceAll(RegExp(r'(:\d+)+(?=\)\n)'), '');
   }
 
   // not work in release mode
@@ -235,10 +252,11 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
     }
     buffer.write("<h3>Summary:</h3>");
     Map<String, dynamic> summary = {
-      'appVersion': '${AppInfo.appName} v${AppInfo.fullVersion2}',
-      'datasetMemory': db.gameData.version,
+      'app': '${AppInfo.appName} v${AppInfo.fullVersion2}',
+      'dataset': db.gameData.version,
       'os': '${Platform.operatingSystem} ${Platform.operatingSystemVersion}',
-      'lang': Language.current,
+      'lang': Language.current.code,
+      'uniqueId': AppInfo.uniqueId,
     };
     for (var entry in summary.entries) {
       buffer

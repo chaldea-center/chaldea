@@ -85,7 +85,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
         children: divideTiles([
           filters,
           actionBar,
-          taskList,
+          missionListView,
           solutionList,
           relatedQuests,
         ]),
@@ -196,7 +196,8 @@ class _MasterMissionPageState extends State<MasterMissionPage>
         TextButton(
           onPressed: () {
             SimpleCancelOkDialog(
-              title: Text('清空所有任务'),
+              title: Text(LocalizedText.of(
+                  chs: '清空所有任务', jpn: 'ミッションをクリア', eng: 'Clear all missions')),
               onTapOk: () {
                 setState(() {
                   filterData.reset();
@@ -233,9 +234,16 @@ class _MasterMissionPageState extends State<MasterMissionPage>
 
   Widget get popupMenu {
     return PopupMenuButton<int>(
-      itemBuilder: (context) => [
-        PopupMenuItem(value: 0, child: Text('日服本周')),
-        PopupMenuItem(value: 1, child: Text('国服本周')),
+      itemBuilder: (context) =>
+      [
+        PopupMenuItem(
+            value: 0,
+            child: Text(LocalizedText.of(
+                chs: '日服本周', jpn: '今週(JP)', eng: 'This Week(JP)'))),
+        PopupMenuItem(
+            value: 1,
+            child: Text(LocalizedText.of(
+                chs: '国服本周', jpn: '今週(CN)', eng: 'This Week(CN)'))),
       ],
       onSelected: (v) async {
         EasyLoading.show();
@@ -287,7 +295,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
     );
   }
 
-  Widget get taskList {
+  Widget get missionListView {
     List<Widget> children = [];
     for (var mission in missions) {
       VoidCallback _onPressAddAll = () {
@@ -310,8 +318,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
         contentPadding: EdgeInsets.symmetric(horizontal: 8),
         title: AutoSizeText(
           mission.getLocalizedTargets().join(', '),
-          maxLines: 2,
-          maxFontSize: 14,
+          maxFontSize: 12,
           style: TextStyle(color: mission.valid ? null : Colors.grey),
         ),
         trailing: Row(
@@ -507,12 +514,23 @@ class _MasterMissionPageState extends State<MasterMissionPage>
 
   void showHelp() {
     SimpleCancelOkDialog(
+      scrollable: true,
       title: Text(S.current.help),
-      content: Text("""注意：无法得知一个关卡X既有属性A又有属性B的敌人数目。只能知晓关卡X共有a个属性A，b个属性B。
+      content: Text(LocalizedText.of(
+          chs: """注意：无法得知一个关卡X既有属性A又有属性B的敌人数目。只能知晓关卡X共有a个属性A，b个属性B。
 例：关卡X共有2个属性A，4个属性B，9个属性C
 “或”：2+4+9=15, 几乎都有关卡可以满足
 “且”：min(2,4,9)=2, 此时极大可能将没有关卡可以满足条件而忽略，相应任务会变灰
-"""),
+""",
+          jpn: """注：クエストに属性Aと属性Bの両方を持つ敵の数を知る方法はありません。 
+「OR」/「AND」の違い：たとえば、クエストには2つの属性A、4つの属性B、および9つの属性Cがあります。
+「OR」：2+4+9=15、コモンモード
+「AND」：min(2,4,9)=2、条件を満たして無視できたクエストがない可能性が非常に高く、対応するミッションはグレー表示されます """,
+          eng:
+              """One quest has "x" enemies with Attribute A and "y" enemies with Attribute B, but we cannot know the count of enemies who has both attributes. 
+"Or"/"And" mode: e.g. 2 Attribute A, 4 Attribute B, and 9 Attribute C in one quest
+"Or": 2+4+9=15, mostly used
+"And": min(2,4,9)=2, most quests may not meet the requirements and will be ignored, the corresponding mission with no related quest will be gray.""")),
     ).showDialog(context);
   }
 }

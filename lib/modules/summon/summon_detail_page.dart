@@ -2,7 +2,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/event/limit_event_detail_page.dart';
 import 'package:chaldea/modules/event/main_record_detail_page.dart';
-import 'package:chaldea/modules/servant/servant_detail_page.dart';
 import 'package:chaldea/modules/summon/summon_simulator_page.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:getwidget/getwidget.dart';
@@ -97,20 +96,22 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
             enableInfiniteScroll: banners.length > 1,
           ),
         ),
-      SHeader('卡池详情'),
+      SHeader(LocalizedText.of(chs: '卡池详情', jpn: '詳細', eng: 'Information')),
       ListTile(
         title: Text(
-            '日服: ${summon.startTimeJp ?? "?"} ~ ${summon.endTimeJp ?? "?"}\n'
-            '国服: ${summon.startTimeCn ?? "?"} ~ ${summon.endTimeCn ?? "?"}'),
+            '${S.current.server_jp}: ${summon.startTimeJp ?? "?"} ~ ${summon.endTimeJp ?? "?"}\n'
+            '${S.current.server_cn}: ${summon.startTimeCn ?? "?"} ~ ${summon.endTimeCn ?? "?"}'),
       ),
       if (summon.dataList.length > 1) dropdownButton,
       if (summon.dataList.isNotEmpty) gachaDetails,
       if (summon.associatedEvents.isNotEmpty) ...[
-        SHeader('关联活动'),
+        SHeader(LocalizedText.of(
+            chs: '关联活动', jpn: '関連イベント', eng: 'Associated Events')),
         for (String event in summon.associatedEvents) associateEvent(event)
       ],
       if (summon.associatedSummons.isNotEmpty) ...[
-        SHeader('关联卡池'),
+        SHeader(LocalizedText.of(
+            chs: '关联卡池', jpn: '関連ガチャ', eng: 'Associated Summons')),
         for (String _summon in summon.associatedSummons)
           associateSummon(_summon)
       ],
@@ -178,19 +179,27 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     List<DropdownMenuItem<int>> items = [];
     if (showOverview) {
       items.add(DropdownMenuItem(
-        child: Text('概览'),
+        child: Text(
+          LocalizedText.of(chs: '概览', jpn: '概要', eng: 'Overview'),
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         value: -1,
       ));
     }
     items.addAll(summon.dataList.map((e) => DropdownMenuItem(
-          child: AutoSizeText(e.name, maxLines: 2, maxFontSize: 14),
+          child: AutoSizeText(
+            e.name,
+            maxLines: 2,
+            maxFontSize: 14,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           value: summon.dataList.indexOf(e),
         )));
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
-          Text('日替 '),
+          Text(LocalizedText.of(chs: '日替: ', jpn: '日替: ', eng: 'Daily: ')),
           Flexible(
             child: Container(
               decoration: BoxDecoration(
@@ -225,7 +234,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
       final row = Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('${block.rarity}星  '),
+          Text('${block.rarity}☆  '),
           Flexible(
             child: Wrap(
               spacing: 3,
@@ -233,7 +242,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
               children: block.ids.map((id) {
                 final svt = db.gameData.servants[id];
                 if (svt == null) return Text('No.$id');
-                return _svtAvatar(svt, block.ids.length == 1);
+                return _svtAvatar(svt, block.weight, block.ids.length == 1);
               }).toList(),
             ),
           )
@@ -264,7 +273,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
       final row = Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('$rarity星  '),
+          Text('$rarity☆  '),
           Flexible(
             child: Wrap(
               spacing: 3,
@@ -272,7 +281,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
               children: svts[rarity]!.map((id) {
                 final svt = db.gameData.servants[id];
                 if (svt == null) return Text('No.$id');
-                return _svtAvatar(svt, summon.hasSinglePickupSvt(id));
+                return _svtAvatar(svt, null, summon.hasSinglePickupSvt(id));
               }).toList(),
             ),
           )
@@ -289,30 +298,20 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     );
   }
 
-  Widget _svtAvatar(Servant svt, [bool star = false]) {
-    return InkWell(
-      onTap: () {
-        SplitRoute.push(
-          context: context,
-          builder: (context, _) => ServantDetailPage(svt),
-        );
-      },
-      child: Stack(
-        alignment: Alignment.topRight,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(top: 6, right: 6),
-            child: ImageWithText(
-              image: db.getIconImage(svt.icon, height: 64, width: 56),
-              text: svt.info.obtain.replaceAll('常驻', ''),
-            ),
-          ),
-          if (star) ...[
-            Icon(Icons.star, color: Colors.yellow, size: 18),
-            Icon(Icons.star_outline, color: Colors.redAccent, size: 18),
-          ]
-        ],
-      ),
+  Widget _svtAvatar(Servant svt, double? weight, [bool star = false]) {
+    return Stack(
+      alignment: Alignment.topRight,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 6, right: 6),
+          child: buildSummonCard(
+              context: context, card: svt, weight: weight, showCategory: true),
+        ),
+        if (star) ...[
+          Icon(Icons.star, color: Colors.yellow, size: 18),
+          Icon(Icons.star_outline, color: Colors.redAccent, size: 18),
+        ]
+      ],
     );
   }
 

@@ -134,6 +134,7 @@ class CraftListPageState extends State<CraftListPage> {
               });
             },
             icon: Icon(Icons.search),
+            tooltip: 'Search',
           ),
         ],
       ),

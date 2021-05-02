@@ -113,6 +113,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
               });
             },
             icon: Icon(Icons.search),
+            tooltip: 'Search',
           ),
         ],
       ),
