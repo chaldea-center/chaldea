@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:audioplayers/audioplayers.dart' as audio1;
 import 'package:chaldea/components/components.dart';
 import 'package:flutter_audio_desktop/flutter_audio_desktop.dart' as audio2;
@@ -21,8 +23,7 @@ class SvtVoiceTab extends SvtTabBaseWidget {
 }
 
 class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
-  _SvtVoiceTabState(
-      {ServantDetailPageState? parent, Servant? svt, ServantStatus? plan})
+  _SvtVoiceTabState({ServantDetailPageState? parent, Servant? svt, ServantStatus? plan})
       : super(parent: parent, svt: svt, status: plan);
   bool useLangCn = false;
   GeneralAudioPlayer? audioPlayer;
@@ -56,7 +57,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
                   child: Table(
                     border: TableBorder(
                         horizontalInside:
-                            Divider.createBorderSide(context, width: 1)),
+                        Divider.createBorderSide(context, width: 1)),
                     defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                     children: _buildVoiceRows(table),
                     columnWidths: {
@@ -90,8 +91,15 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
               '???'),
         ),
         IconButton(
-          onPressed:
-              record.voiceFile.isNotEmpty ? () => onPlayVoice(record) : null,
+          onPressed: record.voiceFile.isNotEmpty
+              ? () {
+                  onPlayVoice(record).onError((e, s) {
+                    EasyLoading.showError('Error playing audio\n$e');
+                    logger.e(
+                        'Error playing audio\n${jsonEncode(record)}\n', e, s);
+                  });
+                }
+              : null,
           icon: Icon(Icons.play_circle_outline),
           color: Colors.blue,
         ),
@@ -122,7 +130,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
           },
           children: List.generate(
             2,
-            (i) => Padding(
+                (i) => Padding(
               padding: EdgeInsets.all(6),
               child: Text(['中', '日'][i]),
             ),
@@ -141,7 +149,6 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
     audioPlayer ??= GeneralAudioPlayer();
     final String? url = await MooncellUtil.resolveFileUrl(record.voiceFile);
     // print('${record.voiceFile}  -> $url');
-    if (!mounted) return;
     if (url == null) {
       EasyLoading.showToast('File not found: ${record.voiceFile}');
       return;
@@ -150,9 +157,10 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
     /// [DefaultCacheManager] will change the extension when saving cache
     ///   * .ogg/.ogx -> .oga
     ///   * .wav -> .bin
+
     final file = await DefaultCacheManager().getSingleFile(url);
     if (!mounted) return;
-    audioPlayer?.play(file.path, url);
+    await audioPlayer?.play(file.path, url);
   }
 }
 
@@ -167,7 +175,11 @@ class GeneralAudioPlayer {
   /// * not support ogg/ogx
   audio2.AudioPlayer? player2;
 
-  GeneralAudioPlayer() {
+  bool _valid;
+
+  bool get valid => _valid;
+
+  GeneralAudioPlayer() : _valid = true {
     if (usePlayer1) {
       player1 = audio1.AudioPlayer();
       player1!.onPlayerError.listen((event) {
@@ -186,6 +198,12 @@ class GeneralAudioPlayer {
   /// [path] must be local path
   /// [DefaultCacheManager] download from [originPath] and save cache as [path]
   Future<void> play(String path, [String? originPath]) async {
+    assert(() {
+      if (!_valid) {
+        throw Exception('Call player after disposed.');
+      }
+      return true;
+    }());
     if (!checkSupport(path, originPath)) {
       return;
     }
@@ -220,6 +238,7 @@ class GeneralAudioPlayer {
   }
 
   Future<void> stop() async {
+    _valid = false;
     if (usePlayer1) {
       await player1!.stop();
     } else {
@@ -236,35 +255,35 @@ class GeneralAudioPlayer {
   }
 
   void dispose() {
-    if (usePlayer1) player1?.dispose();
+    stop().then((value) => player1?.dispose());
   }
 }
 
 LocalizedGroup get _localizedVoices => LocalizedGroup([
-      LocalizedText(chs: '战斗', jpn: '', eng: 'Battle'),
-      LocalizedText(chs: '开始', jpn: '', eng: 'Battle Start'),
-      LocalizedText(chs: '技能', jpn: '', eng: 'Skill'),
-      LocalizedText(chs: '指令卡', jpn: '', eng: 'Attack Selected'),
-      LocalizedText(chs: '宝具卡', jpn: '', eng: 'NP Selected'),
-      LocalizedText(chs: '攻击', jpn: '', eng: 'Attack'),
-      LocalizedText(chs: '宝具', jpn: '', eng: 'Noble Phantasm'),
-      LocalizedText(chs: '受击', jpn: '', eng: 'Damage'),
-      LocalizedText(chs: '无法战斗', jpn: '', eng: 'Defeated'),
-      LocalizedText(chs: '胜利', jpn: '', eng: 'Battle Finish'),
-      LocalizedText(chs: '召唤和强化', jpn: '', eng: 'Summon and Leveling'),
-      LocalizedText(chs: '召唤', jpn: '', eng: 'Summoned'),
-      LocalizedText(chs: '升级', jpn: '', eng: 'Level Up'),
-      LocalizedText(chs: '灵基再临', jpn: '', eng: 'Ascension'),
-      LocalizedText(chs: '个人空间', jpn: '', eng: 'My Room'),
-      LocalizedText(chs: '羁绊', jpn: '', eng: 'Bond'),
-      LocalizedText(chs: '羁绊 Lv.', jpn: '', eng: 'Bond Lv.'),
-      LocalizedText(chs: '对话', jpn: '', eng: 'Dialogue'),
-      LocalizedText(chs: '喜欢的东西', jpn: '', eng: 'Something you Like'),
-      LocalizedText(chs: '讨厌的东西', jpn: '', eng: 'Something you Hate'),
-      LocalizedText(chs: '关于圣杯', jpn: '', eng: 'About the Holy Grail'),
-      LocalizedText(chs: '活动举行中', jpn: '', eng: 'During an Event'),
-      LocalizedText(chs: '生日', jpn: '', eng: 'Birthday'),
-      LocalizedText(chs: '灵衣', jpn: '', eng: 'Costume'),
-      LocalizedText(chs: '灵衣开放', jpn: '', eng: 'Costume Unlock'),
-      LocalizedText(chs: '灵衣相关', jpn: '', eng: 'Costume Related'),
-    ]);
+  LocalizedText(chs: '战斗', jpn: '', eng: 'Battle'),
+  LocalizedText(chs: '开始', jpn: '', eng: 'Battle Start'),
+  LocalizedText(chs: '技能', jpn: '', eng: 'Skill'),
+  LocalizedText(chs: '指令卡', jpn: '', eng: 'Attack Selected'),
+  LocalizedText(chs: '宝具卡', jpn: '', eng: 'NP Selected'),
+  LocalizedText(chs: '攻击', jpn: '', eng: 'Attack'),
+  LocalizedText(chs: '宝具', jpn: '', eng: 'Noble Phantasm'),
+  LocalizedText(chs: '受击', jpn: '', eng: 'Damage'),
+  LocalizedText(chs: '无法战斗', jpn: '', eng: 'Defeated'),
+  LocalizedText(chs: '胜利', jpn: '', eng: 'Battle Finish'),
+  LocalizedText(chs: '召唤和强化', jpn: '', eng: 'Summon and Leveling'),
+  LocalizedText(chs: '召唤', jpn: '', eng: 'Summoned'),
+  LocalizedText(chs: '升级', jpn: '', eng: 'Level Up'),
+  LocalizedText(chs: '灵基再临', jpn: '', eng: 'Ascension'),
+  LocalizedText(chs: '个人空间', jpn: '', eng: 'My Room'),
+  LocalizedText(chs: '羁绊', jpn: '', eng: 'Bond'),
+  LocalizedText(chs: '羁绊 Lv.', jpn: '', eng: 'Bond Lv.'),
+  LocalizedText(chs: '对话', jpn: '', eng: 'Dialogue'),
+  LocalizedText(chs: '喜欢的东西', jpn: '', eng: 'Something you Like'),
+  LocalizedText(chs: '讨厌的东西', jpn: '', eng: 'Something you Hate'),
+  LocalizedText(chs: '关于圣杯', jpn: '', eng: 'About the Holy Grail'),
+  LocalizedText(chs: '活动举行中', jpn: '', eng: 'During an Event'),
+  LocalizedText(chs: '生日', jpn: '', eng: 'Birthday'),
+  LocalizedText(chs: '灵衣', jpn: '', eng: 'Costume'),
+  LocalizedText(chs: '灵衣开放', jpn: '', eng: 'Costume Unlock'),
+  LocalizedText(chs: '灵衣相关', jpn: '', eng: 'Costume Related'),
+]);
