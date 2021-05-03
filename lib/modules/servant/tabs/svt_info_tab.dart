@@ -324,11 +324,11 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
               subtitle: condition.isEmpty ? null : Text(condition),
             ),
             CustomTile(
-              subtitle: Text((LocalizedText(
+              subtitle: Text(LocalizedText(
                       chs: profile.description,
                       jpn: profile.descriptionJp,
                       eng: profile.descriptionEn)
-                  .ofPrimary(lang ?? Language.current))),
+                  .ofPrimary(lang ?? Language.current)),
             ),
           ],
         ),

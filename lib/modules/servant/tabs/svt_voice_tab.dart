@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:audioplayers/audioplayers.dart' as audio1;
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/shared/lang_switch.dart';
 import 'package:flutter_audio_desktop/flutter_audio_desktop.dart' as audio2;
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path/path.dart' as p;
@@ -23,15 +25,15 @@ class SvtVoiceTab extends SvtTabBaseWidget {
 }
 
 class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
-  _SvtVoiceTabState({ServantDetailPageState? parent, Servant? svt, ServantStatus? plan})
+  _SvtVoiceTabState(
+      {ServantDetailPageState? parent, Servant? svt, ServantStatus? plan})
       : super(parent: parent, svt: svt, status: plan);
-  bool useLangCn = false;
+  Language? lang;
   GeneralAudioPlayer? audioPlayer;
 
   @override
   void initState() {
     super.initState();
-    useLangCn = Language.isCN;
   }
 
   @override
@@ -57,7 +59,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
                   child: Table(
                     border: TableBorder(
                         horizontalInside:
-                        Divider.createBorderSide(context, width: 1)),
+                            Divider.createBorderSide(context, width: 1)),
                     defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                     children: _buildVoiceRows(table),
                     columnWidths: {
@@ -81,14 +83,19 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
   List<TableRow> _buildVoiceRows(VoiceTable table) {
     return table.table.map((record) {
       return TableRow(children: [
-        Text(_getLocalizedText(record.title),
-            style: TextStyle(fontWeight: FontWeight.bold)),
+        AutoSizeText(
+          _getLocalizedText(record.title),
+          maxLines: 2,
+          maxFontSize: 12,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         Padding(
           padding: EdgeInsets.symmetric(vertical: 3),
-          child: Text((useLangCn ? record.text : record.textJp) ??
-              record.textJp ??
-              record.text ??
-              '???'),
+          child: Text(LocalizedText(
+            chs: record.text,
+            jpn: record.textJp,
+            eng: null,
+          ).ofPrimary(lang ?? Language.current)),
         ),
         IconButton(
           onPressed: record.voiceFile.isNotEmpty
@@ -119,23 +126,14 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
     return ButtonBar(
       alignment: MainAxisAlignment.center,
       children: [
-        ToggleButtons(
-          constraints: BoxConstraints(),
-          selectedColor: Colors.white,
-          fillColor: Theme.of(context).primaryColor,
-          onPressed: (i) {
+        ProfileLangSwitch(
+          primary: lang,
+          showEn: false,
+          onChanged: (v) {
             setState(() {
-              useLangCn = i == 0;
+              lang = v;
             });
           },
-          children: List.generate(
-            2,
-                (i) => Padding(
-              padding: EdgeInsets.all(6),
-              child: Text(['中', '日'][i]),
-            ),
-          ),
-          isSelected: List.generate(2, (i) => useLangCn == (i == 0)),
         ),
       ],
     );
@@ -260,30 +258,30 @@ class GeneralAudioPlayer {
 }
 
 LocalizedGroup get _localizedVoices => LocalizedGroup([
-  LocalizedText(chs: '战斗', jpn: '', eng: 'Battle'),
-  LocalizedText(chs: '开始', jpn: '', eng: 'Battle Start'),
-  LocalizedText(chs: '技能', jpn: '', eng: 'Skill'),
-  LocalizedText(chs: '指令卡', jpn: '', eng: 'Attack Selected'),
-  LocalizedText(chs: '宝具卡', jpn: '', eng: 'NP Selected'),
-  LocalizedText(chs: '攻击', jpn: '', eng: 'Attack'),
-  LocalizedText(chs: '宝具', jpn: '', eng: 'Noble Phantasm'),
-  LocalizedText(chs: '受击', jpn: '', eng: 'Damage'),
-  LocalizedText(chs: '无法战斗', jpn: '', eng: 'Defeated'),
-  LocalizedText(chs: '胜利', jpn: '', eng: 'Battle Finish'),
-  LocalizedText(chs: '召唤和强化', jpn: '', eng: 'Summon and Leveling'),
-  LocalizedText(chs: '召唤', jpn: '', eng: 'Summoned'),
-  LocalizedText(chs: '升级', jpn: '', eng: 'Level Up'),
-  LocalizedText(chs: '灵基再临', jpn: '', eng: 'Ascension'),
-  LocalizedText(chs: '个人空间', jpn: '', eng: 'My Room'),
-  LocalizedText(chs: '羁绊', jpn: '', eng: 'Bond'),
-  LocalizedText(chs: '羁绊 Lv.', jpn: '', eng: 'Bond Lv.'),
-  LocalizedText(chs: '对话', jpn: '', eng: 'Dialogue'),
-  LocalizedText(chs: '喜欢的东西', jpn: '', eng: 'Something you Like'),
-  LocalizedText(chs: '讨厌的东西', jpn: '', eng: 'Something you Hate'),
-  LocalizedText(chs: '关于圣杯', jpn: '', eng: 'About the Holy Grail'),
-  LocalizedText(chs: '活动举行中', jpn: '', eng: 'During an Event'),
-  LocalizedText(chs: '生日', jpn: '', eng: 'Birthday'),
-  LocalizedText(chs: '灵衣', jpn: '', eng: 'Costume'),
-  LocalizedText(chs: '灵衣开放', jpn: '', eng: 'Costume Unlock'),
-  LocalizedText(chs: '灵衣相关', jpn: '', eng: 'Costume Related'),
-]);
+      LocalizedText(chs: '战斗', jpn: '', eng: 'Battle'),
+      LocalizedText(chs: '开始', jpn: '', eng: 'Battle Start'),
+      LocalizedText(chs: '技能', jpn: '', eng: 'Skill'),
+      LocalizedText(chs: '指令卡', jpn: '', eng: 'Attack Selected'),
+      LocalizedText(chs: '宝具卡', jpn: '', eng: 'NP Selected'),
+      LocalizedText(chs: '攻击', jpn: '', eng: 'Attack'),
+      LocalizedText(chs: '宝具', jpn: '', eng: 'Noble Phantasm'),
+      LocalizedText(chs: '受击', jpn: '', eng: 'Damage'),
+      LocalizedText(chs: '无法战斗', jpn: '', eng: 'Defeated'),
+      LocalizedText(chs: '胜利', jpn: '', eng: 'Battle Finish'),
+      LocalizedText(chs: '召唤和强化', jpn: '', eng: 'Summon and Leveling'),
+      LocalizedText(chs: '召唤', jpn: '', eng: 'Summoned'),
+      LocalizedText(chs: '升级', jpn: '', eng: 'Level Up'),
+      LocalizedText(chs: '灵基再临', jpn: '', eng: 'Ascension'),
+      LocalizedText(chs: '个人空间', jpn: '', eng: 'My Room'),
+      LocalizedText(chs: '羁绊', jpn: '', eng: 'Bond'),
+      LocalizedText(chs: '羁绊 Lv.', jpn: '', eng: 'Bond Lv.'),
+      LocalizedText(chs: '对话', jpn: '', eng: 'Dialogue'),
+      LocalizedText(chs: '喜欢的东西', jpn: '', eng: 'Something you Like'),
+      LocalizedText(chs: '讨厌的东西', jpn: '', eng: 'Something you Hate'),
+      LocalizedText(chs: '关于圣杯', jpn: '', eng: 'About the Holy Grail'),
+      LocalizedText(chs: '活动举行中', jpn: '', eng: 'During an Event'),
+      LocalizedText(chs: '生日', jpn: '', eng: 'Birthday'),
+      LocalizedText(chs: '灵衣', jpn: '', eng: 'Costume'),
+      LocalizedText(chs: '灵衣开放', jpn: '', eng: 'Costume Unlock'),
+      LocalizedText(chs: '灵衣相关', jpn: '', eng: 'Costume Related'),
+    ]);

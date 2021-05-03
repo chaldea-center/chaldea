@@ -5,10 +5,19 @@ import 'filter_page.dart';
 class ProfileLangSwitch extends StatefulWidget {
   final Language? primary;
   final ValueChanged<Language> onChanged;
+  final bool showCn;
+  final bool showJp;
+  final bool showEn;
 
-  const ProfileLangSwitch(
-      {Key? key, required this.primary, required this.onChanged})
-      : super(key: key);
+  const ProfileLangSwitch({
+    Key? key,
+    required this.primary,
+    required this.onChanged,
+    this.showCn = true,
+    this.showJp = true,
+    this.showEn = true,
+  })  : assert(showCn || showJp || showEn, 'At least show one language'),
+        super(key: key);
 
   @override
   _ProfileLangSwitchState createState() => _ProfileLangSwitchState();
@@ -29,7 +38,11 @@ class _ProfileLangSwitchState extends State<ProfileLangSwitch> {
   Widget build(BuildContext context) {
     return FilterGroup(
       values: data,
-      options: Language.supportLanguages.map((e) => e.code).toList(),
+      options: [
+        if (widget.showCn) Language.chs.code,
+        if (widget.showJp) Language.jpn.code,
+        if (widget.showEn) Language.eng.code,
+      ],
       optionBuilder: (code) {
         return SizedBox(
           width: 32,
