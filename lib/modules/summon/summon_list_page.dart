@@ -93,6 +93,7 @@ class _SummonListPageState extends State<SummonListPage> {
             maxFontSize: 16,
             style: TextStyle(color: summon.isOutdated() ? Colors.grey : null),
           ),
+          subtitle: Text('JP ${summon.startTimeJp ?? "???"}'),
           trailing: db.streamBuilder(
             (context) {
               final planned =

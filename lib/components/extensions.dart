@@ -27,17 +27,21 @@ extension DateTimeEnhance on DateTime {
     if (formattedString == null) return null;
     var date = DateTime.tryParse(formattedString);
     if (date != null) return date;
-    // replace 2020-2-2 to 2020-02-02
-    final _reg = RegExp(r'^([+-]?\d{4})-?(\d{1,2})-?(\d{1,2})');
-    final match = _reg.firstMatch(formattedString);
-    if (match != null) {
+    // replace 2020-2-2 0:0 to 2020-02-02 00:00
+    formattedString = formattedString.replaceFirstMapped(
+        RegExp(r'^([+-]?\d{4})-?(\d{1,2})-?(\d{1,2})'), (match) {
       String year = match.group(1)!;
       String month = match.group(2)!.padLeft(2, '0');
       String day = match.group(3)!.padLeft(2, '0');
-      // print('replace ${match.group(0)} to ${'$year-$month-$day'}');
-      return DateTime.tryParse(
-          formattedString.replaceFirst(match.group(0)!, '$year-$month-$day'));
-    }
+      return '$year-$month-$day';
+    });
+    formattedString = formattedString
+        .replaceFirstMapped(RegExp(r'(\d{1,2}):(\d{1,2})$'), (match) {
+      String hour = match.group(1)!.padLeft(2, '0');
+      String minute = match.group(2)!.padLeft(2, '0');
+      return '$hour:$minute';
+    });
+    return DateTime.tryParse(formattedString);
   }
 
   /// [this] is reference time, check [dateTime] outdated or not
