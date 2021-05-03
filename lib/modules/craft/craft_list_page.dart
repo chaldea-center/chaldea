@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:chaldea/components/animation/animate_on_scroll.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
 
@@ -109,40 +110,46 @@ class CraftListPageState extends State<CraftListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(S.of(context).craft_essence),
-        leading: MasterBackButton(),
-        bottom: _showSearch ? _searchBar : null,
-        titleSpacing: 0,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.filter_alt),
-            tooltip: S.of(context).filter,
-            onPressed: () => FilterPage.show(
-              context: context,
-              builder: (context) => CraftFilterPage(
-                  filterData: filterData, onChanged: onFilterChanged),
+    return UserScrollListener(
+      builder: (context, controller) => Scaffold(
+        appBar: AppBar(
+          title: Text(S.of(context).craft_essence),
+          leading: MasterBackButton(),
+          bottom: _showSearch ? _searchBar : null,
+          titleSpacing: 0,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.filter_alt),
+              tooltip: S.of(context).filter,
+              onPressed: () => FilterPage.show(
+                context: context,
+                builder: (context) => CraftFilterPage(
+                    filterData: filterData, onChanged: onFilterChanged),
+              ),
             ),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  _showSearch = !_showSearch;
+                  if (!_showSearch)
+                    filterData.filterString = _inputController.text = '';
+                });
+              },
+              icon: Icon(Icons.search),
+              tooltip: 'Search',
+            ),
+          ],
+        ),
+        floatingActionButton: ScaleTransition(
+          scale: controller,
+          child: FloatingActionButton(
+            child: Icon(Icons.arrow_upward),
+            onPressed: () => _scrollController.animateTo(0,
+                duration: Duration(milliseconds: 600), curve: Curves.easeOut),
           ),
-          IconButton(
-            onPressed: () {
-              setState(() {
-                _showSearch = !_showSearch;
-                if (!_showSearch)
-                  filterData.filterString = _inputController.text = '';
-              });
-            },
-            icon: Icon(Icons.search),
-            tooltip: 'Search',
-          ),
-        ],
+        ),
+        body: db.streamBuilder((context) => buildOverview()),
       ),
-      floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.arrow_upward),
-          onPressed: () => _scrollController.animateTo(0,
-              duration: Duration(milliseconds: 600), curve: Curves.easeOut)),
-      body: db.streamBuilder((context) => buildOverview()),
     );
   }
 

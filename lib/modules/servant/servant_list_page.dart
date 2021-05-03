@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:chaldea/components/animation/animate_on_scroll.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
@@ -195,93 +196,98 @@ class ServantListPageState extends State<ServantListPage> {
   @override
   Widget build(BuildContext context) {
     return db.streamBuilder(
-      (context) => Scaffold(
-        appBar: AppBar(
-          title: AutoSizeText(
-            widget.planMode
-                ? '${S.current.plan} ${db.curUser.curSvtPlanNo + 1}'
-                : S.of(context).servant,
-            maxLines: 1,
-          ),
-          leading: MasterBackButton(),
-          titleSpacing: 0,
-          bottom: _showSearch ? _searchBar : null,
-          actions: <Widget>[
-            IconButton(
-                icon: Icon([
-                  Icons.remove_circle_outline,
-                  Icons.favorite,
-                  Icons.favorite_border
-                ][filterData.favorite]),
-                tooltip: ['All', 'Favorite', 'Others'][filterData.favorite],
+      (context) => UserScrollListener(
+        builder: (context, controller) => Scaffold(
+          appBar: AppBar(
+            title: AutoSizeText(
+              widget.planMode
+                  ? '${S.current.plan} ${db.curUser.curSvtPlanNo + 1}'
+                  : S.of(context).servant,
+              maxLines: 1,
+            ),
+            leading: MasterBackButton(),
+            titleSpacing: 0,
+            bottom: _showSearch ? _searchBar : null,
+            actions: <Widget>[
+              IconButton(
+                  icon: Icon([
+                    Icons.remove_circle_outline,
+                    Icons.favorite,
+                    Icons.favorite_border
+                  ][filterData.favorite]),
+                  tooltip: ['All', 'Favorite', 'Others'][filterData.favorite],
+                  onPressed: () {
+                    setState(() {
+                      filterData.favorite = (filterData.favorite + 1) % 3;
+                    });
+                  }),
+              IconButton(
+                icon: Icon(Icons.filter_alt),
+                tooltip: S.of(context).filter,
+                onPressed: () => FilterPage.show(
+                    context: context,
+                    builder: (context) => ServantFilterPage(
+                        filterData: filterData, onChanged: onFilterChanged)),
+              ),
+              IconButton(
                 onPressed: () {
                   setState(() {
-                    filterData.favorite = (filterData.favorite + 1) % 3;
+                    _showSearch = !_showSearch;
+                    if (!_showSearch)
+                      filterData.filterString = _inputController.text = '';
                   });
-                }),
-            IconButton(
-              icon: Icon(Icons.filter_alt),
-              tooltip: S.of(context).filter,
-              onPressed: () => FilterPage.show(
-                  context: context,
-                  builder: (context) => ServantFilterPage(
-                      filterData: filterData, onChanged: onFilterChanged)),
-            ),
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  _showSearch = !_showSearch;
-                  if (!_showSearch)
-                    filterData.filterString = _inputController.text = '';
-                });
-              },
-              icon: Icon(Icons.search),
-              tooltip: 'Search',
-            ),
-            PopupMenuButton(
-              itemBuilder: (context) {
-                return [
-                  PopupMenuItem(
-                      value: 'switch_plan',
-                      child: Text(S.of(context).select_plan)),
-                  if (widget.planMode)
+                },
+                icon: Icon(Icons.search),
+                tooltip: 'Search',
+              ),
+              PopupMenuButton(
+                itemBuilder: (context) {
+                  return [
                     PopupMenuItem(
-                        value: 'copy_plan',
-                        child: Text(S.of(context).copy_plan_menu)),
-                ];
-              },
-              onSelected: (v) {
-                if (v == 'copy_plan') {
-                  copyPlan();
-                } else if (v == 'switch_plan') {
-                  onSwitchPlan(
-                    context: context,
-                    onChange: (index) {
-                      db.curUser.curSvtPlanNo = index;
-                      db.curUser.ensurePlanLarger();
-                      db.itemStat.updateSvtItems();
-                    },
-                  );
-                }
-              },
-            ),
-          ],
-        ),
-        floatingActionButton: widget.planMode
-            ? null
-            : FloatingActionButton(
-                child: Icon(Icons.arrow_upward),
-                onPressed: () async {
-                  _scrollController.animateTo(0,
-                      duration: Duration(milliseconds: 600),
-                      curve: Curves.easeOut);
+                        value: 'switch_plan',
+                        child: Text(S.of(context).select_plan)),
+                    if (widget.planMode)
+                      PopupMenuItem(
+                          value: 'copy_plan',
+                          child: Text(S.of(context).copy_plan_menu)),
+                  ];
+                },
+                onSelected: (v) {
+                  if (v == 'copy_plan') {
+                    copyPlan();
+                  } else if (v == 'switch_plan') {
+                    onSwitchPlan(
+                      context: context,
+                      onChange: (index) {
+                        db.curUser.curSvtPlanNo = index;
+                        db.curUser.ensurePlanLarger();
+                        db.itemStat.updateSvtItems();
+                      },
+                    );
+                  }
                 },
               ),
-        body: buildOverview(),
+            ],
+          ),
+          floatingActionButton: ScaleTransition(
+            scale: controller,
+            child: widget.planMode
+                ? Padding(
+                    padding: EdgeInsets.only(bottom: 48),
+                    child: floatingActionButton)
+                : floatingActionButton,
+          ),
+          body: buildOverview(),
+        ),
       ),
     );
   }
 
+  Widget get floatingActionButton => FloatingActionButton(
+        child: Icon(Icons.arrow_upward),
+        onPressed: () => _scrollController.animateTo(0,
+            duration: Duration(milliseconds: 600), curve: Curves.easeOut),
+      );
   final _onSearchTimer = DelayedTimer(Duration(milliseconds: 250));
 
   PreferredSizeWidget get _searchBar {

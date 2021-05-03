@@ -270,18 +270,24 @@ class TimeCounter {
 
 Future<void> jumpToExternalLinkAlert(
     {required String url, String? name}) async {
+  String shownLink = url;
+  String? safeLink = Uri.tryParse(url)?.toString();
+  if (safeLink != null) {
+    shownLink = Uri.decodeFull(safeLink);
+  }
+
   return showDialog(
     context: kAppKey.currentContext!,
     builder: (context) => SimpleCancelOkDialog(
       title: Text(S.of(context).jump_to(name ?? S.of(context).link)),
-      content:
-          Text(url, style: TextStyle(decoration: TextDecoration.underline)),
+      content: Text(shownLink,
+          style: TextStyle(decoration: TextDecoration.underline)),
       onTapOk: () async {
-        final safeLink = Uri.tryParse(url).toString();
-        if (await canLaunch(safeLink)) {
-          launch(safeLink);
+        String link = safeLink ?? url;
+        if (await canLaunch(link)) {
+          launch(link);
         } else {
-          EasyLoading.showToast('Could not launch url:\n$url');
+          EasyLoading.showToast('Could not launch url:\n$link');
         }
       },
     ),

@@ -15,7 +15,8 @@ class LimitEventDetailPage extends StatefulWidget {
   _LimitEventDetailPageState createState() => _LimitEventDetailPageState();
 }
 
-class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
+class _LimitEventDetailPageState extends State<LimitEventDetailPage>
+    with TickerProviderStateMixin {
   LimitEvent get event => widget.event;
 
   LimitEventPlan get plan => db.curUser.events.limitEventOf(event.indexKey);
@@ -48,8 +49,9 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
     if (event.lBannerUrl != null)
       children.add(GestureDetector(
         onTap: () => jumpToExternalLinkAlert(
-            url: MooncellUtil.fullLink(widget.event.indexKey),
-            name: 'Mooncell'),
+          url: MooncellUtil.fullLink(widget.event.indexKey),
+          name: 'Mooncell',
+        ),
         child: CachedImage(
           imageUrl: event.lBannerUrl,
           isMCFile: true,
@@ -179,31 +181,49 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage> {
         title: AutoSizeText(event.localizedName, maxLines: 1),
         titleSpacing: 0,
         actions: [
-          IconButton(
-            icon: Icon(Icons.archive_outlined),
-            tooltip: S.of(context).event_collect_items,
-            onPressed: () {
-              if (!plan.enable) {
-                showInformDialog(context,
-                    content: S.of(context).event_not_planned);
-              } else {
-                SimpleCancelOkDialog(
-                  title: Text(S.of(context).confirm),
-                  content: Text(S.of(context).event_collect_item_confirm),
-                  onTapOk: () {
-                    sumDict([db.curUser.items, event.getItems(plan)],
-                        inPlace: true);
-                    plan.enable = false;
-                    db.itemStat.updateEventItems();
-                    setState(() {});
-                  },
-                ).showDialog(context);
+          PopupMenuButton<String>(
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'jump_mc',
+                child: Text(S.current.jump_to('Mooncell')),
+              )
+            ],
+            onSelected: (v) {
+              if (v == 'jump_mc') {
+                jumpToExternalLinkAlert(
+                  url: MooncellUtil.fullLink(widget.event.indexKey),
+                  name: 'Mooncell',
+                );
               }
             },
-          ),
+          )
         ],
       ),
       body: ListView(children: divideTiles(children)),
+      floatingActionButton: floatingActionButton,
+    );
+  }
+
+  Widget get floatingActionButton {
+    return FloatingActionButton(
+      child: Icon(Icons.archive_outlined),
+      tooltip: S.of(context).event_collect_items,
+      onPressed: () {
+        if (!plan.enable) {
+          showInformDialog(context, content: S.of(context).event_not_planned);
+        } else {
+          SimpleCancelOkDialog(
+            title: Text(S.of(context).confirm),
+            content: Text(S.of(context).event_collect_item_confirm),
+            onTapOk: () {
+              sumDict([db.curUser.items, event.getItems(plan)], inPlace: true);
+              plan.enable = false;
+              db.itemStat.updateEventItems();
+              setState(() {});
+            },
+          ).showDialog(context);
+        }
+      },
     );
   }
 

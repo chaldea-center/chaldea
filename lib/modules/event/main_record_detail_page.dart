@@ -43,30 +43,22 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
         title: AutoSizeText(widget.record.localizedName, maxLines: 1),
         titleSpacing: 0,
         actions: [
-          IconButton(
-            icon: Icon(Icons.archive_outlined),
-            tooltip: S.of(context).event_collect_items,
-            onPressed: () {
-              final plan =
-                  db.curUser.events.mainRecordOf(widget.record.indexKey);
-              if (!plan.contains(true)) {
-                showInformDialog(context,
-                    content: S.of(context).event_not_planned);
-              } else {
-                SimpleCancelOkDialog(
-                  title: Text(S.of(context).confirm),
-                  content: Text(S.of(context).event_collect_item_confirm),
-                  onTapOk: () {
-                    sumDict([db.curUser.items, widget.record.getItems(plan)],
-                        inPlace: true);
-                    plan.fillRange(0, plan.length, false);
-                    db.itemStat.updateEventItems();
-                    setState(() {});
-                  },
-                ).showDialog(context);
+          PopupMenuButton<String>(
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'jump_mc',
+                child: Text(S.current.jump_to('Mooncell')),
+              )
+            ],
+            onSelected: (v) {
+              if (v == 'jump_mc') {
+                jumpToExternalLinkAlert(
+                  url: MooncellUtil.fullLink(widget.record.indexKey),
+                  name: 'Mooncell',
+                );
               }
             },
-          ),
+          )
         ],
       ),
       body: ListView(
@@ -74,8 +66,9 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
           if (widget.record.lBannerUrl != null)
             GestureDetector(
               onTap: () => jumpToExternalLinkAlert(
-                  url: MooncellUtil.fullLink(widget.record.indexKey),
-                  name: 'Mooncell'),
+                url: MooncellUtil.fullLink(widget.record.indexKey),
+                name: 'Mooncell',
+              ),
               child: CachedImage(
                 imageUrl: widget.record.lBannerUrl,
                 isMCFile: true,
@@ -138,6 +131,33 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
           ]
         ],
       ),
+      floatingActionButton: floatingActionButton,
+    );
+  }
+
+  Widget get floatingActionButton {
+    return FloatingActionButton(
+      // backgroundColor: Theme.of(context).colorScheme.secondary.withAlpha(160),
+      child: Icon(Icons.archive_outlined),
+      tooltip: S.of(context).event_collect_items,
+      onPressed: () {
+        final plan = db.curUser.events.mainRecordOf(widget.record.indexKey);
+        if (!plan.contains(true)) {
+          showInformDialog(context, content: S.of(context).event_not_planned);
+        } else {
+          SimpleCancelOkDialog(
+            title: Text(S.of(context).confirm),
+            content: Text(S.of(context).event_collect_item_confirm),
+            onTapOk: () {
+              sumDict([db.curUser.items, widget.record.getItems(plan)],
+                  inPlace: true);
+              plan.fillRange(0, plan.length, false);
+              db.itemStat.updateEventItems();
+              setState(() {});
+            },
+          ).showDialog(context);
+        }
+      },
     );
   }
 }
