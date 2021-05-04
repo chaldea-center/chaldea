@@ -104,8 +104,7 @@ class User {
     bool? isMasterGirl,
     int? msProgress,
     Map<int, int>? duplicatedServants,
-  })
-      : name = name?.isNotEmpty == true ? name! : 'default',
+  })  : name = name?.isNotEmpty == true ? name! : 'default',
         _server = server,
         servants = servants ?? {},
         curSvtPlanNo = curSvtPlanNo ?? 0,
@@ -399,11 +398,13 @@ class EventPlans {
     Map<String, List<int>>? exchangeTickets,
   })  : limitEvents = limitEvents ?? {},
         mainRecords = Map.fromIterable((mainRecords ?? {}).entries,
-            value: (v) => List.generate(
-                2, (index) => (v as List<bool>).getOrNull(index) ?? false)),
+            key: (e) => e.key,
+            value: (e) => List.generate(2,
+                (index) => (e.value as List<bool>).getOrNull(index) ?? false)),
         exchangeTickets = Map.fromIterable((exchangeTickets ?? {}).entries,
-            value: (v) => List.generate(
-                3, (index) => (v as List<int>).getOrNull(index) ?? 0));
+            key: (e) => e.key,
+            value: (e) => List.generate(
+                3, (index) => (e.value as List<int>).getOrNull(index) ?? 0));
 
   LimitEventPlan limitEventOf(String indexKey) =>
       limitEvents.putIfAbsent(indexKey, () => LimitEventPlan());

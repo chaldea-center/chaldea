@@ -3,9 +3,9 @@
 // BSD-style license that can be found in the LICENSE file.
 part of datatypes;
 
-bool _$ignoreUserDataError(StackTrace stack) {
+bool _$ignoreUserDataError(dynamic error, StackTrace stack) {
   if (stack.toString().contains('UserData.fromJson')) {
-    print('error inside UserData.fromJson');
+    logger.d('error inside UserData.fromJson', error, stack);
     return true;
   } else {
     return false;
@@ -34,7 +34,7 @@ T $checkedNew<T>(
     }
     rethrow;
   } catch (error, stack) {
-    if (_$ignoreUserDataError(stack)) {
+    if (_$ignoreUserDataError(error, stack)) {
       return _$defaultNull();
     }
 
@@ -66,7 +66,7 @@ T $checkedConvert<T>(Map map, String key, T Function(dynamic) castFunc) {
   } on CheckedFromJsonException {
     rethrow;
   } catch (error, stack) {
-    if (_$ignoreUserDataError(stack)) {
+    if (_$ignoreUserDataError(error, stack)) {
       return _$defaultNull();
     }
     throw CheckedFromJsonException._(error, stack, map, key);

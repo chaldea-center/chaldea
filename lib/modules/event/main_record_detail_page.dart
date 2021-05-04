@@ -128,7 +128,16 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
                       }))
                   .toList(),
             ),
-          ]
+          ],
+          SizedBox(
+            height: 72,
+            child: Center(
+              child: Text(
+                '.',
+                style: Theme.of(context).textTheme.caption,
+              ),
+            ),
+          ),
         ],
       ),
       floatingActionButton: floatingActionButton,

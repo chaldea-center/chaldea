@@ -358,8 +358,9 @@ class GitTool {
 
   Future<String?> appReleaseNote([bool test(GitRelease release)?]) async {
     if (test == null)
-      test =
-          (release) => Version.tryParse(release.name) == AppInfo.versionClass;
+      test = (release) =>
+          !release.name.contains('ffo') &&
+          Version.tryParse(release.name) == AppInfo.versionClass;
     return (await appReleases).firstWhereOrNull(test)?.body;
   }
 

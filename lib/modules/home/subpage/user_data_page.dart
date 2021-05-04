@@ -105,7 +105,8 @@ class _UserDataPageState extends State<UserDataPage> {
           UserData.fromJson(json.decode(File(path).readAsStringSync()));
       EasyLoading.showToast('${S.current.import_data_success}:\n$path');
       db.saveUserData();
-      db.notifyDbUpdate(true);
+      db.itemStat.update();
+      db.notifyAppUpdate();
     } on FileSelectionCanceledError {} catch (e) {
       EasyLoading.showError(S.of(context).import_data_error(e));
     }

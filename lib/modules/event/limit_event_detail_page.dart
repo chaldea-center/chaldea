@@ -175,6 +175,16 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
               .toList(),
         ));
     }
+
+    children.add(SizedBox(
+      height: 72,
+      child: Center(
+        child: Text(
+          '.',
+          style: Theme.of(context).textTheme.caption,
+        ),
+      ),
+    ));
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
@@ -199,7 +209,10 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
           )
         ],
       ),
-      body: ListView(children: divideTiles(children)),
+      body: ListView(
+        children: divideTiles(children),
+        // padding: EdgeInsets.only(bottom: 72),
+      ),
       floatingActionButton: floatingActionButton,
     );
   }
