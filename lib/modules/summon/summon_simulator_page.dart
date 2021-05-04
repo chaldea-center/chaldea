@@ -217,7 +217,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     List<DropdownMenuItem<int>> items = [];
     items.addAll(summon.dataList.map((e) => DropdownMenuItem(
           child: AutoSizeText(
-            e.name,
+            summonNameLocalize(e.name),
             maxLines: 2,
             maxFontSize: 14,
             style: TextStyle(fontWeight: FontWeight.bold),
@@ -628,4 +628,39 @@ Widget buildSummonCard(
       ),
     ),
   );
+}
+
+String _castBracket(String s) {
+  return s.replaceAll('〔', '(').replaceAll('〕', ')');
+}
+
+String summonNameLocalize(String origin) {
+  List<String> names = _castBracket(origin.replaceAll('・', '·')).split('+');
+  return names.map((e) {
+    String name2 = db.gameData.servants.values
+            .firstWhereOrNull((svt) =>
+                _castBracket(svt.mcLink) == e ||
+                _castBracket(svt.info.name) == e)
+            ?.info
+            .localizedName ??
+        e;
+    if (name2 == e) {
+      List<String> fragments = e.split('(');
+      fragments[0] = fragments[0].trim();
+      fragments[0] = db.gameData.servants.values
+              .firstWhereOrNull((svt) =>
+                  _castBracket(svt.mcLink) == fragments[0] ||
+                  _castBracket(svt.info.name) == fragments[0] ||
+                  svt.info.namesOther.contains(fragments[0]) ||
+                  svt.info.nicknames.contains(fragments[0]))
+              ?.info
+              .localizedName ??
+          e;
+      name2 = fragments.join(Language.isEN ? ' ' : '');
+    }
+    if (!RegExp(r'[\s\da-zA-Z]+').hasMatch(name2)) {
+      print(name2);
+    }
+    return name2;
+  }).join('+');
 }

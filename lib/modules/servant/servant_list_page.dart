@@ -78,9 +78,9 @@ class ServantListPageState extends State<ServantListPage> {
       [...svt.nobelPhantasm, ...svt.nobelPhantasmEn].forEach((td) {
         searchStrings.addAll([
           td.name,
-          td.nameJp,
+          td.nameJp ?? '',
           td.upperName,
-          td.upperNameJp,
+          td.upperNameJp ?? '',
           for (var e in td.effects) e.description
         ]);
       });

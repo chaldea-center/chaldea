@@ -188,7 +188,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     }
     items.addAll(summon.dataList.map((e) => DropdownMenuItem(
           child: AutoSizeText(
-            e.name,
+            summonNameLocalize(e.name),
             maxLines: 2,
             maxFontSize: 14,
             style: TextStyle(fontWeight: FontWeight.bold),

@@ -503,5 +503,3 @@ class _DownloadDialogState extends State<DownloadDialog> {
     );
   }
 }
-
-class StaticS extends S {}

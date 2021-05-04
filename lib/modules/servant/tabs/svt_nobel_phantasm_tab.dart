@@ -23,8 +23,7 @@ class _SvtNobelPhantasmTabState extends SvtTabBaseState<SvtNobelPhantasmTab> {
       {ServantDetailPageState? parent, Servant? svt, ServantStatus? plan})
       : super(parent: parent, svt: svt, status: plan);
 
-  List<NobelPhantasm> get nobelPhantasms =>
-      Language.isEN ? svt.nobelPhantasmEn : svt.nobelPhantasm;
+  List<NobelPhantasm> get nobelPhantasms => svt.lNobelPhantasm;
 
   @override
   Widget build(BuildContext context) {
@@ -116,18 +115,20 @@ class _SvtNobelPhantasmTabState extends SvtTabBaseState<SvtNobelPhantasmTab> {
           AutoSizeText(
             td.name,
             style: TextStyle(fontWeight: FontWeight.w600),
-            maxLines: 1,
+            maxLines: Language.isEN ? 2 : 1,
           ),
-          AutoSizeText(
-            td.upperNameJp,
-            style: TextStyle(fontSize: 16, color: Colors.black54),
-            maxLines: 1,
-          ),
-          AutoSizeText(
-            td.nameJp,
-            style: TextStyle(fontWeight: FontWeight.w600),
-            maxLines: 1,
-          ),
+          if (td.upperNameJp?.isNotEmpty == true)
+            AutoSizeText(
+              td.upperNameJp!,
+              style: TextStyle(fontSize: 16, color: Colors.black54),
+              maxLines: 1,
+            ),
+          if (td.nameJp?.isNotEmpty == true)
+            AutoSizeText(
+              td.nameJp!,
+              style: TextStyle(fontWeight: FontWeight.w600),
+              maxLines: 1,
+            ),
         ],
       ),
     );

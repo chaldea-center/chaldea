@@ -48,6 +48,11 @@ class Servant {
     return clsName;
   }
 
+  List<NobelPhantasm> get lNobelPhantasm =>
+      Language.isEN && nobelPhantasmEn.isNotEmpty
+          ? nobelPhantasmEn
+          : nobelPhantasm;
+
   List<ActiveSkill> get lActiveSkills =>
       Language.isEN ? activeSkillsEn : activeSkills;
 
@@ -362,9 +367,9 @@ class ServantBaseInfo {
 class NobelPhantasm {
   String state;
   String name;
-  String nameJp;
+  String? nameJp;
   String upperName;
-  String upperNameJp;
+  String? upperNameJp;
   String color;
   String category;
   String? rank;

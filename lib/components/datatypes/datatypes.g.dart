@@ -1155,9 +1155,9 @@ NobelPhantasm _$NobelPhantasmFromJson(Map<String, dynamic> json) {
     final val = NobelPhantasm(
       state: $checkedConvert(json, 'state', (v) => v as String),
       name: $checkedConvert(json, 'name', (v) => v as String),
-      nameJp: $checkedConvert(json, 'nameJp', (v) => v as String),
+      nameJp: $checkedConvert(json, 'nameJp', (v) => v as String?),
       upperName: $checkedConvert(json, 'upperName', (v) => v as String),
-      upperNameJp: $checkedConvert(json, 'upperNameJp', (v) => v as String),
+      upperNameJp: $checkedConvert(json, 'upperNameJp', (v) => v as String?),
       color: $checkedConvert(json, 'color', (v) => v as String),
       category: $checkedConvert(json, 'category', (v) => v as String),
       rank: $checkedConvert(json, 'rank', (v) => v as String?),
