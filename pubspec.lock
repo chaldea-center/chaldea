@@ -123,12 +123,10 @@ packages:
   catcher:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "8d8566e4d13ab0c04b5bffd1f7e4fe4cbb081ca8"
-      url: "https://github.com/narumishi/catcher.git"
-    source: git
-    version: "0.6.5"
+      name: catcher
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.6.6"
   characters:
     dependency: transitive
     description:
@@ -403,7 +401,7 @@ packages:
       name: fl_chart
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.35.0"
+    version: "0.36.0"
   flutter:
     dependency: "direct main"
     description: flutter

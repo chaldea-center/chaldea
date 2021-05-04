@@ -5,7 +5,7 @@ import 'package:catcher/utils/catcher_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'config.dart';
+import '../config.dart';
 
 class PageReportModeCross extends ReportMode {
   final bool showStackTrace;

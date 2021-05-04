@@ -334,7 +334,9 @@ class _QuestCardState extends State<QuestCard> {
 
   static String? getEnemyName(String? name) {
     if (name == null) return null;
-    String name2 = Localized.enemy.of(name.split(' ').first);
+    name =
+        name.split(' ').first.replaceFirst(RegExp(r'(?<=[^a-zA-Z])[A-D]$'), '');
+    String name2 = Localized.enemy.of(name);
     if (name == name2) {
       name2 = db.gameData.servants.values
               .firstWhereOrNull((svt) => svt.mcLink == name)

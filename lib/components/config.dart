@@ -548,10 +548,19 @@ class PathManager {
     if (_appPath == null) {
       throw OSError('Cannot resolve document folder');
     }
+
+    // ensure directory exist
     for (String dir in [userDir, gameDir, tempDir, gameIconDir, logDir]) {
       Directory(dir).createSync(recursive: true);
     }
+    // logger
     initiateLoggerPath(appLog);
+    // crash files
+    final File crashFile = File(crashLog);
+    if (!crashFile.existsSync()) {
+      crashFile.writeAsString('chaldea.crash.log\n', flush: true);
+    }
+    rollLogFiles(crashFile.path, 3, 1 * 1024 * 1024);
   }
 
   String get appPath => _appPath!;
