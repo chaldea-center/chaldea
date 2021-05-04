@@ -223,78 +223,18 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
         ],
       ),
       onTap: () {
-        final clearBtn = TextButton(
-          onPressed: () async {
-            await params.setPart(null, sameSvt ? null : where);
-            Navigator.of(context).pop();
-            setState(() {});
-          },
-          child: Text(S.current.clear),
-        );
-
-        List<Widget> children = [];
-        parts.values.forEach((svt) {
-          String idString = svt.svtId.toString().padLeft(3, '0');
-          File file = File(join(
-              db.paths.appPath, 'ffo', 'Sprite', 'icon_servant_$idString.png'));
-          if (!file.existsSync()) return;
-          Widget child = ImageWithText(
-            width: 54,
-            text: idString,
-            image: Container(
-              width: 54,
-              height: 54,
-              child: Image.file(file, fit: BoxFit.contain),
-            ),
-            textStyle: TextStyle(fontSize: 12),
-          );
-          child = GestureDetector(
-            child: Padding(
-              padding: EdgeInsets.all(2),
-              child: child,
-            ),
-            onTap: () async {
+        SplitRoute.push(
+          context: context,
+          detail: true,
+          builder: (context, _) => _PartChooserPage(
+            title: 'Choose $partName',
+            parts: parts,
+            onChanged: (svt) async {
               await params.setPart(svt, sameSvt ? null : where);
-              Navigator.pop(context);
               setState(() {});
             },
-          );
-          children.add(child);
-        });
-        showModalBottomSheet(
-          context: context,
-          builder: (context) => Scaffold(
-            appBar: AppBar(
-              leading: BackButton(),
-              title: Text('Choose $partName'),
-              actions: [clearBtn],
-            ),
-            body: LayoutBuilder(builder: (context, constraints) {
-              print(constraints);
-              return GridView.count(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                crossAxisCount: constraints.maxWidth ~/ 56,
-                children: children,
-              );
-            }),
           ),
-          isScrollControlled: true,
         );
-        // SimpleCancelOkDialog(
-        //   hideOk: true,
-        //   title: Text('Choose $partName'),
-        //   actions: [clearBtn],
-        //   content: Builder(builder: (context) {
-        //     final size = MediaQuery.of(context).size;
-        //     return SizedBox.fromSize(
-        //       size: size,
-        //       child: GridView.count(
-        //         crossAxisCount: (MediaQuery.of(context).size.width - 128) ~/ 56,
-        //         children: children,
-        //       ),
-        //     );
-        //   }),
-        // ).showDialog(context);
       },
     );
   }
@@ -325,5 +265,137 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
       ).showDialog(context);
       Catcher.reportCheckedError(e, s);
     }
+  }
+}
+
+class _PartChooserPage extends StatefulWidget {
+  final String title;
+  final Map<int, FFOPart> parts;
+  final ValueChanged<FFOPart?> onChanged;
+
+  const _PartChooserPage({
+    Key? key,
+    required this.title,
+    required this.parts,
+    required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  _PartChooserPageState createState() => _PartChooserPageState();
+}
+
+class _PartChooserPageState extends State<_PartChooserPage> {
+  late List<FFOPart> parts;
+  int sortType = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    parts = widget.parts.values.toList();
+    sort();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> children = [];
+    parts.forEach((svt) {
+      String idString = svt.svtId.toString().padLeft(3, '0');
+      File file = File(join(
+          db.paths.appPath, 'ffo', 'Sprite', 'icon_servant_$idString.png'));
+      if (!file.existsSync()) return;
+
+      Widget child = ImageWithText(
+        width: 54,
+        text: idString,
+        image: Container(
+          width: 54,
+          height: 54,
+          child: Image.file(file, fit: BoxFit.contain),
+        ),
+        textStyle: TextStyle(fontSize: 12),
+      );
+      child = GestureDetector(
+        child: Padding(
+          padding: EdgeInsets.all(2),
+          child: child,
+        ),
+        onTap: () {
+          widget.onChanged(svt);
+          Navigator.pop(context);
+        },
+      );
+      children.add(child);
+    });
+    return Scaffold(
+      appBar: AppBar(
+        leading: BackButton(),
+        title: Text(widget.title),
+        titleSpacing: 0,
+      ),
+      body: Column(
+        children: [
+          Expanded(child: LayoutBuilder(builder: (context, constraints) {
+            return GridView.count(
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              crossAxisCount: constraints.maxWidth ~/ 56,
+              children: children,
+            );
+          })),
+          kDefaultDivider,
+          buttonBar,
+        ],
+      ),
+    );
+  }
+
+  Widget get buttonBar {
+    return ButtonBar(
+      children: [
+        DropdownButton<int>(
+          value: sortType,
+          items: [
+            DropdownMenuItem(value: 0, child: Text('ID')),
+            DropdownMenuItem(value: 1, child: Text(S.current.rarity)),
+            DropdownMenuItem(
+                value: 2, child: Text(S.current.filter_sort_class)),
+          ],
+          onChanged: (v) {
+            if (v != null) {
+              sortType = v;
+              sort();
+              setState(() {});
+            }
+          },
+        ),
+        TextButton(
+          onPressed: () async {
+            widget.onChanged(null);
+            Navigator.of(context).pop();
+          },
+          child: Text(S.current.clear),
+        ),
+      ],
+    );
+  }
+
+  void sort() {
+    parts.sort((a, b) {
+      if (sortType == 0) {
+        return a.id - b.id;
+      }
+      final sa = db.gameData.servants[a.id], sb = db.gameData.servants[b.id];
+      if (sa != null && sb != null) {
+        if (sortType == 1) {
+          return Servant.compare(sa, sb,
+              keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no],
+              reversed: [true, false, false]);
+        } else if (sortType == 2) {
+          return Servant.compare(sa, sb,
+              keys: [SvtCompare.className, SvtCompare.rarity, SvtCompare.no],
+              reversed: [false, true, false]);
+        }
+      }
+      return a.id - b.id;
+    });
   }
 }
