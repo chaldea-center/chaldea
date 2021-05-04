@@ -52,8 +52,8 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
             itemBuilder: (context, index) {
               final table = svt.voices[index];
               return SimpleAccordion(
-                headerBuilder: (context, expanded) =>
-                    ListTile(title: Text(_getLocalizedText(table.section))),
+                headerBuilder: (context, expanded) => ListTile(
+                    title: Text(_getLocalizedText(table.section, true))),
                 contentBuilder: (context) => Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Table(
@@ -114,12 +114,30 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
     }).toList();
   }
 
-  String _getLocalizedText(String text) {
-    final match = RegExp(r'^(.+?)(\d*)$').firstMatch(text);
-    if (match == null || match.groupCount < 2) return _localizedVoices.of(text);
-    String prefix = match.group(1)!.trim(), digit = match.group(2)!;
-    String v = _localizedVoices.of(prefix) + ' ' + digit;
-    return v;
+  String _getLocalizedText(String text, [bool isTitle = false]) {
+    String _getPart(String _text) {
+      final match = RegExp(r'^(.+?)([\s\d]+)$').firstMatch(_text);
+      if (match == null) return _localizedVoices.of(_text);
+      String prefix = (match.group(1) ?? '').trim(),
+          digit = match.group(2)!.trim();
+      return _localizedVoices.of(prefix) + ' ' + digit;
+    }
+
+    if (isTitle) {
+      return text.replaceFirstMapped(RegExp(r'^(.*?)(?:\(([^()]+)\))?$'),
+          (match) {
+        if (match.group(2) != null) {
+          return _getPart(match.group(1)!) +
+              '(' +
+              _getPart(match.group(2)!) +
+              ')';
+        } else {
+          return _getPart(match.group(1)!);
+        }
+      });
+    } else {
+      return _getPart(text);
+    }
   }
 
   Widget _buildButtonBar() {
@@ -258,6 +276,8 @@ class GeneralAudioPlayer {
 }
 
 LocalizedGroup get _localizedVoices => LocalizedGroup([
+      LocalizedText(chs: '战斗形象', jpn: '', eng: 'Battle Sprite'),
+      LocalizedText(chs: '期间限定加入', jpn: '', eng: ''),
       LocalizedText(chs: '战斗', jpn: '', eng: 'Battle'),
       LocalizedText(chs: '开始', jpn: '', eng: 'Battle Start'),
       LocalizedText(chs: '技能', jpn: '', eng: 'Skill'),
