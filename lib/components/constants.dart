@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:chaldea/components/device_app_info.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -48,7 +52,7 @@ class Language {
   static Language? getLanguage(String? code) {
     if (code == null) return null;
     Language? language =
-        supportLanguages.firstWhereOrNull((lang) => lang.code == code);
+    supportLanguages.firstWhereOrNull((lang) => lang.code == code);
     language ??= supportLanguages
         .firstWhereOrNull((lang) => code.startsWith(lang.locale.languageCode));
     return language;
@@ -65,8 +69,8 @@ class Language {
   static Language get current => isJP
       ? jpn
       : isEN
-          ? eng
-          : chs;
+      ? eng
+      : chs;
 
   @override
   String toString() {
@@ -101,36 +105,36 @@ class ClassName {
   static const beast = const ClassName('Beast');
 
   static List<ClassName> get values => const [
-        saber,
-        archer,
-        lancer,
-        rider,
-        caster,
-        assassin,
-        berserker,
-        ruler,
-        avenger,
-        alterego,
-        mooncancer,
-        foreigner,
-        shielder,
-        beast
-      ];
+    saber,
+    archer,
+    lancer,
+    rider,
+    caster,
+    assassin,
+    berserker,
+    ruler,
+    avenger,
+    alterego,
+    mooncancer,
+    foreigner,
+    shielder,
+    beast
+  ];
 }
 
 T localizeNoun<T>(T? nameCn, T? nameJp, T? nameEn,
     {T k()?, Language? primary}) {
   primary ??= Language.current;
   List<T?> names = primary == Language.chs
-      ? [nameCn, nameJp, nameEn]
+  ? [nameCn, nameJp, nameEn]
       : primary == Language.eng
-          ? [nameEn, nameJp, nameCn]
-          : [nameJp, nameCn, nameEn];
+  ? [nameEn, nameJp, nameCn]
+      : [nameJp, nameCn, nameEn];
   T? name = names[0] ?? names[1] ?? names[2] ?? k?.call();
   // assert(name != null,
   //     'null for every localized value: $nameCn,$nameJp,$nameEn,$k');
   if (T == String) {
-    return name ?? '' as T;
+  return name ?? '' as T;
   }
   return name!;
 }
@@ -149,7 +153,7 @@ class EnumUtil {
 
   static shortString(Object enumObj) {
     assert(enumObj.toString().contains('.'),
-        'The provided object "$enumObj" is not an enum.');
+    'The provided object "$enumObj" is not an enum.');
     return enumObj.toString().split('.').last;
   }
 
@@ -163,11 +167,39 @@ class EnumUtil {
   }
 }
 
-class HttpParamKeys {
-  HttpParamKeys._();
+class HttpUtils {
+  HttpUtils._();
 
-  static const username = 'username';
-  static const password = 'password';
-  static const newPassword = 'newPassword';
-  static const body = 'body';
+  static const usernameKey = 'username';
+  static const passwordKey = 'password';
+  static const newPasswordKey = 'newPassword';
+  static const bodyKey = 'body';
+
+  static Dio get defaultDio => Dio(BaseOptions(headers: headersWithUA()));
+
+  static String get userAgentChaldea => 'Chaldea/${AppInfo.version}';
+
+  static String get userAgentMacOS =>
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36 $userAgentChaldea';
+
+  static String get userAgentWindows =>
+      ' Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36 Edg/89.0.774.54 $userAgentChaldea';
+
+  static String get userAgentIOS =>
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/69.0.3497.105 Mobile/15E148 Safari/605.1 $userAgentChaldea';
+
+  static String get userAgentAndroid =>
+      'Mozilla/5.0 (Linux; Android 8.0.0; SM-G960F Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.84 Mobile Safari/537.36 $userAgentChaldea';
+
+  static String get userAgentPlatform {
+    if (Platform.isAndroid) return userAgentAndroid;
+    if (Platform.isIOS) return userAgentIOS;
+    if (Platform.isWindows) return userAgentWindows;
+    if (Platform.isMacOS) return userAgentMacOS;
+    return userAgentIOS;
+  }
+
+  static Map<String, dynamic> headersWithUA([String? ua]) {
+    return {HttpHeaders.userAgentHeader: ua ?? userAgentPlatform};
+  }
 }

@@ -14,7 +14,7 @@ import 'package:rfc_6902/rfc_6902.dart' as jsonpatch;
 import 'package:url_launcher/url_launcher.dart';
 
 class AutoUpdateUtil {
-  final _dio = Dio();
+  static Dio get _dio => HttpUtils.defaultDio;
   bool validSHA1 = false;
   bool upgradable = false;
 
@@ -128,8 +128,7 @@ class AutoUpdateUtil {
         return;
       }
 
-      final dio = Dio(BaseOptions(baseUrl: kServerRoot));
-      final rawResp = await dio.get('/patchDataset', queryParameters: {
+      final rawResp = await db.serverDio.get('/patchDataset', queryParameters: {
         'from': curRelease.tagName,
         'to': latestRelease.tagName
       });
@@ -209,7 +208,8 @@ class AutoUpdateUtil {
       logger.i('Release note:\n$releaseNote');
 
       if (Platform.isAndroid) {
-        await Dio(BaseOptions(connectTimeout: 3000))
+        await Dio(BaseOptions(
+                connectTimeout: 3000, headers: HttpUtils.headersWithUA()))
             .get("$kGooglePlayLink&hl=en")
             .then((response) =>
                 db.runtimeData.googlePlayAccess = response.statusCode == 200)

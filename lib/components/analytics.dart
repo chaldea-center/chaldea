@@ -26,14 +26,6 @@ String _constructUrl({String? platform}) {
   return '$kServerRoot/bdtj/${Language.currentLocaleCode}/${platform ?? Platform.operatingSystem}/${AppInfo.version}';
 }
 
-String? getDefaultUserAgent() {
-  if (Platform.isWindows) {
-    return ' Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36 Edg/89.0.774.54';
-  } else if (Platform.isMacOS) {
-    return 'Mozilla/5.0 (Macintosh; Intel Mac OS X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36';
-  }
-}
-
 bool skipReport() {
   final excludeIds = [
     b64('YjhhMDY0OWQ3NTI5MmQwOQ=='), // android
@@ -173,8 +165,7 @@ Future<void> _reportBdtj({String? bdId}) async {
       // logger.i(_param);
       return _param.map((key, value) => MapEntry(key, value.toString()));
     };
-    final _dio =
-        Dio(BaseOptions(headers: {'User-Agent': getDefaultUserAgent()}));
+    final _dio = HttpUtils.defaultDio;
     _dio.interceptors.add(CookieManager(cookieJar));
     await _dio.get(hjs);
     String gifUrl1 =

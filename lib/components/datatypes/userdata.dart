@@ -9,7 +9,7 @@ class UserData {
   int? slidesUpdateTime;
   Map<String, String> sliderUrls;
   Map<String, bool> galleries;
-  String? serverRoot;
+  // String? serverRoot;
   int downloadSource;
   bool autoUpdateApp;
   bool autoUpdateDataset;
@@ -36,7 +36,6 @@ class UserData {
     this.slidesUpdateTime,
     Map<String, String>? sliderUrls,
     Map<String, bool>? galleries,
-    this.serverRoot,
     int? downloadSource,
     bool? autoUpdateApp,
     bool? autoUpdateDataset,

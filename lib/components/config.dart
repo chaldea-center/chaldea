@@ -33,7 +33,10 @@ class Database {
   VoidCallback notifyAppUpdate = () {};
   UserData userData = UserData();
   GameData gameData = GameData();
-  Dio serverDio = Dio(BaseOptions(baseUrl: kServerRoot));
+
+  Dio get serverDio => Dio(BaseOptions(
+      baseUrl: kServerRoot,
+      headers: {HttpHeaders.userAgentHeader: HttpUtils.userAgentChaldea}));
 
   SharedPrefs prefs = SharedPrefs();
   late Box cfg;
@@ -149,36 +152,6 @@ class Database {
       logger.e('Load game data failed', e, s);
       EasyLoading.showToast('Load game data failed\n$e');
       return false;
-    }
-  }
-
-  Future<void> downloadGameData([String? url]) async {
-    url ??= db.userData.serverRoot ?? kServerRoot + kDatasetServerPath;
-    Dio _dio = Dio();
-    try {
-      Response response = await _dio.get(url,
-          options: Options(responseType: ResponseType.bytes));
-      print(response.headers);
-      if (response.statusCode == 200) {
-        File file = File(pathlib.join(db.paths.tempDir, 'dataset.zip'));
-        var raf = file.openSync(mode: FileMode.write);
-        raf.writeFromSync(response.data);
-        raf.closeSync();
-        await extractZip(bytes: response.data, savePath: db.paths.gameDir);
-        if (db.loadGameData()) {
-          logger.i('Data downloaded! Version: ${db.gameData.version}');
-          EasyLoading.showToast(
-              'Data downloaded! Version: ${db.gameData.version}');
-        } else {
-          logger.i('Invalid data content! Version: ${db.gameData.version}');
-          EasyLoading.showToast(
-              'Invalid data content! Version: ${db.gameData.version}');
-        }
-      }
-    } catch (e) {
-      logger.w('Downloading error:\n$e');
-      EasyLoading.showToast('Downloading error: $e');
-      rethrow;
     }
   }
 

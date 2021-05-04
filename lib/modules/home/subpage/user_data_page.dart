@@ -185,9 +185,9 @@ class _UserDataPageState extends State<UserDataPage> {
         EasyLoading.show(
             status: 'uploading', maskType: EasyLoadingMaskType.clear);
         var rawResp = await db.serverDio.post('/user/uploadBackup', data: {
-          HttpParamKeys.username: db.prefs.userName.get(),
-          HttpParamKeys.password: db.prefs.userPwd.get(),
-          HttpParamKeys.body: jsonEncode(db.userData),
+          HttpUtils.usernameKey: db.prefs.userName.get(),
+          HttpUtils.passwordKey: db.prefs.userPwd.get(),
+          HttpUtils.bodyKey: jsonEncode(db.userData),
         });
         final resp = ChaldeaResponse.fromResponse(rawResp.data);
         if (!resp.success) {
@@ -205,8 +205,8 @@ class _UserDataPageState extends State<UserDataPage> {
     await catchErrorAsync(
       () async {
         var rawResp = await db.serverDio.post('/user/listBackups', data: {
-          HttpParamKeys.username: db.prefs.userName.get(),
-          HttpParamKeys.password: db.prefs.userPwd.get(),
+          HttpUtils.usernameKey: db.prefs.userName.get(),
+          HttpUtils.passwordKey: db.prefs.userPwd.get(),
         });
         final resp = ChaldeaResponse.fromResponse(rawResp.data);
         if (!resp.success) {
@@ -240,8 +240,8 @@ class _UserDataPageState extends State<UserDataPage> {
         EasyLoading.show(
             status: 'Downloading', maskType: EasyLoadingMaskType.clear);
         var rawResp2 = await db.serverDio.post('/user/downloadBackup', data: {
-          HttpParamKeys.username: db.prefs.userName.get(),
-          HttpParamKeys.password: db.prefs.userPwd.get(),
+          HttpUtils.usernameKey: db.prefs.userName.get(),
+          HttpUtils.passwordKey: db.prefs.userPwd.get(),
           'bak': fn,
         });
         final resp2 = ChaldeaResponse.fromResponse(rawResp2.data);

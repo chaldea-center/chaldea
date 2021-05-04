@@ -1229,8 +1229,7 @@ Skill _$SkillFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$SkillToJson(Skill instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$SkillToJson(Skill instance) => <String, dynamic>{
       'state': instance.state,
       'name': instance.name,
       'nameJp': instance.nameJp,
@@ -1254,8 +1253,7 @@ Effect _$EffectFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$EffectToJson(Effect instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$EffectToJson(Effect instance) => <String, dynamic>{
       'description': instance.description,
       'descriptionEn': instance.descriptionEn,
       'lvData': instance.lvData,
@@ -1685,7 +1683,6 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
           (v) => (v as Map<String, dynamic>?)?.map(
                 (k, e) => MapEntry(k, e as bool),
               )),
-      serverRoot: $checkedConvert(json, 'serverRoot', (v) => v as String?),
       downloadSource: $checkedConvert(json, 'downloadSource', (v) => v as int?),
       autoUpdateApp: $checkedConvert(json, 'autoUpdateApp', (v) => v as bool?),
       autoUpdateDataset:
@@ -1734,7 +1731,6 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'slidesUpdateTime': instance.slidesUpdateTime,
       'sliderUrls': instance.sliderUrls,
       'galleries': instance.galleries,
-      'serverRoot': instance.serverRoot,
       'downloadSource': instance.downloadSource,
       'autoUpdateApp': instance.autoUpdateApp,
       'autoUpdateDataset': instance.autoUpdateDataset,

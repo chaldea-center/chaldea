@@ -62,7 +62,7 @@ class MooncellUtil {
       return _resolveUrlTasks[filename]!;
     }
     final future = _pool.withResource<String?>(() async {
-      final _dio = Dio();
+      final _dio = HttpUtils.defaultDio;
       bool fandomFile = filename.startsWith('fandom.');
       String api = fandomFile
           ? 'https://fategrandorder.fandom.com/api.php'

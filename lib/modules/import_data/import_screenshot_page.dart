@@ -25,9 +25,10 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
     imageFiles = db.runtimeData.itemRecognizeImageFiles;
     _dio = Dio(BaseOptions(
       // baseUrl: 'http://localhost:8083',
-      baseUrl: db.userData.serverRoot ?? kServerRoot,
+      baseUrl: kServerRoot,
       sendTimeout: 600 * 1000,
       receiveTimeout: 600 * 1000,
+      headers: HttpUtils.headersWithUA(),
     ));
   }
 

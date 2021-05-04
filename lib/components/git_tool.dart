@@ -238,10 +238,8 @@ class GitTool {
         String url = source == GitSource.server
             ? '$kServerRoot/githubapi/repos/$owner/$_repo/releases'
             : 'https://api.github.com/repos/$owner/$_repo/releases';
-        final response = await Dio().get(
-          url,
-          options: Options(responseType: ResponseType.plain),
-        );
+        final response = await HttpUtils.defaultDio
+            .get(url, options: Options(responseType: ResponseType.plain));
         final map =
             response.data is String ? jsonDecode(response.data) : response.data;
         // don't use map().toList(), List<dynamic> is not subtype ...
@@ -261,12 +259,13 @@ class GitTool {
         );
       } else if (source == GitSource.gitee) {
         // response: List<Release>
-        final response = await Dio().get(
+        final response = await HttpUtils.defaultDio.get(
           'https://gitee.com/api/v5/repos/$owner/$_repo/releases',
           queryParameters: {'page': 0, 'per_page': 50},
           options: Options(
-              contentType: 'application/json;charset=UTF-8',
-              responseType: ResponseType.json),
+            contentType: 'application/json;charset=UTF-8',
+            responseType: ResponseType.json,
+          ),
         );
         // don't use map().toList(), List<dynamic> is not subtype ...
         releases = List.generate(
@@ -397,7 +396,7 @@ class _DownloadDialogState extends State<DownloadDialog> {
 
   /// -1:not start, 0:started, 1:completed
   int status = -1;
-  Dio _dio = Dio();
+  Dio _dio = HttpUtils.defaultDio;
 
   @override
   void initState() {

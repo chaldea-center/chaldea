@@ -197,8 +197,8 @@ class _LoginPageState extends State<LoginPage> {
       await catchErrorAsync(() async {
         EasyLoading.show(maskType: EasyLoadingMaskType.clear);
         var rawResp = await db.serverDio.post('/user/login', data: {
-          HttpParamKeys.username: name,
-          HttpParamKeys.password: b64(pwd, false)
+          HttpUtils.usernameKey: name,
+          HttpUtils.passwordKey: b64(pwd, false)
         });
         var resp = ChaldeaResponse.fromResponse(rawResp.data);
         if (resp.success) {
@@ -226,8 +226,8 @@ class _LoginPageState extends State<LoginPage> {
       await catchErrorAsync(() async {
         EasyLoading.show(maskType: EasyLoadingMaskType.clear);
         var rawResp = await db.serverDio.post('/user/signup', data: {
-          HttpParamKeys.username: name,
-          HttpParamKeys.password: b64(pwd, false)
+          HttpUtils.usernameKey: name,
+          HttpUtils.passwordKey: b64(pwd, false)
         });
         var resp = ChaldeaResponse.fromResponse(rawResp.data);
         if (resp.success) {
@@ -247,9 +247,9 @@ class _LoginPageState extends State<LoginPage> {
       await catchErrorAsync(() async {
         EasyLoading.show(maskType: EasyLoadingMaskType.clear);
         var rawResp = await db.serverDio.post('/user/changePassword', data: {
-          HttpParamKeys.username: name,
-          HttpParamKeys.password: b64(pwd, false),
-          HttpParamKeys.newPassword: b64(newPwd, false),
+          HttpUtils.usernameKey: name,
+          HttpUtils.passwordKey: b64(pwd, false),
+          HttpUtils.newPasswordKey: b64(newPwd, false),
         });
         var resp = ChaldeaResponse.fromResponse(rawResp.data);
         if (resp.success) {
