@@ -8,12 +8,18 @@ Widget buildSwitchPlanButton(
       onSwitchPlan(context: context, onChange: onChange);
     },
     tooltip: '${S.current.plan_title} ${db.curUser.curSvtPlanNo + 1}',
-    icon: ImageWithText(
-      image: Icon(Icons.list),
-      text: (db.curUser.curSvtPlanNo + 1).toString(),
-      shadowSize: null,
-      textStyle: TextStyle(
-          color: Colors.red, fontSize: 14, fontWeight: FontWeight.bold),
+    icon: Center(
+      child: Stack(
+        alignment: Alignment.bottomRight,
+        children: [
+          Icon(Icons.list),
+          ImageWithText.paintOutline(
+            text: (db.curUser.curSvtPlanNo + 1).toString(),
+            shadowSize: 5,
+            shadowColor: Theme.of(context).primaryColor,
+          )
+        ],
+      ),
     ),
   );
 }

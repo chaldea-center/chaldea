@@ -220,6 +220,7 @@ class ImageWithText extends StatelessWidget {
   final TextStyle? textStyle;
   final AlignmentDirectional alignment;
   final double? shadowSize;
+  final Color? shadowColor;
   final VoidCallback? onTap;
 
   ImageWithText({
@@ -234,6 +235,7 @@ class ImageWithText extends StatelessWidget {
     this.textAlign,
     this.textStyle,
     this.shadowSize = 3,
+    this.shadowColor,
     this.onTap,
   }) : super(key: key);
 
@@ -271,6 +273,7 @@ class ImageWithText extends StatelessWidget {
                   textAlign: textAlign,
                   textStyle: _style,
                   shadowSize: shadowSize,
+                  shadowColor: shadowColor,
                 ),
               ),
               boxFit: BoxFit.scaleDown,
@@ -293,16 +296,18 @@ class ImageWithText extends StatelessWidget {
     return child;
   }
 
-  static TextStyle toGlowStyle([TextStyle? style, double? shadowSize]) {
+  static TextStyle toGlowStyle(
+      [TextStyle? style, double? shadowSize, Color? shadowColor]) {
     style ??= TextStyle();
     if (shadowSize == null)
       return style;
     else
       return style.copyWith(
-          foreground: style.foreground ?? Paint()
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = shadowSize
-            ..color = Colors.white);
+        foreground: style.foreground ?? Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = shadowSize
+          ..color = shadowColor ?? Colors.white,
+      );
   }
 
   static Widget paintOutline({
@@ -311,6 +316,7 @@ class ImageWithText extends StatelessWidget {
     TextAlign? textAlign,
     TextStyle? textStyle,
     double? shadowSize,
+    Color? shadowColor,
   }) {
     assert(text != null || builder != null);
     assert(text == null || builder == null);
@@ -318,7 +324,7 @@ class ImageWithText extends StatelessWidget {
     List<Widget> children;
     if (builder != null) {
       children = [
-        builder(toGlowStyle(_style, shadowSize)),
+        builder(toGlowStyle(_style, shadowSize, shadowColor)),
         builder(_style),
       ];
     } else {
@@ -326,7 +332,7 @@ class ImageWithText extends StatelessWidget {
         Text(
           text!,
           textAlign: textAlign,
-          style: toGlowStyle(textStyle, shadowSize),
+          style: toGlowStyle(textStyle, shadowSize, shadowColor),
         ),
         Text(
           text,
