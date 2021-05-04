@@ -46,6 +46,7 @@ class Localized {
   static LocalizedGroup get chapter => LocalizedGroup([
         LocalizedText(chs: '幕间物语', jpn: '幕間の物語', eng: 'Interlude'),
         LocalizedText(chs: '强化任务', jpn: '強化クエスト', eng: 'Strengthening'),
+        LocalizedText(chs: '强化关卡', jpn: '強化クエスト', eng: 'Strengthening'),
         LocalizedText(
             chs: '特异点F 燃烧污染都市 冬木',
             jpn: '特異点F 炎上汚染都市 冬木',

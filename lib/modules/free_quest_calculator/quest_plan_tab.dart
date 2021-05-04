@@ -41,7 +41,8 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   CustomTile(
-                    title: Text(quest?.localizedKey ?? variable.name),
+                    title: Text(quest?.localizedKey ??
+                        Quest.getDailyQuestName(variable.name)),
                     subtitle: Text(variable.detail.entries
                         .map((e) => '${Item.localizedNameOf(e.key)}*${e.value}')
                         .join(', ')),
@@ -54,31 +55,31 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                   if (state.value && widget.solution?.params != null)
                     widget.solution!.params!.blacklist.contains(variable.name)
                         ? TextButton.icon(
-                      onPressed: () {
-                        setState(() {
-                          widget.solution!.params!.blacklist
-                              .remove(variable.name);
-                        });
-                      },
-                      icon: Icon(Icons.clear, color: Colors.black),
-                      label: Text(
-                        S.of(context).remove_from_blacklist,
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    )
+                            onPressed: () {
+                              setState(() {
+                                widget.solution!.params!.blacklist
+                                    .remove(variable.name);
+                              });
+                            },
+                            icon: Icon(Icons.clear, color: Colors.black),
+                            label: Text(
+                              S.of(context).remove_from_blacklist,
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          )
                         : TextButton.icon(
-                      onPressed: () {
-                        setState(() {
-                          widget.solution!.params!.blacklist
-                              .add(variable.name);
-                        });
-                      },
-                      icon: Icon(Icons.add, color: Colors.redAccent),
-                      label: Text(
-                        S.of(context).add_to_blacklist,
-                        style: TextStyle(color: Colors.redAccent),
-                      ),
-                    ),
+                            onPressed: () {
+                              setState(() {
+                                widget.solution!.params!.blacklist
+                                    .add(variable.name);
+                              });
+                            },
+                            icon: Icon(Icons.add, color: Colors.redAccent),
+                            label: Text(
+                              S.of(context).add_to_blacklist,
+                              style: TextStyle(color: Colors.redAccent),
+                            ),
+                          ),
                   if (state.value && quest != null) QuestCard(quest: quest),
                 ],
               );

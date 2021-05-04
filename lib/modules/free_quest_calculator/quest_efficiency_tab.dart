@@ -63,21 +63,22 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   CustomTile(
-                    title: Text(quest?.localizedKey ?? questKey),
+                    title: Text(quest?.localizedKey ??
+                        Quest.getDailyQuestName(questKey)),
                     subtitle: Text(drops.entries.map((e) {
                       String v = e.value.toStringAsFixed(3);
                       while (v.contains('.') && v[v.length - 1] == '0') {
                         v = v.substring(0, v.length - 1);
                       }
-                      return '${e.key}*$v';
+                      return '${Item.localizedNameOf(e.key)}*$v';
                     }).join(', ')),
                     trailing: Text(sum(drops.values).toStringAsFixed(3)),
                     onTap: quest == null
                         ? null
                         : () {
-                      state.value = !state.value;
-                      state.updateState();
-                    },
+                            state.value = !state.value;
+                            state.updateState();
+                          },
                   ),
                   if (state.value && quest != null) QuestCard(quest: quest),
                 ],

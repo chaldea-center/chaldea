@@ -18,7 +18,7 @@ final localizedGameClass = LocalizedGroup([
   LocalizedText(chs: '裁阶', jpn: 'ルーラー', eng: 'Ruler'),
   LocalizedText(chs: '仇阶', jpn: 'アヴェンジャー', eng: 'Avenger'),
   LocalizedText(chs: '他人格', jpn: '', eng: 'Alterego'),
-  LocalizedText(chs: '月癌', jpn: '', eng: 'Mooncancer'),
+  LocalizedText(chs: '月癌', jpn: '', eng: 'MoonCancer'),
   LocalizedText(chs: '外阶', jpn: '', eng: 'Foreigner'),
   LocalizedText(chs: '盾阶', jpn: '', eng: 'Shielder'),
   LocalizedText(chs: '兽阶', jpn: '', eng: 'Beast'),

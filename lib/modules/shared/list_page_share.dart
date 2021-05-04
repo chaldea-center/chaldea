@@ -2,17 +2,19 @@ import 'package:chaldea/components/components.dart';
 
 Widget buildSwitchPlanButton(
     {required BuildContext context, ValueChanged<int>? onChange}) {
-  return ImageWithText(
-    image: IconButton(
-      icon: Icon(Icons.list),
-      tooltip: '${S.current.plan_title} ${db.curUser.curSvtPlanNo + 1}',
-      onPressed: () {
-        FocusScope.of(context).unfocus();
-        onSwitchPlan(context: context, onChange: onChange);
-      },
+  return IconButton(
+    onPressed: () {
+      FocusScope.of(context).unfocus();
+      onSwitchPlan(context: context, onChange: onChange);
+    },
+    tooltip: '${S.current.plan_title} ${db.curUser.curSvtPlanNo + 1}',
+    icon: ImageWithText(
+      image: Icon(Icons.list),
+      text: (db.curUser.curSvtPlanNo + 1).toString(),
+      shadowSize: null,
+      textStyle: TextStyle(
+          color: Colors.red, fontSize: 14, fontWeight: FontWeight.bold),
     ),
-    text: (db.curUser.curSvtPlanNo + 1).toString(),
-    shadowSize: null,
   );
 }
 

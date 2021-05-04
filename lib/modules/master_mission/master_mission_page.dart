@@ -234,8 +234,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
 
   Widget get popupMenu {
     return PopupMenuButton<int>(
-      itemBuilder: (context) =>
-      [
+      itemBuilder: (context) => [
         PopupMenuItem(
             value: 0,
             child: Text(LocalizedText.of(

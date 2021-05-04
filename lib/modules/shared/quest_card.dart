@@ -53,7 +53,7 @@ class _QuestCardState extends State<QuestCard> {
                       ),
                       AutoSizeText(
                         questName,
-                        maxLines: 1,
+                        maxLines: 2,
                         maxFontSize: 14,
                         minFontSize: 6,
                         textAlign: TextAlign.center,
@@ -202,7 +202,7 @@ class _QuestCardState extends State<QuestCard> {
     '狂': 'Berserker',
     '仇': 'Avenger',
     '裁': 'Ruler',
-    '月': 'Mooncancer',
+    '月': 'MoonCancer',
     '分': 'Alterego',
     '降': 'Foreigner',
     // '月外分盾'
