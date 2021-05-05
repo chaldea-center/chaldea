@@ -42,9 +42,15 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
 
   Widget buildActiveSkill(int index) {
     ActiveSkill activeSkill = svt.lActiveSkills[index];
-    Skill skill = Servant.unavailable.contains(svt.no)
-        ? activeSkill.skills[0]
-        : activeSkill.skills[status.skillIndex[index] ?? activeSkill.cnState];
+    int? _state;
+    if (Servant.unavailable.contains(svt.no)) {
+      _state = 0;
+    } else {
+      _state = status.skillIndex[index] ??
+          (Language.isCN ? activeSkill.cnState : null);
+    }
+    _state ??= activeSkill.skills.length - 1;
+    Skill skill = activeSkill.skills[_state];
     String name = '${skill.name} ${skill.rank}';
     String nameJp = '${skill.nameJp} ${skill.rank}';
     return TileGroup(
@@ -65,8 +71,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
                       ((widget.parent ?? this) as State).setState(() {});
                     },
                     child: db.getIconImage(
-                      (status.skillIndex[index] ?? activeSkill.cnState) >= i
-                          ? '技能强化'
+                      _state >= i ? '技能强化'
                           : '技能未强化',
                       width: 22,
                     ),

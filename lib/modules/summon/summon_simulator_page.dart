@@ -172,8 +172,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       suits = (totalQuartz / 168);
       title = '合計: $totalPulls回'
           ' $totalQuartz石'
-          '(${suits.toStringAsFixed(2)}×10000'
-          ' ${(suits * 10000).round()}円)';
+          '(${suits.toStringAsFixed(2)}×10000='
+          '${(suits * 10000).round()}円)';
       subtitle = 'あと$extraLeft回で1回ボーナス召喚';
     } else {
       title = 'Total $totalPulls Pulls $totalQuartz SQ'
@@ -624,7 +624,8 @@ Widget buildSummonCard(
         text: texts.join('\n'),
         width: 56,
         textAlign: TextAlign.right,
-        padding: EdgeInsets.only(bottom: 2, left: 15),
+        textStyle: TextStyle(fontSize: 12),
+        padding: EdgeInsets.only(bottom: 0, left: 15),
       ),
     ),
   );
@@ -644,7 +645,9 @@ String summonNameLocalize(String origin) {
             ?.info
             .localizedName ??
         e;
-    if (name2 == e) {
+    if (name2 == e &&
+        ClassName.values
+            .every((cls) => cls.name.toLowerCase() != e.toLowerCase())) {
       List<String> fragments = e.split('(');
       fragments[0] = fragments[0].trim();
       fragments[0] = db.gameData.servants.values
@@ -656,7 +659,7 @@ String summonNameLocalize(String origin) {
               ?.info
               .localizedName ??
           e;
-      name2 = fragments.join(Language.isEN ? ' ' : '');
+      name2 = fragments.join(Language.isEN ? ' (' : '(');
     }
     if (!RegExp(r'[\s\da-zA-Z]+').hasMatch(name2)) {
       print(name2);

@@ -351,6 +351,7 @@ class _PartChooserPageState extends State<_PartChooserPage> {
   Widget get buttonBar {
     return ButtonBar(
       children: [
+        Text(S.current.filter_sort),
         DropdownButton<int>(
           value: sortType,
           items: [

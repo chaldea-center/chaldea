@@ -204,9 +204,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     launch('https://testflight.apple.com/join/HSyZttrr'),
               ),
             ListTile(
-              title: Text(
-                  LocalizedText(chs: '更新历史', jpn: '更新履歴', eng: 'Update History')
-                      .localized),
+              title: Text(LocalizedText.of(
+                  chs: '更新历史', jpn: '更新履歴', eng: 'Release Notes')),
               onTap: () {
                 launch('$kProjectHomepage/blob/master/CHANGELOG.md',
                     forceWebView: true);
