@@ -44,35 +44,38 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> children = [];
+    for (var table in svt.voices) {
+      children.add(SimpleAccordion(
+        headerBuilder: (context, expanded) =>
+            ListTile(title: Text(_getLocalizedText(table.section, true))),
+        contentBuilder: (context) => Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Table(
+            border: TableBorder(
+                horizontalInside: Divider.createBorderSide(context, width: 1)),
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            children: _buildVoiceRows(table),
+            columnWidths: {0: FlexColumnWidth(), 1: FixedColumnWidth(33.0)},
+          ),
+        ),
+      ));
+    }
+    if (lang == Language.eng)
+      children.add(Center(
+        child: Text(
+          'Voices maybe mismatched',
+          style: Theme.of(context).textTheme.caption,
+        ),
+      ));
     return Column(
       children: [
         Expanded(
           child: ListView.separated(
             shrinkWrap: true,
-            itemBuilder: (context, index) {
-              final table = svt.voices[index];
-              return SimpleAccordion(
-                headerBuilder: (context, expanded) => ListTile(
-                    title: Text(_getLocalizedText(table.section, true))),
-                contentBuilder: (context) => Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Table(
-                    border: TableBorder(
-                        horizontalInside:
-                            Divider.createBorderSide(context, width: 1)),
-                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                    children: _buildVoiceRows(table),
-                    columnWidths: {
-                      0: FixedColumnWidth(80.0),
-                      1: FlexColumnWidth(),
-                      2: FixedColumnWidth(33.0)
-                    },
-                  ),
-                ),
-              );
-            },
+            itemBuilder: (context, index) => children[index],
             separatorBuilder: (context, index) => kDefaultDivider,
-            itemCount: svt.voices.length,
+            itemCount: children.length,
           ),
         ),
         _buildButtonBar()
@@ -83,32 +86,66 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
   List<TableRow> _buildVoiceRows(VoiceTable table) {
     return table.table.map((record) {
       return TableRow(children: [
-        AutoSizeText(
-          _getLocalizedText(record.title),
-          maxLines: 2,
-          maxFontSize: 12,
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
         Padding(
           padding: EdgeInsets.symmetric(vertical: 3),
-          child: Text(LocalizedText(
-            chs: record.text,
-            jpn: record.textJp,
-            eng: null,
-          ).ofPrimary(lang ?? Language.current)),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AutoSizeText(
+                _getLocalizedText(record.title),
+                maxLines: 1,
+                maxFontSize: 12,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+              Text(LocalizedText(
+                chs: record.text,
+                jpn: record.textJp,
+                eng: record.textEn,
+              ).ofPrimary(lang ?? Language.current))
+            ],
+          ),
         ),
-        IconButton(
-          onPressed: record.voiceFile.isNotEmpty
-              ? () {
+        ValueStatefulBuilder<bool>(
+          initValue: false,
+          builder: (context, state) {
+            bool playing = state.value;
+            bool valid = record.voiceFile.isNotEmpty;
+            if (!valid) {
+              return IconButton(
+                onPressed: null,
+                icon: Icon(Icons.play_circle_outline),
+              );
+            }
+            if (playing) {
+              return IconButton(
+                  onPressed: null, icon: Icon(Icons.download_rounded));
+            } else {
+              return IconButton(
+                onPressed: () {
+                  if (!state.mounted) return;
+                  state.setState(() {
+                    state.value = !state.value;
+                  });
                   onPlayVoice(record).onError((e, s) {
                     EasyLoading.showError('Error playing audio\n$e');
                     logger.e(
                         'Error playing audio\n${jsonEncode(record)}\n', e, s);
+                  }).whenComplete(() {
+                    if (state.mounted)
+                      state.setState(() {
+                        state.value = !state.value;
+                      });
                   });
-                }
-              : null,
-          icon: Icon(Icons.play_circle_outline),
-          color: Colors.blue,
+                },
+                icon: Icon(Icons.play_circle_outline),
+                color: Theme.of(context).primaryColor,
+              );
+            }
+          },
         ),
       ]);
     }).toList();
@@ -146,7 +183,6 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
       children: [
         ProfileLangSwitch(
           primary: lang,
-          showEn: false,
           onChanged: (v) {
             setState(() {
               lang = v;

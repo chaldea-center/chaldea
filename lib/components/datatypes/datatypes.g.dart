@@ -1312,6 +1312,7 @@ VoiceRecord _$VoiceRecordFromJson(Map<String, dynamic> json) {
       title: $checkedConvert(json, 'title', (v) => v as String),
       text: $checkedConvert(json, 'text', (v) => v as String?),
       textJp: $checkedConvert(json, 'textJp', (v) => v as String?),
+      textEn: $checkedConvert(json, 'textEn', (v) => v as String?),
       condition: $checkedConvert(json, 'condition', (v) => v as String?),
       voiceFile: $checkedConvert(json, 'voiceFile', (v) => v as String),
     );
@@ -1324,6 +1325,7 @@ Map<String, dynamic> _$VoiceRecordToJson(VoiceRecord instance) =>
       'title': instance.title,
       'text': instance.text,
       'textJp': instance.textJp,
+      'textEn': instance.textEn,
       'condition': instance.condition,
       'voiceFile': instance.voiceFile,
     };

@@ -503,6 +503,7 @@ class VoiceRecord {
   String title;
   String? text;
   String? textJp;
+  String? textEn;
   String? condition;
   String voiceFile;
 
@@ -510,7 +511,8 @@ class VoiceRecord {
     required this.title,
     required this.text,
     required this.textJp,
-    this.condition,
+    required this.textEn,
+    required this.condition,
     required this.voiceFile,
   });
 

@@ -38,7 +38,7 @@ class ServantListPageState extends State<ServantListPage> {
   void initState() {
     super.initState();
     filterData.filterString = '';
-    filterData.favorite = widget.planMode ? 1 : 0;
+    // filterData.favorite = widget.planMode ? 1 : 0;
     _inputController = TextEditingController();
     _scrollController = ScrollController();
     _inputFocusNode = FocusNode();
