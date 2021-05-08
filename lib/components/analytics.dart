@@ -73,6 +73,7 @@ Future<void> sendStat([bool test = false]) async {
         : Platform.operatingSystemVersion,
     'app': AppInfo.packageName,
     'app_ver': AppInfo.version,
+    'dataset': db.gameData.version,
     'lang': Language.current.code,
     'locale': await findSystemLocale(),
     'data_ver': db.gameData.version,

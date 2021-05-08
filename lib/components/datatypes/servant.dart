@@ -31,7 +31,7 @@ class Servant {
   List<int> valentineCraft;
 
   // from data file not in code
-  static const List<int> unavailable = [83, 149, 151, 152, 168, 240];
+  static List<int> get unavailable => db.gameData.unavailableSvts;
 
   String toString() => '$runtimeType($mcLink)';
 

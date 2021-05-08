@@ -4,6 +4,7 @@ part of datatypes;
 @JsonSerializable(checked: true)
 class GameData {
   String version;
+  List<int> unavailableSvts;
   Map<int, Servant> servants;
   Map<int, CraftEssence> crafts;
   Map<int, CommandCode> cmdCodes;
@@ -21,6 +22,7 @@ class GameData {
 
   GameData({
     this.version = '0',
+    this.unavailableSvts = const [],
     this.servants = const {},
     this.crafts = const {},
     this.cmdCodes = const {},

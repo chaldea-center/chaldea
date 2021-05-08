@@ -460,6 +460,8 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
   return $checkedNew('GameData', json, () {
     final val = GameData(
       version: $checkedConvert(json, 'version', (v) => v as String),
+      unavailableSvts: $checkedConvert(json, 'unavailableSvts',
+          (v) => (v as List<dynamic>).map((e) => e as int).toList()),
       servants: $checkedConvert(
           json,
           'servants',
@@ -532,8 +534,10 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
+Map<String, dynamic> _$GameDataToJson(GameData instance) =>
+    <String, dynamic>{
       'version': instance.version,
+      'unavailableSvts': instance.unavailableSvts,
       'servants': instance.servants.map((k, e) => MapEntry(k.toString(), e)),
       'crafts': instance.crafts.map((k, e) => MapEntry(k.toString(), e)),
       'cmdCodes': instance.cmdCodes.map((k, e) => MapEntry(k.toString(), e)),
