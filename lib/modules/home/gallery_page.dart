@@ -385,7 +385,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
           child: FittedBox(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 4),
-              child: Text(imgUrl),
+              child: Text(imgUrl, textAlign: TextAlign.center),
             ),
           ),
         );
@@ -518,14 +518,22 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       ));
     }
     if (_cachedIconsRatio < 0.7) {
-      int total = db.gameData.servants.length +
-          db.gameData.crafts.length +
-          db.gameData.cmdCodes.length +
-          321;
-      final iconDir = Directory(db.paths.gameIconDir);
-      int cached = 0;
-      if (iconDir.existsSync()) cached = iconDir.listSync().length;
-      _cachedIconsRatio = cached / total;
+      // TODO: why icon folder list error?
+      // FileSystemException: Directory listing failed,
+      // path = '/storage/emulated/0/Android/data/cc.narumi.chaldea/files/data/icons/'
+      // (OS Error: Invalid argument, errno = 22)
+      try {
+        int total = db.gameData.servants.length +
+            db.gameData.crafts.length +
+            db.gameData.cmdCodes.length +
+            321;
+        final iconDir = Directory(db.paths.gameIconDir);
+        int cached = 0;
+        if (iconDir.existsSync()) cached = iconDir.listSync().length;
+        _cachedIconsRatio = cached / total;
+      } catch (e, s) {
+        logger.e('list icon dir failed', e, s);
+      }
     }
     // print('$cached/$total');
     if (_cachedIconsRatio >= 0 && _cachedIconsRatio < 0.8) {

@@ -338,7 +338,8 @@ class GitTool {
     List<GitRelease>? releases,
   }) async {
     releases ??= await datasetReleases;
-    if (testRelease == null) {
+    // don't limit app version for icons
+    if (testRelease == null && !icons) {
       testRelease = (release) {
         Version? minVersion =
             Version.tryParse(release.name.split('-').getOrNull(1) ?? '');
@@ -426,10 +427,12 @@ class _DownloadDialogState extends State<DownloadDialog> {
         onReceiveProgress: onReceiveProgress,
       );
       onDownloadComplete(response);
-    } on DioError catch (e) {
-      if (e.type != DioErrorType.cancel) {
+    } catch (e, s) {
+      if (e is DioError && e.type == DioErrorType.cancel) {
+        // do nothing
+      } else {
         EasyLoading.showError(e.toString());
-        rethrow;
+        logger.e('download ${widget.url} failed', e, s);
       }
     }
     logger.i('Download time usage:'

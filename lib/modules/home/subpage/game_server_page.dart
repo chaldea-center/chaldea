@@ -40,6 +40,7 @@ class _GameServerPageState extends State<GameServerPage> {
         setState(() {
           if (v != null) db.curUser.server = v;
         });
+        db.notifyDbUpdate();
       },
     );
   }

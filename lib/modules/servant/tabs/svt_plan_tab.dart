@@ -119,31 +119,43 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       List<Widget> skillWidgets = [];
       for (int index = 0; index < svt.lActiveSkills.length; index++) {
         final activeSkill = svt.lActiveSkills[index];
-        Skill skill =
-            activeSkill.skills[status.skillIndex[index] ?? activeSkill.cnState];
+        int? _state;
+        if (Servant.unavailable.contains(svt.no)) {
+          _state = 0;
+        } else {
+          _state = status.skillIndex.getOrNull(index) ??
+              (Language.isCN ? activeSkill.cnState : null);
+        }
+        _state ??= activeSkill.skills.length - 1;
+        Skill skill = activeSkill.skills[_state];
         String shownName =
             Language.isCN ? skill.name : (skill.nameJp ?? skill.name);
-        skillWidgets.add(buildPlanRow(
-          useSlider: sliderMode,
-          leading: db.getIconImage(skill.icon, width: 33),
-          title: '$shownName ${skill.rank}',
-          start: curVal.skills[index],
-          end: targetVal.skills[index],
-          minVal: 1,
-          maxVal: 10,
-          onValueChanged: (_start, _end) {
-            status.favorite = true;
-            curVal.skills[index] = _start;
-            targetVal.skills[index] = _end;
-            updateState();
-          },
-          detailPageBuilder: (context) => LevelingCostPage(
-            costList: svt.itemCost.skill,
-            title: '${S.current.skill} ${index + 1} - ${skill.localizedName}',
-            curLv: curVal.skills[index],
-            targetLv: targetVal.skills[index],
-          ),
-        ));
+        if (index >= 3) {
+          skillWidgets.add(buildPlanRow(
+              start: 0, minVal: 0, maxVal: 0, onValueChanged: (_, __) {}));
+        } else {
+          skillWidgets.add(buildPlanRow(
+            useSlider: sliderMode,
+            leading: db.getIconImage(skill.icon, width: 33),
+            title: '$shownName ${skill.rank}',
+            start: curVal.skills[index],
+            end: targetVal.skills[index],
+            minVal: 1,
+            maxVal: 10,
+            onValueChanged: (_start, _end) {
+              status.favorite = true;
+              curVal.skills[index] = _start;
+              targetVal.skills[index] = _end;
+              updateState();
+            },
+            detailPageBuilder: (context) => LevelingCostPage(
+              costList: svt.itemCost.skill,
+              title: '${S.current.skill} ${index + 1} - ${skill.localizedName}',
+              curLv: curVal.skills[index],
+              targetLv: targetVal.skills[index],
+            ),
+          ));
+        }
       }
       children.add(
           TileGroup(header: S.of(context).skill_up, children: skillWidgets));

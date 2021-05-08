@@ -8,8 +8,8 @@ import 'dart:typed_data';
 
 import 'package:archive/archive_io.dart';
 import 'package:catcher/catcher.dart';
+import 'package:chaldea/components/analytics.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart';
 import 'package:logging/logging.dart';
@@ -89,13 +89,22 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
   /// store html message that has already be sent
   HashSet<String> _sentReports = HashSet();
 
+  /// the same error may have different StackTrace
+  String _getReportShortSummary(Report report) {
+    StringBuffer buffer = StringBuffer();
+    buffer.writeln(report.error.toString());
+    buffer
+        .writeln(report.stackTrace.toString().split('\n').take(20).join('\n'));
+    return buffer.toString();
+  }
+
   Future<bool> _sendMail(Report report, {Attachment? extraAttach}) async {
     try {
       if (db.connectivity == ConnectivityResult.none) return false;
 
-      String htmlMsg = _setupHtmlMessageText(report);
+      String reportSummary = _getReportShortSummary(report);
       // don't send email repeatedly
-      if (_sentReports.contains(htmlMsg)) {
+      if (_sentReports.contains(reportSummary)) {
         _logger.fine('"${report.error}" has been sent before');
         return true;
       }
@@ -119,14 +128,14 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
         message.attachments.add(extraAttach);
       }
       if (sendHtml) {
-        message.html = htmlMsg;
+        message.html = _setupHtmlMessageText(report);
       }
       _printLog("Sending email...");
-      if (!kReleaseMode) return true;
+      if (skipReport()) return true;
 
       var result = await send(message, _setupSmtpServer());
       _printLog("Email result: $result ");
-      _sentReports.add(htmlMsg);
+      _sentReports.add(reportSummary);
       return true;
     } catch (stacktrace, exception) {
       _printLog(stacktrace.toString());

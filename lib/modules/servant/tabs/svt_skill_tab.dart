@@ -27,7 +27,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
     if (svt.lActiveSkills.isNotEmpty != true) {
       return Center(child: Text('Nothing'));
     }
-
+    status.validate();
     return ListView(children: [
       SHeader(S.of(context).active_skill),
       for (var index = 0; index < svt.lActiveSkills.length; index++)
@@ -46,7 +46,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
     if (Servant.unavailable.contains(svt.no)) {
       _state = 0;
     } else {
-      _state = status.skillIndex[index] ??
+      _state = status.skillIndex.getOrNull(index) ??
           (Language.isCN ? activeSkill.cnState : null);
     }
     _state ??= activeSkill.skills.length - 1;

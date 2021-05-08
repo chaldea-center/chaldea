@@ -24,7 +24,10 @@ class _QuestCardState extends State<QuestCard> {
   Widget build(BuildContext context) {
     String questName = [
       quest.localizedName,
-      if (!Language.isJP && quest.nameJp != null) quest.nameJp!
+      if (!Language.isJP &&
+          quest.nameJp != null &&
+          quest.nameJp != quest.localizedName)
+        quest.nameJp!
     ].join('/');
     String chapter = Localized.chapter.of(quest.chapter);
     return Card(
@@ -72,10 +75,14 @@ class _QuestCardState extends State<QuestCard> {
                   ),
                 ),
                 contentPadding: EdgeInsets.fromLTRB(16, 8, 0, 8),
-                trailing: GestureDetector(
-                  child: Icon(
-                    Icons.remove_red_eye_outlined,
-                    color: showTrueName ? Colors.blue : null,
+                trailing: InkWell(
+                  child: Tooltip(
+                    message:
+                        showTrueName ? 'Show Display Name' : 'Show True Name',
+                    child: Icon(
+                      Icons.remove_red_eye_outlined,
+                      color: showTrueName ? Colors.blue : null,
+                    ),
                   ),
                   onTap: () => setState(() => showTrueName = !showTrueName),
                 ),

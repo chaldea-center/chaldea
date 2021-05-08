@@ -294,7 +294,7 @@ class ExchangeTicket {
   String get monthEn => dateToStr(dateEn);
 
   int get days {
-    return DateTime(curDate.year, curDate.month + 1, 0, 1)
+    return DateTime(curDate.year, curDate.month + 1, 1, 1)
         .difference(curDate)
         .inDays;
   }

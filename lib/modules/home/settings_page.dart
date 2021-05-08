@@ -203,14 +203,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 onTap: () =>
                     launch('https://testflight.apple.com/join/HSyZttrr'),
               ),
-            ListTile(
-              title: Text(LocalizedText.of(
-                  chs: '更新历史', jpn: '更新履歴', eng: 'Release Notes')),
-              onTap: () {
-                launch('$kProjectHomepage/blob/master/CHANGELOG.md',
-                    forceWebView: true);
-              },
-            ),
             if (Platform.isIOS || Platform.isMacOS)
               ListTile(
                 title: Text(S.of(context).about_appstore_rating),

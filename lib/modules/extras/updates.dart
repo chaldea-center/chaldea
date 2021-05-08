@@ -287,7 +287,8 @@ class AutoUpdateUtil {
 
     if (!await _checkSHA1(fpInstaller, checksum, false)) {
       await _dio.download(
-          release!.targetAsset!.browserDownloadUrl!, fpInstaller);
+          release!.targetAsset!.browserDownloadUrl!, fpInstaller,
+          deleteOnError: false);
       logger.d('downloaded $fpInstaller');
       await _checkSHA1(fpInstaller, checksum, false);
     } else {
@@ -386,7 +387,10 @@ class AutoUpdateUtil {
                   jpn: 'バックグラウンドでダウンロード...',
                   eng: 'Downloading in the background... '));
               await Future.delayed(Duration(milliseconds: 500));
-              await startDownload(background: false);
+              await startDownload(background: false).onError((e, s) {
+                logger.e('error download', e, s);
+                EasyLoading.showError('Download Failed\n$e');
+              });
             },
           ),
       ],

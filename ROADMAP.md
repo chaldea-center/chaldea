@@ -25,7 +25,6 @@
 
 ## Bug fix - long term
 - [ ] `SplitRoute` currently all detail routes is transparent even not in split mode
-- [ ] `audioplayers` not support `wav`/`ogg` file on iOS and macOS
 - [ ] audio format not fully supported
   | Format | Android | iOS/macOS | Windows |
   |:------:|:-------:|:---------:|:-------:|

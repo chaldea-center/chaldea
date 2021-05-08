@@ -71,6 +71,13 @@ class _AboutPageState extends State<AboutPage> {
                       });
                     },
                   ),
+                ListTile(
+                  title: Text(LocalizedText.of(
+                      chs: '更新历史', jpn: '更新履歴', eng: 'Release Notes')),
+                  onTap: () {
+                    launch('$kProjectHomepage/blob/master/CHANGELOG.md');
+                  },
+                ),
               ],
             ),
           ListTile(
