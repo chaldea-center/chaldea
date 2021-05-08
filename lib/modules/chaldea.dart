@@ -7,6 +7,7 @@ import 'package:chaldea/components/git_tool.dart';
 import 'package:chaldea/components/method_channel_chaldea.dart';
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:chaldea/modules/home/home_page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -49,6 +50,21 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         debugPrint('save userdata before being inactive');
       }
       return null;
+    });
+
+    LicenseRegistry.addLicense(() async* {
+      Map<String, String> licenses = {
+        'MOONCELL': 'res/licenses/CC-BY-NC-SA-4.0',
+        'FANDOM': 'res/licenses/CC-BY-SA-3.0',
+      };
+      for (final entry in licenses.entries) {
+        String license =
+            await rootBundle.loadString(entry.value).catchError((e, s) async {
+          logger.e('load license(${entry.key}, ${entry.value}) failed.', e, s);
+          return 'load license failed';
+        });
+        yield LicenseEntryWithLineBreaks([entry.key], license);
+      }
     });
   }
 

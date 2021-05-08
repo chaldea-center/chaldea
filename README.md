@@ -72,7 +72,7 @@ You may need to install [Microsoft Visual C++ redistributable package](https://s
 
 ## Feedback and contribution
 If you have any bug report, feature request, question or want to contribute to this project, feel free to
-- open an [issue](https://github.com/chaldea-center/chaldea/issues/new)
+- open an [issue](https://github.com/chaldea-center/chaldea/issues/new/choose)
 - pull request or join the collaboration
 - Email: chaldea@narumi.cc
 - [![Twitter](https://img.shields.io/twitter/url?label=Twitter&style=social&url=https%3A%2F%2Ftwitter.com%2Fnarumi147)](https://twitter.com/narumi147)

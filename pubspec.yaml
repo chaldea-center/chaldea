@@ -112,6 +112,7 @@ flutter:
     - res/img/launcher_icon/app_icon_logo.png
     - res/img/
     - res/js/
+    - res/licenses/
     - res/VERSION
 
   # An image asset can refer to one or more resolution-specific "variants", see
