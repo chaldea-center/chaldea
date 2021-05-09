@@ -79,14 +79,12 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
       required Widget content,
       List<Widget> actions = const []}) {
     return AlertDialog(
-      backgroundColor: AppColors.setting_bg,
       title: Center(child: title),
       titlePadding: EdgeInsets.fromLTRB(24, 12, 24, 12),
       contentPadding: EdgeInsets.zero,
       actionsPadding: EdgeInsets.zero,
       actions: actions,
       content: Container(
-        color: Colors.white,
         // for landscape, limit it's width
         width: defaultDialogWidth(context),
         // for portrait, limit it's height
@@ -373,14 +371,14 @@ class FilterOption<T> extends StatelessWidget {
     this.onChanged,
     this.selectedColor,
     this.unselectedColor,
-    this.selectedTextColor = Colors.white,
+    this.selectedTextColor,
     this.borderRadius = const BorderRadius.all(Radius.circular(3)),
     this.shrinkWrap = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final _selectedColor = selectedColor ?? Theme.of(context).primaryColor;
+    bool darkMode = Theme.of(context).brightness == Brightness.dark;
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: 30),
       child: OutlinedButton(
@@ -390,8 +388,9 @@ class FilterOption<T> extends StatelessWidget {
           }
         },
         style: OutlinedButton.styleFrom(
-          primary: selected ? Colors.white : Colors.black,
-          backgroundColor: selected ? _selectedColor : unselectedColor,
+          primary: selected || darkMode ? Colors.white : Colors.black,
+          backgroundColor:
+              selected ? selectedColor ?? Colors.blue : unselectedColor,
           minimumSize: shrinkWrap ? Size(2, 2) : null,
           padding: shrinkWrap ? EdgeInsets.all(0) : null,
           textStyle: TextStyle(fontWeight: FontWeight.normal),

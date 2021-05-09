@@ -96,10 +96,10 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
                 _getLocalizedText(record.title),
                 maxLines: 1,
                 maxFontSize: 12,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor,
-                ),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText1
+                    ?.copyWith(fontWeight: FontWeight.bold),
               ),
               Text(LocalizedText(
                 chs: record.text,

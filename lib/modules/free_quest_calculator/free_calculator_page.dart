@@ -155,7 +155,10 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     params.sortByItem();
     // update userdata at last
     db.userData.glpkParams = params;
+    solver.ensureEngine();
+  }
 
+  void setPickerData() {
     // picker
     db.gameData.items.keys.forEach((name) {
       final category = getItemCategory(name);
@@ -173,6 +176,8 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
             maxLines: 2,
             maxFontSize: 15,
             textAlign: TextAlign.center,
+            style:
+                TextStyle(color: Theme.of(context).textTheme.bodyText1?.color),
           ),
         ),
       );
@@ -184,12 +189,10 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
         value: category,
         children: items
             .map((e) =>
-            PickerItem(text: makeText(Item.localizedNameOf(e)), value: e))
+                PickerItem(text: makeText(Item.localizedNameOf(e)), value: e))
             .toList(),
       ));
     });
-
-    solver.ensureEngine();
   }
 
   @override
@@ -202,6 +205,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
 
   @override
   Widget build(BuildContext context) {
+    if (pickerData.isEmpty) setPickerData();
     return Column(
       children: <Widget>[
         ListTile(
@@ -265,7 +269,8 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
           style: TextButton.styleFrom(
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               minimumSize: Size(48, 28),
-              padding: EdgeInsets.symmetric(horizontal: 8)),
+              padding:
+                  EdgeInsets.symmetric(horizontal: AppInfo.isMobile ? 8 : 16)),
           child: Text(Item.localizedNameOf(item)),
           onPressed: () {
             final String? category = getItemCategory(item);
@@ -281,6 +286,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               changeToFirst: true,
               hideHeader: true,
               textScaleFactor: 0.7,
+              backgroundColor: null,
               cancelText: S.of(context).cancel,
               confirmText: S.of(context).confirm,
               onConfirm: (Picker picker, List<int> value) {
@@ -303,9 +309,9 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
           child: Text(
             planOrEff
                 ? S.current.words_separate(
-                S.current.calc_weight, params.weights[index])
+                    S.current.calc_weight, params.weights[index])
                 : S.current
-                .words_separate(S.current.counts, params.counts[index]),
+                    .words_separate(S.current.counts, params.counts[index]),
           ),
         );
         return CustomTile(
@@ -384,7 +390,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
             ),
             IconButton(
                 icon: Icon(Icons.settings),
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).colorScheme.primary,
                 tooltip: S.of(context).settings_tab_name,
                 onPressed: () async {
                   await showDialog(
@@ -397,7 +403,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
             IconButton(
               icon: Icon(Icons.sort),
               tooltip: S.of(context).filter_sort,
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).colorScheme.primary,
               onPressed: () {
                 setState(() {
                   params.sortByItem();
@@ -411,7 +417,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                 IconButton(
                     icon: Icon(
                       Icons.add_circle,
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                     tooltip: 'Add row',
                     onPressed: () {
@@ -466,7 +472,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
         running = true;
       });
       final solution =
-      await solver.calculate(data: db.gameData.glpk, params: params);
+          await solver.calculate(data: db.gameData.glpk, params: params);
       running = false;
       solution.destination = planOrEff ? 1 : 2;
       solution.params = params;

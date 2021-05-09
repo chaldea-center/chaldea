@@ -390,9 +390,6 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           enhanceMode = !enhanceMode;
         }),
         child: Text(enhanceMode ? S.of(context).cancel : S.of(context).enhance),
-        style: ElevatedButton.styleFrom(
-            primary:
-                enhanceMode ? Colors.grey : Theme.of(context).primaryColor),
       ),
     );
 

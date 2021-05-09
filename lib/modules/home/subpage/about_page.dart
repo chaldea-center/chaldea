@@ -178,7 +178,7 @@ class _AboutProgram extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.setting_tile,
+      color: Theme.of(context).cardColor,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 24.0),
         child: Column(

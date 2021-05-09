@@ -15,8 +15,14 @@ class SHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(left: 16.0, top: 8.0, bottom: 4.0),
-      child: Text(label,
-          style: style ?? TextStyle(color: Colors.black54, fontSize: 14.0)),
+      child: Text(
+        label,
+        style: style ??
+            TextStyle(
+              color: Theme.of(context).textTheme.caption?.color,
+              fontSize: 14.0,
+            ),
+      ),
     );
   }
 }
@@ -33,7 +39,9 @@ class SFooter extends StatelessWidget {
       child: Text(
         label,
         style: TextStyle(
-            color: Color(0xFF777777), fontSize: 13.0, letterSpacing: -0.08),
+            color: Theme.of(context).textTheme.caption?.color,
+            fontSize: 13.0,
+            letterSpacing: -0.08),
       ),
     );
   }
@@ -170,7 +178,7 @@ class TileGroup extends StatelessWidget {
     this.padding,
     this.divider = const Divider(height: 0.5, thickness: 0.5),
     this.innerDivider = true,
-    this.tileColor = Colors.white,
+    this.tileColor,
     this.crossAxisAlignment = CrossAxisAlignment.start,
     this.scrollable = false,
     this.shrinkWrap = false,
@@ -187,7 +195,7 @@ class TileGroup extends StatelessWidget {
     final _children = <Widget>[
       if (header != null) SHeader(header!),
       Material(
-        color: tileColor,
+        color: tileColor ?? Theme.of(context).cardColor,
         child: Column(
           crossAxisAlignment: crossAxisAlignment,
           mainAxisSize: MainAxisSize.min,

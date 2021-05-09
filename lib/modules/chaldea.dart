@@ -78,6 +78,9 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
           title: kAppName,
           debugShowCheckedModeBanner: false,
           navigatorKey: kAppKey,
+          themeMode: db.userData.themeMode ?? ThemeMode.system,
+          theme: ThemeData.light(),
+          darkTheme: ThemeData.dark(),
           locale: Language.getLanguage(db.userData.language)?.locale,
           localizationsDelegates: [
             S.delegate,

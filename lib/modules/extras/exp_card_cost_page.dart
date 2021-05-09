@@ -130,9 +130,10 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
   }
 
   Widget get stageCostList {
+    Color? headerColor = Theme.of(context).highlightColor;
     List<TableRow> rows = [
       TableRow(
-        decoration: BoxDecoration(color: Colors.grey[200]),
+        decoration: BoxDecoration(color: headerColor),
         children: [
           Center(child: Text('...')),
           _cardIcon('睿智的业火.png'),
@@ -163,7 +164,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
 
     for (int index = 0; index < data.stages.length; index++) {
       rows.add(TableRow(
-        decoration: index == 0 ? BoxDecoration(color: Colors.grey[200]) : null,
+        decoration: index == 0 ? BoxDecoration(color: headerColor) : null,
         children: [
           _valToWidget(data.stages[index], index == 0),
           _valToWidget(data.exp5Stages[index].toString(), index == 0),

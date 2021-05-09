@@ -98,7 +98,7 @@ class _SvtNobelPhantasmTabState extends SvtTabBaseState<SvtNobelPhantasmTab> {
             constraints: BoxConstraints(maxWidth: 110 * 0.9),
             child: Text(
               '${td.typeText} ${td.rank}',
-              style: TextStyle(fontSize: 14, color: Colors.black),
+              style: TextStyle(fontSize: 14),
               textAlign: TextAlign.center,
             ),
           )
@@ -109,7 +109,9 @@ class _SvtNobelPhantasmTabState extends SvtTabBaseState<SvtNobelPhantasmTab> {
         children: <Widget>[
           AutoSizeText(
             td.upperName,
-            style: TextStyle(fontSize: 16, color: Colors.black54),
+            style: TextStyle(
+                fontSize: 16,
+                color: Theme.of(context).textTheme.caption?.color),
             maxLines: 1,
           ),
           AutoSizeText(
@@ -120,7 +122,9 @@ class _SvtNobelPhantasmTabState extends SvtTabBaseState<SvtNobelPhantasmTab> {
           if (td.upperNameJp?.isNotEmpty == true)
             AutoSizeText(
               td.upperNameJp!,
-              style: TextStyle(fontSize: 16, color: Colors.black54),
+              style: TextStyle(
+                  fontSize: 16,
+                  color: Theme.of(context).textTheme.caption?.color),
               maxLines: 1,
             ),
           if (td.nameJp?.isNotEmpty == true)

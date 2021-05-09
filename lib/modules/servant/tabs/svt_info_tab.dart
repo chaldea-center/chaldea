@@ -47,22 +47,19 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
         Row(
           children: <Widget>[
             Expanded(
-              child: TabBar(
-                controller: _tabController,
-                isScrollable: true,
-                tabs: [
-                  S.of(context).svt_info_tab_base,
-                  S.of(context).svt_info_tab_bond_story,
-                  S.of(context).bond_craft,
-                  S.of(context).valentine_craft,
-                  S.of(context).svt_related_cards,
-                ]
-                    .map((tabName) => Tab(
-                            child: Text(
-                          tabName,
-                          style: TextStyle(color: Colors.black87),
-                        )))
-                    .toList(),
+              child: SizedBox(
+                height: 36,
+                child: TabBar(
+                  controller: _tabController,
+                  isScrollable: true,
+                  tabs: [
+                    S.of(context).svt_info_tab_base,
+                    S.of(context).svt_info_tab_bond_story,
+                    S.of(context).bond_craft,
+                    S.of(context).valentine_craft,
+                    S.of(context).svt_related_cards,
+                  ].map((tabName) => getTab(tabName)).toList(),
+                ),
               ),
             ),
             ProfileLangSwitch(
@@ -250,7 +247,8 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
                       (i + 1).toString()
                   ],
                   defaults: TableCellData(
-                      color: TableCellData.headerColor.withOpacity(0.5)),
+                      color: TableCellData.resolveHeaderColor(context)
+                          .withOpacity(0.5)),
                 ),
                 CustomTableRow.fromTexts(
                   texts: [

@@ -23,4 +23,13 @@ abstract class SvtTabBaseState<T extends SvtTabBaseWidget> extends State<T> {
   })  : assert(parent?.svt != null || svt != null),
         svt = (svt ?? parent?.svt)!,
         status = status ?? parent?.status ?? ServantStatus();
+
+  Widget getTab(String label) {
+    return Tab(
+      child: Text(
+        label,
+        style: Theme.of(context).textTheme.bodyText2,
+      ),
+    );
+  }
 }

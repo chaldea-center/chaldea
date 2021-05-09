@@ -93,11 +93,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          leading: BackButton(
-            onPressed: () {
-              Navigator.of(context).maybePop();
-            },
-          ),
+          leading: BackButton(),
           titleSpacing: 0,
           title: AutoSizeText(
             svt.info.localizedName,
@@ -126,19 +122,21 @@ class ServantDetailPageState extends State<ServantDetailPage>
             _buildHeader(),
             Align(
               alignment: Alignment.centerLeft,
-              child: TabBar(
-                controller: _tabController,
-                labelColor: Colors.black87,
-                indicatorSize: TabBarIndicatorSize.label,
-                labelPadding: EdgeInsets.symmetric(horizontal: 6.0),
-                unselectedLabelColor: Colors.grey,
-                isScrollable: true,
-                tabs: _builders.keys
-                    .map((name) => Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                        child: Text(name)))
-                    .toList(),
+              child: SizedBox(
+                height: 36,
+                child: TabBar(
+                  controller: _tabController,
+                  labelColor: Theme.of(context).accentColor,
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  labelPadding: EdgeInsets.symmetric(horizontal: 8.0),
+                  unselectedLabelColor: Colors.grey,
+                  isScrollable: true,
+                  tabs: _builders.keys
+                      .map((name) => Tab(
+                          child: Text(name,
+                              style: Theme.of(context).textTheme.bodyText2)))
+                      .toList(),
+                ),
               ),
             ),
             Divider(
@@ -300,7 +298,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                   value: 5 - index,
                   child: Icon(
                     icons[index],
-                    color: Colors.black54,
+                    color: Theme.of(context).accentColor,
                   ));
             }),
             onChanged: (v) {

@@ -36,27 +36,19 @@ class _AccountPageState extends State<AccountPage> {
       ),
       body: TileGroup(
         children: db.userData.users.keys.map((userKey) {
-          final bool _isCurUser = userKey == db.userData.curUserKey;
           int index = db.userData.users.keys.toList().indexOf(userKey);
-          return ListTile(
-            title: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(right: 5.0),
-                  child: Icon(
-                    Icons.check,
-                    size: 18.0,
-                    color: _isCurUser
-                        ? Theme.of(context).primaryColor
-                        : Colors.transparent,
-                  ),
-                ),
-                Text(db.userData.users[userKey]!.name)
-              ],
-            ),
-            selected: _isCurUser,
-            trailing: PopupMenuButton(
+          return RadioListTile<String>(
+            value: userKey,
+            groupValue: db.userData.curUserKey,
+            onChanged: (v) {
+              if (v != null) {
+                db.userData.curUserKey = v;
+                updateData();
+              }
+            },
+            controlAffinity: ListTileControlAffinity.leading,
+            title: Text(db.userData.users[userKey]!.name),
+            secondary: PopupMenuButton(
               itemBuilder: (BuildContext context) => [
                 PopupMenuItem(
                   value: 'rename',
@@ -64,12 +56,12 @@ class _AccountPageState extends State<AccountPage> {
                 ),
                 PopupMenuItem(
                   value: 'move_up',
-                  child: Text('上移'),
+                  child: Text('Move Up'),
                   enabled: index != 0,
                 ),
                 PopupMenuItem(
                   value: 'move_down',
-                  child: Text('下移'),
+                  child: Text('Move Down'),
                   enabled: index != db.userData.users.length - 1,
                 ),
                 PopupMenuItem(value: 'copy', child: Text(S.of(context).copy)),
@@ -107,10 +99,6 @@ class _AccountPageState extends State<AccountPage> {
                 }
               },
             ),
-            onTap: () {
-              db.userData.curUserKey = userKey;
-              updateData();
-            },
           );
         }).toList(),
       ),

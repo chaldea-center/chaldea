@@ -175,7 +175,7 @@ class CraftListPageState extends State<CraftListPage> {
                       borderSide:
                           const BorderSide(width: 0, style: BorderStyle.none),
                       borderRadius: BorderRadius.all(Radius.circular(10))),
-                  fillColor: Colors.white,
+                  fillColor: Theme.of(context).scaffoldBackgroundColor,
                   hintText: 'Search',
                   prefixIcon: Icon(Icons.search, size: 20),
                   suffixIcon: IconButton(

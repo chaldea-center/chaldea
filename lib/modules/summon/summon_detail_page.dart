@@ -138,7 +138,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     return ListTile(
       leading: Icon(
         Icons.event,
-        color: builder == null ? null : Colors.blue,
+        color: builder == null ? null : Theme.of(context).colorScheme.primary,
       ),
       title: Text(event?.localizedName ?? name),
       horizontalTitleGap: 0,
@@ -155,7 +155,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     return ListTile(
       leading: FaIcon(
         FontAwesomeIcons.chessQueen,
-        color: _summon == null ? null : Colors.blue,
+        color: _summon == null ? null : Theme.of(context).colorScheme.primary,
       ),
       dense: true,
       title: Text(_summon?.localizedName ?? name),
@@ -321,7 +321,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
       children: [
         IconButton(
           icon: FaIcon(FontAwesomeIcons.chevronCircleLeft),
-          color: Colors.blueAccent,
+          color: Theme.of(context).colorScheme.primary,
           tooltip: S.current.previous_card,
           onPressed: () => moveNext(true),
         ),
@@ -341,7 +341,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         ),
         IconButton(
           icon: FaIcon(FontAwesomeIcons.chevronCircleRight),
-          color: Colors.blueAccent,
+          color: Theme.of(context).colorScheme.primary,
           tooltip: S.current.next_card,
           onPressed: () => moveNext(),
         )

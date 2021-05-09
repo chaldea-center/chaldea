@@ -33,12 +33,10 @@ class LevelingCostPageState extends State<LevelingCostPage> {
 
     final size = MediaQuery.of(context).size;
     return AlertDialog(
-      backgroundColor: AppColors.setting_bg,
       contentPadding: EdgeInsets.zero,
       titlePadding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       title: Center(child: Text(widget.title)),
       content: Container(
-        color: Colors.white,
         width: min(380, size.width * 0.8),
         child: ListView(
           shrinkWrap: true,
@@ -85,15 +83,16 @@ class LevelingCostPageState extends State<LevelingCostPage> {
           if (lvCost.isNotEmpty)
             GridView.count(
               crossAxisCount: 6,
+              childAspectRatio: 132 / 144,
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               children: lvCost.entries
-                  .map((entry) => Align(
-                        alignment: Alignment.centerLeft,
+                  .map((entry) => Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                         child: ImageWithText(
                           image: db.getIconImage(entry.key, preferPng: false),
                           text: formatNumber(entry.value, compact: true),
-                          padding: EdgeInsets.only(right: 3),
                           onTap: entry.key == 'QP'
                               ? null
                               : () => SplitRoute.push(

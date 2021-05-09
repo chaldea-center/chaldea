@@ -74,6 +74,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       child: FaIcon(
         icon,
         size: 36,
+        color: Theme.of(context).colorScheme.primary,
       ),
     );
   }
@@ -320,7 +321,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       if ((db.userData.galleries[name] ?? true) ||
           name == GalleryItem.more ||
           name == GalleryItem.bug) {
-        _galleryItems.add(TextButton(
+        _galleryItems.add(InkWell(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -329,7 +330,11 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: item.child == null
-                      ? Icon(item.icon, size: 40)
+                      ? Icon(
+                          item.icon,
+                          size: 40,
+                          color: Theme.of(context).colorScheme.primary,
+                        )
                       : item.child,
                 ),
               ),
@@ -339,8 +344,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
                   alignment: Alignment.topCenter,
                   child: AutoSizeText(
                     item.title,
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.normal),
+                    style: TextStyle(fontWeight: FontWeight.normal),
                     textAlign: TextAlign.center,
                     maxFontSize: 14,
                   ),
@@ -348,7 +352,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
               )
             ],
           ),
-          onPressed: () {
+          onTap: () {
             if (item.builder != null) {
               SplitRoute.push(
                 context: context,

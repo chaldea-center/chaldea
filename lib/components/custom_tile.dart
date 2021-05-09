@@ -273,7 +273,8 @@ class ImageWithText extends StatelessWidget {
                   textAlign: textAlign,
                   textStyle: _style,
                   shadowSize: shadowSize,
-                  shadowColor: shadowColor,
+                  shadowColor:
+                      shadowColor ?? Theme.of(context).scaffoldBackgroundColor,
                 ),
               ),
               boxFit: BoxFit.scaleDown,

@@ -310,7 +310,7 @@ class ServantListPageState extends State<ServantListPage> {
                       borderSide:
                           const BorderSide(width: 0, style: BorderStyle.none),
                       borderRadius: BorderRadius.all(Radius.circular(10))),
-                  fillColor: Colors.white,
+                  fillColor: Theme.of(context).scaffoldBackgroundColor,
                   hintText: 'Search',
                   prefixIcon: Icon(Icons.search, size: 20),
                   suffixIcon: IconButton(
@@ -545,7 +545,9 @@ class ServantListPageState extends State<ServantListPage> {
                           ? S.of(context).search_result_count_hide(
                               shownList.length, _hiddenNum)
                           : S.of(context).search_result_count(shownList.length),
-                      style: TextStyle(color: Colors.grey, fontSize: 14),
+                      style: TextStyle(
+                          color: Theme.of(context).textTheme.caption?.color,
+                          fontSize: 14),
                     ),
                   ),
                 );
@@ -555,8 +557,9 @@ class ServantListPageState extends State<ServantListPage> {
               final eyeWidget = GestureDetector(
                 child: Icon(
                   Icons.remove_red_eye,
-                  color:
-                      isSvtFavorite(svt) && !_hidden ? Colors.lightBlue : null,
+                  color: isSvtFavorite(svt) && !_hidden
+                      ? Theme.of(context).colorScheme.primary
+                      : null,
                 ),
                 onTap: () {
                   if (!isSvtFavorite(svt)) return;
@@ -629,7 +632,7 @@ class ServantListPageState extends State<ServantListPage> {
     return DefaultTextStyle(
       style: TextStyle(
         fontSize: 12,
-        color: Colors.black54,
+        color: Theme.of(context).textTheme.caption?.color,
         fontFamily: 'RobotoMono',
       ),
       child: Table(

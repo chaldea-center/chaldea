@@ -5,10 +5,13 @@ part of datatypes;
 class UserData {
   // app settings
   String? language;
+  @JsonKey(unknownEnumValue: ThemeMode.system)
+  ThemeMode? themeMode;
 
   int? slidesUpdateTime;
   Map<String, String> sliderUrls;
   Map<String, bool> galleries;
+
   // String? serverRoot;
   int downloadSource;
   bool autoUpdateApp;
@@ -33,6 +36,7 @@ class UserData {
 
   UserData({
     this.language,
+    this.themeMode,
     this.slidesUpdateTime,
     Map<String, String>? sliderUrls,
     Map<String, bool>? galleries,

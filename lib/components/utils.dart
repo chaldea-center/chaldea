@@ -374,6 +374,10 @@ void copyOrMoveDirectory(
 class Utils {
   Utils._();
 
+  static bool isDarkMode(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark;
+  }
+
   static T? findNextOrPrevious<T>(List<T> list, T cur, bool next) {
     int curIndex = list.indexOf(cur);
     if (curIndex < 0) return null;

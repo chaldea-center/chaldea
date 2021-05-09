@@ -65,14 +65,16 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
     final imageUrls = svt.info.illustrations.values.toList();
     return Column(
       children: <Widget>[
-        TabBar(
+        SizedBox(
+          height: 36,
+          child: TabBar(
             controller: _tabController,
             isScrollable: true,
             tabs: svt.info.illustrations.keys
-                .map((e) => Tab(
-                    child: Text(_localize(e),
-                        style: TextStyle(color: Colors.black87))))
-                .toList()),
+                .map((e) => getTab(_localize(e)))
+                .toList(),
+          ),
+        ),
         Expanded(
           child: TabBarView(
             controller: _tabController,

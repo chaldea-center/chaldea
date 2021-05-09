@@ -21,7 +21,10 @@ class _FreeQuestQueryTabState extends State<FreeQuestQueryTab> {
     db.gameData.freeQuests.forEach((key, quest) {
       _categorizedData.putIfAbsent(quest.chapter, () => <String>[]).add(key);
     });
-    pickerData = [];
+    super.initState();
+  }
+
+  void setPickerData() {
     _categorizedData.forEach((chapter, quests) {
       pickerData.add(PickerItem<String>(
           text: Center(
@@ -30,6 +33,8 @@ class _FreeQuestQueryTabState extends State<FreeQuestQueryTab> {
               maxFontSize: 15,
               maxLines: 2,
               textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Theme.of(context).textTheme.bodyText1?.color),
             ),
           ),
           value: chapter,
@@ -42,13 +47,14 @@ class _FreeQuestQueryTabState extends State<FreeQuestQueryTab> {
                   maxFontSize: 15,
                   maxLines: 2,
                   textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Theme.of(context).textTheme.bodyText1?.color),
                 ),
               ),
               value: quest.indexKey,
             );
           }).toList()));
     });
-    super.initState();
   }
 
   @override
@@ -71,6 +77,7 @@ class _FreeQuestQueryTabState extends State<FreeQuestQueryTab> {
   }
 
   Widget get questPicker {
+    if (pickerData.isEmpty) setPickerData();
     return Center(
       child: TextButton(
         onPressed: () {
@@ -79,14 +86,15 @@ class _FreeQuestQueryTabState extends State<FreeQuestQueryTab> {
             selecteds: chapter == null || questKey == null
                 ? null
                 : [
-              _categorizedData.keys.toList().indexOf(chapter!),
-              _categorizedData[chapter]!.indexOf(questKey!)
-            ],
+                    _categorizedData.keys.toList().indexOf(chapter!),
+                    _categorizedData[chapter]!.indexOf(questKey!)
+                  ],
             changeToFirst: true,
             hideHeader: true,
             textScaleFactor: 0.7,
             height: min(200, MediaQuery.of(context).size.height - 200),
             itemExtent: 48,
+            backgroundColor: null,
             cancelText: S.of(context).cancel,
             confirmText: S.of(context).confirm,
             onConfirm: (Picker picker, List<int> intValues) {

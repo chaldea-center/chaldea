@@ -53,10 +53,7 @@ class _SettingsPageState extends State<SettingsPage> {
           children: [
             ListTile(
               title: Text(S.of(context).cur_account),
-              trailing: _wrapArrowTrailing(Text(
-                db.curUser.name,
-                style: TextStyle(color: Colors.black87),
-              )),
+              trailing: _wrapArrowTrailing(Text(db.curUser.name)),
               onTap: () {
                 SplitRoute.push(
                   context: context,
@@ -67,10 +64,8 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             ListTile(
               title: Text(S.current.server),
-              trailing: _wrapArrowTrailing(Text(
-                db.curUser.server.localizedShort,
-                style: TextStyle(color: Colors.black87),
-              )),
+              trailing:
+                  _wrapArrowTrailing(Text(db.curUser.server.localizedShort)),
               onTap: () {
                 SplitRoute.push(
                   context: context,
@@ -137,6 +132,26 @@ class _SettingsPageState extends State<SettingsPage> {
                   if (lang == null) return;
                   db.userData.language = lang.code;
                   db.notifyAppUpdate();
+                },
+              ),
+            ),
+            ListTile(
+              title: Text(LocalizedText.of(
+                  chs: '夜间模式', jpn: 'ダークモード', eng: 'Dark Mode')),
+              trailing: DropdownButton<ThemeMode>(
+                value: db.userData.themeMode ?? ThemeMode.system,
+                items: [
+                  DropdownMenuItem(
+                      child: Text('System'), value: ThemeMode.system),
+                  DropdownMenuItem(
+                      child: Text('Light'), value: ThemeMode.light),
+                  DropdownMenuItem(child: Text('Dark'), value: ThemeMode.dark),
+                ],
+                onChanged: (v) {
+                  if (v != null) {
+                    db.userData.themeMode = v;
+                    db.notifyAppUpdate();
+                  }
                 },
               ),
             ),

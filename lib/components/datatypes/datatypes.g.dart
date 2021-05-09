@@ -534,8 +534,7 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$GameDataToJson(GameData instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
       'version': instance.version,
       'unavailableSvts': instance.unavailableSvts,
       'servants': instance.servants.map((k, e) => MapEntry(k.toString(), e)),
@@ -1675,6 +1674,11 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
   return $checkedNew('UserData', json, () {
     final val = UserData(
       language: $checkedConvert(json, 'language', (v) => v as String?),
+      themeMode: $checkedConvert(
+          json,
+          'themeMode',
+          (v) => _$enumDecodeNullable(_$ThemeModeEnumMap, v,
+              unknownValue: ThemeMode.system)),
       slidesUpdateTime:
           $checkedConvert(json, 'slidesUpdateTime', (v) => v as int?),
       sliderUrls: $checkedConvert(
@@ -1732,8 +1736,10 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
+Map<String, dynamic> _$UserDataToJson(UserData instance) =>
+    <String, dynamic>{
       'language': instance.language,
+      'themeMode': _$ThemeModeEnumMap[instance.themeMode],
       'slidesUpdateTime': instance.slidesUpdateTime,
       'sliderUrls': instance.sliderUrls,
       'galleries': instance.galleries,
@@ -1749,6 +1755,12 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'itemAbundantValue': instance.itemAbundantValue,
       'curUserKey': instance.curUserKey,
     };
+
+const _$ThemeModeEnumMap = {
+  ThemeMode.system: 'system',
+  ThemeMode.light: 'light',
+  ThemeMode.dark: 'dark',
+};
 
 SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
   return $checkedNew('SvtFilterData', json, () {

@@ -31,7 +31,6 @@ class _QuestCardState extends State<QuestCard> {
     ].join('/');
     String chapter = Localized.chapter.of(quest.chapter);
     return Card(
-      color: Colors.white,
       elevation: 0,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -81,7 +80,9 @@ class _QuestCardState extends State<QuestCard> {
                         showTrueName ? 'Show Display Name' : 'Show True Name',
                     child: Icon(
                       Icons.remove_red_eye_outlined,
-                      color: showTrueName ? Colors.blue : null,
+                      color: showTrueName
+                          ? Theme.of(context).accentColor
+                          : Theme.of(context).hintColor,
                     ),
                   ),
                   onTap: () => setState(() => showTrueName = !showTrueName),

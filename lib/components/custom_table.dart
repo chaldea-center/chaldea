@@ -3,6 +3,8 @@ import 'dart:math' show max;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import 'utils.dart';
+
 const Divider kHorizontalDivider = Divider(
     color: Color.fromRGBO(162, 169, 177, 1), thickness: 0.5, height: 0.5);
 const VerticalDivider kVerticalDivider = VerticalDivider(
@@ -173,7 +175,7 @@ class _CustomTableRowState extends State<CustomTableRow> {
         flex: cell.flex,
         child: Container(
           constraints: constraints,
-          color: cell.color ?? widget.color,
+          color: cell.resolveColor(context) ?? widget.color,
           child: Align(
             alignment: cell.alignment,
             child: Padding(
@@ -238,7 +240,19 @@ class TableCellData {
   bool fitHeight;
   GlobalKey? key;
 
-  static const headerColor = Color.fromRGBO(234, 235, 238, 1);
+  static const headerColorLight = Color.fromRGBO(234, 235, 238, 1);
+  static const headerColorDark = Color.fromRGBO(70, 70, 70, 1);
+
+  static Color resolveHeaderColor(BuildContext context) {
+    return Utils.isDarkMode(context) ? headerColorDark : headerColorLight;
+  }
+
+  Color? resolveColor(BuildContext context) {
+    if (color != null) return color;
+    if (isHeader) {
+      return resolveHeaderColor(context);
+    }
+  }
 
   TableCellData({
     this.key,
@@ -254,7 +268,6 @@ class TableCellData {
     this.fitHeight = false,
   }) : assert(text == null || child == null) {
     if (isHeader == true) {
-      color ??= headerColor;
       maxLines ??= 1;
     }
   }
@@ -310,7 +323,6 @@ class TableCellData {
       data.maxLines =
           maxLines ?? maxLinesList?.elementAt(index) ?? data.maxLines;
       if (isHeader ?? isHeaderList?.elementAt(index) == true) {
-        data.color ??= headerColor;
         data.maxLines ??= 1;
       }
       data.alignment =

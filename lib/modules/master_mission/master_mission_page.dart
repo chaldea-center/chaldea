@@ -180,7 +180,6 @@ class _MasterMissionPageState extends State<MasterMissionPage>
     });
     return Container(
       padding: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
-      color: Colors.grey[100],
       child: Wrap(
         spacing: 6,
         runSpacing: 6,
