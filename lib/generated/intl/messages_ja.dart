@@ -7,7 +7,7 @@
 // ignore_for_file:unnecessary_brace_in_string_interps, unnecessary_new
 // ignore_for_file:prefer_single_quotes,comment_references, directives_ordering
 // ignore_for_file:annotate_overrides,prefer_generic_function_type_aliases
-// ignore_for_file:unused_import, file_names
+// ignore_for_file:unused_import, file_names, avoid_escaping_inner_quotes
 
 import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
@@ -19,49 +19,50 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ja';
 
-  static m0(email, logPath) => "エラーページのスクリーンショットとログファイルをこのメールボックスに送信してください：\n${email}\nログファイルパス：${logPath}";
+  static String m0(email, logPath) =>
+      "エラーページのスクリーンショットとログファイルをこのメールボックスに送信してください：\n${email}\nログファイルパス：${logPath}";
 
-  static m1(curVersion, newVersion, releaseNote) =>
+  static String m1(curVersion, newVersion, releaseNote) =>
       "現在のバージョン：${curVersion} \n最新のバージョン：${newVersion}\n詳細:\n${releaseNote}";
 
-  static m2(name) => "ソース${name}";
+  static String m2(name) => "ソース${name}";
 
-  static m3(n) => "最大${n}ボックス";
+  static String m3(n) => "最大${n}ボックス";
 
-  static m4(n) => "聖杯は伝承結晶に置き換える${n}個";
+  static String m4(n) => "聖杯は伝承結晶に置き換える${n}個";
 
-  static m5(error) => "インポートに失敗しました、エラー:\n${error}";
+  static String m5(error) => "インポートに失敗しました、エラー:\n${error}";
 
-  static m6(account) => "アカウント ${account} に切り替える";
+  static String m6(account) => "アカウント ${account} に切り替える";
 
-  static m7(itemNum, svtNum) => "どのアカウントに？${itemNum}アイテム&${svtNum}サーバント";
+  static String m7(itemNum, svtNum) => "どのアカウントに？${itemNum}アイテム&${svtNum}サーバント";
 
-  static m8(name) => "${name}はすでに存在します";
+  static String m8(name) => "${name}はすでに存在します";
 
-  static m9(site) => "${site}にジャンプ";
+  static String m9(site) => "${site}にジャンプ";
 
-  static m10(first) => "${Intl.select(first, {
+  static String m10(first) => "${Intl.select(first, {
             'true': '最初のもの',
             'false': '最後のもの',
             'other': '最後のもの',
           })}";
 
-  static m11(version) => "データバージョンが${version}に更新されました";
+  static String m11(version) => "データバージョンが${version}に更新されました";
 
-  static m12(index) => "プラン${index}";
+  static String m12(index) => "プラン${index}";
 
-  static m13(total) => "合計：${total}";
+  static String m13(total) => "合計：${total}";
 
-  static m14(total, hidden) => "合計：${total} (非表示: ${hidden})";
+  static String m14(total, hidden) => "合計：${total} (非表示: ${hidden})";
 
-  static m15(tempDir, externalBackupDir) =>
-      "ユーザーデータのバックアップは一時(${tempDir})に保存されます\nアプリの削除/他のアーキテクチャのインストール（例えば、arm64-v8aからarmeabi-v7aへ ）/将来のビルド番号の変更、ユーザーデータと一時バックアップが削除されます。外部ストレージ(${externalBackupDir}})にバックアップするためのストレージ権限を有効にすることを強くお勧めします ";
+  static String m15(tempDir, externalBackupDir) =>
+      "ユーザーデータのバックアップは一時(${tempDir})に保存されます\nアプリの削除/他のアーキテクチャのインストール（例えば、arm64-v8aからarmeabi-v7aへ ）/将来のビルド番号の変更、ユーザーデータと一時バックアップが削除されます。外部ストレージ(${externalBackupDir}";
 
-  static m16(a, b) => "${a}${b}";
+  static String m16(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
 
-  static _notInlinedMessages(_) => <String, Function>{
+  static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about_app": MessageLookupByLibrary.simpleMessage("ついて"),
         "about_app_declaration_text": MessageLookupByLibrary.simpleMessage(
             "　このアプリケーションで使用されるデータは、ゲームおよび次のサイトからのものです。ゲーム画像およびその他のテキストの著作権はTYPE MOON / FGO PROJECTに帰属します。\n　プログラムの機能と設計はWeChatアプリ「素材规划」とiOSアプリのGudaを参照しています。\n"),
@@ -434,8 +435,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("フリークエストを計画する"),
         "previous_card": MessageLookupByLibrary.simpleMessage("前のカード"),
         "priority": MessageLookupByLibrary.simpleMessage("優先順位"),
-        "progress_cn": MessageLookupByLibrary.simpleMessage("中国サーバー"),
-        "progress_jp": MessageLookupByLibrary.simpleMessage("日本サーバー"),
         "project_homepage":
             MessageLookupByLibrary.simpleMessage("プロジェクトホームページ"),
         "query_failed": MessageLookupByLibrary.simpleMessage("クエリに失敗しました"),
@@ -473,8 +472,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "servant": MessageLookupByLibrary.simpleMessage("サーヴァント"),
         "servant_title": MessageLookupByLibrary.simpleMessage("サーヴァント"),
         "server": MessageLookupByLibrary.simpleMessage("サーバー"),
-        "server_cn": MessageLookupByLibrary.simpleMessage("CN"),
-        "server_jp": MessageLookupByLibrary.simpleMessage("JP"),
+        "server_cn": MessageLookupByLibrary.simpleMessage("中国"),
+        "server_jp": MessageLookupByLibrary.simpleMessage("日本"),
+        "server_na": MessageLookupByLibrary.simpleMessage("北米"),
+        "server_tw": MessageLookupByLibrary.simpleMessage("台湾"),
         "setting_auto_rotate": MessageLookupByLibrary.simpleMessage("自動回転"),
         "settings_data": MessageLookupByLibrary.simpleMessage("データ"),
         "settings_data_management":

@@ -310,6 +310,8 @@ Map<String, dynamic> _$CraftEssenceToJson(CraftEssence instance) =>
 Events _$EventsFromJson(Map<String, dynamic> json) {
   return $checkedNew('Events', json, () {
     final val = Events(
+      progressNA: $checkedConvert(json, 'progressNA', (v) => v as String?),
+      progressTW: $checkedConvert(json, 'progressTW', (v) => v as String?),
       limitEvents: $checkedConvert(
           json,
           'limitEvents',
@@ -322,21 +324,24 @@ Events _$EventsFromJson(Map<String, dynamic> json) {
           'mainRecords',
           (v) => (v as Map<String, dynamic>).map(
                 (k, e) =>
-                    MapEntry(k, MainRecord.fromJson(e as Map<String, dynamic>)),
-              )),
+                MapEntry(k, MainRecord.fromJson(e as Map<String, dynamic>)),
+          )),
       exchangeTickets: $checkedConvert(
           json,
           'exchangeTickets',
-          (v) => (v as Map<String, dynamic>).map(
+              (v) => (v as Map<String, dynamic>).map(
                 (k, e) => MapEntry(
-                    k, ExchangeTicket.fromJson(e as Map<String, dynamic>)),
-              )),
+                k, ExchangeTicket.fromJson(e as Map<String, dynamic>)),
+          )),
     );
     return val;
   });
 }
 
-Map<String, dynamic> _$EventsToJson(Events instance) => <String, dynamic>{
+Map<String, dynamic> _$EventsToJson(Events instance) =>
+    <String, dynamic>{
+      'progressNA': instance.progressNA.toIso8601String(),
+      'progressTW': instance.progressTW.toIso8601String(),
       'limitEvents': instance.limitEvents,
       'mainRecords': instance.mainRecords,
       'exchangeTickets': instance.exchangeTickets,
@@ -1736,8 +1741,7 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$UserDataToJson(UserData instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'language': instance.language,
       'themeMode': _$ThemeModeEnumMap[instance.themeMode],
       'slidesUpdateTime': instance.slidesUpdateTime,

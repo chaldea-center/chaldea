@@ -64,8 +64,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             ListTile(
               title: Text(S.current.server),
-              trailing:
-                  _wrapArrowTrailing(Text(db.curUser.server.localizedShort)),
+              trailing: _wrapArrowTrailing(Text(db.curUser.server.localized)),
               onTap: () {
                 SplitRoute.push(
                   context: context,
@@ -294,7 +293,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ?.millisecondsSinceEpoch ??
           -1;
     } else {
-      db.curUser.msProgress = fixValidRange(db.curUser.msProgress, -2, -1);
+      db.curUser.msProgress = fixValidRange(db.curUser.msProgress, -4, -1);
     }
     Widget _wrapText(String text) => Text(
           text,
@@ -304,8 +303,10 @@ class _SettingsPageState extends State<SettingsPage> {
         );
 
     final items = <DropdownMenuItem<int>>[
-      DropdownMenuItem(value: -1, child: _wrapText(S.current.progress_jp)),
-      DropdownMenuItem(value: -2, child: _wrapText(S.current.progress_cn)),
+      DropdownMenuItem(value: -1, child: _wrapText(S.current.server_jp)),
+      DropdownMenuItem(value: -2, child: _wrapText(S.current.server_cn)),
+      DropdownMenuItem(value: -3, child: _wrapText(S.current.server_tw)),
+      DropdownMenuItem(value: -4, child: _wrapText(S.current.server_na)),
     ];
     for (var date in sortedDates) {
       items.add(DropdownMenuItem(

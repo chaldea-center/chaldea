@@ -10,7 +10,7 @@ import 'intl/messages_all.dart';
 
 // ignore_for_file: non_constant_identifier_names, lines_longer_than_80_chars
 // ignore_for_file: join_return_with_assignment, prefer_final_in_for_each
-// ignore_for_file: avoid_redundant_argument_values
+// ignore_for_file: avoid_redundant_argument_values, avoid_escaping_inner_quotes
 
 class S {
   S();
@@ -18,28 +18,31 @@ class S {
   static S? _current;
 
   static S get current {
-    assert(_current != null, 'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
+    assert(_current != null,
+        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
     return _current!;
   }
 
-  static const AppLocalizationDelegate delegate =
-    AppLocalizationDelegate();
+  static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final name = (locale.countryCode?.isEmpty ?? false) ? locale.languageCode : locale.toString();
-    final localeName = Intl.canonicalizedLocale(name); 
+    final name = (locale.countryCode?.isEmpty ?? false)
+        ? locale.languageCode
+        : locale.toString();
+    final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
       final instance = S();
       S._current = instance;
- 
+
       return instance;
     });
-  } 
+  }
 
   static S of(BuildContext context) {
     final instance = S.maybeOf(context);
-    assert(instance != null, 'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
+    assert(instance != null,
+        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
     return instance!;
   }
 
@@ -207,6 +210,16 @@ class S {
     );
   }
 
+  /// `日服`
+  String get server_jp {
+    return Intl.message(
+      '日服',
+      name: 'server_jp',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `国服`
   String get server_cn {
     return Intl.message(
@@ -217,11 +230,21 @@ class S {
     );
   }
 
-  /// `日服`
-  String get server_jp {
+  /// `台服`
+  String get server_tw {
     return Intl.message(
-      '日服',
-      name: 'server_jp',
+      '台服',
+      name: 'server_tw',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `美服`
+  String get server_na {
+    return Intl.message(
+      '美服',
+      name: 'server_na',
       desc: '',
       args: [],
     );
@@ -1018,7 +1041,8 @@ class S {
   }
 
   /// `当前版本: {curVersion}\n最新版本: {newVersion}\n更新内容:\n{releaseNote}`
-  String about_update_app_detail(Object curVersion, Object newVersion, Object releaseNote) {
+  String about_update_app_detail(
+      Object curVersion, Object newVersion, Object releaseNote) {
     return Intl.message(
       '当前版本: $curVersion\n最新版本: $newVersion\n更新内容:\n$releaseNote',
       name: 'about_update_app_detail',
@@ -3172,26 +3196,6 @@ class S {
     );
   }
 
-  /// `日服`
-  String get progress_jp {
-    return Intl.message(
-      '日服',
-      name: 'progress_jp',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `国服`
-  String get progress_cn {
-    return Intl.message(
-      '国服',
-      name: 'progress_cn',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `生成2号机`
   String get create_duplicated_svt {
     return Intl.message(
@@ -3555,7 +3559,7 @@ class S {
   /// `用户数据备份储存于临时目录({tempDir})\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至({externalBackupDir}})`
   String storage_permission_content(Object tempDir, Object externalBackupDir) {
     return Intl.message(
-      '用户数据备份储存于临时目录($tempDir)\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至($externalBackupDir})',
+      '用户数据备份储存于临时目录($tempDir)\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至($externalBackupDir',
       name: 'storage_permission_content',
       desc: '',
       args: [tempDir, externalBackupDir],

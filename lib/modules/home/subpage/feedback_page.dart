@@ -40,25 +40,19 @@ class _FeedbackPageState extends State<FeedbackPage> {
         leading: BackButton(),
       ),
       body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 8),
+        padding: EdgeInsets.symmetric(vertical: 8),
         children: [
-          Padding(padding: EdgeInsets.only(top: 8)),
           TileGroup(
-            header: 'Github',
+            header: 'Contact',
             children: [
               ListTile(
-                title: Text(S.of(context).project_homepage),
+                title: Text('Github'),
                 subtitle: Text(kProjectHomepage),
                 onTap: () => jumpToExternalLinkAlert(
                   url: '$kProjectHomepage/issues',
                   name: 'Github',
                 ),
               ),
-            ],
-          ),
-          TileGroup(
-            header: 'NGA',
-            children: [
               ListTile(
                 title: Text(S.of(context).nga),
                 subtitle: Text('https://bbs.nga.cn/read.php?tid=24926789'),
@@ -67,11 +61,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   name: S.of(context).nga_fgo,
                 ),
               ),
-            ],
-          ),
-          TileGroup(
-            header: 'Email',
-            children: [
               ListTile(
                 title: Text('Email'),
                 subtitle: Text(kSupportTeamEmailAddress),
@@ -95,6 +84,14 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   }
                 },
               ),
+              ListTile(
+                title: Text('Discord'),
+                subtitle: Text('https://discord.gg/5M6w5faqjP'),
+                onTap: () {
+                  jumpToExternalLinkAlert(
+                      url: 'https://discord.gg/5M6w5faqjP', name: 'Discord');
+                },
+              )
             ],
           ),
           TileGroup(

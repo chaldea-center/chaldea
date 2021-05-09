@@ -2,15 +2,24 @@ part of datatypes;
 
 @JsonSerializable(checked: true)
 class Events {
+  DateTime progressNA;
+  DateTime progressTW;
   Map<String, LimitEvent> limitEvents; //key: event.name=mcLink
   Map<String, MainRecord> mainRecords; //key: event.chapter
   Map<String, ExchangeTicket> exchangeTickets; //key: event.monthCn
 
   Events({
+    String? progressNA,
+    String? progressTW,
     required this.limitEvents,
     required this.mainRecords,
     required this.exchangeTickets,
-  });
+  })  : progressNA = _parseDate(progressNA, 365 * 2),
+        progressTW = _parseDate(progressTW, 648);
+
+  static DateTime _parseDate(String? time, [int days = 0]) {
+    return time?.toDateTime() ?? DateTime.now().subtract(Duration(days: days));
+  }
 
   factory Events.fromJson(Map<String, dynamic> data) => _$EventsFromJson(data);
 
@@ -285,10 +294,15 @@ class ExchangeTicket {
   @JsonKey(ignore: true)
   DateTime dateCn;
   @JsonKey(ignore: true)
+  DateTime dateTw;
+  @JsonKey(ignore: true)
   DateTime dateEn;
 
   @JsonKey(name: 'monthCn')
   String get monthCn => dateToStr(dateCn);
+
+  @JsonKey(ignore: false)
+  String get monthTw => dateToStr(dateTw);
 
   @JsonKey(ignore: false)
   String get monthEn => dateToStr(dateEn);
@@ -304,9 +318,12 @@ class ExchangeTicket {
     required this.items,
     // don't import but export these two
     String? monthCn,
+    String? monthTw,
     String? monthEn,
-  })  : dateJp = monthToDate(monthJp),
+  })
+      : dateJp = monthToDate(monthJp),
         dateCn = monthToDate(monthJp, 15),
+        dateTw = monthToDate(monthJp, 21),
         dateEn = monthToDate(monthJp, 24);
 
   DateTime get curDate {
@@ -315,6 +332,8 @@ class ExchangeTicket {
         return dateJp;
       case GameServer.cn:
         return dateCn;
+      case GameServer.tw:
+        return dateTw;
       case GameServer.en:
         return dateEn;
     }

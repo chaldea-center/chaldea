@@ -297,10 +297,15 @@ Future<void> jumpToExternalLinkAlert(
 bool checkEventOutdated(
     {DateTime? timeJp, DateTime? timeCn, Duration? duration}) {
   duration ??= Duration(days: 27);
-  if (db.curUser.msProgress <= 0) {
+  if (db.curUser.msProgress == -1 || db.curUser.msProgress == -2) {
     return DateTime.now().checkOutdated(timeCn, duration);
   } else {
-    return DateTime.fromMillisecondsSinceEpoch(db.curUser.msProgress)
+    int ms = db.curUser.msProgress == -3
+        ? db.gameData.events.progressTW.millisecondsSinceEpoch
+        : db.curUser.msProgress == -4
+            ? db.gameData.events.progressNA.millisecondsSinceEpoch
+            : db.curUser.msProgress;
+    return DateTime.fromMillisecondsSinceEpoch(ms)
         .checkOutdated(timeJp, duration);
   }
 }

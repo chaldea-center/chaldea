@@ -4,6 +4,7 @@ part of datatypes;
 enum GameServer {
   jp,
   cn,
+  tw,
   en,
 }
 
@@ -11,26 +12,13 @@ extension GameServerUtil on GameServer {
   String get localized {
     switch (this) {
       case GameServer.jp:
-        return LocalizedText.of(
-            chs: '日服', jpn: 'Japanese Server', eng: 'Japanese');
+        return S.current.server_jp;
       case GameServer.cn:
-        return LocalizedText.of(
-            chs: '国服', jpn: 'Chinese Server', eng: 'Chinese (Simplified)');
+        return S.current.server_cn;
+      case GameServer.tw:
+        return S.current.server_tw;
       case GameServer.en:
-        return LocalizedText.of(
-            chs: '美服', jpn: 'English (NA)', eng: 'English (NA)');
-    }
-  }
-
-  String get localizedShort {
-    switch (this) {
-      case GameServer.jp:
-        return LocalizedText.of(chs: '日服', jpn: 'Japanese', eng: 'Japanese');
-      case GameServer.cn:
-        return LocalizedText.of(
-            chs: '国服', jpn: 'Chinese Server', eng: 'Chinese');
-      case GameServer.en:
-        return LocalizedText.of(chs: '美服', jpn: 'English', eng: 'English');
+        return S.current.server_na;
     }
   }
 }
