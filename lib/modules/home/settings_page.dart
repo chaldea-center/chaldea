@@ -69,7 +69,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 SplitRoute.push(
                   context: context,
                   builder: (ctx, _) => GameServerPage(),
-                  detail: true,
+                  popDetail: true,
                 );
               },
             ),
@@ -77,7 +77,8 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         TileGroup(
           header: S.current.event_progress,
-          footer: '${S.current.limited_event}/${S.current.main_record}',
+          footer:
+              '${S.current.limited_event}/${S.current.main_record}/${S.current.summon}',
           children: [
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
@@ -359,7 +360,7 @@ class _SettingsPageState extends State<SettingsPage> {
         SplitRoute.push(
           context: context,
           builder: (context, _) => LoginPage(),
-          detail: true,
+          popDetail: true,
         );
       },
     );

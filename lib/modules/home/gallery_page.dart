@@ -74,7 +74,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       child: FaIcon(
         icon,
         size: 36,
-        color: Theme.of(context).colorScheme.primary,
+        color: Theme.of(context).colorScheme.secondaryVariant,
       ),
     );
   }
@@ -331,9 +331,9 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
                   alignment: Alignment.bottomCenter,
                   child: item.child == null
                       ? Icon(
-                          item.icon,
+                    item.icon,
                           size: 40,
-                          color: Theme.of(context).colorScheme.primary,
+                          color: Theme.of(context).colorScheme.secondaryVariant,
                         )
                       : item.child,
                 ),
@@ -427,7 +427,11 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
   }
 
   Future<Null> resolveSliderImageUrls([bool showToast = false]) async {
-    Map<String, String> _getImageLinks(dom.Element? element, Uri uri) {
+    Map<String, String> _getImageLinks(
+        {required dom.Element? element,
+        required Uri uri,
+        String attr = 'src',
+        bool imgOnly = true}) {
       Map<String, String> _result = {};
       if (element == null) return _result;
       for (var linkNode in element.getElementsByTagName('a')) {
@@ -436,14 +440,15 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         if (link == null) continue;
         print('link=$link');
         if (imgNodes.isNotEmpty) {
-          String? imgUrl = imgNodes.first.attributes['src'];
+          String? imgUrl = imgNodes.first.attributes[attr];
           if (imgUrl != null) {
             imgUrl = uri.resolve(imgUrl).toString();
+            print('imgUrl=$imgUrl');
             link = uri.resolve(link).toString();
             _result[imgUrl] = link;
             // print('imgUrl= "$imgUrl"\nhref  = "$link"');
           }
-        } else if (linkNode.text.isNotEmpty) {
+        } else if (linkNode.text.isNotEmpty && !imgOnly) {
           _result[linkNode.text] = link;
         }
       }
@@ -453,12 +458,12 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
     Map<String, String> result = {};
     try {
       final _dio = Dio();
-      // mc slides
+      // // mc slides
       final mcUrl = 'https://fgo.wiki/w/模板:自动取值轮播';
-      final task1 = _dio.get(mcUrl).then((response) {
+      final taskMC = _dio.get(mcUrl).then((response) {
         var mcParser = parser.parse(response.data.toString());
         var mcElement = mcParser.getElementById('transImageBox');
-        return _getImageLinks(mcElement, Uri.parse(mcUrl));
+        return _getImageLinks(element: mcElement, uri: Uri.parse(mcUrl));
       }).catchError((e, s) {
         logger.e('parse mc slides failed', e, s);
         return <String, String>{};
@@ -466,30 +471,55 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
 
       // jp slides
       final jpUrl = 'http://view.fate-go.jp';
-      final task2 = _dio.get(jpUrl).then((response) {
+      final taskJp = _dio.get(jpUrl).then((response) {
         var jpParser = parser.parse(response.data.toString());
         var jpElement = jpParser.getElementsByClassName('slide').getOrNull(0);
-        return _getImageLinks(jpElement, Uri.parse(jpUrl));
+        return _getImageLinks(element: jpElement, uri: Uri.parse(jpUrl));
       }).catchError((e, s) {
         logger.e('parse jp slides failed', e, s);
         return <String, String>{};
       });
 
+      // gitee
       final announceUrl =
           'https://gitee.com/chaldea-center/chaldea/wikis/pages/wiki?wiki_title=Announcement&parent=&version_id=master&sort_id=3819789&info_id=1327454&extname=.md';
-      final task3 = _dio.get(announceUrl).then((response) {
+      final taskGitee = _dio.get(announceUrl).then((response) {
         final annContent = response.data;
         // print(annContent.runtimeType);
         // print(annContent['wiki']['content_html']);
         var announceParser = parser.parse(annContent['wiki']['content_html']);
         var announceElement = announceParser.body;
-        return _getImageLinks(announceElement, Uri.parse(announceUrl));
+        return _getImageLinks(
+            element: announceElement,
+            uri: Uri.parse(announceUrl),
+            imgOnly: false);
       }).catchError((e, s) {
         logger.e('parse gitee announce slides failed', e, s);
         return <String, String>{};
       });
+
+      // fandom news - NA part
+      final fandomUrl = 'https://fategrandorder.fandom.com/wiki/Template:News';
+      final taskFandom =
+          _dio.get(fandomUrl).then<Map<String, String>>((response) {
+        var fandomParser = parser.parse(response.data.toString());
+        var fandomElements = fandomParser.getElementsByClassName('wikitable');
+        if (fandomElements.isEmpty) return {};
+        var links = _getImageLinks(
+            element: fandomElements.last,
+            uri: Uri.parse(fandomUrl),
+            attr: 'data-src');
+        links = links.map(
+            (key, value) => MapEntry(key.split('/revision/').first, value));
+        return links;
+      }).catchError((e, s) {
+        logger.e('parse fandom news failed', e, s);
+        return <String, String>{};
+      });
       await Future.forEach<Future<Map<String, String>>>(
-          [task1, task3, task2], (e) async => result.addAll(await e));
+          // [taskFandom],
+          [taskMC, taskGitee, taskFandom, taskJp],
+          (e) async => result.addAll(await e));
       if (showToast) {
         EasyLoading.showSuccess('slides updated');
       }

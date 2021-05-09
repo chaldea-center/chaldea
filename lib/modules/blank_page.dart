@@ -15,6 +15,25 @@ class BlankPage extends StatelessWidget {
       double imgHeight = min(270, constraints.biggest.height * 0.5);
       double progressSize = 50;
       progressSize = min(100, progressSize);
+      Widget img = Image(
+        image: AssetImage("res/img/chaldea.png"),
+        filterQuality: FilterQuality.high,
+      );
+      if (Utils.isDarkMode(context)) {
+        // assume r=g=b
+        int b = Theme.of(context).scaffoldBackgroundColor.blue;
+        double v = (255 - b) / 255;
+        img = ColorFiltered(
+          colorFilter: ColorFilter.matrix([
+            //R G  B  A  Const
+            -v, 0, 0, 0, 255,
+            0, -v, 0, 0, 255,
+            0, 0, -v, 0, 255,
+            0, 0, 0, 1, 0,
+          ]),
+          child: img,
+        );
+      }
       return Scaffold(
         body: Center(
           child: Column(
@@ -26,10 +45,7 @@ class BlankPage extends StatelessWidget {
                   maxWidth: imgWidth,
                   maxHeight: imgHeight,
                 ),
-                child: Image(
-                  image: AssetImage("res/img/chaldea.png"),
-                  filterQuality: FilterQuality.high,
-                ),
+                child: img,
               ),
 
               /// If show progress
