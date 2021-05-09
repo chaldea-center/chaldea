@@ -51,7 +51,7 @@
 
 ## UI
 毫无艺术细胞，有生之年
-- [ ] Dark mode
+- [x] Dark mode
 - [ ] Animation
     - [x] transition animation of `SplitRoute`
       - [ ] custom transition

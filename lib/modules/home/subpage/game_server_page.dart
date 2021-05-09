@@ -20,11 +20,11 @@ class _GameServerPageState extends State<GameServerPage> {
           ],
           footer: LocalizedText.of(
               chs: '当前与之关联的有：\n'
-                  ' - 素材交换券每月兑换数量',
+                  ' - 素材交换券月份与每月兑换数量',
               jpn: '現在関連付けられている：\n'
-                  ' - 素材交換券の月間交換限度額',
+                  ' - 素材交換券の月の設定と交換回数',
               eng: 'Current related: \n'
-                  ' - Exchange Ticket limit every month'),
+                  ' - Exchange Tickets\' month setting and limit per month'),
         ),
       ),
     );

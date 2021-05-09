@@ -155,7 +155,7 @@ class User {
     final svt = db.gameData.servantsWithUser[no];
 
     if (svt != null &&
-        status.isEmptyIgnoreFavorite && // TODO: replace with isEmpty
+        status.isEmpty &&
         (svt.info.rarity <= 3 || svt.info.obtain == '活动')) {
       status.npLv = 5;
     }
@@ -244,17 +244,7 @@ class ServantStatus {
   }
 
   bool get isEmpty {
-    return curVal.isEmpty &&
-        (npLv == 1 || npLv == 5) &&
-        priority == 1 &&
-        skillIndex.every((e) => e == null) &&
-        npIndex == 0;
-  }
-
-  bool get isEmptyIgnoreFavorite {
-    return curVal.isEmptyIgnoreFavorite &&
-        (npLv == 1 || npLv == 5) &&
-        priority == 1;
+    return curVal.isEmpty && (npLv == 1 || npLv == 5) && priority == 1;
   }
 
   factory ServantStatus.fromJson(Map<String, dynamic> data) =>

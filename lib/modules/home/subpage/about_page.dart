@@ -47,7 +47,10 @@ class _AboutPageState extends State<AboutPage> {
             ),
             legalese: 'Copyright © 2021 cc.narumi.\nAll rights reserved.',
           ),
-          if (!Platform.isIOS && !AppInfo.isMacStoreApp || kDebugMode)
+          if (!AppInfo.isMacStoreApp &&
+                  (!Platform.isIOS ||
+                      db.runtimeData.upgradableVersion != null) ||
+              kDebugMode)
             TileGroup(
               header: S.current.update,
               children: [

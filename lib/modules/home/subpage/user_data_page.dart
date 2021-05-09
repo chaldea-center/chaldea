@@ -51,7 +51,7 @@ class _UserDataPageState extends State<UserDataPage> {
               // ),
               ListTile(
                 title: Text(S.of(context).backup),
-                subtitle: Text(db.paths.userDataBackupDir),
+                subtitle: Text(defaultBackupDir),
                 onTap: backupUserData,
               ),
               ListTile(
@@ -112,10 +112,12 @@ class _UserDataPageState extends State<UserDataPage> {
     }
   }
 
+  String get defaultBackupDir => Platform.isIOS
+      ? S.current.ios_app_path + '/backup'
+      : db.paths.userDataBackupDir;
+
   Future backupUserData() async {
-    List<String> backupPaths = [
-      Platform.isIOS ? S.of(context).ios_app_path + '/user' : db.paths.userDir
-    ];
+    List<String> backupPaths = [defaultBackupDir];
     if (db.paths.externalAppPath != null) {
       backupPaths.add(db.paths.externalAppPath!);
     }
