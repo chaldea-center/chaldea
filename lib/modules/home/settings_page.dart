@@ -140,6 +140,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   chs: '夜间模式', jpn: 'ダークモード', eng: 'Dark Mode')),
               trailing: DropdownButton<ThemeMode>(
                 value: db.userData.themeMode ?? ThemeMode.system,
+                underline: Container(),
                 items: [
                   DropdownMenuItem(
                       child: Text('System'), value: ThemeMode.system),

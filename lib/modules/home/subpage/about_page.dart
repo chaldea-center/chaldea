@@ -13,8 +13,7 @@ class _AboutPageState extends State<AboutPage> {
   Map<String, String> get references => {
         'TYPE-MOON/FGO PROJECT': 'https://www.fate-go.jp',
         'Mooncell': 'https://fgo.wiki',
-        'Fandom-fategrandorder':
-            'https://fategrandorder.fandom.com/wiki/Fate/Grand_Order_Wikia',
+        'Fandom-fategrandorder': 'https://fategrandorder.fandom.com/wiki',
         'NGA-FGO': 'https://bbs.nga.cn/thread.php?fid=540',
         S.current.fgo_domus_aurea:
             'https://sites.google.com/view/fgo-domus-aurea',
@@ -32,9 +31,10 @@ class _AboutPageState extends State<AboutPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          leading: BackButton(),
-          title: Text(MaterialLocalizations.of(context)
-              .aboutListTileTitle(AppInfo.appName))),
+        leading: BackButton(),
+        title: Text(MaterialLocalizations.of(context)
+            .aboutListTileTitle(AppInfo.appName)),
+      ),
       body: ListView(
         children: <Widget>[
           _AboutProgram(
@@ -94,6 +94,16 @@ class _AboutPageState extends State<AboutPage> {
                   onTap: () =>
                       jumpToExternalLinkAlert(url: ref.value, name: ref.key),
                 ),
+              ListTile(
+                title: Text('Fandom Contributors'),
+                onTap: () {
+                  SplitRoute.push(
+                    context: context,
+                    builder: (_, __) => _FandomContributorsPage(),
+                    detail: true,
+                  );
+                },
+              ),
             ],
           ),
           TileGroup(
@@ -206,6 +216,45 @@ class _AboutProgram extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _FandomContributorsPage extends StatelessWidget {
+  const _FandomContributorsPage({Key? key}) : super(key: key);
+
+  final Map<String, String> data = const {
+    'Fandom FGO Team': 'https://fategrandorder.fandom.com/wiki',
+    'Chaldeum Translations': 'https://chaldeum.wordpress.com',
+    'aabisector': 'https://www.reddit.com/user/aabisector',
+    'ComunCoutinho': 'https://www.reddit.com/user/ComunCoutinho',
+    'newworldfool': 'https://www.reddit.com/user/newworldfool',
+    'kanramori': 'https://www.reddit.com/user/kanramori',
+    'Kairosity': 'https://twitter.com/paradigmkai',
+    'Konchew': 'https://www.reddit.com/user/Konchew',
+    'PkFreezeAlpha': 'https://www.reddit.com/user/PkFreezeAlpha',
+    'shinyklefkey': 'https://www.reddit.com/user/shinyklefkey',
+    'uragiruhito': 'https://www.reddit.com/user/uragiruhito',
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> children = [];
+    data.forEach((name, link) {
+      children.add(ListTile(
+        title: Text(name),
+        subtitle: Text(link),
+        onTap: () {
+          jumpToExternalLinkAlert(url: link);
+        },
+      ));
+    });
+    return Scaffold(
+      appBar: AppBar(
+        leading: BackButton(),
+        title: Text('Fandom Contributors'),
+      ),
+      body: ListView(children: children),
     );
   }
 }
