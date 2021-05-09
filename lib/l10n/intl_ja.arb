@@ -20,6 +20,7 @@
   "server_cn": "中国",
   "server_tw": "台湾",
   "server_na": "北米",
+  "sync_server": "同步{server}",
   "backup": "バックアップ",
   "restore": "復元",
   "servant_title": "サーヴァント",

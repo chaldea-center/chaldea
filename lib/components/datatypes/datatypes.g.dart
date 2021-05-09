@@ -324,22 +324,21 @@ Events _$EventsFromJson(Map<String, dynamic> json) {
           'mainRecords',
           (v) => (v as Map<String, dynamic>).map(
                 (k, e) =>
-                MapEntry(k, MainRecord.fromJson(e as Map<String, dynamic>)),
-          )),
+                    MapEntry(k, MainRecord.fromJson(e as Map<String, dynamic>)),
+              )),
       exchangeTickets: $checkedConvert(
           json,
           'exchangeTickets',
-              (v) => (v as Map<String, dynamic>).map(
+          (v) => (v as Map<String, dynamic>).map(
                 (k, e) => MapEntry(
-                k, ExchangeTicket.fromJson(e as Map<String, dynamic>)),
-          )),
+                    k, ExchangeTicket.fromJson(e as Map<String, dynamic>)),
+              )),
     );
     return val;
   });
 }
 
-Map<String, dynamic> _$EventsToJson(Events instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$EventsToJson(Events instance) => <String, dynamic>{
       'progressNA': instance.progressNA.toIso8601String(),
       'progressTW': instance.progressTW.toIso8601String(),
       'limitEvents': instance.limitEvents,
@@ -447,6 +446,7 @@ ExchangeTicket _$ExchangeTicketFromJson(Map<String, dynamic> json) {
       items: $checkedConvert(json, 'items',
           (v) => (v as List<dynamic>).map((e) => e as String).toList()),
       monthCn: $checkedConvert(json, 'monthCn', (v) => v as String?),
+      monthTw: $checkedConvert(json, 'monthTw', (v) => v as String?),
       monthEn: $checkedConvert(json, 'monthEn', (v) => v as String?),
     );
     return val;
@@ -458,6 +458,7 @@ Map<String, dynamic> _$ExchangeTicketToJson(ExchangeTicket instance) =>
       'monthJp': instance.monthJp,
       'items': instance.items,
       'monthCn': instance.monthCn,
+      'monthTw': instance.monthTw,
       'monthEn': instance.monthEn,
     };
 
@@ -1556,6 +1557,7 @@ K? _$enumDecodeNullable<K, V>(
 const _$GameServerEnumMap = {
   GameServer.jp: 'jp',
   GameServer.cn: 'cn',
+  GameServer.tw: 'tw',
   GameServer.en: 'en',
 };
 
@@ -1684,6 +1686,8 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
           'themeMode',
           (v) => _$enumDecodeNullable(_$ThemeModeEnumMap, v,
               unknownValue: ThemeMode.system)),
+      showSummonBanner:
+          $checkedConvert(json, 'showSummonBanner', (v) => v as bool?),
       slidesUpdateTime:
           $checkedConvert(json, 'slidesUpdateTime', (v) => v as int?),
       sliderUrls: $checkedConvert(
@@ -1741,9 +1745,11 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
+Map<String, dynamic> _$UserDataToJson(UserData instance) =>
+    <String, dynamic>{
       'language': instance.language,
       'themeMode': _$ThemeModeEnumMap[instance.themeMode],
+      'showSummonBanner': instance.showSummonBanner,
       'slidesUpdateTime': instance.slidesUpdateTime,
       'sliderUrls': instance.sliderUrls,
       'galleries': instance.galleries,

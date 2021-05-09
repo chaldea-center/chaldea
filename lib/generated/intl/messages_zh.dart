@@ -58,7 +58,9 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m15(tempDir, externalBackupDir) =>
       "用户数据备份储存于临时目录(${tempDir})\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至(${externalBackupDir}";
 
-  static String m16(a, b) => "${a}${b}";
+  static String m16(server) => "同步${server}";
+
+  static String m17(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
 
@@ -487,6 +489,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("重置规划"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("切换滑动条/下拉框"),
+        "sync_server": m16,
         "tooltip_refresh_sliders":
             MessageLookupByLibrary.simpleMessage("刷新首页图"),
         "total_ap": MessageLookupByLibrary.simpleMessage("总AP"),
@@ -506,7 +509,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "version": MessageLookupByLibrary.simpleMessage("版本"),
         "view_illustration": MessageLookupByLibrary.simpleMessage("查看卡面"),
         "voice": MessageLookupByLibrary.simpleMessage("语音"),
-        "words_separate": m16,
+        "words_separate": m17,
         "yes": MessageLookupByLibrary.simpleMessage("是")
       };
 }

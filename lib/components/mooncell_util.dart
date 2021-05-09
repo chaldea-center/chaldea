@@ -7,7 +7,7 @@ import 'package:pool/pool.dart';
 class MooncellUtil {
   MooncellUtil._();
 
-  static Pool _pool = Pool(20);
+  static Pool _pool = Pool(10);
 
   static String domain = 'https://fgo.wiki';
   static String fandomDomain = 'https://fategrandorder.fandom.com';

@@ -10,7 +10,6 @@ class SummonListPage extends StatefulWidget {
 class _SummonListPageState extends State<SummonListPage> {
   late ScrollController _scrollController;
   late List<Summon> summons;
-  bool showImage = false;
   bool showOutdated = false;
   bool favorite = false;
   List<Summon> _shownSummons = [];
@@ -41,6 +40,17 @@ class _SummonListPageState extends State<SummonListPage> {
         titleSpacing: 0,
         actions: [
           IconButton(
+            icon: Icon(db.userData.showSummonBanner
+                ? Icons.image_outlined
+                : Icons.image_not_supported_outlined),
+            tooltip: 'Banner',
+            onPressed: () {
+              setState(() {
+                db.userData.showSummonBanner = !db.userData.showSummonBanner;
+              });
+            },
+          ),
+          IconButton(
             icon: Icon(showOutdated ? Icons.timer_off : Icons.timer),
             tooltip: 'Outdated',
             onPressed: () {
@@ -58,16 +68,7 @@ class _SummonListPageState extends State<SummonListPage> {
               });
             },
           ),
-          // IconButton(
-          //   icon: Icon(showImage
-          //       ? Icons.image_outlined
-          //       : Icons.image_not_supported_outlined),
-          //   onPressed: () {
-          //     setState(() {
-          //       showImage = !showImage;
-          //     });
-          //   },
-          // ),
+          SizedBox(width: 8),
         ],
       ),
       body: Scrollbar(
@@ -83,56 +84,74 @@ class _SummonListPageState extends State<SummonListPage> {
   }
 
   Widget getSummonTile(Summon summon) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ListTile(
-          title: AutoSizeText(
-            summon.localizedName,
-            maxLines: 2,
-            maxFontSize: 16,
-            style: TextStyle(color: summon.isOutdated() ? Colors.grey : null),
-          ),
-          subtitle: Text('JP ${summon.startTimeJp ?? "???"}'),
-          trailing: db.streamBuilder(
-            (context) {
-              final planned =
-                  db.curUser.plannedSummons.contains(summon.indexKey);
-              return IconButton(
-                icon: Icon(
-                  planned ? Icons.favorite : Icons.favorite_outline,
-                  color: planned ? Colors.redAccent : null,
-                ),
-                onPressed: () {
-                  if (planned) {
-                    db.curUser.plannedSummons.remove(summon.indexKey);
-                  } else {
-                    db.curUser.plannedSummons.add(summon.indexKey);
-                  }
-                  db.notifyDbUpdate();
-                },
-              );
-            },
-          ),
-          onTap: () {
-            SplitRoute.push(
-              context: context,
-              popDetail: true,
-              builder: (context, _) => SummonDetailPage(
-                summon: summon,
-                summonList: _shownSummons,
-              ),
-            );
-          },
+    Widget title;
+    Widget? subtitle;
+    if (db.userData.showSummonBanner) {
+      title = ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: 108),
+        child: CachedImage(
+          imageUrl: db.curUser.server == GameServer.cn
+              ? summon.bannerUrl ?? summon.bannerUrlJp
+              : summon.bannerUrlJp ?? summon.bannerUrl,
+          placeholder: (ctx, url) => Text(summon.localizedName),
+          errorWidget: (ctx, url, error) => Text(summon.localizedName),
         ),
-        if (showImage)
-          CachedImage(
-            imageUrl: summon.bannerUrl ?? summon.bannerUrlJp,
-            isMCFile: true,
-            connectivity: db.connectivity,
-            placeholder: (context, _) => Container(),
+      );
+    } else {
+      title = AutoSizeText(
+        summon.localizedName,
+        maxLines: 2,
+        maxFontSize: 14,
+        style: TextStyle(color: summon.isOutdated() ? Colors.grey : null),
+      );
+      String? subtitleText;
+      if (db.curUser.server == GameServer.cn) {
+        subtitleText = summon.startTimeCn?.split(' ').first;
+        if (subtitleText != null) {
+          subtitleText = 'CN ' + subtitleText;
+        }
+      }
+      if (subtitleText == null) {
+        subtitleText = 'JP ' + (summon.startTimeJp?.split(' ').first ?? '???');
+      }
+      subtitle = Text(subtitleText);
+    }
+    return ListTile(
+      title: title,
+      subtitle: subtitle,
+      contentPadding: db.userData.showSummonBanner
+          ? EdgeInsets.only(right: 8)
+          : EdgeInsets.only(left: 16, right: 8),
+      minVerticalPadding: db.userData.showSummonBanner ? 0 : null,
+      trailing: db.streamBuilder(
+        (context) {
+          final planned = db.curUser.plannedSummons.contains(summon.indexKey);
+          return IconButton(
+            icon: Icon(
+              planned ? Icons.favorite : Icons.favorite_outline,
+              color: planned ? Colors.redAccent : null,
+            ),
+            onPressed: () {
+              if (planned) {
+                db.curUser.plannedSummons.remove(summon.indexKey);
+              } else {
+                db.curUser.plannedSummons.add(summon.indexKey);
+              }
+              db.notifyDbUpdate();
+            },
+          );
+        },
+      ),
+      onTap: () {
+        SplitRoute.push(
+          context: context,
+          popDetail: true,
+          builder: (context, _) => SummonDetailPage(
+            summon: summon,
+            summonList: _shownSummons,
           ),
-      ],
+        );
+      },
     );
   }
 }

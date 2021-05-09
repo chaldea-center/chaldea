@@ -205,7 +205,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
       'dataset': db.gameData.version,
       'os': '${Platform.operatingSystem} ${Platform.operatingSystemVersion}',
       'lang': Language.current.code,
-      'uniqueId': AppInfo.uniqueId,
+      'uuid': AppInfo.uniqueId,
     };
     for (var entry in summary.entries) {
       buffer

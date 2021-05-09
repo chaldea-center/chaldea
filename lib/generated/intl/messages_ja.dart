@@ -58,7 +58,9 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m15(tempDir, externalBackupDir) =>
       "ユーザーデータのバックアップは一時(${tempDir})に保存されます\nアプリの削除/他のアーキテクチャのインストール（例えば、arm64-v8aからarmeabi-v7aへ ）/将来のビルド番号の変更、ユーザーデータと一時バックアップが削除されます。外部ストレージ(${externalBackupDir}";
 
-  static String m16(a, b) => "${a}${b}";
+  static String m16(server) => "同步${server}";
+
+  static String m17(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
 
@@ -521,6 +523,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("プランをリセット"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Slider/Dropdownを切り替え"),
+        "sync_server": m16,
         "tooltip_refresh_sliders":
             MessageLookupByLibrary.simpleMessage("ホームページを更新"),
         "total_ap": MessageLookupByLibrary.simpleMessage("合計AP"),
@@ -542,7 +545,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "version": MessageLookupByLibrary.simpleMessage("バージョン"),
         "view_illustration": MessageLookupByLibrary.simpleMessage("カードの画像を表示"),
         "voice": MessageLookupByLibrary.simpleMessage("ボイス"),
-        "words_separate": m16,
+        "words_separate": m17,
         "yes": MessageLookupByLibrary.simpleMessage("はい")
       };
 }

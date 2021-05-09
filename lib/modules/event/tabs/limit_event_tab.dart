@@ -49,6 +49,16 @@ class _LimitEventTabState extends State<LimitEventTab> {
         final event = events[index];
         final plan = db.curUser.events.limitEventOf(event.indexKey);
         bool outdated = event.isOutdated();
+        String? subtitle;
+        if (db.curUser.server == GameServer.cn) {
+          subtitle = event.startTimeCn?.split(' ').first;
+          if (subtitle != null) {
+            subtitle = 'CN ' + subtitle;
+          }
+        }
+        if (subtitle == null) {
+          subtitle = 'JP ' + (event.startTimeJp?.split(' ').first ?? '???');
+        }
         return ListTile(
           title: AutoSizeText(
             event.localizedName,
@@ -57,7 +67,7 @@ class _LimitEventTabState extends State<LimitEventTab> {
             style: outdated ? TextStyle(color: Colors.grey) : null,
           ),
           subtitle: AutoSizeText(
-            event.startTimeJp?.split(' ').first ?? '',
+            subtitle,
             maxLines: 1,
             style: outdated ? TextStyle(color: Colors.grey[400]) : null,
           ),

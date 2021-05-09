@@ -20,6 +20,7 @@
   "server_cn": "Chinese(Simplified)",
   "server_tw": "Chinese(Traditional)",
   "server_na": "English(NA)",
+  "sync_server": "Sync with {server}",
   "backup": "Backup",
   "restore": "Restore",
   "servant_title": "Servant",

@@ -20,6 +20,7 @@
   "server_cn": "国服",
   "server_tw": "台服",
   "server_na": "美服",
+  "sync_server": "同步{server}",
   "backup": "备份",
   "restore": "恢复",
   "servant_title": "从者",

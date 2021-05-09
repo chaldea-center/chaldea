@@ -250,6 +250,16 @@ class S {
     );
   }
 
+  /// `同步{server}`
+  String sync_server(Object server) {
+    return Intl.message(
+      '同步$server',
+      name: 'sync_server',
+      desc: '',
+      args: [server],
+    );
+  }
+
   /// `备份`
   String get backup {
     return Intl.message(

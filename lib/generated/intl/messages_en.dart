@@ -60,7 +60,9 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m15(tempDir, externalBackupDir) =>
       "User data backup is stored in a temporary directory(${tempDir})\nDelete the app/install other architecture installer (e.g. from arm64-v8a to armeabi-v7a)/changes to the build number in future will result in deletion of user data and temporary backups. It is highly recommended to enable storage permissions to back up to (${externalBackupDir}";
 
-  static String m16(a, b) => "${a} ${b}";
+  static String m16(server) => "Sync with ${server}";
+
+  static String m17(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
 
@@ -579,6 +581,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("Reset Plan"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Switch Slider/Dropdown"),
+        "sync_server": m16,
         "tooltip_refresh_sliders":
             MessageLookupByLibrary.simpleMessage("Refresh sliders"),
         "total_ap": MessageLookupByLibrary.simpleMessage("Total AP"),
@@ -604,7 +607,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "view_illustration":
             MessageLookupByLibrary.simpleMessage("View Illustration"),
         "voice": MessageLookupByLibrary.simpleMessage("Voice"),
-        "words_separate": m16,
+        "words_separate": m17,
         "yes": MessageLookupByLibrary.simpleMessage("Yes")
       };
 }

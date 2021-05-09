@@ -98,9 +98,11 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         ),
       SHeader(LocalizedText.of(chs: '卡池详情', jpn: '詳細', eng: 'Information')),
       ListTile(
-        title: Text(
-            '${S.current.server_jp}: ${summon.startTimeJp ?? "?"} ~ ${summon.endTimeJp ?? "?"}\n'
-            '${S.current.server_cn}: ${summon.startTimeCn ?? "?"} ~ ${summon.endTimeCn ?? "?"}'),
+        title: AutoSizeText(
+          'JP: ${summon.startTimeJp ?? "?"} ~ ${summon.endTimeJp ?? "?"}\n'
+          'CN: ${summon.startTimeCn ?? "?"} ~ ${summon.endTimeCn ?? "?"}',
+          maxLines: 2,
+        ),
       ),
       if (summon.dataList.length > 1) dropdownButton,
       if (summon.dataList.isNotEmpty) gachaDetails,

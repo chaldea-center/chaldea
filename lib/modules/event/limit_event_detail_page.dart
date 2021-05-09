@@ -59,6 +59,13 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
           placeholder: (_, __) => AspectRatio(aspectRatio: 8 / 3),
         ),
       ));
+    children.add(ListTile(
+      title: AutoSizeText(
+        'JP: ${event.startTimeJp ?? '?'} ~ ${event.endTimeJp ?? '?'}\n'
+        'CN: ${event.startTimeCn ?? '?'} ~ ${event.endTimeCn ?? '?'}',
+        maxLines: 2,
+      ),
+    ));
     children.add(db.streamBuilder(
       (context) => SwitchListTile.adaptive(
         title: Text(S.of(context).plan),

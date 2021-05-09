@@ -7,6 +7,7 @@ class UserData {
   String? language;
   @JsonKey(unknownEnumValue: ThemeMode.system)
   ThemeMode? themeMode;
+  bool showSummonBanner;
 
   int? slidesUpdateTime;
   Map<String, String> sliderUrls;
@@ -37,6 +38,7 @@ class UserData {
   UserData({
     this.language,
     this.themeMode,
+    bool? showSummonBanner,
     this.slidesUpdateTime,
     Map<String, String>? sliderUrls,
     Map<String, bool>? galleries,
@@ -51,7 +53,8 @@ class UserData {
     CmdCodeFilterData? cmdCodeFilter,
     GLPKParams? glpkParams,
     List<int>? itemAbundantValue,
-  })  : sliderUrls = sliderUrls ?? {},
+  })  : showSummonBanner = showSummonBanner ?? false,
+        sliderUrls = sliderUrls ?? {},
         galleries = galleries ?? {},
         downloadSource = fixValidRange(downloadSource ?? GitSource.server.index,
             0, GitSource.values.length),

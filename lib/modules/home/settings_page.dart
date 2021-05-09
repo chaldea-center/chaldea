@@ -303,10 +303,18 @@ class _SettingsPageState extends State<SettingsPage> {
         );
 
     final items = <DropdownMenuItem<int>>[
-      DropdownMenuItem(value: -1, child: _wrapText(S.current.server_jp)),
-      DropdownMenuItem(value: -2, child: _wrapText(S.current.server_cn)),
-      DropdownMenuItem(value: -3, child: _wrapText(S.current.server_tw)),
-      DropdownMenuItem(value: -4, child: _wrapText(S.current.server_na)),
+      DropdownMenuItem(
+          value: -1,
+          child: _wrapText(S.current.sync_server(S.current.server_jp))),
+      DropdownMenuItem(
+          value: -2,
+          child: _wrapText(S.current.sync_server(S.current.server_cn))),
+      DropdownMenuItem(
+          value: -3,
+          child: _wrapText(S.current.sync_server(S.current.server_tw))),
+      DropdownMenuItem(
+          value: -4,
+          child: _wrapText(S.current.sync_server(S.current.server_na))),
     ];
     for (var date in sortedDates) {
       items.add(DropdownMenuItem(
