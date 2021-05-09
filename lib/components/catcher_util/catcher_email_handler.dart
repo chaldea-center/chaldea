@@ -131,7 +131,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
         message.html = _setupHtmlMessageText(report);
       }
       _printLog("Sending email...");
-      if (skipReport()) return true;
+      if (Analyzer.skipReport()) return true;
 
       var result = await send(message, _setupSmtpServer());
       _printLog("Email result: $result ");

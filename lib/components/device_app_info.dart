@@ -111,10 +111,11 @@ class AppInfo {
 
   static Future<void> _loadUniqueId() async {
     final deviceInfoPlugin = DeviceInfoPlugin();
+    String? originId;
     if (Platform.isAndroid) {
-      _uniqueId = (await deviceInfoPlugin.androidInfo).androidId;
+      originId = (await deviceInfoPlugin.androidInfo).androidId;
     } else if (Platform.isIOS) {
-      _uniqueId = (await deviceInfoPlugin.iosInfo).identifierForVendor;
+      originId = (await deviceInfoPlugin.iosInfo).identifierForVendor;
     } else if (Platform.isWindows) {
       // reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v "ProductId"
       // Output:
@@ -134,8 +135,7 @@ class AppInfo {
       // print('Windows Product Id query:\n$resultString');
       if (resultString.contains('ProductId') &&
           resultString.contains('REG_SZ')) {
-        final productId = resultString.split(RegExp(r'\s+')).last;
-        _uniqueId = b64(productId, false);
+        originId = resultString.split(RegExp(r'\s+')).last;
       }
     } else if (Platform.isMacOS) {
       // https://stackoverflow.com/a/944103
@@ -161,7 +161,7 @@ class AppInfo {
           if (_snMatches.isNotEmpty) {
             final _sn = _snMatches.last.group(0);
             if (_sn != null) {
-              _uniqueId = b64(_sn, false);
+              originId = _sn;
               break;
             }
           }
@@ -170,16 +170,18 @@ class AppInfo {
     } else {
       throw UnimplementedError(Platform.operatingSystem);
     }
-    if (_uniqueId?.isNotEmpty != true) {
+    if (originId?.isNotEmpty != true) {
       var uuidFile = File(p.join(db.paths.appPath, '.uuid'));
       if (uuidFile.existsSync()) {
-        _uniqueId = uuidFile.readAsStringSync();
+        originId = uuidFile.readAsStringSync();
       }
-      if (_uniqueId?.isNotEmpty != true) {
-        _uniqueId = Uuid().v1();
+      if (originId?.isNotEmpty != true) {
+        originId = Uuid().v1();
         uuidFile.writeAsStringSync(_uniqueId!);
       }
     }
+    _uniqueId = Uuid().v5(Uuid.NAMESPACE_URL, originId!);
+
     // logger.i('Unique ID: $_uniqueId');
   }
 
