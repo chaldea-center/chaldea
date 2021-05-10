@@ -41,6 +41,7 @@ class _MainRecordTabState extends State<MainRecordTab> {
     }
     // first three chapters has the same startTimeJp
     EventBase.sortEvents(mainRecords, reversed: widget.reversed);
+    Color? _outdatedColor = Theme.of(context).textTheme.caption?.color;
     return Column(
       children: <Widget>[
         CustomTile(
@@ -71,7 +72,7 @@ class _MainRecordTabState extends State<MainRecordTab> {
                   Localized.chapter.of(record.name),
                   maxLines: 2,
                   maxFontSize: 16,
-                  style: outdated ? TextStyle(color: Colors.grey) : null,
+                  style: outdated ? TextStyle(color: _outdatedColor) : null,
                 );
               } else {
                 title = AutoSizeText(
@@ -83,7 +84,9 @@ class _MainRecordTabState extends State<MainRecordTab> {
                 subtitle = AutoSizeText(
                   record.localizedTitle,
                   maxLines: 1,
-                  style: outdated ? TextStyle(color: Colors.grey[400]) : null,
+                  style: outdated
+                      ? TextStyle(color: _outdatedColor?.withAlpha(200))
+                      : null,
                 );
               }
               return ListTile(

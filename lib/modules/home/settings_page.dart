@@ -30,8 +30,9 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(S.of(context).settings_tab_name)),
-        body: db.streamBuilder((context) => body));
+      appBar: AppBar(title: Text(S.of(context).settings_tab_name)),
+      body: db.streamBuilder((context) => body),
+    );
   }
 
   Widget _wrapArrowTrailing(Widget trailing) {

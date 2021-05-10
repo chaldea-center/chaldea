@@ -114,7 +114,6 @@ class SplitRoute<T> extends __PageRoute<T>
   /// wrap master page here
   @override
   Widget buildContent(BuildContext context) {
-    super.reverseTransitionDuration;
     final layout = getLayout(context);
     switch (layout) {
       case SplitLayout.master:

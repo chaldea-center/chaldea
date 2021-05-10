@@ -30,15 +30,15 @@ class Localized {
         LocalizedText(chs: '卡池常驻', jpn: '恒常', eng: 'Permanent'),
         LocalizedText(chs: '期间限定', jpn: '期間限定', eng: 'Limited'),
         LocalizedText(chs: '友情池常驻', jpn: 'フレンドポイント', eng: 'Friendship'),
-        LocalizedText(chs: '未遭遇', jpn: '', eng: ''),
-        LocalizedText(chs: '已遭遇', jpn: '', eng: ''),
-        LocalizedText(chs: '已契约', jpn: '', eng: ''),
         LocalizedText(chs: '普通概念礼装', jpn: '', eng: 'General CE'),
         LocalizedText(chs: '纪念概念礼装', jpn: '', eng: 'Gift CE'),
         LocalizedText(chs: '概念礼装EXP卡', jpn: '', eng: 'EXP CE'),
         LocalizedText(chs: '魔力棱镜兑换概念礼装', jpn: '', eng: 'Mana Prism Shop CE'),
         LocalizedText(chs: '情人节概念礼装', jpn: '', eng: 'Valentine CE'),
         LocalizedText(chs: '羁绊概念礼装', jpn: '', eng: 'Bond CE'),
+        LocalizedText(chs: '未遭遇', jpn: '未遭遇', eng: 'Not Encountered'),
+        LocalizedText(chs: '已遭遇', jpn: '遭遇済', eng: 'Encountered'),
+        LocalizedText(chs: '已契约', jpn: '契約済', eng: 'Contracted'),
       ]);
 
   static LocalizedGroup get enemy => _enemy;

@@ -145,6 +145,7 @@ class SvtFilterData {
   FilterGroupData alignment2;
   FilterGroupData gender;
   FilterGroupData trait;
+  FilterGroupData special;
 
   SvtFilterData({
     int? favorite,
@@ -166,6 +167,7 @@ class SvtFilterData {
     FilterGroupData? alignment2,
     FilterGroupData? gender,
     FilterGroupData? trait,
+    FilterGroupData? special,
   })  : filterString = '',
         favorite = favorite ?? 0,
         display = display ?? FilterGroupData(options: {'List': true}),
@@ -185,7 +187,8 @@ class SvtFilterData {
         alignment1 = alignment1 ?? FilterGroupData(),
         alignment2 = alignment2 ?? FilterGroupData(),
         gender = gender ?? FilterGroupData(),
-        trait = trait ?? FilterGroupData() {
+        trait = trait ?? FilterGroupData(),
+        special = special ?? FilterGroupData() {
     this.favorite = fixValidRange(this.favorite, 0, 2);
     fillListValue(this.sortKeys, 3, (i) => sortKeyData[i]);
     fillListValue(this.sortReversed, 3, (_) => true);
@@ -207,6 +210,7 @@ class SvtFilterData {
         alignment2,
         gender,
         trait,
+        special,
         // traitSpecial
       ];
 

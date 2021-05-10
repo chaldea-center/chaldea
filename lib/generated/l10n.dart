@@ -3346,20 +3346,20 @@ class S {
     );
   }
 
-  /// `全选`
+  /// `全匹配`
   String get filter_match_all {
     return Intl.message(
-      '全选',
+      '全匹配',
       name: 'filter_match_all',
       desc: '',
       args: [],
     );
   }
 
-  /// `反选`
+  /// `反向匹配`
   String get filter_revert {
     return Intl.message(
-      '反选',
+      '反向匹配',
       name: 'filter_revert',
       desc: '',
       args: [],

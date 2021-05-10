@@ -246,7 +246,7 @@ class _FandomContributorsPage extends StatelessWidget {
     data.forEach((name, link) {
       children.add(ListTile(
         title: Text(name),
-        subtitle: Text(link),
+        // subtitle: Text(link),
         onTap: () {
           jumpToExternalLinkAlert(url: link);
         },

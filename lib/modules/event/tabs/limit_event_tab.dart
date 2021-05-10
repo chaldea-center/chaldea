@@ -59,17 +59,20 @@ class _LimitEventTabState extends State<LimitEventTab> {
         if (subtitle == null) {
           subtitle = 'JP ' + (event.startTimeJp?.split(' ').first ?? '???');
         }
+        Color? _outdatedColor = Theme.of(context).textTheme.caption?.color;
         return ListTile(
           title: AutoSizeText(
             event.localizedName,
             maxFontSize: 16,
             maxLines: 2,
-            style: outdated ? TextStyle(color: Colors.grey) : null,
+            style: outdated ? TextStyle(color: _outdatedColor) : null,
           ),
           subtitle: AutoSizeText(
             subtitle,
             maxLines: 1,
-            style: outdated ? TextStyle(color: Colors.grey[400]) : null,
+            style: outdated
+                ? TextStyle(color: _outdatedColor?.withAlpha(200))
+                : null,
           ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,

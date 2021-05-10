@@ -68,13 +68,19 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
     });
   }
 
+  Color? get _iconColor {
+    return Utils.isDarkMode(context)
+        ? Theme.of(context).colorScheme.secondaryVariant
+        : Theme.of(context).colorScheme.secondary;
+  }
+
   Widget faIcon(IconData icon) {
     return Padding(
       padding: EdgeInsets.all(2),
       child: FaIcon(
         icon,
         size: 36,
-        color: Theme.of(context).colorScheme.secondaryVariant,
+        color: _iconColor,
       ),
     );
   }
@@ -333,7 +339,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
                       ? Icon(
                     item.icon,
                           size: 40,
-                          color: Theme.of(context).colorScheme.secondaryVariant,
+                          color: _iconColor,
                         )
                       : item.child,
                 ),

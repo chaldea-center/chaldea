@@ -213,6 +213,18 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             update();
           },
         ),
+        FilterGroup(
+          title: Text('Special', style: textStyle),
+          options: ['充能(技能)', '充能(宝具)'],
+          values: filterData.special,
+          showInvert: true,
+          showMatchAll: true,
+          optionBuilder: (v) => Text(Localized.svtFilter.of(v)),
+          onFilterChanged: (value) {
+            // filterData.special = value;
+            update();
+          },
+        ),
       ]),
     );
   }

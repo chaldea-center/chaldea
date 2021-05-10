@@ -38,7 +38,7 @@ class ServantListPageState extends State<ServantListPage> {
   void initState() {
     super.initState();
     filterData.filterString = '';
-    // filterData.favorite = widget.planMode ? 1 : 0;
+    filterData.favorite = 1;
     _inputController = TextEditingController();
     _scrollController = ScrollController();
     _inputFocusNode = FocusNode();
@@ -180,6 +180,44 @@ class ServantListPageState extends State<ServantListPage> {
       compares: {
         '天地(拟似除外)': (o, v) => !svt.info.isTDNS,
         'EA不特攻': (o, v) => !svt.info.isWeakToEA,
+      },
+    )) {
+      return false;
+    }
+    bool _matchNPCharge(List<Effect> effects) {
+      String string =
+          effects.map((e) => e.description).join('\t').toUpperCase();
+      // print(string);
+      //182->
+      final keys = [
+        RegExp(r'NP[^\s获]{0,3}增加'),
+        RegExp(r'每回合([^\s]*?)NP(?!获)'),
+        RegExp(r'增加([^\s]*?)NP(?!获)'),
+        RegExp(r'吸收([^\s]*?)NP')
+      ];
+      bool result = keys.any((e) => string.contains(e));
+      return result;
+    }
+
+    if (!filterData.special.listValueFilter(
+      [''],
+      compares: {
+        '充能(技能)': (o, v) {
+          List<Effect> effects = [];
+          for (var active in svt.activeSkills) {
+            for (var skill in active.skills) {
+              effects.addAll(skill.effects);
+            }
+          }
+          return _matchNPCharge(effects);
+        },
+        '充能(宝具)': (o, v) {
+          List<Effect> effects = [];
+          for (var np in svt.nobelPhantasm) {
+            effects.addAll(np.effects);
+          }
+          return _matchNPCharge(effects);
+        },
       },
     )) {
       return false;
@@ -498,6 +536,7 @@ class ServantListPageState extends State<ServantListPage> {
             shadowSize: 4,
             textBuilder: textBuilder,
             textStyle: TextStyle(fontSize: 11, color: Colors.black),
+            shadowColor: Colors.white,
             alignment: AlignmentDirectional.bottomStart,
             padding: EdgeInsets.fromLTRB(2, 0, 0, 2),
             onTap: () => _onTapSvt(svt),

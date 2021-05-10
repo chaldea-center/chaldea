@@ -25,6 +25,9 @@ final localizedGameClass = LocalizedGroup([
 ]);
 
 final _localizedSvtFilter = LocalizedGroup([
+  LocalizedText(chs: '充能(技能)', jpn: 'NPチャージ(スキル)', eng: 'NP Charge(Skill)'),
+  LocalizedText(chs: '充能(宝具)', jpn: 'NPチャージ(宝具)', eng: 'NP Charge(NP)'),
+  //['未遭遇', '已遭遇', '已契约']
   LocalizedText(chs: '初号机', jpn: '初号機', eng: 'Primary'),
   LocalizedText(chs: '2号机', jpn: '2号機', eng: 'Replica'),
   // obtain

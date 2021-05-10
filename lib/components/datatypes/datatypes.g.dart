@@ -1745,8 +1745,7 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$UserDataToJson(UserData instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'language': instance.language,
       'themeMode': _$ThemeModeEnumMap[instance.themeMode],
       'showSummonBanner': instance.showSummonBanner,
@@ -1875,6 +1874,12 @@ SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
           (v) => v == null
               ? null
               : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      special: $checkedConvert(
+          json,
+          'special',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
     );
     $checkedConvert(
         json, 'filterString', (v) => val.filterString = v as String);
@@ -1904,6 +1909,7 @@ Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
       'alignment2': instance.alignment2,
       'gender': instance.gender,
       'trait': instance.trait,
+      'special': instance.special,
     };
 
 const _$SvtCompareEnumMap = {

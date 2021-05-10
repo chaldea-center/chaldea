@@ -255,8 +255,17 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         child: row,
       ));
     });
+    children.add(Padding(
+      padding: EdgeInsets.only(bottom: 8, left: 16),
+      child: Text(
+        LocalizedText.of(
+            chs: '☆ 单up', jpn: '☆ ピックアップ', eng: '☆ Individual Pick Up'),
+        style: Theme.of(context).textTheme.caption,
+      ),
+    ));
     return Column(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: divideTiles(children),
     );
   }

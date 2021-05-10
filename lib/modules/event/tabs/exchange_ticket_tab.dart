@@ -95,6 +95,8 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     bool planned =
         db.curUser.events.exchangeTicketOf(ticket.monthJp).any((e) => e > 0);
     bool outdated = ticket.isOutdated();
+    Color? _plannedColor = Theme.of(context).colorScheme.secondary;
+    Color? _outdatedColor = Theme.of(context).textTheme.caption?.color;
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -108,9 +110,9 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
               maxFontSize: 16,
               style: TextStyle(
                 color: planned
-                    ? Colors.blueAccent
+                    ? _plannedColor
                     : outdated
-                        ? Colors.grey
+                        ? _outdatedColor
                         : null,
                 fontWeight: FontWeight.w600,
               ),
@@ -123,9 +125,9 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
               maxFontSize: 12,
               style: TextStyle(
                   color: planned
-                      ? Colors.blueAccent[100]
+                      ? _plannedColor.withAlpha(200)
                       : outdated
-                          ? Colors.grey[400]
+                          ? _outdatedColor?.withAlpha(200)
                           : null),
               minFontSize: 6,
             ),
@@ -194,6 +196,8 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                   hideHeader: true,
                   cancelText: S.of(context).cancel,
                   confirmText: S.of(context).confirm,
+                  backgroundColor: null,
+                  textStyle: Theme.of(context).textTheme.headline6,
                   adapter: NumberPickerAdapter(
                     data: [
                       NumberPickerColumn(

@@ -63,7 +63,6 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m17(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about_app": MessageLookupByLibrary.simpleMessage("关于"),
         "about_app_declaration_text": MessageLookupByLibrary.simpleMessage(
@@ -217,11 +216,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_attribute": MessageLookupByLibrary.simpleMessage("阵营"),
         "filter_category": MessageLookupByLibrary.simpleMessage("分类"),
         "filter_gender": MessageLookupByLibrary.simpleMessage("性别"),
-        "filter_match_all": MessageLookupByLibrary.simpleMessage("全选"),
+        "filter_match_all": MessageLookupByLibrary.simpleMessage("全匹配"),
         "filter_obtain": MessageLookupByLibrary.simpleMessage("获取方式"),
         "filter_plan_not_reached": MessageLookupByLibrary.simpleMessage("未满"),
         "filter_plan_reached": MessageLookupByLibrary.simpleMessage("已满"),
-        "filter_revert": MessageLookupByLibrary.simpleMessage("反选"),
+        "filter_revert": MessageLookupByLibrary.simpleMessage("反向匹配"),
         "filter_shown_type": MessageLookupByLibrary.simpleMessage("显示"),
         "filter_skill_lv": MessageLookupByLibrary.simpleMessage("技能练度"),
         "filter_sort": MessageLookupByLibrary.simpleMessage("排序"),

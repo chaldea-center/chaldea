@@ -61,8 +61,6 @@ class _EventListPageState extends State<EventListPage>
       ),
       body: TabBarView(
         controller: _tabController,
-        // desktop: direction of drag may be confused
-        physics: AppInfo.isMobile ? null : NeverScrollableScrollPhysics(),
         children: <Widget>[
           KeepAliveBuilder(
               builder: (_) =>
