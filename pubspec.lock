@@ -401,7 +401,7 @@ packages:
       name: fl_chart
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.36.0"
+    version: "0.36.1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -694,7 +694,7 @@ packages:
       name: open_file
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.2.0"
+    version: "3.2.1"
   package_config:
     dependency: transitive
     description:
