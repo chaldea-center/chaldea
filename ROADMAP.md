@@ -15,7 +15,7 @@
 ## Enhancement
 - [ ] add version for userdata, convert if necessary
 - [ ] custom SharedPreferences with prefix
-- [ ] move `Servant.unavailable` to dataset.json
+- [x] move `Servant.unavailable` to dataset.json
 - [x] NP Lv.5 for low rarity and event servants
 - [ ] ocr for skills
 
@@ -46,7 +46,7 @@
   - [x] CE/Command Code
   - [x] Mystic Code
   - [x] Event
-  - [ ] Summon
+  - [ ] Summon - show banner image instead
   - [x] Quest
 
 ## UI

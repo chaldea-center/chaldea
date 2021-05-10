@@ -1,3 +1,9 @@
+## 1.4.1
+- [FEATURE] Dark Mode
+- add NA/TW server tracking
+- add English text of servant voice
+- servant filter: NP-Charge
+
 ## 1.4.0
 - [BREAKING CHANGE] Exchange ticket now use monthJp as index, days per month depends on GameServer
 - English localization almost supported(data from fandom)
