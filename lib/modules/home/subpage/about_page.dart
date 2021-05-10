@@ -190,8 +190,10 @@ class _AboutProgram extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Theme.of(context).cardColor,
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+      ),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 24.0),
         child: Column(

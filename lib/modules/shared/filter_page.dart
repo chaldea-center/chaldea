@@ -69,7 +69,13 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
           centerTitle: true,
           actions: actions,
         ),
-        Flexible(child: content),
+        Flexible(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+                minHeight: min(400, MediaQuery.of(context).size.height * 0.4)),
+            child: content,
+          ),
+        ),
       ],
     );
   }

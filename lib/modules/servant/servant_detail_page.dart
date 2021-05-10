@@ -57,7 +57,8 @@ class ServantDetailPageState extends State<ServantDetailPage>
     if (svt.voices.isNotEmpty) {
       _builders[S.current.voice] = (context) => SvtVoiceTab(parent: this);
     }
-    if (!Servant.unavailable.contains(svt.no)) {
+    if (!Servant.unavailable.contains(svt.no) &&
+        db.gameData.svtQuests[svt.no]?.isNotEmpty == true) {
       _builders[S.current.quest] = (context) => SvtQuestTab(parent: this);
     }
   }

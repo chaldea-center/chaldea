@@ -106,6 +106,26 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
       ),
       if (summon.dataList.length > 1) dropdownButton,
       if (summon.dataList.isNotEmpty) gachaDetails,
+      if (summon.dataList.isNotEmpty)
+        Padding(
+          padding: EdgeInsets.only(bottom: 8, left: 16),
+          child: Row(
+            children: [
+              Text(
+                '★ ',
+                style: Theme.of(context)
+                    .textTheme
+                    .caption
+                    ?.copyWith(color: Colors.yellow),
+              ),
+              Text(
+                LocalizedText.of(
+                    chs: '单up', jpn: 'ピックアップ', eng: 'Individual Pick Up'),
+                style: Theme.of(context).textTheme.caption,
+              )
+            ],
+          ),
+        ),
       if (summon.associatedEvents.isNotEmpty) ...[
         SHeader(LocalizedText.of(
             chs: '关联活动', jpn: '関連イベント', eng: 'Associated Events')),
@@ -255,14 +275,6 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         child: row,
       ));
     });
-    children.add(Padding(
-      padding: EdgeInsets.only(bottom: 8, left: 16),
-      child: Text(
-        LocalizedText.of(
-            chs: '☆ 单up', jpn: '☆ ピックアップ', eng: '☆ Individual Pick Up'),
-        style: Theme.of(context).textTheme.caption,
-      ),
-    ));
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,

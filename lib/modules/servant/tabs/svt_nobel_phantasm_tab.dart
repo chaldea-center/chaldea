@@ -93,7 +93,7 @@ class _SvtNobelPhantasmTabState extends SvtTabBaseState<SvtNobelPhantasmTab> {
     return CustomTile(
       leading: Column(
         children: <Widget>[
-          db.getIconImage(td.color, width: 99),
+          db.getIconImage(td.color.toLowerCase().toTitle(), width: 99),
           ConstrainedBox(
             constraints: BoxConstraints(maxWidth: 110 * 0.9),
             child: Text(

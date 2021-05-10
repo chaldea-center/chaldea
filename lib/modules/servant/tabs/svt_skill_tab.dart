@@ -71,8 +71,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
                       ((widget.parent ?? this) as State).setState(() {});
                     },
                     child: db.getIconImage(
-                      _state >= i ? '技能强化'
-                          : '技能未强化',
+                      _state >= i ? '技能强化' : '技能未强化',
                       width: 22,
                     ),
                   ),
@@ -105,17 +104,22 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
         : effect.lvData.length == 1 && effect.lvData.first.length >= 10
             ? 1
             : 0;
+    String description = effect.description;
+    if (Language.isEN) {
+      description =
+          description.split('\n').map((e) => '· ${e.trim()}').join('\n');
+    }
     return <Widget>[
       CustomTile(
         contentPadding: EdgeInsets.fromLTRB(16, 6, crossCount == 0 ? 0 : 16, 6),
         subtitle: crossCount == 0
             ? Row(children: [
-                Expanded(child: Text(effect.description), flex: 4),
+                Expanded(child: Text(description), flex: 4),
                 if (effect.lvData.isNotEmpty)
                   Expanded(
                       child: Center(child: Text(effect.lvData[0])), flex: 1),
               ])
-            : Text(effect.description),
+            : Text(description),
       ),
       if (crossCount > 0)
         Table(

@@ -38,7 +38,10 @@ class ServantListPageState extends State<ServantListPage> {
   void initState() {
     super.initState();
     filterData.filterString = '';
-    filterData.favorite = 1;
+    filterData.favorite =
+        db.curUser.servants.values.where((svt) => svt.favorite).isNotEmpty
+            ? 1
+            : 0;
     _inputController = TextEditingController();
     _scrollController = ScrollController();
     _inputFocusNode = FocusNode();
@@ -593,14 +596,14 @@ class ServantListPageState extends State<ServantListPage> {
               }
               final svt = shownList[index - 1];
               final _hidden = hiddenPlanServants.contains(svt);
-              final eyeWidget = GestureDetector(
-                child: Icon(
+              final eyeWidget = IconButton(
+                icon: Icon(
                   Icons.remove_red_eye,
                   color: isSvtFavorite(svt) && !_hidden
                       ? Theme.of(context).colorScheme.primary
-                      : null,
+                      : Theme.of(context).highlightColor,
                 ),
-                onTap: () {
+                onPressed: () {
                   if (!isSvtFavorite(svt)) return;
                   setState(() {
                     if (_hidden)

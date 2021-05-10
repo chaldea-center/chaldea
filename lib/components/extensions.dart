@@ -57,6 +57,13 @@ extension StringToDateTime on String {
   DateTime? toDateTime() {
     return DateTimeEnhance.tryParse(this);
   }
+
+  String toTitle() {
+    return this.replaceAllMapped(RegExp(r'\S+'), (match) {
+      String s = match.group(0)!;
+      return s.substring(0, 1).toUpperCase() + s.substring(1);
+    });
+  }
 }
 
 extension TrimString on String {

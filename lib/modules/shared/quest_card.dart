@@ -211,7 +211,7 @@ class _QuestCardState extends State<QuestCard> {
     '仇': 'Avenger',
     '裁': 'Ruler',
     '月': 'MoonCancer',
-    '分': 'Alterego',
+    '他': 'Alterego',
     '降': 'Foreigner',
     // '月外分盾'
   };
@@ -236,7 +236,7 @@ class _QuestCardState extends State<QuestCard> {
             '仇': '讐',
             '裁': '裁',
             '月': '月',
-            '分': '分',
+            '他': '分',
             '降': '降',
           }[clsName] ??
           clsName;

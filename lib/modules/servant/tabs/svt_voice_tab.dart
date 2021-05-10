@@ -142,7 +142,6 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
                   });
                 },
                 icon: Icon(Icons.play_circle_outline),
-                color: Theme.of(context).primaryColor,
               );
             }
           },
@@ -330,6 +329,7 @@ LocalizedGroup get _localizedVoices => LocalizedGroup([
       LocalizedText(chs: '灵基再临', jpn: '', eng: 'Ascension'),
       LocalizedText(chs: '个人空间', jpn: '', eng: 'My Room'),
       LocalizedText(chs: '羁绊', jpn: '', eng: 'Bond'),
+      LocalizedText(chs: '羁绊Lv.', jpn: '', eng: 'Bond Lv.'),
       LocalizedText(chs: '羁绊 Lv.', jpn: '', eng: 'Bond Lv.'),
       LocalizedText(chs: '对话', jpn: '', eng: 'Dialogue'),
       LocalizedText(chs: '喜欢的东西', jpn: '', eng: 'Something you Like'),
