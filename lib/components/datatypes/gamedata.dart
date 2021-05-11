@@ -1,4 +1,4 @@
-/// Servant data
+  /// Servant data
 part of datatypes;
 
 @JsonSerializable(checked: true)
@@ -109,8 +109,6 @@ class Item {
   /// may be null
   String? nameJp;
   String? nameEn;
-  String? description;
-  String? descriptionJp;
 
   /// category: 1-usual item(include crystal/grail), 2-skill gem, 3-ascension piece/monument,
   /// 4-event servants' ascension item, 5-special, now only QP
@@ -120,16 +118,19 @@ class Item {
   @JsonKey(defaultValue: 0)
   int rarity;
 
+  String? description;
+  String? descriptionJp;
+
   Item({
     required this.id,
     required this.itemId,
     required this.name,
     this.nameJp,
     this.nameEn,
-    this.description,
-    this.descriptionJp,
     required this.category,
     required this.rarity,
+    this.description,
+    this.descriptionJp,
   });
 
   Item copyWith({

@@ -316,7 +316,8 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
             aspectRatio: 8.0 / 3.0,
             pagination: true,
             autoPlay: sliderPages.length > 1,
-            autoPlayInterval: Duration(seconds: 5),
+            autoPlayInterval: const Duration(seconds: 5),
+            pauseAutoPlayOnTouch: const Duration(seconds: 2),
             viewportFraction: 1.0,
           );
   }
@@ -480,7 +481,10 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       final taskJp = _dio.get(jpUrl).then((response) {
         var jpParser = parser.parse(response.data.toString());
         var jpElement = jpParser.getElementsByClassName('slide').getOrNull(0);
-        return _getImageLinks(element: jpElement, uri: Uri.parse(jpUrl));
+        return _getImageLinks(element: jpElement, uri: Uri.parse(jpUrl))
+          ..removeWhere((key, value) =>
+              key.endsWith('2019/tips_qavwi/top_banner.png') ||
+              key.endsWith('2017/02/banner_10009.png'));
       }).catchError((e, s) {
         logger.e('parse jp slides failed', e, s);
         return <String, String>{};

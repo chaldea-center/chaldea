@@ -19,7 +19,7 @@ class CommandCode {
   String? illustratorsEn;
   String skillIcon;
   String skill;
-  String skillEn;
+  String? skillEn;
   String? description;
   String? descriptionJp;
   String? descriptionEn;

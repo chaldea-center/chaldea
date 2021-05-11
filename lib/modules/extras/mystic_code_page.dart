@@ -207,7 +207,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
         CustomTableRow(
           children: [
             TableCellData(
-              child: Text(mysticCode.nameEn,
+              child: Text(mysticCode.nameEn ?? '???',
                   style: TextStyle(fontWeight: FontWeight.w500)),
             )
           ],

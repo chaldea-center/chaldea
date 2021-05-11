@@ -61,7 +61,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
             [code.illustratorsJp ?? ''], [code.illustratorsEn ?? '']),
         ...Utils.getSearchAlphabetsForList(code.characters),
         code.skill,
-        code.skillEn,
+        code.skillEn ?? '',
         code.obtain,
       ];
       searchMap[code] = searchStrings.join('\t');

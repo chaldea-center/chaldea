@@ -38,7 +38,7 @@ class CraftEssence {
   int bond;
   int valentine;
 
-  String toString() => mcLink;
+  String toString() => '$runtimeType($no, $mcLink)';
 
   CraftEssence({
     required this.gameId,

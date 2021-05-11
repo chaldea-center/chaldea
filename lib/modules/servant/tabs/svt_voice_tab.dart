@@ -113,7 +113,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
           initValue: false,
           builder: (context, state) {
             bool playing = state.value;
-            bool valid = record.voiceFile.isNotEmpty;
+            bool valid = record.voiceFile?.isNotEmpty == true;
             if (!valid) {
               return IconButton(
                 onPressed: null,
@@ -193,12 +193,12 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
   }
 
   Future<void> onPlayVoice(VoiceRecord record) async {
-    if (record.voiceFile.isEmpty) {
+    if (record.voiceFile?.isNotEmpty != true) {
       // check before call and set button disabled
       return;
     }
     audioPlayer ??= GeneralAudioPlayer();
-    final String? url = await MooncellUtil.resolveFileUrl(record.voiceFile);
+    final String? url = await MooncellUtil.resolveFileUrl(record.voiceFile!);
     // print('${record.voiceFile}  -> $url');
     if (url == null) {
       EasyLoading.showToast('File not found: ${record.voiceFile}');

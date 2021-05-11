@@ -4,7 +4,7 @@ part of datatypes;
 class MysticCode {
   String name;
   String nameJp;
-  String nameEn;
+  String? nameEn;
   String description;
   String descriptionJp;
   String? descriptionEn;

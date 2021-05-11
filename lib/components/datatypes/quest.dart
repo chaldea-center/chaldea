@@ -154,7 +154,7 @@ class Battle {
 class Enemy {
   List<String> name;
   List<String?> shownName;
-  List<String> className;
+  List<String?> className;
   List<int> rank;
   List<int> hp;
 

@@ -365,15 +365,15 @@ class ServantBaseInfo {
 
 @JsonSerializable(checked: true)
 class NobelPhantasm {
-  String state;
+  String? state;
   String name;
   String? nameJp;
   String upperName;
   String? upperNameJp;
-  String color;
+  String? color;
   String category;
   String? rank;
-  String typeText;
+  String? typeText;
   List<Effect> effects;
 
   NobelPhantasm({
@@ -505,7 +505,7 @@ class VoiceRecord {
   String? textJp;
   String? textEn;
   String? condition;
-  String voiceFile;
+  String? voiceFile;
 
   VoiceRecord({
     required this.title,

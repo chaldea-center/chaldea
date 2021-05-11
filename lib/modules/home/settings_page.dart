@@ -92,7 +92,7 @@ class _SettingsPageState extends State<SettingsPage> {
           children: <Widget>[
             ListTile(
               title: Text(S.of(context).userdata),
-              subtitle: Text(S.current.backup_data_alert),
+              // subtitle: Text(S.current.backup_data_alert),
               trailing: Icon(Icons.arrow_forward_ios),
               onTap: () {
                 SplitRoute.push(

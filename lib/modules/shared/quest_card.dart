@@ -216,12 +216,13 @@ class _QuestCardState extends State<QuestCard> {
     // '月外分盾'
   };
 
-  Widget _getClassIcon(String clsName) {
+  Widget _getClassIcon(String? clsName) {
     if (!_clasIcons.containsKey(clsName)) return Container();
     return db.getIconImage('金卡${_clasIcons[clsName]}', width: 16);
   }
 
-  String _localizeClassName(String clsName) {
+  String _localizeClassName(String? clsName) {
+    if (clsName == null) return '';
     if (Language.isCN)
       return clsName;
     else

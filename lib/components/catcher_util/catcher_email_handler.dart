@@ -79,7 +79,8 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
         String shotFn = p.join(db.paths.tempDir, 'crash.jpg');
         File(shotFn).writeAsBytesSync(screenshotBytes);
         screenshotAttachment = StreamAttachment(
-            Stream<List<int>>.value(screenshotBytes), 'image/jpeg');
+            Stream<List<int>>.value(screenshotBytes), 'image/jpeg',
+            fileName: 'crash.jpg');
       }
     }
     return _pool.withResource<bool>(
@@ -93,8 +94,12 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
   String _getReportShortSummary(Report report) {
     StringBuffer buffer = StringBuffer();
     buffer.writeln(report.error.toString());
-    buffer
-        .writeln(report.stackTrace.toString().split('\n').take(20).join('\n'));
+    final lines = report.stackTrace.toString().split('\n');
+    int index =
+        lines.lastIndexWhere((line) => line.contains('package:chaldea'));
+    if (lines.isNotEmpty) {
+      buffer.writeAll(lines.take(index < 0 ? 10 : index + 1), '\n');
+    }
     return buffer.toString();
   }
 

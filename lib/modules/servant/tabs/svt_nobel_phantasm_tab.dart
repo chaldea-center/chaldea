@@ -61,7 +61,7 @@ class _SvtNobelPhantasmTabState extends SvtTabBaseState<SvtNobelPhantasmTab> {
               List.generate(nobelPhantasms.length, (index) => index.toString()),
           values: _toggleData,
           optionBuilder: (s) {
-            String state = nobelPhantasms[int.parse(s)].state;
+            String state = nobelPhantasms[int.parse(s)].state ?? 'NP';
             Widget button;
             if (state.contains('强化前') || state.contains('强化后')) {
               final iconKey = state.contains('强化前') ? '宝具未强化' : '宝具强化';
@@ -93,7 +93,7 @@ class _SvtNobelPhantasmTabState extends SvtTabBaseState<SvtNobelPhantasmTab> {
     return CustomTile(
       leading: Column(
         children: <Widget>[
-          db.getIconImage(td.color.toLowerCase().toTitle(), width: 99),
+          db.getIconImage(td.color?.toLowerCase().toTitle(), width: 99),
           ConstrainedBox(
             constraints: BoxConstraints(maxWidth: 110 * 0.9),
             child: Text(

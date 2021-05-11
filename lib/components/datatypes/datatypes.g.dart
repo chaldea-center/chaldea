@@ -177,7 +177,7 @@ CommandCode _$CommandCodeFromJson(Map<String, dynamic> json) {
           $checkedConvert(json, 'illustratorsEn', (v) => v as String?),
       skillIcon: $checkedConvert(json, 'skillIcon', (v) => v as String),
       skill: $checkedConvert(json, 'skill', (v) => v as String),
-      skillEn: $checkedConvert(json, 'skillEn', (v) => v as String),
+      skillEn: $checkedConvert(json, 'skillEn', (v) => v as String?),
       description: $checkedConvert(json, 'description', (v) => v as String?),
       descriptionJp:
           $checkedConvert(json, 'descriptionJp', (v) => v as String?),
@@ -351,7 +351,7 @@ LimitEvent _$LimitEventFromJson(Map<String, dynamic> json) {
     final val = LimitEvent(
       mcLink: $checkedConvert(json, 'mcLink', (v) => v as String),
       name: $checkedConvert(json, 'name', (v) => v as String),
-      nameJp: $checkedConvert(json, 'nameJp', (v) => v as String),
+      nameJp: $checkedConvert(json, 'nameJp', (v) => v as String?),
       nameEn: $checkedConvert(json, 'nameEn', (v) => v as String?),
       startTimeJp: $checkedConvert(json, 'startTimeJp', (v) => v as String?),
       endTimeJp: $checkedConvert(json, 'endTimeJp', (v) => v as String?),
@@ -400,7 +400,7 @@ MainRecord _$MainRecordFromJson(Map<String, dynamic> json) {
     final val = MainRecord(
       mcLink: $checkedConvert(json, 'mcLink', (v) => v as String),
       name: $checkedConvert(json, 'name', (v) => v as String),
-      nameJp: $checkedConvert(json, 'nameJp', (v) => v as String),
+      nameJp: $checkedConvert(json, 'nameJp', (v) => v as String?),
       nameEn: $checkedConvert(json, 'nameEn', (v) => v as String?),
       startTimeJp: $checkedConvert(json, 'startTimeJp', (v) => v as String?),
       endTimeJp: $checkedConvert(json, 'endTimeJp', (v) => v as String?),
@@ -602,26 +602,27 @@ Item _$ItemFromJson(Map<String, dynamic> json) {
       name: $checkedConvert(json, 'name', (v) => v as String),
       nameJp: $checkedConvert(json, 'nameJp', (v) => v as String?),
       nameEn: $checkedConvert(json, 'nameEn', (v) => v as String?),
+      category: $checkedConvert(json, 'category', (v) => v as int),
+      rarity: $checkedConvert(json, 'rarity', (v) => v as int?) ?? 0,
       description: $checkedConvert(json, 'description', (v) => v as String?),
       descriptionJp:
           $checkedConvert(json, 'descriptionJp', (v) => v as String?),
-      category: $checkedConvert(json, 'category', (v) => v as int),
-      rarity: $checkedConvert(json, 'rarity', (v) => v as int?) ?? 0,
     );
     return val;
   });
 }
 
-Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
+Map<String, dynamic> _$ItemToJson(Item instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'itemId': instance.itemId,
       'name': instance.name,
       'nameJp': instance.nameJp,
       'nameEn': instance.nameEn,
-      'description': instance.description,
-      'descriptionJp': instance.descriptionJp,
       'category': instance.category,
       'rarity': instance.rarity,
+      'description': instance.description,
+      'descriptionJp': instance.descriptionJp,
     };
 
 GLPKData _$GLPKDataFromJson(Map<String, dynamic> json) {
@@ -797,7 +798,7 @@ MysticCode _$MysticCodeFromJson(Map<String, dynamic> json) {
     final val = MysticCode(
       name: $checkedConvert(json, 'name', (v) => v as String),
       nameJp: $checkedConvert(json, 'nameJp', (v) => v as String),
-      nameEn: $checkedConvert(json, 'nameEn', (v) => v as String),
+      nameEn: $checkedConvert(json, 'nameEn', (v) => v as String?),
       description: $checkedConvert(json, 'description', (v) => v as String),
       descriptionJp: $checkedConvert(json, 'descriptionJp', (v) => v as String),
       descriptionEn:
@@ -927,7 +928,7 @@ Enemy _$EnemyFromJson(Map<String, dynamic> json) {
       shownName: $checkedConvert(json, 'shownName',
           (v) => (v as List<dynamic>).map((e) => e as String?).toList()),
       className: $checkedConvert(json, 'className',
-          (v) => (v as List<dynamic>).map((e) => e as String).toList()),
+          (v) => (v as List<dynamic>).map((e) => e as String?).toList()),
       rank: $checkedConvert(json, 'rank',
           (v) => (v as List<dynamic>).map((e) => e as int).toList()),
       hp: $checkedConvert(json, 'hp',
@@ -1162,15 +1163,15 @@ Map<String, dynamic> _$ServantBaseInfoToJson(ServantBaseInfo instance) =>
 NobelPhantasm _$NobelPhantasmFromJson(Map<String, dynamic> json) {
   return $checkedNew('NobelPhantasm', json, () {
     final val = NobelPhantasm(
-      state: $checkedConvert(json, 'state', (v) => v as String),
+      state: $checkedConvert(json, 'state', (v) => v as String?),
       name: $checkedConvert(json, 'name', (v) => v as String),
       nameJp: $checkedConvert(json, 'nameJp', (v) => v as String?),
       upperName: $checkedConvert(json, 'upperName', (v) => v as String),
       upperNameJp: $checkedConvert(json, 'upperNameJp', (v) => v as String?),
-      color: $checkedConvert(json, 'color', (v) => v as String),
+      color: $checkedConvert(json, 'color', (v) => v as String?),
       category: $checkedConvert(json, 'category', (v) => v as String),
       rank: $checkedConvert(json, 'rank', (v) => v as String?),
-      typeText: $checkedConvert(json, 'typeText', (v) => v as String),
+      typeText: $checkedConvert(json, 'typeText', (v) => v as String?),
       effects: $checkedConvert(
           json,
           'effects',
@@ -1323,7 +1324,7 @@ VoiceRecord _$VoiceRecordFromJson(Map<String, dynamic> json) {
       textJp: $checkedConvert(json, 'textJp', (v) => v as String?),
       textEn: $checkedConvert(json, 'textEn', (v) => v as String?),
       condition: $checkedConvert(json, 'condition', (v) => v as String?),
-      voiceFile: $checkedConvert(json, 'voiceFile', (v) => v as String),
+      voiceFile: $checkedConvert(json, 'voiceFile', (v) => v as String?),
     );
     return val;
   });

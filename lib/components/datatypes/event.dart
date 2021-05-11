@@ -50,7 +50,7 @@ class Events {
 abstract class EventBase {
   late String mcLink;
   late String name;
-  late String nameJp;
+  late String? nameJp;
   late String? nameEn;
   String? startTimeJp;
   String? endTimeJp;
@@ -115,7 +115,7 @@ abstract class EventBase {
 @JsonSerializable(checked: true)
 class LimitEvent extends EventBase {
   String name;
-  String nameJp;
+  String? nameJp;
   String? nameEn;
   String mcLink;
   String? startTimeJp;
@@ -190,7 +190,7 @@ class LimitEvent extends EventBase {
 class MainRecord extends EventBase {
   String mcLink;
   String name;
-  String nameJp;
+  String? nameJp;
   String? nameEn;
   String? startTimeJp;
   String? endTimeJp;
@@ -226,9 +226,9 @@ class MainRecord extends EventBase {
 
   String get title => _splitChapterTitle(name)[1];
 
-  String get chapterJp => _splitChapterTitle(nameJp)[0];
+  String get chapterJp => _splitChapterTitle(nameJp ?? name)[0];
 
-  String get titleJp => _splitChapterTitle(nameJp)[1];
+  String get titleJp => _splitChapterTitle(nameJp ?? name)[1];
 
   String get localizedName {
     if (Language.isEN) {
