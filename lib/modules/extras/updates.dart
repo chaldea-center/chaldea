@@ -136,15 +136,17 @@ class AutoUpdateUtil {
 
       if (resp.success) {
         final patchJson = jsonDecode(resp.body);
-        final curData = jsonDecode(jsonEncode(db.gameData));
+        final curData =
+            jsonDecode(File(db.paths.gameDataPath).readAsStringSync());
         dynamic newData = jsonpatch.JsonPatch(patchJson).applyTo(curData);
+        // encode then decode to verify validation
         final gameData = GameData.fromJson(jsonDecode(jsonEncode(newData)));
         String previousVersion = db.gameData.version;
         if (gameData.version.compareTo(previousVersion) > 0) {
           await alertReload();
           if (db.loadGameData(gameData)) {
-            File(db.paths.gameDataPath)
-                .writeAsStringSync(jsonEncode(db.gameData));
+            // use patched data, don't use jsonEncode(db.gameData)
+            File(db.paths.gameDataPath).writeAsStringSync(jsonEncode(newData));
             logger.i(
                 'update dataset from $previousVersion to ${db.gameData.version}');
             EasyLoading.showInfo(

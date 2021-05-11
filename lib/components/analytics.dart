@@ -85,6 +85,10 @@ class Analyzer {
         launchStaticUrl(_constructUrl());
         return;
       }
+      if (kReleaseMode) {
+        // don't send for desktop
+        return;
+      }
       String url = _constructUrl();
       bdId ??= _kBDID;
       final String hjs = _hjs + bdId;

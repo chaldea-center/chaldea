@@ -180,7 +180,7 @@ class AppInfo {
         uuidFile.writeAsStringSync(_uniqueId!);
       }
     }
-    _uniqueId = Uuid().v5(Uuid.NAMESPACE_URL, originId!);
+    _uniqueId = Uuid().v5(Uuid.NAMESPACE_URL, originId!).toUpperCase();
 
     // logger.i('Unique ID: $_uniqueId');
   }
