@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/components/icon_clipper.dart';
 import 'package:chaldea/components/method_channel_chaldea.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
@@ -284,6 +285,7 @@ class Database {
     BoxFit? fit,
     bool? preferPng,
     bool withBorder = true,
+    bool? clip,
   }) {
     if (iconKey == null || iconKey.isEmpty) {
       return Image(
@@ -296,8 +298,9 @@ class Database {
     String iconName =
         getIconFullKey(iconKey, preferPng: preferPng, withBorder: withBorder)!;
     File iconFile = File(pathlib.join(paths.gameIconDir, iconName));
+    Widget image;
     if (iconFile.existsSync()) {
-      return Image(
+      image = Image(
         image: FileImage(iconFile),
         width: width,
         height: height,
@@ -309,7 +312,7 @@ class Database {
         ),
       );
     } else {
-      return CachedImage(
+      image = CachedImage(
         imageUrl: iconName,
         saveDir: db.paths.gameIconDir,
         width: width,
@@ -318,6 +321,13 @@ class Database {
         placeholder: (_, __) => Container(width: width, height: height),
       );
     }
+    if (clip != false) {
+      image = ClipPath(
+        clipper: TopCornerClipper(),
+        child: image,
+      );
+    }
+    return image;
   }
 
   // assist methods
