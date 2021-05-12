@@ -61,7 +61,7 @@ class _AboutPageState extends State<AboutPage> {
                           style: TextStyle(color: Colors.redAccent))
                       : null,
                   onTap: () {
-                    AutoUpdateUtil().checkAppUpdate(background: false);
+                    AutoUpdateUtil.checkAppUpdate(background: false);
                   },
                 ),
                 if (!Platform.isIOS && !AppInfo.isMacStoreApp)

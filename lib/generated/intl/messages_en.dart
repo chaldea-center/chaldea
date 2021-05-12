@@ -58,7 +58,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Total ${total} results (${hidden} hidden)";
 
   static String m15(tempDir, externalBackupDir) =>
-      "User data backup is stored in a temporary directory(${tempDir})\nDelete the app/install other architecture installer (e.g. from arm64-v8a to armeabi-v7a)/changes to the build number in future will result in deletion of user data and temporary backups. It is highly recommended to enable storage permissions to back up to (${externalBackupDir}";
+      "User data backup is stored in a temporary directory(${tempDir})\nDelete the app/install other architecture installer (e.g. from arm64-v8a to armeabi-v7a)/changes to the build number in future will result in deletion of user data and temporary backups. It is highly recommended to enable storage permissions to back up to (${externalBackupDir})";
 
   static String m16(server) => "Sync with ${server}";
 

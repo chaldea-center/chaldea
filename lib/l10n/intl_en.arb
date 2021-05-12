@@ -352,7 +352,7 @@
   "userdata_download_backup": "Download Backup",
   "userdata_download_choose_backup": "Choose one backup",
   "storage_permission_title": "Storage Permission",
-  "storage_permission_content": "User data backup is stored in a temporary directory({tempDir})\nDelete the app/install other architecture installer (e.g. from arm64-v8a to armeabi-v7a)/changes to the build number in future will result in deletion of user data and temporary backups. It is highly recommended to enable storage permissions to back up to ({externalBackupDir}})",
+  "storage_permission_content": "User data backup is stored in a temporary directory({tempDir})\nDelete the app/install other architecture installer (e.g. from arm64-v8a to armeabi-v7a)/changes to the build number in future will result in deletion of user data and temporary backups. It is highly recommended to enable storage permissions to back up to ({externalBackupDir})",
   "load_dataset_error": "Error loading dataset",
   "load_dataset_error_hint": "Please reload default gamedata in Settings-Gamedata",
   "install": "Install",

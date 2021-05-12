@@ -165,28 +165,28 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
   String? selectedPie;
 
   List<Color> get palette => [
-    // Color(0xFFCC0000),
-    Color(0xFFCC6600),
-    Color(0xFFCCCC00),
-    Color(0xFF66CC00),
-    Color(0xFF00CC00),
-    Color(0xFF00CC66),
-    Color(0xFF00CCCC),
-    Color(0xFF0066CC),
-    Color(0xFF0000CC),
-    // Color(0xFF6600CC),
-    // Color(0xFFCC00CC),
-    // Color(0xFFCC0066),
-  ].reversed.toList();
+        // Color(0xFFCC0000),
+        Color(0xFFCC6600),
+        Color(0xFFCCCC00),
+        Color(0xFF66CC00),
+        Color(0xFF00CC00),
+        Color(0xFF00CC66),
+        Color(0xFF00CCCC),
+        Color(0xFF0066CC),
+        Color(0xFF0000CC),
+        // Color(0xFF6600CC),
+        // Color(0xFFCC00CC),
+        // Color(0xFFCC0066),
+      ].reversed.toList();
 
   Widget pieChart() {
     _calcServantClass();
     int total = sum(svtClassCount.values);
-    if (total <= 0) return Container();
     final iter = palette.iterator;
     return LayoutBuilder(
       builder: (context, constraints) {
         double mag = min(1, constraints.maxWidth / 350);
+        if (total <= 0) return Container(height: 280 * mag);
         iter.moveNext();
         return Container(
           height: 280 * mag,
@@ -219,7 +219,8 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
     );
   }
 
-  PieChartSectionData _pieSection(String clsName, int count, int total, double mag, Color? color) {
+  PieChartSectionData _pieSection(
+      String clsName, int count, int total, double mag, Color? color) {
     bool selected = selectedPie == clsName;
     double ratio = count / total;
     double posRatio = ratio < 0.05 ? 1.2 : 1;

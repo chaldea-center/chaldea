@@ -56,7 +56,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m14(total, hidden) => "总计: ${total} (隐藏: ${hidden})";
 
   static String m15(tempDir, externalBackupDir) =>
-      "用户数据备份储存于临时目录(${tempDir})\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至(${externalBackupDir}";
+      "用户数据备份储存于临时目录(${tempDir})\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至(${externalBackupDir})";
 
   static String m16(server) => "同步${server}";
 

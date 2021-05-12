@@ -285,7 +285,7 @@ class Database {
     bool? preferPng,
     bool withBorder = true,
   }) {
-    if (iconKey == null) {
+    if (iconKey == null || iconKey.isEmpty) {
       return Image(
         image: errorImage,
         width: width,

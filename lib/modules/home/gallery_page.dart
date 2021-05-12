@@ -63,7 +63,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         await AutoUpdateUtil.patchGameData();
       }
       await Future.delayed(Duration(seconds: 2));
-      await AutoUpdateUtil().checkAppUpdate(
+      await AutoUpdateUtil.checkAppUpdate(
           background: true, download: db.userData.autoUpdateApp);
     });
   }
@@ -255,7 +255,9 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
                   ],
                 ),
               ),
-              _buildNotifications(),
+              Card(
+                child: _buildNotifications(),
+              ),
               if (kDebugMode) buildTestInfoPad(),
             ],
           );
@@ -561,8 +563,8 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         onTap: _setupAndroidPermission,
       ));
     }
-    if (_cachedIconsRatio < 0.7) {
-      // TODO: why icon folder list error?
+    if (_cachedIconsRatio < 0.7 && !kReleaseMode) {
+      // TODO: why icon folder list error? Currently disabled it
       // FileSystemException: Directory listing failed,
       // path = '/storage/emulated/0/Android/data/cc.narumi.chaldea/files/data/icons/'
       // (OS Error: Invalid argument, errno = 22)
@@ -598,13 +600,16 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         },
       ));
     }
+    if (!kReleaseMode) children.add(ListTile(title: Text('Test')));
     if (children.isEmpty) return Container();
     return SimpleAccordion(
       expanded: false,
+      expandElevation: 0.0,
       headerBuilder: (context, _) => ListTile(
-        leading: Icon(Icons.notifications, color: Colors.blue),
+        leading: Icon(Icons.notifications,
+            color: Theme.of(context).colorScheme.primary),
         title: Text('Notifications'),
-        tileColor: Colors.white,
+        // tileColor: Theme.of(context).cardColor,
       ),
       contentBuilder: (context) => Column(
         mainAxisSize: MainAxisSize.min,

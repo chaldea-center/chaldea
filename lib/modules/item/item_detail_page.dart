@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/item/tabs/item_info_tab.dart';
 import 'package:chaldea/modules/item/tabs/item_obtain_interlude.dart';
 
 import 'tabs/item_cost_servant_page.dart';
@@ -37,7 +38,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
     _tabController.addListener(() {
       setState(() {
         curTab = _tabController.index;
@@ -69,10 +70,11 @@ class _ItemDetailPageState extends State<ItemDetailPage>
           controller: _tabController,
           isScrollable: true,
           tabs: [
-            Tab(text: S.of(context).servant),
-            Tab(text: S.of(context).free_quest),
-            Tab(text: S.of(context).event_title),
-            Tab(text: S.of(context).interlude_and_rankup),
+            Tab(text: S.current.servant),
+            Tab(text: S.current.free_quest),
+            Tab(text: S.current.event_title),
+            Tab(text: S.current.interlude_and_rankup),
+            Tab(text: S.current.card_info),
           ],
         ),
       ),
@@ -89,7 +91,8 @@ class _ItemDetailPageState extends State<ItemDetailPage>
           ItemObtainEventPage(
               itemKey: widget.itemKey, filtrateOutdated: filtrateOutdated),
           ItemObtainInterludeTab(
-              itemKey: widget.itemKey, favorite: favorite, sortType: sortType)
+              itemKey: widget.itemKey, favorite: favorite, sortType: sortType),
+          ItemInfoTab(itemKey: widget.itemKey),
           // Container(child: Center(child: Text('Interludes'))),
         ],
       ),

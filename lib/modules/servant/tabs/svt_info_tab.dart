@@ -28,10 +28,15 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
       : super(parent: parent, svt: svt, status: plan);
   Language? lang;
 
+  bool get hasBondCraft => svt.bondCraft > 0;
+
+  bool get hasValentineCraft => svt.valentineCraft.isNotEmpty;
+
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
+    int count = 3 + (hasBondCraft ? 1 : 0) + (hasValentineCraft ? 1 : 0);
+    _tabController = TabController(length: count, vsync: this);
   }
 
   @override
@@ -55,8 +60,8 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
                   tabs: [
                     S.of(context).svt_info_tab_base,
                     S.of(context).svt_info_tab_bond_story,
-                    S.of(context).bond_craft,
-                    S.of(context).valentine_craft,
+                    if (hasBondCraft) S.of(context).bond_craft,
+                    if (hasValentineCraft) S.of(context).valentine_craft,
                     S.of(context).svt_related_cards,
                   ].map((tabName) => getTab(tabName)).toList(),
                 ),
@@ -76,8 +81,8 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
           child: TabBarView(controller: _tabController, children: [
             buildBaseInfoTab(),
             buildProfileTab(),
-            buildBondCraftTab(),
-            buildValentineCraftTab(),
+            if (hasBondCraft) buildBondCraftTab(),
+            if (hasValentineCraft) buildValentineCraftTab(),
             buildRelatedCards(),
           ]),
         ),
@@ -349,7 +354,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
   }
 
   Widget buildValentineCraftTab() {
-    if (svt.valentineCraft.isNotEmpty == true) {
+    if (svt.valentineCraft.isNotEmpty) {
       // mash has two valentine crafts
       return ListView.separated(
         itemBuilder: (context, index) {

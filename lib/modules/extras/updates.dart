@@ -15,21 +15,12 @@ import 'package:url_launcher/url_launcher.dart';
 
 class AutoUpdateUtil {
   static Dio get _dio => HttpUtils.defaultDio;
-  bool validSHA1 = false;
-  bool upgradable = false;
 
-  GitRelease? release;
-  Version? version; //1.2.3
-  String? releaseNote;
-  String? launchUrl; // release page, not download url
-
-  BuildContext get context => kAppKey.currentContext!;
+  static BuildContext get context => kAppKey.currentContext!;
 
   /// download dataset-text.zip and unzip it to reload
-  Future<void> autoUpdateDataset() async {
-    version = null; //1.2.3
-    releaseNote = null;
-    launchUrl = null; // release page, not download url
+  static Future<void> autoUpdateDataset() async {
+    GitRelease? release;
 
     final git = GitTool.fromDb();
     try {
@@ -47,7 +38,7 @@ class AutoUpdateUtil {
         return;
       }
       String zipFp = join(
-          join(baseFolder, '${release!.name}-${release!.targetAsset!.name}'));
+          join(baseFolder, '${release.name}-${release.targetAsset!.name}'));
       if (!File(zipFp).existsSync()) {
         await _dio.download(url, zipFp);
         logger.d('downloaded $zipFp');
@@ -79,7 +70,7 @@ class AutoUpdateUtil {
           throw 'Load GameData failed, maybe incompatible with current app version';
         }
       } else {
-        logger.w('version mismatch release name: ${release?.name},'
+        logger.w('version mismatch release name: ${release.name},'
             ' real version: ${gameData.version}');
       }
     } catch (e, s) {
@@ -99,7 +90,8 @@ class AutoUpdateUtil {
       if (onError != null) onError(e, s);
     }
 
-    if (!background) EasyLoading.showInfo('patching');
+    if (!background)
+      EasyLoading.show(status: 'patching', maskType: EasyLoadingMaskType.clear);
     try {
       if (db.connectivity == ConnectivityResult.none) {
         _reportResult(S.current.error_no_network);
@@ -124,7 +116,7 @@ class AutoUpdateUtil {
       if (curRelease == null) {
         print('cur version not found in server: ${db.gameData.version}');
         _reportResult(S.current.patch_gamedata_error_unknown_version);
-        AutoUpdateUtil().autoUpdateDataset();
+        AutoUpdateUtil.autoUpdateDataset();
         return;
       }
 
@@ -160,16 +152,30 @@ class AutoUpdateUtil {
       }
     } catch (e, s) {
       _reportResult(e, s);
+    } finally {
+      await Future.delayed(Duration(seconds: 2));
+      EasyLoading.dismiss();
     }
   }
 
-  Future<void> checkAppUpdate(
+  static Completer? _downloadTask;
+
+  /// background:
+  ///   version info->download->alert->install
+  /// foreground
+  ///   version info->alert->download->alert->install
+  static Future<void> checkAppUpdate(
       {bool background = true, bool download = false}) async {
-    version = null; //1.2.3
-    releaseNote = null;
-    launchUrl = null; // release page, not download url
+    if (_downloadTask?.isCompleted == false) return null;
+    _downloadTask = Completer();
+    GitRelease? release;
+    Version? version;
+    String? releaseNote;
+    String? launchUrl; // release page, not download url
+    bool upgradable = false;
     if (!background) EasyLoading.show(maskType: EasyLoadingMaskType.clear);
 
+    String? fpInstaller;
     try {
       if (!background) {
         db.prefs.ignoreAppVersion.remove();
@@ -207,9 +213,9 @@ class AutoUpdateUtil {
         print(version);
       }
       releaseNote = releaseNote?.replaceAll('\r\n', '\n');
-      logger.i('Release note:\n$releaseNote');
+      // logger.i('Release note:\n$releaseNote');
 
-      if (Platform.isAndroid) {
+      if (Platform.isAndroid && kDebugMode) {
         await Dio(BaseOptions(
                 connectTimeout: 3000, headers: HttpUtils.headersWithUA()))
             .get("$kGooglePlayLink&hl=en")
@@ -220,9 +226,10 @@ class AutoUpdateUtil {
         });
       }
 
-      upgradable = version != null && version! > AppInfo.versionClass;
+      upgradable = version != null && version > AppInfo.versionClass;
       // if (kDebugMode) upgradable = true;
       db.runtimeData.upgradableVersion = upgradable ? version : null;
+      String newVersion = version?.version ?? '';
 
       if (kReleaseMode && (Platform.isIOS || AppInfo.isMacStoreApp)) {
         // Guideline 2.4.5(vii) - Performance
@@ -235,24 +242,38 @@ class AutoUpdateUtil {
         }
         return;
       }
-      if (background) {
-        if (!upgradable) {
-          logger.i('No update: fetched=${version?.fullVersion}, '
-              'cur=${AppInfo.fullVersion2}');
-          return;
-        }
-        if (db.prefs.ignoreAppVersion.get() == version!.version) {
-          logger.i('Latest version: $version, ignore this update.');
-          return;
-        }
-        if (download) {
-          await startDownload(background: true);
-        } else {
-          await _showDialog();
-        }
-      } else {
-        await _showDialog();
+
+      if (!upgradable) {
+        logger.i('No update: fetched=${version?.fullVersion}, '
+            'cur=${AppInfo.fullVersion2}');
+        if (!background) EasyLoading.showInfo('No update');
+        return;
       }
+      if (background && db.prefs.ignoreAppVersion.get() == newVersion) {
+        logger.i('Latest version: $version, ignore this update.');
+        return;
+      }
+      if (!background) {
+        download = await _showDialog(
+                version: version,
+                launchUrl: launchUrl,
+                releaseNote: releaseNote) ==
+            true;
+        if (!download) return;
+      }
+      if (download) {
+        fpInstaller = await startDownload(release: release!);
+      }
+
+      if (fpInstaller == null) {
+        if (!background) EasyLoading.showError('Download Failed');
+        return;
+      }
+      await _showDialog(
+          fpInstaller: fpInstaller,
+          version: version,
+          releaseNote: releaseNote,
+          launchUrl: launchUrl);
     } catch (e, s) {
       logger.e('error check app update', e, s);
       if (background) {
@@ -264,17 +285,20 @@ class AutoUpdateUtil {
         ).showDialog(null);
       }
     } finally {
-      EasyLoading.dismiss();
+      Future.delayed(Duration(seconds: 2), () => EasyLoading.dismiss());
+      _downloadTask!.complete();
     }
   }
 
-  Future<void> startDownload({bool background = false}) async {
-    validSHA1 = false;
-    final assetSHA1 = release!.targetSHA1Asset;
+  static Future<String?> startDownload({required GitRelease release}) async {
+    bool validSHA1 = false;
+    String? fpInstaller;
+
+    final assetSHA1 = release.targetSHA1Asset;
     print('sha1 file: ${assetSHA1?.name}');
     final String baseDir = join(db.paths.tempDir, 'app');
     String? fpSHA1 = assetSHA1 == null ? null : join(baseDir, assetSHA1.name);
-    String fpInstaller = join(baseDir, release!.targetAsset!.name);
+    fpInstaller = join(baseDir, release.targetAsset!.name);
 
     if (assetSHA1?.browserDownloadUrl != null) {
       print(assetSHA1?.browserDownloadUrl);
@@ -285,20 +309,19 @@ class AutoUpdateUtil {
         : null;
     if (checksum?.length != 40) checksum = null;
     // background download should ensure the correct checksum
-    if (background && checksum == null) return;
-
-    if (!await _checkSHA1(fpInstaller, checksum, false)) {
-      await _dio.download(
-          release!.targetAsset!.browserDownloadUrl!, fpInstaller,
-          deleteOnError: false);
+    if (checksum == null) {
+      return null;
+    }
+    validSHA1 = await _checkSHA1(fpInstaller, checksum, true);
+    if (!validSHA1) {
+      await _dio.download(release.targetAsset!.browserDownloadUrl!, fpInstaller,
+          deleteOnError: true);
       logger.d('downloaded $fpInstaller');
-      await _checkSHA1(fpInstaller, checksum, false);
+      validSHA1 = await _checkSHA1(fpInstaller, checksum, false);
     } else {
       logger.d('already downloaded $fpInstaller');
     }
-    if (!background || validSHA1) {
-      await _showDialog(fpInstaller: fpInstaller);
-    }
+    if (validSHA1) return fpInstaller;
   }
 
   static Future<void> alertReload() async {
@@ -310,7 +333,13 @@ class AutoUpdateUtil {
     await Future.delayed(Duration(milliseconds: 600));
   }
 
-  Future<void> _showDialog({String? fpInstaller}) async {
+  static Future<bool?> _showDialog({
+    required Version version,
+    String? fpInstaller,
+    String? releaseNote,
+    String? launchUrl,
+  }) async {
+    bool upgradable = version > AppInfo.versionClass;
     EasyLoading.dismiss();
     String content = '';
     if (fpInstaller != null)
@@ -319,7 +348,7 @@ class AutoUpdateUtil {
           jpn: 'インストールパッケージがダウンロードされました\n',
           eng: 'Installer is downloaded\n');
     content += S.current.about_update_app_detail(
-        AppInfo.fullVersion, (version?.version).toString(), releaseNote ?? '-');
+        AppInfo.fullVersion, version.version, releaseNote ?? '-');
     return SimpleCancelOkDialog(
       title: Text(S.current.about_update_app),
       content: SingleChildScrollView(
@@ -332,7 +361,7 @@ class AutoUpdateUtil {
           TextButton(
             child: Text(S.current.ignore),
             onPressed: () {
-              db.prefs.ignoreAppVersion.set(version!.version);
+              db.prefs.ignoreAppVersion.set(version.version);
               Navigator.of(context).pop();
             },
           ),
@@ -353,7 +382,7 @@ class AutoUpdateUtil {
         if (Platform.isWindows)
           TextButton(
             child: Text(S.current.release_page),
-            onPressed: launchUrl == null ? null : () => launch(launchUrl!),
+            onPressed: launchUrl == null ? null : () => launch(launchUrl),
           ),
         if (upgradable && fpInstaller != null)
           TextButton(
@@ -361,45 +390,38 @@ class AutoUpdateUtil {
             onPressed: () {
               Navigator.pop(context);
               db.saveUserData();
-              if (validSHA1) {
-                _installUpdate(fpInstaller);
-              } else {
-                SimpleCancelOkDialog(
-                  title: Text('Warning'),
-                  content: Text(LocalizedText.of(
-                    chs: '安装包未通过校验，仍然安装？',
-                    jpn: 'インストールパッケージは検証に失敗しましたが、それでもインストールしますか？',
-                    eng:
-                        'The installer failed the checksum verification, still install it?',
-                  )),
-                  onTapOk: () {
-                    _installUpdate(fpInstaller);
-                  },
-                ).showDialog(null);
-              }
+              _installUpdate(fpInstaller);
+              // SimpleCancelOkDialog(
+              //   title: Text('Warning'),
+              //   content: Text(LocalizedText.of(
+              //     chs: '安装包未通过校验，仍然安装？',
+              //     jpn: 'インストールパッケージは検証に失敗しましたが、それでもインストールしますか？',
+              //     eng:
+              //     'The installer failed the checksum verification, still install it?',
+              //   )),
+              //   onTapOk: () {
+              //     _installUpdate(fpInstaller);
+              //   },
+              // ).showDialog(null);
             },
           ),
         if (upgradable && fpInstaller == null)
           TextButton(
             child: Text(S.current.update),
             onPressed: () async {
-              Navigator.pop(context);
-              EasyLoading.showToast(LocalizedText.of(
+              Navigator.pop(context, true);
+              await Future.delayed(Duration(milliseconds: 600));
+              await EasyLoading.showToast(LocalizedText.of(
                   chs: '后台下载中...',
                   jpn: 'バックグラウンドでダウンロード...',
                   eng: 'Downloading in the background... '));
-              await Future.delayed(Duration(milliseconds: 500));
-              await startDownload(background: false).onError((e, s) {
-                logger.e('error download', e, s);
-                EasyLoading.showError('Download Failed\n$e');
-              });
             },
           ),
       ],
     ).showDialog(null);
   }
 
-  Future<void> _installUpdate(String fp) async {
+  static Future<void> _installUpdate(String fp) async {
     await Future.delayed(Duration(milliseconds: 500));
     if (Platform.isAndroid) {
       final result = await OpenFile.open(fp);
@@ -459,7 +481,7 @@ class AutoUpdateUtil {
     }
   }
 
-  String _generateCMD(
+  static String _generateCMD(
       String srcDir, String destDir, String backupDir, String logFp) {
     if (!File(logFp).existsSync()) File(logFp).createSync(recursive: true);
     StringBuffer buffer = StringBuffer();
@@ -481,8 +503,9 @@ class AutoUpdateUtil {
     return cmdFp;
   }
 
-  Future<bool> _checkSHA1(String fp, String? checksum,
+  static Future<bool> _checkSHA1(String fp, String? checksum,
       [bool deleteOnMismatch = false]) async {
+    bool validSHA1 = false;
     var file = File(fp);
     if (checksum == null || !file.existsSync()) {
       validSHA1 = false;
@@ -499,7 +522,7 @@ class AutoUpdateUtil {
     return validSHA1;
   }
 
-  void _deleteFileOrDir(String fp) {
+  static void _deleteFileOrDir(String fp) {
     if (FileSystemEntity.typeSync(fp) != FileSystemEntityType.notFound) {
       File(fp).deleteSync(recursive: true);
     }

@@ -56,7 +56,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m14(total, hidden) => "合計：${total} (非表示: ${hidden})";
 
   static String m15(tempDir, externalBackupDir) =>
-      "ユーザーデータのバックアップは一時(${tempDir})に保存されます\nアプリの削除/他のアーキテクチャのインストール（例えば、arm64-v8aからarmeabi-v7aへ ）/将来のビルド番号の変更、ユーザーデータと一時バックアップが削除されます。外部ストレージ(${externalBackupDir}";
+      "ユーザーデータのバックアップは一時(${tempDir})に保存されます\nアプリの削除/他のアーキテクチャのインストール（例えば、arm64-v8aからarmeabi-v7aへ ）/将来のビルド番号の変更、ユーザーデータと一時バックアップが削除されます。外部ストレージ(${externalBackupDir})にバックアップするためのストレージ権限を有効にすることを強くお勧めします ";
 
   static String m16(server) => "同步${server}";
 

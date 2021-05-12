@@ -126,7 +126,7 @@
 
 ## 1.1.1
 - fix focus issue of mouse cursor
-- support `Tab` to move next to focusNode
+- support `Tab` to move to next focusNode
 
 ## 1.1.0
 - support Windows

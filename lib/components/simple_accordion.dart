@@ -11,6 +11,7 @@ class SimpleAccordion extends StatefulWidget {
   final bool canTapOnHeader;
   final AccordionHeaderBuilder? expandIconBuilder;
   final bool disableAnimation;
+  final double? expandElevation;
 
   const SimpleAccordion({
     Key? key,
@@ -21,6 +22,7 @@ class SimpleAccordion extends StatefulWidget {
     this.canTapOnHeader = true,
     this.expandIconBuilder,
     this.disableAnimation = false,
+    this.expandElevation,
   }) : super(key: key);
 
   @override
@@ -81,7 +83,7 @@ class _SimpleAccordionState extends State<SimpleAccordion> {
     return Padding(
       padding: expanded ? EdgeInsets.only(bottom: 6) : EdgeInsets.zero,
       child: Material(
-        elevation: expanded ? 2 : 0,
+        elevation: expanded ? (widget.expandElevation ?? 2) : 0,
         color: Material.of(context)?.color,
         child: Column(
           mainAxisSize: MainAxisSize.min,

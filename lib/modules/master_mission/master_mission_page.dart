@@ -496,7 +496,9 @@ class _MasterMissionPageState extends State<MasterMissionPage>
     }
     if (params.rowNames.isEmpty || params.colNames.isEmpty) {
       EasyLoading.showError('No quest');
-      setState(() {});
+      setState(() {
+        solution.clear();
+      });
       return;
     }
     // call js
