@@ -206,13 +206,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 popDetail: true,
               ),
             ),
-            ListTile(
-              title: Text(S.of(context).settings_tutorial),
-              onTap: () {
-                EasyLoading.showToast(
-                    Language.isCN ? '咕咕咕咕咕咕' : "Not implemented");
-              },
-            ),
+            if (!kReleaseMode)
+              ListTile(
+                title: Text(S.of(context).settings_tutorial),
+                onTap: () {
+                  EasyLoading.showToast(
+                      Language.isCN ? '咕咕咕咕咕咕' : "Not implemented");
+                },
+              ),
             if (Platform.isIOS)
               ListTile(
                 title: Text(S.of(context).join_beta),

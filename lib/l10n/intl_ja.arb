@@ -375,7 +375,7 @@
   "exp_card_select_lvs": "レベルの範囲を選択",
   "patch_gamedata": "ゲームデータを更新",
   "patch_gamedata_hint": "パッチのみ",
-  "patch_gamedata_error_already_latest": "すでに最新バージョン",
+  "update_already_latest": "すでに最新バージョン",
   "patch_gamedata_error_no_compatible": "このAPPバージョンと互換性のあるデータバージョンが見つかりません",
   "patch_gamedata_error_unknown_version": "サーバーの現在のバージョンが存在せず、完全なデータパッケージをダウンロード",
   "patch_gamedata_success_to": "データバージョンが{version}に更新されました",
@@ -388,5 +388,7 @@
   "svt_related_cards": "関連カード",
   "master_mission_tasklist": "ミッション",
   "master_mission_solution": "対策",
-  "master_mission_related_quest": "関連クエスト"
+  "master_mission_related_quest": "関連クエスト",
+  "import_screenshot_update_items": "更新素材",
+  "import_screenshot_hint": "識別された資料のみを更新する"
 }

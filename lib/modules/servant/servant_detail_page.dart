@@ -173,11 +173,11 @@ class ServantDetailPageState extends State<ServantDetailPage>
               child: Text(S.current.svt_reset_plan),
               value: 'reset_plan',
             ),
-          if (!Servant.unavailable.contains(svt.no))
-            PopupMenuItem<String>(
-              child: Text(S.of(context).reset_svt_enhance_state),
-              value: 'reset_enhance',
-            ),
+          // if (!Servant.unavailable.contains(svt.no))
+          //   PopupMenuItem<String>(
+          //     child: Text(S.of(context).reset_svt_enhance_state),
+          //     value: 'reset_enhance',
+          //   ),
           PopupMenuItem<String>(
             child: Text(S.of(context).jump_to('Mooncell')),
             value: 'jump_mc',

@@ -18,7 +18,7 @@ class CatcherUtils {
       [
         FileHandler(crashFile),
         ConsoleHandler(),
-        ToastHandler(),
+        // ToastHandler(),
         kEmailAutoHandlerCross(attachments: [
           crashFile,
           File(db.paths.userDataPath),

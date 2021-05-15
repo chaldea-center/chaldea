@@ -108,7 +108,7 @@ class AutoUpdateUtil {
       int newer =
           db.gameData.version.compareTo(_dataVersion(latestRelease.name));
       if (newer >= 0) {
-        _reportResult(S.current.patch_gamedata_error_already_latest);
+        _reportResult(S.current.update_already_latest);
         return;
       }
       final curRelease = releases.firstWhereOrNull(
@@ -246,7 +246,7 @@ class AutoUpdateUtil {
       if (!upgradable) {
         logger.i('No update: fetched=${version?.fullVersion}, '
             'cur=${AppInfo.fullVersion2}');
-        if (!background) EasyLoading.showInfo('No update');
+        if (!background) EasyLoading.showInfo(S.current.update_already_latest);
         return;
       }
       if (background && db.prefs.ignoreAppVersion.get() == newVersion) {

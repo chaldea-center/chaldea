@@ -293,6 +293,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("ロックのみ"),
         "import_http_body_success_switch": m6,
         "import_http_body_target_account_header": m7,
+        "import_screenshot_hint":
+            MessageLookupByLibrary.simpleMessage("識別された資料のみを更新する"),
+        "import_screenshot_update_items":
+            MessageLookupByLibrary.simpleMessage("更新素材"),
         "info_agility": MessageLookupByLibrary.simpleMessage("敏捷"),
         "info_alignment": MessageLookupByLibrary.simpleMessage("属性"),
         "info_bond_points": MessageLookupByLibrary.simpleMessage("絆ポイント"),
@@ -416,8 +420,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "overwrite": MessageLookupByLibrary.simpleMessage("上書き"),
         "passive_skill": MessageLookupByLibrary.simpleMessage("クラススキル"),
         "patch_gamedata": MessageLookupByLibrary.simpleMessage("ゲームデータを更新"),
-        "patch_gamedata_error_already_latest":
-            MessageLookupByLibrary.simpleMessage("すでに最新バージョン"),
         "patch_gamedata_error_no_compatible":
             MessageLookupByLibrary.simpleMessage(
                 "このAPPバージョンと互換性のあるデータバージョンが見つかりません"),
@@ -528,6 +530,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "total_ap": MessageLookupByLibrary.simpleMessage("合計AP"),
         "total_counts": MessageLookupByLibrary.simpleMessage("合計カウント"),
         "update": MessageLookupByLibrary.simpleMessage("更新"),
+        "update_already_latest":
+            MessageLookupByLibrary.simpleMessage("すでに最新バージョン"),
         "update_dataset": MessageLookupByLibrary.simpleMessage("ゲームデータを更新"),
         "upload": MessageLookupByLibrary.simpleMessage("アップロード"),
         "userdata": MessageLookupByLibrary.simpleMessage("ユーザーデータ"),

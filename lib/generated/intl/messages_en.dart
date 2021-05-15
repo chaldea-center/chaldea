@@ -321,6 +321,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Locked Only"),
         "import_http_body_success_switch": m6,
         "import_http_body_target_account_header": m7,
+        "import_screenshot_hint": MessageLookupByLibrary.simpleMessage(
+            "Only update recognized items"),
+        "import_screenshot_update_items":
+            MessageLookupByLibrary.simpleMessage("Update Items"),
         "info_agility": MessageLookupByLibrary.simpleMessage("Agility"),
         "info_alignment": MessageLookupByLibrary.simpleMessage("Alignment"),
         "info_bond_points": MessageLookupByLibrary.simpleMessage("Bond Points"),
@@ -464,8 +468,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "passive_skill": MessageLookupByLibrary.simpleMessage("Passive Skill"),
         "patch_gamedata":
             MessageLookupByLibrary.simpleMessage("Patch Gamedata"),
-        "patch_gamedata_error_already_latest":
-            MessageLookupByLibrary.simpleMessage("Already the latest version"),
         "patch_gamedata_error_no_compatible":
             MessageLookupByLibrary.simpleMessage(
                 "No compatible version with current app version"),
@@ -508,7 +510,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "reset_success":
             MessageLookupByLibrary.simpleMessage("Reset successfully"),
         "reset_svt_enhance_state":
-            MessageLookupByLibrary.simpleMessage("Reset skill/NP enhancements"),
+            MessageLookupByLibrary.simpleMessage("Reset default skill/NP"),
         "reset_svt_enhance_state_hint": MessageLookupByLibrary.simpleMessage(
             "Reset rank up of skills and nobel phantasm"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
@@ -586,6 +588,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "total_ap": MessageLookupByLibrary.simpleMessage("Total AP"),
         "total_counts": MessageLookupByLibrary.simpleMessage("Total counts"),
         "update": MessageLookupByLibrary.simpleMessage("Update"),
+        "update_already_latest":
+            MessageLookupByLibrary.simpleMessage("Already the latest version"),
         "update_dataset":
             MessageLookupByLibrary.simpleMessage("Update Dataset"),
         "upload": MessageLookupByLibrary.simpleMessage("Upload"),

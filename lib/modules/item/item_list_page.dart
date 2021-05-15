@@ -477,7 +477,8 @@ class _ItemListTabState extends State<ItemListTab> {
 
     // update when text input
     bool enough = (db.itemStat.leftItems[itemKey] ?? 0) >= 0;
-    final highlightStyle = TextStyle(color: enough ? null : Colors.redAccent);
+    final highlightStyle =
+        TextStyle(color: enough ? null : Theme.of(context).errorColor);
     Widget textField = TextField(
       maxLength: isQp ? 20 : 5,
       controller: group.controller,

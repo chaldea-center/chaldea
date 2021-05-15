@@ -275,6 +275,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_http_body_locked": MessageLookupByLibrary.simpleMessage("仅锁定"),
         "import_http_body_success_switch": m6,
         "import_http_body_target_account_header": m7,
+        "import_screenshot_hint":
+            MessageLookupByLibrary.simpleMessage("仅更新识别出的素材"),
+        "import_screenshot_update_items":
+            MessageLookupByLibrary.simpleMessage("更新素材"),
         "info_agility": MessageLookupByLibrary.simpleMessage("敏捷"),
         "info_alignment": MessageLookupByLibrary.simpleMessage("属性"),
         "info_bond_points": MessageLookupByLibrary.simpleMessage("羁绊点数"),
@@ -389,8 +393,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "overwrite": MessageLookupByLibrary.simpleMessage("覆盖"),
         "passive_skill": MessageLookupByLibrary.simpleMessage("职阶技能"),
         "patch_gamedata": MessageLookupByLibrary.simpleMessage("更新游戏数据"),
-        "patch_gamedata_error_already_latest":
-            MessageLookupByLibrary.simpleMessage("已经是最新数据"),
         "patch_gamedata_error_no_compatible":
             MessageLookupByLibrary.simpleMessage("找不到兼容此APP版本的数据版本"),
         "patch_gamedata_error_unknown_version":
@@ -494,6 +496,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "total_ap": MessageLookupByLibrary.simpleMessage("总AP"),
         "total_counts": MessageLookupByLibrary.simpleMessage("总数"),
         "update": MessageLookupByLibrary.simpleMessage("更新"),
+        "update_already_latest":
+            MessageLookupByLibrary.simpleMessage("已经是最新版本"),
         "update_dataset": MessageLookupByLibrary.simpleMessage("更新资源包"),
         "upload": MessageLookupByLibrary.simpleMessage("上传"),
         "userdata": MessageLookupByLibrary.simpleMessage("用户数据"),

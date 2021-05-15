@@ -3776,11 +3776,11 @@ class S {
     );
   }
 
-  /// `已经是最新数据`
-  String get patch_gamedata_error_already_latest {
+  /// `已经是最新版本`
+  String get update_already_latest {
     return Intl.message(
-      '已经是最新数据',
-      name: 'patch_gamedata_error_already_latest',
+      '已经是最新版本',
+      name: 'update_already_latest',
       desc: '',
       args: [],
     );
@@ -3911,6 +3911,26 @@ class S {
     return Intl.message(
       '关联关卡',
       name: 'master_mission_related_quest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `更新素材`
+  String get import_screenshot_update_items {
+    return Intl.message(
+      '更新素材',
+      name: 'import_screenshot_update_items',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `仅更新识别出的素材`
+  String get import_screenshot_hint {
+    return Intl.message(
+      '仅更新识别出的素材',
+      name: 'import_screenshot_hint',
       desc: '',
       args: [],
     );

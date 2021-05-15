@@ -66,6 +66,21 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         yield LicenseEntryWithLineBreaks([entry.key], license);
       }
     });
+
+    // if failed to load userdata, backup and alert user
+    if (File(db.paths.userDataPath).existsSync() && !db.loadUserData()) {
+      userdataBackup = db.backupUserdata(disk: true, memory: false);
+    }
+
+    if (userdataBackup != null) {
+      Utils.addPostFrameCallback(() {
+        showInformDialog(
+          kAppKey.currentContext!,
+          title: 'Userdata damaged',
+          content: 'A backup is created:\n ${userdataBackup!.join('\n')}',
+        );
+      });
+    }
   }
 
   @override
@@ -106,18 +121,6 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
       MethodChannelChaldea.setWindowPos();
     }
 
-    // if failed to load userdata, backup and alert user
-    if (File(db.paths.userDataPath).existsSync() && !db.loadUserData()) {
-      userdataBackup = db.backupUserdata(disk: true, memory: false);
-    }
-
-    if (userdataBackup != null) {
-      showInformDialog(
-        kAppKey.currentContext!,
-        title: 'Userdata damaged',
-        content: 'A backup is created:\n ${userdataBackup!.join('\n')}',
-      );
-    }
     if (!Analyzer.skipReport()) {
       await Future.delayed(Duration(seconds: 5));
       await Analyzer.sendStat();

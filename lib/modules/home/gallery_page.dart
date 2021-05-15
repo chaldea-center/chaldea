@@ -607,7 +607,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       expandElevation: 0.0,
       headerBuilder: (context, _) => ListTile(
         leading: Icon(Icons.notifications,
-            color: Theme.of(context).colorScheme.primary),
+            color: Theme.of(context).colorScheme.secondary),
         title: Text('Notifications'),
         // tileColor: Theme.of(context).cardColor,
       ),

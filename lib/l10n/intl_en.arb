@@ -261,7 +261,7 @@
   "download_source": "Download source",
   "download_source_of": "Source {name}",
   "download_source_hint": "update dataset and app",
-  "reset_svt_enhance_state": "Reset skill/NP enhancements",
+  "reset_svt_enhance_state": "Reset default skill/NP",
   "reset_svt_enhance_state_hint": "Reset rank up of skills and nobel phantasm",
   "reset_success": "Reset successfully",
   "gamedata": "Gamedata",
@@ -373,7 +373,7 @@
   "exp_card_select_lvs": "Select Level Range",
   "patch_gamedata": "Patch Gamedata",
   "patch_gamedata_hint": "Only patch downloaded",
-  "patch_gamedata_error_already_latest": "Already the latest version",
+  "update_already_latest": "Already the latest version",
   "patch_gamedata_error_no_compatible": "No compatible version with current app version",
   "patch_gamedata_error_unknown_version": "Cannot found current version on server, downloading full size package",
   "patch_gamedata_success_to": "Updated dataset to {version}",
@@ -386,5 +386,7 @@
   "svt_related_cards": "Related Cards",
   "master_mission_tasklist": "Missions",
   "master_mission_solution": "Solution",
-  "master_mission_related_quest": "Related Quests"
+  "master_mission_related_quest": "Related Quests",
+  "import_screenshot_update_items": "Update Items",
+  "import_screenshot_hint": "Only update recognized items"
 }

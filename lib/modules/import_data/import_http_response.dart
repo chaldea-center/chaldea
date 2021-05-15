@@ -65,9 +65,8 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
                   padding: EdgeInsets.all(8),
                   child: Column(
                     children: [
-                      if (!Language.isCN)
-                        Text('Only Simplified Chinese server is supported yet'),
-                      if (!Language.isCN) Text(S.current.import_http_body_hint),
+                      Text('Only Chinese server is supported yet'),
+                      Text(S.current.import_http_body_hint),
                     ],
                   ),
                 )
@@ -85,8 +84,8 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
                       kDefaultDivider,
                       craftAccordion,
                     ],
+                  ),
                 ),
-          ),
         ),
         kDefaultDivider,
         buttonBar,
@@ -198,7 +197,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
           text += '\n';
         } else {
           text +=
-          '灵衣 ${cardCollections[svt.svtId]!.costumeIdsTo01().join('/')}\n';
+              '灵衣 ${cardCollections[svt.svtId]!.costumeIdsTo01().join('/')}\n';
         }
         text += '技能 ${svt.skillLv1}/${svt.skillLv2}/${svt.skillLv3}\n';
 
@@ -494,11 +493,11 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
   void importResponseBody() async {
     try {
       FilePickerCross filePickerCross =
-      await FilePickerCross.importFromStorage();
+          await FilePickerCross.importFromStorage();
       String body =
-      Uri.decodeFull(File(filePickerCross.path).readAsStringSync());
+          Uri.decodeFull(File(filePickerCross.path).readAsStringSync());
       BiliResponse _response =
-      BiliResponse.fromJson(jsonDecode(b64(body))['cache']['replaced']);
+          BiliResponse.fromJson(jsonDecode(b64(body))['cache']['replaced']);
 
       // clear before import
       ignoreSvts.clear();
@@ -538,7 +537,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
           // cardCollections[svt.svtId] = _response.userSvtCollection
           //     .firstWhere((element) => element.svtId == svt.svtId);
           final group = servants.firstWhereOrNull(
-                  (group) => group.any((element) => element.svtId == svt.svtId));
+              (group) => group.any((element) => element.svtId == svt.svtId));
           if (group == null) {
             servants.add([svt]);
           } else {
@@ -554,7 +553,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
           // cardCollections[svt.svtId] = _response.userSvtCollection
           //     .firstWhere((element) => element.svtId == svt.svtId);
           final group = servants.firstWhereOrNull(
-                  (group) => group.any((element) => element.svtId == svt.svtId));
+              (group) => group.any((element) => element.svtId == svt.svtId));
           if (group == null) {
             servants.add([svt]);
           } else {

@@ -37,7 +37,7 @@ class Localized {
         LocalizedText(chs: '情人节概念礼装', jpn: '', eng: 'Valentine CE'),
         LocalizedText(chs: '羁绊概念礼装', jpn: '', eng: 'Bond CE'),
         LocalizedText(chs: '未遭遇', jpn: '未遭遇', eng: 'Not Encountered'),
-        LocalizedText(chs: '已遭遇', jpn: '遭遇済', eng: 'Encountered'),
+        LocalizedText(chs: '已遭遇', jpn: '遭遇済', eng: 'Uncontracted'),
         LocalizedText(chs: '已契约', jpn: '契約済', eng: 'Contracted'),
       ]);
 

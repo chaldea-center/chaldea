@@ -28,7 +28,7 @@ class ImportGudaPageState extends State<ImportGudaPage> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Expanded(
           child: SingleChildScrollView(
@@ -43,41 +43,32 @@ class ImportGudaPageState extends State<ImportGudaPage> {
     );
   }
 
-  bool clearData = false;
-
   Widget get buttonBar {
     return ButtonBar(
+      alignment: MainAxisAlignment.center,
       children: [
+        IconButton(
+          onPressed: () {
+            SimpleCancelOkDialog(
+              title: Text(S.current.help),
+              scrollable: true,
+              content: Text(LocalizedText.of(
+                  chs: '导入iOS应用"Guda"的数据，支持素材和从者',
+                  jpn: 'iOSアプリ「Guda」のデータをインポートする',
+                  eng: 'Import item or servant data from iOS app "Guda"')),
+            ).showDialog(context);
+          },
+          icon: Icon(Icons.help),
+          color: Theme.of(context).colorScheme.primary,
+        ),
         ElevatedButton(
           child: Text(itemOrSvt == null
               ? S.current.import_data
               : itemOrSvt == true
-              ? S.current.import_guda_items
-              : S.current.import_guda_servants),
+                  ? S.current.import_guda_items
+                  : S.current.import_guda_servants),
           onPressed: itemOrSvt == null ? null : _import,
         ),
-        Checkbox(
-          value: clearData,
-          onChanged: (v) {
-            if (v == true) {
-              SimpleCancelOkDialog(
-                title: Text(S.of(context).confirm),
-                content: Text('清除已有素材/从者数据'),
-                onTapOk: () {
-                  setState(() => clearData = true);
-                },
-                onTapCancel: () {
-                  setState(() => clearData = false);
-                },
-              ).showDialog(context);
-            } else {
-              setState(() {
-                clearData = v ?? clearData;
-              });
-            }
-          },
-        ),
-        Text('清除已有数据')
       ],
     );
   }
@@ -85,14 +76,14 @@ class ImportGudaPageState extends State<ImportGudaPage> {
   void importGudaFile() async {
     try {
       FilePickerCross filePickerCross =
-      await FilePickerCross.importFromStorage();
+          await FilePickerCross.importFromStorage();
       gudaData = File(filePickerCross.path).readAsStringSync();
       int cellNum = gudaData!.trim().split(';').first.split('/').length;
       itemOrSvt = cellNum == 3
           ? true
           : cellNum == 13
-          ? false
-          : null;
+              ? false
+              : null;
       if (mounted) {
         setState(() {});
       }
@@ -104,7 +95,7 @@ class ImportGudaPageState extends State<ImportGudaPage> {
   List<List<String>> _splitTable(String content) {
     List<String> lines = content.trim().split(';');
     final table =
-    lines.map((row) => row.trim().split('/').map((e) => e.trim()).toList());
+        lines.map((row) => row.trim().split('/').map((e) => e.trim()).toList());
     return table.where((e) => e.isNotEmpty).toList();
   }
 
@@ -142,9 +133,6 @@ class ImportGudaPageState extends State<ImportGudaPage> {
           print('Item $itemKey not found');
         }
       }
-      if (clearData) {
-        db.curUser.items.clear();
-      }
       db.curUser.items.addAll(items);
       print(db.curUser.items);
       EasyLoading.showSuccess(S.of(context).import_data_success);
@@ -156,10 +144,6 @@ class ImportGudaPageState extends State<ImportGudaPage> {
   void _importGudaSvts() async {
     if (gudaData == null) return;
     try {
-      if (clearData) {
-        db.curUser.servants.clear();
-        db.curUser.curSvtPlan.clear();
-      }
       Map<int, ServantStatus> statuses = {};
       Map<int, ServantPlan> plans = {};
 
@@ -177,7 +161,7 @@ class ImportGudaPageState extends State<ImportGudaPage> {
         if (svt == null) continue;
 
         List<int> values =
-        List.generate(10, (index) => int.parse(row[index + 3]));
+            List.generate(10, (index) => int.parse(row[index + 3]));
         ServantPlan cur = ServantPlan(favorite: true),
             target = ServantPlan(favorite: true);
         cur
@@ -195,13 +179,9 @@ class ImportGudaPageState extends State<ImportGudaPage> {
         statuses[svtNo] = ServantStatus(curVal: cur);
         plans[svtNo] = target;
       }
-      if (clearData) {
-        db.curUser.servants.clear();
-        db.curUser.curSvtPlan.clear();
-      }
       db.curUser.servants.addAll(statuses);
       db.curUser.curSvtPlan.addAll(plans);
-      EasyLoading.showToast(S.of(context).import_data_success);
+      EasyLoading.showSuccess(S.of(context).import_data_success);
     } catch (e) {
       EasyLoading.showError('Invalid Guda servant format');
     }

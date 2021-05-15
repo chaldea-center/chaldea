@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math' show min;
 import 'dart:typed_data';
 
 import 'package:archive/archive_io.dart';
@@ -98,7 +99,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
     int index =
         lines.lastIndexWhere((line) => line.contains('package:chaldea'));
     if (lines.isNotEmpty) {
-      buffer.writeAll(lines.take(index < 0 ? 10 : index + 1), '\n');
+      buffer.writeAll(lines.take(index < 0 ? 10 : min(index + 1, 20)), '\n');
     }
     return buffer.toString();
   }
@@ -280,7 +281,7 @@ EmailAutoHandlerCross kEmailAutoHandlerCross(
       465,
       'chaldea-client@narumi.cc',
       'Chaldea ${AppInfo.version} Crash',
-      b64('Q2hhbGRlYUBjbGllbnQ='), //Chaldea@client
+      b64('Q2hhbGRlYUBjbGllbnQ='),
       [kSupportTeamEmailAddress],
       attachments: attachments,
       screenshot: true,

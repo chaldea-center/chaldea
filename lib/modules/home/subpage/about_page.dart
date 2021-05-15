@@ -98,6 +98,10 @@ class _AboutPageState extends State<AboutPage> {
                       jumpToExternalLinkAlert(url: ref.value, name: ref.key),
                 ),
               ListTile(
+                title: Text('icyalala@NGA'),
+                subtitle: AutoSizeText('Fate/Freedom Order data', maxLines: 1),
+              ),
+              ListTile(
                 title: Text('Fandom Contributors'),
                 onTap: () {
                   SplitRoute.push(
@@ -192,7 +196,7 @@ class _AboutProgram extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+        borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 24.0),

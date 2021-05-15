@@ -19,7 +19,7 @@ const String kGameDataFilename = 'dataset.json';
 const String kSupportTeamEmailAddress = 'chaldea@narumi.cc';
 const String kDatasetAssetKey = 'res/data/dataset.zip';
 const String kDatasetServerPath = '/chaldea/dataset.zip';
-// const String kServerRoot = 'http://localhost:8083';
+// String get kServerRoot => 'http://localhost:8083';
 const String kServerRoot = 'http://chaldea.narumi.cc';
 const String kAppStoreLink = 'itms-apps://itunes.apple.com/app/id1548713491';
 const String kGooglePlayLink =
@@ -52,7 +52,7 @@ class Language {
   static Language? getLanguage(String? code) {
     if (code == null) return null;
     Language? language =
-    supportLanguages.firstWhereOrNull((lang) => lang.code == code);
+        supportLanguages.firstWhereOrNull((lang) => lang.code == code);
     language ??= supportLanguages
         .firstWhereOrNull((lang) => code.startsWith(lang.locale.languageCode));
     return language;
@@ -69,8 +69,8 @@ class Language {
   static Language get current => isJP
       ? jpn
       : isEN
-      ? eng
-      : chs;
+          ? eng
+          : chs;
 
   @override
   String toString() {
@@ -105,36 +105,36 @@ class ClassName {
   static const beast = const ClassName('Beast');
 
   static List<ClassName> get values => const [
-    saber,
-    archer,
-    lancer,
-    rider,
-    caster,
-    assassin,
-    berserker,
-    ruler,
-    avenger,
-    alterego,
-    mooncancer,
-    foreigner,
-    shielder,
-    beast
-  ];
+        saber,
+        archer,
+        lancer,
+        rider,
+        caster,
+        assassin,
+        berserker,
+        ruler,
+        avenger,
+        alterego,
+        mooncancer,
+        foreigner,
+        shielder,
+        beast,
+      ];
 }
 
 T localizeNoun<T>(T? nameCn, T? nameJp, T? nameEn,
     {T k()?, Language? primary}) {
   primary ??= Language.current;
   List<T?> names = primary == Language.chs
-  ? [nameCn, nameJp, nameEn]
+      ? [nameCn, nameJp, nameEn]
       : primary == Language.eng
-  ? [nameEn, nameJp, nameCn]
-      : [nameJp, nameCn, nameEn];
+          ? [nameEn, nameJp, nameCn]
+          : [nameJp, nameCn, nameEn];
   T? name = names[0] ?? names[1] ?? names[2] ?? k?.call();
   // assert(name != null,
   //     'null for every localized value: $nameCn,$nameJp,$nameEn,$k');
   if (T == String) {
-  return name ?? '' as T;
+    return name ?? '' as T;
   }
   return name!;
 }
@@ -153,7 +153,7 @@ class EnumUtil {
 
   static shortString(Object enumObj) {
     assert(enumObj.toString().contains('.'),
-    'The provided object "$enumObj" is not an enum.');
+        'The provided object "$enumObj" is not an enum.');
     return enumObj.toString().split('.').last;
   }
 
