@@ -19,13 +19,13 @@ class Analyzer {
 
   static bool skipReport() {
     final excludeIds = [
-      b64('YjhhMDY0OWQ3NTI5MmQwOQ=='), // android
-      b64('RDE0QjBGNzItNUYzRS00ODcxLTlDRjUtNTRGMkQ1OTYyMUEw'), //ios
-      'QzAyQ1cwTUNNTDdM', //macos
-      'MDAzNzgtNDAwMDAtMDAwMDEtQUE5Mjc=', // windows
+      'FB26CA34-0B8F-588C-8542-4A748BB67740', // android
+      '739F2CE5-ADA0-5216-B6C9-CBF1D1C33183', // ios
+      '1D6D5558-9929-5AB0-9CE7-BC2E188948CD', // macos
+      '88E2ACF3-0BA8-552C-80BA-D000CE336475', // windows
     ];
 
-    if (kDebugMode || excludeIds.contains(AppInfo.uniqueId)) {
+    if (kDebugMode || excludeIds.contains(AppInfo.uuid)) {
       return true;
     }
     return false;
@@ -56,7 +56,7 @@ class Analyzer {
     // await Dio(BaseOptions(baseUrl: 'http://localhost:8083'))
     //     .get('/analytics', queryParameters: {
     await db.serverDio.get('/analytics', queryParameters: {
-      'id': AppInfo.uniqueId,
+      'uuid': AppInfo.uuid,
       'os': Platform.operatingSystem,
       'os_ver': Platform.isAndroid
           ? AppInfo.androidSdk ?? Platform.operatingSystemVersion
@@ -69,7 +69,7 @@ class Analyzer {
       'data_ver': db.gameData.version,
       'abi': AppInfo.abi.toStandardString(),
       'mac': AppInfo.macAppType.index,
-      'time': DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      'time': DateTime.now().toString().split('.').first,
       'size': size,
       'zone': zone,
     }).catchError((e, s) {

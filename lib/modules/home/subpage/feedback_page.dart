@@ -208,6 +208,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
         ..subject = 'Chaldea v${AppInfo.fullVersion} Feedback';
 
       message.html = _emailBody();
+      message.attachments
+          .add(StringAttachment(bodyController.text, fileName: 'raw_msg.txt'));
       if (attachLog) {
         message.attachments.addAll(EmailAutoHandlerCross.archiveAttachments(
             [File(db.paths.crashLog), File(db.paths.appLog)],
@@ -253,13 +255,16 @@ class _FeedbackPageState extends State<FeedbackPage> {
       buffer.write("<h3>Contact:</h3>");
       buffer.write("${escape(contactController.text)}<br>");
     }
+    buffer.write("<h3>Body:</h3>");
+    buffer
+        .write("${escape(bodyController.text).replaceAll('\n', '<br>\n')}<br>");
     buffer.write("<h3>Summary:</h3>");
     Map<String, dynamic> summary = {
       'app': '${AppInfo.appName} v${AppInfo.fullVersion2}',
       'dataset': db.gameData.version,
       'os': '${Platform.operatingSystem} ${Platform.operatingSystemVersion}',
       'lang': Language.current.code,
-      'uuid': AppInfo.uniqueId,
+      'uuid': AppInfo.uuid,
     };
     for (var entry in summary.entries) {
       buffer

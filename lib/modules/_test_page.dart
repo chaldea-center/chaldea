@@ -3,7 +3,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:path/path.dart' as p;
 
 void testFunction() async {
-  _reloadDebugDataset();
+  if (Platform.isMacOS) _reloadDebugDataset();
   return;
 }
 

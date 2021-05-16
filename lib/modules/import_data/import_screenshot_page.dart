@@ -52,9 +52,10 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                       child: Text(LocalizedText.of(
-                        chs: '理论支持现有所有服务器的截图解析，精度有所提升',
-                        jpn: '理論的に既存のすべてのサーバーのスクリーンショット分析をサポートする',
-                        eng: 'Support all servers with improved accuracy',
+                        chs: '理论支持现有所有服务器的素材截图解析，精度有所提升',
+                        jpn: '理論的に既存のすべてのサーバーのアイテムスクリーンショット分析をサポートする',
+                        eng:
+                            'Support item screenshots of all servers with improved accuracy',
                       )),
                     ),
                   ),
@@ -93,7 +94,9 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
             onPressed: imageFiles.isEmpty ? null : _uploadScreenshots,
             child: Text(S.of(context).upload)),
         ElevatedButton(
-            onPressed: _fetchResult, child: Text(S.of(context).download)),
+            onPressed: _fetchResult,
+            child: Text(LocalizedText.of(
+                chs: '下载结果', jpn: '結果をダウンロード', eng: 'Download Result'))),
         ElevatedButton(
           onPressed: output.isEmpty
               ? null
@@ -175,21 +178,22 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
   }
 
   void _uploadScreenshots() async {
-    print('uuid=${AppInfo.uniqueId}');
+    print('uuid=${AppInfo.uuid}');
     if (imageFiles.isEmpty) {
       return;
     }
     try {
-      final response1 = await _dio.get('/requestNewTask',
-          queryParameters: {'userKey': AppInfo.uniqueId});
+      final response1 = await _dio
+          .get('/requestNewTask', queryParameters: {'userKey': AppInfo.uuid});
       final data1 = jsonDecode(response1.data);
       if (data1['success'] != true) {
-        showInformDialog(context, content: data1['msg']);
+        showInformDialog(context,
+            title: S.current.success, content: data1['msg']);
         return;
       }
 
       Map<String, dynamic> map = Map();
-      map['userKey'] = AppInfo.uniqueId;
+      map['userKey'] = AppInfo.uuid;
       for (var file in imageFiles) {
         map[pathlib.basename(file.path)] =
             await MultipartFile.fromFile(file.path);
@@ -205,7 +209,7 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
     } catch (e, s) {
       print(e);
       print(s);
-      showInformDialog(context, content: e.toString());
+      showInformDialog(context, title: 'Error', content: e.toString());
     } finally {
       EasyLoading.dismiss();
     }
@@ -214,7 +218,7 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
   void _fetchResult() async {
     try {
       final response = await _dio.get('/downloadItemResult',
-          queryParameters: {'userKey': AppInfo.uniqueId});
+          queryParameters: {'userKey': AppInfo.uuid});
       Map data = jsonDecode(response.data);
       if (!mounted) return;
       if (data['success'] == true) {
@@ -223,7 +227,8 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
         print(output);
         setState(() {});
       } else {
-        showInformDialog(context, content: data['msg'].toString());
+        showInformDialog(context,
+            title: 'Response', content: data['msg'].toString());
       }
     } catch (e) {
       showInformDialog(context, title: 'Error', content: e.toString());

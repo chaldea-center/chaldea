@@ -16,7 +16,7 @@ class AppInfo {
   AppInfo._();
 
   static PackageInfo? _packageInfo;
-  static String? _uniqueId;
+  static String? _uuid;
   static MacAppType _macAppType = MacAppType.unknown;
   static int? _androidSdk;
 
@@ -177,10 +177,10 @@ class AppInfo {
       }
       if (originId?.isNotEmpty != true) {
         originId = Uuid().v1();
-        uuidFile.writeAsStringSync(_uniqueId!);
+        uuidFile.writeAsStringSync(_uuid!);
       }
     }
-    _uniqueId = Uuid().v5(Uuid.NAMESPACE_URL, originId!).toUpperCase();
+    _uuid = Uuid().v5(Uuid.NAMESPACE_URL, originId!).toUpperCase();
 
     // logger.i('Unique ID: $_uniqueId');
   }
@@ -265,7 +265,7 @@ class AppInfo {
     return buffer.toString();
   }
 
-  static String get uniqueId => _uniqueId!;
+  static String get uuid => _uuid!;
 
   /// currently supported mobile or desktop
   static bool get isMobile => Platform.isAndroid || Platform.isIOS;
