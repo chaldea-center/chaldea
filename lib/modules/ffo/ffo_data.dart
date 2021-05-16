@@ -338,14 +338,18 @@ class FFOParams {
         if (Platform.isAndroid || Platform.isIOS)
           TextButton(
             onPressed: () async {
-              final result = await ImageGallerySaver.saveFile(fp!);
-              logger.i('save to gallery: $result');
-              if (result['isSuccess'] == true) {
-                EasyLoading.showSuccess('Saved to Photos');
-                Navigator.pop(context);
-              } else {
-                EasyLoading.showError(
-                    'Save to Photos failed\n${result["errorMessage"]}');
+              try {
+                final result = await ImageGallerySaver.saveFile(fp!);
+                logger.i('save to gallery: $result');
+                if (result['isSuccess'] == true) {
+                  EasyLoading.showSuccess('Saved to Photos');
+                  Navigator.pop(context);
+                } else {
+                  EasyLoading.showError(
+                      'Save to Photos failed\n${result["errorMessage"]}');
+                }
+              } catch (e) {
+                EasyLoading.showError('Save to Photos failed');
               }
             },
             child: Text(S.current.save_to_photos),

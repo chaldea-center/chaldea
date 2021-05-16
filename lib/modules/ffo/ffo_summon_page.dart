@@ -202,40 +202,49 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
   }
 
   Widget _buildCard(FFOParams params) {
-    final image = FFOCardWidget(params: params);
-    void _showSave() {
-      SimpleCancelOkDialog(
-        scrollable: true,
-        title: Text(S.current.save),
-        content: FFOCardWidget(params: params),
-        onTapOk: () {
-          params.saveTo(context);
-        },
-      ).showDialog(context);
-    }
-
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: InkWell(
-        child: image,
-        onLongPress: _showSave,
-        onTap: () {
-          FullscreenWidget(
-            builder: (BuildContext context) {
-              return Scaffold(
-                body: Center(
-                  child: FittedBox(
-                    child: GestureDetector(
-                      onLongPress: _showSave,
-                      child: image,
-                    ),
-                  ),
-                ),
-              );
-            },
-          ).push(context);
-        },
-      ),
+      child: _fullscreenAndSave(context, params),
     );
   }
+}
+
+Widget _fullscreenAndSave(BuildContext context, FFOParams params) {
+  final image = FFOCardWidget(params: params);
+
+  void _showSave() {
+    SimpleCancelOkDialog(
+      scrollable: true,
+      title: Text(S.current.save),
+      content: image,
+      onTapOk: () {
+        params.saveTo(context);
+      },
+    ).showDialog(context);
+  }
+
+  if (params.isEmpty) {
+    return image;
+  }
+
+  return InkWell(
+    child: image,
+    onLongPress: _showSave,
+    onTap: () {
+      FullscreenWidget(
+        builder: (BuildContext context) {
+          return Scaffold(
+            body: Center(
+              child: FittedBox(
+                child: GestureDetector(
+                  onLongPress: _showSave,
+                  child: image,
+                ),
+              ),
+            ),
+          );
+        },
+      ).push(context);
+    },
+  );
 }
