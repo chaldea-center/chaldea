@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.4.1+39
+version: 1.4.2+40
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -27,14 +27,14 @@ dependencies:
     sdk: flutter
 
   archive: ^3.1.2
-  audioplayers: ^0.18.3
+  audioplayers: ^0.19.0
   auto_size_text: ^3.0.0-nullsafety.0
   cached_network_image: ^3.0.0
   catcher: ^0.6.6
   connectivity_plus: ^1.0.0
   crypto: ^3.0.1
   csv: ^5.0.0
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^1.0.3
   device_info_plus: ^1.0.0
   #  dart_vlc:
   #    git:
@@ -46,14 +46,14 @@ dependencies:
       url: https://gitlab.com/testapp-system/file_picker_cross.git
   fl_chart: ^0.36.1
   flutter_audio_desktop: 0.0.8
-  flutter_cache_manager: ^3.0.1
+  flutter_cache_manager: ^3.0.2
   flutter_easyloading: ^3.0.0
   flutter_email_sender: ^5.0.0
   flutter_picker: ^2.0.1
   flutter_qjs: ^0.3.6
   flutter_webview_plugin: ^0.3.11
   font_awesome_flutter: ^9.0.0
-  getwidget: ^2.0.0-nullsafety.4
+  getwidget: ^2.0.2
   hive: ^2.0.3
   hive_flutter: ^1.0.0
   html: ^0.15.0
@@ -63,7 +63,7 @@ dependencies:
   json_annotation: ^4.0.1
   kana_kit: ^2.0.0
   logger: ^1.0.0
-  lpinyin: ^2.0.1
+  lpinyin: ^2.0.3
   open_file: ^3.2.1
   package_info: ^2.0.0
   path_provider: ^2.0.1
@@ -80,8 +80,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.0.1
-  json_serializable: ^4.1.0
+  build_runner: ^2.0.3
+  json_serializable: ^4.1.2
   # flutter_launcher_icons: ^0.8.1
 
 

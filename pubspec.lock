@@ -35,14 +35,14 @@ packages:
       name: async
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.5.0"
+    version: "2.6.1"
   audioplayers:
     dependency: "direct main"
     description:
       name: audioplayers
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.18.3"
+    version: "0.19.0"
   auto_size_text:
     dependency: "direct main"
     description:
@@ -91,7 +91,7 @@ packages:
       name: build_runner
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.3"
   build_runner_core:
     dependency: transitive
     description:
@@ -112,7 +112,7 @@ packages:
       name: built_value
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "8.0.5"
+    version: "8.0.6"
   cached_network_image:
     dependency: "direct main"
     description:
@@ -259,7 +259,7 @@ packages:
       name: cupertino_icons
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.3"
   dart_style:
     dependency: transitive
     description:
@@ -427,7 +427,7 @@ packages:
       name: flutter_cache_manager
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.0.1"
+    version: "3.0.2"
   flutter_easyloading:
     dependency: "direct main"
     description:
@@ -453,7 +453,7 @@ packages:
       name: flutter_mailer
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.0-null-safe"
+    version: "2.0.0"
   flutter_picker:
     dependency: "direct main"
     description:
@@ -513,13 +513,20 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "9.0.0"
+  frontend_server_client:
+    dependency: transitive
+    description:
+      name: frontend_server_client
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.1.0"
   getwidget:
     dependency: "direct main"
     description:
       name: getwidget
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.1-nullsafety.4"
+    version: "2.0.2"
   glob:
     dependency: transitive
     description:
@@ -561,7 +568,7 @@ packages:
       name: http
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.13.2"
+    version: "0.13.3"
   http_multi_server:
     dependency: transitive
     description:
@@ -624,7 +631,7 @@ packages:
       name: json_serializable
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.1.1"
+    version: "4.1.2"
   kana_kit:
     dependency: "direct main"
     description:
@@ -652,7 +659,7 @@ packages:
       name: lpinyin
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.3"
   mailer:
     dependency: transitive
     description:
@@ -883,7 +890,7 @@ packages:
       name: rxdart
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.26.0"
+    version: "0.27.0"
   screenshot:
     dependency: "direct main"
     description:
@@ -953,7 +960,7 @@ packages:
       name: shelf
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.1.1"
+    version: "1.1.4"
   shelf_web_socket:
     dependency: transitive
     description:
@@ -1140,7 +1147,7 @@ packages:
       name: web_socket_channel
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.0"
+    version: "2.1.0"
   win32:
     dependency: transitive
     description:
