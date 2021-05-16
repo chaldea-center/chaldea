@@ -93,7 +93,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AutoSizeText(
-                _getLocalizedText(record.title),
+                '· ' + _getLocalizedText(record.title),
                 maxLines: 1,
                 maxFontSize: 12,
                 style: Theme.of(context)

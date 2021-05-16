@@ -9,6 +9,10 @@ class StatisticServantTab extends StatefulWidget {
 
 class _StatisticServantTabState extends State<StatisticServantTab> {
   late ScrollController _scrollController;
+
+  /// disable scroll of ListView when pie chart is touched
+  bool scrollable = true;
+
   List<int> rarityTotal = List.filled(6, 0);
   List<int> rarityOwn = List.filled(6, 0);
   List<int> rarity999 = List.filled(6, 0);
@@ -88,6 +92,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
     ));
     return ListView(
       controller: _scrollController,
+      physics: scrollable ? null : NeverScrollableScrollPhysics(),
       children: divideTiles(children),
       padding: EdgeInsets.symmetric(vertical: 6),
     );
@@ -198,20 +203,39 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
             }),
             centerSpaceRadius: 0,
             pieTouchData: PieTouchData(touchCallback: (pieTouchResponse) {
-              setState(() {
-                final desiredTouch =
-                    pieTouchResponse.touchInput is! PointerExitEvent &&
-                        pieTouchResponse.touchInput is! PointerUpEvent;
-                if (desiredTouch && pieTouchResponse.touchedSection != null) {
-                  int index =
-                      pieTouchResponse.touchedSection!.touchedSectionIndex;
-                  if (index >= 0 && index < svtClassCount.length) {
-                    selectedPie = svtClassCount.keys.elementAt(index);
-                  } else {
-                    selectedPie = null;
-                  }
+              bool _needsBuild = false;
+              if (pieTouchResponse.touchInput is PointerDownEvent &&
+                  pieTouchResponse.touchedSection != null &&
+                  pieTouchResponse.touchedSection!.touchedSectionIndex >= 0) {
+                scrollable = false;
+                _needsBuild = true;
+              }
+              if (pieTouchResponse.touchInput is PointerUpEvent ||
+                  pieTouchResponse.touchInput is PointerExitEvent ||
+                  pieTouchResponse.touchInput is PointerCancelEvent) {
+                scrollable = true;
+                _needsBuild = true;
+              }
+              final desiredTouch =
+                  pieTouchResponse.touchInput is! PointerExitEvent &&
+                      pieTouchResponse.touchInput is! PointerUpEvent;
+              if (desiredTouch && pieTouchResponse.touchedSection != null) {
+                String? _newSelected;
+                int index =
+                    pieTouchResponse.touchedSection!.touchedSectionIndex;
+                if (index >= 0 && index < svtClassCount.length) {
+                  _newSelected = svtClassCount.keys.elementAt(index);
+                } else {
+                  _newSelected = null;
                 }
-              });
+                if (selectedPie != _newSelected) {
+                  selectedPie = _newSelected;
+                  _needsBuild = true;
+                }
+              }
+              if (_needsBuild) {
+                setState(() {});
+              }
             }),
           )),
         );

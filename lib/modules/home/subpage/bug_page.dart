@@ -12,9 +12,9 @@ class BugAnnouncePage extends StatelessWidget {
     ),
     _BugDetail(
       title: '翻译错误/不全',
-      content: '欢迎纠错/提供翻译',
+      content: '欢迎纠错/提供翻译\n',
       titleEn: 'Translations',
-      contentEn: 'Any suggestion is welcomed.\n',
+      contentEn: 'Any suggestion(mistake/missing/adding) is welcomed.\n',
     ),
     _BugDetail(
         title: '输入框操作过快问题',

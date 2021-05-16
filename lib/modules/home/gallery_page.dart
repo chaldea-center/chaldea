@@ -340,7 +340,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
                   alignment: Alignment.bottomCenter,
                   child: item.child == null
                       ? Icon(
-                    item.icon,
+                          item.icon,
                           size: 40,
                           color: _iconColor,
                         )

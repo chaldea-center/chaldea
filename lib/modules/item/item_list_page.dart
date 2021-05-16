@@ -615,7 +615,7 @@ class _ItemListTabState extends State<ItemListTab> {
       },
       horizontalTitleGap: 8,
       contentPadding: EdgeInsets.symmetric(horizontal: 6),
-      leading: db.getIconImage(itemKey, width: 55),
+      leading: db.getIconImage(itemKey, width: 48 / 144 * 132, height: 48),
       title: title,
       focusNode: FocusNode(canRequestFocus: true, skipTraversal: true),
       subtitle: subtitle,

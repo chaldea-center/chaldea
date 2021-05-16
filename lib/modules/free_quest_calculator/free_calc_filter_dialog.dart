@@ -14,6 +14,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
   @override
   Widget build(BuildContext context) {
     final params = widget.params;
+    params.minCost = fixValidRange(params.minCost, 0, 19);
     if (!db.gameData.glpk.freeCounts.values.contains(params.maxColNum)) {
       params.maxColNum = -1;
     }

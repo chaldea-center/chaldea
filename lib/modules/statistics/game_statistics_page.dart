@@ -40,6 +40,8 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
       ),
       body: TabBarView(
         controller: _tabController,
+        // pie chart relate
+        physics: AppInfo.isMobile ? NeverScrollableScrollPhysics() : null,
         children: [
           // [PrimaryScrollerController]
           KeepAliveBuilder(builder: (context) => _buildItemTab()),

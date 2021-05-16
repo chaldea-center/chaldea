@@ -389,16 +389,20 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               ],
             ),
             IconButton(
-                icon: Icon(Icons.settings),
-                color: Theme.of(context).colorScheme.primary,
-                tooltip: S.of(context).settings_tab_name,
-                onPressed: () async {
-                  await showDialog(
-                      context: context,
-                      builder: (context) =>
-                          FreeCalcFilterDialog(params: params));
-                  setState(() {});
-                }),
+              icon: Icon(Icons.settings),
+              color: params.minCost > 0 ||
+                      params.maxColNum > 0 ||
+                      params.blacklist.isNotEmpty
+                  ? Colors.red
+                  : Theme.of(context).colorScheme.primary,
+              tooltip: S.of(context).settings_tab_name,
+              onPressed: () async {
+                await showDialog(
+                    context: context,
+                    builder: (context) => FreeCalcFilterDialog(params: params));
+                setState(() {});
+              },
+            ),
             //TODO: add extra event quests button and dialog page
             IconButton(
               icon: Icon(Icons.sort),

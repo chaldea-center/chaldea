@@ -89,8 +89,6 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     final darkTheme = ThemeData.dark();
 
     Color? navColor;
-
-    SchedulerBinding.instance!.window.platformBrightness;
     switch (db.userData.themeMode) {
       case ThemeMode.light:
         navColor = lightTheme.scaffoldBackgroundColor;
