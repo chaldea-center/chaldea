@@ -208,8 +208,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("画像とファイルを追加"),
         "feedback_add_crash_log":
             MessageLookupByLibrary.simpleMessage("クラッシュログを追加"),
-        "feedback_contact":
-            MessageLookupByLibrary.simpleMessage("連絡先情報(オプション)"),
+        "feedback_contact": MessageLookupByLibrary.simpleMessage("連絡先情報"),
         "feedback_content_hint":
             MessageLookupByLibrary.simpleMessage("フィードバックと提案"),
         "feedback_send": MessageLookupByLibrary.simpleMessage("送信"),

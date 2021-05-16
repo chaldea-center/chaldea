@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:chaldea/components/catcher_util/catcher_email_handler.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flutter/foundation.dart';
@@ -191,11 +192,12 @@ class _FeedbackPageState extends State<FeedbackPage> {
   }
 
   void sendEmail() async {
-    print('pixelRatio=${MediaQuery.of(context).devicePixelRatio}');
-    if (bodyController.text.trim().isEmpty &&
-        attachFiles.isEmpty &&
-        !attachLog) {
-      EasyLoading.showToast('请填写反馈内容或添加附件');
+    // print('pixelRatio=${MediaQuery.of(context).devicePixelRatio}');
+    if (bodyController.text.trim().isEmpty) {
+      EasyLoading.showInfo(LocalizedText.of(
+          chs: '请填写反馈内容',
+          jpn: 'フィードバックの内容を記入してください',
+          eng: 'Please add feedback details'));
       return;
     }
     EasyLoading.show(status: 'Sending');
@@ -203,17 +205,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
       final message = Message()
         ..from = Address('chaldea-client@narumi.cc', 'Chaldea Feedback')
         ..recipients.add(kSupportTeamEmailAddress)
-        ..subject = 'Chaldea v${AppInfo.fullVersion2} Feedback';
+        ..subject = 'Chaldea v${AppInfo.fullVersion} Feedback';
 
       message.html = _emailBody();
-      File crashFile = File(db.paths.crashLog);
-      if (crashFile.existsSync()) {
-        String content = crashFile.readAsStringSync();
-        message.attachments.add(StringAttachment(
-          content.substring(
-              max(0, content.length - 1024 * 1024 * 2), content.length),
-          fileName: 'crash.log',
-        ));
+      if (attachLog) {
+        message.attachments.addAll(EmailAutoHandlerCross.archiveAttachments(
+            [File(db.paths.crashLog), File(db.paths.appLog)],
+            join(db.paths.tempDir, '.feedback.tmp.zip')));
       }
       attachFiles.forEach((fp) {
         var file = File(fp);
@@ -256,14 +254,12 @@ class _FeedbackPageState extends State<FeedbackPage> {
       buffer.write("${escape(contactController.text)}<br>");
     }
     buffer.write("<h3>Summary:</h3>");
-    final dataVerFile = File(db.paths.datasetVersionFile);
     Map<String, dynamic> summary = {
-      'appVersion': '${AppInfo.appName} v${AppInfo.fullVersion}',
-      'datasetVersion': dataVerFile.existsSync()
-          ? dataVerFile.readAsStringSync()
-          : "Not detected",
+      'app': '${AppInfo.appName} v${AppInfo.fullVersion2}',
+      'dataset': db.gameData.version,
       'os': '${Platform.operatingSystem} ${Platform.operatingSystemVersion}',
-      'id': AppInfo.uniqueId,
+      'lang': Language.current.code,
+      'uuid': AppInfo.uniqueId,
     };
     for (var entry in summary.entries) {
       buffer

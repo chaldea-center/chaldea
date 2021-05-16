@@ -50,8 +50,8 @@ class Events {
 abstract class EventBase {
   late String mcLink;
   late String name;
-  late String? nameJp;
-  late String? nameEn;
+  String? nameJp;
+  String? nameEn;
   String? startTimeJp;
   String? endTimeJp;
   String? startTimeCn;
@@ -61,6 +61,7 @@ abstract class EventBase {
   late int grail;
   late int crystal;
   late int grail2crystal;
+  late int foukun4;
 
   String get indexKey => mcLink;
 
@@ -128,6 +129,7 @@ class LimitEvent extends EventBase {
   int grail;
   int crystal;
   int grail2crystal;
+  int foukun4;
   Map<String, int> items;
   int lotteryLimit; //>0 limited
   Map<String, int> lottery;
@@ -148,6 +150,7 @@ class LimitEvent extends EventBase {
     required this.grail,
     required this.crystal,
     required this.grail2crystal,
+    required this.foukun4,
     required this.items,
     required this.lotteryLimit,
     required this.lottery,
@@ -203,6 +206,7 @@ class MainRecord extends EventBase {
   int grail;
   int crystal;
   int grail2crystal;
+  int foukun4;
   Map<String, int> drops;
   Map<String, int> rewards;
 
@@ -220,6 +224,7 @@ class MainRecord extends EventBase {
     required this.grail,
     required this.crystal,
     required this.grail2crystal,
+    required this.foukun4,
     required this.drops,
     required this.rewards,
   });
@@ -322,8 +327,7 @@ class ExchangeTicket {
     String? monthCn,
     String? monthTw,
     String? monthEn,
-  })
-      : dateJp = monthToDate(monthJp),
+  })  : dateJp = monthToDate(monthJp),
         dateCn = monthToDate(monthJp, 15),
         dateTw = monthToDate(monthJp, 21),
         dateEn = monthToDate(monthJp, 24);

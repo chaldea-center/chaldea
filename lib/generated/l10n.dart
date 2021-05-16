@@ -3116,10 +3116,10 @@ class S {
     );
   }
 
-  /// `联系方式(可选)`
+  /// `联系方式`
   String get feedback_contact {
     return Intl.message(
-      '联系方式(可选)',
+      '联系方式',
       name: 'feedback_contact',
       desc: '',
       args: [],

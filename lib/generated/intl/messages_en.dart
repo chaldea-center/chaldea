@@ -226,8 +226,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Add screenshots or file attachments"),
         "feedback_add_crash_log":
             MessageLookupByLibrary.simpleMessage("Add crash log"),
-        "feedback_contact": MessageLookupByLibrary.simpleMessage(
-            "Contact information (Optional)"),
+        "feedback_contact":
+            MessageLookupByLibrary.simpleMessage("Contact information"),
         "feedback_content_hint":
             MessageLookupByLibrary.simpleMessage("Feedback or Suggestion"),
         "feedback_send": MessageLookupByLibrary.simpleMessage("Send"),

@@ -199,7 +199,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("添加图像或文件附件"),
         "feedback_add_crash_log":
             MessageLookupByLibrary.simpleMessage("添加崩溃日志"),
-        "feedback_contact": MessageLookupByLibrary.simpleMessage("联系方式(可选)"),
+        "feedback_contact": MessageLookupByLibrary.simpleMessage("联系方式"),
         "feedback_content_hint": MessageLookupByLibrary.simpleMessage("反馈与建议"),
         "feedback_send": MessageLookupByLibrary.simpleMessage("发送"),
         "ffo_background": MessageLookupByLibrary.simpleMessage("背景"),

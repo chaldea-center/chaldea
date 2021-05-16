@@ -363,6 +363,7 @@ LimitEvent _$LimitEventFromJson(Map<String, dynamic> json) {
       grail: $checkedConvert(json, 'grail', (v) => v as int),
       crystal: $checkedConvert(json, 'crystal', (v) => v as int),
       grail2crystal: $checkedConvert(json, 'grail2crystal', (v) => v as int),
+      foukun4: $checkedConvert(json, 'foukun4', (v) => v as int),
       items: $checkedConvert(
           json, 'items', (v) => Map<String, int>.from(v as Map)),
       lotteryLimit: $checkedConvert(json, 'lotteryLimit', (v) => v as int),
@@ -391,6 +392,7 @@ Map<String, dynamic> _$LimitEventToJson(LimitEvent instance) =>
       'grail': instance.grail,
       'crystal': instance.crystal,
       'grail2crystal': instance.grail2crystal,
+      'foukun4': instance.foukun4,
       'items': instance.items,
       'lotteryLimit': instance.lotteryLimit,
       'lottery': instance.lottery,
@@ -413,6 +415,7 @@ MainRecord _$MainRecordFromJson(Map<String, dynamic> json) {
       grail: $checkedConvert(json, 'grail', (v) => v as int),
       crystal: $checkedConvert(json, 'crystal', (v) => v as int),
       grail2crystal: $checkedConvert(json, 'grail2crystal', (v) => v as int),
+      foukun4: $checkedConvert(json, 'foukun4', (v) => v as int),
       drops: $checkedConvert(
           json, 'drops', (v) => Map<String, int>.from(v as Map)),
       rewards: $checkedConvert(
@@ -437,6 +440,7 @@ Map<String, dynamic> _$MainRecordToJson(MainRecord instance) =>
       'grail': instance.grail,
       'crystal': instance.crystal,
       'grail2crystal': instance.grail2crystal,
+      'foukun4': instance.foukun4,
       'drops': instance.drops,
       'rewards': instance.rewards,
     };

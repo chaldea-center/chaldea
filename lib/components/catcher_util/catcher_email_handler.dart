@@ -129,7 +129,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
         ..recipients.addAll(recipients)
         ..subject = _getEmailTitle(report)
         ..text = setupRawMessageText(report)
-        ..attachments = _archiveAttachments(attachments);
+        ..attachments = archiveAttachments(attachments, archiveTmpFp);
       if (extraAttach != null) {
         message.attachments.add(extraAttach);
       }
@@ -155,17 +155,17 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
 
   String get archiveTmpFp => '${db.paths.tempDir}/.tmp_attach.zip';
 
-  List<Attachment> _archiveAttachments(List<File> files) {
+  static List<Attachment> archiveAttachments(List<File> files, String tmpFp) {
     files = files.where((f) => f.existsSync()).toList();
     if (files.isEmpty) return [];
 
     var encoder = ZipFileEncoder();
-    encoder.create(archiveTmpFp);
+    encoder.create(tmpFp);
     for (File file in files) {
       encoder.addFile(file);
     }
     encoder.close();
-    return [FileAttachment(File(archiveTmpFp), fileName: 'attachment.zip')];
+    return [FileAttachment(File(tmpFp), fileName: 'attachment.zip')];
   }
 
   Future<List<int>?> _captureScreenshot() async {

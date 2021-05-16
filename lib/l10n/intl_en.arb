@@ -307,7 +307,7 @@
   "summon_title": "Summons",
   "master_mission": "Master Mission",
   "project_homepage": "Project Homepage",
-  "feedback_contact": "Contact information (Optional)",
+  "feedback_contact": "Contact information",
   "feedback_content_hint": "Feedback or Suggestion",
   "feedback_add_crash_log": "Add crash log",
   "feedback_add_attachments": "Add screenshots or file attachments",
