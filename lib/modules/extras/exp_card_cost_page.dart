@@ -25,8 +25,15 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
               SimpleCancelOkDialog(
                 scrollable: true,
                 title: Text(S.current.help),
-                content: Text('''1.QP计算可能不准确，仅供参考。按每20个狗粮计算
-2.如80->90，只计算80级时的再临(圣杯转临)所消耗的QP(圣杯)'''),
+                content: Text(LocalizedText.of(
+                  chs: '''1.QP计算可能不准确，仅供参考。按每次20个狗粮计算。
+2.如80->90，只计算80级时的再临(圣杯转临)所消耗的QP(圣杯)''',
+                  jpn: """1. QPの計算は不正確である可能性があり、参照用です。 毎回20回で計算。
+2. 例えば、80->90の場合、レベル80で再臨（聖杯転臨）によって消費されるQP（聖杯）のみを計算します。 """,
+                  eng:
+                      """1. The QP calculation may be inaccurate and is for reference only. 20 Exp cards every enhancement.
+2. e.g. 80->90, only calculate the QP (Holy Grail) consumed by the ascension (Palingenesis) at level 80""",
+                )),
               ).showDialog(context);
             },
             icon: Icon(Icons.help_outline),

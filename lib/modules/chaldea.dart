@@ -85,8 +85,33 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
 
   @override
   Widget build(BuildContext context) {
+    final lightTheme = ThemeData.light();
+    final darkTheme = ThemeData.dark();
+
+    Color? navColor;
+
+    SchedulerBinding.instance!.window.platformBrightness;
+    switch (db.userData.themeMode) {
+      case ThemeMode.light:
+        navColor = lightTheme.scaffoldBackgroundColor;
+        break;
+      case ThemeMode.dark:
+        navColor = darkTheme.scaffoldBackgroundColor;
+        break;
+      default:
+        if (SchedulerBinding.instance!.window.platformBrightness ==
+            Brightness.light) {
+          navColor = lightTheme.scaffoldBackgroundColor;
+        } else {
+          navColor = darkTheme.scaffoldBackgroundColor;
+        }
+        break;
+    }
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        systemNavigationBarColor: navColor,
+      ),
       child: Screenshot(
         controller: db.runtimeData.screenshotController!,
         child: MaterialApp(
@@ -143,7 +168,10 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
   @override
   void afterFirstLayout(BuildContext context) async {
     // ensure image is shown on screen
-    await precacheImage(AssetImage("res/img/chaldea.png"), context);
+    await precacheImage(AssetImage("res/img/chaldea.png"), context,
+        onError: (e, s) {
+      logger.w('pre cache chaldea image error', e, s);
+    });
     await Future.delayed(Duration(milliseconds: 100));
 
     // if app updated, reload gamedata

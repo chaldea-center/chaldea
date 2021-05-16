@@ -291,6 +291,8 @@ class ServantListPageState extends State<ServantListPage> {
                       PopupMenuItem(
                           value: 'copy_plan',
                           child: Text(S.of(context).copy_plan_menu)),
+                    if (widget.planMode)
+                      PopupMenuItem(value: 'help', child: Text(S.current.help)),
                   ];
                 },
                 onSelected: (v) {
@@ -305,6 +307,24 @@ class ServantListPageState extends State<ServantListPage> {
                         db.itemStat.updateSvtItems();
                       },
                     );
+                  } else if (v == 'help') {
+                    SimpleCancelOkDialog(
+                      title: Text(S.current.help),
+                      scrollable: true,
+                      content: Text(LocalizedText.of(
+                        chs: """1.规划列表页与从者列表页相似，但主要用于<批量>设置从者<目标>练度(灵基/技能/灵衣)
+2.仅更改列表中"已显示"的从者
+3.通过筛选/搜索功能筛选显示列表，通过每行尾部的显示按钮可以单独隐藏/显示特定从者""",
+                        jpn:
+                            """1.プランページはサーヴァントページに似ていますが、主にサーヴァントの目標レベルを一律に設定するために使用されます（霊基再臨/スキル/霊衣）
+2.リストで「表示」されているサーヴァントのみを変更します
+3.フィルター/検索機能で表示リストをフィルターし、各行の表示ボタンで特定のサーヴァントを個別に表示/非表示にすることができます """,
+                        eng:
+                            """1. The plan page is similar to servant list page, but it is mainly used for <uniformly> setting the <target> value of servant ascension/skills/costumes
+2. Only change the servants who are "shown" in the list
+3. Filter the display list through the filter/search function, and you can hide/show specific servants individually through the display button at the end of each line""",
+                      )),
+                    ).showDialog(context);
                   }
                 },
               ),

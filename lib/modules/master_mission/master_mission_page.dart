@@ -21,12 +21,12 @@ class _MasterMissionPageState extends State<MasterMissionPage>
   List<WeeklyMissionQuest> get srcData => db.gameData.glpk.weeklyMissionData;
 
   List<LocalizedText> tabNames = const [
-    LocalizedText(chs: '一般特性', jpn: '', eng: 'General Trait'),
-    LocalizedText(chs: '从者职阶', jpn: '', eng: 'Servant Class'),
-    LocalizedText(chs: '从者特性', jpn: '', eng: 'Servant Trait'),
-    LocalizedText(chs: '小怪职阶', jpn: '', eng: 'Enemy Class'),
-    LocalizedText(chs: '小怪特性', jpn: '', eng: 'Enemy Trait'),
-    LocalizedText(chs: '场地特性', jpn: '', eng: 'Battle Field'),
+    LocalizedText(chs: '一般特性', jpn: '共有特性', eng: 'General Trait'),
+    LocalizedText(chs: '从者职阶', jpn: 'サーヴァントクラス', eng: 'Servant Class'),
+    LocalizedText(chs: '从者特性', jpn: 'サーヴァント特性', eng: 'Servant Trait'),
+    LocalizedText(chs: '小怪职阶', jpn: 'エネミークラス', eng: 'Enemy Class'),
+    LocalizedText(chs: '小怪特性', jpn: 'エネミー特性', eng: 'Enemy Trait'),
+    LocalizedText(chs: '场地特性', jpn: 'フィールド', eng: 'Battle Field'),
   ];
   List<String> classTypes = const ['剑阶', '弓阶', '枪阶', '骑阶', '术阶', '杀阶', '狂阶'];
   late TabController _tabController;

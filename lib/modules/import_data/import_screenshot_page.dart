@@ -47,6 +47,17 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
           Expanded(
             child: Column(
               children: [
+                if (imageFiles.isEmpty && output.isEmpty)
+                  Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                      child: Text(LocalizedText.of(
+                        chs: '理论支持现有所有服务器的截图解析，精度有所提升',
+                        jpn: '理論的に既存のすべてのサーバーのスクリーンショット分析をサポートする',
+                        eng: 'Support all servers with improved accuracy',
+                      )),
+                    ),
+                  ),
                 if (imageFiles.isNotEmpty)
                   Expanded(
                     child: ListView(
@@ -61,10 +72,6 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
                     ),
                   ),
                 if (output.isNotEmpty) Expanded(child: _itemList()),
-                if (imageFiles.isEmpty && output.isEmpty)
-                  Center(
-                    child: Text('Support all servers with improved accuracy'),
-                  )
               ],
             ),
           ),

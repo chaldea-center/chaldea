@@ -366,7 +366,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_category_event_svt_ascension":
             MessageLookupByLibrary.simpleMessage("Event Item"),
         "item_category_gem": MessageLookupByLibrary.simpleMessage("Gem"),
-        "item_category_gems": MessageLookupByLibrary.simpleMessage("Gem Items"),
+        "item_category_gems":
+            MessageLookupByLibrary.simpleMessage("Skill Reinforcement Items"),
         "item_category_gold":
             MessageLookupByLibrary.simpleMessage("Gold Items"),
         "item_category_magic_gem":

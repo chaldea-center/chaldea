@@ -12,6 +12,7 @@ class _SummonListPageState extends State<SummonListPage> {
   late List<Summon> summons;
   bool showOutdated = false;
   bool favorite = false;
+  bool reversed = false;
   List<Summon> _shownSummons = [];
 
   Set<String> get plans => db.curUser.plannedSummons;
@@ -33,6 +34,9 @@ class _SummonListPageState extends State<SummonListPage> {
         return false;
       }
     }).toList();
+    if (reversed) {
+      _shownSummons = _shownSummons.reversed.toList();
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text(S.of(context).summon_title),
@@ -56,6 +60,16 @@ class _SummonListPageState extends State<SummonListPage> {
             onPressed: () {
               setState(() {
                 showOutdated = !showOutdated;
+              });
+            },
+          ),
+          IconButton(
+            icon: Icon(
+                reversed ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up),
+            tooltip: 'Reversed',
+            onPressed: () {
+              setState(() {
+                reversed = !reversed;
               });
             },
           ),

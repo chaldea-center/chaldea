@@ -65,7 +65,14 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
                   padding: EdgeInsets.all(8),
                   child: Column(
                     children: [
-                      Text('Only Chinese server is supported yet'),
+                      Text(
+                        LocalizedText.of(
+                            chs: '目前仅国服可用',
+                            jpn: '現在、中国サーバーのみがサポートされています',
+                            eng: 'Only Chinese server is supported yet'),
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 10),
                       Text(S.current.import_http_body_hint),
                     ],
                   ),

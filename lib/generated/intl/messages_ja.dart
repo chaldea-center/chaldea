@@ -327,13 +327,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "item": MessageLookupByLibrary.simpleMessage("アイテム"),
         "item_already_exist_hint": m8,
         "item_category_ascension":
-            MessageLookupByLibrary.simpleMessage("霊基再臨用アイテム"),
+            MessageLookupByLibrary.simpleMessage("霊基再臨用素材"),
         "item_category_copper": MessageLookupByLibrary.simpleMessage("銅素材"),
         "item_category_event_svt_ascension":
             MessageLookupByLibrary.simpleMessage("イベントサーバント霊基再臨用アイテム"),
         "item_category_gem": MessageLookupByLibrary.simpleMessage("輝石"),
-        "item_category_gems":
-            MessageLookupByLibrary.simpleMessage("スキル強化用アイテム"),
+        "item_category_gems": MessageLookupByLibrary.simpleMessage("スキル強化素材"),
         "item_category_gold": MessageLookupByLibrary.simpleMessage("金素材"),
         "item_category_magic_gem": MessageLookupByLibrary.simpleMessage("魔石"),
         "item_category_monument":

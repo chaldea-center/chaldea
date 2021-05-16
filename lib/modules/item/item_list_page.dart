@@ -563,7 +563,7 @@ class _ItemListTabState extends State<ItemListTab> {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          Text(S.of(context).item_left, style: TextStyle(fontSize: 14)),
+          Text('  ' + S.of(context).item_left, style: TextStyle(fontSize: 14)),
           SizedBox(
               width: 36,
               child: Align(
