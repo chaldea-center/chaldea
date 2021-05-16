@@ -127,7 +127,8 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
                 Icon(Icons.circle, size: height * 0.53, color: Colors.white),
               if (filterItems.contains(itemKey))
                 Icon(Icons.check_circle,
-                    size: height * 0.5, color: Theme.of(context).primaryColor)
+                    size: height * 0.5,
+                    color: Theme.of(context).colorScheme.primary)
             ],
           ),
         ),
@@ -138,8 +139,8 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
       children: [
         IconButton(
           icon: Icon(matchAll ? Icons.add_box : Icons.add_box_outlined),
-          color: Theme.of(context).primaryColor,
-          tooltip: matchAll ? 'Contains All' : 'Contains One',
+          color: Theme.of(context).buttonTheme.colorScheme?.secondary,
+          tooltip: matchAll ? 'Contains All' : 'Contains Any',
           onPressed: () {
             setState(() {
               matchAll = !matchAll;

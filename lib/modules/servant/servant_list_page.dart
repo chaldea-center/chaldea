@@ -38,10 +38,10 @@ class ServantListPageState extends State<ServantListPage> {
   void initState() {
     super.initState();
     filterData.filterString = '';
-    filterData.favorite =
-        db.curUser.servants.values.where((svt) => svt.favorite).isNotEmpty
-            ? 1
-            : 0;
+    // filterData.favorite =
+    //     db.curUser.servants.values.where((svt) => svt.favorite).isNotEmpty
+    //         ? 1
+    //         : 0;
     _inputController = TextEditingController();
     _scrollController = ScrollController();
     _inputFocusNode = FocusNode();

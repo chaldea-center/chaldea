@@ -124,6 +124,7 @@ class LimitEvent extends EventBase {
   String? endTimeCn;
   String? bannerUrl;
   String? bannerUrlJp;
+  int welfareServant;
   int grail;
   int crystal;
   int grail2crystal;
@@ -143,6 +144,7 @@ class LimitEvent extends EventBase {
     required this.endTimeCn,
     required this.bannerUrl,
     required this.bannerUrlJp,
+    required this.welfareServant,
     required this.grail,
     required this.crystal,
     required this.grail2crystal,

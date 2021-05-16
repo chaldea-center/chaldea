@@ -359,6 +359,7 @@ LimitEvent _$LimitEventFromJson(Map<String, dynamic> json) {
       endTimeCn: $checkedConvert(json, 'endTimeCn', (v) => v as String?),
       bannerUrl: $checkedConvert(json, 'bannerUrl', (v) => v as String?),
       bannerUrlJp: $checkedConvert(json, 'bannerUrlJp', (v) => v as String?),
+      welfareServant: $checkedConvert(json, 'welfareServant', (v) => v as int),
       grail: $checkedConvert(json, 'grail', (v) => v as int),
       crystal: $checkedConvert(json, 'crystal', (v) => v as int),
       grail2crystal: $checkedConvert(json, 'grail2crystal', (v) => v as int),
@@ -386,6 +387,7 @@ Map<String, dynamic> _$LimitEventToJson(LimitEvent instance) =>
       'endTimeCn': instance.endTimeCn,
       'bannerUrl': instance.bannerUrl,
       'bannerUrlJp': instance.bannerUrlJp,
+      'welfareServant': instance.welfareServant,
       'grail': instance.grail,
       'crystal': instance.crystal,
       'grail2crystal': instance.grail2crystal,
@@ -612,8 +614,7 @@ Item _$ItemFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$ItemToJson(Item instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
       'id': instance.id,
       'itemId': instance.itemId,
       'name': instance.name,
