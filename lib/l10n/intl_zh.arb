@@ -351,7 +351,7 @@
   "userdata_download_backup": "下载备份",
   "userdata_download_choose_backup": "选择一个备份",
   "storage_permission_title": "储存权限",
-  "storage_permission_content": "用户数据备份储存于临时目录({tempDir})\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至({externalBackupDir})",
+  "storage_permission_content": "不适用从Google Play下载的版本，将来可能移除该功能\n用户数据备份储存于临时目录({tempDir})\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至({externalBackupDir})",
   "load_dataset_error": "加载数据出错",
   "load_dataset_error_hint": "请在设置-游戏数据中重新加载默认资源",
   "install": "安装",

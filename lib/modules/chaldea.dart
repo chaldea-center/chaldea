@@ -46,7 +46,6 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         db.checkConnectivity();
       } else if (msg == AppLifecycleState.inactive.toString()) {
         db.saveUserData();
-        db.cfg.close();
         debugPrint('save userdata before being inactive');
       }
       return null;
