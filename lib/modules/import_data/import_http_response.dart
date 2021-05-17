@@ -2,8 +2,11 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/home/subpage/account_page.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'bond_detail_page.dart';
 
 class ImportHttpResponse extends StatefulWidget {
   ImportHttpResponse({Key? key}) : super(key: key);
@@ -32,7 +35,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
   Map<int, UserSvtCollection> cardCollections = {};
 
   // data
-  BiliResponse? response;
+  BiliTopLogin? topLogin;
   List<List<UserSvt>> servants = [];
   List<UserItem> items = [];
   Set<int> ignoreSvts = {};
@@ -40,6 +43,11 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
   Map<int, int> crafts = {}; // craft.no: status
 
   HashSet<UserSvt> _shownSvts = HashSet();
+
+  BiliReplaced? get replacedResponse => topLogin?.body;
+
+  String get tmpPath =>
+      join(db.paths.tempDir, 'http_packages', db.curUser.key!);
 
   @override
   void initState() {
@@ -51,6 +59,14 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
     itemIdMap = db.gameData.items
         .map((key, item) => MapEntry(item.itemId, item))
           ..removeWhere((key, value) => key < 0);
+    try {
+      final f = File(tmpPath);
+      if (f.existsSync()) {
+        parseResponseBody(f.readAsBytesSync());
+      }
+    } catch (e, s) {
+      logger.e('reading http packages cache failed', e, s);
+    }
   }
 
   @override
@@ -60,7 +76,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
       children: [
         Padding(padding: EdgeInsets.only(top: 6)),
         Expanded(
-          child: response == null
+          child: topLogin == null
               ? Padding(
                   padding: EdgeInsets.all(8),
                   child: Column(
@@ -78,19 +94,22 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
                   ),
                 )
               : LayoutBuilder(
-                  builder: (context, constraints) => ListView(
+            builder: (context, constraints) => SingleChildScrollView(
                     controller: _scrollController,
-                    children: [
-                      if (response!.firstUser != null) userInfoAccordion,
-                      kDefaultDivider,
-                      itemsAccordion,
-                      kDefaultDivider,
-                      svtAccordion(false, constraints),
-                      kDefaultDivider,
-                      svtAccordion(true, constraints),
-                      kDefaultDivider,
-                      craftAccordion,
-                    ],
+                    child: Column(
+                      children: [
+                        if (replacedResponse!.firstUser != null)
+                          userInfoAccordion,
+                        kDefaultDivider,
+                        itemsAccordion,
+                        kDefaultDivider,
+                        svtAccordion(false, constraints),
+                        kDefaultDivider,
+                        svtAccordion(true, constraints),
+                        kDefaultDivider,
+                        craftAccordion,
+                      ],
+                    ),
                   ),
                 ),
         ),
@@ -108,7 +127,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
   final double _height = 56 / Constants.iconAspectRatio; // ignore: unused_field
 
   Widget get userInfoAccordion {
-    final user = response!.firstUser!;
+    final user = replacedResponse!.firstUser!;
     return SimpleAccordion(
       expanded: true,
       headerBuilder: (context, _) => ListTile(
@@ -118,6 +137,10 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
       contentBuilder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: divideTiles([
+          ListTile(
+            title: Text('获取时间'),
+            trailing: Text(topLogin!.cache.serverTime?.toStringShort() ?? '?'),
+          ),
           ListTile(
             title: Text('用户名'),
             trailing: Text(user.name),
@@ -197,11 +220,11 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
           _shownSvts.add(svt);
         }
 
-        String text = '宝具${svt.treasureDeviceLv1} '
-            '圣杯${svt.exceedCount} ';
-        text += '灵基${svt.limitCount}  Lv.${svt.lv}\n';
+        String text = '宝具${svt.treasureDeviceLv1} ';
+        text += ' 绊${cardCollections[svt.svtId]!.friendshipRank}\n';
+        text += '灵基${svt.limitCount} 圣杯${svt.exceedCount} Lv.${svt.lv}\n';
         if (db.gameData.servants[svt.indexKey]!.itemCost.dress.isEmpty) {
-          text += '\n';
+          text += '';
         } else {
           text +=
               '灵衣 ${cardCollections[svt.svtId]!.costumeIdsTo01().join('/')}\n';
@@ -226,45 +249,42 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
         );
         // image+text
         Widget child = Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(padding: EdgeInsets.only(left: 6)),
-            db.getIconImage(
-              db.gameData.servants[svt.indexKey]!.icon,
-              height: _height,
-              width: min(_with, constraints.maxWidth / crossCount * 0.25),
+            Stack(
+              alignment: Alignment.centerLeft,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 6, top: 2),
+                  child: db.getIconImage(
+                      db.gameData.servants[svt.indexKey]!.icon,
+                      width:
+                          min(_with, constraints.maxWidth / crossCount * 0.25),
+                      aspectRatio: 132 / 144),
+                ),
+                // if (!_isLocked && svt.isLock)
+                Icon(
+                  Icons.lock,
+                  size: 13,
+                  color: Colors.white,
+                ),
+                // if (!_isLocked && svt.isLock)
+                Icon(
+                  Icons.lock,
+                  size: 12,
+                  color: Colors.yellow[900],
+                ),
+              ],
             ),
-            Expanded(
-              child: Align(
-                alignment: Alignment.bottomLeft,
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 4),
-                    child: richText,
-                  ),
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 4),
+                  child: richText,
                 ),
               ),
             )
-          ],
-        );
-        // add lock
-        child = Stack(
-          alignment: Alignment.centerLeft,
-          children: [
-            child,
-            // if (!_isLocked && svt.isLock)
-            Icon(
-              Icons.lock,
-              size: 13,
-              color: Colors.white,
-            ),
-            // if (!_isLocked && svt.isLock)
-            Icon(
-              Icons.lock,
-              size: 12,
-              color: Colors.yellow[900],
-            ),
           ],
         );
         if (hidden) {
@@ -394,9 +414,22 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
               label: Text(S.current.import_http_body_duplicated),
             ),
             ElevatedButton(
-              onPressed: response == null ? null : didImportData,
+              onPressed: replacedResponse == null
+                  ? null
+                  : () {
+                      SplitRoute.push(
+                        context: context,
+                        builder: (ctx, _) => SvtBondDetailPage(
+                            svtIdMap: svtIdMap,
+                            cardCollections: cardCollections),
+                      );
+                    },
+              child: Text('羁绊详情'),
+            ),
+            ElevatedButton(
+              onPressed: replacedResponse == null ? null : didImportData,
               child: Text(S.current.import_data),
-            )
+            ),
           ],
         )
       ],
@@ -404,46 +437,19 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
   }
 
   void didImportData() async {
-    String? key = await showDialog<String?>(
-      context: context,
-      builder: (context) {
-        List<Widget> children = [];
-        for (String key in db.userData.users.keys) {
-          children.add(ListTile(
-            leading: Icon(Icons.person),
-            horizontalTitleGap: 0,
-            title: Text(db.userData.users[key]!.name),
-            onTap: () {
-              Navigator.of(context).pop(key);
-            },
-          ));
-        }
-        children.add(IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.clear),
-        ));
-        return SimpleDialog(
-          title: Text(
-            S.current.import_http_body_target_account_header(
-                items.length, servants.length),
-            style: TextStyle(fontSize: 16),
-          ),
-          children: divideTiles(children, top: true),
-        );
-      },
-    );
-    if (!db.userData.users.containsKey(key)) return;
-
-    final user = db.userData.users[key]!;
-    user.isMasterGirl = response!.firstUser!.genderType == 2;
+    bool? confirmed = await SimpleCancelOkDialog(
+      title: Text(S.current.import_data),
+      content: Text(S.current.cur_account + ': ' + db.curUser.name),
+    ).showDialog(context);
+    if (confirmed != true) return;
+    final user = db.curUser;
+    user.isMasterGirl = replacedResponse!.firstUser!.genderType == 2;
     if (_includeItem) {
       // user.items.clear();
-      if (response!.firstUser != null) {
-        user.items[Item.qp] = response!.firstUser!.qp;
-        user.items[Item.mana] = response!.firstUser!.mana;
-        user.items[Item.rarePri] = response!.firstUser!.rarePri;
+      if (replacedResponse!.firstUser != null) {
+        user.items[Item.qp] = replacedResponse!.firstUser!.qp;
+        user.items[Item.mana] = replacedResponse!.firstUser!.mana;
+        user.items[Item.rarePri] = replacedResponse!.firstUser!.rarePri;
       }
       items.forEach((item) {
         user.items[item.indexKey!] = item.num;
@@ -486,116 +492,32 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
         status.curVal.dress.setRange(0, costumeVals.length, costumeVals);
       }
     }
-
-    // finish
-    db.userData.curUserKey = key!;
-    db.notifyAppUpdate();
-    SimpleCancelOkDialog(
-      hideCancel: true,
-      title: Text(S.current.import_data_success),
-      content: Text(S.current.import_http_body_success_switch(user.name)),
-    ).showDialog(context);
+    EasyLoading.showSuccess(S.current.success);
   }
 
   void importResponseBody() async {
     try {
+      bool? confirmed = await SimpleCancelOkDialog(
+        title: Text(S.current.import_data),
+        content: Text(S.current.cur_account + ': ' + db.curUser.name),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              SplitRoute.push(
+                  context: context, builder: (ctx, _) => AccountPage());
+            },
+            child: Text(LocalizedText.of(chs: '切换', jpn: '切替', eng: 'Switch')),
+          )
+        ],
+      ).showDialog(context);
+      if (confirmed != true) return;
       FilePickerCross filePickerCross =
           await FilePickerCross.importFromStorage();
-      String body =
-          Uri.decodeFull(File(filePickerCross.path).readAsStringSync());
-      BiliResponse _response =
-          BiliResponse.fromJson(jsonDecode(b64(body))['cache']['replaced']);
-
-      // clear before import
-      ignoreSvts.clear();
-      cardCollections.clear();
-      servants.clear();
-      items.clear();
-      crafts.clear();
-      _shownSvts.clear();
-
-      // items
-      _response.userItem.forEach((item) {
-        if (itemIdMap.containsKey(item.itemId)) {
-          item.indexKey = itemIdMap[item.itemId]!.name;
-          items.add(item);
-        }
-      });
-      items.sort((a, b) {
-        if (a.indexKey != null && b.indexKey != null) {
-          return db.gameData.items[a.indexKey!]!.id -
-              db.gameData.items[b.indexKey!]!.id;
-        } else if (a.indexKey == null && b.indexKey == null) {
-          return a.itemId - b.itemId;
-        } else {
-          return 0;
-        }
-      });
-
-      // collections
-      cardCollections = Map.fromEntries(
-          _response.userSvtCollection.map((e) => MapEntry(e.svtId, e)));
-
-      // svt
-      _response.userSvt.forEach((svt) {
-        if (svtIdMap.containsKey(svt.svtId)) {
-          svt.indexKey = svtIdMap[svt.svtId]!.originNo;
-          svt.inStorage = false;
-          // cardCollections[svt.svtId] = _response.userSvtCollection
-          //     .firstWhere((element) => element.svtId == svt.svtId);
-          final group = servants.firstWhereOrNull(
-              (group) => group.any((element) => element.svtId == svt.svtId));
-          if (group == null) {
-            servants.add([svt]);
-          } else {
-            group.add(svt);
-          }
-        }
-      });
-      // svtStorage
-      _response.userSvtStorage.forEach((svt) {
-        if (svtIdMap.containsKey(svt.svtId)) {
-          svt.indexKey = svtIdMap[svt.svtId]!.originNo;
-          svt.inStorage = true;
-          // cardCollections[svt.svtId] = _response.userSvtCollection
-          //     .firstWhere((element) => element.svtId == svt.svtId);
-          final group = servants.firstWhereOrNull(
-              (group) => group.any((element) => element.svtId == svt.svtId));
-          if (group == null) {
-            servants.add([svt]);
-          } else {
-            group.add(svt);
-          }
-        }
-      });
-      servants.sort((a, b) {
-        final aa = db.gameData.servants[a.first.indexKey];
-        final bb = db.gameData.servants[b.first.indexKey];
-        return Servant.compare(aa, bb,
-            keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no],
-            reversed: [true, false, false]);
-      });
-      servants.forEach((group) {
-        group.sort((a, b) {
-          // reversed, skill high to low
-          int d = (b.skillLv1 + b.skillLv2 + b.skillLv3) -
-              (a.skillLv1 + a.skillLv2 + a.skillLv3);
-          if (d == 0) {
-            // created from old to new
-            d = a.createdAt.millisecondsSinceEpoch -
-                b.createdAt.millisecondsSinceEpoch;
-          }
-          return d;
-        });
-      });
-      // crafts
-      crafts = craftIdMap.map((gameId, craft) {
-        int status = cardCollections[gameId]?.status ?? 0;
-        return MapEntry(craft.no, status);
-      });
-
-      // assign last
-      response = _response;
+      parseResponseBody(filePickerCross.toUint8List());
+      File(tmpPath)
+        ..createSync(recursive: true)
+        ..writeAsBytesSync(filePickerCross.toUint8List());
     } on FileSelectionCanceledError {} catch (e, s) {
       logger.e('fail to load http response', e, s);
       if (mounted)
@@ -612,6 +534,101 @@ https://line3-s2-xxx-fate.bilibiligame.net/rongame_beta//rgfate/60_1001/ac.php?_
         setState(() {});
       }
     }
+  }
+
+  void parseResponseBody(List<int> bytes) {
+    BiliTopLogin _topLogin = BiliTopLogin.fromBase64(utf8.decode(bytes));
+
+    // clear before import
+    ignoreSvts.clear();
+    cardCollections.clear();
+    servants.clear();
+    items.clear();
+    crafts.clear();
+    _shownSvts.clear();
+
+    // items
+    _topLogin.body.userItem.forEach((item) {
+      if (itemIdMap.containsKey(item.itemId)) {
+        item.indexKey = itemIdMap[item.itemId]!.name;
+        items.add(item);
+      }
+    });
+    items.sort((a, b) {
+      if (a.indexKey != null && b.indexKey != null) {
+        return db.gameData.items[a.indexKey!]!.id -
+            db.gameData.items[b.indexKey!]!.id;
+      } else if (a.indexKey == null && b.indexKey == null) {
+        return a.itemId - b.itemId;
+      } else {
+        return 0;
+      }
+    });
+
+    // collections
+    cardCollections = Map.fromEntries(
+        _topLogin.body.userSvtCollection.map((e) => MapEntry(e.svtId, e)));
+
+    // svt
+    _topLogin.body.userSvt.forEach((svt) {
+      if (svtIdMap.containsKey(svt.svtId)) {
+        svt.indexKey = svtIdMap[svt.svtId]!.originNo;
+        svt.inStorage = false;
+        // cardCollections[svt.svtId] = _response.userSvtCollection
+        //     .firstWhere((element) => element.svtId == svt.svtId);
+        final group = servants.firstWhereOrNull(
+            (group) => group.any((element) => element.svtId == svt.svtId));
+        if (group == null) {
+          servants.add([svt]);
+        } else {
+          group.add(svt);
+        }
+      }
+    });
+    // svtStorage
+    _topLogin.body.userSvtStorage.forEach((svt) {
+      if (svtIdMap.containsKey(svt.svtId)) {
+        svt.indexKey = svtIdMap[svt.svtId]!.originNo;
+        svt.inStorage = true;
+        // cardCollections[svt.svtId] = _response.userSvtCollection
+        //     .firstWhere((element) => element.svtId == svt.svtId);
+        final group = servants.firstWhereOrNull(
+            (group) => group.any((element) => element.svtId == svt.svtId));
+        if (group == null) {
+          servants.add([svt]);
+        } else {
+          group.add(svt);
+        }
+      }
+    });
+    servants.sort((a, b) {
+      final aa = db.gameData.servants[a.first.indexKey];
+      final bb = db.gameData.servants[b.first.indexKey];
+      return Servant.compare(aa, bb,
+          keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no],
+          reversed: [true, false, false]);
+    });
+    servants.forEach((group) {
+      group.sort((a, b) {
+        // reversed, skill high to low
+        int d = (b.skillLv1 + b.skillLv2 + b.skillLv3) -
+            (a.skillLv1 + a.skillLv2 + a.skillLv3);
+        if (d == 0) {
+          // created from old to new
+          d = a.createdAt.millisecondsSinceEpoch -
+              b.createdAt.millisecondsSinceEpoch;
+        }
+        return d;
+      });
+    });
+    // crafts
+    crafts = craftIdMap.map((gameId, craft) {
+      int status = cardCollections[gameId]?.status ?? 0;
+      return MapEntry(craft.no, status);
+    });
+
+    // assign last
+    topLogin = _topLogin;
   }
 
   void showHelp() {

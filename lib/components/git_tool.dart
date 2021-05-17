@@ -472,7 +472,7 @@ class _DownloadDialogState extends State<DownloadDialog> {
           if (widget.notes != null) Text(widget.notes!),
           Text('下载进度:', style: headerStyle),
           widget.url?.isNotEmpty == true
-              ? Text(progress, style: TextStyle(fontFamily: 'RobotoMono'))
+              ? Text(progress, style: TextStyle(fontFamily: kMonoFont))
               : Text(S.of(context).query_failed)
         ],
       ),

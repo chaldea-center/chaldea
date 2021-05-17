@@ -107,7 +107,7 @@ class _AccountPageState extends State<AccountPage> {
 
   void addUser(String name) {
     String newKey = DateTime.now().millisecondsSinceEpoch.toString();
-    db.userData.users[newKey] = User(name: name);
+    db.userData.users[newKey] = User(key: newKey, name: name);
     db.userData.curUserKey = newKey;
     updateData();
     logger.d('Add account $newKey(name:$name)');

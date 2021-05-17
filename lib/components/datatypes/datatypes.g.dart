@@ -6,8 +6,34 @@ part of datatypes;
 // JsonSerializableGenerator
 // **************************************************************************
 
-BiliResponse _$BiliResponseFromJson(Map<String, dynamic> json) {
-  return BiliResponse(
+BiliTopLogin _$BiliTopLoginFromJson(Map<String, dynamic> json) {
+  return BiliTopLogin(
+    response: json['response'],
+    cache: json['cache'] == null
+        ? null
+        : BiliCache.fromJson(json['cache'] as Map<String, dynamic>),
+    sign: json['sign'] as String?,
+  );
+}
+
+BiliCache _$BiliCacheFromJson(Map<String, dynamic> json) {
+  return BiliCache(
+    replaced: json['replaced'] == null
+        ? null
+        : BiliReplaced.fromJson(json['replaced'] as Map<String, dynamic>),
+    updated: json['updated'] == null
+        ? null
+        : BiliUpdated.fromJson(json['updated'] as Map<String, dynamic>),
+    serverTime: json['serverTime'] as int?,
+  );
+}
+
+BiliUpdated _$BiliUpdatedFromJson(Map<String, dynamic> json) {
+  return BiliUpdated();
+}
+
+BiliReplaced _$BiliReplacedFromJson(Map<String, dynamic> json) {
+  return BiliReplaced(
     userItem: (json['userItem'] as List<dynamic>?)
         ?.map((e) => UserItem.fromJson(e as Map<String, dynamic>))
         .toList(),
@@ -26,26 +52,12 @@ BiliResponse _$BiliResponseFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$BiliResponseToJson(BiliResponse instance) =>
-    <String, dynamic>{
-      'userItem': instance.userItem,
-      'userSvt': instance.userSvt,
-      'userSvtStorage': instance.userSvtStorage,
-      'userSvtCollection': instance.userSvtCollection,
-      'userGame': instance.userGame,
-    };
-
 UserItem _$UserItemFromJson(Map<String, dynamic> json) {
   return UserItem(
     itemId: json['itemId'] as String,
     num: json['num'] as String,
   );
 }
-
-Map<String, dynamic> _$UserItemToJson(UserItem instance) => <String, dynamic>{
-      'itemId': instance.itemId,
-      'num': instance.num,
-    };
 
 UserSvt _$UserSvtFromJson(Map<String, dynamic> json) {
   return UserSvt(
@@ -69,45 +81,17 @@ UserSvt _$UserSvtFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$UserSvtToJson(UserSvt instance) => <String, dynamic>{
-      'id': instance.id,
-      'svtId': instance.svtId,
-      'limitCount': instance.limitCount,
-      'lv': instance.lv,
-      'exp': instance.exp,
-      'adjustHp': instance.adjustHp,
-      'adjustAtk': instance.adjustAtk,
-      'skillLv1': instance.skillLv1,
-      'skillLv2': instance.skillLv2,
-      'skillLv3': instance.skillLv3,
-      'treasureDeviceLv1': instance.treasureDeviceLv1,
-      'exceedCount': instance.exceedCount,
-      'createdAt': instance.createdAt.toIso8601String(),
-      'updatedAt': instance.updatedAt.toIso8601String(),
-      'isLock': instance.isLock,
-      'hp': instance.hp,
-      'atk': instance.atk,
-    };
-
 UserSvtCollection _$UserSvtCollectionFromJson(Map<String, dynamic> json) {
   return UserSvtCollection(
     svtId: json['svtId'] as String,
     status: json['status'] as String,
     friendship: json['friendship'] as String,
     friendshipRank: json['friendshipRank'] as String,
+    friendshipExceedCount: json['friendshipExceedCount'] as String,
     costumeIds:
         (json['costumeIds'] as List<dynamic>).map((e) => e as int).toList(),
   );
 }
-
-Map<String, dynamic> _$UserSvtCollectionToJson(UserSvtCollection instance) =>
-    <String, dynamic>{
-      'svtId': instance.svtId,
-      'status': instance.status,
-      'friendship': instance.friendship,
-      'friendshipRank': instance.friendshipRank,
-      'costumeIds': instance.costumeIds,
-    };
 
 UserGame _$UserGameFromJson(Map<String, dynamic> json) {
   return UserGame(
@@ -132,28 +116,6 @@ UserGame _$UserGameFromJson(Map<String, dynamic> json) {
     stone: json['stone'] as int,
   );
 }
-
-Map<String, dynamic> _$UserGameToJson(UserGame instance) => <String, dynamic>{
-      'id': instance.id,
-      'userId': instance.userId,
-      'appname': instance.appname,
-      'name': instance.name,
-      'birthDay': instance.birthDay.toIso8601String(),
-      'actMax': instance.actMax,
-      'genderType': instance.genderType,
-      'lv': instance.lv,
-      'exp': instance.exp,
-      'qp': instance.qp,
-      'costMax': instance.costMax,
-      'friendCode': instance.friendCode,
-      'freeStone': instance.freeStone,
-      'chargeStone': instance.chargeStone,
-      'mana': instance.mana,
-      'rarePri': instance.rarePri,
-      'createdAt': instance.createdAt.toIso8601String(),
-      'message': instance.message,
-      'stone': instance.stone,
-    };
 
 CommandCode _$CommandCodeFromJson(Map<String, dynamic> json) {
   return $checkedNew('CommandCode', json, () {

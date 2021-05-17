@@ -118,7 +118,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
             Expanded(child: Text(title)),
             Text(
               '($skillMax) ' + '$own/$total'.padLeft(7),
-              style: TextStyle(fontFamily: 'RobotoMono'),
+              style: TextStyle(fontFamily: kMonoFont),
             )
           ],
         ),

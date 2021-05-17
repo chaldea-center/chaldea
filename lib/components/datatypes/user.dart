@@ -25,6 +25,7 @@ extension GameServerUtil on GameServer {
 
 @JsonSerializable(checked: true)
 class User {
+  String? key;
   String name;
 
   GameServer? _server;
@@ -79,6 +80,7 @@ class User {
   Map<int, int> duplicatedServants;
 
   User({
+    this.key,
     String? name,
     GameServer? server,
     Map<int, ServantStatus>? servants,
@@ -108,7 +110,7 @@ class User {
     this.curSvtPlanNo =
         fixValidRange(this.curSvtPlanNo, 0, this.servantPlans.length);
     fillListValue(this.servantPlans, max(5, this.servantPlans.length),
-        (_) => <int, ServantPlan>{});
+            (_) => <int, ServantPlan>{});
   }
 
   Map<int, ServantPlan> get curSvtPlan {
@@ -118,8 +120,8 @@ class User {
 
   Servant addDuplicatedForServant(Servant svt, [int? newNo]) {
     for (int no = svt.originNo * 1000 + 1;
-        no < svt.originNo * 1000 + 999;
-        no++) {
+    no < svt.originNo * 1000 + 999;
+    no++) {
       if (!db.gameData.servantsWithUser.containsKey(no)) {
         duplicatedServants[no] = svt.originNo;
         final newSvt = svt.duplicate(no);
@@ -167,17 +169,15 @@ class User {
   Map<String, dynamic> toJson() => _$UserToJson(this);
 
   // can be sorted before saving
-  static Map<String, ServantStatus> _servantsToJson(
-      Map<int, ServantStatus> data) {
+  static Map<String, ServantStatus> _servantsToJson(Map<int, ServantStatus> data) {
     return data.map((k, e) => MapEntry(k.toString(), e))
       ..removeWhere((key, value) => value.isEmpty);
   }
 
-  static List<Map<String, ServantPlan>> _servantPlansToJson(
-      List<Map<int, ServantPlan>> data) {
+  static List<Map<String, ServantPlan>> _servantPlansToJson(List<Map<int, ServantPlan>> data) {
     return data
         .map((e) => e.map((k, e) => MapEntry(k.toString(), e))
-          ..removeWhere((key, value) => value.isEmpty))
+      ..removeWhere((key, value) => value.isEmpty))
         .toList();
   }
 

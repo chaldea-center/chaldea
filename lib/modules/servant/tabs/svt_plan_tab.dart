@@ -328,7 +328,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           child: Container(height: 23, child: slider),
         ),
         trailing: Text(trailingLabelFormatter(start, end),
-            style: TextStyle(fontFamily: 'RobotoMono')),
+            style: TextStyle(fontFamily: kMonoFont)),
         trailingIcon: trailingIcon,
       );
     } else {

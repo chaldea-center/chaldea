@@ -695,7 +695,7 @@ class ServantListPageState extends State<ServantListPage> {
       style: TextStyle(
         fontSize: 12,
         color: Theme.of(context).textTheme.caption?.color,
-        fontFamily: 'RobotoMono',
+        fontFamily: kMonoFont,
       ),
       child: Table(
         // border: TableBorder.all(),

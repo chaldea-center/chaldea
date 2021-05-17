@@ -77,6 +77,9 @@ class UserData {
     if (!this.users.containsKey(_curUserKey)) {
       this._curUserKey = this.users.keys.first;
     }
+    this.users.forEach((key, value) {
+      value.key = key;
+    });
   }
 
   String get curUserKey => _curUserKey;
@@ -91,7 +94,7 @@ class UserData {
 
   User get curUser {
     if (users.isEmpty) {
-      users['default'] = User(name: 'default');
+      users['default'] = User(key: 'default', name: 'default');
     }
     if (!users.containsKey(curUserKey)) {
       curUserKey = users.keys.first;

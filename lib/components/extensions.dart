@@ -22,7 +22,7 @@ extension FirstWhereOrNull<E> on Iterable<E> {
   }
 }
 
-extension DateTimeEnhance on DateTime {
+extension DateTimeX on DateTime {
   static DateTime? tryParse(String? formattedString) {
     if (formattedString == null) return null;
     var date = DateTime.tryParse(formattedString);
@@ -51,11 +51,15 @@ extension DateTimeEnhance on DateTime {
     if (duration != null) dateTime = dateTime.add(duration);
     return this.isAfter(dateTime);
   }
+
+  String toStringShort() {
+    return this.toString().split('.').first;
+  }
 }
 
 extension StringToDateTime on String {
   DateTime? toDateTime() {
-    return DateTimeEnhance.tryParse(this);
+    return DateTimeX.tryParse(this);
   }
 
   String toTitle() {

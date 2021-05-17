@@ -13,8 +13,55 @@ int _toInt(dynamic v, [int? k]) {
   }
 }
 
-@JsonSerializable()
-class BiliResponse {
+@JsonSerializable(createToJson: false)
+class BiliTopLogin {
+  dynamic response;
+  BiliCache cache;
+  String sign;
+
+  BiliReplaced get body => cache.replaced;
+
+  BiliTopLogin({this.response, BiliCache? cache, String? sign})
+      : cache = cache ?? BiliCache(),
+        sign = sign ?? '';
+
+  factory BiliTopLogin.fromJson(Map<String, dynamic> data) =>
+      _$BiliTopLoginFromJson(data);
+
+  /// base64 maybe url-encoded
+  static BiliTopLogin fromBase64(String encoded) {
+    String body = Uri.decodeFull(encoded);
+    return BiliTopLogin.fromJson(jsonDecode(utf8.decode(base64Decode(body))));
+  }
+}
+
+@JsonSerializable(createToJson: false)
+class BiliCache {
+  BiliReplaced replaced;
+  BiliUpdated updated;
+  DateTime? serverTime;
+
+  BiliCache({BiliReplaced? replaced, BiliUpdated? updated, int? serverTime})
+      : replaced = replaced ?? BiliReplaced(),
+        updated = updated ?? BiliUpdated(),
+        serverTime = serverTime == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(serverTime * 1000);
+
+  factory BiliCache.fromJson(Map<String, dynamic> data) =>
+      _$BiliCacheFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class BiliUpdated {
+  BiliUpdated();
+
+  factory BiliUpdated.fromJson(Map<String, dynamic> data) =>
+      _$BiliUpdatedFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class BiliReplaced {
   List<UserItem> userItem;
 
   /// svt: including servant and craft essence
@@ -23,7 +70,7 @@ class BiliResponse {
   List<UserSvtCollection> userSvtCollection;
   List<UserGame> userGame;
 
-  BiliResponse({
+  BiliReplaced({
     List<UserItem>? userItem,
     List<UserSvt>? userSvt,
     List<UserSvt>? userSvtStorage,
@@ -37,10 +84,8 @@ class BiliResponse {
 
   UserGame? get firstUser => userGame.getOrNull(0);
 
-  factory BiliResponse.fromJson(Map<String, dynamic> data) =>
-      _$BiliResponseFromJson(data);
-
-  Map<String, dynamic> toJson() => _$BiliResponseToJson(this);
+  factory BiliReplaced.fromJson(Map<String, dynamic> data) =>
+      _$BiliReplacedFromJson(data);
 }
 
 // Example:
@@ -49,7 +94,7 @@ class BiliResponse {
 // "num": "2650",
 // "updatedAt": "1504378320",
 // "createdAt": "1504378320"
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class UserItem {
   int itemId;
   int num;
@@ -66,8 +111,6 @@ class UserItem {
 
   factory UserItem.fromJson(Map<String, dynamic> data) =>
       _$UserItemFromJson(data);
-
-  Map<String, dynamic> toJson() => _$UserItemToJson(this);
 }
 
 // Example:
@@ -105,7 +148,7 @@ class UserItem {
 // "limitCountSupport": 0,
 // "hp": 10623,
 // "atk": 7726
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class UserSvt {
   int id; // unique id for every card
   int svtId;
@@ -177,8 +220,6 @@ class UserSvt {
 
   factory UserSvt.fromJson(Map<String, dynamic> data) =>
       _$UserSvtFromJson(data);
-
-  Map<String, dynamic> toJson() => _$UserSvtToJson(this);
 }
 
 //  {
@@ -208,7 +249,7 @@ class UserSvt {
 //             "updatedAt": "1568449630",
 //             "createdAt": "1568449630"
 //         },
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class UserSvtCollection {
   int svtId;
 
@@ -216,6 +257,7 @@ class UserSvtCollection {
   int status;
   int friendship;
   int friendshipRank;
+  int friendshipExceedCount;
 
   /// costume: x start from 11, -x if unlock. Not include mash's story costume
   List<int> costumeIds;
@@ -225,11 +267,15 @@ class UserSvtCollection {
     required String status,
     required String friendship,
     required String friendshipRank,
+    required String friendshipExceedCount,
     required this.costumeIds,
   })  : svtId = int.parse(svtId),
         status = int.parse(status),
         friendship = int.parse(friendship),
-        friendshipRank = int.parse(friendshipRank);
+        friendshipRank = int.parse(friendshipRank),
+        friendshipExceedCount = int.parse(friendshipExceedCount);
+
+  bool get isOwned => status == 2;
 
   List<int> costumeIdsTo01() {
     return costumeIds.map((e) => e > 0 ? 1 : 0).toList();
@@ -237,11 +283,9 @@ class UserSvtCollection {
 
   factory UserSvtCollection.fromJson(Map<String, dynamic> data) =>
       _$UserSvtCollectionFromJson(data);
-
-  Map<String, dynamic> toJson() => _$UserSvtCollectionToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class UserGame {
   int id;
   String userId;
@@ -308,6 +352,4 @@ class UserGame {
 
   factory UserGame.fromJson(Map<String, dynamic> data) =>
       _$UserGameFromJson(data);
-
-  Map<String, dynamic> toJson() => _$UserGameToJson(this);
 }

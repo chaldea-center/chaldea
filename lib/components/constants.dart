@@ -35,6 +35,7 @@ const double kGridIconSize = 110 * 0.5 + 6;
 /// The global key passed to [MaterialApp], so you can access context anywhere
 final kAppKey = GlobalKey<NavigatorState>();
 const kDefaultDivider = Divider(height: 1, thickness: 0.5);
+const kMonoFont = 'RobotoMono';
 
 class Language {
   final String code;

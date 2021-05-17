@@ -282,50 +282,62 @@ class Database {
     String? iconKey, {
     double? width,
     double? height,
+    double? aspectRatio,
     BoxFit? fit,
     bool? preferPng,
     bool withBorder = true,
     bool? clip,
+    EdgeInsetsGeometry? padding,
   }) {
+    Widget image;
     if (iconKey == null || iconKey.isEmpty) {
-      return Image(
+      image = Image(
         image: errorImage,
         width: width,
         height: height,
         fit: fit,
       );
-    }
-    String iconName =
-        getIconFullKey(iconKey, preferPng: preferPng, withBorder: withBorder)!;
-    File iconFile = File(pathlib.join(paths.gameIconDir, iconName));
-    Widget image;
-    if (iconFile.existsSync()) {
-      image = Image(
-        image: FileImage(iconFile),
-        width: width,
-        height: height,
-        fit: fit,
-        loadingBuilder: (context, child, loadingProgress) => Container(
+    } else {
+      String iconName = getIconFullKey(iconKey,
+          preferPng: preferPng, withBorder: withBorder)!;
+      File iconFile = File(pathlib.join(paths.gameIconDir, iconName));
+      if (iconFile.existsSync()) {
+        image = CachedImage.sizeChild(
           width: width,
           height: height,
-          child: child,
-        ),
-      );
-    } else {
-      image = CachedImage(
-        imageUrl: iconName,
-        saveDir: db.paths.gameIconDir,
-        width: width,
-        height: height,
-        fit: fit,
-        placeholder: (_, __) => Container(width: width, height: height),
-      );
+          aspectRatio: aspectRatio,
+          child: Image(
+            image: FileImage(iconFile),
+            width: width,
+            height: height,
+            fit: fit,
+            loadingBuilder: (context, child, loadingProgress) => Container(
+              width: width,
+              height: height,
+              child: child,
+            ),
+          ),
+        );
+      } else {
+        image = CachedImage(
+          imageUrl: iconName,
+          saveDir: db.paths.gameIconDir,
+          width: width,
+          height: height,
+          aspectRatio: aspectRatio,
+          fit: fit,
+          placeholder: (_, __) => Container(width: width, height: height),
+        );
+      }
     }
     if (clip != false) {
       image = ClipPath(
         clipper: TopCornerClipper(),
         child: image,
       );
+    }
+    if (padding != null) {
+      image = Padding(padding: padding, child: image);
     }
     return image;
   }

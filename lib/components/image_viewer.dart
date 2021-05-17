@@ -156,6 +156,7 @@ class CachedImage extends StatefulWidget {
   final Curve fadeInCurve;
   final double? width;
   final double? height;
+  final double? aspectRatio;
   final BoxFit? fit;
   final Alignment alignment;
   final ImageRepeat repeat;
@@ -189,6 +190,7 @@ class CachedImage extends StatefulWidget {
     this.fadeInCurve = Curves.easeIn,
     this.width,
     this.height,
+    this.aspectRatio,
     this.fit,
     this.alignment = Alignment.center,
     this.repeat = ImageRepeat.noRepeat,
@@ -234,6 +236,20 @@ class CachedImage extends StatefulWidget {
       padding: EdgeInsets.all(10),
       child: Image(image: db.errorImage),
     );
+  }
+
+  static Widget sizeChild(
+      {required Widget child,
+      double? width,
+      double? height,
+      double? aspectRatio}) {
+    if (aspectRatio != null) {
+      child = AspectRatio(aspectRatio: aspectRatio, child: child);
+    }
+    if (width != null || height != null) {
+      child = Container(width: width, height: height, child: child);
+    }
+    return child;
   }
 }
 
@@ -343,7 +359,11 @@ class _CachedImageState extends State<CachedImage> {
     //     },
     //     child: child,
     //   );
-    return child;
+    return CachedImage.sizeChild(
+        child: child,
+        width: widget.width,
+        height: widget.height,
+        aspectRatio: widget.aspectRatio);
   }
 
   bool canDownload() {
