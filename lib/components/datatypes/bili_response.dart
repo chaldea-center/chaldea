@@ -259,7 +259,9 @@ class UserSvtCollection {
   int friendshipRank;
   int friendshipExceedCount;
 
-  /// costume: x start from 11, -x if unlock. Not include mash's story costume
+  /// costume: x start from 11, -x when unlock.
+  /// maybe out of order, need to sort when parsing
+  /// include mash's story costume.
   List<int> costumeIds;
 
   UserSvtCollection({
@@ -268,12 +270,13 @@ class UserSvtCollection {
     required String friendship,
     required String friendshipRank,
     required String friendshipExceedCount,
-    required this.costumeIds,
+    required List<int> costumeIds,
   })  : svtId = int.parse(svtId),
         status = int.parse(status),
         friendship = int.parse(friendship),
         friendshipRank = int.parse(friendshipRank),
-        friendshipExceedCount = int.parse(friendshipExceedCount);
+        friendshipExceedCount = int.parse(friendshipExceedCount),
+        costumeIds = costumeIds..sort((a, b) => a.abs() - b.abs());
 
   bool get isOwned => status == 2;
 
@@ -291,9 +294,9 @@ class UserGame {
   String userId;
 
   // String usk;
-  String appname;
+  String? appname; // username of bili account
   String name;
-  DateTime birthDay;
+  DateTime? birthDay;
   int actMax;
   int genderType;
   int lv;
@@ -318,7 +321,7 @@ class UserGame {
     required this.userId,
     required this.appname,
     required this.name,
-    required String birthDay,
+    required String? birthDay,
     required String actMax,
     required String genderType,
     required String lv,
@@ -333,9 +336,11 @@ class UserGame {
     required String createdAt,
     required this.message,
     required this.stone,
-  })  : id = int.parse(id),
-        birthDay =
-            DateTime.fromMillisecondsSinceEpoch(int.parse(birthDay) * 1000),
+  })
+      : id = int.parse(id),
+        birthDay = birthDay == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(int.parse(birthDay) * 1000),
         actMax = int.parse(actMax),
         genderType = int.parse(genderType),
         lv = int.parse(lv),

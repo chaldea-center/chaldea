@@ -97,9 +97,9 @@ UserGame _$UserGameFromJson(Map<String, dynamic> json) {
   return UserGame(
     id: json['id'] as String,
     userId: json['userId'] as String,
-    appname: json['appname'] as String,
+    appname: json['appname'] as String?,
     name: json['name'] as String,
-    birthDay: json['birthDay'] as String,
+    birthDay: json['birthDay'] as String?,
     actMax: json['actMax'] as String,
     genderType: json['genderType'] as String,
     lv: json['lv'] as String,
@@ -1409,6 +1409,7 @@ Map<String, dynamic> _$SummonDataBlockToJson(SummonDataBlock instance) =>
 User _$UserFromJson(Map<String, dynamic> json) {
   return $checkedNew('User', json, () {
     final val = User(
+      key: $checkedConvert(json, 'key', (v) => v as String?),
       name: $checkedConvert(json, 'name', (v) => v as String?),
       server: $checkedConvert(
           json, 'server', (v) => _$enumDecodeNullable(_$GameServerEnumMap, v)),
@@ -1423,52 +1424,54 @@ User _$UserFromJson(Map<String, dynamic> json) {
       servantPlans: $checkedConvert(
           json,
           'servantPlans',
-          (v) => (v as List<dynamic>?)
+              (v) => (v as List<dynamic>?)
               ?.map((e) => (e as Map<String, dynamic>).map(
-                    (k, e) => MapEntry(int.parse(k),
-                        ServantPlan.fromJson(e as Map<String, dynamic>)),
-                  ))
+                (k, e) => MapEntry(int.parse(k),
+                ServantPlan.fromJson(e as Map<String, dynamic>)),
+          ))
               .toList()),
       items: $checkedConvert(
           json,
           'items',
-          (v) => (v as Map<String, dynamic>?)?.map(
+              (v) => (v as Map<String, dynamic>?)?.map(
                 (k, e) => MapEntry(k, e as int),
-              )),
+          )),
       events: $checkedConvert(
           json,
           'events',
-          (v) => v == null
+              (v) => v == null
               ? null
               : EventPlans.fromJson(v as Map<String, dynamic>)),
       crafts: $checkedConvert(
           json,
           'crafts',
-          (v) => (v as Map<String, dynamic>?)?.map(
+              (v) => (v as Map<String, dynamic>?)?.map(
                 (k, e) => MapEntry(int.parse(k), e as int),
-              )),
+          )),
       mysticCodes: $checkedConvert(
           json,
           'mysticCodes',
-          (v) => (v as Map<String, dynamic>?)?.map(
+              (v) => (v as Map<String, dynamic>?)?.map(
                 (k, e) => MapEntry(k, e as int),
-              )),
+          )),
       plannedSummons: $checkedConvert(json, 'plannedSummons',
-          (v) => (v as List<dynamic>?)?.map((e) => e as String).toSet()),
+              (v) => (v as List<dynamic>?)?.map((e) => e as String).toSet()),
       isMasterGirl: $checkedConvert(json, 'isMasterGirl', (v) => v as bool?),
       msProgress: $checkedConvert(json, 'msProgress', (v) => v as int?),
       duplicatedServants: $checkedConvert(
           json,
           'duplicatedServants',
-          (v) => (v as Map<String, dynamic>?)?.map(
+              (v) => (v as Map<String, dynamic>?)?.map(
                 (k, e) => MapEntry(int.parse(k), e as int),
-              )),
+          )),
     );
     return val;
   });
 }
 
-Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
+Map<String, dynamic> _$UserToJson(User instance) =>
+    <String, dynamic>{
+      'key': instance.key,
       'name': instance.name,
       'server': _$GameServerEnumMap[instance.server],
       'servants': User._servantsToJson(instance.servants),

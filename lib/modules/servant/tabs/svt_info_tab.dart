@@ -2,6 +2,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/cmd_code/cmd_code_detail_page.dart';
 import 'package:chaldea/modules/craft/craft_detail_page.dart';
 import 'package:chaldea/modules/shared/lang_switch.dart';
+import 'package:flutter/foundation.dart';
 
 import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
@@ -107,6 +108,9 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
               texts: [svt.info.nameJp], defaults: contentData),
           CustomTableRow.fromTexts(
               texts: [svt.info.nameEn], defaults: contentData),
+          if (!kReleaseMode)
+            CustomTableRow.fromTexts(
+                texts: ['No.${svt.svtId}'], defaults: contentData),
           CustomTableRow.fromTexts(
               texts: ['No.${svt.originNo}', svt.info.className],
               defaults: contentData),

@@ -94,7 +94,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
                   ),
                 )
               : LayoutBuilder(
-            builder: (context, constraints) => SingleChildScrollView(
+                  builder: (context, constraints) => SingleChildScrollView(
                     controller: _scrollController,
                     child: Column(
                       children: [
@@ -492,6 +492,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
         status.curVal.dress.setRange(0, costumeVals.length, costumeVals);
       }
     }
+    db.gameData.updateUserDuplicatedServants();
     EasyLoading.showSuccess(S.current.success);
   }
 

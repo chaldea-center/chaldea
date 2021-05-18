@@ -29,7 +29,7 @@ class BlankPage extends StatelessWidget {
             -v, 0, 0, 0, 255,
             0, -v, 0, 0, 255,
             0, 0, -v, 0, 255,
-            0, 0, 0, 1, 0,
+            0, 0, 0, 0.8, 0,
           ]),
           child: img,
         );

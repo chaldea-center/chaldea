@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:catcher/catcher.dart';
+import 'package:flutter/foundation.dart';
 
 import '../config.dart';
 import '../device_app_info.dart';
@@ -64,6 +65,7 @@ class CatcherUtils {
   /// In release mode, StackTrace won't offer offset
   /// This should only called for develop
   static String removeStackTraceLineNumber(String s) {
+    if (kReleaseMode) return s;
     return s.replaceAll(RegExp(r'(:\d+)+(?=\)\n)'), '');
   }
 }

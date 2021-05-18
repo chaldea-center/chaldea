@@ -103,6 +103,7 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
       if (!svtStat.favorite) return;
       if (!db.gameData.servantsWithUser.containsKey(no)) {
         print('No $no: ${db.gameData.servantsWithUser.length}');
+        return;
       }
       final svt = db.gameData.servantsWithUser[no]!;
       sumDict(

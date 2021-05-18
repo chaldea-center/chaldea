@@ -160,18 +160,25 @@ class _AccountPageState extends State<AccountPage> {
 
   void clearUser(String key) {
     final user = db.userData.users[key]!;
-    user.servants.clear();
-    user.duplicatedServants.clear();
-    user.items.clear();
-    user.events.mainRecords.clear();
-    user.events.limitEvents.clear();
-    user.events.exchangeTickets.clear();
-    user.servantPlans.forEach((e) => e.clear());
-    user.mysticCodes.clear();
-    user.plannedSummons.clear();
-    user.msProgress = -1;
-    db.gameData.updateUserDuplicatedServants();
-    db.notifyDbUpdate();
+
+    SimpleCancelOkDialog(
+      title: Text('Clear Data'),
+      content: Text('Account: ${user.name}'),
+      onTapOk: () {
+        user.servants.clear();
+        user.duplicatedServants.clear();
+        user.items.clear();
+        user.events.mainRecords.clear();
+        user.events.limitEvents.clear();
+        user.events.exchangeTickets.clear();
+        user.servantPlans.forEach((e) => e.clear());
+        user.mysticCodes.clear();
+        user.plannedSummons.clear();
+        user.msProgress = -1;
+        db.gameData.updateUserDuplicatedServants();
+        updateData();
+      },
+    ).showDialog(context);
   }
 
   void deleteUser(String key) {
@@ -183,24 +190,22 @@ class _AccountPageState extends State<AccountPage> {
       ).showDialog(context);
       return;
     }
-    setState(() {
-      final user = db.userData.users[key]!;
-      SimpleCancelOkDialog(
-        title: Text('Delete ${user.name}'),
-        content:
-            canDelete ? null : Text('Cannot delete, at least one account!'),
-        onTapOk: canDelete
-            ? () {
-                db.userData.users.remove(key);
-                if (db.userData.curUserKey == key) {
-                  db.userData.curUserKey = db.userData.users.keys.first;
-                }
-                updateData();
-                print('accounts: ${db.userData.users.keys.toList()}');
+
+    final user = db.userData.users[key]!;
+    SimpleCancelOkDialog(
+      title: Text('Delete ${user.name}'),
+      content: canDelete ? null : Text('Cannot delete, at least one account!'),
+      onTapOk: canDelete
+          ? () {
+              db.userData.users.remove(key);
+              if (db.userData.curUserKey == key) {
+                db.userData.curUserKey = db.userData.users.keys.first;
               }
-            : null,
-      ).showDialog(context);
-    });
+              updateData();
+              print('accounts: ${db.userData.users.keys.toList()}');
+            }
+          : null,
+    ).showDialog(context);
   }
 
   void updateData() async {

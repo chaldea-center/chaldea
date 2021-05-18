@@ -48,6 +48,7 @@
   - [x] Event
   - [ ] Summon - show banner image instead
   - [x] Quest
+- [ ] Add readme.txt to Windows/macOS zip: only troubleshooting
 
 ## UI
 毫无艺术细胞，有生之年
