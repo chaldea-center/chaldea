@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:catcher/catcher.dart';
 import 'package:chaldea/components/analytics.dart';
+import 'package:chaldea/components/catcher_util/catcher_config.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/git_tool.dart';
 import 'package:chaldea/components/method_channel_chaldea.dart';
@@ -125,7 +125,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
           ],
           supportedLocales: S.delegate.supportedLocales,
           builder: (context, widget) {
-            Catcher.addDefaultErrorWidget(showStacktrace: true);
+            ErrorWidget.builder = CatcherUtility.errorWidgetBuilder;
             return FlutterEasyLoading(child: widget);
           },
           home: _ChaldeaHome(key: _homeKey),

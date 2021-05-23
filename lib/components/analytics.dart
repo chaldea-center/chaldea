@@ -63,6 +63,7 @@ class Analyzer {
           : Platform.operatingSystemVersion,
       'app': AppInfo.packageName,
       'app_ver': AppInfo.version,
+      'build': AppInfo.originBuild,
       'dataset': db.gameData.version,
       'lang': Language.current.code,
       'locale': await findSystemLocale(),

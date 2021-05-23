@@ -64,11 +64,13 @@ android {
             signingConfig signingConfigs.release
         }
         profile {
-            applicationIdSuffix ".trail"
-            resValue "string", "app_name", "Chaldea Trail"
+            applicationIdSuffix ".profile"
+            resValue "string", "app_name", "Chaldea Profile"
             signingConfig signingConfigs.release
         }
         debug {
+            applicationIdSuffix ".debug"
+            resValue "string", "app_name", "Chaldea Debug"
             signingConfig signingConfigs.release
         }
     }

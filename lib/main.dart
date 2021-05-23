@@ -9,7 +9,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await db.initial();
 
-  final catcherOptions = CatcherUtils.getOptions();
+  final catcherOptions = CatcherUtility.getOptions();
   if (kDebugMode)
     runApp(Chaldea());
   else

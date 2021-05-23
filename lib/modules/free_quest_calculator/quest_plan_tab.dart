@@ -61,10 +61,12 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                                     .remove(variable.name);
                               });
                             },
-                            icon: Icon(Icons.clear, color: Colors.black),
+                            icon: Icon(Icons.clear,
+                                color: Theme.of(context).accentColor),
                             label: Text(
                               S.of(context).remove_from_blacklist,
-                              style: TextStyle(color: Colors.black),
+                              style: TextStyle(
+                                  color: Theme.of(context).accentColor),
                             ),
                           )
                         : TextButton.icon(

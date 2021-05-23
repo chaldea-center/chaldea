@@ -2,13 +2,16 @@ import 'dart:io';
 
 import 'package:catcher/catcher.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 import '../config.dart';
 import '../device_app_info.dart';
 import '../logger.dart';
 import 'catcher_email_handler.dart';
 
-class CatcherUtils {
+class CatcherUtility {
+  CatcherUtility._();
+
   static CatcherOptions getOptions() {
     final crashFile = File(db.paths.crashLog);
     return CatcherOptions(
@@ -28,7 +31,7 @@ class CatcherUtils {
       ],
       customParameters: _getCatcherCustomParameters(),
       handleSilentError: false,
-      filterFunction: CatcherUtils.reportFilter,
+      filterFunction: CatcherUtility.reportFilter,
       handlerTimeout: 10000,
     );
   }
@@ -67,6 +70,22 @@ class CatcherUtils {
   static String removeStackTraceLineNumber(String s) {
     if (kReleaseMode) return s;
     return s.replaceAll(RegExp(r'(:\d+)+(?=\)\n)'), '');
+  }
+
+  static Widget errorWidgetBuilder(FlutterErrorDetails details) {
+    if (details.silent) return Container();
+    return Center(
+      child: RichText(
+        overflow: TextOverflow.clip,
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          children: [
+            WidgetSpan(child: db.getIconImage(null, width: 40, height: 40)),
+            TextSpan(text: '\nThis is an Error')
+          ],
+        ),
+      ),
+    );
   }
 }
 

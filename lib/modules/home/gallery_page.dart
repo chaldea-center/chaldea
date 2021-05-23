@@ -391,6 +391,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
           imageUrl: imgUrl,
           connectivity: db.connectivity,
           errorWidget: (context, url, error) => Container(),
+          aspectRatio: 8 / 3,
         );
       } else {
         child = AspectRatio(

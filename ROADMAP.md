@@ -18,6 +18,7 @@
 - [x] move `Servant.unavailable` to dataset.json
 - [x] NP Lv.5 for low rarity and event servants
 - [ ] ocr for skills
+- [ ] item recognizer: itemName -> itemId
 
 ## Performance
 - [ ] update itemStat in Isolate

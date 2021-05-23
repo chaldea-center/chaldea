@@ -102,7 +102,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
         title: Text(LocalizedText.of(
             chs: '活动从者', jpn: '配布サーヴァント', eng: 'Welfare Servant')),
         trailing: InkWell(
-          child: db.getIconImage(svt.icon),
+          child: db.getIconImage(svt.icon, aspectRatio: 132 / 144),
           onTap: () {
             SplitRoute.push(
                 context: context, builder: (_, __) => ServantDetailPage(svt));

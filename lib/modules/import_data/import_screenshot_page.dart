@@ -177,6 +177,13 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
     });
   }
 
+  Map<String, dynamic> _getBaseAPIParams() {
+    final m = Map<String, dynamic>();
+    m['userKey'] = AppInfo.uuid;
+    m['version'] = AppInfo.version;
+    return m;
+  }
+
   void _uploadScreenshots() async {
     print('uuid=${AppInfo.uuid}');
     if (imageFiles.isEmpty) {
@@ -192,8 +199,7 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
         return;
       }
 
-      Map<String, dynamic> map = Map();
-      map['userKey'] = AppInfo.uuid;
+      final map = _getBaseAPIParams();
       for (var file in imageFiles) {
         map[pathlib.basename(file.path)] =
             await MultipartFile.fromFile(file.path);
@@ -218,7 +224,7 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
   void _fetchResult() async {
     try {
       final response = await _dio.get('/downloadItemResult',
-          queryParameters: {'userKey': AppInfo.uuid});
+          queryParameters: _getBaseAPIParams());
       Map data = jsonDecode(response.data);
       if (!mounted) return;
       if (data['success'] == true) {
