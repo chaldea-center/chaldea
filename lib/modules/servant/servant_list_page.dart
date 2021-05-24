@@ -154,8 +154,8 @@ class ServantListPageState extends State<ServantListPage> {
       filterData.priority: svtStat.priority.toString(),
       filterData.rarity: svt.info.rarity.toString(),
       filterData.obtain: svt.info.obtain,
-      filterData.npColor: getListItem(svt.nobelPhantasm, 0)?.color,
-      filterData.npType: getListItem(svt.nobelPhantasm, 0)?.category,
+      filterData.npColor: svt.nobelPhantasm.getOrNull(0)?.color,
+      filterData.npType: svt.nobelPhantasm.getOrNull(0)?.category,
       filterData.attribute: svt.info.attribute,
     };
     for (var entry in singleValuePair.entries) {

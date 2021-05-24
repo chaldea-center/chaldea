@@ -281,7 +281,12 @@ class UserSvtCollection {
   bool get isOwned => status == 2;
 
   List<int> costumeIdsTo01() {
-    return costumeIds.map((e) => e > 0 ? 1 : 0).toList();
+    final n = MathUtils.max(costumeIds.map((e) => e.abs()));
+    final result = <int>[];
+    for (int i = 11; i <= n; i++) {
+      result.add(costumeIds.contains(i) ? 1 : 0);
+    }
+    return result;
   }
 
   factory UserSvtCollection.fromJson(Map<String, dynamic> data) =>
@@ -336,8 +341,7 @@ class UserGame {
     required String createdAt,
     required this.message,
     required this.stone,
-  })
-      : id = int.parse(id),
+  })  : id = int.parse(id),
         birthDay = birthDay == null
             ? null
             : DateTime.fromMillisecondsSinceEpoch(int.parse(birthDay) * 1000),

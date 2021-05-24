@@ -245,21 +245,23 @@ class CraftDetailBasePage extends StatelessWidget {
               )
             ],
           ),
-          for (var i = 0; i < ce.eventIcons.length; i++)
-            CustomTableRow(
-              children: [
-                TableCellData(
-                  padding: EdgeInsets.all(6),
-                  flex: 1,
-                  child: db.getIconImage(ce.eventIcons[i], height: 40),
-                ),
-                TableCellData(
-                  flex: 5,
-                  text: ce.eventSkills[i],
-                  alignment: Alignment.centerLeft,
-                )
-              ],
-            ),
+          // Only CN is supported
+          if (Language.isCN)
+            for (var i = 0; i < ce.eventIcons.length; i++)
+              CustomTableRow(
+                children: [
+                  TableCellData(
+                    padding: EdgeInsets.all(6),
+                    flex: 1,
+                    child: db.getIconImage(ce.eventIcons[i], height: 40),
+                  ),
+                  TableCellData(
+                    flex: 5,
+                    text: ce.eventSkills[i],
+                    alignment: Alignment.centerLeft,
+                  )
+                ],
+              ),
           CustomTableRow(children: [
             TableCellData(text: S.current.characters_in_card, isHeader: true)
           ]),

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math' show max, min;
+import 'dart:math' as math;
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:dio/dio.dart';
@@ -74,6 +74,31 @@ dynamic deepCopy(dynamic obj) {
   return jsonDecode(jsonEncode(obj));
 }
 
+class MathUtils {
+  MathUtils._();
+
+  static T _convertNum<T extends num>(num a) {
+    if (T == int) {
+      return a.toInt() as T;
+    } else {
+      return a.toDouble() as T;
+    }
+  }
+
+  static T max<T extends num>(Iterable<T> iterable) {
+    return iterable.fold<T>(_convertNum<T>(0), (p, c) => math.max(p, c));
+  }
+
+  static T min<T extends num>(Iterable<T> iterable) {
+    return iterable.fold<T>(_convertNum<T>(0), (p, c) => math.min(p, c));
+  }
+
+  static T sum<T extends num>(Iterable<T?> iterable) {
+    return iterable.fold<T>(
+        _convertNum(0), (p, c) => (p + (c ?? _convertNum<T>(0))) as T);
+  }
+}
+
 /// Sum a list of number, list item defaults to 0 if null
 T sum<T extends num>(Iterable<T?> x) {
   if (0 is T) {
@@ -140,15 +165,6 @@ Map<K, V> sortDict<K, V>(Map<K, V> d,
   }
 }
 
-/// If invalid index or null data passed, return default value.
-T? getListItem<T>(List<T>? data, int index, [k()?]) {
-  if (data == null || data.length <= index) {
-    return k?.call();
-  } else {
-    return data[index];
-  }
-}
-
 String b64(String source, [bool decode = true]) {
   if (decode) {
     return utf8.decode(base64Decode(source));
@@ -159,10 +175,10 @@ String b64(String source, [bool decode = true]) {
 
 T fixValidRange<T extends num>(T value, [T? minVal, T? maxVal]) {
   if (minVal != null) {
-    value = max(value, minVal);
+    value = math.max(value, minVal);
   }
   if (maxVal != null) {
-    value = min(value, maxVal);
+    value = math.min(value, maxVal);
   }
   return value;
 }
@@ -241,11 +257,11 @@ void showSheet(BuildContext context,
 }
 
 double defaultDialogWidth(BuildContext context) {
-  return min(420, MediaQuery.of(context).size.width * 0.8);
+  return math.min(420, MediaQuery.of(context).size.width * 0.8);
 }
 
 double defaultDialogHeight(BuildContext context) {
-  return min(420, MediaQuery.of(context).size.width * 0.8);
+  return math.min(420, MediaQuery.of(context).size.width * 0.8);
 }
 
 /// other utils
