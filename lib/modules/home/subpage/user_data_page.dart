@@ -6,7 +6,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/home/subpage/login_page.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:open_file/open_file.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 
 class UserDataPage extends StatefulWidget {
   @override

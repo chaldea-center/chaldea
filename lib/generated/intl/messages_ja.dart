@@ -504,8 +504,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "success": MessageLookupByLibrary.simpleMessage("成功"),
         "summon": MessageLookupByLibrary.simpleMessage("ガチャ"),
         "summon_title": MessageLookupByLibrary.simpleMessage("ガチャ"),
-        "support_chaldea":
-            MessageLookupByLibrary.simpleMessage("Support Chaldea"),
+        "support_chaldea": MessageLookupByLibrary.simpleMessage("サポートと寄付"),
         "svt_info_tab_base": MessageLookupByLibrary.simpleMessage("ステータス"),
         "svt_info_tab_bond_story":
             MessageLookupByLibrary.simpleMessage("プロファイル"),

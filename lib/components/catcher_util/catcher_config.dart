@@ -80,7 +80,8 @@ class CatcherUtility {
         textAlign: TextAlign.center,
         text: TextSpan(
           children: [
-            WidgetSpan(child: db.getIconImage(null, width: 40, height: 40)),
+            WidgetSpan(
+                child: Icon(Icons.announcement, color: Colors.red, size: 40)),
             TextSpan(text: '\nThis is an Error')
           ],
         ),

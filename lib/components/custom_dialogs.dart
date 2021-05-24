@@ -107,6 +107,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
 class SimpleCancelOkDialog extends StatelessWidget {
   final Widget? title;
   final Widget? content;
+  final EdgeInsetsGeometry contentPadding;
   final String? confirmText;
   final VoidCallback? onTapOk;
   final VoidCallback? onTapCancel;
@@ -122,6 +123,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
     Key? key,
     this.title,
     this.content,
+    this.contentPadding = const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 24.0),
     this.confirmText,
     this.onTapOk,
     this.onTapCancel,
@@ -171,6 +173,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
     return AlertDialog(
       title: title,
       content: content,
+      contentPadding: contentPadding,
       scrollable: scrollable,
       actions: children,
     );

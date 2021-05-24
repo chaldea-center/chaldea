@@ -1,3 +1,20 @@
+## 1.4.4
+- add servant bond detail and sorting in import https body page
+- fix wrong conversion of costume id to servant plan value
+- use a RichText as ErrorWidget to avoid extra bugs
+- add share app
+
+## 1.4.3
+- fix HiveBox closed when app inactive(on mobile)
+
+## 1.4.2
+- consistent null-safety with mcparser
+- fix patching data
+- add welfare servant in limit event page
+- add foukun(rarity 4) as regular item
+- improve render behaviour of PieChart
+- improve localizations
+
 ## 1.4.1
 - [FEATURE] Dark Mode
 - add NA/TW server tracking

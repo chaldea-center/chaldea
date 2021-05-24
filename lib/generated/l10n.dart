@@ -3566,10 +3566,10 @@ class S {
     );
   }
 
-  /// `不适用从Google Play下载的版本，将来可能移除\n用户数据备份储存于临时目录({tempDir})\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至({externalBackupDir})`
+  /// `不适用从Google Play下载的版本，将来可能移除该功能\n用户数据备份储存于临时目录({tempDir})\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至({externalBackupDir})`
   String storage_permission_content(Object tempDir, Object externalBackupDir) {
     return Intl.message(
-      '不适用从Google Play下载的版本，将来可能移除\n用户数据备份储存于临时目录($tempDir)\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至($externalBackupDir)',
+      '不适用从Google Play下载的版本，将来可能移除该功能\n用户数据备份储存于临时目录($tempDir)\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至($externalBackupDir)',
       name: 'storage_permission_content',
       desc: '',
       args: [tempDir, externalBackupDir],

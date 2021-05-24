@@ -22,6 +22,7 @@ const String kDatasetServerPath = '/chaldea/dataset.zip';
 // String get kServerRoot => 'http://localhost:8083';
 const String kServerRoot = 'http://chaldea.narumi.cc';
 const String kAppStoreLink = 'itms-apps://itunes.apple.com/app/id1548713491';
+const String kAppStoreHttpLink = 'https://itunes.apple.com/app/id1548713491';
 const String kGooglePlayLink =
     'https://play.google.com/store/apps/details?id=cc.narumi.chaldea';
 const String kProjectHomepage = 'https://github.com/chaldea-center/chaldea';

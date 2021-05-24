@@ -358,7 +358,7 @@
   "install": "Install",
   "release_page": "Release Page",
   "auto_update": "Auto Update",
-  "support_chaldea": "Support Chaldea",
+  "support_chaldea": "Support and Donation",
   "restart_to_upgrade_hint": "Restart to upgrade. If the update fails, please manually copy the source folder to destination",
   "import_http_body_locked": "Locked Only",
   "import_http_body_duplicated": "Duplicated",

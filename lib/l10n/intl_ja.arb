@@ -360,7 +360,7 @@
   "install": "インスト",
   "release_page": "ウェブサイト",
   "auto_update": "自動更新",
-  "support_chaldea": "Support Chaldea",
+  "support_chaldea": "サポートと寄付",
   "restart_to_upgrade_hint": "再起動してアプリを更新します。更新に失敗した場合は、ソースフォルダをコピー先に手動でコピーしてください",
   "import_http_body_locked": "ロックのみ",
   "import_http_body_duplicated": "重複サーバント",
