@@ -24,7 +24,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
-import 'package:permission_handler/permission_handler.dart';
 import 'package:string_validator/string_validator.dart';
 
 class GalleryPage extends StatefulWidget {
@@ -48,13 +47,6 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       }
     }
 
-    _hasPermission = true;
-    if (!Platform.isAndroid) return;
-    int? sdkInt = AppInfo.androidSdk;
-    if (sdkInt == null) return;
-    permission =
-        sdkInt >= 30 ? Permission.manageExternalStorage : Permission.storage;
-    _hasPermission = await permission.isGranted;
     if (mounted) setState(() {});
 
     Future.delayed(Duration(seconds: 2)).then((_) async {
@@ -557,13 +549,6 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
 
   Widget _buildNotifications() {
     List<Widget> children = [];
-    if (!_hasPermission) {
-      children.add(ListTile(
-        title: Text(S.current.storage_permission_title),
-        leading: Icon(Icons.warning_rounded),
-        onTap: _setupAndroidPermission,
-      ));
-    }
     if (_cachedIconsRatio < 0.7 && !kReleaseMode) {
       // TODO: why icon folder list error? Currently disabled it
       // FileSystemException: Directory listing failed,
@@ -617,30 +602,5 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         children: divideTiles(children),
       ),
     );
-  }
-
-  bool _hasPermission = true;
-  Permission permission = Permission.storage;
-
-  Future<void> _setupAndroidPermission() async {
-    final String externalBackupDir =
-        join('/storage/emulated/0/', AppInfo.packageName);
-    var confirmed = await SimpleCancelOkDialog(
-      title: Text(S.current.storage_permission_title),
-      content: Text(S.current
-          .storage_permission_content(db.paths.userDir, externalBackupDir)),
-    ).showDialog(kAppKey.currentContext!);
-    if (confirmed == true) {
-      logger.i('request storage permission');
-      await permission.request();
-    }
-    logger.d(
-        'storage permission $permission: ${await Permission.storage.status}');
-    _hasPermission = await permission.isGranted;
-    if (_hasPermission) {
-      db.paths.externalAppPath = externalBackupDir;
-      print(db.paths.externalAppPath);
-    }
-    if (mounted) setState(() {});
   }
 }

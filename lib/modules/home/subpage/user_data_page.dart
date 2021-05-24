@@ -51,7 +51,6 @@ class _UserDataPageState extends State<UserDataPage> {
               // ),
               ListTile(
                 title: Text(S.of(context).backup),
-                subtitle: Text(defaultBackupDir),
                 onTap: backupUserData,
               ),
               ListTile(
@@ -72,6 +71,7 @@ class _UserDataPageState extends State<UserDataPage> {
                 ListTile(
                   title: Text(LocalizedText.of(
                       chs: '打开目录', jpn: 'フォルダを開く', eng: 'Open Folder')),
+                  subtitle: Text(db.paths.convertIosPath(db.paths.appPath)),
                   onTap: () {
                     OpenFile.open(db.paths.appPath);
                   },
@@ -112,18 +112,10 @@ class _UserDataPageState extends State<UserDataPage> {
     }
   }
 
-  String get defaultBackupDir => Platform.isIOS
-      ? S.current.ios_app_path + '/backup'
-      : db.paths.userDataBackupDir;
-
   Future backupUserData() async {
-    List<String> backupPaths = [defaultBackupDir];
-    if (db.paths.externalAppPath != null) {
-      backupPaths.add(db.paths.externalAppPath!);
-    }
     return SimpleCancelOkDialog(
       title: Text(S.of(context).backup),
-      content: Text(backupPaths.join('\n\n')),
+      content: Text(db.paths.convertIosPath(db.paths.userDataBackupDir)),
       onTapOk: () async {
         final fps = db.backupUserdata();
         String hint = '';

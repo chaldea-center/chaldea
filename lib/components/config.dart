@@ -209,21 +209,6 @@ class Database {
         },
         onSuccess: (fp) => _saved.add(fp),
       );
-
-      if (paths.externalAppPath != null) {
-        final _externalFp =
-            join(paths.externalAppPath!, 'backup', filenameWithPrefix);
-        logger.i('ready to write into $_externalFp');
-        _saveJsonToFile(
-          obj,
-          _externalFp,
-          onError: (e, s) {
-            logger.e('error save backup to $_externalFp', e, s);
-            paths.externalAppPath = null;
-          },
-          onSuccess: (fp) => _saved.add(fp),
-        );
-      }
     }
     return _saved;
   }
@@ -474,7 +459,6 @@ class Database {
 class PathManager {
   /// [_appPath] root path where app can access
   String? _appPath;
-  String? externalAppPath;
 
   Future<void> initRootPath() async {
     if (_appPath != null) return;
@@ -556,6 +540,13 @@ class PathManager {
       crashFile.writeAsString('chaldea.crash.log\n', flush: true);
     }
     rollLogFiles(crashFile.path, 3, 1 * 1024 * 1024);
+  }
+
+  String convertIosPath(String p) {
+    if (Platform.isIOS)
+      return p.replaceFirst(appPath, S.current.ios_app_path);
+    else
+      return p;
   }
 
   String get appPath => _appPath!;
