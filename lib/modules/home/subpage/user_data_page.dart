@@ -285,12 +285,14 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
     final dir = Directory(db.paths.userDataBackupDir);
     if (dir.existsSync()) {
       for (var entry in dir.listSync()) {
-        if (FileSystemEntity.isFileSync(entry.path)) {
+        if (FileSystemEntity.isFileSync(entry.path) &&
+            entry.path.toLowerCase().endsWith('.json')) {
           paths.add(entry.path);
         }
       }
     }
     paths.sort((a, b) => b.compareTo(a));
+    paths = paths.take(50).toList();
   }
 
   @override
@@ -302,18 +304,26 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
       ),
       body: ListView.separated(
         itemBuilder: (context, index) {
+          if (index == 0)
+            return Card(
+              child: Padding(
+                padding: EdgeInsets.all(6),
+                child:
+                    Text(db.paths.convertIosPath(db.paths.userDataBackupDir)),
+              ),
+            );
+          final path = paths[index - 1];
           return ListTile(
-            title: Text(basenameWithoutExtension(paths[index])),
+            title: Text(basenameWithoutExtension(path)),
             trailing: IconButton(
               icon: Icon(Icons.download),
               tooltip: S.current.import_data,
               onPressed: () {
                 SimpleCancelOkDialog(
                   title: Text(S.current.import_data),
-                  content: Text(db.paths.convertIosPath(paths[index])),
+                  content: Text(db.paths.convertIosPath(path)),
                   onTapOk: () {
                     try {
-                      final path = paths[index];
                       db.backupUserdata();
                       db.userData = UserData.fromJson(
                           json.decode(File(path).readAsStringSync()));
@@ -331,7 +341,7 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
           );
         },
         separatorBuilder: (_, __) => kDefaultDivider,
-        itemCount: paths.length,
+        itemCount: paths.length + 1,
       ),
     );
   }

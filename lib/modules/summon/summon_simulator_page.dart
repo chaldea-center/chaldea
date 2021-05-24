@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/craft/craft_detail_page.dart';
 import 'package:chaldea/modules/servant/servant_detail_page.dart';
-import 'package:getwidget/getwidget.dart';
 
 class SummonSimulatorPage extends StatefulWidget {
   final Summon summon;
@@ -96,12 +96,14 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
         SliverList(
             delegate: SliverChildListDelegate([
           if (banners.isNotEmpty)
-            GFCarousel(
+            CarouselSlider(
               items: banners,
-              autoPlay: false,
-              aspectRatio: 8 / 3,
-              viewportFraction: 1.0,
-              enableInfiniteScroll: banners.length > 1,
+              options: CarouselOptions(
+                autoPlay: false,
+                aspectRatio: 8 / 3,
+                viewportFraction: 1.0,
+                enableInfiniteScroll: banners.length > 1,
+              ),
             ),
           if (summon.dataList.length > 1) dropdownButton,
           details,

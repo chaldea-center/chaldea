@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:getwidget/components/carousel/gf_carousel.dart';
 import 'package:string_validator/string_validator.dart' as validator;
 
 import 'config.dart';
@@ -107,7 +107,7 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
           Navigator.of(context).pop(_curIndex);
         },
         child: Scaffold(
-          body: GFCarousel(
+          body: CarouselSlider(
             items: List.generate(
               widget.imgUrls.length,
               (index) => CachedImage(
@@ -117,12 +117,14 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
                 connectivity: widget.connectivity,
               ),
             ),
-            autoPlay: false,
-            viewportFraction: 1.0,
-            height: MediaQuery.of(context).size.height,
-            enableInfiniteScroll: false,
-            initialPage: _curIndex,
-            onPageChanged: (v) => _curIndex = v,
+            options: CarouselOptions(
+              autoPlay: false,
+              viewportFraction: 1.0,
+              height: MediaQuery.of(context).size.height,
+              enableInfiniteScroll: false,
+              initialPage: _curIndex,
+              onPageChanged: (v, _) => _curIndex = v,
+            ),
           ),
         ),
       ),

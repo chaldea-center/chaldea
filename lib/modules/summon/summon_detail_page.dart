@@ -1,10 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/event/limit_event_detail_page.dart';
 import 'package:chaldea/modules/event/main_record_detail_page.dart';
 import 'package:chaldea/modules/summon/summon_simulator_page.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:getwidget/getwidget.dart';
 
 class SummonDetailPage extends StatefulWidget {
   final Summon summon;
@@ -88,12 +88,14 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         GestureDetector(
           onTap: () => jumpToExternalLinkAlert(
               url: MooncellUtil.fullLink(summon.mcLink)),
-          child: GFCarousel(
+          child: CarouselSlider(
             items: banners,
-            autoPlay: false,
-            aspectRatio: 8 / 3,
-            viewportFraction: 1.0,
-            enableInfiniteScroll: banners.length > 1,
+            options: CarouselOptions(
+              autoPlay: false,
+              aspectRatio: 8 / 3,
+              viewportFraction: 1.0,
+              enableInfiniteScroll: banners.length > 1,
+            ),
           ),
         ),
       SHeader(LocalizedText.of(chs: '卡池详情', jpn: '詳細', eng: 'Information')),

@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/craft/craft_list_page.dart';
@@ -19,9 +20,9 @@ import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:chaldea/modules/statistics/game_statistics_page.dart';
 import 'package:chaldea/modules/summon/summon_list_page.dart';
 import 'package:dio/dio.dart';
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:getwidget/getwidget.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
 import 'package:string_validator/string_validator.dart';
@@ -292,6 +293,9 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
     return grid;
   }
 
+  int _curCarouselIndex = 0;
+  CarouselController _carouselController = CarouselController();
+
   Widget _buildCarousel() {
     final sliderPages = _getSliderPages();
     return sliderPages.isEmpty
@@ -305,14 +309,42 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
               ),
             ),
           )
-        : GFCarousel(
-            items: sliderPages,
-            aspectRatio: 8.0 / 3.0,
-            pagination: true,
-            autoPlay: sliderPages.length > 1,
-            autoPlayInterval: const Duration(seconds: 5),
-            pauseAutoPlayOnTouch: const Duration(seconds: 2),
-            viewportFraction: 1.0,
+        : Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              CarouselSlider(
+                carouselController: _carouselController,
+                items: sliderPages,
+                options: CarouselOptions(
+                  aspectRatio: 8.0 / 3.0,
+                  autoPlay: sliderPages.length > 1,
+                  autoPlayInterval: const Duration(seconds: 5),
+                  viewportFraction: 1.0,
+                  initialPage: _curCarouselIndex,
+                  onPageChanged: (v, _) => setState(() {
+                    _curCarouselIndex = v;
+                  }),
+                ),
+              ),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: DotsIndicator(
+                  dotsCount: sliderPages.length,
+                  position: _curCarouselIndex.toDouble(),
+                  decorator: DotsDecorator(
+                    color: Colors.white70,
+                    spacing: EdgeInsets.symmetric(vertical: 6, horizontal: 3),
+                  ),
+                  onTap: (v) {
+                    setState(() {
+                      _curCarouselIndex =
+                          fixValidRange(v.toInt(), 0, sliderPages.length - 1);
+                      _carouselController.animateToPage(_curCarouselIndex);
+                    });
+                  },
+                ),
+              ),
+            ],
           );
   }
 
@@ -406,26 +438,27 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
 
   Widget buildTestInfoPad() {
     return Card(
-        elevation: 2,
-        margin: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: divideTiles(<Widget>[
-            ListTile(
-              title: Center(
-                child: Text('Test Info Pad', style: TextStyle(fontSize: 18)),
-              ),
+      elevation: 2,
+      margin: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: divideTiles(<Widget>[
+          ListTile(
+            title: Center(
+              child: Text('Test Info Pad', style: TextStyle(fontSize: 18)),
             ),
-            ListTile(
-              title: Text('Screen size'),
-              trailing: Text(MediaQuery.of(context).size.toString()),
-            ),
-            ListTile(
-              title: Text('Dataset version'),
-              trailing: Text(db.gameData.version),
-            ),
-          ]),
-        ));
+          ),
+          ListTile(
+            title: Text('Screen size'),
+            trailing: Text(MediaQuery.of(context).size.toString()),
+          ),
+          ListTile(
+            title: Text('Dataset version'),
+            trailing: Text(db.gameData.version),
+          ),
+        ]),
+      ),
+    );
   }
 
   Future<Null> resolveSliderImageUrls([bool showToast = false]) async {

@@ -30,6 +30,7 @@ dependencies:
   audioplayers: ^0.19.0
   auto_size_text: ^3.0.0-nullsafety.0
   cached_network_image: ^3.0.0
+  carousel_slider: ^4.0.0-nullsafety.0
   catcher: ^0.6.6
   connectivity_plus: ^1.0.0
   crypto: ^3.0.1
@@ -41,6 +42,7 @@ dependencies:
   #      url: https://github.com/alexmercerind/dart_vlc
   dio: ^4.0.0
   dio_cookie_manager: ^2.0.0
+  dots_indicator: ^2.0.0
   file_picker_cross:
     git:
       url: https://gitlab.com/testapp-system/file_picker_cross.git
@@ -53,7 +55,6 @@ dependencies:
   flutter_qjs: ^0.3.6
   flutter_webview_plugin: ^0.3.11
   font_awesome_flutter: ^9.0.0
-  getwidget: ^2.0.2
   hive: ^2.0.3
   hive_flutter: ^1.0.0
   html: ^0.15.0
