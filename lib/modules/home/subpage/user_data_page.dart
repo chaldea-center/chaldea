@@ -6,6 +6,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/home/subpage/login_page.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:open_file/open_file.dart';
+import 'package:path/path.dart' show basenameWithoutExtension;
 import 'package:share_plus/share_plus.dart';
 
 class UserDataPage extends StatefulWidget {
@@ -52,6 +53,15 @@ class _UserDataPageState extends State<UserDataPage> {
               ListTile(
                 title: Text(S.of(context).backup),
                 onTap: backupUserData,
+              ),
+              ListTile(
+                title: Text(S.current.backup_history),
+                onTap: () {
+                  SplitRoute.push(
+                    context: context,
+                    builder: (ctx, _) => _BackupHistoryPage(),
+                  );
+                },
               ),
               ListTile(
                 title: Text(S.of(context).import_data),
@@ -101,11 +111,13 @@ class _UserDataPageState extends State<UserDataPage> {
       FilePickerCross result = await FilePickerCross.importFromStorage(
           type: FileTypeCross.custom, fileExtension: 'json');
       final path = result.path;
+      db.backupUserdata();
+
       db.userData =
           UserData.fromJson(json.decode(File(path).readAsStringSync()));
-      EasyLoading.showToast('${S.current.import_data_success}:\n$path');
+      EasyLoading.showToast(S.current.import_data_success);
       db.saveUserData();
-      db.itemStat.update();
+      db.notifyDbUpdate(item: true, svt: true);
       db.notifyAppUpdate();
     } on FileSelectionCanceledError {} catch (e) {
       EasyLoading.showError(S.of(context).import_data_error(e));
@@ -253,6 +265,74 @@ class _UserDataPageState extends State<UserDataPage> {
         EasyLoading.showSuccess('Import $fn');
       },
       onError: (e, s) => EasyLoading.showError(e.toString()),
+    );
+  }
+}
+
+class _BackupHistoryPage extends StatefulWidget {
+  const _BackupHistoryPage({Key? key}) : super(key: key);
+
+  @override
+  __BackupHistoryPageState createState() => __BackupHistoryPageState();
+}
+
+class __BackupHistoryPageState extends State<_BackupHistoryPage> {
+  List<String> paths = [];
+
+  @override
+  void initState() {
+    super.initState();
+    final dir = Directory(db.paths.userDataBackupDir);
+    if (dir.existsSync()) {
+      for (var entry in dir.listSync()) {
+        if (FileSystemEntity.isFileSync(entry.path)) {
+          paths.add(entry.path);
+        }
+      }
+    }
+    paths.sort((a, b) => b.compareTo(a));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: BackButton(),
+        title: Text(S.current.backup_history),
+      ),
+      body: ListView.separated(
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(basenameWithoutExtension(paths[index])),
+            trailing: IconButton(
+              icon: Icon(Icons.download),
+              tooltip: S.current.import_data,
+              onPressed: () {
+                SimpleCancelOkDialog(
+                  title: Text(S.current.import_data),
+                  content: Text(db.paths.convertIosPath(paths[index])),
+                  onTapOk: () {
+                    try {
+                      final path = paths[index];
+                      db.backupUserdata();
+                      db.userData = UserData.fromJson(
+                          json.decode(File(path).readAsStringSync()));
+                      EasyLoading.showToast(S.current.import_data_success);
+                      db.saveUserData();
+                      db.notifyDbUpdate(item: true, svt: true);
+                      db.notifyAppUpdate();
+                    } on FileSelectionCanceledError {} catch (e) {
+                      EasyLoading.showError(S.of(context).import_data_error(e));
+                    }
+                  },
+                ).showDialog(context);
+              },
+            ),
+          );
+        },
+        separatorBuilder: (_, __) => kDefaultDivider,
+        itemCount: paths.length,
+      ),
     );
   }
 }

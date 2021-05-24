@@ -388,5 +388,6 @@
   "master_mission_solution": "Solution",
   "master_mission_related_quest": "Related Quests",
   "import_screenshot_update_items": "Update Items",
-  "import_screenshot_hint": "Only update recognized items"
+  "import_screenshot_hint": "Only update recognized items",
+  "backup_history": "Backup History"
 }

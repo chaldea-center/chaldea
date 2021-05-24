@@ -387,5 +387,6 @@
   "master_mission_solution": "方案",
   "master_mission_related_quest": "关联关卡",
   "import_screenshot_update_items": "更新素材",
-  "import_screenshot_hint": "仅更新识别出的素材"
+  "import_screenshot_hint": "仅更新识别出的素材",
+  "backup_history": "历史备份"
 }

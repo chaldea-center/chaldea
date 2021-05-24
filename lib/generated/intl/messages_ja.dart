@@ -96,6 +96,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "backup": MessageLookupByLibrary.simpleMessage("バックアップ"),
         "backup_data_alert":
             MessageLookupByLibrary.simpleMessage("Timely backup wanted"),
+        "backup_history": MessageLookupByLibrary.simpleMessage("バックアップ履歴"),
         "backup_success": MessageLookupByLibrary.simpleMessage("バックアップは成功しました"),
         "blacklist": MessageLookupByLibrary.simpleMessage("ブラックリスト"),
         "bond_craft": MessageLookupByLibrary.simpleMessage("絆礼装"),

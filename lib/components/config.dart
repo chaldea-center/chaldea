@@ -51,10 +51,13 @@ class Database {
   /// It is used across the whole app lifecycle, so should not close it.
   StreamController<Database> broadcast = StreamController.broadcast();
 
-  Future<void> notifyDbUpdate([bool recalculateItemStat = false]) async {
-    if (recalculateItemStat) {
+  Future<void> notifyDbUpdate({bool item = false, bool svt = false}) async {
+    if (item) {
       itemStat.clear();
       itemStat.update();
+    }
+    if (svt) {
+      gameData.updateUserDuplicatedServants();
     }
     this.broadcast.sink.add(this);
   }

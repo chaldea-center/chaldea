@@ -101,6 +101,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "backup": MessageLookupByLibrary.simpleMessage("Backup"),
         "backup_data_alert":
             MessageLookupByLibrary.simpleMessage("Timely backup wanted"),
+        "backup_history":
+            MessageLookupByLibrary.simpleMessage("Backup History"),
         "backup_success":
             MessageLookupByLibrary.simpleMessage("Backup successfully"),
         "blacklist": MessageLookupByLibrary.simpleMessage("Blacklist"),

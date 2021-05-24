@@ -95,6 +95,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "auto_update": MessageLookupByLibrary.simpleMessage("自动更新"),
         "backup": MessageLookupByLibrary.simpleMessage("备份"),
         "backup_data_alert": MessageLookupByLibrary.simpleMessage("及！时！备！份！"),
+        "backup_history": MessageLookupByLibrary.simpleMessage("历史备份"),
         "backup_success": MessageLookupByLibrary.simpleMessage("备份成功"),
         "blacklist": MessageLookupByLibrary.simpleMessage("黑名单"),
         "bond_craft": MessageLookupByLibrary.simpleMessage("羁绊礼装"),

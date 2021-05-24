@@ -3935,6 +3935,16 @@ class S {
       args: [],
     );
   }
+
+  /// `历史备份`
+  String get backup_history {
+    return Intl.message(
+      '历史备份',
+      name: 'backup_history',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
