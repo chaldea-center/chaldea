@@ -3126,6 +3126,16 @@ class S {
     );
   }
 
+  /// `主题`
+  String get feedback_subject {
+    return Intl.message(
+      '主题',
+      name: 'feedback_subject',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `反馈与建议`
   String get feedback_content_hint {
     return Intl.message(

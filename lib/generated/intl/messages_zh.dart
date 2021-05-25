@@ -204,6 +204,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "feedback_contact": MessageLookupByLibrary.simpleMessage("联系方式"),
         "feedback_content_hint": MessageLookupByLibrary.simpleMessage("反馈与建议"),
         "feedback_send": MessageLookupByLibrary.simpleMessage("发送"),
+        "feedback_subject": MessageLookupByLibrary.simpleMessage("主题"),
         "ffo_background": MessageLookupByLibrary.simpleMessage("背景"),
         "ffo_body": MessageLookupByLibrary.simpleMessage("身体"),
         "ffo_crop": MessageLookupByLibrary.simpleMessage("裁剪"),

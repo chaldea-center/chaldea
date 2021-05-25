@@ -235,6 +235,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "feedback_content_hint":
             MessageLookupByLibrary.simpleMessage("Feedback or Suggestion"),
         "feedback_send": MessageLookupByLibrary.simpleMessage("Send"),
+        "feedback_subject": MessageLookupByLibrary.simpleMessage("Subject"),
         "ffo_background": MessageLookupByLibrary.simpleMessage("Background"),
         "ffo_body": MessageLookupByLibrary.simpleMessage("Body"),
         "ffo_crop": MessageLookupByLibrary.simpleMessage("Crop"),

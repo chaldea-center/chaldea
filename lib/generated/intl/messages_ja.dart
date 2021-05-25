@@ -214,6 +214,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "feedback_content_hint":
             MessageLookupByLibrary.simpleMessage("フィードバックと提案"),
         "feedback_send": MessageLookupByLibrary.simpleMessage("送信"),
+        "feedback_subject": MessageLookupByLibrary.simpleMessage("件名"),
         "ffo_background": MessageLookupByLibrary.simpleMessage("背景"),
         "ffo_body": MessageLookupByLibrary.simpleMessage("体"),
         "ffo_crop": MessageLookupByLibrary.simpleMessage("切り抜く "),

@@ -32,7 +32,10 @@ class _HomePageState extends State<HomePage> {
       child: SplitRoute.createMasterWidget(
         context: context,
         child: Scaffold(
-          body: <Widget>[GalleryPage(), SettingsPage()][_curIndex],
+          body: IndexedStack(
+            index: _curIndex,
+            children: <Widget>[GalleryPage(), SettingsPage()],
+          ),
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: _curIndex,
             items: [
