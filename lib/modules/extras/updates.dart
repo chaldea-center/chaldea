@@ -166,6 +166,10 @@ class AutoUpdateUtil {
   ///   version info->alert->download->alert->install
   static Future<void> checkAppUpdate(
       {bool background = true, bool download = false}) async {
+    if (db.connectivity == ConnectivityResult.none) {
+      if (!background) EasyLoading.showError('No network');
+      return;
+    }
     if (_downloadTask?.isCompleted == false) return null;
     _downloadTask = Completer();
     GitRelease? release;
@@ -179,12 +183,6 @@ class AutoUpdateUtil {
     try {
       if (!background) {
         db.prefs.ignoreAppVersion.remove();
-      }
-      if (db.connectivity == ConnectivityResult.none) {
-        if (background)
-          return;
-        else
-          throw HttpException('No available network');
       }
       final git = GitTool.fromDb();
       if (Platform.isIOS) {
@@ -212,6 +210,7 @@ class AutoUpdateUtil {
         launchUrl = release?.htmlUrl;
         print(version);
       }
+      print(release?.targetAsset?.browserDownloadUrl);
       releaseNote = releaseNote?.replaceAll('\r\n', '\n');
       // logger.i('Release note:\n$releaseNote');
 
@@ -255,9 +254,9 @@ class AutoUpdateUtil {
       }
       if (!background) {
         download = await _showDialog(
-                version: version,
-                launchUrl: launchUrl,
-                releaseNote: releaseNote) ==
+            version: version,
+            launchUrl: launchUrl,
+            releaseNote: releaseNote) ==
             true;
         if (!download) return;
       }

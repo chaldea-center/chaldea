@@ -244,7 +244,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "game_rewards": MessageLookupByLibrary.simpleMessage("通关奖励"),
         "gamedata": MessageLookupByLibrary.simpleMessage("游戏数据"),
         "gitee_source_hint": MessageLookupByLibrary.simpleMessage("更新可能不及时"),
-        "github_source_hint": MessageLookupByLibrary.simpleMessage("连接可能受阻"),
+        "github_source_hint": MessageLookupByLibrary.simpleMessage("国内可能偶尔连不上"),
         "gold": MessageLookupByLibrary.simpleMessage("金"),
         "grail": MessageLookupByLibrary.simpleMessage("圣杯"),
         "grail_level": MessageLookupByLibrary.simpleMessage("圣杯等级"),

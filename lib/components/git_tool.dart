@@ -252,7 +252,7 @@ class GitTool {
                   asset.browserDownloadUrl != null) {
                 asset.browserDownloadUrl = Uri.parse('$kServerRoot/githubasset')
                     .replace(queryParameters: {
-                  'url': asset.browserDownloadUrl
+                  'url': asset.browserDownloadUrl,
                 }).toString();
               }
             }),

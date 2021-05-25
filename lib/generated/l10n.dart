@@ -3176,10 +3176,10 @@ class S {
     );
   }
 
-  /// `连接可能受阻`
+  /// `国内可能偶尔连不上`
   String get github_source_hint {
     return Intl.message(
-      '连接可能受阻',
+      '国内可能偶尔连不上',
       name: 'github_source_hint',
       desc: '',
       args: [],

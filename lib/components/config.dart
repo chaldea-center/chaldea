@@ -37,6 +37,7 @@ class Database {
 
   Dio get serverDio => Dio(BaseOptions(
       baseUrl: kServerRoot,
+      queryParameters: {'app_ver': AppInfo.version},
       headers: {HttpHeaders.userAgentHeader: HttpUtils.userAgentChaldea}));
 
   SharedPrefs prefs = SharedPrefs();

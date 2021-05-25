@@ -266,7 +266,8 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
               children: block.ids.map((id) {
                 final svt = db.gameData.servants[id];
                 if (svt == null) return Text('No.$id');
-                return _svtAvatar(svt, block.weight, block.ids.length == 1);
+                return _svtAvatar(svt, block.weight / block.ids.length,
+                    block.ids.length == 1);
               }).toList(),
             ),
           )

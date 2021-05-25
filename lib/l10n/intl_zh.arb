@@ -312,7 +312,7 @@
   "feedback_add_attachments": "添加图像或文件附件",
   "feedback_send": "发送",
   "update_dataset": "更新资源包",
-  "github_source_hint": "连接可能受阻",
+  "github_source_hint": "国内可能偶尔连不上",
   "gitee_source_hint": "更新可能不及时",
   "event_progress": "进度",
   "create_duplicated_svt": "生成2号机",
