@@ -167,7 +167,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                             child: AutoSizeText(
                               'Lv.${collection.friendshipRank}',
                               maxLines: 1,
-                              maxFontSize: 16,
+                              maxFontSize: 14,
                               style: TextStyle(fontFamily: kMonoFont),
                             )),
                         Expanded(
@@ -180,7 +180,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                                 child: AutoSizeText(
                                   formatNumber(collection.friendship),
                                   maxLines: 1,
-                                  maxFontSize: 16,
+                                  maxFontSize: 14,
                                   style: TextStyle(
                                       fontFamily: kMonoFont,
                                       fontWeight: FontWeight.bold),
@@ -194,7 +194,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                               child: AutoSizeText(
                                 formatNumber(_getBondNext(svt, collection)),
                                 maxLines: 1,
-                                maxFontSize: 16,
+                                maxFontSize: 14,
                                 style: TextStyle(fontFamily: kMonoFont),
                               ),
                             )),

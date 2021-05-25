@@ -30,7 +30,7 @@ class BiliTopLogin {
 
   /// base64 maybe url-encoded
   static BiliTopLogin fromBase64(String encoded) {
-    String body = Uri.decodeFull(encoded);
+    String body = Uri.decodeFull(encoded).trim();
     return BiliTopLogin.fromJson(jsonDecode(utf8.decode(base64Decode(body))));
   }
 }

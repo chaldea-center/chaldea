@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/home/subpage/account_page.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'bond_detail_page.dart';
@@ -94,22 +95,20 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
                   ),
                 )
               : LayoutBuilder(
-                  builder: (context, constraints) => SingleChildScrollView(
+                  builder: (context, constraints) => ListView(
                     controller: _scrollController,
-                    child: Column(
-                      children: [
-                        if (replacedResponse!.firstUser != null)
-                          userInfoAccordion,
-                        kDefaultDivider,
-                        itemsAccordion,
-                        kDefaultDivider,
-                        svtAccordion(false, constraints),
-                        kDefaultDivider,
-                        svtAccordion(true, constraints),
-                        kDefaultDivider,
-                        craftAccordion,
-                      ],
-                    ),
+                    children: [
+                      if (replacedResponse!.firstUser != null)
+                        userInfoAccordion,
+                      kDefaultDivider,
+                      itemsAccordion,
+                      kDefaultDivider,
+                      svtAccordion(false, constraints),
+                      kDefaultDivider,
+                      svtAccordion(true, constraints),
+                      kDefaultDivider,
+                      craftAccordion,
+                    ],
                   ),
                 ),
         ),
@@ -182,14 +181,16 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
     });
     return SimpleAccordion(
       expanded: true,
-      canTapOnHeader: false,
-      headerBuilder: (context, _) => CheckboxListTile(
-        value: _includeItem,
+      disableAnimation: true,
+      headerBuilder: (context, _) => ListTile(
+        leading: Checkbox(
+          value: _includeItem,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          onChanged: (v) => setState(() {
+            _includeItem = v ?? _includeItem;
+          }),
+        ),
         title: Text(S.current.item),
-        controlAffinity: ListTileControlAffinity.leading,
-        onChanged: (v) => setState(() {
-          _includeItem = v ?? _includeItem;
-        }),
       ),
       contentBuilder: (context) => Padding(
         padding: EdgeInsets.symmetric(vertical: 6),
@@ -313,6 +314,11 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
               }
             });
           },
+          onLongPress: () {
+            final _svt2 = db.gameData.servants[svt.indexKey];
+            EasyLoading.showToast(
+                'No.${_svt2?.no} - ${_svt2?.info.localizedName}');
+          },
           child: child,
         ));
       }
@@ -320,19 +326,21 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
 
     return SimpleAccordion(
       expanded: true,
-      canTapOnHeader: false,
       disableAnimation: true,
-      headerBuilder: (context, _) => CheckboxListTile(
-        value: inStorage ? _includeSvtStorage : _includeSvt,
+      headerBuilder: (context, _) => ListTile(
         title: Text(inStorage ? '保管室从者' : '从者'),
-        controlAffinity: ListTileControlAffinity.leading,
-        onChanged: (v) => setState(() {
-          if (inStorage) {
-            _includeSvtStorage = v ?? _includeSvtStorage;
-          } else {
-            _includeSvt = v ?? _includeSvt;
-          }
-        }),
+        leading: Checkbox(
+          value: inStorage ? _includeSvtStorage : _includeSvt,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          onChanged: (v) => setState(() {
+            if (inStorage) {
+              _includeSvtStorage = v ?? _includeSvtStorage;
+            } else {
+              _includeSvt = v ?? _includeSvt;
+            }
+          }),
+        ),
+        trailing: Text(children.length.toString()),
       ),
       contentBuilder: (context) {
         return GridView.builder(
@@ -353,15 +361,16 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
   Widget get craftAccordion {
     return SimpleAccordion(
       expanded: true,
-      canTapOnHeader: false,
       disableAnimation: true,
-      headerBuilder: (context, _) => CheckboxListTile(
-        value: _includeCraft,
+      headerBuilder: (context, _) => ListTile(
+        leading: Checkbox(
+          value: _includeCraft,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          onChanged: (v) => setState(() {
+            _includeCraft = v ?? _includeCraft;
+          }),
+        ),
         title: Text('礼装图鉴'),
-        controlAffinity: ListTileControlAffinity.leading,
-        onChanged: (v) => setState(() {
-          _includeCraft = v ?? _includeCraft;
-        }),
       ),
       contentBuilder: (context) {
         final notMeet = crafts.values.where((v) => v == 0).length;
@@ -513,22 +522,73 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
         ],
       ).showDialog(context);
       if (confirmed != true) return;
-      FilePickerCross filePickerCross =
-          await FilePickerCross.importFromStorage();
-      parseResponseBody(filePickerCross.toUint8List());
-      File(tmpPath)
-        ..createSync(recursive: true)
-        ..writeAsBytesSync(filePickerCross.toUint8List());
+      final error = await SimpleDialog(
+        title: Text(S.current.import_data),
+        children: [
+          ListTile(
+            leading: Icon(Icons.paste),
+            title: Text(LocalizedText.of(
+                chs: '从剪切板', jpn: 'クリップボードから', eng: 'From Clipboard')),
+            onTap: () async {
+              try {
+                String? text =
+                    (await Clipboard.getData(Clipboard.kTextPlain))?.text;
+                if (text?.isNotEmpty != true) {
+                  EasyLoading.showError('Clipboard is empty!');
+                } else {
+                  final bytes = utf8.encode(text!);
+                  parseResponseBody(bytes);
+                  File(tmpPath)
+                    ..createSync(recursive: true)
+                    ..writeAsBytesSync(bytes);
+                }
+                EasyLoading.showSuccess(S.current.import_data_success);
+                Navigator.of(context).pop();
+              } catch (e, s) {
+                logger.e('import http body from clipboard failed', e, s);
+                Navigator.of(context).pop(e);
+              }
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.file_present),
+            title: Text(LocalizedText.of(
+                chs: '从文本文件', jpn: 'テキストファイルから', eng: 'From Text File')),
+            onTap: () async {
+              try {
+                FilePickerCross filePickerCross =
+                    await FilePickerCross.importFromStorage();
+                parseResponseBody(filePickerCross.toUint8List());
+                File(tmpPath)
+                  ..createSync(recursive: true)
+                  ..writeAsBytesSync(filePickerCross.toUint8List());
+                EasyLoading.showSuccess(S.current.import_data_success);
+                Navigator.of(context).pop();
+              } on FileSelectionCanceledError {} catch (e, s) {
+                logger.e('import http body from text file failed', e, s);
+                Navigator.of(context).pop(e);
+              }
+            },
+          ),
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: Icon(Icons.clear),
+          ),
+        ],
+      ).showDialog(context);
+      if (error != null) throw error;
     } on FileSelectionCanceledError {} catch (e, s) {
       logger.e('fail to load http response', e, s);
       if (mounted)
         SimpleCancelOkDialog(
           title: Text('Error'),
           content: Text('''$e\n\n请检查以下步骤是否正确：
-- 所捕获的URL为：
+- 所捕获的URL格式类似为：
 https://line3-s2-xxx-fate.bilibiligame.net/rongame_beta//rgfate/60_1001/ac.php?_userId=xxxxxx&_key=toplogin
 其中域名前缀、数字及xxx可能随着地区、所在服务器和用户ID而不同
-- 确保保存的文件编码为UTF8(默认)且已解码，内容为ey开头的英文+数字，且内容未手动更改'''),
+- 确保保存的文件编码为UTF8(默认)且已解码为ey开头的英文+数字，内容未手动更改'''),
         ).showDialog(context);
     } finally {
       if (mounted) {
