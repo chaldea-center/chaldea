@@ -33,14 +33,15 @@ class GalleryPage extends StatefulWidget {
 }
 
 class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
+  CarouselSetting get carouselSetting => db.userData.carouselSetting;
+
   @override
   void afterFirstLayout(BuildContext context) async {
-    if (db.userData.slidesUpdateTime == null ||
-        db.userData.sliderUrls.isEmpty) {
+    if (carouselSetting.updateTime == null || carouselSetting.urls.isEmpty) {
       resolveSliderImageUrls();
     } else {
       DateTime lastTime = DateTime.fromMillisecondsSinceEpoch(
-              db.userData.slidesUpdateTime! * 1000),
+              carouselSetting.updateTime! * 1000),
           now = DateTime.now();
       if (now.difference(lastTime).inHours > 24) {
         // more than 1 day
@@ -298,6 +299,8 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
 
   Widget _buildCarousel() {
     final sliderPages = _getSliderPages();
+    _curCarouselIndex =
+        fixValidRange(_curCarouselIndex, 0, sliderPages.length - 1);
     return sliderPages.isEmpty
         ? AspectRatio(
             aspectRatio: 8 / 3,
@@ -310,42 +313,42 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
             ),
           )
         : Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              CarouselSlider(
-                carouselController: _carouselController,
-                items: sliderPages,
-                options: CarouselOptions(
-                  aspectRatio: 8.0 / 3.0,
+      alignment: Alignment.bottomCenter,
+      children: [
+        CarouselSlider(
+          carouselController: _carouselController,
+          items: sliderPages,
+          options: CarouselOptions(
+            aspectRatio: 8.0 / 3.0,
                   autoPlay: sliderPages.length > 1,
-                  autoPlayInterval: const Duration(seconds: 5),
+                  autoPlayInterval: const Duration(seconds: 6),
                   viewportFraction: 1.0,
                   initialPage: _curCarouselIndex,
                   onPageChanged: (v, _) => setState(() {
                     _curCarouselIndex = v;
                   }),
                 ),
-              ),
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: DotsIndicator(
-                  dotsCount: sliderPages.length,
-                  position: _curCarouselIndex.toDouble(),
-                  decorator: DotsDecorator(
-                    color: Colors.white70,
-                    spacing: EdgeInsets.symmetric(vertical: 6, horizontal: 3),
-                  ),
-                  onTap: (v) {
-                    setState(() {
-                      _curCarouselIndex =
-                          fixValidRange(v.toInt(), 0, sliderPages.length - 1);
-                      _carouselController.animateToPage(_curCarouselIndex);
-                    });
-                  },
-                ),
-              ),
-            ],
-          );
+        ),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: DotsIndicator(
+            dotsCount: sliderPages.length,
+            position: _curCarouselIndex.toDouble(),
+            decorator: DotsDecorator(
+              color: Colors.white70,
+              spacing: EdgeInsets.symmetric(vertical: 6, horizontal: 3),
+            ),
+            onTap: (v) {
+              setState(() {
+                _curCarouselIndex =
+                    fixValidRange(v.toInt(), 0, sliderPages.length - 1);
+                _carouselController.animateToPage(_curCarouselIndex);
+              });
+            },
+          ),
+        ),
+      ],
+    );
   }
 
   List<Widget> _getShownGalleries(BuildContext context) {
@@ -364,10 +367,10 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
                   alignment: Alignment.bottomCenter,
                   child: item.child == null
                       ? Icon(
-                          item.icon,
-                          size: 40,
-                          color: _iconColor,
-                        )
+                    item.icon,
+                    size: 40,
+                    color: _iconColor,
+                  )
                       : item.child,
                 ),
               ),
@@ -403,12 +406,11 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
 
   List<Widget> _getSliderPages() {
     List<Widget> sliders = [];
-    if (db.userData.sliderUrls.isEmpty) {
+    if (carouselSetting.urls.isEmpty) {
       resolveSliderImageUrls();
       return sliders;
     }
-    final urls = db.userData.sliderUrls;
-    urls.forEach((imgUrl, link) {
+    carouselSetting.urls.forEach((imgUrl, link) {
       Widget child;
       if (isURL(imgUrl)) {
         child = CachedImage(
@@ -462,11 +464,10 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
   }
 
   Future<Null> resolveSliderImageUrls([bool showToast = false]) async {
-    Map<String, String> _getImageLinks(
-        {required dom.Element? element,
-        required Uri uri,
-        String attr = 'src',
-        bool imgOnly = true}) {
+    Map<String, String> _getImageLinks({required dom.Element? element,
+      required Uri uri,
+      String attr = 'src',
+      bool imgOnly = true}) {
       Map<String, String> _result = {};
       if (element == null) return _result;
       for (var linkNode in element.getElementsByTagName('a')) {
@@ -477,14 +478,14 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         if (imgNodes.isNotEmpty) {
           String? imgUrl = imgNodes.first.attributes[attr];
           if (imgUrl != null) {
-            imgUrl = uri.resolve(imgUrl).toString();
+            imgUrl = uri.resolve(imgUrl).toString().trim();
             print('imgUrl=$imgUrl');
-            link = uri.resolve(link).toString();
+            link = uri.resolve(link).toString().trim();
             _result[imgUrl] = link;
             // print('imgUrl= "$imgUrl"\nhref  = "$link"');
           }
         } else if (linkNode.text.isNotEmpty && !imgOnly) {
-          _result[linkNode.text] = link;
+          _result[linkNode.text.trim()] = link.trim();
         }
       }
       return _result;
@@ -493,35 +494,40 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
     Map<String, String> result = {};
     try {
       final _dio = Dio();
-      // // mc slides
-      final mcUrl = 'https://fgo.wiki/w/模板:自动取值轮播';
-      final taskMC = _dio.get(mcUrl).then((response) {
-        var mcParser = parser.parse(response.data.toString());
-        var mcElement = mcParser.getElementById('transImageBox');
-        return _getImageLinks(element: mcElement, uri: Uri.parse(mcUrl));
-      }).catchError((e, s) {
-        logger.e('parse mc slides failed', e, s);
-        return <String, String>{};
-      });
+      Future<Map<String, String>>? taskMC, taskJp, taskGitee, taskUs;
+      // mc slides
+      if (carouselSetting.enableMooncell) {
+        final mcUrl = 'https://fgo.wiki/w/模板:自动取值轮播';
+        taskMC = _dio.get(mcUrl).then((response) {
+          var mcParser = parser.parse(response.data.toString());
+          var mcElement = mcParser.getElementById('transImageBox');
+          return _getImageLinks(element: mcElement, uri: Uri.parse(mcUrl));
+        }).catchError((e, s) {
+          logger.e('parse mc slides failed', e, s);
+          return <String, String>{};
+        });
+      }
 
       // jp slides
-      final jpUrl = 'http://view.fate-go.jp';
-      final taskJp = _dio.get(jpUrl).then((response) {
-        var jpParser = parser.parse(response.data.toString());
-        var jpElement = jpParser.getElementsByClassName('slide').getOrNull(0);
-        return _getImageLinks(element: jpElement, uri: Uri.parse(jpUrl))
-          ..removeWhere((key, value) =>
-              key.endsWith('2019/tips_qavwi/top_banner.png') ||
-              key.endsWith('2017/02/banner_10009.png'));
-      }).catchError((e, s) {
-        logger.e('parse jp slides failed', e, s);
-        return <String, String>{};
-      });
+      if (carouselSetting.enableJp) {
+        final jpUrl = 'http://view.fate-go.jp';
+        taskJp = _dio.get(jpUrl).then((response) {
+          var jpParser = parser.parse(response.data.toString());
+          var jpElement = jpParser.getElementsByClassName('slide').getOrNull(0);
+          return _getImageLinks(element: jpElement, uri: Uri.parse(jpUrl))
+            ..removeWhere((key, value) =>
+                key.endsWith('2019/tips_qavwi/top_banner.png') ||
+                key.endsWith('2017/02/banner_10009.png'));
+        }).catchError((e, s) {
+          logger.e('parse jp slides failed', e, s);
+          return <String, String>{};
+        });
+      }
 
-      // gitee
+      // gitee, always
       final announceUrl =
           'https://gitee.com/chaldea-center/chaldea/wikis/pages/wiki?wiki_title=Announcement&parent=&version_id=master&sort_id=3819789&info_id=1327454&extname=.md';
-      final taskGitee = _dio.get(announceUrl).then((response) {
+      taskGitee = _dio.get(announceUrl).then((response) {
         final annContent = response.data;
         // print(annContent.runtimeType);
         // print(annContent['wiki']['content_html']);
@@ -536,30 +542,45 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         return <String, String>{};
       });
 
-      // fandom news - NA part
-      final fandomUrl = 'https://fategrandorder.fandom.com/wiki/Template:News';
-      final taskFandom =
-          _dio.get(fandomUrl).then<Map<String, String>>((response) {
-        var fandomParser = parser.parse(response.data.toString());
-        var fandomElements = fandomParser.getElementsByClassName('wikitable');
-        if (fandomElements.isEmpty) return {};
-        var links = _getImageLinks(
-            element: fandomElements.last,
-            uri: Uri.parse(fandomUrl),
-            attr: 'data-src');
-        links = links.map(
-            (key, value) => MapEntry(key.split('/revision/').first, value));
-        return links;
-      }).catchError((e, s) {
-        logger.e('parse fandom news failed', e, s);
-        return <String, String>{};
-      });
-      await Future.forEach<Future<Map<String, String>>>(
-          // [taskFandom],
-          [taskMC, taskGitee, taskFandom, taskJp],
-          (e) async => result.addAll(await e));
-      if (showToast) {
-        EasyLoading.showSuccess('slides updated');
+      // jp slides
+      if (carouselSetting.enableUs) {
+        final usUrl = 'https://webview.fate-go.us';
+        taskUs = _dio.get(usUrl).then((response) {
+          var usParser = parser.parse(response.data.toString());
+          var usElement = usParser.getElementsByClassName('slide').getOrNull(0);
+          return _getImageLinks(element: usElement, uri: Uri.parse(usUrl))
+            ..removeWhere((key, value) => [
+                  'top_banner.png',
+                  'banner_sns_20181120.png',
+                  '0215_evenmoremanwaka/banner_20210215.png',
+                  'banner_tips_k5dz8.png',
+                  '0707_start_dash_campaign/banner_20200707_h1wb3.png'
+                ].any((e) => key.endsWith(e)));
+        }).catchError((e, s) {
+          logger.e('parse jp slides failed', e, s);
+          return <String, String>{};
+        });
+      }
+
+      await Future.forEach<Future<Map<String, String>>?>(
+        // [taskUs],
+        [taskMC, taskGitee, taskJp, taskUs],
+        (e) async {
+          if (e != null) result.addAll(await e);
+        },
+      );
+
+      if (result.isNotEmpty) {
+        carouselSetting.urls = result;
+        carouselSetting.updateTime =
+            DateTime.now().millisecondsSinceEpoch ~/ 1000;
+        if (showToast) {
+          EasyLoading.showSuccess('slides updated');
+        }
+      } else {
+        if (showToast) {
+          EasyLoading.showInfo('Not update');
+        }
       }
     } catch (e, s) {
       logger.e('Error refresh slides', e, s);
@@ -567,11 +588,6 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         EasyLoading.showError('update slides failed\n$e');
       }
     } finally {
-      if (result.isNotEmpty) {
-        db.userData.sliderUrls = result;
-        db.userData.slidesUpdateTime =
-            DateTime.now().millisecondsSinceEpoch ~/ 1000;
-      }
       if (mounted) {
         setState(() {});
       }
@@ -607,7 +623,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         title: Text('Download icons'),
         subtitle: Text(
             'About ${(_cachedIconsRatio * 100).toStringAsFixed(0)}% downloaded'
-            '\nGoto ${S.current.download_full_gamedata}'),
+                '\nGoto ${S.current.download_full_gamedata}'),
         isThreeLine: true,
         trailing: Icon(Icons.chevron_right),
         onTap: () {

@@ -9,11 +9,9 @@ class UserData {
   ThemeMode? themeMode;
   bool showSummonBanner;
 
-  int? slidesUpdateTime;
-  Map<String, String> sliderUrls;
+  CarouselSetting carouselSetting;
   Map<String, bool> galleries;
 
-  // String? serverRoot;
   int downloadSource;
   bool autoUpdateApp;
   bool autoUpdateDataset;
@@ -39,8 +37,7 @@ class UserData {
     this.language,
     this.themeMode,
     bool? showSummonBanner,
-    this.slidesUpdateTime,
-    Map<String, String>? sliderUrls,
+    CarouselSetting? carouselSetting,
     Map<String, bool>? galleries,
     int? downloadSource,
     bool? autoUpdateApp,
@@ -53,8 +50,9 @@ class UserData {
     CmdCodeFilterData? cmdCodeFilter,
     GLPKParams? glpkParams,
     List<int>? itemAbundantValue,
-  })  : showSummonBanner = showSummonBanner ?? false,
-        sliderUrls = sliderUrls ?? {},
+  })
+      : showSummonBanner = showSummonBanner ?? false,
+        carouselSetting = carouselSetting ?? CarouselSetting(),
         galleries = galleries ?? {},
         downloadSource = fixValidRange(downloadSource ?? GitSource.server.index,
             0, GitSource.values.length),
@@ -115,11 +113,37 @@ class UserData {
     }
   }
 
-  // json_serializable
   factory UserData.fromJson(Map<String, dynamic> data) =>
       _$UserDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$UserDataToJson(this);
+}
+
+@JsonSerializable(checked: true)
+class CarouselSetting {
+  int? updateTime;
+
+  /// img_url: link, or text:link
+  Map<String, String> urls;
+  bool enableMooncell;
+  bool enableJp;
+  bool enableUs;
+
+  CarouselSetting({
+    this.updateTime,
+    Map<String, String>? urls,
+    bool? enableMooncell,
+    bool? enableJp,
+    bool? enableUs,
+  })  : urls = urls ?? {},
+        enableMooncell = enableMooncell ?? true,
+        enableJp = enableJp ?? true,
+        enableUs = enableUs ?? true;
+
+  factory CarouselSetting.fromJson(Map<String, dynamic> data) =>
+      _$CarouselSettingFromJson(data);
+
+  Map<String, dynamic> toJson() => _$CarouselSettingToJson(this);
 }
 
 @JsonSerializable(checked: true)

@@ -2,6 +2,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/method_channel_chaldea.dart';
 import 'package:chaldea/modules/_test_page.dart';
 import 'package:chaldea/modules/home/subpage/game_server_page.dart';
+import 'package:chaldea/modules/home/subpage/carousel_setting_page.dart';
 import 'package:chaldea/modules/home/subpage/login_page.dart';
 import 'package:chaldea/modules/home/subpage/user_data_page.dart';
 import 'package:flutter/foundation.dart';
@@ -40,7 +41,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget _wrapArrowTrailing(Widget trailing) {
     return Row(
       mainAxisSize: MainAxisSize.min,
-      children: <Widget>[trailing, Icon(Icons.arrow_forward_ios)],
+      children: <Widget>[trailing, Icon(Icons.keyboard_arrow_right)],
     );
   }
 
@@ -95,7 +96,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ListTile(
               title: Text(S.of(context).userdata),
               // subtitle: Text(S.current.backup_data_alert),
-              trailing: Icon(Icons.arrow_forward_ios),
+              trailing: Icon(Icons.keyboard_arrow_right),
               onTap: () {
                 SplitRoute.push(
                   context: context,
@@ -178,16 +179,16 @@ class _SettingsPageState extends State<SettingsPage> {
                   setState(() {});
                 },
               ),
-            // if (Platform.isAndroid || Platform.isIOS)
-            //   SwitchListTile.adaptive(
-            //     title: Text(S.of(context).settings_use_mobile_network),
-            //     value: db.userData.useMobileNetwork ?? true,
-            //     onChanged: (v) async {
-            //       db.userData.useMobileNetwork = v;
-            //       db.saveUserData();
-            //       setState(() {});
-            //     },
-            //   ),
+            ListTile(
+              title: Text(S.current.carousel_setting),
+              trailing: Icon(Icons.keyboard_arrow_right),
+              onTap: () {
+                SplitRoute.push(
+                  context: context,
+                  builder: (_, __) => CarouselSettingPage(),
+                );
+              },
+            )
           ],
         ),
         TileGroup(

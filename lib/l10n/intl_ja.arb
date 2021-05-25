@@ -391,5 +391,6 @@
   "master_mission_related_quest": "関連クエスト",
   "import_screenshot_update_items": "更新素材",
   "import_screenshot_hint": "識別された資料のみを更新する",
-  "backup_history": "バックアップ履歴"
+  "backup_history": "バックアップ履歴",
+  "carousel_setting": "カルーセル設定"
 }

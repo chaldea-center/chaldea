@@ -113,6 +113,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "card_description": MessageLookupByLibrary.simpleMessage("Description"),
         "card_info": MessageLookupByLibrary.simpleMessage("Info"),
+        "carousel_setting":
+            MessageLookupByLibrary.simpleMessage("Carousel Setting"),
         "characters_in_card":
             MessageLookupByLibrary.simpleMessage("Characters"),
         "check_update": MessageLookupByLibrary.simpleMessage("Check update"),

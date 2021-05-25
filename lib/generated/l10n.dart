@@ -3945,6 +3945,16 @@ class S {
       args: [],
     );
   }
+
+  /// `轮播设置`
+  String get carousel_setting {
+    return Intl.message(
+      '轮播设置',
+      name: 'carousel_setting',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

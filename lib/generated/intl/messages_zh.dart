@@ -105,6 +105,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
         "card_description": MessageLookupByLibrary.simpleMessage("解说"),
         "card_info": MessageLookupByLibrary.simpleMessage("资料"),
+        "carousel_setting": MessageLookupByLibrary.simpleMessage("轮播设置"),
         "characters_in_card": MessageLookupByLibrary.simpleMessage("出场角色"),
         "check_update": MessageLookupByLibrary.simpleMessage("检查更新"),
         "choose_quest_hint": MessageLookupByLibrary.simpleMessage("选择Free本"),

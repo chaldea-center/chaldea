@@ -1424,53 +1424,52 @@ User _$UserFromJson(Map<String, dynamic> json) {
       servantPlans: $checkedConvert(
           json,
           'servantPlans',
-              (v) => (v as List<dynamic>?)
+          (v) => (v as List<dynamic>?)
               ?.map((e) => (e as Map<String, dynamic>).map(
-                (k, e) => MapEntry(int.parse(k),
-                ServantPlan.fromJson(e as Map<String, dynamic>)),
-          ))
+                    (k, e) => MapEntry(int.parse(k),
+                        ServantPlan.fromJson(e as Map<String, dynamic>)),
+                  ))
               .toList()),
       items: $checkedConvert(
           json,
           'items',
-              (v) => (v as Map<String, dynamic>?)?.map(
+          (v) => (v as Map<String, dynamic>?)?.map(
                 (k, e) => MapEntry(k, e as int),
-          )),
+              )),
       events: $checkedConvert(
           json,
           'events',
-              (v) => v == null
+          (v) => v == null
               ? null
               : EventPlans.fromJson(v as Map<String, dynamic>)),
       crafts: $checkedConvert(
           json,
           'crafts',
-              (v) => (v as Map<String, dynamic>?)?.map(
+          (v) => (v as Map<String, dynamic>?)?.map(
                 (k, e) => MapEntry(int.parse(k), e as int),
-          )),
+              )),
       mysticCodes: $checkedConvert(
           json,
           'mysticCodes',
-              (v) => (v as Map<String, dynamic>?)?.map(
+          (v) => (v as Map<String, dynamic>?)?.map(
                 (k, e) => MapEntry(k, e as int),
-          )),
+              )),
       plannedSummons: $checkedConvert(json, 'plannedSummons',
-              (v) => (v as List<dynamic>?)?.map((e) => e as String).toSet()),
+          (v) => (v as List<dynamic>?)?.map((e) => e as String).toSet()),
       isMasterGirl: $checkedConvert(json, 'isMasterGirl', (v) => v as bool?),
       msProgress: $checkedConvert(json, 'msProgress', (v) => v as int?),
       duplicatedServants: $checkedConvert(
           json,
           'duplicatedServants',
-              (v) => (v as Map<String, dynamic>?)?.map(
+          (v) => (v as Map<String, dynamic>?)?.map(
                 (k, e) => MapEntry(int.parse(k), e as int),
-          )),
+              )),
     );
     return val;
   });
 }
 
-Map<String, dynamic> _$UserToJson(User instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'key': instance.key,
       'name': instance.name,
       'server': _$GameServerEnumMap[instance.server],
@@ -1659,14 +1658,12 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
               unknownValue: ThemeMode.system)),
       showSummonBanner:
           $checkedConvert(json, 'showSummonBanner', (v) => v as bool?),
-      slidesUpdateTime:
-          $checkedConvert(json, 'slidesUpdateTime', (v) => v as int?),
-      sliderUrls: $checkedConvert(
+      carouselSetting: $checkedConvert(
           json,
-          'sliderUrls',
-          (v) => (v as Map<String, dynamic>?)?.map(
-                (k, e) => MapEntry(k, e as String),
-              )),
+          'carouselSetting',
+          (v) => v == null
+              ? null
+              : CarouselSetting.fromJson(v as Map<String, dynamic>)),
       galleries: $checkedConvert(
           json,
           'galleries',
@@ -1716,12 +1713,12 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
+Map<String, dynamic> _$UserDataToJson(UserData instance) =>
+    <String, dynamic>{
       'language': instance.language,
       'themeMode': _$ThemeModeEnumMap[instance.themeMode],
       'showSummonBanner': instance.showSummonBanner,
-      'slidesUpdateTime': instance.slidesUpdateTime,
-      'sliderUrls': instance.sliderUrls,
+      'carouselSetting': instance.carouselSetting,
       'galleries': instance.galleries,
       'downloadSource': instance.downloadSource,
       'autoUpdateApp': instance.autoUpdateApp,
@@ -1741,6 +1738,34 @@ const _$ThemeModeEnumMap = {
   ThemeMode.light: 'light',
   ThemeMode.dark: 'dark',
 };
+
+CarouselSetting _$CarouselSettingFromJson(Map<String, dynamic> json) {
+  return $checkedNew('CarouselSetting', json, () {
+    final val = CarouselSetting(
+      updateTime: $checkedConvert(json, 'updateTime', (v) => v as int?),
+      urls: $checkedConvert(
+          json,
+          'urls',
+          (v) => (v as Map<String, dynamic>?)?.map(
+                (k, e) => MapEntry(k, e as String),
+              )),
+      enableMooncell:
+          $checkedConvert(json, 'enableMooncell', (v) => v as bool?),
+      enableJp: $checkedConvert(json, 'enableJp', (v) => v as bool?),
+      enableUs: $checkedConvert(json, 'enableUs', (v) => v as bool?),
+    );
+    return val;
+  });
+}
+
+Map<String, dynamic> _$CarouselSettingToJson(CarouselSetting instance) =>
+    <String, dynamic>{
+      'updateTime': instance.updateTime,
+      'urls': instance.urls,
+      'enableMooncell': instance.enableMooncell,
+      'enableJp': instance.enableJp,
+      'enableUs': instance.enableUs,
+    };
 
 SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
   return $checkedNew('SvtFilterData', json, () {
