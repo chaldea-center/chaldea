@@ -1,5 +1,6 @@
 ## 1.4.4
 - add servant bond detail and sorting in import https body page
+- support import https body from clipboard
 - fix wrong conversion of costume id to servant plan value
 - use a RichText as ErrorWidget to avoid extra bugs
 - add share app

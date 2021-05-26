@@ -416,17 +416,17 @@ class __ShareAppDialogState extends State<_ShareAppDialog> {
     String msg = LocalizedText.of(
       chs:
           "Chaldea——一款跨平台的Fate/GO素材规划客户端，支持游戏信息浏览、从者练度/活动/素材规划、周常规划、抽卡模拟器等功能。\n"
-          "App Store: $kAppStoreHttpLink\n"
+          "iOS&Mac App Store: $kAppStoreHttpLink\n"
           "Google Play: $kGooglePlayLink\n"
           "Windows/macOS/Android安装包:\n${kProjectHomepage + '/releases'}",
       jpn:
-          "Chaldea - クロスプラットフォームのFate/GOアイテム計画アプリ。ゲーム情報の閲覧、サーヴァント/イベント/アイテム計画、マスターミッション計画、ガチャシミュレーターなどの機能をサポートします。\n"
-          "App Store: $kAppStoreHttpLink\n"
+      "Chaldea - クロスプラットフォームのFate/GOアイテム計画アプリ。ゲーム情報の閲覧、サーヴァント/イベント/アイテム計画、マスターミッション計画、ガチャシミュレーターなどの機能をサポートします。\n"
+          "iOS&Mac App Store: $kAppStoreHttpLink\n"
           "Google Play: $kGooglePlayLink\n"
           "Windows/macOS/Android:\n${kProjectHomepage + '/releases'}",
       eng:
-          "Chaldea - A cross-platform utility for Fate/GO. Supporting game data review, servant/event/item planning, master mission planning, summon simulator and so on.\n"
-          "App Store: $kAppStoreHttpLink\n"
+      "Chaldea - A cross-platform utility for Fate/GO. Supporting game data review, servant/event/item planning, master mission planning, summon simulator and so on.\n"
+          "iOS&Mac App Store: $kAppStoreHttpLink\n"
           "Google Play: $kGooglePlayLink\n"
           "Windows/macOS/Android installer:\n${kProjectHomepage + '/releases'}",
     );
