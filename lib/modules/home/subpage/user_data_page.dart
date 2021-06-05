@@ -56,6 +56,7 @@ class _UserDataPageState extends State<UserDataPage> {
               ),
               ListTile(
                 title: Text(S.current.backup_history),
+                trailing: Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   SplitRoute.push(
                     context: context,
@@ -136,13 +137,18 @@ class _UserDataPageState extends State<UserDataPage> {
         final fps = db.backupUserdata();
         String hint = '';
         if (fps.isEmpty) {
-          hint += '备份失败';
+          hint += LocalizedText.of(
+              chs: '备份失败', jpn: 'バックアップに失敗しました', eng: 'Backup failed');
         } else {
-          hint += '临时备份已保存于：\n${fps[0]}\n';
-          if (fps.length >= 2) {
-            hint += '外部备份已保存于：\n${fps[0]}\n';
-          }
-          hint += '删除应用(以及升级时可能)将导致临时备份被删除，建议手动备份到外部可靠储存位置！';
+          hint += LocalizedText.of(
+                  chs: '已备份至:', jpn: 'バックアップ:', eng: 'Backup to:') +
+              '\n${fps[0]}\n';
+          hint += LocalizedText.of(
+              chs: '删除应用(以及升级时可能)将导致临时备份被删除，建议手动备份到外部可靠储存位置！',
+              jpn:
+                  'アプリを削除すると、一時バックアップが削除されます。外部の信頼できるストレージ場所に手動でバックアップすることをお勧めします',
+              eng:
+                  'The backups will be deleted when uninstalling the app. It is recommended to manually backup to an external storage.');
         }
         showInformDialog(
           context,

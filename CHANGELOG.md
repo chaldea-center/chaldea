@@ -1,3 +1,8 @@
+## 1.4.5
+- support deleting chaldea user
+- remove orientation setting on iPad
+- add next/previous buttons in item list page
+
 ## 1.4.4
 - add servant bond detail and sorting in import https body page
 - support import https body from clipboard

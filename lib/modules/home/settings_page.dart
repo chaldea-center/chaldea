@@ -141,16 +141,23 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             ListTile(
               title: Text(LocalizedText.of(
-                  chs: '夜间模式', jpn: 'ダークモード', eng: 'Dark Mode')),
+                  chs: '深色模式', jpn: 'ダークモード', eng: 'Dark Mode')),
               trailing: DropdownButton<ThemeMode>(
                 value: db.userData.themeMode ?? ThemeMode.system,
                 underline: Container(),
                 items: [
                   DropdownMenuItem(
-                      child: Text('System'), value: ThemeMode.system),
+                      child: Text(LocalizedText.of(
+                          chs: '系统', jpn: 'System', eng: 'System')),
+                      value: ThemeMode.system),
                   DropdownMenuItem(
-                      child: Text('Light'), value: ThemeMode.light),
-                  DropdownMenuItem(child: Text('Dark'), value: ThemeMode.dark),
+                      child: Text(LocalizedText.of(
+                          chs: '浅色', jpn: 'Light', eng: 'Light')),
+                      value: ThemeMode.light),
+                  DropdownMenuItem(
+                      child: Text(LocalizedText.of(
+                          chs: '深色', jpn: 'Dark', eng: 'Dark')),
+                      value: ThemeMode.dark),
                 ],
                 onChanged: (v) {
                   if (v != null) {
@@ -174,7 +181,8 @@ class _SettingsPageState extends State<SettingsPage> {
             if (Platform.isMacOS || Platform.isWindows)
               SwitchListTile.adaptive(
                 value: alwaysOnTop,
-                title: Text('Always On Top'),
+                title: Text(LocalizedText.of(
+                    chs: '置顶显示', jpn: 'スティッキー表示', eng: 'Always On Top')),
                 onChanged: (v) async {
                   alwaysOnTop = v;
                   MethodChannelChaldea.setAlwaysOnTop(v);
@@ -267,7 +275,7 @@ class _SettingsPageState extends State<SettingsPage> {
               },
             ),
             ListTile(
-              title: Text('Contribute to Chaldea'),
+              title: Text('Contribution/Collaboration'),
               subtitle: Text('e.g. Translation'),
               onTap: () {
                 SimpleCancelOkDialog(

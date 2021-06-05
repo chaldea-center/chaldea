@@ -114,25 +114,13 @@ class ItemListPageState extends State<ItemListPage>
                 categories.length,
                 (index) => ItemListTab(
                   category: categories[index],
+                  onNavToCalculator: navToDropCalculator,
                   filtered: filtered,
                   showSet999: true,
                 ),
               ),
             ),
           ),
-          kDefaultDivider,
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: ElevatedButton.icon(
-              icon: Icon(Icons.calculate_outlined),
-              label: Text(S.current.planning_free_quest_btn),
-              style: ElevatedButton.styleFrom(),
-              onPressed: () {
-                FocusScope.of(context).unfocus();
-                navToDropCalculator();
-              },
-            ),
-          )
         ],
       ),
     );
@@ -288,12 +276,14 @@ class InputComponents<T> {
 
 class ItemListTab extends StatefulWidget {
   final int category;
+  final VoidCallback onNavToCalculator;
   final bool filtered;
   final bool showSet999;
 
   const ItemListTab({
     Key? key,
     required this.category,
+    required this.onNavToCalculator,
     this.filtered = false,
     this.showSet999 = false,
   }) : super(key: key);
@@ -405,39 +395,57 @@ class _ItemListTabState extends State<ItemListTab> {
       );
       return _listView;
     });
-    Widget? actionBar;
-    // TODO: not shown actually
-    // keyboard is shown and mobile view, cannot detect floating keyboard
-    if (MediaQuery.of(context).viewInsets.bottom > 20 &&
-        (Platform.isIOS || Platform.isAndroid)) {
-      actionBar = Row(
+    return Column(children: [
+      Expanded(child: listView),
+      kDefaultDivider,
+      Row(
         children: [
           IconButton(
             onPressed: () {
+              if (_shownGroups.isEmpty) return;
               int focused =
                   _shownGroups.indexWhere((e) => e.focusNode.hasFocus);
               if (focused >= 0) {
                 moveToNext(_shownGroups[focused].focusNode, true);
+              } else {
+                FocusScope.of(context)
+                    .requestFocus(_shownGroups.last.focusNode);
               }
             },
-            icon: Icon(Icons.keyboard_arrow_up, color: Colors.grey),
+            icon: Icon(Icons.keyboard_arrow_up),
+            tooltip: 'Previous',
           ),
           IconButton(
             onPressed: () {
+              if (_shownGroups.isEmpty) return;
               int focused =
                   _shownGroups.indexWhere((e) => e.focusNode.hasFocus);
               if (focused >= 0) {
                 moveToNext(_shownGroups[focused].focusNode);
+              } else {
+                FocusScope.of(context)
+                    .requestFocus(_shownGroups.first.focusNode);
               }
             },
-            icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey),
+            icon: Icon(Icons.keyboard_arrow_down),
+            tooltip: 'Next',
+          ),
+          Flexible(
+            child: Center(
+              child: ElevatedButton.icon(
+                icon: Icon(Icons.calculate_outlined),
+                label: Text(S.current.planning_free_quest_btn),
+                style: ElevatedButton.styleFrom(),
+                onPressed: () {
+                  FocusScope.of(context).unfocus();
+                  widget.onNavToCalculator();
+                },
+              ),
+            ),
           )
         ],
-      );
-    }
-    return actionBar == null
-        ? listView
-        : Column(children: [Expanded(child: listView), actionBar]);
+      )
+    ]);
   }
 
   void setTextController() {
