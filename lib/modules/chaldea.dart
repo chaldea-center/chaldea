@@ -240,8 +240,9 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
         : BlankPage(showProgress: _showProgress, reserveProgressSpace: true);
   }
 
+  /// only set orientation for mobile phone
   void setPreferredOrientations() {
-    if (!AppInfo.isMobile) return;
+    if (!AppInfo.isMobile || AppInfo.isIPad) return;
     if (db.userData.autorotate && SplitRoute.isSplit(context)) {
       SystemChrome.setPreferredOrientations([]);
     } else {

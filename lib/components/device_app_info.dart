@@ -18,6 +18,7 @@ class AppInfo {
   static PackageInfo? _packageInfo;
   static String? _uuid;
   static MacAppType _macAppType = MacAppType.unknown;
+  static bool _isIPad = false;
   static int? _androidSdk;
 
   static final Map<String, dynamic> deviceParams = {};
@@ -76,6 +77,9 @@ class AppInfo {
     deviceParams["utsnameMachine"] = iosInfo.utsname.machine;
     deviceParams["utsnameNodename"] = iosInfo.utsname.nodename;
     deviceParams["utsnameSysname"] = iosInfo.utsname.sysname;
+
+    // extra
+    _isIPad = iosInfo.model?.toLowerCase().contains('ipad') ?? false;
   }
 
   /// PackageInfo: appName+version+buildNumber
@@ -279,6 +283,8 @@ class AppInfo {
 
   /// currently supported mobile or desktop
   static bool get isMobile => Platform.isAndroid || Platform.isIOS;
+
+  static bool get isIPad => _isIPad;
 
   static bool get isDesktop => Platform.isMacOS || Platform.isWindows;
 

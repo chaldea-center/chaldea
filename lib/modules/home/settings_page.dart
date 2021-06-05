@@ -1,8 +1,8 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/method_channel_chaldea.dart';
 import 'package:chaldea/modules/_test_page.dart';
-import 'package:chaldea/modules/home/subpage/game_server_page.dart';
 import 'package:chaldea/modules/home/subpage/carousel_setting_page.dart';
+import 'package:chaldea/modules/home/subpage/game_server_page.dart';
 import 'package:chaldea/modules/home/subpage/login_page.dart';
 import 'package:chaldea/modules/home/subpage/user_data_page.dart';
 import 'package:flutter/foundation.dart';
@@ -160,7 +160,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               ),
             ),
-            if (AppInfo.isMobile && SplitRoute.isSplit(context))
+            // only show on mobile phone, not desktop and tablet
+            // on Android, cannot detect phone or mobile
+            if (AppInfo.isMobile && !AppInfo.isIPad)
               SwitchListTile.adaptive(
                 value: db.userData.autorotate,
                 title: Text(S.current.setting_auto_rotate),
