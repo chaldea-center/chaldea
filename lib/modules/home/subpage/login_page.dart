@@ -141,6 +141,10 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: doLogout,
                 child: Text(S.current.login_logout),
               ),
+              ElevatedButton(
+                onPressed: isLoginAvailable() ? doDelete : null,
+                child: Text(S.current.delete),
+              ),
             ],
           )
         ],
@@ -215,7 +219,31 @@ class _LoginPageState extends State<LoginPage> {
     db.prefs.userPwd.remove();
     db.notifyDbUpdate();
     SimpleCancelOkDialog(
-      content: Text('Logged out'),
+      content: Text(LocalizedText.of(
+          chs: '已清除本地登陆信息',
+          jpn: 'ローカル ログイン情報が消去されました',
+          eng: 'Cleared local login info')),
+    ).showDialog(context);
+  }
+
+  void doDelete() {
+    String name = _nameController.text;
+    String pwd = _pwdController.text;
+    SimpleCancelOkDialog(
+      title: Text(LocalizedText.of(
+          chs: '删除账户', jpn: 'アカウントを削除', eng: 'Delete User Account')),
+      content: Text(LocalizedText.of(
+          chs: '包括所有服务器备份',
+          jpn: 'また、すべてのサーバー バックアップを削除します',
+          eng: 'Including backups on server')),
+      onTapOk: () async {
+        final rawResp = await db.serverDio.post('/user/deleteAccount', data: {
+          HttpUtils.usernameKey: name,
+          HttpUtils.passwordKey: b64(pwd, false)
+        });
+        var resp = ChaldeaResponse.fromResponse(rawResp.data);
+        resp.showMsg(context);
+      },
     ).showDialog(context);
   }
 

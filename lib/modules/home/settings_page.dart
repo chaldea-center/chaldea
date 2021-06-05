@@ -271,7 +271,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 SimpleCancelOkDialog(
                   title: Text('Contribute to Chaldea'),
                   content: Text(
-                      'Collaboration is welcomed, please contact me through email:\n'
+                      'Collaboration is welcomed, please contact us through email:\n'
                       '$kSupportTeamEmailAddress'),
                   scrollable: true,
                 ).showDialog(context);
