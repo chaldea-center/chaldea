@@ -542,7 +542,6 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
                     ..createSync(recursive: true)
                     ..writeAsBytesSync(bytes);
                 }
-                EasyLoading.showSuccess(S.current.import_data_success);
                 Navigator.of(context).pop();
               } catch (e, s) {
                 logger.e('import http body from clipboard failed', e, s);
@@ -562,7 +561,6 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
                 File(tmpPath)
                   ..createSync(recursive: true)
                   ..writeAsBytesSync(filePickerCross.toUint8List());
-                EasyLoading.showSuccess(S.current.import_data_success);
                 Navigator.of(context).pop();
               } on FileSelectionCanceledError {} catch (e, s) {
                 logger.e('import http body from text file failed', e, s);

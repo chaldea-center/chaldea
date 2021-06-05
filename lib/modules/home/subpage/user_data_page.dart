@@ -90,6 +90,10 @@ class _UserDataPageState extends State<UserDataPage> {
           ),
           TileGroup(
             header: S.current.userdata_sync + '(Server)',
+            footer: LocalizedText.of(
+                chs: '仅更新账户数据，不包含本地设置',
+                jpn: 'アカウントデータのみを更新し、ローカル設定を含めない ',
+                eng: 'Only update account data, excluding local settings'),
             children: [
               ListTile(
                 title: Text(S.current.userdata_upload_backup),
@@ -258,7 +262,11 @@ class _UserDataPageState extends State<UserDataPage> {
         }
         final userdata = UserData.fromJson(jsonDecode(resp2.body));
         db.backupUserdata(disk: true, memory: true);
-        db.loadUserData(userdata);
+        // only update UserData.users part
+        final newUserdata = db.userData;
+        newUserdata.users = userdata.users;
+        newUserdata.curUserKey; // ensure _curUserKey is set correctly
+        db.loadUserData(newUserdata);
         db.saveUserData();
         db.itemStat.update();
         db.notifyAppUpdate();
