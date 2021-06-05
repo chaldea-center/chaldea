@@ -107,6 +107,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_description": MessageLookupByLibrary.simpleMessage("解説"),
         "card_info": MessageLookupByLibrary.simpleMessage("資料"),
         "carousel_setting": MessageLookupByLibrary.simpleMessage("カルーセル設定"),
+        "change_log": MessageLookupByLibrary.simpleMessage("更新履歴"),
         "characters_in_card": MessageLookupByLibrary.simpleMessage("キャラクター"),
         "check_update": MessageLookupByLibrary.simpleMessage("更新の確認"),
         "choose_quest_hint": MessageLookupByLibrary.simpleMessage("フリークエストを選択"),

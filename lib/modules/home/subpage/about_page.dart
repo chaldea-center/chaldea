@@ -1,7 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/extras/markdown_page.dart';
 import 'package:chaldea/modules/extras/updates.dart';
 import 'package:flutter/foundation.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutPage extends StatefulWidget {
@@ -75,10 +77,30 @@ class _AboutPageState extends State<AboutPage> {
                     },
                   ),
                 ListTile(
-                  title: Text(LocalizedText.of(
-                      chs: '更新历史', jpn: '更新履歴', eng: 'Release Notes')),
-                  onTap: () {
-                    launch('$kProjectHomepage/blob/master/CHANGELOG.md');
+                  title: Text('README'),
+                  onTap: () async {
+                    SplitRoute.push(
+                      context: context,
+                      builder: (_, __) => _GithubMarkdownPage(
+                        title: 'README',
+                        link: '$kProjectHomepage/blob/master/README.md',
+                        assetKey: 'README.md',
+                      ),
+                    );
+                    // launch('$kProjectHomepage/blob/master/CHANGELOG.md');
+                  },
+                ),
+                ListTile(
+                  title: Text(S.current.change_log),
+                  onTap: () async {
+                    SplitRoute.push(
+                      context: context,
+                      builder: (_, __) => _GithubMarkdownPage(
+                        title: S.current.change_log,
+                        link: '$kProjectHomepage/blob/master/CHANGELOG.md',
+                        assetKey: 'CHANGELOG.md',
+                      ),
+                    );
                   },
                 ),
               ],
@@ -231,6 +253,41 @@ class _FandomContributorsPage extends StatelessWidget {
         title: Text('Fandom Contributors'),
       ),
       body: ListView(children: children),
+    );
+  }
+}
+
+class _GithubMarkdownPage extends StatelessWidget {
+  final String title;
+  final String? link;
+  final String? data;
+  final String? assetKey;
+
+  const _GithubMarkdownPage(
+      {Key? key, required this.title, this.link, this.data, this.assetKey})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: BackButton(),
+        title: Text(title),
+        actions: [
+          if (link != null)
+            IconButton(
+              onPressed: () {
+                launch(link!);
+              },
+              icon: FaIcon(FontAwesomeIcons.github),
+              tooltip: 'view on Github',
+            )
+        ],
+      ),
+      body: MyMarkdownPage(
+        data: data,
+        assetKey: assetKey,
+      ),
     );
   }
 }

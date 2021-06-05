@@ -51,6 +51,7 @@ dependencies:
   flutter_cache_manager: ^3.0.2
   flutter_easyloading: ^3.0.0
   flutter_email_sender: ^5.0.0
+  flutter_markdown: ^0.6.2
   flutter_picker: ^2.0.1
   flutter_qjs: ^0.3.6
   flutter_webview_plugin: ^0.3.11
@@ -115,6 +116,8 @@ flutter:
     - res/js/
     - res/licenses/
     - res/VERSION
+    - CHANGELOG.md
+    - README.md
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

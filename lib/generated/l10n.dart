@@ -3965,6 +3965,16 @@ class S {
       args: [],
     );
   }
+
+  /// `更新历史`
+  String get change_log {
+    return Intl.message(
+      '更新历史',
+      name: 'change_log',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
