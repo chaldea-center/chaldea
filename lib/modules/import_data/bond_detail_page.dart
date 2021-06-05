@@ -117,10 +117,13 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
             title: Row(
               children: [
                 Expanded(
-                    flex: 1,
-                    child: TextButton(
-                      child: Text('Rank'),
-                      onPressed: () => onTouch(_SortType.bondRank),
+                    flex: 2,
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: TextButton(
+                        child: Text('Rank'),
+                        onPressed: () => onTouch(_SortType.bondRank),
+                      ),
                     )),
                 Expanded(
                     flex: 2,
@@ -163,12 +166,16 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                     title: Row(
                       children: [
                         Expanded(
-                            flex: 1,
-                            child: AutoSizeText(
-                              'Lv.${collection.friendshipRank}',
-                              maxLines: 1,
-                              maxFontSize: 14,
-                              style: TextStyle(fontFamily: kMonoFont),
+                            flex: 2,
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: AutoSizeText(
+                                'Lv.${collection.friendshipRank}/${10 + collection.friendshipExceedCount}',
+                                maxLines: 1,
+                                maxFontSize: 14,
+                                minFontSize: 6,
+                                style: TextStyle(fontFamily: kMonoFont),
+                              ),
                             )),
                         Expanded(
                             flex: 2,
@@ -181,6 +188,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                                   formatNumber(collection.friendship),
                                   maxLines: 1,
                                   maxFontSize: 14,
+                                  minFontSize: 6,
                                   style: TextStyle(
                                       fontFamily: kMonoFont,
                                       fontWeight: FontWeight.bold),
@@ -195,6 +203,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                                 formatNumber(_getBondNext(svt, collection)),
                                 maxLines: 1,
                                 maxFontSize: 14,
+                                minFontSize: 6,
                                 style: TextStyle(fontFamily: kMonoFont),
                               ),
                             )),
