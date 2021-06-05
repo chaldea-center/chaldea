@@ -15,7 +15,7 @@ abstract class JsEngine<T> {
   Future<void> init([Function? callback]);
 
   /// JSON.stringify returned object
-  Future<String> eval(String command, {String name});
+  Future<String?> eval(String command, {String name});
 
   void dispose();
 }
@@ -30,7 +30,7 @@ class QjsEngine implements JsEngine<IsolateQjs> {
     if (callback != null) await callback();
   }
 
-  Future<String> eval(String command, {String? name}) async {
+  Future<String?> eval(String command, {String? name}) async {
     return (await engine.evaluate(command, name: name)).toString();
   }
 
@@ -46,7 +46,7 @@ class WebviewJsEngine implements JsEngine<FlutterWebviewPlugin> {
   WebviewJsEngine();
 
   Future<bool> isopen() async {
-    String s = await engine.evalJavascript('1+1');
+    String? s = await engine.evalJavascript('1+1');
     if (s != '2') {
       print('eval 1+1=$s, webview is closed');
       return false;
@@ -70,7 +70,7 @@ class WebviewJsEngine implements JsEngine<FlutterWebviewPlugin> {
     }
   }
 
-  Future<String> eval(String command, {String? name}) async {
+  Future<String?> eval(String command, {String? name}) async {
     return engine.evalJavascript(command);
   }
 
@@ -137,8 +137,9 @@ class GLPKSolver {
         EasyLoading.showToast('At least one weight >0');
       } else {
 //        print('modified params: ${json.encode(params2)}');
-        String resultString = await js.eval(
+        String? resultString = await js.eval(
             '''solve_glpk( `${json.encode(data2)}`,`${json.encode(params2)}`)''');
+        resultString ??= '';
         resultString = resultString.trim();
         logger.v('result: $resultString');
         if (resultString.isNotEmpty != true || resultString == 'null') {

@@ -91,7 +91,7 @@ packages:
       name: build_runner
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.3"
+    version: "2.0.4"
   build_runner_core:
     dependency: transitive
     description:
@@ -239,6 +239,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.0.1"
+  cross_file:
+    dependency: transitive
+    description:
+      name: cross_file
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.3.1+1"
   crypto:
     dependency: "direct main"
     description:
@@ -343,7 +350,7 @@ packages:
       name: disk_space
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.1.0+2"
+    version: "0.1.1"
   dots_indicator:
     dependency: "direct main"
     description:
@@ -379,29 +386,62 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "6.1.0"
-  file_chooser:
-    dependency: transitive
-    description:
-      name: file_chooser
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.1.6"
   file_picker:
     dependency: transitive
     description:
       name: file_picker
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.0.1"
+    version: "3.0.2+2"
   file_picker_cross:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "317a348cc6937f07fd9933eb715e7144f3aa60be"
-      url: "https://gitlab.com/testapp-system/file_picker_cross.git"
-    source: git
-    version: "4.2.9"
+      name: file_picker_cross
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "4.4.2"
+  file_selector:
+    dependency: transitive
+    description:
+      name: file_selector
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.8.2"
+  file_selector_linux:
+    dependency: transitive
+    description:
+      name: file_selector_linux
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.0.2"
+  file_selector_macos:
+    dependency: transitive
+    description:
+      name: file_selector_macos
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.0.4"
+  file_selector_platform_interface:
+    dependency: transitive
+    description:
+      name: file_selector_platform_interface
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.2"
+  file_selector_web:
+    dependency: transitive
+    description:
+      name: file_selector_web
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.8.1"
+  file_selector_windows:
+    dependency: transitive
+    description:
+      name: file_selector_windows
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.0.2"
   fixnum:
     dependency: transitive
     description:
@@ -441,7 +481,7 @@ packages:
       name: flutter_cache_manager
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.0.2"
+    version: "3.1.1"
   flutter_easyloading:
     dependency: "direct main"
     description:
@@ -519,7 +559,7 @@ packages:
       name: flutter_webview_plugin
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.3.11"
+    version: "0.4.0"
   fluttertoast:
     dependency: transitive
     description:
@@ -645,7 +685,7 @@ packages:
       name: json_serializable
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.1.2"
+    version: "4.1.3"
   kana_kit:
     dependency: "direct main"
     description:
@@ -736,7 +776,7 @@ packages:
       name: package_info
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.2"
   package_info_plus:
     dependency: transitive
     description:
@@ -792,7 +832,7 @@ packages:
       name: path_provider
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   path_provider_linux:
     dependency: transitive
     description:
@@ -834,14 +874,14 @@ packages:
       name: permission_handler
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "7.1.0"
+    version: "8.0.1"
   permission_handler_platform_interface:
     dependency: transitive
     description:
       name: permission_handler_platform_interface
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.3.0"
+    version: "3.5.1"
   petitparser:
     dependency: transitive
     description:
@@ -926,13 +966,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "5.0.0"
-  share:
-    dependency: transitive
-    description:
-      name: share
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "2.0.1"
   share_plus:
     dependency: "direct main"
     description:
@@ -981,7 +1014,7 @@ packages:
       name: shared_preferences
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.5"
+    version: "2.0.6"
   shared_preferences_linux:
     dependency: transitive
     description:
@@ -1147,7 +1180,7 @@ packages:
       name: url_launcher
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.0.3"
+    version: "6.0.6"
   url_launcher_linux:
     dependency: transitive
     description:
@@ -1168,7 +1201,7 @@ packages:
       name: url_launcher_platform_interface
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.2"
+    version: "2.0.3"
   url_launcher_web:
     dependency: transitive
     description:

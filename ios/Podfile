@@ -64,7 +64,7 @@ post_install do |installer|
         'PERMISSION_SPEECH_RECOGNIZER=0',
 
         ## dart: PermissionGroup.photos
-        # 'PERMISSION_PHOTOS=0',
+        'PERMISSION_PHOTOS=1',
 
         ## dart: [PermissionGroup.location, PermissionGroup.locationAlways, PermissionGroup.locationWhenInUse]
         'PERMISSION_LOCATION=0',
@@ -79,7 +79,10 @@ post_install do |installer|
         'PERMISSION_SENSORS=0',
 
         ## dart: PermissionGroup.bluetooth
-        'PERMISSION_BLUETOOTH=0'
+        'PERMISSION_BLUETOOTH=0',
+
+        ## dart: PermissionGroup.appTrackingTransparency
+        'PERMISSION_APP_TRACKING_TRANSPARENCY=0'
       ]
     end
     flutter_additional_ios_build_settings(target)

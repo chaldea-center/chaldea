@@ -214,7 +214,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
   void _addAttachments() {
     FilePickerCross.importMultipleFromStorage(type: FileTypeCross.image)
         .then((filePickers) {
-      attachFiles.addAll(filePickers.map((e) => e.path));
+      attachFiles.addAll(filePickers.map((e) => e.path!));
       if (mounted) {
         setState(() {});
       }

@@ -506,7 +506,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
         name: 'solver_caller');
     setState(() {
       solution.clear();
-      Map.from(jsonDecode(result)).forEach((key, value) {
+      Map.from(jsonDecode(result ?? '')).forEach((key, value) {
         solution[srcData.firstWhere((e) => e.place == key)] = value;
       });
     });

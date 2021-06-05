@@ -9,7 +9,7 @@ import audioplayers
 import catcher
 import connectivity_plus_macos
 import device_info_plus_macos
-import file_chooser
+import file_selector_macos
 import flutter_qjs
 import package_info
 import package_info_plus_macos
@@ -24,7 +24,7 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   CatcherPlugin.register(with: registry.registrar(forPlugin: "CatcherPlugin"))
   ConnectivityPlugin.register(with: registry.registrar(forPlugin: "ConnectivityPlugin"))
   DeviceInfoPlusMacosPlugin.register(with: registry.registrar(forPlugin: "DeviceInfoPlusMacosPlugin"))
-  FileChooserPlugin.register(with: registry.registrar(forPlugin: "FileChooserPlugin"))
+  FileSelectorPlugin.register(with: registry.registrar(forPlugin: "FileSelectorPlugin"))
   FlutterQjsPlugin.register(with: registry.registrar(forPlugin: "FlutterQjsPlugin"))
   FLTPackageInfoPlugin.register(with: registry.registrar(forPlugin: "FLTPackageInfoPlugin"))
   FLTPackageInfoPlusPlugin.register(with: registry.registrar(forPlugin: "FLTPackageInfoPlusPlugin"))

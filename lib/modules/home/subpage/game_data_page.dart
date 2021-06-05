@@ -295,7 +295,7 @@ class _GameDataPageState extends State<GameDataPage> {
       // final result = await FilePicker.platform.pickFiles();
       final result = await FilePickerCross.importFromStorage(
           type: FileTypeCross.custom, fileExtension: 'zip,json');
-      final file = File(result.path);
+      final file = File(result.path!);
       if (file.path.toLowerCase().endsWith('.zip')) {
         EasyLoading.show(
             status: 'loading', maskType: EasyLoadingMaskType.clear);

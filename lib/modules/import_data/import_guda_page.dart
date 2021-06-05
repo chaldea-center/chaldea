@@ -77,7 +77,7 @@ class ImportGudaPageState extends State<ImportGudaPage> {
     try {
       FilePickerCross filePickerCross =
           await FilePickerCross.importFromStorage();
-      gudaData = File(filePickerCross.path).readAsStringSync();
+      gudaData = File(filePickerCross.path!).readAsStringSync();
       int cellNum = gudaData!.trim().split(';').first.split('/').length;
       itemOrSvt = cellNum == 3
           ? true

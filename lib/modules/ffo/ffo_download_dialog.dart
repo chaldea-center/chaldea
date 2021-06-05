@@ -81,7 +81,7 @@ class _FfoDownloadDialogState extends State<FfoDownloadDialog> {
           onPressed: () async {
             try {
               final file = await FilePickerCross.importFromStorage();
-              await _extractZip(file.path);
+              if (file.path != null) await _extractZip(file.path!);
               Navigator.pop(context);
             } on FileSelectionCanceledError {}
             if (mounted) setState(() {});

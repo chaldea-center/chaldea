@@ -164,7 +164,7 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
         .then((value) {
       output.clear();
       db.runtimeData.itemRecognizeImageFiles =
-          imageFiles = value.map((e) => File(e.path)).toList();
+          imageFiles = value.map((e) => File(e.path!)).toList();
       if (mounted) {
         setState(() {});
       }

@@ -68,5 +68,10 @@
 	<string>Chaldea needs to import data and export backup</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Export FFO picture to photos</string>
+	<key>LSApplicationQueriesSchemes</key>
+    <array>
+      <string>https</string>
+      <string>http</string>
+    </array>
 </dict>
 </plist>

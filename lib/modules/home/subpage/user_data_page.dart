@@ -110,7 +110,7 @@ class _UserDataPageState extends State<UserDataPage> {
     try {
       FilePickerCross result = await FilePickerCross.importFromStorage(
           type: FileTypeCross.custom, fileExtension: 'json');
-      final path = result.path;
+      final path = result.path!;
       db.backupUserdata();
 
       db.userData =
