@@ -162,16 +162,16 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
 
       // dress part
       List<Widget> dressWidgets = [];
-      curVal.fixDressLength(svt.itemCost.dress.length, 0);
-      targetVal.fixDressLength(svt.itemCost.dress.length, 0);
-      for (int index = 0; index < svt.itemCost.dress.length; index++) {
-        final dressNameCn = svt.itemCost.dressName[index];
-        final dressNameJp = svt.itemCost.dressNameJp[index];
+      curVal.fixDressLength(svt.costumeNos.length, 0);
+      targetVal.fixDressLength(svt.costumeNos.length, 0);
+      for (int index = 0; index < svt.costumeNos.length; index++) {
+        final costume = db.gameData.costumes[svt.costumeNos[index]];
+        if (costume == null) continue;
         dressWidgets.add(buildPlanRow(
           useSlider: false,
           leading: db.getIconImage('灵衣开放权', width: 33),
-          title: Language.isCN ? dressNameCn : dressNameJp,
-          subtitle: Language.isCN ? dressNameJp : dressNameCn,
+          title: costume.lName,
+          subtitle: Language.isJP ? null : costume.nameJp,
           start: curVal.dress[index],
           end: targetVal.dress[index],
           minVal: 0,
@@ -183,9 +183,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             updateState();
           },
           detailPageBuilder: (context) => LevelingCostPage(
-            costList: [svt.itemCost.dress[index]],
-            title:
-                '${S.current.costume_unlock} - ${svt.itemCost.dressName[index]}',
+            costList: [costume.itemCost],
+            title: '${S.current.costume_unlock} - ${costume.lName}',
           ),
         ));
       }

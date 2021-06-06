@@ -1,4 +1,4 @@
-  /// Servant data
+/// Servant data
 part of datatypes;
 
 @JsonSerializable(checked: true)
@@ -82,17 +82,14 @@ class GameData {
 class ItemCost {
   List<Map<String, int>> ascension;
   List<Map<String, int>> skill;
-  List<Map<String, int>> dress;
 
-  List<String> dressName;
-  List<String> dressNameJp;
+  // see db.gamedata.costumes
+  // @deprecated
+  // List<Map<String, int>> dress;
 
   ItemCost({
     required this.ascension,
     required this.skill,
-    required this.dressName,
-    required this.dressNameJp,
-    required this.dress,
   });
 
   factory ItemCost.fromJson(Map<String, dynamic> data) =>

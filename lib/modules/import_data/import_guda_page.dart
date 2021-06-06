@@ -167,11 +167,11 @@ class ImportGudaPageState extends State<ImportGudaPage> {
         cur
           ..ascension = values[0]
           ..skills = [values[2], values[4], values[6]]
-          ..dress = List.generate(svt.itemCost.dressName.length, (_) => 0);
+          ..dress = List.generate(svt.costumeNos.length, (_) => 0);
         target
           ..ascension = values[1]
           ..skills = [values[3], values[5], values[7]]
-          ..dress = List.generate(svt.itemCost.dressName.length, (_) => 0);
+          ..dress = List.generate(svt.costumeNos.length, (_) => 0);
         int rarity = svt.info.rarity;
         int startIndex = lvs.indexOf(startLvs[rarity]);
         cur.grail = lvs.indexOf(values[8]) - startIndex;

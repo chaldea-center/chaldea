@@ -111,7 +111,7 @@ class ServantListPageState extends State<ServantListPage> {
       }
     }
     if (filterData.hasDress) {
-      if ((svt.itemCost.dressName.length) <= 0) {
+      if (svt.costumeNos.isEmpty) {
         return false;
       }
     }
@@ -689,8 +689,8 @@ class ServantListPageState extends State<ServantListPage> {
     if (hiddenPlanServants.contains(svt)) {
       return Center(child: Text(S.of(context).svt_plan_hidden));
     }
-    cur.fixDressLength(svt.itemCost.dress.length);
-    target.fixDressLength(svt.itemCost.dress.length);
+    cur.fixDressLength(svt.costumeNos.length);
+    target.fixDressLength(svt.costumeNos.length);
     return DefaultTextStyle(
       style: TextStyle(
         fontSize: 12,

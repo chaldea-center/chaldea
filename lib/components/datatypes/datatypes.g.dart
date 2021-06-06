@@ -515,8 +515,7 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$GameDataToJson(GameData instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
       'version': instance.version,
       'unavailableSvts': instance.unavailableSvts,
       'servants': instance.servants.map((k, e) => MapEntry(k.toString(), e)),
@@ -548,16 +547,6 @@ ItemCost _$ItemCostFromJson(Map<String, dynamic> json) {
           (v) => (v as List<dynamic>)
               .map((e) => Map<String, int>.from(e as Map))
               .toList()),
-      dressName: $checkedConvert(json, 'dressName',
-          (v) => (v as List<dynamic>).map((e) => e as String).toList()),
-      dressNameJp: $checkedConvert(json, 'dressNameJp',
-          (v) => (v as List<dynamic>).map((e) => e as String).toList()),
-      dress: $checkedConvert(
-          json,
-          'dress',
-          (v) => (v as List<dynamic>)
-              .map((e) => Map<String, int>.from(e as Map))
-              .toList()),
     );
     return val;
   });
@@ -566,9 +555,6 @@ ItemCost _$ItemCostFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$ItemCostToJson(ItemCost instance) => <String, dynamic>{
       'ascension': instance.ascension,
       'skill': instance.skill,
-      'dress': instance.dress,
-      'dressName': instance.dressName,
-      'dressNameJp': instance.dressNameJp,
     };
 
 Item _$ItemFromJson(Map<String, dynamic> json) {

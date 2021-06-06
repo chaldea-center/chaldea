@@ -160,7 +160,7 @@ class Servant {
 
   Map<String, int> getDressCost({List<int>? cur, List<int>? target}) {
     Map<String, int> items = {};
-    final dressNum = itemCost.dress.length;
+    final dressNum = costumeNos.length;
     if (cur == null) cur = List.filled(dressNum, 0, growable: true);
     if (target == null) target = List.filled(dressNum, 1, growable: true);
     if (cur.length < dressNum)
@@ -171,8 +171,9 @@ class Servant {
     for (int i = 0; i < dressNum; i++) {
       cur[i] = fixValidRange(cur[i], 0, 1);
       target[i] = fixValidRange(target[i], 0, 1);
-      for (int j = cur[i]; j < target[i]; j++) {
-        sumDict([items, itemCost.dress[i]], inPlace: true);
+      if (cur[i] == 0 && target[i] == 1) {
+        sumDict([items, db.gameData.costumes[costumeNos[i]]?.itemCost],
+            inPlace: true);
       }
     }
     return items;
@@ -559,6 +560,12 @@ class Costume {
     required this.obtain,
     required this.obtainEn,
   });
+
+  String get lName => localizeNoun(name, nameJp, nameEn);
+
+  String get lDescription => localizeNoun(description, descriptionJp, null);
+
+  String get lObtain => localizeNoun(obtain, null, obtainEn);
 
   factory Costume.fromJson(Map<String, dynamic> data) =>
       _$CostumeFromJson(data);

@@ -224,7 +224,7 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
         String text = '宝具${svt.treasureDeviceLv1} ';
         text += ' 绊${cardCollections[svt.svtId]!.friendshipRank}\n';
         text += '灵基${svt.limitCount} 圣杯${svt.exceedCount} Lv.${svt.lv}\n';
-        if (db.gameData.servants[svt.indexKey]!.itemCost.dress.isEmpty) {
+        if (db.gameData.servants[svt.indexKey]!.costumeNos.isEmpty) {
           text += '';
         } else {
           text +=
