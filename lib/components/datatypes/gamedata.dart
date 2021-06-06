@@ -6,6 +6,7 @@ class GameData {
   String version;
   List<int> unavailableSvts;
   Map<int, Servant> servants;
+  Map<int, Costume> costumes;
   Map<int, CraftEssence> crafts;
   Map<int, CommandCode> cmdCodes;
   Map<String, Item> items;
@@ -24,6 +25,7 @@ class GameData {
     this.version = '0',
     this.unavailableSvts = const [],
     this.servants = const {},
+    this.costumes = const {},
     this.crafts = const {},
     this.cmdCodes = const {},
     this.items = const {},

@@ -443,6 +443,13 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
                 (k, e) => MapEntry(
                     int.parse(k), Servant.fromJson(e as Map<String, dynamic>)),
               )),
+      costumes: $checkedConvert(
+          json,
+          'costumes',
+          (v) => (v as Map<String, dynamic>).map(
+                (k, e) => MapEntry(
+                    int.parse(k), Costume.fromJson(e as Map<String, dynamic>)),
+              )),
       crafts: $checkedConvert(
           json,
           'crafts',
@@ -508,10 +515,12 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
+Map<String, dynamic> _$GameDataToJson(GameData instance) =>
+    <String, dynamic>{
       'version': instance.version,
       'unavailableSvts': instance.unavailableSvts,
       'servants': instance.servants.map((k, e) => MapEntry(k.toString(), e)),
+      'costumes': instance.costumes.map((k, e) => MapEntry(k.toString(), e)),
       'crafts': instance.crafts.map((k, e) => MapEntry(k.toString(), e)),
       'cmdCodes': instance.cmdCodes.map((k, e) => MapEntry(k.toString(), e)),
       'items': instance.items,
@@ -960,6 +969,8 @@ Servant _$ServantFromJson(Map<String, dynamic> json) {
               .toList()),
       itemCost: $checkedConvert(json, 'itemCost',
           (v) => ItemCost.fromJson(v as Map<String, dynamic>)),
+      costumeNos: $checkedConvert(json, 'costumeNos',
+          (v) => (v as List<dynamic>).map((e) => e as int).toList()),
       bondPoints: $checkedConvert(json, 'bondPoints',
           (v) => (v as List<dynamic>).map((e) => e as int).toList()),
       profiles: $checkedConvert(
@@ -995,6 +1006,7 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'passiveSkills': instance.passiveSkills,
       'passiveSkillsEn': instance.passiveSkillsEn,
       'itemCost': instance.itemCost,
+      'costumeNos': instance.costumeNos,
       'bondPoints': instance.bondPoints,
       'profiles': instance.profiles,
       'voices': instance.voices,
@@ -1305,6 +1317,50 @@ Map<String, dynamic> _$VoiceRecordToJson(VoiceRecord instance) =>
       'textEn': instance.textEn,
       'condition': instance.condition,
       'voiceFile': instance.voiceFile,
+    };
+
+Costume _$CostumeFromJson(Map<String, dynamic> json) {
+  return $checkedNew('Costume', json, () {
+    final val = Costume(
+      no: $checkedConvert(json, 'no', (v) => v as int),
+      gameId: $checkedConvert(json, 'gameId', (v) => v as int),
+      svtNo: $checkedConvert(json, 'svtNo', (v) => v as int),
+      name: $checkedConvert(json, 'name', (v) => v as String),
+      nameJp: $checkedConvert(json, 'nameJp', (v) => v as String),
+      nameEn: $checkedConvert(json, 'nameEn', (v) => v as String),
+      icon: $checkedConvert(json, 'icon', (v) => v as String),
+      avatar: $checkedConvert(json, 'avatar', (v) => v as String),
+      models: $checkedConvert(json, 'models',
+          (v) => (v as List<dynamic>).map((e) => e as String).toList()),
+      illustration: $checkedConvert(json, 'illustration', (v) => v as String),
+      description: $checkedConvert(json, 'description', (v) => v as String?),
+      descriptionJp:
+          $checkedConvert(json, 'descriptionJp', (v) => v as String?),
+      itemCost: $checkedConvert(
+          json, 'itemCost', (v) => Map<String, int>.from(v as Map)),
+      obtain: $checkedConvert(json, 'obtain', (v) => v as String?),
+      obtainEn: $checkedConvert(json, 'obtainEn', (v) => v as String?),
+    );
+    return val;
+  });
+}
+
+Map<String, dynamic> _$CostumeToJson(Costume instance) => <String, dynamic>{
+      'no': instance.no,
+      'gameId': instance.gameId,
+      'svtNo': instance.svtNo,
+      'name': instance.name,
+      'nameJp': instance.nameJp,
+      'nameEn': instance.nameEn,
+      'icon': instance.icon,
+      'avatar': instance.avatar,
+      'models': instance.models,
+      'illustration': instance.illustration,
+      'description': instance.description,
+      'descriptionJp': instance.descriptionJp,
+      'itemCost': instance.itemCost,
+      'obtain': instance.obtain,
+      'obtainEn': instance.obtainEn,
     };
 
 Summon _$SummonFromJson(Map<String, dynamic> json) {
@@ -1713,8 +1769,7 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$UserDataToJson(UserData instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'language': instance.language,
       'themeMode': _$ThemeModeEnumMap[instance.themeMode],
       'showSummonBanner': instance.showSummonBanner,

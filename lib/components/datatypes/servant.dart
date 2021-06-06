@@ -22,6 +22,7 @@ class Servant {
   List<Skill> passiveSkills;
   List<Skill> passiveSkillsEn;
   ItemCost itemCost;
+  List<int> costumeNos;
   List<int> bondPoints;
 
   /// 0:default, 1-6:profile 1-6, 7:april fool's
@@ -72,6 +73,7 @@ class Servant {
     required this.passiveSkills,
     required this.passiveSkillsEn,
     required this.itemCost,
+    required this.costumeNos,
     required this.bondPoints,
     required this.profiles,
     required this.voices,
@@ -520,4 +522,46 @@ class VoiceRecord {
       _$VoiceRecordFromJson(data);
 
   Map<String, dynamic> toJson() => _$VoiceRecordToJson(this);
+}
+
+@JsonSerializable(checked: true)
+class Costume {
+  int no;
+  int gameId;
+  int svtNo;
+  String name;
+  String nameJp;
+  String nameEn;
+  String icon;
+  String avatar;
+  List<String> models;
+  String illustration;
+  String? description;
+  String? descriptionJp;
+  Map<String, int> itemCost;
+  String? obtain;
+  String? obtainEn;
+
+  Costume({
+    required this.no,
+    required this.gameId,
+    required this.svtNo,
+    required this.name,
+    required this.nameJp,
+    required this.nameEn,
+    required this.icon,
+    required this.avatar,
+    required this.models,
+    required this.illustration,
+    required this.description,
+    required this.descriptionJp,
+    required this.itemCost,
+    required this.obtain,
+    required this.obtainEn,
+  });
+
+  factory Costume.fromJson(Map<String, dynamic> data) =>
+      _$CostumeFromJson(data);
+
+  Map<String, dynamic> toJson() => _$CostumeToJson(this);
 }
