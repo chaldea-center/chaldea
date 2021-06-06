@@ -16,6 +16,7 @@ import 'package:chaldea/modules/home/subpage/game_data_page.dart';
 import 'package:chaldea/modules/import_data/import_data_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/master_mission/master_mission_page.dart';
+import 'package:chaldea/modules/servant/costume_list_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:chaldea/modules/statistics/game_statistics_page.dart';
 import 'package:chaldea/modules/summon/summon_list_page.dart';
@@ -84,31 +85,35 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       GalleryItem.servant: GalleryItem(
         name: GalleryItem.servant,
         title: S.of(context).servant_title,
-        icon: Icons.people,
+        // icon: Icons.people,
+        child: faIcon(FontAwesomeIcons.users),
         builder: (context, _) => ServantListPage(),
       ),
       GalleryItem.craft_essence: GalleryItem(
         name: GalleryItem.craft_essence,
         title: S.of(context).craft_essence,
-        icon: Icons.extension,
+        // icon: Icons.extension,
+        child: faIcon(FontAwesomeIcons.streetView),
         builder: (context, _) => CraftListPage(),
       ),
       GalleryItem.cmd_code: GalleryItem(
         name: GalleryItem.cmd_code,
         title: S.of(context).cmd_code_title,
-        icon: Icons.stars,
+        // icon: Icons.stars,
+        child: faIcon(FontAwesomeIcons.expand),
         builder: (context, _) => CmdCodeListPage(),
       ),
       GalleryItem.item: GalleryItem(
         name: GalleryItem.item,
         title: S.of(context).item_title,
         icon: Icons.category,
+        // child: faIcon(FontAwesomeIcons.cubes),
         builder: (context, _) => ItemListPage(),
       ),
       GalleryItem.event: GalleryItem(
         name: GalleryItem.event,
         title: S.of(context).event_title,
-        icon: Icons.event_available,
+        icon: Icons.flag,
         builder: (context, _) => EventListPage(),
       ),
       GalleryItem.plan: GalleryItem(
@@ -121,12 +126,13 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       GalleryItem.free_calculator: GalleryItem(
         name: GalleryItem.free_calculator,
         title: S.of(context).free_quest_calculator_short,
-        icon: Icons.pin_drop,
+        // icon: Icons.pin_drop,
+        child: faIcon(FontAwesomeIcons.mapMarked),
         builder: (context, _) => FreeQuestCalculatorPage(),
         isDetail: true,
       ),
-      GalleryItem.weekly_mission: GalleryItem(
-        name: GalleryItem.weekly_mission,
+      GalleryItem.master_mission: GalleryItem(
+        name: GalleryItem.master_mission,
         title: S.of(context).master_mission,
         child: faIcon(FontAwesomeIcons.tasks),
         builder: (context, _) => MasterMissionPage(),
@@ -135,8 +141,15 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       GalleryItem.mystic_code: GalleryItem(
         name: GalleryItem.mystic_code,
         title: S.of(context).mystic_code,
-        child: faIcon(FontAwesomeIcons.tshirt),
+        child: faIcon(FontAwesomeIcons.diagnoses),
         builder: (context, _) => MysticCodePage(),
+        isDetail: true,
+      ),
+      GalleryItem.costume: GalleryItem(
+        name: GalleryItem.costume,
+        title: S.of(context).costume,
+        child: faIcon(FontAwesomeIcons.tshirt),
+        builder: (context, _) => CostumeListPage(),
         isDetail: true,
       ),
       // GalleryItem.calculator: GalleryItem(
@@ -149,14 +162,14 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       GalleryItem.gacha: GalleryItem(
         name: GalleryItem.gacha,
         title: S.of(context).summon_title,
-        child: faIcon(FontAwesomeIcons.chessQueen),
+        child: faIcon(FontAwesomeIcons.dice),
         builder: (context, _) => SummonListPage(),
         isDetail: false,
       ),
       GalleryItem.ffo: GalleryItem(
         name: GalleryItem.ffo,
         title: 'Freedom Order',
-        child: faIcon(FontAwesomeIcons.cubes),
+        child: faIcon(FontAwesomeIcons.layerGroup),
         builder: (context, _) => FreedomOrderPage(),
         isDetail: true,
       ),
@@ -185,7 +198,8 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       GalleryItem.exp_card: GalleryItem(
         name: GalleryItem.exp_card,
         title: S.current.exp_card_title,
-        icon: Icons.rice_bowl,
+        // icon: Icons.rice_bowl,
+        child: faIcon(FontAwesomeIcons.breadSlice),
         builder: (context, _) => ExpCardCostPage(),
         isDetail: true,
       ),
@@ -313,13 +327,13 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
             ),
           )
         : Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        CarouselSlider(
-          carouselController: _carouselController,
-          items: sliderPages,
-          options: CarouselOptions(
-            aspectRatio: 8.0 / 3.0,
+            alignment: Alignment.bottomCenter,
+            children: [
+              CarouselSlider(
+                carouselController: _carouselController,
+                items: sliderPages,
+                options: CarouselOptions(
+                  aspectRatio: 8.0 / 3.0,
                   autoPlay: sliderPages.length > 1,
                   autoPlayInterval: const Duration(seconds: 6),
                   viewportFraction: 1.0,
@@ -328,27 +342,27 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
                     _curCarouselIndex = v;
                   }),
                 ),
-        ),
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: DotsIndicator(
-            dotsCount: sliderPages.length,
-            position: _curCarouselIndex.toDouble(),
-            decorator: DotsDecorator(
-              color: Colors.white70,
-              spacing: EdgeInsets.symmetric(vertical: 6, horizontal: 3),
-            ),
-            onTap: (v) {
-              setState(() {
-                _curCarouselIndex =
-                    fixValidRange(v.toInt(), 0, sliderPages.length - 1);
-                _carouselController.animateToPage(_curCarouselIndex);
-              });
-            },
-          ),
-        ),
-      ],
-    );
+              ),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: DotsIndicator(
+                  dotsCount: sliderPages.length,
+                  position: _curCarouselIndex.toDouble(),
+                  decorator: DotsDecorator(
+                    color: Colors.white70,
+                    spacing: EdgeInsets.symmetric(vertical: 6, horizontal: 3),
+                  ),
+                  onTap: (v) {
+                    setState(() {
+                      _curCarouselIndex =
+                          fixValidRange(v.toInt(), 0, sliderPages.length - 1);
+                      _carouselController.animateToPage(_curCarouselIndex);
+                    });
+                  },
+                ),
+              ),
+            ],
+          );
   }
 
   List<Widget> _getShownGalleries(BuildContext context) {
@@ -367,10 +381,10 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
                   alignment: Alignment.bottomCenter,
                   child: item.child == null
                       ? Icon(
-                    item.icon,
-                    size: 40,
-                    color: _iconColor,
-                  )
+                          item.icon,
+                          size: 40,
+                          color: _iconColor,
+                        )
                       : item.child,
                 ),
               ),
@@ -464,10 +478,11 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
   }
 
   Future<Null> resolveSliderImageUrls([bool showToast = false]) async {
-    Map<String, String> _getImageLinks({required dom.Element? element,
-      required Uri uri,
-      String attr = 'src',
-      bool imgOnly = true}) {
+    Map<String, String> _getImageLinks(
+        {required dom.Element? element,
+        required Uri uri,
+        String attr = 'src',
+        bool imgOnly = true}) {
       Map<String, String> _result = {};
       if (element == null) return _result;
       for (var linkNode in element.getElementsByTagName('a')) {
@@ -623,7 +638,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         title: Text('Download icons'),
         subtitle: Text(
             'About ${(_cachedIconsRatio * 100).toStringAsFixed(0)}% downloaded'
-                '\nGoto ${S.current.download_full_gamedata}'),
+            '\nGoto ${S.current.download_full_gamedata}'),
         isThreeLine: true,
         trailing: Icon(Icons.chevron_right),
         onTap: () {

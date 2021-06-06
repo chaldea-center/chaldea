@@ -72,6 +72,16 @@ class FullScreenImageSlider extends StatefulWidget {
 
   @override
   _FullScreenImageSliderState createState() => _FullScreenImageSliderState();
+
+  Future push(BuildContext context) {
+    return Navigator.of(context).push(
+      PageRouteBuilder(
+        opaque: false,
+        fullscreenDialog: true,
+        pageBuilder: (context, _, __) => this,
+      ),
+    );
+  }
 }
 
 class _FullScreenImageSliderState extends State<FullScreenImageSlider> {

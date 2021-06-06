@@ -97,6 +97,20 @@ class MathUtils {
     return iterable.fold<T>(
         _convertNum(0), (p, c) => (p + (c ?? _convertNum<T>(0))) as T);
   }
+
+  static MapEntry<double, double>? fitSize(
+      double? width, double? height, double? aspectRatio) {
+    if (aspectRatio == null || (width == null && height == null)) return null;
+    if (width != null && height != null) {
+      if (width / aspectRatio < height) {
+        return MapEntry(width, width / aspectRatio);
+      } else {
+        return MapEntry(height * aspectRatio, height);
+      }
+    }
+    if (width != null) return MapEntry(width, width / aspectRatio);
+    if (height != null) return MapEntry(height * aspectRatio, height);
+  }
 }
 
 /// Sum a list of number, list item defaults to 0 if null

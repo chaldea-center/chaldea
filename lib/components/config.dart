@@ -277,6 +277,7 @@ class Database {
     bool withBorder = true,
     bool? clip,
     EdgeInsetsGeometry? padding,
+    WidgetBuilder? placeholder,
   }) {
     Widget image;
     if (iconKey == null || iconKey.isEmpty) {
@@ -315,7 +316,11 @@ class Database {
           height: height,
           aspectRatio: aspectRatio,
           fit: fit,
-          placeholder: (_, __) => Container(width: width, height: height),
+          placeholder: (context, __) => Container(
+            width: width,
+            height: height,
+            child: placeholder?.call(context),
+          ),
         );
       }
     }

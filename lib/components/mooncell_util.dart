@@ -51,6 +51,10 @@ class MooncellUtil {
 
   static Map<String, Future<String?>> _resolveUrlTasks = {};
 
+  /// Don't keep trying resolving everytime. Once error, resolve it after 1 min
+  /// key is [filename], value is [DateTime.millisecondsSinceEpoch]
+  static Map<String, int> _errorTasks = {};
+
   /// If [savePath] is provided, the file will be downloaded
   static Future<String?> resolveFileUrl(String filename,
       [String? savePath]) async {
@@ -60,6 +64,11 @@ class MooncellUtil {
     }
     if (_resolveUrlTasks.containsKey(filename)) {
       return _resolveUrlTasks[filename]!;
+    }
+    if (_errorTasks[filename] != null &&
+        DateTime.now().millisecondsSinceEpoch - _errorTasks[filename]! <
+            60000) {
+      return null;
     }
     final future = _pool.withResource<String?>(() async {
       final _dio = HttpUtils.defaultDio;
@@ -97,8 +106,10 @@ class MooncellUtil {
           }
         }
         // print('mc file: $filename -> $url');
+        _errorTasks.remove(filename);
         return url;
       } catch (e) {
+        _errorTasks[filename] = DateTime.now().millisecondsSinceEpoch;
         logger.e('error download $filename', e);
       } finally {
         _resolveUrlTasks.remove(filename);

@@ -45,12 +45,13 @@ class GalleryItem {
   static const String plan = 'plan';
   static const String free_calculator = 'free_calculator';
   static const String mystic_code = 'mystic_code';
+  static const String costume = 'costume';
   static const String gacha = 'gacha';
   static const String ffo = 'ffo';
   static const String cv_list = 'cv_list';
   static const String illustrator_list = 'illustrator_list';
 
-  static const String weekly_mission = 'weekly_mission';
+  static const String master_mission = 'master_mission';
   static const String calculator = 'calculator';
   static const String master_equip = 'master_equip';
   static const String exp_card = 'exp_card';

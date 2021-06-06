@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
+import 'package:chaldea/modules/servant/costume_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -169,7 +170,19 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         if (costume == null) continue;
         dressWidgets.add(buildPlanRow(
           useSlider: false,
-          leading: db.getIconImage('灵衣开放权', width: 33),
+          // leading: db.getIconImage('灵衣开放权', width: 33),
+          leading: GestureDetector(
+            child: db.getIconImage(costume.icon,
+                aspectRatio: 132 / 144,
+                width: 33,
+                placeholder: (ctx) => db.getIconImage('灵衣开放权')),
+            onTap: () {
+              SplitRoute.push(
+                context: context,
+                builder: (context, _) => CostumeDetailPage(costume: costume),
+              );
+            },
+          ),
           title: costume.lName,
           subtitle: Language.isJP ? null : costume.nameJp,
           start: curVal.dress[index],
@@ -192,7 +205,6 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         children.add(TileGroup(
             header: S.of(context).costume_unlock, children: dressWidgets));
       }
-
       children.add(TileGroup(
         children: <Widget>[
           buildPlanRow(

@@ -245,43 +245,47 @@ class ImageWithText extends StatelessWidget {
 
     TextStyle _style = textStyle ?? TextStyle();
     _style = _style.copyWith(fontWeight: _style.fontWeight ?? FontWeight.bold);
-    return GestureDetector(
-      onTap: onTap,
-      child: Stack(
-        alignment: alignment,
-        children: <Widget>[
-          applyConstraints(Padding(
-            // if pad < 0
-            padding: EdgeInsets.fromLTRB(
-                -min(0.0, padding.left),
-                -min(0.0, padding.top),
-                -min(0.0, padding.right),
-                -min(0.0, padding.bottom)),
-            child: image,
-          )),
-          if (text?.isNotEmpty == true || textBuilder != null)
-            applyConstraints(
-              Padding(
-                padding: EdgeInsets.fromLTRB(
-                    max(0.0, padding.left),
-                    max(0.0, padding.top),
-                    max(0.0, padding.right),
-                    max(0.0, padding.bottom)),
-                child: paintOutline(
-                  text: text,
-                  builder: textBuilder,
-                  textAlign: textAlign,
-                  textStyle: _style,
-                  shadowSize: shadowSize,
-                  shadowColor:
-                      shadowColor ?? Theme.of(context).scaffoldBackgroundColor,
-                ),
+    Widget child = Stack(
+      alignment: alignment,
+      children: <Widget>[
+        applyConstraints(Padding(
+          // if pad < 0
+          padding: EdgeInsets.fromLTRB(
+              -min(0.0, padding.left),
+              -min(0.0, padding.top),
+              -min(0.0, padding.right),
+              -min(0.0, padding.bottom)),
+          child: image,
+        )),
+        if (text?.isNotEmpty == true || textBuilder != null)
+          applyConstraints(
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                  max(0.0, padding.left),
+                  max(0.0, padding.top),
+                  max(0.0, padding.right),
+                  max(0.0, padding.bottom)),
+              child: paintOutline(
+                text: text,
+                builder: textBuilder,
+                textAlign: textAlign,
+                textStyle: _style,
+                shadowSize: shadowSize,
+                shadowColor:
+                    shadowColor ?? Theme.of(context).scaffoldBackgroundColor,
               ),
-              boxFit: BoxFit.scaleDown,
-            )
-        ],
-      ),
+            ),
+            boxFit: BoxFit.scaleDown,
+          )
+      ],
     );
+    if (onTap != null) {
+      child = GestureDetector(
+        child: child,
+        onTap: onTap,
+      );
+    }
+    return child;
   }
 
   Widget applyConstraints(Widget child, {BoxFit? boxFit}) {

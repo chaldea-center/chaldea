@@ -234,6 +234,38 @@ class Item {
         return S.current.item_category_others;
     }
   }
+
+  static Widget iconBuilder({
+    required BuildContext context,
+    required String itemKey,
+    double? width,
+    double? height,
+    String? text,
+    bool jumpToDetail = false,
+  }) {
+    final size = MathUtils.fitSize(width, height, 132 / 144);
+    Widget child = ImageWithText(
+      image: db.getIconImage(itemKey,
+          aspectRatio: 132 / 144, width: width, height: height),
+      text: text,
+      width: width,
+      padding: size == null
+          ? EdgeInsets.zero
+          : EdgeInsets.only(right: size.value / 22, bottom: size.value / 12),
+    );
+    if (jumpToDetail) {
+      child = InkWell(
+        child: child,
+        onTap: () {
+          SplitRoute.push(
+            context: context,
+            builder: (context, _) => ItemDetailPage(itemKey: itemKey),
+          );
+        },
+      );
+    }
+    return child;
+  }
 }
 
 class ItemCategory {

@@ -11,6 +11,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/modules/item/item_detail_page.dart' show ItemDetailPage;
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart'
     hide $checkedNew, $checkedConvert, CheckedFromJsonException;
@@ -18,11 +19,13 @@ import 'package:json_annotation/src/allowed_keys_helpers.dart'; // ignore: imple
 
 import '../config.dart' show db;
 import '../constants.dart';
+import '../custom_tile.dart' show ImageWithText;
 import '../extensions.dart';
 import '../git_tool.dart';
-import '../logger.dart';
-import '../utils.dart';
 import '../localized/localized.dart';
+import '../logger.dart';
+import '../split_route/split_route.dart';
+import '../utils.dart';
 
 part 'bili_response.dart';
 
