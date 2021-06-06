@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/git_tool.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -25,7 +24,7 @@ class AutoUpdateUtil {
     final git = GitTool.fromDb();
     try {
       final String baseFolder = join(db.paths.tempDir, 'dataset');
-      if (db.connectivity == ConnectivityResult.none) return;
+      if (!db.hasNetwork) return;
       release = await git.latestDatasetRelease(testRelease: (_) => true);
       final url = release?.targetAsset?.browserDownloadUrl;
       if (url == null) {
@@ -93,7 +92,7 @@ class AutoUpdateUtil {
     if (!background)
       EasyLoading.show(status: 'patching', maskType: EasyLoadingMaskType.clear);
     try {
-      if (db.connectivity == ConnectivityResult.none) {
+      if (!db.hasNetwork) {
         _reportResult(S.current.error_no_network);
         return;
       }
@@ -166,7 +165,7 @@ class AutoUpdateUtil {
   ///   version info->alert->download->alert->install
   static Future<void> checkAppUpdate(
       {bool background = true, bool download = false}) async {
-    if (db.connectivity == ConnectivityResult.none) {
+    if (!db.hasNetwork) {
       if (!background) EasyLoading.showError('No network');
       return;
     }
@@ -254,9 +253,9 @@ class AutoUpdateUtil {
       }
       if (!background) {
         download = await _showDialog(
-            version: version,
-            launchUrl: launchUrl,
-            releaseNote: releaseNote) ==
+                version: version,
+                launchUrl: launchUrl,
+                releaseNote: releaseNote) ==
             true;
         if (!download) return;
       }

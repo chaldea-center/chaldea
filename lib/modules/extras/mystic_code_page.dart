@@ -297,16 +297,12 @@ class _MysticCodePageState extends State<MysticCodePage> {
                     pageBuilder: (context, _, __) => FullScreenImageSlider(
                       imgUrls: urls,
                       initialPage: i,
-                      connectivity: db.connectivity,
                     ),
                   ));
                 },
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: CachedImage(
-                    imageUrl: urls[i],
-                    connectivity: db.connectivity,
-                  ),
+                  child: CachedImage(imageUrl: urls[i]),
                 ),
               ),
           ],

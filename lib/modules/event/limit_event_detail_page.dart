@@ -56,7 +56,6 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
         child: CachedImage(
           imageUrl: event.lBannerUrl,
           isMCFile: true,
-          connectivity: db.connectivity,
           placeholder: (_, __) => AspectRatio(aspectRatio: 8 / 3),
         ),
       ));

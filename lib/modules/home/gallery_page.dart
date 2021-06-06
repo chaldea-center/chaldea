@@ -429,7 +429,6 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       if (isURL(imgUrl)) {
         child = CachedImage(
           imageUrl: imgUrl,
-          connectivity: db.connectivity,
           errorWidget: (context, url, error) => Container(),
           aspectRatio: 8 / 3,
         );

@@ -10,7 +10,6 @@ import 'dart:typed_data';
 import 'package:archive/archive_io.dart';
 import 'package:catcher/catcher.dart';
 import 'package:chaldea/components/analytics.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart';
 import 'package:logging/logging.dart';
@@ -106,7 +105,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
 
   Future<bool> _sendMail(Report report, {Attachment? extraAttach}) async {
     try {
-      if (db.connectivity == ConnectivityResult.none) return false;
+      if (!db.hasNetwork) return false;
 
       String reportSummary = _getReportShortSummary(report);
       // don't send email repeatedly

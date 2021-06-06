@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -54,7 +53,6 @@ class FullScreenImageSlider extends StatefulWidget {
   final List<String?> imgUrls;
   final bool? isMcFile;
   final int initialPage;
-  final ConnectivityResult? connectivity;
   final bool? downloadEnabled;
   final PlaceholderWidgetBuilder? placeholder;
   final LoadingErrorWidgetBuilder? errorWidget;
@@ -64,7 +62,6 @@ class FullScreenImageSlider extends StatefulWidget {
     required this.imgUrls,
     this.isMcFile,
     this.initialPage = 0,
-    this.connectivity,
     this.downloadEnabled,
     this.placeholder,
     this.errorWidget,
@@ -124,7 +121,6 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
                 imageUrl: widget.imgUrls[index],
                 isMCFile: widget.isMcFile,
                 placeholder: widget.placeholder,
-                connectivity: widget.connectivity,
               ),
             ),
             options: CarouselOptions(
@@ -157,10 +153,6 @@ class CachedImage extends StatefulWidget {
   final PlaceholderWidgetBuilder? placeholder;
   final ProgressIndicatorBuilder? progressIndicatorBuilder;
   final LoadingErrorWidgetBuilder? errorWidget;
-
-  /// [ConnectivityResult.none] or others
-  final ConnectivityResult? connectivity;
-
   final Map<String, String>? httpHeaders;
   final Duration fadeOutDuration;
   final Curve fadeOutCurve;
@@ -194,7 +186,6 @@ class CachedImage extends StatefulWidget {
     this.placeholder,
     this.progressIndicatorBuilder,
     this.errorWidget,
-    this.connectivity,
     this.httpHeaders,
     this.fadeOutDuration = const Duration(milliseconds: 1000),
     this.fadeOutCurve = Curves.easeOut,
@@ -300,7 +291,7 @@ class _CachedImageState extends State<CachedImage> {
     String? realUrl = getRealUrl();
     if (realUrl?.isNotEmpty != true) {
       usePlaceholder = true;
-    } else if (canDownload()) {
+    } else if (db.hasNetwork) {
       // use CachedNetworkImage
       usePlaceholder = false;
     } else {
@@ -311,7 +302,7 @@ class _CachedImageState extends State<CachedImage> {
         (context, url) => Container(
               width: widget.width,
               height: widget.height,
-              child: canDownload()
+          child: db.hasNetwork
                   ? CachedImage.defaultProgressPlaceholder(context, url)
                   : Container(),
             );
@@ -376,10 +367,6 @@ class _CachedImageState extends State<CachedImage> {
         width: widget.width,
         height: widget.height,
         aspectRatio: widget.aspectRatio);
-  }
-
-  bool canDownload() {
-    return (widget.connectivity ?? db.connectivity) != ConnectivityResult.none;
   }
 }
 

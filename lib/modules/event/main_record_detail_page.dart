@@ -72,7 +72,6 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
               child: CachedImage(
                 imageUrl: widget.record.lBannerUrl,
                 isMCFile: true,
-                connectivity: db.connectivity,
                 placeholder: (_, __) => AspectRatio(aspectRatio: 8 / 3),
               ),
             ),

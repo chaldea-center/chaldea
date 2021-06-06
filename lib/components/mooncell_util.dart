@@ -70,6 +70,7 @@ class MooncellUtil {
             60000) {
       return null;
     }
+    if (!db.hasNetwork) return null;
     final future = _pool.withResource<String?>(() async {
       final _dio = HttpUtils.defaultDio;
       bool fandomFile = filename.startsWith('fandom.');

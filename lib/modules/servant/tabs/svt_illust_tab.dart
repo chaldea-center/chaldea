@@ -88,7 +88,6 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
                     pageBuilder: (context, _, __) => FullScreenImageSlider(
                       imgUrls: imageUrls,
                       initialPage: index,
-                      connectivity: db.connectivity,
                       placeholder: placeholder,
                     ),
                   ));
@@ -99,7 +98,6 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
                 child: CachedImage(
                   imageUrl: imageUrls[index],
                   placeholder: placeholder,
-                  connectivity: db.connectivity,
                 ),
               );
             }),

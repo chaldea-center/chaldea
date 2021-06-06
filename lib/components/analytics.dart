@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:chaldea/components/components.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
@@ -32,7 +31,7 @@ class Analyzer {
   }
 
   static Future<void> sendStat() async {
-    if (db.connectivity == ConnectivityResult.none) return;
+    if (!db.hasNetwork) return;
 
     String size = '';
     if (kAppKey.currentContext != null) {
@@ -79,7 +78,7 @@ class Analyzer {
   }
 
   static Future<void> sendBdtj({String? bdId}) async {
-    if (db.connectivity == ConnectivityResult.none) return;
+    if (!db.hasNetwork) return;
     // TODO: invalid, ignored by bdtj
     try {
       if (Platform.isIOS || Platform.isAndroid) {

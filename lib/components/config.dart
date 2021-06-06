@@ -82,8 +82,8 @@ class Database {
 
   ConnectivityResult? _connectivity;
 
-  ConnectivityResult get connectivity =>
-      _connectivity ?? ConnectivityResult.none;
+  bool get hasNetwork =>
+      _connectivity != null && _connectivity != ConnectivityResult.none;
 
   /// You should always check for connectivity status when your app is resumed
   Future<ConnectivityResult> checkConnectivity() async {
