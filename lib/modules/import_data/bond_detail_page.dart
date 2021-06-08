@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/servant/servant_detail_page.dart';
 
 class SvtBondDetailPage extends StatefulWidget {
   // key=game id
@@ -153,16 +152,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                   final svt = collections[index].key;
                   final collection = collections[index].value;
                   return ListTile(
-                    leading: InkWell(
-                      child: db.getIconImage(svt.icon,
-                          aspectRatio: 132 / 144,
-                          padding: EdgeInsets.symmetric(vertical: 2)),
-                      onTap: () {
-                        SplitRoute.push(
-                            context: context,
-                            builder: (_, __) => ServantDetailPage(svt));
-                      },
-                    ),
+                    leading: svt.iconBuilder(context: context),
                     title: Row(
                       children: [
                         Expanded(

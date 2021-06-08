@@ -251,7 +251,8 @@ class Item {
       width: width,
       padding: size == null
           ? EdgeInsets.zero
-          : EdgeInsets.only(right: size.value / 22, bottom: size.value / 12),
+          : EdgeInsets.fromLTRB(
+              size.value / 22, 0, size.value / 22, size.value / 12),
     );
     if (jumpToDetail) {
       child = InkWell(

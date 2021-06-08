@@ -12,6 +12,8 @@ import 'dart:math';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart' show ItemDetailPage;
+import 'package:chaldea/modules/servant/servant_detail_page.dart'
+    show ServantDetailPage;
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart'
     hide $checkedNew, $checkedConvert, CheckedFromJsonException;

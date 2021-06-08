@@ -109,16 +109,10 @@ class ItemCostServantPage extends StatelessWidget {
                   shape: BoxShape.rectangle,
                 )
               : null,
-          child: ImageWithText(
-            image: db.getIconImage(svt.icon),
+          child: svt.iconBuilder(
+            context: context,
             text: formatNumber(num, compact: true, minVal: 10000),
-            padding: EdgeInsets.only(right: 3, bottom: 12),
-            onTap: () {
-              SplitRoute.push(
-                context: context,
-                builder: (context, _) => ServantDetailPage(svt),
-              );
-            },
+            padding: EdgeInsets.only(right: 2, bottom: 12),
           ),
         ));
       }

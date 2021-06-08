@@ -244,6 +244,42 @@ class Servant {
     return res;
   }
 
+  Widget iconBuilder({
+    required BuildContext context,
+    // required Servant svt,
+    double? width,
+    double? height,
+    String? text,
+    bool jumpToDetail = true,
+    EdgeInsets? padding,
+  }) {
+    if (padding == null) {
+      final size = MathUtils.fitSize(width, height, 132 / 144);
+      padding = size == null
+          ? EdgeInsets.zero
+          : EdgeInsets.only(right: size.value / 22, bottom: size.value / 12);
+    }
+    Widget child = ImageWithText(
+      image: db.getIconImage(this.icon,
+          aspectRatio: 132 / 144, width: width, height: height),
+      text: text,
+      width: width,
+      padding: padding,
+    );
+    if (jumpToDetail) {
+      child = InkWell(
+        child: child,
+        onTap: () {
+          SplitRoute.push(
+            context: context,
+            builder: (context, _) => ServantDetailPage(this),
+          );
+        },
+      );
+    }
+    return child;
+  }
+
   factory Servant.fromJson(Map<String, dynamic> data) =>
       _$ServantFromJson(data);
 

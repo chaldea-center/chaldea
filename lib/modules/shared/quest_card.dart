@@ -136,13 +136,13 @@ class _QuestCardState extends State<QuestCard> {
         ));
       }
 
-      if (battle.drops.isNotEmpty)
+      if (battle.drops.isNotEmpty) {
         children.add(Padding(
           padding: EdgeInsets.symmetric(vertical: 3),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Text(S.current.game_drop + ':  '),
+              Text(S.current.game_drop + (quest.isFree ? '(AP): ' : ': ')),
               Expanded(
                 child: Center(
                   child: _getDropsWidget(battle.drops, quest.isFree),
@@ -151,6 +151,7 @@ class _QuestCardState extends State<QuestCard> {
             ],
           ),
         ));
+      }
     }
     if (quest.rewards.isNotEmpty) {
       children.add(Padding(
@@ -319,24 +320,24 @@ class _QuestCardState extends State<QuestCard> {
         ..sort((a, b) => (a.value - b.value).sign.toInt());
       entryList.forEach((entry) {
         String v = entry.value >= 1000
-            ? entry.value.toString()
+            ? entry.value.toInt().toString()
             : entry.value.toStringAsPrecision(4);
-        dropTexts[entry.key] = '${v}AP';
+        dropTexts[entry.key] =
+            formatNumber(double.parse(v), groupSeparator: '', precision: 4);
       });
     } else {
-      items.forEach((key, value) => dropTexts[key] = '*$value');
+      items.forEach((key, value) => dropTexts[key] = value.toString());
     }
     return Wrap(
       spacing: 3,
       runSpacing: 4,
       children: dropTexts.entries
-          .map((entry) => Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  db.getIconImage(entry.key, height: 30),
-                  Text(entry.value, style: TextStyle(fontSize: 14))
-                ],
-              ))
+          .map((entry) => Item.iconBuilder(
+              context: context,
+              itemKey: entry.key,
+              width: 40,
+              text: entry.value,
+              jumpToDetail: true))
           .toList(),
     );
   }

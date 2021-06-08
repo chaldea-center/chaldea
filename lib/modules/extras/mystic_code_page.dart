@@ -28,7 +28,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: Text(S.of(context).mystic_code),
+        title: Text(S.current.mystic_code),
         actions: [
           TextButton(
             onPressed: () => setState(
@@ -51,7 +51,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
             children: [
               Padding(
                   padding: EdgeInsets.only(left: 16, right: 2),
-                  child: Text(S.of(context).level)),
+                  child: Text(S.current.level)),
               SizedBox(
                   width: 20, child: Center(child: Text(_level.toString()))),
               Expanded(
@@ -131,61 +131,6 @@ class _MysticCodePageState extends State<MysticCodePage> {
     }
   }
 
-  Widget buildDetails2(MysticCode mysticCode) {
-    return CustomTable(
-      children: <Widget>[
-        CustomTableRow(children: [
-          TableCellData(
-            child: Text(mysticCode.name,
-                style: TextStyle(fontWeight: FontWeight.bold)),
-            isHeader: true,
-          )
-        ]),
-        CustomTableRow(children: [TableCellData(text: mysticCode.nameJp)]),
-        CustomTableRow(children: [
-          TableCellData(
-            text: mysticCode.description,
-            alignment: Alignment.centerLeft,
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-          ),
-        ]),
-        CustomTableRow(
-          children: [
-            TableCellData(
-              text: mysticCode.descriptionJp,
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              // isHeader: true
-            ),
-          ],
-        ),
-        CustomTableRow(children: [
-          TableCellData(text: S.of(context).obtain_methods, isHeader: false)
-        ]),
-        // CustomTableRow(children: [
-        //   TableCellData(child: Text(mysticCode.obtains.join('\n')))
-        // ]),
-        // CustomTableRow(children: [
-        //   TableCellData(text: S.of(context).skill, isHeader: true)
-        // ]),
-        // CustomTableRow(children: [
-        //   TableCellData(
-        //     child: Column(
-        //       mainAxisSize: MainAxisSize.min,
-        //       children: mysticCode.skills.map((e) => buildSkill(e)).toList(),
-        //     ),
-        //   )
-        // ]),
-        // CustomTableRow(children: [
-        //   TableCellData(text: S.of(context).illustration, isHeader: true)
-        // ]),
-        // CustomTableRow(
-        //   children: [TableCellData(child: buildCodeImages(mysticCode))],
-        // )
-      ],
-    );
-  }
-
   Widget buildDetails(MysticCode mysticCode) {
     return CustomTable(
       children: <Widget>[
@@ -231,14 +176,13 @@ class _MysticCodePageState extends State<MysticCodePage> {
             ],
           ),
         CustomTableRow(children: [
-          TableCellData(text: S.of(context).obtain_methods, isHeader: true)
+          TableCellData(text: S.current.obtain_methods, isHeader: true)
         ]),
         CustomTableRow(children: [
           TableCellData(child: Text(mysticCode.lObtains.join('\n')))
         ]),
-        CustomTableRow(children: [
-          TableCellData(text: S.of(context).skill, isHeader: true)
-        ]),
+        CustomTableRow(
+            children: [TableCellData(text: S.current.skill, isHeader: true)]),
         CustomTableRow(children: [
           TableCellData(
             child: Column(
@@ -248,11 +192,46 @@ class _MysticCodePageState extends State<MysticCodePage> {
           )
         ]),
         CustomTableRow(children: [
-          TableCellData(text: S.of(context).illustration, isHeader: true)
+          TableCellData(text: S.current.game_experience, isHeader: true)
+        ]),
+        for (int row = 0; row < mysticCode.expPoints.length / 5; row++) ...[
+          CustomTableRow.fromTexts(
+            texts: [
+              'Lv.',
+              for (int i = row * 5; i < row * 5 + 5; i++)
+                i == 9 ? '-' : '${i + 1}->${i + 2}'
+            ],
+            defaults: TableCellData(
+                color:
+                    TableCellData.resolveHeaderColor(context).withOpacity(0.5)),
+          ),
+          CustomTableRow.fromTexts(
+            texts: [
+              S.current.info_bond_points_single,
+              for (int i = row * 5; i < row * 5 + 5; i++)
+                i >= mysticCode.expPoints.length
+                    ? '-'
+                    : formatNumber(mysticCode.expPoints[i])
+            ],
+            defaults: TableCellData(maxLines: 1),
+          ),
+          CustomTableRow.fromTexts(
+            texts: [
+              S.current.info_bond_points_sum,
+              for (int i = row * 5; i < row * 5 + 5; i++)
+                i >= mysticCode.expPoints.length
+                    ? '-'
+                    : formatNumber(sum(mysticCode.expPoints.sublist(0, i + 1)))
+            ],
+            defaults: TableCellData(maxLines: 1),
+          ),
+        ],
+        CustomTableRow(children: [
+          TableCellData(text: S.current.illustration, isHeader: true)
         ]),
         CustomTableRow(
           children: [TableCellData(child: buildCodeImages(mysticCode))],
-        )
+        ),
       ],
     );
   }

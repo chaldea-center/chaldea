@@ -524,7 +524,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
 
       // jp slides
       if (carouselSetting.enableJp) {
-        final jpUrl = 'http://view.fate-go.jp';
+        final jpUrl = 'https://view.fate-go.jp';
         taskJp = _dio.get(jpUrl).then((response) {
           var jpParser = parser.parse(response.data.toString());
           var jpElement = jpParser.getElementsByClassName('slide').getOrNull(0);
@@ -593,7 +593,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         }
       } else {
         if (showToast) {
-          EasyLoading.showInfo('Not update');
+          EasyLoading.showInfo('Not updated');
         }
       }
     } catch (e, s) {

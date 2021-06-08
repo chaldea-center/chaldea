@@ -1,7 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
-import 'package:chaldea/modules/servant/servant_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';
 import 'package:chaldea/modules/summon/summon_detail_page.dart';
 import 'package:flutter/services.dart';
@@ -100,13 +99,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
       children.add(ListTile(
         title: Text(LocalizedText.of(
             chs: '活动从者', jpn: '配布サーヴァント', eng: 'Welfare Servant')),
-        trailing: InkWell(
-          child: db.getIconImage(svt.icon, aspectRatio: 132 / 144),
-          onTap: () {
-            SplitRoute.push(
-                context: context, builder: (_, __) => ServantDetailPage(svt));
-          },
-        ),
+        trailing: svt.iconBuilder(context: context),
       ));
     }
 
