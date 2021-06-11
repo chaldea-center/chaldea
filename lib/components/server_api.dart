@@ -97,6 +97,13 @@ class OneSvtRecResult {
     return _imgBytes;
   }
 
+  bool get isValid {
+    return _imgBytes != null &&
+        svtNo != null &&
+        svtNo! > 0 &&
+        skills.every((e) => e != null && e >= 1 && e <= 10);
+  }
+
   factory OneSvtRecResult.fromJson(Map<String, dynamic> data) =>
       _$OneSvtRecResultFromJson(data);
 

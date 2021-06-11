@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:path/path.dart' as pathlib;
@@ -73,7 +75,7 @@ class ImportSvtScreenshotPageState extends State<ImportSvtScreenshotPage> {
                       }).toList(),
                     ),
                   ),
-                if (results.isNotEmpty) Expanded(child: _resultList()),
+                if (results.isNotEmpty) Expanded(flex: 2, child: _resultList()),
               ],
             ),
           ),
@@ -85,6 +87,8 @@ class ImportSvtScreenshotPageState extends State<ImportSvtScreenshotPage> {
   }
 
   Widget _buildButtonBar() {
+    List<OneSvtRecResult> usedResults =
+        results.where((e) => e.isValid && e.checked).toList();
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
       alignment: WrapAlignment.center,
@@ -99,47 +103,101 @@ class ImportSvtScreenshotPageState extends State<ImportSvtScreenshotPage> {
             child: Text(LocalizedText.of(
                 chs: '下载结果', jpn: '結果をダウンロード', eng: 'Download Result'))),
         ElevatedButton(
-          onPressed: results.isEmpty
+          child: Text(S.current.import_data),
+          onPressed: usedResults.isEmpty
               ? null
-              : () {
-                  SimpleCancelOkDialog(
-                    title: Text(S.current.import_screenshot_update_items),
-                    content: Text(S.current.import_screenshot_hint),
-                    hideOk: true,
-                    actions: [
-                      TextButton(
-                          onPressed: () {
-                            // TODO
-                            // db.curUser.items..addAll(output);
-                            // db.itemStat.updateLeftItems();
-                            // Navigator.of(context).pop();
-                            // EasyLoading.showSuccess('Updated');
-                          },
-                          child: Text(S.current.update)),
-                    ],
-                  ).showDialog(context);
-                },
-          child: Text(S.current.import_screenshot_update_items),
+              : () => SimpleCancelOkDialog(
+                    title: Text(S.current.import_data),
+                    content: Text(
+                        '${usedResults.length}/${results.length} ${S.current.servant} -> '
+                        '${db.curUser.name} - ${S.current.plan_x(db.curUser.curSvtPlanNo + 1)}'),
+                    onTapOk: () {
+                      usedResults.forEach((result) {
+                        final status = db.curUser.svtStatusOf(result.svtNo!);
+                        status
+                          ..favorite = true
+                          ..curVal.skills = [
+                            result.skill1!,
+                            result.skill2!,
+                            result.skill3!
+                          ];
+                      });
+                      db.itemStat.update();
+                      EasyLoading.showSuccess(S.current.import_data_success);
+                    },
+                  ).showDialog(context),
         ),
       ],
     );
   }
 
-  // Map<String, TextEditingController> _controllers = {};
-
   Widget _resultList() {
     List<Widget> children = [];
     results.forEach((svtResult) {
-      // _controllers.putIfAbsent(key, () => TextEditingController());
-      // _controllers[key]!.text = value.toString();
       if (svtResult.imgBytes == null) return;
       Servant? svt;
       if (svtResult.svtNo != null) {
-        svt = db.gameData.servants[svtResult.svtNo];
+        svt = db.gameData.servantsWithUser[svtResult.svtNo];
       }
-      if (svt == null) {
-        svtResult.checked = false;
-      }
+      bool valid = svt != null && svtResult.isValid;
+      Widget nameBtn = TextButton(
+        child: AutoSizeText(
+          svt != null ? 'No.${svt.no} ${svt.info.localizedName}' : 'unknown',
+          maxLines: 2,
+          minFontSize: 6,
+          maxFontSize: 14,
+        ),
+        style: TextButton.styleFrom(alignment: Alignment.centerLeft),
+        onPressed: () async {
+          // use Servant.no rather Servant.originNo
+          await SplitRoute.push(
+            context: context,
+            detail: false,
+            builder: (ctx, _) => ServantListPage(
+              onSelected: (_svt) {
+                svtResult.svtNo = _svt.no;
+                Navigator.of(context).pop();
+              },
+            ),
+          );
+          setState(() {});
+        },
+      );
+      List<Widget> skillBtns = List.generate(
+        3,
+        (index) => SizedBox(
+          width: 25,
+          child: DropdownButton<int?>(
+            value: MathUtils.inRange(svtResult.skills[index], 1, 10)
+                ? svtResult.skills[index]
+                : null,
+            hint: Text('-1'),
+            items: List.generate(
+              10,
+              (index) => DropdownMenuItem(
+                  value: index + 1,
+                  child: Text((index + 1).toString().padLeft(2))),
+            ),
+            icon: Container(),
+            underline: Container(),
+            dropdownColor: Theme.of(context).cardColor,
+            onChanged: (v) {
+              switch (index) {
+                case 0:
+                  svtResult.skill1 = v;
+                  break;
+                case 1:
+                  svtResult.skill2 = v;
+                  break;
+                case 2:
+                  svtResult.skill3 = v;
+                  break;
+              }
+              setState(() {});
+            },
+          ),
+        ),
+      );
       children.add(ListTile(
         leading: Padding(
           padding: EdgeInsets.symmetric(vertical: 3),
@@ -147,30 +205,24 @@ class ImportSvtScreenshotPageState extends State<ImportSvtScreenshotPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Image.memory(svtResult.imgBytes!, width: 40),
-              db.getIconImage(svt?.icon, width: 40, aspectRatio: 132 / 144),
+              svt?.iconBuilder(context: context, width: 40) ??
+                  db.getIconImage(null, width: 40, aspectRatio: 132 / 144),
             ],
           ),
         ),
         title: Row(
           children: [
-            Expanded(
-              child: Text(
-                svt?.info.localizedName ?? 'unknown',
-                style: TextStyle(fontSize: 14),
-              ),
-            ),
-            Expanded(child: Text(svtResult.skills.join('/'))),
+            Expanded(flex: 4, child: nameBtn),
+            ...divideTiles(skillBtns, divider: Text('/')),
           ],
         ),
         trailing: Checkbox(
-          value: svtResult.checked,
-          onChanged: svt == null
-              ? null
-              : (v) {
-                  setState(() {
+          value: valid && svtResult.checked,
+          onChanged: valid
+              ? (v) => setState(() {
                     if (v != null) svtResult.checked = v;
-                  });
-                },
+                  })
+              : null,
         ),
       ));
     });
@@ -261,43 +313,32 @@ class ImportSvtScreenshotPageState extends State<ImportSvtScreenshotPage> {
   }
 
   Widget get helpBtn {
+    S.current.ascension;
     return IconButton(
       onPressed: () {
         final helpMsg = LocalizedText.of(
-          chs: """1. 目前仅可解析素材信息，理论上所有服都可使用
+          chs: """0. 测试阶段：有任何问题欢迎反馈交流！！！
+1. 功能：解析截图中的从者技能等级（不包括灵基等级），应该不限服务器
 2. 使用方法: 
  - 点击右上角可同时导入多张截图
- - 上传成功后悠然得喝口茶再下载结果导入
-3. 如识别结果偏差很大，请在反馈中描述下这种偏差，以便改进
-4. 注意事项
+ - 上传成功后稍等片刻再下载结果
+ - 每行识别结果从左到右分别是：
+   - 识别到的从者头像
+   - 本地从者头像：可点击进入详情
+   - 识别的从者编号姓名：点击进入列表页更改从者（若存在识别错误或识别失败）
+   - 三个技能数值：点击可修改数值
+   - 复选框：是否选择导入，仅识别出且技能数值正确时可用
+3. 必要条件!!!重要!!!
+  - 技能升级页的截图，头像缩放最好为中或大，小头像识别失败率高。通过左下角切换。
+  - 仅识别被“锁定锁定锁定”的从者，不会有人不锁吧
+  - 头像框务必完整显示，至少保证职阶图标、技能数字等完全显示
+4. 其他注意事项
  - 单次上传总大小有限制(~15MB)，否则会出现413错误，请分多次上传下载
- - 截图尽量别做裁剪等修改
- - 素材框务必完全显示, 否则对应素材可能识别不到
- - 解析精度应该可能或许还可以，下载结果后可自行修正
- - 解析结果保留24h, 24h后可能删除""",
-          jpn: """1.現在、解析できるのはアイテムのみであり、理論的にはすべてのサーバーに適用可能
-2.使用方法：
-  - 右上隅をクリックして、複数のスクリーンショットを同時にインポートします
-  - アップロードが成功したら、しばらく待って、結果をダウンロードして、インポートする
-3.認識結果に大きな偏差がある場合は、改善のためにフィードバックに記述してください
-4.注意が必要な事項
-  - 1回のアップロードの合計サイズは制限されています（〜15MB）。そうしないと、413エラーが発生します。複数回アップロードおよびダウンロードしてください。
-  - スクリーンショットを変更しないようにしてください
-  - アイテムを完全に表示する必要があります。そうしないと、対応するマテリアルが認識されない場合があります。
-  - 解析の偏差はそれ手動で修正することができます。
-  - 分析結果は24時間保持され、24時間後に削除される場合があります """,
-          eng:
-              """1. At present, only items can be parsed, all servers should be supported
-2. How to use:
-  - Click the import button on upper right corner to import multiple screenshots at the same time
-  - Wait a few minutes after the upload is successful, then download the result and import it
-3. If the recognition result has a large deviation, please describe the deviation in the feedback for future improvement
-4. Attentions
-  - The total size of a single upload is limited (~15MB), otherwise a 413 error will occur, please upload and download multiple times
-  - Don't crop/modify the screenshots
-  - The item must be fully displayed, otherwise the it may not be recognized
-  - You can correct the result after downloading if any recognition mistake
-  - The result will be retained for about 24h, and may be deleted after 24h""",
+ - 截图请勿裁剪等修改，请勿分屏
+ - 解析结果保留24h, 24h后可能删除
+ - 新从者/灵衣需要服务器更新头像数据，如有未能识别的，请积极反馈""",
+          jpn: """""",
+          eng: """""",
         );
         SimpleCancelOkDialog(
           title: Text(S.of(context).help),

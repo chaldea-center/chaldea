@@ -5,6 +5,8 @@ part of datatypes;
 class GameData {
   String version;
   List<int> unavailableSvts;
+
+  /// Be careful when access [servants] and [servantsWithUser]
   Map<int, Servant> servants;
   Map<int, Costume> costumes;
   Map<int, CraftEssence> crafts;

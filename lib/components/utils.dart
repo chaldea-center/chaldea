@@ -98,6 +98,16 @@ class MathUtils {
         _convertNum(0), (p, c) => (p + (c ?? _convertNum<T>(0))) as T);
   }
 
+  static bool inRange<T extends Comparable>(T? value, T lower, T upper,
+      [bool includeEnds = true]) {
+    if (value == null) return false;
+    if (includeEnds) {
+      return value.compareTo(lower) >= 0 && value.compareTo(upper) <= 0;
+    } else {
+      return value.compareTo(lower) > 0 && value.compareTo(upper) < 0;
+    }
+  }
+
   static MapEntry<double, double>? fitSize(
       double? width, double? height, double? aspectRatio) {
     if (aspectRatio == null || (width == null && height == null)) return null;

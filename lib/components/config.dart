@@ -45,6 +45,8 @@ class Database {
 
   User get curUser => userData.curUser;
 
+  Map<int, ServantPlan> get curPlan => curUser.curSvtPlan;
+
   final ItemStatistics itemStat = ItemStatistics();
   final RuntimeData runtimeData = RuntimeData();
 

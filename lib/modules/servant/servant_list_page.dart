@@ -14,8 +14,10 @@ import 'servant_filter_page.dart';
 
 class ServantListPage extends StatefulWidget {
   final bool planMode;
+  final void Function(Servant)? onSelected;
 
-  ServantListPage({Key? key, this.planMode = false}) : super(key: key);
+  ServantListPage({Key? key, this.planMode = false, this.onSelected})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => ServantListPageState();
@@ -653,14 +655,17 @@ class ServantListPageState extends State<ServantListPage> {
   }
 
   void _onTapSvt(Servant svt) {
-    SplitRoute.push(
-      context: context,
-      builder: (context, _) => ServantDetailPage(svt),
-      popDetail: true,
-    );
-    setState(() {
+    if (widget.onSelected != null) {
+      widget.onSelected!(svt);
+    } else {
+      SplitRoute.push(
+        context: context,
+        builder: (context, _) => ServantDetailPage(svt),
+        popDetail: true,
+      );
       _selectedSvtNo = svt.no;
-    });
+    }
+    setState(() {});
   }
 
   Widget _getDetailTable(Servant svt) {

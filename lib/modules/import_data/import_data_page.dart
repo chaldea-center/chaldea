@@ -47,9 +47,9 @@ class _ImportDataPageState extends State<ImportDataPage>
           isScrollable: !Language.isCN,
           tabs: [
             Tab(text: 'HTTP'),
-            Tab(text: S.of(context).item_screenshot),
-            Tab(text: 'SvtRec'),
-            Tab(text: S.of(context).import_guda_data)
+            Tab(text: S.current.item_screenshot),
+            Tab(text: S.current.skill),
+            Tab(text: S.current.import_guda_data)
           ],
         ),
       ),
