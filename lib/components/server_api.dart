@@ -1,11 +1,17 @@
+library server_api;
+
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 import 'custom_dialogs.dart';
 import 'extensions.dart';
 import 'logger.dart';
+
+part 'server_api.g.dart';
 
 class ChaldeaResponse {
   bool success;
@@ -41,4 +47,58 @@ class ChaldeaResponse {
       content: Text(content),
     ).showDialog(context);
   }
+}
+
+@JsonSerializable()
+class SvtRecResults {
+  String? uuid;
+  List<OneSvtRecResult> results;
+
+  SvtRecResults({this.uuid, List<OneSvtRecResult>? results})
+      : results = results ?? [];
+
+  factory SvtRecResults.fromJson(Map<String, dynamic> data) =>
+      _$SvtRecResultsFromJson(data);
+
+  Map<String, dynamic> toJson() => _$SvtRecResultsToJson(this);
+}
+
+@JsonSerializable()
+class OneSvtRecResult {
+  int? svtNo;
+  int? maxLv;
+  int? skill1;
+  int? skill2;
+  int? skill3;
+  String? image;
+
+  OneSvtRecResult({
+    this.svtNo,
+    this.maxLv,
+    this.skill1,
+    this.skill2,
+    this.skill3,
+    this.image,
+  });
+
+  bool checked = true;
+
+  List<int?> get skills => [skill1, skill2, skill3];
+  Uint8List? _imgBytes;
+
+  Uint8List? get imgBytes {
+    if (image == null) return null;
+    if (_imgBytes != null) return _imgBytes;
+    try {
+      _imgBytes = base64Decode(image!);
+    } catch (e, s) {
+      logger.e('decode image base64 string failed', e, s);
+    }
+    return _imgBytes;
+  }
+
+  factory OneSvtRecResult.fromJson(Map<String, dynamic> data) =>
+      _$OneSvtRecResultFromJson(data);
+
+  Map<String, dynamic> toJson() => _$OneSvtRecResultToJson(this);
 }

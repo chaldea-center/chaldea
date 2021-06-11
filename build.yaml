@@ -1,7 +1,7 @@
 targets:
   $default:
     sources:
-      - lib/components/datatypes/**
+      - lib/components/**
       - pubspec.*
       - $package$
       - lib/$lib$

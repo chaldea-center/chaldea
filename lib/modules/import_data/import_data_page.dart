@@ -1,5 +1,6 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/import_data/import_http_response.dart';
+import 'package:chaldea/modules/import_data/import_svt_screenshot_page.dart';
 
 import 'import_guda_page.dart';
 import 'import_screenshot_page.dart';
@@ -16,12 +17,13 @@ class _ImportDataPageState extends State<ImportDataPage>
 
   GlobalKey<ImportHttpResponseState> keyHttp = GlobalKey();
   GlobalKey<ImportScreenshotPageState> keyScreenshot = GlobalKey();
+  GlobalKey<ImportSvtScreenshotPageState> keySvtScreenshot = GlobalKey();
   GlobalKey<ImportGudaPageState> keyGuda = GlobalKey();
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(() {
       curTab = _tabController.index;
     });
@@ -46,6 +48,7 @@ class _ImportDataPageState extends State<ImportDataPage>
           tabs: [
             Tab(text: 'HTTP'),
             Tab(text: S.of(context).item_screenshot),
+            Tab(text: 'SvtRec'),
             Tab(text: S.of(context).import_guda_data)
           ],
         ),
@@ -57,6 +60,9 @@ class _ImportDataPageState extends State<ImportDataPage>
               builder: (context) => ImportHttpResponse(key: keyHttp)),
           KeepAliveBuilder(
               builder: (context) => ImportScreenshotPage(key: keyScreenshot)),
+          KeepAliveBuilder(
+              builder: (context) =>
+                  ImportSvtScreenshotPage(key: keySvtScreenshot)),
           KeepAliveBuilder(builder: (context) => ImportGudaPage(key: keyGuda)),
         ],
       ),
@@ -78,6 +84,9 @@ class _ImportDataPageState extends State<ImportDataPage>
         keyScreenshot.currentState?.importImages();
         break;
       case 2:
+        keySvtScreenshot.currentState?.importImages();
+        break;
+      case 3:
         keyGuda.currentState?.importGudaFile();
         break;
       default:
