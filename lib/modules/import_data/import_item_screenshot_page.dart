@@ -4,17 +4,18 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path/path.dart' as pathlib;
 
-class ImportScreenshotPage extends StatefulWidget {
-  ImportScreenshotPage({Key? key}) : super(key: key);
+class ImportItemScreenshotPage extends StatefulWidget {
+  ImportItemScreenshotPage({Key? key}) : super(key: key);
 
   @override
-  ImportScreenshotPageState createState() => ImportScreenshotPageState();
+  ImportItemScreenshotPageState createState() =>
+      ImportItemScreenshotPageState();
 }
 
-class ImportScreenshotPageState extends State<ImportScreenshotPage> {
-  late ScrollController _scrollController;
+class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> {
   Map<String, int> output = {};
   late Dio _dio;
   late List<File> imageFiles;
@@ -22,7 +23,6 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController();
     imageFiles = db.runtimeData.itemRecognizeImageFiles;
     _dio = Dio(BaseOptions(
       // baseUrl: 'http://localhost:8083',
@@ -34,15 +34,22 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    _scrollController.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return Column(
+    return Scaffold(
+      appBar: AppBar(
+        leading: BackButton(),
+        title: Text(LocalizedText.of(
+            chs: '素材截图解析', jpn: 'アイテムのスクリーンショット', eng: 'Items Screenshots')),
+        actions: [
+          helpBtn,
+          IconButton(
+            onPressed: importImages,
+            icon: FaIcon(FontAwesomeIcons.fileImport),
+            tooltip: S.current.import_source_file,
+          ),
+        ],
+      ),
+      body: Column(
         children: [
           Expanded(
             child: Column(
@@ -61,15 +68,16 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
                   ),
                 if (imageFiles.isNotEmpty)
                   Expanded(
-                    child: ListView(
-                      controller: _scrollController,
-                      children: imageFiles.map((e) {
-                        return Container(
-                          width: constraints.biggest.width,
-                          padding: EdgeInsets.only(bottom: 6),
-                          child: Image.file(e, fit: BoxFit.fitWidth),
-                        );
-                      }).toList(),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) => ListView(
+                        children: imageFiles.map((e) {
+                          return Container(
+                            width: constraints.biggest.width,
+                            padding: EdgeInsets.only(bottom: 6),
+                            child: Image.file(e, fit: BoxFit.fitWidth),
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ),
                 if (output.isNotEmpty) Expanded(child: _itemList()),
@@ -77,48 +85,53 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
             ),
           ),
           kDefaultDivider,
-          _buildButtonBar(),
+          buttonBar,
         ],
-      );
-    });
+      ),
+    );
   }
 
-  Widget _buildButtonBar() {
-    return Wrap(
-      crossAxisAlignment: WrapCrossAlignment.center,
-      alignment: WrapAlignment.center,
-      spacing: 6,
+  Widget get buttonBar {
+    return ButtonBar(
+      alignment: MainAxisAlignment.center,
       children: [
-        helpBtn,
-        ElevatedButton(
-            onPressed: imageFiles.isEmpty ? null : _uploadScreenshots,
-            child: Text(S.of(context).upload)),
-        ElevatedButton(
-            onPressed: _fetchResult,
-            child: Text(LocalizedText.of(
-                chs: '下载结果', jpn: '結果をダウンロード', eng: 'Download Result'))),
-        ElevatedButton(
-          onPressed: output.isEmpty
-              ? null
-              : () {
-                  SimpleCancelOkDialog(
-                    title: Text(S.current.import_screenshot_update_items),
-                    content: Text(S.current.import_screenshot_hint),
-                    hideOk: true,
-                    actions: [
-                      TextButton(
-                          onPressed: () {
-                            db.curUser.items..addAll(output);
-                            db.itemStat.updateLeftItems();
-                            Navigator.of(context).pop();
-                            EasyLoading.showSuccess('Updated');
-                          },
-                          child: Text(S.current.update)),
-                    ],
-                  ).showDialog(context);
-                },
-          child: Text(S.current.import_screenshot_update_items),
-        ),
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          alignment: WrapAlignment.center,
+          spacing: 6,
+          children: [
+            ElevatedButton(
+                onPressed: imageFiles.isEmpty ? null : _uploadScreenshots,
+                child: Text(S.current.upload)),
+            ElevatedButton(
+                onPressed: _fetchResult,
+                child: Text(LocalizedText.of(
+                    chs: '下载结果', jpn: '結果をダウンロード', eng: 'Download Result'))),
+            ElevatedButton(
+              onPressed: output.isEmpty
+                  ? null
+                  : () {
+                      SimpleCancelOkDialog(
+                        title: Text(S.current.import_screenshot_update_items),
+                        content: Text(S.current.import_screenshot_hint),
+                        hideOk: true,
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              db.curUser.items..addAll(output);
+                              db.itemStat.updateLeftItems();
+                              Navigator.of(context).pop();
+                              EasyLoading.showSuccess('Updated');
+                            },
+                            child: Text(S.current.update),
+                          ),
+                        ],
+                      ).showDialog(context);
+                    },
+              child: Text(S.current.import_screenshot_update_items),
+            ),
+          ],
+        )
       ],
     );
   }
@@ -288,8 +301,7 @@ class ImportScreenshotPageState extends State<ImportScreenshotPage> {
         ).showDialog(context);
       },
       icon: Icon(Icons.help),
-      tooltip: S.of(context).help,
-      color: Theme.of(context).colorScheme.primary,
+      tooltip: S.current.help,
     );
   }
 }

@@ -5,18 +5,18 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path/path.dart' as pathlib;
 
-class ImportSvtScreenshotPage extends StatefulWidget {
-  ImportSvtScreenshotPage({Key? key}) : super(key: key);
+class ImportSkillScreenshotPage extends StatefulWidget {
+  ImportSkillScreenshotPage({Key? key}) : super(key: key);
 
   @override
-  ImportSvtScreenshotPageState createState() => ImportSvtScreenshotPageState();
+  ImportSkillScreenshotPageState createState() =>
+      ImportSkillScreenshotPageState();
 }
 
-class ImportSvtScreenshotPageState extends State<ImportSvtScreenshotPage> {
-  late ScrollController _scrollController;
-
+class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage> {
   // Map<String, int> output = {};
   List<OneSvtRecResult> results = [];
   late Dio _dio;
@@ -25,7 +25,6 @@ class ImportSvtScreenshotPageState extends State<ImportSvtScreenshotPage> {
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController();
     imageFiles = db.runtimeData.svtRecognizeImageFiles;
     _dio = Dio(BaseOptions(
       baseUrl: 'http://localhost:8083',
@@ -37,15 +36,22 @@ class ImportSvtScreenshotPageState extends State<ImportSvtScreenshotPage> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    _scrollController.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return Column(
+    return Scaffold(
+      appBar: AppBar(
+        leading: BackButton(),
+        title: Text(LocalizedText.of(
+            chs: '技能截图解析', jpn: 'スキルのスクリーンショット', eng: 'Skill Screenshots')),
+        actions: [
+          helpBtn,
+          IconButton(
+            onPressed: importImages,
+            icon: FaIcon(FontAwesomeIcons.fileImport),
+            tooltip: S.current.import_source_file,
+          ),
+        ],
+      ),
+      body: Column(
         children: [
           Expanded(
             child: Column(
@@ -54,25 +60,21 @@ class ImportSvtScreenshotPageState extends State<ImportSvtScreenshotPage> {
                   Center(
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      child: Text(LocalizedText.of(
-                        chs: '理论支持现有所有服务器的素材截图解析，精度有所提升',
-                        jpn: '理論的に既存のすべてのサーバーのアイテムスクリーンショット分析をサポートする',
-                        eng:
-                            'Support item screenshots of all servers with improved accuracy',
-                      )),
+                      child: Text(''),
                     ),
                   ),
                 if (imageFiles.isNotEmpty)
                   Expanded(
-                    child: ListView(
-                      controller: _scrollController,
-                      children: imageFiles.map((e) {
-                        return Container(
-                          width: constraints.biggest.width,
-                          padding: EdgeInsets.only(bottom: 6),
-                          child: Image.file(e, fit: BoxFit.fitWidth),
-                        );
-                      }).toList(),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) => ListView(
+                        children: imageFiles.map((e) {
+                          return Container(
+                            width: constraints.biggest.width,
+                            padding: EdgeInsets.only(bottom: 6),
+                            child: Image.file(e, fit: BoxFit.fitWidth),
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ),
                 if (results.isNotEmpty) Expanded(flex: 2, child: _resultList()),
@@ -82,8 +84,8 @@ class ImportSvtScreenshotPageState extends State<ImportSvtScreenshotPage> {
           kDefaultDivider,
           _buildButtonBar(),
         ],
-      );
-    });
+      ),
+    );
   }
 
   Widget _buildButtonBar() {
@@ -94,7 +96,6 @@ class ImportSvtScreenshotPageState extends State<ImportSvtScreenshotPage> {
       alignment: WrapAlignment.center,
       spacing: 6,
       children: [
-        helpBtn,
         ElevatedButton(
             onPressed: imageFiles.isEmpty ? null : _uploadScreenshots,
             child: Text(S.of(context).upload)),
@@ -313,7 +314,6 @@ class ImportSvtScreenshotPageState extends State<ImportSvtScreenshotPage> {
   }
 
   Widget get helpBtn {
-    S.current.ascension;
     return IconButton(
       onPressed: () {
         final helpMsg = LocalizedText.of(
@@ -348,8 +348,7 @@ class ImportSvtScreenshotPageState extends State<ImportSvtScreenshotPage> {
         ).showDialog(context);
       },
       icon: Icon(Icons.help),
-      tooltip: S.of(context).help,
-      color: Theme.of(context).colorScheme.primary,
+      tooltip: S.current.help,
     );
   }
 }

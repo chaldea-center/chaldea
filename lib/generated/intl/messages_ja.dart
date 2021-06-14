@@ -300,6 +300,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("識別された資料のみを更新する"),
         "import_screenshot_update_items":
             MessageLookupByLibrary.simpleMessage("更新素材"),
+        "import_source_file":
+            MessageLookupByLibrary.simpleMessage("ソースファイルをインポート"),
         "info_agility": MessageLookupByLibrary.simpleMessage("敏捷"),
         "info_alignment": MessageLookupByLibrary.simpleMessage("属性"),
         "info_bond_points": MessageLookupByLibrary.simpleMessage("絆ポイント"),

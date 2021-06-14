@@ -394,5 +394,6 @@
   "import_screenshot_hint": "識別された資料のみを更新する",
   "backup_history": "バックアップ履歴",
   "carousel_setting": "カルーセル設定",
-  "change_log": "更新履歴"
+  "change_log": "更新履歴",
+  "import_source_file": "ソースファイルをインポート"
 }

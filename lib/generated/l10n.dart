@@ -3975,6 +3975,16 @@ class S {
       args: [],
     );
   }
+
+  /// `导入源数据`
+  String get import_source_file {
+    return Intl.message(
+      '导入源数据',
+      name: 'import_source_file',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

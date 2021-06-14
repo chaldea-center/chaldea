@@ -323,9 +323,8 @@ class CraftListPageState extends State<CraftListPage> {
 
   CraftEssence? switchNext(CraftEssence cur, bool next) {
     void _setSelected(CraftEssence _ce) {
-      setState(() {
-        _selectedNo = _ce.no;
-      });
+      _selectedNo = _ce.no;
+      if (mounted) setState(() {});
     }
 
     if (shownList.length <= 0) return null;

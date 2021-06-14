@@ -290,9 +290,8 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
 
   CommandCode? switchNext(CommandCode cur, bool next) {
     void _setSelected(CommandCode _code) {
-      setState(() {
-        _selectedNo = _code.no;
-      });
+      _selectedNo = _code.no;
+      if (mounted) setState(() {});
     }
 
     if (shownList.isEmpty) return null;

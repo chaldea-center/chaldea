@@ -283,6 +283,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("仅更新识别出的素材"),
         "import_screenshot_update_items":
             MessageLookupByLibrary.simpleMessage("更新素材"),
+        "import_source_file": MessageLookupByLibrary.simpleMessage("导入源数据"),
         "info_agility": MessageLookupByLibrary.simpleMessage("敏捷"),
         "info_alignment": MessageLookupByLibrary.simpleMessage("属性"),
         "info_bond_points": MessageLookupByLibrary.simpleMessage("羁绊点数"),

@@ -391,5 +391,6 @@
   "import_screenshot_hint": "仅更新识别出的素材",
   "backup_history": "历史备份",
   "carousel_setting": "轮播设置",
-  "change_log": "更新历史"
+  "change_log": "更新历史",
+  "import_source_file": "导入源数据"
 }

@@ -1,45 +1,60 @@
 import 'package:chaldea/components/components.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ImportGudaPage extends StatefulWidget {
   const ImportGudaPage({Key? key}) : super(key: key);
 
   @override
-  ImportGudaPageState createState() => ImportGudaPageState();
+  _ImportGudaPageState createState() => _ImportGudaPageState();
 }
 
-class ImportGudaPageState extends State<ImportGudaPage> {
-  late ScrollController _scrollController;
+class _ImportGudaPageState extends State<ImportGudaPage> {
   String? gudaData;
   bool? itemOrSvt;
 
   @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _scrollController.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Expanded(
-          child: SingleChildScrollView(
-            controller: _scrollController,
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            child: Text(gudaData ?? ''),
+    return Scaffold(
+      appBar: AppBar(
+        leading: BackButton(),
+        title: Text(
+            LocalizedText.of(chs: 'Guda数据', jpn: 'Gudaデータ', eng: 'Guda Data')),
+        actions: [
+          IconButton(
+            onPressed: () {
+              SimpleCancelOkDialog(
+                title: Text(S.current.help),
+                scrollable: true,
+                content: Text(LocalizedText.of(
+                    chs: '导入iOS应用"Guda"的数据，支持素材和从者',
+                    jpn: 'iOSアプリ「Guda」のデータをインポートする',
+                    eng: 'Import item or servant data from iOS app "Guda"')),
+              ).showDialog(context);
+            },
+            icon: Icon(Icons.help),
+            tooltip: S.current.help,
           ),
-        ),
-        kDefaultDivider,
-        buttonBar,
-      ],
+          IconButton(
+            onPressed: importFile,
+            icon: FaIcon(FontAwesomeIcons.fileImport),
+            tooltip: S.current.import_source_file,
+          ),
+        ],
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Text(gudaData ?? ''),
+            ),
+          ),
+          kDefaultDivider,
+          buttonBar,
+        ],
+      ),
     );
   }
 
@@ -47,20 +62,6 @@ class ImportGudaPageState extends State<ImportGudaPage> {
     return ButtonBar(
       alignment: MainAxisAlignment.center,
       children: [
-        IconButton(
-          onPressed: () {
-            SimpleCancelOkDialog(
-              title: Text(S.current.help),
-              scrollable: true,
-              content: Text(LocalizedText.of(
-                  chs: '导入iOS应用"Guda"的数据，支持素材和从者',
-                  jpn: 'iOSアプリ「Guda」のデータをインポートする',
-                  eng: 'Import item or servant data from iOS app "Guda"')),
-            ).showDialog(context);
-          },
-          icon: Icon(Icons.help),
-          color: Theme.of(context).colorScheme.primary,
-        ),
         ElevatedButton(
           child: Text(itemOrSvt == null
               ? S.current.import_data
@@ -73,7 +74,7 @@ class ImportGudaPageState extends State<ImportGudaPage> {
     );
   }
 
-  void importGudaFile() async {
+  void importFile() async {
     try {
       FilePickerCross filePickerCross =
           await FilePickerCross.importFromStorage();
@@ -87,7 +88,9 @@ class ImportGudaPageState extends State<ImportGudaPage> {
       if (mounted) {
         setState(() {});
       }
-    } catch (e) {
+    } on FileSelectionCanceledError {} catch (e, s) {
+      logger.e('import guda file failed', e, s);
+      EasyLoading.showError('Something went wrong\n$e');
       return;
     }
   }
@@ -99,13 +102,15 @@ class ImportGudaPageState extends State<ImportGudaPage> {
     return table.where((e) => e.isNotEmpty).toList();
   }
 
-  _import() {
-    if (itemOrSvt == true)
+  void _import() {
+    if (itemOrSvt == true) {
       _importGudaItems();
-    else if (itemOrSvt == false) _importGudaSvts();
+    } else if (itemOrSvt == false) {
+      _importGudaSvts();
+    }
   }
 
-  _importGudaItems() async {
+  void _importGudaItems() async {
     if (gudaData == null) return;
     try {
       List<List<String>> table = _splitTable(gudaData!);

@@ -392,5 +392,6 @@
   "import_screenshot_hint": "Only update recognized items",
   "backup_history": "Backup History",
   "carousel_setting": "Carousel Setting",
-  "change_log": "Change Log"
+  "change_log": "Change Log",
+  "import_source_file": "Import Source File"
 }

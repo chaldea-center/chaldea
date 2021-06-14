@@ -331,6 +331,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Only update recognized items"),
         "import_screenshot_update_items":
             MessageLookupByLibrary.simpleMessage("Update Items"),
+        "import_source_file":
+            MessageLookupByLibrary.simpleMessage("Import Source File"),
         "info_agility": MessageLookupByLibrary.simpleMessage("Agility"),
         "info_alignment": MessageLookupByLibrary.simpleMessage("Alignment"),
         "info_bond_points": MessageLookupByLibrary.simpleMessage("Bond Points"),

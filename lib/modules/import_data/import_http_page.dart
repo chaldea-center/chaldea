@@ -5,20 +5,19 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/home/subpage/account_page.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'bond_detail_page.dart';
 
-class ImportHttpResponse extends StatefulWidget {
-  ImportHttpResponse({Key? key}) : super(key: key);
+class ImportHttpPage extends StatefulWidget {
+  ImportHttpPage({Key? key}) : super(key: key);
 
   @override
-  ImportHttpResponseState createState() => ImportHttpResponseState();
+  ImportHttpPageState createState() => ImportHttpPageState();
 }
 
-class ImportHttpResponseState extends State<ImportHttpResponse> {
-  late ScrollController _scrollController;
-
+class ImportHttpPageState extends State<ImportHttpPage> {
   // settings
   bool _includeItem = true;
   bool _includeSvt = true;
@@ -53,7 +52,6 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController();
     svtIdMap = db.gameData.servants.map((key, svt) => MapEntry(svt.svtId, svt));
     craftIdMap =
         db.gameData.crafts.map((key, craft) => MapEntry(craft.gameId, craft));
@@ -73,52 +71,70 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
   @override
   Widget build(BuildContext context) {
     _shownSvts.clear();
-    return Column(
-      children: [
-        Padding(padding: EdgeInsets.only(top: 6)),
-        Expanded(
-          child: topLogin == null
-              ? Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Column(
-                    children: [
-                      Text(
-                        LocalizedText.of(
-                            chs: '目前仅国服可用',
-                            jpn: '現在、中国サーバーのみがサポートされています',
-                            eng: 'Only Chinese server is supported yet'),
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 10),
-                      Text(S.current.import_http_body_hint),
-                    ],
+    return Scaffold(
+      appBar: AppBar(
+        leading: BackButton(),
+        title: Text(LocalizedText.of(
+            chs: 'HTTPS抓包', jpn: 'HTTPSスニッフィング', eng: 'HTTPS Sniffing')),
+        actions: [
+          IconButton(
+            onPressed: showHelp,
+            tooltip: S.current.help,
+            icon: Icon(Icons.help),
+          ),
+          IconButton(
+            onPressed: importResponseBody,
+            icon: FaIcon(FontAwesomeIcons.fileImport),
+            tooltip: S.current.import_source_file,
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Padding(padding: EdgeInsets.only(top: 6)),
+          Expanded(
+            child: topLogin == null
+                ? Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Column(
+                      children: [
+                        Text(
+                          LocalizedText.of(
+                              chs: '目前仅国服可用',
+                              jpn: '現在、中国サーバーのみがサポートされています',
+                              eng: 'Only Chinese server is supported yet'),
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 10),
+                        Text(S.current.import_http_body_hint),
+                      ],
+                    ),
+                  )
+                : LayoutBuilder(
+                    builder: (context, constraints) => ListView(
+                      children: [
+                        if (replacedResponse!.firstUser != null)
+                          userInfoAccordion,
+                        kDefaultDivider,
+                        itemsAccordion,
+                        kDefaultDivider,
+                        svtAccordion(false, constraints),
+                        kDefaultDivider,
+                        svtAccordion(true, constraints),
+                        kDefaultDivider,
+                        craftAccordion,
+                      ],
+                    ),
                   ),
-                )
-              : LayoutBuilder(
-                  builder: (context, constraints) => ListView(
-                    controller: _scrollController,
-                    children: [
-                      if (replacedResponse!.firstUser != null)
-                        userInfoAccordion,
-                      kDefaultDivider,
-                      itemsAccordion,
-                      kDefaultDivider,
-                      svtAccordion(false, constraints),
-                      kDefaultDivider,
-                      svtAccordion(true, constraints),
-                      kDefaultDivider,
-                      craftAccordion,
-                    ],
-                  ),
-                ),
-        ),
-        kDefaultDivider,
-        buttonBar,
-        Text(
-          S.current.import_http_body_hint_hide,
-          style: TextStyle(color: Colors.grey, fontSize: 13),
-        )
-      ],
+          ),
+          kDefaultDivider,
+          buttonBar,
+          Text(
+            S.current.import_http_body_hint_hide,
+            style: TextStyle(color: Colors.grey, fontSize: 13),
+          )
+        ],
+      ),
     );
   }
 
@@ -396,14 +412,6 @@ class ImportHttpResponseState extends State<ImportHttpResponse> {
           alignment: WrapAlignment.center,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            IconButton(
-              onPressed: showHelp,
-              tooltip: S.current.help,
-              icon: Icon(
-                Icons.help,
-                color: Colors.blue,
-              ),
-            ),
             CheckboxWithLabel(
               value: _isLocked,
               onChanged: (v) {

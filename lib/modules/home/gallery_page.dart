@@ -13,7 +13,7 @@ import 'package:chaldea/modules/free_quest_calculator/free_calculator_page.dart'
 import 'package:chaldea/modules/home/subpage/bug_page.dart';
 import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
 import 'package:chaldea/modules/home/subpage/game_data_page.dart';
-import 'package:chaldea/modules/import_data/import_data_page.dart';
+import 'package:chaldea/modules/import_data/home_import_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/master_mission/master_mission_page.dart';
 import 'package:chaldea/modules/servant/costume_list_page.dart';
@@ -214,7 +214,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         name: GalleryItem.import_data,
         title: S.of(context).import_data,
         icon: Icons.cloud_download,
-        builder: (context, _) => ImportDataPage(),
+        builder: (context, _) => ImportPageHome(),
         isDetail: true,
       ),
       GalleryItem.bug: GalleryItem(
