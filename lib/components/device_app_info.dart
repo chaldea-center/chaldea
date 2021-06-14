@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:chaldea/components/components.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/services.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart' as p;
 import 'package:uuid/uuid.dart';
 

@@ -63,13 +63,13 @@ IDI_APP_ICON            ICON                    "resources\\app_icon.ico"
 #ifdef FLUTTER_BUILD_NUMBER
 #define VERSION_AS_NUMBER FLUTTER_BUILD_NUMBER
 #else
-#define VERSION_AS_NUMBER 1,4,4,43
+#define VERSION_AS_NUMBER 1,4,5,44
 #endif
 
 #ifdef FLUTTER_BUILD_NAME
 #define VERSION_AS_STRING #FLUTTER_BUILD_NAME
 #else
-#define VERSION_AS_STRING "1.4.4.43"
+#define VERSION_AS_STRING "1.4.5+44"
 #endif
 
 VS_VERSION_INFO VERSIONINFO
@@ -92,7 +92,7 @@ BEGIN
             VALUE "CompanyName", "cc.narumi" "\0"
             VALUE "FileDescription", "Chaldea center." "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "chaldea" "\0"
+            VALUE "InternalName", "cc.narumi.chaldea" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2021 cc.narumi. All rights reserved." "\0"
             VALUE "OriginalFilename", "chaldea.exe" "\0"
             VALUE "ProductName", "chaldea" "\0"
