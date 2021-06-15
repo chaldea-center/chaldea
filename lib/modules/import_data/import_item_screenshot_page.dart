@@ -24,12 +24,12 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> {
   void initState() {
     super.initState();
     imageFiles = db.runtimeData.itemRecognizeImageFiles;
-    _dio = Dio(BaseOptions(
+    _dio = Dio(db.serverDio.options.copyWith(
       // baseUrl: 'http://localhost:8083',
-      baseUrl: kServerRoot,
       sendTimeout: 600 * 1000,
       receiveTimeout: 600 * 1000,
-      headers: HttpUtils.headersWithUA(),
+      headers: Map.from(db.serverDio.options.headers)
+        ..remove(Headers.contentTypeHeader),
     ));
   }
 
@@ -226,8 +226,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> {
       String content = data2['msg'].toString();
       showInformDialog(context, title: title, content: content);
     } catch (e, s) {
-      print(e);
-      print(s);
+      logger.e('upload item screenshots to server error', e, s);
       showInformDialog(context, title: 'Error', content: e.toString());
     } finally {
       EasyLoading.dismiss();
@@ -244,6 +243,12 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> {
         output = Map<String, int>.from(data['msg']);
         output = Item.sortMapById(output);
         print(output);
+        if (output.isEmpty) {
+          EasyLoading.showInfo(LocalizedText.of(
+              chs: '识别结果为空',
+              jpn: '認識結果が空です',
+              eng: 'The recognition result is empty'));
+        }
         setState(() {});
       } else {
         showInformDialog(context,
@@ -258,7 +263,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> {
     return IconButton(
       onPressed: () {
         final helpMsg = LocalizedText.of(
-          chs: """1. 目前仅可解析素材信息，理论上所有服都可使用
+          chs: """1. 功能: 从素材截图中解析素材数量，理论上所有服都可使用
 2. 使用方法: 
  - 点击右上角可同时导入多张截图
  - 上传成功后悠然得喝口茶再下载结果导入
@@ -269,7 +274,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> {
  - 素材框务必完全显示, 否则对应素材可能识别不到
  - 解析精度应该可能或许还可以，下载结果后可自行修正
  - 解析结果保留24h, 24h后可能删除""",
-          jpn: """1.現在、解析できるのはアイテムのみであり、理論的にはすべてのサーバーに適用可能
+          jpn: """1.機能：アイテムのスクリーンショットからアイテムの量を分析します、理論的にはすべてのサーバーに適用可能
 2.使用方法：
   - 右上隅をクリックして、複数のスクリーンショットを同時にインポートします
   - アップロードが成功したら、しばらく待って、結果をダウンロードして、インポートする
@@ -281,7 +286,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> {
   - 解析の偏差はそれ手動で修正することができます。
   - 分析結果は24時間保持され、24時間後に削除される場合があります """,
           eng:
-              """1. At present, only items can be parsed, all servers should be supported
+          """1. Feature: recognize item counts from screenshots, all servers should be supported
 2. How to use:
   - Click the import button on upper right corner to import multiple screenshots at the same time
   - Wait a few minutes after the upload is successful, then download the result and import it

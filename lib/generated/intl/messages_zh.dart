@@ -7,7 +7,7 @@
 // ignore_for_file:unnecessary_brace_in_string_interps, unnecessary_new
 // ignore_for_file:prefer_single_quotes,comment_references, directives_ordering
 // ignore_for_file:annotate_overrides,prefer_generic_function_type_aliases
-// ignore_for_file:unused_import, file_names, avoid_escaping_inner_quotes
+// ignore_for_file:unused_import, file_names
 
 import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
@@ -19,51 +19,52 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'zh';
 
-  static String m0(email, logPath) =>
+  static m0(email, logPath) =>
       "请将出错页面的截图以及日志文件发送到以下邮箱:\n ${email}\n日志文件路径: ${logPath}";
 
-  static String m1(curVersion, newVersion, releaseNote) =>
+  static m1(curVersion, newVersion, releaseNote) =>
       "当前版本: ${curVersion}\n最新版本: ${newVersion}\n更新内容:\n${releaseNote}";
 
-  static String m2(name) => "源${name}";
+  static m2(name) => "源${name}";
 
-  static String m3(n) => "最多${n}池";
+  static m3(n) => "最多${n}池";
 
-  static String m4(n) => "圣杯替换为传承结晶 ${n} 个";
+  static m4(n) => "圣杯替换为传承结晶 ${n} 个";
 
-  static String m5(error) => "导入失败，Error:\n${error}";
+  static m5(error) => "导入失败，Error:\n${error}";
 
-  static String m6(account) => "已切换到账号${account}";
+  static m6(account) => "已切换到账号${account}";
 
-  static String m7(itemNum, svtNum) => "导入${itemNum}个素材,${svtNum}从者到";
+  static m7(itemNum, svtNum) => "导入${itemNum}个素材,${svtNum}从者到";
 
-  static String m8(name) => "${name}已存在";
+  static m8(name) => "${name}已存在";
 
-  static String m9(site) => "跳转到${site}";
+  static m9(site) => "跳转到${site}";
 
-  static String m10(first) => "${Intl.select(first, {
+  static m10(first) => "${Intl.select(first, {
             'true': '已经是第一张',
             'false': '已经是最后一张',
             'other': '已经到头了',
           })}";
 
-  static String m11(version) => "已更新数据版本至${version}";
+  static m11(version) => "已更新数据版本至${version}";
 
-  static String m12(index) => "规划${index}";
+  static m12(index) => "规划${index}";
 
-  static String m13(total) => "总计: ${total}";
+  static m13(total) => "总计: ${total}";
 
-  static String m14(total, hidden) => "总计: ${total} (隐藏: ${hidden})";
+  static m14(total, hidden) => "总计: ${total} (隐藏: ${hidden})";
 
-  static String m15(tempDir, externalBackupDir) =>
+  static m15(tempDir, externalBackupDir) =>
       "不适用从Google Play下载的版本，将来可能移除该功能\n用户数据备份储存于临时目录(${tempDir})\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至(${externalBackupDir})";
 
-  static String m16(server) => "同步${server}";
+  static m16(server) => "同步${server}";
 
-  static String m17(a, b) => "${a}${b}";
+  static m17(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-  static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+
+  static _notInlinedMessages(_) => <String, Function>{
         "about_app": MessageLookupByLibrary.simpleMessage("关于"),
         "about_app_declaration_text": MessageLookupByLibrary.simpleMessage(
             "　本应用所使用数据均来源于游戏及以下网站，游戏图片文本原文等版权属于TYPE MOON/FGO PROJECT。\n　程序功能与界面设计参考微信小程序\"素材规划\"以及iOS版Guda。"),
@@ -477,6 +478,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("储存权限"),
         "success": MessageLookupByLibrary.simpleMessage("成功"),
         "summon": MessageLookupByLibrary.simpleMessage("卡池"),
+        "summon_simulator": MessageLookupByLibrary.simpleMessage("抽卡模拟器"),
         "summon_title": MessageLookupByLibrary.simpleMessage("卡池一览"),
         "support_chaldea": MessageLookupByLibrary.simpleMessage("支持与捐赠"),
         "svt_info_tab_base": MessageLookupByLibrary.simpleMessage("基础资料"),

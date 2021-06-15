@@ -53,6 +53,8 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
         children: [
           banner,
           summonBtn,
+          if (widget.partsDta.isEmpty)
+            Center(child: Text(S.current.ffo_missing_data_hint)),
           results,
           if (history.isNotEmpty)
             Center(

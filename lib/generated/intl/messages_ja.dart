@@ -7,7 +7,7 @@
 // ignore_for_file:unnecessary_brace_in_string_interps, unnecessary_new
 // ignore_for_file:prefer_single_quotes,comment_references, directives_ordering
 // ignore_for_file:annotate_overrides,prefer_generic_function_type_aliases
-// ignore_for_file:unused_import, file_names, avoid_escaping_inner_quotes
+// ignore_for_file:unused_import, file_names
 
 import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
@@ -19,51 +19,52 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ja';
 
-  static String m0(email, logPath) =>
+  static m0(email, logPath) =>
       "エラーページのスクリーンショットとログファイルをこのメールボックスに送信してください：\n${email}\nログファイルパス：${logPath}";
 
-  static String m1(curVersion, newVersion, releaseNote) =>
+  static m1(curVersion, newVersion, releaseNote) =>
       "現在のバージョン：${curVersion} \n最新のバージョン：${newVersion}\n詳細:\n${releaseNote}";
 
-  static String m2(name) => "ソース${name}";
+  static m2(name) => "ソース${name}";
 
-  static String m3(n) => "最大${n}ボックス";
+  static m3(n) => "最大${n}ボックス";
 
-  static String m4(n) => "聖杯は伝承結晶に置き換える${n}個";
+  static m4(n) => "聖杯は伝承結晶に置き換える${n}個";
 
-  static String m5(error) => "インポートに失敗しました、エラー:\n${error}";
+  static m5(error) => "インポートに失敗しました、エラー:\n${error}";
 
-  static String m6(account) => "アカウント ${account} に切り替える";
+  static m6(account) => "アカウント ${account} に切り替える";
 
-  static String m7(itemNum, svtNum) => "どのアカウントに？${itemNum}アイテム&${svtNum}サーバント";
+  static m7(itemNum, svtNum) => "どのアカウントに？${itemNum}アイテム&${svtNum}サーバント";
 
-  static String m8(name) => "${name}はすでに存在します";
+  static m8(name) => "${name}はすでに存在します";
 
-  static String m9(site) => "${site}にジャンプ";
+  static m9(site) => "${site}にジャンプ";
 
-  static String m10(first) => "${Intl.select(first, {
+  static m10(first) => "${Intl.select(first, {
             'true': '最初のもの',
             'false': '最後のもの',
             'other': '最後のもの',
           })}";
 
-  static String m11(version) => "データバージョンが${version}に更新されました";
+  static m11(version) => "データバージョンが${version}に更新されました";
 
-  static String m12(index) => "プラン${index}";
+  static m12(index) => "プラン${index}";
 
-  static String m13(total) => "合計：${total}";
+  static m13(total) => "合計：${total}";
 
-  static String m14(total, hidden) => "合計：${total} (非表示: ${hidden})";
+  static m14(total, hidden) => "合計：${total} (非表示: ${hidden})";
 
-  static String m15(tempDir, externalBackupDir) =>
+  static m15(tempDir, externalBackupDir) =>
       "Google Playからのバージョンには適用されません。この機能は、将来削除される可能性があります。\nユーザーデータのバックアップは一時(${tempDir})に保存されます\nアプリの削除/他のアーキテクチャのインストール（例えば、arm64-v8aからarmeabi-v7aへ ）/将来のビルド番号の変更、ユーザーデータと一時バックアップが削除されます。外部ストレージ(${externalBackupDir})にバックアップするためのストレージ権限を有効にすることを強くお勧めします ";
 
-  static String m16(server) => "同步${server}";
+  static m16(server) => "同步${server}";
 
-  static String m17(a, b) => "${a}${b}";
+  static m17(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-  static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+
+  static _notInlinedMessages(_) => <String, Function>{
         "about_app": MessageLookupByLibrary.simpleMessage("ついて"),
         "about_app_declaration_text": MessageLookupByLibrary.simpleMessage(
             "　このアプリケーションで使用されるデータは、ゲームおよび次のサイトからのものです。ゲーム画像およびその他のテキストの著作権はTYPE MOON / FGO PROJECTに帰属します。\n　プログラムの機能と設計はWeChatアプリ「素材规划」とiOSアプリのGudaを参照しています。\n"),
@@ -509,6 +510,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("ストレージ権限"),
         "success": MessageLookupByLibrary.simpleMessage("成功"),
         "summon": MessageLookupByLibrary.simpleMessage("ガチャ"),
+        "summon_simulator": MessageLookupByLibrary.simpleMessage("ガチャシミュ"),
         "summon_title": MessageLookupByLibrary.simpleMessage("ガチャ"),
         "support_chaldea": MessageLookupByLibrary.simpleMessage("サポートと寄付"),
         "svt_info_tab_base": MessageLookupByLibrary.simpleMessage("ステータス"),

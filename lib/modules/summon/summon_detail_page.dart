@@ -363,7 +363,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
                     ),
                   );
                 },
-          child: Text(S.current.summon),
+          child: Text(S.current.summon_simulator),
         ),
         IconButton(
           icon: FaIcon(FontAwesomeIcons.chevronCircleRight),

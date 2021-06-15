@@ -1,4 +1,6 @@
 ## 1.4.5
+- [FEATURE] recognize skill screenshots 
+- standalone costume list
 - support deleting chaldea user
 - remove orientation setting on iPad
 - add next/previous buttons in item list page

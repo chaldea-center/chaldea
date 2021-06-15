@@ -663,9 +663,9 @@ String summonNameLocalize(String origin) {
           e;
       name2 = fragments.join(Language.isEN ? ' (' : '(');
     }
-    if (!RegExp(r'[\s\da-zA-Z]+').hasMatch(name2) && !Language.isCN) {
-      print(name2);
-    }
+    // if (!RegExp(r'[\s\da-zA-Z]+').hasMatch(name2) && !Language.isCN) {
+    //   print(name2);
+    // }
     return name2;
   }).join('+');
 }

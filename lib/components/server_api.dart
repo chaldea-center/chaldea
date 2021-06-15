@@ -98,8 +98,7 @@ class OneSvtRecResult {
   }
 
   bool get isValid {
-    return _imgBytes != null &&
-        svtNo != null &&
+    return svtNo != null &&
         svtNo! > 0 &&
         skills.every((e) => e != null && e >= 1 && e <= 10);
   }

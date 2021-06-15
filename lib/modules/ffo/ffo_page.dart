@@ -131,7 +131,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
                       detail: true,
                     );
                   },
-                  child: Text(S.current.summon),
+                  child: Text(S.current.summon_simulator),
                 ),
               ],
             ),

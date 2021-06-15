@@ -10,7 +10,7 @@ import 'intl/messages_all.dart';
 
 // ignore_for_file: non_constant_identifier_names, lines_longer_than_80_chars
 // ignore_for_file: join_return_with_assignment, prefer_final_in_for_each
-// ignore_for_file: avoid_redundant_argument_values, avoid_escaping_inner_quotes
+// ignore_for_file: avoid_redundant_argument_values
 
 class S {
   S();
@@ -3091,6 +3091,16 @@ class S {
     return Intl.message(
       '卡池一览',
       name: 'summon_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `抽卡模拟器`
+  String get summon_simulator {
+    return Intl.message(
+      '抽卡模拟器',
+      name: 'summon_simulator',
       desc: '',
       args: [],
     );

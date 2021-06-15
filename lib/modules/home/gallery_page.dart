@@ -215,7 +215,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
         title: S.of(context).import_data,
         icon: Icons.cloud_download,
         builder: (context, _) => ImportPageHome(),
-        isDetail: true,
+        isDetail: false,
       ),
       GalleryItem.bug: GalleryItem(
         name: GalleryItem.bug,

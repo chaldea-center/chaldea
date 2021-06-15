@@ -25,11 +25,16 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             leading: Icon(Icons.http),
             title: Text(LocalizedText.of(
                 chs: 'HTTPS抓包', jpn: 'HTTPSスニッフィング', eng: 'HTTPS Sniffing')),
-            subtitle: Text('借助抓包工具获取账号登陆时的数据'),
+            subtitle: Text(LocalizedText.of(
+                chs: '(仅限国服)借助抓包工具获取账号登陆时的数据',
+                jpn: '（中国サーバのみ）アカウントがログインしているときにデータを取得する',
+                eng:
+                    '(CN server only) Capture the data when the account is logging in')),
             trailing: Icon(Icons.keyboard_arrow_right),
             onTap: () {
               SplitRoute.push(
                 context: context,
+                popDetail: true,
                 builder: (context, _) => ImportHttpPage(),
               );
             },
@@ -40,11 +45,15 @@ class _ImportPageHomeState extends State<ImportPageHome> {
                 chs: '素材截图解析',
                 jpn: 'アイテムのスクリーンショット',
                 eng: 'Items Screenshots')),
-            subtitle: Text('My Room - 道具一览'),
+            subtitle: Text(LocalizedText.of(
+                chs: '个人空间 - 道具一览',
+                jpn: 'マイルーム - 所持アイテム一覧',
+                eng: 'My Room - Item List')),
             trailing: Icon(Icons.keyboard_arrow_right),
             onTap: () {
               SplitRoute.push(
                 context: context,
+                popDetail: true,
                 builder: (context, _) => ImportItemScreenshotPage(),
               );
             },
@@ -54,11 +63,14 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             title: Text(LocalizedText.of(
                 chs: '技能截图解析', jpn: 'スキルのスクリーンショット', eng: 'Skill Screenshots')),
             subtitle: Text(LocalizedText.of(
-                chs: '强化-技能升级', jpn: 'jpn', eng: 'Enhancement-Skill')),
+                chs: '强化-从者技能强化',
+                jpn: '強化-サーヴァントスキル強化 ',
+                eng: 'Enhance-Skill')),
             trailing: Icon(Icons.keyboard_arrow_right),
             onTap: () {
               SplitRoute.push(
                 context: context,
+                popDetail: true,
                 builder: (context, _) => ImportSkillScreenshotPage(),
               );
             },
@@ -71,6 +83,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             onTap: () {
               SplitRoute.push(
                 context: context,
+                popDetail: true,
                 builder: (ctx, _) => ImportGudaPage(),
               );
             },
