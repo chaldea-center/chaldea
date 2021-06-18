@@ -14,7 +14,7 @@ class _EditGalleryPageState extends State<EditGalleryPage> {
   Widget build(BuildContext context) {
     List<Widget> tiles = [];
     widget.galleries.forEach((name, item) {
-      if (name != GalleryItem.more && name != GalleryItem.bug) {
+      if (!GalleryItem.persistentPages.contains(name)) {
         tiles.add(SwitchListTile.adaptive(
           value: db.userData.galleries[name] ?? true,
           onChanged: (bool _selected) {
@@ -63,6 +63,9 @@ class GalleryItem {
   static const String backup = 'backup';
   static const String more = 'more';
   static const String bug = 'bug';
+  static const String about = 'about';
+
+  static List<String> get persistentPages => [bug, about, more];
 
 //  static Map<String, GalleryItem> allItems;
 
