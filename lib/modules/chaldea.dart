@@ -72,7 +72,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     }
 
     if (userdataBackup != null) {
-      Utils.addPostFrameCallback(() {
+      Utils.scheduleFrameCallback(() {
         showInformDialog(
           kAppKey.currentContext!,
           title: 'Userdata damaged',

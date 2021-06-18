@@ -26,7 +26,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
   void initState() {
     super.initState();
     contactController = TextEditingController();
-    subjectController = TextEditingController(text: 'haha');
+    subjectController = TextEditingController();
     bodyController = TextEditingController();
   }
 
@@ -131,10 +131,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   child: TextField(
                     controller: contactController,
                     decoration: InputDecoration(
-                      labelText: S.of(context).feedback_contact,
-                      border: OutlineInputBorder(),
-                      // prefix: Icon(Icons.mail_outline),
-                    ),
+                        labelText: S.of(context).feedback_contact,
+                        border: OutlineInputBorder(),
+                        // prefix: Icon(Icons.mail_outline),
+                        hintText: LocalizedText.of(
+                            chs: '如需回复请填写',
+                            jpn: 'Please fill in if reply wanted',
+                            eng: 'Please fill in if reply wanted')),
                     maxLines: 1,
                   ),
                 ),
@@ -235,6 +238,21 @@ class _FeedbackPageState extends State<FeedbackPage> {
           jpn: 'フィードバックの内容を記入してください',
           eng: 'Please add feedback details'));
       return;
+    }
+    if (contactController.text.trim().isEmpty) {
+      final confirmed = await SimpleCancelOkDialog(
+        title: Text(LocalizedText.of(
+            chs: '联系方式未填写',
+            jpn: '連絡先情報が入力されていません',
+            eng: 'Contact information is not filled in')),
+        content: Text(LocalizedText.of(
+            chs: '开发者将无法回复您的问题',
+            jpn: '開発者はあなたのフィードバックに応答することができなくなります',
+            eng: 'The developer will not be able to respond to your feedback')),
+        confirmText:
+            LocalizedText.of(chs: '仍然发送', jpn: '送信し続ける', eng: 'Still Send'),
+      ).showDialog(context);
+      if (confirmed != true) return;
     }
     EasyLoading.show(status: 'Sending', maskType: EasyLoadingMaskType.clear);
     try {

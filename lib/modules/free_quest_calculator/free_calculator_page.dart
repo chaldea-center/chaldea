@@ -62,7 +62,7 @@ class _FreeQuestCalculatorPageState extends State<FreeQuestCalculatorPage>
           controller: _tabController,
           isScrollable: !Language.isCN,
           tabs: [
-            Tab(text: S.of(context).item),
+            Tab(text: LocalizedText.of(chs: '需求', jpn: 'アイテム', eng: 'Demands')),
             Tab(text: S.of(context).plan),
             Tab(text: S.of(context).efficiency),
             Tab(text: S.of(context).free_quest)

@@ -2,13 +2,12 @@ export 'dart:io' show Platform, File, Directory;
 export 'dart:math' show min, max;
 
 export 'package:chaldea/generated/l10n.dart';
+export 'package:flutter/foundation.dart' show kDebugMode, kReleaseMode;
 export 'package:flutter/material.dart';
 export 'package:flutter_easyloading/flutter_easyloading.dart';
 export 'package:intl/intl.dart' show Intl, DateFormat;
 export 'package:path/path.dart' show join;
 
-export 'localized/localized.dart';
-export 'localized/localized_base.dart';
 export 'after_layout.dart';
 export 'config.dart';
 export 'constants.dart';
@@ -21,6 +20,8 @@ export 'ensure_visible_when_focused.dart';
 export 'extensions.dart';
 export 'glpk_solver.dart';
 export 'image_viewer.dart';
+export 'localized/localized.dart';
+export 'localized/localized_base.dart';
 export 'logger.dart';
 export 'mooncell_util.dart';
 export 'query.dart';

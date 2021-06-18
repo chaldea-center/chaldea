@@ -15,12 +15,13 @@ part 'server_api.g.dart';
 
 class ChaldeaResponse {
   bool success;
-  String? msg;
+  dynamic msg;
   dynamic body;
 
   ChaldeaResponse({this.success = false, this.msg, this.body});
 
   static ChaldeaResponse fromResponse(dynamic data) {
+    print('type:${data.runtimeType}, data=$data');
     try {
       var map;
       if (data is String) {
@@ -32,14 +33,13 @@ class ChaldeaResponse {
           success: map['success'] ?? false, msg: map['msg'], body: map['body']);
     } catch (e, s) {
       logger.e('parse ChaldeaResponse error', e, s);
-      return ChaldeaResponse();
+      return ChaldeaResponse(msg: 'invalid api: $e');
     }
   }
 
   Future showMsg(BuildContext? context,
       {String? title, bool showBody = false}) {
-    title ??= 'Result';
-    title += ' ' + (success ? S.current.success : S.current.failed);
+    title ??= success ? S.current.success : S.current.failed;
     String content = msg.toString();
     if (showBody) content += '\n$body';
     return SimpleCancelOkDialog(

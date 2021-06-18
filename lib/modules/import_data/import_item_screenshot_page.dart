@@ -15,7 +15,12 @@ class ImportItemScreenshotPage extends StatefulWidget {
       ImportItemScreenshotPageState();
 }
 
-class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> {
+class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  late ScrollController _scrollController1;
+  late ScrollController _scrollController2;
+  late ScrollController _scrollController3;
   Map<String, int> output = {};
   late Dio _dio;
   late List<File> imageFiles;
@@ -23,14 +28,28 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> {
   @override
   void initState() {
     super.initState();
+    _tabController =
+        TabController(length: AppInfo.isDebugDevice ? 3 : 2, vsync: this);
+    _scrollController1 = ScrollController();
+    _scrollController2 = ScrollController();
+    _scrollController3 = ScrollController();
     imageFiles = db.runtimeData.itemRecognizeImageFiles;
     _dio = Dio(db.serverDio.options.copyWith(
-      // baseUrl: 'http://localhost:8083',
+      // baseUrl: kDebugMode ? 'http://localhost:8083' : null,
       sendTimeout: 600 * 1000,
       receiveTimeout: 600 * 1000,
       headers: Map.from(db.serverDio.options.headers)
         ..remove(Headers.contentTypeHeader),
     ));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _tabController.dispose();
+    _scrollController1.dispose();
+    _scrollController2.dispose();
+    _scrollController3.dispose();
   }
 
   @override
@@ -48,39 +67,26 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> {
             tooltip: S.current.import_source_file,
           ),
         ],
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: [
+            Tab(text: '截图'),
+            Tab(text: '结果'),
+            if (AppInfo.isDebugDevice) Tab(text: 'Debug')
+          ],
+        ),
       ),
       body: Column(
         children: [
           Expanded(
-            child: Column(
+            child: TabBarView(
+              controller: _tabController,
               children: [
-                if (imageFiles.isEmpty && output.isEmpty)
-                  Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      child: Text(LocalizedText.of(
-                        chs: '理论支持现有所有服务器的素材截图解析，精度有所提升',
-                        jpn: '理論的に既存のすべてのサーバーのアイテムスクリーンショット分析をサポートする',
-                        eng:
-                            'Support item screenshots of all servers with improved accuracy',
-                      )),
-                    ),
-                  ),
-                if (imageFiles.isNotEmpty)
-                  Expanded(
-                    child: LayoutBuilder(
-                      builder: (context, constraints) => ListView(
-                        children: imageFiles.map((e) {
-                          return Container(
-                            width: constraints.biggest.width,
-                            padding: EdgeInsets.only(bottom: 6),
-                            child: Image.file(e, fit: BoxFit.fitWidth),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                if (output.isNotEmpty) Expanded(child: _itemList()),
+                KeepAliveBuilder(builder: (ctx) => screenshotsTab),
+                KeepAliveBuilder(builder: (ctx) => resultTab),
+                if (AppInfo.isDebugDevice)
+                  KeepAliveBuilder(
+                      builder: (ctx) => Center(child: Text('test')))
               ],
             ),
           ),
@@ -88,6 +94,71 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> {
           buttonBar,
         ],
       ),
+    );
+  }
+
+  Widget get screenshotsTab {
+    if (imageFiles.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          child: Text(LocalizedText.of(
+            chs: '理论支持现有所有服务器的素材截图解析，精度有所提升',
+            jpn: '理論的に既存のすべてのサーバーのアイテムスクリーンショット分析をサポートする',
+            eng:
+                'Support item screenshots of all servers with improved accuracy',
+          )),
+        ),
+      );
+    }
+    return ListView(
+      controller: _scrollController1,
+      children: imageFiles.map((e) {
+        return Padding(
+          padding: EdgeInsets.only(bottom: 6),
+          child: Image.file(e, fit: BoxFit.fitWidth),
+        );
+      }).toList(),
+    );
+  }
+
+  Map<String, TextEditingController> _controllers = {};
+
+  Widget get resultTab {
+    List<Widget> children = [];
+    output.forEach((key, value) {
+      final _ctrl =
+          _controllers.putIfAbsent(key, () => TextEditingController());
+      _ctrl.text = value.toString();
+      children.add(ListTile(
+        leading: Padding(
+          padding: EdgeInsets.symmetric(vertical: 3),
+          child: InkWell(
+            child: db.getIconImage(key),
+            onTap: () {
+              SplitRoute.push(
+                context: context,
+                builder: (_, __) => ItemDetailPage(itemKey: key),
+              );
+            },
+          ),
+        ),
+        title: Text(Item.localizedNameOf(key)),
+        trailing: SizedBox(
+          width: 80,
+          child: TextField(
+            controller: _ctrl,
+            textAlign: TextAlign.center,
+            onChanged: (s) {
+              output[key] = int.tryParse(s) ?? output[key]!;
+            },
+          ),
+        ),
+      ));
+    });
+    return ListView(
+      controller: _scrollController2,
+      children: children,
     );
   }
 
@@ -108,68 +179,13 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> {
                 child: Text(LocalizedText.of(
                     chs: '下载结果', jpn: '結果をダウンロード', eng: 'Download Result'))),
             ElevatedButton(
-              onPressed: output.isEmpty
-                  ? null
-                  : () {
-                      SimpleCancelOkDialog(
-                        title: Text(S.current.import_screenshot_update_items),
-                        content: Text(S.current.import_screenshot_hint),
-                        hideOk: true,
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              db.curUser.items..addAll(output);
-                              db.itemStat.updateLeftItems();
-                              Navigator.of(context).pop();
-                              EasyLoading.showSuccess('Updated');
-                            },
-                            child: Text(S.current.update),
-                          ),
-                        ],
-                      ).showDialog(context);
-                    },
+              onPressed: output.isEmpty ? null : _doImportResult,
               child: Text(S.current.import_screenshot_update_items),
             ),
           ],
         )
       ],
     );
-  }
-
-  Map<String, TextEditingController> _controllers = {};
-
-  Widget _itemList() {
-    List<Widget> children = [];
-    output.forEach((key, value) {
-      _controllers.putIfAbsent(key, () => TextEditingController());
-      _controllers[key]!.text = value.toString();
-      children.add(ListTile(
-        leading: Padding(
-          padding: EdgeInsets.symmetric(vertical: 3),
-          child: InkWell(
-            child: db.getIconImage(key),
-            onTap: () {
-              SplitRoute.push(
-                context: context,
-                builder: (_, __) => ItemDetailPage(itemKey: key),
-              );
-            },
-          ),
-        ),
-        title: Text(Item.localizedNameOf(key)),
-        trailing: SizedBox(
-          width: 80,
-          child: TextField(
-            controller: _controllers[key],
-            textAlign: TextAlign.center,
-            onChanged: (s) {
-              output[key] = int.tryParse(s) ?? output[key]!;
-            },
-          ),
-        ),
-      ));
-    });
-    return ListView(children: children);
   }
 
   void importImages() async {
@@ -181,11 +197,10 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> {
       if (mounted) {
         setState(() {});
       }
-    }).catchError((error, stackTrace) {
-      if (!(error is FileSelectionCanceledError)) {
-        print(error.toString());
-        print(stackTrace.toString());
-        EasyLoading.showError(error.toString());
+    }).catchError((e, s) {
+      if (!(e is FileSelectionCanceledError)) {
+        logger.e('import images error', e, s);
+        EasyLoading.showError(e.toString());
       }
     });
   }
@@ -193,7 +208,6 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> {
   Map<String, dynamic> _getBaseAPIParams() {
     final m = Map<String, dynamic>();
     m['userKey'] = AppInfo.uuid;
-    m['version'] = AppInfo.version;
     return m;
   }
 
@@ -221,10 +235,12 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> {
       EasyLoading.show(
           status: 'Uploading', maskType: EasyLoadingMaskType.clear);
       final response2 = await _dio.post('/recognizeItems', data: formData);
-      var data2 = jsonDecode(response2.data);
-      String title = data2['success'] == true ? '上传成功' : '上传失败';
-      String content = data2['msg'].toString();
-      showInformDialog(context, title: title, content: content);
+      final resp2 = ChaldeaResponse.fromResponse(response2.data);
+      resp2.showMsg(context);
+      // var data2 = jsonDecode(response2.data);
+      // String title = data2['success'] == true ? '上传成功' : '上传失败';
+      // String content = data2['msg'].toString();
+      // showInformDialog(context, title: title, content: content);
     } catch (e, s) {
       logger.e('upload item screenshots to server error', e, s);
       showInformDialog(context, title: 'Error', content: e.toString());
@@ -237,11 +253,10 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> {
     try {
       final response = await _dio.get('/downloadItemResult',
           queryParameters: _getBaseAPIParams());
-      Map data = jsonDecode(response.data);
+      final resp = ChaldeaResponse.fromResponse(response.data);
       if (!mounted) return;
-      if (data['success'] == true) {
-        output = Map<String, int>.from(data['msg']);
-        output = Item.sortMapById(output);
+      if (resp.success) {
+        output = Item.sortMapById(Map<String, int>.from(resp.body));
         print(output);
         if (output.isEmpty) {
           EasyLoading.showInfo(LocalizedText.of(
@@ -249,14 +264,36 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> {
               jpn: '認識結果が空です',
               eng: 'The recognition result is empty'));
         }
-        setState(() {});
+        if (mounted)
+          setState(() {
+            _tabController.index = 1;
+          });
       } else {
-        showInformDialog(context,
-            title: 'Response', content: data['msg'].toString());
+        resp.showMsg(context);
       }
-    } catch (e) {
+    } catch (e, s) {
+      logger.e('fetch item result error', e, s);
       showInformDialog(context, title: 'Error', content: e.toString());
     }
+  }
+
+  void _doImportResult() {
+    SimpleCancelOkDialog(
+      title: Text(S.current.import_screenshot_update_items),
+      content: Text(S.current.import_screenshot_hint),
+      hideOk: true,
+      actions: [
+        TextButton(
+          onPressed: () {
+            db.curUser.items..addAll(output);
+            db.itemStat.updateLeftItems();
+            Navigator.of(context).pop();
+            EasyLoading.showSuccess('Updated');
+          },
+          child: Text(S.current.update),
+        ),
+      ],
+    ).showDialog(context);
   }
 
   Widget get helpBtn {

@@ -44,7 +44,7 @@ class _MyMarkdownPageState extends State<MyMarkdownPage> {
         logger.e('error loading markdown asset ${widget.assetKey}', e, s);
         return 'Loading error';
       }).whenComplete(
-        () => Utils.addPostFrameCallback(() => this.setState(() {})),
+        () => Utils.scheduleFrameCallback(() => this.setState(() {})),
       );
     }
   }

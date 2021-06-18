@@ -196,7 +196,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 SplitRoute.push(
                   context: context,
                   builder: (_, __) => CarouselSettingPage(),
-                );
+                ).then((value) => db.notifyAppUpdate());
               },
             )
           ],

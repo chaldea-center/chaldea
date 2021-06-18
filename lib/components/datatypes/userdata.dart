@@ -50,8 +50,7 @@ class UserData {
     CmdCodeFilterData? cmdCodeFilter,
     GLPKParams? glpkParams,
     List<int>? itemAbundantValue,
-  })
-      : showSummonBanner = showSummonBanner ?? false,
+  })  : showSummonBanner = showSummonBanner ?? false,
         carouselSetting = carouselSetting ?? CarouselSetting(),
         galleries = galleries ?? {},
         downloadSource = fixValidRange(downloadSource ?? GitSource.server.index,
@@ -128,6 +127,8 @@ class CarouselSetting {
   bool enableMooncell;
   bool enableJp;
   bool enableUs;
+  @JsonKey(ignore: true)
+  bool needUpdate = false;
 
   CarouselSetting({
     this.updateTime,

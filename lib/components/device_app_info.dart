@@ -281,6 +281,16 @@ class AppInfo {
 
   static String get uuid => _uuid!;
 
+  static bool get isDebugDevice {
+    final excludeIds = const [
+      'FB26CA34-0B8F-588C-8542-4A748BB67740', // android
+      '739F2CE5-ADA0-5216-B6C9-CBF1D1C33183', // ios
+      '1D6D5558-9929-5AB0-9CE7-BC2E188948CD', // macos
+      '88E2ACF3-0BA8-552C-80BA-D000CE336475', // windows
+    ];
+    return excludeIds.contains(AppInfo.uuid);
+  }
+
   /// currently supported mobile or desktop
   static bool get isMobile => Platform.isAndroid || Platform.isIOS;
 

@@ -432,8 +432,8 @@ class Utils {
     }
   }
 
-  static void addPostFrameCallback(VoidCallback callback) {
-    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+  static void scheduleFrameCallback(VoidCallback callback) {
+    SchedulerBinding.instance!.scheduleFrameCallback((timeStamp) {
       callback();
     });
   }

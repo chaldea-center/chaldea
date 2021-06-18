@@ -26,6 +26,7 @@ class _CarouselSettingPageState extends State<CarouselSettingPage> {
               subtitle: Text('CN/JP'),
               onChanged: (v) {
                 setState(() {
+                  setting.needUpdate = true;
                   setting.enableMooncell = v ?? setting.enableMooncell;
                 });
               },
@@ -36,6 +37,7 @@ class _CarouselSettingPageState extends State<CarouselSettingPage> {
               subtitle: Text('https://view.fate-go.jp/'),
               onChanged: (v) {
                 setState(() {
+                  setting.needUpdate = true;
                   setting.enableJp = v ?? setting.enableJp;
                 });
               },
@@ -46,6 +48,7 @@ class _CarouselSettingPageState extends State<CarouselSettingPage> {
               subtitle: Text('https://webview.fate-go.us/'),
               onChanged: (v) {
                 setState(() {
+                  setting.needUpdate = true;
                   setting.enableUs = v ?? setting.enableUs;
                 });
               },

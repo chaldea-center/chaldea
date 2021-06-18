@@ -33,24 +33,23 @@ class GalleryPage extends StatefulWidget {
   _GalleryPageState createState() => _GalleryPageState();
 }
 
-class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
+class _GalleryPageState extends State<GalleryPage> {
   CarouselSetting get carouselSetting => db.userData.carouselSetting;
 
   @override
-  void afterFirstLayout(BuildContext context) async {
+  void initState() {
+    super.initState();
     if (carouselSetting.updateTime == null || carouselSetting.urls.isEmpty) {
-      resolveSliderImageUrls();
+      carouselSetting.needUpdate = true;
     } else {
       DateTime lastTime = DateTime.fromMillisecondsSinceEpoch(
               carouselSetting.updateTime! * 1000),
           now = DateTime.now();
       if (now.difference(lastTime).inHours > 24) {
         // more than 1 day
-        resolveSliderImageUrls();
+        carouselSetting.needUpdate = true;
       }
     }
-
-    if (mounted) setState(() {});
 
     Future.delayed(Duration(seconds: 2)).then((_) async {
       if (kDebugMode) return;
@@ -420,7 +419,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
 
   List<Widget> _getSliderPages() {
     List<Widget> sliders = [];
-    if (carouselSetting.urls.isEmpty) {
+    if (carouselSetting.needUpdate) {
       resolveSliderImageUrls();
       return sliders;
     }
@@ -476,7 +475,8 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
     );
   }
 
-  Future<Null> resolveSliderImageUrls([bool showToast = false]) async {
+  Future<void> resolveSliderImageUrls([bool showToast = false]) async {
+    carouselSetting.needUpdate = false;
     Map<String, String> _getImageLinks(
         {required dom.Element? element,
         required Uri uri,
@@ -530,7 +530,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
           var jpElement = jpParser.getElementsByClassName('slide').getOrNull(0);
           return _getImageLinks(element: jpElement, uri: Uri.parse(jpUrl))
             ..removeWhere((key, value) =>
-                key.endsWith('2019/tips_qavwi/top_banner.png') ||
+            key.endsWith('2019/tips_qavwi/top_banner.png') ||
                 key.endsWith('2017/02/banner_10009.png'));
         }).catchError((e, s) {
           logger.e('parse jp slides failed', e, s);
@@ -579,7 +579,7 @@ class _GalleryPageState extends State<GalleryPage> with AfterLayoutMixin {
       await Future.forEach<Future<Map<String, String>>?>(
         // [taskUs],
         [taskMC, taskGitee, taskJp, taskUs],
-        (e) async {
+            (e) async {
           if (e != null) result.addAll(await e);
         },
       );

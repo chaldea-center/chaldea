@@ -5,7 +5,6 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
-import 'package:flutter/foundation.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path/path.dart' as pathlib;
 
@@ -17,8 +16,13 @@ class ImportSkillScreenshotPage extends StatefulWidget {
       ImportSkillScreenshotPageState();
 }
 
-class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage> {
-  // Map<String, int> output = {};
+class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  late ScrollController _scrollController1;
+  late ScrollController _scrollController2;
+  late ScrollController _scrollController3;
+
   List<OneSvtRecResult> results = [];
   late Dio _dio;
   late List<File> imageFiles;
@@ -29,6 +33,11 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage> {
   @override
   void initState() {
     super.initState();
+    _tabController =
+        TabController(length: AppInfo.isDebugDevice ? 3 : 2, vsync: this);
+    _scrollController1 = ScrollController();
+    _scrollController2 = ScrollController();
+    _scrollController3 = ScrollController();
     imageFiles = db.runtimeData.svtRecognizeImageFiles;
     _dio = Dio(db.serverDio.options.copyWith(
       // baseUrl: kDebugMode ? 'http://localhost:8083' : null,
@@ -40,19 +49,20 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _tabController.dispose();
+    _scrollController1.dispose();
+    _scrollController2.dispose();
+    _scrollController3.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     resultsMap.clear();
     results.forEach((e) {
       if (e.svtNo != null) resultsMap.putIfAbsent(e.svtNo!, () => []).add(e);
     });
-    int totalNum = results.length,
-        validNum = results.where((e) => e.isValid).length,
-        selectedNum = results.where((e) => e.isValid && e.checked).length,
-        dupNum = resultsMap.values
-            .where((e) =>
-                e.length > 1 &&
-                e.where((ee) => ee.isValid && ee.checked).length > 1)
-            .length;
 
     return Scaffold(
       appBar: AppBar(
@@ -67,47 +77,26 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage> {
             tooltip: S.current.import_source_file,
           ),
         ],
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: [
+            Tab(text: '截图'),
+            Tab(text: '结果'),
+            if (AppInfo.isDebugDevice) Tab(text: 'Debug')
+          ],
+        ),
       ),
       body: Column(
         children: [
           Expanded(
-            child: Column(
+            child: TabBarView(
+              controller: _tabController,
               children: [
-                if (imageFiles.isEmpty && results.isEmpty)
-                  Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                      child: Text(''),
-                    ),
-                  ),
-                if (imageFiles.isNotEmpty)
-                  Expanded(
-                    child: LayoutBuilder(
-                      builder: (context, constraints) => ListView(
-                        children: imageFiles.map((e) {
-                          return Container(
-                            width: constraints.biggest.width,
-                            padding: EdgeInsets.only(bottom: 6),
-                            child: Image.file(e, fit: BoxFit.fitWidth),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                if (results.isNotEmpty)
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Text(
-                      LocalizedText.of(
-                          chs:
-                              '共$totalNum, 有效$validNum, 已选$selectedNum, 重复$dupNum',
-                          jpn:
-                              '合計$totalNum, 有効$validNum, 選択済み$selectedNum, 重複$dupNum',
-                          eng:
-                              'Total $totalNum, valid $validNum, selected $selectedNum, duplicated $dupNum'),
-                    ),
-                  ),
-                if (results.isNotEmpty) Expanded(flex: 2, child: _resultList()),
+                KeepAliveBuilder(builder: (ctx) => screenshotsTab),
+                KeepAliveBuilder(builder: (ctx) => resultTab),
+                if (AppInfo.isDebugDevice)
+                  KeepAliveBuilder(
+                      builder: (ctx) => Center(child: Text('test')))
               ],
             ),
           ),
@@ -118,36 +107,44 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage> {
     );
   }
 
-  Widget get buttonBar {
-    List<OneSvtRecResult> usedResults =
-        results.where((e) => e.isValid && e.checked).toList();
-    return ButtonBar(
-      alignment: MainAxisAlignment.center,
-      children: [
-        Wrap(
-          crossAxisAlignment: WrapCrossAlignment.center,
-          alignment: WrapAlignment.center,
-          spacing: 6,
-          children: [
-            ElevatedButton(
-                onPressed: imageFiles.isEmpty ? null : _uploadScreenshots,
-                child: Text(S.current.upload)),
-            ElevatedButton(
-                onPressed: _fetchResult,
-                child: Text(LocalizedText.of(
-                    chs: '下载结果', jpn: '結果をダウンロード', eng: 'Download Result'))),
-            ElevatedButton(
-              child: Text(S.current.import_data),
-              onPressed:
-                  usedResults.isEmpty ? null : () => _doImport(usedResults),
-            ),
-          ],
-        )
-      ],
+  Widget get screenshotsTab {
+    if (imageFiles.isEmpty)
+      return Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          child: Text(''),
+        ),
+      );
+    return ListView(
+      children: imageFiles.map((e) {
+        return Padding(
+          padding: EdgeInsets.only(bottom: 6),
+          child: Image.file(e, fit: BoxFit.fitWidth),
+        );
+      }).toList(),
     );
   }
 
-  Widget _resultList() {
+  Widget get resultTab {
+    int totalNum = results.length,
+        validNum = results.where((e) => e.isValid).length,
+        selectedNum = results.where((e) => e.isValid && e.checked).length,
+        dupNum = resultsMap.values
+            .where((e) =>
+                e.length > 1 &&
+                e.where((ee) => ee.isValid && ee.checked).length > 1)
+            .length;
+
+    final summary = Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Text(
+        LocalizedText.of(
+            chs: '共$totalNum, 有效$validNum, 已选$selectedNum, 重复$dupNum',
+            jpn: '合計$totalNum, 有効$validNum, 選択済み$selectedNum, 重複$dupNum',
+            eng:
+                'Total $totalNum, valid $validNum, selected $selectedNum, duplicated $dupNum'),
+      ),
+    );
     List<Widget> children = [];
     results.forEach((svtResult) {
       if (svtResult.imgBytes == null) return;
@@ -256,7 +253,38 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage> {
         ),
       ));
     });
-    return ListView(children: children);
+    return Column(
+      children: [summary, Expanded(child: ListView(children: children))],
+    );
+  }
+
+  Widget get buttonBar {
+    List<OneSvtRecResult> usedResults =
+        results.where((e) => e.isValid && e.checked).toList();
+    return ButtonBar(
+      alignment: MainAxisAlignment.center,
+      children: [
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          alignment: WrapAlignment.center,
+          spacing: 6,
+          children: [
+            ElevatedButton(
+                onPressed: imageFiles.isEmpty ? null : _uploadScreenshots,
+                child: Text(S.current.upload)),
+            ElevatedButton(
+                onPressed: _fetchResult,
+                child: Text(LocalizedText.of(
+                    chs: '下载结果', jpn: '結果をダウンロード', eng: 'Download Result'))),
+            ElevatedButton(
+              child: Text(S.current.import_data),
+              onPressed:
+                  usedResults.isEmpty ? null : () => _doImport(usedResults),
+            ),
+          ],
+        )
+      ],
+    );
   }
 
   void importImages() async {
@@ -280,7 +308,6 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage> {
   Map<String, dynamic> _getBaseAPIParams() {
     final m = Map<String, dynamic>();
     m['userKey'] = AppInfo.uuid;
-    m['version'] = AppInfo.version;
     return m;
   }
 
@@ -330,21 +357,21 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage> {
 
       if (resp.success) {
         results = SvtRecResults.fromJson(Map.from(resp.body)).results;
-        // output = Map<String, int>.from(data['msg']);
-        // output = Item.sortMapById(output);
-        // print(output);
         if (results.isEmpty) {
           EasyLoading.showInfo(LocalizedText.of(
               chs: '识别结果为空',
               jpn: '認識結果が空です',
               eng: 'The recognition result is empty'));
         }
-        if (mounted) setState(() {});
+        if (mounted)
+          setState(() {
+            _tabController.index = 1;
+          });
       } else {
-        showInformDialog(context,
-            title: 'Response', content: resp.msg.toString());
+        resp.showMsg(context);
       }
-    } catch (e) {
+    } catch (e, s) {
+      logger.e('fetch svt result', e, s);
       showInformDialog(context, title: 'Error', content: e.toString());
     }
   }
