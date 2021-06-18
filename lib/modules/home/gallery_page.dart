@@ -314,54 +314,55 @@ class _GalleryPageState extends State<GalleryPage> {
     final sliderPages = _getSliderPages();
     _curCarouselIndex =
         fixValidRange(_curCarouselIndex, 0, sliderPages.length - 1);
-    return sliderPages.isEmpty
-        ? AspectRatio(
-            aspectRatio: 8 / 3,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: Divider.createBorderSide(context, width: 0.5),
-                ),
-              ),
+    if (sliderPages.isEmpty) {
+      return AspectRatio(
+        aspectRatio: 8 / 3,
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: Divider.createBorderSide(context, width: 0.5),
             ),
-          )
-        : Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              CarouselSlider(
-                carouselController: _carouselController,
-                items: sliderPages,
-                options: CarouselOptions(
-                  aspectRatio: 8.0 / 3.0,
-                  autoPlay: sliderPages.length > 1,
-                  autoPlayInterval: const Duration(seconds: 6),
-                  viewportFraction: 1.0,
-                  initialPage: _curCarouselIndex,
-                  onPageChanged: (v, _) => setState(() {
-                    _curCarouselIndex = v;
-                  }),
-                ),
-              ),
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: DotsIndicator(
-                  dotsCount: sliderPages.length,
-                  position: _curCarouselIndex.toDouble(),
-                  decorator: DotsDecorator(
-                    color: Colors.white70,
-                    spacing: EdgeInsets.symmetric(vertical: 6, horizontal: 3),
-                  ),
-                  onTap: (v) {
-                    setState(() {
-                      _curCarouselIndex =
-                          fixValidRange(v.toInt(), 0, sliderPages.length - 1);
-                      _carouselController.animateToPage(_curCarouselIndex);
-                    });
-                  },
-                ),
-              ),
-            ],
-          );
+          ),
+        ),
+      );
+    }
+    return Stack(
+      alignment: Alignment.bottomCenter,
+      children: [
+        CarouselSlider(
+          carouselController: _carouselController,
+          items: sliderPages,
+          options: CarouselOptions(
+            aspectRatio: 8.0 / 3.0,
+            autoPlay: sliderPages.length > 1,
+            autoPlayInterval: const Duration(seconds: 6),
+            viewportFraction: 1.0,
+            initialPage: _curCarouselIndex,
+            onPageChanged: (v, _) => setState(() {
+              _curCarouselIndex = v;
+            }),
+          ),
+        ),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: DotsIndicator(
+            dotsCount: sliderPages.length,
+            position: _curCarouselIndex.toDouble(),
+            decorator: DotsDecorator(
+              color: Colors.white70,
+              spacing: EdgeInsets.symmetric(vertical: 6, horizontal: 3),
+            ),
+            onTap: (v) {
+              setState(() {
+                _curCarouselIndex =
+                    fixValidRange(v.toInt(), 0, sliderPages.length - 1);
+                _carouselController.animateToPage(_curCarouselIndex);
+              });
+            },
+          ),
+        ),
+      ],
+    );
   }
 
   List<Widget> _getShownGalleries(BuildContext context) {
@@ -432,12 +433,15 @@ class _GalleryPageState extends State<GalleryPage> {
           aspectRatio: 8 / 3,
         );
       } else {
-        child = AspectRatio(
-          aspectRatio: 8 / 3,
-          child: FittedBox(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 4),
-              child: Text(imgUrl, textAlign: TextAlign.center),
+        child = Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+          child: Center(
+            child: AutoSizeText(
+              imgUrl,
+              textAlign: TextAlign.center,
+              maxFontSize: 20,
+              minFontSize: 5,
+              maxLines: imgUrl.split('\n').length,
             ),
           ),
         );
