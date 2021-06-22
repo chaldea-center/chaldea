@@ -17,7 +17,7 @@
 - [ ] custom SharedPreferences with prefix
 - [x] move `Servant.unavailable` to dataset.json
 - [x] NP Lv.5 for low rarity and event servants
-- [ ] ocr for skills
+- [x] ~~ocr for skills~~ skill recognizer
 - [ ] item recognizer: itemName -> itemId
 
 ## Performance

@@ -198,17 +198,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 ).then((value) => db.notifyAppUpdate());
               },
             ),
-            // ListTile(
-            //   title: Text(MaterialLocalizations.of(context)
-            //       .aboutListTileTitle(AppInfo.appName)),
-            //   trailing: Icon(Icons.keyboard_arrow_right),
-            //   onTap: () {
-            //     SplitRoute.push(
-            //       context: context,
-            //       builder: (_, __) => AboutAppPage(),
-            //     );
-            //   },
-            // ),
           ],
         ),
         TileGroup(
@@ -218,7 +207,7 @@ class _SettingsPageState extends State<SettingsPage> {
               title: Text(MaterialLocalizations.of(context)
                   .aboutListTileTitle(AppInfo.appName)),
               trailing: db.runtimeData.upgradableVersion == null
-                  ? null
+                  ? Icon(Icons.keyboard_arrow_right)
                   : Text(
                       db.runtimeData.upgradableVersion!.version + ' ↑',
                       style: TextStyle(),
@@ -229,16 +218,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 popDetail: true,
               ),
             ),
-            if (!kReleaseMode)
-              ListTile(
-                title: Text(S.of(context).settings_tutorial),
-                onTap: () {
-                  EasyLoading.showToast(
-                      Language.isCN ? '咕咕咕咕咕咕' : "Not implemented");
-                },
-              ),
             ListTile(
               title: Text(S.of(context).about_feedback),
+              trailing: Icon(Icons.keyboard_arrow_right),
               onTap: () {
                 SplitRoute.push(
                   context: context,
@@ -248,12 +230,29 @@ class _SettingsPageState extends State<SettingsPage> {
                 );
               },
             ),
+            if (!kReleaseMode)
+              ListTile(
+                title: Text(S.of(context).settings_tutorial),
+                trailing: Icon(Icons.menu_book),
+                onTap: () {
+                  EasyLoading.showToast(
+                      Language.isCN ? '咕咕咕咕咕咕' : "Not implemented");
+                },
+              ),
+            ListTile(
+              title: Text(S.current.support_chaldea),
+              trailing: Icon(Icons.favorite),
+              onTap: () {
+                launch('https://chaldea-center.github.io/support.html');
+              },
+            ),
             if (Platform.isIOS || Platform.isMacOS)
               ListTile(
                 title: Text(LocalizedText.of(
                     chs: 'App Store评分',
                     jpn: 'App Storeでのレート ',
                     eng: 'Rate on App Store')),
+                trailing: Icon(Icons.star_half_rounded),
                 onTap: () {
                   launch(kAppStoreLink);
                 },
@@ -264,24 +263,15 @@ class _SettingsPageState extends State<SettingsPage> {
                     chs: 'Google Play评分',
                     jpn: 'Google Playでのレート ',
                     eng: 'Rate on Google Play')),
+                trailing: Icon(Icons.star_half_rounded),
                 onTap: () {
                   launch(kGooglePlayLink);
                 },
               ),
             ListTile(
               title: Text(S.current.share),
+              trailing: Icon(Icons.ios_share),
               onTap: () => ShareAppDialog().showDialog(context),
-            )
-          ],
-        ),
-        TileGroup(
-          header: 'Support Chaldea',
-          children: [
-            ListTile(
-              title: Text(S.current.support_chaldea),
-              onTap: () {
-                launch('https://chaldea-center.github.io/support.html');
-              },
             ),
             ListTile(
               title: Text('Starring on Github'),
