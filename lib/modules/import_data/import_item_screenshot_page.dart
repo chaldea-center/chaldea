@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:dio/dio.dart';
@@ -35,7 +33,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
     _scrollController3 = ScrollController();
     imageFiles = db.runtimeData.itemRecognizeImageFiles;
     _dio = Dio(db.serverDio.options.copyWith(
-      // baseUrl: kDebugMode ? 'http://localhost:8083' : null,
+      baseUrl: kDebugMode ? 'http://localhost:8083' : null,
       sendTimeout: 600 * 1000,
       receiveTimeout: 600 * 1000,
       headers: Map.from(db.serverDio.options.headers)
@@ -205,42 +203,29 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
     });
   }
 
-  Map<String, dynamic> _getBaseAPIParams() {
-    final m = Map<String, dynamic>();
-    m['userKey'] = AppInfo.uuid;
-    return m;
-  }
-
   void _uploadScreenshots() async {
-    print('uuid=${AppInfo.uuid}');
     if (imageFiles.isEmpty) {
       return;
     }
     try {
-      final response1 = await _dio
-          .get('/requestNewTask', queryParameters: {'userKey': AppInfo.uuid});
-      final data1 = jsonDecode(response1.data);
-      if (data1['success'] != true) {
-        showInformDialog(context,
-            title: S.current.success, content: data1['msg']);
+      EasyLoading.show(
+          status: 'Uploading', maskType: EasyLoadingMaskType.clear);
+      final resp1 = ChaldeaResponse.fromResponse(
+          await _dio.get('/recognizer/item/request'));
+      if (!resp1.success) {
+        resp1.showMsg(context);
         return;
       }
 
-      final map = _getBaseAPIParams();
+      final Map<String, dynamic> map = {};
       for (var file in imageFiles) {
         map[pathlib.basename(file.path)] =
             await MultipartFile.fromFile(file.path);
       }
       var formData = FormData.fromMap(map);
-      EasyLoading.show(
-          status: 'Uploading', maskType: EasyLoadingMaskType.clear);
-      final response2 = await _dio.post('/recognizeItems', data: formData);
-      final resp2 = ChaldeaResponse.fromResponse(response2.data);
+      final resp2 = ChaldeaResponse.fromResponse(
+          await _dio.post('/recognizer/item/new', data: formData));
       resp2.showMsg(context);
-      // var data2 = jsonDecode(response2.data);
-      // String title = data2['success'] == true ? '上传成功' : '上传失败';
-      // String content = data2['msg'].toString();
-      // showInformDialog(context, title: title, content: content);
     } catch (e, s) {
       logger.e('upload item screenshots to server error', e, s);
       showInformDialog(context, title: 'Error', content: e.toString());
@@ -251,26 +236,24 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
 
   void _fetchResult() async {
     try {
-      final response = await _dio.get('/downloadItemResult',
-          queryParameters: _getBaseAPIParams());
-      final resp = ChaldeaResponse.fromResponse(response.data);
+      final resp = ChaldeaResponse.fromResponse(
+          await _dio.get('/recognizer/item/result'));
       if (!mounted) return;
-      if (resp.success) {
-        output = Item.sortMapById(Map<String, int>.from(resp.body));
-        print(output);
-        if (output.isEmpty) {
-          EasyLoading.showInfo(LocalizedText.of(
-              chs: '识别结果为空',
-              jpn: '認識結果が空です',
-              eng: 'The recognition result is empty'));
-        }
-        if (mounted)
-          setState(() {
-            _tabController.index = 1;
-          });
-      } else {
+      if (!resp.success) {
         resp.showMsg(context);
+        return;
       }
+
+      output = Item.sortMapById(Map<String, int>.from(resp.body));
+      if (output.isEmpty) {
+        EasyLoading.showInfo(LocalizedText.of(
+            chs: '识别结果为空',
+            jpn: '認識結果が空です',
+            eng: 'The recognition result is empty'));
+      }
+      _tabController.index = 1;
+      await Future.delayed(Duration(milliseconds: 300));
+      if (mounted) setState(() {});
     } catch (e, s) {
       logger.e('fetch item result error', e, s);
       showInformDialog(context, title: 'Error', content: e.toString());

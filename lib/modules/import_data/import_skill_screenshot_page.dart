@@ -5,6 +5,8 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path/path.dart' as pathlib;
 
@@ -40,12 +42,13 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
     _scrollController3 = ScrollController();
     imageFiles = db.runtimeData.svtRecognizeImageFiles;
     _dio = Dio(db.serverDio.options.copyWith(
-      // baseUrl: kDebugMode ? 'http://localhost:8083' : null,
+      baseUrl: kDebugMode ? 'http://localhost:8083' : null,
       sendTimeout: 600 * 1000,
       receiveTimeout: 600 * 1000,
       headers: Map.from(db.serverDio.options.headers)
         ..remove(Headers.contentTypeHeader),
     ));
+    _debugCountController = TextEditingController(text: '10');
   }
 
   @override
@@ -55,6 +58,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
     _scrollController1.dispose();
     _scrollController2.dispose();
     _scrollController3.dispose();
+    _debugCountController.dispose();
   }
 
   @override
@@ -95,8 +99,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
                 KeepAliveBuilder(builder: (ctx) => screenshotsTab),
                 KeepAliveBuilder(builder: (ctx) => resultTab),
                 if (AppInfo.isDebugDevice)
-                  KeepAliveBuilder(
-                      builder: (ctx) => Center(child: Text('test')))
+                  KeepAliveBuilder(builder: (ctx) => debugTab)
               ],
             ),
           ),
@@ -258,6 +261,51 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
     );
   }
 
+  late TextEditingController _debugCountController;
+  List<String> _debugFilenames = [];
+
+  Widget get debugTab {
+    List<Widget> children = [];
+    children.add(Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          width: 80,
+          child: TextField(
+            controller: _debugCountController,
+            textAlign: TextAlign.center,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () async {
+            final resp = ChaldeaResponse.fromResponse(await _dio.get(
+              '/recognizer/skill/debug/list',
+              queryParameters: {
+                'count': int.tryParse(_debugCountController.text) ?? 10
+              },
+            ));
+            _debugFilenames = List.from(resp.body);
+            if (mounted) setState(() {});
+          },
+          child: Text('Download List'),
+        )
+      ],
+    ));
+    for (String fn in _debugFilenames) {
+      children.add(Padding(
+        padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
+        child: Text(fn),
+      ));
+      String url = '${_dio.options.baseUrl}/recognizer/skill/debug/file/$fn';
+      children.add(_SkillResultLoader(url: url));
+    }
+    return ListView(
+      controller: _scrollController3,
+      children: children,
+    );
+  }
+
   Widget get buttonBar {
     List<OneSvtRecResult> usedResults =
         results.where((e) => e.isValid && e.checked).toList();
@@ -305,40 +353,30 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
     });
   }
 
-  Map<String, dynamic> _getBaseAPIParams() {
-    final m = Map<String, dynamic>();
-    m['userKey'] = AppInfo.uuid;
-    return m;
-  }
-
   void _uploadScreenshots() async {
-    print('uuid=${AppInfo.uuid}');
     if (imageFiles.isEmpty) {
       return;
     }
     try {
-      final response1 = await _dio.get('/requestSvtTask',
-          queryParameters: _getBaseAPIParams());
-      final data1 = jsonDecode(response1.data);
-      if (data1['success'] != true) {
-        showInformDialog(context,
-            title: S.current.success, content: data1['msg']);
+      EasyLoading.show(
+          status: 'Uploading', maskType: EasyLoadingMaskType.clear);
+
+      final resp1 = ChaldeaResponse.fromResponse(
+          await _dio.get('/recognizer/skill/request'));
+      if (!resp1.success) {
+        resp1.showMsg(context);
         return;
       }
 
-      final map = _getBaseAPIParams();
+      Map<String, dynamic> map = {};
       for (var file in imageFiles) {
         map[pathlib.basename(file.path)] =
             await MultipartFile.fromFile(file.path);
       }
       var formData = FormData.fromMap(map);
-      EasyLoading.show(
-          status: 'Uploading', maskType: EasyLoadingMaskType.clear);
-      final response2 = await _dio.post('/recognizeServants', data: formData);
-      var data2 = jsonDecode(response2.data);
-      String title = data2['success'] == true ? '上传成功' : '上传失败';
-      String content = data2['msg'].toString();
-      showInformDialog(context, title: title, content: content);
+      final resp2 = ChaldeaResponse.fromResponse(
+          await _dio.post('/recognizer/skill/new', data: formData));
+      resp2.showMsg(context);
     } catch (e, s) {
       logger.e('upload skill screenshots to server error', e, s);
       showInformDialog(context, title: 'Error', content: e.toString());
@@ -349,27 +387,24 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
 
   void _fetchResult() async {
     try {
-      final response = await _dio.get('/downloadSvtResult',
-          queryParameters: _getBaseAPIParams());
-      // Map data = jsonDecode(response.data);
+      final resp = ChaldeaResponse.fromResponse(
+          await _dio.get('/recognizer/skill/result'));
       if (!mounted) return;
-      final resp = ChaldeaResponse.fromResponse(response.data);
-
-      if (resp.success) {
-        results = SvtRecResults.fromJson(Map.from(resp.body)).results;
-        if (results.isEmpty) {
-          EasyLoading.showInfo(LocalizedText.of(
-              chs: '识别结果为空',
-              jpn: '認識結果が空です',
-              eng: 'The recognition result is empty'));
-        }
-        if (mounted)
-          setState(() {
-            _tabController.index = 1;
-          });
-      } else {
+      if (!resp.success) {
         resp.showMsg(context);
+        return;
       }
+
+      results = SvtRecResults.fromJson(Map.from(resp.body)).results;
+      if (results.isEmpty) {
+        EasyLoading.showInfo(LocalizedText.of(
+            chs: '识别结果为空',
+            jpn: '認識結果が空です',
+            eng: 'The recognition result is empty'));
+      }
+      _tabController.index = 1;
+      await Future.delayed(Duration(milliseconds: 300));
+      if (mounted) setState(() {});
     } catch (e, s) {
       logger.e('fetch svt result', e, s);
       showInformDialog(context, title: 'Error', content: e.toString());
@@ -454,6 +489,99 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
       },
       icon: Icon(Icons.help),
       tooltip: S.current.help,
+    );
+  }
+}
+
+class _SkillResultLoader extends StatefulWidget {
+  final String url;
+
+  const _SkillResultLoader({Key? key, required this.url}) : super(key: key);
+
+  @override
+  __SkillResultLoaderState createState() => __SkillResultLoaderState();
+}
+
+class __SkillResultLoaderState extends State<_SkillResultLoader> {
+  static final _cacheManager = CacheManager(Config('debug'));
+  List<OneSvtRecResult> results = [];
+  String? _lastUrl;
+  static Map<String, File> _cachedFiles = {};
+
+  bool get isJson => widget.url.toLowerCase().endsWith('.json');
+
+  void _parse(File file) {
+    if (isJson)
+      results =
+          SvtRecResults.fromJson(jsonDecode(file.readAsStringSync())).results;
+  }
+
+  File? _getFile() {
+    final file = _cachedFiles[widget.url];
+    // cached
+    if (file != null) {
+      if (_lastUrl != widget.url) _parse(file);
+      _lastUrl = widget.url;
+      return file;
+    }
+    // caching
+    if (widget.url == _lastUrl) return null;
+
+    // cache it
+    _lastUrl = widget.url;
+    final url = widget.url;
+    _cacheManager.getSingleFile(url).then((file) {
+      _cachedFiles[url] = file;
+      _parse(file);
+      if (mounted) setState(() {});
+    }).catchError((e, s) {
+      logger.e('load skill result json file failed', e, s);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final file = _getFile();
+    if (file == null) {
+      return AspectRatio(
+        aspectRatio: 1,
+        child: CircularProgressIndicator(),
+      );
+    }
+    if (!isJson) {
+      return Image.file(file);
+    }
+    if (results.isEmpty) {
+      return Text(widget.url);
+    }
+
+    return Column(
+      children: results.map((e) {
+        final svt = db.gameData.servants[e.svtNo];
+        return ListTile(
+          leading: Padding(
+            padding: EdgeInsets.symmetric(vertical: 3),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                GestureDetector(
+                  child: Image.memory(e.imgBytes!, width: 44),
+                  onTap: () {
+                    SimpleCancelOkDialog(
+                      hideCancel: true,
+                      content: Image.memory(e.imgBytes!),
+                    ).showDialog(context);
+                  },
+                ),
+                svt?.iconBuilder(context: context, width: 40) ??
+                    db.getIconImage(null, width: 40, aspectRatio: 132 / 144),
+              ],
+            ),
+          ),
+          title: Text('${e.svtNo} - ${svt?.mcLink}'),
+          trailing: Text(e.skills.join('/')),
+        );
+      }).toList(),
     );
   }
 }

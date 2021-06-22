@@ -197,7 +197,18 @@ class _SettingsPageState extends State<SettingsPage> {
                   builder: (_, __) => CarouselSettingPage(),
                 ).then((value) => db.notifyAppUpdate());
               },
-            )
+            ),
+            // ListTile(
+            //   title: Text(MaterialLocalizations.of(context)
+            //       .aboutListTileTitle(AppInfo.appName)),
+            //   trailing: Icon(Icons.keyboard_arrow_right),
+            //   onTap: () {
+            //     SplitRoute.push(
+            //       context: context,
+            //       builder: (_, __) => AboutAppPage(),
+            //     );
+            //   },
+            // ),
           ],
         ),
         TileGroup(

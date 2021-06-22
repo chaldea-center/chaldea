@@ -119,11 +119,11 @@ class AutoUpdateUtil {
         return;
       }
 
-      final rawResp = await db.serverDio.get('/patchDataset', queryParameters: {
+      final resp = ChaldeaResponse.fromResponse(await db.serverDio
+          .get('/patchDataset', queryParameters: {
         'from': curRelease.tagName,
         'to': latestRelease.tagName
-      });
-      final resp = ChaldeaResponse.fromResponse(rawResp.data);
+      }));
 
       if (resp.success) {
         final patchJson = jsonDecode(resp.body);

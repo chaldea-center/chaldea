@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:chaldea/generated/l10n.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -20,9 +21,10 @@ class ChaldeaResponse {
 
   ChaldeaResponse({this.success = false, this.msg, this.body});
 
-  static ChaldeaResponse fromResponse(dynamic data) {
-    print('type:${data.runtimeType}, data=$data');
+  static ChaldeaResponse fromResponse(Response response) {
+    // print('type:${data.runtimeType}, data=$data');
     try {
+      final data = response.data;
       var map;
       if (data is String) {
         map = jsonDecode(data);
@@ -39,6 +41,7 @@ class ChaldeaResponse {
 
   Future showMsg(BuildContext? context,
       {String? title, bool showBody = false}) {
+    if (context == null) return Future.value();
     title ??= success ? S.current.success : S.current.failed;
     String content = msg.toString();
     if (showBody) content += '\n$body';

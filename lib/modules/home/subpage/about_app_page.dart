@@ -5,14 +5,14 @@ import 'about_page.dart';
 import 'feedback_page.dart';
 import 'share_app_dialog.dart';
 
-class AboutPage2 extends StatefulWidget {
-  const AboutPage2({Key? key}) : super(key: key);
+class AboutAppPage extends StatefulWidget {
+  const AboutAppPage({Key? key}) : super(key: key);
 
   @override
-  _AboutPage2State createState() => _AboutPage2State();
+  _AboutAppPageState createState() => _AboutAppPageState();
 }
 
-class _AboutPage2State extends State<AboutPage2> {
+class _AboutAppPageState extends State<AboutAppPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

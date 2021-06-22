@@ -10,7 +10,7 @@ import 'package:chaldea/modules/extras/mystic_code_page.dart';
 import 'package:chaldea/modules/extras/updates.dart';
 import 'package:chaldea/modules/ffo/ffo_page.dart';
 import 'package:chaldea/modules/free_quest_calculator/free_calculator_page.dart';
-import 'package:chaldea/modules/home/subpage/about_page2.dart';
+import 'package:chaldea/modules/home/subpage/about_app_page.dart';
 import 'package:chaldea/modules/home/subpage/bug_page.dart';
 import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
 import 'package:chaldea/modules/home/subpage/game_data_page.dart';
@@ -229,7 +229,7 @@ class _GalleryPageState extends State<GalleryPage> {
         name: GalleryItem.about,
         title: S.current.about_app,
         icon: Icons.copyright,
-        builder: (context, _) => AboutPage2(),
+        builder: (context, _) => AboutAppPage(),
         //fail
         isDetail: true,
       ),

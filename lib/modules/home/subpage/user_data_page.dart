@@ -201,12 +201,12 @@ class _UserDataPageState extends State<UserDataPage> {
       () async {
         EasyLoading.show(
             status: 'uploading', maskType: EasyLoadingMaskType.clear);
-        var rawResp = await db.serverDio.post('/user/uploadBackup', data: {
+        final resp = ChaldeaResponse.fromResponse(
+            await db.serverDio.post('/user/uploadBackup', data: {
           HttpUtils.usernameKey: db.prefs.userName.get(),
           HttpUtils.passwordKey: db.prefs.userPwd.get(),
           HttpUtils.bodyKey: jsonEncode(db.userData),
-        });
-        final resp = ChaldeaResponse.fromResponse(rawResp.data);
+        }));
         if (!resp.success) {
           resp.showMsg(context);
           return;
@@ -221,11 +221,11 @@ class _UserDataPageState extends State<UserDataPage> {
     if (!checkUserPwd()) return;
     await catchErrorAsync(
       () async {
-        var rawResp = await db.serverDio.post('/user/listBackups', data: {
+        final resp = ChaldeaResponse.fromResponse(
+            await db.serverDio.post('/user/listBackups', data: {
           HttpUtils.usernameKey: db.prefs.userName.get(),
           HttpUtils.passwordKey: db.prefs.userPwd.get(),
-        });
-        final resp = ChaldeaResponse.fromResponse(rawResp.data);
+        }));
         if (!resp.success) {
           resp.showMsg(context);
           return;
@@ -256,12 +256,12 @@ class _UserDataPageState extends State<UserDataPage> {
         if (fn == null) return;
         EasyLoading.show(
             status: 'Downloading', maskType: EasyLoadingMaskType.clear);
-        var rawResp2 = await db.serverDio.post('/user/downloadBackup', data: {
+        final resp2 = ChaldeaResponse.fromResponse(
+            await db.serverDio.post('/user/downloadBackup', data: {
           HttpUtils.usernameKey: db.prefs.userName.get(),
           HttpUtils.passwordKey: db.prefs.userPwd.get(),
           'bak': fn,
-        });
-        final resp2 = ChaldeaResponse.fromResponse(rawResp2.data);
+        }));
         if (!resp2.success) {
           resp2.showMsg(context);
           return;

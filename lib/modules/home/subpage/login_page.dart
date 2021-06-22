@@ -200,11 +200,11 @@ class _LoginPageState extends State<LoginPage> {
     if (isLoginAvailable(name, pwd)) {
       await catchErrorAsync(() async {
         EasyLoading.show(maskType: EasyLoadingMaskType.clear);
-        var rawResp = await db.serverDio.post('/user/login', data: {
+        var resp = ChaldeaResponse.fromResponse(await db.serverDio
+            .post('/user/login', data: {
           HttpUtils.usernameKey: name,
           HttpUtils.passwordKey: b64(pwd, false)
-        });
-        var resp = ChaldeaResponse.fromResponse(rawResp.data);
+        }));
         if (resp.success) {
           _saveUserInfo(name, pwd);
         }
@@ -237,11 +237,11 @@ class _LoginPageState extends State<LoginPage> {
           jpn: 'また、すべてのサーバー バックアップを削除します',
           eng: 'Including backups on server')),
       onTapOk: () async {
-        final rawResp = await db.serverDio.post('/user/deleteAccount', data: {
+        var resp = ChaldeaResponse.fromResponse(await db.serverDio
+            .post('/user/deleteAccount', data: {
           HttpUtils.usernameKey: name,
           HttpUtils.passwordKey: b64(pwd, false)
-        });
-        var resp = ChaldeaResponse.fromResponse(rawResp.data);
+        }));
         resp.showMsg(context);
       },
     ).showDialog(context);
@@ -253,11 +253,11 @@ class _LoginPageState extends State<LoginPage> {
     if (isLoginAvailable(name, pwd)) {
       await catchErrorAsync(() async {
         EasyLoading.show(maskType: EasyLoadingMaskType.clear);
-        var rawResp = await db.serverDio.post('/user/signup', data: {
+        var resp = ChaldeaResponse.fromResponse(await db.serverDio
+            .post('/user/signup', data: {
           HttpUtils.usernameKey: name,
           HttpUtils.passwordKey: b64(pwd, false)
-        });
-        var resp = ChaldeaResponse.fromResponse(rawResp.data);
+        }));
         if (resp.success) {
           _saveUserInfo(name, pwd);
         }
@@ -274,12 +274,12 @@ class _LoginPageState extends State<LoginPage> {
     if (isChangePasswordAvailable(name, pwd, newPwd)) {
       await catchErrorAsync(() async {
         EasyLoading.show(maskType: EasyLoadingMaskType.clear);
-        var rawResp = await db.serverDio.post('/user/changePassword', data: {
+        var resp = ChaldeaResponse.fromResponse(
+            await db.serverDio.post('/user/changePassword', data: {
           HttpUtils.usernameKey: name,
           HttpUtils.passwordKey: b64(pwd, false),
           HttpUtils.newPasswordKey: b64(newPwd, false),
-        });
-        var resp = ChaldeaResponse.fromResponse(rawResp.data);
+        }));
         if (resp.success) {
           _saveUserInfo(name, newPwd);
         }

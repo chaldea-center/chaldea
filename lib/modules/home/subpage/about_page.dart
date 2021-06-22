@@ -222,7 +222,7 @@ class _FandomContributorsPage extends StatelessWidget {
   const _FandomContributorsPage({Key? key}) : super(key: key);
 
   final Map<String, String> data = const {
-    'Fandom FGO Team': 'https://fategrandorder.fandom.com/wiki',
+    'Fandom FGO Team': 'https://fategrandorder.fandom.com/wiki/',
     'Chaldeum Translations': 'https://chaldeum.wordpress.com',
     'aabisector': 'https://www.reddit.com/user/aabisector',
     'ComunCoutinho': 'https://www.reddit.com/user/ComunCoutinho',
