@@ -69,6 +69,7 @@ dependencies:
   path_provider: ^2.0.2
   permission_handler: ^8.1.0
   pool: ^1.5.0
+  rate_my_app: ^1.1.0+1
   rfc_6902: ^0.1.0
   screenshot: ^1.2.0
   share_plus: ^2.1.2

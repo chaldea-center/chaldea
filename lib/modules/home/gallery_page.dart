@@ -26,6 +26,7 @@ import 'package:flutter/foundation.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
+import 'package:rate_my_app/rate_my_app.dart';
 import 'package:string_validator/string_validator.dart';
 
 class GalleryPage extends StatefulWidget {
@@ -35,6 +36,14 @@ class GalleryPage extends StatefulWidget {
 
 class _GalleryPageState extends State<GalleryPage> {
   CarouselSetting get carouselSetting => db.userData.carouselSetting;
+  final RateMyApp rateMyApp = RateMyApp(
+    minDays: 7,
+    minLaunches: 20,
+    remindDays: 7,
+    remindLaunches: 20,
+    appStoreIdentifier: '1548713491',
+    googlePlayIdentifier: 'cc.narumi.chaldea',
+  );
 
   @override
   void initState() {
@@ -52,6 +61,17 @@ class _GalleryPageState extends State<GalleryPage> {
     }
 
     Future.delayed(Duration(seconds: 2)).then((_) async {
+      if (AppInfo.isMobile) {
+        await rateMyApp.init();
+        if (rateMyApp.shouldOpenDialog || kDebugMode) {
+          await rateMyApp.showRateDialog(
+            context,
+            title: 'Enjoy Chaldea?',
+            message:
+                'If you like this app, please take a little bit of your time to review it!',
+          );
+        }
+      }
       if (kDebugMode) return;
       if (db.userData.autoUpdateDataset) {
         await AutoUpdateUtil.patchGameData();
@@ -59,6 +79,8 @@ class _GalleryPageState extends State<GalleryPage> {
       await Future.delayed(Duration(seconds: 2));
       await AutoUpdateUtil.checkAppUpdate(
           background: true, download: db.userData.autoUpdateApp);
+    }).onError((e, s) {
+      logger.e('init app extras', e, s);
     });
   }
 
