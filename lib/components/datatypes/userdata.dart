@@ -141,6 +141,22 @@ class CarouselSetting {
         enableJp = enableJp ?? true,
         enableUs = enableUs ?? true;
 
+  bool get shouldUpdate {
+    if (updateTime == null) return true;
+    if (urls.isEmpty && (enableMooncell || enableJp || enableUs)) return true;
+    DateTime lastTime =
+            DateTime.fromMillisecondsSinceEpoch(updateTime! * 1000).toUtc(),
+        now = DateTime.now().toUtc();
+    int hours = now.difference(lastTime).inHours;
+    if (hours > 24 || hours < 0) return true;
+    // update at 17:00(+08), 18:00(+09) => 9:00(+00)
+    int hour = (9 - lastTime.hour) % 24 + lastTime.hour;
+    final time1 =
+        DateTime.utc(lastTime.year, lastTime.month, lastTime.day, hour, 10);
+    if (now.isAfter(time1)) return true;
+    return false;
+  }
+
   factory CarouselSetting.fromJson(Map<String, dynamic> data) =>
       _$CarouselSettingFromJson(data);
 

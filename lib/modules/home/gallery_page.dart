@@ -39,8 +39,8 @@ class _GalleryPageState extends State<GalleryPage> {
   final RateMyApp rateMyApp = RateMyApp(
     minDays: 7,
     minLaunches: 20,
-    remindDays: 7,
-    remindLaunches: 20,
+    remindDays: 14,
+    remindLaunches: 40,
     appStoreIdentifier: '1548713491',
     googlePlayIdentifier: 'cc.narumi.chaldea',
   );
@@ -48,22 +48,12 @@ class _GalleryPageState extends State<GalleryPage> {
   @override
   void initState() {
     super.initState();
-    if (carouselSetting.updateTime == null || carouselSetting.urls.isEmpty) {
-      carouselSetting.needUpdate = true;
-    } else {
-      DateTime lastTime = DateTime.fromMillisecondsSinceEpoch(
-              carouselSetting.updateTime! * 1000),
-          now = DateTime.now();
-      if (now.difference(lastTime).inHours > 24) {
-        // more than 1 day
-        carouselSetting.needUpdate = true;
-      }
-    }
+    carouselSetting.needUpdate = carouselSetting.shouldUpdate;
 
     Future.delayed(Duration(seconds: 2)).then((_) async {
       if (AppInfo.isMobile) {
         await rateMyApp.init();
-        if (rateMyApp.shouldOpenDialog || kDebugMode) {
+        if (rateMyApp.shouldOpenDialog) {
           await rateMyApp.showRateDialog(
             context,
             title: 'Enjoy Chaldea?',
@@ -279,8 +269,8 @@ class _GalleryPageState extends State<GalleryPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _buildCarousel(),
-                    _buildGalleries(),
+                    _buildCarousel(constraints),
+                    _buildGalleries(constraints),
                   ],
                 ),
               ),
@@ -295,17 +285,17 @@ class _GalleryPageState extends State<GalleryPage> {
     );
   }
 
-  Widget _buildGalleries() {
-    Widget grid = LayoutBuilder(builder: (context, constraints) {
-      int crossCount = max(2, constraints.maxWidth ~/ 75);
-      return GridView.count(
-        crossAxisCount: crossCount,
-        physics: NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        childAspectRatio: 1,
-        children: _getShownGalleries(context),
-      );
-    });
+  Widget _buildGalleries(BoxConstraints constraints) {
+    int crossCount = max(2, constraints.maxWidth ~/ 75);
+    crossCount = min(8, crossCount);
+    Widget grid = GridView.count(
+      padding: EdgeInsets.all(8),
+      crossAxisCount: crossCount,
+      physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      childAspectRatio: 1,
+      children: _getShownGalleries(context),
+    );
     if (db.gameData.version.length < 2) {
       grid = GestureDetector(
         onTap: () {
@@ -332,20 +322,52 @@ class _GalleryPageState extends State<GalleryPage> {
   int _curCarouselIndex = 0;
   CarouselController _carouselController = CarouselController();
 
-  Widget _buildCarousel() {
+  Widget _buildCarousel(BoxConstraints constraints) {
     final sliderPages = _getSliderPages();
     _curCarouselIndex =
         fixValidRange(_curCarouselIndex, 0, sliderPages.length - 1);
+    final double criticalWidth = 400;
     if (sliderPages.isEmpty) {
-      return AspectRatio(
-        aspectRatio: 8 / 3,
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: Divider.createBorderSide(context, width: 0.5),
-            ),
-          ),
-        ),
+      final logo = FractionallySizedBox(
+        heightFactor: 0.6,
+        child: Image.asset('res/img/launcher_icon/app_icon_logo.png'),
+      );
+      if (constraints.maxWidth < criticalWidth * 1.2) {
+        return AspectRatio(
+          aspectRatio: 8 / 3,
+          child: Container(child: logo),
+        );
+      } else {
+        return Container(
+          height: criticalWidth * 3 / 8,
+          child: logo,
+        );
+      }
+    }
+    CarouselOptions options;
+    if (constraints.maxWidth < criticalWidth * 1.2) {
+      options = CarouselOptions(
+        aspectRatio: 8.0 / 3.0,
+        autoPlay: sliderPages.length > 1,
+        autoPlayInterval: const Duration(seconds: 6),
+        viewportFraction: 1,
+        initialPage: _curCarouselIndex,
+        onPageChanged: (v, _) => setState(() {
+          _curCarouselIndex = v;
+        }),
+      );
+    } else {
+      options = CarouselOptions(
+        height: criticalWidth * 3 / 8,
+        autoPlay: sliderPages.length > 1,
+        autoPlayInterval: const Duration(seconds: 6),
+        viewportFraction: criticalWidth / constraints.maxWidth,
+        enlargeCenterPage: true,
+        enlargeStrategy: CenterPageEnlargeStrategy.height,
+        initialPage: _curCarouselIndex,
+        onPageChanged: (v, _) => setState(() {
+          _curCarouselIndex = v;
+        }),
       );
     }
     return Stack(
@@ -354,16 +376,7 @@ class _GalleryPageState extends State<GalleryPage> {
         CarouselSlider(
           carouselController: _carouselController,
           items: sliderPages,
-          options: CarouselOptions(
-            aspectRatio: 8.0 / 3.0,
-            autoPlay: sliderPages.length > 1,
-            autoPlayInterval: const Duration(seconds: 6),
-            viewportFraction: 1.0,
-            initialPage: _curCarouselIndex,
-            onPageChanged: (v, _) => setState(() {
-              _curCarouselIndex = v;
-            }),
-          ),
+          options: options,
         ),
         FittedBox(
           fit: BoxFit.scaleDown,
