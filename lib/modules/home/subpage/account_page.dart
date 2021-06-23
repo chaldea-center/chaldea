@@ -17,6 +17,7 @@ class _AccountPageState extends State<AccountPage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
+            tooltip: S.current.new_account,
             onPressed: () {
               showDialog(
                 context: context,
@@ -25,7 +26,9 @@ class _AccountPageState extends State<AccountPage> {
                     title: S.of(context).new_account,
                     errorText: S.of(context).input_invalid_hint,
                     validate: (v) =>
-                        v == v.trim() && !db.userData.users.containsKey(v),
+                        v == v.trim() &&
+                        v.isNotEmpty &&
+                        db.userData.users.values.every((e) => e.name != v),
                     onSubmit: addUser,
                   );
                 },
@@ -56,12 +59,14 @@ class _AccountPageState extends State<AccountPage> {
                 ),
                 PopupMenuItem(
                   value: 'move_up',
-                  child: Text('Move Up'),
+                  child: Text(
+                      LocalizedText.of(chs: '上移', jpn: '上に移動', eng: 'Move Up')),
                   enabled: index != 0,
                 ),
                 PopupMenuItem(
                   value: 'move_down',
-                  child: Text('Move Down'),
+                  child: Text(LocalizedText.of(
+                      chs: '下移', jpn: '下に移動', eng: 'Move Down')),
                   enabled: index != db.userData.users.length - 1,
                 ),
                 PopupMenuItem(value: 'copy', child: Text(S.of(context).copy)),
@@ -122,7 +127,9 @@ class _AccountPageState extends State<AccountPage> {
         text: user.name,
         errorText: S.of(context).input_invalid_hint,
         validate: (v) {
-          return v == v.trim() && !db.userData.userNames.contains(v);
+          return v == v.trim() &&
+              v.isNotEmpty &&
+              db.userData.users.values.every((e) => e.name != v);
         },
         onSubmit: (v) {
           user.name = v;

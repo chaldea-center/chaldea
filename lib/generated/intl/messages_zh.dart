@@ -499,7 +499,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("切换滑动条/下拉框"),
         "sync_server": m16,
         "tooltip_refresh_sliders":
-            MessageLookupByLibrary.simpleMessage("刷新首页图"),
+            MessageLookupByLibrary.simpleMessage("刷新轮播图"),
         "total_ap": MessageLookupByLibrary.simpleMessage("总AP"),
         "total_counts": MessageLookupByLibrary.simpleMessage("总数"),
         "update": MessageLookupByLibrary.simpleMessage("更新"),

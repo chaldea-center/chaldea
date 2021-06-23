@@ -594,7 +594,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Switch Slider/Dropdown"),
         "sync_server": m16,
         "tooltip_refresh_sliders":
-            MessageLookupByLibrary.simpleMessage("Refresh sliders"),
+            MessageLookupByLibrary.simpleMessage("Refresh slides"),
         "total_ap": MessageLookupByLibrary.simpleMessage("Total AP"),
         "total_counts": MessageLookupByLibrary.simpleMessage("Total counts"),
         "update": MessageLookupByLibrary.simpleMessage("Update"),

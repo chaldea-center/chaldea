@@ -86,18 +86,20 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
         ),
         TextButton(
           child: Text(S.of(context).ok),
-          onPressed: () {
-            String _value = _controller!.text;
-            validation = _validate(_value);
-            setState(() {
-              if (validation) {
-                if (widget.onSubmit != null) {
-                  widget.onSubmit!(_value);
+          onPressed: validation
+              ? () {
+                  String _value = _controller!.text;
+                  validation = _validate(_value);
+                  setState(() {
+                    if (validation) {
+                      if (widget.onSubmit != null) {
+                        widget.onSubmit!(_value);
+                      }
+                      Navigator.pop(context);
+                    }
+                  });
                 }
-                Navigator.pop(context);
-              }
-            });
-          },
+              : null,
         )
       ],
     );

@@ -531,7 +531,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Slider/Dropdownを切り替え"),
         "sync_server": m16,
         "tooltip_refresh_sliders":
-            MessageLookupByLibrary.simpleMessage("ホームページを更新"),
+            MessageLookupByLibrary.simpleMessage("スライドを更新"),
         "total_ap": MessageLookupByLibrary.simpleMessage("合計AP"),
         "total_counts": MessageLookupByLibrary.simpleMessage("合計カウント"),
         "update": MessageLookupByLibrary.simpleMessage("更新"),

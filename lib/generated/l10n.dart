@@ -350,10 +350,10 @@ class S {
     );
   }
 
-  /// `刷新首页图`
+  /// `刷新轮播图`
   String get tooltip_refresh_sliders {
     return Intl.message(
-      '刷新首页图',
+      '刷新轮播图',
       name: 'tooltip_refresh_sliders',
       desc: '',
       args: [],
