@@ -1,3 +1,10 @@
+## 1.4.6
+- TabBarView for skill/item recognizer
+- add debug tab for skill recognizer
+- refresh carousel slides after settings changed
+- limit carousel height
+- bug fix
+
 ## 1.4.5
 - [FEATURE] recognize skill screenshots 
 - standalone costume list

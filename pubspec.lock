@@ -112,7 +112,7 @@ packages:
       name: built_value
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "8.0.6"
+    version: "8.1.0"
   cached_network_image:
     dependency: "direct main"
     description:
@@ -126,7 +126,7 @@ packages:
       name: carousel_slider
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.0.0-nullsafety.0"
+    version: "4.0.0"
   catcher:
     dependency: "direct main"
     description:
@@ -189,7 +189,7 @@ packages:
       name: connectivity_plus
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.4"
   connectivity_plus_linux:
     dependency: transitive
     description:
@@ -364,7 +364,7 @@ packages:
       name: equatable
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.2"
+    version: "2.0.3"
   fake_async:
     dependency: transitive
     description:
@@ -385,14 +385,14 @@ packages:
       name: file
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.1.1"
+    version: "6.1.2"
   file_picker:
     dependency: transitive
     description:
       name: file_picker
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.0.2+2"
+    version: "3.0.3"
   file_picker_cross:
     dependency: "direct main"
     description:
@@ -455,7 +455,7 @@ packages:
       name: fl_chart
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.36.1"
+    version: "0.36.2"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -481,7 +481,7 @@ packages:
       name: flutter_cache_manager
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.1.1"
+    version: "3.1.2"
   flutter_easyloading:
     dependency: "direct main"
     description:
@@ -615,7 +615,7 @@ packages:
       name: hive_flutter
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.0"
+    version: "1.1.0"
   html:
     dependency: "direct main"
     description:
@@ -783,7 +783,7 @@ packages:
       name: package_info_plus
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.3"
   package_info_plus_linux:
     dependency: transitive
     description:
@@ -818,7 +818,7 @@ packages:
       name: package_info_plus_windows
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.2"
   path:
     dependency: transitive
     description:
@@ -867,14 +867,14 @@ packages:
       name: pedantic
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.11.0"
+    version: "1.11.1"
   permission_handler:
     dependency: "direct main"
     description:
       name: permission_handler
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "8.1.0"
+    version: "8.1.1"
   permission_handler_platform_interface:
     dependency: transitive
     description:
@@ -965,7 +965,7 @@ packages:
       name: screenshot
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.2.0"
+    version: "1.2.1"
   sentry:
     dependency: transitive
     description:
@@ -979,7 +979,7 @@ packages:
       name: share_plus
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.1.2"
+    version: "2.1.4"
   share_plus_linux:
     dependency: transitive
     description:
@@ -1187,7 +1187,7 @@ packages:
       name: url_launcher
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.0.6"
+    version: "6.0.7"
   url_launcher_linux:
     dependency: transitive
     description:
@@ -1257,7 +1257,7 @@ packages:
       name: win32
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.1.5"
+    version: "2.2.3"
   xdg_directories:
     dependency: transitive
     description:
