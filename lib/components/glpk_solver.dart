@@ -155,6 +155,8 @@ class GLPKSolver {
         solution = GLPKSolution.fromJson(Map.from(result));
         solution.sortCountVars();
       }
+      //
+      _solveEfficiency(solution, params2, data2);
     } catch (e, s) {
       logger.e('Execute GLPK solver failed', e, s);
       EasyLoading.showToast('Execute GLPK solver failed:\n$e');
@@ -162,7 +164,6 @@ class GLPKSolver {
         rethrow;
       }
     }
-    _solveEfficiency(solution, params2, data2);
     print('=========solving finished=========');
     return solution;
   }
@@ -283,14 +284,13 @@ GLPKData _preProcess({required GLPKData data, required GLPKParams params}) {
   }
 
   // remove rows/cols above
-  objective.removeWhere((key, value) => removeRows.contains(key));
+  objective.forEach((key, value) {
+    if (removeRows.contains(key)) params.remove(key);
+  });
   removeRows.forEach((element) => data.removeRow(element));
   removeCols.forEach((element) {
     if (!retainCols.contains(element)) data.removeCol(element);
   });
-
-  params.rows = objective.keys.toList();
-  params.counts = objective.values.toList();
 
   // no rows (glpk will raise error), need to check in caller
   if (objective.length == 0) logger.d('no valid objRows');
