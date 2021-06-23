@@ -202,5 +202,15 @@ class Localized {
             jpn: '地獄界曼荼羅 平安京 轟雷一閃',
             eng:
                 "Lostbelt No.5.5: Realm of Hell Mandala, Heian-kyō, Thundering Flash"),
+        LocalizedText(
+            chs: 'Lostbelt No.6 妖精圆桌领域 阿瓦隆·勒·菲',
+            jpn: 'Lostbelt No.6 妖精円卓領域 アヴァロン･ル･フェ',
+            eng:
+                "Lostbelt No.6: Fairy Realm of the Round Table, Avalon le Fae"),
+        LocalizedText(
+            chs: 'Lostbelt No.6 妖精圆桌领域 阿瓦隆·勒·菲 星辰诞生之刻',
+            jpn: 'Lostbelt No.6 妖精円卓領域 アヴァロン･ル･フェ 星の生まれる刻',
+            eng:
+                "Lostbelt No.6: Fairy Realm of the Round Table, Avalon le Fae, The Moment a Star is Born"),
       ]);
 }
