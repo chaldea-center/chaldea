@@ -147,7 +147,7 @@ class ItemCostServantPage extends StatelessWidget {
         leading: db.getIconImage(svt.icon, width: 52),
         title: Text('${svt.info.name}', style: textStyle),
         subtitle: Text(
-          Item.extraItems.contains(itemKey)
+          Items.extraPlanningItems.contains(itemKey)
               ? '$allNum'
               : '$allNum($ascensionNum/$skillNum/$dressNum/$extraNum)',
           style: textStyle,

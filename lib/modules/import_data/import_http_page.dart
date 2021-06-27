@@ -464,9 +464,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     if (_includeItem) {
       // user.items.clear();
       if (replacedResponse!.firstUser != null) {
-        user.items[Item.qp] = replacedResponse!.firstUser!.qp;
-        user.items[Item.mana] = replacedResponse!.firstUser!.mana;
-        user.items[Item.rarePri] = replacedResponse!.firstUser!.rarePri;
+        user.items[Items.qp] = replacedResponse!.firstUser!.qp;
+        user.items[Items.manaPri] = replacedResponse!.firstUser!.mana;
+        user.items[Items.rarePri] = replacedResponse!.firstUser!.rarePri;
       }
       items.forEach((item) {
         user.items[item.indexKey!] = item.num;

@@ -302,7 +302,7 @@ class _ItemListTabState extends State<ItemListTab> {
     super.initState();
     _scrollController = ScrollController();
     db.gameData.items.forEach((key, item) {
-      if (item.category == widget.category && key != Item.qp) {
+      if (item.category == widget.category && key != Items.qp) {
         _allGroups[item] = InputComponents(
           data: item,
           focusNode: FocusNode(
@@ -326,9 +326,9 @@ class _ItemListTabState extends State<ItemListTab> {
     sortedEntries.insert(
         0,
         MapEntry(
-          db.gameData.items[Item.qp]!,
+          db.gameData.items[Items.qp]!,
           InputComponents(
-              data: db.gameData.items[Item.qp]!,
+              data: db.gameData.items[Items.qp]!,
               focusNode: FocusNode(),
               controller: TextEditingController()),
         ));
@@ -357,7 +357,7 @@ class _ItemListTabState extends State<ItemListTab> {
       content: Text('本页所有素材均设为999'),
       onTapOk: () {
         _shownGroups.forEach((group) {
-          if (group.data.name != Item.qp)
+          if (group.data.name != Items.qp)
             db.curUser.items[group.data.name] = 999;
         });
         db.itemStat.updateLeftItems();
@@ -373,7 +373,7 @@ class _ItemListTabState extends State<ItemListTab> {
       _shownGroups.clear();
       for (var group in _allGroups.values) {
         if (!widget.filtered ||
-            group.data.name == Item.qp ||
+            group.data.name == Items.qp ||
             (db.itemStat.leftItems[group.data.name] ?? 0) < 0) {
           _shownGroups.add(group);
           children.add(buildItemTile(group));
@@ -456,7 +456,7 @@ class _ItemListTabState extends State<ItemListTab> {
           return;
         }
         final text = formatNumber(db.curUser.items[item.name] ?? 0,
-            groupSeparator: item.name == Item.qp ? ',' : null);
+            groupSeparator: item.name == Items.qp ? ',' : null);
         final selection = group.controller!.value.selection;
         TextSelection? newSelection;
         if (selection.isValid) {
@@ -481,7 +481,7 @@ class _ItemListTabState extends State<ItemListTab> {
   /// macOS: catch "\t", enter to complete and submit
   Widget buildItemTile(InputComponents<Item> group) {
     final itemKey = group.data.name;
-    bool isQp = itemKey == Item.qp;
+    bool isQp = itemKey == Items.qp;
 
     // update when text input
     bool enough = (db.itemStat.leftItems[itemKey] ?? 0) >= 0;

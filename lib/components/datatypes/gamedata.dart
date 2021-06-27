@@ -168,19 +168,6 @@ class Item {
     return '$runtimeType($name)';
   }
 
-  static const String grail = '圣杯';
-  static const String crystal = '传承结晶';
-  static const String qp = 'QP';
-  static const String mana = '魔力棱镜';
-  static const String rarePri = '稀有魔力棱镜';
-  static const String hufu = '呼符';
-  static const String quartz = '圣晶石';
-  static const String fou4Hp = '流星之芙芙';
-  static const String fou4Atk = '日轮之芙芙';
-
-  // items for servant planning but not for ascension and skill
-  static const List<String> extraItems = [grail, fou4Hp, fou4Atk];
-
   static getId(String key) {
     return db.gameData.items[key]?.id;
   }
@@ -274,6 +261,24 @@ class Item {
     }
     return child;
   }
+}
+
+class Items {
+  const Items._();
+
+  static const String grail = '圣杯';
+  static const String crystal = '传承结晶';
+  static const String qp = 'QP';
+  static const String manaPri = '魔力棱镜';
+  static const String rarePri = '稀有魔力棱镜';
+  static const String summonTicket = '呼符';
+  static const String quartz = '圣晶石';
+  static const String quartzFragment = '圣晶片';
+  static const String fou4Hp = '流星之芙芙';
+  static const String fou4Atk = '日轮之芙芙';
+
+  /// items for servant planning but not for ascension and skill
+  static const List<String> extraPlanningItems = [grail, fou4Hp, fou4Atk];
 }
 
 class ItemCategory {

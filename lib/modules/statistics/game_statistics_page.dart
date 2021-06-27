@@ -59,7 +59,7 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
         sumDict([allItemCost, if (includeCurItems) db.curUser.items]);
     shownItems.removeWhere((key, value) {
       int group = (db.gameData.items[key]?.id ?? 0) ~/ 100;
-      return key != Item.qp && (!(group >= 10 && group < 40) || value <= 0);
+      return key != Items.qp && (!(group >= 10 && group < 40) || value <= 0);
     });
     return ListView(
       padding: EdgeInsets.symmetric(vertical: 12),
@@ -73,16 +73,16 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
           title: Text(S.of(context).statistics_include_checkbox),
         ),
         CustomTile(
-          leading: db.getIconImage(Item.qp, height: kGridIconSize),
-          title: Text(formatNumber(shownItems[Item.qp] ?? 0)),
+          leading: db.getIconImage(Items.qp, height: kGridIconSize),
+          title: Text(formatNumber(shownItems[Items.qp] ?? 0)),
           onTap: () => SplitRoute.push(
             context: context,
-            builder: (context, _) => ItemDetailPage(itemKey: Item.qp),
+            builder: (context, _) => ItemDetailPage(itemKey: Items.qp),
           ),
         ),
         buildClassifiedItemList(
           context: context,
-          data: shownItems..remove(Item.qp),
+          data: shownItems..remove(Items.qp),
           divideRarity: false,
           crossCount: SplitRoute.isSplit(context) ? 7 : 7,
           onTap: (itemKey) => SplitRoute.push(

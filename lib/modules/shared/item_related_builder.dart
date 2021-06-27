@@ -21,7 +21,7 @@ class CommonBuilder {
                 child: ImageWithText(
                   onTap: onTap == null ? null : () => onTap(entry.key),
                   image: db.getIconImage(entry.key),
-                  text: entry.key == Item.qp && entry.value is int
+                  text: entry.key == Items.qp && entry.value is int
                       ? formatNumber(entry.value, compact: true)
                       : entry.value.toString(),
                   padding: EdgeInsets.symmetric(horizontal: 3),

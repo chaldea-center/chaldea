@@ -187,9 +187,9 @@ class Servant {
       ..fouAtk = 50
       ..grail = maxGrail;
     return <String, int>{
-      Item.grail: max(0, target.grail - cur.grail),
-      Item.fou4Hp: max(0, target.fouHp - cur.fouHp),
-      Item.fou4Atk: max(0, target.fouAtk - cur.fouAtk),
+      Items.grail: max(0, target.grail - cur.grail),
+      Items.fou4Hp: max(0, target.fouHp - cur.fouHp),
+      Items.fou4Atk: max(0, target.fouAtk - cur.fouAtk),
     };
   }
 

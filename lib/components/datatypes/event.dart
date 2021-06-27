@@ -160,8 +160,8 @@ class LimitEvent extends EventBase {
   Map<String, int> itemsWithRare([LimitEventPlan? plan]) {
     return Map.from(items)
       ..addAll({
-        Item.grail: grail + (plan?.rerun == false ? grail2crystal : 0),
-        Item.crystal: crystal + (plan?.rerun == false ? 0 : grail2crystal)
+        Items.grail: grail + (plan?.rerun == false ? grail2crystal : 0),
+        Items.crystal: crystal + (plan?.rerun == false ? 0 : grail2crystal)
       })
       ..removeWhere((key, value) => value <= 0);
   }
@@ -267,7 +267,7 @@ class MainRecord extends EventBase {
 
   Map<String, int> get rewardsWithRare {
     return Map.from(rewards)
-      ..addAll({Item.grail: grail, Item.crystal: crystal})
+      ..addAll({Items.grail: grail, Items.crystal: crystal})
       ..removeWhere((key, value) => value <= 0);
   }
 

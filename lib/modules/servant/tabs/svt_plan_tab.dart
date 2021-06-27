@@ -205,7 +205,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             buildPlanRow(
               useSlider: sliderMode,
               leading: Item.iconBuilder(
-                  context: context, itemKey: Item.grail, width: 33),
+                  context: context, itemKey: Items.grail, width: 33),
               title: S.of(context).grail_up,
               start: curVal.grail,
               end: targetVal.grail,
@@ -225,8 +225,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           buildPlanRow(
             useSlider: sliderMode,
             leading: Item.iconBuilder(
-                context: context, itemKey: Item.fou4Hp, width: 33),
-            title: Item.localizedNameOf(Item.fou4Hp),
+                context: context, itemKey: Items.fou4Hp, width: 33),
+            title: Item.localizedNameOf(Items.fou4Hp),
             start: curVal.fouHp,
             end: targetVal.fouHp,
             minVal: 0,
@@ -245,8 +245,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           buildPlanRow(
             useSlider: sliderMode,
             leading: Item.iconBuilder(
-                context: context, itemKey: Item.fou4Atk, width: 33),
-            title: Item.localizedNameOf(Item.fou4Atk),
+                context: context, itemKey: Items.fou4Atk, width: 33),
+            title: Item.localizedNameOf(Items.fou4Atk),
             start: curVal.fouAtk,
             end: targetVal.fouAtk,
             minVal: 0,

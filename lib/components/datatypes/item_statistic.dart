@@ -233,7 +233,9 @@ class SvtParts<T> {
   List<T> get values => [ascension, skill, dress, extra];
 
   List<T> valuesIfExtra(String key) {
-    return Item.extraItems.contains(key) ? [extra] : [ascension, skill, dress];
+    return Items.extraPlanningItems.contains(key)
+        ? [extra]
+        : [ascension, skill, dress];
   }
 
   /// calculate [summation] before using!!!
