@@ -38,7 +38,7 @@ class ItemCostServantPage extends StatelessWidget {
           trailing: Text(
             '${S.current.item_total_demand} ${num2str(counts.summation![itemKey])}\n' +
                 counts
-                    .valuesIfGrail(itemKey)
+                    .valuesIfExtra(itemKey)
                     .map((v) => num2str(v[itemKey]))
                     .join('/'),
             textAlign: TextAlign.end,
@@ -51,7 +51,7 @@ class ItemCostServantPage extends StatelessWidget {
           S.current.ascension_up,
           S.current.skill_up,
           S.current.costume_unlock,
-          S.current.grail_up
+          'Extra'
         ];
         for (int i = 0; i < headers.length; i++) {
           final _allSvtCounts =
@@ -142,12 +142,14 @@ class ItemCostServantPage extends StatelessWidget {
       final ascensionNum = details.ascension[itemKey]?[svtNo] ?? 0,
           skillNum = details.skill[itemKey]?[svtNo] ?? 0,
           dressNum = details.dress[itemKey]?[svtNo] ?? 0,
-          grailNum = details.grailAscension[itemKey]?[svtNo] ?? 0;
+          extraNum = details.extra[itemKey]?[svtNo] ?? 0;
       children.add(CustomTile(
         leading: db.getIconImage(svt.icon, width: 52),
         title: Text('${svt.info.name}', style: textStyle),
         subtitle: Text(
-          '$allNum($ascensionNum/$skillNum/$dressNum/$grailNum)',
+          Item.extraItems.contains(itemKey)
+              ? '$allNum'
+              : '$allNum($ascensionNum/$skillNum/$dressNum/$extraNum)',
           style: textStyle,
         ),
         trailing: Icon(Icons.arrow_forward_ios),

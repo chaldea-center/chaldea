@@ -84,6 +84,7 @@ class OneSvtRecResult {
     this.image,
   });
 
+  @JsonKey(ignore: true)
   bool checked = true;
 
   List<int?> get skills => [skill1, skill2, skill3];

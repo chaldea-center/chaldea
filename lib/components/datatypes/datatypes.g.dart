@@ -1613,6 +1613,8 @@ ServantPlan _$ServantPlanFromJson(Map<String, dynamic> json) {
       dress: $checkedConvert(json, 'dress',
           (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
       grail: $checkedConvert(json, 'grail', (v) => v as int?),
+      fouHp: $checkedConvert(json, 'fouHp', (v) => v as int?),
+      fouAtk: $checkedConvert(json, 'fouAtk', (v) => v as int?),
     );
     return val;
   });
@@ -1625,6 +1627,8 @@ Map<String, dynamic> _$ServantPlanToJson(ServantPlan instance) =>
       'skills': instance.skills,
       'dress': instance.dress,
       'grail': instance.grail,
+      'fouHp': instance.fouHp,
+      'fouAtk': instance.fouAtk,
     };
 
 EventPlans _$EventPlansFromJson(Map<String, dynamic> json) {

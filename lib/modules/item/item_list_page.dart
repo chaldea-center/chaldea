@@ -585,7 +585,7 @@ class _ItemListTabState extends State<ItemListTab> {
         ],
       );
       List<int> _countsInSubTitle = db.itemStat.svtItemDetail.planItemCounts
-          .valuesIfGrail(itemKey)
+          .valuesIfExtra(itemKey)
           .map((e) => e[itemKey] ?? 0)
           .toList();
       subtitle = Row(

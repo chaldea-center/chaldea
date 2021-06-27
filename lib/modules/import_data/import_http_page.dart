@@ -498,7 +498,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         status.curVal
           ..ascension = svt.limitCount
           ..skills = [svt.skillLv1, svt.skillLv2, svt.skillLv3]
-          ..grail = svt.exceedCount;
+          ..grail = svt.exceedCount
+          ..fouHp = max(0, (svt.adjustHp - 100) ~/ 2)
+          ..fouAtk = max(0, (svt.adjustAtk - 100) ~/ 2);
 
         final costumeVals = cardCollections[svt.svtId]!.costumeIdsTo01();
         // should always be non-null

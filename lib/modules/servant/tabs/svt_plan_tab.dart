@@ -34,29 +34,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       {ServantDetailPageState? parent, Servant? svt, ServantStatus? status})
       : super(parent: parent, svt: svt, status: status);
 
-  /// valid range include start and end
-  int _ensureInRange(int? v, int start, int end) {
-    v = v ?? start;
-    if (v < start) return start;
-    if (v > end) return end;
-    return v;
-  }
-
   void ensureTargetLarger(ServantPlan cur, ServantPlan target) {
-    // first ensure valid too
-    cur.ascension = _ensureInRange(cur.ascension, 0, 4);
-    target.ascension = max(target.ascension, cur.ascension);
-    for (var i = 0; i < cur.skills.length; i++) {
-      cur.skills[i] = _ensureInRange(cur.skills[i], 1, 10);
-      target.skills[i] = max(target.skills[i], cur.skills[i]);
-    }
-    target.fixDressLength(cur.dress.length, 0);
-    for (var i = 0; i < cur.dress.length; i++) {
-      cur.dress[i] = _ensureInRange(cur.dress[i], 0, 1);
-      target.dress[i] = max(target.dress[i], cur.dress[i]);
-    }
-    cur.grail = _ensureInRange(cur.grail, 0, 10);
-    target.grail = max(target.grail, cur.grail);
+    target.validate(cur);
   }
 
   @override
@@ -74,7 +53,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       status.validate();
       final curVal = status.curVal;
       final targetVal = enhanceMode ? enhancePlan : plan;
-      ensureTargetLarger(curVal, targetVal);
+      targetVal.validate(curVal);
       // ascension part
       List<Widget> children = [];
       if (svt.no != 1) {
@@ -225,12 +204,13 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           if (svt.no != 1)
             buildPlanRow(
               useSlider: sliderMode,
-              leading: db.getIconImage(Item.grail, width: 33),
+              leading: Item.iconBuilder(
+                  context: context, itemKey: Item.grail, width: 33),
               title: S.of(context).grail_up,
               start: curVal.grail,
               end: targetVal.grail,
               minVal: 0,
-              maxVal: [10, 10, 10, 9, 7, 5][svt.info.rarity],
+              maxVal: svt.getMaxGrailCount(),
               labelFormatter: (v) => svt.getGrailLv(v).toString(),
               trailingLabelFormatter: (a, b) =>
                   '${svt.getGrailLv(a)}->${svt.getGrailLv(b!).toString().padRight(3)}',
@@ -241,7 +221,47 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                 updateState();
               },
               detailPageBuilder: null,
-            )
+            ),
+          buildPlanRow(
+            useSlider: sliderMode,
+            leading: Item.iconBuilder(
+                context: context, itemKey: Item.fou4Hp, width: 33),
+            title: Item.localizedNameOf(Item.fou4Hp),
+            start: curVal.fouHp,
+            end: targetVal.fouHp,
+            minVal: 0,
+            maxVal: 50,
+            labelFormatter: (v) => (v * 20).toString(),
+            trailingLabelFormatter: (a, b) =>
+                '${curVal.shownFouHp}->${targetVal.shownFouHp}',
+            onValueChanged: (_start, _end) {
+              status.favorite = true;
+              curVal.fouHp = _start;
+              targetVal.fouHp = _end;
+              updateState();
+            },
+            detailPageBuilder: null,
+          ),
+          buildPlanRow(
+            useSlider: sliderMode,
+            leading: Item.iconBuilder(
+                context: context, itemKey: Item.fou4Atk, width: 33),
+            title: Item.localizedNameOf(Item.fou4Atk),
+            start: curVal.fouAtk,
+            end: targetVal.fouAtk,
+            minVal: 0,
+            maxVal: 50,
+            labelFormatter: (v) => (v * 20).toString(),
+            trailingLabelFormatter: (a, b) =>
+                '${curVal.shownFouAtk}->${targetVal.shownFouAtk}',
+            onValueChanged: (_start, _end) {
+              status.favorite = true;
+              curVal.fouAtk = _start;
+              targetVal.fouAtk = _end;
+              updateState();
+            },
+            detailPageBuilder: null,
+          ),
         ],
       ));
 
@@ -262,6 +282,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     int? end,
     required int minVal,
     required int maxVal,
+    int? divisions,
     String labelFormatter(int v)?,
     String trailingLabelFormatter(int a, int? b)?,
     required void onValueChanged(int start, int end),
@@ -295,7 +316,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         slider = Slider(
           min: minVal.toDouble(),
           max: maxVal.toDouble(),
-          divisions: (maxVal - minVal).round(),
+          divisions: divisions ?? (maxVal - minVal).round(),
           value: start.toDouble(),
           label: labelFormatter(start),
           onChanged: (v) {
@@ -306,7 +327,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         slider = RangeSlider(
           min: minVal.toDouble(),
           max: maxVal.toDouble(),
-          divisions: (maxVal - minVal).round(),
+          divisions: divisions ?? (maxVal - minVal).round(),
           values: RangeValues(start.toDouble(), end.toDouble()),
           labels: RangeLabels(labelFormatter(start), labelFormatter(end)),
           onChanged: (v) {
@@ -362,6 +383,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                 },
         );
       } else {
+        // TODO: add divisions
         selector = RangeSelector<int>(
           start: start,
           end: end,

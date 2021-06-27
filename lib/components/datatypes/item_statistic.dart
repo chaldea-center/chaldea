@@ -196,24 +196,24 @@ class SvtParts<T> {
   T ascension;
   T skill;
   T dress;
-  T grailAscension;
+  T extra;
 
   SvtParts({
     T? ascension,
     T? skill,
     T? dress,
-    T? grailAscension,
+    T? extra,
     T? summation,
     T k()?,
   })  : assert(ascension != null &&
                 skill != null &&
                 dress != null &&
-                grailAscension != null ||
+                extra != null ||
             k != null),
         ascension = ascension ?? k!(),
         skill = skill ?? k!(),
         dress = dress ?? k!(),
-        grailAscension = grailAscension ?? k!(),
+        extra = extra ?? k!(),
         summation = summation ?? k?.call();
 
   SvtParts<T2> copyWith<T2>([T2 f(T e)?]) {
@@ -221,28 +221,27 @@ class SvtParts<T> {
       ascension: f == null ? ascension as T2 : f(ascension),
       skill: f == null ? skill as T2 : f(skill),
       dress: f == null ? dress as T2 : f(dress),
-      grailAscension: f == null ? grailAscension as T2 : f(grailAscension),
+      extra: f == null ? extra as T2 : f(extra),
       summation: f == null
           ? summation as T2?
           : summation != null
-          ? f(summation!)
-          : null,
+              ? f(summation!)
+              : null,
     );
   }
 
-  List<T> get values => [ascension, skill, dress, grailAscension];
+  List<T> get values => [ascension, skill, dress, extra];
 
-  List<T> valuesIfGrail(String key) {
-    return key == Item.grail ? [grailAscension] : [ascension, skill, dress];
+  List<T> valuesIfExtra(String key) {
+    return Item.extraItems.contains(key) ? [extra] : [ascension, skill, dress];
   }
 
   /// calculate [summation] before using!!!
-  List<T> get valuesWithSum =>
-      [ascension, skill, dress, grailAscension, summation!];
+  List<T> get valuesWithSum => [ascension, skill, dress, extra, summation!];
 
   @override
   String toString() {
     return '$runtimeType<$T>(\n  ascension:$ascension,\n  skill:$skill,\n'
-        '  dress:$dress)\n  grailAscension:$grailAscension';
+        '  dress:$dress)\n  extra:$extra';
   }
 }

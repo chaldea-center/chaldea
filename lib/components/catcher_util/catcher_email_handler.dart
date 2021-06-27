@@ -98,7 +98,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
     int index =
         lines.lastIndexWhere((line) => line.contains('package:chaldea'));
     if (lines.isNotEmpty) {
-      buffer.writeAll(lines.take(index < 0 ? 10 : min(index + 1, 20)), '\n');
+      buffer.writeAll(lines.take(index < 0 ? 3 : min(index + 1, 20)), '\n');
     }
     return buffer.toString();
   }

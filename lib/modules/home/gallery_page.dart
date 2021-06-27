@@ -28,6 +28,7 @@ import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
 import 'package:rate_my_app/rate_my_app.dart';
 import 'package:string_validator/string_validator.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class GalleryPage extends StatefulWidget {
   @override
@@ -482,7 +483,11 @@ class _GalleryPageState extends State<GalleryPage> {
         );
       }
       sliders.add(GestureDetector(
-        onTap: () => jumpToExternalLinkAlert(url: link),
+        onTap: () async {
+          if (await canLaunch(link)) {
+            jumpToExternalLinkAlert(url: link);
+          }
+        },
         child: child,
       ));
     });

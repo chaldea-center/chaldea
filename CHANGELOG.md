@@ -1,4 +1,5 @@
 ## 1.4.6
+- NEW: add ★️4 fou-kun planning
 - TabBarView for skill/item recognizer
 - add debug tab for skill recognizer
 - refresh carousel slides after settings changed

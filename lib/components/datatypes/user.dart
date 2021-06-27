@@ -110,7 +110,7 @@ class User {
     this.curSvtPlanNo =
         fixValidRange(this.curSvtPlanNo, 0, this.servantPlans.length);
     fillListValue(this.servantPlans, max(5, this.servantPlans.length),
-            (_) => <int, ServantPlan>{});
+        (_) => <int, ServantPlan>{});
   }
 
   Map<int, ServantPlan> get curSvtPlan {
@@ -120,8 +120,8 @@ class User {
 
   Servant addDuplicatedForServant(Servant svt, [int? newNo]) {
     for (int no = svt.originNo * 1000 + 1;
-    no < svt.originNo * 1000 + 999;
-    no++) {
+        no < svt.originNo * 1000 + 999;
+        no++) {
       if (!db.gameData.servantsWithUser.containsKey(no)) {
         duplicatedServants[no] = svt.originNo;
         final newSvt = svt.duplicate(no);
@@ -169,15 +169,17 @@ class User {
   Map<String, dynamic> toJson() => _$UserToJson(this);
 
   // can be sorted before saving
-  static Map<String, ServantStatus> _servantsToJson(Map<int, ServantStatus> data) {
+  static Map<String, ServantStatus> _servantsToJson(
+      Map<int, ServantStatus> data) {
     return data.map((k, e) => MapEntry(k.toString(), e))
       ..removeWhere((key, value) => value.isEmpty);
   }
 
-  static List<Map<String, ServantPlan>> _servantPlansToJson(List<Map<int, ServantPlan>> data) {
+  static List<Map<String, ServantPlan>> _servantPlansToJson(
+      List<Map<int, ServantPlan>> data) {
     return data
         .map((e) => e.map((k, e) => MapEntry(k.toString(), e))
-      ..removeWhere((key, value) => value.isEmpty))
+          ..removeWhere((key, value) => value.isEmpty))
         .toList();
   }
 
@@ -262,20 +264,32 @@ class ServantPlan {
   List<int> dress;
   int grail;
 
+  /// 流星のフォウくん/日輪のフォウくん, 1000-2000
+  int fouHp;
+  int fouAtk;
+
   ServantPlan({
     bool? favorite,
     int? ascension,
     List<int>? skills,
     List<int>? dress,
     int? grail,
+    int? fouHp,
+    int? fouAtk,
   })  : favorite = favorite ?? false,
         ascension = ascension ?? 0,
         skills = List.generate(3, (index) => skills?.getOrNull(index) ?? 0),
         dress = List.generate(
             dress?.length ?? 0, (index) => dress?.getOrNull(index) ?? 0),
-        grail = grail ?? 0 {
+        grail = grail ?? 0,
+        fouHp = fouHp ?? 0,
+        fouAtk = fouAtk ?? 0 {
     validate();
   }
+
+  int get shownFouHp => fouHp * 20;
+
+  int get shownFouAtk => fouAtk * 20;
 
   void reset() {
     favorite = false;
@@ -283,6 +297,7 @@ class ServantPlan {
     skills.fillRange(0, 3, 1);
     dress.fillRange(0, dress.length, 0);
     grail = 0;
+    fouHp = fouAtk = 0;
   }
 
   bool get isEmpty {
@@ -290,14 +305,9 @@ class ServantPlan {
         ascension == 0 &&
         skills.every((e) => e == 1) &&
         dress.every((e) => e == 0) &&
-        grail == 0;
-  }
-
-  bool get isEmptyIgnoreFavorite {
-    return ascension == 0 &&
-        skills.every((e) => e == 1) &&
-        dress.every((e) => e == 0) &&
-        grail == 0;
+        grail == 0 &&
+        fouHp == 0 &&
+        fouAtk == 0;
   }
 
   void setMax({int skill = 10}) {
@@ -307,6 +317,7 @@ class ServantPlan {
     skills.fillRange(0, 3, skill);
     dress.fillRange(0, dress.length, 1);
     // grail = grail;
+    // fouHp, fouAtk
   }
 
   void fixDressLength(int length, [int fill = 0]) {
@@ -314,6 +325,7 @@ class ServantPlan {
   }
 
   void validate([ServantPlan? lowerPlan]) {
+    lowerPlan?.validate();
     ascension = fixValidRange(ascension, lowerPlan?.ascension ?? 0, 4);
     for (int i = 0; i < skills.length; i++) {
       skills[i] = fixValidRange(skills[i], lowerPlan?.skills[i] ?? 1, 10);
@@ -323,6 +335,8 @@ class ServantPlan {
     }
     // check grail max limit when used
     grail = fixValidRange(grail, lowerPlan?.grail ?? 0);
+    fouHp = fixValidRange(fouHp, lowerPlan?.fouHp ?? 0, 50);
+    fouAtk = fixValidRange(fouAtk, lowerPlan?.fouAtk ?? 0, 50);
   }
 
   factory ServantPlan.fromJson(Map<String, dynamic> data) =>
@@ -336,6 +350,8 @@ class ServantPlan {
     List<int>? skills,
     List<int>? dress,
     int? grail,
+    int? fouHp,
+    int? fouAtk,
   }) {
     return ServantPlan(
       favorite: favorite ?? this.favorite,
@@ -343,6 +359,8 @@ class ServantPlan {
       skills: skills ?? this.skills,
       dress: dress ?? this.dress,
       grail: grail ?? this.grail,
+      fouHp: fouHp ?? this.fouHp,
+      fouAtk: fouAtk ?? this.fouAtk,
     );
   }
 
@@ -352,6 +370,8 @@ class ServantPlan {
     skills = List.from(other.skills);
     dress = List.from(other.dress);
     grail = other.grail;
+    fouHp = other.fouHp;
+    fouAtk = other.fouAtk;
   }
 
   static ServantPlan from(ServantPlan other) => ServantPlan()..copyFrom(other);

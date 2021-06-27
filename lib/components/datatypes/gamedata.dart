@@ -175,6 +175,11 @@ class Item {
   static const String rarePri = '稀有魔力棱镜';
   static const String hufu = '呼符';
   static const String quartz = '圣晶石';
+  static const String fou4Hp = '流星之芙芙';
+  static const String fou4Atk = '日轮之芙芙';
+
+  // items for servant planning but not for ascension and skill
+  static const List<String> extraItems = [grail, fou4Hp, fou4Atk];
 
   static getId(String key) {
     return db.gameData.items[key]?.id;

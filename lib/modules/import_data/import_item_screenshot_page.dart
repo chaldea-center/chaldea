@@ -33,7 +33,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
     _scrollController3 = ScrollController();
     imageFiles = db.runtimeData.itemRecognizeImageFiles;
     _dio = Dio(db.serverDio.options.copyWith(
-      baseUrl: kDebugMode ? 'http://localhost:8083' : null,
+      // baseUrl: kDebugMode ? 'http://localhost:8183' : null,
       sendTimeout: 600 * 1000,
       receiveTimeout: 600 * 1000,
       headers: Map.from(db.serverDio.options.headers)

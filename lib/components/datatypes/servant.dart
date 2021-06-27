@@ -94,7 +94,7 @@ class Servant {
       {ServantPlan? cur, ServantPlan? target, bool all = false}) {
     if (all) {
       return sumDict(
-          [getAscensionCost(), getSkillCost(), getDressCost(), getGrailCost()]);
+          [getAscensionCost(), getSkillCost(), getDressCost(), getExtraCost()]);
     }
     target ??= ServantPlan();
     if (cur?.favorite == true) {
@@ -102,7 +102,7 @@ class Servant {
         getAscensionCost(cur: cur!.ascension, target: target.ascension),
         getSkillCost(cur: cur.skills, target: target.skills),
         getDressCost(cur: cur.dress, target: target.dress),
-        getGrailCost(cur: cur.grail, target: target.grail)
+        getExtraCost(cur: cur, target: target)
       ]);
     } else {
       return {};
@@ -117,7 +117,7 @@ class Servant {
         ascension: getAscensionCost(),
         skill: getSkillCost(),
         dress: getDressCost(),
-        grailAscension: getGrailCost(),
+        extra: getExtraCost(),
       );
     }
     target ??= ServantPlan();
@@ -127,7 +127,7 @@ class Servant {
             getAscensionCost(cur: cur!.ascension, target: target.ascension),
         skill: getSkillCost(cur: cur.skills, target: target.skills),
         dress: getDressCost(cur: cur.dress, target: target.dress),
-        grailAscension: getGrailCost(cur: cur.grail, target: target.grail),
+        extra: getExtraCost(cur: cur, target: target),
       );
     } else {
       return SvtParts(k: () => <String, int>{});
@@ -179,19 +179,29 @@ class Servant {
     return items;
   }
 
-  Map<String, int> getGrailCost({int cur = 0, int? target}) {
-    final maxVal = [10, 10, 10, 9, 7, 5][this.info.rarity2];
-    cur = fixValidRange(cur, 0, maxVal);
-    target = fixValidRange(target ?? maxVal, 0, maxVal);
-    target = max(cur, target);
-
-    return target > cur ? {Item.grail: target - cur} : <String, int>{};
+  Map<String, int> getExtraCost({ServantPlan? cur, ServantPlan? target}) {
+    final maxGrail = [10, 10, 10, 9, 7, 5][this.info.rarity2];
+    cur ??= ServantPlan();
+    target ??= ServantPlan()
+      ..fouHp = 50
+      ..fouAtk = 50
+      ..grail = maxGrail;
+    return <String, int>{
+      Item.grail: max(0, target.grail - cur.grail),
+      Item.fou4Hp: max(0, target.fouHp - cur.fouHp),
+      Item.fou4Atk: max(0, target.fouAtk - cur.fouAtk),
+    };
   }
 
   int getGrailLv(int grail) {
-    final maxGrail = [10, 10, 10, 9, 7, 5][info.rarity];
-    if (grail == 0) return [65, 60, 65, 70, 80, 90][info.rarity];
+    final maxGrail = getMaxGrailCount();
+    if (grail == 0)
+      return [65, 60, 65, 70, 80, 90].getOrNull(info.rarity) ?? 90;
     return [100, 98, 96, 94, 92, 90, 85, 80, 75, 70][maxGrail - grail];
+  }
+
+  int getMaxGrailCount() {
+    return [10, 10, 10, 9, 7, 5].getOrNull(info.rarity) ?? 5;
   }
 
   int getClassSortIndex() {
