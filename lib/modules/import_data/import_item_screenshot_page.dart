@@ -84,7 +84,11 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
                 KeepAliveBuilder(builder: (ctx) => resultTab),
                 if (AppInfo.isDebugDevice)
                   KeepAliveBuilder(
-                      builder: (ctx) => Center(child: Text('test')))
+                    builder: (ctx) => ListView(
+                      controller: _scrollController3,
+                      children: [Text('test')],
+                    ),
+                  )
               ],
             ),
           ),

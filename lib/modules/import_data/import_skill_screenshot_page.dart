@@ -120,6 +120,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
         ),
       );
     return ListView(
+      controller: _scrollController1,
       children: imageFiles.map((e) {
         return Padding(
           padding: EdgeInsets.only(bottom: 6),
@@ -258,7 +259,15 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
       ));
     });
     return Column(
-      children: [summary, Expanded(child: ListView(children: children))],
+      children: [
+        summary,
+        Expanded(
+          child: ListView(
+            controller: _scrollController2,
+            children: children,
+          ),
+        )
+      ],
     );
   }
 
