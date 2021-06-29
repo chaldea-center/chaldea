@@ -129,17 +129,21 @@ class AppInfo {
         'reg',
         [
           'query',
-          r'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion',
+          // ProductId
+          // r'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion',
+          // MachineGuid
+          r'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography',
           '/v',
-          'ProductId'
+          // 'ProductId'
+          'MachineGuid'
         ],
         runInShell: true,
       );
       String resultString = result.stdout.toString().trim();
-      // print('Windows Product Id query:\n$resultString');
-      if (resultString.contains('ProductId') &&
+      // print('Windows MachineGuid query:\n$resultString');
+      if (resultString.contains('MachineGuid') &&
           resultString.contains('REG_SZ')) {
-        originId = resultString.split(RegExp(r'\s+')).last;
+        originId = resultString.trim().split(RegExp(r'\s+')).last;
       }
     } else if (Platform.isMacOS) {
       // https://stackoverflow.com/a/944103
@@ -186,7 +190,7 @@ class AppInfo {
     }
     _uuid = Uuid().v5(Uuid.NAMESPACE_URL, originId!).toUpperCase();
 
-    // logger.i('Unique ID: $_uniqueId');
+    logger.i('Unique ID: $_uuid');
   }
 
   /// resolve when init app, so no need to check null or resolve every time
@@ -286,7 +290,7 @@ class AppInfo {
       'FB26CA34-0B8F-588C-8542-4A748BB67740', // android
       '739F2CE5-ADA0-5216-B6C9-CBF1D1C33183', // ios
       '1D6D5558-9929-5AB0-9CE7-BC2E188948CD', // macos
-      '88E2ACF3-0BA8-552C-80BA-D000CE336475', // windows
+      '6986A299-F7CB-5BBF-9680-14ED34013C07', // windows
     ];
     return excludeIds.contains(AppInfo.uuid);
   }
