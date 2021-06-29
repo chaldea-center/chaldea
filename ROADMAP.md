@@ -11,6 +11,7 @@
 - [x] Experience cards and qp cost when leveling up
 - [x] Patch dataset.json online
 - [ ] ~~damage/NP calculation - GIVE UP~~
+- [ ] add search and sort in CV/illustrator list
 
 ## Enhancement
 - [ ] add version for userdata, convert if necessary

@@ -271,6 +271,7 @@ class _GalleryPageState extends State<GalleryPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     _buildCarousel(constraints),
+                    const Divider(height: 0.5, thickness: 0.5),
                     _buildGalleries(constraints),
                   ],
                 ),

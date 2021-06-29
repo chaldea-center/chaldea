@@ -52,7 +52,8 @@ class CmdCodeListPageState extends State<CmdCodeListPage> {
   Map<CommandCode, String> searchMap = {};
 
   bool filtrateCmdCode(CommandCode code) {
-    if (!searchMap.containsKey(code)) {
+    if (filterData.filterString.trim().isNotEmpty &&
+        !searchMap.containsKey(code)) {
       List<String> searchStrings = [
         code.no.toString(),
         code.mcLink,

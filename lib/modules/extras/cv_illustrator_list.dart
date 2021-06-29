@@ -3,7 +3,7 @@ import 'package:chaldea/modules/cmd_code/cmd_code_detail_page.dart';
 import 'package:chaldea/modules/craft/craft_detail_page.dart';
 import 'package:chaldea/modules/servant/servant_detail_page.dart';
 
-const String unknown = '---';
+const String _unknownCreator = '---';
 
 class CvListPage extends StatefulWidget {
   @override
@@ -22,7 +22,7 @@ class _CvListPageState extends State<CvListPage> {
       List<String> cvs = svt.info.lCV;
       if (cvs.isEmpty) cvs = svt.info.cv;
       if (cvs.isEmpty) {
-        cvMap.putIfAbsent(unknown, () => []).add(svt);
+        cvMap.putIfAbsent(_unknownCreator, () => []).add(svt);
       }
       for (var cv in cvs) {
         cvMap.putIfAbsent(cv, () => []).add(svt);
@@ -108,13 +108,13 @@ class _IllustratorListPageState extends State<IllustratorListPage> {
     db.gameData.crafts.values.forEach((craft) {
       String illus = craft.lIllustrators;
       if (illus.isEmpty) illus = craft.illustrators.join(', ');
-      if (illus.isEmpty) illus = unknown;
+      if (illus.isEmpty) illus = _unknownCreator;
       craftMap.putIfAbsent(illus, () => []).add(craft);
     });
     db.gameData.cmdCodes.values.forEach((code) {
       String illus = code.lIllustrators;
       if (illus.isEmpty) illus = code.illustrators.join(', ');
-      if (illus.isEmpty) illus = unknown;
+      if (illus.isEmpty) illus = _unknownCreator;
       codeMap.putIfAbsent(illus, () => []).add(code);
     });
 

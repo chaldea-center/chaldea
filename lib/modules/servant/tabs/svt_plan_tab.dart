@@ -415,16 +415,27 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     final curVal = status.curVal;
     List<Widget> buttons = [];
     // 强化 or 取消
-    buttons.add(
-      ElevatedButton(
-        onPressed: () => setState(() {
-          // reset enhance plan every time enter the enhance mode
-          enhancePlan = ServantPlan.from(curVal);
-          enhanceMode = !enhanceMode;
-        }),
-        child: Text(enhanceMode ? S.of(context).cancel : S.of(context).enhance),
-      ),
-    );
+    if (enhanceMode) {
+      buttons.add(TextButton(
+        onPressed: () {
+          setState(() {
+            enhanceMode = !enhanceMode;
+          });
+        },
+        child: Text(S.current.cancel),
+      ));
+    } else {
+      buttons.add(ElevatedButton(
+        onPressed: () {
+          setState(() {
+            // reset enhance plan every time enter the enhance mode
+            enhancePlan = ServantPlan.from(curVal);
+            enhanceMode = !enhanceMode;
+          });
+        },
+        child: Text(S.current.enhance),
+      ));
+    }
 
     // 确定
     if (enhanceMode) {

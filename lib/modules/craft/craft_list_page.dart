@@ -60,7 +60,8 @@ class CraftListPageState extends State<CraftListPage> {
   Map<CraftEssence, String> searchMap = {};
 
   bool filtrateCraft(CraftEssence ce) {
-    if (!searchMap.containsKey(ce)) {
+    if (filterData.filterString.trim().isNotEmpty &&
+        !searchMap.containsKey(ce)) {
       List<String> searchStrings = [
         ce.no.toString(),
         ce.mcLink,

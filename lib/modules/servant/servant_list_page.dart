@@ -67,7 +67,8 @@ class ServantListPageState extends State<ServantListPage> {
     final svtStat = db.curUser.svtStatusOf(svt.no);
     final svtPlan = db.curUser.svtPlanOf(svt.no);
     // input text filter
-    if (!searchMap.containsKey(svt)) {
+    if (filterData.filterString.trim().isNotEmpty &&
+        !searchMap.containsKey(svt)) {
       List<String> searchStrings = [
         svt.no.toString(),
         svt.mcLink,

@@ -4,8 +4,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 class BugAnnouncePage extends StatelessWidget {
   final _BugDetail header = _BugDetail(
-    title: '本页罗列当前版本已发现的BUG',
-    content: '但无法短时间内解决，如有其他bug请反馈',
+    title: '本页罗列当前版本已发现的或可能出现的BUG',
+    content: '但无法短时间内解决或忘了，如有其他bug请反馈',
     titleEn: 'Bugs in Current Version',
     contentEn:
         'Cannot be fixed immediately. If there is any other bug, please send feedback.',
@@ -28,7 +28,13 @@ class BugAnnouncePage extends StatelessWidget {
         title: '技能/素材识别功能',
         content: '新功能，需要多测试，有任何问题欢迎反馈\n',
         titleEn: 'Skill/Item recognition',
-        contentEn: 'New feature, any advice/feedback is welcomed.\n')
+        contentEn: 'New feature, any advice/feedback is welcomed.\n'),
+    _BugDetail(
+        title: '滚动条不能拖动',
+        content: '主要发生在桌面端，同一个页面(包含子标签页)含有多个滚动组件时可能发生，请反馈修复！\n',
+        titleEn: 'Cannot drag scrollbar',
+        contentEn:
+            'Mostly on desktop when two or more scrollbars in one page(including sub-tabs). Please let me know to fix it.\n'),
   ];
 
   @override
@@ -100,7 +106,7 @@ class _BugDetail {
   final String? contentEn;
   final String? link;
 
-  _BugDetail({
+  const _BugDetail({
     required this.title,
     required this.content,
     required this.titleEn,

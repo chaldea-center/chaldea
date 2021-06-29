@@ -44,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: Text(S.current.login_login),
+        title: Text('${S.current.login_login}/${S.current.login_signup}'),
       ),
       body: ListView(
         padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
@@ -137,14 +137,18 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: isChangePasswordAvailable() ? doChangePwd : null,
                   child: Text(S.current.login_change_password),
                 ),
-              ElevatedButton(
-                onPressed: doLogout,
-                child: Text(S.current.login_logout),
-              ),
-              ElevatedButton(
-                onPressed: isLoginAvailable() ? doDelete : null,
-                child: Text(S.current.delete),
-              ),
+              if (!changePwdMde)
+                ElevatedButton(
+                  onPressed: doLogout,
+                  child: Text(S.current.login_logout),
+                ),
+              if (!changePwdMde)
+                ElevatedButton(
+                  onPressed: isLoginAvailable() ? doDelete : null,
+                  child: Text(S.current.delete),
+                  style: ElevatedButton.styleFrom(
+                      primary: Theme.of(context).errorColor),
+                ),
             ],
           )
         ],
