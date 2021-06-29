@@ -241,8 +241,6 @@ class ImageWithText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //TODO: fix image pos shift with different alignment
-
     TextStyle _style = textStyle ?? TextStyle();
     _style = _style.copyWith(fontWeight: _style.fontWeight ?? FontWeight.bold);
     Widget child = Stack(

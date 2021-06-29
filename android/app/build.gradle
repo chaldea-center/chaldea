@@ -33,7 +33,6 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    // TODO: when Google Play accept permission MANAGE_EXTERNAL_STORAGE, remove requestLegacyExternalStorage
     compileSdkVersion 30
 
     sourceSets {

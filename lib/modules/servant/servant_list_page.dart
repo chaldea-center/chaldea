@@ -127,9 +127,10 @@ class ServantListPageState extends State<ServantListPage> {
       bool planNotComplete = <bool>[
         svtPlan.ascension > svtStat.curVal.ascension,
         svtPlan.grail > svtStat.curVal.grail,
-        // TODO: add fou-kun or not
         for (var i = 0; i < 3; i++)
           svtPlan.skills[i] > svtStat.curVal.skills[i],
+        svtPlan.fouHp > svtStat.curVal.fouHp,
+        svtPlan.fouAtk > svtStat.curVal.fouAtk,
         for (var i = 0;
             i < min(svtPlan.dress.length, svtStat.curVal.dress.length);
             i++)

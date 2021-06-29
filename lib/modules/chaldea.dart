@@ -184,7 +184,6 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
         db.backupUserdata(disk: true, memory: false);
 
         /// load failed(json destroyed) or app updated, reload default dataset
-        // TODO: if asset not exist? download from server
         logger.i('reload default gamedata asset');
         setState(() {
           _showProgress = true;
