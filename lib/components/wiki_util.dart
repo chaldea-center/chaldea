@@ -40,7 +40,9 @@ class WikiUtil {
     return Uri.parse(link).toString();
   }
 
-  static String prefixKey(String filename) => 'wikiurl_$filename';
+  /// Hive need keys to be ASCII string or int
+  static String prefixKey(String filename) =>
+      'wikiurl_${Uri.tryParse(filename)?.toString() ?? filename}';
 
   /// parsing wiki file downloading url
 
@@ -60,7 +62,7 @@ class WikiUtil {
   static Future<String?> resolveFileUrl(String filename,
       [String? savePath]) async {
     String key = prefixKey(filename);
-    String? url = getCachedUrl(key);
+    String? url = wikiUrlCache.get(key);
     if (url != null) {
       print('wiki cache: $filename -> $url');
       return url;
@@ -77,6 +79,7 @@ class WikiUtil {
     // resolving
     if (!db.hasNetwork) return null;
     final future = _pool.withResource<String?>(() async {
+      // print('resolving $filename');
       final _dio = HttpUtils.defaultDio;
       bool isFandomFile = filename.startsWith('fandom.');
       String api = isFandomFile
@@ -98,7 +101,7 @@ class WikiUtil {
         final String? url =
             response.data['query']['pages'].values.first['imageinfo'][0]['url'];
         if (url?.isNotEmpty == true) {
-          await db.wikiCache.put(key, url!);
+          await wikiUrlCache.put(key, url!);
           if (savePath != null) {
             /// directly save, don't use [wikiFileCache]
             Response fileResponse = await _dio.get(url,
@@ -116,9 +119,9 @@ class WikiUtil {
         // print('mc file: $filename -> $url');
         _errorTasks.remove(filename);
         return url;
-      } catch (e) {
+      } catch (e, s) {
         _errorTasks[filename] = DateTime.now().millisecondsSinceEpoch;
-        logger.e('error download $filename', e);
+        logger.e('error download $filename', e, s);
       } finally {
         _resolvingUrlTasks.remove(filename);
       }

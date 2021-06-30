@@ -43,7 +43,6 @@ class Database {
 
   SharedPrefs prefs = SharedPrefs();
   late Box cfg;
-  late Box<String> wikiCache;
 
   User get curUser => userData.curUser;
 
@@ -103,7 +102,6 @@ class Database {
     await AppInfo.resolve();
     await prefs.initiate();
     cfg = await Hive.openBox('cfg');
-    wikiCache = await Hive.openBox('wikiCache');
     await checkConnectivity();
     Connectivity().onConnectivityChanged.listen((result) {
       _connectivity = result;
@@ -544,7 +542,14 @@ class PathManager {
     }
 
     // ensure directory exist
-    for (String dir in [userDir, gameDir, tempDir, gameIconDir, logDir]) {
+    for (String dir in [
+      userDir,
+      gameDir,
+      tempDir,
+      downloadDir,
+      gameIconDir,
+      logDir
+    ]) {
       Directory(dir).createSync(recursive: true);
     }
     // logger
@@ -571,6 +576,8 @@ class PathManager {
   String get userDir => pathlib.join(_appPath!, 'user');
 
   String get tempDir => pathlib.join(_appPath!, 'temp');
+
+  String get downloadDir => pathlib.join(_appPath!, 'downloads');
 
   String get configDir => pathlib.join(_appPath!, 'config');
 

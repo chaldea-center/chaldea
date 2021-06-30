@@ -1,5 +1,7 @@
+import 'package:chaldea/components/components.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:open_file/open_file.dart';
 
 class InputCancelOkDialog extends StatefulWidget {
   final String? title;
@@ -179,5 +181,30 @@ class SimpleCancelOkDialog extends StatelessWidget {
       scrollable: scrollable,
       actions: children,
     );
+  }
+
+  static Future showSave({
+    required BuildContext context,
+    required File srcFile,
+    required String savePath,
+  }) async {
+    return SimpleCancelOkDialog(
+      title: Text(S.current.save),
+      content: Text(db.paths.convertIosPath(savePath)),
+      actions: [
+        if (AppInfo.isDesktop)
+          TextButton(
+            onPressed: () {
+              OpenFile.open(db.paths.downloadDir);
+            },
+            child: Text(S.current.open),
+          )
+      ],
+      onTapOk: () {
+        File(savePath).createSync(recursive: true);
+        srcFile.copySync(savePath);
+        EasyLoading.showSuccess(S.current.saved);
+      },
+    ).showDialog(context);
   }
 }

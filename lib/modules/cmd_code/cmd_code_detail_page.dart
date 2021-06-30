@@ -165,8 +165,9 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                                   fullscreenDialog: true,
                                   pageBuilder: (context, _, __) =>
                                       FullScreenImageSlider(
-                                        imgUrls: [code.illustration],
+                                    imgUrls: [code.illustration],
                                     placeholder: placeholder,
+                                    allowSave: true,
                                   ),
                                 ),
                               );
@@ -251,7 +252,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
     if (characters.isEmpty) return '-';
     return characters.map((e) {
       final svt =
-      db.gameData.servants.values.firstWhereOrNull((s) => s.mcLink == e);
+          db.gameData.servants.values.firstWhereOrNull((s) => s.mcLink == e);
       return svt?.info.localizedName ?? e;
     }).join(', ');
   }

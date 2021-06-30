@@ -50,13 +50,17 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
         headerBuilder: (context, expanded) =>
             ListTile(title: Text(_getLocalizedText(table.section, true))),
         contentBuilder: (context) => Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
+          padding: EdgeInsets.only(left: 16),
           child: Table(
             border: TableBorder(
                 horizontalInside: Divider.createBorderSide(context, width: 1)),
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children: _buildVoiceRows(table),
-            columnWidths: {0: FlexColumnWidth(), 1: FixedColumnWidth(33.0)},
+            columnWidths: {
+              0: FlexColumnWidth(),
+              1: FixedColumnWidth(36.0),
+              2: FixedColumnWidth(36.0)
+            },
           ),
         ),
       ));
@@ -96,10 +100,9 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
                 '· ' + _getLocalizedText(record.title),
                 maxLines: 1,
                 maxFontSize: 12,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText1
-                    ?.copyWith(fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).accentColor),
               ),
               Text(LocalizedText(
                 chs: record.text,
@@ -118,11 +121,15 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
               return IconButton(
                 onPressed: null,
                 icon: Icon(Icons.play_circle_outline),
+                tooltip: 'Not Found',
               );
             }
             if (downloading) {
               return IconButton(
-                  onPressed: null, icon: Icon(Icons.download_rounded));
+                onPressed: null,
+                icon: Icon(Icons.download_rounded),
+                tooltip: S.current.downloading,
+              );
             } else {
               return IconButton(
                 onPressed: () {
@@ -142,8 +149,41 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
                   });
                 },
                 icon: Icon(Icons.play_circle_outline),
+                tooltip: 'Play',
               );
             }
+          },
+        ),
+        ValueStatefulBuilder<bool>(
+          initValue: false,
+          builder: (context, state) {
+            bool downloading = state.value;
+            bool valid = record.voiceFile?.isNotEmpty == true;
+            if (!valid || downloading) {
+              return IconButton(
+                onPressed: null,
+                icon: Icon(Icons.file_download),
+                tooltip: 'Not Found',
+              );
+            }
+            return IconButton(
+              onPressed: () async {
+                state.setState(() {
+                  state.value = !state.value;
+                });
+                final file = await WikiUtil.getWikiFile(record.voiceFile!);
+                if (file == null) return;
+                final fp = p.join(db.paths.downloadDir, record.voiceFile);
+                await SimpleCancelOkDialog.showSave(
+                    context: context, srcFile: file, savePath: fp);
+                if (state.mounted)
+                  state.setState(() {
+                    state.value = !state.value;
+                  });
+              },
+              icon: Icon(Icons.file_download),
+              tooltip: S.current.download,
+            );
           },
         ),
       ]);
@@ -160,6 +200,9 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
     }
 
     if (isTitle) {
+      if (db.gameData.events.limitEvents.containsKey(text)) {
+        return db.gameData.events.limitEvents[text]!.localizedName;
+      }
       return text.replaceFirstMapped(RegExp(r'^(.*?)(?:\(([^()]+)\))?$'),
           (match) {
         if (match.group(2) != null) {
@@ -270,7 +313,7 @@ class GeneralAudioPlayer {
   }
 
   bool checkSupport(String path, [String? originPath]) {
-    print('$originPath\n  -> $path');
+    // print('$originPath\n  -> $path');
     List<String> unsupported = [];
     if (usePlayer1) {
       if (Platform.isMacOS || Platform.isIOS) {

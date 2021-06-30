@@ -199,6 +199,7 @@ class CraftDetailBasePage extends StatelessWidget {
                         pageBuilder: (context, _, __) => FullScreenImageSlider(
                           imgUrls: [ce.illustration],
                           placeholder: placeholder,
+                          allowSave: true,
                         ),
                       ),
                     );

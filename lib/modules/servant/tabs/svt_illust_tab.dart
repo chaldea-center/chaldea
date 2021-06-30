@@ -89,6 +89,7 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
                       imgUrls: imageUrls,
                       initialPage: index,
                       placeholder: placeholder,
+                      allowSave: true,
                     ),
                   ));
                   if (newIndex != null) {
@@ -98,6 +99,7 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
                 child: CachedImage(
                   imageUrl: imageUrls[index],
                   placeholder: placeholder,
+                  allowSave: true,
                 ),
               );
             }),

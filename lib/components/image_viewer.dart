@@ -4,6 +4,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:path/path.dart' show basename;
 import 'package:string_validator/string_validator.dart' as validator;
 
 import 'config.dart';
@@ -52,6 +53,7 @@ class _FullscreenWidgetState extends State<FullscreenWidget> {
 class FullScreenImageSlider extends StatefulWidget {
   final List<String?> imgUrls;
   final bool? isMcFile;
+  final bool allowSave;
   final int initialPage;
   final bool? downloadEnabled;
   final PlaceholderWidgetBuilder? placeholder;
@@ -61,6 +63,7 @@ class FullScreenImageSlider extends StatefulWidget {
     Key? key,
     required this.imgUrls,
     this.isMcFile,
+    this.allowSave = false,
     this.initialPage = 0,
     this.downloadEnabled,
     this.placeholder,
@@ -120,6 +123,7 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
               (index) => CachedImage(
                 imageUrl: widget.imgUrls[index],
                 isMCFile: widget.isMcFile,
+                allowSave: widget.allowSave,
                 placeholder: widget.placeholder,
               ),
             ),
@@ -148,7 +152,10 @@ class CachedImage extends StatefulWidget {
 
   /// If [isMCFile] is null, check it is a valid url
   final bool? isMCFile;
+
+  /// wiki file cache dir
   final String? saveDir;
+  final bool allowSave;
   final ImageWidgetBuilder? imageBuilder;
   final PlaceholderWidgetBuilder? placeholder;
   final ProgressIndicatorBuilder? progressIndicatorBuilder;
@@ -182,6 +189,7 @@ class CachedImage extends StatefulWidget {
     required this.imageUrl,
     this.isMCFile,
     this.saveDir,
+    this.allowSave = false,
     this.imageBuilder,
     this.placeholder,
     this.progressIndicatorBuilder,
@@ -259,11 +267,12 @@ class CachedImage extends StatefulWidget {
 class _CachedImageState extends State<CachedImage> {
   BaseCacheManager get cacheManager =>
       widget.cacheManager ?? DefaultCacheManager();
+  bool _isMcFile = false;
 
   String? getRealUrl() {
     if (widget.imageUrl == null) return null;
-    bool isMCFile = widget.isMCFile ?? !_isValidUrl(widget.imageUrl!);
-    if (!isMCFile) return widget.imageUrl;
+    bool _isMcFile = widget.isMCFile ?? !_isValidUrl(widget.imageUrl!);
+    if (!_isMcFile) return widget.imageUrl;
     String? url = WikiUtil.getCachedUrl(widget.imageUrl!);
     if (url != null) {
       return url;
@@ -309,6 +318,8 @@ class _CachedImageState extends State<CachedImage> {
     if (usePlaceholder) {
       child = placeholder(context, realUrl ?? widget.imageUrl);
     } else {
+      final _cacheManager = widget.cacheManager ??
+          (_isMcFile ? WikiUtil.wikiFileCache : DefaultCacheManager());
       child = CachedNetworkImage(
         imageUrl: realUrl!,
         httpHeaders: widget.httpHeaders,
@@ -326,7 +337,7 @@ class _CachedImageState extends State<CachedImage> {
         alignment: widget.alignment,
         repeat: widget.repeat,
         matchTextDirection: widget.matchTextDirection,
-        cacheManager: widget.cacheManager,
+        cacheManager: _cacheManager,
         useOldImageOnUrlChange: widget.useOldImageOnUrlChange,
         color: widget.color,
         filterQuality: widget.filterQuality,
@@ -338,6 +349,18 @@ class _CachedImageState extends State<CachedImage> {
         maxWidthDiskCache: widget.maxWidthDiskCache,
         maxHeightDiskCache: widget.maxHeightDiskCache,
       );
+
+      if (widget.allowSave) {
+        child = GestureDetector(
+          child: child,
+          onLongPress: () async {
+            final file = await _cacheManager.getSingleFile(realUrl);
+            final savePath = join(db.paths.downloadDir, basename(file.path));
+            SimpleCancelOkDialog.showSave(
+                context: context, srcFile: file, savePath: savePath);
+          },
+        );
+      }
     }
     // if (realUrl != null)
     //   child = GestureDetector(
