@@ -238,9 +238,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
             status.resetEnhancement();
           });
         } else if (select == 'jump_mc') {
-          launch(MooncellUtil.fullLink(svt.mcLink));
+          launch(WikiUtil.mcFullLink(svt.mcLink));
         } else if (select == 'jump_fandom') {
-          launch(MooncellUtil.fandomFullLink(svt.info.nameEn));
+          launch(WikiUtil.fandomFullLink(svt.info.nameEn));
         } else if (select == 'duplicate_svt') {
           final newSvt = db.curUser.addDuplicatedForServant(svt);
           print('add ${newSvt.no}');

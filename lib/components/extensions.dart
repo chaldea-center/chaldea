@@ -1,5 +1,6 @@
 import 'package:chaldea/components/components.dart' hide showDialog;
 import 'package:flutter/material.dart' as material;
+import 'package:hive/hive.dart';
 
 /// Some convenient extensions on build-in classes
 
@@ -98,4 +99,12 @@ extension DialogShowMethod on Widget {
     if (context == null) return Future.value();
     return material.showDialog<T>(context: context, builder: (context) => this);
   }
+}
+
+extension HiveBoxUtil<E> on Box<E> {
+  // String? getString(dynamic key, {E? defaultValue}) {
+  //   final v = this.get(key, defaultValue: defaultValue);
+  //   if(v==null ||v is!String)return defaultValue;
+  //
+  // }
 }

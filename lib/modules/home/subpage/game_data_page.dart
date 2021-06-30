@@ -326,6 +326,7 @@ class _GameDataPageState extends State<GameDataPage> {
 
   Future<void> clearCache() async {
     await DefaultCacheManager().emptyCache();
+    await WikiUtil.clear();
     Directory(db.paths.tempDir)
       ..deleteSync(recursive: true)
       ..createSync(recursive: true);

@@ -53,7 +53,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
             onSelected: (v) {
               if (v == 'jump_mc') {
                 jumpToExternalLinkAlert(
-                  url: MooncellUtil.fullLink(widget.record.indexKey),
+                  url: WikiUtil.mcFullLink(widget.record.indexKey),
                   name: 'Mooncell',
                 );
               }
@@ -66,7 +66,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
           if (widget.record.lBannerUrl != null)
             GestureDetector(
               onTap: () => jumpToExternalLinkAlert(
-                url: MooncellUtil.fullLink(widget.record.indexKey),
+                url: WikiUtil.mcFullLink(widget.record.indexKey),
                 name: 'Mooncell',
               ),
               child: CachedImage(

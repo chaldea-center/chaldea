@@ -112,9 +112,9 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
       },
       onSelected: (select) {
         if (select == 'jump_mc') {
-          launch(MooncellUtil.fullLink(ce.mcLink));
+          launch(WikiUtil.mcFullLink(ce.mcLink));
         } else if (select == 'jump_fandom') {
-          launch(MooncellUtil.fandomFullLink(ce.nameEn));
+          launch(WikiUtil.fandomFullLink(ce.nameEn));
         }
       },
     );

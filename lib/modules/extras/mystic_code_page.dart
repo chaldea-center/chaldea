@@ -238,12 +238,12 @@ class _MysticCodePageState extends State<MysticCodePage> {
 
   List<String> getImageUrl(List<String> filenames) {
     final List<String?> urls =
-        filenames.map((e) => db.prefs.getRealUrl(e)).toList();
+        filenames.map((e) => WikiUtil.getCachedUrl(e)).toList();
     Future<void> _resolve() async {
       for (var fn in filenames) {
-        if (db.prefs.getRealUrl(fn) == null) {
+        if (WikiUtil.getCachedUrl(fn) == null) {
           //use await to ensure every image only resolve once
-          await MooncellUtil.resolveFileUrl(fn);
+          await WikiUtil.resolveFileUrl(fn);
         }
       }
     }

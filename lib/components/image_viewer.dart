@@ -264,14 +264,14 @@ class _CachedImageState extends State<CachedImage> {
     if (widget.imageUrl == null) return null;
     bool isMCFile = widget.isMCFile ?? !_isValidUrl(widget.imageUrl!);
     if (!isMCFile) return widget.imageUrl;
-    String? url = db.prefs.getRealUrl(widget.imageUrl!);
+    String? url = WikiUtil.getCachedUrl(widget.imageUrl!);
     if (url != null) {
       return url;
     } else {
       String? savePath;
       if (widget.saveDir != null)
         savePath = join(widget.saveDir!, widget.imageUrl!);
-      MooncellUtil.resolveFileUrl(widget.imageUrl!, savePath).then((url) {
+      WikiUtil.resolveFileUrl(widget.imageUrl!, savePath).then((url) {
         if (url != null && mounted) {
           setState(() {});
         }

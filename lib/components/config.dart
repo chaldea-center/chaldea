@@ -43,6 +43,7 @@ class Database {
 
   SharedPrefs prefs = SharedPrefs();
   late Box cfg;
+  late Box<String> wikiCache;
 
   User get curUser => userData.curUser;
 
@@ -98,9 +99,11 @@ class Database {
   Future<void> initial() async {
     await paths.initRootPath();
     Hive.init(paths.configDir);
+    await WikiUtil.init();
     await AppInfo.resolve();
     await prefs.initiate();
     cfg = await Hive.openBox('cfg');
+    wikiCache = await Hive.openBox('wikiCache');
     await checkConnectivity();
     Connectivity().onConnectivityChanged.listen((result) {
       _connectivity = result;

@@ -248,7 +248,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
         EasyLoading.show();
         String wikitext;
         try {
-          wikitext = await MooncellUtil.pageContent('首页/御主任务数据');
+          wikitext = await WikiUtil.pageContent('首页/御主任务数据');
           EasyLoading.showSuccess('success');
         } catch (e) {
           EasyLoading.showError(e.toString());

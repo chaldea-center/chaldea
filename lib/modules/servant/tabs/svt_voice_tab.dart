@@ -112,7 +112,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
         ValueStatefulBuilder<bool>(
           initValue: false,
           builder: (context, state) {
-            bool playing = state.value;
+            bool downloading = state.value;
             bool valid = record.voiceFile?.isNotEmpty == true;
             if (!valid) {
               return IconButton(
@@ -120,7 +120,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
                 icon: Icon(Icons.play_circle_outline),
               );
             }
-            if (playing) {
+            if (downloading) {
               return IconButton(
                   onPressed: null, icon: Icon(Icons.download_rounded));
             } else {
@@ -198,9 +198,9 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
       return;
     }
     audioPlayer ??= GeneralAudioPlayer();
-    final String? url = await MooncellUtil.resolveFileUrl(record.voiceFile!);
-    // print('${record.voiceFile}  -> $url');
-    if (url == null) {
+    final url = await WikiUtil.resolveFileUrl(record.voiceFile!);
+    final file = await WikiUtil.getWikiFile(record.voiceFile!);
+    if (file == null) {
       EasyLoading.showToast('File not found: ${record.voiceFile}');
       return;
     }
@@ -209,7 +209,6 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
     ///   * .ogg/.ogx -> .oga
     ///   * .wav -> .bin
 
-    final file = await DefaultCacheManager().getSingleFile(url);
     if (!mounted) return;
     await audioPlayer?.play(file.path, url);
   }

@@ -49,7 +49,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
     if (event.lBannerUrl != null)
       children.add(GestureDetector(
         onTap: () => jumpToExternalLinkAlert(
-          url: MooncellUtil.fullLink(widget.event.indexKey),
+          url: WikiUtil.mcFullLink(widget.event.indexKey),
           name: 'Mooncell',
         ),
         child: CachedImage(
@@ -216,7 +216,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
             onSelected: (v) {
               if (v == 'jump_mc') {
                 jumpToExternalLinkAlert(
-                  url: MooncellUtil.fullLink(widget.event.indexKey),
+                  url: WikiUtil.mcFullLink(widget.event.indexKey),
                   name: 'Mooncell',
                 );
               }

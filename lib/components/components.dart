@@ -23,7 +23,7 @@ export 'image_viewer.dart';
 export 'localized/localized.dart';
 export 'localized/localized_base.dart';
 export 'logger.dart';
-export 'mooncell_util.dart';
+export 'wiki_util.dart';
 export 'query.dart';
 export 'server_api.dart';
 export 'shared_prefs.dart';

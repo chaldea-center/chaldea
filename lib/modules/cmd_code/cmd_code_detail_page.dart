@@ -61,9 +61,9 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
       },
       onSelected: (select) {
         if (select == 'jump_mc') {
-          launch(MooncellUtil.fullLink(code.mcLink));
+          launch(WikiUtil.mcFullLink(code.mcLink));
         } else if (select == 'jump_fandom') {
-          launch(MooncellUtil.fandomFullLink(code.nameEn));
+          launch(WikiUtil.fandomFullLink(code.nameEn));
         }
       },
     );

@@ -17,21 +17,6 @@ class SharedPrefs {
   SharedPrefItem<T> getItem<T>(String key) {
     return SharedPrefItem<T>(key);
   }
-
-  /// url
-  String _addUrlPrefix(String key) => 'url_$key';
-
-  String? getRealUrl(String key) {
-    return instance.getString(_addUrlPrefix(key));
-  }
-
-  Future<bool> setRealUrl(String key, String value) {
-    return instance.setString(_addUrlPrefix(key), value);
-  }
-
-  bool containsRealUrl(String key) {
-    return instance.containsKey(_addUrlPrefix(key));
-  }
 }
 
 /// T can not be T?
