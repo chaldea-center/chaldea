@@ -302,6 +302,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
       print(error.toString());
       print(stacktrace.toString());
       EasyLoading.showError(error.toString());
+    } finally {
+      EasyLoadingUtil.dismiss();
     }
   }
 

@@ -214,7 +214,7 @@ class _UserDataPageState extends State<UserDataPage> {
       },
       onSuccess: () => EasyLoading.showSuccess('Uploaded'),
       onError: (e, s) => EasyLoading.showError(e.toString()),
-    );
+    ).whenComplete(() => EasyLoadingUtil.dismiss());
   }
 
   Future<void> downloadFromServer() async {
@@ -262,6 +262,7 @@ class _UserDataPageState extends State<UserDataPage> {
           HttpUtils.passwordKey: db.prefs.userPwd.get(),
           'bak': fn,
         }));
+        // print(resp2);
         if (!resp2.success) {
           resp2.showMsg(context);
           return;
@@ -279,7 +280,7 @@ class _UserDataPageState extends State<UserDataPage> {
         EasyLoading.showSuccess('Import $fn');
       },
       onError: (e, s) => EasyLoading.showError(e.toString()),
-    );
+    ).whenComplete(() => EasyLoadingUtil.dismiss());
   }
 }
 

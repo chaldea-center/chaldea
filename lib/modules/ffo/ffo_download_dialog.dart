@@ -130,11 +130,11 @@ class _FfoDownloadDialogState extends State<FfoDownloadDialog> {
       );
       EasyLoading.showSuccess(S.current.import_data_success);
       widget.onSuccess();
-    } on FileSelectionCanceledError {
-      EasyLoading.dismiss();
-    } catch (e, s) {
+    } on FileSelectionCanceledError {} catch (e, s) {
       EasyLoading.showError(e.toString());
       logger.e('extract zip error', e, s);
+    } finally {
+      EasyLoadingUtil.dismiss();
     }
   }
 }

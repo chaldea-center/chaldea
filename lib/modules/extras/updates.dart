@@ -152,8 +152,7 @@ class AutoUpdateUtil {
     } catch (e, s) {
       _reportResult(e, s);
     } finally {
-      await Future.delayed(Duration(seconds: 2));
-      EasyLoading.dismiss();
+      EasyLoadingUtil.dismiss();
     }
   }
 
@@ -283,7 +282,7 @@ class AutoUpdateUtil {
         ).showDialog(null);
       }
     } finally {
-      Future.delayed(Duration(seconds: 2), () => EasyLoading.dismiss());
+      EasyLoadingUtil.dismiss();
       _downloadTask!.complete();
     }
   }

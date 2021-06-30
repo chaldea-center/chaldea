@@ -134,7 +134,7 @@ class _GameDataPageState extends State<GameDataPage> {
                 title: Text('Lanzou/woozooo'),
                 subtitle: RichText(
                   text: TextSpan(
-                    text: 'https://wws.lanzous.com/b01tuahmf\n',
+                    text: 'https://wws.lanzoui.com/b01tuahmf\n',
                     style: TextStyle(color: Colors.grey),
                     children: [
                       TextSpan(
@@ -255,7 +255,9 @@ class _GameDataPageState extends State<GameDataPage> {
               EasyLoading.showSuccess(S.of(context).import_data_success);
             } catch (e) {
               EasyLoading.showError(S.of(context).import_data_error(e));
-            } finally {}
+            } finally {
+              EasyLoadingUtil.dismiss();
+            }
           },
         ),
       );
@@ -315,9 +317,10 @@ class _GameDataPageState extends State<GameDataPage> {
       }
       EasyLoading.showSuccess(S.of(context).import_data_success);
     } on FileSelectionCanceledError {} catch (e) {
-      EasyLoading.dismiss();
       showInformDialog(context,
           title: 'Import gamedata failed!', content: e.toString());
+    } finally {
+      EasyLoadingUtil.dismiss();
     }
   }
 

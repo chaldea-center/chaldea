@@ -37,6 +37,7 @@ class Database {
 
   Dio get serverDio => Dio(BaseOptions(
       baseUrl: kServerRoot,
+      // baseUrl: kDebugMode ? 'http://localhost:8183' : kServerRoot,
       queryParameters: {'app_ver': AppInfo.version, 'user_key': AppInfo.uuid},
       headers: {HttpHeaders.userAgentHeader: HttpUtils.userAgentChaldea}));
 

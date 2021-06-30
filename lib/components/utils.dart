@@ -381,12 +381,15 @@ Future<void> catchErrorAsync(
   Function callback, {
   VoidCallback? onSuccess,
   void onError(e, s)?,
+  VoidCallback? whenComplete,
 }) async {
   try {
     await callback();
     if (onSuccess != null) onSuccess();
   } catch (e, s) {
     if (onError != null) onError(e, s);
+  } finally {
+    if (whenComplete != null) whenComplete();
   }
 }
 
@@ -502,5 +505,20 @@ class DelayedTimer {
   Timer delayed(void Function() callback) {
     _timer?.cancel();
     return _timer = Timer(duration, callback);
+  }
+}
+
+class EasyLoadingUtil {
+  EasyLoadingUtil._();
+
+  /// default 2s of EasyLoading
+  static Future<void> dismiss(
+      [Duration? duration = const Duration(milliseconds: 2200)]) {
+    if (duration != null) {
+      return Future.delayed(duration, () => EasyLoading.dismiss());
+    } else {
+      EasyLoading.dismiss();
+      return Future.value();
+    }
   }
 }

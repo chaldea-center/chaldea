@@ -303,13 +303,16 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         return s;
       };
     }
-    Widget trailingIcon = IconButton(
-      icon: Icon(Icons.info_outline,
-          color: detailPageBuilder == null ? Colors.grey : Colors.blueAccent),
-      onPressed: detailPageBuilder == null
-          ? null
-          : () => showDialog(context: context, builder: detailPageBuilder),
-    );
+    Widget trailingIcon;
+    if (detailPageBuilder != null) {
+      trailingIcon = IconButton(
+        icon: Icon(Icons.info_outline, color: Theme.of(context).accentColor),
+        onPressed: () =>
+            showDialog(context: context, builder: detailPageBuilder),
+      );
+    } else {
+      trailingIcon = SizedBox(width: 8);
+    }
     if (useSlider) {
       Widget slider;
       if (end == null) {

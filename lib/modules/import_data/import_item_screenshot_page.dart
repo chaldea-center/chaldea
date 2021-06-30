@@ -68,8 +68,14 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
         bottom: TabBar(
           controller: _tabController,
           tabs: [
-            Tab(text: '截图'),
-            Tab(text: '结果'),
+            Tab(
+              text: LocalizedText.of(
+                chs: '截图',
+                jpn: 'スクリーンショット',
+                eng: 'Screenshots',
+              ),
+            ),
+            Tab(text: LocalizedText.of(chs: '识别结果', jpn: '結果', eng: 'Results')),
             if (AppInfo.isDebugDevice) Tab(text: 'Debug')
           ],
         ),
@@ -234,7 +240,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
       logger.e('upload item screenshots to server error', e, s);
       showInformDialog(context, title: 'Error', content: e.toString());
     } finally {
-      EasyLoading.dismiss();
+      EasyLoadingUtil.dismiss();
     }
   }
 

@@ -50,6 +50,11 @@ class ChaldeaResponse {
       content: Text(content),
     ).showDialog(context);
   }
+
+  @override
+  String toString() {
+    return '$runtimeType(\n  success: $success,\n  msg: $msg\n  body: $body)';
+  }
 }
 
 @JsonSerializable()

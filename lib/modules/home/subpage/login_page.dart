@@ -213,8 +213,7 @@ class _LoginPageState extends State<LoginPage> {
           _saveUserInfo(name, pwd);
         }
         resp.showMsg(context, title: S.current.login_login);
-      });
-      EasyLoading.dismiss();
+      }).whenComplete(() => EasyLoadingUtil.dismiss());
     }
   }
 
@@ -266,8 +265,7 @@ class _LoginPageState extends State<LoginPage> {
           _saveUserInfo(name, pwd);
         }
         resp.showMsg(context, title: S.current.login_signup);
-      });
-      EasyLoading.dismiss();
+      }).whenComplete(() => EasyLoadingUtil.dismiss());
     }
   }
 
@@ -288,8 +286,7 @@ class _LoginPageState extends State<LoginPage> {
           _saveUserInfo(name, newPwd);
         }
         resp.showMsg(context, title: S.current.login_change_password);
-      });
-      EasyLoading.dismiss();
+      }).whenComplete(() => EasyLoadingUtil.dismiss());
     }
   }
 

@@ -249,11 +249,13 @@ class _MasterMissionPageState extends State<MasterMissionPage>
         String wikitext;
         try {
           wikitext = await MooncellUtil.pageContent('首页/御主任务数据');
+          EasyLoading.showSuccess('success');
         } catch (e) {
           EasyLoading.showError(e.toString());
           return;
+        } finally {
+          EasyLoadingUtil.dismiss();
         }
-        EasyLoading.showSuccess('success');
         String prefix = ['jp', 'cn'][v];
         missions.clear();
         String? _getContent(String key) {
