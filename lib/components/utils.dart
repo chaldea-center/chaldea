@@ -490,6 +490,38 @@ class Utils {
       }
     return list;
   }
+
+  static void debugChangeDarkMode([ThemeMode? mode]) {
+    if (mode == db.userData.themeMode) return;
+
+    final t = DateTime.now().millisecondsSinceEpoch;
+    final _last = db.runtimeData.tempDict['debugChangeDarkMode'] ?? 0;
+    if (t - _last < 2000) return;
+    db.runtimeData.tempDict['debugChangeDarkMode'] = t;
+
+    if (mode != null) {
+      db.userData.themeMode = mode;
+    } else {
+      // don't rebuild
+      switch (db.userData.themeMode) {
+        case ThemeMode.light:
+          db.userData.themeMode = ThemeMode.dark;
+          break;
+        case ThemeMode.dark:
+          db.userData.themeMode = ThemeMode.light;
+          break;
+        default:
+          db.userData.themeMode =
+              SchedulerBinding.instance!.window.platformBrightness ==
+                      Brightness.light
+                  ? ThemeMode.dark
+                  : ThemeMode.light;
+          break;
+      }
+    }
+    debugPrint('change themeMode: ${db.userData.themeMode}');
+    db.notifyAppUpdate();
+  }
 }
 
 class DelayedTimer {

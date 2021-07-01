@@ -17,32 +17,34 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Radio<bool>(
-              value: true,
-              groupValue: sortByAP,
-              onChanged: (v) => setState(() => sortByAP = v ?? sortByAP),
-            ),
-            GestureDetector(
-              onTap: () => setState(() => sortByAP = true),
-              child: Text(S.of(context).ap_efficiency),
-            ),
-            Radio<bool>(
-              value: false,
-              groupValue: sortByAP,
-              onChanged: (v) => setState(() => sortByAP = v ?? sortByAP),
-            ),
-            GestureDetector(
-              onTap: () => setState(() => sortByAP = false),
-              child: Text(S.of(context).drop_rate),
-            ),
-          ],
+        ListTile(
+          title: Text(S.current.quest),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              buildSortRadio(true),
+              buildSortRadio(false),
+            ],
+          ),
         ),
         Divider(height: 1),
         Expanded(child: ListView(children: divideTiles(buildQuests())))
       ],
+    );
+  }
+
+  Widget buildSortRadio(bool value) {
+    return RadioWithLabel(
+      value: value,
+      groupValue: sortByAP,
+      label: Text(
+        value ? S.current.ap_efficiency : S.current.drop_rate,
+        style: value == sortByAP
+            ? null
+            : TextStyle(color: Theme.of(context).textTheme.caption?.color),
+      ),
+      onChanged: (v) => setState(() => sortByAP = v ?? sortByAP),
     );
   }
 

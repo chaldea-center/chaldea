@@ -613,6 +613,9 @@ class RuntimeData {
 
   /// Controller of [Screenshot] widget which set root [MaterialApp] as child
   ScreenshotController? screenshotController;
+
+  /// store anything you like
+  Map<dynamic, dynamic> tempDict = {};
 }
 
 Database db = new Database();
