@@ -58,9 +58,16 @@ class CatcherUtility {
 #7      FocusManager._handleRawKeyEvent (package:flutter/src/widgets/focus_manager.dart)
 #8      RawKeyboard._handleKeyEvent (package:flutter/src/services/raw_keyboard.dart)
 ''')) {
-        logger.e('ignore the bug by TextField changing too fast');
+        logger.e('ignore RenderEditable.delete bug', report.error,
+            report.stackTrace);
         return true;
       }
+    }
+
+    if (report.error.toString().startsWith(
+        'HttpException: Unexpected response (unsolicited response without request).')) {
+      logger.e('ignore HttpException', report.error, report.stackTrace);
+      return true;
     }
     return false;
   }
