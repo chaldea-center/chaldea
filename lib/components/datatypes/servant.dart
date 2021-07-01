@@ -190,7 +190,7 @@ class Servant {
       Items.grail: max(0, target.grail - cur.grail),
       Items.fou4Hp: max(0, target.fouHp - cur.fouHp),
       Items.fou4Atk: max(0, target.fouAtk - cur.fouAtk),
-    };
+    }..removeWhere((key, value) => value == 0);
   }
 
   int getGrailLv(int grail) {

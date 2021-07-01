@@ -40,7 +40,7 @@ class ItemListPageState extends State<ItemListPage>
         3,
         (index) => TextEditingController(
             text: db.userData.itemAbundantValue[index].toString()));
-    db.itemStat.update();
+    db.itemStat.update(lapse: Duration(seconds: 2));
   }
 
   @override

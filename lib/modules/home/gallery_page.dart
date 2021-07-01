@@ -36,6 +36,8 @@ class GalleryPage extends StatefulWidget {
 }
 
 class _GalleryPageState extends State<GalleryPage> {
+  late ScrollController _scrollController;
+
   CarouselSetting get carouselSetting => db.userData.carouselSetting;
   final RateMyApp rateMyApp = RateMyApp(
     minDays: 7,
@@ -49,6 +51,7 @@ class _GalleryPageState extends State<GalleryPage> {
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     carouselSetting.needUpdate = carouselSetting.shouldUpdate;
 
     Future.delayed(Duration(seconds: 2)).then((_) async {
@@ -73,6 +76,12 @@ class _GalleryPageState extends State<GalleryPage> {
     }).onError((e, s) {
       logger.e('init app extras', e, s);
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
   }
 
   Color? get _iconColor {
@@ -264,6 +273,7 @@ class _GalleryPageState extends State<GalleryPage> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           return ListView(
+            controller: _scrollController,
             children: <Widget>[
               ConstrainedBox(
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
@@ -418,10 +428,10 @@ class _GalleryPageState extends State<GalleryPage> {
                   alignment: Alignment.bottomCenter,
                   child: item.child == null
                       ? Icon(
-                          item.icon,
-                          size: 40,
-                          color: _iconColor,
-                        )
+                    item.icon,
+                    size: 40,
+                    color: _iconColor,
+                  )
                       : item.child,
                 ),
               ),
@@ -522,11 +532,10 @@ class _GalleryPageState extends State<GalleryPage> {
 
   Future<void> resolveSliderImageUrls([bool showToast = false]) async {
     carouselSetting.needUpdate = false;
-    Map<String, String> _getImageLinks(
-        {required dom.Element? element,
-        required Uri uri,
-        String attr = 'src',
-        bool imgOnly = true}) {
+    Map<String, String> _getImageLinks({required dom.Element? element,
+      required Uri uri,
+      String attr = 'src',
+      bool imgOnly = true}) {
       Map<String, String> _result = {};
       if (element == null) return _result;
       for (var linkNode in element.getElementsByTagName('a')) {
@@ -609,12 +618,12 @@ class _GalleryPageState extends State<GalleryPage> {
           var usElement = usParser.getElementsByClassName('slide').getOrNull(0);
           return _getImageLinks(element: usElement, uri: Uri.parse(usUrl))
             ..removeWhere((key, value) => [
-                  'top_banner.png',
-                  'banner_sns_20181120.png',
-                  '0215_evenmoremanwaka/banner_20210215.png',
-                  'banner_tips_k5dz8.png',
-                  '0707_start_dash_campaign/banner_20200707_h1wb3.png'
-                ].any((e) => key.endsWith(e)));
+              'top_banner.png',
+              'banner_sns_20181120.png',
+              '0215_evenmoremanwaka/banner_20210215.png',
+              'banner_tips_k5dz8.png',
+              '0707_start_dash_campaign/banner_20200707_h1wb3.png'
+            ].any((e) => key.endsWith(e)));
         }).catchError((e, s) {
           logger.e('parse jp slides failed', e, s);
           return <String, String>{};
@@ -682,7 +691,7 @@ class _GalleryPageState extends State<GalleryPage> {
         title: Text('Download icons'),
         subtitle: Text(
             'About ${(_cachedIconsRatio * 100).toStringAsFixed(0)}% downloaded'
-            '\nGoto ${S.current.download_full_gamedata}'),
+                '\nGoto ${S.current.download_full_gamedata}'),
         isThreeLine: true,
         trailing: Icon(Icons.chevron_right),
         onTap: () {

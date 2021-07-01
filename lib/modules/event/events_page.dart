@@ -25,7 +25,7 @@ class _EventListPageState extends State<EventListPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: tabNames.length, vsync: this);
-    db.itemStat.update();
+    db.itemStat.update(lapse: Duration(seconds: 2));
   }
 
   @override

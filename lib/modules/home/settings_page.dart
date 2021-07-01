@@ -20,6 +20,8 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  late ScrollController _scrollController;
+
   bool get alwaysOnTop => db.cfg.get('alwaysOnTop') ?? false;
 
   set alwaysOnTop(bool v) => db.cfg.put('alwaysOnTop', v);
@@ -27,6 +29,13 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
   }
 
   @override
@@ -46,6 +55,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget get body {
     return ListView(
+      controller: _scrollController,
       children: <Widget>[
         TileGroup(
           header: 'Chaldea User',
@@ -81,7 +91,7 @@ class _SettingsPageState extends State<SettingsPage> {
         TileGroup(
           header: S.current.event_progress,
           footer:
-              '${S.current.limited_event}/${S.current.main_record}/${S.current.summon}',
+          '${S.current.limited_event}/${S.current.main_record}/${S.current.summon}',
           children: [
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
@@ -209,9 +219,9 @@ class _SettingsPageState extends State<SettingsPage> {
               trailing: db.runtimeData.upgradableVersion == null
                   ? Icon(Icons.keyboard_arrow_right)
                   : Text(
-                      db.runtimeData.upgradableVersion!.version + ' ↑',
-                      style: TextStyle(),
-                    ),
+                db.runtimeData.upgradableVersion!.version + ' ↑',
+                style: TextStyle(),
+              ),
               onTap: () => SplitRoute.push(
                 context: context,
                 builder: (context, _) => AboutPage(),
@@ -288,7 +298,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   title: Text('Contribute to Chaldea'),
                   content: Text(
                       'Collaboration is welcomed, please contact us through email:\n'
-                      '$kSupportTeamEmailAddress'),
+                          '$kSupportTeamEmailAddress'),
                   scrollable: true,
                 ).showDialog(context);
               },
@@ -337,20 +347,20 @@ class _SettingsPageState extends State<SettingsPage> {
       ..sort((a, b) => b.compareTo(a));
     if (db.curUser.msProgress > 0) {
       db.curUser.msProgress = sortedDates
-              .firstWhereOrNull((e) =>
-                  e.millisecondsSinceEpoch > 0 &&
-                  e.millisecondsSinceEpoch <= db.curUser.msProgress)
-              ?.millisecondsSinceEpoch ??
+          .firstWhereOrNull((e) =>
+      e.millisecondsSinceEpoch > 0 &&
+          e.millisecondsSinceEpoch <= db.curUser.msProgress)
+          ?.millisecondsSinceEpoch ??
           -1;
     } else {
       db.curUser.msProgress = fixValidRange(db.curUser.msProgress, -4, -1);
     }
     Widget _wrapText(String text) => Text(
-          text,
-          maxLines: 2,
-          style: TextStyle(fontSize: 14),
-          overflow: TextOverflow.ellipsis,
-        );
+      text,
+      maxLines: 2,
+      style: TextStyle(fontSize: 14),
+      overflow: TextOverflow.ellipsis,
+    );
 
     final items = <DropdownMenuItem<int>>[
       DropdownMenuItem(
@@ -374,9 +384,9 @@ class _SettingsPageState extends State<SettingsPage> {
     }
     if (db.curUser.msProgress > 0) {
       db.curUser.msProgress = items
-              .firstWhereOrNull(
-                  (e) => e.value! > 0 && e.value! <= db.curUser.msProgress)
-              ?.value ??
+          .firstWhereOrNull(
+              (e) => e.value! > 0 && e.value! <= db.curUser.msProgress)
+          ?.value ??
           -1;
     }
     return DropdownButton<int>(

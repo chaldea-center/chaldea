@@ -64,7 +64,6 @@ class _GameDataPageState extends State<GameDataPage> {
               ),
             ],
           ),
-
           TileGroup(
             header: S.of(context).gamedata,
             footer: S.current.download_latest_gamedata_hint,

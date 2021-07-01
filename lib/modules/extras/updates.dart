@@ -124,6 +124,7 @@ class AutoUpdateUtil {
         'from': curRelease.tagName,
         'to': latestRelease.tagName
       }));
+      EasyLoading.dismiss();
 
       if (resp.success) {
         final patchJson = jsonDecode(resp.body);
@@ -134,7 +135,7 @@ class AutoUpdateUtil {
         final gameData = GameData.fromJson(jsonDecode(jsonEncode(newData)));
         String previousVersion = db.gameData.version;
         if (gameData.version.compareTo(previousVersion) > 0) {
-          await alertReload();
+          await alertReload(pop: !background);
           if (db.loadGameData(gameData)) {
             // use patched data, don't use jsonEncode(db.gameData)
             File(db.paths.gameDataPath).writeAsStringSync(jsonEncode(newData));
@@ -321,12 +322,13 @@ class AutoUpdateUtil {
     if (validSHA1) return fpInstaller;
   }
 
-  static Future<void> alertReload() async {
+  static Future<void> alertReload({bool pop = true}) async {
     await SimpleCancelOkDialog(
       title: Text(S.current.update_dataset),
       content: Text('Ready to reload dataset'),
     ).showDialog(null);
-    Navigator.of(kAppKey.currentContext!).popUntil((route) => route.isFirst);
+    if (pop)
+      Navigator.of(kAppKey.currentContext!).popUntil((route) => route.isFirst);
     await Future.delayed(Duration(milliseconds: 600));
   }
 
