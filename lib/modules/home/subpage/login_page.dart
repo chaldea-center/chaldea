@@ -58,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
               errorText: _validateName(),
             ),
           ),
-          Padding(padding: EdgeInsets.only(bottom: 12)),
+          const SizedBox(height: 12),
           TextField(
             controller: _pwdController,
             autocorrect: false,
@@ -91,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
               });
             },
           ),
-          Padding(padding: EdgeInsets.only(bottom: 12)),
+          const SizedBox(height: 12),
           if (changePwdMde)
             TextField(
               controller: _newPwdController,
@@ -118,9 +118,11 @@ class _LoginPageState extends State<LoginPage> {
             S.current.login_hint_text,
             style: TextStyle(color: Colors.grey, fontSize: 14),
           ),
-          ButtonBar(
-            alignment: MainAxisAlignment.center,
-            overflowButtonSpacing: 6,
+          const SizedBox(height: 8),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 6,
+            runSpacing: 6,
             children: [
               if (!changePwdMde)
                 ElevatedButton(
@@ -137,7 +139,9 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: isChangePasswordAvailable() ? doChangePwd : null,
                   child: Text(S.current.login_change_password),
                 ),
-              if (!changePwdMde)
+              if (!changePwdMde &&
+                  db.prefs.userName.get()?.isNotEmpty == true &&
+                  db.prefs.userPwd.get()?.isNotEmpty == true)
                 ElevatedButton(
                   onPressed: doLogout,
                   child: Text(S.current.login_logout),
@@ -213,7 +217,7 @@ class _LoginPageState extends State<LoginPage> {
           _saveUserInfo(name, pwd);
         }
         resp.showMsg(context, title: S.current.login_login);
-      }).whenComplete(() => EasyLoadingUtil.dismiss());
+      }).whenComplete(() => EasyLoadingUtil.dismiss(null));
     }
   }
 
@@ -265,7 +269,7 @@ class _LoginPageState extends State<LoginPage> {
           _saveUserInfo(name, pwd);
         }
         resp.showMsg(context, title: S.current.login_signup);
-      }).whenComplete(() => EasyLoadingUtil.dismiss());
+      }).whenComplete(() => EasyLoadingUtil.dismiss(null));
     }
   }
 
@@ -286,7 +290,7 @@ class _LoginPageState extends State<LoginPage> {
           _saveUserInfo(name, newPwd);
         }
         resp.showMsg(context, title: S.current.login_change_password);
-      }).whenComplete(() => EasyLoadingUtil.dismiss());
+      }).whenComplete(() => EasyLoadingUtil.dismiss(null));
     }
   }
 

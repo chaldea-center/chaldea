@@ -170,7 +170,9 @@ class Analyzer {
 
   static Future<void> launchStaticUrl(String url) async {
     final plugin = FlutterWebviewPlugin();
-    await plugin.launch(url, hidden: true);
+    await plugin.launch(url, hidden: true).catchError((e, s) {
+      logger.e('loading webview failed, url=$url', e, s);
+    });
     print('$url launched');
     await Future.delayed(Duration(seconds: 10));
     plugin.dispose();

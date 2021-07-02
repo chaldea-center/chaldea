@@ -594,7 +594,10 @@ class __SkillResultLoaderState extends State<_SkillResultLoader> {
               ],
             ),
           ),
-          title: Text('${e.svtNo} - ${svt?.mcLink}'),
+          title: AutoSizeText(
+            '${e.svtNo} - ${svt?.mcLink}',
+            maxLines: 2,
+          ),
           trailing: Text(e.skills.join('/')),
         );
       }).toList(),

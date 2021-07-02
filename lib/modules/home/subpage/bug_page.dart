@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/extras/markdown_page.dart';
 import 'package:chaldea/modules/home/subpage/feedback_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -10,12 +11,22 @@ class BugAnnouncePage extends StatelessWidget {
     contentEn:
         'Cannot be fixed immediately. If there is any other bug, please send feedback.',
   );
+
   final List<_BugDetail> bugs = [
     _BugDetail(
       title: '翻译错误/不全',
       content: '欢迎纠错/提供翻译\n',
       titleEn: 'Translations',
       contentEn: 'Any suggestion(mistake/missing/adding) is welcomed.\n',
+    ),
+    _BugDetail(
+      title: '游戏文本/数据有误',
+      content:
+          '请先在[Mooncell](https://fgo.wiki)上确认是否正确，若wiki上有误，请积极投入编辑大军。若wiki正确却APP内解析出错，请反馈。\n',
+      titleEn: 'Wrong text/data',
+      contentEn:
+          'If possible, please check the correctness on [Mooncell](https://fgo.wiki) and [Fandom](https://fategrandorder.fandom.com/wiki/)\n'
+          'If that\'s right, please send feedback to let me know.',
     ),
     // _BugDetail(
     //     title: '输入框操作过快问题',
@@ -56,7 +67,10 @@ class BugAnnouncePage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(bug.getContent()),
+              MyMarkdownPage(
+                data: bug.getContent(),
+                scrollable: false,
+              ),
               if (bug.link != null)
                 TextButton(
                   onPressed: () {

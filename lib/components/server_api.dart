@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'custom_dialogs.dart';
@@ -41,6 +42,7 @@ class ChaldeaResponse {
 
   Future showMsg(BuildContext? context,
       {String? title, bool showBody = false}) {
+    EasyLoading.dismiss();
     if (context == null) return Future.value();
     title ??= success ? S.current.success : S.current.failed;
     String content = msg.toString();

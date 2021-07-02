@@ -1,5 +1,5 @@
 ## 1.4.7
-- allow saving illustration(long press) and voices
+- allow long press to save illustrations and voices
 
 ## 1.4.6
 - NEW: add ★️4 fou-kun planning

@@ -148,8 +148,8 @@ class ItemCostServantPage extends StatelessWidget {
         title: Text('${svt.info.name}', style: textStyle),
         subtitle: Text(
           Items.extraPlanningItems.contains(itemKey)
-              ? '$allNum'
-              : '$allNum($ascensionNum/$skillNum/$dressNum/$extraNum)',
+              ? '$extraNum'
+              : '$allNum($ascensionNum/$skillNum/$dressNum)',
           style: textStyle,
         ),
         trailing: Icon(Icons.arrow_forward_ios),

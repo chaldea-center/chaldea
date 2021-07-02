@@ -44,7 +44,9 @@ class _MyMarkdownPageState extends State<MyMarkdownPage> {
         logger.e('error loading markdown asset ${widget.assetKey}', e, s);
         return 'Loading error';
       }).whenComplete(
-        () => Utils.scheduleFrameCallback(() => this.setState(() {})),
+        () => Utils.scheduleFrameCallback(() {
+          if (mounted) this.setState(() {});
+        }),
       );
     }
   }
@@ -81,6 +83,7 @@ class _MyMarkdownPageState extends State<MyMarkdownPage> {
   }
 
   void onTapLink(String text, String? href, String title) async {
+    // print('text=$text,href=$href,title=$title');
     if (href?.isNotEmpty != true) return;
     try {
       await launch(href!);
