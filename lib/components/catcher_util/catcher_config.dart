@@ -64,6 +64,7 @@ class CatcherUtility {
       }
     }
 
+    // compilation related
     if (report.error.toString().startsWith(
         'HttpException: Unexpected response (unsolicited response without request).')) {
       logger.e('ignore HttpException', report.error, report.stackTrace);

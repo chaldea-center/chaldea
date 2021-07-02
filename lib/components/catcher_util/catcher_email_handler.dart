@@ -21,7 +21,9 @@ import 'package:pool/pool.dart';
 import '../config.dart';
 import '../constants.dart';
 import '../device_app_info.dart';
+import '../logger.dart';
 import '../utils.dart' show b64;
+import 'catcher_config.dart';
 
 export 'page_report_mode_cross.dart';
 
@@ -107,6 +109,8 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
     try {
       if (!db.hasNetwork) return false;
 
+      if (await _isBlockedError(report)) return false;
+
       String reportSummary = _getReportShortSummary(report);
       // don't send email repeatedly
       if (_sentReports.contains(reportSummary)) {
@@ -136,10 +140,12 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
         message.html = _setupHtmlMessageText(report);
       }
       _printLog("Sending email...");
-      if (Analyzer.skipReport()) return true;
-
-      var result = await send(message, _setupSmtpServer());
-      _printLog("Email result: $result ");
+      if (Analyzer.skipReport()) {
+        await Future.delayed(Duration(seconds: 2));
+      } else {
+        var result = await send(message, _setupSmtpServer());
+        _printLog("Email result: $result ");
+      }
       _sentReports.add(reportSummary);
       return true;
     } catch (stacktrace, exception) {
@@ -150,6 +156,38 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
       // var f = File(archiveTmpFp);
       // if (f.existsSync()) f.deleteSync();
     }
+  }
+
+  /// List temporary blocked error on gitee wiki
+  ///
+  /// Fetch from https://gitee.com/chaldea-center/chaldea/wikis/blocked_error?sort_id=4200566
+  /// Use [error.startsWith] to check if blocked or not
+  /// These blocked errors should be added into [CatcherUtility.isKnownError] in next version
+  List<String>? _blockedErrors;
+
+  Future<bool> _isBlockedError(Report report) async {
+    if (_blockedErrors == null) {
+      final url = 'https://gitee.com/chaldea-center/chaldea/wikis/pages/wiki'
+          '?wiki_title=blocked_error&parent=&version_id=master&sort_id=4200566&info_id=1327454&extname=.md';
+      await HttpUtils.defaultDio.get(url).then((response) {
+        final String content = response.data['wiki']['content'];
+        _blockedErrors = [];
+        content.trim().split('\n').forEach((line) {
+          line = line.trim();
+          if (line.isNotEmpty) _blockedErrors!.add(line);
+        });
+        print('_blockedErrors=${jsonEncode(_blockedErrors)}');
+      }).catchError((e, s) {
+        logger.e('fetch blocked errors failed', e, s);
+      });
+    }
+
+    final error = (report.error ?? report.errorDetails).toString();
+    if (_blockedErrors?.any((e) => error.startsWith(e)) == true) {
+      logger.e('don\'t send blocked error', report.error, report.stackTrace);
+      return true;
+    }
+    return false;
   }
 
   String get archiveTmpFp => '${db.paths.tempDir}/.tmp_attach.zip';
