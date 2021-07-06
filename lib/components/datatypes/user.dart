@@ -221,13 +221,17 @@ class ServantStatus {
     validate();
   }
 
-  void validate() {
+  void validate([Servant? svt]) {
     curVal.validate();
     npLv = fixValidRange(npLv, 1, 5);
-    npIndex = fixValidRange(npIndex, 0);
-    for (int i = 0; i < 3; i++) {
+    npIndex = fixValidRange(
+        npIndex, 0, svt == null ? null : svt.lNobelPhantasm.length - 1);
+    for (int i = 0; i < (svt?.lActiveSkills.length ?? 3); i++) {
       if (skillIndex[i] != null) {
-        skillIndex[i] = fixValidRange(skillIndex[i]!, 0);
+        if (svt != null &&
+            svt.lActiveSkills.getOrNull(skillIndex[i]!) == null) {
+          skillIndex[i] = null;
+        }
       }
     }
     priority = fixValidRange(priority, 1, 5);

@@ -451,6 +451,16 @@ class ActiveSkill {
 
   ActiveSkill({required this.cnState, required this.skills});
 
+  Skill ofIndex(int? index) {
+    if (index != null && index >= 0 && index < skills.length) {
+      return skills[index];
+    } else {
+      return Language.isCN
+          ? skills.getOrNull(cnState) ?? skills.last
+          : skills.last;
+    }
+  }
+
   factory ActiveSkill.fromJson(Map<String, dynamic> data) =>
       _$ActiveSkillFromJson(data);
 

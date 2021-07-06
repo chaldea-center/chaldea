@@ -50,7 +50,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       if (svt.lActiveSkills.isEmpty) {
         return Center(child: Text('${svt.info.localizedName} has no skills'));
       }
-      status.validate();
+      status.validate(svt);
       final curVal = status.curVal;
       final targetVal = enhanceMode ? enhancePlan : plan;
       targetVal.validate(curVal);
@@ -98,16 +98,15 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       //skill part
       List<Widget> skillWidgets = [];
       for (int index = 0; index < svt.lActiveSkills.length; index++) {
+        if (index >= 3) continue;
         final activeSkill = svt.lActiveSkills[index];
         int? _state;
         if (Servant.unavailable.contains(svt.no)) {
           _state = 0;
         } else {
-          _state = status.skillIndex.getOrNull(index) ??
-              (Language.isCN ? activeSkill.cnState : null);
+          _state = status.skillIndex.getOrNull(index);
         }
-        _state ??= activeSkill.skills.length - 1;
-        Skill skill = activeSkill.skills[_state];
+        Skill skill = activeSkill.ofIndex(_state);
         String shownName =
             Language.isCN ? skill.name : (skill.nameJp ?? skill.name);
         if (index >= 3) {
@@ -140,7 +139,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       children.add(
           TileGroup(header: S.of(context).skill_up, children: skillWidgets));
 
-      // dress part
+      // costume part
       List<Widget> dressWidgets = [];
       curVal.fixDressLength(svt.costumeNos.length, 0);
       targetVal.fixDressLength(svt.costumeNos.length, 0);
