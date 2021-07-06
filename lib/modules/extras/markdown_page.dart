@@ -1,4 +1,4 @@
-import 'package:chaldea/components/image_viewer.dart';
+import 'package:chaldea/widgets/image_viewer.dart';
 import 'package:chaldea/components/logger.dart';
 import 'package:chaldea/components/utils.dart';
 import 'package:flutter/material.dart';

@@ -11,6 +11,16 @@ extension GetOrNull<T> on List<T> {
     }
     return null;
   }
+
+  void fixLength(int length, T k()) {
+    assert(length >= 0);
+    if (this.length == length) return;
+    if (this.length > length) {
+      this.length = length;
+    } else {
+      this.addAll(List.generate(length - this.length, (index) => k()));
+    }
+  }
 }
 
 extension FirstWhereOrNull<E> on Iterable<E> {

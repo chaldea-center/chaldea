@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/icon_clipper.dart';
+import 'package:chaldea/widgets/icon_clipper.dart';
 import 'package:chaldea/components/method_channel_chaldea.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';

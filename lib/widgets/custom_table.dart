@@ -3,7 +3,7 @@ import 'dart:math' show max;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-import 'utils.dart';
+import '../components/utils.dart';
 
 const Divider kHorizontalDivider = Divider(
     color: Color.fromRGBO(162, 169, 177, 1), thickness: 0.5, height: 0.5);

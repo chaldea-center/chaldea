@@ -7,7 +7,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path/path.dart' show basename;
 import 'package:string_validator/string_validator.dart' as validator;
 
-import 'config.dart';
+import '../components/config.dart';
 
 class FullscreenWidget extends StatefulWidget {
   final WidgetBuilder builder;

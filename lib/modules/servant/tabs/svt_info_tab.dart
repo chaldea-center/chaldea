@@ -49,6 +49,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         Row(
           children: <Widget>[
@@ -93,7 +94,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
 
   Widget buildBaseInfoTab() {
     final headerData = TableCellData(isHeader: true, maxLines: 1);
-    final contentData = TableCellData(textAlign: TextAlign.center);
+    final contentData = TableCellData(textAlign: TextAlign.center, maxLines: 1);
     return SingleChildScrollView(
       padding: EdgeInsets.only(bottom: 10),
       child: CustomTable(
@@ -145,9 +146,12 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
               defaults: contentData),
           CustomTableRow.fromTexts(
               texts: [S.current.info_trait], defaults: headerData),
-          CustomTableRow.fromTexts(texts: [
-            svt.info.traits.map((e) => Localized.svtFilter.of(e)).join(', ')
-          ], defaults: contentData),
+          CustomTableRow.fromTexts(
+            texts: [
+              svt.info.traits.map((e) => Localized.svtFilter.of(e)).join(', ')
+            ],
+            defaults: TableCellData(textAlign: TextAlign.center),
+          ),
           CustomTableRow(children: [
             TableCellData(text: S.current.info_human, isHeader: true, flex: 1),
             TableCellData(
@@ -181,20 +185,22 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
               'MAX'
             ], defaults: headerData),
             CustomTableRow(children: [
-              TableCellData(text: 'ATK', isHeader: true),
-              TableCellData(text: svt.info.atkMin.toString()),
-              TableCellData(text: svt.info.atkMax.toString()),
-              TableCellData(text: svt.info.atk90.toString()),
-              TableCellData(text: svt.info.atk100.toString()),
-              TableCellData(text: (svt.info.atk100 + 2000).toString()),
+              TableCellData(text: 'ATK', isHeader: true, maxLines: 1),
+              TableCellData(text: svt.info.atkMin.toString(), maxLines: 1),
+              TableCellData(text: svt.info.atkMax.toString(), maxLines: 1),
+              TableCellData(text: svt.info.atk90.toString(), maxLines: 1),
+              TableCellData(text: svt.info.atk100.toString(), maxLines: 1),
+              TableCellData(
+                  text: (svt.info.atk100 + 2000).toString(), maxLines: 1),
             ]),
             CustomTableRow(children: [
-              TableCellData(text: 'HP', isHeader: true),
-              TableCellData(text: svt.info.hpMin.toString()),
-              TableCellData(text: svt.info.hpMax.toString()),
-              TableCellData(text: svt.info.hp90.toString()),
-              TableCellData(text: svt.info.hp100.toString()),
-              TableCellData(text: (svt.info.hp100 + 2000).toString()),
+              TableCellData(text: 'HP', isHeader: true, maxLines: 1),
+              TableCellData(text: svt.info.hpMin.toString(), maxLines: 1),
+              TableCellData(text: svt.info.hpMax.toString(), maxLines: 1),
+              TableCellData(text: svt.info.hp90.toString(), maxLines: 1),
+              TableCellData(text: svt.info.hp100.toString(), maxLines: 1),
+              TableCellData(
+                  text: (svt.info.hp100 + 2000).toString(), maxLines: 1),
             ]),
             CustomTableRow.fromTexts(
                 texts: [S.current.info_cards], defaults: headerData),
@@ -232,7 +238,8 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
             CustomTableRow.fromTexts(
                 texts: svt.info.npRate.keys.toList(),
                 defaults: TableCellData(isHeader: true, maxLines: 1)),
-            CustomTableRow.fromTexts(texts: svt.info.npRate.values.toList()),
+            CustomTableRow.fromTexts(
+                texts: svt.info.npRate.values.toList(), defaults: contentData),
             CustomTableRow.fromTexts(texts: [
               S.current.info_star_rate,
               S.current.info_death_rate,
@@ -244,6 +251,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
                 svt.info.deathRate,
                 svt.info.criticalRate
               ],
+              defaults: contentData,
             ),
             if (svt.bondPoints.length > 0) ...[
               CustomTableRow.fromTexts(

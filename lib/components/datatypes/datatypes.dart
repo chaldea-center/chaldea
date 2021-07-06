@@ -21,7 +21,7 @@ import 'package:json_annotation/src/allowed_keys_helpers.dart'; // ignore: imple
 
 import '../config.dart' show db;
 import '../constants.dart';
-import '../custom_tile.dart' show ImageWithText;
+import '../../widgets/custom_tile.dart' show ImageWithText;
 import '../extensions.dart';
 import '../git_tool.dart';
 import '../localized/localized.dart';

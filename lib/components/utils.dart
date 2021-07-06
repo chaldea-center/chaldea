@@ -17,7 +17,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'config.dart' show db;
 import 'constants.dart';
-import 'custom_dialogs.dart';
+import '../widgets/custom_dialogs.dart';
 import 'extensions.dart';
 import 'logger.dart';
 

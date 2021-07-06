@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'custom_dialogs.dart';
+import '../widgets/custom_dialogs.dart';
 import 'extensions.dart';
 import 'logger.dart';
 
