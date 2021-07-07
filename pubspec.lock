@@ -42,7 +42,7 @@ packages:
       name: audioplayers
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.19.0"
+    version: "0.19.1"
   auto_size_text:
     dependency: "direct main"
     description:
@@ -91,7 +91,7 @@ packages:
       name: build_runner
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.4"
+    version: "2.0.5"
   build_runner_core:
     dependency: transitive
     description:
@@ -133,7 +133,7 @@ packages:
       name: catcher
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.6.6"
+    version: "0.6.7"
   characters:
     dependency: transitive
     description:
@@ -161,7 +161,7 @@ packages:
       name: cli_util
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.3.0"
+    version: "0.3.3"
   clock:
     dependency: transitive
     description:
@@ -231,7 +231,7 @@ packages:
       name: convert
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   cookie_jar:
     dependency: transitive
     description:
@@ -294,42 +294,42 @@ packages:
       name: device_info_plus
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.1"
+    version: "2.1.0"
   device_info_plus_linux:
     dependency: transitive
     description:
       name: device_info_plus_linux
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.1"
+    version: "2.1.0"
   device_info_plus_macos:
     dependency: transitive
     description:
       name: device_info_plus_macos
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.1"
+    version: "2.1.0"
   device_info_plus_platform_interface:
     dependency: transitive
     description:
       name: device_info_plus_platform_interface
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.2"
+    version: "2.1.0"
   device_info_plus_web:
     dependency: transitive
     description:
       name: device_info_plus_web
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.1"
+    version: "2.1.0"
   device_info_plus_windows:
     dependency: transitive
     description:
       name: device_info_plus_windows
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.1"
+    version: "2.1.0"
   dio:
     dependency: "direct main"
     description:
@@ -495,7 +495,7 @@ packages:
       name: flutter_email_sender
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.0.0"
+    version: "5.0.2"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -521,7 +521,7 @@ packages:
       name: flutter_picker
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -671,7 +671,7 @@ packages:
       name: io
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.0"
+    version: "1.0.3"
   js:
     dependency: transitive
     description:
@@ -874,7 +874,7 @@ packages:
       name: permission_handler
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "8.1.1"
+    version: "8.1.2"
   permission_handler_platform_interface:
     dependency: transitive
     description:
@@ -1187,7 +1187,7 @@ packages:
       name: url_launcher
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.0.7"
+    version: "6.0.9"
   url_launcher_linux:
     dependency: transitive
     description:
@@ -1208,7 +1208,7 @@ packages:
       name: url_launcher_platform_interface
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.3"
+    version: "2.0.4"
   url_launcher_web:
     dependency: transitive
     description:
@@ -1257,7 +1257,7 @@ packages:
       name: win32
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.2.3"
+    version: "2.2.5"
   xdg_directories:
     dependency: transitive
     description:

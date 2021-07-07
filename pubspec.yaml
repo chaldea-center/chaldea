@@ -27,16 +27,16 @@ dependencies:
     sdk: flutter
 
   archive: ^3.1.2
-  audioplayers: ^0.19.0
+  audioplayers: ^0.19.1
   auto_size_text: ^3.0.0-nullsafety.0
   cached_network_image: ^3.0.0
   carousel_slider: ^4.0.0
-  catcher: ^0.6.6
+  catcher: ^0.6.7
   connectivity_plus: ^1.0.4
   crypto: ^3.0.1
   csv: ^5.0.0
   cupertino_icons: ^1.0.3
-  device_info_plus: ^1.0.1
+  device_info_plus: ^2.1.0
   #  dart_vlc:
   #    git:
   #      url: https://github.com/alexmercerind/dart_vlc
@@ -48,9 +48,9 @@ dependencies:
   flutter_audio_desktop: 0.0.8
   flutter_cache_manager: ^3.1.2
   flutter_easyloading: ^3.0.0
-  flutter_email_sender: ^5.0.0
+  flutter_email_sender: ^5.0.2
   flutter_markdown: ^0.6.2
-  flutter_picker: ^2.0.1
+  flutter_picker: ^2.0.2
   flutter_qjs: ^0.3.6
   flutter_webview_plugin: ^0.4.0
   font_awesome_flutter: ^9.1.0
@@ -67,7 +67,7 @@ dependencies:
   open_file: ^3.2.1
   package_info_plus: ^1.0.3
   path_provider: ^2.0.2
-  permission_handler: ^8.1.1
+  permission_handler: ^8.1.2
   pool: ^1.5.0
   rate_my_app: ^1.1.0+1
   rfc_6902: ^0.1.0
@@ -75,7 +75,7 @@ dependencies:
   share_plus: ^2.1.4
   shared_preferences: ^2.0.6
   string_validator: ^0.3.0
-  url_launcher: ^6.0.7
+  url_launcher: ^6.0.9
   uuid: ^3.0.4
 
 dev_dependencies:
