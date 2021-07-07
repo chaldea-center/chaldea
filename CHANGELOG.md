@@ -1,5 +1,6 @@
 ## 1.4.7
 - allow long press to save illustrations and voices
+- fix some null safety bugs
 
 ## 1.4.6
 - NEW: add ★️4 fou-kun planning

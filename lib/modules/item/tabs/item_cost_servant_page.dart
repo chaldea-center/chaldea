@@ -91,7 +91,8 @@ class ItemCostServantPage extends StatelessWidget {
     List<Widget> children = [];
     var sortedSvts = sortSvts(src.keys.toList());
     sortedSvts.forEach((svtNo) {
-      final svt = db.gameData.servantsWithUser[svtNo]!;
+      final svt = db.gameData.servantsWithUser[svtNo];
+      if (svt == null) return;
       final num = src![svtNo]!;
       bool showShadow = highlight && db.curUser.svtStatusOf(svtNo).favorite;
       if (num > 0) {

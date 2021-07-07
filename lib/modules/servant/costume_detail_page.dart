@@ -66,6 +66,9 @@ class CostumeDetailPage extends StatelessWidget {
                                       builder: (context, _) =>
                                           ServantDetailPage(svt),
                                     ),
+                            style: TextButton.styleFrom(
+                              minimumSize: const Size(24, 28),
+                            ),
                           ),
                         )
                       ]),

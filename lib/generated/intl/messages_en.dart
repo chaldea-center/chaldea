@@ -128,7 +128,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Including illustrations, voices"),
         "clear_userdata":
             MessageLookupByLibrary.simpleMessage("Clear Userdata"),
-        "cmd_code_title": MessageLookupByLibrary.simpleMessage("Cmd Code"),
+        "cmd_code_title": MessageLookupByLibrary.simpleMessage("Command Code"),
         "command_code": MessageLookupByLibrary.simpleMessage("Command Code"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
         "copper": MessageLookupByLibrary.simpleMessage("Copper"),
@@ -374,7 +374,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Event Item"),
         "item_category_gem": MessageLookupByLibrary.simpleMessage("Gem"),
         "item_category_gems":
-            MessageLookupByLibrary.simpleMessage("Skill Reinforcement Items"),
+            MessageLookupByLibrary.simpleMessage("Skill Items"),
         "item_category_gold":
             MessageLookupByLibrary.simpleMessage("Gold Items"),
         "item_category_magic_gem":
