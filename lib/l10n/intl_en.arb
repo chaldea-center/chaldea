@@ -394,5 +394,7 @@
   "backup_history": "Backup History",
   "carousel_setting": "Carousel Setting",
   "change_log": "Change Log",
-  "import_source_file": "Import Source File"
+  "import_source_file": "Import Source File",
+  "attachment": "Attachment",
+  "search": "Search"
 }

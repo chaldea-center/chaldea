@@ -402,8 +402,8 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
               context: context,
               builder: (context, _) => CraftDetailPage(
                 ce: ce,
-                onSwitch: (cur, next) =>
-                    Utils.findNextOrPrevious<CraftEssence>(crafts!, cur, next),
+                onSwitch: (cur, next) => Utils.findNextOrPrevious<CraftEssence>(
+                    list: crafts!, cur: cur, reversed: next),
               ),
               detail: true,
             );
@@ -428,8 +428,8 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
               context: context,
               builder: (context, _) => CmdCodeDetailPage(
                 code: code,
-                onSwitch: (cur, next) =>
-                    Utils.findNextOrPrevious<CommandCode>(codes!, cur, next),
+                onSwitch: (cur, next) => Utils.findNextOrPrevious<CommandCode>(
+                    list: codes!, cur: cur, reversed: next),
               ),
               detail: true,
             );

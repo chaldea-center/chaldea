@@ -4,6 +4,7 @@ export 'custom_table.dart';
 export 'custom_tile.dart';
 export 'form_elements.dart';
 export 'image_viewer.dart';
+export 'search_bar.dart';
 export 'simple_accordion.dart';
-export 'widget_builders.dart';
 export 'sliver_grid.dart';
+export 'widget_builders.dart';

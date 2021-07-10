@@ -96,6 +96,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ascension": MessageLookupByLibrary.simpleMessage("Ascension"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("Ascen"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("Ascension"),
+        "attachment": MessageLookupByLibrary.simpleMessage("Attachment"),
         "auto_update": MessageLookupByLibrary.simpleMessage("Auto Update"),
         "backup": MessageLookupByLibrary.simpleMessage("Backup"),
         "backup_data_alert":
@@ -528,6 +529,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "save_to_photos":
             MessageLookupByLibrary.simpleMessage("Save to Photos"),
         "saved": MessageLookupByLibrary.simpleMessage("Saved"),
+        "search": MessageLookupByLibrary.simpleMessage("Search"),
         "search_result_count": m13,
         "search_result_count_hide": m14,
         "select_copy_plan_source":

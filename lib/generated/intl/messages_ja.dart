@@ -93,6 +93,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ascension": MessageLookupByLibrary.simpleMessage("霊基"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("霊基"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("霊基再臨"),
+        "attachment": MessageLookupByLibrary.simpleMessage("アタッチメント"),
         "auto_update": MessageLookupByLibrary.simpleMessage("自動更新"),
         "backup": MessageLookupByLibrary.simpleMessage("バックアップ"),
         "backup_data_alert":
@@ -472,6 +473,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "save": MessageLookupByLibrary.simpleMessage("保存"),
         "save_to_photos": MessageLookupByLibrary.simpleMessage("アルバムに保存"),
         "saved": MessageLookupByLibrary.simpleMessage("保存しました"),
+        "search": MessageLookupByLibrary.simpleMessage("検索"),
         "search_result_count": m13,
         "search_result_count_hide": m14,
         "select_copy_plan_source":

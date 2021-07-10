@@ -588,7 +588,7 @@ class _GalleryPageState extends State<GalleryPage> {
           var jpElement = jpParser.getElementsByClassName('slide').getOrNull(0);
           return _getImageLinks(element: jpElement, uri: Uri.parse(jpUrl))
             ..removeWhere((key, value) =>
-            key.endsWith('2019/tips_qavwi/top_banner.png') ||
+                key.endsWith('2019/tips_qavwi/top_banner.png') ||
                 key.endsWith('2017/02/banner_10009.png'));
         }).catchError((e, s) {
           logger.e('parse jp slides failed', e, s);

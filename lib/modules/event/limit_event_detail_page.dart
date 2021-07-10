@@ -265,7 +265,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
           onTap: () => onTapIcon(itemKey),
           child: db.getIconImage(itemKey, width: 48),
         ),
-        title: Text(itemKey),
+        title: Text(Item.localizedNameOf(itemKey)),
         subtitle: Text(hint),
         trailing: SizedBox(
           width: 50,

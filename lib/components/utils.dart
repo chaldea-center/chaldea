@@ -15,9 +15,9 @@ import 'package:lpinyin/lpinyin.dart';
 import 'package:path/path.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../widgets/custom_dialogs.dart';
 import 'config.dart' show db;
 import 'constants.dart';
-import '../widgets/custom_dialogs.dart';
 import 'extensions.dart';
 import 'logger.dart';
 
@@ -426,12 +426,20 @@ class Utils {
     return Theme.of(context).brightness == Brightness.dark;
   }
 
-  static T? findNextOrPrevious<T>(List<T> list, T cur, bool next) {
+  static T? findNextOrPrevious<T>({
+    required List<T> list,
+    required T cur,
+    bool reversed = false,
+    bool defaultFirst = false,
+  }) {
     int curIndex = list.indexOf(cur);
-    if (curIndex < 0) return null;
-    int nextIndex = curIndex + (next ? 1 : -1);
-    if (nextIndex >= 0 && nextIndex < list.length) {
-      return list[nextIndex];
+    if (curIndex >= 0) {
+      int nextIndex = curIndex + (reversed ? -1 : 1);
+      if (nextIndex >= 0 && nextIndex < list.length) {
+        return list[nextIndex];
+      }
+    } else if (defaultFirst && list.isNotEmpty) {
+      return list.first;
     }
   }
 

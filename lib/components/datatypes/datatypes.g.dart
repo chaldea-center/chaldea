@@ -1922,8 +1922,6 @@ SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
               ? null
               : FilterGroupData.fromJson(v as Map<String, dynamic>)),
     );
-    $checkedConvert(
-        json, 'filterString', (v) => val.filterString = v as String);
     return val;
   });
 }
@@ -1931,7 +1929,6 @@ SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
     <String, dynamic>{
       'favorite': instance.favorite,
-      'filterString': instance.filterString,
       'display': instance.display,
       'sortKeys': instance.sortKeys.map((e) => _$SvtCompareEnumMap[e]).toList(),
       'sortReversed': instance.sortReversed,
@@ -2004,15 +2001,12 @@ CraftFilterData _$CraftFilterDataFromJson(Map<String, dynamic> json) {
               ? null
               : FilterGroupData.fromJson(v as Map<String, dynamic>)),
     );
-    $checkedConvert(
-        json, 'filterString', (v) => val.filterString = v as String);
     return val;
   });
 }
 
 Map<String, dynamic> _$CraftFilterDataToJson(CraftFilterData instance) =>
     <String, dynamic>{
-      'filterString': instance.filterString,
       'display': instance.display,
       'sortKeys':
           instance.sortKeys.map((e) => _$CraftCompareEnumMap[e]).toList(),
@@ -2060,15 +2054,12 @@ CmdCodeFilterData _$CmdCodeFilterDataFromJson(Map<String, dynamic> json) {
               ? null
               : FilterGroupData.fromJson(v as Map<String, dynamic>)),
     );
-    $checkedConvert(
-        json, 'filterString', (v) => val.filterString = v as String);
     return val;
   });
 }
 
 Map<String, dynamic> _$CmdCodeFilterDataToJson(CmdCodeFilterData instance) =>
     <String, dynamic>{
-      'filterString': instance.filterString,
       'display': instance.display,
       'sortKeys':
           instance.sortKeys.map((e) => _$CmdCodeCompareEnumMap[e]).toList(),

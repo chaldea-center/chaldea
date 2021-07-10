@@ -3995,6 +3995,26 @@ class S {
       args: [],
     );
   }
+
+  /// `附件`
+  String get attachment {
+    return Intl.message(
+      '附件',
+      name: 'attachment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `搜索`
+  String get search {
+    return Intl.message(
+      '搜索',
+      name: 'search',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

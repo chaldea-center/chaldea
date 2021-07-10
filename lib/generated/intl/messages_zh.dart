@@ -93,6 +93,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ascension": MessageLookupByLibrary.simpleMessage("灵基"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("灵基"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("灵基再临"),
+        "attachment": MessageLookupByLibrary.simpleMessage("附件"),
         "auto_update": MessageLookupByLibrary.simpleMessage("自动更新"),
         "backup": MessageLookupByLibrary.simpleMessage("备份"),
         "backup_data_alert": MessageLookupByLibrary.simpleMessage("及！时！备！份！"),
@@ -441,6 +442,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "save": MessageLookupByLibrary.simpleMessage("保存"),
         "save_to_photos": MessageLookupByLibrary.simpleMessage("保存到相册"),
         "saved": MessageLookupByLibrary.simpleMessage("已保存"),
+        "search": MessageLookupByLibrary.simpleMessage("搜索"),
         "search_result_count": m13,
         "search_result_count_hide": m14,
         "select_copy_plan_source":

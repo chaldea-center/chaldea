@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class CmdCodeDetailPage extends StatefulWidget {
   final CommandCode code;
-  final CommandCode? Function(CommandCode, bool)? onSwitch;
+  final CommandCode? Function(CommandCode current, bool reversed)? onSwitch;
 
   const CmdCodeDetailPage({Key? key, required this.code, this.onSwitch})
       : super(key: key);
@@ -85,7 +85,7 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
             CommandCode? nextCode;
             if (widget.onSwitch != null) {
               // if navigated from filter list, let filter list decide which is the next one
-              nextCode = widget.onSwitch!(code, i == 1);
+              nextCode = widget.onSwitch!(code, i == 0);
             } else {
               nextCode = db.gameData.cmdCodes[code.no + [-1, 1][i]];
             }

@@ -6,7 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class CraftDetailPage extends StatefulWidget {
   final CraftEssence ce;
-  final CraftEssence? Function(CraftEssence, bool)? onSwitch;
+  final CraftEssence? Function(CraftEssence current, bool reversed)? onSwitch;
 
   const CraftDetailPage({Key? key, required this.ce, this.onSwitch})
       : super(key: key);
@@ -73,7 +73,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
                   CraftEssence? nextCe;
                   if (widget.onSwitch != null) {
                     // if navigated from filter list, let filter list decide which is the next one
-                    nextCe = widget.onSwitch!(ce, i == 1);
+                    nextCe = widget.onSwitch!(ce, i == 0);
                   } else {
                     nextCe = db.gameData.crafts[ce.no + [-1, 1][i]];
                   }

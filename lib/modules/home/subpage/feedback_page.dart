@@ -15,7 +15,7 @@ class FeedbackPage extends StatefulWidget {
 }
 
 class _FeedbackPageState extends State<FeedbackPage> {
-  bool attachLog = true;
+  final bool attachLog = true;
   late TextEditingController contactController;
   late TextEditingController subjectController;
   late TextEditingController bodyController;
@@ -167,19 +167,32 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     textAlignVertical: TextAlignVertical.top,
                   ),
                 ),
-                CheckboxListTile(
-                  title: Text(S.of(context).feedback_add_crash_log),
-                  value: attachLog,
-                  onChanged: (v) {
-                    setState(() {
-                      attachLog = v ?? attachLog;
-                    });
-                  },
-                ),
-                Divider(height: 1, thickness: 0.5, indent: 16, endIndent: 16),
+                // // Always add logs
+                // CheckboxListTile(
+                //   title: Text(S.of(context).feedback_add_crash_log),
+                //   value: attachLog,
+                //   onChanged: (v) {
+                //     setState(() {
+                //       attachLog = v ?? attachLog;
+                //     });
+                //   },
+                // ),
+                // Divider(height: 1, thickness: 0.5, indent: 16, endIndent: 16),
                 ListTile(
                   title: Text(S.of(context).feedback_add_attachments),
                   onTap: _addAttachments,
+                ),
+                ListTile(
+                  title: Text(S.current.attachment),
+                  subtitle: Text(LocalizedText.of(
+                      chs: 'e.g. 截图等文件',
+                      jpn: 'e.g. スクリーンショットとその他のファイル',
+                      eng: 'e.g. screenshots, files.')),
+                  trailing: IconButton(
+                    icon: Icon(Icons.add),
+                    tooltip: S.current.add,
+                    onPressed: _addAttachments,
+                  ),
                 ),
                 for (String fp in attachFiles)
                   ListTile(

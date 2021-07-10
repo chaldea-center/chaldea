@@ -167,7 +167,6 @@ class CarouselSetting {
 class SvtFilterData {
   /// 0-all, 1-fav, 2-not fav
   int favorite;
-  String filterString;
 
   FilterGroupData display;
   List<SvtCompare> sortKeys;
@@ -191,6 +190,8 @@ class SvtFilterData {
   FilterGroupData trait;
   FilterGroupData special;
 
+  bool get useGrid => display.isRadioVal('Grid');
+
   SvtFilterData({
     int? favorite,
     FilterGroupData? display,
@@ -212,8 +213,7 @@ class SvtFilterData {
     FilterGroupData? gender,
     FilterGroupData? trait,
     FilterGroupData? special,
-  })  : filterString = '',
-        favorite = favorite ?? 0,
+  })  : favorite = favorite ?? 0,
         display = display ?? FilterGroupData(options: {'List': true}),
         sortKeys = sortKeys ?? List.generate(3, (i) => sortKeyData[i]),
         sortReversed = sortReversed ?? List.generate(3, (index) => true),
@@ -343,8 +343,6 @@ class SvtFilterData {
 
 @JsonSerializable(checked: true)
 class CraftFilterData {
-  String filterString;
-
   FilterGroupData display;
   List<CraftCompare> sortKeys;
   List<bool> sortReversed;
@@ -354,6 +352,8 @@ class CraftFilterData {
   FilterGroupData atkHpType;
   FilterGroupData status;
 
+  bool get useGrid => display.isRadioVal('Grid');
+
   CraftFilterData({
     FilterGroupData? display,
     List<CraftCompare>? sortKeys,
@@ -362,8 +362,7 @@ class CraftFilterData {
     FilterGroupData? category,
     FilterGroupData? atkHpType,
     FilterGroupData? status,
-  })  : filterString = '',
-        display = display ?? FilterGroupData(options: {'List': true}),
+  })  : display = display ?? FilterGroupData(options: {'List': true}),
         sortKeys = sortKeys ?? List.generate(2, (index) => sortKeyData[index]),
         sortReversed = sortReversed ?? List.filled(2, true, growable: true),
         rarity = rarity ?? FilterGroupData(),
@@ -418,8 +417,6 @@ class CraftFilterData {
 
 @JsonSerializable(checked: true)
 class CmdCodeFilterData {
-  String filterString;
-
   FilterGroupData display;
   List<CmdCodeCompare> sortKeys;
   List<bool> sortReversed;
@@ -427,14 +424,15 @@ class CmdCodeFilterData {
   FilterGroupData rarity;
   FilterGroupData category;
 
+  bool get useGrid => display.isRadioVal('Grid');
+
   CmdCodeFilterData({
     FilterGroupData? display,
     List<CmdCodeCompare>? sortKeys,
     List<bool>? sortReversed,
     FilterGroupData? rarity,
     FilterGroupData? category,
-  })  : filterString = '',
-        display = display ?? FilterGroupData(options: {'List': true}),
+  })  : display = display ?? FilterGroupData(options: {'List': true}),
         sortKeys = sortKeys ?? List.generate(2, (index) => sortKeyData[index]),
         sortReversed = sortReversed ?? List.filled(2, true, growable: true),
         rarity = rarity ?? FilterGroupData(),

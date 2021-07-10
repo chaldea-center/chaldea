@@ -396,5 +396,7 @@
   "backup_history": "バックアップ履歴",
   "carousel_setting": "カルーセル設定",
   "change_log": "更新履歴",
-  "import_source_file": "ソースファイルをインポート"
+  "import_source_file": "ソースファイルをインポート",
+  "attachment": "アタッチメント",
+  "search": "検索"
 }
