@@ -12,7 +12,7 @@ class EventListPage extends StatefulWidget {
 class _EventListPageState extends State<EventListPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  bool reversed = true;
+  bool reversed = false;
   bool showOutdated = false;
 
   List<String> get tabNames => [
@@ -48,7 +48,7 @@ class _EventListPageState extends State<EventListPage>
           ),
           IconButton(
             icon: Icon(
-                reversed ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down),
+                reversed ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up),
             tooltip: 'Reversed',
             onPressed: () => setState(() => reversed = !reversed),
           )

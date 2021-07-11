@@ -174,7 +174,7 @@ class _GalleryPageState extends State<GalleryPage> {
         title: S.of(context).costume,
         child: faIcon(FontAwesomeIcons.tshirt),
         builder: (context, _) => CostumeListPage(),
-        isDetail: true,
+        isDetail: false,
       ),
       // GalleryItem.calculator: GalleryItem(
       //   name: GalleryItem.calculator,

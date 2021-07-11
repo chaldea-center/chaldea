@@ -87,7 +87,7 @@ class CmdCodeListPageState
   @override
   Widget gridItemBuilder(CommandCode code) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 3, horizontal: 3),
+      padding: EdgeInsets.all(3),
       child: GestureDetector(
         child: db.getIconImage(code.icon),
         onTap: () {

@@ -234,7 +234,7 @@ class CachedImage extends StatefulWidget {
           child: SizedBox(
             width: width,
             height: width,
-            child: CircularProgressIndicator(),
+            child: Center(child: CircularProgressIndicator()),
           ),
         );
       },

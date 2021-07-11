@@ -559,10 +559,7 @@ class __SkillResultLoaderState extends State<_SkillResultLoader> {
   Widget build(BuildContext context) {
     final file = _getFile();
     if (file == null) {
-      return AspectRatio(
-        aspectRatio: 1,
-        child: CircularProgressIndicator(),
-      );
+      return Center(child: CircularProgressIndicator());
     }
     if (!isJson) {
       return Image.file(file);

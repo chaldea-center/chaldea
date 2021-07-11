@@ -57,6 +57,14 @@ class _CvListPageState extends SearchableListState<String, CvListPage> {
   Map<String, String> searchMap = {};
 
   @override
+  Widget buildScrollable({bool useGrid = false}) {
+    if (shownList.isEmpty) {
+      return Center(child: CircularProgressIndicator());
+    }
+    return super.buildScrollable(useGrid: useGrid);
+  }
+
+  @override
   bool filter(String keyword, String cv) {
     __textFilter.parse(keyword);
     if (keyword.isNotEmpty && searchMap[cv] == null) {
@@ -174,6 +182,14 @@ class _IllustratorListPageState
           bottom: showSearchBar ? searchBar : null,
           actions: [searchIcon],
         ));
+  }
+
+  @override
+  Widget buildScrollable({bool useGrid = false}) {
+    if (shownList.isEmpty) {
+      return Center(child: CircularProgressIndicator());
+    }
+    return super.buildScrollable(useGrid: useGrid);
   }
 
   Query __textFilter = Query();
