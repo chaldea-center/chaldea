@@ -9,9 +9,7 @@ class ItemObtainEventPage extends StatefulWidget {
   final bool filtrateOutdated;
 
   const ItemObtainEventPage(
-      {Key? key,
-      required this.itemKey,
-      this.filtrateOutdated = true})
+      {Key? key, required this.itemKey, this.filtrateOutdated = true})
       : super(key: key);
 
   @override
@@ -54,27 +52,30 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
     );
   }
 
+  bool _hasItemIn(Map<String, dynamic> map) {
+    final v = map[widget.itemKey];
+    return v != null && v != 0;
+  }
+
   Widget get _limitEventAccordion {
     List<Widget> children = [];
-    final limitEvents = db.gameData.events.limitEvents.values.toList();
-    EventBase.sortEvents(limitEvents, reversed: true);
+    final limitEvents = db.gameData.events.limitEvents.values
+        .where((event) => _whetherToShow(
+            db.curUser.events.limitEventOf(event.indexKey).enable,
+            event.isOutdated()))
+        .toList();
+    EventBase.sortEvents(limitEvents, reversed: false);
+    int count = 0;
     limitEvents.forEach((event) {
       final plan = db.curUser.events.limitEventOf(event.indexKey);
       List<String> texts = [];
-      bool hasEventItems =
-          event.itemsWithRare(plan).containsKey(widget.itemKey);
-      bool hasLotteryItems = event.lottery.containsKey(widget.itemKey);
-      bool hasExtraItems = event.extra.containsKey(widget.itemKey);
-      // don't contain this item
-      if (!hasEventItems && !hasLotteryItems && !hasExtraItems) {
-        return;
-      }
-      if (!_whetherToShow(plan.enable, event.isOutdated())) {
-        return;
-      }
-      if (hasEventItems)
+      bool hasEventItems = _hasItemIn(event.itemsWithRare(plan));
+      bool hasLotteryItems = _hasItemIn(event.lottery);
+      bool hasExtraItems = event.extra[widget.itemKey] != null;
+      if (hasEventItems) {
         texts.add('${S.current.event_title}'
             ' ${event.itemsWithRare(plan)[widget.itemKey]}');
+      }
       if (hasLotteryItems) {
         String prefix = event.lotteryLimit > 0
             ? S.current.event_lottery_limited
@@ -87,6 +88,8 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
         texts.add('${S.current.event_item_extra}'
             ' ${plan.extra[widget.itemKey] ?? 0}');
       }
+      if (texts.isEmpty) return;
+      count += event.getItems(plan)[widget.itemKey] ?? 0;
       children.add(ListTile(
         title: AutoSizeText(event.localizedName,
             maxFontSize: 15,
@@ -108,6 +111,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
     });
     return _getAccordion(
       title: Text(S.of(context).limited_event),
+      trailing: Text(count.toString()),
       children: children,
       expanded: expandedList[0],
     );
@@ -116,8 +120,8 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
   Widget get _ticketAccordion {
     List<Widget> children = [];
     final exchangeTickets = db.gameData.events.exchangeTickets.values.toList();
-    // from new to old
-    exchangeTickets.sort((a, b) => b.curDate.compareTo(a.curDate));
+    exchangeTickets.sort((a, b) => a.curDate.compareTo(b.curDate));
+    int count = 0;
     exchangeTickets.forEach((ticket) {
       int itemIndex = ticket.items.indexOf(widget.itemKey);
       if (itemIndex < 0) {
@@ -132,19 +136,20 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
       }
 
       int itemNum = plan.elementAt(itemIndex);
+      count += itemNum;
       children.add(SimpleAccordion(
         expanded: false,
         headerBuilder: (context, _) => ListTile(
           title: Text(
-                '${S.current.exchange_ticket_short} ${ticket.dateToStr()}',
-                style: _textStyle(false, ticket.isOutdated()),
-              ),
-              subtitle: AutoSizeText(ticket.items.join('/'), maxLines: 1),
-              trailing: Text(
-                '$itemNum/${ticket.days}',
-                style: _textStyle(planned, ticket.isOutdated()),
-              ),
-            ),
+            '${S.current.exchange_ticket_short} ${ticket.dateToStr()}',
+            style: _textStyle(false, ticket.isOutdated()),
+          ),
+          subtitle: AutoSizeText(ticket.items.join('/'), maxLines: 1),
+          trailing: Text(
+            '$itemNum/${ticket.days}',
+            style: _textStyle(planned, ticket.isOutdated()),
+          ),
+        ),
         contentBuilder: (context) => ExchangeTicketTab(monthJp: ticket.monthJp),
         expandIconBuilder: (_, __) => Container(),
         disableAnimation: true,
@@ -152,6 +157,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
     });
     return _getAccordion(
       title: Text(S.of(context).exchange_ticket),
+      trailing: Text(count.toString()),
       children: children,
       expanded: expandedList[1],
     );
@@ -160,8 +166,8 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
   Widget get _mainRecordAccordion {
     List<Widget> children = [];
     final mainRecords = db.gameData.events.mainRecords.values.toList();
-    // new to old
-    EventBase.sortEvents(mainRecords, reversed: true);
+    EventBase.sortEvents(mainRecords, reversed: false);
+    int count = 0;
     mainRecords.forEach((record) {
       bool hasDrop = record.drops.containsKey(widget.itemKey);
       bool hasRewards = record.rewards.containsKey(widget.itemKey);
@@ -173,7 +179,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
       if (!_whetherToShow(planned, record.isOutdated())) {
         return;
       }
-
+      count += record.getItems(plan)[widget.itemKey] ?? 0;
       children.add(ListTile(
         title: AutoSizeText(
           record.localizedChapter,
@@ -214,20 +220,24 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
     });
     return _getAccordion(
       title: Text(S.of(context).main_record),
+      trailing: Text(count.toString()),
       children: children,
       expanded: expandedList[2],
     );
   }
 
-  Widget _getAccordion(
-      {required Widget title,
-      required List<Widget> children,
-      required bool expanded}) {
+  Widget _getAccordion({
+    required Widget title,
+    Widget? trailing,
+    required List<Widget> children,
+    required bool expanded,
+  }) {
     return SimpleAccordion(
       expanded: true,
       headerBuilder: (context, expanded) => ListTile(
         leading: Icon(Icons.event),
         title: title,
+        trailing: trailing,
         horizontalTitleGap: 0,
       ),
       contentBuilder: (context) => ListView.separated(
