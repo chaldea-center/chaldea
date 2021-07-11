@@ -5,28 +5,29 @@ import 'package:url_launcher/url_launcher.dart';
 
 class BugAnnouncePage extends StatelessWidget {
   final _BugDetail header = _BugDetail(
-    title: '本页罗列当前版本已发现的或可能出现的BUG',
-    content: '但无法短时间内解决或忘了，如有其他bug请反馈',
-    titleEn: 'Bugs in Current Version',
+    title: '本页罗列可能出现的BUG',
+    content: '部分可能短时间无法解决，如有其他bug请反馈',
+    titleEn: 'Potential Bugs',
     contentEn:
-        'Cannot be fixed immediately. If there is any other bug, please send feedback.',
+        'Some cannot be fixed immediately. If there is any other bug, please send feedback.',
   );
 
   final List<_BugDetail> bugs = [
     _BugDetail(
       title: '翻译错误/不全',
-      content: '欢迎纠错/提供翻译\n',
+      content: '欢迎纠错/提供翻译',
       titleEn: 'Translations',
-      contentEn: 'Any suggestion(mistake/missing/adding) is welcomed.\n',
+      contentEn: 'Any suggestion(mistake/missing/adding) is welcomed.',
     ),
     _BugDetail(
       title: '游戏文本/数据有误',
       content:
-          '请先在[Mooncell](https://fgo.wiki)上确认是否正确，若wiki上有误，请积极投入编辑大军。若wiki正确却APP内解析出错，请反馈。\n',
+          '请先在[Mooncell](https://fgo.wiki)及英文wiki[Fandom](https://fategrandorder.fandom.com/wiki/)上确认是否正确，'
+          '若wiki上有误，请积极投入编辑大军。若wiki正确但APP内解析出错，请反馈。',
       titleEn: 'Wrong text/data',
       contentEn:
           'If possible, please check the correctness on [Mooncell](https://fgo.wiki) and [Fandom](https://fategrandorder.fandom.com/wiki/)\n'
-          'If that\'s right, please send feedback to let me know.',
+          'If only wrong in app, please send feedback to let me know.',
     ),
     // _BugDetail(
     //     title: '输入框操作过快问题',
@@ -46,6 +47,14 @@ class BugAnnouncePage extends StatelessWidget {
         titleEn: 'Cannot drag scrollbar',
         contentEn:
             'Mostly on desktop when two or more scrollbars in one page(including sub-tabs). Please let me know to fix it.\n'),
+    _BugDetail(
+        title: '重复从者(2号机)',
+        content: '当存在2号机时，部分页面可能出错，请反馈。\n\n临时解决方案：删除2号机。',
+        titleEn: 'Duplicated servants',
+        contentEn:
+            'Some pages may went wrong because of duplicated servants.\n\n'
+            'Temp fix: remove duplicated servants.\n\n'
+            'Please send feedback to let me fix it.'),
   ];
 
   @override
