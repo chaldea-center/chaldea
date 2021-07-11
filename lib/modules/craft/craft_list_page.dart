@@ -16,7 +16,6 @@ class CraftListPage extends StatefulWidget {
 class CraftListPageState
     extends SearchableListState<CraftEssence, CraftListPage> {
   Query __textFilter = Query();
-  bool _showSearch = false;
 
   //temp, calculate once build() called.
   int __binAtkHpType = 0;
@@ -42,7 +41,7 @@ class CraftListPageState
         leading: MasterBackButton(),
         title: Text(S.current.craft_essence),
         titleSpacing: 0,
-        bottom: _showSearch ? searchBar : null,
+        bottom: showSearchBar ? searchBar : null,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.filter_alt),
@@ -53,16 +52,7 @@ class CraftListPageState
                   filterData: filterData, onChanged: onFilterChanged),
             ),
           ),
-          IconButton(
-            onPressed: () {
-              setState(() {
-                _showSearch = !_showSearch;
-                if (!_showSearch) searchEditingController.text = '';
-              });
-            },
-            icon: Icon(Icons.search),
-            tooltip: S.current.search,
-          ),
+          searchIcon,
         ],
       ),
     );
@@ -165,7 +155,7 @@ class CraftListPageState
         ce.skillMaxEn ?? '',
         ...ce.eventSkills,
       ];
-      searchMap[ce] = searchStrings.join('\t');
+      searchMap[ce] = searchStrings.toSet().join('\t');
     }
     if (keyword.isNotEmpty) {
       if (!__textFilter.match(searchMap[ce]!)) {

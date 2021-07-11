@@ -15,6 +15,8 @@ class CraftEssence {
   String icon;
   String illustration;
   List<String> illustrators;
+
+  /// TODO: make list
   String? illustratorsJp;
   String? illustratorsEn;
   int cost;

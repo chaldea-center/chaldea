@@ -2,6 +2,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/cmd_code/cmd_code_detail_page.dart';
 import 'package:chaldea/modules/craft/craft_detail_page.dart';
 import 'package:chaldea/modules/servant/servant_detail_page.dart';
+import 'package:chaldea/widgets/searchable_list_state.dart';
 
 const String _unknownCreator = '---';
 
@@ -10,14 +11,13 @@ class CvListPage extends StatefulWidget {
   _CvListPageState createState() => _CvListPageState();
 }
 
-class _CvListPageState extends State<CvListPage> {
-  late ScrollController _scrollController;
+class _CvListPageState extends SearchableListState<String, CvListPage> {
   Map<String, List<Servant>> cvMap = {};
+  List<String> cvs = [];
 
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController();
     for (var svt in db.gameData.servants.values) {
       List<String> cvs = svt.info.lCV;
       if (cvs.isEmpty) cvs = svt.info.cv;
@@ -28,36 +28,59 @@ class _CvListPageState extends State<CvListPage> {
         cvMap.putIfAbsent(cv, () => []).add(svt);
       }
     }
-    cvMap = sortDict<String, List<Servant>>(
-      cvMap,
-      compare: (a, b) =>
-          Utils.toAlphabet(a.key).compareTo(Utils.toAlphabet(b.key)),
-    );
+    cvs = cvMap.keys.toList();
+    cvs.sort((a, b) => Utils.toAlphabet(a).compareTo(Utils.toAlphabet(b)));
   }
 
   @override
   Widget build(BuildContext context) {
-    List<String> names = cvMap.keys.toList();
-    return Scaffold(
+    filterShownList(data: cvs, compare: null);
+    return scrollListener(
+      useGrid: false,
       appBar: AppBar(
         leading: BackButton(),
         title: Text(S.current.info_cv),
-      ),
-      body: Scrollbar(
-        controller: _scrollController,
-        child: ListView.separated(
-          controller: _scrollController,
-          padding: EdgeInsets.only(bottom: 16),
-          itemBuilder: (context, index) => cvDetail(names[index]),
-          separatorBuilder: (context, _) => kDefaultDivider,
-          itemCount: names.length,
-        ),
+        bottom: showSearchBar ? searchBar : null,
+        actions: [searchIcon],
       ),
     );
   }
 
-  Widget cvDetail(String cv) {
+  Query __textFilter = Query();
+  Map<String, String> searchMap = {};
+
+  @override
+  bool filter(String keyword, String cv) {
+    __textFilter.parse(keyword);
+    if (keyword.isNotEmpty && searchMap[cv] == null) {
+      List<Servant> cards = cvMap[cv]!;
+      if (cards.isEmpty) return false;
+      List<String> searchStrings = Utils.getSearchAlphabetsForList(
+          cards.first.info.cv, cards.first.info.cvJp, cards.first.info.cvEn);
+      for (final svt in cards) {
+        searchStrings.addAll([
+          ...Utils.getSearchAlphabets(
+              svt.info.name, svt.info.nameJp, svt.info.nameEn),
+          ...Utils.getSearchAlphabetsForList(svt.info.namesOther,
+              svt.info.namesJpOther, svt.info.namesEnOther),
+          ...Utils.getSearchAlphabetsForList(svt.info.nicknames),
+        ]);
+      }
+      searchMap[cv] = searchStrings.toSet().join('\t');
+    }
+
+    if (keyword.isNotEmpty) {
+      if (!__textFilter.match(searchMap[cv]!)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  @override
+  Widget listItemBuilder(String cv) {
     final svts = cvMap[cv]!;
+    // // add card icon at trailing
     // if (svts.length == 1) {
     //   return ListTile(
     //     title: Text(cv),
@@ -80,10 +103,8 @@ class _CvListPageState extends State<CvListPage> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    _scrollController.dispose();
-  }
+  Widget gridItemBuilder(String cv) =>
+      throw UnimplementedError('GridView not allowed');
 }
 
 class IllustratorListPage extends StatefulWidget {
@@ -91,8 +112,8 @@ class IllustratorListPage extends StatefulWidget {
   _IllustratorListPageState createState() => _IllustratorListPageState();
 }
 
-class _IllustratorListPageState extends State<IllustratorListPage> {
-  late ScrollController _scrollController;
+class _IllustratorListPageState
+    extends SearchableListState<String, IllustratorListPage> {
   Map<String, List<Servant>> svtMap = {};
   Map<String, List<CraftEssence>> craftMap = {};
   Map<String, List<CommandCode>> codeMap = {};
@@ -101,7 +122,6 @@ class _IllustratorListPageState extends State<IllustratorListPage> {
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController();
     db.gameData.servants.values.forEach((svt) {
       svtMap.putIfAbsent(svt.info.lIllustrator, () => []).add(svt);
     });
@@ -118,10 +138,8 @@ class _IllustratorListPageState extends State<IllustratorListPage> {
       codeMap.putIfAbsent(illus, () => []).add(code);
     });
 
-    illustrators
-      ..addAll(svtMap.keys)
-      ..addAll(craftMap.keys)
-      ..addAll(codeMap.keys);
+    illustrators..addAll(svtMap.keys)..addAll(craftMap.keys)..addAll(
+        codeMap.keys);
     illustrators = illustrators.toSet().toList();
     illustrators
         .sort((a, b) => Utils.toAlphabet(a).compareTo(Utils.toAlphabet(b)));
@@ -129,43 +147,86 @@ class _IllustratorListPageState extends State<IllustratorListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: BackButton(),
-        title: Text(S.current.illustrator),
-      ),
-      body: Scrollbar(
-        controller: _scrollController,
-        child: ListView.separated(
-          controller: _scrollController,
-          padding: EdgeInsets.only(bottom: 16),
-          itemBuilder: (context, index) {
-            return _detail(illustrators[index]);
-          },
-          separatorBuilder: (context, _) => kDefaultDivider,
-          itemCount: illustrators.length,
-        ),
-      ),
-    );
+    filterShownList(data: illustrators, compare: null);
+    return scrollListener(
+        useGrid: false,
+        appBar: AppBar(
+          leading: BackButton(),
+          title: Text(S.current.illustrator),
+          bottom: showSearchBar ? searchBar : null,
+          actions: [searchIcon],
+        ));
   }
 
-  Widget _detail(String name) {
-    int count = (svtMap[name]?.length ?? 0) +
-        (craftMap[name]?.length ?? 0) +
-        (codeMap[name]?.length ?? 0);
+  Query __textFilter = Query();
+  Map<String, String> searchMap = {};
+
+  @override
+  bool filter(String keyword, String creator) {
+    __textFilter.parse(keyword);
+    if (keyword.isNotEmpty && searchMap[creator] == null) {
+      List<String> searchStrings = [];
+      for (final svt in svtMap[creator] ?? <Servant>[]) {
+        searchStrings.addAll([
+          ...Utils.getSearchAlphabets(svt.info.illustrator,
+              svt.info.illustratorJp, svt.info.illustratorEn),
+        ]);
+        searchStrings.addAll([
+          ...Utils.getSearchAlphabets(
+              svt.info.name, svt.info.nameJp, svt.info.nameEn),
+          ...Utils.getSearchAlphabetsForList(svt.info.namesOther,
+              svt.info.namesJpOther, svt.info.namesEnOther),
+          ...Utils.getSearchAlphabetsForList(svt.info.nicknames),
+        ]);
+      }
+      for (final craft in craftMap[creator] ?? <CraftEssence>[]) {
+        searchStrings.addAll([
+          ...Utils.getSearchAlphabets(craft.illustrators.join('\t'),
+              craft.illustratorsJp, craft.illustratorsEn),
+          ...Utils.getSearchAlphabets(craft.name, craft.nameJp, craft.nameEn),
+          ...Utils.getSearchAlphabetsForList(craft.nameOther),
+        ]);
+      }
+      for (final code in codeMap[creator] ?? <CommandCode>[]) {
+        searchStrings.addAll([
+          ...Utils.getSearchAlphabets(code.illustrators.join('\t'),
+              code.illustratorsJp, code.illustratorsEn),
+          ...Utils.getSearchAlphabets(code.name, code.nameJp, code.nameEn),
+          ...Utils.getSearchAlphabetsForList(code.nameOther),
+        ]);
+      }
+      searchMap[creator] = searchStrings.toSet().join('\t');
+    }
+
+    if (keyword.isNotEmpty) {
+      if (!__textFilter.match(searchMap[creator]!)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  @override
+  Widget listItemBuilder(String creator) {
+    int count = (svtMap[creator]?.length ?? 0) +
+        (craftMap[creator]?.length ?? 0) +
+        (codeMap[creator]?.length ?? 0);
     return SimpleAccordion(
       disableAnimation: true,
-      headerBuilder: (context, _) => ListTile(
-        title: Text(name),
-        trailing: Text(count.toString()),
-      ),
+      headerBuilder: (context, _) =>
+          ListTile(
+            title: Text(creator),
+            trailing: Text(count.toString()),
+          ),
       contentBuilder: (context) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (svtMap.containsKey(name)) _gridView(context, svtMap[name]!),
-            if (craftMap.containsKey(name)) _gridView(context, craftMap[name]!),
-            if (codeMap.containsKey(name)) _gridView(context, codeMap[name]!),
+            if (svtMap[creator] != null) _gridView(context, svtMap[creator]!),
+            if (craftMap[creator] != null)
+              _gridView(context, craftMap[creator]!),
+            if (codeMap[creator] != null) _gridView(context, codeMap[creator]!),
           ],
         );
       },
@@ -173,10 +234,8 @@ class _IllustratorListPageState extends State<IllustratorListPage> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    _scrollController.dispose();
-  }
+  Widget gridItemBuilder(String creator) =>
+      throw UnimplementedError('GridView not allowed');
 }
 
 Widget _cardIcon<T>(BuildContext context, T card) {

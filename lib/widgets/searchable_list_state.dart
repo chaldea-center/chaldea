@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chaldea/components/animation/animate_on_scroll.dart';
 import 'package:chaldea/components/utils.dart' show DelayedTimer, Utils;
 import 'package:chaldea/generated/l10n.dart';
@@ -11,6 +13,7 @@ abstract class SearchableListState<T, St extends StatefulWidget>
   final List<T> shownList = [];
 
   T? selected;
+  bool showSearchBar = false;
 
   late ScrollController scrollController;
   late TextEditingController searchEditingController;
@@ -29,7 +32,18 @@ abstract class SearchableListState<T, St extends StatefulWidget>
     searchEditingController.dispose();
   }
 
-  PreferredSizeWidget? buttonBar;
+  Widget get searchIcon {
+    return IconButton(
+      onPressed: () {
+        setState(() {
+          showSearchBar = !showSearchBar;
+          if (!showSearchBar) searchEditingController.text = '';
+        });
+      },
+      icon: Icon(Icons.search),
+      tooltip: S.current.search,
+    );
+  }
 
   PreferredSizeWidget get searchBar {
     return SearchBar(
@@ -48,6 +62,8 @@ abstract class SearchableListState<T, St extends StatefulWidget>
     );
   }
 
+  PreferredSizeWidget? buttonBar;
+
   final _onSearchTimer = DelayedTimer(Duration(milliseconds: 250));
 
   Widget scrollListener({
@@ -58,19 +74,19 @@ abstract class SearchableListState<T, St extends StatefulWidget>
       builder: (context, animationController) => Scaffold(
         appBar: appBar,
         floatingActionButton: ScaleTransition(
-          scale: animationController,
-          child: Padding(
-            padding:
+              scale: animationController,
+              child: Padding(
+                padding:
                 EdgeInsets.only(bottom: buttonBar?.preferredSize.height ?? 0),
-            child: FloatingActionButton(
-              child: Icon(Icons.arrow_upward),
-              onPressed: () => scrollController.animateTo(0,
-                  duration: Duration(milliseconds: 600), curve: Curves.easeOut),
+                child: FloatingActionButton(
+                  child: Icon(Icons.arrow_upward),
+                  onPressed: () => scrollController.animateTo(0,
+                      duration: Duration(milliseconds: 600), curve: Curves.easeOut),
+                ),
+              ),
             ),
+            body: buildScrollable(useGrid: useGrid),
           ),
-        ),
-        body: buildScrollable(useGrid: useGrid),
-      ),
     );
   }
 
@@ -79,6 +95,7 @@ abstract class SearchableListState<T, St extends StatefulWidget>
         context, S.current.search_result_count(shownList.length));
     return Scrollbar(
       controller: scrollController,
+      showTrackOnHover: Platform.isWindows || Platform.isMacOS,
       child: useGrid
           ? buildGridView()
           : buildListView(topHint: hintText, bottomHint: hintText),
@@ -163,8 +180,7 @@ abstract class SearchableListState<T, St extends StatefulWidget>
 
   Widget gridItemBuilder(T datum);
 
-  void filterShownList(
-      {required Iterable<T> data, required Comparator<T>? compare}) {
+  void filterShownList({required Iterable<T> data, required Comparator<T>? compare}) {
     shownList.clear();
     for (final T datum in data) {
       if (filter(searchEditingController.text.trim(), datum)) {

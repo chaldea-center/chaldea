@@ -16,7 +16,6 @@ class CmdCodeListPage extends StatefulWidget {
 class CmdCodeListPageState
     extends SearchableListState<CommandCode, CmdCodeListPage> {
   Query __textFilter = Query();
-  bool _showSearch = false;
 
   CmdCodeFilterData get filterData => db.userData.cmdCodeFilter;
 
@@ -39,7 +38,7 @@ class CmdCodeListPageState
         leading: MasterBackButton(),
         title: Text(S.current.command_code),
         titleSpacing: 0,
-        bottom: _showSearch ? searchBar : null,
+        bottom: showSearchBar ? searchBar : null,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.filter_alt),
@@ -50,16 +49,7 @@ class CmdCodeListPageState
                   filterData: filterData, onChanged: onFilterChanged),
             ),
           ),
-          IconButton(
-            onPressed: () {
-              setState(() {
-                _showSearch = !_showSearch;
-                if (!_showSearch) searchEditingController.text = '';
-              });
-            },
-            icon: Icon(Icons.search),
-            tooltip: S.current.search,
-          ),
+          searchIcon,
         ],
       ),
     );
@@ -136,7 +126,7 @@ class CmdCodeListPageState
         code.skillEn ?? '',
         code.obtain,
       ];
-      searchMap[code] = searchStrings.join('\t');
+      searchMap[code] = searchStrings.toSet().join('\t');
     }
     if (keyword.isNotEmpty) {
       if (!__textFilter.match(searchMap[code]!)) {

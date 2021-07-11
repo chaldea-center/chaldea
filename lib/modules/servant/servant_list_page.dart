@@ -24,7 +24,6 @@ class ServantListPage extends StatefulWidget {
 class ServantListPageState
     extends SearchableListState<Servant, ServantListPage> {
   Query __textFilter = Query();
-  bool _showSearch = false;
 
   Set<Servant> hiddenPlanServants = {};
 
@@ -63,7 +62,7 @@ class ServantListPageState
       ),
       leading: MasterBackButton(),
       titleSpacing: 0,
-      bottom: _showSearch ? searchBar : null,
+      bottom: showSearchBar ? searchBar : null,
       actions: <Widget>[
         IconButton(
             icon: Icon([
@@ -85,16 +84,7 @@ class ServantListPageState
               builder: (context) => ServantFilterPage(
                   filterData: filterData, onChanged: onFilterChanged)),
         ),
-        IconButton(
-          onPressed: () {
-            setState(() {
-              _showSearch = !_showSearch;
-              if (!_showSearch) searchEditingController.text = '';
-            });
-          },
-          icon: Icon(Icons.search),
-          tooltip: S.current.search,
-        ),
+        searchIcon,
         PopupMenuButton(
           itemBuilder: (context) {
             return [
@@ -285,7 +275,7 @@ class ServantListPageState
           for (var e in skill.effects) e.description
         ]);
       });
-      searchMap[svt] = searchStrings.join('\t');
+      searchMap[svt] = searchStrings.toSet().join('\t');
     }
     if (keyword.isNotEmpty) {
       if (!__textFilter.match(searchMap[svt]!)) {
