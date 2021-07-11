@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:chaldea/components/analytics.dart';
 import 'package:chaldea/components/catcher_util/catcher_config.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/git_tool.dart';
 import 'package:chaldea/components/method_channel_chaldea.dart';
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:chaldea/modules/home/home_page.dart';

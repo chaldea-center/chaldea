@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:chaldea/components/device_app_info.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'device_app_info.dart';
 import 'extensions.dart';
 
 const bool kDebugMode_ = kDebugMode && true;

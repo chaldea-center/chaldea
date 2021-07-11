@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/git_tool.dart';
 import 'package:chaldea/modules/extras/updates.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';

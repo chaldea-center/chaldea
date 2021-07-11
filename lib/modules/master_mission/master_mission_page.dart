@@ -64,9 +64,11 @@ class _MasterMissionPageState extends State<MasterMissionPage>
         centerTitle: true,
         actions: [
           IconButton(
-              onPressed: showHelp,
-              tooltip: S.current.help,
-              icon: Icon(Icons.help_outline)),
+            onPressed: () => SplitRoute.push2(context,
+                MyMarkdownPage.fromHelpAsset(filename: 'master_mission.md')),
+            tooltip: S.current.help,
+            icon: Icon(Icons.help_outline),
+          ),
           popupMenu,
         ],
         bottom: TabBar(
@@ -524,16 +526,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
 例：关卡X共有2个属性A，4个属性B，9个属性C
 “或”：2+4+9=15, 几乎都有关卡可以满足
 “且”：min(2,4,9)=2, 此时极大可能将没有关卡可以满足条件而忽略，相应任务会变灰
-""",
-          jpn: """注：クエストに属性Aと属性Bの両方を持つ敵の数を知る方法はありません。 
-「OR」/「AND」の違い：たとえば、クエストには2つの属性A、4つの属性B、および9つの属性Cがあります。
-「OR」：2+4+9=15、コモンモード
-「AND」：min(2,4,9)=2、条件を満たして無視できたクエストがない可能性が非常に高く、対応するミッションはグレー表示されます """,
-          eng:
-              """One quest has "x" enemies with Attribute A and "y" enemies with Attribute B, but we cannot know the count of enemies who has both attributes. 
-"Or"/"And" mode: e.g. 2 Attribute A, 4 Attribute B, and 9 Attribute C in one quest
-"Or": 2+4+9=15, mostly used
-"And": min(2,4,9)=2, most quests may not meet the requirements and will be ignored, the corresponding mission with no related quest will be gray.""")),
+""", jpn: """ """, eng: """""")),
     ).showDialog(context);
   }
 }

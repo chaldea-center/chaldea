@@ -55,12 +55,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m14(total, hidden) => "Total ${total} results (${hidden} hidden)";
 
-  static m15(tempDir, externalBackupDir) =>
-      "Not applicable for Google Play user, may be removed in future.\nUser data backup is stored in a temporary directory(${tempDir})\nDelete the app/install other architecture installer (e.g. from arm64-v8a to armeabi-v7a)/changes to the build number in future will result in deletion of user data and temporary backups. It is highly recommended to enable storage permissions to back up to (${externalBackupDir})";
+  static m15(server) => "Sync with ${server}";
 
-  static m16(server) => "Sync with ${server}";
-
-  static m17(a, b) => "${a} ${b}";
+  static m16(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
 
@@ -181,8 +178,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "downloading": MessageLookupByLibrary.simpleMessage("Downloading"),
         "drop_calc_empty_hint":
             MessageLookupByLibrary.simpleMessage("Click + to add items"),
-        "drop_calc_help_text": MessageLookupByLibrary.simpleMessage(
-            "The result is for reference only\n- Planning/efficiency:\n   - Planning: Set the count of items for planning\n   - Efficiency: Set the weight of each item\n- Min AP: Filter quests with lower AP, but ensure that at least one quest for each item\n- Quest Limit: items that have not been installed in this progress will be removed from the plan\n- Planning goals (planning only): minimum AP, minimum count of battles\n- Efficiency type (efficiency only): per 20AP drop rate or per quest drop rate\n- Blacklist (planning page only): quest blacklist\n- Click the item name to switch the item, click icon to view details"),
         "drop_calc_min_ap": MessageLookupByLibrary.simpleMessage("Min AP"),
         "drop_calc_optimize": MessageLookupByLibrary.simpleMessage("Optimize"),
         "drop_calc_solve": MessageLookupByLibrary.simpleMessage("Solve"),
@@ -566,7 +561,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "statistics_include_checkbox":
             MessageLookupByLibrary.simpleMessage("Including owned items"),
         "statistics_title": MessageLookupByLibrary.simpleMessage("Statistics"),
-        "storage_permission_content": m15,
         "storage_permission_title":
             MessageLookupByLibrary.simpleMessage("Storage Permission"),
         "success": MessageLookupByLibrary.simpleMessage("Success"),
@@ -594,7 +588,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("Reset Plan"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Switch Slider/Dropdown"),
-        "sync_server": m16,
+        "sync_server": m15,
         "tooltip_refresh_sliders":
             MessageLookupByLibrary.simpleMessage("Refresh slides"),
         "total_ap": MessageLookupByLibrary.simpleMessage("Total AP"),
@@ -622,7 +616,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "view_illustration":
             MessageLookupByLibrary.simpleMessage("View Illustration"),
         "voice": MessageLookupByLibrary.simpleMessage("Voice"),
-        "words_separate": m17,
+        "words_separate": m16,
         "yes": MessageLookupByLibrary.simpleMessage("Yes")
       };
 }

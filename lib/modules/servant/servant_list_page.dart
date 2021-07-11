@@ -5,7 +5,6 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
 import 'package:chaldea/modules/shared/list_page_share.dart';
-import 'package:chaldea/widgets/searchable_list_state.dart';
 
 import 'servant_detail_page.dart';
 import 'servant_filter_page.dart';

@@ -14,6 +14,7 @@ export 'constants.dart';
 export 'datatypes/datatypes.dart';
 export 'device_app_info.dart';
 export 'extensions.dart';
+export 'git_tool.dart';
 export 'glpk_solver.dart';
 export 'localized/localized.dart';
 export 'localized/localized_base.dart';

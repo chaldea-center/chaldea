@@ -1426,16 +1426,6 @@ class S {
     );
   }
 
-  /// `计算结果仅供参考\n- 规划/效率：\n  - 规划：设定规划的素材数量\n  - 效率：设定各素材的权重\n- 最低AP：过滤AP较低的free, 但保证每个素材至少有一个关卡\n- Free进度：该进度未实装的素材将被移出规划\n- 规划目标(仅规划页)：最低AP、最低打本次数\n- 效率类型(仅效率页)：按每20AP掉率或每场掉率\n- 黑名单(仅规划页)：关卡黑名单\n- 点击素材名字切换素材，点击素材图标查看素材详情`
-  String get drop_calc_help_text {
-    return Intl.message(
-      '计算结果仅供参考\n- 规划/效率：\n  - 规划：设定规划的素材数量\n  - 效率：设定各素材的权重\n- 最低AP：过滤AP较低的free, 但保证每个素材至少有一个关卡\n- Free进度：该进度未实装的素材将被移出规划\n- 规划目标(仅规划页)：最低AP、最低打本次数\n- 效率类型(仅效率页)：按每20AP掉率或每场掉率\n- 黑名单(仅规划页)：关卡黑名单\n- 点击素材名字切换素材，点击素材图标查看素材详情',
-      name: 'drop_calc_help_text',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `输入无效`
   String get input_invalid_hint {
     return Intl.message(
@@ -3583,16 +3573,6 @@ class S {
       name: 'storage_permission_title',
       desc: '',
       args: [],
-    );
-  }
-
-  /// `不适用从Google Play下载的版本，将来可能移除该功能\n用户数据备份储存于临时目录({tempDir})\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至({externalBackupDir})`
-  String storage_permission_content(Object tempDir, Object externalBackupDir) {
-    return Intl.message(
-      '不适用从Google Play下载的版本，将来可能移除该功能\n用户数据备份储存于临时目录($tempDir)\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至($externalBackupDir)',
-      name: 'storage_permission_content',
-      desc: '',
-      args: [tempDir, externalBackupDir],
     );
   }
 

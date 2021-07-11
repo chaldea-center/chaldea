@@ -4,9 +4,9 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
-import 'package:chaldea/components/components.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/widgets/icon_clipper.dart';
-import 'package:chaldea/components/method_channel_chaldea.dart';
+import 'package:chaldea/widgets/image_viewer.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -24,7 +24,9 @@ import 'datatypes/datatypes.dart';
 import 'device_app_info.dart';
 import 'git_tool.dart';
 import 'logger.dart';
+import 'method_channel_chaldea.dart';
 import 'shared_prefs.dart';
+import 'wiki_util.dart';
 
 /// app config:
 ///  - app database
@@ -209,7 +211,7 @@ class Database {
       String filenameWithPrefix = (obj is File ? 'd' : 'm') + filename;
       _saveJsonToFile(
         obj,
-        join(paths.userDataBackupDir, filenameWithPrefix),
+        pathlib.join(paths.userDataBackupDir, filenameWithPrefix),
         onError: (e, s) {
           logger.e('error save backup to ${paths.userDataBackupDir}', e, s);
           EasyLoading.showError(

@@ -2,7 +2,6 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/cmd_code/cmd_code_detail_page.dart';
 import 'package:chaldea/modules/craft/craft_detail_page.dart';
 import 'package:chaldea/modules/servant/servant_detail_page.dart';
-import 'package:chaldea/widgets/searchable_list_state.dart';
 
 const String _unknownCreator = '---';
 

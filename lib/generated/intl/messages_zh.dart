@@ -55,12 +55,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m14(total, hidden) => "总计: ${total} (隐藏: ${hidden})";
 
-  static m15(tempDir, externalBackupDir) =>
-      "不适用从Google Play下载的版本，将来可能移除该功能\n用户数据备份储存于临时目录(${tempDir})\n删除应用/安装其他架构安装包(如已装arm64-v8a再装armeabi-v7a)/后续可能构建号变更，将导致用户数据和临时备份删除，建议开启储存访问权限以备份至(${externalBackupDir})";
+  static m15(server) => "同步${server}";
 
-  static m16(server) => "同步${server}";
-
-  static m17(a, b) => "${a}${b}";
+  static m16(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
 
@@ -162,8 +159,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "downloading": MessageLookupByLibrary.simpleMessage("下载中"),
         "drop_calc_empty_hint":
             MessageLookupByLibrary.simpleMessage("点击 + 添加素材"),
-        "drop_calc_help_text": MessageLookupByLibrary.simpleMessage(
-            "计算结果仅供参考\n- 规划/效率：\n  - 规划：设定规划的素材数量\n  - 效率：设定各素材的权重\n- 最低AP：过滤AP较低的free, 但保证每个素材至少有一个关卡\n- Free进度：该进度未实装的素材将被移出规划\n- 规划目标(仅规划页)：最低AP、最低打本次数\n- 效率类型(仅效率页)：按每20AP掉率或每场掉率\n- 黑名单(仅规划页)：关卡黑名单\n- 点击素材名字切换素材，点击素材图标查看素材详情"),
         "drop_calc_min_ap": MessageLookupByLibrary.simpleMessage("最低AP"),
         "drop_calc_optimize": MessageLookupByLibrary.simpleMessage("优化"),
         "drop_calc_solve": MessageLookupByLibrary.simpleMessage("求解"),
@@ -475,7 +470,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "statistics_include_checkbox":
             MessageLookupByLibrary.simpleMessage("包含现有素材"),
         "statistics_title": MessageLookupByLibrary.simpleMessage("统计"),
-        "storage_permission_content": m15,
         "storage_permission_title":
             MessageLookupByLibrary.simpleMessage("储存权限"),
         "success": MessageLookupByLibrary.simpleMessage("成功"),
@@ -499,7 +493,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("重置规划"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("切换滑动条/下拉框"),
-        "sync_server": m16,
+        "sync_server": m15,
         "tooltip_refresh_sliders":
             MessageLookupByLibrary.simpleMessage("刷新轮播图"),
         "total_ap": MessageLookupByLibrary.simpleMessage("总AP"),
@@ -521,7 +515,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "version": MessageLookupByLibrary.simpleMessage("版本"),
         "view_illustration": MessageLookupByLibrary.simpleMessage("查看卡面"),
         "voice": MessageLookupByLibrary.simpleMessage("语音"),
-        "words_separate": m17,
+        "words_separate": m16,
         "yes": MessageLookupByLibrary.simpleMessage("是")
       };
 }

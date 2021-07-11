@@ -1,5 +1,4 @@
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/widgets/markdown/markdown_page.dart';
 import 'package:chaldea/modules/home/subpage/feedback_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -76,7 +75,7 @@ class BugAnnouncePage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              MyMarkdownPage(
+              MyMarkdownWidget(
                 data: bug.getContent(),
                 scrollable: false,
               ),

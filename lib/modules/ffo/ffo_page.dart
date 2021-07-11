@@ -7,7 +7,6 @@ import 'dart:ui' as ui;
 
 import 'package:catcher/core/catcher.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/git_tool.dart';
 import 'package:csv/csv.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flutter/foundation.dart';

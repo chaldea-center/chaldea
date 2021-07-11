@@ -55,12 +55,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m14(total, hidden) => "合計：${total} (非表示: ${hidden})";
 
-  static m15(tempDir, externalBackupDir) =>
-      "Google Playからのバージョンには適用されません。この機能は、将来削除される可能性があります。\nユーザーデータのバックアップは一時(${tempDir})に保存されます\nアプリの削除/他のアーキテクチャのインストール（例えば、arm64-v8aからarmeabi-v7aへ ）/将来のビルド番号の変更、ユーザーデータと一時バックアップが削除されます。外部ストレージ(${externalBackupDir})にバックアップするためのストレージ権限を有効にすることを強くお勧めします ";
+  static m15(server) => "同步${server}";
 
-  static m16(server) => "同步${server}";
-
-  static m17(a, b) => "${a}${b}";
+  static m16(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
 
@@ -166,8 +163,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "downloading": MessageLookupByLibrary.simpleMessage("ダウンロード"),
         "drop_calc_empty_hint":
             MessageLookupByLibrary.simpleMessage("＋をクリックしてアイテムを追加"),
-        "drop_calc_help_text": MessageLookupByLibrary.simpleMessage(
-            "計算結果は参考用です\n- プラン/効率：\n   -プラン：計画する材料の数を設定\n   -効率：各材料の重みを設定\n- 最低AP：低いAPでスキップしますが、各アイテムに少なくとも1つのクエストがあることを確認します\n- クエストプログレス：このプログレスでインストールされていないアイテムはプランから削除されます\n- プラン目標（プランページのみ）：最小AP、最小回数\n- 効率タイプ（効率ページのみ）：20APドロップ率ごとまたはゲームドロップ率ごと\n- ブラックリスト（プランページのみ）：クエストブラックリスト\n- 材料名をクリックして材料を切り替え、アイコンをクリックして材料の詳細を表示します "),
         "drop_calc_min_ap": MessageLookupByLibrary.simpleMessage("最低AP"),
         "drop_calc_optimize": MessageLookupByLibrary.simpleMessage("最適化"),
         "drop_calc_solve": MessageLookupByLibrary.simpleMessage("解決する"),
@@ -507,7 +502,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "statistics_include_checkbox":
             MessageLookupByLibrary.simpleMessage("既存のアイテムを含める"),
         "statistics_title": MessageLookupByLibrary.simpleMessage("統計"),
-        "storage_permission_content": m15,
         "storage_permission_title":
             MessageLookupByLibrary.simpleMessage("ストレージ権限"),
         "success": MessageLookupByLibrary.simpleMessage("成功"),
@@ -531,7 +525,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("プランをリセット"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Slider/Dropdownを切り替え"),
-        "sync_server": m16,
+        "sync_server": m15,
         "tooltip_refresh_sliders":
             MessageLookupByLibrary.simpleMessage("スライドを更新"),
         "total_ap": MessageLookupByLibrary.simpleMessage("合計AP"),
@@ -555,7 +549,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "version": MessageLookupByLibrary.simpleMessage("バージョン"),
         "view_illustration": MessageLookupByLibrary.simpleMessage("カードの画像を表示"),
         "voice": MessageLookupByLibrary.simpleMessage("ボイス"),
-        "words_separate": m17,
+        "words_separate": m16,
         "yes": MessageLookupByLibrary.simpleMessage("はい")
       };
 }

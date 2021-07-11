@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
+import 'package:chaldea/widgets/markdown_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -49,12 +50,8 @@ class _FreeQuestCalculatorPageState extends State<FreeQuestCalculatorPage>
             icon: Icon(Icons.help_outline),
             tooltip: S.of(context).help,
             onPressed: () {
-              SimpleCancelOkDialog(
-                scrollable: true,
-                hideCancel: true,
-                title: Text(S.of(context).help),
-                content: Text(S.of(context).drop_calc_help_text),
-              ).showDialog(context);
+              SplitRoute.push2(context,
+                  MyMarkdownPage.fromHelpAsset(filename: 'free_calculator.md'));
             },
           )
         ],

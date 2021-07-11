@@ -239,6 +239,21 @@ class SplitRoute<T> extends __PageRoute<T>
       title: title,
     ));
   }
+
+  /// A simple form of [push]
+  static Future<T?> push2<T extends Object?>(
+    BuildContext context,
+    Widget page, {
+    bool detail = true,
+    bool popDetail = false,
+  }) {
+    return push(
+      context: context,
+      builder: (context, _) => page,
+      detail: detail,
+      popDetail: popDetail,
+    );
+  }
 }
 
 /// BackButton used on master page which will pop all top detail routes
