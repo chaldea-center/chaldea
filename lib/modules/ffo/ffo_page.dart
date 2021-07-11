@@ -54,7 +54,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
         title: Text('Freedom Order'),
         centerTitle: true,
         actions: [
-          helpButton,
+          MarkdownHelpPage.buildHelpBtn(context, 'freedom_order.md'),
           importButton,
         ],
       ),
@@ -137,50 +137,6 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget get helpButton {
-    return IconButton(
-      onPressed: () {
-        SimpleCancelOkDialog(
-          scrollable: true,
-          title: Text(S.current.help),
-          content: Text(LocalizedText.of(
-            chs: """1.初次使用请点击右上角导入按钮，从gitee/github releases下载ffo-data资源包并导入
-2.可自定义任意头部、身体、背景，注意部分从者可能没有某些部件，如boss龙娘、Beast
-3.功能说明
-  - 裁剪：不显示超出背景框的部分
-  - 同一从者：头部/身体/背景使用同一从者资源
-  - 保存：保存PNG图片，移动端可选择是否导入到相册
-  - 也可以点击图片进入全屏查看，长按图片可保存(包括抽卡页面)
-4.解包数据来源于icyalala@NGA，稍作修正，从者编号可能与其他来源有所不同（主要是乌冬从者）
-5.使用Gitee下载源时两个压缩包均需下载导入""",
-            jpn:
-                """1.初めて使用する場合は、右上隅にあるインポートボタンをクリックし、github/giteeリリースからffo-dataをダウンロードしてインポートしてください。
-2.頭、体、背景は自由にカスタマイズできます。ボスエリちゃんとビーストなど、一部のサーヴァントにはパーツがない場合がありますのでご注意ください。
-3.機能の説明
-   -切り抜き：背景を超える部分を表示しません
-   -同じサーヴァント：頭/体/背景は同じサーヴァントを使用します
-   -保存：PNG画像を保存します。モバイル端末はそれをアルバムにインポートするかどうかを選択できます
-   -画像をクリックして全画面表示にし、画像を長押しして保存することもできます（ガチャページも含む）
-4.データはicyalala@NGAからですが、一部の修正により、他のソースと異なる場合があります（主にうどんサーヴァント）。
-5.Giteeを使用してソースをダウンロードする場合は、二つのzip圧縮パッケージをダウンロードしてインポートする必要があります。""",
-            eng:
-                """1. For the first use, you need to download the ffo-data resource from github/gitee releases then import it
-2. Any HEAD, BODY, and BACKGROUND can be customized. Note that some servants may not have some parts, such as the boss Eli-chan and Beast
-3. Function description
-   - Crop: Do not display the part that exceeds the background frame
-   - Same servant: head/body/background use the same servant parts
-   - Save: Save the PNG image, the mobile platforms can choose whether to export it to the album,
-   - You can also tap the card to view in full screen and long press to save(the same for summon page)
-4. The decrypted data comes from icyalala@NGA, with a slight modification, the servant number may be different from other sources (mainly Udon servant)
-5. When using Gitee to download the source, both zip files need to be downloaded and imported""",
-          )),
-        ).showDialog(context);
-      },
-      icon: Icon(Icons.help_outline),
-      tooltip: S.current.help,
     );
   }
 

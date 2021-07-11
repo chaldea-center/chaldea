@@ -5,10 +5,9 @@ import 'package:url_launcher/url_launcher.dart';
 class BugAnnouncePage extends StatelessWidget {
   final _BugDetail header = _BugDetail(
     title: '本页罗列可能出现的BUG',
-    content: '部分可能短时间无法解决，如有其他bug请反馈',
+    content: '如有其他bug请反馈',
     titleEn: 'Potential Bugs',
-    contentEn:
-        'Some cannot be fixed immediately. If there is any other bug, please send feedback.',
+    contentEn: 'If there is any other bug, please send feedback.',
   );
 
   final List<_BugDetail> bugs = [
@@ -62,7 +61,7 @@ class BugAnnouncePage extends StatelessWidget {
     children.add(Card(
       child: ListTile(
         title: Center(child: Text(header.getTitle())),
-        subtitle: Text(header.getContent()),
+        subtitle: Center(child: Text(header.getContent())),
       ),
     ));
     for (int index = 0; index < bugs.length; index++) {

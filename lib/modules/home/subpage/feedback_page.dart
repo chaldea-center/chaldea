@@ -179,10 +179,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 // ),
                 // Divider(height: 1, thickness: 0.5, indent: 16, endIndent: 16),
                 ListTile(
-                  title: Text(S.of(context).feedback_add_attachments),
-                  onTap: _addAttachments,
-                ),
-                ListTile(
                   title: Text(S.current.attachment),
                   subtitle: Text(LocalizedText.of(
                       chs: 'e.g. 截图等文件',

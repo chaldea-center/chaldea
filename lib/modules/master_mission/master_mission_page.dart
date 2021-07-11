@@ -63,12 +63,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
         title: Text(S.of(context).master_mission),
         centerTitle: true,
         actions: [
-          IconButton(
-            onPressed: () => SplitRoute.push2(context,
-                MyMarkdownPage.fromHelpAsset(filename: 'master_mission.md')),
-            tooltip: S.current.help,
-            icon: Icon(Icons.help_outline),
-          ),
+          MarkdownHelpPage.buildHelpBtn(context, 'master_mission.md'),
           popupMenu,
         ],
         bottom: TabBar(

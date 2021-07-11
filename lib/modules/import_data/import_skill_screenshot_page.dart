@@ -75,7 +75,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
         title: Text(LocalizedText.of(
             chs: '技能截图解析', jpn: 'スキルのスクリーンショット', eng: 'Skill Screenshots')),
         actions: [
-          helpBtn,
+          MarkdownHelpPage.buildHelpBtn(context, 'import_skill_screenshot.md'),
           IconButton(
             onPressed: importImages,
             icon: FaIcon(FontAwesomeIcons.fileImport),
@@ -443,69 +443,6 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
         EasyLoading.showSuccess(S.current.import_data_success);
       },
     ).showDialog(context);
-  }
-
-  Widget get helpBtn {
-    return IconButton(
-      onPressed: () {
-        final helpMsg = LocalizedText.of(
-          chs: """0. 测试阶段：有任何问题欢迎反馈交流！！！
-1. 功能：解析截图中的从者技能等级（不包括灵基等级），应该不限服务器
-2. 使用方法: 
- - 点击右上角可同时导入多张源截图
- - 上传成功后稍等片刻再下载结果
- - 每行识别结果从左到右分别是：
-   - 识别到的从者头像: 点击可放大显示
-   - 本地从者头像：可点击进入详情
-   - 识别的从者编号姓名：点击进入列表页更改从者（若存在识别错误或识别失败）
-   - 三个技能数值：点击可分别修改数值
-   - 复选框：是否选择导入，仅识别出且技能数值正确时可勾选
-   - 如有重复出现的结果，将显示为红色，后者会覆盖前者!!!
- - 点击导入按钮将识别结果导入到当前账户
-3. 必要条件!!!重要!!!
-  - 技能升级页的截图，头像缩放最好为中或大，小头像识别失败率高。通过左下角切换。
-  - 仅识别被“锁定锁定锁定”的从者，不会有人不锁吧
-4. 其他注意事项
- - 单次上传总大小有限制(~15MB)，否则会出现413错误，请分多次上传下载
- - 截图请勿裁剪等修改，请勿分屏
- - 已经10/10/10并头像呈现灰色的大概率识别失败
- - 解析结果保留24h, 24h后可能删除
- - 新从者/灵衣数据可能更新不及时，如有未能识别的，请积极反馈""",
-          jpn: """""", //TODO
-          eng: """0. Test Stage: any question and feedback is welcomed!
-1. Feature: resolving servant skills from screenshots, adapted for all servers.
-2. Usage:
-  - click upper-right button to import multiple screenshots at same time
-  - "upload" to server then "download" results after a while
-  - every result row:
-    - cropped servant avatar: click to view the larger image
-    - identified servant avatar: click to view servant detail
-    - identified servant number and name: click to change servant if it's wrong or not identified
-    - identified skills: click to change skill level
-    - checkbox: whether to import, only enabled when servant and skills are valid
-    - duplicated servants will show their name in red font, the latter will override the former one when importing
-  - click "import" to merge results into current account
-3. Requirement/IMPORTANT
-  - screenshot of skill page: click scale button(left-bottom) in FGO to scale avatar to middle or large, the small scale may have a lower accuracy
-  - only *LOCKED* servants will be recognized
-4. Others
-  - The total size of a single upload is limited (~15MB), otherwise a 413 error will occur, please upload and download multiple times
-  - Don't crop/modify the screenshots
-  - recognition for servants whose skills are already 10/10/10 may be failed
-  - The result will be retained for about 24h, and may be deleted after 24h
-  - the data of latest servants or costumes may be missing, send feedback to me if so
-""",
-        );
-        SimpleCancelOkDialog(
-          title: Text(S.of(context).help),
-          hideCancel: true,
-          scrollable: true,
-          content: Text(helpMsg),
-        ).showDialog(context);
-      },
-      icon: Icon(Icons.help),
-      tooltip: S.current.help,
-    );
   }
 }
 

@@ -58,7 +58,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
         title: Text(LocalizedText.of(
             chs: '素材截图解析', jpn: 'アイテムのスクリーンショット', eng: 'Items Screenshots')),
         actions: [
-          helpBtn,
+          MarkdownHelpPage.buildHelpBtn(context, 'import_item_screenshot.md'),
           IconButton(
             onPressed: importImages,
             icon: FaIcon(FontAwesomeIcons.fileImport),
@@ -287,56 +287,5 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
         ),
       ],
     ).showDialog(context);
-  }
-
-  Widget get helpBtn {
-    return IconButton(
-      onPressed: () {
-        final helpMsg = LocalizedText.of(
-          chs: """1. 功能: 从素材截图中解析素材数量，理论上所有服都可使用
-2. 使用方法: 
- - 点击右上角可同时导入多张截图
- - 上传成功后悠然得喝口茶再下载结果导入
-3. 如识别结果偏差很大，请在反馈中描述下这种偏差，以便改进
-4. 注意事项
- - 单次上传总大小有限制(~15MB)，否则会出现413错误，请分多次上传下载
- - 截图尽量别做裁剪等修改
- - 素材框务必完全显示, 否则对应素材可能识别不到
- - 解析精度应该可能或许还可以，下载结果后可自行修正
- - 解析结果保留24h, 24h后可能删除""",
-          jpn: """1.機能：アイテムのスクリーンショットからアイテムの量を分析します、理論的にはすべてのサーバーに適用可能
-2.使用方法：
-  - 右上隅をクリックして、複数のスクリーンショットを同時にインポートします
-  - アップロードが成功したら、しばらく待って、結果をダウンロードして、インポートする
-3.認識結果に大きな偏差がある場合は、改善のためにフィードバックに記述してください
-4.注意が必要な事項
-  - 1回のアップロードの合計サイズは制限されています（〜15MB）。そうしないと、413エラーが発生します。複数回アップロードおよびダウンロードしてください。
-  - スクリーンショットを変更しないようにしてください
-  - アイテムを完全に表示する必要があります。そうしないと、対応するマテリアルが認識されない場合があります。
-  - 解析の偏差はそれ手動で修正することができます。
-  - 分析結果は24時間保持され、24時間後に削除される場合があります """,
-          eng:
-          """1. Feature: recognize item counts from screenshots, all servers should be supported
-2. How to use:
-  - Click the import button on upper right corner to import multiple screenshots at the same time
-  - Wait a few minutes after the upload is successful, then download the result and import it
-3. If the recognition result has a large deviation, please describe the deviation in the feedback for future improvement
-4. Attentions
-  - The total size of a single upload is limited (~15MB), otherwise a 413 error will occur, please upload and download multiple times
-  - Don't crop/modify the screenshots
-  - The item must be fully displayed, otherwise the it may not be recognized
-  - You can correct the result after downloading if any recognition mistake
-  - The result will be retained for about 24h, and may be deleted after 24h""",
-        );
-        SimpleCancelOkDialog(
-          title: Text(S.of(context).help),
-          hideCancel: true,
-          scrollable: true,
-          content: Text(helpMsg),
-        ).showDialog(context);
-      },
-      icon: Icon(Icons.help),
-      tooltip: S.current.help,
-    );
   }
 }
