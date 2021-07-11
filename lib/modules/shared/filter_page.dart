@@ -18,7 +18,7 @@ abstract class FilterPage<T> extends StatefulWidget {
         builder: (context) => LayoutBuilder(builder: (context, constraints) {
           return ConstrainedBox(
             constraints:
-                constraints.copyWith(maxHeight: constraints.maxHeight * 0.6),
+                constraints.copyWith(maxHeight: constraints.maxHeight * 0.7),
             child: builder(context),
           );
         }),
@@ -160,7 +160,7 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
               contentPadding: EdgeInsets.zero,
             ),
           Wrap(
-            spacing: 6,
+            spacing: 8,
             runSpacing: 3,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: children,
@@ -198,38 +198,27 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
       ValueChanged<T?>? onSortAttr,
       bool reversed = true,
       ValueChanged<bool>? onSortDirectional}) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(width: 0, color: Colors.grey))),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (prefix != null) Text(prefix + ' - ', style: textStyle),
-          DropdownButtonHideUnderline(
-              child: DropdownButton(
-            isDense: true,
-            value: value,
-            items: items.entries
-                .map((e) => DropdownMenuItem(
-                    child: Text(e.value, style: textStyle), value: e.key))
-                .toList(),
-            onChanged: onSortAttr,
-          )),
-          IconButton(
-            icon: Icon(reversed ? Icons.south_rounded : Icons.north_rounded),
-            onPressed: () {
-              if (onSortDirectional != null) {
-                onSortDirectional(!reversed);
-              }
-            },
-            padding: EdgeInsets.zero,
-            constraints: BoxConstraints.loose(Size.square(24)),
-            iconSize: 20,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-          )
-        ],
+    return DropdownButton(
+      isDense: true,
+      value: value,
+      icon: IconButton(
+        icon: Icon(reversed ? Icons.south_rounded : Icons.north_rounded),
+        onPressed: () {
+          if (onSortDirectional != null) {
+            onSortDirectional(!reversed);
+          }
+        },
+        padding: EdgeInsets.zero,
+        constraints: BoxConstraints.loose(Size.square(24)),
+        iconSize: 20,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
       ),
+      items: items.entries
+          .map((e) => DropdownMenuItem(
+              child: Text(e.value, style: textStyle), value: e.key))
+          .toList(),
+      onChanged: onSortAttr,
     );
   }
 }

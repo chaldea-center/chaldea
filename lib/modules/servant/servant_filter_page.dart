@@ -49,22 +49,6 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             ),
           ],
         ),
-        FilterGroup(
-          title: Text(LocalizedText(
-                  chs: '重复从者', jpn: '重複サーバント', eng: 'Duplicated Servant')
-              .localized),
-          options: ['1', '2'],
-          values: filterData.svtDuplicated,
-          optionBuilder: (v) =>
-              Text(Localized.svtFilter.of(v == '1' ? '初号机' : '2号机')),
-          combined: true,
-          onFilterChanged: (v) {
-            setState(() {
-              filterData.svtDuplicated = v;
-              update();
-            });
-          },
-        ),
         getGroup(header: S.of(context).filter_sort, children: [
           for (int i = 0; i < filterData.sortKeys.length; i++)
             getSortButton<SvtCompare>(
@@ -99,6 +83,40 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             // object should be the same, need not to update manually
             filterData.rarity = value;
             update();
+          },
+        ),
+        FilterGroup(
+          title: Text(S.of(context).nobel_phantasm, style: textStyle),
+          options: SvtFilterData.npColorData,
+          values: filterData.npColor,
+          onFilterChanged: (value) {
+            filterData.npColor = value;
+            update();
+          },
+        ),
+        FilterGroup(
+          values: filterData.npType,
+          options: SvtFilterData.npTypeData,
+          optionBuilder: (v) => Text(Localized.svtFilter.of(v)),
+          onFilterChanged: (value) {
+            filterData.npType = value;
+            update();
+          },
+        ),
+        FilterGroup(
+          title: Text(LocalizedText(
+                  chs: '重复从者', jpn: '重複サーバント', eng: 'Duplicated Servant')
+              .localized),
+          options: ['1', '2'],
+          values: filterData.svtDuplicated,
+          optionBuilder: (v) =>
+              Text(Localized.svtFilter.of(v == '1' ? '初号机' : '2号机')),
+          combined: true,
+          onFilterChanged: (v) {
+            setState(() {
+              filterData.svtDuplicated = v;
+              update();
+            });
           },
         ),
         FilterGroup(
@@ -141,24 +159,6 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           optionBuilder: (v) => Text(Localized.svtFilter.of(v)),
           onFilterChanged: (value) {
             filterData.obtain = value;
-            update();
-          },
-        ),
-        FilterGroup(
-          title: Text(S.of(context).nobel_phantasm, style: textStyle),
-          options: SvtFilterData.npColorData,
-          values: filterData.npColor,
-          onFilterChanged: (value) {
-            filterData.npColor = value;
-            update();
-          },
-        ),
-        FilterGroup(
-          values: filterData.npType,
-          options: SvtFilterData.npTypeData,
-          optionBuilder: (v) => Text(Localized.svtFilter.of(v)),
-          onFilterChanged: (value) {
-            filterData.npType = value;
             update();
           },
         ),
