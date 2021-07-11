@@ -90,7 +90,7 @@ class CatcherUtility {
           children: [
             WidgetSpan(
                 child: Icon(Icons.announcement, color: Colors.red, size: 40)),
-            TextSpan(text: '\nThis is an Error')
+            TextSpan(text: '\There is an Error')
           ],
         ),
       ),

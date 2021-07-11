@@ -272,7 +272,18 @@ class ServantDetailPageState extends State<ServantDetailPage>
   Widget _buildHeader() {
     return CustomTile(
       leading: db.getIconImage(svt.icon, fit: BoxFit.contain, height: 65),
-      title: Text('No.${svt.no}  ${svt.info.className}'),
+      title: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('No.${svt.no}  ${svt.info.className}'),
+          Text(
+            'ATK ${svt.info.atkMax}  HP ${svt.info.hpMax}',
+            style: Theme.of(context).textTheme.caption,
+          ),
+          const SizedBox(height: 4),
+        ],
+      ),
       titlePadding: EdgeInsets.only(left: 16),
       subtitle: Wrap(
         spacing: 3,

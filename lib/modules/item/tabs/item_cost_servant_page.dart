@@ -94,28 +94,34 @@ class ItemCostServantPage extends StatelessWidget {
       final svt = db.gameData.servantsWithUser[svtNo];
       if (svt == null) return;
       final num = src![svtNo]!;
-      bool showShadow = highlight && db.curUser.svtStatusOf(svtNo).favorite;
+      bool shouldHighlight =
+          highlight && db.curUser.svtStatusOf(svtNo).favorite;
       if (num > 0) {
-        children.add(Container(
-          decoration: showShadow
-              ? BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.redAccent,
-                      blurRadius: 1.5,
-                      spreadRadius: 2,
-                    ),
-                  ],
-                  borderRadius: BorderRadius.all(Radius.circular(3)),
-                  shape: BoxShape.rectangle,
-                )
-              : null,
-          child: svt.iconBuilder(
-            context: context,
-            text: formatNumber(num, compact: true, minVal: 10000),
-            padding: EdgeInsets.only(right: 2, bottom: 12),
-          ),
-        ));
+        Widget avatar = svt.iconBuilder(
+          context: context,
+          text: formatNumber(num, compact: true, minVal: 10000),
+          padding: EdgeInsets.only(right: 2, bottom: 12),
+        );
+        if (shouldHighlight) {
+          avatar = Stack(
+            alignment: Alignment.topRight,
+            children: [
+              avatar,
+              Container(
+                padding: EdgeInsets.all(1),
+                decoration: BoxDecoration(
+                    color: Colors.blueAccent,
+                    borderRadius: BorderRadius.circular(3)),
+                child: Icon(
+                  Icons.favorite,
+                  color: Colors.white,
+                  size: 12,
+                ),
+              ),
+            ],
+          );
+        }
+        children.add(avatar);
       }
     });
     if (children.isEmpty) {
