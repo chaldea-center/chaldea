@@ -5,7 +5,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
 import 'package:chaldea/modules/shared/list_page_share.dart';
-import 'package:chaldea/widgets/searchable_list_page.dart';
+import 'package:chaldea/widgets/searchable_list_state.dart';
 
 import 'servant_detail_page.dart';
 import 'servant_filter_page.dart';
@@ -21,31 +21,14 @@ class ServantListPage extends StatefulWidget {
   State<StatefulWidget> createState() => ServantListPageState();
 }
 
-class ServantListPageState extends State<ServantListPage>
-    with SearchableListMixin<Servant, ServantListPage> {
+class ServantListPageState
+    extends SearchableListState<Servant, ServantListPage> {
   Query __textFilter = Query();
   bool _showSearch = false;
-  late TextEditingController _searchController;
 
   Set<Servant> hiddenPlanServants = {};
 
   SvtFilterData get filterData => db.userData.svtFilter;
-
-  @override
-  void initState() {
-    super.initState();
-    // filterData.favorite =
-    //     db.curUser.servants.values.where((svt) => svt.favorite).isNotEmpty
-    //         ? 1
-    //         : 0;
-    _searchController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _searchController.dispose();
-  }
 
   void onFilterChanged(SvtFilterData data) {
     if (mounted) {
@@ -55,29 +38,22 @@ class ServantListPageState extends State<ServantListPage>
 
   @override
   Widget build(BuildContext context) {
-    return db.streamBuilder(
-      (context) => SearchableListPage<Servant>(
-        data: db.gameData.servantsWithUser.values.toList(),
-        stringFilter: this.filter,
+    return db.streamBuilder((context) {
+      this.filterShownList(
+        data: db.gameData.servantsWithUser.values,
         compare: (a, b) => Servant.compare(a, b,
             keys: filterData.sortKeys,
             reversed: filterData.sortReversed,
             user: db.curUser),
-        showSearchBar: _showSearch,
-        appBarBuilder: appBarBuilder,
+      );
+      return scrollListener(
         useGrid: widget.planMode ? false : filterData.useGrid,
-        listItemBuilder: listItemBuilder,
-        gridItemBuilder: gridItemBuilder,
-        buttonBarBuilder: widget.planMode ? _buildButtonBar : null,
-        topHintBuilder: hintBuilder,
-        bottomHintBuilder: hintBuilder,
-        textEditingController: _searchController,
-      ),
-    );
+        appBar: appBar,
+      );
+    });
   }
 
-  PreferredSizeWidget? appBarBuilder(
-      BuildContext context, PreferredSizeWidget? searchBar) {
+  PreferredSizeWidget? get appBar {
     return AppBar(
       title: AutoSizeText(
         widget.planMode
@@ -103,7 +79,7 @@ class ServantListPageState extends State<ServantListPage>
             }),
         IconButton(
           icon: Icon(Icons.filter_alt),
-          tooltip: S.of(context).filter,
+          tooltip: S.current.filter,
           onPressed: () => FilterPage.show(
               context: context,
               builder: (context) => ServantFilterPage(
@@ -113,7 +89,7 @@ class ServantListPageState extends State<ServantListPage>
           onPressed: () {
             setState(() {
               _showSearch = !_showSearch;
-              if (!_showSearch) _searchController.text = '';
+              if (!_showSearch) searchEditingController.text = '';
             });
           },
           icon: Icon(Icons.search),
@@ -169,11 +145,6 @@ class ServantListPageState extends State<ServantListPage>
     );
   }
 
-  ///
-  ///
-  ///
-  ///
-  ///
   Map<Servant, String> searchMap = {};
 
   void _onTapSvt(Servant svt) {
@@ -265,151 +236,6 @@ class ServantListPageState extends State<ServantListPage>
   int? _planTargetAscension;
   int? _planTargetSkill;
   int? _planTargetDress;
-
-  PreferredSizeWidget _buildButtonBar(
-      BuildContext context, List<Servant> shownList) {
-    final buttons = [
-      DropdownButton<int>(
-        value: _planTargetAscension,
-        icon: Container(),
-        hint: Text(S.of(context).ascension),
-        items: List.generate(
-          5,
-          (i) => DropdownMenuItem(
-            value: i,
-            child: Text(
-              S.current.words_separate(S.current.ascension, '$i'),
-            ),
-          ),
-        ),
-        onChanged: (v) {
-          setState(() {
-            _planTargetAscension = v;
-            if (_planTargetAscension == null) return;
-            shownList.forEach((svt) {
-              if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
-                final cur = db.curUser.svtStatusOf(svt.no).curVal,
-                    target = db.curUser.svtPlanOf(svt.no);
-                target.ascension = max(cur.ascension, _planTargetAscension!);
-              }
-            });
-          });
-        },
-      ),
-      DropdownButton<int>(
-        value: _planTargetSkill,
-        icon: Container(),
-        hint: Text(S.of(context).skill),
-        items: List.generate(11, (i) {
-          if (i == 0) {
-            return DropdownMenuItem(value: i, child: Text('x + 1'));
-          } else {
-            return DropdownMenuItem(
-              value: i,
-              child:
-                  Text(S.current.words_separate(S.current.skill, i.toString())),
-            );
-          }
-        }),
-        onChanged: (v) {
-          setState(() {
-            _planTargetSkill = v;
-            if (_planTargetSkill == null) return;
-            shownList.forEach((svt) {
-              if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
-                final cur = db.curUser.svtStatusOf(svt.no).curVal,
-                    target = db.curUser.svtPlanOf(svt.no);
-                for (int i = 0; i < 3; i++) {
-                  if (v == 0) {
-                    target.skills[i] = min(10, cur.skills[i] + 1);
-                  } else {
-                    target.skills[i] = max(cur.skills[i], _planTargetSkill!);
-                  }
-                }
-              }
-            });
-          });
-        },
-      ),
-      DropdownButton<int>(
-        value: _planTargetDress,
-        icon: Container(),
-        hint: Text(S.of(context).costume),
-        items: List.generate(
-            2,
-                (i) => DropdownMenuItem(
-                value: i, child: Text(S.of(context).costume + ['×', '√'][i]))),
-        onChanged: (v) {
-          setState(() {
-            _planTargetDress = v;
-            if (_planTargetDress == null) return;
-            shownList.forEach((svt) {
-              if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
-                final cur = db.curUser.svtStatusOf(svt.no).curVal,
-                    target = db.curUser.svtPlanOf(svt.no);
-                for (int i = 0; i < target.dress.length; i++) {
-                  target.dress[i] = max(cur.dress[i], _planTargetDress!);
-                }
-              }
-            });
-          });
-        },
-      ),
-      ElevatedButton(
-        onPressed: () {
-          db.itemStat.updateSvtItems();
-          SplitRoute.push(
-            context: context,
-            builder: (context, _) => ItemListPage(),
-            detail: false,
-          );
-        },
-        child: Text('→' + S.of(context).item),
-      ),
-    ];
-    return PreferredSize(
-      child: Container(
-        decoration: BoxDecoration(
-            border: Border(top: Divider.createBorderSide(context, width: 0.5))),
-        child: Align(
-          alignment: Alignment.center,
-          child: FittedBox(
-            fit: BoxFit.contain,
-            child: ButtonBar(children: buttons),
-          ),
-        ),
-      ),
-      preferredSize: Size.fromHeight(48),
-    );
-  }
-
-  void copyPlan() {
-    showDialog(
-      context: context,
-      builder: (context) => SimpleDialog(
-        title: Text(S.of(context).select_copy_plan_source),
-        children: List.generate(db.curUser.servantPlans.length, (index) {
-          bool isCur = index == db.curUser.curSvtPlanNo;
-          return ListTile(
-            title: Text(S.of(context).plan_x(index + 1) +
-                ' ' +
-                (isCur ? '(${S.current.current_})' : '')),
-            onTap: isCur
-                ? null
-                : () {
-                    db.curUser.curSvtPlan.clear();
-                    db.curUser.servantPlans[index].forEach((key, plan) {
-                      db.curUser.curSvtPlan[key] =
-                          ServantPlan.fromJson(jsonDecode(jsonEncode(plan)));
-                    });
-                    db.curUser.ensurePlanLarger();
-                    Navigator.of(context).pop();
-                  },
-          );
-        }),
-      ),
-    );
-  }
 
   @override
   bool filter(String keyword, Servant svt) {
@@ -587,8 +413,28 @@ class ServantListPageState extends State<ServantListPage>
   }
 
   @override
-  Widget gridItemBuilder(
-      BuildContext context, Servant svt, List<Servant> shownList) {
+  Widget buildScrollable({bool useGrid = false}) {
+    int _hiddenNum = 0;
+    if (widget.planMode) {
+      _hiddenNum =
+          shownList.where((e) => hiddenPlanServants.contains(e)).length;
+    }
+    final hintText = SearchableListState.defaultHintBuilder(
+      context,
+      widget.planMode
+          ? S.current.search_result_count_hide(shownList.length, _hiddenNum)
+          : S.current.search_result_count(shownList.length),
+    );
+    return Scrollbar(
+      controller: scrollController,
+      child: useGrid
+          ? buildGridView()
+          : buildListView(topHint: hintText, bottomHint: hintText),
+    );
+  }
+
+  @override
+  Widget gridItemBuilder(Servant svt) {
     final status = db.curUser.svtStatusOf(svt.no);
     Widget Function(TextStyle)? textBuilder;
     if (status.favorite) {
@@ -638,15 +484,132 @@ class ServantListPageState extends State<ServantListPage>
   }
 
   @override
-  Widget listItemBuilder(
-      BuildContext context, Servant svt, List<Servant> shownList) {
+  Widget listItemBuilder(Servant svt) {
     return widget.planMode
-        ? _planListItemBuilder(context, svt, shownList)
-        : _usualListItemBuilder(context, svt, shownList);
+        ? _planListItemBuilder(svt)
+        : _usualListItemBuilder(svt);
   }
 
-  Widget _usualListItemBuilder(
-      BuildContext context, Servant svt, List<Servant> shownList) {
+  @override
+  PreferredSizeWidget? get buttonBar {
+    if (!widget.planMode) return null;
+
+    final buttons = [
+      DropdownButton<int>(
+        value: _planTargetAscension,
+        icon: Container(),
+        hint: Text(S.of(context).ascension),
+        items: List.generate(
+          5,
+          (i) => DropdownMenuItem(
+            value: i,
+            child: Text(
+              S.current.words_separate(S.current.ascension, '$i'),
+            ),
+          ),
+        ),
+        onChanged: (v) {
+          setState(() {
+            _planTargetAscension = v;
+            if (_planTargetAscension == null) return;
+            shownList.forEach((svt) {
+              if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
+                final cur = db.curUser.svtStatusOf(svt.no).curVal,
+                    target = db.curUser.svtPlanOf(svt.no);
+                target.ascension = max(cur.ascension, _planTargetAscension!);
+              }
+            });
+          });
+        },
+      ),
+      DropdownButton<int>(
+        value: _planTargetSkill,
+        icon: Container(),
+        hint: Text(S.of(context).skill),
+        items: List.generate(11, (i) {
+          if (i == 0) {
+            return DropdownMenuItem(value: i, child: Text('x + 1'));
+          } else {
+            return DropdownMenuItem(
+              value: i,
+              child:
+                  Text(S.current.words_separate(S.current.skill, i.toString())),
+            );
+          }
+        }),
+        onChanged: (v) {
+          setState(() {
+            _planTargetSkill = v;
+            if (_planTargetSkill == null) return;
+            shownList.forEach((svt) {
+              if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
+                final cur = db.curUser.svtStatusOf(svt.no).curVal,
+                    target = db.curUser.svtPlanOf(svt.no);
+                for (int i = 0; i < 3; i++) {
+                  if (v == 0) {
+                    target.skills[i] = min(10, cur.skills[i] + 1);
+                  } else {
+                    target.skills[i] = max(cur.skills[i], _planTargetSkill!);
+                  }
+                }
+              }
+            });
+          });
+        },
+      ),
+      DropdownButton<int>(
+        value: _planTargetDress,
+        icon: Container(),
+        hint: Text(S.of(context).costume),
+        items: List.generate(
+            2,
+            (i) => DropdownMenuItem(
+                value: i, child: Text(S.of(context).costume + ['×', '√'][i]))),
+        onChanged: (v) {
+          setState(() {
+            _planTargetDress = v;
+            if (_planTargetDress == null) return;
+            shownList.forEach((svt) {
+              if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
+                final cur = db.curUser.svtStatusOf(svt.no).curVal,
+                    target = db.curUser.svtPlanOf(svt.no);
+                for (int i = 0; i < target.dress.length; i++) {
+                  target.dress[i] = max(cur.dress[i], _planTargetDress!);
+                }
+              }
+            });
+          });
+        },
+      ),
+      ElevatedButton(
+        onPressed: () {
+          db.itemStat.updateSvtItems();
+          SplitRoute.push(
+            context: context,
+            builder: (context, _) => ItemListPage(),
+            detail: false,
+          );
+        },
+        child: Text('→' + S.of(context).item),
+      ),
+    ];
+    return PreferredSize(
+      child: Container(
+        decoration: BoxDecoration(
+            border: Border(top: Divider.createBorderSide(context, width: 0.5))),
+        child: Align(
+          alignment: Alignment.center,
+          child: FittedBox(
+            fit: BoxFit.contain,
+            child: ButtonBar(children: buttons),
+          ),
+        ),
+      ),
+      preferredSize: Size.fromHeight(48),
+    );
+  }
+
+  Widget _usualListItemBuilder(Servant svt) {
     final status = db.curUser.svtStatusOf(svt.no);
     Widget? statusText;
     if (status.favorite) {
@@ -715,8 +678,7 @@ class ServantListPageState extends State<ServantListPage>
     );
   }
 
-  Widget _planListItemBuilder(
-      BuildContext context, Servant svt, List<Servant> shownList) {
+  Widget _planListItemBuilder(Servant svt) {
     final _hidden = hiddenPlanServants.contains(svt);
     final eyeWidget = IconButton(
       icon: Icon(
@@ -746,20 +708,30 @@ class ServantListPageState extends State<ServantListPage>
     );
   }
 
-  Widget hintBuilder(BuildContext context, List<Servant> shownList) {
-    int _hiddenNum = 0;
-    if (widget.planMode) {
-      _hiddenNum =
-          shownList.where((e) => hiddenPlanServants.contains(e)).length;
-    }
-    return CustomTile(
-      subtitle: Center(
-        child: Text(
-          widget.planMode
-              ? S.current.search_result_count_hide(shownList.length, _hiddenNum)
-              : S.current.search_result_count(shownList.length),
-          style: TextStyle(color: Colors.grey, fontSize: 14),
-        ),
+  void copyPlan() {
+    showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: Text(S.of(context).select_copy_plan_source),
+        children: List.generate(db.curUser.servantPlans.length, (index) {
+          bool isCur = index == db.curUser.curSvtPlanNo;
+          return ListTile(
+            title: Text(S.of(context).plan_x(index + 1) +
+                ' ' +
+                (isCur ? '(${S.current.current_})' : '')),
+            onTap: isCur
+                ? null
+                : () {
+                    db.curUser.curSvtPlan.clear();
+                    db.curUser.servantPlans[index].forEach((key, plan) {
+                      db.curUser.curSvtPlan[key] =
+                          ServantPlan.fromJson(jsonDecode(jsonEncode(plan)));
+                    });
+                    db.curUser.ensurePlanLarger();
+                    Navigator.of(context).pop();
+                  },
+          );
+        }),
       ),
     );
   }

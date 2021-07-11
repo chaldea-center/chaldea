@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
-import 'package:chaldea/widgets/searchable_list_page.dart';
+import 'package:chaldea/widgets/searchable_list_state.dart';
 
 import 'cmd_code_detail_page.dart';
 import 'cmd_code_filter_page.dart';
@@ -13,25 +13,12 @@ class CmdCodeListPage extends StatefulWidget {
   State<StatefulWidget> createState() => CmdCodeListPageState();
 }
 
-class CmdCodeListPageState extends State<CmdCodeListPage>
-    with SearchableListMixin<CommandCode, CmdCodeListPage> {
+class CmdCodeListPageState
+    extends SearchableListState<CommandCode, CmdCodeListPage> {
   Query __textFilter = Query();
   bool _showSearch = false;
-  late TextEditingController _searchController;
 
   CmdCodeFilterData get filterData => db.userData.cmdCodeFilter;
-
-  @override
-  void initState() {
-    super.initState();
-    _searchController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _searchController.dispose();
-  }
 
   void onFilterChanged(CmdCodeFilterData data) {
     if (mounted) {
@@ -41,17 +28,18 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
 
   @override
   Widget build(BuildContext context) {
-    return SearchableListPage<CommandCode>(
-      data: db.gameData.cmdCodes.values.toList(),
-      stringFilter: this.filter,
+    filterShownList(
+      data: db.gameData.cmdCodes.values,
       compare: (a, b) => CommandCode.compare(a, b,
           keys: filterData.sortKeys, reversed: filterData.sortReversed),
-      showSearchBar: _showSearch,
-      appBarBuilder: (context, searchBar) => AppBar(
+    );
+    return scrollListener(
+      useGrid: filterData.useGrid,
+      appBar: AppBar(
         leading: MasterBackButton(),
-        title: Text(S.of(context).command_code),
+        title: Text(S.current.command_code),
         titleSpacing: 0,
-        bottom: searchBar,
+        bottom: _showSearch ? searchBar : null,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.filter_alt),
@@ -66,7 +54,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
             onPressed: () {
               setState(() {
                 _showSearch = !_showSearch;
-                if (!_showSearch) _searchController.text = '';
+                if (!_showSearch) searchEditingController.text = '';
               });
             },
             icon: Icon(Icons.search),
@@ -74,18 +62,11 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
           ),
         ],
       ),
-      useGrid: filterData.useGrid,
-      listItemBuilder: listItemBuilder,
-      gridItemBuilder: gridItemBuilder,
-      topHintBuilder: SearchableListPage.defaultHintBuilder,
-      bottomHintBuilder: SearchableListPage.defaultHintBuilder,
-      textEditingController: _searchController,
     );
   }
 
   @override
-  Widget listItemBuilder(
-      BuildContext context, CommandCode code, List<CommandCode> shownList) {
+  Widget listItemBuilder(CommandCode code) {
     return CustomTile(
       leading: db.getIconImage(code.icon, width: 56),
       title: AutoSizeText(code.localizedName, maxLines: 1),
@@ -115,8 +96,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
   }
 
   @override
-  Widget gridItemBuilder(
-      BuildContext context, CommandCode code, List<CommandCode> shownList) {
+  Widget gridItemBuilder(CommandCode code) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 3, horizontal: 3),
       child: GestureDetector(

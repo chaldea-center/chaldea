@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
-import 'package:chaldea/widgets/searchable_list_page.dart';
+import 'package:chaldea/widgets/searchable_list_state.dart';
 
 import 'craft_detail_page.dart';
 import 'craft_filter_page.dart';
@@ -13,28 +13,15 @@ class CraftListPage extends StatefulWidget {
   State<StatefulWidget> createState() => CraftListPageState();
 }
 
-class CraftListPageState extends State<CraftListPage>
-    with SearchableListMixin<CraftEssence, CraftListPage> {
+class CraftListPageState
+    extends SearchableListState<CraftEssence, CraftListPage> {
   Query __textFilter = Query();
   bool _showSearch = false;
-  late TextEditingController _searchController;
 
   //temp, calculate once build() called.
   int __binAtkHpType = 0;
 
   CraftFilterData get filterData => db.userData.craftFilter;
-
-  @override
-  void initState() {
-    super.initState();
-    _searchController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _searchController.dispose();
-  }
 
   void onFilterChanged(CraftFilterData data) {
     if (mounted) {
@@ -44,17 +31,18 @@ class CraftListPageState extends State<CraftListPage>
 
   @override
   Widget build(BuildContext context) {
-    return SearchableListPage<CraftEssence>(
-      data: db.gameData.crafts.values.toList(),
-      stringFilter: this.filter,
+    filterShownList(
+      data: db.gameData.crafts.values,
       compare: (a, b) => CraftEssence.compare(a, b,
           keys: filterData.sortKeys, reversed: filterData.sortReversed),
-      showSearchBar: _showSearch,
-      appBarBuilder: (context, searchBar) => AppBar(
+    );
+    return scrollListener(
+      useGrid: filterData.useGrid,
+      appBar: AppBar(
         leading: MasterBackButton(),
-        title: Text(S.of(context).craft_essence),
+        title: Text(S.current.craft_essence),
         titleSpacing: 0,
-        bottom: searchBar,
+        bottom: _showSearch ? searchBar : null,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.filter_alt),
@@ -69,7 +57,7 @@ class CraftListPageState extends State<CraftListPage>
             onPressed: () {
               setState(() {
                 _showSearch = !_showSearch;
-                if (!_showSearch) _searchController.text = '';
+                if (!_showSearch) searchEditingController.text = '';
               });
             },
             icon: Icon(Icons.search),
@@ -77,18 +65,11 @@ class CraftListPageState extends State<CraftListPage>
           ),
         ],
       ),
-      useGrid: filterData.useGrid,
-      listItemBuilder: listItemBuilder,
-      gridItemBuilder: gridItemBuilder,
-      topHintBuilder: SearchableListPage.defaultHintBuilder,
-      bottomHintBuilder: SearchableListPage.defaultHintBuilder,
-      textEditingController: _searchController,
     );
   }
 
   @override
-  Widget listItemBuilder(
-      BuildContext context, CraftEssence ce, List<CraftEssence> shownList) {
+  Widget listItemBuilder(CraftEssence ce) {
     String additionalText = '';
     switch (filterData.sortKeys.first) {
       case CraftCompare.atk:
@@ -129,8 +110,7 @@ class CraftListPageState extends State<CraftListPage>
   }
 
   @override
-  Widget gridItemBuilder(
-      BuildContext context, CraftEssence ce, List<CraftEssence> shownList) {
+  Widget gridItemBuilder(CraftEssence ce) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 3, horizontal: 3),
       child: GestureDetector(
@@ -152,7 +132,12 @@ class CraftListPageState extends State<CraftListPage>
     );
   }
 
-  void beforeFiltrate() {
+  Map<CraftEssence, String> searchMap = {};
+
+  @override
+  void filterShownList(
+      {required Iterable<CraftEssence> data,
+      required Comparator<CraftEssence>? compare}) {
     __binAtkHpType = 0;
     for (int i = 0; i < CraftFilterData.atkHpTypeData.length; i++) {
       if (filterData.atkHpType.options[CraftFilterData.atkHpTypeData[i]] ==
@@ -160,14 +145,12 @@ class CraftListPageState extends State<CraftListPage>
         __binAtkHpType += 1 << i;
       }
     }
+    super.filterShownList(data: data, compare: compare);
   }
-
-  Map<CraftEssence, String> searchMap = {};
 
   @override
   bool filter(String keyword, CraftEssence ce) {
     __textFilter.parse(keyword);
-    beforeFiltrate();
     if (keyword.isNotEmpty && searchMap[ce] == null) {
       List<String> searchStrings = [
         ce.no.toString(),

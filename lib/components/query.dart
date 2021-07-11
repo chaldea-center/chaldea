@@ -16,6 +16,7 @@
 /// // prints: true, false, false
 /// ```
 class Query {
+  String? _searchString;
   bool _caseSensitive = false;
   List<String> _optional = [];
   List<String> _mandatory = [];
@@ -23,12 +24,16 @@ class Query {
 
   Query({String? queryString, bool caseSensitive = false}) {
     if (queryString != null) {
-      parse(queryString, caseSensitive: caseSensitive);
+      this.parse(queryString, caseSensitive: caseSensitive);
     }
   }
 
   void parse(String queryString, {bool caseSensitive = false}) {
+    if (queryString == _searchString && caseSensitive == _caseSensitive) return;
+
     _caseSensitive = caseSensitive;
+    _searchString = queryString;
+
     if (!caseSensitive) queryString = queryString.toLowerCase();
     final phrases = queryString.split(RegExp(r'\s+'));
     phrases.removeWhere((item) => ['', '-', '+'].contains(item));
