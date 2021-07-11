@@ -22,6 +22,10 @@ class _ImportPageHomeState extends State<ImportPageHome> {
       body: ListView(
         children: [
           ListTile(
+            title: Center(
+                child: Text(S.current.cur_account + ': ' + db.curUser.name)),
+          ),
+          ListTile(
             leading: Icon(Icons.http),
             title: Text(LocalizedText.of(
                 chs: 'HTTPS抓包', jpn: 'HTTPSスニッフィング', eng: 'HTTPS Sniffing')),

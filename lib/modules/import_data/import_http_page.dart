@@ -2,7 +2,6 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/home/subpage/account_page.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -517,21 +516,6 @@ class ImportHttpPageState extends State<ImportHttpPage> {
 
   void importResponseBody() async {
     try {
-      bool? confirmed = await SimpleCancelOkDialog(
-        title: Text(S.current.import_data),
-        content: Text(S.current.cur_account + ': ' + db.curUser.name),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              SplitRoute.push(
-                  context: context, builder: (ctx, _) => AccountPage());
-            },
-            child: Text(LocalizedText.of(chs: '切换', jpn: '切替', eng: 'Switch')),
-          )
-        ],
-      ).showDialog(context);
-      if (confirmed != true) return;
       final error = await SimpleDialog(
         title: Text(S.current.import_data),
         children: [

@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/extras/markdown_page.dart';
+import 'package:chaldea/widgets/markdown/markdown_page.dart';
 import 'package:chaldea/modules/extras/updates.dart';
 import 'package:flutter/foundation.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

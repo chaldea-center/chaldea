@@ -74,19 +74,19 @@ abstract class SearchableListState<T, St extends StatefulWidget>
       builder: (context, animationController) => Scaffold(
         appBar: appBar,
         floatingActionButton: ScaleTransition(
-              scale: animationController,
-              child: Padding(
-                padding:
+          scale: animationController,
+          child: Padding(
+            padding:
                 EdgeInsets.only(bottom: buttonBar?.preferredSize.height ?? 0),
-                child: FloatingActionButton(
-                  child: Icon(Icons.arrow_upward),
-                  onPressed: () => scrollController.animateTo(0,
-                      duration: Duration(milliseconds: 600), curve: Curves.easeOut),
-                ),
-              ),
+            child: FloatingActionButton(
+              child: Icon(Icons.arrow_upward),
+              onPressed: () => scrollController.animateTo(0,
+                  duration: Duration(milliseconds: 600), curve: Curves.easeOut),
             ),
-            body: buildScrollable(useGrid: useGrid),
           ),
+        ),
+        body: buildScrollable(useGrid: useGrid),
+      ),
     );
   }
 
@@ -180,10 +180,12 @@ abstract class SearchableListState<T, St extends StatefulWidget>
 
   Widget gridItemBuilder(T datum);
 
-  void filterShownList({required Iterable<T> data, required Comparator<T>? compare}) {
+  void filterShownList(
+      {required Iterable<T> data, required Comparator<T>? compare}) {
     shownList.clear();
+    final keyword = searchEditingController.text.trim();
     for (final T datum in data) {
-      if (filter(searchEditingController.text.trim(), datum)) {
+      if (filter(keyword, datum)) {
         shownList.add(datum);
       }
     }

@@ -15,9 +15,9 @@ class _CvListPageState extends SearchableListState<String, CvListPage> {
   Map<String, List<Servant>> cvMap = {};
   List<String> cvs = [];
 
-  @override
-  void initState() {
-    super.initState();
+  void _parse() {
+    cvMap.clear();
+    cvs.clear();
     for (var svt in db.gameData.servants.values) {
       List<String> cvs = svt.info.lCV;
       if (cvs.isEmpty) cvs = svt.info.cv;
@@ -30,6 +30,14 @@ class _CvListPageState extends SearchableListState<String, CvListPage> {
     }
     cvs = cvMap.keys.toList();
     cvs.sort((a, b) => Utils.toAlphabet(a).compareTo(Utils.toAlphabet(b)));
+
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(milliseconds: 400), _parse);
   }
 
   @override
@@ -119,9 +127,11 @@ class _IllustratorListPageState
   Map<String, List<CommandCode>> codeMap = {};
   List<String> illustrators = [];
 
-  @override
-  void initState() {
-    super.initState();
+  void _parse() {
+    svtMap.clear();
+    craftMap.clear();
+    codeMap.clear();
+    illustrators.clear();
     db.gameData.servants.values.forEach((svt) {
       svtMap.putIfAbsent(svt.info.lIllustrator, () => []).add(svt);
     });
@@ -138,11 +148,20 @@ class _IllustratorListPageState
       codeMap.putIfAbsent(illus, () => []).add(code);
     });
 
-    illustrators..addAll(svtMap.keys)..addAll(craftMap.keys)..addAll(
-        codeMap.keys);
+    illustrators
+      ..addAll(svtMap.keys)
+      ..addAll(craftMap.keys)
+      ..addAll(codeMap.keys);
     illustrators = illustrators.toSet().toList();
     illustrators
         .sort((a, b) => Utils.toAlphabet(a).compareTo(Utils.toAlphabet(b)));
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(milliseconds: 400), _parse);
   }
 
   @override
@@ -214,11 +233,10 @@ class _IllustratorListPageState
         (codeMap[creator]?.length ?? 0);
     return SimpleAccordion(
       disableAnimation: true,
-      headerBuilder: (context, _) =>
-          ListTile(
-            title: Text(creator),
-            trailing: Text(count.toString()),
-          ),
+      headerBuilder: (context, _) => ListTile(
+        title: Text(creator),
+        trailing: Text(count.toString()),
+      ),
       contentBuilder: (context) {
         return Column(
           mainAxisSize: MainAxisSize.min,
