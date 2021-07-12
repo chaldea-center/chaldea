@@ -78,7 +78,8 @@ class _MyMarkdownWidgetState extends State<MyMarkdownWidget> {
     return CachedImage(
       imageUrl: uri.toString(),
       placeholder: (_, __) => Container(),
-      errorWidget: (ctx, url, e) => Text("[${title ?? alt ?? ''}]"),
+      cachedOption: CachedImageOption(
+          errorWidget: (ctx, url, e) => Text("[${title ?? alt ?? ''}]")),
     );
   }
 

@@ -3,7 +3,7 @@ export 'custom_dialogs.dart';
 export 'custom_table.dart';
 export 'custom_tile.dart';
 export 'form_elements.dart';
-export 'image_viewer.dart';
+export 'image/image_viewer.dart';
 export 'markdown_page.dart';
 export 'search_bar.dart';
 export 'searchable_list_state.dart';

@@ -1,13 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path/path.dart' show basename;
+import 'package:photo_view/photo_view.dart';
 import 'package:string_validator/string_validator.dart' as validator;
 
-import '../components/config.dart';
+import 'cached_image_option.dart';
+import 'photo_view_option.dart';
+
+export 'cached_image_option.dart';
+export 'photo_view_option.dart';
 
 class FullscreenWidget extends StatefulWidget {
   final WidgetBuilder builder;
@@ -142,47 +146,25 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
   }
 }
 
-typedef PlaceholderWidgetBuilder = Widget Function(
-  BuildContext context,
-  String? url,
-);
-
 class CachedImage extends StatefulWidget {
   final String? imageUrl;
 
   /// If [isMCFile] is null, check it is a valid url
   final bool? isMCFile;
 
-  /// wiki file cache dir
+  /// Save only if the image is wiki file
   final String? saveDir;
   final bool allowSave;
-  final ImageWidgetBuilder? imageBuilder;
-  final PlaceholderWidgetBuilder? placeholder;
-  final ProgressIndicatorBuilder? progressIndicatorBuilder;
-  final LoadingErrorWidgetBuilder? errorWidget;
-  final Map<String, String>? httpHeaders;
-  final Duration fadeOutDuration;
-  final Curve fadeOutCurve;
-  final Duration fadeInDuration;
-  final Curve fadeInCurve;
-  final double? width;
-  final double? height;
+
   final double? aspectRatio;
-  final BoxFit? fit;
-  final Alignment alignment;
-  final ImageRepeat repeat;
-  final bool matchTextDirection;
-  final BaseCacheManager? cacheManager;
-  final bool useOldImageOnUrlChange;
-  final Color? color;
-  final FilterQuality filterQuality;
-  final BlendMode? colorBlendMode;
-  final Duration? placeholderFadeInDuration;
-  final int? memCacheWidth;
-  final int? memCacheHeight;
-  final String? cacheKey;
-  final int? maxWidthDiskCache;
-  final int? maxHeightDiskCache;
+
+  /// [width], [height], [placeholder] will override [cachedOption]
+  final double? width; //2
+  final double? height; //2
+  final PlaceholderWidgetBuilder? placeholder; //2
+
+  final CachedImageOption cachedOption;
+  final PhotoViewOption? photoViewOption;
 
   CachedImage({
     Key? key,
@@ -190,33 +172,12 @@ class CachedImage extends StatefulWidget {
     this.isMCFile,
     this.saveDir,
     this.allowSave = false,
-    this.imageBuilder,
-    this.placeholder,
-    this.progressIndicatorBuilder,
-    this.errorWidget,
-    this.httpHeaders,
-    this.fadeOutDuration = const Duration(milliseconds: 1000),
-    this.fadeOutCurve = Curves.easeOut,
-    this.fadeInDuration = const Duration(milliseconds: 500),
-    this.fadeInCurve = Curves.easeIn,
     this.width,
     this.height,
     this.aspectRatio,
-    this.fit,
-    this.alignment = Alignment.center,
-    this.repeat = ImageRepeat.noRepeat,
-    this.matchTextDirection = false,
-    this.cacheManager,
-    this.useOldImageOnUrlChange = false,
-    this.color,
-    this.filterQuality = FilterQuality.low,
-    this.colorBlendMode,
-    this.placeholderFadeInDuration,
-    this.memCacheWidth,
-    this.memCacheHeight,
-    this.cacheKey,
-    this.maxWidthDiskCache,
-    this.maxHeightDiskCache,
+    this.placeholder,
+    this.cachedOption = const CachedImageOption(),
+    this.photoViewOption,
   }) : super(key: key);
 
   @override
@@ -265,9 +226,9 @@ class CachedImage extends StatefulWidget {
 }
 
 class _CachedImageState extends State<CachedImage> {
-  BaseCacheManager get cacheManager =>
-      widget.cacheManager ?? DefaultCacheManager();
   bool _isMcFile = false;
+
+  CachedImageOption get option => widget.cachedOption;
 
   String? getRealUrl() {
     if (widget.imageUrl == null) return null;
@@ -307,47 +268,48 @@ class _CachedImageState extends State<CachedImage> {
       usePlaceholder = true;
     }
 
-    Widget Function(BuildContext, String?) placeholder = widget.placeholder ??
+    Widget Function(BuildContext, String) placeholder = widget.placeholder ??
+        option.placeholder ??
         (context, url) => Container(
               width: widget.width,
               height: widget.height,
-          child: db.hasNetwork
+              child: db.hasNetwork
                   ? CachedImage.defaultProgressPlaceholder(context, url)
-                  : Container(),
+                  : Container(), // TODO: add no-network icon
             );
     if (usePlaceholder) {
-      child = placeholder(context, realUrl ?? widget.imageUrl);
+      child = placeholder(context, realUrl ?? widget.imageUrl ?? '');
     } else {
-      final _cacheManager = widget.cacheManager ??
+      final _cacheManager = option.cacheManager ??
           (_isMcFile ? WikiUtil.wikiFileCache : DefaultCacheManager());
       child = CachedNetworkImage(
         imageUrl: realUrl!,
-        httpHeaders: widget.httpHeaders,
-        imageBuilder: widget.imageBuilder,
+        httpHeaders: option.httpHeaders,
+        imageBuilder: option.imageBuilder,
         placeholder: placeholder,
-        progressIndicatorBuilder: widget.progressIndicatorBuilder,
-        errorWidget: widget.errorWidget ?? CachedImage.defaultErrorWidget,
-        fadeOutDuration: widget.fadeOutDuration,
-        fadeOutCurve: widget.fadeOutCurve,
-        fadeInDuration: widget.fadeInDuration,
-        fadeInCurve: widget.fadeInCurve,
-        width: widget.width,
-        height: widget.height,
-        fit: widget.fit,
-        alignment: widget.alignment,
-        repeat: widget.repeat,
-        matchTextDirection: widget.matchTextDirection,
+        progressIndicatorBuilder: option.progressIndicatorBuilder,
+        errorWidget: option.errorWidget ?? CachedImage.defaultErrorWidget,
+        fadeOutDuration: option.fadeOutDuration,
+        fadeOutCurve: option.fadeOutCurve,
+        fadeInDuration: option.fadeInDuration,
+        fadeInCurve: option.fadeInCurve,
+        width: widget.width ?? option.width,
+        height: widget.height ?? option.height,
+        fit: option.fit,
+        alignment: option.alignment,
+        repeat: option.repeat,
+        matchTextDirection: option.matchTextDirection,
         cacheManager: _cacheManager,
-        useOldImageOnUrlChange: widget.useOldImageOnUrlChange,
-        color: widget.color,
-        filterQuality: widget.filterQuality,
-        colorBlendMode: widget.colorBlendMode,
-        placeholderFadeInDuration: widget.placeholderFadeInDuration,
-        memCacheWidth: widget.memCacheWidth,
-        memCacheHeight: widget.memCacheHeight,
-        cacheKey: widget.cacheKey,
-        maxWidthDiskCache: widget.maxWidthDiskCache,
-        maxHeightDiskCache: widget.maxHeightDiskCache,
+        useOldImageOnUrlChange: option.useOldImageOnUrlChange,
+        color: option.color,
+        filterQuality: option.filterQuality,
+        colorBlendMode: option.colorBlendMode,
+        placeholderFadeInDuration: option.placeholderFadeInDuration,
+        memCacheWidth: option.memCacheWidth,
+        memCacheHeight: option.memCacheHeight,
+        cacheKey: option.cacheKey,
+        maxWidthDiskCache: option.maxWidthDiskCache,
+        maxHeightDiskCache: option.maxHeightDiskCache,
       );
 
       if (widget.allowSave) {
@@ -361,49 +323,50 @@ class _CachedImageState extends State<CachedImage> {
           },
         );
       }
+      if (widget.photoViewOption != null) {
+        final pvOption = widget.photoViewOption!;
+        child = PhotoView.customChild(
+          child: child,
+          backgroundDecoration: pvOption.backgroundDecoration,
+          heroAttributes: pvOption.heroAttributes,
+          scaleStateChangedCallback: pvOption.scaleStateChangedCallback,
+          enableRotation: pvOption.enableRotation,
+          controller: pvOption.controller,
+          scaleStateController: pvOption.scaleStateController,
+          minScale: pvOption.minScale,
+          maxScale: pvOption.maxScale,
+          initialScale: pvOption.initialScale,
+          basePosition: pvOption.basePosition,
+          scaleStateCycle: pvOption.scaleStateCycle,
+          onTapUp: pvOption.onTapUp,
+          onTapDown: pvOption.onTapDown,
+          customSize: pvOption.customSize,
+          gestureDetectorBehavior: pvOption.gestureDetectorBehavior,
+          tightMode: pvOption.tightMode,
+          filterQuality: pvOption.filterQuality,
+          disableGestures: pvOption.disableGestures,
+        );
+      }
     }
-    // if (realUrl != null)
-    //   child = GestureDetector(
-    //     onLongPress: () {
-    //       SimpleCancelOkDialog(
-    //         title: Text(S.of(context).clear_cache),
-    //         content: Text(realUrl),
-    //         onTapOk: () async {
-    //           /// clear cache in filesystem
-    //           /// will cause error
-    //           await cacheManager.removeFile(realUrl);
-    //
-    //           /// This will clear all cached images in memory
-    //           /// enhance: `imageCache.evict(key)` or `ImageProvider.evict()`
-    //           imageCache?.clear();
-    //
-    //           if (mounted) {
-    //             setState(() {});
-    //           }
-    //         },
-    //       ).show(context);
-    //     },
-    //     child: child,
-    //   );
     return CachedImage.sizeChild(
         child: child,
         width: widget.width,
         height: widget.height,
         aspectRatio: widget.aspectRatio);
   }
-}
 
-bool _isValidUrl(String str) {
-  if (validator.isURL(str)) {
-    str = str.toLowerCase();
-    if (str.endsWith('.png') ||
-        str.endsWith('.jpg') ||
-        str.endsWith('.mp3') ||
-        str.endsWith('.wav')) {
-      return str.contains('/');
+  bool _isValidUrl(String str) {
+    if (validator.isURL(str)) {
+      str = str.toLowerCase();
+      if (str.endsWith('.png') ||
+          str.endsWith('.jpg') ||
+          str.endsWith('.mp3') ||
+          str.endsWith('.wav')) {
+        return str.contains('/');
+      }
+      return true;
+    } else {
+      return false;
     }
-    return true;
-  } else {
-    return false;
   }
 }

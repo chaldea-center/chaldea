@@ -20,6 +20,7 @@ import 'package:chaldea/modules/servant/costume_list_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:chaldea/modules/statistics/game_statistics_page.dart';
 import 'package:chaldea/modules/summon/summon_list_page.dart';
+import 'package:chaldea/widgets/image/cached_image_option.dart';
 import 'package:dio/dio.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/foundation.dart';
@@ -475,8 +476,9 @@ class _GalleryPageState extends State<GalleryPage> {
       if (isURL(imgUrl)) {
         child = CachedImage(
           imageUrl: imgUrl,
-          errorWidget: (context, url, error) => Container(),
           aspectRatio: 8 / 3,
+          cachedOption: CachedImageOption(
+              errorWidget: (context, url, error) => Container()),
         );
       } else {
         child = Padding(

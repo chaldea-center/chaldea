@@ -6,7 +6,8 @@ import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/widgets/icon_clipper.dart';
-import 'package:chaldea/widgets/image_viewer.dart';
+import 'package:chaldea/widgets/image/cached_image_option.dart';
+import 'package:chaldea/widgets/image/image_viewer.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -321,7 +322,7 @@ class Database {
           width: width,
           height: height,
           aspectRatio: aspectRatio,
-          fit: fit,
+          cachedOption: CachedImageOption(fit: fit),
           placeholder: (context, __) => Container(
             width: width,
             height: height,

@@ -84,8 +84,9 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       if (url?.isNotEmpty == true) {
         banners.add(CachedImage(
           imageUrl: url,
-          imageBuilder: (context, image) =>
-              FittedBox(child: Image(image: image)),
+          cachedOption: CachedImageOption(
+              imageBuilder: (context, image) =>
+                  FittedBox(child: Image(image: image))),
           isMCFile: true,
           placeholder: (_, __) => Container(),
         ));

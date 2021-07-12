@@ -108,7 +108,8 @@ class _SummonListPageState extends State<SummonListPage> {
               ? summon.bannerUrl ?? summon.bannerUrlJp
               : summon.bannerUrlJp ?? summon.bannerUrl,
           placeholder: (ctx, url) => Text(summon.localizedName),
-          errorWidget: (ctx, url, error) => Text(summon.localizedName),
+          cachedOption: CachedImageOption(
+              errorWidget: (ctx, url, error) => Text(summon.localizedName)),
         ),
       );
     } else {
