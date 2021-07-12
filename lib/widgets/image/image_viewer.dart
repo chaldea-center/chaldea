@@ -1,153 +1,25 @@
+import 'dart:ui' as ui;
+
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:flutter/services.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:string_validator/string_validator.dart' as validator;
+import 'package:uuid/uuid.dart';
 
 import 'cached_image_option.dart';
 import 'image_action_mixin.dart';
 import 'photo_view_option.dart';
 
 export 'cached_image_option.dart';
+export 'fullscreen_image_viewer.dart';
 export 'image_action_mixin.dart';
 export 'photo_view_option.dart';
 
-class FullscreenWidget extends StatefulWidget {
-  final WidgetBuilder builder;
-
-  const FullscreenWidget({Key? key, required this.builder}) : super(key: key);
-
-  Future<T?> push<T>(BuildContext context, [bool opaque = false]) {
-    return Navigator.of(context).push<T>(PageRouteBuilder(
-      fullscreenDialog: true,
-      opaque: opaque,
-      pageBuilder: (context, _, __) => this,
-    ));
-  }
-
-  @override
-  _FullscreenWidgetState createState() => _FullscreenWidgetState();
-}
-
-class _FullscreenWidgetState extends State<FullscreenWidget> {
-  @override
-  void initState() {
-    super.initState();
-    SystemChrome.setEnabledSystemUIOverlays([]);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pop(context);
-      },
-      child: widget.builder(context),
-    );
-  }
-}
-
-class FullScreenImageSlider extends StatefulWidget {
-  final List<String?> imgUrls;
-  final bool? isMcFile;
-  final bool allowSave;
-  final int initialPage;
-  final bool? downloadEnabled;
-  final PlaceholderWidgetBuilder? placeholder;
-  final LoadingErrorWidgetBuilder? errorWidget;
-
-  const FullScreenImageSlider({
-    Key? key,
-    required this.imgUrls,
-    this.isMcFile,
-    this.allowSave = false,
-    this.initialPage = 0,
-    this.downloadEnabled,
-    this.placeholder,
-    this.errorWidget,
-  }) : super(key: key);
-
-  @override
-  _FullScreenImageSliderState createState() => _FullScreenImageSliderState();
-
-  Future push(BuildContext context) {
-    return Navigator.of(context).push(
-      PageRouteBuilder(
-        opaque: false,
-        fullscreenDialog: true,
-        pageBuilder: (context, _, __) => this,
-      ),
-    );
-  }
-}
-
-class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
-  int _curIndex = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _curIndex = widget.initialPage;
-    SystemChrome.setEnabledSystemUIOverlays([]);
-  }
-
-  Future<void> resetSystemUI() async {
-    await SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        await resetSystemUI();
-        Navigator.of(context).pop(_curIndex);
-        return false;
-      },
-      child: GestureDetector(
-        onTap: () async {
-          await resetSystemUI();
-          Navigator.of(context).pop(_curIndex);
-        },
-        child: Scaffold(
-          body: CarouselSlider(
-            items: List.generate(
-              widget.imgUrls.length,
-              (index) => CachedImage(
-                imageUrl: widget.imgUrls[index],
-                isMCFile: widget.isMcFile,
-                showSaveOnLongPress: widget.allowSave,
-                placeholder: widget.placeholder,
-              ),
-            ),
-            options: CarouselOptions(
-              autoPlay: false,
-              viewportFraction: 1.0,
-              height: MediaQuery.of(context).size.height,
-              enableInfiniteScroll: false,
-              initialPage: _curIndex,
-              onPageChanged: (v, _) => _curIndex = v,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class CachedImage extends StatefulWidget {
+  final ImageProvider? imageProvider;
+
   final String? imageUrl;
 
   /// If [isMCFile] is null, check it is a valid url
@@ -178,7 +50,23 @@ class CachedImage extends StatefulWidget {
     this.placeholder,
     this.cachedOption = const CachedImageOption(),
     this.photoViewOption,
-  }) : super(key: key);
+  })  : imageProvider = null,
+        super(key: key);
+
+  CachedImage.fromProvider({
+    Key? key,
+    required this.imageProvider,
+    this.showSaveOnLongPress = false,
+    this.width,
+    this.height,
+    this.aspectRatio,
+    this.placeholder,
+    this.cachedOption = const CachedImageOption(),
+    this.photoViewOption,
+  })  : imageUrl = null,
+        isMCFile = false,
+        cacheDir = null,
+        super(key: key);
 
   @override
   _CachedImageState createState() => _CachedImageState();
@@ -249,84 +137,130 @@ class _CachedImageState extends State<CachedImage> with ImageActionMixin {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-  }
+  ImageStreamListener? _imageStreamListener;
 
   @override
   Widget build(BuildContext context) {
-    bool usePlaceholder = true;
     late Widget child;
-    String? realUrl = getRealUrl();
-    if (realUrl?.isNotEmpty != true) {
-      usePlaceholder = true;
-    } else if (db.hasNetwork) {
-      // use CachedNetworkImage
-      usePlaceholder = false;
-    } else {
-      usePlaceholder = true;
-    }
 
-    Widget Function(BuildContext, String) placeholder = widget.placeholder ??
-        option.placeholder ??
-        (context, url) => Container(
-              width: widget.width,
-              height: widget.height,
-              child: db.hasNetwork
-                  ? CachedImage.defaultProgressPlaceholder(context, url)
-                  : Container(), // TODO: add no-network icon
-            );
-    if (usePlaceholder) {
-      child = placeholder(context, realUrl ?? widget.imageUrl ?? '');
-    } else {
-      final _cacheManager = option.cacheManager ??
-          (_isMcFile ? WikiUtil.wikiFileCache : DefaultCacheManager());
-      child = CachedNetworkImage(
-        imageUrl: realUrl!,
-        httpHeaders: option.httpHeaders,
-        imageBuilder: option.imageBuilder,
-        placeholder: placeholder,
-        progressIndicatorBuilder: option.progressIndicatorBuilder,
-        errorWidget: option.errorWidget ?? CachedImage.defaultErrorWidget,
-        fadeOutDuration: option.fadeOutDuration,
-        fadeOutCurve: option.fadeOutCurve,
-        fadeInDuration: option.fadeInDuration,
-        fadeInCurve: option.fadeInCurve,
-        width: widget.width ?? option.width,
-        height: widget.height ?? option.height,
+    if (widget.imageProvider != null) {
+      child = Image(
+        image: widget.imageProvider!,
+        // frameBuilder:null,
+        // loadingBuilder:null,
+        errorBuilder: option.errorWidget == null
+            ? null
+            : (ctx, e, s) => option.errorWidget!(ctx, '', e),
+        // semanticLabel:null,
+        // excludeFromSemantics : false,
+        width: widget.width,
+        height: widget.height,
+        color: option.color,
+        colorBlendMode: option.colorBlendMode,
         fit: option.fit,
         alignment: option.alignment,
         repeat: option.repeat,
+        // centerSlice:null,
         matchTextDirection: option.matchTextDirection,
-        cacheManager: _cacheManager,
-        useOldImageOnUrlChange: option.useOldImageOnUrlChange,
-        color: option.color,
+        // gaplessPlayback : false,
+        // isAntiAlias :false,
         filterQuality: option.filterQuality,
-        colorBlendMode: option.colorBlendMode,
-        placeholderFadeInDuration: option.placeholderFadeInDuration,
-        memCacheWidth: option.memCacheWidth,
-        memCacheHeight: option.memCacheHeight,
-        cacheKey: option.cacheKey,
-        maxWidthDiskCache: option.maxWidthDiskCache,
-        maxHeightDiskCache: option.maxHeightDiskCache,
       );
-
       if (widget.showSaveOnLongPress) {
         child = GestureDetector(
           child: child,
           onLongPress: () async {
-            final file = await _cacheManager.getSingleFile(realUrl);
-            return showSaveShare(
-              context: context,
-              srcFp: file.path,
-              destFp: join(db.paths.downloadDir, file.basename),
-              gallery: true,
-              share: true,
-            );
+            _imageStreamListener ??= ImageStreamListener((info, sycCall) async {
+              final bytes =
+                  await info.image.toByteData(format: ui.ImageByteFormat.png);
+              final data = bytes?.buffer.asUint8List();
+              if (data == null) {
+                EasyLoading.showError('Failed');
+                return;
+              }
+              if (!mounted) return;
+              // some sha1 hash value for same data
+              String fn =
+                  Uuid().v5(Uuid.NAMESPACE_URL, sha1.convert(data).toString()) +
+                      '.png';
+              showSaveShare(
+                context: context,
+                data: data,
+                destFp: join(db.paths.downloadDir, fn),
+                gallery: true,
+                share: true,
+              );
+            });
+            widget.imageProvider!.resolve(ImageConfiguration.empty)
+              ..removeListener(_imageStreamListener!)
+              ..addListener(_imageStreamListener!);
           },
         );
       }
+    } else {
+      bool usePlaceholder = true;
+      String? realUrl = getRealUrl();
+      if (realUrl?.isNotEmpty != true) {
+        usePlaceholder = true;
+      } else if (db.hasNetwork) {
+        // use CachedNetworkImage
+        usePlaceholder = false;
+      } else {
+        usePlaceholder = true;
+      }
+
+      if (usePlaceholder) {
+        child = parsedPlaceholder(context, realUrl ?? widget.imageUrl ?? '');
+      } else {
+        final _cacheManager = option.cacheManager ??
+            (_isMcFile ? WikiUtil.wikiFileCache : DefaultCacheManager());
+        child = CachedNetworkImage(
+          imageUrl: realUrl!,
+          httpHeaders: option.httpHeaders,
+          imageBuilder: option.imageBuilder,
+          placeholder: parsedPlaceholder,
+          progressIndicatorBuilder: option.progressIndicatorBuilder,
+          errorWidget: option.errorWidget ?? CachedImage.defaultErrorWidget,
+          fadeOutDuration: option.fadeOutDuration,
+          fadeOutCurve: option.fadeOutCurve,
+          fadeInDuration: option.fadeInDuration,
+          fadeInCurve: option.fadeInCurve,
+          width: widget.width ?? option.width,
+          height: widget.height ?? option.height,
+          fit: option.fit,
+          alignment: option.alignment,
+          repeat: option.repeat,
+          matchTextDirection: option.matchTextDirection,
+          cacheManager: _cacheManager,
+          useOldImageOnUrlChange: option.useOldImageOnUrlChange,
+          color: option.color,
+          filterQuality: option.filterQuality,
+          colorBlendMode: option.colorBlendMode,
+          placeholderFadeInDuration: option.placeholderFadeInDuration,
+          memCacheWidth: option.memCacheWidth,
+          memCacheHeight: option.memCacheHeight,
+          cacheKey: option.cacheKey,
+          maxWidthDiskCache: option.maxWidthDiskCache,
+          maxHeightDiskCache: option.maxHeightDiskCache,
+        );
+
+        if (widget.showSaveOnLongPress) {
+          child = GestureDetector(
+            child: child,
+            onLongPress: () async {
+              final file = await _cacheManager.getSingleFile(realUrl);
+              return showSaveShare(
+                context: context,
+                srcFp: file.path,
+                destFp: join(db.paths.downloadDir, file.basename),
+                gallery: true,
+                share: true,
+              );
+            },
+          );
+        }
+      }
+
       if (widget.photoViewOption != null) {
         final pvOption = widget.photoViewOption!;
         child = PhotoView.customChild(
@@ -357,6 +291,18 @@ class _CachedImageState extends State<CachedImage> with ImageActionMixin {
       width: widget.width,
       height: widget.height,
       aspectRatio: widget.aspectRatio,
+    );
+  }
+
+  Widget parsedPlaceholder(BuildContext context, String url) {
+    if (widget.placeholder != null) return widget.placeholder!(context, url);
+    if (option.placeholder != null) return option.placeholder!(context, url);
+    return Container(
+      width: widget.width,
+      height: widget.height,
+      child: db.hasNetwork
+          ? CachedImage.defaultProgressPlaceholder(context, url)
+          : Container(), // TODO: add no-network icon
     );
   }
 

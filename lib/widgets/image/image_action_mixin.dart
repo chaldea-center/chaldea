@@ -74,10 +74,17 @@ mixin ImageActionMixin {
             title: Text(S.current.share),
             onTap: () async {
               Navigator.pop(context);
-              if (srcFp == null) {
-                srcFp = join(db.paths.tempDir, Uuid().v1() + '.tmp');
+              if (srcFp == null && data != null) {
+                // Although, it may not be PNG
+                String fn =
+                    Uuid().v5(Uuid.NAMESPACE_URL, data.hashCode.toString()) +
+                        '.png';
+                srcFp = join(db.paths.tempDir, fn);
+                File(srcFp!)
+                  ..createSync(recursive: true)
+                  ..writeAsBytesSync(data);
+                await Share.shareFiles([srcFp!], text: shareText);
               }
-              await Share.shareFiles([srcFp!], text: shareText);
             },
           ));
         }

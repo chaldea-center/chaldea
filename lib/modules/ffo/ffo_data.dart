@@ -418,7 +418,11 @@ class _FFOCardWidgetState extends State<FFOCardWidget> {
             backgroundDecoration: BoxDecoration(color: Colors.transparent),
             minScale: PhotoViewComputedScale.contained * 0.25,
             initialScale: PhotoViewComputedScale.contained,
+            // heroAttributes: PhotoViewHeroAttributes(tag: widget.params),
           );
+        } else {
+          // no Hero effect
+          // child = Hero(tag: widget.params, child: child);
         }
         return child;
       },
