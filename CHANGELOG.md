@@ -1,6 +1,8 @@
 ## 1.4.7
 - allow long press to save illustrations and voices
-- fix some null safety bugs
+- add search CV/illustrator/costume list page
+- fix some null safety bugs, scrollbar bugs
+- enable markdown support for help messages
 
 ## 1.4.6
 - NEW: add ★️4 fou-kun planning

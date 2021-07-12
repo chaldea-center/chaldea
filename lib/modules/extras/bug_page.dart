@@ -5,9 +5,9 @@ import 'package:url_launcher/url_launcher.dart';
 class BugAnnouncePage extends StatelessWidget {
   final _BugDetail header = _BugDetail(
     title: '本页罗列可能出现的BUG',
-    content: '如有其他bug请反馈',
+    content: '欢迎积极反馈 φ(≧ω≦*)♪',
     titleEn: 'Potential Bugs',
-    contentEn: 'If there is any other bug, please send feedback.',
+    contentEn: 'Any suggestion is welcomed φ(≧ω≦*)♪',
   );
 
   final List<_BugDetail> bugs = [

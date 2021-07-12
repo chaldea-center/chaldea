@@ -333,7 +333,7 @@ class ServantBaseInfo {
   List<String> alignments;
   List<String> traits;
   Map<String, String> ability;
-  Map<String, String> illustrations;
+  Map<String, String> illustrations; //key: description, value:wiki filename
   List<String> cards;
   Map<String, int> cardHits;
   Map<String, List<int>> cardHitsDamage;

@@ -28,7 +28,8 @@ class _EditGalleryPageState extends State<EditGalleryPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit galleries'),
+        title: Text(LocalizedText.of(
+            chs: '编辑主页', jpn: 'ホームページの編集', eng: 'Edit Homepage')),
         leading: BackButton(),
       ),
       body: ListView(children: divideTiles(tiles, bottom: true)),

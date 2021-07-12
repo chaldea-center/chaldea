@@ -14,6 +14,8 @@ class _CvListPageState extends SearchableListState<String, CvListPage> {
   Map<String, List<Servant>> cvMap = {};
   List<String> cvs = [];
 
+  bool _initiated = false;
+
   void _parse() {
     cvMap.clear();
     cvs.clear();
@@ -30,7 +32,11 @@ class _CvListPageState extends SearchableListState<String, CvListPage> {
     cvs = cvMap.keys.toList();
     cvs.sort((a, b) => Utils.toAlphabet(a).compareTo(Utils.toAlphabet(b)));
 
-    if (mounted) setState(() {});
+    if (mounted) {
+      setState(() {
+        _initiated = true;
+      });
+    }
   }
 
   @override
@@ -58,7 +64,7 @@ class _CvListPageState extends SearchableListState<String, CvListPage> {
 
   @override
   Widget buildScrollable({bool useGrid = false}) {
-    if (shownList.isEmpty) {
+    if (shownList.isEmpty && !_initiated) {
       return Center(child: CircularProgressIndicator());
     }
     return super.buildScrollable(useGrid: useGrid);
@@ -129,6 +135,7 @@ class IllustratorListPage extends StatefulWidget {
 
 class _IllustratorListPageState
     extends SearchableListState<String, IllustratorListPage> {
+  bool _initiated = false;
   Map<String, List<Servant>> svtMap = {};
   Map<String, List<CraftEssence>> craftMap = {};
   Map<String, List<CommandCode>> codeMap = {};
@@ -162,7 +169,11 @@ class _IllustratorListPageState
     illustrators = illustrators.toSet().toList();
     illustrators
         .sort((a, b) => Utils.toAlphabet(a).compareTo(Utils.toAlphabet(b)));
-    if (mounted) setState(() {});
+    if (mounted) {
+      setState(() {
+        _initiated = true;
+      });
+    }
   }
 
   @override
@@ -186,7 +197,7 @@ class _IllustratorListPageState
 
   @override
   Widget buildScrollable({bool useGrid = false}) {
-    if (shownList.isEmpty) {
+    if (shownList.isEmpty && !_initiated) {
       return Center(child: CircularProgressIndicator());
     }
     return super.buildScrollable(useGrid: useGrid);
