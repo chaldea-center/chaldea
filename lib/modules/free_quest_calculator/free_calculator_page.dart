@@ -45,7 +45,9 @@ class _FreeQuestCalculatorPageState extends State<FreeQuestCalculatorPage>
       appBar: AppBar(
         title: Text(S.of(context).free_quest_calculator),
         leading: BackButton(),
-        actions: [MarkdownHelpPage.buildHelpBtn(context, 'free_calculator.md')],
+        actions: [
+          MarkdownHelpPage.buildHelpBtn(context, 'free_quest_planning.md')
+        ],
         bottom: TabBar(
           controller: _tabController,
           isScrollable: !Language.isCN,

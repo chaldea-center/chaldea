@@ -360,11 +360,10 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
       if (mounted) {
         setState(() {});
       }
-    }).catchError((error, stackTrace) {
-      if (!(error is FileSelectionCanceledError)) {
-        print(error.toString());
-        print(stackTrace.toString());
-        EasyLoading.showError(error.toString());
+    }).catchError((e, s) {
+      if (!(e is FileSelectionCanceledError)) {
+        logger.e('import image failed', e, s);
+        EasyLoading.showError(e.toString());
       }
     });
   }
@@ -386,8 +385,16 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
 
       Map<String, dynamic> map = {};
       for (var file in imageFiles) {
-        map[pathlib.basename(file.path)] =
-            await MultipartFile.fromFile(file.path);
+        var bytes = await file.readAsBytes();
+        // compress if size > 1.0M
+        if (bytes.length ~/ 1024 > 1.0) {
+          // bytes = compressToJpg(
+          //     src: bytes, maxWidth: 1920, maxHeight: 1080, quality: 90);
+        }
+
+        /// MUST pass filename
+        final filename = pathlib.basename(file.path);
+        map[filename] = MultipartFile.fromBytes(bytes, filename: filename);
       }
       var formData = FormData.fromMap(map);
       final resp2 = ChaldeaResponse.fromResponse(
@@ -403,6 +410,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
 
   void _fetchResult() async {
     try {
+      EasyLoading.show(maskType: EasyLoadingMaskType.clear);
       final resp = ChaldeaResponse.fromResponse(
           await _dio.get('/recognizer/skill/result'));
       if (!mounted) return;
@@ -424,6 +432,8 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
     } catch (e, s) {
       logger.e('fetch svt result', e, s);
       showInformDialog(context, title: 'Error', content: e.toString());
+    } finally {
+      EasyLoadingUtil.dismiss(null);
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/components/img_util.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
@@ -229,8 +230,16 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
 
       final Map<String, dynamic> map = {};
       for (var file in imageFiles) {
-        map[pathlib.basename(file.path)] =
-            await MultipartFile.fromFile(file.path);
+        var bytes = await file.readAsBytes();
+        // compress if size > 1.0M
+        if (bytes.length ~/ 1024 > 1.0) {
+          bytes = compressToJpg(
+              src: bytes, maxWidth: 1920, maxHeight: 1080, quality: 90);
+        }
+
+        /// MUST pass filename
+        final filename = pathlib.basename(file.path);
+        map[filename] = MultipartFile.fromBytes(bytes, filename: filename);
       }
       var formData = FormData.fromMap(map);
       final resp2 = ChaldeaResponse.fromResponse(
@@ -246,6 +255,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
 
   void _fetchResult() async {
     try {
+      EasyLoading.show(maskType: EasyLoadingMaskType.clear);
       final resp = ChaldeaResponse.fromResponse(
           await _dio.get('/recognizer/item/result'));
       if (!mounted) return;
@@ -267,6 +277,8 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
     } catch (e, s) {
       logger.e('fetch item result error', e, s);
       showInformDialog(context, title: 'Error', content: e.toString());
+    } finally {
+      EasyLoadingUtil.dismiss(null);
     }
   }
 

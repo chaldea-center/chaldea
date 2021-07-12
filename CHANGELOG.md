@@ -3,6 +3,7 @@
 - add search CV/illustrator/costume list page
 - fix some null safety bugs, scrollbar bugs
 - enable markdown support for help messages
+- compress image before uploading screenshots
 
 ## 1.4.6
 - NEW: add ★️4 fou-kun planning
