@@ -51,7 +51,7 @@ class FFOPart {
         headY2 = _toInt(row[9]);
 }
 
-class FFOParams {
+class FFOParams with ImageActionMixin {
   FFOPart? headPart;
   FFOPart? bodyPart;
   FFOPart? landPart;
@@ -300,10 +300,7 @@ class FFOParams {
   Size get canvasSize =>
       cropNormalizedSize ? const Size(512, 720) : const Size(1024, 1024);
 
-  Future<void> saveTo(BuildContext context, [String? fp]) async {
-    fp ??= join(db.paths.appPath, 'ffo_output',
-        parts.map((e) => e?.svtId ?? 0).join('-') + '.png');
-
+  Future<Uint8List?> toBinary() async {
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(
       recorder,
@@ -315,57 +312,82 @@ class FFOParams {
     ui.Image img = await picture.toImage(
         canvasSize.width.toInt(), canvasSize.height.toInt());
     ByteData? data = (await img.toByteData(format: ui.ImageByteFormat.png));
+    return data?.buffer.asUint8List();
+  }
+
+  /// save to temp file first, then open sheet
+  @override
+  Future showSaveShare({
+    required BuildContext context,
+    Uint8List? data, //ignore
+    String? srcFp, //ignore
+    bool gallery = true,
+    String? destFp,
+    bool share = true,
+    String? shareText,
+  }) async {
+    data = await this.toBinary();
     if (data == null) {
-      SimpleCancelOkDialog(
-        title: Text('Save failed'),
-      ).showDialog(context);
+      EasyLoading.showError('Failed');
       return;
     }
-    final file = File(fp)..createSync(recursive: true);
-    await file.writeAsBytes(data.buffer.asUint8List());
-    await SimpleCancelOkDialog(
-      title: Text(S.current.saved),
-      content: Text(fp),
-      hideCancel: true,
-      actions: [
-        if (Platform.isMacOS || Platform.isWindows)
-          TextButton(
-            onPressed: () {
-              OpenFile.open(dirname(fp!));
-            },
-            child: Text(S.current.open),
-          ),
-        if (Platform.isAndroid || Platform.isIOS)
-          TextButton(
-            onPressed: () async {
-              try {
-                final result = await ImageGallerySaver.saveFile(fp!);
-                logger.i('save to gallery: $result');
-                if (result['isSuccess'] == true) {
-                  EasyLoading.showSuccess('Saved to Photos');
-                  Navigator.pop(context);
-                } else {
-                  EasyLoading.showError(
-                      'Save to Photos failed\n${result["errorMessage"]}');
-                }
-              } catch (e) {
-                EasyLoading.showError('Save to Photos failed');
-              }
-            },
-            child: Text(S.current.save_to_photos),
-          ),
-      ],
-    ).showDialog(context);
+    String fn =
+        'ffo-' + this.parts.map((e) => e?.svtId ?? 0).join('-') + '.png';
+    srcFp = join(db.paths.tempDir, fn); //tempFile
+    File(srcFp)
+      ..createSync(recursive: true)
+      ..writeAsBytesSync(data);
+    destFp ??= join(db.paths.appPath, 'ffo_output', fn);
+    return super.showSaveShare(
+      context: context,
+      data: null,
+      srcFp: srcFp,
+      gallery: gallery,
+      destFp: destFp,
+      share: share,
+      shareText: shareText ?? fn,
+    );
+  }
+
+  Widget buildCard(BuildContext context, [tapToFullscreen = false]) {
+    final image = FFOCardWidget(params: this, showSave: true);
+    if (this.isEmpty) {
+      return image;
+    }
+    return GestureDetector(
+      child: image,
+      onTap: tapToFullscreen
+          ? () {
+              FullscreenWidget(
+                builder: (BuildContext context) {
+                  return Scaffold(
+                    body: FFOCardWidget(
+                      params: this,
+                      showSave: true,
+                      enableZoom: true,
+                    ),
+                  );
+                },
+              ).push(context);
+            }
+          : null,
+    );
   }
 }
 
 class FFOCardWidget extends StatefulWidget {
   final FFOParams params;
   final BoxFit fit;
+  final bool showSave;
+  final bool enableZoom;
 
-  const FFOCardWidget(
-      {Key? key, required this.params, this.fit = BoxFit.contain})
-      : super(key: key);
+  const FFOCardWidget({
+    Key? key,
+    required this.params,
+    this.fit = BoxFit.contain,
+    this.showSave = true,
+    this.enableZoom = false,
+  }) : super(key: key);
 
   @override
   _FFOCardWidgetState createState() => _FFOCardWidgetState();
@@ -377,14 +399,28 @@ class _FFOCardWidgetState extends State<FFOCardWidget> {
     return StreamBuilder(
       stream: widget.params.onChanged.stream,
       builder: (context, snapshot) {
-        // print('stream builder');
-        return FittedBox(
+        Widget child = FittedBox(
           fit: widget.fit,
           child: CustomPaint(
             size: widget.params.canvasSize,
             painter: FFOPainter(widget.params),
           ),
         );
+        if (widget.showSave) {
+          child = GestureDetector(
+            child: child,
+            onLongPress: () => widget.params.showSaveShare(context: context),
+          );
+        }
+        if (widget.enableZoom) {
+          child = PhotoView.customChild(
+            child: child,
+            backgroundDecoration: BoxDecoration(color: Colors.transparent),
+            minScale: PhotoViewComputedScale.contained * 0.25,
+            initialScale: PhotoViewComputedScale.contained,
+          );
+        }
+        return child;
       },
     );
   }

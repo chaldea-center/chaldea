@@ -311,7 +311,7 @@ class _SettingsPageState extends State<SettingsPage> {
             children: <Widget>[
               ListTile(
                 title: Text('Test Func'),
-                onTap: testFunction,
+                onTap: () => testFunction(context),
               ),
               ListTile(
                 title: Text('Master-Detail width'),

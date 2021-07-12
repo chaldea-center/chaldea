@@ -318,7 +318,7 @@ class Database {
       } else {
         image = CachedImage(
           imageUrl: iconName,
-          saveDir: db.paths.gameIconDir,
+          cacheDir: db.paths.gameIconDir,
           width: width,
           height: height,
           aspectRatio: aspectRatio,

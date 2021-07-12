@@ -3,14 +3,15 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:path/path.dart' show basename;
 import 'package:photo_view/photo_view.dart';
 import 'package:string_validator/string_validator.dart' as validator;
 
 import 'cached_image_option.dart';
+import 'image_action_mixin.dart';
 import 'photo_view_option.dart';
 
 export 'cached_image_option.dart';
+export 'image_action_mixin.dart';
 export 'photo_view_option.dart';
 
 class FullscreenWidget extends StatefulWidget {
@@ -127,7 +128,7 @@ class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
               (index) => CachedImage(
                 imageUrl: widget.imgUrls[index],
                 isMCFile: widget.isMcFile,
-                allowSave: widget.allowSave,
+                showSaveOnLongPress: widget.allowSave,
                 placeholder: widget.placeholder,
               ),
             ),
@@ -153,9 +154,8 @@ class CachedImage extends StatefulWidget {
   final bool? isMCFile;
 
   /// Save only if the image is wiki file
-  final String? saveDir;
-  final bool allowSave;
-
+  final String? cacheDir;
+  final bool showSaveOnLongPress;
   final double? aspectRatio;
 
   /// [width], [height], [placeholder] will override [cachedOption]
@@ -170,8 +170,8 @@ class CachedImage extends StatefulWidget {
     Key? key,
     required this.imageUrl,
     this.isMCFile,
-    this.saveDir,
-    this.allowSave = false,
+    this.cacheDir,
+    this.showSaveOnLongPress = false,
     this.width,
     this.height,
     this.aspectRatio,
@@ -225,7 +225,7 @@ class CachedImage extends StatefulWidget {
   }
 }
 
-class _CachedImageState extends State<CachedImage> {
+class _CachedImageState extends State<CachedImage> with ImageActionMixin {
   bool _isMcFile = false;
 
   CachedImageOption get option => widget.cachedOption;
@@ -239,8 +239,8 @@ class _CachedImageState extends State<CachedImage> {
       return url;
     } else {
       String? savePath;
-      if (widget.saveDir != null)
-        savePath = join(widget.saveDir!, widget.imageUrl!);
+      if (widget.cacheDir != null)
+        savePath = join(widget.cacheDir!, widget.imageUrl!);
       WikiUtil.resolveFileUrl(widget.imageUrl!, savePath).then((url) {
         if (url != null && mounted) {
           setState(() {});
@@ -312,14 +312,18 @@ class _CachedImageState extends State<CachedImage> {
         maxHeightDiskCache: option.maxHeightDiskCache,
       );
 
-      if (widget.allowSave) {
+      if (widget.showSaveOnLongPress) {
         child = GestureDetector(
           child: child,
           onLongPress: () async {
             final file = await _cacheManager.getSingleFile(realUrl);
-            final savePath = join(db.paths.downloadDir, basename(file.path));
-            SimpleCancelOkDialog.showSave(
-                context: context, srcFile: file, savePath: savePath);
+            return showSaveShare(
+              context: context,
+              srcFp: file.path,
+              destFp: join(db.paths.downloadDir, file.basename),
+              gallery: true,
+              share: true,
+            );
           },
         );
       }
@@ -349,10 +353,11 @@ class _CachedImageState extends State<CachedImage> {
       }
     }
     return CachedImage.sizeChild(
-        child: child,
-        width: widget.width,
-        height: widget.height,
-        aspectRatio: widget.aspectRatio);
+      child: child,
+      width: widget.width,
+      height: widget.height,
+      aspectRatio: widget.aspectRatio,
+    );
   }
 
   bool _isValidUrl(String str) {

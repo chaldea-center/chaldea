@@ -99,7 +99,7 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
                 child: CachedImage(
                   imageUrl: imageUrls[index],
                   placeholder: placeholder,
-                  allowSave: true,
+                  showSaveOnLongPress: true,
                 ),
               );
             }),

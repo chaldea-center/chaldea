@@ -10,9 +10,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:csv/csv.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flutter/foundation.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:open_file/open_file.dart';
-import 'package:path/path.dart' show dirname;
+import 'package:photo_view/photo_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 part 'ffo_data.dart';
@@ -51,7 +49,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: Text('Freedom Order'),
+        title: Text('Fate/Freedom Order'),
         centerTitle: true,
         actions: [
           MarkdownHelpPage.buildHelpBtn(context, 'freedom_order.md'),
@@ -69,7 +67,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
           if (parts.isNotEmpty)
             Expanded(
               child: Center(
-                child: _fullscreenAndSave(context, params),
+                child: params.buildCard(context, true),
               ),
             ),
           Padding(
@@ -118,8 +116,9 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
                   },
                 ),
                 ElevatedButton(
-                  onPressed:
-                      params.isEmpty ? null : () => params.saveTo(context),
+                  onPressed: params.isEmpty
+                      ? null
+                      : () => params.showSaveShare(context: context),
                   child: Text(S.current.save),
                 ),
                 ElevatedButton(

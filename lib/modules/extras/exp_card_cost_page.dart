@@ -129,7 +129,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
       child: CachedImage(
         imageUrl: name,
         isMCFile: true,
-        saveDir: db.paths.gameIconDir,
+        cacheDir: db.paths.gameIconDir,
         width: 132 * 0.2,
         height: 144 * 0.2,
       ),

@@ -64,6 +64,7 @@ dependencies:
   kana_kit: ^2.0.0
   logger: ^1.0.0
   lpinyin: ^2.0.3
+  modal_bottom_sheet: ^2.0.0
   open_file: ^3.2.1
   package_info_plus: ^1.0.3
   path_provider: ^2.0.2

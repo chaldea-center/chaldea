@@ -134,7 +134,12 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
     Widget _buildRow(List<FFOParams> rowItems) {
       return Row(
         mainAxisSize: MainAxisSize.min,
-        children: rowItems.map((e) => _buildCard(e)).toList(),
+        children: rowItems
+            .map((e) => Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  child: e.buildCard(context, true),
+                ))
+            .toList(),
       );
     }
 
@@ -202,51 +207,4 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
       ],
     );
   }
-
-  Widget _buildCard(FFOParams params) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: _fullscreenAndSave(context, params),
-    );
-  }
-}
-
-Widget _fullscreenAndSave(BuildContext context, FFOParams params) {
-  final image = FFOCardWidget(params: params);
-
-  void _showSave() {
-    SimpleCancelOkDialog(
-      scrollable: true,
-      title: Text(S.current.save),
-      content: image,
-      onTapOk: () {
-        params.saveTo(context);
-      },
-    ).showDialog(context);
-  }
-
-  if (params.isEmpty) {
-    return image;
-  }
-
-  return InkWell(
-    child: image,
-    onLongPress: _showSave,
-    onTap: () {
-      FullscreenWidget(
-        builder: (BuildContext context) {
-          return Scaffold(
-            body: Center(
-              child: FittedBox(
-                child: GestureDetector(
-                  onLongPress: _showSave,
-                  child: image,
-                ),
-              ),
-            ),
-          );
-        },
-      ).push(context);
-    },
-  );
 }
