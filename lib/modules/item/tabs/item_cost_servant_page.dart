@@ -108,14 +108,14 @@ class ItemCostServantPage extends StatelessWidget {
             children: [
               avatar,
               Container(
-                padding: EdgeInsets.all(1),
+                padding: EdgeInsets.all(1.5),
                 decoration: BoxDecoration(
                     color: Colors.blueAccent,
                     borderRadius: BorderRadius.circular(3)),
                 child: Icon(
                   Icons.favorite,
                   color: Colors.white,
-                  size: 12,
+                  size: 10,
                 ),
               ),
             ],

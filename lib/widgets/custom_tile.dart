@@ -88,13 +88,13 @@ class CustomTile extends StatelessWidget {
     List<Widget> trailingIcons = [];
     if (trailing != null) {
       trailingIcons.add(IconTheme.merge(
-        data: iconThemeData!.copyWith(color: theme.buttonColor),
+        data: iconThemeData!,
         child: trailing!,
       ));
     }
     if (trailingIcon != null) {
       trailingIcons.add(IconTheme.merge(
-        data: iconThemeData!.copyWith(color: theme.buttonColor),
+        data: iconThemeData!,
         child: trailingIcon!,
       ));
     }
@@ -158,7 +158,7 @@ class CustomTile extends StatelessWidget {
         return selected ? theme.primaryColor : Colors.black45;
       case Brightness.dark:
         return selected
-            ? theme.accentColor
+            ? theme.colorScheme.secondary
             : null; // null - use current icon theme color
     }
   }
@@ -177,7 +177,7 @@ class CustomTile extends StatelessWidget {
         case Brightness.light:
           return theme.primaryColor;
         case Brightness.dark:
-          return theme.accentColor;
+          return theme.colorScheme.secondary;
       }
     }
     return defaultColor;

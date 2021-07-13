@@ -102,7 +102,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
                 maxFontSize: 12,
                 style: Theme.of(context).textTheme.bodyText1?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).accentColor),
+                    color: Theme.of(context).colorScheme.secondary),
               ),
               Text(LocalizedText(
                 chs: record.text,

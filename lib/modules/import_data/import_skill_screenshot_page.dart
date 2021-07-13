@@ -387,7 +387,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
       for (var file in imageFiles) {
         var bytes = await file.readAsBytes();
         // compress if size > 1.0M
-        if (bytes.length ~/ 1024 > 1.0) {
+        if (bytes.length / 1024 > 1.0) {
           bytes = compressToJpg(
               src: bytes, maxWidth: 1920, maxHeight: 1080, quality: 90);
         }

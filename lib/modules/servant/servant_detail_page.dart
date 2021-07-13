@@ -127,7 +127,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                 height: 36,
                 child: TabBar(
                   controller: _tabController,
-                  labelColor: Theme.of(context).accentColor,
+                  labelColor: Theme.of(context).colorScheme.secondary,
                   indicatorSize: TabBarIndicatorSize.tab,
                   labelPadding: EdgeInsets.symmetric(horizontal: 8.0),
                   unselectedLabelColor: Colors.grey,
@@ -310,7 +310,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                   value: 5 - index,
                   child: Icon(
                     icons[index],
-                    color: Theme.of(context).accentColor,
+                    color: Theme.of(context).colorScheme.secondary,
                   ));
             }),
             onChanged: (v) {

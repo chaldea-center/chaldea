@@ -74,21 +74,19 @@ class _QuestCardState extends State<QuestCard> {
                   ),
                 ),
                 contentPadding: EdgeInsets.fromLTRB(16, 8, 0, 8),
-                trailing: InkWell(
-                  child: Tooltip(
-                    message:
-                        showTrueName ? 'Show Display Name' : 'Show True Name',
-                    child: Icon(
-                      Icons.remove_red_eye_outlined,
-                      color: showTrueName
-                          ? Theme.of(context).accentColor
-                          : Theme.of(context).hintColor,
-                    ),
+                trailing: IconButton(
+                  onPressed: () => setState(() => showTrueName = !showTrueName),
+                  icon: Icon(
+                    Icons.remove_red_eye_outlined,
+                    color: showTrueName
+                        ? null
+                        : Theme.of(context).hintColor.withOpacity(0.5),
                   ),
-                  onTap: () => setState(() => showTrueName = !showTrueName),
+                  tooltip:
+                      showTrueName ? 'Show Display Name' : 'Show True Name',
                 ),
               ),
-              ..._buildBattles(quest.battles)
+              ..._buildBattles(quest.battles),
             ],
             divider: Divider(height: 3, thickness: 0.5),
           ).toList(),
