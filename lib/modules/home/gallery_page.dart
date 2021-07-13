@@ -83,7 +83,11 @@ class _GalleryPageState extends State<GalleryPage> {
                 )),
               ),
               kDefaultDivider,
-              if (_showRateCard == true) buildRateTile(),
+              if (_showRateCard == true)
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  child: buildRateTile(),
+                ),
               if (kDebugMode) buildTestInfoPad(),
             ],
           );
@@ -107,7 +111,7 @@ class _GalleryPageState extends State<GalleryPage> {
     return SimpleAccordion(
       canTapOnHeader: false,
       headerBuilder: (context, expanded) => ListTile(
-        // dense: expanded,
+        horizontalTitleGap: 0,
         leading: Icon(Icons.stars_rounded),
         title: Text(LocalizedText.of(
             chs: '走过路过给个评分吧', jpn: 'アプリを評価する', eng: 'Rating Chaldea')),
@@ -121,38 +125,34 @@ class _GalleryPageState extends State<GalleryPage> {
               )
             : Text(' '),
       ),
-      contentBuilder: (context) => Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8),
-        child: ButtonBar(
-          alignment: MainAxisAlignment.end,
-          children: [
-            TextButton(
-              onPressed: () async {
-                rateMyApp.callEvent(RateMyAppEventType.rateButtonPressed);
-                launch(Platform.isAndroid
-                    ? kGooglePlayLink
-                    : Platform.isIOS || Platform.isMacOS
-                        ? kAppStoreLink
-                        : kGooglePlayLink);
-                setState(() {
-                  _showRateCard = false;
-                });
-              },
-              child: Text(LocalizedText.of(chs: '评分', jpn: '評価', eng: 'RATE')),
-            ),
-            TextButton(
-              onPressed: () {
-                rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed);
-                setState(() {
-                  _showRateCard = false;
-                });
-              },
-              child: Text(
-                  LocalizedText.of(chs: '取消', jpn: '後で', eng: 'DISMISS'),
-                  style: TextStyle(color: Theme.of(context).disabledColor)),
-            ),
-          ],
-        ),
+      contentBuilder: (context) => ButtonBar(
+        alignment: MainAxisAlignment.end,
+        children: [
+          TextButton(
+            onPressed: () async {
+              rateMyApp.callEvent(RateMyAppEventType.rateButtonPressed);
+              launch(Platform.isAndroid
+                  ? kGooglePlayLink
+                  : Platform.isIOS || Platform.isMacOS
+                      ? kAppStoreLink
+                      : kGooglePlayLink);
+              setState(() {
+                _showRateCard = false;
+              });
+            },
+            child: Text(LocalizedText.of(chs: '评分', jpn: '評価', eng: 'RATE')),
+          ),
+          TextButton(
+            onPressed: () {
+              rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed);
+              setState(() {
+                _showRateCard = false;
+              });
+            },
+            child: Text(LocalizedText.of(chs: '取消', jpn: '後で', eng: 'DISMISS'),
+                style: TextStyle(color: Theme.of(context).disabledColor)),
+          ),
+        ],
       ),
     );
   }

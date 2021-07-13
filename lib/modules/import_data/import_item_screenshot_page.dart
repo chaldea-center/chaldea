@@ -1,5 +1,4 @@
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/img_util.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';

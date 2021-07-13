@@ -7,7 +7,7 @@ import 'logger.dart';
 
 Uint8List compressToJpg({
   required Uint8List src,
-  int quality = 80,
+  int quality = 90,
   int? maxWidth,
   int? maxHeight,
 }) {

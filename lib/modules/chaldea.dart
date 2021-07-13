@@ -7,6 +7,7 @@ import 'package:chaldea/components/method_channel_chaldea.dart';
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:chaldea/modules/home/home_page.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -123,6 +124,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
             ...GlobalMaterialLocalizations.delegates,
           ],
           supportedLocales: S.delegate.supportedLocales,
+          scrollBehavior: DraggableScrollBehavior(),
           builder: (context, widget) {
             ErrorWidget.builder = CatcherUtility.errorWidgetBuilder;
             return FlutterEasyLoading(child: widget);
@@ -247,4 +249,12 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
       SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     }
   }
+}
+
+class DraggableScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+      };
 }

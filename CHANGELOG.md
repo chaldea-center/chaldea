@@ -1,10 +1,10 @@
 ## 1.4.7
-- allow long press to save illustrations and voices
+- allow long press to save illustrations and voice files
+- enable scale/pan gestures in full-screen image viewer
 - add search CV/illustrator/costume list page
+- compress screenshots before uploading to avoid 413 error
 - fix some null safety bugs, scrollbar bugs
 - enable markdown support for help messages
-- compress image before uploading screenshots
-- enable scale/pan gestures in fullscreen illustration viewer
 
 ## 1.4.6
 - NEW: add ★️4 fou-kun planning

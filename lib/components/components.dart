@@ -16,6 +16,7 @@ export 'device_app_info.dart';
 export 'extensions.dart';
 export 'git_tool.dart';
 export 'glpk_solver.dart';
+export 'img_util.dart';
 export 'localized/localized.dart';
 export 'localized/localized_base.dart';
 export 'logger.dart';
