@@ -159,17 +159,10 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                                 child: Text(S.of(context).view_illustration)),
                             contentPadding: EdgeInsets.zero,
                             onTap: () {
-                              Navigator.of(context).push(
-                                PageRouteBuilder(
-                                  opaque: false,
-                                  fullscreenDialog: true,
-                                  pageBuilder: (context, _, __) =>
-                                      FullScreenImageSlider(
-                                    imgUrls: [code.illustration],
-                                    placeholder: placeholder,
-                                    allowSave: true,
-                                  ),
-                                ),
+                              FullscreenImageViewer.show(
+                                context: context,
+                                urls: [code.illustration],
+                                placeholder: placeholder,
                               );
                             },
                           ),

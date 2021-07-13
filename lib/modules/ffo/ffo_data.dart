@@ -357,19 +357,19 @@ class FFOParams with ImageActionMixin {
     return GestureDetector(
       child: image,
       onTap: tapToFullscreen
-          ? () {
-              FullscreenWidget(
-                builder: (BuildContext context) {
-                  return Scaffold(
-                    body: FFOCardWidget(
+          ? () => Navigator.of(context).push(PageRouteBuilder(
+                fullscreenDialog: true,
+                opaque: false,
+                pageBuilder: (context, _, __) => FullscreenImageViewer(
+                  children: [
+                    FFOCardWidget(
                       params: this,
                       showSave: true,
                       enableZoom: true,
-                    ),
-                  );
-                },
-              ).push(context);
-            }
+                    )
+                  ],
+                ),
+              ))
           : null,
     );
   }

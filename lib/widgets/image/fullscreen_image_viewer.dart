@@ -1,139 +1,134 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 import 'image_viewer.dart';
 
-class FullscreenWidget extends StatefulWidget {
-  final WidgetBuilder builder;
+class FullscreenImageViewer extends StatefulWidget {
+  final List<Widget> children;
+  final bool fullscreen;
+  final PhotoViewOption photoViewOption;
+  final PhotoViewGalleryOption galleryOption;
 
-  const FullscreenWidget({Key? key, required this.builder}) : super(key: key);
-
-  Future<T?> push<T>(BuildContext context, [bool opaque = false]) {
-    return Navigator.of(context).push<T>(PageRouteBuilder(
-      fullscreenDialog: true,
-      opaque: opaque,
-      pageBuilder: (context, _, __) => this,
-    ));
-  }
-
-  @override
-  _FullscreenWidgetState createState() => _FullscreenWidgetState();
-}
-
-class _FullscreenWidgetState extends State<FullscreenWidget> {
-  @override
-  void initState() {
-    super.initState();
-    SystemChrome.setEnabledSystemUIOverlays([]);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pop(context);
-      },
-      child: widget.builder(context),
-    );
-  }
-}
-
-class FullScreenImageSlider extends StatefulWidget {
-  final List<String?> imgUrls;
-  final bool? isMcFile;
-  final bool allowSave;
-  final int initialPage;
-  final bool? downloadEnabled;
-  final PlaceholderWidgetBuilder? placeholder;
-  final LoadingErrorWidgetBuilder? errorWidget;
-
-  const FullScreenImageSlider({
+  FullscreenImageViewer({
     Key? key,
-    required this.imgUrls,
-    this.isMcFile,
-    this.allowSave = false,
-    this.initialPage = 0,
-    this.downloadEnabled,
-    this.placeholder,
-    this.errorWidget,
-  }) : super(key: key);
+    required this.children,
+    this.fullscreen = true,
+    PhotoViewOption? photoViewOption,
+    this.galleryOption = const PhotoViewGalleryOption(),
+  })  : photoViewOption = photoViewOption ??
+            PhotoViewOption.limited()
+                .copyWith(onTapUp: (ctx, _, __) => Navigator.pop(ctx)),
+        super(key: key);
 
-  @override
-  _FullScreenImageSliderState createState() => _FullScreenImageSliderState();
+  FullscreenImageViewer.fromUrls({
+    Key? key,
+    required List<String> urls,
+    this.fullscreen = true,
+    this.photoViewOption = const PhotoViewOption(),
+    this.galleryOption = const PhotoViewGalleryOption(),
+    CachedImageOption? cachedImageOption,
+    bool showSaveOnLongPress = false,
+  })  : children = urls
+            .map((e) => CachedImage(
+                  imageUrl: e,
+                  cachedOption: cachedImageOption,
+                  photoViewOption: photoViewOption,
+                  showSaveOnLongPress: showSaveOnLongPress,
+                ))
+            .toList(),
+        super(key: key);
 
-  Future push(BuildContext context) {
+  /// mostly used
+  static Future show({
+    required BuildContext context,
+    required List<String> urls,
+    PlaceholderWidgetBuilder? placeholder,
+    int? initialPage,
+  }) {
     return Navigator.of(context).push(
       PageRouteBuilder(
-        opaque: false,
+        opaque: false, // to avoid create new state of lower routes
         fullscreenDialog: true,
-        pageBuilder: (context, _, __) => this,
+        // add transition
+        pageBuilder: (context, _, __) => FullscreenImageViewer(
+          children: List.generate(
+            urls.length,
+            (index) => CachedImage(
+              imageUrl: urls[index],
+              placeholder: placeholder,
+              showSaveOnLongPress: true,
+              photoViewOption: PhotoViewOption.limited().copyWith(
+                onTapUp: (ctx, _, __) {
+                  Navigator.pop(ctx, index);
+                },
+              ),
+            ),
+          ),
+          galleryOption: PhotoViewGalleryOption(
+            pageController: initialPage == null
+                ? null
+                : PageController(initialPage: initialPage),
+          ),
+        ),
       ),
     );
   }
+
+  @override
+  _FullscreenImageViewerState createState() => _FullscreenImageViewerState();
 }
 
-class _FullScreenImageSliderState extends State<FullScreenImageSlider> {
-  int _curIndex = 0;
+class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
+  int? _curIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _curIndex = widget.initialPage;
-    SystemChrome.setEnabledSystemUIOverlays([]);
-  }
-
-  Future<void> resetSystemUI() async {
-    await SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+    if (widget.fullscreen) SystemChrome.setEnabledSystemUIOverlays([]);
   }
 
   @override
   void dispose() {
     super.dispose();
+    if (widget.fullscreen)
+      SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        await resetSystemUI();
         Navigator.of(context).pop(_curIndex);
         return false;
       },
-      child: GestureDetector(
-        onTap: () async {
-          await resetSystemUI();
-          Navigator.of(context).pop(_curIndex);
-        },
-        child: Scaffold(
-          body: CarouselSlider(
-            items: List.generate(
-              widget.imgUrls.length,
-              (index) => CachedImage(
-                imageUrl: widget.imgUrls[index],
-                isMCFile: widget.isMcFile,
-                showSaveOnLongPress: widget.allowSave,
-                placeholder: widget.placeholder,
-              ),
-            ),
-            options: CarouselOptions(
-              autoPlay: false,
-              viewportFraction: 1.0,
-              height: MediaQuery.of(context).size.height,
-              enableInfiniteScroll: false,
-              initialPage: _curIndex,
-              onPageChanged: (v, _) => _curIndex = v,
-            ),
-          ),
-        ),
+      child: Scaffold(
+        // appBar: AppBar(leading: BackButton()),
+        body: gallery,
       ),
+    );
+  }
+
+  Widget get gallery {
+    return PhotoViewGallery(
+      pageOptions: widget.children
+          .map((child) => widget.photoViewOption.toOriginalWithChild(child))
+          .toList(),
+      loadingBuilder: widget.galleryOption.loadingBuilder,
+      backgroundDecoration: widget.galleryOption.backgroundDecoration,
+      gaplessPlayback: widget.galleryOption.gaplessPlayback,
+      reverse: widget.galleryOption.reverse,
+      pageController: widget.galleryOption.pageController,
+      onPageChanged: (index) {
+        _curIndex = index;
+        return widget.galleryOption.onPageChanged?.call(index);
+      },
+      scaleStateChangedCallback: widget.galleryOption.scaleStateChangedCallback,
+      enableRotation: widget.galleryOption.enableRotation,
+      scrollPhysics: widget.galleryOption.scrollPhysics,
+      scrollDirection: widget.galleryOption.scrollDirection,
+      customSize: widget.galleryOption.customSize,
     );
   }
 }

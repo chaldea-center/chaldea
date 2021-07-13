@@ -35,7 +35,7 @@ mixin ImageActionMixin {
               if (data != null) {
                 await ImageGallerySaver.saveImage(data);
               } else if (srcFp != null) {
-                await ImageGallerySaver.saveFile(srcFp!);
+                await ImageGallerySaver.saveFile(srcFp);
               }
               EasyLoading.showSuccess(S.current.saved);
             },
@@ -74,16 +74,18 @@ mixin ImageActionMixin {
             title: Text(S.current.share),
             onTap: () async {
               Navigator.pop(context);
-              if (srcFp == null && data != null) {
+              if (srcFp != null) {
+                await Share.shareFiles([srcFp], text: shareText);
+              } else if (data != null) {
                 // Although, it may not be PNG
                 String fn =
                     Uuid().v5(Uuid.NAMESPACE_URL, data.hashCode.toString()) +
                         '.png';
-                srcFp = join(db.paths.tempDir, fn);
-                File(srcFp!)
+                String tmpFp = join(db.paths.tempDir, fn);
+                File(tmpFp)
                   ..createSync(recursive: true)
                   ..writeAsBytesSync(data);
-                await Share.shareFiles([srcFp!], text: shareText);
+                await Share.shareFiles([tmpFp], text: shareText);
               }
             },
           ));
@@ -91,7 +93,7 @@ mixin ImageActionMixin {
         children.addAll([
           Material(
             color: Colors.grey.withOpacity(0.2),
-            child: const SizedBox(height: 8),
+            child: const SizedBox(height: 6),
           ),
           ListTile(
             leading: Icon(Icons.close),

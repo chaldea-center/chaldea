@@ -81,18 +81,13 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
             children: List.generate(svt.info.illustrations.length, (index) {
               return GestureDetector(
                 onTap: () async {
-                  int? newIndex =
-                      await Navigator.of(context).push(PageRouteBuilder(
-                    opaque: false,
-                    fullscreenDialog: true,
-                    pageBuilder: (context, _, __) => FullScreenImageSlider(
-                      imgUrls: imageUrls,
-                      initialPage: index,
-                      placeholder: placeholder,
-                      allowSave: true,
-                    ),
-                  ));
-                  if (newIndex != null) {
+                  var newIndex = await FullscreenImageViewer.show(
+                    context: context,
+                    urls: imageUrls,
+                    placeholder: placeholder,
+                    initialPage: index,
+                  );
+                  if (newIndex != null && newIndex is int) {
                     _tabController.animateTo(newIndex);
                   }
                 },

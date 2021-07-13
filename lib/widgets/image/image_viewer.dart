@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:path/path.dart' as path;
 import 'package:photo_view/photo_view.dart';
 import 'package:string_validator/string_validator.dart' as validator;
 import 'package:uuid/uuid.dart';
@@ -35,7 +36,7 @@ class CachedImage extends StatefulWidget {
   final double? height; //2
   final PlaceholderWidgetBuilder? placeholder; //2
 
-  final CachedImageOption cachedOption;
+  final CachedImageOption? cachedOption;
   final PhotoViewOption? photoViewOption;
 
   CachedImage({
@@ -48,7 +49,7 @@ class CachedImage extends StatefulWidget {
     this.height,
     this.aspectRatio,
     this.placeholder,
-    this.cachedOption = const CachedImageOption(),
+    this.cachedOption,
     this.photoViewOption,
   })  : imageProvider = null,
         super(key: key);
@@ -116,7 +117,8 @@ class CachedImage extends StatefulWidget {
 class _CachedImageState extends State<CachedImage> with ImageActionMixin {
   bool _isMcFile = false;
 
-  CachedImageOption get option => widget.cachedOption;
+  CachedImageOption get cachedOption =>
+      widget.cachedOption ?? const CachedImageOption();
 
   String? getRealUrl() {
     if (widget.imageUrl == null) return null;
@@ -148,23 +150,23 @@ class _CachedImageState extends State<CachedImage> with ImageActionMixin {
         image: widget.imageProvider!,
         // frameBuilder:null,
         // loadingBuilder:null,
-        errorBuilder: option.errorWidget == null
+        errorBuilder: cachedOption.errorWidget == null
             ? null
-            : (ctx, e, s) => option.errorWidget!(ctx, '', e),
+            : (ctx, e, s) => cachedOption.errorWidget!(ctx, '', e),
         // semanticLabel:null,
         // excludeFromSemantics : false,
         width: widget.width,
         height: widget.height,
-        color: option.color,
-        colorBlendMode: option.colorBlendMode,
-        fit: option.fit,
-        alignment: option.alignment,
-        repeat: option.repeat,
+        color: cachedOption.color,
+        colorBlendMode: cachedOption.colorBlendMode,
+        fit: cachedOption.fit,
+        alignment: cachedOption.alignment,
+        repeat: cachedOption.repeat,
         // centerSlice:null,
-        matchTextDirection: option.matchTextDirection,
+        matchTextDirection: cachedOption.matchTextDirection,
         // gaplessPlayback : false,
         // isAntiAlias :false,
-        filterQuality: option.filterQuality,
+        filterQuality: cachedOption.filterQuality,
       );
       if (widget.showSaveOnLongPress) {
         child = GestureDetector(
@@ -212,49 +214,52 @@ class _CachedImageState extends State<CachedImage> with ImageActionMixin {
       if (usePlaceholder) {
         child = parsedPlaceholder(context, realUrl ?? widget.imageUrl ?? '');
       } else {
-        final _cacheManager = option.cacheManager ??
+        final _cacheManager = cachedOption.cacheManager ??
             (_isMcFile ? WikiUtil.wikiFileCache : DefaultCacheManager());
         child = CachedNetworkImage(
           imageUrl: realUrl!,
-          httpHeaders: option.httpHeaders,
-          imageBuilder: option.imageBuilder,
+          httpHeaders: cachedOption.httpHeaders,
+          imageBuilder: cachedOption.imageBuilder,
           placeholder: parsedPlaceholder,
-          progressIndicatorBuilder: option.progressIndicatorBuilder,
-          errorWidget: option.errorWidget ?? CachedImage.defaultErrorWidget,
-          fadeOutDuration: option.fadeOutDuration,
-          fadeOutCurve: option.fadeOutCurve,
-          fadeInDuration: option.fadeInDuration,
-          fadeInCurve: option.fadeInCurve,
-          width: widget.width ?? option.width,
-          height: widget.height ?? option.height,
-          fit: option.fit,
-          alignment: option.alignment,
-          repeat: option.repeat,
-          matchTextDirection: option.matchTextDirection,
+          progressIndicatorBuilder: cachedOption.progressIndicatorBuilder,
+          errorWidget:
+              cachedOption.errorWidget ?? CachedImage.defaultErrorWidget,
+          fadeOutDuration: cachedOption.fadeOutDuration,
+          fadeOutCurve: cachedOption.fadeOutCurve,
+          fadeInDuration: cachedOption.fadeInDuration,
+          fadeInCurve: cachedOption.fadeInCurve,
+          width: widget.width ?? cachedOption.width,
+          height: widget.height ?? cachedOption.height,
+          fit: cachedOption.fit,
+          alignment: cachedOption.alignment,
+          repeat: cachedOption.repeat,
+          matchTextDirection: cachedOption.matchTextDirection,
           cacheManager: _cacheManager,
-          useOldImageOnUrlChange: option.useOldImageOnUrlChange,
-          color: option.color,
-          filterQuality: option.filterQuality,
-          colorBlendMode: option.colorBlendMode,
-          placeholderFadeInDuration: option.placeholderFadeInDuration,
-          memCacheWidth: option.memCacheWidth,
-          memCacheHeight: option.memCacheHeight,
-          cacheKey: option.cacheKey,
-          maxWidthDiskCache: option.maxWidthDiskCache,
-          maxHeightDiskCache: option.maxHeightDiskCache,
+          useOldImageOnUrlChange: cachedOption.useOldImageOnUrlChange,
+          color: cachedOption.color,
+          filterQuality: cachedOption.filterQuality,
+          colorBlendMode: cachedOption.colorBlendMode,
+          placeholderFadeInDuration: cachedOption.placeholderFadeInDuration,
+          memCacheWidth: cachedOption.memCacheWidth,
+          memCacheHeight: cachedOption.memCacheHeight,
+          cacheKey: cachedOption.cacheKey,
+          maxWidthDiskCache: cachedOption.maxWidthDiskCache,
+          maxHeightDiskCache: cachedOption.maxHeightDiskCache,
         );
 
         if (widget.showSaveOnLongPress) {
           child = GestureDetector(
             child: child,
             onLongPress: () async {
-              final file = await _cacheManager.getSingleFile(realUrl);
+              File file = await _cacheManager.getSingleFile(realUrl);
+              String fn = path.basename(file.path);
               return showSaveShare(
                 context: context,
                 srcFp: file.path,
-                destFp: join(db.paths.downloadDir, file.basename),
+                destFp: join(db.paths.downloadDir, fn),
                 gallery: true,
                 share: true,
+                shareText: fn,
               );
             },
           );
@@ -296,7 +301,8 @@ class _CachedImageState extends State<CachedImage> with ImageActionMixin {
 
   Widget parsedPlaceholder(BuildContext context, String url) {
     if (widget.placeholder != null) return widget.placeholder!(context, url);
-    if (option.placeholder != null) return option.placeholder!(context, url);
+    if (cachedOption.placeholder != null)
+      return cachedOption.placeholder!(context, url);
     return Container(
       width: widget.width,
       height: widget.height,

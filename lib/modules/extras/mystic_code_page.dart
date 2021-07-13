@@ -270,14 +270,11 @@ class _MysticCodePageState extends State<MysticCodePage> {
             for (int i = 0; i < urls.length; i++)
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(PageRouteBuilder(
-                    fullscreenDialog: true,
-                    opaque: false,
-                    pageBuilder: (context, _, __) => FullScreenImageSlider(
-                      imgUrls: urls,
-                      initialPage: i,
-                    ),
-                  ));
+                  FullscreenImageViewer.show(
+                    context: context,
+                    urls: urls,
+                    initialPage: i,
+                  );
                 },
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15),

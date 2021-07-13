@@ -28,7 +28,7 @@ class PhotoViewOption {
   final bool? disableGestures;
   final ImageErrorWidgetBuilder? errorBuilder;
 
-  PhotoViewOption({
+  const PhotoViewOption({
     this.backgroundDecoration = const BoxDecoration(color: Colors.transparent),
     this.heroAttributes,
     this.scaleStateChangedCallback,
@@ -49,6 +49,13 @@ class PhotoViewOption {
     this.disableGestures,
     this.errorBuilder,
   });
+
+  static PhotoViewOption limited({double minScale = 0.4, dynamic maxScale}) {
+    return PhotoViewOption(
+      minScale: PhotoViewComputedScale.contained * minScale,
+      maxScale: maxScale,
+    );
+  }
 
   PhotoViewOption copyWith({
     BoxDecoration? backgroundDecoration,
@@ -156,9 +163,9 @@ class PhotoViewGalleryOption {
   final Axis scrollDirection;
   final Size? customSize;
 
-  PhotoViewGalleryOption({
+  const PhotoViewGalleryOption({
     this.loadingBuilder,
-    this.backgroundDecoration,
+    this.backgroundDecoration = const BoxDecoration(color: Colors.transparent),
     this.gaplessPlayback = false,
     this.reverse = false,
     this.pageController,

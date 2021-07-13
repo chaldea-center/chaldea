@@ -144,10 +144,11 @@ class CostumeDetailPage extends StatelessWidget {
                     (index) => GestureDetector(
                       child: CachedImage(imageUrl: illustrations[index]),
                       onTap: () {
-                        FullScreenImageSlider(
-                          imgUrls: illustrations,
+                        FullscreenImageViewer.show(
+                          context: context,
+                          urls: illustrations,
                           initialPage: index,
-                        ).push(context);
+                        );
                       },
                     ),
                   ),

@@ -4,6 +4,7 @@
 - fix some null safety bugs, scrollbar bugs
 - enable markdown support for help messages
 - compress image before uploading screenshots
+- enable scale/pan gestures in fullscreen illustration viewer
 
 ## 1.4.6
 - NEW: add ★️4 fou-kun planning
