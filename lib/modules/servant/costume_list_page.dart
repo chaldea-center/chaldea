@@ -10,6 +10,9 @@ class CostumeListPage extends StatefulWidget {
 
 class _CostumeListPageState
     extends SearchableListState<Costume, CostumeListPage> {
+  @override
+  Iterable<Costume> get wholeData => db.gameData.costumes.values;
+
   Query __textFilter = Query();
 
   bool useGrid = false;
@@ -17,7 +20,6 @@ class _CostumeListPageState
   @override
   Widget build(BuildContext context) {
     filterShownList(
-      data: db.gameData.costumes.values,
       compare: (a, b) => a.no.compareTo(b.no),
     );
     return scrollListener(

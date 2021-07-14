@@ -22,6 +22,9 @@ class ServantListPage extends StatefulWidget {
 
 class ServantListPageState
     extends SearchableListState<Servant, ServantListPage> {
+  @override
+  Iterable<Servant> get wholeData => db.gameData.servantsWithUser.values;
+
   Query __textFilter = Query();
 
   Set<Servant> hiddenPlanServants = {};
@@ -38,7 +41,6 @@ class ServantListPageState
   Widget build(BuildContext context) {
     return db.streamBuilder((context) {
       this.filterShownList(
-        data: db.gameData.servantsWithUser.values,
         compare: (a, b) => Servant.compare(a, b,
             keys: filterData.sortKeys,
             reversed: filterData.sortReversed,
@@ -118,11 +120,11 @@ class ServantListPageState
 2.仅更改列表中"已显示"的从者
 3.通过筛选/搜索功能筛选显示列表，通过每行尾部的显示按钮可以单独隐藏/显示特定从者""",
                   jpn:
-                      """1.プランページはサーヴァントページに似ていますが、主にサーヴァントの目標レベルを一律に設定するために使用されます（霊基再臨/スキル/霊衣）
+                  """1.プランページはサーヴァントページに似ていますが、主にサーヴァントの目標レベルを一律に設定するために使用されます（霊基再臨/スキル/霊衣）
 2.リストで「表示」されているサーヴァントのみを変更します
 3.フィルター/検索機能で表示リストをフィルターし、各行の表示ボタンで特定のサーヴァントを個別に表示/非表示にすることができます """,
                   eng:
-                      """1. The plan page is similar to servant list page, but it is mainly used for <uniformly> setting the <target> value of servant ascension/skills/costumes
+                  """1. The plan page is similar to servant list page, but it is mainly used for <uniformly> setting the <target> value of servant ascension/skills/costumes
 2. Only change the servants who are "shown" in the list
 3. Filter the display list through the filter/search function, and you can hide/show specific servants individually through the display button at the end of each line""",
                 )),
@@ -300,8 +302,8 @@ class ServantListPageState
         svtPlan.fouHp > svtStat.curVal.fouHp,
         svtPlan.fouAtk > svtStat.curVal.fouAtk,
         for (var i = 0;
-            i < min(svtPlan.dress.length, svtStat.curVal.dress.length);
-            i++)
+        i < min(svtPlan.dress.length, svtStat.curVal.dress.length);
+        i++)
           svtPlan.dress[i] > svtStat.curVal.dress[i]
       ].contains(true);
       if (filterData.planCompletion.options[planNotComplete ? '0' : '1'] !=
@@ -344,7 +346,7 @@ class ServantListPageState
     // gender
     if (!filterData.gender.singleValueFilter(svt.info.gender, compares: {
       '其他': (optionKey, value) =>
-          value != SvtFilterData.genderData[0] &&
+      value != SvtFilterData.genderData[0] &&
           value != SvtFilterData.genderData[1]
     })) {
       return false;
@@ -362,7 +364,7 @@ class ServantListPageState
     }
     bool _matchNPCharge(List<Effect> effects) {
       String string =
-          effects.map((e) => e.description).join('\t').toUpperCase();
+      effects.map((e) => e.description).join('\t').toUpperCase();
       // print(string);
       //182->
       final keys = [
@@ -410,9 +412,8 @@ class ServantListPageState
     }
     final hintText = SearchableListState.defaultHintBuilder(
       context,
-      widget.planMode
-          ? S.current.search_result_count_hide(shownList.length, _hiddenNum)
-          : S.current.search_result_count(shownList.length),
+      defaultHintText(shownList.length, wholeData.length,
+          widget.planMode ? _hiddenNum : null),
     );
     return Scrollbar(
       controller: scrollController,
@@ -490,7 +491,7 @@ class ServantListPageState
         hint: Text(S.of(context).ascension),
         items: List.generate(
           5,
-          (i) => DropdownMenuItem(
+              (i) => DropdownMenuItem(
             value: i,
             child: Text(
               S.current.words_separate(S.current.ascension, '$i'),
@@ -522,7 +523,7 @@ class ServantListPageState
             return DropdownMenuItem(
               value: i,
               child:
-                  Text(S.current.words_separate(S.current.skill, i.toString())),
+              Text(S.current.words_separate(S.current.skill, i.toString())),
             );
           }
         }),
@@ -552,7 +553,7 @@ class ServantListPageState
         hint: Text(S.of(context).costume),
         items: List.generate(
             2,
-            (i) => DropdownMenuItem(
+                (i) => DropdownMenuItem(
                 value: i, child: Text(S.of(context).costume + ['×', '√'][i]))),
         onChanged: (v) {
           setState(() {
@@ -711,14 +712,14 @@ class ServantListPageState
             onTap: isCur
                 ? null
                 : () {
-                    db.curUser.curSvtPlan.clear();
-                    db.curUser.servantPlans[index].forEach((key, plan) {
-                      db.curUser.curSvtPlan[key] =
-                          ServantPlan.fromJson(jsonDecode(jsonEncode(plan)));
-                    });
-                    db.curUser.ensurePlanLarger();
-                    Navigator.of(context).pop();
-                  },
+              db.curUser.curSvtPlan.clear();
+              db.curUser.servantPlans[index].forEach((key, plan) {
+                db.curUser.curSvtPlan[key] =
+                    ServantPlan.fromJson(jsonDecode(jsonEncode(plan)));
+              });
+              db.curUser.ensurePlanLarger();
+              Navigator.of(context).pop();
+            },
           );
         }),
       ),

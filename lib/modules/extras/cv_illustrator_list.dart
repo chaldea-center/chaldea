@@ -11,6 +11,9 @@ class CvListPage extends StatefulWidget {
 }
 
 class _CvListPageState extends SearchableListState<String, CvListPage> {
+  @override
+  Iterable<String> get wholeData => cvs;
+
   Map<String, List<Servant>> cvMap = {};
   List<String> cvs = [];
 
@@ -47,7 +50,7 @@ class _CvListPageState extends SearchableListState<String, CvListPage> {
 
   @override
   Widget build(BuildContext context) {
-    filterShownList(data: cvs, compare: null);
+    filterShownList(compare: null);
     return scrollListener(
       useGrid: false,
       appBar: AppBar(
@@ -135,6 +138,9 @@ class IllustratorListPage extends StatefulWidget {
 
 class _IllustratorListPageState
     extends SearchableListState<String, IllustratorListPage> {
+  @override
+  // TODO: implement wholeData
+  Iterable<String> get wholeData => illustrators;
   bool _initiated = false;
   Map<String, List<Servant>> svtMap = {};
   Map<String, List<CraftEssence>> craftMap = {};
@@ -162,10 +168,7 @@ class _IllustratorListPageState
       codeMap.putIfAbsent(illus, () => []).add(code);
     });
 
-    illustrators
-      ..addAll(svtMap.keys)
-      ..addAll(craftMap.keys)
-      ..addAll(codeMap.keys);
+    illustrators..addAll(svtMap.keys)..addAll(craftMap.keys)..addAll(codeMap.keys);
     illustrators = illustrators.toSet().toList();
     illustrators
         .sort((a, b) => Utils.toAlphabet(a).compareTo(Utils.toAlphabet(b)));
@@ -184,7 +187,7 @@ class _IllustratorListPageState
 
   @override
   Widget build(BuildContext context) {
-    filterShownList(data: illustrators, compare: null);
+    filterShownList(compare: null);
     return scrollListener(
         useGrid: false,
         appBar: AppBar(

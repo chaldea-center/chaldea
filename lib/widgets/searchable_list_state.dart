@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:chaldea/components/animation/animate_on_scroll.dart';
+import 'package:chaldea/components/localized/localized.dart';
 import 'package:chaldea/components/utils.dart' show DelayedTimer, Utils;
 import 'package:chaldea/generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,8 @@ import 'search_bar.dart';
 abstract class SearchableListState<T, St extends StatefulWidget>
     extends State<St> {
   final List<T> shownList = [];
+
+  Iterable<T> get wholeData;
 
   T? selected;
   bool showSearchBar = false;
@@ -92,7 +95,7 @@ abstract class SearchableListState<T, St extends StatefulWidget>
 
   Widget buildScrollable({bool useGrid = false}) {
     final hintText = defaultHintBuilder(
-        context, S.current.search_result_count(shownList.length));
+        context, defaultHintText(shownList.length, wholeData.length));
     return Scrollbar(
       controller: scrollController,
       showTrackOnHover: Platform.isWindows || Platform.isMacOS,
@@ -180,11 +183,10 @@ abstract class SearchableListState<T, St extends StatefulWidget>
 
   Widget gridItemBuilder(T datum);
 
-  void filterShownList(
-      {required Iterable<T> data, required Comparator<T>? compare}) {
+  void filterShownList({required Comparator<T>? compare}) {
     shownList.clear();
     final keyword = searchEditingController.text.trim();
-    for (final T datum in data) {
+    for (final T datum in wholeData) {
       if (filter(keyword, datum)) {
         shownList.add(datum);
       }
@@ -200,6 +202,22 @@ abstract class SearchableListState<T, St extends StatefulWidget>
     if (nextCard != null) selected = nextCard;
     if (mounted) setState(() {});
     return nextCard;
+  }
+
+  String defaultHintText(int shown, int total, [int? ignore]) {
+    if (ignore == null) {
+      return LocalizedText.of(
+        chs: '显示$shown/总计$total',
+        jpn: '表示$shown/合計$total',
+        eng: '$shown shown (total $total)',
+      );
+    } else {
+      return LocalizedText.of(
+        chs: '显示$shown/忽略$ignore/总计$total',
+        jpn: '表示$shown/無視$ignore/合計$total',
+        eng: '$shown shown, $ignore ignored (total $total)',
+      );
+    }
   }
 
   static Widget defaultHintBuilder(BuildContext context, String text) {

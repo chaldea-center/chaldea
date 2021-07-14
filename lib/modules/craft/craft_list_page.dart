@@ -14,6 +14,9 @@ class CraftListPage extends StatefulWidget {
 
 class CraftListPageState
     extends SearchableListState<CraftEssence, CraftListPage> {
+  @override
+  Iterable<CraftEssence> get wholeData => db.gameData.crafts.values;
+
   Query __textFilter = Query();
 
   //temp, calculate once build() called.
@@ -30,7 +33,6 @@ class CraftListPageState
   @override
   Widget build(BuildContext context) {
     filterShownList(
-      data: db.gameData.crafts.values,
       compare: (a, b) => CraftEssence.compare(a, b,
           keys: filterData.sortKeys, reversed: filterData.sortReversed),
     );
@@ -124,9 +126,7 @@ class CraftListPageState
   Map<CraftEssence, String> searchMap = {};
 
   @override
-  void filterShownList(
-      {required Iterable<CraftEssence> data,
-      required Comparator<CraftEssence>? compare}) {
+  void filterShownList({required Comparator<CraftEssence>? compare}) {
     __binAtkHpType = 0;
     for (int i = 0; i < CraftFilterData.atkHpTypeData.length; i++) {
       if (filterData.atkHpType.options[CraftFilterData.atkHpTypeData[i]] ==
@@ -134,7 +134,7 @@ class CraftListPageState
         __binAtkHpType += 1 << i;
       }
     }
-    super.filterShownList(data: data, compare: compare);
+    super.filterShownList(compare: compare);
   }
 
   @override
@@ -171,7 +171,7 @@ class CraftListPageState
     }
     if (__binAtkHpType > 0 &&
         ((1 << ((ce.hpMax > 0 ? 1 : 0) + (ce.atkMax > 0 ? 2 : 0))) &
-                __binAtkHpType) ==
+        __binAtkHpType) ==
             0) {
       return false;
     }

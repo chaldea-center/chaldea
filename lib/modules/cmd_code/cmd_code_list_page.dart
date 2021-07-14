@@ -14,6 +14,9 @@ class CmdCodeListPage extends StatefulWidget {
 
 class CmdCodeListPageState
     extends SearchableListState<CommandCode, CmdCodeListPage> {
+  @override
+  Iterable<CommandCode> get wholeData => db.gameData.cmdCodes.values;
+
   Query __textFilter = Query();
 
   CmdCodeFilterData get filterData => db.userData.cmdCodeFilter;
@@ -27,7 +30,6 @@ class CmdCodeListPageState
   @override
   Widget build(BuildContext context) {
     filterShownList(
-      data: db.gameData.cmdCodes.values,
       compare: (a, b) => CommandCode.compare(a, b,
           keys: filterData.sortKeys, reversed: filterData.sortReversed),
     );

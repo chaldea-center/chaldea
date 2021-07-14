@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 typedef AccordionHeaderBuilder = Widget Function(
     BuildContext context, bool expanded);
 
+/// TODO: firstChild may not change dark theme
 class SimpleAccordion extends StatefulWidget {
   final bool expanded;
   final AccordionHeaderBuilder headerBuilder;
@@ -11,7 +12,9 @@ class SimpleAccordion extends StatefulWidget {
   final bool canTapOnHeader;
   final AccordionHeaderBuilder? expandIconBuilder;
   final bool disableAnimation;
+  final double? elevation;
   final double? expandElevation;
+  final BorderSide topBorderSide;
 
   const SimpleAccordion({
     Key? key,
@@ -22,7 +25,9 @@ class SimpleAccordion extends StatefulWidget {
     this.canTapOnHeader = true,
     this.expandIconBuilder,
     this.disableAnimation = false,
+    this.elevation,
     this.expandElevation,
+    this.topBorderSide = BorderSide.none,
   }) : super(key: key);
 
   @override
@@ -83,11 +88,15 @@ class _SimpleAccordionState extends State<SimpleAccordion> {
     return Padding(
       padding: expanded ? EdgeInsets.only(bottom: 6) : EdgeInsets.zero,
       child: Material(
-        elevation: expanded ? (widget.expandElevation ?? 2) : 0,
+        elevation:
+            expanded ? (widget.expandElevation ?? 2) : (widget.elevation ?? 0),
         color: Material.of(context)?.color,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [header, content],
+        child: DecoratedBox(
+          decoration: BoxDecoration(border: Border(top: widget.topBorderSide)),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [header, content],
+          ),
         ),
       ),
     );

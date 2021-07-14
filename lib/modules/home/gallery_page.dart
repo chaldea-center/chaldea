@@ -82,10 +82,9 @@ class _GalleryPageState extends State<GalleryPage> {
                   maxLines: 1,
                 )),
               ),
-              kDefaultDivider,
               if (_showRateCard == true)
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 8),
                   child: buildRateTile(),
                 ),
               if (kDebugMode) buildTestInfoPad(),
@@ -110,6 +109,8 @@ class _GalleryPageState extends State<GalleryPage> {
   Widget buildRateTile() {
     return SimpleAccordion(
       canTapOnHeader: false,
+      elevation: 0.5,
+      topBorderSide: Divider.createBorderSide(context, width: 0.5),
       headerBuilder: (context, expanded) => ListTile(
         horizontalTitleGap: 0,
         leading: Icon(Icons.stars_rounded),
