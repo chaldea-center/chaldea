@@ -205,7 +205,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
           content: S.current.load_dataset_error_hint);
     }
     _initiated = true;
-    setState(() {});
+    if (mounted) setState(() {});
     logger.i('App version: ${AppInfo.appName} v${AppInfo.fullVersion}');
     logger.i('appPath: ${db.paths.appPath}');
     db.notifyAppUpdate();
@@ -224,6 +224,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
         }
       }).onError((error, stackTrace) => null);
     }
+    _createFloatingBtn();
   }
 
   /// place some operations that need a [MaterialApp] like ancestor
@@ -248,6 +249,77 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
     } else {
       SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     }
+  }
+
+  OverlayEntry? _floatingBtnEntry;
+
+  void _createFloatingBtn() {
+    if (kReleaseMode) return;
+    _floatingBtnEntry ??= OverlayEntry(
+      builder: (context) => _FloatingMenu(),
+    );
+    Overlay.of(context)!.insert(_floatingBtnEntry!);
+  }
+}
+
+class _FloatingMenu extends StatefulWidget {
+  const _FloatingMenu({Key? key}) : super(key: key);
+
+  @override
+  __FloatingMenuState createState() => __FloatingMenuState();
+}
+
+class __FloatingMenuState extends State<_FloatingMenu> {
+  Offset? _offset;
+
+  Offset get offset =>
+      _offset ?? Offset(16, MediaQuery.of(context).size.height - 48 - 16);
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      left: offset.dx,
+      top: offset.dy,
+      child: GestureDetector(
+        onPanUpdate: (DragUpdateDetails details) {
+          setState(() {
+            this.updateOffset(details.delta);
+          });
+        },
+        child: Opacity(
+          opacity: 0.75,
+          child: FloatingActionButton(
+            mini: true,
+            onPressed: () {},
+            child: Icon(Icons.menu_open),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void updateOffset(Offset delta) {
+    double x = offset.dx + delta.dx, y = offset.dy + delta.dy;
+    Size btn = (context.findRenderObject() as RenderBox?)?.size ?? Size(48, 48);
+    Size screen = MediaQuery.of(context).size;
+    final rect = Rect.fromLTRB(
+      16,
+      MediaQuery.of(context).padding.top + kToolbarHeight,
+      screen.width - 16 - btn.width,
+      screen.height - 16 - btn.height,
+    );
+    x = x > rect.right
+        ? rect.right
+        : x < rect.left
+            ? rect.left
+            : x;
+    y = y > rect.bottom
+        ? rect.bottom
+        : y < rect.top
+            ? rect.top
+            : y;
+    _offset = Offset(x, y);
+    setState(() {});
   }
 }
 

@@ -257,10 +257,11 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
         );
         Widget title = TextButton(
           style: TextButton.styleFrom(
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              minimumSize: Size(48, 28),
-              padding:
-                  EdgeInsets.symmetric(horizontal: AppInfo.isMobile ? 8 : 16)),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            minimumSize: Size(48, 28),
+            padding:
+                AppInfo.isMobile ? EdgeInsets.symmetric(horizontal: 8) : null,
+          ),
           child: Text(Item.localizedNameOf(item)),
           onPressed: () {
             final String? category = getItemCategory(item);

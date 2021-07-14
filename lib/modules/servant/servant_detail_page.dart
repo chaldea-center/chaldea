@@ -271,7 +271,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
 
   Widget _buildHeader() {
     return CustomTile(
-      leading: db.getIconImage(svt.icon, fit: BoxFit.contain, height: 65),
+      leading: svt.iconBuilder(context: context, height: 64),
       title: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,

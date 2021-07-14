@@ -68,7 +68,8 @@ class CostumeDetailPage extends StatelessWidget {
                                     ),
                             style: TextButton.styleFrom(
                               minimumSize: const Size(24, 28),
-                            ),
+                              tapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap),
                           ),
                         )
                       ]),

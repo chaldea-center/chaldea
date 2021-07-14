@@ -92,7 +92,7 @@ mixin ImageActionMixin {
         }
         children.addAll([
           Material(
-            color: Colors.grey.withOpacity(0.2),
+            color: Colors.grey.withOpacity(0.1),
             child: const SizedBox(height: 6),
           ),
           ListTile(

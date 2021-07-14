@@ -2,6 +2,8 @@ import 'package:chaldea/components/components.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+const double _kSearchBarPaddingBottom = 8.0;
+
 /// Placed in [AppBar.bottom]
 class SearchBar extends StatelessWidget with PreferredSizeWidget {
   final TextEditingController? controller;
@@ -15,7 +17,7 @@ class SearchBar extends StatelessWidget with PreferredSizeWidget {
   const SearchBar({
     Key? key,
     this.controller,
-    this.preferredSize = const Size.fromHeight(36 + 4),
+    this.preferredSize = const Size.fromHeight(36 + _kSearchBarPaddingBottom),
     this.focusNode,
     this.style,
     this.onChanged,
@@ -33,7 +35,7 @@ class SearchBar extends StatelessWidget with PreferredSizeWidget {
       child: SizedBox.fromSize(
         size: preferredSize,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(8, 0, 8, 4),
+          padding: EdgeInsets.fromLTRB(16, 0, 16, _kSearchBarPaddingBottom),
           child: CupertinoSearchTextField(
             controller: controller,
             focusNode: focusNode,

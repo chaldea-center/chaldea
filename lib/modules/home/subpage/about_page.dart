@@ -123,7 +123,7 @@ class _AboutPageState extends State<AboutPage> {
                 subtitle: AutoSizeText('Fate/Freedom Order data', maxLines: 1),
               ),
               ListTile(
-                title: Text('Fandom Contributors'),
+                title: Text('Fandom Translators'),
                 onTap: () {
                   SplitRoute.push(
                     context: context,
