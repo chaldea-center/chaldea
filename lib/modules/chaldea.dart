@@ -13,6 +13,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:screenshot/screenshot.dart';
 
+import 'debug/debug_floating_menu.dart';
+
 class Chaldea extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _ChaldeaState();
@@ -256,74 +258,9 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
   void _createFloatingBtn() {
     if (kReleaseMode) return;
     _floatingBtnEntry ??= OverlayEntry(
-      builder: (context) => _FloatingMenu(),
+      builder: (context) => DebugFloatingMenuButton(),
     );
     Overlay.of(context)!.insert(_floatingBtnEntry!);
-  }
-}
-
-class _FloatingMenu extends StatefulWidget {
-  const _FloatingMenu({Key? key}) : super(key: key);
-
-  @override
-  __FloatingMenuState createState() => __FloatingMenuState();
-}
-
-class __FloatingMenuState extends State<_FloatingMenu> {
-  Offset? _offset;
-
-  Offset get offset =>
-      _offset ??
-      Offset(8,
-          MediaQuery.of(context).size.height - kBottomNavigationBarHeight - 16);
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      left: offset.dx,
-      top: offset.dy,
-      child: GestureDetector(
-        onPanUpdate: (DragUpdateDetails details) {
-          setState(() {
-            this.updateOffset(details.delta);
-          });
-        },
-        child: Opacity(
-          opacity: 0.75,
-          child: FloatingActionButton(
-            mini: true,
-            onPressed: () {
-              Utils.debugChangeDarkMode();
-            },
-            child: Icon(Icons.menu_open),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void updateOffset(Offset delta) {
-    double x = offset.dx + delta.dx, y = offset.dy + delta.dy;
-    Size btn = (context.findRenderObject() as RenderBox?)?.size ?? Size(48, 48);
-    Size screen = MediaQuery.of(context).size;
-    final rect = Rect.fromLTRB(
-      -8,
-      MediaQuery.of(context).padding.top + kToolbarHeight,
-      screen.width + 8 - btn.width,
-      screen.height - 8 - btn.height,
-    );
-    x = x > rect.right
-        ? rect.right
-        : x < rect.left
-            ? rect.left
-            : x;
-    y = y > rect.bottom
-        ? rect.bottom
-        : y < rect.top
-            ? rect.top
-            : y;
-    _offset = Offset(x, y);
-    setState(() {});
   }
 }
 
