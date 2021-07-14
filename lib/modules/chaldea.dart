@@ -273,7 +273,9 @@ class __FloatingMenuState extends State<_FloatingMenu> {
   Offset? _offset;
 
   Offset get offset =>
-      _offset ?? Offset(16, MediaQuery.of(context).size.height - 48 - 16);
+      _offset ??
+      Offset(8,
+          MediaQuery.of(context).size.height - kBottomNavigationBarHeight - 16);
 
   @override
   Widget build(BuildContext context) {
@@ -290,7 +292,9 @@ class __FloatingMenuState extends State<_FloatingMenu> {
           opacity: 0.75,
           child: FloatingActionButton(
             mini: true,
-            onPressed: () {},
+            onPressed: () {
+              Utils.debugChangeDarkMode();
+            },
             child: Icon(Icons.menu_open),
           ),
         ),
@@ -303,10 +307,10 @@ class __FloatingMenuState extends State<_FloatingMenu> {
     Size btn = (context.findRenderObject() as RenderBox?)?.size ?? Size(48, 48);
     Size screen = MediaQuery.of(context).size;
     final rect = Rect.fromLTRB(
-      16,
+      -8,
       MediaQuery.of(context).padding.top + kToolbarHeight,
-      screen.width - 16 - btn.width,
-      screen.height - 16 - btn.height,
+      screen.width + 8 - btn.width,
+      screen.height - 8 - btn.height,
     );
     x = x > rect.right
         ? rect.right

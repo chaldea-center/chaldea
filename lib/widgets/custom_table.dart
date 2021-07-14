@@ -141,12 +141,14 @@ class _CustomTableRowState extends State<CustomTableRow> {
           /// TODO: AutoSizeText supported here:
           /// LayoutBuilder does not support returning intrinsic dimensions
           /// see https://github.com/leisim/auto_size_text/issues/77
-          if (cell.maxLines == null) {
-            _child = Text(cell.text!, textAlign: cell.textAlign);
+          String text = cell.text!;
+          if (cell.maxLines == null || text.isEmpty) {
+            _child = Text(text, textAlign: cell.textAlign);
           } else if (cell.maxLines == 1) {
+            // empty string->Text has no size->cannot place in FittedBox
             _child = FittedBox(
               child: Text(
-                cell.text!,
+                text,
                 maxLines: cell.maxLines,
                 textAlign: cell.textAlign,
               ),
@@ -156,7 +158,7 @@ class _CustomTableRowState extends State<CustomTableRow> {
                 'CustomTable: maxLines=${cell.maxLines} > 1 not supported yet!!!');
             _child = FittedBox(
               child: Text(
-                cell.text!,
+                text,
                 maxLines: cell.maxLines,
                 textAlign: cell.textAlign,
               ),

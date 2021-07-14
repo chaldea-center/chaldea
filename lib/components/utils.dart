@@ -500,7 +500,7 @@ class Utils {
   }
 
   static void debugChangeDarkMode([ThemeMode? mode]) {
-    if (mode == db.userData.themeMode) return;
+    if (db.userData.themeMode != null && mode == db.userData.themeMode) return;
 
     final t = DateTime.now().millisecondsSinceEpoch;
     final _last = db.runtimeData.tempDict['debugChangeDarkMode'] ?? 0;

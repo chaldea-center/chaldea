@@ -34,7 +34,7 @@ class Servant {
   // from data file not in code
   static List<int> get unavailable => db.gameData.unavailableSvts;
 
-  String toString() => '$runtimeType($mcLink)';
+  String toString() => '$runtimeType(No.$no-$mcLink)';
 
   String get stdClassName {
     String clsName;
@@ -55,10 +55,13 @@ class Servant {
           : nobelPhantasm;
 
   List<ActiveSkill> get lActiveSkills =>
-      Language.isEN ? activeSkillsEn : activeSkills;
+      Language.isEN && activeSkillsEn.isNotEmpty
+          ? activeSkillsEn
+          : activeSkills;
 
-  List<Skill> get lPassiveSkills =>
-      Language.isEN ? passiveSkillsEn : passiveSkills;
+  List<Skill> get lPassiveSkills => Language.isEN && passiveSkillsEn.isNotEmpty
+      ? passiveSkillsEn
+      : passiveSkills;
 
   Servant({
     required this.no,

@@ -12,6 +12,7 @@ import 'config.dart' show db;
 import 'constants.dart';
 import 'device_app_info.dart';
 import 'extensions.dart';
+import 'localized/localized_base.dart';
 import 'logger.dart';
 
 enum GitSource { server, github, gitee }
@@ -461,20 +462,32 @@ class _DownloadDialogState extends State<DownloadDialog> {
   @override
   Widget build(BuildContext context) {
     final fn = pathlib.basename(widget.savePath);
-    final headerStyle = TextStyle(fontWeight: FontWeight.bold);
+    final textTheme = Theme.of(context).textTheme;
+    final headerStyle = textTheme.subtitle2;
+    final contentStyle =
+        textTheme.bodyText2?.copyWith(color: textTheme.caption?.color);
     return AlertDialog(
       title: Text(S.of(context).download),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      content: ListView(
+        shrinkWrap: true,
         children: [
-          Text('${S.current.filename}:', style: headerStyle),
-          Text(fn),
-          if (widget.notes != null) Text('更新内容:', style: headerStyle),
-          if (widget.notes != null) Text(widget.notes!),
-          Text('下载进度:', style: headerStyle),
+          Text(LocalizedText.of(chs: '文件名', jpn: 'ファイル名', eng: 'Filename'),
+              style: headerStyle),
+          Text(fn, style: contentStyle),
+          const SizedBox(height: 10),
+          if (widget.notes != null) ...[
+            Text(LocalizedText.of(chs: '概要', jpn: '概要', eng: 'Summary'),
+                style: headerStyle),
+            Text(widget.notes!, style: contentStyle),
+            const SizedBox(height: 10),
+          ],
+          Text(
+              LocalizedText.of(
+                  chs: '下载进度', jpn: 'ダウンロードの進行状況', eng: 'Download Progress'),
+              style: headerStyle),
           widget.url?.isNotEmpty == true
-              ? Text(progress, style: TextStyle(fontFamily: kMonoFont))
+              ? Text(progress,
+                  style: contentStyle?.copyWith(fontFamily: kMonoFont))
               : Text(S.of(context).query_failed)
         ],
       ),

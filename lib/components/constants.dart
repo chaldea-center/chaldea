@@ -126,6 +126,14 @@ class ClassName {
 
 T localizeNoun<T>(T? nameCn, T? nameJp, T? nameEn,
     {T k()?, Language? primary}) {
+  // convert '' to null
+  if (nameJp is String && nameJp.isEmpty) {
+    nameJp = null;
+  }
+  if (nameEn is String && nameEn.isEmpty) {
+    nameEn = null;
+  }
+
   primary ??= Language.current;
   List<T?> names = primary == Language.chs
       ? [nameCn, nameJp, nameEn]
