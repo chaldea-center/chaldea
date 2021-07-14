@@ -68,7 +68,7 @@ mixin ImageActionMixin {
             },
           ));
         }
-        if (share && AppInfo.isMobile) {
+        if (share && (Platform.isAndroid || Platform.isIOS)) {
           children.add(ListTile(
             leading: Icon(Icons.share),
             title: Text(S.current.share),

@@ -3,6 +3,7 @@ library server_api;
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:chaldea/components/config.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -110,6 +111,7 @@ class OneSvtRecResult {
 
   bool get isValid {
     return svtNo != null &&
+        !db.gameData.unavailableSvts.contains(svtNo) &&
         svtNo! > 0 &&
         skills.every((e) => e != null && e >= 1 && e <= 10);
   }

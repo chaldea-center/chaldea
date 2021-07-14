@@ -101,11 +101,13 @@ class UserData {
 
   void validate() {
     if (db.gameData.servants.isNotEmpty) {
-      curUser.servants.removeWhere(
-          (key, value) => !db.gameData.servantsWithUser.containsKey(key));
+      curUser.servants.removeWhere((key, value) =>
+          db.gameData.unavailableSvts.contains(key) ||
+          db.gameData.servantsWithUser[key] == null);
       curUser.servantPlans.forEach((plans) {
-        plans.removeWhere(
-            (key, value) => !db.gameData.servantsWithUser.containsKey(key));
+        plans.removeWhere((key, value) =>
+            db.gameData.unavailableSvts.contains(key) ||
+            db.gameData.servantsWithUser[key] == null);
       });
       curUser.crafts
           .removeWhere((key, value) => !const [0, 1, 2].contains(value));

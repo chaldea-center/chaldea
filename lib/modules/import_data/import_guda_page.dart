@@ -162,6 +162,7 @@ class _ImportGudaPageState extends State<ImportGudaPage> {
 
       for (var row in table) {
         int svtNo = int.parse(row[0]);
+        if (db.gameData.unavailableSvts.contains(svtNo)) continue;
         final svt = db.gameData.servants[svtNo];
         if (svt == null) continue;
 
