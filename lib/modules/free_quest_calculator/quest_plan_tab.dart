@@ -43,9 +43,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                   CustomTile(
                     title: Text(quest?.localizedKey ??
                         Quest.getDailyQuestName(variable.name)),
-                    subtitle: Text(variable.detail.entries
-                        .map((e) => '${Item.localizedNameOf(e.key)}*${e.value}')
-                        .join(', ')),
+                    subtitle: buildRichText(variable.detail.entries),
                     trailing: Text('${variable.value}*${variable.cost} AP'),
                     onTap: () {
                       state.value = !state.value;
@@ -108,6 +106,27 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
           ),
         )
       ],
+    );
+  }
+
+  // (icon name, display text)
+  Widget buildRichText(Iterable<MapEntry<String, dynamic>> entries) {
+    List<InlineSpan> children = [];
+    for (final entry in entries) {
+      children.add(WidgetSpan(
+        child: Opacity(
+          opacity: 0.6,
+          child: db.getIconImage(entry.key, height: 18),
+        ),
+      ));
+      children.add(TextSpan(text: '*${entry.value} '));
+    }
+    final textTheme = Theme.of(context).textTheme;
+    return RichText(
+      text: TextSpan(
+        children: children,
+        style: textTheme.bodyText2?.copyWith(color: textTheme.caption?.color),
+      ),
     );
   }
 }

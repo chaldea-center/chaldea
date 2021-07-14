@@ -65,13 +65,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
                   CustomTile(
                     title: Text(quest?.localizedKey ??
                         Quest.getDailyQuestName(questKey)),
-                    subtitle: Text(drops.entries.map((e) {
-                      String v = e.value.toStringAsFixed(3);
-                      while (v.contains('.') && v[v.length - 1] == '0') {
-                        v = v.substring(0, v.length - 1);
-                      }
-                      return '${Item.localizedNameOf(e.key)}*$v';
-                    }).join(', ')),
+                    subtitle: buildRichText(drops.entries),
                     trailing: Text(sum(drops.values).toStringAsFixed(3)),
                     onTap: quest == null
                         ? null
@@ -100,6 +94,30 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
         kDefaultDivider,
         _buildButtonBar(),
       ],
+    );
+  }
+
+  Widget buildRichText(Iterable<MapEntry<String, double>> entries) {
+    List<InlineSpan> children = [];
+    for (final entry in entries) {
+      String v = entry.value.toStringAsFixed(3);
+      while (v.contains('.') && v[v.length - 1] == '0') {
+        v = v.substring(0, v.length - 1);
+      }
+      children.add(WidgetSpan(
+        child: Opacity(
+          opacity: 0.75,
+          child: db.getIconImage(entry.key, height: 18),
+        ),
+      ));
+      children.add(TextSpan(text: '*$v '));
+    }
+    final textTheme = Theme.of(context).textTheme;
+    return RichText(
+      text: TextSpan(
+        children: children,
+        style: textTheme.bodyText2?.copyWith(color: textTheme.caption?.color),
+      ),
     );
   }
 
