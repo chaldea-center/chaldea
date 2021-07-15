@@ -393,5 +393,7 @@
   "change_log": "更新历史",
   "import_source_file": "导入源数据",
   "attachment": "附件",
-  "search": "搜索"
+  "search": "搜索",
+  "icons": "图标",
+  "sprites": "模型"
 }

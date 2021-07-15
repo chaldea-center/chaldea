@@ -296,6 +296,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("No bond craft"),
         "hint_no_valentine_craft":
             MessageLookupByLibrary.simpleMessage("No valentine craft"),
+        "icons": MessageLookupByLibrary.simpleMessage("Icons"),
         "ignore": MessageLookupByLibrary.simpleMessage("Ignore"),
         "illustration": MessageLookupByLibrary.simpleMessage("Illustration"),
         "illustrator": MessageLookupByLibrary.simpleMessage("Illustrator"),
@@ -558,6 +559,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skill_up": MessageLookupByLibrary.simpleMessage("Skill Up"),
         "skilled_max10":
             MessageLookupByLibrary.simpleMessage("Skills Max(310)"),
+        "sprites": MessageLookupByLibrary.simpleMessage("Sprites"),
         "statistics_include_checkbox":
             MessageLookupByLibrary.simpleMessage("Including owned items"),
         "statistics_title": MessageLookupByLibrary.simpleMessage("Statistics"),

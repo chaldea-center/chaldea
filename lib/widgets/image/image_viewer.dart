@@ -38,6 +38,7 @@ class CachedImage extends StatefulWidget {
 
   final CachedImageOption? cachedOption;
   final PhotoViewOption? photoViewOption;
+  final VoidCallback? onTap;
 
   CachedImage({
     Key? key,
@@ -51,6 +52,7 @@ class CachedImage extends StatefulWidget {
     this.placeholder,
     this.cachedOption,
     this.photoViewOption,
+    this.onTap,
   })  : imageProvider = null,
         super(key: key);
 
@@ -64,6 +66,7 @@ class CachedImage extends StatefulWidget {
     this.placeholder,
     this.cachedOption = const CachedImageOption(),
     this.photoViewOption,
+    this.onTap,
   })  : imageUrl = null,
         isMCFile = false,
         cacheDir = null,
@@ -291,12 +294,19 @@ class _CachedImageState extends State<CachedImage> with ImageActionMixin {
         );
       }
     }
-    return CachedImage.sizeChild(
+    child = CachedImage.sizeChild(
       child: child,
       width: widget.width,
       height: widget.height,
       aspectRatio: widget.aspectRatio,
     );
+    if (widget.onTap != null) {
+      child = GestureDetector(
+        child: child,
+        onTap: widget.onTap,
+      );
+    }
+    return child;
   }
 
   Widget parsedPlaceholder(BuildContext context, String url) {

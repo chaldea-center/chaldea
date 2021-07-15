@@ -13,7 +13,11 @@ class Servant {
   /// default -1 for [Servant.unavailable]
   int svtId;
   String mcLink;
+
+  // @deprecated
   String icon;
+
+  String get thumb => icon;
   ServantBaseInfo info;
   List<NobelPhantasm> nobelPhantasm;
   List<NobelPhantasm> nobelPhantasmEn;
@@ -30,6 +34,8 @@ class Servant {
   List<VoiceTable> voices;
   int bondCraft;
   List<int> valentineCraft;
+  List<KeyValueListEntry> icons;
+  List<KeyValueListEntry> sprites;
 
   // from data file not in code
   static List<int> get unavailable => db.gameData.unavailableSvts;
@@ -82,6 +88,8 @@ class Servant {
     required this.voices,
     required this.bondCraft,
     required this.valentineCraft,
+    required this.icons,
+    required this.sprites,
   }) : originNo = no;
 
   Servant duplicate(int newNo) {

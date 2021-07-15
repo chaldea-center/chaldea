@@ -268,6 +268,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "hint_no_bond_craft": MessageLookupByLibrary.simpleMessage("絆礼装なし"),
         "hint_no_valentine_craft":
             MessageLookupByLibrary.simpleMessage("チョコ礼装なし"),
+        "icons": MessageLookupByLibrary.simpleMessage("アイコン"),
         "ignore": MessageLookupByLibrary.simpleMessage("無視"),
         "illustration": MessageLookupByLibrary.simpleMessage("イラスト"),
         "illustrator": MessageLookupByLibrary.simpleMessage("イラストレーター"),
@@ -499,6 +500,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skill_up": MessageLookupByLibrary.simpleMessage("スキル強化"),
         "skilled_max10":
             MessageLookupByLibrary.simpleMessage("スキルレベル最大化する(310)"),
+        "sprites": MessageLookupByLibrary.simpleMessage("モデル"),
         "statistics_include_checkbox":
             MessageLookupByLibrary.simpleMessage("既存のアイテムを含める"),
         "statistics_title": MessageLookupByLibrary.simpleMessage("統計"),

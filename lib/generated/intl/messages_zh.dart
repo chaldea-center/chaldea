@@ -255,6 +255,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "hint_no_bond_craft": MessageLookupByLibrary.simpleMessage("无羁绊礼装"),
         "hint_no_valentine_craft":
             MessageLookupByLibrary.simpleMessage("无情人节礼装"),
+        "icons": MessageLookupByLibrary.simpleMessage("图标"),
         "ignore": MessageLookupByLibrary.simpleMessage("忽略"),
         "illustration": MessageLookupByLibrary.simpleMessage("卡面"),
         "illustrator": MessageLookupByLibrary.simpleMessage("画师"),
@@ -467,6 +468,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skill": MessageLookupByLibrary.simpleMessage("技能"),
         "skill_up": MessageLookupByLibrary.simpleMessage("技能升级"),
         "skilled_max10": MessageLookupByLibrary.simpleMessage("练度最大化(310)"),
+        "sprites": MessageLookupByLibrary.simpleMessage("模型"),
         "statistics_include_checkbox":
             MessageLookupByLibrary.simpleMessage("包含现有素材"),
         "statistics_title": MessageLookupByLibrary.simpleMessage("统计"),

@@ -46,10 +46,11 @@ class FullscreenImageViewer extends StatefulWidget {
     required List<String> urls,
     PlaceholderWidgetBuilder? placeholder,
     int? initialPage,
+    bool opaque = false,
   }) {
     return Navigator.of(context).push(
       PageRouteBuilder(
-        opaque: false, // to avoid create new state of lower routes
+        opaque: opaque, // to avoid create new state of lower routes
         fullscreenDialog: true,
         // add transition
         pageBuilder: (context, _, __) => FullscreenImageViewer(

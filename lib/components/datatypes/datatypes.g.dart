@@ -6,6 +6,32 @@ part of datatypes;
 // JsonSerializableGenerator
 // **************************************************************************
 
+KeyValueEntry _$KeyValueEntryFromJson(Map<String, dynamic> json) {
+  return KeyValueEntry(
+    key: json['key'] as String?,
+    value: json['value'],
+  );
+}
+
+Map<String, dynamic> _$KeyValueEntryToJson(KeyValueEntry instance) =>
+    <String, dynamic>{
+      'key': instance.key,
+      'value': instance.value,
+    };
+
+KeyValueListEntry _$KeyValueListEntryFromJson(Map<String, dynamic> json) {
+  return KeyValueListEntry(
+    key: json['key'] as String?,
+    valueList: json['valueList'] as List<dynamic>?,
+  );
+}
+
+Map<String, dynamic> _$KeyValueListEntryToJson(KeyValueListEntry instance) =>
+    <String, dynamic>{
+      'key': instance.key,
+      'valueList': instance.valueList,
+    };
+
 BiliTopLogin _$BiliTopLoginFromJson(Map<String, dynamic> json) {
   return BiliTopLogin(
     response: json['response'],
@@ -974,6 +1000,18 @@ Servant _$ServantFromJson(Map<String, dynamic> json) {
       bondCraft: $checkedConvert(json, 'bondCraft', (v) => v as int),
       valentineCraft: $checkedConvert(json, 'valentineCraft',
           (v) => (v as List<dynamic>).map((e) => e as int).toList()),
+      icons: $checkedConvert(
+          json,
+          'icons',
+          (v) => (v as List<dynamic>)
+              .map((e) => KeyValueListEntry.fromJson(e as Map<String, dynamic>))
+              .toList()),
+      sprites: $checkedConvert(
+          json,
+          'sprites',
+          (v) => (v as List<dynamic>)
+              .map((e) => KeyValueListEntry.fromJson(e as Map<String, dynamic>))
+              .toList()),
     );
     return val;
   });
@@ -998,6 +1036,8 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'voices': instance.voices,
       'bondCraft': instance.bondCraft,
       'valentineCraft': instance.valentineCraft,
+      'icons': instance.icons,
+      'sprites': instance.sprites,
     };
 
 ServantBaseInfo _$ServantBaseInfoFromJson(Map<String, dynamic> json) {

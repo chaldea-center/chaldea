@@ -1,9 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/blank_page.dart';
-import 'package:chaldea/modules/servant/tabs/svt_quest_tab.dart';
-import 'package:chaldea/modules/servant/tabs/svt_summon_tab.dart';
-import 'package:chaldea/modules/servant/tabs/svt_voice_tab.dart';
 import 'package:chaldea/modules/shared/list_page_share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -11,7 +8,11 @@ import 'tabs/svt_illust_tab.dart';
 import 'tabs/svt_info_tab.dart';
 import 'tabs/svt_nobel_phantasm_tab.dart';
 import 'tabs/svt_plan_tab.dart';
+import 'tabs/svt_quest_tab.dart';
 import 'tabs/svt_skill_tab.dart';
+import 'tabs/svt_sprite_tab.dart';
+import 'tabs/svt_summon_tab.dart';
+import 'tabs/svt_voice_tab.dart';
 
 class ServantDetailPage extends StatefulWidget {
   final Servant svt;
@@ -50,6 +51,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
     }
     _builders[S.current.card_info] = (context) => SvtInfoTab(parent: this);
     _builders[S.current.illustration] = (context) => SvtIllustTab(parent: this);
+    if (svt.icons.isNotEmpty || svt.sprites.isNotEmpty)
+      _builders[S.current.sprites] = (context) => SvtSpriteTab(parent: this);
+
     if (!Servant.unavailable.contains(svt.no) &&
         !['活动', '初始获得', '无法召唤', '友情点召唤'].contains(svt.info.obtain)) {
       _builders[S.current.summon] = (context) => SvtSummonTab(parent: this);

@@ -3995,6 +3995,26 @@ class S {
       args: [],
     );
   }
+
+  /// `图标`
+  String get icons {
+    return Intl.message(
+      '图标',
+      name: 'icons',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `模型`
+  String get sprites {
+    return Intl.message(
+      '模型',
+      name: 'sprites',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
