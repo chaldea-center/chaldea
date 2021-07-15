@@ -21,6 +21,7 @@ import 'package:pool/pool.dart';
 import '../config.dart';
 import '../constants.dart';
 import '../device_app_info.dart';
+import '../git_tool.dart';
 import '../logger.dart';
 import '../utils.dart' show b64;
 import 'catcher_config.dart';
@@ -167,19 +168,13 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
 
   Future<bool> _isBlockedError(Report report) async {
     if (_blockedErrors == null) {
-      final url = 'https://gitee.com/chaldea-center/chaldea/wikis/pages/wiki'
-          '?wiki_title=blocked_error&parent=&version_id=master&sort_id=4200566&info_id=1327454&extname=.md';
-      await HttpUtils.defaultDio.get(url).then((response) {
-        final String content = response.data['wiki']['content'];
-        _blockedErrors = [];
-        content.trim().split('\n').forEach((line) {
-          line = line.trim();
-          if (line.isNotEmpty) _blockedErrors!.add(line);
-        });
-        print('_blockedErrors=${jsonEncode(_blockedErrors)}');
-      }).catchError((e, s) {
-        logger.e('fetch blocked errors failed', e, s);
+      final String content = await GitTool.giteeWikiPage('blocked_error');
+      _blockedErrors = [];
+      content.trim().split('\n').forEach((line) {
+        line = line.trim();
+        if (line.isNotEmpty) _blockedErrors!.add(line);
       });
+      print('_blockedErrors=${jsonEncode(_blockedErrors)}');
     }
 
     final error = (report.error ?? report.errorDetails).toString();

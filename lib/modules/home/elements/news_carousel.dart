@@ -17,6 +17,10 @@ class AppNewsCarousel extends StatefulWidget {
   _AppNewsCarouselState createState() => _AppNewsCarouselState();
 
   static Future<void> resolveSliderImageUrls([bool showToast = false]) async {
+    if (!db.hasNetwork) {
+      if (showToast) EasyLoading.showInfo(S.current.error_no_network);
+      return;
+    }
     final carouselSetting = db.userData.carouselSetting;
     carouselSetting.needUpdate = false;
     Map<String, String> _getImageLinks(
@@ -30,7 +34,7 @@ class AppNewsCarousel extends StatefulWidget {
         String? link = linkNode.attributes['href'];
         var imgNodes = linkNode.getElementsByTagName('img');
         if (link == null) continue;
-        print('link=$link');
+        // print('link=$link');
         if (imgNodes.isNotEmpty) {
           String? imgUrl = imgNodes.first.attributes[attr];
           if (imgUrl != null) {
@@ -70,10 +74,7 @@ class AppNewsCarousel extends StatefulWidget {
         taskJp = _dio.get(jpUrl).then((response) {
           var jpParser = parser.parse(response.data.toString());
           var jpElement = jpParser.getElementsByClassName('slide').getOrNull(0);
-          return _getImageLinks(element: jpElement, uri: Uri.parse(jpUrl))
-            ..removeWhere((key, value) =>
-                key.endsWith('2019/tips_qavwi/top_banner.png') ||
-                key.endsWith('2017/02/banner_10009.png'));
+          return _getImageLinks(element: jpElement, uri: Uri.parse(jpUrl));
         }).catchError((e, s) {
           logger.e('parse jp slides failed', e, s);
           return <String, String>{};
@@ -81,17 +82,14 @@ class AppNewsCarousel extends StatefulWidget {
       }
 
       // gitee, always
-      final announceUrl =
-          'https://gitee.com/chaldea-center/chaldea/wikis/pages/wiki?wiki_title=Announcement&parent=&version_id=master&sort_id=3819789&info_id=1327454&extname=.md';
-      taskGitee = _dio.get(announceUrl).then((response) {
-        final annContent = response.data;
-        // print(annContent.runtimeType);
-        // print(annContent['wiki']['content_html']);
-        var announceParser = parser.parse(annContent['wiki']['content_html']);
+      taskGitee = GitTool.giteeWikiPage('Announcement', htmlFmt: true)
+          .then((String content) {
+        var announceParser = parser.parse(content);
         var announceElement = announceParser.body;
         return _getImageLinks(
             element: announceElement,
-            uri: Uri.parse(announceUrl),
+            uri: Uri.parse(
+                'https://gitee.com/chaldea-center/chaldea/wikis/Announcement'),
             imgOnly: false);
       }).catchError((e, s) {
         logger.e('parse gitee announce slides failed', e, s);
@@ -104,14 +102,7 @@ class AppNewsCarousel extends StatefulWidget {
         taskUs = _dio.get(usUrl).then((response) {
           var usParser = parser.parse(response.data.toString());
           var usElement = usParser.getElementsByClassName('slide').getOrNull(0);
-          return _getImageLinks(element: usElement, uri: Uri.parse(usUrl))
-            ..removeWhere((key, value) => [
-                  'top_banner.png',
-                  'banner_sns_20181120.png',
-                  '0215_evenmoremanwaka/banner_20210215.png',
-                  'banner_tips_k5dz8.png',
-                  '0707_start_dash_campaign/banner_20200707_h1wb3.png'
-                ].any((e) => key.endsWith(e)));
+          return _getImageLinks(element: usElement, uri: Uri.parse(usUrl));
         }).catchError((e, s) {
           logger.e('parse jp slides failed', e, s);
           return <String, String>{};
@@ -121,12 +112,21 @@ class AppNewsCarousel extends StatefulWidget {
       await Future.forEach<Future<Map<String, String>>?>(
         // [taskUs],
         [taskMC, taskGitee, taskJp, taskUs],
-        (e) async {
+            (e) async {
           if (e != null) result.addAll(await e);
         },
       );
 
+      // key: img url, value: href url
       if (result.isNotEmpty) {
+        final blockedWiki = await GitTool.giteeWikiPage('blocked_carousel');
+        List<String> blocked = blockedWiki
+            .split('\n')
+            .map((e) => e.trim())
+            .where((e) => e.isNotEmpty)
+            .toList();
+        result.removeWhere(
+            (key, value) => blocked.any((word) => key.contains(word)));
         carouselSetting.urls = result;
         carouselSetting.updateTime =
             DateTime.now().millisecondsSinceEpoch ~/ 1000;
@@ -281,7 +281,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
       sliders.add(GestureDetector(
         onTap: () async {
           if (await canLaunch(link)) {
-            jumpToExternalLinkAlert(url: link);
+            jumpToExternalLinkAlert(url: '$imgUrl\n\n$link');
           }
         },
         child: child,
