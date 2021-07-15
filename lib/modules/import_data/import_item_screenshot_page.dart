@@ -55,6 +55,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
+        titleSpacing: 0,
         title: Text(LocalizedText.of(
             chs: '素材截图解析', jpn: 'アイテムのスクリーンショット', eng: 'Items Screenshots')),
         actions: [
@@ -178,6 +179,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
           crossAxisAlignment: WrapCrossAlignment.center,
           alignment: WrapAlignment.center,
           spacing: 6,
+          runSpacing: 4,
           children: [
             ElevatedButton(
                 onPressed: imageFiles.isEmpty ? null : _uploadScreenshots,

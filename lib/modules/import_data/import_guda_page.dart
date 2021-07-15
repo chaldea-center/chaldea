@@ -18,6 +18,7 @@ class _ImportGudaPageState extends State<ImportGudaPage> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
+        titleSpacing: 0,
         title: Text(
             LocalizedText.of(chs: 'Guda数据', jpn: 'Gudaデータ', eng: 'Guda Data')),
         actions: [

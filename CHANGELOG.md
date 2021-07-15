@@ -1,3 +1,7 @@
+## 1.4.8
+- fix unavailable characters related bug
+- show CN/JP servant info(e.g. skills) when EN version is not available
+
 ## 1.4.7
 - allow long press to save illustrations and voice files
 - enable scale/pan gestures in full-screen image viewer

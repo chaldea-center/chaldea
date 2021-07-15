@@ -111,8 +111,8 @@ class OneSvtRecResult {
 
   bool get isValid {
     return svtNo != null &&
-        !db.gameData.unavailableSvts.contains(svtNo) &&
         svtNo! > 0 &&
+        !db.gameData.unavailableSvts.contains(svtNo) &&
         skills.every((e) => e != null && e >= 1 && e <= 10);
   }
 

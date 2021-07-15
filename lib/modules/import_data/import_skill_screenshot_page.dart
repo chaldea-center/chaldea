@@ -72,6 +72,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
+        titleSpacing: 0,
         title: Text(LocalizedText.of(
             chs: '技能截图解析', jpn: 'スキルのスクリーンショット', eng: 'Skill Screenshots')),
         actions: [
@@ -177,7 +178,10 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
           style: TextStyle(
               color: dupNum != null && dupNum > 1 ? Colors.redAccent : null),
         ),
-        style: TextButton.styleFrom(alignment: Alignment.centerLeft),
+        style: TextButton.styleFrom(
+            alignment: Alignment.centerLeft,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            padding: EdgeInsets.symmetric(horizontal: 0)),
         onPressed: () async {
           // use Servant.no rather Servant.originNo
           await SplitRoute.push(
@@ -332,6 +336,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
           crossAxisAlignment: WrapCrossAlignment.center,
           alignment: WrapAlignment.center,
           spacing: 6,
+          runSpacing: 4,
           children: [
             ElevatedButton(
                 onPressed: imageFiles.isEmpty ? null : _uploadScreenshots,

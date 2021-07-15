@@ -73,6 +73,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
+        titleSpacing: 0,
         title: Text(LocalizedText.of(
             chs: 'HTTPS抓包', jpn: 'HTTPSスニッフィング', eng: 'HTTPS Sniffing')),
         actions: [
