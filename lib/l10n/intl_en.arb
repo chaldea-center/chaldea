@@ -143,6 +143,7 @@
   "main_record": "Main Record",
   "exchange_ticket": "Exchange Ticket",
   "exchange_ticket_short": "Ticket",
+  "campaign_event": "Campaign",
   "rerun_event": "Rerun",
   "event_rerun_replace_grail": "Grail to crystal: {n}",
   "event_lottery_limited": "Limited lottery",

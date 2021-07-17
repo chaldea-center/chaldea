@@ -321,16 +321,25 @@ Events _$EventsFromJson(Map<String, dynamic> json) {
                 (k, e) => MapEntry(
                     k, ExchangeTicket.fromJson(e as Map<String, dynamic>)),
               )),
+      campaigns: $checkedConvert(
+          json,
+          'campaigns',
+          (v) => (v as Map<String, dynamic>).map(
+                (k, e) => MapEntry(
+                    k, CampaignEvent.fromJson(e as Map<String, dynamic>)),
+              )),
     );
     return val;
   });
 }
 
-Map<String, dynamic> _$EventsToJson(Events instance) => <String, dynamic>{
+Map<String, dynamic> _$EventsToJson(Events instance) =>
+    <String, dynamic>{
       'progressNA': instance.progressNA.toIso8601String(),
       'progressTW': instance.progressTW.toIso8601String(),
       'limitEvents': instance.limitEvents,
       'mainRecords': instance.mainRecords,
+      'campaigns': instance.campaigns,
       'exchangeTickets': instance.exchangeTickets,
     };
 

@@ -5,20 +5,22 @@ import 'package:chaldea/modules/shared/item_related_builder.dart';
 import 'package:chaldea/modules/summon/summon_detail_page.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class MainRecordDetailPage extends StatefulWidget {
-  final MainRecord record;
+class CampaignDetailPage extends StatefulWidget {
+  final CampaignEvent event;
 
-  const MainRecordDetailPage({Key? key, required this.record})
-      : super(key: key);
+  const CampaignDetailPage({Key? key, required this.event}) : super(key: key);
 
   @override
-  _MainRecordDetailPageState createState() => _MainRecordDetailPageState();
+  _CampaignDetailPageState createState() => _CampaignDetailPageState();
 }
 
-class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
-  MainRecord get record => widget.record;
+class _CampaignDetailPageState extends State<CampaignDetailPage>
+    with TickerProviderStateMixin {
+  CampaignEvent get event => widget.event;
 
-  List<bool> get plan => db.curUser.events.mainRecordOf(widget.record.indexKey);
+  CampaignPlan get plan =>
+      db.curUser.events.campaignEventPlanOf(event.indexKey);
+
   List<Summon> _associatedSummons = [];
 
   @override
@@ -26,7 +28,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
     super.initState();
     db.gameData.summons.values.forEach((summon) {
       for (var eventName in summon.associatedEvents) {
-        if (record.isSameEvent(eventName)) {
+        if (event.isSameEvent(eventName)) {
           _associatedSummons.add(summon);
         }
       }
@@ -35,73 +37,88 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final _onTap = (String itemKey) => SplitRoute.push(
-        context: context,
-        builder: (context, _) => ItemDetailPage(itemKey: itemKey));
-
     List<Widget> children = [];
-    if (record.lBannerUrl != null) {
+    if (event.lBannerUrl != null)
       children.add(GestureDetector(
         onTap: () => jumpToExternalLinkAlert(
-          url: WikiUtil.mcFullLink(record.indexKey),
+          url: WikiUtil.mcFullLink(widget.event.indexKey),
           name: 'Mooncell',
         ),
         child: CachedImage(
-          imageUrl: record.lBannerUrl,
+          imageUrl: event.lBannerUrl,
           isMCFile: true,
           placeholder: (_, __) => AspectRatio(aspectRatio: 8 / 3),
         ),
       ));
-    }
     children.add(ListTile(
       title: AutoSizeText(
-        'JP: ${record.startTimeJp ?? '?'}\n'
-        'CN: ${record.startTimeCn ?? '?'}',
+        'JP: ${event.startTimeJp ?? '?'} ~ ${event.endTimeJp ?? '?'}\n'
+        'CN: ${event.startTimeCn ?? '?'} ~ ${event.endTimeCn ?? '?'}',
         maxLines: 2,
       ),
     ));
-
-    children.addAll([
-      kDefaultDivider,
-      db.streamBuilder(
+    if (event.couldPlan) {
+      children.add(db.streamBuilder(
         (context) => SwitchListTile.adaptive(
-          title: Text(S.of(context).main_record_fixed_drop),
-          value: plan[0],
+          title: Text(S.of(context).plan),
+          value: plan.enable,
           onChanged: (v) {
-            plan[0] = v;
+            plan.enable = v;
             db.itemStat.updateEventItems();
           },
         ),
-      ),
-      kDefaultDivider,
-      buildClassifiedItemList(
-          context: context, data: widget.record.drops, onTap: _onTap),
-      db.streamBuilder(
+      ));
+    }
+
+    // 复刻
+    if (event.grail2crystal > 0) {
+      children.add(db.streamBuilder(
         (context) => SwitchListTile.adaptive(
-          title: Text(S.of(context).main_record_bonus),
-          value: plan[1],
+          title: Text(S.of(context).rerun_event),
+          subtitle: Text(
+              S.of(context).event_rerun_replace_grail(event.grail2crystal)),
+          value: plan.rerun,
           onChanged: (v) {
-            plan[1] = v;
-            db.itemStat.updateEventItems();
+            plan.rerun = v;
+            db.notifyDbUpdate();
+            setState(() {
+              // update grail and crystal num
+            });
           },
         ),
-      ),
-      kDefaultDivider,
-      buildClassifiedItemList(
-        context: context,
-        data: widget.record.rewardsWithRare,
-        onTap: _onTap,
-      ),
-    ]);
+      ));
+    }
 
+    final svt = db.gameData.servants[event.welfareServant];
+    if (svt != null) {
+      children.add(ListTile(
+        title: Text(LocalizedText.of(
+            chs: '活动从者', jpn: '配布サーヴァント', eng: 'Welfare Servant')),
+        trailing: svt.iconBuilder(context: context),
+      ));
+    }
+
+    final Map<String, int> items = event.itemsWithRare();
+    if (items.isNotEmpty) {
+      children
+        ..add(ListTile(
+          leading: Icon(Icons.double_arrow),
+          horizontalTitleGap: 0,
+          title: Text(S.current.item),
+        ))
+        ..add(buildClassifiedItemList(
+            context: context, data: items, onTap: onTapIcon));
+    }
+
+    // summons
     if (_associatedSummons.isNotEmpty) {
-      children.addAll([
-        ListTile(
-          // leading: Icon(Icons.double_arrow),
-          // horizontalTitleGap: 0,
+      children
+        ..add(ListTile(
+          leading: Icon(Icons.double_arrow),
+          horizontalTitleGap: 0,
           title: Text(S.of(context).summon),
-        ),
-        TileGroup(
+        ))
+        ..add(TileGroup(
           children: _associatedSummons
               .map((e) => ListTile(
                   leading: FaIcon(
@@ -117,9 +134,9 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
                     );
                   }))
               .toList(),
-        ),
-      ]);
+        ));
     }
+
     children.add(SizedBox(
       height: 72,
       child: Center(
@@ -129,12 +146,11 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
         ),
       ),
     ));
-
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
         title: AutoSizeText(
-          widget.record.localizedName,
+          event.localizedName,
           maxLines: 1,
           overflow: TextOverflow.fade,
         ),
@@ -151,7 +167,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
             onSelected: (v) {
               if (v == 'jump_mc') {
                 jumpToExternalLinkAlert(
-                  url: WikiUtil.mcFullLink(widget.record.indexKey),
+                  url: WikiUtil.mcFullLink(widget.event.indexKey),
                   name: 'Mooncell',
                 );
               }
@@ -159,34 +175,41 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
           )
         ],
       ),
-      body: ListView(children: children),
-      floatingActionButton: floatingActionButton,
+      body: ListView(
+        children: divideTiles(children),
+        // padding: EdgeInsets.only(bottom: 72),
+      ),
+      floatingActionButton: event.couldPlan ? floatingActionButton : null,
     );
   }
 
   Widget get floatingActionButton {
     return FloatingActionButton(
-      // backgroundColor: Theme.of(context).colorScheme.secondary.withAlpha(160),
       child: Icon(Icons.archive_outlined),
       tooltip: S.of(context).event_collect_items,
       onPressed: () {
-        final plan = db.curUser.events.mainRecordOf(widget.record.indexKey);
-        if (!plan.contains(true)) {
+        if (!plan.enable) {
           showInformDialog(context, content: S.of(context).event_not_planned);
         } else {
           SimpleCancelOkDialog(
             title: Text(S.of(context).confirm),
             content: Text(S.of(context).event_collect_item_confirm),
             onTapOk: () {
-              sumDict([db.curUser.items, widget.record.getItems(plan)],
-                  inPlace: true);
-              plan.fillRange(0, plan.length, false);
+              sumDict([db.curUser.items, event.getItems(plan)], inPlace: true);
+              plan.enable = false;
               db.itemStat.updateEventItems();
               setState(() {});
             },
           ).showDialog(context);
         }
       },
+    );
+  }
+
+  void onTapIcon(String itemKey) {
+    SplitRoute.push(
+      context: context,
+      builder: (context, _) => ItemDetailPage(itemKey: itemKey),
     );
   }
 }

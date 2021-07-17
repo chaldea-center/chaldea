@@ -1,5 +1,6 @@
 import 'package:chaldea/components/components.dart';
 
+import 'tabs/campaign_event_tab.dart';
 import 'tabs/exchange_ticket_tab.dart';
 import 'tabs/limit_event_tab.dart';
 import 'tabs/main_record_tab.dart';
@@ -15,10 +16,12 @@ class _EventListPageState extends State<EventListPage>
   bool reversed = false;
   bool showOutdated = false;
 
-  List<String> get tabNames => [
+  List<String> get tabNames =>
+      [
         S.current.limited_event,
         S.current.main_record,
-        S.current.exchange_ticket
+        S.current.exchange_ticket,
+        S.current.campaign_event
       ];
 
   @override
@@ -32,7 +35,7 @@ class _EventListPageState extends State<EventListPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).event_title),
+        title: Text(S.current.event_title),
         centerTitle: true,
         titleSpacing: 0,
         leading: MasterBackButton(),
@@ -70,6 +73,9 @@ class _EventListPageState extends State<EventListPage>
                   reversed: reversed, showOutdated: showOutdated)),
           KeepAliveBuilder(
               builder: (_) => ExchangeTicketTab(
+                  reverse: reversed, showOutdated: showOutdated)),
+          KeepAliveBuilder(
+              builder: (_) => CampaignEventTab(
                   reverse: reversed, showOutdated: showOutdated)),
         ],
       ),

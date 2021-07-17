@@ -5,6 +5,7 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:catcher/core/catcher.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:csv/csv.dart';
@@ -49,8 +50,9 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: Text('Fate/Freedom Order'),
-        centerTitle: true,
+        titleSpacing: 0,
+        title: AutoSizeText('Fate/Freedom Order', maxLines: 1),
+        centerTitle: false,
         actions: [
           MarkdownHelpPage.buildHelpBtn(context, 'freedom_order.md'),
           importButton,

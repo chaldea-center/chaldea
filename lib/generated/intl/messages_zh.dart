@@ -101,6 +101,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "calc_weight": MessageLookupByLibrary.simpleMessage("权重"),
         "calculate": MessageLookupByLibrary.simpleMessage("计算"),
         "calculator": MessageLookupByLibrary.simpleMessage("计算器"),
+        "campaign_event": MessageLookupByLibrary.simpleMessage("纪念活动"),
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
         "card_description": MessageLookupByLibrary.simpleMessage("解说"),
         "card_info": MessageLookupByLibrary.simpleMessage("资料"),

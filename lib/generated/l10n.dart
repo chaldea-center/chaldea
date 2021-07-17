@@ -1466,6 +1466,16 @@ class S {
     );
   }
 
+  /// `纪念活动`
+  String get campaign_event {
+    return Intl.message(
+      '纪念活动',
+      name: 'campaign_event',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `交换券`
   String get exchange_ticket_short {
     return Intl.message(

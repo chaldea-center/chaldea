@@ -25,6 +25,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             title: Center(
                 child: Text(S.current.cur_account + ': ' + db.curUser.name)),
           ),
+          kDefaultDivider,
           ListTile(
             leading: Icon(Icons.http),
             title: Text(LocalizedText.of(

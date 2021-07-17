@@ -64,7 +64,11 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: AutoSizeText(summon.localizedName, maxLines: 1),
+        title: AutoSizeText(
+          summon.localizedName,
+          maxLines: 1,
+          overflow: TextOverflow.fade,
+        ),
         titleSpacing: 0,
         actions: [
           IconButton(

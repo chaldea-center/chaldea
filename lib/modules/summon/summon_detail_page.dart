@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/event/campaign_detail_page.dart';
 import 'package:chaldea/modules/event/limit_event_detail_page.dart';
 import 'package:chaldea/modules/event/main_record_detail_page.dart';
 import 'package:chaldea/modules/summon/summon_simulator_page.dart';
@@ -37,7 +38,11 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: AutoSizeText(summon.localizedName, maxLines: 1),
+        title: AutoSizeText(
+          summon.localizedName,
+          maxLines: 1,
+          overflow: TextOverflow.fade,
+        ),
         titleSpacing: 0,
         actions: [
           db.streamBuilder(
@@ -158,6 +163,9 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     } else if (db.gameData.events.mainRecords.containsKey(name)) {
       event = db.gameData.events.mainRecords[name]!;
       builder = (_, __) => MainRecordDetailPage(record: event as MainRecord);
+    } else if (db.gameData.events.campaigns.containsKey(name)) {
+      event = db.gameData.events.campaigns[name]!;
+      builder = (_, __) => CampaignDetailPage(event: event as CampaignEvent);
     }
 
     return ListTile(

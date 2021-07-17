@@ -203,8 +203,13 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: AutoSizeText(event.localizedName, maxLines: 1),
+        title: AutoSizeText(
+          event.localizedName,
+          maxLines: 1,
+          overflow: TextOverflow.fade,
+        ),
         titleSpacing: 0,
+        centerTitle: false,
         actions: [
           PopupMenuButton<String>(
             itemBuilder: (context) => [

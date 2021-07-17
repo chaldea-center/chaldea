@@ -6,6 +6,7 @@ class Events {
   DateTime progressTW;
   Map<String, LimitEvent> limitEvents; //key: event.name=mcLink
   Map<String, MainRecord> mainRecords; //key: event.chapter
+  Map<String, CampaignEvent> campaigns; //key: event.name=mcLink
   Map<String, ExchangeTicket> exchangeTickets; //key: event.monthCn
 
   Events({
@@ -14,6 +15,7 @@ class Events {
     required this.limitEvents,
     required this.mainRecords,
     required this.exchangeTickets,
+    required this.campaigns,
   })  : progressNA = _parseDate(progressNA, 365 * 2),
         progressTW = _parseDate(progressTW, 648);
 
@@ -29,6 +31,9 @@ class Events {
     List<Map<String, int>> resultList = [];
     limitEvents.forEach((name, event) {
       resultList.add(event.getItems(eventPlans.limitEvents[name]));
+    });
+    campaigns.forEach((name, event) {
+      resultList.add(event.getItems(eventPlans.campaigns[name]));
     });
     mainRecords.forEach((name, event) {
       resultList.add(event.getItems(eventPlans.mainRecords[name]));
@@ -98,6 +103,20 @@ class EventBase {
     return checkEventOutdated(
         timeJp: startTimeJp?.toDateTime(), timeCn: startTimeCn?.toDateTime());
   }
+
+  Map<String, int> _itemsWithRare([bool? rerun]) {
+    return Map.from(items)
+      ..addAll({
+        Items.grail: grail + (rerun == false ? grail2crystal : 0),
+        Items.crystal: crystal + (rerun == false ? 0 : grail2crystal),
+        Items.fou4Atk: foukun4,
+        Items.fou4Hp: foukun4,
+        Items.rarePri: rarePrism,
+      })
+      ..removeWhere((key, value) => value <= 0);
+  }
+
+  bool get couldPlan => _itemsWithRare().isNotEmpty;
 
   static List<T> sortEvents<T extends EventBase>(List<T> events,
       {bool reversed = false, bool inPlace = true}) {
@@ -190,12 +209,7 @@ class LimitEvent extends EventBase {
         );
 
   Map<String, int> itemsWithRare([LimitEventPlan? plan]) {
-    return Map.from(items)
-      ..addAll({
-        Items.grail: grail + (plan?.rerun == false ? grail2crystal : 0),
-        Items.crystal: crystal + (plan?.rerun == false ? 0 : grail2crystal)
-      })
-      ..removeWhere((key, value) => value <= 0);
+    return super._itemsWithRare(plan?.rerun);
   }
 
   Map<String, int> getItems([LimitEventPlan? plan]) {
@@ -212,10 +226,9 @@ class LimitEvent extends EventBase {
       ..removeWhere((key, value) => value <= 0);
   }
 
-  bool isOutdated() {
-    return checkEventOutdated(
-        timeJp: startTimeJp?.toDateTime(), timeCn: startTimeCn?.toDateTime());
-  }
+  // @override
+  // bool get couldPlan =>
+  //     super.couldPlan || lottery.isNotEmpty || extra.isNotEmpty;
 
   factory LimitEvent.fromJson(Map<String, dynamic> data) =>
       _$LimitEventFromJson(data);
@@ -371,19 +384,14 @@ class CampaignEvent extends EventBase {
         );
 
   Map<String, int> itemsWithRare([CampaignPlan? plan]) {
-    return Map.from(items)
-      ..addAll({
-        Items.grail: grail + (plan?.rerun == false ? grail2crystal : 0),
-        Items.crystal: crystal + (plan?.rerun == false ? 0 : grail2crystal)
-      })
-      ..removeWhere((key, value) => value <= 0);
+    return super._itemsWithRare(plan?.rerun);
   }
 
   Map<String, int> getItems([CampaignPlan? plan]) {
     if (plan == null || !plan.enable) {
       return {};
     }
-    return Map.from(items)..removeWhere((key, value) => value <= 0);
+    return Map.of(itemsWithRare(plan))..removeWhere((key, value) => value <= 0);
   }
 
   factory CampaignEvent.fromJson(Map<String, dynamic> data) =>

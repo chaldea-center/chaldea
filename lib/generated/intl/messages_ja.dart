@@ -102,6 +102,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "calc_weight": MessageLookupByLibrary.simpleMessage("重み"),
         "calculate": MessageLookupByLibrary.simpleMessage("計算する"),
         "calculator": MessageLookupByLibrary.simpleMessage("電卓"),
+        "campaign_event": MessageLookupByLibrary.simpleMessage("キャンペーン"),
         "cancel": MessageLookupByLibrary.simpleMessage("キャセル"),
         "card_description": MessageLookupByLibrary.simpleMessage("解説"),
         "card_info": MessageLookupByLibrary.simpleMessage("資料"),

@@ -107,6 +107,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "calc_weight": MessageLookupByLibrary.simpleMessage("Wight"),
         "calculate": MessageLookupByLibrary.simpleMessage("Calculate"),
         "calculator": MessageLookupByLibrary.simpleMessage("Calculator"),
+        "campaign_event": MessageLookupByLibrary.simpleMessage("Campaign"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "card_description": MessageLookupByLibrary.simpleMessage("Description"),
         "card_info": MessageLookupByLibrary.simpleMessage("Info"),

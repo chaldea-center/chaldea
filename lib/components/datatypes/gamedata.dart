@@ -39,15 +39,21 @@ class GameData {
     this.mysticCodes = const {},
     this.summons = const {},
   })  : events = events ??
-            Events(limitEvents: {}, mainRecords: {}, exchangeTickets: {}),
+            Events(
+              limitEvents: {},
+              mainRecords: {},
+              exchangeTickets: {},
+              campaigns: {},
+            ),
         glpk = glpk ??
             GLPKData(
-                colNames: [],
-                rowNames: [],
-                costs: [],
-                matrix: [],
-                freeCounts: {},
-                weeklyMissionData: []),
+              colNames: [],
+              rowNames: [],
+              costs: [],
+              matrix: [],
+              freeCounts: {},
+              weeklyMissionData: [],
+            ),
         servantsWithUser = Map.of(servants);
 
   void updateUserDuplicatedServants([Map<int, int>? duplicated]) {

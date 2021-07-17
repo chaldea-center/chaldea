@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/event/campaign_detail_page.dart';
 import 'package:chaldea/modules/event/limit_event_detail_page.dart';
 import 'package:chaldea/modules/event/main_record_detail_page.dart';
 import 'package:chaldea/modules/event/tabs/exchange_ticket_tab.dart';
@@ -17,7 +18,7 @@ class ItemObtainEventPage extends StatefulWidget {
 }
 
 class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
-  List<bool> expandedList = [true, true, true];
+  List<bool> expandedList = [true, true, true, true];
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,8 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
       List<Widget> children = [
         _limitEventAccordion,
         _ticketAccordion,
-        _mainRecordAccordion
+        _mainRecordAccordion,
+        _campaignAccordion,
       ];
       return ListView.separated(
         itemBuilder: (context, index) => children[index],
@@ -223,6 +225,52 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
       trailing: Text(count.toString()),
       children: children,
       expanded: expandedList[2],
+    );
+  }
+
+  Widget get _campaignAccordion {
+    List<Widget> children = [];
+    final campaigns = db.gameData.events.campaigns.values
+        .where((event) => _whetherToShow(
+            db.curUser.events.campaignEventPlanOf(event.indexKey).enable,
+            event.isOutdated()))
+        .toList();
+    EventBase.sortEvents(campaigns, reversed: false);
+    int count = 0;
+    campaigns.forEach((event) {
+      final plan = db.curUser.events.campaignEventPlanOf(event.indexKey);
+      List<String> texts = [];
+      bool hasEventItems = _hasItemIn(event.itemsWithRare(plan));
+      if (hasEventItems) {
+        texts.add('${S.current.event_title}'
+            ' ${event.itemsWithRare(plan)[widget.itemKey]}');
+      }
+      if (texts.isEmpty) return;
+      count += event.getItems(plan)[widget.itemKey] ?? 0;
+      children.add(ListTile(
+        title: AutoSizeText(event.localizedName,
+            maxFontSize: 15,
+            maxLines: 2,
+            style: _textStyle(false, event.isOutdated())),
+        onTap: () {
+          SplitRoute.push(
+            context: context,
+            builder: (context, _) => CampaignDetailPage(event: event),
+            detail: true,
+          );
+        },
+        trailing: Text(
+          texts.join('\n'),
+          style: _textStyle(plan.enable, event.isOutdated()),
+          textAlign: TextAlign.right,
+        ),
+      ));
+    });
+    return _getAccordion(
+      title: Text(S.current.campaign_event),
+      trailing: Text(count.toString()),
+      children: children,
+      expanded: expandedList[3],
     );
   }
 

@@ -86,8 +86,8 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
 
   @override
   Widget build(BuildContext context) {
-    final lightTheme = ThemeData.light();
-    final darkTheme = ThemeData.dark();
+    final lightTheme = configureTheme(ThemeData.light());
+    final darkTheme = configureTheme(ThemeData.dark());
 
     Color? navColor;
     switch (db.userData.themeMode) {
@@ -134,6 +134,12 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
           home: _ChaldeaHome(key: _homeKey),
         ),
       ),
+    );
+  }
+
+  ThemeData configureTheme(ThemeData themeData) {
+    return themeData.copyWith(
+      appBarTheme: themeData.appBarTheme.copyWith(titleSpacing: 0),
     );
   }
 
