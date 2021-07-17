@@ -277,9 +277,11 @@ class _FeedbackPageState extends State<FeedbackPage> {
       message.attachments
           .add(StringAttachment(bodyController.text, fileName: 'raw_msg.txt'));
       if (attachLog) {
-        message.attachments.addAll(EmailAutoHandlerCross.archiveAttachments(
-            [File(db.paths.crashLog), File(db.paths.appLog)],
-            join(db.paths.tempDir, '.feedback.tmp.zip')));
+        message.attachments.addAll(EmailAutoHandlerCross.archiveAttachments([
+          File(db.paths.crashLog),
+          File(db.paths.appLog),
+          File(db.paths.userDataPath)
+        ], join(db.paths.tempDir, '.feedback.tmp.zip')));
       }
       attachFiles.forEach((fp) {
         var file = File(fp);

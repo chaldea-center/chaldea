@@ -325,7 +325,8 @@ class AutoUpdateUtil {
     await SimpleCancelOkDialog(
       title: Text(S.current.update_dataset),
       content: Text('Ready to reload dataset'),
-    ).showDialog(null);
+      hideCancel: true,
+    ).showDialog(null, barrierDismissible: false);
     if (pop)
       Navigator.of(kAppKey.currentContext!).popUntil((route) => route.isFirst);
     await Future.delayed(Duration(milliseconds: 600));

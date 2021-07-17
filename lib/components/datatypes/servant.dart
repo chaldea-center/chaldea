@@ -42,6 +42,8 @@ class Servant {
 
   String toString() => '$runtimeType(No.$no-$mcLink)';
 
+  String get lName => info.localizedName;
+
   String get stdClassName {
     String clsName;
     if (info.className.startsWith('Beast'))
@@ -263,6 +265,10 @@ class Servant {
       res = res * 1000000 + ((reversed?.elementAt(i) ?? false) ? -r : r);
     }
     return res;
+  }
+
+  Future pushDetail(BuildContext context) {
+    return SplitRoute.push2(context, ServantDetailPage(this));
   }
 
   Widget iconBuilder({

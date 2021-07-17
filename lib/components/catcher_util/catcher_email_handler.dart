@@ -187,7 +187,14 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
 
   String get archiveTmpFp => '${db.paths.tempDir}/.tmp_attach.zip';
 
-  static List<Attachment> archiveAttachments(List<File> files, String tmpFp) {
+  static List<Attachment> archiveAttachments(List<File> files, String tmpFp,
+      {bool dumpMemoryUserdata = true}) {
+    if (dumpMemoryUserdata) {
+      String mfp = p.join(db.paths.tempDir, 'userdata.memory.json');
+      File(mfp).writeAsStringSync(jsonEncode(db.userData), flush: true);
+      files.add(File(mfp));
+    }
+
     files = files.where((f) => f.existsSync()).toList();
     if (files.isEmpty) return [];
 

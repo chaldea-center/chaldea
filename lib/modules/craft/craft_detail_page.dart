@@ -212,6 +212,7 @@ class CraftDetailBasePage extends StatelessWidget {
                   textAlign: TextAlign.center),
             )
           ]),
+          ..._relatedSvt(context),
           CustomTableRow(children: [
             TableCellData(text: S.of(context).skill, isHeader: true)
           ]),
@@ -260,12 +261,7 @@ class CraftDetailBasePage extends StatelessWidget {
             TableCellData(text: S.current.characters_in_card, isHeader: true)
           ]),
           CustomTableRow(children: [
-            TableCellData(
-              child: Text(
-                localizeCharacters(ce.characters),
-                textAlign: TextAlign.center,
-              ),
-            )
+            TableCellData(child: localizeCharacters(context, ce.characters))
           ]),
           CustomTableRow(children: [
             TableCellData(text: S.of(context).card_description, isHeader: true)
@@ -314,13 +310,33 @@ class CraftDetailBasePage extends StatelessWidget {
     );
   }
 
-  String localizeCharacters(List<String> characters) {
-    if (characters.isEmpty) return '-';
-    return characters.map((e) {
+  Widget localizeCharacters(BuildContext context, List<String> characters) {
+    if (characters.isEmpty) return Text('-');
+    List<Widget> children = [];
+    for (final name in characters) {
       final svt =
-          db.gameData.servants.values.firstWhereOrNull((s) => s.mcLink == e);
-      return svt?.info.localizedName ?? e;
-    }).join(', ');
+          db.gameData.servants.values.firstWhereOrNull((s) => s.mcLink == name);
+      if (svt == null) {
+        children.add(Text(name));
+      } else {
+        children.add(InkWell(
+          child: Text(
+            svt.info.localizedName,
+            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+          ),
+          onTap: () => svt.pushDetail(context),
+        ));
+      }
+    }
+    children = divideTiles(children, divider: Text('/'));
+    return Wrap(
+      spacing: 4,
+      runSpacing: 4,
+      alignment: WrapAlignment.center,
+      runAlignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: children,
+    );
   }
 
   List<Summon> getPickupSummons() {
@@ -348,5 +364,27 @@ class CraftDetailBasePage extends StatelessWidget {
         color = '银';
     }
     return db.getIconImage('礼装$color卡背');
+  }
+
+  List<Widget> _relatedSvt(BuildContext context) {
+    List<Widget> children = [];
+    final bondSvt = db.gameData.servants[ce.bond];
+    final valentineSvt = db.gameData.servants[ce.valentine];
+    for (var svt in [bondSvt, valentineSvt]) {
+      if (svt != null) {
+        children.add(TextButton(
+          onPressed: () => svt.pushDetail(context),
+          child: Text(
+            svt.info.localizedName,
+            textAlign: TextAlign.center,
+          ),
+          style: TextButton.styleFrom(
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            padding: EdgeInsets.all(1),
+          ),
+        ));
+      }
+    }
+    return children;
   }
 }

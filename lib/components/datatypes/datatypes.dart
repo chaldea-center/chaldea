@@ -27,6 +27,7 @@ import '../git_tool.dart';
 import '../localized/localized.dart';
 import '../logger.dart';
 import '../split_route/split_route.dart';
+import '../tile_items.dart';
 import '../utils.dart';
 
 part 'base_types.dart';

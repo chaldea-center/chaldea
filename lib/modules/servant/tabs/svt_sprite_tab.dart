@@ -57,7 +57,7 @@ class _SvtSvtSpriteTabTabState extends SvtTabBaseState<SvtSpriteTab>
       if (match.group(1) == 'icon') return S.current.icons + ' $suffix';
       if (match.group(1) == 'sprite') return S.current.sprites + ' $suffix';
       return match.group(0).toString();
-    });
+    }).trim();
   }
 
   @override
@@ -73,7 +73,7 @@ class _SvtSvtSpriteTabTabState extends SvtTabBaseState<SvtSpriteTab>
   List<Widget> _rows(List<KeyValueListEntry> entries, double height) {
     List<Widget> children = [];
     for (final KeyValueListEntry entry in entries) {
-      print(entry.key);
+      // print(entry.key);
       List<String> urls = entry.valueList.whereType<String>().toList();
       if (urls.isEmpty) continue;
       children.add(TileGroup(
@@ -89,7 +89,7 @@ class _SvtSvtSpriteTabTabState extends SvtTabBaseState<SvtSpriteTab>
                     padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                     child: CachedImage(
                       imageUrl: url,
-                      height: height,
+                      // height: height,
                       showSaveOnLongPress: true,
                       placeholder: placeholder,
                       onTap: () {

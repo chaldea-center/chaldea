@@ -337,21 +337,22 @@ Map<String, dynamic> _$EventsToJson(Events instance) => <String, dynamic>{
 LimitEvent _$LimitEventFromJson(Map<String, dynamic> json) {
   return $checkedNew('LimitEvent', json, () {
     final val = LimitEvent(
-      mcLink: $checkedConvert(json, 'mcLink', (v) => v as String),
       name: $checkedConvert(json, 'name', (v) => v as String),
       nameJp: $checkedConvert(json, 'nameJp', (v) => v as String?),
       nameEn: $checkedConvert(json, 'nameEn', (v) => v as String?),
+      mcLink: $checkedConvert(json, 'mcLink', (v) => v as String),
       startTimeJp: $checkedConvert(json, 'startTimeJp', (v) => v as String?),
       endTimeJp: $checkedConvert(json, 'endTimeJp', (v) => v as String?),
       startTimeCn: $checkedConvert(json, 'startTimeCn', (v) => v as String?),
       endTimeCn: $checkedConvert(json, 'endTimeCn', (v) => v as String?),
       bannerUrl: $checkedConvert(json, 'bannerUrl', (v) => v as String?),
       bannerUrlJp: $checkedConvert(json, 'bannerUrlJp', (v) => v as String?),
-      welfareServant: $checkedConvert(json, 'welfareServant', (v) => v as int),
       grail: $checkedConvert(json, 'grail', (v) => v as int),
       crystal: $checkedConvert(json, 'crystal', (v) => v as int),
       grail2crystal: $checkedConvert(json, 'grail2crystal', (v) => v as int),
       foukun4: $checkedConvert(json, 'foukun4', (v) => v as int),
+      rarePrism: $checkedConvert(json, 'rarePrism', (v) => v as int),
+      welfareServant: $checkedConvert(json, 'welfareServant', (v) => v as int),
       items: $checkedConvert(
           json, 'items', (v) => Map<String, int>.from(v as Map)),
       lotteryLimit: $checkedConvert(json, 'lotteryLimit', (v) => v as int),
@@ -366,21 +367,22 @@ LimitEvent _$LimitEventFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$LimitEventToJson(LimitEvent instance) =>
     <String, dynamic>{
+      'mcLink': instance.mcLink,
       'name': instance.name,
       'nameJp': instance.nameJp,
       'nameEn': instance.nameEn,
-      'mcLink': instance.mcLink,
       'startTimeJp': instance.startTimeJp,
       'endTimeJp': instance.endTimeJp,
       'startTimeCn': instance.startTimeCn,
       'endTimeCn': instance.endTimeCn,
       'bannerUrl': instance.bannerUrl,
       'bannerUrlJp': instance.bannerUrlJp,
-      'welfareServant': instance.welfareServant,
       'grail': instance.grail,
       'crystal': instance.crystal,
       'grail2crystal': instance.grail2crystal,
       'foukun4': instance.foukun4,
+      'rarePrism': instance.rarePrism,
+      'welfareServant': instance.welfareServant,
       'items': instance.items,
       'lotteryLimit': instance.lotteryLimit,
       'lottery': instance.lottery,
@@ -390,10 +392,10 @@ Map<String, dynamic> _$LimitEventToJson(LimitEvent instance) =>
 MainRecord _$MainRecordFromJson(Map<String, dynamic> json) {
   return $checkedNew('MainRecord', json, () {
     final val = MainRecord(
-      mcLink: $checkedConvert(json, 'mcLink', (v) => v as String),
       name: $checkedConvert(json, 'name', (v) => v as String),
       nameJp: $checkedConvert(json, 'nameJp', (v) => v as String?),
       nameEn: $checkedConvert(json, 'nameEn', (v) => v as String?),
+      mcLink: $checkedConvert(json, 'mcLink', (v) => v as String),
       startTimeJp: $checkedConvert(json, 'startTimeJp', (v) => v as String?),
       endTimeJp: $checkedConvert(json, 'endTimeJp', (v) => v as String?),
       startTimeCn: $checkedConvert(json, 'startTimeCn', (v) => v as String?),
@@ -404,6 +406,8 @@ MainRecord _$MainRecordFromJson(Map<String, dynamic> json) {
       crystal: $checkedConvert(json, 'crystal', (v) => v as int),
       grail2crystal: $checkedConvert(json, 'grail2crystal', (v) => v as int),
       foukun4: $checkedConvert(json, 'foukun4', (v) => v as int),
+      rarePrism: $checkedConvert(json, 'rarePrism', (v) => v as int),
+      welfareServant: $checkedConvert(json, 'welfareServant', (v) => v as int),
       drops: $checkedConvert(
           json, 'drops', (v) => Map<String, int>.from(v as Map)),
       rewards: $checkedConvert(
@@ -429,8 +433,57 @@ Map<String, dynamic> _$MainRecordToJson(MainRecord instance) =>
       'crystal': instance.crystal,
       'grail2crystal': instance.grail2crystal,
       'foukun4': instance.foukun4,
+      'rarePrism': instance.rarePrism,
+      'welfareServant': instance.welfareServant,
       'drops': instance.drops,
       'rewards': instance.rewards,
+    };
+
+CampaignEvent _$CampaignEventFromJson(Map<String, dynamic> json) {
+  return $checkedNew('CampaignEvent', json, () {
+    final val = CampaignEvent(
+      name: $checkedConvert(json, 'name', (v) => v as String),
+      nameJp: $checkedConvert(json, 'nameJp', (v) => v as String?),
+      nameEn: $checkedConvert(json, 'nameEn', (v) => v as String?),
+      mcLink: $checkedConvert(json, 'mcLink', (v) => v as String),
+      startTimeJp: $checkedConvert(json, 'startTimeJp', (v) => v as String?),
+      endTimeJp: $checkedConvert(json, 'endTimeJp', (v) => v as String?),
+      startTimeCn: $checkedConvert(json, 'startTimeCn', (v) => v as String?),
+      endTimeCn: $checkedConvert(json, 'endTimeCn', (v) => v as String?),
+      bannerUrl: $checkedConvert(json, 'bannerUrl', (v) => v as String?),
+      bannerUrlJp: $checkedConvert(json, 'bannerUrlJp', (v) => v as String?),
+      grail: $checkedConvert(json, 'grail', (v) => v as int),
+      crystal: $checkedConvert(json, 'crystal', (v) => v as int),
+      grail2crystal: $checkedConvert(json, 'grail2crystal', (v) => v as int),
+      foukun4: $checkedConvert(json, 'foukun4', (v) => v as int),
+      rarePrism: $checkedConvert(json, 'rarePrism', (v) => v as int),
+      welfareServant: $checkedConvert(json, 'welfareServant', (v) => v as int),
+      items: $checkedConvert(
+          json, 'items', (v) => Map<String, int>.from(v as Map)),
+    );
+    return val;
+  });
+}
+
+Map<String, dynamic> _$CampaignEventToJson(CampaignEvent instance) =>
+    <String, dynamic>{
+      'mcLink': instance.mcLink,
+      'name': instance.name,
+      'nameJp': instance.nameJp,
+      'nameEn': instance.nameEn,
+      'startTimeJp': instance.startTimeJp,
+      'endTimeJp': instance.endTimeJp,
+      'startTimeCn': instance.startTimeCn,
+      'endTimeCn': instance.endTimeCn,
+      'bannerUrl': instance.bannerUrl,
+      'bannerUrlJp': instance.bannerUrlJp,
+      'grail': instance.grail,
+      'crystal': instance.crystal,
+      'grail2crystal': instance.grail2crystal,
+      'foukun4': instance.foukun4,
+      'rarePrism': instance.rarePrism,
+      'welfareServant': instance.welfareServant,
+      'items': instance.items,
     };
 
 ExchangeTicket _$ExchangeTicketFromJson(Map<String, dynamic> json) {
@@ -1695,6 +1748,13 @@ EventPlans _$EventPlansFromJson(Map<String, dynamic> json) {
                 (k, e) => MapEntry(
                     k, (e as List<dynamic>).map((e) => e as int).toList()),
               )),
+      campaigns: $checkedConvert(
+          json,
+          'campaigns',
+          (v) => (v as Map<String, dynamic>?)?.map(
+                (k, e) => MapEntry(
+                    k, CampaignPlan.fromJson(e as Map<String, dynamic>)),
+              )),
     );
     return val;
   });
@@ -1706,6 +1766,7 @@ Map<String, dynamic> _$EventPlansToJson(EventPlans instance) =>
       'mainRecords': EventPlans._mainRecordsToJson(instance.mainRecords),
       'exchangeTickets':
           EventPlans._exchangeTicketsToJson(instance.exchangeTickets),
+      'campaigns': instance.campaigns,
     };
 
 LimitEventPlan _$LimitEventPlanFromJson(Map<String, dynamic> json) {
@@ -1731,6 +1792,22 @@ Map<String, dynamic> _$LimitEventPlanToJson(LimitEventPlan instance) =>
       'rerun': instance.rerun,
       'lottery': instance.lottery,
       'extra': instance.extra,
+    };
+
+CampaignPlan _$CampaignPlanFromJson(Map<String, dynamic> json) {
+  return $checkedNew('CampaignPlan', json, () {
+    final val = CampaignPlan(
+      enable: $checkedConvert(json, 'enable', (v) => v as bool?),
+      rerun: $checkedConvert(json, 'rerun', (v) => v as bool?),
+    );
+    return val;
+  });
+}
+
+Map<String, dynamic> _$CampaignPlanToJson(CampaignPlan instance) =>
+    <String, dynamic>{
+      'enable': instance.enable,
+      'rerun': instance.rerun,
     };
 
 UserData _$UserDataFromJson(Map<String, dynamic> json) {

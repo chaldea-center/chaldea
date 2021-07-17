@@ -110,7 +110,7 @@
   "list_end_hint": "{first, select, true{最初のもの} false{最後のもの} other{最後のもの}}",
   "previous_card": "前のカード",
   "next_card": "次のカード",
-  "illustrator": "イラストレーター",
+  "illustrator": "イラスト",
   "rarity": "レアリティ",
   "view_illustration": "カードの画像を表示",
   "obtain_methods": "入手方法",

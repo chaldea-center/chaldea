@@ -47,9 +47,9 @@ class Events {
   }
 }
 
-abstract class EventBase {
-  late String mcLink;
-  late String name;
+class EventBase {
+  String mcLink;
+  String name;
   String? nameJp;
   String? nameEn;
   String? startTimeJp;
@@ -58,17 +58,46 @@ abstract class EventBase {
   String? endTimeCn;
   String? bannerUrl;
   String? bannerUrlJp;
-  late int grail;
-  late int crystal;
-  late int grail2crystal;
-  late int foukun4;
+  int grail;
+  int crystal;
+  int grail2crystal;
+  int foukun4;
+  int rarePrism;
+  int welfareServant;
+  Map<String, int> items;
 
+  EventBase({
+    required this.mcLink,
+    required this.name,
+    required this.nameJp,
+    required this.nameEn,
+    required this.startTimeJp,
+    required this.endTimeJp,
+    required this.startTimeCn,
+    required this.endTimeCn,
+    required this.bannerUrl,
+    required this.bannerUrlJp,
+    required this.grail,
+    required this.crystal,
+    required this.grail2crystal,
+    required this.foukun4,
+    required this.rarePrism,
+    required this.welfareServant,
+    required this.items,
+  });
+
+  //
   String get indexKey => mcLink;
 
   String get localizedName => localizeNoun(name, nameJp, nameEn);
 
   String? get lBannerUrl =>
       Language.isCN ? bannerUrl ?? bannerUrlJp : bannerUrlJp ?? bannerUrl;
+
+  bool isOutdated() {
+    return checkEventOutdated(
+        timeJp: startTimeJp?.toDateTime(), timeCn: startTimeCn?.toDateTime());
+  }
 
   static List<T> sortEvents<T extends EventBase>(List<T> events,
       {bool reversed = false, bool inPlace = true}) {
@@ -115,47 +144,50 @@ abstract class EventBase {
 
 @JsonSerializable(checked: true)
 class LimitEvent extends EventBase {
-  String name;
-  String? nameJp;
-  String? nameEn;
-  String mcLink;
-  String? startTimeJp;
-  String? endTimeJp;
-  String? startTimeCn;
-  String? endTimeCn;
-  String? bannerUrl;
-  String? bannerUrlJp;
-  int welfareServant;
-  int grail;
-  int crystal;
-  int grail2crystal;
-  int foukun4;
-  Map<String, int> items;
   int lotteryLimit; //>0 limited
   Map<String, int> lottery;
   Map<String, String> extra;
 
   LimitEvent({
-    required this.mcLink,
-    required this.name,
-    required this.nameJp,
-    required this.nameEn,
-    required this.startTimeJp,
-    required this.endTimeJp,
-    required this.startTimeCn,
-    required this.endTimeCn,
-    required this.bannerUrl,
-    required this.bannerUrlJp,
-    required this.welfareServant,
-    required this.grail,
-    required this.crystal,
-    required this.grail2crystal,
-    required this.foukun4,
-    required this.items,
+    required String name,
+    required String? nameJp,
+    required String? nameEn,
+    required String mcLink,
+    required String? startTimeJp,
+    required String? endTimeJp,
+    required String? startTimeCn,
+    required String? endTimeCn,
+    required String? bannerUrl,
+    required String? bannerUrlJp,
+    required int grail,
+    required int crystal,
+    required int grail2crystal,
+    required int foukun4,
+    required int rarePrism,
+    required int welfareServant,
+    required Map<String, int> items,
     required this.lotteryLimit,
     required this.lottery,
     required this.extra,
-  }); //item-comment
+  }) : super(
+          name: name,
+          nameJp: nameJp,
+          nameEn: nameEn,
+          mcLink: mcLink,
+          startTimeJp: startTimeJp,
+          endTimeJp: endTimeJp,
+          startTimeCn: startTimeCn,
+          endTimeCn: endTimeCn,
+          bannerUrl: bannerUrl,
+          bannerUrlJp: bannerUrlJp,
+          grail: grail,
+          crystal: crystal,
+          grail2crystal: grail2crystal,
+          foukun4: foukun4,
+          rarePrism: rarePrism,
+          welfareServant: welfareServant,
+          items: items,
+        );
 
   Map<String, int> itemsWithRare([LimitEventPlan? plan]) {
     return Map.from(items)
@@ -166,7 +198,7 @@ class LimitEvent extends EventBase {
       ..removeWhere((key, value) => value <= 0);
   }
 
-  Map<String, int> getItems(LimitEventPlan? plan) {
+  Map<String, int> getItems([LimitEventPlan? plan]) {
     if (plan == null || !plan.enable) {
       return {};
     }
@@ -193,41 +225,52 @@ class LimitEvent extends EventBase {
 
 @JsonSerializable(checked: true)
 class MainRecord extends EventBase {
-  String mcLink;
-  String name;
-  String? nameJp;
-  String? nameEn;
-  String? startTimeJp;
-  String? endTimeJp;
-  String? startTimeCn;
-  String? endTimeCn;
-  String? bannerUrl;
-  String? bannerUrlJp;
-  int grail;
-  int crystal;
-  int grail2crystal;
-  int foukun4;
   Map<String, int> drops;
   Map<String, int> rewards;
 
+  @override
+  @JsonKey(ignore: true)
+  Map<String, int> get items => sumDict([drops, rewards]);
+
   MainRecord({
-    required this.mcLink,
-    required this.name,
-    required this.nameJp,
-    required this.nameEn,
-    required this.startTimeJp,
-    required this.endTimeJp,
-    required this.startTimeCn,
-    required this.endTimeCn,
-    required this.bannerUrl,
-    required this.bannerUrlJp,
-    required this.grail,
-    required this.crystal,
-    required this.grail2crystal,
-    required this.foukun4,
+    required String name,
+    required String? nameJp,
+    required String? nameEn,
+    required String mcLink,
+    required String? startTimeJp,
+    required String? endTimeJp,
+    required String? startTimeCn,
+    required String? endTimeCn,
+    required String? bannerUrl,
+    required String? bannerUrlJp,
+    required int grail,
+    required int crystal,
+    required int grail2crystal,
+    required int foukun4,
+    required int rarePrism,
+    required int welfareServant,
+    // required Map<String, int> items,
     required this.drops,
     required this.rewards,
-  });
+  }) : super(
+          name: name,
+          nameJp: nameJp,
+          nameEn: nameEn,
+          mcLink: mcLink,
+          startTimeJp: startTimeJp,
+          endTimeJp: endTimeJp,
+          startTimeCn: startTimeCn,
+          endTimeCn: endTimeCn,
+          bannerUrl: bannerUrl,
+          bannerUrlJp: bannerUrlJp,
+          grail: grail,
+          crystal: crystal,
+          grail2crystal: grail2crystal,
+          foukun4: foukun4,
+          rarePrism: rarePrism,
+          welfareServant: welfareServant,
+          items: {},
+        );
 
   String get chapter => _splitChapterTitle(name)[0];
 
@@ -271,7 +314,7 @@ class MainRecord extends EventBase {
       ..removeWhere((key, value) => value <= 0);
   }
 
-  Map<String, int> getItems(List<bool>? plan) {
+  Map<String, int> getItems([List<bool>? plan]) {
     if (plan == null) return {};
     assert(plan.length == 2, 'incorrect main record plan: $plan');
     return sumDict([
@@ -285,6 +328,68 @@ class MainRecord extends EventBase {
     return checkEventOutdated(
         timeJp: startTimeJp?.toDateTime(), timeCn: startTimeCn?.toDateTime());
   }
+}
+
+@JsonSerializable(checked: true)
+class CampaignEvent extends EventBase {
+  CampaignEvent({
+    required String name,
+    required String? nameJp,
+    required String? nameEn,
+    required String mcLink,
+    required String? startTimeJp,
+    required String? endTimeJp,
+    required String? startTimeCn,
+    required String? endTimeCn,
+    required String? bannerUrl,
+    required String? bannerUrlJp,
+    required int grail,
+    required int crystal,
+    required int grail2crystal,
+    required int foukun4,
+    required int rarePrism,
+    required int welfareServant,
+    required Map<String, int> items,
+  }) : super(
+          name: name,
+          nameJp: nameJp,
+          nameEn: nameEn,
+          mcLink: mcLink,
+          startTimeJp: startTimeJp,
+          endTimeJp: endTimeJp,
+          startTimeCn: startTimeCn,
+          endTimeCn: endTimeCn,
+          bannerUrl: bannerUrl,
+          bannerUrlJp: bannerUrlJp,
+          grail: grail,
+          crystal: crystal,
+          grail2crystal: grail2crystal,
+          foukun4: foukun4,
+          rarePrism: rarePrism,
+          welfareServant: welfareServant,
+          items: items,
+        );
+
+  Map<String, int> itemsWithRare([CampaignPlan? plan]) {
+    return Map.from(items)
+      ..addAll({
+        Items.grail: grail + (plan?.rerun == false ? grail2crystal : 0),
+        Items.crystal: crystal + (plan?.rerun == false ? 0 : grail2crystal)
+      })
+      ..removeWhere((key, value) => value <= 0);
+  }
+
+  Map<String, int> getItems([CampaignPlan? plan]) {
+    if (plan == null || !plan.enable) {
+      return {};
+    }
+    return Map.from(items)..removeWhere((key, value) => value <= 0);
+  }
+
+  factory CampaignEvent.fromJson(Map<String, dynamic> data) =>
+      _$CampaignEventFromJson(data);
+
+  Map<String, dynamic> toJson() => _$CampaignEventToJson(this);
 }
 
 ///  Exchange Ticket starts from:

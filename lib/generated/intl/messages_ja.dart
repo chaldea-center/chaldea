@@ -271,7 +271,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "icons": MessageLookupByLibrary.simpleMessage("アイコン"),
         "ignore": MessageLookupByLibrary.simpleMessage("無視"),
         "illustration": MessageLookupByLibrary.simpleMessage("イラスト"),
-        "illustrator": MessageLookupByLibrary.simpleMessage("イラストレーター"),
+        "illustrator": MessageLookupByLibrary.simpleMessage("イラスト"),
         "image_analysis": MessageLookupByLibrary.simpleMessage("画像分析"),
         "import_data": MessageLookupByLibrary.simpleMessage("インポート"),
         "import_data_error": m5,

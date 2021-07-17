@@ -396,10 +396,13 @@ class EventPlans {
   @JsonKey(toJson: _exchangeTicketsToJson)
   Map<String, List<int>> exchangeTickets;
 
+  Map<String, CampaignPlan> campaigns;
+
   EventPlans({
     Map<String, LimitEventPlan>? limitEvents,
     Map<String, List<bool>>? mainRecords,
     Map<String, List<int>>? exchangeTickets,
+    Map<String, CampaignPlan>? campaigns,
   })  : limitEvents = limitEvents ?? {},
         mainRecords = Map.fromIterable((mainRecords ?? {}).entries,
             key: (e) => e.key,
@@ -408,7 +411,8 @@ class EventPlans {
         exchangeTickets = Map.fromIterable((exchangeTickets ?? {}).entries,
             key: (e) => e.key,
             value: (e) => List.generate(
-                3, (index) => (e.value as List<int>).getOrNull(index) ?? 0));
+                3, (index) => (e.value as List<int>).getOrNull(index) ?? 0)),
+        campaigns = campaigns ?? {};
 
   LimitEventPlan limitEventOf(String indexKey) =>
       limitEvents.putIfAbsent(indexKey, () => LimitEventPlan());
@@ -418,6 +422,9 @@ class EventPlans {
 
   List<int> exchangeTicketOf(String indexKey) =>
       exchangeTickets.putIfAbsent(indexKey, () => [0, 0, 0]);
+
+  CampaignPlan campaignEventPlanOf(String indexKey) =>
+      campaigns.putIfAbsent(indexKey, () => CampaignPlan());
 
   factory EventPlans.fromJson(Map<String, dynamic> data) =>
       _$EventPlansFromJson(data);
@@ -470,4 +477,21 @@ class LimitEventPlan {
       _$LimitEventPlanFromJson(data);
 
   Map<String, dynamic> toJson() => _$LimitEventPlanToJson(this);
+}
+
+@JsonSerializable(checked: true)
+class CampaignPlan {
+  bool enable;
+  bool rerun;
+
+  CampaignPlan({
+    bool? enable,
+    bool? rerun,
+  })  : enable = enable ?? false,
+        rerun = rerun ?? true;
+
+  factory CampaignPlan.fromJson(Map<String, dynamic> data) =>
+      _$CampaignPlanFromJson(data);
+
+  Map<String, dynamic> toJson() => _$CampaignPlanToJson(this);
 }

@@ -104,10 +104,15 @@ extension TrimString on String {
 }
 
 extension DialogShowMethod on Widget {
-  Future<T?> showDialog<T>(BuildContext? context) {
+  Future<T?> showDialog<T>(BuildContext? context,
+      {bool barrierDismissible = true}) {
     context ??= kAppKey.currentContext;
     if (context == null) return Future.value();
-    return material.showDialog<T>(context: context, builder: (context) => this);
+    return material.showDialog<T>(
+      context: context,
+      builder: (context) => this,
+      barrierDismissible: barrierDismissible,
+    );
   }
 }
 
