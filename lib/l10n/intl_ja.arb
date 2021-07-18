@@ -400,5 +400,6 @@
   "search": "検索",
   "icons": "アイコン",
   "sprites": "モデル",
-  "display_setting": "表示設定"
+  "display_setting": "表示設定",
+  "issues": "問題"
 }

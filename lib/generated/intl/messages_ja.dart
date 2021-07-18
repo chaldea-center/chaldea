@@ -330,6 +330,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "interlude_and_rankup": MessageLookupByLibrary.simpleMessage("幕間・強化"),
         "ios_app_path": MessageLookupByLibrary.simpleMessage(
             "\"ファイル\"アプリ/このiPhone内/Chaldea"),
+        "issues": MessageLookupByLibrary.simpleMessage("問題"),
         "item": MessageLookupByLibrary.simpleMessage("アイテム"),
         "item_already_exist_hint": m8,
         "item_category_ascension":

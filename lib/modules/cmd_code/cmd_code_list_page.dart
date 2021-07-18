@@ -113,8 +113,6 @@ class CmdCodeListPageState
 
   @override
   bool filter(String keyword, CommandCode code) {
-    __textFilter.parse(keyword);
-
     if (keyword.isNotEmpty && searchMap[code] == null) {
       List<String> searchStrings = [
         code.no.toString(),
@@ -130,10 +128,11 @@ class CmdCodeListPageState
       searchMap[code] = searchStrings.toSet().join('\t');
     }
     if (keyword.isNotEmpty) {
-      if (!__textFilter.match(searchMap[code]!)) {
-        return false;
-      }
+      __textFilter.parse(keyword);
+      return __textFilter.match(searchMap[code]!);
     }
+
+    /// In search mode, filters are ignored
     if (!filterData.rarity.singleValueFilter(code.rarity.toString())) {
       return false;
     }

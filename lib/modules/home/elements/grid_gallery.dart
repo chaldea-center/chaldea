@@ -3,9 +3,9 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/craft/craft_list_page.dart';
 import 'package:chaldea/modules/event/events_page.dart';
-import 'package:chaldea/modules/extras/bug_page.dart';
 import 'package:chaldea/modules/extras/cv_illustrator_list.dart';
 import 'package:chaldea/modules/extras/exp_card_cost_page.dart';
+import 'package:chaldea/modules/extras/issues_page.dart';
 import 'package:chaldea/modules/extras/mystic_code_page.dart';
 import 'package:chaldea/modules/ffo/ffo_page.dart';
 import 'package:chaldea/modules/free_quest_calculator/free_calculator_page.dart';
@@ -77,48 +77,48 @@ class _GridGalleryState extends State<GridGallery> {
   List<Widget> _getShownGalleries(BuildContext context) {
     List<Widget> _galleryItems = [];
     kAllGalleryItems.forEach((name, item) {
-      if ((db.userData.galleries[name] ?? true) ||
-          name == GalleryItem.more ||
-          name == GalleryItem.bug) {
-        _galleryItems.add(InkWell(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                flex: 6,
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: item.child == null
-                      ? Icon(item.icon, size: 40, color: _iconColor)
-                      : item.child,
+      if (db.userData.galleries[name] == false &&
+          !GalleryItem.persistentPages.contains(name)) {
+        return;
+      }
+      _galleryItems.add(InkWell(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              flex: 6,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: item.child == null
+                    ? Icon(item.icon, size: 40, color: _iconColor)
+                    : item.child,
+              ),
+            ),
+            Expanded(
+              flex: 4,
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: AutoSizeText(
+                  item.title,
+                  style: TextStyle(fontWeight: FontWeight.normal),
+                  textAlign: TextAlign.center,
+                  maxFontSize: 14,
                 ),
               ),
-              Expanded(
-                flex: 4,
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: AutoSizeText(
-                    item.title,
-                    style: TextStyle(fontWeight: FontWeight.normal),
-                    textAlign: TextAlign.center,
-                    maxFontSize: 14,
-                  ),
-                ),
-              )
-            ],
-          ),
-          onTap: () {
-            if (item.builder != null) {
-              SplitRoute.push(
-                context: context,
-                builder: item.builder!,
-                detail: item.isDetail,
-                popDetail: true,
-              ).then((value) => db.saveUserData());
-            }
-          },
-        ));
-      }
+            )
+          ],
+        ),
+        onTap: () {
+          if (item.builder != null) {
+            SplitRoute.push(
+              context: context,
+              builder: item.builder!,
+              detail: item.isDetail,
+              popDetail: true,
+            ).then((value) => db.saveUserData());
+          }
+        },
+      ));
     });
     return _galleryItems;
   }
@@ -277,12 +277,11 @@ class _GridGalleryState extends State<GridGallery> {
         builder: (context, _) => ImportPageHome(),
         isDetail: false,
       ),
-      GalleryItem.bug: GalleryItem(
-        name: GalleryItem.bug,
-        title: 'BUG',
-        icon: Icons.bug_report_outlined,
-        builder: (context, _) => BugAnnouncePage(),
-        //fail
+      GalleryItem.issues: GalleryItem(
+        name: GalleryItem.issues,
+        title: 'FAQ',
+        icon: Icons.report_problem,
+        builder: (context, _) => IssuesPage(),
         isDetail: true,
       ),
       GalleryItem.more: GalleryItem(
@@ -290,7 +289,6 @@ class _GridGalleryState extends State<GridGallery> {
         title: S.current.more,
         icon: Icons.add,
         builder: (context, _) => EditGalleryPage(galleries: kAllGalleryItems),
-        //fail
         isDetail: true,
       ),
     };

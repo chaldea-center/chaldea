@@ -398,5 +398,6 @@
   "search": "Search",
   "icons": "Icons",
   "sprites": "Sprites",
-  "display_setting": "Display Settings"
+  "display_setting": "Display Settings",
+  "issues": "Issues"
 }

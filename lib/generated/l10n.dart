@@ -4035,6 +4035,16 @@ class S {
       args: [],
     );
   }
+
+  /// `常见问题`
+  String get issues {
+    return Intl.message(
+      '常见问题',
+      name: 'issues',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

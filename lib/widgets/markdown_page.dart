@@ -98,7 +98,7 @@ class _MyMarkdownWidgetState extends State<MyMarkdownWidget> {
 }
 
 class MarkdownHelpPage extends StatefulWidget {
-  final String? dir;
+  final String dir;
 
   final String? data;
 
@@ -139,6 +139,30 @@ class MarkdownHelpPage extends StatefulWidget {
         assetEn = 'en/$asset',
         super(key: key);
 
+  static Future<String?> loadHelpAsset({
+    String dir = 'doc/help',
+    required String? asset,
+    String? assetJp,
+    String? assetEn,
+  }) async {
+    return LocalizedText.of(
+      chs: await _loadAsset(join(dir, asset)) ?? '',
+      jpn: await _loadAsset(assetJp ?? join(dir, 'jp', asset)),
+      eng: await _loadAsset(assetEn ?? join(dir, 'en', asset)),
+    );
+  }
+
+  static Future<String?> _loadAsset(String? assetKey) async {
+    if (assetKey == null) return null;
+    String? content;
+    try {
+      content = await rootBundle.loadString(assetKey);
+    } catch (e) {}
+    if (content?.trim().isNotEmpty == true) {
+      return content;
+    }
+  }
+
   static Widget buildHelpBtn(BuildContext context, String asset) {
     return IconButton(
       onPressed: () {
@@ -154,40 +178,40 @@ class MarkdownHelpPage extends StatefulWidget {
 
   @override
   _MarkdownHelpPageState createState() => _MarkdownHelpPageState();
-
-  int get _dataHash {
-    return hashValues(dir, data, asset, assetJp, assetEn);
-  }
 }
 
 class _MarkdownHelpPageState extends State<MarkdownHelpPage> {
-  int? _cachedDataHash;
   String? _resolvedData;
 
   void _parse() async {
-    final _dataHash = widget._dataHash;
-    if (_dataHash == _cachedDataHash) return;
-    _cachedDataHash = _dataHash;
     if (widget.data != null) {
       _resolvedData = widget.data;
     } else {
-      _resolvedData = LocalizedText.of(
-          chs: await _loadAsset(widget.asset) ?? '',
-          jpn: await _loadAsset(widget.assetJp),
-          eng: await _loadAsset(widget.assetEn));
+      _resolvedData = await MarkdownHelpPage.loadHelpAsset(
+        dir: widget.dir,
+        asset: widget.asset,
+        assetJp: widget.assetJp,
+        assetEn: widget.assetEn,
+      );
     }
     if (mounted) setState(() {});
   }
 
-  Future<String?> _loadAsset(String? assetKey) async {
-    if (assetKey == null) return null;
-    assetKey = join(widget.dir ?? '', assetKey);
-    String? content;
-    try {
-      content = await rootBundle.loadString(assetKey);
-    } catch (e) {}
-    if (content?.trim().isNotEmpty == true) {
-      return content;
+  @override
+  void initState() {
+    super.initState();
+    _parse();
+  }
+
+  @override
+  void didUpdateWidget(covariant MarkdownHelpPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.data != oldWidget.data ||
+        widget.dir != oldWidget.dir ||
+        widget.asset != oldWidget.asset ||
+        widget.assetJp != oldWidget.assetJp ||
+        widget.assetEn != oldWidget.assetEn) {
+      _parse();
     }
   }
 

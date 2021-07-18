@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:chaldea/components/catcher_util/catcher_email_handler.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/extras/issues_page.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 import 'package:path/path.dart' as pathlib;
@@ -67,6 +69,46 @@ class _FeedbackPageState extends State<FeedbackPage> {
         body: ListView(
           padding: EdgeInsets.symmetric(vertical: 8),
           children: [
+            // if (Language.isCN)
+            Card(
+              elevation: 4,
+              margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                child: MarkdownBody(
+                    data: LocalizedText.of(
+                  chs: '''提交反馈前，请先查阅<**FAQ**>。反馈时请详细描述:
+- 如何复现/期望表现
+- 应用/数据版本、使用设备系统及版本
+- 附加截图日志
+- 以及最好提供联系方式(邮箱等)''',
+                  jpn:
+                      """フィードバックを送信する前に、<**FAQ**>を確認してください。 フィードバックを提供する際は、詳細に説明してください。
+- 再現方法/期待されるパフォーマンス
+- アプリ/データのバージョン、デバイスシステム/バージョン
+- スクリーンショットとログを添付する
+- そして、連絡先情報（電子メールなど）を提供するのが良いです """,
+                  eng:
+                      '''Please check <**FAQ**> first before sending feedback. And following detail is desired:
+- How to reproduce, expected behaviour
+- App/dataset version, device system and version
+- Attach screenshots and logs
+- It's better to provide contact info (e.g. Email) 
+''',
+                )),
+              ),
+            ),
+            TileGroup(
+              children: [
+                ListTile(
+                  title: Text('FAQ'),
+                  trailing: Icon(Icons.keyboard_arrow_right),
+                  onTap: () {
+                    SplitRoute.push2(context, IssuesPage());
+                  },
+                ),
+              ],
+            ),
             TileGroup(
               header: 'Contact',
               children: [
@@ -94,7 +136,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                         '$kAppName v${AppInfo.fullVersion} Feedback';
                     String body = "OS: ${Platform.operatingSystem}"
                         " ${Platform.operatingSystemVersion}\n\n"
-                        "Please attach crash log(${db.paths.crashLog})";
+                        "Please attach logs(${db.paths.logDir})";
                     final uri = Uri(
                         scheme: 'mailto',
                         path: kSupportTeamEmailAddress,
@@ -206,7 +248,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 SizedBox(
                   width: double.infinity,
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: ElevatedButton(
                       onPressed: sendEmail,
                       child: Text(S.of(context).feedback_send),

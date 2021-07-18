@@ -27,10 +27,9 @@ class GalleryItem {
   static const String import_data = 'import_data';
   static const String backup = 'backup';
   static const String more = 'more';
-  static const String bug = 'bug';
-  static const String about = 'about';
+  static const String issues = 'issues';
 
-  static List<String> get persistentPages => [bug, about, more];
+  static List<String> get persistentPages => [issues, more];
 
 //  static Map<String, GalleryItem> allItems;
 

@@ -364,6 +364,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Interlude & Rank Up"),
         "ios_app_path": MessageLookupByLibrary.simpleMessage(
             "\"Files\" app/On My iPhone/Chaldea"),
+        "issues": MessageLookupByLibrary.simpleMessage("Issues"),
         "item": MessageLookupByLibrary.simpleMessage("Item"),
         "item_already_exist_hint": m8,
         "item_category_ascension":

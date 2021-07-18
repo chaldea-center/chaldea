@@ -397,5 +397,6 @@
   "search": "搜索",
   "icons": "图标",
   "sprites": "模型",
-  "display_setting": "显示设置"
+  "display_setting": "显示设置",
+  "issues": "常见问题"
 }

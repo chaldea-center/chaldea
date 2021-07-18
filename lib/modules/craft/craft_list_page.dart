@@ -139,7 +139,6 @@ class CraftListPageState
 
   @override
   bool filter(String keyword, CraftEssence ce) {
-    __textFilter.parse(keyword);
     if (keyword.isNotEmpty && searchMap[ce] == null) {
       List<String> searchStrings = [
         ce.no.toString(),
@@ -157,10 +156,11 @@ class CraftListPageState
       searchMap[ce] = searchStrings.toSet().join('\t');
     }
     if (keyword.isNotEmpty) {
-      if (!__textFilter.match(searchMap[ce]!)) {
-        return false;
-      }
+      __textFilter.parse(keyword);
+      return __textFilter.match(searchMap[ce]!);
     }
+
+    /// In search mode, filters are ignored
     if (!filterData.rarity.singleValueFilter(ce.rarity.toString())) {
       return false;
     }
@@ -171,7 +171,7 @@ class CraftListPageState
     }
     if (__binAtkHpType > 0 &&
         ((1 << ((ce.hpMax > 0 ? 1 : 0) + (ce.atkMax > 0 ? 2 : 0))) &
-        __binAtkHpType) ==
+                __binAtkHpType) ==
             0) {
       return false;
     }
