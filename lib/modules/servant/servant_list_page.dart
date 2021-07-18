@@ -38,6 +38,11 @@ class ServantListPageState
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return db.streamBuilder((context) {
       this.filterShownList(

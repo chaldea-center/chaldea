@@ -142,6 +142,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "dataset_type_text_hint":
             MessageLookupByLibrary.simpleMessage("不包含图片，~5M"),
         "delete": MessageLookupByLibrary.simpleMessage("删除"),
+        "display_setting": MessageLookupByLibrary.simpleMessage("显示设置"),
         "download": MessageLookupByLibrary.simpleMessage("下载"),
         "download_complete": MessageLookupByLibrary.simpleMessage("下载完成"),
         "download_full_gamedata":

@@ -19,6 +19,7 @@ class _GalleryPageState extends State<GalleryPage> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
+    db.userData.resetFiltersIfNeed();
 
     Future.delayed(Duration(seconds: 2)).then((_) async {
       if (!Platform.isWindows) {

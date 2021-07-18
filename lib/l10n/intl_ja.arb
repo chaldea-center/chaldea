@@ -399,5 +399,6 @@
   "attachment": "アタッチメント",
   "search": "検索",
   "icons": "アイコン",
-  "sprites": "モデル"
+  "sprites": "モデル",
+  "display_setting": "表示設定"
 }

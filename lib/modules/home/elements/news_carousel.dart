@@ -112,7 +112,7 @@ class AppNewsCarousel extends StatefulWidget {
       await Future.forEach<Future<Map<String, String>>?>(
         // [taskUs],
         [taskMC, taskGitee, taskJp, taskUs],
-            (e) async {
+        (e) async {
           if (e != null) result.addAll(await e);
         },
       );
@@ -281,7 +281,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
       sliders.add(GestureDetector(
         onTap: () async {
           if (await canLaunch(link)) {
-            jumpToExternalLinkAlert(url: '$imgUrl\n\n$link');
+            jumpToExternalLinkAlert(url: link);
           }
         },
         child: child,

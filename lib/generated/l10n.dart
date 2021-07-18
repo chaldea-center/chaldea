@@ -4025,6 +4025,16 @@ class S {
       args: [],
     );
   }
+
+  /// `显示设置`
+  String get display_setting {
+    return Intl.message(
+      '显示设置',
+      name: 'display_setting',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

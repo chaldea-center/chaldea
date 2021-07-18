@@ -160,6 +160,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "dataset_type_text_hint":
             MessageLookupByLibrary.simpleMessage("Only texts, ~5M"),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
+        "display_setting":
+            MessageLookupByLibrary.simpleMessage("Display Settings"),
         "download": MessageLookupByLibrary.simpleMessage("Download"),
         "download_complete": MessageLookupByLibrary.simpleMessage("Downloaded"),
         "download_full_gamedata":

@@ -396,5 +396,6 @@
   "attachment": "附件",
   "search": "搜索",
   "icons": "图标",
-  "sprites": "模型"
+  "sprites": "模型",
+  "display_setting": "显示设置"
 }

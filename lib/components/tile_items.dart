@@ -13,13 +13,16 @@ class SHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 138
+    final color = Theme.of(context).textTheme.caption?.color?.withAlpha(175);
     return Container(
       padding: const EdgeInsets.only(left: 16.0, top: 8.0, bottom: 4.0),
       child: Text(
         label,
         style: style ??
             TextStyle(
-              color: Theme.of(context).textTheme.caption?.color,
+              color: color,
+              fontWeight: FontWeight.w500,
               fontSize: 14.0,
             ),
       ),

@@ -333,8 +333,7 @@ Events _$EventsFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$EventsToJson(Events instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$EventsToJson(Events instance) => <String, dynamic>{
       'progressNA': instance.progressNA.toIso8601String(),
       'progressTW': instance.progressTW.toIso8601String(),
       'limitEvents': instance.limitEvents,
@@ -1842,6 +1841,10 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
           (v) => (v as Map<String, dynamic>?)?.map(
                 (k, e) => MapEntry(k, e as bool),
               )),
+      favoritePreferred:
+          $checkedConvert(json, 'favoritePreferred', (v) => v as bool?),
+      resetFilterWhenStart:
+          $checkedConvert(json, 'resetFilterWhenStart', (v) => v as bool?),
       downloadSource: $checkedConvert(json, 'downloadSource', (v) => v as int?),
       autoUpdateApp: $checkedConvert(json, 'autoUpdateApp', (v) => v as bool?),
       autoUpdateDataset:
@@ -1885,12 +1888,15 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
+Map<String, dynamic> _$UserDataToJson(UserData instance) =>
+    <String, dynamic>{
       'language': instance.language,
       'themeMode': _$ThemeModeEnumMap[instance.themeMode],
       'showSummonBanner': instance.showSummonBanner,
       'carouselSetting': instance.carouselSetting,
       'galleries': instance.galleries,
+      'favoritePreferred': instance.favoritePreferred,
+      'resetFilterWhenStart': instance.resetFilterWhenStart,
       'downloadSource': instance.downloadSource,
       'autoUpdateApp': instance.autoUpdateApp,
       'autoUpdateDataset': instance.autoUpdateDataset,

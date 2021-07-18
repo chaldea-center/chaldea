@@ -11,6 +11,8 @@ class UserData {
 
   CarouselSetting carouselSetting;
   Map<String, bool> galleries;
+  bool? favoritePreferred;
+  bool resetFilterWhenStart;
 
   int downloadSource;
   bool autoUpdateApp;
@@ -39,6 +41,8 @@ class UserData {
     bool? showSummonBanner,
     CarouselSetting? carouselSetting,
     Map<String, bool>? galleries,
+    this.favoritePreferred,
+    bool? resetFilterWhenStart,
     int? downloadSource,
     bool? autoUpdateApp,
     bool? autoUpdateDataset,
@@ -53,6 +57,7 @@ class UserData {
   })  : showSummonBanner = showSummonBanner ?? false,
         carouselSetting = carouselSetting ?? CarouselSetting(),
         galleries = galleries ?? {},
+        resetFilterWhenStart = resetFilterWhenStart ?? true,
         downloadSource = fixValidRange(downloadSource ?? GitSource.server.index,
             0, GitSource.values.length),
         autoUpdateApp = autoUpdateApp ?? true,
@@ -111,6 +116,18 @@ class UserData {
       });
       curUser.crafts
           .removeWhere((key, value) => !const [0, 1, 2].contains(value));
+    }
+  }
+
+  void resetFiltersIfNeed() {
+    // can also call *.reset()
+    if (resetFilterWhenStart) {
+      svtFilter.reset();
+      craftFilter.reset();
+      cmdCodeFilter.reset();
+    }
+    if (favoritePreferred != null) {
+      svtFilter.favorite = favoritePreferred! ? 1 : 0;
     }
   }
 

@@ -1,18 +1,17 @@
 import 'package:chaldea/_test_page.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/method_channel_chaldea.dart';
-import 'package:chaldea/modules/home/subpage/carousel_setting_page.dart';
-import 'package:chaldea/modules/home/subpage/game_server_page.dart';
-import 'package:chaldea/modules/home/subpage/login_page.dart';
-import 'package:chaldea/modules/home/subpage/user_data_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'subpage/about_page.dart';
 import 'subpage/account_page.dart';
+import 'subpage/display_setting_page.dart';
 import 'subpage/feedback_page.dart';
 import 'subpage/game_data_page.dart';
+import 'subpage/game_server_page.dart';
+import 'subpage/login_page.dart';
 import 'subpage/share_app_dialog.dart';
+import 'subpage/user_data_page.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -21,10 +20,6 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   late ScrollController _scrollController;
-
-  bool get alwaysOnTop => db.cfg.get('alwaysOnTop') ?? false;
-
-  set alwaysOnTop(bool v) => db.cfg.put('alwaysOnTop', v);
 
   @override
   void initState() {
@@ -176,35 +171,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               ),
             ),
-            // only show on mobile phone, not desktop and tablet
-            // on Android, cannot detect phone or mobile
-            if (AppInfo.isMobile && !AppInfo.isIPad)
-              SwitchListTile.adaptive(
-                value: db.userData.autorotate,
-                title: Text(S.current.setting_auto_rotate),
-                onChanged: (v) {
-                  db.userData.autorotate = v;
-                  db.notifyAppUpdate();
-                },
-              ),
-            if (Platform.isMacOS || Platform.isWindows)
-              SwitchListTile.adaptive(
-                value: alwaysOnTop,
-                title: Text(LocalizedText.of(
-                    chs: '置顶显示', jpn: 'スティッキー表示', eng: 'Always On Top')),
-                onChanged: (v) async {
-                  alwaysOnTop = v;
-                  MethodChannelChaldea.setAlwaysOnTop(v);
-                  setState(() {});
-                },
-              ),
             ListTile(
-              title: Text(S.current.carousel_setting),
+              title: Text(S.current.display_setting),
               trailing: Icon(Icons.keyboard_arrow_right),
               onTap: () {
                 SplitRoute.push(
                   context: context,
-                  builder: (_, __) => CarouselSettingPage(),
+                  builder: (_, __) => DisplaySettingPage(),
                 ).then((value) => db.notifyAppUpdate());
               },
             ),

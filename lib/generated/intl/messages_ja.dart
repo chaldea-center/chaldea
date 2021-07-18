@@ -146,6 +146,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "dataset_type_text_hint":
             MessageLookupByLibrary.simpleMessage("テキストのみ、約5M"),
         "delete": MessageLookupByLibrary.simpleMessage("削除"),
+        "display_setting": MessageLookupByLibrary.simpleMessage("表示設定"),
         "download": MessageLookupByLibrary.simpleMessage("ダウンロード"),
         "download_complete": MessageLookupByLibrary.simpleMessage("ダウンロード完了"),
         "download_full_gamedata":

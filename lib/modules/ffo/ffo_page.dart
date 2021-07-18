@@ -265,7 +265,7 @@ class _PartChooserPageState extends State<_PartChooserPage> {
   @override
   void initState() {
     super.initState();
-    final _sortType = db.cfg.get('ffo_sort');
+    final _sortType = db.cfg.ffoSort.get();
     if (_sortType is int && sortType >= 0 && sortType <= 2) {
       sortType = _sortType;
     }
@@ -344,7 +344,7 @@ class _PartChooserPageState extends State<_PartChooserPage> {
               sortType = v;
               sort();
               setState(() {});
-              db.cfg.put('ffo_sort', sortType);
+              db.cfg.ffoSort.put(sortType);
             }
           },
         ),

@@ -397,5 +397,6 @@
   "attachment": "Attachment",
   "search": "Search",
   "icons": "Icons",
-  "sprites": "Sprites"
+  "sprites": "Sprites",
+  "display_setting": "Display Settings"
 }

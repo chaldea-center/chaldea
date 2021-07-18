@@ -24,6 +24,7 @@ import 'constants.dart';
 import 'datatypes/datatypes.dart';
 import 'device_app_info.dart';
 import 'git_tool.dart';
+import 'hive_boxes.dart';
 import 'logger.dart';
 import 'method_channel_chaldea.dart';
 import 'shared_prefs.dart';
@@ -45,7 +46,7 @@ class Database {
       headers: {HttpHeaders.userAgentHeader: HttpUtils.userAgentChaldea}));
 
   SharedPrefs prefs = SharedPrefs();
-  late Box cfg;
+  late AppConfigBox cfg;
 
   User get curUser => userData.curUser;
 
@@ -104,7 +105,7 @@ class Database {
     await WikiUtil.init();
     await AppInfo.resolve();
     await prefs.initiate();
-    cfg = await Hive.openBox('cfg');
+    cfg = AppConfigBox(await Hive.openBox('cfg'));
     await checkConnectivity();
     Connectivity().onConnectivityChanged.listen((result) {
       _connectivity = result;
