@@ -11,6 +11,7 @@ import 'subpage/game_data_page.dart';
 import 'subpage/game_server_page.dart';
 import 'subpage/login_page.dart';
 import 'subpage/share_app_dialog.dart';
+import 'subpage/support_donation_page.dart';
 import 'subpage/user_data_page.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -226,7 +227,7 @@ class _SettingsPageState extends State<SettingsPage> {
               title: Text(S.current.support_chaldea),
               trailing: Icon(Icons.favorite),
               onTap: () {
-                launch('https://chaldea-center.github.io/support.html');
+                SplitRoute.push2(context, SupportDonationPage());
               },
             ),
             if (Platform.isIOS || Platform.isMacOS)

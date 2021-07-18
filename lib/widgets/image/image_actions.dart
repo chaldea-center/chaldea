@@ -8,8 +8,8 @@ import 'package:path/path.dart' as path;
 import 'package:share_plus/share_plus.dart';
 import 'package:uuid/uuid.dart';
 
-mixin ImageActionMixin {
-  Future showSaveShare({
+class ImageActions {
+  static Future showSaveShare({
     required BuildContext context,
     Uint8List? data,
     String? srcFp,

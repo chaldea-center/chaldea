@@ -115,7 +115,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
     for (final entry in entries) {
       children.add(WidgetSpan(
         child: Opacity(
-          opacity: 0.6,
+          opacity: 0.75,
           child: db.getIconImage(entry.key, height: 18),
         ),
       ));

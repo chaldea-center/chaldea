@@ -51,7 +51,7 @@ class FFOPart {
         headY2 = _toInt(row[9]);
 }
 
-class FFOParams with ImageActionMixin {
+class FFOParams {
   FFOPart? headPart;
   FFOPart? bodyPart;
   FFOPart? landPart;
@@ -316,29 +316,26 @@ class FFOParams with ImageActionMixin {
   }
 
   /// save to temp file first, then open sheet
-  @override
   Future showSaveShare({
     required BuildContext context,
-    Uint8List? data, //ignore
-    String? srcFp, //ignore
     bool gallery = true,
     String? destFp,
     bool share = true,
     String? shareText,
   }) async {
-    data = await this.toBinary();
+    Uint8List? data = await this.toBinary();
     if (data == null) {
       EasyLoading.showError('Failed');
       return;
     }
     String fn =
         'ffo-' + this.parts.map((e) => e?.svtId ?? 0).join('-') + '.png';
-    srcFp = join(db.paths.tempDir, fn); //tempFile
+    String srcFp = join(db.paths.tempDir, fn); //tempFile
     File(srcFp)
       ..createSync(recursive: true)
       ..writeAsBytesSync(data);
     destFp ??= join(db.paths.appPath, 'ffo_output', fn);
-    return super.showSaveShare(
+    return ImageActions.showSaveShare(
       context: context,
       data: null,
       srcFp: srcFp,

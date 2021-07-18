@@ -280,7 +280,7 @@ class _GridGalleryState extends State<GridGallery> {
       GalleryItem.issues: GalleryItem(
         name: GalleryItem.issues,
         title: 'FAQ',
-        icon: Icons.report_problem,
+        icon: Icons.report_problem_rounded,
         builder: (context, _) => IssuesPage(),
         isDetail: true,
       ),

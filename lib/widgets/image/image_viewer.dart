@@ -10,12 +10,12 @@ import 'package:string_validator/string_validator.dart' as validator;
 import 'package:uuid/uuid.dart';
 
 import 'cached_image_option.dart';
-import 'image_action_mixin.dart';
+import 'image_actions.dart';
 import 'photo_view_option.dart';
 
 export 'cached_image_option.dart';
 export 'fullscreen_image_viewer.dart';
-export 'image_action_mixin.dart';
+export 'image_actions.dart';
 export 'photo_view_option.dart';
 
 class CachedImage extends StatefulWidget {
@@ -117,7 +117,7 @@ class CachedImage extends StatefulWidget {
   }
 }
 
-class _CachedImageState extends State<CachedImage> with ImageActionMixin {
+class _CachedImageState extends State<CachedImage> {
   bool _isMcFile = false;
 
   CachedImageOption get cachedOption =>
@@ -188,7 +188,7 @@ class _CachedImageState extends State<CachedImage> with ImageActionMixin {
               String fn =
                   Uuid().v5(Uuid.NAMESPACE_URL, sha1.convert(data).toString()) +
                       '.png';
-              showSaveShare(
+              ImageActions.showSaveShare(
                 context: context,
                 data: data,
                 destFp: join(db.paths.downloadDir, fn),
@@ -256,7 +256,7 @@ class _CachedImageState extends State<CachedImage> with ImageActionMixin {
             onLongPress: () async {
               File file = await _cacheManager.getSingleFile(realUrl);
               String fn = path.basename(file.path);
-              return showSaveShare(
+              return ImageActions.showSaveShare(
                 context: context,
                 srcFp: file.path,
                 destFp: join(db.paths.downloadDir, fn),

@@ -113,8 +113,9 @@ flutter:
   assets:
     - doc/help/
     - res/data/dataset.zip
-    - res/img/launcher_icon/app_icon_logo.png
     - res/img/
+    - res/img/launcher_icon/app_icon_logo.png
+    - res/img/md/
     - res/js/
     - res/licenses/
     - res/VERSION
