@@ -1,3 +1,9 @@
+## 1.4.9
+- add servant sprites tab
+- add Campaign events
+- display setting: remember or reset favorite and filter settings
+- ignore filters when searching
+
 ## 1.4.8
 - fix unavailable characters related bug
 - show CN/JP servant info(e.g. skills) when EN version is not available

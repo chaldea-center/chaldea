@@ -1888,8 +1888,7 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$UserDataToJson(UserData instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'language': instance.language,
       'themeMode': _$ThemeModeEnumMap[instance.themeMode],
       'showSummonBanner': instance.showSummonBanner,
