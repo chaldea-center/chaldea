@@ -167,7 +167,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
               // divider: Container(),
               innerDivider: false,
               children: [
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   child: TextField(
@@ -177,13 +177,18 @@ class _FeedbackPageState extends State<FeedbackPage> {
                       border: OutlineInputBorder(),
                       // prefix: Icon(Icons.mail_outline),
                       hintText: LocalizedText.of(
-                          chs: '建议填写，否则将收不到回复，优先邮箱',
-                          jpn: 'Please fill in if reply wanted',
-                          eng: 'Please fill in if reply wanted'),
+                          chs: '推荐邮箱',
+                          jpn: 'メールおすすめ',
+                          eng: 'Email is preferred'),
+                      helperText: LocalizedText.of(
+                          chs: '建议填写联系方式，否则将无法得到回复！！！',
+                          jpn: '連絡先情報ないと、返信ができません。',
+                          eng: 'Please fill it if reply wanted.'),
                     ),
                     maxLines: 1,
                   ),
                 ),
+                const SizedBox(height: 8),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   child: TextField(

@@ -63,11 +63,9 @@ class _SvtSvtSpriteTabTabState extends SvtTabBaseState<SvtSpriteTab>
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
-    children.addAll(_rows(svt.icons, 100));
-    children.addAll(_rows(svt.sprites, 150));
-    return ListView(
-      children: children,
-    );
+    children.addAll(_rows(svt.icons, 150));
+    children.addAll(_rows(svt.sprites, 250));
+    return ListView(children: children);
   }
 
   List<Widget> _rows(List<KeyValueListEntry> entries, double height) {

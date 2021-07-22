@@ -560,10 +560,9 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         content: Container(
           width: defaultDialogWidth(context),
           child: hasItem
-              ? buildResponsiveGridWrap(
+              ? buildGridIcons(
                   context: context,
                   children: children,
-                  responsive: true,
                   crossCount: 5,
                 )
               : ListTile(title: Text('Nothing')),

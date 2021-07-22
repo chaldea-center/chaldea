@@ -124,12 +124,7 @@ class ItemCostServantPage extends StatelessWidget {
         children.add(avatar);
       }
     });
-    if (children.isEmpty) {
-      return Container();
-    } else {
-      return buildResponsiveGridWrap(
-          context: context, children: children, crossCount: 6);
-    }
+    return buildGridIcons(context: context, children: children);
   }
 
   List<Widget> buildSvtList(

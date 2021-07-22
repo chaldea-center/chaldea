@@ -55,9 +55,10 @@ Widget buildClassifiedItemList({
         padding: EdgeInsets.only(right: 3),
       );
     }).toList();
-    children.add(LayoutBuilder(builder: (context, constraint) {
-      int crossCount = constraint.maxWidth ~/ 48;
-      if (crossCount == double.infinity) crossCount = 7;
+    children.add(LayoutBuilder(builder: (context, constraints) {
+      int crossCount = constraints.maxWidth == double.infinity
+          ? 7
+          : constraints.maxWidth ~/ 48;
       if (minCrossCount != null && crossCount < minCrossCount) {
         crossCount = minCrossCount;
       }
@@ -65,10 +66,9 @@ Widget buildClassifiedItemList({
         header: Item.getNameOfCategory(key ~/ 10, key % 10),
         padding: EdgeInsets.only(bottom: 0),
         children: <Widget>[
-          buildResponsiveGridWrap(
+          buildGridIcons(
             context: context,
             children: gridChildren,
-            responsive: responsive,
             crossCount: crossCount,
           ),
         ],
@@ -82,44 +82,40 @@ Widget buildClassifiedItemList({
   );
 }
 
-/// Build Wrap for split view, otherwise GridView.
-///
-/// If not [responsive], just build GridView
-/// and [crossCount] is only used for GridView.
-Widget buildResponsiveGridWrap({
+Widget buildGridIcons({
   required BuildContext context,
   required List<Widget> children,
-  bool responsive = true,
-  int crossCount = 7,
+  double minWidth = 56,
+  int? crossCount,
 }) {
-  bool useWrap = SplitRoute.isSplit(context) && responsive;
-  final _children = children
-      .map((child) => Padding(
-            padding: EdgeInsets.all(2),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: useWrap ? kGridIconSize : double.infinity,
-              ),
-              child: child,
-            ),
-          ))
+  if (children.isEmpty) return Container();
+  children = children
+      .map((e) => Padding(padding: EdgeInsets.all(2), child: e))
       .toList();
-  return useWrap
-      ? Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Wrap(
-            children: _children,
-            runSpacing: 3,
-          ),
-        )
-      : GridView.count(
-          padding: EdgeInsets.only(left: 16, top: 3, bottom: 3, right: 10),
-          childAspectRatio: 132 / 144,
-          crossAxisCount: crossCount,
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          children: _children,
-        );
+  if (crossCount == null) {
+    return LayoutBuilder(builder: (context, constraints) {
+      int count = constraints.maxWidth == double.infinity
+          ? 7
+          : constraints.maxWidth ~/ minWidth;
+      return GridView.count(
+        padding: EdgeInsets.only(left: 16, top: 3, bottom: 3, right: 10),
+        childAspectRatio: 132 / 144,
+        crossAxisCount: count,
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        children: children,
+      );
+    });
+  } else {
+    return GridView.count(
+      padding: EdgeInsets.only(left: 16, top: 3, bottom: 3, right: 10),
+      childAspectRatio: 132 / 144,
+      crossAxisCount: crossCount,
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      children: children,
+    );
+  }
 }
 
 /// Divide list of items into groups according to [category] and/or [rarity].
