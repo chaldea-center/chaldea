@@ -8,6 +8,7 @@ import 'package:pool/pool.dart';
 import 'config.dart' show db;
 import 'constants.dart';
 import 'logger.dart';
+import 'utils.dart';
 
 class WikiUtil {
   static final CacheManager wikiFileCache = CacheManager(Config('wikiCache'));
@@ -22,7 +23,7 @@ class WikiUtil {
   WikiUtil._();
 
   static Future<void> init() async {
-    wikiUrlCache = await Hive.openBox('wikiUrl');
+    wikiUrlCache = await Utils.openHiveBox('wikiUrl');
   }
 
   static Future<void> clear() async {

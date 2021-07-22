@@ -28,6 +28,7 @@ import 'hive_boxes.dart';
 import 'logger.dart';
 import 'method_channel_chaldea.dart';
 import 'shared_prefs.dart';
+import 'utils.dart';
 import 'wiki_util.dart';
 
 /// app config:
@@ -105,7 +106,7 @@ class Database {
     await WikiUtil.init();
     await AppInfo.resolve();
     await prefs.initiate();
-    cfg = AppConfigBox(await Hive.openBox('cfg'));
+    cfg = AppConfigBox(await Utils.openHiveBox('cfg'));
     await checkConnectivity();
     Connectivity().onConnectivityChanged.listen((result) {
       _connectivity = result;
