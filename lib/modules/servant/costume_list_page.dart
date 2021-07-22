@@ -80,10 +80,7 @@ class _CostumeListPageState
       child: ImageWithText(
         image: db.getIconImage(costume.icon, aspectRatio: 132 / 144),
         onTap: () {
-          SplitRoute.push(
-            context: context,
-            builder: (context, _) => CostumeDetailPage(costume: costume),
-          );
+          SplitRoute.push(context, CostumeDetailPage(costume: costume));
         },
       ),
     );
@@ -101,10 +98,7 @@ class _CostumeListPageState
       subtitle: Text(
           'No.${costume.no} / ${db.gameData.servants[costume.svtNo]?.info.localizedName}'),
       onTap: () {
-        SplitRoute.push(
-          context: context,
-          builder: (context, _) => CostumeDetailPage(costume: costume),
-        );
+        SplitRoute.push(context, CostumeDetailPage(costume: costume));
       },
     );
   }

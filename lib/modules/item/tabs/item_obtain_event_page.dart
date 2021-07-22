@@ -99,8 +99,8 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
             style: _textStyle(false, event.isOutdated())),
         onTap: () {
           SplitRoute.push(
-            context: context,
-            builder: (context, _) => LimitEventDetailPage(event: event),
+            context,
+            LimitEventDetailPage(event: event),
             detail: true,
           );
         },
@@ -196,8 +196,8 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
         ),
         onTap: () {
           SplitRoute.push(
-            context: context,
-            builder: (context, _) => MainRecordDetailPage(record: record),
+            context,
+            MainRecordDetailPage(record: record),
             detail: true,
           );
         },
@@ -254,8 +254,8 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
             style: _textStyle(false, event.isOutdated())),
         onTap: () {
           SplitRoute.push(
-            context: context,
-            builder: (context, _) => CampaignDetailPage(event: event),
+            context,
+            CampaignDetailPage(event: event),
             detail: true,
           );
         },

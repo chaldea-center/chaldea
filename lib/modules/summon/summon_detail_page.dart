@@ -156,29 +156,27 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
   Widget associateEvent(String name) {
     name = name.replaceAll('_', ' ');
     EventBase? event;
-    SplitPageBuilder? builder;
+    Widget? page;
     if (db.gameData.events.limitEvents.containsKey(name)) {
       event = db.gameData.events.limitEvents[name]!;
-      builder = (_, __) => LimitEventDetailPage(event: event as LimitEvent);
+      page = LimitEventDetailPage(event: event as LimitEvent);
     } else if (db.gameData.events.mainRecords.containsKey(name)) {
       event = db.gameData.events.mainRecords[name]!;
-      builder = (_, __) => MainRecordDetailPage(record: event as MainRecord);
+      page = MainRecordDetailPage(record: event as MainRecord);
     } else if (db.gameData.events.campaigns.containsKey(name)) {
       event = db.gameData.events.campaigns[name]!;
-      builder = (_, __) => CampaignDetailPage(event: event as CampaignEvent);
+      page = CampaignDetailPage(event: event as CampaignEvent);
     }
 
     return ListTile(
       leading: Icon(
         Icons.event,
-        color: builder == null ? null : Theme.of(context).colorScheme.primary,
+        color: page == null ? null : Theme.of(context).colorScheme.primary,
       ),
       title: Text(event?.localizedName ?? name),
       horizontalTitleGap: 0,
       dense: true,
-      onTap: builder == null
-          ? null
-          : () => SplitRoute.push(context: context, builder: builder!),
+      onTap: page == null ? null : () => SplitRoute.push(context, page!),
     );
   }
 
@@ -195,10 +193,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
       horizontalTitleGap: 0,
       onTap: _summon == null
           ? null
-          : () => SplitRoute.push(
-                context: context,
-                builder: (context, _) => SummonDetailPage(summon: _summon),
-              ),
+          : () => SplitRoute.push(context, SummonDetailPage(summon: _summon)),
     );
   }
 
@@ -363,15 +358,8 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         ElevatedButton(
           onPressed: summon.dataList.isEmpty
               ? null
-              : () {
-                  SplitRoute.push(
-                    context: context,
-                    builder: (context, _) => SummonSimulatorPage(
-                      summon: summon,
-                      initIndex: curIndex,
-                    ),
-                  );
-                },
+              : () => SplitRoute.push(context,
+                  SummonSimulatorPage(summon: summon, initIndex: curIndex)),
           child: Text(S.current.summon_simulator),
         ),
         IconButton(

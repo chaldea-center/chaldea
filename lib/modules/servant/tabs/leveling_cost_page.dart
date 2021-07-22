@@ -96,9 +96,8 @@ class LevelingCostPageState extends State<LevelingCostPage> {
                           onTap: entry.key == 'QP'
                               ? null
                               : () => SplitRoute.push(
-                                    context: context,
-                                    builder: (context, _) =>
-                                        ItemDetailPage(itemKey: entry.key),
+                                    context,
+                                    ItemDetailPage(itemKey: entry.key),
                                     popDetail: true,
                                   ),
                         ),

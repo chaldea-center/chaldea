@@ -16,8 +16,7 @@ class _EventListPageState extends State<EventListPage>
   bool reversed = false;
   bool showOutdated = false;
 
-  List<String> get tabNames =>
-      [
+  List<String> get tabNames => [
         S.current.limited_event,
         S.current.main_record,
         S.current.exchange_ticket,

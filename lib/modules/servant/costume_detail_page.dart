@@ -62,13 +62,10 @@ class CostumeDetailPage extends StatelessWidget {
                             onPressed: svt == null
                                 ? null
                                 : () => SplitRoute.push(
-                                      context: context,
-                                      builder: (context, _) =>
-                                          ServantDetailPage(svt),
-                                    ),
+                                    context, ServantDetailPage(svt)),
                             style: TextButton.styleFrom(
-                              minimumSize: const Size(24, 28),
-                              tapTargetSize:
+                                minimumSize: const Size(24, 28),
+                                tapTargetSize:
                                     MaterialTapTargetSize.shrinkWrap),
                           ),
                         )

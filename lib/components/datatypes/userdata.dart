@@ -54,8 +54,7 @@ class UserData {
     CmdCodeFilterData? cmdCodeFilter,
     GLPKParams? glpkParams,
     List<int>? itemAbundantValue,
-  })
-      : showSummonBanner = showSummonBanner ?? false,
+  })  : showSummonBanner = showSummonBanner ?? false,
         carouselSetting = carouselSetting ?? CarouselSetting(),
         galleries = galleries ?? {},
         favoritePreferred = favoritePreferred ?? false,

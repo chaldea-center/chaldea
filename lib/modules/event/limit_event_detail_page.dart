@@ -182,10 +182,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
                   title: Text(e.localizedName),
                   horizontalTitleGap: 0,
                   onTap: () {
-                    SplitRoute.push(
-                      context: context,
-                      builder: (_, __) => SummonDetailPage(summon: e),
-                    );
+                    SplitRoute.push(context, SummonDetailPage(summon: e));
                   }))
               .toList(),
         ));
@@ -298,10 +295,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
   }
 
   void onTapIcon(String itemKey) {
-    SplitRoute.push(
-      context: context,
-      builder: (context, _) => ItemDetailPage(itemKey: itemKey),
-    );
+    SplitRoute.push(context, ItemDetailPage(itemKey: itemKey));
   }
 
   @override

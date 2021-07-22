@@ -399,13 +399,12 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
           title: Text(ce.localizedName),
           onTap: () {
             SplitRoute.push(
-              context: context,
-              builder: (context, _) => CraftDetailPage(
+              context,
+              CraftDetailPage(
                 ce: ce,
                 onSwitch: (cur, next) => Utils.findNextOrPrevious<CraftEssence>(
                     list: crafts!, cur: cur, reversed: next),
               ),
-              detail: true,
             );
           },
         ));
@@ -425,13 +424,12 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
           title: Text(code.localizedName),
           onTap: () {
             SplitRoute.push(
-              context: context,
-              builder: (context, _) => CmdCodeDetailPage(
+              context,
+              CmdCodeDetailPage(
                 code: code,
                 onSwitch: (cur, next) => Utils.findNextOrPrevious<CommandCode>(
                     list: codes!, cur: cur, reversed: next),
               ),
-              detail: true,
             );
           },
         ));

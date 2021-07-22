@@ -104,7 +104,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   title: Text('FAQ'),
                   trailing: Icon(Icons.keyboard_arrow_right),
                   onTap: () {
-                    SplitRoute.push2(context, IssuesPage());
+                    SplitRoute.push(context, IssuesPage());
                   },
                 ),
               ],

@@ -17,11 +17,7 @@ class _DamageCalcPageState extends State<DamageCalcPage> {
           IconButton(
               icon: Icon(Icons.people),
               onPressed: () {
-                SplitRoute.push(
-                  context: context,
-                  builder: (context, _) => ServantListPage(),
-                  detail: false,
-                );
+                SplitRoute.push(context, ServantListPage(), detail: false);
               }),
           IconButton(icon: Icon(Icons.replay), onPressed: () {}),
           IconButton(icon: Icon(Icons.save), onPressed: () {})

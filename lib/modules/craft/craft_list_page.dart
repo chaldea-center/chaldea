@@ -86,8 +86,8 @@ class CraftListPageState
       selected: SplitRoute.isSplit(context) && selected == ce,
       onTap: () {
         SplitRoute.push(
-          context: context,
-          builder: (context, _) => CraftDetailPage(
+          context,
+          CraftDetailPage(
             ce: ce,
             onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList),
           ),
@@ -108,8 +108,8 @@ class CraftListPageState
         child: db.getIconImage(ce.icon),
         onTap: () {
           SplitRoute.push(
-            context: context,
-            builder: (context, _) => CraftDetailPage(
+            context,
+            CraftDetailPage(
               ce: ce,
               onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList),
             ),

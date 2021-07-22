@@ -107,9 +107,8 @@ class _MainRecordTabState extends State<MainRecordTab> {
                 ),
                 onTap: () {
                   SplitRoute.push(
-                    context: context,
-                    builder: (context, _) =>
-                        MainRecordDetailPage(record: record),
+                    context,
+                    MainRecordDetailPage(record: record),
                     popDetail: true,
                   );
                 },

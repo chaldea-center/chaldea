@@ -37,11 +37,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
                     '(CN server only) Capture the data when the account is logging in')),
             trailing: Icon(Icons.keyboard_arrow_right),
             onTap: () {
-              SplitRoute.push(
-                context: context,
-                popDetail: true,
-                builder: (context, _) => ImportHttpPage(),
-              );
+              SplitRoute.push(context, ImportHttpPage(), popDetail: true);
             },
           ),
           ListTile(
@@ -57,9 +53,9 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             trailing: Icon(Icons.keyboard_arrow_right),
             onTap: () {
               SplitRoute.push(
-                context: context,
+                context,
+                ImportItemScreenshotPage(),
                 popDetail: true,
-                builder: (context, _) => ImportItemScreenshotPage(),
               );
             },
           ),
@@ -74,9 +70,9 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             trailing: Icon(Icons.keyboard_arrow_right),
             onTap: () {
               SplitRoute.push(
-                context: context,
+                context,
+                ImportSkillScreenshotPage(),
                 popDetail: true,
-                builder: (context, _) => ImportSkillScreenshotPage(),
               );
             },
           ),
@@ -86,11 +82,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
                 chs: 'Guda数据', jpn: 'Gudaデータ', eng: 'Guda Data')),
             trailing: Icon(Icons.keyboard_arrow_right),
             onTap: () {
-              SplitRoute.push(
-                context: context,
-                popDetail: true,
-                builder: (ctx, _) => ImportGudaPage(),
-              );
+              SplitRoute.push(context, ImportGudaPage(), popDetail: true);
             },
           ),
         ],

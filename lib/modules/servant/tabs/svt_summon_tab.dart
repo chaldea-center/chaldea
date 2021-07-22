@@ -90,10 +90,7 @@ class _SvtSummonTabState extends SvtTabBaseState<SvtSummonTab> {
         },
       ),
       onTap: () {
-        SplitRoute.push(
-          context: context,
-          builder: (context, _) => SummonDetailPage(summon: summon),
-        );
+        SplitRoute.push(context, SummonDetailPage(summon: summon));
       },
     );
   }

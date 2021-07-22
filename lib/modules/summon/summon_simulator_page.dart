@@ -423,14 +423,14 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       padding: EdgeInsets.symmetric(horizontal: 3, vertical: 3),
       child: InkWell(
         onTap: () {
-          SplitRoute.push(
-            context: context,
-            builder: (context, _) {
-              if (obj is Servant) return ServantDetailPage(obj);
-              if (obj is CraftEssence) return CraftDetailPage(ce: obj);
-              throw 'obj must be Servant or CraftEssence: ${obj.runtimeType}';
-            },
-          );
+          final page = obj is Servant
+              ? ServantDetailPage(obj)
+              : obj is CraftEssence
+                  ? CraftDetailPage(ce: obj)
+                  : null;
+          if (page != null) {
+            SplitRoute.push(context, page);
+          }
         },
         child: ImageWithText(
           image: db.getIconImage(obj.icon, width: 50),
@@ -617,14 +617,14 @@ Widget buildSummonCard(
     padding: EdgeInsets.symmetric(horizontal: 3, vertical: 3),
     child: InkWell(
       onTap: () {
-        SplitRoute.push(
-          context: context,
-          builder: (context, _) {
-            if (card is Servant) return ServantDetailPage(card);
-            if (card is CraftEssence) return CraftDetailPage(ce: card);
-            throw 'obj must be Servant or CraftEssence: ${card.runtimeType}';
-          },
-        );
+        final page = card is Servant
+            ? ServantDetailPage(card)
+            : card is CraftEssence
+                ? CraftDetailPage(ce: card)
+                : null;
+        if (page != null) {
+          SplitRoute.push(context, page);
+        }
       },
       child: ImageWithText(
         image: db.getIconImage(card.icon, width: 56, height: 56 / 132 * 144),

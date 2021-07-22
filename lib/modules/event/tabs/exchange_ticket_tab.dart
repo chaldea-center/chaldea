@@ -157,8 +157,8 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
         children: <Widget>[
           GestureDetector(
             onTap: () => SplitRoute.push(
-              context: context,
-              builder: (context, _) => ItemDetailPage(itemKey: iconKey),
+              context,
+              ItemDetailPage(itemKey: iconKey),
               // if month specified, it's a widget somewhere, don't pop detail
               // if month is null, it's a tab of events in master layout
               popDetail: widget.monthJp == null,

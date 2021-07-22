@@ -161,10 +161,7 @@ class ItemCostServantPage extends StatelessWidget {
         ),
         trailing: Icon(Icons.arrow_forward_ios),
         onTap: () {
-          SplitRoute.push(
-            context: context,
-            builder: (context, _) => ServantDetailPage(svt),
-          );
+          SplitRoute.push(context, ServantDetailPage(svt));
         },
       ));
     });

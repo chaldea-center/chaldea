@@ -185,10 +185,9 @@ class ItemListPageState extends State<ItemListPage>
       onTapOk: () {
         Timer(Duration(milliseconds: 500), () {
           SplitRoute.push(
-            context: context,
+            context,
+            FreeQuestCalculatorPage(objectiveCounts: _getObjective()),
             popDetail: true,
-            builder: (context, _) =>
-                FreeQuestCalculatorPage(objectiveCounts: _getObjective()),
           );
         });
       },
@@ -616,8 +615,8 @@ class _ItemListTabState extends State<ItemListTab> {
       onTap: () {
         FocusScope.of(context).unfocus();
         SplitRoute.push(
-          context: context,
-          builder: (context, _) => ItemDetailPage(itemKey: itemKey),
+          context,
+          ItemDetailPage(itemKey: itemKey),
           popDetail: true,
         );
       },

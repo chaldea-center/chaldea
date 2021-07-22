@@ -129,7 +129,7 @@ class ServantListPageState
 2.リストで「表示」されているサーヴァントのみを変更します
 3.フィルター/検索機能で表示リストをフィルターし、各行の表示ボタンで特定のサーヴァントを個別に表示/非表示にすることができます """,
                   eng:
-                  """1. The plan page is similar to servant list page, but it is mainly used for <uniformly> setting the <target> value of servant ascension/skills/costumes
+                      """1. The plan page is similar to servant list page, but it is mainly used for <uniformly> setting the <target> value of servant ascension/skills/costumes
 2. Only change the servants who are "shown" in the list
 3. Filter the display list through the filter/search function, and you can hide/show specific servants individually through the display button at the end of each line""",
                 )),
@@ -148,8 +148,8 @@ class ServantListPageState
       widget.onSelected!(svt);
     } else {
       SplitRoute.push(
-        context: context,
-        builder: (context, _) => ServantDetailPage(svt),
+        context,
+        ServantDetailPage(svt),
         popDetail: true,
       );
       selected = svt;
@@ -580,8 +580,8 @@ class ServantListPageState
         onPressed: () {
           db.itemStat.updateSvtItems();
           SplitRoute.push(
-            context: context,
-            builder: (context, _) => ItemListPage(),
+            context,
+            ItemListPage(),
             detail: false,
           );
         },

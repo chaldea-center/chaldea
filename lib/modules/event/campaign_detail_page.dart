@@ -107,7 +107,10 @@ class _CampaignDetailPageState extends State<CampaignDetailPage>
           title: Text(S.current.item),
         ))
         ..add(buildClassifiedItemList(
-            context: context, data: items, onTap: onTapIcon));
+          context: context,
+          data: items,
+          onTap: (v) => SplitRoute.push(context, ItemDetailPage(itemKey: v)),
+        ));
     }
 
     // summons
@@ -128,10 +131,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage>
                   title: Text(e.localizedName),
                   horizontalTitleGap: 0,
                   onTap: () {
-                    SplitRoute.push(
-                      context: context,
-                      builder: (_, __) => SummonDetailPage(summon: e),
-                    );
+                    SplitRoute.push(context, SummonDetailPage(summon: e));
                   }))
               .toList(),
         ));
@@ -203,13 +203,6 @@ class _CampaignDetailPageState extends State<CampaignDetailPage>
           ).showDialog(context);
         }
       },
-    );
-  }
-
-  void onTapIcon(String itemKey) {
-    SplitRoute.push(
-      context: context,
-      builder: (context, _) => ItemDetailPage(itemKey: itemKey),
     );
   }
 }

@@ -255,8 +255,8 @@ class ServantDetailPageState extends State<ServantDetailPage>
             ).showDialog(context);
           } else {
             SplitRoute.push(
-              context: context,
-              builder: (context, _) => ServantDetailPage(newSvt),
+              context,
+              ServantDetailPage(newSvt),
               detail: true,
             );
             db.notifyDbUpdate();

@@ -58,10 +58,7 @@ class _UserDataPageState extends State<UserDataPage> {
                 title: Text(S.current.backup_history),
                 trailing: Icon(Icons.keyboard_arrow_right),
                 onTap: () {
-                  SplitRoute.push(
-                    context: context,
-                    builder: (ctx, _) => _BackupHistoryPage(),
-                  );
+                  SplitRoute.push(context, _BackupHistoryPage());
                 },
               ),
               ListTile(
@@ -182,11 +179,7 @@ class _UserDataPageState extends State<UserDataPage> {
       SimpleCancelOkDialog(
         content: Text(S.current.login_first_hint),
         onTapOk: () {
-          SplitRoute.push(
-            context: context,
-            builder: (context, _) => LoginPage(),
-            detail: true,
-          );
+          SplitRoute.push(context, LoginPage());
         },
       ).showDialog(context);
       return false;

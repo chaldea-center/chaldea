@@ -72,8 +72,8 @@ class CmdCodeListPageState
       selected: SplitRoute.isSplit(context) && selected == code,
       onTap: () {
         SplitRoute.push(
-          context: context,
-          builder: (context, _) => CmdCodeDetailPage(
+          context,
+          CmdCodeDetailPage(
             code: code,
             onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList),
           ),
@@ -94,8 +94,8 @@ class CmdCodeListPageState
         child: db.getIconImage(code.icon),
         onTap: () {
           SplitRoute.push(
-            context: context,
-            builder: (context, _) => CmdCodeDetailPage(
+            context,
+            CmdCodeDetailPage(
               code: code,
               onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList),
             ),

@@ -268,7 +268,7 @@ class Servant {
   }
 
   Future pushDetail(BuildContext context) {
-    return SplitRoute.push2(context, ServantDetailPage(this));
+    return SplitRoute.push(context, ServantDetailPage(this));
   }
 
   Widget iconBuilder({
@@ -297,10 +297,7 @@ class Servant {
       child = InkWell(
         child: child,
         onTap: () {
-          SplitRoute.push(
-            context: context,
-            builder: (context, _) => ServantDetailPage(this),
-          );
+          SplitRoute.push(context, ServantDetailPage(this));
         },
       );
     }

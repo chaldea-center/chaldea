@@ -35,9 +35,8 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final _onTap = (String itemKey) => SplitRoute.push(
-        context: context,
-        builder: (context, _) => ItemDetailPage(itemKey: itemKey));
+    final _onTap = (String itemKey) =>
+        SplitRoute.push(context, ItemDetailPage(itemKey: itemKey));
 
     List<Widget> children = [];
     if (record.lBannerUrl != null) {
@@ -111,10 +110,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
                   title: Text(e.localizedName),
                   horizontalTitleGap: 0,
                   onTap: () {
-                    SplitRoute.push(
-                      context: context,
-                      builder: (_, __) => SummonDetailPage(summon: e),
-                    );
+                    SplitRoute.push(context, SummonDetailPage(summon: e));
                   }))
               .toList(),
         ),

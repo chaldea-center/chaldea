@@ -245,10 +245,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
         final item = params.rows[index];
         Widget leading = GestureDetector(
           onTap: () {
-            SplitRoute.push(
-              context: context,
-              builder: (context, _) => ItemDetailPage(itemKey: item),
-            );
+            SplitRoute.push(context, ItemDetailPage(itemKey: item));
           },
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 6),

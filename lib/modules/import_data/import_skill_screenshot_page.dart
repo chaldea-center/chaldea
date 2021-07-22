@@ -185,14 +185,14 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
         onPressed: () async {
           // use Servant.no rather Servant.originNo
           await SplitRoute.push(
-            context: context,
-            detail: false,
-            builder: (ctx, _) => ServantListPage(
+            context,
+            ServantListPage(
               onSelected: (_svt) {
                 svtResult.svtNo = _svt.no;
                 Navigator.of(context).pop();
               },
             ),
+            detail: false,
           );
           setState(() {});
         },

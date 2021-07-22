@@ -79,8 +79,8 @@ class _AboutPageState extends State<AboutPage> {
                   title: Text('README'),
                   onTap: () async {
                     SplitRoute.push(
-                      context: context,
-                      builder: (_, __) => _GithubMarkdownPage(
+                      context,
+                      _GithubMarkdownPage(
                         title: 'README',
                         link: '$kProjectHomepage/blob/master/README.md',
                         assetKey: 'README.md',
@@ -93,8 +93,8 @@ class _AboutPageState extends State<AboutPage> {
                   title: Text(S.current.change_log),
                   onTap: () async {
                     SplitRoute.push(
-                      context: context,
-                      builder: (_, __) => _GithubMarkdownPage(
+                      context,
+                      _GithubMarkdownPage(
                         title: S.current.change_log,
                         link: '$kProjectHomepage/blob/master/CHANGELOG.md',
                         assetKey: 'CHANGELOG.md',
@@ -126,8 +126,8 @@ class _AboutPageState extends State<AboutPage> {
                 title: Text('Fandom Translators'),
                 onTap: () {
                   SplitRoute.push(
-                    context: context,
-                    builder: (_, __) => _FandomContributorsPage(),
+                    context,
+                    _FandomContributorsPage(),
                     detail: true,
                   );
                 },

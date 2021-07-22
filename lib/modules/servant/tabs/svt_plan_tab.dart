@@ -155,10 +155,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                 width: 33,
                 placeholder: (ctx) => db.getIconImage('灵衣开放权')),
             onTap: () {
-              SplitRoute.push(
-                context: context,
-                builder: (context, _) => CostumeDetailPage(costume: costume),
-              );
+              SplitRoute.push(context, CostumeDetailPage(costume: costume));
             },
           ),
           title: costume.lName,
@@ -546,8 +543,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     enhanceItems.forEach((itemKey, number) {
       children.add(ImageWithText(
         onTap: () => SplitRoute.push(
-          context: context,
-          builder: (context, _) => ItemDetailPage(itemKey: itemKey),
+          context,
+          ItemDetailPage(itemKey: itemKey),
         ),
         image: db.getIconImage(itemKey),
         text: formatNumber(number, compact: true),

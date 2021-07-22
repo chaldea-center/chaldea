@@ -64,22 +64,14 @@ class _SettingsPageState extends State<SettingsPage> {
               title: Text(S.of(context).cur_account),
               trailing: _wrapArrowTrailing(Text(db.curUser.name)),
               onTap: () {
-                SplitRoute.push(
-                  context: context,
-                  builder: (context, _) => AccountPage(),
-                  popDetail: true,
-                );
+                SplitRoute.push(context, AccountPage(), popDetail: true);
               },
             ),
             ListTile(
               title: Text(S.current.server),
               trailing: _wrapArrowTrailing(Text(db.curUser.server.localized)),
               onTap: () {
-                SplitRoute.push(
-                  context: context,
-                  builder: (ctx, _) => GameServerPage(),
-                  popDetail: true,
-                );
+                SplitRoute.push(context, GameServerPage(), popDetail: true);
               },
             ),
           ],
@@ -103,23 +95,14 @@ class _SettingsPageState extends State<SettingsPage> {
               // subtitle: Text(S.current.backup_data_alert),
               trailing: Icon(Icons.keyboard_arrow_right),
               onTap: () {
-                SplitRoute.push(
-                  context: context,
-                  builder: (context, _) => UserDataPage(),
-                  popDetail: true,
-                );
+                SplitRoute.push(context, UserDataPage(), popDetail: true);
               },
             ),
             ListTile(
               title: Text(S.of(context).gamedata),
               trailing: _wrapArrowTrailing(Text(db.gameData.version)),
               onTap: () {
-                SplitRoute.push(
-                  context: context,
-                  builder: (context, _) => GameDataPage(),
-                  detail: true,
-                  popDetail: true,
-                );
+                SplitRoute.push(context, GameDataPage(), popDetail: true);
               },
             ),
           ],
@@ -176,10 +159,7 @@ class _SettingsPageState extends State<SettingsPage> {
               title: Text(S.current.display_setting),
               trailing: Icon(Icons.keyboard_arrow_right),
               onTap: () {
-                SplitRoute.push(
-                  context: context,
-                  builder: (_, __) => DisplaySettingPage(),
-                ).then((value) => db.notifyAppUpdate());
+                SplitRoute.push(context, DisplaySettingPage());
               },
             ),
           ],
@@ -197,8 +177,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       style: TextStyle(),
                     ),
               onTap: () => SplitRoute.push(
-                context: context,
-                builder: (context, _) => AboutPage(),
+                context,
+                AboutPage(),
                 popDetail: true,
               ),
             ),
@@ -206,12 +186,7 @@ class _SettingsPageState extends State<SettingsPage> {
               title: Text(S.of(context).about_feedback),
               trailing: Icon(Icons.keyboard_arrow_right),
               onTap: () {
-                SplitRoute.push(
-                  context: context,
-                  builder: (context, _) => FeedbackPage(),
-                  detail: true,
-                  popDetail: true,
-                );
+                SplitRoute.push(context, FeedbackPage(), popDetail: true);
               },
             ),
             if (!kReleaseMode)
@@ -227,7 +202,7 @@ class _SettingsPageState extends State<SettingsPage> {
               title: Text(S.current.support_chaldea),
               trailing: Icon(Icons.favorite),
               onTap: () {
-                SplitRoute.push2(context, SupportDonationPage());
+                SplitRoute.push(context, SupportDonationPage());
               },
             ),
             if (Platform.isIOS || Platform.isMacOS)
@@ -390,11 +365,7 @@ class _SettingsPageState extends State<SettingsPage> {
       title: Text(S.current.login_username),
       trailing: Text(trailing),
       onTap: () async {
-        SplitRoute.push(
-          context: context,
-          builder: (context, _) => LoginPage(),
-          popDetail: true,
-        );
+        SplitRoute.push(context, LoginPage(), popDetail: true);
       },
     );
   }

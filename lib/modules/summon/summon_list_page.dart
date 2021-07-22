@@ -159,12 +159,9 @@ class _SummonListPageState extends State<SummonListPage> {
       ),
       onTap: () {
         SplitRoute.push(
-          context: context,
+          context,
+          SummonDetailPage(summon: summon, summonList: _shownSummons),
           popDetail: true,
-          builder: (context, _) => SummonDetailPage(
-            summon: summon,
-            summonList: _shownSummons,
-          ),
         );
       },
     );

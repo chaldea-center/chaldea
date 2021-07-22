@@ -75,10 +75,8 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
         CustomTile(
           leading: db.getIconImage(Items.qp, height: kGridIconSize),
           title: Text(formatNumber(shownItems[Items.qp] ?? 0)),
-          onTap: () => SplitRoute.push(
-            context: context,
-            builder: (context, _) => ItemDetailPage(itemKey: Items.qp),
-          ),
+          onTap: () =>
+              SplitRoute.push(context, ItemDetailPage(itemKey: Items.qp)),
         ),
         buildClassifiedItemList(
           context: context,
@@ -86,8 +84,8 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
           divideRarity: false,
           crossCount: SplitRoute.isSplit(context) ? 7 : 7,
           onTap: (itemKey) => SplitRoute.push(
-            context: context,
-            builder: (context, _) => ItemDetailPage(itemKey: itemKey),
+            context,
+            ItemDetailPage(itemKey: itemKey),
           ),
           compact: false,
         )

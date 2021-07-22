@@ -431,8 +431,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                   ? null
                   : () {
                       SplitRoute.push(
-                        context: context,
-                        builder: (ctx, _) => SvtBondDetailPage(
+                        context,
+                        SvtBondDetailPage(
                             svtIdMap: svtIdMap,
                             cardCollections: cardCollections),
                       );

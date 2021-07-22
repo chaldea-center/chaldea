@@ -168,7 +168,10 @@ class _IllustratorListPageState
       codeMap.putIfAbsent(illus, () => []).add(code);
     });
 
-    illustrators..addAll(svtMap.keys)..addAll(craftMap.keys)..addAll(codeMap.keys);
+    illustrators
+      ..addAll(svtMap.keys)
+      ..addAll(craftMap.keys)
+      ..addAll(codeMap.keys);
     illustrators = illustrators.toSet().toList();
     illustrators
         .sort((a, b) => Utils.toAlphabet(a).compareTo(Utils.toAlphabet(b)));
@@ -287,26 +290,22 @@ class _IllustratorListPageState
 
 Widget _cardIcon<T>(BuildContext context, T card) {
   String icon;
-  Widget Function(BuildContext, SplitLayout) builder;
+  Widget page;
   if (card is Servant) {
     icon = card.icon;
-    builder = (context, _) => ServantDetailPage(card);
+    page = ServantDetailPage(card);
   } else if (card is CraftEssence) {
     icon = card.icon;
-    builder = (context, _) => CraftDetailPage(ce: card);
+    page = CraftDetailPage(ce: card);
   } else if (card is CommandCode) {
     icon = card.icon;
-    builder = (context, _) => CmdCodeDetailPage(code: card);
+    page = CmdCodeDetailPage(code: card);
   } else {
     throw ArgumentError.value(card.runtimeType, 'card', 'Unknown type');
   }
   return InkWell(
     onTap: () {
-      SplitRoute.push(
-        context: context,
-        builder: builder,
-        detail: true,
-      );
+      SplitRoute.push(context, page, detail: true);
     },
     child: Padding(
       padding: EdgeInsets.all(2),

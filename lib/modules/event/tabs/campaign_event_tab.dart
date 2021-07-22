@@ -87,8 +87,8 @@ class _CampaignEventTabState extends State<CampaignEventTab> {
               : null,
           onTap: () {
             SplitRoute.push(
-              context: context,
-              builder: (context, _) => CampaignDetailPage(event: event),
+              context,
+              CampaignDetailPage(event: event),
               popDetail: true,
             );
           },

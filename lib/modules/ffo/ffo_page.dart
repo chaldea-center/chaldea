@@ -15,9 +15,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 part 'ffo_data.dart';
-
 part 'ffo_download_dialog.dart';
-
 part 'ffo_summon_page.dart';
 
 String get _baseDir => join(db.paths.appPath, 'ffo');
@@ -126,8 +124,8 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
                 ElevatedButton(
                   onPressed: () {
                     SplitRoute.push(
-                      context: context,
-                      builder: (context, _) => FFOSummonPage(partsDta: parts),
+                      context,
+                      FFOSummonPage(partsDta: parts),
                       detail: true,
                     );
                   },
@@ -198,9 +196,8 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
       ),
       onTap: () {
         SplitRoute.push(
-          context: context,
-          detail: true,
-          builder: (context, _) => _PartChooserPage(
+          context,
+          _PartChooserPage(
             title: 'Choose $partName',
             parts: parts,
             onChanged: (svt) async {
@@ -208,6 +205,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
               setState(() {});
             },
           ),
+          detail: true,
         );
       },
     );

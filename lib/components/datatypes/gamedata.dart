@@ -258,10 +258,7 @@ class Item {
       child = InkWell(
         child: child,
         onTap: () {
-          SplitRoute.push(
-            context: context,
-            builder: (context, _) => ItemDetailPage(itemKey: itemKey),
-          );
+          SplitRoute.push(context, ItemDetailPage(itemKey: itemKey));
         },
       );
     }

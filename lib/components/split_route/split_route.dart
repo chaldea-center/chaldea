@@ -212,7 +212,7 @@ class SplitRoute<T> extends __PageRoute<T>
 
   /// if there is any detail view and need to pop detail,
   /// don't show pop and push animation
-  static Future<T?> push<T extends Object?>({
+  static Future<T?> pushBuilder<T extends Object?>({
     required BuildContext context,
     required SplitPageBuilder builder,
     bool popDetail = false,
@@ -240,18 +240,20 @@ class SplitRoute<T> extends __PageRoute<T>
     ));
   }
 
-  /// A simple form of [push]
-  static Future<T?> push2<T extends Object?>(
+  /// A simple form of [pushBuilder]
+  static Future<T?> push<T extends Object?>(
     BuildContext context,
     Widget page, {
     bool detail = true,
     bool popDetail = false,
+    RouteSettings? settings,
   }) {
-    return push(
+    return pushBuilder(
       context: context,
       builder: (context, _) => page,
       detail: detail,
       popDetail: popDetail,
+      settings: settings,
     );
   }
 }

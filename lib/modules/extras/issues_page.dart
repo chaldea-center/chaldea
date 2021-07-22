@@ -31,10 +31,7 @@ class IssuesPage extends StatelessWidget {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  SplitRoute.push(
-                    context: context,
-                    builder: (ctx, _) => FeedbackPage(),
-                  );
+                  SplitRoute.push(context, FeedbackPage());
                 },
                 child: Text(S.current.about_feedback),
               )

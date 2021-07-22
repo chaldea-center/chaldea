@@ -145,10 +145,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
           child: InkWell(
             child: db.getIconImage(key),
             onTap: () {
-              SplitRoute.push(
-                context: context,
-                builder: (_, __) => ItemDetailPage(itemKey: key),
-              );
+              SplitRoute.push(context, ItemDetailPage(itemKey: key));
             },
           ),
         ),

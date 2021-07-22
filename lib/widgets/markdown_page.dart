@@ -166,7 +166,7 @@ class MarkdownHelpPage extends StatefulWidget {
   static Widget buildHelpBtn(BuildContext context, String asset) {
     return IconButton(
       onPressed: () {
-        SplitRoute.push2(
+        SplitRoute.push(
           context,
           MarkdownHelpPage.localized(asset: asset),
         );
