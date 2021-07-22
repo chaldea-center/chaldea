@@ -214,7 +214,6 @@ class _IllustratorListPageState
 
   @override
   bool filter(String keyword, String creator) {
-    __textFilter.parse(keyword);
     if (keyword.isNotEmpty && searchMap[creator] == null) {
       List<String> searchStrings = [];
       for (final svt in svtMap[creator] ?? <Servant>[]) {
@@ -250,6 +249,7 @@ class _IllustratorListPageState
     }
 
     if (keyword.isNotEmpty) {
+      __textFilter.parse(keyword);
       if (!__textFilter.match(searchMap[creator]!)) {
         return false;
       }

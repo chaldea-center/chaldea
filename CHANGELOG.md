@@ -2,7 +2,8 @@
 - add servant sprites tab
 - add Campaign events
 - display setting: remember or reset favorite and filter settings
-- ignore filters when searching
+- string search and filters works together
+- fix startup crash
 
 ## 1.4.8
 - fix unavailable characters related bug

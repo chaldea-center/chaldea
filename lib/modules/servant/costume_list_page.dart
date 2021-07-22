@@ -48,7 +48,6 @@ class _CostumeListPageState
 
   @override
   bool filter(String keyword, Costume costume) {
-    __textFilter.parse(keyword);
     if (keyword.isNotEmpty && searchMap[costume] == null) {
       final svt = db.gameData.servants[costume.svtNo];
       List<String> searchStrings = [
@@ -66,6 +65,7 @@ class _CostumeListPageState
       searchMap[costume] = searchStrings.toSet().join('\t');
     }
     if (keyword.isNotEmpty) {
+      __textFilter.parse(keyword);
       if (!__textFilter.match(searchMap[costume]!)) {
         return false;
       }

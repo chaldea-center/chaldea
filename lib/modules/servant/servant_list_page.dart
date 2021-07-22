@@ -278,7 +278,9 @@ class ServantListPageState
     }
     if (keyword.isNotEmpty) {
       __textFilter.parse(keyword);
-      return __textFilter.match(searchMap[svt]!);
+      if (!__textFilter.match(searchMap[svt]!)) {
+        return false;
+      }
     }
 
     /// In search mode, filters and favorite are ignored

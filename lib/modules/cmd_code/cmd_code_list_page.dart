@@ -129,7 +129,9 @@ class CmdCodeListPageState
     }
     if (keyword.isNotEmpty) {
       __textFilter.parse(keyword);
-      return __textFilter.match(searchMap[code]!);
+      if (!__textFilter.match(searchMap[code]!)) {
+        return false;
+      }
     }
 
     /// In search mode, filters are ignored

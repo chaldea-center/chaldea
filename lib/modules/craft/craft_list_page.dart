@@ -157,7 +157,9 @@ class CraftListPageState
     }
     if (keyword.isNotEmpty) {
       __textFilter.parse(keyword);
-      return __textFilter.match(searchMap[ce]!);
+      if (!__textFilter.match(searchMap[ce]!)) {
+        return false;
+      }
     }
 
     /// In search mode, filters are ignored
