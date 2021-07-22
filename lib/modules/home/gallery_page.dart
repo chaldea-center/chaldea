@@ -19,7 +19,6 @@ class _GalleryPageState extends State<GalleryPage> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    db.userData.resetFiltersIfNeed();
 
     Future.delayed(Duration(seconds: 2)).then((_) async {
       if (!Platform.isWindows) {
@@ -131,6 +130,16 @@ class _GalleryPageState extends State<GalleryPage> {
         alignment: MainAxisAlignment.end,
         children: [
           TextButton(
+            onPressed: () {
+              rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed);
+              setState(() {
+                _showRateCard = false;
+              });
+            },
+            child: Text(LocalizedText.of(chs: '取消', jpn: '後で', eng: 'DISMISS'),
+                style: TextStyle(color: Theme.of(context).disabledColor)),
+          ),
+          TextButton(
             onPressed: () async {
               rateMyApp.callEvent(RateMyAppEventType.rateButtonPressed);
               launch(Platform.isAndroid
@@ -143,16 +152,6 @@ class _GalleryPageState extends State<GalleryPage> {
               });
             },
             child: Text(LocalizedText.of(chs: '评分', jpn: '評価', eng: 'RATE')),
-          ),
-          TextButton(
-            onPressed: () {
-              rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed);
-              setState(() {
-                _showRateCard = false;
-              });
-            },
-            child: Text(LocalizedText.of(chs: '取消', jpn: '後で', eng: 'DISMISS'),
-                style: TextStyle(color: Theme.of(context).disabledColor)),
           ),
         ],
       ),

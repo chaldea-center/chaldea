@@ -98,7 +98,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage>
       ));
     }
 
-    final Map<String, int> items = event.itemsWithRare();
+    final Map<String, int> items = event.itemsWithRare(plan);
     if (items.isNotEmpty) {
       children
         ..add(ListTile(

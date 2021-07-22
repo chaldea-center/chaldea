@@ -24,6 +24,13 @@ class CraftListPageState
 
   CraftFilterData get filterData => db.userData.craftFilter;
 
+  void initState() {
+    super.initState();
+    if (db.userData.autoResetFilter) {
+      filterData.reset();
+    }
+  }
+
   void onFilterChanged(CraftFilterData data) {
     if (mounted) {
       setState(() {});
@@ -40,7 +47,8 @@ class CraftListPageState
       useGrid: filterData.useGrid,
       appBar: AppBar(
         leading: MasterBackButton(),
-        title: Text(S.current.craft_essence),
+        title: AutoSizeText(S.current.craft_essence,
+            maxLines: 1, overflow: TextOverflow.fade),
         titleSpacing: 0,
         bottom: showSearchBar ? searchBar : null,
         actions: <Widget>[

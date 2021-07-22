@@ -1843,8 +1843,8 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
               )),
       favoritePreferred:
           $checkedConvert(json, 'favoritePreferred', (v) => v as bool?),
-      resetFilterWhenStart:
-          $checkedConvert(json, 'resetFilterWhenStart', (v) => v as bool?),
+      autoResetFilter:
+          $checkedConvert(json, 'autoResetFilter', (v) => v as bool?),
       downloadSource: $checkedConvert(json, 'downloadSource', (v) => v as int?),
       autoUpdateApp: $checkedConvert(json, 'autoUpdateApp', (v) => v as bool?),
       autoUpdateDataset:
@@ -1888,14 +1888,15 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
+Map<String, dynamic> _$UserDataToJson(UserData instance) =>
+    <String, dynamic>{
       'language': instance.language,
       'themeMode': _$ThemeModeEnumMap[instance.themeMode],
       'showSummonBanner': instance.showSummonBanner,
       'carouselSetting': instance.carouselSetting,
       'galleries': instance.galleries,
       'favoritePreferred': instance.favoritePreferred,
-      'resetFilterWhenStart': instance.resetFilterWhenStart,
+      'autoResetFilter': instance.autoResetFilter,
       'downloadSource': instance.downloadSource,
       'autoUpdateApp': instance.autoUpdateApp,
       'autoUpdateDataset': instance.autoUpdateDataset,

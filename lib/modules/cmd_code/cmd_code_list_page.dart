@@ -21,6 +21,14 @@ class CmdCodeListPageState
 
   CmdCodeFilterData get filterData => db.userData.cmdCodeFilter;
 
+  @override
+  void initState() {
+    super.initState();
+    if (db.userData.autoResetFilter) {
+      filterData.reset();
+    }
+  }
+
   void onFilterChanged(CmdCodeFilterData data) {
     if (mounted) {
       setState(() {});
@@ -60,7 +68,8 @@ class CmdCodeListPageState
   Widget listItemBuilder(CommandCode code) {
     return CustomTile(
       leading: db.getIconImage(code.icon, width: 56),
-      title: AutoSizeText(code.localizedName, maxLines: 1),
+      title: AutoSizeText(code.localizedName,
+          maxLines: 1, overflow: TextOverflow.fade),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[

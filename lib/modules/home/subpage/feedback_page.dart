@@ -173,13 +173,14 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   child: TextField(
                     controller: contactController,
                     decoration: InputDecoration(
-                        labelText: S.of(context).feedback_contact,
-                        border: OutlineInputBorder(),
-                        // prefix: Icon(Icons.mail_outline),
-                        hintText: LocalizedText.of(
-                            chs: '如需回复请填写',
-                            jpn: 'Please fill in if reply wanted',
-                            eng: 'Please fill in if reply wanted')),
+                      labelText: S.of(context).feedback_contact,
+                      border: OutlineInputBorder(),
+                      // prefix: Icon(Icons.mail_outline),
+                      hintText: LocalizedText.of(
+                          chs: '建议填写，否则将收不到回复，优先邮箱',
+                          jpn: 'Please fill in if reply wanted',
+                          eng: 'Please fill in if reply wanted'),
+                    ),
                     maxLines: 1,
                   ),
                 ),
@@ -297,7 +298,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
             jpn: '連絡先情報が入力されていません',
             eng: 'Contact information is not filled in')),
         content: Text(LocalizedText.of(
-            chs: '开发者将无法回复您的问题',
+            chs: '将无法无法无法无法无法回复您的问题',
             jpn: '開発者はあなたのフィードバックに応答することができなくなります',
             eng: 'The developer will not be able to respond to your feedback')),
         confirmText:

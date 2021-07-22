@@ -12,7 +12,7 @@ class UserData {
   CarouselSetting carouselSetting;
   Map<String, bool> galleries;
   bool? favoritePreferred;
-  bool resetFilterWhenStart;
+  bool autoResetFilter;
 
   int downloadSource;
   bool autoUpdateApp;
@@ -42,7 +42,7 @@ class UserData {
     CarouselSetting? carouselSetting,
     Map<String, bool>? galleries,
     bool? favoritePreferred,
-    bool? resetFilterWhenStart,
+    bool? autoResetFilter,
     int? downloadSource,
     bool? autoUpdateApp,
     bool? autoUpdateDataset,
@@ -54,11 +54,12 @@ class UserData {
     CmdCodeFilterData? cmdCodeFilter,
     GLPKParams? glpkParams,
     List<int>? itemAbundantValue,
-  })  : showSummonBanner = showSummonBanner ?? false,
+  })
+      : showSummonBanner = showSummonBanner ?? false,
         carouselSetting = carouselSetting ?? CarouselSetting(),
         galleries = galleries ?? {},
         favoritePreferred = favoritePreferred ?? false,
-        resetFilterWhenStart = resetFilterWhenStart ?? true,
+        autoResetFilter = autoResetFilter ?? true,
         downloadSource = fixValidRange(downloadSource ?? GitSource.server.index,
             0, GitSource.values.length),
         autoUpdateApp = autoUpdateApp ?? true,
@@ -122,7 +123,7 @@ class UserData {
 
   void resetFiltersIfNeed() {
     // can also call *.reset()
-    if (resetFilterWhenStart) {
+    if (autoResetFilter) {
       svtFilter.reset();
       craftFilter.reset();
       cmdCodeFilter.reset();

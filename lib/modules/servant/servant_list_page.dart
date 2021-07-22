@@ -40,6 +40,12 @@ class ServantListPageState
   @override
   void initState() {
     super.initState();
+    if (db.userData.autoResetFilter) {
+      filterData.reset();
+    }
+    if (db.userData.favoritePreferred != null) {
+      filterData.favorite = db.userData.favoritePreferred! ? 1 : 0;
+    }
   }
 
   @override
@@ -65,6 +71,7 @@ class ServantListPageState
             ? '${S.current.plan} ${db.curUser.curSvtPlanNo + 1}'
             : S.of(context).servant,
         maxLines: 1,
+        overflow: TextOverflow.fade,
       ),
       leading: MasterBackButton(),
       titleSpacing: 0,

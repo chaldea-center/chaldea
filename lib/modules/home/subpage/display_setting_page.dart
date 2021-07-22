@@ -57,13 +57,11 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 '/${S.current.command_code}',
             children: [
               SwitchListTile.adaptive(
-                value: db.userData.resetFilterWhenStart,
+                value: db.userData.autoResetFilter,
                 title: Text(LocalizedText.of(
                     chs: '自动重置', jpn: '自動リセット', eng: 'Auto Reset')),
-                subtitle: Text(LocalizedText.of(
-                    chs: '启动时设置', jpn: '起動時に設定 ', eng: 'Set at startup')),
                 onChanged: (v) async {
-                  db.userData.resetFilterWhenStart = v;
+                  db.userData.autoResetFilter = v;
                   setState(() {});
                 },
               ),
@@ -75,8 +73,6 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 jpn: '"フォロー"のデフォルト動作\n'
                     '(サーバント フィルタ)',
                 eng: 'Default "Favorite" of Servant Filter'),
-            footer: LocalizedText.of(
-                chs: '启动时设置', jpn: '起動時に設定 ', eng: 'Set at startup'),
             children: [
               RadioListTile<bool?>(
                 value: null,

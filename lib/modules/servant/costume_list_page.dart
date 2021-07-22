@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/servant/costume_detail_page.dart';
 
@@ -8,8 +9,7 @@ class CostumeListPage extends StatefulWidget {
   _CostumeListPageState createState() => _CostumeListPageState();
 }
 
-class _CostumeListPageState
-    extends SearchableListState<Costume, CostumeListPage> {
+class _CostumeListPageState extends SearchableListState<Costume, CostumeListPage> {
   @override
   Iterable<Costume> get wholeData => db.gameData.costumes.values;
 
@@ -26,7 +26,11 @@ class _CostumeListPageState
       useGrid: useGrid,
       appBar: AppBar(
         leading: MasterBackButton(),
-        title: Text(S.current.costume),
+        title: AutoSizeText(
+          S.current.costume,
+          maxLines: 1,
+          overflow: TextOverflow.fade,
+        ),
         bottom: showSearchBar ? searchBar : null,
         actions: [
           IconButton(
