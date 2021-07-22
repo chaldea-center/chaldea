@@ -1,9 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';
-import 'package:chaldea/modules/summon/summon_detail_page.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'event_base_page.dart';
 
 class CampaignDetailPage extends StatefulWidget {
   final CampaignEvent event;
@@ -15,7 +14,7 @@ class CampaignDetailPage extends StatefulWidget {
 }
 
 class _CampaignDetailPageState extends State<CampaignDetailPage>
-    with TickerProviderStateMixin {
+    with EventBasePage {
   CampaignEvent get event => widget.event;
 
   CampaignPlan get plan =>
@@ -37,105 +36,54 @@ class _CampaignDetailPageState extends State<CampaignDetailPage>
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> children = [];
-    if (event.lBannerUrl != null)
-      children.add(GestureDetector(
-        onTap: () => jumpToExternalLinkAlert(
-          url: WikiUtil.mcFullLink(widget.event.indexKey),
-          name: 'Mooncell',
-        ),
-        child: CachedImage(
-          imageUrl: event.lBannerUrl,
-          isMCFile: true,
-          placeholder: (_, __) => AspectRatio(aspectRatio: 8 / 3),
-        ),
-      ));
-    children.add(ListTile(
-      title: AutoSizeText(
-        'JP: ${event.startTimeJp ?? '?'} ~ ${event.endTimeJp ?? '?'}\n'
-        'CN: ${event.startTimeCn ?? '?'} ~ ${event.endTimeCn ?? '?'}',
-        maxLines: 2,
-      ),
-    ));
-    if (event.couldPlan) {
-      children.add(db.streamBuilder(
-        (context) => SwitchListTile.adaptive(
-          title: Text(S.of(context).plan),
-          value: plan.enable,
-          onChanged: (v) {
-            plan.enable = v;
-            db.itemStat.updateEventItems();
-          },
-        ),
-      ));
-    }
-
-    // 复刻
-    if (event.grail2crystal > 0) {
-      children.add(db.streamBuilder(
-        (context) => SwitchListTile.adaptive(
-          title: Text(S.of(context).rerun_event),
-          subtitle: Text(
-              S.of(context).event_rerun_replace_grail(event.grail2crystal)),
-          value: plan.rerun,
-          onChanged: (v) {
-            plan.rerun = v;
-            db.notifyDbUpdate();
-            setState(() {
-              // update grail and crystal num
-            });
-          },
-        ),
-      ));
-    }
-
     final svt = db.gameData.servants[event.welfareServant];
-    if (svt != null) {
-      children.add(ListTile(
-        title: Text(LocalizedText.of(
-            chs: '活动从者', jpn: '配布サーヴァント', eng: 'Welfare Servant')),
-        trailing: svt.iconBuilder(context: context),
-      ));
-    }
+
+    List<Widget> children = [];
+    children.addAll(this.buildHeaders(context: context, event: event));
+    children.add(db.streamBuilder((context) => TileGroup(children: [
+          if (event.couldPlan)
+            SwitchListTile.adaptive(
+              title: Text(S.of(context).plan),
+              value: plan.enable,
+              onChanged: (v) {
+                plan.enable = v;
+                db.itemStat.updateEventItems();
+              },
+            ),
+          if (event.grail2crystal > 0)
+            SwitchListTile.adaptive(
+              title: Text(S.of(context).rerun_event),
+              subtitle: Text(
+                  S.of(context).event_rerun_replace_grail(event.grail2crystal)),
+              value: plan.rerun,
+              onChanged: (v) {
+                plan.rerun = v;
+                db.notifyDbUpdate();
+                setState(() {
+                  // update grail and crystal num
+                });
+              },
+            ),
+          if (svt != null)
+            ListTile(
+              title: Text(LocalizedText.of(
+                  chs: '活动从者', jpn: '配布サーヴァント', eng: 'Welfare Servant')),
+              trailing: svt.iconBuilder(context: context),
+            )
+        ])));
 
     final Map<String, int> items = event.itemsWithRare(plan);
     if (items.isNotEmpty) {
-      children
-        ..add(ListTile(
-          leading: Icon(Icons.double_arrow),
-          horizontalTitleGap: 0,
-          title: Text(S.current.item),
-        ))
-        ..add(buildClassifiedItemList(
-          context: context,
-          data: items,
-          onTap: (v) => SplitRoute.push(context, ItemDetailPage(itemKey: v)),
-        ));
+      children.addAll([
+        ListTile(title: Center(child: Text(S.current.item))),
+        kDefaultDivider,
+        buildClassifiedItemList(context: context, data: items)
+      ]);
     }
 
     // summons
-    if (_associatedSummons.isNotEmpty) {
-      children
-        ..add(ListTile(
-          leading: Icon(Icons.double_arrow),
-          horizontalTitleGap: 0,
-          title: Text(S.of(context).summon),
-        ))
-        ..add(TileGroup(
-          children: _associatedSummons
-              .map((e) => ListTile(
-                  leading: FaIcon(
-                    FontAwesomeIcons.chessQueen,
-                    color: Colors.blue,
-                  ),
-                  title: Text(e.localizedName),
-                  horizontalTitleGap: 0,
-                  onTap: () {
-                    SplitRoute.push(context, SummonDetailPage(summon: e));
-                  }))
-              .toList(),
-        ));
-    }
+    children.addAll(
+        this.buildSummons(context: context, summons: _associatedSummons));
 
     children.add(SizedBox(
       height: 72,
@@ -175,10 +123,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage>
           )
         ],
       ),
-      body: ListView(
-        children: divideTiles(children),
-        // padding: EdgeInsets.only(bottom: 72),
-      ),
+      body: ListView(children: children),
       floatingActionButton: event.couldPlan ? floatingActionButton : null,
     );
   }

@@ -49,7 +49,10 @@ class _SvtSummonTabState extends SvtTabBaseState<SvtSummonTab> {
   @override
   Widget build(BuildContext context) {
     if (shownSummons.isEmpty) {
-      return ListTile(title: Text('无关联卡池'));
+      return ListTile(
+        title: Text(LocalizedText.of(
+            chs: '无关联卡池', jpn: '関連するガチャない', eng: 'No related summons')),
+      );
     }
 
     return ListView.separated(
@@ -71,6 +74,7 @@ class _SvtSummonTabState extends SvtTabBaseState<SvtSummonTab> {
               summon.localizedName,
               maxLines: 2,
               style: TextStyle(color: summon.isOutdated() ? Colors.grey : null),
+              maxFontSize: 14,
             ),
           ),
         ],

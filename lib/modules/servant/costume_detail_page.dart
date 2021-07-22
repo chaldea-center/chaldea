@@ -92,7 +92,6 @@ class CostumeDetailPage extends StatelessWidget {
                                   itemKey: e.key,
                                   text: formatNumber(e.value, compact: true),
                                   width: 44,
-                                  jumpToDetail: true,
                                 ))
                             .toList(),
                       ),
@@ -129,9 +128,9 @@ class CostumeDetailPage extends StatelessWidget {
             CustomTableRow(children: [
               TableCellData(
                   text: LocalizedText.of(
-                      chs: '立绘/模型',
-                      jpn: 'イラスト・バトルキャラ',
-                      eng: 'Illustration/Sprites'),
+                      chs: '< 立绘/模型 >',
+                      jpn: '< イラスト・バトルキャラ >',
+                      eng: '< Illustration/Sprites >'),
                   isHeader: true)
             ]),
             CustomTableRow(children: [

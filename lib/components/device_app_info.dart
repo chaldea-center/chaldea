@@ -107,6 +107,7 @@ class AppInfo {
       packageName: kPackageName,
       version: nameAndCode[0],
       buildNumber: nameAndCode[1],
+      buildSignature: '',
     );
     logger.i('Fail to read package info, asset instead: $nameAndCode');
     return packageInfo;

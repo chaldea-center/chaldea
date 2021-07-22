@@ -31,7 +31,6 @@ class CachedImageOption {
   final String? cacheKey;
   final int? maxWidthDiskCache;
   final int? maxHeightDiskCache;
-  final ImageRenderMethodForWeb? imageRenderMethodForWeb;
 
   const CachedImageOption({
     this.httpHeaders,
@@ -60,7 +59,6 @@ class CachedImageOption {
     this.cacheKey,
     this.maxWidthDiskCache,
     this.maxHeightDiskCache,
-    this.imageRenderMethodForWeb,
   });
 
   CachedImageOption copyWith({
@@ -90,7 +88,6 @@ class CachedImageOption {
     String? cacheKey,
     int? maxWidthDiskCache,
     int? maxHeightDiskCache,
-    ImageRenderMethodForWeb? imageRenderMethodForWeb,
   }) {
     return CachedImageOption(
       httpHeaders: httpHeaders ?? this.httpHeaders,
@@ -122,8 +119,6 @@ class CachedImageOption {
       cacheKey: cacheKey ?? this.cacheKey,
       maxWidthDiskCache: maxWidthDiskCache ?? this.maxWidthDiskCache,
       maxHeightDiskCache: maxHeightDiskCache ?? this.maxHeightDiskCache,
-      imageRenderMethodForWeb:
-          imageRenderMethodForWeb ?? this.imageRenderMethodForWeb,
     );
   }
 }

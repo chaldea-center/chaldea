@@ -2,9 +2,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';
-import 'package:chaldea/modules/summon/summon_detail_page.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'event_base_page.dart';
 
 class LimitEventDetailPage extends StatefulWidget {
   final LimitEvent event;
@@ -16,7 +16,7 @@ class LimitEventDetailPage extends StatefulWidget {
 }
 
 class _LimitEventDetailPageState extends State<LimitEventDetailPage>
-    with TickerProviderStateMixin {
+    with EventBasePage {
   LimitEvent get event => widget.event;
 
   LimitEventPlan get plan => db.curUser.events.limitEventOf(event.indexKey);
@@ -45,86 +45,61 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> children = [];
-    if (event.lBannerUrl != null)
-      children.add(GestureDetector(
-        onTap: () => jumpToExternalLinkAlert(
-          url: WikiUtil.mcFullLink(widget.event.indexKey),
-          name: 'Mooncell',
-        ),
-        child: CachedImage(
-          imageUrl: event.lBannerUrl,
-          isMCFile: true,
-          placeholder: (_, __) => AspectRatio(aspectRatio: 8 / 3),
-        ),
-      ));
-    children.add(ListTile(
-      title: AutoSizeText(
-        'JP: ${event.startTimeJp ?? '?'} ~ ${event.endTimeJp ?? '?'}\n'
-        'CN: ${event.startTimeCn ?? '?'} ~ ${event.endTimeCn ?? '?'}',
-        maxLines: 2,
-      ),
-    ));
-    children.add(db.streamBuilder(
-      (context) => SwitchListTile.adaptive(
-        title: Text(S.of(context).plan),
-        value: plan.enable,
-        onChanged: (v) {
-          plan.enable = v;
-          db.itemStat.updateEventItems();
-        },
-      ),
-    ));
-    // 复刻
-    if (event.grail2crystal > 0) {
-      children.add(db.streamBuilder(
-        (context) => SwitchListTile.adaptive(
-          title: Text(S.of(context).rerun_event),
-          subtitle: Text(
-              S.of(context).event_rerun_replace_grail(event.grail2crystal)),
-          value: plan.rerun,
-          onChanged: (v) {
-            plan.rerun = v;
-            db.notifyDbUpdate();
-            setState(() {
-              // update grail and crystal num
-            });
-          },
-        ),
-      ));
-    }
-
     final svt = db.gameData.servants[event.welfareServant];
-    if (svt != null) {
-      children.add(ListTile(
-        title: Text(LocalizedText.of(
-            chs: '活动从者', jpn: '配布サーヴァント', eng: 'Welfare Servant')),
-        trailing: svt.iconBuilder(context: context),
-      ));
-    }
+
+    List<Widget> children = [];
+    children.addAll(this.buildHeaders(context: context, event: event));
+    children.add(db.streamBuilder((context) => TileGroup(children: [
+          SwitchListTile.adaptive(
+            title: Text(S.of(context).plan),
+            value: plan.enable,
+            onChanged: (v) {
+              plan.enable = v;
+              db.itemStat.updateEventItems();
+            },
+          ),
+          if (event.grail2crystal > 0)
+            SwitchListTile.adaptive(
+              title: Text(S.of(context).rerun_event),
+              subtitle: Text(
+                  S.of(context).event_rerun_replace_grail(event.grail2crystal)),
+              value: plan.rerun,
+              onChanged: (v) {
+                plan.rerun = v;
+                db.notifyDbUpdate();
+                setState(() {
+                  // update grail and crystal num
+                });
+              },
+            ),
+          if (svt != null)
+            ListTile(
+              title: Text(LocalizedText.of(
+                  chs: '活动从者', jpn: '配布サーヴァント', eng: 'Welfare Servant')),
+              trailing: svt.iconBuilder(context: context),
+            )
+        ])));
 
     // 无限池
     if (event.lottery.isNotEmpty == true) {
       children
         ..add(ListTile(
-          leading: Icon(Icons.double_arrow),
-          horizontalTitleGap: 0,
           title: Text(event.lotteryLimit > 0
               ? S.of(context).event_lottery_limited
               : S.of(context).event_lottery_unlimited),
           subtitle: event.lotteryLimit > 0
               ? Text(S.of(context).event_lottery_limit_hint(event.lotteryLimit))
               : null,
-          trailing: SizedBox(
-              width: 80,
-              child: TextField(
-                maxLength: 4,
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.number,
-                scrollPadding: EdgeInsets.zero,
-                decoration: InputDecoration(
-                  counterText: '',
-                  suffixText: S.of(context).event_lottery_unit,
+        trailing: SizedBox(
+            width: 80,
+            child: TextField(
+              maxLength: 4,
+              textAlign: TextAlign.center,
+              keyboardType: TextInputType.number,
+              scrollPadding: EdgeInsets.zero,
+              decoration: InputDecoration(
+                counterText: '',
+                suffixText: S.of(context).event_lottery_unit,
                   isDense: true,
                 ),
                 controller: _lotteryController,
@@ -135,58 +110,32 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
                 },
               )),
         ))
-        ..add(buildClassifiedItemList(
-            context: context, data: event.lottery, onTap: onTapIcon));
+        ..add(kDefaultDivider)
+        ..add(buildClassifiedItemList(context: context, data: event.lottery));
     }
 
     // 商店任务点数
-    final Map<String, int> items = event.itemsWithRare(plan)
-      ..removeWhere((key, value) => value <= 0);
+    final Map<String, int> items = event.itemsWithRare(plan);
     if (items.isNotEmpty) {
-      children
-        ..add(ListTile(
-          leading: Icon(Icons.double_arrow),
-          horizontalTitleGap: 0,
-          title: Text(S.of(context).event_item_default),
-        ))
-        ..add(buildClassifiedItemList(
-            context: context, data: items, onTap: onTapIcon));
+      children.addAll([
+        ListTile(title: Center(child: Text(S.current.event_item_default))),
+        kDefaultDivider,
+        buildClassifiedItemList(context: context, data: items)
+      ]);
     }
 
     // 狩猎 无限池终本掉落等
     if (event.extra.isNotEmpty == true) {
-      children
-        ..add(ListTile(
-          leading: Icon(Icons.double_arrow),
-          horizontalTitleGap: 0,
-          title: Text(S.of(context).event_item_extra),
-        ))
-        ..add(_buildExtraItems(event.extra, plan.extra));
+      children.addAll([
+        ListTile(title: Center(child: Text(S.current.event_item_extra))),
+        kDefaultDivider,
+        _buildExtraItems(event.extra, plan.extra)
+      ]);
     }
 
     // summons
-    if (_associatedSummons.isNotEmpty) {
-      children
-        ..add(ListTile(
-          leading: Icon(Icons.double_arrow),
-          horizontalTitleGap: 0,
-          title: Text(S.of(context).summon),
-        ))
-        ..add(TileGroup(
-          children: _associatedSummons
-              .map((e) => ListTile(
-                  leading: FaIcon(
-                    FontAwesomeIcons.chessQueen,
-                    color: Colors.blue,
-                  ),
-                  title: Text(e.localizedName),
-                  horizontalTitleGap: 0,
-                  onTap: () {
-                    SplitRoute.push(context, SummonDetailPage(summon: e));
-                  }))
-              .toList(),
-        ));
-    }
+    children.addAll(
+        this.buildSummons(context: context, summons: _associatedSummons));
 
     children.add(SizedBox(
       height: 72,
@@ -226,10 +175,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
           )
         ],
       ),
-      body: ListView(
-        children: divideTiles(children),
-        // padding: EdgeInsets.only(bottom: 72),
-      ),
+      body: ListView(children: children),
       floatingActionButton: floatingActionButton,
     );
   }
@@ -263,10 +209,8 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
     data.forEach((itemKey, hint) {
       final controller = _controllers[itemKey];
       children.add(ListTile(
-        leading: GestureDetector(
-          onTap: () => onTapIcon(itemKey),
-          child: db.getIconImage(itemKey, width: 48),
-        ),
+        leading:
+            Item.iconBuilder(context: context, itemKey: itemKey, width: 48),
         title: Text(Item.localizedNameOf(itemKey)),
         subtitle: Text(hint),
         trailing: SizedBox(

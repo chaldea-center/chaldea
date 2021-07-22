@@ -69,7 +69,8 @@ class Version extends Comparable<Version> {
   static Version? tryParse(String versionString, [int? build]) {
     versionString = versionString.trim();
     if (!_fullVersionRegex.hasMatch(versionString)) {
-      if (versionString.isNotEmpty)
+      if (versionString.isNotEmpty &&
+          !['svt_icons', 'ffo-data'].contains(versionString))
         logger.e(ArgumentError.value(
             versionString, 'versionString', 'Invalid version format'));
       return null;

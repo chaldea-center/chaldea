@@ -1,5 +1,4 @@
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/item/item_detail_page.dart';
 
 class LevelingCostPage extends StatefulWidget {
   final List<Map<String, int>> costList;
@@ -91,15 +90,9 @@ class LevelingCostPageState extends State<LevelingCostPage> {
                         padding:
                             EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                         child: ImageWithText(
-                          image: db.getIconImage(entry.key, preferPng: false),
+                          image: Item.iconBuilder(
+                              context: context, itemKey: entry.key),
                           text: formatNumber(entry.value, compact: true),
-                          onTap: entry.key == 'QP'
-                              ? null
-                              : () => SplitRoute.push(
-                                    context,
-                                    ItemDetailPage(itemKey: entry.key),
-                                    popDetail: true,
-                                  ),
                         ),
                       ))
                   .toList(),

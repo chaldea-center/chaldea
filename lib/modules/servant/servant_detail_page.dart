@@ -275,7 +275,16 @@ class ServantDetailPageState extends State<ServantDetailPage>
 
   Widget _buildHeader() {
     return CustomTile(
-      leading: svt.iconBuilder(context: context, height: 64),
+      leading: InkWell(
+        child:
+            svt.iconBuilder(context: context, height: 64, jumpToDetail: false),
+        onTap: () {
+          FullscreenImageViewer.show(
+            context: context,
+            urls: svt.info.illustrations.values.toList(),
+          );
+        },
+      ),
       title: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,

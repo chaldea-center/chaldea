@@ -29,10 +29,10 @@ dependencies:
   archive: ^3.1.2
   audioplayers: ^0.19.1
   auto_size_text: ^3.0.0-nullsafety.0
-  cached_network_image: ^3.0.0
+  cached_network_image: ^3.1.0
   carousel_slider: ^4.0.0
   catcher: ^0.6.7
-  connectivity_plus: ^1.0.4
+  connectivity_plus: ^1.0.6
   crypto: ^3.0.1
   csv: ^5.0.0
   cupertino_icons: ^1.0.3
@@ -60,7 +60,7 @@ dependencies:
   image: ^3.0.2
   image_gallery_saver: ^1.6.9
   intl: ^0.17.0
-  json_annotation: ^4.0.1
+  json_annotation: 4.0.1
   kana_kit: ^2.0.0
   logger: ^1.0.0
   lpinyin: ^2.0.3
@@ -70,10 +70,10 @@ dependencies:
   path_provider: ^2.0.2
   permission_handler: ^8.1.2
   pool: ^1.5.0
-  photo_view: ^0.11.1
+  photo_view: ^0.12.0
   rate_my_app: ^1.1.0+1
   rfc_6902: ^0.1.0
-  screenshot: ^1.2.1
+  screenshot: ^1.2.3
   share_plus: ^2.1.4
   shared_preferences: ^2.0.6
   string_validator: ^0.3.0

@@ -148,7 +148,16 @@ class CraftDetailBasePage extends StatelessWidget {
           CustomTableRow(
             children: [
               TableCellData(
-                child: db.getIconImage(ce.icon, height: 90),
+                child: InkWell(
+                  child: db.getIconImage(ce.icon, height: 90),
+                  onTap: () {
+                    FullscreenImageViewer.show(
+                      context: context,
+                      urls: [ce.illustration],
+                      placeholder: placeholder,
+                    );
+                  },
+                ),
                 flex: 1,
                 padding: EdgeInsets.all(3),
               ),

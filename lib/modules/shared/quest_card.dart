@@ -78,9 +78,8 @@ class _QuestCardState extends State<QuestCard> {
                   onPressed: () => setState(() => showTrueName = !showTrueName),
                   icon: Icon(
                     Icons.remove_red_eye_outlined,
-                    color: showTrueName
-                        ? null
-                        : Theme.of(context).hintColor.withOpacity(0.5),
+                    color:
+                        showTrueName ? Theme.of(context).indicatorColor : null,
                   ),
                   tooltip:
                       showTrueName ? 'Show Display Name' : 'Show True Name',
@@ -334,8 +333,7 @@ class _QuestCardState extends State<QuestCard> {
               context: context,
               itemKey: entry.key,
               width: 40,
-              text: entry.value,
-              jumpToDetail: true))
+              text: entry.value))
           .toList(),
     );
   }

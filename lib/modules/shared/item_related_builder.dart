@@ -35,37 +35,45 @@ class CommonBuilder {
 Widget buildClassifiedItemList({
   required BuildContext context,
   required Map<String, int> data,
-  void onTap(String iconKey)?,
   bool divideCategory = true,
   bool divideRarity = true,
+  bool divideClassItem = true,
   bool responsive = true,
-  int crossCount = 7,
-  bool compact = true,
+  int? minCrossCount,
+  bool compactNum = true,
 }) {
   final divided = divideItemsToGroups(data.keys.toList(),
-      divideCategory: divideCategory, divideRarity: divideRarity);
+      divideCategory: divideCategory,
+      divideRarity: divideRarity,
+      divideClassItem: divideClassItem);
   List<Widget> children = [];
   for (var key in divided.keys) {
     final gridChildren = divided[key]!.map((item) {
       return ImageWithText(
-        onTap: onTap == null ? null : () => onTap(item.name),
-        image: db.getIconImage(item.name),
-        text: formatNumber(data[item.name]!, compact: compact),
+        image: Item.iconBuilder(context: context, itemKey: item.name),
+        text: formatNumber(data[item.name]!, compact: compactNum),
         padding: EdgeInsets.only(right: 3),
       );
     }).toList();
-    children.add(TileGroup(
-      header: Item.getNameOfCategory(key ~/ 10, key % 10),
-      padding: EdgeInsets.only(bottom: 0),
-      children: <Widget>[
-        buildResponsiveGridWrap(
-          context: context,
-          children: gridChildren,
-          responsive: responsive,
-          crossCount: crossCount,
-        ),
-      ],
-    ));
+    children.add(LayoutBuilder(builder: (context, constraint) {
+      int crossCount = constraint.maxWidth ~/ 48;
+      if (crossCount == double.infinity) crossCount = 7;
+      if (minCrossCount != null && crossCount < minCrossCount) {
+        crossCount = minCrossCount;
+      }
+      return TileGroup(
+        header: Item.getNameOfCategory(key ~/ 10, key % 10),
+        padding: EdgeInsets.only(bottom: 0),
+        children: <Widget>[
+          buildResponsiveGridWrap(
+            context: context,
+            children: gridChildren,
+            responsive: responsive,
+            crossCount: crossCount,
+          ),
+        ],
+      );
+    }));
   }
   return Column(
     mainAxisSize: MainAxisSize.min,
@@ -117,14 +125,26 @@ Widget buildResponsiveGridWrap({
 /// Divide list of items into groups according to [category] and/or [rarity].
 /// If [divideRarity] is set to false, only divide into [category] groups.
 /// The key of returned Map is [category] if [divideRarity], else [category]*10+[rarity]
-Map<int, List<Item>> divideItemsToGroups(List<String> items,
-    {bool divideCategory = true, bool divideRarity = true}) {
+Map<int, List<Item>> divideItemsToGroups(
+  List<String> items, {
+  bool divideCategory = true,
+  bool divideRarity = true,
+  bool divideClassItem = true,
+}) {
   Map<int, List<Item>> groups = {};
   for (String itemKey in items) {
     final item = db.gameData.items[itemKey];
     if (item != null) {
-      final groupKey = (divideCategory ? item.category * 10 : 0) +
-          (divideRarity ? item.rarity : 0);
+      int groupKey;
+      if ((item.category == ItemCategory.gem ||
+              item.category == ItemCategory.ascension) &&
+          !divideClassItem &&
+          divideCategory) {
+        groupKey = item.category * 10;
+      } else {
+        groupKey = (divideCategory ? item.category * 10 : 0) +
+            (divideRarity ? item.rarity : 0);
+      }
       groups[groupKey] ??= [];
       groups[groupKey]!.add(item);
     }

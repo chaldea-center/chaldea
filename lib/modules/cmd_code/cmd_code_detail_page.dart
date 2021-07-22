@@ -130,7 +130,16 @@ class CmdCodeDetailBasePage extends StatelessWidget {
           CustomTableRow(
             children: [
               TableCellData(
-                child: db.getIconImage(code.icon, height: 90),
+                child: InkWell(
+                  child: db.getIconImage(code.icon, height: 90),
+                  onTap: () {
+                    FullscreenImageViewer.show(
+                      context: context,
+                      urls: [code.illustration],
+                      placeholder: placeholder,
+                    );
+                  },
+                ),
                 flex: 1,
                 padding: EdgeInsets.all(3),
               ),

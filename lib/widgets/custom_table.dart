@@ -67,46 +67,47 @@ class CustomTableRow extends StatefulWidget {
   final Color? color;
   final VerticalDivider divider;
 
-  CustomTableRow(
-      {Key? key,
-      required this.children,
-      this.color,
-      this.divider = kVerticalDivider})
+  CustomTableRow({Key? key,
+    required this.children,
+    this.color,
+    this.divider = kVerticalDivider})
       : super(key: key) {
     children.forEach((cell) {
       cell.key ??= GlobalKey();
     });
   }
 
-  CustomTableRow.fromTexts(
-      {required List<String> texts,
-      TableCellData? defaults,
-      Color? color,
-      VerticalDivider divider = kVerticalDivider})
-      : this(
-          children: texts
-              .map((text) => defaults == null
-                  ? TableCellData(text: text)
-                  : defaults.copyWith(text: text))
-              .toList(),
-          color: color,
-          divider: divider,
-        );
+  CustomTableRow.fromTexts({
+    required List<String> texts,
+    TableCellData? defaults,
+    Color? color,
+    VerticalDivider divider = kVerticalDivider,
+  }) : this(
+    children: texts
+        .map((text) =>
+    defaults == null
+        ? TableCellData(text: text)
+        : defaults.copyWith(text: text))
+        .toList(),
+    color: color,
+    divider: divider,
+  );
 
-  CustomTableRow.fromChildren(
-      {required List<Widget> children,
-      TableCellData? defaults,
-      Color? color,
-      VerticalDivider divider = kVerticalDivider})
-      : this(
-          children: children
-              .map((child) => defaults == null
-                  ? TableCellData(child: child)
-                  : defaults.copyWith(child: child))
-              .toList(),
-          color: color,
-          divider: divider,
-        );
+  CustomTableRow.fromChildren({
+    required List<Widget> children,
+    TableCellData? defaults,
+    Color? color,
+    VerticalDivider divider = kVerticalDivider,
+  }) : this(
+    children: children
+        .map((child) =>
+    defaults == null
+        ? TableCellData(child: child)
+        : defaults.copyWith(child: child))
+        .toList(),
+    color: color,
+    divider: divider,
+  );
 
   @override
   _CustomTableRowState createState() => _CustomTableRowState();
@@ -143,7 +144,11 @@ class _CustomTableRowState extends State<CustomTableRow> {
           /// see https://github.com/leisim/auto_size_text/issues/77
           String text = cell.text!;
           if (cell.maxLines == null || text.isEmpty) {
-            _child = Text(text, textAlign: cell.textAlign);
+            _child = Text(
+              text,
+              textAlign: cell.textAlign,
+              style: TextStyle(fontSize: cell.fontSize),
+            );
           } else if (cell.maxLines == 1) {
             // empty string->Text has no size->cannot place in FittedBox
             _child = FittedBox(
@@ -151,6 +156,7 @@ class _CustomTableRowState extends State<CustomTableRow> {
                 text,
                 maxLines: cell.maxLines,
                 textAlign: cell.textAlign,
+                style: TextStyle(fontSize: cell.fontSize),
               ),
             );
           } else {
@@ -161,6 +167,7 @@ class _CustomTableRowState extends State<CustomTableRow> {
                 text,
                 maxLines: cell.maxLines,
                 textAlign: cell.textAlign,
+                style: TextStyle(fontSize: cell.fontSize),
               ),
             );
             // _child = AutoSizeText(
@@ -232,6 +239,7 @@ class TableCellData {
   Widget? child;
   int flex;
   bool isHeader;
+  double? fontSize;
   Color? color;
   int? maxLines;
   Alignment alignment;
@@ -262,6 +270,7 @@ class TableCellData {
     this.child,
     this.flex = 1,
     this.isHeader = false,
+    this.fontSize,
     this.color,
     this.maxLines,
     this.alignment = Alignment.center,
@@ -281,6 +290,8 @@ class TableCellData {
     List<int>? flexList,
     bool? isHeader,
     List<bool>? isHeaderList,
+    double? fontSize,
+    List<double>? fontSizeList,
     Color? color,
     List<Color>? colorList,
     int? maxLines,
@@ -299,6 +310,7 @@ class TableCellData {
     assert(texts == null || children == null);
     assert(flex == null || flexList == null);
     assert(isHeader == null || isHeaderList == null);
+    assert(fontSize == null || fontSizeList == null);
     assert(color == null || colorList == null);
     assert(maxLines == null || maxLinesList == null);
     assert(alignment == null || alignmentList == null);
@@ -308,6 +320,7 @@ class TableCellData {
     assert([
       flexList?.length,
       isHeaderList?.length,
+      fontSizeList?.length,
       colorList?.length,
       maxLinesList?.length,
       alignmentList?.length,
@@ -321,6 +334,7 @@ class TableCellData {
         child: children?.elementAt(index),
       );
       data.flex = flex ?? flexList?.elementAt(index) ?? data.flex;
+      data.fontSize = fontSize ?? fontSizeList?.elementAt(index);
       data.color = color ?? colorList?.elementAt(index);
       data.maxLines =
           maxLines ?? maxLinesList?.elementAt(index) ?? data.maxLines;
@@ -344,6 +358,7 @@ class TableCellData {
       Widget? child,
       int? flex,
       bool? isHeader,
+      double? fontSize,
       Color? color,
       int? maxLines,
       Alignment? alignment,
@@ -358,6 +373,7 @@ class TableCellData {
       child: child,
       flex: flex ?? this.flex,
       isHeader: isHeader ?? this.isHeader,
+      fontSize: fontSize ?? this.fontSize,
       color: color ?? this.color,
       maxLines: maxLines ?? this.maxLines,
       alignment: alignment ?? this.alignment,

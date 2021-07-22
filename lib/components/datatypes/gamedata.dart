@@ -117,7 +117,8 @@ class Item {
   String? nameJp;
   String? nameEn;
 
-  /// category: 1-usual item(include crystal/grail), 2-skill gem, 3-ascension piece/monument,
+  /// see [ItemCategory]
+  /// category: 1-skill gem, 2-usual item(include crystal/grail), 3-ascension piece/monument,
   /// 4-event servants' ascension item, 5-special, now only QP
   int category;
 
@@ -241,7 +242,7 @@ class Item {
     double? width,
     double? height,
     String? text,
-    bool jumpToDetail = false,
+    bool jumpToDetail = true,
   }) {
     final size = MathUtils.fitSize(width, height, 132 / 144);
     Widget child = ImageWithText(

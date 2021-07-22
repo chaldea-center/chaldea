@@ -1,9 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';
-import 'package:chaldea/modules/summon/summon_detail_page.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'event_base_page.dart';
 
 class MainRecordDetailPage extends StatefulWidget {
   final MainRecord record;
@@ -15,7 +14,8 @@ class MainRecordDetailPage extends StatefulWidget {
   _MainRecordDetailPageState createState() => _MainRecordDetailPageState();
 }
 
-class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
+class _MainRecordDetailPageState extends State<MainRecordDetailPage>
+    with EventBasePage {
   MainRecord get record => widget.record;
 
   List<bool> get plan => db.curUser.events.mainRecordOf(widget.record.indexKey);
@@ -35,30 +35,8 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final _onTap = (String itemKey) =>
-        SplitRoute.push(context, ItemDetailPage(itemKey: itemKey));
-
     List<Widget> children = [];
-    if (record.lBannerUrl != null) {
-      children.add(GestureDetector(
-        onTap: () => jumpToExternalLinkAlert(
-          url: WikiUtil.mcFullLink(record.indexKey),
-          name: 'Mooncell',
-        ),
-        child: CachedImage(
-          imageUrl: record.lBannerUrl,
-          isMCFile: true,
-          placeholder: (_, __) => AspectRatio(aspectRatio: 8 / 3),
-        ),
-      ));
-    }
-    children.add(ListTile(
-      title: AutoSizeText(
-        'JP: ${record.startTimeJp ?? '?'}\n'
-        'CN: ${record.startTimeCn ?? '?'}',
-        maxLines: 2,
-      ),
-    ));
+    children.addAll(this.buildHeaders(context: context, event: record));
 
     children.addAll([
       kDefaultDivider,
@@ -73,8 +51,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
         ),
       ),
       kDefaultDivider,
-      buildClassifiedItemList(
-          context: context, data: widget.record.drops, onTap: _onTap),
+      buildClassifiedItemList(context: context, data: widget.record.drops),
       db.streamBuilder(
         (context) => SwitchListTile.adaptive(
           title: Text(S.of(context).main_record_bonus),
@@ -87,35 +64,11 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage> {
       ),
       kDefaultDivider,
       buildClassifiedItemList(
-        context: context,
-        data: widget.record.rewardsWithRare,
-        onTap: _onTap,
-      ),
+          context: context, data: widget.record.rewardsWithRare),
     ]);
 
-    if (_associatedSummons.isNotEmpty) {
-      children.addAll([
-        ListTile(
-          // leading: Icon(Icons.double_arrow),
-          // horizontalTitleGap: 0,
-          title: Text(S.of(context).summon),
-        ),
-        TileGroup(
-          children: _associatedSummons
-              .map((e) => ListTile(
-                  leading: FaIcon(
-                    FontAwesomeIcons.chessQueen,
-                    color: Colors.blue,
-                  ),
-                  title: Text(e.localizedName),
-                  horizontalTitleGap: 0,
-                  onTap: () {
-                    SplitRoute.push(context, SummonDetailPage(summon: e));
-                  }))
-              .toList(),
-        ),
-      ]);
-    }
+    children.addAll(
+        this.buildSummons(context: context, summons: _associatedSummons));
     children.add(SizedBox(
       height: 72,
       child: Center(
