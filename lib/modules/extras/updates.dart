@@ -175,11 +175,11 @@ class AutoUpdateUtil {
     String? releaseNote;
     String? launchUrl; // release page, not download url
     bool upgradable = false;
-    if (!background) EasyLoading.show(maskType: EasyLoadingMaskType.clear);
 
     String? fpInstaller;
     try {
       if (!background) {
+        EasyLoading.show(maskType: EasyLoadingMaskType.clear);
         db.prefs.ignoreAppVersion.remove();
       }
       final git = GitTool.fromDb();
@@ -206,9 +206,7 @@ class AutoUpdateUtil {
         version = Version.tryParse(release?.name ?? '');
         releaseNote = release?.body;
         launchUrl = release?.htmlUrl;
-        print(version);
       }
-      print(release?.targetAsset?.browserDownloadUrl);
       releaseNote = releaseNote?.replaceAll('\r\n', '\n');
       // logger.i('Release note:\n$releaseNote');
 
@@ -259,6 +257,16 @@ class AutoUpdateUtil {
         if (!download) return;
       }
       if (download) {
+        if (git.source == GitSource.gitee) {
+          /// Gitee always return 503 for large file, *.sha1 is ok???
+          launch(release!.htmlUrl!); // or open download url
+          return;
+        }
+        await Future.delayed(Duration(milliseconds: 300));
+        EasyLoading.showToast(LocalizedText.of(
+            chs: '后台下载中...',
+            jpn: 'バックグラウンドでダウンロード...',
+            eng: 'Downloading in the background... '));
         fpInstaller = await startDownload(release: release!);
       }
 
@@ -288,22 +296,25 @@ class AutoUpdateUtil {
   }
 
   static Future<String?> startDownload({required GitRelease release}) async {
+    logger.d('sha1 file: ${release.targetSHA1Asset}');
+    logger.d('installer: ${release.targetAsset}');
+
     bool validSHA1 = false;
     String? fpInstaller;
 
     final assetSHA1 = release.targetSHA1Asset;
-    print('sha1 file: ${assetSHA1?.name}');
     final String baseDir = join(db.paths.tempDir, 'app');
+    Directory(baseDir).createSync(recursive: true);
     String? fpSHA1 = assetSHA1 == null ? null : join(baseDir, assetSHA1.name);
     fpInstaller = join(baseDir, release.targetAsset!.name);
 
     if (assetSHA1?.browserDownloadUrl != null) {
-      print(assetSHA1?.browserDownloadUrl);
       await _dio.download(assetSHA1!.browserDownloadUrl!, fpSHA1);
     }
     String? checksum = fpSHA1 != null && File(fpSHA1).existsSync()
         ? File(fpSHA1).readAsStringSync().trim()
         : null;
+    logger.d('sha1 checksum: $checksum');
     if (checksum?.length != 40) checksum = null;
     // background download should ensure the correct checksum
     if (checksum == null) {
@@ -347,7 +358,7 @@ class AutoUpdateUtil {
           jpn: 'インストールパッケージがダウンロードされました\n',
           eng: 'Installer is downloaded\n');
     content += S.current.about_update_app_detail(
-        AppInfo.fullVersion, version.version, releaseNote ?? '-');
+        AppInfo.version, version.version, releaseNote ?? '-');
     return SimpleCancelOkDialog(
       title: Text(S.current.about_update_app),
       content: SingleChildScrollView(
@@ -407,13 +418,8 @@ class AutoUpdateUtil {
         if (upgradable && fpInstaller == null)
           TextButton(
             child: Text(S.current.update),
-            onPressed: () async {
+            onPressed: () {
               Navigator.pop(context, true);
-              await Future.delayed(Duration(milliseconds: 600));
-              await EasyLoading.showToast(LocalizedText.of(
-                  chs: '后台下载中...',
-                  jpn: 'バックグラウンドでダウンロード...',
-                  eng: 'Downloading in the background... '));
             },
           ),
       ],
@@ -435,7 +441,7 @@ class AutoUpdateUtil {
         hideCancel: true,
       ).showDialog(kAppKey.currentContext!);
       final result = await OpenFile.open(dirname(fp));
-      print('open result: ${result.type}, ${result.message}');
+      logger.d('open result: ${result.type}, ${result.message}');
     } else if (Platform.isWindows) {
       String extractFolder = join(dirname(fp), basenameWithoutExtension(fp));
       if (extractFolder == fp) {

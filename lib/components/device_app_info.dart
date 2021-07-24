@@ -93,6 +93,15 @@ class AppInfo {
         ? await _loadApplicationInfoFromAsset()
         : await PackageInfo.fromPlatform()
             .catchError((e) => _loadApplicationInfoFromAsset());
+    // if (kDebugMode) {
+    //   _packageInfo = PackageInfo(
+    //     appName: 'Chaldea',
+    //     packageName: 'cc.narumi.cc',
+    //     version: '1.4.8',
+    //     buildNumber: '2048',
+    //     buildSignature: '',
+    //   );
+    // }
     appParams["version"] = _packageInfo?.version;
     appParams["appName"] = _packageInfo?.appName;
     appParams["buildNumber"] = _packageInfo?.buildNumber;

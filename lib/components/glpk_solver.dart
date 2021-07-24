@@ -160,7 +160,7 @@ class GLPKSolver {
     } catch (e, s) {
       logger.e('Execute GLPK solver failed', e, s);
       EasyLoading.showToast('Execute GLPK solver failed:\n$e');
-      if (kDebugMode_) {
+      if (kDebugMode) {
         rethrow;
       }
     }

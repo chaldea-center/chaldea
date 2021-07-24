@@ -19,7 +19,7 @@ class _GridGalleryState extends State<GridGallery> {
     if (widget.maxWidth != null &&
         widget.maxWidth! > 0 &&
         widget.maxWidth != double.infinity) {
-      crossCount = widget.maxWidth! ~/ 75;
+      crossCount = widget.maxWidth! ~/ 80;
       crossCount = fixValidRange(crossCount, 2, 8);
     } else {
       crossCount = 4;

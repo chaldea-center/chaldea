@@ -170,7 +170,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
 
     return ListTile(
       leading: Icon(
-        Icons.event,
+        Icons.flag,
         color: page == null ? null : Theme.of(context).colorScheme.primary,
       ),
       title: Text(event?.localizedName ?? name),
@@ -185,7 +185,8 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     Summon? _summon = db.gameData.summons[name];
     return ListTile(
       leading: FaIcon(
-        FontAwesomeIcons.chessQueen,
+        FontAwesomeIcons.dice,
+        size: 20,
         color: _summon == null ? null : Theme.of(context).colorScheme.primary,
       ),
       dense: true,

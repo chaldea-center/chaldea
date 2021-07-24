@@ -89,6 +89,7 @@ class EventBasePage {
             .map((e) => ListTile(
                 leading: FaIcon(
                   FontAwesomeIcons.dice,
+                  size: 20,
                   color: Colors.blue,
                 ),
                 title: Text(e.localizedName, style: TextStyle(fontSize: 14)),

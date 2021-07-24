@@ -47,6 +47,10 @@ class _GameDataPageState extends State<GameDataPage> {
           ),
           TileGroup(
             header: S.current.download_source,
+            footer: LocalizedText.of(
+                chs: '用于数据包&APP更新',
+                jpn: 'データとAPPの更新に使用',
+                eng: 'Used for dataset & APP update'),
             children: [
               sourceAccordion(
                 source: GitSource.server,

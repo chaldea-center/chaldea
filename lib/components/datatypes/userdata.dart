@@ -21,10 +21,7 @@ class UserData {
 
   // user-related game data
   String _curUserKey;
-
   Map<String, User> users;
-
-  List<String> get userNames => users.values.map((user) => user.name).toList();
 
   //filters, ItemFilterDat to be done
   SvtFilterData svtFilter;
@@ -54,8 +51,7 @@ class UserData {
     CmdCodeFilterData? cmdCodeFilter,
     GLPKParams? glpkParams,
     List<int>? itemAbundantValue,
-  })
-      : showSummonBanner = showSummonBanner ?? false,
+  })  : showSummonBanner = showSummonBanner ?? false,
         carouselSetting = carouselSetting ?? CarouselSetting(),
         galleries = galleries ?? {},
         favoritePreferred = favoritePreferred ?? false,
@@ -85,6 +81,11 @@ class UserData {
       value.key = key;
     });
   }
+
+  GitSource get gitSource =>
+      GitSource.values.getOrNull(downloadSource) ?? GitSource.values.first;
+
+  List<String> get userNames => users.values.map((user) => user.name).toList();
 
   String get curUserKey => _curUserKey;
 

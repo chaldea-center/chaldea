@@ -181,6 +181,11 @@ class GitAsset {
   String? browserDownloadUrl;
 
   GitAsset({required this.name, required this.browserDownloadUrl});
+
+  @override
+  String toString() {
+    return '$runtimeType($name, $browserDownloadUrl)';
+  }
 }
 
 class GitTool {
@@ -265,7 +270,7 @@ class GitTool {
         // response: List<Release>
         final response = await HttpUtils.defaultDio.get(
           'https://gitee.com/api/v5/repos/$owner/$_repo/releases',
-          queryParameters: {'page': 0, 'per_page': 50},
+          queryParameters: {'page': 0, 'per_page': 50, 'direction': 'desc'},
           options: Options(
             contentType: 'application/json;charset=UTF-8',
             responseType: ResponseType.json,
@@ -317,6 +322,7 @@ class GitTool {
     if (test == null) {
       test = (asset) {
         String assetName = asset.name.toLowerCase();
+        if (assetName.endsWith('.sha1')) return false;
         if (!Platform.isAndroid) {
           return assetName.contains(Platform.operatingSystem);
         }

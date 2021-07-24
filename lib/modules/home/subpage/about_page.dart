@@ -57,6 +57,7 @@ class _AboutPageState extends State<AboutPage> {
               children: [
                 ListTile(
                   title: Text(S.current.check_update),
+                  subtitle: Text('${EnumUtil.titled(db.userData.gitSource)}'),
                   trailing: db.runtimeData.upgradableVersion != null
                       ? Text(db.runtimeData.upgradableVersion!.version + '↑',
                           style: TextStyle(color: Colors.redAccent))

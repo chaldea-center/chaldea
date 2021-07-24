@@ -153,8 +153,10 @@ abstract class SearchableListState<T, St extends StatefulWidget>
     }
 
     Widget grid = LayoutBuilder(builder: (context, constraints) {
-      int count = crossCount ?? constraints.maxWidth ~/ 64;
-      if (count == double.infinity) count = 7;
+      int count = crossCount ??
+          (constraints.maxWidth == double.infinity
+              ? 7
+              : constraints.maxWidth ~/ 64);
       return GridView.count(
         controller: scrollController,
         crossAxisCount: count,

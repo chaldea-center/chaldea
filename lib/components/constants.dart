@@ -1,14 +1,11 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'device_app_info.dart';
 import 'extensions.dart';
-
-const bool kDebugMode_ = kDebugMode && true;
 
 //typedef
 //const value
@@ -161,13 +158,13 @@ class Constants {
 class EnumUtil {
   EnumUtil._();
 
-  static shortString(Object enumObj) {
+  static String shortString(Object enumObj) {
     assert(enumObj.toString().contains('.'),
         'The provided object "$enumObj" is not an enum.');
     return enumObj.toString().split('.').last;
   }
 
-  static titled(Object enumObj) {
+  static String titled(Object enumObj) {
     String s = shortString(enumObj);
     if (s.length > 1) {
       return s[0].toUpperCase() + s.substring(1);
