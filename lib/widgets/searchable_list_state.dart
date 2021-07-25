@@ -36,8 +36,11 @@ abstract class SearchableListState<T, St extends StatefulWidget>
     final keyword = searchEditingController.text.trim();
     query.parse(keyword);
     for (final T datum in wholeData) {
-      String summary = (_cachedSummary[datum] ??= getSummary(datum));
-      if (query.match(summary) && filter(datum)) {
+      if (keyword.isNotEmpty) {
+        String summary = (_cachedSummary[datum] ??= getSummary(datum));
+        if (!query.match(summary)) continue;
+      }
+      if (filter(datum)) {
         shownList.add(datum);
       }
     }
