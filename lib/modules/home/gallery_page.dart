@@ -172,6 +172,10 @@ class _GalleryPageState extends State<GalleryPage> {
             ),
           ),
           ListTile(
+            title: Text('UUID'),
+            subtitle: Text(AppInfo.uuid),
+          ),
+          ListTile(
             title: Text('Screen size'),
             trailing: Text(MediaQuery.of(context).size.toString()),
           ),

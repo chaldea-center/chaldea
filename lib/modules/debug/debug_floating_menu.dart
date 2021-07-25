@@ -1,5 +1,7 @@
 import 'package:chaldea/components/components.dart';
 
+import 'theme_palette.dart';
+
 class DebugFloatingMenuButton extends StatefulWidget {
   const DebugFloatingMenuButton({Key? key}) : super(key: key);
 
@@ -91,7 +93,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
-      title: Text('DEBUG'),
+      title: Text('Debug Menu'),
       children: [
         ListTile(
           horizontalTitleGap: 0,
@@ -121,6 +123,15 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
               db.notifyAppUpdate();
             },
           ),
+        ),
+        ListTile(
+          horizontalTitleGap: 0,
+          leading: Icon(Icons.palette_outlined),
+          title: Text('Palette'),
+          onTap: () {
+            Navigator.pop(context);
+            SplitRoute.push(context, DarkLightThemePalette());
+          },
         ),
         Center(
           child: IconButton(

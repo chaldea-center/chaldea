@@ -3,6 +3,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/craft/craft_list_page.dart';
 import 'package:chaldea/modules/damage_calc/damage_calc_page.dart';
+import 'package:chaldea/modules/debug/theme_palette.dart';
 import 'package:chaldea/modules/event/events_page.dart';
 import 'package:chaldea/modules/extras/ap_calc_page.dart';
 import 'package:chaldea/modules/extras/cv_illustrator_list.dart';
@@ -19,6 +20,7 @@ import 'package:chaldea/modules/servant/costume_list_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:chaldea/modules/statistics/game_statistics_page.dart';
 import 'package:chaldea/modules/summon/summon_list_page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -81,6 +83,7 @@ class GalleryItem {
     statistics,
     importData,
     faq,
+    if (kDebugMode) palette,
     more,
     // // unpublished
     // _apCal,
@@ -213,6 +216,15 @@ class GalleryItem {
     titleBuilder: () => S.current.more,
     icon: Icons.add,
     page: EditGalleryPage(),
+    isDetail: true,
+  );
+
+  /// debug only
+  static GalleryItem palette = GalleryItem(
+    name: 'palette',
+    titleBuilder: () => 'Palette',
+    icon: Icons.palette_outlined,
+    page: DarkLightThemePalette(),
     isDetail: true,
   );
 
