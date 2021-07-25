@@ -157,7 +157,9 @@ class MarkdownHelpPage extends StatefulWidget {
     String? content;
     try {
       content = await rootBundle.loadString(assetKey);
-    } catch (e) {}
+    } catch (e) {
+      // print(e);
+    }
     if (content?.trim().isNotEmpty == true) {
       return content;
     }

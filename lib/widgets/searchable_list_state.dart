@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:chaldea/components/animation/animate_on_scroll.dart';
 import 'package:chaldea/components/localized/localized.dart';
+import 'package:chaldea/components/query.dart';
 import 'package:chaldea/components/utils.dart' show DelayedTimer, Utils;
 import 'package:chaldea/generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -11,15 +12,39 @@ import 'search_bar.dart';
 
 abstract class SearchableListState<T, St extends StatefulWidget>
     extends State<St> {
-  final List<T> shownList = [];
-
   Iterable<T> get wholeData;
 
+  final List<T> shownList = [];
   T? selected;
   bool showSearchBar = false;
 
   late ScrollController scrollController;
   late TextEditingController searchEditingController;
+
+  /// String Search
+  Query query = Query();
+  Map<T, String> _cachedSummary = {};
+
+  /// Generate the string summary of datum entry
+  String getSummary(T datum);
+
+  /// Extra filters, string search is executed before calling [filter],
+  bool filter(T datum);
+
+  void filterShownList({Comparator<T>? compare}) {
+    shownList.clear();
+    final keyword = searchEditingController.text.trim();
+    query.parse(keyword);
+    for (final T datum in wholeData) {
+      String summary = (_cachedSummary[datum] ??= getSummary(datum));
+      if (query.match(summary) && filter(datum)) {
+        shownList.add(datum);
+      }
+    }
+    if (compare != null) shownList.sort(compare);
+  }
+
+  /// end of String Search
 
   @override
   void initState() {
@@ -184,19 +209,6 @@ abstract class SearchableListState<T, St extends StatefulWidget>
   Widget listItemBuilder(T datum);
 
   Widget gridItemBuilder(T datum);
-
-  void filterShownList({required Comparator<T>? compare}) {
-    shownList.clear();
-    final keyword = searchEditingController.text.trim();
-    for (final T datum in wholeData) {
-      if (filter(keyword, datum)) {
-        shownList.add(datum);
-      }
-    }
-    if (compare != null) shownList.sort(compare);
-  }
-
-  bool filter(String keyword, T datum);
 
   T? switchNext(T cur, bool reversed, List<T> shownList) {
     T? nextCard = Utils.findNextOrPrevious<T>(

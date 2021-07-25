@@ -17,8 +17,6 @@ class CmdCodeListPageState
   @override
   Iterable<CommandCode> get wholeData => db.gameData.cmdCodes.values;
 
-  Query __textFilter = Query();
-
   CmdCodeFilterData get filterData => db.userData.cmdCodeFilter;
 
   @override
@@ -118,32 +116,23 @@ class CmdCodeListPageState
     );
   }
 
-  Map<CommandCode, String> searchMap = {};
+  @override
+  String getSummary(CommandCode code) {
+    return [
+      code.no.toString(),
+      code.mcLink,
+      ...Utils.getSearchAlphabets(code.name, code.nameJp, code.nameEn),
+      ...Utils.getSearchAlphabetsForList(code.illustrators,
+          [code.illustratorsJp ?? ''], [code.illustratorsEn ?? '']),
+      ...Utils.getSearchAlphabetsForList(code.characters),
+      code.skill,
+      code.skillEn ?? '',
+      code.obtain,
+    ].toSet().join('\t');
+  }
 
   @override
-  bool filter(String keyword, CommandCode code) {
-    if (keyword.isNotEmpty && searchMap[code] == null) {
-      List<String> searchStrings = [
-        code.no.toString(),
-        code.mcLink,
-        ...Utils.getSearchAlphabets(code.name, code.nameJp, code.nameEn),
-        ...Utils.getSearchAlphabetsForList(code.illustrators,
-            [code.illustratorsJp ?? ''], [code.illustratorsEn ?? '']),
-        ...Utils.getSearchAlphabetsForList(code.characters),
-        code.skill,
-        code.skillEn ?? '',
-        code.obtain,
-      ];
-      searchMap[code] = searchStrings.toSet().join('\t');
-    }
-    if (keyword.isNotEmpty) {
-      __textFilter.parse(keyword);
-      if (!__textFilter.match(searchMap[code]!)) {
-        return false;
-      }
-    }
-
-    /// In search mode, filters are ignored
+  bool filter(CommandCode code) {
     if (!filterData.rarity.singleValueFilter(code.rarity.toString())) {
       return false;
     }

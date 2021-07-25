@@ -41,10 +41,15 @@ class Database {
   GameData gameData = GameData();
 
   Dio get serverDio => Dio(BaseOptions(
-      baseUrl: kServerRoot,
-      // baseUrl: kDebugMode ? 'http://localhost:8183' : kServerRoot,
-      queryParameters: {'app_ver': AppInfo.version, 'user_key': AppInfo.uuid},
-      headers: {HttpHeaders.userAgentHeader: HttpUtils.userAgentChaldea}));
+        baseUrl: kServerRoot,
+        // baseUrl: kDebugMode ? 'http://localhost:8183' : kServerRoot,
+        queryParameters: {
+          'app_ver': AppInfo.version,
+          'user_key': AppInfo.uuid,
+          'lang': Language.current.code,
+        },
+        headers: {HttpHeaders.userAgentHeader: HttpUtils.userAgentChaldea},
+      ));
 
   SharedPrefs prefs = SharedPrefs();
   late AppConfigBox cfg;

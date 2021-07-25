@@ -343,7 +343,7 @@
   "login_new_password": "New Password",
   "login_change_password": "Change Password",
   "login_signup": "Signup",
-  "login_hint_text": "A simple account system for userdata backup to server and multi-device synchronization\nNO security guarantee, PLEASE DON'T set frequently used passwords!!!",
+  "login_forget_pwd": "Forget Password",
   "login_username_error": "Can only contain letters and numbers, starting with a letter, no less than 4 digits",
   "login_password_error": "Can only contain letters and numbers, no less than 4 digits",
   "login_password_error_same_as_old": "Cannot be the same as the old password",

@@ -3476,11 +3476,11 @@ class S {
     );
   }
 
-  /// `十分简易的系统，仅用于备份数据到服务器并实现多设备同步\n极mei低you安全性保证，请务必不要使用常用密码！！！`
-  String get login_hint_text {
+  /// `忘记密码`
+  String get login_forget_pwd {
     return Intl.message(
-      '十分简易的系统，仅用于备份数据到服务器并实现多设备同步\n极mei低you安全性保证，请务必不要使用常用密码！！！',
-      name: 'login_hint_text',
+      '忘记密码',
+      name: 'login_forget_pwd',
       desc: '',
       args: [],
     );
@@ -4060,8 +4060,10 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
 
   @override
   bool isSupported(Locale locale) => _isSupported(locale);
+
   @override
   Future<S> load(Locale locale) => S.load(locale);
+
   @override
   bool shouldReload(AppLocalizationDelegate old) => false;
 

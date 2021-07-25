@@ -34,7 +34,7 @@ Uint8List compressToJpg({
   }
   final dest =
       Uint8List.fromList(libImage.encodeJpg(destImage, quality: quality));
-  logger.i('compress image: ${src.length ~/ 1024}KB'
+  logger.i('compress image(q=$quality): ${src.length ~/ 1024}KB'
       ' ${srcImage.width}x${srcImage.height} ->'
       ' ${dest.length ~/ 1024}KB ${destImage.width}x${destImage.height}');
   return dest;

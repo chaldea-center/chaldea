@@ -2,10 +2,11 @@ import 'dart:convert';
 
 import 'package:chaldea/components/catcher_util/catcher_email_handler.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/extras/issues_page.dart';
+import 'package:chaldea/modules/extras/faq_page.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:intl/intl_standalone.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 import 'package:path/path.dart' as pathlib;
@@ -104,7 +105,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   title: Text('FAQ'),
                   trailing: Icon(Icons.keyboard_arrow_right),
                   onTap: () {
-                    SplitRoute.push(context, IssuesPage());
+                    SplitRoute.push(context, FAQPage());
                   },
                 ),
               ],
@@ -181,9 +182,11 @@ class _FeedbackPageState extends State<FeedbackPage> {
                           jpn: 'メールおすすめ',
                           eng: 'Email is preferred'),
                       helperText: LocalizedText.of(
-                          chs: '建议填写联系方式，否则将无法得到回复！！！',
+                          chs: '建议填写邮件联系方式，否则将无法得到回复！！！请勿填写QQ/微信。',
                           jpn: '連絡先情報ないと、返信ができません。',
-                          eng: 'Please fill it if reply wanted.'),
+                          eng:
+                              'Please fill in contact info(email) if reply wanted.'),
+                      helperMaxLines: 3,
                     ),
                     maxLines: 1,
                   ),
@@ -321,7 +324,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
       if (subject.isEmpty) subject = defaultSubject;
       message.subject = subject;
 
-      message.html = _emailBody();
+      message.html = await _emailBody();
       message.attachments
           .add(StringAttachment(bodyController.text, fileName: 'raw_msg.txt'));
       if (attachLog) {
@@ -366,7 +369,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
     }
   }
 
-  String _emailBody() {
+  Future<String> _emailBody() async {
     final escape = HtmlEscape().convert;
     StringBuffer buffer = StringBuffer("");
     buffer.write('<style>h3{margin:0.2em 0;}</style>');
@@ -384,6 +387,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
       'dataset': db.gameData.version,
       'os': '${Platform.operatingSystem} ${Platform.operatingSystemVersion}',
       'lang': Language.current.code,
+      'locale': await findSystemLocale(),
       'uuid': AppInfo.uuid,
     };
     for (var entry in summary.entries) {

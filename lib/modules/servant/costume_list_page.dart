@@ -9,11 +9,10 @@ class CostumeListPage extends StatefulWidget {
   _CostumeListPageState createState() => _CostumeListPageState();
 }
 
-class _CostumeListPageState extends SearchableListState<Costume, CostumeListPage> {
+class _CostumeListPageState
+    extends SearchableListState<Costume, CostumeListPage> {
   @override
   Iterable<Costume> get wholeData => db.gameData.costumes.values;
-
-  Query __textFilter = Query();
 
   bool useGrid = false;
 
@@ -48,34 +47,25 @@ class _CostumeListPageState extends SearchableListState<Costume, CostumeListPage
     );
   }
 
-  Map<Costume, String> searchMap = {};
+  @override
+  String getSummary(Costume costume) {
+    final svt = db.gameData.servants[costume.svtNo];
+    List<String> searchStrings = [
+      costume.no.toString(),
+      ...Utils.getSearchAlphabets(costume.name, costume.nameJp, costume.nameEn),
+      if (svt != null) ...[
+        ...Utils.getSearchAlphabets(
+            svt.info.name, svt.info.nameJp, svt.info.nameEn),
+        ...Utils.getSearchAlphabetsForList(
+            svt.info.namesOther, svt.info.namesJpOther, svt.info.namesEnOther),
+        ...Utils.getSearchAlphabetsForList(svt.info.nicknames),
+      ]
+    ];
+    return searchStrings.toSet().join('\t');
+  }
 
   @override
-  bool filter(String keyword, Costume costume) {
-    if (keyword.isNotEmpty && searchMap[costume] == null) {
-      final svt = db.gameData.servants[costume.svtNo];
-      List<String> searchStrings = [
-        costume.no.toString(),
-        ...Utils.getSearchAlphabets(
-            costume.name, costume.nameJp, costume.nameEn),
-        if (svt != null) ...[
-          ...Utils.getSearchAlphabets(
-              svt.info.name, svt.info.nameJp, svt.info.nameEn),
-          ...Utils.getSearchAlphabetsForList(svt.info.namesOther,
-              svt.info.namesJpOther, svt.info.namesEnOther),
-          ...Utils.getSearchAlphabetsForList(svt.info.nicknames),
-        ]
-      ];
-      searchMap[costume] = searchStrings.toSet().join('\t');
-    }
-    if (keyword.isNotEmpty) {
-      __textFilter.parse(keyword);
-      if (!__textFilter.match(searchMap[costume]!)) {
-        return false;
-      }
-    }
-    return true;
-  }
+  bool filter(Costume costume) => true;
 
   @override
   Widget gridItemBuilder(Costume costume) {

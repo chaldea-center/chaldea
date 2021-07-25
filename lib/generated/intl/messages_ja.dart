@@ -374,8 +374,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("パスワードを変更する"),
         "login_first_hint":
             MessageLookupByLibrary.simpleMessage("最初にログインしてください"),
-        "login_hint_text": MessageLookupByLibrary.simpleMessage(
-            "サーバーにデータをバックアップし、マルチデバイス同期を実現するためにのみ使用されるシンプルなシステム\nセキュリティの保証はありません。一般的なパスワードは使用しないでください！！！"),
+        "login_forget_pwd": MessageLookupByLibrary.simpleMessage("パスワードを忘れる"),
         "login_login": MessageLookupByLibrary.simpleMessage("ログイン"),
         "login_logout": MessageLookupByLibrary.simpleMessage("ログアウト"),
         "login_new_password": MessageLookupByLibrary.simpleMessage("新しいパスワード"),

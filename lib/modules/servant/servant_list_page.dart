@@ -25,8 +25,6 @@ class ServantListPageState
   @override
   Iterable<Servant> get wholeData => db.gameData.servantsWithUser.values;
 
-  Query __textFilter = Query();
-
   Set<Servant> hiddenPlanServants = {};
 
   SvtFilterData get filterData => db.userData.svtFilter;
@@ -148,8 +146,6 @@ class ServantListPageState
     );
   }
 
-  Map<Servant, String> searchMap = {};
-
   void _onTapSvt(Servant svt) {
     if (widget.onSelected != null) {
       widget.onSelected!(svt);
@@ -241,56 +237,49 @@ class ServantListPageState
   int? _planTargetDress;
 
   @override
-  bool filter(String keyword, Servant svt) {
-    // input text filter
-    if (keyword.isNotEmpty && searchMap[svt] == null) {
-      List<String> searchStrings = [
-        svt.no.toString(),
-        svt.mcLink,
-        ...Utils.getSearchAlphabets(
-            svt.info.name, svt.info.nameJp, svt.info.nameEn),
-        ...Utils.getSearchAlphabetsForList(svt.info.nicknames),
-        ...Utils.getSearchAlphabetsForList(
-            svt.info.cv, svt.info.cvJp, svt.info.cvEn),
-        ...Utils.getSearchAlphabets(svt.info.illustrator,
-            svt.info.illustratorJp, svt.info.illustratorEn),
-        ...svt.info.traits
-      ];
-      [...svt.nobelPhantasm, ...svt.nobelPhantasmEn].forEach((td) {
-        searchStrings.addAll([
-          td.name,
-          td.nameJp ?? '',
-          td.upperName,
-          td.upperNameJp ?? '',
-          for (var e in td.effects) e.description
-        ]);
-      });
-      [...svt.activeSkills, ...svt.activeSkillsEn].forEach((activeSkill) {
-        activeSkill.skills.forEach((skill) {
-          searchStrings.addAll([
-            skill.name,
-            skill.nameJp ?? '',
-            for (var e in skill.effects) e.description
-          ]);
-        });
-      });
-      [...svt.passiveSkills, ...svt.passiveSkillsEn].forEach((skill) {
+  String getSummary(Servant svt) {
+    List<String> searchStrings = [
+      svt.no.toString(),
+      svt.mcLink,
+      ...Utils.getSearchAlphabets(
+          svt.info.name, svt.info.nameJp, svt.info.nameEn),
+      ...Utils.getSearchAlphabetsForList(svt.info.nicknames),
+      ...Utils.getSearchAlphabetsForList(
+          svt.info.cv, svt.info.cvJp, svt.info.cvEn),
+      ...Utils.getSearchAlphabets(
+          svt.info.illustrator, svt.info.illustratorJp, svt.info.illustratorEn),
+      ...svt.info.traits
+    ];
+    [...svt.nobelPhantasm, ...svt.nobelPhantasmEn].forEach((td) {
+      searchStrings.addAll([
+        td.name,
+        td.nameJp ?? '',
+        td.upperName,
+        td.upperNameJp ?? '',
+        for (var e in td.effects) e.description
+      ]);
+    });
+    [...svt.activeSkills, ...svt.activeSkillsEn].forEach((activeSkill) {
+      activeSkill.skills.forEach((skill) {
         searchStrings.addAll([
           skill.name,
           skill.nameJp ?? '',
           for (var e in skill.effects) e.description
         ]);
       });
-      searchMap[svt] = searchStrings.toSet().join('\t');
-    }
-    if (keyword.isNotEmpty) {
-      __textFilter.parse(keyword);
-      if (!__textFilter.match(searchMap[svt]!)) {
-        return false;
-      }
-    }
+    });
+    [...svt.passiveSkills, ...svt.passiveSkillsEn].forEach((skill) {
+      searchStrings.addAll([
+        skill.name,
+        skill.nameJp ?? '',
+        for (var e in skill.effects) e.description
+      ]);
+    });
+    return searchStrings.toSet().join('\t');
+  }
 
-    /// In search mode, filters and favorite are ignored
+  @override
+  bool filter(Servant svt) {
     final svtStat = db.curUser.svtStatusOf(svt.no);
     final svtPlan = db.curUser.svtPlanOf(svt.no);
     if ((filterData.favorite == 1 && !svtStat.favorite) ||

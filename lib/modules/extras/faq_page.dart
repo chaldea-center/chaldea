@@ -1,8 +1,8 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/home/subpage/feedback_page.dart';
 
-class IssuesPage extends StatelessWidget {
-  const IssuesPage({Key? key}) : super(key: key);
+class FAQPage extends StatelessWidget {
+  const FAQPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class IssuesPage extends StatelessWidget {
         children: [
           Expanded(
             child: FutureBuilder<String?>(
-              future: MarkdownHelpPage.loadHelpAsset(asset: 'common_issues.md'),
+              future: MarkdownHelpPage.loadHelpAsset(asset: 'FAQ.md'),
               builder: (context, snapshot) {
                 return MyMarkdownWidget(
                   data: snapshot.data ?? '',

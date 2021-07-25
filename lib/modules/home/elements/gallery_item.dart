@@ -8,7 +8,7 @@ import 'package:chaldea/modules/event/events_page.dart';
 import 'package:chaldea/modules/extras/ap_calc_page.dart';
 import 'package:chaldea/modules/extras/cv_illustrator_list.dart';
 import 'package:chaldea/modules/extras/exp_card_cost_page.dart';
-import 'package:chaldea/modules/extras/issues_page.dart';
+import 'package:chaldea/modules/extras/faq_page.dart';
 import 'package:chaldea/modules/extras/mystic_code_page.dart';
 import 'package:chaldea/modules/ffo/ffo_page.dart';
 import 'package:chaldea/modules/free_quest_calculator/free_calculator_page.dart';
@@ -208,7 +208,7 @@ class GalleryItem {
     name: 'faq',
     titleBuilder: () => 'FAQ',
     icon: Icons.report_problem_rounded,
-    page: IssuesPage(),
+    page: FAQPage(),
     isDetail: true,
   );
   static GalleryItem more = GalleryItem(

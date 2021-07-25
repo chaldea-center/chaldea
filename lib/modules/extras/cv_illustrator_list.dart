@@ -62,9 +62,6 @@ class _CvListPageState extends SearchableListState<String, CvListPage> {
     );
   }
 
-  Query __textFilter = Query();
-  Map<String, String> searchMap = {};
-
   @override
   Widget buildScrollable({bool useGrid = false}) {
     if (shownList.isEmpty && !_initiated) {
@@ -74,32 +71,26 @@ class _CvListPageState extends SearchableListState<String, CvListPage> {
   }
 
   @override
-  bool filter(String keyword, String cv) {
-    __textFilter.parse(keyword);
-    if (keyword.isNotEmpty && searchMap[cv] == null) {
-      List<Servant> cards = cvMap[cv]!;
-      if (cards.isEmpty) return false;
-      List<String> searchStrings = Utils.getSearchAlphabetsForList(
-          cards.first.info.cv, cards.first.info.cvJp, cards.first.info.cvEn);
-      for (final svt in cards) {
-        searchStrings.addAll([
-          ...Utils.getSearchAlphabets(
-              svt.info.name, svt.info.nameJp, svt.info.nameEn),
-          ...Utils.getSearchAlphabetsForList(svt.info.namesOther,
-              svt.info.namesJpOther, svt.info.namesEnOther),
-          ...Utils.getSearchAlphabetsForList(svt.info.nicknames),
-        ]);
-      }
-      searchMap[cv] = searchStrings.toSet().join('\t');
+  String getSummary(String cv) {
+    List<Servant>? cards = cvMap[cv];
+    if (cards == null || cards.isEmpty)
+      return ''; // Although, it should always be passed
+    List<String> searchStrings = Utils.getSearchAlphabetsForList(
+        cards.first.info.cv, cards.first.info.cvJp, cards.first.info.cvEn);
+    for (final svt in cards) {
+      searchStrings.addAll([
+        ...Utils.getSearchAlphabets(
+            svt.info.name, svt.info.nameJp, svt.info.nameEn),
+        ...Utils.getSearchAlphabetsForList(
+            svt.info.namesOther, svt.info.namesJpOther, svt.info.namesEnOther),
+        ...Utils.getSearchAlphabetsForList(svt.info.nicknames),
+      ]);
     }
-
-    if (keyword.isNotEmpty) {
-      if (!__textFilter.match(searchMap[cv]!)) {
-        return false;
-      }
-    }
-    return true;
+    return searchStrings.toSet().join('\t');
   }
+
+  @override
+  bool filter(String cv) => true;
 
   @override
   Widget listItemBuilder(String cv) {
@@ -128,7 +119,7 @@ class _CvListPageState extends SearchableListState<String, CvListPage> {
 
   @override
   Widget gridItemBuilder(String cv) =>
-      throw UnimplementedError('GridView not allowed');
+      throw UnimplementedError('GridView not designed');
 }
 
 class IllustratorListPage extends StatefulWidget {
@@ -209,54 +200,43 @@ class _IllustratorListPageState
     return super.buildScrollable(useGrid: useGrid);
   }
 
-  Query __textFilter = Query();
-  Map<String, String> searchMap = {};
+  @override
+  String getSummary(String creator) {
+    List<String> searchStrings = [];
+    for (final svt in (svtMap[creator] ?? <Servant>[])) {
+      searchStrings.addAll([
+        ...Utils.getSearchAlphabets(svt.info.illustrator,
+            svt.info.illustratorJp, svt.info.illustratorEn),
+      ]);
+      searchStrings.addAll([
+        ...Utils.getSearchAlphabets(
+            svt.info.name, svt.info.nameJp, svt.info.nameEn),
+        ...Utils.getSearchAlphabetsForList(
+            svt.info.namesOther, svt.info.namesJpOther, svt.info.namesEnOther),
+        ...Utils.getSearchAlphabetsForList(svt.info.nicknames),
+      ]);
+    }
+    for (final craft in craftMap[creator] ?? <CraftEssence>[]) {
+      searchStrings.addAll([
+        ...Utils.getSearchAlphabets(craft.illustrators.join('\t'),
+            craft.illustratorsJp, craft.illustratorsEn),
+        ...Utils.getSearchAlphabets(craft.name, craft.nameJp, craft.nameEn),
+        ...Utils.getSearchAlphabetsForList(craft.nameOther),
+      ]);
+    }
+    for (final code in codeMap[creator] ?? <CommandCode>[]) {
+      searchStrings.addAll([
+        ...Utils.getSearchAlphabets(code.illustrators.join('\t'),
+            code.illustratorsJp, code.illustratorsEn),
+        ...Utils.getSearchAlphabets(code.name, code.nameJp, code.nameEn),
+        ...Utils.getSearchAlphabetsForList(code.nameOther),
+      ]);
+    }
+    return searchStrings.toSet().join('\t');
+  }
 
   @override
-  bool filter(String keyword, String creator) {
-    if (keyword.isNotEmpty && searchMap[creator] == null) {
-      List<String> searchStrings = [];
-      for (final svt in svtMap[creator] ?? <Servant>[]) {
-        searchStrings.addAll([
-          ...Utils.getSearchAlphabets(svt.info.illustrator,
-              svt.info.illustratorJp, svt.info.illustratorEn),
-        ]);
-        searchStrings.addAll([
-          ...Utils.getSearchAlphabets(
-              svt.info.name, svt.info.nameJp, svt.info.nameEn),
-          ...Utils.getSearchAlphabetsForList(svt.info.namesOther,
-              svt.info.namesJpOther, svt.info.namesEnOther),
-          ...Utils.getSearchAlphabetsForList(svt.info.nicknames),
-        ]);
-      }
-      for (final craft in craftMap[creator] ?? <CraftEssence>[]) {
-        searchStrings.addAll([
-          ...Utils.getSearchAlphabets(craft.illustrators.join('\t'),
-              craft.illustratorsJp, craft.illustratorsEn),
-          ...Utils.getSearchAlphabets(craft.name, craft.nameJp, craft.nameEn),
-          ...Utils.getSearchAlphabetsForList(craft.nameOther),
-        ]);
-      }
-      for (final code in codeMap[creator] ?? <CommandCode>[]) {
-        searchStrings.addAll([
-          ...Utils.getSearchAlphabets(code.illustrators.join('\t'),
-              code.illustratorsJp, code.illustratorsEn),
-          ...Utils.getSearchAlphabets(code.name, code.nameJp, code.nameEn),
-          ...Utils.getSearchAlphabetsForList(code.nameOther),
-        ]);
-      }
-      searchMap[creator] = searchStrings.toSet().join('\t');
-    }
-
-    if (keyword.isNotEmpty) {
-      __textFilter.parse(keyword);
-      if (!__textFilter.match(searchMap[creator]!)) {
-        return false;
-      }
-    }
-
-    return true;
-  }
+  bool filter(String creator) => true;
 
   @override
   Widget listItemBuilder(String creator) {
@@ -285,7 +265,7 @@ class _IllustratorListPageState
 
   @override
   Widget gridItemBuilder(String creator) =>
-      throw UnimplementedError('GridView not allowed');
+      throw UnimplementedError('GridView not designed');
 }
 
 Widget _cardIcon<T>(BuildContext context, T card) {

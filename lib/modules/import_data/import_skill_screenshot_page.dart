@@ -42,7 +42,6 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
     _scrollController3 = ScrollController();
     imageFiles = db.runtimeData.svtRecognizeImageFiles;
     _dio = Dio(db.serverDio.options.copyWith(
-      // baseUrl: kDebugMode ? 'http://localhost:8183' : null,
       sendTimeout: 600 * 1000,
       receiveTimeout: 600 * 1000,
       headers: Map.from(db.serverDio.options.headers)
@@ -112,6 +111,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
             ),
           ),
           kDefaultDivider,
+          if (kDebugMode) Center(child: Text(_dio.options.baseUrl)),
           buttonBar,
         ],
       ),
@@ -171,12 +171,15 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
           .length;
       Widget nameBtn = TextButton(
         child: AutoSizeText(
-          svt != null ? 'No.${svt.no} ${svt.info.localizedName}' : 'unknown',
-          maxLines: 2,
+          svt != null ? 'No.${svt.no}\n${svt.info.localizedName}' : 'unknown',
+          maxLines: 3,
           minFontSize: 6,
           maxFontSize: 14,
           style: TextStyle(
-              color: dupNum != null && dupNum > 1 ? Colors.redAccent : null),
+            color: (dupNum != null && dupNum > 1) || svt == null
+                ? Theme.of(context).errorColor
+                : null,
+          ),
         ),
         style: TextButton.styleFrom(
             alignment: Alignment.centerLeft,
@@ -232,14 +235,16 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
           ),
         ),
       );
-      children.add(ListTile(
+      children.add(CustomTile(
+        contentPadding: EdgeInsets.symmetric(horizontal: 8),
         leading: Padding(
           padding: EdgeInsets.symmetric(vertical: 3),
           child: Row(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               GestureDetector(
-                child: Image.memory(svtResult.imgBytes!, width: 44),
+                child: Image.memory(svtResult.imgBytes!, width: 56),
                 onTap: () {
                   SimpleCancelOkDialog(
                     hideCancel: true,
@@ -247,6 +252,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
                   ).showDialog(context);
                 },
               ),
+              const SizedBox(width: 4),
               svt?.iconBuilder(context: context, width: 40) ??
                   db.getIconImage(null, width: 40, aspectRatio: 132 / 144),
             ],
@@ -519,18 +525,18 @@ class __SkillResultLoaderState extends State<_SkillResultLoader> {
     if (results.isEmpty) {
       return Text(widget.url);
     }
-
     return Column(
       children: results.map((e) {
         final svt = db.gameData.servants[e.svtNo];
-        return ListTile(
+        return CustomTile(
+          contentPadding: EdgeInsets.symmetric(horizontal: 8),
           leading: Padding(
             padding: EdgeInsets.symmetric(vertical: 3),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 GestureDetector(
-                  child: Image.memory(e.imgBytes!, width: 44),
+                  child: Image.memory(e.imgBytes!, width: 56),
                   onTap: () {
                     SimpleCancelOkDialog(
                       hideCancel: true,
@@ -538,6 +544,7 @@ class __SkillResultLoaderState extends State<_SkillResultLoader> {
                     ).showDialog(context);
                   },
                 ),
+                const SizedBox(width: 4),
                 svt?.iconBuilder(context: context, width: 40) ??
                     db.getIconImage(null, width: 40, aspectRatio: 132 / 144),
               ],

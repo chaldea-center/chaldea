@@ -17,8 +17,6 @@ class CraftListPageState
   @override
   Iterable<CraftEssence> get wholeData => db.gameData.crafts.values;
 
-  Query __textFilter = Query();
-
   //temp, calculate once build() called.
   int __binAtkHpType = 0;
 
@@ -131,10 +129,8 @@ class CraftListPageState
     );
   }
 
-  Map<CraftEssence, String> searchMap = {};
-
   @override
-  void filterShownList({required Comparator<CraftEssence>? compare}) {
+  void filterShownList({Comparator<CraftEssence>? compare}) {
     __binAtkHpType = 0;
     for (int i = 0; i < CraftFilterData.atkHpTypeData.length; i++) {
       if (filterData.atkHpType.options[CraftFilterData.atkHpTypeData[i]] ==
@@ -146,31 +142,24 @@ class CraftListPageState
   }
 
   @override
-  bool filter(String keyword, CraftEssence ce) {
-    if (keyword.isNotEmpty && searchMap[ce] == null) {
-      List<String> searchStrings = [
-        ce.no.toString(),
-        ce.mcLink,
-        ...Utils.getSearchAlphabets(ce.name, ce.nameJp, ce.nameEn),
-        ...Utils.getSearchAlphabetsForList(ce.illustrators,
-            [ce.illustratorsJp ?? ''], [ce.illustratorsEn ?? '']),
-        ...Utils.getSearchAlphabetsForList(ce.characters),
-        ce.skill,
-        ce.skillMax ?? '',
-        ce.skillEn ?? '',
-        ce.skillMaxEn ?? '',
-        ...ce.eventSkills,
-      ];
-      searchMap[ce] = searchStrings.toSet().join('\t');
-    }
-    if (keyword.isNotEmpty) {
-      __textFilter.parse(keyword);
-      if (!__textFilter.match(searchMap[ce]!)) {
-        return false;
-      }
-    }
+  String getSummary(CraftEssence ce) {
+    return [
+      ce.no.toString(),
+      ce.mcLink,
+      ...Utils.getSearchAlphabets(ce.name, ce.nameJp, ce.nameEn),
+      ...Utils.getSearchAlphabetsForList(ce.illustrators,
+          [ce.illustratorsJp ?? ''], [ce.illustratorsEn ?? '']),
+      ...Utils.getSearchAlphabetsForList(ce.characters),
+      ce.skill,
+      ce.skillMax ?? '',
+      ce.skillEn ?? '',
+      ce.skillMaxEn ?? '',
+      ...ce.eventSkills,
+    ].toSet().join('\t');
+  }
 
-    /// In search mode, filters are ignored
+  @override
+  bool filter(CraftEssence ce) {
     if (!filterData.rarity.singleValueFilter(ce.rarity.toString())) {
       return false;
     }

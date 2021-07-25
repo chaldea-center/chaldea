@@ -12,6 +12,7 @@ import 'package:catcher/catcher.dart';
 import 'package:chaldea/components/analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart';
+import 'package:intl/intl_standalone.dart';
 import 'package:logging/logging.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
@@ -138,7 +139,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
         message.attachments.add(extraAttach);
       }
       if (sendHtml) {
-        message.html = _setupHtmlMessageText(report);
+        message.html = await _setupHtmlMessageText(report);
       }
       _printLog("Sending email...");
       if (Analyzer.skipReport()) {
@@ -235,7 +236,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
     }
   }
 
-  String _setupHtmlMessageText(Report report) {
+  Future<String> _setupHtmlMessageText(Report report) async {
     final escape = HtmlEscape().convert;
     StringBuffer buffer = StringBuffer("");
     if (emailHeader?.isNotEmpty == true) {
@@ -250,6 +251,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
       'dataset': db.gameData.version,
       'os': '${Platform.operatingSystem} ${Platform.operatingSystemVersion}',
       'lang': Language.current.code,
+      'locale': await findSystemLocale(),
       'uuid': AppInfo.uuid,
     };
     for (var entry in summary.entries) {

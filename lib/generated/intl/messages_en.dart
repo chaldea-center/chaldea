@@ -418,8 +418,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Change Password"),
         "login_first_hint":
             MessageLookupByLibrary.simpleMessage("Please login first"),
-        "login_hint_text": MessageLookupByLibrary.simpleMessage(
-            "A simple account system for userdata backup to server and multi-device synchronization\nNO security guarantee, PLEASE DON\'T set frequently used passwords!!!"),
+        "login_forget_pwd":
+            MessageLookupByLibrary.simpleMessage("Forget Password"),
         "login_login": MessageLookupByLibrary.simpleMessage("Login"),
         "login_logout": MessageLookupByLibrary.simpleMessage("Logout"),
         "login_new_password":

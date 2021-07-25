@@ -351,8 +351,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("请在设置-游戏数据中重新加载默认资源"),
         "login_change_password": MessageLookupByLibrary.simpleMessage("修改密码"),
         "login_first_hint": MessageLookupByLibrary.simpleMessage("请先登陆"),
-        "login_hint_text": MessageLookupByLibrary.simpleMessage(
-            "十分简易的系统，仅用于备份数据到服务器并实现多设备同步\n极mei低you安全性保证，请务必不要使用常用密码！！！"),
+        "login_forget_pwd": MessageLookupByLibrary.simpleMessage("忘记密码"),
         "login_login": MessageLookupByLibrary.simpleMessage("登陆"),
         "login_logout": MessageLookupByLibrary.simpleMessage("登出"),
         "login_new_password": MessageLookupByLibrary.simpleMessage("新密码"),

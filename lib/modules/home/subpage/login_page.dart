@@ -1,5 +1,8 @@
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/home/subpage/feedback_page.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+enum _PageMode { login, signup, changePwd }
 
 class LoginPage extends StatefulWidget {
   @override
@@ -7,11 +10,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  _PageMode mode = _PageMode.login;
   late TextEditingController _nameController;
   late TextEditingController _pwdController;
   late TextEditingController _newPwdController;
   bool obscurePwd = true;
-  bool changePwdMde = false;
 
   @override
   void initState() {
@@ -44,118 +47,216 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: Text('${S.current.login_login}/${S.current.login_signup}'),
+        title: Text(mode == _PageMode.login
+            ? S.current.login_login
+            : mode == _PageMode.signup
+                ? S.current.login_signup
+                : S.current.login_change_password),
       ),
       body: ListView(
         padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         children: [
-          TextField(
-            controller: _nameController,
-            autocorrect: false,
-            decoration: InputDecoration(
-              labelText: S.current.login_username,
-              border: OutlineInputBorder(),
-              errorText: _validateName(),
-            ),
-          ),
+          nameInput,
           const SizedBox(height: 12),
-          TextField(
-            controller: _pwdController,
-            autocorrect: false,
-            obscureText: obscurePwd,
-            decoration: InputDecoration(
-              labelText: S.current.login_password,
-              border: OutlineInputBorder(),
-              errorText: _validatePwd(),
-              suffixIcon: IconButton(
-                onPressed: () {
-                  setState(() {
-                    obscurePwd = !obscurePwd;
-                  });
-                },
-                icon: FaIcon(
-                  obscurePwd
-                      ? FontAwesomeIcons.solidEyeSlash
-                      : FontAwesomeIcons.solidEye,
-                  size: 20,
-                ),
-              ),
-            ),
-          ),
-          SwitchListTile.adaptive(
-            value: changePwdMde,
-            title: Text(S.current.login_change_password),
-            onChanged: (v) {
-              setState(() {
-                changePwdMde = v;
-              });
-            },
-          ),
+          pwdInput,
           const SizedBox(height: 12),
-          if (changePwdMde)
-            TextField(
-              controller: _newPwdController,
-              autocorrect: false,
-              obscureText: obscurePwd,
-              decoration: InputDecoration(
-                labelText: S.current.login_new_password,
-                border: OutlineInputBorder(),
-                errorText: _validateNewPwd(),
-                suffixIcon: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      obscurePwd = !obscurePwd;
-                    });
-                  },
-                  icon: Icon(
-                    Icons.remove_red_eye,
-                    color: obscurePwd ? Colors.grey : null,
-                  ),
-                ),
-              ),
-            ),
+          if (mode == _PageMode.changePwd) ...[
+            changePwdInput,
+            const SizedBox(height: 12),
+          ],
           Text(
-            S.current.login_hint_text,
+            LocalizedText.of(
+              chs: '十分简易的系统，仅用于备份数据到服务器并实现多设备同步\n'
+                  '极mei低you安全性保证，请务必不要使用常用密码！！！',
+              jpn: 'サーバーにデータをバックアップし、マルチデバイス同期を実現するためにのみ使用されるシンプルなシステム\n'
+                  'セキュリティの保証はありません。一般的なパスワードは使用しないでください！！！',
+              eng:
+                  'A simple account system for userdata backup to server and multi-device synchronization\n'
+                  'NO security guarantee, PLEASE DON\'T set frequently used passwords!!!',
+            ),
             style: TextStyle(color: Colors.grey, fontSize: 14),
           ),
           const SizedBox(height: 8),
-          Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 6,
-            runSpacing: 6,
-            children: [
-              if (!changePwdMde)
-                ElevatedButton(
-                  onPressed: isLoginAvailable() ? doLogin : null,
-                  child: Text(S.current.login_login),
-                ),
-              if (!changePwdMde)
-                ElevatedButton(
-                  onPressed: isLoginAvailable() ? doSignUp : null,
-                  child: Text(S.current.login_signup),
-                ),
-              if (changePwdMde)
-                ElevatedButton(
-                  onPressed: isChangePasswordAvailable() ? doChangePwd : null,
-                  child: Text(S.current.login_change_password),
-                ),
-              if (!changePwdMde &&
-                  db.prefs.userName.get()?.isNotEmpty == true &&
-                  db.prefs.userPwd.get()?.isNotEmpty == true)
-                ElevatedButton(
-                  onPressed: doLogout,
-                  child: Text(S.current.login_logout),
-                ),
-              if (!changePwdMde)
-                ElevatedButton(
-                  onPressed: isLoginAvailable() ? doDelete : null,
-                  child: Text(S.current.delete),
-                  style: ElevatedButton.styleFrom(
-                      primary: Theme.of(context).errorColor),
-                ),
-            ],
-          )
+          mainAction(),
+          ButtonBar(
+            alignment: MainAxisAlignment.center,
+            children: otherActions(),
+          ),
+          if (mode == _PageMode.login)
+            ButtonBar(
+              alignment: MainAxisAlignment.center,
+              children: [
+                forgotPwdBtn,
+                logoutBtn,
+              ],
+            )
         ],
+      ),
+    );
+  }
+
+  Widget mainAction() {
+    switch (mode) {
+      case _PageMode.login:
+        return loginBtn;
+      case _PageMode.signup:
+        return signupBtn;
+      case _PageMode.changePwd:
+        return changePwdBtn;
+    }
+  }
+
+  List<Widget> otherActions() {
+    switch (mode) {
+      case _PageMode.login:
+        return [_toChangePwdBtn, _toSignupBtn];
+      case _PageMode.signup:
+        return [_toLoginBtn];
+      case _PageMode.changePwd:
+        return [_toLoginBtn];
+    }
+  }
+
+  Widget get loginBtn => ElevatedButton(
+        onPressed: isLoginAvailable() ? doLogin : null,
+        child: Text(S.current.login_login),
+      );
+
+  Widget get logoutBtn => TextButton(
+        onPressed: doLogout,
+        child: Text(
+          S.current.login_logout,
+          style: TextStyle(color: Theme.of(context).errorColor),
+        ),
+      );
+
+  @deprecated
+  Widget get deleteBtn => ElevatedButton(
+        onPressed: isLoginAvailable() ? doDelete : null,
+        child: Text(S.current.delete),
+        style: ElevatedButton.styleFrom(primary: Theme.of(context).errorColor),
+      );
+
+  Widget get signupBtn => ElevatedButton(
+        onPressed: isLoginAvailable() ? doSignUp : null,
+        child: Text(S.current.login_signup),
+      );
+
+  Widget get changePwdBtn => ElevatedButton(
+        onPressed: isChangePasswordAvailable() ? doChangePwd : null,
+        child: Text(S.current.login_change_password),
+      );
+
+  Widget get forgotPwdBtn => TextButton(
+        onPressed: () {
+          SimpleCancelOkDialog(
+            title: Text(S.current.login_forget_pwd),
+            content: Text(LocalizedText.of(
+                chs: '请通过反馈页面的【邮件】地址联系',
+                jpn: 'フィードバックページの「メールアドレス」からご連絡ください ',
+                eng:
+                    'Please contact developer through feedback page with *Email*')),
+            scrollable: true,
+            hideOk: true,
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    SplitRoute.push(context, FeedbackPage());
+                  },
+                  child: Text(S.current.about_feedback))
+            ],
+          ).showDialog(context);
+        },
+        child: Text(S.current.login_forget_pwd),
+      );
+
+  Widget get _toLoginBtn => TextButton(
+        onPressed: () {
+          setState(() {
+            mode = _PageMode.login;
+          });
+        },
+        child: Text(S.current.login_login),
+      );
+
+  Widget get _toSignupBtn => TextButton(
+        onPressed: () {
+          setState(() {
+            mode = _PageMode.signup;
+          });
+        },
+        child: Text(S.current.login_signup),
+      );
+
+  Widget get _toChangePwdBtn => TextButton(
+        onPressed: () {
+          setState(() {
+            mode = _PageMode.changePwd;
+          });
+        },
+        child: Text(S.current.login_change_password),
+      );
+
+  Widget get nameInput {
+    return TextField(
+      controller: _nameController,
+      autocorrect: false,
+      decoration: InputDecoration(
+        labelText: S.current.login_username,
+        border: OutlineInputBorder(),
+        errorText: _validateName(),
+      ),
+    );
+  }
+
+  Widget get pwdInput {
+    return TextField(
+      controller: _pwdController,
+      autocorrect: false,
+      obscureText: obscurePwd,
+      decoration: InputDecoration(
+        labelText: S.current.login_password,
+        border: OutlineInputBorder(),
+        errorText: _validatePwd(),
+        suffixIcon: IconButton(
+          onPressed: () {
+            setState(() {
+              obscurePwd = !obscurePwd;
+            });
+          },
+          icon: FaIcon(
+            obscurePwd
+                ? FontAwesomeIcons.solidEyeSlash
+                : FontAwesomeIcons.solidEye,
+            size: 20,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget get changePwdInput {
+    return TextField(
+      controller: _newPwdController,
+      autocorrect: false,
+      obscureText: obscurePwd,
+      decoration: InputDecoration(
+        labelText: S.current.login_new_password,
+        border: OutlineInputBorder(),
+        errorText: _validateNewPwd(),
+        suffixIcon: IconButton(
+          onPressed: () {
+            setState(() {
+              obscurePwd = !obscurePwd;
+            });
+          },
+          icon: FaIcon(
+            obscurePwd
+                ? FontAwesomeIcons.solidEyeSlash
+                : FontAwesomeIcons.solidEye,
+            size: 20,
+          ),
+        ),
       ),
     );
   }
