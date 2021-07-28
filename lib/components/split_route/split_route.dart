@@ -13,34 +13,14 @@
 ///  • Framework revision 02efffc134, 2021-04-10 03:49:01 -0400
 ///  • Engine revision 8863afff16
 ///  • Dart version 2.13.0 (build 2.13.0-222.0.dev)
+import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 // ignore_for_file: unnecessary_null_comparison
 
-library split_route;
-
-import 'dart:async';
-import 'dart:math';
-import 'dart:ui' as ui;
-import 'dart:ui' show lerpDouble;
-
-import 'package:flutter/cupertino.dart'
-    show CupertinoFullscreenDialogTransition;
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart'
-    hide PageRoute, PageRouteBuilder, ModalRoute;
-import 'package:flutter/rendering.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/semantics.dart';
-import 'package:flutter/widgets.dart';
-
-part 'cupertino_transition.dart';
-
-part 'modal_route.dart';
-
-part 'page_route.dart';
-
-const int kSplitMasterRatio = 38;
+const int _kSplitMasterRatio = 38;
 const double _kSplitDividerWidth = 0.5;
 
 typedef SplitPageBuilder = Widget Function(
@@ -59,8 +39,7 @@ enum SplitLayout {
 }
 
 /// Master-Detail Layout Route for large aspect ratio screen.
-class SplitRoute<T> extends __PageRoute<T>
-    with __CupertinoRouteTransitionMixin<T> {
+class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   /// Expose BuildContext and SplitLayout to builder
   final SplitPageBuilder builder;
 
@@ -70,46 +49,43 @@ class SplitRoute<T> extends __PageRoute<T>
   /// Master page ratio of full-width, between 0~100
   final int masterRatio;
 
-  /// define your own builder for right space of master page
-  static WidgetBuilder defaultMasterFillPageBuilder = (context) => Container();
-
-  SplitRoute({
-    required this.builder,
-    this.detail = false,
-    bool? opaque,
-    this.masterRatio = kSplitMasterRatio,
-    this.title,
-    this.transitionDuration = const Duration(milliseconds: 400),
-    Duration? reverseTransitionDuration,
-    RouteSettings? settings,
-    this.maintainState = true,
-    bool fullscreenDialog = false,
-  })  : assert(builder != null),
-        assert(masterRatio > 0 && masterRatio < 100),
-        assert(maintainState != null),
-        assert(fullscreenDialog != null),
-        opaque = opaque ?? !detail,
-        reverseTransitionDuration =
-            reverseTransitionDuration ?? transitionDuration,
-        super(settings: settings, fullscreenDialog: fullscreenDialog);
+  @override
+  final Duration transitionDuration;
 
   @override
-  bool get hideBarrier => detail;
+  final Duration reverseTransitionDuration;
+
+  @override
+  final bool opaque;
 
   @override
   final bool maintainState;
 
   @override
-  String? title;
+  final String? title;
 
-  @override
-  bool opaque;
+  SplitRoute({
+    RouteSettings? settings,
+    required this.builder,
+    this.detail = false,
+    this.masterRatio = _kSplitMasterRatio,
+    this.transitionDuration = const Duration(milliseconds: 400),
+    Duration? reverseTransitionDuration,
+    bool? opaque,
+    this.maintainState = true,
+    this.title,
+    bool fullscreenDialog = false,
+  })  : assert(builder != null),
+        assert(masterRatio > 0 && masterRatio < 100),
+        assert(maintainState != null),
+        assert(fullscreenDialog != null),
+        reverseTransitionDuration =
+            reverseTransitionDuration ?? transitionDuration,
+        opaque = opaque ?? !detail,
+        super(settings: settings, fullscreenDialog: fullscreenDialog);
 
-  @override
-  Duration transitionDuration;
-
-  @override
-  Duration reverseTransitionDuration;
+  /// define your own builder for right space of master page
+  static WidgetBuilder defaultMasterFillPageBuilder = (context) => Container();
 
   /// wrap master page here
   @override
@@ -126,11 +102,67 @@ class SplitRoute<T> extends __PageRoute<T>
     }
   }
 
+  @override
+  Iterable<OverlayEntry> createOverlayEntries() sync* {
+    final entries = super.createOverlayEntries().toList();
+    final _modalBarrier = entries[0], _modalScope = entries[1];
+
+    if (!detail) {
+      yield _modalBarrier;
+    }
+    yield OverlayEntry(
+      builder: (context) {
+        Widget scope = _modalScope.builder(context);
+        final layout = getLayout(context);
+        if (layout == SplitLayout.detail) {
+          final size = MediaQuery.of(context).size;
+          final left = size.width * masterRatio / 100 + _kSplitDividerWidth;
+          scope = Positioned(
+            left: left,
+            top: 0,
+            child: SizedBox(
+              height: size.height,
+              width: size.width - left,
+              child: scope,
+            ),
+          );
+        }
+        return scope;
+      },
+      opaque: _modalScope.opaque,
+      maintainState: _modalScope.maintainState,
+    );
+  }
+
+  @override
+  bool canTransitionTo(TransitionRoute nextRoute) {
+    if (_isSplitCache && nextRoute is SplitRoute && nextRoute.detail) {
+      return false;
+    }
+    return super.canTransitionTo(nextRoute);
+  }
+
+  @override
+  bool canTransitionFrom(TransitionRoute previousRoute) {
+    if (_isSplitCache && previousRoute is SplitRoute && previousRoute.detail) {
+      return false;
+    }
+    return super.canTransitionFrom(previousRoute);
+  }
+
+  @override
+  Widget buildTransitions(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child) {
+    return ClipRect(
+        child: super
+            .buildTransitions(context, animation, secondaryAnimation, child));
+  }
+
   /// create master widget without scope wrapped
   static Widget createMasterWidget({
     required BuildContext context,
     required Widget child,
-    int masterRatio = kSplitMasterRatio,
+    int masterRatio = _kSplitMasterRatio,
   }) {
     return Row(
       children: <Widget>[
@@ -152,33 +184,13 @@ class SplitRoute<T> extends __PageRoute<T>
     );
   }
 
-  /// wrap detail page in [Positioned] here
-  ///
-  /// a space width [_kSplitDividerWidth] is reversed for divider
-  @override
-  Widget overlayScopeBuilder(BuildContext context, WidgetBuilder scopeBuilder) {
-    Widget scope = scopeBuilder(context);
-    if (getLayout(context) == SplitLayout.detail) {
-      final size = MediaQuery.of(context).size;
-      final left = size.width * masterRatio / 100 + _kSplitDividerWidth;
-      scope = Positioned(
-        left: left,
-        top: 0,
-        child: SizedBox(
-          height: size.height,
-          width: size.width - left,
-          child: scope,
-        ),
-      );
-    }
-    return scope;
-  }
+  static bool _isSplitCache = false;
 
   /// check current size to use split view or not
   static bool isSplit(BuildContext? context) {
     if (context == null) return false;
     final size = MediaQuery.of(context).size;
-    return size.width > size.height && size.width >= 720;
+    return _isSplitCache = size.width > size.height && size.width >= 720;
   }
 
   SplitLayout getLayout(BuildContext context) {
@@ -217,7 +229,7 @@ class SplitRoute<T> extends __PageRoute<T>
     required SplitPageBuilder builder,
     bool popDetail = false,
     bool detail = true,
-    int masterRatio = kSplitMasterRatio,
+    int masterRatio = _kSplitMasterRatio,
     String? title,
     RouteSettings? settings,
   }) {
@@ -248,6 +260,10 @@ class SplitRoute<T> extends __PageRoute<T>
     bool popDetail = false,
     RouteSettings? settings,
   }) {
+    assert(() {
+      settings ??= RouteSettings(name: page.runtimeType.toString());
+      return true;
+    }());
     return pushBuilder(
       context: context,
       builder: (context, _) => page,

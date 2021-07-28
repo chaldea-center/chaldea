@@ -131,7 +131,20 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
             ErrorWidget.builder = CatcherUtility.errorWidgetBuilder;
             return FlutterEasyLoading(child: widget);
           },
-          home: _ChaldeaHome(key: _homeKey),
+          // let the initial route '/' become a SplitRoute
+          onGenerateInitialRoutes: (String initialRouteName) {
+            return [
+              SplitRoute(
+                builder: (context, _) => _ChaldeaHome(key: _homeKey),
+                detail: false,
+              )
+            ];
+          },
+          onGenerateRoute: (settings) {
+            // throw UnimplementedError();
+            logger.d('onGenerateRoute: $settings');
+            return null;
+          },
         ),
       ),
     );
@@ -266,7 +279,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
     _floatingBtnEntry ??= OverlayEntry(
       builder: (context) => DebugFloatingMenuButton(),
     );
-    Overlay.of(context)!.insert(_floatingBtnEntry!);
+    Overlay.of(context)?.insert(_floatingBtnEntry!);
   }
 }
 
