@@ -477,7 +477,14 @@ class Utils {
         PinyinHelper.getShortPinyin(textCn)
       ]);
     // kanji to Romaji?
-    if (textJp != null) list.addAll([textJp, kanaKit.toRomaji(textJp)]);
+    if (textJp != null && textJp.length < 100) {
+      try {
+        list.addAll([textJp, kanaKit.toRomaji(textJp)]);
+      } catch (e, s) {
+        logger.e(textJp, e, s);
+        rethrow;
+      }
+    }
     return list;
   }
 

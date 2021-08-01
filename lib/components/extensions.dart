@@ -123,3 +123,11 @@ extension HiveBoxUtil<E> on Box<E> {
   //
   // }
 }
+
+extension SafeSetState<T extends StatefulWidget> on State<T> {
+  void safeSetState() {
+    if (mounted) {
+      setState(() {}); //ignore: invalid_use_of_protected_member
+    }
+  }
+}

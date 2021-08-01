@@ -4045,6 +4045,26 @@ class S {
       args: [],
     );
   }
+
+  /// `搜索范围`
+  String get search_options {
+    return Intl.message(
+      '搜索范围',
+      name: 'search_options',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `基础信息`
+  String get search_option_basic {
+    return Intl.message(
+      '基础信息',
+      name: 'search_option_basic',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -4060,10 +4080,8 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
 
   @override
   bool isSupported(Locale locale) => _isSupported(locale);
-
   @override
   Future<S> load(Locale locale) => S.load(locale);
-
   @override
   bool shouldReload(AppLocalizationDelegate old) => false;
 

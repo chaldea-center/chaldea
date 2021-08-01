@@ -27,12 +27,7 @@ class CraftListPageState
     if (db.userData.autoResetFilter) {
       filterData.reset();
     }
-  }
-
-  void onFilterChanged(CraftFilterData data) {
-    if (mounted) {
-      setState(() {});
-    }
+    options = _CraftSearchOptions(onChanged: (_) => safeSetState());
   }
 
   @override
@@ -56,7 +51,11 @@ class CraftListPageState
             onPressed: () => FilterPage.show(
               context: context,
               builder: (context) => CraftFilterPage(
-                  filterData: filterData, onChanged: onFilterChanged),
+                filterData: filterData,
+                onChanged: (_) {
+                  if (mounted) setState(() {});
+                },
+              ),
             ),
           ),
           searchIcon,
@@ -143,19 +142,7 @@ class CraftListPageState
 
   @override
   String getSummary(CraftEssence ce) {
-    return [
-      ce.no.toString(),
-      ce.mcLink,
-      ...Utils.getSearchAlphabets(ce.name, ce.nameJp, ce.nameEn),
-      ...Utils.getSearchAlphabetsForList(ce.illustrators,
-          [ce.illustratorsJp ?? ''], [ce.illustratorsEn ?? '']),
-      ...Utils.getSearchAlphabetsForList(ce.characters),
-      ce.skill,
-      ce.skillMax ?? '',
-      ce.skillEn ?? '',
-      ce.skillMaxEn ?? '',
-      ...ce.eventSkills,
-    ].toSet().join('\t');
+    return options!.getSummary(ce);
   }
 
   @override
@@ -179,5 +166,94 @@ class CraftListPageState
       return false;
     }
     return true;
+  }
+}
+
+class _CraftSearchOptions with SearchOptionsMixin<CraftEssence> {
+  bool basic;
+
+  bool skill;
+  bool description;
+  ValueChanged? onChanged;
+
+  _CraftSearchOptions({
+    this.basic = true,
+    this.skill = true,
+    this.description = false,
+    this.onChanged,
+  });
+
+  @override
+  Widget builder(BuildContext context, StateSetter setState) {
+    return Wrap(
+      children: [
+        CheckboxWithLabel(
+          value: basic,
+          label: Text(S.current.search_option_basic),
+          onChanged: (v) {
+            basic = v ?? basic;
+            setState(() {});
+            updateParent();
+          },
+        ),
+        CheckboxWithLabel(
+          value: skill,
+          label: Text(S.current.skill),
+          onChanged: (v) {
+            skill = v ?? skill;
+            setState(() {});
+            updateParent();
+          },
+        ),
+        CheckboxWithLabel(
+          value: description,
+          label: Text(S.current.card_description),
+          onChanged: (v) {
+            description = v ?? description;
+            setState(() {});
+            updateParent();
+          },
+        ),
+      ],
+    );
+  }
+
+  @override
+  String getSummary(CraftEssence ce) {
+    StringBuffer buffer = StringBuffer();
+    if (basic) {
+      buffer.write(getCache(
+        ce,
+        'basic',
+        () => [
+          ce.no.toString(),
+          ce.mcLink,
+          ...Utils.getSearchAlphabets(ce.name, ce.nameJp, ce.nameEn),
+          ...Utils.getSearchAlphabetsForList(ce.illustrators,
+              [ce.illustratorsJp ?? ''], [ce.illustratorsEn ?? '']),
+          ...Utils.getSearchAlphabetsForList(ce.characters),
+        ],
+      ));
+    }
+    if (skill) {
+      buffer.write(getCache(
+        ce,
+        'skill',
+        () => [
+          ...Utils.getSearchAlphabets(ce.skill, null, ce.skillEn),
+          ...Utils.getSearchAlphabets(ce.skillMax, null, ce.skillMaxEn),
+          ...Utils.getSearchAlphabetsForList(ce.eventSkills),
+        ],
+      ));
+    }
+    if (description) {
+      buffer.write(getCache(
+        ce,
+        'description',
+        () => Utils.getSearchAlphabets(
+            ce.description, ce.descriptionJp, ce.descriptionEn),
+      ));
+    }
+    return buffer.toString();
   }
 }

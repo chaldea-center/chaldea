@@ -29,12 +29,6 @@ class ServantListPageState
 
   SvtFilterData get filterData => db.userData.svtFilter;
 
-  void onFilterChanged(SvtFilterData data) {
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -44,6 +38,7 @@ class ServantListPageState
     if (db.userData.favoritePreferred != null) {
       filterData.favorite = db.userData.favoritePreferred! ? 1 : 0;
     }
+    options = _ServantOptions(onChanged: (_) => safeSetState());
   }
 
   @override
@@ -91,9 +86,16 @@ class ServantListPageState
           icon: Icon(Icons.filter_alt),
           tooltip: S.current.filter,
           onPressed: () => FilterPage.show(
-              context: context,
-              builder: (context) => ServantFilterPage(
-                  filterData: filterData, onChanged: onFilterChanged)),
+            context: context,
+            builder: (context) => ServantFilterPage(
+              filterData: filterData,
+              onChanged: (_) {
+                if (mounted) {
+                  setState(() {});
+                }
+              },
+            ),
+          ),
         ),
         searchIcon,
         PopupMenuButton(
@@ -238,44 +240,7 @@ class ServantListPageState
 
   @override
   String getSummary(Servant svt) {
-    List<String> searchStrings = [
-      svt.no.toString(),
-      svt.mcLink,
-      ...Utils.getSearchAlphabets(
-          svt.info.name, svt.info.nameJp, svt.info.nameEn),
-      ...Utils.getSearchAlphabetsForList(svt.info.nicknames),
-      ...Utils.getSearchAlphabetsForList(
-          svt.info.cv, svt.info.cvJp, svt.info.cvEn),
-      ...Utils.getSearchAlphabets(
-          svt.info.illustrator, svt.info.illustratorJp, svt.info.illustratorEn),
-      ...svt.info.traits
-    ];
-    [...svt.nobelPhantasm, ...svt.nobelPhantasmEn].forEach((td) {
-      searchStrings.addAll([
-        td.name,
-        td.nameJp ?? '',
-        td.upperName,
-        td.upperNameJp ?? '',
-        for (var e in td.effects) e.description
-      ]);
-    });
-    [...svt.activeSkills, ...svt.activeSkillsEn].forEach((activeSkill) {
-      activeSkill.skills.forEach((skill) {
-        searchStrings.addAll([
-          skill.name,
-          skill.nameJp ?? '',
-          for (var e in skill.effects) e.description
-        ]);
-      });
-    });
-    [...svt.passiveSkills, ...svt.passiveSkillsEn].forEach((skill) {
-      searchStrings.addAll([
-        skill.name,
-        skill.nameJp ?? '',
-        for (var e in skill.effects) e.description
-      ]);
-    });
-    return searchStrings.toSet().join('\t');
+    return options!.getSummary(svt);
   }
 
   @override
@@ -727,5 +692,133 @@ class ServantListPageState
         }),
       ),
     );
+  }
+}
+
+class _ServantOptions with SearchOptionsMixin<Servant> {
+  bool basic;
+  bool activeSkill;
+  bool passiveSkill;
+  bool nobelPhantasm;
+  ValueChanged? onChanged;
+
+  _ServantOptions({
+    this.basic = true,
+    this.activeSkill = true,
+    this.passiveSkill = true,
+    this.nobelPhantasm = true,
+    this.onChanged,
+  });
+
+  Widget builder(BuildContext context, StateSetter setState) {
+    return Wrap(
+      children: [
+        CheckboxWithLabel(
+          value: basic,
+          label: Text(S.current.search_option_basic),
+          onChanged: (v) {
+            basic = v ?? basic;
+            setState(() {});
+            updateParent();
+          },
+        ),
+        CheckboxWithLabel(
+          value: activeSkill,
+          label: Text(S.current.active_skill),
+          onChanged: (v) {
+            activeSkill = v ?? activeSkill;
+            setState(() {});
+            updateParent();
+          },
+        ),
+        CheckboxWithLabel(
+          value: passiveSkill,
+          label: Text(S.current.passive_skill),
+          onChanged: (v) {
+            passiveSkill = v ?? passiveSkill;
+            setState(() {});
+            updateParent();
+          },
+        ),
+        CheckboxWithLabel(
+          value: nobelPhantasm,
+          label: Text(S.current.nobel_phantasm),
+          onChanged: (v) {
+            nobelPhantasm = v ?? nobelPhantasm;
+            setState(() {});
+            updateParent();
+          },
+        ),
+      ],
+    );
+  }
+
+  String getSummary(Servant svt) {
+    StringBuffer buffer = StringBuffer();
+    if (basic) {
+      buffer.write(getCache(
+        svt,
+        'basic',
+        () => [
+          svt.no.toString(),
+          svt.mcLink,
+          ...Utils.getSearchAlphabets(
+              svt.info.name, svt.info.nameJp, svt.info.nameEn),
+          ...Utils.getSearchAlphabetsForList(svt.info.nicknames),
+          ...Utils.getSearchAlphabetsForList(
+              svt.info.cv, svt.info.cvJp, svt.info.cvEn),
+          ...Utils.getSearchAlphabets(svt.info.illustrator,
+              svt.info.illustratorJp, svt.info.illustratorEn),
+          ...svt.info.traits,
+        ],
+      ));
+    }
+
+    if (activeSkill) {
+      buffer.write(getCache(svt, 'activeSkill', () {
+        List<String?> _ss = [];
+        [...svt.activeSkills, ...svt.activeSkillsEn].forEach((activeSkill) {
+          activeSkill.skills.forEach((skill) {
+            _ss.addAll([
+              skill.name,
+              skill.nameJp,
+              for (var e in skill.effects) e.description
+            ]);
+          });
+        });
+        return _ss;
+      }));
+    }
+
+    if (passiveSkill) {
+      buffer.write(getCache(svt, 'passiveSkill', () {
+        List<String?> _ss = [];
+        [...svt.passiveSkills, ...svt.passiveSkillsEn].forEach((skill) {
+          _ss.addAll([
+            skill.name,
+            skill.nameJp,
+            for (var e in skill.effects) e.description
+          ]);
+        });
+        return _ss;
+      }));
+    }
+
+    if (nobelPhantasm) {
+      buffer.write(getCache(svt, 'nobelPhantasm', () {
+        List<String?> _ss = [];
+        [...svt.nobelPhantasm, ...svt.nobelPhantasmEn].forEach((td) {
+          _ss.addAll([
+            td.name,
+            td.nameJp,
+            td.upperName,
+            td.upperNameJp,
+            for (var e in td.effects) e.description
+          ]);
+        });
+        return _ss;
+      }));
+    }
+    return buffer.toString();
   }
 }

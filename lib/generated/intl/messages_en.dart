@@ -530,6 +530,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Save to Photos"),
         "saved": MessageLookupByLibrary.simpleMessage("Saved"),
         "search": MessageLookupByLibrary.simpleMessage("Search"),
+        "search_option_basic": MessageLookupByLibrary.simpleMessage("Basic"),
+        "search_options": MessageLookupByLibrary.simpleMessage("Search Scopes"),
         "search_result_count": m13,
         "search_result_count_hide": m14,
         "select_copy_plan_source":

@@ -472,6 +472,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "save_to_photos": MessageLookupByLibrary.simpleMessage("アルバムに保存"),
         "saved": MessageLookupByLibrary.simpleMessage("保存しました"),
         "search": MessageLookupByLibrary.simpleMessage("検索"),
+        "search_option_basic": MessageLookupByLibrary.simpleMessage("基本情報"),
+        "search_options": MessageLookupByLibrary.simpleMessage("検索範囲"),
         "search_result_count": m13,
         "search_result_count_hide": m14,
         "select_copy_plan_source":

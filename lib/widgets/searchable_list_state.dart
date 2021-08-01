@@ -23,7 +23,8 @@ abstract class SearchableListState<T, St extends StatefulWidget>
 
   /// String Search
   Query query = Query();
-  Map<T, String> _cachedSummary = {};
+
+  SearchOptionsMixin<T>? options;
 
   /// Generate the string summary of datum entry
   String getSummary(T datum);
@@ -37,7 +38,7 @@ abstract class SearchableListState<T, St extends StatefulWidget>
     query.parse(keyword);
     for (final T datum in wholeData) {
       if (keyword.isNotEmpty) {
-        String summary = (_cachedSummary[datum] ??= getSummary(datum));
+        String summary = getSummary(datum);
         if (!query.match(summary)) continue;
       }
       if (filter(datum)) {
@@ -81,15 +82,13 @@ abstract class SearchableListState<T, St extends StatefulWidget>
       controller: searchEditingController,
       onChanged: (s) {
         _onSearchTimer.delayed(() {
-          if (mounted)
-            setState(() {
-              // filterData.filterString = s;
-            });
+          if (mounted) setState(() {});
         });
       },
       onSubmitted: (s) {
         FocusScope.of(context).unfocus();
       },
+      searchOptionsBuilder: options?.builder,
     );
   }
 

@@ -154,8 +154,13 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   Widget buildTransitions(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child) {
     return ClipRect(
-        child: super
-            .buildTransitions(context, animation, secondaryAnimation, child));
+      child: super.buildTransitions(
+        context,
+        animation,
+        secondaryAnimation,
+        child,
+      ),
+    );
   }
 
   /// create master widget without scope wrapped
@@ -287,11 +292,12 @@ class MasterBackButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BackButton(
       color: color,
-      onPressed: () {
+      onPressed: () async {
         SplitRoute.pop(context, true);
         if (onPressed != null) {
           onPressed!();
         } else {
+          // won't ignore WillPopScope
           Navigator.maybePop(context);
         }
       },

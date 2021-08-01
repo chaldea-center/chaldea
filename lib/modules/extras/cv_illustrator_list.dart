@@ -46,6 +46,7 @@ class _CvListPageState extends SearchableListState<String, CvListPage> {
   void initState() {
     super.initState();
     Future.delayed(Duration(milliseconds: 400), _parse);
+    options = _CVOptions(onChanged: (_) => safeSetState(), state: this);
   }
 
   @override
@@ -72,21 +73,7 @@ class _CvListPageState extends SearchableListState<String, CvListPage> {
 
   @override
   String getSummary(String cv) {
-    List<Servant>? cards = cvMap[cv];
-    if (cards == null || cards.isEmpty)
-      return ''; // Although, it should always be passed
-    List<String> searchStrings = Utils.getSearchAlphabetsForList(
-        cards.first.info.cv, cards.first.info.cvJp, cards.first.info.cvEn);
-    for (final svt in cards) {
-      searchStrings.addAll([
-        ...Utils.getSearchAlphabets(
-            svt.info.name, svt.info.nameJp, svt.info.nameEn),
-        ...Utils.getSearchAlphabetsForList(
-            svt.info.namesOther, svt.info.namesJpOther, svt.info.namesEnOther),
-        ...Utils.getSearchAlphabetsForList(svt.info.nicknames),
-      ]);
-    }
-    return searchStrings.toSet().join('\t');
+    return options!.getSummary(cv);
   }
 
   @override
@@ -95,13 +82,6 @@ class _CvListPageState extends SearchableListState<String, CvListPage> {
   @override
   Widget listItemBuilder(String cv) {
     final svts = cvMap[cv]!;
-    // // add card icon at trailing
-    // if (svts.length == 1) {
-    //   return ListTile(
-    //     title: Text(cv),
-    //     trailing: _cardIcon(context, svts.first),
-    //   );
-    // }
     List<Widget> children = [];
     for (var svt in svts) {
       children.add(_cardIcon(context, svt));
@@ -122,6 +102,82 @@ class _CvListPageState extends SearchableListState<String, CvListPage> {
       throw UnimplementedError('GridView not designed');
 }
 
+class _CVOptions with SearchOptionsMixin<String> {
+  bool cvName;
+  bool cardName;
+  ValueChanged? onChanged;
+
+  _CvListPageState state;
+
+  _CVOptions({
+    this.cvName = true,
+    this.cardName = true,
+    this.onChanged,
+    required this.state,
+  });
+
+  @override
+  Widget builder(BuildContext context, StateSetter setState) {
+    return Wrap(
+      children: [
+        CheckboxWithLabel(
+          value: cvName,
+          label: Text(S.current.info_cv),
+          onChanged: (v) {
+            cvName = v ?? cvName;
+            setState(() {});
+            updateParent();
+          },
+        ),
+        CheckboxWithLabel(
+          value: cardName,
+          label: Text(
+              LocalizedText.of(chs: '卡牌名称', jpn: 'カード名', eng: 'Card Name')),
+          onChanged: (v) {
+            cardName = v ?? cardName;
+            setState(() {});
+            updateParent();
+          },
+        ),
+      ],
+    );
+  }
+
+  @override
+  String getSummary(String cv) {
+    StringBuffer buffer = StringBuffer();
+
+    List<Servant>? cards = state.cvMap[cv];
+    if (cards == null || cards.isEmpty)
+      return ''; // Although, it should always be passed
+    if (cvName) {
+      buffer.write(getCache(
+        cv,
+        'cvName',
+        () => Utils.getSearchAlphabetsForList(
+            cards.first.info.cv, cards.first.info.cvJp, cards.first.info.cvEn),
+      ));
+    }
+    if (cardName) {
+      buffer.write(getCache(
+        cv,
+        'cardName',
+        () => [
+          for (final svt in cards) ...[
+            ...Utils.getSearchAlphabets(
+                svt.info.name, svt.info.nameJp, svt.info.nameEn),
+            ...Utils.getSearchAlphabetsForList(svt.info.namesOther,
+                svt.info.namesJpOther, svt.info.namesEnOther),
+            ...Utils.getSearchAlphabetsForList(svt.info.nicknames),
+          ],
+        ],
+      ));
+    }
+
+    return buffer.toString();
+  }
+}
+
 class IllustratorListPage extends StatefulWidget {
   @override
   _IllustratorListPageState createState() => _IllustratorListPageState();
@@ -130,7 +186,6 @@ class IllustratorListPage extends StatefulWidget {
 class _IllustratorListPageState
     extends SearchableListState<String, IllustratorListPage> {
   @override
-  // TODO: implement wholeData
   Iterable<String> get wholeData => illustrators;
   bool _initiated = false;
   Map<String, List<Servant>> svtMap = {};
@@ -177,19 +232,22 @@ class _IllustratorListPageState
   void initState() {
     super.initState();
     Future.delayed(Duration(milliseconds: 400), _parse);
+    options =
+        _IllustratorOptions(onChanged: (_) => safeSetState(), state: this);
   }
 
   @override
   Widget build(BuildContext context) {
     filterShownList(compare: null);
     return scrollListener(
-        useGrid: false,
-        appBar: AppBar(
-          leading: BackButton(),
-          title: Text(S.current.illustrator),
-          bottom: showSearchBar ? searchBar : null,
-          actions: [searchIcon],
-        ));
+      useGrid: false,
+      appBar: AppBar(
+        leading: BackButton(),
+        title: Text(S.current.illustrator),
+        bottom: showSearchBar ? searchBar : null,
+        actions: [searchIcon],
+      ),
+    );
   }
 
   @override
@@ -202,37 +260,7 @@ class _IllustratorListPageState
 
   @override
   String getSummary(String creator) {
-    List<String> searchStrings = [];
-    for (final svt in (svtMap[creator] ?? <Servant>[])) {
-      searchStrings.addAll([
-        ...Utils.getSearchAlphabets(svt.info.illustrator,
-            svt.info.illustratorJp, svt.info.illustratorEn),
-      ]);
-      searchStrings.addAll([
-        ...Utils.getSearchAlphabets(
-            svt.info.name, svt.info.nameJp, svt.info.nameEn),
-        ...Utils.getSearchAlphabetsForList(
-            svt.info.namesOther, svt.info.namesJpOther, svt.info.namesEnOther),
-        ...Utils.getSearchAlphabetsForList(svt.info.nicknames),
-      ]);
-    }
-    for (final craft in craftMap[creator] ?? <CraftEssence>[]) {
-      searchStrings.addAll([
-        ...Utils.getSearchAlphabets(craft.illustrators.join('\t'),
-            craft.illustratorsJp, craft.illustratorsEn),
-        ...Utils.getSearchAlphabets(craft.name, craft.nameJp, craft.nameEn),
-        ...Utils.getSearchAlphabetsForList(craft.nameOther),
-      ]);
-    }
-    for (final code in codeMap[creator] ?? <CommandCode>[]) {
-      searchStrings.addAll([
-        ...Utils.getSearchAlphabets(code.illustrators.join('\t'),
-            code.illustratorsJp, code.illustratorsEn),
-        ...Utils.getSearchAlphabets(code.name, code.nameJp, code.nameEn),
-        ...Utils.getSearchAlphabetsForList(code.nameOther),
-      ]);
-    }
-    return searchStrings.toSet().join('\t');
+    return options!.getSummary(creator);
   }
 
   @override
@@ -266,6 +294,103 @@ class _IllustratorListPageState
   @override
   Widget gridItemBuilder(String creator) =>
       throw UnimplementedError('GridView not designed');
+}
+
+class _IllustratorOptions with SearchOptionsMixin<String> {
+  bool creatorName;
+  bool cardName;
+  ValueChanged? onChanged;
+
+  _IllustratorListPageState state;
+
+  _IllustratorOptions({
+    this.creatorName = true,
+    this.cardName = true,
+    this.onChanged,
+    required this.state,
+  });
+
+  @override
+  Widget builder(BuildContext context, StateSetter setState) {
+    return Wrap(
+      children: [
+        CheckboxWithLabel(
+          value: creatorName,
+          label: Text(S.current.illustrator),
+          onChanged: (v) {
+            creatorName = v ?? creatorName;
+            setState(() {});
+            updateParent();
+          },
+        ),
+        CheckboxWithLabel(
+          value: cardName,
+          label: Text(
+              LocalizedText.of(chs: '卡牌名称', jpn: 'カード名', eng: 'Card Name')),
+          onChanged: (v) {
+            cardName = v ?? cardName;
+            setState(() {});
+            updateParent();
+          },
+        ),
+      ],
+    );
+  }
+
+  @override
+  String getSummary(String creator) {
+    StringBuffer buffer = StringBuffer();
+
+    if (creatorName) {
+      buffer.write(getCache(creator, 'creatorName', () {
+        List<String?> _ss = [];
+        for (final svt in (state.svtMap[creator] ?? <Servant>[])) {
+          _ss.addAll([
+            ...Utils.getSearchAlphabets(svt.info.illustrator,
+                svt.info.illustratorJp, svt.info.illustratorEn),
+          ]);
+        }
+        for (final craft in state.craftMap[creator] ?? <CraftEssence>[]) {
+          _ss.addAll(Utils.getSearchAlphabets(craft.illustrators.join('\t'),
+              craft.illustratorsJp, craft.illustratorsEn));
+        }
+        for (final code in state.codeMap[creator] ?? <CommandCode>[]) {
+          _ss.addAll(Utils.getSearchAlphabets(code.illustrators.join('\t'),
+              code.illustratorsJp, code.illustratorsEn));
+        }
+        return _ss;
+      }));
+    }
+
+    if (cardName) {
+      buffer.write(getCache(creator, 'cardName', () {
+        List<String?> _ss = [];
+        for (final svt in (state.svtMap[creator] ?? <Servant>[])) {
+          _ss.addAll([
+            ...Utils.getSearchAlphabets(
+                svt.info.name, svt.info.nameJp, svt.info.nameEn),
+            ...Utils.getSearchAlphabetsForList(svt.info.namesOther,
+                svt.info.namesJpOther, svt.info.namesEnOther),
+            ...Utils.getSearchAlphabetsForList(svt.info.nicknames),
+          ]);
+        }
+        for (final craft in state.craftMap[creator] ?? <CraftEssence>[]) {
+          _ss.addAll([
+            ...Utils.getSearchAlphabets(craft.name, craft.nameJp, craft.nameEn),
+            ...Utils.getSearchAlphabetsForList(craft.nameOther),
+          ]);
+        }
+        for (final code in state.codeMap[creator] ?? <CommandCode>[]) {
+          _ss.addAll([
+            ...Utils.getSearchAlphabets(code.name, code.nameJp, code.nameEn),
+            ...Utils.getSearchAlphabetsForList(code.nameOther),
+          ]);
+        }
+        return _ss;
+      }));
+    }
+    return buffer.toString();
+  }
 }
 
 Widget _cardIcon<T>(BuildContext context, T card) {

@@ -401,5 +401,7 @@
   "icons": "アイコン",
   "sprites": "モデル",
   "display_setting": "表示設定",
-  "issues": "問題"
+  "issues": "問題",
+  "search_options": "検索範囲",
+  "search_option_basic": "基本情報"
 }

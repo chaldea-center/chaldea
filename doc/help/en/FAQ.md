@@ -11,7 +11,7 @@ Check following filters:
   * 🕟　Outdated event filter
   * ☑️　Filter dialog setting
 
-Warning: filters are ignored when "searching"
+Warning: "searching" is executed in the results filtrated by "filters"
 
 
 ----------

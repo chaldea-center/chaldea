@@ -25,12 +25,7 @@ class CmdCodeListPageState
     if (db.userData.autoResetFilter) {
       filterData.reset();
     }
-  }
-
-  void onFilterChanged(CmdCodeFilterData data) {
-    if (mounted) {
-      setState(() {});
-    }
+    options = _CmdCodeSearchOptions(onChanged: (_) => safeSetState());
   }
 
   @override
@@ -53,7 +48,11 @@ class CmdCodeListPageState
             onPressed: () => FilterPage.show(
               context: context,
               builder: (context) => CmdCodeFilterPage(
-                  filterData: filterData, onChanged: onFilterChanged),
+                filterData: filterData,
+                onChanged: (_) {
+                  if (mounted) setState(() {});
+                },
+              ),
             ),
           ),
           searchIcon,
@@ -118,17 +117,7 @@ class CmdCodeListPageState
 
   @override
   String getSummary(CommandCode code) {
-    return [
-      code.no.toString(),
-      code.mcLink,
-      ...Utils.getSearchAlphabets(code.name, code.nameJp, code.nameEn),
-      ...Utils.getSearchAlphabetsForList(code.illustrators,
-          [code.illustratorsJp ?? ''], [code.illustratorsEn ?? '']),
-      ...Utils.getSearchAlphabetsForList(code.characters),
-      code.skill,
-      code.skillEn ?? '',
-      code.obtain,
-    ].toSet().join('\t');
+    return options!.getSummary(code);
   }
 
   @override
@@ -141,5 +130,93 @@ class CmdCodeListPageState
       return false;
     }
     return true;
+  }
+}
+
+class _CmdCodeSearchOptions with SearchOptionsMixin<CommandCode> {
+  bool basic;
+  bool skill;
+  bool description;
+  ValueChanged? onChanged;
+
+  _CmdCodeSearchOptions({
+    this.basic = true,
+    this.skill = true,
+    this.description = false,
+    this.onChanged,
+  });
+
+  Widget builder(BuildContext context, StateSetter setState) {
+    return Wrap(
+      children: [
+        CheckboxWithLabel(
+          value: basic,
+          label: Text(S.current.search_option_basic),
+          onChanged: (v) {
+            basic = v ?? basic;
+            setState(() {});
+            updateParent();
+          },
+        ),
+        CheckboxWithLabel(
+          value: skill,
+          label: Text(S.current.skill),
+          onChanged: (v) {
+            skill = v ?? skill;
+            setState(() {});
+            updateParent();
+          },
+        ),
+        CheckboxWithLabel(
+          value: description,
+          label: Text(S.current.card_description),
+          onChanged: (v) {
+            description = v ?? description;
+            setState(() {});
+            updateParent();
+          },
+        ),
+      ],
+    );
+  }
+
+  String getSummary(CommandCode code) {
+    StringBuffer buffer = StringBuffer();
+    if (basic) {
+      buffer.write(getCache(
+        code,
+        'basic',
+        () => [
+          code.no.toString(),
+          code.mcLink,
+          ...Utils.getSearchAlphabets(code.name, code.nameJp, code.nameEn),
+          ...Utils.getSearchAlphabetsForList(code.illustrators,
+              [code.illustratorsJp ?? ''], [code.illustratorsEn ?? '']),
+          ...Utils.getSearchAlphabetsForList(code.characters),
+        ],
+      ));
+    }
+    if (skill) {
+      buffer.write(getCache(
+        code,
+        'skill',
+        () => [
+          code.skill,
+          code.skillEn,
+        ],
+      ));
+    }
+    if (description) {
+      buffer.write(getCache(
+        code,
+        'description',
+        () => Utils.getSearchAlphabets(
+          code.description,
+          code.descriptionJp,
+          code.descriptionEn,
+        ),
+      ));
+    }
+    return buffer.toString();
   }
 }

@@ -441,6 +441,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "save_to_photos": MessageLookupByLibrary.simpleMessage("保存到相册"),
         "saved": MessageLookupByLibrary.simpleMessage("已保存"),
         "search": MessageLookupByLibrary.simpleMessage("搜索"),
+        "search_option_basic": MessageLookupByLibrary.simpleMessage("基础信息"),
+        "search_options": MessageLookupByLibrary.simpleMessage("搜索范围"),
         "search_result_count": m13,
         "search_result_count_hide": m14,
         "select_copy_plan_source":
