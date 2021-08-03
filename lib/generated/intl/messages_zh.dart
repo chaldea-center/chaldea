@@ -255,6 +255,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "guda_servant_data": MessageLookupByLibrary.simpleMessage("Guda从者数据"),
         "hello": MessageLookupByLibrary.simpleMessage("你好！御主!"),
         "help": MessageLookupByLibrary.simpleMessage("帮助"),
+        "hide_outdated": MessageLookupByLibrary.simpleMessage("隐藏已过期"),
         "hint_no_bond_craft": MessageLookupByLibrary.simpleMessage("无羁绊礼装"),
         "hint_no_valentine_craft":
             MessageLookupByLibrary.simpleMessage("无情人节礼装"),
@@ -469,6 +470,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_userdata_footer": MessageLookupByLibrary.simpleMessage(
             "更新数据/版本/bug较多时，建议提前备份数据，卸载应用将导致内部备份丢失，及时转移到可靠的储存位置"),
         "share": MessageLookupByLibrary.simpleMessage("分享"),
+        "show_outdated": MessageLookupByLibrary.simpleMessage("显示已过期"),
         "silver": MessageLookupByLibrary.simpleMessage("银"),
         "skill": MessageLookupByLibrary.simpleMessage("技能"),
         "skill_up": MessageLookupByLibrary.simpleMessage("技能升级"),

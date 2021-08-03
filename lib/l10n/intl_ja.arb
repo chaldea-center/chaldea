@@ -404,5 +404,7 @@
   "issues": "問題",
   "search_options": "検索範囲",
   "search_option_basic": "基本情報",
-  "append_skill": "アペンドスキル"
+  "append_skill": "アペンドスキル",
+  "show_outdated": "期限切れを表示",
+  "hide_outdated": "期限切れの非表示"
 }

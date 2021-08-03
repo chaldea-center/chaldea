@@ -242,9 +242,9 @@ class _MasterMissionPageState extends State<MasterMissionPage>
                 chs: '国服本周', jpn: '今週(CN)', eng: 'This Week(CN)'))),
       ],
       onSelected: (v) async {
-        EasyLoading.show();
         String wikitext;
         try {
+          EasyLoading.show();
           wikitext = await WikiUtil.pageContent('首页/御主任务数据');
           EasyLoading.showSuccess('success');
         } catch (e) {

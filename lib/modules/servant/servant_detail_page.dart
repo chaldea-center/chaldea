@@ -165,110 +165,107 @@ class ServantDetailPageState extends State<ServantDetailPage>
         return [
           PopupMenuItem(
             child: Text(S.of(context).select_plan),
-            value: 'plan',
+            onTap: () {
+              onSwitchPlan(
+                context: context,
+                onChange: (index) {
+                  db.curUser.curSvtPlanNo = index;
+                  db.curUser.ensurePlanLarger();
+                  db.itemStat.updateSvtItems();
+                },
+              );
+            },
           ),
           if (!Servant.unavailable.contains(svt.no))
             PopupMenuItem<String>(
               child: Text(S.of(context).reset),
-              value: 'reset',
+              onTap: () {
+                SimpleCancelOkDialog(
+                  title: Text(S.of(context).reset),
+                  onTapOk: () {
+                    setState(() {
+                      status.reset();
+                      db.curUser.svtPlanOf(svt.no).reset();
+                    });
+                    db.itemStat.updateSvtItems();
+                  },
+                ).showDialog(context);
+              },
             ),
           if (!Servant.unavailable.contains(svt.no))
             PopupMenuItem<String>(
               child: Text(S.current.svt_reset_plan),
-              value: 'reset_plan',
+              onTap: () {
+                setState(() {
+                  plan
+                    ..ascension = status.curVal.ascension
+                    ..skills = List.of(status.curVal.skills)
+                    ..dress = List.of(status.curVal.dress)
+                    ..grail = status.curVal.grail;
+                });
+                db.itemStat.updateSvtItems();
+              },
             ),
           // if (!Servant.unavailable.contains(svt.no))
           //   PopupMenuItem<String>(
           //     child: Text(S.of(context).reset_svt_enhance_state),
-          //     value: 'reset_enhance',
+          //     onTap: () {
+          //       setState(() {
+          //         status.resetEnhancement();
+          //       });
+          //     },
           //   ),
           PopupMenuItem<String>(
             child: Text(S.of(context).jump_to('Mooncell')),
-            value: 'jump_mc',
+            onTap: () {
+              launch(WikiUtil.mcFullLink(svt.mcLink));
+            },
           ),
           PopupMenuItem<String>(
             child: Text(S.of(context).jump_to('Fandom')),
-            value: 'jump_fandom',
+            onTap: () {
+              launch(WikiUtil.fandomFullLink(svt.info.nameEn));
+            },
           ),
           if (!Servant.unavailable.contains(svt.originNo))
             PopupMenuItem<String>(
               child: Text(S.current.create_duplicated_svt),
-              value: 'duplicate_svt',
+              onTap: () {
+                final newSvt = db.curUser.addDuplicatedForServant(svt);
+                print('add ${newSvt.no}');
+                if (newSvt == svt) {
+                  SimpleCancelOkDialog(
+                    title: Text('复制从者失败'),
+                    content: Text('同一从者超过999个上限'),
+                  ).showDialog(context);
+                } else {
+                  SplitRoute.push(
+                    context,
+                    ServantDetailPage(newSvt),
+                    detail: true,
+                  );
+                  db.notifyDbUpdate();
+                }
+              },
             ),
           if (svt.no != svt.originNo)
             PopupMenuItem<String>(
               child: Text(S.current.remove_duplicated_svt),
-              value: 'delete_duplicated',
+              onTap: () {
+                db.curUser.removeDuplicatedServant(svt.no);
+                Navigator.pop(context);
+                db.notifyDbUpdate();
+              },
             ),
           if (_tabController.index == 0)
             PopupMenuItem<String>(
               child: Text(S.current.svt_switch_slider_dropdown),
-              value: 'switch_slider_dropdown',
+              onTap: () {
+                svtPlanSliderMode.set(!(svtPlanSliderMode.get() ?? false));
+                setState(() {});
+              },
             ),
         ];
-      },
-      onSelected: (select) {
-        if (select == 'plan') {
-          onSwitchPlan(
-            context: context,
-            onChange: (index) {
-              db.curUser.curSvtPlanNo = index;
-              db.curUser.ensurePlanLarger();
-              db.itemStat.updateSvtItems();
-            },
-          );
-        } else if (select == 'reset') {
-          SimpleCancelOkDialog(
-            title: Text(S.of(context).reset),
-            onTapOk: () {
-              setState(() {
-                status.reset();
-                db.curUser.svtPlanOf(svt.no).reset();
-              });
-              db.itemStat.updateSvtItems();
-            },
-          ).showDialog(context);
-        } else if (select == 'reset_plan') {
-          setState(() {
-            plan
-              ..ascension = status.curVal.ascension
-              ..skills = List.of(status.curVal.skills)
-              ..dress = List.of(status.curVal.dress)
-              ..grail = status.curVal.grail;
-          });
-          db.itemStat.updateSvtItems();
-        } else if (select == 'reset_enhance') {
-          setState(() {
-            status.resetEnhancement();
-          });
-        } else if (select == 'jump_mc') {
-          launch(WikiUtil.mcFullLink(svt.mcLink));
-        } else if (select == 'jump_fandom') {
-          launch(WikiUtil.fandomFullLink(svt.info.nameEn));
-        } else if (select == 'duplicate_svt') {
-          final newSvt = db.curUser.addDuplicatedForServant(svt);
-          print('add ${newSvt.no}');
-          if (newSvt == svt) {
-            SimpleCancelOkDialog(
-              title: Text('复制从者失败'),
-              content: Text('同一从者超过999个上限'),
-            ).showDialog(context);
-          } else {
-            SplitRoute.push(
-              context,
-              ServantDetailPage(newSvt),
-              detail: true,
-            );
-            db.notifyDbUpdate();
-          }
-        } else if (select == 'delete_duplicated') {
-          db.curUser.removeDuplicatedServant(svt.no);
-          db.notifyDbUpdate();
-          Navigator.pop(context);
-        } else if (select == 'switch_slider_dropdown') {
-          svtPlanSliderMode.set(!(svtPlanSliderMode.get() ?? false));
-          setState(() {});
-        }
       },
     );
   }

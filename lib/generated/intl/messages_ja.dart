@@ -268,6 +268,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Gudaサーヴァントデータ"),
         "hello": MessageLookupByLibrary.simpleMessage("こんにちは、マスタ。"),
         "help": MessageLookupByLibrary.simpleMessage("ヘルプ"),
+        "hide_outdated": MessageLookupByLibrary.simpleMessage("期限切れの非表示"),
         "hint_no_bond_craft": MessageLookupByLibrary.simpleMessage("絆礼装なし"),
         "hint_no_valentine_craft":
             MessageLookupByLibrary.simpleMessage("チョコ礼装なし"),
@@ -500,6 +501,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_userdata_footer": MessageLookupByLibrary.simpleMessage(
             "更新数据/版本/bug较多时，建议提前备份数据，卸载应用将导致内部备份丢失，及时转移到可靠的储存位置"),
         "share": MessageLookupByLibrary.simpleMessage("共有"),
+        "show_outdated": MessageLookupByLibrary.simpleMessage("期限切れを表示"),
         "silver": MessageLookupByLibrary.simpleMessage("銀"),
         "skill": MessageLookupByLibrary.simpleMessage("スキル"),
         "skill_up": MessageLookupByLibrary.simpleMessage("スキル強化"),

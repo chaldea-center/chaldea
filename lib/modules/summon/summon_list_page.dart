@@ -34,26 +34,6 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
         bottom: showSearchBar ? searchBar : null,
         actions: [
           IconButton(
-            icon: Icon(db.userData.showSummonBanner
-                ? Icons.image_outlined
-                : Icons.image_not_supported_outlined),
-            tooltip: 'Banner',
-            onPressed: () {
-              setState(() {
-                db.userData.showSummonBanner = !db.userData.showSummonBanner;
-              });
-            },
-          ),
-          IconButton(
-            icon: Icon(showOutdated ? Icons.timer_off : Icons.timer),
-            tooltip: 'Outdated',
-            onPressed: () {
-              setState(() {
-                showOutdated = !showOutdated;
-              });
-            },
-          ),
-          IconButton(
             icon: Icon(
                 reversed ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up),
             tooltip: 'Reversed',
@@ -73,7 +53,33 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
               });
             },
           ),
-          SizedBox(width: 8),
+          PopupMenuButton(
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                child: Text(db.userData.showSummonBanner
+                    ? LocalizedText.of(
+                        chs: '显示标题', jpn: 'タイトルを表示', eng: 'Show Title')
+                    : LocalizedText.of(
+                        chs: '显示封面', jpn: '画像を表示', eng: 'Show Banner')),
+                onTap: () {
+                  setState(() {
+                    db.userData.showSummonBanner =
+                        !db.userData.showSummonBanner;
+                  });
+                },
+              ),
+              PopupMenuItem(
+                child: Text(showOutdated
+                    ? S.current.hide_outdated
+                    : S.current.show_outdated),
+                onTap: () {
+                  setState(() {
+                    showOutdated = !showOutdated;
+                  });
+                },
+              ),
+            ],
+          ),
         ],
       ),
     );

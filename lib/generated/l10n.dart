@@ -4075,6 +4075,26 @@ class S {
       args: [],
     );
   }
+
+  /// `显示已过期`
+  String get show_outdated {
+    return Intl.message(
+      '显示已过期',
+      name: 'show_outdated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `隐藏已过期`
+  String get hide_outdated {
+    return Intl.message(
+      '隐藏已过期',
+      name: 'hide_outdated',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

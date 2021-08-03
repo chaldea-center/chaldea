@@ -93,18 +93,15 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage>
           PopupMenuButton<String>(
             itemBuilder: (context) => [
               PopupMenuItem(
-                value: 'jump_mc',
                 child: Text(S.current.jump_to('Mooncell')),
+                onTap: () {
+                  jumpToExternalLinkAlert(
+                    url: WikiUtil.mcFullLink(widget.record.indexKey),
+                    name: 'Mooncell',
+                  );
+                },
               )
             ],
-            onSelected: (v) {
-              if (v == 'jump_mc') {
-                jumpToExternalLinkAlert(
-                  url: WikiUtil.mcFullLink(widget.record.indexKey),
-                  name: 'Mooncell',
-                );
-              }
-            },
           )
         ],
       ),

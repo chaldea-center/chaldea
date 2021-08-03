@@ -296,6 +296,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Guda Servant Data"),
         "hello": MessageLookupByLibrary.simpleMessage("Hello! Master!"),
         "help": MessageLookupByLibrary.simpleMessage("Help"),
+        "hide_outdated": MessageLookupByLibrary.simpleMessage("Hide Outdated"),
         "hint_no_bond_craft":
             MessageLookupByLibrary.simpleMessage("No bond craft"),
         "hint_no_valentine_craft":
@@ -561,6 +562,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_userdata_footer": MessageLookupByLibrary.simpleMessage(
             "Backup userdata before upgrading application, and move backups to safe locations outside app\'s document folder"),
         "share": MessageLookupByLibrary.simpleMessage("Share"),
+        "show_outdated": MessageLookupByLibrary.simpleMessage("Show Outdated"),
         "silver": MessageLookupByLibrary.simpleMessage("Silver"),
         "skill": MessageLookupByLibrary.simpleMessage("Skill"),
         "skill_up": MessageLookupByLibrary.simpleMessage("Skill Up"),

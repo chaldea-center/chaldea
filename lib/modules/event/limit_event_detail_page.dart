@@ -90,16 +90,16 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
           subtitle: event.lotteryLimit > 0
               ? Text(S.of(context).event_lottery_limit_hint(event.lotteryLimit))
               : null,
-        trailing: SizedBox(
-            width: 80,
-            child: TextField(
-              maxLength: 4,
-              textAlign: TextAlign.center,
-              keyboardType: TextInputType.number,
-              scrollPadding: EdgeInsets.zero,
-              decoration: InputDecoration(
-                counterText: '',
-                suffixText: S.of(context).event_lottery_unit,
+          trailing: SizedBox(
+              width: 80,
+              child: TextField(
+                maxLength: 4,
+                textAlign: TextAlign.center,
+                keyboardType: TextInputType.number,
+                scrollPadding: EdgeInsets.zero,
+                decoration: InputDecoration(
+                  counterText: '',
+                  suffixText: S.of(context).event_lottery_unit,
                   isDense: true,
                 ),
                 controller: _lotteryController,
@@ -160,18 +160,15 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
           PopupMenuButton<String>(
             itemBuilder: (context) => [
               PopupMenuItem(
-                value: 'jump_mc',
                 child: Text(S.current.jump_to('Mooncell')),
+                onTap: () {
+                  jumpToExternalLinkAlert(
+                    url: WikiUtil.mcFullLink(widget.event.indexKey),
+                    name: 'Mooncell',
+                  );
+                },
               )
             ],
-            onSelected: (v) {
-              if (v == 'jump_mc') {
-                jumpToExternalLinkAlert(
-                  url: WikiUtil.mcFullLink(widget.event.indexKey),
-                  name: 'Mooncell',
-                );
-              }
-            },
           )
         ],
       ),

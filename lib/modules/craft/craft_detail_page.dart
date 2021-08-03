@@ -102,20 +102,17 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
         return [
           PopupMenuItem<String>(
             child: Text(S.of(context).jump_to('Mooncell')),
-            value: 'jump_mc',
+            onTap: () {
+              launch(WikiUtil.mcFullLink(ce.mcLink));
+            },
           ),
           PopupMenuItem<String>(
             child: Text(S.of(context).jump_to('Fandom')),
-            value: 'jump_fandom',
+            onTap: () {
+              launch(WikiUtil.fandomFullLink(ce.nameEn));
+            },
           ),
         ];
-      },
-      onSelected: (select) {
-        if (select == 'jump_mc') {
-          launch(WikiUtil.mcFullLink(ce.mcLink));
-        } else if (select == 'jump_fandom') {
-          launch(WikiUtil.fandomFullLink(ce.nameEn));
-        }
       },
     );
   }

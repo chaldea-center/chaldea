@@ -402,5 +402,7 @@
   "issues": "Issues",
   "search_options": "Search Scopes",
   "search_option_basic": "Basic",
-  "append_skill": "Append Skill"
+  "append_skill": "Append Skill",
+  "show_outdated": "Show Outdated",
+  "hide_outdated": "Hide Outdated"
 }

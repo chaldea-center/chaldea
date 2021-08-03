@@ -401,5 +401,7 @@
   "issues": "常见问题",
   "search_options": "搜索范围",
   "search_option_basic": "基础信息",
-  "append_skill": "附加被动"
+  "append_skill": "附加被动",
+  "show_outdated": "显示已过期",
+  "hide_outdated": "隐藏已过期"
 }

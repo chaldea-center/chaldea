@@ -51,20 +51,17 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
         return [
           PopupMenuItem<String>(
             child: Text(S.of(context).jump_to('Mooncell')),
-            value: 'jump_mc',
+            onTap: () {
+              launch(WikiUtil.mcFullLink(code.mcLink));
+            },
           ),
           PopupMenuItem<String>(
             child: Text(S.of(context).jump_to('Fandom')),
-            value: 'jump_fandom',
+            onTap: () {
+              launch(WikiUtil.fandomFullLink(code.nameEn));
+            },
           ),
         ];
-      },
-      onSelected: (select) {
-        if (select == 'jump_mc') {
-          launch(WikiUtil.mcFullLink(code.mcLink));
-        } else if (select == 'jump_fandom') {
-          launch(WikiUtil.fandomFullLink(code.nameEn));
-        }
       },
     );
   }

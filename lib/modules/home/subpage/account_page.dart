@@ -54,55 +54,34 @@ class _AccountPageState extends State<AccountPage> {
             secondary: PopupMenuButton(
               itemBuilder: (BuildContext context) => [
                 PopupMenuItem(
-                  value: 'rename',
                   child: Text(S.of(context).rename),
+                  onTap: () => renameUser(userKey),
                 ),
                 PopupMenuItem(
-                  value: 'move_up',
                   child: Text(
                       LocalizedText.of(chs: '上移', jpn: '上に移動', eng: 'Move Up')),
                   enabled: index != 0,
+                  onTap: () => moveUser(userKey, -1),
                 ),
                 PopupMenuItem(
-                  value: 'move_down',
                   child: Text(LocalizedText.of(
                       chs: '下移', jpn: '下に移動', eng: 'Move Down')),
                   enabled: index != db.userData.users.length - 1,
+                  onTap: () => moveUser(userKey, 1),
                 ),
-                PopupMenuItem(value: 'copy', child: Text(S.of(context).copy)),
                 PopupMenuItem(
-                  value: 'clear',
+                  child: Text(S.of(context).copy),
+                  onTap: () => copyUser(userKey),
+                ),
+                PopupMenuItem(
                   child: Text(S.of(context).clear),
+                  onTap: () => clearUser(userKey),
                 ),
                 PopupMenuItem(
-                  value: 'delete',
                   child: Text(S.of(context).delete),
+                  onTap: () => deleteUser(userKey),
                 ),
               ],
-              onSelected: (k) {
-                switch (k) {
-                  case 'rename':
-                    renameUser(userKey);
-                    break;
-                  case 'copy':
-                    copyUser(userKey);
-                    break;
-                  case 'clear':
-                    clearUser(userKey);
-                    break;
-                  case 'delete':
-                    deleteUser(userKey);
-                    break;
-                  case 'move_up':
-                    moveUser(userKey, -1);
-                    break;
-                  case 'move_down':
-                    moveUser(userKey, 1);
-                    break;
-                  default:
-                    break;
-                }
-              },
             ),
           );
         }).toList(),
