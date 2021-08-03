@@ -403,5 +403,6 @@
   "search_option_basic": "基础信息",
   "append_skill": "附加被动",
   "show_outdated": "显示已过期",
-  "hide_outdated": "隐藏已过期"
+  "hide_outdated": "隐藏已过期",
+  "import_screenshot": "导入截图"
 }

@@ -298,6 +298,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("ロックのみ"),
         "import_http_body_success_switch": m6,
         "import_http_body_target_account_header": m7,
+        "import_screenshot":
+            MessageLookupByLibrary.simpleMessage("スクリーンショットをインポート"),
         "import_screenshot_hint":
             MessageLookupByLibrary.simpleMessage("識別された資料のみを更新する"),
         "import_screenshot_update_items":

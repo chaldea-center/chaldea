@@ -328,6 +328,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Locked Only"),
         "import_http_body_success_switch": m6,
         "import_http_body_target_account_header": m7,
+        "import_screenshot":
+            MessageLookupByLibrary.simpleMessage("Import Screenshots"),
         "import_screenshot_hint": MessageLookupByLibrary.simpleMessage(
             "Only update recognized items"),
         "import_screenshot_update_items":

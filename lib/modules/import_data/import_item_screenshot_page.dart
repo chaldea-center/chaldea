@@ -21,7 +21,8 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
   late ScrollController _scrollController3;
   Map<String, int> output = {};
   late Dio _dio;
-  late List<File> imageFiles;
+
+  Set<String> get imageFiles => db.runtimeData.itemRecognizeImageFiles;
 
   @override
   void initState() {
@@ -31,7 +32,6 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
     _scrollController1 = ScrollController();
     _scrollController2 = ScrollController();
     _scrollController3 = ScrollController();
-    imageFiles = db.runtimeData.itemRecognizeImageFiles;
     _dio = Dio(db.serverDio.options.copyWith(
       // baseUrl: kDebugMode ? 'http://localhost:8183' : null,
       sendTimeout: 600 * 1000,
@@ -63,7 +63,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
           IconButton(
             onPressed: importImages,
             icon: FaIcon(FontAwesomeIcons.fileImport),
-            tooltip: S.current.import_source_file,
+            tooltip: S.current.import_screenshot,
           ),
         ],
         bottom: TabBar(
@@ -108,24 +108,14 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
 
   Widget get screenshotsTab {
     if (imageFiles.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          child: Text(LocalizedText.of(
-            chs: '理论支持现有所有服务器的素材截图解析，精度有所提升',
-            jpn: '理論的に既存のすべてのサーバーのアイテムスクリーンショット分析をサポートする',
-            eng:
-                'Support item screenshots of all servers with improved accuracy',
-          )),
-        ),
-      );
+      return Container();
     }
     return ListView(
       controller: _scrollController1,
       children: imageFiles.map((e) {
         return Padding(
           padding: EdgeInsets.only(bottom: 6),
-          child: Image.file(e, fit: BoxFit.fitWidth),
+          child: Image.file(File(e), fit: BoxFit.fitWidth),
         );
       }).toList(),
     );
@@ -178,13 +168,24 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
           spacing: 6,
           runSpacing: 4,
           children: [
-            ElevatedButton(
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  imageFiles.clear();
+                });
+              },
+              icon: Icon(Icons.clear_all),
+              tooltip: 'Clear All',
+            ),
+            ElevatedButton.icon(
                 onPressed: imageFiles.isEmpty ? null : _uploadScreenshots,
-                child: Text(S.current.upload)),
-            ElevatedButton(
+                icon: Icon(Icons.upload),
+                label: Text(S.current.upload)),
+            ElevatedButton.icon(
                 onPressed: _fetchResult,
-                child: Text(LocalizedText.of(
-                    chs: '下载结果', jpn: '結果をダウンロード', eng: 'Download Result'))),
+                icon: Icon(Icons.download),
+                label: Text(
+                    LocalizedText.of(chs: '结果', jpn: '結果', eng: 'Result'))),
             ElevatedButton(
               onPressed: output.isEmpty ? null : _doImportResult,
               child: Text(S.current.import_screenshot_update_items),
@@ -199,8 +200,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
     FilePickerCross.importMultipleFromStorage(type: FileTypeCross.image)
         .then((value) {
       output.clear();
-      db.runtimeData.itemRecognizeImageFiles =
-          imageFiles = value.map((e) => File(e.path!)).toList();
+      imageFiles.addAll(value.map((e) => e.path).whereType<String>());
       if (mounted) {
         setState(() {});
       }
@@ -227,7 +227,8 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
       }
 
       final Map<String, dynamic> map = {};
-      for (var file in imageFiles) {
+      for (var fp in imageFiles) {
+        final file = File(fp);
         var bytes = await file.readAsBytes();
         // compress if size > 1.0M
         if (bytes.length / 1024 > 1.0) {

@@ -1,3 +1,8 @@
+## 1.5.0
+- [FEATURE] Append Skill planning support
+- support grail planning to max Lv.120
+- improve and support search feature in more pages
+
 ## 1.4.9
 - add servant sprites tab
 - add Campaign events

@@ -617,8 +617,8 @@ class PathManager {
 class RuntimeData {
   Version? upgradableVersion;
   double? criticalWidth;
-  List<File> itemRecognizeImageFiles = [];
-  List<File> svtRecognizeImageFiles = [];
+  Set<String> itemRecognizeImageFiles = {};
+  Set<String> svtRecognizeImageFiles = {};
   bool googlePlayAccess = false;
 
   /// Controller of [Screenshot] widget which set root [MaterialApp] as child

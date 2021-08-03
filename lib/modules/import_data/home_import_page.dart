@@ -20,12 +20,11 @@ class _ImportPageHomeState extends State<ImportPageHome> {
         title: Text(S.current.import_data),
       ),
       body: ListView(
-        children: [
+        children: divideTiles([
           ListTile(
             title: Center(
                 child: Text(S.current.cur_account + ': ' + db.curUser.name)),
           ),
-          kDefaultDivider,
           ListTile(
             leading: Icon(Icons.http),
             title: Text(LocalizedText.of(
@@ -85,7 +84,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
               SplitRoute.push(context, ImportGudaPage(), popDetail: true);
             },
           ),
-        ],
+        ], bottom: true),
       ),
     );
   }

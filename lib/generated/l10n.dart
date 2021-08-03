@@ -4095,6 +4095,16 @@ class S {
       args: [],
     );
   }
+
+  /// `导入截图`
+  String get import_screenshot {
+    return Intl.message(
+      '导入截图',
+      name: 'import_screenshot',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

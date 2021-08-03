@@ -281,6 +281,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_http_body_locked": MessageLookupByLibrary.simpleMessage("仅锁定"),
         "import_http_body_success_switch": m6,
         "import_http_body_target_account_header": m7,
+        "import_screenshot": MessageLookupByLibrary.simpleMessage("导入截图"),
         "import_screenshot_hint":
             MessageLookupByLibrary.simpleMessage("仅更新识别出的素材"),
         "import_screenshot_update_items":

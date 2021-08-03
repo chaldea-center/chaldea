@@ -404,5 +404,6 @@
   "search_option_basic": "Basic",
   "append_skill": "Append Skill",
   "show_outdated": "Show Outdated",
-  "hide_outdated": "Hide Outdated"
+  "hide_outdated": "Hide Outdated",
+  "import_screenshot": "Import Screenshots"
 }

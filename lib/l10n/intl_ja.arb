@@ -406,5 +406,6 @@
   "search_option_basic": "基本情報",
   "append_skill": "アペンドスキル",
   "show_outdated": "期限切れを表示",
-  "hide_outdated": "期限切れの非表示"
+  "hide_outdated": "期限切れの非表示",
+  "import_screenshot": "スクリーンショットをインポート"
 }

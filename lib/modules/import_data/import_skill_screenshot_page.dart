@@ -27,7 +27,8 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
 
   List<OneSvtRecResult> results = [];
   late Dio _dio;
-  late List<File> imageFiles;
+
+  Set<String> get imageFiles => db.runtimeData.svtRecognizeImageFiles;
 
   // update every build
   Map<int, List<OneSvtRecResult>> resultsMap = {};
@@ -40,7 +41,6 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
     _scrollController1 = ScrollController();
     _scrollController2 = ScrollController();
     _scrollController3 = ScrollController();
-    imageFiles = db.runtimeData.svtRecognizeImageFiles;
     _dio = Dio(db.serverDio.options.copyWith(
       sendTimeout: 600 * 1000,
       receiveTimeout: 600 * 1000,
@@ -79,7 +79,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
           IconButton(
             onPressed: importImages,
             icon: FaIcon(FontAwesomeIcons.fileImport),
-            tooltip: S.current.import_source_file,
+            tooltip: S.current.import_screenshot,
           ),
         ],
         bottom: TabBar(
@@ -131,7 +131,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
       children: imageFiles.map((e) {
         return Padding(
           padding: EdgeInsets.only(bottom: 6),
-          child: Image.file(e, fit: BoxFit.fitWidth),
+          child: Image.file(File(e), fit: BoxFit.fitWidth),
         );
       }).toList(),
     );
@@ -344,13 +344,24 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
           spacing: 6,
           runSpacing: 4,
           children: [
-            ElevatedButton(
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  imageFiles.clear();
+                });
+              },
+              icon: Icon(Icons.clear_all),
+              tooltip: 'Clear All',
+            ),
+            ElevatedButton.icon(
                 onPressed: imageFiles.isEmpty ? null : _uploadScreenshots,
-                child: Text(S.current.upload)),
-            ElevatedButton(
+                icon: Icon(Icons.upload),
+                label: Text(S.current.upload)),
+            ElevatedButton.icon(
                 onPressed: _fetchResult,
-                child: Text(LocalizedText.of(
-                    chs: '下载结果', jpn: '結果をダウンロード', eng: 'Download Result'))),
+                icon: Icon(Icons.download),
+                label: Text(
+                    LocalizedText.of(chs: '结果', jpn: '結果', eng: 'Result'))),
             ElevatedButton(
               child: Text(S.current.import_data),
               onPressed:
@@ -366,8 +377,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
     FilePickerCross.importMultipleFromStorage(type: FileTypeCross.image)
         .then((value) {
       results.clear();
-      db.runtimeData.svtRecognizeImageFiles =
-          imageFiles = value.map((e) => File(e.path!)).toList();
+      imageFiles.addAll(value.map((e) => e.path).whereType<String>());
       if (mounted) {
         setState(() {});
       }
@@ -395,7 +405,8 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
       }
 
       Map<String, dynamic> map = {};
-      for (var file in imageFiles) {
+      for (var fp in imageFiles) {
+        final file = File(fp);
         var bytes = await file.readAsBytes();
         // compress if size > 1.0M
         if (bytes.length / 1024 > 1.0) {
