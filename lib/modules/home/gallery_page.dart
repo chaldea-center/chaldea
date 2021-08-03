@@ -115,7 +115,7 @@ class _GalleryPageState extends State<GalleryPage> {
         horizontalTitleGap: 0,
         leading: Icon(Icons.stars_rounded),
         title: Text(LocalizedText.of(
-            chs: '走过路过给个评分吧', jpn: 'アプリを評価する', eng: 'Rating Chaldea')),
+            chs: '走过路过给个评价反馈吧~', jpn: 'アプリを評価する', eng: 'Rating Chaldea')),
         subtitle: expanded
             ? AutoSizeText(
                 LocalizedText.of(

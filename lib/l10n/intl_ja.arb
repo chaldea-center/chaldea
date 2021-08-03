@@ -403,5 +403,6 @@
   "display_setting": "表示設定",
   "issues": "問題",
   "search_options": "検索範囲",
-  "search_option_basic": "基本情報"
+  "search_option_basic": "基本情報",
+  "append_skill": "アペンドスキル"
 }

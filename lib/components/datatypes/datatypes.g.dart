@@ -634,6 +634,12 @@ ItemCost _$ItemCostFromJson(Map<String, dynamic> json) {
           (v) => (v as List<dynamic>)
               .map((e) => Map<String, int>.from(e as Map))
               .toList()),
+      appendSkill: $checkedConvert(
+          json,
+          'appendSkill',
+          (v) => (v as List<dynamic>)
+              .map((e) => Map<String, int>.from(e as Map))
+              .toList()),
     );
     return val;
   });
@@ -642,6 +648,7 @@ ItemCost _$ItemCostFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$ItemCostToJson(ItemCost instance) => <String, dynamic>{
       'ascension': instance.ascension,
       'skill': instance.skill,
+      'appendSkill': instance.appendSkill,
     };
 
 Item _$ItemFromJson(Map<String, dynamic> json) {
@@ -1040,6 +1047,12 @@ Servant _$ServantFromJson(Map<String, dynamic> json) {
           (v) => (v as List<dynamic>)
               .map((e) => Skill.fromJson(e as Map<String, dynamic>))
               .toList()),
+      appendSkills: $checkedConvert(
+          json,
+          'appendSkills',
+          (v) => (v as List<dynamic>)
+              .map((e) => Skill.fromJson(e as Map<String, dynamic>))
+              .toList()),
       itemCost: $checkedConvert(json, 'itemCost',
           (v) => ItemCost.fromJson(v as Map<String, dynamic>)),
       costumeNos: $checkedConvert(json, 'costumeNos',
@@ -1090,6 +1103,7 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'activeSkillsEn': instance.activeSkillsEn,
       'passiveSkills': instance.passiveSkills,
       'passiveSkillsEn': instance.passiveSkillsEn,
+      'appendSkills': instance.appendSkills,
       'itemCost': instance.itemCost,
       'costumeNos': instance.costumeNos,
       'bondPoints': instance.bondPoints,
@@ -1888,8 +1902,7 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$UserDataToJson(UserData instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'language': instance.language,
       'themeMode': _$ThemeModeEnumMap[instance.themeMode],
       'showSummonBanner': instance.showSummonBanner,

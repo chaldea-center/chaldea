@@ -29,7 +29,18 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
           ),
         ),
         Divider(height: 1),
-        Expanded(child: ListView(children: divideTiles(buildQuests())))
+        Expanded(
+            child: ListView(
+                children: divideTiles([
+          ...buildQuests(),
+          ListTile(
+            subtitle: Center(
+              child: Text(
+                Localized.freeDropRateChangedHint.localized,
+              ),
+            ),
+          )
+        ])))
       ],
     );
   }

@@ -90,6 +90,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ap_efficiency": MessageLookupByLibrary.simpleMessage("AP rate"),
         "ap_overflow_time":
             MessageLookupByLibrary.simpleMessage("Time of AP Full"),
+        "append_skill": MessageLookupByLibrary.simpleMessage("Append Skill"),
         "ascension": MessageLookupByLibrary.simpleMessage("Ascension"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("Ascen"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("Ascension"),

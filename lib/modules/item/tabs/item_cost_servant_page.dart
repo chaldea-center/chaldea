@@ -46,11 +46,12 @@ class ItemCostServantPage extends StatelessWidget {
         ),
       ];
       if (viewType == 0) {
-        // 0 ascension 1 skill 2 dress 3 grail
+        // 0 ascension 1 skill 2 dress 3 append 4 extra
         final headers = [
           S.current.ascension_up,
           S.current.skill_up,
           S.current.costume_unlock,
+          S.current.append_skill,
           'Extra'
         ];
         for (int i = 0; i < headers.length; i++) {
@@ -144,6 +145,7 @@ class ItemCostServantPage extends StatelessWidget {
       final ascensionNum = details.ascension[itemKey]?[svtNo] ?? 0,
           skillNum = details.skill[itemKey]?[svtNo] ?? 0,
           dressNum = details.dress[itemKey]?[svtNo] ?? 0,
+          appendNum = details.appendSkill[itemKey]?[svtNo] ?? 0,
           extraNum = details.extra[itemKey]?[svtNo] ?? 0;
       children.add(CustomTile(
         leading: db.getIconImage(svt.icon, width: 52),
@@ -151,7 +153,7 @@ class ItemCostServantPage extends StatelessWidget {
         subtitle: Text(
           Items.extraPlanningItems.contains(itemKey)
               ? '$extraNum'
-              : '$allNum($ascensionNum/$skillNum/$dressNum)',
+              : '$allNum($ascensionNum/$skillNum/$dressNum/$appendNum)',
           style: textStyle,
         ),
         trailing: Icon(Icons.arrow_forward_ios),

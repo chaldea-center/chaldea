@@ -90,6 +90,7 @@ class GameData {
 class ItemCost {
   List<Map<String, int>> ascension;
   List<Map<String, int>> skill;
+  List<Map<String, int>> appendSkill;
 
   // see db.gamedata.costumes
   // @deprecated
@@ -98,6 +99,7 @@ class ItemCost {
   ItemCost({
     required this.ascension,
     required this.skill,
+    required this.appendSkill,
   });
 
   factory ItemCost.fromJson(Map<String, dynamic> data) =>

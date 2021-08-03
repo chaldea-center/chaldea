@@ -36,6 +36,11 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
         SHeader(S.of(context).passive_skill),
         for (var index = 0; index < svt.lPassiveSkills.length; index++)
           buildPassiveSkill(index),
+      ],
+      if (svt.appendSkills.isNotEmpty) ...[
+        SHeader(S.current.append_skill),
+        for (var index = 0; index < svt.appendSkills.length; index++)
+          buildAppendSkill(index),
       ]
     ]);
   }
@@ -90,6 +95,20 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
           contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
           leading: db.getIconImage(skill.icon, width: 33, height: 33),
           title: Text('${skill.localizedName} ${skill.rank ?? ""}'),
+        ),
+        for (Effect effect in skill.effects) ...buildEffect(effect),
+      ],
+    );
+  }
+
+  Widget buildAppendSkill(int index) {
+    Skill skill = svt.appendSkills[index];
+    return TileGroup(
+      children: <Widget>[
+        CustomTile(
+          contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
+          leading: db.getIconImage(skill.icon, width: 33, height: 33),
+          title: Text(skill.localizedName),
         ),
         for (Effect effect in skill.effects) ...buildEffect(effect),
       ],

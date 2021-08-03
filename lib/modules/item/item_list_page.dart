@@ -353,7 +353,10 @@ class _ItemListTabState extends State<ItemListTab> {
 
   void setAll999() {
     SimpleCancelOkDialog(
-      content: Text('本页所有素材均设为999'),
+      content: Text(LocalizedText.of(
+          chs: '本页所有素材均设为999',
+          jpn: 'このページのすべてのアイテム量は999に設定',
+          eng: 'Set all items in this tab to 999')),
       onTapOk: () {
         _shownGroups.forEach((group) {
           if (group.data.name != Items.qp)

@@ -87,6 +87,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ap_calc_title": MessageLookupByLibrary.simpleMessage("AP计算"),
         "ap_efficiency": MessageLookupByLibrary.simpleMessage("AP效率"),
         "ap_overflow_time": MessageLookupByLibrary.simpleMessage("AP溢出时间"),
+        "append_skill": MessageLookupByLibrary.simpleMessage("附加被动"),
         "ascension": MessageLookupByLibrary.simpleMessage("灵基"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("灵基"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("灵基再临"),

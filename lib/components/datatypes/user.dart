@@ -267,6 +267,7 @@ class ServantPlan {
   bool favorite;
   int ascension;
   List<int> skills; // length 3
+  List<int> appendSkills; // length 3
   List<int> dress;
   int grail;
 
@@ -279,14 +280,17 @@ class ServantPlan {
     int? ascension,
     List<int>? skills,
     List<int>? dress,
+    List<int>? appendSkills,
     int? grail,
     int? fouHp,
     int? fouAtk,
   })  : favorite = favorite ?? false,
         ascension = ascension ?? 0,
-        skills = List.generate(3, (index) => skills?.getOrNull(index) ?? 0),
+        skills = List.generate(3, (index) => skills?.getOrNull(index) ?? 1),
         dress = List.generate(
             dress?.length ?? 0, (index) => dress?.getOrNull(index) ?? 0),
+        appendSkills =
+            List.generate(3, (index) => appendSkills?.getOrNull(index) ?? 1),
         grail = grail ?? 0,
         fouHp = fouHp ?? 0,
         fouAtk = fouAtk ?? 0 {
@@ -302,6 +306,7 @@ class ServantPlan {
     ascension = 0;
     skills.fillRange(0, 3, 1);
     dress.fillRange(0, dress.length, 0);
+    appendSkills.fillRange(0, 3, 1);
     grail = 0;
     fouHp = fouAtk = 0;
   }
@@ -311,6 +316,7 @@ class ServantPlan {
         ascension == 0 &&
         skills.every((e) => e == 1) &&
         dress.every((e) => e == 0) &&
+        appendSkills.every((e) => e == 1) &&
         grail == 0 &&
         fouHp == 0 &&
         fouAtk == 0;
@@ -322,6 +328,7 @@ class ServantPlan {
     ascension = 4;
     skills.fillRange(0, 3, skill);
     dress.fillRange(0, dress.length, 1);
+    // appendSkills.fillRange(0, 3, skill);
     // grail = grail;
     // fouHp, fouAtk
   }
@@ -335,6 +342,10 @@ class ServantPlan {
     ascension = fixValidRange(ascension, lowerPlan?.ascension ?? 0, 4);
     for (int i = 0; i < skills.length; i++) {
       skills[i] = fixValidRange(skills[i], lowerPlan?.skills[i] ?? 1, 10);
+    }
+    for (int i = 0; i < appendSkills.length; i++) {
+      appendSkills[i] =
+          fixValidRange(appendSkills[i], lowerPlan?.appendSkills[i] ?? 1, 10);
     }
     for (int i = 0; i < dress.length; i++) {
       dress[i] = fixValidRange(dress[i], lowerPlan?.dress.getOrNull(i) ?? 0, 1);
@@ -355,6 +366,7 @@ class ServantPlan {
     int? ascension,
     List<int>? skills,
     List<int>? dress,
+    List<int>? appendSkills,
     int? grail,
     int? fouHp,
     int? fouAtk,
@@ -364,6 +376,7 @@ class ServantPlan {
       ascension: ascension ?? this.ascension,
       skills: skills ?? this.skills,
       dress: dress ?? this.dress,
+      appendSkills: appendSkills ?? this.appendSkills,
       grail: grail ?? this.grail,
       fouHp: fouHp ?? this.fouHp,
       fouAtk: fouAtk ?? this.fouAtk,
@@ -375,6 +388,7 @@ class ServantPlan {
     ascension = other.ascension;
     skills = List.from(other.skills);
     dress = List.from(other.dress);
+    appendSkills = List.from(other.appendSkills);
     grail = other.grail;
     fouHp = other.fouHp;
     fouAtk = other.fouAtk;

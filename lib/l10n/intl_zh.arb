@@ -400,5 +400,6 @@
   "display_setting": "显示设置",
   "issues": "常见问题",
   "search_options": "搜索范围",
-  "search_option_basic": "基础信息"
+  "search_option_basic": "基础信息",
+  "append_skill": "附加被动"
 }

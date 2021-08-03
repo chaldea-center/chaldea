@@ -196,23 +196,27 @@ class SvtParts<T> {
   T ascension;
   T skill;
   T dress;
+  T appendSkill;
   T extra;
 
   SvtParts({
     T? ascension,
     T? skill,
     T? dress,
+    T? appendSkill,
     T? extra,
     T? summation,
     T k()?,
   })  : assert(ascension != null &&
                 skill != null &&
                 dress != null &&
+                appendSkill != null &&
                 extra != null ||
             k != null),
         ascension = ascension ?? k!(),
         skill = skill ?? k!(),
         dress = dress ?? k!(),
+        appendSkill = appendSkill ?? k!(),
         extra = extra ?? k!(),
         summation = summation ?? k?.call();
 
@@ -221,6 +225,7 @@ class SvtParts<T> {
       ascension: f == null ? ascension as T2 : f(ascension),
       skill: f == null ? skill as T2 : f(skill),
       dress: f == null ? dress as T2 : f(dress),
+      appendSkill: f == null ? appendSkill as T2 : f(skill),
       extra: f == null ? extra as T2 : f(extra),
       summation: f == null
           ? summation as T2?
@@ -230,20 +235,21 @@ class SvtParts<T> {
     );
   }
 
-  List<T> get values => [ascension, skill, dress, extra];
+  List<T> get values => [ascension, skill, dress, appendSkill, extra];
 
   List<T> valuesIfExtra(String key) {
     return Items.extraPlanningItems.contains(key)
         ? [extra]
-        : [ascension, skill, dress];
+        : [ascension, skill, dress, appendSkill];
   }
 
   /// calculate [summation] before using!!!
-  List<T> get valuesWithSum => [ascension, skill, dress, extra, summation!];
+  List<T> get valuesWithSum =>
+      [ascension, skill, dress, appendSkill, extra, summation!];
 
   @override
   String toString() {
     return '$runtimeType<$T>(\n  ascension:$ascension,\n  skill:$skill,\n'
-        '  dress:$dress)\n  extra:$extra';
+        '  dress:$dress,\n  appendSkill:$appendSkill,\n  extra:$extra)';
   }
 }

@@ -82,6 +82,11 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
         ));
       }
     });
+    children.add(ListTile(
+      subtitle: Center(
+        child: Text(Localized.freeDropRateChangedHint.localized),
+      ),
+    ));
     return Column(
       children: [
         ListTile(

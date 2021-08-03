@@ -25,6 +25,7 @@ class Servant {
   List<ActiveSkill> activeSkillsEn;
   List<Skill> passiveSkills;
   List<Skill> passiveSkillsEn;
+  List<Skill> appendSkills;
   ItemCost itemCost;
   List<int> costumeNos;
   List<int> bondPoints;
@@ -83,6 +84,7 @@ class Servant {
     required this.activeSkillsEn,
     required this.passiveSkills,
     required this.passiveSkillsEn,
+    required this.appendSkills,
     required this.itemCost,
     required this.costumeNos,
     required this.bondPoints,
@@ -106,8 +108,13 @@ class Servant {
   Map<String, int> getAllCost(
       {ServantPlan? cur, ServantPlan? target, bool all = false}) {
     if (all) {
-      return sumDict(
-          [getAscensionCost(), getSkillCost(), getDressCost(), getExtraCost()]);
+      return sumDict([
+        getAscensionCost(),
+        getSkillCost(),
+        getDressCost(),
+        getAppendSkillCost(),
+        getExtraCost()
+      ]);
     }
     target ??= ServantPlan();
     if (cur?.favorite == true) {
@@ -115,6 +122,7 @@ class Servant {
         getAscensionCost(cur: cur!.ascension, target: target.ascension),
         getSkillCost(cur: cur.skills, target: target.skills),
         getDressCost(cur: cur.dress, target: target.dress),
+        getAppendSkillCost(cur: cur.appendSkills, target: target.appendSkills),
         getExtraCost(cur: cur, target: target)
       ]);
     } else {
@@ -130,6 +138,7 @@ class Servant {
         ascension: getAscensionCost(),
         skill: getSkillCost(),
         dress: getDressCost(),
+        appendSkill: getAppendSkillCost(),
         extra: getExtraCost(),
       );
     }
@@ -140,6 +149,8 @@ class Servant {
             getAscensionCost(cur: cur!.ascension, target: target.ascension),
         skill: getSkillCost(cur: cur.skills, target: target.skills),
         dress: getDressCost(cur: cur.dress, target: target.dress),
+        appendSkill: getAppendSkillCost(
+            cur: cur.appendSkills, target: target.appendSkills),
         extra: getExtraCost(cur: cur, target: target),
       );
     } else {
@@ -166,6 +177,24 @@ class Servant {
       // lv 1-10 -> 0-9
       for (int j = cur[i] - 1; j < target[i] - 1; j++) {
         sumDict([items, itemCost.skill[j]], inPlace: true);
+      }
+    }
+    return items;
+  }
+
+  Map<String, int> getAppendSkillCost({List<int>? cur, List<int>? target}) {
+    if (itemCost.appendSkill.isEmpty || itemCost.appendSkill.first.isEmpty)
+      return {};
+    cur ??= [1, 1, 1];
+    target ??= [10, 10, 10];
+    Map<String, int> items = {};
+
+    for (int i = 0; i < 3; i++) {
+      cur[i] = fixValidRange(cur[i], 1, 10);
+      target[i] = fixValidRange(target[i], 1, 10);
+      // lv 1-10 -> 0-9
+      for (int j = cur[i] - 1; j < target[i] - 1; j++) {
+        sumDict([items, itemCost.appendSkill[j]], inPlace: true);
       }
     }
     return items;

@@ -136,8 +136,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           ));
         }
       }
-      children.add(
-          TileGroup(header: S.of(context).skill_up, children: skillWidgets));
+      children
+          .add(TileGroup(header: S.current.skill_up, children: skillWidgets));
 
       // costume part
       List<Widget> dressWidgets = [];
@@ -180,7 +180,40 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         children.add(TileGroup(
             header: S.of(context).costume_unlock, children: dressWidgets));
       }
+
+      // append skill
+      List<Widget> appendSkillWidgets = [];
+      for (int index = 0; index < svt.appendSkills.length; index++) {
+        final skill = svt.appendSkills[index];
+        appendSkillWidgets.add(buildPlanRow(
+          useSlider: sliderMode,
+          leading: db.getIconImage(skill.icon, width: 33),
+          title: skill.localizedName,
+          start: curVal.appendSkills[index],
+          end: targetVal.appendSkills[index],
+          minVal: 1,
+          maxVal: 10,
+          onValueChanged: (_start, _end) {
+            status.favorite = true;
+            curVal.appendSkills[index] = _start;
+            targetVal.appendSkills[index] = _end;
+            updateState();
+          },
+          detailPageBuilder: (context) => LevelingCostPage(
+            costList: svt.itemCost.appendSkill,
+            title:
+                '${S.current.append_skill} ${index + 1} - ${skill.localizedName}',
+            curLv: curVal.appendSkills[index],
+            targetLv: targetVal.appendSkills[index],
+          ),
+        ));
+      }
       children.add(TileGroup(
+          header: S.current.append_skill, children: appendSkillWidgets));
+
+      // Extra part: np/grail/fou-kun
+      children.add(TileGroup(
+        header: S.current.event_item_extra,
         children: <Widget>[
           buildPlanRow(
             useSlider: sliderMode,
@@ -209,7 +242,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
               maxVal: svt.getMaxGrailCount(),
               labelFormatter: (v) => svt.getGrailLv(v).toString(),
               trailingLabelFormatter: (a, b) =>
-                  '${svt.getGrailLv(a)}->${svt.getGrailLv(b!).toString().padRight(3)}',
+                  '${svt.getGrailLv(a)}->${svt.getGrailLv(b!)}'.padLeft(7),
               onValueChanged: (_start, _end) {
                 status.favorite = true;
                 curVal.grail = _start;
@@ -308,7 +341,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             showDialog(context: context, builder: detailPageBuilder),
       );
     } else {
-      trailingIcon = SizedBox(width: 8);
+      trailingIcon = SizedBox(width: 16);
     }
     if (useSlider) {
       Widget slider;
@@ -527,7 +560,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
   }
 
   void updateState() {
-    db.itemStat.updateSvtItems(lapse: Duration(seconds: 1));
+    db.itemStat.updateSvtItems(lapse: const Duration(seconds: 1));
     if (widget.parent != null)
       widget.parent?.setState(() {});
     else

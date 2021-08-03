@@ -87,6 +87,11 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
             }),
       ));
     });
+    children.add(ListTile(
+      subtitle: Center(
+        child: Text(Localized.freeDropRateChangedHint.localized),
+      ),
+    ));
     return Column(
       children: <Widget>[
         Container(

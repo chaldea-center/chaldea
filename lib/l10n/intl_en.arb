@@ -401,5 +401,6 @@
   "display_setting": "Display Settings",
   "issues": "Issues",
   "search_options": "Search Scopes",
-  "search_option_basic": "Basic"
+  "search_option_basic": "Basic",
+  "append_skill": "Append Skill"
 }
