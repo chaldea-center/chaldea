@@ -341,7 +341,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "info_cards": MessageLookupByLibrary.simpleMessage("Cards"),
         "info_critical_rate":
             MessageLookupByLibrary.simpleMessage("Critical Rate"),
-        "info_cv": MessageLookupByLibrary.simpleMessage("CV"),
+        "info_cv": MessageLookupByLibrary.simpleMessage("Voice Actor"),
         "info_death_rate": MessageLookupByLibrary.simpleMessage("Death Rate"),
         "info_endurance": MessageLookupByLibrary.simpleMessage("Endurance"),
         "info_gender": MessageLookupByLibrary.simpleMessage("Gender"),

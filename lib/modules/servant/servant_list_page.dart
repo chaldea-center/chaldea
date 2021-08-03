@@ -314,7 +314,7 @@ class ServantListPageState
     // gender
     if (!filterData.gender.singleValueFilter(svt.info.gender, compares: {
       '其他': (optionKey, value) =>
-      value != SvtFilterData.genderData[0] &&
+          value != SvtFilterData.genderData[0] &&
           value != SvtFilterData.genderData[1]
     })) {
       return false;
@@ -759,8 +759,10 @@ class _ServantOptions with SearchOptionsMixin<Servant> {
       buffer.write(getCache(
         svt,
         'basic',
-        () => [
+        () =>
+        [
           svt.no.toString(),
+          if (kDebugMode) svt.svtId.toString(),
           svt.mcLink,
           ...Utils.getSearchAlphabets(
               svt.info.name, svt.info.nameJp, svt.info.nameEn),
