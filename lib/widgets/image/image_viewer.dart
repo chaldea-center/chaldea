@@ -207,11 +207,8 @@ class _CachedImageState extends State<CachedImage> {
       String? realUrl = getRealUrl();
       if (realUrl?.isNotEmpty != true) {
         usePlaceholder = true;
-      } else if (db.hasNetwork) {
-        // use CachedNetworkImage
-        usePlaceholder = false;
       } else {
-        usePlaceholder = true;
+        usePlaceholder = false;
       }
 
       if (usePlaceholder) {

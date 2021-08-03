@@ -63,7 +63,12 @@ class _GameDataPageState extends State<GameDataPage> {
               ),
               sourceAccordion(
                 source: GitSource.gitee,
-                subtitle: S.current.gitee_source_hint,
+                subtitle: LocalizedText.of(
+                  chs: '暂不作为应用内下载源',
+                  jpn: '現在、アプリ内ダウンロードソースとして使用されていません',
+                  eng: 'Currently this in-app download source is disabled',
+                ),
+                disabled: true,
               ),
             ],
           ),
@@ -159,22 +164,28 @@ class _GameDataPageState extends State<GameDataPage> {
     );
   }
 
-  Widget sourceAccordion(
-      {required GitSource source, String? subtitle, bool hideContent = false}) {
+  Widget sourceAccordion({
+    required GitSource source,
+    String? subtitle,
+    bool hideContent = false,
+    bool disabled = false,
+  }) {
     final gitTool = GitTool(source);
     Widget radio = RadioListTile<int>(
       value: source.toIndex(),
       groupValue: db.userData.downloadSource,
       title: Text(source.toTitleString()),
       subtitle: subtitle == null ? null : Text(subtitle),
-      onChanged: (v) {
-        setState(() {
-          if (v != null) {
-            db.userData.downloadSource = v;
-            db.notifyDbUpdate();
-          }
-        });
-      },
+      onChanged: disabled
+          ? null
+          : (v) {
+              setState(() {
+                if (v != null) {
+                  db.userData.downloadSource = v;
+                  db.notifyDbUpdate();
+                }
+              });
+            },
       controlAffinity: ListTileControlAffinity.leading,
     );
     if (hideContent) return radio;

@@ -34,15 +34,6 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       {ServantDetailPageState? parent, Servant? svt, ServantStatus? status})
       : super(parent: parent, svt: svt, status: status);
 
-  void ensureTargetLarger(ServantPlan cur, ServantPlan target) {
-    target.validate(cur);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     bool sliderMode = widget.parent?.svtPlanSliderMode.get() ?? false;
@@ -53,7 +44,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       status.validate(svt);
       final curVal = status.curVal;
       final targetVal = enhanceMode ? enhancePlan : plan;
-      targetVal.validate(curVal);
+      targetVal.validate(curVal, svt.info.rarity);
       // ascension part
       List<Widget> children = [];
       if (svt.no != 1) {
@@ -239,10 +230,13 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
               start: curVal.grail,
               end: targetVal.grail,
               minVal: 0,
-              maxVal: svt.getMaxGrailCount(),
-              labelFormatter: (v) => svt.getGrailLv(v).toString(),
+              maxVal: Grail.maxGrailCount(svt.info.rarity),
+              labelFormatter: (v) =>
+                  Grail.grailToLvMax(svt.info.rarity, v).toString(),
               trailingLabelFormatter: (a, b) =>
-                  '${svt.getGrailLv(a)}->${svt.getGrailLv(b!)}'.padLeft(7),
+                  '${Grail.grailToLvMax(svt.info.rarity, a)}->'
+                          '${Grail.grailToLvMax(svt.info.rarity, b!)}'
+                      .padLeft(7),
               onValueChanged: (_start, _end) {
                 status.favorite = true;
                 curVal.grail = _start;

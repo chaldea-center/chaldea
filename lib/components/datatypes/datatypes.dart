@@ -48,6 +48,8 @@ part 'gamedata.dart';
 
 part 'glpk.dart';
 
+part 'item.dart';
+
 part 'item_statistic.dart';
 
 part 'mystic_code.dart';

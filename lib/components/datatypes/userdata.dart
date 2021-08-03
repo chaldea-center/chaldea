@@ -80,6 +80,10 @@ class UserData {
     this.users.forEach((key, value) {
       value.key = key;
     });
+    // gitee disabled
+    if (this.downloadSource == 2) {
+      this.downloadSource = 0;
+    }
   }
 
   GitSource get gitSource =>

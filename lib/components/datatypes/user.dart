@@ -337,8 +337,8 @@ class ServantPlan {
     fillListValue(dress, length, (_) => fill);
   }
 
-  void validate([ServantPlan? lowerPlan]) {
-    lowerPlan?.validate();
+  void validate([ServantPlan? lowerPlan, int? rarity]) {
+    lowerPlan?.validate(null, rarity);
     ascension = fixValidRange(ascension, lowerPlan?.ascension ?? 0, 4);
     for (int i = 0; i < skills.length; i++) {
       skills[i] = fixValidRange(skills[i], lowerPlan?.skills[i] ?? 1, 10);
@@ -351,7 +351,8 @@ class ServantPlan {
       dress[i] = fixValidRange(dress[i], lowerPlan?.dress.getOrNull(i) ?? 0, 1);
     }
     // check grail max limit when used
-    grail = fixValidRange(grail, lowerPlan?.grail ?? 0);
+    grail = fixValidRange(grail, lowerPlan?.grail ?? 0,
+        rarity == null ? null : Grail.maxGrailCount(rarity));
     fouHp = fixValidRange(fouHp, lowerPlan?.fouHp ?? 0, 50);
     fouAtk = fixValidRange(fouAtk, lowerPlan?.fouAtk ?? 0, 50);
   }

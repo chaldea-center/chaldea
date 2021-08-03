@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 
+const int _MAX_SVT_LV = 120;
+
 class ExpCardCostPage extends StatefulWidget {
   @override
   _ExpCardCostPageState createState() => _ExpCardCostPageState();
@@ -210,73 +212,51 @@ class _ExpLvRangeSelectorState extends State<ExpLvRangeSelector> {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
-    for (int i = 1; i <= 100; i++) {
+    for (int i = 1; i <= _MAX_SVT_LV; i++) {
       VoidCallback _onTapLv = () {
         data.clickAt(i);
         setState(() {});
       };
+      bool isEndPoint = i == data.startLv || i == data.endLv;
+      bool isInRange = i > data.startLv && i < data.endLv;
       Widget btn;
-      Widget text = Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-        child: SizedBox(
-          width: 48,
-          height: 32,
-          child: Center(
-            child: AutoSizeText(
-              i.toString(),
-              maxFontSize: 48,
-              minFontSize: 12,
-              maxLines: 1,
-              style: TextStyle(fontSize: 48),
+      btn = Padding(
+        padding: EdgeInsets.symmetric(horizontal: 2, vertical: 3),
+        child: Material(
+          color: isEndPoint
+              ? Theme.of(context).colorScheme.primary
+              : isInRange
+                  ? Theme.of(context).colorScheme.background
+                  : Theme.of(context).highlightColor,
+          borderRadius: BorderRadius.circular(3),
+          child: InkWell(
+            onTap: _onTapLv,
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 2),
+                child: AutoSizeText(
+                  i.toString(),
+                  maxFontSize: 48,
+                  minFontSize: 2,
+                  maxLines: 1,
+                  style: TextStyle(fontSize: 48),
+                ),
+              ),
             ),
           ),
         ),
       );
-      Size buttonSize = Size(48, 48);
-      if (i == data.startLv || i == data.endLv) {
-        btn = ElevatedButton(
-          onPressed: _onTapLv,
-          child: text,
-          style: ElevatedButton.styleFrom(
-            minimumSize: buttonSize,
-          ),
-        );
-      } else if (i > data.startLv && i < data.endLv) {
-        btn = ElevatedButton(
-          onPressed: _onTapLv,
-          child: text,
-          style: ElevatedButton.styleFrom(
-            minimumSize: buttonSize,
-            elevation: 0,
-            primary: Colors.lightBlue[300],
-          ),
-        );
-      } else {
-        btn = OutlinedButton(
-          onPressed: _onTapLv,
-          child: text,
-          style: OutlinedButton.styleFrom(
-            minimumSize: buttonSize,
-          ),
-        );
-      }
-      btn = Padding(
-        padding: EdgeInsets.symmetric(horizontal: 2, vertical: 3),
-        child: btn,
-      );
-      children.add(FittedBox(
-        fit: BoxFit.contain,
-        child: btn,
-      ));
+
+      children.add(btn);
     }
     Widget grid = LayoutBuilder(builder: (context, constraints) {
-      int crossCount = constraints.maxWidth ~/ 40 ~/ 5 * 5;
-      crossCount = max(10, crossCount);
+      int crossCount = constraints.maxWidth ~/ 32 ~/ 5 * 5;
+      crossCount = max(5, crossCount);
       return GridView.count(
         shrinkWrap: true,
         crossAxisCount: crossCount,
         padding: EdgeInsets.fromLTRB(4, 8, 4, 24),
-        childAspectRatio: 48 / 28,
+        childAspectRatio: 48 / 32,
         children: children,
       );
     });
@@ -338,13 +318,7 @@ class ExpUpData {
     qpStages.clear();
     grailStages.clear();
 
-    List<int> lvs = const [
-      [0, 20, 30, 40, 50, 60, 70, 75, 80, 85, 90, 92, 94, 96, 98, 100],
-      [0, 25, 35, 45, 55, 65, 70, 75, 80, 85, 90, 92, 94, 96, 98, 100],
-      [0, 30, 40, 50, 60, 70, 75, 80, 85, 90, 92, 94, 96, 98, 100],
-      [0, 40, 50, 60, 70, 80, 85, 90, 92, 94, 96, 98, 100],
-      [0, 50, 60, 70, 80, 90, 92, 94, 96, 98, 100],
-    ][rarity2 - 1];
+    List<int> lvs = Grail.maxAscensionGrailLvs(rarity: rarity2);
     for (int index = 0; index < lvs.length - 1; index++) {
       int lva = max(lvs[index], startLv), lvb = min(lvs[index + 1], endLv);
       if (lva >= lvb) {
@@ -372,7 +346,7 @@ class ExpUpData {
       int curLv = lva, qp = 0, curExp = lvExpList[curLv];
       List<int> ascensionQp = ascensionQpList[rarity2 - 1];
       grailStages.add(0);
-      if (lva != 100 && lvs.contains(lva)) {
+      if (lva != _MAX_SVT_LV && lvs.contains(lva)) {
         qp += ascensionQp[lvs.indexOf(lva) - 1] * 1000;
         if (index >= 5) grailStages[grailStages.length - 1] = 1;
         // print('ascension qp: ${ascensionQp[lvs.indexOf(lva) - 1] * 1000}');
@@ -386,7 +360,7 @@ class ExpUpData {
           // print('    Lv.$curLv - ${lvQpCostList[curLv]}');
         }
         if (curExp >= lvExpList.last) {
-          curLv = 100;
+          curLv = _MAX_SVT_LV;
         } else {
           curLv = lvExpList.indexWhere((e) => e > curExp) - 1;
         }
@@ -402,6 +376,7 @@ class ExpUpData {
     grailStages.insert(0, sum(grailStages));
   }
 
+  // total EXP for every lv
   static const List<int> lvExpList = [
     -1,
     0,
@@ -503,11 +478,33 @@ class ExpUpData {
     16514400,
     17596500,
     18855000,
-    20311500
+    20311500 * 1, //Lv.100
+    20311500 * 2, //Lv.101
+    20311500 * 3,
+    20311500 * 4,
+    20311500 * 5,
+    20311500 * 6,
+    20311500 * 7,
+    20311500 * 8,
+    20311500 * 9,
+    20311500 * 10,
+    20311500 * 11,
+    20311500 * 12,
+    20311500 * 13,
+    20311500 * 14,
+    20311500 * 15,
+    20311500 * 16,
+    20311500 * 17,
+    20311500 * 18,
+    20311500 * 19,
+    20311500 * 20,
+    20311500 * 21, // Lv.120
   ];
+
+  // use ★1 servant data, ★5=6	★4=4	★3=2	★2=1.5  ★1=1
   static const List<int> lvQpCostList = [
     -1,
-    100,
+    100, //Lv.1
     130,
     160,
     190,
@@ -606,10 +603,49 @@ class ExpUpData {
     2980,
     3010,
     3040,
-    3070
+    3070, //Lv.100
+    3100, //Lv.101
+    3130,
+    3160,
+    3190,
+    3220,
+    3250,
+    3280,
+    3310,
+    3340,
+    3370,
+    3400,
+    3430,
+    3460,
+    3490,
+    3520,
+    3550,
+    3580,
+    3610,
+    3640,
+    3670, // Lv.120
   ];
-  static const List<List<int>> ascensionQpList = [
-    [10, 30, 90, 300, 400, 600, 800, 1000, 2000, 3000, 4000, 5000, 6000, 7000],
+
+  // including Ascension and Palingenesis QP cost
+  // unit: k
+  static List<List<int>> ascensionQpList = [
+    [
+      10,
+      30,
+      90,
+      300,
+      400,
+      600,
+      800,
+      1000,
+      2000,
+      3000,
+      4000,
+      5000,
+      6000,
+      7000,
+      ...List.generate(10, (index) => 8000)
+    ],
     [
       15,
       45,
@@ -624,10 +660,50 @@ class ExpUpData {
       5000,
       6000,
       7000,
-      8000
+      8000,
+      ...List.generate(10, (index) => 8000)
     ],
-    [30, 100, 300, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000],
-    [50, 150, 500, 1500, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
-    [100, 300, 1000, 3000, 9000, 10000, 11000, 12000, 13000],
+    [
+      30,
+      100,
+      300,
+      900,
+      1000,
+      2000,
+      3000,
+      4000,
+      5000,
+      6000,
+      7000,
+      8000,
+      9000,
+      ...List.generate(10, (index) => 8000)
+    ],
+    [
+      50,
+      150,
+      500,
+      1500,
+      4000,
+      5000,
+      6000,
+      7000,
+      8000,
+      9000,
+      10000,
+      ...List.generate(10, (index) => 8000)
+    ],
+    [
+      100,
+      300,
+      1000,
+      3000,
+      9000,
+      10000,
+      11000,
+      12000,
+      13000,
+      ...List.generate(10, (index) => 8000)
+    ],
   ];
 }

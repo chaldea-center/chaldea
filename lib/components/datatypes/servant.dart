@@ -222,7 +222,7 @@ class Servant {
   }
 
   Map<String, int> getExtraCost({ServantPlan? cur, ServantPlan? target}) {
-    final maxGrail = [10, 10, 10, 9, 7, 5][this.info.rarity2];
+    final maxGrail = Grail.maxGrailCount(this.info.rarity);
     cur ??= ServantPlan();
     target ??= ServantPlan()
       ..fouHp = 50
@@ -233,17 +233,6 @@ class Servant {
       Items.fou4Hp: max(0, target.fouHp - cur.fouHp),
       Items.fou4Atk: max(0, target.fouAtk - cur.fouAtk),
     }..removeWhere((key, value) => value == 0);
-  }
-
-  int getGrailLv(int grail) {
-    final maxGrail = getMaxGrailCount();
-    if (grail == 0)
-      return [65, 60, 65, 70, 80, 90].getOrNull(info.rarity) ?? 90;
-    return [100, 98, 96, 94, 92, 90, 85, 80, 75, 70][maxGrail - grail];
-  }
-
-  int getMaxGrailCount() {
-    return [10, 10, 10, 9, 7, 5].getOrNull(info.rarity) ?? 5;
   }
 
   int getClassSortIndex() {
