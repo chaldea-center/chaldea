@@ -18,6 +18,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
   late TabController _tabController;
 
   Map<int, String> itemMapping = {};
+  Map<int, int> svtIdMapping = {};
 
   Map<String, int> itemResult = {};
   List<_OneServantData> svtResult = [];
@@ -28,6 +29,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
     _textEditingController = TextEditingController();
     _tabController = TabController(length: 3, vsync: this);
     parseItemMapping();
+    parseSvtIdMapping();
   }
 
   @override
@@ -63,7 +65,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
                         jpn: 'fgosimulator.webcrow.jpのサーヴァントとアイテムをインポートします ',
                         eng:
                             'Import servant and item data from fgosimulator.webcrow.jp.') +
-                    '\n"http://fgosimulator.webcrow.jp/Material/" -> My Chaldea -> 引継ぎコード'),
+                    '\n\n"http://fgosimulator.webcrow.jp/Material/" -> My Chaldea -> 引継ぎコード'),
               ).showDialog(context);
             },
             icon: Icon(Icons.help),
@@ -215,7 +217,8 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
         svtResult.clear();
         for (final List row in data) {
           if (row.length < 9) continue;
-          int svtId = row[0];
+          int? svtId = svtIdMapping[row[0]];
+          if (svtId == null) continue;
           svtResult.add(_OneServantData(
             id: svtId,
             cur: ServantPlan(
@@ -278,6 +281,19 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
     }
     itemMapping[800] = Items.crystal;
     itemMapping[900] = Items.qp;
+  }
+
+  void parseSvtIdMapping() {
+    svtIdMapping.clear();
+    final svts = db.gameData.servants.values.toList();
+    svts.sort((a, b) => a.no - b.no);
+    int id = 0;
+    for (final svt in svts) {
+      if (db.gameData.unavailableSvts.contains(svt.no) && svt.no != 83)
+        continue;
+      id++;
+      svtIdMapping[id] = svt.no;
+    }
   }
 }
 
