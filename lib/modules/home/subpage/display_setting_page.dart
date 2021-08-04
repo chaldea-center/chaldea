@@ -13,8 +13,6 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
 
   HiveItem<bool> alwaysOnTop = db.cfg.alwaysOnTop;
 
-  // HiveItem<bool?> favoritePreferred = db.cfg.favoritePreferred;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +43,9 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   value: db.userData.autorotate,
                   title: Text(S.current.setting_auto_rotate),
                   onChanged: (v) {
-                    db.userData.autorotate = v;
+                    setState(() {
+                      db.userData.autorotate = v;
+                    });
                     db.notifyAppUpdate();
                   },
                 ),

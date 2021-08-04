@@ -191,11 +191,13 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
 
   static bool _isSplitCache = false;
 
-  /// check current size to use split view or not
+  /// Check current size to use split view or not.
+  /// When the height is too small, split view is disabled.
   static bool isSplit(BuildContext? context) {
     if (context == null) return false;
     final size = MediaQuery.of(context).size;
-    return _isSplitCache = size.width > size.height && size.width >= 720;
+    return _isSplitCache =
+        size.width > size.height && size.width >= 720 && size.height > 320;
   }
 
   SplitLayout getLayout(BuildContext context) {
