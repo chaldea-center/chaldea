@@ -20,6 +20,8 @@ class GameData {
   Map<String, MysticCode> mysticCodes;
   Map<String, Summon> summons;
 
+  Map<int, int> fsmSvtIdMapping;
+
   @JsonKey(ignore: true)
   Map<int, Servant> servantsWithUser;
 
@@ -38,6 +40,7 @@ class GameData {
     GLPKData? glpk,
     this.mysticCodes = const {},
     this.summons = const {},
+    this.fsmSvtIdMapping = const {},
   })  : events = events ??
             Events(
               limitEvents: {},

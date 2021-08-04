@@ -34,6 +34,7 @@ const double kGridIconSize = 110 * 0.5 + 6;
 final kAppKey = GlobalKey<NavigatorState>();
 const kDefaultDivider = Divider(height: 1, thickness: 0.5);
 const kMonoFont = 'RobotoMono';
+const kMonoStyle = TextStyle(fontFamily: kMonoFont);
 
 class Language {
   final String code;
