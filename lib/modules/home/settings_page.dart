@@ -116,13 +116,13 @@ class _SettingsPageState extends State<SettingsPage> {
               trailing: DropdownButton<Language>(
                 underline: Divider(thickness: 0, color: Colors.transparent),
                 value: Language.getLanguage(
-                    db.userData.language ?? Language.currentLocaleCode),
+                    db.appSetting.language ?? Language.currentLocaleCode),
                 items: Language.supportLanguages.map((lang) {
                   return DropdownMenuItem(value: lang, child: Text(lang.name));
                 }).toList(),
                 onChanged: (lang) {
                   if (lang == null) return;
-                  db.userData.language = lang.code;
+                  db.appSetting.language = lang.code;
                   db.notifyAppUpdate();
                 },
               ),
@@ -131,7 +131,7 @@ class _SettingsPageState extends State<SettingsPage> {
               title: Text(LocalizedText.of(
                   chs: '深色模式', jpn: 'ダークモード', eng: 'Dark Mode')),
               trailing: DropdownButton<ThemeMode>(
-                value: db.userData.themeMode ?? ThemeMode.system,
+                value: db.appSetting.themeMode ?? ThemeMode.system,
                 underline: Container(),
                 items: [
                   DropdownMenuItem(
@@ -149,7 +149,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ],
                 onChanged: (v) {
                   if (v != null) {
-                    db.userData.themeMode = v;
+                    db.appSetting.themeMode = v;
                     db.notifyAppUpdate();
                   }
                 },

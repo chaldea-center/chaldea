@@ -211,7 +211,7 @@ class GitTool {
   }
 
   static GitTool fromDb() {
-    return GitTool(GitSource.values.getOrNull(db.userData.downloadSource) ??
+    return GitTool(GitSource.values.getOrNull(db.appSetting.downloadSource) ??
         GitSource.server);
   }
 

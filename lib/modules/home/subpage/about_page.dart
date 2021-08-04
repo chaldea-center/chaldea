@@ -60,7 +60,8 @@ class _AboutPageState extends State<AboutPage> {
                         db.runtimeData.upgradableVersion != null))
                   ListTile(
                     title: Text(S.current.check_update),
-                    subtitle: Text('${EnumUtil.titled(db.userData.gitSource)}'),
+                    subtitle:
+                        Text('${EnumUtil.titled(db.appSetting.gitSource)}'),
                     trailing: db.runtimeData.upgradableVersion != null
                         ? Text(db.runtimeData.upgradableVersion!.version + '↑',
                             style: TextStyle(color: Colors.redAccent))
@@ -71,11 +72,11 @@ class _AboutPageState extends State<AboutPage> {
                   ),
                 if (!Platform.isIOS && !AppInfo.isMacStoreApp)
                   SwitchListTile.adaptive(
-                    value: db.userData.autoUpdateApp,
+                    value: db.appSetting.autoUpdateApp,
                     title: Text(S.current.auto_update),
                     onChanged: (v) {
                       setState(() {
-                        db.userData.autoUpdateApp = v;
+                        db.appSetting.autoUpdateApp = v;
                       });
                     },
                   ),

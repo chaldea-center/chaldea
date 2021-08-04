@@ -1838,14 +1838,12 @@ Map<String, dynamic> _$CampaignPlanToJson(CampaignPlan instance) =>
 UserData _$UserDataFromJson(Map<String, dynamic> json) {
   return $checkedNew('UserData', json, () {
     final val = UserData(
-      language: $checkedConvert(json, 'language', (v) => v as String?),
-      themeMode: $checkedConvert(
+      appSetting: $checkedConvert(
           json,
-          'themeMode',
-          (v) => _$enumDecodeNullable(_$ThemeModeEnumMap, v,
-              unknownValue: ThemeMode.system)),
-      showSummonBanner:
-          $checkedConvert(json, 'showSummonBanner', (v) => v as bool?),
+          'appSetting',
+          (v) => v == null
+              ? null
+              : AppSetting.fromJson(v as Map<String, dynamic>)),
       carouselSetting: $checkedConvert(
           json,
           'carouselSetting',
@@ -1858,15 +1856,6 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
           (v) => (v as Map<String, dynamic>?)?.map(
                 (k, e) => MapEntry(k, e as bool),
               )),
-      favoritePreferred:
-          $checkedConvert(json, 'favoritePreferred', (v) => v as bool?),
-      autoResetFilter:
-          $checkedConvert(json, 'autoResetFilter', (v) => v as bool?),
-      downloadSource: $checkedConvert(json, 'downloadSource', (v) => v as int?),
-      autoUpdateApp: $checkedConvert(json, 'autoUpdateApp', (v) => v as bool?),
-      autoUpdateDataset:
-          $checkedConvert(json, 'autoUpdateDataset', (v) => v as bool?),
-      autorotate: $checkedConvert(json, 'autorotate', (v) => v as bool?),
       curUserKey: $checkedConvert(json, 'curUserKey', (v) => v as String?),
       users: $checkedConvert(
           json,
@@ -1905,18 +1894,11 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
-      'language': instance.language,
-      'themeMode': _$ThemeModeEnumMap[instance.themeMode],
-      'showSummonBanner': instance.showSummonBanner,
+Map<String, dynamic> _$UserDataToJson(UserData instance) =>
+    <String, dynamic>{
+      'appSetting': instance.appSetting,
       'carouselSetting': instance.carouselSetting,
       'galleries': instance.galleries,
-      'favoritePreferred': instance.favoritePreferred,
-      'autoResetFilter': instance.autoResetFilter,
-      'downloadSource': instance.downloadSource,
-      'autoUpdateApp': instance.autoUpdateApp,
-      'autoUpdateDataset': instance.autoUpdateDataset,
-      'autorotate': instance.autorotate,
       'users': instance.users,
       'svtFilter': instance.svtFilter,
       'craftFilter': instance.craftFilter,
@@ -1924,6 +1906,47 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'glpkParams': instance.glpkParams,
       'itemAbundantValue': instance.itemAbundantValue,
       'curUserKey': instance.curUserKey,
+    };
+
+AppSetting _$AppSettingFromJson(Map<String, dynamic> json) {
+  return $checkedNew('AppSetting', json, () {
+    final val = AppSetting(
+      language: $checkedConvert(json, 'language', (v) => v as String?),
+      themeMode: $checkedConvert(
+          json,
+          'themeMode',
+          (v) => _$enumDecodeNullable(_$ThemeModeEnumMap, v,
+              unknownValue: ThemeMode.system)),
+      showSummonBanner:
+          $checkedConvert(json, 'showSummonBanner', (v) => v as bool?),
+      favoritePreferred:
+          $checkedConvert(json, 'favoritePreferred', (v) => v as bool?),
+      autoResetFilter:
+          $checkedConvert(json, 'autoResetFilter', (v) => v as bool?),
+      downloadSource: $checkedConvert(json, 'downloadSource', (v) => v as int?),
+      autoUpdateApp: $checkedConvert(json, 'autoUpdateApp', (v) => v as bool?),
+      autoUpdateDataset:
+          $checkedConvert(json, 'autoUpdateDataset', (v) => v as bool?),
+      autorotate: $checkedConvert(json, 'autorotate', (v) => v as bool?),
+      showClassFilterOnTop:
+          $checkedConvert(json, 'showClassFilterOnTop', (v) => v as bool?),
+    );
+    return val;
+  });
+}
+
+Map<String, dynamic> _$AppSettingToJson(AppSetting instance) =>
+    <String, dynamic>{
+      'language': instance.language,
+      'themeMode': _$ThemeModeEnumMap[instance.themeMode],
+      'showSummonBanner': instance.showSummonBanner,
+      'favoritePreferred': instance.favoritePreferred,
+      'autoResetFilter': instance.autoResetFilter,
+      'showClassFilterOnTop': instance.showClassFilterOnTop,
+      'autoUpdateApp': instance.autoUpdateApp,
+      'autoUpdateDataset': instance.autoUpdateDataset,
+      'autorotate': instance.autorotate,
+      'downloadSource': instance.downloadSource,
     };
 
 const _$ThemeModeEnumMap = {

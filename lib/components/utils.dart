@@ -508,7 +508,8 @@ class Utils {
   }
 
   static void debugChangeDarkMode([ThemeMode? mode]) {
-    if (db.userData.themeMode != null && mode == db.userData.themeMode) return;
+    if (db.appSetting.themeMode != null && mode == db.appSetting.themeMode)
+      return;
 
     final t = DateTime.now().millisecondsSinceEpoch;
     final _last = db.runtimeData.tempDict['debugChangeDarkMode'] ?? 0;
@@ -516,18 +517,18 @@ class Utils {
     db.runtimeData.tempDict['debugChangeDarkMode'] = t;
 
     if (mode != null) {
-      db.userData.themeMode = mode;
+      db.appSetting.themeMode = mode;
     } else {
       // don't rebuild
-      switch (db.userData.themeMode) {
+      switch (db.appSetting.themeMode) {
         case ThemeMode.light:
-          db.userData.themeMode = ThemeMode.dark;
+          db.appSetting.themeMode = ThemeMode.dark;
           break;
         case ThemeMode.dark:
-          db.userData.themeMode = ThemeMode.light;
+          db.appSetting.themeMode = ThemeMode.light;
           break;
         default:
-          db.userData.themeMode =
+          db.appSetting.themeMode =
               SchedulerBinding.instance!.window.platformBrightness ==
                       Brightness.light
                   ? ThemeMode.dark
@@ -535,7 +536,7 @@ class Utils {
           break;
       }
     }
-    debugPrint('change themeMode: ${db.userData.themeMode}');
+    debugPrint('change themeMode: ${db.appSetting.themeMode}');
     db.notifyAppUpdate();
   }
 

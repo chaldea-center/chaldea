@@ -40,11 +40,11 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
               // on Android, cannot detect phone or mobile
               if (AppInfo.isMobile && !AppInfo.isIPad || kDebugMode)
                 SwitchListTile.adaptive(
-                  value: db.userData.autorotate,
+                  value: db.appSetting.autorotate,
                   title: Text(S.current.setting_auto_rotate),
                   onChanged: (v) {
                     setState(() {
-                      db.userData.autorotate = v;
+                      db.appSetting.autorotate = v;
                     });
                     db.notifyAppUpdate();
                   },
@@ -57,11 +57,28 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 '/${S.current.command_code}',
             children: [
               SwitchListTile.adaptive(
-                value: db.userData.autoResetFilter,
+                value: db.appSetting.autoResetFilter,
                 title: Text(LocalizedText.of(
                     chs: '自动重置', jpn: '自動リセット', eng: 'Auto Reset')),
                 onChanged: (v) async {
-                  db.userData.autoResetFilter = v;
+                  db.appSetting.autoResetFilter = v;
+                  setState(() {});
+                },
+              ),
+            ],
+          ),
+          TileGroup(
+            header: LocalizedText.of(
+                chs: '从者列表页', jpn: 'サーヴァントリストページ', eng: 'Servant List Page'),
+            children: [
+              SwitchListTile.adaptive(
+                value: db.appSetting.showClassFilterOnTop,
+                title: Text(LocalizedText.of(
+                    chs: '列表顶部显示职阶筛选按钮',
+                    jpn: 'ランクフィルターがリストの一番上に表示',
+                    eng: 'Show Class Filter on top')),
+                onChanged: (v) async {
+                  db.appSetting.showClassFilterOnTop = v;
                   setState(() {});
                 },
               ),
@@ -76,36 +93,36 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
             children: [
               RadioListTile<bool?>(
                 value: null,
-                groupValue: db.userData.favoritePreferred,
+                groupValue: db.appSetting.favoritePreferred,
                 title: Text(LocalizedText.of(
                     chs: '记住选择', jpn: '前の選択', eng: 'Remember')),
                 onChanged: (v) {
                   setState(() {
-                    db.userData.favoritePreferred = null;
+                    db.appSetting.favoritePreferred = null;
                   });
                 },
               ),
               RadioListTile<bool?>(
                 value: true,
-                groupValue: db.userData.favoritePreferred,
+                groupValue: db.appSetting.favoritePreferred,
                 title: Text(LocalizedText.of(
                     chs: '显示已关注', jpn: 'フォロー表示', eng: 'Show Favorite')),
                 secondary: Icon(Icons.favorite),
                 onChanged: (v) {
                   setState(() {
-                    db.userData.favoritePreferred = true;
+                    db.appSetting.favoritePreferred = true;
                   });
                 },
               ),
               RadioListTile<bool?>(
                 value: false,
-                groupValue: db.userData.favoritePreferred,
+                groupValue: db.appSetting.favoritePreferred,
                 title: Text(LocalizedText.of(
                     chs: '显示全部', jpn: 'すべて表示', eng: 'Show All')),
                 secondary: Icon(Icons.remove_circle_outline),
                 onChanged: (v) {
                   setState(() {
-                    db.userData.favoritePreferred = false;
+                    db.appSetting.favoritePreferred = false;
                   });
                 },
               ),

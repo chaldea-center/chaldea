@@ -24,7 +24,7 @@ class CraftListPageState
 
   void initState() {
     super.initState();
-    if (db.userData.autoResetFilter) {
+    if (db.appSetting.autoResetFilter) {
       filterData.reset();
     }
     options = _CraftSearchOptions(onChanged: (_) => safeSetState());

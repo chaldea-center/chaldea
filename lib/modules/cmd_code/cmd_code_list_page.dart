@@ -22,7 +22,7 @@ class CmdCodeListPageState
   @override
   void initState() {
     super.initState();
-    if (db.userData.autoResetFilter) {
+    if (db.appSetting.autoResetFilter) {
       filterData.reset();
     }
     options = _CmdCodeSearchOptions(onChanged: (_) => safeSetState());

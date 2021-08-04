@@ -32,11 +32,11 @@ class ServantListPageState
   @override
   void initState() {
     super.initState();
-    if (db.userData.autoResetFilter) {
+    if (db.appSetting.autoResetFilter) {
       filterData.reset();
     }
-    if (db.userData.favoritePreferred != null) {
-      filterData.favorite = db.userData.favoritePreferred! ? 1 : 0;
+    if (db.appSetting.favoritePreferred != null) {
+      filterData.favorite = db.appSetting.favoritePreferred! ? 1 : 0;
     }
     options = _ServantOptions(onChanged: (_) => safeSetState());
   }
@@ -383,11 +383,88 @@ class ServantListPageState
       defaultHintText(shownList.length, wholeData.length,
           widget.planMode ? _hiddenNum : null),
     );
-    return Scrollbar(
+    final scrollable = Scrollbar(
       controller: scrollController,
       child: useGrid
           ? buildGridView()
           : buildListView(topHint: hintText, bottomHint: hintText),
+    );
+    if (!db.appSetting.showClassFilterOnTop) {
+      return scrollable;
+    }
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+          child: _buildClassFilter(),
+        ),
+        kDefaultDivider,
+        Expanded(child: scrollable)
+      ],
+    );
+  }
+
+  Widget _buildClassFilter() {
+    Widget _clsIcon(String clsName) {
+      bool? selected = false;
+      if (clsName == 'All') {
+        selected = filterData.className.isEmpty(SvtFilterData.classesData);
+      } else if (clsName == 'Extra') {
+        if (filterData.className.isEmpty(SvtFilterData.extraClassesData)) {}
+        int selectedExtra = SvtFilterData.extraClassesData
+            .where((e) => filterData.className.options[e] == true)
+            .length;
+        if (selectedExtra == SvtFilterData.extraClassesData.length) {
+          selected = true;
+        } else if (selectedExtra > 0) {
+          selected = null;
+        } else {
+          selected = false;
+        }
+      } else {
+        selected = filterData.className.options[clsName] == true;
+      }
+      return Expanded(
+        child: GestureDetector(
+          child: Padding(
+            padding: const EdgeInsets.all(1),
+            child: db.getIconImage(
+              (selected == null
+                      ? '银卡'
+                      : selected
+                          ? '金卡'
+                          : '铜卡') +
+                  clsName +
+                  '.png',
+              width: 32,
+            ),
+          ),
+          onTap: () {
+            filterData.className.options.clear();
+            if (clsName == 'All') {
+            } else if (clsName == 'Extra') {
+              SvtFilterData.extraClassesData
+                  .every((e) => filterData.className.options[e] = true);
+            } else {
+              filterData.className.options[clsName] = true;
+            }
+            setState(() {});
+          },
+        ),
+      );
+    }
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: 40),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _clsIcon('All'),
+          for (var clsName in SvtFilterData.regularClassesData)
+            _clsIcon(clsName),
+          _clsIcon('Extra'),
+        ],
+      ),
     );
   }
 

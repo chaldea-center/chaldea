@@ -111,14 +111,14 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           trailing: DropdownButton<Language>(
             underline: const Divider(thickness: 0, color: Colors.transparent),
             value: Language.getLanguage(
-                db.userData.language ?? Language.currentLocaleCode),
+                db.appSetting.language ?? Language.currentLocaleCode),
             items: Language.supportLanguages.map((lang) {
               return DropdownMenuItem(value: lang, child: Text(lang.name));
             }).toList(),
             onChanged: (lang) {
               if (lang == null) return;
-              db.userData.language = lang.code;
-              print(db.userData.language);
+              db.appSetting.language = lang.code;
+              print(db.appSetting.language);
               setState(() {});
               db.notifyAppUpdate();
             },

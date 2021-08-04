@@ -56,15 +56,15 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
           PopupMenuButton(
             itemBuilder: (context) => [
               PopupMenuItem(
-                child: Text(db.userData.showSummonBanner
+                child: Text(db.appSetting.showSummonBanner
                     ? LocalizedText.of(
                         chs: '显示标题', jpn: 'タイトルを表示', eng: 'Show Title')
                     : LocalizedText.of(
                         chs: '显示封面', jpn: '画像を表示', eng: 'Show Banner')),
                 onTap: () {
                   setState(() {
-                    db.userData.showSummonBanner =
-                        !db.userData.showSummonBanner;
+                    db.appSetting.showSummonBanner =
+                        !db.appSetting.showSummonBanner;
                   });
                 },
               ),
@@ -89,7 +89,7 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
   Widget listItemBuilder(Summon summon) {
     Widget title;
     Widget? subtitle;
-    if (db.userData.showSummonBanner) {
+    if (db.appSetting.showSummonBanner) {
       title = ConstrainedBox(
         constraints: BoxConstraints(maxHeight: 108),
         child: CachedImage(
@@ -123,10 +123,10 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
     return ListTile(
       title: title,
       subtitle: subtitle,
-      contentPadding: db.userData.showSummonBanner
+      contentPadding: db.appSetting.showSummonBanner
           ? EdgeInsets.only(right: 8)
           : EdgeInsets.only(left: 16, right: 8),
-      minVerticalPadding: db.userData.showSummonBanner ? 0 : null,
+      minVerticalPadding: db.appSetting.showSummonBanner ? 0 : null,
       trailing: db.streamBuilder(
         (context) {
           final planned = db.curUser.plannedSummons.contains(summon.indexKey);

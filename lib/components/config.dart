@@ -40,6 +40,8 @@ class Database {
   UserData userData = UserData();
   GameData gameData = GameData();
 
+  AppSetting get appSetting => userData.appSetting;
+
   Dio get serverDio => Dio(BaseOptions(
         baseUrl: kServerRoot,
         // baseUrl: kDebugMode ? 'http://localhost:8183' : kServerRoot,

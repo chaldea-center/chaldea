@@ -286,7 +286,7 @@ class FFOParams {
       return null;
     }
     final stream = FileImage(_f).resolve(ImageConfiguration.empty);
-    final Completer<ui.Image> completer = Completer();
+    final Completer<ui.Image?> completer = Completer();
     stream.addListener(ImageStreamListener((info, _) {
       completer.complete(info.image);
     }, onError: (e, s) {

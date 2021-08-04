@@ -16,6 +16,7 @@ import 'package:chaldea/modules/servant/servant_detail_page.dart'
     show ServantDetailPage;
 import 'package:chaldea/widgets/custom_tile.dart' show ImageWithText;
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:json_annotation/json_annotation.dart'
     hide $checkedNew, $checkedConvert, CheckedFromJsonException;
 import 'package:json_annotation/src/allowed_keys_helpers.dart'; // ignore: implementation_imports

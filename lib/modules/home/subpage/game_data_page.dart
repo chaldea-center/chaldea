@@ -77,11 +77,11 @@ class _GameDataPageState extends State<GameDataPage> {
             footer: S.current.download_latest_gamedata_hint,
             children: <Widget>[
               SwitchListTile.adaptive(
-                value: db.userData.autoUpdateDataset,
+                value: db.appSetting.autoUpdateDataset,
                 title: Text(S.current.auto_update),
                 onChanged: (v) {
                   setState(() {
-                    db.userData.autoUpdateDataset = v;
+                    db.appSetting.autoUpdateDataset = v;
                   });
                 },
               ),
@@ -173,7 +173,7 @@ class _GameDataPageState extends State<GameDataPage> {
     final gitTool = GitTool(source);
     Widget radio = RadioListTile<int>(
       value: source.toIndex(),
-      groupValue: db.userData.downloadSource,
+      groupValue: db.appSetting.downloadSource,
       title: Text(source.toTitleString()),
       subtitle: subtitle == null ? null : Text(subtitle),
       onChanged: disabled
@@ -181,7 +181,7 @@ class _GameDataPageState extends State<GameDataPage> {
           : (v) {
               setState(() {
                 if (v != null) {
-                  db.userData.downloadSource = v;
+                  db.appSetting.downloadSource = v;
                   db.notifyDbUpdate();
                 }
               });

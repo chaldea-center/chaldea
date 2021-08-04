@@ -33,7 +33,7 @@ class User {
   GameServer get server {
     if (_server == null) {
       Language lang =
-          Language.getLanguage(db.userData.language) ?? Language.current;
+          Language.getLanguage(db.appSetting.language) ?? Language.current;
       switch (lang) {
         case Language.eng:
           _server = GameServer.en;

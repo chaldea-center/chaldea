@@ -27,12 +27,12 @@ class _GalleryPageState extends State<GalleryPage> {
         if (mounted) setState(() {});
       }
       if (kDebugMode) return;
-      if (db.userData.autoUpdateDataset) {
+      if (db.appSetting.autoUpdateDataset) {
         await AutoUpdateUtil.patchGameData();
       }
       await Future.delayed(Duration(seconds: 2));
       await AutoUpdateUtil.checkAppUpdate(
-          background: true, download: db.userData.autoUpdateApp);
+          background: true, download: db.appSetting.autoUpdateApp);
     }).onError((e, s) {
       logger.e('init app extras', e, s);
     });

@@ -88,12 +88,8 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   Widget build(BuildContext context) {
     final lightTheme = configureTheme(ThemeData.light());
     final darkTheme = configureTheme(ThemeData.dark());
-
-    bool resolvedDarkMode = db.userData.themeMode == ThemeMode.dark ||
-        SchedulerBinding.instance!.window.platformBrightness == Brightness.dark;
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: resolvedDarkMode
+      value: db.appSetting.isResolvedDarkMode
           ? SystemUiOverlayStyle.dark.copyWith(
               statusBarColor: Colors.transparent,
               systemNavigationBarColor: darkTheme.scaffoldBackgroundColor)
@@ -106,10 +102,10 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
           title: kAppName,
           debugShowCheckedModeBanner: false,
           navigatorKey: kAppKey,
-          themeMode: db.userData.themeMode ?? ThemeMode.system,
+          themeMode: db.appSetting.themeMode ?? ThemeMode.system,
           theme: ThemeData.light(),
           darkTheme: ThemeData.dark(),
-          locale: Language.getLanguage(db.userData.language)?.locale,
+          locale: Language.getLanguage(db.appSetting.language)?.locale,
           localizationsDelegates: [
             S.delegate,
             ...GlobalMaterialLocalizations.delegates,
@@ -254,7 +250,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
   /// only set orientation for mobile phone
   void setPreferredOrientations() {
     if (!AppInfo.isMobile || AppInfo.isIPad) return;
-    if (!db.userData.autorotate) {
+    if (!db.appSetting.autorotate) {
       SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     } else {
       SystemChrome.setPreferredOrientations([]);

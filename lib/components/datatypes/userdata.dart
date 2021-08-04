@@ -4,20 +4,9 @@ part of datatypes;
 @JsonSerializable(checked: true)
 class UserData {
   // app settings
-  String? language;
-  @JsonKey(unknownEnumValue: ThemeMode.system)
-  ThemeMode? themeMode;
-  bool showSummonBanner;
-
+  AppSetting appSetting;
   CarouselSetting carouselSetting;
   Map<String, bool> galleries;
-  bool? favoritePreferred;
-  bool autoResetFilter;
-
-  int downloadSource;
-  bool autoUpdateApp;
-  bool autoUpdateDataset;
-  bool autorotate;
 
   // user-related game data
   String _curUserKey;
@@ -33,17 +22,9 @@ class UserData {
   List<int> itemAbundantValue;
 
   UserData({
-    this.language,
-    this.themeMode,
-    bool? showSummonBanner,
+    AppSetting? appSetting,
     CarouselSetting? carouselSetting,
     Map<String, bool>? galleries,
-    bool? favoritePreferred,
-    bool? autoResetFilter,
-    int? downloadSource,
-    bool? autoUpdateApp,
-    bool? autoUpdateDataset,
-    bool? autorotate,
     String? curUserKey,
     Map<String, User>? users,
     SvtFilterData? svtFilter,
@@ -51,16 +32,9 @@ class UserData {
     CmdCodeFilterData? cmdCodeFilter,
     GLPKParams? glpkParams,
     List<int>? itemAbundantValue,
-  })  : showSummonBanner = showSummonBanner ?? false,
+  })  : appSetting = appSetting ?? AppSetting(),
         carouselSetting = carouselSetting ?? CarouselSetting(),
         galleries = galleries ?? {},
-        favoritePreferred = favoritePreferred ?? false,
-        autoResetFilter = autoResetFilter ?? true,
-        downloadSource = fixValidRange(downloadSource ?? GitSource.server.index,
-            0, GitSource.values.length),
-        autoUpdateApp = autoUpdateApp ?? true,
-        autoUpdateDataset = autoUpdateDataset ?? true,
-        autorotate = autorotate ?? false,
         _curUserKey = curUserKey ?? 'default',
         users = users ?? {},
         svtFilter = svtFilter ?? SvtFilterData(),
@@ -80,14 +54,7 @@ class UserData {
     this.users.forEach((key, value) {
       value.key = key;
     });
-    // gitee disabled
-    if (this.downloadSource == 2) {
-      this.downloadSource = 0;
-    }
   }
-
-  GitSource get gitSource =>
-      GitSource.values.getOrNull(downloadSource) ?? GitSource.values.first;
 
   List<String> get userNames => users.values.map((user) => user.name).toList();
 
@@ -128,13 +95,13 @@ class UserData {
 
   void resetFiltersIfNeed() {
     // can also call *.reset()
-    if (autoResetFilter) {
+    if (appSetting.autoResetFilter) {
       svtFilter.reset();
       craftFilter.reset();
       cmdCodeFilter.reset();
     }
-    if (favoritePreferred != null) {
-      svtFilter.favorite = favoritePreferred! ? 1 : 0;
+    if (appSetting.favoritePreferred != null) {
+      svtFilter.favorite = appSetting.favoritePreferred! ? 1 : 0;
     }
   }
 
@@ -142,6 +109,60 @@ class UserData {
       _$UserDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$UserDataToJson(this);
+}
+
+@JsonSerializable(checked: true)
+class AppSetting {
+  String? language;
+  @JsonKey(unknownEnumValue: ThemeMode.system)
+  ThemeMode? themeMode;
+  bool showSummonBanner;
+  bool? favoritePreferred;
+  bool autoResetFilter;
+  bool showClassFilterOnTop;
+  bool autoUpdateApp;
+  bool autoUpdateDataset;
+  bool autorotate;
+  int downloadSource;
+
+  AppSetting({
+    this.language,
+    this.themeMode,
+    bool? showSummonBanner,
+    bool? favoritePreferred,
+    bool? autoResetFilter,
+    int? downloadSource,
+    bool? autoUpdateApp,
+    bool? autoUpdateDataset,
+    bool? autorotate,
+    bool? showClassFilterOnTop,
+  })  : showSummonBanner = showSummonBanner ?? false,
+        favoritePreferred = favoritePreferred ?? false,
+        autoResetFilter = autoResetFilter ?? true,
+        downloadSource = fixValidRange(downloadSource ?? GitSource.server.index,
+            0, GitSource.values.length),
+        autoUpdateApp = autoUpdateApp ?? true,
+        autoUpdateDataset = autoUpdateDataset ?? true,
+        autorotate = autorotate ?? false,
+        showClassFilterOnTop = showClassFilterOnTop ?? true {
+    // gitee disabled
+    if (this.downloadSource == 2) {
+      this.downloadSource = 0;
+    }
+  }
+
+  GitSource get gitSource =>
+      GitSource.values.getOrNull(downloadSource) ?? GitSource.values.first;
+
+  bool get isResolvedDarkMode {
+    return themeMode == ThemeMode.dark ||
+        SchedulerBinding.instance!.window.platformBrightness == Brightness.dark;
+  }
+
+  factory AppSetting.fromJson(Map<String, dynamic> data) =>
+      _$AppSettingFromJson(data);
+
+  Map<String, dynamic> toJson() => _$AppSettingToJson(this);
 }
 
 @JsonSerializable(checked: true)
@@ -308,12 +329,33 @@ class SvtFilterData {
     'Caster',
     'Assassin',
     'Berserker',
+    'Shielder',
+
     'Ruler',
     'Avenger',
     'Alterego',
     'MoonCancer',
     'Foreigner',
+    // 'Pretender'
+    'Beast'
+  ];
+  static const List<String> regularClassesData = [
+    'Saber',
+    'Archer',
+    'Lancer',
+    'Rider',
+    'Caster',
+    'Assassin',
+    'Berserker',
+  ];
+  static const List<String> extraClassesData = [
     'Shielder',
+    'Ruler',
+    'Avenger',
+    'Alterego',
+    'MoonCancer',
+    'Foreigner',
+    // 'Pretender'
     'Beast'
   ];
   static const List<String> obtainData = [
