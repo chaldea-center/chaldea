@@ -69,11 +69,11 @@ class Item {
     return '$runtimeType($name)';
   }
 
-  static getId(String key) {
+  static int? getId(String key) {
     return db.gameData.items[key]?.id;
   }
 
-  static localizedNameOf(String name) {
+  static String localizedNameOf(String name) {
     // name could be jp/en?
     return db.gameData.items[name]?.localizedName ?? name;
   }

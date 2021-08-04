@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/import_data/import_fgo_simu_material_page.dart';
 import 'package:chaldea/modules/import_data/import_guda_page.dart';
 import 'package:chaldea/modules/import_data/import_http_page.dart';
 import 'package:chaldea/modules/import_data/import_item_screenshot_page.dart';
@@ -82,6 +83,16 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             trailing: Icon(Icons.keyboard_arrow_right),
             onTap: () {
               SplitRoute.push(context, ImportGudaPage(), popDetail: true);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.compare_arrows),
+            title: Text('FGO Simulator-Material'),
+            subtitle: Text('http://fgosimulator.webcrow.jp/Material/'),
+            trailing: Icon(Icons.keyboard_arrow_right),
+            onTap: () {
+              SplitRoute.push(context, ImportFgoSimuMaterialPage(),
+                  popDetail: true);
             },
           ),
         ], bottom: true),

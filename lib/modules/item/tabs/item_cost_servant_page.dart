@@ -49,7 +49,7 @@ class ItemCostServantPage extends StatelessWidget {
         // 0 ascension 1 skill 2 dress 3 append 4 extra
         final headers = [
           S.current.ascension_up,
-          S.current.skill_up,
+          S.current.active_skill,
           S.current.costume_unlock,
           S.current.append_skill,
           'Extra'

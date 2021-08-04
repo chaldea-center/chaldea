@@ -89,28 +89,17 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     final lightTheme = configureTheme(ThemeData.light());
     final darkTheme = configureTheme(ThemeData.dark());
 
-    Color? navColor;
-    switch (db.userData.themeMode) {
-      case ThemeMode.light:
-        navColor = lightTheme.scaffoldBackgroundColor;
-        break;
-      case ThemeMode.dark:
-        navColor = darkTheme.scaffoldBackgroundColor;
-        break;
-      default:
-        if (SchedulerBinding.instance!.window.platformBrightness ==
-            Brightness.light) {
-          navColor = lightTheme.scaffoldBackgroundColor;
-        } else {
-          navColor = darkTheme.scaffoldBackgroundColor;
-        }
-        break;
-    }
+    bool resolvedDarkMode = db.userData.themeMode == ThemeMode.dark ||
+        SchedulerBinding.instance!.window.platformBrightness == Brightness.dark;
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        systemNavigationBarColor: navColor,
-      ),
+      value: resolvedDarkMode
+          ? SystemUiOverlayStyle.dark.copyWith(
+              statusBarColor: Colors.transparent,
+              systemNavigationBarColor: darkTheme.scaffoldBackgroundColor)
+          : SystemUiOverlayStyle.dark.copyWith(
+              statusBarColor: Colors.transparent,
+              systemNavigationBarColor: lightTheme.scaffoldBackgroundColor),
       child: Screenshot(
         controller: db.runtimeData.screenshotController!,
         child: MaterialApp(

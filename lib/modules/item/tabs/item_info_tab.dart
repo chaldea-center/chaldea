@@ -35,12 +35,13 @@ class ItemInfoTab extends StatelessWidget {
                         isHeader: true,
                       )
                     ]),
-                    CustomTableRow(children: [
-                      TableCellData(text: itemInfo.nameJp ?? '-')
-                    ]),
-                    CustomTableRow(children: [
-                      TableCellData(text: itemInfo.nameEn ?? '-')
-                    ]),
+                    CustomTableRow.fromTexts(texts: [itemInfo.nameJp ?? '-']),
+                    CustomTableRow.fromTexts(texts: [itemInfo.nameEn ?? '-']),
+                    if (kDebugMode)
+                      CustomTableRow.fromTexts(texts: [
+                        itemInfo.id.toString(),
+                        itemInfo.itemId.toString()
+                      ])
                   ],
                 ),
               ),

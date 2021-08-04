@@ -69,7 +69,7 @@ PODS:
     - Flutter
   - "permission_handler (5.1.0+2)":
     - Flutter
-  - rate_my_app (1.1.0):
+  - rate_my_app (1.1.1):
     - Flutter
   - Reachability (3.2)
   - SDWebImage (5.9.4):
@@ -188,7 +188,7 @@ SPEC CHECKSUMS:
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
-  rate_my_app: b2b5847177b024ab7fcfd02ced7a84a9b67eeaf2
+  rate_my_app: 8e49687f3520c56352f974f0cb401afea07cd496
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   SDWebImage: b69257f4ab14e9b6a2ef53e910fdf914d8f757c1
   share_plus: 056a1e8ac890df3e33cb503afffaf1e9b4fbae68

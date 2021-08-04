@@ -651,36 +651,6 @@ Map<String, dynamic> _$ItemCostToJson(ItemCost instance) => <String, dynamic>{
       'appendSkill': instance.appendSkill,
     };
 
-Item _$ItemFromJson(Map<String, dynamic> json) {
-  return $checkedNew('Item', json, () {
-    final val = Item(
-      id: $checkedConvert(json, 'id', (v) => v as int),
-      itemId: $checkedConvert(json, 'itemId', (v) => v as int),
-      name: $checkedConvert(json, 'name', (v) => v as String),
-      nameJp: $checkedConvert(json, 'nameJp', (v) => v as String?),
-      nameEn: $checkedConvert(json, 'nameEn', (v) => v as String?),
-      category: $checkedConvert(json, 'category', (v) => v as int),
-      rarity: $checkedConvert(json, 'rarity', (v) => v as int?) ?? 0,
-      description: $checkedConvert(json, 'description', (v) => v as String?),
-      descriptionJp:
-          $checkedConvert(json, 'descriptionJp', (v) => v as String?),
-    );
-    return val;
-  });
-}
-
-Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
-      'id': instance.id,
-      'itemId': instance.itemId,
-      'name': instance.name,
-      'nameJp': instance.nameJp,
-      'nameEn': instance.nameEn,
-      'category': instance.category,
-      'rarity': instance.rarity,
-      'description': instance.description,
-      'descriptionJp': instance.descriptionJp,
-    };
-
 GLPKData _$GLPKDataFromJson(Map<String, dynamic> json) {
   return GLPKData(
     colNames:
@@ -847,6 +817,36 @@ Map<String, dynamic> _$BasicGLPKParamsToJson(BasicGLPKParams instance) =>
       'bVec': instance.bVec,
       'cVec': instance.cVec,
       'integer': instance.integer,
+    };
+
+Item _$ItemFromJson(Map<String, dynamic> json) {
+  return $checkedNew('Item', json, () {
+    final val = Item(
+      id: $checkedConvert(json, 'id', (v) => v as int),
+      itemId: $checkedConvert(json, 'itemId', (v) => v as int),
+      name: $checkedConvert(json, 'name', (v) => v as String),
+      nameJp: $checkedConvert(json, 'nameJp', (v) => v as String?),
+      nameEn: $checkedConvert(json, 'nameEn', (v) => v as String?),
+      category: $checkedConvert(json, 'category', (v) => v as int),
+      rarity: $checkedConvert(json, 'rarity', (v) => v as int?) ?? 0,
+      description: $checkedConvert(json, 'description', (v) => v as String?),
+      descriptionJp:
+          $checkedConvert(json, 'descriptionJp', (v) => v as String?),
+    );
+    return val;
+  });
+}
+
+Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
+      'id': instance.id,
+      'itemId': instance.itemId,
+      'name': instance.name,
+      'nameJp': instance.nameJp,
+      'nameEn': instance.nameEn,
+      'category': instance.category,
+      'rarity': instance.rarity,
+      'description': instance.description,
+      'descriptionJp': instance.descriptionJp,
     };
 
 MysticCode _$MysticCodeFromJson(Map<String, dynamic> json) {
@@ -1727,6 +1727,8 @@ ServantPlan _$ServantPlanFromJson(Map<String, dynamic> json) {
           (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
       dress: $checkedConvert(json, 'dress',
           (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+      appendSkills: $checkedConvert(json, 'appendSkills',
+          (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
       grail: $checkedConvert(json, 'grail', (v) => v as int?),
       fouHp: $checkedConvert(json, 'fouHp', (v) => v as int?),
       fouAtk: $checkedConvert(json, 'fouAtk', (v) => v as int?),
@@ -1740,6 +1742,7 @@ Map<String, dynamic> _$ServantPlanToJson(ServantPlan instance) =>
       'favorite': instance.favorite,
       'ascension': instance.ascension,
       'skills': instance.skills,
+      'appendSkills': instance.appendSkills,
       'dress': instance.dress,
       'grail': instance.grail,
       'fouHp': instance.fouHp,

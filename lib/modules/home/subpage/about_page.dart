@@ -55,17 +55,20 @@ class _AboutPageState extends State<AboutPage> {
             TileGroup(
               header: S.current.update,
               children: [
-                ListTile(
-                  title: Text(S.current.check_update),
-                  subtitle: Text('${EnumUtil.titled(db.userData.gitSource)}'),
-                  trailing: db.runtimeData.upgradableVersion != null
-                      ? Text(db.runtimeData.upgradableVersion!.version + '↑',
-                          style: TextStyle(color: Colors.redAccent))
-                      : null,
-                  onTap: () {
-                    AutoUpdateUtil.checkAppUpdate(background: false);
-                  },
-                ),
+                if (!AppInfo.isMacStoreApp &&
+                    (!Platform.isIOS ||
+                        db.runtimeData.upgradableVersion != null))
+                  ListTile(
+                    title: Text(S.current.check_update),
+                    subtitle: Text('${EnumUtil.titled(db.userData.gitSource)}'),
+                    trailing: db.runtimeData.upgradableVersion != null
+                        ? Text(db.runtimeData.upgradableVersion!.version + '↑',
+                            style: TextStyle(color: Colors.redAccent))
+                        : null,
+                    onTap: () {
+                      AutoUpdateUtil.checkAppUpdate(background: false);
+                    },
+                  ),
                 if (!Platform.isIOS && !AppInfo.isMacStoreApp)
                   SwitchListTile.adaptive(
                     value: db.userData.autoUpdateApp,
