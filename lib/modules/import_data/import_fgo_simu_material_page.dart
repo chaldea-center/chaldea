@@ -18,7 +18,6 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
   late TabController _tabController;
 
   Map<int, String> itemMapping = {};
-  Map<int, int> svtIdMapping = {};
 
   Map<String, int> itemResult = {};
   List<_OneServantData> svtResult = [];
@@ -29,7 +28,6 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
     _textEditingController = TextEditingController();
     _tabController = TabController(length: 3, vsync: this);
     parseItemMapping();
-    parseSvtIdMapping();
   }
 
   @override
@@ -116,19 +114,39 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
   Widget get servantTab {
     List<Widget> children = [];
     if (svtResult.isEmpty) children.add(Center(child: Text('Nothing yet')));
-    for (final record in svtResult) {
-      final svt = db.gameData.servants[record.id];
-      if (svt == null) continue;
-      children.add(ListTile(
-        leading: svt.iconBuilder(context: context),
-        title: AutoSizeText(svt.info.localizedName, maxLines: 2),
-        trailing: Text(
-          '${record.cur.ascension}-${record.cur.skills.join('/')}'
-          ' → '
-          '${record.target.ascension}-${record.target.skills.join('/')}',
-          style: TextStyle(fontFamily: kMonoFont),
-          textAlign: TextAlign.center,
+    svtResult.sort((a, b) => Servant.compare(a.svt, b.svt,
+        keys: [SvtCompare.rarity, SvtCompare.no], reversed: [true, false]));
+    Widget _getSummary(ServantPlan plan) {
+      String text = '${plan.ascension}-';
+      text += plan.skills.map((e) => e.toString().padLeft(2)).join('/');
+      return Center(
+        child: AutoSizeText(
+          text,
+          maxLines: 1,
+          minFontSize: 2,
+          style: kMonoStyle,
         ),
+      );
+    }
+
+    for (final record in svtResult) {
+      children.add(ListTile(
+        leading: record.svt.iconBuilder(context: context),
+        title: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(child: _getSummary(record.cur)),
+            Text(' → '),
+            Expanded(child: _getSummary(record.target)),
+          ],
+        ),
+        // trailing: Text(
+        //   '${record.cur.ascension}-${record.cur.skills.join('/')}'
+        //   ' → '
+        //   '${record.target.ascension}-${record.target.skills.join('/')}',
+        //   style: TextStyle(fontFamily: kMonoFont),
+        //   textAlign: TextAlign.center,
+        // ),
       ));
     }
     return Column(
@@ -152,9 +170,9 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
             ElevatedButton(
               onPressed: () {
                 svtResult.forEach((record) {
-                  db.curUser.servants[record.id] =
+                  db.curUser.servants[record.svt.no] =
                       ServantStatus(curVal: record.cur);
-                  db.curPlan[record.id] = record.target;
+                  db.curPlan[record.svt.no] = record.target;
                 });
                 EasyLoading.showSuccess('Import ${svtResult.length} servants');
               },
@@ -217,10 +235,14 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
         svtResult.clear();
         for (final List row in data) {
           if (row.length < 9) continue;
-          int? svtId = svtIdMapping[row[0]];
-          if (svtId == null) continue;
+          int? svtId = db.gameData.fsmSvtIdMapping[row[0]];
+          if (svtId == null) {
+            svtId = row[0] < 149 ? row[0] : row[0] + 5;
+          }
+          final svt = db.gameData.servants[svtId];
+          if (svt == null) continue;
           svtResult.add(_OneServantData(
-            id: svtId,
+            svt: svt,
             cur: ServantPlan(
               favorite: true,
               ascension: row[1],
@@ -282,25 +304,12 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
     itemMapping[800] = Items.crystal;
     itemMapping[900] = Items.qp;
   }
-
-  void parseSvtIdMapping() {
-    svtIdMapping.clear();
-    final svts = db.gameData.servants.values.toList();
-    svts.sort((a, b) => a.no - b.no);
-    int id = 0;
-    for (final svt in svts) {
-      if (db.gameData.unavailableSvts.contains(svt.no) && svt.no != 83)
-        continue;
-      id++;
-      svtIdMapping[id] = svt.no;
-    }
-  }
 }
 
 class _OneServantData {
-  int id;
+  Servant svt;
   ServantPlan cur;
   ServantPlan target;
 
-  _OneServantData({required this.id, required this.cur, required this.target});
+  _OneServantData({required this.svt, required this.cur, required this.target});
 }

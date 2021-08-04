@@ -597,6 +597,12 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
                 (k, e) =>
                     MapEntry(k, Summon.fromJson(e as Map<String, dynamic>)),
               )),
+      fsmSvtIdMapping: $checkedConvert(
+          json,
+          'fsmSvtIdMapping',
+          (v) => (v as Map<String, dynamic>).map(
+                (k, e) => MapEntry(int.parse(k), e as int),
+              )),
     );
     return val;
   });
@@ -617,6 +623,8 @@ Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
       'glpk': instance.glpk,
       'mysticCodes': instance.mysticCodes,
       'summons': instance.summons,
+      'fsmSvtIdMapping':
+          instance.fsmSvtIdMapping.map((k, e) => MapEntry(k.toString(), e)),
     };
 
 ItemCost _$ItemCostFromJson(Map<String, dynamic> json) {

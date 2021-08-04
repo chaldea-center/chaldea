@@ -1,3 +1,8 @@
+## 1.5.1
+- Import servant/item data from http://fgosimulator.webcrow.jp/Material/
+- fix append skill data not saved
+- re-enable autorotate on mobile
+
 ## 1.5.0
 - [FEATURE] Append Skill planning support
 - support grail planning to max Lv.120
