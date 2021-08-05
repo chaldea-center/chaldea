@@ -297,8 +297,8 @@ class ServantListPageState
       filterData.priority: svtStat.priority.toString(),
       filterData.rarity: svt.info.rarity.toString(),
       filterData.obtain: svt.info.obtain,
-      filterData.npColor: svt.nobelPhantasm.getOrNull(0)?.color,
-      filterData.npType: svt.nobelPhantasm.getOrNull(0)?.category,
+      filterData.npColor: svt.noblePhantasm.getOrNull(0)?.color,
+      filterData.npType: svt.noblePhantasm.getOrNull(0)?.category,
       filterData.attribute: svt.info.attribute,
     };
     for (var entry in singleValuePair.entries) {
@@ -359,7 +359,7 @@ class ServantListPageState
         },
         '充能(宝具)': (o, v) {
           List<Effect> effects = [];
-          for (var np in svt.nobelPhantasm) {
+          for (var np in svt.noblePhantasm) {
             effects.addAll(np.effects);
           }
           return _matchNPCharge(effects);
@@ -776,14 +776,14 @@ class _ServantOptions with SearchOptionsMixin<Servant> {
   bool basic;
   bool activeSkill;
   bool passiveSkill;
-  bool nobelPhantasm;
+  bool noblePhantasm;
   ValueChanged? onChanged;
 
   _ServantOptions({
     this.basic = true,
     this.activeSkill = true,
     this.passiveSkill = true,
-    this.nobelPhantasm = true,
+    this.noblePhantasm = true,
     this.onChanged,
   });
 
@@ -818,10 +818,10 @@ class _ServantOptions with SearchOptionsMixin<Servant> {
           },
         ),
         CheckboxWithLabel(
-          value: nobelPhantasm,
-          label: Text(S.current.nobel_phantasm),
+          value: noblePhantasm,
+          label: Text(S.current.noble_phantasm),
           onChanged: (v) {
-            nobelPhantasm = v ?? nobelPhantasm;
+            noblePhantasm = v ?? noblePhantasm;
             setState(() {});
             updateParent();
           },
@@ -882,10 +882,10 @@ class _ServantOptions with SearchOptionsMixin<Servant> {
       }));
     }
 
-    if (nobelPhantasm) {
-      buffer.write(getCache(svt, 'nobelPhantasm', () {
+    if (noblePhantasm) {
+      buffer.write(getCache(svt, 'noblePhantasm', () {
         List<String?> _ss = [];
-        [...svt.nobelPhantasm, ...svt.nobelPhantasmEn].forEach((td) {
+        [...svt.noblePhantasm, ...svt.noblePhantasmEn].forEach((td) {
           _ss.addAll([
             td.name,
             td.nameJp,

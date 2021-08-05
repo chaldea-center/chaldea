@@ -470,10 +470,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "There is no interlude or rank up quest"),
         "no_servant_quest_hint_subtitle": MessageLookupByLibrary.simpleMessage(
             "Click ♡ to view all servants\' quests"),
-        "nobel_phantasm":
-            MessageLookupByLibrary.simpleMessage("Nobel Phantasm"),
-        "nobel_phantasm_level":
-            MessageLookupByLibrary.simpleMessage("Nobel Phantasm"),
+        "noble_phantasm":
+            MessageLookupByLibrary.simpleMessage("Noble Phantasm"),
+        "noble_phantasm_level":
+            MessageLookupByLibrary.simpleMessage("Noble Phantasm"),
         "obtain_methods": MessageLookupByLibrary.simpleMessage("Obtains"),
         "ok": MessageLookupByLibrary.simpleMessage("OK"),
         "open": MessageLookupByLibrary.simpleMessage("Open"),
@@ -525,7 +525,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "reset_svt_enhance_state":
             MessageLookupByLibrary.simpleMessage("Reset default skill/NP"),
         "reset_svt_enhance_state_hint": MessageLookupByLibrary.simpleMessage(
-            "Reset rank up of skills and nobel phantasm"),
+            "Reset rank up of skills and noble phantasm"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
             "Restart to upgrade. If the update fails, please manually copy the source folder to destination"),
         "restore": MessageLookupByLibrary.simpleMessage("Restore"),

@@ -420,8 +420,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("幕間の物語や強化クエストはありません"),
         "no_servant_quest_hint_subtitle":
             MessageLookupByLibrary.simpleMessage("♡をクリックして、すべてのクエストを表示します"),
-        "nobel_phantasm": MessageLookupByLibrary.simpleMessage("宝具"),
-        "nobel_phantasm_level": MessageLookupByLibrary.simpleMessage("宝具レベル"),
+        "noble_phantasm": MessageLookupByLibrary.simpleMessage("宝具"),
+        "noble_phantasm_level": MessageLookupByLibrary.simpleMessage("宝具レベル"),
         "obtain_methods": MessageLookupByLibrary.simpleMessage("入手方法"),
         "ok": MessageLookupByLibrary.simpleMessage("OK"),
         "open": MessageLookupByLibrary.simpleMessage("開く"),

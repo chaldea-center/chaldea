@@ -207,7 +207,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
             CustomTableRow(children: [
               TableCellData(
                 child:
-                    db.getIconImage(svt.nobelPhantasm.first.color, height: 55),
+                    db.getIconImage(svt.noblePhantasm.first.color, height: 55),
                 flex: 1,
               ),
               TableCellData(

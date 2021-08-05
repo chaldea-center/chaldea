@@ -209,7 +209,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           buildPlanRow(
             useSlider: sliderMode,
             leading: db.getIconImage('宝具强化', width: 33),
-            title: S.of(context).nobel_phantasm_level,
+            title: S.of(context).noble_phantasm_level,
             start: status.npLv,
             minVal: 1,
             maxVal: 5,

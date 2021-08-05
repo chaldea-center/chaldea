@@ -6,7 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'tabs/svt_illust_tab.dart';
 import 'tabs/svt_info_tab.dart';
-import 'tabs/svt_nobel_phantasm_tab.dart';
+import 'tabs/svt_noble_phantasm_tab.dart';
 import 'tabs/svt_plan_tab.dart';
 import 'tabs/svt_quest_tab.dart';
 import 'tabs/svt_skill_tab.dart';
@@ -45,9 +45,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
     if (svt.lActiveSkills.isNotEmpty) {
       _builders[S.current.skill] = (context) => SvtSkillTab(parent: this);
     }
-    if (svt.nobelPhantasm.isNotEmpty) {
-      _builders[S.current.nobel_phantasm] =
-          (context) => SvtNobelPhantasmTab(parent: this);
+    if (svt.noblePhantasm.isNotEmpty) {
+      _builders[S.current.noble_phantasm] =
+          (context) => SvtNoblePhantasmTab(parent: this);
     }
     _builders[S.current.card_info] = (context) => SvtInfoTab(parent: this);
     _builders[S.current.illustration] = (context) => SvtIllustTab(parent: this);

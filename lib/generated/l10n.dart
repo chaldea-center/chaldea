@@ -1767,10 +1767,10 @@ class S {
   }
 
   /// `宝具`
-  String get nobel_phantasm {
+  String get noble_phantasm {
     return Intl.message(
       '宝具',
-      name: 'nobel_phantasm',
+      name: 'noble_phantasm',
       desc: '',
       args: [],
     );
@@ -2277,10 +2277,10 @@ class S {
   }
 
   /// `宝具等级`
-  String get nobel_phantasm_level {
+  String get noble_phantasm_level {
     return Intl.message(
       '宝具等级',
-      name: 'nobel_phantasm_level',
+      name: 'noble_phantasm_level',
       desc: '',
       args: [],
     );

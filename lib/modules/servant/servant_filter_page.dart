@@ -86,7 +86,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           },
         ),
         FilterGroup(
-          title: Text(S.of(context).nobel_phantasm, style: textStyle),
+          title: Text(S.of(context).noble_phantasm, style: textStyle),
           options: SvtFilterData.npColorData,
           values: filterData.npColor,
           onFilterChanged: (value) {

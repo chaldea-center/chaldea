@@ -5,8 +5,8 @@ import 'package:chaldea/modules/shared/filter_page.dart';
 import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
 
-class SvtNobelPhantasmTab extends SvtTabBaseWidget {
-  SvtNobelPhantasmTab({
+class SvtNoblePhantasmTab extends SvtTabBaseWidget {
+  SvtNoblePhantasmTab({
     Key? key,
     ServantDetailPageState? parent,
     Servant? svt,
@@ -14,26 +14,26 @@ class SvtNobelPhantasmTab extends SvtTabBaseWidget {
   }) : super(key: key, parent: parent, svt: svt, status: status);
 
   @override
-  _SvtNobelPhantasmTabState createState() =>
-      _SvtNobelPhantasmTabState(parent: parent, svt: svt, plan: status);
+  _SvtNoblePhantasmTabState createState() =>
+      _SvtNoblePhantasmTabState(parent: parent, svt: svt, plan: status);
 }
 
-class _SvtNobelPhantasmTabState extends SvtTabBaseState<SvtNobelPhantasmTab> {
-  _SvtNobelPhantasmTabState(
+class _SvtNoblePhantasmTabState extends SvtTabBaseState<SvtNoblePhantasmTab> {
+  _SvtNoblePhantasmTabState(
       {ServantDetailPageState? parent, Servant? svt, ServantStatus? plan})
       : super(parent: parent, svt: svt, status: plan);
 
-  List<NobelPhantasm> get nobelPhantasms => svt.lNobelPhantasm;
+  List<NoblePhantasm> get noblePhantasms => svt.lNoblePhantasm;
 
   @override
   Widget build(BuildContext context) {
-    if (nobelPhantasms.length == 0) {
-      return Container(child: Center(child: Text('No NobelPhantasm Data')));
+    if (noblePhantasms.length == 0) {
+      return Container(child: Center(child: Text('No NoblePhantasm Data')));
     }
     status.npIndex =
-        fixValidRange(status.npIndex, 0, nobelPhantasms.length - 1);
+        fixValidRange(status.npIndex, 0, noblePhantasms.length - 1);
 
-    final td = nobelPhantasms[status.npIndex];
+    final td = noblePhantasms[status.npIndex];
     return ListView(
       children: <Widget>[
         TileGroup(
@@ -50,7 +50,7 @@ class _SvtNobelPhantasmTabState extends SvtTabBaseState<SvtNobelPhantasmTab> {
   FilterGroupData _toggleData = FilterGroupData(options: {'0': true});
 
   Widget buildToggle(int selected) {
-    if (nobelPhantasms.length <= 1) {
+    if (noblePhantasms.length <= 1) {
       return Container();
     }
     return Center(
@@ -58,10 +58,10 @@ class _SvtNobelPhantasmTabState extends SvtTabBaseState<SvtNobelPhantasmTab> {
         padding: EdgeInsets.only(top: 8, bottom: 4),
         child: FilterGroup(
           options:
-              List.generate(nobelPhantasms.length, (index) => index.toString()),
+              List.generate(noblePhantasms.length, (index) => index.toString()),
           values: _toggleData,
           optionBuilder: (s) {
-            String state = nobelPhantasms[int.parse(s)].state ?? 'NP';
+            String state = noblePhantasms[int.parse(s)].state ?? 'NP';
             Widget button;
             if (state.contains('强化前') || state.contains('强化后')) {
               final iconKey = state.contains('强化前') ? '宝具未强化' : '宝具强化';
@@ -89,7 +89,7 @@ class _SvtNobelPhantasmTabState extends SvtTabBaseState<SvtNobelPhantasmTab> {
     );
   }
 
-  Widget buildHeader(NobelPhantasm td) {
+  Widget buildHeader(NoblePhantasm td) {
     return CustomTile(
       leading: Column(
         children: <Widget>[

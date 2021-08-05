@@ -1019,17 +1019,17 @@ Servant _$ServantFromJson(Map<String, dynamic> json) {
       icon: $checkedConvert(json, 'icon', (v) => v as String),
       info: $checkedConvert(json, 'info',
           (v) => ServantBaseInfo.fromJson(v as Map<String, dynamic>)),
-      nobelPhantasm: $checkedConvert(
+      noblePhantasm: $checkedConvert(
           json,
-          'nobelPhantasm',
+          'noblePhantasm',
           (v) => (v as List<dynamic>)
-              .map((e) => NobelPhantasm.fromJson(e as Map<String, dynamic>))
+              .map((e) => NoblePhantasm.fromJson(e as Map<String, dynamic>))
               .toList()),
-      nobelPhantasmEn: $checkedConvert(
+      noblePhantasmEn: $checkedConvert(
           json,
-          'nobelPhantasmEn',
+          'noblePhantasmEn',
           (v) => (v as List<dynamic>)
-              .map((e) => NobelPhantasm.fromJson(e as Map<String, dynamic>))
+              .map((e) => NoblePhantasm.fromJson(e as Map<String, dynamic>))
               .toList()),
       activeSkills: $checkedConvert(
           json,
@@ -1099,14 +1099,15 @@ Servant _$ServantFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
+Map<String, dynamic> _$ServantToJson(Servant instance) =>
+    <String, dynamic>{
       'no': instance.no,
       'svtId': instance.svtId,
       'mcLink': instance.mcLink,
       'icon': instance.icon,
       'info': instance.info,
-      'nobelPhantasm': instance.nobelPhantasm,
-      'nobelPhantasmEn': instance.nobelPhantasmEn,
+      'noblePhantasm': instance.noblePhantasm,
+      'noblePhantasmEn': instance.noblePhantasmEn,
       'activeSkills': instance.activeSkills,
       'activeSkillsEn': instance.activeSkillsEn,
       'passiveSkills': instance.passiveSkills,
@@ -1248,9 +1249,9 @@ Map<String, dynamic> _$ServantBaseInfoToJson(ServantBaseInfo instance) =>
       'criticalRate': instance.criticalRate,
     };
 
-NobelPhantasm _$NobelPhantasmFromJson(Map<String, dynamic> json) {
-  return $checkedNew('NobelPhantasm', json, () {
-    final val = NobelPhantasm(
+NoblePhantasm _$NoblePhantasmFromJson(Map<String, dynamic> json) {
+  return $checkedNew('NoblePhantasm', json, () {
+    final val = NoblePhantasm(
       state: $checkedConvert(json, 'state', (v) => v as String?),
       name: $checkedConvert(json, 'name', (v) => v as String),
       nameJp: $checkedConvert(json, 'nameJp', (v) => v as String?),
@@ -1271,7 +1272,7 @@ NobelPhantasm _$NobelPhantasmFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$NobelPhantasmToJson(NobelPhantasm instance) =>
+Map<String, dynamic> _$NoblePhantasmToJson(NoblePhantasm instance) =>
     <String, dynamic>{
       'state': instance.state,
       'name': instance.name,
@@ -1902,8 +1903,7 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$UserDataToJson(UserData instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'appSetting': instance.appSetting,
       'carouselSetting': instance.carouselSetting,
       'galleries': instance.galleries,

@@ -393,8 +393,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("无幕间或强化关卡"),
         "no_servant_quest_hint_subtitle":
             MessageLookupByLibrary.simpleMessage("点击♡查看所有从者任务"),
-        "nobel_phantasm": MessageLookupByLibrary.simpleMessage("宝具"),
-        "nobel_phantasm_level": MessageLookupByLibrary.simpleMessage("宝具等级"),
+        "noble_phantasm": MessageLookupByLibrary.simpleMessage("宝具"),
+        "noble_phantasm_level": MessageLookupByLibrary.simpleMessage("宝具等级"),
         "obtain_methods": MessageLookupByLibrary.simpleMessage("获取方式"),
         "ok": MessageLookupByLibrary.simpleMessage("确定"),
         "open": MessageLookupByLibrary.simpleMessage("打开"),

@@ -19,8 +19,8 @@ class Servant {
 
   String get thumb => icon;
   ServantBaseInfo info;
-  List<NobelPhantasm> nobelPhantasm;
-  List<NobelPhantasm> nobelPhantasmEn;
+  List<NoblePhantasm> noblePhantasm;
+  List<NoblePhantasm> noblePhantasmEn;
   List<ActiveSkill> activeSkills;
   List<ActiveSkill> activeSkillsEn;
   List<Skill> passiveSkills;
@@ -58,10 +58,10 @@ class Servant {
     return clsName;
   }
 
-  List<NobelPhantasm> get lNobelPhantasm =>
-      Language.isEN && nobelPhantasmEn.isNotEmpty
-          ? nobelPhantasmEn
-          : nobelPhantasm;
+  List<NoblePhantasm> get lNoblePhantasm =>
+      Language.isEN && noblePhantasmEn.isNotEmpty
+          ? noblePhantasmEn
+          : noblePhantasm;
 
   List<ActiveSkill> get lActiveSkills =>
       Language.isEN && activeSkillsEn.isNotEmpty
@@ -78,8 +78,8 @@ class Servant {
     required this.mcLink,
     required this.icon,
     required this.info,
-    required this.nobelPhantasm,
-    required this.nobelPhantasmEn,
+    required this.noblePhantasm,
+    required this.noblePhantasmEn,
     required this.activeSkills,
     required this.activeSkillsEn,
     required this.passiveSkills,
@@ -445,7 +445,7 @@ class ServantBaseInfo {
 }
 
 @JsonSerializable(checked: true)
-class NobelPhantasm {
+class NoblePhantasm {
   String? state;
   String name;
   String? nameJp;
@@ -457,7 +457,7 @@ class NobelPhantasm {
   String? typeText;
   List<Effect> effects;
 
-  NobelPhantasm({
+  NoblePhantasm({
     required this.state,
     required this.name,
     required this.nameJp,
@@ -470,10 +470,10 @@ class NobelPhantasm {
     required this.effects,
   });
 
-  factory NobelPhantasm.fromJson(Map<String, dynamic> data) =>
-      _$NobelPhantasmFromJson(data);
+  factory NoblePhantasm.fromJson(Map<String, dynamic> data) =>
+      _$NoblePhantasmFromJson(data);
 
-  Map<String, dynamic> toJson() => _$NobelPhantasmToJson(this);
+  Map<String, dynamic> toJson() => _$NoblePhantasmToJson(this);
 }
 
 @JsonSerializable(checked: true)

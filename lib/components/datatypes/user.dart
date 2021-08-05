@@ -225,7 +225,7 @@ class ServantStatus {
     curVal.validate();
     npLv = fixValidRange(npLv, 1, 5);
     npIndex = fixValidRange(
-        npIndex, 0, svt == null ? null : svt.lNobelPhantasm.length - 1);
+        npIndex, 0, svt == null ? null : svt.lNoblePhantasm.length - 1);
     int skillNum = svt?.lActiveSkills.length ?? 3;
     skillIndex.length = skillNum;
     for (int i = 0; i < skillNum; i++) {
