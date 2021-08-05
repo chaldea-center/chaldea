@@ -12,7 +12,7 @@ class GameData {
   Map<int, CraftEssence> crafts;
   Map<int, CommandCode> cmdCodes;
   Map<String, Item> items;
-  Map<String, String?> icons;
+  Map<String, String?> icons; //key: filename, value: original filename
   Events events;
   Map<String, Quest> freeQuests;
   Map<int, List<Quest>> svtQuests;

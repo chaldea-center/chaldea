@@ -1,3 +1,6 @@
+## 1.5.2
+- support ★3 fou-kun planning
+
 ## 1.5.1
 - Import servant/item data from http://fgosimulator.webcrow.jp/Material/
 - fix append skill data not saved

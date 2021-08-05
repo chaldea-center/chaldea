@@ -230,8 +230,10 @@ class Servant {
       ..grail = maxGrail;
     return <String, int>{
       Items.grail: max(0, target.grail - cur.grail),
-      Items.fou4Hp: max(0, target.fouHp - cur.fouHp),
-      Items.fou4Atk: max(0, target.fouAtk - cur.fouAtk),
+      Items.fou4Hp: max(0, target.fouHp - max(0, cur.fouHp)),
+      Items.fou4Atk: max(0, target.fouAtk - max(0, cur.fouAtk)),
+      Items.fou3Hp: max(0, min(0, target.fouHp) - cur.fouHp),
+      Items.fou3Atk: max(0, min(0, target.fouAtk) - cur.fouAtk),
     }..removeWhere((key, value) => value == 0);
   }
 

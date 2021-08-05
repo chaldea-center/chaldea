@@ -56,7 +56,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         db.gameData.crafts.map((key, craft) => MapEntry(craft.gameId, craft));
     itemIdMap = db.gameData.items
         .map((key, item) => MapEntry(item.itemId, item))
-          ..removeWhere((key, value) => key < 0);
+      ..removeWhere((key, value) => key < 0);
     try {
       final f = File(tmpPath);
       if (f.existsSync()) {
@@ -495,8 +495,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           ..ascension = svt.limitCount
           ..skills = [svt.skillLv1, svt.skillLv2, svt.skillLv3]
           ..grail = svt.exceedCount
-          ..fouHp = max(0, (svt.adjustHp - 100) ~/ 2)
-          ..fouAtk = max(0, (svt.adjustAtk - 100) ~/ 2);
+          ..fouHp = Item.fouShownToVal(svt.adjustHp * 10)
+          ..fouAtk = Item.fouShownToVal(svt.adjustAtk * 10);
 
         final costumeVals = cardCollections[svt.svtId]!.costumeIdsTo01();
         // should always be non-null
@@ -553,7 +553,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                   ..createSync(recursive: true)
                   ..writeAsBytesSync(filePickerCross.toUint8List());
                 Navigator.of(context).pop();
-              } on FileSelectionCanceledError {} catch (e, s) {
+              } on FileSelectionCanceledError {
+              } catch (e, s) {
                 logger.e('import http body from text file failed', e, s);
                 Navigator.of(context).pop(e);
               }
@@ -568,7 +569,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         ],
       ).showDialog(context);
       if (error != null) throw error;
-    } on FileSelectionCanceledError {} catch (e, s) {
+    } on FileSelectionCanceledError {
+    } catch (e, s) {
       logger.e('fail to load http response', e, s);
       if (mounted)
         SimpleCancelOkDialog(

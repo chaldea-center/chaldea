@@ -247,14 +247,22 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             ),
           buildPlanRow(
             useSlider: sliderMode,
-            leading: Item.iconBuilder(
-                context: context, itemKey: Items.fou4Hp, width: 33),
-            title: Item.localizedNameOf(Items.fou4Hp),
+            leading: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Item.iconBuilder(
+                    context: context, itemKey: Items.fou3Hp, width: 33),
+                const SizedBox(width: 4),
+                Item.iconBuilder(
+                    context: context, itemKey: Items.fou4Hp, width: 33)
+              ],
+            ),
+            title: LocalizedText.of(chs: 'HP芙芙', jpn: 'HPフォウ', eng: 'HP Fou'),
             start: curVal.fouHp,
             end: targetVal.fouHp,
-            minVal: 0,
+            minVal: -20,
             maxVal: 50,
-            labelFormatter: (v) => (v * 20).toString(),
+            labelFormatter: (v) => Item.fouValToShown(v).toString(),
             trailingLabelFormatter: (a, b) =>
                 '${curVal.shownFouHp}->${targetVal.shownFouHp}',
             onValueChanged: (_start, _end) {
@@ -267,9 +275,18 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           ),
           buildPlanRow(
             useSlider: sliderMode,
-            leading: Item.iconBuilder(
-                context: context, itemKey: Items.fou4Atk, width: 33),
-            title: Item.localizedNameOf(Items.fou4Atk),
+            leading: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Item.iconBuilder(
+                    context: context, itemKey: Items.fou3Atk, width: 33),
+                const SizedBox(width: 4),
+                Item.iconBuilder(
+                    context: context, itemKey: Items.fou4Atk, width: 33)
+              ],
+            ),
+            title:
+                LocalizedText.of(chs: 'ATK芙芙', jpn: 'ATKフォウ', eng: 'ATK Fou'),
             start: curVal.fouAtk,
             end: targetVal.fouAtk,
             minVal: 0,

@@ -159,6 +159,14 @@ class Item {
     }
     return child;
   }
+
+  static int fouValToShown(int fou) {
+    return fou >= 0 ? (1000 + 20 * fou) : (1000 + 50 * fou);
+  }
+
+  static int fouShownToVal(int shown) {
+    return shown >= 1000 ? (shown - 1000) ~/ 20 : ((shown - 1000) / 50).floor();
+  }
 }
 
 class Items {
@@ -172,11 +180,24 @@ class Items {
   static const String summonTicket = '呼符';
   static const String quartz = '圣晶石';
   static const String quartzFragment = '圣晶片';
+  static const String chaldeaFlame = '迦勒底梦火';
+
+  // static const String fouHp = 'HP芙芙';
+  // static const String fouAtk = 'ATK芙芙';
+  static const String fou3Hp = '明星之芙芙';
+  static const String fou3Atk = '太阳之芙芙';
   static const String fou4Hp = '流星之芙芙';
   static const String fou4Atk = '日轮之芙芙';
 
   /// items for servant planning but not for ascension and skill
-  static const List<String> extraPlanningItems = [grail, fou4Hp, fou4Atk];
+  static const List<String> extraPlanningItems = [
+    grail,
+    chaldeaFlame,
+    fou3Hp,
+    fou3Atk,
+    fou4Hp,
+    fou4Atk
+  ];
 }
 
 class ItemCategory {

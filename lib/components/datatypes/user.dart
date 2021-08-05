@@ -271,7 +271,8 @@ class ServantPlan {
   List<int> dress;
   int grail;
 
-  /// 流星のフォウくん/日輪のフォウくん, 1000-2000
+  /// ★3 0-100=-20->0
+  /// ★4 1000-2000=0->50, 流星のフォウくん/日輪のフォウくん
   int fouHp;
   int fouAtk;
 
@@ -297,9 +298,9 @@ class ServantPlan {
     validate();
   }
 
-  int get shownFouHp => fouHp * 20;
+  int get shownFouHp => Item.fouValToShown(fouHp);
 
-  int get shownFouAtk => fouAtk * 20;
+  int get shownFouAtk => Item.fouValToShown(fouAtk);
 
   void reset() {
     favorite = false;
@@ -353,8 +354,8 @@ class ServantPlan {
     // check grail max limit when used
     grail = fixValidRange(grail, lowerPlan?.grail ?? 0,
         rarity == null ? null : Grail.maxGrailCount(rarity));
-    fouHp = fixValidRange(fouHp, lowerPlan?.fouHp ?? 0, 50);
-    fouAtk = fixValidRange(fouAtk, lowerPlan?.fouAtk ?? 0, 50);
+    fouHp = fixValidRange(fouHp, lowerPlan?.fouHp ?? -20, 50);
+    fouAtk = fixValidRange(fouAtk, lowerPlan?.fouAtk ?? -20, 50);
   }
 
   factory ServantPlan.fromJson(Map<String, dynamic> data) =>
