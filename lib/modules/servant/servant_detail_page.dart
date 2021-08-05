@@ -201,7 +201,11 @@ class ServantDetailPageState extends State<ServantDetailPage>
                     ..ascension = status.curVal.ascension
                     ..skills = List.of(status.curVal.skills)
                     ..dress = List.of(status.curVal.dress)
-                    ..grail = status.curVal.grail;
+                    ..appendSkills = List.of(status.curVal.appendSkills)
+                    ..grail = status.curVal.grail
+                    ..fouHp = status.curVal.fouHp
+                    ..fouAtk = status.curVal.fouAtk
+                    ..bond = status.curVal.bond;
                 });
                 db.itemStat.updateSvtItems();
               },

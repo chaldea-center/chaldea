@@ -225,15 +225,18 @@ class Servant {
     final maxGrail = Grail.maxGrailCount(this.info.rarity);
     cur ??= ServantPlan();
     target ??= ServantPlan()
+      ..grail = maxGrail
       ..fouHp = 50
       ..fouAtk = 50
-      ..grail = maxGrail;
+      ..bond = 15;
+    // todo add qp cost for flame and grail
     return <String, int>{
       Items.grail: max(0, target.grail - cur.grail),
       Items.fou4Hp: max(0, target.fouHp - max(0, cur.fouHp)),
       Items.fou4Atk: max(0, target.fouAtk - max(0, cur.fouAtk)),
       Items.fou3Hp: max(0, min(0, target.fouHp) - cur.fouHp),
       Items.fou3Atk: max(0, min(0, target.fouAtk) - cur.fouAtk),
+      Items.chaldeaFlame: max(0, target.flameCost - cur.flameCost)
     }..removeWhere((key, value) => value == 0);
   }
 

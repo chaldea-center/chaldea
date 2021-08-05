@@ -481,6 +481,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         if (!_includeSvtStorage && svt.inStorage) continue;
 
         ServantStatus status;
+        UserSvtCollection collection = cardCollections[svt.svtId]!;
         if (_alreadyAdded.contains(svt.indexKey!)) {
           user.duplicatedServants[svt.id] = svt.indexKey!;
           status = user.svtStatusOf(svt.id);
@@ -496,9 +497,10 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           ..skills = [svt.skillLv1, svt.skillLv2, svt.skillLv3]
           ..grail = svt.exceedCount
           ..fouHp = Item.fouShownToVal(svt.adjustHp * 10)
-          ..fouAtk = Item.fouShownToVal(svt.adjustAtk * 10);
+          ..fouAtk = Item.fouShownToVal(svt.adjustAtk * 10)
+          ..bond = collection.friendshipExceedCount + 10;
 
-        final costumeVals = cardCollections[svt.svtId]!.costumeIdsTo01();
+        final costumeVals = collection.costumeIdsTo01();
         // should always be non-null
         if (status.curVal.dress.length < costumeVals.length) {
           status.curVal.dress.addAll(List.generate(

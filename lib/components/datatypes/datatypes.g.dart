@@ -1099,8 +1099,7 @@ Servant _$ServantFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$ServantToJson(Servant instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'no': instance.no,
       'svtId': instance.svtId,
       'mcLink': instance.mcLink,
@@ -1741,6 +1740,7 @@ ServantPlan _$ServantPlanFromJson(Map<String, dynamic> json) {
       grail: $checkedConvert(json, 'grail', (v) => v as int?),
       fouHp: $checkedConvert(json, 'fouHp', (v) => v as int?),
       fouAtk: $checkedConvert(json, 'fouAtk', (v) => v as int?),
+      bond: $checkedConvert(json, 'bond', (v) => v as int?),
     );
     return val;
   });
@@ -1756,6 +1756,7 @@ Map<String, dynamic> _$ServantPlanToJson(ServantPlan instance) =>
       'grail': instance.grail,
       'fouHp': instance.fouHp,
       'fouAtk': instance.fouAtk,
+      'bond': instance.bond,
     };
 
 EventPlans _$EventPlansFromJson(Map<String, dynamic> json) {

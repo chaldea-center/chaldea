@@ -302,6 +302,33 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             },
             detailPageBuilder: null,
           ),
+          buildPlanRow(
+            useSlider: sliderMode,
+            leading: Item.iconBuilder(
+                context: context, itemKey: Items.chaldeaFlame, width: 33),
+            title: Item.localizedNameOf(Items.chaldeaFlame),
+            start: curVal.bond,
+            end: targetVal.bond,
+            minVal: 10,
+            maxVal: 15,
+            labelFormatter: (v) => v.toString(),
+            // trailingLabelFormatter: (a, b) => '$a->$b',
+            onValueChanged: (_start, _end) {
+              status.favorite = true;
+              curVal.bond = _start;
+              targetVal.bond = _end;
+              updateState();
+            },
+            detailPageBuilder: (context) => SimpleCancelOkDialog(
+              title: Text(Item.localizedNameOf(Items.chaldeaFlame)),
+              content: Text(LocalizedText.of(
+                chs: '数值为当前的羁绊上限，用于计算梦火消耗',
+                jpn: '値は、カルデアの夢火の消費量を計算するために使用される、ボンドの現在の上限です。',
+                eng:
+                    'The value is the current bond limit, used for calculation of Chaldea Flame/Lantern',
+              )),
+            ),
+          ),
         ],
       ));
 

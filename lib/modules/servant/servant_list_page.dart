@@ -264,15 +264,16 @@ class ServantListPageState
       if (!svtStat.favorite) return false;
       bool planNotComplete = <bool>[
         svtPlan.ascension > svtStat.curVal.ascension,
-        svtPlan.grail > svtStat.curVal.grail,
         for (var i = 0; i < 3; i++)
           svtPlan.skills[i] > svtStat.curVal.skills[i],
-        svtPlan.fouHp > svtStat.curVal.fouHp,
-        svtPlan.fouAtk > svtStat.curVal.fouAtk,
         for (var i = 0;
             i < min(svtPlan.dress.length, svtStat.curVal.dress.length);
             i++)
-          svtPlan.dress[i] > svtStat.curVal.dress[i]
+          svtPlan.dress[i] > svtStat.curVal.dress[i],
+        svtPlan.grail > svtStat.curVal.grail,
+        svtPlan.fouHp > svtStat.curVal.fouHp,
+        svtPlan.fouAtk > svtStat.curVal.fouAtk,
+        svtPlan.bond > svtStat.curVal.bond,
       ].contains(true);
       if (filterData.planCompletion.options[planNotComplete ? '0' : '1'] !=
           true) return false;
