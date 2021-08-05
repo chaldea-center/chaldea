@@ -537,7 +537,7 @@ class ServantListPageState
         hint: Text(S.of(context).ascension),
         items: List.generate(
           5,
-              (i) => DropdownMenuItem(
+          (i) => DropdownMenuItem(
             value: i,
             child: Text(
               S.current.words_separate(S.current.ascension, '$i'),

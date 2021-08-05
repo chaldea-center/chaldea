@@ -254,3 +254,27 @@ class Grail {
     return lvs;
   }
 }
+
+class QPCost {
+  QPCost._();
+
+  static List<int> grailAscensionAll(int rarity) {
+    if (rarity < 0 || rarity > 5) return [];
+    List<int> qps = [
+      [60, 80, 100, 200, 300, 400, 500, 600, 700, 800],
+      [40, 60, 80, 100, 200, 300, 400, 500, 600, 700],
+      [60, 80, 100, 200, 300, 400, 500, 600, 700, 800],
+      [100, 200, 300, 400, 500, 600, 700, 800, 900],
+      [400, 500, 600, 700, 800, 900, 1000],
+      [900, 1000, 1100, 1200, 1300]
+    ][rarity];
+    qps.addAll(
+        List.generate(10, (index) => [900, 800, 900, 1000, 1200, 1500][index]));
+    return qps.map((e) => e * 10000).toList();
+  }
+
+  static List<int> bondLimitAll(int rarity) {
+    if (rarity < 0 || rarity > 5) return [];
+    return [];
+  }
+}

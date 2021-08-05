@@ -12,6 +12,7 @@ class DebugFloatingMenuButton extends StatefulWidget {
 
 class _DebugFloatingMenuButtonState extends State<DebugFloatingMenuButton> {
   bool isMenuShowing = false;
+  double opaque = 0.75;
   Offset? _offset;
 
   Offset get offset =>
@@ -33,7 +34,7 @@ class _DebugFloatingMenuButtonState extends State<DebugFloatingMenuButton> {
           });
         },
         child: Opacity(
-          opacity: 0.75,
+          opacity: opaque,
           child: FloatingActionButton(
             mini: true,
             backgroundColor:
@@ -44,7 +45,7 @@ class _DebugFloatingMenuButtonState extends State<DebugFloatingMenuButton> {
                     setState(() {
                       isMenuShowing = true;
                     });
-                    _DebugMenuDialog().showDialog(context).then((_) {
+                    _DebugMenuDialog(state: this).showDialog(context).then((_) {
                       setState(() {
                         isMenuShowing = false;
                       });
@@ -80,10 +81,21 @@ class _DebugFloatingMenuButtonState extends State<DebugFloatingMenuButton> {
     _offset = Offset(x, y);
     setState(() {});
   }
+
+  void hide() {
+    opaque = 0;
+    safeSetState();
+    Future.delayed(Duration(seconds: 60), () {
+      opaque = 0.75;
+      safeSetState();
+    });
+  }
 }
 
 class _DebugMenuDialog extends StatefulWidget {
-  const _DebugMenuDialog({Key? key}) : super(key: key);
+  final _DebugFloatingMenuButtonState? state;
+
+  const _DebugMenuDialog({Key? key, this.state}) : super(key: key);
 
   @override
   __DebugMenuDialogState createState() => __DebugMenuDialogState();
@@ -131,6 +143,15 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           onTap: () {
             Navigator.pop(context);
             SplitRoute.push(context, DarkLightThemePalette());
+          },
+        ),
+        ListTile(
+          horizontalTitleGap: 0,
+          leading: Icon(Icons.palette_outlined),
+          title: Text('Hide 60s'),
+          onTap: () {
+            widget.state?.hide();
+            Navigator.pop(context);
           },
         ),
         Center(
