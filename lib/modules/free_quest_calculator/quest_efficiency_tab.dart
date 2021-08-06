@@ -1,6 +1,11 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/quest_card.dart';
 
+enum _EfficiencySort {
+  item,
+  bond,
+}
+
 class QuestEfficiencyTab extends StatefulWidget {
   final GLPKSolution? solution;
 
@@ -17,6 +22,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
   Set<String> allItems = {};
   Set<String> filterItems = {};
   bool matchAll = true;
+  _EfficiencySort sortType = _EfficiencySort.item;
 
   @override
   void initState() {
@@ -30,10 +36,40 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
     _scrollController.dispose();
   }
 
+  List<GLPKVariable> getSortedVars() {
+    if (widget.solution == null) return [];
+    final List<GLPKVariable> quests = List.of(widget.solution!.weightVars);
+    switch (sortType) {
+      case _EfficiencySort.item:
+        quests.sort((a, b) => sum(b.detail.values as Iterable<double>)
+            .compareTo(sum(a.detail.values as Iterable<double>)));
+        break;
+      case _EfficiencySort.bond:
+        quests.sort((a, b) {
+          return getBondEff(b).compareTo(getBondEff(a));
+        });
+        break;
+    }
+    return quests;
+  }
+
+  double getBondEff(GLPKVariable variable) {
+    final quest = db.gameData.freeQuests[variable.name];
+    if (quest != null) {
+      int? ap = quest.battles.getOrNull(0)?.ap;
+      if (ap != null) {
+        return quest.bondPoint / ap;
+      }
+    }
+    return double.negativeInfinity;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final List<GLPKVariable> solutionVars = getSortedVars();
+
     allItems.clear();
-    widget.solution?.weightVars.forEach((variable) {
+    solutionVars.forEach((variable) {
       variable.detail.forEach((key, value) {
         if (value > 0) {
           allItems.add(key);
@@ -43,7 +79,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
     filterItems.removeWhere((element) => !allItems.contains(element));
 
     List<Widget> children = [];
-    widget.solution?.weightVars.forEach((variable) {
+    solutionVars.forEach((variable) {
       final String questKey = variable.name;
       final Map<String, double> drops = variable.detail as Map<String, double>;
       final Quest? quest = db.gameData.freeQuests[questKey];
@@ -58,6 +94,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
           child: ValueStatefulBuilder<bool>(
             initValue: false,
             builder: (context, state) {
+              double bondEff = getBondEff(variable);
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,7 +103,19 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
                     title: Text(quest?.localizedKey ??
                         Quest.getDailyQuestName(questKey)),
                     subtitle: buildRichText(drops.entries),
-                    trailing: Text(sum(drops.values).toStringAsFixed(3)),
+                    trailing: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(sum(drops.values).toStringAsFixed(3)),
+                        Text(
+                          bondEff == double.negativeInfinity
+                              ? '???'
+                              : bondEff.toStringAsFixed(2),
+                          style: Theme.of(context).textTheme.caption,
+                        )
+                      ],
+                    ),
                     onTap: quest == null
                         ? null
                         : () {
@@ -89,9 +138,18 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
     ));
     return Column(
       children: [
+        const SizedBox(height: 6),
         ListTile(
           title: Text(S.of(context).quest),
-          trailing: Text(S.of(context).efficiency),
+          trailing: Column(
+            children: [
+              Text(S.current.item_eff),
+              Text(
+                S.current.bond_eff,
+                style: Theme.of(context).textTheme.caption,
+              )
+            ],
+          ),
         ),
         kDefaultDivider,
         Expanded(
@@ -157,28 +215,64 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
         ),
       ));
     });
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        IconButton(
-          icon: Icon(matchAll ? Icons.add_box : Icons.add_box_outlined),
-          color: Theme.of(context).buttonTheme.colorScheme?.secondary,
-          tooltip: matchAll ? 'Contains All' : 'Contains Any',
-          onPressed: () {
-            setState(() {
-              matchAll = !matchAll;
-            });
-          },
-        ),
-        Expanded(
-          child: Container(
-            margin: EdgeInsets.symmetric(vertical: 5),
-            height: height,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: children,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Text(S.current.filter_sort),
             ),
-          ),
+            RadioWithLabel<_EfficiencySort>(
+              value: _EfficiencySort.item,
+              groupValue: sortType,
+              label: Text(S.current.item_eff),
+              onChanged: (v) {
+                setState(() {
+                  sortType = v ?? sortType;
+                });
+              },
+            ),
+            RadioWithLabel<_EfficiencySort>(
+              value: _EfficiencySort.bond,
+              groupValue: sortType,
+              label: Text(S.current.bond_eff),
+              onChanged: (v) {
+                setState(() {
+                  sortType = v ?? sortType;
+                });
+              },
+            ),
+          ],
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            IconButton(
+              icon: Icon(matchAll ? Icons.add_box : Icons.add_box_outlined),
+              color: Theme.of(context).buttonTheme.colorScheme?.secondary,
+              tooltip: matchAll ? 'Contains All' : 'Contains Any',
+              onPressed: () {
+                setState(() {
+                  matchAll = !matchAll;
+                });
+              },
+            ),
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 5),
+                height: height,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: children,
+                ),
+              ),
+            )
+          ],
         )
       ],
     );

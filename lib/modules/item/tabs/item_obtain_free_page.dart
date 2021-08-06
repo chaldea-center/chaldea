@@ -46,7 +46,7 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
   }
 
   Widget buildSortRadio(bool value) {
-    return RadioWithLabel(
+    return RadioWithLabel<bool>(
       value: value,
       groupValue: sortByAP,
       label: Text(

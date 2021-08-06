@@ -100,6 +100,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "backup_success": MessageLookupByLibrary.simpleMessage("バックアップは成功しました"),
         "blacklist": MessageLookupByLibrary.simpleMessage("ブラックリスト"),
         "bond_craft": MessageLookupByLibrary.simpleMessage("絆礼装"),
+        "bond_eff": MessageLookupByLibrary.simpleMessage("絆効率"),
         "calc_weight": MessageLookupByLibrary.simpleMessage("重み"),
         "calculate": MessageLookupByLibrary.simpleMessage("計算する"),
         "calculator": MessageLookupByLibrary.simpleMessage("電卓"),
@@ -354,6 +355,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_category_silver": MessageLookupByLibrary.simpleMessage("銀素材"),
         "item_category_special": MessageLookupByLibrary.simpleMessage("特殊素材"),
         "item_category_usual": MessageLookupByLibrary.simpleMessage("共通素材"),
+        "item_eff": MessageLookupByLibrary.simpleMessage("アイテム効率"),
         "item_exceed_hint": MessageLookupByLibrary.simpleMessage(
             "プランを計算する前に、材料の余剰を設定できます（フリークエストプランの場合のみ）"),
         "item_left": MessageLookupByLibrary.simpleMessage("残り"),

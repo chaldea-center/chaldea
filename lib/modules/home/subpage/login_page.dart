@@ -89,7 +89,13 @@ class _LoginPageState extends State<LoginPage> {
                 forgotPwdBtn,
                 logoutBtn,
               ],
-            )
+            ),
+          if (kDebugMode)
+            ListTile(
+              title: Center(
+                child: Text('Server: ${db.serverDio.options.baseUrl}'),
+              ),
+            ),
         ],
       ),
     );

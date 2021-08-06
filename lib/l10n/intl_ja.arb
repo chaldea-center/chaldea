@@ -284,6 +284,8 @@
   "quest_condition": "開放条件",
   "free_efficiency": "フリー効率",
   "efficiency": "効率",
+  "item_eff": "アイテム効率",
+  "bond_eff": "絆効率",
   "calc_weight": "重み",
   "words_separate": "{a}{b}",
   "clear_cache": "キャッシュを消去",

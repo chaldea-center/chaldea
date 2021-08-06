@@ -282,6 +282,8 @@
   "quest_condition": "Conditions",
   "free_efficiency": "Free Efficiency",
   "efficiency": "Efficiency",
+  "item_eff": "Item Eff",
+  "bond_eff": "Bond Eff",
   "calc_weight": "Wight",
   "words_separate": "{a} {b}",
   "clear_cache": "Clear cache",

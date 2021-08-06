@@ -490,15 +490,17 @@ class _DownloadDialogState extends State<DownloadDialog> {
         textTheme.bodyText2?.copyWith(color: textTheme.caption?.color);
     return AlertDialog(
       title: Text(S.of(context).download),
-      content: ListView(
-        shrinkWrap: true,
+      scrollable: true,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(LocalizedText.of(chs: '文件名', jpn: 'ファイル名', eng: 'Filename'),
               style: headerStyle),
           Text(fn, style: contentStyle),
           const SizedBox(height: 10),
           if (widget.notes != null) ...[
-            Text(LocalizedText.of(chs: '概要', jpn: '概要', eng: 'Summary'),
+            Text(LocalizedText.of(chs: '摘要', jpn: '概要', eng: 'Summary'),
                 style: headerStyle),
             Text(widget.notes!, style: contentStyle),
             const SizedBox(height: 10),

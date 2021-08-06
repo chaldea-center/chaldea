@@ -281,6 +281,8 @@
   "quest_condition": "开放条件",
   "free_efficiency": "Free效率",
   "efficiency": "效率",
+  "item_eff": "素材效率",
+  "bond_eff": "羁绊效率",
   "calc_weight": "权重",
   "words_separate": "{a}{b}",
   "clear_cache": "清除缓存",

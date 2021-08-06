@@ -99,6 +99,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "backup_success": MessageLookupByLibrary.simpleMessage("备份成功"),
         "blacklist": MessageLookupByLibrary.simpleMessage("黑名单"),
         "bond_craft": MessageLookupByLibrary.simpleMessage("羁绊礼装"),
+        "bond_eff": MessageLookupByLibrary.simpleMessage("羁绊效率"),
         "calc_weight": MessageLookupByLibrary.simpleMessage("权重"),
         "calculate": MessageLookupByLibrary.simpleMessage("计算"),
         "calculator": MessageLookupByLibrary.simpleMessage("计算器"),
@@ -333,6 +334,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_category_silver": MessageLookupByLibrary.simpleMessage("银素材"),
         "item_category_special": MessageLookupByLibrary.simpleMessage("特殊素材"),
         "item_category_usual": MessageLookupByLibrary.simpleMessage("普通素材"),
+        "item_eff": MessageLookupByLibrary.simpleMessage("素材效率"),
         "item_exceed_hint": MessageLookupByLibrary.simpleMessage(
             "计算规划前，可以设置不同材料的富余量(仅用于Free本规划)"),
         "item_left": MessageLookupByLibrary.simpleMessage("剩余"),

@@ -2866,6 +2866,26 @@ class S {
     );
   }
 
+  /// `素材效率`
+  String get item_eff {
+    return Intl.message(
+      '素材效率',
+      name: 'item_eff',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `羁绊效率`
+  String get bond_eff {
+    return Intl.message(
+      '羁绊效率',
+      name: 'bond_eff',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `权重`
   String get calc_weight {
     return Intl.message(

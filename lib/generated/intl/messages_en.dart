@@ -105,6 +105,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Backup successfully"),
         "blacklist": MessageLookupByLibrary.simpleMessage("Blacklist"),
         "bond_craft": MessageLookupByLibrary.simpleMessage("Bond Craft"),
+        "bond_eff": MessageLookupByLibrary.simpleMessage("Bond Eff"),
         "calc_weight": MessageLookupByLibrary.simpleMessage("Wight"),
         "calculate": MessageLookupByLibrary.simpleMessage("Calculate"),
         "calculator": MessageLookupByLibrary.simpleMessage("Calculator"),
@@ -395,6 +396,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_category_special":
             MessageLookupByLibrary.simpleMessage("Special Items"),
         "item_category_usual": MessageLookupByLibrary.simpleMessage("Items"),
+        "item_eff": MessageLookupByLibrary.simpleMessage("Item Eff"),
         "item_exceed_hint": MessageLookupByLibrary.simpleMessage(
             "Before planning, you can set exceeded num for items(Only used for free quest planning)"),
         "item_left": MessageLookupByLibrary.simpleMessage("Left"),

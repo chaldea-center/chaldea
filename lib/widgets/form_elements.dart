@@ -27,10 +27,10 @@ class CheckboxWithLabel extends StatelessWidget {
   }
 }
 
-class RadioWithLabel extends StatelessWidget {
-  final bool value;
-  final bool? groupValue;
-  final ValueChanged<bool?>? onChanged;
+class RadioWithLabel<T> extends StatelessWidget {
+  final T value;
+  final T? groupValue;
+  final ValueChanged<T?>? onChanged;
   final Widget label;
 
   const RadioWithLabel({
