@@ -37,7 +37,8 @@ class _LimitEventTabState extends State<LimitEventTab> {
     List<LimitEvent> events = limitEvents.values.toList();
     if (!widget.showOutdated) {
       events.removeWhere((e) =>
-          e.isOutdated() && !db.curUser.events.limitEventOf(e.indexKey).enable);
+          e.isOutdated() &&
+          !db.curUser.events.limitEventOf(e.indexKey).enabled);
     }
     EventBase.sortEvents(events, reversed: widget.reverse);
 
@@ -81,9 +82,9 @@ class _LimitEventTabState extends State<LimitEventTab> {
                 Icon(Icons.star, color: Colors.yellow[700]),
               db.streamBuilder(
                 (context) => Switch.adaptive(
-                  value: plan.enable,
+                  value: plan.enabled,
                   onChanged: (v) => setState(() {
-                    plan.enable = v;
+                    plan.enabled = v;
                     db.itemStat.updateEventItems();
                   }),
                 ),

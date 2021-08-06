@@ -130,7 +130,6 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
             onChanged: (lang) {
               if (lang == null) return;
               db.appSetting.language = lang.code;
-              print(db.appSetting.language);
               setState(() {});
               db.notifyAppUpdate();
             },

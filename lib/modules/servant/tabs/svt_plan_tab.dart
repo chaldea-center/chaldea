@@ -289,9 +289,9 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                 LocalizedText.of(chs: 'ATK芙芙', jpn: 'ATKフォウ', eng: 'ATK Fou'),
             start: curVal.fouAtk,
             end: targetVal.fouAtk,
-            minVal: 0,
+            minVal: -20,
             maxVal: 50,
-            labelFormatter: (v) => (v * 20).toString(),
+            labelFormatter: (v) => Item.fouValToShown(v).toString(),
             trailingLabelFormatter: (a, b) =>
                 '${curVal.shownFouAtk}->${targetVal.shownFouAtk}',
             onValueChanged: (_start, _end) {
@@ -321,6 +321,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             },
             detailPageBuilder: (context) => SimpleCancelOkDialog(
               title: Text(Item.localizedNameOf(Items.chaldeaFlame)),
+              hideCancel: true,
               content: Text(LocalizedText.of(
                 chs: '数值为当前的羁绊上限，用于计算梦火消耗',
                 jpn: '値は、カルデアの夢火の消費量を計算するために使用される、ボンドの現在の上限です。',

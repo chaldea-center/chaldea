@@ -219,6 +219,6 @@ class Localized {
     chs: '注意: 日服于六周年之际略微调高了free本的素材掉率，因此现有数据可能存在一定偏差。',
     jpn: 'ご注意：FGO6周年の時、フリークエストのドロップ率が若干調整されたため、既存のデータに多少のずれが生じる可能性があります。',
     eng:
-        'Note: On the 6th anniversary of JP server, the item drop rate of free quest has been slightly adjusted, so there may be slight deviations in the existing data.',
+        'Note: At the 6th anniversary of JP server, the item drop rate of free quest has been slightly adjusted, so there may be slight deviations in the existing data.',
   );
 }

@@ -1,5 +1,9 @@
 ## 1.5.2
-- support ★3 fou-kun planning
+- add ★3 fou-kun planning
+- add Chaldea flame/lantern planning(bond)
+- sort by bond or item efficiency in free quest calculator
+- fix popup menu not show dialog/new route
+- more profile support for Altoria Caster 
 
 ## 1.5.1
 - Import servant/item data from http://fgosimulator.webcrow.jp/Material/

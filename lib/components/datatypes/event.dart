@@ -213,7 +213,7 @@ class LimitEvent extends EventBase {
   }
 
   Map<String, int> getItems([LimitEventPlan? plan]) {
-    if (plan == null || !plan.enable) {
+    if (plan == null || !plan.enabled) {
       return {};
     }
     Map<String, int> lotterySum =
@@ -327,12 +327,12 @@ class MainRecord extends EventBase {
       ..removeWhere((key, value) => value <= 0);
   }
 
-  Map<String, int> getItems([List<bool>? plan]) {
+  Map<String, int> getItems([MainRecordPlan? plan]) {
     if (plan == null) return {};
-    assert(plan.length == 2, 'incorrect main record plan: $plan');
+    // assert(plan.length == 2, 'incorrect main record plan: $plan');
     return sumDict([
-      if (plan[0]) drops,
-      if (plan[1]) rewardsWithRare,
+      if (plan.drop) drops,
+      if (plan.reward) rewardsWithRare,
     ])
       ..removeWhere((key, value) => value <= 0);
   }
@@ -388,7 +388,7 @@ class CampaignEvent extends EventBase {
   }
 
   Map<String, int> getItems([CampaignPlan? plan]) {
-    if (plan == null || !plan.enable) {
+    if (plan == null || !plan.enabled) {
       return {};
     }
     return Map.of(itemsWithRare(plan))..removeWhere((key, value) => value <= 0);
@@ -479,12 +479,11 @@ class ExchangeTicket {
 
   Map<String, dynamic> toJson() => _$ExchangeTicketToJson(this);
 
-  Map<String, int> getItems(List<int>? plan) {
+  Map<String, int> getItems(ExchangeTicketPlan? plan) {
     if (plan == null) return {};
-    assert(plan.length == 3, 'incorrect main record plan: $plan');
     Map<String, int> result = {};
     for (var i = 0; i < 3; i++) {
-      result[items[i]] = plan[i];
+      result[items[i]] = plan.items[i];
     }
     return result;
   }

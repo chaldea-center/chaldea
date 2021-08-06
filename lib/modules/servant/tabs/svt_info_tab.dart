@@ -305,25 +305,17 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
         continue;
       }
       String title;
-      if (profile.title != null) {
-        title = profile.title!;
+      if (profile.title == 'aprilfool') {
+        title = title = LocalizedText.of(
+            chs: '愚人节资料', jpn: 'エイプリルフール', eng: "April Fools' Day");
+      } else if (profile.title == '0') {
+        title = LocalizedText.of(
+            chs: '角色详情', jpn: 'キャラクター詳細', eng: 'Character Profile');
       } else {
-        switch (index) {
-          case 0:
-            title = LocalizedText.of(
-                chs: '角色详情', jpn: 'キャラクター詳細', eng: 'Character Profile');
-            break;
-          case 7:
-            title = LocalizedText.of(
-                chs: '愚人节资料', jpn: 'エイプリルフール', eng: "April Fools' Day");
-            break;
-          default:
-            title =
-                LocalizedText.of(chs: '个人资料', jpn: 'プロフィール', eng: 'Profile ') +
-                    index.toString();
-            break;
-        }
+        title = LocalizedText.of(chs: '个人资料', jpn: 'プロフィール', eng: 'Profile ') +
+            profile.title.toString();
       }
+
       String condition = LocalizedText(
               chs: profile.condition, jpn: null, eng: profile.conditionEn)
           .ofPrimary(lang ?? Language.current);

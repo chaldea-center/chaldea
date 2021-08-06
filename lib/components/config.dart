@@ -161,6 +161,7 @@ class Database {
     try {
       gameData = data ?? GameData.fromJson(getJsonFromFile(paths.gameDataPath));
       // userdata is loaded before gamedata, safe to use curUser
+      gameData.updateSvtCrafts();
       gameData.updateUserDuplicatedServants();
       userData.validate();
       logger.d('game data loaded, version ${gameData.version}.');

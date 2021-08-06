@@ -299,6 +299,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
           FullscreenImageViewer.show(
             context: context,
             urls: svt.info.illustrations.values.toList(),
+            placeholder: (context, url) => db.getIconImage(svt.cardBackFace),
           );
         },
       ),

@@ -102,6 +102,23 @@ class Servant {
       ..originNo = originNo;
   }
 
+  String get cardBackFace {
+    final _colors = ['黑', '铜', '铜', '银', '金', '金'];
+    String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
+    String key = '${capitalize(this.info.className)}'
+        '${_colors[this.info.rarity]}卡背';
+    if (this.no == 285) {
+      // 泳装杀生院
+      key += '2';
+    } else if (this.no == 1) {
+      //玛修
+      key = '普通金卡背';
+    } else if (this.info.className.toLowerCase().startsWith('beast')) {
+      key = '普通黑卡背';
+    }
+    return key;
+  }
+
   /// [cur]=[target]=null: all
   /// [cur.favorite]=true
   /// else empty
@@ -536,16 +553,19 @@ class Skill {
 @JsonSerializable(checked: true)
 class Effect {
   String description;
+  String? descriptionJp;
   String? descriptionEn;
   List<String> lvData;
 
   Effect({
     required this.description,
+    required this.descriptionJp,
     required this.descriptionEn,
     required this.lvData,
   });
 
-  String get lDescription => localizeNoun(description, null, descriptionEn);
+  String get lDescription =>
+      localizeNoun(description, descriptionJp, descriptionEn);
 
   factory Effect.fromJson(Map<String, dynamic> data) => _$EffectFromJson(data);
 

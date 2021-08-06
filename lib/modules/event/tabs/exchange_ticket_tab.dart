@@ -51,7 +51,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
       tickets.removeWhere((ticket) {
         if (!ticket.isOutdated()) return false;
         final plan = db.curUser.events.exchangeTicketOf(ticket.monthJp);
-        if (plan.any((e) => e > 0)) return false;
+        if (plan.enabled) return false;
         return true;
       });
     }
@@ -92,8 +92,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
   }
 
   Widget buildOneMonth(ExchangeTicket ticket) {
-    bool planned =
-        db.curUser.events.exchangeTicketOf(ticket.monthJp).any((e) => e > 0);
+    bool planned = db.curUser.events.exchangeTicketOf(ticket.monthJp).enabled;
     bool outdated = ticket.isOutdated();
     Color? _plannedColor = Theme.of(context).colorScheme.secondary;
     Color? _outdatedColor = Theme.of(context).textTheme.caption?.color;
@@ -150,8 +149,8 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     for (var i = 0; i < 3; i++) {
       final iconKey = ticket.items[i];
       int leftNum = statistics.leftItems[iconKey] ?? 0;
-      monthPlan[i] = fixValidRange(monthPlan[i], 0, ticket.days);
-      final int maxValue = ticket.days - sum(monthPlan.getRange(0, i));
+      monthPlan.setAt(i, fixValidRange(monthPlan.items[i], 0, ticket.days));
+      final int maxValue = ticket.days - sum(monthPlan.items.getRange(0, i));
       trailingItems.add(Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -171,7 +170,9 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
               padding: EdgeInsets.symmetric(),
               child: Column(
                 children: <Widget>[
-                  Text(monthPlan[i] == 0 ? '' : monthPlan[i].toString()),
+                  Text(monthPlan.items[i] == 0
+                      ? ''
+                      : monthPlan.items[i].toString()),
                   Divider(height: 1),
                   DefaultTextStyle(
                     style: Theme.of(context)
@@ -203,15 +204,16 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                       NumberPickerColumn(
                         items: List.generate(
                             maxValue + 2, (i) => i == 0 ? 0 : maxValue + 1 - i),
-                        initValue: monthPlan[i],
+                        initValue: monthPlan.items[i],
                       ),
                     ],
                   ),
                   onConfirm: (picker, values) {
-                    monthPlan[i] = picker.getSelectedValues()[0];
+                    monthPlan.items[i] = picker.getSelectedValues()[0];
                     for (var j = 0; j < 3; j++) {
-                      monthPlan[j] = min(monthPlan[j],
-                          ticket.days - sum(monthPlan.getRange(0, j)));
+                      final int v = min(monthPlan.items[j],
+                          ticket.days - sum(monthPlan.items.getRange(0, j)));
+                      monthPlan.setAt(j, v);
                     }
                     statistics.updateEventItems();
                   },

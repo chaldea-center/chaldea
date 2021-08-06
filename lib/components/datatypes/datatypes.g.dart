@@ -1342,6 +1342,8 @@ Effect _$EffectFromJson(Map<String, dynamic> json) {
   return $checkedNew('Effect', json, () {
     final val = Effect(
       description: $checkedConvert(json, 'description', (v) => v as String),
+      descriptionJp:
+          $checkedConvert(json, 'descriptionJp', (v) => v as String?),
       descriptionEn:
           $checkedConvert(json, 'descriptionEn', (v) => v as String?),
       lvData: $checkedConvert(json, 'lvData',
@@ -1351,8 +1353,10 @@ Effect _$EffectFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$EffectToJson(Effect instance) => <String, dynamic>{
+Map<String, dynamic> _$EffectToJson(Effect instance) =>
+    <String, dynamic>{
       'description': instance.description,
+      'descriptionJp': instance.descriptionJp,
       'descriptionEn': instance.descriptionEn,
       'lvData': instance.lvData,
     };
@@ -1770,19 +1774,9 @@ EventPlans _$EventPlansFromJson(Map<String, dynamic> json) {
                     k, LimitEventPlan.fromJson(e as Map<String, dynamic>)),
               )),
       mainRecords: $checkedConvert(
-          json,
-          'mainRecords',
-          (v) => (v as Map<String, dynamic>?)?.map(
-                (k, e) => MapEntry(
-                    k, (e as List<dynamic>).map((e) => e as bool).toList()),
-              )),
+          json, 'mainRecords', (v) => v as Map<String, dynamic>?),
       exchangeTickets: $checkedConvert(
-          json,
-          'exchangeTickets',
-          (v) => (v as Map<String, dynamic>?)?.map(
-                (k, e) => MapEntry(
-                    k, (e as List<dynamic>).map((e) => e as int).toList()),
-              )),
+          json, 'exchangeTickets', (v) => v as Map<String, dynamic>?),
       campaigns: $checkedConvert(
           json,
           'campaigns',
@@ -1797,16 +1791,16 @@ EventPlans _$EventPlansFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$EventPlansToJson(EventPlans instance) =>
     <String, dynamic>{
-      'limitEvents': EventPlans._limitEventsToJson(instance.limitEvents),
-      'mainRecords': EventPlans._mainRecordsToJson(instance.mainRecords),
-      'exchangeTickets':
-          EventPlans._exchangeTicketsToJson(instance.exchangeTickets),
+      'limitEvents': instance.limitEvents,
+      'mainRecords': instance.mainRecords,
+      'exchangeTickets': instance.exchangeTickets,
       'campaigns': instance.campaigns,
     };
 
 LimitEventPlan _$LimitEventPlanFromJson(Map<String, dynamic> json) {
   return $checkedNew('LimitEventPlan', json, () {
     final val = LimitEventPlan(
+      enabled: $checkedConvert(json, 'enabled', (v) => v as bool?),
       enable: $checkedConvert(json, 'enable', (v) => v as bool?),
       rerun: $checkedConvert(json, 'rerun', (v) => v as bool?),
       lottery: $checkedConvert(json, 'lottery', (v) => v as int?),
@@ -1824,15 +1818,51 @@ LimitEventPlan _$LimitEventPlanFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$LimitEventPlanToJson(LimitEventPlan instance) =>
     <String, dynamic>{
       'enable': instance.enable,
+      'enabled': instance.enabled,
       'rerun': instance.rerun,
       'lottery': instance.lottery,
       'extra': instance.extra,
+    };
+
+MainRecordPlan _$MainRecordPlanFromJson(Map<String, dynamic> json) {
+  return $checkedNew('MainRecordPlan', json, () {
+    final val = MainRecordPlan(
+      drop: $checkedConvert(json, 'drop', (v) => v as bool?),
+      reward: $checkedConvert(json, 'reward', (v) => v as bool?),
+    );
+    return val;
+  });
+}
+
+Map<String, dynamic> _$MainRecordPlanToJson(MainRecordPlan instance) =>
+    <String, dynamic>{
+      'drop': instance.drop,
+      'reward': instance.reward,
+    };
+
+ExchangeTicketPlan _$ExchangeTicketPlanFromJson(Map<String, dynamic> json) {
+  return $checkedNew('ExchangeTicketPlan', json, () {
+    final val = ExchangeTicketPlan(
+      item1: $checkedConvert(json, 'item1', (v) => v as int?),
+      item2: $checkedConvert(json, 'item2', (v) => v as int?),
+      item3: $checkedConvert(json, 'item3', (v) => v as int?),
+    );
+    return val;
+  });
+}
+
+Map<String, dynamic> _$ExchangeTicketPlanToJson(ExchangeTicketPlan instance) =>
+    <String, dynamic>{
+      'item1': instance.item1,
+      'item2': instance.item2,
+      'item3': instance.item3,
     };
 
 CampaignPlan _$CampaignPlanFromJson(Map<String, dynamic> json) {
   return $checkedNew('CampaignPlan', json, () {
     final val = CampaignPlan(
       enable: $checkedConvert(json, 'enable', (v) => v as bool?),
+      enabled: $checkedConvert(json, 'enabled', (v) => v as bool?),
       rerun: $checkedConvert(json, 'rerun', (v) => v as bool?),
     );
     return val;
@@ -1842,6 +1872,7 @@ CampaignPlan _$CampaignPlanFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$CampaignPlanToJson(CampaignPlan instance) =>
     <String, dynamic>{
       'enable': instance.enable,
+      'enabled': instance.enabled,
       'rerun': instance.rerun,
     };
 

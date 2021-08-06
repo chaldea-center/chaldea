@@ -18,7 +18,8 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage>
     with EventBasePage {
   MainRecord get record => widget.record;
 
-  List<bool> get plan => db.curUser.events.mainRecordOf(widget.record.indexKey);
+  MainRecordPlan get plan =>
+      db.curUser.events.mainRecordOf(widget.record.indexKey);
   List<Summon> _associatedSummons = [];
 
   @override
@@ -43,9 +44,9 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage>
       db.streamBuilder(
         (context) => SwitchListTile.adaptive(
           title: Text(S.of(context).main_record_fixed_drop),
-          value: plan[0],
+          value: plan.drop,
           onChanged: (v) {
-            plan[0] = v;
+            plan.drop = v;
             db.itemStat.updateEventItems();
           },
         ),
@@ -55,9 +56,9 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage>
       db.streamBuilder(
         (context) => SwitchListTile.adaptive(
           title: Text(S.of(context).main_record_bonus),
-          value: plan[1],
+          value: plan.reward,
           onChanged: (v) {
-            plan[1] = v;
+            plan.reward = v;
             db.itemStat.updateEventItems();
           },
         ),
@@ -117,7 +118,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage>
       tooltip: S.of(context).event_collect_items,
       onPressed: () {
         final plan = db.curUser.events.mainRecordOf(widget.record.indexKey);
-        if (!plan.contains(true)) {
+        if (!plan.enabled) {
           showInformDialog(context, content: S.of(context).event_not_planned);
         } else {
           SimpleCancelOkDialog(
@@ -126,7 +127,9 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage>
             onTapOk: () {
               sumDict([db.curUser.items, widget.record.getItems(plan)],
                   inPlace: true);
-              plan.fillRange(0, plan.length, false);
+              plan
+                ..drop = false
+                ..reward = false;
               db.itemStat.updateEventItems();
               setState(() {});
             },

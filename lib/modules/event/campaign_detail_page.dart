@@ -44,9 +44,9 @@ class _CampaignDetailPageState extends State<CampaignDetailPage>
           if (event.couldPlan)
             SwitchListTile.adaptive(
               title: Text(S.of(context).plan),
-              value: plan.enable,
+              value: plan.enabled,
               onChanged: (v) {
-                plan.enable = v;
+                plan.enabled = v;
                 db.itemStat.updateEventItems();
               },
             ),
@@ -130,7 +130,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage>
       child: Icon(Icons.archive_outlined),
       tooltip: S.of(context).event_collect_items,
       onPressed: () {
-        if (!plan.enable) {
+        if (!plan.enabled) {
           showInformDialog(context, content: S.of(context).event_not_planned);
         } else {
           SimpleCancelOkDialog(
@@ -138,7 +138,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage>
             content: Text(S.of(context).event_collect_item_confirm),
             onTapOk: () {
               sumDict([db.curUser.items, event.getItems(plan)], inPlace: true);
-              plan.enable = false;
+              plan.enabled = false;
               db.itemStat.updateEventItems();
               setState(() {});
             },

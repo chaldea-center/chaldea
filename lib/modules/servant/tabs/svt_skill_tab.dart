@@ -122,7 +122,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
         : effect.lvData.length == 1 && effect.lvData.first.length >= 10
             ? 1
             : 0;
-    String description = effect.description;
+    String description = effect.lDescription;
     if (Language.isEN) {
       description =
           description.split('\n').map((e) => '· ${e.trim()}').join('\n');

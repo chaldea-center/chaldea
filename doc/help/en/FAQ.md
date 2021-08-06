@@ -13,6 +13,7 @@ Check following filters:
 
 Warning: "searching" is executed in the results filtrated by "filters"
 
+If still cannot find, please contact developer. DON'T forget to provide your email!!!
 
 ----------
 ### 2. Game/UI Text Translation
@@ -31,7 +32,8 @@ Any suggestion and contribution on translation is welcomed!
 
 ----------
 ### 3. Skill/Item Recognition
-Only **LOCKED** servants are recognized. Low accuracy for 310(10/10/10) servants whose thumbs are grey. Manual correction is recommended.
+Only **LOCKED** servants are recognized. Low accuracy for 310(10/10/10) servants whose thumbs are grey.
+ Manual correction is recommended.
 
 Attach skill screenshots and describe details if feedback wanted.
 

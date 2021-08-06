@@ -63,7 +63,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
     List<Widget> children = [];
     final limitEvents = db.gameData.events.limitEvents.values
         .where((event) => _whetherToShow(
-            db.curUser.events.limitEventOf(event.indexKey).enable,
+            db.curUser.events.limitEventOf(event.indexKey).enabled,
             event.isOutdated()))
         .toList();
     EventBase.sortEvents(limitEvents, reversed: false);
@@ -106,7 +106,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
         },
         trailing: Text(
           texts.join('\n'),
-          style: _textStyle(plan.enable, event.isOutdated()),
+          style: _textStyle(plan.enabled, event.isOutdated()),
           textAlign: TextAlign.right,
         ),
       ));
@@ -131,13 +131,13 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
       }
 
       final plan = db.curUser.events.exchangeTicketOf(ticket.monthJp);
-      bool planned = sum(plan) > 0;
+      // bool planned = sum(plan) > 0;
 
-      if (!_whetherToShow(planned, ticket.isOutdated())) {
+      if (!_whetherToShow(plan.enabled, ticket.isOutdated())) {
         return;
       }
 
-      int itemNum = plan.elementAt(itemIndex);
+      int itemNum = plan.items[itemIndex];
       count += itemNum;
       children.add(SimpleAccordion(
         expanded: false,
@@ -149,7 +149,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
           subtitle: AutoSizeText(ticket.items.join('/'), maxLines: 1),
           trailing: Text(
             '$itemNum/${ticket.days}',
-            style: _textStyle(planned, ticket.isOutdated()),
+            style: _textStyle(plan.enabled, ticket.isOutdated()),
           ),
         ),
         contentBuilder: (context) => ExchangeTicketTab(monthJp: ticket.monthJp),
@@ -177,8 +177,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
         return;
       }
       final plan = db.curUser.events.mainRecordOf(record.indexKey);
-      bool planned = plan.contains(true);
-      if (!_whetherToShow(planned, record.isOutdated())) {
+      if (!_whetherToShow(plan.enabled, record.isOutdated())) {
         return;
       }
       count += record.getItems(plan)[widget.itemKey] ?? 0;
@@ -208,13 +207,13 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
               Text(
                 '${S.current.main_record_fixed_drop_short}'
                 ' ${record.drops[widget.itemKey]}',
-                style: _textStyle(planned, record.isOutdated()),
+                style: _textStyle(plan.enabled, record.isOutdated()),
               ),
             if (hasRewards)
               Text(
                 '${S.current.main_record_bonus_short}'
                 ' ${record.rewards[widget.itemKey]}',
-                style: _textStyle(planned, record.isOutdated()),
+                style: _textStyle(plan.enabled, record.isOutdated()),
               ),
           ],
         ),
@@ -232,7 +231,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
     List<Widget> children = [];
     final campaigns = db.gameData.events.campaigns.values
         .where((event) => _whetherToShow(
-            db.curUser.events.campaignEventPlanOf(event.indexKey).enable,
+        db.curUser.events.campaignEventPlanOf(event.indexKey).enabled,
             event.isOutdated()))
         .toList();
     EventBase.sortEvents(campaigns, reversed: false);
@@ -261,7 +260,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
         },
         trailing: Text(
           texts.join('\n'),
-          style: _textStyle(plan.enable, event.isOutdated()),
+          style: _textStyle(plan.enabled, event.isOutdated()),
           textAlign: TextAlign.right,
         ),
       ));

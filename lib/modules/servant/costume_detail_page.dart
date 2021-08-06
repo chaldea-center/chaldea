@@ -40,10 +40,13 @@ class CostumeDetailPage extends StatelessWidget {
                     children: <Widget>[
                       CustomTableRow(children: [
                         TableCellData(
-                            child: Text(costume.name,
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                            isHeader: true,
-                            textAlign: TextAlign.center)
+                          child: Text(
+                            costume.name,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                          isHeader: true,
+                        )
                       ]),
                       CustomTableRow(children: [
                         TableCellData(

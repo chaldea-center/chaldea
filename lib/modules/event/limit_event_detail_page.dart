@@ -52,9 +52,9 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
     children.add(db.streamBuilder((context) => TileGroup(children: [
           SwitchListTile.adaptive(
             title: Text(S.of(context).plan),
-            value: plan.enable,
+            value: plan.enabled,
             onChanged: (v) {
-              plan.enable = v;
+              plan.enabled = v;
               db.itemStat.updateEventItems();
             },
           ),
@@ -182,7 +182,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
       child: Icon(Icons.archive_outlined),
       tooltip: S.of(context).event_collect_items,
       onPressed: () {
-        if (!plan.enable) {
+        if (!plan.enabled) {
           showInformDialog(context, content: S.of(context).event_not_planned);
         } else {
           SimpleCancelOkDialog(
@@ -190,7 +190,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
             content: Text(S.of(context).event_collect_item_confirm),
             onTapOk: () {
               sumDict([db.curUser.items, event.getItems(plan)], inPlace: true);
-              plan.enable = false;
+              plan.enabled = false;
               db.itemStat.updateEventItems();
               setState(() {});
             },

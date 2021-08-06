@@ -59,6 +59,21 @@ class GameData {
             ),
         servantsWithUser = Map.of(servants);
 
+  void updateSvtCrafts() {
+    servants.forEach((key, svt) {
+      // svt.bondCraft = -1;
+      svt.valentineCraft.clear();
+    });
+    for (final craft in crafts.values) {
+      if (craft.bond > 0) {
+        servants[craft.bond]?.bondCraft = craft.no;
+      }
+      if (craft.valentine > 0) {
+        servants[craft.valentine]?.valentineCraft.add(craft.no);
+      }
+    }
+  }
+
   void updateUserDuplicatedServants([Map<int, int>? duplicated]) {
     duplicated ??= db.curUser.duplicatedServants;
     servantsWithUser = Map.of(servants);

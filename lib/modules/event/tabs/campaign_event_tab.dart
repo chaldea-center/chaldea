@@ -37,7 +37,8 @@ class _CampaignEventTabState extends State<CampaignEventTab> {
     List<CampaignEvent> events = campaigns.values.toList();
     if (!widget.showOutdated) {
       events.removeWhere((e) =>
-          e.isOutdated() && !db.curUser.events.limitEventOf(e.indexKey).enable);
+          e.isOutdated() &&
+          !db.curUser.events.limitEventOf(e.indexKey).enabled);
     }
     EventBase.sortEvents(events, reversed: widget.reverse);
 
@@ -77,9 +78,9 @@ class _CampaignEventTabState extends State<CampaignEventTab> {
           trailing: event.couldPlan
               ? db.streamBuilder(
                   (context) => Switch.adaptive(
-                    value: plan.enable,
+                    value: plan.enabled,
                     onChanged: (v) => setState(() {
-                      plan.enable = v;
+                      plan.enabled = v;
                       db.itemStat.updateEventItems();
                     }),
                   ),
