@@ -2,11 +2,13 @@
 part of datatypes;
 
 class ItemStatistics {
-  SvtCostItems svtItemDetail = SvtCostItems();
+  bool includingEvent = true;
 
-  Map<String, int> get svtItems => svtItemDetail.planItemCounts.summation!;
+  SvtCostItems svtItemDetail = SvtCostItems();
   Map<String, int> eventItems = {};
   Map<String, int> leftItems = {};
+
+  Map<String, int> get svtItems => svtItemDetail.planItemCounts.summation!;
 
   ItemStatistics();
 
@@ -75,7 +77,10 @@ class ItemStatistics {
 
   void updateEventItems({bool shouldBroadcast = true, Duration? lapse}) {
     void callback() {
-      eventItems = db.gameData.events.getAllItems(db.curUser.events);
+      if (includingEvent)
+        eventItems = db.gameData.events.getAllItems(db.curUser.events);
+      else
+        eventItems = {};
       updateLeftItems(shouldBroadcast: shouldBroadcast);
     }
 

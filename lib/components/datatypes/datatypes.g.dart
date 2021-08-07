@@ -1353,8 +1353,7 @@ Effect _$EffectFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$EffectToJson(Effect instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$EffectToJson(Effect instance) => <String, dynamic>{
       'description': instance.description,
       'descriptionJp': instance.descriptionJp,
       'descriptionEn': instance.descriptionEn,
@@ -1715,6 +1714,8 @@ ServantStatus _$ServantStatusFromJson(Map<String, dynamic> json) {
           (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
       npIndex: $checkedConvert(json, 'npIndex', (v) => v as int?),
       priority: $checkedConvert(json, 'priority', (v) => v as int?),
+      equipCmdCodes: $checkedConvert(json, 'equipCmdCodes',
+          (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
     );
     return val;
   });
@@ -1728,6 +1729,7 @@ Map<String, dynamic> _$ServantStatusToJson(ServantStatus instance) =>
       'skillIndex': instance.skillIndex,
       'npIndex': instance.npIndex,
       'priority': instance.priority,
+      'equipCmdCodes': instance.equipCmdCodes,
     };
 
 ServantPlan _$ServantPlanFromJson(Map<String, dynamic> json) {

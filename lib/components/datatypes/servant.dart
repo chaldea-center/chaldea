@@ -3,7 +3,7 @@ part of datatypes;
 enum SvtCompare { no, className, rarity, atk, hp, priority }
 
 @JsonSerializable(checked: true)
-class Servant {
+class Servant with GameCardMixin {
   // left avatar & model
   int no;
   @JsonKey(ignore: true)
@@ -311,37 +311,29 @@ class Servant {
     return SplitRoute.push(context, ServantDetailPage(this));
   }
 
+  @override
   Widget iconBuilder({
     required BuildContext context,
-    // required Servant svt,
     double? width,
     double? height,
+    double? aspectRatio = 132 / 144,
     String? text,
-    bool jumpToDetail = true,
     EdgeInsets? padding,
+    VoidCallback? onTap,
+    bool jumpToDetail = true,
   }) {
-    if (padding == null) {
-      final size = MathUtils.fitSize(width, height, 132 / 144);
-      padding = size == null
-          ? EdgeInsets.zero
-          : EdgeInsets.only(right: size.value / 22, bottom: size.value / 12);
-    }
-    Widget child = ImageWithText(
-      image: db.getIconImage(this.icon,
-          aspectRatio: 132 / 144, width: width, height: height),
-      text: text,
+    return super.iconBuilder(
+      context: context,
       width: width,
+      height: height,
+      aspectRatio: aspectRatio,
+      text: text,
       padding: padding,
+      onTap: onTap ??
+          (jumpToDetail
+              ? () => SplitRoute.push(context, ServantDetailPage(this))
+              : null),
     );
-    if (jumpToDetail) {
-      child = InkWell(
-        child: child,
-        onTap: () {
-          SplitRoute.push(context, ServantDetailPage(this));
-        },
-      );
-    }
-    return child;
   }
 
   factory Servant.fromJson(Map<String, dynamic> data) =>

@@ -388,7 +388,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
           leading: ImageWithText(
               image:
                   db.getIconImage(ce.icon, height: 45, width: 45 / 144 * 132)),
-          title: Text(ce.localizedName),
+          title: Text(ce.lName),
           onTap: () {
             SplitRoute.push(
               context,
@@ -413,7 +413,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
           leading: ImageWithText(
               image: db.getIconImage(code.icon,
                   height: 45, width: 45 / 144 * 132)),
-          title: Text(code.localizedName),
+          title: Text(code.lName),
           onTap: () {
             SplitRoute.push(
               context,

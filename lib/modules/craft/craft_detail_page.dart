@@ -33,7 +33,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: AutoSizeText(ce.localizedName, maxLines: 1),
+        title: AutoSizeText(ce.lName, maxLines: 1),
         titleSpacing: 0,
         actions: [
           IconButton(

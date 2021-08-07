@@ -206,6 +206,8 @@ class ServantStatus {
   /// priority 1-5
   int priority;
 
+  List<int?> equipCmdCodes;
+
   ServantStatus({
     bool? favorite,
     ServantPlan? curVal,
@@ -213,11 +215,13 @@ class ServantStatus {
     List<int?>? skillIndex,
     int? npIndex,
     int? priority,
+    List<int?>? equipCmdCodes,
   })  : curVal = curVal ?? ServantPlan(),
         npLv = npLv ?? 1,
         skillIndex = List.generate(3, (index) => skillIndex?.getOrNull(index)),
         npIndex = npIndex ?? 0,
-        priority = priority ?? 1 {
+        priority = priority ?? 1,
+        equipCmdCodes = equipCmdCodes ?? List.generate(5, (index) => null) {
     validate();
   }
 

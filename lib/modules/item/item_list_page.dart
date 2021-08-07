@@ -402,36 +402,38 @@ class _ItemListTabState extends State<ItemListTab> {
       kDefaultDivider,
       Row(
         children: [
-          IconButton(
-            onPressed: () {
-              if (_shownGroups.isEmpty) return;
-              int focused =
-                  _shownGroups.indexWhere((e) => e.focusNode.hasFocus);
-              if (focused >= 0) {
-                moveToNext(_shownGroups[focused].focusNode, true);
-              } else {
-                FocusScope.of(context)
-                    .requestFocus(_shownGroups.last.focusNode);
-              }
-            },
-            icon: Icon(Icons.keyboard_arrow_up),
-            tooltip: 'Previous',
-          ),
-          IconButton(
-            onPressed: () {
-              if (_shownGroups.isEmpty) return;
-              int focused =
-                  _shownGroups.indexWhere((e) => e.focusNode.hasFocus);
-              if (focused >= 0) {
-                moveToNext(_shownGroups[focused].focusNode);
-              } else {
-                FocusScope.of(context)
-                    .requestFocus(_shownGroups.first.focusNode);
-              }
-            },
-            icon: Icon(Icons.keyboard_arrow_down),
-            tooltip: 'Next',
-          ),
+          if (AppInfo.isMobile)
+            IconButton(
+              onPressed: () {
+                if (_shownGroups.isEmpty) return;
+                int focused =
+                    _shownGroups.indexWhere((e) => e.focusNode.hasFocus);
+                if (focused >= 0) {
+                  moveToNext(_shownGroups[focused].focusNode, true);
+                } else {
+                  FocusScope.of(context)
+                      .requestFocus(_shownGroups.last.focusNode);
+                }
+              },
+              icon: Icon(Icons.keyboard_arrow_up),
+              tooltip: 'Previous',
+            ),
+          if (AppInfo.isMobile)
+            IconButton(
+              onPressed: () {
+                if (_shownGroups.isEmpty) return;
+                int focused =
+                    _shownGroups.indexWhere((e) => e.focusNode.hasFocus);
+                if (focused >= 0) {
+                  moveToNext(_shownGroups[focused].focusNode);
+                } else {
+                  FocusScope.of(context)
+                      .requestFocus(_shownGroups.first.focusNode);
+                }
+              },
+              icon: Icon(Icons.keyboard_arrow_down),
+              tooltip: 'Next',
+            ),
           Flexible(
             child: Center(
               child: ElevatedButton.icon(
@@ -444,7 +446,18 @@ class _ItemListTabState extends State<ItemListTab> {
                 },
               ),
             ),
-          )
+          ),
+          CheckboxWithLabel(
+            value: db.itemStat.includingEvent,
+            label: Text(S.current.event_title),
+            onChanged: (v) {
+              setState(() {
+                db.itemStat.includingEvent = v ?? db.itemStat.includingEvent;
+                db.itemStat.updateEventItems();
+              });
+            },
+          ),
+          const SizedBox(width: 6),
         ],
       )
     ]);
@@ -547,20 +560,25 @@ class _ItemListTabState extends State<ItemListTab> {
       subtitle = Row(
         children: <Widget>[
           Expanded(
-              flex: 1,
-              child: AutoSizeText(
-                '${S.current.item_total_demand}'
-                ' ${formatNumber(db.itemStat.svtItems[itemKey])}',
-                maxLines: 1,
-              )),
+            flex: 1,
+            child: AutoSizeText(
+              '${S.current.item_total_demand}'
+              ' ${formatNumber(db.itemStat.svtItems[itemKey])}',
+              maxLines: 1,
+              minFontSize: 1,
+              overflow: TextOverflow.visible,
+            ),
+          ),
           Expanded(
-              flex: 1,
-              child: AutoSizeText(
-                '${S.current.item_left} ${formatNumber(db.itemStat.leftItems[itemKey])}',
-                maxLines: 1,
-                style: highlightStyle,
-                minFontSize: 10,
-              ))
+            flex: 1,
+            child: AutoSizeText(
+              '${S.current.item_left} ${formatNumber(db.itemStat.leftItems[itemKey])}',
+              maxLines: 1,
+              style: highlightStyle,
+              minFontSize: 1,
+              overflow: TextOverflow.visible,
+            ),
+          )
         ],
       );
     } else {
@@ -573,43 +591,40 @@ class _ItemListTabState extends State<ItemListTab> {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          Text('  ' + S.of(context).item_left, style: TextStyle(fontSize: 14)),
-          SizedBox(
-              width: 36,
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: AutoSizeText(db.itemStat.leftItems[itemKey].toString(),
-                    minFontSize: 6,
-                    maxFontSize: 14,
-                    style: highlightStyle,
-                    maxLines: 1),
-              )),
+          Text('  ' + S.current.item_left, style: TextStyle(fontSize: 14)),
+          ConstrainedBox(
+            constraints: BoxConstraints(minWidth: 36),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                '  ${db.itemStat.leftItems[itemKey]}',
+                style: highlightStyle.copyWith(fontSize: 14),
+                maxLines: 1,
+              ),
+            ),
+          ),
         ],
       );
-      List<int> _countsInSubTitle = db.itemStat.svtItemDetail.planItemCounts
-          .valuesIfExtra(itemKey)
-          .map((e) => e[itemKey] ?? 0)
-          .toList();
       subtitle = Row(
         children: <Widget>[
           Expanded(
             child: AutoSizeText(
-              '${db.itemStat.svtItems[itemKey]}'
-              '(${_countsInSubTitle.join("/")})',
+              '${S.current.item_total_demand}  ${db.itemStat.svtItems[itemKey]}',
               maxLines: 1,
             ),
           ),
           Text(S.of(context).event_title, style: TextStyle(fontSize: 14)),
-          SizedBox(
-              width: 36,
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: AutoSizeText(
-                    (db.itemStat.eventItems[itemKey] ?? 0).toString(),
-                    minFontSize: 6,
-                    maxFontSize: 14,
-                    maxLines: 1),
-              )),
+          ConstrainedBox(
+            constraints: BoxConstraints(minWidth: 36),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                '  ${db.itemStat.eventItems[itemKey] ?? 0}',
+                style: TextStyle(fontSize: 14),
+                maxLines: 1,
+              ),
+            ),
+          ),
         ],
       );
     }
@@ -629,7 +644,7 @@ class _ItemListTabState extends State<ItemListTab> {
       title: title,
       focusNode: FocusNode(canRequestFocus: true, skipTraversal: true),
       subtitle: subtitle,
-      trailing: isQp ? null : SizedBox(width: 50, child: textField),
+      trailing: isQp ? null : SizedBox(width: 64, child: textField),
     );
   }
 

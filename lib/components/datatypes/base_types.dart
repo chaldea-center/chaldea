@@ -63,4 +63,59 @@ mixin GameCardMixin {
       children: children,
     );
   }
+
+  Widget iconBuilder({
+    required BuildContext context,
+    double? width,
+    double? height,
+    double? aspectRatio = 132 / 144,
+    String? text,
+    EdgeInsets? padding,
+    VoidCallback? onTap,
+    // for subclasses
+    bool jumpToDetail = false,
+  }) {
+    return cardIconBuilder(
+      context: context,
+      icon: icon,
+      width: width,
+      height: height,
+      aspectRatio: aspectRatio,
+      text: text,
+      padding: padding,
+      onTap: onTap,
+    );
+  }
+
+  static Widget cardIconBuilder({
+    required BuildContext context,
+    required String icon,
+    double? width,
+    double? height,
+    double? aspectRatio = 132 / 144,
+    String? text,
+    EdgeInsets? padding,
+    VoidCallback? onTap,
+  }) {
+    if (padding == null) {
+      final size = MathUtils.fitSize(width, height, aspectRatio);
+      padding = size == null
+          ? EdgeInsets.zero
+          : EdgeInsets.only(right: size.value / 22, bottom: size.value / 12);
+    }
+    Widget child = ImageWithText(
+      image: db.getIconImage(icon,
+          aspectRatio: aspectRatio, width: width, height: height),
+      text: text,
+      width: width,
+      padding: padding,
+    );
+    if (onTap != null) {
+      child = InkWell(
+        child: child,
+        onTap: onTap,
+      );
+    }
+    return child;
+  }
 }

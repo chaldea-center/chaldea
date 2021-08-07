@@ -79,7 +79,7 @@ class CraftListPageState
     }
     return CustomTile(
       leading: db.getIconImage(ce.icon, width: 56),
-      title: AutoSizeText(ce.localizedName, maxLines: 1),
+      title: AutoSizeText(ce.lName, maxLines: 1),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[

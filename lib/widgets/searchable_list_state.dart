@@ -162,7 +162,16 @@ abstract class SearchableListState<T, St extends StatefulWidget>
       listView = ListView.separated(
         controller: scrollController,
         itemBuilder: (context, index) => children[index],
-        separatorBuilder: (_, __) => separator,
+        separatorBuilder: (context, index) {
+          if (index == 0 && topHint != null && children.contains(topHint))
+            return Divider(height: 1);
+          if (index == children.length - 2 &&
+              topHint != null &&
+              children.contains(bottomHint)) {
+            return Divider(height: 1);
+          }
+          return separator;
+        },
         itemCount: children.length,
       );
     }

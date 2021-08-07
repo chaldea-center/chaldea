@@ -3,7 +3,7 @@ part of datatypes;
 enum CraftCompare { no, rarity, atk, hp }
 
 @JsonSerializable(checked: true)
-class CraftEssence {
+class CraftEssence with GameCardMixin {
   int gameId;
   int no;
   String mcLink;
@@ -78,7 +78,7 @@ class CraftEssence {
     required this.valentine,
   });
 
-  String get localizedName => localizeNoun(name, nameJp, nameEn);
+  String get lName => localizeNoun(name, nameJp, nameEn);
 
   String get lIllustrators =>
       localizeNoun(illustrators.join(', '), illustratorsJp, illustratorsEn);
@@ -115,6 +115,31 @@ class CraftEssence {
       res = res * 1000 + ((reversed?.elementAt(i) ?? false) ? -r : r);
     }
     return res;
+  }
+
+  @override
+  Widget iconBuilder({
+    required BuildContext context,
+    double? width,
+    double? height,
+    double? aspectRatio = 132 / 144,
+    String? text,
+    EdgeInsets? padding,
+    VoidCallback? onTap,
+    bool jumpToDetail = true,
+  }) {
+    return super.iconBuilder(
+      context: context,
+      width: width,
+      height: height,
+      aspectRatio: aspectRatio,
+      text: text,
+      padding: padding,
+      onTap: onTap ??
+          (jumpToDetail
+              ? () => SplitRoute.push(context, CraftDetailPage(ce: this))
+              : null),
+    );
   }
 
   factory CraftEssence.fromJson(Map<String, dynamic> data) =>

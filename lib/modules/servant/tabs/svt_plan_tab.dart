@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/servant/costume_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';
@@ -333,9 +334,16 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         ],
       ));
 
+      children.add(_buildCmdCodePlanner());
+
       return Column(
         children: <Widget>[
-          Expanded(child: ListView(children: children)),
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.only(bottom: 16),
+              children: children,
+            ),
+          ),
           buildButtonBar(targetVal),
         ],
       );
@@ -481,6 +489,74 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         ),
       );
     }
+  }
+
+  Widget _buildCmdCodePlanner() {
+    status.equipCmdCodes.length = svt.info.cards.length;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SHeader(S.current.command_code),
+        Material(
+          color: Theme.of(context).cardColor,
+          child: Table(
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            children: List.generate(svt.info.cards.length, (index) {
+              final code = db.gameData.cmdCodes[status.equipCmdCodes[index]];
+              return TableRow(children: [
+                db.getIconImage(svt.info.cards[index],
+                    height: 48, padding: EdgeInsets.all(4)),
+                InkWell(
+                  onTap: () async {
+                    await SplitRoute.push(
+                      context,
+                      CmdCodeListPage(
+                        onSelected: (selectedCode) {
+                          status.equipCmdCodes[index] = selectedCode.no;
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      detail: false,
+                      popDetail: false,
+                    );
+                    if (mounted) setState(() {});
+                  },
+                  child: db.getIconImage(code?.icon ?? '未知技能',
+                      height: 48,
+                      aspectRatio: 132 / 144,
+                      padding: EdgeInsets.all(4)),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(4),
+                  child: Text(
+                    code?.lSkill ?? '',
+                    style: Theme.of(context).textTheme.caption,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      status.equipCmdCodes[index] = null;
+                    });
+                  },
+                  icon: Icon(Icons.remove_circle_outline, size: 18),
+                  tooltip: 'Remove',
+                )
+              ]);
+            }),
+            columnWidths: {
+              0: FixedColumnWidth(56),
+              1: FixedColumnWidth(56),
+              // 2:
+              3: FixedColumnWidth(32)
+            },
+            border: TableBorder.all(
+                color: Color.fromRGBO(162, 169, 177, 1), width: 0.5),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget buildButtonBar(ServantPlan targetPlan) {

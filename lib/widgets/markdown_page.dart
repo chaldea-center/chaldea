@@ -189,6 +189,7 @@ class _MarkdownHelpPageState extends State<MarkdownHelpPage> {
     if (widget.data != null) {
       _resolvedData = widget.data;
     } else {
+      await Future.delayed(Duration(milliseconds: 420));
       _resolvedData = await MarkdownHelpPage.loadHelpAsset(
         dir: widget.dir,
         asset: widget.asset,

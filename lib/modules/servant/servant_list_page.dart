@@ -599,7 +599,7 @@ class ServantListPageState
         hint: Text(S.of(context).costume),
         items: List.generate(
             2,
-                (i) => DropdownMenuItem(
+            (i) => DropdownMenuItem(
                 value: i, child: Text(S.of(context).costume + ['×', '√'][i]))),
         onChanged: (v) {
           setState(() {
@@ -776,14 +776,16 @@ class ServantListPageState
 class _ServantOptions with SearchOptionsMixin<Servant> {
   bool basic;
   bool activeSkill;
-  bool passiveSkill;
+  bool classPassive;
+  bool appendSkill;
   bool noblePhantasm;
   ValueChanged? onChanged;
 
   _ServantOptions({
     this.basic = true,
     this.activeSkill = true,
-    this.passiveSkill = true,
+    this.classPassive = true,
+    this.appendSkill = true,
     this.noblePhantasm = true,
     this.onChanged,
   });
@@ -810,10 +812,19 @@ class _ServantOptions with SearchOptionsMixin<Servant> {
           },
         ),
         CheckboxWithLabel(
-          value: passiveSkill,
+          value: classPassive,
           label: Text(S.current.passive_skill),
           onChanged: (v) {
-            passiveSkill = v ?? passiveSkill;
+            classPassive = v ?? classPassive;
+            setState(() {});
+            updateParent();
+          },
+        ),
+        CheckboxWithLabel(
+          value: appendSkill,
+          label: Text(S.current.append_skill),
+          onChanged: (v) {
+            appendSkill = v ?? appendSkill;
             setState(() {});
             updateParent();
           },
@@ -869,14 +880,37 @@ class _ServantOptions with SearchOptionsMixin<Servant> {
       }));
     }
 
-    if (passiveSkill) {
-      buffer.write(getCache(svt, 'passiveSkill', () {
+    if (classPassive) {
+      buffer.write(getCache(svt, 'classPassive', () {
         List<String?> _ss = [];
         [...svt.passiveSkills, ...svt.passiveSkillsEn].forEach((skill) {
           _ss.addAll([
             skill.name,
             skill.nameJp,
-            for (var e in skill.effects) e.description
+            skill.nameEn,
+            for (var e in skill.effects) ...[
+              e.description,
+              e.descriptionJp,
+              e.descriptionEn,
+            ]
+          ]);
+        });
+        return _ss;
+      }));
+    }
+    if (appendSkill) {
+      buffer.write(getCache(svt, 'appendSkill', () {
+        List<String?> _ss = [];
+        svt.appendSkills.forEach((skill) {
+          _ss.addAll([
+            skill.name,
+            skill.nameJp,
+            skill.nameEn,
+            for (var e in skill.effects) ...[
+              e.description,
+              e.descriptionJp,
+              e.descriptionEn,
+            ]
           ]);
         });
         return _ss;

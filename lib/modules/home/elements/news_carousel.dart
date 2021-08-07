@@ -111,7 +111,7 @@ class AppNewsCarousel extends StatefulWidget {
 
       await Future.forEach<Future<Map<String, String>>?>(
         // [taskUs],
-        [taskMC, taskGitee, taskJp, taskUs],
+        [taskGitee, taskMC, taskJp, taskUs],
         (e) async {
           if (e != null) result.addAll(await e);
         },

@@ -67,10 +67,11 @@ class CustomTableRow extends StatefulWidget {
   final Color? color;
   final VerticalDivider divider;
 
-  CustomTableRow({Key? key,
-    required this.children,
-    this.color,
-    this.divider = kVerticalDivider})
+  CustomTableRow(
+      {Key? key,
+      required this.children,
+      this.color,
+      this.divider = kVerticalDivider})
       : super(key: key) {
     children.forEach((cell) {
       cell.key ??= GlobalKey();
@@ -80,18 +81,17 @@ class CustomTableRow extends StatefulWidget {
   CustomTableRow.fromTexts({
     required List<String> texts,
     TableCellData? defaults,
+    bool isHeader = false,
     Color? color,
     VerticalDivider divider = kVerticalDivider,
   }) : this(
-    children: texts
-        .map((text) =>
-    defaults == null
-        ? TableCellData(text: text)
-        : defaults.copyWith(text: text))
-        .toList(),
-    color: color,
-    divider: divider,
-  );
+          children: texts
+              .map((text) => (defaults ?? TableCellData(text: text))
+                  .copyWith(text: text, isHeader: isHeader))
+              .toList(),
+          color: color,
+          divider: divider,
+        );
 
   CustomTableRow.fromChildren({
     required List<Widget> children,
@@ -99,15 +99,14 @@ class CustomTableRow extends StatefulWidget {
     Color? color,
     VerticalDivider divider = kVerticalDivider,
   }) : this(
-    children: children
-        .map((child) =>
-    defaults == null
-        ? TableCellData(child: child)
-        : defaults.copyWith(child: child))
-        .toList(),
-    color: color,
-    divider: divider,
-  );
+          children: children
+              .map((child) => defaults == null
+                  ? TableCellData(child: child)
+                  : defaults.copyWith(child: child))
+              .toList(),
+          color: color,
+          divider: divider,
+        );
 
   @override
   _CustomTableRowState createState() => _CustomTableRowState();

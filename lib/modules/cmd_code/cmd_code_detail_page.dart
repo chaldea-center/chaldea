@@ -30,14 +30,18 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: AutoSizeText(code.localizedName, maxLines: 1),
+        title: AutoSizeText(code.lName, maxLines: 1),
         titleSpacing: 0,
         actions: [_popupButton],
       ),
       body: Column(
         children: <Widget>[
           Expanded(
-            child: CmdCodeDetailBasePage(code: code, lang: lang),
+            child: CmdCodeDetailBasePage(
+              code: code,
+              lang: lang,
+              showEquipped: true,
+            ),
           ),
           _buttonBar,
         ],
@@ -106,8 +110,10 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
 class CmdCodeDetailBasePage extends StatelessWidget {
   final CommandCode code;
   final Language? lang;
+  final bool showEquipped;
 
-  const CmdCodeDetailBasePage({Key? key, required this.code, this.lang})
+  const CmdCodeDetailBasePage(
+      {Key? key, required this.code, this.lang, this.showEquipped = false})
       : super(key: key);
 
   @override
@@ -220,9 +226,38 @@ class CmdCodeDetailBasePage extends StatelessWidget {
               )
             ],
           ),
+          if (showEquipped) ...[
+            CustomTableRow.fromTexts(
+              texts: [
+                LocalizedText.of(
+                    chs: '已装备的从者', jpn: '装備されたサーヴァント', eng: 'Equipped Servants')
+              ],
+              isHeader: true,
+            ),
+            CustomTableRow.fromChildren(children: [
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 8,
+                runSpacing: 8,
+                children: _equippedSvts(context),
+              ),
+            ]),
+          ]
         ],
       ),
     );
+  }
+
+  List<Widget> _equippedSvts(BuildContext context) {
+    List<Widget> svts = [];
+    db.curUser.servants.forEach((svtNo, status) {
+      final svt = db.gameData.servants[svtNo];
+      if (status.equipCmdCodes.contains(code.no) && svt != null) {
+        svts.add(svt.iconBuilder(context: context, height: 48));
+      }
+    });
+    if (svts.isEmpty) svts.add(Text('-'));
+    return svts;
   }
 
   Widget placeholder(BuildContext context, String? url) {

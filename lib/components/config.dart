@@ -309,6 +309,7 @@ class Database {
           preferPng: preferPng, withBorder: withBorder)!;
       File iconFile = File(pathlib.join(paths.gameIconDir, iconName));
       if (iconFile.existsSync()) {
+        if (iconKey == '未知技能') print('here');
         image = CachedImage.sizeChild(
           width: width,
           height: height,

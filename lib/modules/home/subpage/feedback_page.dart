@@ -174,18 +174,18 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   child: TextField(
                     controller: contactController,
                     decoration: InputDecoration(
-                      labelText: S.of(context).feedback_contact,
+                      labelText: 'Email',
                       border: OutlineInputBorder(),
-                      // prefix: Icon(Icons.mail_outline),
+                      prefixIcon: Icon(Icons.mail_outline),
                       hintText: LocalizedText.of(
                           chs: '推荐邮箱',
                           jpn: 'メールおすすめ',
                           eng: 'Email is preferred'),
                       helperText: LocalizedText.of(
-                          chs: '建议填写邮件联系方式，否则将无法得到回复！！！请勿填写QQ/微信。',
+                          chs: '建议填写邮件联系方式，否则将无法得到回复！！！请勿填写QQ/微信/手机号！',
                           jpn: '連絡先情報ないと、返信ができません。',
                           eng:
-                              'Please fill in contact info(email) if reply wanted.'),
+                              'Please fill in email address. Otherwise NO reply.'),
                       helperMaxLines: 3,
                     ),
                     maxLines: 1,

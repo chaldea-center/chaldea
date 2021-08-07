@@ -6,7 +6,9 @@ import 'cmd_code_detail_page.dart';
 import 'cmd_code_filter_page.dart';
 
 class CmdCodeListPage extends StatefulWidget {
-  CmdCodeListPage({Key? key}) : super(key: key);
+  final void Function(CommandCode)? onSelected;
+
+  CmdCodeListPage({Key? key, this.onSelected}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => CmdCodeListPageState();
@@ -26,6 +28,23 @@ class CmdCodeListPageState
       filterData.reset();
     }
     options = _CmdCodeSearchOptions(onChanged: (_) => safeSetState());
+  }
+
+  void _onTapCard(CommandCode code) {
+    if (widget.onSelected != null) {
+      widget.onSelected!(code);
+    } else {
+      SplitRoute.push(
+        context,
+        CmdCodeDetailPage(
+          code: code,
+          onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList),
+        ),
+        popDetail: true,
+      );
+      selected = code;
+    }
+    setState(() {});
   }
 
   @override
@@ -65,8 +84,7 @@ class CmdCodeListPageState
   Widget listItemBuilder(CommandCode code) {
     return CustomTile(
       leading: db.getIconImage(code.icon, width: 56),
-      title: AutoSizeText(code.localizedName,
-          maxLines: 1, overflow: TextOverflow.fade),
+      title: AutoSizeText(code.lName, maxLines: 1, overflow: TextOverflow.fade),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -76,19 +94,7 @@ class CmdCodeListPageState
       ),
       trailing: Icon(Icons.arrow_forward_ios),
       selected: SplitRoute.isSplit(context) && selected == code,
-      onTap: () {
-        SplitRoute.push(
-          context,
-          CmdCodeDetailPage(
-            code: code,
-            onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList),
-          ),
-          popDetail: true,
-        );
-        setState(() {
-          selected = code;
-        });
-      },
+      onTap: () => _onTapCard(code),
     );
   }
 
@@ -98,19 +104,7 @@ class CmdCodeListPageState
       padding: EdgeInsets.all(3),
       child: GestureDetector(
         child: db.getIconImage(code.icon),
-        onTap: () {
-          SplitRoute.push(
-            context,
-            CmdCodeDetailPage(
-              code: code,
-              onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList),
-            ),
-            popDetail: true,
-          );
-          setState(() {
-            selected = code;
-          });
-        },
+        onTap: () => _onTapCard(code),
       ),
     );
   }
