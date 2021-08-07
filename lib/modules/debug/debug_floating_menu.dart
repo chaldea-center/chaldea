@@ -1,9 +1,27 @@
 import 'package:chaldea/components/components.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'theme_palette.dart';
 
 class DebugFloatingMenuButton extends StatefulWidget {
   const DebugFloatingMenuButton({Key? key}) : super(key: key);
+
+  static GlobalKey<_DebugFloatingMenuButtonState> globalKey = GlobalKey();
+  static OverlayEntry? _instance;
+
+  static void createOverlay(BuildContext context) {
+    if (!kDebugMode) return;
+    _instance?.remove();
+    _instance = OverlayEntry(
+      builder: (context) => DebugFloatingMenuButton(key: globalKey),
+    );
+    Overlay.of(context)?.insert(_instance!);
+  }
+
+  static void removeOverlay() {
+    _instance?.remove();
+    _instance = null;
+  }
 
   @override
   _DebugFloatingMenuButtonState createState() =>
@@ -24,6 +42,7 @@ class _DebugFloatingMenuButtonState extends State<DebugFloatingMenuButton> {
 
   @override
   Widget build(BuildContext context) {
+    this.updateOffset();
     return Positioned(
       left: offset.dx,
       top: offset.dy,
@@ -38,19 +57,19 @@ class _DebugFloatingMenuButtonState extends State<DebugFloatingMenuButton> {
           child: FloatingActionButton(
             mini: true,
             backgroundColor:
-                isMenuShowing ? Theme.of(context).disabledColor : null,
+            isMenuShowing ? Theme.of(context).disabledColor : null,
             onPressed: isMenuShowing
                 ? null
                 : () {
-                    setState(() {
-                      isMenuShowing = true;
-                    });
-                    _DebugMenuDialog(state: this).showDialog(context).then((_) {
-                      setState(() {
-                        isMenuShowing = false;
-                      });
-                    });
-                  },
+              setState(() {
+                isMenuShowing = true;
+              });
+              _DebugMenuDialog(state: this).showDialog(context).then((_) {
+                setState(() {
+                  isMenuShowing = false;
+                });
+              });
+            },
             child: Icon(Icons.menu_open),
           ),
         ),
@@ -58,7 +77,7 @@ class _DebugFloatingMenuButtonState extends State<DebugFloatingMenuButton> {
     );
   }
 
-  void updateOffset(Offset delta) {
+  void updateOffset([Offset delta = Offset.zero]) {
     double x = offset.dx + delta.dx, y = offset.dy + delta.dy;
     Size btn = (context.findRenderObject() as RenderBox?)?.size ?? Size(48, 48);
     Size screen = MediaQuery.of(context).size;
@@ -88,6 +107,12 @@ class _DebugFloatingMenuButtonState extends State<DebugFloatingMenuButton> {
     Future.delayed(Duration(seconds: 60), () {
       opaque = 0.75;
       safeSetState();
+    });
+  }
+
+  void markNeedRebuild() {
+    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+      setState(() {});
     });
   }
 }

@@ -625,6 +625,12 @@ class RuntimeData {
   Set<String> svtRecognizeImageFiles = {};
   bool googlePlayAccess = false;
 
+  bool _showDebugFAB = true;
+
+  bool get showDebugFAB => _showDebugFAB && kDebugMode;
+
+  set showDebugFAB(bool value) => _showDebugFAB = value;
+
   /// Controller of [Screenshot] widget which set root [MaterialApp] as child
   ScreenshotController? screenshotController;
 

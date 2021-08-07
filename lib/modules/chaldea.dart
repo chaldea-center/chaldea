@@ -230,7 +230,8 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
         }
       }).onError((error, stackTrace) => null);
     }
-    _createFloatingBtn();
+    if (db.runtimeData.showDebugFAB)
+      DebugFloatingMenuButton.createOverlay(context);
   }
 
   /// place some operations that need a [MaterialApp] like ancestor
@@ -238,6 +239,13 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
   void _onAppUpdate() {
     if (!mounted) return;
     setPreferredOrientations();
+  }
+
+  @override
+  void didUpdateWidget(covariant _ChaldeaHome oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // usually resize
+    DebugFloatingMenuButton.globalKey.currentState?.markNeedRebuild();
   }
 
   @override
@@ -255,16 +263,6 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
     } else {
       SystemChrome.setPreferredOrientations([]);
     }
-  }
-
-  OverlayEntry? _floatingBtnEntry;
-
-  void _createFloatingBtn() {
-    if (kReleaseMode) return;
-    _floatingBtnEntry ??= OverlayEntry(
-      builder: (context) => DebugFloatingMenuButton(),
-    );
-    Overlay.of(context)?.insert(_floatingBtnEntry!);
   }
 }
 
