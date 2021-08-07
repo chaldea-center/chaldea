@@ -28,10 +28,10 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   int _curHistory = -1;
   List<List> history = [];
 
-  Map<dynamic, int> allSummons = {};
+  Map<GameCardMixin, int> allSummons = {};
 
   // [(card1,0),(card2,0.4),...,(cardN,99.0)]
-  List<MapEntry<dynamic, double>> probabilityList = [];
+  List<MapEntry<GameCardMixin, double>> probabilityList = [];
 
   @override
   void initState() {
@@ -40,11 +40,11 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     double acc = 0; //max 100
     for (var block in [...data.svts, ...data.crafts]) {
       for (int i = 0; i < block.ids.length; i++) {
-        var key = block.isSvt
+        var card = block.isSvt
             ? db.gameData.servants[block.ids[i]]
             : db.gameData.crafts[block.ids[i]];
         double value = acc + i * block.weight / block.ids.length;
-        probabilityList.add(MapEntry(key, value));
+        if (card != null) probabilityList.add(MapEntry(card, value));
       }
       acc += block.weight;
     }
@@ -418,25 +418,13 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     );
   }
 
-  Widget _cardIcon(dynamic obj, [String? text]) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 3, vertical: 3),
-      child: InkWell(
-        onTap: () {
-          final page = obj is Servant
-              ? ServantDetailPage(obj)
-              : obj is CraftEssence
-                  ? CraftDetailPage(ce: obj)
-                  : null;
-          if (page != null) {
-            SplitRoute.push(context, page);
-          }
-        },
-        child: ImageWithText(
-          image: db.getIconImage(obj.icon, width: 50),
-          text: text,
-        ),
-      ),
+  Widget _cardIcon(GameCardMixin card, [String? text]) {
+    return card.iconBuilder(
+      context: context,
+      text: text,
+      width: 48,
+      padding: EdgeInsets.all(3),
+      textPadding: EdgeInsets.only(right: 4, bottom: 4),
     );
   }
 
@@ -482,7 +470,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   final random = Random(DateTime.now().microsecondsSinceEpoch);
 
   /// 无任何保底，纯随机
-  List randomSummon(Map<dynamic, double> probMap, int times) {
+  List randomSummon(Map<GameCardMixin, double> probMap, int times) {
     final probList = probMap.entries.toList();
     List result = [];
     double totalProb = 0;
@@ -507,8 +495,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   }
 
   /// null-所有从者, 4/5-福袋4/5星从者
-  Map<dynamic, double> svtProbs([bool Function(int r)? rarityTest]) {
-    Map<dynamic, double> probs = {};
+  Map<GameCardMixin, double> svtProbs([bool Function(int r)? rarityTest]) {
+    Map<GameCardMixin, double> probs = {};
     data.svts
         .where((block) => rarityTest == null || rarityTest(block.rarity))
         .forEach((block) {
@@ -522,8 +510,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   }
 
   /// 从者+礼装
-  Map<dynamic, double> cardProbs([bool Function(int r)? rarityTest]) {
-    Map<dynamic, double> probs = {};
+  Map<GameCardMixin, double> cardProbs([bool Function(int r)? rarityTest]) {
+    Map<GameCardMixin, double> probs = {};
     data.allBlocks
         .where((block) => rarityTest == null || rarityTest(block.rarity))
         .forEach((block) {
@@ -537,7 +525,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     return probs;
   }
 
-  void _printMap(Map<dynamic, double> probs) {
+  void _printMap(Map<GameCardMixin, double> probs) {
     // Map s = {};
     // probs.forEach((key, value) {
     //   s[key] = value.toStringAsFixed(3).trimCharRight('0');
@@ -549,8 +537,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
 
   CraftEssence? craftFromId(int id) => db.gameData.crafts[id];
 
-  Map<dynamic, double> _addProbMap({
-    Map<dynamic, double>? result,
+  Map<GameCardMixin, double> _addProbMap({
+    Map<GameCardMixin, double>? result,
     required List<int> ids,
     required double totalWeight,
     required bool isSvt,
@@ -560,6 +548,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     double weight = totalWeight / ids.length;
     for (var id in ids) {
       var key = (isSvt ? db.gameData.servants : db.gameData.crafts)[id];
+      if (key == null) continue;
       if (skipExistKey) {
         result.putIfAbsent(key, () => weight);
       } else {
@@ -602,7 +591,7 @@ String _removeDoubleTrailing(double weight) {
 
 Widget buildSummonCard(
     {required BuildContext context,
-    required dynamic card,
+    required GameCardMixin card,
     double? weight,
     bool showCategory = false}) {
   List<String> texts = [];

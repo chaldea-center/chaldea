@@ -71,6 +71,7 @@ mixin GameCardMixin {
     double? aspectRatio = 132 / 144,
     String? text,
     EdgeInsets? padding,
+    EdgeInsets? textPadding,
     VoidCallback? onTap,
     // for subclasses
     bool jumpToDetail = false,
@@ -83,6 +84,7 @@ mixin GameCardMixin {
       aspectRatio: aspectRatio,
       text: text,
       padding: padding,
+      textPadding: textPadding,
       onTap: onTap,
     );
   }
@@ -95,20 +97,26 @@ mixin GameCardMixin {
     double? aspectRatio = 132 / 144,
     String? text,
     EdgeInsets? padding,
+    EdgeInsets? textPadding,
     VoidCallback? onTap,
   }) {
-    if (padding == null) {
+    if (textPadding == null) {
       final size = MathUtils.fitSize(width, height, aspectRatio);
-      padding = size == null
+      textPadding = size == null
           ? EdgeInsets.zero
           : EdgeInsets.only(right: size.value / 22, bottom: size.value / 12);
     }
     Widget child = ImageWithText(
-      image: db.getIconImage(icon,
-          aspectRatio: aspectRatio, width: width, height: height),
+      image: db.getIconImage(
+        icon,
+        aspectRatio: aspectRatio,
+        width: width,
+        height: height,
+        padding: padding,
+      ),
       text: text,
       width: width,
-      padding: padding,
+      padding: textPadding,
     );
     if (onTap != null) {
       child = InkWell(

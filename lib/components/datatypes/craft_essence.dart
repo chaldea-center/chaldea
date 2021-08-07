@@ -125,6 +125,7 @@ class CraftEssence with GameCardMixin {
     double? aspectRatio = 132 / 144,
     String? text,
     EdgeInsets? padding,
+    EdgeInsets? textPadding,
     VoidCallback? onTap,
     bool jumpToDetail = true,
   }) {
@@ -135,6 +136,7 @@ class CraftEssence with GameCardMixin {
       aspectRatio: aspectRatio,
       text: text,
       padding: padding,
+      textPadding: textPadding,
       onTap: onTap ??
           (jumpToDetail
               ? () => SplitRoute.push(context, CraftDetailPage(ce: this))

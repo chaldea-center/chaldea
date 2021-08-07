@@ -101,7 +101,7 @@ class ItemCostServantPage extends StatelessWidget {
         Widget avatar = svt.iconBuilder(
           context: context,
           text: formatNumber(num, compact: true, minVal: 10000),
-          padding: EdgeInsets.only(right: 2, bottom: 12),
+          textPadding: EdgeInsets.only(right: 2, bottom: 12),
         );
         if (shouldHighlight) {
           avatar = Stack(
