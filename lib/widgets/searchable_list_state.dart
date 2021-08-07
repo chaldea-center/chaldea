@@ -101,6 +101,7 @@ abstract class SearchableListState<T, St extends StatefulWidget>
     PreferredSizeWidget? appBar,
   }) {
     return UserScrollListener(
+      shouldAnimate: (userScroll) => userScroll.metrics.axis == Axis.vertical,
       builder: (context, animationController) => Scaffold(
         appBar: appBar,
         floatingActionButton: ScaleTransition(
@@ -112,11 +113,11 @@ abstract class SearchableListState<T, St extends StatefulWidget>
               child: Icon(Icons.arrow_upward),
               onPressed: () => scrollController.animateTo(0,
                   duration: Duration(milliseconds: 600), curve: Curves.easeOut),
+                ),
+              ),
             ),
+            body: buildScrollable(useGrid: useGrid),
           ),
-        ),
-        body: buildScrollable(useGrid: useGrid),
-      ),
     );
   }
 
@@ -247,6 +248,7 @@ abstract class SearchableListState<T, St extends StatefulWidget>
 
   static Widget defaultHintBuilder(BuildContext context, String text) {
     return CustomTile(
+      contentPadding: EdgeInsets.symmetric(vertical: 2),
       subtitle: Center(
         child: Text(
           text,

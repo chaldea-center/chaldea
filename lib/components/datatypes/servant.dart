@@ -54,7 +54,7 @@ class Servant with GameCardMixin {
     else
       clsName = info.className;
     assert(SvtFilterData.classesData.contains(clsName),
-        'svt class name: $clsName');
+        'svt class name: "$clsName", ${clsName == "Beast"},${SvtFilterData.classesData}');
     return clsName;
   }
 

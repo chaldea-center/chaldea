@@ -437,7 +437,7 @@ class EventPlans {
         exchangeTickets = _backwardTicketPlans(exchangeTickets),
         campaigns = campaigns ?? {};
 
-  @Deprecated('To be removed in 1.6.0')
+  @Deprecated('To be removed in v1.6.0')
   static Map<String, MainRecordPlan> _backwardMainRecordPlans(
       Map<String, dynamic>? mainRecords) {
     if (mainRecords == null || mainRecords.isEmpty) return {};
@@ -454,7 +454,7 @@ class EventPlans {
     }
   }
 
-  @Deprecated('To be removed in 1.6.0')
+  @Deprecated('To be removed in v1.6.0')
   static Map<String, ExchangeTicketPlan> _backwardTicketPlans(
       Map<String, dynamic>? tickets) {
     if (tickets == null || tickets.isEmpty) return {};
@@ -507,7 +507,7 @@ class EventPlans {
 @JsonSerializable(checked: true)
 class LimitEventPlan {
   @Deprecated('To be removed in v1.6.0')
-  bool enable = false;
+  bool get enable => enabled;
   bool enabled;
   bool rerun;
   int lottery;
@@ -592,7 +592,7 @@ class ExchangeTicketPlan {
 @JsonSerializable(checked: true)
 class CampaignPlan {
   @Deprecated('To be removed in v1.6.0')
-  bool enable = false;
+  bool get enable => enabled;
   bool enabled;
   bool rerun;
 

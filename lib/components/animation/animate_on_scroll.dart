@@ -4,8 +4,11 @@ import 'package:flutter/rendering.dart';
 class UserScrollListener extends StatefulWidget {
   final Widget Function(BuildContext context, AnimationController controller)
       builder;
+  final bool Function(UserScrollNotification userScroll)? shouldAnimate;
 
-  const UserScrollListener({Key? key, required this.builder}) : super(key: key);
+  const UserScrollListener(
+      {Key? key, required this.builder, this.shouldAnimate})
+      : super(key: key);
 
   @override
   _UserScrollListenerState createState() => _UserScrollListenerState();
@@ -58,6 +61,9 @@ class _UserScrollListenerState extends State<UserScrollListener>
         userScroll.metrics.minScrollExtent) return false;
     if ((controller.status == AnimationStatus.forward ||
         controller.status == AnimationStatus.reverse)) return false;
+    if (widget.shouldAnimate != null) {
+      return widget.shouldAnimate!(userScroll);
+    }
     return true;
   }
 }

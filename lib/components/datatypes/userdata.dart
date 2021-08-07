@@ -111,6 +111,14 @@ class UserData {
   Map<String, dynamic> toJson() => _$UserDataToJson(this);
 }
 
+enum SvtListClassFilterStyle {
+  auto,
+  singleRow,
+  singleRowExpanded, // scrollable
+  twoRow,
+  doNotShow,
+}
+
 @JsonSerializable(checked: true)
 class AppSetting {
   String? language;
@@ -119,7 +127,8 @@ class AppSetting {
   bool showSummonBanner;
   bool? favoritePreferred;
   bool autoResetFilter;
-  bool showClassFilterOnTop;
+  @JsonKey(unknownEnumValue: SvtListClassFilterStyle.auto)
+  SvtListClassFilterStyle classFilterStyle;
   bool autoUpdateApp;
   bool autoUpdateDataset;
   bool autorotate;
@@ -135,7 +144,7 @@ class AppSetting {
     bool? autoUpdateApp,
     bool? autoUpdateDataset,
     bool? autorotate,
-    bool? showClassFilterOnTop,
+    SvtListClassFilterStyle? classFilterStyle,
   })  : showSummonBanner = showSummonBanner ?? false,
         favoritePreferred = favoritePreferred ?? false,
         autoResetFilter = autoResetFilter ?? true,
@@ -144,7 +153,7 @@ class AppSetting {
         autoUpdateApp = autoUpdateApp ?? true,
         autoUpdateDataset = autoUpdateDataset ?? true,
         autorotate = autorotate ?? false,
-        showClassFilterOnTop = showClassFilterOnTop ?? true {
+        classFilterStyle = classFilterStyle ?? SvtListClassFilterStyle.auto {
     // gitee disabled
     if (this.downloadSource == 2) {
       this.downloadSource = 0;
@@ -330,13 +339,12 @@ class SvtFilterData {
     'Assassin',
     'Berserker',
     'Shielder',
-
     'Ruler',
     'Avenger',
     'Alterego',
     'MoonCancer',
     'Foreigner',
-    // 'Pretender'
+    'Pretender',
     'Beast'
   ];
   static const List<String> regularClassesData = [
@@ -355,7 +363,7 @@ class SvtFilterData {
     'Alterego',
     'MoonCancer',
     'Foreigner',
-    // 'Pretender'
+    'Pretender',
     'Beast'
   ];
   static const List<String> obtainData = [

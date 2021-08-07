@@ -406,5 +406,6 @@
   "append_skill": "附加被动",
   "show_outdated": "显示已过期",
   "hide_outdated": "隐藏已过期",
-  "import_screenshot": "导入截图"
+  "import_screenshot": "导入截图",
+  "preview": "预览"
 }

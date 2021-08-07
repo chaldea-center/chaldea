@@ -242,33 +242,34 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             child: Row(
               children: <Widget>[
                 Expanded(
-                    flex: 3,
-                    child: GridView.count(
-                      crossAxisCount: 1,
-                      childAspectRatio: 1.2,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      children: List.generate(2, (index) {
-                        final name = ['金卡', '铜卡'][index] + 'All';
-                        return GestureDetector(
-                          child: db.getIconImage(name),
-                          onTap: () {
-                            if (index == 0) {
-                              SvtFilterData.classesData.forEach((e) =>
-                                  filterData.className.options[e] = true);
-                            } else {
-                              filterData.className.options.clear();
-                            }
-                            update();
-                          },
-                        );
-                      }),
-                    )),
+                  flex: 1,
+                  child: GridView.count(
+                    crossAxisCount: 1,
+                    childAspectRatio: 1.2,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: List.generate(2, (index) {
+                      final name = ['金卡', '铜卡'][index] + 'All';
+                      return GestureDetector(
+                        child: db.getIconImage(name),
+                        onTap: () {
+                          if (index == 0) {
+                            SvtFilterData.classesData.forEach(
+                                (e) => filterData.className.options[e] = true);
+                          } else {
+                            filterData.className.options.clear();
+                          }
+                          update();
+                        },
+                      );
+                    }),
+                  ),
+                ),
                 Container(width: 10),
                 Expanded(
-                    flex: 21,
+                    flex: 8,
                     child: GridView.count(
-                      crossAxisCount: 7,
+                      crossAxisCount: 8,
                       shrinkWrap: true,
                       childAspectRatio: 1.2,
                       physics: NeverScrollableScrollPhysics(),

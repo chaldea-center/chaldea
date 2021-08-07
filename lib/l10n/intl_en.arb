@@ -407,5 +407,6 @@
   "append_skill": "Append Skill",
   "show_outdated": "Show Outdated",
   "hide_outdated": "Hide Outdated",
-  "import_screenshot": "Import Screenshots"
+  "import_screenshot": "Import Screenshots",
+  "preview": "Preview"
 }

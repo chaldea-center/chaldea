@@ -450,7 +450,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
         results.addAll(randomSummon(svtProbs((r) => r == 5), 1));
         //带4星的福袋保底
         if (summon.luckyBag == 2) {
-          results.addAll(randomSummon(svtProbs((r) => r == 4), 1));
+          results.addAll(randomSummon(svtProbs((r) => r == 4 || r == 5), 1));
         }
       }
       //从者保底

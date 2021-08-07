@@ -390,14 +390,14 @@ class ServantListPageState
           ? buildGridView()
           : buildListView(topHint: hintText, bottomHint: hintText),
     );
-    if (!db.appSetting.showClassFilterOnTop) {
+    if (db.appSetting.classFilterStyle == SvtListClassFilterStyle.doNotShow) {
       return scrollable;
     }
     return Column(
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-          child: _buildClassFilter(),
+          child: LayoutBuilder(builder: _buildClassFilter),
         ),
         kDefaultDivider,
         Expanded(child: scrollable)
@@ -405,67 +405,142 @@ class ServantListPageState
     );
   }
 
-  Widget _buildClassFilter() {
-    Widget _clsIcon(String clsName) {
-      bool? selected = false;
-      if (clsName == 'All') {
-        selected = filterData.className.isEmpty(SvtFilterData.classesData);
-      } else if (clsName == 'Extra') {
-        if (filterData.className.isEmpty(SvtFilterData.extraClassesData)) {}
-        int selectedExtra = SvtFilterData.extraClassesData
-            .where((e) => filterData.className.options[e] == true)
-            .length;
-        if (selectedExtra == SvtFilterData.extraClassesData.length) {
-          selected = true;
-        } else if (selectedExtra > 0) {
-          selected = null;
+  Widget _buildClassFilter(BuildContext context, BoxConstraints constraints) {
+    final clsRegularBtns = [
+      _oneClsBtn('All'),
+      for (var clsName in SvtFilterData.regularClassesData) _oneClsBtn(clsName),
+    ];
+    final clsExtraBtns = [
+      for (var clsName in SvtFilterData.extraClassesData) _oneClsBtn(clsName),
+    ];
+    final extraBtn = _oneClsBtn('Extra');
+    SvtListClassFilterStyle style = db.appSetting.classFilterStyle;
+    if (style == SvtListClassFilterStyle.auto) {
+      double height = MediaQuery.of(context).size.height;
+      if (height < 600) {
+        // one row
+        if (constraints.maxWidth < 32 * 10) {
+          // fixed
+          style = SvtListClassFilterStyle.singleRow;
         } else {
-          selected = false;
+          // expand, scrollable
+          style = SvtListClassFilterStyle.singleRowExpanded;
         }
       } else {
-        selected = filterData.className.options[clsName] == true;
+        // two rows ok
+        if (constraints.maxWidth < 32 * 10) {
+          // two row
+          style = SvtListClassFilterStyle.twoRow;
+        } else {
+          // expand, scrollable
+          style = SvtListClassFilterStyle.singleRowExpanded;
+        }
       }
-      return Expanded(
-        child: GestureDetector(
-          child: Padding(
-            padding: const EdgeInsets.all(1),
-            child: db.getIconImage(
-              (selected == null
-                      ? '银卡'
-                      : selected
-                          ? '金卡'
-                          : '铜卡') +
-                  clsName +
-                  '.png',
-              width: 32,
-            ),
-          ),
-          onTap: () {
-            filterData.className.options.clear();
-            if (clsName == 'All') {
-            } else if (clsName == 'Extra') {
-              SvtFilterData.extraClassesData
-                  .every((e) => filterData.className.options[e] = true);
-            } else {
-              filterData.className.options[clsName] = true;
-            }
-            setState(() {});
-          },
-        ),
-      );
     }
+    switch (style) {
+      case SvtListClassFilterStyle.auto: // already resolved
+        return Container();
+      case SvtListClassFilterStyle.singleRow:
+        return ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: 40),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [...clsRegularBtns, extraBtn]
+                .map((e) => Expanded(child: e))
+                .toList(),
+          ),
+        );
+      case SvtListClassFilterStyle.singleRowExpanded:
+        final allBtns = [...clsRegularBtns, ...clsExtraBtns];
+        return SizedBox(
+          height: 40,
+          child: Row(
+            children: [
+              Expanded(
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: allBtns,
+                ),
+              ),
+              if (constraints.maxWidth < 36 * allBtns.length)
+                Padding(
+                  padding: EdgeInsets.only(left: 6),
+                  child: Icon(
+                    Icons.keyboard_arrow_right,
+                    color: Theme.of(context).disabledColor,
+                  ),
+                ),
+            ],
+          ),
+        );
+      case SvtListClassFilterStyle.twoRow:
+        int crossCount = max(clsRegularBtns.length, clsExtraBtns.length);
+        clsRegularBtns.addAll(List.generate(
+            crossCount - clsRegularBtns.length, (index) => Container()));
+        clsExtraBtns.addAll(List.generate(
+            crossCount - clsExtraBtns.length, (index) => Container()));
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final btns in [clsRegularBtns, clsExtraBtns])
+              ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: 40),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: btns.map((e) => Expanded(child: e)).toList(),
+                ),
+              ),
+          ],
+        );
+      case SvtListClassFilterStyle.doNotShow:
+        return Container();
+    }
+  }
 
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: 40),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _clsIcon('All'),
-          for (var clsName in SvtFilterData.regularClassesData)
-            _clsIcon(clsName),
-          _clsIcon('Extra'),
-        ],
+  Widget _oneClsBtn(String clsName) {
+    // if null-partially selected
+    bool? selected = false;
+    if (clsName == 'All') {
+      selected = filterData.className.isEmpty(SvtFilterData.classesData);
+    } else if (clsName == 'Extra') {
+      if (filterData.className.isEmpty(SvtFilterData.extraClassesData)) {}
+      int selectedExtra = SvtFilterData.extraClassesData
+          .where((e) => filterData.className.options[e] == true)
+          .length;
+      if (selectedExtra == SvtFilterData.extraClassesData.length) {
+        selected = true;
+      } else if (selectedExtra > 0) {
+        selected = null;
+      } else {
+        selected = false;
+      }
+    } else {
+      selected = filterData.className.options[clsName] == true;
+    }
+    String clsRarity = selected == null
+        ? '银卡'
+        : selected
+            ? '金卡'
+            : '铜卡';
+    return InkWell(
+      child: Padding(
+        padding: const EdgeInsets.all(1),
+        child: db.getIconImage(
+          clsRarity + clsName + '.png',
+          width: 32,
+        ),
       ),
+      onTap: () {
+        filterData.className.options.clear();
+        if (clsName == 'All') {
+        } else if (clsName == 'Extra') {
+          SvtFilterData.extraClassesData
+              .every((e) => filterData.className.options[e] = true);
+        } else {
+          filterData.className.options[clsName] = true;
+        }
+        setState(() {});
+      },
     );
   }
 

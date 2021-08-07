@@ -446,6 +446,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "plan_x": m12,
         "planning_free_quest_btn":
             MessageLookupByLibrary.simpleMessage("フリークエストを計画"),
+        "preview": MessageLookupByLibrary.simpleMessage("プレビュー"),
         "previous_card": MessageLookupByLibrary.simpleMessage("前のカード"),
         "priority": MessageLookupByLibrary.simpleMessage("優先順位"),
         "project_homepage":

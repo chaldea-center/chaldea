@@ -1970,8 +1970,11 @@ AppSetting _$AppSettingFromJson(Map<String, dynamic> json) {
       autoUpdateDataset:
           $checkedConvert(json, 'autoUpdateDataset', (v) => v as bool?),
       autorotate: $checkedConvert(json, 'autorotate', (v) => v as bool?),
-      showClassFilterOnTop:
-          $checkedConvert(json, 'showClassFilterOnTop', (v) => v as bool?),
+      classFilterStyle: $checkedConvert(
+          json,
+          'classFilterStyle',
+          (v) => _$enumDecodeNullable(_$SvtListClassFilterStyleEnumMap, v,
+              unknownValue: SvtListClassFilterStyle.auto)),
     );
     return val;
   });
@@ -1984,7 +1987,8 @@ Map<String, dynamic> _$AppSettingToJson(AppSetting instance) =>
       'showSummonBanner': instance.showSummonBanner,
       'favoritePreferred': instance.favoritePreferred,
       'autoResetFilter': instance.autoResetFilter,
-      'showClassFilterOnTop': instance.showClassFilterOnTop,
+      'classFilterStyle':
+          _$SvtListClassFilterStyleEnumMap[instance.classFilterStyle],
       'autoUpdateApp': instance.autoUpdateApp,
       'autoUpdateDataset': instance.autoUpdateDataset,
       'autorotate': instance.autorotate,
@@ -1995,6 +1999,14 @@ const _$ThemeModeEnumMap = {
   ThemeMode.system: 'system',
   ThemeMode.light: 'light',
   ThemeMode.dark: 'dark',
+};
+
+const _$SvtListClassFilterStyleEnumMap = {
+  SvtListClassFilterStyle.auto: 'auto',
+  SvtListClassFilterStyle.singleRow: 'singleRow',
+  SvtListClassFilterStyle.singleRowExpanded: 'singleRowExpanded',
+  SvtListClassFilterStyle.twoRow: 'twoRow',
+  SvtListClassFilterStyle.doNotShow: 'doNotShow',
 };
 
 CarouselSetting _$CarouselSettingFromJson(Map<String, dynamic> json) {

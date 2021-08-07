@@ -4125,6 +4125,16 @@ class S {
       args: [],
     );
   }
+
+  /// `预览`
+  String get preview {
+    return Intl.message(
+      '预览',
+      name: 'preview',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -4140,8 +4150,10 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
 
   @override
   bool isSupported(Locale locale) => _isSupported(locale);
+
   @override
   Future<S> load(Locale locale) => S.load(locale);
+
   @override
   bool shouldReload(AppLocalizationDelegate old) => false;
 
