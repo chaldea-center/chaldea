@@ -156,7 +156,7 @@ class ItemListPageState extends State<ItemListPage>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text([
-                  S.current.copper,
+                  S.current.bronze,
                   S.current.silver,
                   S.current.gold
                 ][index]),

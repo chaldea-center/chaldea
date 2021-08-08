@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/blank_page.dart';
 import 'package:chaldea/modules/shared/list_page_share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -14,6 +13,18 @@ import 'tabs/svt_sprite_tab.dart';
 import 'tabs/svt_summon_tab.dart';
 import 'tabs/svt_voice_tab.dart';
 
+class _SubTabInfo {
+  final SvtTab tab;
+  final String Function() tabBuilder;
+  final WidgetBuilder viewBuilder;
+
+  _SubTabInfo({
+    required this.tab,
+    required this.tabBuilder,
+    required this.viewBuilder,
+  });
+}
+
 class ServantDetailPage extends StatefulWidget {
   final Servant svt;
 
@@ -26,137 +37,155 @@ class ServantDetailPage extends StatefulWidget {
 class ServantDetailPageState extends State<ServantDetailPage>
     with SingleTickerProviderStateMixin {
   Servant svt;
-  late TabController _tabController;
-  late SharedPrefItem<bool> svtPlanSliderMode;
 
-//  List<String> _tabNames = ['规划', '技能', '宝具', '特攻', '卡池', '礼装', '语音', '卡面'];
-  // 特攻, 卡池,礼装,语音,卡面
-  Map<String, WidgetBuilder> _builders = {};
+  List<_SubTabInfo> builders = [];
 
   // store data
   ServantStatus get status => db.curUser.svtStatusOf(svt.no);
 
   ServantPlan get plan => db.curUser.svtPlanOf(svt.no);
 
-  ServantDetailPageState(this.svt) {
-    if (!Servant.unavailable.contains(svt.no)) {
-      _builders[S.current.plan] = (context) => SvtPlanTab(parent: this);
-    }
-    if (svt.lActiveSkills.isNotEmpty) {
-      _builders[S.current.skill] = (context) => SvtSkillTab(parent: this);
-    }
-    if (svt.noblePhantasm.isNotEmpty) {
-      _builders[S.current.noble_phantasm] =
-          (context) => SvtNoblePhantasmTab(parent: this);
-    }
-    _builders[S.current.card_info] = (context) => SvtInfoTab(parent: this);
-    _builders[S.current.illustration] = (context) => SvtIllustTab(parent: this);
-    if (svt.icons.isNotEmpty || svt.sprites.isNotEmpty)
-      _builders[S.current.sprites] = (context) => SvtSpriteTab(parent: this);
+  ServantDetailPageState(this.svt);
 
-    if (!Servant.unavailable.contains(svt.no) &&
-        !['活动', '初始获得', '无法召唤', '友情点召唤'].contains(svt.info.obtain)) {
-      _builders[S.current.summon] = (context) => SvtSummonTab(parent: this);
+  _SubTabInfo? _getBuilder(SvtTab tab) {
+    switch (tab) {
+      case SvtTab.plan:
+        if (Servant.unavailable.contains(svt.no)) return null;
+        return _SubTabInfo(
+          tab: tab,
+          tabBuilder: () => S.current.plan,
+          viewBuilder: (ctx) => SvtPlanTab(parent: this),
+        );
+      case SvtTab.skill:
+        if (svt.lActiveSkills.isEmpty) return null;
+        return _SubTabInfo(
+          tab: tab,
+          tabBuilder: () => S.current.skill,
+          viewBuilder: (ctx) => SvtSkillTab(parent: this),
+        );
+      case SvtTab.np:
+        if (svt.noblePhantasm.isEmpty) return null;
+        return _SubTabInfo(
+          tab: tab,
+          tabBuilder: () => S.current.noble_phantasm,
+          viewBuilder: (ctx) => SvtNoblePhantasmTab(parent: this),
+        );
+      case SvtTab.info:
+        return _SubTabInfo(
+          tab: tab,
+          tabBuilder: () => S.current.card_info,
+          viewBuilder: (ctx) => SvtInfoTab(parent: this),
+        );
+      case SvtTab.illustration:
+        return _SubTabInfo(
+          tab: tab,
+          tabBuilder: () => S.current.illustration,
+          viewBuilder: (ctx) => SvtIllustTab(parent: this),
+        );
+      case SvtTab.sprite:
+        if (svt.icons.isEmpty && svt.sprites.isEmpty) return null;
+        return _SubTabInfo(
+          tab: tab,
+          tabBuilder: () => S.current.sprites,
+          viewBuilder: (ctx) => SvtSpriteTab(parent: this),
+        );
+      case SvtTab.summon:
+        if (Servant.unavailable.contains(svt.no) ||
+            ['活动', '初始获得', '无法召唤', '友情点召唤'].contains(svt.info.obtain))
+          return null;
+        return _SubTabInfo(
+          tab: tab,
+          tabBuilder: () => S.current.summon,
+          viewBuilder: (ctx) => SvtSummonTab(parent: this),
+        );
+      case SvtTab.voice:
+        if (svt.voices.isEmpty) return null;
+        return _SubTabInfo(
+          tab: tab,
+          tabBuilder: () => S.current.voice,
+          viewBuilder: (ctx) => SvtVoiceTab(parent: this),
+        );
+      case SvtTab.quest:
+        if (Servant.unavailable.contains(svt.no) ||
+            db.gameData.svtQuests[svt.no]?.isNotEmpty != true) {
+          return null;
+        }
+        return _SubTabInfo(
+          tab: tab,
+          tabBuilder: () => S.current.quest,
+          viewBuilder: (ctx) => SvtQuestTab(parent: this),
+        );
     }
-    if (svt.voices.isNotEmpty) {
-      _builders[S.current.voice] = (context) => SvtVoiceTab(parent: this);
-    }
-    if (!Servant.unavailable.contains(svt.no) &&
-        db.gameData.svtQuests[svt.no]?.isNotEmpty == true) {
-      _builders[S.current.quest] = (context) => SvtQuestTab(parent: this);
-    }
-  }
-
-  /// just for test
-  Widget getDefaultTab(String name) {
-    return Center(
-      child: TextButton(
-        child: Text(name),
-        onPressed: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => BlankPage()));
-        },
-      ),
-    );
-  }
-
-  @override
-  void initState() {
-    // TODO: why state re-created after fullscreen page popped?
-    super.initState();
-    _tabController = TabController(length: _builders.length, vsync: this);
-    svtPlanSliderMode = SharedPrefItem('svtPlanSliderMode');
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _tabController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          leading: BackButton(),
-          titleSpacing: 0,
-          title: AutoSizeText(
-            svt.info.localizedName,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+    db.appSetting.validateSvtTabs();
+    builders = db.appSetting.sortedSvtTabs
+        .map((e) => _getBuilder(e))
+        .whereType<_SubTabInfo>()
+        .toList();
+    return DefaultTabController(
+      length: builders.length,
+      child: Scaffold(
+          appBar: AppBar(
+            leading: BackButton(),
+            titleSpacing: 0,
+            title: AutoSizeText(
+              svt.info.localizedName,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            actions: <Widget>[
+              if (!Servant.unavailable.contains(svt.no))
+                db.streamBuilder(
+                  (context) => IconButton(
+                    icon: status.favorite
+                        ? Icon(Icons.favorite, color: Colors.redAccent)
+                        : Icon(Icons.favorite_border),
+                    tooltip: S.of(context).favorite,
+                    onPressed: () {
+                      status.favorite = !status.favorite;
+                      db.itemStat.updateSvtItems();
+                    },
+                  ),
+                ),
+              _popupButton,
+            ],
           ),
-          actions: <Widget>[
-            if (!Servant.unavailable.contains(svt.no))
-              db.streamBuilder(
-                (context) => IconButton(
-                  icon: status.favorite
-                      ? Icon(Icons.favorite, color: Colors.redAccent)
-                      : Icon(Icons.favorite_border),
-                  tooltip: S.of(context).favorite,
-                  onPressed: () {
-                    status.favorite = !status.favorite;
-                    db.itemStat.updateSvtItems();
-                  },
+          body: Column(
+            children: <Widget>[
+              _buildHeader(),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: SizedBox(
+                  height: 36,
+                  child: TabBar(
+                    labelColor: Theme.of(context).colorScheme.secondary,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    labelPadding: EdgeInsets.symmetric(horizontal: 8.0),
+                    unselectedLabelColor: Colors.grey,
+                    isScrollable: true,
+                    tabs: builders
+                        .map((e) => Tab(
+                            child: Text(e.tabBuilder(),
+                                style: Theme.of(context).textTheme.bodyText2)))
+                        .toList(),
+                  ),
                 ),
               ),
-            _popupButton,
-          ],
-        ),
-        body: Column(
-          children: <Widget>[
-            _buildHeader(),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: SizedBox(
-                height: 36,
-                child: TabBar(
-                  controller: _tabController,
-                  labelColor: Theme.of(context).colorScheme.secondary,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  labelPadding: EdgeInsets.symmetric(horizontal: 8.0),
-                  unselectedLabelColor: Colors.grey,
-                  isScrollable: true,
-                  tabs: _builders.keys
-                      .map((name) => Tab(
-                          child: Text(name,
-                              style: Theme.of(context).textTheme.bodyText2)))
-                      .toList(),
+              Divider(
+                height: 1,
+              ),
+              Expanded(
+                child: TabBarView(
+                  children:
+                      builders.map((e) => e.viewBuilder(context)).toList(),
                 ),
-              ),
-            ),
-            Divider(
-              height: 1,
-            ),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: _builders.values
-                    .map((builder) => builder(context))
-                    .toList(),
-              ),
-            )
-          ],
-        ));
+              )
+            ],
+          )),
+    );
   }
 
   Widget get _popupButton {
@@ -179,15 +208,6 @@ class ServantDetailPageState extends State<ServantDetailPage>
               onTap: () {
                 setState(() {
                   plan.reset();
-                  // plan
-                  //   ..ascension = status.curVal.ascension
-                  //   ..skills = List.of(status.curVal.skills)
-                  //   ..dress = List.of(status.curVal.dress)
-                  //   ..appendSkills = List.of(status.curVal.appendSkills)
-                  //   ..grail = status.curVal.grail
-                  //   ..fouHp = status.curVal.fouHp
-                  //   ..fouAtk = status.curVal.fouAtk
-                  //   ..bond = status.curVal.bond;
                 });
                 db.itemStat.updateSvtItems();
               },
@@ -224,15 +244,16 @@ class ServantDetailPageState extends State<ServantDetailPage>
               child: Text(S.current.remove_duplicated_svt),
               value: 'delete_duplicated', //pop cur page
             ),
-          if (_tabController.index == 0)
-            PopupMenuItem<String>(
-              child: Text(S.current.svt_switch_slider_dropdown),
-              value: 'switch_slider_dropdown',
-              onTap: () {
-                svtPlanSliderMode.set(!(svtPlanSliderMode.get() ?? false));
-                setState(() {});
-              },
-            ),
+          // if (_tabController.index == 0)
+          PopupMenuItem<String>(
+            child: Text(S.current.svt_switch_slider_dropdown),
+            value: 'switch_slider_dropdown',
+            onTap: () {
+              db.appSetting.svtPlanSliderMode =
+                  !db.appSetting.svtPlanSliderMode;
+              setState(() {});
+            },
+          ),
         ];
       },
       onSelected: (select) {

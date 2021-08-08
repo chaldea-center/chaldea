@@ -442,7 +442,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
       if (item.rarity <= 3) {
         return <String?>[
           null,
-          S.current.item_category_copper,
+          S.current.item_category_bronze,
           S.current.item_category_silver,
           S.current.item_category_gold
         ][item.rarity];

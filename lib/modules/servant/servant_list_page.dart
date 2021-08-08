@@ -273,7 +273,7 @@ class ServantListPageState
         svtPlan.grail > svtStat.curVal.grail,
         svtPlan.fouHp > svtStat.curVal.fouHp,
         svtPlan.fouAtk > svtStat.curVal.fouAtk,
-        svtPlan.bond > svtStat.curVal.bond,
+        svtPlan.bondLimit > svtStat.curVal.bondLimit,
       ].contains(true);
       if (filterData.planCompletion.options[planNotComplete ? '0' : '1'] !=
           true) return false;

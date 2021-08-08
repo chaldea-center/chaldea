@@ -1746,7 +1746,7 @@ ServantPlan _$ServantPlanFromJson(Map<String, dynamic> json) {
       grail: $checkedConvert(json, 'grail', (v) => v as int?),
       fouHp: $checkedConvert(json, 'fouHp', (v) => v as int?),
       fouAtk: $checkedConvert(json, 'fouAtk', (v) => v as int?),
-      bond: $checkedConvert(json, 'bond', (v) => v as int?),
+      bondLimit: $checkedConvert(json, 'bondLimit', (v) => v as int?),
     );
     return val;
   });
@@ -1762,7 +1762,7 @@ Map<String, dynamic> _$ServantPlanToJson(ServantPlan instance) =>
       'grail': instance.grail,
       'fouHp': instance.fouHp,
       'fouAtk': instance.fouAtk,
-      'bond': instance.bond,
+      'bondLimit': instance.bondLimit,
     };
 
 EventPlans _$EventPlansFromJson(Map<String, dynamic> json) {
@@ -1975,6 +1975,15 @@ AppSetting _$AppSettingFromJson(Map<String, dynamic> json) {
           'classFilterStyle',
           (v) => _$enumDecodeNullable(_$SvtListClassFilterStyleEnumMap, v,
               unknownValue: SvtListClassFilterStyle.auto)),
+      svtPlanSliderMode:
+          $checkedConvert(json, 'svtPlanSliderMode', (v) => v as bool?),
+      sortedSvtTabs: $checkedConvert(
+          json,
+          'sortedSvtTabs',
+          (v) => (v as List<dynamic>?)
+              ?.map((e) => _$enumDecodeNullable(_$SvtTabEnumMap, e,
+                  unknownValue: SvtTab.plan))
+              .toList()),
     );
     return val;
   });
@@ -1993,6 +2002,9 @@ Map<String, dynamic> _$AppSettingToJson(AppSetting instance) =>
       'autoUpdateDataset': instance.autoUpdateDataset,
       'autorotate': instance.autorotate,
       'downloadSource': instance.downloadSource,
+      'svtPlanSliderMode': instance.svtPlanSliderMode,
+      'sortedSvtTabs':
+          instance.sortedSvtTabs.map((e) => _$SvtTabEnumMap[e]).toList(),
     };
 
 const _$ThemeModeEnumMap = {
@@ -2007,6 +2019,18 @@ const _$SvtListClassFilterStyleEnumMap = {
   SvtListClassFilterStyle.singleRowExpanded: 'singleRowExpanded',
   SvtListClassFilterStyle.twoRow: 'twoRow',
   SvtListClassFilterStyle.doNotShow: 'doNotShow',
+};
+
+const _$SvtTabEnumMap = {
+  SvtTab.plan: 'plan',
+  SvtTab.skill: 'skill',
+  SvtTab.np: 'np',
+  SvtTab.info: 'info',
+  SvtTab.illustration: 'illustration',
+  SvtTab.sprite: 'sprite',
+  SvtTab.summon: 'summon',
+  SvtTab.voice: 'voice',
+  SvtTab.quest: 'quest',
 };
 
 CarouselSetting _$CarouselSettingFromJson(Map<String, dynamic> json) {

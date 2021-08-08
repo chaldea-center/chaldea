@@ -118,6 +118,17 @@ enum SvtListClassFilterStyle {
   twoRow,
   doNotShow,
 }
+enum SvtTab {
+  plan,
+  skill,
+  np,
+  info,
+  illustration,
+  sprite,
+  summon,
+  voice,
+  quest,
+}
 
 @JsonSerializable(checked: true)
 class AppSetting {
@@ -133,6 +144,9 @@ class AppSetting {
   bool autoUpdateDataset;
   bool autorotate;
   int downloadSource;
+  bool svtPlanSliderMode;
+  @JsonKey(unknownEnumValue: SvtTab.plan)
+  List<SvtTab> sortedSvtTabs;
 
   AppSetting({
     this.language,
@@ -145,6 +159,8 @@ class AppSetting {
     bool? autoUpdateDataset,
     bool? autorotate,
     SvtListClassFilterStyle? classFilterStyle,
+    bool? svtPlanSliderMode,
+    List<SvtTab?>? sortedSvtTabs,
   })  : showSummonBanner = showSummonBanner ?? false,
         favoritePreferred = favoritePreferred ?? false,
         autoResetFilter = autoResetFilter ?? true,
@@ -153,10 +169,20 @@ class AppSetting {
         autoUpdateApp = autoUpdateApp ?? true,
         autoUpdateDataset = autoUpdateDataset ?? true,
         autorotate = autorotate ?? false,
-        classFilterStyle = classFilterStyle ?? SvtListClassFilterStyle.auto {
+        classFilterStyle = classFilterStyle ?? SvtListClassFilterStyle.auto,
+        svtPlanSliderMode = svtPlanSliderMode ?? false,
+        sortedSvtTabs = sortedSvtTabs?.whereType<SvtTab>().toList() ??
+            List.of(SvtTab.values) {
     // gitee disabled
     if (this.downloadSource == 2) {
       this.downloadSource = 0;
+    }
+    validateSvtTabs();
+  }
+
+  void validateSvtTabs() {
+    if (sortedSvtTabs.toSet().length != SvtTab.values.length) {
+      sortedSvtTabs = List.of(SvtTab.values);
     }
   }
 

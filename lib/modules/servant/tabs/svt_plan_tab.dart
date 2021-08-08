@@ -37,7 +37,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
 
   @override
   Widget build(BuildContext context) {
-    bool sliderMode = widget.parent?.svtPlanSliderMode.get() ?? false;
+    final sliderMode = db.appSetting.svtPlanSliderMode;
     return db.streamBuilder((context) {
       if (svt.lActiveSkills.isEmpty) {
         return Center(child: Text('${svt.info.localizedName} has no skills'));
@@ -308,16 +308,16 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             leading: Item.iconBuilder(
                 context: context, itemKey: Items.chaldeaFlame, width: 33),
             title: Item.localizedNameOf(Items.chaldeaFlame),
-            start: curVal.bond,
-            end: targetVal.bond,
-            minVal: 10,
+            start: curVal.bondLimit,
+            end: targetVal.bondLimit,
+            minVal: 5,
             maxVal: 15,
-            labelFormatter: (v) => v.toString(),
+            labelFormatter: (v) => v == 15 ? '15' : '<$v',
             // trailingLabelFormatter: (a, b) => '$a->$b',
             onValueChanged: (_start, _end) {
               status.favorite = true;
-              curVal.bond = _start;
-              targetVal.bond = _end;
+              curVal.bondLimit = _start;
+              targetVal.bondLimit = _end;
               updateState();
             },
             detailPageBuilder: (context) => SimpleCancelOkDialog(

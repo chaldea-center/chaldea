@@ -101,6 +101,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "blacklist": MessageLookupByLibrary.simpleMessage("ブラックリスト"),
         "bond_craft": MessageLookupByLibrary.simpleMessage("絆礼装"),
         "bond_eff": MessageLookupByLibrary.simpleMessage("絆効率"),
+        "bronze": MessageLookupByLibrary.simpleMessage("銅"),
         "calc_weight": MessageLookupByLibrary.simpleMessage("重み"),
         "calculate": MessageLookupByLibrary.simpleMessage("計算する"),
         "calculator": MessageLookupByLibrary.simpleMessage("電卓"),
@@ -122,7 +123,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "cmd_code_title": MessageLookupByLibrary.simpleMessage("指令紋章"),
         "command_code": MessageLookupByLibrary.simpleMessage("指令紋章"),
         "confirm": MessageLookupByLibrary.simpleMessage("確認"),
-        "copper": MessageLookupByLibrary.simpleMessage("銅"),
         "copy": MessageLookupByLibrary.simpleMessage("コピー"),
         "copy_plan_menu": MessageLookupByLibrary.simpleMessage("他のプランからコピー"),
         "costume": MessageLookupByLibrary.simpleMessage("霊衣"),
@@ -340,7 +340,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_already_exist_hint": m8,
         "item_category_ascension":
             MessageLookupByLibrary.simpleMessage("霊基再臨用素材"),
-        "item_category_copper": MessageLookupByLibrary.simpleMessage("銅素材"),
+        "item_category_bronze": MessageLookupByLibrary.simpleMessage("銅素材"),
         "item_category_event_svt_ascension":
             MessageLookupByLibrary.simpleMessage("イベントサーバント霊基再臨用アイテム"),
         "item_category_gem": MessageLookupByLibrary.simpleMessage("輝石"),

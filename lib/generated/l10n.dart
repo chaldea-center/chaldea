@@ -621,10 +621,10 @@ class S {
   }
 
   /// `铜`
-  String get copper {
+  String get bronze {
     return Intl.message(
       '铜',
-      name: 'copper',
+      name: 'bronze',
       desc: '',
       args: [],
     );
@@ -691,10 +691,10 @@ class S {
   }
 
   /// `铜素材`
-  String get item_category_copper {
+  String get item_category_bronze {
     return Intl.message(
       '铜素材',
-      name: 'item_category_copper',
+      name: 'item_category_bronze',
       desc: '',
       args: [],
     );
@@ -4150,10 +4150,8 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
 
   @override
   bool isSupported(Locale locale) => _isSupported(locale);
-
   @override
   Future<S> load(Locale locale) => S.load(locale);
-
   @override
   bool shouldReload(AppLocalizationDelegate old) => false;
 

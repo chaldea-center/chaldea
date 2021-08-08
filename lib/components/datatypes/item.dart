@@ -101,7 +101,7 @@ class Item {
         // usual items
         return [
           S.current.item_category_usual,
-          S.current.item_category_copper,
+          S.current.item_category_bronze,
           S.current.item_category_silver,
           S.current.item_category_gold,
           S.current.item_category_special,

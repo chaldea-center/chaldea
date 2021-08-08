@@ -2,6 +2,8 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/method_channel_chaldea.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 
+import 'display_settings/svt_tab_sorting.dart';
+
 class DisplaySettingPage extends StatefulWidget {
   const DisplaySettingPage({Key? key}) : super(key: key);
 
@@ -108,11 +110,17 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
           ),
           TileGroup(
             header: LocalizedText.of(
-                chs: '从者筛选-"关注"默认行为',
-                jpn: '"フォロー"のデフォルト動作\n'
-                    '(サーバント フィルタ)',
-                eng: 'Default "Favorite" of Servant Filter'),
-            children: [],
+                chs: '从者详情页', jpn: 'サーヴァント詳細ページ', eng: 'Servant Detail Page'),
+            children: [
+              ListTile(
+                title: Text(LocalizedText.of(
+                    chs: '标签页排序', jpn: 'ページ表示順序', eng: 'Tabs Sorting')),
+                trailing: Icon(Icons.keyboard_arrow_right),
+                onTap: () {
+                  SplitRoute.push(context, SvtTabsSortingSetting());
+                },
+              )
+            ],
           ),
           TileGroup(
             header: S.current.carousel_setting,

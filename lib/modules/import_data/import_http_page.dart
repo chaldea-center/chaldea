@@ -498,7 +498,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           ..grail = svt.exceedCount
           ..fouHp = Item.fouShownToVal(svt.adjustHp * 10)
           ..fouAtk = Item.fouShownToVal(svt.adjustAtk * 10)
-          ..bond = collection.friendshipExceedCount + 10;
+          ..bondLimit = min(collection.friendshipRank + 1,
+              collection.friendshipExceedCount + 10);
 
         final costumeVals = collection.costumeIdsTo01();
         // should always be non-null

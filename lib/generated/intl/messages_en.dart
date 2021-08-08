@@ -106,6 +106,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "blacklist": MessageLookupByLibrary.simpleMessage("Blacklist"),
         "bond_craft": MessageLookupByLibrary.simpleMessage("Bond Craft"),
         "bond_eff": MessageLookupByLibrary.simpleMessage("Bond Eff"),
+        "bronze": MessageLookupByLibrary.simpleMessage("Bronze"),
         "calc_weight": MessageLookupByLibrary.simpleMessage("Wight"),
         "calculate": MessageLookupByLibrary.simpleMessage("Calculate"),
         "calculator": MessageLookupByLibrary.simpleMessage("Calculator"),
@@ -132,7 +133,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "cmd_code_title": MessageLookupByLibrary.simpleMessage("Command Code"),
         "command_code": MessageLookupByLibrary.simpleMessage("Command Code"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
-        "copper": MessageLookupByLibrary.simpleMessage("Copper"),
         "copy": MessageLookupByLibrary.simpleMessage("Copy"),
         "copy_plan_menu":
             MessageLookupByLibrary.simpleMessage("Copy from other plan"),
@@ -374,8 +374,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_already_exist_hint": m8,
         "item_category_ascension":
             MessageLookupByLibrary.simpleMessage("Ascension Items"),
-        "item_category_copper":
-            MessageLookupByLibrary.simpleMessage("Copper Items"),
+        "item_category_bronze":
+            MessageLookupByLibrary.simpleMessage("Bronze Items"),
         "item_category_event_svt_ascension":
             MessageLookupByLibrary.simpleMessage("Event Item"),
         "item_category_gem": MessageLookupByLibrary.simpleMessage("Gem"),

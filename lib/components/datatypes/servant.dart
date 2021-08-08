@@ -105,7 +105,7 @@ class Servant with GameCardMixin {
   String get cardBackFace {
     final _colors = ['黑', '铜', '铜', '银', '金', '金'];
     String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
-    String key = '${capitalize(this.info.className)}'
+    String key = '${capitalize(this.stdClassName)}'
         '${_colors[this.info.rarity]}卡背';
     if (this.no == 285) {
       // 泳装杀生院
@@ -113,7 +113,7 @@ class Servant with GameCardMixin {
     } else if (this.no == 1) {
       //玛修
       key = '普通金卡背';
-    } else if (this.info.className.toLowerCase().startsWith('beast')) {
+    } else if (this.stdClassName.startsWith('beast')) {
       key = '普通黑卡背';
     }
     return key;
@@ -245,7 +245,7 @@ class Servant with GameCardMixin {
       ..grail = maxGrail
       ..fouHp = 50
       ..fouAtk = 50
-      ..bond = 15;
+      ..bondLimit = 15;
     // todo add qp cost for flame and grail
     return <String, int>{
       Items.grail: max(0, target.grail - cur.grail),

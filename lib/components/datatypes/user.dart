@@ -281,7 +281,7 @@ class ServantPlan {
   int fouAtk;
 
   /// max limit for bond, should from 10 to 15, chaldea flame cost
-  int bond;
+  int bondLimit;
 
   ServantPlan({
     bool? favorite,
@@ -292,7 +292,7 @@ class ServantPlan {
     int? grail,
     int? fouHp,
     int? fouAtk,
-    int? bond,
+    int? bondLimit,
   })  : favorite = favorite ?? false,
         ascension = ascension ?? 0,
         skills = List.generate(3, (index) => skills?.getOrNull(index) ?? 1),
@@ -303,7 +303,7 @@ class ServantPlan {
         grail = grail ?? 0,
         fouHp = fouHp ?? 0,
         fouAtk = fouAtk ?? 0,
-        bond = bond ?? 10 {
+        bondLimit = bondLimit ?? 5 {
     validate();
   }
 
@@ -311,7 +311,7 @@ class ServantPlan {
 
   int get shownFouAtk => Item.fouValToShown(fouAtk);
 
-  int get flameCost => max(0, bond - 10);
+  int get flameCost => max(0, bondLimit - 10);
 
   void reset() {
     favorite = false;
@@ -321,7 +321,7 @@ class ServantPlan {
     appendSkills.fillRange(0, 3, 1);
     grail = 0;
     fouHp = fouAtk = 0;
-    bond = 5;
+    bondLimit = 5;
   }
 
   bool get isEmpty {
@@ -333,7 +333,7 @@ class ServantPlan {
         grail == 0 &&
         fouHp == 0 &&
         fouAtk == 0 &&
-        bond == 5;
+        bondLimit == 5;
   }
 
   void setMax({int skill = 10}) {
@@ -369,7 +369,7 @@ class ServantPlan {
         rarity == null ? null : Grail.maxGrailCount(rarity));
     fouHp = fixValidRange(fouHp, lowerPlan?.fouHp ?? -20, 50);
     fouAtk = fixValidRange(fouAtk, lowerPlan?.fouAtk ?? -20, 50);
-    bond = fixValidRange(bond, lowerPlan?.bond ?? 10, 15);
+    bondLimit = fixValidRange(bondLimit, lowerPlan?.bondLimit ?? 5, 15);
   }
 
   factory ServantPlan.fromJson(Map<String, dynamic> data) =>
@@ -386,7 +386,7 @@ class ServantPlan {
     int? grail,
     int? fouHp,
     int? fouAtk,
-    int? bond,
+    int? bondLimit,
   }) {
     return ServantPlan(
       favorite: favorite ?? this.favorite,
@@ -397,7 +397,7 @@ class ServantPlan {
       grail: grail ?? this.grail,
       fouHp: fouHp ?? this.fouHp,
       fouAtk: fouAtk ?? this.fouAtk,
-      bond: bond ?? this.bond,
+      bondLimit: bondLimit ?? this.bondLimit,
     );
   }
 
@@ -410,7 +410,7 @@ class ServantPlan {
     grail = other.grail;
     fouHp = other.fouHp;
     fouAtk = other.fouAtk;
-    bond = other.bond;
+    bondLimit = other.bondLimit;
   }
 
   static ServantPlan from(ServantPlan other) => ServantPlan()..copyFrom(other);
