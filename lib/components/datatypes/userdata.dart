@@ -147,6 +147,7 @@ class AppSetting {
   bool svtPlanSliderMode;
   @JsonKey(unknownEnumValue: SvtTab.plan)
   List<SvtTab> sortedSvtTabs;
+  Map<String, String> priorityTags;
 
   AppSetting({
     this.language,
@@ -161,6 +162,7 @@ class AppSetting {
     SvtListClassFilterStyle? classFilterStyle,
     bool? svtPlanSliderMode,
     List<SvtTab?>? sortedSvtTabs,
+    Map<String, String>? priorityTags,
   })  : showSummonBanner = showSummonBanner ?? false,
         favoritePreferred = favoritePreferred ?? false,
         autoResetFilter = autoResetFilter ?? true,
@@ -172,7 +174,8 @@ class AppSetting {
         classFilterStyle = classFilterStyle ?? SvtListClassFilterStyle.auto,
         svtPlanSliderMode = svtPlanSliderMode ?? false,
         sortedSvtTabs = sortedSvtTabs?.whereType<SvtTab>().toList() ??
-            List.of(SvtTab.values) {
+            List.of(SvtTab.values),
+        priorityTags = priorityTags ?? {} {
     // gitee disabled
     if (this.downloadSource == 2) {
       this.downloadSource = 0;

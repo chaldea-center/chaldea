@@ -1984,6 +1984,12 @@ AppSetting _$AppSettingFromJson(Map<String, dynamic> json) {
               ?.map((e) => _$enumDecodeNullable(_$SvtTabEnumMap, e,
                   unknownValue: SvtTab.plan))
               .toList()),
+      priorityTags: $checkedConvert(
+          json,
+          'priorityTags',
+          (v) => (v as Map<String, dynamic>?)?.map(
+                (k, e) => MapEntry(k, e as String),
+              )),
     );
     return val;
   });
@@ -2005,6 +2011,7 @@ Map<String, dynamic> _$AppSettingToJson(AppSetting instance) =>
       'svtPlanSliderMode': instance.svtPlanSliderMode,
       'sortedSvtTabs':
           instance.sortedSvtTabs.map((e) => _$SvtTabEnumMap[e]).toList(),
+      'priorityTags': instance.priorityTags,
     };
 
 const _$ThemeModeEnumMap = {

@@ -2,6 +2,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/method_channel_chaldea.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 
+import 'display_settings/svt_priority_tagging.dart';
 import 'display_settings/svt_tab_sorting.dart';
 
 class DisplaySettingPage extends StatefulWidget {
@@ -119,7 +120,15 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 onTap: () {
                   SplitRoute.push(context, SvtTabsSortingSetting());
                 },
-              )
+              ),
+              ListTile(
+                title: Text(LocalizedText.of(
+                    chs: '优先级备注', jpn: '優先順位ノート', eng: 'Priority Tagging')),
+                trailing: Icon(Icons.keyboard_arrow_right),
+                onTap: () {
+                  SplitRoute.push(context, SvtPriorityTagging());
+                },
+              ),
             ],
           ),
           TileGroup(

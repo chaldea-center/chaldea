@@ -6,6 +6,8 @@
 - more profile support for Altoria Caster 
 - servant equipped cmd code planning
 - add item demands/consumed overview in Statistics
+- add servant tabs sorting
+- add servant priority tagging
 
 ## 1.5.1
 - Import servant/item data from http://fgosimulator.webcrow.jp/Material/

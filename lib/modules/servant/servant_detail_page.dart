@@ -359,12 +359,28 @@ class ServantDetailPageState extends State<ServantDetailPage>
                 Icons.looks_two_outlined,
                 Icons.looks_one_outlined,
               ];
+              final int priority = 5 - index;
               return DropdownMenuItem(
-                  value: 5 - index,
-                  child: Icon(
-                    icons[index],
-                    color: Theme.of(context).colorScheme.secondary,
-                  ));
+                value: priority,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(icons[index],
+                        color: Theme.of(context).colorScheme.secondary),
+                    SizedBox(
+                      width: 40,
+                      child: Center(
+                        child: Text(
+                          db.appSetting.priorityTags['$priority'] ?? '',
+                          overflow: TextOverflow.fade,
+                          style: TextStyle(fontSize: 12),
+                          maxLines: 1,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              );
             }),
             onChanged: (v) {
               status.priority = v ?? status.priority;
