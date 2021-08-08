@@ -172,7 +172,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
     int count = 0;
     mainRecords.forEach((record) {
       bool hasDrop = record.drops.containsKey(widget.itemKey);
-      bool hasRewards = record.rewards.containsKey(widget.itemKey);
+      bool hasRewards = record.rewardsWithRare.containsKey(widget.itemKey);
       if (!hasDrop && !hasRewards) {
         return;
       }
@@ -212,7 +212,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
             if (hasRewards)
               Text(
                 '${S.current.main_record_bonus_short}'
-                ' ${record.rewards[widget.itemKey]}',
+                ' ${record.rewardsWithRare[widget.itemKey]}',
                 style: _textStyle(plan.enabled, record.isOutdated()),
               ),
           ],

@@ -21,6 +21,7 @@ class CheckboxWithLabel extends StatelessWidget {
         children: [
           Checkbox(value: value, onChanged: onChanged),
           label,
+          const SizedBox(width: 8),
         ],
       ),
     );

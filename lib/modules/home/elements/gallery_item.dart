@@ -44,7 +44,7 @@ class GalleryItem {
     this.isDetail = false,
   }) : assert(icon != null || child != null);
 
-  Widget buildIcon(BuildContext context) {
+  Widget buildIcon(BuildContext context, {double size = 40}) {
     if (child != null) return child!;
     bool fa = icon!.fontFamily?.toLowerCase().startsWith('fontawesome') == true;
     final _iconColor = Utils.isDarkMode(context)
@@ -52,9 +52,9 @@ class GalleryItem {
         : Theme.of(context).colorScheme.secondary;
     return fa
         ? Padding(
-            padding: EdgeInsets.all(2),
-            child: FaIcon(icon, size: 36, color: _iconColor))
-        : Icon(icon, size: 40, color: _iconColor);
+            padding: EdgeInsets.all(size * 0.05),
+            child: FaIcon(icon, size: size * 0.9, color: _iconColor))
+        : Icon(icon, size: size, color: _iconColor);
   }
 
   @override

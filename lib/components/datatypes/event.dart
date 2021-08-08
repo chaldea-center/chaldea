@@ -48,7 +48,9 @@ class Events {
   }
 
   Map<String, EventBase> get allEvents {
-    return Map<String, EventBase>()..addAll(limitEvents)..addAll(mainRecords);
+    return Map<String, EventBase>()
+      ..addAll(limitEvents)
+      ..addAll(mainRecords);
   }
 }
 
@@ -239,11 +241,12 @@ class LimitEvent extends EventBase {
 @JsonSerializable(checked: true)
 class MainRecord extends EventBase {
   Map<String, int> drops;
+  @protected
   Map<String, int> rewards;
 
   @override
   @JsonKey(ignore: true)
-  Map<String, int> get items => sumDict([drops, rewards]);
+  Map<String, int> get items => sumDict([drops, rewardsWithRare]);
 
   MainRecord({
     required String name,

@@ -22,6 +22,7 @@ class _EditGalleryPageState extends State<EditGalleryPage> {
             setState(() {});
           },
           title: Text(item.titleBuilder()),
+          secondary: item.buildIcon(context, size: 24),
         ));
       }
     });

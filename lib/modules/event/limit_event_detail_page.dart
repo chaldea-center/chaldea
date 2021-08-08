@@ -3,6 +3,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'event_base_page.dart';
 
@@ -162,10 +163,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
               PopupMenuItem(
                 child: Text(S.current.jump_to('Mooncell')),
                 onTap: () {
-                  jumpToExternalLinkAlert(
-                    url: WikiUtil.mcFullLink(widget.event.indexKey),
-                    name: 'Mooncell',
-                  );
+                  launch(WikiUtil.mcFullLink(widget.event.indexKey));
                 },
               )
             ],

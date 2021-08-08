@@ -178,15 +178,16 @@ class ServantDetailPageState extends State<ServantDetailPage>
               value: 'reset_plan',
               onTap: () {
                 setState(() {
-                  plan
-                    ..ascension = status.curVal.ascension
-                    ..skills = List.of(status.curVal.skills)
-                    ..dress = List.of(status.curVal.dress)
-                    ..appendSkills = List.of(status.curVal.appendSkills)
-                    ..grail = status.curVal.grail
-                    ..fouHp = status.curVal.fouHp
-                    ..fouAtk = status.curVal.fouAtk
-                    ..bond = status.curVal.bond;
+                  plan.reset();
+                  // plan
+                  //   ..ascension = status.curVal.ascension
+                  //   ..skills = List.of(status.curVal.skills)
+                  //   ..dress = List.of(status.curVal.dress)
+                  //   ..appendSkills = List.of(status.curVal.appendSkills)
+                  //   ..grail = status.curVal.grail
+                  //   ..fouHp = status.curVal.fouHp
+                  //   ..fouAtk = status.curVal.fouAtk
+                  //   ..bond = status.curVal.bond;
                 });
                 db.itemStat.updateSvtItems();
               },
