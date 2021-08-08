@@ -112,12 +112,12 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - doc/help/
+    - doc/license/
     - res/data/dataset.zip
     - res/img/
     - res/img/launcher_icon/app_icon_logo.png
     - res/img/md/
     - res/js/
-    - res/licenses/
     - res/VERSION
     - CHANGELOG.md
     - README.md

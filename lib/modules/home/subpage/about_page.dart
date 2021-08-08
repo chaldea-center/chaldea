@@ -15,6 +15,7 @@ class _AboutPageState extends State<AboutPage> {
         'TYPE-MOON/FGO PROJECT': 'https://www.fate-go.jp',
         'Mooncell': 'https://fgo.wiki',
         'Fandom-fategrandorder': 'https://fategrandorder.fandom.com/wiki/',
+        'Atlas Academy': 'https://atlasacademy.io',
         'NGA-FGO': 'https://bbs.nga.cn/thread.php?fid=540',
         S.current.fgo_domus_aurea:
             'https://sites.google.com/view/fgo-domus-aurea',

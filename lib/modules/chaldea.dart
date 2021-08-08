@@ -55,8 +55,9 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
 
     LicenseRegistry.addLicense(() async* {
       Map<String, String> licenses = {
-        'MOONCELL': 'res/licenses/CC-BY-NC-SA-4.0',
-        'FANDOM': 'res/licenses/CC-BY-SA-3.0',
+        'MOONCELL': 'doc/license/CC-BY-NC-SA-4.0.txt',
+        'FANDOM': 'doc/license/CC-BY-SA-3.0.txt',
+        'Atlas Academy': 'doc/license/ODC-BY 1.0.txt',
       };
       for (final entry in licenses.entries) {
         String license =
