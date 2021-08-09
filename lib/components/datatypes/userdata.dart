@@ -18,7 +18,6 @@ class UserData {
   CmdCodeFilterData cmdCodeFilter;
 
   // glpk
-  GLPKParams glpkParams;
   List<int> itemAbundantValue;
 
   UserData({
@@ -30,7 +29,6 @@ class UserData {
     SvtFilterData? svtFilter,
     CraftFilterData? craftFilter,
     CmdCodeFilterData? cmdCodeFilter,
-    GLPKParams? glpkParams,
     List<int>? itemAbundantValue,
   })  : appSetting = appSetting ?? AppSetting(),
         carouselSetting = carouselSetting ?? CarouselSetting(),
@@ -40,7 +38,6 @@ class UserData {
         svtFilter = svtFilter ?? SvtFilterData(),
         craftFilter = craftFilter ?? CraftFilterData(),
         cmdCodeFilter = cmdCodeFilter ?? CmdCodeFilterData(),
-        glpkParams = glpkParams ?? GLPKParams(),
         itemAbundantValue =
             itemAbundantValue ?? List.generate(3, (index) => 0) {
     // not initiate language: auto-change language if not set yet.

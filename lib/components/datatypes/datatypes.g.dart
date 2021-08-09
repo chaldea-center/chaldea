@@ -723,14 +723,6 @@ GLPKParams _$GLPKParamsFromJson(Map<String, dynamic> json) {
     final val = GLPKParams(
       rows: $checkedConvert(json, 'rows',
           (v) => (v as List<dynamic>?)?.map((e) => e as String).toList()),
-      counts: $checkedConvert(json, 'counts',
-          (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
-      weights: $checkedConvert(
-          json,
-          'weights',
-          (v) => (v as List<dynamic>?)
-              ?.map((e) => (e as num).toDouble())
-              .toList()),
       blacklist: $checkedConvert(json, 'blacklist',
           (v) => (v as List<dynamic>?)?.map((e) => e as String).toSet()),
       minCost: $checkedConvert(json, 'minCost', (v) => v as int?),
@@ -740,6 +732,18 @@ GLPKParams _$GLPKParamsFromJson(Map<String, dynamic> json) {
           (v) => (v as List<dynamic>?)?.map((e) => e as String).toList()),
       integerResult: $checkedConvert(json, 'integerResult', (v) => v as bool?),
       useAP20: $checkedConvert(json, 'useAP20', (v) => v as bool?),
+      planItemCounts: $checkedConvert(
+          json,
+          'planItemCounts',
+          (v) => (v as Map<String, dynamic>?)?.map(
+                (k, e) => MapEntry(k, e as int),
+              )),
+      planItemWeights: $checkedConvert(
+          json,
+          'planItemWeights',
+          (v) => (v as Map<String, dynamic>?)?.map(
+                (k, e) => MapEntry(k, (e as num).toDouble()),
+              )),
     );
     return val;
   });
@@ -748,8 +752,8 @@ GLPKParams _$GLPKParamsFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$GLPKParamsToJson(GLPKParams instance) =>
     <String, dynamic>{
       'rows': instance.rows,
-      'counts': instance.counts,
-      'weights': instance.weights,
+      'planItemCounts': instance.planItemCounts,
+      'planItemWeights': instance.planItemWeights,
       'blacklist': instance.blacklist.toList(),
       'minCost': instance.minCost,
       'costMinimize': instance.costMinimize,
@@ -1632,6 +1636,12 @@ User _$UserFromJson(Map<String, dynamic> json) {
           (v) => (v as Map<String, dynamic>?)?.map(
                 (k, e) => MapEntry(int.parse(k), e as int),
               )),
+      glpkParams: $checkedConvert(
+          json,
+          'glpkParams',
+          (v) => v == null
+              ? null
+              : GLPKParams.fromJson(v as Map<String, dynamic>)),
     );
     return val;
   });
@@ -1653,6 +1663,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'msProgress': instance.msProgress,
       'duplicatedServants':
           instance.duplicatedServants.map((k, e) => MapEntry(k.toString(), e)),
+      'glpkParams': instance.glpkParams,
     };
 
 K _$enumDecode<K, V>(
@@ -1924,12 +1935,6 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
           (v) => v == null
               ? null
               : CmdCodeFilterData.fromJson(v as Map<String, dynamic>)),
-      glpkParams: $checkedConvert(
-          json,
-          'glpkParams',
-          (v) => v == null
-              ? null
-              : GLPKParams.fromJson(v as Map<String, dynamic>)),
       itemAbundantValue: $checkedConvert(json, 'itemAbundantValue',
           (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
     );
@@ -1945,7 +1950,6 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'svtFilter': instance.svtFilter,
       'craftFilter': instance.craftFilter,
       'cmdCodeFilter': instance.cmdCodeFilter,
-      'glpkParams': instance.glpkParams,
       'itemAbundantValue': instance.itemAbundantValue,
       'curUserKey': instance.curUserKey,
     };

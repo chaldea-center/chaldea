@@ -79,6 +79,14 @@ class User {
   // <svt_no_for_user, origin_svt_user>
   Map<int, int> duplicatedServants;
 
+  // glpk
+  GLPKParams glpkParams;
+
+  // @protected
+  // Map<String, int> planItemCounts;
+  // @protected
+  // Map<String, double> planItemWeights;
+
   User({
     this.key,
     String? name,
@@ -94,6 +102,7 @@ class User {
     bool? isMasterGirl,
     int? msProgress,
     Map<int, int>? duplicatedServants,
+    GLPKParams? glpkParams,
   })  : name = name?.isNotEmpty == true ? name! : 'default',
         _server = server,
         servants = servants ?? {},
@@ -106,7 +115,8 @@ class User {
         plannedSummons = plannedSummons ?? <String>{},
         isMasterGirl = isMasterGirl ?? true,
         msProgress = msProgress ?? -1,
-        duplicatedServants = duplicatedServants ?? {} {
+        duplicatedServants = duplicatedServants ?? {},
+        glpkParams = glpkParams ?? GLPKParams() {
     this.curSvtPlanNo =
         fixValidRange(this.curSvtPlanNo, 0, this.servantPlans.length);
     fillListValue(this.servantPlans, max(5, this.servantPlans.length),

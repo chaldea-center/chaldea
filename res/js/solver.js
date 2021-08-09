@@ -15,7 +15,7 @@ function solve_glpk(data_str, params_str) {
     let params = JSON.parse(params_str);
     // (default) params
     // required, b in AX>=b, row-num dict
-    let rows = params.rows, counts = params.counts;
+    let rows = params.rows, counts = Array.from(params.rows, x => params.planItemCounts[x]);
     let objective = {}
     for (let i = 0; i < rows.length; i++)
         objective[rows[i]] = counts[i]
@@ -129,7 +129,7 @@ function solve_glpk(data_str, params_str) {
     let t1 = new Date().getTime();
     log(`Time: ${(t1 - t0) / 1000} s.`);
     log('---------- End Summary ----------');
-    return JSON.stringify({"totalCost": total_cost,"totalNum": total_num,"countVars": variables})
+    return JSON.stringify({ "totalCost": total_cost, "totalNum": total_num, "countVars": variables })
 }
 
 function add_log(a) {

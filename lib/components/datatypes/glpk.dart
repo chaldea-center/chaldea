@@ -120,19 +120,16 @@ class WeeklyMissionQuest {
 /// for solve_glpk(data_str and params_str)
 @JsonSerializable(checked: true)
 class GLPKParams {
-  /// if [countControllers] is null, disabled. Removed controllers are temporary
-  /// stored in [_unusedControllers] and dispose them inside widget's dispose
-  @JsonKey(ignore: true)
-  List<TextEditingController>? countControllers;
-  @JsonKey(ignore: true)
-  List<TextEditingController>? weightControllers;
-  @JsonKey(ignore: true)
-  List<TextEditingController> _unusedControllers = [];
-
   /// items(X)-counts(b) in AX>=b, only generated before transferred to js
   List<String> rows;
-  List<int> counts;
-  List<double> weights;
+
+  Map<String, int> planItemCounts;
+  Map<String, double> planItemWeights;
+
+  List<int> get counts => rows.map((e) => getPlanItemCount(e)).toList();
+
+  List<double> get weights => rows.map((e) => getPlanItemWeight(e)).toList();
+
   Set<String> blacklist;
 
   /// generated from [rows] and [counts], only used when processing data
@@ -161,14 +158,18 @@ class GLPKParams {
   bool useAP20;
 
   /// convert two key-value list to map
-  Map<String, int> get objectiveCounts => Map.fromIterables(rows, counts);
+  Map<String, int> get objectiveCounts =>
+      Map.fromIterable(rows, value: (k) => getPlanItemCount(k));
 
-  Map<String, double> get objectiveWeights => Map.fromIterables(rows, weights);
+  Map<String, double> get objectiveWeights =>
+      Map.fromIterable(rows, value: (k) => getPlanItemWeight(k));
+
+  int getPlanItemCount(String key) => planItemCounts[key] ??= 50;
+
+  double getPlanItemWeight(String key) => planItemWeights[key] ??= 1.0;
 
   GLPKParams({
     List<String>? rows,
-    List<int>? counts,
-    List<double>? weights,
     Set<String>? blacklist,
     int? minCost = 0,
     bool? costMinimize = true,
@@ -176,143 +177,46 @@ class GLPKParams {
     List<String>? extraCols,
     bool? integerResult = false,
     bool? useAP20 = true,
+    Map<String, int>? planItemCounts,
+    Map<String, double>? planItemWeights,
   })  : rows = rows ?? [],
-        counts = counts ?? [],
-        weights = weights ?? [],
         blacklist = blacklist ?? Set(),
         minCost = minCost ?? 0,
         costMinimize = costMinimize ?? true,
         maxColNum = maxColNum ?? -1,
         extraCols = extraCols ?? [],
         integerResult = integerResult ?? false,
-        useAP20 = useAP20 ?? true {
-    // controllers ??= null;
-    fillListValue(this.counts, this.rows.length, (_) => 0);
-    fillListValue(this.weights, this.rows.length, (_) => 1.0);
-  }
+        useAP20 = useAP20 ?? true,
+        planItemCounts = planItemCounts ?? {},
+        planItemWeights = planItemWeights ?? {};
 
   GLPKParams.from(GLPKParams other)
       : rows = List.from(other.rows),
-        counts = List.from(other.counts),
-        weights = List.from(other.weights),
         blacklist = Set.from(other.blacklist),
         minCost = other.minCost,
         costMinimize = other.costMinimize,
         maxColNum = other.maxColNum,
         extraCols = List.from(other.extraCols),
         integerResult = other.integerResult,
-        useAP20 = other.useAP20;
+        useAP20 = other.useAP20,
+        planItemCounts = other.planItemCounts,
+        planItemWeights = other.planItemWeights;
 
   void validate() {
-    // Need to remove item, so from end to start
-    counts.length = weights.length = rows.length;
-    for (int i = rows.length - 1; i >= 0; i--) {
-      if (!db.gameData.glpk.rowNames.contains(rows[i])) {
-        removeAt(i);
-      } else {
-        if (weights[i] < 0) weights[i] = 1;
-        if (counts[i] < 0) counts[i] = 0;
-      }
-    }
+    rows.removeWhere((e) => !db.gameData.glpk.rowNames.contains(e));
   }
 
   void sortByItem() {
-    // rows,counts,weights,countControllers,weightControllers
+    // rows
     final _getSortVal = (String key) {
       return db.gameData.items[key]?.id ?? -1;
     };
-    final int length = rows.length;
-    List<int> indices = List.generate(length, (index) => index);
-    indices.sort((a, b) => _getSortVal(rows[a]) - _getSortVal(rows[b]));
-    rows = List.generate(length, (index) => rows[indices[index]]);
-    counts = List.generate(length, (index) => counts[indices[index]]);
-    weights = List.generate(length, (index) => weights[indices[index]]);
-    if (countControllers != null) {
-      countControllers =
-          List.generate(length, (index) => countControllers![indices[index]]);
-    }
-    if (weightControllers != null) {
-      weightControllers =
-          List.generate(length, (index) => weightControllers![indices[index]]);
-    }
-  }
-
-  void enableControllers() {
-    if (countControllers?.length == rows.length &&
-        countControllers?.length == weightControllers?.length) {
-      return;
-    }
-
-    countControllers = [];
-    for (int i = 0; i < rows.length; i++) {
-      countControllers!.add(TextEditingController(text: counts[i].toString()));
-    }
-    weightControllers = [];
-    for (int i = 0; i < weights.length; i++) {
-      weightControllers!
-          .add(TextEditingController(text: weights[i].toString()));
-    }
-  }
-
-  void disableControllers() {
-    _unusedControllers
-      ..addAll(countControllers ?? [])
-      ..addAll(weightControllers ?? []);
-    countControllers = weightControllers = null;
-  }
-
-  void dispose() {
-    countControllers?.forEach((e) => e.dispose());
-    weightControllers?.forEach((e) => e.dispose());
-    _unusedControllers.forEach((e) => e.dispose());
-    countControllers = weightControllers = null;
-    _unusedControllers.clear();
-  }
-
-  void disposeUnused() {
-    _unusedControllers.forEach((e) => e.dispose());
-    _unusedControllers.clear();
-  }
-
-  bool addOne(String item, [int count = 0, double weight = 1.0]) {
-    final index = rows.indexOf(item);
-    if (index < 0) {
-      rows.add(item);
-      counts.add(count);
-      weights.add(weight);
-      countControllers?.add(TextEditingController(text: count.toString()));
-      weightControllers?.add(TextEditingController(text: weight.toString()));
-      return true;
-    }
-    return false;
-  }
-
-  void remove(String item) {
-    return removeAt(rows.indexOf(item));
+    rows.sort((a, b) => _getSortVal(a).compareTo(_getSortVal(b)));
   }
 
   void removeAt(int index) {
     if (index >= 0 && index < rows.length) {
       rows.removeAt(index);
-      counts.removeAt(index);
-      weights.removeAt(index);
-      if (countControllers != null) {
-        _unusedControllers.add(countControllers!.removeAt(index));
-        _unusedControllers.add(weightControllers!.removeAt(index));
-      }
-    }
-  }
-
-  void removeAll() {
-    rows.clear();
-    counts.clear();
-    weights.clear();
-    if (countControllers != null) {
-      _unusedControllers
-        ..addAll(countControllers ?? [])
-        ..addAll(weightControllers ?? []);
-      countControllers!.clear();
-      weightControllers!.clear();
     }
   }
 

@@ -285,7 +285,7 @@ GLPKData _preProcess({required GLPKData data, required GLPKParams params}) {
 
   // remove rows/cols above
   objective.forEach((key, value) {
-    if (removeRows.contains(key)) params.remove(key);
+    if (removeRows.contains(key)) params.rows.remove(key);
   });
   removeRows.forEach((element) => data.removeRow(element));
   removeCols.forEach((element) {

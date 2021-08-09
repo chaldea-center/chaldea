@@ -18,7 +18,8 @@ class DropCalcInputTab extends StatefulWidget {
 
 class _DropCalcInputTabState extends State<DropCalcInputTab> {
   late ScrollController _scrollController;
-  late GLPKParams params;
+
+  GLPKParams get params => db.curUser.glpkParams;
 
   // category - itemKey
   Map<String, List<String>> pickerData = {};
@@ -30,13 +31,14 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    // ensure every time [params] is a new instance
-    params = GLPKParams.from(db.userData.glpkParams);
-    params.enableControllers();
     if (widget.objectiveCounts != null) {
-      params.removeAll();
-      widget.objectiveCounts!
-          .forEach((key, count) => params.addOne(key, count, 1.0));
+      params.rows.clear();
+      widget.objectiveCounts!.forEach((key, count) {
+        if (!params.rows.contains(key)) {
+          params.rows.add(key);
+          params.planItemCounts[key] = count;
+        }
+      });
     } else {
       if (params.rows.isEmpty) {
         addAnItemNotInList();
@@ -45,7 +47,6 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     }
     params.sortByItem();
     // update userdata at last
-    db.userData.glpkParams = params;
     solver.ensureEngine();
   }
 
@@ -89,7 +90,6 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
   @override
   void dispose() {
     solver.dispose();
-    params.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -117,10 +117,10 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                   icon: Icon(Icons.delete),
                   onPressed: () {
                     SimpleCancelOkDialog(
-                      title: Text('Clear ALL'),
+                      title: Text(S.current.clear),
                       onTapOk: () {
                         setState(() {
-                          params.removeAll();
+                          params.rows.clear();
                         });
                       },
                     ).showDialog(context);
@@ -164,30 +164,11 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
           onPressed: () {
             final String? category = getItemCategory(item);
             if (category == null) return;
-            Picker(
-              adapter: PickerDataAdapter<String>(data: pickerAdapter),
-              selecteds: [
-                pickerData.keys.toList().indexOf(category),
-                pickerData[category]!.indexOf(item)
-              ],
-              height: min(150, MediaQuery.of(context).size.height - 200),
-              itemExtent: 48,
-              changeToFirst: true,
-              hideHeader: true,
-              textScaleFactor: 0.7,
-              backgroundColor: null,
-              cancelText: S.of(context).cancel,
-              confirmText: S.of(context).confirm,
-              onConfirm: (Picker picker, List<int> value) {
-                print('picker: ${picker.getSelectedValues()}');
+            getPicker(
+              item: item,
+              onSelected: (v) {
                 setState(() {
-                  String selected = picker.getSelectedValues().last;
-                  if (params.rows.contains(selected)) {
-                    EasyLoading.showToast(S.of(context).item_already_exist_hint(
-                        Item.localizedNameOf(selected)));
-                  } else {
-                    params.rows[index] = selected;
-                  }
+                  params.rows[index] = v;
                 });
               },
             ).showDialog(context);
@@ -198,9 +179,9 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
           child: Text(
             planOrEff
                 ? S.current.words_separate(
-                    S.current.calc_weight, params.weights[index])
-                : S.current
-                    .words_separate(S.current.counts, params.counts[index]),
+                    S.current.calc_weight, params.getPlanItemWeight(item))
+                : S.current.words_separate(
+                    S.current.counts, params.getPlanItemCount(item)),
           ),
         );
         return CustomTile(
@@ -215,9 +196,11 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               SizedBox(
                 width: 65,
                 child: TextField(
-                  controller: planOrEff
-                      ? params.countControllers![index]
-                      : params.weightControllers![index],
+                  key: Key('calc_input_$item'),
+                  controller: TextEditingController(
+                      text: planOrEff
+                          ? params.getPlanItemCount(item).toString()
+                          : params.getPlanItemWeight(item).toString()),
                   keyboardType: TextInputType.numberWithOptions(
                       signed: true, decimal: true),
                   textAlign: TextAlign.center,
@@ -226,9 +209,11 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                   // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   onChanged: (s) {
                     if (planOrEff) {
-                      params.counts[index] = int.tryParse(s) ?? 0;
+                      int? v = int.tryParse(s);
+                      if (v != null) params.planItemCounts[item] = v;
                     } else {
-                      params.weights[index] = double.tryParse(s) ?? 1.0;
+                      double? v = double.tryParse(s);
+                      if (v != null) params.planItemWeights[item] = v;
                     }
                   },
                 ),
@@ -238,7 +223,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                   focusNode: FocusNode(skipTraversal: true),
                   onPressed: () {
                     setState(() {
-                      params.remove(item);
+                      params.rows.remove(item);
                     });
                   })
             ],
@@ -247,6 +232,39 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
       },
       separatorBuilder: (context, index) => kDefaultDivider,
       itemCount: params.rows.length,
+    );
+  }
+
+  Picker getPicker({String? item, required ValueChanged<String> onSelected}) {
+    String? category;
+    if (item != null) category = getItemCategory(item);
+    return Picker(
+      adapter: PickerDataAdapter<String>(data: pickerAdapter),
+      selecteds: [
+        if (category != null) pickerData.keys.toList().indexOf(category),
+        if (item != null) pickerData[category]!.indexOf(item)
+      ],
+      height: min(250, MediaQuery.of(context).size.height - 200),
+      itemExtent: 48,
+      changeToFirst: true,
+      hideHeader: true,
+      textScaleFactor: 0.7,
+      backgroundColor: null,
+      cancelText: S.current.cancel,
+      confirmText: S.current.confirm,
+      onConfirm: (Picker picker, List<int> value) {
+        print('picker: ${picker.getSelectedValues()}');
+        setState(() {
+          String selected = picker.getSelectedValues().last;
+          if (params.rows.contains(selected)) {
+            EasyLoading.showToast(S.current
+                .item_already_exist_hint(Item.localizedNameOf(selected)));
+          } else {
+            onSelected(selected);
+            // params.rows[index] = selected;
+          }
+        });
+      },
     );
   }
 
@@ -308,16 +326,21 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               spacing: 10,
               children: <Widget>[
                 IconButton(
-                    icon: Icon(
-                      Icons.add_circle,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    tooltip: 'Add row',
-                    onPressed: () {
-                      setState(() {
-                        addAnItemNotInList();
-                      });
-                    }),
+                  icon: Icon(
+                    Icons.add_circle,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  tooltip: 'Add',
+                  onPressed: () {
+                    getPicker(
+                      onSelected: (v) {
+                        setState(() {
+                          params.rows.add(v);
+                        });
+                      },
+                    ).showDialog(context);
+                  },
+                ),
                 ElevatedButton(
                   onPressed: running ? null : solve,
                   child: Text(S.of(context).drop_calc_solve),
@@ -330,10 +353,10 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     );
   }
 
-  void addAnItemNotInList([int n = 50]) {
+  void addAnItemNotInList() {
     final item = db.gameData.glpk.rowNames
         .firstWhereOrNull((e) => !params.rows.contains(e));
-    if (item != null) params.addOne(item, n);
+    if (item != null) params.rows.add(item);
   }
 
   String? getItemCategory(String itemKey) {
