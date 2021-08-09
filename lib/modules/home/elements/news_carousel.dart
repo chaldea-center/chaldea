@@ -27,27 +27,30 @@ class AppNewsCarousel extends StatefulWidget {
         {required dom.Element? element,
         required Uri uri,
         String attr = 'src',
-        bool imgOnly = true}) {
+        bool custom = false}) {
       Map<String, String> _result = {};
       if (element == null) return _result;
       for (var linkNode in element.getElementsByTagName('a')) {
         String? link = linkNode.attributes['href'];
         var imgNodes = linkNode.getElementsByTagName('img');
         if (link == null) continue;
-        // print('link=$link');
         if (imgNodes.isNotEmpty) {
           String? imgUrl = imgNodes.first.attributes[attr];
+          if (!custom) {
+            link = uri.resolve(link).toString().trim();
+          }
           if (imgUrl != null) {
             imgUrl = uri.resolve(imgUrl).toString().trim();
-            print('imgUrl=$imgUrl');
-            link = uri.resolve(link).toString().trim();
             _result[imgUrl] = link;
-            // print('imgUrl= "$imgUrl"\nhref  = "$link"');
           }
-        } else if (linkNode.text.isNotEmpty && !imgOnly) {
+        } else if (linkNode.text.isNotEmpty && custom) {
           _result[linkNode.text.trim()] = link.trim();
         }
       }
+      _result.forEach((key, value) {
+        print('img=$key');
+        print('  link=$value');
+      });
       return _result;
     }
 
@@ -90,7 +93,7 @@ class AppNewsCarousel extends StatefulWidget {
             element: announceElement,
             uri: Uri.parse(
                 'https://gitee.com/chaldea-center/chaldea/wikis/Announcement'),
-            imgOnly: false);
+            custom: true);
       }).catchError((e, s) {
         logger.e('parse gitee announce slides failed', e, s);
         return <String, String>{};
@@ -280,7 +283,11 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
       }
       sliders.add(GestureDetector(
         onTap: () async {
-          if (await canLaunch(link)) {
+          final routePrefix = '/chaldea/route';
+          if (link.toLowerCase().startsWith(routePrefix) &&
+              link.length > routePrefix.length + 1) {
+            Navigator.pushNamed(context, link.substring(routePrefix.length));
+          } else if (await canLaunch(link)) {
             jumpToExternalLinkAlert(url: link);
           }
         },

@@ -13,7 +13,7 @@ String _makeLocalizedDart(String chs, String jpn, String eng) {
 
 Future _reloadDebugDataset() async {
   await db.extractZip(
-    fp: r'/Users/narumi/Projects/chaldea-project/mcparser/output/dataset-text.zip',
+    fp: r'res/data/dataset.zip',
     savePath: db.paths.gameDir,
   );
   db.loadGameData();

@@ -436,7 +436,8 @@ class SvtFilterData {
     '鬼',
     '源氏',
     '机械',
-    '妖精'
+    '妖精',
+    '圆桌骑士'
   ];
 
   // json_serializable

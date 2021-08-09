@@ -99,6 +99,7 @@ final _localizedSvtFilter = LocalizedGroup([
   LocalizedText(chs: '持有灵衣者', jpn: '霊衣を持つ者', eng: 'Costume-Owning'),
   LocalizedText(chs: '机械', jpn: '機械', eng: 'Mechanical'),
   LocalizedText(chs: '妖精', jpn: '妖精', eng: 'Fairy'),
+  LocalizedText(chs: '圆桌骑士', jpn: '円卓の騎士', eng: 'Round Table Knight'),
 
   LocalizedText(chs: '伊莉雅', jpn: 'イリヤ', eng: 'Illya'),
   LocalizedText(chs: '织田信长', jpn: '', eng: 'Nobunaga'),
