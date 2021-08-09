@@ -17,8 +17,8 @@ And dataset resources are mostly based on the Chinese FGO wiki [Mooncell](https:
 - support almost all platform: Android, iOS, Windows and macOS
 - profiles of **Servants**, **Craft Essences**, **Command Codes**, **Mystic Codes**, **Events**, **Items** and **Summons**
 - item/material planning
-  - servants' ascension, skill, dress and palingenesis
-  - limit events, main records and exchange tickets
+  - servants' ascension, skill, dress, append skill, palingenesis, fou-kun and bond(Chaldea flame)
+  - limit events, main records, exchange tickets and campaigns
   - owned items
 - free quest solution
   - calculate the best solution of least AP or battle times according to item demands
@@ -26,9 +26,10 @@ And dataset resources are mostly based on the Chinese FGO wiki [Mooncell](https:
   - master mission/weekly mission solver, customization is supported
 - summon/gacha simulator
 - import user data
-    - import item and servant data from captured https traffic when login to CN server(Bilibili)
-    - import item data from game screenshots (realized on server side)
-    - from `Guda` exported data
+  - import item and servant data from captured https traffic when login to CN server(Bilibili)
+  - import item data from game screenshots (realized on server side)
+  - from `Guda` app
+  - from `fgosimulator.webcrow.jp/Material`
 
 
 ## Support Platforms
@@ -50,8 +51,6 @@ Web       | Not supported
 
 ### App Store
 [<img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-US?size=250x83&amp;releaseDate=1610841600&h=cb0adac232fdd6b88894f78b2f349b6e" alt="Download on the App Store" width="120px">](https://apps.apple.com/us/app/chaldea/id1548713491?itsct=apps_box&itscg=30200)
-
-If possible, join the iOS beta program in [TestFlight](https://testflight.apple.com/join/HSyZttrr).
 
 ### Installer
 You can download installer package in [release](https://github.com/chaldea-center/chaldea/releases) page for Android, Windows and macOS.
@@ -76,4 +75,5 @@ If you have any bug report, feature request, question or want to contribute to t
 - open an [issue](https://github.com/chaldea-center/chaldea/issues/new/choose)
 - pull request or join the collaboration
 - Email: [chaldea@narumi.cc](mailto:chaldea@narumi.cc)
+- Discord: [https://discord.gg/5M6w5faqjP](https://discord.gg/5M6w5faqjP)
 - [![Twitter](https://img.shields.io/twitter/url?label=Twitter&style=social&url=https%3A%2F%2Ftwitter.com%2Fnarumi147)](https://twitter.com/narumi147)

@@ -2,9 +2,10 @@
 
 ## New feature
 - [ ] Servant
-  - [ ] battle model/avatar
+  - [x] battle model/avatar
   - [ ] HP/ATK curve
   - [x] crafts and cmd codes that have appeared in
+- [ ] Buff filter for servants, craft essences and command codes
 - [x] Master Mission: 
   - [x] support **and** / **or** inside one mission
   - [x] related quests, sorted by mission target counts
@@ -23,7 +24,6 @@
 - [ ] item recognizer: itemName -> itemId
 
 ## Performance
-- [ ] update itemStat in Isolate
 - [x] save userdata periodically, rather manually call it
 
 ## Bug fix - long term

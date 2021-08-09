@@ -1,13 +1,13 @@
 ## 1.5.2
 - add ★3 fou-kun planning
 - add Chaldea flame/lantern planning(bond)
+- add servant equipped cmd code planning
+- add item demands/consumed overview in Statistics
 - sort by bond or item efficiency in free quest calculator
 - fix popup menu not show dialog/new route
 - more profile support for Altoria Caster 
-- servant equipped cmd code planning
-- add item demands/consumed overview in Statistics
-- add servant tabs sorting
-- add servant priority tagging
+- settings: add servant tabs sorting
+- settings: add servant priority tagging
 
 ## 1.5.1
 - Import servant/item data from http://fgosimulator.webcrow.jp/Material/
