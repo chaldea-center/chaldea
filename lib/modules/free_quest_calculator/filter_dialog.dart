@@ -38,7 +38,9 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
             items: [
               DropdownMenuItem(
                   value: -1, child: Text(S.of(context).free_progress_newest)),
-              for (var entry in db.gameData.glpk.freeCounts.entries)
+              for (var entry
+                  in db.gameData.glpk.freeCounts.entries.toList()
+                    ..sort((a, b) => b.value - a.value))
                 DropdownMenuItem(value: entry.value, child: Text(entry.key)),
             ],
             onChanged: (v) =>
@@ -79,7 +81,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
           contentBuilder: (context) => Column(
             children: divideTiles(params.blacklist.map((key) {
               String shownName =
-                  db.gameData.freeQuests[key]?.localizedKey ?? key;
+                  db.gameData.getFreeQuest(key)?.localizedKey ?? key;
               return ListTile(
                 title: Text(shownName),
                 dense: true,

@@ -29,7 +29,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
   Widget build(BuildContext context) {
     List<Widget> children = [];
     widget.solution?.countVars.forEach((variable) {
-      final Quest? quest = db.gameData.freeQuests[variable.name];
+      final Quest? quest = db.gameData.getFreeQuest(variable.name);
       children.add(Container(
         decoration: BoxDecoration(
             border: Border(bottom: Divider.createBorderSide(context))),

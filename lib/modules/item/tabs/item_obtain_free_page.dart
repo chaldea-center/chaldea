@@ -73,7 +73,7 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
         final apRate = apRates[i], dropRate = glpk.costs[i] / apRates[i];
         final dropRateString = (dropRate * 100).toStringAsFixed(2),
             apRateString = apRate.toStringAsFixed(2);
-        final quest = db.gameData.freeQuests[questName];
+        final quest = db.gameData.getFreeQuest(questName);
 
         final child = ValueStatefulBuilder<bool>(
             initValue: false,

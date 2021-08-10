@@ -39,7 +39,7 @@ class _FreeQuestQueryTabState extends State<FreeQuestQueryTab> {
           ),
           value: chapter,
           children: quests.map((questKey) {
-            final quest = db.gameData.freeQuests[questKey]!;
+            final quest = db.gameData.getFreeQuest(questKey)!;
             return PickerItem<String>(
               text: Center(
                 child: AutoSizeText(
@@ -65,13 +65,13 @@ class _FreeQuestQueryTabState extends State<FreeQuestQueryTab> {
 
   @override
   Widget build(BuildContext context) {
+    Quest? quest;
+    if (questKey != null) quest = db.gameData.getFreeQuest(questKey!);
     return ListView(
       controller: _scrollController,
       children: [
         questPicker,
-        questKey == null || !db.gameData.freeQuests.containsKey(questKey)
-            ? Center()
-            : QuestCard(quest: db.gameData.freeQuests[questKey]!),
+        quest == null ? Center() : QuestCard(quest: quest),
       ],
     );
   }
@@ -111,7 +111,7 @@ class _FreeQuestQueryTabState extends State<FreeQuestQueryTab> {
           child: Text(
             chapter == null || questKey == null
                 ? S.of(context).choose_quest_hint
-                : '${Localized.chapter.of(chapter!)} / ${db.gameData.freeQuests[questKey]?.localizedKey}',
+                : '${Localized.chapter.of(chapter!)} / ${db.gameData.getFreeQuest(questKey!)?.localizedKey}',
             textAlign: TextAlign.center,
           ),
         ),

@@ -235,7 +235,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
               labelFormatter: (v) =>
                   Grail.grailToLvMax(svt.info.rarity, v).toString(),
               trailingLabelFormatter: (a, b) =>
-                  '${Grail.grailToLvMax(svt.info.rarity, a)}->'
+                  '${Grail.grailToLvMax(svt.info.rarity, a)}→'
                           '${Grail.grailToLvMax(svt.info.rarity, b!)}'
                       .padLeft(7),
               onValueChanged: (_start, _end) {
@@ -265,7 +265,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             maxVal: 50,
             labelFormatter: (v) => Item.fouValToShown(v).toString(),
             trailingLabelFormatter: (a, b) =>
-                '${curVal.shownFouHp}->${targetVal.shownFouHp}',
+                '${curVal.shownFouHp}→${targetVal.shownFouHp}',
             onValueChanged: (_start, _end) {
               status.favorite = true;
               curVal.fouHp = _start;
@@ -294,7 +294,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             maxVal: 50,
             labelFormatter: (v) => Item.fouValToShown(v).toString(),
             trailingLabelFormatter: (a, b) =>
-                '${curVal.shownFouAtk}->${targetVal.shownFouAtk}',
+                '${curVal.shownFouAtk}→${targetVal.shownFouAtk}',
             onValueChanged: (_start, _end) {
               status.favorite = true;
               curVal.fouAtk = _start;
@@ -313,7 +313,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             minVal: 5,
             maxVal: 15,
             labelFormatter: (v) => v == 15 ? '15' : '<$v',
-            // trailingLabelFormatter: (a, b) => '$a->$b',
+            // trailingLabelFormatter: (a, b) => '$a → $b',
             onValueChanged: (_start, _end) {
               status.favorite = true;
               curVal.bondLimit = _start;
@@ -375,7 +375,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     if (trailingLabelFormatter == null) {
       trailingLabelFormatter = (a, b) {
         String s = labelFormatter!(a).padLeft(2);
-        if (b != null) s += '->' + labelFormatter(b).padRight(2);
+        if (b != null) s += '→' + labelFormatter(b).padRight(2);
         return s;
       };
     }

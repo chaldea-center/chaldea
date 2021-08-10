@@ -54,7 +54,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
   }
 
   double getBondEff(GLPKVariable variable) {
-    final quest = db.gameData.freeQuests[variable.name];
+    final quest = db.gameData.getFreeQuest(variable.name);
     if (quest != null) {
       int? ap = quest.battles.getOrNull(0)?.ap;
       if (ap != null) {
@@ -82,7 +82,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
     solutionVars.forEach((variable) {
       final String questKey = variable.name;
       final Map<String, double> drops = variable.detail as Map<String, double>;
-      final Quest? quest = db.gameData.freeQuests[questKey];
+      final Quest? quest = db.gameData.getFreeQuest(questKey);
       if (filterItems.isEmpty ||
           (matchAll &&
               filterItems.every((e) => variable.detail.containsKey(e))) ||

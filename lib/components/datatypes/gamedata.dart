@@ -14,6 +14,7 @@ class GameData {
   Map<String, Item> items;
   Map<String, String?> icons; //key: filename, value: original filename
   Events events;
+  @protected
   Map<String, Quest> freeQuests;
   Map<int, List<Quest>> svtQuests;
   GLPKData glpk;
@@ -89,12 +90,16 @@ class GameData {
   Quest? getFreeQuest(String key) {
     if (freeQuests.containsKey(key)) return freeQuests[key]!;
     for (var quest in freeQuests.values) {
-      if (key.contains(quest.place!) && key.contains(quest.name)) {
+      if (quest.place != null &&
+          key.contains(quest.place!) &&
+          key.contains(quest.name)) {
         return quest;
       }
       if (fullToHalf(quest.indexKey!) == fullToHalf(key)) {
         return quest;
       }
+      return freeQuests.values.firstWhereOrNull(
+          (quest) => key == quest.placeJp || key == quest.place);
     }
   }
 

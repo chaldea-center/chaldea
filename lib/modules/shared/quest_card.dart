@@ -297,6 +297,7 @@ class _QuestCardState extends State<QuestCard> {
   }
 
   /// only drops of free quest useApRate
+  /// TODO: if provide drop rate data, [items] here should not be used
   Widget _getDropsWidget(Map<String, int> items, bool useApRate) {
     Map<String, String> dropTexts = {};
     if (useApRate) {
@@ -309,7 +310,7 @@ class _QuestCardState extends State<QuestCard> {
 
       Map<String, double> apRates = {};
       for (var i = 0; i < glpk.rowNames.length; i++) {
-        if (glpk.matrix[i][colIndex] > 0) {
+        if (colIndex >= 0 && glpk.matrix[i][colIndex] > 0) {
           apRates[glpk.rowNames[i]] = glpk.matrix[i][colIndex];
         }
       }

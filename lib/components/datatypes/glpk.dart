@@ -15,7 +15,7 @@ class GLPKData {
   ///
   List<WeeklyMissionQuest> weeklyMissionData;
 
-  int get jpMaxColNum => freeCounts.values.first;
+  int get jpMaxColNum => freeCounts.values.reduce((a, b) => max(a, b));
 
   GLPKData({
     required this.colNames,
