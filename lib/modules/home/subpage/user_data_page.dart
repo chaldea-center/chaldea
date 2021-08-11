@@ -63,6 +63,7 @@ class _UserDataPageState extends State<UserDataPage> {
               ),
               ListTile(
                 title: Text(S.of(context).import_data),
+                subtitle: Text('userdata.json/*.json'),
                 onTap: importUserData,
               ),
               ListTile(
@@ -75,15 +76,21 @@ class _UserDataPageState extends State<UserDataPage> {
                   EasyLoading.showToast(S.of(context).reset_success);
                 },
               ),
-              if (Platform.isMacOS || Platform.isWindows)
-                ListTile(
-                  title: Text(LocalizedText.of(
-                      chs: '打开目录', jpn: 'フォルダを開く', eng: 'Open Folder')),
-                  subtitle: Text(db.paths.convertIosPath(db.paths.appPath)),
-                  onTap: () {
+              ListTile(
+                title: Text(LocalizedText.of(
+                    chs: '打开目录', jpn: 'フォルダを開く', eng: 'Open Folder')),
+                subtitle: Text(db.paths.convertIosPath(db.paths.appPath)),
+                onTap: () {
+                  if (Platform.isMacOS || Platform.isWindows) {
                     OpenFile.open(db.paths.appPath);
-                  },
-                )
+                  } else {
+                    EasyLoading.showInfo(LocalizedText.of(
+                        chs: '请用文件管理器打开',
+                        jpn: 'ファイルマネージャで開いてください',
+                        eng: 'Please open with file manager'));
+                  }
+                },
+              )
             ],
           ),
           TileGroup(
@@ -121,7 +128,8 @@ class _UserDataPageState extends State<UserDataPage> {
       db.saveUserData();
       db.notifyDbUpdate(item: true, svt: true);
       db.notifyAppUpdate();
-    } on FileSelectionCanceledError {} catch (e) {
+    } on FileSelectionCanceledError {
+    } catch (e) {
       EasyLoading.showError(S.of(context).import_data_error(e));
     }
   }
@@ -339,7 +347,8 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
                       db.saveUserData();
                       db.notifyDbUpdate(item: true, svt: true);
                       db.notifyAppUpdate();
-                    } on FileSelectionCanceledError {} catch (e) {
+                    } on FileSelectionCanceledError {
+                    } catch (e) {
                       EasyLoading.showError(S.of(context).import_data_error(e));
                     }
                   },

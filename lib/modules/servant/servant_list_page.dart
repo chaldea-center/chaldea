@@ -44,6 +44,7 @@ class ServantListPageState
   @override
   Widget build(BuildContext context) {
     return db.streamBuilder((context) {
+      db.curUser.ensurePlanLarger();
       this.filterShownList(
         compare: (a, b) => Servant.compare(a, b,
             keys: filterData.sortKeys,
@@ -234,9 +235,10 @@ class ServantListPageState
     return db.curUser.svtStatusOf(svt.no).favorite;
   }
 
-  int? _planTargetAscension;
-  int? _planTargetSkill;
-  int? _planTargetDress;
+  bool changeTarget = true;
+  int? _changedAscension;
+  int? _changedSkill;
+  int? _changedDress;
 
   @override
   String getSummary(Servant svt) {
@@ -607,7 +609,7 @@ class ServantListPageState
 
     final buttons = [
       DropdownButton<int>(
-        value: _planTargetAscension,
+        value: _changedAscension,
         icon: Container(),
         hint: Text(S.of(context).ascension),
         items: List.generate(
@@ -621,20 +623,24 @@ class ServantListPageState
         ),
         onChanged: (v) {
           setState(() {
-            _planTargetAscension = v;
-            if (_planTargetAscension == null) return;
+            _changedAscension = v;
+            if (_changedAscension == null) return;
             shownList.forEach((svt) {
               if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
                 final cur = db.curUser.svtStatusOf(svt.no).curVal,
                     target = db.curUser.svtPlanOf(svt.no);
-                target.ascension = max(cur.ascension, _planTargetAscension!);
+                if (changeTarget) {
+                  target.ascension = max(cur.ascension, _changedAscension!);
+                } else {
+                  cur.ascension = _changedAscension!;
+                }
               }
             });
           });
         },
       ),
       DropdownButton<int>(
-        value: _planTargetSkill,
+        value: _changedSkill,
         icon: Container(),
         hint: Text(S.of(context).skill),
         items: List.generate(11, (i) {
@@ -650,17 +656,25 @@ class ServantListPageState
         }),
         onChanged: (v) {
           setState(() {
-            _planTargetSkill = v;
-            if (_planTargetSkill == null) return;
+            _changedSkill = v;
+            if (_changedSkill == null) return;
             shownList.forEach((svt) {
               if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
                 final cur = db.curUser.svtStatusOf(svt.no).curVal,
                     target = db.curUser.svtPlanOf(svt.no);
                 for (int i = 0; i < 3; i++) {
-                  if (v == 0) {
-                    target.skills[i] = min(10, cur.skills[i] + 1);
+                  if (changeTarget) {
+                    if (v == 0) {
+                      target.skills[i] = min(10, cur.skills[i] + 1);
+                    } else {
+                      target.skills[i] = max(cur.skills[i], _changedSkill!);
+                    }
                   } else {
-                    target.skills[i] = max(cur.skills[i], _planTargetSkill!);
+                    if (v == 0) {
+                      cur.skills[i] = min(10, cur.skills[i] + 1);
+                    } else {
+                      cur.skills[i] = _changedSkill!;
+                    }
                   }
                 }
               }
@@ -669,7 +683,7 @@ class ServantListPageState
         },
       ),
       DropdownButton<int>(
-        value: _planTargetDress,
+        value: _changedDress,
         icon: Container(),
         hint: Text(S.of(context).costume),
         items: List.generate(
@@ -678,30 +692,23 @@ class ServantListPageState
                 value: i, child: Text(S.of(context).costume + ['×', '√'][i]))),
         onChanged: (v) {
           setState(() {
-            _planTargetDress = v;
-            if (_planTargetDress == null) return;
+            _changedDress = v;
+            if (_changedDress == null) return;
             shownList.forEach((svt) {
               if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
                 final cur = db.curUser.svtStatusOf(svt.no).curVal,
                     target = db.curUser.svtPlanOf(svt.no);
                 for (int i = 0; i < target.dress.length; i++) {
-                  target.dress[i] = max(cur.dress[i], _planTargetDress!);
+                  if (changeTarget) {
+                    target.dress[i] = max(cur.dress[i], _changedDress!);
+                  } else {
+                    cur.dress[i] = _changedDress!;
+                  }
                 }
               }
             });
           });
         },
-      ),
-      ElevatedButton(
-        onPressed: () {
-          db.itemStat.updateSvtItems();
-          SplitRoute.push(
-            context,
-            ItemListPage(),
-            detail: false,
-          );
-        },
-        child: Text('→' + S.of(context).item),
       ),
     ];
     return PreferredSize(
@@ -712,11 +719,50 @@ class ServantListPageState
           alignment: Alignment.center,
           child: FittedBox(
             fit: BoxFit.contain,
-            child: ButtonBar(children: buttons),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Wrap(spacing: 6, children: buttons),
+                Wrap(
+                  spacing: 6,
+                  children: [
+                    FilterGroup(
+                      useRadio: true,
+                      combined: true,
+                      options: ['cur', 'target'],
+                      values: FilterGroupData(options: {
+                        'cur': !changeTarget,
+                        'target': changeTarget
+                      }),
+                      onFilterChanged: (v) {
+                        setState(() {
+                          changeTarget = v.isRadioVal('target');
+                          _changedAscension = null;
+                          _changedSkill = null;
+                          _changedDress = null;
+                        });
+                      },
+                      optionBuilder: (s) => Text(LocalizedText.of(
+                          chs: s == 'target' ? '目标值' : '当前值',
+                          jpn: s == 'target' ? '目標値' : '現在値',
+                          eng: s == 'target' ? 'Target' : 'Current')),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        db.itemStat.updateSvtItems();
+                        SplitRoute.push(context, ItemListPage(), detail: false);
+                      },
+                      child: Text('→' + S.of(context).item),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+              ],
+            ),
           ),
         ),
       ),
-      preferredSize: Size.fromHeight(48),
+      preferredSize: Size.fromHeight(64),
     );
   }
 
@@ -735,14 +781,15 @@ class ServantListPageState
           //     Text(status.npLv.toString()),
           //   ],
           // ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // db.getIconImage('技能强化', width: 16, height: 16),
-              Text(status.curVal.ascension.toString() + '-'),
-              Text(status.curVal.skills.join('/')),
-            ],
-          ),
+          Text(status.curVal.skills.join('/')),
+          // Row(
+          //   mainAxisSize: MainAxisSize.min,
+          //   children: [
+          //     // db.getIconImage('技能强化', width: 16, height: 16),
+          //     Text(status.curVal.ascension.toString() + '-'),
+          //     Text(status.curVal.skills.join('/')),
+          //   ],
+          // ),
           if (status.curVal.dress.isNotEmpty)
             Row(
               mainAxisSize: MainAxisSize.min,
