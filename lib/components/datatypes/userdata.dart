@@ -367,8 +367,8 @@ class SvtFilterData {
     'Shielder',
     'Ruler',
     'Avenger',
-    'Alterego',
     'MoonCancer',
+    'Alterego',
     'Foreigner',
     'Pretender',
     'Beast'
@@ -382,16 +382,17 @@ class SvtFilterData {
     'Assassin',
     'Berserker',
   ];
-  static const List<String> extraClassesData = [
-    'Shielder',
-    'Ruler',
-    'Avenger',
-    'Alterego',
-    'MoonCancer',
-    'Foreigner',
-    'Pretender',
-    'Beast'
-  ];
+
+  static List<String> get extraClassesData => [
+        'Shielder',
+        'Ruler',
+        'Avenger',
+        'MoonCancer',
+        'Alterego',
+        'Foreigner',
+        'Pretender',
+        'Beast'
+      ];
   static const List<String> obtainData = [
     '剧情',
     '活动',

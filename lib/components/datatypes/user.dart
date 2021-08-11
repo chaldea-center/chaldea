@@ -504,12 +504,12 @@ class EventPlans {
     return _$EventPlansToJson(EventPlans(
       limitEvents: Map.of(this.limitEvents)
         ..removeWhere((key, value) => value.isEmpty),
-      mainRecords: Map.of(this.mainRecords)
-        ..removeWhere((key, value) => value.enabled),
-      exchangeTickets: Map.of(this.exchangeTickets)
-        ..removeWhere((key, value) => value.enabled),
+      mainRecords: Map<String, MainRecordPlan>.of(this.mainRecords)
+        ..removeWhere((key, value) => !value.enabled),
+      exchangeTickets: Map<String, ExchangeTicketPlan>.of(this.exchangeTickets)
+        ..removeWhere((key, value) => !value.enabled),
       campaigns: Map.of(this.campaigns)
-        ..removeWhere((key, value) => value.enabled),
+        ..removeWhere((key, value) => !value.enabled),
     ));
   }
 }
@@ -575,7 +575,8 @@ class ExchangeTicketPlan {
 
   bool get enabled => items.any((e) => e > 0);
 
-  List<int> get items => [item1, item2, item3];
+  /// cannot write value to [items], use [setAt] instead
+  List<int> get items => List.unmodifiable([item1, item2, item3]);
 
   void setAt(int index, int value) {
     if (index == 0)

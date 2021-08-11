@@ -193,7 +193,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                   title: Text(
                       '${ticket.dateToStr()} ${Item.localizedNameOf(iconKey)}'),
                   itemExtent: 36,
-                  height: min(200, MediaQuery.of(context).size.height - 220),
+                  height: min(250, MediaQuery.of(context).size.height - 220),
                   hideHeader: true,
                   cancelText: S.of(context).cancel,
                   confirmText: S.of(context).confirm,
@@ -209,7 +209,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                     ],
                   ),
                   onConfirm: (picker, values) {
-                    monthPlan.items[i] = picker.getSelectedValues()[0];
+                    monthPlan.setAt(i, picker.getSelectedValues()[0]);
                     for (var j = 0; j < 3; j++) {
                       final int v = min(monthPlan.items[j],
                           ticket.days - sum(monthPlan.items.getRange(0, j)));
