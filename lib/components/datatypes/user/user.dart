@@ -82,11 +82,6 @@ class User {
   // glpk
   GLPKParams glpkParams;
 
-  // @protected
-  // Map<String, int> planItemCounts;
-  // @protected
-  // Map<String, double> planItemWeights;
-
   User({
     this.key,
     String? name,

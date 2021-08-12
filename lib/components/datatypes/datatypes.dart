@@ -11,13 +11,13 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/modules/item/item_detail_page.dart' show ItemDetailPage;
-import 'package:chaldea/modules/servant/servant_detail_page.dart'
-    show ServantDetailPage;
 import 'package:chaldea/modules/cmd_code/cmd_code_detail_page.dart'
     show CmdCodeDetailPage;
 import 'package:chaldea/modules/craft/craft_detail_page.dart'
     show CraftDetailPage;
+import 'package:chaldea/modules/item/item_detail_page.dart' show ItemDetailPage;
+import 'package:chaldea/modules/servant/servant_detail_page.dart'
+    show ServantDetailPage;
 import 'package:chaldea/widgets/custom_tile.dart' show ImageWithText;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -38,6 +38,8 @@ import '../utils.dart';
 part 'base_types.dart';
 
 part 'bili_response.dart';
+
+part 'card_mixin.dart';
 
 part 'checked_helpers.dart';
 
@@ -65,8 +67,10 @@ part 'servant.dart';
 
 part 'summon.dart';
 
-part 'user.dart';
+part 'user/filter_data.dart';
 
-part 'userdata.dart';
+part 'user/user.dart';
 
-part 'card_mixin.dart';
+part 'user/user_settings.dart';
+
+part 'user/userdata.dart';
