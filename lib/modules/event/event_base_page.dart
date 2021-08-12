@@ -101,4 +101,69 @@ class EventBasePage {
       ),
     ];
   }
+
+  static Widget buildSpecialRewards(
+      BuildContext context, EventBase event, Widget tile) {
+    final svt = db.gameData.servants[event.welfareServant];
+    final items = <Widget>[
+      if (event.grail > 0)
+        Item.iconBuilder(
+            context: context,
+            itemKey: Items.grail,
+            text: event.grail.toString(),
+            width: 32),
+      if (event.crystal > 0)
+        Item.iconBuilder(
+            context: context,
+            itemKey: Items.crystal,
+            text: event.crystal.toString(),
+            width: 32),
+      if (event.grail2crystal > 0)
+        Item.iconBuilder(
+            context: context,
+            itemKey: Items.grail2crystal,
+            text: event.grail2crystal.toString(),
+            width: 32),
+      if (event.rarePrism > 0)
+        Item.iconBuilder(
+            context: context,
+            itemKey: Items.rarePri,
+            text: event.rarePrism.toString(),
+            width: 32),
+      if (event.foukun4 > 0) ...[
+        Item.iconBuilder(
+            context: context,
+            itemKey: Items.fou4Hp,
+            text: event.foukun4.toString(),
+            width: 32),
+        Item.iconBuilder(
+            context: context,
+            itemKey: Items.fou4Atk,
+            text: event.foukun4.toString(),
+            width: 32),
+      ],
+    ];
+    final rewards = Wrap(
+      spacing: 4,
+      runSpacing: 4,
+      alignment: WrapAlignment.start,
+      children: [
+        svt == null
+            ? SizedBox(width: 32)
+            : svt.iconBuilder(context: context, width: 32),
+        ...items,
+      ],
+    );
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        tile,
+        Padding(
+          padding: EdgeInsets.fromLTRB(16, 0, 16, 4),
+          child: rewards,
+        ),
+      ],
+    );
+  }
 }

@@ -174,6 +174,7 @@ class Items {
 
   static const String grail = '圣杯';
   static const String crystal = '传承结晶';
+  static const String grail2crystal = '圣杯传承结晶';
   static const String qp = 'QP';
   static const String manaPri = '魔力棱镜';
   static const String rarePri = '稀有魔力棱镜';

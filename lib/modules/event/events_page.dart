@@ -15,6 +15,7 @@ class _EventListPageState extends State<EventListPage>
   late TabController _tabController;
   bool reversed = false;
   bool showOutdated = false;
+  bool showSpecialRewards = false;
 
   List<String> get tabNames => [
         S.current.limited_event,
@@ -35,7 +36,6 @@ class _EventListPageState extends State<EventListPage>
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.event_title),
-        centerTitle: true,
         titleSpacing: 0,
         leading: MasterBackButton(),
         actions: <Widget>[
@@ -53,7 +53,29 @@ class _EventListPageState extends State<EventListPage>
                 reversed ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up),
             tooltip: 'Reversed',
             onPressed: () => setState(() => reversed = !reversed),
-          )
+          ),
+          PopupMenuButton(
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                child: Text(
+                  showSpecialRewards
+                      ? LocalizedText.of(
+                          chs: '隐藏特殊报酬',
+                          jpn: '特別報酬を非表示',
+                          eng: 'Hide Special Rewards')
+                      : LocalizedText.of(
+                          chs: '显示特殊报酬',
+                          jpn: '特別報酬を表示',
+                          eng: 'Show Special Rewards'),
+                ),
+                onTap: () {
+                  setState(() {
+                    showSpecialRewards = !showSpecialRewards;
+                  });
+                },
+              )
+            ],
+          ),
         ],
         bottom: TabBar(
           controller: _tabController,
@@ -65,17 +87,29 @@ class _EventListPageState extends State<EventListPage>
         controller: _tabController,
         children: <Widget>[
           KeepAliveBuilder(
-              builder: (_) =>
-                  LimitEventTab(reverse: reversed, showOutdated: showOutdated)),
+            builder: (_) => LimitEventTab(
+              reverse: reversed,
+              showOutdated: showOutdated,
+              showSpecialRewards: showSpecialRewards,
+            ),
+          ),
           KeepAliveBuilder(
-              builder: (_) => MainRecordTab(
-                  reversed: reversed, showOutdated: showOutdated)),
+            builder: (_) => MainRecordTab(
+              reversed: reversed,
+              showOutdated: showOutdated,
+              showSpecialRewards: showSpecialRewards,
+            ),
+          ),
           KeepAliveBuilder(
               builder: (_) => ExchangeTicketTab(
                   reverse: reversed, showOutdated: showOutdated)),
           KeepAliveBuilder(
-              builder: (_) => CampaignEventTab(
-                  reverse: reversed, showOutdated: showOutdated)),
+            builder: (_) => CampaignEventTab(
+              reverse: reversed,
+              showOutdated: showOutdated,
+              showSpecialRewards: showSpecialRewards,
+            ),
+          ),
         ],
       ),
     );

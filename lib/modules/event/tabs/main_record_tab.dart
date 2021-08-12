@@ -2,12 +2,18 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/event/main_record_detail_page.dart';
 
+import '../event_base_page.dart';
+
 class MainRecordTab extends StatefulWidget {
   final bool reversed;
   final bool showOutdated;
+  final bool showSpecialRewards;
 
   const MainRecordTab(
-      {Key? key, this.reversed = false, this.showOutdated = false})
+      {Key? key,
+      this.reversed = false,
+      this.showOutdated = false,
+      this.showSpecialRewards = false})
       : super(key: key);
 
   @override
@@ -90,7 +96,7 @@ class _MainRecordTabState extends State<MainRecordTab> {
                         : null,
                   );
                 }
-                return ListTile(
+                Widget tile = ListTile(
                   title: title,
                   subtitle: subtitle,
                   trailing: Wrap(
@@ -119,6 +125,13 @@ class _MainRecordTabState extends State<MainRecordTab> {
                     );
                   },
                 );
+                if (widget.showSpecialRewards) {
+                  if (widget.showSpecialRewards) {
+                    tile = EventBasePage.buildSpecialRewards(
+                        context, record, tile);
+                  }
+                }
+                return tile;
               },
             ),
           ),

@@ -2,13 +2,18 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 
 import '../campaign_detail_page.dart';
+import '../event_base_page.dart';
 
 class CampaignEventTab extends StatefulWidget {
   final bool reverse;
   final bool showOutdated;
+  final bool showSpecialRewards;
 
   const CampaignEventTab(
-      {Key? key, this.reverse = false, this.showOutdated = false})
+      {Key? key,
+      this.reverse = false,
+      this.showOutdated = false,
+      this.showSpecialRewards = false})
       : super(key: key);
 
   @override
@@ -61,7 +66,7 @@ class _CampaignEventTabState extends State<CampaignEventTab> {
           subtitle = 'JP ' + (event.startTimeJp?.split(' ').first ?? '???');
         }
         Color? _outdatedColor = Theme.of(context).textTheme.caption?.color;
-        return ListTile(
+        Widget tile = ListTile(
           title: AutoSizeText(
             event.localizedName,
             maxFontSize: 16,
@@ -94,6 +99,12 @@ class _CampaignEventTabState extends State<CampaignEventTab> {
             );
           },
         );
+        if (widget.showSpecialRewards) {
+          if (widget.showSpecialRewards) {
+            tile = EventBasePage.buildSpecialRewards(context, event, tile);
+          }
+        }
+        return tile;
       },
     );
   }

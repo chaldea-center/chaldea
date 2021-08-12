@@ -1,14 +1,19 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 
+import '../event_base_page.dart';
 import '../limit_event_detail_page.dart';
 
 class LimitEventTab extends StatefulWidget {
   final bool reverse;
   final bool showOutdated;
+  final bool showSpecialRewards;
 
   const LimitEventTab(
-      {Key? key, this.reverse = false, this.showOutdated = false})
+      {Key? key,
+      this.reverse = false,
+      this.showOutdated = false,
+      this.showSpecialRewards = false})
       : super(key: key);
 
   @override
@@ -61,7 +66,7 @@ class _LimitEventTabState extends State<LimitEventTab> {
           subtitle = 'JP ' + (event.startTimeJp?.split(' ').first ?? '???');
         }
         Color? _outdatedColor = Theme.of(context).textTheme.caption?.color;
-        return ListTile(
+        Widget tile = ListTile(
           title: AutoSizeText(
             event.localizedName,
             maxFontSize: 16,
@@ -99,6 +104,10 @@ class _LimitEventTabState extends State<LimitEventTab> {
             );
           },
         );
+        if (widget.showSpecialRewards) {
+          tile = EventBasePage.buildSpecialRewards(context, event, tile);
+        }
+        return tile;
       },
     );
   }
