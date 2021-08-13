@@ -44,7 +44,8 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   final SplitPageBuilder builder;
 
   /// whether to use detail layout if in split mode
-  final bool detail;
+  /// if null, don't use split view
+  final bool? detail;
 
   /// Master page ratio of full-width, between 0~100
   final int masterRatio;
@@ -75,13 +76,14 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     this.maintainState = true,
     this.title,
     bool fullscreenDialog = false,
-  })  : assert(builder != null),
+  })
+      : assert(builder != null),
         assert(masterRatio > 0 && masterRatio < 100),
         assert(maintainState != null),
         assert(fullscreenDialog != null),
         reverseTransitionDuration =
             reverseTransitionDuration ?? transitionDuration,
-        opaque = opaque ?? !detail,
+        opaque = opaque ?? detail != true,
         super(settings: settings, fullscreenDialog: fullscreenDialog);
 
   /// define your own builder for right space of master page
@@ -107,7 +109,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     final entries = super.createOverlayEntries().toList();
     final _modalBarrier = entries[0], _modalScope = entries[1];
 
-    if (!detail) {
+    if (detail != true) {
       yield _modalBarrier;
     }
     yield OverlayEntry(
@@ -136,7 +138,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
 
   @override
   bool canTransitionTo(TransitionRoute nextRoute) {
-    if (_isSplitCache && nextRoute is SplitRoute && nextRoute.detail) {
+    if (_isSplitCache && nextRoute is SplitRoute && nextRoute.detail == true) {
       return false;
     }
     return super.canTransitionTo(nextRoute);
@@ -144,7 +146,9 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
 
   @override
   bool canTransitionFrom(TransitionRoute previousRoute) {
-    if (_isSplitCache && previousRoute is SplitRoute && previousRoute.detail) {
+    if (_isSplitCache &&
+        previousRoute is SplitRoute &&
+        previousRoute.detail == true) {
       return false;
     }
     return super.canTransitionFrom(previousRoute);
@@ -201,11 +205,8 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   }
 
   SplitLayout getLayout(BuildContext context) {
-    return isSplit(context)
-        ? detail
-            ? SplitLayout.detail
-            : SplitLayout.master
-        : SplitLayout.none;
+    if (detail == null || !isSplit(context)) return SplitLayout.none;
+    return detail! ? SplitLayout.detail : SplitLayout.master;
   }
 
   /// Pop all top detail routes
@@ -216,7 +217,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     if (popDetails) {
       int n = 0;
       Navigator.of(context).popUntil((route) {
-        bool isDetail = route is SplitRoute && route.detail;
+        bool isDetail = route is SplitRoute && route.detail == true;
         if (isDetail) {
           n += 1;
         }
