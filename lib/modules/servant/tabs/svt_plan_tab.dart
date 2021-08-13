@@ -312,12 +312,12 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             useSlider: sliderMode,
             leading: Item.iconBuilder(
                 context: context, itemKey: Items.chaldeaFlame, width: 33),
-            title: Item.localizedNameOf(Items.chaldeaFlame),
+            title: S.current.game_kizuna,
             start: curVal.bondLimit,
             end: targetVal.bondLimit,
             minVal: 5,
             maxVal: 15,
-            labelFormatter: (v) => v == 15 ? '15' : '<$v',
+            // labelFormatter: (v) => v == 15 ? '15' : '$v',
             // trailingLabelFormatter: (a, b) => '$a → $b',
             onValueChanged: (_start, _end) {
               status.favorite = true;
@@ -326,7 +326,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
               updateState();
             },
             detailPageBuilder: (context) => SimpleCancelOkDialog(
-              title: Text(Item.localizedNameOf(Items.chaldeaFlame)),
+              title: Text(S.current.game_kizuna),
               hideCancel: true,
               content: Text(LocalizedText.of(
                 chs: '数值为当前的羁绊上限，用于计算梦火消耗',

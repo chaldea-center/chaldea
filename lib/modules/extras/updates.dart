@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:catcher/catcher.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
@@ -116,6 +117,22 @@ class AutoUpdateUtil {
         _reportResult(S.current.patch_gamedata_error_unknown_version);
         AutoUpdateUtil.autoUpdateDataset();
         return;
+      }
+
+      if (curRelease.tagName.startsWith('-') ||
+          latestRelease.tagName.startsWith('-')) {
+        // TODO: debugging tagName
+        Future.delayed(Duration(seconds: 2), () async {
+          try {
+            final response = await HttpUtils.defaultDio.get(
+                '$kServerRoot/githubapi/repos/chaldea-center/chaldea-dataset/releases',
+                options: Options(responseType: ResponseType.plain));
+            Catcher.reportCheckedError(
+                'Invalid tagName\n\n${response.data}', StackTrace.current);
+          } catch (e, s) {
+            logger.e('report tagName failed', e, s);
+          }
+        });
       }
 
       final resp = ChaldeaResponse.fromResponse(await db.serverDio

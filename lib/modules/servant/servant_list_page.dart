@@ -608,6 +608,11 @@ class ServantListPageState
     if (!widget.planMode) return null;
 
     final buttons = [
+      Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8),
+        child: Text(
+            LocalizedText.of(chs: '统一设定:', jpn: 'すべてを設定:', eng: 'Set All:')),
+      ),
       DropdownButton<int>(
         value: _changedAscension,
         icon: Container(),
@@ -722,9 +727,14 @@ class ServantListPageState
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Wrap(spacing: 6, children: buttons),
                 Wrap(
                   spacing: 6,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: buttons,
+                ),
+                Wrap(
+                  spacing: 6,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     FilterGroup(
                       useRadio: true,
@@ -753,6 +763,10 @@ class ServantListPageState
                         SplitRoute.push(context, ItemListPage(), detail: false);
                       },
                       child: Text('→' + S.of(context).item),
+                      style: ElevatedButton.styleFrom(
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        visualDensity: VisualDensity.compact,
+                      ),
                     ),
                   ],
                 ),
