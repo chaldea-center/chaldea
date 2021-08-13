@@ -28,6 +28,7 @@ class CachedImage extends StatefulWidget {
 
   /// Save only if the image is wiki file
   final String? cacheDir;
+  final String? cacheName;
   final bool showSaveOnLongPress;
   final double? aspectRatio;
 
@@ -45,6 +46,7 @@ class CachedImage extends StatefulWidget {
     required this.imageUrl,
     this.isMCFile,
     this.cacheDir,
+    this.cacheName,
     this.showSaveOnLongPress = false,
     this.width,
     this.height,
@@ -67,9 +69,11 @@ class CachedImage extends StatefulWidget {
     this.cachedOption = const CachedImageOption(),
     this.photoViewOption,
     this.onTap,
-  })  : imageUrl = null,
+  })
+      : imageUrl = null,
         isMCFile = false,
         cacheDir = null,
+        cacheName = null,
         super(key: key);
 
   @override
@@ -133,7 +137,7 @@ class _CachedImageState extends State<CachedImage> {
     } else {
       String? savePath;
       if (widget.cacheDir != null)
-        savePath = join(widget.cacheDir!, widget.imageUrl!);
+        savePath = join(widget.cacheDir!, widget.cacheName ?? widget.imageUrl!);
       WikiUtil.resolveFileUrl(widget.imageUrl!, savePath).then((url) {
         if (url != null && mounted) {
           setState(() {});

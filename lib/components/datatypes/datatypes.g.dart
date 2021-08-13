@@ -1065,6 +1065,7 @@ Servant _$ServantFromJson(Map<String, dynamic> json) {
           (v) => (v as List<dynamic>)
               .map((e) => Skill.fromJson(e as Map<String, dynamic>))
               .toList()),
+      coinSummonNum: $checkedConvert(json, 'coinSummonNum', (v) => v as int),
       itemCost: $checkedConvert(json, 'itemCost',
           (v) => ItemCost.fromJson(v as Map<String, dynamic>)),
       costumeNos: $checkedConvert(json, 'costumeNos',
@@ -1116,6 +1117,7 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'passiveSkills': instance.passiveSkills,
       'passiveSkillsEn': instance.passiveSkillsEn,
       'appendSkills': instance.appendSkills,
+      'coinSummonNum': instance.coinSummonNum,
       'itemCost': instance.itemCost,
       'costumeNos': instance.costumeNos,
       'bondPoints': instance.bondPoints,
@@ -1578,6 +1580,316 @@ Map<String, dynamic> _$SummonDataBlockToJson(SummonDataBlock instance) =>
       'ids': instance.ids,
     };
 
+SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
+  return $checkedNew('SvtFilterData', json, () {
+    final val = SvtFilterData(
+      favorite: $checkedConvert(json, 'favorite', (v) => v as int?),
+      display: $checkedConvert(
+          json,
+          'display',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      sortKeys: $checkedConvert(
+          json,
+          'sortKeys',
+          (v) => (v as List<dynamic>?)
+              ?.map((e) => _$enumDecode(_$SvtCompareEnumMap, e))
+              .toList()),
+      sortReversed: $checkedConvert(json, 'sortReversed',
+          (v) => (v as List<dynamic>?)?.map((e) => e as bool).toList()),
+      hasDress: $checkedConvert(json, 'hasDress', (v) => v as bool?),
+      svtDuplicated: $checkedConvert(
+          json,
+          'svtDuplicated',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      planCompletion: $checkedConvert(
+          json,
+          'planCompletion',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      skillLevel: $checkedConvert(
+          json,
+          'skillLevel',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      priority: $checkedConvert(
+          json,
+          'priority',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      rarity: $checkedConvert(
+          json,
+          'rarity',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      className: $checkedConvert(
+          json,
+          'className',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      obtain: $checkedConvert(
+          json,
+          'obtain',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      npColor: $checkedConvert(
+          json,
+          'npColor',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      npType: $checkedConvert(
+          json,
+          'npType',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      attribute: $checkedConvert(
+          json,
+          'attribute',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      alignment1: $checkedConvert(
+          json,
+          'alignment1',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      alignment2: $checkedConvert(
+          json,
+          'alignment2',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      gender: $checkedConvert(
+          json,
+          'gender',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      trait: $checkedConvert(
+          json,
+          'trait',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      special: $checkedConvert(
+          json,
+          'special',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+    );
+    return val;
+  });
+}
+
+Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
+    <String, dynamic>{
+      'favorite': instance.favorite,
+      'display': instance.display,
+      'sortKeys': instance.sortKeys.map((e) => _$SvtCompareEnumMap[e]).toList(),
+      'sortReversed': instance.sortReversed,
+      'hasDress': instance.hasDress,
+      'svtDuplicated': instance.svtDuplicated,
+      'planCompletion': instance.planCompletion,
+      'skillLevel': instance.skillLevel,
+      'priority': instance.priority,
+      'rarity': instance.rarity,
+      'className': instance.className,
+      'obtain': instance.obtain,
+      'npColor': instance.npColor,
+      'npType': instance.npType,
+      'attribute': instance.attribute,
+      'alignment1': instance.alignment1,
+      'alignment2': instance.alignment2,
+      'gender': instance.gender,
+      'trait': instance.trait,
+      'special': instance.special,
+    };
+
+K _$enumDecode<K, V>(
+  Map<K, V> enumValues,
+  Object? source, {
+  K? unknownValue,
+}) {
+  if (source == null) {
+    throw ArgumentError(
+      'A value must be provided. Supported values: '
+      '${enumValues.values.join(', ')}',
+    );
+  }
+
+  return enumValues.entries.singleWhere(
+    (e) => e.value == source,
+    orElse: () {
+      if (unknownValue == null) {
+        throw ArgumentError(
+          '`$source` is not one of the supported values: '
+          '${enumValues.values.join(', ')}',
+        );
+      }
+      return MapEntry(unknownValue, enumValues.values.first);
+    },
+  ).key;
+}
+
+const _$SvtCompareEnumMap = {
+  SvtCompare.no: 'no',
+  SvtCompare.className: 'className',
+  SvtCompare.rarity: 'rarity',
+  SvtCompare.atk: 'atk',
+  SvtCompare.hp: 'hp',
+  SvtCompare.priority: 'priority',
+};
+
+CraftFilterData _$CraftFilterDataFromJson(Map<String, dynamic> json) {
+  return $checkedNew('CraftFilterData', json, () {
+    final val = CraftFilterData(
+      display: $checkedConvert(
+          json,
+          'display',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      sortKeys: $checkedConvert(
+          json,
+          'sortKeys',
+          (v) => (v as List<dynamic>?)
+              ?.map((e) => _$enumDecode(_$CraftCompareEnumMap, e))
+              .toList()),
+      sortReversed: $checkedConvert(json, 'sortReversed',
+          (v) => (v as List<dynamic>?)?.map((e) => e as bool).toList()),
+      rarity: $checkedConvert(
+          json,
+          'rarity',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      category: $checkedConvert(
+          json,
+          'category',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      atkHpType: $checkedConvert(
+          json,
+          'atkHpType',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      status: $checkedConvert(
+          json,
+          'status',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+    );
+    return val;
+  });
+}
+
+Map<String, dynamic> _$CraftFilterDataToJson(CraftFilterData instance) =>
+    <String, dynamic>{
+      'display': instance.display,
+      'sortKeys':
+          instance.sortKeys.map((e) => _$CraftCompareEnumMap[e]).toList(),
+      'sortReversed': instance.sortReversed,
+      'rarity': instance.rarity,
+      'category': instance.category,
+      'atkHpType': instance.atkHpType,
+      'status': instance.status,
+    };
+
+const _$CraftCompareEnumMap = {
+  CraftCompare.no: 'no',
+  CraftCompare.rarity: 'rarity',
+  CraftCompare.atk: 'atk',
+  CraftCompare.hp: 'hp',
+};
+
+CmdCodeFilterData _$CmdCodeFilterDataFromJson(Map<String, dynamic> json) {
+  return $checkedNew('CmdCodeFilterData', json, () {
+    final val = CmdCodeFilterData(
+      display: $checkedConvert(
+          json,
+          'display',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      sortKeys: $checkedConvert(
+          json,
+          'sortKeys',
+          (v) => (v as List<dynamic>?)
+              ?.map((e) => _$enumDecode(_$CmdCodeCompareEnumMap, e))
+              .toList()),
+      sortReversed: $checkedConvert(json, 'sortReversed',
+          (v) => (v as List<dynamic>?)?.map((e) => e as bool).toList()),
+      rarity: $checkedConvert(
+          json,
+          'rarity',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      category: $checkedConvert(
+          json,
+          'category',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+    );
+    return val;
+  });
+}
+
+Map<String, dynamic> _$CmdCodeFilterDataToJson(CmdCodeFilterData instance) =>
+    <String, dynamic>{
+      'display': instance.display,
+      'sortKeys':
+          instance.sortKeys.map((e) => _$CmdCodeCompareEnumMap[e]).toList(),
+      'sortReversed': instance.sortReversed,
+      'rarity': instance.rarity,
+      'category': instance.category,
+    };
+
+const _$CmdCodeCompareEnumMap = {
+  CmdCodeCompare.no: 'no',
+  CmdCodeCompare.rarity: 'rarity',
+};
+
+FilterGroupData _$FilterGroupDataFromJson(Map<String, dynamic> json) {
+  return $checkedNew('FilterGroupData', json, () {
+    final val = FilterGroupData(
+      matchAll: $checkedConvert(json, 'matchAll', (v) => v as bool?),
+      invert: $checkedConvert(json, 'invert', (v) => v as bool?),
+      options: $checkedConvert(
+          json,
+          'options',
+          (v) => (v as Map<String, dynamic>?)?.map(
+                (k, e) => MapEntry(k, e as bool),
+              )),
+    );
+    return val;
+  });
+}
+
+Map<String, dynamic> _$FilterGroupDataToJson(FilterGroupData instance) =>
+    <String, dynamic>{
+      'matchAll': instance.matchAll,
+      'invert': instance.invert,
+      'options': instance.options,
+    };
+
 User _$UserFromJson(Map<String, dynamic> json) {
   return $checkedNew('User', json, () {
     final val = User(
@@ -1665,32 +1977,6 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
           instance.duplicatedServants.map((k, e) => MapEntry(k.toString(), e)),
       'glpkParams': instance.glpkParams,
     };
-
-K _$enumDecode<K, V>(
-  Map<K, V> enumValues,
-  Object? source, {
-  K? unknownValue,
-}) {
-  if (source == null) {
-    throw ArgumentError(
-      'A value must be provided. Supported values: '
-      '${enumValues.values.join(', ')}',
-    );
-  }
-
-  return enumValues.entries.singleWhere(
-    (e) => e.value == source,
-    orElse: () {
-      if (unknownValue == null) {
-        throw ArgumentError(
-          '`$source` is not one of the supported values: '
-          '${enumValues.values.join(', ')}',
-        );
-      }
-      return MapEntry(unknownValue, enumValues.values.first);
-    },
-  ).key;
-}
 
 K? _$enumDecodeNullable<K, V>(
   Map<K, V> enumValues,
@@ -1889,71 +2175,6 @@ Map<String, dynamic> _$CampaignPlanToJson(CampaignPlan instance) =>
       'rerun': instance.rerun,
     };
 
-UserData _$UserDataFromJson(Map<String, dynamic> json) {
-  return $checkedNew('UserData', json, () {
-    final val = UserData(
-      appSetting: $checkedConvert(
-          json,
-          'appSetting',
-          (v) => v == null
-              ? null
-              : AppSetting.fromJson(v as Map<String, dynamic>)),
-      carouselSetting: $checkedConvert(
-          json,
-          'carouselSetting',
-          (v) => v == null
-              ? null
-              : CarouselSetting.fromJson(v as Map<String, dynamic>)),
-      galleries: $checkedConvert(
-          json,
-          'galleries',
-          (v) => (v as Map<String, dynamic>?)?.map(
-                (k, e) => MapEntry(k, e as bool),
-              )),
-      curUserKey: $checkedConvert(json, 'curUserKey', (v) => v as String?),
-      users: $checkedConvert(
-          json,
-          'users',
-          (v) => (v as Map<String, dynamic>?)?.map(
-                (k, e) => MapEntry(k, User.fromJson(e as Map<String, dynamic>)),
-              )),
-      svtFilter: $checkedConvert(
-          json,
-          'svtFilter',
-          (v) => v == null
-              ? null
-              : SvtFilterData.fromJson(v as Map<String, dynamic>)),
-      craftFilter: $checkedConvert(
-          json,
-          'craftFilter',
-          (v) => v == null
-              ? null
-              : CraftFilterData.fromJson(v as Map<String, dynamic>)),
-      cmdCodeFilter: $checkedConvert(
-          json,
-          'cmdCodeFilter',
-          (v) => v == null
-              ? null
-              : CmdCodeFilterData.fromJson(v as Map<String, dynamic>)),
-      itemAbundantValue: $checkedConvert(json, 'itemAbundantValue',
-          (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
-    );
-    return val;
-  });
-}
-
-Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
-      'appSetting': instance.appSetting,
-      'carouselSetting': instance.carouselSetting,
-      'galleries': instance.galleries,
-      'users': instance.users,
-      'svtFilter': instance.svtFilter,
-      'craftFilter': instance.craftFilter,
-      'cmdCodeFilter': instance.cmdCodeFilter,
-      'itemAbundantValue': instance.itemAbundantValue,
-      'curUserKey': instance.curUserKey,
-    };
-
 AppSetting _$AppSettingFromJson(Map<String, dynamic> json) {
   return $checkedNew('AppSetting', json, () {
     final val = AppSetting(
@@ -2072,286 +2293,69 @@ Map<String, dynamic> _$CarouselSettingToJson(CarouselSetting instance) =>
       'enableUs': instance.enableUs,
     };
 
-SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
-  return $checkedNew('SvtFilterData', json, () {
-    final val = SvtFilterData(
-      favorite: $checkedConvert(json, 'favorite', (v) => v as int?),
-      display: $checkedConvert(
+UserData _$UserDataFromJson(Map<String, dynamic> json) {
+  return $checkedNew('UserData', json, () {
+    final val = UserData(
+      version: $checkedConvert(json, 'version', (v) => v as int?),
+      appSetting: $checkedConvert(
           json,
-          'display',
+          'appSetting',
           (v) => v == null
               ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      sortKeys: $checkedConvert(
+              : AppSetting.fromJson(v as Map<String, dynamic>)),
+      carouselSetting: $checkedConvert(
           json,
-          'sortKeys',
-          (v) => (v as List<dynamic>?)
-              ?.map((e) => _$enumDecode(_$SvtCompareEnumMap, e))
-              .toList()),
-      sortReversed: $checkedConvert(json, 'sortReversed',
-          (v) => (v as List<dynamic>?)?.map((e) => e as bool).toList()),
-      hasDress: $checkedConvert(json, 'hasDress', (v) => v as bool?),
-      svtDuplicated: $checkedConvert(
-          json,
-          'svtDuplicated',
+          'carouselSetting',
           (v) => v == null
               ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      planCompletion: $checkedConvert(
+              : CarouselSetting.fromJson(v as Map<String, dynamic>)),
+      galleries: $checkedConvert(
           json,
-          'planCompletion',
-          (v) => v == null
-              ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      skillLevel: $checkedConvert(
-          json,
-          'skillLevel',
-          (v) => v == null
-              ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      priority: $checkedConvert(
-          json,
-          'priority',
-          (v) => v == null
-              ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      rarity: $checkedConvert(
-          json,
-          'rarity',
-          (v) => v == null
-              ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      className: $checkedConvert(
-          json,
-          'className',
-          (v) => v == null
-              ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      obtain: $checkedConvert(
-          json,
-          'obtain',
-          (v) => v == null
-              ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      npColor: $checkedConvert(
-          json,
-          'npColor',
-          (v) => v == null
-              ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      npType: $checkedConvert(
-          json,
-          'npType',
-          (v) => v == null
-              ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      attribute: $checkedConvert(
-          json,
-          'attribute',
-          (v) => v == null
-              ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      alignment1: $checkedConvert(
-          json,
-          'alignment1',
-          (v) => v == null
-              ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      alignment2: $checkedConvert(
-          json,
-          'alignment2',
-          (v) => v == null
-              ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      gender: $checkedConvert(
-          json,
-          'gender',
-          (v) => v == null
-              ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      trait: $checkedConvert(
-          json,
-          'trait',
-          (v) => v == null
-              ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      special: $checkedConvert(
-          json,
-          'special',
-          (v) => v == null
-              ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-    );
-    return val;
-  });
-}
-
-Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
-    <String, dynamic>{
-      'favorite': instance.favorite,
-      'display': instance.display,
-      'sortKeys': instance.sortKeys.map((e) => _$SvtCompareEnumMap[e]).toList(),
-      'sortReversed': instance.sortReversed,
-      'hasDress': instance.hasDress,
-      'svtDuplicated': instance.svtDuplicated,
-      'planCompletion': instance.planCompletion,
-      'skillLevel': instance.skillLevel,
-      'priority': instance.priority,
-      'rarity': instance.rarity,
-      'className': instance.className,
-      'obtain': instance.obtain,
-      'npColor': instance.npColor,
-      'npType': instance.npType,
-      'attribute': instance.attribute,
-      'alignment1': instance.alignment1,
-      'alignment2': instance.alignment2,
-      'gender': instance.gender,
-      'trait': instance.trait,
-      'special': instance.special,
-    };
-
-const _$SvtCompareEnumMap = {
-  SvtCompare.no: 'no',
-  SvtCompare.className: 'className',
-  SvtCompare.rarity: 'rarity',
-  SvtCompare.atk: 'atk',
-  SvtCompare.hp: 'hp',
-  SvtCompare.priority: 'priority',
-};
-
-CraftFilterData _$CraftFilterDataFromJson(Map<String, dynamic> json) {
-  return $checkedNew('CraftFilterData', json, () {
-    final val = CraftFilterData(
-      display: $checkedConvert(
-          json,
-          'display',
-          (v) => v == null
-              ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      sortKeys: $checkedConvert(
-          json,
-          'sortKeys',
-          (v) => (v as List<dynamic>?)
-              ?.map((e) => _$enumDecode(_$CraftCompareEnumMap, e))
-              .toList()),
-      sortReversed: $checkedConvert(json, 'sortReversed',
-          (v) => (v as List<dynamic>?)?.map((e) => e as bool).toList()),
-      rarity: $checkedConvert(
-          json,
-          'rarity',
-          (v) => v == null
-              ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      category: $checkedConvert(
-          json,
-          'category',
-          (v) => v == null
-              ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      atkHpType: $checkedConvert(
-          json,
-          'atkHpType',
-          (v) => v == null
-              ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      status: $checkedConvert(
-          json,
-          'status',
-          (v) => v == null
-              ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-    );
-    return val;
-  });
-}
-
-Map<String, dynamic> _$CraftFilterDataToJson(CraftFilterData instance) =>
-    <String, dynamic>{
-      'display': instance.display,
-      'sortKeys':
-          instance.sortKeys.map((e) => _$CraftCompareEnumMap[e]).toList(),
-      'sortReversed': instance.sortReversed,
-      'rarity': instance.rarity,
-      'category': instance.category,
-      'atkHpType': instance.atkHpType,
-      'status': instance.status,
-    };
-
-const _$CraftCompareEnumMap = {
-  CraftCompare.no: 'no',
-  CraftCompare.rarity: 'rarity',
-  CraftCompare.atk: 'atk',
-  CraftCompare.hp: 'hp',
-};
-
-CmdCodeFilterData _$CmdCodeFilterDataFromJson(Map<String, dynamic> json) {
-  return $checkedNew('CmdCodeFilterData', json, () {
-    final val = CmdCodeFilterData(
-      display: $checkedConvert(
-          json,
-          'display',
-          (v) => v == null
-              ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      sortKeys: $checkedConvert(
-          json,
-          'sortKeys',
-          (v) => (v as List<dynamic>?)
-              ?.map((e) => _$enumDecode(_$CmdCodeCompareEnumMap, e))
-              .toList()),
-      sortReversed: $checkedConvert(json, 'sortReversed',
-          (v) => (v as List<dynamic>?)?.map((e) => e as bool).toList()),
-      rarity: $checkedConvert(
-          json,
-          'rarity',
-          (v) => v == null
-              ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-      category: $checkedConvert(
-          json,
-          'category',
-          (v) => v == null
-              ? null
-              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
-    );
-    return val;
-  });
-}
-
-Map<String, dynamic> _$CmdCodeFilterDataToJson(CmdCodeFilterData instance) =>
-    <String, dynamic>{
-      'display': instance.display,
-      'sortKeys':
-          instance.sortKeys.map((e) => _$CmdCodeCompareEnumMap[e]).toList(),
-      'sortReversed': instance.sortReversed,
-      'rarity': instance.rarity,
-      'category': instance.category,
-    };
-
-const _$CmdCodeCompareEnumMap = {
-  CmdCodeCompare.no: 'no',
-  CmdCodeCompare.rarity: 'rarity',
-};
-
-FilterGroupData _$FilterGroupDataFromJson(Map<String, dynamic> json) {
-  return $checkedNew('FilterGroupData', json, () {
-    final val = FilterGroupData(
-      matchAll: $checkedConvert(json, 'matchAll', (v) => v as bool?),
-      invert: $checkedConvert(json, 'invert', (v) => v as bool?),
-      options: $checkedConvert(
-          json,
-          'options',
+          'galleries',
           (v) => (v as Map<String, dynamic>?)?.map(
                 (k, e) => MapEntry(k, e as bool),
               )),
+      curUserKey: $checkedConvert(json, 'curUserKey', (v) => v as String?),
+      users: $checkedConvert(
+          json,
+          'users',
+          (v) => (v as Map<String, dynamic>?)?.map(
+                (k, e) => MapEntry(k, User.fromJson(e as Map<String, dynamic>)),
+              )),
+      svtFilter: $checkedConvert(
+          json,
+          'svtFilter',
+          (v) => v == null
+              ? null
+              : SvtFilterData.fromJson(v as Map<String, dynamic>)),
+      craftFilter: $checkedConvert(
+          json,
+          'craftFilter',
+          (v) => v == null
+              ? null
+              : CraftFilterData.fromJson(v as Map<String, dynamic>)),
+      cmdCodeFilter: $checkedConvert(
+          json,
+          'cmdCodeFilter',
+          (v) => v == null
+              ? null
+              : CmdCodeFilterData.fromJson(v as Map<String, dynamic>)),
+      itemAbundantValue: $checkedConvert(json, 'itemAbundantValue',
+          (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
     );
     return val;
   });
 }
 
-Map<String, dynamic> _$FilterGroupDataToJson(FilterGroupData instance) =>
-    <String, dynamic>{
-      'matchAll': instance.matchAll,
-      'invert': instance.invert,
-      'options': instance.options,
+Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
+      'version': instance.version,
+      'appSetting': instance.appSetting,
+      'carouselSetting': instance.carouselSetting,
+      'galleries': instance.galleries,
+      'users': instance.users,
+      'svtFilter': instance.svtFilter,
+      'craftFilter': instance.craftFilter,
+      'cmdCodeFilter': instance.cmdCodeFilter,
+      'itemAbundantValue': instance.itemAbundantValue,
+      'curUserKey': instance.curUserKey,
     };

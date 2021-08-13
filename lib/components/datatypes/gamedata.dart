@@ -115,9 +115,10 @@ class ItemCost {
   List<Map<String, int>> skill;
   List<Map<String, int>> appendSkill;
 
-  // see db.gamedata.costumes
-  // @deprecated
-  // List<Map<String, int>> dress;
+  List<Map<String, int>> get appendSkillWithCoin => [
+        {Items.servantCoin: 120},
+        ...appendSkill,
+      ];
 
   ItemCost({
     required this.ascension,

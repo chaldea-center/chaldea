@@ -487,6 +487,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("コピー元を選択"),
         "select_plan": MessageLookupByLibrary.simpleMessage("プランを選択"),
         "servant": MessageLookupByLibrary.simpleMessage("サーヴァント"),
+        "servant_coin": MessageLookupByLibrary.simpleMessage("サーヴァントコイン"),
         "servant_title": MessageLookupByLibrary.simpleMessage("サーヴァント"),
         "server": MessageLookupByLibrary.simpleMessage("サーバー"),
         "server_cn": MessageLookupByLibrary.simpleMessage("中国"),

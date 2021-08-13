@@ -183,8 +183,9 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           title: skill.localizedName,
           start: curVal.appendSkills[index],
           end: targetVal.appendSkills[index],
-          minVal: 1,
+          minVal: 0,
           maxVal: 10,
+          // labelFormatter: (v) => v == 0 ? '0' : v.toString(),
           onValueChanged: (_start, _end) {
             status.favorite = true;
             curVal.appendSkills[index] = _start;
@@ -192,7 +193,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             updateState();
           },
           detailPageBuilder: (context) => LevelingCostPage(
-            costList: svt.itemCost.appendSkill,
+            costList: svt.itemCost.appendSkillWithCoin,
             title:
                 '${S.current.append_skill} ${index + 1} - ${skill.localizedName}',
             curLv: curVal.appendSkills[index],
@@ -201,7 +202,11 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         ));
       }
       children.add(TileGroup(
-          header: S.current.append_skill, children: appendSkillWidgets));
+        header: S.current.append_skill,
+        footer:
+            '${S.current.servant_coin}(${LocalizedText.of(chs: '召唤', jpn: 'ガチャ', eng: 'Summon')}): ${svt.coinSummonNum}',
+        children: appendSkillWidgets,
+      ));
 
       // Extra part: np/grail/fou-kun
       children.add(TileGroup(

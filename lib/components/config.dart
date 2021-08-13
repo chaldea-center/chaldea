@@ -326,9 +326,11 @@ class Database {
           ),
         );
       } else {
+        final originName = gameData.icons[iconName] ?? iconName;
         image = CachedImage(
-          imageUrl: iconName,
-          cacheDir: db.paths.gameIconDir,
+          imageUrl: originName,
+          cacheDir: paths.gameIconDir,
+          cacheName: iconName,
           width: width,
           height: height,
           aspectRatio: aspectRatio,

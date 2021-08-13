@@ -277,4 +277,17 @@ final _enemy = LocalizedGroup([
   LocalizedText(chs: '女佣娃娃', jpn: '', eng: 'Helper Doll'),
   LocalizedText(chs: '土蜘蛛', jpn: '', eng: 'Tsuchigumo'),
   LocalizedText(chs: '大土蜘蛛·玖贺耳之御笠', jpn: '', eng: 'Great Tsuchigumo'),
+  // 2.6
+  LocalizedText(chs: '死神', jpn: '', eng: 'Mors'),
+  LocalizedText(chs: '大型死神', jpn: '', eng: 'Large Mors'),
+  LocalizedText(chs: '森の獣', jpn: '森の獣', eng: 'Forest Beast'),
+  LocalizedText(chs: '牙之氏族', jpn: '', eng: 'Fang Clan'),
+  LocalizedText(chs: 'ウィル·オー·ウィスプ', jpn: 'ウィル·オー·ウィスプ', eng: "Will O' Wisp"),
+  // LocalizedText(chs: '', jpn: 'よどみ', eng: ''),
+  LocalizedText(chs: '黑犬', jpn: '', eng: 'Black Dog'),
+  LocalizedText(chs: '摩根士兵', jpn: '', eng: "Queen's Soldier"),
+  LocalizedText(chs: '死神人类', jpn: '', eng: 'Human-Mors'),
+  LocalizedText(chs: '王之氏族', jpn: '', eng: 'Royal Clan'),
+  LocalizedText(chs: '王之氏族·小兵', jpn: '', eng: 'Royal Clan・Veteran'),
+  LocalizedText(chs: '王之氏族·士官', jpn: '', eng: 'Royal Clan・Cygan'),
 ]);

@@ -3,6 +3,10 @@ part of datatypes;
 
 @JsonSerializable(checked: true)
 class UserData {
+  static const int modelVersion = 2;
+
+  final int version;
+
   // app settings
   AppSetting appSetting;
   CarouselSetting carouselSetting;
@@ -21,6 +25,7 @@ class UserData {
   List<int> itemAbundantValue;
 
   UserData({
+    int? version,
     AppSetting? appSetting,
     CarouselSetting? carouselSetting,
     Map<String, bool>? galleries,
@@ -30,7 +35,8 @@ class UserData {
     CraftFilterData? craftFilter,
     CmdCodeFilterData? cmdCodeFilter,
     List<int>? itemAbundantValue,
-  })  : appSetting = appSetting ?? AppSetting(),
+  })  : version = modelVersion,
+        appSetting = appSetting ?? AppSetting(),
         carouselSetting = carouselSetting ?? CarouselSetting(),
         galleries = galleries ?? {},
         _curUserKey = curUserKey ?? 'default',
@@ -78,11 +84,11 @@ class UserData {
   void validate() {
     if (db.gameData.servants.isNotEmpty) {
       curUser.servants.removeWhere((key, value) =>
-          db.gameData.unavailableSvts.contains(key) ||
+      db.gameData.unavailableSvts.contains(key) ||
           db.gameData.servantsWithUser[key] == null);
       curUser.servantPlans.forEach((plans) {
         plans.removeWhere((key, value) =>
-            db.gameData.unavailableSvts.contains(key) ||
+        db.gameData.unavailableSvts.contains(key) ||
             db.gameData.servantsWithUser[key] == null);
       });
       curUser.crafts
@@ -102,8 +108,26 @@ class UserData {
     }
   }
 
-  factory UserData.fromJson(Map<String, dynamic> data) =>
-      _$UserDataFromJson(data);
+  factory UserData.fromJson(Map<String, dynamic> data) {
+    final userData = _$UserDataFromJson(data);
+    if (data['version'] == null || data['version'] == 1 || true) {
+      // 2021/08/03 support append skill unlock
+      logger.d('appendSkill: convert v1 to v2');
+      for (final user in userData.users.values) {
+        for (final status in user.servants.values) {
+          status.curVal.appendSkills =
+              status.curVal.appendSkills.map((e) => e == 1 ? 0 : e).toList();
+        }
+        for (final svtPlans in user.servantPlans) {
+          for (final plan in svtPlans.values) {
+            plan.appendSkills =
+                plan.appendSkills.map((e) => e == 1 ? 0 : e).toList();
+          }
+        }
+      }
+    }
+    return userData;
+  }
 
   Map<String, dynamic> toJson() => _$UserDataToJson(this);
 }

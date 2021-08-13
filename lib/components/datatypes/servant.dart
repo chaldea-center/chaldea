@@ -26,6 +26,7 @@ class Servant with GameCardMixin {
   List<Skill> passiveSkills;
   List<Skill> passiveSkillsEn;
   List<Skill> appendSkills;
+  int coinSummonNum;
   ItemCost itemCost;
   List<int> costumeNos;
   List<int> bondPoints;
@@ -85,6 +86,7 @@ class Servant with GameCardMixin {
     required this.passiveSkills,
     required this.passiveSkillsEn,
     required this.appendSkills,
+    required this.coinSummonNum,
     required this.itemCost,
     required this.costumeNos,
     required this.bondPoints,
@@ -202,16 +204,16 @@ class Servant with GameCardMixin {
   Map<String, int> getAppendSkillCost({List<int>? cur, List<int>? target}) {
     if (itemCost.appendSkill.isEmpty || itemCost.appendSkill.first.isEmpty)
       return {};
-    cur ??= [1, 1, 1];
+    cur ??= [0, 0, 0];
     target ??= [10, 10, 10];
     Map<String, int> items = {};
 
     for (int i = 0; i < 3; i++) {
-      cur[i] = fixValidRange(cur[i], 1, 10);
-      target[i] = fixValidRange(target[i], 1, 10);
+      cur[i] = fixValidRange(cur[i], 0, 10);
+      target[i] = fixValidRange(target[i], 0, 10);
       // lv 1-10 -> 0-9
-      for (int j = cur[i] - 1; j < target[i] - 1; j++) {
-        sumDict([items, itemCost.appendSkill[j]], inPlace: true);
+      for (int j = cur[i]; j < target[i]; j++) {
+        sumDict([items, itemCost.appendSkillWithCoin[j]], inPlace: true);
       }
     }
     return items;

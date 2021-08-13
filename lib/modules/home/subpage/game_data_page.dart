@@ -103,8 +103,7 @@ class _GameDataPageState extends State<GameDataPage> {
                 onTap: downloadGamedata,
               ),
               ListTile(
-                title:
-                    Text('${S.of(context).import_data} (dataset*.zip/.json)'),
+                title: Text('${S.of(context).import_data} (dataset*.zip)'),
                 onTap: importGamedata,
               ),
               ListTile(

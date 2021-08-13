@@ -212,6 +212,26 @@ class Localized {
             jpn: 'Lostbelt No.6 妖精円卓領域 アヴァロン･ル･フェ 星の生まれる刻',
             eng:
                 "Lostbelt No.6: Fairy Realm of the Round Table, Avalon le Fae, The Moment a Star is Born"),
+        LocalizedText(
+            chs: 'Lostbelt No.6 妖精圆桌领域 阿瓦隆·勒·菲(前篇)',
+            jpn: 'Lostbelt No.6 妖精円卓領域 アヴァロン･ル･フェ(前編)',
+            eng:
+                "Lostbelt No.6: Fairy Realm of the Round Table, Avalon le Fae, The Moment a Star is Born, Part I"),
+        LocalizedText(
+            chs: 'Lostbelt No.6 妖精圆桌领域 阿瓦隆·勒·菲(后篇)',
+            jpn: 'Lostbelt No.6 妖精円卓領域 アヴァロン･ル･フェ(後編)',
+            eng:
+                "Lostbelt No.6: Fairy Realm of the Round Table, Avalon le Fae, The Moment a Star is Born, Part II"),
+        LocalizedText(
+            chs: 'Lostbelt No.6 妖精圆桌领域 阿瓦隆·勒·菲 星辰诞生之刻(前篇)',
+            jpn: 'Lostbelt No.6 妖精円卓領域 アヴァロン･ル･フェ 星の生まれる刻(前編)',
+            eng:
+                "Lostbelt No.6: Fairy Realm of the Round Table, Avalon le Fae, The Moment a Star is Born, Part I"),
+        LocalizedText(
+            chs: 'Lostbelt No.6 妖精圆桌领域 阿瓦隆·勒·菲 星辰诞生之刻(后篇)',
+            jpn: 'Lostbelt No.6 妖精円卓領域 アヴァロン･ル･フェ 星の生まれる刻(後編)',
+            eng:
+                "Lostbelt No.6: Fairy Realm of the Round Table, Avalon le Fae, The Moment a Star is Born, Part II"),
       ]);
 
   // temp

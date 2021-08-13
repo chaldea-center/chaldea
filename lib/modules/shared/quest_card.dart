@@ -211,7 +211,7 @@ class _QuestCardState extends State<QuestCard> {
     '月': 'MoonCancer',
     '他': 'Alterego',
     '降': 'Foreigner',
-    // '月外分盾'
+    // '月外分盾伪'
   };
 
   Widget _getClassIcon(String? clsName) {

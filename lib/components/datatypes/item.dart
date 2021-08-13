@@ -189,6 +189,7 @@ class Items {
   static const String fou3Atk = '太阳之芙芙';
   static const String fou4Hp = '流星之芙芙';
   static const String fou4Atk = '日轮之芙芙';
+  static const String servantCoin = '从者硬币';
 
   /// items for servant planning but not for ascension and skill
   static const List<String> extraPlanningItems = [

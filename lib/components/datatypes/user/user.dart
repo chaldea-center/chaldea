@@ -304,7 +304,7 @@ class ServantPlan {
         dress = List.generate(
             dress?.length ?? 0, (index) => dress?.getOrNull(index) ?? 0),
         appendSkills =
-            List.generate(3, (index) => appendSkills?.getOrNull(index) ?? 1),
+            List.generate(3, (index) => appendSkills?.getOrNull(index) ?? 0),
         grail = grail ?? 0,
         fouHp = fouHp ?? 0,
         fouAtk = fouAtk ?? 0,
@@ -323,7 +323,7 @@ class ServantPlan {
     ascension = 0;
     skills.fillRange(0, 3, 1);
     dress.fillRange(0, dress.length, 0);
-    appendSkills.fillRange(0, 3, 1);
+    appendSkills.fillRange(0, 3, 0);
     grail = 0;
     fouHp = fouAtk = 0;
     bondLimit = 5;
@@ -334,7 +334,7 @@ class ServantPlan {
         ascension == 0 &&
         skills.every((e) => e == 1) &&
         dress.every((e) => e == 0) &&
-        appendSkills.every((e) => e == 1) &&
+        appendSkills.every((e) => e == 0) &&
         grail == 0 &&
         fouHp == 0 &&
         fouAtk == 0 &&
@@ -364,7 +364,7 @@ class ServantPlan {
     }
     for (int i = 0; i < appendSkills.length; i++) {
       appendSkills[i] =
-          fixValidRange(appendSkills[i], lowerPlan?.appendSkills[i] ?? 1, 10);
+          fixValidRange(appendSkills[i], lowerPlan?.appendSkills[i] ?? 0, 10);
     }
     for (int i = 0; i < dress.length; i++) {
       dress[i] = fixValidRange(dress[i], lowerPlan?.dress.getOrNull(i) ?? 0, 1);
@@ -409,9 +409,9 @@ class ServantPlan {
   void copyFrom(ServantPlan other) {
     favorite = other.favorite;
     ascension = other.ascension;
-    skills = List.from(other.skills);
-    dress = List.from(other.dress);
-    appendSkills = List.from(other.appendSkills);
+    skills = List.of(other.skills);
+    dress = List.of(other.dress);
+    appendSkills = List.of(other.appendSkills);
     grail = other.grail;
     fouHp = other.fouHp;
     fouAtk = other.fouAtk;

@@ -545,6 +545,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Select copy source"),
         "select_plan": MessageLookupByLibrary.simpleMessage("Select Plan"),
         "servant": MessageLookupByLibrary.simpleMessage("Servant"),
+        "servant_coin": MessageLookupByLibrary.simpleMessage("Servant Coin"),
         "servant_title": MessageLookupByLibrary.simpleMessage("Servant"),
         "server": MessageLookupByLibrary.simpleMessage("Server"),
         "server_cn":

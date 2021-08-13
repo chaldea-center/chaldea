@@ -4135,6 +4135,16 @@ class S {
       args: [],
     );
   }
+
+  /// `从者硬币`
+  String get servant_coin {
+    return Intl.message(
+      '从者硬币',
+      name: 'servant_coin',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
