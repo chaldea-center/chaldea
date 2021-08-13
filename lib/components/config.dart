@@ -181,6 +181,7 @@ class Database {
     extractDir ??= paths.gameDir;
     final bytes =
         (await rootBundle.load(assetKey)).buffer.asUint8List().cast<int>();
+    print('bytes: ${bytes.length}');
     await extractZip(bytes: bytes, savePath: extractDir);
   }
 
@@ -436,9 +437,11 @@ class Database {
       throw ArgumentError('You can/must only pass one parameter of bytes,fp');
     }
     if (fp != null) bytes = await File(fp).readAsBytes();
-    final message = {'bytes': bytes, 'savePath': savePath};
+    final message = {'bytes': List.of(bytes!), 'savePath': savePath};
     if (onError == null) {
-      await compute(_extractZipIsolate, message);
+      await compute(_extractZipIsolate, message).catchError((e, s) {
+        logger.e('extract zip failed', e, s);
+      });
     } else {
       await compute(_extractZipIsolate, message).catchError(onError);
     }
@@ -447,9 +450,8 @@ class Database {
 
   static Future<void> _extractZipIsolate(Map<String, dynamic> message) async {
     String savePath = message['savePath']!;
-    List<int> bytes = message['bytes']!;
-
-    Archive archive = ZipDecoder().decodeBytes(bytes);
+    List<int> bytes = List.of(message['bytes']!);
+    Archive archive = ZipDecoder().decodeBytes(List.of(bytes));
     print('──────────────── Extract zip file ────────────────────────────────');
     print('extract zip file, directory tree "$savePath":');
     // if (archive.findFile(kGameDataFilename) == null) {
