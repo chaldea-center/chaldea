@@ -48,6 +48,10 @@ class Localized {
         LocalizedText(chs: '强化任务', jpn: '強化クエスト', eng: 'Strengthening'),
         LocalizedText(chs: '强化关卡', jpn: '強化クエスト', eng: 'Strengthening'),
         LocalizedText(
+            chs: '迦勒底之门/每日任务',
+            jpn: 'カルデアゲート/曜日クエスト',
+            eng: 'Chaldea Gate/Daily Quests'),
+        LocalizedText(
             chs: '特异点F 燃烧污染都市 冬木',
             jpn: '特異点F 炎上汚染都市 冬木',
             eng: 'Prologue: Fuyuki'),
