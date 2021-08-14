@@ -479,6 +479,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "obtain_methods": MessageLookupByLibrary.simpleMessage("Obtains"),
         "ok": MessageLookupByLibrary.simpleMessage("OK"),
         "open": MessageLookupByLibrary.simpleMessage("Open"),
+        "open_condition": MessageLookupByLibrary.simpleMessage("Condition"),
         "overwrite": MessageLookupByLibrary.simpleMessage("Override"),
         "passive_skill": MessageLookupByLibrary.simpleMessage("Passive Skill"),
         "patch_gamedata":

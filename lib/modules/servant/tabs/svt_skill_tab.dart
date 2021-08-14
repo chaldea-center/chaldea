@@ -1,5 +1,6 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/localized/localized_base.dart';
+import 'package:chaldea/modules/shared/filter_page.dart';
 
 import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
@@ -57,32 +58,66 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
     Skill skill = activeSkill.ofIndex(_state);
     String name = '${skill.name} ${skill.rank}';
     String nameJp = '${skill.nameJp} ${skill.rank}';
-    return TileGroup(
-      children: <Widget>[
-        CustomTile(
-            contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
-            leading: db.getIconImage(skill.icon, width: 33),
-            title: Text(Language.isJP ? nameJp : name),
-            subtitle: Language.isCN ? Text(nameJp) : null,
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                for (int i = 1; i < activeSkill.skills.length; i++)
-                  GestureDetector(
-                    onTap: () {
-                      status.skillIndex[index] =
-                          status.skillIndex[index] == i ? i - 1 : i;
-                      ((widget.parent ?? this) as State).setState(() {});
-                    },
-                    child: db.getIconImage(
-                      _state >= i ? '技能强化' : '技能未强化',
-                      width: 22,
-                    ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (activeSkill.skills.length > 1)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Expanded(
+                child: FilterGroup(
+                  useRadio: true,
+                  shrinkWrap: true,
+                  combined: true,
+                  options: List.generate(
+                      activeSkill.skills.length, (index) => index.toString()),
+                  optionBuilder: (v) => Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                    child: Text(activeSkill.skills[int.parse(v)].state2),
                   ),
-                Text('   CD: ${skill.cd}→${skill.cd - 2}')
-              ],
-            )),
-        for (Effect effect in skill.effects) ...buildEffect(effect)
+                  values: FilterGroupData(options: {_state.toString(): true}),
+                  onFilterChanged: (v) {
+                    status.skillIndex[index] = int.parse(
+                        v.options.keys.firstWhere((e) => v.options[e] == true));
+                    ((widget.parent ?? this) as State).setState(() {});
+                  },
+                ),
+              ),
+              if (skill.openCondition?.isNotEmpty == true)
+                IconButton(
+                  padding: EdgeInsets.all(2),
+                  constraints: const BoxConstraints(
+                    minWidth: 48,
+                    minHeight: 24,
+                  ),
+                  onPressed: () {
+                    SimpleCancelOkDialog(
+                      title: Text(skill.localizedName),
+                      content: Text(
+                        skill.openCondition!,
+                        style: Theme.of(context).textTheme.caption,
+                      ),
+                    ).showDialog(context);
+                  },
+                  icon: Icon(Icons.info_outline),
+                  color: Theme.of(context).hintColor,
+                  tooltip: S.current.open_condition,
+                ),
+            ],
+          ),
+        TileGroup(
+          children: <Widget>[
+            CustomTile(
+                contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
+                leading: db.getIconImage(skill.icon, width: 33),
+                title: Text(Language.isJP ? nameJp : name),
+                subtitle: Language.isCN ? Text(nameJp) : null,
+                trailing: Text('   CD: ${skill.cd}→${skill.cd - 2}')),
+            for (Effect effect in skill.effects) ...buildEffect(effect)
+          ],
+        ),
       ],
     );
   }

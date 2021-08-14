@@ -38,7 +38,7 @@ class _SvtNoblePhantasmTabState extends SvtTabBaseState<SvtNoblePhantasmTab> {
       children: <Widget>[
         TileGroup(
           children: <Widget>[
-            buildToggle(status.npIndex),
+            buildToggle(status.npIndex, td),
             buildHeader(td),
             for (Effect e in td.effects) ...buildEffect(e)
           ],
@@ -49,42 +49,70 @@ class _SvtNoblePhantasmTabState extends SvtTabBaseState<SvtNoblePhantasmTab> {
 
   FilterGroupData _toggleData = FilterGroupData(options: {'0': true});
 
-  Widget buildToggle(int selected) {
+  Widget buildToggle(int selected, NoblePhantasm td) {
     if (noblePhantasms.length <= 1) {
       return Container();
     }
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.only(top: 8, bottom: 4),
-        child: FilterGroup(
-          options:
-              List.generate(noblePhantasms.length, (index) => index.toString()),
-          values: _toggleData,
-          optionBuilder: (s) {
-            String state = noblePhantasms[int.parse(s)].state ?? 'NP';
-            Widget button;
-            if (state.contains('强化前') || state.contains('强化后')) {
-              final iconKey = state.contains('强化前') ? '宝具未强化' : '宝具强化';
-              button = Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  db.getIconImage(iconKey, height: 22),
-                  Text(state)
-                ],
-              );
-            } else {
-              button = Text(state);
-            }
-            return button;
-          },
-          combined: true,
-          useRadio: true,
-          onFilterChanged: (v) {
-            setState(() {
-              status.npIndex = int.parse(v.options.keys.first);
-            });
-          },
-        ),
+    final filter = FilterGroup(
+      options:
+          List.generate(noblePhantasms.length, (index) => index.toString()),
+      values: _toggleData,
+      optionBuilder: (s) {
+        String state = noblePhantasms[int.parse(s)].state ?? 'NP';
+        Widget button;
+        if (state.contains('强化前') || state.contains('强化后')) {
+          final iconKey = state.contains('强化前') ? '宝具未强化' : '宝具强化';
+          button = Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              db.getIconImage(iconKey, height: 22),
+              Text(state)
+            ],
+          );
+        } else {
+          button = Text(state);
+        }
+        return button;
+      },
+      combined: true,
+      useRadio: true,
+      onFilterChanged: (v) {
+        setState(() {
+          status.npIndex = int.parse(v.options.keys.first);
+        });
+      },
+    );
+    return Padding(
+      padding: EdgeInsets.only(top: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          if (td.openCondition?.isNotEmpty == true) SizedBox(width: 48),
+          Expanded(child: Center(child: filter)),
+          if (td.openCondition?.isNotEmpty == true)
+            SizedBox(
+              width: 48,
+              child: IconButton(
+                padding: EdgeInsets.all(2),
+                constraints: const BoxConstraints(
+                  minWidth: 48,
+                  minHeight: 24,
+                ),
+                onPressed: () {
+                  SimpleCancelOkDialog(
+                    title: Text(td.lName),
+                    content: Text(
+                      td.openCondition!,
+                      style: Theme.of(context).textTheme.caption,
+                    ),
+                  ).showDialog(context);
+                },
+                icon: Icon(Icons.info_outline),
+                color: Theme.of(context).hintColor,
+                tooltip: S.current.open_condition,
+              ),
+            )
+        ],
       ),
     );
   }

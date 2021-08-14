@@ -1258,6 +1258,8 @@ NoblePhantasm _$NoblePhantasmFromJson(Map<String, dynamic> json) {
   return $checkedNew('NoblePhantasm', json, () {
     final val = NoblePhantasm(
       state: $checkedConvert(json, 'state', (v) => v as String?),
+      openCondition:
+          $checkedConvert(json, 'openCondition', (v) => v as String?),
       name: $checkedConvert(json, 'name', (v) => v as String),
       nameJp: $checkedConvert(json, 'nameJp', (v) => v as String?),
       upperName: $checkedConvert(json, 'upperName', (v) => v as String),
@@ -1280,6 +1282,7 @@ NoblePhantasm _$NoblePhantasmFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$NoblePhantasmToJson(NoblePhantasm instance) =>
     <String, dynamic>{
       'state': instance.state,
+      'openCondition': instance.openCondition,
       'name': instance.name,
       'nameJp': instance.nameJp,
       'upperName': instance.upperName,
@@ -1316,6 +1319,8 @@ Skill _$SkillFromJson(Map<String, dynamic> json) {
   return $checkedNew('Skill', json, () {
     final val = Skill(
       state: $checkedConvert(json, 'state', (v) => v as String),
+      openCondition:
+          $checkedConvert(json, 'openCondition', (v) => v as String?),
       name: $checkedConvert(json, 'name', (v) => v as String),
       nameJp: $checkedConvert(json, 'nameJp', (v) => v as String?),
       nameEn: $checkedConvert(json, 'nameEn', (v) => v as String?),
@@ -1333,8 +1338,10 @@ Skill _$SkillFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$SkillToJson(Skill instance) => <String, dynamic>{
+Map<String, dynamic> _$SkillToJson(Skill instance) =>
+    <String, dynamic>{
       'state': instance.state,
+      'openCondition': instance.openCondition,
       'name': instance.name,
       'nameJp': instance.nameJp,
       'nameEn': instance.nameEn,

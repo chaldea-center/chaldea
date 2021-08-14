@@ -411,5 +411,6 @@
   "hide_outdated": "期限切れの非表示",
   "import_screenshot": "スクリーンショットをインポート",
   "preview": "プレビュー",
-  "servant_coin": "サーヴァントコイン"
+  "servant_coin": "サーヴァントコイン",
+  "open_condition": "開放条件"
 }

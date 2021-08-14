@@ -465,6 +465,7 @@ class ServantBaseInfo {
 @JsonSerializable(checked: true)
 class NoblePhantasm {
   String? state;
+  String? openCondition;
   String name;
   String? nameJp;
   String upperName;
@@ -477,6 +478,7 @@ class NoblePhantasm {
 
   NoblePhantasm({
     required this.state,
+    required this.openCondition,
     required this.name,
     required this.nameJp,
     required this.upperName,
@@ -487,6 +489,8 @@ class NoblePhantasm {
     required this.typeText,
     required this.effects,
   });
+
+  String get lName => localizeNoun(name, nameJp, null);
 
   factory NoblePhantasm.fromJson(Map<String, dynamic> data) =>
       _$NoblePhantasmFromJson(data);
@@ -520,6 +524,7 @@ class ActiveSkill {
 @JsonSerializable(checked: true)
 class Skill {
   String state;
+  String? openCondition;
   String name;
   String? nameJp;
   String? nameEn;
@@ -530,6 +535,7 @@ class Skill {
 
   Skill({
     required this.state,
+    required this.openCondition,
     required this.name,
     required this.nameJp,
     required this.nameEn,
@@ -540,6 +546,11 @@ class Skill {
   });
 
   String get localizedName => localizeNoun(name, nameJp, nameEn);
+
+  String get state2 {
+    if (state.trim().isNotEmpty) return state;
+    return 'Rank $rank';
+  }
 
   factory Skill.fromJson(Map<String, dynamic> data) => _$SkillFromJson(data);
 

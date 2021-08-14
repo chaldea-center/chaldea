@@ -4145,6 +4145,16 @@ class S {
       args: [],
     );
   }
+
+  /// `开发条件`
+  String get open_condition {
+    return Intl.message(
+      '开发条件',
+      name: 'open_condition',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
