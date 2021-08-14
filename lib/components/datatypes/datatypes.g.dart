@@ -2073,9 +2073,19 @@ EventPlans _$EventPlansFromJson(Map<String, dynamic> json) {
                     k, LimitEventPlan.fromJson(e as Map<String, dynamic>)),
               )),
       mainRecords: $checkedConvert(
-          json, 'mainRecords', (v) => v as Map<String, dynamic>?),
+          json,
+          'mainRecords',
+          (v) => (v as Map<String, dynamic>?)?.map(
+                (k, e) => MapEntry(
+                    k, MainRecordPlan.fromJson(e as Map<String, dynamic>)),
+              )),
       exchangeTickets: $checkedConvert(
-          json, 'exchangeTickets', (v) => v as Map<String, dynamic>?),
+          json,
+          'exchangeTickets',
+          (v) => (v as Map<String, dynamic>?)?.map(
+                (k, e) => MapEntry(
+                    k, ExchangeTicketPlan.fromJson(e as Map<String, dynamic>)),
+              )),
       campaigns: $checkedConvert(
           json,
           'campaigns',
@@ -2100,7 +2110,6 @@ LimitEventPlan _$LimitEventPlanFromJson(Map<String, dynamic> json) {
   return $checkedNew('LimitEventPlan', json, () {
     final val = LimitEventPlan(
       enabled: $checkedConvert(json, 'enabled', (v) => v as bool?),
-      enable: $checkedConvert(json, 'enable', (v) => v as bool?),
       rerun: $checkedConvert(json, 'rerun', (v) => v as bool?),
       lottery: $checkedConvert(json, 'lottery', (v) => v as int?),
       extra: $checkedConvert(
@@ -2116,7 +2125,6 @@ LimitEventPlan _$LimitEventPlanFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$LimitEventPlanToJson(LimitEventPlan instance) =>
     <String, dynamic>{
-      'enable': instance.enable,
       'enabled': instance.enabled,
       'rerun': instance.rerun,
       'lottery': instance.lottery,
@@ -2160,7 +2168,6 @@ Map<String, dynamic> _$ExchangeTicketPlanToJson(ExchangeTicketPlan instance) =>
 CampaignPlan _$CampaignPlanFromJson(Map<String, dynamic> json) {
   return $checkedNew('CampaignPlan', json, () {
     final val = CampaignPlan(
-      enable: $checkedConvert(json, 'enable', (v) => v as bool?),
       enabled: $checkedConvert(json, 'enabled', (v) => v as bool?),
       rerun: $checkedConvert(json, 'rerun', (v) => v as bool?),
     );
@@ -2170,7 +2177,6 @@ CampaignPlan _$CampaignPlanFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$CampaignPlanToJson(CampaignPlan instance) =>
     <String, dynamic>{
-      'enable': instance.enable,
       'enabled': instance.enabled,
       'rerun': instance.rerun,
     };

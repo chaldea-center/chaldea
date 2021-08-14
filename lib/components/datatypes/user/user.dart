@@ -434,51 +434,14 @@ class EventPlans {
 
   EventPlans({
     Map<String, LimitEventPlan>? limitEvents,
-    Map<String, dynamic>? mainRecords,
-    Map<String, dynamic>? exchangeTickets,
+    Map<String, MainRecordPlan>? mainRecords,
+    Map<String, ExchangeTicketPlan>? exchangeTickets,
     Map<String, CampaignPlan>? campaigns,
-  })  : limitEvents = limitEvents ?? {},
-        mainRecords = _backwardMainRecordPlans(mainRecords),
-        exchangeTickets = _backwardTicketPlans(exchangeTickets),
+  })
+      : limitEvents = limitEvents ?? {},
+        mainRecords = mainRecords ?? {},
+        exchangeTickets = exchangeTickets ?? {},
         campaigns = campaigns ?? {};
-
-  @Deprecated('To be removed in v1.6.0')
-  static Map<String, MainRecordPlan> _backwardMainRecordPlans(
-      Map<String, dynamic>? mainRecords) {
-    if (mainRecords == null || mainRecords.isEmpty) return {};
-    if (mainRecords.values.first is Map) {
-      return mainRecords
-          .map((key, value) => MapEntry(key, MainRecordPlan.fromJson(value)));
-    } else if (mainRecords.values.first is List) {
-      return mainRecords.map((key, value) => MapEntry(
-          key,
-          MainRecordPlan(
-              drop: (value as List).getOrNull(0), reward: value.getOrNull(1))));
-    } else {
-      return {};
-    }
-  }
-
-  @Deprecated('To be removed in v1.6.0')
-  static Map<String, ExchangeTicketPlan> _backwardTicketPlans(
-      Map<String, dynamic>? tickets) {
-    if (tickets == null || tickets.isEmpty) return {};
-    if (tickets.values.first is Map) {
-      return tickets.map(
-          (key, value) => MapEntry(key, ExchangeTicketPlan.fromJson(value)));
-    } else if (tickets.values.first is List) {
-      return tickets.map((key, value) => MapEntry(
-            key,
-            ExchangeTicketPlan(
-              item1: (value as List).getOrNull(0),
-              item2: value.getOrNull(1),
-              item3: value.getOrNull(2),
-            ),
-          ));
-    } else {
-      return {};
-    }
-  }
 
   LimitEventPlan limitEventOf(String indexKey) =>
       limitEvents.putIfAbsent(indexKey, () => LimitEventPlan());
@@ -499,9 +462,9 @@ class EventPlans {
     return _$EventPlansToJson(EventPlans(
       limitEvents: Map.of(this.limitEvents)
         ..removeWhere((key, value) => value.isEmpty),
-      mainRecords: Map<String, MainRecordPlan>.of(this.mainRecords)
+      mainRecords: Map.of(this.mainRecords)
         ..removeWhere((key, value) => !value.enabled),
-      exchangeTickets: Map<String, ExchangeTicketPlan>.of(this.exchangeTickets)
+      exchangeTickets: Map.of(this.exchangeTickets)
         ..removeWhere((key, value) => !value.enabled),
       campaigns: Map.of(this.campaigns)
         ..removeWhere((key, value) => !value.enabled),
@@ -511,8 +474,6 @@ class EventPlans {
 
 @JsonSerializable(checked: true)
 class LimitEventPlan {
-  @Deprecated('To be removed in v1.6.0')
-  bool get enable => enabled;
   bool enabled;
   bool rerun;
   int lottery;
@@ -520,11 +481,10 @@ class LimitEventPlan {
 
   LimitEventPlan({
     bool? enabled,
-    bool? enable,
     bool? rerun,
     int? lottery,
     Map<String, int>? extra,
-  })  : enabled = enabled ?? enable ?? false,
+  })  : enabled = enabled ?? false,
         rerun = rerun ?? true,
         lottery = lottery ?? 0,
         extra = extra ?? {};
@@ -597,20 +557,17 @@ class ExchangeTicketPlan {
 
 @JsonSerializable(checked: true)
 class CampaignPlan {
-  @Deprecated('To be removed in v1.6.0')
-  bool get enable => enabled;
   bool enabled;
   bool rerun;
 
   CampaignPlan({
-    bool? enable,
     bool? enabled,
     bool? rerun,
-  })  : enabled = enabled ?? enable ?? false,
+  })  : enabled = enabled ?? false,
         rerun = rerun ?? true;
 
   factory CampaignPlan.fromJson(Map<String, dynamic> data) =>
       _$CampaignPlanFromJson(data);
 
-  Map<String, dynamic> toJson() => _$CampaignPlanToJson(this)..remove('enable');
+  Map<String, dynamic> toJson() => _$CampaignPlanToJson(this);
 }
