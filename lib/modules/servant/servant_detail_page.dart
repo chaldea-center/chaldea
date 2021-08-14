@@ -330,10 +330,11 @@ class ServantDetailPageState extends State<ServantDetailPage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('No.${svt.no}  ${svt.info.className}'),
-          Text(
-            'ATK ${svt.info.atkMax}  HP ${svt.info.hpMax}',
-            style: Theme.of(context).textTheme.caption,
-          ),
+          if (!db.gameData.unavailableSvts.contains(svt.no))
+            Text(
+              'ATK ${svt.info.atkMax}  HP ${svt.info.hpMax}',
+              style: Theme.of(context).textTheme.caption,
+            ),
           const SizedBox(height: 4),
         ],
       ),

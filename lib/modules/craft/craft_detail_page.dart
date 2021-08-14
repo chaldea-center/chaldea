@@ -296,7 +296,7 @@ class CraftDetailBasePage extends StatelessWidget {
                 children: [
                   for (var summon in summons)
                     ListTile(
-                      title: Text(summon.localizedName, maxLines: 1),
+                      title: Text(summon.lName, maxLines: 1),
                       dense: true,
                       visualDensity: VisualDensity.compact,
                       onTap: () {

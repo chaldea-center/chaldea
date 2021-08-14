@@ -39,7 +39,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
       appBar: AppBar(
         leading: BackButton(),
         title: AutoSizeText(
-          summon.localizedName,
+          summon.lName,
           maxLines: 1,
           overflow: TextOverflow.fade,
         ),
@@ -105,13 +105,14 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           ),
         ),
       SHeader(LocalizedText.of(chs: '卡池详情', jpn: '詳細', eng: 'Information')),
-      ListTile(
-        title: AutoSizeText(
-          'JP: ${summon.startTimeJp ?? "?"} ~ ${summon.endTimeJp ?? "?"}\n'
-          'CN: ${summon.startTimeCn ?? "?"} ~ ${summon.endTimeCn ?? "?"}',
-          maxLines: 2,
+      if (!summon.isStory)
+        ListTile(
+          title: AutoSizeText(
+            'JP: ${summon.startTimeJp ?? "?"} ~ ${summon.endTimeJp ?? "?"}\n'
+            'CN: ${summon.startTimeCn ?? "?"} ~ ${summon.endTimeCn ?? "?"}',
+            maxLines: 2,
+          ),
         ),
-      ),
       if (summon.dataList.length > 1) dropdownButton,
       if (summon.dataList.isNotEmpty) gachaDetails,
       if (summon.dataList.isNotEmpty)
@@ -190,7 +191,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         color: _summon == null ? null : Theme.of(context).colorScheme.primary,
       ),
       dense: true,
-      title: Text(_summon?.localizedName ?? name),
+      title: Text(_summon?.lName ?? name),
       horizontalTitleGap: 0,
       onTap: _summon == null
           ? null
@@ -201,7 +202,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
   bool get showOverview {
     return summon.dataList.length > 1 &&
         !summon.classPickUp &&
-        summon.luckyBag == 0;
+        summon.isLimited;
   }
 
   Widget get dropdownButton {
@@ -258,29 +259,21 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     final data = summon.dataList[curIndex];
 
     List<Widget> children = [];
-    data.svts.forEach((block) {
-      if (!block.display && summon.luckyBag == 0 && !summon.classPickUp) return;
-      final row = Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('${block.rarity}☆  '),
-          Flexible(
-            child: Wrap(
-              spacing: 3,
-              runSpacing: 3,
-              children: block.ids.map((id) {
-                final svt = db.gameData.servants[id];
-                if (svt == null) return Text('No.$id');
-                return _svtAvatar(svt, block.weight / block.ids.length,
-                    block.ids.length == 1);
-              }).toList(),
-            ),
-          )
-        ],
-      );
+    [...data.svts, if (summon.isStory) ...data.crafts].forEach((block) {
+      if (!block.display && summon.isLimited && !summon.classPickUp) return;
       children.add(Padding(
         padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        child: row,
+        child: _cardGrid(
+          ids: block.ids,
+          header: '${block.rarity}☆',
+          childBuilder: (id) {
+            final card =
+                block.isSvt ? db.gameData.servants[id] : db.gameData.crafts[id];
+            if (card == null) return Text('No.$id');
+            return _svtAvatar(
+                card, block.weight / block.ids.length, block.ids.length == 1);
+          },
+        ),
       ));
     });
     return Column(
@@ -301,26 +294,17 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     List<Widget> children = [];
     for (int rarity in [5, 4, 3]) {
       if (svts[rarity]!.isEmpty) continue;
-      final row = Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('$rarity☆  '),
-          Flexible(
-            child: Wrap(
-              spacing: 3,
-              runSpacing: 3,
-              children: svts[rarity]!.map((id) {
-                final svt = db.gameData.servants[id];
-                if (svt == null) return Text('No.$id');
-                return _svtAvatar(svt, null, summon.hasSinglePickupSvt(id));
-              }).toList(),
-            ),
-          )
-        ],
-      );
       children.add(Padding(
         padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        child: row,
+        child: _cardGrid(
+          ids: svts[rarity]!,
+          header: '$rarity☆  ',
+          childBuilder: (id) {
+            final svt = db.gameData.servants[id];
+            if (svt == null) return Text('No.$id');
+            return _svtAvatar(svt, null, summon.hasSinglePickupSvt(id));
+          },
+        ),
       ));
     }
     return Column(
@@ -329,14 +313,43 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     );
   }
 
-  Widget _svtAvatar(Servant svt, double? weight, [bool star = false]) {
+  Widget _cardGrid({
+    required Iterable<int> ids,
+    required String header,
+    required Widget childBuilder(int id),
+  }) {
+    final grid = LayoutBuilder(
+      builder: (context, constraints) {
+        int count = max(constraints.maxWidth ~/ 72, 4);
+        double childWidth = constraints.maxWidth / count;
+        return GridView.count(
+          crossAxisCount: count,
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          childAspectRatio: childWidth / min(72, childWidth * 144 / 132),
+          children: ids.map((id) {
+            return childBuilder(id);
+          }).toList(),
+        );
+      },
+    );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(header),
+        grid,
+      ],
+    );
+  }
+
+  Widget _svtAvatar(GameCardMixin card, double? weight, [bool star = false]) {
     return Stack(
       alignment: Alignment.topRight,
       children: [
         Padding(
-          padding: EdgeInsets.only(top: 6, right: 6),
+          padding: EdgeInsets.only(top: 2, right: 2),
           child: buildSummonCard(
-              context: context, card: svt, weight: weight, showCategory: true),
+              context: context, card: card, weight: weight, showCategory: true),
         ),
         if (star) ...[
           Icon(Icons.star, color: Colors.yellow, size: 18),

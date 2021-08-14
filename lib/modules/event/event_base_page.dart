@@ -92,7 +92,7 @@ class EventBasePage {
                   size: 20,
                   color: Colors.blue,
                 ),
-                title: Text(e.localizedName, style: TextStyle(fontSize: 14)),
+                title: Text(e.lName, style: TextStyle(fontSize: 14)),
                 horizontalTitleGap: 0,
                 onTap: () {
                   SplitRoute.push(context, SummonDetailPage(summon: e));

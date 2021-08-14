@@ -29,7 +29,7 @@ class _SvtSummonTabState extends SvtTabBaseState<SvtSummonTab> {
   void initState() {
     super.initState();
     db.gameData.summons.forEach((key, summon) {
-      if (summon.luckyBag > 0) {
+      if (summon.isLuckyBag) {
         if (summon.allSvts(svt.info.rarity == 5).contains(svt.no)) {
           shownSummons.add(summon);
         }
@@ -71,7 +71,7 @@ class _SvtSummonTabState extends SvtTabBaseState<SvtSummonTab> {
             Icon(Icons.star, color: Colors.yellow[800], size: 18),
           Flexible(
             child: AutoSizeText(
-              summon.localizedName,
+              summon.lName,
               maxLines: 2,
               style: TextStyle(color: summon.isOutdated() ? Colors.grey : null),
               maxFontSize: 14,

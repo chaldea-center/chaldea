@@ -5,6 +5,7 @@ class Summon {
   String mcLink;
   String name;
   String? nameJp;
+  String? nameEn;
   String? startTimeJp;
   String? endTimeJp;
   String? startTimeCn;
@@ -14,13 +15,24 @@ class Summon {
   List<String> associatedEvents;
   List<String> associatedSummons;
 
-  /// 0-common summon, 1-SSR, 2-SSR+SR
-  int luckyBag;
+  /// 0-story, 1-limited summon, 2-SSR, 3-SSR+SR
+  @protected
+  int category;
   bool classPickUp;
   bool roll11;
   List<SummonData> dataList;
 
   String get indexKey => mcLink;
+
+  String get lName => localizeNoun(name, nameJp, nameEn);
+
+  bool get isStory => category == 0;
+
+  bool get isLimited => category == 1;
+
+  bool get isLuckyBag => category == 2 || category == 3;
+
+  bool get isLuckyBagWithSR => category == 3;
 
   List<int> allSvts([bool includeHidden = false]) {
     Set<int> all = {};
@@ -50,6 +62,7 @@ class Summon {
     required this.mcLink,
     required this.name,
     this.nameJp,
+    this.nameEn,
     this.startTimeJp,
     this.endTimeJp,
     this.startTimeCn,
@@ -58,13 +71,11 @@ class Summon {
     this.bannerUrlJp,
     required this.associatedEvents,
     required this.associatedSummons,
-    required this.luckyBag,
+    required this.category,
     required this.classPickUp,
     required this.roll11,
     required this.dataList,
   });
-
-  String get localizedName => localizeNoun(name, nameJp, null);
 
   bool isOutdated() {
     return checkEventOutdated(
@@ -104,7 +115,9 @@ class SummonData {
   List<SummonDataBlock> svts;
   List<SummonDataBlock> crafts;
 
-  List<SummonDataBlock> get allBlocks => []..addAll(svts)..addAll(crafts);
+  List<SummonDataBlock> get allBlocks => []
+    ..addAll(svts)
+    ..addAll(crafts);
 
   SummonData({
     required this.name,

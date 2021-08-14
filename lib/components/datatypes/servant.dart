@@ -115,7 +115,7 @@ class Servant with GameCardMixin {
     } else if (this.no == 1) {
       //玛修
       key = '普通金卡背';
-    } else if (this.stdClassName.startsWith('beast')) {
+    } else if (this.stdClassName.startsWith('Beast')) {
       key = '普通黑卡背';
     }
     return key;

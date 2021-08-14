@@ -25,6 +25,11 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
     if (reversed) {
       shownList = shownList.reversed.toList();
     }
+    shownList.sort((a, b) {
+      if (a.isStory && !b.isStory) return -1;
+      if (b.isStory && !a.isStory) return 1;
+      return 0;
+    });
     return scrollListener(
       useGrid: false,
       appBar: AppBar(
@@ -96,14 +101,14 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
           imageUrl: db.curUser.server == GameServer.cn
               ? summon.bannerUrl ?? summon.bannerUrlJp
               : summon.bannerUrlJp ?? summon.bannerUrl,
-          placeholder: (ctx, url) => Text(summon.localizedName),
+          placeholder: (ctx, url) => Text(summon.lName),
           cachedOption: CachedImageOption(
-              errorWidget: (ctx, url, error) => Text(summon.localizedName)),
+              errorWidget: (ctx, url, error) => Text(summon.lName)),
         ),
       );
     } else {
       title = AutoSizeText(
-        summon.localizedName,
+        summon.lName,
         maxLines: 2,
         maxFontSize: 14,
         style: TextStyle(color: summon.isOutdated() ? Colors.grey : null),
@@ -118,7 +123,7 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
       if (subtitleText == null) {
         subtitleText = 'JP ' + (summon.startTimeJp?.split(' ').first ?? '???');
       }
-      subtitle = Text(subtitleText);
+      if (!summon.isStory) subtitle = Text(subtitleText);
     }
     return ListTile(
       title: title,
@@ -163,7 +168,7 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
 
   @override
   String getSummary(Summon summon) {
-    return Utils.getSearchAlphabets(summon.name, summon.nameJp, null)
+    return Utils.getSearchAlphabets(summon.name, summon.nameJp, summon.nameEn)
         .join('\t');
   }
 
@@ -171,7 +176,7 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
   bool filter(Summon summon) {
     if (plans.contains(summon.indexKey)) return true;
     if (!favorite) {
-      return showOutdated || !summon.isOutdated();
+      return showOutdated || summon.isStory || !summon.isOutdated();
     } else {
       // won't reach here
       return false;

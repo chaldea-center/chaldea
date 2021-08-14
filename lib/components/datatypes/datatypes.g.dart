@@ -1338,8 +1338,7 @@ Skill _$SkillFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$SkillToJson(Skill instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$SkillToJson(Skill instance) => <String, dynamic>{
       'state': instance.state,
       'openCondition': instance.openCondition,
       'name': instance.name,
@@ -1494,6 +1493,7 @@ Summon _$SummonFromJson(Map<String, dynamic> json) {
       mcLink: $checkedConvert(json, 'mcLink', (v) => v as String),
       name: $checkedConvert(json, 'name', (v) => v as String),
       nameJp: $checkedConvert(json, 'nameJp', (v) => v as String?),
+      nameEn: $checkedConvert(json, 'nameEn', (v) => v as String?),
       startTimeJp: $checkedConvert(json, 'startTimeJp', (v) => v as String?),
       endTimeJp: $checkedConvert(json, 'endTimeJp', (v) => v as String?),
       startTimeCn: $checkedConvert(json, 'startTimeCn', (v) => v as String?),
@@ -1504,7 +1504,7 @@ Summon _$SummonFromJson(Map<String, dynamic> json) {
           (v) => (v as List<dynamic>).map((e) => e as String).toList()),
       associatedSummons: $checkedConvert(json, 'associatedSummons',
           (v) => (v as List<dynamic>).map((e) => e as String).toList()),
-      luckyBag: $checkedConvert(json, 'luckyBag', (v) => v as int),
+      category: $checkedConvert(json, 'category', (v) => v as int),
       classPickUp: $checkedConvert(json, 'classPickUp', (v) => v as bool),
       roll11: $checkedConvert(json, 'roll11', (v) => v as bool),
       dataList: $checkedConvert(
@@ -1518,10 +1518,12 @@ Summon _$SummonFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$SummonToJson(Summon instance) => <String, dynamic>{
+Map<String, dynamic> _$SummonToJson(Summon instance) =>
+    <String, dynamic>{
       'mcLink': instance.mcLink,
       'name': instance.name,
       'nameJp': instance.nameJp,
+      'nameEn': instance.nameEn,
       'startTimeJp': instance.startTimeJp,
       'endTimeJp': instance.endTimeJp,
       'startTimeCn': instance.startTimeCn,
@@ -1530,7 +1532,7 @@ Map<String, dynamic> _$SummonToJson(Summon instance) => <String, dynamic>{
       'bannerUrlJp': instance.bannerUrlJp,
       'associatedEvents': instance.associatedEvents,
       'associatedSummons': instance.associatedSummons,
-      'luckyBag': instance.luckyBag,
+      'category': instance.category,
       'classPickUp': instance.classPickUp,
       'roll11': instance.roll11,
       'dataList': instance.dataList,

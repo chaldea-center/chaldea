@@ -65,7 +65,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       appBar: AppBar(
         leading: BackButton(),
         title: AutoSizeText(
-          summon.localizedName,
+          summon.lName,
           maxLines: 1,
           overflow: TextOverflow.fade,
         ),
@@ -126,9 +126,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
               child: Center(
                 child: FittedBox(
                   child: Row(
-                      children: summon.luckyBag > 0
-                          ? [gachaLucky]
-                          : [gacha1, gacha10]),
+                      children:
+                          summon.isLuckyBag ? [gachaLucky] : [gacha1, gacha10]),
                   fit: BoxFit.contain,
                 ),
               ),
@@ -189,7 +188,9 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     }
     return ListTile(
       title: Text(title),
-      subtitle: summon.luckyBag == 0 && summon.roll11 ? Text(subtitle) : null,
+      subtitle: (summon.isLimited && summon.roll11) || summon.isStory
+          ? Text(subtitle)
+          : null,
     );
   }
 
@@ -446,10 +447,10 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     // 10or11连抽保底
     if (times >= 10) {
       //福袋保底
-      if (summon.luckyBag > 0) {
+      if (summon.isLuckyBag) {
         results.addAll(randomSummon(svtProbs((r) => r == 5), 1));
         //带4星的福袋保底
-        if (summon.luckyBag == 2) {
+        if (summon.isLuckyBagWithSR) {
           results.addAll(randomSummon(svtProbs((r) => r == 4 || r == 5), 1));
         }
       }

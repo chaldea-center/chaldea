@@ -34,8 +34,24 @@ class _ChapterList extends StatelessWidget {
     db.gameData.freeQuests.values.forEach((quest) {
       chapters.putIfAbsent(quest.chapter, () => []).add(quest);
     });
+    List<String> chapterNames = chapters.keys.toList();
+    chapterNames.sort((a, b) {
+      final recordA = db.gameData.events.mainRecords[a];
+      final recordB = db.gameData.events.mainRecords[b];
+      if (recordA == null && recordB == null) {
+        return 0;
+      } else if (recordA != null && recordB != null) {
+        return recordA.startTimeJp?.compareTo(recordB.startTimeJp ?? '') ?? 0;
+      } else if (recordA == null) {
+        return -1;
+      } else if (recordB == null) {
+        return 1;
+      }
+      return 0;
+    });
     List<Widget> children = [];
-    chapters.forEach((chapter, quests) {
+    chapterNames.forEach((chapter) {
+      final quests = chapters[chapter]!;
       children.add(ListTile(
         title: AutoSizeText(
           Localized.chapter.of(chapter),
@@ -94,7 +110,7 @@ class _ChapterFreeQuests extends StatelessWidget {
           for (final quest in quests)
             SimpleAccordion(
               headerBuilder: (context, _) => ListTile(
-                title: Text(quest.localizedPlace),
+                title: Text(quest.localizedKey),
                 subtitle: !Language.isJP && quest.placeJp != null
                     ? Text(quest.placeJp!)
                     : null,
