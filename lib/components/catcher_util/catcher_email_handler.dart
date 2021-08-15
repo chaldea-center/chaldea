@@ -171,15 +171,18 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
     if (_blockedErrors == null) {
       final String content = await GitTool.giteeWikiPage('blocked_error');
       _blockedErrors = [];
-      content.trim().split('\n').forEach((line) {
-        line = line.trim();
+      content.trim().split('\n\n').forEach((line) {
+        line = line.trim().replaceAll('\r', '');
         if (line.isNotEmpty) _blockedErrors!.add(line);
       });
       print('_blockedErrors=${jsonEncode(_blockedErrors)}');
     }
 
     final error = (report.error ?? report.errorDetails).toString();
-    if (_blockedErrors?.any((e) => error.startsWith(e)) == true) {
+    final stackTrace = report.stackTrace.toString();
+    bool? shouldIgnore = _blockedErrors
+        ?.any((e) => error.startsWith(e) || stackTrace.startsWith(e));
+    if (shouldIgnore == true) {
       logger.e('don\'t send blocked error', report.error, report.stackTrace);
       return true;
     }

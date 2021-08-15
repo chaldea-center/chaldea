@@ -139,15 +139,17 @@ class SvtCostItems {
     }
     // bySvt
     db.gameData.servantsWithUser.forEach((no, svt) {
-      final cur = curStat[no]?.curVal, target = targetPlan[no];
+      final status = curStat[no], target = targetPlan[no];
       // planned
       SvtParts<Map<String, int>> a, b;
-      if (cur?.favorite == true) {
-        a = svt.getAllCostParts(cur: cur, target: target);
+      if (status?.curVal.favorite == true) {
+        a = svt.getAllCostParts(status: status, target: target);
       } else {
         a = SvtParts(k: () => {});
       }
       a.summation = sumDict(a.values);
+      a.summation![Items.servantCoin] =
+          max(0, (a.summation![Items.servantCoin] ?? 0) - (status?.coin ?? 0));
       b = svt.getAllCostParts(all: true);
       b.summation = sumDict(b.values);
       for (var i = 0; i < planCountBySvt.valuesWithSum.length; i++) {
@@ -162,8 +164,11 @@ class SvtCostItems {
     for (String itemKey in db.gameData.items.keys) {
       for (var i = 0; i < planCountBySvt.values.length; i++) {
         planCountBySvt.values[i].forEach((svtNo, cost) {
-          planCountByItem.values[i].putIfAbsent(itemKey, () => {})[svtNo] =
-              cost[itemKey] ?? 0;
+          int n = cost[itemKey] ?? 0;
+          // if (itemKey == Items.servantCoin) {
+          //   n = max(0, n - (curStat[svtNo]?.coin ?? 0));
+          // }
+          planCountByItem.values[i].putIfAbsent(itemKey, () => {})[svtNo] = n;
         });
         if (_needUpdateAll) {
           allCountBySvt.values[i].forEach((svtNo, cost) {
@@ -174,6 +179,11 @@ class SvtCostItems {
       }
       planCountByItem.summation![itemKey] =
           sumDict(planCountByItem.values.map((e) => e[itemKey]));
+      if (itemKey == Items.servantCoin) {
+        final svtCosts = planCountByItem.summation![itemKey]!;
+        svtCosts.updateAll(
+            (svtNo, count) => max(0, count - (curStat[svtNo]?.coin ?? 0)));
+      }
       if (_needUpdateAll) {
         allCountByItem.summation![itemKey] =
             sumDict(allCountByItem.values.map((e) => e[itemKey]));

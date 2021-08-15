@@ -125,7 +125,7 @@ class Servant with GameCardMixin {
   /// [cur.favorite]=true
   /// else empty
   Map<String, int> getAllCost(
-      {ServantPlan? cur, ServantPlan? target, bool all = false}) {
+      {ServantStatus? status, ServantPlan? target, bool all = false}) {
     if (all) {
       return sumDict([
         getAscensionCost(),
@@ -135,22 +135,28 @@ class Servant with GameCardMixin {
         getExtraCost()
       ]);
     }
+    ServantPlan? cur = status?.curVal;
     target ??= ServantPlan();
     if (cur?.favorite == true) {
-      return sumDict([
+      final items = sumDict([
         getAscensionCost(cur: cur!.ascension, target: target.ascension),
         getSkillCost(cur: cur.skills, target: target.skills),
         getDressCost(cur: cur.dress, target: target.dress),
         getAppendSkillCost(cur: cur.appendSkills, target: target.appendSkills),
         getExtraCost(cur: cur, target: target)
       ]);
+      if (status != null) {
+        items[Items.servantCoin] =
+            max(0, (items[Items.servantCoin] ?? 0) - status.coin);
+      }
+      return items;
     } else {
       return {};
     }
   }
 
   SvtParts<Map<String, int>> getAllCostParts(
-      {ServantPlan? cur, ServantPlan? target, bool all = false}) {
+      {ServantStatus? status, ServantPlan? target, bool all = false}) {
     // no grail?
     if (all) {
       return SvtParts(
@@ -161,6 +167,7 @@ class Servant with GameCardMixin {
         extra: getExtraCost(),
       );
     }
+    ServantPlan? cur = status?.curVal;
     target ??= ServantPlan();
     if (cur?.favorite == true) {
       return SvtParts(
@@ -216,6 +223,9 @@ class Servant with GameCardMixin {
         sumDict([items, itemCost.appendSkillWithCoin[j]], inPlace: true);
       }
     }
+    // if (coin != null) {
+    //   items[Items.servantCoin] = max(0, (items[Items.servantCoin] ?? 0) - coin);
+    // }
     return items;
   }
 
@@ -249,14 +259,17 @@ class Servant with GameCardMixin {
       ..fouAtk = 50
       ..bondLimit = 15;
     // todo add qp cost for flame and grail
+    int coins = max(0, target.grail - maxGrail - 10) -
+        max(0, cur.grail - maxGrail - 10);
     return <String, int>{
       Items.grail: max(0, target.grail - cur.grail),
+      Items.servantCoin: max(0, coins),
       Items.fou4Hp: max(0, target.fouHp - max(0, cur.fouHp)),
       Items.fou4Atk: max(0, target.fouAtk - max(0, cur.fouAtk)),
       Items.fou3Hp: max(0, min(0, target.fouHp) - cur.fouHp),
       Items.fou3Atk: max(0, min(0, target.fouAtk) - cur.fouAtk),
       Items.chaldeaFlame: max(0, target.flameCost - cur.flameCost)
-    }..removeWhere((key, value) => value == 0);
+    }..removeWhere((key, value) => value <= 0);
   }
 
   int getClassSortIndex() {

@@ -4,6 +4,7 @@ import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/servant/costume_detail_page.dart';
 import 'package:chaldea/modules/shared/item_related_builder.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../servant_detail_page.dart';
@@ -27,6 +28,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
   /// in edit mode, change skill lv_a to lv_b and take out the items
   bool enhanceMode = false;
 
+  late TextEditingController _coinEditController;
+
   ServantPlan enhancePlan = ServantPlan();
 
   ServantPlan get plan => db.curUser.svtPlanOf(svt.no);
@@ -34,6 +37,18 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
   _SvtPlanTabState(
       {ServantDetailPageState? parent, Servant? svt, ServantStatus? status})
       : super(parent: parent, svt: svt, status: status);
+
+  @override
+  void initState() {
+    super.initState();
+    _coinEditController = TextEditingController(text: status.coin.toString());
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _coinEditController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -203,9 +218,50 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       }
       children.add(TileGroup(
         header: S.current.append_skill,
-        footer:
-            '${S.current.servant_coin}(${LocalizedText.of(chs: '召唤', jpn: 'ガチャ', eng: 'Summon')}): ${svt.coinSummonNum}',
         children: appendSkillWidgets,
+      ));
+      children.add(TileGroup(
+        children: [
+          ListTile(
+            leading: InkWell(
+              child: Item.iconBuilder(
+                context: context,
+                itemKey: '从者硬币 ${svt.svtId}.png',
+                jumpToDetail: false,
+              ),
+              onTap: () {
+                SplitRoute.push(
+                    context, ItemDetailPage(itemKey: Items.servantCoin));
+              },
+            ),
+            title: Text(S.current.servant_coin),
+            subtitle: Text(
+                LocalizedText.of(chs: '召唤', jpn: 'ガチャ', eng: 'Summon') +
+                    ': ${svt.coinSummonNum}'),
+            trailing: SizedBox(
+              width: 60,
+              child: TextField(
+                controller: _coinEditController,
+                buildCounter: (context,
+                        {required int currentLength,
+                        required int? maxLength,
+                        required bool isFocused}) =>
+                    null,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                maxLength: 4,
+                onChanged: (v) {
+                  int? coin = int.tryParse(v);
+                  if (coin != null) {
+                    status.coin = coin;
+                    updateState();
+                  }
+                },
+              ),
+            ),
+          )
+        ],
       ));
 
       // Extra part: np/grail/fou-kun
@@ -578,6 +634,31 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         child: Text(S.current.cancel),
       ));
     } else {
+      buttons.add(IconButton(
+        onPressed: () {
+          final items =
+              Item.sortMapById(svt.getAllCost(status: status, target: plan));
+          SimpleCancelOkDialog(
+            title: Text(S.current.item_total_demand),
+            hideCancel: true,
+            content: Wrap(
+              spacing: 4,
+              runSpacing: 4,
+              children: [
+                for (final entry in items.entries)
+                  Item.iconBuilder(
+                    context: context,
+                    itemKey: entry.key,
+                    text: formatNumber(entry.value, compact: true),
+                    width: 36,
+                  ),
+              ],
+            ),
+          ).showDialog(context);
+        },
+        icon: Icon(Icons.info_outline),
+        tooltip: S.current.item_total_demand,
+      ));
       buttons.add(ElevatedButton(
         onPressed: () {
           setState(() {
@@ -672,8 +753,11 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       child: Align(
         alignment: Alignment.centerRight,
         child: FittedBox(
-          fit: BoxFit.contain,
-          child: ButtonBar(children: buttons),
+          fit: BoxFit.scaleDown,
+          child: ButtonBar(
+            children: buttons,
+            buttonPadding: EdgeInsets.symmetric(horizontal: 2),
+          ),
         ),
       ),
     );
@@ -688,8 +772,9 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
   }
 
   void _onEnhance() {
+    status.curVal.favorite = true;
     final enhanceItems = Item.sortMapById(svt.getAllCost(
-      cur: status.curVal..favorite = true,
+      status: status,
       target: enhancePlan,
     ));
     List<Widget> children = [];
@@ -714,10 +799,10 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           width: defaultDialogWidth(context),
           child: hasItem
               ? buildGridIcons(
-                  context: context,
-                  children: children,
-                  crossCount: 5,
-                )
+            context: context,
+            children: children,
+            crossCount: 5,
+          )
               : ListTile(title: Text('Nothing')),
         ),
         actions: [

@@ -492,6 +492,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "summon_simulator": MessageLookupByLibrary.simpleMessage("抽卡模拟器"),
         "summon_title": MessageLookupByLibrary.simpleMessage("卡池一览"),
         "support_chaldea": MessageLookupByLibrary.simpleMessage("支持与捐赠"),
+        "support_party": MessageLookupByLibrary.simpleMessage("助战编制"),
         "svt_info_tab_base": MessageLookupByLibrary.simpleMessage("基础资料"),
         "svt_info_tab_bond_story": MessageLookupByLibrary.simpleMessage("羁绊故事"),
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("未关注"),

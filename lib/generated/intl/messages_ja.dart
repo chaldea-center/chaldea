@@ -525,6 +525,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "summon_simulator": MessageLookupByLibrary.simpleMessage("ガチャシミュ"),
         "summon_title": MessageLookupByLibrary.simpleMessage("ガチャ"),
         "support_chaldea": MessageLookupByLibrary.simpleMessage("サポートと寄付"),
+        "support_party": MessageLookupByLibrary.simpleMessage("サポート編成"),
         "svt_info_tab_base": MessageLookupByLibrary.simpleMessage("ステータス"),
         "svt_info_tab_bond_story":
             MessageLookupByLibrary.simpleMessage("プロファイル"),

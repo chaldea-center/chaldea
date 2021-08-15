@@ -79,7 +79,19 @@ class ItemCostServantPage extends StatelessWidget {
       } else {
         children.addAll(buildSvtList(context, details));
       }
-
+      if (itemKey == Items.servantCoin) {
+        children.add(Center(
+          child: Text(
+            LocalizedText.of(
+                chs: '\n通用从者硬币消耗总计中已减去专用从者硬币数',
+                jpn: '\n通用のサーヴァントコインの総数は、専用のサーヴァントコインの数から差し引かれています。',
+                eng:
+                    '\nThe total cost of universal servant coins has been subtracted from dedicated servant coins.'),
+            style: Theme.of(context).textTheme.caption,
+            textAlign: TextAlign.center,
+          ),
+        ));
+      }
       return ListView(
         children: divideTiles(children),
       );

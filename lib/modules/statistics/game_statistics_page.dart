@@ -139,7 +139,7 @@ class _StatItemConsumedTabState extends State<StatItemConsumedTab> {
 
   void calculateItem() {
     shownItems.clear();
-    final emptyPlan = ServantPlan(favorite: true);
+    final emptyPlan = ServantStatus()..curVal.favorite = true;
     db.curUser.servants.forEach((no, svtStat) {
       if (!svtStat.favorite) return;
       if (!db.gameData.servantsWithUser.containsKey(no)) {
@@ -148,7 +148,7 @@ class _StatItemConsumedTabState extends State<StatItemConsumedTab> {
       }
       final svt = db.gameData.servantsWithUser[no]!;
       sumDict(
-        [shownItems, svt.getAllCost(cur: emptyPlan, target: svtStat.curVal)],
+        [shownItems, svt.getAllCost(status: emptyPlan, target: svtStat.curVal)],
         inPlace: true,
       );
     });
@@ -250,7 +250,7 @@ class _StatItemDemandsTabState extends State<StatItemDemandsTab> {
       }
       sumDict([
         shownItems,
-        svt.getAllCost(cur: svtStat.curVal, target: db.curUser.svtPlanOf(no))
+        svt.getAllCost(status: svtStat, target: db.curUser.svtPlanOf(no))
       ], inPlace: true);
     });
     sumDict([

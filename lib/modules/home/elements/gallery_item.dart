@@ -15,6 +15,7 @@ import 'package:chaldea/modules/free_quest_calculator/free_calculator_page.dart'
 import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
 import 'package:chaldea/modules/import_data/home_import_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
+import 'package:chaldea/modules/lostroom/lost_room.dart';
 import 'package:chaldea/modules/master_mission/master_mission_page.dart';
 import 'package:chaldea/modules/servant/costume_list_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
@@ -83,6 +84,7 @@ class GalleryItem {
     statistics,
     importData,
     faq,
+    lostRoom,
     if (kDebugMode) palette,
     more,
     // // unpublished
@@ -210,6 +212,13 @@ class GalleryItem {
     icon: Icons.report_problem_rounded,
     page: FAQPage(),
     isDetail: true,
+  );
+  static GalleryItem lostRoom = GalleryItem(
+    name: 'lost_room',
+    titleBuilder: () => 'LOSTROOM',
+    icon: FontAwesomeIcons.ghost,
+    page: LostRoomPage(),
+    isDetail: false,
   );
   static GalleryItem more = GalleryItem(
     name: 'more',

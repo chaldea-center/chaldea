@@ -4155,6 +4155,16 @@ class S {
       args: [],
     );
   }
+
+  /// `助战编制`
+  String get support_party {
+    return Intl.message(
+      '助战编制',
+      name: 'support_party',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

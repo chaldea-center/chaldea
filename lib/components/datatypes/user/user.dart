@@ -201,38 +201,42 @@ class ServantStatus {
   set favorite(bool v) => curVal.favorite = v;
 
   ServantPlan curVal;
+  int coin;
   int npLv;
-
-  /// null-not set, >=0 index, sorted from non-enhanced to enhanced
-  List<int?> skillIndex; //length=3
-  /// default 0, origin order in wiki
-  int npIndex;
 
   /// priority 1-5
   int priority;
 
   List<int?> equipCmdCodes;
 
+  /// null-not set, >=0 index, sorted from non-enhanced to enhanced
+  List<int?> skillIndex; //length=3
+  /// default 0, origin order in wiki
+  int npIndex;
+
   ServantStatus({
     bool? favorite,
     ServantPlan? curVal,
+    int? coin,
     int? npLv,
-    List<int?>? skillIndex,
-    int? npIndex,
     int? priority,
     List<int?>? equipCmdCodes,
+    List<int?>? skillIndex,
+    int? npIndex,
   })  : curVal = curVal ?? ServantPlan(),
+        coin = coin ?? 0,
         npLv = npLv ?? 1,
-        skillIndex = List.generate(3, (index) => skillIndex?.getOrNull(index)),
-        npIndex = npIndex ?? 0,
         priority = priority ?? 1,
-        equipCmdCodes = equipCmdCodes ?? List.generate(5, (index) => null) {
+        equipCmdCodes = equipCmdCodes ?? List.generate(5, (index) => null),
+        skillIndex = List.generate(3, (index) => skillIndex?.getOrNull(index)),
+        npIndex = npIndex ?? 0 {
     validate();
   }
 
   void validate([Servant? svt]) {
     curVal.validate();
     npLv = fixValidRange(npLv, 1, 5);
+    coin = fixValidRange(coin, 0);
     npIndex = fixValidRange(
         npIndex, 0, svt == null ? null : svt.lNoblePhantasm.length - 1);
     int skillNum = svt?.lActiveSkills.length ?? 3;
@@ -250,6 +254,7 @@ class ServantStatus {
 
   void reset() {
     curVal.reset();
+    coin = 0;
     npLv = 1;
     priority = 1;
     resetEnhancement();
@@ -261,7 +266,11 @@ class ServantStatus {
   }
 
   bool get isEmpty {
-    return curVal.isEmpty && (npLv == 1 || npLv == 5) && priority == 1;
+    return curVal.isEmpty &&
+        coin == 0 &&
+        (npLv == 1 || npLv == 5) &&
+        priority == 1 &&
+        equipCmdCodes.whereType<int>().isEmpty;
   }
 
   factory ServantStatus.fromJson(Map<String, dynamic> data) =>
@@ -437,8 +446,7 @@ class EventPlans {
     Map<String, MainRecordPlan>? mainRecords,
     Map<String, ExchangeTicketPlan>? exchangeTickets,
     Map<String, CampaignPlan>? campaigns,
-  })
-      : limitEvents = limitEvents ?? {},
+  })  : limitEvents = limitEvents ?? {},
         mainRecords = mainRecords ?? {},
         exchangeTickets = exchangeTickets ?? {},
         campaigns = campaigns ?? {};

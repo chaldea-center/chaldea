@@ -2015,13 +2015,14 @@ ServantStatus _$ServantStatusFromJson(Map<String, dynamic> json) {
           (v) => v == null
               ? null
               : ServantPlan.fromJson(v as Map<String, dynamic>)),
+      coin: $checkedConvert(json, 'coin', (v) => v as int?),
       npLv: $checkedConvert(json, 'npLv', (v) => v as int?),
-      skillIndex: $checkedConvert(json, 'skillIndex',
-          (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
-      npIndex: $checkedConvert(json, 'npIndex', (v) => v as int?),
       priority: $checkedConvert(json, 'priority', (v) => v as int?),
       equipCmdCodes: $checkedConvert(json, 'equipCmdCodes',
           (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
+      skillIndex: $checkedConvert(json, 'skillIndex',
+          (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
+      npIndex: $checkedConvert(json, 'npIndex', (v) => v as int?),
     );
     return val;
   });
@@ -2031,11 +2032,12 @@ Map<String, dynamic> _$ServantStatusToJson(ServantStatus instance) =>
     <String, dynamic>{
       'favorite': instance.favorite,
       'curVal': instance.curVal,
+      'coin': instance.coin,
       'npLv': instance.npLv,
-      'skillIndex': instance.skillIndex,
-      'npIndex': instance.npIndex,
       'priority': instance.priority,
       'equipCmdCodes': instance.equipCmdCodes,
+      'skillIndex': instance.skillIndex,
+      'npIndex': instance.npIndex,
     };
 
 ServantPlan _$ServantPlanFromJson(Map<String, dynamic> json) {

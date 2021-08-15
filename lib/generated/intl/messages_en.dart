@@ -588,6 +588,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "summon_title": MessageLookupByLibrary.simpleMessage("Summons"),
         "support_chaldea":
             MessageLookupByLibrary.simpleMessage("Support and Donation"),
+        "support_party": MessageLookupByLibrary.simpleMessage("Support Setup"),
         "svt_info_tab_base": MessageLookupByLibrary.simpleMessage("Basic Info"),
         "svt_info_tab_bond_story": MessageLookupByLibrary.simpleMessage("Lore"),
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("Not favorite"),
