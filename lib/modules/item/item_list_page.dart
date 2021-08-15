@@ -452,6 +452,7 @@ class _ItemListTabState extends State<ItemListTab> {
             label: Text(S.current.event_title),
             onChanged: (v) {
               setState(() {
+                // reset to true in initState or not?
                 db.itemStat.includingEvent = v ?? db.itemStat.includingEvent;
                 db.itemStat.updateEventItems();
               });

@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -4086,10 +4087,10 @@ class S {
     );
   }
 
-  /// `附加被动`
+  /// `附加技能`
   String get append_skill {
     return Intl.message(
-      '附加被动',
+      '附加技能',
       name: 'append_skill',
       desc: '',
       args: [],
@@ -4180,8 +4181,10 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
 
   @override
   bool isSupported(Locale locale) => _isSupported(locale);
+
   @override
   Future<S> load(Locale locale) => S.load(locale);
+
   @override
   bool shouldReload(AppLocalizationDelegate old) => false;
 

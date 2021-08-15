@@ -33,8 +33,11 @@ class LevelingCostPageState extends State<LevelingCostPage> {
     final size = MediaQuery.of(context).size;
     return AlertDialog(
       contentPadding: EdgeInsets.zero,
-      titlePadding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      title: Center(child: Text(widget.title)),
+      titlePadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      title: Text(
+        widget.title,
+        style: TextStyle(fontSize: 16),
+      ),
       content: Container(
         width: min(380, size.width * 0.8),
         child: ListView(

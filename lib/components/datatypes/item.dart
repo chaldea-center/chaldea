@@ -193,12 +193,14 @@ class Items {
 
   /// items for servant planning but not for ascension and skill
   static const List<String> extraPlanningItems = [
+    qp,
     grail,
     chaldeaFlame,
     fou3Hp,
     fou3Atk,
     fou4Hp,
-    fou4Atk
+    fou4Atk,
+    servantCoin,
   ];
 }
 
@@ -260,7 +262,22 @@ class Grail {
 class QPCost {
   QPCost._();
 
-  static List<int> grailAscensionAll(int rarity) {
+  static List<int> bondLimitAll(int rarity) {
+    if (rarity < 0 || rarity > 5) return [];
+    return [];
+  }
+
+  static int bondLimitQP(int start, int end) {
+    List<int> costs = [10, 12, 14, 16, 18]; //*1000,000
+    int result = 0;
+    for (int i = start; i < end; i++) {
+      //start 10->0,14->4
+      result += costs.getOrNull(i - 10) ?? 0;
+    }
+    return result * 1000000;
+  }
+
+  static List<int> grailQpAll(int rarity) {
     if (rarity < 0 || rarity > 5) return [];
     List<int> qps = [
       [60, 80, 100, 200, 300, 400, 500, 600, 700, 800],
@@ -270,13 +287,18 @@ class QPCost {
       [400, 500, 600, 700, 800, 900, 1000],
       [900, 1000, 1100, 1200, 1300]
     ][rarity];
-    qps.addAll(
-        List.generate(10, (index) => [900, 800, 900, 1000, 1200, 1500][index]));
+    qps.addAll(List.generate(
+        10, (index) => [900, 800, 900, 1000, 1200, 1500][rarity]));
     return qps.map((e) => e * 10000).toList();
   }
 
-  static List<int> bondLimitAll(int rarity) {
-    if (rarity < 0 || rarity > 5) return [];
-    return [];
+  static int grailQp(int rarity, int start, int end) {
+    final qps = grailQpAll(rarity);
+    int result = 0;
+    for (int i = start; i < end; i++) {
+      //start 1->0
+      result += qps.getOrNull(i) ?? 0;
+    }
+    return result;
   }
 }

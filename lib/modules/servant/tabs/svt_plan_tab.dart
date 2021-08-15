@@ -223,6 +223,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       children.add(TileGroup(
         children: [
           ListTile(
+            horizontalTitleGap: 6,
             leading: InkWell(
               child: Item.iconBuilder(
                 context: context,
@@ -243,10 +244,10 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
               child: TextField(
                 controller: _coinEditController,
                 buildCounter: (context,
-                        {required int currentLength,
-                        required int? maxLength,
-                        required bool isFocused}) =>
-                    null,
+                    {required int currentLength,
+                      required int? maxLength,
+                      required bool isFocused}) =>
+                null,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 textAlign: TextAlign.center,
                 maxLines: 1,
@@ -613,7 +614,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
               3: FixedColumnWidth(32)
             },
             border: TableBorder.all(
-                color: Color.fromRGBO(162, 169, 177, 1), width: 0.5),
+                color: Color.fromRGBO(162, 169, 177, 1), width: 0.25),
           ),
         ),
       ],

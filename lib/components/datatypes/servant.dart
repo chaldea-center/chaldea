@@ -258,9 +258,12 @@ class Servant with GameCardMixin {
       ..fouHp = 50
       ..fouAtk = 50
       ..bondLimit = 15;
-    // todo add qp cost for flame and grail
-    int coins = max(0, target.grail - maxGrail - 10) -
-        max(0, cur.grail - maxGrail - 10);
+    int coins = max(0, target.grail - maxGrail + 10) * 30 -
+        max(0, cur.grail - maxGrail + 10) * 30;
+    int qp = sum([
+      QPCost.bondLimitQP(cur.bondLimit, target.bondLimit),
+      QPCost.grailQp(this.info.rarity, cur.grail, target.grail),
+    ]);
     return <String, int>{
       Items.grail: max(0, target.grail - cur.grail),
       Items.servantCoin: max(0, coins),
@@ -268,7 +271,8 @@ class Servant with GameCardMixin {
       Items.fou4Atk: max(0, target.fouAtk - max(0, cur.fouAtk)),
       Items.fou3Hp: max(0, min(0, target.fouHp) - cur.fouHp),
       Items.fou3Atk: max(0, min(0, target.fouAtk) - cur.fouAtk),
-      Items.chaldeaFlame: max(0, target.flameCost - cur.flameCost)
+      Items.chaldeaFlame: max(0, target.flameCost - cur.flameCost),
+      Items.qp: qp,
     }..removeWhere((key, value) => value <= 0);
   }
 
