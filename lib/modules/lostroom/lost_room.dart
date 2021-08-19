@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/lostroom/suuport_party.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LostRoomPage extends StatelessWidget {
@@ -13,7 +14,11 @@ class LostRoomPage extends StatelessWidget {
           ListTile(
             subtitle: Center(
               child: Text(
-                LocalizedText.of(chs: '试验性功能\n若有问题请反馈', jpn: '', eng: ''),
+                LocalizedText.of(
+                    chs: '还在开发中，仅供预览\n欢迎提意见~',
+                    jpn: '進行中の開発作業。\nプレビューのみ。',
+                    eng:
+                        'Work In Progress. Preview only.\n Suggestion welcomed.'),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -22,6 +27,9 @@ class LostRoomPage extends StatelessWidget {
           ListTile(
             leading: FaIcon(FontAwesomeIcons.userFriends),
             title: Text(S.current.support_party),
+            onTap: () {
+              SplitRoute.push(context, SupportPartyPage());
+            },
           )
         ],
       ),

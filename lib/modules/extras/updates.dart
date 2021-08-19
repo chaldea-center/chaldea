@@ -515,13 +515,14 @@ class AutoUpdateUtil {
     _writeln('echo ready to kill chaldea.exe PID=$pid');
     _writeln('taskkill /F /PID $pid');
     _writeln('echo backup dest "$destDir" to backup "$backupDir"');
-    _writeln('xcopy "$destDir" "$backupDir" /E /Y');
+    _writeln('xcopy "$destDir" "$backupDir" /E /Y /B');
     _writeln('echo copy src "$srcDir" to dest "$destDir"');
-    _writeln('xcopy "$srcDir" "$destDir" /E /Y');
+    _writeln('xcopy "$srcDir" "$destDir" /E /Y /B');
     _writeln('echo restart chaldea.exe');
+    _writeln('pause');
     buffer.writeln('"${join(destDir, 'chaldea.exe')}"');
-    String cmdFp = absolute(join(db.paths.tempDir, 'upgrade.cmd'));
-    File(cmdFp)..writeAsStringSync(buffer.toString());
+    String cmdFp = absolute(join(db.paths.tempDir, 'upgrade.bat'));
+    File(cmdFp)..writeAsStringSync(buffer.toString(), encoding: ascii);
     return cmdFp;
   }
 

@@ -261,7 +261,7 @@ class ServantStatus {
   }
 
   void resetEnhancement() {
-    skillIndex.fillRange(0, 3, null);
+    skillIndex.fillRange(0, skillIndex.length, null);
     npIndex = 0;
   }
 

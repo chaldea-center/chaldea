@@ -118,6 +118,7 @@ flutter:
     - res/img/launcher_icon/app_icon_logo.png
     - res/img/md/
     - res/js/
+    - res/ui/
     - res/VERSION
     - CHANGELOG.md
     - README.md

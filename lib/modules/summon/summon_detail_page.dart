@@ -320,7 +320,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
   }) {
     final grid = LayoutBuilder(
       builder: (context, constraints) {
-        int count = max(constraints.maxWidth ~/ 72, 4);
+        int count = max(constraints.maxWidth ~/ 72, 5);
         double childWidth = constraints.maxWidth / count;
         return GridView.count(
           crossAxisCount: count,
