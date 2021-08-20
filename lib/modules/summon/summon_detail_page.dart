@@ -7,6 +7,8 @@ import 'package:chaldea/modules/event/main_record_detail_page.dart';
 import 'package:chaldea/modules/summon/summon_simulator_page.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'summon_util.dart';
+
 class SummonDetailPage extends StatefulWidget {
   final Summon summon;
   final List<Summon>? summonList;
@@ -30,7 +32,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
   }
 
   void init() {
-    curIndex = showOverview ? -1 : 0;
+    curIndex = showShowOverview ? -1 : 0;
   }
 
   @override
@@ -104,15 +106,46 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
             ),
           ),
         ),
-      SHeader(LocalizedText.of(chs: '卡池详情', jpn: '詳細', eng: 'Information')),
-      if (!summon.isStory)
-        ListTile(
-          title: AutoSizeText(
-            'JP: ${summon.startTimeJp ?? "?"} ~ ${summon.endTimeJp ?? "?"}\n'
-            'CN: ${summon.startTimeCn ?? "?"} ~ ${summon.endTimeCn ?? "?"}',
-            maxLines: 2,
-          ),
-        ),
+      CustomTable(children: [
+        CustomTableRow(children: [
+          TableCellData(
+            text: summon.lName,
+            textAlign: TextAlign.center,
+            fontSize: 12,
+            color: TableCellData.resolveHeaderColor(context),
+          )
+        ]),
+        if (!Language.isJP && summon.nameJp != null)
+          CustomTableRow(children: [
+            TableCellData(
+              text: summon.nameJp!,
+              textAlign: TextAlign.center,
+              fontSize: 12,
+              color: TableCellData.resolveHeaderColor(context).withOpacity(0.5),
+            )
+          ]),
+        CustomTableRow(children: [
+          TableCellData(
+            text:
+                'JP: ${summon.startTimeJp ?? '?'} ~ ${summon.endTimeJp ?? '?'}',
+            maxLines: 1,
+            fontSize: 14,
+            alignment: Alignment.centerLeft,
+            padding: EdgeInsets.fromLTRB(16, 4, 4, 4),
+          )
+        ]),
+        if (summon.startTimeCn != null && summon.endTimeCn != null)
+          CustomTableRow(children: [
+            TableCellData(
+              text:
+                  'CN: ${summon.startTimeCn ?? '?'} ~ ${summon.endTimeCn ?? '?'}',
+              maxLines: 1,
+              fontSize: 14,
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.fromLTRB(16, 4, 4, 4),
+            )
+          ]),
+      ]),
       if (summon.dataList.length > 1) dropdownButton,
       if (summon.dataList.isNotEmpty) gachaDetails,
       if (summon.dataList.isNotEmpty)
@@ -147,11 +180,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           associateSummon(_summon)
       ],
     ];
-    return ListView.separated(
-      itemBuilder: (context, index) => children[index],
-      separatorBuilder: (context, _) => kDefaultDivider,
-      itemCount: children.length,
-    );
+    return ListView(children: children);
   }
 
   Widget associateEvent(String name) {
@@ -199,15 +228,13 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     );
   }
 
-  bool get showOverview {
-    return summon.dataList.length > 1 &&
-        !summon.classPickUp &&
-        summon.isLimited;
+  bool get showShowOverview {
+    return summon.dataList.length > 1 && !summon.isStory;
   }
 
   Widget get dropdownButton {
     List<DropdownMenuItem<int>> items = [];
-    if (showOverview) {
+    if (showShowOverview) {
       items.add(DropdownMenuItem(
         child: Text(
           LocalizedText.of(chs: '概览', jpn: '概要', eng: 'Overview'),
@@ -218,7 +245,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     }
     items.addAll(summon.dataList.map((e) => DropdownMenuItem(
           child: AutoSizeText(
-            summonNameLocalize(e.name),
+            SummonUtil.summonNameLocalize(e.name),
             maxLines: 2,
             maxFontSize: 14,
             style: TextStyle(fontWeight: FontWeight.bold),
@@ -259,103 +286,75 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     final data = summon.dataList[curIndex];
 
     List<Widget> children = [];
-    [...data.svts, if (summon.isStory) ...data.crafts].forEach((block) {
+    [...data.svts, ...data.crafts].forEach((block) {
       if (!block.display && summon.isLimited && !summon.classPickUp) return;
       children.add(Padding(
-        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        child: _cardGrid(
-          ids: block.ids,
-          header: '${block.rarity}☆',
-          childBuilder: (id) {
-            final card =
-                block.isSvt ? db.gameData.servants[id] : db.gameData.crafts[id];
-            if (card == null) return Text('No.$id');
-            return _svtAvatar(
-                card, block.weight / block.ids.length, block.ids.length == 1);
-          },
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: SummonUtil.buildBlock(
+          context: context,
+          block: block,
         ),
       ));
     });
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: divideTiles(children),
+      children: children,
     );
   }
 
+  /// 日替: 从者列一遍，若礼装一致，只显示一次
+  /// 福袋：五星+限定&剧情34星
+  /// 职阶：五星
   Widget get gachaOverview {
-    Map<int, Set<int>> svts = {5: {}, 4: {}, 3: {}};
-    for (var data in summon.dataList) {
-      for (var blockData in data.svts) {
-        if (!blockData.display) continue;
-        svts[blockData.rarity]?.addAll(blockData.ids);
+    List<Widget> children = [];
+    void _addTo(Map<int, bool> map, List<int> ids) {
+      if (ids.length == 1) {
+        map[ids.single] = true;
+      } else {
+        ids.forEach((id) {
+          map[id] = false;
+        });
       }
     }
-    List<Widget> children = [];
-    for (int rarity in [5, 4, 3]) {
-      if (svts[rarity]!.isEmpty) continue;
+
+    for (final data in summon.dataList) {
+      children.add(SHeader(SummonUtil.summonNameLocalize(data.name)));
+      Map<int, bool> svtIds = {};
+      if (summon.isLuckyBag) {
+        data.svts.where((block) => block.rarity == 5).forEach((block) {
+          _addTo(svtIds, block.ids);
+        });
+      } else if (summon.classPickUp) {
+        data.svts.where((block) => block.rarity == 5).forEach((block) {
+          _addTo(svtIds, block.ids);
+        });
+      } else {
+        data.allBlocks
+            .where((block) => block.display && block.isSvt)
+            .forEach((block) {
+          _addTo(svtIds, block.ids);
+        });
+      }
       children.add(Padding(
-        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        child: _cardGrid(
-          ids: svts[rarity]!,
-          header: '$rarity☆  ',
-          childBuilder: (id) {
-            final svt = db.gameData.servants[id];
-            if (svt == null) return Text('No.$id');
-            return _svtAvatar(svt, null, summon.hasSinglePickupSvt(id));
-          },
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Wrap(
+          spacing: 4,
+          runSpacing: 4,
+          children: svtIds.entries
+              .map((entry) => SummonUtil.svtAvatar(
+                  context: context,
+                  card: db.gameData.servants[entry.key],
+                  star: entry.value,
+                  favorite: db.curUser.svtStatusOf(entry.key).favorite))
+              .toList(),
         ),
       ));
     }
     return Column(
       mainAxisSize: MainAxisSize.min,
-      children: divideTiles(children),
-    );
-  }
-
-  Widget _cardGrid({
-    required Iterable<int> ids,
-    required String header,
-    required Widget childBuilder(int id),
-  }) {
-    final grid = LayoutBuilder(
-      builder: (context, constraints) {
-        int count = max(constraints.maxWidth ~/ 72, 5);
-        double childWidth = constraints.maxWidth / count;
-        return GridView.count(
-          crossAxisCount: count,
-          physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          childAspectRatio: childWidth / min(72, childWidth * 144 / 132),
-          children: ids.map((id) {
-            return childBuilder(id);
-          }).toList(),
-        );
-      },
-    );
-    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(header),
-        grid,
-      ],
-    );
-  }
-
-  Widget _svtAvatar(GameCardMixin card, double? weight, [bool star = false]) {
-    return Stack(
-      alignment: Alignment.topRight,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(top: 2, right: 2),
-          child: buildSummonCard(
-              context: context, card: card, weight: weight, showCategory: true),
-        ),
-        if (star) ...[
-          Icon(Icons.star, color: Colors.yellow, size: 18),
-          Icon(Icons.star_outline, color: Colors.redAccent, size: 18),
-        ]
-      ],
+      children: children,
     );
   }
 

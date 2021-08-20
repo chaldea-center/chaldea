@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/craft/craft_detail_page.dart';
-import 'package:chaldea/modules/servant/servant_detail_page.dart';
+
+import 'summon_util.dart';
 
 class SummonSimulatorPage extends StatefulWidget {
   final Summon summon;
@@ -118,11 +118,6 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           delegate: _SliverPersistentHeaderDelegate(
             height: 60,
             child: Container(
-              decoration: BoxDecoration(
-                border: Border.symmetric(
-                    horizontal: Divider.createBorderSide(context)),
-                color: Theme.of(context).scaffoldBackgroundColor,
-              ),
               child: Center(
                 child: FittedBox(
                   child: Row(
@@ -137,7 +132,6 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
         SliverList(
             delegate: SliverChildListDelegate([
           statisticHint,
-          kDefaultDivider,
           SimpleAccordion(
             expanded: true,
             headerBuilder: (context, _) => ListTile(
@@ -225,7 +219,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     List<DropdownMenuItem<int>> items = [];
     items.addAll(summon.dataList.map((e) => DropdownMenuItem(
           child: AutoSizeText(
-            summonNameLocalize(e.name),
+            SummonUtil.summonNameLocalize(e.name),
             maxLines: 2,
             maxFontSize: 14,
             style: TextStyle(fontWeight: FontWeight.bold),
@@ -267,7 +261,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       block.ids.forEach((id) {
         Servant? svt = db.gameData.servants[id];
         if (svt == null) return;
-        svtRow.add(buildSummonCard(
+        svtRow.add(SummonUtil.buildCard(
           context: context,
           card: svt,
           weight: weight,
@@ -282,7 +276,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       block.ids.forEach((id) {
         CraftEssence? ce = db.gameData.crafts[id];
         if (ce == null) return;
-        craftRow.add(buildSummonCard(
+        craftRow.add(SummonUtil.buildCard(
           context: context,
           card: ce,
           weight: weight,
@@ -295,8 +289,11 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (svtRow.isNotEmpty) Wrap(children: svtRow),
-          if (craftRow.isNotEmpty) Wrap(children: craftRow),
+          if (svtRow.isNotEmpty)
+            Wrap(spacing: 4, runSpacing: 4, children: svtRow),
+          const SizedBox(height: 4),
+          if (craftRow.isNotEmpty)
+            Wrap(spacing: 4, runSpacing: 4, children: craftRow),
         ],
       ),
     );
@@ -582,85 +579,4 @@ class _SliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(covariant _SliverPersistentHeaderDelegate oldDelegate) {
     return oldDelegate.height != height || oldDelegate.child != child;
   }
-}
-
-String _removeDoubleTrailing(double weight) {
-  return double.parse(weight.toStringAsFixed(5))
-      .toString()
-      .replaceFirst(RegExp(r'\.0+$'), '');
-}
-
-Widget buildSummonCard(
-    {required BuildContext context,
-    required GameCardMixin card,
-    double? weight,
-    bool showCategory = false}) {
-  List<String> texts = [];
-  if (weight != null) {
-    texts.add(_removeDoubleTrailing(weight) + '%');
-  }
-  if (showCategory && card is Servant) {
-    texts.add(Localized.svtFilter.of(card.info.obtain.replaceAll('常驻', '')));
-  }
-
-  return Padding(
-    padding: EdgeInsets.symmetric(horizontal: 3, vertical: 3),
-    child: InkWell(
-      onTap: () {
-        final page = card is Servant
-            ? ServantDetailPage(card)
-            : card is CraftEssence
-                ? CraftDetailPage(ce: card)
-                : null;
-        if (page != null) {
-          SplitRoute.push(context, page);
-        }
-      },
-      child: ImageWithText(
-        image: db.getIconImage(card.icon, width: 56, height: 56 / 132 * 144),
-        text: texts.join('\n'),
-        width: 56,
-        textAlign: TextAlign.right,
-        textStyle: TextStyle(fontSize: 12),
-        padding: EdgeInsets.only(bottom: 0, left: 15),
-      ),
-    ),
-  );
-}
-
-String _castBracket(String s) {
-  return s.replaceAll('〔', '(').replaceAll('〕', ')');
-}
-
-String summonNameLocalize(String origin) {
-  List<String> names = _castBracket(origin.replaceAll('・', '·')).split('+');
-  return names.map((e) {
-    String name2 = db.gameData.servants.values
-            .firstWhereOrNull((svt) =>
-                _castBracket(svt.mcLink) == e ||
-                _castBracket(svt.info.name) == e)
-            ?.info
-            .localizedName ??
-        e;
-    if (name2 == e &&
-        ClassName.values
-            .every((cls) => cls.name.toLowerCase() != e.toLowerCase())) {
-      List<String> fragments = e.split('(');
-      fragments[0] = fragments[0].trim();
-      fragments[0] = db.gameData.servants.values
-              .firstWhereOrNull((svt) =>
-                  _castBracket(svt.mcLink) == fragments[0] ||
-                  _castBracket(svt.info.name) == fragments[0] ||
-                  svt.info.namesOther.contains(fragments[0]) ||
-                  svt.info.nicknames.contains(fragments[0]))
-              ?.info
-              .localizedName ??
-          e;
-      name2 = fragments.join(Language.isEN ? ' (' : '(');
-    }
-    // if (!RegExp(r'[\s\da-zA-Z]+').hasMatch(name2) && !Language.isCN) {
-    //   print(name2);
-    // }
-    return name2;
-  }).join('+');
 }

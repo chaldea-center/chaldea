@@ -128,8 +128,12 @@ class CmdCodeDetailBasePage extends StatelessWidget {
               isHeader: true,
             )
           ]),
-          CustomTableRow(children: [TableCellData(text: code.nameJp)]),
-          CustomTableRow(children: [TableCellData(text: code.nameEn)]),
+          CustomTableRow(children: [
+            TableCellData(text: code.nameJp, textAlign: TextAlign.center)
+          ]),
+          CustomTableRow(children: [
+            TableCellData(text: code.nameEn, textAlign: TextAlign.center)
+          ]),
           CustomTableRow(
             children: [
               TableCellData(

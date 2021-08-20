@@ -140,8 +140,12 @@ class CraftDetailBasePage extends StatelessWidget {
               isHeader: true,
             )
           ]),
-          CustomTableRow(children: [TableCellData(text: ce.nameJp)]),
-          CustomTableRow(children: [TableCellData(text: ce.nameEn)]),
+          CustomTableRow(children: [
+            TableCellData(text: ce.nameJp, textAlign: TextAlign.center)
+          ]),
+          CustomTableRow(children: [
+            TableCellData(text: ce.nameEn, textAlign: TextAlign.center)
+          ]),
           CustomTableRow(
             children: [
               TableCellData(
