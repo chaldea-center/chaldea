@@ -1,3 +1,11 @@
+## 1.5.4
+- fix main record planning
+- [BREAK CHANGE] windows: migrate user data folder to app folder
+
+## 1.5.3
+- fix exchange ticket planning
+- basic support of servant coin 
+
 ## 1.5.2
 - add ★3 fou-kun planning
 - add Chaldea flame/lantern planning(bond)

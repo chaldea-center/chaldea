@@ -489,6 +489,7 @@ class Database {
 class PathManager {
   /// [_appPath] root path where app can access
   String? _appPath;
+  String? legacyWinAppPath;
 
   Future<void> initRootPath() async {
     if (_appPath != null) return;
@@ -517,32 +518,22 @@ class PathManager {
       // in old version windows, it may need admin permission, so it may fail
       try {
         String exeFolder = pathlib.dirname(Platform.resolvedExecutable);
-        String linkPath = pathlib.join(exeFolder, 'userdata');
-        Link link = Link(linkPath);
-        DateTime now = DateTime.now();
-        switch (FileSystemEntity.typeSync(linkPath, followLinks: false)) {
-          case FileSystemEntityType.notFound:
-            break;
-          case FileSystemEntityType.file:
-            File(linkPath).renameSync(
-                linkPath + '.bak${now.millisecondsSinceEpoch ~/ 1000}');
-            break;
-          case FileSystemEntityType.directory:
-            Directory(linkPath).renameSync(
-                linkPath + '.bak${now.millisecondsSinceEpoch ~/ 1000}');
-            break;
-          case FileSystemEntityType.link:
-            if (FileSystemEntity.identicalSync(
-                link.resolveSymbolicLinksSync(), _appPath!)) {
-              // pass
-            } else {
-              link.update(_appPath!);
-            }
-            break;
+        String legacyAppPath = (await getApplicationSupportDirectory()).path;
+        legacyWinAppPath = legacyAppPath;
+        String curAppPath = pathlib.join(exeFolder, 'userdata');
+        if (FileSystemEntity.isLinkSync(curAppPath)) {
+          Link(curAppPath).deleteSync();
         }
-        if (!link.existsSync()) {
-          link.createSync(_appPath!, recursive: true);
+        final legacyUserdata =
+            File(pathlib.join(legacyAppPath, 'user', kUserDataFilename));
+        final curUserdata =
+            File(pathlib.join(curAppPath, 'user', kUserDataFilename));
+        if (legacyUserdata.existsSync() && !curUserdata.existsSync()) {
+          curUserdata
+            ..createSync(recursive: true)
+            ..writeAsBytesSync(legacyUserdata.readAsBytesSync());
         }
+        _appPath = curAppPath;
       } catch (e, s) {
         logger.e('make link failed', e, s);
       }
