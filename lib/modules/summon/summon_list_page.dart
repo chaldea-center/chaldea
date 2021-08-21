@@ -20,6 +20,12 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
   Set<String> get plans => db.curUser.plannedSummons;
 
   @override
+  void initState() {
+    super.initState();
+    reversed = Language.isJP || db.curUser.server == GameServer.jp;
+  }
+
+  @override
   Widget build(BuildContext context) {
     filterShownList();
     if (reversed) {

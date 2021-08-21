@@ -271,7 +271,7 @@ class Servant with GameCardMixin {
       Items.fou4Atk: max(0, target.fouAtk - max(0, cur.fouAtk)),
       Items.fou3Hp: max(0, min(0, target.fouHp) - cur.fouHp),
       Items.fou3Atk: max(0, min(0, target.fouAtk) - cur.fouAtk),
-      Items.chaldeaFlame: max(0, target.flameCost - cur.flameCost),
+      Items.chaldeaLantern: max(0, target.lanternCost - cur.lanternCost),
       Items.qp: qp,
     }..removeWhere((key, value) => value <= 0);
   }
@@ -354,6 +354,30 @@ class Servant with GameCardMixin {
           (jumpToDetail
               ? () => SplitRoute.push(context, ServantDetailPage(this))
               : null),
+    );
+  }
+
+  static Widget withFavIcon(
+      {required Widget child, bool favorite = false, double size = 10}) {
+    if (!favorite) return child;
+    return Stack(
+      alignment: Alignment.topRight,
+      children: [
+        child,
+        IgnorePointer(
+          child: Container(
+            padding: EdgeInsets.all(size * 0.2),
+            decoration: BoxDecoration(
+                color: Colors.blueAccent,
+                borderRadius: BorderRadius.circular(size * 0.4)),
+            child: Icon(
+              Icons.favorite,
+              color: Colors.white,
+              size: size,
+            ),
+          ),
+        )
+      ],
     );
   }
 

@@ -411,5 +411,6 @@
   "preview": "Preview",
   "servant_coin": "Servant Coin",
   "open_condition": "Condition",
-  "support_party": "Support Setup"
+  "support_party": "Support Setup",
+  "simulator": "Simulator"
 }

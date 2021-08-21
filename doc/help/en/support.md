@@ -22,7 +22,14 @@ Donation is also welcomed, please leave a message to let me know that's donated 
 [![Bilibili Charge](resource://res/img/md/bilicharge.webp)](https://space.bilibili.com/3785253)
 
 
+## Expenditure
+- Apple Developer Program: ¥688/$99 per year
+- Google Developer Program: ¥162/$25
+- AWS cloud server: ~ ¥1000/$150 per year
+- Time
+
+
 ## Contact me
 If you have any question or want the donation back, please contact me:
 
-- Email: [narumi@chaldea.cc](mailto:narumi@chaldea.cc)
+- Email: [chaldea@narumi.cc](mailto:chaldea@narumi.cc)

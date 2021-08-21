@@ -67,7 +67,8 @@ class _GalleryPageState extends State<GalleryPage> {
             controller: _scrollController,
             children: <Widget>[
               ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                constraints: BoxConstraints(
+                    minHeight: AppInfo.isDesktop ? 0 : constraints.maxHeight),
                 child: Column(
                   children: [
                     AppNewsCarousel(maxWidth: constraints.maxWidth),

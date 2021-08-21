@@ -478,6 +478,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "share": MessageLookupByLibrary.simpleMessage("分享"),
         "show_outdated": MessageLookupByLibrary.simpleMessage("显示已过期"),
         "silver": MessageLookupByLibrary.simpleMessage("银"),
+        "simulator": MessageLookupByLibrary.simpleMessage("模拟器"),
         "skill": MessageLookupByLibrary.simpleMessage("技能"),
         "skill_up": MessageLookupByLibrary.simpleMessage("技能升级"),
         "skilled_max10": MessageLookupByLibrary.simpleMessage("练度最大化(310)"),

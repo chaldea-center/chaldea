@@ -294,7 +294,7 @@ class ServantPlan {
   int fouHp;
   int fouAtk;
 
-  /// max limit for bond, should from 10 to 15, chaldea flame cost
+  /// max limit for bond, should from 10 to 15, chaldea lantern cost
   int bondLimit;
 
   ServantPlan({
@@ -325,7 +325,7 @@ class ServantPlan {
 
   int get shownFouAtk => Item.fouValToShown(fouAtk);
 
-  int get flameCost => max(0, bondLimit - 10);
+  int get lanternCost => max(0, bondLimit - 10);
 
   void reset() {
     favorite = false;

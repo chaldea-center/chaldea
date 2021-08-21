@@ -368,7 +368,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           buildPlanRow(
             useSlider: sliderMode,
             leading: Item.iconBuilder(
-                context: context, itemKey: Items.chaldeaFlame, width: 33),
+                context: context, itemKey: Items.chaldeaLantern, width: 33),
             title: S.current.game_kizuna,
             start: curVal.bondLimit,
             end: targetVal.bondLimit,
@@ -389,7 +389,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                 chs: '数值为当前的羁绊上限，用于计算梦火消耗',
                 jpn: '値は、カルデアの夢火の消費量を計算するために使用される、ボンドの現在の上限です。',
                 eng:
-                    'The value is the current bond limit, used for calculation of Chaldea Flame/Lantern',
+                    'The value is the current bond limit, used for calculation of Chaldea Lantern',
               )),
             ),
           ),

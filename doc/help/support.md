@@ -22,7 +22,14 @@
 [![Bilibili Charge](resource://res/img/md/bilicharge.webp)](https://space.bilibili.com/3785253)
 
 
+## 支出一览
+- Apple开发者: ¥688/$99 每年
+- Google开发者: ¥162/$25
+- 云服务器: ~ ¥1000/$150 每年
+- 时间
+
+
 ## 联系方式
 如果有任何问题或希望退回，可以通过以下方式联系
 
-- Email: [narumi@chaldea.cc](mailto:narumi@chaldea.cc)
+- Email: [chaldea@narumi.cc](mailto:chaldea@narumi.cc)

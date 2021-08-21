@@ -510,6 +510,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "share": MessageLookupByLibrary.simpleMessage("共有"),
         "show_outdated": MessageLookupByLibrary.simpleMessage("期限切れを表示"),
         "silver": MessageLookupByLibrary.simpleMessage("銀"),
+        "simulator": MessageLookupByLibrary.simpleMessage("エミュレータ"),
         "skill": MessageLookupByLibrary.simpleMessage("スキル"),
         "skill_up": MessageLookupByLibrary.simpleMessage("スキル強化"),
         "skilled_max10":

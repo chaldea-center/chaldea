@@ -571,6 +571,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "share": MessageLookupByLibrary.simpleMessage("Share"),
         "show_outdated": MessageLookupByLibrary.simpleMessage("Show Outdated"),
         "silver": MessageLookupByLibrary.simpleMessage("Silver"),
+        "simulator": MessageLookupByLibrary.simpleMessage("Simulator"),
         "skill": MessageLookupByLibrary.simpleMessage("Skill"),
         "skill_up": MessageLookupByLibrary.simpleMessage("Skill Up"),
         "skilled_max10":

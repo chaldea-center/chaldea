@@ -181,7 +181,7 @@ class Items {
   static const String summonTicket = '呼符';
   static const String quartz = '圣晶石';
   static const String quartzFragment = '圣晶片';
-  static const String chaldeaFlame = '迦勒底梦火';
+  static const String chaldeaLantern = '迦勒底梦火';
 
   // static const String fouHp = 'HP芙芙';
   // static const String fouAtk = 'ATK芙芙';
@@ -195,7 +195,7 @@ class Items {
   static const List<String> extraPlanningItems = [
     qp,
     grail,
-    chaldeaFlame,
+    chaldeaLantern,
     fou3Hp,
     fou3Atk,
     fou4Hp,

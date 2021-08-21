@@ -106,9 +106,10 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
         alignment: Alignment.topCenter,
         children: [
           located(
-            child: Image.asset(
-              'res/ui/flame_bg_gold.webp',
-              fit: BoxFit.fill,
+            child: CachedImage(
+              imageUrl: 'flame_bg_gold.png',
+              isMCFile: true,
+              cachedOption: CachedImageOption(fit: BoxFit.fill),
             ),
           ),
           Positioned(
@@ -119,9 +120,10 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
           // _OneSupportWithGesture(setUp: setUp),
           located(
             child: IgnorePointer(
-              child: Image.asset(
-                'res/ui/flame_gold.webp',
-                fit: BoxFit.fill,
+              child: CachedImage(
+                imageUrl: 'flame_gold.png',
+                isMCFile: true,
+                cachedOption: CachedImageOption(fit: BoxFit.fill),
               ),
             ),
           ),

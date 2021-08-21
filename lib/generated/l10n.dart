@@ -1,7 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -4162,6 +4161,16 @@ class S {
     return Intl.message(
       '助战编制',
       name: 'support_party',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `模拟器`
+  String get simulator {
+    return Intl.message(
+      '模拟器',
+      name: 'simulator',
       desc: '',
       args: [],
     );

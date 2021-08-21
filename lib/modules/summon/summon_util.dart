@@ -16,10 +16,11 @@ class SummonUtil {
       ids: block.ids,
       header: showRarity ? '☆${block.rarity}' : null,
       childBuilder: (id) {
+        Widget child;
         if (block.isSvt) {
           final svt = db.gameData.servants[id];
           if (svt == null) return Text('No.$id');
-          return svtAvatar(
+          child = svtAvatar(
             context: context,
             card: svt,
             weight: showProb ? block.weight / block.ids.length : null,
@@ -29,12 +30,13 @@ class SummonUtil {
         } else {
           final ce = db.gameData.crafts[id];
           if (ce == null) return Text('No.$id');
-          return buildCard(
+          child = buildCard(
             context: context,
             card: ce,
             weight: showProb ? block.weight / block.ids.length : null,
           );
         }
+        return Center(child: Padding(padding: EdgeInsets.all(2), child: child));
       },
     );
   }
@@ -157,7 +159,7 @@ class SummonUtil {
         }
       },
       child: ImageWithText(
-        image: db.getIconImage(card.icon, width: 56, height: 56 / 132 * 144),
+        image: db.getIconImage(card.icon, aspectRatio: 132 / 144),
         text: texts.join('\n'),
         width: 56,
         textAlign: TextAlign.right,
@@ -169,7 +171,7 @@ class SummonUtil {
 
   static String _removeDoubleTrailing(double weight) {
     return double.parse(weight.toStringAsFixed(5))
-        .toString()
+        .toStringAsFixed(4)
         .replaceFirst(RegExp(r'\.0+$'), '');
   }
 

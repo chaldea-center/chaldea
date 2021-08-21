@@ -7,6 +7,7 @@ import 'package:chaldea/modules/event/main_record_detail_page.dart';
 import 'package:chaldea/modules/summon/summon_simulator_page.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'lucky_bag_expectation.dart';
 import 'summon_util.dart';
 
 class SummonDetailPage extends StatefulWidget {
@@ -32,7 +33,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
   }
 
   void init() {
-    curIndex = showShowOverview ? -1 : 0;
+    curIndex = shouldShowOverview ? -1 : 0;
   }
 
   @override
@@ -228,13 +229,13 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     );
   }
 
-  bool get showShowOverview {
+  bool get shouldShowOverview {
     return summon.dataList.length > 1 && !summon.isStory;
   }
 
   Widget get dropdownButton {
     List<DropdownMenuItem<int>> items = [];
-    if (showShowOverview) {
+    if (shouldShowOverview) {
       items.add(DropdownMenuItem(
         child: Text(
           LocalizedText.of(chs: '概览', jpn: '概要', eng: 'Overview'),
@@ -303,9 +304,6 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     );
   }
 
-  /// 日替: 从者列一遍，若礼装一致，只显示一次
-  /// 福袋：五星+限定&剧情34星
-  /// 职阶：五星
   Widget get gachaOverview {
     List<Widget> children = [];
     void _addTo(Map<int, bool> map, List<int> ids) {
@@ -359,8 +357,33 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
   }
 
   Widget get buttonBar {
-    return ButtonBar(
-      alignment: MainAxisAlignment.center,
+    Widget centerBtn = ElevatedButton(
+      onPressed: summon.dataList.isEmpty
+          ? null
+          : () => SplitRoute.push(context,
+              SummonSimulatorPage(summon: summon, initIndex: curIndex)),
+      child: Text(S.current.simulator),
+    );
+    if (summon.isLuckyBag && summon.dataList.isNotEmpty) {
+      centerBtn = Flexible(
+        child: Wrap(
+          spacing: 6,
+          runSpacing: 6,
+          alignment: WrapAlignment.center,
+          children: [
+            centerBtn,
+            ElevatedButton(
+              onPressed: () =>
+                  SplitRoute.push(context, LuckyBagExpectation(summon: summon)),
+              child: Text(LocalizedText.of(
+                  chs: '期望计算', jpn: '期待値計算', eng: 'Expectation')),
+            ),
+          ],
+        ),
+      );
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
           icon: FaIcon(FontAwesomeIcons.chevronCircleLeft),
@@ -368,13 +391,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           tooltip: S.current.previous_card,
           onPressed: () => moveNext(true),
         ),
-        ElevatedButton(
-          onPressed: summon.dataList.isEmpty
-              ? null
-              : () => SplitRoute.push(context,
-                  SummonSimulatorPage(summon: summon, initIndex: curIndex)),
-          child: Text(S.current.summon_simulator),
-        ),
+        centerBtn,
         IconButton(
           icon: FaIcon(FontAwesomeIcons.chevronCircleRight),
           color: Theme.of(context).colorScheme.primary,
