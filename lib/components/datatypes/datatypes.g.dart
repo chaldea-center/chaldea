@@ -1989,6 +1989,16 @@ User _$UserFromJson(Map<String, dynamic> json) {
           (v) => v == null
               ? null
               : GLPKParams.fromJson(v as Map<String, dynamic>)),
+      luckyBagSvtScores: $checkedConvert(
+          json,
+          'luckyBagSvtScores',
+          (v) => (v as Map<String, dynamic>?)?.map(
+                (k, e) => MapEntry(
+                    k,
+                    (e as Map<String, dynamic>).map(
+                      (k, e) => MapEntry(int.parse(k), e as int),
+                    )),
+              )),
     );
     return val;
   });
@@ -2011,6 +2021,8 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'duplicatedServants':
           instance.duplicatedServants.map((k, e) => MapEntry(k.toString(), e)),
       'glpkParams': instance.glpkParams,
+      'luckyBagSvtScores': instance.luckyBagSvtScores.map(
+          (k, e) => MapEntry(k, e.map((k, e) => MapEntry(k.toString(), e)))),
     };
 
 K? _$enumDecodeNullable<K, V>(
@@ -2393,8 +2405,7 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$UserDataToJson(UserData instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'version': instance.version,
       'appSetting': instance.appSetting,
       'carouselSetting': instance.carouselSetting,

@@ -1,6 +1,9 @@
 ## 1.5.4
 - fix main record planning
 - [BREAK CHANGE] windows: migrate user data folder to app folder
+- add lucky bag expectation
+- improve summon page and filter
+
 
 ## 1.5.3
 - fix exchange ticket planning

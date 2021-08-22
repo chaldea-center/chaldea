@@ -82,6 +82,8 @@ class User {
   // glpk
   GLPKParams glpkParams;
 
+  Map<String, Map<int, int>> luckyBagSvtScores;
+
   User({
     this.key,
     String? name,
@@ -98,6 +100,7 @@ class User {
     int? msProgress,
     Map<int, int>? duplicatedServants,
     GLPKParams? glpkParams,
+    Map<String, Map<int, int>>? luckyBagSvtScores,
   })  : name = name?.isNotEmpty == true ? name! : 'default',
         _server = server,
         servants = servants ?? {},
@@ -111,7 +114,8 @@ class User {
         isMasterGirl = isMasterGirl ?? true,
         msProgress = msProgress ?? -1,
         duplicatedServants = duplicatedServants ?? {},
-        glpkParams = glpkParams ?? GLPKParams() {
+        glpkParams = glpkParams ?? GLPKParams(),
+        luckyBagSvtScores = luckyBagSvtScores ?? {} {
     this.curSvtPlanNo =
         fixValidRange(this.curSvtPlanNo, 0, this.servantPlans.length);
     fillListValue(this.servantPlans, max(5, this.servantPlans.length),

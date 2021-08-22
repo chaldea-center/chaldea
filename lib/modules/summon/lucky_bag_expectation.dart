@@ -54,10 +54,11 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
     );
   }
 
-  Map<int, int> _svtScores = {};
+  Map<int, int> get _svtScores => db.curUser.luckyBagSvtScores
+      .putIfAbsent(widget.summon.indexKey, () => {});
 
   int scoreOf(int id) {
-    return _svtScores[id] ??= db.curUser.svtStatusOf(id).favorite ? 1 : 5;
+    return _svtScores[id] ?? (db.curUser.svtStatusOf(id).favorite ? 1 : 5);
   }
 
   Widget get inputTab {
