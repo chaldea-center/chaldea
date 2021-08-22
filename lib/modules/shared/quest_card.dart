@@ -37,58 +37,70 @@ class _QuestCardState extends State<QuestCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
-          children: divideTiles(
-            [
-              CustomTile(
-                title: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      AutoSizeText(
-                        chapter,
-                        maxLines: 2,
-                        maxFontSize: 14,
-                        minFontSize: 6,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      AutoSizeText(
-                        questName,
-                        maxLines: 2,
-                        maxFontSize: 14,
-                        minFontSize: 6,
-                        textAlign: TextAlign.center,
-                        // style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      AutoSizeText(
-                        '${S.of(context).game_kizuna} ${quest.bondPoint}  '
-                        '${S.of(context).game_experience} ${quest.experience}',
-                        maxLines: 1,
-                        maxFontSize: 14,
-                        minFontSize: 6,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.caption,
-                      ),
-                    ],
-                  ),
-                ),
-                contentPadding: EdgeInsets.fromLTRB(16, 8, 0, 8),
-                trailing: IconButton(
-                  onPressed: () => setState(() => showTrueName = !showTrueName),
-                  icon: Icon(
-                    Icons.remove_red_eye_outlined,
-                    color:
-                        showTrueName ? Theme.of(context).indicatorColor : null,
-                  ),
-                  tooltip:
-                      showTrueName ? 'Show Display Name' : 'Show True Name',
+          children: divideTiles([
+            CustomTile(
+              title: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    AutoSizeText(
+                      chapter,
+                      maxLines: 2,
+                      maxFontSize: 14,
+                      minFontSize: 6,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    AutoSizeText(
+                      questName,
+                      maxLines: 2,
+                      maxFontSize: 14,
+                      minFontSize: 6,
+                      textAlign: TextAlign.center,
+                      // style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    AutoSizeText(
+                      '${S.of(context).game_kizuna} ${quest.bondPoint}  '
+                      '${S.of(context).game_experience} ${quest.experience}',
+                      maxLines: 1,
+                      maxFontSize: 14,
+                      minFontSize: 6,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.caption,
+                    ),
+                  ],
                 ),
               ),
-              ..._buildBattles(quest.battles),
-            ],
-            divider: Divider(height: 3, thickness: 0.5),
-          ).toList(),
+              contentPadding: EdgeInsets.fromLTRB(16, 8, 0, 8),
+              trailing: IconButton(
+                onPressed: () => setState(() => showTrueName = !showTrueName),
+                icon: Icon(
+                  Icons.remove_red_eye_outlined,
+                  color: showTrueName ? Theme.of(context).indicatorColor : null,
+                ),
+                tooltip: showTrueName ? 'Show Display Name' : 'Show True Name',
+              ),
+            ),
+            ..._buildBattles(quest.battles),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(Icons.info_outline, size: 16),
+                  SizedBox(width: 6),
+                  Text(LocalizedText.of(
+                    chs: '非Free本的关卡配置仅供参考，数据可能解析不完全',
+                    jpn: 'jpn',
+                    eng: 'Data of quest may not be accurate. ',
+                  ))
+                ],
+              ),
+            )
+          ], divider: Divider(height: 3, thickness: 0.5))
+              .toList(),
         ),
       ),
     );

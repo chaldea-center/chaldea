@@ -287,7 +287,11 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
                         _sortType = _ExpSort.best5;
                       });
                     },
-                    child: Text('5/Best'),
+                    child: Text(
+                      'Best/5',
+                      maxLines: 1,
+                      overflow: TextOverflow.visible,
+                    ),
                   ),
                   _sortType == _ExpSort.best5,
                 ),
@@ -300,7 +304,11 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
                         _sortType = _ExpSort.worst1;
                       });
                     },
-                    child: Text('1/Worst'),
+                    child: Text(
+                      'Worst/1',
+                      maxLines: 1,
+                      overflow: TextOverflow.visible,
+                    ),
                   ),
                   _sortType == _ExpSort.worst1,
                 ),
