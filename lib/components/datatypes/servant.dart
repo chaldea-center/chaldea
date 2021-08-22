@@ -149,7 +149,7 @@ class Servant with GameCardMixin {
         items[Items.servantCoin] =
             max(0, (items[Items.servantCoin] ?? 0) - status.coin);
       }
-      return items;
+      return items..removeWhere((key, value) => value <= 0);
     } else {
       return {};
     }

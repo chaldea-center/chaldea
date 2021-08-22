@@ -257,6 +257,17 @@ class Grail {
     lvs.addAll(List.generate(15, (index) => 92 + index * 2));
     return lvs;
   }
+
+  static List<Map<String, int>> itemCost(int rarity) {
+    return [
+      for (int index = 0; index < maxGrailCount(rarity); index++)
+        {
+          Items.grail: 1,
+          if (grailToLvMax(rarity, index + 1) > 100) Items.servantCoin: 30,
+          Items.qp: QPCost.grailQp(rarity, index, index + 1),
+        }
+    ];
+  }
 }
 
 class QPCost {

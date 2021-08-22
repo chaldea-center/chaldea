@@ -137,8 +137,9 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             detailPageBuilder: (context) => LevelingCostPage(
               costList: svt.itemCost.skill,
               title: '${S.current.skill} ${index + 1} - ${skill.localizedName}',
-              curLv: curVal.skills[index],
-              targetLv: targetVal.skills[index],
+              curLv: curVal.skills[index] - 1,
+              targetLv: targetVal.skills[index] - 1,
+              levelFormatter: (v) => 'Lv.${v + 1}',
             ),
           ));
         }
@@ -223,12 +224,13 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       children.add(TileGroup(
         children: [
           ListTile(
-            horizontalTitleGap: 6,
+            horizontalTitleGap: 3,
             leading: InkWell(
               child: Item.iconBuilder(
                 context: context,
                 itemKey: '从者硬币 ${svt.svtId}.png',
                 jumpToDetail: false,
+                width: 33,
               ),
               onTap: () {
                 SplitRoute.push(
@@ -244,10 +246,10 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
               child: TextField(
                 controller: _coinEditController,
                 buildCounter: (context,
-                    {required int currentLength,
-                      required int? maxLength,
-                      required bool isFocused}) =>
-                null,
+                        {required int currentLength,
+                        required int? maxLength,
+                        required bool isFocused}) =>
+                    null,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 textAlign: TextAlign.center,
                 maxLines: 1,
@@ -261,28 +263,6 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                 },
               ),
             ),
-          )
-        ],
-      ));
-
-      // Extra part: np/grail/fou-kun
-      children.add(TileGroup(
-        header: S.current.event_item_extra,
-        children: <Widget>[
-          buildPlanRow(
-            useSlider: sliderMode,
-            leading: db.getIconImage('宝具强化', width: 33),
-            title: S.of(context).noble_phantasm_level,
-            start: status.npLv,
-            minVal: 1,
-            maxVal: 5,
-            trailingLabelFormatter: (a, b) => '   $a   ',
-            onValueChanged: (_value, _) {
-              status.npLv = _value;
-              status.favorite = true;
-              db.notifyDbUpdate();
-            },
-            detailPageBuilder: null,
           ),
           if (svt.no != 1)
             buildPlanRow(
@@ -306,8 +286,37 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                 targetVal.grail = _end;
                 updateState();
               },
-              detailPageBuilder: null,
+              detailPageBuilder: (context) => LevelingCostPage(
+                title: S.current.grail_up,
+                costList: Grail.itemCost(svt.info.rarity),
+                curLv: curVal.grail,
+                targetLv: targetVal.grail,
+                levelFormatter: (v) =>
+                    'Lv.${Grail.grailToLvMax(svt.info.rarity, v)}',
+              ),
             ),
+        ],
+      ));
+
+      // Extra part: np/grail/fou-kun
+      children.add(TileGroup(
+        header: S.current.event_item_extra,
+        children: <Widget>[
+          buildPlanRow(
+            useSlider: sliderMode,
+            leading: db.getIconImage('宝具强化', width: 33),
+            title: S.of(context).noble_phantasm_level,
+            start: status.npLv,
+            minVal: 1,
+            maxVal: 5,
+            trailingLabelFormatter: (a, b) => '   $a   ',
+            onValueChanged: (_value, _) {
+              status.npLv = _value;
+              status.favorite = true;
+              db.notifyDbUpdate();
+            },
+            detailPageBuilder: null,
+          ),
           buildPlanRow(
             useSlider: sliderMode,
             leading: Row(
@@ -800,10 +809,10 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           width: defaultDialogWidth(context),
           child: hasItem
               ? buildGridIcons(
-            context: context,
-            children: children,
-            crossCount: 5,
-          )
+                  context: context,
+                  children: children,
+                  crossCount: 5,
+                )
               : ListTile(title: Text('Nothing')),
         ),
         actions: [

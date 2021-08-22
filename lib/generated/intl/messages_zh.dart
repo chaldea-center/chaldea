@@ -98,6 +98,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "backup_history": MessageLookupByLibrary.simpleMessage("历史备份"),
         "backup_success": MessageLookupByLibrary.simpleMessage("备份成功"),
         "blacklist": MessageLookupByLibrary.simpleMessage("黑名单"),
+        "bond": MessageLookupByLibrary.simpleMessage("羁绊"),
         "bond_craft": MessageLookupByLibrary.simpleMessage("羁绊礼装"),
         "bond_eff": MessageLookupByLibrary.simpleMessage("羁绊效率"),
         "bronze": MessageLookupByLibrary.simpleMessage("铜"),

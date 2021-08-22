@@ -5,6 +5,7 @@ class LevelingCostPage extends StatefulWidget {
   final int curLv;
   final int targetLv;
   final String title;
+  final String Function(int level)? levelFormatter;
 
   const LevelingCostPage({
     Key? key,
@@ -12,6 +13,7 @@ class LevelingCostPage extends StatefulWidget {
     this.curLv = 0,
     this.targetLv = 0,
     this.title = '',
+    this.levelFormatter,
   })  : assert(curLv <= targetLv),
         super(key: key);
 
@@ -24,10 +26,10 @@ class LevelingCostPageState extends State<LevelingCostPage> {
 
   @override
   Widget build(BuildContext context) {
-    final int offset = widget.costList.length == 9 ? -1 : 0;
+    // final int offset = widget.costList.length == 9 ? -1 : 0;
     final bool _showAll = showAll || widget.curLv >= widget.targetLv;
-    final int lva = _showAll ? 0 : widget.curLv + offset,
-        lvb = _showAll ? widget.costList.length : widget.targetLv + offset;
+    final int lva = _showAll ? 0 : widget.curLv,
+        lvb = _showAll ? widget.costList.length : widget.targetLv;
     assert(0 <= lva && lvb <= widget.costList.length);
 
     final size = MediaQuery.of(context).size;
@@ -44,7 +46,7 @@ class LevelingCostPageState extends State<LevelingCostPage> {
           shrinkWrap: true,
           children: List.generate(lvb - lva, (i) {
             return buildOneLevel(
-              'Lv.${lva + i - offset} → Lv.${lva + i - offset + 1}',
+              '${_formatLevel(lva + i)} → ${_formatLevel(lva + i + 1)}',
               widget.costList[lva + i],
             );
           }),
@@ -103,5 +105,10 @@ class LevelingCostPageState extends State<LevelingCostPage> {
         ],
       ),
     );
+  }
+
+  String _formatLevel(int lv) {
+    if (widget.levelFormatter != null) return widget.levelFormatter!(lv);
+    return 'Lv.$lv';
   }
 }

@@ -99,6 +99,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "backup_history": MessageLookupByLibrary.simpleMessage("バックアップ履歴"),
         "backup_success": MessageLookupByLibrary.simpleMessage("バックアップは成功しました"),
         "blacklist": MessageLookupByLibrary.simpleMessage("ブラックリスト"),
+        "bond": MessageLookupByLibrary.simpleMessage("絆"),
         "bond_craft": MessageLookupByLibrary.simpleMessage("絆礼装"),
         "bond_eff": MessageLookupByLibrary.simpleMessage("絆効率"),
         "bronze": MessageLookupByLibrary.simpleMessage("銅"),

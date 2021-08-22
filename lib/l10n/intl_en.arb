@@ -413,5 +413,6 @@
   "open_condition": "Condition",
   "support_party": "Support Setup",
   "simulator": "Simulator",
-  "lucky_bag": "Lucky Bag"
+  "lucky_bag": "Lucky Bag",
+  "bond": "Bond"
 }

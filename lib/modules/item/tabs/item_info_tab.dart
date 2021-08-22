@@ -72,8 +72,33 @@ class ItemInfoTab extends StatelessWidget {
                 )
               ],
             ),
+          if (itemKey == Items.servantCoin) ..._svtCoinObtain(),
         ],
       ),
     );
+  }
+
+  List<Widget> _svtCoinObtain() {
+    List<int> bondCoins = [
+      ...List.generate(6, (index) => 5),
+      ...List.generate(3, (index) => 10),
+      ...List.generate(6, (index) => 20),
+    ];
+    return [
+      CustomTableRow.fromTexts(
+        texts: [
+          S.current.bond,
+          LocalizedText.of(chs: '奖励', jpn: '報酬', eng: 'Rewards'),
+          'SUM'
+        ],
+        isHeader: true,
+      ),
+      for (int index = 0; index < bondCoins.length; index++)
+        CustomTableRow.fromTexts(texts: [
+          'Lv.${index + 1}',
+          bondCoins[index].toString(),
+          sum(bondCoins.sublist(0, index + 1)).toString()
+        ])
+    ];
   }
 }

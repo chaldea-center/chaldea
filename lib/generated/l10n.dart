@@ -4185,6 +4185,16 @@ class S {
       args: [],
     );
   }
+
+  /// `羁绊`
+  String get bond {
+    return Intl.message(
+      '羁绊',
+      name: 'bond',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
