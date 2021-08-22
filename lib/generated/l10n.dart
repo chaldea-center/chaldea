@@ -4175,6 +4175,16 @@ class S {
       args: [],
     );
   }
+
+  /// `福袋`
+  String get lucky_bag {
+    return Intl.message(
+      '福袋',
+      name: 'lucky_bag',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -4190,10 +4200,8 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
 
   @override
   bool isSupported(Locale locale) => _isSupported(locale);
-
   @override
   Future<S> load(Locale locale) => S.load(locale);
-
   @override
   bool shouldReload(AppLocalizationDelegate old) => false;
 

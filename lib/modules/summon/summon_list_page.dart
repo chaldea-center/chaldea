@@ -1,5 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/shared/filter_page.dart';
+import 'package:chaldea/modules/summon/filter_page.dart';
 import 'package:chaldea/modules/summon/summon_detail_page.dart';
 
 class SummonListPage extends StatefulWidget {
@@ -8,27 +10,26 @@ class SummonListPage extends StatefulWidget {
 }
 
 class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
-  bool showOutdated = false;
-  bool favorite = false;
-  bool reversed = false;
-
   @override
   Iterable<Summon> get wholeData => db.gameData.summons.values;
   @override
   List<Summon> shownList = [];
+
+  SummonFilterData get filterData => db.userData.summonFilter;
 
   Set<String> get plans => db.curUser.plannedSummons;
 
   @override
   void initState() {
     super.initState();
-    reversed = Language.isJP || db.curUser.server == GameServer.jp;
+    filterData.reset();
+    // filterData.reversed = Language.isJP || db.curUser.server == GameServer.jp;
   }
 
   @override
   Widget build(BuildContext context) {
     filterShownList();
-    if (reversed) {
+    if (filterData.reversed) {
       shownList = shownList.reversed.toList();
     }
     shownList.sort((a, b) {
@@ -45,52 +46,40 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
         bottom: showSearchBar ? searchBar : null,
         actions: [
           IconButton(
-            icon: Icon(
-                reversed ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up),
+            icon: Icon(filterData.reversed
+                ? Icons.keyboard_arrow_down
+                : Icons.keyboard_arrow_up),
             tooltip: 'Reversed',
             onPressed: () {
               setState(() {
-                reversed = !reversed;
+                filterData.reversed = !filterData.reversed;
+              });
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.filter_alt),
+            tooltip: S.of(context).filter,
+            onPressed: () => FilterPage.show(
+              context: context,
+              builder: (context) => SummonFilterPage(
+                filterData: filterData,
+                onChanged: (_) {
+                  if (mounted) setState(() {});
+                },
+              ),
+            ),
+          ),
+          IconButton(
+            icon: Icon(
+                filterData.favorite ? Icons.favorite : Icons.favorite_outline),
+            tooltip: S.current.favorite,
+            onPressed: () {
+              setState(() {
+                filterData.favorite = !filterData.favorite;
               });
             },
           ),
           searchIcon,
-          IconButton(
-            icon: Icon(favorite ? Icons.favorite : Icons.favorite_outline),
-            tooltip: S.current.favorite,
-            onPressed: () {
-              setState(() {
-                favorite = !favorite;
-              });
-            },
-          ),
-          PopupMenuButton(
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                child: Text(db.appSetting.showSummonBanner
-                    ? LocalizedText.of(
-                        chs: '显示标题', jpn: 'タイトルを表示', eng: 'Show Title')
-                    : LocalizedText.of(
-                        chs: '显示封面', jpn: '画像を表示', eng: 'Show Banner')),
-                onTap: () {
-                  setState(() {
-                    db.appSetting.showSummonBanner =
-                        !db.appSetting.showSummonBanner;
-                  });
-                },
-              ),
-              PopupMenuItem(
-                child: Text(showOutdated
-                    ? S.current.hide_outdated
-                    : S.current.show_outdated),
-                onTap: () {
-                  setState(() {
-                    showOutdated = !showOutdated;
-                  });
-                },
-              ),
-            ],
-          ),
         ],
       ),
     );
@@ -100,7 +89,7 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
   Widget listItemBuilder(Summon summon) {
     Widget title;
     Widget? subtitle;
-    if (db.appSetting.showSummonBanner) {
+    if (filterData.showBanner) {
       title = ConstrainedBox(
         constraints: BoxConstraints(maxHeight: 108),
         child: CachedImage(
@@ -134,10 +123,10 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
     return ListTile(
       title: title,
       subtitle: subtitle,
-      contentPadding: db.appSetting.showSummonBanner
+      contentPadding: filterData.showBanner
           ? EdgeInsets.only(right: 8)
           : EdgeInsets.only(left: 16, right: 8),
-      minVerticalPadding: db.appSetting.showSummonBanner ? 0 : null,
+      minVerticalPadding: filterData.showBanner ? 0 : null,
       trailing: db.streamBuilder(
         (context) {
           final planned = db.curUser.plannedSummons.contains(summon.indexKey);
@@ -180,12 +169,11 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
 
   @override
   bool filter(Summon summon) {
-    if (plans.contains(summon.indexKey)) return true;
-    if (!favorite) {
-      return showOutdated || summon.isStory || !summon.isOutdated();
-    } else {
-      // won't reach here
+    if (filterData.favorite && !plans.contains(summon.indexKey)) return false;
+    if (!filterData.showOutdated && summon.isOutdated() && !summon.isStory)
       return false;
-    }
+    if (!filterData.category.singleValueFilter(summon.category.toString()))
+      return false;
+    return true;
   }
 }

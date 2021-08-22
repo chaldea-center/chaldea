@@ -125,17 +125,20 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
               color: TableCellData.resolveHeaderColor(context).withOpacity(0.5),
             )
           ]),
-        CustomTableRow(children: [
-          TableCellData(
-            text:
-                'JP: ${summon.startTimeJp ?? '?'} ~ ${summon.endTimeJp ?? '?'}',
-            maxLines: 1,
-            fontSize: 14,
-            alignment: Alignment.centerLeft,
-            padding: EdgeInsets.fromLTRB(16, 4, 4, 4),
-          )
-        ]),
-        if (summon.startTimeCn != null && summon.endTimeCn != null)
+        if (!summon.isStory)
+          CustomTableRow(children: [
+            TableCellData(
+              text:
+                  'JP: ${summon.startTimeJp ?? '?'} ~ ${summon.endTimeJp ?? '?'}',
+              maxLines: 1,
+              fontSize: 14,
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.fromLTRB(16, 4, 4, 4),
+            )
+          ]),
+        if (!summon.isStory &&
+            summon.startTimeCn != null &&
+            summon.endTimeCn != null)
           CustomTableRow(children: [
             TableCellData(
               text:
@@ -146,6 +149,13 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
               padding: EdgeInsets.fromLTRB(16, 4, 4, 4),
             )
           ]),
+        if (summon.isLuckyBag)
+          CustomTableRow.fromTexts(texts: [
+            S.current.lucky_bag +
+                '(' +
+                (summon.isLuckyBagWithSR ? 'SSR+SR' : 'SSR') +
+                ')'
+          ])
       ]),
       if (summon.dataList.length > 1) dropdownButton,
       if (summon.dataList.isNotEmpty) gachaDetails,

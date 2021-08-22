@@ -20,6 +20,7 @@ class UserData {
   SvtFilterData svtFilter;
   CraftFilterData craftFilter;
   CmdCodeFilterData cmdCodeFilter;
+  SummonFilterData summonFilter;
 
   // glpk
   List<int> itemAbundantValue;
@@ -34,8 +35,10 @@ class UserData {
     SvtFilterData? svtFilter,
     CraftFilterData? craftFilter,
     CmdCodeFilterData? cmdCodeFilter,
+    SummonFilterData? summonFilter,
     List<int>? itemAbundantValue,
-  })  : version = modelVersion,
+  })
+      : version = modelVersion,
         appSetting = appSetting ?? AppSetting(),
         carouselSetting = carouselSetting ?? CarouselSetting(),
         galleries = galleries ?? {},
@@ -44,6 +47,7 @@ class UserData {
         svtFilter = svtFilter ?? SvtFilterData(),
         craftFilter = craftFilter ?? CraftFilterData(),
         cmdCodeFilter = cmdCodeFilter ?? CmdCodeFilterData(),
+        summonFilter = summonFilter ?? SummonFilterData(),
         itemAbundantValue =
             itemAbundantValue ?? List.generate(3, (index) => 0) {
     // not initiate language: auto-change language if not set yet.

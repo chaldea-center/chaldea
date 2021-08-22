@@ -1518,8 +1518,7 @@ Summon _$SummonFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$SummonToJson(Summon instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$SummonToJson(Summon instance) => <String, dynamic>{
       'mcLink': instance.mcLink,
       'name': instance.name,
       'nameJp': instance.nameJp,
@@ -1876,6 +1875,33 @@ const _$CmdCodeCompareEnumMap = {
   CmdCodeCompare.rarity: 'rarity',
 };
 
+SummonFilterData _$SummonFilterDataFromJson(Map<String, dynamic> json) {
+  return $checkedNew('SummonFilterData', json, () {
+    final val = SummonFilterData(
+      favorite: $checkedConvert(json, 'favorite', (v) => v as bool?),
+      reversed: $checkedConvert(json, 'reversed', (v) => v as bool?),
+      showBanner: $checkedConvert(json, 'showBanner', (v) => v as bool?),
+      showOutdated: $checkedConvert(json, 'showOutdated', (v) => v as bool?),
+      category: $checkedConvert(
+          json,
+          'category',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+    );
+    return val;
+  });
+}
+
+Map<String, dynamic> _$SummonFilterDataToJson(SummonFilterData instance) =>
+    <String, dynamic>{
+      'favorite': instance.favorite,
+      'reversed': instance.reversed,
+      'showBanner': instance.showBanner,
+      'showOutdated': instance.showOutdated,
+      'category': instance.category,
+    };
+
 FilterGroupData _$FilterGroupDataFromJson(Map<String, dynamic> json) {
   return $checkedNew('FilterGroupData', json, () {
     final val = FilterGroupData(
@@ -2201,8 +2227,6 @@ AppSetting _$AppSettingFromJson(Map<String, dynamic> json) {
           'themeMode',
           (v) => _$enumDecodeNullable(_$ThemeModeEnumMap, v,
               unknownValue: ThemeMode.system)),
-      showSummonBanner:
-          $checkedConvert(json, 'showSummonBanner', (v) => v as bool?),
       favoritePreferred:
           $checkedConvert(json, 'favoritePreferred', (v) => v as bool?),
       autoResetFilter:
@@ -2241,7 +2265,6 @@ Map<String, dynamic> _$AppSettingToJson(AppSetting instance) =>
     <String, dynamic>{
       'language': instance.language,
       'themeMode': _$ThemeModeEnumMap[instance.themeMode],
-      'showSummonBanner': instance.showSummonBanner,
       'favoritePreferred': instance.favoritePreferred,
       'autoResetFilter': instance.autoResetFilter,
       'classFilterStyle':
@@ -2357,6 +2380,12 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
           (v) => v == null
               ? null
               : CmdCodeFilterData.fromJson(v as Map<String, dynamic>)),
+      summonFilter: $checkedConvert(
+          json,
+          'summonFilter',
+          (v) => v == null
+              ? null
+              : SummonFilterData.fromJson(v as Map<String, dynamic>)),
       itemAbundantValue: $checkedConvert(json, 'itemAbundantValue',
           (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
     );
@@ -2364,7 +2393,8 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) {
   });
 }
 
-Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
+Map<String, dynamic> _$UserDataToJson(UserData instance) =>
+    <String, dynamic>{
       'version': instance.version,
       'appSetting': instance.appSetting,
       'carouselSetting': instance.carouselSetting,
@@ -2373,6 +2403,7 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'svtFilter': instance.svtFilter,
       'craftFilter': instance.craftFilter,
       'cmdCodeFilter': instance.cmdCodeFilter,
+      'summonFilter': instance.summonFilter,
       'itemAbundantValue': instance.itemAbundantValue,
       'curUserKey': instance.curUserKey,
     };

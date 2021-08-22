@@ -371,6 +371,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "login_username_error":
             MessageLookupByLibrary.simpleMessage("只能包含字母与数字，字母开头，不少于4位"),
         "long_press_to_save_hint": MessageLookupByLibrary.simpleMessage("长按保存"),
+        "lucky_bag": MessageLookupByLibrary.simpleMessage("福袋"),
         "main_record": MessageLookupByLibrary.simpleMessage("主线记录"),
         "main_record_bonus": MessageLookupByLibrary.simpleMessage("通关奖励"),
         "main_record_bonus_short": MessageLookupByLibrary.simpleMessage("奖励"),

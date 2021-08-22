@@ -24,7 +24,6 @@ class AppSetting {
   String? language;
   @JsonKey(unknownEnumValue: ThemeMode.system)
   ThemeMode? themeMode;
-  bool showSummonBanner;
   bool? favoritePreferred;
   bool autoResetFilter;
   @JsonKey(unknownEnumValue: SvtListClassFilterStyle.auto)
@@ -41,7 +40,6 @@ class AppSetting {
   AppSetting({
     this.language,
     this.themeMode,
-    bool? showSummonBanner,
     this.favoritePreferred,
     bool? autoResetFilter,
     int? downloadSource,
@@ -52,8 +50,7 @@ class AppSetting {
     bool? svtPlanSliderMode,
     List<SvtTab?>? sortedSvtTabs,
     Map<String, String>? priorityTags,
-  })  : showSummonBanner = showSummonBanner ?? false,
-        autoResetFilter = autoResetFilter ?? true,
+  })  : autoResetFilter = autoResetFilter ?? true,
         downloadSource = fixValidRange(downloadSource ?? GitSource.server.index,
             0, GitSource.values.length),
         autoUpdateApp = autoUpdateApp ?? true,

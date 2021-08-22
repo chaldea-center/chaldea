@@ -397,6 +397,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("4桁以上の文字と数字のみ、文字で始まる"),
         "long_press_to_save_hint":
             MessageLookupByLibrary.simpleMessage("長押しして保存"),
+        "lucky_bag": MessageLookupByLibrary.simpleMessage("福袋"),
         "main_record": MessageLookupByLibrary.simpleMessage("シナリオ"),
         "main_record_bonus": MessageLookupByLibrary.simpleMessage("報酬"),
         "main_record_bonus_short": MessageLookupByLibrary.simpleMessage("報酬"),

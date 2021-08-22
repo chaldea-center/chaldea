@@ -314,7 +314,6 @@ class CmdCodeFilterData {
   static const List<CmdCodeCompare> sortKeyData = CmdCodeCompare.values;
   static const List<String> rarityData = ['1', '2', '3', '4', '5'];
 
-  // category: bin: 0b1111111111
   static const List<String> categoryData = ['友情池常驻', '活动奖励'];
 
   // json_serializable
@@ -322,6 +321,44 @@ class CmdCodeFilterData {
       _$CmdCodeFilterDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$CmdCodeFilterDataToJson(this);
+}
+
+@JsonSerializable(checked: true)
+class SummonFilterData {
+  bool favorite;
+  bool reversed;
+  bool showBanner;
+  bool showOutdated;
+  FilterGroupData category;
+
+  SummonFilterData({
+    bool? favorite,
+    bool? reversed,
+    bool? showBanner,
+    bool? showOutdated,
+    FilterGroupData? category,
+  })  : favorite = favorite ?? false,
+        reversed = reversed ?? false,
+        showBanner = showBanner ?? false,
+        showOutdated = showOutdated ?? false,
+        category = category ?? FilterGroupData();
+
+  List<FilterGroupData> get groupValues => [category];
+
+  void reset() {
+    for (var group in groupValues) {
+      group.reset();
+    }
+    favorite = false;
+    showOutdated = false;
+  }
+
+  static const List<String> categoryData = ['0', '1', '2', '3'];
+
+  factory SummonFilterData.fromJson(Map<String, dynamic> data) =>
+      _$SummonFilterDataFromJson(data);
+
+  Map<String, dynamic> toJson() => _$SummonFilterDataToJson(this);
 }
 
 typedef bool? CompareFilterKeyCallback(String option, String? value);

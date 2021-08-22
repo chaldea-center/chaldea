@@ -57,19 +57,19 @@ class _DebugFloatingMenuButtonState extends State<DebugFloatingMenuButton> {
           child: FloatingActionButton(
             mini: true,
             backgroundColor:
-            isMenuShowing ? Theme.of(context).disabledColor : null,
+                isMenuShowing ? Theme.of(context).disabledColor : null,
             onPressed: isMenuShowing
                 ? null
                 : () {
-              setState(() {
-                isMenuShowing = true;
-              });
-              _DebugMenuDialog(state: this).showDialog(context).then((_) {
-                setState(() {
-                  isMenuShowing = false;
-                });
-              });
-            },
+                    setState(() {
+                      isMenuShowing = true;
+                    });
+                    _DebugMenuDialog(state: this).showDialog(context).then((_) {
+                      setState(() {
+                        isMenuShowing = false;
+                      });
+                    });
+                  },
             child: Icon(Icons.menu_open),
           ),
         ),
@@ -101,10 +101,10 @@ class _DebugFloatingMenuButtonState extends State<DebugFloatingMenuButton> {
     setState(() {});
   }
 
-  void hide() {
+  void hide([int seconds = 60]) {
     opaque = 0;
     safeSetState();
-    Future.delayed(Duration(seconds: 60), () {
+    Future.delayed(Duration(seconds: seconds), () {
       opaque = 0.75;
       safeSetState();
     });
@@ -171,10 +171,10 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
         ),
         ListTile(
           horizontalTitleGap: 0,
-          leading: Icon(Icons.palette_outlined),
+          leading: Icon(Icons.timer),
           title: Text('Hide 60s'),
           onTap: () {
-            widget.state?.hide();
+            widget.state?.hide(60);
             Navigator.pop(context);
           },
         ),

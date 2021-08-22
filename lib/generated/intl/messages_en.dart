@@ -444,6 +444,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Can only contain letters and numbers, starting with a letter, no less than 4 digits"),
         "long_press_to_save_hint":
             MessageLookupByLibrary.simpleMessage("Long press to save"),
+        "lucky_bag": MessageLookupByLibrary.simpleMessage("Lucky Bag"),
         "main_record": MessageLookupByLibrary.simpleMessage("Main Record"),
         "main_record_bonus": MessageLookupByLibrary.simpleMessage("Bonus"),
         "main_record_bonus_short":
