@@ -41,7 +41,15 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
         title: AutoSizeText(widget.summon.lName, maxLines: 1),
         bottom: TabBar(
           controller: _tabController,
-          tabs: [Tab(text: 'Input'), Tab(text: 'Output')],
+          tabs: [
+            Tab(
+              text: LocalizedText.of(chs: '打分', jpn: 'スコアリング', eng: 'Rating'),
+            ),
+            Tab(
+              text:
+                  LocalizedText.of(chs: '期望值', jpn: '期待値', eng: 'Expectation'),
+            )
+          ],
         ),
       ),
       body: TabBarView(
@@ -204,6 +212,10 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
         ),
       ));
       int n = _result.block.ids.length;
+      String _toPercent(double number) {
+        return formatNumber(number, percent: true, precision: 1);
+      }
+
       children.add(ListTile(
         tileColor: Theme.of(context).highlightColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
@@ -218,26 +230,22 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
               Expanded(child: Text(_result.exp.toStringAsFixed(2))),
               Expanded(
                 child: Text(
-                  '${_result.pBest5.toStringAsFixed(2)}\n${_result.best5}/$n',
-                  // textAlign: TextAlign.center,
+                  '${_toPercent(_result.pBest5)}\n${_result.best5}/$n',
                 ),
               ),
               Expanded(
                 child: Text(
-                  '${_result.pWorst1.toStringAsFixed(2)}\n${_result.worst1}/$n',
-                  // textAlign: TextAlign.center,
+                  '${_toPercent(_result.pWorst1)}\n${_result.worst1}/$n',
                 ),
               ),
               Expanded(
                 child: Text(
-                  '${_result.pMoreThan.toStringAsFixed(2)}\n${_result.moreThan}/$n',
-                  // textAlign: TextAlign.center,
+                  '${_toPercent(_result.pMoreThan)}\n${_result.moreThan}/$n',
                 ),
               ),
               Expanded(
                 child: Text(
-                  '${_result.pLessThan.toStringAsFixed(2)}\n${_result.lessThan}/$n',
-                  // textAlign: TextAlign.center,
+                  '${_toPercent(_result.pLessThan)}\n${_result.lessThan}/$n',
                 ),
               ),
             ],
@@ -274,7 +282,11 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
                         _sortType = _ExpSort.exp;
                       });
                     },
-                    child: Text('期望'),
+                    child: Text(
+                      LocalizedText.of(chs: '期望', jpn: '期待値', eng: 'Exp.'),
+                      maxLines: 1,
+                      overflow: TextOverflow.visible,
+                    ),
                   ),
                   _sortType == _ExpSort.exp,
                 ),
