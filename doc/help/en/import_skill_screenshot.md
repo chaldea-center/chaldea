@@ -4,7 +4,7 @@
 1. Feature: resolving servant skills from screenshots, adapted for all servers.
 2. Usage:
     - click upper-right button to import multiple screenshots at same time
-    - "upload" to server then "download" results after a while
+    - "upload" to server then "download" results after a while ~~(A few minutes to tens of minutes)~~
     - click "import" to merge results into current account
 3. Every result row:
     - cropped servant avatar: click to view the larger image

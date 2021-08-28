@@ -7,7 +7,7 @@
 // ignore_for_file:unnecessary_brace_in_string_interps, unnecessary_new
 // ignore_for_file:prefer_single_quotes,comment_references, directives_ordering
 // ignore_for_file:annotate_overrides,prefer_generic_function_type_aliases
-// ignore_for_file:unused_import, file_names
+// ignore_for_file:unused_import, file_names, avoid_escaping_inner_quotes
 
 import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
@@ -19,49 +19,51 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static m0(email, logPath) =>
+  static String m0(email, logPath) =>
       "Please send screenshot and log file to email:\n ${email}\nLog filepath: ${logPath}";
 
-  static m1(curVersion, newVersion, releaseNote) =>
+  static String m1(curVersion, newVersion, releaseNote) =>
       "Current version: ${curVersion}\nLatest version: ${newVersion}\nRelease Note:\n${releaseNote}";
 
-  static m2(name) => "Source ${name}";
+  static String m2(name) => "Source ${name}";
 
-  static m3(n) => "Max ${n} lottery";
+  static String m3(n) => "Max ${n} lottery";
 
-  static m4(n) => "Grail to crystal: ${n}";
+  static String m4(n) => "Grail to crystal: ${n}";
 
-  static m5(error) => "Import failed. Error:\n${error}";
+  static String m5(error) => "Import failed. Error:\n${error}";
 
-  static m6(account) => "Switched to account ${account}";
+  static String m6(account) => "Switched to account ${account}";
 
-  static m7(itemNum, svtNum) => "Import ${itemNum} items and ${svtNum} svts to";
+  static String m7(itemNum, svtNum) =>
+      "Import ${itemNum} items and ${svtNum} svts to";
 
-  static m8(name) => "${name} already exist";
+  static String m8(name) => "${name} already exist";
 
-  static m9(site) => "Jump to ${site}";
+  static String m9(site) => "Jump to ${site}";
 
-  static m10(first) => "${Intl.select(first, {
+  static String m10(first) => "${Intl.select(first, {
             'true': 'Already the first one',
             'false': 'Already the last one',
             'other': 'No more',
           })}";
 
-  static m11(version) => "Updated dataset to ${version}";
+  static String m11(version) => "Updated dataset to ${version}";
 
-  static m12(index) => "Plan ${index}";
+  static String m12(index) => "Plan ${index}";
 
-  static m13(total) => "Total ${total} results";
+  static String m13(total) => "Total ${total} results";
 
-  static m14(total, hidden) => "Total ${total} results (${hidden} hidden)";
+  static String m14(total, hidden) =>
+      "Total ${total} results (${hidden} hidden)";
 
-  static m15(server) => "Sync with ${server}";
+  static String m15(server) => "Sync with ${server}";
 
-  static m16(a, b) => "${a} ${b}";
+  static String m16(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
 
-  static _notInlinedMessages(_) => <String, Function>{
+  static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about_app": MessageLookupByLibrary.simpleMessage("About"),
         "about_app_declaration_text": MessageLookupByLibrary.simpleMessage(
             "The data used in this application comes from game Fate/GO and the following websites. The copyright of the original texts, pictures and voices of game belongs to TYPE MOON/FGO PROJECT.\n\nThe design of program is based on the WeChat mini program \"Material Programe\" and the iOS application \"Guda\".\n"),

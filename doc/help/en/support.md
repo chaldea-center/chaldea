@@ -9,6 +9,10 @@ If this project is helpful to you and want to support it, you can:
 ## Donation
 Donation is also welcomed, please leave a message to let me know that's donated for Chaldea.
 
+The project financial report can be found at online sheet:
+[https://shimo.im/sheets/Q3yHkVQJvqHqHtP3/IoZsK](https://shimo.im/sheets/Q3yHkVQJvqHqHtP3/IoZsK)
+
+
 ### Buy me a coffee
 [![ko-fi](resource://res/img/md/kofi2.webp)](https://ko-fi.com/G2G152BDO)
 

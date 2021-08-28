@@ -377,6 +377,11 @@ class FilterGroupData {
         invert = invert ?? false,
         options = options ?? {};
 
+  FilterGroupData.radio([String? selected])
+      : options = {if (selected != null) selected: true},
+        invert = false,
+        matchAll = false;
+
   bool isRadioVal(String v) => options[v] == true;
 
   bool isEmpty(Iterable<String> keys) {

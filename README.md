@@ -1,16 +1,23 @@
 <p align="center"><img alt="Chaldea logo" src="https://raw.githubusercontent.com/chaldea-center/chaldea/master/res/img/launcher_icon/app_icon_rounded.png" width="128"></p>
 
-# Chaldea
+# [Chaldea](https://github.com/chaldea-center/chaldea)
 
 [![platforms](https://img.shields.io/badge/platform-android_|_ios_|_windows_|_macos-blue)](https://github.com/chaldea-center/chaldea/releases)
 [![release](https://img.shields.io/github/v/release/chaldea-center/chaldea?sort=semver)](https://github.com/chaldea-center/chaldea/releases)
-![license GPL-3.0](https://img.shields.io/github/license/chaldea-center/chaldea.svg?style=flat)
+[![license GPL-3.0](https://img.shields.io/github/license/chaldea-center/chaldea.svg?style=flat)](https://github.com/chaldea-center/chaldea/blob/master/LICENSE)
 [![stars](https://img.shields.io/github/stars/chaldea-center/chaldea?style=social)](https://github.com/chaldea-center/chaldea/stargazers)
 
 Chaldea is a cross-platform tool for [Fate/Grand Order](https://www.fate-go.jp) to help masters planning their trip of taking back the future. 
 
 Chaldea is inspired from the iOS app [Guda](https://apps.apple.com/sg/app/guda/id1229055088) and WeChat mini program [FGO material programe](https://github.com/lacus87/fgo). 
-And dataset resources are mostly based on the Chinese FGO wiki [Mooncell](https://fgo.wiki) and English wiki [Fandom](https://fategrandorder.fandom.com/wiki/).
+And dataset resources are mostly based on following sites:
+- The Chinese wiki - [Mooncell](https://fgo.wiki)
+- The English wiki - [Fandom - Fate/Grand Order Wiki](https://fategrandorder.fandom.com/wiki/)
+- [FGO効率劇場](https://sites.google.com/view/fgo-domus-aurea)
+- [Atlas Academy](https://atlasacademy.io/)
+
+Thanks for all above communities and contributors.
+
 
 ## Features
 
@@ -76,4 +83,4 @@ If you have any bug report, feature request, question or want to contribute to t
 - pull request or join the collaboration
 - Email: [chaldea@narumi.cc](mailto:chaldea@narumi.cc)
 - Discord: [https://discord.gg/5M6w5faqjP](https://discord.gg/5M6w5faqjP)
-- [![Twitter](https://img.shields.io/twitter/url?label=Twitter&style=social&url=https%3A%2F%2Ftwitter.com%2Fnarumi147)](https://twitter.com/narumi147)
+- [![twitter@narumi147](https://img.shields.io/twitter/url?label=Twitter&style=social&url=https%3A%2F%2Ftwitter.com%2Fnarumi147)](https://twitter.com/narumi147)

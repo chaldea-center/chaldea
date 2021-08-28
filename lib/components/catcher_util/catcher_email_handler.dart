@@ -175,7 +175,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
         line = line.trim().replaceAll('\r', '');
         if (line.isNotEmpty) _blockedErrors!.add(line);
       });
-      print('_blockedErrors=${jsonEncode(_blockedErrors)}');
+      logger.d('_blockedErrors=${jsonEncode(_blockedErrors)}');
     }
 
     final error = (report.error ?? report.errorDetails).toString();

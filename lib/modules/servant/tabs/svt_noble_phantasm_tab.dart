@@ -30,10 +30,10 @@ class _SvtNoblePhantasmTabState extends SvtTabBaseState<SvtNoblePhantasmTab> {
     if (noblePhantasms.length == 0) {
       return Container(child: Center(child: Text('No NoblePhantasm Data')));
     }
-    status.npIndex =
-        fixValidRange(status.npIndex, 0, noblePhantasms.length - 1);
+    status.validate(svt);
 
     final td = noblePhantasms[status.npIndex];
+
     return ListView(
       children: <Widget>[
         TileGroup(
@@ -47,16 +47,14 @@ class _SvtNoblePhantasmTabState extends SvtTabBaseState<SvtNoblePhantasmTab> {
     );
   }
 
-  FilterGroupData _toggleData = FilterGroupData(options: {'0': true});
-
-  Widget buildToggle(int selected, NoblePhantasm td) {
+  Widget buildToggle(int npIndex, NoblePhantasm td) {
     if (noblePhantasms.length <= 1) {
       return Container();
     }
     final filter = FilterGroup(
       options:
           List.generate(noblePhantasms.length, (index) => index.toString()),
-      values: _toggleData,
+      values: FilterGroupData.radio(npIndex.toString()),
       optionBuilder: (s) {
         String state = noblePhantasms[int.parse(s)].state ?? 'NP';
         Widget button;

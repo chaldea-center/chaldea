@@ -9,6 +9,8 @@
 ## 捐赠
 如果希望通过捐赠以支持本项目，请添加留言以注明用于捐赠Chaldea应用。
 
+项目收支一览可见在线表格[https://shimo.im/sheets/Q3yHkVQJvqHqHtP3/IoZsK](https://shimo.im/sheets/Q3yHkVQJvqHqHtP3/IoZsK)
+
 ### Buy me a coffee
 [![ko-fi](resource://res/img/md/kofi2.webp)](https://ko-fi.com/G2G152BDO)
 
@@ -26,7 +28,7 @@
 - Apple开发者: ¥688/$99 每年
 - Google开发者: ¥162/$25
 - 云服务器: ~ ¥1000/$150 每年
-- 时间
+- 时间成本
 
 
 ## 联系方式
