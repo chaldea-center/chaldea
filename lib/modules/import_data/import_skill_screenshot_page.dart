@@ -11,7 +11,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path/path.dart' as pathlib;
 
 class ImportSkillScreenshotPage extends StatefulWidget {
-  ImportSkillScreenshotPage({Key? key}) : super(key: key);
+  final bool isAppendSkill;
+
+  ImportSkillScreenshotPage({Key? key, this.isAppendSkill = false})
+      : super(key: key);
 
   @override
   ImportSkillScreenshotPageState createState() =>
@@ -28,7 +31,9 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
   List<OneSvtRecResult> results = [];
   late Dio _dio;
 
-  Set<String> get imageFiles => db.runtimeData.svtRecognizeImageFiles;
+  Set<String> get imageFiles => widget.isAppendSkill
+      ? db.runtimeData.appendSkillRecognizeImageFiles
+      : db.runtimeData.activeSkillRecognizeImageFiles;
 
   // update every build
   Map<int, List<OneSvtRecResult>> resultsMap = {};
@@ -38,6 +43,9 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
     super.initState();
     _tabController =
         TabController(length: AppInfo.isDebugDevice ? 3 : 2, vsync: this);
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) setState(() {});
+    });
     _scrollController1 = ScrollController();
     _scrollController2 = ScrollController();
     _scrollController3 = ScrollController();
@@ -46,6 +54,8 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
       receiveTimeout: 600 * 1000,
       headers: Map.from(db.serverDio.options.headers)
         ..remove(Headers.contentTypeHeader),
+      queryParameters: {'is_append_skill': widget.isAppendSkill}
+        ..addAll(db.serverDio.options.queryParameters),
     ));
     _debugCountController = TextEditingController(text: '10');
   }
@@ -72,8 +82,9 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
       appBar: AppBar(
         leading: BackButton(),
         titleSpacing: 0,
-        title: Text(LocalizedText.of(
-            chs: '技能截图解析', jpn: 'スキルのスクリーンショット', eng: 'Skill Screenshots')),
+        title: Text(widget.isAppendSkill
+            ? S.current.append_skill
+            : S.current.active_skill),
         actions: [
           MarkdownHelpPage.buildHelpBtn(context, 'import_skill_screenshot.md'),
           IconButton(
@@ -200,20 +211,22 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
           setState(() {});
         },
       );
+
+      int minSkill = widget.isAppendSkill ? 0 : 1;
       List<Widget> skillBtns = List.generate(
         3,
         (index) => SizedBox(
           width: 25,
           child: DropdownButton<int?>(
-            value: MathUtils.inRange(svtResult.skills[index], 1, 10)
+            value: MathUtils.inRange(svtResult.skills[index], minSkill, 10)
                 ? svtResult.skills[index]
                 : null,
             hint: Text('-1'),
             items: List.generate(
-              10,
-              (index) => DropdownMenuItem(
-                  value: index + 1,
-                  child: Text((index + 1).toString().padLeft(2))),
+              10 - minSkill + 1,
+              (i) => DropdownMenuItem(
+                  value: i + minSkill,
+                  child: Text((i + minSkill).toString().padLeft(2))),
             ),
             icon: Container(),
             underline: Container(),
@@ -332,6 +345,10 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
     );
   }
 
+  bool get _isUploadTab => _tabController.index == 0;
+
+  bool get _isResultTab => _tabController.index == 1;
+
   Widget get buttonBar {
     List<OneSvtRecResult> usedResults =
         results.where((e) => e.isValid && e.checked).toList();
@@ -344,29 +361,35 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
           spacing: 6,
           runSpacing: 4,
           children: [
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  imageFiles.clear();
-                });
-              },
-              icon: Icon(Icons.clear_all),
-              tooltip: 'Clear All',
-            ),
-            ElevatedButton.icon(
-                onPressed: imageFiles.isEmpty ? null : _uploadScreenshots,
-                icon: Icon(Icons.upload),
-                label: Text(S.current.upload)),
-            ElevatedButton.icon(
-                onPressed: _fetchResult,
-                icon: Icon(Icons.download),
-                label: Text(
-                    LocalizedText.of(chs: '结果', jpn: '結果', eng: 'Result'))),
-            ElevatedButton(
-              child: Text(S.current.import_data),
-              onPressed:
-                  usedResults.isEmpty ? null : () => _doImport(usedResults),
-            ),
+            if (_isUploadTab)
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    imageFiles.clear();
+                  });
+                },
+                icon: Icon(Icons.clear_all),
+                tooltip: S.current.clear,
+                constraints: BoxConstraints(minWidth: 36, maxHeight: 24),
+                padding: EdgeInsets.zero,
+              ),
+            if (_isUploadTab)
+              ElevatedButton.icon(
+                  onPressed: imageFiles.isEmpty ? null : _uploadScreenshots,
+                  icon: Icon(Icons.upload),
+                  label: Text(S.current.upload)),
+            if (_isUploadTab || _isResultTab)
+              ElevatedButton.icon(
+                  onPressed: _fetchResult,
+                  icon: Icon(Icons.download),
+                  label: Text(
+                      LocalizedText.of(chs: '结果', jpn: '結果', eng: 'Result'))),
+            if (_isResultTab)
+              ElevatedButton(
+                child: Text(S.current.import_data),
+                onPressed:
+                    usedResults.isEmpty ? null : () => _doImport(usedResults),
+              ),
           ],
         )
       ],
@@ -448,6 +471,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
             jpn: '認識結果が空です',
             eng: 'The recognition result is empty'));
       }
+      results.forEach((e) => e.isAppendSkill = widget.isAppendSkill);
       _tabController.index = 1;
       await Future.delayed(Duration(milliseconds: 300));
       if (mounted) setState(() {});
@@ -466,10 +490,21 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
           ' -> ${db.curUser.name}'),
       onTapOk: () {
         usedResults.forEach((result) {
+          if (!result.isValid) return;
           final status = db.curUser.svtStatusOf(result.svtNo!);
-          status
-            ..favorite = true
-            ..curVal.skills = [result.skill1!, result.skill2!, result.skill3!];
+          status.favorite = true;
+          if (widget.isAppendSkill)
+            status.curVal.appendSkills = [
+              result.skill1!,
+              result.skill2!,
+              result.skill3!
+            ];
+          else
+            status.curVal.skills = [
+              result.skill1!,
+              result.skill2!,
+              result.skill3!
+            ];
         });
         db.itemStat.update();
         EasyLoading.showSuccess(S.current.import_data_success);

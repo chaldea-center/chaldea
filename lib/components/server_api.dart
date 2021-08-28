@@ -82,6 +82,7 @@ class OneSvtRecResult {
   int? skill2;
   int? skill3;
   String? image;
+  bool isAppendSkill = false;
 
   OneSvtRecResult({
     this.svtNo,
@@ -113,7 +114,8 @@ class OneSvtRecResult {
     return svtNo != null &&
         svtNo! > 0 &&
         !db.gameData.unavailableSvts.contains(svtNo) &&
-        skills.every((e) => e != null && e >= 1 && e <= 10);
+        skills
+            .every((e) => e != null && e >= (isAppendSkill ? 0 : 1) && e <= 10);
   }
 
   factory OneSvtRecResult.fromJson(Map<String, dynamic> data) =>

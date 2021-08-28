@@ -114,7 +114,6 @@
   "obtain_methods": "Obtains",
   "active_skill": "Active Skill",
   "passive_skill": "Passive Skill",
-  "card_skill": "Skill",
   "card_description": "Description",
   "filter": "Filter",
   "filter_shown_type": "Display",

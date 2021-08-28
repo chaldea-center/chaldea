@@ -73,16 +73,37 @@ class _ImportPageHomeState extends State<ImportPageHome> {
           ListTile(
             leading: Icon(Icons.screenshot),
             title: Text(LocalizedText.of(
-                chs: '技能截图解析', jpn: 'スキルのスクリーンショット', eng: 'Skill Screenshots')),
+                chs: '主动技能截图解析',
+                jpn: '保有スキルのスクリーンショット',
+                eng: 'Active Skill Screenshots')),
             subtitle: Text(LocalizedText.of(
-                chs: '强化-从者技能强化',
-                jpn: '強化-サーヴァントスキル強化 ',
-                eng: 'Enhance-Skill')),
+                chs: '强化 - 从者技能强化',
+                jpn: '強化 - サーヴァントスキル強化 ',
+                eng: 'Enhance - Skill')),
             trailing: Icon(Icons.keyboard_arrow_right),
             onTap: () {
               SplitRoute.push(
                 context,
                 ImportSkillScreenshotPage(),
+                popDetail: true,
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.screenshot),
+            title: Text(LocalizedText.of(
+                chs: '附加技能截图解析',
+                jpn: 'アペンドスキルのスクリーンショット',
+                eng: 'Append Skill Screenshots')),
+            subtitle: Text(LocalizedText.of(
+                chs: '强化 - 被动技能强化',
+                jpn: '強化 - アペンドスキル強化 ',
+                eng: 'Enhance - Append Skill')),
+            trailing: Icon(Icons.keyboard_arrow_right),
+            onTap: () {
+              SplitRoute.push(
+                context,
+                ImportSkillScreenshotPage(isAppendSkill: true),
                 popDetail: true,
               );
             },

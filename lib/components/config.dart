@@ -616,7 +616,8 @@ class RuntimeData {
   Version? upgradableVersion;
   double? criticalWidth;
   Set<String> itemRecognizeImageFiles = {};
-  Set<String> svtRecognizeImageFiles = {};
+  Set<String> activeSkillRecognizeImageFiles = {};
+  Set<String> appendSkillRecognizeImageFiles = {};
   bool googlePlayAccess = false;
 
   bool _showDebugFAB = true;

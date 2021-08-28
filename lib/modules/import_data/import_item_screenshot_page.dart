@@ -29,6 +29,9 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
     super.initState();
     _tabController =
         TabController(length: AppInfo.isDebugDevice ? 3 : 2, vsync: this);
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) setState(() {});
+    });
     _scrollController1 = ScrollController();
     _scrollController2 = ScrollController();
     _scrollController3 = ScrollController();
@@ -100,6 +103,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
             ),
           ),
           kDefaultDivider,
+          if (kDebugMode) Center(child: Text(_dio.options.baseUrl)),
           buttonBar,
         ],
       ),
@@ -158,6 +162,10 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
     );
   }
 
+  bool get _isUploadTab => _tabController.index == 0;
+
+  bool get _isResultTab => _tabController.index == 1;
+
   Widget get buttonBar {
     return ButtonBar(
       alignment: MainAxisAlignment.center,
@@ -168,28 +176,34 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
           spacing: 6,
           runSpacing: 4,
           children: [
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  imageFiles.clear();
-                });
-              },
-              icon: Icon(Icons.clear_all),
-              tooltip: 'Clear All',
-            ),
-            ElevatedButton.icon(
-                onPressed: imageFiles.isEmpty ? null : _uploadScreenshots,
-                icon: Icon(Icons.upload),
-                label: Text(S.current.upload)),
-            ElevatedButton.icon(
-                onPressed: _fetchResult,
-                icon: Icon(Icons.download),
-                label: Text(
-                    LocalizedText.of(chs: '结果', jpn: '結果', eng: 'Result'))),
-            ElevatedButton(
-              onPressed: output.isEmpty ? null : _doImportResult,
-              child: Text(S.current.import_screenshot_update_items),
-            ),
+            if (_isUploadTab)
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    imageFiles.clear();
+                  });
+                },
+                icon: Icon(Icons.clear_all),
+                tooltip: S.current.clear,
+                constraints: BoxConstraints(minWidth: 36, maxHeight: 24),
+                padding: EdgeInsets.zero,
+              ),
+            if (_isUploadTab)
+              ElevatedButton.icon(
+                  onPressed: imageFiles.isEmpty ? null : _uploadScreenshots,
+                  icon: Icon(Icons.upload),
+                  label: Text(S.current.upload)),
+            if (_isUploadTab || _isResultTab)
+              ElevatedButton.icon(
+                  onPressed: _fetchResult,
+                  icon: Icon(Icons.download),
+                  label: Text(
+                      LocalizedText.of(chs: '结果', jpn: '結果', eng: 'Result'))),
+            if (_isResultTab)
+              ElevatedButton(
+                onPressed: output.isEmpty ? null : _doImportResult,
+                child: Text(S.current.import_screenshot_update_items),
+              ),
           ],
         )
       ],
