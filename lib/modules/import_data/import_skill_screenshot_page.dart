@@ -169,7 +169,35 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
       ),
     );
     List<Widget> children = [];
-    results.forEach((svtResult) {
+    List<OneSvtRecResult> sortedResults = List.of(results);
+    switch (_sortType) {
+      case SvtCompare.no:
+        sortedResults.sort((a, b) {
+          return (a.svtNo ?? -1).compareTo(b.svtNo ?? -1);
+        });
+        break;
+      case SvtCompare.className:
+        sortedResults.sort((a, b) {
+          final svtA = db.gameData.servants[a.svtNo],
+              svtB = db.gameData.servants[b.svtNo];
+          return Servant.compare(svtA, svtB,
+              keys: [SvtCompare.className, SvtCompare.rarity, SvtCompare.no],
+              reversed: [false, true, true]);
+        });
+        break;
+      case SvtCompare.rarity:
+        sortedResults.sort((a, b) {
+          final svtA = db.gameData.servants[a.svtNo],
+              svtB = db.gameData.servants[b.svtNo];
+          return Servant.compare(svtA, svtB,
+              keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no],
+              reversed: [true, false, true]);
+        });
+        break;
+      default:
+        break;
+    }
+    sortedResults.forEach((svtResult) {
       if (svtResult.imgBytes == null) return;
 
       Servant? svt;
@@ -348,6 +376,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
   bool get _isUploadTab => _tabController.index == 0;
 
   bool get _isResultTab => _tabController.index == 1;
+  SvtCompare? _sortType;
 
   Widget get buttonBar {
     List<OneSvtRecResult> usedResults =
@@ -378,6 +407,35 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
                   onPressed: imageFiles.isEmpty ? null : _uploadScreenshots,
                   icon: Icon(Icons.upload),
                   label: Text(S.current.upload)),
+            if (_isResultTab)
+              DropdownButton<SvtCompare?>(
+                value: _sortType,
+                isDense: true,
+                items: [
+                  DropdownMenuItem(
+                    child: Text(LocalizedText.of(
+                        chs: '不排序', jpn: 'Unsorted', eng: 'Unsorted')),
+                    value: null,
+                  ),
+                  DropdownMenuItem(
+                    child: Text(S.current.filter_sort_number),
+                    value: SvtCompare.no,
+                  ),
+                  DropdownMenuItem(
+                    child: Text(S.current.filter_sort_class),
+                    value: SvtCompare.className,
+                  ),
+                  DropdownMenuItem(
+                    child: Text(S.current.filter_sort_rarity),
+                    value: SvtCompare.rarity,
+                  ),
+                ],
+                onChanged: (v) {
+                  setState(() {
+                    _sortType = v;
+                  });
+                },
+              ),
             if (_isUploadTab || _isResultTab)
               ElevatedButton.icon(
                   onPressed: _fetchResult,
