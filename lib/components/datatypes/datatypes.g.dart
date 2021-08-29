@@ -295,6 +295,56 @@ Map<String, dynamic> _$CraftEssenceToJson(CraftEssence instance) =>
       'valentine': instance.valentine,
     };
 
+EnemyDetail _$EnemyDetailFromJson(Map<String, dynamic> json) {
+  return $checkedNew('EnemyDetail', json, () {
+    final val = EnemyDetail(
+      category: $checkedConvert(json, 'category', (v) => v as String),
+      icon: $checkedConvert(json, 'icon', (v) => v as String?),
+      id: $checkedConvert(json, 'id', (v) => v as String),
+      name: $checkedConvert(json, 'name', (v) => v as String),
+      classIcons: $checkedConvert(json, 'classIcons',
+          (v) => (v as List<dynamic>).map((e) => e as String).toList()),
+      attribute: $checkedConvert(json, 'attribute', (v) => v as String),
+      traits: $checkedConvert(json, 'traits',
+          (v) => (v as List<dynamic>).map((e) => e as String).toList()),
+      actions: $checkedConvert(json, 'actions', (v) => v as int?),
+      charges: $checkedConvert(json, 'charges',
+          (v) => (v as List<dynamic>).map((e) => e as int).toList()),
+      deathRate: $checkedConvert(json, 'deathRate', (v) => v as String?),
+      noblePhantasm: $checkedConvert(json, 'noblePhantasm', (v) => v as String),
+      skill: $checkedConvert(json, 'skill', (v) => v as String),
+      hitsCommon: $checkedConvert(json, 'hitsCommon',
+          (v) => (v as List<dynamic>).map((e) => e as int).toList()),
+      hitsCritical: $checkedConvert(json, 'hitsCritical',
+          (v) => (v as List<dynamic>).map((e) => e as int).toList()),
+      hitsNp: $checkedConvert(json, 'hitsNp',
+          (v) => (v as List<dynamic>).map((e) => e as int).toList()),
+      firstStage: $checkedConvert(json, 'firstStage', (v) => v as String),
+    );
+    return val;
+  });
+}
+
+Map<String, dynamic> _$EnemyDetailToJson(EnemyDetail instance) =>
+    <String, dynamic>{
+      'category': instance.category,
+      'icon': instance.icon,
+      'id': instance.id,
+      'name': instance.name,
+      'classIcons': instance.classIcons,
+      'attribute': instance.attribute,
+      'traits': instance.traits,
+      'actions': instance.actions,
+      'charges': instance.charges,
+      'deathRate': instance.deathRate,
+      'noblePhantasm': instance.noblePhantasm,
+      'skill': instance.skill,
+      'hitsCommon': instance.hitsCommon,
+      'hitsCritical': instance.hitsCritical,
+      'hitsNp': instance.hitsNp,
+      'firstStage': instance.firstStage,
+    };
+
 Events _$EventsFromJson(Map<String, dynamic> json) {
   return $checkedNew('Events', json, () {
     final val = Events(
@@ -597,6 +647,17 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
                 (k, e) =>
                     MapEntry(k, Summon.fromJson(e as Map<String, dynamic>)),
               )),
+      categorizedEnemies: $checkedConvert(
+          json,
+          'categorizedEnemies',
+          (v) => (v as Map<String, dynamic>).map(
+                (k, e) => MapEntry(
+                    k,
+                    (e as List<dynamic>)
+                        .map((e) =>
+                            EnemyDetail.fromJson(e as Map<String, dynamic>))
+                        .toList()),
+              )),
       fsmSvtIdMapping: $checkedConvert(
           json,
           'fsmSvtIdMapping',
@@ -623,6 +684,7 @@ Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
       'glpk': instance.glpk,
       'mysticCodes': instance.mysticCodes,
       'summons': instance.summons,
+      'categorizedEnemies': instance.categorizedEnemies,
       'fsmSvtIdMapping':
           instance.fsmSvtIdMapping.map((k, e) => MapEntry(k.toString(), e)),
     };

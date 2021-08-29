@@ -20,8 +20,12 @@ class GameData {
   GLPKData glpk;
   Map<String, MysticCode> mysticCodes;
   Map<String, Summon> summons;
-
+  Map<String, List<EnemyDetail>> categorizedEnemies;
   Map<int, int> fsmSvtIdMapping;
+
+  // Generated
+  @JsonKey(ignore: true)
+  Map<String, EnemyDetail> enemies;
 
   @JsonKey(ignore: true)
   Map<int, Servant> servantsWithUser;
@@ -41,6 +45,7 @@ class GameData {
     GLPKData? glpk,
     this.mysticCodes = const {},
     this.summons = const {},
+    this.categorizedEnemies = const {},
     this.fsmSvtIdMapping = const {},
   })  : events = events ??
             Events(
@@ -58,7 +63,11 @@ class GameData {
               freeCounts: {},
               weeklyMissionData: [],
             ),
-        servantsWithUser = Map.of(servants);
+        servantsWithUser = Map.of(servants),
+        enemies = {
+          for (final es in categorizedEnemies.values)
+            for (final e in es) e.id: e
+        };
 
   void updateSvtCrafts() {
     servants.forEach((key, svt) {

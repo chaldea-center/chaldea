@@ -81,7 +81,7 @@ class CustomTableRow extends StatefulWidget {
   CustomTableRow.fromTexts({
     required List<String> texts,
     TableCellData? defaults,
-    bool isHeader = false,
+    bool? isHeader,
     Color? color,
     VerticalDivider divider = kVerticalDivider,
   }) : this(

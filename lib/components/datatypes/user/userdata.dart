@@ -114,7 +114,7 @@ class UserData {
 
   factory UserData.fromJson(Map<String, dynamic> data) {
     final userData = _$UserDataFromJson(data);
-    if (data['version'] == null || data['version'] == 1 || true) {
+    if (data['version'] == null || data['version'] == 1) {
       // 2021/08/03 support append skill unlock
       logger.d('appendSkill: convert v1 to v2');
       for (final user in userData.users.values) {

@@ -49,6 +49,8 @@ part 'craft_essence.dart';
 
 part 'datatypes.g.dart';
 
+part 'enemy_detail.dart';
+
 part 'event.dart';
 
 part 'gamedata.dart';

@@ -83,22 +83,24 @@ class _QuestCardState extends State<QuestCard> {
               ),
             ),
             ..._buildBattles(quest.battles),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(Icons.info_outline, size: 16),
-                  SizedBox(width: 6),
-                  Text(LocalizedText.of(
-                    chs: '非Free本的关卡配置仅供参考，数据可能解析不完全',
-                    jpn: 'jpn',
-                    eng: 'Data of quest may not be accurate. ',
-                  ))
-                ],
-              ),
-            )
+            if (!quest.isFree)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(Icons.info_outline, size: 16),
+                    SizedBox(width: 6),
+                    Flexible(
+                        child: Text(LocalizedText.of(
+                      chs: '非Free本的关卡配置仅供参考，数据可能解析不完全',
+                      jpn: 'jpn',
+                      eng: 'Data of quest may not be accurate. ',
+                    )))
+                  ],
+                ),
+              )
           ], divider: Divider(height: 3, thickness: 0.5))
               .toList(),
         ),
@@ -261,6 +263,20 @@ class _QuestCardState extends State<QuestCard> {
         final String? name = getEnemyName(showTrueName
             ? enemy.name[i]
             : (enemy.shownName[i] ?? enemy.name[i]));
+        String? icon = db.gameData.enemies[enemy.name[i]]?.icon;
+        if (icon != null) {
+          lines.add(CachedImage(
+            imageUrl: icon,
+            width: 36,
+            height: 36,
+            placeholder: (_, __) => Container(),
+          ));
+        } else if (enemy.shownName[i] == '影从者') {
+          final svt = db.gameData.servants.values
+              .firstWhereOrNull((e) => e.mcLink == enemy.name[i]);
+          if (svt != null)
+            lines.add(svt.iconBuilder(context: context, height: 36));
+        }
         if (name?.isNotEmpty == true)
           lines.add(AutoSizeText(name!,
               maxFontSize: 14,
