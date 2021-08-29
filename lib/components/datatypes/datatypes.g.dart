@@ -300,8 +300,10 @@ EnemyDetail _$EnemyDetailFromJson(Map<String, dynamic> json) {
     final val = EnemyDetail(
       category: $checkedConvert(json, 'category', (v) => v as String),
       icon: $checkedConvert(json, 'icon', (v) => v as String?),
-      id: $checkedConvert(json, 'id', (v) => v as String),
-      name: $checkedConvert(json, 'name', (v) => v as String),
+      ids: $checkedConvert(json, 'ids',
+          (v) => (v as List<dynamic>).map((e) => e as String).toList()),
+      names: $checkedConvert(json, 'names',
+          (v) => (v as List<dynamic>).map((e) => e as String).toList()),
       classIcons: $checkedConvert(json, 'classIcons',
           (v) => (v as List<dynamic>).map((e) => e as String).toList()),
       attribute: $checkedConvert(json, 'attribute', (v) => v as String),
@@ -329,8 +331,8 @@ Map<String, dynamic> _$EnemyDetailToJson(EnemyDetail instance) =>
     <String, dynamic>{
       'category': instance.category,
       'icon': instance.icon,
-      'id': instance.id,
-      'name': instance.name,
+      'ids': instance.ids,
+      'names': instance.names,
       'classIcons': instance.classIcons,
       'attribute': instance.attribute,
       'traits': instance.traits,

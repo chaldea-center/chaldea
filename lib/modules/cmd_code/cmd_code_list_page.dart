@@ -30,8 +30,8 @@ class CmdCodeListPageState
     options = _CmdCodeSearchOptions(onChanged: (_) => safeSetState());
   }
 
-  void _onTapCard(CommandCode code) {
-    if (widget.onSelected != null) {
+  void _onTapCard(CommandCode code, [bool forcePush = false]) {
+    if (widget.onSelected != null && !forcePush) {
       widget.onSelected!(code);
     } else {
       SplitRoute.push(
@@ -92,7 +92,14 @@ class CmdCodeListPageState
           Text('No.${code.no}')
         ],
       ),
-      trailing: Icon(Icons.arrow_forward_ios),
+      trailing: IconButton(
+        icon: Icon(Icons.keyboard_arrow_right),
+        constraints: BoxConstraints(minHeight: 48, minWidth: 2),
+        padding: EdgeInsets.symmetric(vertical: 8),
+        onPressed: () {
+          _onTapCard(code, true);
+        },
+      ),
       selected: SplitRoute.isSplit(context) && selected == code,
       onTap: () => _onTapCard(code),
     );

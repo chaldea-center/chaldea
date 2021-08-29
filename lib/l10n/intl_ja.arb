@@ -415,5 +415,7 @@
   "support_party": "サポート編成",
   "simulator": "エミュレータ",
   "lucky_bag": "福袋",
-  "bond": "絆"
+  "bond": "絆",
+  "enemy_list": "エネミー",
+  "critical_attack": "クリティカル"
 }

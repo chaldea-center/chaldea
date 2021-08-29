@@ -62,7 +62,6 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m16(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about_app": MessageLookupByLibrary.simpleMessage("About"),
         "about_app_declaration_text": MessageLookupByLibrary.simpleMessage(
@@ -147,6 +146,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "craft_essence_title": MessageLookupByLibrary.simpleMessage("Craft"),
         "create_duplicated_svt":
             MessageLookupByLibrary.simpleMessage("Create duplicated"),
+        "critical_attack": MessageLookupByLibrary.simpleMessage("Critical"),
         "cur_account": MessageLookupByLibrary.simpleMessage("Current Account"),
         "cur_ap": MessageLookupByLibrary.simpleMessage("Current AP"),
         "current_": MessageLookupByLibrary.simpleMessage("Current"),
@@ -196,6 +196,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "efficiency_type_ap": MessageLookupByLibrary.simpleMessage("20AP Rate"),
         "efficiency_type_drop":
             MessageLookupByLibrary.simpleMessage("Drop Rate"),
+        "enemy_list": MessageLookupByLibrary.simpleMessage("Enemies"),
         "enhance": MessageLookupByLibrary.simpleMessage("Enhance"),
         "enhance_warning": MessageLookupByLibrary.simpleMessage(
             "The following items will be consumed for enhancement"),

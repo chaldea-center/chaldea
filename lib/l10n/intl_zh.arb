@@ -413,5 +413,7 @@
   "support_party": "助战编制",
   "simulator": "模拟器",
   "lucky_bag": "福袋",
-  "bond": "羁绊"
+  "bond": "羁绊",
+  "enemy_list": "敌人一览",
+  "critical_attack": "暴击"
 }

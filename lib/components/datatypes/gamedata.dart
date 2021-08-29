@@ -25,7 +25,7 @@ class GameData {
 
   // Generated
   @JsonKey(ignore: true)
-  Map<String, EnemyDetail> enemies;
+  Map<String, EnemyDetail> enemies = {};
 
   @JsonKey(ignore: true)
   Map<int, Servant> servantsWithUser;
@@ -63,11 +63,12 @@ class GameData {
               freeCounts: {},
               weeklyMissionData: [],
             ),
-        servantsWithUser = Map.of(servants),
-        enemies = {
-          for (final es in categorizedEnemies.values)
-            for (final e in es) e.id: e
-        };
+        servantsWithUser = Map.of(servants) {
+    for (final es in categorizedEnemies.values)
+      for (final e in es)
+        for (final key in [...e.names, ...e.ids])
+          if (!enemies.containsKey(key)) enemies[key] = e;
+  }
 
   void updateSvtCrafts() {
     servants.forEach((key, svt) {

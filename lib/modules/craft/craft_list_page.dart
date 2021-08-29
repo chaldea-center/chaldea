@@ -87,7 +87,7 @@ class CraftListPageState
           Text('No.${ce.no.toString().padRight(4)}  $additionalText'),
         ],
       ),
-      trailing: Icon(Icons.arrow_forward_ios),
+      trailing: Icon(Icons.keyboard_arrow_right),
       selected: SplitRoute.isSplit(context) && selected == ce,
       onTap: () {
         SplitRoute.push(

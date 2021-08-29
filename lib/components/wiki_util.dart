@@ -86,8 +86,9 @@ class WikiUtil {
       String api = isFandomFile
           ? 'https://fategrandorder.fandom.com/api.php'
           : 'https://fgo.wiki/api.php';
+      Response? response;
       try {
-        final response = await _dio.get(
+        response = await _dio.get(
           api,
           queryParameters: {
             "action": "query",
@@ -99,8 +100,9 @@ class WikiUtil {
           },
           options: Options(responseType: ResponseType.json),
         );
-        final String? url =
-            response.data['query']['pages'].values.first['imageinfo'][0]['url'];
+        final info = response.data['query']['pages'].values.first['imageinfo'];
+        if (info == null) return null;
+        final String? url = info[0]['url'];
         if (url?.isNotEmpty == true) {
           await wikiUrlCache.put(key, url!);
           if (savePath != null) {
@@ -122,6 +124,7 @@ class WikiUtil {
         return url;
       } catch (e, s) {
         _errorTasks[filename] = DateTime.now().millisecondsSinceEpoch;
+        logger.d(response?.data);
         logger.e('error download $filename', e, s);
       } finally {
         _resolvingUrlTasks.remove(filename);

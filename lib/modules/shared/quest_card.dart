@@ -90,14 +90,22 @@ class _QuestCardState extends State<QuestCard> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Icon(Icons.info_outline, size: 16),
+                    Icon(
+                      Icons.info_outline,
+                      size: 16,
+                      color: Theme.of(context).textTheme.caption?.color,
+                    ),
                     SizedBox(width: 6),
                     Flexible(
-                        child: Text(LocalizedText.of(
-                      chs: '非Free本的关卡配置仅供参考，数据可能解析不完全',
-                      jpn: 'jpn',
-                      eng: 'Data of quest may not be accurate. ',
-                    )))
+                      child: Text(
+                        LocalizedText.of(
+                          chs: '非Free本的关卡配置仅供参考，数据可能解析不完全',
+                          jpn: 'jpn',
+                          eng: 'Data of quest may not be accurate. ',
+                        ),
+                        style: Theme.of(context).textTheme.caption,
+                      ),
+                    )
                   ],
                 ),
               )

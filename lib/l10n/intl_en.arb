@@ -413,5 +413,7 @@
   "support_party": "Support Setup",
   "simulator": "Simulator",
   "lucky_bag": "Lucky Bag",
-  "bond": "Bond"
+  "bond": "Bond",
+  "enemy_list": "Enemies",
+  "critical_attack": "Critical"
 }

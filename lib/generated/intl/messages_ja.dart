@@ -60,7 +60,6 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m16(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about_app": MessageLookupByLibrary.simpleMessage("ついて"),
         "about_app_declaration_text": MessageLookupByLibrary.simpleMessage(
@@ -132,6 +131,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "craft_essence": MessageLookupByLibrary.simpleMessage("概念礼装"),
         "craft_essence_title": MessageLookupByLibrary.simpleMessage("概念礼装"),
         "create_duplicated_svt": MessageLookupByLibrary.simpleMessage("2号機を生成"),
+        "critical_attack": MessageLookupByLibrary.simpleMessage("クリティカル"),
         "cur_account": MessageLookupByLibrary.simpleMessage("アカウント"),
         "cur_ap": MessageLookupByLibrary.simpleMessage("既存のAP"),
         "current_": MessageLookupByLibrary.simpleMessage("現在"),
@@ -177,6 +177,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "efficiency_type": MessageLookupByLibrary.simpleMessage("効率タイプ"),
         "efficiency_type_ap": MessageLookupByLibrary.simpleMessage("20AP効率"),
         "efficiency_type_drop": MessageLookupByLibrary.simpleMessage("ドロップ率"),
+        "enemy_list": MessageLookupByLibrary.simpleMessage("エネミー"),
         "enhance": MessageLookupByLibrary.simpleMessage("強化"),
         "enhance_warning":
             MessageLookupByLibrary.simpleMessage("強化すると、次の資アイテムが差し引かれます"),

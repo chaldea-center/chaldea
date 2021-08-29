@@ -1176,10 +1176,10 @@ class S {
     );
   }
 
-  /// `持有技能`
+  /// `保有技能`
   String get active_skill {
     return Intl.message(
-      '持有技能',
+      '保有技能',
       name: 'active_skill',
       desc: '',
       args: [],
@@ -4191,6 +4191,26 @@ class S {
     return Intl.message(
       '羁绊',
       name: 'bond',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `敌人一览`
+  String get enemy_list {
+    return Intl.message(
+      '敌人一览',
+      name: 'enemy_list',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `暴击`
+  String get critical_attack {
+    return Intl.message(
+      '暴击',
+      name: 'critical_attack',
       desc: '',
       args: [],
     );

@@ -4,6 +4,7 @@ import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/craft/craft_list_page.dart';
 import 'package:chaldea/modules/damage_calc/damage_calc_page.dart';
 import 'package:chaldea/modules/debug/theme_palette.dart';
+import 'package:chaldea/modules/enemy/enemy_list_page.dart';
 import 'package:chaldea/modules/event/events_page.dart';
 import 'package:chaldea/modules/extras/ap_calc_page.dart';
 import 'package:chaldea/modules/extras/cv_illustrator_list.dart';
@@ -80,6 +81,7 @@ class GalleryItem {
     ffo,
     cvList,
     illustratorList,
+    enemyList,
     expCard,
     statistics,
     importData,
@@ -184,6 +186,13 @@ class GalleryItem {
     icon: FontAwesomeIcons.paintBrush,
     page: IllustratorListPage(),
     isDetail: true,
+  );
+  static GalleryItem enemyList = GalleryItem(
+    name: 'enemy_list',
+    titleBuilder: () => S.current.enemy_list,
+    icon: FontAwesomeIcons.cat,
+    page: EnemyListPage(),
+    isDetail: false,
   );
   static GalleryItem expCard = GalleryItem(
     name: 'exp_card',

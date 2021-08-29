@@ -60,7 +60,6 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m16(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about_app": MessageLookupByLibrary.simpleMessage("关于"),
         "about_app_declaration_text": MessageLookupByLibrary.simpleMessage(
@@ -78,7 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "about_update_app_alert_ios_mac":
             MessageLookupByLibrary.simpleMessage("请在App Store中检查更新"),
         "about_update_app_detail": m1,
-        "active_skill": MessageLookupByLibrary.simpleMessage("持有技能"),
+        "active_skill": MessageLookupByLibrary.simpleMessage("保有技能"),
         "add": MessageLookupByLibrary.simpleMessage("添加"),
         "add_to_blacklist": MessageLookupByLibrary.simpleMessage("加入黑名单"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
@@ -130,6 +129,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "craft_essence": MessageLookupByLibrary.simpleMessage("概念礼装"),
         "craft_essence_title": MessageLookupByLibrary.simpleMessage("概念礼装"),
         "create_duplicated_svt": MessageLookupByLibrary.simpleMessage("生成2号机"),
+        "critical_attack": MessageLookupByLibrary.simpleMessage("暴击"),
         "cur_account": MessageLookupByLibrary.simpleMessage("当前账号"),
         "cur_ap": MessageLookupByLibrary.simpleMessage("现有AP"),
         "current_": MessageLookupByLibrary.simpleMessage("当前"),
@@ -173,6 +173,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "efficiency_type": MessageLookupByLibrary.simpleMessage("效率类型"),
         "efficiency_type_ap": MessageLookupByLibrary.simpleMessage("20AP效率"),
         "efficiency_type_drop": MessageLookupByLibrary.simpleMessage("每场掉率"),
+        "enemy_list": MessageLookupByLibrary.simpleMessage("敌人一览"),
         "enhance": MessageLookupByLibrary.simpleMessage("强化"),
         "enhance_warning": MessageLookupByLibrary.simpleMessage("强化将扣除以下素材"),
         "error_no_network": MessageLookupByLibrary.simpleMessage("无网络连接"),
