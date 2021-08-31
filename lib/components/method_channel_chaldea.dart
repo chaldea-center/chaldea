@@ -13,7 +13,7 @@ class MethodChannelChaldea {
       if (call.method == 'onWindowPos') {
         if (call.arguments != null && call.arguments['pos'] != null) {
           // print('onWindowRect: args=${call.arguments}');
-          db.cfg.windowPos.put(call.arguments['pos']);
+          db.cfg.windowPos.set(call.arguments['pos']);
           return;
         } else {
           print('onWindowRect invalid args=${call.arguments}');

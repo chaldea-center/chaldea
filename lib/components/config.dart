@@ -14,7 +14,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:path_provider/path_provider.dart';
@@ -24,11 +23,10 @@ import 'constants.dart';
 import 'datatypes/datatypes.dart';
 import 'device_app_info.dart';
 import 'git_tool.dart';
-import 'hive_boxes.dart';
+import 'json_store/local_app_config.dart';
 import 'logger.dart';
 import 'method_channel_chaldea.dart';
 import 'shared_prefs.dart';
-import 'utils.dart';
 import 'wiki_util.dart';
 
 /// app config:
@@ -54,7 +52,7 @@ class Database {
       ));
 
   SharedPrefs prefs = SharedPrefs();
-  late AppConfigBox cfg;
+  late LocalAppConfig cfg;
 
   User get curUser => userData.curUser;
 
@@ -109,11 +107,11 @@ class Database {
   // initialization before startup
   Future<void> initial() async {
     await paths.initRootPath();
-    Hive.init(paths.configDir);
     await WikiUtil.init();
     await AppInfo.resolve();
     await prefs.initiate();
-    cfg = AppConfigBox(await Utils.openHiveBox('cfg'));
+    cfg = LocalAppConfig(pathlib.join(paths.configDir, 'cfg.json'),
+        lapse: Duration(seconds: 3));
     await checkConnectivity();
     Connectivity().onConnectivityChanged.listen((result) {
       _connectivity = result;

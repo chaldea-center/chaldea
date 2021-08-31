@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:kana_kit/kana_kit.dart';
 import 'package:lpinyin/lpinyin.dart';
@@ -538,14 +537,6 @@ class Utils {
     }
     debugPrint('change themeMode: ${db.appSetting.themeMode}');
     db.notifyAppUpdate();
-  }
-
-  static Future<Box<T>> openHiveBox<T>(String name) async {
-    return Hive.openBox<T>(name).catchError((e, s) async {
-      logger.e('error open hive box $name', e, s);
-      await Hive.deleteBoxFromDisk(name);
-      return Hive.openBox<T>(name);
-    });
   }
 }
 

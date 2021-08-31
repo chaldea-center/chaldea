@@ -2,17 +2,17 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:hive/hive.dart';
+import 'package:path/path.dart' show join;
 import 'package:pool/pool.dart';
 
 import 'config.dart' show db;
 import 'constants.dart';
+import 'json_store/json_store.dart';
 import 'logger.dart';
-import 'utils.dart';
 
 class WikiUtil {
   static final CacheManager wikiFileCache = CacheManager(Config('wikiCache'));
-  static late final Box<String> wikiUrlCache;
+  static late final JsonStore<String> wikiUrlCache;
 
   /// limit request frequency
   static Pool _pool = Pool(10);
@@ -23,11 +23,11 @@ class WikiUtil {
   WikiUtil._();
 
   static Future<void> init() async {
-    wikiUrlCache = await Utils.openHiveBox('wikiUrl');
+    wikiUrlCache = JsonStore<String>(join(db.paths.configDir, 'wikiurl.json'));
   }
 
   static Future<void> clear() async {
-    await wikiUrlCache.clear();
+    wikiUrlCache.clear();
     await wikiFileCache.emptyCache();
   }
 
@@ -41,9 +41,7 @@ class WikiUtil {
     return Uri.parse(link).toString();
   }
 
-  /// Hive need keys to be ASCII string or int
-  static String prefixKey(String filename) =>
-      'wikiurl_${Uri.tryParse(filename)?.toString() ?? filename}';
+  static String prefixKey(String filename) => 'wikiurl_$filename';
 
   /// parsing wiki file downloading url
 
@@ -104,7 +102,7 @@ class WikiUtil {
         if (info == null) return null;
         final String? url = info[0]['url'];
         if (url?.isNotEmpty == true) {
-          await wikiUrlCache.put(key, url!);
+          wikiUrlCache.set(key, url!);
           if (savePath != null) {
             /// directly save, don't use [wikiFileCache]
             Response fileResponse = await _dio.get(url,

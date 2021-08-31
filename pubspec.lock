@@ -616,20 +616,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.0"
-  hive:
-    dependency: "direct main"
-    description:
-      name: hive
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "2.0.4"
-  hive_flutter:
-    dependency: "direct main"
-    description:
-      name: hive_flutter
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.1.0"
   html:
     dependency: "direct main"
     description:

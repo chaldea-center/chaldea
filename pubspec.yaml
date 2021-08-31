@@ -54,8 +54,6 @@ dependencies:
   flutter_qjs: ^0.3.6
   flutter_webview_plugin: ^0.4.0
   font_awesome_flutter: ^9.1.0
-  hive: ^2.0.3
-  hive_flutter: ^1.1.0
   html: ^0.15.0
   image: ^3.0.2
   image_gallery_saver: ^1.6.9

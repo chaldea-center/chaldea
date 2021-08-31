@@ -15,8 +15,6 @@ class DisplaySettingPage extends StatefulWidget {
 class _DisplaySettingPageState extends State<DisplaySettingPage> {
   CarouselSetting get carousel => db.userData.carouselSetting;
 
-  HiveItem<bool> alwaysOnTop = db.cfg.alwaysOnTop;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,11 +29,11 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
             children: [
               if (Platform.isMacOS || Platform.isWindows)
                 SwitchListTile.adaptive(
-                  value: alwaysOnTop.get() ?? false,
+                  value: db.cfg.alwaysOnTop.get() ?? false,
                   title: Text(LocalizedText.of(
                       chs: '置顶显示', jpn: 'スティッキー表示', eng: 'Always On Top')),
                   onChanged: (v) async {
-                    alwaysOnTop.put(v);
+                    db.cfg.alwaysOnTop.set(v);
                     MethodChannelChaldea.setAlwaysOnTop(v);
                     setState(() {});
                   },

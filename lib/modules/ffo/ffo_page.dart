@@ -342,7 +342,7 @@ class _PartChooserPageState extends State<_PartChooserPage> {
               sortType = v;
               sort();
               setState(() {});
-              db.cfg.ffoSort.put(sortType);
+              db.cfg.ffoSort.set(sortType);
             }
           },
         ),
