@@ -587,7 +587,7 @@ class _ItemListTabState extends State<ItemListTab> {
         children: <Widget>[
           Expanded(
             child: AutoSizeText(
-              Item.localizedNameOf(itemKey),
+              Item.lNameOf(itemKey),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),

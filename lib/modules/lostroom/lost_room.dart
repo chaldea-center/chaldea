@@ -1,5 +1,6 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/lostroom/suuport_party.dart';
+import 'package:chaldea/modules/saint_quartz/saint_quarts_plan.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LostRoomPage extends StatelessWidget {
@@ -30,7 +31,14 @@ class LostRoomPage extends StatelessWidget {
             onTap: () {
               SplitRoute.push(context, SupportPartyPage());
             },
-          )
+          ),
+          ListTile(
+            leading: FaIcon(FontAwesomeIcons.userFriends),
+            title: Text('圣晶石'),
+            onTap: () {
+              SplitRoute.push(context, SaintQuartzPlanning());
+            },
+          ),
         ],
       ),
     );

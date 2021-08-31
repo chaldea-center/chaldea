@@ -80,8 +80,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
         text: makeText(category),
         value: category,
         children: items
-            .map((e) =>
-                PickerItem(text: makeText(Item.localizedNameOf(e)), value: e))
+            .map((e) => PickerItem(text: makeText(Item.lNameOf(e)), value: e))
             .toList(),
       ));
     });
@@ -160,7 +159,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
             padding:
                 AppInfo.isMobile ? EdgeInsets.symmetric(horizontal: 8) : null,
           ),
-          child: Text(Item.localizedNameOf(item)),
+          child: Text(Item.lNameOf(item)),
           onPressed: () {
             final String? category = getItemCategory(item);
             if (category == null) return;
@@ -257,8 +256,8 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
         setState(() {
           String selected = picker.getSelectedValues().last;
           if (params.rows.contains(selected)) {
-            EasyLoading.showToast(S.current
-                .item_already_exist_hint(Item.localizedNameOf(selected)));
+            EasyLoading.showToast(
+                S.current.item_already_exist_hint(Item.lNameOf(selected)));
           } else {
             onSelected(selected);
             // params.rows[index] = selected;

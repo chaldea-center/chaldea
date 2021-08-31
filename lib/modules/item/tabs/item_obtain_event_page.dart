@@ -146,7 +146,9 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
             '${S.current.exchange_ticket_short} ${ticket.dateToStr()}',
             style: _textStyle(false, ticket.isOutdated()),
           ),
-          subtitle: AutoSizeText(ticket.items.join('/'), maxLines: 1),
+          subtitle: AutoSizeText(
+              ticket.items.map((e) => Item.lNameOf(e)).join('/'),
+              maxLines: 1),
           trailing: Text(
             '$itemNum/${ticket.days}',
             style: _textStyle(plan.enabled, ticket.isOutdated()),

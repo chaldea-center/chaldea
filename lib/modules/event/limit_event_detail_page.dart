@@ -206,7 +206,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
       children.add(ListTile(
         leading:
             Item.iconBuilder(context: context, itemKey: itemKey, width: 48),
-        title: Text(Item.localizedNameOf(itemKey)),
+        title: Text(Item.lNameOf(itemKey)),
         subtitle: Text(hint),
         trailing: SizedBox(
           width: 50,

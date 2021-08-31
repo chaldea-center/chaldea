@@ -143,7 +143,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
             },
           ),
         ),
-        title: Text(Item.localizedNameOf(key)),
+        title: Text(Item.lNameOf(key)),
         trailing: SizedBox(
           width: 80,
           child: TextField(

@@ -73,7 +73,7 @@ class Item {
     return db.gameData.items[key]?.id;
   }
 
-  static String localizedNameOf(String name) {
+  static String lNameOf(String name) {
     // name could be jp/en?
     return db.gameData.items[name]?.localizedName ?? name;
   }

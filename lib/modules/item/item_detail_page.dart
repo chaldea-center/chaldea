@@ -57,7 +57,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(),
-        title: AutoSizeText(Item.localizedNameOf(widget.itemKey), maxLines: 1),
+        title: AutoSizeText(Item.lNameOf(widget.itemKey), maxLines: 1),
         centerTitle: false,
         titleSpacing: 0,
         actions: <Widget>[

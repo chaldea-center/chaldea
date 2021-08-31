@@ -2039,6 +2039,12 @@ User _$UserFromJson(Map<String, dynamic> json) {
               )),
       plannedSummons: $checkedConvert(json, 'plannedSummons',
           (v) => (v as List<dynamic>?)?.map((e) => e as String).toSet()),
+      saintQuartzPlan: $checkedConvert(
+          json,
+          'saintQuartzPlan',
+          (v) => v == null
+              ? null
+              : SaintQuartzPlan.fromJson(v as Map<String, dynamic>)),
       isMasterGirl: $checkedConvert(json, 'isMasterGirl', (v) => v as bool?),
       msProgress: $checkedConvert(json, 'msProgress', (v) => v as int?),
       duplicatedServants: $checkedConvert(
@@ -2080,6 +2086,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'crafts': User._craftsPlanToJson(instance.crafts),
       'mysticCodes': instance.mysticCodes,
       'plannedSummons': instance.plannedSummons.toList(),
+      'saintQuartzPlan': instance.saintQuartzPlan,
       'isMasterGirl': instance.isMasterGirl,
       'msProgress': instance.msProgress,
       'duplicatedServants':
@@ -2292,6 +2299,37 @@ Map<String, dynamic> _$CampaignPlanToJson(CampaignPlan instance) =>
     <String, dynamic>{
       'enabled': instance.enabled,
       'rerun': instance.rerun,
+    };
+
+SaintQuartzPlan _$SaintQuartzPlanFromJson(Map<String, dynamic> json) {
+  return $checkedNew('SaintQuartzPlan', json, () {
+    final val = SaintQuartzPlan(
+      loginStart: $checkedConvert(json, 'loginStart',
+          (v) => v == null ? null : DateTime.parse(v as String)),
+      accLogin: $checkedConvert(json, 'accLogin', (v) => v as int?),
+      continuousLogin:
+          $checkedConvert(json, 'continuousLogin', (v) => v as int?),
+      eventDateDelta: $checkedConvert(json, 'eventDateDelta', (v) => v as int?),
+      weeklyMission: $checkedConvert(json, 'weeklyMission', (v) => v as bool?),
+      missions: $checkedConvert(
+          json,
+          'missions',
+          (v) => (v as Map<String, dynamic>?)?.map(
+                (k, e) => MapEntry(k, e as bool),
+              )),
+    );
+    return val;
+  });
+}
+
+Map<String, dynamic> _$SaintQuartzPlanToJson(SaintQuartzPlan instance) =>
+    <String, dynamic>{
+      'loginStart': instance.loginStart.toIso8601String(),
+      'accLogin': instance.accLogin,
+      'continuousLogin': instance.continuousLogin,
+      'eventDateDelta': instance.eventDateDelta,
+      'weeklyMission': instance.weeklyMission,
+      'missions': instance.missions,
     };
 
 AppSetting _$AppSettingFromJson(Map<String, dynamic> json) {

@@ -190,7 +190,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
     itemResult.forEach((itemKey, value) {
       children.add(ListTile(
         leading: Item.iconBuilder(context: context, itemKey: itemKey),
-        title: Text(Item.localizedNameOf(itemKey)),
+        title: Text(Item.lNameOf(itemKey)),
         trailing: Text(value.toString()),
       ));
     });

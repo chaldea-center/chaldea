@@ -190,8 +190,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
               ),
               onPressed: () {
                 Picker(
-                  title: Text(
-                      '${ticket.dateToStr()} ${Item.localizedNameOf(iconKey)}'),
+                  title: Text('${ticket.dateToStr()} ${Item.lNameOf(iconKey)}'),
                   itemExtent: 36,
                   height: min(250, MediaQuery.of(context).size.height - 220),
                   hideHeader: true,

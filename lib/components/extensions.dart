@@ -66,6 +66,14 @@ extension DateTimeX on DateTime {
   String toStringShort() {
     return this.toString().split('.').first;
   }
+
+  String toDateString([String sep = '-']) {
+    return [
+      year,
+      month.toString().padLeft(2, '0'),
+      day.toString().padLeft(2, '0')
+    ].join(sep);
+  }
 }
 
 extension StringToDateTime on String {
