@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -16,6 +17,7 @@ class WikiUtil {
 
   /// limit request frequency
   static Pool _pool = Pool(10);
+  static Pool _pool2 = Pool(10);
 
   static String mcDomain = 'https://fgo.wiki';
   static String fandomDomain = 'https://fategrandorder.fandom.com';
@@ -41,14 +43,15 @@ class WikiUtil {
     return Uri.parse(link).toString();
   }
 
+  @deprecated
   static String prefixKey(String filename) => 'wikiurl_$filename';
 
   /// parsing wiki file downloading url
 
   ///
   static String? getCachedUrl(String filename) {
-    final key = prefixKey(filename);
-    return wikiUrlCache.get(key);
+    // final key = prefixKey(filename);
+    return wikiUrlCache.get(filename);
   }
 
   static Map<String, Future<String?>> _resolvingUrlTasks = {};
@@ -60,12 +63,6 @@ class WikiUtil {
   /// If [savePath] is provided, the file will be downloaded
   static Future<String?> resolveFileUrl(String filename,
       [String? savePath]) async {
-    String key = prefixKey(filename);
-    String? url = wikiUrlCache.get(key);
-    if (url != null) {
-      print('wiki cache: $filename -> $url');
-      return url;
-    }
     if (_resolvingUrlTasks.containsKey(filename)) {
       return _resolvingUrlTasks[filename]!;
     }
@@ -73,68 +70,94 @@ class WikiUtil {
     if (_errorTasks[filename] != null &&
         DateTime.now().millisecondsSinceEpoch - _errorTasks[filename]! <
             60000) {
+      print('error $filename');
       return null;
     }
-    // resolving
-    if (!db.hasNetwork) return null;
-    final future = _pool.withResource<String?>(() async {
-      // print('resolving $filename');
+    Future<String?> _download(String url) async {
+      if (savePath == null) return url;
+      if (!await File(savePath).exists()) {
+        return withPool(_pool2, 'download_$filename', () async {
+          // don't use _dio.download and writeSync
+          // avoid reading file when write not completed
+          Response fileResponse = await HttpUtils.defaultDio
+              .get(url, options: Options(responseType: ResponseType.bytes));
+          if (fileResponse.statusCode == 200) {
+            File file = File(savePath);
+            file.writeAsBytesSync(fileResponse.data, flush: true);
+            // logger.i('downloaded $url to $savePath');
+          }
+          return url;
+        });
+      }
+    }
+
+    Future<String?> _fullUrl() async {
       final _dio = HttpUtils.defaultDio;
       bool isFandomFile = filename.startsWith('fandom.');
       String api = isFandomFile
           ? 'https://fategrandorder.fandom.com/api.php'
           : 'https://fgo.wiki/api.php';
       Response? response;
-      try {
-        response = await _dio.get(
-          api,
-          queryParameters: {
-            "action": "query",
-            "format": "json",
-            "prop": "imageinfo",
-            "iiprop": "url",
-            "titles":
-                "File:" + (isFandomFile ? filename.substring(7) : filename)
-          },
-          options: Options(responseType: ResponseType.json),
-        );
-        final info = response.data['query']['pages'].values.first['imageinfo'];
-        if (info == null) return null;
-        final String? url = info[0]['url'];
-        if (url?.isNotEmpty == true) {
-          wikiUrlCache.set(key, url!);
-          if (savePath != null) {
-            /// directly save, don't use [wikiFileCache]
-            Response fileResponse = await _dio.get(url,
-                options: Options(responseType: ResponseType.bytes));
-            if (fileResponse.statusCode == 200) {
-              File file = File(savePath);
-              await file.writeAsBytes(fileResponse.data, flush: true);
-              // logger.i('downloaded $url to $savePath');
-            } else {
-              throw HttpException('HTTP ${fileResponse.statusCode}',
-                  uri: Uri.tryParse(url));
-            }
-          }
-        }
-        // print('mc file: $filename -> $url');
-        _errorTasks.remove(filename);
-        return url;
-      } catch (e, s) {
-        _errorTasks[filename] = DateTime.now().millisecondsSinceEpoch;
-        logger.d(response?.data);
-        logger.e('error download $filename', e, s);
-      } finally {
-        _resolvingUrlTasks.remove(filename);
+      response = await _dio.get(
+        api,
+        queryParameters: {
+          "action": "query",
+          "format": "json",
+          "prop": "imageinfo",
+          "iiprop": "url",
+          "titles": "File:" + (isFandomFile ? filename.substring(7) : filename)
+        },
+        options: Options(responseType: ResponseType.json),
+      );
+      final info = response.data['query']['pages'].values.first['imageinfo'];
+      if (info == null) return null;
+      String? _trueUrl = info[0]['url'];
+      if (_trueUrl != null) {
+        print('wikiurl: $filename\n    ->$_trueUrl');
+        wikiUrlCache.set(filename, _trueUrl);
+        await _download(_trueUrl).catchError((e, s) => null);
       }
-    });
-    _resolvingUrlTasks[filename] = future;
-    return future;
+      return _trueUrl;
+    }
+
+    String? url = wikiUrlCache.get(filename);
+    if (!db.hasNetwork) return url;
+    if (url != null && savePath != null) {
+      return _download(url);
+    }
+    if (url == null) {
+      final future = withPool<String?>(_pool, 'resolve_$filename', _fullUrl)
+          .whenComplete(() {
+        _resolvingUrlTasks.remove(filename);
+      });
+      _resolvingUrlTasks[filename] = future;
+      return future;
+    } else {
+      return url;
+    }
   }
 
   static Future<File?> getWikiFile(String filename) async {
     final url = await resolveFileUrl(filename);
     if (url != null) return wikiFileCache.getSingleFile(url);
+  }
+
+  static Future<T?> withPool<T>(
+      Pool pool, String key, FutureOr<T> Function() func) async {
+    if (_errorTasks[key] != null &&
+        DateTime.now().millisecondsSinceEpoch - _errorTasks[key]! < 60000) {
+      return null;
+    }
+    return pool.withResource<T?>(() async {
+      try {
+        final v = await func();
+        _errorTasks.remove(key);
+        return v;
+      } catch (e, s) {
+        _errorTasks[key] = DateTime.now().millisecondsSinceEpoch;
+        logger.e('withPool: $key', e, s);
+      }
+    });
   }
 
   /// download wiki code
@@ -156,7 +179,7 @@ class WikiUtil {
         options: Options(responseType: ResponseType.json),
       );
       String content =
-          response.data['query']['pages'].values.first['revisions'][0]['*'];
+      response.data['query']['pages'].values.first['revisions'][0]['*'];
       return content;
     } catch (e, s) {
       logger.e('failed to get wikitext', e, s);

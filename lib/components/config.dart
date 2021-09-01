@@ -107,11 +107,11 @@ class Database {
   // initialization before startup
   Future<void> initial() async {
     await paths.initRootPath();
+    cfg = LocalAppConfig(pathlib.join(paths.configDir, 'cfg.json'),
+        lapse: Duration(seconds: 3));
     await WikiUtil.init();
     await AppInfo.resolve();
     await prefs.initiate();
-    cfg = LocalAppConfig(pathlib.join(paths.configDir, 'cfg.json'),
-        lapse: Duration(seconds: 3));
     await checkConnectivity();
     Connectivity().onConnectivityChanged.listen((result) {
       _connectivity = result;
@@ -278,6 +278,9 @@ class Database {
 
   final AssetImage errorImage = AssetImage('res/img/gudako.png');
 
+  // HashSet<String> _existsIcons =
+  //     HashSet(isValidKey: (k) => k != null && k is String);
+
   /// Only call this when [iconKey] SHOULD be saved to icon dir.
   /// If just want to use network image, use [CachedImage] instead.
   ///
@@ -306,41 +309,21 @@ class Database {
     } else {
       String iconName = getIconFullKey(iconKey,
           preferPng: preferPng, withBorder: withBorder)!;
-      File iconFile = File(pathlib.join(paths.gameIconDir, iconName));
-      if (iconFile.existsSync()) {
-        image = CachedImage.sizeChild(
+      final originName = gameData.icons[iconName] ?? iconName;
+      image = CachedImage(
+        imageUrl: originName,
+        cacheDir: paths.gameIconDir,
+        cacheName: iconName,
+        width: width,
+        height: height,
+        aspectRatio: aspectRatio,
+        cachedOption: CachedImageOption(fit: fit),
+        placeholder: (context, __) => Container(
           width: width,
           height: height,
-          aspectRatio: aspectRatio,
-          child: Image(
-            image: FileImage(iconFile),
-            width: width,
-            height: height,
-            fit: fit,
-            loadingBuilder: (context, child, loadingProgress) => Container(
-              width: width,
-              height: height,
-              child: child,
-            ),
-          ),
-        );
-      } else {
-        final originName = gameData.icons[iconName] ?? iconName;
-        image = CachedImage(
-          imageUrl: originName,
-          cacheDir: paths.gameIconDir,
-          cacheName: iconName,
-          width: width,
-          height: height,
-          aspectRatio: aspectRatio,
-          cachedOption: CachedImageOption(fit: fit),
-          placeholder: (context, __) => Container(
-            width: width,
-            height: height,
-            child: placeholder?.call(context),
-          ),
-        );
-      }
+          child: placeholder?.call(context),
+        ),
+      );
     }
     if (clip != false) {
       image = ClipPath(

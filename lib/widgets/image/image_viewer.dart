@@ -1,11 +1,12 @@
+import 'dart:collection';
 import 'dart:ui' as ui;
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:crypto/crypto.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path/path.dart' as path;
-import 'package:photo_view/photo_view.dart';
 import 'package:string_validator/string_validator.dart' as validator;
 import 'package:uuid/uuid.dart';
 
@@ -69,8 +70,7 @@ class CachedImage extends StatefulWidget {
     this.cachedOption = const CachedImageOption(),
     this.photoViewOption,
     this.onTap,
-  })
-      : imageUrl = null,
+  })  : imageUrl = null,
         isMCFile = false,
         cacheDir = null,
         cacheName = null,
@@ -127,174 +127,11 @@ class _CachedImageState extends State<CachedImage> {
   CachedImageOption get cachedOption =>
       widget.cachedOption ?? const CachedImageOption();
 
-  String? getRealUrl() {
-    if (widget.imageUrl == null) return null;
-    bool _isMcFile = widget.isMCFile ?? !_isValidUrl(widget.imageUrl!);
-    if (!_isMcFile) return widget.imageUrl;
-    String? url = WikiUtil.getCachedUrl(widget.imageUrl!);
-    if (url != null) {
-      return url;
-    } else {
-      String? savePath;
-      if (widget.cacheDir != null)
-        savePath = join(widget.cacheDir!, widget.cacheName ?? widget.imageUrl!);
-      WikiUtil.resolveFileUrl(widget.imageUrl!, savePath).then((url) {
-        if (url != null && mounted) {
-          setState(() {});
-        }
-      });
-    }
-  }
-
   ImageStreamListener? _imageStreamListener;
 
   @override
   Widget build(BuildContext context) {
-    late Widget child;
-
-    if (widget.imageProvider != null) {
-      child = Image(
-        image: widget.imageProvider!,
-        // frameBuilder:null,
-        // loadingBuilder:null,
-        errorBuilder: cachedOption.errorWidget == null
-            ? null
-            : (ctx, e, s) => cachedOption.errorWidget!(ctx, '', e),
-        // semanticLabel:null,
-        // excludeFromSemantics : false,
-        width: widget.width,
-        height: widget.height,
-        color: cachedOption.color,
-        colorBlendMode: cachedOption.colorBlendMode,
-        fit: cachedOption.fit,
-        alignment: cachedOption.alignment,
-        repeat: cachedOption.repeat,
-        // centerSlice:null,
-        matchTextDirection: cachedOption.matchTextDirection,
-        // gaplessPlayback : false,
-        // isAntiAlias :false,
-        filterQuality: cachedOption.filterQuality,
-      );
-      if (widget.showSaveOnLongPress) {
-        child = GestureDetector(
-          child: child,
-          onLongPress: () async {
-            _imageStreamListener ??= ImageStreamListener((info, sycCall) async {
-              final bytes =
-                  await info.image.toByteData(format: ui.ImageByteFormat.png);
-              final data = bytes?.buffer.asUint8List();
-              if (data == null) {
-                EasyLoading.showError('Failed');
-                return;
-              }
-              if (!mounted) return;
-              // some sha1 hash value for same data
-              String fn =
-                  Uuid().v5(Uuid.NAMESPACE_URL, sha1.convert(data).toString()) +
-                      '.png';
-              ImageActions.showSaveShare(
-                context: context,
-                data: data,
-                destFp: join(db.paths.downloadDir, fn),
-                gallery: true,
-                share: true,
-              );
-            });
-            widget.imageProvider!.resolve(ImageConfiguration.empty)
-              ..removeListener(_imageStreamListener!)
-              ..addListener(_imageStreamListener!);
-          },
-        );
-      }
-    } else {
-      bool usePlaceholder = true;
-      String? realUrl = getRealUrl();
-      if (realUrl?.isNotEmpty != true) {
-        usePlaceholder = true;
-      } else {
-        usePlaceholder = false;
-      }
-
-      if (usePlaceholder) {
-        child = parsedPlaceholder(context, realUrl ?? widget.imageUrl ?? '');
-      } else {
-        final _cacheManager = cachedOption.cacheManager ??
-            (_isMcFile ? WikiUtil.wikiFileCache : DefaultCacheManager());
-        child = CachedNetworkImage(
-          imageUrl: realUrl!,
-          httpHeaders: cachedOption.httpHeaders,
-          imageBuilder: cachedOption.imageBuilder,
-          placeholder: parsedPlaceholder,
-          progressIndicatorBuilder: cachedOption.progressIndicatorBuilder,
-          errorWidget:
-              cachedOption.errorWidget ?? CachedImage.defaultErrorWidget,
-          fadeOutDuration: cachedOption.fadeOutDuration,
-          fadeOutCurve: cachedOption.fadeOutCurve,
-          fadeInDuration: cachedOption.fadeInDuration,
-          fadeInCurve: cachedOption.fadeInCurve,
-          width: widget.width ?? cachedOption.width,
-          height: widget.height ?? cachedOption.height,
-          fit: cachedOption.fit,
-          alignment: cachedOption.alignment,
-          repeat: cachedOption.repeat,
-          matchTextDirection: cachedOption.matchTextDirection,
-          cacheManager: _cacheManager,
-          useOldImageOnUrlChange: cachedOption.useOldImageOnUrlChange,
-          color: cachedOption.color,
-          filterQuality: cachedOption.filterQuality,
-          colorBlendMode: cachedOption.colorBlendMode,
-          placeholderFadeInDuration: cachedOption.placeholderFadeInDuration,
-          memCacheWidth: cachedOption.memCacheWidth,
-          memCacheHeight: cachedOption.memCacheHeight,
-          cacheKey: cachedOption.cacheKey,
-          maxWidthDiskCache: cachedOption.maxWidthDiskCache,
-          maxHeightDiskCache: cachedOption.maxHeightDiskCache,
-        );
-
-        if (widget.showSaveOnLongPress) {
-          child = GestureDetector(
-            child: child,
-            onLongPress: () async {
-              File file = await _cacheManager.getSingleFile(realUrl);
-              String fn = path.basename(file.path);
-              return ImageActions.showSaveShare(
-                context: context,
-                srcFp: file.path,
-                destFp: join(db.paths.downloadDir, fn),
-                gallery: true,
-                share: true,
-                shareText: fn,
-              );
-            },
-          );
-        }
-      }
-
-      if (widget.photoViewOption != null) {
-        final pvOption = widget.photoViewOption!;
-        child = PhotoView.customChild(
-          child: child,
-          backgroundDecoration: pvOption.backgroundDecoration,
-          heroAttributes: pvOption.heroAttributes,
-          scaleStateChangedCallback: pvOption.scaleStateChangedCallback,
-          enableRotation: pvOption.enableRotation,
-          controller: pvOption.controller,
-          scaleStateController: pvOption.scaleStateController,
-          minScale: pvOption.minScale,
-          maxScale: pvOption.maxScale,
-          initialScale: pvOption.initialScale,
-          basePosition: pvOption.basePosition,
-          scaleStateCycle: pvOption.scaleStateCycle,
-          onTapUp: pvOption.onTapUp,
-          onTapDown: pvOption.onTapDown,
-          customSize: pvOption.customSize,
-          gestureDetectorBehavior: pvOption.gestureDetectorBehavior,
-          tightMode: pvOption.tightMode,
-          filterQuality: pvOption.filterQuality,
-          disableGestures: pvOption.disableGestures,
-        );
-      }
-    }
+    Widget child = resolveChild();
     child = CachedImage.sizeChild(
       child: child,
       width: widget.width,
@@ -310,7 +147,167 @@ class _CachedImageState extends State<CachedImage> {
     return child;
   }
 
-  Widget parsedPlaceholder(BuildContext context, String url) {
+  bool _shouldFadeIn = false;
+
+  Widget resolveChild() {
+    if (widget.imageProvider != null)
+      return _withProvider(widget.imageProvider!);
+    if (widget.imageUrl == null) return _withPlaceholder(context, '');
+    _isMcFile = widget.isMCFile ?? !_isValidUrl(widget.imageUrl!);
+    if (!_isMcFile) return _withCached(widget.imageUrl!);
+    if (widget.cacheDir != null) {
+      String? savePath;
+      savePath = join(widget.cacheDir!, widget.cacheName ?? widget.imageUrl!);
+      if (_existIcon(savePath)) {
+        Widget child = _withProvider(FileImage(File(savePath)));
+        return _shouldFadeIn ? _FadeIn(child: child) : child;
+      } else {
+        _shouldFadeIn = true;
+        WikiUtil.resolveFileUrl(widget.imageUrl!, savePath).then((_url) {
+          if (_url != null && mounted) {
+            setState(() {});
+          }
+        });
+        return _withPlaceholder(context, widget.imageUrl!);
+      }
+    } else {
+      String? trueUrl = WikiUtil.getCachedUrl(widget.imageUrl!);
+      if (trueUrl != null) {
+        return _withCached(trueUrl);
+      }
+      WikiUtil.resolveFileUrl(widget.imageUrl!).then((_url) {
+        if (_url != null && mounted) {
+          setState(() {});
+        }
+      });
+      return _withPlaceholder(context, widget.imageUrl!);
+    }
+  }
+
+  /// Don't check image file exists or not every frame
+  static final HashSet<String> _existsIcons =
+      HashSet(isValidKey: (k) => k != null && k is String);
+
+  bool _existIcon(String fp) {
+    if (_existsIcons.contains(fp)) return true;
+    if (File(fp).existsSync()) {
+      _existsIcons.add(fp);
+      return true;
+    }
+    return false;
+  }
+
+  Widget _withProvider(ImageProvider provider) {
+    Widget child = Image(
+      image: provider,
+      // frameBuilder:null,
+      // loadingBuilder: null,
+      errorBuilder: cachedOption.errorWidget == null
+          ? null
+          : (ctx, e, s) => cachedOption.errorWidget!(ctx, '', e),
+      // semanticLabel:null,
+      // excludeFromSemantics : false,
+      width: widget.width,
+      height: widget.height,
+      color: cachedOption.color,
+      colorBlendMode: cachedOption.colorBlendMode,
+      fit: cachedOption.fit,
+      alignment: cachedOption.alignment,
+      repeat: cachedOption.repeat,
+      // centerSlice:null,
+      matchTextDirection: cachedOption.matchTextDirection,
+      // gaplessPlayback : false,
+      // isAntiAlias :false,
+      filterQuality: cachedOption.filterQuality,
+    );
+    if (widget.showSaveOnLongPress) {
+      child = GestureDetector(
+        child: child,
+        onLongPress: () async {
+          _imageStreamListener ??= ImageStreamListener((info, sycCall) async {
+            final bytes =
+                await info.image.toByteData(format: ui.ImageByteFormat.png);
+            final data = bytes?.buffer.asUint8List();
+            if (data == null) {
+              EasyLoading.showError('Failed');
+              return;
+            }
+            if (!mounted) return;
+            // some sha1 hash value for same data
+            String fn =
+                Uuid().v5(Uuid.NAMESPACE_URL, sha1.convert(data).toString()) +
+                    '.png';
+            ImageActions.showSaveShare(
+              context: context,
+              data: data,
+              destFp: join(db.paths.downloadDir, fn),
+              gallery: true,
+              share: true,
+            );
+          });
+          widget.imageProvider!.resolve(ImageConfiguration.empty)
+            ..removeListener(_imageStreamListener!)
+            ..addListener(_imageStreamListener!);
+        },
+      );
+    }
+    return child;
+  }
+
+  Widget _withCached(String fullUrl) {
+    final _cacheManager = cachedOption.cacheManager ??
+        (_isMcFile ? WikiUtil.wikiFileCache : DefaultCacheManager());
+    Widget child = CachedNetworkImage(
+      imageUrl: fullUrl,
+      httpHeaders: cachedOption.httpHeaders,
+      imageBuilder: cachedOption.imageBuilder,
+      placeholder: _withPlaceholder,
+      progressIndicatorBuilder: cachedOption.progressIndicatorBuilder,
+      errorWidget: cachedOption.errorWidget ?? CachedImage.defaultErrorWidget,
+      fadeOutDuration: cachedOption.fadeOutDuration,
+      fadeOutCurve: cachedOption.fadeOutCurve,
+      fadeInDuration: cachedOption.fadeInDuration,
+      fadeInCurve: cachedOption.fadeInCurve,
+      width: widget.width ?? cachedOption.width,
+      height: widget.height ?? cachedOption.height,
+      fit: cachedOption.fit,
+      alignment: cachedOption.alignment,
+      repeat: cachedOption.repeat,
+      matchTextDirection: cachedOption.matchTextDirection,
+      cacheManager: _cacheManager,
+      useOldImageOnUrlChange: cachedOption.useOldImageOnUrlChange,
+      color: cachedOption.color,
+      filterQuality: cachedOption.filterQuality,
+      colorBlendMode: cachedOption.colorBlendMode,
+      placeholderFadeInDuration: cachedOption.placeholderFadeInDuration,
+      memCacheWidth: cachedOption.memCacheWidth,
+      memCacheHeight: cachedOption.memCacheHeight,
+      cacheKey: cachedOption.cacheKey,
+      maxWidthDiskCache: cachedOption.maxWidthDiskCache,
+      maxHeightDiskCache: cachedOption.maxHeightDiskCache,
+    );
+
+    if (widget.showSaveOnLongPress) {
+      child = GestureDetector(
+        child: child,
+        onLongPress: () async {
+          File file = await _cacheManager.getSingleFile(fullUrl);
+          String fn = path.basename(file.path);
+          return ImageActions.showSaveShare(
+            context: context,
+            srcFp: file.path,
+            destFp: join(db.paths.downloadDir, fn),
+            gallery: true,
+            share: true,
+            shareText: fn,
+          );
+        },
+      );
+    }
+    return child;
+  }
+
+  Widget _withPlaceholder(BuildContext context, String url) {
     if (widget.placeholder != null) return widget.placeholder!(context, url);
     if (cachedOption.placeholder != null)
       return cachedOption.placeholder!(context, url);
@@ -336,5 +333,40 @@ class _CachedImageState extends State<CachedImage> {
     } else {
       return false;
     }
+  }
+}
+
+class _FadeIn extends StatefulWidget {
+  final Widget child;
+
+  const _FadeIn({Key? key, required this.child}) : super(key: key);
+
+  @override
+  __FadeInState createState() => __FadeInState();
+}
+
+class __FadeInState extends State<_FadeIn> {
+  double? opacity = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    if (opacity == null) return widget.child;
+    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+      if (mounted)
+        setState(() {
+          opacity = 1;
+        });
+    });
+    return AnimatedOpacity(
+      opacity: opacity!,
+      duration: Duration(milliseconds: 300),
+      child: widget.child,
+      onEnd: () {
+        if (mounted)
+          setState(() {
+            opacity = null;
+          });
+      },
+    );
   }
 }
