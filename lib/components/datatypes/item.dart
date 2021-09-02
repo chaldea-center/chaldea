@@ -182,6 +182,9 @@ class Items {
   static const String quartz = '圣晶石';
   static const String quartzFragment = '圣晶片';
   static const String chaldeaLantern = '迦勒底梦火';
+  static const String goldApple = '黄金果实';
+  static const String silverApple = '白银果实';
+  static const String bronzeApple = '赤铜果实';
 
   // static const String fouHp = 'HP芙芙';
   // static const String fouAtk = 'ATK芙芙';

@@ -1,3 +1,4 @@
+import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/localized/localized_base.dart';
 
 class SaintLocalized {

@@ -103,8 +103,7 @@ class User {
     Map<int, int>? duplicatedServants,
     GLPKParams? glpkParams,
     Map<String, Map<int, int>>? luckyBagSvtScores,
-  })
-      : name = name?.isNotEmpty == true ? name! : 'default',
+  })  : name = name?.isNotEmpty == true ? name! : 'default',
         _server = server,
         servants = servants ?? {},
         curSvtPlanNo = curSvtPlanNo ?? 0,
@@ -586,44 +585,4 @@ class CampaignPlan {
       _$CampaignPlanFromJson(data);
 
   Map<String, dynamic> toJson() => _$CampaignPlanToJson(this);
-}
-
-@JsonSerializable(checked: true)
-class SaintQuartzPlan {
-  // login
-  DateTime loginStart;
-  int accLogin = 0;
-  int continuousLogin = 1;
-
-  // event
-  int eventDateDelta;
-
-  // mission
-  bool weeklyMission;
-  Map<String, bool> missions;
-
-  SaintQuartzPlan({
-    DateTime? loginStart,
-    int? accLogin,
-    int? continuousLogin,
-    int? eventDateDelta,
-    bool? weeklyMission,
-    Map<String, bool>? missions,
-  })  : loginStart = loginStart ?? DateTime.now(),
-        accLogin = accLogin ?? 1,
-        continuousLogin = continuousLogin ?? 1,
-        eventDateDelta = eventDateDelta ?? 0,
-        weeklyMission = weeklyMission ?? false,
-        missions = missions ?? {} {
-    validate();
-  }
-
-  void validate() {
-    continuousLogin = fixValidRange(continuousLogin, 1, 7);
-  }
-
-  factory SaintQuartzPlan.fromJson(Map<String, dynamic> data) =>
-      _$SaintQuartzPlanFromJson(data);
-
-  Map<String, dynamic> toJson() => _$SaintQuartzPlanToJson(this);
 }

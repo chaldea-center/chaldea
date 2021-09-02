@@ -380,6 +380,12 @@ Events _$EventsFromJson(Map<String, dynamic> json) {
                 (k, e) => MapEntry(
                     k, CampaignEvent.fromJson(e as Map<String, dynamic>)),
               )),
+      extraMasterMissions: $checkedConvert(
+          json,
+          'extraMasterMissions',
+          (v) => (v as List<dynamic>)
+              .map((e) => MasterMission.fromJson(e as Map<String, dynamic>))
+              .toList()),
     );
     return val;
   });
@@ -392,6 +398,7 @@ Map<String, dynamic> _$EventsToJson(Events instance) => <String, dynamic>{
       'mainRecords': instance.mainRecords,
       'campaigns': instance.campaigns,
       'exchangeTickets': instance.exchangeTickets,
+      'extraMasterMissions': instance.extraMasterMissions,
     };
 
 LimitEvent _$LimitEventFromJson(Map<String, dynamic> json) {
@@ -567,6 +574,37 @@ Map<String, dynamic> _$ExchangeTicketToJson(ExchangeTicket instance) =>
       'monthCn': instance.monthCn,
       'monthTw': instance.monthTw,
       'monthEn': instance.monthEn,
+    };
+
+MasterMission _$MasterMissionFromJson(Map<String, dynamic> json) {
+  return MasterMission(
+    id: json['id'] as int,
+    flag: json['flag'] as int,
+    type: json['type'] as String,
+    dispNo: json['dispNo'] as int,
+    name: json['name'] as String,
+    detail: json['detail'] as String,
+    startedAt: json['startedAt'] as int,
+    endedAt: json['endedAt'] as int,
+    closedAt: json['closedAt'] as int,
+    rewards: (json['rewards'] as Map<String, dynamic>).map(
+      (k, e) => MapEntry(int.parse(k), e as int),
+    ),
+  );
+}
+
+Map<String, dynamic> _$MasterMissionToJson(MasterMission instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'flag': instance.flag,
+      'type': instance.type,
+      'dispNo': instance.dispNo,
+      'name': instance.name,
+      'detail': instance.detail,
+      'startedAt': instance.startedAt,
+      'endedAt': instance.endedAt,
+      'closedAt': instance.closedAt,
+      'rewards': instance.rewards.map((k, e) => MapEntry(k.toString(), e)),
     };
 
 GameData _$GameDataFromJson(Map<String, dynamic> json) {
@@ -2304,32 +2342,45 @@ Map<String, dynamic> _$CampaignPlanToJson(CampaignPlan instance) =>
 SaintQuartzPlan _$SaintQuartzPlanFromJson(Map<String, dynamic> json) {
   return $checkedNew('SaintQuartzPlan', json, () {
     final val = SaintQuartzPlan(
-      loginStart: $checkedConvert(json, 'loginStart',
+      curSQ: $checkedConvert(json, 'curSQ', (v) => v as int?),
+      curTicket: $checkedConvert(json, 'curTicket', (v) => v as int?),
+      curApple: $checkedConvert(json, 'curApple', (v) => v as int?),
+      startDate: $checkedConvert(json, 'startDate',
+          (v) => v == null ? null : DateTime.parse(v as String)),
+      endDate: $checkedConvert(json, 'endDate',
           (v) => v == null ? null : DateTime.parse(v as String)),
       accLogin: $checkedConvert(json, 'accLogin', (v) => v as int?),
       continuousLogin:
           $checkedConvert(json, 'continuousLogin', (v) => v as int?),
       eventDateDelta: $checkedConvert(json, 'eventDateDelta', (v) => v as int?),
       weeklyMission: $checkedConvert(json, 'weeklyMission', (v) => v as bool?),
-      missions: $checkedConvert(
-          json,
-          'missions',
-          (v) => (v as Map<String, dynamic>?)?.map(
-                (k, e) => MapEntry(k, e as bool),
-              )),
+      minusPlannedBanner:
+          $checkedConvert(json, 'minusPlannedBanner', (v) => v as bool?),
     );
+    $checkedConvert(
+        json,
+        'extraMissions',
+        (v) => val.extraMissions = (v as Map<String, dynamic>).map(
+              (k, e) => MapEntry(int.parse(k), e as bool),
+            ));
     return val;
   });
 }
 
 Map<String, dynamic> _$SaintQuartzPlanToJson(SaintQuartzPlan instance) =>
     <String, dynamic>{
-      'loginStart': instance.loginStart.toIso8601String(),
+      'curSQ': instance.curSQ,
+      'curTicket': instance.curTicket,
+      'curApple': instance.curApple,
+      'startDate': instance.startDate.toIso8601String(),
+      'endDate': instance.endDate.toIso8601String(),
       'accLogin': instance.accLogin,
       'continuousLogin': instance.continuousLogin,
       'eventDateDelta': instance.eventDateDelta,
       'weeklyMission': instance.weeklyMission,
-      'missions': instance.missions,
+      'extraMissions':
+          instance.extraMissions.map((k, e) => MapEntry(k.toString(), e)),
+      'minusPlannedBanner': instance.minusPlannedBanner,
     };
 
 AppSetting _$AppSettingFromJson(Map<String, dynamic> json) {

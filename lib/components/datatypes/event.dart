@@ -8,6 +8,7 @@ class Events {
   Map<String, MainRecord> mainRecords; //key: event.chapter
   Map<String, CampaignEvent> campaigns; //key: event.name=mcLink
   Map<String, ExchangeTicket> exchangeTickets; //key: event.monthCn
+  List<MasterMission> extraMasterMissions;
 
   Events({
     String? progressNA,
@@ -16,6 +17,7 @@ class Events {
     required this.mainRecords,
     required this.exchangeTickets,
     required this.campaigns,
+    required this.extraMasterMissions,
   })  : progressNA = _parseDate(progressNA, 365 * 2),
         progressTW = _parseDate(progressTW, 648);
 
@@ -494,4 +496,49 @@ class ExchangeTicket {
   bool isOutdated([int months = 4]) {
     return DateTime.now().checkOutdated(curDate, Duration(days: months * 31));
   }
+}
+
+@JsonSerializable()
+class MasterMission {
+  int id;
+  int flag;
+  String type;
+  int dispNo;
+  String name;
+  String detail;
+  int startedAt;
+  int endedAt;
+  int closedAt;
+  Map<int, int> rewards;
+
+  MasterMission({
+    required this.id,
+    required this.flag,
+    required this.type,
+    required this.dispNo,
+    required this.name,
+    required this.detail,
+    required this.startedAt,
+    required this.endedAt,
+    required this.closedAt,
+    required this.rewards,
+  });
+
+  DateTime get startedDateTime =>
+      DateTime.fromMillisecondsSinceEpoch(startedAt * 1000);
+
+  Map<String, int> get itemRewards {
+    Map<String, int> map = {};
+    rewards.forEach((key, value) {
+      final item = db.gameData.items.values
+          .firstWhereOrNull((item) => item.itemId == key);
+      if (item != null) map[item.name] = value;
+    });
+    return map;
+  }
+
+  factory MasterMission.fromJson(Map<String, dynamic> data) =>
+      _$MasterMissionFromJson(data);
+
+  Map<String, dynamic> toJson() => _$MasterMissionToJson(this);
 }

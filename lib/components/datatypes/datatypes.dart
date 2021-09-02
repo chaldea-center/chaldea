@@ -71,6 +71,8 @@ part 'summon.dart';
 
 part 'user/filter_data.dart';
 
+part 'user/sq_plan.dart';
+
 part 'user/user.dart';
 
 part 'user/user_settings.dart';

@@ -1,6 +1,5 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/event/events_page.dart';
-import 'package:flutter/services.dart';
 
 class EventBonusTab extends StatefulWidget {
   const EventBonusTab({Key? key}) : super(key: key);
@@ -10,15 +9,11 @@ class EventBonusTab extends StatefulWidget {
 }
 
 class _EventBonusTabState extends State<EventBonusTab> {
-  late TextEditingController _textEditingController;
-
-  SaintQuartzPlan get _plan => db.curUser.saintQuartzPlan;
+  SaintQuartzPlan get plan => db.curUser.saintQuartzPlan;
 
   @override
   void initState() {
     super.initState();
-    _textEditingController =
-        TextEditingController(text: _plan.eventDateDelta.toString());
   }
 
   @override
@@ -26,23 +21,6 @@ class _EventBonusTabState extends State<EventBonusTab> {
     return ListView(
       padding: EdgeInsets.symmetric(vertical: 16),
       children: [
-        ListTile(
-          title: Text('时间差'),
-          trailing: SizedBox(
-            width: 60,
-            child: TextField(
-              controller: _textEditingController,
-              onChanged: (s) {
-                setState(() {
-                  _plan.eventDateDelta =
-                      int.tryParse(s) ?? _plan.eventDateDelta;
-                });
-              },
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
         ListTile(
           title: Text(Item.lNameOf(Items.quartz)),
           trailing:

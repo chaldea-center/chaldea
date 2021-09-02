@@ -53,6 +53,7 @@ class GameData {
               mainRecords: {},
               exchangeTickets: {},
               campaigns: {},
+              extraMasterMissions: [],
             ),
         glpk = glpk ??
             GLPKData(

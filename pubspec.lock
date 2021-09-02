@@ -1160,6 +1160,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.0.0"
+  table_sticky_headers:
+    dependency: "direct main"
+    description:
+      name: table_sticky_headers
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.0"
   term_glyph:
     dependency: transitive
     description:

@@ -138,7 +138,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
           ),
           Expanded(
             child: Container(height: 8, color: Colors.grey[300]),
-            flex: total - skillMax,
+            flex: total - own,
           ),
         ],
       ),

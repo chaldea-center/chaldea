@@ -1,8 +1,8 @@
 import 'package:chaldea/components/components.dart';
 
-import 'common.dart';
-import 'event_bonus_tab.dart';
-import 'login_bonus_tab.dart';
+import 'extra_mission_tab.dart';
+import 'setting_tab.dart';
+import 'table_tab.dart';
 
 SaintQuartzPlan get _plan => db.curUser.saintQuartzPlan;
 
@@ -20,7 +20,15 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging &&
+          _tabController.index == _tabController.length - 1) {
+        print('hello');
+        db.curUser.saintQuartzPlan.solve();
+        setState(() {});
+      }
+    });
   }
 
   @override
@@ -31,6 +39,7 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning>
 
   @override
   Widget build(BuildContext context) {
+    _plan.validate();
     return Scaffold(
       appBar: AppBar(
         title: Text(Item.lNameOf(Items.quartz)),
@@ -38,20 +47,19 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning>
           controller: _tabController,
           isScrollable: true,
           tabs: [
-            Tab(text: LocalizedText.of(chs: '总计', jpn: '合計', eng: 'Total')),
-            Tab(text: SaintLocalized.loginBonus),
-            Tab(text: S.current.event_title),
-            Tab(text: S.current.master_mission),
+            Tab(text: S.current.settings_tab_name),
+            Tab(text: 'Extra Mission'),
+            Tab(text: 'Result'),
           ],
         ),
       ),
       body: TabBarView(
         controller: _tabController,
+        physics: NeverScrollableScrollPhysics(),
         children: [
-          resultTab,
-          LoginBonusTab(),
-          EventBonusTab(),
-          missionBonusTab,
+          KeepAliveBuilder(builder: (context) => SQSettingTab()),
+          KeepAliveBuilder(builder: (context) => ExtraMissionTab()),
+          KeepAliveBuilder(builder: (context) => SQTableTab()),
         ],
       ),
     );
