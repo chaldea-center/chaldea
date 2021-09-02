@@ -1,6 +1,7 @@
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/item/item_list_page.dart';
 
-class CommonBuilder {
+mixin CommonBuilder {
   /// build a grid view with [ImageWithText] as its children.
   /// The key and value of [data] are Servant/Item icon name and its' num or text
   /// for image and text in [ImageWithText].
@@ -28,6 +29,26 @@ class CommonBuilder {
                 ),
               ))
           .toList(),
+    );
+  }
+
+  static Widget priorityIcon({required BuildContext context}) {
+    return db.streamBuilder(
+      (context) => IconButton(
+        icon: Icon(
+          Icons.low_priority,
+          color: db.userData.svtFilter.priority.isEmpty('12345'.split(''))
+              ? null
+              : Colors.yellowAccent,
+        ),
+        tooltip: S.of(context).priority,
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) => ItemFilterDialog(),
+          );
+        },
+      ),
     );
   }
 }

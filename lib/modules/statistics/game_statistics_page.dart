@@ -28,43 +28,45 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: BackButton(),
-        title: Text(S.of(context).statistics_title),
-        actions: [
-          buildSwitchPlanButton(
-            context: context,
-            onChange: (index) {
-              db.curUser.curSvtPlanNo = index;
-              db.itemStat.update();
-              setState(() {});
-            },
-          )
-        ],
-        bottom: TabBar(
+    return db.streamBuilder(
+      (context) => Scaffold(
+        appBar: AppBar(
+          title: Text(S.current.statistics_title),
+          actions: [
+            buildSwitchPlanButton(
+              context: context,
+              onChange: (index) {
+                db.curUser.curSvtPlanNo = index;
+                db.itemStat.update();
+                setState(() {});
+              },
+            ),
+            CommonBuilder.priorityIcon(context: context),
+          ],
+          bottom: TabBar(
+            controller: _tabController,
+            isScrollable: true,
+            tabs: [
+              Tab(
+                  text: LocalizedText.of(
+                      chs: '素材需求', jpn: 'アイテム需要', eng: 'Item Demands')),
+              Tab(
+                  text: LocalizedText.of(
+                      chs: '已消耗素材', jpn: 'アイテム消費済', eng: 'Item Consumed')),
+              Tab(text: S.of(context).servant)
+            ],
+          ),
+        ),
+        body: TabBarView(
           controller: _tabController,
-          isScrollable: true,
-          tabs: [
-            Tab(
-                text: LocalizedText.of(
-                    chs: '素材需求', jpn: 'アイテム需要', eng: 'Item Demands')),
-            Tab(
-                text: LocalizedText.of(
-                    chs: '已消耗素材', jpn: 'アイテム消費済', eng: 'Item Consumed')),
-            Tab(text: S.of(context).servant)
+          // pie chart relate
+          physics: AppInfo.isMobile ? NeverScrollableScrollPhysics() : null,
+          children: [
+            KeepAliveBuilder(builder: (context) => StatItemDemandsTab()),
+            KeepAliveBuilder(builder: (context) => StatItemConsumedTab()),
+            KeepAliveBuilder(builder: (context) => StatisticServantTab())
           ],
         ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        // pie chart relate
-        physics: AppInfo.isMobile ? NeverScrollableScrollPhysics() : null,
-        children: [
-          KeepAliveBuilder(builder: (context) => StatItemDemandsTab()),
-          KeepAliveBuilder(builder: (context) => StatItemConsumedTab()),
-          KeepAliveBuilder(builder: (context) => StatisticServantTab())
-        ],
       ),
     );
   }
@@ -240,19 +242,7 @@ class _StatItemDemandsTabState extends State<StatItemDemandsTab> {
   }
 
   void calculateItem() {
-    shownItems.clear();
-    db.curUser.servants.forEach((no, svtStat) {
-      if (!svtStat.favorite) return;
-      final svt = db.gameData.servantsWithUser[no];
-      if (svt == null) {
-        print('No $no: ${db.gameData.servantsWithUser.length}');
-        return;
-      }
-      sumDict([
-        shownItems,
-        svt.getAllCost(status: svtStat, target: db.curUser.svtPlanOf(no))
-      ], inPlace: true);
-    });
+    shownItems = Map.of(db.itemStat.svtItems);
     sumDict([
       shownItems,
       if (subtractOwnedItems) multiplyDict(db.curUser.items, -1),

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/free_quest_calculator/free_calculator_page.dart';
+import 'package:chaldea/modules/shared/item_related_builder.dart';
 import 'package:chaldea/modules/shared/list_page_share.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -59,21 +60,7 @@ class ItemListPageState extends State<ItemListPage>
               setState(() {});
             },
           ),
-          IconButton(
-            icon: Icon(
-              Icons.low_priority,
-              color: db.userData.svtFilter.priority.isEmpty('12345'.split(''))
-                  ? null
-                  : Colors.yellowAccent,
-            ),
-            tooltip: S.of(context).priority,
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => ItemFilterDialog(),
-              ).then((_) => setState(() {}));
-            },
-          ),
+          CommonBuilder.priorityIcon(context: context),
           IconButton(
             icon: Icon(
                 filtered ? Icons.check_circle : Icons.check_circle_outline),
