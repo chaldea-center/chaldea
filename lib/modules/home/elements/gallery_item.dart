@@ -1,5 +1,4 @@
-import 'package:chaldea/components/utils.dart';
-import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/craft/craft_list_page.dart';
 import 'package:chaldea/modules/damage_calc/damage_calc_page.dart';
@@ -18,12 +17,11 @@ import 'package:chaldea/modules/import_data/home_import_page.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/lostroom/lost_room.dart';
 import 'package:chaldea/modules/master_mission/master_mission_page.dart';
+import 'package:chaldea/modules/saint_quartz/sq_main.dart';
 import 'package:chaldea/modules/servant/costume_list_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:chaldea/modules/statistics/game_statistics_page.dart';
 import 'package:chaldea/modules/summon/summon_list_page.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class GalleryItem {
@@ -75,6 +73,7 @@ class GalleryItem {
     plan,
     freeCalculator,
     masterMission,
+    saintQuartz,
     mysticCode,
     costume,
     gacha,
@@ -143,6 +142,13 @@ class GalleryItem {
     titleBuilder: () => S.current.master_mission,
     icon: FontAwesomeIcons.tasks,
     page: MasterMissionPage(),
+    isDetail: true,
+  );
+  static GalleryItem saintQuartz = GalleryItem(
+    name: 'saint_quartz',
+    titleBuilder: () => Item.lNameOf(Items.quartz),
+    icon: FontAwesomeIcons.gem,
+    page: SaintQuartzPlanning(),
     isDetail: true,
   );
   static GalleryItem mysticCode = GalleryItem(

@@ -15,6 +15,9 @@ import 'package:chaldea/modules/cmd_code/cmd_code_detail_page.dart'
     show CmdCodeDetailPage;
 import 'package:chaldea/modules/craft/craft_detail_page.dart'
     show CraftDetailPage;
+import 'package:chaldea/modules/event/campaign_detail_page.dart';
+import 'package:chaldea/modules/event/limit_event_detail_page.dart';
+import 'package:chaldea/modules/event/main_record_detail_page.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart' show ItemDetailPage;
 import 'package:chaldea/modules/servant/servant_detail_page.dart'
     show ServantDetailPage;

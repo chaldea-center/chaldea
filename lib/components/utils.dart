@@ -5,6 +5,7 @@ import 'dart:math' as math;
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -569,4 +570,12 @@ class EasyLoadingUtil {
       return Future.value();
     }
   }
+}
+
+class UndraggableScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        // PointerDeviceKind.touch,
+        // PointerDeviceKind.mouse,
+      };
 }

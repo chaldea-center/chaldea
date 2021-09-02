@@ -73,12 +73,12 @@ class SaintQuartzPlan {
     validate();
     Map<String, SQDayDetail> dataMap = {};
     dataMap[startDate.toDateString()] = SQDayDetail(
-        date: startDate,
-        accLogin: accLogin,
-        accSQ: curApple,
-        accTicket: curTicket,
-        accApple: curApple.toDouble(),
-        events: ['Starting']);
+      date: startDate,
+      accLogin: accLogin,
+      accSQ: curApple,
+      accTicket: curTicket,
+      accApple: curApple.toDouble(),
+    );
     for (int day = 1; day <= endDate.difference(startDate).inDays; day++) {
       final date = DateUtils.dateOnly(DateUtils.addDaysToDate(startDate, day));
       int sq = 0, ticket = 0;
@@ -130,9 +130,7 @@ class SaintQuartzPlan {
       detail.addApple += (items[Items.goldApple] ?? 0) +
           (items[Items.silverApple] ?? 0) / 2 +
           (items[Items.bronzeApple] ?? 0) / 14.2;
-      if (name.isNotEmpty) {
-        detail.events.add(name);
-      }
+      if (event != null) detail.events.add(event);
     }
 
     db.gameData.events.limitEvents.values.forEach((e) => _checkEvent(event: e));
@@ -147,6 +145,16 @@ class SaintQuartzPlan {
       items: extraMissionItems,
       name: 'Extra Mission',
     );
+
+    db.gameData.summons.values.forEach((summon) {
+      DateTime? startDate = summon.startTimeJp?.toDateTime();
+      if (startDate == null) return;
+      startDate = DateUtils.dateOnly(
+          DateUtils.addDaysToDate(startDate, eventDateDelta));
+      final detail = dataMap[startDate.toDateString()];
+      if (detail == null) return;
+      detail.summons.add(summon);
+    });
 
     solution = dataMap.values.toList();
     solution.sort((a, b) => a.date.compareTo(b.date));
@@ -171,7 +179,8 @@ class SQDayDetail {
   int accTicket;
   double addApple;
   double accApple;
-  List<String> events;
+  List<EventBase> events;
+  List<Summon> summons;
 
   SQDayDetail({
     required this.date,
@@ -183,26 +192,9 @@ class SQDayDetail {
     this.accTicket = 0,
     this.addApple = 0,
     this.accApple = 0,
-    List<String>? events,
+    List<EventBase>? events,
+    List<Summon>? summons,
   })  : continuousLogin = fixValidRange(continuousLogin, 1, 7),
-        events = events ?? [];
-
-  SQDayDetail next({
-    int addSQ = 0,
-    int addTicket = 0,
-    double addApple = 0,
-    List<String>? events,
-  }) {
-    return SQDayDetail(
-      date: DateUtils.addDaysToDate(date, 1),
-      continuousLogin: continuousLogin + 1,
-      addSQ: addSQ,
-      accSQ: accSQ + addSQ,
-      addTicket: addTicket,
-      accTicket: accTicket + addTicket,
-      addApple: addApple,
-      accApple: accApple + addApple,
-      events: events ?? [],
-    );
-  }
+        events = events ?? [],
+        summons = summons ?? [];
 }

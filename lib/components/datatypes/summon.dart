@@ -104,6 +104,21 @@ class Summon {
     return false;
   }
 
+  List<Servant> shownServants() {
+    Set<Servant> svts = {};
+    dataList.forEach((data) {
+      data.svts.forEach((block) {
+        if (block.display) {
+          block.ids.forEach((id) {
+            final svt = db.gameData.servants[id];
+            if (svt != null) svts.add(svt);
+          });
+        }
+      });
+    });
+    return svts.toList();
+  }
+
   factory Summon.fromJson(Map<String, dynamic> data) => _$SummonFromJson(data);
 
   Map<String, dynamic> toJson() => _$SummonToJson(this);

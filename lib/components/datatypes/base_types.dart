@@ -73,8 +73,6 @@ mixin GameCardMixin {
     EdgeInsets? padding,
     EdgeInsets? textPadding,
     VoidCallback? onTap,
-    // for subclasses
-    bool jumpToDetail = false,
   }) {
     return cardIconBuilder(
       context: context,

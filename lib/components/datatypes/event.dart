@@ -163,6 +163,17 @@ class EventBase {
     }
     return false;
   }
+
+  Widget resolveDetailPage() {
+    if (this is LimitEvent)
+      return LimitEventDetailPage(event: this as LimitEvent);
+    else if (this is MainRecord)
+      return MainRecordDetailPage(record: this as MainRecord);
+    else if (this is CampaignEvent)
+      return CampaignDetailPage(event: this as CampaignEvent);
+    else
+      throw TypeError();
+  }
 }
 
 @JsonSerializable(checked: true)

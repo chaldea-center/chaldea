@@ -1,6 +1,5 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/lostroom/suuport_party.dart';
-import 'package:chaldea/modules/saint_quartz/sq_main.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LostRoomPage extends StatelessWidget {
@@ -30,13 +29,6 @@ class LostRoomPage extends StatelessWidget {
             title: Text(S.current.support_party),
             onTap: () {
               SplitRoute.push(context, SupportPartyPage());
-            },
-          ),
-          ListTile(
-            leading: FaIcon(FontAwesomeIcons.userFriends),
-            title: Text(Item.lNameOf(Items.quartz)),
-            onTap: () {
-              SplitRoute.push(context, SaintQuartzPlanning());
             },
           ),
         ],

@@ -344,11 +344,3 @@ class _SupportCornerClipper extends CustomClipper<Path> {
     return true;
   }
 }
-
-class UndraggableScrollBehavior extends MaterialScrollBehavior {
-  @override
-  Set<PointerDeviceKind> get dragDevices => {
-        // PointerDeviceKind.touch,
-        // PointerDeviceKind.mouse,
-      };
-}
