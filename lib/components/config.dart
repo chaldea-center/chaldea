@@ -595,6 +595,7 @@ class PathManager {
 
 class RuntimeData {
   Version? upgradableVersion;
+  DatasetVersion? latestDatasetVersion;
   double? criticalWidth;
   Set<String> itemRecognizeImageFiles = {};
   Set<String> activeSkillRecognizeImageFiles = {};

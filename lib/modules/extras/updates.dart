@@ -99,6 +99,17 @@ class AutoUpdateUtil {
       final git = GitTool(GitSource.server);
       final releases = await git.datasetReleases;
 
+      final _globalLatestRelease = await git.latestDatasetRelease(
+          releases: releases, testRelease: (_) => true);
+      if (_globalLatestRelease != null) {
+        final dataVersion = DatasetVersion.tryParse(_globalLatestRelease.name);
+        if (dataVersion != null &&
+                dataVersion.minimalApp > AppInfo.versionClass ||
+            kDebugMode) {
+          db.runtimeData.latestDatasetVersion = dataVersion;
+        }
+      }
+
       final latestRelease = await git.latestDatasetRelease(releases: releases);
       if (latestRelease == null) {
         _reportResult(S.current.patch_gamedata_error_no_compatible);

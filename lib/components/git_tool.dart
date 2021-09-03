@@ -112,6 +112,52 @@ class Version extends Comparable<Version> {
   int get hashCode => toString().hashCode;
 }
 
+class DatasetVersion extends Comparable<DatasetVersion> {
+  String createAt;
+  Version minimalApp;
+  String hotfix;
+
+  DatasetVersion(this.createAt, this.minimalApp, [this.hotfix = '']);
+
+  static DatasetVersion? tryParse(String source) {
+    final segments = source.split('-');
+    if (segments.length == 1) return null;
+    Version? app = Version.tryParse(segments[1]);
+    if (app == null) return null;
+    return DatasetVersion(segments[0], app, segments.getOrNull(2) ?? '');
+  }
+
+  @override
+  int compareTo(DatasetVersion other) {
+    if (createAt != other.createAt) return createAt.compareTo(other.createAt);
+    return hotfix.compareTo(other.hotfix);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is DatasetVersion && compareTo(other) == 0;
+  }
+
+  bool operator <(DatasetVersion other) => compareTo(other) < 0;
+
+  bool operator <=(DatasetVersion other) => compareTo(other) <= 0;
+
+  bool operator >(DatasetVersion other) => compareTo(other) > 0;
+
+  bool operator >=(DatasetVersion other) => compareTo(other) >= 0;
+
+  @override
+  String toString() {
+    return '$runtimeType($createAt, $minimalApp, $hotfix)';
+  }
+
+  String get readable =>
+      '$createAt-${minimalApp.version}' + (hotfix.isEmpty ? '' : '-$hotfix');
+
+  @override
+  int get hashCode => toString().hashCode;
+}
+
 class GitRelease {
   int id;
   String name;

@@ -17,10 +17,7 @@ class _GameDataPageState extends State<GameDataPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.of(context).gamedata),
-        leading: BackButton(),
-      ),
+      appBar: AppBar(title: Text(S.current.gamedata)),
       body: ListView(
         children: [
           TileGroup(
@@ -29,7 +26,20 @@ class _GameDataPageState extends State<GameDataPage> {
                 title: Text(S.current.version),
                 subtitle: Text(S.current.gamedata),
                 trailing: Text(db.gameData.version),
-              )
+              ),
+              if (db.runtimeData.latestDatasetVersion != null)
+                ListTile(
+                  title: Text(LocalizedText.of(
+                      chs: '最新版本', jpn: '最新バージョン ', eng: 'Latest Version')),
+                  subtitle: Text(LocalizedText.of(
+                      chs: '需要升级APP',
+                      jpn: 'APPをアップグレードする必要があります',
+                      eng: 'Need to upgrade APP')),
+                  trailing: Text(
+                    db.runtimeData.latestDatasetVersion!.readable,
+                    style: TextStyle(color: Theme.of(context).errorColor),
+                  ),
+                )
             ],
           ),
           TileGroup(
@@ -86,6 +96,7 @@ class _GameDataPageState extends State<GameDataPage> {
                       EasyLoading.showInfo(e.toString());
                     },
                   );
+                  if (mounted) setState(() {});
                 },
               ),
               ListTile(
