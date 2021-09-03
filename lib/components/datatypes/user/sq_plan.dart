@@ -39,8 +39,8 @@ class SaintQuartzPlan {
         endDate = endDate ?? DateUtils.dateOnly(DateTime.now()),
         accLogin = accLogin ?? 1,
         continuousLogin = continuousLogin ?? 1,
-        eventDateDelta = eventDateDelta ?? 0,
-        weeklyMission = weeklyMission ?? false,
+        eventDateDelta = eventDateDelta ?? 365,
+        weeklyMission = weeklyMission ?? true,
         extraMissions = missions ?? {},
         minusPlannedBanner = minusPlannedBanner ?? true {
     validate();

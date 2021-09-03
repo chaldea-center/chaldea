@@ -24,7 +24,6 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning>
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging &&
           _tabController.index == _tabController.length - 1) {
-        print('hello');
         db.curUser.saintQuartzPlan.solve();
         setState(() {});
       }
@@ -48,8 +47,13 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning>
           isScrollable: true,
           tabs: [
             Tab(text: S.current.settings_tab_name),
-            Tab(text: 'Extra Mission'),
-            Tab(text: 'Result'),
+            Tab(
+              text: LocalizedText.of(
+                  chs: '特殊御主任务', jpn: 'エクストラミッション', eng: 'Extra Mission'),
+            ),
+            Tab(
+              text: LocalizedText.of(chs: '攒石表(伪)', jpn: '結果表', eng: 'Table'),
+            ),
           ],
         ),
       ),

@@ -32,7 +32,8 @@ dependencies:
   cached_network_image: ^3.1.0
   carousel_slider: ^4.0.0
   catcher: ^0.6.8
-  connectivity_plus: ^1.0.6
+  connectivity_plus: 1.0.8
+  connectivity_plus_macos: 1.0.2  # 1.1.0: macOS deployment target 10.11 to 10.14
   crypto: ^3.0.1
   csv: ^5.0.0
   cupertino_icons: ^1.0.3
@@ -44,12 +45,12 @@ dependencies:
   dio_cookie_manager: ^2.0.0
   dots_indicator: ^2.0.0
   file_picker_cross: ^4.4.2
-  fl_chart: ^0.36.2
+  fl_chart: ^0.40.0
   flutter_audio_desktop: 0.0.8
   flutter_cache_manager: ^3.1.2
   flutter_easyloading: ^3.0.0
   flutter_email_sender: ^5.0.2
-  flutter_markdown: ^0.6.2
+  flutter_markdown: ^0.6.6
   flutter_picker: ^2.0.2
   flutter_qjs: ^0.3.6
   flutter_webview_plugin: ^0.4.0
@@ -60,12 +61,12 @@ dependencies:
   intl: ^0.17.0
   json_annotation: 4.0.1
   kana_kit: ^2.0.0
-  logger: ^1.0.0
+  logger: ^1.1.0
   lpinyin: ^2.0.3
   modal_bottom_sheet: ^2.0.0
   open_file: ^3.2.1
-  package_info_plus: ^1.0.3
-  path_provider: ^2.0.2
+  package_info_plus: ^1.0.6
+  path_provider: ^2.0.3
   permission_handler: ^8.1.2
   pool: ^1.5.0
   photo_view: ^0.12.0
@@ -73,10 +74,10 @@ dependencies:
   rfc_6902: ^0.1.0
   screenshot: ^1.2.3
   share_plus: ^2.1.4
-  shared_preferences: ^2.0.6
+  shared_preferences: ^2.0.7
   string_validator: ^0.3.0
   table_sticky_headers: ^2.0.0
-  url_launcher: ^6.0.9
+  url_launcher: ^6.0.10
   uuid: ^3.0.4
 
 dev_dependencies:

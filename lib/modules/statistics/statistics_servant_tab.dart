@@ -1,6 +1,5 @@
 import 'package:chaldea/components/components.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/gestures.dart';
 
 class StatisticServantTab extends StatefulWidget {
   @override
@@ -202,23 +201,22 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
                   entry.key, entry.value, total, mag, palette[index]);
             }),
             centerSpaceRadius: 0,
-            pieTouchData: PieTouchData(touchCallback: (pieTouchResponse) {
+            pieTouchData:
+                PieTouchData(touchCallback: (event, pieTouchResponse) {
+              if (pieTouchResponse == null) return;
               bool _needsBuild = false;
-              if (pieTouchResponse.touchInput is PointerDownEvent &&
+              if (event is FlTapUpEvent &&
                   pieTouchResponse.touchedSection != null &&
                   pieTouchResponse.touchedSection!.touchedSectionIndex >= 0) {
                 scrollable = false;
                 _needsBuild = true;
               }
-              if (pieTouchResponse.touchInput is PointerUpEvent ||
-                  pieTouchResponse.touchInput is PointerExitEvent ||
-                  pieTouchResponse.touchInput is PointerCancelEvent) {
+              if (event is FlTapUpEvent || event is FlTapCancelEvent) {
                 scrollable = true;
                 _needsBuild = true;
               }
               final desiredTouch =
-                  pieTouchResponse.touchInput is! PointerExitEvent &&
-                      pieTouchResponse.touchInput is! PointerUpEvent;
+                  event is! FlTapUpEvent && event is! FlTapCancelEvent;
               if (desiredTouch && pieTouchResponse.touchedSection != null) {
                 String? _newSelected;
                 int index =

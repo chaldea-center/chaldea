@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -10,8 +11,8 @@ class SupportDonationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
-        title: Text(S.current.support_chaldea),
+        title: AutoSizeText(S.current.support_chaldea, maxLines: 1),
+        titleSpacing: 0,
         actions: [
           IconButton(
             onPressed: () {
