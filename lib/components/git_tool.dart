@@ -259,10 +259,13 @@ class GitTool {
             ..assets.forEach((asset) {
               if (source == GitSource.server &&
                   asset.browserDownloadUrl != null) {
-                asset.browserDownloadUrl = Uri.parse('$kServerRoot/githubasset')
-                    .replace(queryParameters: {
-                  'url': asset.browserDownloadUrl,
-                }).toString();
+                asset.browserDownloadUrl = asset.browserDownloadUrl!
+                    .replaceFirst(RegExp(r'^https://github.com'),
+                        'http://github.com.cnpmjs.org');
+                // asset.browserDownloadUrl = Uri.parse('$kServerRoot/githubasset')
+                //     .replace(queryParameters: {
+                //   'url': asset.browserDownloadUrl,
+                // }).toString();
               }
             }),
         );

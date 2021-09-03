@@ -139,11 +139,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("下载后手动导入"),
         "dataset_management": MessageLookupByLibrary.simpleMessage("数据管理"),
         "dataset_type_image": MessageLookupByLibrary.simpleMessage("图片数据包"),
-        "dataset_type_image_hint":
-            MessageLookupByLibrary.simpleMessage("仅包含图片，~20M"),
         "dataset_type_text": MessageLookupByLibrary.simpleMessage("文本数据包"),
-        "dataset_type_text_hint":
-            MessageLookupByLibrary.simpleMessage("不包含图片，~5M"),
         "delete": MessageLookupByLibrary.simpleMessage("删除"),
         "display_setting": MessageLookupByLibrary.simpleMessage("显示设置"),
         "download": MessageLookupByLibrary.simpleMessage("下载"),
@@ -248,8 +244,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "game_kizuna": MessageLookupByLibrary.simpleMessage("羁绊"),
         "game_rewards": MessageLookupByLibrary.simpleMessage("通关奖励"),
         "gamedata": MessageLookupByLibrary.simpleMessage("游戏数据"),
-        "gitee_source_hint": MessageLookupByLibrary.simpleMessage("更新可能不及时"),
-        "github_source_hint": MessageLookupByLibrary.simpleMessage("国内可能偶尔连不上"),
         "gold": MessageLookupByLibrary.simpleMessage("金"),
         "grail": MessageLookupByLibrary.simpleMessage("圣杯"),
         "grail_level": MessageLookupByLibrary.simpleMessage("圣杯等级"),

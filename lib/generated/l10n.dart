@@ -2576,31 +2576,11 @@ class S {
     );
   }
 
-  /// `仅包含图片，~20M`
-  String get dataset_type_image_hint {
-    return Intl.message(
-      '仅包含图片，~20M',
-      name: 'dataset_type_image_hint',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `文本数据包`
   String get dataset_type_text {
     return Intl.message(
       '文本数据包',
       name: 'dataset_type_text',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `不包含图片，~5M`
-  String get dataset_type_text_hint {
-    return Intl.message(
-      '不包含图片，~5M',
-      name: 'dataset_type_text_hint',
       desc: '',
       args: [],
     );
@@ -3211,26 +3191,6 @@ class S {
     return Intl.message(
       '更新资源包',
       name: 'update_dataset',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `国内可能偶尔连不上`
-  String get github_source_hint {
-    return Intl.message(
-      '国内可能偶尔连不上',
-      name: 'github_source_hint',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `更新可能不及时`
-  String get gitee_source_hint {
-    return Intl.message(
-      '更新可能不及时',
-      name: 'gitee_source_hint',
       desc: '',
       args: [],
     );

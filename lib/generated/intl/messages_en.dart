@@ -158,12 +158,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Data Management"),
         "dataset_type_image":
             MessageLookupByLibrary.simpleMessage("Icon dataset"),
-        "dataset_type_image_hint":
-            MessageLookupByLibrary.simpleMessage("Only icons, ~20M"),
         "dataset_type_text":
             MessageLookupByLibrary.simpleMessage("Text dataset"),
-        "dataset_type_text_hint":
-            MessageLookupByLibrary.simpleMessage("Only texts, ~5M"),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
         "display_setting":
             MessageLookupByLibrary.simpleMessage("Display Settings"),
@@ -287,10 +283,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "game_kizuna": MessageLookupByLibrary.simpleMessage("Bond"),
         "game_rewards": MessageLookupByLibrary.simpleMessage("Rewards"),
         "gamedata": MessageLookupByLibrary.simpleMessage("Gamedata"),
-        "gitee_source_hint":
-            MessageLookupByLibrary.simpleMessage("May be outdated"),
-        "github_source_hint":
-            MessageLookupByLibrary.simpleMessage("May be blocked in China"),
         "gold": MessageLookupByLibrary.simpleMessage("Gold"),
         "grail": MessageLookupByLibrary.simpleMessage("Grail"),
         "grail_level": MessageLookupByLibrary.simpleMessage("Grail"),

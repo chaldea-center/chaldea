@@ -142,12 +142,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "dataset_management": MessageLookupByLibrary.simpleMessage("データベース"),
         "dataset_type_image":
             MessageLookupByLibrary.simpleMessage("画像データパッケージ"),
-        "dataset_type_image_hint":
-            MessageLookupByLibrary.simpleMessage("画像のみ、約20M"),
         "dataset_type_text":
             MessageLookupByLibrary.simpleMessage("テキストデータパッケージ"),
-        "dataset_type_text_hint":
-            MessageLookupByLibrary.simpleMessage("テキストのみ、約5M"),
         "delete": MessageLookupByLibrary.simpleMessage("削除"),
         "display_setting": MessageLookupByLibrary.simpleMessage("表示設定"),
         "download": MessageLookupByLibrary.simpleMessage("ダウンロード"),
@@ -259,9 +255,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "game_kizuna": MessageLookupByLibrary.simpleMessage("絆"),
         "game_rewards": MessageLookupByLibrary.simpleMessage("クリア報酬"),
         "gamedata": MessageLookupByLibrary.simpleMessage("ゲームデータ"),
-        "gitee_source_hint":
-            MessageLookupByLibrary.simpleMessage("更新が遅れる可能性があります"),
-        "github_source_hint": MessageLookupByLibrary.simpleMessage(""),
         "gold": MessageLookupByLibrary.simpleMessage("金"),
         "grail": MessageLookupByLibrary.simpleMessage("聖杯"),
         "grail_level": MessageLookupByLibrary.simpleMessage("聖杯レベル"),

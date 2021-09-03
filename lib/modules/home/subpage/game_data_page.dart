@@ -23,19 +23,6 @@ class _GameDataPageState extends State<GameDataPage> {
       ),
       body: ListView(
         children: [
-          // TileGroup(
-          //   children: [
-          //     SwitchListTile.adaptive(
-          //       value: false,
-          //       onChanged: (v){
-          //         // db.userData;
-          //       },
-          //       title: Text('Auto Update'),
-          //       subtitle: Text('only dataset'),
-          //       controlAffinity: ListTileControlAffinity.trailing,
-          //     ),
-          //   ],
-          // ),
           TileGroup(
             children: [
               ListTile(
@@ -54,26 +41,30 @@ class _GameDataPageState extends State<GameDataPage> {
             children: [
               sourceAccordion(
                 source: GitSource.server,
-                subtitle: 'Chaldea server',
+                subtitle: LocalizedText.of(
+                    chs: '建议仅国内不能连接Github时使用',
+                    jpn: 'Githubにアクセスできない場合のみ',
+                    eng: 'Only when you cannot access Github'),
                 hideContent: true,
               ),
               sourceAccordion(
                 source: GitSource.github,
-                subtitle: S.current.github_source_hint,
+                subtitle: LocalizedText.of(
+                    chs: '国内可能连不上', jpn: '推奨されます', eng: 'Suggested'),
               ),
               sourceAccordion(
                 source: GitSource.gitee,
                 subtitle: LocalizedText.of(
-                  chs: '暂不作为应用内下载源',
+                  chs: '暂不作为应用内下载源，仍可手动下载',
                   jpn: '現在、アプリ内ダウンロードソースとして使用されていません',
-                  eng: 'Currently this in-app download source is disabled',
+                  eng: 'In-app download source is disabled',
                 ),
                 disabled: true,
               ),
             ],
           ),
           TileGroup(
-            header: S.of(context).gamedata,
+            header: S.current.gamedata,
             footer: S.current.download_latest_gamedata_hint,
             children: <Widget>[
               SwitchListTile.adaptive(
@@ -283,12 +274,16 @@ class _GameDataPageState extends State<GameDataPage> {
           children: [
             ListTile(
               title: Text(S.of(context).dataset_type_text),
-              subtitle: Text(S.of(context).dataset_type_text_hint),
+              subtitle: Text(LocalizedText.of(
+                  chs: '不包含图片，~8M', jpn: 'テキストのみ、約8M', eng: 'Only texts, ~8M')),
               onTap: () => _downloadAsset(false),
             ),
             ListTile(
               title: Text(S.of(context).dataset_type_image),
-              subtitle: Text(S.of(context).dataset_type_image_hint),
+              subtitle: Text(LocalizedText.of(
+                  chs: '仅包含图片，~20M',
+                  jpn: '画像のみ、約20M',
+                  eng: 'Only icons, ~20M')),
               onTap: () => _downloadAsset(true),
             ),
             ListTile(
@@ -328,7 +323,8 @@ class _GameDataPageState extends State<GameDataPage> {
         throw FormatException('unsupported file type');
       }
       EasyLoading.showSuccess(S.of(context).import_data_success);
-    } on FileSelectionCanceledError {} catch (e) {
+    } on FileSelectionCanceledError {
+    } catch (e) {
       showInformDialog(context,
           title: 'Import gamedata failed!', content: e.toString());
     } finally {
