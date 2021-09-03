@@ -111,6 +111,7 @@ extension TrimString on String {
 }
 
 extension DialogShowMethod on Widget {
+  /// Don't use this when dialog children depends on [context]
   Future<T?> showDialog<T>(BuildContext? context,
       {bool barrierDismissible = true}) {
     context ??= kAppKey.currentContext;

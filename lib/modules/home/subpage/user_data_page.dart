@@ -232,28 +232,31 @@ class _UserDataPageState extends State<UserDataPage> {
           return;
         }
         Map<String, int> body = Map.from(resp.body ?? {});
-        String? fn = await SimpleDialog(
-          title: Text(S.current.userdata_download_choose_backup),
-          children: [
-            if (body.isEmpty) ListTile(title: Text('No backup found')),
-            for (var entry in body.entries)
-              ListTile(
-                title: Text(entry.key),
-                subtitle: Text(
-                    DateTime.fromMillisecondsSinceEpoch(entry.value * 1000)
-                        .toString()),
-                onTap: () {
-                  Navigator.pop(context, entry.key);
+        String? fn = await showDialog(
+          context: context,
+          builder: (context) => SimpleDialog(
+            title: Text(S.current.userdata_download_choose_backup),
+            children: [
+              if (body.isEmpty) ListTile(title: Text('No backup found')),
+              for (var entry in body.entries)
+                ListTile(
+                  title: Text(entry.key),
+                  subtitle: Text(
+                      DateTime.fromMillisecondsSinceEpoch(entry.value * 1000)
+                          .toString()),
+                  onTap: () {
+                    Navigator.pop(context, entry.key);
+                  },
+                ),
+              IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
                 },
-              ),
-            IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(Icons.clear),
-            )
-          ],
-        ).showDialog(context);
+                icon: Icon(Icons.clear),
+              )
+            ],
+          ),
+        );
         if (fn == null) return;
         EasyLoading.show(
             status: 'Downloading', maskType: EasyLoadingMaskType.clear);

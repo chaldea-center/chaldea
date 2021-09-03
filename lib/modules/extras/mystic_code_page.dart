@@ -8,10 +8,9 @@ class MysticCodePage extends StatefulWidget {
 }
 
 class _MysticCodePageState extends State<MysticCodePage> {
-  List<String> codes = db.gameData.mysticCodes.keys.toList();
-  int _curIndex = 0;
+  Map<String, MysticCode> get codes => db.gameData.mysticCodes;
 
-  String get _curCodeName => codes[_curIndex];
+  String? _curCodeName;
   late ScrollController _scrollController;
 
   @override
@@ -22,12 +21,12 @@ class _MysticCodePageState extends State<MysticCodePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (db.gameData.mysticCodes.isEmpty) return Container();
-    final MysticCode mysticCode = db.gameData.mysticCodes[_curCodeName]!;
+    if (codes.isEmpty) return Container();
+    _curCodeName ??= codes.keys.first;
+    final MysticCode? mysticCode = db.gameData.mysticCodes[_curCodeName];
     final int _level = db.curUser.mysticCodes[_curCodeName] ?? 10;
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         title: Text(S.current.mystic_code),
         actions: [
           TextButton(
@@ -42,33 +41,37 @@ class _MysticCodePageState extends State<MysticCodePage> {
           )
         ],
       ),
-      body: Column(
-        children: [
-          buildScrollHeader(),
-          Expanded(
-              child: SingleChildScrollView(child: buildDetails(mysticCode))),
-          Row(
-            children: [
-              Padding(
-                  padding: EdgeInsets.only(left: 16, right: 2),
-                  child: Text(S.current.level)),
-              SizedBox(
-                  width: 20, child: Center(child: Text(_level.toString()))),
-              Expanded(
-                child: Slider(
-                  value: _level.toDouble(),
-                  onChanged: (v) => setState(
-                      () => db.curUser.mysticCodes[_curCodeName] = v.toInt()),
-                  min: 1.0,
-                  max: 10.0,
-                  divisions: 9,
-                  label: _level.toString(),
+      body: mysticCode == null
+          ? Container()
+          : Column(
+              children: [
+                buildScrollHeader(),
+                Expanded(
+                    child:
+                        SingleChildScrollView(child: buildDetails(mysticCode))),
+                Row(
+                  children: [
+                    Padding(
+                        padding: EdgeInsets.only(left: 16, right: 2),
+                        child: Text(S.current.level)),
+                    SizedBox(
+                        width: 20,
+                        child: Center(child: Text(_level.toString()))),
+                    Expanded(
+                      child: Slider(
+                        value: _level.toDouble(),
+                        onChanged: (v) => setState(() =>
+                            db.curUser.mysticCodes[_curCodeName!] = v.toInt()),
+                        min: 1.0,
+                        max: 10.0,
+                        divisions: 9,
+                        label: _level.toString(),
+                      ),
+                    )
+                  ],
                 ),
-              )
-            ],
-          ),
-        ],
-      ),
+              ],
+            ),
     );
   }
 
@@ -87,18 +90,18 @@ class _MysticCodePageState extends State<MysticCodePage> {
             child: ListView(
               controller: _scrollController,
               scrollDirection: Axis.horizontal,
-              children: List.generate(codes.length, (index) {
-                final code = db.gameData.mysticCodes[codes[index]]!;
+              children: codes.entries.map((e) {
+                final code = e.value;
                 return Padding(
                   padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
                   child: Container(
                     decoration: BoxDecoration(
                         border: Border.all(
-                            color: _curIndex == index
+                            color: _curCodeName == e.key
                                 ? Colors.blue
                                 : Colors.transparent)),
                     child: GestureDetector(
-                      onTap: () => setState(() => _curIndex = index),
+                      onTap: () => setState(() => _curCodeName = e.key),
                       child: db.getIconImage(
                           db.curUser.isMasterGirl ? code.icon2 : code.icon1,
                           width: 50,
@@ -119,8 +122,12 @@ class _MysticCodePageState extends State<MysticCodePage> {
   }
 
   void _scrollTo(int dx) {
+    List<String> keys = codes.keys.toList();
+    int _curIndex = codes.keys.toList().indexOf(_curCodeName ?? '');
     _curIndex = fixValidRange(_curIndex + dx, 0, codes.length - 1);
-    setState(() {});
+    setState(() {
+      _curCodeName = keys[_curIndex];
+    });
     if (codes.length > 1) {
       final length = _scrollController.position.maxScrollExtent -
           _scrollController.position.minScrollExtent;

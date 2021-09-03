@@ -415,5 +415,6 @@
   "lucky_bag": "Lucky Bag",
   "bond": "Bond",
   "enemy_list": "Enemies",
-  "critical_attack": "Critical"
+  "critical_attack": "Critical",
+  "overview": "Overview"
 }

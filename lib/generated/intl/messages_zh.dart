@@ -404,6 +404,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ok": MessageLookupByLibrary.simpleMessage("确定"),
         "open": MessageLookupByLibrary.simpleMessage("打开"),
         "open_condition": MessageLookupByLibrary.simpleMessage("开发条件"),
+        "overview": MessageLookupByLibrary.simpleMessage("概览"),
         "overwrite": MessageLookupByLibrary.simpleMessage("覆盖"),
         "passive_skill": MessageLookupByLibrary.simpleMessage("职阶技能"),
         "patch_gamedata": MessageLookupByLibrary.simpleMessage("更新游戏数据"),

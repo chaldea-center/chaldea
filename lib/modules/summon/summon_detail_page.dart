@@ -248,7 +248,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     if (shouldShowOverview) {
       items.add(DropdownMenuItem(
         child: Text(
-          LocalizedText.of(chs: '概览', jpn: '概要', eng: 'Overview'),
+          S.current.overview,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         value: -1,
@@ -324,6 +324,37 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           map[id] = false;
         });
       }
+    }
+
+    if (!summon.isLuckyBag && !summon.classPickUp) {
+      children.add(SHeader(S.current.overview));
+      for (int rarity in [5, 4, 3]) {
+        Set<int> pickups = {};
+        summon.dataList.forEach((data) {
+          data.svts.forEach((block) {
+            if (block.display && block.rarity == rarity) {
+              pickups.addAll(block.ids);
+            }
+          });
+        });
+        children.add(Padding(
+          padding: EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: Wrap(
+            spacing: 4,
+            runSpacing: 4,
+            children: pickups
+                .map((id) => SummonUtil.svtAvatar(
+                      context: context,
+                      card: db.gameData.servants[id],
+                      star: summon.hasSinglePickupSvt(id),
+                      favorite: db.curUser.svtStatusOf(id).favorite,
+                    ))
+                .toList(),
+          ),
+        ));
+      }
+      children
+          .add(Divider(thickness: 0.5, height: 16, indent: 16, endIndent: 16));
     }
 
     for (final data in summon.dataList) {
