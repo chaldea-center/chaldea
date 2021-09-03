@@ -1,5 +1,8 @@
 # Support Chaldea
 
+The project financial report can be found at online sheet:
+[https://shimo.im/sheets/Q3yHkVQJvqHqHtP3/IoZsK](https://shimo.im/sheets/Q3yHkVQJvqHqHtP3/IoZsK)
+
 If this project is helpful to you and want to support it, you can:
 - [Starring](https://github.com/chaldea-center/chaldea/stargazers) the Github repo
 - Rate/review on [Google Play](https://play.google.com/store/apps/details?id=cc.narumi.chaldea) or [App Store](https://apps.apple.com/us/app/chaldea/id1548713491?itsct=apps_box&itscg=30200)
@@ -8,9 +11,6 @@ If this project is helpful to you and want to support it, you can:
 
 ## Donation
 Donation is also welcomed, please leave a message to let me know that's donated for Chaldea.
-
-The project financial report can be found at online sheet:
-[https://shimo.im/sheets/Q3yHkVQJvqHqHtP3/IoZsK](https://shimo.im/sheets/Q3yHkVQJvqHqHtP3/IoZsK)
 
 
 ### Buy me a coffee

@@ -6,6 +6,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/method_channel_chaldea.dart';
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:chaldea/modules/home/home_page.dart';
+import 'package:chaldea/modules/home/subpage/support_donation_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/scheduler.dart';
@@ -136,42 +137,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
               )
             ];
           },
-          onGenerateRoute: (settings) {
-            logger.d('onGenerateRoute: $settings');
-            if (settings.name == null) return null;
-            List<String> segments =
-                settings.name!.split('/').where((e) => e.isNotEmpty).toList();
-            if (segments.length == 2 && segments[0] == 'servant') {
-              final svt = db.gameData.servants[int.tryParse(segments[1])];
-              if (svt != null)
-                return SplitRoute(
-                  builder: (_, __) => ServantDetailPage(svt),
-                  detail: true,
-                );
-            } else if (segments.length == 2 && segments[0] == 'craft_essence') {
-              final craft = db.gameData.crafts[int.tryParse(segments[1])];
-              if (craft != null)
-                return SplitRoute(
-                  builder: (_, __) => CraftDetailPage(ce: craft),
-                  detail: true,
-                );
-            } else if (segments.length == 2 && segments[0] == 'command_code') {
-              final code = db.gameData.cmdCodes[int.tryParse(segments[1])];
-              if (code != null)
-                return SplitRoute(
-                  builder: (_, __) => CmdCodeDetailPage(code: code),
-                  detail: true,
-                );
-            } else if (segments.length == 2 && segments[0] == 'costume') {
-              final costume = db.gameData.costumes[int.tryParse(segments[1])];
-              if (costume != null)
-                return SplitRoute(
-                  builder: (_, __) => CostumeDetailPage(costume: costume),
-                  detail: true,
-                );
-            }
-            return null;
-          },
+          onGenerateRoute: onGenerateRoute,
           onUnknownRoute: (settings) {
             return SplitRoute(
               builder: (context, _) => Route404Page(settings: settings),
@@ -203,6 +169,49 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
       await Analyzer.sendStat();
       await Analyzer.sendBdtj();
     }
+  }
+
+  /// In carousel link, prefix /chaldea/route
+  Route<dynamic>? onGenerateRoute(RouteSettings settings) {
+    logger.d('onGenerateRoute: $settings');
+    if (settings.name == null) return null;
+    List<String> segments =
+        settings.name!.split('/').where((e) => e.isNotEmpty).toList();
+    if (segments.length == 2 && segments[0] == 'servant') {
+      final svt = db.gameData.servants[int.tryParse(segments[1])];
+      if (svt != null)
+        return SplitRoute(
+          builder: (_, __) => ServantDetailPage(svt),
+          detail: true,
+        );
+    } else if (segments.length == 2 && segments[0] == 'craft_essence') {
+      final craft = db.gameData.crafts[int.tryParse(segments[1])];
+      if (craft != null)
+        return SplitRoute(
+          builder: (_, __) => CraftDetailPage(ce: craft),
+          detail: true,
+        );
+    } else if (segments.length == 2 && segments[0] == 'command_code') {
+      final code = db.gameData.cmdCodes[int.tryParse(segments[1])];
+      if (code != null)
+        return SplitRoute(
+          builder: (_, __) => CmdCodeDetailPage(code: code),
+          detail: true,
+        );
+    } else if (segments.length == 2 && segments[0] == 'costume') {
+      final costume = db.gameData.costumes[int.tryParse(segments[1])];
+      if (costume != null)
+        return SplitRoute(
+          builder: (_, __) => CostumeDetailPage(costume: costume),
+          detail: true,
+        );
+    } else if (segments.isNotEmpty && segments.first == 'support') {
+      return SplitRoute(
+        builder: (_, __) => SupportDonationPage(),
+        detail: true,
+      );
+    }
+    return null;
   }
 }
 

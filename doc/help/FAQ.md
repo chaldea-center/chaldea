@@ -54,3 +54,8 @@
 
 启动时报该错误请安装VC++运行时环境(x64): [Microsoft Visual C++ redistributable package](https://support.microsoft.com/zh-cn/help/2977003/the-latest-supported-visual-c-downloads)
 
+----------
+### [Windows] 启动卡在Logo页面
+检查程序保存路径：
+- 非系统目录（需要管理员权限），如保存在"C:/Program File/"将导致程序无权限运行
+- 路径尽量不带中文等字符

@@ -1,5 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/enemy/enemy_detail_page.dart';
+import 'package:chaldea/modules/servant/servant_detail_page.dart';
 
 class QuestCard extends StatefulWidget {
   final Quest quest;
@@ -266,24 +268,32 @@ class _QuestCardState extends State<QuestCard> {
   Widget _buildWave(List<Enemy?> enemies) {
     List<Widget> enemyWidgets = enemies.map((enemy) {
       if (enemy == null) return Container();
-      List<Widget> lines = [];
+      List<Widget> children = [];
       for (int i = 0; i < enemy.hp.length; i++) {
+        List<Widget> lines = [];
+        VoidCallback? onTap;
+
         final String? name = getEnemyName(showTrueName
             ? enemy.name[i]
             : (enemy.shownName[i] ?? enemy.name[i]));
-        String? icon = db.gameData.enemies[enemy.name[i]]?.icon;
-        if (icon != null) {
+        final enemyInfo = db.gameData.enemies[enemy.name[i]];
+        if (enemyInfo?.icon != null) {
           lines.add(CachedImage(
-            imageUrl: icon,
+            imageUrl: enemyInfo?.icon,
             width: 36,
             height: 36,
             placeholder: (_, __) => Container(),
           ));
+          onTap = () =>
+              SplitRoute.push(context, EnemyDetailPage(enemy: enemyInfo!));
         } else if (enemy.shownName[i] == '影从者') {
           final svt = db.gameData.servants.values
               .firstWhereOrNull((e) => e.mcLink == enemy.name[i]);
-          if (svt != null)
-            lines.add(svt.iconBuilder(context: context, height: 36));
+          if (svt != null) {
+            lines.add(svt.iconBuilder(
+                context: context, height: 36, jumpToDetail: false));
+            onTap = () => SplitRoute.push(context, ServantDetailPage(svt));
+          }
         }
         if (name?.isNotEmpty == true)
           lines.add(AutoSizeText(name!,
@@ -308,11 +318,23 @@ class _QuestCardState extends State<QuestCard> {
             )
           ],
         ));
+        Widget child = Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: lines,
+        );
+        if (onTap != null) {
+          child = InkWell(
+            onTap: onTap,
+            child: child,
+          );
+        }
+        children.add(child);
       }
       return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: lines,
+        children: children,
       );
     }).toList();
     while (enemyWidgets.length % 3 != 0) {

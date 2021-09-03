@@ -1,3 +1,8 @@
+## 1.5.5
+- add Saint Quartz planning
+- support Append skill recognition
+- add enemy page, show quest's enemy icon
+
 ## 1.5.4
 - fix main record planning
 - [BREAK CHANGE] windows: migrate user data folder to app folder

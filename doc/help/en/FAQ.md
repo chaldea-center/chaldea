@@ -60,3 +60,7 @@ Only x64 is supported on desktop。
 
 You may need to install VC++ runtime(x64): [Microsoft Visual C++ redistributable package](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads)
 
+----------
+### [Windows] Stuck at logo screen
+Check your folder path where chaldea.exe saved: 
+- outside of system folder, e.g. "C:/Program File/" is not permitted. 

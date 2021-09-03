@@ -604,7 +604,8 @@ class RuntimeData {
 
   bool _showDebugFAB = true;
 
-  bool get showDebugFAB => _showDebugFAB && kDebugMode;
+  bool get showDebugFAB =>
+      _showDebugFAB && (kDebugMode || AppInfo.isDebugDevice);
 
   set showDebugFAB(bool value) => _showDebugFAB = value;
 
