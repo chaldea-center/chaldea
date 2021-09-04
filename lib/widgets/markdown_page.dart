@@ -144,16 +144,22 @@ class MarkdownHelpPage extends StatefulWidget {
     required String? asset,
     String? assetJp,
     String? assetEn,
+    Duration? lapse,
   }) async {
-    return LocalizedText.of(
+    final result = LocalizedText.of(
       chs: await _loadAsset(join(dir, asset)) ?? '',
       jpn: await _loadAsset(assetJp ?? join(dir, 'jp', asset)),
       eng: await _loadAsset(assetEn ?? join(dir, 'en', asset)),
     );
+    if (lapse != null) {
+      await Future.delayed(lapse);
+    }
+    return result;
   }
 
   static Future<String?> _loadAsset(String? assetKey) async {
     if (assetKey == null) return null;
+    assetKey = assetKey.replaceAll('\\', '/');
     String? content;
     try {
       content = await rootBundle.loadString(assetKey);
@@ -189,13 +195,13 @@ class _MarkdownHelpPageState extends State<MarkdownHelpPage> {
     if (widget.data != null) {
       _resolvedData = widget.data;
     } else {
-      await Future.delayed(Duration(milliseconds: 420));
       _resolvedData = await MarkdownHelpPage.loadHelpAsset(
-        dir: widget.dir,
-        asset: widget.asset,
-        assetJp: widget.assetJp,
-        assetEn: widget.assetEn,
-      );
+            dir: widget.dir,
+            asset: widget.asset,
+            assetJp: widget.assetJp,
+            assetEn: widget.assetEn,
+          ) ??
+          'Load failed';
     }
     if (mounted) setState(() {});
   }
@@ -203,7 +209,7 @@ class _MarkdownHelpPageState extends State<MarkdownHelpPage> {
   @override
   void initState() {
     super.initState();
-    _parse();
+    Future.delayed(kSplitRouteDuration, _parse);
   }
 
   @override

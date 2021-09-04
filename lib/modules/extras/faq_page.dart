@@ -16,7 +16,8 @@ class FAQPage extends StatelessWidget {
         children: [
           Expanded(
             child: FutureBuilder<String?>(
-              future: MarkdownHelpPage.loadHelpAsset(asset: 'FAQ.md'),
+              future: MarkdownHelpPage.loadHelpAsset(
+                  asset: 'FAQ.md', lapse: kSplitRouteDuration),
               builder: (context, snapshot) {
                 return MyMarkdownWidget(
                   data: snapshot.data ?? '',

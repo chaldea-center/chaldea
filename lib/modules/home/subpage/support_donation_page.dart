@@ -24,7 +24,8 @@ class SupportDonationPage extends StatelessWidget {
         ],
       ),
       body: FutureBuilder<String?>(
-        future: MarkdownHelpPage.loadHelpAsset(asset: 'support.md'),
+        future: MarkdownHelpPage.loadHelpAsset(
+            asset: 'support.md', lapse: kSplitRouteDuration),
         builder: (context, snapshot) {
           return Markdown(
             data: snapshot.data ?? '',

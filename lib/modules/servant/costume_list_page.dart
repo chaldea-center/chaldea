@@ -92,7 +92,8 @@ class _CostumeListPageState
       subtitle: Text(
           'No.${costume.no} / ${db.gameData.servants[costume.svtNo]?.info.localizedName}'),
       onTap: () {
-        SplitRoute.push(context, CostumeDetailPage(costume: costume));
+        SplitRoute.push(context, CostumeDetailPage(costume: costume),
+            popDetail: true);
       },
     );
   }

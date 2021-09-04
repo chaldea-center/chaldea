@@ -22,6 +22,7 @@ import 'package:flutter/scheduler.dart';
 
 const int _kSplitMasterRatio = 38;
 const double _kSplitDividerWidth = 0.5;
+const Duration kSplitRouteDuration = Duration(milliseconds: 400);
 
 typedef SplitPageBuilder = Widget Function(
     BuildContext context, SplitLayout layout);
@@ -70,14 +71,13 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     required this.builder,
     this.detail = false,
     this.masterRatio = _kSplitMasterRatio,
-    this.transitionDuration = const Duration(milliseconds: 400),
+    this.transitionDuration = kSplitRouteDuration,
     Duration? reverseTransitionDuration,
     bool? opaque,
     this.maintainState = true,
     this.title,
     bool fullscreenDialog = false,
-  })
-      : assert(builder != null),
+  })  : assert(builder != null),
         assert(masterRatio > 0 && masterRatio < 100),
         assert(maintainState != null),
         assert(fullscreenDialog != null),
@@ -244,6 +244,13 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     final navigator = Navigator.of(context);
     int n = 0;
     if (popDetail) {
+      assert(() {
+        final route = ModalRoute.of(context);
+        if (route is SplitRoute && route.detail == true) {
+          throw StateError('DO NOT call pop detail in detail page');
+        }
+        return true;
+      }());
       n = pop(context, true);
     }
 
@@ -251,10 +258,9 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
       builder: builder,
       detail: detail,
       masterRatio: masterRatio,
-      transitionDuration: (detail && popDetail && n > 0)
-          ? Duration()
-          : Duration(milliseconds: 400),
-      reverseTransitionDuration: Duration(milliseconds: 400),
+      transitionDuration:
+          (detail && popDetail && n > 0) ? Duration() : kSplitRouteDuration,
+      reverseTransitionDuration: kSplitRouteDuration,
       settings: settings,
       title: title,
     ));
