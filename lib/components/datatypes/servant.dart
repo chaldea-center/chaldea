@@ -26,6 +26,8 @@ class Servant with GameCardMixin {
   List<Skill> passiveSkills;
   List<Skill> passiveSkillsEn;
   List<Skill> appendSkills;
+  List<NiceSkill> niceSkills;
+  List<NiceNoblePhantasm> niceNoblePhantasms;
   int coinSummonNum;
   ItemCost itemCost;
   List<int> costumeNos;
@@ -86,6 +88,8 @@ class Servant with GameCardMixin {
     required this.passiveSkills,
     required this.passiveSkillsEn,
     required this.appendSkills,
+    required this.niceSkills,
+    required this.niceNoblePhantasms,
     required this.coinSummonNum,
     required this.itemCost,
     required this.costumeNos,

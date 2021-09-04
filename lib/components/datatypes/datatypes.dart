@@ -66,6 +66,8 @@ part 'item_statistic.dart';
 
 part 'mystic_code.dart';
 
+part 'nice_format.dart';
+
 part 'quest.dart';
 
 part 'servant.dart';

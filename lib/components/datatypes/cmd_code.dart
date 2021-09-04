@@ -27,6 +27,7 @@ class CommandCode with GameCardMixin {
   String category;
   String categoryText;
   List<String> characters;
+  List<NiceSkill> niceSkills;
 
   CommandCode({
     required this.gameId,
@@ -52,6 +53,7 @@ class CommandCode with GameCardMixin {
     required this.category,
     required this.categoryText,
     required this.characters,
+    required this.niceSkills,
   });
 
   String get lName => localizeNoun(name, nameJp, nameEn);

@@ -39,6 +39,7 @@ class CraftEssence with GameCardMixin {
   List<String> characters;
   int bond;
   int valentine;
+  List<NiceSkill> niceSkills;
 
   String toString() => '$runtimeType($no, $mcLink)';
 
@@ -76,6 +77,7 @@ class CraftEssence with GameCardMixin {
     required this.characters,
     this.bond = -1,
     this.valentine = -1,
+    required this.niceSkills,
   });
 
   String get lName => localizeNoun(name, nameJp, nameEn);
