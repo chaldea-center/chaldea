@@ -211,6 +211,11 @@ class ServantListPageState
             for (int i = 0; i < 3; i++)
               _getRange(cur.skills[i], target.skills[i])
           ]),
+          TableRow(children: [
+            _getHeader(S.current.append_skill_short + ':'),
+            for (int i = 0; i < 3; i++)
+              _getRange(cur.appendSkills[i], target.appendSkills[i])
+          ]),
           if (cur.dress.isNotEmpty)
             for (int row = 0; row < cur.dress.length / 3; row++)
               TableRow(
@@ -238,6 +243,7 @@ class ServantListPageState
   bool changeTarget = true;
   int? _changedAscension;
   int? _changedSkill;
+  int? _changedAppend;
   int? _changedDress;
 
   @override
@@ -268,6 +274,8 @@ class ServantListPageState
         svtPlan.ascension > svtStat.curVal.ascension,
         for (var i = 0; i < 3; i++)
           svtPlan.skills[i] > svtStat.curVal.skills[i],
+        for (var i = 0; i < 3; i++)
+          svtPlan.appendSkills[i] > svtStat.curVal.appendSkills[i],
         for (var i = 0;
             i < min(svtPlan.dress.length, svtStat.curVal.dress.length);
             i++)
@@ -688,6 +696,50 @@ class ServantListPageState
         },
       ),
       DropdownButton<int>(
+        value: _changedAppend,
+        icon: Container(),
+        hint: Text(S.current.append_skill_short),
+        items: List.generate(12, (i) {
+          if (i == 0) {
+            return DropdownMenuItem(value: -1, child: Text('x + 1'));
+          } else {
+            return DropdownMenuItem(
+              value: i - 1,
+              child: Text(S.current
+                  .words_separate(S.current.skill, (i - 1).toString())),
+            );
+          }
+        }),
+        onChanged: (v) {
+          setState(() {
+            _changedAppend = v;
+            if (_changedAppend == null) return;
+            shownList.forEach((svt) {
+              if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
+                final cur = db.curUser.svtStatusOf(svt.no).curVal,
+                    target = db.curUser.svtPlanOf(svt.no);
+                for (int i = 0; i < 3; i++) {
+                  if (changeTarget) {
+                    if (v == -1) {
+                      target.appendSkills[i] = min(10, cur.appendSkills[i] + 1);
+                    } else {
+                      target.appendSkills[i] =
+                          max(cur.appendSkills[i], _changedAppend!);
+                    }
+                  } else {
+                    if (v == -1) {
+                      cur.appendSkills[i] = min(10, cur.appendSkills[i] + 1);
+                    } else {
+                      cur.appendSkills[i] = _changedAppend!;
+                    }
+                  }
+                }
+              }
+            });
+          });
+        },
+      ),
+      DropdownButton<int>(
         value: _changedDress,
         icon: Container(),
         hint: Text(S.of(context).costume),
@@ -749,6 +801,7 @@ class ServantListPageState
                           changeTarget = v.isRadioVal('target');
                           _changedAscension = null;
                           _changedSkill = null;
+                          _changedAppend = null;
                           _changedDress = null;
                         });
                       },

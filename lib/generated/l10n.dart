@@ -4185,6 +4185,26 @@ class S {
       args: [],
     );
   }
+
+  /// `附加`
+  String get append_skill_short {
+    return Intl.message(
+      '附加',
+      name: 'append_skill_short',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已复制`
+  String get copied {
+    return Intl.message(
+      '已复制',
+      name: 'copied',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -5,6 +5,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/extras/faq_page.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl_standalone.dart';
 import 'package:mailer/mailer.dart';
@@ -154,13 +155,21 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   },
                 ),
                 ListTile(
+                  title: Text('QQ Group'),
+                  subtitle: Text('863998768'),
+                  onTap: () {
+                    Clipboard.setData(ClipboardData(text: '863998768'))
+                        .then((_) => EasyLoading.showToast(S.current.copied));
+                  },
+                ),
+                ListTile(
                   title: Text('Discord'),
                   subtitle: Text('https://discord.gg/5M6w5faqjP'),
                   onTap: () {
                     jumpToExternalLinkAlert(
                         url: 'https://discord.gg/5M6w5faqjP', name: 'Discord');
                   },
-                )
+                ),
               ],
             ),
             TileGroup(

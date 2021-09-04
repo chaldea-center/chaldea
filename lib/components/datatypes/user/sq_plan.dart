@@ -66,6 +66,7 @@ class SaintQuartzPlan {
 
   Map<String, dynamic> toJson() => _$SaintQuartzPlanToJson(this);
 
+  @JsonKey(ignore: true)
   List<SQDayDetail> solution = [];
 
   List<SQDayDetail> solve() {
@@ -75,7 +76,7 @@ class SaintQuartzPlan {
     dataMap[startDate.toDateString()] = SQDayDetail(
       date: startDate,
       accLogin: accLogin,
-      accSQ: curApple,
+      accSQ: curSQ,
       accTicket: curTicket,
       accApple: curApple.toDouble(),
     );

@@ -93,12 +93,14 @@ class EnemyDetail {
     }
   }
 
-  static EnemyDetail? of(String name) {
+  static EnemyDetail? of(String? name) {
+    if (name == null) return null;
     return db.gameData
         .enemies[convertKey(name).replaceFirst(RegExp(r'^罗马士兵'), '联合罗马士兵')];
   }
 
-  static String convertKey(String key) => key.replaceAll('_', ' ');
+  static String convertKey(String? key) =>
+      key?.replaceAll('_', ' ') ?? '_UNKNOWN_';
 
   factory EnemyDetail.fromJson(Map<String, dynamic> data) =>
       _$EnemyDetailFromJson(data);

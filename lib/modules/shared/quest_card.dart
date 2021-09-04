@@ -66,7 +66,7 @@ class _QuestCardState extends State<QuestCard> {
                     ),
                     AutoSizeText(
                       '${S.of(context).game_kizuna} ${quest.bondPoint}  '
-                          '${S.of(context).game_experience} ${quest.experience}',
+                      '${S.of(context).game_experience} ${quest.experience}',
                       maxLines: 1,
                       maxFontSize: 14,
                       minFontSize: 6,
@@ -130,7 +130,7 @@ class _QuestCardState extends State<QuestCard> {
       String? placeEn = battle.placeEn ?? lastBattle?.placeJp;
       lastBattle = battle;
       String shownPlace =
-      LocalizedText.of(chs: place ?? '', jpn: placeJp, eng: placeEn);
+          LocalizedText.of(chs: place ?? '', jpn: placeJp, eng: placeEn);
       if (placeJp != null && placeJp != shownPlace) shownPlace += '/' + placeJp;
       if (shownPlace == '迦勒底之门')
         shownPlace =
@@ -251,19 +251,19 @@ class _QuestCardState extends State<QuestCard> {
       return clsName;
     else
       return {
-        '剑': '剣',
-        '弓': '弓',
-        '枪': '槍',
-        '骑': '騎',
-        '术': '術',
-        '杀': '殺',
-        '狂': '狂',
-        '仇': '讐',
-        '裁': '裁',
-        '月': '月',
-        '他': '分',
-        '降': '降',
-      }[clsName] ??
+            '剑': '剣',
+            '弓': '弓',
+            '枪': '槍',
+            '骑': '騎',
+            '术': '術',
+            '杀': '殺',
+            '狂': '狂',
+            '仇': '讐',
+            '裁': '裁',
+            '月': '月',
+            '他': '分',
+            '降': '降',
+          }[clsName] ??
           clsName;
   }
 
@@ -289,14 +289,14 @@ class _QuestCardState extends State<QuestCard> {
             ));
           onTap =
               () => SplitRoute.push(context, EnemyDetailPage(enemy: enemyInfo));
-        } else if (enemy.shownName[i] == '影从者') {
-          final svt = db.gameData.servants.values
-              .firstWhereOrNull((e) => e.mcLink == enemy.name[i]);
+        } else {
+          final svt = db.gameData.servants.values.firstWhereOrNull((e) =>
+              <String>[e.mcLink, ...e.info.namesOther].contains(enemy.name[i]));
           if (svt != null) {
             // add mask
             Widget shadowSvt = svt.iconBuilder(
                 context: context, height: 36, jumpToDetail: false);
-            if (!showTrueName) {
+            if (!showTrueName && enemy.shownName[i] == '影从者') {
               shadowSvt = Stack(
                 alignment: Alignment.center,
                 children: [
@@ -415,10 +415,10 @@ class _QuestCardState extends State<QuestCard> {
       runSpacing: 4,
       children: dropTexts.entries
           .map((entry) => Item.iconBuilder(
-          context: context,
-          itemKey: entry.key,
-          width: 40,
-          text: entry.value))
+              context: context,
+              itemKey: entry.key,
+              width: 40,
+              text: entry.value))
           .toList(),
     );
   }
@@ -430,9 +430,9 @@ class _QuestCardState extends State<QuestCard> {
     String name2 = Localized.enemy.of(name);
     if (name == name2) {
       name2 = db.gameData.servants.values
-          .firstWhereOrNull((svt) => svt.mcLink == name)
-          ?.info
-          .localizedName ??
+              .firstWhereOrNull((svt) => svt.mcLink == name)
+              ?.info
+              .localizedName ??
           name2;
     }
     return name2;

@@ -414,5 +414,7 @@
   "bond": "絆",
   "enemy_list": "エネミー",
   "critical_attack": "クリティカル",
-  "overview": "概要"
+  "overview": "概要",
+  "append_skill_short": "アペンド",
+  "copied": "コピー済み"
 }

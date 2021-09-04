@@ -412,5 +412,7 @@
   "bond": "Bond",
   "enemy_list": "Enemies",
   "critical_attack": "Critical",
-  "overview": "Overview"
+  "overview": "Overview",
+  "append_skill_short": "Append",
+  "copied": "Copied"
 }

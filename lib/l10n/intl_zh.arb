@@ -412,5 +412,7 @@
   "bond": "羁绊",
   "enemy_list": "敌人一览",
   "critical_attack": "暴击",
-  "overview": "概览"
+  "overview": "概览",
+  "append_skill_short": "附加",
+  "copied": "已复制"
 }

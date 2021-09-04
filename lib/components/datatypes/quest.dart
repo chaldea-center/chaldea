@@ -152,7 +152,7 @@ class Battle {
 
 @JsonSerializable(checked: true)
 class Enemy {
-  List<String> name;
+  List<String?> name;
   List<String?> shownName;
   List<String?> className;
   List<int> rank;

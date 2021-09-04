@@ -211,6 +211,7 @@ class _LoginPageState extends State<LoginPage> {
         labelText: S.current.login_username,
         border: OutlineInputBorder(),
         errorText: _validateName(),
+        errorMaxLines: 3,
       ),
     );
   }
@@ -224,6 +225,7 @@ class _LoginPageState extends State<LoginPage> {
         labelText: S.current.login_password,
         border: OutlineInputBorder(),
         errorText: _validatePwd(),
+        errorMaxLines: 3,
         suffixIcon: IconButton(
           onPressed: () {
             setState(() {
@@ -250,6 +252,7 @@ class _LoginPageState extends State<LoginPage> {
         labelText: S.current.login_new_password,
         border: OutlineInputBorder(),
         errorText: _validateNewPwd(),
+        errorMaxLines: 3,
         suffixIcon: IconButton(
           onPressed: () {
             setState(() {

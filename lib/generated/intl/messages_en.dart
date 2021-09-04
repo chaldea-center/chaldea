@@ -92,6 +92,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ap_overflow_time":
             MessageLookupByLibrary.simpleMessage("Time of AP Full"),
         "append_skill": MessageLookupByLibrary.simpleMessage("Append Skill"),
+        "append_skill_short": MessageLookupByLibrary.simpleMessage("Append"),
         "ascension": MessageLookupByLibrary.simpleMessage("Ascension"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("Ascen"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("Ascension"),
@@ -135,6 +136,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cmd_code_title": MessageLookupByLibrary.simpleMessage("Command Code"),
         "command_code": MessageLookupByLibrary.simpleMessage("Command Code"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
+        "copied": MessageLookupByLibrary.simpleMessage("Copied"),
         "copy": MessageLookupByLibrary.simpleMessage("Copy"),
         "copy_plan_menu":
             MessageLookupByLibrary.simpleMessage("Copy from other plan"),

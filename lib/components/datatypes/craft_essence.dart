@@ -74,8 +74,8 @@ class CraftEssence with GameCardMixin {
     required this.category,
     required this.categoryText,
     required this.characters,
-    required this.bond,
-    required this.valentine,
+    this.bond = -1,
+    this.valentine = -1,
   });
 
   String get lName => localizeNoun(name, nameJp, nameEn);

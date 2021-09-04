@@ -142,7 +142,7 @@ class _GameDataPageState extends State<GameDataPage> {
                 title: Text('Lanzou/woozooo'),
                 subtitle: RichText(
                   text: TextSpan(
-                    text: 'https://wws.lanzoui.com/b01tuahmf\n',
+                    text: 'https://www.lanzouw.com/b01tuahmf\n',
                     style: TextStyle(color: Colors.grey),
                     children: [
                       TextSpan(
@@ -155,7 +155,7 @@ class _GameDataPageState extends State<GameDataPage> {
                 horizontalTitleGap: 0,
                 onTap: () {
                   jumpToExternalLinkAlert(
-                      url: 'https://wws.lanzous.com/b01tuahmf');
+                      url: 'https://www.lanzouw.com/b01tuahmf');
                 },
               ),
             ],

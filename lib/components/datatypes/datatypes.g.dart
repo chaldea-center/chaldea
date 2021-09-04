@@ -1094,7 +1094,7 @@ Enemy _$EnemyFromJson(Map<String, dynamic> json) {
   return $checkedNew('Enemy', json, () {
     final val = Enemy(
       name: $checkedConvert(json, 'name',
-          (v) => (v as List<dynamic>).map((e) => e as String).toList()),
+          (v) => (v as List<dynamic>).map((e) => e as String?).toList()),
       shownName: $checkedConvert(json, 'shownName',
           (v) => (v as List<dynamic>).map((e) => e as String?).toList()),
       className: $checkedConvert(json, 'className',
@@ -2027,6 +2027,50 @@ Map<String, dynamic> _$FilterGroupDataToJson(FilterGroupData instance) =>
       'options': instance.options,
     };
 
+SaintQuartzPlan _$SaintQuartzPlanFromJson(Map<String, dynamic> json) {
+  return $checkedNew('SaintQuartzPlan', json, () {
+    final val = SaintQuartzPlan(
+      curSQ: $checkedConvert(json, 'curSQ', (v) => v as int?),
+      curTicket: $checkedConvert(json, 'curTicket', (v) => v as int?),
+      curApple: $checkedConvert(json, 'curApple', (v) => v as int?),
+      startDate: $checkedConvert(json, 'startDate',
+          (v) => v == null ? null : DateTime.parse(v as String)),
+      endDate: $checkedConvert(json, 'endDate',
+          (v) => v == null ? null : DateTime.parse(v as String)),
+      accLogin: $checkedConvert(json, 'accLogin', (v) => v as int?),
+      continuousLogin:
+          $checkedConvert(json, 'continuousLogin', (v) => v as int?),
+      eventDateDelta: $checkedConvert(json, 'eventDateDelta', (v) => v as int?),
+      weeklyMission: $checkedConvert(json, 'weeklyMission', (v) => v as bool?),
+      minusPlannedBanner:
+          $checkedConvert(json, 'minusPlannedBanner', (v) => v as bool?),
+    );
+    $checkedConvert(
+        json,
+        'extraMissions',
+        (v) => val.extraMissions = (v as Map<String, dynamic>).map(
+              (k, e) => MapEntry(int.parse(k), e as bool),
+            ));
+    return val;
+  });
+}
+
+Map<String, dynamic> _$SaintQuartzPlanToJson(SaintQuartzPlan instance) =>
+    <String, dynamic>{
+      'curSQ': instance.curSQ,
+      'curTicket': instance.curTicket,
+      'curApple': instance.curApple,
+      'startDate': instance.startDate.toIso8601String(),
+      'endDate': instance.endDate.toIso8601String(),
+      'accLogin': instance.accLogin,
+      'continuousLogin': instance.continuousLogin,
+      'eventDateDelta': instance.eventDateDelta,
+      'weeklyMission': instance.weeklyMission,
+      'extraMissions':
+          instance.extraMissions.map((k, e) => MapEntry(k.toString(), e)),
+      'minusPlannedBanner': instance.minusPlannedBanner,
+    };
+
 User _$UserFromJson(Map<String, dynamic> json) {
   return $checkedNew('User', json, () {
     final val = User(
@@ -2337,50 +2381,6 @@ Map<String, dynamic> _$CampaignPlanToJson(CampaignPlan instance) =>
     <String, dynamic>{
       'enabled': instance.enabled,
       'rerun': instance.rerun,
-    };
-
-SaintQuartzPlan _$SaintQuartzPlanFromJson(Map<String, dynamic> json) {
-  return $checkedNew('SaintQuartzPlan', json, () {
-    final val = SaintQuartzPlan(
-      curSQ: $checkedConvert(json, 'curSQ', (v) => v as int?),
-      curTicket: $checkedConvert(json, 'curTicket', (v) => v as int?),
-      curApple: $checkedConvert(json, 'curApple', (v) => v as int?),
-      startDate: $checkedConvert(json, 'startDate',
-          (v) => v == null ? null : DateTime.parse(v as String)),
-      endDate: $checkedConvert(json, 'endDate',
-          (v) => v == null ? null : DateTime.parse(v as String)),
-      accLogin: $checkedConvert(json, 'accLogin', (v) => v as int?),
-      continuousLogin:
-          $checkedConvert(json, 'continuousLogin', (v) => v as int?),
-      eventDateDelta: $checkedConvert(json, 'eventDateDelta', (v) => v as int?),
-      weeklyMission: $checkedConvert(json, 'weeklyMission', (v) => v as bool?),
-      minusPlannedBanner:
-          $checkedConvert(json, 'minusPlannedBanner', (v) => v as bool?),
-    );
-    $checkedConvert(
-        json,
-        'extraMissions',
-        (v) => val.extraMissions = (v as Map<String, dynamic>).map(
-              (k, e) => MapEntry(int.parse(k), e as bool),
-            ));
-    return val;
-  });
-}
-
-Map<String, dynamic> _$SaintQuartzPlanToJson(SaintQuartzPlan instance) =>
-    <String, dynamic>{
-      'curSQ': instance.curSQ,
-      'curTicket': instance.curTicket,
-      'curApple': instance.curApple,
-      'startDate': instance.startDate.toIso8601String(),
-      'endDate': instance.endDate.toIso8601String(),
-      'accLogin': instance.accLogin,
-      'continuousLogin': instance.continuousLogin,
-      'eventDateDelta': instance.eventDateDelta,
-      'weeklyMission': instance.weeklyMission,
-      'extraMissions':
-          instance.extraMissions.map((k, e) => MapEntry(k.toString(), e)),
-      'minusPlannedBanner': instance.minusPlannedBanner,
     };
 
 AppSetting _$AppSettingFromJson(Map<String, dynamic> json) {
