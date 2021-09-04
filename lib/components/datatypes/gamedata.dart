@@ -67,8 +67,8 @@ class GameData {
         servantsWithUser = Map.of(servants) {
     for (final es in categorizedEnemies.values)
       for (final e in es)
-        for (final key in [...e.names, ...e.ids])
-          if (!enemies.containsKey(key)) enemies[key] = e;
+        for (final key in [...e.ids, ...e.names])
+          enemies[EnemyDetail.convertKey(key)] ??= e;
   }
 
   void updateSvtCrafts() {
