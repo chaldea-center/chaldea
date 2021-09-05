@@ -1,3 +1,8 @@
+## 1.5.6
+- add append skill in plan list page
+- add account in homepage
+- fix bugs
+
 ## 1.5.5
 - add Saint Quartz planning
 - support Append skill recognition
