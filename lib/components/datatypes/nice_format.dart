@@ -15,6 +15,7 @@ class NiceSkill {
   int condQuestPhase;
   int conLv;
   int condLimitCount;
+  String icon; // full url
   List<int> coolDown;
   List<NiceSkillFunction> functions;
 
@@ -31,6 +32,7 @@ class NiceSkill {
     required this.condQuestPhase,
     required this.conLv,
     required this.condLimitCount,
+    required this.icon,
     required this.coolDown,
     required this.functions,
   });

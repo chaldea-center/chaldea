@@ -227,6 +227,12 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
   bool _showProgress = false;
 
   @override
+  void initState() {
+    super.initState();
+    db.cfg.launchTimes.set((db.cfg.launchTimes.get() ?? 0) + 1);
+  }
+
+  @override
   void afterFirstLayout(BuildContext context) async {
     // ensure image is shown on screen
     await precacheImage(AssetImage("res/img/chaldea.png"), context,

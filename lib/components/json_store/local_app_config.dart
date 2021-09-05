@@ -10,4 +10,6 @@ class LocalAppConfig extends JsonStore {
   JsonStoreItem get windowPos => JsonStoreItem(this, 'windowPos');
 
   JsonStoreItem<int> get ffoSort => JsonStoreItem<int>(this, 'ffoSort');
+
+  JsonStoreItem<int> get launchTimes => JsonStoreItem<int>(this, 'launchTimes');
 }

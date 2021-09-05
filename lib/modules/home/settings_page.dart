@@ -199,13 +199,14 @@ class _SettingsPageState extends State<SettingsPage> {
                       Language.isCN ? '咕咕咕咕咕咕' : "Not implemented");
                 },
               ),
-            ListTile(
-              title: Text(S.current.support_chaldea),
-              trailing: Icon(Icons.favorite),
-              onTap: () {
-                SplitRoute.push(context, SupportDonationPage());
-              },
-            ),
+            if (!AppInfo.isApple || (db.cfg.launchTimes.get() ?? 0) > 5)
+              ListTile(
+                title: Text(S.current.support_chaldea),
+                trailing: Icon(Icons.favorite),
+                onTap: () {
+                  SplitRoute.push(context, SupportDonationPage());
+                },
+              ),
             if (Platform.isIOS || Platform.isMacOS)
               ListTile(
                 title: Text(LocalizedText.of(

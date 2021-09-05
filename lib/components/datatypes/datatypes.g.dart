@@ -1026,6 +1026,136 @@ Map<String, dynamic> _$MysticCodeToJson(MysticCode instance) =>
       'skills': instance.skills,
     };
 
+NiceSkill _$NiceSkillFromJson(Map<String, dynamic> json) {
+  return NiceSkill(
+    id: json['id'] as int,
+    num: json['num'] as int,
+    name: json['name'] as String,
+    ruby: json['ruby'] as String,
+    detail: json['detail'] as String,
+    type: json['type'] as String,
+    strengthStatus: json['strengthStatus'] as int,
+    priority: json['priority'] as int,
+    condQuestId: json['condQuestId'] as int,
+    condQuestPhase: json['condQuestPhase'] as int,
+    conLv: json['conLv'] as int,
+    condLimitCount: json['condLimitCount'] as int,
+    icon: json['icon'] as String,
+    coolDown: (json['coolDown'] as List<dynamic>).map((e) => e as int).toList(),
+    functions: (json['functions'] as List<dynamic>)
+        .map((e) => NiceSkillFunction.fromJson(e as Map<String, dynamic>))
+        .toList(),
+  );
+}
+
+Map<String, dynamic> _$NiceSkillToJson(NiceSkill instance) => <String, dynamic>{
+      'id': instance.id,
+      'num': instance.num,
+      'name': instance.name,
+      'ruby': instance.ruby,
+      'detail': instance.detail,
+      'type': instance.type,
+      'strengthStatus': instance.strengthStatus,
+      'priority': instance.priority,
+      'condQuestId': instance.condQuestId,
+      'condQuestPhase': instance.condQuestPhase,
+      'conLv': instance.conLv,
+      'condLimitCount': instance.condLimitCount,
+      'icon': instance.icon,
+      'coolDown': instance.coolDown,
+      'functions': instance.functions,
+    };
+
+NiceNoblePhantasm _$NiceNoblePhantasmFromJson(Map<String, dynamic> json) {
+  return NiceNoblePhantasm(
+    id: json['id'] as int,
+    num: json['num'] as int,
+    card: json['card'] as String,
+    name: json['name'] as String,
+    ruby: json['ruby'] as String,
+    rank: json['rank'] as String,
+    type: json['type'] as String,
+    detail: json['detail'] as String,
+    npGain: (json['npGain'] as Map<String, dynamic>).map(
+      (k, e) => MapEntry(k, (e as List<dynamic>).map((e) => e as int).toList()),
+    ),
+    npDistribution:
+        (json['npDistribution'] as List<dynamic>).map((e) => e as int).toList(),
+    strengthStatus: json['strengthStatus'] as int,
+    priority: json['priority'] as int,
+    condQuestId: json['condQuestId'] as int,
+    condQuestPhase: json['condQuestPhase'] as int,
+    individuality: (json['individuality'] as List<dynamic>)
+        .map((e) => e as Map<String, dynamic>)
+        .toList(),
+    functions: (json['functions'] as List<dynamic>)
+        .map((e) => NiceSkillFunction.fromJson(e as Map<String, dynamic>))
+        .toList(),
+  );
+}
+
+Map<String, dynamic> _$NiceNoblePhantasmToJson(NiceNoblePhantasm instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'num': instance.num,
+      'card': instance.card,
+      'name': instance.name,
+      'ruby': instance.ruby,
+      'rank': instance.rank,
+      'type': instance.type,
+      'detail': instance.detail,
+      'npGain': instance.npGain,
+      'npDistribution': instance.npDistribution,
+      'strengthStatus': instance.strengthStatus,
+      'priority': instance.priority,
+      'condQuestId': instance.condQuestId,
+      'condQuestPhase': instance.condQuestPhase,
+      'individuality': instance.individuality,
+      'functions': instance.functions,
+    };
+
+NiceSkillFunction _$NiceSkillFunctionFromJson(Map<String, dynamic> json) {
+  return NiceSkillFunction(
+    funcId: json['funcId'] as int,
+    funcType: json['funcType'] as String,
+    funcTargetType: json['funcTargetType'] as String,
+    funcTargetTeam: json['funcTargetTeam'] as String,
+    funcPopupText: json['funcPopupText'] as String,
+    buffs: (json['buffs'] as List<dynamic>)
+        .map((e) => NiceSkillBuff.fromJson(e as Map<String, dynamic>))
+        .toList(),
+  );
+}
+
+Map<String, dynamic> _$NiceSkillFunctionToJson(NiceSkillFunction instance) =>
+    <String, dynamic>{
+      'funcId': instance.funcId,
+      'funcType': instance.funcType,
+      'funcTargetType': instance.funcTargetType,
+      'funcTargetTeam': instance.funcTargetTeam,
+      'funcPopupText': instance.funcPopupText,
+      'buffs': instance.buffs,
+    };
+
+NiceSkillBuff _$NiceSkillBuffFromJson(Map<String, dynamic> json) {
+  return NiceSkillBuff(
+    id: json['id'] as int,
+    name: json['name'] as String,
+    detail: json['detail'] as String,
+    type: json['type'] as String,
+    buffGroup: json['buffGroup'] as int,
+  );
+}
+
+Map<String, dynamic> _$NiceSkillBuffToJson(NiceSkillBuff instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'detail': instance.detail,
+      'type': instance.type,
+      'buffGroup': instance.buffGroup,
+    };
+
 Quest _$QuestFromJson(Map<String, dynamic> json) {
   return $checkedNew('Quest', json, () {
     final val = Quest(
@@ -2598,132 +2728,4 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'summonFilter': instance.summonFilter,
       'itemAbundantValue': instance.itemAbundantValue,
       'curUserKey': instance.curUserKey,
-    };
-
-NiceSkill _$NiceSkillFromJson(Map<String, dynamic> json) {
-  return NiceSkill(
-    id: json['id'] as int,
-    num: json['num'] as int,
-    name: json['name'] as String,
-    ruby: json['ruby'] as String,
-    detail: json['detail'] as String,
-    type: json['type'] as String,
-    strengthStatus: json['strengthStatus'] as int,
-    priority: json['priority'] as int,
-    condQuestId: json['condQuestId'] as int,
-    condQuestPhase: json['condQuestPhase'] as int,
-    conLv: json['conLv'] as int,
-    condLimitCount: json['condLimitCount'] as int,
-    coolDown: (json['coolDown'] as List<dynamic>).map((e) => e as int).toList(),
-    functions: (json['functions'] as List<dynamic>)
-        .map((e) => NiceSkillFunction.fromJson(e as Map<String, dynamic>))
-        .toList(),
-  );
-}
-
-Map<String, dynamic> _$NiceSkillToJson(NiceSkill instance) => <String, dynamic>{
-      'id': instance.id,
-      'num': instance.num,
-      'name': instance.name,
-      'ruby': instance.ruby,
-      'detail': instance.detail,
-      'type': instance.type,
-      'strengthStatus': instance.strengthStatus,
-      'priority': instance.priority,
-      'condQuestId': instance.condQuestId,
-      'condQuestPhase': instance.condQuestPhase,
-      'conLv': instance.conLv,
-      'condLimitCount': instance.condLimitCount,
-      'coolDown': instance.coolDown,
-      'functions': instance.functions,
-    };
-
-NiceNoblePhantasm _$NiceNoblePhantasmFromJson(Map<String, dynamic> json) {
-  return NiceNoblePhantasm(
-    id: json['id'] as int,
-    num: json['num'] as int,
-    card: json['card'] as String,
-    name: json['name'] as String,
-    ruby: json['ruby'] as String,
-    rank: json['rank'] as String,
-    type: json['type'] as String,
-    detail: json['detail'] as String,
-    npGain: (json['npGain'] as Map<String, dynamic>).map(
-      (k, e) => MapEntry(k, (e as List<dynamic>).map((e) => e as int).toList()),
-    ),
-    npDistribution:
-        (json['npDistribution'] as List<dynamic>).map((e) => e as int).toList(),
-    strengthStatus: json['strengthStatus'] as int,
-    priority: json['priority'] as int,
-    condQuestId: json['condQuestId'] as int,
-    condQuestPhase: json['condQuestPhase'] as int,
-    individuality: (json['individuality'] as List<dynamic>)
-        .map((e) => e as Map<String, dynamic>)
-        .toList(),
-    functions: (json['functions'] as List<dynamic>)
-        .map((e) => NiceSkillFunction.fromJson(e as Map<String, dynamic>))
-        .toList(),
-  );
-}
-
-Map<String, dynamic> _$NiceNoblePhantasmToJson(NiceNoblePhantasm instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'num': instance.num,
-      'card': instance.card,
-      'name': instance.name,
-      'ruby': instance.ruby,
-      'rank': instance.rank,
-      'type': instance.type,
-      'detail': instance.detail,
-      'npGain': instance.npGain,
-      'npDistribution': instance.npDistribution,
-      'strengthStatus': instance.strengthStatus,
-      'priority': instance.priority,
-      'condQuestId': instance.condQuestId,
-      'condQuestPhase': instance.condQuestPhase,
-      'individuality': instance.individuality,
-      'functions': instance.functions,
-    };
-
-NiceSkillFunction _$NiceSkillFunctionFromJson(Map<String, dynamic> json) {
-  return NiceSkillFunction(
-    funcId: json['funcId'] as int,
-    funcType: json['funcType'] as String,
-    funcTargetType: json['funcTargetType'] as String,
-    funcTargetTeam: json['funcTargetTeam'] as String,
-    funcPopupText: json['funcPopupText'] as String,
-    buffs: (json['buffs'] as List<dynamic>)
-        .map((e) => NiceSkillBuff.fromJson(e as Map<String, dynamic>))
-        .toList(),
-  );
-}
-
-Map<String, dynamic> _$NiceSkillFunctionToJson(NiceSkillFunction instance) =>
-    <String, dynamic>{
-      'funcId': instance.funcId,
-      'funcType': instance.funcType,
-      'funcTargetType': instance.funcTargetType,
-      'funcTargetTeam': instance.funcTargetTeam,
-      'funcPopupText': instance.funcPopupText,
-      'buffs': instance.buffs,
-    };
-
-NiceSkillBuff _$NiceSkillBuffFromJson(Map<String, dynamic> json) {
-  return NiceSkillBuff(
-    id: json['id'] as int,
-    name: json['name'] as String,
-    detail: json['detail'] as String,
-    type: json['type'] as String,
-    buffGroup: json['buffGroup'] as int,
-  );
-}
-
-Map<String, dynamic> _$NiceSkillBuffToJson(NiceSkillBuff instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-      'detail': instance.detail,
-      'type': instance.type,
-      'buffGroup': instance.buffGroup,
     };
