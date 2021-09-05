@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/extras/updates.dart';
+import 'package:chaldea/modules/home/subpage/account_page.dart';
 import 'package:open_file/open_file.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -51,6 +52,26 @@ class _GalleryPageState extends State<GalleryPage> {
       appBar: AppBar(
         title: Text(kAppName),
         actions: <Widget>[
+          if (db.appSetting.showAccountAtHome)
+            InkWell(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: 36,
+                  minWidth: 48,
+                  maxWidth: 56,
+                ),
+                child: Center(
+                  child: Text(
+                    db.curUser.name,
+                    overflow: TextOverflow.ellipsis,
+                    textScaleFactor: 0.8,
+                  ),
+                ),
+              ),
+              onTap: () {
+                SplitRoute.push(context, AccountPage());
+              },
+            ),
           IconButton(
             icon: Icon(Icons.refresh),
             tooltip: S.of(context).tooltip_refresh_sliders,

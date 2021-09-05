@@ -51,6 +51,19 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                     db.notifyAppUpdate();
                   },
                 ),
+              SwitchListTile.adaptive(
+                value: db.appSetting.showAccountAtHome,
+                title: Text(LocalizedText.of(
+                    chs: '首页显示当前账号',
+                    jpn: 'ホームページにアカウントを表示 ',
+                    eng: 'Show Account at Homepage')),
+                onChanged: (v) {
+                  setState(() {
+                    db.appSetting.showAccountAtHome = v;
+                  });
+                  db.notifyAppUpdate();
+                },
+              )
             ],
           ),
           TileGroup(

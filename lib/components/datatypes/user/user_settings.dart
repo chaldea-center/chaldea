@@ -36,6 +36,7 @@ class AppSetting {
   @JsonKey(unknownEnumValue: SvtTab.plan)
   List<SvtTab> sortedSvtTabs;
   Map<String, String> priorityTags;
+  bool showAccountAtHome;
 
   AppSetting({
     this.language,
@@ -50,6 +51,7 @@ class AppSetting {
     bool? svtPlanSliderMode,
     List<SvtTab?>? sortedSvtTabs,
     Map<String, String>? priorityTags,
+    bool? showAccountAtHome,
   })  : autoResetFilter = autoResetFilter ?? true,
         downloadSource = fixValidRange(downloadSource ?? GitSource.server.index,
             0, GitSource.values.length),
@@ -60,7 +62,8 @@ class AppSetting {
         svtPlanSliderMode = svtPlanSliderMode ?? false,
         sortedSvtTabs = sortedSvtTabs?.whereType<SvtTab>().toList() ??
             List.of(SvtTab.values),
-        priorityTags = priorityTags ?? {} {
+        priorityTags = priorityTags ?? {},
+        showAccountAtHome = showAccountAtHome ?? false {
     // gitee disabled
     if (this.downloadSource == 2) {
       this.downloadSource = 0;

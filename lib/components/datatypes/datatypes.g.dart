@@ -2579,6 +2579,8 @@ AppSetting _$AppSettingFromJson(Map<String, dynamic> json) {
           (v) => (v as Map<String, dynamic>?)?.map(
                 (k, e) => MapEntry(k, e as String),
               )),
+      showAccountAtHome:
+          $checkedConvert(json, 'showAccountAtHome', (v) => v as bool?),
     );
     return val;
   });
@@ -2600,6 +2602,7 @@ Map<String, dynamic> _$AppSettingToJson(AppSetting instance) =>
       'sortedSvtTabs':
           instance.sortedSvtTabs.map((e) => _$SvtTabEnumMap[e]).toList(),
       'priorityTags': instance.priorityTags,
+      'showAccountAtHome': instance.showAccountAtHome,
     };
 
 const _$ThemeModeEnumMap = {
