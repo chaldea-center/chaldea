@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/platform_interface/platform/platform.dart';
 import 'package:chaldea/widgets/icon_clipper.dart';
 import 'package:chaldea/widgets/image/cached_image_option.dart';
 import 'package:chaldea/widgets/image/image_viewer.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:path_provider/path_provider.dart';
@@ -41,14 +43,16 @@ class Database {
   AppSetting get appSetting => userData.appSetting;
 
   Dio get serverDio => Dio(BaseOptions(
-        baseUrl: kServerRoot,
+    baseUrl: kServerRoot,
         // baseUrl: kDebugMode ? 'http://localhost:8183' : kServerRoot,
         queryParameters: {
           'app_ver': AppInfo.version,
           'user_key': AppInfo.uuid,
           'lang': Language.current.code,
         },
-        headers: {HttpHeaders.userAgentHeader: HttpUtils.userAgentChaldea},
+        headers: {
+          if (!PlatformU.isWeb) 'user-agent': HttpUtils.userAgentChaldea,
+        },
       ));
 
   SharedPrefs prefs = SharedPrefs();
@@ -104,6 +108,8 @@ class Database {
     return _connectivity!;
   }
 
+  Box? webFS;
+
   // initialization before startup
   Future<void> initial() async {
     await paths.initRootPath();
@@ -116,6 +122,9 @@ class Database {
     Connectivity().onConnectivityChanged.listen((result) {
       _connectivity = result;
     });
+    if (PlatformU.isWeb) {
+      webFS = await Hive.openBox('WebFileSystem');
+    }
     MethodChannelChaldea.configMethodChannel();
   }
 
@@ -208,6 +217,7 @@ class Database {
   }
 
   List<String> backupUserdata({bool disk = false, bool memory = true}) {
+    if (PlatformU.isWeb) return [];
     String timeStamp = DateFormat('yyyyMMddTHHmmss').format(DateTime.now());
     String filename = '$timeStamp.json';
 
@@ -342,12 +352,19 @@ class Database {
     // dynamic: json object can be Map or List.
     // However, json_serializable always use Map->Class
     dynamic result;
-    final file = File(filepath);
     try {
-      if (file.existsSync()) {
-        String contents = file.readAsStringSync();
-        result = jsonDecode(contents);
-        print('loaded json "$filepath".');
+      if (PlatformU.isWeb) {
+        final contents = webFS!.get(paths.hiveAsciiKey(filepath));
+        if (contents is String) {
+          result = jsonDecode(contents);
+        }
+      } else {
+        final file = File(filepath);
+        if (file.existsSync()) {
+          String contents = file.readAsStringSync();
+          result = jsonDecode(contents);
+          print('loaded json "$filepath".');
+        }
       }
     } catch (e, s) {
       print('error loading "$filepath", use default value. Error:\n$e\n$s');
@@ -364,11 +381,15 @@ class Database {
   void _saveJsonToFile(dynamic jsonDataOrFile, String filepath,
       {void onError(Object e, StackTrace s)?, void onSuccess(String fp)?}) {
     try {
-      Directory(pathlib.dirname(filepath)).createSync(recursive: true);
-      final contents = jsonDataOrFile is File
-          ? jsonDataOrFile.readAsStringSync()
-          : json.encode(jsonDataOrFile);
-      File(filepath).writeAsStringSync(contents);
+      if (PlatformU.isWeb) {
+        webFS!.put(paths.hiveAsciiKey(filepath), json.encode(jsonDataOrFile));
+      } else {
+        Directory(pathlib.dirname(filepath)).createSync(recursive: true);
+        final contents = jsonDataOrFile is File
+            ? jsonDataOrFile.readAsStringSync()
+            : json.encode(jsonDataOrFile);
+        File(filepath).writeAsStringSync(contents);
+      }
     } catch (e, s) {
       if (onError != null) {
         return onError(e, s);
@@ -380,6 +401,7 @@ class Database {
   }
 
   void _deleteFileOrDirectory(String path) {
+    if (PlatformU.isWeb) return;
     final type = FileSystemEntity.typeSync(path, followLinks: false);
     if (type == FileSystemEntityType.directory) {
       Directory directory = Directory(path);
@@ -413,6 +435,7 @@ class Database {
     Function(dynamic error, dynamic stackTrace)? onError,
     void Function(int, int)? onProgress,
   }) async {
+    if (PlatformU.isWeb) return;
     // final t = TimeCounter('extractZip');
     if ([bytes, fp].where((e) => e != null).length != 1) {
       throw ArgumentError('You can/must only pass one parameter of bytes,fp');
@@ -474,6 +497,11 @@ class PathManager {
 
   Future<void> initRootPath() async {
     if (_appPath != null) return;
+    if (PlatformU.isWeb) {
+      _appPath = 'web';
+      initiateLoggerPath('');
+      return;
+    }
     // final Map<String, Directory> _fps = {
     //   'ApplicationDocuments': await getApplicationDocumentsDirectory(),
     //   'Temporary': await getTemporaryDirectory(),
@@ -484,21 +512,21 @@ class PathManager {
     //   print('${e.key}\n\t\t${e.value.path}');
     // }
 
-    if (Platform.isAndroid) {
+    if (PlatformU.isAndroid) {
       // don't use getApplicationDocumentsDirectory, it is hidden to user.
       // android: [emulated, external SD]
       _appPath = (await getExternalStorageDirectories())![0].path;
       // _tempPath = (await getTemporaryDirectory())?.path;
-    } else if (Platform.isIOS) {
+    } else if (PlatformU.isIOS) {
       _appPath = (await getApplicationDocumentsDirectory()).path;
       // _tempPath = (await getTemporaryDirectory())?.path;
-    } else if (Platform.isWindows) {
+    } else if (PlatformU.isWindows) {
       _appPath = (await getApplicationSupportDirectory()).path;
       // _tempPath = (await getTemporaryDirectory())?.path;
       // set link:
       // in old version windows, it may need admin permission, so it may fail
       try {
-        String exeFolder = pathlib.dirname(Platform.resolvedExecutable);
+        String exeFolder = pathlib.dirname(PlatformU.resolvedExecutable);
         String legacyAppPath = (await getApplicationSupportDirectory()).path;
         legacyWinAppPath = legacyAppPath;
         String curAppPath = pathlib.join(exeFolder, 'userdata');
@@ -518,13 +546,14 @@ class PathManager {
       } catch (e, s) {
         logger.e('make link failed', e, s);
       }
-    } else if (Platform.isMacOS) {
+    } else if (PlatformU.isMacOS) {
       // /Users/<user>/Library/Containers/cc.narumi.chaldea/Data/Documents
       _appPath = (await getApplicationDocumentsDirectory()).path;
       // /Users/<user>/Library/Containers/cc.narumi.chaldea/Data/Library/Caches
       // _tempPath = (await getTemporaryDirectory())?.path;
     } else {
-      throw UnimplementedError('Not supported for ${Platform.operatingSystem}');
+      throw UnimplementedError(
+          'Not supported for ${PlatformU.operatingSystem}');
     }
     if (_appPath == null) {
       throw OSError('Cannot resolve document folder');
@@ -552,10 +581,14 @@ class PathManager {
   }
 
   String convertIosPath(String p) {
-    if (Platform.isIOS)
+    if (PlatformU.isIOS)
       return p.replaceFirst(appPath, S.current.ios_app_path);
     else
       return p;
+  }
+
+  String hiveAsciiKey(String s) {
+    return Uri.tryParse(s)?.toString() ?? s;
   }
 
   String get appPath => _appPath!;

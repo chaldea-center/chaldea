@@ -1,4 +1,4 @@
-export 'dart:io' show Platform, File, Directory;
+export 'dart:io' show File, Directory;
 export 'dart:math' show min, max;
 
 export 'package:chaldea/generated/l10n.dart';
@@ -8,6 +8,7 @@ export 'package:flutter_easyloading/flutter_easyloading.dart';
 export 'package:intl/intl.dart' show Intl, DateFormat;
 export 'package:path/path.dart' show join;
 
+export '../platform_interface/platform/platform.dart';
 export '../widgets/widgets.dart';
 export 'config.dart';
 export 'constants.dart';

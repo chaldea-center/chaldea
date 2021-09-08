@@ -19,6 +19,8 @@ class AutoUpdateUtil {
 
   /// download dataset-text.zip and unzip it to reload
   static Future<void> autoUpdateDataset() async {
+    if (PlatformU.isWeb) return;
+
     GitRelease? release;
 
     final git = GitTool.fromDb();
@@ -80,6 +82,8 @@ class AutoUpdateUtil {
   /// get json patch from server
   static Future<void> patchGameData(
       {bool background = true, void onError(e, s)?}) async {
+    if (PlatformU.isWeb) return;
+
     String _dataVersion(String releaseName) {
       return releaseName.split('-').first;
     }
@@ -104,7 +108,7 @@ class AutoUpdateUtil {
       if (_globalLatestRelease != null) {
         final dataVersion = DatasetVersion.tryParse(_globalLatestRelease.name);
         if (dataVersion != null &&
-                dataVersion.minimalApp > AppInfo.versionClass ||
+            dataVersion.minimalApp > AppInfo.versionClass ||
             kDebugMode) {
           db.runtimeData.latestDatasetVersion = dataVersion;
         }
@@ -116,13 +120,13 @@ class AutoUpdateUtil {
         return;
       }
       int newer =
-          db.gameData.version.compareTo(_dataVersion(latestRelease.name));
+      db.gameData.version.compareTo(_dataVersion(latestRelease.name));
       if (newer >= 0) {
         _reportResult(S.current.update_already_latest);
         return;
       }
       final curRelease = releases.firstWhereOrNull(
-          (release) => _dataVersion(release.name) == db.gameData.version);
+              (release) => _dataVersion(release.name) == db.gameData.version);
       if (curRelease == null) {
         print('cur version not found in server: ${db.gameData.version}');
         _reportResult(S.current.patch_gamedata_error_unknown_version);
@@ -156,7 +160,7 @@ class AutoUpdateUtil {
       if (resp.success) {
         final patchJson = jsonDecode(resp.body);
         final curData =
-            jsonDecode(File(db.paths.gameDataPath).readAsStringSync());
+        jsonDecode(File(db.paths.gameDataPath).readAsStringSync());
         dynamic newData = jsonpatch.JsonPatch(patchJson).applyTo(curData);
         // encode then decode to verify validation
         final gameData = GameData.fromJson(jsonDecode(jsonEncode(newData)));
@@ -192,6 +196,10 @@ class AutoUpdateUtil {
   ///   version info->alert->download->alert->install
   static Future<void> checkAppUpdate(
       {bool background = true, bool download = false}) async {
+    if (PlatformU.isWeb) {
+      EasyLoading.showInfo('No update on web');
+      return;
+    }
     if (!db.hasNetwork) {
       if (!background) EasyLoading.showError('No network');
       return;
@@ -211,7 +219,7 @@ class AutoUpdateUtil {
         db.prefs.ignoreAppVersion.remove();
       }
       final git = GitTool.fromDb();
-      if (Platform.isIOS) {
+      if (PlatformU.isIOS) {
         // use https and set UA, or the fetched info may be outdated
         // this http request always return iOS version result
         final response = await _dio.get(
@@ -238,7 +246,7 @@ class AutoUpdateUtil {
       releaseNote = releaseNote?.replaceAll('\r\n', '\n');
       // logger.i('Release note:\n$releaseNote');
 
-      if (Platform.isAndroid && kDebugMode) {
+      if (PlatformU.isAndroid && kDebugMode) {
         await Dio(BaseOptions(
                 connectTimeout: 3000, headers: HttpUtils.headersWithUA()))
             .get("$kGooglePlayLink&hl=en")
@@ -254,7 +262,7 @@ class AutoUpdateUtil {
       db.runtimeData.upgradableVersion = upgradable ? version : null;
       String newVersion = version?.version ?? '';
 
-      if (kReleaseMode && (Platform.isIOS || AppInfo.isMacStoreApp)) {
+      if (kReleaseMode && (PlatformU.isIOS || AppInfo.isMacStoreApp)) {
         // Guideline 2.4.5(vii) - Performance
         // The Mac App Store provides customers with notifications of updates
         // pending for all apps delivered through the App Store, and allows the
@@ -278,9 +286,9 @@ class AutoUpdateUtil {
       }
       if (!background) {
         download = await _showDialog(
-                version: version,
-                launchUrl: launchUrl,
-                releaseNote: releaseNote) ==
+            version: version,
+            launchUrl: launchUrl,
+            releaseNote: releaseNote) ==
             true;
         if (!download) return;
       }
@@ -324,6 +332,8 @@ class AutoUpdateUtil {
   }
 
   static Future<String?> startDownload({required GitRelease release}) async {
+    if (PlatformU.isWeb) return null;
+
     logger.d('sha1 file: ${release.targetSHA1Asset}');
     logger.d('installer: ${release.targetAsset}');
 
@@ -403,21 +413,21 @@ class AutoUpdateUtil {
               Navigator.of(context).pop();
             },
           ),
-        if (Platform.isAndroid)
+        if (PlatformU.isAndroid)
           TextButton(
             child: Text('Google Play'),
             onPressed: () {
               launch(kGooglePlayLink);
             },
           ),
-        if (Platform.isIOS || Platform.isMacOS)
+        if (PlatformU.isIOS || PlatformU.isMacOS)
           TextButton(
             child: Text('App Store'),
             onPressed: () {
               launch(kAppStoreLink);
             },
           ),
-        if (Platform.isWindows)
+        if (PlatformU.isWindows)
           TextButton(
             child: Text(S.current.release_page),
             onPressed: launchUrl == null ? null : () => launch(launchUrl),
@@ -456,11 +466,11 @@ class AutoUpdateUtil {
 
   static Future<void> _installUpdate(String fp) async {
     await Future.delayed(Duration(milliseconds: 500));
-    if (Platform.isAndroid) {
+    if (PlatformU.isAndroid) {
       final result = await OpenFile.open(fp);
       print('open result: ${result.type}, ${result.message}');
       // await InstallPlugin.installApk(saveFp, AppInfo.packageName);
-    } else if (Platform.isMacOS) {
+    } else if (PlatformU.isMacOS) {
       SimpleCancelOkDialog(
         content: Text(LocalizedText.of(
             chs: '请解压并替换原程序',
@@ -470,7 +480,7 @@ class AutoUpdateUtil {
       ).showDialog(kAppKey.currentContext!);
       final result = await OpenFile.open(dirname(fp));
       logger.d('open result: ${result.type}, ${result.message}');
-    } else if (Platform.isWindows) {
+    } else if (PlatformU.isWindows) {
       String extractFolder = join(dirname(fp), basenameWithoutExtension(fp));
       if (extractFolder == fp) {
         extractFolder = fp + '.extract';
@@ -488,7 +498,7 @@ class AutoUpdateUtil {
       }
 
       String srcDir = absolute(dirname(exeFp));
-      String destDir = absolute(dirname(Platform.resolvedExecutable));
+      String destDir = absolute(dirname(PlatformU.resolvedExecutable));
       String backupDir = destDir + '.old';
       _deleteFileOrDir(backupDir);
       Directory(backupDir).createSync(recursive: true);

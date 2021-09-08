@@ -155,7 +155,7 @@ class _CachedImageState extends State<CachedImage> {
     if (widget.imageUrl == null) return _withPlaceholder(context, '');
     _isMcFile = widget.isMCFile ?? !_isValidUrl(widget.imageUrl!);
     if (!_isMcFile) return _withCached(widget.imageUrl!);
-    if (widget.cacheDir != null) {
+    if (!PlatformU.isWeb && widget.cacheDir != null) {
       String? savePath;
       savePath = join(widget.cacheDir!, widget.cacheName ?? widget.imageUrl!);
       if (_existIcon(savePath)) {
@@ -287,11 +287,11 @@ class _CachedImageState extends State<CachedImage> {
       maxHeightDiskCache: cachedOption.maxHeightDiskCache,
     );
 
-    if (widget.showSaveOnLongPress) {
+    if (!PlatformU.isWeb && widget.showSaveOnLongPress) {
       child = GestureDetector(
         child: child,
         onLongPress: () async {
-          File file = await _cacheManager.getSingleFile(fullUrl);
+          File file = File((await _cacheManager.getSingleFile(fullUrl)).path);
           String fn = path.basename(file.path);
           return ImageActions.showSaveShare(
             context: context,

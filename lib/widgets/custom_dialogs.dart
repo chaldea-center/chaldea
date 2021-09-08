@@ -192,7 +192,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
       title: Text(S.current.save),
       content: Text(db.paths.convertIosPath(savePath)),
       actions: [
-        if (AppInfo.isDesktop)
+        if (PlatformU.isDesktop)
           TextButton(
             onPressed: () {
               OpenFile.open(db.paths.downloadDir);
@@ -201,6 +201,10 @@ class SimpleCancelOkDialog extends StatelessWidget {
           )
       ],
       onTapOk: () {
+        if (PlatformU.isWeb) {
+          EasyLoading.showError('Not support on web');
+          return;
+        }
         File(savePath).createSync(recursive: true);
         srcFile.copySync(savePath);
         EasyLoading.showSuccess(S.current.saved);

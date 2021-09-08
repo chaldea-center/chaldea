@@ -75,7 +75,7 @@ class _ShareAppDialogState extends State<ShareAppDialog> {
           },
           child: Text(MaterialLocalizations.of(context).copyButtonLabel),
         ),
-        if (!Platform.isWindows)
+        if (!PlatformU.isWindows)
           TextButton(
             onPressed: () {
               Share.share(_controller.text).catchError((e, s) {

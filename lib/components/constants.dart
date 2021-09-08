@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:chaldea/platform_interface/platform/platform.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -200,14 +199,16 @@ class HttpUtils {
       'Mozilla/5.0 (Linux; Android 8.0.0; SM-G960F Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.84 Mobile Safari/537.36 $userAgentChaldea';
 
   static String get userAgentPlatform {
-    if (Platform.isAndroid) return userAgentAndroid;
-    if (Platform.isIOS) return userAgentIOS;
-    if (Platform.isWindows) return userAgentWindows;
-    if (Platform.isMacOS) return userAgentMacOS;
+    if (PlatformU.isAndroid) return userAgentAndroid;
+    if (PlatformU.isIOS) return userAgentIOS;
+    if (PlatformU.isWindows) return userAgentWindows;
+    if (PlatformU.isMacOS) return userAgentMacOS;
     return userAgentIOS;
   }
 
   static Map<String, dynamic> headersWithUA([String? ua]) {
-    return {HttpHeaders.userAgentHeader: ua ?? userAgentPlatform};
+    return {
+      if (!PlatformU.isWeb) "user-agent": ua ?? userAgentPlatform,
+    };
   }
 }

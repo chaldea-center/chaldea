@@ -157,7 +157,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             minimumSize: Size(48, 28),
             padding:
-                AppInfo.isMobile ? EdgeInsets.symmetric(horizontal: 8) : null,
+                PlatformU.isMobile ? EdgeInsets.symmetric(horizontal: 8) : null,
           ),
           child: Text(Item.lNameOf(item)),
           onPressed: () {

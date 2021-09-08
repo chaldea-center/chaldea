@@ -3,86 +3,10 @@ import 'dart:convert';
 
 import 'package:chaldea/components/components.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_qjs/flutter_qjs.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-
-abstract class JsEngine<T> {
-  final T engine;
-
-  JsEngine(this.engine);
-
-  /// init if needed
-  Future<void> init([Function? callback]);
-
-  /// JSON.stringify returned object
-  Future<String?> eval(String command, {String name});
-
-  void dispose();
-}
-
-/// using package `flutter_qjs`
-class QjsEngine implements JsEngine<IsolateQjs> {
-  final IsolateQjs engine = IsolateQjs();
-
-  QjsEngine();
-
-  Future<void> init([Function? callback]) async {
-    if (callback != null) await callback();
-  }
-
-  Future<String?> eval(String command, {String? name}) async {
-    return (await engine.evaluate(command, name: name)).toString();
-  }
-
-  void dispose() {
-    engine.close();
-  }
-}
-
-/// using package `flutter_webview_plugin`
-class WebviewJsEngine implements JsEngine<FlutterWebviewPlugin> {
-  final FlutterWebviewPlugin engine = FlutterWebviewPlugin();
-
-  WebviewJsEngine();
-
-  Future<bool> isopen() async {
-    String? s = await engine.evalJavascript('1+1');
-    if (s != '2') {
-      print('eval 1+1=$s, webview is closed');
-      return false;
-    }
-    return true;
-  }
-
-  Future<void> init([Function? callback]) async {
-    if (await isopen()) return;
-    await engine.launch(
-      Uri.dataFromString('''<html><body></body></html>''',
-          mimeType: 'text/html', parameters: {'charset': 'utf-8'}).toString(),
-      hidden: true,
-    );
-    while (true) {
-      if (await isopen()) break;
-      await Future.delayed(Duration(seconds: 1));
-    }
-    if (callback != null) {
-      await callback();
-    }
-  }
-
-  Future<String?> eval(String command, {String? name}) async {
-    return engine.evalJavascript(command);
-  }
-
-  void dispose() {
-    engine.dispose();
-    engine.close();
-  }
-}
+import 'js_engine/js_engine.dart';
 
 class GLPKSolver {
-  // final JsEngine js = WebviewJsEngine();
-  final JsEngine js = QjsEngine();
+  final JsEngine js = JsEngine();
   Completer? _initCompleter;
 
   GLPKSolver();
@@ -148,6 +72,7 @@ class GLPKSolver {
         var result;
         try {
           result = json.decode(resultString);
+          print('after jsondecode: ${result.runtimeType}, $result');
         } catch (e) {
           throw FormatException(
               'JsonDecodeError(error=$e)\njsonString:$result');

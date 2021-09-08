@@ -10,6 +10,7 @@ import 'dart:typed_data';
 import 'package:archive/archive_io.dart';
 import 'package:catcher/catcher.dart';
 import 'package:chaldea/components/analytics.dart';
+import 'package:chaldea/platform_interface/platform/platform.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart';
 import 'package:intl/intl_standalone.dart';
@@ -28,6 +29,7 @@ import '../utils.dart' show b64;
 import 'catcher_config.dart';
 
 export 'page_report_mode_cross.dart';
+import 'dart:io' as io;
 
 class EmailAutoHandlerCross extends EmailAutoHandler {
   final Logger _logger = Logger("EmailAutoHandler");
@@ -81,7 +83,8 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
       final screenshotBytes = await _captureScreenshot();
       if (screenshotBytes != null) {
         String shotFn = p.join(db.paths.tempDir, 'crash.jpg');
-        File(shotFn).writeAsBytesSync(screenshotBytes);
+        // just saved
+        if (!PlatformU.isWeb) File(shotFn).writeAsBytesSync(screenshotBytes);
         screenshotAttachment = StreamAttachment(
             Stream<List<int>>.value(screenshotBytes), 'image/jpeg',
             fileName: 'crash.jpg');
@@ -193,6 +196,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
 
   static List<Attachment> archiveAttachments(List<File> files, String tmpFp,
       {bool dumpMemoryUserdata = true}) {
+    if (PlatformU.isWeb) return [];
     if (dumpMemoryUserdata) {
       String mfp = p.join(db.paths.tempDir, 'userdata.memory.json');
       File(mfp).writeAsStringSync(jsonEncode(db.userData), flush: true);
@@ -205,10 +209,10 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
     var encoder = ZipFileEncoder();
     encoder.create(tmpFp);
     for (File file in files) {
-      encoder.addFile(file);
+      encoder.addFile(io.File(file.path));
     }
     encoder.close();
-    return [FileAttachment(File(tmpFp), fileName: 'attachment.zip')];
+    return [FileAttachment(io.File(tmpFp), fileName: 'attachment.zip')];
   }
 
   Future<List<int>?> _captureScreenshot() async {
@@ -252,7 +256,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
     Map<String, dynamic> summary = {
       'app': '${AppInfo.appName} v${AppInfo.fullVersion2}',
       'dataset': db.gameData.version,
-      'os': '${Platform.operatingSystem} ${Platform.operatingSystemVersion}',
+      'os': '${PlatformU.operatingSystem} ${PlatformU.operatingSystemVersion}',
       'lang': Language.current.code,
       'locale': await findSystemLocale(),
       'uuid': AppInfo.uuid,

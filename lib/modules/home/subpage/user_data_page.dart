@@ -81,7 +81,7 @@ class _UserDataPageState extends State<UserDataPage> {
                     chs: '打开目录', jpn: 'フォルダを開く', eng: 'Open Folder')),
                 subtitle: Text(db.paths.convertIosPath(db.paths.appPath)),
                 onTap: () {
-                  if (Platform.isMacOS || Platform.isWindows) {
+                  if (PlatformU.isMacOS || PlatformU.isWindows) {
                     OpenFile.open(db.paths.appPath);
                   } else {
                     EasyLoading.showInfo(LocalizedText.of(
@@ -160,7 +160,7 @@ class _UserDataPageState extends State<UserDataPage> {
           title: S.of(context).backup,
           content: hint,
           actions: [
-            if (Platform.isAndroid || Platform.isIOS)
+            if (PlatformU.isAndroid || PlatformU.isIOS)
               TextButton(
                 child: Text(S.of(context).share),
                 onPressed: () {
@@ -168,7 +168,7 @@ class _UserDataPageState extends State<UserDataPage> {
                   Share.shareFiles(fps);
                 },
               ),
-            if (Platform.isMacOS || Platform.isWindows)
+            if (PlatformU.isMacOS || PlatformU.isWindows)
               TextButton(
                 child: Text(S.of(context).open),
                 onPressed: () {

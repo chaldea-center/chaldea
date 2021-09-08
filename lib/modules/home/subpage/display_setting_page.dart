@@ -27,7 +27,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
           TileGroup(
             header: 'App',
             children: [
-              if (Platform.isMacOS || Platform.isWindows)
+              if (PlatformU.isMacOS || PlatformU.isWindows)
                 SwitchListTile.adaptive(
                   value: db.cfg.alwaysOnTop.get() ?? false,
                   title: Text(LocalizedText.of(
@@ -40,7 +40,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 ),
               // only show on mobile phone, not desktop and tablet
               // on Android, cannot detect phone or mobile
-              if (AppInfo.isMobile && !AppInfo.isIPad || kDebugMode)
+              if (PlatformU.isMobile && !AppInfo.isIPad || kDebugMode)
                 SwitchListTile.adaptive(
                   value: db.appSetting.autorotate,
                   title: Text(S.current.setting_auto_rotate),

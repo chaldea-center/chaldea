@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:chaldea/platform_interface/platform/platform.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -24,13 +25,13 @@ class AppInfo {
   static final Map<String, dynamic> appParams = {};
 
   static Future<void> _loadDeviceInfo() async {
-    if (Platform.isAndroid) {
+    if (PlatformU.isAndroid) {
       _loadAndroidParameters(await DeviceInfoPlugin().androidInfo);
-    } else if (Platform.isIOS) {
+    } else if (PlatformU.isIOS) {
       _loadIosParameters(await DeviceInfoPlugin().iosInfo);
     } else {
-      deviceParams['operatingSystem'] = Platform.operatingSystem;
-      deviceParams['operatingSystemVersion'] = Platform.operatingSystemVersion;
+      deviceParams['operatingSystem'] = PlatformU.operatingSystem;
+      deviceParams['operatingSystemVersion'] = PlatformU.operatingSystemVersion;
       // To be implemented
     }
   }
@@ -89,7 +90,7 @@ class AppInfo {
   ///  - Windows: Not Support
   static Future<void> _loadApplicationInfo() async {
     ///Only android, iOS and macOS are implemented
-    _packageInfo = Platform.isWindows
+    _packageInfo = PlatformU.isWindows
         ? await _loadApplicationInfoFromAsset()
         : await PackageInfo.fromPlatform()
             .catchError((e) => _loadApplicationInfoFromAsset());
@@ -125,11 +126,16 @@ class AppInfo {
   static Future<void> _loadUniqueId() async {
     final deviceInfoPlugin = DeviceInfoPlugin();
     String? originId;
-    if (Platform.isAndroid) {
+    if (PlatformU.isWeb) {
+      originId = null;
+      _uuid = '00000000-0000-0000-0000-000000000000';
+      return;
+    }
+    if (PlatformU.isAndroid) {
       originId = (await deviceInfoPlugin.androidInfo).androidId;
-    } else if (Platform.isIOS) {
+    } else if (PlatformU.isIOS) {
       originId = (await deviceInfoPlugin.iosInfo).identifierForVendor;
-    } else if (Platform.isWindows) {
+    } else if (PlatformU.isWindows) {
       // reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v "ProductId"
       // Output:
       // HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion
@@ -154,7 +160,7 @@ class AppInfo {
           resultString.contains('REG_SZ')) {
         originId = resultString.trim().split(RegExp(r'\s+')).last;
       }
-    } else if (Platform.isMacOS) {
+    } else if (PlatformU.isMacOS) {
       // https://stackoverflow.com/a/944103
       // However, IOPlatformUUID will change every boot, use IOPlatformSerialNumber instead
       // ioreg -rd1 -c IOPlatformExpertDevice | awk '/IOPlatformSerialNumber/ { split($0, line, "\""); printf("%s\n", line[4]); }'
@@ -185,7 +191,7 @@ class AppInfo {
         }
       }
     } else {
-      throw UnimplementedError(Platform.operatingSystem);
+      throw UnimplementedError(PlatformU.operatingSystem);
     }
     if (originId?.isNotEmpty != true) {
       var uuidFile = File(p.join(db.paths.appPath, '.uuid'));
@@ -212,10 +218,10 @@ class AppInfo {
   }
 
   static void _checkMacAppType() {
-    if (!Platform.isMacOS) {
+    if (!PlatformU.isMacOS) {
       _macAppType = MacAppType.notMacApp;
     } else {
-      final String executable = Platform.resolvedExecutable;
+      final String executable = PlatformU.resolvedExecutable;
       final String fpStore =
           p.absolute(p.dirname(executable), '../_MASReceipt/receipt');
       final String fpNotarized =
@@ -248,7 +254,7 @@ class AppInfo {
       int.tryParse(_packageInfo?.buildNumber ?? '0') ?? 0;
 
   static int get originBuild {
-    if (Platform.isAndroid) {
+    if (PlatformU.isAndroid) {
       final _build = buildNumber;
       if (_build > 1000 && [10, 20, 40].contains(_build ~/ 100)) {
         return int.parse(_build.toString().substring(2));
@@ -260,7 +266,7 @@ class AppInfo {
   static String get packageName => info?.packageName ?? kPackageName;
 
   static ABIType get abi {
-    if (!Platform.isAndroid) return ABIType.unknown;
+    if (!PlatformU.isAndroid) return ABIType.unknown;
     if (buildNumber <= 100) return ABIType.unknown;
     String buildStr = buildNumber.toString();
     if (buildStr.startsWith('10')) return ABIType.armeabi_v7a;
@@ -284,7 +290,7 @@ class AppInfo {
     StringBuffer buffer = StringBuffer(version);
     if (buildNumber > 0) {
       buffer.write(' ($buildNumber');
-      if (Platform.isAndroid) {
+      if (PlatformU.isAndroid) {
         buffer.write(', ${EnumUtil.shortString(abi)}');
       }
       buffer.write(')');
@@ -304,18 +310,11 @@ class AppInfo {
     return excludeIds.contains(AppInfo.uuid);
   }
 
-  /// currently supported mobile or desktop
-  static bool get isMobile => Platform.isAndroid || Platform.isIOS;
-
   static bool get isIPad => _isIPad;
-
-  static bool get isDesktop => Platform.isMacOS || Platform.isWindows;
 
   static MacAppType get macAppType => _macAppType;
 
   static bool get isMacStoreApp => _macAppType == MacAppType.store;
-
-  static bool get isApple => Platform.isIOS || Platform.isMacOS;
 }
 
 enum MacAppType {

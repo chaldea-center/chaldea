@@ -26,7 +26,7 @@ class ImageActions {
       duration: const Duration(milliseconds: 250),
       builder: (context) {
         List<Widget> children = [];
-        if (gallery && AppInfo.isMobile) {
+        if (gallery && PlatformU.isMobile) {
           children.add(ListTile(
             leading: Icon(Icons.photo_library),
             title: Text(S.current.save_to_photos),
@@ -41,7 +41,7 @@ class ImageActions {
             },
           ));
         }
-        if (destFp != null) {
+        if (!PlatformU.isWeb && destFp != null) {
           children.add(ListTile(
             leading: Icon(Icons.save),
             title: Text(S.current.save),
@@ -56,7 +56,7 @@ class ImageActions {
                 title: Text(S.current.saved),
                 content: Text(db.paths.convertIosPath(destFp)),
                 actions: [
-                  if (AppInfo.isDesktop)
+                  if (PlatformU.isDesktop)
                     TextButton(
                       onPressed: () {
                         OpenFile.open(path.dirname(destFp));
@@ -68,7 +68,7 @@ class ImageActions {
             },
           ));
         }
-        if (share && (Platform.isAndroid || Platform.isIOS)) {
+        if (share && PlatformU.isMobile) {
           children.add(ListTile(
             leading: Icon(Icons.share),
             title: Text(S.current.share),

@@ -104,10 +104,11 @@ class _GameDataPageState extends State<GameDataPage> {
                 subtitle: Text(S.current.download_full_gamedata_hint),
                 onTap: downloadGamedata,
               ),
-              ListTile(
-                title: Text('${S.of(context).import_data} (dataset*.zip)'),
-                onTap: importGamedata,
-              ),
+              if (!PlatformU.isWeb)
+                ListTile(
+                  title: Text('${S.of(context).import_data} (dataset*.zip)'),
+                  onTap: importGamedata,
+                ),
               ListTile(
                 title: Text(S.of(context).reload_default_gamedata),
                 onTap: () {

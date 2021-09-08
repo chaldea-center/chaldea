@@ -49,10 +49,10 @@ class Analyzer {
     //     .get('/analytics', queryParameters: {
     await db.serverDio.get('/analytics', queryParameters: {
       'uuid': AppInfo.uuid,
-      'os': Platform.operatingSystem,
-      'os_ver': Platform.isAndroid
-          ? AppInfo.androidSdk ?? Platform.operatingSystemVersion
-          : Platform.operatingSystemVersion,
+      'os': PlatformU.operatingSystem,
+      'os_ver': PlatformU.isAndroid
+          ? AppInfo.androidSdk ?? PlatformU.operatingSystemVersion
+          : PlatformU.operatingSystemVersion,
       'app': AppInfo.packageName,
       'app_ver': AppInfo.version,
       'build': AppInfo.originBuild,
@@ -74,7 +74,7 @@ class Analyzer {
     if (!db.hasNetwork) return;
     // TODO: invalid, ignored by bdtj
     try {
-      if (Platform.isIOS || Platform.isAndroid) {
+      if (PlatformU.isIOS || PlatformU.isAndroid) {
         launchStaticUrl(_constructUrl());
         return;
       }
@@ -146,7 +146,7 @@ class Analyzer {
           _param['ct'] = '!!';
         }
         if (fresh || !first) {
-          _param['uu'] = 'Chaldea ${Platform.operatingSystem}';
+          _param['uu'] = 'Chaldea ${PlatformU.operatingSystem}';
         }
         // logger.i(_param);
         return _param.map((key, value) => MapEntry(key, value.toString()));
@@ -179,6 +179,6 @@ class Analyzer {
   }
 
   static String _constructUrl({String? platform}) {
-    return '$kServerRoot/bdtj/${Language.currentLocaleCode}/${platform ?? Platform.operatingSystem}/${AppInfo.version}';
+    return '$kServerRoot/bdtj/${Language.currentLocaleCode}/${platform ?? PlatformU.operatingSystem}/${AppInfo.version}';
   }
 }

@@ -95,7 +95,8 @@ class ItemListPageState extends State<ItemListPage>
           Expanded(
             child: TabBarView(
               // mostly, we focus on category 1 tab
-              physics: AppInfo.isMobile ? null : NeverScrollableScrollPhysics(),
+              physics:
+                  PlatformU.isMobile ? null : NeverScrollableScrollPhysics(),
               controller: _tabController,
               children: List.generate(
                 categories.length,
@@ -389,7 +390,7 @@ class _ItemListTabState extends State<ItemListTab> {
       kDefaultDivider,
       Row(
         children: [
-          if (AppInfo.isMobile)
+          if (PlatformU.isMobile)
             IconButton(
               onPressed: () {
                 if (_shownGroups.isEmpty) return;
@@ -405,7 +406,7 @@ class _ItemListTabState extends State<ItemListTab> {
               icon: Icon(Icons.keyboard_arrow_up),
               tooltip: 'Previous',
             ),
-          if (AppInfo.isMobile)
+          if (PlatformU.isMobile)
             IconButton(
               onPressed: () {
                 if (_shownGroups.isEmpty) return;
@@ -524,7 +525,7 @@ class _ItemListTabState extends State<ItemListTab> {
       onSubmitted: (s) {
         print('onSubmit: ${group.focusNode.debugLabel}');
         // move scrollbar for ios
-        if (Platform.isIOS) {
+        if (PlatformU.isIOS) {
           final index = _shownGroups.indexOf(group);
           if (index < 0) return;
           final start = _scrollController.position.minScrollExtent,

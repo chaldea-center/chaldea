@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/components/js_engine/js_engine.dart';
 import 'package:chaldea/modules/shared/quest_card.dart';
 import 'package:flutter/services.dart';
 
@@ -39,7 +40,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
   Map<WeeklyMissionQuest, num> solution = {};
 
   // solver
-  QjsEngine engine = QjsEngine();
+  JsEngine engine = JsEngine();
 
   @override
   void initState() {

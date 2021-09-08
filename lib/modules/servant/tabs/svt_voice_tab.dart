@@ -286,7 +286,7 @@ class GeneralAudioPlayer {
     }
   }
 
-  bool get usePlayer1 => !Platform.isWindows;
+  bool get usePlayer1 => !PlatformU.isWindows;
 
   /// [path] must be local path
   /// [DefaultCacheManager] download from [originPath] and save cache as [path]
@@ -316,7 +316,7 @@ class GeneralAudioPlayer {
     // print('$originPath\n  -> $path');
     List<String> unsupported = [];
     if (usePlayer1) {
-      if (Platform.isMacOS || Platform.isIOS) {
+      if (PlatformU.isMacOS || PlatformU.isIOS) {
         unsupported = ['ogg', 'ogx', 'oga', 'ogv', 'wav'];
       }
     } else {

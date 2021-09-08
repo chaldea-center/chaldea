@@ -23,7 +23,7 @@ class _GalleryPageState extends State<GalleryPage> {
     _scrollController = ScrollController();
 
     Future.delayed(Duration(seconds: 2)).then((_) async {
-      if (!Platform.isWindows) {
+      if (!PlatformU.isWindows) {
         await rateMyApp.init();
         _showRateCard = rateMyApp.shouldOpenDialog || kDebugMode;
         if (mounted) setState(() {});
@@ -89,7 +89,8 @@ class _GalleryPageState extends State<GalleryPage> {
             children: <Widget>[
               ConstrainedBox(
                 constraints: BoxConstraints(
-                    minHeight: AppInfo.isDesktop ? 0 : constraints.maxHeight),
+                    minHeight:
+                        PlatformU.isDesktopOrWeb ? 0 : constraints.maxHeight),
                 child: Column(
                   children: [
                     AppNewsCarousel(maxWidth: constraints.maxWidth),
@@ -119,7 +120,7 @@ class _GalleryPageState extends State<GalleryPage> {
 
   List<Widget> get notifications {
     List<Widget> children = [];
-    if (Platform.isWindows && winAppPathMigration.get() != false ||
+    if (PlatformU.isWindows && winAppPathMigration.get() != false ||
         kDebugMode) {
       children.add(Container(
         margin: EdgeInsets.symmetric(horizontal: 8),
@@ -255,9 +256,9 @@ class _GalleryPageState extends State<GalleryPage> {
           TextButton(
             onPressed: () async {
               rateMyApp.callEvent(RateMyAppEventType.rateButtonPressed);
-              launch(Platform.isAndroid
+              launch(PlatformU.isAndroid
                   ? kGooglePlayLink
-                  : Platform.isIOS || Platform.isMacOS
+                  : PlatformU.isIOS || PlatformU.isMacOS
                       ? kAppStoreLink
                       : kGooglePlayLink);
               setState(() {

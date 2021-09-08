@@ -1,9 +1,8 @@
-import 'dart:io';
-
 import 'package:catcher/catcher.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../components.dart';
 import '../config.dart';
 import '../device_app_info.dart';
 import '../logger.dart';
@@ -13,21 +12,24 @@ class CatcherUtility {
   CatcherUtility._();
 
   static CatcherOptions getOptions() {
-    final crashFile = File(db.paths.crashLog);
     return CatcherOptions(
       // when error occurs when building:
       // DialogReportMode will keep generating error and you can do nothing
       // PageReportMode will generate error repeatedly for about 3 times.
       SilentReportMode(),
       [
-        FileHandler(crashFile),
+        if (!PlatformU.isWeb) FileHandler(File(db.paths.crashLog)),
         ConsoleHandler(),
         // ToastHandler(),
-        kEmailAutoHandlerCross(attachments: [
-          crashFile,
-          File(db.paths.userDataPath),
-          File(db.paths.appLog),
-        ]),
+        kEmailAutoHandlerCross(
+          attachments: PlatformU.isWeb
+              ? []
+              : [
+                  File(db.paths.crashLog),
+                  File(db.paths.userDataPath),
+                  File(db.paths.appLog),
+                ],
+        ),
       ],
       customParameters: _getCatcherCustomParameters(),
       handleSilentError: false,
@@ -90,7 +92,7 @@ class CatcherUtility {
           children: [
             WidgetSpan(
                 child: Icon(Icons.announcement, color: Colors.red, size: 40)),
-            TextSpan(text: '\There is an Error')
+            TextSpan(text: '\nThere is an Error')
           ],
         ),
       ),
@@ -100,9 +102,9 @@ class CatcherUtility {
 
 Map<String, dynamic> _getCatcherCustomParameters() {
   Map<String, dynamic> customParameters = {};
-  if (Platform.isWindows) {
+  if (PlatformU.isWindows) {
     customParameters.addAll(<String, dynamic>{
-      'system': 'windows ' + Platform.operatingSystemVersion,
+      'system': 'windows ' + PlatformU.operatingSystemVersion,
       'version': AppInfo.version,
       'appName': AppInfo.appName,
       'buildNumber': AppInfo.buildNumber,

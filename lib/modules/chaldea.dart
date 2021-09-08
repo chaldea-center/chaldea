@@ -81,8 +81,11 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     });
 
     // if failed to load userdata, backup and alert user
-    if (File(db.paths.userDataPath).existsSync() && !db.loadUserData()) {
-      userdataBackup = db.backupUserdata(disk: true, memory: false);
+    if (!db.loadUserData()) {
+      if (!PlatformU.isWeb) {
+        if (File(db.paths.userDataPath).existsSync())
+          userdataBackup = db.backupUserdata(disk: true, memory: false);
+      }
     }
 
     if (userdataBackup != null) {
@@ -157,10 +160,10 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
 
   @override
   void afterFirstLayout(BuildContext context) async {
-    if (Platform.isMacOS || Platform.isWindows) {
+    if (PlatformU.isMacOS || PlatformU.isWindows) {
       MethodChannelChaldea.setAlwaysOnTop();
     }
-    if (Platform.isWindows) {
+    if (PlatformU.isWindows) {
       MethodChannelChaldea.setWindowPos();
     }
 
@@ -247,8 +250,13 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
         Version.tryParse(db.prefs.previousVersion.get() ?? '');
     bool justUpdated =
         previousVersion == null || previousVersion < AppInfo.versionClass;
+
     try {
-      if (justUpdated ||
+      if (PlatformU.isWeb) {
+        db.webFS!.put(db.paths.hiveAsciiKey(db.paths.gameDataPath),
+            await rootBundle.loadString('res/data/dataset.json'));
+        gameDataLoadSuccess = db.loadGameData();
+      } else if (justUpdated ||
           !File(db.paths.gameDataPath).existsSync() ||
           !db.loadGameData()) {
         db.backupUserdata(disk: true, memory: false);
@@ -320,7 +328,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
 
   /// only set orientation for mobile phone
   void setPreferredOrientations() {
-    if (!AppInfo.isMobile || AppInfo.isIPad) return;
+    if (!PlatformU.isMobile || AppInfo.isIPad) return;
     if (!db.appSetting.autorotate) {
       SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     } else {

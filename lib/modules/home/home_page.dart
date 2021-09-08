@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
     return WillPopScope(
       onWillPop: () {
         db.saveUserData();
-        if (Platform.isAndroid) {
+        if (PlatformU.isAndroid) {
           if (Navigator.of(context).canPop()) {
             return Future.value(true);
           } else {

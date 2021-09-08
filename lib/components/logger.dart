@@ -2,6 +2,7 @@
 /// Wrap our logs inside a drawn box to make it easy to identify.
 import 'dart:io';
 
+import 'package:chaldea/platform_interface/platform/platform.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 import 'package:logger/src/outputs/file_output.dart'; // ignore: implementation_imports
@@ -21,13 +22,20 @@ void initiateLoggerPath(String fp) {
     filter: ProductionFilter(),
     printer: PrettyPrinter(
         methodCount: 2, colors: false, printEmojis: false, printTime: true),
-    output: MultiOutput([ConsoleOutput(), FileOutput(file: File(fp))]),
+    output: MultiOutput([
+      ConsoleOutput(),
+      if (!PlatformU.isWeb) FileOutput(file: File(fp)),
+    ]),
     level: kDebugMode ? null : Level.debug,
   );
 }
 
 /// fp, fp.1,...,fp.[maxCount], [maxSize] in bytes
 void rollLogFiles(String fp, int maxBackup, int maxSize) {
+  if (PlatformU.isWeb) {
+    print('ignore rolling log on web');
+    return;
+  }
   var f = File(fp);
   String _fpAt(int index) {
     return index == 0 ? fp : '$fp.$index';

@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:chaldea/components/config.dart';
+import 'package:chaldea/platform_interface/platform/platform.dart';
 import 'package:flutter/services.dart';
 
 // default channel
@@ -39,7 +38,7 @@ class MethodChannelChaldea {
   ///
   /// only available on macOS
   static Future<void> setAlwaysOnTop([bool? onTop]) async {
-    if (Platform.isWindows || Platform.isMacOS) {
+    if (PlatformU.isWindows || PlatformU.isMacOS) {
       onTop ??= db.cfg.alwaysOnTop.get() ?? false;
       return kMethodChannel.invokeMethod<bool?>(
         'alwaysOnTop',
@@ -51,7 +50,7 @@ class MethodChannelChaldea {
   }
 
   static Future<void> setWindowPos([List? rect]) async {
-    if (Platform.isWindows) {
+    if (PlatformU.isWindows) {
       rect ??= db.cfg.windowPos.get();
       print('rect ${rect.runtimeType}: $rect');
       if (rect != null &&

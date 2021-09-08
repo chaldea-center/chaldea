@@ -2,52 +2,76 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:chaldea/platform_interface/platform/platform.dart';
+import 'package:hive/hive.dart';
+
 import '../logger.dart';
 
 class JsonStore<T> {
   final String fp;
   final Duration lapse;
   final String? indent;
-  final File _file;
   Map<String, dynamic> _data = {};
 
   JsonStore(this.fp, {Duration? lapse, this.indent})
-      : _file = File(fp),
-        lapse = lapse ?? const Duration(seconds: 10) {
+      : lapse = lapse ?? const Duration(seconds: 10) {
     loadSync();
   }
 
+  String get _boxName => 'json_store_$fp';
+
+  String get _key => 'key';
+
   Future<void> load() async {
     try {
-      if (await _file.exists()) {
-        final content = await File(fp).readAsString();
+      if (PlatformU.isWeb) {
+        final box = await Hive.openBox(_boxName);
+        final content = box.get(_key) ?? '{}';
         _data = json.decode(content) as Map<String, dynamic>;
       } else {
-        _file.createSync(recursive: true);
+        final _file = File(fp);
+        if (await _file.exists()) {
+          final content = await File(fp).readAsString();
+          _data = json.decode(content) as Map<String, dynamic>;
+        } else {
+          _file.createSync(recursive: true);
+        }
       }
     } catch (e, s) {
       logger.e('Failed loading JsonStore data', e, s);
     }
   }
 
-  void loadSync() {
+  Future<void> loadSync() {
     try {
-      if (_file.existsSync()) {
-        final content = File(fp).readAsStringSync();
-        _data = json.decode(content) as Map<String, dynamic>;
+      if (PlatformU.isWeb) {
+        return load();
       } else {
-        _file
-          ..createSync(recursive: true)
-          ..writeAsString('{}');
+        final _file = File(fp);
+        if (_file.existsSync()) {
+          final content = File(fp).readAsStringSync();
+          _data = json.decode(content) as Map<String, dynamic>;
+        } else {
+          _file
+            ..createSync(recursive: true)
+            ..writeAsString('{}');
+        }
       }
     } catch (e, s) {
       logger.e('Failed loading JsonStore data', e, s);
     }
+    return Future.value();
   }
 
   void saveSync() {
     try {
-      _file.writeAsString(_encode());
+      if (PlatformU.isWeb) {
+        Hive.openBox(_boxName).then((box) {
+          box.put(_key, _encode());
+        });
+      } else {
+        File(fp).writeAsString(_encode());
+      }
     } catch (e, s) {
       logger.e('save JsonStore data failed', e, s);
     }

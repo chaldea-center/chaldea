@@ -199,7 +199,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       Language.isCN ? '咕咕咕咕咕咕' : "Not implemented");
                 },
               ),
-            if (!AppInfo.isApple || (db.cfg.launchTimes.get() ?? 0) > 5)
+            if (!PlatformU.isApple || (db.cfg.launchTimes.get() ?? 0) > 5)
               ListTile(
                 title: Text(S.current.support_chaldea),
                 trailing: Icon(Icons.favorite),
@@ -207,7 +207,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   SplitRoute.push(context, SupportDonationPage());
                 },
               ),
-            if (Platform.isIOS || Platform.isMacOS)
+            if (PlatformU.isApple)
               ListTile(
                 title: Text(LocalizedText.of(
                     chs: 'App Store评分',
@@ -218,7 +218,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   launch(kAppStoreLink);
                 },
               ),
-            if (Platform.isAndroid)
+            if (PlatformU.isAndroid)
               ListTile(
                 title: Text(LocalizedText.of(
                     chs: 'Google Play评分',

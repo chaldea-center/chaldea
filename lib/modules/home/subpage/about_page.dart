@@ -22,8 +22,6 @@ class _AboutPageState extends State<AboutPage> {
         '茹西教王的理想鄉': 'http://kazemai.github.io/fgo-vz/'
       };
 
-  final crashFile = File(db.paths.crashLog);
-
   @override
   void initState() {
     super.initState();
@@ -50,14 +48,14 @@ class _AboutPageState extends State<AboutPage> {
             legalese: 'Copyright © 2021 cc.narumi.\nAll rights reserved.',
           ),
           if (!AppInfo.isMacStoreApp &&
-                  (!Platform.isIOS ||
+                  (!PlatformU.isIOS ||
                       db.runtimeData.upgradableVersion != null) ||
               kDebugMode)
             TileGroup(
               header: S.current.update,
               children: [
                 if (!AppInfo.isMacStoreApp &&
-                    (!Platform.isIOS ||
+                    (!PlatformU.isIOS ||
                         db.runtimeData.upgradableVersion != null))
                   ListTile(
                     title: Text(S.current.check_update),
@@ -71,7 +69,7 @@ class _AboutPageState extends State<AboutPage> {
                       AutoUpdateUtil.checkAppUpdate(background: false);
                     },
                   ),
-                if (!Platform.isIOS && !AppInfo.isMacStoreApp)
+                if (!PlatformU.isIOS && !AppInfo.isMacStoreApp)
                   SwitchListTile.adaptive(
                     value: db.appSetting.autoUpdateApp,
                     title: Text(S.current.auto_update),

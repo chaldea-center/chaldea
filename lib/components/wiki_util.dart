@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:chaldea/platform_interface/platform/platform.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path/path.dart' show join;
@@ -74,7 +75,7 @@ class WikiUtil {
       return null;
     }
     Future<String?> _download(String url) async {
-      if (savePath == null) return url;
+      if (savePath == null || PlatformU.isWeb) return url;
       if (!await File(savePath).exists()) {
         return withPool(_pool2, 'download_$filename', () async {
           // don't use _dio.download and writeSync
@@ -138,8 +139,11 @@ class WikiUtil {
   }
 
   static Future<File?> getWikiFile(String filename) async {
+    if (PlatformU.isWeb) return null;
     final url = await resolveFileUrl(filename);
-    if (url != null) return wikiFileCache.getSingleFile(url);
+    if (url != null) {
+      return await wikiFileCache.getSingleFile(url);
+    }
   }
 
   static Future<T?> withPool<T>(
@@ -179,7 +183,7 @@ class WikiUtil {
         options: Options(responseType: ResponseType.json),
       );
       String content =
-      response.data['query']['pages'].values.first['revisions'][0]['*'];
+          response.data['query']['pages'].values.first['revisions'][0]['*'];
       return content;
     } catch (e, s) {
       logger.e('failed to get wikitext', e, s);

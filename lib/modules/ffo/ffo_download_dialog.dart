@@ -41,6 +41,13 @@ class _FfoDownloadDialogState extends State<FfoDownloadDialog> {
 
   @override
   Widget build(BuildContext context) {
+    if (PlatformU.isWeb) {
+      return SimpleCancelOkDialog(
+        title: Text(S.current.import_data + ' FFO data'),
+        content: Text('Not supported on web'),
+        hideCancel: true,
+      );
+    }
     return SimpleCancelOkDialog(
       title: Text(S.current.import_data + ' FFO data'),
       content: Column(
@@ -130,7 +137,8 @@ class _FfoDownloadDialogState extends State<FfoDownloadDialog> {
       );
       EasyLoading.showSuccess(S.current.import_data_success);
       widget.onSuccess();
-    } on FileSelectionCanceledError {} catch (e, s) {
+    } on FileSelectionCanceledError {
+    } catch (e, s) {
       EasyLoading.showError(e.toString());
       logger.e('extract zip error', e, s);
     } finally {

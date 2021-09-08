@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/platform_interface/platform/platform.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -372,8 +373,8 @@ class GitTool {
       test = (asset) {
         String assetName = asset.name.toLowerCase();
         if (assetName.endsWith('.sha1')) return false;
-        if (!Platform.isAndroid) {
-          return assetName.contains(Platform.operatingSystem);
+        if (!PlatformU.isAndroid) {
+          return assetName.contains(PlatformU.operatingSystem);
         }
         // If Android, need to check architecture
         // arch     build
@@ -385,7 +386,7 @@ class GitTool {
             assetName.contains(abi.toStandardString());
       };
     }
-    if (Platform.isAndroid || Platform.isWindows || kDebugMode) {
+    if (PlatformU.isAndroid || PlatformU.isWindows || kDebugMode) {
       releases ??= await appReleases;
       return _latestReleaseWhereAsset(releases, testAsset: test);
     }

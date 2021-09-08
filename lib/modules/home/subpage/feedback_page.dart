@@ -136,8 +136,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   onTap: () async {
                     String subject =
                         '$kAppName v${AppInfo.fullVersion} Feedback';
-                    String body = "OS: ${Platform.operatingSystem}"
-                        " ${Platform.operatingSystemVersion}\n\n"
+                    String body = "OS: ${PlatformU.operatingSystem}"
+                        " ${PlatformU.operatingSystemVersion}\n\n"
                         "Please attach logs(${db.paths.logDir})";
                     final uri = Uri(
                         scheme: 'mailto',
@@ -336,19 +336,21 @@ class _FeedbackPageState extends State<FeedbackPage> {
       message.html = await _emailBody();
       message.attachments
           .add(StringAttachment(bodyController.text, fileName: 'raw_msg.txt'));
-      if (attachLog) {
-        message.attachments.addAll(EmailAutoHandlerCross.archiveAttachments([
-          File(db.paths.crashLog),
-          File(db.paths.appLog),
-          File(db.paths.userDataPath)
-        ], join(db.paths.tempDir, '.feedback.tmp.zip')));
-      }
-      attachFiles.forEach((fp) {
-        var file = File(fp);
-        if (file.existsSync()) {
-          message.attachments.add(FileAttachment(file));
+      if (!PlatformU.isWeb) {
+        if (attachLog) {
+          message.attachments.addAll(EmailAutoHandlerCross.archiveAttachments([
+            File(db.paths.crashLog),
+            File(db.paths.appLog),
+            File(db.paths.userDataPath)
+          ], join(db.paths.tempDir, '.feedback.tmp.zip')));
         }
-      });
+        attachFiles.forEach((fp) {
+          var file = File(fp);
+          if (file.existsSync()) {
+            message.attachments.add(FileAttachment(File(file.path)));
+          }
+        });
+      }
       if (!kDebugMode) {
         final result = await send(
           message,
@@ -394,7 +396,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
     Map<String, dynamic> summary = {
       'app': '${AppInfo.appName} v${AppInfo.fullVersion2}',
       'dataset': db.gameData.version,
-      'os': '${Platform.operatingSystem} ${Platform.operatingSystemVersion}',
+      'os': '${PlatformU.operatingSystem} ${PlatformU.operatingSystemVersion}',
       'lang': Language.current.code,
       'locale': await findSystemLocale(),
       'uuid': AppInfo.uuid,
