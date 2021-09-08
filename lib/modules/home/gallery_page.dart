@@ -10,6 +10,8 @@ import 'elements/grid_gallery.dart';
 import 'elements/news_carousel.dart';
 
 class GalleryPage extends StatefulWidget {
+  const GalleryPage({Key? key}) : super(key: key);
+
   @override
   _GalleryPageState createState() => _GalleryPageState();
 }
@@ -127,11 +129,12 @@ class _GalleryPageState extends State<GalleryPage> {
         child: winAppPathMigrationTile,
       ));
     }
-    if (_showRateCard == true)
+    if (_showRateCard == true) {
       children.add(Container(
         margin: EdgeInsets.symmetric(horizontal: 8),
         child: buildRateTile(),
       ));
+    }
     return children;
   }
 

@@ -16,6 +16,8 @@ import 'subpage/support_donation_page.dart';
 import 'subpage/user_data_page.dart';
 
 class SettingsPage extends StatefulWidget {
+  const SettingsPage({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _SettingsPageState();
 }
@@ -283,7 +285,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 trailing: DropdownButtonHideUnderline(
                   child: DropdownButton<double>(
                     value: db.runtimeData.criticalWidth ?? 768,
-                    items: <DropdownMenuItem<double>>[
+                    items: const <DropdownMenuItem<double>>[
                       DropdownMenuItem(value: 768, child: Text('768')),
                       DropdownMenuItem(value: 600, child: Text('600'))
                     ],

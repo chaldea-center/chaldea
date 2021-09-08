@@ -10,7 +10,8 @@ class SummonSimulatorPage extends StatefulWidget {
   final Summon summon;
   final int initIndex;
 
-  SummonSimulatorPage({Key? key, required this.summon, this.initIndex = 0})
+  const SummonSimulatorPage(
+      {Key? key, required this.summon, this.initIndex = 0})
       : super(key: key);
 
   @override
@@ -117,14 +118,12 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           pinned: true,
           delegate: _SliverPersistentHeaderDelegate(
             height: 60,
-            child: Container(
-              child: Center(
-                child: FittedBox(
-                  child: Row(
-                      children:
-                          summon.isLuckyBag ? [gachaLucky] : [gacha1, gacha10]),
-                  fit: BoxFit.contain,
-                ),
+            child: Center(
+              child: FittedBox(
+                child: Row(
+                    children:
+                        summon.isLuckyBag ? [gachaLucky] : [gacha1, gacha10]),
+                fit: BoxFit.contain,
               ),
             ),
           ),
@@ -323,16 +322,18 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           ),
         ),
       );
-      if (data.isNotEmpty)
+      if (data.isNotEmpty) {
         child = FittedBox(
           child: child,
           fit: BoxFit.scaleDown,
         );
+      }
       return child;
     }
 
-    if (_curHistory < 0 || _curHistory >= history.length)
+    if (_curHistory < 0 || _curHistory >= history.length) {
       _curHistory = history.length - 1;
+    }
     return Column(
       children: [
         Row(
@@ -458,8 +459,9 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       //金卡保底
       if (!results.any((e) =>
           (e is Servant && e.info.rarity > 3) ||
-          (e is CraftEssence && e.rarity > 3)))
+          (e is CraftEssence && e.rarity > 3))) {
         results.addAll(randomSummon(cardProbs((r) => r > 3), 1));
+      }
     }
     results.addAll(randomSummon(cardProbs(), times - results.length));
     return results;
@@ -475,7 +477,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     probList.forEach((element) => totalProb += element.value);
     for (int i = 0; i < times; i++) {
       double p = random.nextDouble() * totalProb * 0.9999999;
-      var target;
+      GameCardMixin? target;
       double acc = 0;
       for (int j = 0; j < probList.length; j++) {
         acc += probList[j].value;

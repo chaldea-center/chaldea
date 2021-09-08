@@ -89,7 +89,7 @@ class CatcherUtility {
         overflow: TextOverflow.clip,
         textAlign: TextAlign.center,
         text: TextSpan(
-          children: [
+          children: const [
             WidgetSpan(
                 child: Icon(Icons.announcement, color: Colors.red, size: 40)),
             TextSpan(text: '\nThere is an Error')

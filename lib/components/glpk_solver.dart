@@ -51,7 +51,7 @@ class GLPKSolver {
     try {
       await ensureEngine();
       print('=========solving========\nparams=${json.encode(params)}');
-      if (params2.rows.length == 0) {
+      if (params2.rows.isEmpty) {
         logger.d('after pre processing, params has no valid rows.\n'
             'params=${json.encode(params2)}');
         EasyLoading.showToast('Invalid inputs');
@@ -69,7 +69,7 @@ class GLPKSolver {
         if (resultString.isNotEmpty != true || resultString == 'null') {
           throw 'qjsEngine return nothing!';
         }
-        var result;
+        dynamic result;
         try {
           result = json.decode(resultString);
           print('after jsondecode: ${result.runtimeType}, $result');
@@ -199,10 +199,11 @@ GLPKData _preProcess({required GLPKData data, required GLPKParams params}) {
       // no column(cost>minCost) contains rowName
       // then retain the column with max drop rate/min ap rate
       int retainCol = data.matrix[row].indexOf(data.matrix[row].reduce(max));
-      if (retainCol < 0)
+      if (retainCol < 0) {
         removeRows.add(rowName);
-      else
+      } else {
         retainCols.add(data.colNames[retainCol]);
+      }
     } else {
       retainCols.add(data.colNames[minApRateCol]);
     }
@@ -218,7 +219,7 @@ GLPKData _preProcess({required GLPKData data, required GLPKParams params}) {
   });
 
   // no rows (glpk will raise error), need to check in caller
-  if (objective.length == 0) logger.d('no valid objRows');
+  if (objective.isEmpty) logger.d('no valid objRows');
 
   logger.v('processed data: ${data.rowNames.length} rows,'
       ' ${data.colNames.length} columns');

@@ -12,7 +12,7 @@ import 'leveling_cost_page.dart';
 import 'svt_tab_base.dart';
 
 class SvtPlanTab extends SvtTabBaseWidget {
-  SvtPlanTab({
+  const SvtPlanTab({
     Key? key,
     ServantDetailPageState? parent,
     Servant? svt,
@@ -20,8 +20,7 @@ class SvtPlanTab extends SvtTabBaseWidget {
   }) : super(key: key, parent: parent, svt: svt, status: status);
 
   @override
-  State<StatefulWidget> createState() =>
-      _SvtPlanTabState(parent: parent, svt: svt, status: status);
+  State<StatefulWidget> createState() => _SvtPlanTabState();
 }
 
 class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
@@ -33,10 +32,6 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
   ServantPlan enhancePlan = ServantPlan();
 
   ServantPlan get plan => db.curUser.svtPlanOf(svt.no);
-
-  _SvtPlanTabState(
-      {ServantDetailPageState? parent, Servant? svt, ServantStatus? status})
-      : super(parent: parent, svt: svt, status: status);
 
   @override
   void initState() {
@@ -69,7 +64,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           children: <Widget>[
             buildPlanRow(
               useSlider: sliderMode,
-              leading: Container(
+              leading: SizedBox(
                 width: 33,
                 height: 33,
                 child: Center(
@@ -184,7 +179,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           ),
         ));
       }
-      if (dressWidgets.length > 0) {
+      if (dressWidgets.isNotEmpty) {
         children.add(TileGroup(
             header: S.of(context).costume_unlock, children: dressWidgets));
       }
@@ -430,9 +425,9 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     required int minVal,
     required int maxVal,
     int? divisions,
-    String labelFormatter(int v)?,
-    String trailingLabelFormatter(int a, int? b)?,
-    required void onValueChanged(int start, int end),
+    String Function(int v)? labelFormatter,
+    String Function(int a, int? b)? trailingLabelFormatter,
+    required void Function(int start, int end) onValueChanged,
     bool useSlider = false,
     WidgetBuilder? detailPageBuilder,
   }) {
@@ -440,16 +435,12 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     if (end != null) {
       assert(start <= end && end <= maxVal);
     }
-    if (labelFormatter == null) {
-      labelFormatter = (v) => v.toString();
-    }
-    if (trailingLabelFormatter == null) {
-      trailingLabelFormatter = (a, b) {
-        String s = labelFormatter!(a).padLeft(2);
-        if (b != null) s += '→' + labelFormatter(b).padRight(2);
-        return s;
-      };
-    }
+    labelFormatter ??= (v) => v.toString();
+    trailingLabelFormatter ??= (a, b) {
+      String s = labelFormatter!(a).padLeft(2);
+      if (b != null) s += '→' + labelFormatter(b).padRight(2);
+      return s;
+    };
     Widget trailingIcon;
     if (detailPageBuilder != null) {
       trailingIcon = IconButton(
@@ -508,7 +499,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             thumbShape: RoundSliderThumbShape(enabledThumbRadius: 6),
             rangeThumbShape: RoundRangeSliderThumbShape(enabledThumbRadius: 6),
           ),
-          child: Container(height: 23, child: slider),
+          child: SizedBox(height: 23, child: slider),
         ),
         trailing: Text(trailingLabelFormatter(start, end),
             style: TextStyle(fontFamily: kMonoFont)),
@@ -616,7 +607,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                 )
               ]);
             }),
-            columnWidths: {
+            columnWidths: const {
               0: FixedColumnWidth(56),
               1: FixedColumnWidth(56),
               // 2:
@@ -775,10 +766,11 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
 
   void updateState() {
     db.itemStat.updateSvtItems(lapse: const Duration(seconds: 1));
-    if (widget.parent != null)
+    if (widget.parent != null) {
       widget.parent?.setState(() {});
-    else
+    } else {
       setState(() {});
+    }
   }
 
   void _onEnhance() {
@@ -805,7 +797,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       builder: (context) => AlertDialog(
         title: Text(S.of(context).enhance_warning),
         contentPadding: EdgeInsets.symmetric(horizontal: 8),
-        content: Container(
+        content: SizedBox(
           width: defaultDialogWidth(context),
           child: hasItem
               ? buildGridIcons(

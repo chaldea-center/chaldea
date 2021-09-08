@@ -2,6 +2,8 @@ import 'package:chaldea/components/components.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class StatisticServantTab extends StatefulWidget {
+  const StatisticServantTab({Key? key}) : super(key: key);
+
   @override
   _StatisticServantTabState createState() => _StatisticServantTabState();
 }
@@ -152,8 +154,9 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
         value: (_) => 0);
     db.gameData.servants.values.forEach((svt) {
       if (db.curUser.svtStatusOf(svt.no).favorite) {
-        if (raritySelected.contains(true) && !raritySelected[svt.info.rarity])
+        if (raritySelected.contains(true) && !raritySelected[svt.info.rarity]) {
           return;
+        }
         if (svtClassCount.containsKey(svt.stdClassName)) {
           svtClassCount[svt.stdClassName] =
               (svtClassCount[svt.stdClassName] ?? 0) + 1;
@@ -192,7 +195,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
         double mag = min(1, constraints.maxWidth / 350);
         if (total <= 0) return Container(height: 280 * mag);
         iter.moveNext();
-        return Container(
+        return SizedBox(
           height: 280 * mag,
           child: PieChart(PieChartData(
             sections: List.generate(svtClassCount.length, (index) {

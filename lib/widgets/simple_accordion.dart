@@ -54,8 +54,9 @@ class _SimpleAccordionState extends State<SimpleAccordion> {
     late Widget expandIcon;
     if (widget.expandIconBuilder != null) {
       expandIcon = widget.expandIconBuilder!(context, expanded);
-      if (!widget.canTapOnHeader)
+      if (!widget.canTapOnHeader) {
         expandIcon = GestureDetector(onTap: toggle, child: expandIcon);
+      }
     } else {
       expandIcon = ExpandIcon(
         isExpanded: expanded,

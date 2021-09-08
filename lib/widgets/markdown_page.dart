@@ -43,7 +43,7 @@ class _MyMarkdownWidgetState extends State<MyMarkdownWidget> {
         return 'Loading error';
       }).whenComplete(
         () => Utils.scheduleFrameCallback(() {
-          if (mounted) this.setState(() {});
+          if (mounted) setState(() {});
         }),
       );
     }
@@ -129,12 +129,11 @@ class MarkdownHelpPage extends StatefulWidget {
   const MarkdownHelpPage.localized({
     Key? key,
     this.dir = 'doc/help',
-    required String asset,
+    required this.asset,
     this.leading = const BackButton(),
     this.title,
     this.actions = const [],
   })  : data = null,
-        asset = asset,
         assetJp = 'jp/$asset',
         assetEn = 'en/$asset',
         super(key: key);

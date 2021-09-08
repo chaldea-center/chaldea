@@ -17,9 +17,10 @@ class _FreeQuestQueryTabState extends State<FreeQuestQueryTab> {
     return Navigator(
       key: _navigatorKey,
       onGenerateRoute: (settings) {
-        if (settings.name == '/')
+        if (settings.name == '/') {
           return SplitRoute(
               builder: (context, _) => _ChapterList(), detail: null);
+        }
       },
     );
   }

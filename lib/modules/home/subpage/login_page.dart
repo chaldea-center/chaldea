@@ -5,6 +5,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 enum _PageMode { login, signup, changePwd }
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -134,13 +136,6 @@ class _LoginPageState extends State<LoginPage> {
           S.current.login_logout,
           style: TextStyle(color: Theme.of(context).errorColor),
         ),
-      );
-
-  @deprecated
-  Widget get deleteBtn => ElevatedButton(
-        onPressed: isLoginAvailable() ? doDelete : null,
-        child: Text(S.current.delete),
-        style: ElevatedButton.styleFrom(primary: Theme.of(context).errorColor),
       );
 
   Widget get signupBtn => ElevatedButton(
@@ -289,8 +284,9 @@ class _LoginPageState extends State<LoginPage> {
   String? _validateNewPwd([String? newPwd]) {
     newPwd ??= _newPwdController.text;
     if (newPwd.isEmpty) return null;
-    if (newPwd == _pwdController.text)
+    if (newPwd == _pwdController.text) {
       return S.current.login_password_error_same_as_old;
+    }
     return _validatePwd(newPwd);
   }
 
@@ -343,6 +339,7 @@ class _LoginPageState extends State<LoginPage> {
     ).showDialog(context);
   }
 
+  @Deprecated('do not use')
   void doDelete() {
     String name = _nameController.text;
     String pwd = _pwdController.text;

@@ -32,8 +32,8 @@ class EnsureVisibleWhenFocused extends StatefulWidget {
     Key? key,
     required this.child,
     required this.focusNode,
-    this.curve: Curves.ease,
-    this.duration: const Duration(milliseconds: 100),
+    this.curve = Curves.ease,
+    this.duration = const Duration(milliseconds: 100),
   }) : super(key: key);
 
   /// The node we will monitor to determine if the child is focused
@@ -54,7 +54,7 @@ class EnsureVisibleWhenFocused extends StatefulWidget {
 
   @override
   _EnsureVisibleWhenFocusedState createState() =>
-      new _EnsureVisibleWhenFocusedState();
+      _EnsureVisibleWhenFocusedState();
 }
 
 ///
@@ -97,21 +97,21 @@ class _EnsureVisibleWhenFocusedState extends State<EnsureVisibleWhenFocused>
   ///
   /// This method was suggested by Peter Yuen (see discussion).
   ///
-  Future<Null> _keyboardToggled() async {
+  Future<void> _keyboardToggled() async {
     if (mounted) {
       EdgeInsets edgeInsets = MediaQuery.of(context).viewInsets;
       while (mounted && MediaQuery.of(context).viewInsets == edgeInsets) {
-        await new Future.delayed(const Duration(milliseconds: 10));
+        await Future.delayed(const Duration(milliseconds: 10));
       }
     }
 
     return;
   }
 
-  Future<Null> _ensureVisible() async {
+  Future<void> _ensureVisible() async {
     // Wait for the keyboard to come into view
     await Future.any([
-      new Future.delayed(const Duration(milliseconds: 300)),
+      Future.delayed(const Duration(milliseconds: 300)),
       _keyboardToggled()
     ]);
 

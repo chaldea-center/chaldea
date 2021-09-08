@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:io' as io;
 import 'dart:math' show min;
 import 'dart:typed_data';
 
@@ -29,7 +30,6 @@ import '../utils.dart' show b64;
 import 'catcher_config.dart';
 
 export 'page_report_mode_cross.dart';
-import 'dart:io' as io;
 
 class EmailAutoHandlerCross extends EmailAutoHandler {
   final Logger _logger = Logger("EmailAutoHandler");
@@ -95,7 +95,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
   }
 
   /// store html message that has already be sent
-  HashSet<String> _sentReports = HashSet();
+  final HashSet<String> _sentReports = HashSet();
 
   /// the same error may have different StackTrace
   String _getReportShortSummary(Report report) {
@@ -132,8 +132,8 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
       // wait a moment to let other handlers finish, e.g. FileHandler
       await Future.delayed(Duration(seconds: 1));
 
-      final message = new Message()
-        ..from = new Address(this.senderEmail, this.senderName)
+      final message = Message()
+        ..from = Address(senderEmail, senderName)
         ..recipients.addAll(recipients)
         ..subject = _getEmailTitle(report)
         ..text = setupRawMessageText(report)

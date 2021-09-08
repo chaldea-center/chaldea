@@ -14,7 +14,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:screenshot/screenshot.dart';
 
-import '404.dart';
+import 'route_404.dart';
 import 'cmd_code/cmd_code_detail_page.dart';
 import 'craft/craft_detail_page.dart';
 import 'debug/debug_floating_menu.dart';
@@ -22,6 +22,8 @@ import 'servant/costume_detail_page.dart';
 import 'servant/servant_detail_page.dart';
 
 class Chaldea extends StatefulWidget {
+  const Chaldea({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _ChaldeaState();
 }
@@ -83,8 +85,9 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     // if failed to load userdata, backup and alert user
     if (!db.loadUserData()) {
       if (!PlatformU.isWeb) {
-        if (File(db.paths.userDataPath).existsSync())
+        if (File(db.paths.userDataPath).existsSync()) {
           userdataBackup = db.backupUserdata(disk: true, memory: false);
+        }
       }
     }
 
@@ -121,7 +124,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
           theme: ThemeData.light(),
           darkTheme: ThemeData.dark(),
           locale: Language.getLanguage(db.appSetting.language)?.locale,
-          localizationsDelegates: [
+          localizationsDelegates: const [
             S.delegate,
             ...GlobalMaterialLocalizations.delegates,
           ],
@@ -182,32 +185,36 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         settings.name!.split('/').where((e) => e.isNotEmpty).toList();
     if (segments.length == 2 && segments[0] == 'servant') {
       final svt = db.gameData.servants[int.tryParse(segments[1])];
-      if (svt != null)
+      if (svt != null) {
         return SplitRoute(
           builder: (_, __) => ServantDetailPage(svt),
           detail: true,
         );
+      }
     } else if (segments.length == 2 && segments[0] == 'craft_essence') {
       final craft = db.gameData.crafts[int.tryParse(segments[1])];
-      if (craft != null)
+      if (craft != null) {
         return SplitRoute(
           builder: (_, __) => CraftDetailPage(ce: craft),
           detail: true,
         );
+      }
     } else if (segments.length == 2 && segments[0] == 'command_code') {
       final code = db.gameData.cmdCodes[int.tryParse(segments[1])];
-      if (code != null)
+      if (code != null) {
         return SplitRoute(
           builder: (_, __) => CmdCodeDetailPage(code: code),
           detail: true,
         );
+      }
     } else if (segments.length == 2 && segments[0] == 'costume') {
       final costume = db.gameData.costumes[int.tryParse(segments[1])];
-      if (costume != null)
+      if (costume != null) {
         return SplitRoute(
           builder: (_, __) => CostumeDetailPage(costume: costume),
           detail: true,
         );
+      }
     } else if (segments.isNotEmpty && segments.first == 'support') {
       return SplitRoute(
         builder: (_, __) => SupportDonationPage(),
@@ -219,7 +226,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
 }
 
 class _ChaldeaHome extends StatefulWidget {
-  _ChaldeaHome({Key? key}) : super(key: key);
+  const _ChaldeaHome({Key? key}) : super(key: key);
 
   @override
   _ChaldeaHomeState createState() => _ChaldeaHomeState();
@@ -301,8 +308,9 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
         }
       }).onError((error, stackTrace) => null);
     }
-    if (db.runtimeData.showDebugFAB)
+    if (db.runtimeData.showDebugFAB) {
       DebugFloatingMenuButton.createOverlay(context);
+    }
   }
 
   /// place some operations that need a [MaterialApp] like ancestor

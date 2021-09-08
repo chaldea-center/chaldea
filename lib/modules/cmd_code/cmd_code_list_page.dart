@@ -8,7 +8,7 @@ import 'cmd_code_filter_page.dart';
 class CmdCodeListPage extends StatefulWidget {
   final void Function(CommandCode)? onSelected;
 
-  CmdCodeListPage({Key? key, this.onSelected}) : super(key: key);
+  const CmdCodeListPage({Key? key, this.onSelected}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => CmdCodeListPageState();
@@ -138,6 +138,7 @@ class _CmdCodeSearchOptions with SearchOptionsMixin<CommandCode> {
   bool basic;
   bool skill;
   bool description;
+  @override
   ValueChanged? onChanged;
 
   _CmdCodeSearchOptions({
@@ -147,6 +148,7 @@ class _CmdCodeSearchOptions with SearchOptionsMixin<CommandCode> {
     this.onChanged,
   });
 
+  @override
   Widget builder(BuildContext context, StateSetter setState) {
     return Wrap(
       children: [
@@ -181,13 +183,14 @@ class _CmdCodeSearchOptions with SearchOptionsMixin<CommandCode> {
     );
   }
 
+  @override
   String getSummary(CommandCode code) {
     StringBuffer buffer = StringBuffer();
     if (basic) {
       buffer.write(getCache(
         code,
         'basic',
-        () => [
+            () => [
           code.no.toString(),
           code.mcLink,
           ...Utils.getSearchAlphabets(code.name, code.nameJp, code.nameEn),
@@ -201,7 +204,7 @@ class _CmdCodeSearchOptions with SearchOptionsMixin<CommandCode> {
       buffer.write(getCache(
         code,
         'skill',
-        () => [
+            () => [
           code.skill,
           code.skillEn,
         ],
@@ -211,7 +214,7 @@ class _CmdCodeSearchOptions with SearchOptionsMixin<CommandCode> {
       buffer.write(getCache(
         code,
         'description',
-        () => Utils.getSearchAlphabets(
+            () => Utils.getSearchAlphabets(
           code.description,
           code.descriptionJp,
           code.descriptionEn,

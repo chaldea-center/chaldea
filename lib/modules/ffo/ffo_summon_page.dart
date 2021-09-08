@@ -78,7 +78,7 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
   Widget get summonBtn {
     double ratio = 0.56;
     Widget _buildBtn(bool ten) {
-      return Container(
+      return SizedBox(
         width: 214 * ratio,
         height: 88 * ratio,
         child: InkWell(
@@ -157,16 +157,18 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
           ),
         ),
       );
-      if (data.isNotEmpty)
+      if (data.isNotEmpty) {
         child = FittedBox(
           child: child,
           fit: BoxFit.scaleDown,
         );
+      }
       return child;
     }
 
-    if (_curHistory < 0 || _curHistory >= history.length)
+    if (_curHistory < 0 || _curHistory >= history.length) {
       _curHistory = history.length - 1;
+    }
     return Column(
       children: [
         Row(

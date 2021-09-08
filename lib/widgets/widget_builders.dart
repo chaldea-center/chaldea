@@ -13,13 +13,17 @@ class ValueStatefulBuilder<T> extends StatefulWidget {
 
   @override
   _ValueStatefulBuilderState<T> createState() =>
-      _ValueStatefulBuilderState<T>(initValue);
+      _ValueStatefulBuilderState<T>();
 }
 
 class _ValueStatefulBuilderState<T> extends State<ValueStatefulBuilder<T>> {
-  T value;
+  late T value;
 
-  _ValueStatefulBuilderState(this.value);
+  @override
+  void initState() {
+    super.initState();
+    value = widget.initValue;
+  }
 
   void updateState() {
     setState(() {});
@@ -41,12 +45,13 @@ class KeepAliveBuilder extends StatefulWidget {
       : super(key: key);
 
   @override
+  // ignore: no_logic_in_create_state
   _KeepAliveBuilderState createState() => _KeepAliveBuilderState(wantKeepAlive);
 }
 
 class _KeepAliveBuilderState extends State<KeepAliveBuilder>
     with AutomaticKeepAliveClientMixin {
-  bool _wantKeepAlive;
+  final bool _wantKeepAlive;
 
   _KeepAliveBuilderState(this._wantKeepAlive);
 
@@ -63,7 +68,7 @@ class _KeepAliveBuilderState extends State<KeepAliveBuilder>
 class AutoUnfocusBuilder extends StatelessWidget {
   final WidgetBuilder builder;
 
-  AutoUnfocusBuilder({Key? key, required this.builder}) : super(key: key);
+  const AutoUnfocusBuilder({Key? key, required this.builder}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

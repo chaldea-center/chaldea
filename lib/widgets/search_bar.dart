@@ -7,6 +7,7 @@ const double _kSearchBarPaddingBottom = 8.0;
 
 class SearchBar extends StatefulWidget with PreferredSizeWidget, RouteAware {
   final TextEditingController? controller;
+  @override
   final Size preferredSize;
   final FocusNode? focusNode;
   final TextStyle? style;
@@ -158,9 +159,9 @@ abstract class SearchOptionsMixin<T> {
 
   String getSummary(T datum);
 
-  Map<int, String> _caches = {};
+  final Map<int, String> _caches = {};
 
-  String getCache(T datum, String subKey, List<String?> ifAbsent()) {
+  String getCache(T datum, String subKey, List<String?> Function() ifAbsent) {
     int key = hashValues(datum, subKey);
     return _caches[key] ??=
         ifAbsent().whereType<String>().toSet().join('\t') + '\t';

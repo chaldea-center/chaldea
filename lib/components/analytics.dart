@@ -98,7 +98,7 @@ class Analyzer {
       bool fresh = hca() == null;
       bool first = true;
 
-      final genMap = () {
+      Map<String, String> genMap() {
         print('bdtj: fresh=$fresh, first=$first');
         final Map<String, dynamic> _param = {
           // 'hca':null,
@@ -150,7 +150,8 @@ class Analyzer {
         }
         // logger.i(_param);
         return _param.map((key, value) => MapEntry(key, value.toString()));
-      };
+      }
+
       final _dio = HttpUtils.defaultDio;
       _dio.interceptors.add(CookieManager(cookieJar));
       await _dio.get(hjs);

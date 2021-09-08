@@ -60,7 +60,7 @@ class AppNewsCarousel extends StatefulWidget {
       Future<Map<String, String>>? taskMC, taskJp, taskGitee, taskUs;
       // mc slides
       if (carouselSetting.enableMooncell) {
-        final mcUrl = 'https://fgo.wiki/w/模板:自动取值轮播';
+        const mcUrl = 'https://fgo.wiki/w/模板:自动取值轮播';
         taskMC = _dio.get(mcUrl).then((response) {
           var mcParser = parser.parse(response.data.toString());
           var mcElement = mcParser.getElementById('transImageBox');
@@ -73,7 +73,7 @@ class AppNewsCarousel extends StatefulWidget {
 
       // jp slides
       if (carouselSetting.enableJp) {
-        final jpUrl = 'https://view.fate-go.jp';
+        const jpUrl = 'https://view.fate-go.jp';
         taskJp = _dio.get(jpUrl).then((response) {
           var jpParser = parser.parse(response.data.toString());
           var jpElement = jpParser.getElementsByClassName('slide').getOrNull(0);
@@ -101,7 +101,7 @@ class AppNewsCarousel extends StatefulWidget {
 
       // jp slides
       if (carouselSetting.enableUs) {
-        final usUrl = 'https://webview.fate-go.us';
+        const usUrl = 'https://webview.fate-go.us';
         taskUs = _dio.get(usUrl).then((response) {
           var usParser = parser.parse(response.data.toString());
           var usElement = usParser.getElementsByClassName('slide').getOrNull(0);
@@ -152,7 +152,7 @@ class AppNewsCarousel extends StatefulWidget {
 
 class _AppNewsCarouselState extends State<AppNewsCarousel> {
   int _curCarouselIndex = 0;
-  CarouselController _carouselController = CarouselController();
+  final CarouselController _carouselController = CarouselController();
 
   final double criticalWidth = 400;
 
@@ -187,7 +187,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
           child: Container(child: logo),
         );
       } else {
-        return Container(
+        return SizedBox(
           height: criticalWidth * 3 / 8,
           child: logo,
         );
@@ -283,7 +283,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
       }
       sliders.add(GestureDetector(
         onTap: () async {
-          final routePrefix = '/chaldea/route';
+          const routePrefix = '/chaldea/route';
           if (link.toLowerCase().startsWith(routePrefix) &&
               link.length > routePrefix.length + 1) {
             Navigator.pushNamed(context, link.substring(routePrefix.length));

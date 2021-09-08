@@ -5,6 +5,7 @@ enum SvtCompare { no, className, rarity, atk, hp, priority }
 @JsonSerializable(checked: true)
 class Servant with GameCardMixin {
   // left avatar & model
+  @override
   int no;
   @JsonKey(ignore: true)
   int originNo;
@@ -12,9 +13,11 @@ class Servant with GameCardMixin {
   /// the real identity [svtId] in game database
   /// default -1 for [Servant.unavailable]
   int svtId;
+  @override
   String mcLink;
 
   // @deprecated
+  @override
   String icon;
 
   String get thumb => icon;
@@ -44,20 +47,23 @@ class Servant with GameCardMixin {
   // from data file not in code
   static List<int> get unavailable => db.gameData.unavailableSvts;
 
+  @override
   String toString() => '$runtimeType(No.$no-$mcLink)';
 
+  @override
   String get lName => info.localizedName;
 
   String get stdClassName {
     String clsName;
-    if (info.className.startsWith('Beast'))
+    if (info.className.startsWith('Beast')) {
       clsName = 'Beast';
-    else if (info.className.contains('Caster'))
+    } else if (info.className.contains('Caster')) {
       clsName = 'Caster';
-    else
+    } else {
       clsName = info.className;
+    }
     assert(SvtFilterData.classesData.contains(clsName),
-        'svt class name: "$clsName", ${clsName == "Beast"},${SvtFilterData.classesData}');
+    'svt class name: "$clsName", ${clsName == "Beast"},${SvtFilterData.classesData}');
     return clsName;
   }
 
@@ -111,15 +117,15 @@ class Servant with GameCardMixin {
   String get cardBackFace {
     final _colors = ['黑', '铜', '铜', '银', '金', '金'];
     String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
-    String key = '${capitalize(this.stdClassName)}'
-        '${_colors[this.info.rarity]}卡背';
-    if (this.no == 285) {
+    String key = '${capitalize(stdClassName)}'
+        '${_colors[info.rarity]}卡背';
+    if (no == 285) {
       // 泳装杀生院
       key += '2';
-    } else if (this.no == 1) {
+    } else if (no == 1) {
       //玛修
       key = '普通金卡背';
-    } else if (this.stdClassName.startsWith('Beast')) {
+    } else if (stdClassName.startsWith('Beast')) {
       key = '普通黑卡背';
     }
     return key;
@@ -128,8 +134,7 @@ class Servant with GameCardMixin {
   /// [cur]=[target]=null: all
   /// [cur.favorite]=true
   /// else empty
-  Map<String, int> getAllCost(
-      {ServantStatus? status, ServantPlan? target, bool all = false}) {
+  Map<String, int> getAllCost({ServantStatus? status, ServantPlan? target, bool all = false}) {
     if (all) {
       return sumDict([
         getAscensionCost(),
@@ -159,8 +164,7 @@ class Servant with GameCardMixin {
     }
   }
 
-  SvtParts<Map<String, int>> getAllCostParts(
-      {ServantStatus? status, ServantPlan? target, bool all = false}) {
+  SvtParts<Map<String, int>> getAllCostParts({ServantStatus? status, ServantPlan? target, bool all = false}) {
     // no grail?
     if (all) {
       return SvtParts(
@@ -176,7 +180,7 @@ class Servant with GameCardMixin {
     if (cur?.favorite == true) {
       return SvtParts(
         ascension:
-            getAscensionCost(cur: cur!.ascension, target: target.ascension),
+        getAscensionCost(cur: cur!.ascension, target: target.ascension),
         skill: getSkillCost(cur: cur.skills, target: target.skills),
         dress: getDressCost(cur: cur.dress, target: target.dress),
         appendSkill: getAppendSkillCost(
@@ -213,8 +217,9 @@ class Servant with GameCardMixin {
   }
 
   Map<String, int> getAppendSkillCost({List<int>? cur, List<int>? target}) {
-    if (itemCost.appendSkill.isEmpty || itemCost.appendSkill.first.isEmpty)
+    if (itemCost.appendSkill.isEmpty || itemCost.appendSkill.first.isEmpty) {
       return {};
+    }
     cur ??= [0, 0, 0];
     target ??= [10, 10, 10];
     Map<String, int> items = {};
@@ -236,12 +241,14 @@ class Servant with GameCardMixin {
   Map<String, int> getDressCost({List<int>? cur, List<int>? target}) {
     Map<String, int> items = {};
     final dressNum = costumeNos.length;
-    if (cur == null) cur = List.filled(dressNum, 0, growable: true);
-    if (target == null) target = List.filled(dressNum, 1, growable: true);
-    if (cur.length < dressNum)
+    cur ??= List.filled(dressNum, 0, growable: true);
+    target ??= List.filled(dressNum, 1, growable: true);
+    if (cur.length < dressNum) {
       cur.addAll(List.filled(dressNum - cur.length, 0, growable: true));
-    if (target.length < dressNum)
+    }
+    if (target.length < dressNum) {
       target.addAll(List.filled(dressNum - target.length, 0, growable: true));
+    }
 
     for (int i = 0; i < dressNum; i++) {
       cur[i] = fixValidRange(cur[i], 0, 1);
@@ -255,7 +262,7 @@ class Servant with GameCardMixin {
   }
 
   Map<String, int> getExtraCost({ServantPlan? cur, ServantPlan? target}) {
-    final maxGrail = Grail.maxGrailCount(this.info.rarity);
+    final maxGrail = Grail.maxGrailCount(info.rarity);
     cur ??= ServantPlan();
     target ??= ServantPlan()
       ..grail = maxGrail
@@ -266,7 +273,7 @@ class Servant with GameCardMixin {
         max(0, cur.grail - maxGrail + 10) * 30;
     int qp = sum([
       QPCost.bondLimitQP(cur.bondLimit, target.bondLimit),
-      QPCost.grailQp(this.info.rarity, cur.grail, target.grail),
+      QPCost.grailQp(info.rarity, cur.grail, target.grail),
     ]);
     return <String, int>{
       Items.grail: max(0, target.grail - cur.grail),
@@ -361,8 +368,7 @@ class Servant with GameCardMixin {
     );
   }
 
-  static Widget withFavIcon(
-      {required Widget child, bool favorite = false, double size = 10}) {
+  static Widget withFavIcon({required Widget child, bool favorite = false, double size = 10}) {
     if (!favorite) return child;
     return Stack(
       alignment: Alignment.topRight,

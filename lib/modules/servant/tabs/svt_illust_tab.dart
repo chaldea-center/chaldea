@@ -4,7 +4,7 @@ import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
 
 class SvtIllustTab extends SvtTabBaseWidget {
-  SvtIllustTab({
+  const SvtIllustTab({
     Key? key,
     ServantDetailPageState? parent,
     Servant? svt,
@@ -12,17 +12,12 @@ class SvtIllustTab extends SvtTabBaseWidget {
   }) : super(key: key, parent: parent, svt: svt, status: status);
 
   @override
-  _SvtIllustTabState createState() =>
-      _SvtIllustTabState(parent: parent, svt: svt, plan: status);
+  _SvtIllustTabState createState() => _SvtIllustTabState();
 }
 
 class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-
-  _SvtIllustTabState(
-      {ServantDetailPageState? parent, Servant? svt, ServantStatus? plan})
-      : super(parent: parent, svt: svt, status: plan);
 
   @override
   void initState() {

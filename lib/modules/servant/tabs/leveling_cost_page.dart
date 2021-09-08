@@ -40,7 +40,7 @@ class LevelingCostPageState extends State<LevelingCostPage> {
         widget.title,
         style: TextStyle(fontSize: 16),
       ),
-      content: Container(
+      content: SizedBox(
         width: min(380, size.width * 0.8),
         child: ListView(
           shrinkWrap: true,

@@ -4,6 +4,8 @@ import 'package:chaldea/components/components.dart';
 import 'package:flutter/services.dart';
 
 class APCalcPage extends StatefulWidget {
+  const APCalcPage({Key? key}) : super(key: key);
+
   @override
   _APCalcPageState createState() => _APCalcPageState();
 }

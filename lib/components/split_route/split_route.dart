@@ -87,6 +87,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
         super(settings: settings, fullscreenDialog: fullscreenDialog);
 
   /// define your own builder for right space of master page
+  // ignore: prefer_function_declarations_over_variables
   static WidgetBuilder defaultMasterFillPageBuilder = (context) => Container();
 
   /// wrap master page here
@@ -295,7 +296,8 @@ class MasterBackButton extends StatelessWidget {
   final Color? color;
   final VoidCallback? onPressed;
 
-  MasterBackButton({Key? key, this.color, this.onPressed}) : super(key: key);
+  const MasterBackButton({Key? key, this.color, this.onPressed})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

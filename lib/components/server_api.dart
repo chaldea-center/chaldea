@@ -27,7 +27,7 @@ class ChaldeaResponse {
     // print('type:${data.runtimeType}, data=$data');
     try {
       final data = response.data;
-      var map;
+      Map map;
       if (data is String) {
         map = jsonDecode(data);
       } else {

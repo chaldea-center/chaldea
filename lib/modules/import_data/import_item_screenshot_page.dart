@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path/path.dart' as pathlib;
 
 class ImportItemScreenshotPage extends StatefulWidget {
-  ImportItemScreenshotPage({Key? key}) : super(key: key);
+  const ImportItemScreenshotPage({Key? key}) : super(key: key);
 
   @override
   ImportItemScreenshotPageState createState() =>
@@ -96,7 +96,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
                   KeepAliveBuilder(
                     builder: (ctx) => ListView(
                       controller: _scrollController3,
-                      children: [Text('test')],
+                      children: const [Text('test')],
                     ),
                   )
               ],
@@ -125,7 +125,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
     );
   }
 
-  Map<String, TextEditingController> _controllers = {};
+  final Map<String, TextEditingController> _controllers = {};
 
   Widget get resultTab {
     List<Widget> children = [];
@@ -219,7 +219,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
         setState(() {});
       }
     }).catchError((e, s) {
-      if (!(e is FileSelectionCanceledError)) {
+      if (e is! FileSelectionCanceledError) {
         logger.e('import images error', e, s);
         EasyLoading.showError(e.toString());
       }
@@ -303,7 +303,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
       actions: [
         TextButton(
           onPressed: () {
-            db.curUser.items..addAll(output);
+            db.curUser.items.addAll(output);
             db.itemStat.updateLeftItems();
             Navigator.of(context).pop();
             EasyLoading.showSuccess('Updated');

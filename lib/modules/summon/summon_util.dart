@@ -44,7 +44,7 @@ class SummonUtil {
   static Widget cardGrid({
     required Iterable<int> ids,
     required String? header,
-    required Widget childBuilder(int id),
+    required Widget Function(int id) childBuilder,
   }) {
     final grid = LayoutBuilder(
       builder: (context, constraints) {
@@ -61,9 +61,9 @@ class SummonUtil {
         );
       },
     );
-    if (header == null)
+    if (header == null) {
       return grid;
-    else
+    } else {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -74,6 +74,7 @@ class SummonUtil {
           grid,
         ],
       );
+    }
   }
 
   static Widget svtAvatar({

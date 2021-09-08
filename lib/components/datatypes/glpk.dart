@@ -56,10 +56,11 @@ class GLPKData {
 
   void removeCol(String name) {
     int index = colNames.indexOf(name);
-    if (index >= 0)
+    if (index >= 0) {
       removeColAt(index);
-    else
+    } else {
       logger.w('GLPKData has no such column to remove: "$name"');
+    }
   }
 
   void removeColAt(int index) {
@@ -87,7 +88,7 @@ class WeeklyMissionQuest {
   List<String> battlefields;
 
   Map<String, int> get allTraits {
-    Map<String, int> result = Map();
+    Map<String, int> result = {};
     servantTraits.forEach((key, value) {
       result['从者_$key'] = value;
     });
@@ -179,8 +180,9 @@ class GLPKParams {
     bool? useAP20 = true,
     Map<String, int>? planItemCounts,
     Map<String, double>? planItemWeights,
-  })  : rows = rows ?? [],
-        blacklist = blacklist ?? Set(),
+  })
+      : rows = rows ?? [],
+        blacklist = blacklist ?? {},
         minCost = minCost ?? 0,
         costMinimize = costMinimize ?? true,
         maxColNum = maxColNum ?? -1,
@@ -208,9 +210,10 @@ class GLPKParams {
 
   void sortByItem() {
     // rows
-    final _getSortVal = (String key) {
+    int _getSortVal(String key) {
       return db.gameData.items[key]?.id ?? -1;
-    };
+    }
+
     rows.sort((a, b) => _getSortVal(a).compareTo(_getSortVal(b)));
   }
 
@@ -286,11 +289,10 @@ class GLPKVariable<T> {
 
   GLPKVariable({
     required this.name,
-    required T value,
+    required this.value,
     required this.cost,
     Map<String, T>? detail,
-  })  : value = value,
-        detail = detail ?? {};
+  }) : detail = detail ?? {};
 
   factory GLPKVariable.fromJson(Map<String, dynamic> data) =>
       _$GLPKVariableFromJson<T>(data);

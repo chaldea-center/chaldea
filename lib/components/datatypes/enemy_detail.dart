@@ -56,9 +56,9 @@ class EnemyDetail {
 
   static String _localizeClassName(String? clsName) {
     if (clsName == null) return '';
-    if (Language.isCN)
+    if (Language.isCN) {
       return clsName;
-    else if (Language.isJP)
+    } else if (Language.isJP) {
       return {
             '剑': '剣',
             '弓': '弓',
@@ -74,7 +74,7 @@ class EnemyDetail {
             '降': '降',
           }[clsName] ??
           clsName;
-    else {
+    } else {
       return {
             '剑': 'Saber',
             '弓': 'Archer',

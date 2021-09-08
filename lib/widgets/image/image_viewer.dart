@@ -42,7 +42,7 @@ class CachedImage extends StatefulWidget {
   final PhotoViewOption? photoViewOption;
   final VoidCallback? onTap;
 
-  CachedImage({
+  const CachedImage({
     Key? key,
     required this.imageUrl,
     this.isMCFile,
@@ -59,7 +59,7 @@ class CachedImage extends StatefulWidget {
   })  : imageProvider = null,
         super(key: key);
 
-  CachedImage.fromProvider({
+  const CachedImage.fromProvider({
     Key? key,
     required this.imageProvider,
     this.showSaveOnLongPress = false,
@@ -115,7 +115,7 @@ class CachedImage extends StatefulWidget {
       child = AspectRatio(aspectRatio: aspectRatio, child: child);
     }
     if (width != null || height != null) {
-      child = Container(width: width, height: height, child: child);
+      child = SizedBox(width: width, height: height, child: child);
     }
     return child;
   }
@@ -150,8 +150,9 @@ class _CachedImageState extends State<CachedImage> {
   bool _shouldFadeIn = false;
 
   Widget resolveChild() {
-    if (widget.imageProvider != null)
+    if (widget.imageProvider != null) {
       return _withProvider(widget.imageProvider!);
+    }
     if (widget.imageUrl == null) return _withPlaceholder(context, '');
     _isMcFile = widget.isMCFile ?? !_isValidUrl(widget.imageUrl!);
     if (!_isMcFile) return _withCached(widget.imageUrl!);
@@ -309,9 +310,10 @@ class _CachedImageState extends State<CachedImage> {
 
   Widget _withPlaceholder(BuildContext context, String url) {
     if (widget.placeholder != null) return widget.placeholder!(context, url);
-    if (cachedOption.placeholder != null)
+    if (cachedOption.placeholder != null) {
       return cachedOption.placeholder!(context, url);
-    return Container(
+    }
+    return SizedBox(
       width: widget.width,
       height: widget.height,
       child: db.hasNetwork
@@ -352,20 +354,22 @@ class __FadeInState extends State<_FadeIn> {
   Widget build(BuildContext context) {
     if (opacity == null) return widget.child;
     SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
-      if (mounted)
+      if (mounted) {
         setState(() {
           opacity = 1;
         });
+      }
     });
     return AnimatedOpacity(
       opacity: opacity!,
       duration: Duration(milliseconds: 300),
       child: widget.child,
       onEnd: () {
-        if (mounted)
+        if (mounted) {
           setState(() {
             opacity = null;
           });
+        }
       },
     );
   }

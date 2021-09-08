@@ -40,18 +40,19 @@ class SharedPrefItem<T> {
   }
 
   Future<bool> set(T v) {
-    if (_isStringType)
+    if (_isStringType) {
       return _instance.setString(key, v as String);
-    else if (_isIntType)
+    } else if (_isIntType) {
       return _instance.setInt(key, v as int);
-    else if (_isDoubleType)
+    } else if (_isDoubleType) {
       return _instance.setDouble(key, v as double);
-    else if (_isBoolType)
+    } else if (_isBoolType) {
       return _instance.setBool(key, v as bool);
-    else if (_isStringListType)
+    } else if (_isStringListType) {
       return _instance.setStringList(key, v as List<String>);
-    else
+    } else {
       throw ArgumentError.value(T, 'T', 'invalid type');
+    }
   }
 
   Future<bool> remove() {

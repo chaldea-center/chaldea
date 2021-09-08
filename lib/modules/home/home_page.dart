@@ -5,6 +5,8 @@ import 'gallery_page.dart';
 import 'settings_page.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -32,7 +34,7 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         body: IndexedStack(
           index: _curIndex,
-          children: <Widget>[GalleryPage(), SettingsPage()],
+          children: const <Widget>[GalleryPage(), SettingsPage()],
         ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _curIndex,

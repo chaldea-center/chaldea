@@ -13,6 +13,8 @@ String _convertLocalized(String key) {
 }
 
 class MasterMissionPage extends StatefulWidget {
+  const MasterMissionPage({Key? key}) : super(key: key);
+
   @override
   _MasterMissionPageState createState() => _MasterMissionPageState();
 }
@@ -133,8 +135,8 @@ class _MasterMissionPageState extends State<MasterMissionPage>
     );
   }
 
-  Widget _buildTraits(Set<String> keys, bool isChecked(String key)?,
-      void onTap(String key, bool checked)?) {
+  Widget _buildTraits(Set<String> keys, bool Function(String key)? isChecked,
+      void Function(String key, bool checked)? onTap) {
     List<Widget> children = [];
     keys.forEach((key) {
       bool checked = isChecked == null
@@ -297,11 +299,12 @@ class _MasterMissionPageState extends State<MasterMissionPage>
   Widget get missionListView {
     List<Widget> children = [];
     for (var mission in missions) {
-      VoidCallback _onPressAddAll = () {
+      void _onPressAddAll() {
         setState(() {
           mission.useAnd = !mission.useAnd;
         });
-      };
+      }
+
       children.add(ListTile(
         leading: IconButton(
           constraints: BoxConstraints(minHeight: 48, minWidth: 36),

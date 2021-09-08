@@ -163,8 +163,9 @@ abstract class SearchableListState<T, St extends StatefulWidget>
         controller: scrollController,
         itemBuilder: (context, index) => children[index],
         separatorBuilder: (context, index) {
-          if (index == 0 && topHint != null && children.contains(topHint))
+          if (index == 0 && topHint != null && children.contains(topHint)) {
             return Divider(height: 1);
+          }
           if (index == children.length - 2 &&
               topHint != null &&
               children.contains(bottomHint)) {

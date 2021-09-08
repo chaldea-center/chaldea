@@ -8,7 +8,7 @@ import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
 
 class SvtInfoTab extends SvtTabBaseWidget {
-  SvtInfoTab({
+  const SvtInfoTab({
     Key? key,
     ServantDetailPageState? parent,
     Servant? svt,
@@ -16,17 +16,13 @@ class SvtInfoTab extends SvtTabBaseWidget {
   }) : super(key: key, parent: parent, svt: svt, status: status);
 
   @override
-  _SvtInfoTabState createState() =>
-      _SvtInfoTabState(parent: parent, svt: svt, plan: status);
+  _SvtInfoTabState createState() => _SvtInfoTabState();
 }
 
 class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
-  _SvtInfoTabState(
-      {ServantDetailPageState? parent, Servant? svt, ServantStatus? plan})
-      : super(parent: parent, svt: svt, status: plan);
   Language? lang;
 
   bool get hasBondCraft => svt.bondCraft > 0;
@@ -220,7 +216,8 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
                 flex: 3,
               )
             ]),
-            CustomTableRow.fromTexts(texts: ['Hits'], defaults: headerData),
+            CustomTableRow.fromTexts(
+                texts: const ['Hits'], defaults: headerData),
             for (String card in svt.info.cardHits.keys)
               CustomTableRow(children: [
                 TableCellData(text: card, isHeader: true),
@@ -253,7 +250,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
               ],
               defaults: contentData,
             ),
-            if (svt.bondPoints.length > 0) ...[
+            if (svt.bondPoints.isNotEmpty) ...[
               CustomTableRow.fromTexts(
                   texts: [S.current.info_bond_points], defaults: headerData),
               for (int row = 0; row < svt.bondPoints.length / 5; row++) ...[

@@ -87,7 +87,7 @@ class SaintQuartzPlan {
       // daily login: 2(1), 4(1), 6(2), 7(1 tickets), Mon.(21=3)
       // 50 days: +30
       // 1st of month: 5 tickets
-      int _continuousLogin = (this.continuousLogin + day - 1) % 7 + 1;
+      int _continuousLogin = (continuousLogin + day - 1) % 7 + 1;
       if (_continuousLogin == 2 || _continuousLogin == 4) {
         sq += 1;
       } else if (_continuousLogin == 6) {
@@ -97,7 +97,7 @@ class SaintQuartzPlan {
       } else if (date.weekday == 1 && weeklyMission) {
         sq += 3;
       }
-      int _accLogin = this.accLogin + day;
+      int _accLogin = accLogin + day;
       if (_accLogin % 50 == 0) {
         sq += 30;
       }

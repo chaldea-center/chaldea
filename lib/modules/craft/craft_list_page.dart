@@ -6,7 +6,7 @@ import 'craft_detail_page.dart';
 import 'craft_filter_page.dart';
 
 class CraftListPage extends StatefulWidget {
-  CraftListPage({Key? key}) : super(key: key);
+  const CraftListPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => CraftListPageState();
@@ -22,6 +22,7 @@ class CraftListPageState
 
   CraftFilterData get filterData => db.userData.craftFilter;
 
+  @override
   void initState() {
     super.initState();
     if (db.appSetting.autoResetFilter) {
@@ -174,6 +175,7 @@ class _CraftSearchOptions with SearchOptionsMixin<CraftEssence> {
 
   bool skill;
   bool description;
+  @override
   ValueChanged? onChanged;
 
   _CraftSearchOptions({

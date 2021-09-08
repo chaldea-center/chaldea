@@ -192,10 +192,11 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
       children.add(GestureDetector(
         onTap: () {
           setState(() {
-            if (filterItems.contains(itemKey))
+            if (filterItems.contains(itemKey)) {
               filterItems.remove(itemKey);
-            else
+            } else {
               filterItems.add(itemKey);
+            }
           });
         },
         child: Padding(

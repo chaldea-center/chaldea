@@ -11,19 +11,19 @@ extension GetOrNull<T> on List<T> {
     return null;
   }
 
-  void fixLength(int length, T k()) {
+  void fixLength(int length, T Function() k) {
     assert(length >= 0);
     if (this.length == length) return;
     if (this.length > length) {
       this.length = length;
     } else {
-      this.addAll(List.generate(length - this.length, (index) => k()));
+      addAll(List.generate(length - this.length, (index) => k()));
     }
   }
 }
 
 extension FirstWhereOrNull<E> on Iterable<E> {
-  E? firstWhereOrNull(bool test(E element)) {
+  E? firstWhereOrNull(bool Function(E element) test) {
     try {
       return firstWhere(test);
     } on StateError {
@@ -59,11 +59,11 @@ extension DateTimeX on DateTime {
   bool checkOutdated(DateTime? dateTime, [Duration? duration]) {
     if (dateTime == null) return false;
     if (duration != null) dateTime = dateTime.add(duration);
-    return this.isAfter(dateTime);
+    return isAfter(dateTime);
   }
 
   String toStringShort() {
-    return this.toString().split('.').first;
+    return toString().split('.').first;
   }
 
   String toDateString([String sep = '-']) {
@@ -81,7 +81,7 @@ extension StringToDateTime on String {
   }
 
   String toTitle() {
-    return this.replaceAllMapped(RegExp(r'\S+'), (match) {
+    return replaceAllMapped(RegExp(r'\S+'), (match) {
       String s = match.group(0)!;
       return s.substring(0, 1).toUpperCase() + s.substring(1);
     });
@@ -90,7 +90,7 @@ extension StringToDateTime on String {
 
 extension TrimString on String {
   String trimChar(String chars) {
-    return this.trimCharLeft(chars).trimCharRight(chars);
+    return trimCharLeft(chars).trimCharRight(chars);
   }
 
   String trimCharLeft(String chars) {

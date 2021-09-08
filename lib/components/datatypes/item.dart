@@ -220,7 +220,7 @@ class ItemCategory {
 class Grail {
   Grail._();
 
-  static const MAX_LV = 120;
+  static const maxLv = 120;
 
   static int maxGrailCount(int rarity) {
     if (rarity < 0 || rarity > 5) return 15;

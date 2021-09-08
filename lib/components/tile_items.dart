@@ -10,11 +10,12 @@ class SHeader extends StatelessWidget {
   final TextStyle? style;
   final EdgeInsetsGeometry padding;
 
-  SHeader(
+  const SHeader(
     this.label, {
+    Key? key,
     this.style,
     this.padding = const EdgeInsets.only(left: 16.0, top: 8.0, bottom: 4.0),
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +39,7 @@ class SHeader extends StatelessWidget {
 class SFooter extends StatelessWidget {
   final String label;
 
-  const SFooter(this.label);
+  const SFooter(this.label, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +69,7 @@ class SWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.setting_tile,
+      color: AppColors.settingTile,
       child: ListTile(
         leading: icon,
         title: Text(label),
@@ -85,13 +86,14 @@ class SModal extends StatelessWidget {
   final String? value;
   final VoidCallback? callback;
 
-  SModal({Key? key, required this.label, this.icon, this.value, this.callback})
+  const SModal(
+      {Key? key, required this.label, this.icon, this.value, this.callback})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.setting_tile,
+      color: AppColors.settingTile,
       child: ListTile(
         leading: icon,
         title: Text(label),
@@ -125,7 +127,7 @@ class SSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.setting_tile,
+      color: AppColors.settingTile,
       child: SwitchListTile(
         secondary: icon,
         title: Text(label),
@@ -262,7 +264,7 @@ class RangeSelector<T extends num> extends StatefulWidget {
 
   final bool increasing;
 
-  RangeSelector(
+  const RangeSelector(
       {Key? key,
       required this.start,
       required this.end,

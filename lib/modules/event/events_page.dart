@@ -6,6 +6,8 @@ import 'tabs/limit_event_tab.dart';
 import 'tabs/main_record_tab.dart';
 
 class EventListPage extends StatefulWidget {
+  const EventListPage({Key? key}) : super(key: key);
+
   @override
   _EventListPageState createState() => _EventListPageState();
 }

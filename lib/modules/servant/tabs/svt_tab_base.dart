@@ -7,22 +7,21 @@ abstract class SvtTabBaseWidget extends StatefulWidget {
   final Servant? svt;
   final ServantStatus? status;
 
-  SvtTabBaseWidget({Key? key, this.parent, this.svt, this.status})
+  const SvtTabBaseWidget({Key? key, this.parent, this.svt, this.status})
       : assert(parent != null || svt != null),
         super(key: key);
 }
 
 abstract class SvtTabBaseState<T extends SvtTabBaseWidget> extends State<T> {
-  Servant svt;
-  ServantStatus status;
+  Servant get svt => (widget.svt ?? widget.parent?.svt)!;
+  ServantStatus? _fallbackStatus;
 
-  SvtTabBaseState({
-    ServantDetailPageState? parent,
-    Servant? svt,
-    ServantStatus? status,
-  })  : assert(parent?.svt != null || svt != null),
-        svt = (svt ?? parent?.svt)!,
-        status = status ?? parent?.status ?? ServantStatus();
+  ServantStatus get status {
+    if (widget.status != null || widget.parent?.status != null) {
+      return (widget.status ?? widget.parent?.status)!;
+    }
+    return _fallbackStatus ??= ServantStatus();
+  }
 
   Widget getTab(String label) {
     return Tab(

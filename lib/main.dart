@@ -15,9 +15,9 @@ void main() async {
   });
 
   final catcherOptions = CatcherUtility.getOptions();
-  if (kDebugMode)
+  if (kDebugMode) {
     runApp(Chaldea());
-  else
+  } else {
     Catcher(
       rootWidget: Chaldea(),
       debugConfig: catcherOptions,
@@ -27,4 +27,5 @@ void main() async {
       ensureInitialized: true,
       enableLogger: kDebugMode,
     );
+  }
 }

@@ -6,7 +6,7 @@ import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
 
 class SvtNoblePhantasmTab extends SvtTabBaseWidget {
-  SvtNoblePhantasmTab({
+  const SvtNoblePhantasmTab({
     Key? key,
     ServantDetailPageState? parent,
     Servant? svt,
@@ -14,21 +14,16 @@ class SvtNoblePhantasmTab extends SvtTabBaseWidget {
   }) : super(key: key, parent: parent, svt: svt, status: status);
 
   @override
-  _SvtNoblePhantasmTabState createState() =>
-      _SvtNoblePhantasmTabState(parent: parent, svt: svt, plan: status);
+  _SvtNoblePhantasmTabState createState() => _SvtNoblePhantasmTabState();
 }
 
 class _SvtNoblePhantasmTabState extends SvtTabBaseState<SvtNoblePhantasmTab> {
-  _SvtNoblePhantasmTabState(
-      {ServantDetailPageState? parent, Servant? svt, ServantStatus? plan})
-      : super(parent: parent, svt: svt, status: plan);
-
   List<NoblePhantasm> get noblePhantasms => svt.lNoblePhantasm;
 
   @override
   Widget build(BuildContext context) {
-    if (noblePhantasms.length == 0) {
-      return Container(child: Center(child: Text('No NoblePhantasm Data')));
+    if (noblePhantasms.isEmpty) {
+      return Center(child: Text('No NoblePhantasm Data'));
     }
     status.validate(svt);
 

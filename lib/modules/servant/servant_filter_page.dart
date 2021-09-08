@@ -29,7 +29,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             FilterGroup(
               useRadio: true,
               padding: EdgeInsets.zero,
-              options: ['List', 'Grid'],
+              options: const ['List', 'Grid'],
               values: filterData.display,
               combined: true,
               onFilterChanged: (v) {
@@ -107,7 +107,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
           title: Text(LocalizedText(
                   chs: '重复从者', jpn: '重複サーバント', eng: 'Duplicated Servant')
               .localized),
-          options: ['1', '2'],
+          options: const ['1', '2'],
           values: filterData.svtDuplicated,
           optionBuilder: (v) =>
               Text(Localized.svtFilter.of(v == '1' ? '初号机' : '2号机')),
@@ -215,7 +215,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         ),
         FilterGroup(
           title: Text('Special', style: textStyle),
-          options: ['充能(技能)', '充能(宝具)'],
+          options: const ['充能(技能)', '充能(宝具)'],
           values: filterData.special,
           showInvert: true,
           showMatchAll: true,

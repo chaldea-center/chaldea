@@ -36,6 +36,7 @@ import 'wiki_util.dart';
 ///  - user database
 class Database {
   /// setState for root [MaterialApp]
+  // ignore: prefer_function_declarations_over_variables
   VoidCallback notifyAppUpdate = () {};
   UserData userData = UserData();
   GameData gameData = GameData();
@@ -77,7 +78,7 @@ class Database {
     if (svt) {
       gameData.updateUserDuplicatedServants();
     }
-    this.broadcast.sink.add(this);
+    broadcast.sink.add(this);
   }
 
   /// widgets depending on database which may change
@@ -90,10 +91,10 @@ class Database {
   }
 
   void dispose() {
-    this.broadcast.close();
+    broadcast.close();
   }
 
-  static PathManager _paths = PathManager();
+  static final PathManager _paths = PathManager();
 
   PathManager get paths => _paths;
 
@@ -328,7 +329,7 @@ class Database {
         height: height,
         aspectRatio: aspectRatio,
         cachedOption: CachedImageOption(fit: fit),
-        placeholder: (context, __) => Container(
+        placeholder: (context, __) => SizedBox(
           width: width,
           height: height,
           child: placeholder?.call(context),
@@ -348,7 +349,7 @@ class Database {
   }
 
   // assist methods
-  dynamic getJsonFromFile(String filepath, {dynamic k()?}) {
+  dynamic getJsonFromFile(String filepath, {dynamic Function()? k}) {
     // dynamic: json object can be Map or List.
     // However, json_serializable always use Map->Class
     dynamic result;
@@ -379,7 +380,8 @@ class Database {
   }
 
   void _saveJsonToFile(dynamic jsonDataOrFile, String filepath,
-      {void onError(Object e, StackTrace s)?, void onSuccess(String fp)?}) {
+      {void Function(Object e, StackTrace s)? onError,
+      void Function(String fp)? onSuccess}) {
     try {
       if (PlatformU.isWeb) {
         webFS!.put(paths.hiveAsciiKey(filepath), json.encode(jsonDataOrFile));
@@ -416,7 +418,7 @@ class Database {
     }
   }
 
-  T? parseJson<T>({required T parser(), T k()?}) {
+  T? parseJson<T>({required T Function() parser, T Function()? k}) {
     T? result;
     try {
       result = parser();
@@ -469,12 +471,13 @@ class Database {
         File(fullFilepath)
           ..createSync(recursive: true)
           ..writeAsBytesSync(data);
-        if (file.name.endsWith('.png') || file.name.endsWith('.jpg'))
+        if (file.name.endsWith('.png') || file.name.endsWith('.jpg')) {
           iconCount += 1;
-        else
+        } else {
           print('file: ${file.name}');
+        }
       } else {
-        Directory(fullFilepath)..create(recursive: true);
+        Directory(fullFilepath).create(recursive: true);
         print('dir : ${file.name}');
       }
     }
@@ -483,7 +486,7 @@ class Database {
   }
 
   // singleton
-  static final _db = new Database._internal();
+  static final _db = Database._internal();
 
   factory Database() => _db;
 
@@ -581,10 +584,9 @@ class PathManager {
   }
 
   String convertIosPath(String p) {
-    if (PlatformU.isIOS)
-      return p.replaceFirst(appPath, S.current.ios_app_path);
-    else
-      return p;
+    return PlatformU.isIOS
+        ? p.replaceFirst(appPath, S.current.ios_app_path)
+        : p;
   }
 
   String hiveAsciiKey(String s) {
@@ -619,7 +621,7 @@ class PathManager {
 
   String get datasetVersionFile => pathlib.join(gameDir, 'VERSION');
 
-  static PathManager _instance = PathManager._internal();
+  static final PathManager _instance = PathManager._internal();
 
   PathManager._internal();
 
@@ -649,4 +651,4 @@ class RuntimeData {
   Map<dynamic, dynamic> tempDict = {};
 }
 
-Database db = new Database();
+Database db = Database();

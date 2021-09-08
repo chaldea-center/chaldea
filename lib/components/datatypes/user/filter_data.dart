@@ -361,7 +361,7 @@ class SummonFilterData {
   Map<String, dynamic> toJson() => _$SummonFilterDataToJson(this);
 }
 
-typedef bool? CompareFilterKeyCallback(String option, String? value);
+typedef CompareFilterKeyCallback = bool? Function(String option, String? value);
 
 @JsonSerializable(checked: true)
 class FilterGroupData {

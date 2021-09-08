@@ -28,15 +28,15 @@ class _SubTabInfo {
 class ServantDetailPage extends StatefulWidget {
   final Servant svt;
 
-  const ServantDetailPage(this.svt);
+  const ServantDetailPage(this.svt, {Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => ServantDetailPageState(svt);
+  State<StatefulWidget> createState() => ServantDetailPageState();
 }
 
 class ServantDetailPageState extends State<ServantDetailPage>
     with SingleTickerProviderStateMixin {
-  Servant svt;
+  Servant get svt => widget.svt;
 
   List<_SubTabInfo> builders = [];
 
@@ -44,8 +44,6 @@ class ServantDetailPageState extends State<ServantDetailPage>
   ServantStatus get status => db.curUser.svtStatusOf(svt.no);
 
   ServantPlan get plan => db.curUser.svtPlanOf(svt.no);
-
-  ServantDetailPageState(this.svt);
 
   _SubTabInfo? _getBuilder(SvtTab tab) {
     switch (tab) {
@@ -91,8 +89,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
         );
       case SvtTab.summon:
         if (Servant.unavailable.contains(svt.no) ||
-            ['活动', '初始获得', '无法召唤', '友情点召唤'].contains(svt.info.obtain))
+            ['活动', '初始获得', '无法召唤', '友情点召唤'].contains(svt.info.obtain)) {
           return null;
+        }
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.summon,

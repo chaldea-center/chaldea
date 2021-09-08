@@ -2,6 +2,8 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 
 class DamageCalcPage extends StatefulWidget {
+  const DamageCalcPage({Key? key}) : super(key: key);
+
   @override
   _DamageCalcPageState createState() => _DamageCalcPageState();
 }

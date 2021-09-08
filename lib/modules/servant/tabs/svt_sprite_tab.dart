@@ -4,7 +4,7 @@ import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
 
 class SvtSpriteTab extends SvtTabBaseWidget {
-  SvtSpriteTab({
+  const SvtSpriteTab({
     Key? key,
     ServantDetailPageState? parent,
     Servant? svt,
@@ -12,17 +12,12 @@ class SvtSpriteTab extends SvtTabBaseWidget {
   }) : super(key: key, parent: parent, svt: svt, status: status);
 
   @override
-  _SvtSvtSpriteTabTabState createState() =>
-      _SvtSvtSpriteTabTabState(parent: parent, svt: svt, plan: status);
+  _SvtSvtSpriteTabTabState createState() => _SvtSvtSpriteTabTabState();
 }
 
 class _SvtSvtSpriteTabTabState extends SvtTabBaseState<SvtSpriteTab>
     with SingleTickerProviderStateMixin {
-  _SvtSvtSpriteTabTabState(
-      {ServantDetailPageState? parent, Servant? svt, ServantStatus? plan})
-      : super(parent: parent, svt: svt, status: plan);
-
-  Map<int, ScrollController> _horizontalControllers = {};
+  final Map<int, ScrollController> _horizontalControllers = {};
 
   ScrollController getScrollController(int index) {
     return _horizontalControllers[index] ??= ScrollController();
@@ -46,11 +41,13 @@ class _SvtSvtSpriteTabTabState extends SvtTabBaseState<SvtSpriteTab>
   String _localize(String s) {
     // icon1, icon2, iconCostume
     // sprite ...
-    if (s == 'iconCostume')
+    if (s == 'iconCostume') {
       return LocalizedText.of(chs: '灵衣图标', jpn: '霊衣アイコン', eng: 'Costume Icons');
-    if (s == 'spriteCostume')
+    }
+    if (s == 'spriteCostume') {
       return LocalizedText.of(
           chs: '灵衣模型', jpn: '霊衣モデル', eng: 'Costume Sprites');
+    }
     return s.replaceFirstMapped(RegExp(r'(icon|sprite)(\d)'), (match) {
       String suffix = match.group(2).toString();
       if (suffix == '1') suffix = '';

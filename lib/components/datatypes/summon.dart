@@ -130,9 +130,7 @@ class SummonData {
   List<SummonDataBlock> svts;
   List<SummonDataBlock> crafts;
 
-  List<SummonDataBlock> get allBlocks => []
-    ..addAll(svts)
-    ..addAll(crafts);
+  List<SummonDataBlock> get allBlocks => [...svts, ...crafts];
 
   SummonData({
     required this.name,

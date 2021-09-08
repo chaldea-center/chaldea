@@ -56,12 +56,14 @@ class CustomTile extends StatelessWidget {
     final ListTileTheme tileTheme = ListTileTheme.of(context);
 
     IconThemeData? iconThemeData;
-    if (leading != null || trailing != null || trailingIcon != null)
+    if (leading != null || trailing != null || trailingIcon != null) {
       iconThemeData = IconThemeData(color: _iconColor(theme, tileTheme));
+    }
 
     Widget? leadingIcon;
-    if (leading != null)
+    if (leading != null) {
       leadingIcon = IconTheme.merge(data: iconThemeData!, child: leading!);
+    }
 
     final TextStyle? titleStyle = _titleTextStyle(theme, tileTheme);
     final Widget titleText = titleStyle == null
@@ -148,8 +150,9 @@ class CustomTile extends StatelessWidget {
   Color? _iconColor(ThemeData theme, ListTileTheme? tileTheme) {
     if (!enabled) return theme.disabledColor;
 
-    if (selected && tileTheme?.selectedColor != null)
+    if (selected && tileTheme?.selectedColor != null) {
       return tileTheme?.selectedColor;
+    }
 
     if (!selected && tileTheme?.iconColor != null) return tileTheme?.iconColor;
 
@@ -167,8 +170,9 @@ class CustomTile extends StatelessWidget {
       ThemeData theme, ListTileTheme? tileTheme, Color? defaultColor) {
     if (!enabled) return theme.disabledColor;
 
-    if (selected && tileTheme?.selectedColor != null)
+    if (selected && tileTheme?.selectedColor != null) {
       return tileTheme?.selectedColor;
+    }
 
     if (!selected && tileTheme?.textColor != null) return tileTheme?.textColor;
 
@@ -223,7 +227,7 @@ class ImageWithText extends StatelessWidget {
   final Color? shadowColor;
   final VoidCallback? onTap;
 
-  ImageWithText({
+  const ImageWithText({
     Key? key,
     required this.image,
     this.text,
@@ -302,20 +306,21 @@ class ImageWithText extends StatelessWidget {
   static TextStyle toGlowStyle(
       [TextStyle? style, double? shadowSize, Color? shadowColor]) {
     style ??= TextStyle();
-    if (shadowSize == null)
+    if (shadowSize == null) {
       return style;
-    else
+    } else {
       return style.copyWith(
         foreground: style.foreground ?? Paint()
           ..style = PaintingStyle.stroke
           ..strokeWidth = shadowSize
           ..color = shadowColor ?? Colors.white,
       );
+    }
   }
 
   static Widget paintOutline({
     String? text,
-    Widget builder(TextStyle style)?,
+    Widget Function(TextStyle style)? builder,
     TextAlign? textAlign,
     TextStyle? textStyle,
     double? shadowSize,

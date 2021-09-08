@@ -191,11 +191,11 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
     );
   }
 
-  Widget getSortButton<T>(
+  Widget getSortButton<S>(
       {String? prefix,
-      required T value,
-      required Map<T, String> items,
-      ValueChanged<T?>? onSortAttr,
+      required S value,
+      required Map<S, String> items,
+      ValueChanged<S?>? onSortAttr,
       bool reversed = true,
       ValueChanged<bool>? onSortDirectional}) {
     return DropdownButton(
@@ -224,7 +224,7 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
 }
 
 // for filter items
-typedef bool FilterCallBack<T>(T data);
+typedef FilterCallBack<T> = bool Function(T data);
 
 class FilterGroup extends StatelessWidget {
   final Widget? title;
@@ -240,7 +240,7 @@ class FilterGroup extends StatelessWidget {
   final bool combined;
   final EdgeInsetsGeometry padding;
 
-  FilterGroup({
+  const FilterGroup({
     Key? key,
     this.title,
     required this.options,
@@ -279,7 +279,7 @@ class FilterGroup extends StatelessWidget {
       _optionChildren.add(FilterOption(
         selected: values.options[key] ?? false,
         value: key,
-        child: optionBuilder == null ? Text('$key') : optionBuilder!(key),
+        child: optionBuilder == null ? Text(key) : optionBuilder!(key),
         shrinkWrap: shrinkWrap,
         borderRadius: combined
             ? BorderRadius.horizontal(
@@ -358,7 +358,7 @@ class FilterOption<T> extends StatelessWidget {
   final BorderRadius borderRadius;
   final bool shrinkWrap;
 
-  FilterOption({
+  const FilterOption({
     Key? key,
     required this.selected,
     required this.value,

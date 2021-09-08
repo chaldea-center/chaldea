@@ -65,10 +65,13 @@ class GameData {
               weeklyMissionData: [],
             ),
         servantsWithUser = Map.of(servants) {
-    for (final es in categorizedEnemies.values)
-      for (final e in es)
-        for (final key in [...e.ids, ...e.names])
+    for (final es in categorizedEnemies.values) {
+      for (final e in es) {
+        for (final key in [...e.ids, ...e.names]) {
           enemies[EnemyDetail.convertKey(key)] ??= e;
+        }
+      }
+    }
   }
 
   void updateSvtCrafts() {

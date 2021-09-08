@@ -10,6 +10,8 @@ import 'package:path/path.dart' show basenameWithoutExtension;
 import 'package:share_plus/share_plus.dart';
 
 class UserDataPage extends StatefulWidget {
+  const UserDataPage({Key? key}) : super(key: key);
+
   @override
   _UserDataPageState createState() => _UserDataPageState();
 }
@@ -29,7 +31,6 @@ class _UserDataPageState extends State<UserDataPage> {
       appBar: AppBar(
         leading: BackButton(),
         title: Text(S.of(context).userdata),
-        actions: <Widget>[],
       ),
       body: ListView(
         children: <Widget>[
@@ -129,6 +130,7 @@ class _UserDataPageState extends State<UserDataPage> {
       db.notifyDbUpdate(item: true, svt: true);
       db.notifyAppUpdate();
     } on FileSelectionCanceledError {
+      //
     } catch (e) {
       EasyLoading.showError(S.of(context).import_data_error(e));
     }
@@ -323,7 +325,7 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
       ),
       body: ListView.separated(
         itemBuilder: (context, index) {
-          if (index == 0)
+          if (index == 0) {
             return Card(
               child: Padding(
                 padding: EdgeInsets.all(6),
@@ -331,6 +333,7 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
                     Text(db.paths.convertIosPath(db.paths.userDataBackupDir)),
               ),
             );
+          }
           final path = paths[index - 1];
           return ListTile(
             title: Text(basenameWithoutExtension(path)),
@@ -351,6 +354,7 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
                       db.notifyDbUpdate(item: true, svt: true);
                       db.notifyAppUpdate();
                     } on FileSelectionCanceledError {
+                      //
                     } catch (e) {
                       EasyLoading.showError(S.of(context).import_data_error(e));
                     }

@@ -5,7 +5,7 @@ import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
 
 class SvtQuestTab extends SvtTabBaseWidget {
-  SvtQuestTab(
+  const SvtQuestTab(
       {Key? key,
       ServantDetailPageState? parent,
       Servant? svt,
@@ -13,15 +13,10 @@ class SvtQuestTab extends SvtTabBaseWidget {
       : super(key: key, parent: parent, svt: svt, status: status);
 
   @override
-  _SvtQuestTabState createState() =>
-      _SvtQuestTabState(parent: parent, svt: svt, plan: status);
+  _SvtQuestTabState createState() => _SvtQuestTabState();
 }
 
 class _SvtQuestTabState extends SvtTabBaseState<SvtQuestTab> {
-  _SvtQuestTabState(
-      {ServantDetailPageState? parent, Servant? svt, ServantStatus? plan})
-      : super(parent: parent, svt: svt, status: plan);
-
   @override
   Widget build(BuildContext context) {
     if (db.gameData.svtQuests[svt.no]?.isNotEmpty != true) {

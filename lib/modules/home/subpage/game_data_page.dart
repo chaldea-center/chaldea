@@ -9,6 +9,8 @@ import 'package:path/path.dart' as pathlib;
 import 'package:url_launcher/url_launcher.dart';
 
 class GameDataPage extends StatefulWidget {
+  const GameDataPage({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _GameDataPageState();
 }
@@ -336,6 +338,7 @@ class _GameDataPageState extends State<GameDataPage> {
       }
       EasyLoading.showSuccess(S.of(context).import_data_success);
     } on FileSelectionCanceledError {
+      //
     } catch (e) {
       showInformDialog(context,
           title: 'Import gamedata failed!', content: e.toString());

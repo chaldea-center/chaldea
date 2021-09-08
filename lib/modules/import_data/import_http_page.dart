@@ -10,7 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'bond_detail_page.dart';
 
 class ImportHttpPage extends StatefulWidget {
-  ImportHttpPage({Key? key}) : super(key: key);
+  const ImportHttpPage({Key? key}) : super(key: key);
 
   @override
   ImportHttpPageState createState() => ImportHttpPageState();
@@ -41,7 +41,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
 
   Map<int, int> crafts = {}; // craft.no: status
 
-  HashSet<UserSvt> _shownSvts = HashSet();
+  final HashSet<UserSvt> _shownSvts = HashSet();
 
   BiliReplaced? get replacedResponse => topLogin?.body;
 
@@ -223,8 +223,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         fontSize: 11, color: DefaultTextStyle.of(context).style.color);
     for (var group in servants) {
       for (var svt in group) {
-        if ((inStorage && !svt.inStorage) || (!inStorage && svt.inStorage))
+        if ((inStorage && !svt.inStorage) || (!inStorage && svt.inStorage)) {
           continue;
+        }
         if (_isLocked && !svt.isLock) continue;
         if (!_allowDuplicated && group.indexOf(svt) > 0) continue;
         bool hidden = ignoreSvts.contains(svt.id);
@@ -557,6 +558,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                   ..writeAsBytesSync(filePickerCross.toUint8List());
                 Navigator.of(context).pop();
               } on FileSelectionCanceledError {
+                //
               } catch (e, s) {
                 logger.e('import http body from text file failed', e, s);
                 Navigator.of(context).pop(e);
@@ -573,9 +575,10 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       ).showDialog(context);
       if (error != null) throw error;
     } on FileSelectionCanceledError {
+      //
     } catch (e, s) {
       logger.e('fail to load http response', e, s);
-      if (mounted)
+      if (mounted) {
         SimpleCancelOkDialog(
           title: Text('Error'),
           content: Text('''$e\n\n请检查以下步骤是否正确：
@@ -584,6 +587,7 @@ https://line3-s2-xxx-fate.bilibiligame.net/rongame_beta//rgfate/60_1001/ac.php?_
 其中域名前缀、数字及xxx可能随着地区、所在服务器和用户ID而不同
 - 确保保存的文件编码为UTF8(默认)且已解码为ey开头的英文+数字，内容未手动更改'''),
         ).showDialog(context);
+      }
     } finally {
       if (mounted) {
         setState(() {});

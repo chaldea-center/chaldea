@@ -100,20 +100,22 @@ class JsonStore<T> {
     saveDeferred();
   }
 
-  T? get<T>(String key) {
+  T? get(String key) {
     final v = _data[key];
-    if (v is T?)
+    if (v is T?) {
       return v;
-    else
+    } else {
       return null;
+    }
   }
 
-  void set<T>(String key, T value, {bool deferred = true}) {
+  void set(String key, T value, {bool deferred = true}) {
     _data[key] = value;
-    if (deferred)
+    if (deferred) {
       saveDeferred();
-    else
+    } else {
       saveSync();
+    }
   }
 }
 
@@ -123,7 +125,7 @@ class JsonStoreItem<T> {
 
   JsonStoreItem(this.parent, this.key);
 
-  T? get() => parent.get<T>(key);
+  T? get() => parent.get(key);
 
-  void set(T value) => parent.set<T>(key, value);
+  void set(T value) => parent.set(key, value);
 }

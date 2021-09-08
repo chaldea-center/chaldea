@@ -71,9 +71,10 @@ class Version extends Comparable<Version> {
     versionString = versionString.trim();
     if (!_fullVersionRegex.hasMatch(versionString)) {
       if (versionString.isNotEmpty &&
-          !['svt_icons', 'ffo-data'].contains(versionString))
+          !['svt_icons', 'ffo-data'].contains(versionString)) {
         logger.e(ArgumentError.value(
             versionString, 'versionString', 'Invalid version format'));
+      }
       return null;
     }
     Match match = _fullVersionRegex.firstMatch(versionString)!;
@@ -342,8 +343,8 @@ class GitTool {
   }
 
   GitRelease? _latestReleaseWhereAsset(Iterable<GitRelease> releases,
-      {bool testRelease(GitRelease release)?,
-      bool testAsset(GitAsset asset)?}) {
+      {bool Function(GitRelease release)? testRelease,
+      bool Function(GitAsset asset)? testAsset}) {
     // since releases have been sorted, don't need to traverse all releases.
     if (testRelease != null) {
       releases = releases.where((release) => testRelease(release));
@@ -368,24 +369,22 @@ class GitTool {
   }
 
   Future<GitRelease?> latestAppRelease(
-      {bool test(GitAsset asset)?, List<GitRelease>? releases}) async {
-    if (test == null) {
-      test = (asset) {
-        String assetName = asset.name.toLowerCase();
-        if (assetName.endsWith('.sha1')) return false;
-        if (!PlatformU.isAndroid) {
-          return assetName.contains(PlatformU.operatingSystem);
-        }
-        // If Android, need to check architecture
-        // arch     build
-        // v7a      10xx
-        // v8a      20xx
-        // x86_64   40xx
-        final abi = kDebugMode ? ABIType.arm64_v8a : AppInfo.abi;
-        return abi != ABIType.unknown &&
-            assetName.contains(abi.toStandardString());
-      };
-    }
+      {bool Function(GitAsset asset)? test, List<GitRelease>? releases}) async {
+    test ??= (asset) {
+      String assetName = asset.name.toLowerCase();
+      if (assetName.endsWith('.sha1')) return false;
+      if (!PlatformU.isAndroid) {
+        return assetName.contains(PlatformU.operatingSystem);
+      }
+      // If Android, need to check architecture
+      // arch     build
+      // v7a      10xx
+      // v8a      20xx
+      // x86_64   40xx
+      final abi = kDebugMode ? ABIType.arm64V8a : AppInfo.abi;
+      return abi != ABIType.unknown &&
+          assetName.contains(abi.toStandardString());
+    };
     if (PlatformU.isAndroid || PlatformU.isWindows || kDebugMode) {
       releases ??= await appReleases;
       return _latestReleaseWhereAsset(releases, testAsset: test);
@@ -394,7 +393,7 @@ class GitTool {
 
   Future<GitRelease?> latestDatasetRelease({
     bool icons = false,
-    bool testRelease(GitRelease release)?,
+    bool Function(GitRelease release)? testRelease,
     List<GitRelease>? releases,
   }) async {
     releases ??= await datasetReleases;
@@ -417,16 +416,17 @@ class GitTool {
     );
   }
 
-  Future<String?> appReleaseNote([bool test(GitRelease release)?]) async {
-    if (test == null)
-      test = (release) =>
-          !release.name.contains('ffo') &&
-          Version.tryParse(release.name) == AppInfo.versionClass;
+  Future<String?> appReleaseNote(
+      [bool Function(GitRelease release)? test]) async {
+    test ??= (release) =>
+        !release.name.contains('ffo') &&
+        Version.tryParse(release.name) == AppInfo.versionClass;
     return (await appReleases).firstWhereOrNull(test)?.body;
   }
 
-  Future<String?> datasetReleaseNote([bool test(GitRelease release)?]) async {
-    if (test == null) test = (release) => release.name == db.gameData.version;
+  Future<String?> datasetReleaseNote(
+      [bool Function(GitRelease release)? test]) async {
+    test ??= (release) => release.name == db.gameData.version;
     return (await datasetReleases).firstWhereOrNull(test)?.body;
   }
 
@@ -473,7 +473,7 @@ class _DownloadDialogState extends State<DownloadDialog> {
 
   /// -1:not start, 0:started, 1:completed
   int status = -1;
-  Dio _dio = HttpUtils.defaultDio;
+  final Dio _dio = HttpUtils.defaultDio;
 
   @override
   void initState() {

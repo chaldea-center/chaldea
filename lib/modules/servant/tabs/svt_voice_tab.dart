@@ -12,7 +12,7 @@ import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
 
 class SvtVoiceTab extends SvtTabBaseWidget {
-  SvtVoiceTab({
+  const SvtVoiceTab({
     Key? key,
     ServantDetailPageState? parent,
     Servant? svt,
@@ -20,14 +20,10 @@ class SvtVoiceTab extends SvtTabBaseWidget {
   }) : super(key: key, parent: parent, svt: svt, status: status);
 
   @override
-  _SvtVoiceTabState createState() =>
-      _SvtVoiceTabState(parent: parent, svt: svt, plan: status);
+  _SvtVoiceTabState createState() => _SvtVoiceTabState();
 }
 
 class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
-  _SvtVoiceTabState(
-      {ServantDetailPageState? parent, Servant? svt, ServantStatus? plan})
-      : super(parent: parent, svt: svt, status: plan);
   Language? lang;
   GeneralAudioPlayer? audioPlayer;
 
@@ -56,22 +52,23 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
                 horizontalInside: Divider.createBorderSide(context, width: 1)),
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children: _buildVoiceRows(table),
-            columnWidths: {
-              0: FlexColumnWidth(),
-              1: FixedColumnWidth(36.0),
-              2: FixedColumnWidth(36.0)
-            },
+            columnWidths: [
+              FlexColumnWidth(),
+              FixedColumnWidth(36.0),
+              FixedColumnWidth(36.0)
+            ].asMap(),
           ),
         ),
       ));
     }
-    if (lang == Language.eng)
+    if (lang == Language.eng) {
       children.add(Center(
         child: Text(
           'Voices maybe mismatched',
           style: Theme.of(context).textTheme.caption,
         ),
       ));
+    }
     return Column(
       children: [
         Expanded(
@@ -142,10 +139,11 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
                     logger.e(
                         'Error playing audio\n${jsonEncode(record)}\n', e, s);
                   }).whenComplete(() {
-                    if (state.mounted)
+                    if (state.mounted) {
                       state.setState(() {
                         state.value = !state.value;
                       });
+                    }
                   });
                 },
                 icon: Icon(Icons.play_circle_outline),
@@ -176,10 +174,11 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
                 final fp = p.join(db.paths.downloadDir, record.voiceFile);
                 await SimpleCancelOkDialog.showSave(
                     context: context, srcFile: file, savePath: fp);
-                if (state.mounted)
+                if (state.mounted) {
                   state.setState(() {
                     state.value = !state.value;
                   });
+                }
               },
               icon: Icon(Icons.file_download),
               tooltip: S.current.download,

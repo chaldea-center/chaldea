@@ -50,7 +50,7 @@ class Events {
   }
 
   Map<String, EventBase> get allEvents {
-    return Map<String, EventBase>()
+    return <String, EventBase>{}
       ..addAll(limitEvents)
       ..addAll(mainRecords);
   }
@@ -165,14 +165,15 @@ class EventBase {
   }
 
   Widget resolveDetailPage() {
-    if (this is LimitEvent)
+    if (this is LimitEvent) {
       return LimitEventDetailPage(event: this as LimitEvent);
-    else if (this is MainRecord)
+    } else if (this is MainRecord) {
       return MainRecordDetailPage(record: this as MainRecord);
-    else if (this is CampaignEvent)
+    } else if (this is CampaignEvent) {
       return CampaignDetailPage(event: this as CampaignEvent);
-    else
+    } else {
       throw TypeError();
+    }
   }
 }
 
@@ -309,6 +310,7 @@ class MainRecord extends EventBase {
 
   String get titleJp => _splitChapterTitle(nameJp ?? name)[1];
 
+  @override
   String get localizedName {
     if (Language.isEN) {
       return localizeNoun(name, nameJp, Localized.chapter.of(name));
@@ -353,6 +355,7 @@ class MainRecord extends EventBase {
       ..removeWhere((key, value) => value <= 0);
   }
 
+  @override
   bool isOutdated() {
     return checkEventOutdated(
         timeJp: startTimeJp?.toDateTime(), timeCn: startTimeCn?.toDateTime());

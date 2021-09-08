@@ -3,7 +3,8 @@ part of ffo;
 class FfoDownloadDialog extends StatefulWidget {
   final VoidCallback onSuccess;
 
-  FfoDownloadDialog({required this.onSuccess});
+  const FfoDownloadDialog({Key? key, required this.onSuccess})
+      : super(key: key);
 
   @override
   _FfoDownloadDialogState createState() => _FfoDownloadDialogState();
@@ -90,7 +91,9 @@ class _FfoDownloadDialogState extends State<FfoDownloadDialog> {
               final file = await FilePickerCross.importFromStorage();
               if (file.path != null) await _extractZip(file.path!);
               Navigator.pop(context);
-            } on FileSelectionCanceledError {}
+            } on FileSelectionCanceledError {
+              //
+            }
             if (mounted) setState(() {});
           },
           child: Text(S.current.import_data),
@@ -138,6 +141,7 @@ class _FfoDownloadDialogState extends State<FfoDownloadDialog> {
       EasyLoading.showSuccess(S.current.import_data_success);
       widget.onSuccess();
     } on FileSelectionCanceledError {
+      //
     } catch (e, s) {
       EasyLoading.showError(e.toString());
       logger.e('extract zip error', e, s);

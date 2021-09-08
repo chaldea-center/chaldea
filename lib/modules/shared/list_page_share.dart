@@ -2,6 +2,7 @@ import 'package:chaldea/components/components.dart';
 
 Widget buildSwitchPlanButton(
     {required BuildContext context, ValueChanged<int>? onChange}) {
+  final colorScheme = Theme.of(context).colorScheme;
   return IconButton(
     onPressed: () {
       FocusScope.of(context).unfocus();
@@ -16,7 +17,9 @@ Widget buildSwitchPlanButton(
           ImageWithText.paintOutline(
             text: (db.curUser.curSvtPlanNo + 1).toString(),
             shadowSize: 5,
-            shadowColor: Theme.of(context).primaryColor,
+            shadowColor: colorScheme.brightness == Brightness.light
+                ? colorScheme.primary
+                : colorScheme.surface,
           )
         ],
       ),

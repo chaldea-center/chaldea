@@ -236,9 +236,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
         for (final List row in data) {
           if (row.length < 9) continue;
           int? svtId = db.gameData.fsmSvtIdMapping[row[0]];
-          if (svtId == null) {
-            svtId = row[0] < 149 ? row[0] : row[0] + 5;
-          }
+          svtId ??= row[0] < 149 ? row[0] : row[0] + 5;
           final svt = db.gameData.servants[svtId];
           if (svt == null) continue;
           svtResult.add(_OneServantData(

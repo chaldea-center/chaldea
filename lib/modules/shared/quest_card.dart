@@ -132,9 +132,10 @@ class _QuestCardState extends State<QuestCard> {
       String shownPlace =
           LocalizedText.of(chs: place ?? '', jpn: placeJp, eng: placeEn);
       if (placeJp != null && placeJp != shownPlace) shownPlace += '/' + placeJp;
-      if (shownPlace == '迦勒底之门')
+      if (shownPlace == '迦勒底之门') {
         shownPlace =
             LocalizedText.of(chs: '迦勒底之门', jpn: 'カルデアゲート', eng: 'Chaldea Gate');
+      }
       children.add(Row(children: <Widget>[
         Text('  ${i + 1}/${battles.length}  '),
         Expanded(flex: 1, child: Center(child: Text('AP ${battle.ap}'))),
@@ -247,9 +248,9 @@ class _QuestCardState extends State<QuestCard> {
 
   String _localizeClassName(String? clsName) {
     if (clsName == null) return '';
-    if (Language.isCN)
+    if (Language.isCN) {
       return clsName;
-    else
+    } else {
       return {
             '剑': '剣',
             '弓': '弓',
@@ -265,6 +266,7 @@ class _QuestCardState extends State<QuestCard> {
             '降': '降',
           }[clsName] ??
           clsName;
+    }
   }
 
   Widget _buildWave(List<Enemy?> enemies) {
@@ -280,13 +282,14 @@ class _QuestCardState extends State<QuestCard> {
             : (enemy.shownName[i] ?? enemy.name[i]));
         final enemyInfo = EnemyDetail.of(enemy.name[i]);
         if (enemyInfo != null) {
-          if (enemyInfo.icon != null)
+          if (enemyInfo.icon != null) {
             lines.add(CachedImage(
               imageUrl: enemyInfo.icon,
               width: 36,
               height: 36,
               placeholder: (_, __) => Container(),
             ));
+          }
           onTap =
               () => SplitRoute.push(context, EnemyDetailPage(enemy: enemyInfo));
         } else {
@@ -321,11 +324,12 @@ class _QuestCardState extends State<QuestCard> {
             onTap = () => SplitRoute.push(context, ServantDetailPage(svt));
           }
         }
-        if (name?.isNotEmpty == true)
+        if (name?.isNotEmpty == true) {
           lines.add(AutoSizeText(name!,
               maxFontSize: 14,
               maxLines: Language.isCN ? 1 : 2,
               textAlign: TextAlign.center));
+        }
         lines.add(Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -389,8 +393,9 @@ class _QuestCardState extends State<QuestCard> {
       int colIndex = glpk.colNames.indexOf(quest.indexKey ?? '-');
 
       // not list in glpk
-      if (colIndex < 0)
+      if (colIndex < 0) {
         items.keys.forEach((element) => dropTexts[element] = '');
+      }
 
       Map<String, double> apRates = {};
       for (var i = 0; i < glpk.rowNames.length; i++) {

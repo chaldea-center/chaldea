@@ -89,7 +89,9 @@ class _ImportGudaPageState extends State<ImportGudaPage> {
       if (mounted) {
         setState(() {});
       }
-    } on FileSelectionCanceledError {} catch (e, s) {
+    } on FileSelectionCanceledError {
+      //
+    } catch (e, s) {
       logger.e('import guda file failed', e, s);
       EasyLoading.showError('Something went wrong\n$e');
       return;

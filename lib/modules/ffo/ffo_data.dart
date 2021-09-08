@@ -1,3 +1,4 @@
+// ignore_for_file: constant_identifier_names
 part of ffo;
 
 const int _LAND_0 = 0;
@@ -55,7 +56,7 @@ class FFOParams {
   FFOPart? headPart;
   FFOPart? bodyPart;
   FFOPart? landPart;
-  bool _clipOverflow; // not used
+  final bool _clipOverflow; // not used
   bool cropNormalizedSize;
 
   final List<ui.Image?> images = List.filled(8, null, growable: false);
@@ -153,9 +154,9 @@ class FFOParams {
         case 2:
           landPart = svt;
           images[_LAND_0] =
-              await _loadImage(join(_baseDir, 'Land', 'bg_$strId.png'));
+          await _loadImage(join(_baseDir, 'Land', 'bg_$strId.png'));
           images[_LAND_FRONT_7] =
-              await _loadImage(join(_baseDir, 'Land', 'bg_${strId}_front.png'));
+          await _loadImage(join(_baseDir, 'Land', 'bg_${strId}_front.png'));
           break;
         default:
           throw 'part=$where, not in 0,1,2';
@@ -323,13 +324,12 @@ class FFOParams {
     bool share = true,
     String? shareText,
   }) async {
-    Uint8List? data = await this.toBinary();
+    Uint8List? data = await toBinary();
     if (data == null) {
       EasyLoading.showError('Failed');
       return;
     }
-    String fn =
-        'ffo-' + this.parts.map((e) => e?.svtId ?? 0).join('-') + '.png';
+    String fn = 'ffo-' + parts.map((e) => e?.svtId ?? 0).join('-') + '.png';
     String srcFp = join(db.paths.tempDir, fn); //tempFile
     File(srcFp)
       ..createSync(recursive: true)
@@ -348,25 +348,25 @@ class FFOParams {
 
   Widget buildCard(BuildContext context, [tapToFullscreen = false]) {
     final image = FFOCardWidget(params: this, showSave: true);
-    if (this.isEmpty) {
+    if (isEmpty) {
       return image;
     }
     return GestureDetector(
       child: image,
       onTap: tapToFullscreen
           ? () => Navigator.of(context).push(PageRouteBuilder(
-                fullscreenDialog: true,
-                opaque: false,
-                pageBuilder: (context, _, __) => FullscreenImageViewer(
-                  children: [
-                    FFOCardWidget(
-                      params: this,
-                      showSave: true,
-                      enableZoom: true,
-                    )
-                  ],
-                ),
-              ))
+        fullscreenDialog: true,
+        opaque: false,
+        pageBuilder: (context, _, __) => FullscreenImageViewer(
+          children: [
+            FFOCardWidget(
+              params: this,
+              showSave: true,
+              enableZoom: true,
+            )
+          ],
+        ),
+      ))
           : null,
     );
   }

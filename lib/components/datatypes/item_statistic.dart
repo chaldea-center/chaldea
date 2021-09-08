@@ -77,10 +77,11 @@ class ItemStatistics {
 
   void updateEventItems({bool shouldBroadcast = true, Duration? lapse}) {
     void callback() {
-      if (includingEvent)
+      if (includingEvent) {
         eventItems = db.gameData.events.getAllItems(db.curUser.events);
-      else
+      } else {
         eventItems = {};
+      }
       updateLeftItems(shouldBroadcast: shouldBroadcast);
     }
 
@@ -221,7 +222,7 @@ class SvtParts<T> {
     T? appendSkill,
     T? extra,
     T? summation,
-    T k()?,
+    T Function()? k,
   })  : assert(ascension != null &&
                 skill != null &&
                 dress != null &&
@@ -235,7 +236,7 @@ class SvtParts<T> {
         extra = extra ?? k!(),
         summation = summation ?? k?.call();
 
-  SvtParts<T2> copyWith<T2>([T2 f(T e)?]) {
+  SvtParts<T2> copyWith<T2>([T2 Function(T e)? f]) {
     return SvtParts<T2>(
       ascension: f == null ? ascension as T2 : f(ascension),
       skill: f == null ? skill as T2 : f(skill),

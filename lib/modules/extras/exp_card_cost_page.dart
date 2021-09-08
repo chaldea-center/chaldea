@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 
-const int _MAX_SVT_LV = 120;
-
 class ExpCardCostPage extends StatefulWidget {
+  const ExpCardCostPage({Key? key}) : super(key: key);
+
   @override
   _ExpCardCostPageState createState() => _ExpCardCostPageState();
 }
@@ -188,7 +188,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
     return Table(
       border: TableBorder(horizontalInside: Divider.createBorderSide(context)),
       defaultColumnWidth: FlexColumnWidth(1),
-      columnWidths: {
+      columnWidths: const {
         0: FlexColumnWidth(2),
         4: FlexColumnWidth(2),
       },
@@ -212,11 +212,12 @@ class _ExpLvRangeSelectorState extends State<ExpLvRangeSelector> {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
-    for (int i = 1; i <= _MAX_SVT_LV; i++) {
-      VoidCallback _onTapLv = () {
+    for (int i = 1; i <= Grail.maxLv; i++) {
+      void _onTapLv() {
         data.clickAt(i);
         setState(() {});
-      };
+      }
+
       bool isEndPoint = i == data.startLv || i == data.endLv;
       bool isInRange = i > data.startLv && i < data.endLv;
       Widget btn;
@@ -346,7 +347,7 @@ class ExpUpData {
       int curLv = lva, qp = 0, curExp = lvExpList[curLv];
       List<int> ascensionQp = ascensionQpList[rarity2 - 1];
       grailStages.add(0);
-      if (lva != _MAX_SVT_LV && lvs.contains(lva)) {
+      if (lva != Grail.maxLv && lvs.contains(lva)) {
         qp += ascensionQp[lvs.indexOf(lva) - 1] * 1000;
         if (index >= 5) grailStages[grailStages.length - 1] = 1;
         // print('ascension qp: ${ascensionQp[lvs.indexOf(lva) - 1] * 1000}');
@@ -360,7 +361,7 @@ class ExpUpData {
           // print('    Lv.$curLv - ${lvQpCostList[curLv]}');
         }
         if (curExp >= lvExpList.last) {
-          curLv = _MAX_SVT_LV;
+          curLv = Grail.maxLv;
         } else {
           curLv = lvExpList.indexWhere((e) => e > curExp) - 1;
         }

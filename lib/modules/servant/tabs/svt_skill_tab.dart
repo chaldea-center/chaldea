@@ -6,7 +6,7 @@ import '../servant_detail_page.dart';
 import 'svt_tab_base.dart';
 
 class SvtSkillTab extends SvtTabBaseWidget {
-  SvtSkillTab({
+  const SvtSkillTab({
     Key? key,
     ServantDetailPageState? parent,
     Servant? svt,
@@ -14,15 +14,10 @@ class SvtSkillTab extends SvtTabBaseWidget {
   }) : super(key: key, parent: parent, svt: svt, status: status);
 
   @override
-  State<StatefulWidget> createState() =>
-      _SvtSkillTabState(parent: parent, svt: svt, plan: status);
+  State<StatefulWidget> createState() => _SvtSkillTabState();
 }
 
 class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
-  _SvtSkillTabState(
-      {ServantDetailPageState? parent, Servant? svt, ServantStatus? plan})
-      : super(parent: parent, svt: svt, status: plan);
-
   @override
   Widget build(BuildContext context) {
     if (svt.lActiveSkills.isNotEmpty != true) {

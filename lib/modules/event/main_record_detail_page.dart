@@ -21,7 +21,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage>
 
   MainRecordPlan get plan =>
       db.curUser.events.mainRecordOf(widget.record.indexKey);
-  List<Summon> _associatedSummons = [];
+  final List<Summon> _associatedSummons = [];
 
   @override
   void initState() {
@@ -38,7 +38,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage>
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
-    children.addAll(this.buildHeaders(context: context, event: record));
+    children.addAll(buildHeaders(context: context, event: record));
 
     children.addAll([
       kDefaultDivider,
@@ -69,8 +69,8 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage>
           context: context, data: widget.record.rewardsWithRare),
     ]);
 
-    children.addAll(
-        this.buildSummons(context: context, summons: _associatedSummons));
+    children
+        .addAll(buildSummons(context: context, summons: _associatedSummons));
     children.add(SizedBox(
       height: 72,
       child: Center(

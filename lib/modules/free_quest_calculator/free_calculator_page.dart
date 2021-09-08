@@ -11,7 +11,8 @@ import 'quest_query_tab.dart';
 class FreeQuestCalculatorPage extends StatefulWidget {
   final Map<String, int>? objectiveCounts;
 
-  FreeQuestCalculatorPage({Key? key, this.objectiveCounts}) : super(key: key);
+  const FreeQuestCalculatorPage({Key? key, this.objectiveCounts})
+      : super(key: key);
 
   @override
   _FreeQuestCalculatorPageState createState() =>

@@ -81,7 +81,8 @@ class AutoUpdateUtil {
 
   /// get json patch from server
   static Future<void> patchGameData(
-      {bool background = true, void onError(e, s)?}) async {
+      {bool background = true,
+      void Function(dynamic, StackTrace?)? onError}) async {
     if (PlatformU.isWeb) return;
 
     String _dataVersion(String releaseName) {
@@ -93,8 +94,9 @@ class AutoUpdateUtil {
       if (onError != null) onError(e, s);
     }
 
-    if (!background)
+    if (!background) {
       EasyLoading.show(status: 'patching', maskType: EasyLoadingMaskType.clear);
+    }
     try {
       if (!db.hasNetwork) {
         _reportResult(S.current.error_no_network);
@@ -108,7 +110,7 @@ class AutoUpdateUtil {
       if (_globalLatestRelease != null) {
         final dataVersion = DatasetVersion.tryParse(_globalLatestRelease.name);
         if (dataVersion != null &&
-            dataVersion.minimalApp > AppInfo.versionClass ||
+                dataVersion.minimalApp > AppInfo.versionClass ||
             kDebugMode) {
           db.runtimeData.latestDatasetVersion = dataVersion;
         }
@@ -120,13 +122,13 @@ class AutoUpdateUtil {
         return;
       }
       int newer =
-      db.gameData.version.compareTo(_dataVersion(latestRelease.name));
+          db.gameData.version.compareTo(_dataVersion(latestRelease.name));
       if (newer >= 0) {
         _reportResult(S.current.update_already_latest);
         return;
       }
       final curRelease = releases.firstWhereOrNull(
-              (release) => _dataVersion(release.name) == db.gameData.version);
+          (release) => _dataVersion(release.name) == db.gameData.version);
       if (curRelease == null) {
         print('cur version not found in server: ${db.gameData.version}');
         _reportResult(S.current.patch_gamedata_error_unknown_version);
@@ -160,7 +162,7 @@ class AutoUpdateUtil {
       if (resp.success) {
         final patchJson = jsonDecode(resp.body);
         final curData =
-        jsonDecode(File(db.paths.gameDataPath).readAsStringSync());
+            jsonDecode(File(db.paths.gameDataPath).readAsStringSync());
         dynamic newData = jsonpatch.JsonPatch(patchJson).applyTo(curData);
         // encode then decode to verify validation
         final gameData = GameData.fromJson(jsonDecode(jsonEncode(newData)));
@@ -204,7 +206,7 @@ class AutoUpdateUtil {
       if (!background) EasyLoading.showError('No network');
       return;
     }
-    if (_downloadTask?.isCompleted == false) return null;
+    if (_downloadTask?.isCompleted == false) return;
     _downloadTask = Completer();
     GitRelease? release;
     Version? version;
@@ -286,9 +288,9 @@ class AutoUpdateUtil {
       }
       if (!background) {
         download = await _showDialog(
-            version: version,
-            launchUrl: launchUrl,
-            releaseNote: releaseNote) ==
+                version: version,
+                launchUrl: launchUrl,
+                releaseNote: releaseNote) ==
             true;
         if (!download) return;
       }
@@ -376,8 +378,9 @@ class AutoUpdateUtil {
       content: Text('Ready to reload dataset'),
       hideCancel: true,
     ).showDialog(null, barrierDismissible: false);
-    if (pop)
+    if (pop) {
       Navigator.of(kAppKey.currentContext!).popUntil((route) => route.isFirst);
+    }
     await Future.delayed(Duration(milliseconds: 600));
   }
 
@@ -390,11 +393,12 @@ class AutoUpdateUtil {
     bool upgradable = version > AppInfo.versionClass;
     EasyLoading.dismiss();
     String content = '';
-    if (fpInstaller != null)
+    if (fpInstaller != null) {
       content += LocalizedText.of(
           chs: '安装包已下载\n',
           jpn: 'インストールパッケージがダウンロードされました\n',
           eng: 'Installer is downloaded\n');
+    }
     content += S.current.about_update_app_detail(
         AppInfo.version, version.version, releaseNote ?? '-');
     return SimpleCancelOkDialog(
@@ -543,7 +547,7 @@ class AutoUpdateUtil {
     _writeln('pause');
     buffer.writeln('"${join(destDir, 'chaldea.exe')}"');
     String cmdFp = absolute(join(db.paths.tempDir, 'upgrade.bat'));
-    File(cmdFp)..writeAsStringSync(buffer.toString(), encoding: ascii);
+    File(cmdFp).writeAsStringSync(buffer.toString(), encoding: ascii);
     return cmdFp;
   }
 

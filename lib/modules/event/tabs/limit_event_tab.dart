@@ -62,9 +62,7 @@ class _LimitEventTabState extends State<LimitEventTab> {
             subtitle = 'CN ' + subtitle;
           }
         }
-        if (subtitle == null) {
-          subtitle = 'JP ' + (event.startTimeJp?.split(' ').first ?? '???');
-        }
+        subtitle ??= 'JP ' + (event.startTimeJp?.split(' ').first ?? '???');
         Color? _outdatedColor = Theme.of(context).textTheme.caption?.color;
         Widget tile = ListTile(
           title: AutoSizeText(

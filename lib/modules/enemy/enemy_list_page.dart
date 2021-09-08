@@ -6,7 +6,7 @@ import 'enemy_detail_page.dart';
 class EnemyListPage extends StatefulWidget {
   final void Function(EnemyDetail)? onSelected;
 
-  EnemyListPage({Key? key, this.onSelected}) : super(key: key);
+  const EnemyListPage({Key? key, this.onSelected}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => EnemyListPageState();

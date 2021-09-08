@@ -26,7 +26,7 @@ class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData> {
           FilterGroup(
             useRadio: true,
             padding: EdgeInsets.only(right: 12),
-            options: ['List', 'Grid'],
+            options: const ['List', 'Grid'],
             values: filterData.display,
             combined: true,
             onFilterChanged: (v) {

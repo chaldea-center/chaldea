@@ -6,6 +6,8 @@ import 'package:chaldea/modules/shared/list_page_share.dart';
 import 'statistics_servant_tab.dart';
 
 class GameStatisticsPage extends StatefulWidget {
+  const GameStatisticsPage({Key? key}) : super(key: key);
+
   @override
   _GameStatisticsPageState createState() => _GameStatisticsPageState();
 }

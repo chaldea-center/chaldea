@@ -87,16 +87,18 @@ class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
   @override
   void initState() {
     super.initState();
-    if (widget.fullscreen)
+    if (widget.fullscreen) {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+    }
   }
 
   @override
   void dispose() {
     super.dispose();
-    if (widget.fullscreen)
+    if (widget.fullscreen) {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
           overlays: SystemUiOverlay.values);
+    }
   }
 
   @override

@@ -79,12 +79,14 @@ class CustomTableRow extends StatefulWidget {
   }
 
   CustomTableRow.fromTexts({
+    Key? key,
     required List<String> texts,
     TableCellData? defaults,
     bool? isHeader,
     Color? color,
     VerticalDivider divider = kVerticalDivider,
   }) : this(
+    key: key,
           children: texts
               .map((text) => (defaults ?? TableCellData(text: text))
                   .copyWith(text: text, isHeader: isHeader))
@@ -94,11 +96,13 @@ class CustomTableRow extends StatefulWidget {
         );
 
   CustomTableRow.fromChildren({
+    Key? key,
     required List<Widget> children,
     TableCellData? defaults,
     Color? color,
     VerticalDivider divider = kVerticalDivider,
   }) : this(
+    key: key,
           children: children
               .map((child) => defaults == null
                   ? TableCellData(child: child)
@@ -117,7 +121,7 @@ class _CustomTableRowState extends State<CustomTableRow> {
   /// of children, then rebuild to fit the constraints
   BoxConstraints? _calculatedConstraints;
   bool _needRebuild = true;
-  bool _fit = false;
+  final bool _fit = false;
 
   @override
   Widget build(BuildContext context) {
@@ -316,7 +320,7 @@ class TableCellData {
     assert(textAlign == null || textAlignList == null);
     assert(padding == null || paddingList == null);
     assert(fitHeight == null || fitHeightList == null);
-    assert([
+    assert({
       flexList?.length,
       isHeaderList?.length,
       fontSizeList?.length,
@@ -325,7 +329,7 @@ class TableCellData {
       alignmentList?.length,
       paddingList?.length,
       fitHeightList?.length
-    ].toSet().every((e) => e == null || e == length));
+    }.every((e) => e == null || e == length));
     final List<TableCellData> rowDataList = []..length = length;
     for (int index = 0; index < rowDataList.length; index++) {
       final data = TableCellData(

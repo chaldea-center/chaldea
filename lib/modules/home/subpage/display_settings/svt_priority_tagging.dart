@@ -8,7 +8,7 @@ class SvtPriorityTagging extends StatefulWidget {
 }
 
 class _SvtPriorityTaggingState extends State<SvtPriorityTagging> {
-  Map<String, TextEditingController> _controllers = {};
+  final Map<String, TextEditingController> _controllers = {};
 
   TextEditingController controllerOf(String key) => _controllers[key] ??=
       TextEditingController(text: db.appSetting.priorityTags[key]);

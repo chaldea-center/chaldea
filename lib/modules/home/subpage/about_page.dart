@@ -6,6 +6,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutPage extends StatefulWidget {
+  const AboutPage({Key? key}) : super(key: key);
+
   @override
   _AboutPageState createState() => _AboutPageState();
 }
@@ -59,8 +61,7 @@ class _AboutPageState extends State<AboutPage> {
                         db.runtimeData.upgradableVersion != null))
                   ListTile(
                     title: Text(S.current.check_update),
-                    subtitle:
-                        Text('${EnumUtil.titled(db.appSetting.gitSource)}'),
+                    subtitle: Text(EnumUtil.titled(db.appSetting.gitSource)),
                     trailing: db.runtimeData.upgradableVersion != null
                         ? Text(db.runtimeData.upgradableVersion!.version + '↑',
                             style: TextStyle(color: Colors.redAccent))

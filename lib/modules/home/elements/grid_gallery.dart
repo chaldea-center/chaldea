@@ -60,7 +60,7 @@ class _GridGalleryState extends State<GridGallery> {
     List<Widget> _galleryItems = [];
     GalleryItem.allItems.forEach((item) {
       if (db.userData.galleries[item.name] == false &&
-          !GalleryItem.persistentPages.contains(item.name)) {
+          !GalleryItem.persistentPages.contains(item)) {
         return;
       }
       _galleryItems.add(InkWell(

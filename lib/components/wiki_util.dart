@@ -17,8 +17,8 @@ class WikiUtil {
   static late final JsonStore<String> wikiUrlCache;
 
   /// limit request frequency
-  static Pool _pool = Pool(10);
-  static Pool _pool2 = Pool(10);
+  static final Pool _pool = Pool(10);
+  static final Pool _pool2 = Pool(10);
 
   static String mcDomain = 'https://fgo.wiki';
   static String fandomDomain = 'https://fategrandorder.fandom.com';
@@ -44,9 +44,6 @@ class WikiUtil {
     return Uri.parse(link).toString();
   }
 
-  @deprecated
-  static String prefixKey(String filename) => 'wikiurl_$filename';
-
   /// parsing wiki file downloading url
 
   ///
@@ -55,11 +52,11 @@ class WikiUtil {
     return wikiUrlCache.get(filename);
   }
 
-  static Map<String, Future<String?>> _resolvingUrlTasks = {};
+  static final Map<String, Future<String?>> _resolvingUrlTasks = {};
 
   /// Don't keep trying resolving everytime. Once error, resolve it after 1 min
   /// key is [filename], value is [DateTime.millisecondsSinceEpoch]
-  static Map<String, int> _errorTasks = {};
+  static final Map<String, int> _errorTasks = {};
 
   /// If [savePath] is provided, the file will be downloaded
   static Future<String?> resolveFileUrl(String filename,

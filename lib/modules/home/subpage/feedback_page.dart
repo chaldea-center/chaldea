@@ -14,6 +14,8 @@ import 'package:path/path.dart' as pathlib;
 import 'package:url_launcher/url_launcher.dart';
 
 class FeedbackPage extends StatefulWidget {
+  const FeedbackPage({Key? key}) : super(key: key);
+
   @override
   _FeedbackPageState createState() => _FeedbackPageState();
 }
@@ -281,7 +283,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
     );
   }
 
-  Set<String> attachFiles = Set();
+  Set<String> attachFiles = {};
 
   void _addAttachments() {
     FilePickerCross.importMultipleFromStorage(type: FileTypeCross.image)
@@ -291,7 +293,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
         setState(() {});
       }
     }).catchError((error, stackTrace) {
-      if (!(error is FileSelectionCanceledError)) {
+      if (error is! FileSelectionCanceledError) {
         print(error.toString());
         print(stackTrace.toString());
         EasyLoading.showError(error.toString());

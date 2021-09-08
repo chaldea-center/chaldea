@@ -8,10 +8,11 @@ class ItemInfoTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final itemInfo = db.gameData.items[itemKey];
-    if (itemInfo == null)
+    if (itemInfo == null) {
       return ListTile(
         title: Text('......'),
       );
+    }
     return SingleChildScrollView(
       child: CustomTable(
         children: <Widget>[

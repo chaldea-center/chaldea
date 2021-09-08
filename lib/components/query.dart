@@ -18,13 +18,13 @@
 class Query {
   String? _searchString;
   bool _caseSensitive = false;
-  List<String> _optional = [];
-  List<String> _mandatory = [];
-  List<String> _excluded = [];
+  final List<String> _optional = [];
+  final List<String> _mandatory = [];
+  final List<String> _excluded = [];
 
   Query({String? queryString, bool caseSensitive = false}) {
     if (queryString != null) {
-      this.parse(queryString, caseSensitive: caseSensitive);
+      parse(queryString, caseSensitive: caseSensitive);
     }
   }
 

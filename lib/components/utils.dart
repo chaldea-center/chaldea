@@ -168,7 +168,7 @@ Map<K, V> multiplyDict<K, V extends num>(Map<K, V> d, V multiplier,
 /// [reversed] is used only when [compare] is null for default num values sort
 Map<K, V> sortDict<K, V>(Map<K, V> d,
     {bool reversed = false,
-    int compare(MapEntry<K, V> a, MapEntry<K, V> b)?,
+    int Function(MapEntry<K, V> a, MapEntry<K, V> b)? compare,
     bool inPlace = false}) {
   List<MapEntry<K, V>> entries = d.entries.toList();
   entries.sort((a, b) {
@@ -206,7 +206,7 @@ T fixValidRange<T extends num>(T value, [T? minVal, T? maxVal]) {
   return value;
 }
 
-void fillListValue<T>(List<T> list, int length, T fill(int index)) {
+void fillListValue<T>(List<T> list, int length, T Function(int index) fill) {
   if (length <= list.length) {
     list.length = length;
   } else {
@@ -363,11 +363,11 @@ String fullToHalf(String s) {
   return s2;
 }
 
-void catchErrorSync(
+Future<void> catchErrorSync(
   Function callback, {
   VoidCallback? onSuccess,
-  void onError(e, s)?,
-}) {
+  void Function(dynamic, StackTrace?)? onError,
+}) async {
   try {
     callback();
     if (onSuccess != null) onSuccess();
@@ -379,7 +379,7 @@ void catchErrorSync(
 Future<void> catchErrorAsync(
   Function callback, {
   VoidCallback? onSuccess,
-  void onError(e, s)?,
+  void Function(dynamic, StackTrace)? onError,
   VoidCallback? whenComplete,
 }) async {
   try {
@@ -442,12 +442,13 @@ class Utils {
       [String? textJp, String? textEn]) {
     List<String> list = [];
     if (textEn != null) list.add(textEn);
-    if (textCn != null)
+    if (textCn != null) {
       list.addAll([
         textCn,
         PinyinHelper.getPinyinE(textCn, separator: ''),
         PinyinHelper.getShortPinyin(textCn)
       ]);
+    }
     // kanji to Romaji?
     if (textJp != null && textJp.length < 100) {
       try {
@@ -464,7 +465,7 @@ class Utils {
       [List<String>? textsJp, List<String>? textsEn]) {
     List<String> list = [];
     if (textsEn != null) list.addAll(textsEn);
-    if (textsCn != null)
+    if (textsCn != null) {
       for (var text in textsCn) {
         list.addAll([
           text,
@@ -472,16 +473,19 @@ class Utils {
           PinyinHelper.getShortPinyin(text)
         ]);
       }
-    if (textsJp != null)
+    }
+    if (textsJp != null) {
       for (var text in textsJp) {
         list.addAll([text, kanaKit.toRomaji(text)]);
       }
+    }
     return list;
   }
 
   static void debugChangeDarkMode([ThemeMode? mode]) {
-    if (db.appSetting.themeMode != null && mode == db.appSetting.themeMode)
+    if (db.appSetting.themeMode != null && mode == db.appSetting.themeMode) {
       return;
+    }
 
     final t = DateTime.now().millisecondsSinceEpoch;
     final _last = db.runtimeData.tempDict['debugChangeDarkMode'] ?? 0;

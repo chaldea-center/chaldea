@@ -21,7 +21,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage>
   CampaignPlan get plan =>
       db.curUser.events.campaignEventPlanOf(event.indexKey);
 
-  List<Summon> _associatedSummons = [];
+  final List<Summon> _associatedSummons = [];
 
   @override
   void initState() {
@@ -40,7 +40,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage>
     final svt = db.gameData.servants[event.welfareServant];
 
     List<Widget> children = [];
-    children.addAll(this.buildHeaders(context: context, event: event));
+    children.addAll(buildHeaders(context: context, event: event));
     children.add(db.streamBuilder((context) => TileGroup(children: [
           if (event.couldPlan)
             SwitchListTile.adaptive(
@@ -83,8 +83,8 @@ class _CampaignDetailPageState extends State<CampaignDetailPage>
     }
 
     // summons
-    children.addAll(
-        this.buildSummons(context: context, summons: _associatedSummons));
+    children
+        .addAll(buildSummons(context: context, summons: _associatedSummons));
 
     children.add(SizedBox(
       height: 72,

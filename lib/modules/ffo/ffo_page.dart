@@ -23,6 +23,8 @@ part 'ffo_summon_page.dart';
 String get _baseDir => join(db.paths.appPath, 'ffo');
 
 class FreedomOrderPage extends StatefulWidget {
+  const FreedomOrderPage({Key? key}) : super(key: key);
+
   @override
   _FreedomOrderPageState createState() => _FreedomOrderPageState();
 }
@@ -285,7 +287,7 @@ class _PartChooserPageState extends State<_PartChooserPage> {
       Widget child = ImageWithText(
         width: 54,
         text: idString,
-        image: Container(
+        image: SizedBox(
           width: 54,
           height: 54,
           child: Image.file(file, fit: BoxFit.contain),

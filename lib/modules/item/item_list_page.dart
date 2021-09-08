@@ -12,6 +12,8 @@ import 'package:flutter/services.dart';
 import 'item_detail_page.dart';
 
 class ItemListPage extends StatefulWidget {
+  const ItemListPage({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => ItemListPageState();
 }
@@ -194,6 +196,8 @@ class ItemListPageState extends State<ItemListPage>
 }
 
 class ItemFilterDialog extends StatefulWidget {
+  const ItemFilterDialog({Key? key}) : super(key: key);
+
   @override
   _ItemFilterDialogState createState() => _ItemFilterDialogState();
 }
@@ -221,27 +225,24 @@ class _ItemFilterDialogState extends State<ItemFilterDialog> {
         )
       ],
       contentPadding: EdgeInsets.symmetric(horizontal: 6),
-      content: Container(
-        // constraints: BoxConstraints(maxWidth: 200),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: List.generate(5, (index) {
-            int priority = 5 - index;
-            bool checked = priorityFilter.options[priority.toString()] ?? false;
-            return CheckboxListTile(
-              value: checked,
-              title: Text('${S.current.priority} $priority'),
-              controlAffinity: ListTileControlAffinity.leading,
-              // dense: true,
-              onChanged: (v) {
-                setState(() {
-                  priorityFilter.options[priority.toString()] = v!;
-                });
-                db.itemStat.updateSvtItems();
-              },
-            );
-          }),
-        ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: List.generate(5, (index) {
+          int priority = 5 - index;
+          bool checked = priorityFilter.options[priority.toString()] ?? false;
+          return CheckboxListTile(
+            value: checked,
+            title: Text('${S.current.priority} $priority'),
+            controlAffinity: ListTileControlAffinity.leading,
+            // dense: true,
+            onChanged: (v) {
+              setState(() {
+                priorityFilter.options[priority.toString()] = v!;
+              });
+              db.itemStat.updateSvtItems();
+            },
+          );
+        }),
       ),
     );
   }
@@ -281,7 +282,7 @@ class ItemListTab extends StatefulWidget {
 
 class _ItemListTabState extends State<ItemListTab> {
   Map<Item, InputComponents<Item>> _allGroups = {};
-  List<InputComponents<Item>> _shownGroups = [];
+  final List<InputComponents<Item>> _shownGroups = [];
   late ScrollController _scrollController;
 
   @override
@@ -347,8 +348,9 @@ class _ItemListTabState extends State<ItemListTab> {
           eng: 'Set all items in this tab to 999')),
       onTapOk: () {
         _shownGroups.forEach((group) {
-          if (group.data.name != Items.qp)
+          if (group.data.name != Items.qp) {
             db.curUser.items[group.data.name] = 999;
+          }
         });
         db.itemStat.updateLeftItems();
       },

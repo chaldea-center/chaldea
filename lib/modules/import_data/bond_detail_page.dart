@@ -6,7 +6,7 @@ class SvtBondDetailPage extends StatefulWidget {
   final Map<int, Servant> svtIdMap;
   final Map<int, UserSvtCollection> cardCollections;
 
-  SvtBondDetailPage(
+  const SvtBondDetailPage(
       {Key? key, required this.svtIdMap, required this.cardCollections})
       : super(key: key);
 
@@ -236,11 +236,12 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                   ),
                 ],
                 onChanged: (v) {
-                  if (v != null)
+                  if (v != null) {
                     setState(() {
                       sortType = v;
                       sort();
                     });
+                  }
                 },
               ),
               IconButton(

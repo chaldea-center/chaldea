@@ -239,10 +239,11 @@ class AppInfo {
   static PackageInfo? get info => _packageInfo;
 
   static String get appName {
-    if (_packageInfo?.appName.isNotEmpty == true)
+    if (_packageInfo?.appName.isNotEmpty == true) {
       return _packageInfo!.appName;
-    else
+    } else {
       return kAppName;
+    }
   }
 
   static Version get versionClass => Version.tryParse(fullVersion)!;
@@ -269,10 +270,10 @@ class AppInfo {
     if (!PlatformU.isAndroid) return ABIType.unknown;
     if (buildNumber <= 100) return ABIType.unknown;
     String buildStr = buildNumber.toString();
-    if (buildStr.startsWith('10')) return ABIType.armeabi_v7a;
-    if (buildStr.startsWith('20')) return ABIType.arm64_v8a;
+    if (buildStr.startsWith('10')) return ABIType.armeabiV7a;
+    if (buildStr.startsWith('20')) return ABIType.arm64V8a;
     if (buildStr.startsWith('40')) return ABIType.x86_64;
-    return ABIType.arm64_v8a;
+    return ABIType.arm64V8a;
   }
 
   static int? get androidSdk => _androidSdk;
@@ -301,7 +302,7 @@ class AppInfo {
   static String get uuid => _uuid!;
 
   static bool get isDebugDevice {
-    final excludeIds = const [
+    const excludeIds = [
       'FB26CA34-0B8F-588C-8542-4A748BB67740', // android
       '739F2CE5-ADA0-5216-B6C9-CBF1D1C33183', // ios
       '1D6D5558-9929-5AB0-9CE7-BC2E188948CD', // macos
@@ -327,8 +328,8 @@ enum MacAppType {
 
 enum ABIType {
   unknown,
-  arm64_v8a,
-  armeabi_v7a,
+  arm64V8a,
+  armeabiV7a,
   x86_64,
 }
 
@@ -337,9 +338,9 @@ extension ABITypeToString on ABIType {
     switch (this) {
       case ABIType.unknown:
         return 'unknown';
-      case ABIType.arm64_v8a:
+      case ABIType.arm64V8a:
         return 'arm64-v8a';
-      case ABIType.armeabi_v7a:
+      case ABIType.armeabiV7a:
         return 'armeabi-v7a';
       case ABIType.x86_64:
         return 'x86_64';

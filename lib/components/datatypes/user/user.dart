@@ -475,14 +475,13 @@ class EventPlans {
 
   Map<String, dynamic> toJson() {
     return _$EventPlansToJson(EventPlans(
-      limitEvents: Map.of(this.limitEvents)
+      limitEvents: Map.of(limitEvents)
         ..removeWhere((key, value) => value.isEmpty),
-      mainRecords: Map.of(this.mainRecords)
+      mainRecords: Map.of(mainRecords)
         ..removeWhere((key, value) => !value.enabled),
-      exchangeTickets: Map.of(this.exchangeTickets)
+      exchangeTickets: Map.of(exchangeTickets)
         ..removeWhere((key, value) => !value.enabled),
-      campaigns: Map.of(this.campaigns)
-        ..removeWhere((key, value) => !value.enabled),
+      campaigns: Map.of(campaigns)..removeWhere((key, value) => !value.enabled),
     ));
   }
 }
@@ -549,11 +548,13 @@ class ExchangeTicketPlan {
   List<int> get items => List.unmodifiable([item1, item2, item3]);
 
   void setAt(int index, int value) {
-    if (index == 0)
+    if (index == 0) {
       item1 = value;
-    else if (index == 1)
+    } else if (index == 1) {
       item2 = value;
-    else if (index == 2) item3 = value;
+    } else if (index == 2) {
+      item3 = value;
+    }
   }
 
   ExchangeTicketPlan({

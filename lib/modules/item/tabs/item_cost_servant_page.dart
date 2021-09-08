@@ -13,12 +13,13 @@ class ItemCostServantPage extends StatelessWidget {
   final int viewType;
   final int sortType;
 
-  ItemCostServantPage({
+  const ItemCostServantPage({
+    Key? key,
     required this.itemKey,
     this.favorite = true,
     this.viewType = 0,
     this.sortType = 0,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +59,7 @@ class ItemCostServantPage extends StatelessWidget {
           final _allSvtCounts =
               db.itemStat.svtItemDetail.allCountByItem.values[i][itemKey];
           bool _hasSvt = _allSvtCounts?.values.any((e) => e > 0) ?? false;
-          if (_hasSvt)
+          if (_hasSvt) {
             children.add(Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,6 +73,7 @@ class ItemCostServantPage extends StatelessWidget {
                     highlight: favorite == false),
               ],
             ));
+          }
         }
       } else if (viewType == 1) {
         children.add(_buildSvtIconGrid(context, details.summation![itemKey],
@@ -161,7 +163,7 @@ class ItemCostServantPage extends StatelessWidget {
           extraNum = details.extra[itemKey]?[svtNo] ?? 0;
       children.add(CustomTile(
         leading: db.getIconImage(svt.icon, width: 52),
-        title: Text('${svt.info.name}', style: textStyle),
+        title: Text(svt.info.name, style: textStyle),
         subtitle: Text(
           Items.extraPlanningItems.contains(itemKey)
               ? '$extraNum'

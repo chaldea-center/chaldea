@@ -5,13 +5,16 @@ enum CmdCodeCompare { no, rarity }
 @JsonSerializable(checked: true)
 class CommandCode with GameCardMixin {
   int gameId;
+  @override
   int no;
+  @override
   String mcLink;
   String name;
   String nameJp;
   String nameEn;
   List<String> nameOther;
   int rarity;
+  @override
   String icon;
   String illustration;
   List<String> illustrators;
@@ -56,6 +59,7 @@ class CommandCode with GameCardMixin {
     required this.niceSkills,
   });
 
+  @override
   String get lName => localizeNoun(name, nameJp, nameEn);
 
   String get lIllustrators =>

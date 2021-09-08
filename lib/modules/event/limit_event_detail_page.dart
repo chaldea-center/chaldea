@@ -23,9 +23,9 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
   LimitEventPlan get plan => db.curUser.events.limitEventOf(event.indexKey);
 
   late TextEditingController _lotteryController;
-  Map<String, TextEditingController> _controllers = {};
+  final Map<String, TextEditingController> _controllers = {};
 
-  List<Summon> _associatedSummons = [];
+  final List<Summon> _associatedSummons = [];
 
   @override
   void initState() {
@@ -49,7 +49,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
     final svt = db.gameData.servants[event.welfareServant];
 
     List<Widget> children = [];
-    children.addAll(this.buildHeaders(context: context, event: event));
+    children.addAll(buildHeaders(context: context, event: event));
     children.add(db.streamBuilder((context) => TileGroup(children: [
           SwitchListTile.adaptive(
             title: Text(S.of(context).plan),
@@ -135,8 +135,8 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
     }
 
     // summons
-    children.addAll(
-        this.buildSummons(context: context, summons: _associatedSummons));
+    children
+        .addAll(buildSummons(context: context, summons: _associatedSummons));
 
     children.add(SizedBox(
       height: 72,

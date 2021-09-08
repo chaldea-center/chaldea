@@ -26,7 +26,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
           FilterGroup(
             useRadio: true,
             padding: EdgeInsets.only(right: 12),
-            options: ['List', 'Grid'],
+            options: const ['List', 'Grid'],
             values: filterData.display,
             combined: true,
             onFilterChanged: (v) {
@@ -88,7 +88,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
         ),
         FilterGroup(
           title: Text('Status'),
-          options: ['0', '1', '2'],
+          options: const ['0', '1', '2'],
           values: filterData.status,
           optionBuilder: (v) {
             return Text(Localized.craftFilter

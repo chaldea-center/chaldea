@@ -5,13 +5,16 @@ enum CraftCompare { no, rarity, atk, hp }
 @JsonSerializable(checked: true)
 class CraftEssence with GameCardMixin {
   int gameId;
+  @override
   int no;
+  @override
   String mcLink;
   String name;
   String nameJp;
   String nameEn;
   List<String> nameOther;
   int rarity;
+  @override
   String icon;
   String illustration;
   List<String> illustrators;
@@ -41,6 +44,7 @@ class CraftEssence with GameCardMixin {
   int valentine;
   List<NiceSkill> niceSkills;
 
+  @override
   String toString() => '$runtimeType($no, $mcLink)';
 
   CraftEssence({
@@ -80,6 +84,7 @@ class CraftEssence with GameCardMixin {
     required this.niceSkills,
   });
 
+  @override
   String get lName => localizeNoun(name, nameJp, nameEn);
 
   String get lIllustrators =>

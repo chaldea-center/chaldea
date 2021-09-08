@@ -8,7 +8,7 @@ mixin CommonBuilder {
   static Widget buildIconGridView(
       {required Map<String, dynamic> data,
       int crossCount = 7,
-      void onTap(String key)?,
+      void Function(String key)? onTap,
       double childAspectRatio = 132 / 144,
       bool scrollable = false}) {
     return GridView.count(

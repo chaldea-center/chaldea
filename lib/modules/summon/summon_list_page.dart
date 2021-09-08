@@ -5,6 +5,8 @@ import 'package:chaldea/modules/summon/filter_page.dart';
 import 'package:chaldea/modules/summon/summon_detail_page.dart';
 
 class SummonListPage extends StatefulWidget {
+  const SummonListPage({Key? key}) : super(key: key);
+
   @override
   _SummonListPageState createState() => _SummonListPageState();
 }
@@ -12,8 +14,6 @@ class SummonListPage extends StatefulWidget {
 class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
   @override
   Iterable<Summon> get wholeData => db.gameData.summons.values;
-  @override
-  List<Summon> shownList = [];
 
   SummonFilterData get filterData => db.userData.summonFilter;
 
@@ -30,7 +30,10 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
   Widget build(BuildContext context) {
     filterShownList();
     if (filterData.reversed) {
-      shownList = shownList.reversed.toList();
+      final reversed = List.of(shownList.reversed);
+      shownList
+        ..clear()
+        ..addAll(reversed);
     }
     shownList.sort((a, b) {
       if (a.isStory && !b.isStory) return -1;
@@ -115,9 +118,7 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
           subtitleText = 'CN ' + subtitleText;
         }
       }
-      if (subtitleText == null) {
-        subtitleText = 'JP ' + (summon.startTimeJp?.split(' ').first ?? '???');
-      }
+      subtitleText ??= 'JP ' + (summon.startTimeJp?.split(' ').first ?? '???');
       if (!summon.isStory) subtitle = Text(subtitleText);
     }
     return ListTile(
@@ -170,10 +171,12 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
   @override
   bool filter(Summon summon) {
     if (filterData.favorite && !plans.contains(summon.indexKey)) return false;
-    if (!filterData.showOutdated && summon.isOutdated() && !summon.isStory)
+    if (!filterData.showOutdated && summon.isOutdated() && !summon.isStory) {
       return false;
-    if (!filterData.category.singleValueFilter(summon.category.toString()))
+    }
+    if (!filterData.category.singleValueFilter(summon.category.toString())) {
       return false;
+    }
     return true;
   }
 }

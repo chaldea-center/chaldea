@@ -2,7 +2,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/home/elements/gallery_item.dart';
 
 class EditGalleryPage extends StatefulWidget {
-  EditGalleryPage({Key? key}) : super(key: key);
+  const EditGalleryPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _EditGalleryPageState();

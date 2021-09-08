@@ -78,8 +78,8 @@ class Language {
 }
 
 class AppColors {
-  static const Color setting_bg = Color(0xFFF9F9F9);
-  static const Color setting_tile = Colors.white;
+  static const Color settingBg = Color(0xFFF9F9F9);
+  static const Color settingTile = Colors.white;
 }
 
 class ClassName {
@@ -87,21 +87,21 @@ class ClassName {
 
   const ClassName(this.name);
 
-  static const all = const ClassName('All');
-  static const saber = const ClassName('Saber');
-  static const archer = const ClassName('Archer');
-  static const lancer = const ClassName('Lancer');
-  static const rider = const ClassName('Rider');
-  static const caster = const ClassName('Caster');
-  static const assassin = const ClassName('Assassin');
-  static const berserker = const ClassName('Berserker');
-  static const shielder = const ClassName('Shielder');
-  static const ruler = const ClassName('Ruler');
-  static const avenger = const ClassName('Avenger');
-  static const alterego = const ClassName('Alterego');
-  static const mooncancer = const ClassName('MoonCancer');
-  static const foreigner = const ClassName('Foreigner');
-  static const beast = const ClassName('Beast');
+  static const all = ClassName('All');
+  static const saber = ClassName('Saber');
+  static const archer = ClassName('Archer');
+  static const lancer = ClassName('Lancer');
+  static const rider = ClassName('Rider');
+  static const caster = ClassName('Caster');
+  static const assassin = ClassName('Assassin');
+  static const berserker = ClassName('Berserker');
+  static const shielder = ClassName('Shielder');
+  static const ruler = ClassName('Ruler');
+  static const avenger = ClassName('Avenger');
+  static const alterego = ClassName('Alterego');
+  static const mooncancer = ClassName('MoonCancer');
+  static const foreigner = ClassName('Foreigner');
+  static const beast = ClassName('Beast');
 
   static List<ClassName> get values => const [
         saber,
@@ -122,7 +122,7 @@ class ClassName {
 }
 
 T localizeNoun<T>(T? nameCn, T? nameJp, T? nameEn,
-    {T k()?, Language? primary}) {
+    {T Function()? k, Language? primary}) {
   // convert '' to null
   if (nameJp is String && nameJp.isEmpty) {
     nameJp = null;

@@ -6,6 +6,8 @@ import 'package:chaldea/modules/servant/servant_detail_page.dart';
 const String _unknownCreator = '---';
 
 class CvListPage extends StatefulWidget {
+  const CvListPage({Key? key}) : super(key: key);
+
   @override
   _CvListPageState createState() => _CvListPageState();
 }
@@ -105,6 +107,7 @@ class _CvListPageState extends SearchableListState<String, CvListPage> {
 class _CVOptions with SearchOptionsMixin<String> {
   bool cvName;
   bool cardName;
+  @override
   ValueChanged? onChanged;
 
   _CvListPageState state;
@@ -148,8 +151,9 @@ class _CVOptions with SearchOptionsMixin<String> {
     StringBuffer buffer = StringBuffer();
 
     List<Servant>? cards = state.cvMap[cv];
-    if (cards == null || cards.isEmpty)
-      return ''; // Although, it should always be passed
+    if (cards == null || cards.isEmpty) {
+      return '';
+    } // Although, it should always be passed
     if (cvName) {
       buffer.write(getCache(
         cv,
@@ -179,6 +183,8 @@ class _CVOptions with SearchOptionsMixin<String> {
 }
 
 class IllustratorListPage extends StatefulWidget {
+  const IllustratorListPage({Key? key}) : super(key: key);
+
   @override
   _IllustratorListPageState createState() => _IllustratorListPageState();
 }
@@ -299,6 +305,7 @@ class _IllustratorListPageState
 class _IllustratorOptions with SearchOptionsMixin<String> {
   bool creatorName;
   bool cardName;
+  @override
   ValueChanged? onChanged;
 
   _IllustratorListPageState state;

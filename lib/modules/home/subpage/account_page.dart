@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:chaldea/components/components.dart';
 
 class AccountPage extends StatefulWidget {
+  const AccountPage({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _AccountPageState();
 }

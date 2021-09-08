@@ -1,6 +1,8 @@
 import 'package:chaldea/components/components.dart';
 
 class GameServerPage extends StatefulWidget {
+  const GameServerPage({Key? key}) : super(key: key);
+
   @override
   _GameServerPageState createState() => _GameServerPageState();
 }

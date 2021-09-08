@@ -13,7 +13,7 @@ class ServantListPage extends StatefulWidget {
   final bool planMode;
   final void Function(Servant)? onSelected;
 
-  ServantListPage({Key? key, this.planMode = false, this.onSelected})
+  const ServantListPage({Key? key, this.planMode = false, this.onSelected})
       : super(key: key);
 
   @override
@@ -45,7 +45,7 @@ class ServantListPageState
   Widget build(BuildContext context) {
     return db.streamBuilder((context) {
       db.curUser.ensurePlanLarger();
-      this.filterShownList(
+      filterShownList(
         compare: (a, b) => Servant.compare(a, b,
             keys: filterData.sortKeys,
             reversed: filterData.sortReversed,
@@ -223,11 +223,12 @@ class ServantListPageState
                   _getHeader(S.of(context).costume + ':'),
                   ...List.generate(3, (col) {
                     final dressIndex = row * 3 + col;
-                    if (dressIndex >= cur.dress.length)
+                    if (dressIndex >= cur.dress.length) {
                       return Container();
-                    else
+                    } else {
                       return _getRange(
                           cur.dress[dressIndex], target.dress[dressIndex]);
+                    }
                   })
                 ],
               ),
@@ -567,7 +568,7 @@ class ServantListPageState
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
-                  boxShadow: [
+                  boxShadow: const [
                     BoxShadow(
                       color: Colors.white,
                       blurRadius: 3,
@@ -791,7 +792,7 @@ class ServantListPageState
                     FilterGroup(
                       useRadio: true,
                       combined: true,
-                      options: ['cur', 'target'],
+                      options: const ['cur', 'target'],
                       values: FilterGroupData(options: {
                         'cur': !changeTarget,
                         'target': changeTarget
@@ -915,10 +916,11 @@ class ServantListPageState
       onPressed: () {
         if (!isSvtFavorite(svt)) return;
         setState(() {
-          if (_hidden)
+          if (_hidden) {
             hiddenPlanServants.remove(svt);
-          else
+          } else {
             hiddenPlanServants.add(svt);
+          }
         });
       },
     );
@@ -968,6 +970,7 @@ class _ServantOptions with SearchOptionsMixin<Servant> {
   bool classPassive;
   bool appendSkill;
   bool noblePhantasm;
+  @override
   ValueChanged? onChanged;
 
   _ServantOptions({
@@ -979,6 +982,7 @@ class _ServantOptions with SearchOptionsMixin<Servant> {
     this.onChanged,
   });
 
+  @override
   Widget builder(BuildContext context, StateSetter setState) {
     return Wrap(
       children: [
@@ -1031,6 +1035,7 @@ class _ServantOptions with SearchOptionsMixin<Servant> {
     );
   }
 
+  @override
   String getSummary(Servant svt) {
     StringBuffer buffer = StringBuffer();
     if (basic) {

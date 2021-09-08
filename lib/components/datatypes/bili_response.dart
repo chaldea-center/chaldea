@@ -196,8 +196,8 @@ class UserSvt {
     required String createdAt,
     required String updatedAt,
     required String isLock,
-    required int hp,
-    required int atk,
+    required this.hp,
+    required this.atk,
   })  : id = int.parse(id),
         svtId = int.parse(svtId),
         limitCount = int.parse(limitCount),
@@ -214,9 +214,7 @@ class UserSvt {
             DateTime.fromMillisecondsSinceEpoch(int.parse(createdAt) * 1000),
         updatedAt =
             DateTime.fromMillisecondsSinceEpoch(int.parse(updatedAt) * 1000),
-        isLock = isLock == '1',
-        hp = hp,
-        atk = atk;
+        isLock = isLock == '1';
 
   factory UserSvt.fromJson(Map<String, dynamic> data) =>
       _$UserSvtFromJson(data);

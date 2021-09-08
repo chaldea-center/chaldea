@@ -42,14 +42,14 @@ class _DebugFloatingMenuButtonState extends State<DebugFloatingMenuButton> {
 
   @override
   Widget build(BuildContext context) {
-    this.updateOffset();
+    updateOffset();
     return Positioned(
       left: offset.dx,
       top: offset.dy,
       child: GestureDetector(
         onPanUpdate: (DragUpdateDetails details) {
           setState(() {
-            this.updateOffset(details.delta);
+            updateOffset(details.delta);
           });
         },
         child: Opacity(

@@ -1,4 +1,4 @@
-import 'dart:js' as js;
+import 'dart:js' as js; // ignore: avoid_web_libraries_in_flutter
 
 import 'js_engine_interface.dart' as platform;
 

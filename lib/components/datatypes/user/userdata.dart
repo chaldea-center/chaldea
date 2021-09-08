@@ -56,7 +56,7 @@ class UserData {
       this.users[defaultName] = User(name: defaultName);
     }
     if (!this.users.containsKey(_curUserKey)) {
-      this._curUserKey = this.users.keys.first;
+      _curUserKey = this.users.keys.first;
     }
     this.users.forEach((key, value) {
       value.key = key;

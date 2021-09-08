@@ -13,7 +13,7 @@ import 'package:path/path.dart' as pathlib;
 class ImportSkillScreenshotPage extends StatefulWidget {
   final bool isAppendSkill;
 
-  ImportSkillScreenshotPage({Key? key, this.isAppendSkill = false})
+  const ImportSkillScreenshotPage({Key? key, this.isAppendSkill = false})
       : super(key: key);
 
   @override
@@ -130,13 +130,14 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
   }
 
   Widget get screenshotsTab {
-    if (imageFiles.isEmpty)
+    if (imageFiles.isEmpty) {
       return Center(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Text(''),
         ),
       );
+    }
     return ListView(
       controller: _scrollController1,
       children: imageFiles.map((e) {
@@ -463,7 +464,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
         setState(() {});
       }
     }).catchError((e, s) {
-      if (!(e is FileSelectionCanceledError)) {
+      if (e is! FileSelectionCanceledError) {
         logger.e('import image failed', e, s);
         EasyLoading.showError(e.toString());
       }
@@ -551,18 +552,19 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
           if (!result.isValid) return;
           final status = db.curUser.svtStatusOf(result.svtNo!);
           status.favorite = true;
-          if (widget.isAppendSkill)
+          if (widget.isAppendSkill) {
             status.curVal.appendSkills = [
               result.skill1!,
               result.skill2!,
               result.skill3!
             ];
-          else
+          } else {
             status.curVal.skills = [
               result.skill1!,
               result.skill2!,
               result.skill3!
             ];
+          }
         });
         db.itemStat.update();
         EasyLoading.showSuccess(S.current.import_data_success);
@@ -584,14 +586,15 @@ class __SkillResultLoaderState extends State<_SkillResultLoader> {
   static final _cacheManager = CacheManager(Config('debug'));
   List<OneSvtRecResult> results = [];
   String? _lastUrl;
-  static Map<String, File> _cachedFiles = {};
+  static final Map<String, File> _cachedFiles = {};
 
   bool get isJson => widget.url.toLowerCase().endsWith('.json');
 
   void _parse(File file) {
-    if (isJson)
+    if (isJson) {
       results =
           SvtRecResults.fromJson(jsonDecode(file.readAsStringSync())).results;
+    }
   }
 
   File? _getFile() {
