@@ -11,6 +11,7 @@ import 'config.dart' show db;
 import 'constants.dart';
 import 'json_store/json_store.dart';
 import 'logger.dart';
+import 'server_api.dart';
 
 class WikiUtil {
   static final CacheManager wikiFileCache = CacheManager(Config('wikiCache'));
@@ -90,30 +91,43 @@ class WikiUtil {
     }
 
     Future<String?> _fullUrl() async {
-      final _dio = HttpUtils.defaultDio;
-      bool isFandomFile = filename.startsWith('fandom.');
-      String api = isFandomFile
-          ? 'https://fategrandorder.fandom.com/api.php'
-          : 'https://fgo.wiki/api.php';
-      Response? response;
-      response = await _dio.get(
-        api,
-        queryParameters: {
-          "action": "query",
-          "format": "json",
-          "prop": "imageinfo",
-          "iiprop": "url",
-          "titles": "File:" + (isFandomFile ? filename.substring(7) : filename)
-        },
-        options: Options(responseType: ResponseType.json),
-      );
-      final info = response.data['query']['pages'].values.first['imageinfo'];
-      if (info == null) return null;
-      String? _trueUrl = info[0]['url'];
+      String? _trueUrl;
+      if (PlatformU.isWeb) {
+        final resp = ChaldeaResponse.fromResponse(await db.serverDio
+            .get('/web/wikiurl', queryParameters: {'name': filename}));
+        print(resp);
+        if (resp.success) {
+          _trueUrl = resp.body;
+        }
+      } else {
+        final _dio = HttpUtils.defaultDio;
+        bool isFandomFile = filename.startsWith('fandom.');
+        String api = isFandomFile
+            ? 'https://fategrandorder.fandom.com/api.php'
+            : 'https://fgo.wiki/api.php';
+        Response? response;
+        response = await _dio.get(
+          api,
+          queryParameters: {
+            "action": "query",
+            "format": "json",
+            "prop": "imageinfo",
+            "iiprop": "url",
+            "titles":
+                "File:" + (isFandomFile ? filename.substring(7) : filename)
+          },
+          options: Options(responseType: ResponseType.json),
+        );
+        final info = response.data['query']['pages'].values.first['imageinfo'];
+        if (info == null) return null;
+        _trueUrl = info[0]['url'];
+      }
       if (_trueUrl != null) {
         print('wikiurl: $filename\n    ->$_trueUrl');
         wikiUrlCache.set(filename, _trueUrl);
-        await _download(_trueUrl).catchError((e, s) => null);
+        if (!PlatformU.isWeb) {
+          await _download(_trueUrl).catchError((e, s) => null);
+        }
       }
       return _trueUrl;
     }

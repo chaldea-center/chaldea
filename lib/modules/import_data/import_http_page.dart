@@ -87,11 +87,10 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       ),
       body: Column(
         children: [
-          Padding(padding: EdgeInsets.only(top: 6)),
           Expanded(
             child: topLogin == null
                 ? Padding(
-                    padding: EdgeInsets.all(8),
+                    padding: EdgeInsets.all(16),
                     child: Column(
                       children: [
                         Text(
@@ -108,7 +107,14 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                   )
                 : LayoutBuilder(
                     builder: (context, constraints) => ListView(
+                      padding: EdgeInsets.symmetric(vertical: 8),
                       children: [
+                        Card(
+                          child: Padding(
+                            padding: EdgeInsets.all(8),
+                            child: Text('2021.09.06国服更新2.26.0之后，抓包暂时失效。'),
+                          ),
+                        ),
                         if (replacedResponse!.firstUser != null)
                           userInfoAccordion,
                         kDefaultDivider,

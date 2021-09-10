@@ -44,12 +44,13 @@ class Database {
   AppSetting get appSetting => userData.appSetting;
 
   Dio get serverDio => Dio(BaseOptions(
-    baseUrl: kServerRoot,
+        baseUrl: kServerRoot,
         // baseUrl: kDebugMode ? 'http://localhost:8183' : kServerRoot,
         queryParameters: {
           'app_ver': AppInfo.version,
           'user_key': AppInfo.uuid,
           'lang': Language.current.code,
+          'os': PlatformU.operatingSystem
         },
         headers: {
           if (!PlatformU.isWeb) 'user-agent': HttpUtils.userAgentChaldea,

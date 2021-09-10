@@ -23,16 +23,18 @@ class BlankPage extends StatelessWidget {
         // assume r=g=b
         int b = Theme.of(context).scaffoldBackgroundColor.blue;
         double v = (255 - b) / 255;
-        img = ColorFiltered(
-          colorFilter: ColorFilter.matrix([
-            //R G  B  A  Const
-            -v, 0, 0, 0, 255,
-            0, -v, 0, 0, 255,
-            0, 0, -v, 0, 255,
-            0, 0, 0, 0.8, 0,
-          ]),
-          child: img,
-        );
+        if (!PlatformU.isWeb) {
+          img = ColorFiltered(
+            colorFilter: ColorFilter.matrix([
+              //R G  B  A  Const
+              -v, 0, 0, 0, 255,
+              0, -v, 0, 0, 255,
+              0, 0, -v, 0, 255,
+              0, 0, 0, 0.8, 0,
+            ]),
+            child: img,
+          );
+        }
       }
       return Scaffold(
         body: Center(
