@@ -44,6 +44,10 @@ class CraftEssence with GameCardMixin {
   int valentine;
   List<NiceSkill> niceSkills;
 
+  String? get skillJp => niceSkills.getOrNull(0)?.detail;
+
+  String? get skillMaxJp => niceSkills.getOrNull(0)?.detail;
+
   @override
   String toString() => '$runtimeType($no, $mcLink)';
 
@@ -90,9 +94,9 @@ class CraftEssence with GameCardMixin {
   String get lIllustrators =>
       localizeNoun(illustrators.join(', '), illustratorsJp, illustratorsEn);
 
-  String get lSkill => localizeNoun(skill, null, skillEn);
+  String get lSkill => localizeNoun(skill, skillJp, skillEn);
 
-  String get lSkillMax => localizeNoun(skillMax, null, skillMaxEn);
+  String get lSkillMax => localizeNoun(skillMax, skillMaxJp, skillMaxEn);
 
   String get lDescription =>
       localizeNoun(description, descriptionJp, descriptionEn);

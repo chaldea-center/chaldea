@@ -1124,6 +1124,9 @@ NiceSkillFunction _$NiceSkillFunctionFromJson(Map<String, dynamic> json) {
     buffs: (json['buffs'] as List<dynamic>)
         .map((e) => NiceSkillBuff.fromJson(e as Map<String, dynamic>))
         .toList(),
+    svals: (json['svals'] as List<dynamic>)
+        .map((e) => NiceEffectVal.fromJson(e as Map<String, dynamic>))
+        .toList(),
   );
 }
 
@@ -1135,6 +1138,24 @@ Map<String, dynamic> _$NiceSkillFunctionToJson(NiceSkillFunction instance) =>
       'funcTargetTeam': instance.funcTargetTeam,
       'funcPopupText': instance.funcPopupText,
       'buffs': instance.buffs,
+      'svals': instance.svals,
+    };
+
+NiceEffectVal _$NiceEffectValFromJson(Map<String, dynamic> json) {
+  return NiceEffectVal(
+    rate: json['Rate'] as int?,
+    turn: json['Turn'] as int?,
+    count: json['Count'] as int?,
+    value: json['Value'] as int?,
+  );
+}
+
+Map<String, dynamic> _$NiceEffectValToJson(NiceEffectVal instance) =>
+    <String, dynamic>{
+      'Rate': instance.rate,
+      'Turn': instance.turn,
+      'Count': instance.count,
+      'Value': instance.value,
     };
 
 NiceSkillBuff _$NiceSkillBuffFromJson(Map<String, dynamic> json) {
@@ -1317,6 +1338,12 @@ Servant _$ServantFromJson(Map<String, dynamic> json) {
           (v) => (v as List<dynamic>)
               .map((e) => NiceSkill.fromJson(e as Map<String, dynamic>))
               .toList()),
+      niceClassPassive: $checkedConvert(
+          json,
+          'niceClassPassive',
+          (v) => (v as List<dynamic>)
+              .map((e) => NiceSkill.fromJson(e as Map<String, dynamic>))
+              .toList()),
       niceNoblePhantasms: $checkedConvert(
           json,
           'niceNoblePhantasms',
@@ -1376,6 +1403,7 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'passiveSkillsEn': instance.passiveSkillsEn,
       'appendSkills': instance.appendSkills,
       'niceSkills': instance.niceSkills,
+      'niceClassPassive': instance.niceClassPassive,
       'niceNoblePhantasms': instance.niceNoblePhantasms,
       'coinSummonNum': instance.coinSummonNum,
       'itemCost': instance.itemCost,

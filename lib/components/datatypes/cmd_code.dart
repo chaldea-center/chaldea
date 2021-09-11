@@ -23,6 +23,8 @@ class CommandCode with GameCardMixin {
   String skillIcon;
   String skill;
   String? skillEn;
+
+  String? get skillJp => niceSkills.getOrNull(0)?.detail;
   String? description;
   String? descriptionJp;
   String? descriptionEn;
@@ -65,7 +67,7 @@ class CommandCode with GameCardMixin {
   String get lIllustrators =>
       localizeNoun(illustrators.join(' & '), illustratorsJp, illustratorsEn);
 
-  String get lSkill => localizeNoun(skill, null, skillEn);
+  String get lSkill => localizeNoun(skill, skillJp, skillEn);
 
   String get lDescription =>
       localizeNoun(description, descriptionJp, descriptionEn);

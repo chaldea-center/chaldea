@@ -50,9 +50,10 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
       _state = status.skillIndex.getOrNull(index);
     }
     _state ??= activeSkill.skills.length - 1;
-    Skill skill = activeSkill.ofIndex(_state);
-    String name = '${skill.name} ${skill.rank}';
-    String nameJp = '${skill.nameJp} ${skill.rank}';
+    Skill? skill = activeSkill.ofIndex(_state);
+    if (skill == null) return Container();
+    String name = '${skill.name} ${skill.rank ?? ""}';
+    String nameJp = '${skill.nameJp} ${skill.rank ?? ""}';
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,

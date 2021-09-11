@@ -30,6 +30,7 @@ class Servant with GameCardMixin {
   List<Skill> passiveSkillsEn;
   List<Skill> appendSkills;
   List<NiceSkill> niceSkills;
+  List<NiceSkill> niceClassPassive;
   List<NiceNoblePhantasm> niceNoblePhantasms;
   int coinSummonNum;
   ItemCost itemCost;
@@ -47,6 +48,34 @@ class Servant with GameCardMixin {
   // from data file not in code
   static List<int> get unavailable => db.gameData.unavailableSvts;
 
+  Servant({
+    required this.no,
+    required this.svtId,
+    required this.mcLink,
+    required this.icon,
+    required this.info,
+    required this.noblePhantasm,
+    required this.noblePhantasmEn,
+    required this.activeSkills,
+    required this.activeSkillsEn,
+    required this.passiveSkills,
+    required this.passiveSkillsEn,
+    required this.appendSkills,
+    required this.niceSkills,
+    required this.niceClassPassive,
+    required this.niceNoblePhantasms,
+    required this.coinSummonNum,
+    required this.itemCost,
+    required this.costumeNos,
+    required this.bondPoints,
+    required this.profiles,
+    required this.voices,
+    required this.bondCraft,
+    required this.valentineCraft,
+    required this.icons,
+    required this.sprites,
+  }) : originNo = no;
+
   @override
   String toString() => '$runtimeType(No.$no-$mcLink)';
 
@@ -63,7 +92,7 @@ class Servant with GameCardMixin {
       clsName = info.className;
     }
     assert(SvtFilterData.classesData.contains(clsName),
-    'svt class name: "$clsName", ${clsName == "Beast"},${SvtFilterData.classesData}');
+        'svt class name: "$clsName", ${clsName == "Beast"},${SvtFilterData.classesData}');
     return clsName;
   }
 
@@ -80,39 +109,6 @@ class Servant with GameCardMixin {
   List<Skill> get lPassiveSkills => Language.isEN && passiveSkillsEn.isNotEmpty
       ? passiveSkillsEn
       : passiveSkills;
-
-  Servant({
-    required this.no,
-    required this.svtId,
-    required this.mcLink,
-    required this.icon,
-    required this.info,
-    required this.noblePhantasm,
-    required this.noblePhantasmEn,
-    required this.activeSkills,
-    required this.activeSkillsEn,
-    required this.passiveSkills,
-    required this.passiveSkillsEn,
-    required this.appendSkills,
-    required this.niceSkills,
-    required this.niceNoblePhantasms,
-    required this.coinSummonNum,
-    required this.itemCost,
-    required this.costumeNos,
-    required this.bondPoints,
-    required this.profiles,
-    required this.voices,
-    required this.bondCraft,
-    required this.valentineCraft,
-    required this.icons,
-    required this.sprites,
-  }) : originNo = no;
-
-  Servant duplicate(int newNo) {
-    return Servant.fromJson(deepCopy(this))
-      ..no = newNo
-      ..originNo = originNo;
-  }
 
   String get cardBackFace {
     final _colors = ['黑', '铜', '铜', '银', '金', '金'];
@@ -131,10 +127,17 @@ class Servant with GameCardMixin {
     return key;
   }
 
+  Servant duplicate(int newNo) {
+    return Servant.fromJson(deepCopy(this))
+      ..no = newNo
+      ..originNo = originNo;
+  }
+
   /// [cur]=[target]=null: all
   /// [cur.favorite]=true
   /// else empty
-  Map<String, int> getAllCost({ServantStatus? status, ServantPlan? target, bool all = false}) {
+  Map<String, int> getAllCost(
+      {ServantStatus? status, ServantPlan? target, bool all = false}) {
     if (all) {
       return sumDict([
         getAscensionCost(),
@@ -164,7 +167,8 @@ class Servant with GameCardMixin {
     }
   }
 
-  SvtParts<Map<String, int>> getAllCostParts({ServantStatus? status, ServantPlan? target, bool all = false}) {
+  SvtParts<Map<String, int>> getAllCostParts(
+      {ServantStatus? status, ServantPlan? target, bool all = false}) {
     // no grail?
     if (all) {
       return SvtParts(
@@ -180,7 +184,7 @@ class Servant with GameCardMixin {
     if (cur?.favorite == true) {
       return SvtParts(
         ascension:
-        getAscensionCost(cur: cur!.ascension, target: target.ascension),
+            getAscensionCost(cur: cur!.ascension, target: target.ascension),
         skill: getSkillCost(cur: cur.skills, target: target.skills),
         dress: getDressCost(cur: cur.dress, target: target.dress),
         appendSkill: getAppendSkillCost(
@@ -368,7 +372,8 @@ class Servant with GameCardMixin {
     );
   }
 
-  static Widget withFavIcon({required Widget child, bool favorite = false, double size = 10}) {
+  static Widget withFavIcon(
+      {required Widget child, bool favorite = false, double size = 10}) {
     if (!favorite) return child;
     return Stack(
       alignment: Alignment.topRight,
@@ -556,7 +561,8 @@ class ActiveSkill {
 
   ActiveSkill({required this.cnState, required this.skills});
 
-  Skill ofIndex(int? index) {
+  Skill? ofIndex(int? index) {
+    if (skills.isEmpty) return null;
     if (index != null && index >= 0 && index < skills.length) {
       return skills[index];
     } else {

@@ -171,6 +171,16 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
         ),
         ListTile(
           horizontalTitleGap: 0,
+          leading: Icon(Icons.palette_outlined),
+          title: Text('Load GameData'),
+          onTap: () {
+            db.loadGameData();
+            db.notifyAppUpdate();
+            Navigator.pop(context);
+          },
+        ),
+        ListTile(
+          horizontalTitleGap: 0,
           leading: Icon(Icons.timer),
           title: Text('Hide 60s'),
           onTap: () {

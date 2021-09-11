@@ -108,9 +108,12 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         } else {
           _state = status.skillIndex.getOrNull(index);
         }
-        Skill skill = activeSkill.ofIndex(_state);
-        String shownName =
-            Language.isCN ? skill.name : (skill.nameJp ?? skill.name);
+        Skill? skill = activeSkill.ofIndex(_state);
+        if (skill == null) continue;
+        String shownName = skill.localizedName;
+        if (skill.rank?.isNotEmpty == true) {
+          shownName += ' ${skill.rank}';
+        }
         if (index >= 3) {
           skillWidgets.add(buildPlanRow(
               start: 0, minVal: 0, maxVal: 0, onValueChanged: (_, __) {}));
@@ -118,7 +121,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           skillWidgets.add(buildPlanRow(
             useSlider: sliderMode,
             leading: db.getIconImage(skill.icon, width: 33),
-            title: '$shownName ${skill.rank}',
+            title: shownName,
             start: curVal.skills[index],
             end: targetVal.skills[index],
             minVal: 1,

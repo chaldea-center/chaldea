@@ -122,14 +122,17 @@ class ClassName {
 }
 
 T localizeNoun<T>(T? nameCn, T? nameJp, T? nameEn,
-    {T Function()? k, Language? primary}) {
+    {T Function()? k, Language? primary, bool Function(T)? test}) {
   // convert '' to null
-  if (nameJp is String && nameJp.isEmpty) {
-    nameJp = null;
+  T? _check(T? v) {
+    if (v == null) return null;
+    if (test != null) return test(v) ? v : null;
+    if (v is String) return v.isNotEmpty ? v : null;
   }
-  if (nameEn is String && nameEn.isEmpty) {
-    nameEn = null;
-  }
+
+  nameCn = _check(nameCn);
+  nameJp = _check(nameJp);
+  nameEn = _check(nameEn);
 
   primary ??= Language.current;
   List<T?> names = primary == Language.chs

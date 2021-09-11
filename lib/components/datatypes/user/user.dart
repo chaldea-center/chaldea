@@ -251,7 +251,8 @@ class ServantStatus {
     for (int i = 0; i < skillNum; i++) {
       if (skillIndex[i] != null) {
         if (svt != null &&
-            svt.lActiveSkills.getOrNull(skillIndex[i]!) == null) {
+            svt.lActiveSkills.getOrNull(i)?.skills.getOrNull(skillIndex[i]!) ==
+                null) {
           skillIndex[i] = null;
         }
       }

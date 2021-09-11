@@ -1,6 +1,68 @@
 /// Atlas Academy nicely bundled data
 part of datatypes;
 
+class NiceUtil {
+  static List<ActiveSkill> niceToActive(List<NiceSkill> niceSkills) {
+    List<ActiveSkill> activeSkills =
+        List.generate(3, (index) => ActiveSkill(cnState: 0, skills: []));
+    for (final niceSkill in niceSkills) {
+      activeSkills[niceSkill.num - 1].skills.add(niceToSkill(niceSkill));
+    }
+
+    return activeSkills;
+  }
+
+  static List<Skill> niceToPassive(List<NiceSkill> niceSkills) {
+    List<Skill> passiveSkills = [];
+    for (final niceSkill in niceSkills) {
+      passiveSkills.add(niceToSkill(niceSkill));
+    }
+    return passiveSkills;
+  }
+
+  static Skill niceToSkill(NiceSkill niceSkill) {
+    return Skill(
+      state: niceSkill.name,
+      openCondition: null,
+      name: niceSkill.name,
+      nameJp: null,
+      nameEn: null,
+      rank: null,
+      icon: niceSkill.icon,
+      cd: niceSkill.coolDown.first,
+      effects: niceToEffects(niceSkill),
+    );
+  }
+
+  static List<Effect> niceToEffects(NiceSkill skill) {
+    // todo: parse nice
+    List<Effect> effects = [];
+    effects.add(Effect(
+      description: skill.detail,
+      descriptionJp: null,
+      descriptionEn: null,
+      lvData: [],
+    ));
+    for (final NiceSkillFunction function in skill.functions) {
+      if (function.funcTargetTeam == 'enemy') continue;
+      List<String> lvData = [];
+      for (final val in function.svals) {
+        lvData.add(function.displayValue(val) ?? '');
+      }
+      if (lvData.toSet().length == 1) {
+        lvData = [lvData.first];
+      }
+      effects.add(Effect(
+        description: function.funcPopupText,
+        descriptionJp: null,
+        descriptionEn: null,
+        lvData: lvData,
+      ));
+    }
+    return effects;
+  }
+}
+
 @JsonSerializable()
 class NiceSkill {
   int id;
@@ -95,6 +157,7 @@ class NiceSkillFunction {
   String funcTargetTeam;
   String funcPopupText;
   List<NiceSkillBuff> buffs;
+  List<NiceEffectVal> svals;
 
   NiceSkillFunction({
     required this.funcId,
@@ -103,12 +166,50 @@ class NiceSkillFunction {
     required this.funcTargetTeam,
     required this.funcPopupText,
     required this.buffs,
+    required this.svals,
   });
+
+  String? displayValue(NiceEffectVal val) {
+    if (val.value == null) return null;
+    if (val.rate == null) return val.value.toString();
+    num value = val.value!;
+    if (funcType == 'gainNp') {
+      return formatNumber(value / 10000, percent: true);
+    }
+    if (funcType == 'gainStar') {
+      return value.toString();
+    }
+    return formatNumber(value / 1000, percent: true);
+  }
 
   factory NiceSkillFunction.fromJson(Map<String, dynamic> data) =>
       _$NiceSkillFunctionFromJson(data);
 
   Map<String, dynamic> toJson() => _$NiceSkillFunctionToJson(this);
+}
+
+@JsonSerializable()
+class NiceEffectVal {
+  @JsonKey(name: 'Rate')
+  int? rate;
+  @JsonKey(name: 'Turn')
+  int? turn;
+  @JsonKey(name: 'Count')
+  int? count;
+  @JsonKey(name: 'Value')
+  int? value;
+
+  NiceEffectVal({
+    this.rate,
+    this.turn,
+    this.count,
+    this.value,
+  });
+
+  factory NiceEffectVal.fromJson(Map<String, dynamic> data) =>
+      _$NiceEffectValFromJson(data);
+
+  Map<String, dynamic> toJson() => _$NiceEffectValToJson(this);
 }
 
 @JsonSerializable()
