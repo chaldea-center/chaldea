@@ -29,6 +29,17 @@ class ServantListPageState
 
   SvtFilterData get filterData => db.userData.svtFilter;
 
+  int get favoriteState =>
+      widget.planMode ? filterData.planFavorite : filterData.favorite;
+
+  set favoriteState(int v) {
+    if (widget.planMode) {
+      filterData.planFavorite = v;
+    } else {
+      filterData.favorite = v;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -37,6 +48,9 @@ class ServantListPageState
     }
     if (db.appSetting.favoritePreferred != null) {
       filterData.favorite = db.appSetting.favoritePreferred! ? 1 : 0;
+    }
+    if (widget.planMode) {
+      filterData.planFavorite = 1;
     }
     options = _ServantOptions(onChanged: (_) => safeSetState());
   }
@@ -76,11 +90,11 @@ class ServantListPageState
               Icons.remove_circle_outline,
               Icons.favorite,
               Icons.favorite_border
-            ][filterData.favorite % 3]),
-            tooltip: ['All', 'Favorite', 'Others'][filterData.favorite % 3],
+            ][favoriteState % 3]),
+            tooltip: ['All', 'Favorite', 'Others'][favoriteState % 3],
             onPressed: () {
               setState(() {
-                filterData.favorite = (filterData.favorite + 1) % 3;
+                favoriteState = (favoriteState + 1) % 3;
               });
             }),
         IconButton(
@@ -244,7 +258,7 @@ class ServantListPageState
   bool changeTarget = true;
   int? _changedAscension;
   int? _changedSkill;
-  int? _changedAppend;
+  int? _changedAppend; // only append skill 2 - NP related
   int? _changedDress;
 
   @override
@@ -256,8 +270,8 @@ class ServantListPageState
   bool filter(Servant svt) {
     final svtStat = db.curUser.svtStatusOf(svt.no);
     final svtPlan = db.curUser.svtPlanOf(svt.no);
-    if ((filterData.favorite == 1 && !svtStat.favorite) ||
-        (filterData.favorite == 2 && svtStat.favorite)) {
+    if ((favoriteState == 1 && !svtStat.favorite) ||
+        (favoriteState == 2 && svtStat.favorite)) {
       return false;
     }
     if (filterData.hasDress) {
@@ -594,11 +608,6 @@ class ServantListPageState
     if (!widget.planMode) return null;
 
     final buttons = [
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Text(
-            LocalizedText.of(chs: '统一设定:', jpn: 'すべてを設定:', eng: 'Set All:')),
-      ),
       DropdownButton<int>(
         value: _changedAscension,
         icon: Container(),
@@ -676,15 +685,15 @@ class ServantListPageState
       DropdownButton<int>(
         value: _changedAppend,
         icon: Container(),
-        hint: Text(S.current.append_skill_short),
+        hint: Text(S.current.append_skill_short + '2'),
         items: List.generate(12, (i) {
           if (i == 0) {
             return const DropdownMenuItem(value: -1, child: Text('x + 1'));
           } else {
             return DropdownMenuItem(
               value: i - 1,
-              child: Text(S.current
-                  .words_separate(S.current.skill, (i - 1).toString())),
+              child: Text(S.current.words_separate(
+                  S.current.append_skill_short + '2-', (i - 1).toString())),
             );
           }
         }),
@@ -696,20 +705,19 @@ class ServantListPageState
               if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
                 final cur = db.curUser.svtStatusOf(svt.no).curVal,
                     target = db.curUser.svtPlanOf(svt.no);
-                for (int i = 0; i < 3; i++) {
-                  if (changeTarget) {
-                    if (v == -1) {
-                      target.appendSkills[i] = min(10, cur.appendSkills[i] + 1);
-                    } else {
-                      target.appendSkills[i] =
-                          max(cur.appendSkills[i], _changedAppend!);
-                    }
+                int i = 1; // only change append skill 2 - NP
+                if (changeTarget) {
+                  if (v == -1) {
+                    target.appendSkills[i] = min(10, cur.appendSkills[i] + 1);
                   } else {
-                    if (v == -1) {
-                      cur.appendSkills[i] = min(10, cur.appendSkills[i] + 1);
-                    } else {
-                      cur.appendSkills[i] = _changedAppend!;
-                    }
+                    target.appendSkills[i] =
+                        max(cur.appendSkills[i], _changedAppend!);
+                  }
+                } else {
+                  if (v == -1) {
+                    cur.appendSkills[i] = min(10, cur.appendSkills[i] + 1);
+                  } else {
+                    cur.appendSkills[i] = _changedAppend!;
                   }
                 }
               }
@@ -766,6 +774,11 @@ class ServantListPageState
                   spacing: 6,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Text(LocalizedText.of(
+                          chs: '统一设定', jpn: 'すべてを設定', eng: 'Set All')),
+                    ),
                     FilterGroup(
                       useRadio: true,
                       combined: true,
@@ -788,16 +801,14 @@ class ServantListPageState
                           jpn: s == 'target' ? '目標値' : '現在値',
                           eng: s == 'target' ? 'Target' : 'Current')),
                     ),
-                    ElevatedButton(
+                    IconButton(
                       onPressed: () {
                         db.itemStat.updateSvtItems();
                         SplitRoute.push(context, ItemListPage(), detail: false);
                       },
-                      child: Text('→' + S.of(context).item),
-                      style: ElevatedButton.styleFrom(
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        visualDensity: VisualDensity.compact,
-                      ),
+                      color: Theme.of(context).colorScheme.secondary,
+                      icon: const Icon(Icons.category),
+                      tooltip: S.current.item_title,
                     ),
                   ],
                 ),

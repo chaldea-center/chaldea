@@ -4,6 +4,7 @@ part of datatypes;
 class SvtFilterData {
   /// 0-all, 1-fav, 2-not fav
   int favorite;
+  int planFavorite;
 
   FilterGroupData display;
   List<SvtCompare> sortKeys;
@@ -33,6 +34,7 @@ class SvtFilterData {
 
   SvtFilterData({
     int? favorite,
+    int? planFavorite,
     FilterGroupData? display,
     List<SvtCompare>? sortKeys,
     List<bool>? sortReversed,
@@ -55,6 +57,7 @@ class SvtFilterData {
     FilterGroupData? effectScope,
     FilterGroupData? effects,
   })  : favorite = favorite ?? 0,
+        planFavorite = planFavorite ?? 0,
         display = display ?? FilterGroupData(options: {'List': true}),
         sortKeys = sortKeys ?? List.generate(3, (i) => sortKeyData[i]),
         sortReversed = sortReversed ?? List.generate(3, (index) => true),
@@ -77,6 +80,7 @@ class SvtFilterData {
         effectScope = effectScope ?? FilterGroupData(),
         effects = effects ?? FilterGroupData() {
     this.favorite = fixValidRange(this.favorite, 0, 2);
+    this.planFavorite = fixValidRange(this.planFavorite, 0, 2);
     fillListValue(this.sortKeys, 3, (i) => sortKeyData[i]);
     fillListValue(this.sortReversed, 3, (_) => true);
   }

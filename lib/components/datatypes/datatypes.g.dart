@@ -1879,6 +1879,7 @@ SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
   return $checkedNew('SvtFilterData', json, () {
     final val = SvtFilterData(
       favorite: $checkedConvert(json, 'favorite', (v) => v as int?),
+      planFavorite: $checkedConvert(json, 'planFavorite', (v) => v as int?),
       display: $checkedConvert(
           json,
           'display',
@@ -2004,6 +2005,7 @@ SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
     <String, dynamic>{
       'favorite': instance.favorite,
+      'planFavorite': instance.planFavorite,
       'display': instance.display,
       'sortKeys': instance.sortKeys.map((e) => _$SvtCompareEnumMap[e]).toList(),
       'sortReversed': instance.sortReversed,
