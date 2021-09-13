@@ -20,4 +20,9 @@ class FuncBuffTypeBase<T> {
     if (name.isNotEmpty) return name;
     return type;
   }
+
+  @override
+  String toString() {
+    return '$runtimeType($index,$type,$nameCn,$nameJp,$nameEn)';
+  }
 }

@@ -684,6 +684,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       ));
     }
 
+    buttons.add(const SizedBox(width: 8));
+
     // Lv.x or ≠
     bool skillLvEqual =
         Set.from((enhanceMode ? targetPlan : curVal).skills).length == 1;
