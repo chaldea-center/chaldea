@@ -36,7 +36,7 @@ abstract class SearchableListState<T, St extends StatefulWidget>
     final keyword = searchEditingController.text.trim();
     query.parse(keyword);
     for (final T datum in wholeData) {
-      if (keyword.isNotEmpty) {
+      if (keyword.isNotEmpty || (showSearchBar && _allowSummary)) {
         String summary = getSummary(datum);
         if (!query.match(summary)) continue;
       }
@@ -63,12 +63,23 @@ abstract class SearchableListState<T, St extends StatefulWidget>
     searchEditingController.dispose();
   }
 
+  bool _allowSummary = false;
+
   Widget get searchIcon {
     return IconButton(
       onPressed: () {
         setState(() {
           showSearchBar = !showSearchBar;
           if (!showSearchBar) searchEditingController.text = '';
+          if (showSearchBar && !_allowSummary) {
+            Future.delayed(kThemeAnimationDuration, () {
+              if (mounted) {
+                setState(() {
+                  _allowSummary = true;
+                });
+              }
+            });
+          }
         });
       },
       icon: Icon(Icons.search),
@@ -112,11 +123,11 @@ abstract class SearchableListState<T, St extends StatefulWidget>
               child: Icon(Icons.arrow_upward),
               onPressed: () => scrollController.animateTo(0,
                   duration: Duration(milliseconds: 600), curve: Curves.easeOut),
-                ),
-              ),
             ),
-            body: buildScrollable(useGrid: useGrid),
           ),
+        ),
+        body: buildScrollable(useGrid: useGrid),
+      ),
     );
   }
 

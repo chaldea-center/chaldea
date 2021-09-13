@@ -113,7 +113,7 @@
   "view_illustration": "查看卡面",
   "obtain_methods": "获取方式",
   "active_skill": "保有技能",
-  "passive_skill": "职阶技能",
+  "passive_skill": "被动技能",
   "card_description": "解说",
   "filter": "筛选",
   "filter_shown_type": "显示",
@@ -130,6 +130,7 @@
   "filter_attribute": "阵营",
   "filter_gender": "性别",
   "filter_special_trait": "特殊特性",
+  "filter_effects": "效果",
   "free_quest": "Free本",
   "drop_calc_empty_hint": "点击 + 添加素材",
   "item_already_exist_hint": "{name}已存在",
@@ -414,5 +415,6 @@
   "critical_attack": "暴击",
   "overview": "概览",
   "append_skill_short": "附加",
-  "copied": "已复制"
+  "copied": "已复制",
+  "effect_search": "Buff搜索"
 }

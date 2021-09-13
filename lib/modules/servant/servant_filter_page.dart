@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/components/datatypes/effect_type/effect_type.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -103,6 +104,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             update();
           },
         ),
+        const Divider(height: 16),
         FilterGroup(
           title: Text(LocalizedText(
                   chs: '重复从者', jpn: '重複サーバント', eng: 'Duplicated Servant')
@@ -152,6 +154,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             update();
           },
         ),
+        const Divider(height: 16),
         FilterGroup(
           title: Text(S.of(context).filter_obtain, style: textStyle),
           options: SvtFilterData.obtainData,
@@ -213,15 +216,41 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             update();
           },
         ),
+        // FilterGroup(
+        //   title: Text('Special', style: textStyle),
+        //   options: const ['充能(技能)', '充能(宝具)'],
+        //   values: filterData.special,
+        //   showInvert: true,
+        //   showMatchAll: true,
+        //   optionBuilder: (v) => Text(Localized.svtFilter.of(v)),
+        //   onFilterChanged: (value) {
+        //     // filterData.special = value;
+        //     update();
+        //   },
+        // ),
+        const Divider(height: 16),
         FilterGroup(
-          title: Text('Special', style: textStyle),
-          options: const ['充能(技能)', '充能(宝具)'],
-          values: filterData.special,
-          showInvert: true,
-          showMatchAll: true,
-          optionBuilder: (v) => Text(Localized.svtFilter.of(v)),
+          title: Text(LocalizedText.of(
+              chs: '效果范围', jpn: '効果の範囲', eng: 'Scope of Effects')),
+          options: SvtFilterData.buffScope,
+          values: filterData.effectScope,
+          optionBuilder: (v) => Text([
+            S.current.active_skill,
+            S.current.noble_phantasm,
+            S.current.passive_skill
+          ][int.parse(v)]),
           onFilterChanged: (value) {
-            // filterData.special = value;
+            update();
+          },
+        ),
+        FilterGroup(
+          title: Text(S.current.filter_effects),
+          options: EffectType.svtEffectsMap.keys.toList(),
+          values: filterData.effects,
+          showMatchAll: true,
+          showInvert: true,
+          optionBuilder: (v) => Text(EffectType.svtEffectsMap[v]!.shownName),
+          onFilterChanged: (value) {
             update();
           },
         ),

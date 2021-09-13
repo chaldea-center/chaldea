@@ -163,7 +163,7 @@ class MarkdownHelpPage extends StatefulWidget {
     try {
       content = await rootBundle.loadString(assetKey);
     } catch (e) {
-      // print(e);
+      content = null;
     }
     if (content?.trim().isNotEmpty == true) {
       return content;
@@ -202,13 +202,14 @@ class _MarkdownHelpPageState extends State<MarkdownHelpPage> {
           ) ??
           'Load failed';
     }
-    if (mounted) setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(kSplitRouteDuration, _parse);
+    Future.delayed(kSplitRouteDuration, _parse).then((_) {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
@@ -225,7 +226,6 @@ class _MarkdownHelpPageState extends State<MarkdownHelpPage> {
 
   @override
   Widget build(BuildContext context) {
-    _parse();
     return Scaffold(
       appBar: AppBar(
         leading: widget.leading,

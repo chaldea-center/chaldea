@@ -26,7 +26,7 @@ class _ValueStatefulBuilderState<T> extends State<ValueStatefulBuilder<T>> {
   }
 
   void updateState() {
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   @override

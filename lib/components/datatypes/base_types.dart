@@ -73,6 +73,8 @@ mixin GameCardMixin {
     EdgeInsets? padding,
     EdgeInsets? textPadding,
     VoidCallback? onTap,
+    bool jumpToDetail = true,
+    bool popDetail = false,
   }) {
     return cardIconBuilder(
       context: context,
@@ -123,5 +125,17 @@ mixin GameCardMixin {
       );
     }
     return child;
+  }
+
+  Widget resolveDetailPage() {
+    if (this is Servant) {
+      return ServantDetailPage(this as Servant);
+    } else if (this is CraftEssence) {
+      return CraftDetailPage(ce: this as CraftEssence);
+    } else if (this is CommandCode) {
+      return CmdCodeDetailPage(code: this as CommandCode);
+    } else {
+      throw TypeError();
+    }
   }
 }

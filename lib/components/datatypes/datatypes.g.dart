@@ -1043,7 +1043,7 @@ NiceSkill _$NiceSkillFromJson(Map<String, dynamic> json) {
     icon: json['icon'] as String,
     coolDown: (json['coolDown'] as List<dynamic>).map((e) => e as int).toList(),
     functions: (json['functions'] as List<dynamic>)
-        .map((e) => NiceSkillFunction.fromJson(e as Map<String, dynamic>))
+        .map((e) => NiceFunction.fromJson(e as Map<String, dynamic>))
         .toList(),
   );
 }
@@ -1089,7 +1089,7 @@ NiceNoblePhantasm _$NiceNoblePhantasmFromJson(Map<String, dynamic> json) {
         .map((e) => e as Map<String, dynamic>)
         .toList(),
     functions: (json['functions'] as List<dynamic>)
-        .map((e) => NiceSkillFunction.fromJson(e as Map<String, dynamic>))
+        .map((e) => NiceFunction.fromJson(e as Map<String, dynamic>))
         .toList(),
   );
 }
@@ -1114,15 +1114,15 @@ Map<String, dynamic> _$NiceNoblePhantasmToJson(NiceNoblePhantasm instance) =>
       'functions': instance.functions,
     };
 
-NiceSkillFunction _$NiceSkillFunctionFromJson(Map<String, dynamic> json) {
-  return NiceSkillFunction(
+NiceFunction _$NiceFunctionFromJson(Map<String, dynamic> json) {
+  return NiceFunction(
     funcId: json['funcId'] as int,
     funcType: json['funcType'] as String,
     funcTargetType: json['funcTargetType'] as String,
     funcTargetTeam: json['funcTargetTeam'] as String,
     funcPopupText: json['funcPopupText'] as String,
     buffs: (json['buffs'] as List<dynamic>)
-        .map((e) => NiceSkillBuff.fromJson(e as Map<String, dynamic>))
+        .map((e) => NiceBuff.fromJson(e as Map<String, dynamic>))
         .toList(),
     svals: (json['svals'] as List<dynamic>)
         .map((e) => NiceEffectVal.fromJson(e as Map<String, dynamic>))
@@ -1130,7 +1130,7 @@ NiceSkillFunction _$NiceSkillFunctionFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$NiceSkillFunctionToJson(NiceSkillFunction instance) =>
+Map<String, dynamic> _$NiceFunctionToJson(NiceFunction instance) =>
     <String, dynamic>{
       'funcId': instance.funcId,
       'funcType': instance.funcType,
@@ -1139,6 +1139,24 @@ Map<String, dynamic> _$NiceSkillFunctionToJson(NiceSkillFunction instance) =>
       'funcPopupText': instance.funcPopupText,
       'buffs': instance.buffs,
       'svals': instance.svals,
+    };
+
+NiceBuff _$NiceBuffFromJson(Map<String, dynamic> json) {
+  return NiceBuff(
+    id: json['id'] as int,
+    name: json['name'] as String,
+    detail: json['detail'] as String,
+    type: json['type'] as String,
+    buffGroup: json['buffGroup'] as int,
+  );
+}
+
+Map<String, dynamic> _$NiceBuffToJson(NiceBuff instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'detail': instance.detail,
+      'type': instance.type,
+      'buffGroup': instance.buffGroup,
     };
 
 NiceEffectVal _$NiceEffectValFromJson(Map<String, dynamic> json) {
@@ -1156,25 +1174,6 @@ Map<String, dynamic> _$NiceEffectValToJson(NiceEffectVal instance) =>
       'Turn': instance.turn,
       'Count': instance.count,
       'Value': instance.value,
-    };
-
-NiceSkillBuff _$NiceSkillBuffFromJson(Map<String, dynamic> json) {
-  return NiceSkillBuff(
-    id: json['id'] as int,
-    name: json['name'] as String,
-    detail: json['detail'] as String,
-    type: json['type'] as String,
-    buffGroup: json['buffGroup'] as int,
-  );
-}
-
-Map<String, dynamic> _$NiceSkillBuffToJson(NiceSkillBuff instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-      'detail': instance.detail,
-      'type': instance.type,
-      'buffGroup': instance.buffGroup,
     };
 
 Quest _$QuestFromJson(Map<String, dynamic> json) {
@@ -1985,6 +1984,18 @@ SvtFilterData _$SvtFilterDataFromJson(Map<String, dynamic> json) {
           (v) => v == null
               ? null
               : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      effectScope: $checkedConvert(
+          json,
+          'effectScope',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      effects: $checkedConvert(
+          json,
+          'effects',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
     );
     return val;
   });
@@ -2012,6 +2023,8 @@ Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
       'gender': instance.gender,
       'trait': instance.trait,
       'special': instance.special,
+      'effectScope': instance.effectScope,
+      'effects': instance.effects,
     };
 
 K _$enumDecode<K, V>(
@@ -2090,6 +2103,12 @@ CraftFilterData _$CraftFilterDataFromJson(Map<String, dynamic> json) {
           (v) => v == null
               ? null
               : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      effects: $checkedConvert(
+          json,
+          'effects',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
     );
     return val;
   });
@@ -2105,6 +2124,7 @@ Map<String, dynamic> _$CraftFilterDataToJson(CraftFilterData instance) =>
       'category': instance.category,
       'atkHpType': instance.atkHpType,
       'status': instance.status,
+      'effects': instance.effects,
     };
 
 const _$CraftCompareEnumMap = {
@@ -2143,6 +2163,12 @@ CmdCodeFilterData _$CmdCodeFilterDataFromJson(Map<String, dynamic> json) {
           (v) => v == null
               ? null
               : FilterGroupData.fromJson(v as Map<String, dynamic>)),
+      effects: $checkedConvert(
+          json,
+          'effects',
+          (v) => v == null
+              ? null
+              : FilterGroupData.fromJson(v as Map<String, dynamic>)),
     );
     return val;
   });
@@ -2156,6 +2182,7 @@ Map<String, dynamic> _$CmdCodeFilterDataToJson(CmdCodeFilterData instance) =>
       'sortReversed': instance.sortReversed,
       'rarity': instance.rarity,
       'category': instance.category,
+      'effects': instance.effects,
     };
 
 const _$CmdCodeCompareEnumMap = {

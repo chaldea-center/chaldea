@@ -342,42 +342,19 @@ class ServantListPageState
     )) {
       return false;
     }
-    bool _matchNPCharge(List<Effect> effects) {
-      String string =
-          effects.map((e) => e.description).join('\t').toUpperCase();
-      // print(string);
-      //182->
-      final keys = [
-        RegExp(r'NP[^\s获]{0,3}增加'),
-        RegExp(r'每回合([^\s]*?)NP(?!获)'),
-        RegExp(r'增加([^\s]*?)NP(?!获)'),
-        RegExp(r'吸收([^\s]*?)NP')
-      ];
-      bool result = keys.any((e) => string.contains(e));
-      return result;
-    }
 
-    if (!filterData.special.listValueFilter(
-      [''],
-      compares: {
-        '充能(技能)': (o, v) {
-          List<Effect> effects = [];
-          for (var active in svt.activeSkills) {
-            for (var skill in active.skills) {
-              effects.addAll(skill.effects);
-            }
-          }
-          return _matchNPCharge(effects);
-        },
-        '充能(宝具)': (o, v) {
-          List<Effect> effects = [];
-          for (var np in svt.noblePhantasm) {
-            effects.addAll(np.effects);
-          }
-          return _matchNPCharge(effects);
-        },
-      },
-    )) {
+    bool _isScopeEmpty =
+        filterData.effectScope.isEmpty(SvtFilterData.buffScope);
+    List<NiceFunction> funcs = [
+      if (_isScopeEmpty || filterData.effectScope.options['0'] == true)
+        for (final skill in svt.niceSkills) ...skill.functions,
+      if (_isScopeEmpty || filterData.effectScope.options['1'] == true)
+        for (final np in svt.niceNoblePhantasms) ...np.functions,
+      if (_isScopeEmpty || filterData.effectScope.options['2'] == true)
+        for (final skill in svt.niceClassPassive) ...skill.functions,
+    ];
+    if (!WithNiceFunctionsMixin.testFunctionsStatic(
+        funcs, filterData.effects)) {
       return false;
     }
     return true;

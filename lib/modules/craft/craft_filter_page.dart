@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/components/datatypes/effect_type/effect_type.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
 
 class CraftFilterPage extends FilterPage<CraftFilterData> {
@@ -30,7 +31,6 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
             values: filterData.display,
             combined: true,
             onFilterChanged: (v) {
-              filterData.display = v;
               update();
             },
           ),
@@ -63,7 +63,6 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
           values: filterData.rarity,
           optionBuilder: (v) => Text('$v★'),
           onFilterChanged: (value) {
-            filterData.rarity = value;
             update();
           },
         ),
@@ -73,7 +72,6 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
           values: filterData.category,
           optionBuilder: (v) => Text(Localized.craftFilter.of(v)),
           onFilterChanged: (value) {
-            filterData.category = value;
             update();
           },
         ),
@@ -82,7 +80,6 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
           options: CraftFilterData.atkHpTypeData,
           values: filterData.atkHpType,
           onFilterChanged: (value) {
-            filterData.atkHpType = value;
             update();
           },
         ),
@@ -95,7 +92,17 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
                 .of(CraftFilterData.statusTexts[int.parse(v)]));
           },
           onFilterChanged: (value) {
-            filterData.status = value;
+            update();
+          },
+        ),
+        FilterGroup(
+          title: Text(S.current.filter_effects),
+          options: EffectType.craftEffectsMap.keys.toList(),
+          values: filterData.effects,
+          showMatchAll: true,
+          showInvert: true,
+          optionBuilder: (v) => Text(EffectType.craftEffectsMap[v]!.shownName),
+          onFilterChanged: (value) {
             update();
           },
         ),

@@ -132,6 +132,7 @@
   "filter_attribute": "相性",
   "filter_gender": "性别",
   "filter_special_trait": "特殊特性",
+  "filter_effects": "効果",
   "free_quest": "フリークエスト",
   "drop_calc_empty_hint": "＋をクリックしてアイテムを追加",
   "item_already_exist_hint": "{name}はすでに存在します",
@@ -416,5 +417,6 @@
   "critical_attack": "クリティカル",
   "overview": "概要",
   "append_skill_short": "アペンド",
-  "copied": "コピー済み"
+  "copied": "コピー済み",
+  "effect_search": "バフ検索"
 }

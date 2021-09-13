@@ -29,17 +29,18 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
   @override
   Widget build(BuildContext context) {
     filterShownList();
+    shownList.sort((a, b) {
+      if (a.isStory && !b.isStory) return -1;
+      if (b.isStory && !a.isStory) return 1;
+      return DateTimeX.compare(
+          a.startTimeJp?.toDateTime(), b.startTimeJp?.toDateTime());
+    });
     if (filterData.reversed) {
       final reversed = List.of(shownList.reversed);
       shownList
         ..clear()
         ..addAll(reversed);
     }
-    shownList.sort((a, b) {
-      if (a.isStory && !b.isStory) return -1;
-      if (b.isStory && !a.isStory) return 1;
-      return 0;
-    });
     return scrollListener(
       useGrid: false,
       appBar: AppBar(

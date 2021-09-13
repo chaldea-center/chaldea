@@ -130,6 +130,10 @@ class CmdCodeListPageState
         defaultCompare: (o, v) => v?.contains(o))) {
       return false;
     }
+    if (code.niceSkills
+        .every((skill) => !skill.testFunctions(filterData.effects))) {
+      return false;
+    }
     return true;
   }
 }

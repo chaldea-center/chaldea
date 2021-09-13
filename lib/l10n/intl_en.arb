@@ -130,6 +130,7 @@
   "filter_attribute": "Attribute",
   "filter_gender": "Gender",
   "filter_special_trait": "Special Trait",
+  "filter_effects": "Effects",
   "free_quest": "Free Quest",
   "drop_calc_empty_hint": "Click + to add items",
   "item_already_exist_hint": "{name} already exist",
@@ -414,5 +415,6 @@
   "critical_attack": "Critical",
   "overview": "Overview",
   "append_skill_short": "Append",
-  "copied": "Copied"
+  "copied": "Copied",
+  "effect_search": "Buff Search"
 }

@@ -104,6 +104,7 @@ class CommandCode with GameCardMixin {
     EdgeInsets? textPadding,
     VoidCallback? onTap,
     bool jumpToDetail = true,
+    bool popDetail = false,
   }) {
     return super.iconBuilder(
       context: context,
@@ -115,7 +116,8 @@ class CommandCode with GameCardMixin {
       textPadding: textPadding,
       onTap: onTap ??
           (jumpToDetail
-              ? () => SplitRoute.push(context, CmdCodeDetailPage(code: this))
+              ? () => SplitRoute.push(context, CmdCodeDetailPage(code: this),
+                  popDetail: popDetail)
               : null),
     );
   }

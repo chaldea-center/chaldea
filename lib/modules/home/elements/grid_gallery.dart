@@ -14,6 +14,13 @@ class GridGallery extends StatefulWidget {
 
 class _GridGalleryState extends State<GridGallery> {
   @override
+  void initState() {
+    super.initState();
+    db.userData.galleries.removeWhere(
+        (key, value) => GalleryItem.allItems.every((item) => item.name != key));
+  }
+
+  @override
   Widget build(BuildContext context) {
     int crossCount;
     if (widget.maxWidth != null &&

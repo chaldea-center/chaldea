@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/buff_filter/buff_page.dart';
 import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/craft/craft_list_page.dart';
 import 'package:chaldea/modules/damage_calc/damage_calc_page.dart';
@@ -75,6 +76,7 @@ class GalleryItem {
     masterMission,
     saintQuartz,
     mysticCode,
+    effectSearch,
     costume,
     gacha,
     ffo,
@@ -157,6 +159,13 @@ class GalleryItem {
     icon: FontAwesomeIcons.diagnoses,
     page: MysticCodePage(),
     isDetail: true,
+  );
+  static GalleryItem effectSearch = GalleryItem(
+    name: 'effect_search',
+    titleBuilder: () => S.current.effect_search,
+    icon: FontAwesomeIcons.searchengin,
+    page: BuffFilterPage(),
+    isDetail: false,
   );
   static GalleryItem costume = GalleryItem(
     name: 'costume',

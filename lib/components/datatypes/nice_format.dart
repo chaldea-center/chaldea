@@ -43,7 +43,7 @@ class NiceUtil {
       descriptionEn: null,
       lvData: [],
     ));
-    for (final NiceSkillFunction function in skill.functions) {
+    for (final NiceFunction function in skill.functions) {
       if (function.funcTargetTeam == 'enemy') continue;
       List<String> lvData = [];
       for (final val in function.svals) {
@@ -63,8 +63,29 @@ class NiceUtil {
   }
 }
 
+abstract class WithNiceFunctionsMixin {
+  List<NiceFunction> get functions;
+
+  static bool testFunctionsStatic(
+      List<NiceFunction> functions, FilterGroupData groupData) {
+    groupData.options.removeWhere((key, value) => value == false);
+    if (groupData.options.isEmpty) return true;
+    final matches = groupData.options.keys.map((key) {
+      EffectType? effectType = EffectType.validEffectsMap[key];
+      return effectType?.test(functions) ?? false;
+    }).toList();
+    bool result = groupData.matchAll
+        ? matches.every((e) => e == true)
+        : matches.any((e) => e == true);
+    return groupData.invert ? !result : result;
+  }
+
+  bool testFunctions(FilterGroupData groupData) =>
+      testFunctionsStatic(functions, groupData);
+}
+
 @JsonSerializable()
-class NiceSkill {
+class NiceSkill with WithNiceFunctionsMixin {
   int id;
   int num;
   String name;
@@ -79,7 +100,8 @@ class NiceSkill {
   int condLimitCount;
   String icon; // full url
   List<int> coolDown;
-  List<NiceSkillFunction> functions;
+  @override
+  List<NiceFunction> functions;
 
   NiceSkill({
     required this.id,
@@ -106,7 +128,7 @@ class NiceSkill {
 }
 
 @JsonSerializable()
-class NiceNoblePhantasm {
+class NiceNoblePhantasm with WithNiceFunctionsMixin {
   int id;
   int num;
   String card;
@@ -122,7 +144,8 @@ class NiceNoblePhantasm {
   int condQuestId;
   int condQuestPhase;
   List<Map<String, dynamic>> individuality;
-  List<NiceSkillFunction> functions;
+  @override
+  List<NiceFunction> functions;
 
   NiceNoblePhantasm({
     required this.id,
@@ -150,16 +173,16 @@ class NiceNoblePhantasm {
 }
 
 @JsonSerializable()
-class NiceSkillFunction {
+class NiceFunction {
   int funcId;
   String funcType;
   String funcTargetType;
   String funcTargetTeam;
   String funcPopupText;
-  List<NiceSkillBuff> buffs;
+  List<NiceBuff> buffs;
   List<NiceEffectVal> svals;
 
-  NiceSkillFunction({
+  NiceFunction({
     required this.funcId,
     required this.funcType,
     required this.funcTargetType,
@@ -182,10 +205,32 @@ class NiceSkillFunction {
     return formatNumber(value / 1000, percent: true);
   }
 
-  factory NiceSkillFunction.fromJson(Map<String, dynamic> data) =>
-      _$NiceSkillFunctionFromJson(data);
+  factory NiceFunction.fromJson(Map<String, dynamic> data) =>
+      _$NiceFunctionFromJson(data);
 
-  Map<String, dynamic> toJson() => _$NiceSkillFunctionToJson(this);
+  Map<String, dynamic> toJson() => _$NiceFunctionToJson(this);
+}
+
+@JsonSerializable()
+class NiceBuff {
+  int id;
+  String name;
+  String detail;
+  String type;
+  int buffGroup;
+
+  NiceBuff({
+    required this.id,
+    required this.name,
+    required this.detail,
+    required this.type,
+    required this.buffGroup,
+  });
+
+  factory NiceBuff.fromJson(Map<String, dynamic> data) =>
+      _$NiceBuffFromJson(data);
+
+  Map<String, dynamic> toJson() => _$NiceBuffToJson(this);
 }
 
 @JsonSerializable()
@@ -210,26 +255,4 @@ class NiceEffectVal {
       _$NiceEffectValFromJson(data);
 
   Map<String, dynamic> toJson() => _$NiceEffectValToJson(this);
-}
-
-@JsonSerializable()
-class NiceSkillBuff {
-  int id;
-  String name;
-  String detail;
-  String type;
-  int buffGroup;
-
-  NiceSkillBuff({
-    required this.id,
-    required this.name,
-    required this.detail,
-    required this.type,
-    required this.buffGroup,
-  });
-
-  factory NiceSkillBuff.fromJson(Map<String, dynamic> data) =>
-      _$NiceSkillBuffFromJson(data);
-
-  Map<String, dynamic> toJson() => _$NiceSkillBuffToJson(this);
 }

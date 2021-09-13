@@ -166,6 +166,10 @@ class CraftListPageState
         .singleValueFilter((db.curUser.crafts[ce.no] ?? 0).toString())) {
       return false;
     }
+    if (ce.niceSkills
+        .every((skill) => !skill.testFunctions(filterData.effects))) {
+      return false;
+    }
     return true;
   }
 }

@@ -73,6 +73,18 @@ extension DateTimeX on DateTime {
       day.toString().padLeft(2, '0')
     ].join(sep);
   }
+
+  static int compare(DateTime? a, DateTime? b) {
+    if (a != null && b != null) {
+      return a.compareTo(b);
+    } else if (a != null) {
+      return 1;
+    } else if (b != null) {
+      return -1;
+    } else {
+      return 0;
+    }
+  }
 }
 
 extension StringToDateTime on String {

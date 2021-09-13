@@ -19,10 +19,10 @@ class FAQPage extends StatelessWidget {
               future: MarkdownHelpPage.loadHelpAsset(
                   asset: 'FAQ.md', lapse: kSplitRouteDuration),
               builder: (context, snapshot) {
-                return MyMarkdownWidget(
-                  data: snapshot.data ?? '',
-                  selectable: true,
-                );
+                return snapshot.data == null
+                    ? Center(child: CircularProgressIndicator())
+                    : MyMarkdownWidget(
+                        data: snapshot.data ?? '', selectable: true);
               },
             ),
           ),

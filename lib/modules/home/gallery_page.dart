@@ -63,10 +63,13 @@ class _GalleryPageState extends State<GalleryPage> {
                   maxWidth: 56,
                 ),
                 child: Center(
-                  child: Text(
-                    db.curUser.name,
-                    overflow: TextOverflow.ellipsis,
-                    textScaleFactor: 0.8,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: Text(
+                      db.curUser.name,
+                      overflow: TextOverflow.ellipsis,
+                      textScaleFactor: 0.8,
+                    ),
                   ),
                 ),
               ),

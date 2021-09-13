@@ -139,6 +139,7 @@ class CraftEssence with GameCardMixin {
     EdgeInsets? textPadding,
     VoidCallback? onTap,
     bool jumpToDetail = true,
+    bool popDetail = false,
   }) {
     return super.iconBuilder(
       context: context,
@@ -150,7 +151,8 @@ class CraftEssence with GameCardMixin {
       textPadding: textPadding,
       onTap: onTap ??
           (jumpToDetail
-              ? () => SplitRoute.push(context, CraftDetailPage(ce: this))
+              ? () => SplitRoute.push(context, CraftDetailPage(ce: this),
+                  popDetail: popDetail)
               : null),
     );
   }

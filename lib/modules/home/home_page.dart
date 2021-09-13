@@ -34,7 +34,9 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         body: IndexedStack(
           index: _curIndex,
-          children: const <Widget>[GalleryPage(), SettingsPage()],
+          // TODO: https://github.com/flutter/flutter/issues/89974
+          // ignore: prefer_const_literals_to_create_immutables
+          children: [GalleryPage(), SettingsPage()],
         ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _curIndex,

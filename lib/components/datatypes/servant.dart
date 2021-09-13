@@ -356,6 +356,7 @@ class Servant with GameCardMixin {
     EdgeInsets? textPadding,
     VoidCallback? onTap,
     bool jumpToDetail = true,
+    bool popDetail = false,
   }) {
     return super.iconBuilder(
       context: context,
@@ -367,7 +368,8 @@ class Servant with GameCardMixin {
       textPadding: textPadding,
       onTap: onTap ??
           (jumpToDetail
-              ? () => SplitRoute.push(context, ServantDetailPage(this))
+              ? () => SplitRoute.push(context, ServantDetailPage(this),
+                  popDetail: popDetail)
               : null),
     );
   }

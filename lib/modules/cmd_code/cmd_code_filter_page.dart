@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/components/datatypes/effect_type/effect_type.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
 
 class CmdCodeFilterPage extends FilterPage<CmdCodeFilterData> {
@@ -30,7 +31,6 @@ class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData> {
             values: filterData.display,
             combined: true,
             onFilterChanged: (v) {
-              filterData.display = v;
               update();
             },
           ),
@@ -64,7 +64,6 @@ class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData> {
           values: filterData.rarity,
           optionBuilder: (v) => Text('$v★'),
           onFilterChanged: (value) {
-            filterData.rarity = value;
             update();
           },
         ),
@@ -74,7 +73,15 @@ class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData> {
           values: filterData.category,
           optionBuilder: (v) => Text(Localized.craftFilter.of(v)),
           onFilterChanged: (value) {
-            filterData.category = value;
+            update();
+          },
+        ),
+        FilterGroup(
+          title: Text(S.current.filter_effects),
+          options: EffectType.craftEffectsMap.keys.toList(),
+          values: filterData.effects,
+          optionBuilder: (v) => Text(EffectType.craftEffectsMap[v]!.shownName),
+          onFilterChanged: (value) {
             update();
           },
         ),

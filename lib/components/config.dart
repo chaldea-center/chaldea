@@ -23,6 +23,7 @@ import 'package:screenshot/screenshot.dart';
 
 import 'constants.dart';
 import 'datatypes/datatypes.dart';
+import 'datatypes/effect_type/effect_type.dart';
 import 'device_app_info.dart';
 import 'git_tool.dart';
 import 'json_store/local_app_config.dart';
@@ -114,6 +115,7 @@ class Database {
 
   // initialization before startup
   Future<void> initial() async {
+    initiateFuncBuffInstances();
     await paths.initRootPath();
     cfg = LocalAppConfig(pathlib.join(paths.configDir, 'cfg.json'),
         lapse: Duration(seconds: 3));

@@ -213,22 +213,25 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   /// Pop all top detail routes
   ///
   /// return the number of popped pages
-  static int pop(BuildContext context, [bool popDetails = false]) {
+  static int popDetailRoutes(BuildContext context) {
     // whether to store all values returned by routes?
-    if (popDetails) {
-      int n = 0;
-      Navigator.of(context).popUntil((route) {
-        bool isDetail = route is SplitRoute && route.detail == true;
-        if (isDetail) {
-          n += 1;
-        }
-        return !isDetail;
-      });
-      return n;
-    } else {
-      Navigator.of(context).maybePop();
-      return 1; // maybe 0 route popped
-    }
+    assert(() {
+      final curRoute = ModalRoute.of(context);
+      if (curRoute is! SplitRoute || curRoute.detail == true) {
+        throw StateError(
+            'DO NOT call popDetails outside SplitRoute or inside detail page');
+      }
+      return true;
+    }());
+    int n = 0;
+    Navigator.of(context).popUntil((route) {
+      bool isDetail = route is SplitRoute && route.detail == true;
+      if (isDetail) {
+        n += 1;
+      }
+      return !isDetail;
+    });
+    return n;
   }
 
   /// if there is any detail view and need to pop detail,
@@ -252,7 +255,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
         }
         return true;
       }());
-      n = pop(context, true);
+      n = popDetailRoutes(context);
     }
 
     return navigator.push(SplitRoute(
@@ -304,12 +307,16 @@ class MasterBackButton extends StatelessWidget {
     return BackButton(
       color: color,
       onPressed: () async {
-        SplitRoute.pop(context, true);
+        SplitRoute.popDetailRoutes(context);
         if (onPressed != null) {
           onPressed!();
         } else {
-          // won't ignore WillPopScope
-          Navigator.maybePop(context);
+          if (ModalRoute.of(context)?.isFirst != true) {
+            Navigator.pop(context);
+          } else {
+            // won't ignore WillPopScope
+            Navigator.maybePop(context);
+          }
         }
       },
     );

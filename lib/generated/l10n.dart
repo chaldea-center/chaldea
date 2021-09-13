@@ -1186,10 +1186,10 @@ class S {
     );
   }
 
-  /// `职阶技能`
+  /// `被动技能`
   String get passive_skill {
     return Intl.message(
-      '职阶技能',
+      '被动技能',
       name: 'passive_skill',
       desc: '',
       args: [],
@@ -1351,6 +1351,16 @@ class S {
     return Intl.message(
       '特殊特性',
       name: 'filter_special_trait',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `效果`
+  String get filter_effects {
+    return Intl.message(
+      '效果',
+      name: 'filter_effects',
       desc: '',
       args: [],
     );
@@ -4201,6 +4211,16 @@ class S {
     return Intl.message(
       '已复制',
       name: 'copied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Buff搜索`
+  String get effect_search {
+    return Intl.message(
+      'Buff搜索',
+      name: 'effect_search',
       desc: '',
       args: [],
     );

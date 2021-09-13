@@ -239,6 +239,7 @@ class FilterGroup extends StatelessWidget {
 
   final bool combined;
   final EdgeInsetsGeometry padding;
+  final bool showCollapse;
 
   const FilterGroup({
     Key? key,
@@ -253,6 +254,7 @@ class FilterGroup extends StatelessWidget {
     this.onFilterChanged,
     this.combined = false,
     this.padding = const EdgeInsets.symmetric(horizontal: 12),
+    this.showCollapse = false,
   }) : super(key: key);
 
   Widget _buildCheckbox(
@@ -308,39 +310,76 @@ class FilterGroup extends StatelessWidget {
       children: _optionChildren,
     );
 
-    if (title != null) {
-      child = Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          CustomTile(
-            title: DefaultTextStyle.merge(
-                child: title!, style: TextStyle(fontSize: 14)),
-            contentPadding: EdgeInsets.zero,
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                if (showMatchAll)
-                  _buildCheckbox(
-                      context, values.matchAll, S.current.filter_match_all, () {
-                    values.matchAll = !values.matchAll;
-                    if (onFilterChanged != null) {
-                      onFilterChanged!(values);
-                    }
-                  }),
-                if (showInvert)
-                  _buildCheckbox(
-                      context, values.invert, S.current.filter_revert, () {
-                    values.invert = !values.invert;
-                    if (onFilterChanged != null) {
-                      onFilterChanged!(values);
-                    }
-                  })
-              ],
-            ),
-          ),
-          child,
-        ],
+    Widget _getTitle([Widget? expandIcon]) {
+      return CustomTile(
+        title: DefaultTextStyle.merge(
+            child: title!, style: TextStyle(fontSize: 14)),
+        contentPadding: EdgeInsets.zero,
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            if (showMatchAll)
+              _buildCheckbox(
+                  context, values.matchAll, S.current.filter_match_all, () {
+                values.matchAll = !values.matchAll;
+                if (onFilterChanged != null) {
+                  onFilterChanged!(values);
+                }
+              }),
+            if (showInvert)
+              _buildCheckbox(context, values.invert, S.current.filter_revert,
+                  () {
+                values.invert = !values.invert;
+                if (onFilterChanged != null) {
+                  onFilterChanged!(values);
+                }
+              }),
+            if (expandIcon != null) expandIcon,
+          ],
+        ),
       );
+    }
+
+    Widget _wrapExpandIcon(Widget _child) {
+      return ValueStatefulBuilder<bool>(
+        initValue: true,
+        builder: (context, state) {
+          Widget? expandIcon;
+          if (showCollapse) {
+            expandIcon = ExpandIcon(
+              isExpanded: state.value,
+              onPressed: (v) {
+                state.value = !state.value;
+                state.updateState();
+              },
+            );
+          }
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              _getTitle(expandIcon),
+              if (state.value) _child,
+            ],
+          );
+        },
+      );
+    }
+
+    if (title != null) {
+      if (showCollapse) {
+        child = _wrapExpandIcon(child);
+      } else {
+        child = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            _getTitle(),
+            child,
+          ],
+        );
+      }
     }
 
     return Padding(padding: padding, child: child);
