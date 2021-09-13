@@ -123,6 +123,7 @@ flutter:
     - res/ui/
     - res/VERSION
     - CHANGELOG.md
+    - LICENSE
     - README.md
 
   # An image asset can refer to one or more resolution-specific "variants", see

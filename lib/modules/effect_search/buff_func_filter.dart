@@ -5,25 +5,21 @@ import 'package:chaldea/modules/shared/filter_page.dart';
 class BuffFuncFilterData {
   FilterGroupData display;
   FilterGroupData effectScope;
-  FilterGroupData funcType;
-  FilterGroupData buffType;
+  FilterGroupData funcBuff;
 
   BuffFuncFilterData({
     FilterGroupData? display,
     FilterGroupData? effectScope,
-    FilterGroupData? funcType,
-    FilterGroupData? buffType,
+    FilterGroupData? funcBuff,
   })  : display = display ?? FilterGroupData(options: {'List': true}),
         effectScope = effectScope ?? FilterGroupData(),
-        funcType = funcType ?? FilterGroupData(),
-        buffType = buffType ?? FilterGroupData();
+        funcBuff = funcBuff ?? FilterGroupData();
 
   bool get useGrid => display.isRadioVal('Grid');
 
   void reset() {
     effectScope.reset();
-    funcType.reset();
-    buffType.reset();
+    funcBuff.reset();
   }
 }
 
@@ -77,29 +73,42 @@ class _BuffFuncFilterState extends FilterPageState<BuffFuncFilterData> {
             update();
           },
         ),
+        const Divider(height: 16),
         FilterGroup(
-          options: FuncType.all.keys.toList(),
-          values: filterData.funcType,
-          optionBuilder: (s) => Text(FuncType.all[s]!.shownName),
-          title: const Text('FuncType'),
+          options: const [],
+          values: filterData.funcBuff,
+          title: const Text('FuncType & BuffType'),
           showMatchAll: true,
           showInvert: true,
+          onFilterChanged: (v) {
+            update();
+          },
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Text(
+            LocalizedText.of(
+                chs: '组合筛选', jpn: '組み合わせフィルター', eng: 'Combined filter'),
+            style: Theme.of(context).textTheme.caption,
+          ),
+        ),
+        FilterGroup(
+          options: FuncTypes.withoutAddState.keys.toList(),
+          values: filterData.funcBuff,
+          optionBuilder: (s) => Text(FuncTypes.all[s]!.shownName),
+          title: const Text('FuncType'),
           showCollapse: true,
           onFilterChanged: (v) {
-            filterData.funcType = v;
             update();
           },
         ),
         FilterGroup(
           options: BuffType.all.keys.toList(),
-          values: filterData.buffType,
+          values: filterData.funcBuff,
           optionBuilder: (s) => Text(BuffType.all[s]!.shownName),
           title: const Text('BuffType'),
-          showMatchAll: true,
-          showInvert: true,
           showCollapse: true,
           onFilterChanged: (v) {
-            filterData.buffType = v;
             update();
           },
         ), //end

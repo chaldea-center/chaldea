@@ -112,8 +112,9 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
 
   Widget get servantTab {
     List<Widget> children = [];
-    if (svtResult.isEmpty)
+    if (svtResult.isEmpty) {
       children.add(const Center(child: Text('Nothing yet')));
+    }
     svtResult.sort((a, b) => Servant.compare(a.svt, b.svt,
         keys: [SvtCompare.rarity, SvtCompare.no], reversed: [true, false]));
     Widget _getSummary(ServantPlan plan) {
@@ -186,8 +187,9 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
 
   Widget get itemTab {
     List<Widget> children = [];
-    if (itemResult.isEmpty)
+    if (itemResult.isEmpty) {
       children.add(const Center(child: Text('Nothing yet')));
+    }
     itemResult.forEach((itemKey, value) {
       children.add(ListTile(
         leading: Item.iconBuilder(context: context, itemKey: itemKey),

@@ -114,15 +114,13 @@ class _EffectSearchPageState
         for (final skill in card.niceSkills) ...skill.functions,
       ];
     }
-    if (!filterData.funcType
-        .listValueFilter(functions.map((e) => e.funcType).toList())) {
-      return false;
-    }
-    List<NiceBuff> buffs = [
-      for (final func in functions) ...func.buffs,
-    ];
-    if (!filterData.buffType
-        .listValueFilter(buffs.map((e) => e.type).toList())) {
+    Set<String> funBuffTypes = {
+      for (final func in functions) ...[
+        func.funcType,
+        for (final buff in func.buffs) buff.type,
+      ],
+    };
+    if (!filterData.funcBuff.listValueFilter(funBuffTypes.toList())) {
       return false;
     }
     return true;

@@ -102,7 +102,7 @@ class GameData {
   }
 
   Quest? getFreeQuest(String key) {
-    if (freeQuests.containsKey(key)) return freeQuests[key]!;
+    if (freeQuests[key] != null) return freeQuests[key]!;
     for (var quest in freeQuests.values) {
       if (quest.place != null &&
           key.contains(quest.place!) &&

@@ -2,6 +2,7 @@ import 'package:chaldea/components/datatypes/datatypes.dart';
 import 'package:chaldea/components/localized/localized_base.dart';
 
 import 'buff_type.dart';
+import 'func_buff_type_base.dart';
 import 'func_type.dart';
 
 export 'buff_type.dart';
@@ -87,7 +88,7 @@ class EffectType {
       FuncTypes.gainNp,
       FuncTypes.gainNpFromTargets,
       FuncTypes.gainNpFromTargets,
-      FuncTypes.absorbNpturn,
+      // FuncTypes.absorbNpturn,
       FuncTypes.gainNpBuffIndividualSum,
     ],
     name: const LocalizedText(chs: 'NP増加', jpn: 'NP増加', eng: 'Charge NP'),
@@ -442,10 +443,27 @@ class EffectType {
     for (final eff in svtEffects) eff.key: eff,
     for (final eff in craftEffects) eff.key: eff,
   };
+
+  static Map<String, FuncBuffTypeBase> get allFuncBuff => Map.fromEntries([
+        ...FuncTypes.withoutAddState.entries,
+        ...BuffTypes.all.entries,
+      ]);
 }
 
 void initiateFuncBuffInstances() {
   // static fields and library variables are only initiated when called once
   FuncTypes.addState.nameCn + BuffTypes.regainNp.nameCn;
+
+  final sortedFuncs = Map.fromEntries(
+      FuncTypes.all.entries.toList()..sort((a, b) => a.key.compareTo(b.key)));
+  FuncTypes.all
+    ..clear()
+    ..addAll(sortedFuncs);
+  final sortedBuffs = Map.fromEntries(
+      BuffTypes.all.entries.toList()..sort((a, b) => a.key.compareTo(b.key)));
+  BuffTypes.all
+    ..clear()
+    ..addAll(sortedBuffs);
+
   print('${FuncTypes.all.length} FuncTypes, ${BuffTypes.all.length} BuffTypes');
 }

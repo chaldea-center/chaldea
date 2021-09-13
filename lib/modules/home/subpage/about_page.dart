@@ -25,11 +25,6 @@ class _AboutPageState extends State<AboutPage> {
       };
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -84,7 +79,7 @@ class _AboutPageState extends State<AboutPage> {
                   onTap: () async {
                     SplitRoute.push(
                       context,
-                      _GithubMarkdownPage(
+                      const _GithubMarkdownPage(
                         title: 'README',
                         link: '$kProjectHomepage/blob/master/README.md',
                         assetKey: 'README.md',
@@ -141,6 +136,19 @@ class _AboutPageState extends State<AboutPage> {
           TileGroup(
             header: MaterialLocalizations.of(context).licensesPageTitle,
             children: [
+              ListTile(
+                title: const Text('License'),
+                subtitle: const Text('GNU GPL v3'),
+                onTap: () {
+                  SplitRoute.push(
+                      context,
+                      const _GithubMarkdownPage(
+                        title: 'LICENSE',
+                        link: '$kProjectHomepage/blob/master/LICENSE',
+                        assetKey: 'LICENSE',
+                      ));
+                },
+              ),
               ListTile(
                 title: Text(
                     MaterialLocalizations.of(context).viewLicensesButtonLabel),
@@ -263,7 +271,7 @@ class _GithubMarkdownPage extends StatelessWidget {
   final String? data;
   final String? assetKey;
 
-  _GithubMarkdownPage(
+  const _GithubMarkdownPage(
       {Key? key, required this.title, this.link, this.data, this.assetKey})
       : super(key: key);
 
