@@ -5,7 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SupportDonationPage extends StatelessWidget {
-  const SupportDonationPage({Key? key}) : super(key: key);
+  SupportDonationPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class SupportDonationPage extends StatelessWidget {
             onPressed: () {
               launch('https://chaldea-center.github.io/support.html');
             },
-            icon: FaIcon(FontAwesomeIcons.github),
+            icon: const FaIcon(FontAwesomeIcons.github),
             tooltip: 'Github',
           )
         ],

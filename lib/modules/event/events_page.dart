@@ -6,7 +6,7 @@ import 'tabs/limit_event_tab.dart';
 import 'tabs/main_record_tab.dart';
 
 class EventListPage extends StatefulWidget {
-  const EventListPage({Key? key}) : super(key: key);
+  EventListPage({Key? key}) : super(key: key);
 
   @override
   _EventListPageState createState() => _EventListPageState();
@@ -30,7 +30,7 @@ class _EventListPageState extends State<EventListPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: tabNames.length, vsync: this);
-    db.itemStat.update(lapse: Duration(seconds: 2));
+    db.itemStat.update(lapse: const Duration(seconds: 2));
   }
 
   @override
@@ -39,7 +39,7 @@ class _EventListPageState extends State<EventListPage>
       appBar: AppBar(
         title: Text(S.current.event_title),
         titleSpacing: 0,
-        leading: MasterBackButton(),
+        leading: const MasterBackButton(),
         actions: <Widget>[
           IconButton(
             onPressed: () {

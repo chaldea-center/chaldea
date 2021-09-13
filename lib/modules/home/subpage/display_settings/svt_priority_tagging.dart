@@ -1,7 +1,7 @@
 import 'package:chaldea/components/components.dart';
 
 class SvtPriorityTagging extends StatefulWidget {
-  const SvtPriorityTagging({Key? key}) : super(key: key);
+  SvtPriorityTagging({Key? key}) : super(key: key);
 
   @override
   _SvtPriorityTaggingState createState() => _SvtPriorityTaggingState();
@@ -44,7 +44,6 @@ class _SvtPriorityTaggingState extends State<SvtPriorityTagging> {
                     child: TextField(
                       controller: controllerOf(priority),
                       textAlign: TextAlign.center,
-                      decoration: InputDecoration(),
                       maxLength: 4,
                       onChanged: (s) {
                         db.appSetting.priorityTags[priority] = s;

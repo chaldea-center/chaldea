@@ -27,8 +27,9 @@ class CustomTile extends StatelessWidget {
 
   ///default values
   static EdgeInsets defaultContentPadding =
-      EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
-  static EdgeInsets defaultTitlePadding = EdgeInsets.symmetric(horizontal: 6.0);
+      const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
+  static EdgeInsets defaultTitlePadding =
+      const EdgeInsets.symmetric(horizontal: 6.0);
 
   const CustomTile(
       {Key? key,
@@ -103,11 +104,11 @@ class CustomTile extends StatelessWidget {
 
     final EdgeInsetsGeometry resolvedContentPadding = contentPadding ??
         tileTheme.contentPadding ??
-        EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
+        const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
     final EdgeInsets resolvedTitlePadding = titlePadding ??
         (leading == null
             ? EdgeInsets.zero
-            : EdgeInsets.symmetric(horizontal: 6.0));
+            : const EdgeInsets.symmetric(horizontal: 6.0));
     List<Widget> allElements = [
       if (leadingIcon != null) leadingIcon,
       Expanded(
@@ -245,7 +246,7 @@ class ImageWithText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle _style = textStyle ?? TextStyle();
+    TextStyle _style = textStyle ?? const TextStyle();
     _style = _style.copyWith(fontWeight: _style.fontWeight ?? FontWeight.bold);
     Widget child = Stack(
       alignment: alignment,
@@ -305,7 +306,7 @@ class ImageWithText extends StatelessWidget {
 
   static TextStyle toGlowStyle(
       [TextStyle? style, double? shadowSize, Color? shadowColor]) {
-    style ??= TextStyle();
+    style ??= const TextStyle();
     if (shadowSize == null) {
       return style;
     } else {
@@ -328,7 +329,7 @@ class ImageWithText extends StatelessWidget {
   }) {
     assert(text != null || builder != null);
     assert(text == null || builder == null);
-    TextStyle _style = textStyle ?? TextStyle();
+    TextStyle _style = textStyle ?? const TextStyle();
     List<Widget> children;
     if (builder != null) {
       children = [

@@ -106,7 +106,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         ),
         const Divider(height: 16),
         FilterGroup(
-          title: Text(LocalizedText(
+          title: Text(const LocalizedText(
                   chs: '重复从者', jpn: '重複サーバント', eng: 'Duplicated Servant')
               .localized),
           options: const ['1', '2'],
@@ -260,14 +260,14 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
 
   Widget _buildClassFilter() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(S.of(context).filter_sort_class, style: textStyle),
           ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 480),
+            constraints: const BoxConstraints(maxWidth: 480),
             child: Row(
               children: <Widget>[
                 Expanded(
@@ -276,7 +276,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
                     crossAxisCount: 1,
                     childAspectRatio: 1.2,
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     children: List.generate(2, (index) {
                       final name = ['金卡', '铜卡'][index] + 'All';
                       return GestureDetector(
@@ -301,7 +301,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
                       crossAxisCount: 8,
                       shrinkWrap: true,
                       childAspectRatio: 1.2,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       children: SvtFilterData.classesData.map((className) {
                         final selected =
                             filterData.className.options[className] ?? false;

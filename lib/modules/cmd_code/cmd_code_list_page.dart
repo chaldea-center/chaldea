@@ -8,7 +8,7 @@ import 'cmd_code_filter_page.dart';
 class CmdCodeListPage extends StatefulWidget {
   final void Function(CommandCode)? onSelected;
 
-  const CmdCodeListPage({Key? key, this.onSelected}) : super(key: key);
+  CmdCodeListPage({Key? key, this.onSelected}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => CmdCodeListPageState();
@@ -56,13 +56,13 @@ class CmdCodeListPageState
     return scrollListener(
       useGrid: filterData.useGrid,
       appBar: AppBar(
-        leading: MasterBackButton(),
+        leading: const MasterBackButton(),
         title: Text(S.current.command_code),
         titleSpacing: 0,
         bottom: showSearchBar ? searchBar : null,
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.filter_alt),
+            icon: const Icon(Icons.filter_alt),
             tooltip: S.of(context).filter,
             onPressed: () => FilterPage.show(
               context: context,
@@ -93,9 +93,9 @@ class CmdCodeListPageState
         ],
       ),
       trailing: IconButton(
-        icon: Icon(Icons.keyboard_arrow_right),
-        constraints: BoxConstraints(minHeight: 48, minWidth: 2),
-        padding: EdgeInsets.symmetric(vertical: 8),
+        icon: const Icon(Icons.keyboard_arrow_right),
+        constraints: const BoxConstraints(minHeight: 48, minWidth: 2),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         onPressed: () {
           _onTapCard(code, true);
         },
@@ -108,7 +108,7 @@ class CmdCodeListPageState
   @override
   Widget gridItemBuilder(CommandCode code) {
     return Padding(
-      padding: EdgeInsets.all(3),
+      padding: const EdgeInsets.all(3),
       child: GestureDetector(
         child: db.getIconImage(code.icon),
         onTap: () => _onTapCard(code),

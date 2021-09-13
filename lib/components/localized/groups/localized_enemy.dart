@@ -1,6 +1,6 @@
 part of localized;
 
-final _enemy = LocalizedGroup([
+const _enemy = LocalizedGroup([
   LocalizedText(chs: '影从者', jpn: 'シャドウサーヴァント', eng: 'Shadow Servant'),
   LocalizedText(chs: '亡者之门', jpn: '', eng: 'Door of the Undead'),
   LocalizedText(chs: '勇者之门', jpn: '', eng: 'Door of Brave'),

@@ -14,7 +14,6 @@ class _CarouselSettingPageState extends State<CarouselSettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         title: Text(S.current.carousel_setting),
       ),
       body: ListView(
@@ -22,8 +21,8 @@ class _CarouselSettingPageState extends State<CarouselSettingPage> {
           [
             CheckboxListTile(
               value: carousel.enableMooncell,
-              title: Text('Mooncell News'),
-              subtitle: Text('CN/JP'),
+              title: const Text('Mooncell News'),
+              subtitle: const Text('CN/JP'),
               onChanged: (v) {
                 setState(() {
                   carousel.needUpdate = true;
@@ -33,8 +32,8 @@ class _CarouselSettingPageState extends State<CarouselSettingPage> {
             ),
             CheckboxListTile(
               value: carousel.enableJp,
-              title: Text('JP News'),
-              subtitle: Text('https://view.fate-go.jp/'),
+              title: const Text('JP News'),
+              subtitle: const Text('https://view.fate-go.jp/'),
               onChanged: (v) {
                 setState(() {
                   carousel.needUpdate = true;
@@ -44,8 +43,8 @@ class _CarouselSettingPageState extends State<CarouselSettingPage> {
             ),
             CheckboxListTile(
               value: carousel.enableUs,
-              title: Text('NA News'),
-              subtitle: Text('https://webview.fate-go.us/'),
+              title: const Text('NA News'),
+              subtitle: const Text('https://webview.fate-go.us/'),
               onChanged: (v) {
                 setState(() {
                   carousel.needUpdate = true;

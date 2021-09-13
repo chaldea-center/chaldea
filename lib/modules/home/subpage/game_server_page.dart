@@ -1,7 +1,7 @@
 import 'package:chaldea/components/components.dart';
 
 class GameServerPage extends StatefulWidget {
-  const GameServerPage({Key? key}) : super(key: key);
+  GameServerPage({Key? key}) : super(key: key);
 
   @override
   _GameServerPageState createState() => _GameServerPageState();
@@ -12,7 +12,6 @@ class _GameServerPageState extends State<GameServerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         title: Text(S.current.server),
       ),
       body: SingleChildScrollView(

@@ -5,7 +5,7 @@ import 'package:chaldea/modules/summon/filter_page.dart';
 import 'package:chaldea/modules/summon/summon_detail_page.dart';
 
 class SummonListPage extends StatefulWidget {
-  const SummonListPage({Key? key}) : super(key: key);
+  SummonListPage({Key? key}) : super(key: key);
 
   @override
   _SummonListPageState createState() => _SummonListPageState();
@@ -45,7 +45,7 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
       useGrid: false,
       appBar: AppBar(
         title: Text(S.of(context).summon_title),
-        leading: MasterBackButton(),
+        leading: const MasterBackButton(),
         titleSpacing: 0,
         bottom: showSearchBar ? searchBar : null,
         actions: [
@@ -61,7 +61,7 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.filter_alt),
+            icon: const Icon(Icons.filter_alt),
             tooltip: S.of(context).filter,
             onPressed: () => FilterPage.show(
               context: context,
@@ -95,7 +95,7 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
     Widget? subtitle;
     if (filterData.showBanner) {
       title = ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: 108),
+        constraints: const BoxConstraints(maxHeight: 108),
         child: CachedImage(
           imageUrl: db.curUser.server == GameServer.cn
               ? summon.bannerUrl ?? summon.bannerUrlJp
@@ -126,8 +126,8 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
       title: title,
       subtitle: subtitle,
       contentPadding: filterData.showBanner
-          ? EdgeInsets.only(right: 8)
-          : EdgeInsets.only(left: 16, right: 8),
+          ? const EdgeInsets.only(right: 8)
+          : const EdgeInsets.only(left: 16, right: 8),
       minVerticalPadding: filterData.showBanner ? 0 : null,
       trailing: db.streamBuilder(
         (context) {

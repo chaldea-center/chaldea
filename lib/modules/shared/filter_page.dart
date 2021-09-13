@@ -30,7 +30,7 @@ abstract class FilterPage<T> extends StatefulWidget {
 abstract class FilterPageState<T> extends State<FilterPage<T>> {
   T get filterData => widget.filterData;
 
-  TextStyle textStyle = TextStyle(fontSize: 16);
+  TextStyle textStyle = const TextStyle(fontSize: 16);
   bool? _useTabletView;
 
   bool get useSplitView {
@@ -64,7 +64,7 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
         AppBar(
           elevation: 0,
           toolbarHeight: 40,
-          leading: BackButton(),
+          leading: const BackButton(),
           title: title,
           centerTitle: true,
           actions: actions,
@@ -86,7 +86,7 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
       List<Widget> actions = const []}) {
     return AlertDialog(
       title: Center(child: title),
-      titlePadding: EdgeInsets.fromLTRB(24, 12, 24, 12),
+      titlePadding: const EdgeInsets.fromLTRB(24, 12, 24, 12),
       contentPadding: EdgeInsets.zero,
       actionsPadding: EdgeInsets.zero,
       actions: actions,
@@ -110,7 +110,7 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
         ...extraActions,
         TextButton(
           child: Text(S.of(context).reset.toUpperCase(),
-              style: TextStyle(color: Colors.redAccent)),
+              style: const TextStyle(color: Colors.redAccent)),
           // textColor: Colors.redAccent,
           onPressed: onTapReset,
         ),
@@ -123,10 +123,11 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
     } else {
       return [
         ...extraActions,
-        IconButton(icon: Icon(Icons.replay), onPressed: onTapReset),
+        IconButton(icon: const Icon(Icons.replay), onPressed: onTapReset),
         if (showOk)
           IconButton(
-              icon: Icon(Icons.done), onPressed: () => Navigator.pop(context))
+              icon: const Icon(Icons.done),
+              onPressed: () => Navigator.pop(context))
       ];
     }
   }
@@ -136,10 +137,10 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
     return LimitedBox(
       maxHeight: min(420, size.height * 0.65),
       child: ListView(
-        padding: EdgeInsets.symmetric(vertical: 6),
+        padding: const EdgeInsets.symmetric(vertical: 6),
         shrinkWrap: true,
         children: divideTiles(children,
-            divider: Divider(color: Colors.transparent, height: 5)),
+            divider: const Divider(color: Colors.transparent, height: 5)),
       ),
     );
   }
@@ -173,7 +174,7 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
   Widget getDisplayOptions({String? header, List<Widget> children = const []}) {
     header ??= S.current.filter_shown_type;
     return Padding(
-      padding: EdgeInsets.fromLTRB(12, 6, 12, 0),
+      padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -209,7 +210,7 @@ abstract class FilterPageState<T> extends State<FilterPage<T>> {
           }
         },
         padding: EdgeInsets.zero,
-        constraints: BoxConstraints.loose(Size.square(24)),
+        constraints: BoxConstraints.loose(const Size.square(24)),
         iconSize: 20,
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
@@ -313,7 +314,7 @@ class FilterGroup extends StatelessWidget {
     Widget _getTitle([Widget? expandIcon]) {
       return CustomTile(
         title: DefaultTextStyle.merge(
-            child: title!, style: TextStyle(fontSize: 14)),
+            child: title!, style: const TextStyle(fontSize: 14)),
         contentPadding: EdgeInsets.zero,
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
@@ -414,7 +415,7 @@ class FilterOption<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     bool darkMode = Theme.of(context).brightness == Brightness.dark;
     return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: 30),
+      constraints: const BoxConstraints(maxHeight: 30),
       child: OutlinedButton(
         onPressed: () {
           if (onChanged != null) {
@@ -425,9 +426,9 @@ class FilterOption<T> extends StatelessWidget {
           primary: selected || darkMode ? Colors.white : Colors.black,
           backgroundColor:
               selected ? selectedColor ?? Colors.blue : unselectedColor,
-          minimumSize: shrinkWrap ? Size(2, 2) : null,
-          padding: shrinkWrap ? EdgeInsets.all(0) : null,
-          textStyle: TextStyle(fontWeight: FontWeight.normal),
+          minimumSize: shrinkWrap ? const Size(2, 2) : null,
+          padding: shrinkWrap ? const EdgeInsets.all(0) : null,
+          textStyle: const TextStyle(fontWeight: FontWeight.normal),
           tapTargetSize: shrinkWrap ? MaterialTapTargetSize.shrinkWrap : null,
           shape: ContinuousRectangleBorder(borderRadius: borderRadius),
         ),

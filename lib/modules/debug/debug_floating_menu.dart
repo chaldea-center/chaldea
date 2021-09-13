@@ -70,7 +70,7 @@ class _DebugFloatingMenuButtonState extends State<DebugFloatingMenuButton> {
                       });
                     });
                   },
-            child: Icon(Icons.menu_open),
+            child: const Icon(Icons.menu_open),
           ),
         ),
       ),
@@ -79,7 +79,8 @@ class _DebugFloatingMenuButtonState extends State<DebugFloatingMenuButton> {
 
   void updateOffset([Offset delta = Offset.zero]) {
     double x = offset.dx + delta.dx, y = offset.dy + delta.dy;
-    Size btn = (context.findRenderObject() as RenderBox?)?.size ?? Size(48, 48);
+    Size btn =
+        (context.findRenderObject() as RenderBox?)?.size ?? const Size(48, 48);
     Size screen = MediaQuery.of(context).size;
     final rect = Rect.fromLTRB(
       -8,
@@ -130,12 +131,12 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
-      title: Text('Debug Menu'),
+      title: const Text('Debug Menu'),
       children: [
         ListTile(
           horizontalTitleGap: 0,
-          leading: Icon(Icons.dark_mode),
-          title: Text('Toggle Dark Mode'),
+          leading: const Icon(Icons.dark_mode),
+          title: const Text('Toggle Dark Mode'),
           onTap: () {
             Utils.debugChangeDarkMode();
             Navigator.of(context).pop();
@@ -143,8 +144,8 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
         ),
         ListTile(
           horizontalTitleGap: 0,
-          leading: Icon(Icons.language),
-          title: Text('Language'),
+          leading: const Icon(Icons.language),
+          title: const Text('Language'),
           trailing: DropdownButton<Language>(
             underline: const Divider(thickness: 0, color: Colors.transparent),
             value: Language.getLanguage(
@@ -162,8 +163,8 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
         ),
         ListTile(
           horizontalTitleGap: 0,
-          leading: Icon(Icons.palette_outlined),
-          title: Text('Palette'),
+          leading: const Icon(Icons.palette_outlined),
+          title: const Text('Palette'),
           onTap: () {
             Navigator.pop(context);
             SplitRoute.push(context, DarkLightThemePalette());
@@ -171,8 +172,8 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
         ),
         ListTile(
           horizontalTitleGap: 0,
-          leading: Icon(Icons.palette_outlined),
-          title: Text('Load GameData'),
+          leading: const Icon(Icons.palette_outlined),
+          title: const Text('Load GameData'),
           onTap: () {
             db.loadGameData();
             db.notifyAppUpdate();
@@ -181,8 +182,8 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
         ),
         ListTile(
           horizontalTitleGap: 0,
-          leading: Icon(Icons.timer),
-          title: Text('Hide 60s'),
+          leading: const Icon(Icons.timer),
+          title: const Text('Hide 60s'),
           onTap: () {
             widget.state?.hide(60);
             Navigator.pop(context);
@@ -190,7 +191,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
         ),
         Center(
           child: IconButton(
-            icon: Icon(Icons.clear),
+            icon: const Icon(Icons.clear),
             onPressed: () {
               Navigator.of(context).pop();
             },

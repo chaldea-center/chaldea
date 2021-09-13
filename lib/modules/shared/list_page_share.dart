@@ -13,7 +13,7 @@ Widget buildSwitchPlanButton(
       child: Stack(
         alignment: Alignment.bottomRight,
         children: [
-          Icon(Icons.list),
+          const Icon(Icons.list),
           ImageWithText.paintOutline(
             text: (db.curUser.curSvtPlanNo + 1).toString(),
             shadowSize: 5,

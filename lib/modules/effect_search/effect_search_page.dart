@@ -4,15 +4,15 @@ import 'package:chaldea/modules/shared/filter_page.dart';
 
 import 'buff_func_filter.dart';
 
-class BuffFilterPage extends StatefulWidget {
-  const BuffFilterPage({Key? key}) : super(key: key);
+class EffectSearchPage extends StatefulWidget {
+  EffectSearchPage({Key? key}) : super(key: key);
 
   @override
-  _BuffFilterPageState createState() => _BuffFilterPageState();
+  _EffectSearchPageState createState() => _EffectSearchPageState();
 }
 
-class _BuffFilterPageState
-    extends SearchableListState<GameCardMixin, BuffFilterPage>
+class _EffectSearchPageState
+    extends SearchableListState<GameCardMixin, EffectSearchPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final filterData = BuffFuncFilterData();
@@ -57,13 +57,13 @@ class _BuffFilterPageState
     return scrollListener(
       useGrid: filterData.useGrid,
       appBar: AppBar(
-        leading: MasterBackButton(),
+        leading: const MasterBackButton(),
         titleSpacing: 0,
-        title: Text('Buff Search'),
+        title: Text(S.current.effect_search),
         actions: [
-          MarkdownHelpPage.buildHelpBtn(context, 'buff_search.md'),
+          MarkdownHelpPage.buildHelpBtn(context, 'effect_search.md'),
           IconButton(
-            icon: Icon(Icons.filter_alt),
+            icon: const Icon(Icons.filter_alt),
             tooltip: S.of(context).filter,
             onPressed: () => FilterPage.show(
               context: context,
@@ -137,7 +137,7 @@ class _BuffFilterPageState
   Widget gridItemBuilder(GameCardMixin card) {
     return card.iconBuilder(
       context: context,
-      padding: EdgeInsets.all(2),
+      padding: const EdgeInsets.all(2),
       jumpToDetail: true,
     );
   }

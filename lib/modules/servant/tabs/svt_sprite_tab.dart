@@ -81,7 +81,8 @@ class _SvtSvtSpriteTabTabState extends SvtTabBaseState<SvtSpriteTab>
               children: [
                 for (final url in urls)
                   Padding(
-                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                     child: CachedImage(
                       imageUrl: url,
                       // height: height,

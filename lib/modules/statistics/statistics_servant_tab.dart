@@ -2,7 +2,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class StatisticServantTab extends StatefulWidget {
-  const StatisticServantTab({Key? key}) : super(key: key);
+  StatisticServantTab({Key? key}) : super(key: key);
 
   @override
   _StatisticServantTabState createState() => _StatisticServantTabState();
@@ -56,7 +56,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
     children.add(pieChart());
     children.add(ListTile(
       title: Text(S.current.rarity),
-      trailing: Text('(skillMax)  own/total'),
+      trailing: const Text('(skillMax)  own/total'),
       // dense: true,
     ));
     children.addAll(_oneRarity(
@@ -85,7 +85,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
         },
       ));
     }
-    children.add(Center(
+    children.add(const Center(
       child: Text(
         'Red: skill >=999',
         style: TextStyle(color: Colors.grey),
@@ -93,9 +93,9 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
     ));
     return ListView(
       controller: _scrollController,
-      physics: scrollable ? null : NeverScrollableScrollPhysics(),
+      physics: scrollable ? null : const NeverScrollableScrollPhysics(),
       children: divideTiles(children),
-      padding: EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: 6),
     );
   }
 
@@ -119,7 +119,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
             Expanded(child: Text(title)),
             Text(
               '($skillMax) ' + '$own/$total'.padLeft(7),
-              style: TextStyle(fontFamily: kMonoFont),
+              style: kMonoStyle,
             )
           ],
         ),
@@ -171,7 +171,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
 
   String? selectedPie;
 
-  List<Color> get palette => [
+  List<Color> get palette => const [
         // Color(0xFFCC0000),
         Color(0xFFCC6600),
         Color(0xFFCCCC00),

@@ -28,7 +28,7 @@ class ImageActions {
         List<Widget> children = [];
         if (gallery && PlatformU.isMobile) {
           children.add(ListTile(
-            leading: Icon(Icons.photo_library),
+            leading: const Icon(Icons.photo_library),
             title: Text(S.current.save_to_photos),
             onTap: () async {
               Navigator.pop(context);
@@ -43,7 +43,7 @@ class ImageActions {
         }
         if (!PlatformU.isWeb && destFp != null) {
           children.add(ListTile(
-            leading: Icon(Icons.save),
+            leading: const Icon(Icons.save),
             title: Text(S.current.save),
             onTap: () {
               Navigator.pop(context);
@@ -70,7 +70,7 @@ class ImageActions {
         }
         if (share && PlatformU.isMobile) {
           children.add(ListTile(
-            leading: Icon(Icons.share),
+            leading: const Icon(Icons.share),
             title: Text(S.current.share),
             onTap: () async {
               Navigator.pop(context);
@@ -78,9 +78,9 @@ class ImageActions {
                 await Share.shareFiles([srcFp], text: shareText);
               } else if (data != null) {
                 // Although, it may not be PNG
-                String fn =
-                    Uuid().v5(Uuid.NAMESPACE_URL, data.hashCode.toString()) +
-                        '.png';
+                String fn = const Uuid()
+                        .v5(Uuid.NAMESPACE_URL, data.hashCode.toString()) +
+                    '.png';
                 String tmpFp = join(db.paths.tempDir, fn);
                 File(tmpFp)
                   ..createSync(recursive: true)
@@ -96,7 +96,7 @@ class ImageActions {
             child: const SizedBox(height: 6),
           ),
           ListTile(
-            leading: Icon(Icons.close),
+            leading: const Icon(Icons.close),
             title: Text(S.current.cancel),
             onTap: () {
               Navigator.pop(context);
@@ -107,7 +107,8 @@ class ImageActions {
           shrinkWrap: true,
           controller: ModalScrollController.of(context),
           itemBuilder: (context, index) => children[index],
-          separatorBuilder: (_, __) => Divider(height: 0.5, thickness: 0.5),
+          separatorBuilder: (_, __) =>
+              const Divider(height: 0.5, thickness: 0.5),
           itemCount: children.length,
         );
       },

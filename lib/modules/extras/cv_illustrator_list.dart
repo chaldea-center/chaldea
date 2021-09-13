@@ -6,7 +6,7 @@ import 'package:chaldea/modules/servant/servant_detail_page.dart';
 const String _unknownCreator = '---';
 
 class CvListPage extends StatefulWidget {
-  const CvListPage({Key? key}) : super(key: key);
+  CvListPage({Key? key}) : super(key: key);
 
   @override
   _CvListPageState createState() => _CvListPageState();
@@ -47,7 +47,7 @@ class _CvListPageState extends SearchableListState<String, CvListPage> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 400), _parse);
+    Future.delayed(const Duration(milliseconds: 400), _parse);
     options = _CVOptions(onChanged: (_) => safeSetState(), state: this);
   }
 
@@ -57,7 +57,6 @@ class _CvListPageState extends SearchableListState<String, CvListPage> {
     return scrollListener(
       useGrid: false,
       appBar: AppBar(
-        leading: BackButton(),
         title: Text(S.current.info_cv),
         bottom: showSearchBar ? searchBar : null,
         actions: [searchIcon],
@@ -68,7 +67,7 @@ class _CvListPageState extends SearchableListState<String, CvListPage> {
   @override
   Widget buildScrollable({bool useGrid = false}) {
     if (shownList.isEmpty && !_initiated) {
-      return Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator());
     }
     return super.buildScrollable(useGrid: useGrid);
   }
@@ -183,7 +182,7 @@ class _CVOptions with SearchOptionsMixin<String> {
 }
 
 class IllustratorListPage extends StatefulWidget {
-  const IllustratorListPage({Key? key}) : super(key: key);
+  IllustratorListPage({Key? key}) : super(key: key);
 
   @override
   _IllustratorListPageState createState() => _IllustratorListPageState();
@@ -237,7 +236,7 @@ class _IllustratorListPageState
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 400), _parse);
+    Future.delayed(const Duration(milliseconds: 400), _parse);
     options =
         _IllustratorOptions(onChanged: (_) => safeSetState(), state: this);
   }
@@ -248,7 +247,6 @@ class _IllustratorListPageState
     return scrollListener(
       useGrid: false,
       appBar: AppBar(
-        leading: BackButton(),
         title: Text(S.current.illustrator),
         bottom: showSearchBar ? searchBar : null,
         actions: [searchIcon],
@@ -259,7 +257,7 @@ class _IllustratorListPageState
   @override
   Widget buildScrollable({bool useGrid = false}) {
     if (shownList.isEmpty && !_initiated) {
-      return Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator());
     }
     return super.buildScrollable(useGrid: useGrid);
   }
@@ -420,7 +418,7 @@ Widget _cardIcon<T>(BuildContext context, T card) {
       SplitRoute.push(context, page, detail: true);
     },
     child: Padding(
-      padding: EdgeInsets.all(2),
+      padding: const EdgeInsets.all(2),
       child: db.getIconImage(icon, width: 132 / 2.5, height: 144 / 2.5),
     ),
   );
@@ -432,8 +430,8 @@ Widget _gridView<T>(BuildContext context, List<T> cards) {
     return GridView.count(
       childAspectRatio: 132 / 144,
       crossAxisCount: count,
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-      physics: NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+      physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       children: cards.map((e) => _cardIcon(context, e)).toList(),
     );

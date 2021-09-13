@@ -23,7 +23,7 @@ part 'ffo_summon_page.dart';
 String get _baseDir => join(db.paths.appPath, 'ffo');
 
 class FreedomOrderPage extends StatefulWidget {
-  const FreedomOrderPage({Key? key}) : super(key: key);
+  FreedomOrderPage({Key? key}) : super(key: key);
 
   @override
   _FreedomOrderPageState createState() => _FreedomOrderPageState();
@@ -51,9 +51,8 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         titleSpacing: 0,
-        title: AutoSizeText('Fate/Freedom Order', maxLines: 1),
+        title: const AutoSizeText('Fate/Freedom Order', maxLines: 1),
         centerTitle: false,
         actions: [
           MarkdownHelpPage.buildHelpBtn(context, 'freedom_order.md'),
@@ -75,7 +74,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
               ),
             ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: 6,
@@ -88,7 +87,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: Wrap(
               alignment: WrapAlignment.center,
               crossAxisAlignment: WrapCrossAlignment.center,
@@ -154,7 +153,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
           ),
         );
       },
-      icon: Icon(Icons.download_sharp),
+      icon: const Icon(Icons.download_sharp),
     );
   }
 
@@ -221,7 +220,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
     if (!csvFile.existsSync()) return;
     try {
       parts.clear();
-      CsvToListConverter(eol: '\n')
+      const CsvToListConverter(eol: '\n')
           .convert(csvFile.readAsStringSync().replaceAll('\r\n', '\n'))
           .forEach((row) {
         if (row[0] == 'id') {
@@ -236,7 +235,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
       logger.e('load FFO data failed', e, s);
       logger.e(csvFile.readAsStringSync());
       SimpleCancelOkDialog(
-        title: Text('Load FFO data error'),
+        title: const Text('Load FFO data error'),
         content: Text('$e\nTry to import data again'),
       ).showDialog(context);
       Catcher.reportCheckedError(e, s);
@@ -292,11 +291,11 @@ class _PartChooserPageState extends State<_PartChooserPage> {
           height: 54,
           child: Image.file(file, fit: BoxFit.contain),
         ),
-        textStyle: TextStyle(fontSize: 12),
+        textStyle: const TextStyle(fontSize: 12),
       );
       child = GestureDetector(
         child: Padding(
-          padding: EdgeInsets.all(2),
+          padding: const EdgeInsets.all(2),
           child: child,
         ),
         onTap: () {
@@ -308,7 +307,6 @@ class _PartChooserPageState extends State<_PartChooserPage> {
     });
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         title: Text(widget.title),
         titleSpacing: 0,
       ),
@@ -316,7 +314,7 @@ class _PartChooserPageState extends State<_PartChooserPage> {
         children: [
           Expanded(child: LayoutBuilder(builder: (context, constraints) {
             return GridView.count(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               crossAxisCount: constraints.maxWidth ~/ 56,
               children: children,
             );
@@ -336,7 +334,7 @@ class _PartChooserPageState extends State<_PartChooserPage> {
         DropdownButton<int>(
           value: sortType,
           items: [
-            DropdownMenuItem(value: 0, child: Text('ID')),
+            const DropdownMenuItem(value: 0, child: Text('ID')),
             DropdownMenuItem(value: 1, child: Text(S.current.rarity)),
             DropdownMenuItem(
                 value: 2, child: Text(S.current.filter_sort_class)),

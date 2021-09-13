@@ -3,7 +3,7 @@ import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ImportGudaPage extends StatefulWidget {
-  const ImportGudaPage({Key? key}) : super(key: key);
+  ImportGudaPage({Key? key}) : super(key: key);
 
   @override
   _ImportGudaPageState createState() => _ImportGudaPageState();
@@ -17,7 +17,6 @@ class _ImportGudaPageState extends State<ImportGudaPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         titleSpacing: 0,
         title: Text(
             LocalizedText.of(chs: 'Guda数据', jpn: 'Gudaデータ', eng: 'Guda Data')),
@@ -33,12 +32,12 @@ class _ImportGudaPageState extends State<ImportGudaPage> {
                     eng: 'Import item or servant data from iOS app "Guda"')),
               ).showDialog(context);
             },
-            icon: Icon(Icons.help),
+            icon: const Icon(Icons.help),
             tooltip: S.current.help,
           ),
           IconButton(
             onPressed: importFile,
-            icon: FaIcon(FontAwesomeIcons.fileImport),
+            icon: const FaIcon(FontAwesomeIcons.fileImport),
             tooltip: S.current.import_source_file,
           ),
         ],
@@ -48,7 +47,7 @@ class _ImportGudaPageState extends State<ImportGudaPage> {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(gudaData ?? ''),
             ),
           ),

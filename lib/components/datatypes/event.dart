@@ -40,7 +40,7 @@ class Events {
     mainRecords.forEach((name, event) {
       resultList.add(event.getItems(eventPlans.mainRecords[name]));
     });
-    final startDate = DateTime.now().subtract(Duration(days: 31 * 4));
+    final startDate = DateTime.now().subtract(const Duration(days: 31 * 4));
     exchangeTickets.forEach((name, event) {
       if (event.curDate.isAfter(startDate)) {
         resultList.add(event.getItems(eventPlans.exchangeTickets[name]));

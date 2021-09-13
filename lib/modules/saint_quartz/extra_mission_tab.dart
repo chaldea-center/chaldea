@@ -1,7 +1,7 @@
 import 'package:chaldea/components/components.dart';
 
 class ExtraMissionTab extends StatefulWidget {
-  const ExtraMissionTab({Key? key}) : super(key: key);
+  ExtraMissionTab({Key? key}) : super(key: key);
 
   @override
   _ExtraMissionTabState createState() => _ExtraMissionTabState();

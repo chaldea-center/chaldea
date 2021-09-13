@@ -33,9 +33,9 @@ class _GridGalleryState extends State<GridGallery> {
     }
 
     Widget grid = GridView.count(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       crossAxisCount: crossCount,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       childAspectRatio: 1,
       children: _getShownGalleries(context),
@@ -44,7 +44,7 @@ class _GridGalleryState extends State<GridGallery> {
       grid = GestureDetector(
         onTap: () {
           SimpleCancelOkDialog(
-            title: Text('Gamedata Error'),
+            title: const Text('Gamedata Error'),
             content: Text(S.current.reload_default_gamedata),
             onTapOk: () async {
               await db.loadZipAssets(kDatasetAssetKey);
@@ -88,7 +88,7 @@ class _GridGalleryState extends State<GridGallery> {
                 alignment: Alignment.topCenter,
                 child: AutoSizeText(
                   item.titleBuilder(),
-                  style: TextStyle(fontWeight: FontWeight.normal),
+                  style: const TextStyle(fontWeight: FontWeight.normal),
                   textAlign: TextAlign.center,
                   maxFontSize: 14,
                 ),

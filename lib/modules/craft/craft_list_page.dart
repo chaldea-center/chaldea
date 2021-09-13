@@ -6,7 +6,7 @@ import 'craft_detail_page.dart';
 import 'craft_filter_page.dart';
 
 class CraftListPage extends StatefulWidget {
-  const CraftListPage({Key? key}) : super(key: key);
+  CraftListPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => CraftListPageState();
@@ -40,14 +40,14 @@ class CraftListPageState
     return scrollListener(
       useGrid: filterData.useGrid,
       appBar: AppBar(
-        leading: MasterBackButton(),
+        leading: const MasterBackButton(),
         title: AutoSizeText(S.current.craft_essence,
             maxLines: 1, overflow: TextOverflow.fade),
         titleSpacing: 0,
         bottom: showSearchBar ? searchBar : null,
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.filter_alt),
+            icon: const Icon(Icons.filter_alt),
             tooltip: S.of(context).filter,
             onPressed: () => FilterPage.show(
               context: context,
@@ -88,7 +88,7 @@ class CraftListPageState
           Text('No.${ce.no.toString().padRight(4)}  $additionalText'),
         ],
       ),
-      trailing: Icon(Icons.keyboard_arrow_right),
+      trailing: const Icon(Icons.keyboard_arrow_right),
       selected: SplitRoute.isSplit(context) && selected == ce,
       onTap: () {
         SplitRoute.push(
@@ -109,7 +109,7 @@ class CraftListPageState
   @override
   Widget gridItemBuilder(CraftEssence ce) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 3, horizontal: 3),
+      padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 3),
       child: GestureDetector(
         child: db.getIconImage(ce.icon),
         onTap: () {

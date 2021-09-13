@@ -32,8 +32,7 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
     _curHistory = fixValidRange(_curHistory, 0, history.length - 1);
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
-        title: Text('Freedom Order Summon'),
+        title: const Text('Freedom Order Summon'),
         titleSpacing: 0,
         actions: [
           IconButton(
@@ -43,13 +42,13 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
               setState(() {});
               _disposeHistory();
             },
-            icon: Icon(Icons.replay),
+            icon: const Icon(Icons.replay),
             tooltip: S.current.reset,
           )
         ],
       ),
       body: ListView(
-        padding: EdgeInsets.only(bottom: 6),
+        padding: const EdgeInsets.only(bottom: 6),
         children: [
           banner,
           summonBtn,
@@ -60,7 +59,7 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
             Center(
               child: Text(
                 S.current.long_press_to_save_hint,
-                style: TextStyle(color: Colors.grey),
+                style: const TextStyle(color: Colors.grey),
               ),
             ),
         ],
@@ -102,7 +101,7 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           _buildBtn(false),
-          Padding(padding: EdgeInsets.only(right: 10)),
+          const SizedBox(width: 10),
           _buildBtn(true),
         ],
       ),
@@ -136,7 +135,8 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
         mainAxisSize: MainAxisSize.min,
         children: rowItems
             .map((e) => Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   child: e.buildCard(context, true),
                 ))
             .toList(),
@@ -148,7 +148,7 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
       rows.add(_buildRow(data.sublist(0, min(5, data.length))));
       if (data.length > 5) rows.add(_buildRow(data.sublist(5, data.length)));
       Widget child = Padding(
-        padding: EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         child: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -181,7 +181,7 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
                         _curHistory -= 1;
                       });
                     },
-              icon: Icon(Icons.keyboard_arrow_left),
+              icon: const Icon(Icons.keyboard_arrow_left),
             ),
             Expanded(
               child: AspectRatio(
@@ -197,7 +197,7 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
                         _curHistory += 1;
                       });
                     },
-              icon: Icon(Icons.keyboard_arrow_right),
+              icon: const Icon(Icons.keyboard_arrow_right),
             ),
           ],
         ),
@@ -205,7 +205,7 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
           '${_curHistory + 1}/${history.length}',
           style: Theme.of(context).textTheme.caption,
         ),
-        Padding(padding: EdgeInsets.only(bottom: 6)),
+        const SizedBox(height: 6),
       ],
     );
   }

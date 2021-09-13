@@ -45,7 +45,7 @@ class _FfoDownloadDialogState extends State<FfoDownloadDialog> {
     if (PlatformU.isWeb) {
       return SimpleCancelOkDialog(
         title: Text(S.current.import_data + ' FFO data'),
-        content: Text('Not supported on web'),
+        content: const Text('Not supported on web'),
         hideCancel: true,
       );
     }
@@ -55,15 +55,15 @@ class _FfoDownloadDialogState extends State<FfoDownloadDialog> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (resolving) Text('resolving download url'),
-          if (!resolving && assets.isNotEmpty) Text('将从以下地址下载或自行下载后导入：'),
+          if (resolving) const Text('resolving download url'),
+          if (!resolving && assets.isNotEmpty) const Text("将从以下地址下载或自行下载后导入："),
           if (!resolving && assets.isEmpty)
-            Text('url解析失败，请前往以下网址查找并下载ffo-data'),
+            const Text('url解析失败，请前往以下网址查找并下载ffo-data'),
           for (var asset in assets)
             InkWell(
               child: Text(
                 asset.browserDownloadUrl!,
-                style: TextStyle(
+                style: const TextStyle(
                     color: Colors.blue, decoration: TextDecoration.underline),
               ),
               onTap: () {
@@ -74,7 +74,7 @@ class _FfoDownloadDialogState extends State<FfoDownloadDialog> {
             InkWell(
               child: Text(
                 gitTool.ffoDataReleaseUrl,
-                style: TextStyle(
+                style: const TextStyle(
                     color: Colors.blue, decoration: TextDecoration.underline),
               ),
               onTap: () {
@@ -121,7 +121,7 @@ class _FfoDownloadDialogState extends State<FfoDownloadDialog> {
                     },
                   ),
                 );
-                await Future.delayed(Duration(seconds: 1));
+                await Future.delayed(const Duration(seconds: 1));
               }
             }
           },

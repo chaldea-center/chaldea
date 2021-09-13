@@ -4216,10 +4216,10 @@ class S {
     );
   }
 
-  /// `Buff搜索`
+  /// `Buff检索`
   String get effect_search {
     return Intl.message(
-      'Buff搜索',
+      'Buff检索',
       name: 'effect_search',
       desc: '',
       args: [],

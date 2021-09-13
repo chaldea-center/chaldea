@@ -49,7 +49,7 @@ class _EnemyDetailPageState extends State<EnemyDetailPage> {
                       TableCellData(
                         flex: 3,
                         child: enemy.classIcons.isEmpty
-                            ? Text('?')
+                            ? const Text('?')
                             : Wrap(
                                 spacing: 4,
                                 runSpacing: 4,
@@ -105,7 +105,7 @@ class _EnemyDetailPageState extends State<EnemyDetailPage> {
                 texts: [enemy.skill],
                 defaults: TableCellData(
                   textAlign: TextAlign.center,
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                 ),
               ),
               CustomTableRow.fromTexts(
@@ -114,7 +114,7 @@ class _EnemyDetailPageState extends State<EnemyDetailPage> {
                 texts: [enemy.noblePhantasm],
                 defaults: TableCellData(
                   textAlign: TextAlign.center,
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                 ),
               ),
             ],

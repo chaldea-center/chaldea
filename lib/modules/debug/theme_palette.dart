@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 
 class DarkLightThemePalette extends StatefulWidget {
-  const DarkLightThemePalette({Key? key}) : super(key: key);
+  DarkLightThemePalette({Key? key}) : super(key: key);
 
   @override
   _DarkLightThemePaletteState createState() => _DarkLightThemePaletteState();
@@ -13,8 +13,8 @@ class _DarkLightThemePaletteState extends State<DarkLightThemePalette> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
-        title: Text('Palette'),
+        leading: const BackButton(),
+        title: const Text('Palette'),
       ),
       body: SingleChildScrollView(
         child: Row(
@@ -23,13 +23,13 @@ class _DarkLightThemePaletteState extends State<DarkLightThemePalette> {
             Expanded(
               child: Theme(
                 data: ThemeData.light(),
-                child: Builder(builder: (context) => _PaletteForTheme()),
+                child: Builder(builder: (context) => const _PaletteForTheme()),
               ),
             ),
             Expanded(
               child: Theme(
                 data: ThemeData.dark(),
-                child: Builder(builder: (context) => _PaletteForTheme()),
+                child: Builder(builder: (context) => const _PaletteForTheme()),
               ),
             ),
           ],
@@ -48,24 +48,24 @@ class _PaletteForTheme extends StatelessWidget {
     final colorScheme = themeData.colorScheme;
     return Container(
       color: themeData.scaffoldBackgroundColor,
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Card(
             child: Padding(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Center(
                 child: Text(
                   themeData.brightness.toString(),
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
             ),
           ),
-          Divider(thickness: 2),
+          const Divider(thickness: 2),
           oneColor('colorScheme.primary', colorScheme.primary),
           oneColor('colorScheme.primaryVariant', colorScheme.primaryVariant),
           oneColor('colorScheme.secondary', colorScheme.secondary),
@@ -79,7 +79,7 @@ class _PaletteForTheme extends StatelessWidget {
           oneColor('colorScheme.onSurface', colorScheme.onSurface),
           oneColor('colorScheme.onBackground', colorScheme.onBackground),
           oneColor('colorScheme.onError', colorScheme.onError),
-          Divider(thickness: 2),
+          const Divider(thickness: 2),
           oneColor('primaryColor', themeData.primaryColor),
           oneColor('primaryColorLight', themeData.primaryColorLight),
           oneColor('primaryColorDark', themeData.primaryColorDark),
@@ -129,13 +129,13 @@ class _PaletteForTheme extends StatelessWidget {
                   : 'Color(0x${color.value.toRadixString(16).padLeft(8, '0')})',
               maxLines: 1,
               minFontSize: 2,
-              style: TextStyle(fontFamily: kMonoFont),
+              style: kMonoStyle,
             ),
           ),
         ),
         Container(
           color: color,
-          child: SizedBox(width: double.infinity, height: 50),
+          child: const SizedBox(width: double.infinity, height: 50),
         )
       ],
     );

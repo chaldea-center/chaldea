@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:chaldea/components/components.dart';
 
 class AccountPage extends StatefulWidget {
-  const AccountPage({Key? key}) : super(key: key);
+  AccountPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _AccountPageState();
@@ -15,10 +15,9 @@ class _AccountPageState extends State<AccountPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(S.of(context).cur_account),
-        leading: BackButton(),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
             tooltip: S.current.new_account,
             onPressed: () {
               showDialog(
@@ -171,7 +170,7 @@ class _AccountPageState extends State<AccountPage> {
     final user = db.userData.users[key]!;
 
     SimpleCancelOkDialog(
-      title: Text('Clear Data'),
+      title: const Text('Clear Data'),
       content: Text('Account: ${user.name}'),
       onTapOk: () {
         user.servants.clear();
@@ -203,7 +202,8 @@ class _AccountPageState extends State<AccountPage> {
     final user = db.userData.users[key]!;
     SimpleCancelOkDialog(
       title: Text('Delete ${user.name}'),
-      content: canDelete ? null : Text('Cannot delete, at least one account!'),
+      content:
+          canDelete ? null : const Text('Cannot delete, at least one account!'),
       onTapOk: canDelete
           ? () {
               db.userData.users.remove(key);
@@ -219,7 +219,8 @@ class _AccountPageState extends State<AccountPage> {
 
   void updateData() async {
     setState(() {});
-    await db.itemStat.update(lapse: Duration(seconds: 1), withFuture: true);
+    await db.itemStat
+        .update(lapse: const Duration(seconds: 1), withFuture: true);
     db.notifyAppUpdate();
   }
 }

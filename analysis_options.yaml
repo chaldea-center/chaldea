@@ -25,8 +25,9 @@ linter:
     avoid_function_literals_in_foreach_calls: false
     avoid_print: false
     avoid_renaming_method_parameters: false
-    prefer_const_constructors: false
-
+    #    prefer_const_constructors: false
+    prefer_const_literals_to_create_immutables: false
+    prefer_const_constructors_in_immutables: false
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

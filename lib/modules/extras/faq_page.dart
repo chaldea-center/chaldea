@@ -2,15 +2,14 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/home/subpage/feedback_page.dart';
 
 class FAQPage extends StatelessWidget {
-  const FAQPage({Key? key}) : super(key: key);
+  FAQPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         titleSpacing: 0,
-        title: Text('FAQ'),
+        title: const Text('FAQ'),
       ),
       body: Column(
         children: [
@@ -20,7 +19,7 @@ class FAQPage extends StatelessWidget {
                   asset: 'FAQ.md', lapse: kSplitRouteDuration),
               builder: (context, snapshot) {
                 return snapshot.data == null
-                    ? Center(child: CircularProgressIndicator())
+                    ? const Center(child: CircularProgressIndicator())
                     : MyMarkdownWidget(
                         data: snapshot.data ?? '', selectable: true);
               },

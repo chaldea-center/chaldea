@@ -40,7 +40,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
+        leading: const BackButton(),
         title: AutoSizeText(
           summon.lName,
           maxLines: 1,
@@ -133,7 +133,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
               maxLines: 1,
               fontSize: 14,
               alignment: Alignment.centerLeft,
-              padding: EdgeInsets.fromLTRB(16, 4, 4, 4),
+              padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
             )
           ]),
         if (!summon.isStory &&
@@ -146,7 +146,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
               maxLines: 1,
               fontSize: 14,
               alignment: Alignment.centerLeft,
-              padding: EdgeInsets.fromLTRB(16, 4, 4, 4),
+              padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
             )
           ]),
         if (summon.isLuckyBag)
@@ -161,7 +161,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
       if (summon.dataList.isNotEmpty) gachaDetails,
       if (summon.dataList.isNotEmpty)
         Padding(
-          padding: EdgeInsets.only(bottom: 8, left: 16),
+          padding: const EdgeInsets.only(bottom: 8, left: 16),
           child: Row(
             children: [
               Text(
@@ -249,7 +249,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
       items.add(DropdownMenuItem(
         child: Text(
           S.current.overview,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         value: -1,
       ));
@@ -259,12 +259,12 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
             SummonUtil.summonNameLocalize(e.name),
             maxLines: 2,
             maxFontSize: 14,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           value: summon.dataList.indexOf(e),
         )));
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
           Text(LocalizedText.of(chs: '日替: ', jpn: '日替: ', eng: 'Daily: ')),
@@ -300,7 +300,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     [...data.svts, ...data.crafts].forEach((block) {
       if (!block.display && summon.isLimited && !summon.classPickUp) return;
       children.add(Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: SummonUtil.buildBlock(
           context: context,
           block: block,
@@ -338,7 +338,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           });
         });
         children.add(Padding(
-          padding: EdgeInsets.fromLTRB(16, 0, 16, 8),
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
           child: Wrap(
             spacing: 4,
             runSpacing: 4,
@@ -353,8 +353,8 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           ),
         ));
       }
-      children
-          .add(Divider(thickness: 0.5, height: 16, indent: 16, endIndent: 16));
+      children.add(
+          const Divider(thickness: 0.5, height: 16, indent: 16, endIndent: 16));
     }
 
     for (final data in summon.dataList) {
@@ -376,7 +376,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         });
       }
       children.add(Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Wrap(
           spacing: 4,
           runSpacing: 4,
@@ -427,14 +427,14 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
-          icon: FaIcon(FontAwesomeIcons.chevronCircleLeft),
+          icon: const FaIcon(FontAwesomeIcons.chevronCircleLeft),
           color: Theme.of(context).colorScheme.primary,
           tooltip: S.current.previous_card,
           onPressed: () => moveNext(true),
         ),
         centerBtn,
         IconButton(
-          icon: FaIcon(FontAwesomeIcons.chevronCircleRight),
+          icon: const FaIcon(FontAwesomeIcons.chevronCircleRight),
           color: Theme.of(context).colorScheme.primary,
           tooltip: S.current.next_card,
           onPressed: () => moveNext(),

@@ -16,7 +16,7 @@ import 'subpage/support_donation_page.dart';
 import 'subpage/user_data_page.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({Key? key}) : super(key: key);
+  SettingsPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _SettingsPageState();
@@ -48,7 +48,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget _wrapArrowTrailing(Widget trailing) {
     return Row(
       mainAxisSize: MainAxisSize.min,
-      children: <Widget>[trailing, Icon(Icons.keyboard_arrow_right)],
+      children: <Widget>[trailing, const Icon(Icons.keyboard_arrow_right)],
     );
   }
 
@@ -85,7 +85,7 @@ class _SettingsPageState extends State<SettingsPage> {
               '${S.current.limited_event}/${S.current.main_record}/${S.current.summon}',
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: progressDropdown,
             ),
           ],
@@ -96,7 +96,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ListTile(
               title: Text(S.of(context).userdata),
               // subtitle: Text(S.current.backup_data_alert),
-              trailing: Icon(Icons.keyboard_arrow_right),
+              trailing: const Icon(Icons.keyboard_arrow_right),
               onTap: () {
                 SplitRoute.push(context, UserDataPage(), popDetail: true);
               },
@@ -115,9 +115,10 @@ class _SettingsPageState extends State<SettingsPage> {
           children: <Widget>[
             ListTile(
               title: Text(S.of(context).settings_language),
-              subtitle: Language.isEN ? null : Text('Language'),
+              subtitle: Language.isEN ? null : const Text('Language'),
               trailing: DropdownButton<Language>(
-                underline: Divider(thickness: 0, color: Colors.transparent),
+                underline:
+                    const Divider(thickness: 0, color: Colors.transparent),
                 value: Language.getLanguage(
                     db.appSetting.language ?? Language.currentLocaleCode),
                 items: Language.supportLanguages.map((lang) {
@@ -160,7 +161,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             ListTile(
               title: Text(S.current.display_setting),
-              trailing: Icon(Icons.keyboard_arrow_right),
+              trailing: const Icon(Icons.keyboard_arrow_right),
               onTap: () {
                 SplitRoute.push(context, DisplaySettingPage());
               },
@@ -174,10 +175,9 @@ class _SettingsPageState extends State<SettingsPage> {
               title: Text(MaterialLocalizations.of(context)
                   .aboutListTileTitle(AppInfo.appName)),
               trailing: db.runtimeData.upgradableVersion == null
-                  ? Icon(Icons.keyboard_arrow_right)
+                  ? const Icon(Icons.keyboard_arrow_right)
                   : Text(
                       db.runtimeData.upgradableVersion!.version + ' ↑',
-                      style: TextStyle(),
                     ),
               onTap: () => SplitRoute.push(
                 context,
@@ -187,7 +187,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             ListTile(
               title: Text(S.of(context).about_feedback),
-              trailing: Icon(Icons.keyboard_arrow_right),
+              trailing: const Icon(Icons.keyboard_arrow_right),
               onTap: () {
                 SplitRoute.push(context, FeedbackPage(), popDetail: true);
               },
@@ -195,7 +195,7 @@ class _SettingsPageState extends State<SettingsPage> {
             if (!kReleaseMode)
               ListTile(
                 title: Text(S.of(context).settings_tutorial),
-                trailing: Icon(Icons.menu_book),
+                trailing: const Icon(Icons.menu_book),
                 onTap: () {
                   EasyLoading.showToast(
                       Language.isCN ? '咕咕咕咕咕咕' : "Not implemented");
@@ -204,7 +204,7 @@ class _SettingsPageState extends State<SettingsPage> {
             if (!PlatformU.isApple || (db.cfg.launchTimes.get() ?? 0) > 5)
               ListTile(
                 title: Text(S.current.support_chaldea),
-                trailing: Icon(Icons.favorite),
+                trailing: const Icon(Icons.favorite),
                 onTap: () {
                   SplitRoute.push(context, SupportDonationPage());
                 },
@@ -215,7 +215,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     chs: 'App Store评分',
                     jpn: 'App Storeでのレート ',
                     eng: 'Rate on App Store')),
-                trailing: Icon(Icons.star_half_rounded),
+                trailing: const Icon(Icons.star_half_rounded),
                 onTap: () {
                   launch(kAppStoreLink);
                 },
@@ -226,28 +226,28 @@ class _SettingsPageState extends State<SettingsPage> {
                     chs: 'Google Play评分',
                     jpn: 'Google Playでのレート ',
                     eng: 'Rate on Google Play')),
-                trailing: Icon(Icons.star_half_rounded),
+                trailing: const Icon(Icons.star_half_rounded),
                 onTap: () {
                   launch(kGooglePlayLink);
                 },
               ),
             ListTile(
               title: Text(S.current.share),
-              trailing: Icon(Icons.ios_share),
+              trailing: const Icon(Icons.ios_share),
               onTap: () => ShareAppDialog().showDialog(context),
             ),
             ListTile(
-              title: Text('Starring on Github'),
-              subtitle: Text(kProjectHomepage),
+              title: const Text('Starring on Github'),
+              subtitle: const Text(kProjectHomepage),
               onTap: () {
                 launch(kProjectHomepage);
               },
             ),
             ListTile(
-              title: Text('Contribution/Collaboration'),
-              subtitle: Text('e.g. Translation'),
+              title: const Text('Contribution/Collaboration'),
+              subtitle: const Text('e.g. Translation'),
               onTap: () {
-                SimpleCancelOkDialog(
+                const SimpleCancelOkDialog(
                   title: Text('Contribute to Chaldea'),
                   content: Text(
                       'Collaboration is welcomed, please contact us through email:\n'
@@ -263,12 +263,12 @@ class _SettingsPageState extends State<SettingsPage> {
             header: 'Test(debug mode: ${kDebugMode ? 'on' : 'off'})',
             children: <Widget>[
               ListTile(
-                title: Text('Test Func'),
+                title: const Text('Test Func'),
                 onTap: () => testFunction(context),
               ),
               SwitchListTile.adaptive(
                 value: db.runtimeData.showDebugFAB,
-                title: Text('Debug FAB'),
+                title: const Text('Debug FAB'),
                 onChanged: (v) {
                   setState(() {
                     db.runtimeData.showDebugFAB = v;
@@ -281,7 +281,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               ),
               ListTile(
-                title: Text('Master-Detail width'),
+                title: const Text('Master-Detail width'),
                 trailing: DropdownButtonHideUnderline(
                   child: DropdownButton<double>(
                     value: db.runtimeData.criticalWidth ?? 768,
@@ -323,9 +323,9 @@ class _SettingsPageState extends State<SettingsPage> {
       db.curUser.msProgress = fixValidRange(db.curUser.msProgress, -4, -1);
     }
     Widget _wrapText(String text) => Text(
-          text,
+      text,
           maxLines: 2,
-          style: TextStyle(fontSize: 14),
+          style: const TextStyle(fontSize: 14),
           overflow: TextOverflow.ellipsis,
         );
 

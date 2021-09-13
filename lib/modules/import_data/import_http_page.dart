@@ -10,7 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'bond_detail_page.dart';
 
 class ImportHttpPage extends StatefulWidget {
-  const ImportHttpPage({Key? key}) : super(key: key);
+  ImportHttpPage({Key? key}) : super(key: key);
 
   @override
   ImportHttpPageState createState() => ImportHttpPageState();
@@ -72,7 +72,6 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     _shownSvts.clear();
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         titleSpacing: 0,
         title: Text(LocalizedText.of(
             chs: 'HTTPS抓包', jpn: 'HTTPSスニッフィング', eng: 'HTTPS Sniffing')),
@@ -80,7 +79,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           MarkdownHelpPage.buildHelpBtn(context, 'import_https_response.md'),
           IconButton(
             onPressed: importResponseBody,
-            icon: FaIcon(FontAwesomeIcons.fileImport),
+            icon: const FaIcon(FontAwesomeIcons.fileImport),
             tooltip: S.current.import_source_file,
           ),
         ],
@@ -90,7 +89,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           Expanded(
             child: topLogin == null
                 ? Padding(
-                    padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
                     child: Column(
                       children: [
                         Text(
@@ -98,18 +97,18 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                               chs: '目前仅国服可用',
                               jpn: '現在、中国サーバーのみがサポートされています',
                               eng: 'Only Chinese server is supported yet'),
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Text(S.current.import_http_body_hint),
                       ],
                     ),
                   )
                 : LayoutBuilder(
                     builder: (context, constraints) => ListView(
-                      padding: EdgeInsets.symmetric(vertical: 8),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                       children: [
-                        Card(
+                        const Card(
                           child: Padding(
                             padding: EdgeInsets.all(8),
                             child: Text('2021.09.06国服更新2.26.0之后，抓包暂时失效。'),
@@ -133,7 +132,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           buttonBar,
           Text(
             S.current.import_http_body_hint_hide,
-            style: TextStyle(color: Colors.grey, fontSize: 13),
+            style: const TextStyle(color: Colors.grey, fontSize: 13),
           )
         ],
       ),
@@ -147,7 +146,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     final user = replacedResponse!.firstUser!;
     return SimpleAccordion(
       expanded: true,
-      headerBuilder: (context, _) => ListTile(
+      headerBuilder: (context, _) => const ListTile(
         leading: Icon(Icons.supervised_user_circle),
         title: Text('账号信息'),
       ),
@@ -155,31 +154,31 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         mainAxisSize: MainAxisSize.min,
         children: divideTiles([
           ListTile(
-            title: Text('获取时间'),
+            title: const Text('获取时间'),
             trailing: Text(topLogin!.cache.serverTime?.toStringShort() ?? '?'),
           ),
           ListTile(
-            title: Text('用户名'),
+            title: const Text('用户名'),
             trailing: Text(user.name),
           ),
           ListTile(
-            title: Text('性别'),
+            title: const Text('性别'),
             trailing: Text(user.genderType == 1 ? '咕哒夫' : '咕哒子'),
           ),
           ListTile(
-            title: Text('用户ID'),
+            title: const Text('用户ID'),
             trailing: Text(formatNumber(user.friendCode)),
           ),
           ListTile(
-            title: Text('QP'),
+            title: const Text('QP'),
             trailing: Text(formatNumber(user.qp)),
           ),
           ListTile(
-            title: Text('魔力棱镜'),
+            title: const Text('魔力棱镜'),
             trailing: Text(formatNumber(user.mana)),
           ),
           ListTile(
-            title: Text('稀有魔力棱镜'),
+            title: const Text('稀有魔力棱镜'),
             trailing: Text(formatNumber(user.rarePri)),
           ),
         ]),
@@ -194,7 +193,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         image: db.getIconImage(item.indexKey!, width: _with),
         text: item.num.toString(),
         width: _with,
-        padding: EdgeInsets.only(right: 2, bottom: 3),
+        padding: const EdgeInsets.only(right: 2, bottom: 3),
       ));
     });
     return SimpleAccordion(
@@ -211,7 +210,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         title: Text(S.current.item),
       ),
       contentBuilder: (context) => Padding(
-        padding: EdgeInsets.symmetric(vertical: 6),
+        padding: const EdgeInsets.symmetric(vertical: 6),
         child: Wrap(
           spacing: 6,
           runSpacing: 6,
@@ -261,7 +260,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                     ? ''
                     : DateFormat('yyyy-MM-dd').format(svt.createdAt),
                 style: group.indexOf(svt) == 0
-                    ? TextStyle(color: Colors.red)
+                    ? const TextStyle(color: Colors.red)
                     : null,
               ),
             ],
@@ -275,7 +274,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               alignment: Alignment.centerLeft,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(left: 6, top: 2),
+                  padding: const EdgeInsets.only(left: 6, top: 2),
                   child: db.getIconImage(
                       db.gameData.servants[svt.indexKey]!.icon,
                       width:
@@ -283,7 +282,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                       aspectRatio: 132 / 144),
                 ),
                 // if (!_isLocked && svt.isLock)
-                Icon(
+                const Icon(
                   Icons.lock,
                   size: 13,
                   color: Colors.white,
@@ -300,7 +299,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               child: FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Padding(
-                  padding: EdgeInsets.only(left: 4),
+                  padding: const EdgeInsets.only(left: 4),
                   child: richText,
                 ),
               ),
@@ -364,8 +363,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       contentBuilder: (context) {
         return GridView.builder(
           shrinkWrap: true,
-          padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
-          physics: NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+          physics: const NeverScrollableScrollPhysics(),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCountAndFixedHeight(
               crossAxisCount: crossCount,
               height: _height + 6,
@@ -389,14 +388,14 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             _includeCraft = v ?? _includeCraft;
           }),
         ),
-        title: Text('礼装图鉴'),
+        title: const Text('礼装图鉴'),
       ),
       contentBuilder: (context) {
         final notMeet = crafts.values.where((v) => v == 0).length;
         final meet = crafts.values.where((v) => v == 1).length;
         final own = crafts.values.where((v) => v == 2).length;
         return ListTile(
-          leading: Text(''),
+          leading: const Text(''),
           title: Text(
               '已契约: $own\n已遭遇: $meet\n未遭遇: $notMeet\n总计:   ${crafts.length}'),
         );
@@ -444,7 +443,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                             cardCollections: cardCollections),
                       );
                     },
-              child: Text('羁绊详情'),
+              child: const Text('羁绊详情'),
             ),
             ElevatedButton(
               onPressed: replacedResponse == null ? null : didImportData,
@@ -527,7 +526,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         title: Text(S.current.import_data),
         children: [
           ListTile(
-            leading: Icon(Icons.paste),
+            leading: const Icon(Icons.paste),
             title: Text(LocalizedText.of(
                 chs: '从剪切板', jpn: 'クリップボードから', eng: 'From Clipboard')),
             onTap: () async {
@@ -551,7 +550,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.file_present),
+            leading: const Icon(Icons.file_present),
             title: Text(LocalizedText.of(
                 chs: '从文本文件', jpn: 'テキストファイルから', eng: 'From Text File')),
             onTap: () async {
@@ -575,7 +574,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: Icon(Icons.clear),
+            icon: const Icon(Icons.clear),
           ),
         ],
       ).showDialog(context);
@@ -586,7 +585,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       logger.e('fail to load http response', e, s);
       if (mounted) {
         SimpleCancelOkDialog(
-          title: Text('Error'),
+          title: const Text('Error'),
           content: Text('''$e\n\n请检查以下步骤是否正确：
 - 所捕获的URL格式类似为：
 https://line3-s2-xxx-fate.bilibiligame.net/rongame_beta//rgfate/60_1001/ac.php?_userId=xxxxxx&_key=toplogin
@@ -700,7 +699,7 @@ https://line3-s2-xxx-fate.bilibiligame.net/rongame_beta//rgfate/60_1001/ac.php?_
     SimpleCancelOkDialog(
       hideCancel: true,
       title: Text(S.of(context).help),
-      content: SingleChildScrollView(
+      content: const SingleChildScrollView(
         child: Text(""""""),
       ),
       actions: [
@@ -708,13 +707,13 @@ https://line3-s2-xxx-fate.bilibiligame.net/rongame_beta//rgfate/60_1001/ac.php?_
           onPressed: () {
             launch('https://www.bilibili.com/read/cv10437953');
           },
-          child: Text('iOS'),
+          child: const Text('iOS'),
         ),
         TextButton(
           onPressed: () {
             launch('https://www.bilibili.com/read/cv10437954');
           },
-          child: Text('Win+Android'),
+          child: const Text('Win+Android'),
         ),
       ],
     ).showDialog(context);

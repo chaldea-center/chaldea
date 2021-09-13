@@ -159,7 +159,7 @@ class Analyzer {
           Uri.parse(_hgif).replace(queryParameters: genMap()).toString();
       first = false;
       var gif1 = _dio.get(gifUrl1);
-      await Future.delayed(Duration(milliseconds: 66));
+      await Future.delayed(const Duration(milliseconds: 66));
       String gifUrl2 =
           Uri.parse(_hgif).replace(queryParameters: genMap()).toString();
       var gif2 = _dio.get(gifUrl2);
@@ -175,7 +175,7 @@ class Analyzer {
       logger.e('loading webview failed, url=$url', e, s);
     });
     print('$url launched');
-    await Future.delayed(Duration(seconds: 10));
+    await Future.delayed(const Duration(seconds: 10));
     plugin.dispose();
   }
 

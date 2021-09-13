@@ -10,7 +10,7 @@ import 'elements/grid_gallery.dart';
 import 'elements/news_carousel.dart';
 
 class GalleryPage extends StatefulWidget {
-  const GalleryPage({Key? key}) : super(key: key);
+  GalleryPage({Key? key}) : super(key: key);
 
   @override
   _GalleryPageState createState() => _GalleryPageState();
@@ -24,7 +24,7 @@ class _GalleryPageState extends State<GalleryPage> {
     super.initState();
     _scrollController = ScrollController();
 
-    Future.delayed(Duration(seconds: 2)).then((_) async {
+    Future.delayed(const Duration(seconds: 2)).then((_) async {
       if (!PlatformU.isWindows) {
         await rateMyApp.init();
         _showRateCard = rateMyApp.shouldOpenDialog || kDebugMode;
@@ -34,7 +34,7 @@ class _GalleryPageState extends State<GalleryPage> {
       if (db.appSetting.autoUpdateDataset) {
         await AutoUpdateUtil.patchGameData();
       }
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
       await AutoUpdateUtil.checkAppUpdate(
           background: true, download: db.appSetting.autoUpdateApp);
     }).onError((e, s) {
@@ -52,19 +52,19 @@ class _GalleryPageState extends State<GalleryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(kAppName),
+        title: const Text(kAppName),
         actions: <Widget>[
           if (db.appSetting.showAccountAtHome)
             InkWell(
               child: ConstrainedBox(
-                constraints: BoxConstraints(
+                constraints: const BoxConstraints(
                   minHeight: 36,
                   minWidth: 48,
                   maxWidth: 56,
                 ),
                 child: Center(
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: Text(
                       db.curUser.name,
                       overflow: TextOverflow.ellipsis,
@@ -78,7 +78,7 @@ class _GalleryPageState extends State<GalleryPage> {
               },
             ),
           IconButton(
-            icon: Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh),
             tooltip: S.of(context).tooltip_refresh_sliders,
             onPressed: () async {
               await AppNewsCarousel.resolveSliderImageUrls(true);
@@ -104,7 +104,7 @@ class _GalleryPageState extends State<GalleryPage> {
                   ],
                 ),
               ),
-              ListTile(
+              const ListTile(
                 subtitle: Center(
                     child: AutoSizeText(
                   '~~~~~ ⁽⁽ଘ(ˊᵕˋ)ଓ⁾⁾* ~~~~~',
@@ -128,13 +128,13 @@ class _GalleryPageState extends State<GalleryPage> {
     if (PlatformU.isWindows && winAppPathMigration.get() != false ||
         kDebugMode) {
       children.add(Container(
-        margin: EdgeInsets.symmetric(horizontal: 8),
+        margin: const EdgeInsets.symmetric(horizontal: 8),
         child: winAppPathMigrationTile,
       ));
     }
     if (_showRateCard == true) {
       children.add(Container(
-        margin: EdgeInsets.symmetric(horizontal: 8),
+        margin: const EdgeInsets.symmetric(horizontal: 8),
         child: buildRateTile(),
       ));
     }
@@ -172,7 +172,7 @@ class _GalleryPageState extends State<GalleryPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: Text(LocalizedText.of(
                   chs: '自v1.5.4起，应用/用户数据储存位置已迁移，若需要请手动迁移其他旧数据。\n'
                       '旧路径：$pa\n新路径: $pb',
@@ -233,7 +233,7 @@ class _GalleryPageState extends State<GalleryPage> {
       topBorderSide: Divider.createBorderSide(context, width: 0.5),
       headerBuilder: (context, expanded) => ListTile(
         horizontalTitleGap: 0,
-        leading: Icon(Icons.stars_rounded),
+        leading: const Icon(Icons.stars_rounded),
         title: Text(LocalizedText.of(
             chs: '走过路过给个评价反馈吧~', jpn: 'アプリを評価する', eng: 'Rating Chaldea')),
         subtitle: expanded
@@ -244,7 +244,7 @@ class _GalleryPageState extends State<GalleryPage> {
                     eng: 'Take a minute to rate/review'),
                 maxLines: 1,
               )
-            : Text(' '),
+            : const Text(' '),
       ),
       contentBuilder: (context) => ButtonBar(
         alignment: MainAxisAlignment.end,
@@ -282,25 +282,25 @@ class _GalleryPageState extends State<GalleryPage> {
   Widget buildTestInfoPad() {
     return Card(
       elevation: 2,
-      margin: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+      margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: divideTiles(<Widget>[
-          ListTile(
+          const ListTile(
             title: Center(
               child: Text('Test Info Pad', style: TextStyle(fontSize: 18)),
             ),
           ),
           ListTile(
-            title: Text('UUID'),
+            title: const Text('UUID'),
             subtitle: Text(AppInfo.uuid),
           ),
           ListTile(
-            title: Text('Screen size'),
+            title: const Text('Screen size'),
             trailing: Text(MediaQuery.of(context).size.toString()),
           ),
           ListTile(
-            title: Text('Dataset version'),
+            title: const Text('Dataset version'),
             trailing: Text(db.gameData.version),
           ),
         ]),

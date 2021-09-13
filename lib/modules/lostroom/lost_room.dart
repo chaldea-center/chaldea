@@ -3,12 +3,12 @@ import 'package:chaldea/modules/lostroom/suuport_party.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LostRoomPage extends StatelessWidget {
-  const LostRoomPage({Key? key}) : super(key: key);
+  LostRoomPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('LOST ROOM')),
+      appBar: AppBar(title: const Text('LOST ROOM')),
       body: ListView(
         children: [
           ListTile(
@@ -25,7 +25,7 @@ class LostRoomPage extends StatelessWidget {
           ),
           kDefaultDivider,
           ListTile(
-            leading: FaIcon(FontAwesomeIcons.userFriends),
+            leading: const FaIcon(FontAwesomeIcons.userFriends),
             title: Text(S.current.support_party),
             onTap: () {
               SplitRoute.push(context, SupportPartyPage());

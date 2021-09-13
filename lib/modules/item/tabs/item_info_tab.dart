@@ -9,7 +9,7 @@ class ItemInfoTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final itemInfo = db.gameData.items[itemKey];
     if (itemInfo == null) {
-      return ListTile(
+      return const ListTile(
         title: Text('......'),
       );
     }
@@ -21,7 +21,7 @@ class ItemInfoTab extends StatelessWidget {
               TableCellData(
                 child: db.getIconImage(itemInfo.name, height: 72),
                 flex: 1,
-                padding: EdgeInsets.all(3),
+                padding: const EdgeInsets.all(3),
               ),
               TableCellData(
                 flex: 3,
@@ -32,7 +32,8 @@ class ItemInfoTab extends StatelessWidget {
                     CustomTableRow(children: [
                       TableCellData(
                         child: Text(itemInfo.name,
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
                         isHeader: true,
                       )
                     ]),
@@ -59,7 +60,8 @@ class ItemInfoTab extends StatelessWidget {
                 TableCellData(
                   text: itemInfo.description,
                   alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                 )
               ],
             ),
@@ -69,7 +71,8 @@ class ItemInfoTab extends StatelessWidget {
                 TableCellData(
                   text: itemInfo.descriptionJp,
                   alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                 )
               ],
             ),

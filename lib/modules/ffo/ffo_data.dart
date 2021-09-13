@@ -154,9 +154,9 @@ class FFOParams {
         case 2:
           landPart = svt;
           images[_LAND_0] =
-          await _loadImage(join(_baseDir, 'Land', 'bg_$strId.png'));
+              await _loadImage(join(_baseDir, 'Land', 'bg_$strId.png'));
           images[_LAND_FRONT_7] =
-          await _loadImage(join(_baseDir, 'Land', 'bg_${strId}_front.png'));
+              await _loadImage(join(_baseDir, 'Land', 'bg_${strId}_front.png'));
           break;
         default:
           throw 'part=$where, not in 0,1,2';
@@ -166,7 +166,7 @@ class FFOParams {
 
   void drawCanvas(Canvas canvas) {
     if (cropNormalizedSize) {
-      canvas.clipRect(Rect.fromLTWH(0, 0, 512, 720));
+      canvas.clipRect(const Rect.fromLTWH(0, 0, 512, 720));
       canvas.translate((512 - 1024) / 2, (720 - 1024) / 2);
     }
 
@@ -188,12 +188,12 @@ class FFOParams {
 
     // draw
     if (_clipOverflow) {
-      canvas.clipRect(
-          Rect.fromCenter(center: Offset(512, 512), width: 512, height: 720));
+      canvas.clipRect(Rect.fromCenter(
+          center: const Offset(512, 512), width: 512, height: 720));
     }
     if (images[_LAND_0] != null) {
       canvas.drawImage(images[_LAND_0]!,
-          Offset((1024 - 512) / 2, (1024 - 720) / 2), Paint());
+          const Offset((1024 - 512) / 2, (1024 - 720) / 2), Paint());
     }
     if (images[_BODY_BACK_1] != null) {
       _drawImage(
@@ -244,7 +244,7 @@ class FFOParams {
 
     if (images[_LAND_FRONT_7] != null) {
       canvas.drawImage(images[_LAND_FRONT_7]!,
-          Offset((1024 - 512) / 2, (1024 - 720) / 2), Paint());
+          const Offset((1024 - 512) / 2, (1024 - 720) / 2), Paint());
     }
   }
 
@@ -306,7 +306,7 @@ class FFOParams {
     final canvas = Canvas(
       recorder,
       Rect.fromPoints(
-          Offset(0, 0), Offset(canvasSize.width, canvasSize.height)),
+          const Offset(0, 0), Offset(canvasSize.width, canvasSize.height)),
     );
     drawCanvas(canvas);
     final picture = recorder.endRecording();
@@ -355,18 +355,18 @@ class FFOParams {
       child: image,
       onTap: tapToFullscreen
           ? () => Navigator.of(context).push(PageRouteBuilder(
-        fullscreenDialog: true,
-        opaque: false,
-        pageBuilder: (context, _, __) => FullscreenImageViewer(
-          children: [
-            FFOCardWidget(
-              params: this,
-              showSave: true,
-              enableZoom: true,
-            )
-          ],
-        ),
-      ))
+                fullscreenDialog: true,
+                opaque: false,
+                pageBuilder: (context, _, __) => FullscreenImageViewer(
+                  children: [
+                    FFOCardWidget(
+                      params: this,
+                      showSave: true,
+                      enableZoom: true,
+                    )
+                  ],
+                ),
+              ))
           : null,
     );
   }
@@ -412,7 +412,8 @@ class _FFOCardWidgetState extends State<FFOCardWidget> {
         if (widget.enableZoom) {
           child = PhotoView.customChild(
             child: child,
-            backgroundDecoration: BoxDecoration(color: Colors.transparent),
+            backgroundDecoration:
+                const BoxDecoration(color: Colors.transparent),
             minScale: PhotoViewComputedScale.contained * 0.25,
             initialScale: PhotoViewComputedScale.contained,
             // heroAttributes: PhotoViewHeroAttributes(tag: widget.params),

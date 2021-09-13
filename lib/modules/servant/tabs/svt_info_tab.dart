@@ -92,12 +92,13 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
     final headerData = TableCellData(isHeader: true, maxLines: 1);
     final contentData = TableCellData(textAlign: TextAlign.center, maxLines: 1);
     return SingleChildScrollView(
-      padding: EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 10),
       child: CustomTable(
         children: <Widget>[
           CustomTableRow.fromChildren(
             children: [
-              Text(svt.info.name, style: TextStyle(fontWeight: FontWeight.bold))
+              Text(svt.info.name,
+                  style: const TextStyle(fontWeight: FontWeight.bold))
             ],
             defaults: headerData,
           ),
@@ -317,7 +318,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
               chs: profile.condition, jpn: null, eng: profile.conditionEn)
           .ofPrimary(lang ?? Language.current);
       children.add(Card(
-        margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         color: Theme.of(context).cardColor.withOpacity(0.975),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -363,7 +364,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
           if (ce == null) return Container();
           return CraftDetailBasePage(ce: ce, lang: lang);
         },
-        separatorBuilder: (context, index) => Divider(height: 20),
+        separatorBuilder: (context, index) => const Divider(height: 20),
         itemCount: svt.valentineCraft.length,
       );
     } else {
@@ -427,7 +428,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
     return ListView(
       children: [
         if (craftChildren.isEmpty && codeChildren.isEmpty)
-          ListTile(
+          const ListTile(
             title: Text('No related craft essence or command code'),
           ),
         if (craftChildren.isNotEmpty)

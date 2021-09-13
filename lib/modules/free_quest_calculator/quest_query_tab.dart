@@ -3,7 +3,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/quest_card.dart';
 
 class FreeQuestQueryTab extends StatefulWidget {
-  const FreeQuestQueryTab({Key? key}) : super(key: key);
+  FreeQuestQueryTab({Key? key}) : super(key: key);
 
   @override
   _FreeQuestQueryTabState createState() => _FreeQuestQueryTabState();
@@ -27,7 +27,7 @@ class _FreeQuestQueryTabState extends State<FreeQuestQueryTab> {
 }
 
 class _ChapterList extends StatelessWidget {
-  const _ChapterList({Key? key}) : super(key: key);
+  _ChapterList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +58,7 @@ class _ChapterList extends StatelessWidget {
           Localized.chapter.of(chapter),
           maxFontSize: 14,
         ),
-        trailing: Icon(Icons.keyboard_arrow_right),
+        trailing: const Icon(Icons.keyboard_arrow_right),
         onTap: () {
           Navigator.of(context).push(SplitRoute(
             builder: (context, _) =>
@@ -90,7 +90,7 @@ class _ChapterFreeQuests extends StatelessWidget {
       body: ListView(
         children: [
           Card(
-            margin: EdgeInsets.all(8),
+            margin: const EdgeInsets.all(8),
             child: Row(
               children: [
                 const SizedBox(width: 4),

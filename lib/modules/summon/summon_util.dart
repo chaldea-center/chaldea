@@ -36,7 +36,8 @@ class SummonUtil {
             weight: showProb ? block.weight / block.ids.length : null,
           );
         }
-        return Center(child: Padding(padding: EdgeInsets.all(2), child: child));
+        return Center(
+            child: Padding(padding: const EdgeInsets.all(2), child: child));
       },
     );
   }
@@ -52,7 +53,7 @@ class SummonUtil {
         double childWidth = constraints.maxWidth / count;
         return GridView.count(
           crossAxisCount: count,
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           childAspectRatio: childWidth / min(72, childWidth * 144 / 132),
           children: ids.map((id) {
@@ -69,7 +70,7 @@ class SummonUtil {
         children: [
           SHeader(
             header,
-            padding: EdgeInsets.only(left: 0, top: 4, bottom: 2),
+            padding: const EdgeInsets.only(left: 0, top: 4, bottom: 2),
           ),
           grid,
         ],
@@ -105,12 +106,12 @@ class SummonUtil {
             children: [
               if (favorite)
                 Container(
-                  padding: EdgeInsets.all(1.5),
-                  margin: EdgeInsets.only(bottom: 1),
+                  padding: const EdgeInsets.all(1.5),
+                  margin: const EdgeInsets.only(bottom: 1),
                   decoration: BoxDecoration(
                       color: Colors.blueAccent,
                       borderRadius: BorderRadius.circular(3)),
-                  child: Icon(
+                  child: const Icon(
                     Icons.favorite,
                     color: Colors.white,
                     size: 10,
@@ -118,11 +119,11 @@ class SummonUtil {
                 ),
               if (star)
                 Container(
-                  padding: EdgeInsets.all(1.5),
+                  padding: const EdgeInsets.all(1.5),
                   decoration: BoxDecoration(
                       color: Colors.redAccent,
                       borderRadius: BorderRadius.circular(3)),
-                  child: Icon(
+                  child: const Icon(
                     Icons.star,
                     color: Colors.yellowAccent,
                     size: 10,
@@ -164,8 +165,8 @@ class SummonUtil {
         text: texts.join('\n'),
         width: 56,
         textAlign: TextAlign.right,
-        textStyle: TextStyle(fontSize: 12),
-        padding: EdgeInsets.only(bottom: 0, left: 15),
+        textStyle: const TextStyle(fontSize: 12),
+        padding: const EdgeInsets.only(bottom: 0, left: 15),
       ),
     );
   }

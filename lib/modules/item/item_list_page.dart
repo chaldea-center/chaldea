@@ -12,7 +12,7 @@ import 'package:flutter/services.dart';
 import 'item_detail_page.dart';
 
 class ItemListPage extends StatefulWidget {
-  const ItemListPage({Key? key}) : super(key: key);
+  ItemListPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => ItemListPageState();
@@ -43,7 +43,7 @@ class ItemListPageState extends State<ItemListPage>
         3,
         (index) => TextEditingController(
             text: db.userData.itemAbundantValue[index].toString()));
-    db.itemStat.update(lapse: Duration(seconds: 2));
+    db.itemStat.update(lapse: const Duration(seconds: 2));
   }
 
   @override
@@ -51,7 +51,7 @@ class ItemListPageState extends State<ItemListPage>
     return Scaffold(
       appBar: AppBar(
         title: Text(S.of(context).item_title),
-        leading: MasterBackButton(),
+        leading: const MasterBackButton(),
         titleSpacing: 0,
         actions: <Widget>[
           buildSwitchPlanButton(
@@ -97,8 +97,9 @@ class ItemListPageState extends State<ItemListPage>
           Expanded(
             child: TabBarView(
               // mostly, we focus on category 1 tab
-              physics:
-                  PlatformU.isMobile ? null : NeverScrollableScrollPhysics(),
+              physics: PlatformU.isMobile
+                  ? null
+                  : const NeverScrollableScrollPhysics(),
               controller: _tabController,
               children: List.generate(
                 categories.length,
@@ -134,7 +135,7 @@ class ItemListPageState extends State<ItemListPage>
     SimpleCancelOkDialog(
       title: Text(
         S.current.item_exceed_hint,
-        style: TextStyle(fontSize: 16),
+        style: const TextStyle(fontSize: 16),
       ),
       confirmText: S.current.plan,
       content: Wrap(
@@ -156,7 +157,7 @@ class ItemListPageState extends State<ItemListPage>
                     controller: _itemRedundantControllers[index],
                     keyboardType: TextInputType.number,
                     textAlign: TextAlign.center,
-                    decoration: InputDecoration(isDense: true),
+                    decoration: const InputDecoration(isDense: true),
                     onChanged: (s) {
                       if (s == '-') {
                         db.userData.itemAbundantValue[index] = 0;
@@ -173,7 +174,7 @@ class ItemListPageState extends State<ItemListPage>
         ],
       ),
       onTapOk: () {
-        Timer(Duration(milliseconds: 500), () {
+        Timer(const Duration(milliseconds: 500), () {
           SplitRoute.push(
             context,
             FreeQuestCalculatorPage(objectiveCounts: _getObjective()),
@@ -196,7 +197,7 @@ class ItemListPageState extends State<ItemListPage>
 }
 
 class ItemFilterDialog extends StatefulWidget {
-  const ItemFilterDialog({Key? key}) : super(key: key);
+  ItemFilterDialog({Key? key}) : super(key: key);
 
   @override
   _ItemFilterDialogState createState() => _ItemFilterDialogState();
@@ -224,7 +225,7 @@ class _ItemFilterDialogState extends State<ItemFilterDialog> {
           child: Text(S.of(context).confirm.toUpperCase()),
         )
       ],
-      contentPadding: EdgeInsets.symmetric(horizontal: 6),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 6),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: List.generate(5, (index) {
@@ -375,14 +376,15 @@ class _ItemListTabState extends State<ItemListTab> {
         children.add(Center(
           child: TextButton(
             onPressed: setAll999,
-            child: Text('  >>> SET ALL 999 <<<  '),
+            child: const Text('  >>> SET ALL 999 <<<  '),
           ),
         ));
       }
       Widget _listView = ListView.separated(
         controller: _scrollController,
         itemBuilder: (context, index) => children[index],
-        separatorBuilder: (context, index) => Divider(height: 1, indent: 16),
+        separatorBuilder: (context, index) =>
+            const Divider(height: 1, indent: 16),
         itemCount: children.length,
       );
       return _listView;
@@ -405,7 +407,7 @@ class _ItemListTabState extends State<ItemListTab> {
                       .requestFocus(_shownGroups.last.focusNode);
                 }
               },
-              icon: Icon(Icons.keyboard_arrow_up),
+              icon: const Icon(Icons.keyboard_arrow_up),
               tooltip: 'Previous',
             ),
           if (PlatformU.isMobile)
@@ -421,13 +423,13 @@ class _ItemListTabState extends State<ItemListTab> {
                       .requestFocus(_shownGroups.first.focusNode);
                 }
               },
-              icon: Icon(Icons.keyboard_arrow_down),
+              icon: const Icon(Icons.keyboard_arrow_down),
               tooltip: 'Next',
             ),
           Flexible(
             child: Center(
               child: ElevatedButton.icon(
-                icon: Icon(Icons.calculate_outlined),
+                icon: const Icon(Icons.calculate_outlined),
                 label: Text(S.current.planning_free_quest_btn),
                 style: ElevatedButton.styleFrom(),
                 onPressed: () {
@@ -498,9 +500,9 @@ class _ItemListTabState extends State<ItemListTab> {
       controller: group.controller,
       focusNode: group.focusNode,
       textAlign: TextAlign.center,
-      keyboardType: TextInputType.numberWithOptions(signed: true),
+      keyboardType: const TextInputType.numberWithOptions(signed: true),
       textInputAction: TextInputAction.next,
-      decoration: InputDecoration(counterText: ''),
+      decoration: const InputDecoration(counterText: ''),
       // inputFormatters: [
       // FilteringTextInputFormatter.allow(RegExp(r'-?[\d,]*')),
       // if (itemKey == Item.qp) NumberInputFormatter(),
@@ -535,7 +537,8 @@ class _ItemListTabState extends State<ItemListTab> {
           final newOffset =
               _scrollController.offset + (end - start) / _shownGroups.length;
           _scrollController.animateTo(min(end, newOffset),
-              duration: Duration(milliseconds: 200), curve: Curves.easeOut);
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOut);
         }
       },
       onEditingComplete: () {
@@ -582,9 +585,10 @@ class _ItemListTabState extends State<ItemListTab> {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          Text('  ' + S.current.item_left, style: TextStyle(fontSize: 14)),
+          Text('  ' + S.current.item_left,
+              style: const TextStyle(fontSize: 14)),
           ConstrainedBox(
-            constraints: BoxConstraints(minWidth: 36),
+            constraints: const BoxConstraints(minWidth: 36),
             child: Align(
               alignment: Alignment.centerRight,
               child: Text(
@@ -604,14 +608,14 @@ class _ItemListTabState extends State<ItemListTab> {
               maxLines: 1,
             ),
           ),
-          Text(S.of(context).event_title, style: TextStyle(fontSize: 14)),
+          Text(S.of(context).event_title, style: const TextStyle(fontSize: 14)),
           ConstrainedBox(
-            constraints: BoxConstraints(minWidth: 36),
+            constraints: const BoxConstraints(minWidth: 36),
             child: Align(
               alignment: Alignment.centerRight,
               child: Text(
                 '  ${db.itemStat.eventItems[itemKey] ?? 0}',
-                style: TextStyle(fontSize: 14),
+                style: const TextStyle(fontSize: 14),
                 maxLines: 1,
               ),
             ),
@@ -630,7 +634,7 @@ class _ItemListTabState extends State<ItemListTab> {
         );
       },
       horizontalTitleGap: 8,
-      contentPadding: EdgeInsets.symmetric(horizontal: 6),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 6),
       leading: db.getIconImage(itemKey, width: 48 / 144 * 132, height: 48),
       title: title,
       focusNode: FocusNode(canRequestFocus: true, skipTraversal: true),

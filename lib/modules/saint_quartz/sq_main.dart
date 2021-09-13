@@ -7,7 +7,7 @@ import 'table_tab.dart';
 SaintQuartzPlan get _plan => db.curUser.saintQuartzPlan;
 
 class SaintQuartzPlanning extends StatefulWidget {
-  const SaintQuartzPlanning({Key? key}) : super(key: key);
+  SaintQuartzPlanning({Key? key}) : super(key: key);
 
   @override
   _SaintQuartzPlanningState createState() => _SaintQuartzPlanningState();
@@ -59,7 +59,7 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning>
       ),
       body: TabBarView(
         controller: _tabController,
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         children: [
           KeepAliveBuilder(builder: (context) => SQSettingTab()),
           KeepAliveBuilder(builder: (context) => ExtraMissionTab()),

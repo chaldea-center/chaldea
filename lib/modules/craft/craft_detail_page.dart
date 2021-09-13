@@ -32,7 +32,6 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
     status = fixValidRange(status, 0, 2);
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         title: AutoSizeText(ce.lName, maxLines: 1),
         titleSpacing: 0,
         actions: [
@@ -46,10 +45,10 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
               db.notifyDbUpdate();
             },
             icon: status == 1
-                ? Icon(Icons.favorite)
+                ? const Icon(Icons.favorite)
                 : status == 2
-                    ? Icon(Icons.favorite, color: Colors.redAccent)
-                    : Icon(Icons.favorite_outline),
+                    ? const Icon(Icons.favorite, color: Colors.redAccent)
+                    : const Icon(Icons.favorite_outline),
           ),
           _popupButton,
         ],
@@ -88,7 +87,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
                 child: Text(
                     [S.of(context).previous_card, S.of(context).next_card][i]),
                 style: ElevatedButton.styleFrom(
-                    textStyle: TextStyle(fontWeight: FontWeight.normal)),
+                    textStyle: const TextStyle(fontWeight: FontWeight.normal)),
               ),
           ])
         ],
@@ -135,8 +134,8 @@ class CraftDetailBasePage extends StatelessWidget {
         children: <Widget>[
           CustomTableRow(children: [
             TableCellData(
-              child:
-                  Text(ce.name, style: TextStyle(fontWeight: FontWeight.bold)),
+              child: Text(ce.name,
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
               isHeader: true,
             )
           ]),
@@ -160,7 +159,7 @@ class CraftDetailBasePage extends StatelessWidget {
                   },
                 ),
                 flex: 1,
-                padding: EdgeInsets.all(3),
+                padding: const EdgeInsets.all(3),
               ),
               TableCellData(
                 flex: 3,
@@ -229,7 +228,7 @@ class CraftDetailBasePage extends StatelessWidget {
           CustomTableRow(
             children: [
               TableCellData(
-                padding: EdgeInsets.all(6),
+                padding: const EdgeInsets.all(6),
                 flex: 1,
                 child: db.getIconImage(ce.skillIcon, height: 40),
               ),
@@ -242,7 +241,7 @@ class CraftDetailBasePage extends StatelessWidget {
                   children: <Widget>[
                     Text(ce.lSkill),
                     if (ce.lSkillMax.isNotEmpty) ...[
-                      Divider(height: 6),
+                      const Divider(height: 6),
                       Text(ce.lSkillMax),
                     ]
                   ],
@@ -256,7 +255,7 @@ class CraftDetailBasePage extends StatelessWidget {
               CustomTableRow(
                 children: [
                   TableCellData(
-                    padding: EdgeInsets.all(6),
+                    padding: const EdgeInsets.all(6),
                     flex: 1,
                     child: db.getIconImage(ce.eventIcons[i], height: 40),
                   ),
@@ -285,7 +284,8 @@ class CraftDetailBasePage extends StatelessWidget {
                         eng: ce.descriptionEn)
                     .ofPrimary(lang ?? Language.current),
                 alignment: Alignment.centerLeft,
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               )
             ],
           ),
@@ -318,7 +318,7 @@ class CraftDetailBasePage extends StatelessWidget {
   }
 
   Widget localizeCharacters(BuildContext context, List<String> characters) {
-    if (characters.isEmpty) return Text('-');
+    if (characters.isEmpty) return const Text('-');
     List<Widget> children = [];
     for (final name in characters) {
       final svt =
@@ -335,7 +335,7 @@ class CraftDetailBasePage extends StatelessWidget {
         ));
       }
     }
-    children = divideTiles(children, divider: Text('/'));
+    children = divideTiles(children, divider: const Text('/'));
     return Wrap(
       spacing: 4,
       runSpacing: 4,
@@ -387,7 +387,7 @@ class CraftDetailBasePage extends StatelessWidget {
           ),
           style: TextButton.styleFrom(
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            padding: EdgeInsets.all(1),
+            padding: const EdgeInsets.all(1),
           ),
         ));
       }

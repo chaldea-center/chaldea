@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class MysticCodePage extends StatefulWidget {
-  const MysticCodePage({Key? key}) : super(key: key);
+  MysticCodePage({Key? key}) : super(key: key);
 
   @override
   _MysticCodePageState createState() => _MysticCodePageState();
@@ -54,7 +54,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
                 Row(
                   children: [
                     Padding(
-                        padding: EdgeInsets.only(left: 16, right: 2),
+                        padding: const EdgeInsets.only(left: 16, right: 2),
                         child: Text(S.current.level)),
                     SizedBox(
                         width: 20,
@@ -83,11 +83,11 @@ class _MysticCodePageState extends State<MysticCodePage> {
       children: [
         IconButton(
           onPressed: () => _scrollTo(-1),
-          icon: Icon(Icons.keyboard_arrow_left, color: Colors.grey),
+          icon: const Icon(Icons.keyboard_arrow_left, color: Colors.grey),
         ),
         Expanded(
           child: Container(
-            margin: EdgeInsets.symmetric(vertical: 10),
+            margin: const EdgeInsets.symmetric(vertical: 10),
             height: 50,
             child: ListView(
               controller: _scrollController,
@@ -95,7 +95,8 @@ class _MysticCodePageState extends State<MysticCodePage> {
               children: codes.entries.map((e) {
                 final code = e.value;
                 return Padding(
-                  padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
                   child: Container(
                     decoration: BoxDecoration(
                         border: Border.all(
@@ -117,7 +118,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
         ),
         IconButton(
           onPressed: () => _scrollTo(1),
-          icon: Icon(Icons.keyboard_arrow_right, color: Colors.grey),
+          icon: const Icon(Icons.keyboard_arrow_right, color: Colors.grey),
         ),
       ],
     );
@@ -136,7 +137,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
       final offset = length / (codes.length - 1) * _curIndex +
           _scrollController.position.minScrollExtent;
       _scrollController.animateTo(offset,
-          duration: Duration(milliseconds: 200), curve: Curves.easeOut);
+          duration: const Duration(milliseconds: 200), curve: Curves.easeOut);
     }
   }
 
@@ -146,7 +147,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
         CustomTableRow(children: [
           TableCellData(
             child: Text(mysticCode.name,
-                style: TextStyle(fontWeight: FontWeight.bold)),
+                style: const TextStyle(fontWeight: FontWeight.bold)),
             isHeader: true,
           )
         ]),
@@ -154,7 +155,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
           children: [
             TableCellData(
               child: Text(mysticCode.nameJp,
-                  style: TextStyle(fontWeight: FontWeight.w500)),
+                  style: const TextStyle(fontWeight: FontWeight.w500)),
             )
           ],
         ),
@@ -162,7 +163,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
           children: [
             TableCellData(
               child: Text(mysticCode.nameEn ?? '???',
-                  style: TextStyle(fontWeight: FontWeight.w500)),
+                  style: const TextStyle(fontWeight: FontWeight.w500)),
             )
           ],
           // color: TableCellData.headerColor.withAlpha(120),
@@ -171,7 +172,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
           TableCellData(
             text: mysticCode.lDescription,
             alignment: Alignment.centerLeft,
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           ),
         ]),
         if (!Language.isJP)
@@ -180,7 +181,8 @@ class _MysticCodePageState extends State<MysticCodePage> {
               TableCellData(
                 text: mysticCode.descriptionJp,
                 alignment: Alignment.centerLeft,
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               ),
             ],
           ),
@@ -287,7 +289,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
                   );
                 },
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: CachedImage(imageUrl: urls[i]),
                 ),
               ),
@@ -301,7 +303,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
     return TileGroup(
       children: <Widget>[
         CustomTile(
-            contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
+            contentPadding: const EdgeInsets.fromLTRB(16, 6, 22, 6),
             leading: db.getIconImage(skill.icon, height: 32, width: 32),
             title: Text(skill.localizedName),
             trailing: Text('   CD: ${skill.cd}→${skill.cd - 2}')),
@@ -319,12 +321,12 @@ class _MysticCodePageState extends State<MysticCodePage> {
 
     return <Widget>[
       CustomTile(
-          contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
+          contentPadding: const EdgeInsets.fromLTRB(16, 6, 22, 6),
           subtitle: Text(effect.lDescription),
           trailing: crossCount == 0 ? Text(effect.lvData[0]) : null),
       if (lines > 0)
         Padding(
-          padding: EdgeInsets.only(right: 24),
+          padding: const EdgeInsets.only(right: 24),
           child: Table(
             children: [
               for (int row = 0; row < effect.lvData.length / crossCount; row++)
@@ -335,7 +337,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
                     return Align(
                       alignment: Alignment.center,
                       child: Padding(
-                        padding: EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(5),
                         child: Text(
                           effect.lvData[index],
                           style: TextStyle(

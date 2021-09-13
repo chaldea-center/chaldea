@@ -61,7 +61,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
 
     Widget makeText(String text) {
       return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Center(
           child: AutoSizeText(
             text,
@@ -100,7 +100,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
       children: <Widget>[
         ListTile(
           title: Text(S.of(context).item),
-          contentPadding: EdgeInsets.only(left: 18, right: 8),
+          contentPadding: const EdgeInsets.only(left: 18, right: 8),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -113,7 +113,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                 ),
               ),
               IconButton(
-                  icon: Icon(Icons.delete),
+                  icon: const Icon(Icons.delete),
                   onPressed: () {
                     SimpleCancelOkDialog(
                       title: Text(S.current.clear),
@@ -148,16 +148,17 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
             SplitRoute.push(context, ItemDetailPage(itemKey: item));
           },
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 6),
             child: db.getIconImage(item, height: 48),
           ),
         );
         Widget title = TextButton(
           style: TextButton.styleFrom(
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            minimumSize: Size(48, 28),
-            padding:
-                PlatformU.isMobile ? EdgeInsets.symmetric(horizontal: 8) : null,
+            minimumSize: const Size(48, 28),
+            padding: PlatformU.isMobile
+                ? const EdgeInsets.symmetric(horizontal: 8)
+                : null,
           ),
           child: Text(Item.lNameOf(item)),
           onPressed: () {
@@ -174,7 +175,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
           },
         );
         Widget subtitle = Padding(
-          padding: EdgeInsets.only(left: 8),
+          padding: const EdgeInsets.only(left: 8),
           child: Text(
             planOrEff
                 ? S.current.words_separate(
@@ -184,8 +185,9 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
           ),
         );
         return CustomTile(
-          contentPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-          titlePadding: EdgeInsets.only(right: 6),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+          titlePadding: const EdgeInsets.only(right: 6),
           leading: leading,
           title: title,
           subtitle: subtitle,
@@ -200,11 +202,11 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                       text: planOrEff
                           ? params.getPlanItemCount(item).toString()
                           : params.getPlanItemWeight(item).toString()),
-                  keyboardType: TextInputType.numberWithOptions(
+                  keyboardType: const TextInputType.numberWithOptions(
                       signed: true, decimal: true),
                   textAlign: TextAlign.center,
                   // textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(isDense: true),
+                  decoration: const InputDecoration(isDense: true),
                   // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   onChanged: (s) {
                     if (planOrEff) {
@@ -218,7 +220,8 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                 ),
               ),
               IconButton(
-                  icon: Icon(Icons.delete_outline, color: Colors.redAccent),
+                  icon:
+                      const Icon(Icons.delete_outline, color: Colors.redAccent),
                   focusNode: FocusNode(skipTraversal: true),
                   onPressed: () {
                     setState(() {
@@ -295,7 +298,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               ],
             ),
             IconButton(
-              icon: Icon(Icons.settings),
+              icon: const Icon(Icons.settings),
               color: params.minCost > 0 ||
                       params.maxColNum > 0 ||
                       params.blacklist.isNotEmpty
@@ -311,7 +314,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
             ),
             //TODO: add extra event quests button and dialog page
             IconButton(
-              icon: Icon(Icons.sort),
+              icon: const Icon(Icons.sort),
               tooltip: S.of(context).filter_sort,
               color: Theme.of(context).colorScheme.primary,
               onPressed: () {

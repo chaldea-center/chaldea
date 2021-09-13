@@ -66,7 +66,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
             hintText,
             for (var ticket in tickets) buildOneMonth(ticket),
           ],
-          divider: Divider(height: 1, indent: 16),
+          divider: const Divider(height: 1, indent: 16),
         ).toList(),
       ),
     );
@@ -77,7 +77,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     return Card(
       child: Center(
         child: Padding(
-          padding: EdgeInsets.all(2),
+          padding: const EdgeInsets.all(2),
           child: Text(
             LocalizedText.of(
                 chs: '月份采用$curServer\n在设置中可更改所在服务器',
@@ -102,7 +102,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
         Expanded(
           flex: 1,
           child: ListTile(
-            contentPadding: EdgeInsets.only(left: 12),
+            contentPadding: const EdgeInsets.only(left: 12),
             title: AutoSizeText(
               ticket.dateToStr(),
               maxLines: 1,
@@ -167,13 +167,13 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
           SizedBox(
             width: 36,
             child: MaterialButton(
-              padding: EdgeInsets.symmetric(),
+              padding: const EdgeInsets.symmetric(),
               child: Column(
                 children: <Widget>[
                   Text(monthPlan.items[i] == 0
                       ? ''
                       : monthPlan.items[i].toString()),
-                  Divider(height: 1),
+                  const Divider(height: 1),
                   DefaultTextStyle(
                     style: Theme.of(context)
                         .textTheme

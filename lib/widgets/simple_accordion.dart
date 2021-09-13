@@ -87,7 +87,7 @@ class _SimpleAccordionState extends State<SimpleAccordion> {
     }
 
     return Padding(
-      padding: expanded ? EdgeInsets.only(bottom: 6) : EdgeInsets.zero,
+      padding: expanded ? const EdgeInsets.only(bottom: 6) : EdgeInsets.zero,
       child: Material(
         elevation:
             expanded ? (widget.expandElevation ?? 2) : (widget.elevation ?? 0),

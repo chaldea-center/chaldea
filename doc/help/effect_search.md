@@ -1,4 +1,4 @@
-Buff Search
+技能效果/Buff搜索
 ================
 
 数据来源于Atlas Academy。

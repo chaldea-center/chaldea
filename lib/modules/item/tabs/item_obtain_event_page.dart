@@ -284,14 +284,14 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
     return SimpleAccordion(
       expanded: true,
       headerBuilder: (context, expanded) => ListTile(
-        leading: Icon(Icons.event),
+        leading: const Icon(Icons.event),
         title: title,
         trailing: trailing,
         horizontalTitleGap: 0,
       ),
       contentBuilder: (context) => ListView.separated(
         shrinkWrap: true,
-        physics: ClampingScrollPhysics(),
+        physics: const ClampingScrollPhysics(),
         itemBuilder: (context, index) => children[index],
         itemCount: children.length,
         separatorBuilder: (context, index) => kDefaultDivider,

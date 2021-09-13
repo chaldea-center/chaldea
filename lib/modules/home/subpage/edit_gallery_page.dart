@@ -2,7 +2,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/home/elements/gallery_item.dart';
 
 class EditGalleryPage extends StatefulWidget {
-  const EditGalleryPage({Key? key}) : super(key: key);
+  EditGalleryPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _EditGalleryPageState();
@@ -31,7 +31,6 @@ class _EditGalleryPageState extends State<EditGalleryPage> {
       appBar: AppBar(
         title: Text(LocalizedText.of(
             chs: '编辑主页', jpn: 'ホームページの編集', eng: 'Edit Homepage')),
-        leading: BackButton(),
       ),
       body: ListView(children: divideTiles(tiles, bottom: true)),
     );

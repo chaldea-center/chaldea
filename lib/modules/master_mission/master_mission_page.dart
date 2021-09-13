@@ -13,7 +13,7 @@ String _convertLocalized(String key) {
 }
 
 class MasterMissionPage extends StatefulWidget {
-  const MasterMissionPage({Key? key}) : super(key: key);
+  MasterMissionPage({Key? key}) : super(key: key);
 
   @override
   _MasterMissionPageState createState() => _MasterMissionPageState();
@@ -62,7 +62,6 @@ class _MasterMissionPageState extends State<MasterMissionPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         title: Text(S.of(context).master_mission),
         centerTitle: true,
         actions: [
@@ -154,7 +153,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
               });
             };
       Widget child = Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Text(localized.of(_removePrefix(key))),
       );
       if (checked) {
@@ -162,9 +161,9 @@ class _MasterMissionPageState extends State<MasterMissionPage>
           onPressed: onPressed,
           child: child,
           style: ElevatedButton.styleFrom(
-            minimumSize: Size(48, 24),
+            minimumSize: const Size(48, 24),
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            padding: EdgeInsets.symmetric(),
+            padding: const EdgeInsets.symmetric(),
           ),
         ));
       } else {
@@ -172,15 +171,15 @@ class _MasterMissionPageState extends State<MasterMissionPage>
           onPressed: onPressed,
           child: child,
           style: OutlinedButton.styleFrom(
-            minimumSize: Size(48, 24),
+            minimumSize: const Size(48, 24),
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            padding: EdgeInsets.symmetric(),
+            padding: const EdgeInsets.symmetric(),
           ),
         ));
       }
     });
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 6),
       child: Wrap(
         spacing: 6,
         runSpacing: 6,
@@ -209,7 +208,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
           },
           child: Text(
             S.of(context).clear,
-            style: TextStyle(color: Colors.redAccent),
+            style: const TextStyle(color: Colors.redAccent),
           ),
         ),
         TextButton(
@@ -307,17 +306,17 @@ class _MasterMissionPageState extends State<MasterMissionPage>
 
       children.add(ListTile(
         leading: IconButton(
-          constraints: BoxConstraints(minHeight: 48, minWidth: 36),
+          constraints: const BoxConstraints(minHeight: 48, minWidth: 36),
           onPressed: () {
             setState(() {
               missions.remove(mission);
             });
           },
-          icon: Icon(Icons.clear),
+          icon: const Icon(Icons.clear),
           color: Colors.redAccent,
         ),
         horizontalTitleGap: 0,
-        contentPadding: EdgeInsets.symmetric(horizontal: 8),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8),
         title: AutoSizeText(
           mission.getLocalizedTargets().join(', '),
           maxFontSize: 12,
@@ -329,24 +328,25 @@ class _MasterMissionPageState extends State<MasterMissionPage>
             if (mission.useAnd)
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  fixedSize: Size(36, 24),
-                  minimumSize: Size(36, 24),
-                  padding: EdgeInsets.all(2),
+                  fixedSize: const Size(36, 24),
+                  minimumSize: const Size(36, 24),
+                  padding: const EdgeInsets.all(2),
                 ),
                 onPressed: _onPressAddAll,
                 child: Text(
-                    LocalizedText(chs: '且', eng: 'AND', jpn: 'AND').localized),
+                    const LocalizedText(chs: '且', eng: 'AND', jpn: 'AND')
+                        .localized),
               ),
             if (!mission.useAnd)
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
-                  fixedSize: Size(36, 24),
-                  minimumSize: Size(36, 24),
-                  padding: EdgeInsets.all(2),
+                  fixedSize: const Size(36, 24),
+                  minimumSize: const Size(36, 24),
+                  padding: const EdgeInsets.all(2),
                 ),
                 onPressed: _onPressAddAll,
-                child: Text(
-                    LocalizedText(chs: '或', eng: 'OR', jpn: 'OR').localized),
+                child: Text(const LocalizedText(chs: '或', eng: 'OR', jpn: 'OR')
+                    .localized),
               ),
             _InputGroup(
               controller: mission.controller!,
@@ -359,7 +359,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
     return SimpleAccordion(
       expanded: true,
       headerBuilder: (context, _) => ListTile(
-        leading: Icon(Icons.list),
+        leading: const Icon(Icons.list),
         title: Text(S.current.master_mission_tasklist),
         horizontalTitleGap: 0,
       ),
@@ -383,7 +383,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
     return SimpleAccordion(
       expanded: true,
       headerBuilder: (context, _) => ListTile(
-        leading: Icon(Icons.list_alt),
+        leading: const Icon(Icons.list_alt),
         title: Text(S.current.master_mission_solution),
         trailing: Text('$totalAP AP'),
         horizontalTitleGap: 0,
@@ -413,7 +413,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
     return SimpleAccordion(
       expanded: true,
       headerBuilder: (context, _) => ListTile(
-        leading: Icon(Icons.list_alt),
+        leading: const Icon(Icons.list_alt),
         title: Text(S.current.master_mission_related_quest),
         horizontalTitleGap: 0,
       ),
@@ -462,7 +462,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
                   if (eff != null)
                     Text(
                       eff.toStringAsFixed(2) + '/AP',
-                      style: TextStyle(color: Colors.grey, fontSize: 13),
+                      style: const TextStyle(color: Colors.grey, fontSize: 13),
                     )
                 ],
               ),
@@ -662,7 +662,7 @@ class __InputGroupState extends State<_InputGroup> {
       children: [
         IconButton(
           padding: EdgeInsets.zero,
-          constraints: BoxConstraints(minWidth: 24, minHeight: 24),
+          constraints: const BoxConstraints(minWidth: 24, minHeight: 24),
           icon: Icon(
             Icons.indeterminate_check_box,
             color: minusEnabled ? Colors.blueAccent : null,
@@ -680,7 +680,7 @@ class __InputGroupState extends State<_InputGroup> {
           width: 40,
           child: TextField(
             controller: widget.controller,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               isDense: true,
               // enabledBorder: OutlineInputBorder(),
               // focusedBorder: OutlineInputBorder(
@@ -697,7 +697,7 @@ class __InputGroupState extends State<_InputGroup> {
         ),
         IconButton(
           padding: EdgeInsets.zero,
-          constraints: BoxConstraints(minWidth: 24, minHeight: 24),
+          constraints: const BoxConstraints(minWidth: 24, minHeight: 24),
           icon: Icon(
             Icons.add_box,
             color: plusEnabled ? Colors.blueAccent : null,

@@ -10,7 +10,7 @@ import 'tabs/item_obtain_free_page.dart';
 class ItemDetailPage extends StatefulWidget {
   final String itemKey;
 
-  const ItemDetailPage({Key? key, required this.itemKey}) : super(key: key);
+  ItemDetailPage({Key? key, required this.itemKey}) : super(key: key);
 
   @override
   _ItemDetailPageState createState() => _ItemDetailPageState();
@@ -56,7 +56,6 @@ class _ItemDetailPageState extends State<ItemDetailPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         title: AutoSizeText(Item.lNameOf(widget.itemKey), maxLines: 1),
         centerTitle: false,
         titleSpacing: 0,
@@ -113,7 +112,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
 
   Widget get viewTypeButton {
     return IconButton(
-      icon: Icon(Icons.view_carousel),
+      icon: const Icon(Icons.view_carousel),
       tooltip: S.of(context).filter_shown_type,
       onPressed: () {
         setState(() {
@@ -125,7 +124,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
 
   Widget get sortButton {
     return IconButton(
-      icon: Icon(Icons.sort),
+      icon: const Icon(Icons.sort),
       tooltip: S.of(context).filter_sort +
           '-' +
           [

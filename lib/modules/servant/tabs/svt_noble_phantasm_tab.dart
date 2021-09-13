@@ -23,7 +23,7 @@ class _SvtNoblePhantasmTabState extends SvtTabBaseState<SvtNoblePhantasmTab> {
   @override
   Widget build(BuildContext context) {
     if (noblePhantasms.isEmpty) {
-      return Center(child: Text('No NoblePhantasm Data'));
+      return const Center(child: Text('No NoblePhantasm Data'));
     }
     status.validate(svt);
 
@@ -76,17 +76,17 @@ class _SvtNoblePhantasmTabState extends SvtTabBaseState<SvtNoblePhantasmTab> {
       },
     );
     return Padding(
-      padding: EdgeInsets.only(top: 8),
+      padding: const EdgeInsets.only(top: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          if (td.openCondition?.isNotEmpty == true) SizedBox(width: 48),
+          if (td.openCondition?.isNotEmpty == true) const SizedBox(width: 48),
           Expanded(child: Center(child: filter)),
           if (td.openCondition?.isNotEmpty == true)
             SizedBox(
               width: 48,
               child: IconButton(
-                padding: EdgeInsets.all(2),
+                padding: const EdgeInsets.all(2),
                 constraints: const BoxConstraints(
                   minWidth: 48,
                   minHeight: 24,
@@ -100,7 +100,7 @@ class _SvtNoblePhantasmTabState extends SvtTabBaseState<SvtNoblePhantasmTab> {
                     ),
                   ).showDialog(context);
                 },
-                icon: Icon(Icons.info_outline),
+                icon: const Icon(Icons.info_outline),
                 color: Theme.of(context).hintColor,
                 tooltip: S.current.open_condition,
               ),
@@ -116,10 +116,10 @@ class _SvtNoblePhantasmTabState extends SvtTabBaseState<SvtNoblePhantasmTab> {
         children: <Widget>[
           db.getIconImage(td.color?.toLowerCase().toTitle(), width: 99),
           ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 110 * 0.9),
+            constraints: const BoxConstraints(maxWidth: 110 * 0.9),
             child: Text(
               '${td.typeText} ${td.rank}',
-              style: TextStyle(fontSize: 14),
+              style: const TextStyle(fontSize: 14),
               textAlign: TextAlign.center,
             ),
           )
@@ -137,7 +137,7 @@ class _SvtNoblePhantasmTabState extends SvtTabBaseState<SvtNoblePhantasmTab> {
           ),
           AutoSizeText(
             td.name,
-            style: TextStyle(fontWeight: FontWeight.w600),
+            style: const TextStyle(fontWeight: FontWeight.w600),
             maxLines: Language.isEN ? 2 : 1,
           ),
           if (td.upperNameJp?.isNotEmpty == true)
@@ -151,7 +151,7 @@ class _SvtNoblePhantasmTabState extends SvtTabBaseState<SvtNoblePhantasmTab> {
           if (td.nameJp?.isNotEmpty == true)
             AutoSizeText(
               td.nameJp!,
-              style: TextStyle(fontWeight: FontWeight.w600),
+              style: const TextStyle(fontWeight: FontWeight.w600),
               maxLines: 1,
             ),
         ],
@@ -194,7 +194,7 @@ class _SvtNoblePhantasmTabState extends SvtTabBaseState<SvtNoblePhantasmTab> {
                   return Align(
                     alignment: Alignment.center,
                     child: Padding(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       child: Text(
                         effect.lvData[index],
                         style: TextStyle(

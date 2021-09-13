@@ -9,17 +9,17 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await db.initial().catchError((e, s) {
     logger.e('db.initial failed', e, s);
-    Future.delayed(Duration(seconds: 10), () {
+    Future.delayed(const Duration(seconds: 10), () {
       Catcher.reportCheckedError(e, s);
     });
   });
 
   final catcherOptions = CatcherUtility.getOptions();
   if (kDebugMode) {
-    runApp(Chaldea());
+    runApp(const Chaldea());
   } else {
     Catcher(
-      rootWidget: Chaldea(),
+      rootWidget: const Chaldea(),
       debugConfig: catcherOptions,
       profileConfig: catcherOptions,
       releaseConfig: catcherOptions,

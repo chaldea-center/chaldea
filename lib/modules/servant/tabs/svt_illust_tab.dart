@@ -37,7 +37,7 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
           .localized;
     }).replaceFirst(
       '愚人节',
-      LocalizedText(chs: '愚人节', jpn: 'エイプリルフール', eng: "April Fools' Day")
+      const LocalizedText(chs: '愚人节', jpn: 'エイプリルフール', eng: "April Fools' Day")
           .localized,
     );
   }

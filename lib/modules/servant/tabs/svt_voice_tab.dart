@@ -46,13 +46,13 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
         headerBuilder: (context, expanded) =>
             ListTile(title: Text(_getLocalizedText(table.section, true))),
         contentBuilder: (context) => Padding(
-          padding: EdgeInsets.only(left: 16),
+          padding: const EdgeInsets.only(left: 16),
           child: Table(
             border: TableBorder(
                 horizontalInside: Divider.createBorderSide(context, width: 1)),
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children: _buildVoiceRows(table),
-            columnWidths: [
+            columnWidths: const [
               FlexColumnWidth(),
               FixedColumnWidth(36.0),
               FixedColumnWidth(36.0)
@@ -88,7 +88,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
     return table.table.map((record) {
       return TableRow(children: [
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 3),
+          padding: const EdgeInsets.symmetric(vertical: 3),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -115,7 +115,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
             bool downloading = state.value;
             bool valid = record.voiceFile?.isNotEmpty == true;
             if (!valid) {
-              return IconButton(
+              return const IconButton(
                 onPressed: null,
                 icon: Icon(Icons.play_circle_outline),
                 tooltip: 'Not Found',
@@ -124,7 +124,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
             if (downloading) {
               return IconButton(
                 onPressed: null,
-                icon: Icon(Icons.download_rounded),
+                icon: const Icon(Icons.download_rounded),
                 tooltip: S.current.downloading,
               );
             } else {
@@ -146,7 +146,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
                     }
                   });
                 },
-                icon: Icon(Icons.play_circle_outline),
+                icon: const Icon(Icons.play_circle_outline),
                 tooltip: 'Play',
               );
             }
@@ -158,7 +158,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
             bool downloading = state.value;
             bool valid = record.voiceFile?.isNotEmpty == true;
             if (!valid || downloading) {
-              return IconButton(
+              return const IconButton(
                 onPressed: null,
                 icon: Icon(Icons.file_download),
                 tooltip: 'Not Found',
@@ -180,7 +180,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
                   });
                 }
               },
-              icon: Icon(Icons.file_download),
+              icon: const Icon(Icons.file_download),
               tooltip: S.current.download,
             );
           },
@@ -351,7 +351,7 @@ class GeneralAudioPlayer {
   }
 }
 
-LocalizedGroup get _localizedVoices => LocalizedGroup([
+LocalizedGroup get _localizedVoices => const LocalizedGroup([
       LocalizedText(chs: '战斗形象', jpn: '', eng: 'Battle Sprite'),
       LocalizedText(chs: '期间限定加入', jpn: '', eng: ''),
       LocalizedText(chs: '战斗', jpn: '', eng: 'Battle'),

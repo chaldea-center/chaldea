@@ -21,7 +21,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
   @override
   Widget build(BuildContext context) {
     if (svt.lActiveSkills.isNotEmpty != true) {
-      return Center(child: Text('Nothing'));
+      return const Center(child: Text('Nothing'));
     }
     status.validate(svt);
     return ListView(children: [
@@ -70,7 +70,8 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
                   options: List.generate(
                       activeSkill.skills.length, (index) => index.toString()),
                   optionBuilder: (v) => Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
                     child: Text(activeSkill.skills[int.parse(v)].state2),
                   ),
                   values: FilterGroupData(options: {_state.toString(): true}),
@@ -83,7 +84,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
               ),
               if (skill.openCondition?.isNotEmpty == true)
                 IconButton(
-                  padding: EdgeInsets.all(2),
+                  padding: const EdgeInsets.all(2),
                   constraints: const BoxConstraints(
                     minWidth: 48,
                     minHeight: 24,
@@ -97,7 +98,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
                       ),
                     ).showDialog(context);
                   },
-                  icon: Icon(Icons.info_outline),
+                  icon: const Icon(Icons.info_outline),
                   color: Theme.of(context).hintColor,
                   tooltip: S.current.open_condition,
                 ),
@@ -106,7 +107,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
         TileGroup(
           children: <Widget>[
             CustomTile(
-                contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
+                contentPadding: const EdgeInsets.fromLTRB(16, 6, 22, 6),
                 leading: db.getIconImage(skill.icon, width: 33),
                 title: Text(Language.isJP ? nameJp : name),
                 subtitle: Language.isCN ? Text(nameJp) : null,
@@ -123,7 +124,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
     return TileGroup(
       children: <Widget>[
         CustomTile(
-          contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
+          contentPadding: const EdgeInsets.fromLTRB(16, 6, 22, 6),
           leading: db.getIconImage(skill.icon, width: 33, height: 33),
           title: Text('${skill.localizedName} ${skill.rank ?? ""}'),
         ),
@@ -137,7 +138,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
     return TileGroup(
       children: <Widget>[
         CustomTile(
-          contentPadding: EdgeInsets.fromLTRB(16, 6, 22, 6),
+          contentPadding: const EdgeInsets.fromLTRB(16, 6, 22, 6),
           leading: db.getIconImage(skill.icon, width: 33, height: 33),
           title: Text(skill.localizedName),
         ),
@@ -181,7 +182,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
                   return Align(
                     alignment: Alignment.center,
                     child: Padding(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       child: Text(
                         effect.lvData[index],
                         style: TextStyle(

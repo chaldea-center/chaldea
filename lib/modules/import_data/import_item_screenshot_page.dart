@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path/path.dart' as pathlib;
 
 class ImportItemScreenshotPage extends StatefulWidget {
-  const ImportItemScreenshotPage({Key? key}) : super(key: key);
+  ImportItemScreenshotPage({Key? key}) : super(key: key);
 
   @override
   ImportItemScreenshotPageState createState() =>
@@ -57,7 +57,6 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         titleSpacing: 0,
         title: Text(LocalizedText.of(
             chs: '素材截图解析', jpn: 'アイテムのスクリーンショット', eng: 'Items Screenshots')),
@@ -65,7 +64,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
           MarkdownHelpPage.buildHelpBtn(context, 'import_item_screenshot.md'),
           IconButton(
             onPressed: importImages,
-            icon: FaIcon(FontAwesomeIcons.fileImport),
+            icon: const FaIcon(FontAwesomeIcons.fileImport),
             tooltip: S.current.import_screenshot,
           ),
         ],
@@ -80,7 +79,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
               ),
             ),
             Tab(text: LocalizedText.of(chs: '识别结果', jpn: '結果', eng: 'Results')),
-            if (AppInfo.isDebugDevice) Tab(text: 'Debug')
+            if (AppInfo.isDebugDevice) const Tab(text: 'Debug')
           ],
         ),
       ),
@@ -118,7 +117,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
       controller: _scrollController1,
       children: imageFiles.map((e) {
         return Padding(
-          padding: EdgeInsets.only(bottom: 6),
+          padding: const EdgeInsets.only(bottom: 6),
           child: Image.file(File(e), fit: BoxFit.fitWidth),
         );
       }).toList(),
@@ -135,7 +134,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
       _ctrl.text = value.toString();
       children.add(ListTile(
         leading: Padding(
-          padding: EdgeInsets.symmetric(vertical: 3),
+          padding: const EdgeInsets.symmetric(vertical: 3),
           child: InkWell(
             child: db.getIconImage(key),
             onTap: () {
@@ -183,20 +182,20 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
                     imageFiles.clear();
                   });
                 },
-                icon: Icon(Icons.clear_all),
+                icon: const Icon(Icons.clear_all),
                 tooltip: S.current.clear,
-                constraints: BoxConstraints(minWidth: 36, maxHeight: 24),
+                constraints: const BoxConstraints(minWidth: 36, maxHeight: 24),
                 padding: EdgeInsets.zero,
               ),
             if (_isUploadTab)
               ElevatedButton.icon(
                   onPressed: imageFiles.isEmpty ? null : _uploadScreenshots,
-                  icon: Icon(Icons.upload),
+                  icon: const Icon(Icons.upload),
                   label: Text(S.current.upload)),
             if (_isUploadTab || _isResultTab)
               ElevatedButton.icon(
                   onPressed: _fetchResult,
-                  icon: Icon(Icons.download),
+                  icon: const Icon(Icons.download),
                   label: Text(
                       LocalizedText.of(chs: '结果', jpn: '結果', eng: 'Result'))),
             if (_isResultTab)
@@ -285,7 +284,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
             eng: 'The recognition result is empty'));
       }
       _tabController.index = 1;
-      await Future.delayed(Duration(milliseconds: 300));
+      await Future.delayed(const Duration(milliseconds: 300));
       if (mounted) setState(() {});
     } catch (e, s) {
       logger.e('fetch item result error', e, s);

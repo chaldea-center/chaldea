@@ -22,7 +22,8 @@ class EventBasePage {
                   child: CachedImage(
                     imageUrl: event.lBannerUrl,
                     isMCFile: true,
-                    placeholder: (_, __) => AspectRatio(aspectRatio: 8 / 3),
+                    placeholder: (_, __) =>
+                        const AspectRatio(aspectRatio: 8 / 3),
                   ),
                 ))
             .toList(),
@@ -59,7 +60,7 @@ class EventBasePage {
           maxLines: 1,
           fontSize: 14,
           alignment: Alignment.centerLeft,
-          padding: EdgeInsets.fromLTRB(16, 4, 4, 4),
+          padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
         )
       ]),
       if (event.startTimeCn != null && event.endTimeCn != null)
@@ -69,11 +70,11 @@ class EventBasePage {
             maxLines: 1,
             fontSize: 14,
             alignment: Alignment.centerLeft,
-            padding: EdgeInsets.fromLTRB(16, 4, 4, 4),
+            padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
           )
         ]),
     ]));
-    children.add(SizedBox(height: 8));
+    children.add(const SizedBox(height: 8));
     return children;
   }
 
@@ -87,12 +88,12 @@ class EventBasePage {
       TileGroup(
         children: summons
             .map((e) => ListTile(
-                leading: FaIcon(
+            leading: const FaIcon(
                   FontAwesomeIcons.dice,
                   size: 20,
                   color: Colors.blue,
                 ),
-                title: Text(e.lName, style: TextStyle(fontSize: 14)),
+                title: Text(e.lName, style: const TextStyle(fontSize: 14)),
                 horizontalTitleGap: 0,
                 onTap: () {
                   SplitRoute.push(context, SummonDetailPage(summon: e));
@@ -149,7 +150,7 @@ class EventBasePage {
       alignment: WrapAlignment.start,
       children: [
         svt == null
-            ? SizedBox(width: 32)
+            ? const SizedBox(width: 32)
             : svt.iconBuilder(context: context, width: 32),
         ...items,
       ],
@@ -160,7 +161,7 @@ class EventBasePage {
       children: [
         tile,
         Padding(
-          padding: EdgeInsets.fromLTRB(16, 0, 16, 4),
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
           child: rewards,
         ),
       ],

@@ -97,7 +97,6 @@ class _CampaignDetailPageState extends State<CampaignDetailPage>
     ));
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         title: AutoSizeText(
           event.localizedName,
           maxLines: 1,
@@ -125,7 +124,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage>
 
   Widget get floatingActionButton {
     return FloatingActionButton(
-      child: Icon(Icons.archive_outlined),
+      child: const Icon(Icons.archive_outlined),
       tooltip: S.of(context).event_collect_items,
       onPressed: () {
         if (!plan.enabled) {

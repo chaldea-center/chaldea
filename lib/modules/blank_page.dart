@@ -15,7 +15,7 @@ class BlankPage extends StatelessWidget {
       double imgHeight = min(270, constraints.biggest.height * 0.5);
       double progressSize = 50;
       progressSize = min(100, progressSize);
-      Widget img = Image(
+      Widget img = const Image(
         image: AssetImage("res/img/chaldea.png"),
         filterQuality: FilterQuality.high,
       );
@@ -53,11 +53,12 @@ class BlankPage extends StatelessWidget {
               /// If show progress
               if (reserveProgressSpace || showProgress)
                 Padding(
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   child: SizedBox(
                     width: progressSize,
                     height: progressSize,
-                    child: showProgress ? CircularProgressIndicator() : null,
+                    child:
+                        showProgress ? const CircularProgressIndicator() : null,
                   ),
                 )
             ],

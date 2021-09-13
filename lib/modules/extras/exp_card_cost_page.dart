@@ -4,7 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 
 class ExpCardCostPage extends StatefulWidget {
-  const ExpCardCostPage({Key? key}) : super(key: key);
+  ExpCardCostPage({Key? key}) : super(key: key);
 
   @override
   _ExpCardCostPageState createState() => _ExpCardCostPageState();
@@ -19,7 +19,6 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
     data.calculate(use5: use5, sameClass: sameClass);
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         title: Text(S.current.exp_card_title),
         actions: [
           IconButton(
@@ -38,7 +37,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
                 )),
               ).showDialog(context);
             },
-            icon: Icon(Icons.help_outline),
+            icon: const Icon(Icons.help_outline),
             tooltip: S.current.help,
           ),
         ],
@@ -120,14 +119,14 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
         //   icon: Icon(Icons.add_circle),
         //   color: Colors.blue,
         // ),
-        Padding(padding: EdgeInsets.only(right: 16)),
+        const Padding(padding: EdgeInsets.only(right: 16)),
       ],
     );
   }
 
   Widget _cardIcon(String name) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 2),
+      padding: const EdgeInsets.symmetric(vertical: 2),
       child: CachedImage(
         imageUrl: name,
         isMCFile: true,
@@ -144,7 +143,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
       TableRow(
         decoration: BoxDecoration(color: headerColor),
         children: [
-          Center(child: Text('...')),
+          const Center(child: Text('...')),
           _cardIcon('睿智的业火.png'),
           _cardIcon('睿智的猛火.png'),
           _cardIcon('睿智的大火.png'),
@@ -158,7 +157,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
       return Center(
         child: FittedBox(
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 3),
+            padding: const EdgeInsets.symmetric(vertical: 3),
             child: Text(
               val,
               style: TextStyle(
@@ -187,7 +186,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
     //2 1 1 1 2 1
     return Table(
       border: TableBorder(horizontalInside: Divider.createBorderSide(context)),
-      defaultColumnWidth: FlexColumnWidth(1),
+      defaultColumnWidth: const FlexColumnWidth(1),
       columnWidths: const {
         0: FlexColumnWidth(2),
         4: FlexColumnWidth(2),
@@ -222,7 +221,7 @@ class _ExpLvRangeSelectorState extends State<ExpLvRangeSelector> {
       bool isInRange = i > data.startLv && i < data.endLv;
       Widget btn;
       btn = Padding(
-        padding: EdgeInsets.symmetric(horizontal: 2, vertical: 3),
+        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
         child: Material(
           color: isEndPoint
               ? Theme.of(context).colorScheme.primary
@@ -234,13 +233,13 @@ class _ExpLvRangeSelectorState extends State<ExpLvRangeSelector> {
             onTap: _onTapLv,
             child: Center(
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 2),
+                padding: const EdgeInsets.symmetric(vertical: 2),
                 child: AutoSizeText(
                   i.toString(),
                   maxFontSize: 48,
                   minFontSize: 2,
                   maxLines: 1,
-                  style: TextStyle(fontSize: 48),
+                  style: const TextStyle(fontSize: 48),
                 ),
               ),
             ),
@@ -256,7 +255,7 @@ class _ExpLvRangeSelectorState extends State<ExpLvRangeSelector> {
       return GridView.count(
         shrinkWrap: true,
         crossAxisCount: crossCount,
-        padding: EdgeInsets.fromLTRB(4, 8, 4, 24),
+        padding: const EdgeInsets.fromLTRB(4, 8, 4, 24),
         childAspectRatio: 48 / 32,
         children: children,
       );
@@ -268,12 +267,12 @@ class _ExpLvRangeSelectorState extends State<ExpLvRangeSelector> {
         children: [
           AppBar(
             toolbarHeight: 36,
-            leading: BackButton(),
+            leading: const BackButton(),
             titleSpacing: 0,
             centerTitle: true,
             title: Text(
               S.current.exp_card_select_lvs,
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
           ),
           Flexible(child: grid),

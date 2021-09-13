@@ -100,8 +100,8 @@ class SModal extends StatelessWidget {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text(value ?? "", style: TextStyle(color: Colors.grey)),
-            IconButton(
+            Text(value ?? "", style: const TextStyle(color: Colors.grey)),
+            const IconButton(
               icon: Icon(Icons.arrow_forward_ios),
               iconSize: 5.0,
               onPressed: null,
@@ -218,11 +218,11 @@ class TileGroup extends StatelessWidget {
       return ListView(
         shrinkWrap: shrinkWrap,
         children: _children,
-        padding: padding ?? EdgeInsets.only(bottom: 8),
+        padding: padding ?? const EdgeInsets.only(bottom: 8),
       );
     } else {
       return Padding(
-        padding: padding ?? EdgeInsets.only(bottom: 8),
+        padding: padding ?? const EdgeInsets.only(bottom: 8),
         child: Column(
           crossAxisAlignment: crossAxisAlignment,
           mainAxisSize: MainAxisSize.min,
@@ -312,7 +312,7 @@ class _RangeSelectorState<T extends num> extends State<RangeSelector<T>> {
                 }
               : null,
         ),
-        Text('   →   '),
+        const Text('   →   '),
         DropdownButton<T>(
           value: widget.end,
           items: widget.endItems

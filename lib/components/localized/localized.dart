@@ -19,7 +19,7 @@ class Localized {
 
   static LocalizedGroup get svtFilter => _localizedSvtFilter;
 
-  static LocalizedGroup get craftFilter => LocalizedGroup([
+  static LocalizedGroup get craftFilter => const LocalizedGroup([
         LocalizedText(chs: '兑换', jpn: 'ショップ交換', eng: 'Mana Prism Shop'),
         LocalizedText(chs: '活动奖励', jpn: 'イベント', eng: 'Event Reward'),
         LocalizedText(chs: 'EXP卡', jpn: 'EXP', eng: 'EXP'),
@@ -43,7 +43,7 @@ class Localized {
 
   static LocalizedGroup get enemy => _enemy;
 
-  static LocalizedGroup get chapter => LocalizedGroup([
+  static LocalizedGroup get chapter => const LocalizedGroup([
         LocalizedText(chs: '幕间物语', jpn: '幕間の物語', eng: 'Interlude'),
         LocalizedText(chs: '强化任务', jpn: '強化クエスト', eng: 'Strengthening'),
         LocalizedText(chs: '强化关卡', jpn: '強化クエスト', eng: 'Strengthening'),
@@ -239,7 +239,7 @@ class Localized {
       ]);
 
   // temp
-  static LocalizedText freeDropRateChangedHint = LocalizedText(
+  static LocalizedText freeDropRateChangedHint = const LocalizedText(
     chs: '注意: 日服于六周年之际略微调高了free本的素材掉率，因此现有数据可能存在一定偏差。',
     jpn: 'ご注意：FGO6周年の時、フリークエストのドロップ率が若干調整されたため、既存のデータに多少のずれが生じる可能性があります。',
     eng:

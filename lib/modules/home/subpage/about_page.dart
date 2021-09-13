@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutPage extends StatefulWidget {
-  const AboutPage({Key? key}) : super(key: key);
+  AboutPage({Key? key}) : super(key: key);
 
   @override
   _AboutPageState createState() => _AboutPageState();
@@ -33,7 +33,6 @@ class _AboutPageState extends State<AboutPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         title: Text(MaterialLocalizations.of(context)
             .aboutListTileTitle(AppInfo.appName)),
       ),
@@ -64,7 +63,7 @@ class _AboutPageState extends State<AboutPage> {
                     subtitle: Text(EnumUtil.titled(db.appSetting.gitSource)),
                     trailing: db.runtimeData.upgradableVersion != null
                         ? Text(db.runtimeData.upgradableVersion!.version + '↑',
-                            style: TextStyle(color: Colors.redAccent))
+                            style: const TextStyle(color: Colors.redAccent))
                         : null,
                     onTap: () {
                       AutoUpdateUtil.checkAppUpdate(background: false);
@@ -81,7 +80,7 @@ class _AboutPageState extends State<AboutPage> {
                     },
                   ),
                 ListTile(
-                  title: Text('README'),
+                  title: const Text('README'),
                   onTap: () async {
                     SplitRoute.push(
                       context,
@@ -123,12 +122,12 @@ class _AboutPageState extends State<AboutPage> {
                   onTap: () =>
                       jumpToExternalLinkAlert(url: ref.value, name: ref.key),
                 ),
-              ListTile(
+              const ListTile(
                 title: Text('icyalala@NGA'),
                 subtitle: AutoSizeText('Fate/Freedom Order data', maxLines: 1),
               ),
               ListTile(
-                title: Text('Fandom Translators'),
+                title: const Text("Fandom Translators"),
                 onTap: () {
                   SplitRoute.push(
                     context,
@@ -188,11 +187,11 @@ class _AboutProgram extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24.0),
         child: Column(
           children: <Widget>[
             if (icon != null)
@@ -223,7 +222,7 @@ class _AboutProgram extends StatelessWidget {
 }
 
 class _FandomContributorsPage extends StatelessWidget {
-  const _FandomContributorsPage({Key? key}) : super(key: key);
+  _FandomContributorsPage({Key? key}) : super(key: key);
 
   final Map<String, String> data = const {
     'Fandom FGO Team': 'https://fategrandorder.fandom.com/wiki/',
@@ -252,10 +251,7 @@ class _FandomContributorsPage extends StatelessWidget {
       ));
     });
     return Scaffold(
-      appBar: AppBar(
-        leading: BackButton(),
-        title: Text('Fandom Contributors'),
-      ),
+      appBar: AppBar(title: const Text('Fandom Contributors')),
       body: ListView(children: children),
     );
   }
@@ -267,7 +263,7 @@ class _GithubMarkdownPage extends StatelessWidget {
   final String? data;
   final String? assetKey;
 
-  const _GithubMarkdownPage(
+  _GithubMarkdownPage(
       {Key? key, required this.title, this.link, this.data, this.assetKey})
       : super(key: key);
 
@@ -275,7 +271,6 @@ class _GithubMarkdownPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         title: Text(title),
         actions: [
           if (link != null)
@@ -283,7 +278,7 @@ class _GithubMarkdownPage extends StatelessWidget {
               onPressed: () {
                 launch(link!);
               },
-              icon: FaIcon(FontAwesomeIcons.github),
+              icon: const FaIcon(FontAwesomeIcons.github),
               tooltip: 'view on Github',
             )
         ],

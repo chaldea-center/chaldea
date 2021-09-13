@@ -116,9 +116,7 @@ class _PageWidgetState extends State<_PageWidget> {
       decoration: const BoxDecoration(color: Colors.white),
       child: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 10),
-          ),
+          const SizedBox(height: 10),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
@@ -130,7 +128,7 @@ class _PageWidgetState extends State<_PageWidget> {
           ),
           TextField(
             controller: _textEditingController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               prefixIcon: Icon(Icons.email),
               labelText: 'Contact information (Optional)',
             ),

@@ -199,11 +199,11 @@ class AppInfo {
         originId = uuidFile.readAsStringSync();
       }
       if (originId?.isNotEmpty != true) {
-        originId = Uuid().v1();
+        originId = const Uuid().v1();
         uuidFile.writeAsStringSync(_uuid!);
       }
     }
-    _uuid = Uuid().v5(Uuid.NAMESPACE_URL, originId!).toUpperCase();
+    _uuid = const Uuid().v5(Uuid.NAMESPACE_URL, originId!).toUpperCase();
 
     logger.i('Unique ID: $_uuid');
   }

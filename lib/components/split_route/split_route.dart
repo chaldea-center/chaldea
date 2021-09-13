@@ -262,8 +262,9 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
       builder: builder,
       detail: detail,
       masterRatio: masterRatio,
-      transitionDuration:
-          (detail && popDetail && n > 0) ? Duration() : kSplitRouteDuration,
+      transitionDuration: (detail && popDetail && n > 0)
+          ? const Duration()
+          : kSplitRouteDuration,
       reverseTransitionDuration: kSplitRouteDuration,
       settings: settings,
       title: title,

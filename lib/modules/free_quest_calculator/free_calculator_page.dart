@@ -11,8 +11,7 @@ import 'quest_query_tab.dart';
 class FreeQuestCalculatorPage extends StatefulWidget {
   final Map<String, int>? objectiveCounts;
 
-  const FreeQuestCalculatorPage({Key? key, this.objectiveCounts})
-      : super(key: key);
+  FreeQuestCalculatorPage({Key? key, this.objectiveCounts}) : super(key: key);
 
   @override
   _FreeQuestCalculatorPageState createState() =>
@@ -41,7 +40,6 @@ class _FreeQuestCalculatorPageState extends State<FreeQuestCalculatorPage>
     return Scaffold(
       appBar: AppBar(
         title: Text(S.of(context).free_quest_calculator),
-        leading: BackButton(),
         actions: [
           MarkdownHelpPage.buildHelpBtn(context, 'free_quest_planning.md')
         ],

@@ -75,10 +75,11 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                                     .add(variable.name);
                               });
                             },
-                            icon: Icon(Icons.add, color: Colors.redAccent),
+                            icon:
+                                const Icon(Icons.add, color: Colors.redAccent),
                             label: Text(
                               S.of(context).add_to_blacklist,
-                              style: TextStyle(color: Colors.redAccent),
+                              style: const TextStyle(color: Colors.redAccent),
                             ),
                           ),
                   if (state.value && quest != null) QuestCard(quest: quest),

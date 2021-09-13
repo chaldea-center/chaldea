@@ -13,7 +13,7 @@ import 'package:path/path.dart' as pathlib;
 class ImportSkillScreenshotPage extends StatefulWidget {
   final bool isAppendSkill;
 
-  const ImportSkillScreenshotPage({Key? key, this.isAppendSkill = false})
+  ImportSkillScreenshotPage({Key? key, this.isAppendSkill = false})
       : super(key: key);
 
   @override
@@ -80,7 +80,6 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
 
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         titleSpacing: 0,
         title: Text(widget.isAppendSkill
             ? S.current.append_skill
@@ -89,7 +88,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
           MarkdownHelpPage.buildHelpBtn(context, 'import_skill_screenshot.md'),
           IconButton(
             onPressed: importImages,
-            icon: FaIcon(FontAwesomeIcons.fileImport),
+            icon: const FaIcon(FontAwesomeIcons.fileImport),
             tooltip: S.current.import_screenshot,
           ),
         ],
@@ -104,7 +103,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
               ),
             ),
             Tab(text: LocalizedText.of(chs: '识别结果', jpn: '結果', eng: 'Results')),
-            if (AppInfo.isDebugDevice) Tab(text: 'Debug')
+            if (AppInfo.isDebugDevice) const Tab(text: 'Debug')
           ],
         ),
       ),
@@ -131,7 +130,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
 
   Widget get screenshotsTab {
     if (imageFiles.isEmpty) {
-      return Center(
+      return const Center(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Text(''),
@@ -142,7 +141,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
       controller: _scrollController1,
       children: imageFiles.map((e) {
         return Padding(
-          padding: EdgeInsets.only(bottom: 6),
+          padding: const EdgeInsets.only(bottom: 6),
           child: Image.file(File(e), fit: BoxFit.fitWidth),
         );
       }).toList(),
@@ -160,7 +159,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
             .length;
 
     final summary = Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Text(
         LocalizedText.of(
             chs: '共$totalNum, 有效$validNum, 已选$selectedNum, 重复$dupNum',
@@ -224,7 +223,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
         style: TextButton.styleFrom(
             alignment: Alignment.centerLeft,
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            padding: EdgeInsets.symmetric(horizontal: 0)),
+            padding: const EdgeInsets.symmetric(horizontal: 0)),
         onPressed: () async {
           // use Servant.no rather Servant.originNo
           await SplitRoute.push(
@@ -250,7 +249,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
             value: MathUtils.inRange(svtResult.skills[index], minSkill, 10)
                 ? svtResult.skills[index]
                 : null,
-            hint: Text('-1'),
+            hint: const Text('-1'),
             items: List.generate(
               10 - minSkill + 1,
               (i) => DropdownMenuItem(
@@ -278,9 +277,9 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
         ),
       );
       children.add(CustomTile(
-        contentPadding: EdgeInsets.symmetric(horizontal: 8),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8),
         leading: Padding(
-          padding: EdgeInsets.symmetric(vertical: 3),
+          padding: const EdgeInsets.symmetric(vertical: 3),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -303,7 +302,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
         title: Row(
           children: [
             Expanded(flex: 4, child: nameBtn),
-            ...divideTiles(skillBtns, divider: Text('/')),
+            ...divideTiles(skillBtns, divider: const Text('/')),
           ],
         ),
         trailing: Checkbox(
@@ -356,13 +355,13 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
             _debugFilenames = List.from(resp.body);
             if (mounted) setState(() {});
           },
-          child: Text('Download List'),
+          child: const Text('Download List'),
         )
       ],
     ));
     for (String fn in _debugFilenames) {
       children.add(Padding(
-        padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
         child: Text(fn),
       ));
       String url = '${_dio.options.baseUrl}/recognizer/skill/debug/file/$fn';
@@ -398,15 +397,15 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
                     imageFiles.clear();
                   });
                 },
-                icon: Icon(Icons.clear_all),
+                icon: const Icon(Icons.clear_all),
                 tooltip: S.current.clear,
-                constraints: BoxConstraints(minWidth: 36, maxHeight: 24),
+                constraints: const BoxConstraints(minWidth: 36, maxHeight: 24),
                 padding: EdgeInsets.zero,
               ),
             if (_isUploadTab)
               ElevatedButton.icon(
                   onPressed: imageFiles.isEmpty ? null : _uploadScreenshots,
-                  icon: Icon(Icons.upload),
+                  icon: const Icon(Icons.upload),
                   label: Text(S.current.upload)),
             if (_isResultTab)
               DropdownButton<SvtCompare?>(
@@ -440,7 +439,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
             if (_isUploadTab || _isResultTab)
               ElevatedButton.icon(
                   onPressed: _fetchResult,
-                  icon: Icon(Icons.download),
+                  icon: const Icon(Icons.download),
                   label: Text(
                       LocalizedText.of(chs: '结果', jpn: '結果', eng: 'Result'))),
             if (_isResultTab)
@@ -532,7 +531,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
       }
       results.forEach((e) => e.isAppendSkill = widget.isAppendSkill);
       _tabController.index = 1;
-      await Future.delayed(Duration(milliseconds: 300));
+      await Future.delayed(const Duration(milliseconds: 300));
       if (mounted) setState(() {});
     } catch (e, s) {
       logger.e('fetch svt result', e, s);
@@ -624,7 +623,7 @@ class __SkillResultLoaderState extends State<_SkillResultLoader> {
   Widget build(BuildContext context) {
     final file = _getFile();
     if (file == null) {
-      return Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator());
     }
     if (!isJson) {
       return Image.file(file);
@@ -636,9 +635,9 @@ class __SkillResultLoaderState extends State<_SkillResultLoader> {
       children: results.map((e) {
         final svt = db.gameData.servants[e.svtNo];
         return CustomTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 8),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 8),
           leading: Padding(
-            padding: EdgeInsets.symmetric(vertical: 3),
+            padding: const EdgeInsets.symmetric(vertical: 3),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [

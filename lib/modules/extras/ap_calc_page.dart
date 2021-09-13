@@ -4,7 +4,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:flutter/services.dart';
 
 class APCalcPage extends StatefulWidget {
-  const APCalcPage({Key? key}) : super(key: key);
+  APCalcPage({Key? key}) : super(key: key);
 
   @override
   _APCalcPageState createState() => _APCalcPageState();
@@ -44,7 +44,7 @@ class _APCalcPageState extends State<APCalcPage> {
         title: Center(
           child: Text(
             (endTime ?? '-').toString(),
-            style: TextStyle(fontSize: 20),
+            style: const TextStyle(fontSize: 20),
           ),
         ),
       ),
@@ -53,7 +53,7 @@ class _APCalcPageState extends State<APCalcPage> {
       builder: (context) => Scaffold(
         appBar: AppBar(
           title: Text(S.of(context).ap_overflow_time),
-          leading: BackButton(),
+          leading: const BackButton(),
         ),
         body: Column(
           children: [
@@ -67,10 +67,11 @@ class _APCalcPageState extends State<APCalcPage> {
             if (showExtraHint)
               Center(
                 child: Padding(
-                  padding: EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(5),
                   child: Text(
                     S.of(context).ap_calc_page_joke,
-                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w100),
+                    style: const TextStyle(
+                        fontSize: 10, fontWeight: FontWeight.w100),
                   ),
                 ),
               )
@@ -88,7 +89,7 @@ class _APCalcPageState extends State<APCalcPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           IconButton(
-              icon: Icon(Icons.remove),
+              icon: const Icon(Icons.remove),
               onPressed: () {
                 FocusScope.of(context).unfocus();
                 controller.text =
@@ -103,7 +104,7 @@ class _APCalcPageState extends State<APCalcPage> {
               keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 counterText: '',
                 isDense: true,
                 border: OutlineInputBorder(),
@@ -115,7 +116,7 @@ class _APCalcPageState extends State<APCalcPage> {
             ),
           ),
           IconButton(
-              icon: Icon(Icons.add),
+              icon: const Icon(Icons.add),
               onPressed: () {
                 FocusScope.of(context).unfocus();
                 controller.text =

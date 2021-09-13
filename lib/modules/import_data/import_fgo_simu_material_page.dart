@@ -5,7 +5,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:flutter/scheduler.dart';
 
 class ImportFgoSimuMaterialPage extends StatefulWidget {
-  const ImportFgoSimuMaterialPage({Key? key}) : super(key: key);
+  ImportFgoSimuMaterialPage({Key? key}) : super(key: key);
 
   @override
   _ImportFgoSimuMaterialPageState createState() =>
@@ -41,13 +41,12 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         titleSpacing: 0,
-        title: AutoSizeText('FGO Simulator - Material', maxLines: 1),
+        title: const AutoSizeText('FGO Simulator - Material', maxLines: 1),
         bottom: TabBar(
           controller: _tabController,
           tabs: [
-            Tab(text: 'Input'),
+            const Tab(text: 'Input'),
             Tab(text: S.current.servant),
             Tab(text: S.current.item)
           ],
@@ -66,7 +65,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
                     '\n\n"http://fgosimulator.webcrow.jp/Material/" -> My Chaldea -> 引継ぎコード'),
               ).showDialog(context);
             },
-            icon: Icon(Icons.help),
+            icon: const Icon(Icons.help),
             tooltip: S.current.help,
           ),
         ],
@@ -83,7 +82,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
       children: [
         Expanded(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
             child: TextField(
               controller: _textEditingController,
               expands: true,
@@ -91,7 +90,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
               textAlignVertical: TextAlignVertical.top,
               toolbarOptions: const ToolbarOptions(
                   copy: true, cut: true, paste: true, selectAll: true),
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 helperText:
                     'Copy servant or item data from fgosimulator.webcrow.jp',
@@ -104,7 +103,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
         ButtonBar(
           alignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(onPressed: _parse, child: Text('Parse Data')),
+            ElevatedButton(onPressed: _parse, child: const Text('Parse Data')),
           ],
         )
       ],
@@ -113,7 +112,8 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
 
   Widget get servantTab {
     List<Widget> children = [];
-    if (svtResult.isEmpty) children.add(Center(child: Text('Nothing yet')));
+    if (svtResult.isEmpty)
+      children.add(const Center(child: Text('Nothing yet')));
     svtResult.sort((a, b) => Servant.compare(a.svt, b.svt,
         keys: [SvtCompare.rarity, SvtCompare.no], reversed: [true, false]));
     Widget _getSummary(ServantPlan plan) {
@@ -136,7 +136,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(child: _getSummary(record.cur)),
-            Text(' → '),
+            const Text(' → '),
             Expanded(child: _getSummary(record.target)),
           ],
         ),
@@ -153,7 +153,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
       children: [
         Expanded(
           child: ListView.separated(
-            padding: EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.symmetric(vertical: 8),
             itemBuilder: (context, index) => children[index],
             separatorBuilder: (_, __) => const Divider(
               height: 2,
@@ -186,7 +186,8 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
 
   Widget get itemTab {
     List<Widget> children = [];
-    if (itemResult.isEmpty) children.add(Center(child: Text('Nothing yet')));
+    if (itemResult.isEmpty)
+      children.add(const Center(child: Text('Nothing yet')));
     itemResult.forEach((itemKey, value) {
       children.add(ListTile(
         leading: Item.iconBuilder(context: context, itemKey: itemKey),
@@ -198,7 +199,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
       children: [
         Expanded(
           child: ListView.separated(
-            padding: EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.symmetric(vertical: 8),
             itemBuilder: (context, index) => children[index],
             separatorBuilder: (_, __) => const Divider(
               height: 2,

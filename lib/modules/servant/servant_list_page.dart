@@ -13,7 +13,7 @@ class ServantListPage extends StatefulWidget {
   final bool planMode;
   final void Function(Servant)? onSelected;
 
-  const ServantListPage({Key? key, this.planMode = false, this.onSelected})
+  ServantListPage({Key? key, this.planMode = false, this.onSelected})
       : super(key: key);
 
   @override
@@ -67,7 +67,7 @@ class ServantListPageState
         maxLines: 1,
         overflow: TextOverflow.fade,
       ),
-      leading: MasterBackButton(),
+      leading: const MasterBackButton(),
       titleSpacing: 0,
       bottom: showSearchBar ? searchBar : null,
       actions: <Widget>[
@@ -84,7 +84,7 @@ class ServantListPageState
               });
             }),
         IconButton(
-          icon: Icon(Icons.filter_alt),
+          icon: const Icon(Icons.filter_alt),
           tooltip: S.current.filter,
           onPressed: () => FilterPage.show(
             context: context,
@@ -384,7 +384,7 @@ class ServantListPageState
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
           child: LayoutBuilder(builder: _buildClassFilter),
         ),
         kDefaultDivider,
@@ -430,7 +430,7 @@ class ServantListPageState
         return Container();
       case SvtListClassFilterStyle.singleRow:
         return ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: 40),
+          constraints: const BoxConstraints(maxHeight: 40),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [...clsRegularBtns, extraBtn]
@@ -452,7 +452,7 @@ class ServantListPageState
               ),
               if (constraints.maxWidth < 36 * allBtns.length)
                 Padding(
-                  padding: EdgeInsets.only(left: 6),
+                  padding: const EdgeInsets.only(left: 6),
                   child: Icon(
                     Icons.keyboard_arrow_right,
                     color: Theme.of(context).disabledColor,
@@ -472,7 +472,7 @@ class ServantListPageState
           children: [
             for (final btns in [clsRegularBtns, clsExtraBtns])
               ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: 40),
+                constraints: const BoxConstraints(maxHeight: 40),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: btns.map((e) => Expanded(child: e)).toList(),
@@ -565,17 +565,17 @@ class ServantListPageState
       };
     }
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 3, horizontal: 3),
+      padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 3),
       child: AspectRatio(
         aspectRatio: 132 / 144,
         child: ImageWithText(
           image: db.getIconImage(svt.icon),
           shadowSize: 4,
           textBuilder: textBuilder,
-          textStyle: TextStyle(fontSize: 11, color: Colors.black),
+          textStyle: const TextStyle(fontSize: 11, color: Colors.black),
           shadowColor: Colors.white,
           alignment: AlignmentDirectional.bottomStart,
-          padding: EdgeInsets.fromLTRB(2, 0, 0, 2),
+          padding: const EdgeInsets.fromLTRB(2, 0, 0, 2),
           onTap: () => _onTapSvt(svt),
         ),
       ),
@@ -595,7 +595,7 @@ class ServantListPageState
 
     final buttons = [
       Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Text(
             LocalizedText.of(chs: '统一设定:', jpn: 'すべてを設定:', eng: 'Set All:')),
       ),
@@ -636,7 +636,7 @@ class ServantListPageState
         hint: Text(S.of(context).skill),
         items: List.generate(11, (i) {
           if (i == 0) {
-            return DropdownMenuItem(value: i, child: Text('x + 1'));
+            return DropdownMenuItem(value: i, child: const Text('x + 1'));
           } else {
             return DropdownMenuItem(
               value: i,
@@ -679,7 +679,7 @@ class ServantListPageState
         hint: Text(S.current.append_skill_short),
         items: List.generate(12, (i) {
           if (i == 0) {
-            return DropdownMenuItem(value: -1, child: Text('x + 1'));
+            return const DropdownMenuItem(value: -1, child: Text('x + 1'));
           } else {
             return DropdownMenuItem(
               value: i - 1,
@@ -807,7 +807,7 @@ class ServantListPageState
           ),
         ),
       ),
-      preferredSize: Size.fromHeight(64),
+      preferredSize: const Size.fromHeight(64),
     );
   }
 
@@ -846,7 +846,7 @@ class ServantListPageState
         ],
       );
       statusText = DefaultTextStyle(
-        style: TextStyle(color: Colors.grey, fontSize: 14),
+        style: const TextStyle(color: Colors.grey, fontSize: 14),
         child: statusText,
       );
     }
@@ -907,7 +907,7 @@ class ServantListPageState
       subtitle: _getDetailTable(svt),
       trailing: eyeWidget,
       selected: SplitRoute.isSplit(context) && selected == svt,
-      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 3),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 3),
       onTap: () => _onTapSvt(svt),
     );
   }

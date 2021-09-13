@@ -80,7 +80,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
             if (svt == null) continue;
             children.add(ListTile(
               leading: Padding(
-                padding: EdgeInsets.symmetric(vertical: 2),
+                padding: const EdgeInsets.symmetric(vertical: 2),
                 child: SummonUtil.svtAvatar(
                     context: context,
                     card: svt,
@@ -132,7 +132,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
         Expanded(
           child: ListView(
             controller: _scrollController1,
-            padding: EdgeInsets.only(bottom: 16),
+            padding: const EdgeInsets.only(bottom: 16),
             children: children,
           ),
         )
@@ -196,7 +196,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
     for (final _result in results) {
       children.add(SHeader(SummonUtil.summonNameLocalize(_result.data.name)));
       children.add(Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
         child: Wrap(
           spacing: 2,
           runSpacing: 2,
@@ -299,7 +299,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
                         _sortType = _ExpSort.best5;
                       });
                     },
-                    child: Text(
+                    child: const Text(
                       'Best/5',
                       maxLines: 1,
                       overflow: TextOverflow.visible,
@@ -316,7 +316,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
                         _sortType = _ExpSort.worst1;
                       });
                     },
-                    child: Text(
+                    child: const Text(
                       'Worst/1',
                       maxLines: 1,
                       overflow: TextOverflow.visible,
@@ -375,7 +375,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
         Expanded(
           child: ListView(
             controller: _scrollController2,
-            padding: EdgeInsets.only(bottom: 16),
+            padding: const EdgeInsets.only(bottom: 16),
             children: children,
           ),
         )

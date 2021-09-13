@@ -9,7 +9,7 @@ class Route404Page extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('404'),
+        title: const Text('404'),
       ),
       body: Center(
         child: Text(

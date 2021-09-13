@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:table_sticky_headers/table_sticky_headers.dart';
 
 class SQTableTab extends StatefulWidget {
-  const SQTableTab({Key? key}) : super(key: key);
+  SQTableTab({Key? key}) : super(key: key);
 
   @override
   _SQTableTabState createState() => _SQTableTabState();
@@ -75,13 +75,13 @@ class _SQTableTabState extends State<SQTableTab> {
       columnsTitleBuilder: (col) => Text(
         [
           LocalizedText.of(chs: '石', jpn: '石', eng: 'SQ'),
-              LocalizedText.of(chs: '呼符', jpn: '呼符', eng: 'Ticket'),
-              LocalizedText.of(chs: '果实', jpn: '果実', eng: 'Apple'),
-              S.current.event_title
-            ][col],
-            textAlign: col != 3 ? TextAlign.center : null,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+          LocalizedText.of(chs: '呼符', jpn: '呼符', eng: 'Ticket'),
+          LocalizedText.of(chs: '果实', jpn: '果実', eng: 'Apple'),
+          S.current.event_title
+        ][col],
+        textAlign: col != 3 ? TextAlign.center : null,
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
       rowsTitleBuilder: (row) {
         final detail = plan.solution[row];
         return _accWithAdd(

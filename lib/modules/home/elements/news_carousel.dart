@@ -233,7 +233,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
           child: DotsIndicator(
             dotsCount: pages.length,
             position: _curCarouselIndex.toDouble(),
-            decorator: DotsDecorator(
+            decorator: const DotsDecorator(
               color: Colors.white70,
               spacing: EdgeInsets.symmetric(vertical: 6, horizontal: 3),
             ),
@@ -269,7 +269,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
         );
       } else {
         child = Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
           child: Center(
             child: AutoSizeText(
               imgUrl,

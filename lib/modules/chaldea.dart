@@ -40,7 +40,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   }
 
   void onAppUpdate() {
-    Future.delayed(Duration(milliseconds: 200), () {
+    Future.delayed(const Duration(milliseconds: 200), () {
       if (!mounted) return;
       _homeKey.currentState?._onAppUpdate();
       setState(() {});
@@ -52,7 +52,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     super.initState();
     db.notifyAppUpdate = onAppUpdate;
     db.runtimeData.screenshotController = ScreenshotController();
-    SplitRoute.defaultMasterFillPageBuilder = (context) => BlankPage();
+    SplitRoute.defaultMasterFillPageBuilder = (context) => const BlankPage();
 
     SystemChannels.lifecycle.setMessageHandler((msg) async {
       debugPrint('SystemChannels> $msg');
@@ -171,7 +171,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     }
 
     if (!Analyzer.skipReport()) {
-      await Future.delayed(Duration(seconds: 5));
+      await Future.delayed(const Duration(seconds: 5));
       await Analyzer.sendStat();
       await Analyzer.sendBdtj();
     }
@@ -245,11 +245,11 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
   @override
   void afterFirstLayout(BuildContext context) async {
     // ensure image is shown on screen
-    await precacheImage(AssetImage("res/img/chaldea.png"), context,
+    await precacheImage(const AssetImage("res/img/chaldea.png"), context,
         onError: (e, s) {
       logger.w('pre cache chaldea image error', e, s);
     });
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(const Duration(milliseconds: 100));
 
     // if app updated, reload gamedata
     bool gameDataLoadSuccess = false;

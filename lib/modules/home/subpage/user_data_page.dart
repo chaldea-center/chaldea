@@ -10,7 +10,7 @@ import 'package:path/path.dart' show basenameWithoutExtension;
 import 'package:share_plus/share_plus.dart';
 
 class UserDataPage extends StatefulWidget {
-  const UserDataPage({Key? key}) : super(key: key);
+  UserDataPage({Key? key}) : super(key: key);
 
   @override
   _UserDataPageState createState() => _UserDataPageState();
@@ -29,7 +29,6 @@ class _UserDataPageState extends State<UserDataPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         title: Text(S.of(context).userdata),
       ),
       body: ListView(
@@ -57,14 +56,14 @@ class _UserDataPageState extends State<UserDataPage> {
               ),
               ListTile(
                 title: Text(S.current.backup_history),
-                trailing: Icon(Icons.keyboard_arrow_right),
+                trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   SplitRoute.push(context, _BackupHistoryPage());
                 },
               ),
               ListTile(
                 title: Text(S.of(context).import_data),
-                subtitle: Text('userdata.json/*.json'),
+                subtitle: const Text('userdata.json/*.json'),
                 onTap: importUserData,
               ),
               ListTile(
@@ -239,7 +238,7 @@ class _UserDataPageState extends State<UserDataPage> {
           builder: (context) => SimpleDialog(
             title: Text(S.current.userdata_download_choose_backup),
             children: [
-              if (body.isEmpty) ListTile(title: Text('No backup found')),
+              if (body.isEmpty) const ListTile(title: Text('No backup found')),
               for (var entry in body.entries)
                 ListTile(
                   title: Text(entry.key),
@@ -254,7 +253,7 @@ class _UserDataPageState extends State<UserDataPage> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                icon: Icon(Icons.clear),
+                icon: const Icon(Icons.clear),
               )
             ],
           ),
@@ -291,7 +290,7 @@ class _UserDataPageState extends State<UserDataPage> {
 }
 
 class _BackupHistoryPage extends StatefulWidget {
-  const _BackupHistoryPage({Key? key}) : super(key: key);
+  _BackupHistoryPage({Key? key}) : super(key: key);
 
   @override
   __BackupHistoryPageState createState() => __BackupHistoryPageState();
@@ -320,7 +319,6 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         title: Text(S.current.backup_history),
       ),
       body: ListView.separated(
@@ -328,7 +326,7 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
           if (index == 0) {
             return Card(
               child: Padding(
-                padding: EdgeInsets.all(6),
+                padding: const EdgeInsets.all(6),
                 child:
                     Text(db.paths.convertIosPath(db.paths.userDataBackupDir)),
               ),
@@ -338,7 +336,7 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
           return ListTile(
             title: Text(basenameWithoutExtension(path)),
             trailing: IconButton(
-              icon: Icon(Icons.download),
+              icon: const Icon(Icons.download),
               tooltip: S.current.import_data,
               onPressed: () {
                 SimpleCancelOkDialog(

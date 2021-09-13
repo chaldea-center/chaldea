@@ -1,13 +1,13 @@
 part of localized;
 
-final _localizedGender = LocalizedGroup([
+const _localizedGender = LocalizedGroup([
   LocalizedText(chs: '男性', jpn: '男性', eng: 'Male'),
   LocalizedText(chs: '女性', jpn: '女性', eng: 'Female'),
   LocalizedText(chs: '其他性别', jpn: 'その他の性別', eng: 'Unknown gender'),
   LocalizedText(chs: '其他', jpn: 'その他の性別', eng: 'Unknown gender'),
 ]);
 
-final localizedGameClass = LocalizedGroup([
+const localizedGameClass = LocalizedGroup([
   LocalizedText(chs: '剑阶', jpn: 'セイバー', eng: 'Saber'),
   LocalizedText(chs: '弓阶', jpn: 'アーチャー', eng: 'Archer'),
   LocalizedText(chs: '枪阶', jpn: 'ランサー', eng: 'Lancer'),
@@ -24,7 +24,7 @@ final localizedGameClass = LocalizedGroup([
   LocalizedText(chs: '兽阶', jpn: '', eng: 'Beast'),
 ]);
 
-final _localizedSvtFilter = LocalizedGroup([
+const _localizedSvtFilter = LocalizedGroup([
   LocalizedText(chs: '充能(技能)', jpn: 'NPチャージ(スキル)', eng: 'NP Charge(Skill)'),
   LocalizedText(chs: '充能(宝具)', jpn: 'NPチャージ(宝具)', eng: 'NP Charge(NP)'),
   //['未遭遇', '已遭遇', '已契约']

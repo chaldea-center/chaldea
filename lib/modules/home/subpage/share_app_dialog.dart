@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ShareAppDialog extends StatefulWidget {
-  const ShareAppDialog({Key? key}) : super(key: key);
+  ShareAppDialog({Key? key}) : super(key: key);
 
   @override
   _ShareAppDialogState createState() => _ShareAppDialogState();

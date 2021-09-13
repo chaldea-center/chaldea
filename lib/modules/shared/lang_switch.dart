@@ -55,7 +55,7 @@ class _ProfileLangSwitchState extends State<ProfileLangSwitch> {
           }[code]!)),
         );
       },
-      padding: EdgeInsets.symmetric(horizontal: 1),
+      padding: const EdgeInsets.symmetric(horizontal: 1),
       combined: true,
       useRadio: true,
       shrinkWrap: true,

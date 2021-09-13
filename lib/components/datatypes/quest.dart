@@ -40,7 +40,7 @@ class Quest {
     required this.conditions,
   });
 
-  static LocalizedGroup questNameGroup = LocalizedGroup([
+  static LocalizedGroup questNameGroup = const LocalizedGroup([
     LocalizedText(chs: '周日', jpn: '日曜', eng: 'Sunday'),
     LocalizedText(chs: '周一', jpn: '月曜', eng: 'Monday'),
     LocalizedText(chs: '周二', jpn: '火曜', eng: 'Tuesday'),

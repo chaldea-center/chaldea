@@ -167,7 +167,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "drop_calc_solve": MessageLookupByLibrary.simpleMessage("求解"),
         "drop_rate": MessageLookupByLibrary.simpleMessage("掉率"),
         "edit": MessageLookupByLibrary.simpleMessage("编辑"),
-        "effect_search": MessageLookupByLibrary.simpleMessage("Buff搜索"),
+        "effect_search": MessageLookupByLibrary.simpleMessage("Buff检索"),
         "efficiency": MessageLookupByLibrary.simpleMessage("效率"),
         "efficiency_type": MessageLookupByLibrary.simpleMessage("效率类型"),
         "efficiency_type_ap": MessageLookupByLibrary.simpleMessage("20AP效率"),

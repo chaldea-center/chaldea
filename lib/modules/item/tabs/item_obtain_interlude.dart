@@ -66,7 +66,8 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
     return SimpleAccordion(
       headerBuilder: (context, expanded) {
         return CustomTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           leading: db.getIconImage(svt.icon, width: 40),
           subtitle: Row(
             children: [

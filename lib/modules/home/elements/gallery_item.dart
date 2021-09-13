@@ -1,9 +1,9 @@
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/buff_filter/buff_page.dart';
 import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/craft/craft_list_page.dart';
 import 'package:chaldea/modules/damage_calc/damage_calc_page.dart';
 import 'package:chaldea/modules/debug/theme_palette.dart';
+import 'package:chaldea/modules/effect_search/effect_search_page.dart';
 import 'package:chaldea/modules/enemy/enemy_list_page.dart';
 import 'package:chaldea/modules/event/events_page.dart';
 import 'package:chaldea/modules/extras/ap_calc_page.dart';
@@ -164,7 +164,7 @@ class GalleryItem {
     name: 'effect_search',
     titleBuilder: () => S.current.effect_search,
     icon: FontAwesomeIcons.searchengin,
-    page: BuffFilterPage(),
+    page: EffectSearchPage(),
     isDetail: false,
   );
   static GalleryItem costume = GalleryItem(

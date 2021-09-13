@@ -26,7 +26,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
         getGroup(header: S.of(context).filter_sort, children: [
           FilterGroup(
             useRadio: true,
-            padding: EdgeInsets.only(right: 12),
+            padding: const EdgeInsets.only(right: 12),
             options: const ['List', 'Grid'],
             values: filterData.display,
             combined: true,
@@ -84,7 +84,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
           },
         ),
         FilterGroup(
-          title: Text('Status'),
+          title: const Text('Status'),
           options: const ['0', '1', '2'],
           values: filterData.status,
           optionBuilder: (v) {

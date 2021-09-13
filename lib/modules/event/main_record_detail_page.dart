@@ -83,7 +83,6 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage>
 
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         title: AutoSizeText(
           widget.record.localizedName,
           maxLines: 1,
@@ -112,7 +111,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage>
   Widget get floatingActionButton {
     return FloatingActionButton(
       // backgroundColor: Theme.of(context).colorScheme.secondary.withAlpha(160),
-      child: Icon(Icons.archive_outlined),
+      child: const Icon(Icons.archive_outlined),
       tooltip: S.of(context).event_collect_items,
       onPressed: () {
         final plan = db.curUser.events.mainRecordOf(widget.record.indexKey);

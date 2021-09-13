@@ -102,16 +102,13 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: BackButton(),
-        title: Text('羁绊详情'),
-      ),
+      appBar: AppBar(title: const Text('羁绊详情')),
       body: Column(
         children: [
           ListTile(
             leading: db.getIconImage(null,
                 aspectRatio: 132 / 144,
-                padding: EdgeInsets.symmetric(vertical: 4)),
+                padding: const EdgeInsets.symmetric(vertical: 4)),
             tileColor: Theme.of(context).cardColor,
             title: Row(
               children: [
@@ -120,7 +117,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                     child: Align(
                       alignment: Alignment.center,
                       child: TextButton(
-                        child: Text('Rank'),
+                        child: const Text('Rank'),
                         onPressed: () => onTouch(_SortType.bondRank),
                       ),
                     )),
@@ -129,7 +126,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        child: Text('Total'),
+                        child: const Text("Total"),
                         onPressed: () => onTouch(_SortType.bondTotal),
                       ),
                     )),
@@ -138,7 +135,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        child: Text('Next'),
+                        child: const Text('Next'),
                         onPressed: () => onTouch(_SortType.bondNext),
                       ),
                     )),
@@ -164,7 +161,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                                 maxLines: 1,
                                 maxFontSize: 14,
                                 minFontSize: 6,
-                                style: TextStyle(fontFamily: kMonoFont),
+                                style: kMonoStyle,
                               ),
                             )),
                         Expanded(
@@ -173,13 +170,14 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                               alignment: Alignment.centerRight,
                               child: Container(
                                 color: Theme.of(context).highlightColor,
-                                padding: EdgeInsets.symmetric(horizontal: 4),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 4),
                                 child: AutoSizeText(
                                   formatNumber(collection.friendship),
                                   maxLines: 1,
                                   maxFontSize: 14,
                                   minFontSize: 6,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontFamily: kMonoFont,
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -194,7 +192,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                                 maxLines: 1,
                                 maxFontSize: 14,
                                 minFontSize: 6,
-                                style: TextStyle(fontFamily: kMonoFont),
+                                style: const TextStyle(fontFamily: kMonoFont),
                               ),
                             )),
                       ],
@@ -210,7 +208,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
               DropdownButton<_SortType>(
                 value: sortType,
                 items: [
-                  DropdownMenuItem(
+                  const DropdownMenuItem(
                     child: Text('No.'),
                     value: _SortType.no,
                   ),
@@ -222,15 +220,15 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                     child: Text(S.current.filter_sort_rarity),
                     value: _SortType.rarity,
                   ),
-                  DropdownMenuItem(
+                  const DropdownMenuItem(
                     child: Text('羁绊等级'),
                     value: _SortType.bondRank,
                   ),
-                  DropdownMenuItem(
+                  const DropdownMenuItem(
                     child: Text('总羁绊值'),
                     value: _SortType.bondTotal,
                   ),
-                  DropdownMenuItem(
+                  const DropdownMenuItem(
                     child: Text('升级所需羁绊值'),
                     value: _SortType.bondNext,
                   ),

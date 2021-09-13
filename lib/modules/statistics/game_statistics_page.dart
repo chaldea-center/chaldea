@@ -6,7 +6,7 @@ import 'package:chaldea/modules/shared/list_page_share.dart';
 import 'statistics_servant_tab.dart';
 
 class GameStatisticsPage extends StatefulWidget {
-  const GameStatisticsPage({Key? key}) : super(key: key);
+  GameStatisticsPage({Key? key}) : super(key: key);
 
   @override
   _GameStatisticsPageState createState() => _GameStatisticsPageState();
@@ -62,7 +62,8 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
         body: TabBarView(
           controller: _tabController,
           // pie chart relate
-          physics: PlatformU.isAndroid ? NeverScrollableScrollPhysics() : null,
+          physics:
+              PlatformU.isAndroid ? const NeverScrollableScrollPhysics() : null,
           children: [
             KeepAliveBuilder(builder: (context) => StatItemDemandsTab()),
             KeepAliveBuilder(builder: (context) => StatItemConsumedTab()),
@@ -75,7 +76,7 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
 }
 
 class StatItemConsumedTab extends StatefulWidget {
-  const StatItemConsumedTab({Key? key}) : super(key: key);
+  StatItemConsumedTab({Key? key}) : super(key: key);
 
   @override
   _StatItemConsumedTabState createState() => _StatItemConsumedTabState();
@@ -103,7 +104,7 @@ class _StatItemConsumedTabState extends State<StatItemConsumedTab> {
     calculateItem();
     return ListView(
       controller: _scrollController,
-      padding: EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
         Wrap(
           spacing: 6,
@@ -166,7 +167,7 @@ class _StatItemConsumedTabState extends State<StatItemConsumedTab> {
 }
 
 class StatItemDemandsTab extends StatefulWidget {
-  const StatItemDemandsTab({Key? key}) : super(key: key);
+  StatItemDemandsTab({Key? key}) : super(key: key);
 
   @override
   _StatItemDemandsTabState createState() => _StatItemDemandsTabState();
@@ -195,7 +196,7 @@ class _StatItemDemandsTabState extends State<StatItemDemandsTab> {
     calculateItem();
     return ListView(
       controller: _scrollController,
-      padding: EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
         Wrap(
           spacing: 6,

@@ -35,10 +35,10 @@ class LevelingCostPageState extends State<LevelingCostPage> {
     final size = MediaQuery.of(context).size;
     return AlertDialog(
       contentPadding: EdgeInsets.zero,
-      titlePadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      titlePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       title: Text(
         widget.title,
-        style: TextStyle(fontSize: 16),
+        style: const TextStyle(fontSize: 16),
       ),
       content: SizedBox(
         width: min(380, size.width * 0.8),
@@ -63,7 +63,7 @@ class LevelingCostPageState extends State<LevelingCostPage> {
         ),
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text('OK'),
+          child: const Text('OK'),
         )
       ],
     );
@@ -71,7 +71,7 @@ class LevelingCostPageState extends State<LevelingCostPage> {
 
   Widget buildOneLevel(String title, Map<String, int> lvCost) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 3),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -82,18 +82,18 @@ class LevelingCostPageState extends State<LevelingCostPage> {
                 ? Text(LocalizedText.of(
                     chs: '不消耗素材', jpn: '素材消費なし', eng: 'No item consumption'))
                 : null,
-            contentPadding: EdgeInsets.symmetric(horizontal: 0),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 0),
           ),
           if (lvCost.isNotEmpty)
             GridView.count(
               crossAxisCount: 6,
               childAspectRatio: 132 / 144,
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               children: lvCost.entries
                   .map((entry) => Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 2, vertical: 2),
                         child: ImageWithText(
                           image: Item.iconBuilder(
                               context: context, itemKey: entry.key),

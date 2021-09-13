@@ -2,7 +2,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:flutter/gestures.dart';
 
 class SupportPartyPage extends StatefulWidget {
-  const SupportPartyPage({Key? key}) : super(key: key);
+  SupportPartyPage({Key? key}) : super(key: key);
 
   @override
   _SupportPartyPageState createState() => _SupportPartyPageState();
@@ -46,7 +46,7 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
               child: partyCanvas,
             ),
           ),
-          Expanded(
+          const Expanded(
             flex: 10,
             child: Text('haha'),
           ),
@@ -66,13 +66,13 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
       controller: _scrollController,
       isAlwaysShown: true,
       thickness: 10,
-      radius: Radius.circular(5),
+      radius: const Radius.circular(5),
       interactive: true,
       child: ListView(
         controller: _scrollController,
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
-        padding: EdgeInsets.only(bottom: 15),
+        padding: const EdgeInsets.only(bottom: 15),
         children: [
           for (final setUp in setUps)
             Column(
@@ -106,7 +106,7 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
         alignment: Alignment.topCenter,
         children: [
           located(
-            child: CachedImage(
+            child: const CachedImage(
               imageUrl: 'flame_bg_gold.png',
               isMCFile: true,
               cachedOption: CachedImageOption(fit: BoxFit.fill),
@@ -119,7 +119,7 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
           ),
           // _OneSupportWithGesture(setUp: setUp),
           located(
-            child: IgnorePointer(
+            child: const IgnorePointer(
               child: CachedImage(
                 imageUrl: 'flame_gold.png',
                 isMCFile: true,
@@ -127,7 +127,7 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
               ),
             ),
           ),
-          Positioned(
+          const Positioned(
             left: 5,
             top: 5,
             width: 90,
@@ -152,7 +152,7 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
               text: '90',
               shadowSize: 8,
               shadowColor: Colors.black54,
-              textStyle: TextStyle(
+              textStyle: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 34,
@@ -166,12 +166,12 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 db.getIconImage('宝具强化', width: 36),
-                SizedBox(width: 5),
+                const SizedBox(width: 5),
                 ImageWithText.paintOutline(
                   text: '5',
                   shadowSize: 8,
                   shadowColor: Colors.black54,
-                  textStyle: TextStyle(
+                  textStyle: const TextStyle(
                     color: Color.fromARGB(255, 240, 240, 240),
                     fontWeight: FontWeight.bold,
                     fontSize: 34,
@@ -187,7 +187,7 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
               text: '10 / 10 / 10',
               shadowSize: 6,
               shadowColor: Colors.black38,
-              textStyle: TextStyle(
+              textStyle: const TextStyle(
                 color: Color.fromARGB(255, 240, 240, 240),
                 fontWeight: FontWeight.bold,
                 fontSize: 26,
@@ -202,7 +202,7 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
               text: '10 / 10 / 10',
               shadowSize: 6,
               shadowColor: Colors.black38,
-              textStyle: TextStyle(
+              textStyle: const TextStyle(
                 color: Color.fromARGB(255, 240, 240, 240),
                 fontWeight: FontWeight.bold,
                 fontSize: 26,
@@ -296,8 +296,9 @@ class __OneSupportWithGestureState extends State<_OneSupportWithGesture> {
                 scale: setUp.scale,
                 child: setUp.cached
                     ? CachedImage(
-                        imageUrl: setUp.imgPath,
-                        cachedOption: CachedImageOption(fit: BoxFit.cover),
+                  imageUrl: setUp.imgPath,
+                        cachedOption:
+                            const CachedImageOption(fit: BoxFit.cover),
                       )
                     : Image.file(
                         File(setUp.imgPath!),

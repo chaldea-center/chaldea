@@ -15,17 +15,17 @@ mixin CommonBuilder {
       childAspectRatio: childAspectRatio,
       crossAxisCount: crossCount,
       shrinkWrap: true,
-      physics: scrollable ? null : NeverScrollableScrollPhysics(),
+      physics: scrollable ? null : const NeverScrollableScrollPhysics(),
       children: data.entries
           .map((entry) => Padding(
-                padding: EdgeInsets.symmetric(vertical: 2, horizontal: 1),
+                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 1),
                 child: ImageWithText(
                   onTap: onTap == null ? null : () => onTap(entry.key),
                   image: db.getIconImage(entry.key),
                   text: entry.key == Items.qp && entry.value is int
                       ? formatNumber(entry.value, compact: true)
                       : entry.value.toString(),
-                  padding: EdgeInsets.symmetric(horizontal: 3),
+                  padding: const EdgeInsets.symmetric(horizontal: 3),
                 ),
               ))
           .toList(),
@@ -73,7 +73,7 @@ Widget buildClassifiedItemList({
       return ImageWithText(
         image: Item.iconBuilder(context: context, itemKey: item.name),
         text: formatNumber(data[item.name]!, compact: compactNum),
-        padding: EdgeInsets.only(right: 3),
+        padding: const EdgeInsets.only(right: 3),
       );
     }).toList();
     children.add(LayoutBuilder(builder: (context, constraints) {
@@ -85,7 +85,7 @@ Widget buildClassifiedItemList({
       }
       return TileGroup(
         header: Item.getNameOfCategory(key ~/ 10, key % 10),
-        padding: EdgeInsets.only(bottom: 0),
+        padding: const EdgeInsets.only(bottom: 0),
         children: <Widget>[
           buildGridIcons(
             context: context,
@@ -111,7 +111,7 @@ Widget buildGridIcons({
 }) {
   if (children.isEmpty) return Container();
   children = children
-      .map((e) => Padding(padding: EdgeInsets.all(2), child: e))
+      .map((e) => Padding(padding: const EdgeInsets.all(2), child: e))
       .toList();
   if (crossCount == null) {
     return LayoutBuilder(builder: (context, constraints) {
@@ -119,21 +119,21 @@ Widget buildGridIcons({
           ? 7
           : constraints.maxWidth ~/ minWidth;
       return GridView.count(
-        padding: EdgeInsets.only(left: 16, top: 3, bottom: 3, right: 10),
+        padding: const EdgeInsets.only(left: 16, top: 3, bottom: 3, right: 10),
         childAspectRatio: 132 / 144,
         crossAxisCount: count,
         shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         children: children,
       );
     });
   } else {
     return GridView.count(
-      padding: EdgeInsets.only(left: 16, top: 3, bottom: 3, right: 10),
+      padding: const EdgeInsets.only(left: 16, top: 3, bottom: 3, right: 10),
       childAspectRatio: 132 / 144,
       crossAxisCount: crossCount,
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       children: children,
     );
   }

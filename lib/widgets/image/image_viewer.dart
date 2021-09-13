@@ -91,7 +91,7 @@ class CachedImage extends StatefulWidget {
           child: SizedBox(
             width: width,
             height: width,
-            child: Center(child: CircularProgressIndicator()),
+            child: const Center(child: CircularProgressIndicator()),
           ),
         );
       },
@@ -101,7 +101,7 @@ class CachedImage extends StatefulWidget {
   static Widget defaultErrorWidget(
       BuildContext context, String? url, dynamic error) {
     return Padding(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: Image(image: db.errorImage),
     );
   }
@@ -236,8 +236,9 @@ class _CachedImageState extends State<CachedImage> {
             if (!mounted) return;
             // some sha1 hash value for same data
             String fn =
-                Uuid().v5(Uuid.NAMESPACE_URL, sha1.convert(data).toString()) +
-                    '.png';
+                const Uuid()
+                    .v5(Uuid.NAMESPACE_URL, sha1.convert(data).toString()) +
+                '.png';
             ImageActions.showSaveShare(
               context: context,
               data: data,
@@ -362,7 +363,7 @@ class __FadeInState extends State<_FadeIn> {
     });
     return AnimatedOpacity(
       opacity: opacity!,
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
       child: widget.child,
       onEnd: () {
         if (mounted) {

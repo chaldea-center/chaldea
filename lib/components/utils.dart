@@ -320,7 +320,7 @@ Future<void> jumpToExternalLinkAlert(
     builder: (context) => SimpleCancelOkDialog(
       title: Text(S.of(context).jump_to(name ?? S.of(context).link)),
       content: Text(shownLink,
-          style: TextStyle(decoration: TextDecoration.underline)),
+          style: const TextStyle(decoration: TextDecoration.underline)),
       onTapOk: () async {
         String link = safeLink ?? url;
         if (await canLaunch(link)) {
@@ -335,7 +335,7 @@ Future<void> jumpToExternalLinkAlert(
 
 bool checkEventOutdated(
     {DateTime? timeJp, DateTime? timeCn, Duration? duration}) {
-  duration ??= Duration(days: 27);
+  duration ??= const Duration(days: 27);
   if (db.curUser.msProgress == -1 || db.curUser.msProgress == -2) {
     return DateTime.now().checkOutdated(timeCn, duration);
   } else {
@@ -422,7 +422,7 @@ class Utils {
     });
   }
 
-  static KanaKit kanaKit = KanaKit();
+  static KanaKit kanaKit = const KanaKit();
 
   /// To lowercase alphabet:
   ///   * Chinese->Pinyin

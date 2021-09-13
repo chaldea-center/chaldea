@@ -139,7 +139,7 @@ class AutoUpdateUtil {
       if (curRelease.tagName.startsWith('-') ||
           latestRelease.tagName.startsWith('-')) {
         // TODO: debugging tagName
-        Future.delayed(Duration(seconds: 2), () async {
+        Future.delayed(const Duration(seconds: 2), () async {
           try {
             final response = await HttpUtils.defaultDio.get(
                 '$kServerRoot/githubapi/repos/chaldea-center/chaldea-dataset/releases',
@@ -300,7 +300,7 @@ class AutoUpdateUtil {
           launch(release!.htmlUrl!); // or open download url
           return;
         }
-        await Future.delayed(Duration(milliseconds: 300));
+        await Future.delayed(const Duration(milliseconds: 300));
         EasyLoading.showToast(LocalizedText.of(
             chs: '后台下载中...',
             jpn: 'バックグラウンドでダウンロード...',
@@ -323,7 +323,7 @@ class AutoUpdateUtil {
         // do nothing
       } else {
         SimpleCancelOkDialog(
-          title: Text('Error'),
+          title: const Text('Error'),
           content: Text('$e\n$s'),
         ).showDialog(null);
       }
@@ -375,13 +375,13 @@ class AutoUpdateUtil {
   static Future<void> alertReload({bool pop = true}) async {
     await SimpleCancelOkDialog(
       title: Text(S.current.update_dataset),
-      content: Text('Ready to reload dataset'),
+      content: const Text('Ready to reload dataset'),
       hideCancel: true,
     ).showDialog(null, barrierDismissible: false);
     if (pop) {
       Navigator.of(kAppKey.currentContext!).popUntil((route) => route.isFirst);
     }
-    await Future.delayed(Duration(milliseconds: 600));
+    await Future.delayed(const Duration(milliseconds: 600));
   }
 
   static Future<bool?> _showDialog({
@@ -419,14 +419,14 @@ class AutoUpdateUtil {
           ),
         if (PlatformU.isAndroid)
           TextButton(
-            child: Text('Google Play'),
+            child: const Text('Google Play'),
             onPressed: () {
               launch(kGooglePlayLink);
             },
           ),
         if (PlatformU.isIOS || PlatformU.isMacOS)
           TextButton(
-            child: Text('App Store'),
+            child: const Text('App Store'),
             onPressed: () {
               launch(kAppStoreLink);
             },
@@ -469,7 +469,7 @@ class AutoUpdateUtil {
   }
 
   static Future<void> _installUpdate(String fp) async {
-    await Future.delayed(Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 500));
     if (PlatformU.isAndroid) {
       final result = await OpenFile.open(fp);
       print('open result: ${result.type}, ${result.message}');
@@ -498,7 +498,7 @@ class AutoUpdateUtil {
               basename(element.path).toLowerCase() == 'chaldea.exe')
           ?.path;
       if (exeFp == null) {
-        throw OSError('file chaldea.exe not found');
+        throw const OSError('file chaldea.exe not found');
       }
 
       String srcDir = absolute(dirname(exeFp));
@@ -520,7 +520,7 @@ class AutoUpdateUtil {
         scrollable: true,
         onTapOk: () async {
           db.saveUserData();
-          await Future.delayed(Duration(seconds: 1));
+          await Future.delayed(const Duration(seconds: 1));
           Process.start(cmdFp, ['>>"$logFp"', '2>&1'],
               mode: ProcessStartMode.detached);
         },

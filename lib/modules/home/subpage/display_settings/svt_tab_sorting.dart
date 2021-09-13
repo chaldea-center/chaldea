@@ -4,7 +4,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/servant/servant_detail_page.dart';
 
 class SvtTabsSortingSetting extends StatefulWidget {
-  const SvtTabsSortingSetting({Key? key}) : super(key: key);
+  SvtTabsSortingSetting({Key? key}) : super(key: key);
 
   @override
   _SvtTabsSortingSettingState createState() => _SvtTabsSortingSettingState();

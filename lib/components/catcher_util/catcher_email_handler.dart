@@ -130,7 +130,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
       }
 
       // wait a moment to let other handlers finish, e.g. FileHandler
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
 
       final message = Message()
         ..from = Address(senderEmail, senderName)
@@ -146,7 +146,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
       }
       _printLog("Sending email...");
       if (Analyzer.skipReport()) {
-        await Future.delayed(Duration(seconds: 2));
+        await Future.delayed(const Duration(seconds: 2));
       } else {
         var result = await send(message, _setupSmtpServer());
         _printLog("Email result: $result ");
@@ -219,7 +219,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
     Uint8List? shotBinary = await db.runtimeData.screenshotController?.capture(
       pixelRatio:
           MediaQuery.of(kAppKey.currentContext!).devicePixelRatio * 0.75,
-      delay: Duration(milliseconds: 500),
+      delay: const Duration(milliseconds: 500),
     );
     if (shotBinary == null) return null;
     final img = decodePng(shotBinary);
@@ -244,7 +244,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
   }
 
   Future<String> _setupHtmlMessageText(Report report) async {
-    final escape = HtmlEscape().convert;
+    final escape = const HtmlEscape().convert;
     StringBuffer buffer = StringBuffer("");
     if (emailHeader?.isNotEmpty == true) {
       buffer.write(escape(emailHeader!));

@@ -115,7 +115,7 @@ class ItemCostServantPage extends StatelessWidget {
         Widget avatar = svt.iconBuilder(
           context: context,
           text: formatNumber(num, compact: true, minVal: 10000),
-          textPadding: EdgeInsets.only(right: 2, bottom: 12),
+          textPadding: const EdgeInsets.only(right: 2, bottom: 12),
         );
         if (shouldHighlight) {
           avatar = Stack(
@@ -123,11 +123,11 @@ class ItemCostServantPage extends StatelessWidget {
             children: [
               avatar,
               Container(
-                padding: EdgeInsets.all(1.5),
+                padding: const EdgeInsets.all(1.5),
                 decoration: BoxDecoration(
                     color: Colors.blueAccent,
                     borderRadius: BorderRadius.circular(3)),
-                child: Icon(
+                child: const Icon(
                   Icons.favorite,
                   color: Colors.white,
                   size: 10,
@@ -155,7 +155,8 @@ class ItemCostServantPage extends StatelessWidget {
       }
       final svt = db.gameData.servantsWithUser[svtNo]!;
       bool _planned = db.curUser.svtStatusOf(svtNo).favorite;
-      final textStyle = _planned ? TextStyle(color: Colors.blueAccent) : null;
+      final textStyle =
+          _planned ? const TextStyle(color: Colors.blueAccent) : null;
       final ascensionNum = details.ascension[itemKey]?[svtNo] ?? 0,
           skillNum = details.skill[itemKey]?[svtNo] ?? 0,
           dressNum = details.dress[itemKey]?[svtNo] ?? 0,
@@ -170,7 +171,7 @@ class ItemCostServantPage extends StatelessWidget {
               : '$allNum($ascensionNum/$skillNum/$dressNum/$appendNum)',
           style: textStyle,
         ),
-        trailing: Icon(Icons.arrow_forward_ios),
+        trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () {
           SplitRoute.push(context, ServantDetailPage(svt));
         },

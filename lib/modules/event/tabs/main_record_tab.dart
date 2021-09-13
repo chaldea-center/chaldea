@@ -56,7 +56,7 @@ class _MainRecordTabState extends State<MainRecordTab> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(S.of(context).main_record_fixed_drop),
-              Padding(padding: EdgeInsets.only(right: 6)),
+              const SizedBox(width: 6),
               Text(S.of(context).main_record_bonus)
             ],
           ),
@@ -68,7 +68,7 @@ class _MainRecordTabState extends State<MainRecordTab> {
               controller: _scrollController,
               itemCount: mainRecords.length,
               separatorBuilder: (context, index) =>
-                  Divider(height: 1, indent: 16),
+                  const Divider(height: 1, indent: 16),
               itemBuilder: (context, index) {
                 final record = mainRecords[index];
                 final plan = db.curUser.events.mainRecordOf(record.indexKey);
@@ -86,7 +86,8 @@ class _MainRecordTabState extends State<MainRecordTab> {
                     record.localizedChapter,
                     maxLines: 1,
                     maxFontSize: 16,
-                    style: outdated ? TextStyle(color: Colors.grey) : null,
+                    style:
+                        outdated ? const TextStyle(color: Colors.grey) : null,
                   );
                   subtitle = AutoSizeText(
                     record.localizedTitle,

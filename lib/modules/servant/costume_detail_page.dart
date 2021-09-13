@@ -18,7 +18,7 @@ class CostumeDetailPage extends StatelessWidget {
     ];
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
+        leading: const BackButton(),
         title: AutoSizeText(costume.lName, minFontSize: 10, maxLines: 1),
         titleSpacing: 0,
       ),
@@ -30,7 +30,7 @@ class CostumeDetailPage extends StatelessWidget {
                 TableCellData(
                   child: db.getIconImage(costume.icon, height: 90),
                   flex: 1,
-                  padding: EdgeInsets.all(3),
+                  padding: const EdgeInsets.all(3),
                 ),
                 TableCellData(
                   flex: 3,
@@ -42,7 +42,7 @@ class CostumeDetailPage extends StatelessWidget {
                         TableCellData(
                           child: Text(
                             costume.name,
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
                           isHeader: true,
@@ -84,7 +84,7 @@ class CostumeDetailPage extends StatelessWidget {
             CustomTableRow(children: [
               TableCellData(
                 child: costume.itemCost.isEmpty
-                    ? Text('-')
+                    ? const Text('-')
                     : Wrap(
                         spacing: 4,
                         runSpacing: 2,
@@ -114,7 +114,8 @@ class CostumeDetailPage extends StatelessWidget {
                   TableCellData(
                     text: costume.descriptionJp,
                     alignment: Alignment.centerLeft,
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                   )
                 ],
               ),
@@ -124,7 +125,8 @@ class CostumeDetailPage extends StatelessWidget {
                   TableCellData(
                     text: costume.description,
                     alignment: Alignment.centerLeft,
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                   )
                 ],
               ),

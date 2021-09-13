@@ -3,7 +3,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/servant/costume_detail_page.dart';
 
 class CostumeListPage extends StatefulWidget {
-  const CostumeListPage({Key? key}) : super(key: key);
+  CostumeListPage({Key? key}) : super(key: key);
 
   @override
   _CostumeListPageState createState() => _CostumeListPageState();
@@ -24,7 +24,7 @@ class _CostumeListPageState
     return scrollListener(
       useGrid: useGrid,
       appBar: AppBar(
-        leading: MasterBackButton(),
+        leading: const MasterBackButton(),
         title: AutoSizeText(
           S.current.costume,
           maxLines: 1,
@@ -70,7 +70,7 @@ class _CostumeListPageState
   @override
   Widget gridItemBuilder(Costume costume) {
     return Padding(
-      padding: EdgeInsets.all(3),
+      padding: const EdgeInsets.all(3),
       child: ImageWithText(
         image: db.getIconImage(costume.icon, aspectRatio: 132 / 144),
         onTap: () {
@@ -86,7 +86,7 @@ class _CostumeListPageState
       leading: db.getIconImage(
         costume.icon,
         aspectRatio: 132 / 144,
-        // padding: EdgeInsets.symmetric(vertical: 0),
+        // padding: const EdgeInsets.symmetric(vertical: 0),
       ),
       title: Text(costume.lName),
       subtitle: Text(

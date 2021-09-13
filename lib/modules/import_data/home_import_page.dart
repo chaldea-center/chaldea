@@ -7,7 +7,7 @@ import 'package:chaldea/modules/import_data/import_item_screenshot_page.dart';
 import 'package:chaldea/modules/import_data/import_skill_screenshot_page.dart';
 
 class ImportPageHome extends StatefulWidget {
-  const ImportPageHome({Key? key}) : super(key: key);
+  ImportPageHome({Key? key}) : super(key: key);
 
   @override
   _ImportPageHomeState createState() => _ImportPageHomeState();
@@ -18,7 +18,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: MasterBackButton(),
+        leading: const MasterBackButton(),
         title: Text(S.current.import_data),
       ),
       body: ListView(
@@ -28,17 +28,17 @@ class _ImportPageHomeState extends State<ImportPageHome> {
                 child: Text(S.current.cur_account + ': ' + db.curUser.name)),
           ),
           ListTile(
-            leading: Icon(Icons.settings_backup_restore),
+            leading: const Icon(Icons.settings_backup_restore),
             title: Text(LocalizedText.of(
                 chs: '本应用的备份', jpn: 'このアプリのバックアップ', eng: 'Chaldea App Backup')),
-            subtitle: Text('userdata.json/*.json'),
-            trailing: Icon(Icons.keyboard_arrow_right),
+            subtitle: const Text('userdata.json/*.json'),
+            trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
               SplitRoute.push(context, UserDataPage());
             },
           ),
           ListTile(
-            leading: Icon(Icons.http),
+            leading: const Icon(Icons.http),
             title: Text(LocalizedText.of(
                 chs: 'HTTPS抓包', jpn: 'HTTPSスニッフィング', eng: 'HTTPS Sniffing')),
             subtitle: Text(LocalizedText.of(
@@ -46,13 +46,13 @@ class _ImportPageHomeState extends State<ImportPageHome> {
                 jpn: '（中国サーバのみ）アカウントがログインしているときにデータを取得する',
                 eng:
                     '(CN server only) Capture the data when the account is logging in')),
-            trailing: Icon(Icons.keyboard_arrow_right),
+            trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
               SplitRoute.push(context, ImportHttpPage(), popDetail: true);
             },
           ),
           ListTile(
-            leading: Icon(Icons.screenshot),
+            leading: const Icon(Icons.screenshot),
             title: Text(LocalizedText.of(
                 chs: '素材截图解析',
                 jpn: 'アイテムのスクリーンショット',
@@ -61,7 +61,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
                 chs: '个人空间 - 道具一览',
                 jpn: 'マイルーム - 所持アイテム一覧',
                 eng: 'My Room - Item List')),
-            trailing: Icon(Icons.keyboard_arrow_right),
+            trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
               SplitRoute.push(
                 context,
@@ -71,7 +71,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.screenshot),
+            leading: const Icon(Icons.screenshot),
             title: Text(LocalizedText.of(
                 chs: '主动技能截图解析',
                 jpn: '保有スキルのスクリーンショット',
@@ -80,7 +80,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
                 chs: '强化 - 从者技能强化',
                 jpn: '強化 - サーヴァントスキル強化 ',
                 eng: 'Enhance - Skill')),
-            trailing: Icon(Icons.keyboard_arrow_right),
+            trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
               SplitRoute.push(
                 context,
@@ -90,7 +90,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.screenshot),
+            leading: const Icon(Icons.screenshot),
             title: Text(LocalizedText.of(
                 chs: '附加技能截图解析',
                 jpn: 'アペンドスキルのスクリーンショット',
@@ -99,7 +99,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
                 chs: '强化 - 被动技能强化',
                 jpn: '強化 - アペンドスキル強化 ',
                 eng: 'Enhance - Append Skill')),
-            trailing: Icon(Icons.keyboard_arrow_right),
+            trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
               SplitRoute.push(
                 context,
@@ -109,19 +109,19 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.compare_arrows),
+            leading: const Icon(Icons.compare_arrows),
             title: Text(LocalizedText.of(
                 chs: 'Guda数据', jpn: 'Gudaデータ', eng: 'Guda Data')),
-            trailing: Icon(Icons.keyboard_arrow_right),
+            trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
               SplitRoute.push(context, ImportGudaPage(), popDetail: true);
             },
           ),
           ListTile(
-            leading: Icon(Icons.compare_arrows),
-            title: Text('FGO Simulator-Material'),
-            subtitle: Text('http://fgosimulator.webcrow.jp/Material/'),
-            trailing: Icon(Icons.keyboard_arrow_right),
+            leading: const Icon(Icons.compare_arrows),
+            title: const Text('FGO Simulator-Material'),
+            subtitle: const Text('http://fgosimulator.webcrow.jp/Material/'),
+            trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
               SplitRoute.push(context, ImportFgoSimuMaterialPage(),
                   popDetail: true);

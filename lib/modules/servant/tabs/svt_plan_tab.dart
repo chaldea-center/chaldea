@@ -64,7 +64,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           children: <Widget>[
             buildPlanRow(
               useSlider: sliderMode,
-              leading: SizedBox(
+              leading: const SizedBox(
                 width: 33,
                 height: 33,
                 child: Center(
@@ -409,7 +409,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         children: <Widget>[
           Expanded(
             child: ListView(
-              padding: EdgeInsets.only(bottom: 16),
+              padding: const EdgeInsets.only(bottom: 16),
               children: children,
             ),
           ),
@@ -453,7 +453,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             showDialog(context: context, builder: detailPageBuilder),
       );
     } else {
-      trailingIcon = SizedBox(width: 16);
+      trailingIcon = const SizedBox(width: 16);
     }
     if (useSlider) {
       Widget slider;
@@ -481,31 +481,32 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         );
       }
       return CustomTile(
-        contentPadding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+        contentPadding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
         titlePadding: EdgeInsets.zero,
         leading: leading,
         title: title == null
             ? null
             : Padding(
-                padding: EdgeInsets.only(left: 6, top: 4),
+                padding: const EdgeInsets.only(left: 6, top: 4),
                 child: AutoSizeText(title, maxLines: 1),
               ),
         subtitle: SliderTheme(
           data: SliderThemeData(
             trackHeight: 2,
-            valueIndicatorShape: PaddleSliderValueIndicatorShape(),
-            rangeValueIndicatorShape: PaddleRangeSliderValueIndicatorShape(),
+            valueIndicatorShape: const PaddleSliderValueIndicatorShape(),
+            rangeValueIndicatorShape:
+                const PaddleRangeSliderValueIndicatorShape(),
             rangeTickMarkShape:
-                RoundRangeSliderTickMarkShape(tickMarkRadius: 1.2),
-            tickMarkShape: RoundSliderTickMarkShape(tickMarkRadius: 1.2),
+                const RoundRangeSliderTickMarkShape(tickMarkRadius: 1.2),
+            tickMarkShape: const RoundSliderTickMarkShape(tickMarkRadius: 1.2),
             activeTickMarkColor: Colors.grey[200],
-            thumbShape: RoundSliderThumbShape(enabledThumbRadius: 6),
-            rangeThumbShape: RoundRangeSliderThumbShape(enabledThumbRadius: 6),
+            thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
+            rangeThumbShape:
+                const RoundRangeSliderThumbShape(enabledThumbRadius: 6),
           ),
           child: SizedBox(height: 23, child: slider),
         ),
-        trailing: Text(trailingLabelFormatter(start, end),
-            style: TextStyle(fontFamily: kMonoFont)),
+        trailing: Text(trailingLabelFormatter(start, end), style: kMonoStyle),
         trailingIcon: trailingIcon,
       );
     } else {
@@ -542,7 +543,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         );
       }
       return CustomTile(
-        contentPadding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+        contentPadding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
         leading: leading,
         title: title == null ? null : AutoSizeText(title, maxLines: 1),
         subtitle: subtitle == null
@@ -571,7 +572,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
               final code = db.gameData.cmdCodes[status.equipCmdCodes[index]];
               return TableRow(children: [
                 db.getIconImage(svt.info.cards[index],
-                    height: 48, padding: EdgeInsets.all(4)),
+                    height: 48, padding: const EdgeInsets.all(4)),
                 InkWell(
                   onTap: () async {
                     await SplitRoute.push(
@@ -590,10 +591,10 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                   child: db.getIconImage(code?.icon ?? '未知技能',
                       height: 48,
                       aspectRatio: 132 / 144,
-                      padding: EdgeInsets.all(4)),
+                      padding: const EdgeInsets.all(4)),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(4),
+                  padding: const EdgeInsets.all(4),
                   child: Text(
                     code?.lSkill ?? '',
                     style: Theme.of(context).textTheme.caption,
@@ -605,7 +606,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                       status.equipCmdCodes[index] = null;
                     });
                   },
-                  icon: Icon(Icons.remove_circle_outline, size: 18),
+                  icon: const Icon(Icons.remove_circle_outline, size: 18),
                   tooltip: 'Remove',
                 )
               ]);
@@ -617,7 +618,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
               3: FixedColumnWidth(32)
             },
             border: TableBorder.all(
-                color: Color.fromRGBO(162, 169, 177, 1), width: 0.25),
+                color: const Color.fromRGBO(162, 169, 177, 1), width: 0.25),
           ),
         ),
       ],
@@ -660,7 +661,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             ),
           ).showDialog(context);
         },
-        icon: Icon(Icons.info_outline),
+        icon: const Icon(Icons.info_outline),
         tooltip: S.current.item_total_demand,
       ));
       buttons.add(ElevatedButton(
@@ -689,7 +690,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     buttons.add(DropdownButton(
       value:
           skillLvEqual ? (enhanceMode ? targetPlan : curVal).skills[0] : null,
-      hint: Text('Lv. ≠'),
+      hint: const Text('Lv. ≠'),
       items: List.generate(10,
           (i) => DropdownMenuItem(value: i + 1, child: Text('Lv. ${i + 1}'))),
       onChanged: _onAllSkillLv,
@@ -697,7 +698,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
 
     // max ↑
     buttons.add(IconButton(
-      icon: Icon(Icons.vertical_align_top),
+      icon: const Icon(Icons.vertical_align_top),
       tooltip: S.of(context).skilled_max10,
       onPressed: enhanceMode
           ? null
@@ -712,9 +713,10 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     buttons.add(Stack(
       alignment: AlignmentDirectional.bottomEnd,
       children: <Widget>[
-        Padding(padding: EdgeInsets.fromLTRB(0, 0, 8, 4), child: Text('9')),
+        const Padding(
+            padding: EdgeInsets.fromLTRB(0, 0, 8, 4), child: Text('9')),
         IconButton(
-          icon: Icon(Icons.trending_up),
+          icon: const Icon(Icons.trending_up),
           tooltip: S.of(context).plan_max9,
           onPressed: () {
             status.favorite = true;
@@ -739,9 +741,10 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     buttons.add(Stack(
       alignment: AlignmentDirectional.bottomEnd,
       children: <Widget>[
-        Padding(padding: EdgeInsets.fromLTRB(0, 0, 4, 4), child: Text('10')),
+        const Padding(
+            padding: EdgeInsets.fromLTRB(0, 0, 4, 4), child: Text('10')),
         IconButton(
-          icon: Icon(Icons.trending_up),
+          icon: const Icon(Icons.trending_up),
           tooltip: S.of(context).plan_max10,
           onPressed: () {
             status.favorite = true;
@@ -760,7 +763,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           fit: BoxFit.scaleDown,
           child: ButtonBar(
             children: buttons,
-            buttonPadding: EdgeInsets.symmetric(horizontal: 2),
+            buttonPadding: const EdgeInsets.symmetric(horizontal: 2),
           ),
         ),
       ),
@@ -791,7 +794,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         ),
         image: db.getIconImage(itemKey),
         text: formatNumber(number, compact: true),
-        padding: EdgeInsets.only(right: 3),
+        padding: const EdgeInsets.only(right: 3),
       ));
     });
     bool hasItem = sum(enhanceItems.values) > 0;
@@ -799,7 +802,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(S.of(context).enhance_warning),
-        contentPadding: EdgeInsets.symmetric(horizontal: 8),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8),
         content: SizedBox(
           width: defaultDialogWidth(context),
           child: hasItem
@@ -808,7 +811,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                   children: children,
                   crossCount: 5,
                 )
-              : ListTile(title: Text('Nothing')),
+              : const ListTile(title: Text('Nothing')),
         ),
         actions: [
           TextButton(

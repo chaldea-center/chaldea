@@ -36,7 +36,7 @@ mixin GameCardMixin {
   String get lName;
 
   Widget charactersToButtons(BuildContext context, List<String> characters) {
-    if (characters.isEmpty) return Text('-');
+    if (characters.isEmpty) return const Text('-');
     List<Widget> children = [];
     for (final name in characters) {
       final svt =
@@ -53,7 +53,7 @@ mixin GameCardMixin {
         ));
       }
     }
-    children = divideTiles(children, divider: Text('/'));
+    children = divideTiles(children, divider: const Text('/'));
     return Wrap(
       spacing: 4,
       runSpacing: 4,

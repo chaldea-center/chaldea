@@ -64,7 +64,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
+        leading: const BackButton(),
         title: AutoSizeText(
           summon.lName,
           maxLines: 1,
@@ -73,7 +73,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
         titleSpacing: 0,
         actions: [
           IconButton(
-            icon: Icon(Icons.replay),
+            icon: const Icon(Icons.replay),
             tooltip: S.current.reset,
             onPressed: reset,
           )
@@ -149,7 +149,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
                   chs: '仅供娱乐, 如有雷同, 纯属巧合',
                   jpn: '娯楽のみ',
                   eng: 'Just for entertainment'),
-              style: TextStyle(color: Colors.grey),
+              style: const TextStyle(color: Colors.grey),
             ),
           )
         ]))
@@ -206,7 +206,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
         trailing: Text(totalCount.toString()),
       ),
       contentBuilder: (context) => Padding(
-        padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
         child: Center(
           child: Wrap(children: counts),
         ),
@@ -221,16 +221,16 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
             SummonUtil.summonNameLocalize(e.name),
             maxLines: 2,
             maxFontSize: 14,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           value: summon.dataList.indexOf(e),
         )));
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 14),
+      padding: const EdgeInsets.symmetric(horizontal: 14),
       child: Row(
         children: [
           Text(LocalizedText.of(chs: '日替: ', jpn: '日替: ', eng: 'Daily: '),
-              style: TextStyle(color: Colors.redAccent)),
+              style: const TextStyle(color: Colors.redAccent)),
           Flexible(
             child: Container(
               decoration: BoxDecoration(
@@ -283,7 +283,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       });
     });
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -313,7 +313,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       rows.add(_buildRow(data.sublist(0, min(6, data.length))));
       if (data.length > 6) rows.add(_buildRow(data.sublist(6, data.length)));
       Widget child = Padding(
-        padding: EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         child: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -346,11 +346,11 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
                         _curHistory -= 1;
                       });
                     },
-              icon: Icon(Icons.keyboard_arrow_left),
+              icon: const Icon(Icons.keyboard_arrow_left),
             ),
             Expanded(
               child: ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: 128),
+                constraints: const BoxConstraints(maxHeight: 128),
                 child: AspectRatio(
                   aspectRatio: 5 / 2 * 132 / 144,
                   child: _buildOneHistory(history[_curHistory]),
@@ -365,7 +365,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
                         _curHistory += 1;
                       });
                     },
-              icon: Icon(Icons.keyboard_arrow_right),
+              icon: const Icon(Icons.keyboard_arrow_right),
             ),
           ],
         ),
@@ -373,7 +373,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           '${_curHistory + 1}/${history.length}',
           style: Theme.of(context).textTheme.caption,
         ),
-        Padding(padding: EdgeInsets.only(bottom: 6)),
+        const SizedBox(height: 6),
       ],
     );
   }
@@ -409,7 +409,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   Widget _summonButton(
       {required int times, required int quartz, required String iconKey}) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
       child: InkWell(
         onTap: () => startGacha(times, quartz),
         child: db.getIconImage(iconKey, height: 50),
@@ -422,8 +422,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       context: context,
       text: text,
       width: 48,
-      padding: EdgeInsets.all(3),
-      textPadding: EdgeInsets.only(right: 4, bottom: 4),
+      padding: const EdgeInsets.all(3),
+      textPadding: const EdgeInsets.only(right: 4, bottom: 4),
     );
   }
 

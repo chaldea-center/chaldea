@@ -26,7 +26,7 @@ class _CmdCodeFilterPageState extends FilterPageState<SummonFilterData> {
           value: filterData.showBanner,
           title: Text(
             LocalizedText.of(chs: '显示封面', jpn: '画像を表示', eng: 'Show Banner'),
-            style: TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16),
           ),
           onChanged: (v) {
             filterData.showBanner = v;
@@ -38,7 +38,7 @@ class _CmdCodeFilterPageState extends FilterPageState<SummonFilterData> {
           value: filterData.showOutdated,
           title: Text(
             S.current.show_outdated,
-            style: TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16),
           ),
           onChanged: (v) {
             filterData.showOutdated = v;

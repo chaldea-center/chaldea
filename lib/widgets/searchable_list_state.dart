@@ -82,7 +82,7 @@ abstract class SearchableListState<T, St extends StatefulWidget>
           }
         });
       },
-      icon: Icon(Icons.search),
+      icon: const Icon(Icons.search),
       tooltip: S.current.search,
     );
   }
@@ -104,7 +104,7 @@ abstract class SearchableListState<T, St extends StatefulWidget>
 
   PreferredSizeWidget? buttonBar;
 
-  final _onSearchTimer = DelayedTimer(Duration(milliseconds: 250));
+  final _onSearchTimer = DelayedTimer(const Duration(milliseconds: 250));
 
   Widget scrollListener({
     required bool useGrid,
@@ -120,9 +120,10 @@ abstract class SearchableListState<T, St extends StatefulWidget>
             padding:
                 EdgeInsets.only(bottom: buttonBar?.preferredSize.height ?? 0),
             child: FloatingActionButton(
-              child: Icon(Icons.arrow_upward),
+              child: const Icon(Icons.arrow_upward),
               onPressed: () => scrollController.animateTo(0,
-                  duration: Duration(milliseconds: 600), curve: Curves.easeOut),
+                  duration: const Duration(milliseconds: 600),
+                  curve: Curves.easeOut),
             ),
           ),
         ),
@@ -175,12 +176,12 @@ abstract class SearchableListState<T, St extends StatefulWidget>
         itemBuilder: (context, index) => children[index],
         separatorBuilder: (context, index) {
           if (index == 0 && topHint != null && children.contains(topHint)) {
-            return Divider(height: 1);
+            return const Divider(height: 1);
           }
           if (index == children.length - 2 &&
               topHint != null &&
               children.contains(bottomHint)) {
-            return Divider(height: 1);
+            return const Divider(height: 1);
           }
           return separator;
         },
@@ -209,7 +210,7 @@ abstract class SearchableListState<T, St extends StatefulWidget>
         controller: scrollController,
         crossAxisCount: count,
         childAspectRatio: childAspectRatio,
-        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
         children: children,
       );
     });
@@ -259,11 +260,11 @@ abstract class SearchableListState<T, St extends StatefulWidget>
 
   static Widget defaultHintBuilder(BuildContext context, String text) {
     return CustomTile(
-      contentPadding: EdgeInsets.symmetric(vertical: 2),
+      contentPadding: const EdgeInsets.symmetric(vertical: 2),
       subtitle: Center(
         child: Text(
           text,
-          style: TextStyle(color: Colors.grey, fontSize: 14),
+          style: const TextStyle(color: Colors.grey, fontSize: 14),
         ),
       ),
     );

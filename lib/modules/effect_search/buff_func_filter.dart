@@ -51,7 +51,7 @@ class _BuffFuncFilterState extends FilterPageState<BuffFuncFilterData> {
         getGroup(header: S.of(context).filter_sort, children: [
           FilterGroup(
             useRadio: true,
-            padding: EdgeInsets.only(right: 12),
+            padding: const EdgeInsets.only(right: 12),
             options: const ['List', 'Grid'],
             values: filterData.display,
             combined: true,
@@ -81,7 +81,7 @@ class _BuffFuncFilterState extends FilterPageState<BuffFuncFilterData> {
           options: FuncType.all.keys.toList(),
           values: filterData.funcType,
           optionBuilder: (s) => Text(FuncType.all[s]!.shownName),
-          title: Text('FuncType'),
+          title: const Text('FuncType'),
           showMatchAll: true,
           showInvert: true,
           showCollapse: true,
@@ -94,7 +94,7 @@ class _BuffFuncFilterState extends FilterPageState<BuffFuncFilterData> {
           options: BuffType.all.keys.toList(),
           values: filterData.buffType,
           optionBuilder: (s) => Text(BuffType.all[s]!.shownName),
-          title: Text('BuffType'),
+          title: const Text('BuffType'),
           showMatchAll: true,
           showInvert: true,
           showCollapse: true,

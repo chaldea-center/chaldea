@@ -53,7 +53,7 @@ class _MyMarkdownWidgetState extends State<MyMarkdownWidget> {
   Widget build(BuildContext context) {
     final data = widget.data ?? assetData;
     if (data == null) {
-      return Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator());
     }
     if (widget.scrollable) {
       return Markdown(
@@ -147,8 +147,8 @@ class MarkdownHelpPage extends StatefulWidget {
   }) async {
     final result = LocalizedText.of(
       chs: await _loadAsset(join(dir, asset)) ?? '',
-      jpn: await _loadAsset(assetJp ?? join(dir, 'jp', asset)),
-      eng: await _loadAsset(assetEn ?? join(dir, 'en', asset)),
+      jpn: await _loadAsset(join(dir, assetJp ?? join('jp', asset))),
+      eng: await _loadAsset(join(dir, assetEn ?? join('en', asset))),
     );
     if (lapse != null) {
       await Future.delayed(lapse);
@@ -162,6 +162,7 @@ class MarkdownHelpPage extends StatefulWidget {
     String? content;
     try {
       content = await rootBundle.loadString(assetKey);
+      print('load $assetKey');
     } catch (e) {
       content = null;
     }
@@ -178,7 +179,7 @@ class MarkdownHelpPage extends StatefulWidget {
           MarkdownHelpPage.localized(asset: asset),
         );
       },
-      icon: Icon(Icons.help_outline),
+      icon: const Icon(Icons.help_outline),
       tooltip: S.current.help,
     );
   }
@@ -233,7 +234,7 @@ class _MarkdownHelpPageState extends State<MarkdownHelpPage> {
         actions: widget.actions,
       ),
       body: _resolvedData == null
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : MyMarkdownWidget(data: _resolvedData, selectable: true),
     );
   }

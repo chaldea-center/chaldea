@@ -118,7 +118,7 @@ class Database {
     initiateFuncBuffInstances();
     await paths.initRootPath();
     cfg = LocalAppConfig(pathlib.join(paths.configDir, 'cfg.json'),
-        lapse: Duration(seconds: 3));
+        lapse: const Duration(seconds: 3));
     await WikiUtil.init();
     await AppInfo.resolve();
     await prefs.initiate();
@@ -158,7 +158,7 @@ class Database {
       EasyLoading.showToast('Load userdata failed\n$e');
       result = false;
     }
-    _autoSaveTimer = Timer.periodic(Duration(seconds: 30), (timer) {
+    _autoSaveTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
       String curData = jsonEncode(userData);
       if (_lastSavedUserData == null || curData != _lastSavedUserData) {
         saveUserData();
@@ -290,7 +290,7 @@ class Database {
     return iconKey;
   }
 
-  final AssetImage errorImage = AssetImage('res/img/gudako.png');
+  final AssetImage errorImage = const AssetImage('res/img/gudako.png');
 
   // HashSet<String> _existsIcons =
   //     HashSet(isValidKey: (k) => k != null && k is String);
@@ -562,7 +562,7 @@ class PathManager {
           'Not supported for ${PlatformU.operatingSystem}');
     }
     if (_appPath == null) {
-      throw OSError('Cannot resolve document folder');
+      throw const OSError('Cannot resolve document folder');
     }
 
     // ensure directory exist

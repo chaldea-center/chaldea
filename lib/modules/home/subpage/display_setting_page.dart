@@ -6,7 +6,7 @@ import 'display_settings/svt_priority_tagging.dart';
 import 'display_settings/svt_tab_sorting.dart';
 
 class DisplaySettingPage extends StatefulWidget {
-  const DisplaySettingPage({Key? key}) : super(key: key);
+  DisplaySettingPage({Key? key}) : super(key: key);
 
   @override
   _DisplaySettingPageState createState() => _DisplaySettingPageState();
@@ -19,7 +19,6 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         title: Text(S.current.display_setting),
       ),
       body: ListView(
@@ -103,7 +102,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   jpn: '「フォロー」ボタンディフォルト',
                   eng: '「Favorite」Button Default',
                 )),
-                trailing: Icon(Icons.keyboard_arrow_right),
+                trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   SplitRoute.push(context, _FavOptionSetting());
                 },
@@ -113,7 +112,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                     chs: '从者职阶筛选样式',
                     jpn: 'クラスフィルタースタイル ',
                     eng: 'Servant Class Filter Style')),
-                trailing: Icon(Icons.keyboard_arrow_right),
+                trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   SplitRoute.push(context, _ClassFilterStyleSetting());
                 },
@@ -127,7 +126,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
               ListTile(
                 title: Text(LocalizedText.of(
                     chs: '标签页排序', jpn: 'ページ表示順序', eng: 'Tabs Sorting')),
-                trailing: Icon(Icons.keyboard_arrow_right),
+                trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   SplitRoute.push(context, SvtTabsSortingSetting());
                 },
@@ -135,7 +134,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
               ListTile(
                 title: Text(LocalizedText.of(
                     chs: '优先级备注', jpn: '優先順位ノート', eng: 'Priority Tagging')),
-                trailing: Icon(Icons.keyboard_arrow_right),
+                trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   SplitRoute.push(context, SvtPriorityTagging());
                 },
@@ -147,8 +146,8 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
             children: [
               CheckboxListTile(
                 value: carousel.enableMooncell,
-                title: Text('Mooncell News'),
-                subtitle: Text('CN/JP'),
+                title: const Text('Mooncell News'),
+                subtitle: const Text('CN/JP'),
                 controlAffinity: ListTileControlAffinity.leading,
                 onChanged: (v) {
                   setState(() {
@@ -159,8 +158,8 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
               ),
               CheckboxListTile(
                 value: carousel.enableJp,
-                title: Text('JP News'),
-                subtitle: Text('https://view.fate-go.jp/'),
+                title: const Text('JP News'),
+                subtitle: const Text('https://view.fate-go.jp/'),
                 controlAffinity: ListTileControlAffinity.leading,
                 onChanged: (v) {
                   setState(() {
@@ -171,8 +170,8 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
               ),
               CheckboxListTile(
                 value: carousel.enableUs,
-                title: Text('NA News'),
-                subtitle: Text('https://webview.fate-go.us/'),
+                title: const Text('NA News'),
+                subtitle: const Text('https://webview.fate-go.us/'),
                 controlAffinity: ListTileControlAffinity.leading,
                 onChanged: (v) {
                   setState(() {
@@ -190,7 +189,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
 }
 
 class _FavOptionSetting extends StatefulWidget {
-  const _FavOptionSetting({Key? key}) : super(key: key);
+  _FavOptionSetting({Key? key}) : super(key: key);
 
   @override
   __FavOptionSettingState createState() => __FavOptionSettingState();
@@ -226,7 +225,7 @@ class __FavOptionSettingState extends State<_FavOptionSetting> {
                 groupValue: db.appSetting.favoritePreferred,
                 title: Text(LocalizedText.of(
                     chs: '显示已关注', jpn: 'フォロー表示', eng: 'Show Favorite')),
-                secondary: Icon(Icons.favorite),
+                secondary: const Icon(Icons.favorite),
                 onChanged: (v) {
                   setState(() {
                     db.appSetting.favoritePreferred = true;
@@ -238,7 +237,7 @@ class __FavOptionSettingState extends State<_FavOptionSetting> {
                 groupValue: db.appSetting.favoritePreferred,
                 title: Text(LocalizedText.of(
                     chs: '显示全部', jpn: 'すべて表示', eng: 'Show All')),
-                secondary: Icon(Icons.remove_circle_outline),
+                secondary: const Icon(Icons.remove_circle_outline),
                 onChanged: (v) {
                   setState(() {
                     db.appSetting.favoritePreferred = false;
@@ -262,7 +261,7 @@ class __FavOptionSettingState extends State<_FavOptionSetting> {
 }
 
 class _ClassFilterStyleSetting extends StatefulWidget {
-  const _ClassFilterStyleSetting({Key? key}) : super(key: key);
+  _ClassFilterStyleSetting({Key? key}) : super(key: key);
 
   @override
   _ClassFilterStyleSettingState createState() =>

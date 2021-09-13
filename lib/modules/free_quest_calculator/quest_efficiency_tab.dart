@@ -200,7 +200,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
           });
         },
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 5),
           child: Stack(
             alignment: Alignment.bottomRight,
             children: [
@@ -225,7 +225,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(S.current.filter_sort),
             ),
             RadioWithLabel<_EfficiencySort>(
@@ -265,7 +265,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
             ),
             Expanded(
               child: Container(
-                margin: EdgeInsets.symmetric(vertical: 5),
+                margin: const EdgeInsets.symmetric(vertical: 5),
                 height: height,
                 child: ListView(
                   scrollDirection: Axis.horizontal,

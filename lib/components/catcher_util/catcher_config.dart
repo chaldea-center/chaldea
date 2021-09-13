@@ -88,8 +88,8 @@ class CatcherUtility {
       child: RichText(
         overflow: TextOverflow.clip,
         textAlign: TextAlign.center,
-        text: TextSpan(
-          children: const [
+        text: const TextSpan(
+          children: [
             WidgetSpan(
                 child: Icon(Icons.announcement, color: Colors.red, size: 40)),
             TextSpan(text: '\nThere is an Error')

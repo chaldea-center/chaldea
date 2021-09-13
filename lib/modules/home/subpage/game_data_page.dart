@@ -9,7 +9,7 @@ import 'package:path/path.dart' as pathlib;
 import 'package:url_launcher/url_launcher.dart';
 
 class GameDataPage extends StatefulWidget {
-  const GameDataPage({Key? key}) : super(key: key);
+  GameDataPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _GameDataPageState();
@@ -141,12 +141,12 @@ class _GameDataPageState extends State<GameDataPage> {
             footer: 'Installer for Android/Windows/macOS.',
             children: [
               ListTile(
-                leading: Icon(Icons.cloud_circle, size: 28),
-                title: Text('Lanzou/woozooo'),
+                leading: const Icon(Icons.cloud_circle, size: 28),
+                title: const Text('Lanzou/woozooo'),
                 subtitle: RichText(
                   text: TextSpan(
                     text: 'https://www.lanzouw.com/b01tuahmf\n',
-                    style: TextStyle(color: Colors.grey),
+                    style: const TextStyle(color: Colors.grey),
                     children: [
                       TextSpan(
                         text: 'password: chaldea',
@@ -206,9 +206,9 @@ class _GameDataPageState extends State<GameDataPage> {
                   ? FontAwesomeIcons.github
                   : FontAwesomeIcons.gitAlt),
               dense: true,
-              contentPadding: EdgeInsets.only(left: 20, right: 8),
+              contentPadding: const EdgeInsets.only(left: 20, right: 8),
               // horizontalTitleGap: 0,
-              title: Text('Chaldea app'),
+              title: const Text('Chaldea app'),
               subtitle: Text(gitTool.appReleaseUrl),
               onTap: () {
                 jumpToExternalLinkAlert(url: gitTool.appReleaseUrl);
@@ -219,9 +219,9 @@ class _GameDataPageState extends State<GameDataPage> {
                   ? FontAwesomeIcons.github
                   : FontAwesomeIcons.gitAlt),
               dense: true,
-              contentPadding: EdgeInsets.only(left: 20, right: 8),
+              contentPadding: const EdgeInsets.only(left: 20, right: 8),
               // horizontalTitleGap: 0,
-              title: Text('Dataset'),
+              title: const Text('Dataset'),
               subtitle: Text(gitTool.datasetReleaseUrl),
               onTap: () {
                 jumpToExternalLinkAlert(url: gitTool.datasetReleaseUrl);
@@ -232,9 +232,9 @@ class _GameDataPageState extends State<GameDataPage> {
                   ? FontAwesomeIcons.github
                   : FontAwesomeIcons.gitAlt),
               dense: true,
-              contentPadding: EdgeInsets.only(left: 20, right: 8),
+              contentPadding: const EdgeInsets.only(left: 20, right: 8),
               // horizontalTitleGap: 0,
-              title: Text('FFO data'),
+              title: const Text('FFO data'),
               subtitle: Text(gitTool.ffoDataReleaseUrl),
               onTap: () {
                 jumpToExternalLinkAlert(url: gitTool.ffoDataReleaseUrl);
@@ -331,10 +331,10 @@ class _GameDataPageState extends State<GameDataPage> {
         if (newData.version != '0') {
           db.gameData = newData;
         } else {
-          throw FormatException('Invalid json contents');
+          throw const FormatException('Invalid json contents');
         }
       } else {
-        throw FormatException('unsupported file type');
+        throw const FormatException('unsupported file type');
       }
       EasyLoading.showSuccess(S.of(context).import_data_success);
     } on FileSelectionCanceledError {

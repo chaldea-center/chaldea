@@ -14,7 +14,7 @@ import 'package:path/path.dart' as pathlib;
 import 'package:url_launcher/url_launcher.dart';
 
 class FeedbackPage extends StatefulWidget {
-  const FeedbackPage({Key? key}) : super(key: key);
+  FeedbackPage({Key? key}) : super(key: key);
 
   @override
   _FeedbackPageState createState() => _FeedbackPageState();
@@ -48,7 +48,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
     if (subjectController.text.trim().isNotEmpty ||
         bodyController.text.trim().isNotEmpty) {
       final r = await SimpleCancelOkDialog(
-        title: Text('Warning'),
+        title: const Text('Warning'),
         content: Text(LocalizedText.of(
             chs: '反馈表未提交，仍然退出?',
             jpn: 'フィードバックフォームは送信されませんが、終了します？',
@@ -71,14 +71,14 @@ class _FeedbackPageState extends State<FeedbackPage> {
           }),
         ),
         body: ListView(
-          padding: EdgeInsets.symmetric(vertical: 8),
+          padding: const EdgeInsets.symmetric(vertical: 8),
           children: [
             // if (Language.isCN)
             Card(
               elevation: 4,
-              margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                 child: MarkdownBody(
                     data: LocalizedText.of(
                   chs: '''提交反馈前，请先查阅<**FAQ**>。反馈时请详细描述:
@@ -105,8 +105,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
             TileGroup(
               children: [
                 ListTile(
-                  title: Text('FAQ'),
-                  trailing: Icon(Icons.keyboard_arrow_right),
+                  title: const Text('FAQ'),
+                  trailing: const Icon(Icons.keyboard_arrow_right),
                   onTap: () {
                     SplitRoute.push(context, FAQPage());
                   },
@@ -117,8 +117,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
               header: 'Contact',
               children: [
                 ListTile(
-                  title: Text('Github'),
-                  subtitle: Text(kProjectHomepage),
+                  title: const Text('Github'),
+                  subtitle: const Text(kProjectHomepage),
                   onTap: () => jumpToExternalLinkAlert(
                     url: '$kProjectHomepage/issues',
                     name: 'Github',
@@ -126,15 +126,16 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 ),
                 ListTile(
                   title: Text(S.of(context).nga),
-                  subtitle: Text('https://bbs.nga.cn/read.php?tid=24926789'),
+                  subtitle:
+                      const Text('https://bbs.nga.cn/read.php?tid=24926789'),
                   onTap: () => jumpToExternalLinkAlert(
                     url: 'https://bbs.nga.cn/read.php?tid=24926789',
                     name: S.of(context).nga_fgo,
                   ),
                 ),
                 ListTile(
-                  title: Text('Email'),
-                  subtitle: Text(kSupportTeamEmailAddress),
+                  title: const Text('Email'),
+                  subtitle: const Text(kSupportTeamEmailAddress),
                   onTap: () async {
                     String subject =
                         '$kAppName v${AppInfo.fullVersion} Feedback';
@@ -149,7 +150,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     if (await canLaunch(uri.toString())) {
                       launch(uri.toString());
                     } else {
-                      SimpleCancelOkDialog(
+                      const SimpleCancelOkDialog(
                         title: Text('Send email to'),
                         content: Text(kSupportTeamEmailAddress),
                       ).showDialog(context);
@@ -157,16 +158,16 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   },
                 ),
                 ListTile(
-                  title: Text('QQ Group'),
-                  subtitle: Text('863998768'),
+                  title: const Text('QQ Group'),
+                  subtitle: const Text('863998768'),
                   onTap: () {
-                    Clipboard.setData(ClipboardData(text: '863998768'))
+                    Clipboard.setData(const ClipboardData(text: '863998768'))
                         .then((_) => EasyLoading.showToast(S.current.copied));
                   },
                 ),
                 ListTile(
-                  title: Text('Discord'),
-                  subtitle: Text('https://discord.gg/5M6w5faqjP'),
+                  title: const Text('Discord'),
+                  subtitle: const Text('https://discord.gg/5M6w5faqjP'),
                   onTap: () {
                     jumpToExternalLinkAlert(
                         url: 'https://discord.gg/5M6w5faqjP', name: 'Discord');
@@ -181,13 +182,14 @@ class _FeedbackPageState extends State<FeedbackPage> {
               children: [
                 const SizedBox(height: 8),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   child: TextField(
                     controller: contactController,
                     decoration: InputDecoration(
                       labelText: 'Email',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.mail_outline),
+                      border: const OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.mail_outline),
                       hintText: LocalizedText.of(
                           chs: '推荐邮箱',
                           jpn: 'メールおすすめ',
@@ -204,24 +206,26 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 ),
                 const SizedBox(height: 8),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   child: TextField(
                     controller: subjectController,
                     decoration: InputDecoration(
                       labelText: S.current.feedback_subject,
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                       hintText: defaultSubject,
                     ),
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   height: 200,
                   child: TextField(
                     controller: bodyController,
                     decoration: InputDecoration(
                       labelText: S.of(context).feedback_content_hint,
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                       alignLabelWithHint: true,
                     ),
                     expands: true,
@@ -247,17 +251,17 @@ class _FeedbackPageState extends State<FeedbackPage> {
                       jpn: 'e.g. スクリーンショットとその他のファイル',
                       eng: 'e.g. screenshots, files.')),
                   trailing: IconButton(
-                    icon: Icon(Icons.add),
+                    icon: const Icon(Icons.add),
                     tooltip: S.current.add,
                     onPressed: _addAttachments,
                   ),
                 ),
                 for (String fp in attachFiles)
                   ListTile(
-                    leading: Icon(Icons.attach_file),
+                    leading: const Icon(Icons.attach_file),
                     title: Text(pathlib.basename(fp)),
                     trailing: IconButton(
-                      icon: Icon(Icons.clear),
+                      icon: const Icon(Icons.clear),
                       onPressed: () {
                         setState(() {
                           attachFiles.remove(fp);
@@ -268,7 +272,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 SizedBox(
                   width: double.infinity,
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: ElevatedButton(
                       onPressed: sendEmail,
                       child: Text(S.of(context).feedback_send),
@@ -328,7 +333,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
     EasyLoading.show(status: 'Sending', maskType: EasyLoadingMaskType.clear);
     try {
       final message = Message()
-        ..from = Address('chaldea-client@narumi.cc', 'Chaldea Feedback')
+        ..from = const Address('chaldea-client@narumi.cc', 'Chaldea Feedback')
         ..recipients.add(kSupportTeamEmailAddress);
 
       String subject = subjectController.text.trim();
@@ -368,7 +373,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
         );
         logger.i(result.toString());
       } else {
-        await Future.delayed(Duration(seconds: 3));
+        await Future.delayed(const Duration(seconds: 3));
       }
       subjectController.text = '';
       bodyController.text = '';
@@ -383,7 +388,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
   }
 
   Future<String> _emailBody() async {
-    final escape = HtmlEscape().convert;
+    final escape = const HtmlEscape().convert;
     StringBuffer buffer = StringBuffer("");
     buffer.write('<style>h3{margin:0.2em 0;}</style>');
 

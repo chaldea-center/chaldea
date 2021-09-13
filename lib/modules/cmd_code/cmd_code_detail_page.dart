@@ -29,7 +29,6 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         title: AutoSizeText(code.lName, maxLines: 1),
         titleSpacing: 0,
         actions: [_popupButton],
@@ -101,7 +100,7 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
           child:
               Text([S.of(context).previous_card, S.of(context).next_card][i]),
           style: ElevatedButton.styleFrom(
-              textStyle: TextStyle(fontWeight: FontWeight.normal)),
+              textStyle: const TextStyle(fontWeight: FontWeight.normal)),
         ),
     ]);
   }
@@ -124,7 +123,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
           CustomTableRow(children: [
             TableCellData(
               child: Text(code.name,
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
               isHeader: true,
             )
           ]),
@@ -148,7 +147,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                   },
                 ),
                 flex: 1,
-                padding: EdgeInsets.all(3),
+                padding: const EdgeInsets.all(3),
               ),
               TableCellData(
                 flex: 3,
@@ -203,7 +202,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
           CustomTableRow(
             children: [
               TableCellData(
-                padding: EdgeInsets.all(6),
+                padding: const EdgeInsets.all(6),
                 flex: 1,
                 child: db.getIconImage(code.skillIcon, height: 45),
               ),
@@ -226,7 +225,8 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                     code.description, code.descriptionJp, code.descriptionEn,
                     k: () => '???', primary: lang),
                 alignment: Alignment.centerLeft,
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               )
             ],
           ),
@@ -260,7 +260,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
         svts.add(svt.iconBuilder(context: context, height: 48));
       }
     });
-    if (svts.isEmpty) svts.add(Text('-'));
+    if (svts.isEmpty) svts.add(const Text('-'));
     return svts;
   }
 
@@ -291,7 +291,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
   // }
 
   Widget localizeCharacters(BuildContext context, List<String> characters) {
-    if (characters.isEmpty) return Text('-');
+    if (characters.isEmpty) return const Text('-');
     List<Widget> children = [];
     for (final name in characters) {
       final svt =
@@ -308,7 +308,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
         ));
       }
     }
-    children = divideTiles(children, divider: Text('/'));
+    children = divideTiles(children, divider: const Text('/'));
     return Wrap(
       spacing: 4,
       runSpacing: 4,

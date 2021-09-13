@@ -149,7 +149,6 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
     ));
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         title: AutoSizeText(
           event.localizedName,
           maxLines: 1,
@@ -177,7 +176,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
 
   Widget get floatingActionButton {
     return FloatingActionButton(
-      child: Icon(Icons.archive_outlined),
+      child: const Icon(Icons.archive_outlined),
       tooltip: S.of(context).event_collect_items,
       onPressed: () {
         if (!plan.enabled) {
@@ -217,7 +216,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.next,
             inputFormatters: [NumberInputFormatter()],
-            decoration: InputDecoration(counterText: ''),
+            decoration: const InputDecoration(counterText: ''),
             onChanged: (v) {
               extraPlan[itemKey] = int.tryParse(v) ?? 0;
               db.itemStat.updateEventItems();

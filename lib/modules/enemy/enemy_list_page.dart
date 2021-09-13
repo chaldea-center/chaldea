@@ -6,7 +6,7 @@ import 'enemy_detail_page.dart';
 class EnemyListPage extends StatefulWidget {
   final void Function(EnemyDetail)? onSelected;
 
-  const EnemyListPage({Key? key, this.onSelected}) : super(key: key);
+  EnemyListPage({Key? key, this.onSelected}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => EnemyListPageState();
@@ -47,8 +47,8 @@ class EnemyListPageState
     return scrollListener(
       useGrid: useGrid,
       appBar: AppBar(
-        leading: MasterBackButton(),
-        title: Text('敌人一览'),
+        leading: const MasterBackButton(),
+        title: Text(S.current.enemy_list),
         titleSpacing: 0,
         bottom: showSearchBar ? searchBar : null,
         actions: <Widget>[
@@ -73,7 +73,7 @@ class EnemyListPageState
       leading: db.getIconImage(enemy.icon, width: 48, height: 48),
       title: AutoSizeText(enemy.lIds.join('\n'),
           maxFontSize: 16, overflow: TextOverflow.fade),
-      trailing: Icon(Icons.keyboard_arrow_right),
+      trailing: const Icon(Icons.keyboard_arrow_right),
       selected: SplitRoute.isSplit(context) && selected == enemy,
       onTap: () => _onTapCard(enemy),
     );
@@ -82,7 +82,7 @@ class EnemyListPageState
   @override
   Widget gridItemBuilder(EnemyDetail enemy) {
     return Padding(
-      padding: EdgeInsets.all(3),
+      padding: const EdgeInsets.all(3),
       child: GestureDetector(
         child: db.getIconImage(enemy.icon),
         onTap: () => _onTapCard(enemy),

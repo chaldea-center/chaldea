@@ -47,7 +47,7 @@ class _SearchBarState extends State<SearchBar> {
   }
 
   Widget _realBuild(BuildContext context) {
-    TextStyle textStyle = widget.style ?? TextStyle();
+    TextStyle textStyle = widget.style ?? const TextStyle();
     textStyle = textStyle.copyWith(
       color: textStyle.color ?? Theme.of(context).hintColor,
     );
@@ -90,7 +90,7 @@ class _SearchBarState extends State<SearchBar> {
               child: Tooltip(
                 message: S.current.search_options,
                 child: Padding(
-                  padding: EdgeInsets.all((36 - 24) / 2),
+                  padding: const EdgeInsets.all((36 - 24) / 2),
                   child: Icon(
                     Icons.settings,
                     color: iconColor,
@@ -111,7 +111,7 @@ class _SearchBarState extends State<SearchBar> {
         children: [
           Material(
             child: Padding(
-              padding: EdgeInsets.fromLTRB(8, 0, 16, 0),
+              padding: const EdgeInsets.fromLTRB(8, 0, 16, 0),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -119,7 +119,7 @@ class _SearchBarState extends State<SearchBar> {
                     onPressed: () {
                       _bottomSheetController?.close();
                     },
-                    icon: Icon(Icons.keyboard_arrow_down),
+                    icon: const Icon(Icons.keyboard_arrow_down),
                     tooltip:
                         MaterialLocalizations.of(context).closeButtonTooltip,
                   ),
@@ -127,13 +127,13 @@ class _SearchBarState extends State<SearchBar> {
                 ],
               ),
             ),
-            borderRadius: BorderRadius.only(topRight: Radius.circular(8)),
+            borderRadius: const BorderRadius.only(topRight: Radius.circular(8)),
             elevation: 4,
             color: Theme.of(context).secondaryHeaderColor,
           ),
           Material(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               child: widget.searchOptionsBuilder!(context, setState),
             ),
             elevation: 4,
@@ -152,7 +152,7 @@ abstract class SearchOptionsMixin<T> {
 
   Future<void> updateParent() async {
     if (onChanged != null) {
-      await Future.delayed(Duration(milliseconds: 200));
+      await Future.delayed(const Duration(milliseconds: 200));
       return onChanged!(this);
     }
   }

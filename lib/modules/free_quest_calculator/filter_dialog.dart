@@ -86,7 +86,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
                 title: Text(shownName),
                 dense: true,
                 trailing: IconButton(
-                  icon: Icon(Icons.clear),
+                  icon: const Icon(Icons.clear),
                   tooltip: S.of(context).remove_from_blacklist,
                   onPressed: () {
                     setState(() {
@@ -100,7 +100,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
         ),
         Center(
           child: IconButton(
-            icon: Icon(Icons.close),
+            icon: const Icon(Icons.close),
             onPressed: () => Navigator.of(context).pop(),
           ),
         )

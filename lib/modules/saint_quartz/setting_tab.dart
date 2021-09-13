@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'common.dart';
 
 class SQSettingTab extends StatefulWidget {
-  const SQSettingTab({Key? key}) : super(key: key);
+  SQSettingTab({Key? key}) : super(key: key);
 
   @override
   _SQSettingTabState createState() => _SQSettingTabState();
@@ -200,7 +200,7 @@ class _SQSettingTabState extends State<SQSettingTab> {
         ),
         Card(
           child: Padding(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             child: Text(
               LocalizedText.of(
                   chs: """实际可获得量远高于计算值：

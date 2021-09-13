@@ -128,7 +128,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
       length: builders.length,
       child: Scaffold(
           appBar: AppBar(
-            leading: BackButton(),
+            leading: const BackButton(),
             titleSpacing: 0,
             title: AutoSizeText(
               svt.info.localizedName,
@@ -140,8 +140,8 @@ class ServantDetailPageState extends State<ServantDetailPage>
                 db.streamBuilder(
                   (context) => IconButton(
                     icon: status.favorite
-                        ? Icon(Icons.favorite, color: Colors.redAccent)
-                        : Icon(Icons.favorite_border),
+                        ? const Icon(Icons.favorite, color: Colors.redAccent)
+                        : const Icon(Icons.favorite_border),
                     tooltip: S.of(context).favorite,
                     onPressed: () {
                       status.favorite = !status.favorite;
@@ -162,7 +162,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                   child: TabBar(
                     labelColor: Theme.of(context).colorScheme.secondary,
                     indicatorSize: TabBarIndicatorSize.tab,
-                    labelPadding: EdgeInsets.symmetric(horizontal: 8.0),
+                    labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
                     unselectedLabelColor: Colors.grey,
                     isScrollable: true,
                     tabs: builders
@@ -173,9 +173,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                   ),
                 ),
               ),
-              Divider(
-                height: 1,
-              ),
+              const Divider(height: 1),
               Expanded(
                 child: TabBarView(
                   children:
@@ -288,7 +286,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
           final newSvt = db.curUser.addDuplicatedForServant(svt);
           print('add ${newSvt.no}');
           if (newSvt == svt) {
-            SimpleCancelOkDialog(
+            const SimpleCancelOkDialog(
               title: Text('复制从者失败'),
               content: Text('同一从者超过999个上限'),
             ).showDialog(context);
@@ -337,7 +335,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
           const SizedBox(height: 4),
         ],
       ),
-      titlePadding: EdgeInsets.only(left: 16),
+      titlePadding: const EdgeInsets.only(left: 16),
       subtitle: Wrap(
         spacing: 3,
         runSpacing: 2,
@@ -373,7 +371,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                         child: Text(
                           db.appSetting.priorityTags['$priority'] ?? '',
                           overflow: TextOverflow.fade,
-                          style: TextStyle(fontSize: 12),
+                          style: const TextStyle(fontSize: 12),
                           maxLines: 1,
                         ),
                       ),
@@ -417,9 +415,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
           color: bgColor,
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           child: Text(shownText,
-              style: TextStyle(color: Colors.white, fontSize: 13)),
+              style: const TextStyle(color: Colors.white, fontSize: 13)),
         ),
       );
     }).toList();

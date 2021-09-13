@@ -5,7 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 enum _PageMode { login, signup, changePwd }
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  LoginPage({Key? key}) : super(key: key);
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -48,7 +48,6 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         title: Text(mode == _PageMode.login
             ? S.current.login_login
             : mode == _PageMode.signup
@@ -56,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                 : S.current.login_change_password),
       ),
       body: ListView(
-        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         children: [
           nameInput,
           const SizedBox(height: 12),
@@ -76,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                   'A simple account system for userdata backup to server and multi-device synchronization\n'
                   'NO security guarantee, PLEASE DON\'T set frequently used passwords!!!',
             ),
-            style: TextStyle(color: Colors.grey, fontSize: 14),
+            style: const TextStyle(color: Colors.grey, fontSize: 14),
           ),
           const SizedBox(height: 8),
           mainAction(),
@@ -204,7 +203,7 @@ class _LoginPageState extends State<LoginPage> {
       autocorrect: false,
       decoration: InputDecoration(
         labelText: S.current.login_username,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
         errorText: _validateName(),
         errorMaxLines: 3,
       ),
@@ -218,7 +217,7 @@ class _LoginPageState extends State<LoginPage> {
       obscureText: obscurePwd,
       decoration: InputDecoration(
         labelText: S.current.login_password,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
         errorText: _validatePwd(),
         errorMaxLines: 3,
         suffixIcon: IconButton(
@@ -245,7 +244,7 @@ class _LoginPageState extends State<LoginPage> {
       obscureText: obscurePwd,
       decoration: InputDecoration(
         labelText: S.current.login_new_password,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
         errorText: _validateNewPwd(),
         errorMaxLines: 3,
         suffixIcon: IconButton(

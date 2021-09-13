@@ -37,7 +37,7 @@ class _QuestCardState extends State<QuestCard> {
     return Card(
       elevation: 0,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
@@ -54,7 +54,7 @@ class _QuestCardState extends State<QuestCard> {
                       maxFontSize: 14,
                       minFontSize: 6,
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     AutoSizeText(
                       questName,
@@ -76,7 +76,7 @@ class _QuestCardState extends State<QuestCard> {
                   ],
                 ),
               ),
-              contentPadding: EdgeInsets.fromLTRB(16, 8, 0, 8),
+              contentPadding: const EdgeInsets.fromLTRB(16, 8, 0, 8),
               trailing: IconButton(
                 onPressed: () => setState(() => showTrueName = !showTrueName),
                 icon: Icon(
@@ -89,7 +89,8 @@ class _QuestCardState extends State<QuestCard> {
             ..._buildBattles(quest.battles),
             if (!quest.isFree)
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -99,7 +100,7 @@ class _QuestCardState extends State<QuestCard> {
                       size: 16,
                       color: Theme.of(context).textTheme.caption?.color,
                     ),
-                    SizedBox(width: 6),
+                    const SizedBox(width: 6),
                     Flexible(
                       child: Text(
                         LocalizedText.of(
@@ -113,7 +114,7 @@ class _QuestCardState extends State<QuestCard> {
                   ],
                 ),
               )
-          ], divider: Divider(height: 3, thickness: 0.5))
+          ], divider: const Divider(height: 3, thickness: 0.5))
               .toList(),
         ),
       ),
@@ -145,7 +146,7 @@ class _QuestCardState extends State<QuestCard> {
             child: AutoSizeText(
               shownPlace,
               maxLines: 1,
-              style: TextStyle(fontWeight: FontWeight.w600),
+              style: const TextStyle(fontWeight: FontWeight.w600),
             ),
           ),
         ),
@@ -162,7 +163,7 @@ class _QuestCardState extends State<QuestCard> {
 
       if (battle.drops.isNotEmpty) {
         children.add(Padding(
-          padding: EdgeInsets.symmetric(vertical: 3),
+          padding: const EdgeInsets.symmetric(vertical: 3),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -179,7 +180,7 @@ class _QuestCardState extends State<QuestCard> {
     }
     if (quest.rewards.isNotEmpty) {
       children.add(Padding(
-        padding: EdgeInsets.symmetric(vertical: 3),
+        padding: const EdgeInsets.symmetric(vertical: 3),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
@@ -203,7 +204,8 @@ class _QuestCardState extends State<QuestCard> {
         children: [
           if (enhanceIcon != null)
             Padding(
-                padding: EdgeInsets.symmetric(vertical: 3), child: enhanceIcon),
+                padding: const EdgeInsets.symmetric(vertical: 3),
+                child: enhanceIcon),
           Flexible(child: AutoSizeText(quest.enhancement!, maxLines: 2))
         ],
       ));
@@ -216,7 +218,7 @@ class _QuestCardState extends State<QuestCard> {
         children: [
           Center(
             child: Text(S.of(context).quest_condition,
-                style: TextStyle(fontWeight: FontWeight.w500)),
+                style: const TextStyle(fontWeight: FontWeight.w500)),
           ),
           Text(quest.conditions!, textAlign: TextAlign.center)
         ],
