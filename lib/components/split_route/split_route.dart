@@ -243,9 +243,10 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     bool detail = true,
     int masterRatio = _kSplitMasterRatio,
     String? title,
+    bool rootNavigator = true,
     RouteSettings? settings,
   }) {
-    final navigator = Navigator.of(context);
+    final navigator = Navigator.of(context, rootNavigator: rootNavigator);
     int n = 0;
     if (popDetail) {
       assert(() {
@@ -277,6 +278,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     Widget page, {
     bool detail = true,
     bool popDetail = false,
+    bool rootNavigator = true,
     RouteSettings? settings,
   }) {
     assert(() {
@@ -288,6 +290,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
       builder: (context, _) => page,
       detail: detail,
       popDetail: popDetail,
+      rootNavigator: rootNavigator,
       settings: settings,
     );
   }
