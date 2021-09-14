@@ -392,67 +392,71 @@ class _ItemListTabState extends State<ItemListTab> {
     return Column(children: [
       Expanded(child: listView),
       kDefaultDivider,
-      Row(
-        children: [
-          if (PlatformU.isMobile)
-            IconButton(
-              onPressed: () {
-                if (_shownGroups.isEmpty) return;
-                int focused =
-                    _shownGroups.indexWhere((e) => e.focusNode.hasFocus);
-                if (focused >= 0) {
-                  moveToNext(_shownGroups[focused].focusNode, true);
-                } else {
-                  FocusScope.of(context)
-                      .requestFocus(_shownGroups.last.focusNode);
-                }
-              },
-              icon: const Icon(Icons.keyboard_arrow_up),
-              tooltip: 'Previous',
-            ),
-          if (PlatformU.isMobile)
-            IconButton(
-              onPressed: () {
-                if (_shownGroups.isEmpty) return;
-                int focused =
-                    _shownGroups.indexWhere((e) => e.focusNode.hasFocus);
-                if (focused >= 0) {
-                  moveToNext(_shownGroups[focused].focusNode);
-                } else {
-                  FocusScope.of(context)
-                      .requestFocus(_shownGroups.first.focusNode);
-                }
-              },
-              icon: const Icon(Icons.keyboard_arrow_down),
-              tooltip: 'Next',
-            ),
-          Flexible(
-            child: Center(
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.calculate_outlined),
-                label: Text(S.current.planning_free_quest_btn),
-                style: ElevatedButton.styleFrom(),
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (PlatformU.isMobile)
+              IconButton(
                 onPressed: () {
-                  FocusScope.of(context).unfocus();
-                  widget.onNavToCalculator();
+                  if (_shownGroups.isEmpty) return;
+                  int focused =
+                      _shownGroups.indexWhere((e) => e.focusNode.hasFocus);
+                  if (focused >= 0) {
+                    moveToNext(_shownGroups[focused].focusNode, true);
+                  } else {
+                    FocusScope.of(context)
+                        .requestFocus(_shownGroups.last.focusNode);
+                  }
                 },
+                icon: const Icon(Icons.keyboard_arrow_up),
+                tooltip: 'Previous',
+              ),
+            if (PlatformU.isMobile)
+              IconButton(
+                onPressed: () {
+                  if (_shownGroups.isEmpty) return;
+                  int focused =
+                      _shownGroups.indexWhere((e) => e.focusNode.hasFocus);
+                  if (focused >= 0) {
+                    moveToNext(_shownGroups[focused].focusNode);
+                  } else {
+                    FocusScope.of(context)
+                        .requestFocus(_shownGroups.first.focusNode);
+                  }
+                },
+                icon: const Icon(Icons.keyboard_arrow_down),
+                tooltip: 'Next',
+              ),
+            Flexible(
+              child: Center(
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.calculate_outlined),
+                  label: Text(S.current.planning_free_quest_btn),
+                  style: ElevatedButton.styleFrom(),
+                  onPressed: () {
+                    FocusScope.of(context).unfocus();
+                    widget.onNavToCalculator();
+                  },
+                ),
               ),
             ),
-          ),
-          CheckboxWithLabel(
-            value: db.itemStat.includingEvent,
-            label: Text(S.current.event_title),
-            onChanged: (v) {
-              setState(() {
-                // reset to true in initState or not?
-                db.itemStat.includingEvent = v ?? db.itemStat.includingEvent;
-                db.itemStat.updateEventItems();
-              });
-            },
-          ),
-          const SizedBox(width: 6),
-        ],
-      )
+            CheckboxWithLabel(
+              value: db.itemStat.includingEvent,
+              label: Text(S.current.event_title),
+              onChanged: (v) {
+                setState(() {
+                  // reset to true in initState or not?
+                  db.itemStat.includingEvent = v ?? db.itemStat.includingEvent;
+                  db.itemStat.updateEventItems();
+                });
+              },
+            ),
+            const SizedBox(width: 6),
+          ],
+        ),
+      ),
     ]);
   }
 

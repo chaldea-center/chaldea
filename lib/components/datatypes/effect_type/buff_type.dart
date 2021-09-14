@@ -176,7 +176,7 @@ class _BuffTypes {
       'commandcodeattackFunction',
       '指令纹章攻击时追加效果',
       'コマンドコード攻撃時追加効果',
-      'Cmd Code Effect');
+      'Cmd Code Effect when Attack');
 
   // BuffType donotSelectCommandcard = BuffType._(140, 'donotSelectCommandcard', '', '', '');
   BuffType tdTypeChange = BuffType._(

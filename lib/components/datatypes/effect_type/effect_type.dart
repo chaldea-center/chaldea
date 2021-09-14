@@ -71,9 +71,15 @@ class EffectType {
 
   static EffectType gainStar = EffectType(
     key: 'gainStar',
-    buffs: [BuffTypes.regainStar],
     funcs: [FuncTypes.gainStar],
     name: const LocalizedText(chs: '暴击星获得', jpn: 'スター獲得', eng: 'Gain Stars'),
+  );
+
+  static EffectType regainStar = EffectType(
+    key: 'regainStar',
+    buffs: [BuffTypes.regainStar],
+    name: const LocalizedText(
+        chs: '每回合暴击星', jpn: '毎ターンスター獲得', eng: 'Stars per Turn'),
   );
 
   static EffectType gainHp = EffectType(
@@ -403,7 +409,7 @@ class EffectType {
     pierceDefence, subSelfdamage, upDefence,
 
     gainHp, regainHp, upGainHp,
-    gainStar, starWeight, starRate,
+    gainStar, regainStar, starWeight, starRate,
     upGrantstate, upTolerance, resistInstantdeath, avoidInstantdeath,
 
     subState, avoidState, guts, upHate, shortenSkill,
@@ -423,7 +429,7 @@ class EffectType {
     pierceDefence, subSelfdamage, upDefence,
 
     regainHp, upGainHp,
-    gainStar, starWeight, starRate,
+    gainStar, regainStar, starWeight, starRate,
     upGrantstate, upTolerance, resistInstantdeath,
 
     avoidState, guts, upHate,
