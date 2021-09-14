@@ -15,7 +15,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
   Widget build(BuildContext context) {
     final params = widget.params;
     params.minCost = fixValidRange(params.minCost, 0, 19);
-    if (!db.gameData.glpk.freeCounts.values.contains(params.maxColNum)) {
+    if (!params.dropRatesData.freeCounts.values.contains(params.maxColNum)) {
       params.maxColNum = -1;
     }
     return SimpleDialog(
@@ -39,7 +39,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
               DropdownMenuItem(
                   value: -1, child: Text(S.of(context).free_progress_newest)),
               for (var entry
-                  in db.gameData.glpk.freeCounts.entries.toList()
+                  in params.dropRatesData.freeCounts.entries.toList()
                     ..sort((a, b) => b.value - a.value))
                 DropdownMenuItem(value: entry.value, child: Text(entry.key)),
             ],

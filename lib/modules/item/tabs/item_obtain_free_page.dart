@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/shared/filter_page.dart';
 import 'package:chaldea/modules/shared/quest_card.dart';
 
 class ItemObtainFreeTab extends StatefulWidget {
@@ -12,13 +13,32 @@ class ItemObtainFreeTab extends StatefulWidget {
 
 class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
   bool sortByAP = true;
+  bool use6th = db.curUser.use6thDropRate;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
         ListTile(
-          title: Text(S.current.quest),
+          title: Wrap(
+            spacing: 4,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(S.current.quest),
+              FilterOption(
+                selected: use6th,
+                value: '6th',
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  child: Text('6th'),
+                ),
+                onChanged: (v) => setState(() {
+                  use6th = v;
+                }),
+                shrinkWrap: true,
+              )
+            ],
+          ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -60,48 +80,48 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
   }
 
   List<Widget> buildQuests() {
-    final glpk = db.gameData.glpk;
-    int rowIndex = glpk.rowNames.indexOf(widget.itemKey);
+    final dropRateData = db.gameData.planningData.getDropRate(use6th);
+    int rowIndex = dropRateData.rowNames.indexOf(widget.itemKey);
     if (rowIndex < 0) {
       return [ListTile(title: Text(S.of(context).item_no_free_quests))];
     }
-    final apRates = glpk.matrix[rowIndex];
+    final dropMatrix = dropRateData.matrix[rowIndex];
     List<List> tmp = [];
-    for (var i = 0; i < glpk.jpMaxColNum; i++) {
-      if (apRates[i] > 0) {
-        String questName = glpk.colNames[i];
-        final apRate = apRates[i], dropRate = glpk.costs[i] / apRates[i];
-        final dropRateString = (dropRate * 100).toStringAsFixed(2),
-            apRateString = apRate.toStringAsFixed(2);
-        final quest = db.gameData.getFreeQuest(questName);
+    for (var i = 0; i < dropRateData.colNames.length; i++) {
+      if (dropMatrix[i] <= 0) continue;
+      String questName = dropRateData.colNames[i];
+      final apRate = dropRateData.costs[i] / dropMatrix[i],
+          dropRate = dropMatrix[i];
+      final dropRateString = (dropRate * 100).toStringAsFixed(2),
+          apRateString = apRate.toStringAsFixed(2);
+      final quest = db.gameData.getFreeQuest(questName);
 
-        final child = ValueStatefulBuilder<bool>(
-            initValue: false,
-            builder: (context, state) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  CustomTile(
-                    title: Text(quest?.localizedKey ??
-                        Quest.getDailyQuestName(questName)),
-                    subtitle: Text('cost ${glpk.costs[i]}AP.  ' +
-                        (sortByAP
-                            ? '${S.current.drop_rate} $dropRateString%.'
-                            : '${S.current.ap_efficiency} $apRateString AP.')),
-                    trailing: Text(
-                        sortByAP ? '$apRateString AP' : '$dropRateString%'),
-                    onTap: quest == null
-                        ? null
-                        : () => state.setState(() {
-                              state.value = !state.value;
-                            }),
-                  ),
-                  if (state.value && quest != null) QuestCard(quest: quest)
-                ],
-              );
-            });
-        tmp.add([apRate, dropRate, child]);
-      }
+      final child = ValueStatefulBuilder<bool>(
+          initValue: false,
+          builder: (context, state) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                CustomTile(
+                  title: Text(quest?.localizedKey ??
+                      Quest.getDailyQuestName(questName)),
+                  subtitle: Text('cost ${dropRateData.costs[i]}AP.  ' +
+                      (sortByAP
+                          ? '${S.current.drop_rate} $dropRateString%.'
+                          : '${S.current.ap_efficiency} $apRateString AP.')),
+                  trailing:
+                      Text(sortByAP ? '$apRateString AP' : '$dropRateString%'),
+                  onTap: quest == null
+                      ? null
+                      : () => state.setState(() {
+                            state.value = !state.value;
+                          }),
+                ),
+                if (state.value && quest != null) QuestCard(quest: quest)
+              ],
+            );
+          });
+      tmp.add([apRate, dropRate, child]);
     }
 
     tmp.sort((a, b) {

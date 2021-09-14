@@ -17,9 +17,9 @@ class GameData {
   @protected
   Map<String, Quest> freeQuests;
   Map<int, List<Quest>> svtQuests;
-  GLPKData glpk;
   Map<String, MysticCode> mysticCodes;
   Map<String, Summon> summons;
+  PlanningData planningData;
   Map<String, List<EnemyDetail>> categorizedEnemies;
   Map<int, int> fsmSvtIdMapping;
 
@@ -42,9 +42,9 @@ class GameData {
     Events? events,
     this.freeQuests = const {},
     this.svtQuests = const {},
-    GLPKData? glpk,
     this.mysticCodes = const {},
     this.summons = const {},
+    PlanningData? planningData,
     this.categorizedEnemies = const {},
     this.fsmSvtIdMapping = const {},
   })  : events = events ??
@@ -55,14 +55,11 @@ class GameData {
               campaigns: {},
               extraMasterMissions: [],
             ),
-        glpk = glpk ??
-            GLPKData(
-              colNames: [],
-              rowNames: [],
-              costs: [],
-              matrix: [],
-              freeCounts: {},
-              weeklyMissionData: [],
+        planningData = planningData ??
+            PlanningData(
+              dropRates: DropRateData(),
+              legacyDropRates: DropRateData(),
+              weeklyMissions: [],
             ),
         servantsWithUser = Map.of(servants) {
     for (final es in categorizedEnemies.values) {

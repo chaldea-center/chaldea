@@ -1,41 +1,80 @@
 part of datatypes;
 
 @JsonSerializable()
-class GLPKData {
-  List<String> colNames; //quests, n
-  List<String> rowNames; // items, m
-  List<int> costs; // n
-  /// AP rate, m*n. 0 if not dropped
-  List<List<double>> matrix;
+class PlanningData {
+  @protected
+  DropRateData dropRates;
+  @protected
+  DropRateData legacyDropRates;
+  List<WeeklyMissionQuest> weeklyMissions;
 
+  PlanningData({
+    required this.dropRates,
+    required this.legacyDropRates,
+    required this.weeklyMissions,
+  });
+
+  DropRateData getDropRate([bool use6th = true]) =>
+      use6th ? dropRates : legacyDropRates;
+
+  factory PlanningData.fromJson(Map<String, dynamic> data) =>
+      _$PlanningDataFromJson(data);
+
+  Map<String, dynamic> toJson() => _$PlanningDataToJson(this);
+}
+
+@JsonSerializable()
+class DropRateData {
   /// free quest counts of every progress/chapter
   /// From new to old, the first is jp
   Map<String, int> freeCounts;
+  List<int> sampleNum; // n
 
-  ///
-  List<WeeklyMissionQuest> weeklyMissionData;
+  List<String> colNames; //quests, n
+  List<String> rowNames; // items, m
+  List<int> costs; // n
+
+  /// drop rate per quest, m*n. 0 if not dropped
+  @JsonKey(ignore: true)
+  List<List<double>> matrix = [];
+
+  /// only used when decoding from json
+  @protected
+  Map<int, Map<int, double>> sparseMatrix;
 
   int get jpMaxColNum => freeCounts.values.reduce((a, b) => max(a, b));
 
-  GLPKData({
-    required this.colNames,
-    required this.rowNames,
-    required this.costs,
-    required this.matrix,
-    required this.freeCounts,
-    required this.weeklyMissionData,
-  });
+  DropRateData({
+    this.freeCounts = const {},
+    this.sampleNum = const [],
+    this.colNames = const [],
+    this.rowNames = const [],
+    this.costs = const [],
+    this.sparseMatrix = const {},
+  }) : matrix = sparseToMatrix(sparseMatrix, rowNames.length, colNames.length);
 
-  GLPKData.from(GLPKData other)
-      : colNames = List.from(other.colNames),
-        rowNames = List.from(other.rowNames),
-        costs = List.from(other.costs),
+  static List<List<double>> sparseToMatrix(
+      Map<int, Map<int, double>> sparse, int rows, int cols) {
+    List<List<double>> m =
+        List.generate(rows, (index) => List.generate(cols, (index) => 0));
+    sparse.forEach((i, row) {
+      row.forEach((j, v) {
+        // 80.0 =>80.0%
+        m[i][j] = v / 100;
+      });
+    });
+    return m;
+  }
+
+  DropRateData.from(DropRateData other)
+      : freeCounts = Map.of(other.freeCounts),
+        sampleNum = List.of(other.sampleNum),
+        colNames = List.of(other.colNames),
+        rowNames = List.of(other.rowNames),
+        costs = List.of(other.costs),
+        sparseMatrix = {},
         matrix = List.generate(
-            other.matrix.length, (index) => List.from(other.matrix[index])),
-        freeCounts = other.freeCounts,
-        weeklyMissionData = other.weeklyMissionData
-            .map((e) => WeeklyMissionQuest.fromJson(jsonDecode(jsonEncode(e))))
-            .toList();
+            other.matrix.length, (index) => List.of(other.matrix[index]));
 
   List<double> columnAt(int colIndex) {
     return List.generate(
@@ -67,13 +106,14 @@ class GLPKData {
     assert(index >= 0 && index < colNames.length);
     colNames.removeAt(index);
     costs.removeAt(index);
+    sampleNum.removeAt(index);
     matrix.forEach((row) => row.removeAt(index));
   }
 
-  factory GLPKData.fromJson(Map<String, dynamic> data) =>
-      _$GLPKDataFromJson(data);
+  factory DropRateData.fromJson(Map<String, dynamic> data) =>
+      _$DropRateDataFromJson(data);
 
-  Map<String, dynamic> toJson() => _$GLPKDataToJson(this);
+  Map<String, dynamic> toJson() => _$DropRateDataToJson(this);
 }
 
 @JsonSerializable(checked: true)
@@ -121,6 +161,8 @@ class WeeklyMissionQuest {
 /// for solve_glpk(data_str and params_str)
 @JsonSerializable(checked: true)
 class GLPKParams {
+  bool use6th;
+
   /// items(X)-counts(b) in AX>=b, only generated before transferred to js
   List<String> rows;
 
@@ -170,6 +212,7 @@ class GLPKParams {
   double getPlanItemWeight(String key) => planItemWeights[key] ??= 1.0;
 
   GLPKParams({
+    bool? use6th,
     List<String>? rows,
     Set<String>? blacklist,
     int? minCost = 0,
@@ -180,8 +223,8 @@ class GLPKParams {
     bool? useAP20 = true,
     Map<String, int>? planItemCounts,
     Map<String, double>? planItemWeights,
-  })
-      : rows = rows ?? [],
+  })  : use6th = use6th ?? true,
+        rows = rows ?? [],
         blacklist = blacklist ?? {},
         minCost = minCost ?? 0,
         costMinimize = costMinimize ?? true,
@@ -193,7 +236,8 @@ class GLPKParams {
         planItemWeights = planItemWeights ?? {};
 
   GLPKParams.from(GLPKParams other)
-      : rows = List.from(other.rows),
+      : use6th = other.use6th,
+        rows = List.from(other.rows),
         blacklist = Set.from(other.blacklist),
         minCost = other.minCost,
         costMinimize = other.costMinimize,
@@ -204,8 +248,11 @@ class GLPKParams {
         planItemCounts = other.planItemCounts,
         planItemWeights = other.planItemWeights;
 
+  DropRateData get dropRatesData =>
+      db.gameData.planningData.getDropRate(use6th);
+
   void validate() {
-    rows.removeWhere((e) => !db.gameData.glpk.rowNames.contains(e));
+    rows.removeWhere((e) => !dropRatesData.rowNames.contains(e));
   }
 
   void sortByItem() {

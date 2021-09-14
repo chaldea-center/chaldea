@@ -356,7 +356,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
   }
 
   void addAnItemNotInList() {
-    final item = db.gameData.glpk.rowNames
+    final item = params.dropRatesData.rowNames
         .firstWhereOrNull((e) => !params.rows.contains(e));
     if (item != null) params.rows.add(item);
   }
@@ -389,8 +389,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
       setState(() {
         running = true;
       });
-      final solution =
-          await solver.calculate(data: db.gameData.glpk, params: params);
+      final solution = await solver.calculate(params: params);
       running = false;
       solution.destination = planOrEff ? 1 : 2;
       solution.params = params;

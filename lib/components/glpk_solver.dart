@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:chaldea/components/components.dart';
 import 'package:flutter/services.dart';
+
 import 'js_engine/js_engine.dart';
 
 class GLPKSolver {
@@ -38,14 +39,13 @@ class GLPKSolver {
   }
 
   /// two part: glpk linear programming +(then) efficiency sort
-  Future<GLPKSolution> calculate(
-      {required GLPKData data, required GLPKParams params}) async {
+  Future<GLPKSolution> calculate({required GLPKParams params}) async {
     // if use integer GLPK (simplex then intopt),
     // it may run out of time and memory, then crash.
     // so only use simplex here
     GLPKSolution solution = GLPKSolution();
     final params2 = GLPKParams.from(params);
-    final data2 = GLPKData.from(data);
+    final data2 = DropRateData.from(params.dropRatesData);
     _preProcess(data: data2, params: params2);
 
     try {
@@ -94,7 +94,7 @@ class GLPKSolver {
   }
 
   void _solveEfficiency(
-      GLPKSolution solution, GLPKParams params, GLPKData data) {
+      GLPKSolution solution, GLPKParams params, DropRateData data) {
     Map<String, double> objectiveWeights = params.objectiveWeights;
     objectiveWeights.removeWhere((key, value) => value <= 0);
 
@@ -127,7 +127,8 @@ class GLPKSolver {
 }
 
 /// [data] and [params] must be copied instances. Modify them **in-place** here
-GLPKData _preProcess({required GLPKData data, required GLPKParams params}) {
+DropRateData _preProcess(
+    {required DropRateData data, required GLPKParams params}) {
   print('pre processing GLPK data and params...');
   // inside pre processing, use [params.objective] not [items] and [counts]
   final objective = params.objectiveCounts;

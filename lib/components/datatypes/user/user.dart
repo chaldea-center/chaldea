@@ -1,28 +1,6 @@
 // userdata: plan etc.
 part of datatypes;
 
-enum GameServer {
-  jp,
-  cn,
-  tw,
-  en,
-}
-
-extension GameServerUtil on GameServer {
-  String get localized {
-    switch (this) {
-      case GameServer.jp:
-        return S.current.server_jp;
-      case GameServer.cn:
-        return S.current.server_cn;
-      case GameServer.tw:
-        return S.current.server_tw;
-      case GameServer.en:
-        return S.current.server_na;
-    }
-  }
-}
-
 @JsonSerializable(checked: true)
 class User {
   String? key;
@@ -73,6 +51,7 @@ class User {
   Set<String> plannedSummons;
   SaintQuartzPlan saintQuartzPlan;
   bool isMasterGirl;
+  bool use6thDropRate;
 
   /// milliseconds of event's startTimeJP
   int msProgress;
@@ -99,6 +78,7 @@ class User {
     Set<String>? plannedSummons,
     SaintQuartzPlan? saintQuartzPlan,
     bool? isMasterGirl,
+    bool? use6thDropRate,
     int? msProgress,
     Map<int, int>? duplicatedServants,
     GLPKParams? glpkParams,
@@ -115,6 +95,7 @@ class User {
         plannedSummons = plannedSummons ?? <String>{},
         saintQuartzPlan = saintQuartzPlan ?? SaintQuartzPlan(),
         isMasterGirl = isMasterGirl ?? true,
+        use6thDropRate = use6thDropRate ?? true,
         msProgress = msProgress ?? -1,
         duplicatedServants = duplicatedServants ?? {},
         glpkParams = glpkParams ?? GLPKParams(),
@@ -587,4 +568,26 @@ class CampaignPlan {
       _$CampaignPlanFromJson(data);
 
   Map<String, dynamic> toJson() => _$CampaignPlanToJson(this);
+}
+
+enum GameServer {
+  jp,
+  cn,
+  tw,
+  en,
+}
+
+extension GameServerUtil on GameServer {
+  String get localized {
+    switch (this) {
+      case GameServer.jp:
+        return S.current.server_jp;
+      case GameServer.cn:
+        return S.current.server_cn;
+      case GameServer.tw:
+        return S.current.server_tw;
+      case GameServer.en:
+        return S.current.server_na;
+    }
+  }
 }

@@ -5,10 +5,14 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/enemy/enemy_detail_page.dart';
 import 'package:chaldea/modules/servant/servant_detail_page.dart';
 
+import 'filter_page.dart';
+
 class QuestCard extends StatefulWidget {
   final Quest quest;
+  final bool? use6th;
 
-  const QuestCard({Key? key, required this.quest}) : super(key: key);
+  QuestCard({Key? key, required this.quest, this.use6th})
+      : super(key: Key(quest.indexKey ?? quest.name));
 
   @override
   _QuestCardState createState() => _QuestCardState();
@@ -16,12 +20,32 @@ class QuestCard extends StatefulWidget {
 
 class _QuestCardState extends State<QuestCard> {
   Quest get quest => widget.quest;
-  late bool showTrueName;
+  bool showTrueName = false;
+  bool? _use6th;
+
+  bool get use6th => quest.isFree && (_use6th ?? db.curUser.use6thDropRate);
+
+  bool get show6th {
+    return quest.isFree &&
+        db.gameData.planningData
+            .getDropRate(true)
+            .colNames
+            .contains(quest.indexKey);
+  }
 
   @override
   void initState() {
     super.initState();
     showTrueName = !Language.isCN;
+    _use6th = widget.use6th;
+  }
+
+  @override
+  void didUpdateWidget(covariant QuestCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.use6th != widget.use6th) {
+      _use6th = widget.use6th;
+    }
   }
 
   @override
@@ -167,7 +191,27 @@ class _QuestCardState extends State<QuestCard> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Text(S.current.game_drop + (quest.isFree ? '(AP): ' : ': ')),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(S.current.game_drop + (quest.isFree ? '(AP): ' : ': ')),
+                  if (show6th)
+                    FilterOption(
+                      selected: use6th,
+                      value: '6th',
+                      child: const Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        child: Text('6th'),
+                      ),
+                      onChanged: (v) => setState(() {
+                        _use6th = v;
+                      }),
+                      shrinkWrap: true,
+                    ),
+                ],
+              ),
               Expanded(
                 child: Center(
                   child: _getDropsWidget(battle.drops, quest.isFree),
@@ -388,32 +432,34 @@ class _QuestCardState extends State<QuestCard> {
 
   /// only drops of free quest useApRate
   /// TODO: if provide drop rate data, [items] here should not be used
-  Widget _getDropsWidget(Map<String, int> items, bool useApRate) {
+  Widget _getDropsWidget(Map<String, int> items, bool useDropRate) {
+    // <item, shownText>
     Map<String, String> dropTexts = {};
-    if (useApRate) {
-      final glpk = db.gameData.glpk;
-      int colIndex = glpk.colNames.indexOf(quest.indexKey ?? '-');
+    if (useDropRate) {
+      final dropRates = db.gameData.planningData.getDropRate(use6th);
+      int colIndex = dropRates.colNames.indexOf(quest.indexKey ?? '-');
 
       // not list in glpk
       if (colIndex < 0) {
         items.keys.forEach((element) => dropTexts[element] = '');
-      }
-
-      Map<String, double> apRates = {};
-      for (var i = 0; i < glpk.rowNames.length; i++) {
-        if (colIndex >= 0 && glpk.matrix[i][colIndex] > 0) {
-          apRates[glpk.rowNames[i]] = glpk.matrix[i][colIndex];
+      } else {
+        Map<String, double> apRates = {};
+        for (var i = 0; i < dropRates.rowNames.length; i++) {
+          if (colIndex >= 0 && dropRates.matrix[i][colIndex] > 0) {
+            apRates[dropRates.rowNames[i]] =
+                dropRates.costs[colIndex] / dropRates.matrix[i][colIndex];
+          }
         }
+        final entryList = apRates.entries.toList()
+          ..sort((a, b) => (a.value - b.value).sign.toInt());
+        entryList.forEach((entry) {
+          String v = entry.value >= 1000
+              ? entry.value.toInt().toString()
+              : entry.value.toStringAsPrecision(4);
+          dropTexts[entry.key] =
+              formatNumber(double.parse(v), groupSeparator: '', precision: 4);
+        });
       }
-      final entryList = apRates.entries.toList()
-        ..sort((a, b) => (a.value - b.value).sign.toInt());
-      entryList.forEach((entry) {
-        String v = entry.value >= 1000
-            ? entry.value.toInt().toString()
-            : entry.value.toStringAsPrecision(4);
-        dropTexts[entry.key] =
-            formatNumber(double.parse(v), groupSeparator: '', precision: 4);
-      });
     } else {
       items.forEach((key, value) => dropTexts[key] = value.toString());
     }

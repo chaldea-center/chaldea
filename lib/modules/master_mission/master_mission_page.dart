@@ -7,7 +7,8 @@ import 'package:chaldea/modules/shared/quest_card.dart';
 import 'package:flutter/services.dart';
 
 final localized = Localized.masterMission;
-
+List<WeeklyMissionQuest> get _missionData =>
+    db.gameData.planningData.weeklyMissions;
 String _convertLocalized(String key) {
   return key.split('_').map((e) => localized.of(e)).join('_');
 }
@@ -21,7 +22,6 @@ class MasterMissionPage extends StatefulWidget {
 
 class _MasterMissionPageState extends State<MasterMissionPage>
     with SingleTickerProviderStateMixin {
-  List<WeeklyMissionQuest> get srcData => db.gameData.glpk.weeklyMissionData;
 
   List<LocalizedText> tabNames = const [
     LocalizedText(chs: '一般特性', jpn: '共有特性', eng: 'General Trait'),
@@ -48,7 +48,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: tabNames.length, vsync: this);
-    filterData = WeeklyFilterData.fromQuests(srcData);
+    filterData = WeeklyFilterData.fromQuests(_missionData);
     engine.init(() async {
       await engine.eval(await rootBundle.loadString('res/js/glpk.min.js'),
           name: '<glpk.min.js>');
@@ -406,7 +406,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
     cols.sort((a, b) => (allCounts[b]! - allCounts[a]!).sign.toInt());
     for (var colName in cols) {
       children.add(_oneQuest(
-        weeklyQuest: srcData.firstWhere((e) => e.place == colName),
+        weeklyQuest: _missionData.firstWhere((e) => e.place == colName),
         eff: allCounts[colName],
       ));
     }
@@ -481,9 +481,8 @@ class _MasterMissionPageState extends State<MasterMissionPage>
 
   void solve() async {
     params = BasicGLPKParams();
-    params.colNames
-        .addAll(db.gameData.glpk.weeklyMissionData.map((e) => e.place));
-    params.cVec.addAll(db.gameData.glpk.weeklyMissionData.map((e) => e.ap));
+    params.colNames.addAll(_missionData.map((e) => e.place));
+    params.cVec.addAll(_missionData.map((e) => e.ap));
     params.integer = true;
     for (var mission in missions) {
       var row = mission.rowOfA;
@@ -510,7 +509,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
     setState(() {
       solution.clear();
       Map.from(jsonDecode(result ?? '')).forEach((key, value) {
-        solution[srcData.firstWhere((e) => e.place == key)] = value;
+        solution[_missionData.firstWhere((e) => e.place == key)] = value;
       });
     });
     print(result);
@@ -608,7 +607,7 @@ class WeeklyFilterData {
 
   List<num> get rowOfA {
     List<num> row = [];
-    for (var quest in db.gameData.glpk.weeklyMissionData) {
+    for (var quest in _missionData) {
       int? count;
       final questTraits = quest.allTraits;
       checked.forEach((key, value) {

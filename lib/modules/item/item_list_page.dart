@@ -125,7 +125,8 @@ class ItemListPageState extends State<ItemListPage>
         if (rarity > 0 && rarity <= 3) {
           value -= db.userData.itemAbundantValue[rarity - 1];
         }
-        if (db.gameData.glpk.rowNames.contains(itemKey) && value < 0) {
+        if (db.gameData.planningData.dropRates.rowNames.contains(itemKey) &&
+            value < 0) {
           objective[itemKey] = -value;
         }
       });

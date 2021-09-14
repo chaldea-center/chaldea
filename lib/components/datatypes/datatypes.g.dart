@@ -682,11 +682,6 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
                         .map((e) => Quest.fromJson(e as Map<String, dynamic>))
                         .toList()),
               )),
-      glpk: $checkedConvert(
-          json,
-          'glpk',
-          (v) =>
-              v == null ? null : GLPKData.fromJson(v as Map<String, dynamic>)),
       mysticCodes: $checkedConvert(
           json,
           'mysticCodes',
@@ -701,6 +696,12 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
                 (k, e) =>
                     MapEntry(k, Summon.fromJson(e as Map<String, dynamic>)),
               )),
+      planningData: $checkedConvert(
+          json,
+          'planningData',
+          (v) => v == null
+              ? null
+              : PlanningData.fromJson(v as Map<String, dynamic>)),
       categorizedEnemies: $checkedConvert(
           json,
           'categorizedEnemies',
@@ -735,9 +736,9 @@ Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
       'events': instance.events,
       'freeQuests': instance.freeQuests,
       'svtQuests': instance.svtQuests.map((k, e) => MapEntry(k.toString(), e)),
-      'glpk': instance.glpk,
       'mysticCodes': instance.mysticCodes,
       'summons': instance.summons,
+      'planningData': instance.planningData,
       'categorizedEnemies': instance.categorizedEnemies,
       'fsmSvtIdMapping':
           instance.fsmSvtIdMapping.map((k, e) => MapEntry(k.toString(), e)),
@@ -775,31 +776,53 @@ Map<String, dynamic> _$ItemCostToJson(ItemCost instance) => <String, dynamic>{
       'appendSkill': instance.appendSkill,
     };
 
-GLPKData _$GLPKDataFromJson(Map<String, dynamic> json) {
-  return GLPKData(
-    colNames:
-        (json['colNames'] as List<dynamic>).map((e) => e as String).toList(),
-    rowNames:
-        (json['rowNames'] as List<dynamic>).map((e) => e as String).toList(),
-    costs: (json['costs'] as List<dynamic>).map((e) => e as int).toList(),
-    matrix: (json['matrix'] as List<dynamic>)
-        .map((e) =>
-            (e as List<dynamic>).map((e) => (e as num).toDouble()).toList())
-        .toList(),
-    freeCounts: Map<String, int>.from(json['freeCounts'] as Map),
-    weeklyMissionData: (json['weeklyMissionData'] as List<dynamic>)
+PlanningData _$PlanningDataFromJson(Map<String, dynamic> json) {
+  return PlanningData(
+    dropRates: DropRateData.fromJson(json['dropRates'] as Map<String, dynamic>),
+    legacyDropRates:
+        DropRateData.fromJson(json['legacyDropRates'] as Map<String, dynamic>),
+    weeklyMissions: (json['weeklyMissions'] as List<dynamic>)
         .map((e) => WeeklyMissionQuest.fromJson(e as Map<String, dynamic>))
         .toList(),
   );
 }
 
-Map<String, dynamic> _$GLPKDataToJson(GLPKData instance) => <String, dynamic>{
+Map<String, dynamic> _$PlanningDataToJson(PlanningData instance) =>
+    <String, dynamic>{
+      'dropRates': instance.dropRates,
+      'legacyDropRates': instance.legacyDropRates,
+      'weeklyMissions': instance.weeklyMissions,
+    };
+
+DropRateData _$DropRateDataFromJson(Map<String, dynamic> json) {
+  return DropRateData(
+    freeCounts: Map<String, int>.from(json['freeCounts'] as Map),
+    sampleNum:
+        (json['sampleNum'] as List<dynamic>).map((e) => e as int).toList(),
+    colNames:
+        (json['colNames'] as List<dynamic>).map((e) => e as String).toList(),
+    rowNames:
+        (json['rowNames'] as List<dynamic>).map((e) => e as String).toList(),
+    costs: (json['costs'] as List<dynamic>).map((e) => e as int).toList(),
+    sparseMatrix: (json['sparseMatrix'] as Map<String, dynamic>).map(
+      (k, e) => MapEntry(
+          int.parse(k),
+          (e as Map<String, dynamic>).map(
+            (k, e) => MapEntry(int.parse(k), (e as num).toDouble()),
+          )),
+    ),
+  );
+}
+
+Map<String, dynamic> _$DropRateDataToJson(DropRateData instance) =>
+    <String, dynamic>{
+      'freeCounts': instance.freeCounts,
+      'sampleNum': instance.sampleNum,
       'colNames': instance.colNames,
       'rowNames': instance.rowNames,
       'costs': instance.costs,
-      'matrix': instance.matrix,
-      'freeCounts': instance.freeCounts,
-      'weeklyMissionData': instance.weeklyMissionData,
+      'sparseMatrix': instance.sparseMatrix.map((k, e) =>
+          MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e)))),
     };
 
 WeeklyMissionQuest _$WeeklyMissionQuestFromJson(Map<String, dynamic> json) {
@@ -837,6 +860,7 @@ Map<String, dynamic> _$WeeklyMissionQuestToJson(WeeklyMissionQuest instance) =>
 GLPKParams _$GLPKParamsFromJson(Map<String, dynamic> json) {
   return $checkedNew('GLPKParams', json, () {
     final val = GLPKParams(
+      use6th: $checkedConvert(json, 'use6th', (v) => v as bool?),
       rows: $checkedConvert(json, 'rows',
           (v) => (v as List<dynamic>?)?.map((e) => e as String).toList()),
       blacklist: $checkedConvert(json, 'blacklist',
@@ -867,6 +891,7 @@ GLPKParams _$GLPKParamsFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$GLPKParamsToJson(GLPKParams instance) =>
     <String, dynamic>{
+      'use6th': instance.use6th,
       'rows': instance.rows,
       'planItemCounts': instance.planItemCounts,
       'planItemWeights': instance.planItemWeights,
@@ -2343,6 +2368,8 @@ User _$UserFromJson(Map<String, dynamic> json) {
               ? null
               : SaintQuartzPlan.fromJson(v as Map<String, dynamic>)),
       isMasterGirl: $checkedConvert(json, 'isMasterGirl', (v) => v as bool?),
+      use6thDropRate:
+          $checkedConvert(json, 'use6thDropRate', (v) => v as bool?),
       msProgress: $checkedConvert(json, 'msProgress', (v) => v as int?),
       duplicatedServants: $checkedConvert(
           json,
@@ -2385,6 +2412,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'plannedSummons': instance.plannedSummons.toList(),
       'saintQuartzPlan': instance.saintQuartzPlan,
       'isMasterGirl': instance.isMasterGirl,
+      'use6thDropRate': instance.use6thDropRate,
       'msProgress': instance.msProgress,
       'duplicatedServants':
           instance.duplicatedServants.map((k, e) => MapEntry(k.toString(), e)),
