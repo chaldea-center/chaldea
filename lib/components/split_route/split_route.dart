@@ -46,7 +46,15 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
 
   /// whether to use detail layout if in split mode
   /// if null, don't use split view
-  final bool? detail;
+  bool? _detail;
+
+  bool? get detail => _detail;
+
+  set detail(bool? detail) {
+    if (detail == _detail) return;
+    _detail = detail;
+    changedInternalState();
+  }
 
   /// Master page ratio of full-width, between 0~100
   final int masterRatio;
@@ -69,7 +77,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   SplitRoute({
     RouteSettings? settings,
     required this.builder,
-    this.detail = false,
+    bool? detail = false,
     this.masterRatio = _kSplitMasterRatio,
     this.transitionDuration = kSplitRouteDuration,
     Duration? reverseTransitionDuration,
@@ -77,10 +85,12 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     this.maintainState = true,
     this.title,
     bool fullscreenDialog = false,
-  })  : assert(builder != null),
+  })
+      : assert(builder != null),
         assert(masterRatio > 0 && masterRatio < 100),
         assert(maintainState != null),
         assert(fullscreenDialog != null),
+        _detail = detail,
         reverseTransitionDuration =
             reverseTransitionDuration ?? transitionDuration,
         opaque = opaque ?? detail != true,
@@ -216,8 +226,8 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   static int popDetailRoutes(BuildContext context) {
     // whether to store all values returned by routes?
     assert(() {
-      final curRoute = ModalRoute.of(context);
-      if (curRoute is! SplitRoute || curRoute.detail == true) {
+      final curRoute = SplitRoute.of(context);
+      if (curRoute == null || curRoute.detail == true) {
         throw StateError(
             'DO NOT call popDetails outside SplitRoute or inside detail page');
       }
@@ -250,8 +260,8 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     int n = 0;
     if (popDetail) {
       assert(() {
-        final route = ModalRoute.of(context);
-        if (route is SplitRoute && route.detail == true) {
+        final route = SplitRoute.of(context);
+        if (route != null && route.detail == true) {
           throw StateError('DO NOT call pop detail in detail page');
         }
         return true;
@@ -293,6 +303,11 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
       rootNavigator: rootNavigator,
       settings: settings,
     );
+  }
+
+  static SplitRoute<T2>? of<T2 extends Object?>(BuildContext context) {
+    final route = ModalRoute.of<T2>(context);
+    if (route is SplitRoute<T2>) return route;
   }
 }
 

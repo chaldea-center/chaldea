@@ -907,6 +907,9 @@ Map<String, dynamic> _$GLPKParamsToJson(GLPKParams instance) =>
 GLPKSolution _$GLPKSolutionFromJson(Map<String, dynamic> json) {
   return GLPKSolution(
     destination: json['destination'] as int?,
+    originalItems: (json['originalItems'] as List<dynamic>?)
+        ?.map((e) => e as String)
+        .toList(),
     totalCost: json['totalCost'] as int?,
     totalNum: json['totalNum'] as int?,
     countVars: (json['countVars'] as List<dynamic>?)
@@ -921,6 +924,7 @@ GLPKSolution _$GLPKSolutionFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$GLPKSolutionToJson(GLPKSolution instance) =>
     <String, dynamic>{
       'destination': instance.destination,
+      'originalItems': instance.originalItems,
       'totalCost': instance.totalCost,
       'totalNum': instance.totalNum,
       'countVars': instance.countVars,

@@ -240,9 +240,10 @@ class Localized {
 
   // temp
   static LocalizedText freeDropRateChangedHint = const LocalizedText(
-    chs: '注意: 日服于六周年之际略微调高了free本的素材掉率，因此现有数据可能存在一定偏差。',
-    jpn: 'ご注意：FGO6周年の時、フリークエストのドロップ率が若干調整されたため、既存のデータに多少のずれが生じる可能性があります。',
+    chs: '注意: 日服于六周年之际略微调高了free本的素材掉率，可在设置中选择是否使用新数据。旧数据截至2.5.5的Free本。',
+    jpn:
+        'ご注意：FGO6周年の時、フリークエストのドロップ率が若干調整されたため、設定で新しいデータを使用するかどうかを選択できます。古いデータは2.5.5のフリークエストまでです。',
     eng:
-        'Note: At the 6th anniversary of JP server, the item drop rate of free quest has been slightly adjusted, so there may be slight deviations in the existing data.',
+        'Note: At the 6th anniversary of JP server, the item drop rate of free quest has been slightly adjusted. You can choose whether to use the new data in the settings. The old data is up to the Free quests of 2.5.5.',
   );
 }

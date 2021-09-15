@@ -117,7 +117,8 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
                             state.value = !state.value;
                           }),
                 ),
-                if (state.value && quest != null) QuestCard(quest: quest)
+                if (state.value && quest != null)
+                  QuestCard(quest: quest, use6th: use6th)
               ],
             );
           });

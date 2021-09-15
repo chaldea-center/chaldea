@@ -7,35 +7,27 @@ import 'package:flutter/services.dart';
 import 'js_engine/js_engine.dart';
 
 class GLPKSolver {
-  final JsEngine js = JsEngine();
-  Completer? _initCompleter;
+  final JsEngine engine = JsEngine();
 
   GLPKSolver();
 
   /// ensure libs loaded
   Future<void> ensureEngine() async {
-    if (_initCompleter != null) {
-      return await _initCompleter!.future;
-    }
-    _initCompleter = Completer();
     // only load once
     // use callback to setState, not Future.
-    await js.init();
     print('=========loading js libs=========');
-    try {
+    await engine.init(() async {
       print('loading glpk.min.js ...');
-      await js.eval(await rootBundle.loadString('res/js/glpk.min.js'),
+      await engine.eval(await rootBundle.loadString('res/js/glpk.min.js'),
           name: '<glpk.min.js>');
       print('loading solver.js ...');
-      await js.eval(await rootBundle.loadString('res/js/solver.js'),
-          name: '<solver.js>');
+      await engine.eval(await rootBundle.loadString('res/js/glpk_solver.js'),
+          name: '<glpk_solver.js>');
       print('=========js libs loaded.=========');
-    } catch (e, s) {
+    }).catchError((e, s) {
       logger.e('initiate js libs error', e, s);
       EasyLoading.showToast('initiation error\n$e');
-      _initCompleter!.completeError(e);
-    }
-    _initCompleter!.complete();
+    });
   }
 
   /// two part: glpk linear programming +(then) efficiency sort
@@ -43,45 +35,67 @@ class GLPKSolver {
     // if use integer GLPK (simplex then intopt),
     // it may run out of time and memory, then crash.
     // so only use simplex here
-    GLPKSolution solution = GLPKSolution();
-    final params2 = GLPKParams.from(params);
-    final data2 = DropRateData.from(params.dropRatesData);
-    _preProcess(data: data2, params: params2);
+    print('=========solving========\nparams=${json.encode(params)}');
+    GLPKSolution solution = GLPKSolution(originalItems: List.of(params.rows));
 
+    params = GLPKParams.from(params);
+    final data = DropRateData.from(params.dropRatesData);
+    _preProcess(data: data, params: params);
+    if (params.rows.isEmpty) {
+      logger.d('after pre processing, params has no valid rows.\n'
+          'params=${json.encode(params)}');
+      EasyLoading.showToast('Invalid inputs');
+      return solution;
+    } else if (params.weights.reduce(max) <= 0) {
+      logger.d('after pre processing, params has no positive weights.\n'
+          'params=${json.encode(params)}');
+      EasyLoading.showToast('At least one weight >0');
+      return solution;
+    }
     try {
+      BasicGLPKParams glpkParams = BasicGLPKParams();
+      glpkParams.colNames = data.colNames;
+      glpkParams.rowNames = data.rowNames;
+      glpkParams.AMat = data.matrix;
+      glpkParams.bVec = params.counts;
+      glpkParams.cVec = params.costMinimize
+          ? data.costs
+          : List.generate(data.costs.length, (index) => 1);
+      glpkParams.integer = false;
+
       await ensureEngine();
-      print('=========solving========\nparams=${json.encode(params)}');
-      if (params2.rows.isEmpty) {
-        logger.d('after pre processing, params has no valid rows.\n'
-            'params=${json.encode(params2)}');
-        EasyLoading.showToast('Invalid inputs');
-      } else if (params2.weights.reduce(max) <= 0) {
-        logger.d('after pre processing, params has no positive weights.\n'
-            'params=${json.encode(params2)}');
-        EasyLoading.showToast('At least one weight >0');
-      } else {
-//        print('modified params: ${json.encode(params2)}');
-        String? resultString = await js.eval(
-            '''solve_glpk( `${json.encode(data2)}`,`${json.encode(params2)}`)''');
-        resultString ??= '';
-        resultString = resultString.trim();
-        logger.v('result: $resultString');
-        if (resultString.isNotEmpty != true || resultString == 'null') {
-          throw 'qjsEngine return nothing!';
+      final resultString = await engine.eval(
+          '''glpk_solver(`${jsonEncode(glpkParams)}`)''',
+          name: 'solver_caller');
+      logger.v('result: $resultString');
+
+      Map<String, double> result = Map.from(jsonDecode(resultString ?? '{}'));
+      solution.params = params;
+      solution.totalNum = 0;
+      solution.totalCost = 0;
+      result.forEach((questKey, count) {
+        int col = data.colNames.indexOf(questKey);
+        assert(col >= 0);
+        solution.totalNum = solution.totalNum! + count.ceil();
+        solution.totalCost =
+            solution.totalCost! + count.ceil() * data.costs[col];
+        Map<String, int> details = {};
+        for (String itemKey in params.rows) {
+          int row = data.rowNames.indexOf(itemKey);
+          if (data.matrix[row][col] > 0) {
+            details[itemKey] = (data.matrix[row][col] * count).floor();
+          }
         }
-        dynamic result;
-        try {
-          result = json.decode(resultString);
-          print('after jsondecode: ${result.runtimeType}, $result');
-        } catch (e) {
-          throw FormatException(
-              'JsonDecodeError(error=$e)\njsonString:$result');
-        }
-        solution = GLPKSolution.fromJson(Map.from(result));
-        solution.sortCountVars();
-      }
+        solution.countVars.add(GLPKVariable<int>(
+          name: questKey,
+          value: count.ceil(),
+          cost: data.costs[col],
+          detail: details,
+        ));
+      });
+      solution.sortCountVars();
       //
-      _solveEfficiency(solution, params2, data2);
+      _solveEfficiency(solution, params, data);
     } catch (e, s) {
       logger.e('Execute GLPK solver failed', e, s);
       EasyLoading.showToast('Execute GLPK solver failed:\n$e');
@@ -106,7 +120,7 @@ class GLPKSolver {
         String itemKey = data.rowNames[row];
         if (objectiveWeights.keys.contains(itemKey) &&
             data.matrix[row][col] > 0) {
-          dropWeights[itemKey] = (params.useAP20 ? 20 : data.costs[col]) /
+          dropWeights[itemKey] = (params.useAP20 ? 20 / data.costs[col] : 1) *
               data.matrix[row][col] *
               objectiveWeights[itemKey]!;
           sortDict(dropWeights, reversed: true, inPlace: true);
@@ -122,7 +136,7 @@ class GLPKSolver {
 
   /// must call [dispose]!!!
   void dispose() {
-    js.dispose();
+    engine.dispose();
   }
 }
 
@@ -188,6 +202,7 @@ DropRateData _preProcess(
     double minAPRateVal = double.infinity;
     for (int j = 0; j < data.colNames.length; j++) {
       double v = data.matrix[row][j];
+      if (v > 0) v = data.costs[j] / v;
       if (!removeCols.contains(data.colNames[j]) && v > 0) {
         if (v < minAPRateVal) {
           // record min col
@@ -212,7 +227,9 @@ DropRateData _preProcess(
 
   // remove rows/cols above
   objective.forEach((key, value) {
-    if (removeRows.contains(key)) params.rows.remove(key);
+    if (removeRows.contains(key)) {
+      params.rows.remove(key);
+    }
   });
   removeRows.forEach((element) => data.removeRow(element));
   removeCols.forEach((element) {
@@ -224,5 +241,6 @@ DropRateData _preProcess(
 
   logger.v('processed data: ${data.rowNames.length} rows,'
       ' ${data.colNames.length} columns');
+  print(const JsonEncoder.withIndent('  ').convert(params));
   return data;
 }

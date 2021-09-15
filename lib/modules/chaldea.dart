@@ -14,10 +14,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:screenshot/screenshot.dart';
 
-import 'route_404.dart';
 import 'cmd_code/cmd_code_detail_page.dart';
 import 'craft/craft_detail_page.dart';
 import 'debug/debug_floating_menu.dart';
+import 'route_404.dart';
 import 'servant/costume_detail_page.dart';
 import 'servant/servant_detail_page.dart';
 
@@ -139,7 +139,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
             return [
               SplitRoute(
                 builder: (context, _) => _ChaldeaHome(key: _homeKey),
-                detail: false,
+                detail: null,
               )
             ];
           },
@@ -289,6 +289,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
           content: S.current.load_dataset_error_hint);
     }
     _initiated = true;
+    SplitRoute.of(context)?.detail = false;
     if (mounted) setState(() {});
     logger.i('App version: ${AppInfo.appName} v${AppInfo.fullVersion}');
     logger.i('appPath: ${db.paths.appPath}');

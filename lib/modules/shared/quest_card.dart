@@ -12,7 +12,7 @@ class QuestCard extends StatefulWidget {
   final bool? use6th;
 
   QuestCard({Key? key, required this.quest, this.use6th})
-      : super(key: Key(quest.indexKey ?? quest.name));
+      : super(key: Key('QuestCard_${quest.indexKey ?? quest.name}'));
 
   @override
   _QuestCardState createState() => _QuestCardState();

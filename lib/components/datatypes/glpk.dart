@@ -1,3 +1,4 @@
+// ignore_for_file: non_constant_identifier_names
 part of datatypes;
 
 @JsonSerializable()
@@ -53,10 +54,9 @@ class DropRateData {
     this.sparseMatrix = const {},
   }) : matrix = sparseToMatrix(sparseMatrix, rowNames.length, colNames.length);
 
-  static List<List<double>> sparseToMatrix(
-      Map<int, Map<int, double>> sparse, int rows, int cols) {
+  static List<List<double>> sparseToMatrix(Map<int, Map<int, double>> sparse, int rows, int cols) {
     List<List<double>> m =
-        List.generate(rows, (index) => List.generate(cols, (index) => 0));
+    List.generate(rows, (index) => List.generate(cols, (index) => 0));
     sparse.forEach((i, row) {
       row.forEach((j, v) {
         // 80.0 =>80.0%
@@ -192,6 +192,7 @@ class GLPKParams {
   int maxColNum;
 
   /// for event quests, [extraCols]>[jpMaxColNum]
+  /// not used
   List<String> extraCols;
 
   /// If true, use ILP(simplex+intopt), else use simplex only
@@ -280,6 +281,7 @@ class GLPKParams {
 class GLPKSolution {
   /// 0-glpk plan, 1-efficiency
   int destination = 0;
+  List<String> originalItems;
   int? totalCost;
   int? totalNum;
 
@@ -294,11 +296,14 @@ class GLPKSolution {
 
   GLPKSolution({
     int? destination = 0,
+    List<String>? originalItems,
     this.totalCost,
     this.totalNum,
     List<GLPKVariable>? countVars,
     List<GLPKVariable>? weightVars,
-  })  : destination = destination ?? 0,
+  })
+      : destination = destination ?? 0,
+        originalItems = originalItems ?? [],
         countVars = countVars ?? [],
         weightVars = weightVars ?? [];
 
@@ -315,6 +320,14 @@ class GLPKSolution {
   void sortWeightVars() {
     weightVars.sort((a, b) => sum(b.detail.values as Iterable<double>)
         .compareTo(sum(a.detail.values as Iterable<double>)));
+  }
+
+  List<String> getIgnoredKeys() {
+    List<String> items = [];
+    for (final v in countVars) {
+      items.addAll(v.detail.keys);
+    }
+    return originalItems.where((e) => !items.contains(e)).toList();
   }
 
   factory GLPKSolution.fromJson(Map<String, dynamic> data) =>
@@ -368,7 +381,7 @@ class _Converter<T> implements JsonConverter<T, Object> {
 class BasicGLPKParams {
   List<String> colNames; //n
   List<String> rowNames; //m
-  List<List<num>> AMat; // ignore: non_constant_identifier_names, // m*n
+  List<List<num>> AMat; // m*n
   List<num> bVec; //m
   List<num> cVec; //n
   bool integer;
@@ -376,7 +389,7 @@ class BasicGLPKParams {
   BasicGLPKParams({
     List<String>? colNames,
     List<String>? rowNames,
-    List<List<num>>? AMat, // ignore: non_constant_identifier_names
+    List<List<num>>? AMat,
     List<num>? bVec,
     List<num>? cVec,
     bool? integer,

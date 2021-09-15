@@ -21,6 +21,21 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
     return SimpleDialog(
       title: Text(S.of(context).settings_tab_name),
       children: [
+        SwitchListTile.adaptive(
+          value: params.use6th,
+          title: Text(LocalizedText.of(
+              chs: '日服掉落数据', jpn: '改善されたドロップ', eng: 'JP DropRate Data')),
+          subtitle: Text(LocalizedText.of(
+              chs: '6周年(截至2.5.5)',
+              jpn: '6周年(2.5.5まで)',
+              eng: '6th Anniversary(as of 2.5.5)')),
+          controlAffinity: ListTileControlAffinity.trailing,
+          onChanged: (v) {
+            setState(() {
+              params.use6th = v;
+            });
+          },
+        ),
         ListTile(
           title: Text(S.of(context).drop_calc_min_ap),
           trailing: DropdownButton<int>(

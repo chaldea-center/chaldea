@@ -28,6 +28,26 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
+    List<String> ignoredItems = widget.solution?.getIgnoredKeys() ?? [];
+    if (ignoredItems.isNotEmpty) {
+      children.add(Card(
+        margin: const EdgeInsets.all(8),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Wrap(
+            spacing: 3,
+            runSpacing: 4,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(LocalizedText.of(
+                  chs: '已忽略：', jpn: 'スキップ：', eng: 'Ignored: ')),
+              ...ignoredItems.map((e) =>
+                  Item.iconBuilder(context: context, itemKey: e, width: 32))
+            ],
+          ),
+        ),
+      ));
+    }
     widget.solution?.countVars.forEach((variable) {
       final Quest? quest = db.gameData.getFreeQuest(variable.name);
       children.add(Container(

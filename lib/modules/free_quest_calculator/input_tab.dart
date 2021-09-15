@@ -301,7 +301,8 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               icon: const Icon(Icons.settings),
               color: params.minCost > 0 ||
                       params.maxColNum > 0 ||
-                      params.blacklist.isNotEmpty
+                      params.blacklist.isNotEmpty ||
+                      !params.use6th
                   ? Colors.red
                   : Theme.of(context).colorScheme.primary,
               tooltip: S.of(context).settings_tab_name,

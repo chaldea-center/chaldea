@@ -504,11 +504,12 @@ class _MasterMissionPageState extends State<MasterMissionPage>
       return;
     }
     // call js
+    await engine.ensureInitiated();
     final result = await engine.eval('''glpk_solver(`${jsonEncode(params)}`)''',
         name: 'solver_caller');
     setState(() {
       solution.clear();
-      Map.from(jsonDecode(result ?? '')).forEach((key, value) {
+      Map.from(jsonDecode(result ?? '{}')).forEach((key, value) {
         solution[_missionData.firstWhere((e) => e.place == key)] = value;
       });
     });

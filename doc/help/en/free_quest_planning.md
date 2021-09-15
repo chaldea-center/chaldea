@@ -1,6 +1,8 @@
 ## Free Quest Planning
 
 *The result is for reference only*
+- **JP DropRate Data**: At the 6th anniversary of JP server, the item drop rate of free quest has been slightly adjusted.
+ You can choose whether to use the new data in the settings. The old data is up to the Free quests of 2.5.5.
 - **Planning/efficiency**:
     - Planning: Set the count of items for planning
     - Efficiency: Set the weight of each item
