@@ -11,6 +11,7 @@
 #include <file_selector_windows/file_selector_plugin.h>
 #include <flutter_audio_desktop/flutter_audio_desktop_plugin.h>
 #include <flutter_qjs/flutter_qjs_plugin.h>
+#include <libwinmedia/libwinmedia_plugin.h>
 #include <url_launcher_windows/url_launcher_windows.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
@@ -24,6 +25,8 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("FlutterAudioDesktopPlugin"));
   FlutterQjsPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("FlutterQjsPlugin"));
+  LibwinmediaPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("LibwinmediaPlugin"));
   UrlLauncherWindowsRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("UrlLauncherWindows"));
 }

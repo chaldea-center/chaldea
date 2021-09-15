@@ -62,6 +62,7 @@ dependencies:
   intl: ^0.17.0
   json_annotation: 4.0.1
   kana_kit: ^2.0.0
+  libwinmedia: ^0.0.3
   logger: ^1.1.0
   lpinyin: ^2.0.3
   modal_bottom_sheet: ^2.0.0

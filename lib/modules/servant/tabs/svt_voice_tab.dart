@@ -1,11 +1,9 @@
 import 'dart:convert';
 
-import 'package:audioplayers/audioplayers.dart' as audio1;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/lang_switch.dart';
-import 'package:flutter_audio_desktop/flutter_audio_desktop.dart' as audio2;
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:chaldea/platform_interface/audio_player/audio_player.dart';
 import 'package:path/path.dart' as p;
 
 import '../servant_detail_page.dart';
@@ -25,7 +23,7 @@ class SvtVoiceTab extends SvtTabBaseWidget {
 
 class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
   Language? lang;
-  GeneralAudioPlayer? audioPlayer;
+  AudioPlayer? audioPlayer;
 
   @override
   void initState() {
@@ -239,7 +237,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
       // check before call and set button disabled
       return;
     }
-    audioPlayer ??= GeneralAudioPlayer();
+    audioPlayer ??= AudioPlayer();
     final url = await WikiUtil.resolveFileUrl(record.voiceFile!);
     final file = await WikiUtil.getWikiFile(record.voiceFile!);
     if (file == null) {
@@ -253,101 +251,6 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
 
     if (!mounted) return;
     await audioPlayer?.play(file.path, url);
-  }
-}
-
-class GeneralAudioPlayer {
-  /// audioplayers:
-  ///   * Android: mp3/wav/ogg/ogx √
-  ///   * iOS/macOS: only mp3
-  audio1.AudioPlayer? player1;
-
-  /// flutter_audio_desktop: miniaudio
-  /// * support mp3/wav
-  /// * not support ogg/ogx
-  audio2.AudioPlayer? player2;
-
-  bool _valid;
-
-  bool get valid => _valid;
-
-  GeneralAudioPlayer() : _valid = true {
-    if (usePlayer1) {
-      player1 = audio1.AudioPlayer();
-      player1!.onPlayerError.listen((event) {
-        EasyLoading.showError(LocalizedText.of(
-            chs: '$event\n可能是不受支持的格式',
-            jpn: '$event\nサポートされていない形式かもしれ',
-            eng: '$event\nMay be an unsupported format'));
-      });
-    } else {
-      player2 = audio2.AudioPlayer();
-    }
-  }
-
-  bool get usePlayer1 => !PlatformU.isWindows;
-
-  /// [path] must be local path
-  /// [DefaultCacheManager] download from [originPath] and save cache as [path]
-  Future<void> play(String path, [String? originPath]) async {
-    assert(() {
-      if (!_valid) {
-        throw Exception('Call player after disposed.');
-      }
-      return true;
-    }());
-    if (!checkSupport(path, originPath)) {
-      return;
-    }
-    if (usePlayer1) {
-      await player1!.stop();
-      await player1!.play(path, isLocal: true);
-    } else {
-      if (player2!.isPlaying) {
-        await player2!.stop();
-      }
-      await player2!.load(path);
-      await player2!.play();
-    }
-  }
-
-  bool checkSupport(String path, [String? originPath]) {
-    // print('$originPath\n  -> $path');
-    List<String> unsupported = [];
-    if (usePlayer1) {
-      if (PlatformU.isMacOS || PlatformU.isIOS) {
-        unsupported = ['ogg', 'ogx', 'oga', 'ogv', 'wav'];
-      }
-    } else {
-      unsupported = ['ogg', 'ogx', 'oga', 'ogv'];
-    }
-    String extension = p.extension(originPath ?? path).trimCharLeft('.');
-    if (unsupported.contains(extension)) {
-      EasyLoading.showInfo('Unsupported audio type: $extension');
-      return false;
-    }
-    return true;
-  }
-
-  Future<void> stop() async {
-    _valid = false;
-    if (usePlayer1) {
-      await player1!.stop();
-    } else {
-      await player2!.stop();
-    }
-  }
-
-  Future<void> pause() async {
-    if (usePlayer1) {
-      await player1!.pause();
-    } else {
-      await player2!.pause();
-    }
-  }
-
-  void dispose() {
-    stop().then((value) => player1?.dispose());
   }
 }
 
