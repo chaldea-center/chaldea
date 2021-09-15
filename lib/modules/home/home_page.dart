@@ -15,6 +15,12 @@ class _HomePageState extends State<HomePage> {
   int _curIndex = 0;
 
   @override
+  void initState() {
+    super.initState();
+    MobStat.pageStart(widget.runtimeType.toString());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {

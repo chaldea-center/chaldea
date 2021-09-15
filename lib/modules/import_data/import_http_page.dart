@@ -518,6 +518,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     }
     db.gameData.updateUserDuplicatedServants();
     EasyLoading.showSuccess(S.current.success);
+    MobStat.logEvent('import_data', {"from": "https"});
   }
 
   void importResponseBody() async {

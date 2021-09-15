@@ -21,6 +21,7 @@ export 'img_util.dart';
 export 'localized/localized.dart';
 export 'localized/localized_base.dart';
 export 'logger.dart';
+export 'mob_stat/mob_stat.dart';
 export 'query.dart';
 export 'server_api.dart';
 export 'shared_prefs.dart';

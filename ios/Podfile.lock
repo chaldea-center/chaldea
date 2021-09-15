@@ -1,6 +1,10 @@
 PODS:
   - audioplayers (0.0.1):
     - Flutter
+  - baidu_mob_stat (0.0.3):
+    - BaiduMobStat (>= 5.3.5)
+    - Flutter
+  - BaiduMobStat (5.3.5)
   - catcher (0.0.1):
     - Flutter
   - connectivity_plus (0.0.1):
@@ -89,6 +93,7 @@ PODS:
 
 DEPENDENCIES:
   - audioplayers (from `.symlinks/plugins/audioplayers/ios`)
+  - baidu_mob_stat (from `.symlinks/plugins/baidu_mob_stat/ios`)
   - catcher (from `.symlinks/plugins/catcher/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
@@ -113,6 +118,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - BaiduMobStat
     - DKImagePickerController
     - DKPhotoGallery
     - FMDB
@@ -124,6 +130,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   audioplayers:
     :path: ".symlinks/plugins/audioplayers/ios"
+  baidu_mob_stat:
+    :path: ".symlinks/plugins/baidu_mob_stat/ios"
   catcher:
     :path: ".symlinks/plugins/catcher/ios"
   connectivity_plus:
@@ -169,6 +177,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   audioplayers: 455322b54050b30ea4b1af7cd9e9d105f74efa8c
+  baidu_mob_stat: 105202d73bd511d6db5a9707989b83a6bfa63361
+  BaiduMobStat: 85147dfb781e347fb7693d5bd84c8623a00df301
   catcher: 67a006a3c121c4bbf1202d1e5ea186afb7ef4a18
   connectivity_plus: 5f0eb61093bec56935f21a1699dd2758bc895587
   device_info_plus: e5c5da33f982a436e103237c0c85f9031142abed

@@ -323,7 +323,7 @@ class _SettingsPageState extends State<SettingsPage> {
       db.curUser.msProgress = fixValidRange(db.curUser.msProgress, -4, -1);
     }
     Widget _wrapText(String text) => Text(
-      text,
+          text,
           maxLines: 2,
           style: const TextStyle(fontSize: 14),
           overflow: TextOverflow.ellipsis,

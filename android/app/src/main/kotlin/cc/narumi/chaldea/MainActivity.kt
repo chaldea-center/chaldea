@@ -12,7 +12,6 @@ class MainActivity : FlutterActivity() {
     private val _channel = "chaldea.narumi.cc/chaldea"
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-//        GeneratedPluginRegistrant.registerWith(flutterEngine)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, _channel).apply {
             setMethodCallHandler { methodCall, result ->
                 if (methodCall.method == "sendBackground") {

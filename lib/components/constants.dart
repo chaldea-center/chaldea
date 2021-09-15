@@ -161,7 +161,8 @@ class Constants {
 class EnumUtil {
   EnumUtil._();
 
-  static String shortString(Object enumObj) {
+  static String shortString(Object? enumObj) {
+    if (enumObj == null) return enumObj.toString();
     assert(enumObj.toString().contains('.'),
         'The provided object "$enumObj" is not an enum.');
     return enumObj.toString().split('.').last;

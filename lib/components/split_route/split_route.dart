@@ -15,6 +15,7 @@
 ///  • Dart version 2.13.0 (build 2.13.0-222.0.dev)
 import 'dart:async';
 
+import 'package:chaldea/components/mob_stat/mob_stat.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -85,8 +86,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     this.maintainState = true,
     this.title,
     bool fullscreenDialog = false,
-  })
-      : assert(builder != null),
+  })  : assert(builder != null),
         assert(masterRatio > 0 && masterRatio < 100),
         assert(maintainState != null),
         assert(fullscreenDialog != null),
@@ -295,14 +295,19 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
       settings ??= RouteSettings(name: page.runtimeType.toString());
       return true;
     }());
-    return pushBuilder(
+    String pageName = page.runtimeType.toString();
+    MobStat.pageStart(pageName);
+    return pushBuilder<T>(
       context: context,
       builder: (context, _) => page,
       detail: detail,
       popDetail: popDetail,
       rootNavigator: rootNavigator,
       settings: settings,
-    );
+    ).then<T?>((value) {
+      MobStat.pageEnd(pageName);
+      return value;
+    });
   }
 
   static SplitRoute<T2>? of<T2 extends Object?>(BuildContext context) {

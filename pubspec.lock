@@ -50,6 +50,15 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.0.0-nullsafety.0"
+  baidu_mob_stat:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "115479e8b214fd9d716b7823627d89cbe327c509"
+      url: "https://github.com/narumishi/baidumobstat-flutter"
+    source: git
+    version: "0.0.3"
   boolean_selector:
     dependency: transitive
     description:

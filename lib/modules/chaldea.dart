@@ -175,6 +175,12 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
       await Analyzer.sendStat();
       await Analyzer.sendBdtj();
     }
+    MobStat.start();
+    MobStat.logEvent('config', {
+      "theme":
+          EnumUtil.shortString(db.appSetting.themeMode ?? ThemeMode.system),
+      "lang": Language.current.code,
+    });
   }
 
   /// In carousel link, prefix /chaldea/route

@@ -127,6 +127,7 @@ class _UserDataPageState extends State<UserDataPage> {
       EasyLoading.showToast(S.current.import_data_success);
       db.saveUserData();
       db.notifyDbUpdate(item: true, svt: true);
+      MobStat.logEvent('import_data', {"from": "backup"});
       db.notifyAppUpdate();
     } on FileSelectionCanceledError {
       //
@@ -214,7 +215,10 @@ class _UserDataPageState extends State<UserDataPage> {
           return;
         }
       },
-      onSuccess: () => EasyLoading.showSuccess('Uploaded'),
+      onSuccess: () {
+        EasyLoading.showSuccess('Uploaded');
+        MobStat.logEvent('server_backup', {"action": "upload"});
+      },
       onError: (e, s) => EasyLoading.showError(e.toString()),
     ).whenComplete(() => EasyLoadingUtil.dismiss());
   }
@@ -283,6 +287,7 @@ class _UserDataPageState extends State<UserDataPage> {
         db.itemStat.update();
         db.notifyAppUpdate();
         EasyLoading.showSuccess('Import $fn');
+        MobStat.logEvent('server_backup', {"action": "download"});
       },
       onError: (e, s) => EasyLoading.showError(e.toString()),
     ).whenComplete(() => EasyLoadingUtil.dismiss());

@@ -43,6 +43,7 @@ class AutoUpdateUtil {
       if (!File(zipFp).existsSync()) {
         await _dio.download(url, zipFp);
         logger.d('downloaded $zipFp');
+        MobStat.logEvent('down_dataset', {"src": git.source.toShortString()});
       }
       String extractFolder = join(baseFolder, basenameWithoutExtension(zipFp));
       if (extractFolder == zipFp) extractFolder += '.extract';
@@ -176,6 +177,7 @@ class AutoUpdateUtil {
                 'update dataset from $previousVersion to ${db.gameData.version}');
             EasyLoading.showInfo(
                 S.current.patch_gamedata_success_to(db.gameData.version));
+            MobStat.logEvent('patch_dataset', {"bg": background.toString()});
           } else {
             throw 'Load GameData failed, maybe incompatible with current app version';
           }
@@ -364,6 +366,8 @@ class AutoUpdateUtil {
     if (!validSHA1) {
       await _dio.download(release.targetAsset!.browserDownloadUrl!, fpInstaller,
           deleteOnError: true);
+      MobStat.logEvent(
+          'down_installer', {"src": GitTool.fromDb().source.toShortString()});
       logger.d('downloaded $fpInstaller');
       validSHA1 = await _checkSHA1(fpInstaller, checksum, false);
     } else {

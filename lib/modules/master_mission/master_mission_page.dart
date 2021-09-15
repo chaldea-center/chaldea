@@ -514,6 +514,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
       });
     });
     print(result);
+    MobStat.logEvent('master_mission');
   }
 
   void showHelp() {

@@ -397,6 +397,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
       if (widget.onSolved != null) {
         widget.onSolved!(solution);
       }
+      MobStat.logEvent('free_calc');
     } else {
       EasyLoading.showToast(S.of(context).input_invalid_hint);
     }
