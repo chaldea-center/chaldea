@@ -199,7 +199,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
           end: targetVal.appendSkills[index],
           minVal: 0,
           maxVal: 10,
-          // labelFormatter: (v) => v == 0 ? '0' : v.toString(),
+          labelFormatter: (v) => v == 0 ? '-' : v.toString(),
           onValueChanged: (_start, _end) {
             status.favorite = true;
             curVal.appendSkills[index] = _start;

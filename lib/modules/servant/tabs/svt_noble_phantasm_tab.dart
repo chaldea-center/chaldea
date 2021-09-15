@@ -35,7 +35,8 @@ class _SvtNoblePhantasmTabState extends SvtTabBaseState<SvtNoblePhantasmTab> {
           children: <Widget>[
             buildToggle(status.npIndex, td),
             buildHeader(td),
-            for (Effect e in td.effects) ...buildEffect(e)
+            for (Effect e in td.effects)
+              ...buildEffect(e, status.favorite ? status.npLv : null)
           ],
         )
       ],
@@ -159,7 +160,7 @@ class _SvtNoblePhantasmTabState extends SvtTabBaseState<SvtNoblePhantasmTab> {
     );
   }
 
-  List<Widget> buildEffect(Effect effect) {
+  List<Widget> buildEffect(Effect effect, [int? selected]) {
     assert([0, 1, 5].contains(effect.lvData.length));
     int crossCount = effect.lvData.length > 1
         ? 5
@@ -193,15 +194,26 @@ class _SvtNoblePhantasmTabState extends SvtTabBaseState<SvtNoblePhantasmTab> {
                   if (index >= effect.lvData.length) return Container();
                   return Align(
                     alignment: Alignment.center,
-                    child: Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: Text(
-                        effect.lvData[index],
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: index == 5 || index == 9
-                              ? Colors.redAccent
-                              : null,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            color: effect.lvData.length > 1 &&
+                                    (index + 1) == selected
+                                ? Theme.of(context).highlightColor
+                                : Colors.transparent),
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                      margin: const EdgeInsets.all(2),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(4, 1, 4, 2),
+                        child: Text(
+                          effect.lvData[index],
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: index == 5 || index == 9
+                                ? Colors.redAccent
+                                : null,
+                          ),
                         ),
                       ),
                     ),

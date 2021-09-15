@@ -54,6 +54,10 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
     if (skill == null) return Container();
     String name = '${skill.name} ${skill.rank ?? ""}';
     String nameJp = '${skill.nameJp} ${skill.rank ?? ""}';
+    int? selectedLv;
+    if (status.favorite) {
+      selectedLv = status.curVal.skills.getOrNull(index);
+    }
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,7 +116,8 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
                 title: Text(Language.isJP ? nameJp : name),
                 subtitle: Language.isCN ? Text(nameJp) : null,
                 trailing: Text('   CD: ${skill.cd}→${skill.cd - 2}')),
-            for (Effect effect in skill.effects) ...buildEffect(effect)
+            for (Effect effect in skill.effects)
+              ...buildEffect(effect, selectedLv)
           ],
         ),
       ],
@@ -147,7 +152,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
     );
   }
 
-  List<Widget> buildEffect(Effect effect) {
+  List<Widget> buildEffect(Effect effect, [int? selected]) {
     assert([0, 1, 10].contains(effect.lvData.length));
     int crossCount = effect.lvData.length > 1
         ? 5
@@ -181,15 +186,26 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
                   if (index >= effect.lvData.length) return Container();
                   return Align(
                     alignment: Alignment.center,
-                    child: Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: Text(
-                        effect.lvData[index],
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: index == 5 || index == 9
-                              ? Colors.redAccent
-                              : null,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            color: effect.lvData.length > 1 &&
+                                    (index + 1) == selected
+                                ? Theme.of(context).highlightColor
+                                : Colors.transparent),
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                      margin: const EdgeInsets.all(2),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(4, 1, 4, 2),
+                        child: Text(
+                          effect.lvData[index],
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: index == 5 || index == 9
+                                ? Colors.redAccent
+                                : null,
+                          ),
                         ),
                       ),
                     ),

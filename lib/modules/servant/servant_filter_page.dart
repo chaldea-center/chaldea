@@ -17,6 +17,7 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
 class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
   @override
   Widget build(BuildContext context) {
+    const groupDivider = Divider(height: 16, indent: 12, endIndent: 12);
     return buildAdaptive(
       title: Text(S.of(context).filter),
       actions: getDefaultActions(onTapReset: () {
@@ -104,7 +105,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             update();
           },
         ),
-        const Divider(height: 16),
+        groupDivider,
         FilterGroup(
           title: Text(const LocalizedText(
                   chs: '重复从者', jpn: '重複サーバント', eng: 'Duplicated Servant')
@@ -154,7 +155,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             update();
           },
         ),
-        const Divider(height: 16),
+        groupDivider,
         FilterGroup(
           title: Text(S.of(context).filter_obtain, style: textStyle),
           options: SvtFilterData.obtainData,
@@ -228,7 +229,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         //     update();
         //   },
         // ),
-        const Divider(height: 16),
+        groupDivider,
         FilterGroup(
           title: Text(LocalizedText.of(
               chs: '效果范围', jpn: '効果の範囲', eng: 'Scope of Effects')),

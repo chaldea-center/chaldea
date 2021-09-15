@@ -128,7 +128,6 @@ class ServantDetailPageState extends State<ServantDetailPage>
       length: builders.length,
       child: Scaffold(
           appBar: AppBar(
-            leading: const BackButton(),
             titleSpacing: 0,
             title: AutoSizeText(
               svt.info.localizedName,
@@ -144,7 +143,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
                         : const Icon(Icons.favorite_border),
                     tooltip: S.of(context).favorite,
                     onPressed: () {
-                      status.favorite = !status.favorite;
+                      setState(() {
+                        status.favorite = !status.favorite;
+                      });
                       db.itemStat.updateSvtItems();
                     },
                   ),

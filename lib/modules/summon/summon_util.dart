@@ -121,11 +121,11 @@ class SummonUtil {
                 Container(
                   padding: const EdgeInsets.all(1.5),
                   decoration: BoxDecoration(
-                      color: Colors.redAccent,
+                      color: Colors.blueAccent[400],
                       borderRadius: BorderRadius.circular(3)),
-                  child: const Icon(
+                  child: Icon(
                     Icons.star,
-                    color: Colors.yellowAccent,
+                    color: Colors.yellowAccent[400],
                     size: 10,
                   ),
                 ),
@@ -172,9 +172,11 @@ class SummonUtil {
   }
 
   static String _removeDoubleTrailing(double weight) {
-    return double.parse(weight.toStringAsFixed(5))
-        .toStringAsFixed(4)
-        .replaceFirst(RegExp(r'\.0+$'), '');
+    String s = double.parse(weight.toStringAsFixed(5)).toStringAsFixed(4);
+    if (s.contains('.')) {
+      s = s.replaceFirst(RegExp(r'\.?0+$'), '');
+    }
+    return s;
   }
 
   static String castBracket(String s) {
