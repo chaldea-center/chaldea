@@ -1,20 +1,35 @@
 import 'package:chaldea/components/components.dart';
 
 class BlankPage extends StatelessWidget {
-  final bool showProgress;
-  final bool reserveProgressSpace;
+  final bool showIndicator;
+  final WidgetBuilder indicatorBuilder;
 
-  const BlankPage(
-      {Key? key, this.showProgress = false, this.reserveProgressSpace = false})
-      : super(key: key);
+  const BlankPage({
+    Key? key,
+    this.showIndicator = false,
+    this.indicatorBuilder = _defaultIndicatorBuilder,
+  }) : super(key: key);
+
+  static Widget _defaultIndicatorBuilder(BuildContext context) {
+    return LayoutBuilder(builder: (context, constraints) {
+      double w = min(50, min(constraints.maxHeight, constraints.maxWidth) - 40);
+      return Padding(
+        padding: const EdgeInsets.all(20),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: w, maxHeight: w),
+            child: const CircularProgressIndicator(),
+          ),
+        ),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       double imgWidth = min(270, constraints.biggest.width * 0.5);
       double imgHeight = min(270, constraints.biggest.height * 0.5);
-      double progressSize = 50;
-      progressSize = min(100, progressSize);
       Widget img = const Image(
         image: AssetImage("res/img/chaldea.png"),
         filterQuality: FilterQuality.high,
@@ -49,18 +64,7 @@ class BlankPage extends StatelessWidget {
                 ),
                 child: img,
               ),
-
-              /// If show progress
-              if (reserveProgressSpace || showProgress)
-                Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: SizedBox(
-                    width: progressSize,
-                    height: progressSize,
-                    child:
-                        showProgress ? const CircularProgressIndicator() : null,
-                  ),
-                )
+              if (showIndicator) indicatorBuilder(context),
             ],
           ),
         ),

@@ -17,6 +17,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
+import 'package:libwinmedia/libwinmedia.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
@@ -113,6 +114,8 @@ class Database {
 
   Box? webFS;
 
+  FlutterErrorDetails? initErrorDetail;
+
   // initialization before startup
   Future<void> initial() async {
     initiateFuncBuffInstances();
@@ -122,14 +125,17 @@ class Database {
     await WikiUtil.init();
     await AppInfo.resolve();
     await prefs.initiate();
+    if (PlatformU.isWeb) {
+      webFS = await Hive.openBox('WebFileSystem');
+    }
+    if (PlatformU.isWindows) {
+      LWM.initialize();
+    }
+    MethodChannelChaldea.configMethodChannel();
     await checkConnectivity();
     Connectivity().onConnectivityChanged.listen((result) {
       _connectivity = result;
     });
-    if (PlatformU.isWeb) {
-      webFS = await Hive.openBox('WebFileSystem');
-    }
-    MethodChannelChaldea.configMethodChannel();
   }
 
   /// Automatically save user data when:

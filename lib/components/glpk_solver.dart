@@ -241,6 +241,6 @@ DropRateData _preProcess(
 
   logger.v('processed data: ${data.rowNames.length} rows,'
       ' ${data.colNames.length} columns');
-  print(const JsonEncoder.withIndent('  ').convert(params));
+  // print(const JsonEncoder.withIndent('  ').convert(params));
   return data;
 }

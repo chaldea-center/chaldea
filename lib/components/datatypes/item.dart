@@ -139,6 +139,8 @@ class Item {
     bool jumpToDetail = true,
   }) {
     final size = MathUtils.fitSize(width, height, 132 / 144);
+    width = size?.key;
+    height = size?.value;
     Widget child = ImageWithText(
       image: db.getIconImage(itemKey,
           aspectRatio: 132 / 144, width: width, height: height),

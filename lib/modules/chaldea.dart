@@ -234,7 +234,7 @@ class _ChaldeaHome extends StatefulWidget {
 
 class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
   bool _initiated = false;
-  bool _showProgress = false;
+  bool _showIndicator = false;
 
   @override
   void initState() {
@@ -271,7 +271,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
         /// load failed(json destroyed) or app updated, reload default dataset
         logger.i('reload default gamedata asset');
         setState(() {
-          _showProgress = true;
+          _showIndicator = true;
         });
         await db.loadZipAssets(kDatasetAssetKey);
         db.prefs.previousVersion.set(AppInfo.fullVersion);
@@ -288,8 +288,14 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
           title: S.current.load_dataset_error,
           content: S.current.load_dataset_error_hint);
     }
-    _initiated = true;
     SplitRoute.of(context)?.detail = false;
+    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+      if (mounted) {
+        setState(() {
+          _initiated = true;
+        });
+      }
+    });
     if (mounted) setState(() {});
     logger.i('App version: ${AppInfo.appName} v${AppInfo.fullVersion}');
     logger.i('appPath: ${db.paths.appPath}');
@@ -330,9 +336,36 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
 
   @override
   Widget build(BuildContext context) {
-    return _initiated
-        ? HomePage()
-        : BlankPage(showProgress: _showProgress, reserveProgressSpace: true);
+    if (_initiated) {
+      return HomePage();
+    } else if (db.initErrorDetail != null) {
+      return BlankPage(
+        showIndicator: true,
+        indicatorBuilder: (context) {
+          final detail = db.initErrorDetail!;
+          return Flexible(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Center(
+                  child: RichText(
+                text: TextSpan(
+                  text: 'Error: ${detail.exception}\n\n',
+                  style: Theme.of(context).textTheme.subtitle1,
+                  children: [
+                    TextSpan(
+                      text: detail.stack.toString(),
+                      style: Theme.of(context).textTheme.caption,
+                    )
+                  ],
+                ),
+                overflow: TextOverflow.fade,
+              )),
+            ),
+          );
+        },
+      );
+    }
+    return BlankPage(showIndicator: _showIndicator);
   }
 
   /// only set orientation for mobile phone

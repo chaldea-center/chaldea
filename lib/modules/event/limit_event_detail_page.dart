@@ -204,7 +204,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
       final controller = _controllers[itemKey];
       children.add(ListTile(
         leading:
-            Item.iconBuilder(context: context, itemKey: itemKey, width: 48),
+            Item.iconBuilder(context: context, itemKey: itemKey, height: 46),
         title: Text(Item.lNameOf(itemKey)),
         subtitle: Text(hint),
         trailing: SizedBox(

@@ -102,6 +102,7 @@ class SvtFilterData {
         gender,
         trait,
         special,
+        effectScope,
         effects,
         // traitSpecial
       ];

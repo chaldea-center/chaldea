@@ -8,6 +8,8 @@ void main() async {
   // make sure flutter packages like path_provider is working now
   WidgetsFlutterBinding.ensureInitialized();
   await db.initial().catchError((e, s) {
+    db.initErrorDetail =
+        FlutterErrorDetails(exception: e, stack: s, library: 'initiation');
     logger.e('db.initial failed', e, s);
     Future.delayed(const Duration(seconds: 10), () {
       Catcher.reportCheckedError(e, s);
