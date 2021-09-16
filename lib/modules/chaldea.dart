@@ -83,11 +83,9 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     });
 
     // if failed to load userdata, backup and alert user
-    if (!db.loadUserData()) {
-      if (!PlatformU.isWeb) {
-        if (File(db.paths.userDataPath).existsSync()) {
-          userdataBackup = db.backupUserdata(disk: true, memory: false);
-        }
+    if (!PlatformU.isWeb && !db.loadUserData()) {
+      if (File(db.paths.userDataPath).existsSync()) {
+        userdataBackup = db.backupUserdata(disk: true, memory: false);
       }
     }
 
@@ -121,8 +119,8 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
           debugShowCheckedModeBanner: false,
           navigatorKey: kAppKey,
           themeMode: db.appSetting.themeMode ?? ThemeMode.system,
-          theme: ThemeData.light(),
-          darkTheme: ThemeData.dark(),
+          theme: lightTheme,
+          darkTheme: darkTheme,
           locale: Language.getLanguage(db.appSetting.language)?.locale,
           localizationsDelegates: const [
             S.delegate,

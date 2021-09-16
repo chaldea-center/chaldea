@@ -13,6 +13,7 @@ class CraftEssence with GameCardMixin {
   String nameJp;
   String nameEn;
   List<String> nameOther;
+  @override
   int rarity;
   @override
   String icon;

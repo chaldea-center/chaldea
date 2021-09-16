@@ -27,7 +27,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   int totalQuartz = 0;
   int totalPulls = 0;
   int _curHistory = -1;
-  List<List> history = [];
+  List<List<GameCardMixin>> history = [];
 
   Map<GameCardMixin, int> allSummons = {};
 
@@ -146,10 +146,12 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           Center(
             child: Text(
               LocalizedText.of(
-                  chs: '仅供娱乐, 如有雷同, 纯属巧合',
+                  chs: '仅供娱乐, 如有雷同, 纯属巧合\n保底机制使五星概率在1.04%左右',
                   jpn: '娯楽のみ',
-                  eng: 'Just for entertainment'),
+                  eng:
+                      'Just for entertainment\nGuarantee mechanism: 1%->1.04%'),
               style: const TextStyle(color: Colors.grey),
+              textAlign: TextAlign.center,
             ),
           )
         ]))
@@ -428,7 +430,32 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   }
 
   void startGacha(int times, int quartz) {
-    List newAdded = summonWithGuarantee(times);
+    // // Monte Carlo test
+    // // 100(11000000) = 1.03640 + 3.11976 + 39.80255 + 4.15877 + 12.48025 + 39.40226
+    // // standards: 1+3+40+4+12+40
+    // int total = 0, s5 = 0, s4 = 0, s3 = 0, c5 = 0, c4 = 0, c3 = 0;
+    // for (int i = 0; i < 1000000; i++) {
+    //   final cards = summonWithGuarantee(11);
+    //   total += cards.length;
+    //   s5 += cards.where((e) => e is Servant && e.rarity == 5).length;
+    //   s4 += cards.where((e) => e is Servant && e.rarity == 4).length;
+    //   s3 += cards.where((e) => e is Servant && e.rarity == 3).length;
+    //   c5 += cards.where((e) => e is CraftEssence && e.rarity == 5).length;
+    //   c4 += cards.where((e) => e is CraftEssence && e.rarity == 4).length;
+    //   c3 += cards.where((e) => e is CraftEssence && e.rarity == 3).length;
+    //   if ((i + 1) % 1000 == 0) {
+    //     String _percent(int x) => (x / total * 100).toStringAsFixed(5);
+    //     print('${i + 1}: 100($total) ='
+    //         ' ${_percent(s5)} +'
+    //         ' ${_percent(s4)} +'
+    //         ' ${_percent(s3)} +'
+    //         ' ${_percent(c5)} +'
+    //         ' ${_percent(c4)} +'
+    //         ' ${_percent(c3)}');
+    //   }
+    // }
+    // return;
+    List<GameCardMixin> newAdded = summonWithGuarantee(times);
     newAdded.shuffle(random);
     newAdded.forEach((element) {
       allSummons[element] = (allSummons[element] ?? 0) + 1;
@@ -440,39 +467,88 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     setState(() {});
   }
 
-  List summonWithGuarantee(int times) {
-    List results = [];
+  List<GameCardMixin> summonWithGuarantee(int times) {
+    List<GameCardMixin> results = [];
     // 10or11连抽保底
+    //
+    // void _ensureCardR4() {
+    //   if (!results.any((e) => e.rarity >= 4)) {
+    //     results.addAll(randomSummon(cardProbs((r) => r >= 4), 1));
+    //   }
+    // }
+    //
+    // void _ensureSvtR(int r) {
+    //   if (results.any((e) => e is Servant && e.rarity >= r)) {
+    //     results.addAll(randomSummon(cardProbs(), 1));
+    //   } else {
+    //     results.addAll(randomSummon(svtProbs((_r) => _r >= r), 1));
+    //   }
+    // }
+    results.addAll(randomSummon(cardProbs(), times));
+
     if (times >= 10) {
-      //福袋保底
+      // New
       if (summon.isLuckyBag) {
-        results.addAll(randomSummon(svtProbs((r) => r == 5), 1));
-        //带4星的福袋保底
+        List<GameCardMixin> newResults = [];
+        final s5 =
+            results.firstWhereOrNull((e) => e is Servant && e.rarity == 5);
+        if (s5 != null) {
+          results.remove(s5);
+          newResults.add(s5);
+        } else {
+          newResults.addAll(randomSummon(svtProbs((r) => r == 5), 1));
+        }
         if (summon.isLuckyBagWithSR) {
-          results.addAll(randomSummon(svtProbs((r) => r == 4 || r == 5), 1));
+          final s4 =
+              results.firstWhereOrNull((e) => e is Servant && e.rarity >= 4);
+          if (s4 != null) {
+            results.remove(s4);
+            newResults.add(s4);
+          } else {
+            newResults.addAll(randomSummon(svtProbs((r) => r >= 4), 1));
+          }
+        }
+        newResults.addAll(results.sublist(0, times - newResults.length));
+        results = newResults;
+      } else {
+        final r4 = results.indexWhere((e) => e.rarity >= 4);
+        final s3 = results.indexWhere((e) => e is Servant && e.rarity >= 3);
+        if (r4 < 0) {
+          if (s3 < 0) {
+            // 4 svt
+            results.removeLast();
+            results.addAll(randomSummon(svtProbs((r) => r >= 4), 1));
+          } else {
+            // 4 card
+            results.removeAt(s3 == 0 ? 1 : 0);
+            results.addAll(randomSummon(cardProbs((r) => r >= 4), 1));
+          }
+        } else {
+          if (s3 < 0) {
+            // 3 svt
+            results.removeAt(r4 == 0 ? 1 : 0);
+            results.addAll(randomSummon(svtProbs((r) => r >= 3), 1));
+          } else {
+            //
+          }
         }
       }
-      //从者保底
-      if (!results.any((e) => e is Servant)) {
-        results.addAll(randomSummon(svtProbs(), 1));
-      }
-      //金卡保底
-      if (!results.any((e) =>
-          (e is Servant && e.info.rarity > 3) ||
-          (e is CraftEssence && e.rarity > 3))) {
-        results.addAll(randomSummon(cardProbs((r) => r > 3), 1));
-      }
     }
-    results.addAll(randomSummon(cardProbs(), times - results.length));
+    assert(
+        results.any((e) => e is Servant) && results.any((e) => e.rarity >= 4),
+        results.map((e) => '${e.runtimeType}-${e.rarity}'));
+
     return results;
   }
 
   final random = Random(DateTime.now().microsecondsSinceEpoch);
 
   /// 无任何保底，纯随机
-  List randomSummon(Map<GameCardMixin, double> probMap, int times) {
+  List<GameCardMixin> randomSummon(
+      Map<GameCardMixin, double> probMap, int times) {
     final probList = probMap.entries.toList();
-    List result = [];
+    probList.shuffle();
+    List<GameCardMixin> result = [];
     double totalProb = 0;
     probList.forEach((element) => totalProb += element.value);
     for (int i = 0; i < times; i++) {

@@ -29,10 +29,23 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
 
   bool get hasValentineCraft => svt.valentineCraft.isNotEmpty;
 
+  bool get hasRelatedCards =>
+      _relatedCrafts.isNotEmpty || _relatedCodes.isNotEmpty;
+
   @override
   void initState() {
     super.initState();
-    int count = 3 + (hasBondCraft ? 1 : 0) + (hasValentineCraft ? 1 : 0);
+    _relatedCrafts = db.gameData.crafts.values
+        .where((e) => e.characters.contains(svt.mcLink))
+        .toList();
+    _relatedCodes = db.gameData.cmdCodes.values
+        .where((e) => e.characters.contains(svt.mcLink))
+        .toList();
+
+    int count = 2 +
+        (hasBondCraft ? 1 : 0) +
+        (hasValentineCraft ? 1 : 0) +
+        (hasRelatedCards ? 1 : 0);
     _tabController = TabController(length: count, vsync: this);
   }
 
@@ -60,7 +73,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
                     S.of(context).svt_info_tab_bond_story,
                     if (hasBondCraft) S.of(context).bond_craft,
                     if (hasValentineCraft) S.of(context).valentine_craft,
-                    S.of(context).svt_related_cards,
+                    if (hasRelatedCards) S.of(context).svt_related_cards,
                   ].map((tabName) => getTab(tabName)).toList(),
                 ),
               ),
@@ -81,7 +94,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
             buildProfileTab(),
             if (hasBondCraft) buildBondCraftTab(),
             if (hasValentineCraft) buildValentineCraftTab(),
-            buildRelatedCards(),
+            if (hasRelatedCards) buildRelatedCards(),
           ]),
         ),
       ],
@@ -372,15 +385,12 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
     }
   }
 
-  List<CraftEssence>? crafts;
-  List<CommandCode>? codes;
+  List<CraftEssence> _relatedCrafts = [];
+  List<CommandCode> _relatedCodes = [];
 
   Widget buildRelatedCards() {
     List<Widget> craftChildren = [];
-    crafts ??= db.gameData.crafts.values
-        .where((e) => e.characters.contains(svt.mcLink))
-        .toList();
-    crafts!.forEach((ce) {
+    _relatedCrafts.forEach((ce) {
       if (ce.characters.contains(svt.mcLink)) {
         craftChildren.add(ListTile(
           leading: ImageWithText(
@@ -393,19 +403,15 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
               CraftDetailPage(
                 ce: ce,
                 onSwitch: (cur, next) => Utils.findNextOrPrevious<CraftEssence>(
-                    list: crafts!, cur: cur, reversed: next),
+                    list: _relatedCrafts, cur: cur, reversed: next),
               ),
             );
           },
         ));
       }
     });
-
-    codes ??= db.gameData.cmdCodes.values
-        .where((e) => e.characters.contains(svt.mcLink))
-        .toList();
     List<Widget> codeChildren = [];
-    codes!.forEach((code) {
+    _relatedCodes.forEach((code) {
       if (code.characters.contains(svt.mcLink)) {
         codeChildren.add(ListTile(
           leading: ImageWithText(
@@ -418,7 +424,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
               CmdCodeDetailPage(
                 code: code,
                 onSwitch: (cur, next) => Utils.findNextOrPrevious<CommandCode>(
-                    list: codes!, cur: cur, reversed: next),
+                    list: _relatedCodes, cur: cur, reversed: next),
               ),
             );
           },

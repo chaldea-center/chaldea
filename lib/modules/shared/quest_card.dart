@@ -36,7 +36,6 @@ class _QuestCardState extends State<QuestCard> {
   @override
   void initState() {
     super.initState();
-    showTrueName = !Language.isCN;
     _use6th = widget.use6th;
   }
 
@@ -195,20 +194,31 @@ class _QuestCardState extends State<QuestCard> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(S.current.game_drop + (quest.isFree ? '(AP): ' : ': ')),
+                  Text(
+                    S.current.game_drop +
+                        (quest.isFree
+                            ? Language.isJP
+                                ? '\n(AP)'
+                                : '(AP)'
+                            : ''),
+                    textAlign: TextAlign.center,
+                  ),
                   if (show6th)
-                    FilterOption(
-                      selected: use6th,
-                      value: '6th',
-                      child: const Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        child: Text('6th'),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: FilterOption(
+                        selected: use6th,
+                        value: '6th',
+                        child: const Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          child: Text('6th'),
+                        ),
+                        onChanged: (v) => setState(() {
+                          _use6th = v;
+                        }),
+                        shrinkWrap: true,
                       ),
-                      onChanged: (v) => setState(() {
-                        _use6th = v;
-                      }),
-                      shrinkWrap: true,
                     ),
                 ],
               ),
@@ -228,7 +238,7 @@ class _QuestCardState extends State<QuestCard> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Text(S.current.game_rewards + ':  '),
+            Text(S.current.game_rewards),
             Expanded(
                 child: Center(child: _getDropsWidget(quest.rewards, false)))
           ],
@@ -268,10 +278,34 @@ class _QuestCardState extends State<QuestCard> {
         ],
       ));
     }
+    if (quest.isFree) {
+      final fields = db.gameData.planningData.weeklyMissions
+          .firstWhereOrNull((e) => e.place == quest.place)
+          ?.battlefields;
+      if (fields != null && fields.isNotEmpty) {
+        children.add(Padding(
+          padding: const EdgeInsets.symmetric(vertical: 3),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(LocalizedText.of(
+                  chs: '场地特性', jpn: 'フィールド', eng: '  Fields   ')),
+              Expanded(
+                child: Center(
+                  child: Text(fields
+                      .map((e) => Localized.masterMission.of(e))
+                      .join(' / ')),
+                ),
+              )
+            ],
+          ),
+        ));
+      }
+    }
     return children;
   }
 
-  final _clasIcons = {
+  final _classIcons = {
     '剑': 'Saber',
     '弓': 'Archer',
     '枪': 'Lancer',
@@ -288,8 +322,8 @@ class _QuestCardState extends State<QuestCard> {
   };
 
   Widget _getClassIcon(String? clsName) {
-    if (!_clasIcons.containsKey(clsName)) return Container();
-    return db.getIconImage('金卡${_clasIcons[clsName]}', width: 16);
+    if (!_classIcons.containsKey(clsName)) return Container();
+    return db.getIconImage('金卡${_classIcons[clsName]}', width: 16);
   }
 
   String _localizeClassName(String? clsName) {
@@ -380,7 +414,7 @@ class _QuestCardState extends State<QuestCard> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (_clasIcons.containsKey(enemy.className[i]))
+            if (_classIcons.containsKey(enemy.className[i]))
               _getClassIcon(enemy.className[i]),
             Flexible(
               child: AutoSizeText(
@@ -431,7 +465,6 @@ class _QuestCardState extends State<QuestCard> {
   }
 
   /// only drops of free quest useApRate
-  /// TODO: if provide drop rate data, [items] here should not be used
   Widget _getDropsWidget(Map<String, int> items, bool useDropRate) {
     // <item, shownText>
     Map<String, String> dropTexts = {};

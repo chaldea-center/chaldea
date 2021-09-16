@@ -40,7 +40,10 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(S.of(context).settings_tab_name)),
+      appBar: AppBar(
+        title: Text(S.of(context).settings_tab_name),
+        titleSpacing: NavigationToolbar.kMiddleSpacing,
+      ),
       body: db.streamBuilder((context) => body),
     );
   }

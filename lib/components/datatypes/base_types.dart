@@ -29,6 +29,8 @@ class KeyValueListEntry {
 mixin GameCardMixin {
   int get no;
 
+  int get rarity;
+
   String get mcLink;
 
   String get icon;

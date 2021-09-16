@@ -205,7 +205,7 @@ class GalleryItem {
   static GalleryItem enemyList = GalleryItem(
     name: 'enemy_list',
     titleBuilder: () => S.current.enemy_list,
-    icon: FontAwesomeIcons.cat,
+    icon: FontAwesomeIcons.dragon,
     page: EnemyListPage(),
     isDetail: false,
   );

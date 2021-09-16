@@ -313,8 +313,11 @@ class FilterGroup extends StatelessWidget {
 
     Widget _getTitle([Widget? expandIcon]) {
       return CustomTile(
-        title: DefaultTextStyle.merge(
-            child: title!, style: const TextStyle(fontSize: 14)),
+        title: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2),
+          child: DefaultTextStyle.merge(
+              child: title!, style: const TextStyle(fontSize: 14)),
+        ),
         contentPadding: EdgeInsets.zero,
         trailing: Row(
           mainAxisSize: MainAxisSize.min,

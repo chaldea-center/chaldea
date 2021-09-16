@@ -846,6 +846,10 @@ class ServantListPageState
           //     Text(status.curVal.skills.join('/')),
           //   ],
           // ),
+          if (status.curVal.appendSkills.any((e) => e > 0))
+            Text(status.curVal.appendSkills
+                .map((e) => e == 0 ? '-' : e)
+                .join('/')),
           if (status.curVal.dress.isNotEmpty)
             Row(
               mainAxisSize: MainAxisSize.min,

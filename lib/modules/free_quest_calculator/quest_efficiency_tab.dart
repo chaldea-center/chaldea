@@ -138,10 +138,10 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
     ));
     return Column(
       children: [
-        const SizedBox(height: 6),
         ListTile(
           title: Text(S.of(context).quest),
           trailing: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(S.current.item_eff),
               Text(

@@ -53,6 +53,7 @@ class _GalleryPageState extends State<GalleryPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(kAppName),
+        titleSpacing: NavigationToolbar.kMiddleSpacing,
         actions: <Widget>[
           if (db.appSetting.showAccountAtHome)
             InkWell(
@@ -228,7 +229,7 @@ class _GalleryPageState extends State<GalleryPage> {
 
   Widget buildRateTile() {
     return SimpleAccordion(
-      canTapOnHeader: false,
+      // canTapOnHeader: false,
       elevation: 0.5,
       topBorderSide: Divider.createBorderSide(context, width: 0.5),
       headerBuilder: (context, expanded) => ListTile(
@@ -239,7 +240,7 @@ class _GalleryPageState extends State<GalleryPage> {
         subtitle: expanded
             ? AutoSizeText(
                 LocalizedText.of(
-                    chs: '评分、评价、反馈建议等均欢迎~',
+                    chs: '欢迎评分、评价、反馈、建议~',
                     jpn: '評価またはレビューがかかりましょう',
                     eng: 'Take a minute to rate/review'),
                 maxLines: 1,

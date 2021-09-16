@@ -32,6 +32,7 @@ class CatcherUtility {
         ),
       ],
       customParameters: _getCatcherCustomParameters(),
+      excludedParameters: const ['name'],
       handleSilentError: false,
       filterFunction: CatcherUtility.reportFilter,
       handlerTimeout: 10000,

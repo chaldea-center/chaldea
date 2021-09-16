@@ -20,6 +20,9 @@ class Servant with GameCardMixin {
   @override
   String icon;
 
+  @override
+  int get rarity => info.rarity;
+
   String get thumb => icon;
   ServantBaseInfo info;
   List<NoblePhantasm> noblePhantasm;

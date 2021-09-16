@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/home/subpage/account_page.dart';
 import 'package:chaldea/modules/home/subpage/user_data_page.dart';
 import 'package:chaldea/modules/import_data/import_fgo_simu_material_page.dart';
 import 'package:chaldea/modules/import_data/import_guda_page.dart';
@@ -26,6 +27,11 @@ class _ImportPageHomeState extends State<ImportPageHome> {
           ListTile(
             title: Center(
                 child: Text(S.current.cur_account + ': ' + db.curUser.name)),
+            onTap: () {
+              SplitRoute.push(context, AccountPage()).then((_) {
+                if (mounted) setState(() {});
+              });
+            },
           ),
           ListTile(
             leading: const Icon(Icons.settings_backup_restore),
@@ -112,6 +118,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             leading: const Icon(Icons.compare_arrows),
             title: Text(LocalizedText.of(
                 chs: 'Guda数据', jpn: 'Gudaデータ', eng: 'Guda Data')),
+            subtitle: const Text('Guda@iOS'),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
               SplitRoute.push(context, ImportGudaPage(), popDetail: true);
