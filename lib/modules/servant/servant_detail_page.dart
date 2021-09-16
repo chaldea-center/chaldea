@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/list_page_share.dart';
+import 'package:chaldea/widgets/charts/growth_curve_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'tabs/svt_illust_tab.dart';
@@ -273,7 +274,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
             value: 'switch_slider_dropdown',
             onTap: () {
               db.appSetting.svtPlanSliderMode =
-              !db.appSetting.svtPlanSliderMode;
+                  !db.appSetting.svtPlanSliderMode;
               setState(() {});
             },
           ),
@@ -340,7 +341,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
       firstChild: CustomTile(
         leading: InkWell(
           child: svt.iconBuilder(
-              context: context, height: 64, jumpToDetail: false),
+              context: context, height: 72, jumpToDetail: false),
           onTap: () {
             FullscreenImageViewer.show(
               context: context,
@@ -355,11 +356,38 @@ class ServantDetailPageState extends State<ServantDetailPage>
           children: [
             Text('No.${svt.no}  ${svt.info.className}'),
             if (!db.gameData.unavailableSvts.contains(svt.no))
-              Text(
-                'ATK ${svt.info.atkMax}  HP ${svt.info.hpMax}',
-                style: Theme.of(context).textTheme.caption,
+              TextButton(
+                onPressed: () {
+                  if (svt.atkGrowth.isEmpty && svt.hpGrowth.isEmpty) {
+                    return;
+                  }
+                  SplitRoute.push(
+                      context,
+                      GrowthCurvePage.fromCard(
+                        title: '${S.current.growth_curve} - ${svt.lName}',
+                        atks: svt.atkGrowth,
+                        hps: svt.hpGrowth,
+                        avatar: CachedImage(
+                          imageUrl: svt.icons
+                                  .getOrNull(0)
+                                  ?.valueList
+                                  .firstWhereOrNull((e) => e != null)
+                                  ?.toString() ??
+                              svt.icon,
+                          height: 90,
+                          placeholder: (_, __) => Container(),
+                        ),
+                      ));
+                },
+                child: Text(
+                  'ATK ${svt.info.atkMax}  HP ${svt.info.hpMax}',
+                  // style: Theme.of(context).textTheme.caption,
+                ),
+                style: TextButton.styleFrom(
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    padding: EdgeInsets.zero),
               ),
-            const SizedBox(height: 4),
+            // const SizedBox(height: 4),
           ],
         ),
         titlePadding: const EdgeInsets.only(left: 16),

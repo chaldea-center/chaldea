@@ -41,7 +41,7 @@ class EventBasePage {
         TableCellData(
           text: event.localizedName,
           textAlign: TextAlign.center,
-          fontSize: 12,
+          style: const TextStyle(fontSize: 12),
           color: TableCellData.resolveHeaderColor(context),
         )
       ]),
@@ -50,7 +50,7 @@ class EventBasePage {
           TableCellData(
             text: event.nameJp!,
             textAlign: TextAlign.center,
-            fontSize: 12,
+            style: const TextStyle(fontSize: 12),
             color: TableCellData.resolveHeaderColor(context).withOpacity(0.5),
           )
         ]),
@@ -58,7 +58,7 @@ class EventBasePage {
         TableCellData(
           text: 'JP: ${event.startTimeJp ?? '?'} ~ ${event.endTimeJp ?? '?'}',
           maxLines: 1,
-          fontSize: 14,
+          style: const TextStyle(fontSize: 14),
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
         )
@@ -68,7 +68,7 @@ class EventBasePage {
           TableCellData(
             text: 'CN: ${event.startTimeCn ?? '?'} ~ ${event.endTimeCn ?? '?'}',
             maxLines: 1,
-            fontSize: 14,
+            style: const TextStyle(fontSize: 14),
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
           )

@@ -47,6 +47,8 @@ class Servant with GameCardMixin {
   List<int> valentineCraft;
   List<KeyValueListEntry> icons;
   List<KeyValueListEntry> sprites;
+  List<int> atkGrowth;
+  List<int> hpGrowth;
 
   // from data file not in code
   static List<int> get unavailable => db.gameData.unavailableSvts;
@@ -77,6 +79,8 @@ class Servant with GameCardMixin {
     required this.valentineCraft,
     required this.icons,
     required this.sprites,
+    required this.atkGrowth,
+    required this.hpGrowth,
   }) : originNo = no;
 
   @override

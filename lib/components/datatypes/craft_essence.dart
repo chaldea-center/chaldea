@@ -24,6 +24,7 @@ class CraftEssence with GameCardMixin {
   String? illustratorsJp;
   String? illustratorsEn;
   int cost;
+  int lvMax;
   int hpMin;
   int hpMax;
   int atkMin;
@@ -67,6 +68,7 @@ class CraftEssence with GameCardMixin {
     required this.illustratorsJp,
     required this.illustratorsEn,
     required this.cost,
+    required this.lvMax,
     required this.hpMin,
     required this.hpMax,
     required this.atkMin,

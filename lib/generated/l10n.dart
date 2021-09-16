@@ -4225,6 +4225,16 @@ class S {
       args: [],
     );
   }
+
+  /// `成长曲线`
+  String get growth_curve {
+    return Intl.message(
+      '成长曲线',
+      name: 'growth_curve',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -19,9 +19,13 @@ class TopCornerClipper extends CustomClipper<Path> {
       shouldClip = (ratio / (132 / 144) - 1).abs() < 0.05;
     }
     if (shouldClip) {
+      // origin: left-top corner
       double dx = 10 / 132 * size.width;
-      path.moveTo(0, size.height);
-      path.lineTo(size.width, size.height);
+      double dx2 = dx * 0.3;
+      path.moveTo(0, size.height - dx2);
+      path.lineTo(dx2, size.height);
+      path.lineTo(size.width - dx2, size.height);
+      path.lineTo(size.width, size.height - dx2);
       path.lineTo(size.width, dx);
       path.lineTo(size.width - dx, 0);
       path.lineTo(dx, 0);

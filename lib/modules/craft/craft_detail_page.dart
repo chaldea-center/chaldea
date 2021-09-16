@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/lang_switch.dart';
 import 'package:chaldea/modules/summon/summon_detail_page.dart';
+import 'package:chaldea/widgets/charts/growth_curve_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CraftDetailPage extends StatefulWidget {
@@ -181,14 +182,31 @@ class CraftDetailBasePage extends StatelessWidget {
                       TableCellData(text: 'COST', isHeader: true),
                       TableCellData(text: ce.cost.toString()),
                     ]),
-                    CustomTableRow(children: [
-                      TableCellData(text: 'ATK', isHeader: true),
-                      TableCellData(
-                          text: '${ce.atkMin}/${ce.atkMax}', maxLines: 1),
-                      TableCellData(text: 'HP', isHeader: true),
-                      TableCellData(
-                          text: '${ce.hpMin}/${ce.hpMax}', maxLines: 1),
-                    ])
+                    GestureDetector(
+                      onTap: hasGrowth ? () => showGrowthCurves(context) : null,
+                      child: CustomTableRow(children: [
+                        TableCellData(text: 'ATK', isHeader: true),
+                        TableCellData(
+                          text: '${ce.atkMin}/${ce.atkMax}',
+                          maxLines: 1,
+                          style: TextStyle(
+                            color: hasGrowth
+                                ? Theme.of(context).colorScheme.primary
+                                : null,
+                          ),
+                        ),
+                        TableCellData(text: 'HP', isHeader: true),
+                        TableCellData(
+                          text: '${ce.hpMin}/${ce.hpMax}',
+                          style: TextStyle(
+                            color: hasGrowth
+                                ? Theme.of(context).colorScheme.primary
+                                : null,
+                          ),
+                          maxLines: 1,
+                        ),
+                      ]),
+                    ),
                   ],
                 ),
               ),
@@ -393,5 +411,31 @@ class CraftDetailBasePage extends StatelessWidget {
       }
     }
     return children;
+  }
+
+  bool get hasGrowth => ce.hpMax > ce.hpMin || ce.atkMax > ce.atkMin;
+
+  void showGrowthCurves(BuildContext context) {
+    SplitRoute.push(
+      context,
+      GrowthCurvePage.fromCard(
+        title: '${S.current.growth_curve} - ${ce.lName}',
+        atks: List.generate(
+            ce.lvMax,
+            (index) =>
+                (ce.atkMin + (ce.atkMax - ce.atkMin) / (ce.lvMax - 1) * index)
+                    .round()),
+        hps: List.generate(
+            ce.lvMax,
+            (index) =>
+                (ce.hpMin + (ce.hpMax - ce.hpMin) / (ce.lvMax - 1) * index)
+                    .round()),
+        avatar: ce.iconBuilder(
+          context: context,
+          height: 56,
+          jumpToDetail: false,
+        ),
+      ),
+    );
   }
 }

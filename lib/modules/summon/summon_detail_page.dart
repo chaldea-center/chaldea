@@ -100,7 +100,8 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           child: CarouselSlider(
             items: banners,
             options: CarouselOptions(
-              autoPlay: false,
+              autoPlay: banners.length > 1,
+              autoPlayInterval: const Duration(seconds: 5),
               aspectRatio: 8 / 3,
               viewportFraction: 1.0,
               enableInfiniteScroll: banners.length > 1,
@@ -112,7 +113,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           TableCellData(
             text: summon.lName,
             textAlign: TextAlign.center,
-            fontSize: 12,
+            style: const TextStyle(fontSize: 12),
             color: TableCellData.resolveHeaderColor(context),
           )
         ]),
@@ -121,7 +122,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
             TableCellData(
               text: summon.nameJp!,
               textAlign: TextAlign.center,
-              fontSize: 12,
+              style: const TextStyle(fontSize: 12),
               color: TableCellData.resolveHeaderColor(context).withOpacity(0.5),
             )
           ]),
@@ -131,7 +132,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
               text:
                   'JP: ${summon.startTimeJp ?? '?'} ~ ${summon.endTimeJp ?? '?'}',
               maxLines: 1,
-              fontSize: 14,
+              style: const TextStyle(fontSize: 14),
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
             )
@@ -144,7 +145,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
               text:
                   'CN: ${summon.startTimeCn ?? '?'} ~ ${summon.endTimeCn ?? '?'}',
               maxLines: 1,
-              fontSize: 14,
+              style: const TextStyle(fontSize: 14),
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
             )

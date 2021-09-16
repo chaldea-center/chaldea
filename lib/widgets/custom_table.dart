@@ -150,7 +150,7 @@ class _CustomTableRowState extends State<CustomTableRow> {
             _child = Text(
               text,
               textAlign: cell.textAlign,
-              style: TextStyle(fontSize: cell.fontSize),
+              style: cell.style,
             );
           } else if (cell.maxLines == 1) {
             // empty string->Text has no size->cannot place in FittedBox
@@ -159,7 +159,7 @@ class _CustomTableRowState extends State<CustomTableRow> {
                 text,
                 maxLines: cell.maxLines,
                 textAlign: cell.textAlign,
-                style: TextStyle(fontSize: cell.fontSize),
+                style: cell.style,
               ),
             );
           } else {
@@ -170,7 +170,7 @@ class _CustomTableRowState extends State<CustomTableRow> {
                 text,
                 maxLines: cell.maxLines,
                 textAlign: cell.textAlign,
-                style: TextStyle(fontSize: cell.fontSize),
+                style: cell.style,
               ),
             );
             // _child = AutoSizeText(
@@ -242,7 +242,7 @@ class TableCellData {
   Widget? child;
   int flex;
   bool isHeader;
-  double? fontSize;
+  TextStyle? style;
   Color? color;
   int? maxLines;
   Alignment alignment;
@@ -273,7 +273,7 @@ class TableCellData {
     this.child,
     this.flex = 1,
     this.isHeader = false,
-    this.fontSize,
+    this.style,
     this.color,
     this.maxLines,
     this.alignment = Alignment.center,
@@ -293,8 +293,8 @@ class TableCellData {
     List<int>? flexList,
     bool? isHeader,
     List<bool>? isHeaderList,
-    double? fontSize,
-    List<double>? fontSizeList,
+    TextStyle? style,
+    List<TextStyle>? styleList,
     Color? color,
     List<Color>? colorList,
     int? maxLines,
@@ -313,7 +313,7 @@ class TableCellData {
     assert(texts == null || children == null);
     assert(flex == null || flexList == null);
     assert(isHeader == null || isHeaderList == null);
-    assert(fontSize == null || fontSizeList == null);
+    assert(style == null || styleList == null);
     assert(color == null || colorList == null);
     assert(maxLines == null || maxLinesList == null);
     assert(alignment == null || alignmentList == null);
@@ -323,7 +323,7 @@ class TableCellData {
     assert({
       flexList?.length,
       isHeaderList?.length,
-      fontSizeList?.length,
+      styleList?.length,
       colorList?.length,
       maxLinesList?.length,
       alignmentList?.length,
@@ -337,7 +337,7 @@ class TableCellData {
         child: children?.elementAt(index),
       );
       data.flex = flex ?? flexList?.elementAt(index) ?? data.flex;
-      data.fontSize = fontSize ?? fontSizeList?.elementAt(index);
+      data.style = style ?? styleList?.elementAt(index);
       data.color = color ?? colorList?.elementAt(index);
       data.maxLines =
           maxLines ?? maxLinesList?.elementAt(index) ?? data.maxLines;
@@ -361,7 +361,7 @@ class TableCellData {
       Widget? child,
       int? flex,
       bool? isHeader,
-      double? fontSize,
+      TextStyle? style,
       Color? color,
       int? maxLines,
       Alignment? alignment,
@@ -376,7 +376,7 @@ class TableCellData {
       child: child,
       flex: flex ?? this.flex,
       isHeader: isHeader ?? this.isHeader,
-      fontSize: fontSize ?? this.fontSize,
+      style: style ?? this.style,
       color: color ?? this.color,
       maxLines: maxLines ?? this.maxLines,
       alignment: alignment ?? this.alignment,

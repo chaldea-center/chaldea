@@ -236,6 +236,7 @@ CraftEssence _$CraftEssenceFromJson(Map<String, dynamic> json) {
       illustratorsEn:
           $checkedConvert(json, 'illustratorsEn', (v) => v as String?),
       cost: $checkedConvert(json, 'cost', (v) => v as int),
+      lvMax: $checkedConvert(json, 'lvMax', (v) => v as int),
       hpMin: $checkedConvert(json, 'hpMin', (v) => v as int),
       hpMax: $checkedConvert(json, 'hpMax', (v) => v as int),
       atkMin: $checkedConvert(json, 'atkMin', (v) => v as int),
@@ -287,6 +288,7 @@ Map<String, dynamic> _$CraftEssenceToJson(CraftEssence instance) =>
       'illustratorsJp': instance.illustratorsJp,
       'illustratorsEn': instance.illustratorsEn,
       'cost': instance.cost,
+      'lvMax': instance.lvMax,
       'hpMin': instance.hpMin,
       'hpMax': instance.hpMax,
       'atkMin': instance.atkMin,
@@ -1412,6 +1414,10 @@ Servant _$ServantFromJson(Map<String, dynamic> json) {
           (v) => (v as List<dynamic>)
               .map((e) => KeyValueListEntry.fromJson(e as Map<String, dynamic>))
               .toList()),
+      atkGrowth: $checkedConvert(json, 'atkGrowth',
+          (v) => (v as List<dynamic>).map((e) => e as int).toList()),
+      hpGrowth: $checkedConvert(json, 'hpGrowth',
+          (v) => (v as List<dynamic>).map((e) => e as int).toList()),
     );
     return val;
   });
@@ -1443,6 +1449,8 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'valentineCraft': instance.valentineCraft,
       'icons': instance.icons,
       'sprites': instance.sprites,
+      'atkGrowth': instance.atkGrowth,
+      'hpGrowth': instance.hpGrowth,
     };
 
 ServantBaseInfo _$ServantBaseInfoFromJson(Map<String, dynamic> json) {

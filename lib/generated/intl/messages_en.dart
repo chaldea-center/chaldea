@@ -291,6 +291,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "grail": MessageLookupByLibrary.simpleMessage("Grail"),
         "grail_level": MessageLookupByLibrary.simpleMessage("Grail"),
         "grail_up": MessageLookupByLibrary.simpleMessage("Palingenesis"),
+        "growth_curve": MessageLookupByLibrary.simpleMessage("Growth Curve"),
         "guda_item_data":
             MessageLookupByLibrary.simpleMessage("Guda Item Data"),
         "guda_servant_data":

@@ -263,6 +263,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "grail": MessageLookupByLibrary.simpleMessage("聖杯"),
         "grail_level": MessageLookupByLibrary.simpleMessage("聖杯レベル"),
         "grail_up": MessageLookupByLibrary.simpleMessage("聖杯転臨"),
+        "growth_curve": MessageLookupByLibrary.simpleMessage("成長曲線"),
         "guda_item_data": MessageLookupByLibrary.simpleMessage("Gudaアイテムデータ"),
         "guda_servant_data":
             MessageLookupByLibrary.simpleMessage("Gudaサーヴァントデータ"),
