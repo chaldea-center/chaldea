@@ -11,17 +11,20 @@
 ## 捐赠
 如果希望通过捐赠以支持本项目，请添加留言以注明用于捐赠Chaldea应用。
 
-### Buy me a coffee
-[![ko-fi](resource://res/img/md/kofi2.webp)](https://ko-fi.com/G2G152BDO)
-
 ### WeChat Pay/微信
 ![Wechat Pay](resource://res/img/md/wechat_pay.webp)
 
 ### Alipay/支付宝
 ![Alipay](resource://res/img/md/alipay.webp)
 
-### B站充电
+### [B站充电](https://space.bilibili.com/3785253)
 [![Bilibili Charge](resource://res/img/md/bilicharge.webp)](https://space.bilibili.com/3785253)
+
+### [Buy me a coffee](https://ko-fi.com/G2G152BDO)
+[![ko-fi](resource://res/img/md/kofi2.webp)](https://ko-fi.com/G2G152BDO)
+
+### [PayPal.Me](https://paypal.me/narumishi)
+[![paypal.me/narumishi](https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-200px.png)](https://paypal.me/narumishi)
 
 
 ## 支出一览

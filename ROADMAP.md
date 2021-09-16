@@ -3,9 +3,9 @@
 ## New feature
 - [ ] Servant
   - [x] battle model/avatar
-  - [ ] HP/ATK curve
+  - [x] HP/ATK curve
   - [x] crafts and cmd codes that have appeared in
-- [ ] Buff filter for servants, craft essences and command codes
+- [x] Buff filter for servants, craft essences and command codes
 - [x] Master Mission: 
   - [x] support **and** / **or** inside one mission
   - [x] related quests, sorted by mission target counts

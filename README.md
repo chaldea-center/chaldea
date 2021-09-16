@@ -27,6 +27,7 @@ Thanks for all above communities and contributors.
   - servants' ascension, skill, dress, append skill, palingenesis, fou-kun and bond(Chaldea flame)
   - limit events, main records, exchange tickets and campaigns
   - owned items
+  - Saint Quartz planning
 - free quest solution
   - calculate the best solution of least AP or battle times according to item demands
   - compare free quest efficiency by define items' weight
@@ -34,7 +35,7 @@ Thanks for all above communities and contributors.
 - summon/gacha simulator
 - import user data
   - import item and servant data from captured https traffic when login to CN server(Bilibili)
-  - import item data from game screenshots (realized on server side)
+  - import item/active skill/append skill data from game screenshots (realized on server side)
   - from `Guda` app
   - from `fgosimulator.webcrow.jp/Material`
 
@@ -51,7 +52,7 @@ Linux     | Not implemented
 Web       | Not supported      
 
 
-## Install
+## Installation
 
 ### Google Play
 [<img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' width="137.5px"/>](https://play.google.com/store/apps/details?id=cc.narumi.chaldea)
@@ -77,9 +78,12 @@ E.g. 20210502-1.4.0 means that the dataset is created at 2021/05/02 and requires
 
 You may need to install [Microsoft Visual C++ redistributable package](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads) to enable VC++ runtime support.
 
+## Donation
+If you would like to support or donate for this project, please move to [Support Page](https://chaldea-center.github.io/support.html).
+
 ## Feedback and Contribution
 If you have any bug report, feature request, question or want to contribute to this project, feel free to
-- open an [issue](https://github.com/chaldea-center/chaldea/issues/new/choose)
+- file an [issue](https://github.com/chaldea-center/chaldea/issues/new/choose)
 - pull request or join the collaboration
 - Email: [chaldea@narumi.cc](mailto:chaldea@narumi.cc)
 - Discord: [https://discord.gg/5M6w5faqjP](https://discord.gg/5M6w5faqjP)

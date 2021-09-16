@@ -13,8 +13,11 @@ If this project is helpful to you and want to support it, you can:
 Donation is also welcomed, please leave a message to let me know that's donated for Chaldea.
 
 
-### Buy me a coffee
+### [Buy me a coffee](https://ko-fi.com/G2G152BDO)
 [![ko-fi](resource://res/img/md/kofi2.webp)](https://ko-fi.com/G2G152BDO)
+
+### [PayPal.Me](https://paypal.me/narumishi)
+[![paypal.me/narumishi](https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-200px.png)](https://paypal.me/narumishi)
 
 ### WeChat Pay/微信
 ![Wechat Pay](resource://res/img/md/wechat_pay.webp)
@@ -22,14 +25,14 @@ Donation is also welcomed, please leave a message to let me know that's donated 
 ### Alipay/支付宝
 ![Alipay](resource://res/img/md/alipay.webp)
 
-### Bilibili Charge
+### [Bilibili Charge](https://space.bilibili.com/3785253)
 [![Bilibili Charge](resource://res/img/md/bilicharge.webp)](https://space.bilibili.com/3785253)
 
 
 ## Expenditure
 - Apple Developer Program: ¥688/$99 per year
 - Google Developer Program: ¥162/$25
-- AWS cloud server: ~ ¥1000/$150 per year
+- AWS cloud server: ¥1000/$150 per year
 - Time
 
 

@@ -1,6 +1,7 @@
 ## 1.5.7
 - buff/effect filter
 - support new(after 6th) and legacy drop rate data
+- show growth curve of servant/ce on tapping ATK/HP
 - summon algorithm changed: statistic r5 prob 1.44%->1.24%->1.04%
 
 ## 1.5.6
