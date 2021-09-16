@@ -313,7 +313,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                 setState(() {});
               },
             ),
-            //TODO: add extra event quests button and dialog page
+            //TODO: add extra event quests button
             IconButton(
               icon: const Icon(Icons.sort),
               tooltip: S.of(context).filter_sort,

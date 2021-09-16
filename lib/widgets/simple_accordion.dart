@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 typedef AccordionHeaderBuilder = Widget Function(
     BuildContext context, bool expanded);
 
-/// TODO: firstChild may not change dark theme
 class SimpleAccordion extends StatefulWidget {
   final bool expanded;
   final AccordionHeaderBuilder headerBuilder;

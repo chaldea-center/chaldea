@@ -36,6 +36,8 @@ class ServantDetailPage extends StatefulWidget {
 
 class ServantDetailPageState extends State<ServantDetailPage>
     with SingleTickerProviderStateMixin {
+  bool _showHeader = true;
+
   Servant get svt => widget.svt;
 
   List<_SubTabInfo> builders = [];
@@ -137,7 +139,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
             actions: <Widget>[
               if (!Servant.unavailable.contains(svt.no))
                 db.streamBuilder(
-                  (context) => IconButton(
+                      (context) => IconButton(
                     icon: status.favorite
                         ? const Icon(Icons.favorite, color: Colors.redAccent)
                         : const Icon(Icons.favorite_border),
@@ -156,23 +158,46 @@ class ServantDetailPageState extends State<ServantDetailPage>
           body: Column(
             children: <Widget>[
               _buildHeader(),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: SizedBox(
-                  height: 36,
-                  child: TabBar(
-                    labelColor: Theme.of(context).colorScheme.secondary,
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    unselectedLabelColor: Colors.grey,
-                    isScrollable: true,
-                    tabs: builders
-                        .map((e) => Tab(
-                            child: Text(e.tabBuilder(),
-                                style: Theme.of(context).textTheme.bodyText2)))
-                        .toList(),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: SizedBox(
+                        height: 36,
+                        child: TabBar(
+                          labelColor: Theme.of(context).colorScheme.secondary,
+                          indicatorSize: TabBarIndicatorSize.tab,
+                          labelPadding:
+                              const EdgeInsets.symmetric(horizontal: 8.0),
+                          unselectedLabelColor: Colors.grey,
+                          isScrollable: true,
+                          tabs: builders
+                              .map((e) => Tab(
+                                  child: Text(e.tabBuilder(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText2)))
+                              .toList(),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                  IconButton(
+                    icon: Icon(
+                      _showHeader
+                          ? Icons.keyboard_arrow_up
+                          : Icons.keyboard_arrow_down,
+                      color: Theme.of(context).highlightColor,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _showHeader = !_showHeader;
+                      });
+                    },
+                  )
+                ],
               ),
               const Divider(height: 1),
               Expanded(
@@ -248,7 +273,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
             value: 'switch_slider_dropdown',
             onTap: () {
               db.appSetting.svtPlanSliderMode =
-                  !db.appSetting.svtPlanSliderMode;
+              !db.appSetting.svtPlanSliderMode;
               setState(() {});
             },
           ),
@@ -311,85 +336,91 @@ class ServantDetailPageState extends State<ServantDetailPage>
   }
 
   Widget _buildHeader() {
-    return CustomTile(
-      leading: InkWell(
-        child:
-            svt.iconBuilder(context: context, height: 64, jumpToDetail: false),
-        onTap: () {
-          FullscreenImageViewer.show(
-            context: context,
-            urls: svt.info.illustrations.values.toList(),
-            placeholder: (context, url) => db.getIconImage(svt.cardBackFace),
-          );
-        },
-      ),
-      title: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('No.${svt.no}  ${svt.info.className}'),
-          if (!db.gameData.unavailableSvts.contains(svt.no))
-            Text(
-              'ATK ${svt.info.atkMax}  HP ${svt.info.hpMax}',
-              style: Theme.of(context).textTheme.caption,
-            ),
-          const SizedBox(height: 4),
-        ],
-      ),
-      titlePadding: const EdgeInsets.only(left: 16),
-      subtitle: Wrap(
-        spacing: 3,
-        runSpacing: 2,
-        children: <Widget>[
-          // more tags/info here
-          ...getObtainBadges(),
-        ],
-      ),
-      trailing: db.streamBuilder(
-        (context) => Tooltip(
-          message: S.of(context).priority,
-          child: DropdownButton<int>(
-            value: status.priority,
-            items: List.generate(5, (index) {
-              final icons = [
-                Icons.looks_5_outlined,
-                Icons.looks_4_outlined,
-                Icons.looks_3_outlined,
-                Icons.looks_two_outlined,
-                Icons.looks_one_outlined,
-              ];
-              final int priority = 5 - index;
-              return DropdownMenuItem(
-                value: priority,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(icons[index],
-                        color: Theme.of(context).colorScheme.secondary),
-                    SizedBox(
-                      width: 40,
-                      child: Center(
-                        child: Text(
-                          db.appSetting.priorityTags['$priority'] ?? '',
-                          overflow: TextOverflow.fade,
-                          style: const TextStyle(fontSize: 12),
-                          maxLines: 1,
+    return AnimatedCrossFade(
+      firstChild: CustomTile(
+        leading: InkWell(
+          child: svt.iconBuilder(
+              context: context, height: 64, jumpToDetail: false),
+          onTap: () {
+            FullscreenImageViewer.show(
+              context: context,
+              urls: svt.info.illustrations.values.toList(),
+              placeholder: (context, url) => db.getIconImage(svt.cardBackFace),
+            );
+          },
+        ),
+        title: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('No.${svt.no}  ${svt.info.className}'),
+            if (!db.gameData.unavailableSvts.contains(svt.no))
+              Text(
+                'ATK ${svt.info.atkMax}  HP ${svt.info.hpMax}',
+                style: Theme.of(context).textTheme.caption,
+              ),
+            const SizedBox(height: 4),
+          ],
+        ),
+        titlePadding: const EdgeInsets.only(left: 16),
+        subtitle: Wrap(
+          spacing: 3,
+          runSpacing: 2,
+          children: <Widget>[
+            // more tags/info here
+            ...getObtainBadges(),
+          ],
+        ),
+        trailing: db.streamBuilder(
+          (context) => Tooltip(
+            message: S.of(context).priority,
+            child: DropdownButton<int>(
+              value: status.priority,
+              items: List.generate(5, (index) {
+                final icons = [
+                  Icons.looks_5_outlined,
+                  Icons.looks_4_outlined,
+                  Icons.looks_3_outlined,
+                  Icons.looks_two_outlined,
+                  Icons.looks_one_outlined,
+                ];
+                final int priority = 5 - index;
+                return DropdownMenuItem(
+                  value: priority,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(icons[index],
+                          color: Theme.of(context).colorScheme.secondary),
+                      SizedBox(
+                        width: 40,
+                        child: Center(
+                          child: Text(
+                            db.appSetting.priorityTags['$priority'] ?? '',
+                            overflow: TextOverflow.fade,
+                            style: const TextStyle(fontSize: 12),
+                            maxLines: 1,
+                          ),
                         ),
-                      ),
-                    )
-                  ],
-                ),
-              );
-            }),
-            onChanged: (v) {
-              status.priority = v ?? status.priority;
-              db.notifyDbUpdate();
-            },
-            underline: Container(),
-            icon: Container(),
+                      )
+                    ],
+                  ),
+                );
+              }),
+              onChanged: (v) {
+                status.priority = v ?? status.priority;
+                db.notifyDbUpdate();
+              },
+              underline: Container(),
+              icon: Container(),
+            ),
           ),
         ),
       ),
+      secondChild: const SizedBox(),
+      crossFadeState:
+          _showHeader ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+      duration: const Duration(milliseconds: 200),
     );
   }
 

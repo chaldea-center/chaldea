@@ -530,14 +530,14 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         );
       } else {
         // TODO: add divisions
+        final items = List.generate((maxVal - minVal) ~/ (divisions ?? 1) + 1,
+            (index) => minVal + index * (divisions ?? 1));
         selector = RangeSelector<int>(
           start: start,
           end: end,
           startEnabled: !enhanceMode,
-          startItems:
-              List.generate(maxVal - minVal + 1, (index) => minVal + index),
-          endItems:
-              List.generate(maxVal - minVal + 1, (index) => minVal + index),
+          startItems: items,
+          endItems: items,
           itemBuilder: (context, v) => Text(labelFormatter!(v)),
           onChanged: onValueChanged,
         );
