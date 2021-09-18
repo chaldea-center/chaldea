@@ -21,15 +21,17 @@ import 'package:chaldea/modules/event/main_record_detail_page.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart' show ItemDetailPage;
 import 'package:chaldea/modules/servant/servant_detail_page.dart'
     show ServantDetailPage;
+import 'package:chaldea/platform_interface/platform/platform.dart';
 import 'package:chaldea/widgets/custom_tile.dart' show ImageWithText;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:json_annotation/json_annotation.dart'
     hide $checkedNew, $checkedConvert, CheckedFromJsonException;
 import 'package:json_annotation/src/allowed_keys_helpers.dart'; // ignore: implementation_imports
-import 'effect_type/effect_type.dart';
+
 import '../config.dart' show db;
 import '../constants.dart';
+import '../device_app_info.dart';
 import '../extensions.dart';
 import '../git_tool.dart';
 import '../localized/localized.dart';
@@ -37,6 +39,7 @@ import '../logger.dart';
 import '../split_route/split_route.dart';
 import '../tile_items.dart';
 import '../utils.dart';
+import 'effect_type/effect_type.dart';
 
 part 'base_types.dart';
 

@@ -2738,6 +2738,7 @@ CarouselSetting _$CarouselSettingFromJson(Map<String, dynamic> json) {
           (v) => (v as Map<String, dynamic>?)?.map(
                 (k, e) => MapEntry(k, e as String),
               )),
+      enabled: $checkedConvert(json, 'enabled', (v) => v as bool?),
       enableMooncell:
           $checkedConvert(json, 'enableMooncell', (v) => v as bool?),
       enableJp: $checkedConvert(json, 'enableJp', (v) => v as bool?),
@@ -2751,6 +2752,7 @@ Map<String, dynamic> _$CarouselSettingToJson(CarouselSetting instance) =>
     <String, dynamic>{
       'updateTime': instance.updateTime,
       'urls': instance.urls,
+      'enabled': instance.enabled,
       'enableMooncell': instance.enableMooncell,
       'enableJp': instance.enableJp,
       'enableUs': instance.enableUs,

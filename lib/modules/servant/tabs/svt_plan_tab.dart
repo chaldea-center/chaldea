@@ -773,7 +773,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
   }
 
   void updateState() {
-    db.itemStat.updateSvtItems(lapse: const Duration(seconds: 1));
+    db.itemStat.updateSvtItems();
     if (widget.parent != null) {
       widget.parent?.setState(() {});
     } else {

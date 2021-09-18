@@ -27,19 +27,17 @@ class ItemStatistics {
   Timer? _leftTimer;
 
   Timer? _setTimer(Duration? lapse, VoidCallback callback) {
-    if (lapse == null) {
-      // don't use Timer(Duration.zero,callback), maybe next microtask
-      callback();
-      return null;
-    } else {
-      return Timer(lapse, callback);
-    }
+    lapse ??= PlatformU.isDesktop || AppInfo.isIPad
+        ? const Duration(seconds: 1)
+        : const Duration(seconds: 3);
+    return Timer(lapse, callback);
   }
 
   /// Update [itemState] after duration [lapse]
   ///
   Future<void> update(
       {bool shouldBroadcast = true, Duration? lapse, bool withFuture = false}) {
+    db.notifyDbUpdate();
     void callback() {
       updateSvtItems(shouldBroadcast: false);
       updateEventItems(shouldBroadcast: false);
@@ -59,12 +57,13 @@ class ItemStatistics {
   }
 
   void updateSvtItems({bool shouldBroadcast = true, Duration? lapse}) {
+    if (shouldBroadcast) db.notifyDbUpdate();
     void callback() {
       // priority is shared cross users!
       final Map<int, ServantStatus> priorityFiltered = Map.fromEntries(db
           .curUser.servants.entries
           .where((entry) => db.userData.svtFilter.priority
-              .singleValueFilter(entry.value.priority.toString())));
+          .singleValueFilter(entry.value.priority.toString())));
       svtItemDetail.update(
           curStat: priorityFiltered, targetPlan: db.curUser.curSvtPlan);
       updateLeftItems(shouldBroadcast: shouldBroadcast);
@@ -76,6 +75,7 @@ class ItemStatistics {
   }
 
   void updateEventItems({bool shouldBroadcast = true, Duration? lapse}) {
+    if (shouldBroadcast) db.notifyDbUpdate();
     void callback() {
       if (includingEvent) {
         eventItems = db.gameData.events.getAllItems(db.curUser.events);
