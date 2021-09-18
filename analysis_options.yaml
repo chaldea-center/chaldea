@@ -11,7 +11,7 @@ include: package:flutter_lints/flutter.yaml
 
 analyzer:
   exclude:
-    - lib/generated/
+    - lib/generated/intl/
 
 linter:
   # The lint rules applied to this project can be customized in the

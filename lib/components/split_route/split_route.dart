@@ -57,6 +57,8 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     changedInternalState();
   }
 
+  bool get master => _detail == false;
+
   /// Master page ratio of full-width, between 0~100
   final int masterRatio;
 
@@ -331,7 +333,9 @@ class MasterBackButton extends StatelessWidget {
     return BackButton(
       color: color,
       onPressed: () async {
-        SplitRoute.popDetailRoutes(context);
+        if (SplitRoute.of(context)?.detail == false) {
+          SplitRoute.popDetailRoutes(context);
+        }
         if (onPressed != null) {
           onPressed!();
         } else {
