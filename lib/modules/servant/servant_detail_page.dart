@@ -140,7 +140,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
             actions: <Widget>[
               if (!Servant.unavailable.contains(svt.no))
                 db.streamBuilder(
-                      (context) => IconButton(
+                  (context) => IconButton(
                     icon: status.favorite
                         ? const Icon(Icons.favorite, color: Colors.redAccent)
                         : const Icon(Icons.favorite_border),
@@ -384,8 +384,10 @@ class ServantDetailPageState extends State<ServantDetailPage>
                   // style: Theme.of(context).textTheme.caption,
                 ),
                 style: TextButton.styleFrom(
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    padding: EdgeInsets.zero),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  padding: EdgeInsets.zero,
+                  visualDensity: VisualDensity.compact,
+                ),
               ),
             // const SizedBox(height: 4),
           ],

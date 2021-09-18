@@ -99,8 +99,10 @@ class _GalleryPageState extends State<GalleryPage> {
                         PlatformU.isDesktopOrWeb ? 0 : constraints.maxHeight),
                 child: Column(
                   children: [
-                    AppNewsCarousel(maxWidth: constraints.maxWidth),
-                    const Divider(height: 0.5, thickness: 0.5),
+                    if (db.userData.carouselSetting.enabled)
+                      AppNewsCarousel(maxWidth: constraints.maxWidth),
+                    if (db.userData.carouselSetting.enabled)
+                      const Divider(height: 0.5, thickness: 0.5),
                     GridGallery(maxWidth: constraints.maxWidth),
                   ],
                 ),

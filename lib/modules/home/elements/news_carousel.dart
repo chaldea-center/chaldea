@@ -171,7 +171,6 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    if (!carouselSetting.enabled) return Container();
     bool useFullWidth = widget.maxWidth != null &&
         widget.maxWidth! > 0 &&
         widget.maxWidth != double.infinity &&

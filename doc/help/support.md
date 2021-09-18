@@ -27,7 +27,7 @@
 [![paypal.me/narumishi](https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-200px.png)](https://paypal.me/narumishi)
 
 
-## 支出一览
+## 主要支出
 - Apple开发者: ¥688/$99 每年
 - Google开发者: ¥162/$25
 - 云服务器: ~ ¥1000/$150 每年

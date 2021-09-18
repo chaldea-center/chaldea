@@ -29,7 +29,7 @@ Donation is also welcomed, please leave a message to let me know that's donated 
 [![Bilibili Charge](resource://res/img/md/bilicharge.webp)](https://space.bilibili.com/3785253)
 
 
-## Expenditure
+## Major Expenditure
 - Apple Developer Program: ¥688/$99 per year
 - Google Developer Program: ¥162/$25
 - AWS cloud server: ¥1000/$150 per year

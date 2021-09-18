@@ -42,7 +42,7 @@ class GalleryItem {
     this.icon,
     this.child,
     this.page,
-    this.isDetail = false,
+    required this.isDetail,
   }) : assert(icon != null || child != null);
 
   Widget buildIcon(BuildContext context, {double size = 40}) {
@@ -100,30 +100,35 @@ class GalleryItem {
     titleBuilder: () => S.current.servant_title,
     icon: FontAwesomeIcons.users,
     page: ServantListPage(),
+    isDetail: false,
   );
   static GalleryItem craftEssence = GalleryItem(
     name: 'craft',
     titleBuilder: () => S.current.craft_essence,
     icon: FontAwesomeIcons.streetView,
     page: CraftListPage(),
+    isDetail: false,
   );
   static GalleryItem commandCode = GalleryItem(
     name: 'cmd_code',
     titleBuilder: () => S.current.command_code,
     icon: FontAwesomeIcons.expand,
     page: CmdCodeListPage(),
+    isDetail: false,
   );
   static GalleryItem item = GalleryItem(
     name: 'item',
     titleBuilder: () => S.current.item_title,
     icon: Icons.category,
     page: ItemListPage(),
+    isDetail: false,
   );
   static GalleryItem event = GalleryItem(
     name: 'event',
     titleBuilder: () => S.current.event_title,
     icon: Icons.flag,
     page: EventListPage(),
+    isDetail: false,
   );
   static GalleryItem plan = GalleryItem(
     name: 'plan',
@@ -233,7 +238,7 @@ class GalleryItem {
   static GalleryItem faq = GalleryItem(
     name: 'faq',
     titleBuilder: () => 'FAQ',
-    icon: Icons.report_problem_rounded,
+    icon: Icons.help_center,
     page: FAQPage(),
     isDetail: true,
   );

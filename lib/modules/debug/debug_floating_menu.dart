@@ -172,7 +172,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
         ),
         ListTile(
           horizontalTitleGap: 0,
-          leading: const Icon(Icons.palette_outlined),
+          leading: const Icon(Icons.update),
           title: const Text('Load GameData'),
           onTap: () {
             db.loadGameData();

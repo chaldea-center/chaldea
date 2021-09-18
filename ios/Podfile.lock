@@ -196,17 +196,17 @@ SPEC CHECKSUMS:
   image_gallery_saver: 259eab68fb271cfd57d599904f7acdc7832e7ef2
   open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
-  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  path_provider: d1e9807085df1f9cc9318206cd649dc0b76be3de
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
   rate_my_app: 8e49687f3520c56352f974f0cb401afea07cd496
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   SDWebImage: b69257f4ab14e9b6a2ef53e910fdf914d8f757c1
   share_plus: 056a1e8ac890df3e33cb503afffaf1e9b4fbae68
-  shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
+  shared_preferences: 5033afbb22d372e15aff8ff766df9021b845f273
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   SwiftyGif: e466e86c660d343357ab944a819a101c4127cb40
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
-  url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
+  url_launcher: b6e016d912f04be9f5bf6e8e82dc599b7ba59649
 
 PODFILE CHECKSUM: 1ee720151bd141b76e1a6352e8334625b4483dba
 

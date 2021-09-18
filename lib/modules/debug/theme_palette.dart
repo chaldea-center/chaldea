@@ -60,6 +60,8 @@ class _PaletteForTheme extends StatelessWidget {
                 child: Text(
                   themeData.brightness.toString(),
                   textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
