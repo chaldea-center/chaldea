@@ -97,6 +97,7 @@ class CarouselSetting {
 
   /// img_url: link, or text:link
   Map<String, String> urls;
+  bool enabled;
   bool enableMooncell;
   bool enableJp;
   bool enableUs;
@@ -106,10 +107,13 @@ class CarouselSetting {
   CarouselSetting({
     this.updateTime,
     Map<String, String>? urls,
+    bool? enabled,
     bool? enableMooncell,
     bool? enableJp,
     bool? enableUs,
-  })  : urls = urls ?? {},
+  })
+      : urls = urls ?? {},
+        enabled = enabled ?? true,
         enableMooncell = enableMooncell ?? true,
         enableJp = enableJp ?? true,
         enableUs = enableUs ?? true;

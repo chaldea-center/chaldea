@@ -58,12 +58,14 @@ class AppNewsCarousel extends StatefulWidget {
     try {
       final _dio = Dio();
       Future<Map<String, String>>? taskMC, taskJp, taskGitee, taskUs;
+      bool updated = false;
       // mc slides
       if (carouselSetting.enableMooncell) {
         const mcUrl = 'https://fgo.wiki/w/模板:自动取值轮播';
         taskMC = _dio.get(mcUrl).then((response) {
           var mcParser = parser.parse(response.data.toString());
           var mcElement = mcParser.getElementById('transImageBox');
+          updated = true;
           return _getImageLinks(element: mcElement, uri: Uri.parse(mcUrl));
         }).catchError((e, s) {
           logger.e('parse mc slides failed', e, s);
@@ -77,6 +79,7 @@ class AppNewsCarousel extends StatefulWidget {
         taskJp = _dio.get(jpUrl).then((response) {
           var jpParser = parser.parse(response.data.toString());
           var jpElement = jpParser.getElementsByClassName('slide').getOrNull(0);
+          updated = true;
           return _getImageLinks(element: jpElement, uri: Uri.parse(jpUrl));
         }).catchError((e, s) {
           logger.e('parse jp slides failed', e, s);
@@ -89,6 +92,7 @@ class AppNewsCarousel extends StatefulWidget {
           .then((String content) {
         var announceParser = parser.parse(content);
         var announceElement = announceParser.body;
+        updated = true;
         return _getImageLinks(
             element: announceElement,
             uri: Uri.parse(
@@ -105,6 +109,7 @@ class AppNewsCarousel extends StatefulWidget {
         taskUs = _dio.get(usUrl).then((response) {
           var usParser = parser.parse(response.data.toString());
           var usElement = usParser.getElementsByClassName('slide').getOrNull(0);
+          updated = true;
           return _getImageLinks(element: usElement, uri: Uri.parse(usUrl));
         }).catchError((e, s) {
           logger.e('parse jp slides failed', e, s);
@@ -121,7 +126,7 @@ class AppNewsCarousel extends StatefulWidget {
       );
 
       // key: img url, value: href url
-      if (result.isNotEmpty) {
+      if (updated) {
         final blockedWiki = await GitTool.giteeWikiPage('blocked_carousel');
         List<String> blocked = blockedWiki
             .split('\n')
@@ -166,6 +171,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
 
   @override
   Widget build(BuildContext context) {
+    if (!carouselSetting.enabled) return Container();
     bool useFullWidth = widget.maxWidth != null &&
         widget.maxWidth! > 0 &&
         widget.maxWidth != double.infinity &&

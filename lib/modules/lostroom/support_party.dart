@@ -26,7 +26,7 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
   late ScrollController _horizontalController;
   late ScrollController _verticalController;
   int selected = 0;
-  double deviceRatio = 1;
+  double? pixelRatio;
 
   SupportSetUp get cur => settings[selected];
   final ScreenshotController _screenshotController = ScreenshotController();
@@ -34,7 +34,6 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
   @override
   void initState() {
     super.initState();
-    deviceRatio = MediaQuery.of(context).devicePixelRatio;
     _horizontalController = ScrollController();
     _verticalController = ScrollController();
     for (int index = 0; index < _allClasses.length; index++) {}
@@ -46,6 +45,7 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
 
   @override
   Widget build(BuildContext context) {
+    pixelRatio ??= MediaQuery.of(context).devicePixelRatio;
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.support_party),
@@ -353,54 +353,43 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
             });
           },
         ),
-        // Slider(
-        //   value: cur.dx,
-        //   onChanged: (v) {
-        //     setState(() {
-        //       cur.dx = v;
-        //     });
-        //   },
-        //   min: -1000,
-        //   max: 1000,
-        // ),
-        // const SHeader('Scale'),
-        // Slider(
-        //   value: fixValidRange(cur.scale, 0.5, 2),
-        //   onChanged: (v) {
-        //     setState(() {
-        //       cur.scale = v;
-        //     });
-        //   },
-        //   min: 0.5,
-        //   max: 2,
-        //   label: cur.scale.toStringAsFixed(1),
-        // )
-        SHeader('DeviceRatio: ${deviceRatio.toStringAsFixed(2)}'),
+        SHeader('Resolution: ${pixelRatio!.toStringAsFixed(2)}'),
         Slider(
-          value: deviceRatio,
+          value: pixelRatio!,
           onChanged: (v) {
             setState(() {
-              deviceRatio = v;
+              pixelRatio = v;
             });
           },
           min: MediaQuery.of(context).devicePixelRatio * 0.25,
           max: MediaQuery.of(context).devicePixelRatio * 4,
           divisions:
               MediaQuery.of(context).devicePixelRatio * (4 - 0.25) ~/ 0.01 + 1,
-          label: deviceRatio.toStringAsFixed(2),
+          label: pixelRatio!.toStringAsFixed(2),
         ),
 
         Center(
           child: ElevatedButton(
             onPressed: () async {
               final data =
-                  await _screenshotController.capture(pixelRatio: deviceRatio);
+                  await _screenshotController.capture(pixelRatio: pixelRatio);
               SimpleCancelOkDialog(
                 title: const Text('Export'),
                 content: Image.memory(data!),
-                onTapOk: () {
-                  //
-                },
+                hideOk: true,
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      ImageActions.showSaveShare(
+                          context: context,
+                          data: data,
+                          destFp: join(db.paths.downloadDir,
+                              'support_setup_${DateTime.now().millisecondsSinceEpoch}.png'),
+                          shareText: S.current.support_party);
+                    },
+                    child: Text(S.current.save),
+                  )
+                ],
               ).showDialog(context);
             },
             child: Text(S.current.preview),

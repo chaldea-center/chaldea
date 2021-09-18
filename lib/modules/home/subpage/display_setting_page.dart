@@ -2,6 +2,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/method_channel_chaldea.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 
+import 'display_settings/carousel_setting_page.dart';
 import 'display_settings/svt_priority_tagging.dart';
 import 'display_settings/svt_tab_sorting.dart';
 
@@ -61,6 +62,13 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                     db.appSetting.showAccountAtHome = v;
                   });
                   db.notifyAppUpdate();
+                },
+              ),
+              ListTile(
+                title: Text(S.current.carousel_setting),
+                trailing: const Icon(Icons.keyboard_arrow_right),
+                onTap: () {
+                  SplitRoute.push(context, const CarouselSettingPage());
                 },
               )
             ],
@@ -137,47 +145,6 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   SplitRoute.push(context, SvtPriorityTagging());
-                },
-              ),
-            ],
-          ),
-          TileGroup(
-            header: S.current.carousel_setting,
-            children: [
-              CheckboxListTile(
-                value: carousel.enableMooncell,
-                title: const Text('Mooncell News'),
-                subtitle: const Text('CN/JP'),
-                controlAffinity: ListTileControlAffinity.leading,
-                onChanged: (v) {
-                  setState(() {
-                    carousel.needUpdate = true;
-                    carousel.enableMooncell = v ?? carousel.enableMooncell;
-                  });
-                },
-              ),
-              CheckboxListTile(
-                value: carousel.enableJp,
-                title: const Text('JP News'),
-                subtitle: const Text('https://view.fate-go.jp/'),
-                controlAffinity: ListTileControlAffinity.leading,
-                onChanged: (v) {
-                  setState(() {
-                    carousel.needUpdate = true;
-                    carousel.enableJp = v ?? carousel.enableJp;
-                  });
-                },
-              ),
-              CheckboxListTile(
-                value: carousel.enableUs,
-                title: const Text('NA News'),
-                subtitle: const Text('https://webview.fate-go.us/'),
-                controlAffinity: ListTileControlAffinity.leading,
-                onChanged: (v) {
-                  setState(() {
-                    carousel.needUpdate = true;
-                    carousel.enableUs = v ?? carousel.enableUs;
-                  });
                 },
               ),
             ],
