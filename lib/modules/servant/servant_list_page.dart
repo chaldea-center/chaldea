@@ -147,7 +147,7 @@ class ServantListPageState
 2.仅更改列表中"已显示"的从者
 3.通过筛选/搜索功能筛选显示列表，通过每行尾部的显示按钮可以单独隐藏/显示特定从者""",
                   jpn:
-                  """1.プランページはサーヴァントページに似ていますが、主にサーヴァントの現在と目標レベルを一律に設定するために使用されます（霊基再臨/スキル/霊衣）
+                      """1.プランページはサーヴァントページに似ていますが、主にサーヴァントの現在と目標レベルを一律に設定するために使用されます（霊基再臨/スキル/霊衣）
 2.リストで「表示」されているサーヴァントのみを変更します
 3.フィルター/検索機能で表示リストをフィルターし、各行の表示ボタンで特定のサーヴァントを個別に表示/非表示にすることができます """,
                   eng:
@@ -390,7 +390,14 @@ class ServantListPageState
       controller: scrollController,
       child: useGrid
           ? buildGridView()
-          : buildListView(topHint: hintText, bottomHint: hintText),
+          : buildListView(
+              topHint: hintText,
+              bottomHint: hintText,
+              separator: widget.planMode
+                  ? const Divider(
+                      height: 1, thickness: 0.5, indent: 72, endIndent: 16)
+                  : null,
+            ),
     );
     if (db.appSetting.classFilterStyle == SvtListClassFilterStyle.doNotShow) {
       return scrollable;

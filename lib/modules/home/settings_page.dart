@@ -239,26 +239,26 @@ class _SettingsPageState extends State<SettingsPage> {
               trailing: const Icon(Icons.ios_share),
               onTap: () => ShareAppDialog().showDialog(context),
             ),
-            ListTile(
-              title: const Text('Starring on Github'),
-              subtitle: const Text(kProjectHomepage),
-              onTap: () {
-                launch(kProjectHomepage);
-              },
-            ),
-            ListTile(
-              title: const Text('Contribution/Collaboration'),
-              subtitle: const Text('e.g. Translation'),
-              onTap: () {
-                const SimpleCancelOkDialog(
-                  title: Text('Contribute to Chaldea'),
-                  content: Text(
-                      'Collaboration is welcomed, please contact us through email:\n'
-                      '$kSupportTeamEmailAddress'),
-                  scrollable: true,
-                ).showDialog(context);
-              },
-            )
+            // ListTile(
+            //   title: const Text('Starring on Github'),
+            //   subtitle: const Text(kProjectHomepage),
+            //   onTap: () {
+            //     launch(kProjectHomepage);
+            //   },
+            // ),
+            // ListTile(
+            //   title: const Text('Contribution/Collaboration'),
+            //   subtitle: const Text('e.g. Translation'),
+            //   onTap: () {
+            //     const SimpleCancelOkDialog(
+            //       title: Text('Contribute to Chaldea'),
+            //       content: Text(
+            //           'Collaboration is welcomed, please contact us through email:\n'
+            //           '$kSupportTeamEmailAddress'),
+            //       scrollable: true,
+            //     ).showDialog(context);
+            //   },
+            // )
           ],
         ),
         if (kDebugMode)

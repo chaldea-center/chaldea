@@ -35,6 +35,7 @@ class SimpleAccordion extends StatefulWidget {
 
 class _SimpleAccordionState extends State<SimpleAccordion> {
   bool expanded = false;
+  bool _onceLoaded = false;
 
   @override
   void initState() {
@@ -68,8 +69,9 @@ class _SimpleAccordionState extends State<SimpleAccordion> {
       header = InkWell(onTap: toggle, child: header);
     }
     Widget content;
+    if (expanded) _onceLoaded = true;
     Widget secondChild =
-        expanded ? widget.contentBuilder(context) : Container();
+        _onceLoaded ? widget.contentBuilder(context) : Container();
     if (widget.disableAnimation) {
       content = expanded ? secondChild : Container();
     } else {
@@ -81,7 +83,7 @@ class _SimpleAccordionState extends State<SimpleAccordion> {
         sizeCurve: Curves.fastOutSlowIn,
         crossFadeState:
             expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-        duration: const Duration(milliseconds: 200),
+        duration: kThemeAnimationDuration,
       );
     }
 

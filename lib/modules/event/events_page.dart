@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'tabs/campaign_event_tab.dart';
 import 'tabs/exchange_ticket_tab.dart';
@@ -51,8 +52,12 @@ class _EventListPageState extends State<EventListPage>
             icon: Icon(showOutdated ? Icons.timer_off : Icons.timer),
           ),
           IconButton(
-            icon: Icon(
-                reversed ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up),
+            icon: FaIcon(
+              reversed
+                  ? FontAwesomeIcons.sortAmountDown
+                  : FontAwesomeIcons.sortAmountUp,
+              size: 20,
+            ),
             tooltip: 'Reversed',
             onPressed: () => setState(() => reversed = !reversed),
           ),

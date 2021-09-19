@@ -63,7 +63,7 @@ class GalleryItem {
     return '$runtimeType($name)';
   }
 
-  static List<GalleryItem> get persistentPages => [faq, more];
+  static List<GalleryItem> get persistentPages => [more];
 
   static List<GalleryItem> allItems = [
     servant,

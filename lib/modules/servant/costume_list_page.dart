@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/servant/costume_detail_page.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CostumeListPage extends StatefulWidget {
   CostumeListPage({Key? key}) : super(key: key);
@@ -11,6 +12,8 @@ class CostumeListPage extends StatefulWidget {
 
 class _CostumeListPageState
     extends SearchableListState<Costume, CostumeListPage> {
+  bool reversed = false;
+
   @override
   Iterable<Costume> get wholeData => db.gameData.costumes.values;
 
@@ -19,7 +22,7 @@ class _CostumeListPageState
   @override
   Widget build(BuildContext context) {
     filterShownList(
-      compare: (a, b) => a.no.compareTo(b.no),
+      compare: (a, b) => a.no.compareTo(b.no) * (reversed ? -1 : 1),
     );
     return scrollListener(
       useGrid: useGrid,
@@ -32,6 +35,16 @@ class _CostumeListPageState
         ),
         bottom: showSearchBar ? searchBar : null,
         actions: [
+          IconButton(
+            icon: FaIcon(
+              reversed
+                  ? FontAwesomeIcons.sortAmountDown
+                  : FontAwesomeIcons.sortAmountUp,
+              size: 20,
+            ),
+            tooltip: 'Reversed',
+            onPressed: () => setState(() => reversed = !reversed),
+          ),
           IconButton(
             onPressed: () {
               setState(() {

@@ -75,6 +75,7 @@ class _GrowthCurvePageState extends State<GrowthCurvePage> {
               child: widget.avatar!,
             ),
           Positioned.fill(
+            bottom: 24,
             child: LayoutBuilder(builder: (context, constraints) {
               return SimpleLineChart(
                 data: widget.data,

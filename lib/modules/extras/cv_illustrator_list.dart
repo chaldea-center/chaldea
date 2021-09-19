@@ -276,7 +276,6 @@ class _IllustratorListPageState
         (craftMap[creator]?.length ?? 0) +
         (codeMap[creator]?.length ?? 0);
     return SimpleAccordion(
-      disableAnimation: true,
       headerBuilder: (context, _) => ListTile(
         title: Text(creator),
         trailing: Text(count.toString()),
@@ -430,7 +429,7 @@ Widget _gridView<T>(BuildContext context, List<T> cards) {
     return GridView.count(
       childAspectRatio: 132 / 144,
       crossAxisCount: count,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+      padding: const EdgeInsets.fromLTRB(16, 2, 16, 8),
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       children: cards.map((e) => _cardIcon(context, e)).toList(),

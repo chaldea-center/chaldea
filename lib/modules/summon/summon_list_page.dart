@@ -3,6 +3,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
 import 'package:chaldea/modules/summon/filter_page.dart';
 import 'package:chaldea/modules/summon/summon_detail_page.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SummonListPage extends StatefulWidget {
   SummonListPage({Key? key}) : super(key: key);
@@ -50,9 +51,12 @@ class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
         bottom: showSearchBar ? searchBar : null,
         actions: [
           IconButton(
-            icon: Icon(filterData.reversed
-                ? Icons.keyboard_arrow_down
-                : Icons.keyboard_arrow_up),
+            icon: FaIcon(
+              filterData.reversed
+                  ? FontAwesomeIcons.sortAmountDown
+                  : FontAwesomeIcons.sortAmountUp,
+              size: 20,
+            ),
             tooltip: 'Reversed',
             onPressed: () {
               setState(() {

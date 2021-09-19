@@ -126,7 +126,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
 
   Widget _cardIcon(String name) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: CachedImage(
         imageUrl: name,
         isMCFile: true,
@@ -157,7 +157,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
       return Center(
         child: FittedBox(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 3),
+            padding: const EdgeInsets.symmetric(vertical: 8),
             child: Text(
               val,
               style: TextStyle(
@@ -187,6 +187,7 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
     return Table(
       border: TableBorder(horizontalInside: Divider.createBorderSide(context)),
       defaultColumnWidth: const FlexColumnWidth(1),
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
       columnWidths: const {
         0: FlexColumnWidth(2),
         4: FlexColumnWidth(2),

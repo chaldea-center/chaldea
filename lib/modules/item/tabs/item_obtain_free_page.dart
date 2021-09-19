@@ -19,48 +19,50 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        ListTile(
-          title: Wrap(
-            spacing: 4,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              Text(S.current.quest),
-              FilterOption(
-                selected: use6th,
-                value: '6th',
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  child: Text('6th'),
-                ),
-                onChanged: (v) => setState(() {
-                  use6th = v;
-                }),
-                shrinkWrap: true,
-              )
-            ],
-          ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              buildSortRadio(true),
-              buildSortRadio(false),
-            ],
+        Material(
+          elevation: 1,
+          child: ListTile(
+            title: Wrap(
+              spacing: 4,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                Text(S.current.quest),
+                FilterOption(
+                  selected: use6th,
+                  value: '6th',
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    child: Text('6th'),
+                  ),
+                  onChanged: (v) => setState(() {
+                    use6th = v;
+                  }),
+                  shrinkWrap: true,
+                )
+              ],
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                buildSortRadio(true),
+                buildSortRadio(false),
+              ],
+            ),
           ),
         ),
-        const Divider(height: 1),
         Expanded(
-            child: ListView(
-                children: divideTiles([
-          ...buildQuests(),
-          ListTile(
-            subtitle: Center(
-              child: Text(
-                Localized.freeDropRateChangedHint.localized,
+          child: ListView(children: [
+            ...buildQuests(),
+            const Divider(
+                height: 16, thickness: 0.5, indent: 16, endIndent: 16),
+            ListTile(
+              subtitle: Center(
+                child: Text(Localized.freeDropRateChangedHint.localized),
               ),
-            ),
-          )
-        ])))
+            )
+          ]),
+        )
       ],
     );
   }
