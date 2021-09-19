@@ -74,6 +74,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
       bool hasEventItems = _hasItemIn(event.itemsWithRare(plan));
       bool hasLotteryItems = _hasItemIn(event.lottery);
       bool hasExtraItems = event.extra[widget.itemKey] != null;
+      bool hasExtra2Items = event.extra2[widget.itemKey] != null;
       if (hasEventItems) {
         texts.add('${S.current.event_title}'
             ' ${event.itemsWithRare(plan)[widget.itemKey]}');
@@ -89,6 +90,10 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
       if (hasExtraItems) {
         texts.add('${S.current.event_item_extra}'
             ' ${plan.extra[widget.itemKey] ?? 0}');
+      }
+      if (hasExtra2Items) {
+        texts.add('${S.current.event_item_extra}'
+            ' ${plan.extra2[widget.itemKey] ?? 0}');
       }
       if (texts.isEmpty) return;
       count += event.getItems(plan)[widget.itemKey] ?? 0;

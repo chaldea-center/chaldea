@@ -61,13 +61,10 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
       (context) => ListView(
         controller: _scrollController,
         shrinkWrap: widget.monthJp != null,
-        children: divideTiles(
-          [
-            hintText,
-            for (var ticket in tickets) buildOneMonth(ticket),
-          ],
-          divider: const Divider(height: 1, indent: 16),
-        ).toList(),
+        children: [
+          hintText,
+          for (var ticket in tickets) buildOneMonth(ticket),
+        ],
       ),
     );
   }
@@ -77,12 +74,12 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     return Card(
       child: Center(
         child: Padding(
-          padding: const EdgeInsets.all(2),
+          padding: const EdgeInsets.all(6),
           child: Text(
             LocalizedText.of(
-                chs: '月份采用$curServer\n在设置中可更改所在服务器',
-                jpn: '現在のサーバー：$curServer\n[設定]で変更できます ',
-                eng: 'Current Server: $curServer\nchange it in Settings'),
+                chs: '当前区服: $curServer',
+                jpn: '現在のサーバー：$curServer ',
+                eng: 'Current Server: $curServer'),
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.caption,
           ),

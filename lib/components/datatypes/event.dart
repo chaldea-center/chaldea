@@ -182,6 +182,7 @@ class LimitEvent extends EventBase {
   int lotteryLimit; //>0 limited
   Map<String, int> lottery;
   Map<String, String> extra;
+  Map<String, String> extra2;
 
   LimitEvent({
     required String name,
@@ -204,6 +205,7 @@ class LimitEvent extends EventBase {
     required this.lotteryLimit,
     required this.lottery,
     required this.extra,
+    required this.extra2,
   }) : super(
           name: name,
           nameJp: nameJp,
@@ -237,6 +239,7 @@ class LimitEvent extends EventBase {
     return sumDict([
       itemsWithRare(plan),
       plan.extra..removeWhere((key, value) => !extra.containsKey(key)),
+      plan.extra2..removeWhere((key, value) => !extra2.containsKey(key)),
       lotterySum,
     ])
       ..removeWhere((key, value) => value <= 0);

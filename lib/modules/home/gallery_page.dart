@@ -239,15 +239,14 @@ class _GalleryPageState extends State<GalleryPage> {
         leading: const Icon(Icons.stars_rounded),
         title: Text(LocalizedText.of(
             chs: '走过路过给个评价反馈吧~', jpn: 'アプリを評価する', eng: 'Rating Chaldea')),
-        subtitle: expanded
-            ? AutoSizeText(
-                LocalizedText.of(
-                    chs: '欢迎评分、评价、反馈、建议~',
-                    jpn: '評価またはレビューがかかりましょう',
-                    eng: 'Take a minute to rate/review'),
-                maxLines: 1,
-              )
-            : const Text(' '),
+        subtitle: AutoSizeText(
+          LocalizedText.of(
+              chs: '欢迎评分、评价、反馈、建议~',
+              jpn: '評価またはレビューがかかりましょう',
+              eng: 'Take a minute to rate/review'),
+          maxLines: 1,
+          style: expanded ? null : const TextStyle(color: Colors.transparent),
+        ),
       ),
       contentBuilder: (context) => ButtonBar(
         alignment: MainAxisAlignment.end,

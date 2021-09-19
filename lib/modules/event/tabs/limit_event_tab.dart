@@ -47,12 +47,9 @@ class _LimitEventTabState extends State<LimitEventTab> {
     }
     EventBase.sortEvents(events, reversed: widget.reverse);
 
-    return ListView.separated(
+    return ListView(
       controller: _scrollController,
-      itemCount: events.length,
-      separatorBuilder: (context, index) => kDefaultDivider,
-      itemBuilder: (context, index) {
-        final event = events[index];
+      children: events.map((event) {
         final plan = db.curUser.events.limitEventOf(event.indexKey);
         bool outdated = event.isOutdated();
         String? subtitle;
@@ -81,7 +78,9 @@ class _LimitEventTabState extends State<LimitEventTab> {
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              if (event.extra.isNotEmpty || event.lottery.isNotEmpty)
+              if (event.extra.isNotEmpty ||
+                  event.extra2.isNotEmpty ||
+                  event.lottery.isNotEmpty)
                 Icon(Icons.star, color: Colors.yellow[700]),
               db.streamBuilder(
                 (context) => Switch.adaptive(
@@ -106,7 +105,7 @@ class _LimitEventTabState extends State<LimitEventTab> {
           tile = EventBasePage.buildSpecialRewards(context, event, tile);
         }
         return tile;
-      },
+      }).toList(),
     );
   }
 }

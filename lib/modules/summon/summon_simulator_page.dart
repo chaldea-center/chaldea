@@ -118,12 +118,15 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           pinned: true,
           delegate: _SliverPersistentHeaderDelegate(
             height: 60,
-            child: Center(
-              child: FittedBox(
-                child: Row(
-                    children:
-                        summon.isLuckyBag ? [gachaLucky] : [gacha1, gacha10]),
-                fit: BoxFit.contain,
+            child: Container(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              child: Center(
+                child: FittedBox(
+                  child: Row(
+                      children:
+                          summon.isLuckyBag ? [gachaLucky] : [gacha1, gacha10]),
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
           ),

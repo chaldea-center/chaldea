@@ -381,12 +381,9 @@ class _ItemListTabState extends State<ItemListTab> {
           ),
         ));
       }
-      Widget _listView = ListView.separated(
+      Widget _listView = ListView(
         controller: _scrollController,
-        itemBuilder: (context, index) => children[index],
-        separatorBuilder: (context, index) =>
-            const Divider(height: 1, indent: 16),
-        itemCount: children.length,
+        children: children,
       );
       return _listView;
     });

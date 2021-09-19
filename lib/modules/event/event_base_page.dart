@@ -88,7 +88,7 @@ class EventBasePage {
       TileGroup(
         children: summons
             .map((e) => ListTile(
-            leading: const FaIcon(
+                leading: const FaIcon(
                   FontAwesomeIcons.dice,
                   size: 20,
                   color: Colors.blue,
@@ -144,24 +144,28 @@ class EventBasePage {
             width: 32),
       ],
     ];
-    final rewards = Wrap(
+    if (svt == null && items.isEmpty) return Container();
+    Widget rewards = Wrap(
       spacing: 4,
       runSpacing: 4,
       alignment: WrapAlignment.start,
-      children: [
-        svt == null
-            ? const SizedBox(width: 32)
-            : svt.iconBuilder(context: context, width: 32),
-        ...items,
-      ],
+      children: items,
     );
+    if (svt != null) {
+      rewards = Row(
+        children: [
+          Expanded(child: rewards),
+          svt.iconBuilder(context: context, width: 32),
+        ],
+      );
+    }
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         tile,
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+          padding: const EdgeInsets.fromLTRB(16, 0, 24, 4),
           child: rewards,
         ),
       ],

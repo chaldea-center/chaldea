@@ -243,8 +243,8 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     return Picker(
       adapter: PickerDataAdapter<String>(data: pickerAdapter),
       selecteds: [
-        if (category != null) pickerData.keys.toList().indexOf(category),
-        if (item != null) pickerData[category]!.indexOf(item)
+        category == null ? 1 : pickerData.keys.toList().indexOf(category),
+        item == null ? 0 : pickerData[category]!.indexOf(item)
       ],
       height: min(250, MediaQuery.of(context).size.height - 200),
       itemExtent: 48,

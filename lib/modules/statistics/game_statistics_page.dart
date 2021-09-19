@@ -104,7 +104,7 @@ class _StatItemConsumedTabState extends State<StatItemConsumedTab> {
     calculateItem();
     return ListView(
       controller: _scrollController,
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.only(bottom: 8),
       children: [
         Wrap(
           spacing: 6,
@@ -196,7 +196,7 @@ class _StatItemDemandsTabState extends State<StatItemDemandsTab> {
     calculateItem();
     return ListView(
       controller: _scrollController,
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.only(bottom: 8),
       children: [
         Wrap(
           spacing: 6,

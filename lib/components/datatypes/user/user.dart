@@ -474,16 +474,19 @@ class LimitEventPlan {
   bool rerun;
   int lottery;
   Map<String, int> extra;
+  Map<String, int> extra2;
 
   LimitEventPlan({
     bool? enabled,
     bool? rerun,
     int? lottery,
     Map<String, int>? extra,
+    Map<String, int>? extra2,
   })  : enabled = enabled ?? false,
         rerun = rerun ?? true,
         lottery = lottery ?? 0,
-        extra = extra ?? {};
+        extra = extra ?? {},
+        extra2 = extra2 ?? {};
 
   bool get isEmpty {
     return !enabled &&

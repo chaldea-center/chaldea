@@ -480,6 +480,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
   BasicGLPKParams params = BasicGLPKParams();
 
   void solve() async {
+    FocusScope.of(context).unfocus();
     params = BasicGLPKParams();
     params.colNames.addAll(_missionData.map((e) => e.place));
     params.cVec.addAll(_missionData.map((e) => e.ap));

@@ -47,12 +47,9 @@ class _CampaignEventTabState extends State<CampaignEventTab> {
     }
     EventBase.sortEvents(events, reversed: widget.reverse);
 
-    return ListView.separated(
+    return ListView(
       controller: _scrollController,
-      itemCount: events.length,
-      separatorBuilder: (context, index) => kDefaultDivider,
-      itemBuilder: (context, index) {
-        final event = events[index];
+      children: events.map((event) {
         final plan = db.curUser.events.limitEventOf(event.indexKey);
         bool outdated = event.isOutdated();
         String? subtitle;
@@ -103,7 +100,7 @@ class _CampaignEventTabState extends State<CampaignEventTab> {
           }
         }
         return tile;
-      },
+      }).toList(),
     );
   }
 }

@@ -443,6 +443,8 @@ LimitEvent _$LimitEventFromJson(Map<String, dynamic> json) {
           json, 'lottery', (v) => Map<String, int>.from(v as Map)),
       extra: $checkedConvert(
           json, 'extra', (v) => Map<String, String>.from(v as Map)),
+      extra2: $checkedConvert(
+          json, 'extra2', (v) => Map<String, String>.from(v as Map)),
     );
     return val;
   });
@@ -470,6 +472,7 @@ Map<String, dynamic> _$LimitEventToJson(LimitEvent instance) =>
       'lotteryLimit': instance.lotteryLimit,
       'lottery': instance.lottery,
       'extra': instance.extra,
+      'extra2': instance.extra2,
     };
 
 MainRecord _$MainRecordFromJson(Map<String, dynamic> json) {
@@ -2575,6 +2578,12 @@ LimitEventPlan _$LimitEventPlanFromJson(Map<String, dynamic> json) {
           (v) => (v as Map<String, dynamic>?)?.map(
                 (k, e) => MapEntry(k, e as int),
               )),
+      extra2: $checkedConvert(
+          json,
+          'extra2',
+          (v) => (v as Map<String, dynamic>?)?.map(
+                (k, e) => MapEntry(k, e as int),
+              )),
     );
     return val;
   });
@@ -2586,6 +2595,7 @@ Map<String, dynamic> _$LimitEventPlanToJson(LimitEventPlan instance) =>
       'rerun': instance.rerun,
       'lottery': instance.lottery,
       'extra': instance.extra,
+      'extra2': instance.extra2,
     };
 
 MainRecordPlan _$MainRecordPlanFromJson(Map<String, dynamic> json) {

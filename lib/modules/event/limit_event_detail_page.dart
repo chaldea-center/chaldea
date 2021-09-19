@@ -23,7 +23,8 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
   LimitEventPlan get plan => db.curUser.events.limitEventOf(event.indexKey);
 
   late TextEditingController _lotteryController;
-  final Map<String, TextEditingController> _controllers = {};
+  final Map<String, TextEditingController> _extraControllers = {};
+  final Map<String, TextEditingController> _extra2Controllers = {};
 
   final List<Summon> _associatedSummons = [];
 
@@ -32,8 +33,12 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
     super.initState();
     _lotteryController = TextEditingController(text: plan.lottery.toString());
     for (var name in event.extra.keys) {
-      _controllers[name] =
+      _extraControllers[name] =
           TextEditingController(text: plan.extra[name]?.toString());
+    }
+    for (var name in event.extra2.keys) {
+      _extra2Controllers[name] =
+          TextEditingController(text: plan.extra2[name]?.toString());
     }
     db.gameData.summons.values.forEach((summon) {
       for (var eventName in summon.associatedEvents) {
@@ -130,7 +135,15 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
       children.addAll([
         ListTile(title: Center(child: Text(S.current.event_item_extra))),
         kDefaultDivider,
-        _buildExtraItems(event.extra, plan.extra)
+        _buildExtraItems(event.extra, plan.extra, _extraControllers)
+      ]);
+    }
+
+    if (event.extra2.isNotEmpty == true) {
+      children.addAll([
+        ListTile(title: Center(child: Text(S.current.event_item_extra))),
+        kDefaultDivider,
+        _buildExtraItems(event.extra2, plan.extra2, _extra2Controllers)
       ]);
     }
 
@@ -197,11 +210,11 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
     );
   }
 
-  Widget _buildExtraItems(
-      Map<String, String> data, Map<String, int> extraPlan) {
+  Widget _buildExtraItems(Map<String, String> data, Map<String, int> extraPlan,
+      Map<String, TextEditingController> controllers) {
     List<Widget> children = [];
     data.forEach((itemKey, hint) {
-      final controller = _controllers[itemKey];
+      final controller = controllers[itemKey];
       children.add(ListTile(
         leading:
             Item.iconBuilder(context: context, itemKey: itemKey, height: 46),
@@ -240,6 +253,6 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
   void dispose() {
     super.dispose();
     _lotteryController.dispose();
-    _controllers.values.forEach((c) => c.dispose());
+    _extra2Controllers.values.forEach((c) => c.dispose());
   }
 }

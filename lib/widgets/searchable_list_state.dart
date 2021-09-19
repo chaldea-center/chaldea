@@ -147,7 +147,7 @@ abstract class SearchableListState<T, St extends StatefulWidget>
   Widget buildListView({
     Widget? topHint,
     Widget? bottomHint,
-    Widget? separator = const Divider(height: 1, indent: 16),
+    Widget? separator,
   }) {
     List<Widget> children = [];
     if (topHint != null) {

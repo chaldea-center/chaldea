@@ -143,7 +143,8 @@ class _EffectSearchPageState
   @override
   Widget listItemBuilder(GameCardMixin card) {
     return ListTile(
-      leading: card.iconBuilder(context: context, width: 42),
+      leading: card.iconBuilder(context: context, height: 48),
+      visualDensity: VisualDensity.compact,
       title: AutoSizeText(
         card.lName,
         maxLines: 2,

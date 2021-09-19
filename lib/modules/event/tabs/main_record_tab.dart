@@ -50,27 +50,25 @@ class _MainRecordTabState extends State<MainRecordTab> {
     Color? _outdatedColor = Theme.of(context).textTheme.caption?.color;
     return Column(
       children: <Widget>[
-        CustomTile(
-          title: Text(S.of(context).main_record_chapter),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(S.of(context).main_record_fixed_drop),
-              const SizedBox(width: 6),
-              Text(S.of(context).main_record_bonus)
-            ],
+        Material(
+          child: CustomTile(
+            title: Text(S.of(context).main_record_chapter),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(S.of(context).main_record_fixed_drop),
+                const SizedBox(width: 6),
+                Text(S.of(context).main_record_bonus)
+              ],
+            ),
           ),
+          elevation: 1,
         ),
-        kDefaultDivider,
         Expanded(
           child: db.streamBuilder(
-            (context) => ListView.separated(
+            (context) => ListView(
               controller: _scrollController,
-              itemCount: mainRecords.length,
-              separatorBuilder: (context, index) =>
-                  const Divider(height: 1, indent: 16),
-              itemBuilder: (context, index) {
-                final record = mainRecords[index];
+              children: mainRecords.map((record) {
                 final plan = db.curUser.events.mainRecordOf(record.indexKey);
                 bool outdated = record.isOutdated();
                 Widget? title, subtitle;
@@ -133,7 +131,7 @@ class _MainRecordTabState extends State<MainRecordTab> {
                   }
                 }
                 return tile;
-              },
+              }).toList(),
             ),
           ),
         )

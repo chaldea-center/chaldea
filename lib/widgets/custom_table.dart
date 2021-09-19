@@ -6,9 +6,9 @@ import 'package:flutter/scheduler.dart';
 import '../components/utils.dart';
 
 const Divider kHorizontalDivider = Divider(
-    color: Color.fromRGBO(162, 169, 177, 1), thickness: 0.25, height: 0.5);
+    color: Color.fromRGBO(162, 169, 177, 1), thickness: 0.2, height: 0.2);
 const VerticalDivider kVerticalDivider = VerticalDivider(
-    color: Color.fromRGBO(162, 169, 177, 1), thickness: 0.25, width: 0.5);
+    color: Color.fromRGBO(162, 169, 177, 1), thickness: 0.2, width: 0.2);
 
 class CustomTable extends StatelessWidget {
   final List<Widget> children;

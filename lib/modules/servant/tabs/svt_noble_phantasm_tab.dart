@@ -205,7 +205,8 @@ class _SvtNoblePhantasmTabState extends SvtTabBaseState<SvtNoblePhantasmTab> {
                       ),
                       margin: const EdgeInsets.all(2),
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(4, 1, 4, 2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 4, vertical: 2),
                         child: Text(
                           effect.lvData[index],
                           style: TextStyle(
