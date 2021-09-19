@@ -162,6 +162,7 @@ class _GalleryPageState extends State<GalleryPage> {
       headerBuilder: (context, _) => ListTile(
         leading: Icon(Icons.warning_amber_rounded,
             color: Theme.of(context).errorColor),
+        contentPadding: const EdgeInsets.only(left: 8),
         horizontalTitleGap: 0,
         title: Text(LocalizedText.of(
             chs: 'Windows: 用户文件夹迁移',
@@ -237,6 +238,7 @@ class _GalleryPageState extends State<GalleryPage> {
       headerBuilder: (context, expanded) => ListTile(
         horizontalTitleGap: 0,
         leading: const Icon(Icons.stars_rounded),
+        contentPadding: const EdgeInsets.only(left: 8),
         title: Text(LocalizedText.of(
             chs: '走过路过给个评价反馈吧~', jpn: 'アプリを評価する', eng: 'Rating Chaldea')),
         subtitle: AutoSizeText(

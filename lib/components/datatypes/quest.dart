@@ -133,7 +133,7 @@ class Battle {
   String? place;
   String? placeJp;
   String? placeEn;
-  List<List<Enemy>> enemies; // wave_num*enemy_num
+  List<List<Enemy?>> enemies; // wave_num*enemy_num
   Map<String, int> drops;
 
   Battle({

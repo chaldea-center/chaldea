@@ -3,6 +3,8 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/summon/summon_detail_page.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'quest_list_page.dart';
+
 class EventBasePage {
   List<Widget> buildHeaders({
     required BuildContext context,
@@ -84,7 +86,7 @@ class EventBasePage {
   }) {
     if (summons.isEmpty) return [];
     return [
-      ListTile(title: Center(child: Text(S.current.summon))),
+      blockHeader(S.current.summon),
       TileGroup(
         children: summons
             .map((e) => ListTile(
@@ -170,5 +172,69 @@ class EventBasePage {
         ),
       ],
     );
+  }
+
+  Widget blockHeader(String header) {
+    return ListTile(
+      title: Text(
+        header,
+        textScaleFactor: 0.95,
+        style: const TextStyle(fontWeight: FontWeight.w500),
+      ),
+      contentPadding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+    );
+  }
+
+  List<Widget> buildQuests({
+    required BuildContext context,
+    required EventBase event,
+  }) {
+    if (event is LimitEvent) {
+      if (event.mainQuests.isEmpty && event.freeQuests.isEmpty) {
+        return [];
+      }
+    }
+    return [
+      blockHeader(S.current.quest),
+      TileGroup(
+        children: [
+          ListTile(
+            title: Text(
+                LocalizedText.of(chs: '主线关卡', jpn: 'シナリオ', eng: 'Main Quests')),
+            onTap: () {
+              SplitRoute.push(
+                context,
+                QuestListPage(
+                  title: event.localizedName,
+                  quests: event.mainQuests,
+                  showChapter: true,
+                ),
+              );
+            },
+          ),
+          ListTile(
+            title: Text(S.current.free_quest),
+            onTap: () {
+              List<Quest> quests = [];
+              if (event is MainRecord) {
+                quests = db.gameData.freeQuests.values
+                    .where((quest) => event.isSameEvent(quest.chapter))
+                    .toList();
+              } else if (event is LimitEvent) {
+                quests = event.freeQuests;
+              }
+              SplitRoute.push(
+                context,
+                QuestListPage(
+                  title: event.localizedName,
+                  quests: quests,
+                  showChapter: false,
+                ),
+              );
+            },
+          ),
+        ],
+      )
+    ];
   }
 }

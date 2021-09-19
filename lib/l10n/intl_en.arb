@@ -151,7 +151,7 @@
   "event_lottery_limit_hint": "Max {n} lottery",
   "event_lottery_unit": "Lottery",
   "event_item_default": "Shop/Task/Points/Quests",
-  "event_item_extra": "Extra",
+  "event_item_extra": "Extra Obtains",
   "event_collect_items": "Collect Items",
   "event_collect_item_confirm": "All items will be added to bag and remove the event out of plan",
   "event_not_planned": "Event not planned",

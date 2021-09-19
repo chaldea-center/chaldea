@@ -39,12 +39,16 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage>
   Widget build(BuildContext context) {
     List<Widget> children = [];
     children.addAll(buildHeaders(context: context, event: record));
-
+    children.addAll(buildQuests(context: context, event: record));
     children.addAll([
-      kDefaultDivider,
+      const SizedBox(height: 8),
       db.streamBuilder(
         (context) => SwitchListTile.adaptive(
-          title: Text(S.of(context).main_record_fixed_drop),
+          title: Text(
+            S.current.main_record_fixed_drop,
+            textScaleFactor: 0.95,
+            style: const TextStyle(fontWeight: FontWeight.w500),
+          ),
           value: plan.drop,
           onChanged: (v) {
             plan.drop = v;
@@ -52,11 +56,15 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage>
           },
         ),
       ),
-      kDefaultDivider,
       buildClassifiedItemList(context: context, data: widget.record.drops),
+      const SizedBox(height: 8),
       db.streamBuilder(
         (context) => SwitchListTile.adaptive(
-          title: Text(S.of(context).main_record_bonus),
+          title: Text(
+            S.current.main_record_bonus,
+            textScaleFactor: 0.95,
+            style: const TextStyle(fontWeight: FontWeight.w500),
+          ),
           value: plan.reward,
           onChanged: (v) {
             plan.reward = v;
@@ -64,13 +72,13 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage>
           },
         ),
       ),
-      kDefaultDivider,
       buildClassifiedItemList(
           context: context, data: widget.record.rewardsWithRare),
     ]);
 
     children
         .addAll(buildSummons(context: context, summons: _associatedSummons));
+
     children.add(SizedBox(
       height: 72,
       child: Center(

@@ -187,7 +187,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_collect_items": MessageLookupByLibrary.simpleMessage("アイテムの収集"),
         "event_item_default":
             MessageLookupByLibrary.simpleMessage("ショップ/タスク/ポイント/ドロップ報酬"),
-        "event_item_extra": MessageLookupByLibrary.simpleMessage("その他"),
+        "event_item_extra": MessageLookupByLibrary.simpleMessage("その他入手方法 "),
         "event_lottery_limit_hint": m3,
         "event_lottery_limited":
             MessageLookupByLibrary.simpleMessage("ボックスガチャ"),

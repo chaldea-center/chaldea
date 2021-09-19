@@ -181,7 +181,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_collect_items": MessageLookupByLibrary.simpleMessage("收取素材"),
         "event_item_default":
             MessageLookupByLibrary.simpleMessage("商店/任务/点数/关卡掉落奖励"),
-        "event_item_extra": MessageLookupByLibrary.simpleMessage("其他"),
+        "event_item_extra": MessageLookupByLibrary.simpleMessage("额外可获取素材"),
         "event_lottery_limit_hint": m3,
         "event_lottery_limited": MessageLookupByLibrary.simpleMessage("有限池"),
         "event_lottery_unit": MessageLookupByLibrary.simpleMessage("池"),

@@ -28,7 +28,7 @@ class SHeader extends StatelessWidget {
         style: style ??
             TextStyle(
               color: color,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.normal,
               fontSize: 14.0,
             ),
       ),
@@ -186,7 +186,7 @@ class TileGroup extends StatelessWidget {
     this.header,
     this.footer,
     this.padding,
-    this.divider = const Divider(height: 0.5, thickness: 0.25),
+    this.divider = const Divider(height: 1, thickness: 0.5),
     this.innerDivider = false,
     this.tileColor,
     this.crossAxisAlignment = CrossAxisAlignment.start,

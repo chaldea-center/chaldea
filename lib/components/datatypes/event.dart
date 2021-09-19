@@ -74,6 +74,7 @@ class EventBase {
   int rarePrism;
   int welfareServant;
   Map<String, int> items;
+  List<Quest> mainQuests;
 
   EventBase({
     required this.mcLink,
@@ -93,6 +94,7 @@ class EventBase {
     required this.rarePrism,
     required this.welfareServant,
     required this.items,
+    required this.mainQuests,
   });
 
   //
@@ -183,6 +185,7 @@ class LimitEvent extends EventBase {
   Map<String, int> lottery;
   Map<String, String> extra;
   Map<String, String> extra2;
+  List<Quest> freeQuests;
 
   LimitEvent({
     required String name,
@@ -206,6 +209,8 @@ class LimitEvent extends EventBase {
     required this.lottery,
     required this.extra,
     required this.extra2,
+    required List<Quest> mainQuests,
+    required this.freeQuests,
   }) : super(
           name: name,
           nameJp: nameJp,
@@ -224,6 +229,7 @@ class LimitEvent extends EventBase {
           rarePrism: rarePrism,
           welfareServant: welfareServant,
           items: items,
+          mainQuests: mainQuests,
         );
 
   Map<String, int> itemsWithRare([LimitEventPlan? plan]) {
@@ -285,6 +291,7 @@ class MainRecord extends EventBase {
     // required Map<String, int> items,
     required this.drops,
     required this.rewards,
+    required List<Quest> mainQuests,
   }) : super(
           name: name,
           nameJp: nameJp,
@@ -303,6 +310,7 @@ class MainRecord extends EventBase {
           rarePrism: rarePrism,
           welfareServant: welfareServant,
           items: {},
+          mainQuests: mainQuests,
         );
 
   String get chapter => _splitChapterTitle(name)[0];
@@ -385,6 +393,7 @@ class CampaignEvent extends EventBase {
     required int rarePrism,
     required int welfareServant,
     required Map<String, int> items,
+    required List<Quest> mainQuests,
   }) : super(
           name: name,
           nameJp: nameJp,
@@ -403,6 +412,7 @@ class CampaignEvent extends EventBase {
           rarePrism: rarePrism,
           welfareServant: welfareServant,
           items: items,
+          mainQuests: mainQuests,
         );
 
   Map<String, int> itemsWithRare([CampaignPlan? plan]) {

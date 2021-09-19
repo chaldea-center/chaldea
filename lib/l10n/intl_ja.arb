@@ -153,7 +153,7 @@
   "event_lottery_limit_hint": "最大{n}ボックス",
   "event_lottery_unit": "",
   "event_item_default": "ショップ/タスク/ポイント/ドロップ報酬",
-  "event_item_extra": "その他",
+  "event_item_extra": "その他入手方法 ",
   "event_collect_items": "アイテムの収集",
   "event_collect_item_confirm": "すべてのアイテムを倉庫に追加し、プランからイベントを削除します",
   "event_not_planned": "イベントはプランされていません",

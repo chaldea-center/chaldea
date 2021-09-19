@@ -85,47 +85,51 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
               trailing: svt.iconBuilder(context: context),
             )
         ])));
+    children.addAll(buildQuests(context: context, event: event));
 
     // 无限池
     if (event.lottery.isNotEmpty == true) {
-      children
-        ..add(ListTile(
-          title: Text(event.lotteryLimit > 0
+      children.add(const SizedBox(height: 8));
+      children.add(ListTile(
+        title: Text(
+          event.lotteryLimit > 0
               ? S.of(context).event_lottery_limited
-              : S.of(context).event_lottery_unlimited),
-          subtitle: event.lotteryLimit > 0
-              ? Text(S.of(context).event_lottery_limit_hint(event.lotteryLimit))
-              : null,
-          trailing: SizedBox(
-              width: 80,
-              child: TextField(
-                maxLength: 4,
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.number,
-                scrollPadding: EdgeInsets.zero,
-                decoration: InputDecoration(
-                  counterText: '',
-                  suffixText: S.of(context).event_lottery_unit,
-                  isDense: true,
-                ),
-                controller: _lotteryController,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                onChanged: (v) {
-                  plan.lottery = int.tryParse(v) ?? 0;
-                  db.itemStat.updateEventItems();
-                },
-              )),
-        ))
-        ..add(kDefaultDivider)
-        ..add(buildClassifiedItemList(context: context, data: event.lottery));
+              : S.of(context).event_lottery_unlimited,
+          textScaleFactor: 0.95,
+          style: const TextStyle(fontWeight: FontWeight.w500),
+        ),
+        subtitle: event.lotteryLimit > 0
+            ? Text(S.of(context).event_lottery_limit_hint(event.lotteryLimit))
+            : null,
+        trailing: SizedBox(
+            width: 80,
+            child: TextField(
+              maxLength: 4,
+              textAlign: TextAlign.center,
+              keyboardType: TextInputType.number,
+              scrollPadding: EdgeInsets.zero,
+              decoration: InputDecoration(
+                counterText: '',
+                suffixText: S.of(context).event_lottery_unit,
+                isDense: true,
+              ),
+              controller: _lotteryController,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              onChanged: (v) {
+                plan.lottery = int.tryParse(v) ?? 0;
+                db.itemStat.updateEventItems();
+              },
+            )),
+      ));
+      children
+          .add(buildClassifiedItemList(context: context, data: event.lottery));
     }
 
     // 商店任务点数
     final Map<String, int> items = event.itemsWithRare(plan);
     if (items.isNotEmpty) {
       children.addAll([
-        ListTile(title: Center(child: Text(S.current.event_item_default))),
-        kDefaultDivider,
+        blockHeader(S.current.event_item_default),
         buildClassifiedItemList(context: context, data: items)
       ]);
     }
@@ -133,16 +137,14 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
     // 狩猎 无限池终本掉落等
     if (event.extra.isNotEmpty == true) {
       children.addAll([
-        ListTile(title: Center(child: Text(S.current.event_item_extra))),
-        kDefaultDivider,
+        blockHeader(S.current.event_item_extra),
         _buildExtraItems(event.extra, plan.extra, _extraControllers)
       ]);
     }
 
     if (event.extra2.isNotEmpty == true) {
       children.addAll([
-        ListTile(title: Center(child: Text(S.current.event_item_extra))),
-        kDefaultDivider,
+        blockHeader(S.current.event_item_extra),
         _buildExtraItems(event.extra2, plan.extra2, _extra2Controllers)
       ]);
     }

@@ -151,7 +151,7 @@
   "event_lottery_limit_hint": "最多{n}池",
   "event_lottery_unit": "池",
   "event_item_default": "商店/任务/点数/关卡掉落奖励",
-  "event_item_extra": "其他",
+  "event_item_extra": "额外可获取素材",
   "event_collect_items": "收取素材",
   "event_collect_item_confirm": "所有素材添加到素材仓库，并将该活动移出规划",
   "event_not_planned": "活动未列入规划",

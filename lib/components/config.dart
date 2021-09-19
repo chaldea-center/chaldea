@@ -292,6 +292,9 @@ class Database {
         }
       }
     }
+    if (!iconKey.contains('.') && db.gameData.items[iconKey] == null) {
+      return iconKey + '.png';
+    }
     // logger.d('Icon $iconKey not found');
     return iconKey;
   }

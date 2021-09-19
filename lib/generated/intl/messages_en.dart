@@ -206,7 +206,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Collect Items"),
         "event_item_default":
             MessageLookupByLibrary.simpleMessage("Shop/Task/Points/Quests"),
-        "event_item_extra": MessageLookupByLibrary.simpleMessage("Extra"),
+        "event_item_extra":
+            MessageLookupByLibrary.simpleMessage("Extra Obtains"),
         "event_lottery_limit_hint": m3,
         "event_lottery_limited":
             MessageLookupByLibrary.simpleMessage("Limited lottery"),

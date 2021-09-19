@@ -1566,10 +1566,10 @@ class S {
     );
   }
 
-  /// `其他`
+  /// `额外可获取素材`
   String get event_item_extra {
     return Intl.message(
-      '其他',
+      '额外可获取素材',
       name: 'event_item_extra',
       desc: '',
       args: [],

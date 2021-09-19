@@ -445,6 +445,18 @@ LimitEvent _$LimitEventFromJson(Map<String, dynamic> json) {
           json, 'extra', (v) => Map<String, String>.from(v as Map)),
       extra2: $checkedConvert(
           json, 'extra2', (v) => Map<String, String>.from(v as Map)),
+      mainQuests: $checkedConvert(
+          json,
+          'mainQuests',
+          (v) => (v as List<dynamic>)
+              .map((e) => Quest.fromJson(e as Map<String, dynamic>))
+              .toList()),
+      freeQuests: $checkedConvert(
+          json,
+          'freeQuests',
+          (v) => (v as List<dynamic>)
+              .map((e) => Quest.fromJson(e as Map<String, dynamic>))
+              .toList()),
     );
     return val;
   });
@@ -469,10 +481,12 @@ Map<String, dynamic> _$LimitEventToJson(LimitEvent instance) =>
       'rarePrism': instance.rarePrism,
       'welfareServant': instance.welfareServant,
       'items': instance.items,
+      'mainQuests': instance.mainQuests,
       'lotteryLimit': instance.lotteryLimit,
       'lottery': instance.lottery,
       'extra': instance.extra,
       'extra2': instance.extra2,
+      'freeQuests': instance.freeQuests,
     };
 
 MainRecord _$MainRecordFromJson(Map<String, dynamic> json) {
@@ -498,6 +512,12 @@ MainRecord _$MainRecordFromJson(Map<String, dynamic> json) {
           json, 'drops', (v) => Map<String, int>.from(v as Map)),
       rewards: $checkedConvert(
           json, 'rewards', (v) => Map<String, int>.from(v as Map)),
+      mainQuests: $checkedConvert(
+          json,
+          'mainQuests',
+          (v) => (v as List<dynamic>)
+              .map((e) => Quest.fromJson(e as Map<String, dynamic>))
+              .toList()),
     );
     return val;
   });
@@ -521,6 +541,7 @@ Map<String, dynamic> _$MainRecordToJson(MainRecord instance) =>
       'foukun4': instance.foukun4,
       'rarePrism': instance.rarePrism,
       'welfareServant': instance.welfareServant,
+      'mainQuests': instance.mainQuests,
       'drops': instance.drops,
       'rewards': instance.rewards,
     };
@@ -546,6 +567,12 @@ CampaignEvent _$CampaignEventFromJson(Map<String, dynamic> json) {
       welfareServant: $checkedConvert(json, 'welfareServant', (v) => v as int),
       items: $checkedConvert(
           json, 'items', (v) => Map<String, int>.from(v as Map)),
+      mainQuests: $checkedConvert(
+          json,
+          'mainQuests',
+          (v) => (v as List<dynamic>)
+              .map((e) => Quest.fromJson(e as Map<String, dynamic>))
+              .toList()),
     );
     return val;
   });
@@ -570,6 +597,7 @@ Map<String, dynamic> _$CampaignEventToJson(CampaignEvent instance) =>
       'rarePrism': instance.rarePrism,
       'welfareServant': instance.welfareServant,
       'items': instance.items,
+      'mainQuests': instance.mainQuests,
     };
 
 ExchangeTicket _$ExchangeTicketFromJson(Map<String, dynamic> json) {
@@ -1268,8 +1296,11 @@ Battle _$BattleFromJson(Map<String, dynamic> json) {
           json,
           'enemies',
           (v) => (v as List<dynamic>)
-              .map((e) => (e as List<dynamic>)
-                  .map((e) => Enemy.fromJson(e as Map<String, dynamic>))
+              .map((e) =>
+              (e as List<dynamic>)
+                  .map((e) => e == null
+                      ? null
+                      : Enemy.fromJson(e as Map<String, dynamic>))
                   .toList())
               .toList()),
       drops: $checkedConvert(

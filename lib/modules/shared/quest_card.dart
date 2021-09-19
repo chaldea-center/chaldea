@@ -160,20 +160,23 @@ class _QuestCardState extends State<QuestCard> {
         shownPlace =
             LocalizedText.of(chs: '迦勒底之门', jpn: 'カルデアゲート', eng: 'Chaldea Gate');
       }
-      children.add(Row(children: <Widget>[
-        Text('  ${i + 1}/${battles.length}  '),
-        Expanded(flex: 1, child: Center(child: Text('AP ${battle.ap}'))),
-        Expanded(
-          flex: 4,
-          child: Center(
-            child: AutoSizeText(
-              shownPlace,
-              maxLines: 1,
-              style: const TextStyle(fontWeight: FontWeight.w600),
+      children.add(Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(children: <Widget>[
+          Text('  ${i + 1}/${battles.length}  '),
+          Expanded(flex: 1, child: Center(child: Text('AP ${battle.ap}'))),
+          Expanded(
+            flex: 4,
+            child: Center(
+              child: AutoSizeText(
+                shownPlace,
+                maxLines: 1,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
             ),
           ),
-        ),
-      ]));
+        ]),
+      ));
       for (int j = 0; j < battle.enemies.length; j++) {
         children.add(Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -357,10 +360,12 @@ class _QuestCardState extends State<QuestCard> {
         List<Widget> lines = [];
         VoidCallback? onTap;
 
-        final String? name = getEnemyName(showTrueName
-            ? enemy.name[i]
-            : (enemy.shownName[i] ?? enemy.name[i]));
-        final enemyInfo = EnemyDetail.of(enemy.name[i]);
+        final String? displayName = getEnemyName(showTrueName
+            ? enemy.name.getOrNull(i)
+            : (enemy.shownName.getOrNull(i) ?? enemy.name.getOrNull(i)));
+        final name =
+            enemy.name.getOrNull(i)?.replaceFirst(RegExp(r'[A-Z]$'), '');
+        final enemyInfo = EnemyDetail.of(name);
         if (enemyInfo != null) {
           if (enemyInfo.icon != null) {
             lines.add(CachedImage(
@@ -374,12 +379,13 @@ class _QuestCardState extends State<QuestCard> {
               () => SplitRoute.push(context, EnemyDetailPage(enemy: enemyInfo));
         } else {
           final svt = db.gameData.servants.values.firstWhereOrNull((e) =>
-              <String>[e.mcLink, ...e.info.namesOther].contains(enemy.name[i]));
+              <String>[e.mcLink, ...e.info.namesOther]
+                  .contains(enemy.name.getOrNull(i)));
           if (svt != null) {
             // add mask
             Widget shadowSvt = svt.iconBuilder(
                 context: context, height: 36, jumpToDetail: false);
-            if (!showTrueName && enemy.shownName[i] == '影从者') {
+            if (!showTrueName && enemy.shownName.getOrNull(i) == '影从者') {
               shadowSvt = Stack(
                 alignment: Alignment.center,
                 children: [
@@ -402,10 +408,16 @@ class _QuestCardState extends State<QuestCard> {
             }
             lines.add(shadowSvt);
             onTap = () => SplitRoute.push(context, ServantDetailPage(svt));
+          } else if (name?.isNotEmpty == true) {
+            lines.add(CachedImage(
+              imageUrl: '$name 头像.png',
+              width: 36,
+              placeholder: (_, __) => Container(),
+            ));
           }
         }
-        if (name?.isNotEmpty == true) {
-          lines.add(AutoSizeText(name!,
+        if (displayName?.isNotEmpty == true) {
+          lines.add(AutoSizeText(displayName!,
               maxFontSize: 14,
               maxLines: Language.isCN ? 1 : 2,
               textAlign: TextAlign.center));
@@ -414,11 +426,11 @@ class _QuestCardState extends State<QuestCard> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (_classIcons.containsKey(enemy.className[i]))
-              _getClassIcon(enemy.className[i]),
+            if (_classIcons.containsKey(enemy.className.getOrNull(i)))
+              _getClassIcon(enemy.className.getOrNull(i)),
             Flexible(
               child: AutoSizeText(
-                '${_localizeClassName(enemy.className[i])} ${enemy.hp[i]}',
+                '${_localizeClassName(enemy.className.getOrNull(i))} ${enemy.hp.getOrNull(i)}',
                 maxFontSize: 12,
                 // ensure HP is shown completely
                 minFontSize: 1,
