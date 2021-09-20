@@ -1,5 +1,6 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/localized/localized_base.dart';
+import 'package:chaldea/modules/shared/common_builders.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
 
 import '../servant_detail_page.dart';
@@ -118,7 +119,8 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
                 subtitle: Language.isCN ? Text(nameJp) : null,
                 trailing: Text('   CD: ${skill.cd}→${skill.cd - 2}')),
             for (Effect effect in skill.effects)
-              ...buildEffect(effect, selectedLv)
+              ...CommonBuilder.buildEffect(
+                  context: context, effect: effect, curLv: selectedLv)
           ],
         ),
       ],
@@ -134,7 +136,8 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
           leading: db.getIconImage(skill.icon, width: 33, height: 33),
           title: Text('${skill.localizedName} ${skill.rank ?? ""}'),
         ),
-        for (Effect effect in skill.effects) ...buildEffect(effect),
+        for (Effect effect in skill.effects)
+          ...CommonBuilder.buildEffect(context: context, effect: effect),
       ],
     );
   }
@@ -148,74 +151,9 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
           leading: db.getIconImage(skill.icon, width: 33, height: 33),
           title: Text(skill.localizedName),
         ),
-        for (Effect effect in skill.effects) ...buildEffect(effect),
+        for (Effect effect in skill.effects)
+          ...CommonBuilder.buildEffect(context: context, effect: effect),
       ],
     );
-  }
-
-  List<Widget> buildEffect(Effect effect, [int? selected]) {
-    assert([0, 1, 10].contains(effect.lvData.length));
-    int crossCount = effect.lvData.length > 1
-        ? 5
-        : effect.lvData.length == 1 && effect.lvData.first.length >= 10
-            ? 1
-            : 0;
-    String description = effect.lDescription;
-    if (Language.isEN) {
-      description =
-          description.split('\n').map((e) => '· ${e.trim()}').join('\n');
-    }
-    return <Widget>[
-      CustomTile(
-        contentPadding: EdgeInsets.fromLTRB(16, 6, crossCount == 0 ? 0 : 16, 6),
-        subtitle: crossCount == 0
-            ? Row(children: [
-                Expanded(child: Text(description), flex: 4),
-                if (effect.lvData.isNotEmpty)
-                  Expanded(
-                      child: Center(child: Text(effect.lvData[0])), flex: 1),
-              ])
-            : Text(description),
-      ),
-      if (crossCount > 0)
-        Table(
-          children: [
-            for (int row = 0; row < effect.lvData.length / crossCount; row++)
-              TableRow(
-                children: List.generate(crossCount, (col) {
-                  int index = row * crossCount + col;
-                  if (index >= effect.lvData.length) return Container();
-                  return Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color: effect.lvData.length > 1 &&
-                                    (index + 1) == selected
-                                ? Theme.of(context).highlightColor
-                                : Colors.transparent),
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                      margin: const EdgeInsets.all(2),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 4, vertical: 2),
-                        child: Text(
-                          effect.lvData[index],
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: index == 5 || index == 9
-                                ? Colors.redAccent
-                                : null,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                }),
-              )
-          ],
-        ),
-    ];
   }
 }
