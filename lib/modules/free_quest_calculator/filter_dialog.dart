@@ -24,7 +24,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
         SwitchListTile.adaptive(
           value: params.use6th,
           title: Text(LocalizedText.of(
-              chs: '日服掉落数据', jpn: '改善されたドロップ', eng: 'JP DropRate Data')),
+              chs: '新掉落数据', jpn: '改善されたドロップ', eng: 'New DropRate Data')),
           subtitle: Text(LocalizedText.of(
               chs: '6周年(截至2.5.5)',
               jpn: '6周年(2.5.5まで)',

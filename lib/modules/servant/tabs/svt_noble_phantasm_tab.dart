@@ -95,6 +95,7 @@ class _SvtNoblePhantasmTabState extends SvtTabBaseState<SvtNoblePhantasmTab> {
                 onPressed: () {
                   SimpleCancelOkDialog(
                     title: Text(td.lName),
+                    hideCancel: true,
                     content: Text(
                       td.openCondition!,
                       style: Theme.of(context).textTheme.caption,

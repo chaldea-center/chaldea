@@ -98,11 +98,15 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                             icon:
                                 const Icon(Icons.add, color: Colors.redAccent),
                             label: Text(
-                              S.of(context).add_to_blacklist,
+                              S.current.add_to_blacklist,
                               style: const TextStyle(color: Colors.redAccent),
                             ),
                           ),
-                  if (state.value && quest != null) QuestCard(quest: quest),
+                  if (state.value && quest != null)
+                    QuestCard(
+                      quest: quest,
+                      use6th: widget.solution?.params?.use6th,
+                    ),
                 ],
               );
             }),
