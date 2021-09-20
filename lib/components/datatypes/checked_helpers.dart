@@ -14,6 +14,29 @@ bool _$ignoreUserDataError(dynamic error, StackTrace stack) {
 
 dynamic _$defaultNull() => null;
 
+typedef _CastFunction<R> = R Function(Object?);
+
+/// Helper function used in generated code when
+/// `JsonSerializableGenerator.checked` is `true`.
+///
+/// Should not be used directly.
+T $checkedCreate<T>(
+  String className,
+  Map map,
+  T Function(S Function<S>(String, _CastFunction<S>) converter) constructor, {
+  Map<String, String> fieldKeyMap = const {},
+}) {
+  Q _checkedConvert<Q>(String key, _CastFunction<Q> convertFunction) =>
+      $checkedConvert<Q>(map, key, convertFunction);
+
+  return $checkedNew(
+    className,
+    map,
+    () => constructor(_checkedConvert),
+    fieldKeyMap: fieldKeyMap,
+  );
+}
+
 /// Helper function used in generated code when
 /// `JsonSerializableGenerator.checked` is `true`.
 ///
@@ -69,6 +92,9 @@ T $checkedConvert<T>(Map map, String key, T Function(dynamic) castFunc) {
     if (_$ignoreUserDataError(error, stack)) {
       return _$defaultNull();
     }
+    String s = jsonEncode(map);
+    s = s.substring(0, min(2000, s.length));
+    logger.wtf(s);
     throw CheckedFromJsonException._(error, stack, map, key);
   }
 }
