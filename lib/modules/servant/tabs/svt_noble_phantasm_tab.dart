@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/shared/common_builders.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
 
 import '../servant_detail_page.dart';
@@ -35,8 +36,12 @@ class _SvtNoblePhantasmTabState extends SvtTabBaseState<SvtNoblePhantasmTab> {
           children: <Widget>[
             buildToggle(status.npIndex, td),
             buildHeader(td),
-            for (Effect e in td.effects)
-              ...buildEffect(e, status.favorite ? status.npLv : null)
+            for (Effect effect in td.effects)
+              ...CommonBuilder.buildEffect(
+                context: context,
+                effect: effect,
+                curLv: status.favorite ? status.npLv : null,
+              ),
           ],
         )
       ],
@@ -159,71 +164,5 @@ class _SvtNoblePhantasmTabState extends SvtTabBaseState<SvtNoblePhantasmTab> {
         ],
       ),
     );
-  }
-
-  List<Widget> buildEffect(Effect effect, [int? selected]) {
-    assert([0, 1, 5].contains(effect.lvData.length));
-    int crossCount = effect.lvData.length > 1
-        ? 5
-        : effect.lvData.length == 1 && effect.lvData.first.length >= 10
-            ? 1
-            : 0;
-    String description = effect.description;
-    if (Language.isEN) {
-      description =
-          description.split('\n').map((e) => '· ${e.trim()}').join('\n');
-    }
-    return <Widget>[
-      CustomTile(
-        contentPadding: EdgeInsets.fromLTRB(16, 6, crossCount == 0 ? 0 : 16, 6),
-        subtitle: crossCount == 0
-            ? Row(children: [
-                Expanded(child: Text(description), flex: 4),
-                if (effect.lvData.isNotEmpty)
-                  Expanded(
-                      child: Center(child: Text(effect.lvData[0])), flex: 1),
-              ])
-            : Text(description),
-      ),
-      if (crossCount > 0)
-        Table(
-          children: [
-            for (int row = 0; row < effect.lvData.length / crossCount; row++)
-              TableRow(
-                children: List.generate(crossCount, (col) {
-                  int index = row * crossCount + col;
-                  if (index >= effect.lvData.length) return Container();
-                  return Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color: effect.lvData.length > 1 &&
-                                    (index + 1) == selected
-                                ? Theme.of(context).highlightColor
-                                : Colors.transparent),
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                      margin: const EdgeInsets.all(2),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 4, vertical: 2),
-                        child: Text(
-                          effect.lvData[index],
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: index == 5 || index == 9
-                                ? Colors.redAccent
-                                : null,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                }),
-              )
-          ],
-        ),
-    ];
   }
 }

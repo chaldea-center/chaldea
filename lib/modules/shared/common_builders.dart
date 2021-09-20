@@ -101,6 +101,76 @@ abstract class CommonBuilder {
       ),
     );
   }
+
+  static List<Widget> buildEffect(
+      {required BuildContext context, required Effect effect, int? curLv}) {
+    assert([0, 1, 5, 10].contains(effect.lvData.length));
+    List<Widget> children = [];
+    String description = effect.lDescription;
+    if (Language.isEN) {
+      description =
+          description.split('\n').map((e) => '· ${e.trim()}').join('\n');
+    }
+    Widget title = Text(description);
+
+    int crossCount = 0;
+    if (effect.lvData.length > 1) {
+      crossCount = 5;
+    } else if (effect.lvData.isNotEmpty) {
+      if (effect.lvData.first.length >= 10) {
+        crossCount = 1;
+      } else {
+        title = Row(children: [
+          Expanded(child: title, flex: 4),
+          Expanded(child: Center(child: Text(effect.lvData.first)), flex: 1),
+        ]);
+      }
+    }
+    children.add(CustomTile(
+      contentPadding: EdgeInsets.fromLTRB(16, 6, crossCount == 0 ? 0 : 16, 6),
+      subtitle: title,
+    ));
+    if (crossCount == 0) return children;
+    List<TableRow> tableRows = [];
+    for (int row = 0; row < effect.lvData.length / crossCount; row++) {
+      tableRows.add(TableRow(
+          children: List.generate(crossCount, (col) {
+        int index = row * crossCount + col;
+        if (index >= effect.lvData.length) return Container();
+        Widget child = Text(
+          effect.lvData[index].toString(),
+          style: TextStyle(
+            fontSize: 14,
+            color: index == 5 || index == 9 ? Colors.redAccent : null,
+          ),
+          textAlign: TextAlign.center,
+        );
+        child = Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+          child: child,
+        );
+        child = Container(
+          decoration: index + 1 == curLv
+              ? BoxDecoration(
+                  border: Border.all(
+                      color: effect.lvData.length > 1 && (index + 1) == curLv
+                          ? Theme.of(context).highlightColor
+                          : Colors.transparent),
+                  borderRadius: BorderRadius.circular(3))
+              : null,
+          constraints: const BoxConstraints(minWidth: 48),
+          margin: const EdgeInsets.all(1),
+          child: child,
+        );
+        return Center(child: child);
+      })));
+    }
+    children.add(Table(
+      children: tableRows,
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+    ));
+    return children;
+  }
 }
 
 Widget buildClassifiedItemList({

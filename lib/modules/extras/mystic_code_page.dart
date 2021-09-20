@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/shared/common_builders.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -21,12 +22,14 @@ class _MysticCodePageState extends State<MysticCodePage> {
     _scrollController = ScrollController();
   }
 
+  int _level = 10;
+
   @override
   Widget build(BuildContext context) {
     if (codes.isEmpty) return Container();
     _curCodeName ??= codes.keys.first;
     final MysticCode? mysticCode = db.gameData.mysticCodes[_curCodeName];
-    final int _level = db.curUser.mysticCodes[_curCodeName] ?? 10;
+    _level = fixValidRange(db.curUser.mysticCodes[_curCodeName] ?? 10, 1, 10);
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.mystic_code),
@@ -307,7 +310,12 @@ class _MysticCodePageState extends State<MysticCodePage> {
             leading: db.getIconImage(skill.icon, height: 32, width: 32),
             title: Text(skill.localizedName),
             trailing: Text('   CD: ${skill.cd}→${skill.cd - 2}')),
-        for (Effect effect in skill.effects) ...buildEffect(effect)
+        for (Effect effect in skill.effects)
+          ...CommonBuilder.buildEffect(
+            context: context,
+            effect: effect,
+            curLv: _level,
+          ),
       ],
     );
   }
