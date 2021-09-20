@@ -37,7 +37,7 @@ class ItemListPageState extends State<ItemListPage>
         (index) => TextEditingController(
             text: db.userData.itemAbundantValue[index].toString()));
     db.itemStat.includingEvent = true;
-    db.itemStat.update(lapse: const Duration(seconds: 2));
+    db.itemStat.update(lapse: kSplitRouteDuration);
   }
 
   @override
@@ -45,7 +45,7 @@ class ItemListPageState extends State<ItemListPage>
     super.dispose();
     _tabController.dispose();
     db.itemStat.includingEvent = true;
-    db.itemStat.update(lapse: const Duration(seconds: 2));
+    db.itemStat.update(lapse: kSplitRouteDuration);
   }
 
   @override

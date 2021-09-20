@@ -1,3 +1,6 @@
+## 1.5.8
+- fix null-safety breaking ~~change~~ bug
+
 ## 1.5.7
 - buff/effect filter
 - support new(after 6th) and legacy drop rate data
@@ -144,7 +147,7 @@
 ## 1.3.7
 - sync user data with server on multiple device
 - fix FFO render speed issue
- 
+
 ## 1.3.6
 - Fate/Freedom Order
   - free assembly and random gacha

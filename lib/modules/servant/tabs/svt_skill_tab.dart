@@ -96,6 +96,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
                   onPressed: () {
                     SimpleCancelOkDialog(
                       title: Text(skill.localizedName),
+                      hideCancel: true,
                       content: Text(
                         skill.openCondition!,
                         style: Theme.of(context).textTheme.caption,
