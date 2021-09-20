@@ -43,19 +43,39 @@
 
 
 ----------
+
 ### 5. 滚动条不能拖拽
+
 主要发生在自动生成滚动条的桌面端，当一个页面(包括多个标签页/Tab)存在多个可滚动组件时，可能导致不能拖动滚动条，但页面拖拽、鼠标滚轮和触控板滚动仍可工作。请反馈具体页面信息。
 
 
 ----------
-### 6. [Windows] `VCRUNTIME140_1.dll was not found on Windows`
+
+### 6. 导入数据失败
+
+包括游戏数据包`dataset.zip`、ffo资源包`ffo-data.zip`等。若导入失败，如Out of memory，可手动解压至对应文件夹。
+
+所有数据均保存在一个文件夹下（`app_folder`），不同平台下该文件夹路径和名称不同，可在`设置-用户数据-数据目录`中查看。
+
+- `app_folder/user`: 保存`userdata.json`，储存着几乎全部用户数据，可手动备份还原该文件
+- `app_folder/data`: 应用数据包解压目标文件夹，包含`dataset.json`和`icons`
+- `app_folder/ffo` : ffo数据包解压目标文件夹
+- `app_folder/backup`: 每日备份`userdata.json`于此
+
+----------
+
+### 7. [Windows] `VCRUNTIME140_1.dll was not found on Windows`
 
 桌面版仅支持x64。
 
-启动时报该错误请安装VC++运行时环境(x64): [Microsoft Visual C++ redistributable package](https://support.microsoft.com/zh-cn/help/2977003/the-latest-supported-visual-c-downloads)
+启动时报该错误请安装VC++运行时环境(
+x64): [Microsoft Visual C++ redistributable package](https://support.microsoft.com/zh-cn/help/2977003/the-latest-supported-visual-c-downloads)
 
 ----------
+
 ### [Windows] 启动卡在Logo页面
+
 检查程序保存路径：
+
 - 非系统目录（需要管理员权限），如保存在"C:/Program File/"将导致程序无权限运行
 - 路径尽量不带中文等字符

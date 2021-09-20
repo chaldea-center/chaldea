@@ -1,6 +1,6 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/servant/servant_detail_page.dart';
-import 'package:chaldea/modules/shared/item_related_builder.dart';
+import 'package:chaldea/modules/shared/common_builders.dart';
 
 class ItemCostServantPage extends StatelessWidget {
   final String itemKey;

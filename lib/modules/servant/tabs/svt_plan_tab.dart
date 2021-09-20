@@ -3,7 +3,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/servant/costume_detail_page.dart';
-import 'package:chaldea/modules/shared/item_related_builder.dart';
+import 'package:chaldea/modules/shared/common_builders.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 

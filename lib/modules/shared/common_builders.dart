@@ -1,16 +1,17 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
 
-mixin CommonBuilder {
+abstract class CommonBuilder {
   /// build a grid view with [ImageWithText] as its children.
   /// The key and value of [data] are Servant/Item icon name and its' num or text
   /// for image and text in [ImageWithText].
-  static Widget buildIconGridView(
-      {required Map<String, dynamic> data,
-      int crossCount = 7,
-      void Function(String key)? onTap,
-      double childAspectRatio = 132 / 144,
-      bool scrollable = false}) {
+  static Widget buildIconGridView({
+    required Map<String, dynamic> data,
+    int crossCount = 7,
+    void Function(String key)? onTap,
+    double childAspectRatio = 132 / 144,
+    bool scrollable = false,
+  }) {
     return GridView.count(
       childAspectRatio: childAspectRatio,
       crossAxisCount: crossCount,
@@ -48,6 +49,55 @@ mixin CommonBuilder {
             builder: (context) => ItemFilterDialog(),
           );
         },
+      ),
+    );
+  }
+
+  static Widget buildSwitchPlanButton(
+      {required BuildContext context, ValueChanged<int>? onChange}) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return IconButton(
+      onPressed: () {
+        FocusScope.of(context).unfocus();
+        showSwitchPlanDialog(context: context, onChange: onChange);
+      },
+      tooltip: '${S.current.plan_title} ${db.curUser.curSvtPlanNo + 1}',
+      icon: Center(
+        child: Stack(
+          alignment: Alignment.bottomRight,
+          children: [
+            const Icon(Icons.list),
+            ImageWithText.paintOutline(
+              text: (db.curUser.curSvtPlanNo + 1).toString(),
+              shadowSize: 5,
+              shadowColor: colorScheme.brightness == Brightness.light
+                  ? colorScheme.primary
+                  : colorScheme.surface,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  static Future showSwitchPlanDialog(
+      {required BuildContext context, ValueChanged<int>? onChange}) {
+    return showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: Text(S.current.select_plan),
+        children: List.generate(db.curUser.servantPlans.length, (index) {
+          return ListTile(
+            title: Text(S.current.plan_x(index + 1)),
+            selected: index == db.curUser.curSvtPlanNo,
+            onTap: () {
+              Navigator.of(context).pop();
+              if (onChange != null) {
+                onChange(index);
+              }
+            },
+          );
+        }),
       ),
     );
   }

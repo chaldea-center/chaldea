@@ -133,19 +133,19 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
           flex: 3,
           child: Align(
             alignment: Alignment.centerRight,
-            child: buildTrailing(ticket, db.itemStat),
+            child: buildTrailing(ticket),
           ),
         )
       ],
     );
   }
 
-  Widget buildTrailing(ExchangeTicket ticket, ItemStatistics statistics) {
+  Widget buildTrailing(ExchangeTicket ticket) {
     final monthPlan = db.curUser.events.exchangeTicketOf(ticket.monthJp);
     List<Widget> trailingItems = [];
     for (var i = 0; i < 3; i++) {
       final iconKey = ticket.items[i];
-      int leftNum = statistics.leftItems[iconKey] ?? 0;
+      int leftNum = db.itemStat.leftItems[iconKey] ?? 0;
       monthPlan.setAt(i, fixValidRange(monthPlan.items[i], 0, ticket.days));
       final int maxValue = ticket.days - sum(monthPlan.items.getRange(0, i));
       trailingItems.add(Row(
@@ -211,7 +211,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                           ticket.days - sum(monthPlan.items.getRange(0, j)));
                       monthPlan.setAt(j, v);
                     }
-                    statistics.updateEventItems();
+                    db.itemStat.updateEventItems();
                   },
                 ).showDialog(context);
               },

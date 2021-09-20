@@ -1,7 +1,6 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
-import 'package:chaldea/modules/shared/item_related_builder.dart';
-import 'package:chaldea/modules/shared/list_page_share.dart';
+import 'package:chaldea/modules/shared/common_builders.dart';
 
 import 'statistics_servant_tab.dart';
 
@@ -35,11 +34,11 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
         appBar: AppBar(
           title: Text(S.current.statistics_title),
           actions: [
-            buildSwitchPlanButton(
+            CommonBuilder.buildSwitchPlanButton(
               context: context,
               onChange: (index) {
                 db.curUser.curSvtPlanNo = index;
-                db.itemStat.update();
+                db.itemStat.update(lapse: const Duration());
                 setState(() {});
               },
             ),

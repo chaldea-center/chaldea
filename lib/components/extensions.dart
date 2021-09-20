@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:chaldea/components/components.dart' hide showDialog;
 import 'package:flutter/material.dart' as material;
 
@@ -87,7 +89,7 @@ extension DateTimeX on DateTime {
   }
 }
 
-extension StringToDateTime on String {
+extension StringX on String {
   DateTime? toDateTime() {
     return DateTimeX.tryParse(this);
   }
@@ -97,6 +99,12 @@ extension StringToDateTime on String {
       String s = match.group(0)!;
       return s.substring(0, 1).toUpperCase() + s.substring(1);
     });
+  }
+
+  /// for half-width ascii: 1 char=1 byte, for full-width cn/jp 1 char=3 bytes mostly.
+  /// assume there is no half-width cn/jp char.
+  int get charWidth {
+    return (length + utf8.encode(this).length) ~/ 2;
   }
 }
 

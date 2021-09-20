@@ -34,6 +34,26 @@ class _UserDataPageState extends State<UserDataPage> {
       body: ListView(
         children: <Widget>[
           TileGroup(
+            footer: 'All data saved here.',
+            children: [
+              ListTile(
+                title: Text(LocalizedText.of(
+                    chs: '数据目录', jpn: 'データフォルダ', eng: 'Data Folder')),
+                subtitle: Text(db.paths.convertIosPath(db.paths.appPath)),
+                onTap: () {
+                  if (PlatformU.isMacOS || PlatformU.isWindows) {
+                    OpenFile.open(db.paths.appPath);
+                  } else {
+                    EasyLoading.showInfo(LocalizedText.of(
+                        chs: '请用文件管理器打开',
+                        jpn: 'ファイルマネージャで開いてください',
+                        eng: 'Please open with file manager'));
+                  }
+                },
+              )
+            ],
+          ),
+          TileGroup(
             header: S.of(context).userdata + '(Local)',
             footer: S.of(context).settings_userdata_footer,
             children: <Widget>[
@@ -76,21 +96,6 @@ class _UserDataPageState extends State<UserDataPage> {
                   EasyLoading.showToast(S.of(context).reset_success);
                 },
               ),
-              ListTile(
-                title: Text(LocalizedText.of(
-                    chs: '打开目录', jpn: 'フォルダを開く', eng: 'Open Folder')),
-                subtitle: Text(db.paths.convertIosPath(db.paths.appPath)),
-                onTap: () {
-                  if (PlatformU.isMacOS || PlatformU.isWindows) {
-                    OpenFile.open(db.paths.appPath);
-                  } else {
-                    EasyLoading.showInfo(LocalizedText.of(
-                        chs: '请用文件管理器打开',
-                        jpn: 'ファイルマネージャで開いてください',
-                        eng: 'Please open with file manager'));
-                  }
-                },
-              )
             ],
           ),
           TileGroup(

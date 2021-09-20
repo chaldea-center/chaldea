@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/shared/list_page_share.dart';
+import 'package:chaldea/modules/shared/common_builders.dart';
 import 'package:chaldea/widgets/charts/growth_curve_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -282,7 +282,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
       },
       onSelected: (select) {
         if (select == 'plan') {
-          onSwitchPlan(
+          CommonBuilder.showSwitchPlanDialog(
             context: context,
             onChange: (index) {
               db.curUser.curSvtPlanNo = index;

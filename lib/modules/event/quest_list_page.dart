@@ -21,7 +21,7 @@ class QuestListPage extends StatelessWidget {
       String questTitle = showChapter ? quest.chapter : quest.localizedName;
       String? subtitle = showChapter
           ? quest.localizedName
-          : (!Language.isJP && quest.placeJp != null ? quest.placeJp : null);
+          : (!Language.isJP ? quest.placeJp ?? quest.nameJp : null);
       children.add(SimpleAccordion(
         headerBuilder: (context, _) => ListTile(
           title: Text(questTitle),

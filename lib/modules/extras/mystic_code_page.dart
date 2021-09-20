@@ -267,7 +267,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
         }
       });
     }
-    return urls.where((e) => e != null).toList() as List<String>;
+    return urls.whereType<String>().toList();
   }
 
   Widget buildCodeImages(MysticCode mysticCode) {

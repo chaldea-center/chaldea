@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
+import 'package:chaldea/modules/shared/common_builders.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
-import 'package:chaldea/modules/shared/list_page_share.dart';
 
 import 'servant_detail_page.dart';
 import 'servant_filter_page.dart';
@@ -130,7 +130,7 @@ class ServantListPageState
             if (v == 'copy_plan') {
               copyPlan();
             } else if (v == 'switch_plan') {
-              onSwitchPlan(
+              CommonBuilder.showSwitchPlanDialog(
                 context: context,
                 onChange: (index) {
                   db.curUser.curSvtPlanNo = index;

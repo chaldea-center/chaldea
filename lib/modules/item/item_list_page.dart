@@ -4,8 +4,7 @@ import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/free_quest_calculator/free_calculator_page.dart';
-import 'package:chaldea/modules/shared/item_related_builder.dart';
-import 'package:chaldea/modules/shared/list_page_share.dart';
+import 'package:chaldea/modules/shared/common_builders.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
@@ -30,12 +29,6 @@ class ItemListPageState extends State<ItemListPage>
   late List<TextEditingController> _itemRedundantControllers;
 
   @override
-  void dispose() {
-    super.dispose();
-    _tabController.dispose();
-  }
-
-  @override
   void initState() {
     super.initState();
     _tabController = TabController(length: categories.length, vsync: this);
@@ -43,6 +36,15 @@ class ItemListPageState extends State<ItemListPage>
         3,
         (index) => TextEditingController(
             text: db.userData.itemAbundantValue[index].toString()));
+    db.itemStat.includingEvent = true;
+    db.itemStat.update(lapse: const Duration(seconds: 2));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _tabController.dispose();
+    db.itemStat.includingEvent = true;
     db.itemStat.update(lapse: const Duration(seconds: 2));
   }
 
@@ -54,11 +56,11 @@ class ItemListPageState extends State<ItemListPage>
         leading: const MasterBackButton(),
         titleSpacing: 0,
         actions: <Widget>[
-          buildSwitchPlanButton(
+          CommonBuilder.buildSwitchPlanButton(
             context: context,
-            onChange: (index) {
+            onChange: (index) async {
               db.curUser.curSvtPlanNo = index;
-              db.itemStat.update();
+              db.itemStat.update(lapse: const Duration());
               setState(() {});
             },
           ),
@@ -103,12 +105,12 @@ class ItemListPageState extends State<ItemListPage>
               controller: _tabController,
               children: List.generate(
                 categories.length,
-                (index) => ItemListTab(
-                  category: categories[index],
-                  onNavToCalculator: navToDropCalculator,
-                  filtered: filtered,
-                  showSet999: true,
-                ),
+                (index) => db.streamBuilder((context) => ItemListTab(
+                      category: categories[index],
+                      onNavToCalculator: navToDropCalculator,
+                      filtered: filtered,
+                      showSet999: true,
+                    )),
               ),
             ),
           ),
@@ -125,7 +127,7 @@ class ItemListPageState extends State<ItemListPage>
         if (rarity > 0 && rarity <= 3) {
           value -= db.userData.itemAbundantValue[rarity - 1];
         }
-        if (db.gameData.planningData.dropRates.rowNames.contains(itemKey) &&
+        if (db.gameData.planningData.getDropRate().rowNames.contains(itemKey) &&
             value < 0) {
           objective[itemKey] = -value;
         }
@@ -447,7 +449,7 @@ class _ItemListTabState extends State<ItemListTab> {
                 setState(() {
                   // reset to true in initState or not?
                   db.itemStat.includingEvent = v ?? db.itemStat.includingEvent;
-                  db.itemStat.updateEventItems();
+                  db.itemStat.updateEventItems(lapse: const Duration());
                 });
               },
             ),

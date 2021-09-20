@@ -88,11 +88,11 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
             ' ${event.lottery[widget.itemKey]}*${plan.lottery}');
       }
       if (hasExtraItems) {
-        texts.add('${S.current.event_item_extra}'
+        texts.add('Extra'
             ' ${plan.extra[widget.itemKey] ?? 0}');
       }
       if (hasExtra2Items) {
-        texts.add('${S.current.event_item_extra}'
+        texts.add('Extra'
             ' ${plan.extra2[widget.itemKey] ?? 0}');
       }
       if (texts.isEmpty) return;

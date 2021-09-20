@@ -49,13 +49,19 @@ class _QuestCardState extends State<QuestCard> {
 
   @override
   Widget build(BuildContext context) {
-    String questName = [
+    List<String> names = [
       quest.localizedName,
       if (!Language.isJP &&
           quest.nameJp != null &&
           quest.nameJp != quest.localizedName)
         quest.nameJp!
-    ].join('/');
+    ];
+    String questName;
+    if (names.any((s) => s.charWidth > 16)) {
+      questName = names.join('\n');
+    } else {
+      questName = names.join('/');
+    }
     String chapter = Localized.chapter.of(quest.chapter);
     return Card(
       elevation: 0,
@@ -85,11 +91,11 @@ class _QuestCardState extends State<QuestCard> {
                       maxFontSize: 14,
                       minFontSize: 6,
                       textAlign: TextAlign.center,
-                      // style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.w500),
                     ),
                     AutoSizeText(
-                      '${S.of(context).game_kizuna} ${quest.bondPoint}  '
-                      '${S.of(context).game_experience} ${quest.experience}',
+                      '${S.current.game_kizuna} ${quest.bondPoint}  '
+                      '${S.current.game_experience} ${quest.experience}',
                       maxLines: 1,
                       maxFontSize: 14,
                       minFontSize: 6,

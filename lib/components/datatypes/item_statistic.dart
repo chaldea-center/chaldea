@@ -27,10 +27,11 @@ class ItemStatistics {
   Timer? _leftTimer;
 
   Timer? _setTimer(Duration? lapse, VoidCallback callback) {
-    lapse ??= PlatformU.isDesktop || AppInfo.isIPad
-        ? const Duration(seconds: 1)
-        : const Duration(seconds: 3);
-    return Timer(lapse, callback);
+    if (lapse == null || lapse.inMilliseconds <= 0) {
+      callback();
+    } else {
+      return Timer(lapse, callback);
+    }
   }
 
   /// Update [itemState] after duration [lapse]
@@ -57,16 +58,21 @@ class ItemStatistics {
   }
 
   void updateSvtItems({bool shouldBroadcast = true, Duration? lapse}) {
-    if (shouldBroadcast) db.notifyDbUpdate();
+    if (shouldBroadcast) {
+      // db.notifyDbUpdate();
+    } else {
+      lapse ??= const Duration();
+    }
     void callback() {
       // priority is shared cross users!
       final Map<int, ServantStatus> priorityFiltered = Map.fromEntries(db
           .curUser.servants.entries
           .where((entry) => db.userData.svtFilter.priority
-          .singleValueFilter(entry.value.priority.toString())));
+              .singleValueFilter(entry.value.priority.toString())));
       svtItemDetail.update(
           curStat: priorityFiltered, targetPlan: db.curUser.curSvtPlan);
-      updateLeftItems(shouldBroadcast: shouldBroadcast);
+      updateLeftItems(
+          shouldBroadcast: shouldBroadcast, lapse: const Duration());
     }
 
     _svtTimer?.cancel();
@@ -75,14 +81,19 @@ class ItemStatistics {
   }
 
   void updateEventItems({bool shouldBroadcast = true, Duration? lapse}) {
-    if (shouldBroadcast) db.notifyDbUpdate();
+    if (shouldBroadcast) {
+      // db.notifyDbUpdate();
+    } else {
+      lapse ??= const Duration();
+    }
     void callback() {
       if (includingEvent) {
         eventItems = db.gameData.events.getAllItems(db.curUser.events);
       } else {
         eventItems = {};
       }
-      updateLeftItems(shouldBroadcast: shouldBroadcast);
+      updateLeftItems(
+          shouldBroadcast: shouldBroadcast, lapse: const Duration());
     }
 
     _eventTimer?.cancel();
