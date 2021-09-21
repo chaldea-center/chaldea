@@ -57,15 +57,17 @@ class GLPKSolver {
       BasicGLPKParams glpkParams = BasicGLPKParams();
       glpkParams.colNames = data.colNames;
       glpkParams.rowNames = data.rowNames;
+      glpkParams.AMat = data.matrix;
       glpkParams.bVec =
           data.rowNames.map((e) => params.getPlanItemCount(e, 0)).toList();
       glpkParams.cVec = params.costMinimize
           ? data.costs
           : List.filled(data.costs.length, 1, growable: true);
       glpkParams.integer = false;
-      print(const JsonEncoder.withIndent('  ').convert(glpkParams));
-      glpkParams.AMat = data.matrix;
-
+      final _debugParams = GLPKParams.from(params)
+        ..planItemCounts.clear()
+        ..planItemWeights.clear();
+      logger.i('glpk params: ${jsonEncode(_debugParams)}');
       await ensureEngine();
       final resultString = await engine.eval(
           '''glpk_solver(`${jsonEncode(glpkParams)}`)''',

@@ -1,18 +1,15 @@
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/lostroom/illust_select_page.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:screenshot/screenshot.dart';
 
-const List<String> _allClasses = [
-  'All',
-  ...SvtFilterData.regularClassesData,
-  'Extra',
-];
+import 'illust_select_page.dart';
+import 'support_result_preview.dart';
 
 class SupportPartyPage extends StatefulWidget {
   SupportPartyPage({Key? key}) : super(key: key);
@@ -22,13 +19,14 @@ class SupportPartyPage extends StatefulWidget {
 }
 
 class _SupportPartyPageState extends State<SupportPartyPage> {
-  List<SupportSetUp> settings = [];
+  List<SupportSetup> get settings => db.curUser.supportSetups;
   late ScrollController _horizontalController;
   late ScrollController _verticalController;
   int selected = 0;
   double? pixelRatio;
+  bool hideRadio = false;
 
-  SupportSetUp get cur => settings[selected];
+  SupportSetup get cur => settings[selected];
   final ScreenshotController _screenshotController = ScreenshotController();
 
   @override
@@ -36,11 +34,12 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
     super.initState();
     _horizontalController = ScrollController();
     _verticalController = ScrollController();
-    for (int index = 0; index < _allClasses.length; index++) {}
-    settings = List.generate(
-      _allClasses.length,
-      (index) => SupportSetUp(index: index),
-    );
+    db.curUser.supportSetups =
+        List.generate(SupportSetup.allClasses.length, (index) {
+      final v = settings.getOrNull(index) ?? SupportSetup();
+      v.index = index;
+      return v;
+    });
   }
 
   @override
@@ -50,21 +49,48 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
       appBar: AppBar(
         title: Text(S.current.support_party),
       ),
+      floatingActionButton: FloatingActionButton(
+        tooltip: S.current.preview,
+        onPressed: () {
+          setState(() {
+            hideRadio = true;
+          });
+          SchedulerBinding.instance!.addPostFrameCallback((timeStamp) async {
+            if (!mounted) return;
+            EasyLoading.show(status: 'Rendering...');
+            try {
+              final data =
+                  await _screenshotController.capture(pixelRatio: pixelRatio);
+              if (data == null) {
+                EasyLoading.showError('Failed');
+                return;
+              }
+              EasyLoading.dismiss();
+              SplitRoute.push(context, SupportResultPreview(data: data));
+            } finally {
+              EasyLoadingUtil.dismiss();
+            }
+          });
+        },
+        child: const Icon(Icons.image),
+      ),
       body: Column(
         children: [
-          // SizedBox(height: h * 0.8, child: partyCanvas),
           ConstrainedBox(
             constraints: BoxConstraints(
                 maxHeight: min(MediaQuery.of(context).size.height * 0.5, 400)),
-            child: ScrollConfiguration(
-              behavior: UndraggableScrollBehavior(),
-              child: Scrollbar(
-                controller: _horizontalController,
-                isAlwaysShown: true,
-                thickness: 10,
-                radius: const Radius.circular(5),
-                interactive: true,
-                child: partyCanvas,
+            child: Theme(
+              data: Theme.of(context).copyWith(brightness: Brightness.light),
+              child: ScrollConfiguration(
+                behavior: UndraggableScrollBehavior(),
+                child: Scrollbar(
+                  controller: _horizontalController,
+                  isAlwaysShown: true,
+                  thickness: 10,
+                  radius: const Radius.circular(5),
+                  interactive: true,
+                  child: partyCanvas,
+                ),
               ),
             ),
           ),
@@ -78,40 +104,48 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
     return SingleChildScrollView(
       controller: _horizontalController,
       scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       child: Screenshot(
-        child: Row(
-          children: List.generate(settings.length, (index) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Expanded(
-                  child: LayoutBuilder(builder: (context, constraints) {
-                    return ClipPath(
-                      clipper: _SupportCornerClipper(),
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selected = index;
-                          });
-                        },
-                        child: oneSupport(index, constraints.maxHeight),
-                      ),
-                    );
-                  }),
-                ),
-                Radio(
-                  value: index,
-                  groupValue: selected,
-                  onChanged: (v) {
-                    setState(() {
-                      selected = index;
-                    });
-                  },
-                ),
-              ],
-            );
-          }),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+          ),
+          padding: const EdgeInsets.fromLTRB(36, 8, 36, 8),
+          child: Row(
+            children: List.generate(settings.length, (index) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: LayoutBuilder(builder: (context, constraints) {
+                      return ClipPath(
+                        clipper: _SupportCornerClipper(),
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selected = index;
+                            });
+                          },
+                          child: oneSupport(index, constraints.maxHeight),
+                        ),
+                      );
+                    }),
+                  ),
+                  Opacity(
+                    opacity: hideRadio ? 0 : 1,
+                    child: Radio(
+                      value: index,
+                      groupValue: selected,
+                      onChanged: (v) {
+                        setState(() {
+                          selected = index;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              );
+            }),
+          ),
         ),
         controller: _screenshotController,
       ),
@@ -249,7 +283,7 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
   Widget get settingArea {
     return ListView(
       controller: _verticalController,
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: 48),
       children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -353,6 +387,7 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
             });
           },
         ),
+        const Divider(height: 16, thickness: 0.5, indent: 16, endIndent: 16),
         SHeader('Resolution: ${pixelRatio!.toStringAsFixed(2)}'),
         Slider(
           value: pixelRatio!,
@@ -361,38 +396,22 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
               pixelRatio = v;
             });
           },
-          min: MediaQuery.of(context).devicePixelRatio * 0.25,
-          max: MediaQuery.of(context).devicePixelRatio * 4,
+          min: MediaQuery.of(context).devicePixelRatio * 0.5,
+          max: MediaQuery.of(context).devicePixelRatio * 2,
           divisions:
-              MediaQuery.of(context).devicePixelRatio * (4 - 0.25) ~/ 0.01 + 1,
+              MediaQuery.of(context).devicePixelRatio * (2 - 0.5) ~/ 0.01 + 1,
           label: pixelRatio!.toStringAsFixed(2),
         ),
-        Center(
-          child: ElevatedButton(
-            onPressed: () async {
-              final data =
-                  await _screenshotController.capture(pixelRatio: pixelRatio);
-              SimpleCancelOkDialog(
-                title: const Text('Export'),
-                content: Image.memory(data!),
-                hideOk: true,
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      ImageActions.showSaveShare(
-                          context: context,
-                          data: data,
-                          destFp: join(db.paths.downloadDir,
-                              'support_setup_${DateTime.now().millisecondsSinceEpoch}.png'),
-                          shareText: S.current.support_party);
-                    },
-                    child: Text(S.current.save),
-                  )
-                ],
-              ).showDialog(context);
-            },
-            child: Text(S.current.preview),
-          ),
+        SwitchListTile.adaptive(
+          value: hideRadio,
+          title: const Text('Hide Radio'),
+          onChanged: (v) {
+            setState(
+              () {
+                hideRadio = v;
+              },
+            );
+          },
         )
       ],
     );
@@ -407,73 +426,8 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
   }
 }
 
-class SupportSetUp {
-  int index;
-  int? svtNo;
-  int? lv;
-  String? imgPath;
-  bool cached;
-  double scale;
-  double dx;
-  double dy;
-  bool showActiveSkill;
-  bool showAppendSkill;
-
-  SupportSetUp({
-    required this.index,
-    this.svtNo,
-    this.lv,
-    this.imgPath,
-    this.cached = true,
-    this.scale = 1,
-    this.dx = 0,
-    this.dy = 0,
-    this.showActiveSkill = true,
-    this.showAppendSkill = false,
-  }) : assert(index >= 0 && index < _allClasses.length);
-
-  Offset get offset => Offset(dx, dy);
-
-  set offset(Offset offset) {
-    dx = offset.dx;
-    dy = offset.dy;
-  }
-
-  Servant? get servant => db.gameData.servants[svtNo];
-
-  ServantStatus? get status =>
-      svtNo == null ? null : db.curUser.svtStatusOf(svtNo!);
-
-  String? get clsName {
-    index = fixValidRange(index, 0, _allClasses.length);
-    return servant?.stdClassName ?? _allClasses[index];
-  }
-
-  int? get resolvedLv => lv ?? defaultLv();
-
-  int? defaultLv() {
-    if (servant == null) return null;
-    final curVal = status!.curVal;
-    if (curVal.grail > 0) {
-      return Grail.grailToLvMax(servant!.rarity, curVal.grail);
-    } else {
-      return Grail.maxAscensionGrailLvs(
-          rarity: servant!.rarity)[curVal.ascension + 1];
-    }
-  }
-
-  void reset() {
-    svtNo = null;
-    lv = null;
-    scale = 1;
-    dx = dy = 0;
-    imgPath = null;
-    cached = true;
-  }
-}
-
 class _OneSupportWithGesture extends StatefulWidget {
-  final SupportSetUp setting;
+  final SupportSetup setting;
 
   const _OneSupportWithGesture({
     Key? key,
@@ -485,7 +439,7 @@ class _OneSupportWithGesture extends StatefulWidget {
 }
 
 class __OneSupportWithGestureState extends State<_OneSupportWithGesture> {
-  SupportSetUp get setting => widget.setting;
+  SupportSetup get setting => widget.setting;
 
   Offset offset = Offset.zero;
   double scale = 1;

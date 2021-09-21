@@ -59,6 +59,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
       if (msg == AppLifecycleState.resumed.toString()) {
         // Actions when app is resumed
         db.checkConnectivity();
+        MobStat.pageStart(widget.runtimeType.toString());
       } else if (msg == AppLifecycleState.inactive.toString()) {
         db.saveUserData();
         MobStat.pageEnd(widget.runtimeType.toString());

@@ -2438,6 +2438,11 @@ User _$UserFromJson(Map<String, dynamic> json) => $checkedCreate(
                           (k, e) => MapEntry(int.parse(k), e as int),
                         )),
                   )),
+          supportSetups: $checkedConvert(
+              'supportSetups',
+              (v) => (v as List<dynamic>?)
+                  ?.map((e) => SupportSetup.fromJson(e as Map<String, dynamic>))
+                  .toList()),
         );
         return val;
       },
@@ -2464,6 +2469,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'glpkParams': instance.glpkParams,
       'luckyBagSvtScores': instance.luckyBagSvtScores.map(
           (k, e) => MapEntry(k, e.map((k, e) => MapEntry(k.toString(), e)))),
+      'supportSetups': instance.supportSetups,
     };
 
 K? _$enumDecodeNullable<K, V>(
@@ -2688,6 +2694,33 @@ Map<String, dynamic> _$CampaignPlanToJson(CampaignPlan instance) =>
     <String, dynamic>{
       'enabled': instance.enabled,
       'rerun': instance.rerun,
+    };
+
+SupportSetup _$SupportSetupFromJson(Map<String, dynamic> json) => SupportSetup(
+      index: json['index'] as int? ?? 0,
+      svtNo: json['svtNo'] as int?,
+      lv: json['lv'] as int?,
+      imgPath: json['imgPath'] as String?,
+      cached: json['cached'] as bool? ?? true,
+      scale: (json['scale'] as num?)?.toDouble() ?? 1,
+      dx: (json['dx'] as num?)?.toDouble() ?? 0,
+      dy: (json['dy'] as num?)?.toDouble() ?? 0,
+      showActiveSkill: json['showActiveSkill'] as bool? ?? true,
+      showAppendSkill: json['showAppendSkill'] as bool? ?? false,
+    );
+
+Map<String, dynamic> _$SupportSetupToJson(SupportSetup instance) =>
+    <String, dynamic>{
+      'index': instance.index,
+      'svtNo': instance.svtNo,
+      'lv': instance.lv,
+      'imgPath': instance.imgPath,
+      'cached': instance.cached,
+      'scale': instance.scale,
+      'dx': instance.dx,
+      'dy': instance.dy,
+      'showActiveSkill': instance.showActiveSkill,
+      'showAppendSkill': instance.showAppendSkill,
     };
 
 AppSetting _$AppSettingFromJson(Map<String, dynamic> json) => $checkedCreate(
