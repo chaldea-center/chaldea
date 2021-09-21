@@ -37,8 +37,7 @@ class UserData {
     CmdCodeFilterData? cmdCodeFilter,
     SummonFilterData? summonFilter,
     List<int>? itemAbundantValue,
-  })
-      : version = modelVersion,
+  })  : version = modelVersion,
         appSetting = appSetting ?? AppSetting(),
         carouselSetting = carouselSetting ?? CarouselSetting(),
         galleries = galleries ?? {},

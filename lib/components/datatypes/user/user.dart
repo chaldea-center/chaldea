@@ -63,6 +63,7 @@ class User {
   GLPKParams glpkParams;
 
   Map<String, Map<int, int>> luckyBagSvtScores;
+  List<SupportSetup> supportSetups;
 
   User({
     this.key,
@@ -83,6 +84,7 @@ class User {
     Map<int, int>? duplicatedServants,
     GLPKParams? glpkParams,
     Map<String, Map<int, int>>? luckyBagSvtScores,
+    List<SupportSetup>? supportSetups,
   })  : name = name?.isNotEmpty == true ? name! : 'default',
         _server = server,
         servants = servants ?? {},
@@ -99,7 +101,8 @@ class User {
         msProgress = msProgress ?? -1,
         duplicatedServants = duplicatedServants ?? {},
         glpkParams = glpkParams ?? GLPKParams(),
-        luckyBagSvtScores = luckyBagSvtScores ?? {} {
+        luckyBagSvtScores = luckyBagSvtScores ?? {},
+        supportSetups = supportSetups ?? [] {
     this.curSvtPlanNo =
         fixValidRange(this.curSvtPlanNo, 0, this.servantPlans.length);
     fillListValue(this.servantPlans, max(5, this.servantPlans.length),
@@ -571,6 +574,83 @@ class CampaignPlan {
       _$CampaignPlanFromJson(data);
 
   Map<String, dynamic> toJson() => _$CampaignPlanToJson(this);
+}
+
+@JsonSerializable()
+class SupportSetup {
+  int index;
+  int? svtNo;
+  int? lv;
+  String? imgPath;
+  bool cached;
+  double scale;
+  double dx;
+  double dy;
+  bool showActiveSkill;
+  bool showAppendSkill;
+  static const List<String> allClasses = [
+    'All',
+    ...SvtFilterData.regularClassesData,
+    'Extra',
+  ];
+
+  SupportSetup({
+    this.index = 0,
+    this.svtNo,
+    this.lv,
+    this.imgPath,
+    this.cached = true,
+    this.scale = 1,
+    this.dx = 0,
+    this.dy = 0,
+    this.showActiveSkill = true,
+    this.showAppendSkill = false,
+  });
+
+  @JsonKey(ignore: true)
+  Offset get offset => Offset(dx, dy);
+
+  set offset(Offset offset) {
+    dx = offset.dx;
+    dy = offset.dy;
+  }
+
+  Servant? get servant => db.gameData.servants[svtNo];
+
+  ServantStatus? get status =>
+      svtNo == null ? null : db.curUser.svtStatusOf(svtNo!);
+
+  String? get clsName {
+    index = fixValidRange(index, 0, allClasses.length);
+    return servant?.stdClassName ?? allClasses[index];
+  }
+
+  int? get resolvedLv => lv ?? defaultLv();
+
+  int? defaultLv() {
+    if (servant == null) return null;
+    final curVal = status!.curVal;
+    if (curVal.grail > 0) {
+      return Grail.grailToLvMax(servant!.rarity, curVal.grail);
+    } else {
+      return Grail.maxAscensionGrailLvs(
+          rarity: servant!.rarity)[curVal.ascension + 1];
+    }
+  }
+
+  void reset() {
+    svtNo = null;
+    lv = null;
+    scale = 1;
+    dx = dy = 0;
+    imgPath = null;
+    cached = true;
+  }
+
+  factory SupportSetup.fromJson(Map<String, dynamic> data) =>
+      _$SupportSetupFromJson(data);
+
+  Map<String, dynamic> toJson() => _$SupportSetupToJson(this);
 }
 
 enum GameServer {

@@ -304,8 +304,7 @@ class GLPKSolution {
     this.totalNum,
     List<GLPKVariable>? countVars,
     List<GLPKVariable>? weightVars,
-  })
-      : destination = destination ?? 0,
+  })  : destination = destination ?? 0,
         originalItems = originalItems ?? [],
         countVars = countVars ?? [],
         weightVars = weightVars ?? [];

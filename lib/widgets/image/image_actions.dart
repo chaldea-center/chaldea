@@ -5,6 +5,7 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path/path.dart' as path;
+import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:uuid/uuid.dart';
 
@@ -32,12 +33,24 @@ class ImageActions {
             title: Text(S.current.save_to_photos),
             onTap: () async {
               Navigator.pop(context);
-              if (data != null) {
-                await ImageGallerySaver.saveImage(data);
-              } else if (srcFp != null) {
-                await ImageGallerySaver.saveFile(srcFp);
+              if (PlatformU.isAndroid && await Permission.storage.isDenied) {
+                await Permission.storage.request();
               }
-              EasyLoading.showSuccess(S.current.saved);
+              dynamic result;
+              if (data != null) {
+                result = await ImageGallerySaver.saveImage(data);
+              } else if (srcFp != null) {
+                result = await ImageGallerySaver.saveFile(srcFp);
+              }
+              if (result is Map && result['isSuccess'] == true) {
+                EasyLoading.showSuccess(S.current.saved);
+              } else {
+                String? msg;
+                if (result is Map) {
+                  msg = result['errorMessage'];
+                }
+                EasyLoading.showError(msg ?? result.toString());
+              }
             },
           ));
         }
