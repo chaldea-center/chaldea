@@ -241,16 +241,16 @@ class GLPKParams {
 
   GLPKParams.from(GLPKParams other)
       : use6th = other.use6th,
-        rows = List.from(other.rows),
-        blacklist = Set.from(other.blacklist),
+        rows = List.of(other.rows),
+        blacklist = Set.of(other.blacklist),
         minCost = other.minCost,
         costMinimize = other.costMinimize,
         maxColNum = other.maxColNum,
-        extraCols = List.from(other.extraCols),
+        extraCols = List.of(other.extraCols),
         integerResult = other.integerResult,
         useAP20 = other.useAP20,
-        planItemCounts = other.planItemCounts,
-        planItemWeights = other.planItemWeights;
+        planItemCounts = Map.of(other.planItemCounts),
+        planItemWeights = Map.of(other.planItemWeights);
 
   DropRateData get dropRatesData =>
       db.gameData.planningData.getDropRate(use6th);
