@@ -666,7 +666,7 @@ packages:
       name: image
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.0.4"
+    version: "3.0.5"
   image_gallery_saver:
     dependency: "direct main"
     description:
@@ -708,7 +708,7 @@ packages:
       name: json_serializable
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.0.1"
+    version: "5.0.2"
   kana_kit:
     dependency: "direct main"
     description:
@@ -722,7 +722,7 @@ packages:
       name: libwinmedia
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.0.4"
+    version: "0.0.5"
   lints:
     dependency: transitive
     description:
@@ -981,7 +981,7 @@ packages:
       name: pubspec_parse
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.0"
+    version: "1.1.0"
   rate_my_app:
     dependency: "direct main"
     description:
@@ -1133,7 +1133,7 @@ packages:
       name: source_gen
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.3"
+    version: "1.1.0"
   source_helper:
     dependency: transitive
     description:
