@@ -1,7 +1,14 @@
+## 1.5.9
+
+- fix free calculator
+- fix type cast errors
+
 ## 1.5.8
+
 - fix null-safety breaking ~~change~~ bug
 
 ## 1.5.7
+
 - buff/effect filter
 - support new(after 6th) and legacy drop rate data
 - show growth curve of servant/ce on tapping ATK/HP
@@ -23,7 +30,6 @@
 - [BREAK CHANGE] windows: migrate user data folder to app folder
 - add lucky bag expectation
 - improve summon page and filter
-
 
 ## 1.5.3
 - fix exchange ticket planning
