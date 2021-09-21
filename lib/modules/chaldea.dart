@@ -61,6 +61,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         db.checkConnectivity();
       } else if (msg == AppLifecycleState.inactive.toString()) {
         db.saveUserData();
+        MobStat.pageEnd(widget.runtimeType.toString());
         debugPrint('save userdata before being inactive');
       }
       return null;
@@ -174,10 +175,14 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
       await Analyzer.sendBdtj();
     }
     MobStat.start();
-    MobStat.logEvent('config', {
-      "theme":
-          EnumUtil.shortString(db.appSetting.themeMode ?? ThemeMode.system),
-      "lang": Language.current.code,
+    Future.delayed(const Duration(seconds: 1), () {
+      MobStat.logEvent('config', {
+        "theme": EnumUtil.shortString(db.appSetting.isResolvedDarkMode
+            ? ThemeMode.dark
+            : ThemeMode.light),
+        "lang": Language.current.code,
+      });
+      MobStat.pageStart(widget.runtimeType.toString());
     });
   }
 

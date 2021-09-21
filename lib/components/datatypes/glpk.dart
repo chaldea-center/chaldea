@@ -54,9 +54,10 @@ class DropRateData {
     this.sparseMatrix = const {},
   }) : matrix = sparseToMatrix(sparseMatrix, rowNames.length, colNames.length);
 
-  static List<List<double>> sparseToMatrix(Map<int, Map<int, double>> sparse, int rows, int cols) {
+  static List<List<double>> sparseToMatrix(
+      Map<int, Map<int, double>> sparse, int rows, int cols) {
     List<List<double>> m =
-    List.generate(rows, (index) => List.generate(cols, (index) => 0));
+        List.generate(rows, (index) => List.generate(cols, (index) => 0));
     sparse.forEach((i, row) {
       row.forEach((j, v) {
         // 80.0 =>80.0%
@@ -208,9 +209,11 @@ class GLPKParams {
   Map<String, double> get objectiveWeights =>
       Map.fromIterable(rows, value: (k) => getPlanItemWeight(k));
 
-  int getPlanItemCount(String key) => planItemCounts[key] ??= 50;
+  int getPlanItemCount(String key, [int? _default]) =>
+      planItemCounts[key] ??= _default ?? 50;
 
-  double getPlanItemWeight(String key) => planItemWeights[key] ??= 1.0;
+  double getPlanItemWeight(String key, [double? _default]) =>
+      planItemWeights[key] ??= _default ?? 1.0;
 
   GLPKParams({
     bool? use6th,

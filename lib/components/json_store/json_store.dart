@@ -27,12 +27,12 @@ class JsonStore<T> {
       if (PlatformU.isWeb) {
         final box = await Hive.openBox(_boxName);
         final content = box.get(_key) ?? '{}';
-        _data = json.decode(content) as Map<String, dynamic>;
+        _data = _decode(content);
       } else {
         final _file = File(fp);
         if (await _file.exists()) {
           final content = await File(fp).readAsString();
-          _data = json.decode(content) as Map<String, dynamic>;
+          _data = _decode(content);
         } else {
           _file.createSync(recursive: true);
         }
@@ -49,8 +49,7 @@ class JsonStore<T> {
       } else {
         final _file = File(fp);
         if (_file.existsSync()) {
-          final content = File(fp).readAsStringSync();
-          _data = json.decode(content) as Map<String, dynamic>;
+          _data = _decode(File(fp).readAsStringSync());
         } else {
           _file
             ..createSync(recursive: true)
@@ -95,6 +94,18 @@ class JsonStore<T> {
     }
   }
 
+  Map<String, dynamic> _decode(String content) {
+    try {
+      final decoded = json.decode(content);
+      if (decoded is Map) {
+        return Map.from(decoded);
+      }
+    } catch (e, s) {
+      logger.e('decoding $runtimeType json data failed', e, s);
+    }
+    return {};
+  }
+
   void clear() {
     _data.clear();
     saveDeferred();
@@ -126,6 +137,8 @@ class JsonStoreItem<T> {
   JsonStoreItem(this.parent, this.key);
 
   T? get() => parent.get(key);
+
+  T get2(T _default) => get() ?? _default;
 
   void set(T value) => parent.set(key, value);
 }

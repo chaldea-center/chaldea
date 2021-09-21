@@ -18,20 +18,19 @@ class _ShareAppDialogState extends State<ShareAppDialog> {
     String msg = LocalizedText.of(
       chs:
           "Chaldea——一款跨平台的Fate/GO素材规划客户端，支持游戏信息浏览、从者练度/活动/素材规划、周常规划、抽卡模拟器等功能。\n"
-          "iOS&Mac App Store: $kAppStoreHttpLink\n"
-          "Google Play: $kGooglePlayLink\n"
-          "Windows/macOS/Android安装包:\n${kProjectHomepage + '/releases'}",
+          "iOS&Mac App Store: $kAppStoreHttpLink\n",
       jpn:
           "Chaldea - クロスプラットフォームのFate/GOアイテム計画アプリ。ゲーム情報の閲覧、サーヴァント/イベント/アイテム計画、マスターミッション計画、ガチャシミュレーターなどの機能をサポートします。\n"
-          "iOS&Mac App Store: $kAppStoreHttpLink\n"
-          "Google Play: $kGooglePlayLink\n"
-          "Windows/macOS/Android:\n${kProjectHomepage + '/releases'}",
+          "iOS&Mac App Store: $kAppStoreHttpLink\n",
       eng:
           "Chaldea - A cross-platform utility for Fate/GO. Supporting game data review, servant/event/item planning, master mission planning, summon simulator and so on.\n"
-          "iOS&Mac App Store: $kAppStoreHttpLink\n"
-          "Google Play: $kGooglePlayLink\n"
-          "Windows/macOS/Android installer:\n${kProjectHomepage + '/releases'}",
+          "iOS&Mac App Store: $kAppStoreHttpLink\n",
     );
+    // f**king App Store
+    if (!PlatformU.isApple || db.cfg.launchTimes.get2(0) > 2) {
+      msg += "Google Play: $kGooglePlayLink\n"
+          "Windows/macOS/Android:\n$kProjectHomepage/releases";
+    }
     _controller = TextEditingController(text: msg);
   }
 
@@ -68,7 +67,7 @@ class _ShareAppDialogState extends State<ShareAppDialog> {
           onPressed: () {
             Clipboard.setData(ClipboardData(text: _controller.text)).then((_) {
               EasyLoading.showSuccess(S.current.copied);
-            }).catchError((e, s) {
+            }).catchError((e, s) async {
               logger.e('copy share msg failed', e, s);
               EasyLoading.showError('Copy failed');
             });
@@ -78,7 +77,7 @@ class _ShareAppDialogState extends State<ShareAppDialog> {
         if (!PlatformU.isWindows)
           TextButton(
             onPressed: () {
-              Share.share(_controller.text).catchError((e, s) {
+              Share.share(_controller.text).catchError((e, s) async {
                 logger.e('Share text failed', e, s);
               });
             },

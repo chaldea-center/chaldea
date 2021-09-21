@@ -24,7 +24,7 @@ class GLPKSolver {
       await engine.eval(await rootBundle.loadString('res/js/glpk_solver.js'),
           name: '<glpk_solver.js>');
       print('=========js libs loaded.=========');
-    }).catchError((e, s) {
+    }).catchError((e, s) async {
       logger.e('initiate js libs error', e, s);
       EasyLoading.showToast('initiation error\n$e');
     });
@@ -46,7 +46,8 @@ class GLPKSolver {
           'params=${json.encode(params)}');
       EasyLoading.showToast('Invalid inputs');
       return solution;
-    } else if (params.weights.reduce(max) <= 0) {
+    }
+    if (params.weights.reduce(max) <= 0) {
       logger.d('after pre processing, params has no positive weights.\n'
           'params=${json.encode(params)}');
       EasyLoading.showToast('At least one weight >0');
@@ -56,12 +57,14 @@ class GLPKSolver {
       BasicGLPKParams glpkParams = BasicGLPKParams();
       glpkParams.colNames = data.colNames;
       glpkParams.rowNames = data.rowNames;
-      glpkParams.AMat = data.matrix;
-      glpkParams.bVec = params.counts;
+      glpkParams.bVec =
+          data.rowNames.map((e) => params.getPlanItemCount(e, 0)).toList();
       glpkParams.cVec = params.costMinimize
           ? data.costs
-          : List.generate(data.costs.length, (index) => 1);
+          : List.filled(data.costs.length, 1, growable: true);
       glpkParams.integer = false;
+      print(const JsonEncoder.withIndent('  ').convert(glpkParams));
+      glpkParams.AMat = data.matrix;
 
       await ensureEngine();
       final resultString = await engine.eval(
@@ -69,7 +72,7 @@ class GLPKSolver {
           name: 'solver_caller');
       logger.v('result: $resultString');
 
-      Map<String, double> result = Map.from(jsonDecode(resultString ?? '{}'));
+      Map<String, num> result = Map.from(jsonDecode(resultString ?? '{}'));
       solution.params = params;
       solution.totalNum = 0;
       solution.totalCost = 0;
@@ -82,6 +85,9 @@ class GLPKSolver {
         Map<String, int> details = {};
         for (String itemKey in params.rows) {
           int row = data.rowNames.indexOf(itemKey);
+          if (row < 0) {
+            continue;
+          }
           if (data.matrix[row][col] > 0) {
             details[itemKey] = (data.matrix[row][col] * count).floor();
           }
@@ -147,10 +153,22 @@ DropRateData _preProcess(
   // inside pre processing, use [params.objective] not [items] and [counts]
   final objective = params.objectiveCounts;
 
+  // now filtrate data's rows/cols
+  Set<String> removeCols = {}; // not fit minCost
+  // at least one quest for every item, higher priority than removeRows
+  Set<String> retainCols = {};
+  Set<String> removeRows = {}; // no quest's drop contains the item.
+
   // traverse originData rather new data
   // remove unused rows
-  objective
-      .removeWhere((key, value) => !data.rowNames.contains(key) || value <= 0);
+  objective.removeWhere((key, value) {
+    if (!data.rowNames.contains(key) || value <= 0) {
+      removeRows.add(key);
+      return true;
+    } else {
+      return false;
+    }
+  });
   List.from(data.rowNames).forEach((row) {
     if (!objective.containsKey(row)) data.removeRow(row);
   });
@@ -173,12 +191,6 @@ DropRateData _preProcess(
   List.from(data.colNames).forEach((col) {
     if (!cols.contains(col)) data.removeCol(col);
   });
-
-  // now filtrate data's rows/cols
-  Set<String> removeCols = {}; // not fit minCost
-  // at least one quest for every item, higher priority than removeRows
-  Set<String> retainCols = {};
-  Set<String> removeRows = {}; // no quest's drop contains the item.
 
   // remove cols don't contain any objective rows
   for (int col = 0; col < data.colNames.length; col++) {
@@ -226,11 +238,8 @@ DropRateData _preProcess(
   }
 
   // remove rows/cols above
-  objective.forEach((key, value) {
-    if (removeRows.contains(key)) {
-      params.rows.remove(key);
-    }
-  });
+  params.rows.removeWhere((rowName) =>
+      removeRows.contains(rowName) || !objective.containsKey(rowName));
   removeRows.forEach((element) => data.removeRow(element));
   removeCols.forEach((element) {
     if (!retainCols.contains(element)) data.removeCol(element);

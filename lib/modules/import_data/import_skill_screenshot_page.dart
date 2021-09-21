@@ -462,7 +462,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
       if (mounted) {
         setState(() {});
       }
-    }).catchError((e, s) {
+    }).catchError((e, s) async {
       if (e is! FileSelectionCanceledError) {
         logger.e('import image failed', e, s);
         EasyLoading.showError(e.toString());
@@ -618,7 +618,7 @@ class __SkillResultLoaderState extends State<_SkillResultLoader> {
       _cachedFiles[url] = file;
       _parse(file);
       if (mounted) setState(() {});
-    }).catchError((e, s) {
+    }).catchError((e, s) async {
       logger.e('load skill result json file failed', e, s);
     });
   }

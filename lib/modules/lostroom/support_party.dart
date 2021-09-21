@@ -332,7 +332,7 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
               if (mounted) {
                 setState(() {});
               }
-            }).catchError((e, s) {});
+            }).catchError((e, s) async {});
           },
         ),
         SwitchListTile.adaptive(
@@ -367,7 +367,6 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
               MediaQuery.of(context).devicePixelRatio * (4 - 0.25) ~/ 0.01 + 1,
           label: pixelRatio!.toStringAsFixed(2),
         ),
-
         Center(
           child: ElevatedButton(
             onPressed: () async {

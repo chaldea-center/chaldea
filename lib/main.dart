@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 void main() async {
   // make sure flutter packages like path_provider is working now
   WidgetsFlutterBinding.ensureInitialized();
-  await db.initial().catchError((e, s) {
+  await db.initial().catchError((e, s) async {
     db.initErrorDetail =
         FlutterErrorDetails(exception: e, stack: s, library: 'initiation');
     logger.e('db.initial failed', e, s);

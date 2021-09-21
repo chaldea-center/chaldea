@@ -65,7 +65,7 @@ class Analyzer {
       'time': DateTime.now().toString().split('.').first,
       'size': size,
       'zone': zone,
-    }).catchError((e, s) {
+    }).catchError((e, s) async {
       logger.e('report analytics failed', e, s);
     });
   }
@@ -171,7 +171,7 @@ class Analyzer {
 
   static Future<void> launchStaticUrl(String url) async {
     final plugin = FlutterWebviewPlugin();
-    await plugin.launch(url, hidden: true).catchError((e, s) {
+    await plugin.launch(url, hidden: true).catchError((e, s) async {
       logger.e('loading webview failed, url=$url', e, s);
     });
     print('$url launched');
