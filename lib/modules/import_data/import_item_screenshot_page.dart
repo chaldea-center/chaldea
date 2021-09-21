@@ -217,7 +217,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
       if (mounted) {
         setState(() {});
       }
-    }).catchError((e, s) {
+    }).catchError((e, s) async {
       if (e is! FileSelectionCanceledError) {
         logger.e('import images error', e, s);
         EasyLoading.showError(e.toString());

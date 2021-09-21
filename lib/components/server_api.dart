@@ -82,6 +82,7 @@ class OneSvtRecResult {
   int? skill2;
   int? skill3;
   String? image;
+  @JsonKey(ignore: true)
   bool isAppendSkill = false;
 
   OneSvtRecResult({

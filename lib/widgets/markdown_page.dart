@@ -38,7 +38,7 @@ class _MyMarkdownWidgetState extends State<MyMarkdownWidget> {
       rootBundle
           .loadString(widget.assetKey!, cache: false)
           .then((value) => assetData = value)
-          .catchError((e, s) {
+          .catchError((e, s) async {
         logger.e('error loading markdown asset ${widget.assetKey}', e, s);
         return 'Loading error';
       }).whenComplete(

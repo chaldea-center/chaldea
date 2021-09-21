@@ -126,7 +126,7 @@ class WikiUtil {
         print('wikiurl: $filename\n    ->$_trueUrl');
         wikiUrlCache.set(filename, _trueUrl);
         if (!PlatformU.isWeb) {
-          await _download(_trueUrl).catchError((e, s) => null);
+          await _download(_trueUrl).catchError((e, s) => Future.value(null));
         }
       }
       return _trueUrl;

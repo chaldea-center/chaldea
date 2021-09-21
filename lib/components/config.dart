@@ -446,7 +446,7 @@ class Database {
     List<int>? bytes,
     String? fp,
     required String savePath,
-    Function(dynamic error, dynamic stackTrace)? onError,
+    Future Function(dynamic error, dynamic stackTrace)? onError,
     void Function(int, int)? onProgress,
   }) async {
     if (PlatformU.isWeb) return;
@@ -457,7 +457,7 @@ class Database {
     if (fp != null) bytes = await File(fp).readAsBytes();
     final message = {'bytes': List.of(bytes!), 'savePath': savePath};
     if (onError == null) {
-      await compute(_extractZipIsolate, message).catchError((e, s) {
+      await compute(_extractZipIsolate, message).catchError((e, s) async {
         logger.e('extract zip failed', e, s);
       });
     } else {

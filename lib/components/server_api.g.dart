@@ -28,7 +28,7 @@ OneSvtRecResult _$OneSvtRecResultFromJson(Map<String, dynamic> json) =>
       skill2: json['skill2'] as int?,
       skill3: json['skill3'] as int?,
       image: json['image'] as String?,
-    )..isAppendSkill = json['isAppendSkill'] as bool;
+    );
 
 Map<String, dynamic> _$OneSvtRecResultToJson(OneSvtRecResult instance) =>
     <String, dynamic>{
@@ -38,5 +38,4 @@ Map<String, dynamic> _$OneSvtRecResultToJson(OneSvtRecResult instance) =>
       'skill2': instance.skill2,
       'skill3': instance.skill3,
       'image': instance.image,
-      'isAppendSkill': instance.isAppendSkill,
     };

@@ -31,9 +31,9 @@ class _FfoDownloadDialogState extends State<FfoDownloadDialog> {
           assets.add(asset);
         }
       });
-    }).catchError((error, stackTrace) {
-      logger.e('resolve ${gitTool.source.toShortString()} release failed',
-          error, stackTrace);
+    }).catchError((e, s) async {
+      logger.e(
+          'resolve ${gitTool.source.toShortString()} release failed', e, s);
     }).whenComplete(() {
       resolving = false;
       if (mounted) setState(() {});

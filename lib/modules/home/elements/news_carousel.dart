@@ -67,7 +67,7 @@ class AppNewsCarousel extends StatefulWidget {
           var mcElement = mcParser.getElementById('transImageBox');
           updated = true;
           return _getImageLinks(element: mcElement, uri: Uri.parse(mcUrl));
-        }).catchError((e, s) {
+        }).catchError((e, s) async {
           logger.e('parse mc slides failed', e, s);
           return <String, String>{};
         });
@@ -81,7 +81,7 @@ class AppNewsCarousel extends StatefulWidget {
           var jpElement = jpParser.getElementsByClassName('slide').getOrNull(0);
           updated = true;
           return _getImageLinks(element: jpElement, uri: Uri.parse(jpUrl));
-        }).catchError((e, s) {
+        }).catchError((e, s) async {
           logger.e('parse jp slides failed', e, s);
           return <String, String>{};
         });
@@ -98,7 +98,7 @@ class AppNewsCarousel extends StatefulWidget {
             uri: Uri.parse(
                 'https://gitee.com/chaldea-center/chaldea/wikis/Announcement'),
             custom: true);
-      }).catchError((e, s) {
+      }).catchError((e, s) async {
         logger.e('parse gitee announce slides failed', e, s);
         return <String, String>{};
       });
@@ -111,7 +111,7 @@ class AppNewsCarousel extends StatefulWidget {
           var usElement = usParser.getElementsByClassName('slide').getOrNull(0);
           updated = true;
           return _getImageLinks(element: usElement, uri: Uri.parse(usUrl));
-        }).catchError((e, s) {
+        }).catchError((e, s) async {
           logger.e('parse jp slides failed', e, s);
           return <String, String>{};
         });
