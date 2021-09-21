@@ -1,6 +1,7 @@
 import 'package:chaldea/components/components.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'bond_farming.dart';
 import 'support_party/support_party.dart';
 
 class LostRoomPage extends StatelessWidget {
@@ -32,6 +33,14 @@ class LostRoomPage extends StatelessWidget {
               SplitRoute.push(context, SupportPartyPage());
             },
           ),
+          if (kDebugMode)
+            ListTile(
+              leading: const FaIcon(FontAwesomeIcons.userFriends),
+              title: const Text('Bond Farming'),
+              onTap: () {
+                SplitRoute.push(context, const BondFarmingPage());
+              },
+            ),
         ],
       ),
     );
