@@ -19,6 +19,7 @@ class AppInfo {
   static String? _uuid;
   static MacAppType _macAppType = MacAppType.unknown;
   static bool _isIPad = false;
+  static ABIType _abi = ABIType.unknown;
   static int? _androidSdk;
   static Version? _innerVersion;
 
@@ -52,9 +53,6 @@ class AppInfo {
   ///  - Windows: Not Support
   static Future<void> _loadApplicationInfo() async {
     ///Only android, iOS and macOS are implemented
-    _innerVersion =
-        Version.tryParse(await rootBundle.loadString('res/VERSION'));
-    assert(_innerVersion != null);
     _packageInfo = await PackageInfo.fromPlatform()
         .catchError((e) => _loadApplicationInfoFromAsset());
     // if (kDebugMode) {
@@ -172,10 +170,15 @@ class AppInfo {
 
   /// resolve when init app, so no need to check null or resolve every time
   static Future<void> resolve() async {
+    _innerVersion = Version.tryParse(await rootBundle
+        .loadString('res/VERSION')
+        .catchError((e, s) => Future.value('')));
+    assert(_innerVersion != null);
     await _loadUniqueId();
     await _loadDeviceInfo();
     await _loadApplicationInfo();
     _checkMacAppType();
+    await _checkAndroidABI();
   }
 
   static void _checkMacAppType() {
@@ -194,6 +197,26 @@ class AppInfo {
       } else {
         _macAppType = MacAppType.debug;
       }
+    }
+  }
+
+  static Future<void> _checkAndroidABI() async {
+    if (!PlatformU.isAndroid || buildNumber <= 1000 || _innerVersion == null) {
+      _abi = ABIType.unknown;
+      return;
+    }
+    String buildStr = buildNumber.toString();
+    assert(buildStr.endsWith(_innerVersion!.build.toString()),
+        '$buildStr : $_innerVersion');
+    logger.i('build=$buildNumber, inner=$_innerVersion');
+    if (buildStr.startsWith('1')) {
+      _abi = ABIType.armeabiV7a;
+    } else if (buildStr.startsWith('2')) {
+      _abi = ABIType.arm64V8a;
+    } else if (buildStr.startsWith('4')) {
+      _abi = ABIType.x86_64;
+    } else {
+      _abi = ABIType.unknown;
     }
   }
 
@@ -227,21 +250,7 @@ class AppInfo {
 
   static String get packageName => info?.packageName ?? kPackageName;
 
-  static ABIType? _abi;
-
-  static ABIType get abi {
-    if (_abi != null) return _abi!;
-    if (!PlatformU.isAndroid || buildNumber <= 1000 || _innerVersion == null) {
-      return _abi = ABIType.unknown;
-    }
-    String buildStr = buildNumber.toString();
-    assert(buildStr.endsWith(_innerVersion!.build.toString()),
-        '$buildStr : $_innerVersion');
-    if (buildStr.startsWith('1')) return _abi = ABIType.armeabiV7a;
-    if (buildStr.startsWith('2')) return _abi = ABIType.arm64V8a;
-    if (buildStr.startsWith('4')) return _abi = ABIType.x86_64;
-    return _abi = ABIType.unknown;
-  }
+  static ABIType get abi => _abi;
 
   static int? get androidSdk => _androidSdk;
 
