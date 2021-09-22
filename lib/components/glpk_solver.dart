@@ -72,7 +72,7 @@ class GLPKSolver {
       final resultString = await engine.eval(
           '''glpk_solver(`${jsonEncode(glpkParams)}`)''',
           name: 'solver_caller');
-      logger.v('result: $resultString');
+      logger.i('result: $resultString');
 
       Map<String, num> result = Map.from(jsonDecode(resultString ?? '{}'));
       solution.params = params;

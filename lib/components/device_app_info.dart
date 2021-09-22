@@ -20,6 +20,7 @@ class AppInfo {
   static MacAppType _macAppType = MacAppType.unknown;
   static bool _isIPad = false;
   static int? _androidSdk;
+  static Version? _innerVersion;
 
   static final Map<String, dynamic> deviceParams = {};
   static final Map<String, dynamic> appParams = {};
@@ -90,10 +91,11 @@ class AppInfo {
   ///  - Windows: Not Support
   static Future<void> _loadApplicationInfo() async {
     ///Only android, iOS and macOS are implemented
-    _packageInfo = PlatformU.isWindows
-        ? await _loadApplicationInfoFromAsset()
-        : await PackageInfo.fromPlatform()
-            .catchError((e) => _loadApplicationInfoFromAsset());
+    _innerVersion =
+        Version.tryParse(await rootBundle.loadString('res/VERSION'));
+    assert(_innerVersion != null);
+    _packageInfo = await PackageInfo.fromPlatform()
+        .catchError((e) => _loadApplicationInfoFromAsset());
     // if (kDebugMode) {
     //   _packageInfo = PackageInfo(
     //     appName: 'Chaldea',
@@ -110,16 +112,15 @@ class AppInfo {
   }
 
   static Future<PackageInfo> _loadApplicationInfoFromAsset() async {
-    final versionString = await rootBundle.loadString('res/VERSION');
-    final nameAndCode = versionString.split('+');
+    final _v = Version.tryParse(await rootBundle.loadString('res/VERSION'));
     PackageInfo packageInfo = PackageInfo(
       appName: kAppName,
       packageName: kPackageName,
-      version: nameAndCode[0],
-      buildNumber: nameAndCode[1],
+      version: _v?.version ?? 'unknown',
+      buildNumber: _v?.build.toString() ?? '0',
       buildSignature: '',
     );
-    logger.i('Fail to read package info, asset instead: $nameAndCode');
+    logger.i('Fail to read package info, asset instead: $_v');
     return packageInfo;
   }
 
@@ -211,9 +212,9 @@ class AppInfo {
   /// resolve when init app, so no need to check null or resolve every time
   /// TODO: wait official support for windows
   static Future<void> resolve() async {
+    await _loadUniqueId();
     await _loadDeviceInfo();
     await _loadApplicationInfo();
-    await _loadUniqueId();
     _checkMacAppType();
   }
 
@@ -266,14 +267,22 @@ class AppInfo {
 
   static String get packageName => info?.packageName ?? kPackageName;
 
+  static ABIType? _abi;
+
   static ABIType get abi {
-    if (!PlatformU.isAndroid) return ABIType.unknown;
-    if (buildNumber <= 100) return ABIType.unknown;
+    if (_abi != null) return _abi!;
+    if (!PlatformU.isAndroid ||
+        buildNumber <= 1000 ||
+        _innerVersion == null) {
+      return _abi = ABIType.unknown;
+    }
     String buildStr = buildNumber.toString();
-    if (buildStr.startsWith('10')) return ABIType.armeabiV7a;
-    if (buildStr.startsWith('20')) return ABIType.arm64V8a;
-    if (buildStr.startsWith('40')) return ABIType.x86_64;
-    return ABIType.arm64V8a;
+    assert(buildStr.endsWith(_innerVersion!.build.toString()),
+        '$buildStr : $_innerVersion');
+    if (buildStr.startsWith('1')) return _abi = ABIType.armeabiV7a;
+    if (buildStr.startsWith('2')) return _abi = ABIType.arm64V8a;
+    if (buildStr.startsWith('4')) return _abi = ABIType.x86_64;
+    return _abi = ABIType.unknown;
   }
 
   static int? get androidSdk => _androidSdk;
