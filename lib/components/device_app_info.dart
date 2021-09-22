@@ -27,60 +27,21 @@ class AppInfo {
 
   static Future<void> _loadDeviceInfo() async {
     if (PlatformU.isAndroid) {
-      _loadAndroidParameters(await DeviceInfoPlugin().androidInfo);
+      final androidInfo = await DeviceInfoPlugin().androidInfo;
+      deviceParams.addAll(androidInfo.toMap());
+      _androidSdk = androidInfo.version.sdkInt;
     } else if (PlatformU.isIOS) {
-      _loadIosParameters(await DeviceInfoPlugin().iosInfo);
+      final iosInfo = await DeviceInfoPlugin().iosInfo;
+      deviceParams.addAll(iosInfo.toMap());
+      _isIPad = iosInfo.model?.toLowerCase().contains('ipad') ?? false;
+    } else if (PlatformU.isWindows) {
+      final macOsInfo = await DeviceInfoPlugin().macOsInfo;
+      deviceParams.addAll(macOsInfo.toMap());
     } else {
       deviceParams['operatingSystem'] = PlatformU.operatingSystem;
       deviceParams['operatingSystemVersion'] = PlatformU.operatingSystemVersion;
-      // To be implemented
+      // To be implemented, nothing helpful in windowsInfo
     }
-  }
-
-  static void _loadAndroidParameters(AndroidDeviceInfo androidDeviceInfo) {
-    deviceParams["id"] = androidDeviceInfo.id;
-    deviceParams["androidId"] = androidDeviceInfo.androidId;
-    deviceParams["board"] = androidDeviceInfo.board;
-    deviceParams["bootloader"] = androidDeviceInfo.bootloader;
-    deviceParams["brand"] = androidDeviceInfo.brand;
-    deviceParams["device"] = androidDeviceInfo.device;
-    deviceParams["display"] = androidDeviceInfo.display;
-    deviceParams["fingerprint"] = androidDeviceInfo.fingerprint;
-    deviceParams["hardware"] = androidDeviceInfo.hardware;
-    deviceParams["host"] = androidDeviceInfo.host;
-    deviceParams["isPhysicalDevice"] = androidDeviceInfo.isPhysicalDevice;
-    deviceParams["manufacturer"] = androidDeviceInfo.manufacturer;
-    deviceParams["model"] = androidDeviceInfo.model;
-    deviceParams["product"] = androidDeviceInfo.product;
-    deviceParams["tags"] = androidDeviceInfo.tags;
-    deviceParams["type"] = androidDeviceInfo.type;
-    deviceParams["versionBaseOs"] = androidDeviceInfo.version.baseOS;
-    deviceParams["versionCodename"] = androidDeviceInfo.version.codename;
-    deviceParams["versionIncremental"] = androidDeviceInfo.version.incremental;
-    deviceParams["versionPreviewSdk"] = androidDeviceInfo.version.previewSdkInt;
-    deviceParams["versionRelease"] = androidDeviceInfo.version.release;
-    deviceParams["versionSdk"] = androidDeviceInfo.version.sdkInt;
-    deviceParams["versionSecurityPatch"] =
-        androidDeviceInfo.version.securityPatch;
-
-    _androidSdk = androidDeviceInfo.version.sdkInt;
-  }
-
-  static void _loadIosParameters(IosDeviceInfo iosInfo) {
-    deviceParams["model"] = iosInfo.model;
-    deviceParams["isPhysicalDevice"] = iosInfo.isPhysicalDevice;
-    deviceParams["name"] = iosInfo.name;
-    deviceParams["identifierForVendor"] = iosInfo.identifierForVendor;
-    deviceParams["localizedModel"] = iosInfo.localizedModel;
-    deviceParams["systemName"] = iosInfo.systemName;
-    deviceParams["utsnameVersion"] = iosInfo.utsname.version;
-    deviceParams["utsnameRelease"] = iosInfo.utsname.release;
-    deviceParams["utsnameMachine"] = iosInfo.utsname.machine;
-    deviceParams["utsnameNodename"] = iosInfo.utsname.nodename;
-    deviceParams["utsnameSysname"] = iosInfo.utsname.sysname;
-
-    // extra
-    _isIPad = iosInfo.model?.toLowerCase().contains('ipad') ?? false;
   }
 
   /// PackageInfo: appName+version+buildNumber
@@ -210,7 +171,6 @@ class AppInfo {
   }
 
   /// resolve when init app, so no need to check null or resolve every time
-  /// TODO: wait official support for windows
   static Future<void> resolve() async {
     await _loadUniqueId();
     await _loadDeviceInfo();
@@ -271,9 +231,7 @@ class AppInfo {
 
   static ABIType get abi {
     if (_abi != null) return _abi!;
-    if (!PlatformU.isAndroid ||
-        buildNumber <= 1000 ||
-        _innerVersion == null) {
+    if (!PlatformU.isAndroid || buildNumber <= 1000 || _innerVersion == null) {
       return _abi = ABIType.unknown;
     }
     String buildStr = buildNumber.toString();
