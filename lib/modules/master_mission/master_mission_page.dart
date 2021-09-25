@@ -1,14 +1,17 @@
 import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:catcher/catcher.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/js_engine/js_engine.dart';
 import 'package:chaldea/modules/shared/quest_card.dart';
 import 'package:flutter/services.dart';
 
 final localized = Localized.masterMission;
+
 List<WeeklyMissionQuest> get _missionData =>
     db.gameData.planningData.weeklyMissions;
+
 String _convertLocalized(String key) {
   return key.split('_').map((e) => localized.of(e)).join('_');
 }
@@ -22,7 +25,6 @@ class MasterMissionPage extends StatefulWidget {
 
 class _MasterMissionPageState extends State<MasterMissionPage>
     with SingleTickerProviderStateMixin {
-
   List<LocalizedText> tabNames = const [
     LocalizedText(chs: '一般特性', jpn: '共有特性', eng: 'General Trait'),
     LocalizedText(chs: '从者职阶', jpn: 'サーヴァントクラス', eng: 'Servant Class'),
@@ -55,6 +57,15 @@ class _MasterMissionPageState extends State<MasterMissionPage>
       await engine.eval(await rootBundle.loadString('res/js/glpk_solver.js'),
           name: 'glpk_solver.js');
       print('js engine initiated');
+    }).catchError((e, s) async {
+      logger.e('initiate js libs error', e, s);
+      Catcher.reportCheckedError(e, s);
+      if (mounted) {
+        SimpleCancelOkDialog(
+          title: const Text('Init Error'),
+          content: Text('$e\n\n$s'),
+        ).showDialog(context);
+      }
     });
   }
 

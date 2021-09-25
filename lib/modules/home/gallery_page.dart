@@ -37,7 +37,7 @@ class _GalleryPageState extends State<GalleryPage> {
       await Future.delayed(const Duration(seconds: 2));
       await AutoUpdateUtil.checkAppUpdate(
           background: true, download: db.appSetting.autoUpdateApp);
-    }).onError((e, s) {
+    }).onError((e, s) async {
       logger.e('init app extras', e, s);
     });
   }
@@ -125,6 +125,7 @@ class _GalleryPageState extends State<GalleryPage> {
 
   SharedPrefItem<bool> winAppPathMigration =
       SharedPrefItem('winAppPathMigrationAlert');
+  SharedPrefItem<bool> mac1014Alert = SharedPrefItem('mac1014Alert');
 
   List<Widget> get notifications {
     List<Widget> children = [];
@@ -133,6 +134,12 @@ class _GalleryPageState extends State<GalleryPage> {
       children.add(Container(
         margin: const EdgeInsets.symmetric(horizontal: 8),
         child: winAppPathMigrationTile,
+      ));
+    }
+    if (PlatformU.isMacOS && mac1014Alert.get() != false || kDebugMode) {
+      children.add(Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8),
+        child: macIncompatibleWarning,
       ));
     }
     if (_showRateCard == true) {
@@ -203,6 +210,51 @@ class _GalleryPageState extends State<GalleryPage> {
                   onPressed: () {
                     setState(() {
                       winAppPathMigration.set(false);
+                    });
+                  },
+                  child: Text(
+                    S.current.ignore,
+                    style: TextStyle(color: Theme.of(context).errorColor),
+                  ),
+                ),
+              ],
+            )
+          ],
+        );
+      },
+      expanded: true,
+    );
+  }
+
+  Widget get macIncompatibleWarning {
+    return SimpleAccordion(
+      headerBuilder: (context, _) => ListTile(
+        leading: Icon(Icons.warning_amber_rounded,
+            color: Theme.of(context).errorColor),
+        contentPadding: const EdgeInsets.only(left: 8),
+        horizontalTitleGap: 0,
+        title: Text(LocalizedText.of(
+            chs: 'macOS: 未来只支持10.14及之后系统',
+            jpn: 'macOS: ユーザーフォルダの移行',
+            eng: 'macOS: 将来、10.14以降が必要')),
+      ),
+      contentBuilder: (context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CustomTile(
+              subtitle: Text(LocalizedText.of(
+                chs: '如有问题，请联系开发者',
+                jpn: 'ご不明な点がございましたら、開発者にお問い合わせください',
+                eng: 'Contact developer if any question',
+              )),
+            ),
+            ButtonBar(
+              children: [
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      mac1014Alert.set(false);
                     });
                   },
                   child: Text(

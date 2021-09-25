@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:catcher/catcher.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:flutter/services.dart';
 
@@ -26,6 +27,7 @@ class GLPKSolver {
       print('=========js libs loaded.=========');
     }).catchError((e, s) async {
       logger.e('initiate js libs error', e, s);
+      Catcher.reportCheckedError(e, s);
       EasyLoading.showToast('initiation error\n$e');
     });
   }

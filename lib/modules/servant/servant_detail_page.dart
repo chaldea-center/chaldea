@@ -382,11 +382,13 @@ class ServantDetailPageState extends State<ServantDetailPage>
                 child: Text(
                   'ATK ${svt.info.atkMax}  HP ${svt.info.hpMax}',
                   // style: Theme.of(context).textTheme.caption,
+                  textScaleFactor: 0.9,
                 ),
                 style: TextButton.styleFrom(
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   padding: EdgeInsets.zero,
                   visualDensity: VisualDensity.compact,
+                  minimumSize: const Size(48, 26),
                 ),
               ),
             // const SizedBox(height: 4),

@@ -290,7 +290,7 @@ class FFOParams {
     final Completer<ui.Image?> completer = Completer();
     stream.addListener(ImageStreamListener((info, _) {
       completer.complete(info.image);
-    }, onError: (e, s) {
+    }, onError: (e, s) async {
       EasyLoading.showError(e.toString());
       logger.e('load ui.Image error', e, s);
       completer.complete(null);

@@ -151,7 +151,7 @@ class ServantListPageState
 2.リストで「表示」されているサーヴァントのみを変更します
 3.フィルター/検索機能で表示リストをフィルターし、各行の表示ボタンで特定のサーヴァントを個別に表示/非表示にすることができます """,
                   eng:
-                  """1. The plan page is similar to servant list page, but it is mainly used for <uniformly> setting the <current/target> value of servant ascension/skills/costumes
+                      """1. The plan page is similar to servant list page, but it is mainly used for <uniformly> setting the <current/target> value of servant ascension/skills/costumes
 2. Only change the servants who are "shown" in the list
 3. Filter the display list through the filter/search function, and you can hide/show specific servants individually through the display button at the end of each line""",
                 )),
@@ -691,7 +691,8 @@ class ServantListPageState
       DropdownButton<int>(
         value: _changedAppend,
         icon: Container(),
-        hint: Text(S.current.append_skill_short + '2'),
+        hint: Text(S.current.append_skill_short +
+            (db.appSetting.onlyAppendSkillTwo ? '2' : '')),
         items: List.generate(12, (i) {
           if (i == 0) {
             return const DropdownMenuItem(value: -1, child: Text('x + 1'));
@@ -699,7 +700,9 @@ class ServantListPageState
             return DropdownMenuItem(
               value: i - 1,
               child: Text(S.current.words_separate(
-                  S.current.append_skill_short + '2-', (i - 1).toString())),
+                  S.current.append_skill_short +
+                      (db.appSetting.onlyAppendSkillTwo ? '2-' : '-'),
+                  (i - 1).toString())),
             );
           }
         }),
@@ -711,19 +714,21 @@ class ServantListPageState
               if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
                 final cur = db.curUser.svtStatusOf(svt.no).curVal,
                     target = db.curUser.svtPlanOf(svt.no);
-                int i = 1; // only change append skill 2 - NP
-                if (changeTarget) {
-                  if (v == -1) {
-                    target.appendSkills[i] = min(10, cur.appendSkills[i] + 1);
+                for (int i
+                    in (db.appSetting.onlyAppendSkillTwo ? [1] : [0, 1, 2])) {
+                  if (changeTarget) {
+                    if (v == -1) {
+                      target.appendSkills[i] = min(10, cur.appendSkills[i] + 1);
+                    } else {
+                      target.appendSkills[i] =
+                          max(cur.appendSkills[i], _changedAppend!);
+                    }
                   } else {
-                    target.appendSkills[i] =
-                        max(cur.appendSkills[i], _changedAppend!);
-                  }
-                } else {
-                  if (v == -1) {
-                    cur.appendSkills[i] = min(10, cur.appendSkills[i] + 1);
-                  } else {
-                    cur.appendSkills[i] = _changedAppend!;
+                    if (v == -1) {
+                      cur.appendSkills[i] = min(10, cur.appendSkills[i] + 1);
+                    } else {
+                      cur.appendSkills[i] = _changedAppend!;
+                    }
                   }
                 }
               }

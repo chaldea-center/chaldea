@@ -518,8 +518,8 @@ class ServantBaseInfo {
   String get lIllustrator =>
       localizeNoun(illustrator, illustratorJp, illustratorEn);
 
-  List<String> get lCV =>
-      localizeNoun<List<String>>(cv, cvJp, cvEn, k: () => <String>[]);
+  List<String> get lCV => localizeNoun<List<String>>(cv, cvJp, cvEn,
+      k: () => <String>[], test: (v) => v.isNotEmpty);
 
   factory ServantBaseInfo.fromJson(Map<String, dynamic> data) =>
       _$ServantBaseInfoFromJson(data);

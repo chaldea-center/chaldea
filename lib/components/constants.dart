@@ -130,6 +130,7 @@ T localizeNoun<T>(T? nameCn, T? nameJp, T? nameEn,
     if (v == null) return null;
     if (test != null) return test(v) ? v : null;
     if (v is String) return v.isNotEmpty ? v : null;
+    return v;
   }
 
   nameCn = _check(nameCn);

@@ -256,7 +256,7 @@ class AutoUpdateUtil {
             .get("$kGooglePlayLink&hl=en")
             .then((response) =>
                 db.runtimeData.googlePlayAccess = response.statusCode == 200)
-            .onError((e, s) {
+            .onError((e, s) async {
           return db.runtimeData.googlePlayAccess = false;
         });
       }

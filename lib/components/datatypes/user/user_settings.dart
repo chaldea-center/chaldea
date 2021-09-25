@@ -28,6 +28,7 @@ class AppSetting {
   bool autoResetFilter;
   @JsonKey(unknownEnumValue: SvtListClassFilterStyle.auto)
   SvtListClassFilterStyle classFilterStyle;
+  bool onlyAppendSkillTwo;
   bool autoUpdateApp;
   bool autoUpdateDataset;
   bool autorotate;
@@ -48,17 +49,20 @@ class AppSetting {
     bool? autoUpdateDataset,
     bool? autorotate,
     SvtListClassFilterStyle? classFilterStyle,
+    bool? onlyAppendSkillTwo,
     bool? svtPlanSliderMode,
     List<SvtTab?>? sortedSvtTabs,
     Map<String, String>? priorityTags,
     bool? showAccountAtHome,
-  })  : autoResetFilter = autoResetFilter ?? true,
+  })
+      : autoResetFilter = autoResetFilter ?? true,
         downloadSource = fixValidRange(downloadSource ?? GitSource.server.index,
             0, GitSource.values.length),
         autoUpdateApp = autoUpdateApp ?? true,
         autoUpdateDataset = autoUpdateDataset ?? true,
         autorotate = autorotate ?? false,
         classFilterStyle = classFilterStyle ?? SvtListClassFilterStyle.auto,
+        onlyAppendSkillTwo = onlyAppendSkillTwo ?? true,
         svtPlanSliderMode = svtPlanSliderMode ?? false,
         sortedSvtTabs = sortedSvtTabs?.whereType<SvtTab>().toList() ??
             List.of(SvtTab.values),
@@ -111,8 +115,7 @@ class CarouselSetting {
     bool? enableMooncell,
     bool? enableJp,
     bool? enableUs,
-  })
-      : urls = urls ?? {},
+  })  : urls = urls ?? {},
         enabled = enabled ?? true,
         enableMooncell = enableMooncell ?? true,
         enableJp = enableJp ?? true,

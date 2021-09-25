@@ -17,7 +17,7 @@ class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData> {
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
-      title: Text(S.of(context).filter),
+      title: Text(S.current.filter, textScaleFactor: 0.8),
       actions: getDefaultActions(onTapReset: () {
         filterData.reset();
         update();
@@ -78,9 +78,10 @@ class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData> {
         ),
         FilterGroup(
           title: Text(S.current.filter_effects),
-          options: EffectType.craftEffectsMap.keys.toList(),
+          options: EffectType.cmdCodeEffectsMap.keys.toList(),
           values: filterData.effects,
-          optionBuilder: (v) => Text(EffectType.craftEffectsMap[v]!.shownName),
+          optionBuilder: (v) =>
+              Text(EffectType.cmdCodeEffectsMap[v]!.shownName),
           onFilterChanged: (value) {
             update();
           },

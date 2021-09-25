@@ -125,6 +125,22 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   SplitRoute.push(context, _ClassFilterStyleSetting());
                 },
               ),
+              SwitchListTile.adaptive(
+                title: Text(LocalizedText.of(
+                    chs: '仅更改附加技能2',
+                    jpn: 'アペンドスキル2のみを変更 ',
+                    eng: 'Only Change 2nd Append Skill')),
+                subtitle: Text(LocalizedText.of(
+                    chs: '首页-规划列表页',
+                    jpn: 'ホーム-プラン',
+                    eng: 'Home-Plan List Page')),
+                value: db.appSetting.onlyAppendSkillTwo,
+                onChanged: (v) {
+                  setState(() {
+                    db.appSetting.onlyAppendSkillTwo = v;
+                  });
+                },
+              ),
             ],
           ),
           TileGroup(
@@ -263,7 +279,7 @@ class _ClassFilterStyleSettingState extends State<_ClassFilterStyleSetting> {
                 title: Text(LocalizedText.of(
                     chs: '单行不展开Extra职阶',
                     jpn: '「Extraクラス」展開、単一行',
-                    eng: '<Extra CLass> Collapsed\nSingle Row')),
+                    eng: '<Extra Class> Collapsed\nSingle Row')),
                 onChanged: onChanged,
               ),
               RadioListTile<SvtListClassFilterStyle>(
@@ -272,7 +288,7 @@ class _ClassFilterStyleSettingState extends State<_ClassFilterStyleSetting> {
                 title: Text(LocalizedText.of(
                     chs: '单行并展开Extra职阶',
                     jpn: '単一行、「Extraクラス」を折り畳み',
-                    eng: '<Extra CLass> Expanded\nSingle Row')),
+                    eng: '<Extra Class> Expanded\nSingle Row')),
                 onChanged: onChanged,
               ),
               RadioListTile<SvtListClassFilterStyle>(
@@ -281,7 +297,7 @@ class _ClassFilterStyleSettingState extends State<_ClassFilterStyleSetting> {
                 title: Text(LocalizedText.of(
                     chs: 'Extra职阶显示在第二行',
                     jpn: '「Extraクラス」は2行目に表示',
-                    eng: '<Extra CLass> in Second Row')),
+                    eng: '<Extra Class> in Second Row')),
                 onChanged: onChanged,
               ),
               RadioListTile<SvtListClassFilterStyle>(

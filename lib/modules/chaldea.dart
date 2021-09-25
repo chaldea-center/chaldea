@@ -59,10 +59,10 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
       if (msg == AppLifecycleState.resumed.toString()) {
         // Actions when app is resumed
         db.checkConnectivity();
-        MobStat.pageStart(widget.runtimeType.toString());
+        // MobStat.pageStart(widget.runtimeType.toString());
       } else if (msg == AppLifecycleState.inactive.toString()) {
         db.saveUserData();
-        MobStat.pageEnd(widget.runtimeType.toString());
+        // MobStat.pageEnd(widget.runtimeType.toString());
         debugPrint('save userdata before being inactive');
       }
       return null;
@@ -256,7 +256,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
   void afterFirstLayout(BuildContext context) async {
     // ensure image is shown on screen
     await precacheImage(const AssetImage("res/img/chaldea.png"), context,
-        onError: (e, s) {
+        onError: (e, s) async {
       logger.w('pre cache chaldea image error', e, s);
     });
     await Future.delayed(const Duration(milliseconds: 100));
@@ -323,7 +323,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
             ).showDialog(kAppKey.currentContext!);
           });
         }
-      }).onError((error, stackTrace) => null);
+      }).catchError((error, stackTrace) => Future.value(null));
     }
     if (db.runtimeData.showDebugFAB) {
       DebugFloatingMenuButton.createOverlay(context);

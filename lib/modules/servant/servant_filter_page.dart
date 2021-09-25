@@ -19,7 +19,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
   Widget build(BuildContext context) {
     const groupDivider = Divider(height: 16, indent: 12, endIndent: 12);
     return buildAdaptive(
-      title: Text(S.of(context).filter),
+      title: Text(S.current.filter, textScaleFactor: 0.8),
       actions: getDefaultActions(onTapReset: () {
         filterData.reset();
         update();

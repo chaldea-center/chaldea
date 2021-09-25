@@ -397,6 +397,21 @@ class EffectType {
     name: const LocalizedText(
         chs: '场地特性赋予', jpn: 'フィールドセット', eng: 'Change Field Type'),
   );
+  static EffectType commandattackFunction = EffectType(
+    key: 'commandattackFunction',
+    buffs: [BuffTypes.commandattackFunction],
+    name: const LocalizedText(
+        chs: '攻击时发动', jpn: '攻撃時発動', eng: 'Trigger Skill on Cards'),
+  );
+
+  static EffectType commandcodeattackFunction = EffectType(
+    key: 'commandcodeattackFunction',
+    buffs: [BuffTypes.commandcodeattackFunction],
+    name: const LocalizedText(
+        chs: '指令纹章攻击时追加效果',
+        jpn: 'コマンドコード攻撃時追加効果',
+        eng: 'Cmd Code Effect when Attack'),
+  );
 
   static final List<EffectType> svtEffects = [
     //
@@ -416,7 +431,7 @@ class EffectType {
 
     donotAct, donotNoble, donotSkill,
 
-    deadFunction, turnendFunction, fieldIndividuality,
+    commandattackFunction, deadFunction, turnendFunction, fieldIndividuality,
   ];
 
   static final List<EffectType> craftEffects = [
@@ -434,7 +449,11 @@ class EffectType {
 
     avoidState, guts, upHate,
 
-    deadFunction, entryFunction,
+    commandattackFunction, deadFunction, entryFunction,
+  ];
+  static final List<EffectType> cmdCodeEffects = [
+    ...craftEffects,
+    commandcodeattackFunction,
   ];
 
   static final Map<String, EffectType> svtEffectsMap = {
@@ -443,6 +462,9 @@ class EffectType {
 
   static final Map<String, EffectType> craftEffectsMap = {
     for (final eff in craftEffects) eff.key: eff,
+  };
+  static final Map<String, EffectType> cmdCodeEffectsMap = {
+    for (final eff in cmdCodeEffects) eff.key: eff,
   };
 
   static final Map<String, EffectType> validEffectsMap = {

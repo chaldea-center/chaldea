@@ -133,7 +133,7 @@ class _BuffTypes {
   BuffType upGivegainHp = BuffType._(
       87, 'upGivegainHp', '提供的HP回复量提升', '与HP回復量アップ', 'Healing Dealt Up');
   BuffType commandattackFunction = BuffType._(
-      89, 'commandattackFunction', '攻击时发动', '攻撃時発動', 'Trigger SKill on Cards');
+      89, 'commandattackFunction', '攻击时发动', '攻撃時発動', 'Trigger Skill on Cards');
   BuffType upDamagedropnp = BuffType._(93, 'upDamagedropnp', '受到伤害时NP获得量提升',
       '被ダメージ時NP獲得アップ', 'NP Gain When Damaged Up');
   BuffType entryFunction = BuffType._(

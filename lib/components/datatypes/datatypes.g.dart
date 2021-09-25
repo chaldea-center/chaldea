@@ -968,10 +968,12 @@ GLPKSolution _$GLPKSolutionFromJson(Map<String, dynamic> json) => GLPKSolution(
       totalCost: json['totalCost'] as int?,
       totalNum: json['totalNum'] as int?,
       countVars: (json['countVars'] as List<dynamic>?)
-          ?.map((e) => GLPKVariable.fromJson(e as Map<String, dynamic>))
+          ?.map(
+              (e) => GLPKVariable<dynamic>.fromJson(e as Map<String, dynamic>))
           .toList(),
       weightVars: (json['weightVars'] as List<dynamic>?)
-          ?.map((e) => GLPKVariable.fromJson(e as Map<String, dynamic>))
+          ?.map(
+              (e) => GLPKVariable<dynamic>.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
@@ -2746,6 +2748,8 @@ AppSetting _$AppSettingFromJson(Map<String, dynamic> json) => $checkedCreate(
               'classFilterStyle',
               (v) => _$enumDecodeNullable(_$SvtListClassFilterStyleEnumMap, v,
                   unknownValue: SvtListClassFilterStyle.auto)),
+          onlyAppendSkillTwo:
+              $checkedConvert('onlyAppendSkillTwo', (v) => v as bool?),
           svtPlanSliderMode:
               $checkedConvert('svtPlanSliderMode', (v) => v as bool?),
           sortedSvtTabs: $checkedConvert(
@@ -2774,6 +2778,7 @@ Map<String, dynamic> _$AppSettingToJson(AppSetting instance) =>
       'autoResetFilter': instance.autoResetFilter,
       'classFilterStyle':
           _$SvtListClassFilterStyleEnumMap[instance.classFilterStyle],
+      'onlyAppendSkillTwo': instance.onlyAppendSkillTwo,
       'autoUpdateApp': instance.autoUpdateApp,
       'autoUpdateDataset': instance.autoUpdateDataset,
       'autorotate': instance.autorotate,

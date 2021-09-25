@@ -17,7 +17,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
-      title: Text(S.of(context).filter),
+      title: Text(S.current.filter, textScaleFactor: 0.8),
       actions: getDefaultActions(onTapReset: () {
         filterData.reset();
         update();

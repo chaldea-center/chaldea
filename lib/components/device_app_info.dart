@@ -35,7 +35,7 @@ class AppInfo {
       final iosInfo = await DeviceInfoPlugin().iosInfo;
       deviceParams.addAll(iosInfo.toMap());
       _isIPad = iosInfo.model?.toLowerCase().contains('ipad') ?? false;
-    } else if (PlatformU.isWindows) {
+    } else if (PlatformU.isMacOS) {
       final macOsInfo = await DeviceInfoPlugin().macOsInfo;
       deviceParams.addAll(macOsInfo.toMap());
     } else {
@@ -268,7 +268,7 @@ class AppInfo {
     if (buildNumber > 0) {
       buffer.write(' ($buildNumber');
       if (PlatformU.isAndroid) {
-        buffer.write(', ${EnumUtil.shortString(abi)}');
+        buffer.write(', ${abi.toStandardString()}');
       }
       buffer.write(')');
     }

@@ -1,6 +1,7 @@
 ## Fate/Freedom Order
 
 1. 初次使用请点击右上角导入按钮，从gitee/github releases下载ffo-data资源包并导入，使用Gitee下载源时两个压缩包均需下载导入。
+   - 若导入失败(如Out of Memory)，请手动解压至`root_path/ffo/`，`root_path`实际路径参考设置-用户数据中的提示。
 2. 可自定义任意头部、身体、背景，注意部分从者可能没有某些部件，如boss龙娘、Beast
 3. 功能说明    
   - 裁剪：不显示超出背景框的部分

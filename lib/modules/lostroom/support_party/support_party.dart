@@ -57,7 +57,8 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
           });
           SchedulerBinding.instance!.addPostFrameCallback((timeStamp) async {
             if (!mounted) return;
-            EasyLoading.show(status: 'Rendering...');
+            EasyLoading.show(
+                status: 'Rendering...', maskType: EasyLoadingMaskType.clear);
             try {
               final data =
                   await _screenshotController.capture(pixelRatio: pixelRatio);
@@ -106,7 +107,7 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
       scrollDirection: Axis.horizontal,
       child: Screenshot(
         child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.white,
           ),
           padding: const EdgeInsets.fromLTRB(36, 8, 36, 8),
@@ -366,7 +367,7 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
               if (mounted) {
                 setState(() {});
               }
-            }).catchError((e, s) async {});
+            }).catchError((e, s) => Future.value(null));
           },
         ),
         SwitchListTile.adaptive(
