@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:chaldea/components/analytics.dart';
 import 'package:chaldea/components/catcher_util/catcher_config.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/method_channel_chaldea.dart';
@@ -123,7 +122,8 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
           themeMode: db.appSetting.themeMode ?? ThemeMode.system,
           theme: lightTheme,
           darkTheme: darkTheme,
-          locale: Language.getLanguage(db.appSetting.language)?.locale,
+          locale: Language.getLanguage(db.appSetting.language)?.locale ??
+              Language.eng.locale,
           localizationsDelegates: const [
             S.delegate,
             ...GlobalMaterialLocalizations.delegates,
@@ -170,11 +170,11 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
       MethodChannelChaldea.setWindowPos();
     }
 
-    if (!Analyzer.skipReport()) {
-      await Future.delayed(const Duration(seconds: 5));
-      await Analyzer.sendStat();
-      await Analyzer.sendBdtj();
-    }
+    // if (!Analyzer.skipReport()) {
+    //   await Future.delayed(const Duration(seconds: 5));
+    //   await Analyzer.sendStat();
+    //   await Analyzer.sendBdtj();
+    // }
     MobStat.start();
     Future.delayed(const Duration(seconds: 1), () {
       MobStat.logEvent('config', {

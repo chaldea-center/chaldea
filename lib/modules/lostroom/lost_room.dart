@@ -30,7 +30,7 @@ class LostRoomPage extends StatelessWidget {
             leading: const FaIcon(FontAwesomeIcons.userFriends),
             title: Text(S.current.support_party),
             onTap: () {
-              SplitRoute.push(context, SupportPartyPage());
+              SplitRoute.push(context, SupportPartyPage(), detail: null);
             },
           ),
           if (kDebugMode)

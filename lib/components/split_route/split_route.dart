@@ -252,7 +252,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     required BuildContext context,
     required SplitPageBuilder builder,
     bool popDetail = false,
-    bool detail = true,
+    bool? detail = true,
     int masterRatio = _kSplitMasterRatio,
     String? title,
     bool rootNavigator = true,
@@ -275,7 +275,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
       builder: builder,
       detail: detail,
       masterRatio: masterRatio,
-      transitionDuration: (detail && popDetail && n > 0)
+      transitionDuration: (detail == true && popDetail && n > 0)
           ? const Duration()
           : kSplitRouteDuration,
       reverseTransitionDuration: kSplitRouteDuration,
@@ -288,7 +288,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   static Future<T?> push<T extends Object?>(
     BuildContext context,
     Widget page, {
-    bool detail = true,
+    bool? detail = true,
     bool popDetail = false,
     bool rootNavigator = true,
     RouteSettings? settings,

@@ -82,16 +82,13 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
                 maxHeight: min(MediaQuery.of(context).size.height * 0.5, 400)),
             child: Theme(
               data: Theme.of(context).copyWith(brightness: Brightness.light),
-              child: ScrollConfiguration(
-                behavior: UndraggableScrollBehavior(),
-                child: Scrollbar(
-                  controller: _horizontalController,
-                  isAlwaysShown: true,
-                  thickness: 10,
-                  radius: const Radius.circular(5),
-                  interactive: true,
-                  child: partyCanvas,
-                ),
+              child: Scrollbar(
+                controller: _horizontalController,
+                isAlwaysShown: true,
+                thickness: 10,
+                radius: const Radius.circular(5),
+                interactive: true,
+                child: partyCanvas,
               ),
             ),
           ),
@@ -105,50 +102,53 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
     return SingleChildScrollView(
       controller: _horizontalController,
       scrollDirection: Axis.horizontal,
-      child: Screenshot(
-        child: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-          ),
-          padding: const EdgeInsets.fromLTRB(36, 8, 36, 8),
-          child: Row(
-            children: List.generate(settings.length, (index) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Expanded(
-                    child: LayoutBuilder(builder: (context, constraints) {
-                      return ClipPath(
-                        clipper: _SupportCornerClipper(),
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selected = index;
-                            });
-                          },
-                          child: oneSupport(index, constraints.maxHeight),
-                        ),
-                      );
-                    }),
-                  ),
-                  Opacity(
-                    opacity: hideRadio ? 0 : 1,
-                    child: Radio(
-                      value: index,
-                      groupValue: selected,
-                      onChanged: (v) {
-                        setState(() {
-                          selected = index;
-                        });
-                      },
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 16),
+        child: Screenshot(
+          controller: _screenshotController,
+          child: Container(
+            decoration: BoxDecoration(
+              color: hideRadio ? null : Colors.white,
+            ),
+            padding: const EdgeInsets.fromLTRB(36, 8, 36, 8),
+            child: Row(
+              children: List.generate(settings.length, (index) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Expanded(
+                      child: LayoutBuilder(builder: (context, constraints) {
+                        return ClipPath(
+                          clipper: _SupportCornerClipper(),
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selected = index;
+                              });
+                            },
+                            child: oneSupport(index, constraints.maxHeight),
+                          ),
+                        );
+                      }),
                     ),
-                  ),
-                ],
-              );
-            }),
+                    Opacity(
+                      opacity: hideRadio ? 0 : 1,
+                      child: Radio(
+                        value: index,
+                        groupValue: selected,
+                        onChanged: (v) {
+                          setState(() {
+                            selected = index;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              }),
+            ),
           ),
         ),
-        controller: _screenshotController,
       ),
     );
   }
@@ -448,7 +448,7 @@ class __OneSupportWithGestureState extends State<_OneSupportWithGesture> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      behavior: HitTestBehavior.translucent,
+      behavior: HitTestBehavior.opaque,
       onScaleStart: (detail) {
         offset = setting.offset;
         scale = setting.scale;

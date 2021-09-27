@@ -26,7 +26,7 @@ class _GridGalleryState extends State<GridGallery> {
     if (widget.maxWidth != null &&
         widget.maxWidth! > 0 &&
         widget.maxWidth != double.infinity) {
-      crossCount = widget.maxWidth! ~/ 80;
+      crossCount = widget.maxWidth! ~/ 72;
       crossCount = fixValidRange(crossCount, 2, 8);
     } else {
       crossCount = 4;
@@ -86,11 +86,15 @@ class _GridGalleryState extends State<GridGallery> {
               flex: 4,
               child: Align(
                 alignment: Alignment.topCenter,
-                child: AutoSizeText(
-                  item.titleBuilder(),
-                  style: const TextStyle(fontWeight: FontWeight.normal),
-                  textAlign: TextAlign.center,
-                  maxFontSize: 14,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: AutoSizeText(
+                    item.titleBuilder(),
+                    style: const TextStyle(fontWeight: FontWeight.normal),
+                    textAlign: TextAlign.center,
+                    maxFontSize: 14,
+                    minFontSize: 6,
+                  ),
                 ),
               ),
             )

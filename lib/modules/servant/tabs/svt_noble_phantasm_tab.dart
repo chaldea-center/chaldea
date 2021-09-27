@@ -40,7 +40,7 @@ class _SvtNoblePhantasmTabState extends SvtTabBaseState<SvtNoblePhantasmTab> {
               ...CommonBuilder.buildEffect(
                 context: context,
                 effect: effect,
-                curLv: status.favorite ? status.npLv : null,
+                curLv: null, // over change should not
               ),
           ],
         )
