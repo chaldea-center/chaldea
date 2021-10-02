@@ -27,8 +27,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  archive: ^3.1.2
-  audioplayers: ^0.20.1
+  archive: ^3.1.5
   auto_size_text: ^3.0.0-nullsafety.0
   baidu_mob_stat:
     git:
@@ -41,7 +40,7 @@ dependencies:
   crypto: ^3.0.1
   csv: ^5.0.0
   cupertino_icons: ^1.0.3
-  device_info_plus: ^2.1.0
+  device_info_plus: ^2.2.0
   dio: ^4.0.0
   dio_cookie_manager: ^2.0.0
   dots_indicator: ^2.0.0
@@ -57,17 +56,19 @@ dependencies:
   font_awesome_flutter: ^9.1.0
   hive: ^2.0.4
   html: ^0.15.0
-  image: ^3.0.5
-  image_gallery_saver: ^1.6.9
+  image: ^3.0.7
+  image_gallery_saver: ^1.7.0
   intl: ^0.17.0
   json_annotation: 4.1.0
+  just_audio: ^0.9.12
+  # comment in linux
+  just_audio_libwinmedia: ^0.0.3
   kana_kit: ^2.0.0
-  libwinmedia: ^0.0.5
   logger: ^1.1.0
   lpinyin: ^2.0.3
   modal_bottom_sheet: ^2.0.0
   open_file: ^3.2.1
-  package_info_plus: ^1.0.6
+  package_info_plus: ^1.1.0
   path_provider: ^2.0.3
   permission_handler: ^8.1.6
   pool: ^1.5.0
@@ -75,11 +76,11 @@ dependencies:
   rate_my_app: ^1.1.0+1
   rfc_6902: ^0.1.0
   screenshot: ^1.2.3
-  share_plus: ^2.1.4
+  share_plus: ^2.2.0
   shared_preferences: ^2.0.7
   string_validator: ^0.3.0
   table_sticky_headers: ^2.0.0
-  url_launcher: ^6.0.10
+  url_launcher: ^6.0.12
   uuid: ^3.0.4
 
 dev_dependencies:

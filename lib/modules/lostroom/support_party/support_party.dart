@@ -456,7 +456,7 @@ class __OneSupportWithGestureState extends State<_OneSupportWithGesture> {
       onScaleUpdate: (detail) {
         // print(detail);
         setting.scale = scale * detail.scale;
-        setting.offset = offset + detail.delta;
+        setting.offset = offset + detail.focalPointDelta;
         setState(() {});
         Transform(
           transform: Matrix4.identity()

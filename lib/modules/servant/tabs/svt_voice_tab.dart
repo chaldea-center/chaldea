@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/lang_switch.dart';
-import 'package:chaldea/platform_interface/audio_player/audio_player.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart' as p;
 
 import '../servant_detail_page.dart';
@@ -237,8 +237,13 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
       // check before call and set button disabled
       return;
     }
+    if (PlatformU.isLinux) {
+      EasyLoading.showInfo('Linux not supported yet');
+      return;
+    }
     audioPlayer ??= AudioPlayer();
-    final url = await WikiUtil.resolveFileUrl(record.voiceFile!);
+    audioPlayer?.stop();
+    // final url = await WikiUtil.resolveFileUrl(record.voiceFile!);
     final file = await WikiUtil.getWikiFile(record.voiceFile!);
     if (file == null) {
       EasyLoading.showToast('File not found: ${record.voiceFile}');
@@ -250,7 +255,9 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
     ///   * .wav -> .bin
 
     if (!mounted) return;
-    await audioPlayer?.play(file.path, url);
+    print(file.path);
+    audioPlayer?.setFilePath(file.path);
+    await audioPlayer?.play();
   }
 }
 

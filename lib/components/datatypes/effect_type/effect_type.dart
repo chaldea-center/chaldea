@@ -66,7 +66,7 @@ class EffectType {
   static EffectType subState = EffectType(
     key: 'subState',
     funcs: [FuncTypes.subState],
-    name: const LocalizedText(chs: '强化解除', jpn: '強化解除', eng: 'Remove Effects'),
+    name: const LocalizedText(chs: '状态解除', jpn: '状態解除', eng: 'Remove Effects'),
   );
 
   static EffectType gainStar = EffectType(

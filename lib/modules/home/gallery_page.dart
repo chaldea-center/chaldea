@@ -2,7 +2,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/extras/updates.dart';
 import 'package:chaldea/modules/home/subpage/account_page.dart';
-import 'package:open_file/open_file.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -123,23 +122,15 @@ class _GalleryPageState extends State<GalleryPage> {
     );
   }
 
-  SharedPrefItem<bool> winAppPathMigration =
-      SharedPrefItem('winAppPathMigrationAlert');
   SharedPrefItem<bool> mac1014Alert = SharedPrefItem('mac1014Alert');
 
   List<Widget> get notifications {
     List<Widget> children = [];
-    if (PlatformU.isWindows && winAppPathMigration.get() != false ||
-        kDebugMode) {
-      children.add(Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8),
-        child: winAppPathMigrationTile,
-      ));
-    }
+
     if (PlatformU.isMacOS && mac1014Alert.get() != false || kDebugMode) {
       children.add(Container(
         margin: const EdgeInsets.symmetric(horizontal: 8),
-        child: macIncompatibleWarning,
+        child: _macIncompatibleWarning,
       ));
     }
     if (_showRateCard == true) {
@@ -151,82 +142,7 @@ class _GalleryPageState extends State<GalleryPage> {
     return children;
   }
 
-  Widget get winAppPathMigrationTile {
-    void _openPath(String? p) {
-      if (p == null) {
-        EasyLoading.showError('Path is empty');
-        return;
-      }
-      if (Directory(p).existsSync()) {
-        OpenFile.open(p);
-      } else {
-        EasyLoading.showInfo(LocalizedText.of(
-            chs: '路径不存在: $p', jpn: 'パスが存在しません: $p', eng: 'Path not exist: $p'));
-      }
-    }
-
-    return SimpleAccordion(
-      headerBuilder: (context, _) => ListTile(
-        leading: Icon(Icons.warning_amber_rounded,
-            color: Theme.of(context).errorColor),
-        contentPadding: const EdgeInsets.only(left: 8),
-        horizontalTitleGap: 0,
-        title: Text(LocalizedText.of(
-            chs: 'Windows: 用户文件夹迁移',
-            jpn: 'Windows: ユーザーフォルダの移行',
-            eng: 'Windows: user data folder migration')),
-      ),
-      contentBuilder: (context) {
-        final pa = db.paths.legacyWinAppPath;
-        final pb = db.paths.appPath;
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text(LocalizedText.of(
-                  chs: '自v1.5.4起，应用/用户数据储存位置已迁移，若需要请手动迁移其他旧数据。\n'
-                      '旧路径：$pa\n新路径: $pb',
-                  jpn:
-                      'v1.5.4以降、アプリ/ユーザーデータの保存場所が移行されました。必要に応じて、他の古いデータを手動で移行してください。\n'
-                      '古いパス：$pa\n新しいパス: $pb',
-                  eng:
-                      'Since v1.5.4, the storage location of application/user data has been migrated. If necessary, please manually migrate other old data\n'
-                      'Legacy path：$pa\nNew path: $pb')),
-            ),
-            ButtonBar(
-              children: [
-                TextButton(
-                  onPressed: () => _openPath(db.paths.legacyWinAppPath),
-                  child: Text(LocalizedText.of(
-                      chs: '旧路径', jpn: '古いパス', eng: 'Legacy Path')),
-                ),
-                TextButton(
-                  onPressed: () => _openPath(db.paths.appPath),
-                  child: Text(LocalizedText.of(
-                      chs: '新路径', jpn: '新しいパス', eng: 'New Path')),
-                ),
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      winAppPathMigration.set(false);
-                    });
-                  },
-                  child: Text(
-                    S.current.ignore,
-                    style: TextStyle(color: Theme.of(context).errorColor),
-                  ),
-                ),
-              ],
-            )
-          ],
-        );
-      },
-      expanded: true,
-    );
-  }
-
-  Widget get macIncompatibleWarning {
+  Widget get _macIncompatibleWarning {
     return SimpleAccordion(
       headerBuilder: (context, _) => ListTile(
         leading: Icon(Icons.warning_amber_rounded,
@@ -235,8 +151,8 @@ class _GalleryPageState extends State<GalleryPage> {
         horizontalTitleGap: 0,
         title: Text(LocalizedText.of(
             chs: 'macOS: 未来只支持10.14及之后系统',
-            jpn: 'macOS: ユーザーフォルダの移行',
-            eng: 'macOS: 将来、10.14以降が必要')),
+            jpn: 'macOS: 将来、10.14以降が必要',
+            eng: 'macOS: required at least 10.14 in future')),
       ),
       contentBuilder: (context) {
         return Column(

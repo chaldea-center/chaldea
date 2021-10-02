@@ -150,6 +150,16 @@ class AppInfo {
           }
         }
       }
+    } else if (PlatformU.isLinux) {
+      //cat /etc/machine-id
+      final result = await Process.run(
+        'cat',
+        ['/etc/machine-id'],
+        runInShell: true,
+      );
+      String resultString = result.stdout.toString().trim();
+      print('Linux machine id query:\n$resultString');
+      originId = resultString;
     } else {
       throw UnimplementedError(PlatformU.operatingSystem);
     }

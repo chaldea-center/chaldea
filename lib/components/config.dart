@@ -17,7 +17,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
-import 'package:libwinmedia/libwinmedia.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
@@ -127,9 +126,6 @@ class Database {
     await prefs.initiate();
     if (PlatformU.isWeb) {
       webFS = await Hive.openBox('WebFileSystem');
-    }
-    if (PlatformU.isWindows) {
-      LWM.initialize();
     }
     MethodChannelChaldea.configMethodChannel();
     await checkConnectivity();
@@ -508,24 +504,30 @@ class Database {
 class PathManager {
   /// [_appPath] root path where app can access
   String? _appPath;
-  String? legacyWinAppPath;
 
   Future<void> initRootPath() async {
+    // final Map<String, Directory?> _fps = {
+    //   'ApplicationDocuments': await getApplicationDocumentsDirectory()
+    //       .catchError((e) => Directory('null')),
+    //   'ApplicationSupport': await getApplicationSupportDirectory()
+    //       .catchError((e) => Directory('null')),
+    //   'Temporary':
+    //       await getTemporaryDirectory().catchError((e) => Directory('null')),
+    //   'Library':
+    //       await getLibraryDirectory().catchError((e) => Directory('null')),
+    //   'Downloads':
+    //       await getDownloadsDirectory().catchError((e) => Directory('null')),
+    // };
+    // for (var e in _fps.entries) {
+    //   print('${e.key}\n\t\t${e.value?.path}');
+    // }
+
     if (_appPath != null) return;
     if (PlatformU.isWeb) {
       _appPath = 'web';
       initiateLoggerPath('');
       return;
     }
-    // final Map<String, Directory> _fps = {
-    //   'ApplicationDocuments': await getApplicationDocumentsDirectory(),
-    //   'Temporary': await getTemporaryDirectory(),
-    //   'ApplicationSupport': await getApplicationSupportDirectory(),
-    //   'Library': await getLibraryDirectory(),
-    // };
-    // for (var e in _fps.entries) {
-    //   print('${e.key}\n\t\t${e.value.path}');
-    // }
 
     if (PlatformU.isAndroid) {
       // don't use getApplicationDocumentsDirectory, it is hidden to user.
@@ -535,37 +537,28 @@ class PathManager {
     } else if (PlatformU.isIOS) {
       _appPath = (await getApplicationDocumentsDirectory()).path;
       // _tempPath = (await getTemporaryDirectory())?.path;
-    } else if (PlatformU.isWindows) {
-      _appPath = (await getApplicationSupportDirectory()).path;
-      // _tempPath = (await getTemporaryDirectory())?.path;
-      // set link:
-      // in old version windows, it may need admin permission, so it may fail
-      try {
-        String exeFolder = pathlib.dirname(PlatformU.resolvedExecutable);
-        String legacyAppPath = (await getApplicationSupportDirectory()).path;
-        legacyWinAppPath = legacyAppPath;
-        String curAppPath = pathlib.join(exeFolder, 'userdata');
-        if (FileSystemEntity.isLinkSync(curAppPath)) {
-          Link(curAppPath).deleteSync();
-        }
-        final legacyUserdata =
-            File(pathlib.join(legacyAppPath, 'user', kUserDataFilename));
-        final curUserdata =
-            File(pathlib.join(curAppPath, 'user', kUserDataFilename));
-        if (legacyUserdata.existsSync() && !curUserdata.existsSync()) {
-          curUserdata
-            ..createSync(recursive: true)
-            ..writeAsBytesSync(legacyUserdata.readAsBytesSync());
-        }
-        _appPath = curAppPath;
-      } catch (e, s) {
-        logger.e('make link failed', e, s);
-      }
     } else if (PlatformU.isMacOS) {
       // /Users/<user>/Library/Containers/cc.narumi.chaldea/Data/Documents
       _appPath = (await getApplicationDocumentsDirectory()).path;
       // /Users/<user>/Library/Containers/cc.narumi.chaldea/Data/Library/Caches
       // _tempPath = (await getTemporaryDirectory())?.path;
+    } else if (PlatformU.isWindows) {
+      // _tempPath = (await getTemporaryDirectory())?.path;
+      // set link:
+      // in old version windows, it may need admin permission, so it may fail
+      String exeFolder = pathlib.dirname(PlatformU.resolvedExecutable);
+      _appPath = pathlib.join(exeFolder, 'userdata');
+      if (kDebugMode) {
+        // C:\Users\<user>\AppData\Roaming\cc.narumi\Chaldea
+        _appPath = (await getApplicationSupportDirectory()).path;
+      }
+    } else if (PlatformU.isLinux) {
+      String exeFolder = pathlib.dirname(PlatformU.resolvedExecutable);
+      _appPath = pathlib.join(exeFolder, 'userdata');
+      if (kDebugMode) {
+        // Ubuntu: /home/<user>/.local/share/chaldea
+        _appPath = (await getApplicationSupportDirectory()).path;
+      }
     } else {
       throw UnimplementedError(
           'Not supported for ${PlatformU.operatingSystem}');

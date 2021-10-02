@@ -1,5 +1,5 @@
 PODS:
-  - audioplayers (0.0.1):
+  - audio_session (0.0.1):
     - Flutter
   - baidu_mob_stat (0.0.3):
     - BaiduMobStat (>= 5.3.5)
@@ -65,6 +65,8 @@ PODS:
   - FMDB/standard (2.7.5)
   - image_gallery_saver (1.5.0):
     - Flutter
+  - just_audio (0.0.1):
+    - Flutter
   - open_file (0.0.1):
     - Flutter
   - package_info_plus (0.4.5):
@@ -92,7 +94,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
-  - audioplayers (from `.symlinks/plugins/audioplayers/ios`)
+  - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - baidu_mob_stat (from `.symlinks/plugins/baidu_mob_stat/ios`)
   - catcher (from `.symlinks/plugins/catcher/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
@@ -106,6 +108,7 @@ DEPENDENCIES:
   - flutter_webview_plugin (from `.symlinks/plugins/flutter_webview_plugin/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - image_gallery_saver (from `.symlinks/plugins/image_gallery_saver/ios`)
+  - just_audio (from `.symlinks/plugins/just_audio/ios`)
   - open_file (from `.symlinks/plugins/open_file/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
@@ -128,8 +131,8 @@ SPEC REPOS:
     - Toast
 
 EXTERNAL SOURCES:
-  audioplayers:
-    :path: ".symlinks/plugins/audioplayers/ios"
+  audio_session:
+    :path: ".symlinks/plugins/audio_session/ios"
   baidu_mob_stat:
     :path: ".symlinks/plugins/baidu_mob_stat/ios"
   catcher:
@@ -156,6 +159,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/fluttertoast/ios"
   image_gallery_saver:
     :path: ".symlinks/plugins/image_gallery_saver/ios"
+  just_audio:
+    :path: ".symlinks/plugins/just_audio/ios"
   open_file:
     :path: ".symlinks/plugins/open_file/ios"
   package_info_plus:
@@ -176,7 +181,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher/ios"
 
 SPEC CHECKSUMS:
-  audioplayers: 455322b54050b30ea4b1af7cd9e9d105f74efa8c
+  audio_session: 4f3e461722055d21515cf3261b64c973c062f345
   baidu_mob_stat: 105202d73bd511d6db5a9707989b83a6bfa63361
   BaiduMobStat: 85147dfb781e347fb7693d5bd84c8623a00df301
   catcher: 67a006a3c121c4bbf1202d1e5ea186afb7ef4a18
@@ -194,6 +199,7 @@ SPEC CHECKSUMS:
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   image_gallery_saver: 259eab68fb271cfd57d599904f7acdc7832e7ef2
+  just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
   path_provider: d1e9807085df1f9cc9318206cd649dc0b76be3de
