@@ -298,15 +298,11 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
           title: S.current.load_dataset_error,
           content: S.current.load_dataset_error_hint);
     }
+
+    // set _initiated first, next frame will change layout and child widget together
+    _initiated = true;
     SplitRoute.of(context)?.detail = false;
-    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
-      if (mounted) {
-        setState(() {
-          _initiated = true;
-        });
-      }
-    });
-    if (mounted) setState(() {});
+
     logger.i('App version: ${AppInfo.appName} v${AppInfo.fullVersion}');
     logger.i('appPath: ${db.paths.appPath}');
     db.notifyAppUpdate();

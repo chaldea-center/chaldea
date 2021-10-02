@@ -435,7 +435,7 @@ class AutoUpdateUtil {
               launch(kAppStoreLink);
             },
           ),
-        if (PlatformU.isWindows)
+        if (PlatformU.isWindows || PlatformU.isLinux)
           TextButton(
             child: Text(S.current.release_page),
             onPressed: launchUrl == null ? null : () => launch(launchUrl),
@@ -478,7 +478,7 @@ class AutoUpdateUtil {
       final result = await OpenFile.open(fp);
       print('open result: ${result.type}, ${result.message}');
       // await InstallPlugin.installApk(saveFp, AppInfo.packageName);
-    } else if (PlatformU.isMacOS) {
+    } else if (PlatformU.isMacOS || PlatformU.isLinux) {
       SimpleCancelOkDialog(
         content: Text(LocalizedText.of(
             chs: '请解压并替换原程序',

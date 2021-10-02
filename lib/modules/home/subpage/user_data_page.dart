@@ -41,7 +41,7 @@ class _UserDataPageState extends State<UserDataPage> {
                     chs: '数据目录', jpn: 'データフォルダ', eng: 'Data Folder')),
                 subtitle: Text(db.paths.convertIosPath(db.paths.appPath)),
                 onTap: () {
-                  if (PlatformU.isMacOS || PlatformU.isWindows) {
+                  if (PlatformU.isDesktop) {
                     OpenFile.open(db.paths.appPath);
                   } else {
                     EasyLoading.showInfo(LocalizedText.of(
@@ -175,7 +175,7 @@ class _UserDataPageState extends State<UserDataPage> {
                   Share.shareFiles(fps);
                 },
               ),
-            if (PlatformU.isMacOS || PlatformU.isWindows)
+            if (PlatformU.isDesktop)
               TextButton(
                 child: Text(S.of(context).open),
                 onPressed: () {

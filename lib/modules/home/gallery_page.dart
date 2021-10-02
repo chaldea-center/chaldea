@@ -24,7 +24,7 @@ class _GalleryPageState extends State<GalleryPage> {
     _scrollController = ScrollController();
 
     Future.delayed(const Duration(seconds: 2)).then((_) async {
-      if (!PlatformU.isWindows) {
+      if (PlatformU.isApple || PlatformU.isAndroid) {
         await rateMyApp.init();
         _showRateCard = rateMyApp.shouldOpenDialog || kDebugMode;
         if (mounted) setState(() {});
@@ -236,7 +236,7 @@ class _GalleryPageState extends State<GalleryPage> {
               rateMyApp.callEvent(RateMyAppEventType.rateButtonPressed);
               launch(PlatformU.isAndroid
                   ? kGooglePlayLink
-                  : PlatformU.isIOS || PlatformU.isMacOS
+                  : PlatformU.isApple
                       ? kAppStoreLink
                       : kGooglePlayLink);
               setState(() {

@@ -38,6 +38,27 @@ class AppInfo {
     } else if (PlatformU.isMacOS) {
       final macOsInfo = await DeviceInfoPlugin().macOsInfo;
       deviceParams.addAll(macOsInfo.toMap());
+    } else if (PlatformU.isMacOS) {
+      final linuxInfo = (await DeviceInfoPlugin().linuxInfo);
+      deviceParams['name'] = linuxInfo.name;
+      deviceParams['version'] = linuxInfo.version;
+      deviceParams['id'] = linuxInfo.id;
+      deviceParams['idLike'] = linuxInfo.idLike;
+      deviceParams['versionCodename'] = linuxInfo.versionCodename;
+      deviceParams['versionId'] = linuxInfo.versionId;
+      deviceParams['prettyName'] = linuxInfo.prettyName;
+      deviceParams['buildId'] = linuxInfo.buildId;
+      deviceParams['variant'] = linuxInfo.variant;
+      deviceParams['variantId'] = linuxInfo.variantId;
+      deviceParams['machineId'] = linuxInfo.machineId;
+    } else if (PlatformU.isWindows) {
+      final windowsInfo = (await DeviceInfoPlugin().windowsInfo);
+      deviceParams['operatingSystem'] = PlatformU.operatingSystem;
+      deviceParams['operatingSystemVersion'] = PlatformU.operatingSystemVersion;
+      deviceParams['computerName'] = windowsInfo.computerName;
+      deviceParams['numberOfCores'] = windowsInfo.numberOfCores;
+      deviceParams['systemMemoryInMegabytes'] =
+          windowsInfo.systemMemoryInMegabytes;
     } else {
       deviceParams['operatingSystem'] = PlatformU.operatingSystem;
       deviceParams['operatingSystemVersion'] = PlatformU.operatingSystemVersion;

@@ -385,7 +385,10 @@ class GitTool {
       return abi != ABIType.unknown &&
           assetName.contains(abi.toStandardString());
     };
-    if (PlatformU.isAndroid || PlatformU.isWindows || kDebugMode) {
+    if (PlatformU.isAndroid ||
+        PlatformU.isWindows ||
+        PlatformU.isLinux ||
+        kDebugMode) {
       releases ??= await appReleases;
       return _latestReleaseWhereAsset(releases, testAsset: test);
     }

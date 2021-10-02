@@ -195,15 +195,15 @@ class _SettingsPageState extends State<SettingsPage> {
                 SplitRoute.push(context, FeedbackPage(), popDetail: true);
               },
             ),
-            if (!kReleaseMode)
-              ListTile(
-                title: Text(S.of(context).settings_tutorial),
-                trailing: const Icon(Icons.menu_book),
-                onTap: () {
-                  EasyLoading.showToast(
-                      Language.isCN ? '咕咕咕咕咕咕' : "Not implemented");
-                },
-              ),
+            ListTile(
+              title: Text(S.of(context).settings_tutorial),
+              subtitle: const Text('https://chaldea-center.github.io'),
+              trailing: const Icon(Icons.menu_book),
+              onTap: () {
+                launch('https://chaldea-center.github.io' +
+                    (Language.isCN ? '/zh/' : '/'));
+              },
+            ),
             if (!PlatformU.isApple || (db.cfg.launchTimes.get() ?? 0) > 5)
               ListTile(
                 title: Text(S.current.support_chaldea),

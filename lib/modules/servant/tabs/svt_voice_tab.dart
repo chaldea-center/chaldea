@@ -133,7 +133,8 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
                     state.value = !state.value;
                   });
                   onPlayVoice(record).onError((e, s) async {
-                    EasyLoading.showError('Error playing audio\n$e');
+                    EasyLoading.showError(
+                        'Error playing audio (May not support)\n$e');
                     logger.e(
                         'Error playing audio\n${jsonEncode(record)}\n', e, s);
                   }).whenComplete(() {
