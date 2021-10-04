@@ -53,6 +53,8 @@ class Servant with GameCardMixin {
   // from data file not in code
   static List<int> get unavailable => db.gameData.unavailableSvts;
 
+  bool get isAvailable => !unavailable.contains(originNo);
+
   Servant({
     required this.no,
     required this.svtId,

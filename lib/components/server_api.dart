@@ -12,6 +12,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import '../widgets/custom_dialogs.dart';
 import 'extensions.dart';
+import 'localized/localized_base.dart';
 import 'logger.dart';
 
 part 'server_api.g.dart';
@@ -25,8 +26,8 @@ class ChaldeaResponse {
 
   static ChaldeaResponse fromResponse(Response response) {
     // print('type:${data.runtimeType}, data=$data');
+    final data = response.data;
     try {
-      final data = response.data;
       Map map;
       if (data is String) {
         map = jsonDecode(data);
@@ -34,10 +35,10 @@ class ChaldeaResponse {
         map = Map.from(data);
       }
       return ChaldeaResponse(
-          success: map['success'] ?? false, msg: map['msg'], body: map['body']);
+          success: map['success'] == true, msg: map['msg'], body: map['body']);
     } catch (e, s) {
       logger.e('parse ChaldeaResponse error', e, s);
-      return ChaldeaResponse(msg: 'invalid api: $e');
+      return ChaldeaResponse(msg: '$data');
     }
   }
 
@@ -45,7 +46,9 @@ class ChaldeaResponse {
       {String? title, bool showBody = false}) {
     EasyLoading.dismiss();
     if (context == null) return Future.value();
-    title ??= success ? S.current.success : S.current.failed;
+    title ??= success
+        ? S.current.success
+        : LocalizedText.of(chs: '错误/提示', jpn: 'エラー/警告', eng: 'Error/Warning');
     String content = msg.toString();
     if (showBody) content += '\n$body';
     return SimpleCancelOkDialog(

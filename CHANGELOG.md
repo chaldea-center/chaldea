@@ -1,3 +1,10 @@
+## 1.6.1
+
+- Linux support
+- support https data for CN/TW/JP/EN
+- macOS: require at least 10.12.2
+- bug fix
+
 ## 1.6.0
 
 - use new build number strategy
@@ -216,7 +223,8 @@
 ## 1.3.0
 
 - [BREAKING CHANGE] null safety migration, upgrade to flutter 2
-- downgrade `flutter_audio_desktop 0.1.0` to version `0.0.8`, which will cause stuck in Windows with `file_picker_cross` together
+- downgrade `flutter_audio_desktop 0.1.0` to version `0.0.8`, which will cause stuck in Windows
+  with `file_picker_cross` together
 
 ## 1.2.1
 

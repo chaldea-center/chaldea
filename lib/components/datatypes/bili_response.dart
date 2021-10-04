@@ -13,6 +13,11 @@ int _toInt(dynamic v, [int? k]) {
   }
 }
 
+int? _toIntNull(dynamic v, [int? k]) {
+  if (v == null) return k;
+  return _toInt(v, k);
+}
+
 @JsonSerializable(createToJson: false)
 class BiliTopLogin {
   dynamic response;
@@ -29,14 +34,19 @@ class BiliTopLogin {
       _$BiliTopLoginFromJson(data);
 
   /// base64 maybe url-encoded
-  static BiliTopLogin fromBase64(String encoded) {
-    String body = Uri.decodeFull(encoded).trim();
-    return BiliTopLogin.fromJson(jsonDecode(utf8.decode(base64Decode(body))));
+  static BiliTopLogin tryBase64(String encoded) {
+    encoded = encoded.trim();
+    // eyJy
+    if (encoded.startsWith('ey')) {
+      encoded = utf8.decode(base64Decode(Uri.decodeFull(encoded).trim()));
+    }
+    return BiliTopLogin.fromJson(jsonDecode(encoded));
   }
 }
 
 @JsonSerializable(createToJson: false)
 class BiliCache {
+  // deleted: {} // mostly empty
   BiliReplaced replaced;
   BiliUpdated updated;
   DateTime? serverTime;
@@ -69,6 +79,16 @@ class BiliReplaced {
   List<UserSvt> userSvtStorage;
   List<UserSvtCollection> userSvtCollection;
   List<UserGame> userGame;
+  List<UserSvtAppendPassiveSkill> userSvtAppendPassiveSkill;
+  List<UserSvtCoin> userSvtCoin;
+  List<UserSvtAppendPassiveSkillLv> userSvtAppendPassiveSkillLv;
+
+  // transformed
+  @JsonKey(ignore: true)
+  Map<int, UserSvtCoin> coinMap = {};
+
+  @JsonKey(ignore: true)
+  Map<int, UserSvtAppendPassiveSkillLv> appendSkillMap = {};
 
   BiliReplaced({
     List<UserItem>? userItem,
@@ -76,11 +96,24 @@ class BiliReplaced {
     List<UserSvt>? userSvtStorage,
     List<UserSvtCollection>? userSvtCollection,
     List<UserGame>? userGame,
+    List<UserSvtAppendPassiveSkill>? userSvtAppendPassiveSkill,
+    List<UserSvtCoin>? userSvtCoin,
+    List<UserSvtAppendPassiveSkillLv>? userSvtAppendPassiveSkillLv,
   })  : userItem = userItem ?? [],
         userSvt = userSvt ?? [],
         userSvtStorage = userSvtStorage ?? [],
         userSvtCollection = userSvtCollection ?? [],
-        userGame = userGame ?? [];
+        userGame = userGame ?? [],
+        userSvtAppendPassiveSkill = userSvtAppendPassiveSkill ?? [],
+        userSvtCoin = userSvtCoin ?? [],
+        userSvtAppendPassiveSkillLv = userSvtAppendPassiveSkillLv ?? [] {
+    for (final e in this.userSvtCoin) {
+      coinMap[e.svtId] = e;
+    }
+    for (final e in this.userSvtAppendPassiveSkillLv) {
+      appendSkillMap[e.userSvtId] = e;
+    }
+  }
 
   UserGame? get firstUser => userGame.getOrNull(0);
 
@@ -105,9 +138,11 @@ class UserItem {
   @JsonKey(ignore: true)
   String? indexKey;
 
-  UserItem({required String itemId, required String num})
-      : itemId = int.parse(itemId),
-        num = int.tryParse(num) ?? 0;
+  UserItem({
+    required dynamic itemId,
+    required dynamic num,
+  })  : itemId = _toInt(itemId),
+        num = _toInt(num);
 
   factory UserItem.fromJson(Map<String, dynamic> data) =>
       _$UserItemFromJson(data);
@@ -152,6 +187,10 @@ class UserItem {
 class UserSvt {
   int id; // unique id for every card
   int svtId;
+
+  // 0-unlock, 1-locked, 2-?
+  // 17-party member, -127-Mash
+  int? status;
   int limitCount; // ascension
   // int dispLimitCount;
   int lv;
@@ -167,8 +206,9 @@ class UserSvt {
   // int treasureDeviceLv3;
   int exceedCount; // grail
   DateTime createdAt;
-  DateTime updatedAt;
-  bool isLock;
+  DateTime? updatedAt;
+  @protected
+  int? isLock; //cn only
   int hp;
   int atk;
 
@@ -179,42 +219,56 @@ class UserSvt {
   int? indexKey;
   @JsonKey(ignore: true)
   bool inStorage = false;
+  @JsonKey(ignore: true)
+  List<int>? appendLvs;
+
+  bool get locked {
+    if (isLock != null) {
+      return isLock == 1;
+    } else {
+      return status != 0;
+    }
+  }
 
   UserSvt({
-    required String id,
-    required String svtId,
-    required String limitCount, // ascension
-    required String lv,
-    required String exp,
-    required String adjustHp,
-    required String adjustAtk,
-    required String skillLv1,
-    required String skillLv2,
-    required String skillLv3,
-    required String treasureDeviceLv1,
-    required String exceedCount,
-    required String createdAt,
-    required String updatedAt,
-    required String isLock,
+    required dynamic id,
+    required dynamic svtId,
+    required dynamic status,
+    required dynamic limitCount, // ascension
+    required dynamic lv,
+    required dynamic exp,
+    required dynamic adjustHp,
+    required dynamic adjustAtk,
+    required dynamic skillLv1,
+    required dynamic skillLv2,
+    required dynamic skillLv3,
+    required dynamic treasureDeviceLv1,
+    required dynamic exceedCount,
+    required dynamic createdAt,
+    required dynamic updatedAt,
+    required dynamic isLock,
     required this.hp,
     required this.atk,
-  })  : id = int.parse(id),
-        svtId = int.parse(svtId),
-        limitCount = int.parse(limitCount),
-        lv = int.parse(lv),
-        exp = int.parse(exp),
-        adjustHp = int.parse(adjustHp),
-        adjustAtk = int.parse(adjustAtk),
-        skillLv1 = int.parse(skillLv1),
-        skillLv2 = int.parse(skillLv2),
-        skillLv3 = int.parse(skillLv3),
-        treasureDeviceLv1 = int.parse(treasureDeviceLv1),
-        exceedCount = int.parse(exceedCount),
+  })  : assert(status != null || isLock != null),
+        id = _toInt(id),
+        svtId = _toInt(svtId),
+        status = _toInt(status),
+        limitCount = _toInt(limitCount),
+        lv = _toInt(lv),
+        exp = _toInt(exp),
+        adjustHp = _toInt(adjustHp),
+        adjustAtk = _toInt(adjustAtk),
+        skillLv1 = _toInt(skillLv1),
+        skillLv2 = _toInt(skillLv2),
+        skillLv3 = _toInt(skillLv3),
+        treasureDeviceLv1 = _toInt(treasureDeviceLv1),
+        exceedCount = _toInt(exceedCount),
         createdAt =
-            DateTime.fromMillisecondsSinceEpoch(int.parse(createdAt) * 1000),
-        updatedAt =
-            DateTime.fromMillisecondsSinceEpoch(int.parse(updatedAt) * 1000),
-        isLock = isLock == '1';
+            DateTime.fromMillisecondsSinceEpoch(_toInt(createdAt) * 1000),
+        updatedAt = updatedAt == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(_toInt(updatedAt) * 1000),
+        isLock = _toIntNull(isLock);
 
   factory UserSvt.fromJson(Map<String, dynamic> data) =>
       _$UserSvtFromJson(data);
@@ -262,18 +316,21 @@ class UserSvtCollection {
   /// include mash's story costume.
   List<int> costumeIds;
 
+  // List<int> releasedCostumeIds; // jp only now
+
   UserSvtCollection({
-    required String svtId,
-    required String status,
-    required String friendship,
-    required String friendshipRank,
-    required String friendshipExceedCount,
+    required dynamic svtId,
+    required dynamic status,
+    required dynamic friendship,
+    required dynamic friendshipRank,
+    required dynamic friendshipExceedCount,
     required List<int> costumeIds,
-  })  : svtId = int.parse(svtId),
-        status = int.parse(status),
-        friendship = int.parse(friendship),
-        friendshipRank = int.parse(friendshipRank),
-        friendshipExceedCount = int.parse(friendshipExceedCount),
+    // required List<int> releasedCostumeIds,
+  })  : svtId = _toInt(svtId),
+        status = _toInt(status),
+        friendship = _toInt(friendship),
+        friendshipRank = _toInt(friendshipRank),
+        friendshipExceedCount = _toInt(friendshipExceedCount),
         costumeIds = costumeIds..sort((a, b) => a.abs() - b.abs());
 
   bool get isOwned => status == 2;
@@ -293,8 +350,8 @@ class UserSvtCollection {
 
 @JsonSerializable(createToJson: false)
 class UserGame {
-  int id;
-  String userId;
+  int? id; //cn only
+  int userId;
 
   // String usk;
   String? appname; // username of bili account
@@ -306,7 +363,7 @@ class UserGame {
   int exp;
   int qp;
   int costMax;
-  int friendCode;
+  String friendCode;
 
   // int favoriteUserSvtId;
   int freeStone;
@@ -320,43 +377,130 @@ class UserGame {
   int stone;
 
   UserGame({
-    required String id,
-    required this.userId,
+    required dynamic id,
+    required dynamic userId,
     required this.appname,
     required this.name,
-    required String? birthDay,
-    required String actMax,
-    required String genderType,
-    required String lv,
-    required String exp,
-    required String qp,
-    required String costMax,
-    required String friendCode,
-    required String freeStone,
-    required String chargeStone,
-    required String mana,
-    required String rarePri,
-    required String createdAt,
+    required dynamic birthDay,
+    required dynamic actMax,
+    required dynamic genderType,
+    required dynamic lv,
+    required dynamic exp,
+    required dynamic qp,
+    required dynamic costMax,
+    required this.friendCode,
+    required dynamic freeStone,
+    required dynamic chargeStone,
+    required dynamic mana,
+    required dynamic rarePri,
+    required dynamic createdAt,
     required this.message,
     required this.stone,
-  })  : id = int.parse(id),
+  })  : id = _toIntNull(id),
+        userId = _toInt(userId),
         birthDay = birthDay == null
             ? null
-            : DateTime.fromMillisecondsSinceEpoch(int.parse(birthDay) * 1000),
-        actMax = int.parse(actMax),
-        genderType = int.parse(genderType),
-        lv = int.parse(lv),
-        exp = int.parse(exp),
-        qp = int.parse(qp),
-        costMax = int.parse(costMax),
-        friendCode = int.parse(friendCode),
-        freeStone = int.parse(freeStone),
-        chargeStone = int.parse(chargeStone),
-        mana = int.parse(mana),
-        rarePri = int.parse(rarePri),
+            : DateTime.fromMillisecondsSinceEpoch(_toInt(birthDay) * 1000),
+        actMax = _toInt(actMax),
+        genderType = _toInt(genderType),
+        lv = _toInt(lv),
+        exp = _toInt(exp),
+        qp = _toInt(qp),
+        costMax = _toInt(costMax),
+        freeStone = _toInt(freeStone),
+        chargeStone = _toInt(chargeStone),
+        mana = _toInt(mana),
+        rarePri = _toInt(rarePri),
         createdAt =
-            DateTime.fromMillisecondsSinceEpoch(int.parse(createdAt) * 1000);
+            DateTime.fromMillisecondsSinceEpoch(_toInt(createdAt) * 1000);
 
   factory UserGame.fromJson(Map<String, dynamic> data) =>
       _$UserGameFromJson(data);
+}
+
+// {
+//   "unlockNums": [
+//       100,
+//       101,
+//       102
+//   ],
+//   "userId": xxxxx,
+//   "svtId": 100100
+// },
+@JsonSerializable(createToJson: false)
+class UserSvtAppendPassiveSkill {
+  List<int> unlockNums;
+  int svtId;
+
+  UserSvtAppendPassiveSkill({
+    List<int>? unlockNums,
+    dynamic svtId,
+  })  : unlockNums = unlockNums ?? [],
+        svtId = _toInt(svtId);
+
+  factory UserSvtAppendPassiveSkill.fromJson(Map<String, dynamic> data) =>
+      _$UserSvtAppendPassiveSkillFromJson(data);
+}
+
+// {
+//   "userId": xxxxx,
+//   "svtId": 100100,
+//   "num": 50,
+//   "updatedAt": 1629921881,
+//   "createdAt": 1627812677
+// }
+@JsonSerializable(createToJson: false)
+class UserSvtCoin {
+  int svtId;
+  int num;
+
+  UserSvtCoin({
+    dynamic svtId,
+    dynamic num,
+  })  : svtId = _toInt(svtId),
+        num = _toInt(num);
+
+  factory UserSvtCoin.fromJson(Map<String, dynamic> data) =>
+      _$UserSvtCoinFromJson(data);
+}
+
+// unlock order, only contains svts has unlocked append skill
+// {
+//   "appendPassiveSkillNums": [
+//       101,
+//       102,
+//       100
+//   ],
+//   "appendPassiveSkillLvs": [
+//       8,
+//       7,
+//       7
+//   ],
+//   "userSvtId": 75957046446,
+//   "userId": 8634742
+// },
+@JsonSerializable(createToJson: false)
+class UserSvtAppendPassiveSkillLv {
+  int userSvtId;
+  List<int> appendPassiveSkillNums;
+  List<int> appendPassiveSkillLvs;
+
+  UserSvtAppendPassiveSkillLv({
+    dynamic userSvtId,
+    required this.appendPassiveSkillNums,
+    required this.appendPassiveSkillLvs,
+  }) : userSvtId = _toInt(userSvtId);
+
+  List<int> toLvs() {
+    final lvs =
+        Map.fromIterables(appendPassiveSkillNums, appendPassiveSkillLvs);
+    return [
+      lvs[100] ?? 0,
+      lvs[101] ?? 0,
+      lvs[102] ?? 0,
+    ];
+  }
+
+  factory UserSvtAppendPassiveSkillLv.fromJson(Map<String, dynamic> data) =>
+      _$UserSvtAppendPassiveSkillLvFromJson(data);
 }

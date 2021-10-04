@@ -22,7 +22,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
   void _calcRarityCounts() {
     if (rarityTotal.every((e) => e == 0)) {
       db.gameData.servants.forEach((no, svt) {
-        if (Servant.unavailable.contains(no)) return;
+        if (!svt.isAvailable) return;
         rarityTotal[svt.info.rarity] += 1;
         final stat = db.curUser.svtStatusOf(no);
         if (stat.favorite) {

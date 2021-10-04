@@ -45,7 +45,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
   Widget buildActiveSkill(int index) {
     ActiveSkill activeSkill = svt.lActiveSkills[index];
     int? _state;
-    if (Servant.unavailable.contains(svt.no)) {
+    if (!svt.isAvailable) {
       _state = 0;
     } else {
       _state = status.skillIndex.getOrNull(index);

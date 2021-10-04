@@ -185,7 +185,7 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
             TableCellData(
                 text: Localized.svtFilter.of(svt.info.attribute), flex: 1),
           ]),
-          if (!Servant.unavailable.contains(svt.no)) ...[
+          if (svt.isAvailable) ...[
             CustomTableRow.fromTexts(texts: [
               S.current.info_value,
               'Lv.1',

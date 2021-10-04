@@ -89,7 +89,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           Expanded(
             child: topLogin == null
                 ? Padding(
-              padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
                     child: Column(
                       children: [
                         Text(
@@ -167,7 +167,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           ),
           ListTile(
             title: const Text('用户ID'),
-            trailing: Text(formatNumber(user.friendCode)),
+            trailing: Text(user.friendCode),
           ),
           ListTile(
             title: const Text('QP'),
@@ -231,7 +231,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         if ((inStorage && !svt.inStorage) || (!inStorage && svt.inStorage)) {
           continue;
         }
-        if (_isLocked && !svt.isLock) continue;
+        if (_isLocked && !svt.locked) continue;
         if (!_allowDuplicated && group.indexOf(svt) > 0) continue;
         bool hidden = ignoreSvts.contains(svt.id);
 
@@ -249,6 +249,15 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               '灵衣 ${cardCollections[svt.svtId]!.costumeIdsTo01().join('/')}\n';
         }
         text += '技能 ${svt.skillLv1}/${svt.skillLv2}/${svt.skillLv3}\n';
+
+        if (svt.appendLvs != null) {
+          text +=
+              '附加 ${svt.appendLvs!.map((e) => e == 0 ? '-' : e).join('/')}\n';
+        }
+        int? coin = replacedResponse?.coinMap[svt.svtId]?.num;
+        if (coin != null) {
+          text += 'Coin: $coin\n';
+        }
 
         final richText = RichText(
           text: TextSpan(
@@ -281,18 +290,18 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                           min(_with, constraints.maxWidth / crossCount * 0.25),
                       aspectRatio: 132 / 144),
                 ),
-                // if (!_isLocked && svt.isLock)
-                const Icon(
-                  Icons.lock,
-                  size: 13,
-                  color: Colors.white,
-                ),
-                // if (!_isLocked && svt.isLock)
-                Icon(
-                  Icons.lock,
-                  size: 12,
-                  color: Colors.yellow[900],
-                ),
+                if (svt.locked)
+                  const Icon(
+                    Icons.lock,
+                    size: 13,
+                    color: Colors.white,
+                  ),
+                if (svt.locked)
+                  Icon(
+                    Icons.lock,
+                    size: 12,
+                    color: Colors.yellow[900],
+                  ),
               ],
             ),
             Flexible(
@@ -506,6 +515,10 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           ..fouAtk = Item.fouShownToVal(svt.adjustAtk * 10)
           ..bondLimit = min(collection.friendshipRank + 1,
               collection.friendshipExceedCount + 10);
+        if (svt.appendLvs != null) {
+          status.curVal.appendSkills = svt.appendLvs!;
+        }
+        status.coin = replacedResponse!.coinMap[svt.svtId]?.num ?? 0;
 
         final costumeVals = collection.costumeIdsTo01();
         // should always be non-null
@@ -602,7 +615,7 @@ https://line3-s2-xxx-fate.bilibiligame.net/rongame_beta//rgfate/60_1001/ac.php?_
   }
 
   void parseResponseBody(List<int> bytes) {
-    BiliTopLogin _topLogin = BiliTopLogin.fromBase64(utf8.decode(bytes));
+    BiliTopLogin _topLogin = BiliTopLogin.tryBase64(utf8.decode(bytes));
 
     // clear before import
     ignoreSvts.clear();
@@ -639,6 +652,7 @@ https://line3-s2-xxx-fate.bilibiligame.net/rongame_beta//rgfate/60_1001/ac.php?_
       if (svtIdMap.containsKey(svt.svtId)) {
         svt.indexKey = svtIdMap[svt.svtId]!.originNo;
         svt.inStorage = false;
+        svt.appendLvs = _topLogin.body.appendSkillMap[svt.id]?.toLvs();
         // cardCollections[svt.svtId] = _response.userSvtCollection
         //     .firstWhere((element) => element.svtId == svt.svtId);
         final group = servants.firstWhereOrNull(
@@ -655,6 +669,7 @@ https://line3-s2-xxx-fate.bilibiligame.net/rongame_beta//rgfate/60_1001/ac.php?_
       if (svtIdMap.containsKey(svt.svtId)) {
         svt.indexKey = svtIdMap[svt.svtId]!.originNo;
         svt.inStorage = true;
+        svt.appendLvs = _topLogin.body.appendSkillMap[svt.id]?.toLvs();
         // cardCollections[svt.svtId] = _response.userSvtCollection
         //     .firstWhere((element) => element.svtId == svt.svtId);
         final group = servants.firstWhereOrNull(

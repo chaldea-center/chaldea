@@ -103,7 +103,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         if (index >= 3) continue;
         final activeSkill = svt.lActiveSkills[index];
         int? _state;
-        if (Servant.unavailable.contains(svt.no)) {
+        if (!svt.isAvailable) {
           _state = 0;
         } else {
           _state = status.skillIndex.getOrNull(index);

@@ -130,10 +130,20 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
 
   Widget get screenshotsTab {
     if (imageFiles.isEmpty) {
-      return const Center(
+      return Center(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          child: Text(''),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: widget.isAppendSkill
+              ? Text(
+                  LocalizedText.of(
+                    chs: '注意! 此页面是附加技能，不是主动技能！！！',
+                    jpn: '注意！このページはアペンドスキルであり、保有スキルではありません！',
+                    eng:
+                        'Warning! For APPEND skills only! Not for active skills!',
+                  ),
+                  style: Theme.of(context).textTheme.headline6,
+                )
+              : Text(S.current.active_skill),
         ),
       );
     }

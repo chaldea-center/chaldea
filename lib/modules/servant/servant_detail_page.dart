@@ -51,7 +51,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
   _SubTabInfo? _getBuilder(SvtTab tab) {
     switch (tab) {
       case SvtTab.plan:
-        if (Servant.unavailable.contains(svt.no)) return null;
+        if (!svt.isAvailable) return null;
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.plan,
@@ -91,7 +91,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
           viewBuilder: (ctx) => SvtSpriteTab(parent: this),
         );
       case SvtTab.summon:
-        if (Servant.unavailable.contains(svt.no) ||
+        if (!svt.isAvailable ||
             ['活动', '初始获得', '无法召唤', '友情点召唤'].contains(svt.info.obtain)) {
           return null;
         }
@@ -108,8 +108,8 @@ class ServantDetailPageState extends State<ServantDetailPage>
           viewBuilder: (ctx) => SvtVoiceTab(parent: this),
         );
       case SvtTab.quest:
-        if (Servant.unavailable.contains(svt.no) ||
-            db.gameData.svtQuests[svt.no]?.isNotEmpty != true) {
+        if (!svt.isAvailable ||
+            db.gameData.svtQuests[svt.originNo]?.isNotEmpty != true) {
           return null;
         }
         return _SubTabInfo(
@@ -138,7 +138,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
               overflow: TextOverflow.ellipsis,
             ),
             actions: <Widget>[
-              if (!Servant.unavailable.contains(svt.no))
+              if (svt.isAvailable)
                 db.streamBuilder(
                   (context) => IconButton(
                     icon: status.favorite
@@ -220,12 +220,12 @@ class ServantDetailPageState extends State<ServantDetailPage>
             child: Text(S.of(context).select_plan),
             value: 'plan', // dialog
           ),
-          if (!Servant.unavailable.contains(svt.no))
+          if (svt.isAvailable)
             PopupMenuItem<String>(
               child: Text(S.of(context).reset),
               value: 'reset', // dialog
             ),
-          if (!Servant.unavailable.contains(svt.no))
+          if (svt.isAvailable)
             PopupMenuItem<String>(
               child: Text(S.current.svt_reset_plan),
               value: 'reset_plan',
@@ -236,7 +236,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                 db.itemStat.updateSvtItems();
               },
             ),
-          // if (!Servant.unavailable.contains(svt.no))
+          // if (svt.isAvailable)
           //   PopupMenuItem<String>(
           //     child: Text(S.of(context).reset_svt_enhance_state),
           //     value: 'reset_enhance',
@@ -258,7 +258,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
               launch(WikiUtil.fandomFullLink(svt.info.nameEn));
             },
           ),
-          if (!Servant.unavailable.contains(svt.originNo))
+          if (svt.isAvailable)
             PopupMenuItem<String>(
               child: Text(S.current.create_duplicated_svt),
               value: 'duplicate_svt', // push new page
@@ -355,7 +355,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('No.${svt.no}  ${svt.info.className}'),
-            if (!db.gameData.unavailableSvts.contains(svt.no))
+            if (svt.isAvailable)
               TextButton(
                 onPressed: () {
                   if (svt.atkGrowth.isEmpty && svt.hpGrowth.isEmpty) {
