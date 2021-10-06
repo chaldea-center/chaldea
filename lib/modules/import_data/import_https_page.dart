@@ -5,6 +5,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'bond_detail_page.dart';
@@ -22,8 +23,16 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   bool _includeSvt = true;
   bool _includeSvtStorage = true;
   bool _includeCraft = true;
-  bool _isLocked = true;
+
+  bool _onlyLocked = true;
   bool _allowDuplicated = false;
+
+  bool _showAccount = true;
+  bool _showItem = false;
+  bool _showSvt = false;
+  bool _showStorage = false;
+  bool _showCraft = false;
+  final Set<UserSvt> _validSvts = {};
 
   // mapping, from gamedata, key=game id
   late final Map<int, Servant> svtIdMap;
@@ -37,11 +46,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   BiliTopLogin? topLogin;
   List<List<UserSvt>> servants = [];
   List<UserItem> items = [];
-  Set<int> ignoreSvts = {};
-
   Map<int, int> crafts = {}; // craft.no: status
-
-  final HashSet<UserSvt> _shownSvts = HashSet();
 
   BiliReplaced? get replacedResponse => topLogin?.body;
 
@@ -69,7 +74,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
 
   @override
   Widget build(BuildContext context) {
-    _shownSvts.clear();
+    final url =
+        'https://chaldea-center.github.io/${Language.isCN ? "zh/" : ""}import_https.html';
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -94,36 +100,27 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                       children: [
                         Text(
                           LocalizedText.of(
-                              chs: '目前仅国服可用',
-                              jpn: '現在、中国サーバーのみがサポートされています',
-                              eng: 'Only Chinese server is supported yet'),
+                              chs: '使用方法', jpn: '使用方法について', eng: 'How to use'),
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
-                        Text(S.current.import_http_body_hint),
+                        TextButton(
+                          onPressed: () {
+                            launch(url);
+                          },
+                          child: Text(url),
+                        ),
                       ],
                     ),
                   )
                 : LayoutBuilder(
-                    builder: (context, constraints) => ListView(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      children: [
-                        const Card(
-                          child: Padding(
-                            padding: EdgeInsets.all(8),
-                            child: Text('2021.09.06国服更新2.26.0之后，抓包暂时失效。'),
-                          ),
-                        ),
-                        if (replacedResponse!.firstUser != null)
-                          userInfoAccordion,
-                        kDefaultDivider,
-                        itemsAccordion,
-                        kDefaultDivider,
-                        svtAccordion(false, constraints),
-                        kDefaultDivider,
-                        svtAccordion(true, constraints),
-                        kDefaultDivider,
-                        craftAccordion,
+                    builder: (context, constraints) => CustomScrollView(
+                      slivers: [
+                        userInfoSliver,
+                        itemSliver(constraints),
+                        svtSliver(false),
+                        svtSliver(true),
+                        craftSliver,
                       ],
                     ),
                   ),
@@ -142,277 +139,355 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   final double _with = 56;
   final double _height = 56 / Constants.iconAspectRatio; // ignore: unused_field
 
-  Widget get userInfoAccordion {
+  Widget get userInfoSliver {
     final user = replacedResponse!.firstUser!;
-    return SimpleAccordion(
-      expanded: true,
-      headerBuilder: (context, _) => const ListTile(
-        leading: Icon(Icons.supervised_user_circle),
-        title: Text('账号信息'),
-      ),
-      contentBuilder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: divideTiles([
-          ListTile(
-            title: const Text('获取时间'),
-            trailing: Text(topLogin!.cache.serverTime?.toStringShort() ?? '?'),
+    return MultiSliver(
+      pushPinnedChildren: true,
+      children: [
+        SliverPinnedHeader(
+          child: ListTile(
+            leading: const Icon(Icons.supervised_user_circle),
+            title:
+                Text(LocalizedText.of(chs: '账号信息', jpn: 'jpn', eng: 'Account')),
+            trailing: ExpandIcon(onPressed: null, isExpanded: _showAccount),
+            onTap: () {
+              setState(() {
+                _showAccount = !_showAccount;
+              });
+            },
           ),
-          ListTile(
-            title: const Text('用户名'),
-            trailing: Text(user.name),
-          ),
-          ListTile(
-            title: const Text('性别'),
-            trailing: Text(user.genderType == 1 ? '咕哒夫' : '咕哒子'),
-          ),
-          ListTile(
-            title: const Text('用户ID'),
-            trailing: Text(user.friendCode),
-          ),
-          ListTile(
-            title: const Text('QP'),
-            trailing: Text(formatNumber(user.qp)),
-          ),
-          ListTile(
-            title: const Text('魔力棱镜'),
-            trailing: Text(formatNumber(user.mana)),
-          ),
-          ListTile(
-            title: const Text('稀有魔力棱镜'),
-            trailing: Text(formatNumber(user.rarePri)),
-          ),
-        ]),
-      ),
+        ),
+        if (_showAccount)
+          SliverClip(
+            child: MultiSliver(children: [
+              ListTile(
+                title:
+                    Text(LocalizedText.of(chs: '获取时间', jpn: '時間', eng: 'Time')),
+                trailing:
+                    Text(topLogin!.cache.serverTime?.toStringShort() ?? '?'),
+              ),
+              ListTile(
+                title: Text(S.current.login_username),
+                trailing: Text(user.name),
+              ),
+              ListTile(
+                title: Text(S.current.info_gender),
+                trailing: Text(user.genderType == 1
+                    ? '♂' +
+                        LocalizedText.of(chs: '咕哒夫', jpn: 'ぐだ男', eng: 'Gudao')
+                    : '♀' +
+                        LocalizedText.of(
+                            chs: '咕哒子', jpn: 'ぐだ子', eng: 'Gudako')),
+              ),
+              ListTile(
+                title: const Text('ID'),
+                trailing: Text(user.friendCode),
+              ),
+              ListTile(
+                title: Text(Item.lNameOf(Items.qp)),
+                trailing: Text(formatNumber(user.qp)),
+              ),
+              ListTile(
+                title: Text(Item.lNameOf(Items.manaPri)),
+                trailing: Text(formatNumber(user.mana)),
+              ),
+              ListTile(
+                title: Text(Item.lNameOf(Items.rarePri)),
+                trailing: Text(formatNumber(user.rarePri)),
+              ),
+            ]),
+          )
+      ],
     );
   }
 
-  Widget get itemsAccordion {
-    List<Widget> children = [];
-    items.forEach((item) {
-      children.add(ImageWithText(
-        image: db.getIconImage(item.indexKey!, width: _with),
-        text: item.num.toString(),
-        width: _with,
-        padding: const EdgeInsets.only(right: 2, bottom: 3),
-      ));
-    });
-    return SimpleAccordion(
-      expanded: true,
-      disableAnimation: true,
-      headerBuilder: (context, _) => ListTile(
-        leading: Checkbox(
-          value: _includeItem,
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          onChanged: (v) => setState(() {
-            _includeItem = v ?? _includeItem;
-          }),
+  Widget itemSliver(BoxConstraints constraints) {
+    return MultiSliver(
+      pushPinnedChildren: true,
+      children: [
+        SliverPinnedHeader(
+          child: ListTile(
+            leading: Checkbox(
+              value: _includeItem,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              onChanged: (v) => setState(() {
+                _includeItem = v ?? _includeItem;
+              }),
+            ),
+            title: Text(S.current.item),
+            trailing: ExpandIcon(onPressed: null, isExpanded: _showItem),
+            onTap: () {
+              setState(() {
+                _showItem = !_showItem;
+              });
+            },
+          ),
         ),
-        title: Text(S.current.item),
-      ),
-      contentBuilder: (context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Wrap(
-          spacing: 6,
-          runSpacing: 6,
-          alignment: WrapAlignment.center,
-          children: children,
-        ),
-      ),
+        if (_showItem)
+          SliverClip(
+            child: SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              sliver: SliverGrid(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final item = items[index];
+                  return ImageWithText(
+                    image: db.getIconImage(item.indexKey!, width: _with),
+                    text: item.num.toString(),
+                    // width: _with,
+                    padding: const EdgeInsets.only(right: 2, bottom: 3),
+                  );
+                }, childCount: items.length),
+                gridDelegate:
+                    SliverGridDelegateWithFixedCrossAxisCountAndFixedHeight(
+                  crossAxisCount: constraints.maxWidth ~/ _with,
+                  height: _height,
+                  mainAxisSpacing: 4,
+                  crossAxisSpacing: 4,
+                ),
+              ),
+            ),
+          )
+      ],
     );
   }
 
-  Widget svtAccordion(bool inStorage, BoxConstraints constraints) {
-    int crossCount = max(2, constraints.maxWidth ~/ 210);
+  Widget svtSliver(bool inStorage) {
     List<Widget> children = [];
-    final _textStyle = TextStyle(
-        fontSize: 11, color: DefaultTextStyle.of(context).style.color);
+    int validCount = 0;
+
     for (var group in servants) {
       for (var svt in group) {
         if ((inStorage && !svt.inStorage) || (!inStorage && svt.inStorage)) {
           continue;
         }
-        if (_isLocked && !svt.locked) continue;
-        if (!_allowDuplicated && group.indexOf(svt) > 0) continue;
-        bool hidden = ignoreSvts.contains(svt.id);
 
-        if (!hidden) {
-          _shownSvts.add(svt);
-        }
-
-        String text = '宝具${svt.treasureDeviceLv1} ';
-        text += ' 绊${cardCollections[svt.svtId]!.friendshipRank}\n';
-        text += '灵基${svt.limitCount} 圣杯${svt.exceedCount} Lv.${svt.lv}\n';
-        if (db.gameData.servants[svt.indexKey]!.costumeNos.isEmpty) {
-          text += '';
-        } else {
-          text +=
-              '灵衣 ${cardCollections[svt.svtId]!.costumeIdsTo01().join('/')}\n';
-        }
-        text += '技能 ${svt.skillLv1}/${svt.skillLv2}/${svt.skillLv3}\n';
-
-        if (svt.appendLvs != null) {
-          text +=
-              '附加 ${svt.appendLvs!.map((e) => e == 0 ? '-' : e).join('/')}\n';
-        }
         int? coin = replacedResponse?.coinMap[svt.svtId]?.num;
-        if (coin != null) {
-          text += 'Coin: $coin\n';
+        Widget _wrapCellStyle(List<String> texts) {
+          return CustomTableRow.fromTexts(
+            texts: texts,
+            defaults: TableCellData(
+                padding: EdgeInsets.zero, alignment: Alignment.centerLeft),
+            divider: null,
+          );
         }
 
-        final richText = RichText(
-          text: TextSpan(
-            text: text,
-            style: _textStyle,
+        List<Widget> infoRows = [
+          _wrapCellStyle([
+            'Lv.${svt.lv}',
+            S.current.ascension_short + ' ${svt.limitCount}',
+            S.current.grail + ' ${svt.exceedCount}',
+          ]),
+          _wrapCellStyle([
+            LocalizedText.of(chs: '宝具', jpn: 'NP', eng: 'NP') +
+                ' ${svt.treasureDeviceLv1}',
+            S.current.bond + ' ${cardCollections[svt.svtId]!.friendshipRank}',
+            coin == null
+                ? ''
+                : (LocalizedText.of(chs: '硬币', jpn: 'コイン', eng: 'Coin') +
+                    ' $coin'),
+          ]),
+          _wrapCellStyle([
+            S.current.active_skill +
+                ' ${svt.skillLv1}/${svt.skillLv2}/${svt.skillLv3}',
+            svt.appendLvs == null
+                ? ''
+                : S.current.append_skill_short +
+                    ' ${svt.appendLvs!.map((e) => e == 0 ? '-' : e).join('/')}',
+          ]),
+          if (db.gameData.servants[svt.indexKey]!.costumeNos.isNotEmpty)
+            _wrapCellStyle([
+              S.current.costume +
+                  ' ${cardCollections[svt.svtId]!.costumeIdsTo01().join('/')}',
+            ]),
+          if (group.length > 1)
+            CustomTableRow.fromChildren(
+              children: [
+                Text(
+                  DateFormat('yyyy-MM-dd').format(svt.createdAt),
+                  style: TextStyle(color: Theme.of(context).errorColor),
+                )
+              ],
+              defaults: TableCellData(padding: EdgeInsets.zero),
+              divider: null,
+            ),
+        ];
+
+        void _onTapSvt() {
+          if (_validSvts.contains(svt)) {
+            _validSvts.remove(svt);
+          } else {
+            _validSvts.add(svt);
+          }
+          setState(() {});
+        }
+
+        // image+text
+        Widget child = CustomTile(
+          leading: Stack(
+            alignment: Alignment.centerLeft,
             children: [
-              TextSpan(
-                text: group.length == 1
-                    ? ''
-                    : DateFormat('yyyy-MM-dd').format(svt.createdAt),
-                style: group.indexOf(svt) == 0
-                    ? const TextStyle(color: Colors.red)
-                    : null,
+              Padding(
+                padding: const EdgeInsets.only(left: 6, top: 2),
+                child: db.gameData.servants[svt.indexKey]!
+                    .iconBuilder(context: context, height: 56),
               ),
+              if (svt.locked)
+                const Icon(
+                  Icons.lock,
+                  size: 13,
+                  color: Colors.white,
+                ),
+              if (svt.locked)
+                Icon(
+                  Icons.lock,
+                  size: 12,
+                  color: Colors.yellow[900],
+                ),
             ],
           ),
+          title: DefaultTextStyle(
+              style: DefaultTextStyle.of(context).style.copyWith(fontSize: 12),
+              child: CustomTable(
+                children: infoRows,
+                hideOutline: true,
+                verticalDivider:
+                    const VerticalDivider(width: 0, color: Colors.transparent),
+                horizontalDivider:
+                    const Divider(height: 0, color: Colors.transparent),
+              )),
+          onTap: _onTapSvt,
         );
-        // image+text
-        Widget child = Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Stack(
-              alignment: Alignment.centerLeft,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 6, top: 2),
-                  child: db.getIconImage(
-                      db.gameData.servants[svt.indexKey]!.icon,
-                      width:
-                          min(_with, constraints.maxWidth / crossCount * 0.25),
-                      aspectRatio: 132 / 144),
-                ),
-                if (svt.locked)
-                  const Icon(
-                    Icons.lock,
-                    size: 13,
-                    color: Colors.white,
-                  ),
-                if (svt.locked)
-                  Icon(
-                    Icons.lock,
-                    size: 12,
-                    color: Colors.yellow[900],
-                  ),
-              ],
-            ),
-            Flexible(
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 4),
-                  child: richText,
-                ),
-              ),
-            )
-          ],
-        );
-        if (hidden) {
+        if (_validSvts.contains(svt)) {
+          validCount += 1;
+        } else {
           child = Stack(
             alignment: Alignment.center,
             children: [
               Opacity(
-                opacity: hidden ? 0.25 : 1,
+                opacity: 0.45,
                 child: child,
               ),
-              Icon(
-                Icons.clear_rounded,
-                color: Colors.red,
-                size: _height * 0.8,
+              GestureDetector(
+                child: Icon(
+                  Icons.clear_rounded,
+                  color: Colors.red,
+                  size: _height * 0.8,
+                ),
+                onTap: _onTapSvt,
               )
             ],
           );
         }
-        children.add(GestureDetector(
-          onTap: () {
-            setState(() {
-              if (ignoreSvts.contains(svt.id)) {
-                ignoreSvts.remove(svt.id);
-              } else {
-                ignoreSvts.add(svt.id);
-              }
-            });
-          },
-          onLongPress: () {
-            final _svt2 = db.gameData.servants[svt.indexKey];
-            EasyLoading.showToast(
-                'No.${_svt2?.no} - ${_svt2?.info.localizedName}');
-          },
-          child: child,
-        ));
+        children.add(child);
       }
     }
 
-    return SimpleAccordion(
-      expanded: true,
-      disableAnimation: true,
-      headerBuilder: (context, _) => ListTile(
-        title: Text(inStorage ? '保管室从者' : '从者'),
-        leading: Checkbox(
-          value: inStorage ? _includeSvtStorage : _includeSvt,
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          onChanged: (v) => setState(() {
-            if (inStorage) {
-              _includeSvtStorage = v ?? _includeSvtStorage;
-            } else {
-              _includeSvt = v ?? _includeSvt;
-            }
-          }),
+    return MultiSliver(
+      pushPinnedChildren: true,
+      children: [
+        SliverPinnedHeader(
+          child: ListTile(
+            title: Text(inStorage
+                ? S.current.servant +
+                    '(${LocalizedText.of(chs: '保管室', jpn: '保管室', eng: 'Second Archive')})'
+                : S.current.servant),
+            leading: Checkbox(
+              value: inStorage ? _includeSvtStorage : _includeSvt,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              onChanged: (v) => setState(() {
+                if (inStorage) {
+                  _includeSvtStorage = v ?? _includeSvtStorage;
+                } else {
+                  _includeSvt = v ?? _includeSvt;
+                }
+              }),
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('$validCount/${children.length}'),
+                ExpandIcon(
+                  onPressed: null,
+                  isExpanded: inStorage ? _showStorage : _showSvt,
+                )
+              ],
+            ),
+            onTap: () {
+              if (inStorage) {
+                _showStorage = !_showStorage;
+              } else {
+                _showSvt = !_showSvt;
+              }
+              setState(() {});
+            },
+          ),
         ),
-        trailing: Text(children.length.toString()),
-      ),
-      contentBuilder: (context) {
-        return GridView.builder(
-          shrinkWrap: true,
-          padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCountAndFixedHeight(
-              crossAxisCount: crossCount,
-              height: _height + 6,
-              crossAxisSpacing: 4),
-          itemBuilder: (context, index) => children[index],
-          itemCount: children.length,
-        );
-      },
+        if ((inStorage && _showStorage) || (!inStorage && _showSvt))
+          SliverClip(
+            child: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) => children[index],
+                childCount: children.length,
+              ),
+            ),
+          )
+      ],
     );
   }
 
-  Widget get craftAccordion {
-    return SimpleAccordion(
-      expanded: true,
-      disableAnimation: true,
-      headerBuilder: (context, _) => ListTile(
-        leading: Checkbox(
-          value: _includeCraft,
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          onChanged: (v) => setState(() {
-            _includeCraft = v ?? _includeCraft;
-          }),
+  Widget get craftSliver {
+    final notMeet = crafts.values.where((v) => v == 0).length;
+    final meet = crafts.values.where((v) => v == 1).length;
+    final own = crafts.values.where((v) => v == 2).length;
+    return MultiSliver(
+      pushPinnedChildren: true,
+      children: [
+        SliverPinnedHeader(
+          child: ListTile(
+            leading: Checkbox(
+              value: _includeCraft,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              onChanged: (v) => setState(() {
+                _includeCraft = v ?? _includeCraft;
+              }),
+            ),
+            title: Text(S.current.craft_essence),
+            trailing: ExpandIcon(onPressed: null, isExpanded: _showCraft),
+            onTap: () {
+              setState(() {
+                _showCraft = !_showCraft;
+              });
+            },
+          ),
         ),
-        title: const Text('礼装图鉴'),
-      ),
-      contentBuilder: (context) {
-        final notMeet = crafts.values.where((v) => v == 0).length;
-        final meet = crafts.values.where((v) => v == 1).length;
-        final own = crafts.values.where((v) => v == 2).length;
-        return ListTile(
-          leading: const Text(''),
-          title: Text(
-              '已契约: $own\n已遭遇: $meet\n未遭遇: $notMeet\n总计:   ${crafts.length}'),
-        );
-      },
+        if (_showCraft)
+          SliverClip(
+              child: MultiSliver(children: [
+            ListTile(
+              leading: const Text(''),
+              title: Text(
+                  '${Localized.craftFilter.of(CraftFilterData.statusTexts[2])}: $own\n'
+                  '${Localized.craftFilter.of(CraftFilterData.statusTexts[1])}: $meet\n'
+                  '${Localized.craftFilter.of(CraftFilterData.statusTexts[0])}: $notMeet\n'
+                  'ALL:   ${crafts.length}'),
+            )
+          ]))
+      ],
     );
   }
 
   Widget get buttonBar {
+    void _refreshValidSvts() {
+      _validSvts.clear();
+      for (final group in servants) {
+        for (final svt in group) {
+          if (_onlyLocked && !svt.locked) continue;
+          if (!_allowDuplicated && group.indexOf(svt) > 0) continue;
+          _validSvts.add(svt);
+        }
+      }
+    }
+
     return ButtonBar(
       alignment: MainAxisAlignment.center,
       buttonPadding: EdgeInsets.zero,
@@ -424,10 +499,11 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             CheckboxWithLabel(
-              value: _isLocked,
+              value: _onlyLocked,
               onChanged: (v) {
                 setState(() {
-                  _isLocked = v ?? _isLocked;
+                  _onlyLocked = v ?? _onlyLocked;
+                  _refreshValidSvts();
                 });
               },
               label: Text(S.current.import_http_body_locked),
@@ -437,6 +513,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               onChanged: (v) {
                 setState(() {
                   _allowDuplicated = v ?? _allowDuplicated;
+                  _refreshValidSvts();
                 });
               },
               label: Text(S.current.import_http_body_duplicated),
@@ -452,7 +529,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                             cardCollections: cardCollections),
                       );
                     },
-              child: const Text('羁绊详情'),
+              child: Text(S.current.bond),
             ),
             ElevatedButton(
               onPressed: replacedResponse == null ? null : didImportData,
@@ -491,7 +568,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     HashSet<int> _alreadyAdded = HashSet();
     for (var group in servants) {
       for (var svt in group) {
-        if (!_shownSvts.contains(svt)) continue;
+        if (!_validSvts.contains(svt)) continue;
         if (!_includeSvt && !svt.inStorage) continue;
         if (!_includeSvtStorage && svt.inStorage) continue;
 
@@ -600,11 +677,12 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       if (mounted) {
         SimpleCancelOkDialog(
           title: const Text('Error'),
-          content: Text('''$e\n\n请检查以下步骤是否正确：
-- 所捕获的URL格式类似为：
-https://line3-s2-xxx-fate.bilibiligame.net/rongame_beta//rgfate/60_1001/ac.php?_userId=xxxxxx&_key=toplogin
-其中域名前缀、数字及xxx可能随着地区、所在服务器和用户ID而不同
-- 确保保存的文件编码为UTF8(默认)且已解码为ey开头的英文+数字，内容未手动更改'''),
+          content: Text('$e\n\n' +
+              LocalizedText.of(
+                  chs: '请仔细参考教程',
+                  jpn: 'チュートリアルを参照してください',
+                  eng: 'Please refer thr tutorial') +
+              '\nhttps://chaldae-center.github.io/import_https.html'),
         ).showDialog(context);
       }
     } finally {
@@ -618,12 +696,11 @@ https://line3-s2-xxx-fate.bilibiligame.net/rongame_beta//rgfate/60_1001/ac.php?_
     BiliTopLogin _topLogin = BiliTopLogin.tryBase64(utf8.decode(bytes));
 
     // clear before import
-    ignoreSvts.clear();
+    _validSvts.clear();
     cardCollections.clear();
     servants.clear();
     items.clear();
     crafts.clear();
-    _shownSvts.clear();
 
     // items
     _topLogin.body.userItem.forEach((item) {
@@ -709,29 +786,5 @@ https://line3-s2-xxx-fate.bilibiligame.net/rongame_beta//rgfate/60_1001/ac.php?_
 
     // assign last
     topLogin = _topLogin;
-  }
-
-  void showHelp() {
-    SimpleCancelOkDialog(
-      hideCancel: true,
-      title: Text(S.of(context).help),
-      content: const SingleChildScrollView(
-        child: Text(""""""),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            launch('https://www.bilibili.com/read/cv10437953');
-          },
-          child: const Text('iOS'),
-        ),
-        TextButton(
-          onPressed: () {
-            launch('https://www.bilibili.com/read/cv10437954');
-          },
-          child: const Text('Win+Android'),
-        ),
-      ],
-    ).showDialog(context);
   }
 }

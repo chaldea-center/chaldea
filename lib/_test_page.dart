@@ -1,9 +1,11 @@
 // ignore_for_file: unused_element,unused_import
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/servant/servant_detail_page.dart';
 import 'package:path/path.dart' as p;
 
 void testFunction([BuildContext? context]) async {
   // if (PlatformU.isMacOS) _reloadDebugDataset();
+  SplitRoute.push(context!, ServantDetailPage(db.gameData.servants[321]!));
   return;
 }
 

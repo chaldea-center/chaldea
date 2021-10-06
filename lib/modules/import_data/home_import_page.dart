@@ -3,7 +3,7 @@ import 'package:chaldea/modules/home/subpage/account_page.dart';
 import 'package:chaldea/modules/home/subpage/user_data_page.dart';
 import 'package:chaldea/modules/import_data/import_fgo_simu_material_page.dart';
 import 'package:chaldea/modules/import_data/import_guda_page.dart';
-import 'package:chaldea/modules/import_data/import_http_page.dart';
+import 'package:chaldea/modules/import_data/import_https_page.dart';
 import 'package:chaldea/modules/import_data/import_item_screenshot_page.dart';
 import 'package:chaldea/modules/import_data/import_skill_screenshot_page.dart';
 
@@ -48,10 +48,10 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             title: Text(LocalizedText.of(
                 chs: 'HTTPS抓包', jpn: 'HTTPSスニッフィング', eng: 'HTTPS Sniffing')),
             subtitle: Text(LocalizedText.of(
-                chs: '(仅限国服)借助抓包工具获取账号登陆时的数据',
-                jpn: '（中国サーバのみ）アカウントがログインしているときにデータを取得する',
+                chs: '(国/台/日/美)借助抓包工具获取账号登陆时的数据',
+                jpn: '(JP/NA/CN/TW)アカウントがログインしているときにデータを取得する',
                 eng:
-                    '(CN server only) Capture the data when the account is logging in')),
+                    '(NA/JP/CN/TW)Capture the data when the account is logging in')),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
               SplitRoute.push(context, ImportHttpPage(), popDetail: true);

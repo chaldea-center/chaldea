@@ -78,6 +78,7 @@ dependencies:
   screenshot: ^1.2.3
   share_plus: ^2.2.0
   shared_preferences: ^2.0.7
+  sliver_tools: ^0.2.5
   string_validator: ^0.3.0
   table_sticky_headers: ^2.0.0
   url_launcher: ^6.0.12

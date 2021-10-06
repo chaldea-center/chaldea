@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SvtBondDetailPage extends StatefulWidget {
   // key=game id
@@ -102,7 +103,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('羁绊详情')),
+      appBar: AppBar(title: Text(S.current.bond)),
       body: Column(
         children: [
           ListTile(
@@ -221,15 +222,15 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                     value: _SortType.rarity,
                   ),
                   const DropdownMenuItem(
-                    child: Text('羁绊等级'),
+                    child: Text('Rank'),
                     value: _SortType.bondRank,
                   ),
                   const DropdownMenuItem(
-                    child: Text('总羁绊值'),
+                    child: Text('Total'),
                     value: _SortType.bondTotal,
                   ),
                   const DropdownMenuItem(
-                    child: Text('升级所需羁绊值'),
+                    child: Text('Next'),
                     value: _SortType.bondNext,
                   ),
                 ],
@@ -250,8 +251,9 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> {
                   });
                 },
                 tooltip: 'Reversed',
-                icon: Icon(
-                    reversed ? Icons.arrow_circle_down : Icons.arrow_circle_up),
+                icon: FaIcon(reversed
+                    ? FontAwesomeIcons.sortAlphaUpAlt
+                    : FontAwesomeIcons.sortAlphaDownAlt),
               )
             ],
           )

@@ -65,7 +65,7 @@ class CustomTableRow extends StatefulWidget {
 
   /// background color of table row
   final Color? color;
-  final VerticalDivider divider;
+  final VerticalDivider? divider;
 
   CustomTableRow(
       {Key? key,
@@ -84,7 +84,7 @@ class CustomTableRow extends StatefulWidget {
     TableCellData? defaults,
     bool? isHeader,
     Color? color,
-    VerticalDivider divider = kVerticalDivider,
+    VerticalDivider? divider = kVerticalDivider,
   }) : this(
     key: key,
           children: texts
@@ -100,7 +100,7 @@ class CustomTableRow extends StatefulWidget {
     required List<Widget> children,
     TableCellData? defaults,
     Color? color,
-    VerticalDivider divider = kVerticalDivider,
+    VerticalDivider? divider = kVerticalDivider,
   }) : this(
     key: key,
           children: children
@@ -198,8 +198,8 @@ class _CustomTableRowState extends State<CustomTableRow> {
         ),
       ));
 
-      if (index < widget.children.length - 1) {
-        children.add(widget.divider);
+      if (index < widget.children.length - 1 && widget.divider != null) {
+        children.add(widget.divider!);
       }
     }
     if (!_needRebuild) _needRebuild = true;
