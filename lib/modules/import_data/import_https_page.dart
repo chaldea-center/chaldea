@@ -140,12 +140,20 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   final double _height = 56 / Constants.iconAspectRatio; // ignore: unused_field
 
   Widget get userInfoSliver {
-    final user = replacedResponse!.firstUser!;
+    final user = replacedResponse?.firstUser;
+    if (user == null) {
+      return MultiSliver(children: const [
+        ListTile(
+          title: Text("??? no user info found"),
+        )
+      ]);
+    }
     return MultiSliver(
       pushPinnedChildren: true,
       children: [
         SliverPinnedHeader(
           child: ListTile(
+            tileColor: Theme.of(context).cardColor,
             leading: const Icon(Icons.supervised_user_circle),
             title:
                 Text(LocalizedText.of(chs: '账号信息', jpn: 'jpn', eng: 'Account')),
@@ -207,6 +215,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       children: [
         SliverPinnedHeader(
           child: ListTile(
+            tileColor: Theme.of(context).cardColor,
             leading: Checkbox(
               value: _includeItem,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -226,7 +235,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         if (_showItem)
           SliverClip(
             child: SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               sliver: SliverGrid(
                 delegate: SliverChildBuilderDelegate((context, index) {
                   final item = items[index];
@@ -387,6 +396,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       children: [
         SliverPinnedHeader(
           child: ListTile(
+            tileColor: Theme.of(context).cardColor,
             title: Text(inStorage
                 ? S.current.servant +
                     '(${LocalizedText.of(chs: '保管室', jpn: '保管室', eng: 'Second Archive')})'
@@ -398,9 +408,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                 if (inStorage) {
                   _includeSvtStorage = v ?? _includeSvtStorage;
                 } else {
-                  _includeSvt = v ?? _includeSvt;
-                }
-              }),
+                      _includeSvt = v ?? _includeSvt;
+                    }
+                  }),
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
@@ -444,6 +454,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       children: [
         SliverPinnedHeader(
           child: ListTile(
+            tileColor: Theme.of(context).cardColor,
             leading: Checkbox(
               value: _includeCraft,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -477,17 +488,6 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   }
 
   Widget get buttonBar {
-    void _refreshValidSvts() {
-      _validSvts.clear();
-      for (final group in servants) {
-        for (final svt in group) {
-          if (_onlyLocked && !svt.locked) continue;
-          if (!_allowDuplicated && group.indexOf(svt) > 0) continue;
-          _validSvts.add(svt);
-        }
-      }
-    }
-
     return ButtonBar(
       alignment: MainAxisAlignment.center,
       buttonPadding: EdgeInsets.zero,
@@ -539,6 +539,17 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         )
       ],
     );
+  }
+
+  void _refreshValidSvts() {
+    _validSvts.clear();
+    for (final group in servants) {
+      for (final svt in group) {
+        if (_onlyLocked && !svt.locked) continue;
+        if (!_allowDuplicated && group.indexOf(svt) > 0) continue;
+        _validSvts.add(svt);
+      }
+    }
   }
 
   void didImportData() async {
@@ -783,6 +794,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       int status = cardCollections[gameId]?.status ?? 0;
       return MapEntry(craft.no, status);
     });
+
+    _refreshValidSvts();
 
     // assign last
     topLogin = _topLogin;

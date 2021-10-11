@@ -2,7 +2,6 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -442,21 +441,14 @@ class _OneSupportWithGesture extends StatefulWidget {
 class __OneSupportWithGestureState extends State<_OneSupportWithGesture> {
   SupportSetup get setting => widget.setting;
 
-  Offset offset = Offset.zero;
-  double scale = 1;
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onScaleStart: (detail) {
-        offset = setting.offset;
-        scale = setting.scale;
-      },
+      onScaleStart: (detail) {},
       onScaleUpdate: (detail) {
-        // print(detail);
-        setting.scale = scale * detail.scale;
-        setting.offset = offset + detail.focalPointDelta;
+        setting.scale *= detail.scale;
+        setting.offset += detail.focalPointDelta;
         setState(() {});
         Transform(
           transform: Matrix4.identity()

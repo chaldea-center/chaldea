@@ -21,8 +21,9 @@ Thanks for all above communities and contributors.
 
 ## Features
 
-- support almost all platform: Android, iOS, Windows and macOS
-- profiles of **Servants**, **Craft Essences**, **Command Codes**, **Mystic Codes**, **Events**, **Items** and **Summons**
+- support all platform: Android, iOS, Windows, macOS and Linux
+- profiles of **Servants**, **Craft Essences**, **Command Codes**, **Mystic Codes**, **Events**, **
+  Items** and **Summons**
 - item/material planning
   - servants' ascension, skill, dress, append skill, palingenesis, fou-kun and bond(Chaldea flame)
   - limit events, main records, exchange tickets and campaigns
@@ -48,9 +49,8 @@ Android   | Android 6.0 (API level 23)
 iOS       | iOS 10.0
 Windows   | Windows 7 SP1 (64-bit), x86-64 based
 macOS     | macOS 10.11
-Linux     | Not implemented
-Web       | Not supported      
-
+Linux     | Debian 10 & above
+Web       | Not supported
 
 ## Installation
 
@@ -61,7 +61,9 @@ Web       | Not supported
 [<img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-US?size=250x83&amp;releaseDate=1610841600&h=cb0adac232fdd6b88894f78b2f349b6e" alt="Download on the App Store" width="120px">](https://apps.apple.com/us/app/chaldea/id1548713491?itsct=apps_box&itscg=30200)
 
 ### Installer
-You can download installer package in [release](https://github.com/chaldea-center/chaldea/releases) page for Android, Windows and macOS.
+
+You can download installer package in [release](https://github.com/chaldea-center/chaldea/releases)
+page for Android, Windows, macOS and Linux.
 
 ## Dataset
 The game dataset which should be place at `res/data/dataset.zip` is maintained in another repository [chaldea-dataset](https://github.com/chaldea-center/chaldea-dataset). 

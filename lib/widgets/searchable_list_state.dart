@@ -206,12 +206,13 @@ abstract class SearchableListState<T, St extends StatefulWidget>
           (constraints.maxWidth == double.infinity
               ? 7
               : constraints.maxWidth ~/ 64);
-      return GridView.count(
+      return GridView.builder(
         controller: scrollController,
-        crossAxisCount: count,
-        childAspectRatio: childAspectRatio,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: count, childAspectRatio: childAspectRatio),
+        itemBuilder: (context, index) => children[index],
+        itemCount: children.length,
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-        children: children,
       );
     });
     return _wrapButtonBar(grid);
