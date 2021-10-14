@@ -10,7 +10,11 @@ class ItemStatistics {
 
   Map<String, int> get svtItems => svtItemDetail.planItemCounts.summation!;
 
-  ItemStatistics();
+  final User? user;
+
+  User get curUser => user ?? db.curUser;
+
+  ItemStatistics({this.user});
 
   /// Clear statistic data, all data will be calculated again next calling.
   /// After importing dataset, we should call this to clear, then call
@@ -65,12 +69,12 @@ class ItemStatistics {
     }
     void callback() {
       // priority is shared cross users!
-      final Map<int, ServantStatus> priorityFiltered = Map.fromEntries(db
-          .curUser.servants.entries
+      final Map<int, ServantStatus> priorityFiltered = Map.fromEntries(curUser
+          .servants.entries
           .where((entry) => db.userData.svtFilter.priority
               .singleValueFilter(entry.value.priority.toString())));
       svtItemDetail.update(
-          curStat: priorityFiltered, targetPlan: db.curUser.curSvtPlan);
+          curStat: priorityFiltered, targetPlan: curUser.curSvtPlan);
       updateLeftItems(
           shouldBroadcast: shouldBroadcast, lapse: const Duration());
     }
@@ -88,7 +92,7 @@ class ItemStatistics {
     }
     void callback() {
       if (includingEvent) {
-        eventItems = db.gameData.events.getAllItems(db.curUser.events);
+        eventItems = db.gameData.events.getAllItems(curUser.events);
       } else {
         eventItems = {};
       }
@@ -104,7 +108,7 @@ class ItemStatistics {
   void updateLeftItems({bool shouldBroadcast = true, Duration? lapse}) {
     void callback() {
       leftItems =
-          sumDict([eventItems, db.curUser.items, multiplyDict(svtItems, -1)]);
+          sumDict([eventItems, curUser.items, multiplyDict(svtItems, -1)]);
       if (shouldBroadcast) {
         db.notifyDbUpdate();
       }

@@ -2,7 +2,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/servant/servant_detail_page.dart';
 import 'package:chaldea/modules/shared/common_builders.dart';
 
-class ItemCostServantPage extends StatelessWidget {
+class ItemServantDemandPage extends StatelessWidget {
   final String itemKey;
   final bool favorite;
 
@@ -13,7 +13,7 @@ class ItemCostServantPage extends StatelessWidget {
   final int viewType;
   final int sortType;
 
-  const ItemCostServantPage({
+  const ItemServantDemandPage({
     Key? key,
     required this.itemKey,
     this.favorite = true,

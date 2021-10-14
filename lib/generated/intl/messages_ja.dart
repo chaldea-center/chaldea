@@ -147,6 +147,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "dataset_type_text":
             MessageLookupByLibrary.simpleMessage("テキストデータパッケージ"),
         "delete": MessageLookupByLibrary.simpleMessage("削除"),
+        "demands": MessageLookupByLibrary.simpleMessage("要件"),
         "display_setting": MessageLookupByLibrary.simpleMessage("表示設定"),
         "download": MessageLookupByLibrary.simpleMessage("ダウンロード"),
         "download_complete": MessageLookupByLibrary.simpleMessage("ダウンロード完了"),

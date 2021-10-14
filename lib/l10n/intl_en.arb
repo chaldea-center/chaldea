@@ -417,5 +417,6 @@
   "append_skill_short": "Append",
   "copied": "Copied",
   "effect_search": "Buff Search",
-  "growth_curve": "Growth Curve"
+  "growth_curve": "Growth Curve",
+  "demands": "Demands"
 }

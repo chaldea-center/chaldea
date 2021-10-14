@@ -311,7 +311,13 @@ class AutoUpdateUtil {
       }
 
       if (fpInstaller == null) {
-        if (!background) EasyLoading.showError('Download Failed');
+        if (!background) {
+          const SimpleCancelOkDialog(
+            title: Text('Error'),
+            content: Text('Downloading failed'),
+            hideCancel: true,
+          ).showDialog(context);
+        }
         return;
       }
       await _showDialog(

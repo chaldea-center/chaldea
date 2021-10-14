@@ -3,9 +3,10 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/tabs/item_info_tab.dart';
 import 'package:chaldea/modules/item/tabs/item_obtain_interlude.dart';
 
-import 'tabs/item_cost_servant_page.dart';
 import 'tabs/item_obtain_event_page.dart';
 import 'tabs/item_obtain_free_page.dart';
+import 'tabs/item_servant_cost_page.dart';
+import 'tabs/item_servant_demand_page.dart';
 
 class ItemDetailPage extends StatefulWidget {
   final String itemKey;
@@ -38,7 +39,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: 6, vsync: this);
     _tabController.addListener(() {
       setState(() {
         curTab = _tabController.index;
@@ -60,16 +61,17 @@ class _ItemDetailPageState extends State<ItemDetailPage>
         centerTitle: false,
         titleSpacing: 0,
         actions: <Widget>[
-          if (curTab == 0) viewTypeButton,
-          if (curTab == 0 || curTab == 3) sortButton,
-          if (curTab == 2) filterOutdatedButton,
-          if (curTab == 0 || curTab == 3) favoriteButton,
+          if (curTab == 0 || curTab == 1) viewTypeButton,
+          if (curTab == 0 || curTab == 1 || curTab == 4) sortButton,
+          if (curTab == 3) filterOutdatedButton,
+          if (curTab == 0 || curTab == 4) favoriteButton,
         ],
         bottom: TabBar(
           controller: _tabController,
           isScrollable: true,
           tabs: [
-            Tab(text: S.current.servant),
+            Tab(text: S.current.demands),
+            Tab(text: LocalizedText.of(chs: '消耗', jpn: '消費', eng: 'Consumed')),
             Tab(text: S.current.free_quest),
             Tab(text: S.current.event_title),
             Tab(text: S.current.interlude_and_rankup),
@@ -80,9 +82,14 @@ class _ItemDetailPageState extends State<ItemDetailPage>
       body: TabBarView(
         controller: _tabController,
         children: <Widget>[
-          ItemCostServantPage(
+          ItemServantDemandPage(
             itemKey: widget.itemKey,
             favorite: favorite,
+            viewType: viewType,
+            sortType: sortType,
+          ),
+          ItemServantCostPage(
+            itemKey: widget.itemKey,
             viewType: viewType,
             sortType: sortType,
           ),

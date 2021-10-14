@@ -419,5 +419,6 @@
   "append_skill_short": "アペンド",
   "copied": "コピー済み",
   "effect_search": "バフ検索",
-  "growth_curve": "成長曲線"
+  "growth_curve": "成長曲線",
+  "demands": "要件"
 }

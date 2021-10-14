@@ -417,5 +417,6 @@
   "append_skill_short": "附加",
   "copied": "已复制",
   "effect_search": "Buff检索",
-  "growth_curve": "成长曲线"
+  "growth_curve": "成长曲线",
+  "demands": "需求"
 }

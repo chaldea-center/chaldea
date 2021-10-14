@@ -192,7 +192,8 @@ Widget buildClassifiedItemList({
     final gridChildren = divided[key]!.map((item) {
       return ImageWithText(
         image: Item.iconBuilder(context: context, itemKey: item.name),
-        text: formatNumber(data[item.name]!, compact: compactNum),
+        text: formatNumber(data[item.name]!,
+            compact: compactNum, groupSeparator: ''),
         padding: const EdgeInsets.only(right: 3),
       );
     }).toList();

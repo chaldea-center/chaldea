@@ -95,7 +95,10 @@ class _GameDataPageState extends State<GameDataPage> {
                   await AutoUpdateUtil.patchGameData(
                     background: false,
                     onError: (e, s) {
-                      EasyLoading.showInfo(e.toString());
+                      SimpleCancelOkDialog(
+                        content: Text(e.toString()),
+                        hideCancel: true,
+                      ).showDialog(context);
                     },
                   );
                   if (mounted) setState(() {});

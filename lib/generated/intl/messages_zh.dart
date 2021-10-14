@@ -143,6 +143,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "dataset_type_image": MessageLookupByLibrary.simpleMessage("图片数据包"),
         "dataset_type_text": MessageLookupByLibrary.simpleMessage("文本数据包"),
         "delete": MessageLookupByLibrary.simpleMessage("删除"),
+        "demands": MessageLookupByLibrary.simpleMessage("需求"),
         "display_setting": MessageLookupByLibrary.simpleMessage("显示设置"),
         "download": MessageLookupByLibrary.simpleMessage("下载"),
         "download_complete": MessageLookupByLibrary.simpleMessage("下载完成"),

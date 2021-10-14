@@ -4235,6 +4235,16 @@ class S {
       args: [],
     );
   }
+
+  /// `需求`
+  String get demands {
+    return Intl.message(
+      '需求',
+      name: 'demands',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

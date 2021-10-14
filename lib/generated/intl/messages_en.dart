@@ -163,6 +163,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "dataset_type_text":
             MessageLookupByLibrary.simpleMessage("Text dataset"),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
+        "demands": MessageLookupByLibrary.simpleMessage("Demands"),
         "display_setting":
             MessageLookupByLibrary.simpleMessage("Display Settings"),
         "download": MessageLookupByLibrary.simpleMessage("Download"),

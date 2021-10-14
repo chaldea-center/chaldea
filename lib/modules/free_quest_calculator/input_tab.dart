@@ -9,7 +9,7 @@ class DropCalcInputTab extends StatefulWidget {
   final Map<String, int>? objectiveCounts;
   final ValueChanged<GLPKSolution>? onSolved;
 
-  const DropCalcInputTab({Key? key, this.objectiveCounts, this.onSolved})
+  DropCalcInputTab({Key? key, this.objectiveCounts, this.onSolved})
       : super(key: key);
 
   @override
@@ -59,28 +59,38 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
       }
     });
 
-    Widget makeText(String text) {
+    Widget makeText({required String text, Widget? icon}) {
+      Widget child = AutoSizeText(
+        text,
+        maxLines: 2,
+        maxFontSize: 15,
+        textAlign: TextAlign.center,
+        style: TextStyle(color: Theme.of(context).textTheme.bodyText1?.color),
+      );
+      if (icon != null) {
+        child = Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [icon, Expanded(child: child)],
+        );
+      }
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Center(
-          child: AutoSizeText(
-            text,
-            maxLines: 2,
-            maxFontSize: 15,
-            textAlign: TextAlign.center,
-            style:
-                TextStyle(color: Theme.of(context).textTheme.bodyText1?.color),
-          ),
-        ),
+        child: Center(child: child),
       );
     }
 
     pickerData.forEach((category, items) {
       pickerAdapter.add(PickerItem(
-        text: makeText(category),
+        text: makeText(text: category.replaceFirst(RegExp(r' Items$'), '')),
         value: category,
         children: items
-            .map((e) => PickerItem(text: makeText(Item.lNameOf(e)), value: e))
+            .map((e) => PickerItem(
+                text: makeText(
+                  text: Item.lNameOf(e),
+                  icon: Item.iconBuilder(
+                      context: context, itemKey: e, height: 28),
+                ),
+                value: e))
             .toList(),
       ));
     });
@@ -254,6 +264,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
       backgroundColor: null,
       cancelText: S.current.cancel,
       confirmText: S.current.confirm,
+      columnFlex: [3, 5],
       onConfirm: (Picker picker, List<int> value) {
         print('picker: ${picker.getSelectedValues()}');
         setState(() {
@@ -336,6 +347,8 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                   tooltip: 'Add',
                   onPressed: () {
                     getPicker(
+                      item: params.dropRatesData.rowNames
+                          .firstWhereOrNull((e) => !params.rows.contains(e)),
                       onSelected: (v) {
                         setState(() {
                           params.rows.add(v);
