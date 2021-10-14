@@ -7,10 +7,12 @@
 [![license GPL-3.0](https://img.shields.io/github/license/chaldea-center/chaldea.svg?style=flat)](https://github.com/chaldea-center/chaldea/blob/master/LICENSE)
 [![stars](https://img.shields.io/github/stars/chaldea-center/chaldea?style=social)](https://github.com/chaldea-center/chaldea/stargazers)
 
-Chaldea is a cross-platform tool for [Fate/Grand Order](https://www.fate-go.jp) to help masters planning their trip of taking back the future. 
+Chaldea is a cross-platform tool for [Fate/Grand Order](https://www.fate-go.jp) to help masters planning their trip of taking back the future.
 
-Chaldea is inspired from the iOS app [Guda](https://apps.apple.com/sg/app/guda/id1229055088) and WeChat mini program [FGO material programe](https://github.com/lacus87/fgo). 
-And dataset resources are mostly based on following sites:
+Chaldea is inspired from the iOS app [Guda](https://apps.apple.com/sg/app/guda/id1229055088) and
+WeChat mini program [FGO material programe](https://github.com/lacus87/fgo). And dataset resources
+are mostly based on following sites:
+
 - The Chinese wiki - [Mooncell](https://fgo.wiki)
 - The English wiki - [Fandom - Fate/Grand Order Wiki](https://fategrandorder.fandom.com/wiki/)
 - [FGO効率劇場](https://sites.google.com/view/fgo-domus-aurea)
@@ -18,6 +20,8 @@ And dataset resources are mostly based on following sites:
 
 Thanks for all above communities and contributors.
 
+For more details or usage, please check our document: [English](https://chaldea-center.github.io)
+| [中文](https://chaldea-center.github.io/zh/)
 
 ## Features
 
@@ -25,7 +29,7 @@ Thanks for all above communities and contributors.
 - profiles of **Servants**, **Craft Essences**, **Command Codes**, **Mystic Codes**, **Events**, **
   Items** and **Summons**
 - item/material planning
-  - servants' ascension, skill, dress, append skill, palingenesis, fou-kun and bond(Chaldea flame)
+  - servants' ascension, skill, dress, append skill, palingenesis, fou-kun and bond(Chaldea lantern)
   - limit events, main records, exchange tickets and campaigns
   - owned items
   - Saint Quartz planning
@@ -35,7 +39,7 @@ Thanks for all above communities and contributors.
   - master mission/weekly mission solver, customization is supported
 - summon/gacha simulator
 - import user data
-  - import item and servant data from captured https traffic when login to CN server(Bilibili)
+  - all needed account data from captured https traffic when login to CN/TW/JP/NA server
   - import item/active skill/append skill data from game screenshots (realized on server side)
   - from `Guda` app
   - from `fgosimulator.webcrow.jp/Material`

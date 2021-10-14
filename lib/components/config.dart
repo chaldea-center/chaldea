@@ -234,7 +234,7 @@ class Database {
       if (memory) userData,
     ];
     for (var obj in objs) {
-      String filenameWithPrefix = (obj is File ? 'd' : 'm') + filename;
+      String filenameWithPrefix = filename + (obj is File ? 'd' : 'm');
       _saveJsonToFile(
         obj,
         pathlib.join(paths.userDataBackupDir, filenameWithPrefix),

@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/home/subpage/login_page.dart';
-import 'package:file_picker_cross/file_picker_cross.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path/path.dart' show basenameWithoutExtension;
 import 'package:share_plus/share_plus.dart';
@@ -122,9 +122,10 @@ class _UserDataPageState extends State<UserDataPage> {
 
   void importUserData() async {
     try {
-      FilePickerCross result = await FilePickerCross.importFromStorage(
-          type: FileTypeCross.custom, fileExtension: 'json');
-      final path = result.path!;
+      final result =
+          await FilePicker.platform.pickFiles(allowedExtensions: ['json']);
+      final path = result?.paths.first;
+      if (path == null) return;
       db.backupUserdata();
 
       db.userData =
@@ -134,8 +135,6 @@ class _UserDataPageState extends State<UserDataPage> {
       db.notifyDbUpdate(item: true, svt: true);
       MobStat.logEvent('import_data', {"from": "backup"});
       db.notifyAppUpdate();
-    } on FileSelectionCanceledError {
-      //
     } catch (e) {
       EasyLoading.showError(S.of(context).import_data_error(e));
     }
@@ -361,8 +360,6 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
                       db.saveUserData();
                       db.notifyDbUpdate(item: true, svt: true);
                       db.notifyAppUpdate();
-                    } on FileSelectionCanceledError {
-                      //
                     } catch (e) {
                       EasyLoading.showError(S.of(context).import_data_error(e));
                     }

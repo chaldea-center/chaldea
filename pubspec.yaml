@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.6.1+610
+version: 1.6.1+611
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -27,7 +27,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  archive: ^3.1.5
+  archive: ^3.1.6
   auto_size_text: ^3.0.0-nullsafety.0
   baidu_mob_stat:
     git:
@@ -44,31 +44,31 @@ dependencies:
   dio: ^4.0.0
   dio_cookie_manager: ^2.0.0
   dots_indicator: ^2.0.0
-  file_picker_cross: 4.4.2
+  file_picker: ^4.1.3
   fl_chart: ^0.40.0
   flutter_cache_manager: ^3.1.2
   flutter_easyloading: ^3.0.0
   flutter_email_sender: ^5.0.2
-  flutter_markdown: ^0.6.6
+  flutter_markdown: ^0.6.7
   flutter_picker: ^2.0.2
   flutter_qjs: ^0.3.6
   flutter_webview_plugin: ^0.4.0
   font_awesome_flutter: ^9.1.0
   hive: ^2.0.4
   html: ^0.15.0
-  image: ^3.0.7
-  image_gallery_saver: ^1.7.0
+  image: ^3.0.8
+  image_gallery_saver: ^1.7.1
   intl: ^0.17.0
   json_annotation: 4.1.0
-  just_audio: ^0.9.12
+  just_audio: ^0.9.13
   # comment in linux
-  just_audio_libwinmedia: ^0.0.3
+  just_audio_libwinmedia: ^0.0.4
   kana_kit: ^2.0.0
   logger: ^1.1.0
   lpinyin: ^2.0.3
   modal_bottom_sheet: ^2.0.0
   open_file: ^3.2.1
-  package_info_plus: ^1.2.1
+  package_info_plus: ^1.3.0
   path_provider: ^2.0.3
   permission_handler: ^8.1.6
   pool: ^1.5.0
@@ -76,13 +76,13 @@ dependencies:
   rate_my_app: ^1.1.0+1
   rfc_6902: ^0.1.0
   screenshot: ^1.2.3
-  share_plus: ^2.2.0
+  share_plus: ^3.0.4
   shared_preferences: ^2.0.7
   sliver_tools: ^0.2.5
   string_validator: ^0.3.0
   table_sticky_headers: ^2.0.0
   url_launcher: ^6.0.12
-  uuid: ^3.0.4
+  uuid: ^3.0.5
 
 dev_dependencies:
   flutter_test:

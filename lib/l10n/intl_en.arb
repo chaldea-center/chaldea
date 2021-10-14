@@ -184,7 +184,7 @@
   "svt_obtain_limited": "Limited",
   "svt_obtain_friend_point": "FriendPoint",
   "svt_obtain_unavailable": "Unavailable",
-  "copy_plan_menu": "Copy from other plan",
+  "copy_plan_menu": "Copy Plan from...",
   "select_copy_plan_source": "Select copy source",
   "plan_x": "Plan {index}",
   "svt_info_tab_base": "Basic Info",

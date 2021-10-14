@@ -33,7 +33,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -42,7 +42,7 @@ android {
     defaultConfig {
         applicationId "cc.narumi.chaldea"
         minSdkVersion 23
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
 
@@ -61,6 +61,7 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
+            // proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         profile {
             applicationIdSuffix ".profile"

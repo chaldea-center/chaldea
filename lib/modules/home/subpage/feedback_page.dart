@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:chaldea/components/catcher_util/catcher_email_handler.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/extras/faq_page.dart';
-import 'package:file_picker_cross/file_picker_cross.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -291,18 +291,17 @@ class _FeedbackPageState extends State<FeedbackPage> {
   Set<String> attachFiles = {};
 
   void _addAttachments() {
-    FilePickerCross.importMultipleFromStorage(type: FileTypeCross.image)
-        .then((filePickers) {
-      attachFiles.addAll(filePickers.map((e) => e.path!));
+    FilePicker.platform.pickFiles(allowMultiple: true).then((result) {
+      final paths = result?.paths.whereType<String>();
+      if (paths != null) {
+        attachFiles.addAll(paths);
+      }
       if (mounted) {
         setState(() {});
       }
-    }).catchError((error, stackTrace) async {
-      if (error is! FileSelectionCanceledError) {
-        print(error.toString());
-        print(stackTrace.toString());
-        EasyLoading.showError(error.toString());
-      }
+    }).catchError((e, s) async {
+      logger.e('pick attachment failed', e, s);
+      EasyLoading.showError(e.toString());
     });
   }
 

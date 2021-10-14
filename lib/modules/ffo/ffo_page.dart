@@ -9,7 +9,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:catcher/core/catcher.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:csv/csv.dart';
-import 'package:file_picker_cross/file_picker_cross.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:url_launcher/url_launcher.dart';

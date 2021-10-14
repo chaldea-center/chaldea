@@ -139,7 +139,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "copied": MessageLookupByLibrary.simpleMessage("Copied"),
         "copy": MessageLookupByLibrary.simpleMessage("Copy"),
         "copy_plan_menu":
-            MessageLookupByLibrary.simpleMessage("Copy from other plan"),
+            MessageLookupByLibrary.simpleMessage("Copy Plan from..."),
         "costume": MessageLookupByLibrary.simpleMessage("Costume"),
         "costume_unlock":
             MessageLookupByLibrary.simpleMessage("Costume Unlock"),

@@ -1,5 +1,5 @@
 import 'package:chaldea/components/components.dart';
-import 'package:file_picker_cross/file_picker_cross.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ImportGudaPage extends StatefulWidget {
@@ -76,9 +76,10 @@ class _ImportGudaPageState extends State<ImportGudaPage> {
 
   void importFile() async {
     try {
-      FilePickerCross filePickerCross =
-          await FilePickerCross.importFromStorage();
-      gudaData = File(filePickerCross.path!).readAsStringSync();
+      final result = await FilePicker.platform.pickFiles();
+      final path = result?.paths.first;
+      if (path == null) return;
+      gudaData = File(path).readAsStringSync();
       int cellNum = gudaData!.trim().split(';').first.split('/').length;
       itemOrSvt = cellNum == 3
           ? true
@@ -88,8 +89,6 @@ class _ImportGudaPageState extends State<ImportGudaPage> {
       if (mounted) {
         setState(() {});
       }
-    } on FileSelectionCanceledError {
-      //
     } catch (e, s) {
       logger.e('import guda file failed', e, s);
       EasyLoading.showError('Something went wrong\n$e');

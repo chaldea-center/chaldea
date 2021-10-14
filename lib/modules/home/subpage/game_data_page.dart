@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/extras/updates.dart';
-import 'package:file_picker_cross/file_picker_cross.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path/path.dart' as pathlib;
@@ -318,9 +318,10 @@ class _GameDataPageState extends State<GameDataPage> {
   Future<void> importGamedata() async {
     try {
       // final result = await FilePicker.platform.pickFiles();
-      final result = await FilePickerCross.importFromStorage(
-          type: FileTypeCross.custom, fileExtension: 'zip,json');
-      final file = File(result.path!);
+      final result = await FilePicker.platform
+          .pickFiles(allowedExtensions: ['zip', 'json']);
+      if (result == null) return;
+      final file = File(result.paths.single!);
       if (file.path.toLowerCase().endsWith('.zip')) {
         EasyLoading.show(
             status: 'loading', maskType: EasyLoadingMaskType.clear);
@@ -339,8 +340,6 @@ class _GameDataPageState extends State<GameDataPage> {
         throw const FormatException('unsupported file type');
       }
       EasyLoading.showSuccess(S.of(context).import_data_success);
-    } on FileSelectionCanceledError {
-      //
     } catch (e) {
       showInformDialog(context,
           title: 'Import gamedata failed!', content: e.toString());

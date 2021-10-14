@@ -87,13 +87,11 @@ class _FfoDownloadDialogState extends State<FfoDownloadDialog> {
       actions: [
         TextButton(
           onPressed: () async {
-            try {
-              final file = await FilePickerCross.importFromStorage();
-              if (file.path != null) await _extractZip(file.path!);
-              Navigator.pop(context);
-            } on FileSelectionCanceledError {
-              //
-            }
+            final file =
+                await FilePicker.platform.pickFiles(allowedExtensions: ['zip']);
+            if (file?.paths.first != null)
+              await _extractZip(file!.paths.first!);
+            Navigator.pop(context);
             if (mounted) setState(() {});
           },
           child: Text(S.current.import_data),
@@ -140,8 +138,6 @@ class _FfoDownloadDialogState extends State<FfoDownloadDialog> {
       );
       EasyLoading.showSuccess(S.current.import_data_success);
       widget.onSuccess();
-    } on FileSelectionCanceledError {
-      //
     } catch (e, s) {
       EasyLoading.showError(e.toString());
       logger.e('extract zip error', e, s);

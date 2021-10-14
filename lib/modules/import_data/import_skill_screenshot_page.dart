@@ -4,7 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:dio/dio.dart';
-import 'package:file_picker_cross/file_picker_cross.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -465,18 +465,20 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
   }
 
   void importImages() async {
-    FilePickerCross.importMultipleFromStorage(type: FileTypeCross.image)
-        .then((value) {
+    FilePicker.platform
+        .pickFiles(type: FileType.image, allowMultiple: true)
+        .then((result) {
       results.clear();
-      imageFiles.addAll(value.map((e) => e.path).whereType<String>());
+      final paths = result?.paths.whereType<String>();
+      if (paths != null) {
+        imageFiles.addAll(paths);
+      }
       if (mounted) {
         setState(() {});
       }
     }).catchError((e, s) async {
-      if (e is! FileSelectionCanceledError) {
-        logger.e('import image failed', e, s);
-        EasyLoading.showError(e.toString());
-      }
+      logger.e('import images error', e, s);
+      EasyLoading.showError(e.toString());
     });
   }
 

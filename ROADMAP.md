@@ -28,13 +28,9 @@
 
 ## Bug fix - long term
 - [ ] `SplitRoute` currently all detail routes is transparent even not in split mode
-- [ ] audio format not fully supported
-  | Format | Android | iOS/macOS | Windows |
-  |:------:|:-------:|:---------:|:-------:|
-  |  mp3   |    ✔    |     ✔     |    ✔    |
-  |  wav   |    ✔    |     ❌    |    ✔    |
-  |  ogg   |    ✔    |     ❌    |    ❌    |
-  |  ogx   |    ✔    |     ❌    |    ❌    |
+- [ ] audio format not fully supported, need check again | Format | Android | iOS/macOS | Windows |
+  |:------:|:-------:|:---------:|:-------:| | mp3 | ✔ | ✔ | ✔ | | wav | ✔ | ❌ | ✔ | | ogg | ✔ | ❌ |
+  ❌ | | ogx | ✔ | ❌ | ❌ |
 - [ ] iOS only, move among a list of FocusNode may fail when outside viewport, won't auto scroll
 - [ ] catch close action and save userdata for desktop
   - [x] windows, but not always success
@@ -42,7 +38,8 @@
 - [ ] RenderEditable bug: https://github.com/flutter/flutter/issues/80226
 
 ## Docs
-- [ ] Tutorials
+
+- [x] Tutorials
 - [ ] English/Japanese Translation - **Help Wanted**
 - [ ] English/Japanese Game Data
   - [x] Servant

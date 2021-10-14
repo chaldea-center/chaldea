@@ -1,7 +1,7 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:dio/dio.dart';
-import 'package:file_picker_cross/file_picker_cross.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path/path.dart' as pathlib;
 
@@ -210,18 +210,20 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
   }
 
   void importImages() async {
-    FilePickerCross.importMultipleFromStorage(type: FileTypeCross.image)
-        .then((value) {
+    FilePicker.platform
+        .pickFiles(type: FileType.image, allowMultiple: true)
+        .then((result) {
       output.clear();
-      imageFiles.addAll(value.map((e) => e.path).whereType<String>());
+      final paths = result?.paths.whereType<String>();
+      if (paths != null) {
+        imageFiles.addAll(paths);
+      }
       if (mounted) {
         setState(() {});
       }
     }).catchError((e, s) async {
-      if (e is! FileSelectionCanceledError) {
-        logger.e('import images error', e, s);
-        EasyLoading.showError(e.toString());
-      }
+      logger.e('import images error', e, s);
+      EasyLoading.showError(e.toString());
     });
   }
 

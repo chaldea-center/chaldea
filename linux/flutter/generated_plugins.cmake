@@ -4,7 +4,6 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   catcher
-  file_selector_linux
   flutter_qjs
   libwinmedia
   url_launcher_linux

@@ -2,7 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:chaldea/components/components.dart';
-import 'package:file_picker_cross/file_picker_cross.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -408,9 +408,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                 if (inStorage) {
                   _includeSvtStorage = v ?? _includeSvtStorage;
                 } else {
-                      _includeSvt = v ?? _includeSvt;
-                    }
-                  }),
+                  _includeSvt = v ?? _includeSvt;
+                }
+              }),
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
@@ -657,15 +657,15 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                 chs: '从文本文件', jpn: 'テキストファイルから', eng: 'From Text File')),
             onTap: () async {
               try {
-                FilePickerCross filePickerCross =
-                    await FilePickerCross.importFromStorage();
-                parseResponseBody(filePickerCross.toUint8List());
+                final result =
+                    await FilePicker.platform.pickFiles(withData: true);
+                final bytes = result?.files.first.bytes;
+                if (bytes == null) return;
+                parseResponseBody(bytes);
                 File(tmpPath)
                   ..createSync(recursive: true)
-                  ..writeAsBytesSync(filePickerCross.toUint8List());
+                  ..writeAsBytesSync(bytes);
                 Navigator.of(context).pop();
-              } on FileSelectionCanceledError {
-                //
               } catch (e, s) {
                 logger.e('import http body from text file failed', e, s);
                 Navigator.of(context).pop(e);
@@ -681,8 +681,6 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         ],
       ).showDialog(context);
       if (error != null) throw error;
-    } on FileSelectionCanceledError {
-      //
     } catch (e, s) {
       logger.e('fail to load http response', e, s);
       if (mounted) {

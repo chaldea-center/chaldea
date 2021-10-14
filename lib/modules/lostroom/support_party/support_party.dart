@@ -1,6 +1,6 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
-import 'package:file_picker_cross/file_picker_cross.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
@@ -359,14 +359,14 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
           title: const Text('Choose Custom Image'),
           enabled: cur.servant != null,
           onTap: () {
-            FilePickerCross.importFromStorage(type: FileTypeCross.image)
-                .then((result) {
-              cur.imgPath = result.path;
+            FilePicker.platform.pickFiles(type: FileType.image).then((result) {
+              if (result?.paths.first == null) return;
+              cur.imgPath = result?.paths.first;
               cur.cached = false;
               if (mounted) {
                 setState(() {});
               }
-            }).catchError((e, s) => Future.value(null));
+            });
           },
         ),
         SwitchListTile.adaptive(
