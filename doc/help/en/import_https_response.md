@@ -5,4 +5,4 @@ For:
 - CN/TW: support Android&iOS
 - JP/EN: need modified APK on Android
 
-Tutorial: [https://chaldea-center.github.io/import_https.html](https://chaldea-center.github.io/import_https.html)
+Tutorial: [https://chaldea.center/import_https.html](https://chaldea.center/import_https.html)

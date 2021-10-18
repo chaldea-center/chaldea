@@ -16,7 +16,7 @@ class SupportDonationPage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              launch('https://chaldea-center.github.io/support.html');
+              launch('$kProjectDocRoot/donation.html');
             },
             icon: const FaIcon(FontAwesomeIcons.github),
             tooltip: 'Github',

@@ -501,10 +501,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_data": MessageLookupByLibrary.simpleMessage("データ"),
         "settings_data_management":
             MessageLookupByLibrary.simpleMessage("データベース"),
+        "settings_documents": MessageLookupByLibrary.simpleMessage("使い方"),
         "settings_general": MessageLookupByLibrary.simpleMessage("一般"),
         "settings_language": MessageLookupByLibrary.simpleMessage("言語"),
         "settings_tab_name": MessageLookupByLibrary.simpleMessage("設定"),
-        "settings_tutorial": MessageLookupByLibrary.simpleMessage("ヘルプ"),
         "settings_use_mobile_network":
             MessageLookupByLibrary.simpleMessage("モバイルデータを使用"),
         "settings_userdata_footer": MessageLookupByLibrary.simpleMessage(

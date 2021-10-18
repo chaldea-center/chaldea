@@ -120,11 +120,11 @@ class S {
     );
   }
 
-  /// `使用帮助`
-  String get settings_tutorial {
+  /// `使用文档`
+  String get settings_documents {
     return Intl.message(
-      '使用帮助',
-      name: 'settings_tutorial',
+      '使用文档',
+      name: 'settings_documents',
       desc: '',
       args: [],
     );

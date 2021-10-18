@@ -20,8 +20,8 @@ are mostly based on following sites:
 
 Thanks for all above communities and contributors.
 
-For more details or usage, please check our document: [English](https://chaldea-center.github.io)
-| [中文](https://chaldea-center.github.io/zh/)
+For more details or usage, please check our document: [English](https://chaldea.center)
+| [中文](https://chaldea.center/zh/)
 
 ## Features
 
@@ -85,7 +85,9 @@ E.g. 20210502-1.4.0 means that the dataset is created at 2021/05/02 and requires
 You may need to install [Microsoft Visual C++ redistributable package](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads) to enable VC++ runtime support.
 
 ## Donation
-If you would like to support or donate for this project, please move to [Support Page](https://chaldea-center.github.io/support.html).
+
+If you would like to support or donate for this project, please move
+to [Donation Page](https://chaldea.center/donation.html).
 
 ## Feedback and Contribution
 If you have any bug report, feature request, question or want to contribute to this project, feel free to

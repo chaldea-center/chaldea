@@ -471,10 +471,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_data": MessageLookupByLibrary.simpleMessage("数据"),
         "settings_data_management":
             MessageLookupByLibrary.simpleMessage("数据管理"),
+        "settings_documents": MessageLookupByLibrary.simpleMessage("使用文档"),
         "settings_general": MessageLookupByLibrary.simpleMessage("通用"),
         "settings_language": MessageLookupByLibrary.simpleMessage("语言"),
         "settings_tab_name": MessageLookupByLibrary.simpleMessage("设置"),
-        "settings_tutorial": MessageLookupByLibrary.simpleMessage("使用帮助"),
         "settings_use_mobile_network":
             MessageLookupByLibrary.simpleMessage("使用移动数据下载"),
         "settings_userdata_footer": MessageLookupByLibrary.simpleMessage(

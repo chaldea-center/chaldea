@@ -565,10 +565,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_data": MessageLookupByLibrary.simpleMessage("Data"),
         "settings_data_management":
             MessageLookupByLibrary.simpleMessage("Data Management"),
+        "settings_documents": MessageLookupByLibrary.simpleMessage("Documents"),
         "settings_general": MessageLookupByLibrary.simpleMessage("General"),
         "settings_language": MessageLookupByLibrary.simpleMessage("Language"),
         "settings_tab_name": MessageLookupByLibrary.simpleMessage("Settings"),
-        "settings_tutorial": MessageLookupByLibrary.simpleMessage("Tutorial"),
         "settings_use_mobile_network":
             MessageLookupByLibrary.simpleMessage("Allow mobile network"),
         "settings_userdata_footer": MessageLookupByLibrary.simpleMessage(

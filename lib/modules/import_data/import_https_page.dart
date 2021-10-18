@@ -75,7 +75,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   @override
   Widget build(BuildContext context) {
     final url =
-        'https://chaldea-center.github.io/${Language.isCN ? "zh/" : ""}import_https.html';
+        '$kProjectDocRoot${Language.isCN ? "/zh" : ""}/import_https.html';
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,

@@ -196,12 +196,11 @@ class _SettingsPageState extends State<SettingsPage> {
               },
             ),
             ListTile(
-              title: Text(S.of(context).settings_tutorial),
-              subtitle: const Text('https://chaldea-center.github.io'),
+              title: Text(S.of(context).settings_documents),
+              subtitle: const Text(kProjectDocRoot),
               trailing: const Icon(Icons.menu_book),
               onTap: () {
-                launch('https://chaldea-center.github.io' +
-                    (Language.isCN ? '/zh/' : '/'));
+                launch(kProjectDocRoot + (Language.isCN ? '/zh/' : '/'));
               },
             ),
             if (!PlatformU.isApple || (db.cfg.launchTimes.get() ?? 0) > 5)
