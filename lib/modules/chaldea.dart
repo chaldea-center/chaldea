@@ -176,7 +176,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     //   await Analyzer.sendBdtj();
     // }
     MobStat.start();
-    Future.delayed(const Duration(seconds: 1), () {
+    Future.delayed(const Duration(milliseconds: 100), () {
       MobStat.logEvent('config', {
         "theme": EnumUtil.shortString(db.appSetting.isResolvedDarkMode
             ? ThemeMode.dark

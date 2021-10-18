@@ -117,6 +117,8 @@ class Database {
 
   // initialization before startup
   Future<void> initial() async {
+    HttpOverrides.global = _MyHttpOverrides();
+
     initiateFuncBuffInstances();
     await paths.initRootPath();
     cfg = LocalAppConfig(pathlib.join(paths.configDir, 'cfg.json'),
@@ -654,6 +656,15 @@ class RuntimeData {
 
   /// store anything you like
   Map<dynamic, dynamic> tempDict = {};
+}
+
+class _MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
 }
 
 Database db = Database();

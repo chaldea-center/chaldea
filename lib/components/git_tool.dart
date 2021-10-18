@@ -309,7 +309,7 @@ class GitTool {
                   asset.browserDownloadUrl != null) {
                 asset.browserDownloadUrl = asset.browserDownloadUrl!
                     .replaceFirst(RegExp(r'^https://github.com'),
-                        'http://github.com.cnpmjs.org');
+                        'https://github.com.cnpmjs.org');
                 // asset.browserDownloadUrl = Uri.parse('$kServerRoot/githubasset')
                 //     .replace(queryParameters: {
                 //   'url': asset.browserDownloadUrl,
