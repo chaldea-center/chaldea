@@ -78,7 +78,7 @@ const _localizedSvtFilter = LocalizedGroup([
   LocalizedText(chs: '亚瑟', jpn: 'アーサー', eng: 'Arthur'),
   LocalizedText(chs: '阿尔托莉雅脸', jpn: 'アルトリア顔', eng: 'Altria Face'),
   LocalizedText(chs: '呆毛脸', jpn: 'アルトリア顔', eng: 'Altria Face'),
-  LocalizedText(chs: 'EA不特攻', jpn: '', eng: 'NOT Weak to Enuma Elish	'),
+  LocalizedText(chs: 'EA不特攻', jpn: '', eng: 'NOT Weak to Enuma Elish'),
   LocalizedText(chs: '所爱之人', jpn: '愛する者', eng: "Brynhildr's Beloved"),
   LocalizedText(chs: '希腊神话系男性', jpn: 'ギリシャ神話系男性', eng: 'Greek Mythology Males'),
   LocalizedText(chs: '人类的威胁', jpn: '人類の脅威', eng: 'Threat to Humanity'),
@@ -88,8 +88,8 @@ const _localizedSvtFilter = LocalizedGroup([
   LocalizedText(chs: '天地从者', jpn: '', eng: 'Earth or Sky'),
   LocalizedText(chs: '天地(拟似除外)', jpn: '天または地の力を持つサーヴァント', eng: 'Earth or Sky'),
   LocalizedText(chs: '人型', jpn: '人型', eng: 'Humanoid'),
-  LocalizedText(chs: '人科', jpn: '', eng: ''),
-  LocalizedText(chs: '魔兽型', jpn: '', eng: ''),
+  LocalizedText(chs: '人科', jpn: 'ヒト科', eng: 'Hominidae Servant'),
+  LocalizedText(chs: '魔兽型', jpn: '魔獣型', eng: 'Demonic Beast Servant'),
   LocalizedText(chs: '活在当下的人类', jpn: '', eng: 'Living Human'),
   LocalizedText(chs: '巨人', jpn: '', eng: 'Giant'),
   LocalizedText(chs: '孩童从者', jpn: '', eng: 'Children Servants'),
@@ -100,6 +100,7 @@ const _localizedSvtFilter = LocalizedGroup([
   LocalizedText(chs: '机械', jpn: '機械', eng: 'Mechanical'),
   LocalizedText(chs: '妖精', jpn: '妖精', eng: 'Fairy'),
   LocalizedText(chs: '圆桌骑士', jpn: '円卓の騎士', eng: 'Round Table Knight'),
+  LocalizedText(chs: '童话特性从者', jpn: '童話特性のサーヴァント', eng: 'Fairy Tale Servant'),
 
   LocalizedText(chs: '伊莉雅', jpn: 'イリヤ', eng: 'Illya'),
   LocalizedText(chs: '织田信长', jpn: '', eng: 'Nobunaga'),
@@ -109,4 +110,12 @@ const _localizedSvtFilter = LocalizedGroup([
       jpn: '擬似サーヴァント、デミ・サーヴァント',
       eng: 'Pseudo-Servants and Demi-Servants'),
   // Localized(chs: '死灵和恶魔', jpn: '死霊と悪魔', eng: 'Undead & Daemon'),
+
+  // Enemy filter
+  LocalizedText(chs: '人类', jpn: '', eng: 'Human'),
+  LocalizedText(chs: '女性', jpn: '', eng: 'Gender:Female'),
+  LocalizedText(chs: '男性', jpn: '', eng: 'Gender:Male'),
+  LocalizedText(chs: '野兽', jpn: '', eng: 'Beast'),
+  LocalizedText(chs: '恶魔', jpn: '', eng: 'Demon'),
+  LocalizedText(chs: '死灵', jpn: '', eng: 'Undead'),
 ]);

@@ -2,7 +2,7 @@
 
 1. 教程详见
 
-- [https://chaldea.center/zh/import_https.html](https://chaldea.center/zh/import_https.html)
+- [https://docs.chaldea.center/zh/import_https.html](https://docs.chaldea.center/zh/import_https.html)
 
 2.简要说明
 

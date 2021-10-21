@@ -1,7 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/shared/filter_page.dart';
 
 import 'enemy_detail_page.dart';
+import 'filter_page.dart';
 
 class EnemyListPage extends StatefulWidget {
   final void Function(EnemyDetail)? onSelected;
@@ -14,7 +16,7 @@ class EnemyListPage extends StatefulWidget {
 
 class EnemyListPageState
     extends SearchableListState<EnemyDetail, EnemyListPage> {
-  bool useGrid = false;
+  EnemyFilterData filterData = EnemyFilterData();
 
   @override
   List<EnemyDetail> wholeData = [];
@@ -45,7 +47,7 @@ class EnemyListPageState
   Widget build(BuildContext context) {
     filterShownList();
     return scrollListener(
-      useGrid: useGrid,
+      useGrid: filterData.useGrid,
       appBar: AppBar(
         leading: const MasterBackButton(),
         title: Text(S.current.enemy_list),
@@ -53,13 +55,17 @@ class EnemyListPageState
         bottom: showSearchBar ? searchBar : null,
         actions: <Widget>[
           IconButton(
-            onPressed: () {
-              setState(() {
-                useGrid = !useGrid;
-              });
-            },
-            icon: Icon(useGrid ? Icons.grid_on : Icons.view_list),
-            tooltip: 'List/Grid',
+            icon: const Icon(Icons.filter_alt),
+            tooltip: S.current.filter,
+            onPressed: () => FilterPage.show(
+              context: context,
+              builder: (context) => EnemyFilterPage(
+                filterData: filterData,
+                onChanged: (_) {
+                  if (mounted) setState(() {});
+                },
+              ),
+            ),
           ),
           searchIcon,
         ],
@@ -93,15 +99,26 @@ class EnemyListPageState
   @override
   String getSummary(EnemyDetail enemy) {
     List<String> searchStrings = [
-      ...Utils.getSearchAlphabetsForList(enemy.ids),
-      ...Utils.getSearchAlphabetsForList(enemy.names),
-      ...Utils.getSearchAlphabets(enemy.category),
+      ...Utils.getSearchAlphabetsForList({
+        ...enemy.ids,
+        ...enemy.lIds,
+        ...enemy.names,
+        ...enemy.lNames,
+        enemy.category,
+        Localized.enemy.of(enemy.category),
+      }.toList()),
     ];
     return searchStrings.toSet().join('\t');
   }
 
   @override
   bool filter(EnemyDetail enemy) {
+    if (!filterData.attribute.singleValueFilter(enemy.attribute)) {
+      return false;
+    }
+    if (!filterData.traits.listValueFilter(enemy.traits)) {
+      return false;
+    }
     return true;
   }
 }

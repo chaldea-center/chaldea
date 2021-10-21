@@ -5,6 +5,16 @@ Common Issues and Bugs
 with the latest version of dataset.**
 
 
+---------
+
+### 0. Icon/Image not shown
+
+Almost all images are downloaded from wiki server when shown on stage, please try:
+
+- switch Cellular/WiFi
+- restart app after hours: server may be crowded, or too frequent requests in short time and get
+  banned temporarily
+
 ----------
 
 ### 1. Servant/Craft Essence/Command Code not found

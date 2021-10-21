@@ -20,8 +20,8 @@ are mostly based on following sites:
 
 Thanks for all above communities and contributors.
 
-For more details or usage, please check our document: [English](https://chaldea.center)
-| [中文](https://chaldea.center/zh/)
+For more details or usage, please check our document: [English](https://docs.chaldea.center)
+| [中文](https://docs.chaldea.center/zh/)
 
 ## Features
 
@@ -87,7 +87,7 @@ You may need to install [Microsoft Visual C++ redistributable package](https://s
 ## Donation
 
 If you would like to support or donate for this project, please move
-to [Donation Page](https://chaldea.center/donation.html).
+to [Donation Page](https://docs.chaldea.center/donation.html).
 
 ## Feedback and Contribution
 If you have any bug report, feature request, question or want to contribute to this project, feel free to

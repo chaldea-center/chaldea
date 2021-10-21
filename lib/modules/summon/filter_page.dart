@@ -67,7 +67,7 @@ class _CmdCodeFilterPageState extends FilterPageState<SummonFilterData> {
             }
           },
           onFilterChanged: (value) {
-            filterData.category = value;
+            // filterData.category = value;
             update();
           },
         ),

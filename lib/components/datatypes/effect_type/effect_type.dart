@@ -124,7 +124,8 @@ class EffectType {
       FuncTypes.damageNpStateIndividual,
       FuncTypes.damageNpStateIndividualFix,
     ],
-    name: const LocalizedText(chs: '宝具特攻', jpn: 'jpn', eng: 'eng'),
+    name: const LocalizedText(
+        chs: '宝具特攻', jpn: '宝具特攻', eng: 'NP supereffective damage'),
   );
 
   static EffectType expUp = EffectType(

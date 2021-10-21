@@ -22,7 +22,7 @@ const String kAppStoreHttpLink = 'https://itunes.apple.com/app/id1548713491';
 const String kGooglePlayLink =
     'https://play.google.com/store/apps/details?id=cc.narumi.chaldea';
 const String kProjectHomepage = 'https://github.com/chaldea-center/chaldea';
-const String kProjectDocRoot = 'https://chaldea.center';
+const String kProjectDocRoot = 'https://docs.chaldea.center';
 const String kDatasetHomepage =
     'https://github.com/chaldea-center/chaldea-dataset';
 

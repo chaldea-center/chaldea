@@ -158,6 +158,14 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   },
                 ),
                 ListTile(
+                  title: const Text('NokNok'),
+                  subtitle: const Text('118835'),
+                  onTap: () {
+                    launch(
+                        'https://www.noknok.cn/act/share_group_20210625/index.html?uid=100164675&gid=118835');
+                  },
+                ),
+                ListTile(
                   title: const Text('QQ Group'),
                   subtitle: const Text('863998768'),
                   onTap: () {

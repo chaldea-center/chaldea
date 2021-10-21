@@ -41,13 +41,13 @@ class Quest {
   });
 
   static LocalizedGroup get questNameGroup => const LocalizedGroup([
-        LocalizedText(chs: '周日', jpn: '日曜', eng: 'Sunday'),
-        LocalizedText(chs: '周一', jpn: '月曜', eng: 'Monday'),
-        LocalizedText(chs: '周二', jpn: '火曜', eng: 'Tuesday'),
-        LocalizedText(chs: '周三', jpn: '水曜', eng: 'Wednesday'),
-        LocalizedText(chs: '周四', jpn: '木曜', eng: 'Thursday'),
-        LocalizedText(chs: '周五', jpn: '金曜', eng: 'Friday'),
-        LocalizedText(chs: '周六', jpn: '土曜', eng: 'Saturday'),
+        LocalizedText(chs: '周日', jpn: '日曜', eng: 'SUN:'),
+        LocalizedText(chs: '周一', jpn: '月曜', eng: 'MON:'),
+        LocalizedText(chs: '周二', jpn: '火曜', eng: 'TUE:'),
+        LocalizedText(chs: '周三', jpn: '水曜', eng: 'WED:'),
+        LocalizedText(chs: '周四', jpn: '木曜', eng: 'THU:'),
+        LocalizedText(chs: '周五', jpn: '金曜', eng: 'FRI:'),
+        LocalizedText(chs: '周六', jpn: '土曜', eng: 'SAT:'),
         LocalizedText(chs: '剑之修炼场', jpn: '剣の修練場', eng: 'Saber Training Ground'),
         LocalizedText(
             chs: '弓之修炼场', jpn: '弓の修練場', eng: 'Archer Training Ground'),
@@ -60,13 +60,20 @@ class Quest {
             chs: '术之修炼场', jpn: '術の修練場', eng: 'Caster Training Ground'),
         LocalizedText(
             chs: '杀之修炼场', jpn: '殺の修練場', eng: 'Assassin Training Ground'),
-        LocalizedText(chs: '初级', jpn: '初級', eng: 'Basic'),
+        LocalizedText(chs: '初级', jpn: '初級', eng: 'Novice'),
         LocalizedText(chs: '中级', jpn: '中級', eng: 'Intermediate'),
         LocalizedText(chs: '上级', jpn: '上級', eng: 'Advanced'),
         LocalizedText(chs: '超级', jpn: '超級', eng: 'Expert'),
         LocalizedText(chs: '极级', jpn: '極級', eng: 'Extreme'),
         LocalizedText(
             chs: '打开宝物库之门', jpn: '宝物庫の扉を開け', eng: 'Enter the Treasure Vault'),
+      ]);
+
+  static LocalizedGroup get _emberClsNameGroup => const LocalizedGroup([
+        LocalizedText(chs: '剑·骑', jpn: '剣·騎', eng: 'Saber/Rider'),
+        LocalizedText(chs: '弓·术', jpn: '弓·術', eng: 'Archer/Caster'),
+        LocalizedText(chs: '枪·杀', jpn: '槍·殺', eng: 'Lancer/Assassin'),
+        LocalizedText(chs: '随机', jpn: 'ランダム', eng: 'Random'),
       ]);
 
   static String getDailyQuestName(String name) {
@@ -77,11 +84,10 @@ class Quest {
   String get localizedKey {
     if (indexKey == place) {
       return localizedPlace;
-    } else if (name.contains('种火') ||
+    } else if (name.contains('搜集种火') ||
         name.contains('修炼场') ||
         name.contains('宝物库')) {
-      return name.replaceAllMapped(
-          RegExp(r'\S+'), (match) => questNameGroup.of(match.group(0)!));
+      return localizedName;
     } else {
       return '$localizedPlace ($localizedName)';
     }
@@ -103,7 +109,17 @@ class Quest {
           ].join(' ');
         }
       }
-      if (name.contains('种火') || name.contains('修炼场') || name.contains('宝物库')) {
+      if (name.contains('搜集种火')) {
+        return name.replaceFirstMapped(RegExp(r'^搜集种火<(.+)篇> (.+)$'), (match) {
+          final c1 = _emberClsNameGroup.of(match.group(1)!),
+              c2 = questNameGroup.of(match.group(2)!);
+          return LocalizedText.of(
+              chs: name,
+              jpn: '種火集め<$c1編> $c2',
+              eng: 'Ember Gathering <$c1> - $c2');
+        });
+      }
+      if (name.contains('修炼场') || name.contains('宝物库')) {
         return name.replaceAllMapped(
             RegExp(r'\S+'), (match) => questNameGroup.of(match.group(0)!));
       }
