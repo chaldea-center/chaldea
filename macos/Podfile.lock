@@ -8,8 +8,6 @@ PODS:
     - Reachability
   - device_info_plus_macos (0.0.1):
     - FlutterMacOS
-  - file_selector_macos (0.0.1):
-    - FlutterMacOS
   - flutter_qjs (0.0.1):
     - FlutterMacOS
   - FlutterMacOS (1.0.0)
@@ -38,7 +36,6 @@ DEPENDENCIES:
   - catcher (from `Flutter/ephemeral/.symlinks/plugins/catcher/macos`)
   - connectivity_plus_macos (from `Flutter/ephemeral/.symlinks/plugins/connectivity_plus_macos/macos`)
   - device_info_plus_macos (from `Flutter/ephemeral/.symlinks/plugins/device_info_plus_macos/macos`)
-  - file_selector_macos (from `Flutter/ephemeral/.symlinks/plugins/file_selector_macos/macos`)
   - flutter_qjs (from `Flutter/ephemeral/.symlinks/plugins/flutter_qjs/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
   - just_audio (from `Flutter/ephemeral/.symlinks/plugins/just_audio/macos`)
@@ -63,8 +60,6 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/connectivity_plus_macos/macos
   device_info_plus_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/device_info_plus_macos/macos
-  file_selector_macos:
-    :path: Flutter/ephemeral/.symlinks/plugins/file_selector_macos/macos
   flutter_qjs:
     :path: Flutter/ephemeral/.symlinks/plugins/flutter_qjs/macos
   FlutterMacOS:
@@ -89,7 +84,6 @@ SPEC CHECKSUMS:
   catcher: dc8ecb9a4d3e6e36bd403cd34e13673f7ed7ca70
   connectivity_plus_macos: 3da1605dc99d44cf06fb6852de4ed26ecef3cabc
   device_info_plus_macos: 1ad388a1ef433505c4038e7dd9605aadd1e2e9c7
-  file_selector_macos: ff6dc948d4ddd34e8602a1f60b7d0b4cc6051a47
   flutter_qjs: 1a3a4a23a9bb18d0583b5ee44d09ed9383a36e9f
   FlutterMacOS: 57701585bf7de1b3fc2bb61f6378d73bbdea8424
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a

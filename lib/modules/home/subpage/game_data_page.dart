@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/extras/icon_cache_manager.dart';
 import 'package:chaldea/modules/extras/updates.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path/path.dart' as pathlib;
-import 'package:url_launcher/url_launcher.dart';
 
 class GameDataPage extends StatefulWidget {
   GameDataPage({Key? key}) : super(key: key);
@@ -108,6 +108,12 @@ class _GameDataPageState extends State<GameDataPage> {
                 title: Text(S.current.download_full_gamedata),
                 subtitle: Text(S.current.download_full_gamedata_hint),
                 onTap: downloadGamedata,
+              ),
+              ListTile(
+                title: Text(LocalizedText.of(
+                    chs: '下载图标', jpn: 'アイコンをダウンロード', eng: 'Download Icons')),
+                subtitle: const Text('Icons only'),
+                onTap: downloadIcons,
               ),
               if (!PlatformU.isWeb)
                 ListTile(
@@ -249,72 +255,48 @@ class _GameDataPageState extends State<GameDataPage> {
     );
   }
 
-  void downloadGamedata() {
+  void downloadGamedata() async {
     final gitTool = GitTool.fromDb();
-    void _downloadAsset(bool icons) async {
-      final release = await gitTool.latestDatasetRelease(icons: icons);
-      Navigator.of(context).pop();
-      String fp = pathlib.join(
-          db.paths.tempDir, '${release?.name}-${release?.targetAsset?.name}');
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => DownloadDialog(
-          url: release?.targetAsset?.browserDownloadUrl ?? '',
-          savePath: fp,
-          notes: release?.body,
-          confirmText: S.of(context).import_data.toUpperCase(),
-          onComplete: () async {
-            EasyLoading.show(status: 'loading');
-            try {
-              await db.extractZip(fp: fp, savePath: db.paths.gameDir);
-              if (!db.loadGameData()) {
-                throw 'Load GameData failed, maybe incompatible with current app version';
-              }
-              Navigator.of(context).pop();
-              EasyLoading.showSuccess(S.of(context).import_data_success);
-              MobStat.logEvent('down_dataset',
-                  {"src": GitTool.fromDb().source.toShortString()});
-            } catch (e) {
-              EasyLoading.showError(S.of(context).import_data_error(e));
-            } finally {
-              EasyLoadingUtil.dismiss();
-            }
-          },
-        ),
-      );
-    }
 
-    showModalBottomSheet(
+    EasyLoading.show(maskType: EasyLoadingMaskType.clear);
+    final release = await gitTool.latestDatasetRelease(icons: false);
+    EasyLoading.dismiss();
+    String fp = pathlib.join(
+        db.paths.tempDir, '${release?.name}-${release?.targetAsset?.name}');
+    showDialog(
       context: context,
-      builder: (context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: Text(S.of(context).dataset_type_text),
-              subtitle: Text(LocalizedText.of(
-                  chs: '不包含图片，~8M', jpn: 'テキストのみ、約8M', eng: 'Only texts, ~8M')),
-              onTap: () => _downloadAsset(false),
-            ),
-            ListTile(
-              title: Text(S.of(context).dataset_type_image),
-              subtitle: Text(LocalizedText.of(
-                  chs: '仅包含图片，~20M',
-                  jpn: '画像のみ、約20M',
-                  eng: 'Only icons, ~20M')),
-              onTap: () => _downloadAsset(true),
-            ),
-            ListTile(
-              title: Text(S.of(context).dataset_goto_download_page),
-              subtitle: Text(S.of(context).dataset_goto_download_page_hint),
-              onTap: () {
-                launch(gitTool.datasetReleaseUrl);
-              },
-            )
-          ],
-        );
-      },
+      barrierDismissible: false,
+      builder: (context) => DownloadDialog(
+        url: release?.targetAsset?.browserDownloadUrl ?? '',
+        savePath: fp,
+        notes: release?.body,
+        confirmText: S.of(context).import_data.toUpperCase(),
+        onComplete: () async {
+          EasyLoading.show(status: 'loading');
+          try {
+            await db.extractZip(fp: fp, savePath: db.paths.gameDir);
+            if (!db.loadGameData()) {
+              throw 'Load GameData failed, maybe incompatible with current app version';
+            }
+            Navigator.of(context).pop();
+            EasyLoading.showSuccess(S.of(context).import_data_success);
+            MobStat.logEvent('down_dataset',
+                {"src": GitTool.fromDb().source.toShortString()});
+          } catch (e) {
+            EasyLoading.showError(S.of(context).import_data_error(e));
+          } finally {
+            EasyLoadingUtil.dismiss();
+          }
+        },
+      ),
+    );
+  }
+
+  void downloadIcons() async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => IconCacheManagePage(),
     );
   }
 

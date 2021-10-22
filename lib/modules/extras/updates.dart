@@ -6,7 +6,6 @@ import 'package:catcher/catcher.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path/path.dart';
 import 'package:rfc_6902/rfc_6902.dart' as jsonpatch;

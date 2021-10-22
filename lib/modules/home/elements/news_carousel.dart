@@ -103,8 +103,9 @@ class AppNewsCarousel extends StatefulWidget {
         return <String, String>{};
       });
 
-      // jp slides
-      if (carouselSetting.enableUs) {
+      // NA slides
+      // TODO: https://github.com/flutter/flutter/issues/92331
+      if (carouselSetting.enableUs && !PlatformU.isWindows) {
         const usUrl = 'https://webview.fate-go.us';
         taskUs = _dio.get(usUrl).then((response) {
           var usParser = parser.parse(response.data.toString());
@@ -112,7 +113,7 @@ class AppNewsCarousel extends StatefulWidget {
           updated = true;
           return _getImageLinks(element: usElement, uri: Uri.parse(usUrl));
         }).catchError((e, s) async {
-          logger.e('parse jp slides failed', e, s);
+          logger.e('parse NA slides failed', e, s);
           return <String, String>{};
         });
       }

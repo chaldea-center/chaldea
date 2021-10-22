@@ -55,7 +55,6 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
             hideRadio = true;
           });
           SchedulerBinding.instance!.addPostFrameCallback((timeStamp) async {
-            if (!mounted) return;
             EasyLoading.show(
                 status: 'Rendering...', maskType: EasyLoadingMaskType.clear);
             try {
@@ -66,6 +65,7 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
                 return;
               }
               EasyLoading.dismiss();
+              if (!mounted) return;
               SplitRoute.push(context, SupportResultPreview(data: data));
             } finally {
               EasyLoadingUtil.dismiss();

@@ -166,7 +166,11 @@ class _SettingsPageState extends State<SettingsPage> {
               title: Text(S.current.display_setting),
               trailing: const Icon(Icons.keyboard_arrow_right),
               onTap: () {
-                SplitRoute.push(context, DisplaySettingPage());
+                SplitRoute.push(
+                  context,
+                  DisplaySettingPage(),
+                  popDetail: true,
+                );
               },
             ),
           ],
@@ -208,7 +212,11 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: Text(S.current.support_chaldea),
                 trailing: const Icon(Icons.favorite),
                 onTap: () {
-                  SplitRoute.push(context, SupportDonationPage());
+                  SplitRoute.push(
+                    context,
+                    SupportDonationPage(),
+                    popDetail: true,
+                  );
                 },
               ),
             if (PlatformU.isApple)

@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/extras/icon_cache_manager.dart';
 import 'package:chaldea/modules/extras/updates.dart';
 import 'package:chaldea/modules/home/subpage/account_page.dart';
 import 'package:rate_my_app/rate_my_app.dart';
@@ -29,6 +30,7 @@ class _GalleryPageState extends State<GalleryPage> {
         _showRateCard = rateMyApp.shouldOpenDialog || kDebugMode;
         if (mounted) setState(() {});
       }
+
       if (kDebugMode) return;
       if (db.appSetting.autoUpdateDataset) {
         await AutoUpdateUtil.patchGameData();
@@ -36,6 +38,8 @@ class _GalleryPageState extends State<GalleryPage> {
       await Future.delayed(const Duration(seconds: 2));
       await AutoUpdateUtil.checkAppUpdate(
           background: true, download: db.appSetting.autoUpdateApp);
+      final _iconCache = IconCacheManager();
+      _iconCache.start(interval: const Duration(seconds: 1));
     }).onError((e, s) async {
       logger.e('init app extras', e, s);
     });

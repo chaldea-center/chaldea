@@ -55,6 +55,8 @@ class Servant with GameCardMixin {
 
   bool get isAvailable => !unavailable.contains(originNo);
 
+  String? get svtCoinIcon => isAvailable ? '从者硬币 $svtId.png' : null;
+
   Servant({
     required this.no,
     required this.svtId,

@@ -196,7 +196,8 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
               decoration: BoxDecoration(
                 border: Border(
                   left: Divider.createBorderSide(context,
-                      width: _kSplitDividerWidth, color: Colors.blue),
+                      width: _kSplitDividerWidth,
+                      color: Theme.of(context).dividerColor),
                 ),
               ),
               child: defaultMasterFillPageBuilder(context),

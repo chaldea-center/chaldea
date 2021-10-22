@@ -10,6 +10,7 @@ class Route404Page extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('404'),
+        centerTitle: true,
       ),
       body: Center(
         child: Text(

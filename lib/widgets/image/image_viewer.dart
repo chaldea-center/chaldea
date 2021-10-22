@@ -1,12 +1,18 @@
 import 'dart:collection';
+import 'dart:io';
+import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chaldea/components/components.dart';
+import 'package:chaldea/components/config.dart';
+import 'package:chaldea/components/wiki_util.dart';
+import 'package:chaldea/platform_interface/platform/platform.dart';
 import 'package:crypto/crypto.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:path/path.dart' as path;
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:path/path.dart' show join, basename;
 import 'package:string_validator/string_validator.dart' as validator;
 import 'package:uuid/uuid.dart';
 
@@ -235,8 +241,7 @@ class _CachedImageState extends State<CachedImage> {
             }
             if (!mounted) return;
             // some sha1 hash value for same data
-            String fn =
-                const Uuid()
+            String fn = const Uuid()
                     .v5(Uuid.NAMESPACE_URL, sha1.convert(data).toString()) +
                 '.png';
             ImageActions.showSaveShare(
@@ -294,7 +299,7 @@ class _CachedImageState extends State<CachedImage> {
         child: child,
         onLongPress: () async {
           File file = File((await _cacheManager.getSingleFile(fullUrl)).path);
-          String fn = path.basename(file.path);
+          String fn = basename(file.path);
           return ImageActions.showSaveShare(
             context: context,
             srcFp: file.path,

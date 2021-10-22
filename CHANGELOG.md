@@ -1,3 +1,8 @@
+## 1.6.2
+
+- support caching icons in Settings-Gamedata
+- disable NA news on Windows because of bug
+
 ## 1.6.1
 
 - Linux support
@@ -223,8 +228,7 @@
 ## 1.3.0
 
 - [BREAKING CHANGE] null safety migration, upgrade to flutter 2
-- downgrade `flutter_audio_desktop 0.1.0` to version `0.0.8`, which will cause stuck in Windows
-  with `file_picker_cross` together
+- downgrade `flutter_audio_desktop 0.1.0` to version `0.0.8`, which will cause stuck in Windows with `file_picker_cross` together
 
 ## 1.2.1
 

@@ -226,7 +226,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             leading: InkWell(
               child: Item.iconBuilder(
                 context: context,
-                itemKey: '从者硬币 ${svt.svtId}.png',
+                itemKey: svt.svtCoinIcon!,
                 jumpToDetail: false,
                 width: 33,
               ),

@@ -5,7 +5,6 @@ import 'package:path/path.dart' as p;
 
 void testFunction([BuildContext? context]) async {
   // if (PlatformU.isMacOS) _reloadDebugDataset();
-  SplitRoute.push(context!, ServantDetailPage(db.gameData.servants[321]!));
   return;
 }
 

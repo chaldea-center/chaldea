@@ -1,7 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/extras/updates.dart';
-import 'package:flutter/foundation.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -13,6 +12,8 @@ class AboutPage extends StatefulWidget {
 }
 
 class _AboutPageState extends State<AboutPage> {
+  bool showDebugInfo = false;
+
   Map<String, String> get references => {
         'TYPE-MOON/FGO PROJECT': 'https://www.fate-go.jp',
         'Mooncell': 'https://fgo.wiki',
@@ -33,15 +34,26 @@ class _AboutPageState extends State<AboutPage> {
       ),
       body: ListView(
         children: <Widget>[
-          _AboutProgram(
-            name: AppInfo.appName,
-            version: AppInfo.fullVersion2,
-            icon: SizedBox(
-              height: 120,
-              child: Image.asset('res/img/launcher_icon/app_icon_logo.png',
-                  height: 120),
+          GestureDetector(
+            onDoubleTap: () {
+              setState(() {
+                showDebugInfo = true;
+              });
+            },
+            child: _AboutProgram(
+              name: AppInfo.appName,
+              version: AppInfo.fullVersion2,
+              icon: SizedBox(
+                height: 120,
+                child: Image.asset('res/img/launcher_icon/app_icon_logo.png',
+                    height: 120),
+              ),
+              legalese: 'Copyright © 2021 cc.narumi.\nAll rights reserved.',
+              debugInfo: showDebugInfo
+                  ? 'UUID\n${AppInfo.uuid}\n'
+                      'Width: ${MediaQuery.of(context).size.width}'
+                  : null,
             ),
-            legalese: 'Copyright © 2021 cc.narumi.\nAll rights reserved.',
           ),
           if (!AppInfo.isMacStoreApp &&
                   (!PlatformU.isIOS ||
@@ -58,7 +70,7 @@ class _AboutPageState extends State<AboutPage> {
                     subtitle: Text(EnumUtil.titled(db.appSetting.gitSource)),
                     trailing: db.runtimeData.upgradableVersion != null
                         ? Text(db.runtimeData.upgradableVersion!.version + '↑',
-                            style: const TextStyle(color: Colors.redAccent))
+                        style: const TextStyle(color: Colors.redAccent))
                         : null,
                     onTap: () {
                       AutoUpdateUtil.checkAppUpdate(background: false);
@@ -164,7 +176,7 @@ class _AboutPageState extends State<AboutPage> {
                           height: 120,
                         ),
                         applicationLegalese:
-                            'Copyright © 2021 cc.narumi.\nAll rights reserved.',
+                        'Copyright © 2021 cc.narumi.\nAll rights reserved.',
                       ),
                     ),
                   );
@@ -185,12 +197,14 @@ class _AboutProgram extends StatelessWidget {
     required this.version,
     this.icon,
     this.legalese,
+    this.debugInfo,
   }) : super(key: key);
 
   final String name;
   final String version;
   final Widget? icon;
   final String? legalese;
+  final String? debugInfo;
 
   @override
   Widget build(BuildContext context) {
@@ -222,6 +236,14 @@ class _AboutProgram extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
+            if (debugInfo != null) ...[
+              const SizedBox(height: 12),
+              Text(
+                debugInfo!,
+                style: Theme.of(context).textTheme.caption,
+                textAlign: TextAlign.center,
+              )
+            ],
           ],
         ),
       ),
