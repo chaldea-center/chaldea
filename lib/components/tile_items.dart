@@ -1,7 +1,6 @@
 import 'dart:math' show max, min;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 import 'constants.dart';
 

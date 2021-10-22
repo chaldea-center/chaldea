@@ -18,7 +18,6 @@ import 'dart:async';
 import 'package:chaldea/components/mob_stat/mob_stat.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 // ignore_for_file: unnecessary_null_comparison
 
 const int _kSplitMasterRatio = 38;

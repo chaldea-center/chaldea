@@ -1,5 +1,4 @@
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/localized/localized_base.dart';
 import 'package:chaldea/modules/shared/common_builders.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
 

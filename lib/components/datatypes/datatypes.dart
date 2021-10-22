@@ -26,7 +26,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:json_annotation/json_annotation.dart'
     hide $checkedCreate, $checkedNew, $checkedConvert, CheckedFromJsonException;
-import 'package:json_annotation/src/allowed_keys_helpers.dart'; // ignore: implementation_imports
 
 import '../config.dart' show db;
 import '../constants.dart';

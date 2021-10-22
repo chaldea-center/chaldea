@@ -1,7 +1,6 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/datatypes/effect_type/effect_type.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
-import 'package:flutter/cupertino.dart';
 
 class ServantFilterPage extends FilterPage<SvtFilterData> {
   const ServantFilterPage({

@@ -1,6 +1,11 @@
-import 'package:chaldea/components/components.dart';
+import 'dart:io';
+
+import 'package:chaldea/components/config.dart';
+import 'package:chaldea/components/extensions.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/platform_interface/platform/platform.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:open_file/open_file.dart';
 
 class InputCancelOkDialog extends StatefulWidget {

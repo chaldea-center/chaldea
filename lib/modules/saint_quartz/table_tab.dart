@@ -1,7 +1,5 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/summon/summon_detail_page.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:intl/intl.dart';
 import 'package:table_sticky_headers/table_sticky_headers.dart';
 
 class SQTableTab extends StatefulWidget {

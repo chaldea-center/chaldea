@@ -1,6 +1,5 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/common_builders.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class MysticCodePage extends StatefulWidget {

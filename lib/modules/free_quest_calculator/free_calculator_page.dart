@@ -1,6 +1,4 @@
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/widgets/markdown_page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
 
 import 'input_tab.dart';

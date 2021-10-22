@@ -49,7 +49,7 @@ class MethodChannelChaldea {
     }
   }
 
-  static Future<void> setWindowPos([List? rect]) async {
+  static Future<void> setWindowPos([dynamic rect]) async {
     if (PlatformU.isWindows) {
       rect ??= db.cfg.windowPos.get();
       print('rect ${rect.runtimeType}: $rect');

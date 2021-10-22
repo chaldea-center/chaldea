@@ -7,7 +7,6 @@ import 'package:archive/archive_io.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/platform_interface/platform/platform.dart';
 import 'package:chaldea/widgets/icon_clipper.dart';
-import 'package:chaldea/widgets/image/cached_image_option.dart';
 import 'package:chaldea/widgets/image/image_viewer.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';

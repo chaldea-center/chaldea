@@ -1,7 +1,5 @@
 import 'package:chaldea/components/components.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 const double _kSearchBarPaddingBottom = 8.0;
 

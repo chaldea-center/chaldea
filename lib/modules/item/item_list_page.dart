@@ -6,7 +6,6 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/free_quest_calculator/free_calculator_page.dart';
 import 'package:chaldea/modules/shared/common_builders.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
 
 import 'item_detail_page.dart';
 
