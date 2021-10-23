@@ -41,18 +41,23 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
           child: Text(S.current.cancel),
         ),
         TextButton(
-          onPressed: _manager.isCompleted
-              ? () {
-                  _manager.start(
-                      onProgress: onProgress,
-                      interval: const Duration(milliseconds: 200));
-                  setState(() {});
-                }
-              : null,
+          onPressed: _manager.isCompleted ? _startCaching : null,
           child: Text(S.current.download),
         ),
       ],
     );
+  }
+
+  void _startCaching() {
+    if (!db.hasNetwork) {
+      EasyLoading.showInfo(S.current.error_no_network);
+      return;
+    }
+    _manager.start(
+      onProgress: onProgress,
+      interval: const Duration(milliseconds: 200),
+    );
+    setState(() {});
   }
 }
 
@@ -68,9 +73,13 @@ class IconCacheManager {
 
   bool get isCompleted => _completer == null || _completer?.isCompleted == true;
 
-  Future start(
-      {Function(int count, int total, int errors)? onProgress,
-      Duration interval = const Duration(milliseconds: 200)}) async {
+  Future start({
+    Function(int count, int total, int errors)? onProgress,
+    Duration interval = const Duration(milliseconds: 200),
+  }) async {
+    if (!db.hasNetwork) {
+      return;
+    }
     _completer = Completer();
     Set<String?> _icons = {};
     for (final svt in db.gameData.servants.values) {

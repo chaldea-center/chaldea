@@ -32,7 +32,7 @@ class _ItemServantCostPageState extends State<ItemServantCostPage> {
 
   int get sortType => widget.sortType;
 
-  late ItemStatistics stat;
+  ItemStatistics? stat;
 
   @override
   void initState() {
@@ -52,18 +52,24 @@ class _ItemServantCostPageState extends State<ItemServantCostPage> {
       ],
       duplicatedServants: db.curUser.duplicatedServants,
     );
-    stat = ItemStatistics(user: user);
-    stat.update(shouldBroadcast: false, lapse: Duration.zero);
+    Future.delayed(kTabScrollDuration, () {
+      stat = ItemStatistics(user: user);
+      stat!.update(shouldBroadcast: false, lapse: Duration.zero);
+      if (mounted) setState(() {});
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     // print(db.itemStat.svtItemDetail.allCountBySvt.skill);
+    if (stat == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
     String num2str(int? n) =>
         formatNumber(n ?? 0, compact: true, minVal: 10000);
 
-    final counts = stat.svtItemDetail.getItemCounts();
-    final details = stat.svtItemDetail.getCountByItem();
+    final counts = stat!.svtItemDetail.getItemCounts();
+    final details = stat!.svtItemDetail.getCountByItem();
     List<Widget> children = [
       CustomTile(
         title: Text(
@@ -88,7 +94,7 @@ class _ItemServantCostPageState extends State<ItemServantCostPage> {
       ];
       for (int i = 0; i < headers.length; i++) {
         final _allSvtCounts =
-            db.itemStat.svtItemDetail.allCountByItem.values[i][itemKey];
+        db.itemStat.svtItemDetail.allCountByItem.values[i][itemKey];
         bool _hasSvt = _allSvtCounts?.values.any((e) => e > 0) ?? false;
         if (_hasSvt) {
           children.add(Column(
@@ -159,7 +165,8 @@ class _ItemServantCostPageState extends State<ItemServantCostPage> {
     return buildGridIcons(context: context, children: children);
   }
 
-  List<Widget> buildSvtList(BuildContext context, SvtParts<Map<String, Map<int, int>>> details) {
+  List<Widget> buildSvtList(
+      BuildContext context, SvtParts<Map<String, Map<int, int>>> details) {
     List<Widget> children = [];
     if (!details.summation!.containsKey(itemKey)) {
       return children;
@@ -172,7 +179,7 @@ class _ItemServantCostPageState extends State<ItemServantCostPage> {
       final svt = db.gameData.servantsWithUser[svtNo]!;
       bool _planned = db.curUser.svtStatusOf(svtNo).favorite;
       final textStyle =
-      _planned ? const TextStyle(color: Colors.blueAccent) : null;
+          _planned ? const TextStyle(color: Colors.blueAccent) : null;
       final ascensionNum = details.ascension[itemKey]?[svtNo] ?? 0,
           skillNum = details.skill[itemKey]?[svtNo] ?? 0,
           dressNum = details.dress[itemKey]?[svtNo] ?? 0,

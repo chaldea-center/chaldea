@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/item/item_detail_page.dart';
 import 'package:chaldea/modules/shared/common_builders.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -57,7 +56,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
     children.addAll(buildHeaders(context: context, event: event));
     children.add(db.streamBuilder((context) => TileGroup(children: [
           SwitchListTile.adaptive(
-            title: Text(S.of(context).plan),
+            title: Text(S.current.plan),
             value: plan.enabled,
             onChanged: (v) {
               plan.enabled = v;
@@ -66,9 +65,9 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
           ),
           if (event.grail2crystal > 0)
             SwitchListTile.adaptive(
-              title: Text(S.of(context).rerun_event),
+              title: Text(S.current.rerun_event),
               subtitle: Text(
-                  S.of(context).event_rerun_replace_grail(event.grail2crystal)),
+                  S.current.event_rerun_replace_grail(event.grail2crystal)),
               value: plan.rerun,
               onChanged: (v) {
                 plan.rerun = v;
@@ -93,8 +92,8 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
       children.add(ListTile(
         title: Text(
           event.lotteryLimit > 0
-              ? S.of(context).event_lottery_limited
-              : S.of(context).event_lottery_unlimited,
+              ? S.current.event_lottery_limited
+              : S.current.event_lottery_unlimited,
           textScaleFactor: 0.95,
           style: const TextStyle(fontWeight: FontWeight.w500),
         ),
@@ -144,7 +143,7 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
 
     if (event.extra2.isNotEmpty == true) {
       children.addAll([
-        blockHeader(S.current.event_item_extra),
+        blockHeader(S.current.event_item_extra + ' 2'),
         _buildExtraItems(event.extra2, plan.extra2, _extra2Controllers)
       ]);
     }
@@ -185,31 +184,25 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
         ],
       ),
       body: ListView(children: children),
-      floatingActionButton: floatingActionButton,
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.archive_outlined),
+        tooltip: S.of(context).event_collect_items,
+        onPressed: onArchive,
+      ),
     );
   }
 
-  Widget get floatingActionButton {
-    return FloatingActionButton(
-      child: const Icon(Icons.archive_outlined),
-      tooltip: S.of(context).event_collect_items,
-      onPressed: () {
-        if (!plan.enabled) {
-          showInformDialog(context, content: S.of(context).event_not_planned);
-        } else {
-          SimpleCancelOkDialog(
-            title: Text(S.of(context).confirm),
-            content: Text(S.of(context).event_collect_item_confirm),
-            onTapOk: () {
-              sumDict([db.curUser.items, event.getItems(plan)], inPlace: true);
-              plan.enabled = false;
-              db.itemStat.updateEventItems();
-              setState(() {});
-            },
-          ).showDialog(context);
-        }
-      },
-    );
+  void onArchive() {
+    if (!plan.enabled) {
+      showInformDialog(context, content: S.current.event_not_planned);
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => _ArchiveDialog(event: event, plan: plan),
+      ).then((_) {
+        if (mounted) setState(() {});
+      });
+    }
   }
 
   Widget _buildExtraItems(Map<String, String> data, Map<String, int> extraPlan,
@@ -247,14 +240,176 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
     return TileGroup(padding: EdgeInsets.zero, children: children);
   }
 
-  void onTapIcon(String itemKey) {
-    SplitRoute.push(context, ItemDetailPage(itemKey: itemKey));
-  }
-
   @override
   void dispose() {
     super.dispose();
     _lotteryController.dispose();
     _extra2Controllers.values.forEach((c) => c.dispose());
+  }
+}
+
+class _ArchiveDialog extends StatefulWidget {
+  final LimitEvent event;
+  final LimitEventPlan plan;
+
+  const _ArchiveDialog({Key? key, required this.event, required this.plan})
+      : super(key: key);
+
+  @override
+  _ArchiveDialogState createState() => _ArchiveDialogState();
+}
+
+class _ArchiveDialogState extends State<_ArchiveDialog> {
+  LimitEvent get event => widget.event;
+
+  LimitEventPlan get plan => widget.plan;
+
+  bool _shop = true;
+  bool _lottery = true;
+  bool _extra = true;
+  bool _extra2 = true;
+
+  bool get _shopEnabled => event.itemsWithRare(plan).isNotEmpty;
+
+  bool get _lotteryEnabled => event.lottery.isNotEmpty;
+
+  bool get _extraEnabled => event.extra.isNotEmpty;
+
+  bool get _extra2Enabled => event.extra2.isNotEmpty;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (event.itemsWithRare(plan).isNotEmpty)
+            SwitchListTile.adaptive(
+              value: _shop,
+              title: Text(S.current.event_item_default),
+              onChanged: (v) {
+                setState(() {
+                  _shop = v;
+                });
+              },
+            ),
+          if (event.lottery.isNotEmpty)
+            SwitchListTile.adaptive(
+              value: _lottery,
+              title: Text(event.lotteryLimit > 0
+                  ? S.current.event_lottery_limited
+                  : S.current.event_lottery_unlimited),
+              onChanged: (v) {
+                setState(() {
+                  _lottery = v;
+                });
+              },
+            ),
+          if (event.extra.isNotEmpty)
+            SwitchListTile.adaptive(
+              value: _extra,
+              title: Text(S.current.event_item_extra),
+              onChanged: (v) {
+                setState(() {
+                  _extra = v;
+                });
+              },
+            ),
+          if (event.extra2.isNotEmpty)
+            SwitchListTile.adaptive(
+              value: _extra2,
+              title: Text(S.current.event_item_extra + ' 2'),
+              onChanged: (v) {
+                setState(() {
+                  _extra2 = v;
+                });
+              },
+            ),
+          ListTile(
+            subtitle: Text(
+              LocalizedText.of(
+                chs: '注意:\n收取每部分素材，无限池及额外部分在收取后将清零，若收取全部则本活动在收取后将移出规划',
+                jpn: '知らせ：\n各部分が収集され、"ボックスガチャ"と"その他"は受領後にクリアされます。'
+                    'すべてが収集された場合、このイベントはプランから削除されます。',
+                eng:
+                    'Hint:\nArchive each part of items, reset lottery and extra parts after archived, '
+                    'remove event from plan if all selected',
+              ),
+              textScaleFactor: 0.8,
+            ),
+          )
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(S.current.cancel),
+        ),
+        TextButton(
+          onPressed: (_shop && _shopEnabled) ||
+                  (_lottery && _lotteryEnabled) ||
+                  (_extra && _extraEnabled) ||
+                  (_extra2 && _extra2Enabled)
+              ? archive
+              : null,
+          child: Text(S.current.confirm),
+        )
+      ],
+    );
+  }
+
+  void archive() {
+    Map<String, int> _archived = {};
+    if (_shopEnabled && _shop) {
+      sumDict([_archived, event.itemsWithRare(plan)], inPlace: true);
+    }
+    if (_lotteryEnabled && _lottery) {
+      sumDict([_archived, multiplyDict(event.lottery, plan.lottery)],
+          inPlace: true);
+      plan.lottery = 0;
+    }
+    if (_extraEnabled && _extra) {
+      sumDict([
+        _archived,
+        plan.extra..removeWhere((key, value) => !event.extra.containsKey(key)),
+      ], inPlace: true);
+      plan.extra.clear();
+    }
+    if (_extra2Enabled && _extra2) {
+      sumDict([
+        _archived,
+        plan.extra2
+          ..removeWhere((key, value) => !event.extra2.containsKey(key)),
+      ], inPlace: true);
+      plan.extra2.clear();
+    }
+    sumDict([db.curUser.items, _archived], inPlace: true);
+    if (_shop && _lottery && _extra && _extra2) {
+      plan.enabled = false;
+    }
+    db.itemStat.updateEventItems();
+    Navigator.of(context).pop();
+    showDialog(
+      context: context,
+      builder: (context) => SimpleCancelOkDialog(
+        title: Text(S.current.success),
+        content: Wrap(
+          spacing: 3,
+          runSpacing: 3,
+          children: _archived.entries
+              .map((e) => Item.iconBuilder(
+                    context: context,
+                    itemKey: e.key,
+                    text: formatNumber(e.value,
+                        compact: true, groupSeparator: ''),
+                    height: 42,
+                  ))
+              .toList(),
+        ),
+        hideCancel: true,
+      ),
+    );
   }
 }

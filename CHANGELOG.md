@@ -1,7 +1,11 @@
 ## 1.6.2
 
+- support Bond and EXP as item in free quest calculator
 - support caching icons in Settings-Gamedata
+- archive limit event items by parts
+- add consumed tab in item detail
 - disable NA news on Windows because of bug
+- update some translations
 
 ## 1.6.1
 

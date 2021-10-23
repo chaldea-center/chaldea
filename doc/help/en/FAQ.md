@@ -15,6 +15,8 @@ Almost all images are downloaded from wiki server when shown on stage, please tr
 - restart app after hours: server may be crowded, or too frequent requests in short time and get
   banned temporarily
 
+When network is available, You can cache icons in Settings-Gamedata, about 3000+ icons.
+
 ----------
 
 ### 1. Servant/Craft Essence/Command Code not found

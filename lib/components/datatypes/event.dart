@@ -241,7 +241,7 @@ class LimitEvent extends EventBase {
       return {};
     }
     Map<String, int> lotterySum =
-        lottery.isNotEmpty == true ? multiplyDict(lottery, plan.lottery) : {};
+        lottery.isNotEmpty ? multiplyDict(lottery, plan.lottery) : {};
     return sumDict([
       itemsWithRare(plan),
       plan.extra..removeWhere((key, value) => !extra.containsKey(key)),

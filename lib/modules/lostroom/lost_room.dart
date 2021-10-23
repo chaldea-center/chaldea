@@ -17,10 +17,10 @@ class LostRoomPage extends StatelessWidget {
             subtitle: Center(
               child: Text(
                 LocalizedText.of(
-                    chs: '还在开发中，仅供预览\n欢迎提意见~',
-                    jpn: '進行中の開発作業。\nプレビューのみ。',
+                    chs: '准备v2版本ing\n暂停新功能开发',
+                    jpn: 'v2バージョンを準備する\n新機能の開発を一時停止する',
                     eng:
-                        'Work In Progress. Preview only.\n Suggestion welcomed.'),
+                        'Preparing v2 version\nSuspend the development of new features'),
                 textAlign: TextAlign.center,
               ),
             ),
