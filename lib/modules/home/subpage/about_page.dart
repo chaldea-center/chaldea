@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/extras/updates.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -40,6 +41,13 @@ class _AboutPageState extends State<AboutPage> {
                 showDebugInfo = true;
               });
             },
+            onLongPress: () async {
+              setState(() {
+                showDebugInfo = true;
+              });
+              await Clipboard.setData(ClipboardData(text: AppInfo.uuid));
+              EasyLoading.showToast('UUID ' + S.current.copied);
+            },
             child: _AboutProgram(
               name: AppInfo.appName,
               version: AppInfo.fullVersion2,
@@ -70,7 +78,7 @@ class _AboutPageState extends State<AboutPage> {
                     subtitle: Text(EnumUtil.titled(db.appSetting.gitSource)),
                     trailing: db.runtimeData.upgradableVersion != null
                         ? Text(db.runtimeData.upgradableVersion!.version + '↑',
-                        style: const TextStyle(color: Colors.redAccent))
+                            style: const TextStyle(color: Colors.redAccent))
                         : null,
                     onTap: () {
                       AutoUpdateUtil.checkAppUpdate(background: false);
@@ -176,7 +184,7 @@ class _AboutPageState extends State<AboutPage> {
                           height: 120,
                         ),
                         applicationLegalese:
-                        'Copyright © 2021 cc.narumi.\nAll rights reserved.',
+                            'Copyright © 2021 cc.narumi.\nAll rights reserved.',
                       ),
                     ),
                   );

@@ -177,7 +177,7 @@ class SimpleLineChart<T extends num> extends StatelessWidget {
         isStrokeCapRound: true,
         dotData: FlDotData(show: false),
         belowBarData: BarAreaData(show: false),
-        spots: [
+        spots: const [
           FlSpot(1, 2.8),
           FlSpot(3, 1.9),
           FlSpot(6, 3),
