@@ -124,7 +124,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   ),
                 ),
                 ListTile(
-                  title: Text(S.of(context).nga),
+                  title: Text(S.current.nga),
                   subtitle:
                       const Text('https://bbs.nga.cn/read.php?tid=24926789'),
                   onTap: () => jumpToExternalLinkAlert(
@@ -159,17 +159,11 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 ListTile(
                   title: const Text('NokNok'),
                   subtitle: const Text('118835'),
-                  onTap: () {
+                  onTap: () async {
+                    await Clipboard.setData(const ClipboardData(text: '118835'))
+                        .then((_) => EasyLoading.showToast(S.current.copied));
                     launch(
                         'https://www.noknok.cn/act/share_group_20210625/index.html?uid=100164675&gid=118835');
-                  },
-                ),
-                ListTile(
-                  title: const Text('QQ Group'),
-                  subtitle: const Text('863998768'),
-                  onTap: () {
-                    Clipboard.setData(const ClipboardData(text: '863998768'))
-                        .then((_) => EasyLoading.showToast(S.current.copied));
                   },
                 ),
                 ListTile(
@@ -183,7 +177,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
               ],
             ),
             TileGroup(
-              header: S.of(context).about_feedback,
+              header: S.current.about_feedback,
               // divider: Container(),
               innerDivider: false,
               children: [
@@ -197,10 +191,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
                       labelText: 'Email',
                       border: const OutlineInputBorder(),
                       prefixIcon: const Icon(Icons.mail_outline),
-                      hintText: LocalizedText.of(
-                          chs: '推荐邮箱',
-                          jpn: 'メールおすすめ',
-                          eng: 'Email is preferred'),
+                      hintText:
+                          LocalizedText.of(chs: '邮箱', jpn: 'メール', eng: 'Email'),
                       helperText: LocalizedText.of(
                           chs: '建议填写邮件联系方式，否则将无法得到回复！！！请勿填写QQ/微信/手机号！',
                           jpn: '連絡先情報ないと、返信ができません。',
@@ -240,17 +232,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     textAlignVertical: TextAlignVertical.top,
                   ),
                 ),
-                // // Always add logs
-                // CheckboxListTile(
-                //   title: Text(S.of(context).feedback_add_crash_log),
-                //   value: attachLog,
-                //   onChanged: (v) {
-                //     setState(() {
-                //       attachLog = v ?? attachLog;
-                //     });
-                //   },
-                // ),
-                // Divider(height: 1, thickness: 0.5, indent: 16, endIndent: 16),
                 ListTile(
                   title: Text(S.current.attachment),
                   subtitle: Text(LocalizedText.of(

@@ -6,7 +6,8 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/home/subpage/login_page.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:open_file/open_file.dart';
-import 'package:path/path.dart' show basenameWithoutExtension;
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class UserDataPage extends StatefulWidget {
@@ -20,9 +21,20 @@ class _UserDataPageState extends State<UserDataPage> {
   Map<String, String> cachedFiles = {};
   List<String> onlineVersions = [];
 
+  List<Directory> androidExternalDirs = [];
+
   @override
   void initState() {
     super.initState();
+    if (PlatformU.isAndroid) {
+      getExternalStorageDirectories().then((dirs) {
+        if (dirs != null && mounted) {
+          setState(() {
+            androidExternalDirs = dirs;
+          });
+        }
+      });
+    }
   }
 
   @override
@@ -36,6 +48,19 @@ class _UserDataPageState extends State<UserDataPage> {
           TileGroup(
             footer: 'All data saved here.',
             children: [
+              if (androidExternalDirs.length >= 2)
+                SwitchListTile.adaptive(
+                  value: db.persistentCfg.androidUseExternal.get() == true,
+                  title: Text(LocalizedText.of(
+                      chs: '使用外部储存(SD卡)',
+                      jpn: '外部ストレージ（SDカード）を使用',
+                      eng: 'Use External Storage(SD card)')),
+                  subtitle: Text(LocalizedText.of(
+                      chs: '下次启动生效',
+                      jpn: '次の起動時に有効になります',
+                      eng: 'Take effect at next startup')),
+                  onChanged: _migrateAndroidData,
+                ),
               ListTile(
                 title: Text(LocalizedText.of(
                     chs: '数据目录', jpn: 'データフォルダ', eng: 'Data Folder')),
@@ -296,6 +321,98 @@ class _UserDataPageState extends State<UserDataPage> {
       onError: (e, s) => EasyLoading.showError(e.toString()),
     ).whenComplete(() => EasyLoadingUtil.dismiss());
   }
+
+  Future<void> _migrateAndroidData(bool useExternal) async {
+    Directory from, to;
+    if (useExternal) {
+      // from internal to external
+      from = androidExternalDirs[0];
+      to = androidExternalDirs[1];
+    } else {
+      // from external to internal
+      from = androidExternalDirs[1];
+      to = androidExternalDirs[0];
+    }
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Text(
+            LocalizedText.of(chs: '迁移数据', jpn: 'データの移行', eng: 'Migrate Data')),
+        content: Text('From:\n ${from.path}\nTo:\n${to.path}'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(S.current.cancel),
+          ),
+          TextButton(
+            onPressed: () {
+              db.persistentCfg.androidUseExternal.set(useExternal);
+              Navigator.of(context).pop();
+              SimpleCancelOkDialog(
+                title: const Text('⚠️ Warning'),
+                content: Text(LocalizedText.of(
+                    chs: '请手动移动数据，否则启动后为空数据。',
+                    jpn: 'データを手動で移動してください。そうしないと、起動後にデータが空になります。',
+                    eng:
+                        'Please move the data manually, otherwise the data will be empty after startup.')),
+                hideCancel: true,
+              ).showDialog(context);
+            },
+            child: Text(
+                LocalizedText.of(chs: '不迁移', jpn: '移行しない', eng: 'NOT MIGRATE')),
+          ),
+          TextButton(
+            onPressed: () async {
+              EasyLoading.show(
+                  status: 'Moving...', maskType: EasyLoadingMaskType.clear);
+              try {
+                await _copyDirectory(from, to);
+                db.persistentCfg.androidUseExternal.set(useExternal);
+                Navigator.of(context).pop();
+                SimpleCancelOkDialog(
+                  title: const Text('⚠️ Warning'),
+                  content: Text(LocalizedText.of(
+                      chs: '重启以设置生效',
+                      jpn: '設定を有効にするために再起動します',
+                      eng: 'Restart for the settings to take effect')),
+                  hideCancel: true,
+                ).showDialog(context);
+              } catch (e, s) {
+                logger.e('migrate android data to external failed', e, s);
+                SimpleCancelOkDialog(
+                  title: const Text('⚠️ ERROR'),
+                  content: Text(e.toString()),
+                  hideCancel: true,
+                ).showDialog(context);
+              } finally {
+                EasyLoadingUtil.dismiss();
+              }
+            },
+            child: Text(LocalizedText.of(chs: '迁移', jpn: '移行', eng: 'MIGRATE')),
+          ),
+        ],
+      ),
+    );
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> _copyDirectory(Directory source, Directory destination) async {
+    await destination.create(recursive: true);
+    await for (var entity in source.list(recursive: false)) {
+      if (entity is Directory) {
+        var newDirectory = Directory(
+            p.join(destination.absolute.path, p.basename(entity.path)));
+        await newDirectory.create(recursive: true);
+        await _copyDirectory(entity.absolute, newDirectory);
+      } else if (entity is File) {
+        await entity.copy(p.join(destination.path, p.basename(entity.path)));
+      }
+      //  skip link
+    }
+  }
 }
 
 class _BackupHistoryPage extends StatefulWidget {
@@ -343,7 +460,7 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
           }
           final path = paths[index - 1];
           return ListTile(
-            title: Text(basenameWithoutExtension(path)),
+            title: Text(p.basenameWithoutExtension(path)),
             trailing: IconButton(
               icon: const Icon(Icons.download),
               tooltip: S.current.import_data,

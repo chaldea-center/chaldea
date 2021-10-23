@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:chaldea/platform_interface/platform/platform.dart';
 import 'package:hive/hive.dart';
+import 'package:path/path.dart' as pathlib;
 
 import '../logger.dart';
 
@@ -13,9 +14,25 @@ class JsonStore<T> {
   final String? indent;
   Map<String, dynamic> _data = {};
 
-  JsonStore(this.fp, {Duration? lapse, this.indent})
+  static final Map<String, JsonStore> _instances = {};
+
+  JsonStore.raw(this.fp, {Duration? lapse, this.indent, bool autoLoad = true})
       : lapse = lapse ?? const Duration(seconds: 10) {
-    loadSync();
+    if (autoLoad) {
+      loadSync();
+    }
+  }
+
+  factory JsonStore(String fp,
+      {Duration? lapse, String? indent, bool autoLoad = true}) {
+    fp = pathlib.absolute(fp);
+    final instance = _instances[fp];
+    if (instance is JsonStore<T>) {
+      return instance;
+    } else {
+      return _instances[fp] = JsonStore<T>.raw(fp,
+          lapse: lapse, indent: indent, autoLoad: autoLoad);
+    }
   }
 
   String get _boxName => 'json_store_$fp';
@@ -96,6 +113,7 @@ class JsonStore<T> {
 
   Map<String, dynamic> _decode(String content) {
     try {
+      if (content.trim().isEmpty) return {};
       final decoded = json.decode(content);
       if (decoded is Map) {
         return Map.from(decoded);

@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
+import 'package:chaldea/components/json_store/json_store.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/platform_interface/platform/platform.dart';
 import 'package:chaldea/widgets/icon_clipper.dart';
@@ -59,6 +60,7 @@ class Database {
 
   SharedPrefs prefs = SharedPrefs();
   late LocalAppConfig cfg;
+  late PersistentAppConfig persistentCfg;
 
   User get curUser => userData.curUser;
 
@@ -122,6 +124,7 @@ class Database {
     await paths.initRootPath();
     cfg = LocalAppConfig(pathlib.join(paths.configDir, 'cfg.json'),
         lapse: const Duration(seconds: 3));
+    persistentCfg = PersistentAppConfig(paths.persistentConfigPath);
     await WikiUtil.init();
     await AppInfo.resolve();
     await prefs.initiate();
@@ -509,44 +512,82 @@ class Database {
 }
 
 class PathManager {
-  /// [_appPath] root path where app can access
+  /// [_appPath] root path where app data stored, can be configured by user
   String? _appPath;
 
+  /// persistent data/config store path
+  String? _persistentPath;
+
+  // ignore: unused_element
+  Future<String?> _debugPath(
+      String key, Future<dynamic> Function() getter) async {
+    dynamic _path;
+    try {
+      _path = await getter();
+    } catch (e) {
+      _path = '$e';
+    }
+    String result = '';
+    if (_path is String) {
+      result = _path;
+    } else if (_path is Directory) {
+      result = _path.path;
+    } else if (_path is List<Directory> || _path is List<Directory?>) {
+      result = List<Directory?>.of(_path).map((e) => e?.path).join('\n\t\t');
+    } else {
+      result = _path.toString();
+    }
+    print('$key\n\t\t$result');
+    return result;
+  }
+
   Future<void> initRootPath() async {
-    // final Map<String, Directory?> _fps = {
-    //   'ApplicationDocuments': await getApplicationDocumentsDirectory()
-    //       .catchError((e) => Directory('null')),
-    //   'ApplicationSupport': await getApplicationSupportDirectory()
-    //       .catchError((e) => Directory('null')),
-    //   'Temporary':
-    //       await getTemporaryDirectory().catchError((e) => Directory('null')),
-    //   'Library':
-    //       await getLibraryDirectory().catchError((e) => Directory('null')),
-    //   'Downloads':
-    //       await getDownloadsDirectory().catchError((e) => Directory('null')),
-    // };
-    // for (var e in _fps.entries) {
-    //   print('${e.key}\n\t\t${e.value?.path}');
-    // }
+    // await _debugPath(
+    //     '1-ApplicationDocuments', () => getApplicationDocumentsDirectory());
+    // await _debugPath(
+    //     '2-ApplicationSupport', () => getApplicationSupportDirectory());
+    // await _debugPath('3-Temporary', () => getTemporaryDirectory());
+    // await _debugPath('4-Library', () => getLibraryDirectory());
+    // await _debugPath('5-Downloads', () => getDownloadsDirectory());
+    // await _debugPath('6-ExternalCache', () => getExternalCacheDirectories());
+    // await _debugPath('7-ExternalStorage', () => getExternalStorageDirectory());
+    // await _debugPath(
+    //     '8-ExternalStorages', () => getExternalStorageDirectories());
 
     if (_appPath != null) return;
     if (PlatformU.isWeb) {
-      _appPath = 'web';
+      _persistentPath = _appPath = 'web';
       initiateLoggerPath('');
       return;
     }
 
     if (PlatformU.isAndroid) {
+      // enhancement: startup check, if SD card not exists and set to use external, raise a warning
+      _persistentPath = (await getApplicationDocumentsDirectory()).path;
+      final _c = JsonStore(persistentConfigPath, autoLoad: false);
+      await _c.load();
+      _c.set('description', "KEEP this file if customized app data path");
+      bool useExternal = _c.get('android_use_external') == true;
+      List<String> externalPaths = (await getExternalStorageDirectories())!
+          .map((e) => e.path)
+          .whereType<String>()
+          .toList();
       // don't use getApplicationDocumentsDirectory, it is hidden to user.
-      // android: [emulated, external SD]
-      _appPath = (await getExternalStorageDirectories())![0].path;
+      // android external storages: [emulated, external SD]
+      if (useExternal && externalPaths.length >= 2) {
+        _appPath = externalPaths[1];
+      } else {
+        _appPath = externalPaths[0];
+      }
       // _tempPath = (await getTemporaryDirectory())?.path;
     } else if (PlatformU.isIOS) {
-      _appPath = (await getApplicationDocumentsDirectory()).path;
+      _persistentPath =
+          _appPath = (await getApplicationDocumentsDirectory()).path;
       // _tempPath = (await getTemporaryDirectory())?.path;
     } else if (PlatformU.isMacOS) {
       // /Users/<user>/Library/Containers/cc.narumi.chaldea/Data/Documents
-      _appPath = (await getApplicationDocumentsDirectory()).path;
+      _persistentPath =
+          _appPath = (await getApplicationDocumentsDirectory()).path;
       // /Users/<user>/Library/Containers/cc.narumi.chaldea/Data/Library/Caches
       // _tempPath = (await getTemporaryDirectory())?.path;
     } else if (PlatformU.isWindows) {
@@ -554,6 +595,7 @@ class PathManager {
       // set link:
       // in old version windows, it may need admin permission, so it may fail
       String exeFolder = pathlib.dirname(PlatformU.resolvedExecutable);
+      _persistentPath = exeFolder;
       _appPath = pathlib.join(exeFolder, 'userdata');
       if (kDebugMode) {
         // C:\Users\<user>\AppData\Roaming\cc.narumi\Chaldea
@@ -561,6 +603,7 @@ class PathManager {
       }
     } else if (PlatformU.isLinux) {
       String exeFolder = pathlib.dirname(PlatformU.resolvedExecutable);
+      _persistentPath = exeFolder;
       _appPath = pathlib.join(exeFolder, 'userdata');
       if (kDebugMode) {
         // Ubuntu: /home/<user>/.local/share/chaldea
@@ -576,6 +619,7 @@ class PathManager {
 
     // ensure directory exist
     for (String dir in [
+      _persistentPath!,
       userDir,
       gameDir,
       tempDir,
@@ -632,6 +676,10 @@ class PathManager {
   String get crashLog => pathlib.join(logDir, 'crash.log');
 
   String get datasetVersionFile => pathlib.join(gameDir, 'VERSION');
+
+  // persistent
+  String get persistentConfigPath =>
+      pathlib.join(_persistentPath!, 'setting.json');
 
   static final PathManager _instance = PathManager._internal();
 

@@ -3,6 +3,7 @@
 - support Bond and EXP as item in free quest calculator
 - support caching icons in Settings-Gamedata
 - archive limit event items by parts
+- add enemy alignment and trait filter, fix enemy search
 - add consumed tab in item detail
 - disable NA news on Windows because of bug
 - update some translations
