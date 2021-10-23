@@ -196,6 +196,7 @@ class _CmdCodeSearchOptions with SearchOptionsMixin<CommandCode> {
         'basic',
             () => [
           code.no.toString(),
+          code.gameId.toString(),
           code.mcLink,
           ...Utils.getSearchAlphabets(code.name, code.nameJp, code.nameEn),
           ...Utils.getSearchAlphabetsForList(code.illustrators,

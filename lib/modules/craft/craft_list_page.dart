@@ -233,6 +233,7 @@ class _CraftSearchOptions with SearchOptionsMixin<CraftEssence> {
         'basic',
         () => [
           ce.no.toString(),
+          ce.gameId.toString(),
           ce.mcLink,
           ...Utils.getSearchAlphabets(ce.name, ce.nameJp, ce.nameEn),
           ...Utils.getSearchAlphabetsForList(ce.illustrators,

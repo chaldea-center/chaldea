@@ -1085,12 +1085,15 @@ Item _$ItemFromJson(Map<String, dynamic> json) => $checkedCreate(
           rarity: $checkedConvert('rarity', (v) => v as int? ?? 0),
           description: $checkedConvert('description', (v) => v as String?),
           descriptionJp: $checkedConvert('descriptionJp', (v) => v as String?),
+          enemies: $checkedConvert('enemies',
+              (v) => (v as List<dynamic>?)?.map((e) => e as String).toList()),
         );
         return val;
       },
     );
 
-Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
+Map<String, dynamic> _$ItemToJson(Item instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'itemId': instance.itemId,
       'name': instance.name,
@@ -1100,6 +1103,7 @@ Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
       'rarity': instance.rarity,
       'description': instance.description,
       'descriptionJp': instance.descriptionJp,
+      'enemies': instance.enemies,
     };
 
 MysticCode _$MysticCodeFromJson(Map<String, dynamic> json) => $checkedCreate(

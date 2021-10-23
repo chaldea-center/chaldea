@@ -155,8 +155,8 @@ class CmdCodeDetailBasePage extends StatelessWidget {
                 child: CustomTable(
                   hideOutline: true,
                   children: <Widget>[
-                    CustomTableRow(
-                        children: [TableCellData(text: 'No. ${code.no}')]),
+                    CustomTableRow.fromTexts(
+                        texts: ['No. ${code.no}', 'No.${code.gameId}']),
                     CustomTableRow(children: [
                       TableCellData(
                           text: S.of(context).illustrator, isHeader: true),

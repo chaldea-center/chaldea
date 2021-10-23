@@ -168,8 +168,8 @@ class CraftDetailBasePage extends StatelessWidget {
                 child: CustomTable(
                   hideOutline: true,
                   children: <Widget>[
-                    CustomTableRow(
-                        children: [TableCellData(text: 'No. ${ce.no}')]),
+                    CustomTableRow.fromTexts(
+                        texts: ['No. ${ce.no}', 'No. ${ce.gameId}']),
                     CustomTableRow(children: [
                       TableCellData(
                           text: S.of(context).illustrator, isHeader: true),

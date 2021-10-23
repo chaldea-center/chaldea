@@ -1,4 +1,5 @@
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/modules/enemy/enemy_detail_page.dart';
 
 class ItemInfoTab extends StatelessWidget {
   final String itemKey;
@@ -39,21 +40,46 @@ class ItemInfoTab extends StatelessWidget {
                     ]),
                     CustomTableRow.fromTexts(texts: [itemInfo.nameJp ?? '-']),
                     CustomTableRow.fromTexts(texts: [itemInfo.nameEn ?? '-']),
-                    if (kDebugMode)
-                      CustomTableRow.fromTexts(texts: [
-                        itemInfo.id.toString(),
-                        itemInfo.itemId.toString()
-                      ])
+                    CustomTableRow(children: [
+                      TableCellData(text: 'ID', isHeader: true),
+                      if (kDebugMode)
+                        TableCellData(text: itemInfo.id.toString()),
+                      TableCellData(
+                        text: itemInfo.itemId.toString(),
+                        flex: kDebugMode ? 1 : 2,
+                      ),
+                    ]),
                   ],
                 ),
               ),
             ],
           ),
+          if (itemInfo.enemies.isNotEmpty) ...[
+            CustomTableRow.fromTexts(
+                texts: [S.current.enemy_list], isHeader: true),
+            CustomTableRow.fromChildren(children: [
+              Wrap(
+                spacing: 1,
+                runSpacing: 1,
+                children: itemInfo.enemies.map((e) {
+                  final enemy = db.gameData.enemies[e];
+                  if (enemy == null || enemy.icon == null) return Text(e);
+                  return GameCardMixin.cardIconBuilder(
+                    context: context,
+                    icon: enemy.icon!,
+                    height: 36,
+                    aspectRatio: 1,
+                    onTap: () {
+                      SplitRoute.push(context, EnemyDetailPage(enemy: enemy));
+                    },
+                  );
+                }).toList(),
+              )
+            ])
+          ],
           if (itemInfo.description != null || itemInfo.descriptionJp != null)
-            CustomTableRow(children: [
-              TableCellData(
-                  text: S.of(context).card_description, isHeader: true)
-            ]),
+            CustomTableRow.fromTexts(
+                texts: [S.current.card_description], isHeader: true),
           if (itemInfo.description != null)
             CustomTableRow(
               children: [

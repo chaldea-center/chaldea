@@ -1045,9 +1045,9 @@ class _ServantOptions with SearchOptionsMixin<Servant> {
       buffer.write(getCache(
         svt,
         'basic',
-            () => [
+        () => [
           svt.no.toString(),
-          if (kDebugMode) svt.svtId.toString(),
+          svt.svtId.toString(),
           svt.mcLink,
           ...Utils.getSearchAlphabets(
               svt.info.name, svt.info.nameJp, svt.info.nameEn),

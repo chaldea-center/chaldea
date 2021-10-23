@@ -15,6 +15,7 @@ class _EnemyDetailPageState extends State<EnemyDetailPage> {
   @override
   Widget build(BuildContext context) {
     final names = enemy.lNames;
+    final items = _relatedItems();
     return Scaffold(
       appBar: AppBar(
         title: Text(names.join('/')),
@@ -118,6 +119,21 @@ class _EnemyDetailPageState extends State<EnemyDetailPage> {
                         .map((e) => Localized.masterMission.of(e))
                         .join(', ')
               ]),
+              if (items.isNotEmpty) ...[
+                CustomTableRow.fromTexts(
+                    texts: [S.current.item], isHeader: true),
+                CustomTableRow.fromChildren(children: [
+                  Wrap(
+                    spacing: 3,
+                    runSpacing: 2,
+                    children: [
+                      for (final item in items)
+                        Item.iconBuilder(
+                            context: context, itemKey: item.name, height: 36)
+                    ],
+                  )
+                ])
+              ],
               CustomTableRow.fromTexts(
                   texts: [S.current.skill], isHeader: true),
               CustomTableRow.fromTexts(
@@ -141,5 +157,21 @@ class _EnemyDetailPageState extends State<EnemyDetailPage> {
         ],
       ),
     );
+  }
+
+  Set<Item> _relatedItems() {
+    Set<Item> items = {};
+    final names =
+        [...enemy.ids, ...enemy.names].map((e) => e.split(' ').first).toSet();
+    for (final item in db.gameData.items.values) {
+      for (String enemyName in item.enemies) {
+        enemyName = enemyName.split(' ').first;
+        if (names.contains(enemyName)) {
+          items.add(item);
+          continue;
+        }
+      }
+    }
+    return items;
   }
 }

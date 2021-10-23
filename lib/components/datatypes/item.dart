@@ -16,12 +16,13 @@ class Item {
   /// 4-event servants' ascension item, 5-special, now only QP
   int category;
 
-  /// rarity: 1-cropper, 2-silver, 3-gold, 4-special(crystal/grail)
+  /// rarity: 1-bronze, 2-silver, 3-gold, 4-special(crystal/grail)
   @JsonKey(defaultValue: 0)
   int rarity;
 
   String? description;
   String? descriptionJp;
+  List<String> enemies;
 
   Item({
     required this.id,
@@ -33,7 +34,8 @@ class Item {
     required this.rarity,
     this.description,
     this.descriptionJp,
-  });
+    List<String>? enemies,
+  }) : enemies = enemies ?? [];
 
   Item copyWith({
     int? id,
