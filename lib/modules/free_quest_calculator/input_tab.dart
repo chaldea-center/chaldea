@@ -50,8 +50,13 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     solver.ensureEngine();
   }
 
+  final String specialCategory = 'Special';
+
   void setPickerData() {
     // picker
+    pickerData.clear();
+    pickerData[specialCategory] = List.of(Items.specialPlanItems);
+
     db.gameData.items.keys.forEach((name) {
       final category = getItemCategory(name);
       if (category != null) {
@@ -80,17 +85,32 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     }
 
     pickerData.forEach((category, items) {
+      if (category == specialCategory) {
+        pickerAdapter.add(PickerItem(
+          text: makeText(
+              text: LocalizedText.of(chs: '特殊', jpn: '特別', eng: 'Special')),
+          value: specialCategory,
+          children: items
+              .map((e) => PickerItem(
+                    text: makeText(text: Item.lNameOf(e)),
+                    value: e,
+                  ))
+              .toList(),
+        ));
+        return;
+      }
       pickerAdapter.add(PickerItem(
         text: makeText(text: category.replaceFirst(RegExp(r' Items$'), '')),
         value: category,
         children: items
             .map((e) => PickerItem(
-                text: makeText(
-                  text: Item.lNameOf(e),
-                  icon: Item.iconBuilder(
-                      context: context, itemKey: e, height: 28),
-                ),
-                value: e))
+                  text: makeText(
+                    text: Item.lNameOf(e),
+                    icon: Item.iconBuilder(
+                        context: context, itemKey: e, height: 28),
+                  ),
+                  value: e,
+                ))
             .toList(),
       ));
     });
@@ -108,21 +128,22 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     if (pickerData.isEmpty) setPickerData();
     return Column(
       children: <Widget>[
-        ListTile(
-          title: Text(S.of(context).item),
-          contentPadding: const EdgeInsets.only(left: 18, right: 8),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                width: 65,
-                child: Center(
-                  child: Text(planOrEff
-                      ? S.of(context).counts
-                      : S.of(context).calc_weight),
+        Material(
+          child: ListTile(
+            title: Text(S.of(context).item),
+            contentPadding: const EdgeInsets.only(left: 18, right: 8),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: 65,
+                  child: Center(
+                    child: Text(planOrEff
+                        ? S.of(context).counts
+                        : S.of(context).calc_weight),
+                  ),
                 ),
-              ),
-              IconButton(
+                IconButton(
                   icon: const Icon(Icons.delete),
                   onPressed: () {
                     SimpleCancelOkDialog(
@@ -133,11 +154,13 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                         });
                       },
                     ).showDialog(context);
-                  })
-            ],
+                  },
+                )
+              ],
+            ),
           ),
+          elevation: 1,
         ),
-        kDefaultDivider,
         if (params.rows.isEmpty)
           ListTile(
               title: Center(child: Text(S.of(context).drop_calc_empty_hint))),
@@ -159,7 +182,12 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
           },
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 6),
-            child: db.getIconImage(item, height: 48),
+            child: db.getIconImage(
+              Items.specialPlanItems.contains(item)
+                  ? (item == Items.bondPoint ? Items.chaldeaLantern : null)
+                  : item,
+              height: 48,
+            ),
           ),
         );
         Widget title = TextButton(
@@ -253,8 +281,11 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     return Picker(
       adapter: PickerDataAdapter<String>(data: pickerAdapter),
       selecteds: [
-        category == null ? 1 : pickerData.keys.toList().indexOf(category),
-        item == null ? 0 : pickerData[category]!.indexOf(item)
+        // default Bronze
+        category == null ? 2 : pickerData.keys.toList().indexOf(category),
+        category == null || item == null
+            ? 0
+            : pickerData[category]!.indexOf(item)
       ],
       height: min(250, MediaQuery.of(context).size.height - 200),
       itemExtent: 48,
@@ -378,6 +409,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
   String? getItemCategory(String itemKey) {
     final item = db.gameData.items[itemKey];
     if (item == null) return null;
+    if (Items.specialPlanItems.contains(itemKey)) return specialCategory;
     if (item.category == ItemCategory.item) {
       if (item.rarity <= 3) {
         return <String?>[

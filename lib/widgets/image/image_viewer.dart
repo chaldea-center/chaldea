@@ -210,7 +210,7 @@ class _CachedImageState extends State<CachedImage> {
       // frameBuilder:null,
       // loadingBuilder: null,
       errorBuilder: cachedOption.errorWidget == null
-          ? null
+          ? (ctx, e, s) => CachedImage.defaultErrorWidget(ctx, '', e)
           : (ctx, e, s) => cachedOption.errorWidget!(ctx, '', e),
       // semanticLabel:null,
       // excludeFromSemantics : false,

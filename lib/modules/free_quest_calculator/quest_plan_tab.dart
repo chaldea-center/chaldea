@@ -143,12 +143,18 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
   Widget buildRichText(Iterable<MapEntry<String, dynamic>> entries) {
     List<InlineSpan> children = [];
     for (final entry in entries) {
-      children.add(WidgetSpan(
-        child: Opacity(
-          opacity: 0.75,
-          child: db.getIconImage(entry.key, height: 18),
-        ),
-      ));
+      if (entry.key == Items.bondPoint) {
+        children.add(TextSpan(text: S.current.bond));
+      } else if (entry.key == Items.exp) {
+        children.add(const TextSpan(text: 'EXP'));
+      } else {
+        children.add(WidgetSpan(
+          child: Opacity(
+            opacity: 0.75,
+            child: db.getIconImage(entry.key, height: 18),
+          ),
+        ));
+      }
       children.add(TextSpan(text: '*${entry.value} '));
     }
     final textTheme = Theme.of(context).textTheme;

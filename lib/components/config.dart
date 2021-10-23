@@ -337,7 +337,13 @@ class Database {
         width: width,
         height: height,
         aspectRatio: aspectRatio,
-        cachedOption: CachedImageOption(fit: fit),
+        cachedOption: CachedImageOption(
+            fit: fit,
+            errorWidget: (context, url, e) => SizedBox(
+                  width: width,
+                  height: height,
+                  child: placeholder?.call(context),
+                )),
         placeholder: (context, __) => SizedBox(
           width: width,
           height: height,

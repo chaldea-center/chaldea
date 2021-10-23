@@ -31,7 +31,7 @@ class DropRateData {
   Map<String, int> freeCounts;
   List<int> sampleNum; // n
 
-  List<String> colNames; //quests, n
+  List<String> colNames; // quests, n
   List<String> rowNames; // items, m
   List<int> costs; // n
 
@@ -362,7 +362,7 @@ class GLPKVariable<T> {
   Map<String, dynamic> toJson() => _$GLPKVariableToJson<T>(this);
 }
 
-/// basic [String,int,double,null] converter for generic types
+/// basic [int,double] converter for generic types
 class _Converter<T> implements JsonConverter<T, Object> {
   const _Converter();
 

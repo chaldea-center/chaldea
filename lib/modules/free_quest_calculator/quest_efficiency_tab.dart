@@ -71,7 +71,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
     allItems.clear();
     solutionVars.forEach((variable) {
       variable.detail.forEach((key, value) {
-        if (value > 0) {
+        if (value > 0 && !Items.specialPlanItems.contains(key)) {
           allItems.add(key);
         }
       });
@@ -171,12 +171,18 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
       while (v.contains('.') && v[v.length - 1] == '0') {
         v = v.substring(0, v.length - 1);
       }
-      children.add(WidgetSpan(
-        child: Opacity(
-          opacity: 0.75,
-          child: db.getIconImage(entry.key, height: 18),
-        ),
-      ));
+      if (entry.key == Items.bondPoint) {
+        children.add(TextSpan(text: S.current.bond));
+      } else if (entry.key == Items.exp) {
+        children.add(const TextSpan(text: 'EXP'));
+      } else {
+        children.add(WidgetSpan(
+          child: Opacity(
+            opacity: 0.75,
+            child: db.getIconImage(entry.key, height: 18),
+          ),
+        ));
+      }
       children.add(TextSpan(text: '*$v '));
     }
     final textTheme = Theme.of(context).textTheme;

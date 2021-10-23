@@ -75,6 +75,7 @@ class Item {
 
   static String lNameOf(String name) {
     // name could be jp/en?
+    if (name == Items.bondPoint) return S.current.bond;
     return db.gameData.items[name]?.localizedName ?? name;
   }
 
@@ -195,6 +196,11 @@ class Items {
   static const String fou4Hp = '流星之芙芙';
   static const String fou4Atk = '日轮之芙芙';
   static const String servantCoin = '从者硬币';
+
+  static const String bondPoint = '绊';
+  static const String exp = 'EXP';
+
+  static const List<String> specialPlanItems = [bondPoint, exp];
 
   /// items for servant planning but not for ascension and skill
   static const List<String> extraPlanningItems = [

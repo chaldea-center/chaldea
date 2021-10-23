@@ -42,6 +42,13 @@ class GLPKSolver {
 
     params = GLPKParams.from(params);
     final data = DropRateData.from(params.dropRatesData);
+    data.rowNames.addAll([Items.bondPoint, Items.exp]);
+    data.matrix.add(data.colNames
+        .map((e) => db.gameData.getFreeQuest(e)?.bondPoint.toDouble() ?? 0.0)
+        .toList());
+    data.matrix.add(data.colNames
+        .map((e) => db.gameData.getFreeQuest(e)?.experience.toDouble() ?? 0.0)
+        .toList());
     _preProcess(data: data, params: params);
     if (params.rows.isEmpty) {
       logger.d('after pre processing, params has no valid rows.\n'
@@ -80,12 +87,12 @@ class GLPKSolver {
       solution.params = params;
       solution.totalNum = 0;
       solution.totalCost = 0;
-      result.forEach((questKey, count) {
+      result.forEach((questKey, countFloat) {
+        int count = countFloat.ceil();
         int col = data.colNames.indexOf(questKey);
         assert(col >= 0);
-        solution.totalNum = solution.totalNum! + count.ceil();
-        solution.totalCost =
-            solution.totalCost! + count.ceil() * data.costs[col];
+        solution.totalNum = solution.totalNum! + count;
+        solution.totalCost = solution.totalCost! + count * data.costs[col];
         Map<String, int> details = {};
         for (String itemKey in params.rows) {
           int row = data.rowNames.indexOf(itemKey);
@@ -98,7 +105,7 @@ class GLPKSolver {
         }
         solution.countVars.add(GLPKVariable<int>(
           name: questKey,
-          value: count.ceil(),
+          value: count,
           cost: data.costs[col],
           detail: details,
         ));
