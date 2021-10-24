@@ -192,16 +192,22 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
     );
   }
 
-  void onArchive() {
+  Future<void> onArchive() async {
     if (!plan.enabled) {
       showInformDialog(context, content: S.current.event_not_planned);
     } else {
-      showDialog(
+      await showDialog(
         context: context,
         builder: (context) => _ArchiveDialog(event: event, plan: plan),
-      ).then((_) {
-        if (mounted) setState(() {});
+      );
+      _lotteryController.text = plan.lottery.toString();
+      _extraControllers.forEach((key, controller) {
+        controller.text = plan.extra[key]?.toString() ?? '';
       });
+      _extra2Controllers.forEach((key, controller) {
+        controller.text = plan.extra2[key]?.toString() ?? '';
+      });
+      if (mounted) setState(() {});
     }
   }
 
@@ -385,6 +391,7 @@ class _ArchiveDialogState extends State<_ArchiveDialog> {
       ], inPlace: true);
       plan.extra2.clear();
     }
+    _archived.removeWhere((key, value) => value <= 0);
     sumDict([db.curUser.items, _archived], inPlace: true);
     if (_shop && _lottery && _extra && _extra2) {
       plan.enabled = false;
@@ -394,7 +401,7 @@ class _ArchiveDialogState extends State<_ArchiveDialog> {
     showDialog(
       context: context,
       builder: (context) => SimpleCancelOkDialog(
-        title: Text(S.current.success),
+        title: Text(_archived.isEmpty ? 'Nothing' : S.current.success),
         content: Wrap(
           spacing: 3,
           runSpacing: 3,

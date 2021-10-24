@@ -200,8 +200,6 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
           ),
           child: Text(Item.lNameOf(item)),
           onPressed: () {
-            final String? category = getItemCategory(item);
-            if (category == null) return;
             getPicker(
               item: item,
               onSelected: (v) {
@@ -406,10 +404,11 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     if (item != null) params.rows.add(item);
   }
 
+  // here category is localized
   String? getItemCategory(String itemKey) {
+    if (Items.specialPlanItems.contains(itemKey)) return specialCategory;
     final item = db.gameData.items[itemKey];
     if (item == null) return null;
-    if (Items.specialPlanItems.contains(itemKey)) return specialCategory;
     if (item.category == ItemCategory.item) {
       if (item.rarity <= 3) {
         return <String?>[

@@ -79,8 +79,8 @@ class _UserDataPageState extends State<UserDataPage> {
             ],
           ),
           TileGroup(
-            header: S.of(context).userdata + '(Local)',
-            footer: S.of(context).settings_userdata_footer,
+            header: S.current.userdata + '(Local)',
+            footer: S.current.settings_userdata_footer,
             children: <Widget>[
               // ListTile(
               //   title: Text(S.of(context).clear),
@@ -96,7 +96,7 @@ class _UserDataPageState extends State<UserDataPage> {
               //   },
               // ),
               ListTile(
-                title: Text(S.of(context).backup),
+                title: Text(S.current.backup),
                 onTap: backupUserData,
               ),
               ListTile(
@@ -167,7 +167,7 @@ class _UserDataPageState extends State<UserDataPage> {
 
   Future backupUserData() async {
     return SimpleCancelOkDialog(
-      title: Text(S.of(context).backup),
+      title: Text(S.current.backup),
       content: Text(db.paths.convertIosPath(db.paths.userDataBackupDir)),
       onTapOk: () async {
         final fps = db.backupUserdata();
@@ -203,7 +203,7 @@ class _UserDataPageState extends State<UserDataPage> {
               TextButton(
                 child: Text(S.of(context).open),
                 onPressed: () {
-                  OpenFile.open(db.paths.userDir);
+                  OpenFile.open(db.paths.userDataBackupDir);
                 },
               ),
           ],
@@ -423,56 +423,65 @@ class _BackupHistoryPage extends StatefulWidget {
 }
 
 class __BackupHistoryPageState extends State<_BackupHistoryPage> {
-  List<String> paths = [];
+  List<MapEntry<String, DateTime>> validFiles = [];
 
   @override
   void initState() {
     super.initState();
+    listBackups();
+  }
+
+  Future<void> listBackups() async {
     final dir = Directory(db.paths.userDataBackupDir);
-    if (dir.existsSync()) {
-      for (var entry in dir.listSync()) {
-        if (FileSystemEntity.isFileSync(entry.path) &&
-            entry.path.toLowerCase().endsWith('.json')) {
-          paths.add(entry.path);
+    if (await dir.exists()) {
+      await for (var entry in dir.list()) {
+        if (await FileSystemEntity.isFile(entry.path) &&
+            entry.path.toLowerCase().contains('.json')) {
+          validFiles.add(MapEntry(entry.path, (await entry.stat()).modified));
         }
       }
     }
-    paths.sort((a, b) => b.compareTo(a));
-    paths = paths.take(50).toList();
+    validFiles.sort((a, b) => b.value.compareTo(a.value));
+    validFiles = validFiles.take(50).toList();
+    if (mounted) setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.current.backup_history),
-      ),
+      appBar: AppBar(title: Text(S.current.backup_history)),
       body: ListView.separated(
         itemBuilder: (context, index) {
           if (index == 0) {
             return Card(
-              child: Padding(
-                padding: const EdgeInsets.all(6),
-                child:
-                    Text(db.paths.convertIosPath(db.paths.userDataBackupDir)),
+              child: InkWell(
+                onTap: PlatformU.isDesktop
+                    ? () => OpenFile.open(db.paths.userDataBackupDir)
+                    : null,
+                child: Padding(
+                  padding: const EdgeInsets.all(6),
+                  child:
+                      Text(db.paths.convertIosPath(db.paths.userDataBackupDir)),
+                ),
               ),
             );
           }
-          final path = paths[index - 1];
+          final entry = validFiles[index - 1];
           return ListTile(
-            title: Text(p.basenameWithoutExtension(path)),
+            title: Text(p.basenameWithoutExtension(entry.key)),
+            subtitle: Text('Modified: ${entry.value}'),
             trailing: IconButton(
               icon: const Icon(Icons.download),
               tooltip: S.current.import_data,
               onPressed: () {
                 SimpleCancelOkDialog(
                   title: Text(S.current.import_data),
-                  content: Text(db.paths.convertIosPath(path)),
+                  content: Text(db.paths.convertIosPath(entry.key)),
                   onTapOk: () {
                     try {
                       db.backupUserdata();
                       db.userData = UserData.fromJson(
-                          json.decode(File(path).readAsStringSync()));
+                          json.decode(File(entry.key).readAsStringSync()));
                       EasyLoading.showToast(S.current.import_data_success);
                       db.saveUserData();
                       db.notifyDbUpdate(item: true, svt: true);
@@ -487,7 +496,7 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
           );
         },
         separatorBuilder: (_, __) => kDefaultDivider,
-        itemCount: paths.length + 1,
+        itemCount: validFiles.length + 1,
       ),
     );
   }

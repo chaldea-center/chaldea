@@ -229,7 +229,6 @@ class Database {
   List<String> backupUserdata({bool disk = false, bool memory = true}) {
     if (PlatformU.isWeb) return [];
     String timeStamp = DateFormat('yyyyMMddTHHmmss').format(DateTime.now());
-    String filename = '$timeStamp.json';
 
     List<String> _saved = [];
     File _lastSavedFile = File(paths.userDataPath);
@@ -238,10 +237,10 @@ class Database {
       if (memory) userData,
     ];
     for (var obj in objs) {
-      String filenameWithPrefix = filename + (obj is File ? 'd' : 'm');
+      String filename = timeStamp + (obj is File ? 'd' : 'm') + '.json';
       _saveJsonToFile(
         obj,
-        pathlib.join(paths.userDataBackupDir, filenameWithPrefix),
+        pathlib.join(paths.userDataBackupDir, filename),
         onError: (e, s) {
           logger.e('error save backup to ${paths.userDataBackupDir}', e, s);
           EasyLoading.showError(
