@@ -4,7 +4,7 @@
 
 [![platforms](https://img.shields.io/badge/platform-android_|_ios_|_windows_|_macos-blue)](https://github.com/chaldea-center/chaldea/releases)
 [![release](https://img.shields.io/github/v/release/chaldea-center/chaldea?sort=semver)](https://github.com/chaldea-center/chaldea/releases)
-[![license GPL-3.0](https://img.shields.io/github/license/chaldea-center/chaldea.svg?style=flat)](https://github.com/chaldea-center/chaldea/blob/master/LICENSE)
+[![license AGPL-3.0](https://img.shields.io/github/license/chaldea-center/chaldea.svg?style=flat)](https://github.com/chaldea-center/chaldea/blob/master/LICENSE)
 [![stars](https://img.shields.io/github/stars/chaldea-center/chaldea?style=social)](https://github.com/chaldea-center/chaldea/stargazers)
 
 Chaldea is a cross-platform tool for [Fate/Grand Order](https://www.fate-go.jp) to help masters planning their trip of taking back the future.

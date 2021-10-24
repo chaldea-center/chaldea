@@ -158,7 +158,7 @@ class _AboutPageState extends State<AboutPage> {
             children: [
               ListTile(
                 title: const Text('License'),
-                subtitle: const Text('GNU GPL v3'),
+                subtitle: const Text('AGPL-3.0'),
                 onTap: () {
                   SplitRoute.push(
                       context,
