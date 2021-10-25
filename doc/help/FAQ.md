@@ -3,6 +3,8 @@
 
 **首先，请检查APP版本和数据版本是否最新，旧版本APP可能无法兼容新版数据。**
 
+文档: [https://docs.chaldea.center](https://docs.chaldea.center)
+
 ---------
 
 ### 0. 图标/图片未显示

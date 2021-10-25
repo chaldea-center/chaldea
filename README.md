@@ -98,4 +98,3 @@ If you have any bug report, feature request, question or want to contribute to t
 - Discord: [https://discord.gg/5M6w5faqjP](https://discord.gg/5M6w5faqjP)
 -
 NokNok: [118835](https://www.noknok.cn/act/share_group_20210625/index.html?uid=100164675&gid=118835)
-- [![twitter@narumi147](https://img.shields.io/twitter/url?label=Twitter&style=social&url=https%3A%2F%2Ftwitter.com%2Fnarumi147)](https://twitter.com/narumi147)

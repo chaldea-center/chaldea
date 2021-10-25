@@ -4,6 +4,7 @@ Common Issues and Bugs
 **Please check update of app and dataset first. The old version of Chaldea APP may not be compatible
 with the latest version of dataset.**
 
+Documents: [https://docs.chaldea.center](https://docs.chaldea.center)
 
 ---------
 
