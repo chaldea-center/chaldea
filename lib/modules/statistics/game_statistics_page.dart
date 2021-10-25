@@ -48,13 +48,9 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
             controller: _tabController,
             isScrollable: true,
             tabs: [
-              Tab(
-                  text: LocalizedText.of(
-                      chs: '素材需求', jpn: 'アイテム需要', eng: 'Item Demands')),
-              Tab(
-                  text: LocalizedText.of(
-                      chs: '已消耗素材', jpn: 'アイテム消費済', eng: 'Item Consumed')),
-              Tab(text: S.of(context).servant)
+              Tab(text: S.current.demands),
+              Tab(text: S.current.consumed),
+              Tab(text: S.current.servant)
             ],
           ),
         ),

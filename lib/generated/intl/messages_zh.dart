@@ -122,6 +122,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cmd_code_title": MessageLookupByLibrary.simpleMessage("纹章"),
         "command_code": MessageLookupByLibrary.simpleMessage("指令纹章"),
         "confirm": MessageLookupByLibrary.simpleMessage("确定"),
+        "consumed": MessageLookupByLibrary.simpleMessage("已消耗"),
         "copied": MessageLookupByLibrary.simpleMessage("已复制"),
         "copy": MessageLookupByLibrary.simpleMessage("复制"),
         "copy_plan_menu": MessageLookupByLibrary.simpleMessage("拷贝自其它规划"),

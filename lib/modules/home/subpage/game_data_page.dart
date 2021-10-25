@@ -121,18 +121,26 @@ class _GameDataPageState extends State<GameDataPage> {
                   onTap: importGamedata,
                 ),
               ListTile(
-                title: Text(S.of(context).reload_default_gamedata),
+                title: Text(S.current.reload_default_gamedata),
                 onTap: () {
                   SimpleCancelOkDialog(
-                    title: Text(S.of(context).reload_default_gamedata),
+                    title: Text(S.current.reload_default_gamedata),
                     onTapOk: () async {
-                      EasyLoading.show(status: 'reloading');
-                      await db.loadZipAssets(kDatasetAssetKey);
-                      if (db.loadGameData()) {
-                        EasyLoading.showSuccess(
-                            S.of(context).reload_data_success);
-                      } else {
-                        EasyLoading.showError('Failed');
+                      EasyLoading.show(
+                          status: 'reloading',
+                          maskType: EasyLoadingMaskType.clear);
+                      try {
+                        await db.loadZipAssets(kDatasetAssetKey);
+                        if (db.loadGameData()) {
+                          await EasyLoading.showSuccess(
+                              S.current.reload_data_success);
+                        } else {
+                          await EasyLoading.showError('Failed');
+                        }
+                      } catch (e) {
+                        await EasyLoading.showError('Error');
+                      } finally {
+                        EasyLoadingUtil.dismiss();
                       }
                     },
                   ).showDialog(context);

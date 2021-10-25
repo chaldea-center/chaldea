@@ -418,5 +418,6 @@
   "copied": "已复制",
   "effect_search": "Buff检索",
   "growth_curve": "成长曲线",
-  "demands": "需求"
+  "demands": "需求",
+  "consumed": "已消耗"
 }

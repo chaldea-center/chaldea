@@ -136,6 +136,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cmd_code_title": MessageLookupByLibrary.simpleMessage("Command Code"),
         "command_code": MessageLookupByLibrary.simpleMessage("Command Code"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
+        "consumed": MessageLookupByLibrary.simpleMessage("Consumed"),
         "copied": MessageLookupByLibrary.simpleMessage("Copied"),
         "copy": MessageLookupByLibrary.simpleMessage("Copy"),
         "copy_plan_menu":

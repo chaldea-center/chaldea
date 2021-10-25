@@ -4245,6 +4245,16 @@ class S {
       args: [],
     );
   }
+
+  /// `已消耗`
+  String get consumed {
+    return Intl.message(
+      '已消耗',
+      name: 'consumed',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

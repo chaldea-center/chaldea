@@ -418,5 +418,6 @@
   "copied": "Copied",
   "effect_search": "Buff Search",
   "growth_curve": "Growth Curve",
-  "demands": "Demands"
+  "demands": "Demands",
+  "consumed": "Consumed"
 }

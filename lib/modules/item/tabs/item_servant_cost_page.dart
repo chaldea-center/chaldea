@@ -73,7 +73,7 @@ class _ItemServantCostPageState extends State<ItemServantCostPage> {
     List<Widget> children = [
       CustomTile(
         title: Text(
-            '${S.current.item_total_demand} ${num2str(counts.summation![itemKey])}'),
+            '${S.current.consumed} ${num2str(counts.summation![itemKey])}'),
         trailing: Text(
           counts
               .valuesIfExtra(itemKey)

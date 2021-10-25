@@ -71,7 +71,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
           isScrollable: true,
           tabs: [
             Tab(text: S.current.demands),
-            Tab(text: LocalizedText.of(chs: '消耗', jpn: '消費', eng: 'Consumed')),
+            Tab(text: S.current.consumed),
             Tab(text: S.current.free_quest),
             Tab(text: S.current.event_title),
             Tab(text: S.current.interlude_and_rankup),

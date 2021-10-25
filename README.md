@@ -26,8 +26,8 @@ For more details or usage, please check our document: [English](https://docs.cha
 ## Features
 
 - support all platform: Android, iOS, Windows, macOS and Linux
-- profiles of **Servants**, **Craft Essences**, **Command Codes**, **Mystic Codes**, **Events**, **
-  Items** and **Summons**
+- profiles of **Servants**, **Craft Essences**, **Command Codes**, **Mystic Codes**, **Events**,
+  **Items** and **Summons**
 - item/material planning
   - servants' ascension, skill, dress, append skill, palingenesis, fou-kun and bond(Chaldea lantern)
   - limit events, main records, exchange tickets and campaigns
@@ -91,8 +91,11 @@ to [Donation Page](https://docs.chaldea.center/donation.html).
 
 ## Feedback and Contribution
 If you have any bug report, feature request, question or want to contribute to this project, feel free to
-- file an [issue](https://github.com/chaldea-center/chaldea/issues/new/choose)
-- pull request or join the collaboration
+
+- File an [issue](https://github.com/chaldea-center/chaldea/issues/new/choose)
+- Pull request or join the collaboration
 - Email: [chaldea@narumi.cc](mailto:chaldea@narumi.cc)
 - Discord: [https://discord.gg/5M6w5faqjP](https://discord.gg/5M6w5faqjP)
+-
+NokNok: [118835](https://www.noknok.cn/act/share_group_20210625/index.html?uid=100164675&gid=118835)
 - [![twitter@narumi147](https://img.shields.io/twitter/url?label=Twitter&style=social&url=https%3A%2F%2Ftwitter.com%2Fnarumi147)](https://twitter.com/narumi147)

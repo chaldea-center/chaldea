@@ -31,7 +31,7 @@ class _GalleryPageState extends State<GalleryPage> {
         if (mounted) setState(() {});
       }
 
-      if (kDebugMode) return;
+      if (kDebugMode || AppInfo.isDebugDevice) return;
       if (db.appSetting.autoUpdateDataset) {
         await AutoUpdateUtil.patchGameData();
       }
