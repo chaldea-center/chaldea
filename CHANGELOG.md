@@ -1,3 +1,8 @@
+## 1.6.3
+
+- fix Android 12 compatibility
+- revert incompatible flutter version
+
 ## 1.6.2
 
 - support Bond and EXP as item in free quest calculator

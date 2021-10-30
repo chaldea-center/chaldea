@@ -130,6 +130,9 @@ class User {
   }
 
   void removeDuplicatedServant(int svtNo) {
+    assert(servants[svtNo] == null, '$svtNo is not duplicated');
+    if (servants[svtNo] != null) return;
+
     duplicatedServants.remove(svtNo);
     servants.remove(svtNo);
     servantPlans.forEach((plans) {

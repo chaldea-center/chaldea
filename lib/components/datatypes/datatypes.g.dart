@@ -1092,8 +1092,7 @@ Item _$ItemFromJson(Map<String, dynamic> json) => $checkedCreate(
       },
     );
 
-Map<String, dynamic> _$ItemToJson(Item instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
       'id': instance.id,
       'itemId': instance.itemId,
       'name': instance.name,

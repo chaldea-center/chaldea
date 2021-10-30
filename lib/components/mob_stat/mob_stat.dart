@@ -24,7 +24,8 @@ abstract class MobStat {
 
   static void logEvent(String eventId, [Map<String, String>? attributes]) {
     if (!_validPlatform) return;
-    BaiduMobStatFlutter.logEvent(eventId, attributes);
+    // flutter 2.7.0: org.json.jsonobject$1 cannot be cast to org.json.jsonobject
+    // BaiduMobStatFlutter.logEvent(eventId, attributes);
   }
 
   static void logDurationEvent(String eventId, int duration,
