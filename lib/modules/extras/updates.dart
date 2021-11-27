@@ -6,6 +6,7 @@ import 'package:catcher/catcher.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path/path.dart';
 import 'package:rfc_6902/rfc_6902.dart' as jsonpatch;
@@ -62,7 +63,7 @@ class AutoUpdateUtil {
         _deleteFileOrDir(bak);
         File(db.paths.gameDataPath).renameSync(bak);
         File(datasetFp).renameSync(db.paths.gameDataPath);
-        if (db.loadGameData()) {
+        if (await db.loadGameData()) {
           logger
               .i('update dataset from $previousVer to ${db.gameData.version}');
           EasyLoading.showToast(
@@ -157,21 +158,20 @@ class AutoUpdateUtil {
         'from': curRelease.tagName,
         'to': latestRelease.tagName
       }));
-      EasyLoading.dismiss();
 
       if (resp.success) {
-        final patchJson = jsonDecode(resp.body);
-        final curData =
-            jsonDecode(File(db.paths.gameDataPath).readAsStringSync());
-        dynamic newData = jsonpatch.JsonPatch(patchJson).applyTo(curData);
-        // encode then decode to verify validation
-        final gameData = GameData.fromJson(jsonDecode(jsonEncode(newData)));
+        dynamic newData = await compute(
+            _applyPatch, {'fp': db.paths.gameDataPath, 'patch': resp.body});
+        EasyLoading.dismiss();
+
+        final gameData = GameData.fromJson(newData);
         String previousVersion = db.gameData.version;
         if (gameData.version.compareTo(previousVersion) > 0) {
           await alertReload(pop: !background);
-          if (db.loadGameData(gameData)) {
+          if (await db.loadGameData(gameData)) {
             // use patched data, don't use jsonEncode(db.gameData)
-            File(db.paths.gameDataPath).writeAsStringSync(jsonEncode(newData));
+            await File(db.paths.gameDataPath)
+                .writeAsString(jsonEncode(newData));
             logger.i(
                 'update dataset from $previousVersion to ${db.gameData.version}');
             EasyLoading.showInfo(
@@ -189,6 +189,20 @@ class AutoUpdateUtil {
     } finally {
       EasyLoadingUtil.dismiss();
     }
+  }
+
+  static Future<dynamic> _applyPatch(Map<String, dynamic> msg) async {
+    String fp = msg['fp']!;
+    String patch = msg['patch']!;
+    final patchJson = jsonDecode(patch);
+    final curData = jsonDecode(await File(fp).readAsString());
+    final t = TimeCounter('json_patch');
+    dynamic newData = jsonpatch.JsonPatch(patchJson).applyTo(curData);
+    t.elapsed();
+    // encode then decode to bypass type validation
+    newData = jsonDecode(jsonEncode(newData));
+    t.elapsed();
+    return newData;
   }
 
   static Completer? _downloadTask;

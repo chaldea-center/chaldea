@@ -176,7 +176,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           title: const Text('Load GameData'),
           onTap: () async {
             await db.loadZipAssets(kDatasetAssetKey);
-            db.loadGameData();
+            await db.loadGameData();
             db.notifyAppUpdate();
             Navigator.pop(context);
           },

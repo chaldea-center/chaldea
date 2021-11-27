@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -194,6 +196,15 @@ String b64(String source, [bool decode = true]) {
   } else {
     return base64Encode(utf8.encode(source));
   }
+}
+
+Future<dynamic> readAndDecodeJsonAsync({String? fp, String? contents}) async {
+  assert(fp != null || contents != null);
+  if (fp != null && await File(fp).exists()) {
+    contents = await File(fp).readAsString();
+  }
+  if (contents == null) return null;
+  return compute(jsonDecode, contents);
 }
 
 T fixValidRange<T extends num>(T value, [T? minVal, T? maxVal]) {

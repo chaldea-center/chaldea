@@ -272,10 +272,10 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
       if (PlatformU.isWeb) {
         db.webFS!.put(db.paths.hiveAsciiKey(db.paths.gameDataPath),
             await rootBundle.loadString('res/data/dataset.json'));
-        gameDataLoadSuccess = db.loadGameData();
+        gameDataLoadSuccess = await db.loadGameData();
       } else if (justUpdated ||
           !File(db.paths.gameDataPath).existsSync() ||
-          !db.loadGameData()) {
+          !await db.loadGameData()) {
         db.backupUserdata(disk: true, memory: false);
 
         /// load failed(json destroyed) or app updated, reload default dataset
@@ -286,7 +286,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
         await db.loadZipAssets(kDatasetAssetKey);
         db.prefs.previousVersion.set(AppInfo.fullVersion);
         db.saveUserData();
-        gameDataLoadSuccess = db.loadGameData();
+        gameDataLoadSuccess = await db.loadGameData();
       } else {
         gameDataLoadSuccess = true;
       }

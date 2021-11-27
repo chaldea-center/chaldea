@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
 import 'package:chaldea/components/json_store/json_store.dart';
+import 'package:chaldea/components/utils.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/platform_interface/platform/platform.dart';
 import 'package:chaldea/widgets/icon_clipper.dart';
@@ -173,10 +174,10 @@ class Database {
     return result;
   }
 
-  bool loadGameData([GameData? data]) {
+  Future<bool> loadGameData([GameData? data]) async {
     // final t = TimeCounter('loadGameData');
     try {
-      gameData = data ?? GameData.fromJson(getJsonFromFile(paths.gameDataPath));
+      gameData = data ?? GameData.fromJson(await getJsonFromFileAsync(paths.gameDataPath));
       // userdata is loaded before gamedata, safe to use curUser
       gameData.updateSvtCrafts();
       gameData.updateUserDuplicatedServants();
@@ -264,7 +265,7 @@ class Database {
       // to clear all history version or not?
       _deleteFileOrDirectory(paths.gameDir);
       await loadZipAssets(kDatasetAssetKey);
-      loadGameData();
+      await loadGameData();
     }
   }
 
@@ -381,6 +382,33 @@ class Database {
         if (file.existsSync()) {
           String contents = file.readAsStringSync();
           result = jsonDecode(contents);
+          print('loaded json "$filepath".');
+        }
+      }
+    } catch (e, s) {
+      print('error loading "$filepath", use default value. Error:\n$e\n$s');
+      if (k == null) rethrow;
+    } finally {
+      if (result == null && k != null) {
+        print('Loading "$filepath", use default value.');
+        result = k();
+      }
+    }
+    return result;
+  }
+
+  Future<dynamic> getJsonFromFileAsync(String filepath,
+      {dynamic Function()? k}) async {
+    dynamic result;
+    try {
+      if (PlatformU.isWeb) {
+        final contents = webFS!.get(paths.hiveAsciiKey(filepath));
+        if (contents is String) {
+          result = await readAndDecodeJsonAsync(contents: contents);
+        }
+      } else {
+        result = await readAndDecodeJsonAsync(fp: filepath);
+        if (result != null) {
           print('loaded json "$filepath".');
         }
       }

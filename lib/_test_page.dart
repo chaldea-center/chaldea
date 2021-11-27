@@ -17,6 +17,25 @@ Future _reloadDebugDataset() async {
     fp: r'res/data/dataset.zip',
     savePath: db.paths.gameDir,
   );
-  db.loadGameData();
+  await db.loadGameData();
   EasyLoading.showSuccess('Reloaded');
+}
+
+class _AA {
+  String a;
+  _AA(this.a);
+}
+
+class _BB {
+  String b;
+  _BB(this.b);
+}
+
+class _CC implements _AA, _BB {
+  @override
+  String a;
+  @override
+  String b;
+
+  _CC(this.a, this.b);
 }

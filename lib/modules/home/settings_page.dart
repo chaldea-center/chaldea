@@ -117,7 +117,7 @@ class _SettingsPageState extends State<SettingsPage> {
           children: <Widget>[
             ListTile(
               title: Text(S.of(context).settings_language),
-              subtitle: Language.isEN ? null : const Text('Language'),
+              subtitle: Language.isEN ? const Text('语言') : const Text('Language'),
               trailing: DropdownButton<Language>(
                 underline:
                     const Divider(thickness: 0, color: Colors.transparent),

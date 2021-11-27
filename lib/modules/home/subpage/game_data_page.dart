@@ -131,7 +131,7 @@ class _GameDataPageState extends State<GameDataPage> {
                           maskType: EasyLoadingMaskType.clear);
                       try {
                         await db.loadZipAssets(kDatasetAssetKey);
-                        if (db.loadGameData()) {
+                        if (await db.loadGameData()) {
                           await EasyLoading.showSuccess(
                               S.current.reload_data_success);
                         } else {
@@ -283,7 +283,7 @@ class _GameDataPageState extends State<GameDataPage> {
           EasyLoading.show(status: 'loading');
           try {
             await db.extractZip(fp: fp, savePath: db.paths.gameDir);
-            if (!db.loadGameData()) {
+            if (!await db.loadGameData()) {
               throw 'Load GameData failed, maybe incompatible with current app version';
             }
             Navigator.of(context).pop();
@@ -319,7 +319,7 @@ class _GameDataPageState extends State<GameDataPage> {
         EasyLoading.show(
             status: 'loading', maskType: EasyLoadingMaskType.clear);
         await db.extractZip(fp: file.path, savePath: db.paths.gameDir);
-        if (!db.loadGameData()) {
+        if (!await db.loadGameData()) {
           throw 'Load GameData failed, maybe incompatible with current app version';
         }
       } else if (file.path.toLowerCase().endsWith('.json')) {

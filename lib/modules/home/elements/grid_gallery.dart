@@ -48,7 +48,7 @@ class _GridGalleryState extends State<GridGallery> {
             content: Text(S.current.reload_default_gamedata),
             onTapOk: () async {
               await db.loadZipAssets(kDatasetAssetKey);
-              db.loadGameData();
+              await db.loadGameData();
               db.notifyAppUpdate();
             },
           ).showDialog(context);
