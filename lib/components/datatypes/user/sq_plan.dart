@@ -101,6 +101,10 @@ class SaintQuartzPlan {
       if (_accLogin % 50 == 0) {
         sq += 30;
       }
+      // shop ticket
+      if (date.day == 1) {
+        ticket += 5;
+      }
       dataMap[date.toDateString()] = SQDayDetail(
         date: date,
         accLogin: _accLogin,
