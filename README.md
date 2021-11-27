@@ -66,7 +66,7 @@ Web       | Not supported
 
 ### Installer
 
-You can download installer package in [release](https://github.com/chaldea-center/chaldea/releases)
+You can download binary assets in [release](https://github.com/chaldea-center/chaldea/releases)
 page for Android, Windows, macOS and Linux.
 
 ## Dataset
@@ -96,5 +96,4 @@ If you have any bug report, feature request, question or want to contribute to t
 - Pull request or join the collaboration
 - Email: [chaldea@narumi.cc](mailto:chaldea@narumi.cc)
 - Discord: [https://discord.gg/5M6w5faqjP](https://discord.gg/5M6w5faqjP)
--
-NokNok: [118835](https://www.noknok.cn/act/share_group_20210625/index.html?uid=100164675&gid=118835)
+- NokNok: [118835](https://www.noknok.cn/act/share_group_20210625/index.html?uid=100164675&gid=118835)

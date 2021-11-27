@@ -56,6 +56,11 @@ android {
         versionName flutterVersionName
 
         resValue "string", "app_name", "Chaldea"
+
+        // future: only generate v7a apk
+        // ndk {
+        //     abiFilters 'armeabi-v7a'
+        // }
     }
 
     signingConfigs {

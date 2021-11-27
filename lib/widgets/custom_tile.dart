@@ -54,7 +54,7 @@ class CustomTile extends StatelessWidget {
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterial(context));
     final ThemeData theme = Theme.of(context);
-    final ListTileTheme tileTheme = ListTileTheme.of(context);
+    final ListTileThemeData tileTheme = ListTileTheme.of(context);
 
     IconThemeData? iconThemeData;
     if (leading != null || trailing != null || trailingIcon != null) {
@@ -148,7 +148,7 @@ class CustomTile extends StatelessWidget {
     );
   }
 
-  Color? _iconColor(ThemeData theme, ListTileTheme? tileTheme) {
+  Color? _iconColor(ThemeData theme, ListTileThemeData? tileTheme) {
     if (!enabled) return theme.disabledColor;
 
     if (selected && tileTheme?.selectedColor != null) {
@@ -168,7 +168,7 @@ class CustomTile extends StatelessWidget {
   }
 
   Color? _textColor(
-      ThemeData theme, ListTileTheme? tileTheme, Color? defaultColor) {
+      ThemeData theme, ListTileThemeData? tileTheme, Color? defaultColor) {
     if (!enabled) return theme.disabledColor;
 
     if (selected && tileTheme?.selectedColor != null) {
@@ -188,7 +188,7 @@ class CustomTile extends StatelessWidget {
     return defaultColor;
   }
 
-  TextStyle? _titleTextStyle(ThemeData theme, ListTileTheme? tileTheme) {
+  TextStyle? _titleTextStyle(ThemeData theme, ListTileThemeData? tileTheme) {
     TextStyle? style;
     if (tileTheme != null) {
       switch (tileTheme.style) {
@@ -198,6 +198,8 @@ class CustomTile extends StatelessWidget {
         case ListTileStyle.list:
           style = theme.textTheme.subtitle1; //subhead->subtitle1
           break;
+        default:
+          break;
       }
     } else {
       style = theme.textTheme.headline6; //subhead->headline6
@@ -206,7 +208,7 @@ class CustomTile extends StatelessWidget {
     return style?.copyWith(color: color);
   }
 
-  TextStyle? _subtitleTextStyle(ThemeData theme, ListTileTheme tileTheme) {
+  TextStyle? _subtitleTextStyle(ThemeData theme, ListTileThemeData tileTheme) {
     final TextStyle? style = theme.textTheme.bodyText2; //body1->bodyText2
     final Color? color =
         _textColor(theme, tileTheme, theme.textTheme.caption?.color);

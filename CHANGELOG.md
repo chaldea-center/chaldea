@@ -1,3 +1,8 @@
+## 1.6.4
+- improve performance when loading and patching game data
+- SQ plan: add missing monthly tickets in mana prism store
+- enable 120Hz ProMotion (no guarantee)
+
 ## 1.6.3
 
 - fix Android 12 compatibility
