@@ -6,6 +6,7 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/js_engine/js_engine.dart';
 import 'package:chaldea/modules/shared/quest_card.dart';
 import 'package:flutter/services.dart';
+import 'package:lpinyin/lpinyin.dart';
 
 final localized = Localized.masterMission;
 
@@ -38,6 +39,11 @@ class _MasterMissionPageState extends State<MasterMissionPage>
   int _curTab = 0;
   bool _showFilters = true;
 
+  // search
+  String _searchString = '';
+  bool _showSearch = false;
+  late TextEditingController _searchController;
+
   // data
   late WeeklyFilterData filterData;
   List<WeeklyFilterData> missions = [];
@@ -50,6 +56,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: tabNames.length, vsync: this);
+    _searchController = TextEditingController();
     filterData = WeeklyFilterData.fromQuests(_missionData);
     engine.init(() async {
       await engine.eval(await rootBundle.loadString('res/js/glpk.min.js'),
@@ -70,14 +77,49 @@ class _MasterMissionPageState extends State<MasterMissionPage>
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _searchController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).master_mission),
-        centerTitle: true,
+        title: _showSearch
+            ? TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    gapPadding: 0,
+                  ),
+                  hintText: 'Search',
+                  isDense: true,
+                  contentPadding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                  filled: true,
+                  fillColor: Theme.of(context).secondaryHeaderColor,
+                  focusColor: Theme.of(context).secondaryHeaderColor,
+                ),
+                onChanged: (s) {
+                  setState(() {
+                    _searchString = s.trim();
+                  });
+                },
+              )
+            : Text(S.current.master_mission),
         actions: [
-          MarkdownHelpPage.buildHelpBtn(context, 'master_mission.md'),
-          popupMenu,
+          IconButton(
+            onPressed: () {
+              setState(() {
+                _searchString = '';
+                _showSearch = !_showSearch;
+              });
+            },
+            icon: const Icon(Icons.search),
+            tooltip: S.current.search,
+          ),
+          if (!_showSearch) popupMenu,
         ],
         bottom: TabBar(
           controller: _tabController,
@@ -133,9 +175,20 @@ class _MasterMissionPageState extends State<MasterMissionPage>
     } else {
       keys = filterData.battlefields;
     }
+    List<String> sortedKeys = keys.toList();
+    sortedKeys = sortedKeys.where((key) {
+      if (!_showSearch || _searchString.isEmpty) return true;
+      return _getLocalizedKey(key)
+          .toLowerCase()
+          .contains(_searchString.toLowerCase());
+    }).toList();
+    if (_curTab != 1 && _curTab != 3) {
+      sortedKeys.sort((a, b) => _getLocalizedKey(a, alphabetical: true)
+          .compareTo(_getLocalizedKey(b, alphabetical: true)));
+    }
     return AnimatedCrossFade(
       firstChild: Container(height: 0.0),
-      secondChild: _buildTraits(keys, isChecked, onTap),
+      secondChild: _buildTraits(sortedKeys, isChecked, onTap),
       firstCurve: const Interval(0.0, 0.6, curve: Curves.fastOutSlowIn),
       secondCurve: const Interval(0.4, 1, curve: Curves.fastOutSlowIn),
       sizeCurve: Curves.fastOutSlowIn,
@@ -145,7 +198,20 @@ class _MasterMissionPageState extends State<MasterMissionPage>
     );
   }
 
-  Widget _buildTraits(Set<String> keys, bool Function(String key)? isChecked,
+  final Map<String, String> _shownTexts = {};
+  String _getLocalizedKey(String key, {bool alphabetical = false}) {
+    String text = _shownTexts[key] ??= localized.of(_removePrefix(key));
+    if (alphabetical) {
+      if (Language.isCN) {
+        text = PinyinHelper.getPinyin(text);
+      } else if (Language.isJP) {
+        text = Utils.kanaKit.toRomaji(text);
+      }
+    }
+    return text;
+  }
+
+  Widget _buildTraits(List<String> keys, bool Function(String key)? isChecked,
       void Function(String key, bool checked)? onTap) {
     List<Widget> children = [];
     keys.forEach((key) {
@@ -165,7 +231,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
             };
       Widget child = Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        child: Text(localized.of(_removePrefix(key))),
+        child: Text(_getLocalizedKey(key)),
       );
       if (checked) {
         children.add(ElevatedButton(
@@ -253,8 +319,19 @@ class _MasterMissionPageState extends State<MasterMissionPage>
             value: 1,
             child: Text(LocalizedText.of(
                 chs: '国服本周', jpn: '今週(CN)', eng: 'This Week(CN)'))),
+        PopupMenuItem(
+          value: 2,
+          child: Text(S.current.help),
+        ),
       ],
       onSelected: (v) async {
+        if (v == 2) {
+          SplitRoute.push(
+            context,
+            const MarkdownHelpPage.localized(asset: 'master_mission.md'),
+          );
+          return;
+        }
         String wikitext;
         try {
           EasyLoading.show();
@@ -572,17 +649,6 @@ class WeeklyFilterData {
         battlefields.add('场地_$key');
       });
     }
-    int _getIndex(String key) => Localized.masterMission.values
-        .indexWhere((e) => e.chs == key.split('_').last);
-    Set<String> _sort(Set<String> keys) {
-      final list = keys.toList();
-      list.sort((a, b) => _getIndex(a) - _getIndex(b));
-      return list.toSet();
-    }
-
-    servantTraits = _sort(servantTraits);
-    enemyTraits = _sort(enemyTraits);
-    battlefields = _sort(battlefields);
     generalTraits = servantTraits
         .map((e) => _removePrefix(e))
         .where((e) => enemyTraits.contains('小怪_$e'))

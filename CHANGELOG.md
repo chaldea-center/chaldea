@@ -1,6 +1,7 @@
 ## 1.6.4
-- improve performance when loading and patching game data
-- SQ plan: add missing monthly tickets in mana prism store
+- improve performance when loading and updating game data
+- master mission: support search, sort traits by alphabetical
+- SQ plan: add missing monthly tickets from mana prism store
 - enable 120Hz ProMotion (no guarantee)
 
 ## 1.6.3
