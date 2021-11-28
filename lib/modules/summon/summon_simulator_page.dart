@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/widgets/carousel_util.dart';
 
 import 'summon_util.dart';
 
@@ -84,33 +85,14 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   }
 
   Widget get customScrollView {
-    List<Widget> banners = [];
-    for (String? url in [summon.bannerUrl, summon.bannerUrlJp]) {
-      if (url?.isNotEmpty == true) {
-        banners.add(CachedImage(
-          imageUrl: url,
-          cachedOption: CachedImageOption(
-              imageBuilder: (context, image) =>
-                  FittedBox(child: Image(image: image))),
-          isMCFile: true,
-          placeholder: (_, __) => Container(),
-        ));
-      }
-    }
     return CustomScrollView(
       slivers: [
         SliverList(
             delegate: SliverChildListDelegate([
-          if (banners.isNotEmpty)
-            CarouselSlider(
-              items: banners,
-              options: CarouselOptions(
-                autoPlay: false,
-                aspectRatio: 8 / 3,
-                viewportFraction: 1.0,
-                enableInfiniteScroll: banners.length > 1,
-              ),
-            ),
+          CarouselUtil.limitHeightWidget(
+            context: context,
+            imageUrls: [summon.bannerUrlJp, summon.bannerUrl],
+          ),
           if (summon.dataList.length > 1) dropdownButton,
           details,
         ])),

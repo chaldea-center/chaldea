@@ -68,9 +68,12 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
   }
 
   Widget get banner {
-    return Image.file(
-      File(join(_baseDir, 'UI', 'bg_summon_banner.png')),
-      errorBuilder: (context, e, s) => Container(),
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxHeight: 150),
+      child: Image.file(
+        File(join(_baseDir, 'UI', 'bg_summon_banner.png')),
+        errorBuilder: (context, e, s) => Container(),
+      ),
     );
   }
 

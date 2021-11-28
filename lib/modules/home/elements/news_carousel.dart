@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:dio/dio.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:html/dom.dart' as dom;
@@ -160,8 +161,6 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
   int _curCarouselIndex = 0;
   final CarouselController _carouselController = CarouselController();
 
-  final double criticalWidth = 400;
-
   CarouselSetting get carouselSetting => db.userData.carouselSetting;
 
   @override
@@ -172,10 +171,8 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    bool useFullWidth = widget.maxWidth != null &&
-        widget.maxWidth! > 0 &&
-        widget.maxWidth != double.infinity &&
-        widget.maxWidth! < criticalWidth * 1.2;
+    final limitOption =
+        CarouselUtil.limitHeight(width: widget.maxWidth, maxHeight: 150);
 
     final pages = getPages();
 
@@ -187,45 +184,58 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
         heightFactor: 0.6,
         child: Image.asset('res/img/launcher_icon/app_icon_logo.png'),
       );
-      if (useFullWidth) {
+      if (limitOption.limited) {
+        return SizedBox(
+          height: limitOption.height,
+          child: logo,
+        );
+      } else {
         return AspectRatio(
           aspectRatio: 8 / 3,
           child: Container(child: logo),
         );
-      } else {
-        return SizedBox(
-          height: criticalWidth * 3 / 8,
-          child: logo,
-        );
       }
     }
 
-    CarouselOptions options;
-    if (useFullWidth) {
-      options = CarouselOptions(
-        aspectRatio: 8.0 / 3.0,
+    CarouselOptions options = CarouselOptions(
+        height: limitOption.height,
+        aspectRatio: limitOption.aspectRatio,
         autoPlay: pages.length > 1,
         autoPlayInterval: const Duration(seconds: 6),
-        viewportFraction: 1,
+        viewportFraction: limitOption.viewportFraction,
+        enlargeCenterPage: limitOption.enlargeCenterPage,
+        enlargeStrategy: limitOption.enlargeStrategy,
         initialPage: _curCarouselIndex,
-        onPageChanged: (v, _) => setState(() {
-          _curCarouselIndex = v;
-        }),
-      );
-    } else {
-      options = CarouselOptions(
-        height: criticalWidth * 3 / 8,
-        autoPlay: pages.length > 1,
-        autoPlayInterval: const Duration(seconds: 6),
-        viewportFraction: criticalWidth / widget.maxWidth!,
-        enlargeCenterPage: true,
-        enlargeStrategy: CenterPageEnlargeStrategy.height,
-        initialPage: _curCarouselIndex,
-        onPageChanged: (v, _) => setState(() {
-          _curCarouselIndex = v;
-        }),
-      );
-    }
+        onPageChanged: (v, _) {
+          setState(() {
+            _curCarouselIndex = v;
+          });
+        });
+    // if (useFullWidth) {
+    //   options = CarouselOptions(
+    //     aspectRatio: 8.0 / 3.0,
+    //     autoPlay: pages.length > 1,
+    //     autoPlayInterval: const Duration(seconds: 6),
+    //     viewportFraction: 1,
+    //     initialPage: _curCarouselIndex,
+    //     onPageChanged: (v, _) => setState(() {
+    //       _curCarouselIndex = v;
+    //     }),
+    //   );
+    // } else {
+    //   options = CarouselOptions(
+    //     height: criticalWidth * 3 / 8,
+    //     autoPlay: pages.length > 1,
+    //     autoPlayInterval: const Duration(seconds: 6),
+    //     viewportFraction: criticalWidth / widget.maxWidth!,
+    //     enlargeCenterPage: true,
+    //     enlargeStrategy: CenterPageEnlargeStrategy.height,
+    //     initialPage: _curCarouselIndex,
+    //     onPageChanged: (v, _) => setState(() {
+    //       _curCarouselIndex = v;
+    //     }),
+    //   );
+    // }
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [

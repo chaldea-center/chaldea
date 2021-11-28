@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/summon/summon_detail_page.dart';
+import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'quest_list_page.dart';
@@ -11,33 +12,14 @@ class EventBasePage {
     required EventBase event,
   }) {
     List<Widget> children = [];
-    List<String> banners =
-        [event.bannerUrlJp, event.bannerUrl].whereType<String>().toList();
-    if (banners.isNotEmpty) {
-      children.add(CarouselSlider(
-        items: banners
-            .map((e) => GestureDetector(
-                  onTap: () => jumpToExternalLinkAlert(
-                    url: WikiUtil.mcFullLink(event.indexKey),
-                    name: 'Mooncell',
-                  ),
-                  child: CachedImage(
-                    imageUrl: event.lBannerUrl,
-                    isMCFile: true,
-                    placeholder: (_, __) =>
-                        const AspectRatio(aspectRatio: 8 / 3),
-                  ),
-                ))
-            .toList(),
-        options: CarouselOptions(
-          aspectRatio: 8 / 3,
-          viewportFraction: 1.0,
-          autoPlay: true,
-          enableInfiniteScroll: false,
-          autoPlayInterval: const Duration(seconds: 6),
-        ),
-      ));
-    }
+    children.add(GestureDetector(
+      onTap: () => jumpToExternalLinkAlert(
+        url: WikiUtil.mcFullLink(event.indexKey),
+        name: 'Mooncell',
+      ),
+      child: CarouselUtil.limitHeightWidget(
+          context: context, imageUrls: [event.bannerUrlJp, event.bannerUrl]),
+    ));
     children.add(CustomTable(children: [
       CustomTableRow(children: [
         TableCellData(

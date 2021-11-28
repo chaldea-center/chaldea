@@ -5,6 +5,7 @@ import 'package:chaldea/modules/event/campaign_detail_page.dart';
 import 'package:chaldea/modules/event/limit_event_detail_page.dart';
 import 'package:chaldea/modules/event/main_record_detail_page.dart';
 import 'package:chaldea/modules/summon/summon_simulator_page.dart';
+import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'lucky_bag_expectation.dart';
@@ -79,35 +80,16 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
   }
 
   Widget get listView {
-    List<Widget> banners = [];
-    for (String? url in [summon.bannerUrl, summon.bannerUrlJp]) {
-      if (url?.isNotEmpty == true) {
-        banners.add(CachedImage(
-          imageUrl: url,
-          cachedOption: CachedImageOption(
-              imageBuilder: (context, image) =>
-                  FittedBox(child: Image(image: image))),
-          isMCFile: true,
-          placeholder: (_, __) => Container(),
-        ));
-      }
-    }
+    ;
     List<Widget> children = [
-      if (banners.isNotEmpty)
-        GestureDetector(
-          onTap: () =>
-              jumpToExternalLinkAlert(url: WikiUtil.mcFullLink(summon.mcLink)),
-          child: CarouselSlider(
-            items: banners,
-            options: CarouselOptions(
-              autoPlay: banners.length > 1,
-              autoPlayInterval: const Duration(seconds: 5),
-              aspectRatio: 8 / 3,
-              viewportFraction: 1.0,
-              enableInfiniteScroll: banners.length > 1,
-            ),
-          ),
+      GestureDetector(
+        onTap: () =>
+            jumpToExternalLinkAlert(url: WikiUtil.mcFullLink(summon.mcLink)),
+        child: CarouselUtil.limitHeightWidget(
+          context: context,
+          imageUrls: [summon.bannerUrlJp, summon.bannerUrl],
         ),
+      ),
       CustomTable(children: [
         CustomTableRow(children: [
           TableCellData(
