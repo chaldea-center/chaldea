@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/event/campaign_detail_page.dart';
 import 'package:chaldea/modules/event/limit_event_detail_page.dart';
@@ -80,7 +79,6 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
   }
 
   Widget get listView {
-    ;
     List<Widget> children = [
       GestureDetector(
         onTap: () =>

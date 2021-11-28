@@ -4,7 +4,6 @@ import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:chaldea/generated/l10n.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

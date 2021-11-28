@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/widgets/carousel_util.dart';
 

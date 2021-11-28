@@ -1,4 +1,3 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/summon/summon_detail_page.dart';
 import 'package:chaldea/widgets/carousel_util.dart';
