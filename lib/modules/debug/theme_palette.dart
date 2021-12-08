@@ -58,7 +58,7 @@ class _PaletteForTheme extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Center(
                 child: Text(
-                  themeData.brightness.toString(),
+                  EnumUtil.titled(themeData.brightness),
                   textAlign: TextAlign.center,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

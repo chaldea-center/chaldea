@@ -183,8 +183,8 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
 
     final error = (report.error ?? report.errorDetails).toString();
     final stackTrace = report.stackTrace.toString();
-    bool? shouldIgnore = _blockedErrors
-        ?.any((e) => error.startsWith(e) || stackTrace.startsWith(e));
+    bool? shouldIgnore =
+        _blockedErrors?.any((e) => error.contains(e) || stackTrace.contains(e));
     if (shouldIgnore == true) {
       logger.e('don\'t send blocked error', report.error, report.stackTrace);
       return true;

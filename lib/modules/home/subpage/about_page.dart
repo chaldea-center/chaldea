@@ -44,6 +44,7 @@ class _AboutPageState extends State<AboutPage> {
             onLongPress: () async {
               setState(() {
                 showDebugInfo = true;
+                db.runtimeData.enableDebugTools = true;
               });
               await Clipboard.setData(ClipboardData(text: AppInfo.uuid));
               EasyLoading.showToast('UUID ' + S.current.copied);

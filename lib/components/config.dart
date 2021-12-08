@@ -177,7 +177,8 @@ class Database {
   Future<bool> loadGameData([GameData? data]) async {
     // final t = TimeCounter('loadGameData');
     try {
-      gameData = data ?? GameData.fromJson(await getJsonFromFileAsync(paths.gameDataPath));
+      gameData = data ??
+          GameData.fromJson(await getJsonFromFileAsync(paths.gameDataPath));
       // userdata is loaded before gamedata, safe to use curUser
       gameData.updateSvtCrafts();
       gameData.updateUserDuplicatedServants();
@@ -724,12 +725,17 @@ class RuntimeData {
   Set<String> appendSkillRecognizeImageFiles = {};
   bool googlePlayAccess = false;
 
+  // debug
+  bool _enableDebugTools = false;
+  bool get enableDebugTools =>
+      _enableDebugTools || kDebugMode || AppInfo.isDebugDevice;
+  set enableDebugTools(bool v) => _enableDebugTools = v;
+
   bool _showDebugFAB = true;
-
-  bool get showDebugFAB =>
-      _showDebugFAB && (kDebugMode || AppInfo.isDebugDevice);
-
+  bool get showDebugFAB => _showDebugFAB && enableDebugTools;
   set showDebugFAB(bool value) => _showDebugFAB = value;
+
+  bool showFps = false;
 
   /// Controller of [Screenshot] widget which set root [MaterialApp] as child
   ScreenshotController? screenshotController;

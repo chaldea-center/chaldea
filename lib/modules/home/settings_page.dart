@@ -1,6 +1,7 @@
 import 'package:chaldea/_test_page.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/debug/debug_floating_menu.dart';
+import 'package:chaldea/modules/debug/frame_rate_layer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'subpage/about_page.dart';
@@ -117,7 +118,8 @@ class _SettingsPageState extends State<SettingsPage> {
           children: <Widget>[
             ListTile(
               title: Text(S.of(context).settings_language),
-              subtitle: Language.isEN ? const Text('语言') : const Text('Language'),
+              subtitle:
+                  Language.isEN ? const Text('语言') : const Text('Language'),
               trailing: DropdownButton<Language>(
                 underline:
                     const Divider(thickness: 0, color: Colors.transparent),
@@ -267,13 +269,27 @@ class _SettingsPageState extends State<SettingsPage> {
             // )
           ],
         ),
-        if (kDebugMode)
+        if (db.runtimeData.enableDebugTools)
           TileGroup(
-            header: 'Test(debug mode: ${kDebugMode ? 'on' : 'off'})',
+            header: 'Debug',
             children: <Widget>[
               ListTile(
                 title: const Text('Test Func'),
                 onTap: () => testFunction(context),
+              ),
+              SwitchListTile.adaptive(
+                value: db.runtimeData.showFps,
+                title: const Text('Show Frame Rate'),
+                onChanged: (v) {
+                  setState(() {
+                    db.runtimeData.showFps = v;
+                  });
+                  if (v) {
+                    FrameRateLayer.createOverlay(context);
+                  } else {
+                    FrameRateLayer.removeOverlay();
+                  }
+                },
               ),
               SwitchListTile.adaptive(
                 value: db.runtimeData.showDebugFAB,
