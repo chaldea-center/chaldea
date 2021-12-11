@@ -312,7 +312,7 @@ class _GameDataPageState extends State<GameDataPage> {
     try {
       // final result = await FilePicker.platform.pickFiles();
       final result = await FilePicker.platform
-          .pickFiles(allowedExtensions: ['zip', 'json']);
+          .pickFiles(type: FileType.custom, allowedExtensions: ['zip', 'json']);
       if (result == null) return;
       final file = File(result.paths.single!);
       if (file.path.toLowerCase().endsWith('.zip')) {

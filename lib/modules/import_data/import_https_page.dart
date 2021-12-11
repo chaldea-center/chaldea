@@ -691,7 +691,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                   chs: '请仔细参考教程',
                   jpn: 'チュートリアルを参照してください',
                   eng: 'Please refer thr tutorial') +
-              '\nhttps://chaldae-center.github.io/import_https.html'),
+              '\nhttps://docs.chaldea.center/import_https.html'
+              '\nhttps://docs.chaldea.center/zh/import_https/'),
         ).showDialog(context);
       }
     } finally {

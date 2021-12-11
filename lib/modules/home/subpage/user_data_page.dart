@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/home/subpage/login_page.dart';
+import 'package:chaldea/modules/import_data/home_import_page.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path/path.dart' as p;
@@ -107,9 +108,18 @@ class _UserDataPageState extends State<UserDataPage> {
                 },
               ),
               ListTile(
-                title: Text(S.of(context).import_data),
+                title: Text(LocalizedText.of(
+                    chs: '导入备份', jpn: 'バックアップのインポート', eng: 'Import Backup')),
                 subtitle: const Text('userdata.json/*.json'),
                 onTap: importUserData,
+              ),
+              ListTile(
+                title: Text(LocalizedText.of(
+                    chs: '更多导入方式', jpn: 'その他のインポート方法', eng: 'Import from ...')),
+                trailing: const Icon(Icons.keyboard_arrow_right),
+                onTap: () {
+                  SplitRoute.push(context, ImportPageHome(), detail: false);
+                },
               ),
               ListTile(
                 title: Text(S.of(context).reset_svt_enhance_state),
@@ -147,8 +157,8 @@ class _UserDataPageState extends State<UserDataPage> {
 
   void importUserData() async {
     try {
-      final result =
-          await FilePicker.platform.pickFiles(allowedExtensions: ['json']);
+      final result = await FilePicker.platform
+          .pickFiles(type: FileType.custom, allowedExtensions: ['json']);
       final path = result?.paths.first;
       if (path == null) return;
       db.backupUserdata();
@@ -160,7 +170,8 @@ class _UserDataPageState extends State<UserDataPage> {
       db.notifyDbUpdate(item: true, svt: true);
       MobStat.logEvent('import_data', {"from": "backup"});
       db.notifyAppUpdate();
-    } catch (e) {
+    } catch (e, s) {
+      logger.e('import user data failed', e, s);
       EasyLoading.showError(S.of(context).import_data_error(e));
     }
   }

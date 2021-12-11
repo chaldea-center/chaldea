@@ -28,7 +28,8 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             title: Center(
                 child: Text(S.current.cur_account + ': ' + db.curUser.name)),
             onTap: () {
-              SplitRoute.push(context, AccountPage()).then((_) {
+              SplitRoute.push(context, AccountPage(), popDetail: true)
+                  .then((_) {
                 if (mounted) setState(() {});
               });
             },

@@ -87,8 +87,8 @@ class _FfoDownloadDialogState extends State<FfoDownloadDialog> {
       actions: [
         TextButton(
           onPressed: () async {
-            final file =
-                await FilePicker.platform.pickFiles(allowedExtensions: ['zip']);
+            final file = await FilePicker.platform
+                .pickFiles(type: FileType.custom, allowedExtensions: ['zip']);
             if (file?.paths.first != null) {
               await _extractZip(file!.paths.first!);
             }
