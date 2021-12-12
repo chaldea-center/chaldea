@@ -19,6 +19,11 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) {
+        setState(() {});
+      }
+    });
   }
 
   @override
@@ -57,8 +62,9 @@ class _GameStatisticsPageState extends State<GameStatisticsPage>
         body: TabBarView(
           controller: _tabController,
           // pie chart relate
-          physics:
-              PlatformU.isAndroid ? const NeverScrollableScrollPhysics() : null,
+          physics: PlatformU.isMobile && _tabController.index == 2
+              ? const NeverScrollableScrollPhysics()
+              : null,
           children: [
             KeepAliveBuilder(builder: (context) => StatItemDemandsTab()),
             KeepAliveBuilder(builder: (context) => StatItemConsumedTab()),
@@ -132,6 +138,10 @@ class _StatItemConsumedTabState extends State<StatItemConsumedTab> {
           divideClassItem: false,
           compactNum: false,
           minCrossCount: 7,
+          onTap: (itemKey) {
+            SplitRoute.push(
+                context, ItemDetailPage(itemKey: itemKey, initialTabIndex: 1));
+          },
         )
       ],
     );
@@ -234,6 +244,10 @@ class _StatItemDemandsTabState extends State<StatItemDemandsTab> {
           divideClassItem: false,
           compactNum: false,
           minCrossCount: 7,
+          onTap: (itemKey) {
+            SplitRoute.push(
+                context, ItemDetailPage(itemKey: itemKey, initialTabIndex: 0));
+          },
         )
       ],
     );

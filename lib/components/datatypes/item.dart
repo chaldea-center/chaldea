@@ -138,31 +138,31 @@ class Item {
     required String itemKey,
     double? width,
     double? height,
+    double? aspectRatio = 132 / 144,
     String? text,
+    EdgeInsets? padding,
+    EdgeInsets? textPadding,
+    VoidCallback? onTap,
     bool jumpToDetail = true,
+    bool popDetail = false,
   }) {
-    final size = MathUtils.fitSize(width, height, 132 / 144);
-    width = size?.key;
-    height = size?.value;
-    Widget child = ImageWithText(
-      image: db.getIconImage(itemKey,
-          aspectRatio: 132 / 144, width: width, height: height),
-      text: text,
-      width: width,
-      padding: size == null
-          ? EdgeInsets.zero
-          : EdgeInsets.fromLTRB(
-              size.value / 22, 0, size.value / 22, size.value / 12),
-    );
-    if (jumpToDetail) {
-      child = InkWell(
-        child: child,
-        onTap: () {
-          SplitRoute.push(context, ItemDetailPage(itemKey: itemKey));
-        },
-      );
+    if (onTap == null && popDetail) {
+      onTap = () {
+        SplitRoute.push(context, ItemDetailPage(itemKey: itemKey),
+            popDetail: popDetail);
+      };
     }
-    return child;
+    return GameCardMixin.cardIconBuilder(
+      context: context,
+      icon: itemKey,
+      width: width,
+      height: height,
+      aspectRatio: aspectRatio,
+      text: text,
+      padding: padding,
+      textPadding: textPadding,
+      onTap: onTap,
+    );
   }
 
   static int fouValToShown(int fou) {

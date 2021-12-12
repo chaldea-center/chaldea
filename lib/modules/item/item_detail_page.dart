@@ -10,8 +10,10 @@ import 'tabs/item_servant_demand_page.dart';
 
 class ItemDetailPage extends StatefulWidget {
   final String itemKey;
+  final int initialTabIndex;
 
-  ItemDetailPage({Key? key, required this.itemKey}) : super(key: key);
+  ItemDetailPage({Key? key, required this.itemKey, this.initialTabIndex = 0})
+      : super(key: key);
 
   @override
   _ItemDetailPageState createState() => _ItemDetailPageState();
@@ -20,7 +22,7 @@ class ItemDetailPage extends StatefulWidget {
 class _ItemDetailPageState extends State<ItemDetailPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  int curTab = 0;
+  int get curTab => _tabController.index;
 
   // all
   bool favorite = true;
@@ -39,11 +41,10 @@ class _ItemDetailPageState extends State<ItemDetailPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 6, vsync: this);
+    _tabController = TabController(
+        initialIndex: widget.initialTabIndex, length: 6, vsync: this);
     _tabController.addListener(() {
-      setState(() {
-        curTab = _tabController.index;
-      });
+      if (!_tabController.indexIsChanging) setState(() {});
     });
   }
 

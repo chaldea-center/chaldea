@@ -191,7 +191,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 context,
                 AboutPage(),
                 popDetail: true,
-              ),
+              ).then((_) {
+                if (mounted) setState(() {});
+              }),
             ),
             ListTile(
               title: Text(S.of(context).about_feedback),

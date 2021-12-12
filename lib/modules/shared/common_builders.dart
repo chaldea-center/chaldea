@@ -182,6 +182,7 @@ Widget buildClassifiedItemList({
   bool responsive = true,
   int? minCrossCount,
   bool compactNum = true,
+  void Function(String itemKey)? onTap,
 }) {
   final divided = divideItemsToGroups(data.keys.toList(),
       divideCategory: divideCategory,
@@ -191,7 +192,11 @@ Widget buildClassifiedItemList({
   for (var key in divided.keys) {
     final gridChildren = divided[key]!.map((item) {
       return ImageWithText(
-        image: Item.iconBuilder(context: context, itemKey: item.name),
+        image: Item.iconBuilder(
+          context: context,
+          itemKey: item.name,
+          onTap: onTap == null ? null : () => onTap(item.name),
+        ),
         text: formatNumber(data[item.name]!,
             compact: compactNum, groupSeparator: ''),
         padding: const EdgeInsets.only(right: 3),
