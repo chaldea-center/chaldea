@@ -41,8 +41,8 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
     final List<GLPKVariable> quests = List.of(widget.solution!.weightVars);
     switch (sortType) {
       case _EfficiencySort.item:
-        quests.sort((a, b) => sum(b.detail.values as Iterable<double>)
-            .compareTo(sum(a.detail.values as Iterable<double>)));
+        quests.sort((a, b) => sum(b.detail.values)
+            .compareTo(sum(a.detail.values)));
         break;
       case _EfficiencySort.bond:
         quests.sort((a, b) {
@@ -81,7 +81,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
     List<Widget> children = [];
     solutionVars.forEach((variable) {
       final String questKey = variable.name;
-      final Map<String, double> drops = variable.detail as Map<String, double>;
+      final Map<String, double> drops = variable.detail;
       final Quest? quest = db.gameData.getFreeQuest(questKey);
       if (filterItems.isEmpty ||
           (matchAll &&

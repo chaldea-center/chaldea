@@ -93,14 +93,14 @@ class GLPKSolver {
         assert(col >= 0);
         solution.totalNum = solution.totalNum! + count;
         solution.totalCost = solution.totalCost! + count * data.costs[col];
-        Map<String, int> details = {};
+        Map<String, double> details = {};
         for (String itemKey in params.rows) {
           int row = data.rowNames.indexOf(itemKey);
           if (row < 0) {
             continue;
           }
           if (data.matrix[row][col] > 0) {
-            details[itemKey] = (data.matrix[row][col] * count).floor();
+            details[itemKey] = data.matrix[row][col] * count;
           }
         }
         solution.countVars.add(GLPKVariable<int>(

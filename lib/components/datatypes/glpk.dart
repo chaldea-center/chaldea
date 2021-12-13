@@ -320,8 +320,8 @@ class GLPKSolution {
   }
 
   void sortWeightVars() {
-    weightVars.sort((a, b) => sum(b.detail.values as Iterable<double>)
-        .compareTo(sum(a.detail.values as Iterable<double>)));
+    weightVars.sort((a, b) => sum(b.detail.values)
+        .compareTo(sum(a.detail.values)));
   }
 
   List<String> getIgnoredKeys() {
@@ -346,14 +346,14 @@ class GLPKVariable<T> {
   int cost;
 
   /// total item-num statistics from [value] times of quest [name]
-  @_Converter()
-  Map<String, T> detail;
+  // @_Converter()
+  Map<String, double> detail;
 
   GLPKVariable({
     required this.name,
     required this.value,
     required this.cost,
-    Map<String, T>? detail,
+    Map<String, double>? detail,
   }) : detail = detail ?? {};
 
   factory GLPKVariable.fromJson(Map<String, dynamic> data) =>

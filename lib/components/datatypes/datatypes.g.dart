@@ -1032,7 +1032,7 @@ GLPKVariable<T> _$GLPKVariableFromJson<T>(Map<String, dynamic> json) =>
       value: _Converter<T>().fromJson(json['value'] as Object),
       cost: json['cost'] as int,
       detail: (json['detail'] as Map<String, dynamic>?)?.map(
-        (k, e) => MapEntry(k, _Converter<T>().fromJson(e as Object)),
+        (k, e) => MapEntry(k, (e as num).toDouble()),
       ),
     );
 
@@ -1041,8 +1041,7 @@ Map<String, dynamic> _$GLPKVariableToJson<T>(GLPKVariable<T> instance) =>
       'name': instance.name,
       'value': _Converter<T>().toJson(instance.value),
       'cost': instance.cost,
-      'detail':
-          instance.detail.map((k, e) => MapEntry(k, _Converter<T>().toJson(e))),
+      'detail': instance.detail,
     };
 
 BasicGLPKParams _$BasicGLPKParamsFromJson(Map<String, dynamic> json) =>
