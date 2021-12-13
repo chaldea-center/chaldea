@@ -8,7 +8,6 @@
 // ignore_for_file:prefer_single_quotes,comment_references, directives_ordering
 // ignore_for_file:annotate_overrides,prefer_generic_function_type_aliases
 // ignore_for_file:unused_import, file_names, avoid_escaping_inner_quotes
-// ignore_for_file:unnecessary_string_interpolations, unnecessary_string_escapes
 
 import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
@@ -372,6 +371,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "join_beta": MessageLookupByLibrary.simpleMessage("ベータ版に参加する"),
         "jump_to": m9,
         "language": MessageLookupByLibrary.simpleMessage("日本語"),
+        "language_en": MessageLookupByLibrary.simpleMessage("Japanese"),
         "level": MessageLookupByLibrary.simpleMessage("レベル"),
         "limited_event": MessageLookupByLibrary.simpleMessage("期間限定イベント"),
         "link": MessageLookupByLibrary.simpleMessage("リンク"),

@@ -60,6 +60,16 @@ class S {
     );
   }
 
+  /// `Chinese`
+  String get language_en {
+    return Intl.message(
+      'Chinese',
+      name: 'language_en',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `你好！御主!`
   String get hello {
     return Intl.message(
@@ -4265,6 +4275,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
       Locale.fromSubtags(languageCode: 'zh'),
       Locale.fromSubtags(languageCode: 'en'),
       Locale.fromSubtags(languageCode: 'ja'),
+      Locale.fromSubtags(languageCode: 'ko'),
     ];
   }
 

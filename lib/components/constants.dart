@@ -48,8 +48,9 @@ class Language {
   static const chs = Language('zh', '简体中文', Locale('zh', ''));
   static const jpn = Language('ja', '日本語', Locale('ja', ''));
   static const eng = Language('en', 'English', Locale('en', ''));
+  static const kor = Language('ko', '한국인', Locale('ko', ''));
 
-  static List<Language> get supportLanguages => const [chs, jpn, eng];
+  static List<Language> get supportLanguages => const [chs, jpn, eng, kor];
 
   static Language? getLanguage(String? code) {
     if (code == null) return null;
@@ -68,11 +69,17 @@ class Language {
 
   static bool get isEN => currentLocaleCode.startsWith('en');
 
+  static bool get isKR => currentLocaleCode.startsWith('ko');
+
+  static bool get isEnOrKr => isEN || isKR;
+
   static Language get current => isJP
       ? jpn
       : isEN
           ? eng
-          : chs;
+          : isKR
+              ? kor
+              : chs;
 
   @override
   String toString() {
@@ -141,7 +148,7 @@ T localizeNoun<T>(T? nameCn, T? nameJp, T? nameEn,
   primary ??= Language.current;
   List<T?> names = primary == Language.chs
       ? [nameCn, nameJp, nameEn]
-      : primary == Language.eng
+      : primary == Language.eng || primary == Language.kor
           ? [nameEn, nameJp, nameCn]
           : [nameJp, nameCn, nameEn];
   T? name = names[0] ?? names[1] ?? names[2] ?? k?.call();

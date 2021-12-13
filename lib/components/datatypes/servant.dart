@@ -108,16 +108,16 @@ class Servant with GameCardMixin {
   }
 
   List<NoblePhantasm> get lNoblePhantasm =>
-      Language.isEN && noblePhantasmEn.isNotEmpty
+      Language.isEnOrKr && noblePhantasmEn.isNotEmpty
           ? noblePhantasmEn
           : noblePhantasm;
 
   List<ActiveSkill> get lActiveSkills =>
-      Language.isEN && activeSkillsEn.isNotEmpty
+      Language.isEnOrKr && activeSkillsEn.isNotEmpty
           ? activeSkillsEn
           : activeSkills;
 
-  List<Skill> get lPassiveSkills => Language.isEN && passiveSkillsEn.isNotEmpty
+  List<Skill> get lPassiveSkills => Language.isEnOrKr && passiveSkillsEn.isNotEmpty
       ? passiveSkillsEn
       : passiveSkills;
 

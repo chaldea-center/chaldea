@@ -72,7 +72,7 @@ class _MainRecordTabState extends State<MainRecordTab> {
                 final plan = db.curUser.events.mainRecordOf(record.indexKey);
                 bool outdated = record.isOutdated();
                 Widget? title, subtitle;
-                if (Language.isEN) {
+                if (Language.isEnOrKr) {
                   title = AutoSizeText(
                     Localized.chapter.of(record.name),
                     maxLines: 2,

@@ -1,6 +1,7 @@
 {
   "@@locale": "en",
   "language": "English",
+  "language_en": "English",
   "hello": "Hello! Master!",
   "gallery_tab_name": "Home",
   "settings_tab_name": "Settings",

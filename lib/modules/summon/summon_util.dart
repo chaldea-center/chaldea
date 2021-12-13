@@ -207,7 +207,7 @@ class SummonUtil {
                 ?.info
                 .localizedName ??
             e;
-        name2 = fragments.join(Language.isEN ? ' (' : '(');
+        name2 = fragments.join(Language.isEnOrKr ? ' (' : '(');
       }
       // if (!RegExp(r'[\s\da-zA-Z]+').hasMatch(name2) && !Language.isCN) {
       //   print(name2);

@@ -1,6 +1,7 @@
 {
   "@@locale": "ja",
   "language": "日本語",
+  "language_en": "Japanese",
   "hello": "こんにちは、マスタ。",
   "gallery_tab_name": "ホーム",
   "settings_tab_name": "設定",

@@ -323,7 +323,7 @@ class MainRecord extends EventBase {
 
   @override
   String get localizedName {
-    if (Language.isEN) {
+    if (Language.isEnOrKr) {
       return localizeNoun(name, nameJp, Localized.chapter.of(name));
     }
     return localizeNoun(name, nameJp, null);

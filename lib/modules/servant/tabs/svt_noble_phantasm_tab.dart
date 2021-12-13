@@ -145,7 +145,7 @@ class _SvtNoblePhantasmTabState extends SvtTabBaseState<SvtNoblePhantasmTab> {
           AutoSizeText(
             td.name,
             style: const TextStyle(fontWeight: FontWeight.w600),
-            maxLines: Language.isEN ? 2 : 1,
+            maxLines: Language.isEnOrKr ? 2 : 1,
           ),
           if (td.upperNameJp?.isNotEmpty == true)
             AutoSizeText(

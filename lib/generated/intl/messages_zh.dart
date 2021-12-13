@@ -8,7 +8,6 @@
 // ignore_for_file:prefer_single_quotes,comment_references, directives_ordering
 // ignore_for_file:annotate_overrides,prefer_generic_function_type_aliases
 // ignore_for_file:unused_import, file_names, avoid_escaping_inner_quotes
-// ignore_for_file:unnecessary_string_interpolations, unnecessary_string_escapes
 
 import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
@@ -351,6 +350,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "join_beta": MessageLookupByLibrary.simpleMessage("加入Beta版"),
         "jump_to": m9,
         "language": MessageLookupByLibrary.simpleMessage("简体中文"),
+        "language_en": MessageLookupByLibrary.simpleMessage("Chinese"),
         "level": MessageLookupByLibrary.simpleMessage("等级"),
         "limited_event": MessageLookupByLibrary.simpleMessage("限时活动"),
         "link": MessageLookupByLibrary.simpleMessage("链接"),

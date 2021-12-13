@@ -107,7 +107,7 @@ abstract class CommonBuilder {
     assert([0, 1, 5, 10].contains(effect.lvData.length));
     List<Widget> children = [];
     String description = effect.lDescription;
-    if (Language.isEN) {
+    if (Language.isEnOrKr) {
       description =
           description.split('\n').map((e) => '· ${e.trim()}').join('\n');
     }
