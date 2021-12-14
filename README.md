@@ -7,18 +7,7 @@
 [![license AGPL-3.0](https://img.shields.io/github/license/chaldea-center/chaldea.svg?style=flat)](https://github.com/chaldea-center/chaldea/blob/master/LICENSE)
 [![stars](https://img.shields.io/github/stars/chaldea-center/chaldea?style=social)](https://github.com/chaldea-center/chaldea/stargazers)
 
-Chaldea is a cross-platform tool for [Fate/Grand Order](https://www.fate-go.jp) to help masters planning their trip of taking back the future.
-
-Chaldea is inspired from the iOS app [Guda](https://apps.apple.com/sg/app/guda/id1229055088) and
-WeChat mini program [FGO material programe](https://github.com/lacus87/fgo). And dataset resources
-are mostly based on following sites:
-
-- The Chinese wiki - [Mooncell](https://fgo.wiki)
-- The English wiki - [Fandom - Fate/Grand Order Wiki](https://fategrandorder.fandom.com/wiki/)
-- [FGO効率劇場](https://sites.google.com/view/fgo-domus-aurea)
-- [Atlas Academy](https://atlasacademy.io/)
-
-Thanks for all above communities and contributors.
+Chaldea is a cross-platform tool for [Fate/Grand Order](https://www.fate-go.jp) to help masters planning materials, servants, events and their trip of taking back the future. 
 
 For more details or usage, please check our document: [English](https://docs.chaldea.center)
 | [中文](https://docs.chaldea.center/zh/)
@@ -54,7 +43,7 @@ iOS       | iOS 10.0
 Windows   | Windows 7 SP1 (64-bit), x86-64 based
 macOS     | macOS 10.11
 Linux     | Debian 10 & above
-Web       | Not supported
+Web       | Waiting for next V2
 
 ## Installation
 
@@ -69,20 +58,16 @@ Web       | Not supported
 You can download binary assets in [release](https://github.com/chaldea-center/chaldea/releases)
 page for Android, Windows, macOS and Linux.
 
+
 ## Dataset
-The game dataset which should be place at `res/data/dataset.zip` is maintained in another repository [chaldea-dataset](https://github.com/chaldea-center/chaldea-dataset). 
+
+The game dataset is maintained in another repository [chaldea-dataset](https://github.com/chaldea-center/chaldea-dataset). And the builtin dataset should be placed at `res/data/dataset.zip`(for development). 
 
 You can download the latest dataset from the release page then import it in app, or just check update inside app's setting page.
 
 Note that the dataset version defines the minimal compatible app version.
 E.g. 20210502-1.4.0 means that the dataset is created at 2021/05/02 and requires Chaldea app version >= 1.4.0
 
-
-## Troubleshooting
-
-**VCRUNTIME140_1.dll was not found on Windows**
-
-You may need to install [Microsoft Visual C++ redistributable package](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads) to enable VC++ runtime support.
 
 ## Donation
 
@@ -94,6 +79,28 @@ If you have any bug report, feature request, question or want to contribute to t
 
 - File an [issue](https://github.com/chaldea-center/chaldea/issues/new/choose)
 - Pull request or join the collaboration
-- Email: [chaldea@narumi.cc](mailto:chaldea@narumi.cc)
 - Discord: [https://discord.gg/5M6w5faqjP](https://discord.gg/5M6w5faqjP)
 - NokNok: [118835](https://www.noknok.cn/act/share_group_20210625/index.html?uid=100164675&gid=118835)
+- Email: [chaldea@narumi.cc](mailto:chaldea@narumi.cc)
+
+## Acknowledgements
+
+This project is built with [Flutter](https://flutter.dev). For help getting started with Flutter, view the online [documentation](https://flutter.dev).
+
+Chaldea is greatly inspired from
+- iOS app [Guda](https://apps.apple.com/sg/app/guda/id1229055088)
+- WeChat mini program [FGO material programe](https://github.com/lacus87/fgo)
+
+And the dataset is powered by
+- The Chinese wiki - [Mooncell](https://fgo.wiki)
+- The English wiki - [Fandom - Fate/Grand Order Wiki](https://fategrandorder.fandom.com/wiki/)
+- [FGO効率劇場](https://sites.google.com/view/fgo-domus-aurea)
+- [Atlas Academy](https://atlasacademy.io/)
+
+Finally thanks to all translators
+- Chinese - Mooncell translators
+- English - Fandom and reddit translators
+- Japanese - Google Translate
+- Korean - To be done
+
+Thanks for all above communities and contributors.
