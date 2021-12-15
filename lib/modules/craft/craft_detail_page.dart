@@ -299,7 +299,8 @@ class CraftDetailBasePage extends StatelessWidget {
                 text: LocalizedText(
                         chs: ce.description ?? '???',
                         jpn: ce.descriptionJp,
-                        eng: ce.descriptionEn)
+                        eng: ce.descriptionEn,
+                        kor: ce.descriptionKor)
                     .ofPrimary(lang ?? Language.current),
                 alignment: Alignment.centerLeft,
                 padding:

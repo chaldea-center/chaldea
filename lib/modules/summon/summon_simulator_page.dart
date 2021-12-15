@@ -120,7 +120,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
             headerBuilder: (context, _) => ListTile(
               dense: true,
               title: Text(
-                  LocalizedText.of(chs: '抽卡结果', jpn: 'ガチャ結果', eng: 'Results', kor: '가챠 결과')),
+                  LocalizedText.of(chs: '抽卡结果', jpn: 'ガチャ結果', eng: 'Results')),
             ),
             contentBuilder: (context) => curResult(),
           ),
@@ -133,8 +133,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
                   chs: '仅供娱乐, 如有雷同, 纯属巧合\n保底机制使五星概率在1.04%左右',
                   jpn: '娯楽のみ',
                   eng:
-                      'Just for entertainment\nGuarantee mechanism: 1%->1.04%',
-                  kor:'오직 재미로만\n보장 메커니즘:1%->1.04%'),
+                      'Just for entertainment\nGuarantee mechanism: 1%->1.04%'),
               style: const TextStyle(color: Colors.grey),
               textAlign: TextAlign.center,
             ),
@@ -161,6 +160,10 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           '(${suits.toStringAsFixed(2)}×10000='
           '${(suits * 10000).round()}円)';
       subtitle = 'あと$extraLeft回で1回ボーナス召喚';
+    } else if (Language.isKR) {
+       title = '합계: $totalPulls회 $totalQuartz석'
+          ' (${suits.toStringAsFixed(2)}×93200/95000=₩${(suits * 93200).round()}/${(suits * 95000).round()})';
+      subtitle = '$extraLeft번 더 돌리면 보너스 소환 기회 획득';
     } else {
       title = 'Total $totalPulls Pulls $totalQuartz SQ'
           ' (${suits.toStringAsFixed(2)}×100=\$${(suits * 100).round()})';
@@ -216,7 +219,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       padding: const EdgeInsets.symmetric(horizontal: 14),
       child: Row(
         children: [
-          Text(LocalizedText.of(chs: '日替: ', jpn: '日替: ', eng: 'Daily: ', kor: '일일'),
+          Text(LocalizedText.of(chs: '日替: ', jpn: '日替: ', eng: 'Daily: '),
               style: const TextStyle(color: Colors.redAccent)),
           Flexible(
             child: Container(
