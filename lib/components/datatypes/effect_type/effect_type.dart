@@ -188,7 +188,7 @@ class EffectType {
   static EffectType starRate = EffectType(
     key: 'starRate',
     buffs: [BuffTypes.upCriticalpoint, BuffTypes.downCriticalpoint],
-    name: const LocalizedText(chs: '出星率', jpn: 'スター発生', eng: 'Star Drop Rate', kor: '스타 획득률 증가',
+    name: const LocalizedText(chs: '出星率', jpn: 'スター発生', eng: 'Star Drop Rate', kor: '스타 발생률 증가',
   );
 
   static EffectType regainNp = EffectType(
@@ -313,7 +313,7 @@ class EffectType {
   static EffectType guts = EffectType(
     key: 'guts',
     buffs: [BuffTypes.guts, BuffTypes.gutsRatio],
-    name: const LocalizedText(chs: '毅力', jpn: 'ガッツ', eng: 'Guts', kor: '거츠'),
+    name: const LocalizedText(chs: '毅力', jpn: 'ガッツ', eng: 'Guts', kor: 근성'),
   );
 
   static EffectType upHate = EffectType(
