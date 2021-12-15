@@ -146,7 +146,7 @@ class Item {
     bool jumpToDetail = true,
     bool popDetail = false,
   }) {
-    if (onTap == null && popDetail) {
+    if (onTap == null && jumpToDetail) {
       onTap = () {
         SplitRoute.push(context, ItemDetailPage(itemKey: itemKey),
             popDetail: popDetail);

@@ -4,7 +4,6 @@ import 'package:chaldea/components/catcher_util/catcher_email_handler.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/extras/faq_page.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl_standalone.dart';
 import 'package:mailer/mailer.dart';

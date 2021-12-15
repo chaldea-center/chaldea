@@ -105,8 +105,7 @@ class AppNewsCarousel extends StatefulWidget {
       });
 
       // NA slides
-      // TODO: https://github.com/flutter/flutter/issues/92331
-      if (carouselSetting.enableUs && !PlatformU.isWindows) {
+      if (carouselSetting.enableUs) {
         const usUrl = 'https://webview.fate-go.us';
         taskUs = _dio.get(usUrl).then((response) {
           var usParser = parser.parse(response.data.toString());

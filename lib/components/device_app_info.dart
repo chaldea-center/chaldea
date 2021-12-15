@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:chaldea/platform_interface/platform/platform.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:device_info_plus_windows/device_info_plus_windows.dart'
+    as device_info_windows;
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart' as p;
@@ -39,30 +41,21 @@ class AppInfo {
       final macOsInfo = await DeviceInfoPlugin().macOsInfo;
       deviceParams.addAll(macOsInfo.toMap());
     } else if (PlatformU.isMacOS) {
-      final linuxInfo = (await DeviceInfoPlugin().linuxInfo);
-      deviceParams['name'] = linuxInfo.name;
-      deviceParams['version'] = linuxInfo.version;
-      deviceParams['id'] = linuxInfo.id;
-      deviceParams['idLike'] = linuxInfo.idLike;
-      deviceParams['versionCodename'] = linuxInfo.versionCodename;
-      deviceParams['versionId'] = linuxInfo.versionId;
-      deviceParams['prettyName'] = linuxInfo.prettyName;
-      deviceParams['buildId'] = linuxInfo.buildId;
-      deviceParams['variant'] = linuxInfo.variant;
-      deviceParams['variantId'] = linuxInfo.variantId;
-      deviceParams['machineId'] = linuxInfo.machineId;
+      final linuxInfo = await DeviceInfoPlugin().linuxInfo;
+      deviceParams.addAll(linuxInfo.toMap());
     } else if (PlatformU.isWindows) {
-      final windowsInfo = (await DeviceInfoPlugin().windowsInfo);
+      final windowsInfo =
+          await device_info_windows.DeviceInfoWindows().windowsInfo();
+      if (windowsInfo == null) return;
       deviceParams['operatingSystem'] = PlatformU.operatingSystem;
       deviceParams['operatingSystemVersion'] = PlatformU.operatingSystemVersion;
-      deviceParams['computerName'] = windowsInfo.computerName;
-      deviceParams['numberOfCores'] = windowsInfo.numberOfCores;
-      deviceParams['systemMemoryInMegabytes'] =
-          windowsInfo.systemMemoryInMegabytes;
+      deviceParams.addAll(windowsInfo.toMap());
+    } else if (PlatformU.isWeb) {
+      final webInfo = await DeviceInfoPlugin().webBrowserInfo;
+      deviceParams.addAll(webInfo.toMap());
     } else {
       deviceParams['operatingSystem'] = PlatformU.operatingSystem;
       deviceParams['operatingSystemVersion'] = PlatformU.operatingSystemVersion;
-      // To be implemented, nothing helpful in windowsInfo
     }
   }
 
@@ -76,15 +69,6 @@ class AppInfo {
     ///Only android, iOS and macOS are implemented
     _packageInfo = await PackageInfo.fromPlatform()
         .catchError((e) => _loadApplicationInfoFromAsset());
-    // if (kDebugMode) {
-    //   _packageInfo = PackageInfo(
-    //     appName: 'Chaldea',
-    //     packageName: 'cc.narumi.cc',
-    //     version: '1.4.8',
-    //     buildNumber: '2048',
-    //     buildSignature: '',
-    //   );
-    // }
     appParams["version"] = _packageInfo?.version;
     appParams["appName"] = _packageInfo?.appName;
     appParams["buildNumber"] = _packageInfo?.buildNumber;

@@ -57,7 +57,7 @@ class _CarouselSettingPageState extends State<CarouselSettingPage> {
                 : null,
           ),
           CheckboxListTile(
-            value: carousel.enableUs && !PlatformU.isWindows,
+            value: carousel.enableUs,
             title: const Text('NA News'),
             subtitle: Text(
                 (PlatformU.isWindows ? 'BUG on Windows for NA\n' : '') +
