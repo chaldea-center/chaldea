@@ -78,7 +78,8 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
             LocalizedText.of(
                 chs: '当前区服: $curServer',
                 jpn: '現在のサーバー：$curServer ',
-                eng: 'Current Server: $curServer'),
+                eng: 'Current Server: $curServer',
+                kor: '현재 서버: $curServer'),
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.caption,
           ),

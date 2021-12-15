@@ -67,8 +67,8 @@ class _EnemyDetailPageState extends State<EnemyDetailPage> {
                       texts: [
                         S.current.filter_attribute,
                         LocalizedText.of(
-                            chs: '行动数', jpn: '行動数', eng: 'Actions'),
-                        LocalizedText.of(chs: '充能', jpn: 'チャージ', eng: 'Charge'),
+                            chs: '行动数', jpn: '行動数', eng: 'Actions', kor: '타격 횟수'),
+                        LocalizedText.of(chs: '充能', jpn: 'チャージ', eng: 'Charge', kor: '차지'),
                         S.current.info_death_rate
                       ],
                       isHeader: true,

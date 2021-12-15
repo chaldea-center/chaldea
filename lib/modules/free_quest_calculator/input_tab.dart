@@ -88,7 +88,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
       if (category == specialCategory) {
         pickerAdapter.add(PickerItem(
           text: makeText(
-              text: LocalizedText.of(chs: '特殊', jpn: '特別', eng: 'Special')),
+              text: LocalizedText.of(chs: '特殊', jpn: '特別', eng: 'Special', kor: '특수')),
           value: specialCategory,
           children: items
               .map((e) => PickerItem(

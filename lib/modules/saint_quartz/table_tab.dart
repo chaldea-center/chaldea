@@ -48,7 +48,7 @@ class _SQTableTabState extends State<SQTableTab> {
       },
       columnsLength: 4,
       rowsLength: plan.solution.length,
-      legendCell: Text(LocalizedText.of(chs: '日期', jpn: '日付', eng: 'Date')),
+      legendCell: Text(LocalizedText.of(chs: '日期', jpn: '日付', eng: 'Date', kor: '일')),
       cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
         columnWidths: [50, 50, 50, 500],
         rowHeights: plan.solution
@@ -72,9 +72,9 @@ class _SQTableTabState extends State<SQTableTab> {
       ),
       columnsTitleBuilder: (col) => Text(
         [
-          LocalizedText.of(chs: '石', jpn: '石', eng: 'SQ'),
-          LocalizedText.of(chs: '呼符', jpn: '呼符', eng: 'Ticket'),
-          LocalizedText.of(chs: '果实', jpn: '果実', eng: 'Apple'),
+          LocalizedText.of(chs: '石', jpn: '石', eng: 'SQ', kor: '돌'),
+          LocalizedText.of(chs: '呼符', jpn: '呼符', eng: 'Ticket', kor: '호부'),
+          LocalizedText.of(chs: '果实', jpn: '果実', eng: 'Apple', kor: '사과'),
           S.current.event_title
         ][col],
         textAlign: col != 3 ? TextAlign.center : null,

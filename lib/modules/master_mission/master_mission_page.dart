@@ -27,12 +27,12 @@ class MasterMissionPage extends StatefulWidget {
 class _MasterMissionPageState extends State<MasterMissionPage>
     with SingleTickerProviderStateMixin {
   List<LocalizedText> tabNames = const [
-    LocalizedText(chs: '一般特性', jpn: '共有特性', eng: 'General Trait'),
-    LocalizedText(chs: '从者职阶', jpn: 'サーヴァントクラス', eng: 'Servant Class'),
-    LocalizedText(chs: '从者特性', jpn: 'サーヴァント特性', eng: 'Servant Trait'),
-    LocalizedText(chs: '小怪职阶', jpn: 'エネミークラス', eng: 'Enemy Class'),
-    LocalizedText(chs: '小怪特性', jpn: 'エネミー特性', eng: 'Enemy Trait'),
-    LocalizedText(chs: '场地特性', jpn: 'フィールド', eng: 'Battle Field'),
+    LocalizedText(chs: '一般特性', jpn: '共有特性', eng: 'General Trait', kor: '일반 특성'),
+    LocalizedText(chs: '从者职阶', jpn: 'サーヴァントクラス', eng: 'Servant Class', kor: '서번트 클래스'),
+    LocalizedText(chs: '从者特性', jpn: 'サーヴァント特性', eng: 'Servant Trait', kor: '서번트 속성'),
+    LocalizedText(chs: '小怪职阶', jpn: 'エネミークラス', eng: 'Enemy Class', kor: '적 클래스'),
+    LocalizedText(chs: '小怪特性', jpn: 'エネミー特性', eng: 'Enemy Trait', kor: '적 속성'),
+    LocalizedText(chs: '场地特性', jpn: 'フィールド', eng: 'Battle Field', kor: '필드'),
   ];
   List<String> classTypes = const ['剑阶', '弓阶', '枪阶', '骑阶', '术阶', '杀阶', '狂阶'];
   late TabController _tabController;
@@ -273,7 +273,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
           onPressed: () {
             SimpleCancelOkDialog(
               title: Text(LocalizedText.of(
-                  chs: '清空所有任务', jpn: 'ミッションをクリア', eng: 'Clear all missions')),
+                  chs: '清空所有任务', jpn: 'ミッションをクリア', eng: 'Clear all missions', kor: '모든 미션을 클리어합니다')),
               onTapOk: () {
                 setState(() {
                   filterData.reset();
@@ -314,11 +314,11 @@ class _MasterMissionPageState extends State<MasterMissionPage>
         PopupMenuItem(
             value: 0,
             child: Text(LocalizedText.of(
-                chs: '日服本周', jpn: '今週(JP)', eng: 'This Week(JP)'))),
+                chs: '日服本周', jpn: '今週(JP)', eng: 'This Week(JP)', kor: '이번주(JP)'))),
         PopupMenuItem(
             value: 1,
             child: Text(LocalizedText.of(
-                chs: '国服本周', jpn: '今週(CN)', eng: 'This Week(CN)'))),
+                chs: '国服本周', jpn: '今週(CN)', eng: 'This Week(CN)', kor: '이번주(CN)'))),
         PopupMenuItem(
           value: 2,
           child: Text(S.current.help),
@@ -422,7 +422,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
                 ),
                 onPressed: _onPressAddAll,
                 child: Text(
-                    const LocalizedText(chs: '且', eng: 'AND', jpn: 'AND')
+                    const LocalizedText(chs: '且', eng: 'AND', jpn: 'AND', kor: 'AND')
                         .localized),
               ),
             if (!mission.useAnd)
@@ -433,7 +433,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
                   padding: const EdgeInsets.all(2),
                 ),
                 onPressed: _onPressAddAll,
-                child: Text(const LocalizedText(chs: '或', eng: 'OR', jpn: 'OR')
+                child: Text(const LocalizedText(chs: '或', eng: 'OR', jpn: 'OR', kor: 'OR')
                     .localized),
               ),
             _InputGroup(

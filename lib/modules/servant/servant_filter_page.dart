@@ -107,7 +107,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         groupDivider,
         FilterGroup(
           title: Text(const LocalizedText(
-                  chs: '重复从者', jpn: '重複サーバント', eng: 'Duplicated Servant')
+                  chs: '重复从者', jpn: '重複サーバント', eng: 'Duplicated Servant', kor: '중복된 서번트')
               .localized),
           options: const ['1', '2'],
           values: filterData.svtDuplicated,
@@ -231,7 +231,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         groupDivider,
         FilterGroup(
           title: Text(LocalizedText.of(
-              chs: '效果范围', jpn: '効果の範囲', eng: 'Scope of Effects')),
+              chs: '效果范围', jpn: '効果の範囲', eng: 'Scope of Effects', kor: '스킬/보구')),
           options: SvtFilterData.buffScope,
           values: filterData.effectScope,
           optionBuilder: (v) => Text([

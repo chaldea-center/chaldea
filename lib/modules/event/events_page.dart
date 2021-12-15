@@ -69,11 +69,13 @@ class _EventListPageState extends State<EventListPage>
                       ? LocalizedText.of(
                           chs: '隐藏特殊报酬',
                           jpn: '特別報酬を非表示',
-                          eng: 'Hide Special Rewards')
+                          eng: 'Hide Special Rewards',
+                          kor: '스페셜 보상 숨기기')
                       : LocalizedText.of(
                           chs: '显示特殊报酬',
                           jpn: '特別報酬を表示',
-                          eng: 'Show Special Rewards'),
+                          eng: 'Show Special Rewards',
+                          kor: '스페셜 보상 보기'),
                 ),
                 onTap: () {
                   setState(() {

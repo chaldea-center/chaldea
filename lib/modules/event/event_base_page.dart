@@ -181,7 +181,7 @@ class EventBasePage {
         children: [
           ListTile(
             title: Text(
-                LocalizedText.of(chs: '主线关卡', jpn: 'シナリオ', eng: 'Main Quests')),
+                LocalizedText.of(chs: '主线关卡', jpn: 'シナリオ', eng: 'Main Quests', kor: '메인 퀘스트')),
             onTap: () {
               SplitRoute.push(
                 context,

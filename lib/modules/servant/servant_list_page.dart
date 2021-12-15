@@ -154,7 +154,10 @@ class ServantListPageState
                       """1. The plan page is similar to servant list page, but it is mainly used for <uniformly> setting the <current/target> value of servant ascension/skills/costumes
 2. Only change the servants who are "shown" in the list
 3. Filter the display list through the filter/search function, and you can hide/show specific servants individually through the display button at the end of each line""",
-                )),
+                  kor:
+                      """1. 계획 페이지는 서번트 목록 페이지와 유사하지만 영기재림/스킬/영의의 <현재/목표>값을 설정하는 데 주로 사용합니다
+2. 목록에 표시되어 있는 서번트만 변경합니다
+3. 필터/검색 기능을 통해 목록을 필터링하고 각 줄 끝에 있는 보기 버튼을 통해 특정 서번트를 개별적으로 표시/숨길 할 수 있습니다."""   )),
               ).showDialog(context);
             }
           },
@@ -788,7 +791,7 @@ class ServantListPageState
                     Padding(
                       padding: const EdgeInsets.only(left: 8),
                       child: Text(LocalizedText.of(
-                          chs: '统一设定', jpn: 'すべてを設定', eng: 'Set All')),
+                          chs: '统一设定', jpn: 'すべてを設定', eng: 'Set All', kor: '모두 설정')),
                     ),
                     FilterGroup(
                       useRadio: true,
@@ -810,7 +813,8 @@ class ServantListPageState
                       optionBuilder: (s) => Text(LocalizedText.of(
                           chs: s == 'target' ? '目标值' : '当前值',
                           jpn: s == 'target' ? '目標値' : '現在値',
-                          eng: s == 'target' ? 'Target' : 'Current')),
+                          eng: s == 'target' ? 'Target' : 'Current',
+                          kor: s == 'target' ? '목표값' : '현재값')),
                     ),
                     IconButton(
                       onPressed: () {
