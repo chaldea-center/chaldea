@@ -32,6 +32,8 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
                   eng:
                       """1. The QP calculation may be inaccurate and is for reference only. 20 Exp cards every enhancement.
 2. e.g. 80->90, only calculate the QP (Holy Grail) consumed by the ascension (Palingenesis) at level 80""",
+                  kor: """1. QP의 계산은 정확하지 않을 가능성이 있어, 참고용입니다. 매회 20회씩 계산합니다.
+2. 예를 들어, 80->90의 경우, 레벨 80에서 재림(성배재림)에 소비되는 QP(성배)만 계산합니다. """
                 )),
               ).showDialog(context);
             },

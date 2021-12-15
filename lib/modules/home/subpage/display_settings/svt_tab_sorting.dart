@@ -22,7 +22,8 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
           title: Text(LocalizedText.of(
               chs: '从者详情页排序',
               jpn: 'サーヴァントページ表示順序',
-              eng: 'Servant Tabs Sorting'))),
+              eng: 'Servant Tabs Sorting',
+              kor: '서번트 페이지 표시 순서'))),
       body: ListView(
         children: [
           reorderableList(),

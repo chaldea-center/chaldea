@@ -25,7 +25,7 @@ class _CmdCodeFilterPageState extends FilterPageState<SummonFilterData> {
         SwitchListTile.adaptive(
           value: filterData.showBanner,
           title: Text(
-            LocalizedText.of(chs: '显示封面', jpn: '画像を表示', eng: 'Show Banner'),
+            LocalizedText.of(chs: '显示封面', jpn: '画像を表示', eng: 'Show Banner', kor: '배너 표시'),
             style: const TextStyle(fontSize: 16),
           ),
           onChanged: (v) {
@@ -54,10 +54,10 @@ class _CmdCodeFilterPageState extends FilterPageState<SummonFilterData> {
             switch (v) {
               case '0':
                 return Text(
-                    LocalizedText.of(chs: '剧情', jpn: 'ストーリー', eng: 'Story'));
+                    LocalizedText.of(chs: '剧情', jpn: 'ストーリー', eng: 'Story', kor: '스토리'));
               case '1':
                 return Text(
-                    LocalizedText.of(chs: '普通', jpn: '普通', eng: 'Usual'));
+                    LocalizedText.of(chs: '普通', jpn: '普通', eng: 'Usual', kor: '보통'));
               case '2':
                 return Text(S.current.lucky_bag + '(SSR)');
               case '3':

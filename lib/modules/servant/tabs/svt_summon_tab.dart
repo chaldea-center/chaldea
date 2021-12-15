@@ -46,7 +46,7 @@ class _SvtSummonTabState extends SvtTabBaseState<SvtSummonTab> {
     if (shownSummons.isEmpty) {
       return ListTile(
         title: Text(LocalizedText.of(
-            chs: '无关联卡池', jpn: '関連するガチャない', eng: 'No related summons')),
+            chs: '无关联卡池', jpn: '関連するガチャない', eng: 'No related summons', kor: '관련된 가챠 없음')),
       );
     }
 

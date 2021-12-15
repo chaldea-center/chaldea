@@ -55,16 +55,18 @@ class _UserDataPageState extends State<UserDataPage> {
                   title: Text(LocalizedText.of(
                       chs: '使用外部储存(SD卡)',
                       jpn: '外部ストレージ（SDカード）を使用',
-                      eng: 'Use External Storage(SD card)')),
+                      eng: 'Use External Storage(SD card)',
+                      kor: '외부 스토리지 (SD 카드)를 사용')),
                   subtitle: Text(LocalizedText.of(
                       chs: '下次启动生效',
                       jpn: '次の起動時に有効になります',
-                      eng: 'Take effect at next startup')),
+                      eng: 'Take effect at next startup',
+                      kor: '다음 시작 시 적용됩니다')),
                   onChanged: _migrateAndroidData,
                 ),
               ListTile(
                 title: Text(LocalizedText.of(
-                    chs: '数据目录', jpn: 'データフォルダ', eng: 'Data Folder')),
+                    chs: '数据目录', jpn: 'データフォルダ', eng: 'Data Folder', kor: '데이터 폴더')),
                 subtitle: Text(db.paths.convertIosPath(db.paths.appPath)),
                 onTap: () {
                   if (PlatformU.isDesktop) {
@@ -73,7 +75,8 @@ class _UserDataPageState extends State<UserDataPage> {
                     EasyLoading.showInfo(LocalizedText.of(
                         chs: '请用文件管理器打开',
                         jpn: 'ファイルマネージャで開いてください',
-                        eng: 'Please open with file manager'));
+                        eng: 'Please open with file manager',
+                        kor: '파일 매니저로 열어주십시오'));
                   }
                 },
               )
@@ -109,13 +112,13 @@ class _UserDataPageState extends State<UserDataPage> {
               ),
               ListTile(
                 title: Text(LocalizedText.of(
-                    chs: '导入备份', jpn: 'バックアップのインポート', eng: 'Import Backup')),
+                    chs: '导入备份', jpn: 'バックアップのインポート', eng: 'Import Backup', kor: '백업 불러오기')),
                 subtitle: const Text('userdata.json/*.json'),
                 onTap: importUserData,
               ),
               ListTile(
                 title: Text(LocalizedText.of(
-                    chs: '更多导入方式', jpn: 'その他のインポート方法', eng: 'Import from ...')),
+                    chs: '更多导入方式', jpn: 'その他のインポート方法', eng: 'Import from ...', kor: '이외의 불러오는 방법')),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   SplitRoute.push(context, ImportPageHome(), detail: false);
@@ -138,7 +141,8 @@ class _UserDataPageState extends State<UserDataPage> {
             footer: LocalizedText.of(
                 chs: '仅更新账户数据，不包含本地设置',
                 jpn: 'アカウントデータのみを更新し、ローカル設定を含めない ',
-                eng: 'Only update account data, excluding local settings'),
+                eng: 'Only update account data, excluding local settings',
+                kor: '계정 데이터만을 갱신하여 전역 설정을 포함시키지 않음'),
             children: [
               ListTile(
                 title: Text(S.current.userdata_upload_backup),
@@ -185,17 +189,18 @@ class _UserDataPageState extends State<UserDataPage> {
         String hint = '';
         if (fps.isEmpty) {
           hint += LocalizedText.of(
-              chs: '备份失败', jpn: 'バックアップに失敗しました', eng: 'Backup failed');
+              chs: '备份失败', jpn: 'バックアップに失敗しました', eng: 'Backup failed', kor: '백업 불러오기를 실패하였습니다');
         } else {
           hint += LocalizedText.of(
-                  chs: '已备份至:', jpn: 'バックアップ:', eng: 'Backup to:') +
+                  chs: '已备份至:', jpn: 'バックアップ:', eng: 'Backup to:', kor: '백업:') +
               '\n${fps[0]}\n';
           hint += LocalizedText.of(
               chs: '删除应用(以及升级时可能)将导致临时备份被删除，建议手动备份到外部可靠储存位置！',
               jpn:
                   'アプリを削除すると、一時バックアップが削除されます。外部の信頼できるストレージ場所に手動でバックアップすることをお勧めします',
               eng:
-                  'The backups will be deleted when uninstalling the app. It is recommended to manually backup to an external storage.');
+                  'The backups will be deleted when uninstalling the app. It is recommended to manually backup to an external storage.',
+              kor: '어플을 소삭제하면 동시에 백업이 삭제됩니다. 신뢰할 수 있는 외부 스토리지에 수동으로 백업하는 것을 추천드립니다');
         }
         showInformDialog(
           context,
@@ -349,7 +354,7 @@ class _UserDataPageState extends State<UserDataPage> {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: Text(
-            LocalizedText.of(chs: '迁移数据', jpn: 'データの移行', eng: 'Migrate Data')),
+            LocalizedText.of(chs: '迁移数据', jpn: 'データの移行', eng: 'Migrate Data', kor: '데이터 이동')),
         content: Text('From:\n ${from.path}\nTo:\n${to.path}'),
         actions: [
           TextButton(
@@ -366,12 +371,13 @@ class _UserDataPageState extends State<UserDataPage> {
                     chs: '请手动移动数据，否则启动后为空数据。',
                     jpn: 'データを手動で移動してください。そうしないと、起動後にデータが空になります。',
                     eng:
-                        'Please move the data manually, otherwise the data will be empty after startup.')),
+                        'Please move the data manually, otherwise the data will be empty after startup.',
+                    kor: '데이터를 수동으로 이동시켜주세요. 그렇지않으면 기동 후에 데이터가 날아가버립니다.')),
                 hideCancel: true,
               ).showDialog(context);
             },
             child: Text(
-                LocalizedText.of(chs: '不迁移', jpn: '移行しない', eng: 'NOT MIGRATE')),
+                LocalizedText.of(chs: '不迁移', jpn: '移行しない', eng: 'NOT MIGRATE', kor: '이동시키지 않음')),
           ),
           TextButton(
             onPressed: () async {
@@ -386,7 +392,8 @@ class _UserDataPageState extends State<UserDataPage> {
                   content: Text(LocalizedText.of(
                       chs: '重启以设置生效',
                       jpn: '設定を有効にするために再起動します',
-                      eng: 'Restart for the settings to take effect')),
+                      eng: 'Restart for the settings to take effect',
+                      kor: '설정을 적용 시키기 위해 재기동하여 주십시오')),
                   hideCancel: true,
                 ).showDialog(context);
               } catch (e, s) {
@@ -400,7 +407,7 @@ class _UserDataPageState extends State<UserDataPage> {
                 EasyLoadingUtil.dismiss();
               }
             },
-            child: Text(LocalizedText.of(chs: '迁移', jpn: '移行', eng: 'MIGRATE')),
+            child: Text(LocalizedText.of(chs: '迁移', jpn: '移行', eng: 'MIGRATE', kor: '이동')),
           ),
         ],
       ),

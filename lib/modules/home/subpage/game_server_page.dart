@@ -26,6 +26,8 @@ class _GameServerPageState extends State<GameServerPage> {
                   ' - 素材交換券の月の設定と交換回数',
               eng: 'Current related: \n'
                   ' - Exchange Tickets\' month setting and limit per month'),
+              kor: '현재 관련되어 있음: \n'
+                  ' - 소재 교환권의 월 설정 및 교환 횟수',
         ),
       ),
     );

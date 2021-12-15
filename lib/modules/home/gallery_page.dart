@@ -156,7 +156,8 @@ class _GalleryPageState extends State<GalleryPage> {
         title: Text(LocalizedText.of(
             chs: 'macOS: 未来只支持10.14及之后系统',
             jpn: 'macOS: 将来、10.14以降が必要',
-            eng: 'macOS: required at least 10.14 in future')),
+            eng: 'macOS: required at least 10.14 in future',
+            kor: 'macOS: 미래에는 10.14 이후가 필요')),
       ),
       contentBuilder: (context) {
         return Column(
@@ -167,6 +168,7 @@ class _GalleryPageState extends State<GalleryPage> {
                 chs: '如有问题，请联系开发者',
                 jpn: 'ご不明な点がございましたら、開発者にお問い合わせください',
                 eng: 'Contact developer if any question',
+                kor: '불편한 점이 있으시다면 개발자에게 문의해주시길 바랍니다',
               )),
             ),
             ButtonBar(
@@ -212,12 +214,13 @@ class _GalleryPageState extends State<GalleryPage> {
         leading: const Icon(Icons.stars_rounded),
         contentPadding: const EdgeInsets.only(left: 8),
         title: Text(LocalizedText.of(
-            chs: '走过路过给个评价反馈吧~', jpn: 'アプリを評価する', eng: 'Rating Chaldea')),
+            chs: '走过路过给个评价反馈吧~', jpn: 'アプリを評価する', eng: 'Rating Chaldea', kor: 'Chaldea 앱 평가하기')),
         subtitle: AutoSizeText(
           LocalizedText.of(
               chs: '欢迎评分、评价、反馈、建议~',
               jpn: '評価またはレビューがかかりましょう',
-              eng: 'Take a minute to rate/review'),
+              eng: 'Take a minute to rate/review',
+              kor: '평가 또는 리뷰를 남겨주세요'),
           maxLines: 1,
           style: expanded ? null : const TextStyle(color: Colors.transparent),
         ),
@@ -232,7 +235,7 @@ class _GalleryPageState extends State<GalleryPage> {
                 _showRateCard = false;
               });
             },
-            child: Text(LocalizedText.of(chs: '取消', jpn: '後で', eng: 'DISMISS'),
+            child: Text(LocalizedText.of(chs: '取消', jpn: '後で', eng: 'DISMISS', kor: '나중에'),
                 style: TextStyle(color: Theme.of(context).disabledColor)),
           ),
           TextButton(
@@ -247,7 +250,7 @@ class _GalleryPageState extends State<GalleryPage> {
                 _showRateCard = false;
               });
             },
-            child: Text(LocalizedText.of(chs: '评分', jpn: '評価', eng: 'RATE')),
+            child: Text(LocalizedText.of(chs: '评分', jpn: '評価', eng: 'RATE', kor: '평가')),
           ),
         ],
       ),

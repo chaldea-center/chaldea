@@ -134,7 +134,7 @@ class _CVOptions with SearchOptionsMixin<String> {
         CheckboxWithLabel(
           value: cardName,
           label: Text(
-              LocalizedText.of(chs: '卡牌名称', jpn: 'カード名', eng: 'Card Name')),
+              LocalizedText.of(chs: '卡牌名称', jpn: 'カード名', eng: 'Card Name', kor: '카드명')),
           onChanged: (v) {
             cardName = v ?? cardName;
             setState(() {});
@@ -330,7 +330,7 @@ class _IllustratorOptions with SearchOptionsMixin<String> {
         CheckboxWithLabel(
           value: cardName,
           label: Text(
-              LocalizedText.of(chs: '卡牌名称', jpn: 'カード名', eng: 'Card Name')),
+              LocalizedText.of(chs: '卡牌名称', jpn: 'カード名', eng: 'Card Name', kor: '카드명')),
           onChanged: (v) {
             cardName = v ?? cardName;
             setState(() {});

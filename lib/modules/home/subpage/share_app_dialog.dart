@@ -25,6 +25,9 @@ class _ShareAppDialogState extends State<ShareAppDialog> {
       eng:
           "Chaldea - A cross-platform utility for Fate/GO. Supporting game data review, servant/event/item planning, master mission planning, summon simulator and so on.\n"
           "iOS&Mac App Store: $kAppStoreHttpLink\n",
+      kor:
+          "Chaldea - 멀티 플랫폼의 Fate/GO 아이템 계획 어플. 게임정보의 열람 및 서번트/이벤트/아이템 계획, 마스터 미션 계획, 가챠 시뮬레이터 등의 기능을 서포트합니다.\n"
+          "iOS&Mac 앱 스토어: $kAppStoreHttpLink\n"
     );
     // f**king App Store
     if (!PlatformU.isApple || db.cfg.launchTimes.get2(0) > 2) {

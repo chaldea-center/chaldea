@@ -19,7 +19,7 @@ class _CarouselSettingPageState extends State<CarouselSettingPage> {
           SwitchListTile.adaptive(
             value: carousel.enabled,
             title: Text(LocalizedText.of(
-                chs: '显示轮播图', jpn: 'カルーセルを表示', eng: 'Show Carousel')),
+                chs: '显示轮播图', jpn: 'カルーセルを表示', eng: 'Show Carousel', kor: '배너 표시')),
             onChanged: (v) {
               setState(() {
                 carousel.enabled = v;

@@ -120,7 +120,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
             headerBuilder: (context, _) => ListTile(
               dense: true,
               title: Text(
-                  LocalizedText.of(chs: '抽卡结果', jpn: 'ガチャ結果', eng: 'Results')),
+                  LocalizedText.of(chs: '抽卡结果', jpn: 'ガチャ結果', eng: 'Results', kor: '가챠 결과')),
             ),
             contentBuilder: (context) => curResult(),
           ),
@@ -133,7 +133,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
                   chs: '仅供娱乐, 如有雷同, 纯属巧合\n保底机制使五星概率在1.04%左右',
                   jpn: '娯楽のみ',
                   eng:
-                      'Just for entertainment\nGuarantee mechanism: 1%->1.04%'),
+                      'Just for entertainment\nGuarantee mechanism: 1%->1.04%',
+                  kor:'오직 재미로만\n보장 메커니즘:1%->1.04%'),
               style: const TextStyle(color: Colors.grey),
               textAlign: TextAlign.center,
             ),
@@ -215,7 +216,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       padding: const EdgeInsets.symmetric(horizontal: 14),
       child: Row(
         children: [
-          Text(LocalizedText.of(chs: '日替: ', jpn: '日替: ', eng: 'Daily: '),
+          Text(LocalizedText.of(chs: '日替: ', jpn: '日替: ', eng: 'Daily: ', kor: '일일'),
               style: const TextStyle(color: Colors.redAccent)),
           Flexible(
             child: Container(

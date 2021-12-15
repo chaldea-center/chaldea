@@ -24,7 +24,7 @@ class _SvtPriorityTaggingState extends State<SvtPriorityTagging> {
     return Scaffold(
       appBar: AppBar(
         title: Text(LocalizedText.of(
-            chs: '优先级备注', jpn: '優先順位ノート', eng: 'Priority Tagging')),
+            chs: '优先级备注', jpn: '優先順位ノート', eng: 'Priority Tagging', kor: '우선순위 매기기')),
       ),
       body: ListView(
         children: [
@@ -58,7 +58,8 @@ class _SvtPriorityTaggingState extends State<SvtPriorityTagging> {
               chs: '建议最多4个英文字母或2个汉字',
               jpn: '最大4つの英字または2つの漢字を提案します',
               eng:
-                  'Recommended: max 4 English letters or 2 Chinese/Japanese characters')),
+                  'Recommended: max 4 English letters or 2 Chinese/Japanese characters',
+              kor: '최대 4개의 영문자 또는 2개의 한자를 사용하는 것을 추천합니다')),
         ],
       ),
     );

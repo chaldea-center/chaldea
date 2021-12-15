@@ -319,7 +319,8 @@ class AutoUpdateUtil {
         EasyLoading.showToast(LocalizedText.of(
             chs: '后台下载中...',
             jpn: 'バックグラウンドでダウンロード...',
-            eng: 'Downloading in the background... '));
+            eng: 'Downloading in the background... ',
+            kor: '백그라운드에서 다운로드 중...'));
         fpInstaller = await startDownload(release: release!);
       }
 
@@ -420,7 +421,8 @@ class AutoUpdateUtil {
       content += LocalizedText.of(
           chs: '安装包已下载\n',
           jpn: 'インストールパッケージがダウンロードされました\n',
-          eng: 'Installer is downloaded\n');
+          eng: 'Installer is downloaded\n',
+          kor: '인스톨러가 다운로드 되었습니다\n');
     }
     content += S.current.about_update_app_detail(
         AppInfo.version, version.version, releaseNote ?? '-');
@@ -473,6 +475,7 @@ class AutoUpdateUtil {
               //     jpn: 'インストールパッケージは検証に失敗しましたが、それでもインストールしますか？',
               //     eng:
               //     'The installer failed the checksum verification, still install it?',
+              //     kor: '인스톨러 검증에 실패했습니다만, 그래도 설치하시겠습니까?'
               //   )),
               //   onTapOk: () {
               //     _installUpdate(fpInstaller);
@@ -502,7 +505,8 @@ class AutoUpdateUtil {
         content: Text(LocalizedText.of(
             chs: '请解压并替换原程序',
             jpn: '元のプログラムを解凍して置き換えてください',
-            eng: 'Please unzip and replace the original app')),
+            eng: 'Please unzip and replace the original app',
+            kor: '압축을 풀고 원본 앱과 교체해주세요')),
         hideCancel: true,
       ).showDialog(kAppKey.currentContext!);
       final result = await OpenFile.open(dirname(fp));
