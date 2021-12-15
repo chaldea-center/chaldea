@@ -118,7 +118,7 @@ class ItemInfoTab extends StatelessWidget {
       CustomTableRow.fromTexts(
         texts: [
           S.current.bond,
-          LocalizedText.of(chs: '奖励', jpn: '報酬', eng: 'Rewards'),
+          LocalizedText.of(chs: '奖励', jpn: '報酬', eng: 'Rewards', kor: '보수'),
           'SUM'
         ],
         isHeader: true,

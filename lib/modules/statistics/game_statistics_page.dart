@@ -115,7 +115,7 @@ class _StatItemConsumedTabState extends State<StatItemConsumedTab> {
             CheckboxWithLabel(
               value: includeOwnedItems,
               label: Text(LocalizedText.of(
-                  chs: '包含库存', jpn: '在庫を含める', eng: 'Include Owned')),
+                  chs: '包含库存', jpn: '在庫を含める', eng: 'Include Owned', kor: '재고 포함')),
               onChanged: (v) {
                 setState(() {
                   if (v != null) includeOwnedItems = v;
@@ -211,7 +211,7 @@ class _StatItemDemandsTabState extends State<StatItemDemandsTab> {
             CheckboxWithLabel(
               value: subtractOwnedItems,
               label: Text(LocalizedText.of(
-                  chs: '减去库存', jpn: '在庫を差し引く', eng: 'Subtract Owned')),
+                  chs: '减去库存', jpn: '在庫を差し引く', eng: 'Subtract Owned', kor: '재고 제외')),
               onChanged: (v) {
                 setState(() {
                   subtractOwnedItems = v ?? subtractOwnedItems;
@@ -221,7 +221,7 @@ class _StatItemDemandsTabState extends State<StatItemDemandsTab> {
             CheckboxWithLabel(
               value: subtractEventItems,
               label: Text(LocalizedText.of(
-                  chs: '减去活动所得', jpn: '活動収入を差し引く', eng: 'Subtract Event')),
+                  chs: '减去活动所得', jpn: '活動収入を差し引く', eng: 'Subtract Event', kor: '이벤트 제외')),
               onChanged: (v) {
                 setState(() {
                   subtractEventItems = v ?? subtractEventItems;

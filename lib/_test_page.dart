@@ -9,7 +9,7 @@ void testFunction([BuildContext? context]) async {
 }
 
 String _makeLocalizedDart(String chs, String jpn, String eng) {
-  return " LocalizedText(chs: '$chs', jpn: '$jpn', eng: '$eng'),";
+  return " LocalizedText(chs: '$chs', jpn: '$jpn', eng: '$eng', kor: '$kor'),";
 }
 
 Future _reloadDebugDataset() async {

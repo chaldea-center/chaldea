@@ -136,6 +136,7 @@ class _QuestCardState extends State<QuestCard> {
                           chs: '非Free本的关卡配置仅供参考，数据可能解析不完全',
                           jpn: 'jpn',
                           eng: 'Data of quest may not be accurate. ',
+                          kor: '퀘스트의 데이터가 정확하지 않을 수 있습니다. ',
                         ),
                         style: Theme.of(context).textTheme.caption,
                       ),
@@ -160,11 +161,11 @@ class _QuestCardState extends State<QuestCard> {
       String? placeEn = battle.placeEn ?? lastBattle?.placeJp;
       lastBattle = battle;
       String shownPlace =
-          LocalizedText.of(chs: place ?? '', jpn: placeJp, eng: placeEn);
+          LocalizedText.of(chs: place ?? '', jpn: placeJp, eng: placeEn, kor: placeKo);
       if (placeJp != null && placeJp != shownPlace) shownPlace += '/' + placeJp;
       if (shownPlace == '迦勒底之门') {
         shownPlace =
-            LocalizedText.of(chs: '迦勒底之门', jpn: 'カルデアゲート', eng: 'Chaldea Gate');
+            LocalizedText.of(chs: '迦勒底之门', jpn: 'カルデアゲート', eng: 'Chaldea Gate', kor: '칼데아 게이트');
       }
       children.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: 4),
@@ -298,7 +299,7 @@ class _QuestCardState extends State<QuestCard> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Text(LocalizedText.of(
-                  chs: '场地特性', jpn: 'フィールド', eng: '  Fields   ')),
+                  chs: '场地特性', jpn: 'フィールド', eng: '  Fields   ', kor: '  필드   ')),
               Expanded(
                 child: Center(
                   child: Text(fields

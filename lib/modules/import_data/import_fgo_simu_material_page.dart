@@ -60,8 +60,8 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
                 content: Text(LocalizedText.of(
                         chs: '导入fgosimulator.webcrow.jp的从者和素材数据',
                         jpn: 'fgosimulator.webcrow.jpのサーヴァントとアイテムをインポートします ',
-                        eng:
-                            'Import servant and item data from fgosimulator.webcrow.jp.') +
+                        eng:'Import servant and item data from fgosimulator.webcrow.jp.',
+                        kor:'fgosimulator.webcrow.jp에서 재료와 서번트의 데이터를 가져와 주세요.') +
                     '\n\n"http://fgosimulator.webcrow.jp/Material/" -> My Chaldea -> 引継ぎコード'),
               ).showDialog(context);
             },

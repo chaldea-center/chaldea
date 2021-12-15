@@ -100,9 +100,10 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
                 chs: '截图',
                 jpn: 'スクリーンショット',
                 eng: 'Screenshots',
+                kor: '스크린샷',
               ),
             ),
-            Tab(text: LocalizedText.of(chs: '识别结果', jpn: '結果', eng: 'Results')),
+            Tab(text: LocalizedText.of(chs: '识别结果', jpn: '結果', eng: 'Results', kor: '결과')),
             if (AppInfo.isDebugDevice) const Tab(text: 'Debug')
           ],
         ),
@@ -138,8 +139,8 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
                   LocalizedText.of(
                     chs: '注意! 此页面是附加技能，不是主动技能！！！',
                     jpn: '注意！このページはアペンドスキルであり、保有スキルではありません！',
-                    eng:
-                        'Warning! For APPEND skills only! Not for active skills!',
+                    eng:'Warning! For APPEND skills only! Not for active skills!',
+                    kor:'주의! 어펜드 스킬만! 액티브 스킬은 안됩니다!',
                   ),
                   style: Theme.of(context).textTheme.headline6,
                 )
@@ -174,8 +175,8 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
         LocalizedText.of(
             chs: '共$totalNum, 有效$validNum, 已选$selectedNum, 重复$dupNum',
             jpn: '合計$totalNum, 有効$validNum, 選択済み$selectedNum, 重複$dupNum',
-            eng:
-                'Total $totalNum, valid $validNum, selected $selectedNum, duplicated $dupNum'),
+            eng:'Total $totalNum, valid $validNum, selected $selectedNum, duplicated $dupNum',
+            kor:'합계 $totalNum, 유효 $validNum, 선택된 $selectedNum, 복사 $dupNum'),
       ),
     );
     List<Widget> children = [];
@@ -424,7 +425,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
                 items: [
                   DropdownMenuItem(
                     child: Text(LocalizedText.of(
-                        chs: '不排序', jpn: 'Unsorted', eng: 'Unsorted')),
+                        chs: '不排序', jpn: 'Unsorted', eng: 'Unsorted', kor: '정렬되지 않음')),
                     value: null,
                   ),
                   DropdownMenuItem(
@@ -451,7 +452,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
                   onPressed: _fetchResult,
                   icon: const Icon(Icons.download),
                   label: Text(
-                      LocalizedText.of(chs: '结果', jpn: '結果', eng: 'Result'))),
+                      LocalizedText.of(chs: '结果', jpn: '結果', eng: 'Result', kor: '결과'))),
             if (_isResultTab)
               ElevatedButton(
                 child: Text(S.current.import_data),
@@ -543,7 +544,8 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
         EasyLoading.showInfo(LocalizedText.of(
             chs: '识别结果为空',
             jpn: '認識結果が空です',
-            eng: 'The recognition result is empty'));
+            eng: 'The recognition result is empty,
+            kor: '인식 결과 비었습니다'));
       }
       results.forEach((e) => e.isAppendSkill = widget.isAppendSkill);
       _tabController.index = 1;

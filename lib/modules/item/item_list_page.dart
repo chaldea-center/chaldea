@@ -348,8 +348,8 @@ class _ItemListTabState extends State<ItemListTab> {
       content: Text(LocalizedText.of(
           chs: '本页所有素材均设为999',
           jpn: 'このページのすべてのアイテム量は999に設定',
-          eng: 'Set all items in this tab to 999',
-          kor: '이 탭의 모든 아이템 수량을 999로 설정')),
+          eng: 'Set all items in this tab to 999')),
+          kor: '페이지의 모든 아이템 수량을 999로 설정')),
       onTapOk: () {
         _shownGroups.forEach((group) {
           if (group.data.name != Items.qp) {
