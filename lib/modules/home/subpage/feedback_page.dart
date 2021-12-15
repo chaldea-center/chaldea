@@ -100,7 +100,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
 - It's better to provide contact info (e.g. Email) 
 ''',
                         kor:
-                            '''피드백을 전송하기 전에, <&**FAQ**>를 확인해주세요. 피드백을 적을 때에는 상세하게 적어주시길 바랍니다.
+                            '''피드백을 전송하기 전에, <**FAQ**>를 확인해주세요. 피드백을 적을 때에는 상세하게 적어주시길 바랍니다.
 - 재현 방법/기대하고 있는 퍼포먼스
 - 앱/데이터의 버전, 디바이스 시스템/버전
 - 스크린샷과 로그를 첨부한다
