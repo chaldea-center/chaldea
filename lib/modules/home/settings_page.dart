@@ -137,7 +137,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             ListTile(
               title: Text(LocalizedText.of(
-                  chs: '深色模式', jpn: 'ダークモード', eng: 'Dark Mode',kor: '다크 모드')),
+                  chs: '深色模式', jpn: 'ダークモード', eng: 'Dark Mode', kor: '다크 모드')),
               trailing: DropdownButton<ThemeMode>(
                 value: db.appSetting.themeMode ?? ThemeMode.system,
                 underline: Container(),

@@ -89,7 +89,10 @@ class _BuffFuncFilterState extends FilterPageState<BuffFuncFilterData> {
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Text(
             LocalizedText.of(
-                chs: '组合筛选', jpn: '組み合わせフィルター', eng: 'Combined filter', kor: '다중 필터'),
+                chs: '组合筛选',
+                jpn: '組み合わせフィルター',
+                eng: 'Combined filter',
+                kor: '다중 필터'),
             style: Theme.of(context).textTheme.caption,
           ),
         ),

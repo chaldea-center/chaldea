@@ -37,7 +37,10 @@ class _ImportPageHomeState extends State<ImportPageHome> {
           ListTile(
             leading: const Icon(Icons.settings_backup_restore),
             title: Text(LocalizedText.of(
-                chs: '本应用的备份', jpn: 'このアプリのバックアップ', eng: 'Chaldea App Backup', kor: '칼데아 앱 백업')),
+                chs: '本应用的备份',
+                jpn: 'このアプリのバックアップ',
+                eng: 'Chaldea App Backup',
+                kor: '칼데아 앱 백업')),
             subtitle: const Text('userdata.json/*.json'),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
@@ -47,12 +50,16 @@ class _ImportPageHomeState extends State<ImportPageHome> {
           ListTile(
             leading: const Icon(Icons.http),
             title: Text(LocalizedText.of(
-                chs: 'HTTPS抓包', jpn: 'HTTPSスニッフィング', eng: 'HTTPS Sniffing', kor: 'HTTPS 스나이핑')),
+                chs: 'HTTPS抓包',
+                jpn: 'HTTPSスニッフィング',
+                eng: 'HTTPS Sniffing',
+                kor: 'HTTPS 스나이핑')),
             subtitle: Text(LocalizedText.of(
                 chs: '(国/台/日/美)借助抓包工具获取账号登陆时的数据',
                 jpn: '(JP/NA/CN/TW)アカウントがログインしているときにデータを取得する',
-                eng:'(NA/JP/CN/TW)Capture the data when the account is logging in',
-                kor:'(NA/JP/CN/TW)계정 로그인 시 데이터 캡쳐, KR은 지원하지 않습니다')),
+                eng:
+                    '(NA/JP/CN/TW)Capture the data when the account is logging in',
+                kor: '(NA/JP/CN/TW)계정 로그인 시 데이터 캡쳐, KR은 지원하지 않습니다')),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
               SplitRoute.push(context, ImportHttpPage(), popDetail: true);
@@ -124,7 +131,10 @@ class _ImportPageHomeState extends State<ImportPageHome> {
           ListTile(
             leading: const Icon(Icons.compare_arrows),
             title: Text(LocalizedText.of(
-                chs: 'Guda数据', jpn: 'Gudaデータ', eng: 'Guda Data', kor: '구다 데이터')),
+                chs: 'Guda数据',
+                jpn: 'Gudaデータ',
+                eng: 'Guda Data',
+                kor: '구다 데이터')),
             subtitle: const Text('Guda@iOS'),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {

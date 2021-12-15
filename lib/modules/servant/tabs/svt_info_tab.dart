@@ -321,7 +321,8 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
         title = LocalizedText.of(
             chs: '角色详情', jpn: 'キャラクター詳細', eng: 'Character Profile');
       } else {
-        title = LocalizedText.of(chs: '个人资料', jpn: 'プロフィール', eng: 'Profile ', kor: '프로필') +
+        title = LocalizedText.of(
+                chs: '个人资料', jpn: 'プロフィール', eng: 'Profile ', kor: '프로필') +
             profile.title.toString();
       }
 

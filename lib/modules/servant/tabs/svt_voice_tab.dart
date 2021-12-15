@@ -103,7 +103,6 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
                 chs: record.text,
                 jpn: record.textJp,
                 eng: record.textEn,
-                kor: record.textKr,
               ).ofPrimary(lang ?? Language.current))
             ],
           ),
@@ -264,7 +263,8 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
 }
 
 LocalizedGroup get _localizedVoices => const LocalizedGroup([
-      LocalizedText(chs: '战斗形象', jpn: '', eng: 'Battle Sprite', kor: '전투 스프라이트'),
+      LocalizedText(
+          chs: '战斗形象', jpn: '', eng: 'Battle Sprite', kor: '전투 스프라이트'),
       LocalizedText(chs: '期间限定加入', jpn: '', eng: '', kor: '임시 가입'),
       LocalizedText(chs: '战斗', jpn: '', eng: 'Battle', kor: '전투'),
       LocalizedText(chs: '开始', jpn: '', eng: 'Battle Start', kor: '개시'),
@@ -275,8 +275,9 @@ LocalizedGroup get _localizedVoices => const LocalizedGroup([
       LocalizedText(chs: '宝具', jpn: '', eng: 'Noble Phantasm', kor: '보구'),
       LocalizedText(chs: '受击', jpn: '', eng: 'Damage', kor: '대미지'),
       LocalizedText(chs: '无法战斗', jpn: '', eng: 'Defeated', kor: '전투불능'),
-      LocalizedText(chs: '胜利', jpn: '', eng: 'Battle Finish' kor: '승리'),
-      LocalizedText(chs: '召唤和强化', jpn: '', eng: 'Summon and Leveling', kor: '소환 및 강화'),
+      LocalizedText(chs: '胜利', jpn: '', eng: 'Battle Finish', kor: '승리'),
+      LocalizedText(
+          chs: '召唤和强化', jpn: '', eng: 'Summon and Leveling', kor: '소환 및 강화'),
       LocalizedText(chs: '召唤', jpn: '', eng: 'Summoned', kor: '소환'),
       LocalizedText(chs: '升级', jpn: '', eng: 'Level Up', kor: '레벨 업'),
       LocalizedText(chs: '灵基再临', jpn: '', eng: 'Ascension', kor: '영기재림'),
@@ -285,10 +286,14 @@ LocalizedGroup get _localizedVoices => const LocalizedGroup([
       LocalizedText(chs: '羁绊Lv.', jpn: '', eng: 'Bond Lv.', kor: '인연LV.'),
       LocalizedText(chs: '羁绊 Lv.', jpn: '', eng: 'Bond Lv.', kor: '인연 LV.'),
       LocalizedText(chs: '对话', jpn: '', eng: 'Dialogue', kor: '대화'),
-      LocalizedText(chs: '喜欢的东西', jpn: '', eng: 'Something you Like', kor: '좋아하는 것'),
-      LocalizedText(chs: '讨厌的东西', jpn: '', eng: 'Something you Hate', kor: '싫어하는 것'),
-      LocalizedText(chs: '关于圣杯', jpn: '', eng: 'About the Holy Grail', kor: '성배에 대하여'),
-      LocalizedText(chs: '活动举行中', jpn: '', eng: 'During an Event', kor: '이벤트 개최중'),
+      LocalizedText(
+          chs: '喜欢的东西', jpn: '', eng: 'Something you Like', kor: '좋아하는 것'),
+      LocalizedText(
+          chs: '讨厌的东西', jpn: '', eng: 'Something you Hate', kor: '싫어하는 것'),
+      LocalizedText(
+          chs: '关于圣杯', jpn: '', eng: 'About the Holy Grail', kor: '성배에 대하여'),
+      LocalizedText(
+          chs: '活动举行中', jpn: '', eng: 'During an Event', kor: '이벤트 개최중'),
       LocalizedText(chs: '生日', jpn: '', eng: 'Birthday', kor: '생일'),
       LocalizedText(chs: '灵衣', jpn: '', eng: 'Costume', kor: '영의'),
       LocalizedText(chs: '灵衣开放', jpn: '', eng: 'Costume Unlock', kor: '영의 개방'),

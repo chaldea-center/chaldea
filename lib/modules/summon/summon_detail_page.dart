@@ -154,7 +154,10 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
               ),
               Text(
                 LocalizedText.of(
-                    chs: '单up', jpn: 'ピックアップ', eng: 'Individual Pick Up', kor: '단독 픽업'),
+                    chs: '单up',
+                    jpn: 'ピックアップ',
+                    eng: 'Individual Pick Up',
+                    kor: '단독 픽업'),
                 style: Theme.of(context).textTheme.caption,
               )
             ],
@@ -162,12 +165,18 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         ),
       if (summon.associatedEvents.isNotEmpty) ...[
         SHeader(LocalizedText.of(
-            chs: '关联活动', jpn: '関連イベント', eng: 'Associated Events', kor: '관련 이벤트')),
+            chs: '关联活动',
+            jpn: '関連イベント',
+            eng: 'Associated Events',
+            kor: '관련 이벤트')),
         for (String event in summon.associatedEvents) associateEvent(event)
       ],
       if (summon.associatedSummons.isNotEmpty) ...[
         SHeader(LocalizedText.of(
-            chs: '关联卡池', jpn: '関連ガチャ', eng: 'Associated Summons', kor: '관련 가챠')),
+            chs: '关联卡池',
+            jpn: '関連ガチャ',
+            eng: 'Associated Summons',
+            kor: '관련 가챠')),
         for (String _summon in summon.associatedSummons)
           associateSummon(_summon)
       ],
@@ -248,7 +257,8 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
-          Text(LocalizedText.of(chs: '日替: ', jpn: '日替: ', eng: 'Daily: ', kor: '일일: ')),
+          Text(LocalizedText.of(
+              chs: '日替: ', jpn: '日替: ', eng: 'Daily: ', kor: '일일: ')),
           Flexible(
             child: Container(
               decoration: BoxDecoration(
@@ -398,7 +408,10 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
               onPressed: () =>
                   SplitRoute.push(context, LuckyBagExpectation(summon: summon)),
               child: Text(LocalizedText.of(
-                  chs: '期望计算', jpn: '期待値計算', eng: 'Expectation', kor: '기대치 계산')),
+                  chs: '期望计算',
+                  jpn: '期待値計算',
+                  eng: 'Expectation',
+                  kor: '기대치 계산')),
             ),
           ],
         ),

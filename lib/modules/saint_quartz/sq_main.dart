@@ -49,10 +49,14 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning>
             Tab(text: S.current.settings_tab_name),
             Tab(
               text: LocalizedText.of(
-                  chs: '特殊御主任务', jpn: 'エクストラミッション', eng: 'Extra Mission', kor: '엑스트라 미션'),
+                  chs: '特殊御主任务',
+                  jpn: 'エクストラミッション',
+                  eng: 'Extra Mission',
+                  kor: '엑스트라 미션'),
             ),
             Tab(
-              text: LocalizedText.of(chs: '攒石表(伪)', jpn: '結果表', eng: 'Table', kor: '결과표'),
+              text: LocalizedText.of(
+                  chs: '攒石表(伪)', jpn: '結果表', eng: 'Table', kor: '결과표'),
             ),
           ],
         ),

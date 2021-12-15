@@ -194,7 +194,7 @@ class _CmdCodeSearchOptions with SearchOptionsMixin<CommandCode> {
       buffer.write(getCache(
         code,
         'basic',
-            () => [
+        () => [
           code.no.toString(),
           code.gameId.toString(),
           code.mcLink,
@@ -209,7 +209,7 @@ class _CmdCodeSearchOptions with SearchOptionsMixin<CommandCode> {
       buffer.write(getCache(
         code,
         'skill',
-            () => [
+        () => [
           code.skill,
           code.skillEn,
         ],
@@ -219,7 +219,7 @@ class _CmdCodeSearchOptions with SearchOptionsMixin<CommandCode> {
       buffer.write(getCache(
         code,
         'description',
-            () => Utils.getSearchAlphabets(
+        () => Utils.getSearchAlphabets(
           code.description,
           code.descriptionJp,
           code.descriptionEn,

@@ -42,7 +42,8 @@ class _SvtSvtSpriteTabTabState extends SvtTabBaseState<SvtSpriteTab>
     // icon1, icon2, iconCostume
     // sprite ...
     if (s == 'iconCostume') {
-      return LocalizedText.of(chs: '灵衣图标', jpn: '霊衣アイコン', eng: 'Costume Icons', kor: '영의 아이콘');
+      return LocalizedText.of(
+          chs: '灵衣图标', jpn: '霊衣アイコン', eng: 'Costume Icons', kor: '영의 아이콘');
     }
     if (s == 'spriteCostume') {
       return LocalizedText.of(

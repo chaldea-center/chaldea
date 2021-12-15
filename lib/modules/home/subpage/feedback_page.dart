@@ -51,7 +51,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
         content: Text(LocalizedText.of(
             chs: '反馈表未提交，仍然退出?',
             jpn: 'フィードバックフォームは送信されませんが、終了します？',
-            eng: 'Feedback form is not empty, still exist?'
+            eng: 'Feedback form is not empty, still exist?',
             kor: '피드백은 전송되지 않습니다만, 종료하시겠습니까?')),
       ).showDialog(context);
       return r == true;
@@ -81,31 +81,30 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                 child: MarkdownBody(
                     data: LocalizedText.of(
-                  chs: '''提交反馈前，请先查阅<**FAQ**>。反馈时请详细描述:
+                        chs: '''提交反馈前，请先查阅<**FAQ**>。反馈时请详细描述:
 - 如何复现/期望表现
 - 应用/数据版本、使用设备系统及版本
 - 附加截图日志
 - 以及最好能够提供联系方式(邮箱等)''',
-                  jpn:
-                      """フィードバックを送信する前に、<**FAQ**>を確認してください。 フィードバックを提供する際は、詳細に説明してください。
+                        jpn:
+                            """フィードバックを送信する前に、<**FAQ**>を確認してください。 フィードバックを提供する際は、詳細に説明してください。
 - 再現方法/期待されるパフォーマンス
 - アプリ/データのバージョン、デバイスシステム/バージョン
 - スクリーンショットとログを添付する
 - そして、連絡先情報（電子メールなど）を提供するのが良いです """,
-                  eng:
-                      '''Please check <**FAQ**> first before sending feedback. And following detail is desired:
+                        eng:
+                            '''Please check <**FAQ**> first before sending feedback. And following detail is desired:
 - How to reproduce, expected behaviour
 - App/dataset version, device system and version
 - Attach screenshots and logs
 - It's better to provide contact info (e.g. Email) 
 ''',
-                  kor:
-                      '''피드백을 전송하기 전에, <&**FAQ**>를 확인해주세요. 피드백을 적을 때에는 상세하게 적어주시길 바랍니다.
+                        kor:
+                            '''피드백을 전송하기 전에, <&**FAQ**>를 확인해주세요. 피드백을 적을 때에는 상세하게 적어주시길 바랍니다.
 - 재현 방법/기대하고 있는 퍼포먼스
 - 앱/데이터의 버전, 디바이스 시스템/버전
 - 스크린샷과 로그를 첨부한다
-- 마지막으로, 연락처 정보(전자메일 등)을 적어주시는 것이 좋습니다 '''
-                )),
+- 마지막으로, 연락처 정보(전자메일 등)을 적어주시는 것이 좋습니다 ''')),
               ),
             ),
             TileGroup(
@@ -245,7 +244,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   subtitle: Text(LocalizedText.of(
                       chs: 'e.g. 截图等文件',
                       jpn: 'e.g. スクリーンショットとその他のファイル',
-                      eng: 'e.g. screenshots, files.'
+                      eng: 'e.g. screenshots, files.',
                       kor: 'e.g. 스크린샷, 기타 파일')),
                   trailing: IconButton(
                     icon: const Icon(Icons.add),
@@ -324,8 +323,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
             jpn: '開発者はあなたのフィードバックに応答することができなくなります',
             eng: 'The developer will not be able to respond to your feedback',
             kor: '개발자는 당신의 피드백에 응답할 수 없게 됩니다')),
-        confirmText:
-            LocalizedText.of(chs: '仍然发送', jpn: '送信し続ける', eng: 'Still Send', kor: '계속 보내기'),
+        confirmText: LocalizedText.of(
+            chs: '仍然发送', jpn: '送信し続ける', eng: 'Still Send', kor: '계속 보내기'),
       ).showDialog(context);
       if (confirmed != true) return;
     }

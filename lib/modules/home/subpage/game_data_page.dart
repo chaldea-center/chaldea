@@ -32,7 +32,10 @@ class _GameDataPageState extends State<GameDataPage> {
               if (db.runtimeData.latestDatasetVersion != null)
                 ListTile(
                   title: Text(LocalizedText.of(
-                      chs: '最新版本', jpn: '最新バージョン ', eng: 'Latest Version', kor: '최신 버전')),
+                      chs: '最新版本',
+                      jpn: '最新バージョン ',
+                      eng: 'Latest Version',
+                      kor: '최신 버전')),
                   subtitle: Text(LocalizedText.of(
                       chs: '需要升级APP',
                       jpn: 'APPをアップグレードする必要があります',
@@ -65,16 +68,18 @@ class _GameDataPageState extends State<GameDataPage> {
               sourceAccordion(
                 source: GitSource.github,
                 subtitle: LocalizedText.of(
-                    chs: '国内可能连不上', jpn: '推奨されます', eng: 'Suggested', kor: '제안하기'),
+                    chs: '国内可能连不上',
+                    jpn: '推奨されます',
+                    eng: 'Suggested',
+                    kor: '제안하기'),
               ),
               sourceAccordion(
                 source: GitSource.gitee,
                 subtitle: LocalizedText.of(
-                  chs: '暂不作为应用内下载源，仍可手动下载',
-                  jpn: '現在、アプリ内ダウンロードソースとして使用されていません',
-                  eng: 'In-app download source is disabled',
-                  kor: '현재, 앱 내 다운로드 소스로써 사용되지않습니다'
-                ),
+                    chs: '暂不作为应用内下载源，仍可手动下载',
+                    jpn: '現在、アプリ内ダウンロードソースとして使用されていません',
+                    eng: 'In-app download source is disabled',
+                    kor: '현재, 앱 내 다운로드 소스로써 사용되지않습니다'),
                 disabled: true,
               ),
             ],
@@ -115,7 +120,10 @@ class _GameDataPageState extends State<GameDataPage> {
               ),
               ListTile(
                 title: Text(LocalizedText.of(
-                    chs: '下载图标', jpn: 'アイコンをダウンロード', eng: 'Download Icons', kor: '아이콘 다운로드')),
+                    chs: '下载图标',
+                    jpn: 'アイコンをダウンロード',
+                    eng: 'Download Icons',
+                    kor: '아이콘 다운로드')),
                 subtitle: const Text('Icons only'),
                 onTap: downloadIcons,
               ),

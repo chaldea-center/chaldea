@@ -8,7 +8,7 @@ void testFunction([BuildContext? context]) async {
   return;
 }
 
-String _makeLocalizedDart(String chs, String jpn, String eng) {
+String _makeLocalizedDart(String chs, String jpn, String eng, String kor) {
   return " LocalizedText(chs: '$chs', jpn: '$jpn', eng: '$eng', kor: '$kor'),";
 }
 

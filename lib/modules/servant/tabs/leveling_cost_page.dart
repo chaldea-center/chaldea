@@ -80,7 +80,10 @@ class LevelingCostPageState extends State<LevelingCostPage> {
             title: Text(title),
             subtitle: lvCost.isEmpty
                 ? Text(LocalizedText.of(
-                    chs: '不消耗素材', jpn: '素材消費なし', eng: 'No item consumption', kor: '소비된 소재 없음'))
+                    chs: '不消耗素材',
+                    jpn: '素材消費なし',
+                    eng: 'No item consumption',
+                    kor: '소비된 소재 없음'))
                 : null,
             contentPadding: const EdgeInsets.symmetric(horizontal: 0),
           ),

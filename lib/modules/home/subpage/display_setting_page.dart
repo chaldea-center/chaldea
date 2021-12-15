@@ -31,7 +31,10 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 SwitchListTile.adaptive(
                   value: db.cfg.alwaysOnTop.get() ?? false,
                   title: Text(LocalizedText.of(
-                      chs: '置顶显示', jpn: 'スティッキー表示', eng: 'Always On Top', kor: '항상 맨 위에 표시')),
+                      chs: '置顶显示',
+                      jpn: 'スティッキー表示',
+                      eng: 'Always On Top',
+                      kor: '항상 맨 위에 표시')),
                   onChanged: (v) async {
                     db.cfg.alwaysOnTop.set(v);
                     MethodChannelChaldea.setAlwaysOnTop(v);
@@ -82,7 +85,10 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
               SwitchListTile.adaptive(
                 value: db.appSetting.autoResetFilter,
                 title: Text(LocalizedText.of(
-                    chs: '自动重置', jpn: '自動リセット', eng: 'Auto Reset', kor: '자동 초기화')),
+                    chs: '自动重置',
+                    jpn: '自動リセット',
+                    eng: 'Auto Reset',
+                    kor: '자동 초기화')),
                 onChanged: (v) async {
                   db.appSetting.autoResetFilter = v;
                   setState(() {});
@@ -92,7 +98,10 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
           ),
           TileGroup(
             header: LocalizedText.of(
-                chs: '从者列表页', jpn: 'サーヴァントリストページ', eng: 'Servant List Page', kor: '서번트 리스트 페이지'),
+                chs: '从者列表页',
+                jpn: 'サーヴァントリストページ',
+                eng: 'Servant List Page',
+                kor: '서번트 리스트 페이지'),
             children: [
               // SwitchListTile.adaptive(
               //   value: db.appSetting.showClassFilterOnTop,
@@ -151,11 +160,17 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
           ),
           TileGroup(
             header: LocalizedText.of(
-                chs: '从者详情页', jpn: 'サーヴァント詳細ページ', eng: 'Servant Detail Page', kor: '서번트 상세 페이지'),
+                chs: '从者详情页',
+                jpn: 'サーヴァント詳細ページ',
+                eng: 'Servant Detail Page',
+                kor: '서번트 상세 페이지'),
             children: [
               ListTile(
                 title: Text(LocalizedText.of(
-                    chs: '标签页排序', jpn: 'ページ表示順序', eng: 'Tabs Sorting', kor: '페이지 표시 순서')),
+                    chs: '标签页排序',
+                    jpn: 'ページ表示順序',
+                    eng: 'Tabs Sorting',
+                    kor: '페이지 표시 순서')),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   SplitRoute.push(context, SvtTabsSortingSetting());
@@ -163,7 +178,10 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
               ),
               ListTile(
                 title: Text(LocalizedText.of(
-                    chs: '优先级备注', jpn: '優先順位ノート', eng: 'Priority Tagging', kor: '우선순위 매기기')),
+                    chs: '优先级备注',
+                    jpn: '優先順位ノート',
+                    eng: 'Priority Tagging',
+                    kor: '우선순위 매기기')),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   SplitRoute.push(context, SvtPriorityTagging());
@@ -214,7 +232,10 @@ class __FavOptionSettingState extends State<_FavOptionSetting> {
                 value: true,
                 groupValue: db.appSetting.favoritePreferred,
                 title: Text(LocalizedText.of(
-                    chs: '显示已关注', jpn: 'フォロー表示', eng: 'Show Favorite', kor: '즐겨찾기 표시')),
+                    chs: '显示已关注',
+                    jpn: 'フォロー表示',
+                    eng: 'Show Favorite',
+                    kor: '즐겨찾기 표시')),
                 secondary: const Icon(Icons.favorite),
                 onChanged: (v) {
                   setState(() {
@@ -275,10 +296,13 @@ class _ClassFilterStyleSettingState extends State<_ClassFilterStyleSetting> {
               RadioListTile<SvtListClassFilterStyle>(
                 value: SvtListClassFilterStyle.auto,
                 groupValue: db.appSetting.classFilterStyle,
-                title:
-                    Text(LocalizedText.of(chs: '自动适配', jpn: '自动', eng: 'Auto', kor: '자동')),
+                title: Text(LocalizedText.of(
+                    chs: '自动适配', jpn: '自动', eng: 'Auto', kor: '자동')),
                 subtitle: Text(LocalizedText.of(
-                    chs: '匹配屏幕尺寸', jpn: 'マッチ画面サイズ', eng: 'Match Screen Size', kor: '알맞은 화면 크기')),
+                    chs: '匹配屏幕尺寸',
+                    jpn: 'マッチ画面サイズ',
+                    eng: 'Match Screen Size',
+                    kor: '알맞은 화면 크기')),
                 onChanged: onChanged,
               ),
               RadioListTile<SvtListClassFilterStyle>(
@@ -314,8 +338,8 @@ class _ClassFilterStyleSettingState extends State<_ClassFilterStyleSetting> {
               RadioListTile<SvtListClassFilterStyle>(
                 value: SvtListClassFilterStyle.doNotShow,
                 groupValue: db.appSetting.classFilterStyle,
-                title: Text(
-                    LocalizedText.of(chs: '隐藏', jpn: '非表示', eng: 'Hidden', kor: '숨김')),
+                title: Text(LocalizedText.of(
+                    chs: '隐藏', jpn: '非表示', eng: 'Hidden', kor: '숨김')),
                 onChanged: onChanged,
               ),
             ],

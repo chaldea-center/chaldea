@@ -66,7 +66,10 @@ class _UserDataPageState extends State<UserDataPage> {
                 ),
               ListTile(
                 title: Text(LocalizedText.of(
-                    chs: '数据目录', jpn: 'データフォルダ', eng: 'Data Folder', kor: '데이터 폴더')),
+                    chs: '数据目录',
+                    jpn: 'データフォルダ',
+                    eng: 'Data Folder',
+                    kor: '데이터 폴더')),
                 subtitle: Text(db.paths.convertIosPath(db.paths.appPath)),
                 onTap: () {
                   if (PlatformU.isDesktop) {
@@ -112,13 +115,19 @@ class _UserDataPageState extends State<UserDataPage> {
               ),
               ListTile(
                 title: Text(LocalizedText.of(
-                    chs: '导入备份', jpn: 'バックアップのインポート', eng: 'Import Backup', kor: '백업 불러오기')),
+                    chs: '导入备份',
+                    jpn: 'バックアップのインポート',
+                    eng: 'Import Backup',
+                    kor: '백업 불러오기')),
                 subtitle: const Text('userdata.json/*.json'),
                 onTap: importUserData,
               ),
               ListTile(
                 title: Text(LocalizedText.of(
-                    chs: '更多导入方式', jpn: 'その他のインポート方法', eng: 'Import from ...', kor: '이외의 불러오는 방법')),
+                    chs: '更多导入方式',
+                    jpn: 'その他のインポート方法',
+                    eng: 'Import from ...',
+                    kor: '이외의 불러오는 방법')),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   SplitRoute.push(context, ImportPageHome(), detail: false);
@@ -189,7 +198,10 @@ class _UserDataPageState extends State<UserDataPage> {
         String hint = '';
         if (fps.isEmpty) {
           hint += LocalizedText.of(
-              chs: '备份失败', jpn: 'バックアップに失敗しました', eng: 'Backup failed', kor: '백업 불러오기를 실패하였습니다');
+              chs: '备份失败',
+              jpn: 'バックアップに失敗しました',
+              eng: 'Backup failed',
+              kor: '백업 불러오기를 실패하였습니다');
         } else {
           hint += LocalizedText.of(
                   chs: '已备份至:', jpn: 'バックアップ:', eng: 'Backup to:', kor: '백업:') +
@@ -200,7 +212,8 @@ class _UserDataPageState extends State<UserDataPage> {
                   'アプリを削除すると、一時バックアップが削除されます。外部の信頼できるストレージ場所に手動でバックアップすることをお勧めします',
               eng:
                   'The backups will be deleted when uninstalling the app. It is recommended to manually backup to an external storage.',
-              kor: '어플을 소삭제하면 동시에 백업이 삭제됩니다. 신뢰할 수 있는 외부 스토리지에 수동으로 백업하는 것을 추천드립니다');
+              kor:
+                  '어플을 소삭제하면 동시에 백업이 삭제됩니다. 신뢰할 수 있는 외부 스토리지에 수동으로 백업하는 것을 추천드립니다');
         }
         showInformDialog(
           context,
@@ -353,8 +366,8 @@ class _UserDataPageState extends State<UserDataPage> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: Text(
-            LocalizedText.of(chs: '迁移数据', jpn: 'データの移行', eng: 'Migrate Data', kor: '데이터 이동')),
+        title: Text(LocalizedText.of(
+            chs: '迁移数据', jpn: 'データの移行', eng: 'Migrate Data', kor: '데이터 이동')),
         content: Text('From:\n ${from.path}\nTo:\n${to.path}'),
         actions: [
           TextButton(
@@ -376,8 +389,8 @@ class _UserDataPageState extends State<UserDataPage> {
                 hideCancel: true,
               ).showDialog(context);
             },
-            child: Text(
-                LocalizedText.of(chs: '不迁移', jpn: '移行しない', eng: 'NOT MIGRATE', kor: '이동시키지 않음')),
+            child: Text(LocalizedText.of(
+                chs: '不迁移', jpn: '移行しない', eng: 'NOT MIGRATE', kor: '이동시키지 않음')),
           ),
           TextButton(
             onPressed: () async {
@@ -407,7 +420,8 @@ class _UserDataPageState extends State<UserDataPage> {
                 EasyLoadingUtil.dismiss();
               }
             },
-            child: Text(LocalizedText.of(chs: '迁移', jpn: '移行', eng: 'MIGRATE', kor: '이동')),
+            child: Text(LocalizedText.of(
+                chs: '迁移', jpn: '移行', eng: 'MIGRATE', kor: '이동')),
           ),
         ],
       ),

@@ -348,7 +348,10 @@ class _LoginPageState extends State<LoginPage> {
     String pwd = _pwdController.text;
     SimpleCancelOkDialog(
       title: Text(LocalizedText.of(
-          chs: '删除账户', jpn: 'アカウントを削除', eng: 'Delete User Account', kor: '계정 삭제')),
+          chs: '删除账户',
+          jpn: 'アカウントを削除',
+          eng: 'Delete User Account',
+          kor: '계정 삭제')),
       content: Text(LocalizedText.of(
           chs: '包括所有服务器备份',
           jpn: 'また、すべてのサーバー バックアップを削除します',

@@ -94,7 +94,7 @@ class _ItemServantCostPageState extends State<ItemServantCostPage> {
       ];
       for (int i = 0; i < headers.length; i++) {
         final _allSvtCounts =
-        db.itemStat.svtItemDetail.allCountByItem.values[i][itemKey];
+            db.itemStat.svtItemDetail.allCountByItem.values[i][itemKey];
         bool _hasSvt = _allSvtCounts?.values.any((e) => e > 0) ?? false;
         if (_hasSvt) {
           children.add(Column(

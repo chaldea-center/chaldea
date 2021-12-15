@@ -59,7 +59,10 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
       appBar: AppBar(
         titleSpacing: 0,
         title: Text(LocalizedText.of(
-            chs: '素材截图解析', jpn: 'アイテムのスクリーンショット', eng: 'Items Screenshots', kor: '아이템 스크린샷')),
+            chs: '素材截图解析',
+            jpn: 'アイテムのスクリーンショット',
+            eng: 'Items Screenshots',
+            kor: '아이템 스크린샷')),
         actions: [
           MarkdownHelpPage.buildHelpBtn(context, 'import_item_screenshot.md'),
           IconButton(
@@ -79,7 +82,9 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
                 kor: '스크린샷',
               ),
             ),
-            Tab(text: LocalizedText.of(chs: '识别结果', jpn: '結果', eng: 'Results', kor: '결과')),
+            Tab(
+                text: LocalizedText.of(
+                    chs: '识别结果', jpn: '結果', eng: 'Results', kor: '결과')),
             if (AppInfo.isDebugDevice) const Tab(text: 'Debug')
           ],
         ),
@@ -197,8 +202,8 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
               ElevatedButton.icon(
                   onPressed: _fetchResult,
                   icon: const Icon(Icons.download),
-                  label: Text(
-                      LocalizedText.of(chs: '结果', jpn: '結果', eng: 'Result', kor: '결과'))),
+                  label: Text(LocalizedText.of(
+                      chs: '结果', jpn: '結果', eng: 'Result', kor: '결과'))),
             if (_isResultTab)
               ElevatedButton(
                 onPressed: output.isEmpty ? null : _doImportResult,

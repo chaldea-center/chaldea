@@ -24,7 +24,10 @@ class _SvtPriorityTaggingState extends State<SvtPriorityTagging> {
     return Scaffold(
       appBar: AppBar(
         title: Text(LocalizedText.of(
-            chs: '优先级备注', jpn: '優先順位ノート', eng: 'Priority Tagging', kor: '우선순위 매기기')),
+            chs: '优先级备注',
+            jpn: '優先順位ノート',
+            eng: 'Priority Tagging',
+            kor: '우선순위 매기기')),
       ),
       body: ListView(
         children: [

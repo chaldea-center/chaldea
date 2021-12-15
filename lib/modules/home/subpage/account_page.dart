@@ -60,8 +60,8 @@ class _AccountPageState extends State<AccountPage> {
                 ),
                 PopupMenuItem(
                   value: 'move_up',
-                  child: Text(
-                      LocalizedText.of(chs: '上移', jpn: '上に移動', eng: 'Move Up', kor: '위로 이동')),
+                  child: Text(LocalizedText.of(
+                      chs: '上移', jpn: '上に移動', eng: 'Move Up', kor: '위로 이동')),
                   enabled: index != 0,
                 ),
                 PopupMenuItem(

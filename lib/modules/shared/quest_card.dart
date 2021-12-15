@@ -161,11 +161,11 @@ class _QuestCardState extends State<QuestCard> {
       String? placeEn = battle.placeEn ?? lastBattle?.placeJp;
       lastBattle = battle;
       String shownPlace =
-          LocalizedText.of(chs: place ?? '', jpn: placeJp, eng: placeEn, kor: placeKo);
+          LocalizedText.of(chs: place ?? '', jpn: placeJp, eng: placeEn);
       if (placeJp != null && placeJp != shownPlace) shownPlace += '/' + placeJp;
       if (shownPlace == '迦勒底之门') {
-        shownPlace =
-            LocalizedText.of(chs: '迦勒底之门', jpn: 'カルデアゲート', eng: 'Chaldea Gate', kor: '칼데아 게이트');
+        shownPlace = LocalizedText.of(
+            chs: '迦勒底之门', jpn: 'カルデアゲート', eng: 'Chaldea Gate', kor: '칼데아 게이트');
       }
       children.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: 4),
@@ -299,7 +299,10 @@ class _QuestCardState extends State<QuestCard> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Text(LocalizedText.of(
-                  chs: '场地特性', jpn: 'フィールド', eng: '  Fields   ', kor: '  필드   ')),
+                  chs: '场地特性',
+                  jpn: 'フィールド',
+                  eng: '  Fields   ',
+                  kor: '  필드   ')),
               Expanded(
                 child: Center(
                   child: Text(fields

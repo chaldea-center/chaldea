@@ -48,7 +48,8 @@ class _SQTableTabState extends State<SQTableTab> {
       },
       columnsLength: 4,
       rowsLength: plan.solution.length,
-      legendCell: Text(LocalizedText.of(chs: '日期', jpn: '日付', eng: 'Date', kor: '일')),
+      legendCell:
+          Text(LocalizedText.of(chs: '日期', jpn: '日付', eng: 'Date', kor: '일')),
       cellDimensions: CellDimensions.variableColumnWidthAndRowHeight(
         columnWidths: [50, 50, 50, 500],
         rowHeights: plan.solution
@@ -85,7 +86,7 @@ class _SQTableTabState extends State<SQTableTab> {
         return _accWithAdd(
           detail.date.toDateString(),
           '${DateFormat(DateFormat.ABBR_WEEKDAY).format(detail.date)}'
-              ' ${detail.accLogin}(${detail.continuousLogin})',
+          ' ${detail.accLogin}(${detail.continuousLogin})',
         );
       },
       contentCellBuilder: (col, row) {

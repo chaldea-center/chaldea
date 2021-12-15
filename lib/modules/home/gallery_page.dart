@@ -214,7 +214,10 @@ class _GalleryPageState extends State<GalleryPage> {
         leading: const Icon(Icons.stars_rounded),
         contentPadding: const EdgeInsets.only(left: 8),
         title: Text(LocalizedText.of(
-            chs: '走过路过给个评价反馈吧~', jpn: 'アプリを評価する', eng: 'Rating Chaldea', kor: 'Chaldea 앱 평가하기')),
+            chs: '走过路过给个评价反馈吧~',
+            jpn: 'アプリを評価する',
+            eng: 'Rating Chaldea',
+            kor: 'Chaldea 앱 평가하기')),
         subtitle: AutoSizeText(
           LocalizedText.of(
               chs: '欢迎评分、评价、反馈、建议~',
@@ -235,7 +238,9 @@ class _GalleryPageState extends State<GalleryPage> {
                 _showRateCard = false;
               });
             },
-            child: Text(LocalizedText.of(chs: '取消', jpn: '後で', eng: 'DISMISS', kor: '나중에'),
+            child: Text(
+                LocalizedText.of(
+                    chs: '取消', jpn: '後で', eng: 'DISMISS', kor: '나중에'),
                 style: TextStyle(color: Theme.of(context).disabledColor)),
           ),
           TextButton(
@@ -250,7 +255,8 @@ class _GalleryPageState extends State<GalleryPage> {
                 _showRateCard = false;
               });
             },
-            child: Text(LocalizedText.of(chs: '评分', jpn: '評価', eng: 'RATE', kor: '평가')),
+            child: Text(
+                LocalizedText.of(chs: '评分', jpn: '評価', eng: 'RATE', kor: '평가')),
           ),
         ],
       ),
