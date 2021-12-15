@@ -30,7 +30,7 @@ class LostRoomPage extends StatelessWidget {
             leading: const FaIcon(FontAwesomeIcons.userFriends),
             title: Text(S.current.support_party),
             subtitle: Text(
-                LocalizedText.of(chs: '暂停', jpn: '一時停止', eng: 'Suspended')),
+                LocalizedText.of(chs: '暂停', jpn: '一時停止', eng: 'Suspended', kor: '테스트')),
             onTap: () {
               SplitRoute.push(context, SupportPartyPage(), detail: null);
             },
