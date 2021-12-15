@@ -143,7 +143,8 @@ class _AboutPageState extends State<AboutPage> {
                 subtitle: AutoSizeText('Fate/Freedom Order data', maxLines: 1),
               ),
               ListTile(
-                title: const Text("Fandom Translators"),
+                title: const Text("Fandom & Reddit Translators"),
+                subtitle: const Text('English Communities'),
                 onTap: () {
                   SplitRoute.push(
                     context,
@@ -151,6 +152,10 @@ class _AboutPageState extends State<AboutPage> {
                     detail: true,
                   );
                 },
+              ),
+              const ListTile(
+                title: Text('M.Gallery & Cafe Translators'),
+                subtitle: Text('Korean Communities'),
               ),
             ],
           ),

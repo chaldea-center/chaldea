@@ -43,11 +43,11 @@ class _SvtPriorityTaggingState extends State<SvtPriorityTagging> {
                     ),
                   ),
                   SizedBox(
-                    width: 60,
+                    width: 88,
                     child: TextField(
                       controller: controllerOf(priority),
                       textAlign: TextAlign.center,
-                      maxLength: 4,
+                      maxLength: 10,
                       onChanged: (s) {
                         db.appSetting.priorityTags[priority] = s;
                       },
@@ -58,11 +58,12 @@ class _SvtPriorityTaggingState extends State<SvtPriorityTagging> {
               ),
             ),
           SFooter(LocalizedText.of(
-              chs: '建议最多4个英文字母或2个汉字',
-              jpn: '最大4つの英字または2つの漢字を提案します',
-              eng:
-                  'Recommended: max 4 English letters or 2 Chinese/Japanese characters',
-              kor: '최대 4개의 영문자 또는 2개의 한자를 사용하는 것을 추천합니다')),
+            chs: '建议备注不要太长，否则可能显示不全',
+            jpn: 'コメントは長すぎないようにすることをお勧めします。長すぎると、表示が不完全になります。',
+            eng:
+                'Tags should not be too long, otherwise it cannot be shown completely',
+            kor: '태그는 짧게 해주세요. 너무 길면 전부 표시되지 않습니다',
+          )),
         ],
       ),
     );

@@ -33,6 +33,7 @@ int _count = 0;
 double fps = 0.0;
 
 void _registerFrameCallback(Duration timeStamp) {
+  if (!db.runtimeData.showFps) return;
   final now = DateTime.now();
   if (_lastTime != null) {
     _durations[_count % _sampleNum] = now.difference(_lastTime!).inMilliseconds;

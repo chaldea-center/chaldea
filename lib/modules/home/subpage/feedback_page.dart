@@ -163,16 +163,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   },
                 ),
                 ListTile(
-                  title: const Text('NokNok'),
-                  subtitle: const Text('118835'),
-                  onTap: () async {
-                    await Clipboard.setData(const ClipboardData(text: '118835'))
-                        .then((_) => EasyLoading.showToast(S.current.copied));
-                    launch(
-                        'https://www.noknok.cn/act/share_group_20210625/index.html?uid=100164675&gid=118835');
-                  },
-                ),
-                ListTile(
                   title: const Text('Discord'),
                   subtitle: const Text('https://discord.gg/5M6w5faqjP'),
                   onTap: () {

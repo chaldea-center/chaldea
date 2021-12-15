@@ -80,7 +80,6 @@ If you have any bug report, feature request, question or want to contribute to t
 - File an [issue](https://github.com/chaldea-center/chaldea/issues/new/choose)
 - Pull request or join the collaboration
 - Discord: [https://discord.gg/5M6w5faqjP](https://discord.gg/5M6w5faqjP)
-- NokNok: [118835](https://www.noknok.cn/act/share_group_20210625/index.html?uid=100164675&gid=118835)
 - Email: [chaldea@narumi.cc](mailto:chaldea@narumi.cc)
 
 ## Acknowledgements
@@ -98,9 +97,9 @@ And the dataset is powered by
 - [Atlas Academy](https://atlasacademy.io/)
 
 Finally thanks to all translators
-- Chinese - Mooncell translators
-- English - Fandom and reddit translators
+- Chinese - Mooncell Translators
+- English - Fandom & Reddit Translators
 - Japanese - Google Translate
-- Korean - To be done
+- Korean - M.Gallery & Cafe Translators
 
 Thanks for all above communities and contributors.

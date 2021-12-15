@@ -408,6 +408,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
             message: S.of(context).priority,
             child: DropdownButton<int>(
               value: status.priority,
+              itemHeight: 64,
               items: List.generate(5, (index) {
                 final icons = [
                   Icons.looks_5_outlined,
@@ -419,23 +420,23 @@ class ServantDetailPageState extends State<ServantDetailPage>
                 final int priority = 5 - index;
                 return DropdownMenuItem(
                   value: priority,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(icons[index],
-                          color: Theme.of(context).colorScheme.secondary),
-                      SizedBox(
-                        width: 40,
-                        child: Center(
-                          child: Text(
-                            db.appSetting.priorityTags['$priority'] ?? '',
-                            overflow: TextOverflow.fade,
-                            style: const TextStyle(fontSize: 12),
-                            maxLines: 1,
-                          ),
+                  child: SizedBox(
+                    width: 40,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(icons[index],
+                            color: Theme.of(context).colorScheme.secondary),
+                        AutoSizeText(
+                          db.appSetting.priorityTags['$priority'] ?? '',
+                          overflow: TextOverflow.visible,
+                          minFontSize: 6,
+                          maxFontSize: 12,
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
                         ),
-                      )
-                    ],
+                      ],
+                    ),
                   ),
                 );
               }),

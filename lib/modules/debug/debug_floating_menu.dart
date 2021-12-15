@@ -10,7 +10,7 @@ class DebugFloatingMenuButton extends StatefulWidget {
   static OverlayEntry? _instance;
 
   static void createOverlay(BuildContext context) {
-    if (!kDebugMode) return;
+    // if (!kDebugMode) return;
     _instance?.remove();
     _instance = OverlayEntry(
       builder: (context) => DebugFloatingMenuButton(key: globalKey),
@@ -175,10 +175,12 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           leading: const Icon(Icons.update),
           title: const Text('Load GameData'),
           onTap: () async {
+            EasyLoading.show(status: 'Loading');
             await db.loadZipAssets(kDatasetAssetKey);
             await db.loadGameData();
             db.notifyAppUpdate();
             Navigator.pop(context);
+            EasyLoading.dismiss();
           },
         ),
         ListTile(
