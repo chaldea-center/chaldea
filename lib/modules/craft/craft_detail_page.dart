@@ -297,10 +297,10 @@ class CraftDetailBasePage extends StatelessWidget {
             children: [
               TableCellData(
                 text: LocalizedText(
-                        chs: ce.description ?? '???',
-                        jpn: ce.descriptionJp,
-                        eng: ce.descriptionEn)
-                    .ofPrimary(lang ?? Language.current),
+                  chs: ce.description ?? '???',
+                  jpn: ce.descriptionJp,
+                  eng: ce.descriptionEn,
+                ).ofPrimary(lang ?? Language.current),
                 alignment: Alignment.centerLeft,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 8),

@@ -33,11 +33,13 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
   String _localize(String s) {
     return s.replaceFirstMapped(RegExp(r'第(.)阶段'), (match) {
       final n = match.group(1);
-      return LocalizedText(chs: '第$n阶段', jpn: '第$n段階 ', eng: 'Stage $n')
+      return LocalizedText(
+              chs: '第$n阶段', jpn: '第$n段階 ', eng: 'Stage $n', kor: '제$n단계')
           .localized;
     }).replaceFirst(
       '愚人节',
-      const LocalizedText(chs: '愚人节', jpn: 'エイプリルフール', eng: "April Fools' Day")
+      const LocalizedText(
+              chs: '愚人节', jpn: 'エイプリルフール', eng: "April Fools' Day", kor: '만우절')
           .localized,
     );
   }

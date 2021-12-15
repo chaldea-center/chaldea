@@ -249,12 +249,14 @@ abstract class SearchableListState<T, St extends StatefulWidget>
         chs: '显示$shown/总计$total',
         jpn: '表示$shown/合計$total',
         eng: '$shown shown (total $total)',
+        kor: '$shown 표시 (합계 $total)',
       );
     } else {
       return LocalizedText.of(
         chs: '显示$shown/忽略$ignore/总计$total',
         jpn: '表示$shown/無視$ignore/合計$total',
         eng: '$shown shown, $ignore ignored (total $total)',
+        kor: '$shown 표시, $ignore 무시 (합계) $total)',
       );
     }
   }

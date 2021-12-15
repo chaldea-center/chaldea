@@ -236,9 +236,9 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
               },
             ),
             title: Text(S.current.servant_coin),
-            subtitle: Text(
-                LocalizedText.of(chs: '召唤', jpn: 'ガチャ', eng: 'Summon') +
-                    ': ${svt.coinSummonNum}'),
+            subtitle: Text(LocalizedText.of(
+                    chs: '召唤', jpn: 'ガチャ', eng: 'Summon', kor: '가챠') +
+                ': ${svt.coinSummonNum}'),
             trailing: SizedBox(
               width: 60,
               child: TextField(
@@ -327,7 +327,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                     context: context, itemKey: Items.fou4Hp, width: 33)
               ],
             ),
-            title: LocalizedText.of(chs: 'HP芙芙', jpn: 'HPフォウ', eng: 'HP Fou'),
+            title: LocalizedText.of(
+                chs: 'HP芙芙', jpn: 'HPフォウ', eng: 'HP Fou', kor: 'HP 포우'),
             start: curVal.fouHp,
             end: targetVal.fouHp,
             minVal: -20,
@@ -355,8 +356,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                     context: context, itemKey: Items.fou4Atk, width: 33)
               ],
             ),
-            title:
-                LocalizedText.of(chs: 'ATK芙芙', jpn: 'ATKフォウ', eng: 'ATK Fou'),
+            title: LocalizedText.of(
+                chs: 'ATK芙芙', jpn: 'ATKフォウ', eng: 'ATK Fou', kor: 'ATK 포우'),
             start: curVal.fouAtk,
             end: targetVal.fouAtk,
             minVal: -20,
@@ -393,11 +394,11 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
               title: Text(S.current.game_kizuna),
               hideCancel: true,
               content: Text(LocalizedText.of(
-                chs: '数值为当前的羁绊上限，用于计算梦火消耗',
-                jpn: '値は、カルデアの夢火の消費量を計算するために使用される、ボンドの現在の上限です。',
-                eng:
-                    'The value is the current bond limit, used for calculation of Chaldea Lantern',
-              )),
+                  chs: '数值为当前的羁绊上限，用于计算梦火消耗',
+                  jpn: '値は、カルデアの夢火の消費量を計算するために使用される、ボンドの現在の上限です。',
+                  eng:
+                      'The value is the current bond limit, used for calculation of Chaldea Lantern',
+                  kor: '이 값은 칼데아의 몽화 소비량을 계산하기 위해 사용되는 포인트의 현재 상한입니다. ')),
             ),
           ),
         ],

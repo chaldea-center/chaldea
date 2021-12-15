@@ -80,7 +80,10 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       appBar: AppBar(
         titleSpacing: 0,
         title: Text(LocalizedText.of(
-            chs: 'HTTPS抓包', jpn: 'HTTPSスニッフィング', eng: 'HTTPS Sniffing')),
+            chs: 'HTTPS抓包',
+            jpn: 'HTTPSスニッフィング',
+            eng: 'HTTPS Sniffing',
+            kor: 'HTTPS 스나이핑')),
         actions: [
           MarkdownHelpPage.buildHelpBtn(context, 'import_https_response.md'),
           IconButton(
@@ -100,7 +103,10 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                       children: [
                         Text(
                           LocalizedText.of(
-                              chs: '使用方法', jpn: '使用方法について', eng: 'How to use'),
+                              chs: '使用方法',
+                              jpn: '使用方法について',
+                              eng: 'How to use',
+                              kor: '사용 방법'),
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
@@ -155,8 +161,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           child: ListTile(
             tileColor: Theme.of(context).cardColor,
             leading: const Icon(Icons.supervised_user_circle),
-            title:
-                Text(LocalizedText.of(chs: '账号信息', jpn: 'jpn', eng: 'Account')),
+            title: Text(LocalizedText.of(
+                chs: '账号信息', jpn: 'jpn', eng: 'Account', kor: '계정')),
             trailing: ExpandIcon(onPressed: null, isExpanded: _showAccount),
             onTap: () {
               setState(() {
@@ -169,8 +175,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           SliverClip(
             child: MultiSliver(children: [
               ListTile(
-                title:
-                    Text(LocalizedText.of(chs: '获取时间', jpn: '時間', eng: 'Time')),
+                title: Text(LocalizedText.of(
+                    chs: '获取时间', jpn: '時間', eng: 'Time', kor: '시간')),
                 trailing:
                     Text(topLogin!.cache.serverTime?.toStringShort() ?? '?'),
               ),
@@ -182,10 +188,11 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                 title: Text(S.current.info_gender),
                 trailing: Text(user.genderType == 1
                     ? '♂' +
-                        LocalizedText.of(chs: '咕哒夫', jpn: 'ぐだ男', eng: 'Gudao')
+                        LocalizedText.of(
+                            chs: '咕哒夫', jpn: 'ぐだ男', eng: 'Gudao', kor: '구다오')
                     : '♀' +
                         LocalizedText.of(
-                            chs: '咕哒子', jpn: 'ぐだ子', eng: 'Gudako')),
+                            chs: '咕哒子', jpn: 'ぐだ子', eng: 'Gudako', kor: '구다코')),
               ),
               ListTile(
                 title: const Text('ID'),
@@ -287,12 +294,13 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             S.current.grail + ' ${svt.exceedCount}',
           ]),
           _wrapCellStyle([
-            LocalizedText.of(chs: '宝具', jpn: 'NP', eng: 'NP') +
+            LocalizedText.of(chs: '宝具', jpn: 'NP', eng: 'NP', kor: '보구') +
                 ' ${svt.treasureDeviceLv1}',
             S.current.bond + ' ${cardCollections[svt.svtId]!.friendshipRank}',
             coin == null
                 ? ''
-                : (LocalizedText.of(chs: '硬币', jpn: 'コイン', eng: 'Coin') +
+                : (LocalizedText.of(
+                        chs: '硬币', jpn: 'コイン', eng: 'Coin', kor: '코인') +
                     ' $coin'),
           ]),
           _wrapCellStyle([
@@ -399,7 +407,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             tileColor: Theme.of(context).cardColor,
             title: Text(inStorage
                 ? S.current.servant +
-                    '(${LocalizedText.of(chs: '保管室', jpn: '保管室', eng: 'Second Archive')})'
+                    '(${LocalizedText.of(chs: '保管室', jpn: '保管室', eng: 'Second Archive', kor: '영기 보관실')})'
                 : S.current.servant),
             leading: Checkbox(
               value: inStorage ? _includeSvtStorage : _includeSvt,
@@ -630,7 +638,10 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           ListTile(
             leading: const Icon(Icons.paste),
             title: Text(LocalizedText.of(
-                chs: '从剪切板', jpn: 'クリップボードから', eng: 'From Clipboard')),
+                chs: '从剪切板',
+                jpn: 'クリップボードから',
+                eng: 'From Clipboard',
+                kor: '클립보드에서')),
             onTap: () async {
               try {
                 String? text =
@@ -654,7 +665,10 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           ListTile(
             leading: const Icon(Icons.file_present),
             title: Text(LocalizedText.of(
-                chs: '从文本文件', jpn: 'テキストファイルから', eng: 'From Text File')),
+                chs: '从文本文件',
+                jpn: 'テキストファイルから',
+                eng: 'From Text File',
+                kor: '텍스트 파일에서')),
             onTap: () async {
               try {
                 final result =
@@ -690,9 +704,10 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               LocalizedText.of(
                   chs: '请仔细参考教程',
                   jpn: 'チュートリアルを参照してください',
-                  eng: 'Please refer thr tutorial') +
+                  eng: 'Please refer thr tutorial',
+                  kor: '듀토리얼을 참고해 주세요') +
               '\nhttps://docs.chaldea.center/import_https.html'
-              '\nhttps://docs.chaldea.center/zh/import_https/'),
+                  '\nhttps://docs.chaldea.center/zh/import_https/'),
         ).showDialog(context);
       }
     } finally {

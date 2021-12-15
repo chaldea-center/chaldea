@@ -59,7 +59,10 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
       appBar: AppBar(
         titleSpacing: 0,
         title: Text(LocalizedText.of(
-            chs: '素材截图解析', jpn: 'アイテムのスクリーンショット', eng: 'Items Screenshots')),
+            chs: '素材截图解析',
+            jpn: 'アイテムのスクリーンショット',
+            eng: 'Items Screenshots',
+            kor: '아이템 스크린샷')),
         actions: [
           MarkdownHelpPage.buildHelpBtn(context, 'import_item_screenshot.md'),
           IconButton(
@@ -76,9 +79,12 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
                 chs: '截图',
                 jpn: 'スクリーンショット',
                 eng: 'Screenshots',
+                kor: '스크린샷',
               ),
             ),
-            Tab(text: LocalizedText.of(chs: '识别结果', jpn: '結果', eng: 'Results')),
+            Tab(
+                text: LocalizedText.of(
+                    chs: '识别结果', jpn: '結果', eng: 'Results', kor: '결과')),
             if (AppInfo.isDebugDevice) const Tab(text: 'Debug')
           ],
         ),
@@ -196,8 +202,8 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
               ElevatedButton.icon(
                   onPressed: _fetchResult,
                   icon: const Icon(Icons.download),
-                  label: Text(
-                      LocalizedText.of(chs: '结果', jpn: '結果', eng: 'Result'))),
+                  label: Text(LocalizedText.of(
+                      chs: '结果', jpn: '結果', eng: 'Result', kor: '결과'))),
             if (_isResultTab)
               ElevatedButton(
                 onPressed: output.isEmpty ? null : _doImportResult,
@@ -285,7 +291,8 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
         EasyLoading.showInfo(LocalizedText.of(
             chs: '识别结果为空',
             jpn: '認識結果が空です',
-            eng: 'The recognition result is empty'));
+            eng: 'The recognition result is empty',
+            kor: '인식 결과 비었습니다'));
       }
       _tabController.index = 1;
       await Future.delayed(const Duration(milliseconds: 300));

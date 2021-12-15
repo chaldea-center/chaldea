@@ -74,6 +74,8 @@ class _LoginPageState extends State<LoginPage> {
               eng:
                   'A simple account system for userdata backup to server and multi-device synchronization\n'
                   'NO security guarantee, PLEASE DON\'T set frequently used passwords!!!',
+              kor: '서버에 데이터를 백업해서 멀티 디바이스기기 동기화를 구현하기만을 위한 간단한 시스템\n'
+                  '시큐리티는 보장하지 않습니다. 일반적인 비밀번호는 사용하지 말아주세요!!!',
             ),
             style: const TextStyle(color: Colors.grey, fontSize: 14),
           ),
@@ -155,7 +157,8 @@ class _LoginPageState extends State<LoginPage> {
                 chs: '请通过反馈页面的【邮件】地址联系',
                 jpn: 'フィードバックページの「メールアドレス」からご連絡ください ',
                 eng:
-                    'Please contact developer through feedback page with *Email*')),
+                    'Please contact developer through feedback page with *Email*',
+                kor: '피드백 페이지의 *【메일주소】로 연락하여 주시길 바랍니다 ')),
             scrollable: true,
             hideOk: true,
             actions: [
@@ -334,7 +337,8 @@ class _LoginPageState extends State<LoginPage> {
       content: Text(LocalizedText.of(
           chs: '已清除本地登陆信息',
           jpn: 'ローカル ログイン情報が消去されました',
-          eng: 'Cleared local login info')),
+          eng: 'Cleared local login info',
+          kor: '로컬 로그인 정보가 소실되었습니다')),
     ).showDialog(context);
   }
 
@@ -344,11 +348,15 @@ class _LoginPageState extends State<LoginPage> {
     String pwd = _pwdController.text;
     SimpleCancelOkDialog(
       title: Text(LocalizedText.of(
-          chs: '删除账户', jpn: 'アカウントを削除', eng: 'Delete User Account')),
+          chs: '删除账户',
+          jpn: 'アカウントを削除',
+          eng: 'Delete User Account',
+          kor: '계정 삭제')),
       content: Text(LocalizedText.of(
           chs: '包括所有服务器备份',
           jpn: 'また、すべてのサーバー バックアップを削除します',
-          eng: 'Including backups on server')),
+          eng: 'Including backups on server',
+          kor: '모든 서버 백업을 포함하여 삭제됩니다')),
       onTapOk: () async {
         var resp = ChaldeaResponse.fromResponse(await db.serverDio
             .post('/user/deleteAccount', data: {

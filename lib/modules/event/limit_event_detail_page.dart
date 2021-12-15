@@ -80,7 +80,10 @@ class _LimitEventDetailPageState extends State<LimitEventDetailPage>
           if (svt != null)
             ListTile(
               title: Text(LocalizedText.of(
-                  chs: '活动从者', jpn: '配布サーヴァント', eng: 'Welfare Servant')),
+                  chs: '活动从者',
+                  jpn: '配布サーヴァント',
+                  eng: 'Welfare Servant',
+                  kor: '배포 서번트')),
               trailing: svt.iconBuilder(context: context),
             )
         ])));

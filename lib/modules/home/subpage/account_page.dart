@@ -60,14 +60,14 @@ class _AccountPageState extends State<AccountPage> {
                 ),
                 PopupMenuItem(
                   value: 'move_up',
-                  child: Text(
-                      LocalizedText.of(chs: '上移', jpn: '上に移動', eng: 'Move Up')),
+                  child: Text(LocalizedText.of(
+                      chs: '上移', jpn: '上に移動', eng: 'Move Up', kor: '위로 이동')),
                   enabled: index != 0,
                 ),
                 PopupMenuItem(
                   value: 'move_down',
                   child: Text(LocalizedText.of(
-                      chs: '下移', jpn: '下に移動', eng: 'Move Down')),
+                      chs: '下移', jpn: '下に移動', eng: 'Move Down', kor: '아래로 이동')),
                   enabled: index != db.userData.users.length - 1,
                 ),
                 PopupMenuItem(value: 'copy', child: Text(S.of(context).copy)),

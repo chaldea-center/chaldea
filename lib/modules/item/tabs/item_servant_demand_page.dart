@@ -85,10 +85,12 @@ class ItemServantDemandPage extends StatelessWidget {
         children.add(Center(
           child: Text(
             LocalizedText.of(
-                chs: '\n通用从者硬币消耗总计中已减去专用从者硬币数',
-                jpn: '\n通用のサーヴァントコインの総数は、専用のサーヴァントコインの数から差し引かれています。',
-                eng:
-                    '\nThe total cost of universal servant coins has been subtracted from dedicated servant coins.'),
+              chs: '\n通用从者硬币消耗总计中已减去专用从者硬币数',
+              jpn: '\n通用のサーヴァントコインの総数は、専用のサーヴァントコインの数から差し引かれています。',
+              eng:
+                  '\nThe total cost of universal servant coins has been subtracted from dedicated servant coins.',
+              kor: '\n모든 서번트 코인은 공용으로 사용하고 있습니다. ',
+            ),
             style: Theme.of(context).textTheme.caption,
             textAlign: TextAlign.center,
           ),

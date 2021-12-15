@@ -135,7 +135,8 @@ class CostumeDetailPage extends StatelessWidget {
                   text: LocalizedText.of(
                       chs: '< 立绘/模型 >',
                       jpn: '< イラスト・バトルキャラ >',
-                      eng: '< Illustration/Sprites >'),
+                      eng: '< Illustration/Sprites >',
+                      kor: '< 일러스트/배틀 캐릭터 >'),
                   isHeader: true)
             ]),
             CustomTableRow(children: [

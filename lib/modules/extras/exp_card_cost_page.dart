@@ -25,14 +25,15 @@ class _ExpCardCostPageState extends State<ExpCardCostPage> {
                 scrollable: true,
                 title: Text(S.current.help),
                 content: Text(LocalizedText.of(
-                  chs: '''1.QP计算可能不准确，仅供参考。按每次20个狗粮计算。
+                    chs: '''1.QP计算可能不准确，仅供参考。按每次20个狗粮计算。
 2.如80->90，只计算80级时的再临(圣杯转临)所消耗的QP(圣杯)''',
-                  jpn: """1. QPの計算は不正確である可能性があり、参照用です。 毎回20回で計算。
+                    jpn: """1. QPの計算は不正確である可能性があり、参照用です。 毎回20回で計算。
 2. 例えば、80->90の場合、レベル80で再臨（聖杯転臨）によって消費されるQP（聖杯）のみを計算します。 """,
-                  eng:
-                      """1. The QP calculation may be inaccurate and is for reference only. 20 Exp cards every enhancement.
+                    eng:
+                        """1. The QP calculation may be inaccurate and is for reference only. 20 Exp cards every enhancement.
 2. e.g. 80->90, only calculate the QP (Holy Grail) consumed by the ascension (Palingenesis) at level 80""",
-                )),
+                    kor: """1. QP의 계산은 정확하지 않을 가능성이 있어, 참고용입니다. 매회 20회씩 계산합니다.
+2. 예를 들어, 80->90의 경우, 레벨 80에서 재림(성배재림)에 소비되는 QP(성배)만 계산합니다. """)),
               ).showDialog(context);
             },
             icon: const Icon(Icons.help_outline),

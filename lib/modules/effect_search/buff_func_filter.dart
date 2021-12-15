@@ -61,7 +61,8 @@ class _BuffFuncFilterState extends FilterPageState<BuffFuncFilterData> {
           title: Text(LocalizedText.of(
               chs: '效果范围(从者)',
               jpn: '効果の範囲(サーヴァント)',
-              eng: 'Scope of Effects(Servant)')),
+              eng: 'Scope of Effects(Servant)',
+              kor: '효과의 대상(서번트)')),
           options: SvtFilterData.buffScope,
           values: filterData.effectScope,
           optionBuilder: (v) => Text([
@@ -88,7 +89,10 @@ class _BuffFuncFilterState extends FilterPageState<BuffFuncFilterData> {
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Text(
             LocalizedText.of(
-                chs: '组合筛选', jpn: '組み合わせフィルター', eng: 'Combined filter'),
+                chs: '组合筛选',
+                jpn: '組み合わせフィルター',
+                eng: 'Combined filter',
+                kor: '다중 필터'),
             style: Theme.of(context).textTheme.caption,
           ),
         ),

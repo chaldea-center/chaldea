@@ -66,26 +66,32 @@ class EffectType {
   static EffectType subState = EffectType(
     key: 'subState',
     funcs: [FuncTypes.subState],
-    name: const LocalizedText(chs: '状态解除', jpn: '状態解除', eng: 'Remove Effects'),
+    name: const LocalizedText(
+        chs: '状态解除', jpn: '状態解除', eng: 'Remove Effects', kor: '상태 해제'),
   );
 
   static EffectType gainStar = EffectType(
     key: 'gainStar',
     funcs: [FuncTypes.gainStar],
-    name: const LocalizedText(chs: '暴击星获得', jpn: 'スター獲得', eng: 'Gain Stars'),
+    name: const LocalizedText(
+        chs: '暴击星获得', jpn: 'スター獲得', eng: 'Gain Stars', kor: '스타 획득'),
   );
 
   static EffectType regainStar = EffectType(
     key: 'regainStar',
     buffs: [BuffTypes.regainStar],
     name: const LocalizedText(
-        chs: '每回合暴击星', jpn: '毎ターンスター獲得', eng: 'Stars per Turn'),
+        chs: '每回合暴击星',
+        jpn: '毎ターンスター獲得',
+        eng: 'Stars per Turn',
+        kor: '턴 마다 스타 획득'),
   );
 
   static EffectType gainHp = EffectType(
     key: 'gainHp',
     funcs: [FuncTypes.gainHp, FuncTypes.gainHpPer, FuncTypes.gainHpFromTargets],
-    name: const LocalizedText(chs: 'HP回复', jpn: 'HP回復', eng: 'Restore HP'),
+    name: const LocalizedText(
+        chs: 'HP回复', jpn: 'HP回復', eng: 'Restore HP', kor: 'HP 회복'),
   );
 
   static EffectType gainNp = EffectType(
@@ -97,21 +103,26 @@ class EffectType {
       // FuncTypes.absorbNpturn,
       FuncTypes.gainNpBuffIndividualSum,
     ],
-    name: const LocalizedText(chs: 'NP増加', jpn: 'NP増加', eng: 'Charge NP'),
+    name: const LocalizedText(
+        chs: 'NP増加', jpn: 'NP増加', eng: 'Charge NP', kor: 'NP 증가'),
   );
 
   static EffectType shortenSkill = EffectType(
     key: 'shortenSkill',
     funcs: [FuncTypes.shortenSkill],
     name: const LocalizedText(
-        chs: '技能冷却减小', jpn: 'スキルターン減少', eng: 'Reduce Cooldowns'),
+        chs: '技能冷却减小',
+        jpn: 'スキルターン減少',
+        eng: 'Reduce Cooldowns',
+        kor: '스킬 턴 감소'),
   );
 
   static EffectType pierceDefence = EffectType(
     key: 'pierceDefence',
     funcs: [FuncTypes.damageNpPierce],
     buffs: [BuffTypes.pierceDefence],
-    name: const LocalizedText(chs: '无视防御', jpn: '防御無視', eng: 'Pierce Defense'),
+    name: const LocalizedText(
+        chs: '无视防御', jpn: '防御無視', eng: 'Pierce Defense', kor: '방어 무시'),
   );
 
   static EffectType npTegong = EffectType(
@@ -125,33 +136,40 @@ class EffectType {
       FuncTypes.damageNpStateIndividualFix,
     ],
     name: const LocalizedText(
-        chs: '宝具特攻', jpn: '宝具特攻', eng: 'NP supereffective damage'),
+        chs: '宝具特攻',
+        jpn: '宝具特攻',
+        eng: 'NP supereffective damage',
+        kor: '보구 특공'),
   );
 
   static EffectType expUp = EffectType(
     key: 'expUp',
     funcs: [FuncTypes.expUp],
-    name: const LocalizedText(chs: '御主EXP', jpn: 'マスターEXP', eng: 'Master EXP'),
+    name: const LocalizedText(
+        chs: '御主EXP', jpn: 'マスターEXP', eng: 'Master EXP', kor: '마스터 EXP'),
   );
   static EffectType qpUp = EffectType(
     key: 'qpUp',
     funcs: [FuncTypes.qpUp, FuncTypes.qpDropUp],
-    name: const LocalizedText(chs: 'QP', jpn: 'QP', eng: 'QP'),
+    name: const LocalizedText(chs: 'QP', jpn: 'QP', eng: 'QP', kor: 'QP'),
   );
   static EffectType friendPointUp = EffectType(
     key: 'friendPointUp',
     funcs: [FuncTypes.friendPointUp, FuncTypes.friendPointUpDuplicate],
-    name: const LocalizedText(chs: '友情点', jpn: 'フレンドポイント', eng: 'Friend Point'),
+    name: const LocalizedText(
+        chs: '友情点', jpn: 'フレンドポイント', eng: 'Friend Point', kor: '친구 포인트'),
   );
   static EffectType bondPointUp = EffectType(
     key: 'bondPointUp',
     funcs: [FuncTypes.servantFriendshipUp],
-    name: const LocalizedText(chs: '羁绊', jpn: '絆', eng: 'Bond Point'),
+    name: const LocalizedText(
+        chs: '羁绊', jpn: '絆', eng: 'Bond Point', kor: '인연 포인트'),
   );
   static EffectType userEquipExpUp = EffectType(
     key: 'userEquipExpUp',
     funcs: [FuncTypes.userEquipExpUp],
-    name: const LocalizedText(chs: '魔术礼装', jpn: '魔術礼装', eng: 'Mystic Code'),
+    name: const LocalizedText(
+        chs: '魔术礼装', jpn: '魔術礼装', eng: 'Mystic Code', kor: '마술예장'),
   );
 
   // buffs
@@ -159,13 +177,15 @@ class EffectType {
   static EffectType artsPerform = EffectType(
     key: 'artsPerform',
     buffs: [BuffTypes.upCommandall],
-    name: const LocalizedText(chs: 'Arts', jpn: 'Arts', eng: 'Arts'),
+    name:
+        const LocalizedText(chs: 'Arts', jpn: 'Arts', eng: 'Arts', kor: 'Arts'),
     testBuff: (buff) => buff.name.contains('Arts'),
   );
   static EffectType quickPerform = EffectType(
     key: 'quickPerform',
     buffs: [BuffTypes.upCommandall],
-    name: const LocalizedText(chs: 'Quick', jpn: 'Quick', eng: 'Quick'),
+    name: const LocalizedText(
+        chs: 'Quick', jpn: 'Quick', eng: 'Quick', kor: 'Quick'),
     testBuff: (buff) => buff.name.contains('Quick'),
   );
   static EffectType busterPerform = EffectType(
@@ -175,169 +195,188 @@ class EffectType {
       BuffTypes.downCommandall,
       BuffTypes.downDefencecommandall
     ],
-    name: const LocalizedText(chs: 'Buster', jpn: 'Buster', eng: 'Buster'),
+    name: const LocalizedText(
+        chs: 'Buster', jpn: 'Buster', eng: 'Buster', kor: 'Buster'),
     testBuff: (buff) => buff.name.contains('Buster'),
   );
 
   static EffectType starWeight = EffectType(
     key: 'starWeight',
     buffs: [BuffTypes.upStarweight, BuffTypes.downStarweight],
-    name: const LocalizedText(chs: '集星', jpn: 'スター集中', eng: 'Star Weight'),
+    name: const LocalizedText(
+        chs: '集星', jpn: 'スター集中', eng: 'Star Weight', kor: '스타 집중도'),
   );
 
   static EffectType starRate = EffectType(
     key: 'starRate',
     buffs: [BuffTypes.upCriticalpoint, BuffTypes.downCriticalpoint],
-    name: const LocalizedText(chs: '出星率', jpn: 'スター発生', eng: 'Star Drop Rate'),
+    name: const LocalizedText(
+        chs: '出星率', jpn: 'スター発生', eng: 'Star Drop Rate', kor: '스타 발생률'),
   );
 
   static EffectType regainNp = EffectType(
     key: 'regainNp',
     buffs: [BuffTypes.regainNp],
-    name: const LocalizedText(chs: '每回合NP', jpn: '毎ターンNP', eng: 'NP per turn'),
+    name: const LocalizedText(
+        chs: '每回合NP', jpn: '毎ターンNP', eng: 'NP per turn', kor: '턴 마다 NP 획득'),
   );
 
   static EffectType regainHp = EffectType(
     key: 'regainHp',
     buffs: [BuffTypes.regainHp],
-    name: const LocalizedText(chs: '每回合HP', jpn: '毎ターンHP', eng: 'HP per turn'),
+    name: const LocalizedText(
+        chs: '每回合HP', jpn: '毎ターンHP', eng: 'HP per turn', kor: '턴 마다 HP 회복'),
   );
 
   static EffectType upAtk = EffectType(
     key: 'upAtk',
     buffs: [BuffTypes.upAtk],
-    name: const LocalizedText(chs: '攻击力', jpn: '攻撃力', eng: 'Attack Up'),
+    name: const LocalizedText(
+        chs: '攻击力', jpn: '攻撃力', eng: 'Attack Up', kor: '공격력 상승'),
   );
 
   static EffectType upDamage = EffectType(
     key: 'upDamage',
     buffs: [BuffTypes.upDamage, BuffTypes.upDamageIndividualityActiveonly],
-    name: const LocalizedText(chs: '威力提升', jpn: '威力アップ', eng: 'SP.DMG Up'),
+    name: const LocalizedText(
+        chs: '威力提升', jpn: '威力アップ', eng: 'SP.DMG Up', kor: '위력 상승'),
   );
 
   static EffectType addDamage = EffectType(
     key: 'addDamage',
     buffs: [BuffTypes.addDamage],
-    name: const LocalizedText(chs: '附加伤害', jpn: '威力アップ', eng: 'Damage Plus'),
+    name: const LocalizedText(
+        chs: '附加伤害', jpn: '威力アップ', eng: 'Damage Plus', kor: '대미지 플러스'),
   );
 
   static EffectType npDamage = EffectType(
     key: 'npDamage',
     buffs: [BuffTypes.upNpdamage, BuffTypes.downNpdamage],
-    name: const LocalizedText(chs: '宝威', jpn: '宝具威力', eng: 'NP Damage Up'),
+    name: const LocalizedText(
+        chs: '宝威', jpn: '宝具威力', eng: 'NP Damage Up', kor: '보구 위력 상승'),
   );
 
   static EffectType upDropnp = EffectType(
     key: 'upDropnp',
     buffs: [BuffTypes.upDropnp, BuffTypes.upDamagedropnp],
-    name: const LocalizedText(chs: 'NP获得率', jpn: 'NP獲得率', eng: 'NP Gain Up'),
+    name: const LocalizedText(
+        chs: 'NP获得率', jpn: 'NP獲得率', eng: 'NP Gain Up', kor: 'NP 획득률 상승'),
   );
 
   static EffectType upCriticaldamage = EffectType(
     key: 'upCriticaldamage',
     buffs: [BuffTypes.upCriticaldamage],
     name: const LocalizedText(
-        chs: '暴击威力', jpn: 'クリティカル威力', eng: 'Critical Damage'),
+        chs: '暴击威力', jpn: 'クリティカル威力', eng: 'Critical Damage', kor: '크리티컬 위력'),
   );
 
   static EffectType subSelfdamage = EffectType(
     key: 'subSelfdamage',
     buffs: [BuffTypes.subSelfdamage],
-    name: const LocalizedText(chs: '减伤', jpn: '被ダメージカット', eng: 'Damage Cut'),
+    name: const LocalizedText(
+        chs: '减伤', jpn: '被ダメージカット', eng: 'Damage Cut', kor: '대미지 컷'),
   );
 
   static EffectType avoidance = EffectType(
     key: 'avoidance',
     buffs: [BuffTypes.avoidance],
-    name: const LocalizedText(chs: '回避', jpn: '回避', eng: 'Evade'),
+    name: const LocalizedText(chs: '回避', jpn: '回避', eng: 'Evade', kor: '회피'),
   );
 
   static EffectType breakAvoidance = EffectType(
     key: 'breakAvoidance',
     buffs: [BuffTypes.breakAvoidance],
-    name: const LocalizedText(chs: '必中', jpn: '必中', eng: 'Sure Hit'),
+    name: const LocalizedText(chs: '必中', jpn: '必中', eng: 'Sure Hit', kor: '필중'),
   );
 
   static EffectType invincible = EffectType(
     key: 'invincible',
     buffs: [BuffTypes.invincible],
-    name: const LocalizedText(chs: '无敌', jpn: '無敵', eng: 'Invincible'),
+    name:
+        const LocalizedText(chs: '无敌', jpn: '無敵', eng: 'Invincible', kor: '무적'),
   );
 
   static EffectType pierceInvincible = EffectType(
     key: 'pierceInvincible',
     buffs: [BuffTypes.pierceInvincible],
-    name:
-        const LocalizedText(chs: '无敌贯通', jpn: '無敵貫通', eng: 'Ignore Invincible'),
+    name: const LocalizedText(
+        chs: '无敌贯通', jpn: '無敵貫通', eng: 'Ignore Invincible', kor: '무적 관통'),
   );
 
   static EffectType upGrantstate = EffectType(
     key: 'upGrantstate',
     buffs: [BuffTypes.upGrantstate],
     name: const LocalizedText(
-        chs: '状态赋予率', jpn: '状態付与率', eng: 'Effect Chance Up'),
+        chs: '状态赋予率', jpn: '状態付与率', eng: 'Effect Chance Up', kor: '강화 확률 상승'),
   );
 
   static EffectType upTolerance = EffectType(
     key: 'upTolerance',
     buffs: [BuffTypes.upTolerance],
-    name:
-        const LocalizedText(chs: '耐性提升', jpn: '耐性アップ', eng: 'Debuff Tolerance'),
+    name: const LocalizedText(
+        chs: '耐性提升', jpn: '耐性アップ', eng: 'Debuff Tolerance', kor: '약체 내성 상승'),
   );
 
   static EffectType avoidState = EffectType(
     key: 'avoidState',
     buffs: [BuffTypes.avoidState],
     name: const LocalizedText(
-        chs: '弱体无效', jpn: '弱体無効', eng: 'Immunity vs Debuff'),
+        chs: '弱体无效', jpn: '弱体無効', eng: 'Immunity vs Debuff', kor: '약체 무효'),
   );
 
   static EffectType donotAct = EffectType(
     key: 'donotAct',
     buffs: [BuffTypes.donotAct],
-    name: const LocalizedText(chs: '行动不能', jpn: '行動不能', eng: 'Donot Act'),
+    name: const LocalizedText(
+        chs: '行动不能', jpn: '行動不能', eng: 'Donot Act', kor: '행동 불가'),
   );
 
   static EffectType donotSkill = EffectType(
     key: 'donotSkill',
     buffs: [BuffTypes.donotSkill],
-    name: const LocalizedText(chs: '技能封印', jpn: 'スキル封印', eng: 'Skill Seal'),
+    name: const LocalizedText(
+        chs: '技能封印', jpn: 'スキル封印', eng: 'Skill Seal', kor: '스킬 사용 불가'),
   );
 
   static EffectType donotNoble = EffectType(
     key: 'donotNoble',
     buffs: [BuffTypes.donotNoble],
-    name: const LocalizedText(chs: '宝具封印', jpn: '宝具封印', eng: 'NP Seal'),
+    name: const LocalizedText(
+        chs: '宝具封印', jpn: '宝具封印', eng: 'NP Seal', kor: '보구 사용 불가'),
   );
 
   static EffectType guts = EffectType(
     key: 'guts',
     buffs: [BuffTypes.guts, BuffTypes.gutsRatio],
-    name: const LocalizedText(chs: '毅力', jpn: 'ガッツ', eng: 'Guts'),
+    name: const LocalizedText(chs: '毅力', jpn: 'ガッツ', eng: 'Guts', kor: '근성'),
   );
 
   static EffectType upHate = EffectType(
     key: 'upHate',
     buffs: [BuffTypes.upHate],
-    name: const LocalizedText(chs: '目标集中度', jpn: 'タゲ集中', eng: 'Taunt'),
+    name: const LocalizedText(
+        chs: '目标集中度', jpn: 'タゲ集中', eng: 'Taunt', kor: '타겟 집중'),
   );
 
   static EffectType upDefence = EffectType(
     key: 'upDefence',
     buffs: [BuffTypes.upDefence],
-    name: const LocalizedText(chs: '防御力提升', jpn: '防御力アップ', eng: 'Defence Up'),
+    name: const LocalizedText(
+        chs: '防御力提升', jpn: '防御力アップ', eng: 'Defence Up', kor: '방어력 상승'),
   );
 
   static EffectType downDefence = EffectType(
     key: 'downDefence',
     buffs: [BuffTypes.downDefence],
-    name: const LocalizedText(chs: '防御力下降', jpn: '防御力ダウン', eng: 'Defence Down'),
+    name: const LocalizedText(
+        chs: '防御力下降', jpn: '防御力ダウン', eng: 'Defence Down', kor: '방어력 감소'),
   );
 
   static EffectType avoidInstantdeath = EffectType(
     key: 'avoidInstantdeath',
     buffs: [BuffTypes.avoidInstantdeath],
-    name: const LocalizedText(chs: '即死无效', jpn: '即死無効', eng: 'Immune to Death'),
+    name: const LocalizedText(
+        chs: '即死无效', jpn: '即死無効', eng: 'Immune to Death', kor: '즉사 무효'),
   );
 
   static EffectType resistInstantdeath = EffectType(
@@ -347,62 +386,80 @@ class EffectType {
       BuffTypes.upGrantInstantdeath,
       BuffTypes.upNonresistInstantdeath
     ],
-    name: const LocalizedText(chs: '即死耐性', jpn: '即死耐性', eng: 'Death Resist'),
+    name: const LocalizedText(
+        chs: '即死耐性', jpn: '即死耐性', eng: 'Death Resist', kor: '즉사 내성'),
   );
   static EffectType delayFunction = EffectType(
     key: 'delayFunction',
     buffs: [BuffTypes.delayFunction],
-    name: const LocalizedText(chs: '延迟发动', jpn: '遅延発動', eng: 'Delayed Skill'),
+    name: const LocalizedText(
+        chs: '延迟发动', jpn: '遅延発動', eng: 'Delayed Skill', kor: '지연 발동'),
   );
   static EffectType deadFunction = EffectType(
     key: 'deadFunction',
     buffs: [BuffTypes.deadFunction],
-    name: const LocalizedText(chs: '死亡时发动', jpn: '死亡時発動', eng: 'Skill on Dead'),
+    name: const LocalizedText(
+        chs: '死亡时发动', jpn: '死亡時発動', eng: 'Skill on Dead', kor: '사망 시 발동'),
   );
   static EffectType entryFunction = EffectType(
     key: 'entryFunction',
     buffs: [BuffTypes.entryFunction],
-    name: const LocalizedText(chs: '登场时发动', jpn: '登場時発動', eng: 'Skill on Dead'),
+    name: const LocalizedText(
+        chs: '登场时发动', jpn: '登場時発動', eng: 'Skill on Dead', kor: '등장 시 발동'),
   );
   static EffectType turnendFunction = EffectType(
     key: 'turnendFunction',
     buffs: [BuffTypes.selfturnendFunction],
     name: const LocalizedText(
-        chs: '每回合发动', jpn: '毎ターン発動', eng: 'Skill every Turn'),
+        chs: '每回合发动', jpn: '毎ターン発動', eng: 'Skill every Turn', kor: '매 턴 발동'),
   );
   static EffectType upGainHp = EffectType(
     key: 'upGainHp',
     buffs: [BuffTypes.upGivegainHp, BuffTypes.upGainHp],
-    name: const LocalizedText(chs: 'HP回复量', jpn: 'HP回復量', eng: 'Healing Up'),
+    name: const LocalizedText(
+        chs: 'HP回复量', jpn: 'HP回復量', eng: 'Healing Up', kor: '회복량 증가'),
   );
   static EffectType upChagetd = EffectType(
     key: 'upChagetd',
     buffs: [BuffTypes.upChagetd],
-    name: const LocalizedText(chs: 'OC', jpn: 'オーバーチャージ', eng: 'Over Charge'),
+    name: const LocalizedText(
+        chs: 'OC', jpn: 'オーバーチャージ', eng: 'Over Charge', kor: '오버 차지'),
   );
   static EffectType upToleranceSubstate = EffectType(
     key: 'upToleranceSubstate',
     buffs: [BuffTypes.upToleranceSubstate],
     name: const LocalizedText(
-        chs: '强化解除耐性', jpn: '強化解除耐性', eng: 'Buff Removal Resistance'),
+        chs: '强化解除耐性',
+        jpn: '強化解除耐性',
+        eng: 'Buff Removal Resistance',
+        kor: '강화 해제 내성'),
   );
   static EffectType upFuncHpReduce = EffectType(
     key: 'upFuncHpReduce',
     buffs: [BuffTypes.upFuncHpReduce],
     name: const LocalizedText(
-        chs: '呪厄/延焼/蝕毒', jpn: '呪厄/延焼/蝕毒', eng: 'DoT Effectiveness Up'),
+        chs: '呪厄/延焼/蝕毒',
+        jpn: '呪厄/延焼/蝕毒',
+        eng: 'DoT Effectiveness Up',
+        kor: '주액/연소/식독'),
   );
   static EffectType fieldIndividuality = EffectType(
     key: 'fieldIndividuality',
     buffs: [BuffTypes.fieldIndividuality],
     name: const LocalizedText(
-        chs: '场地特性赋予', jpn: 'フィールドセット', eng: 'Change Field Type'),
+        chs: '场地特性赋予',
+        jpn: 'フィールドセット',
+        eng: 'Change Field Type',
+        kor: '필드 상태 변화'),
   );
   static EffectType commandattackFunction = EffectType(
     key: 'commandattackFunction',
     buffs: [BuffTypes.commandattackFunction],
     name: const LocalizedText(
-        chs: '攻击时发动', jpn: '攻撃時発動', eng: 'Trigger Skill on Cards'),
+        chs: '攻击时发动',
+        jpn: '攻撃時発動',
+        eng: 'Trigger Skill on Cards',
+        kor: '공격 시 발동'),
   );
 
   static EffectType commandcodeattackFunction = EffectType(
@@ -411,7 +468,8 @@ class EffectType {
     name: const LocalizedText(
         chs: '指令纹章攻击时追加效果',
         jpn: 'コマンドコード攻撃時追加効果',
-        eng: 'Cmd Code Effect when Attack'),
+        eng: 'Cmd Code Effect when Attack',
+        kor: '커맨드 코드 공격 시 추가 효과'),
   );
 
   static final List<EffectType> svtEffects = [

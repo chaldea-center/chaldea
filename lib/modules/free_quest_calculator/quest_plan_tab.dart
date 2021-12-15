@@ -40,7 +40,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               Text(LocalizedText.of(
-                  chs: '已忽略：', jpn: 'スキップ：', eng: 'Ignored: ')),
+                  chs: '已忽略：', jpn: 'スキップ：', eng: 'Ignored: ', kor: '무시됨: ')),
               ...ignoredItems.map((e) =>
                   Item.iconBuilder(context: context, itemKey: e, width: 32))
             ],

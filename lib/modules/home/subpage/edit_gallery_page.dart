@@ -30,7 +30,10 @@ class _EditGalleryPageState extends State<EditGalleryPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(LocalizedText.of(
-            chs: '编辑主页', jpn: 'ホームページの編集', eng: 'Edit Homepage')),
+            chs: '编辑主页',
+            jpn: 'ホームページの編集',
+            eng: 'Edit Homepage',
+            kor: '홈페이지 편집')),
       ),
       body: ListView(children: divideTiles(tiles, bottom: true)),
     );

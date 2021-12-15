@@ -43,11 +43,12 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
           controller: _tabController,
           tabs: [
             Tab(
-              text: LocalizedText.of(chs: '打分', jpn: 'スコアリング', eng: 'Rating'),
+              text: LocalizedText.of(
+                  chs: '打分', jpn: 'スコアリング', eng: 'Rating', kor: '스코어링'),
             ),
             Tab(
-              text:
-                  LocalizedText.of(chs: '期望值', jpn: '期待値', eng: 'Expectation'),
+              text: LocalizedText.of(
+                  chs: '期望值', jpn: '期待値', eng: 'Expectation', kor: '기대치'),
             )
           ],
         ),
@@ -144,13 +145,16 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
     switch (score) {
       case 1:
         return LocalizedText.of(
-            chs: '非常不想要', jpn: '本当に不要', eng: 'Really Unwanted');
+            chs: '非常不想要',
+            jpn: '本当に不要',
+            eng: 'Really Unwanted',
+            kor: '정말로 불필요함');
       // case 2:
       // case 3:
       // case 4:
       case 5:
         return LocalizedText.of(
-            chs: '非常想要！', jpn: 'とても欲しい', eng: 'Really Wanted');
+            chs: '非常想要！', jpn: 'とても欲しい', eng: 'Really Wanted', kor: '정말로 원함');
       default:
         return score.toString();
     }
@@ -283,7 +287,8 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
                       });
                     },
                     child: Text(
-                      LocalizedText.of(chs: '期望', jpn: '期待値', eng: 'Exp.'),
+                      LocalizedText.of(
+                          chs: '期望', jpn: '期待値', eng: 'Exp.', kor: '기대치'),
                       maxLines: 1,
                       overflow: TextOverflow.visible,
                     ),

@@ -234,7 +234,10 @@ class CmdCodeDetailBasePage extends StatelessWidget {
             CustomTableRow.fromTexts(
               texts: [
                 LocalizedText.of(
-                    chs: '已装备的从者', jpn: '装備されたサーヴァント', eng: 'Equipped Servants')
+                    chs: '已装备的从者',
+                    jpn: '装備されたサーヴァント',
+                    eng: 'Equipped Servants',
+                    kor: '장착된 서번트')
               ],
               isHeader: true,
             ),

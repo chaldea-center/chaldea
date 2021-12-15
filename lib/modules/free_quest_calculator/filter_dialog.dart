@@ -24,11 +24,15 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
         SwitchListTile.adaptive(
           value: params.use6th,
           title: Text(LocalizedText.of(
-              chs: '新掉落数据', jpn: '改善されたドロップ', eng: 'New DropRate Data')),
+              chs: '新掉落数据',
+              jpn: '改善されたドロップ',
+              eng: 'New DropRate Data',
+              kor: '새로운 드롭률 데이터')),
           subtitle: Text(LocalizedText.of(
               chs: '6周年(截至2.5.5)',
               jpn: '6周年(2.5.5まで)',
-              eng: '6th Anniversary(as of 2.5.5)')),
+              eng: '6th Anniversary(as of 2.5.5)',
+              kor: '6주년(페그오 2.5.5버전 이후)')),
           controlAffinity: ListTileControlAffinity.trailing,
           onChanged: (v) {
             setState(() {

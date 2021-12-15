@@ -48,7 +48,7 @@ class ChaldeaResponse {
     if (context == null) return Future.value();
     title ??= success
         ? S.current.success
-        : LocalizedText.of(chs: '错误/提示', jpn: 'エラー/警告', eng: 'Error/Warning');
+        : LocalizedText.of(chs: '错误/提示', jpn: 'エラー/警告', eng: 'Error/Warning', kor: '에러/경고');
     String content = msg.toString();
     if (showBody) content += '\n$body';
     return SimpleCancelOkDialog(

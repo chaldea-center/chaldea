@@ -32,11 +32,15 @@ class _GameDataPageState extends State<GameDataPage> {
               if (db.runtimeData.latestDatasetVersion != null)
                 ListTile(
                   title: Text(LocalizedText.of(
-                      chs: '最新版本', jpn: '最新バージョン ', eng: 'Latest Version')),
+                      chs: '最新版本',
+                      jpn: '最新バージョン ',
+                      eng: 'Latest Version',
+                      kor: '최신 버전')),
                   subtitle: Text(LocalizedText.of(
                       chs: '需要升级APP',
                       jpn: 'APPをアップグレードする必要があります',
-                      eng: 'Need to upgrade APP')),
+                      eng: 'Need to upgrade APP',
+                      kor: '앱을 업데이트 해야합니다')),
                   trailing: Text(
                     db.runtimeData.latestDatasetVersion!.readable,
                     style: TextStyle(color: Theme.of(context).errorColor),
@@ -49,28 +53,33 @@ class _GameDataPageState extends State<GameDataPage> {
             footer: LocalizedText.of(
                 chs: '用于数据包&APP更新',
                 jpn: 'データとAPPの更新に使用',
-                eng: 'Used for dataset & APP update'),
+                eng: 'Used for dataset & APP update',
+                kor: '데이터를 앱의 갱신에 사용'),
             children: [
               sourceAccordion(
                 source: GitSource.server,
                 subtitle: LocalizedText.of(
                     chs: '建议仅国内不能连接Github时使用',
                     jpn: 'Githubにアクセスできない場合のみ',
-                    eng: 'Only when you cannot access Github'),
+                    eng: 'Only when you cannot access Github',
+                    kor: 'Github에 액세스가 불가능할 경우에만'),
                 hideContent: true,
               ),
               sourceAccordion(
                 source: GitSource.github,
                 subtitle: LocalizedText.of(
-                    chs: '国内可能连不上', jpn: '推奨されます', eng: 'Suggested'),
+                    chs: '国内可能连不上',
+                    jpn: '推奨されます',
+                    eng: 'Suggested',
+                    kor: '제안하기'),
               ),
               sourceAccordion(
                 source: GitSource.gitee,
                 subtitle: LocalizedText.of(
-                  chs: '暂不作为应用内下载源，仍可手动下载',
-                  jpn: '現在、アプリ内ダウンロードソースとして使用されていません',
-                  eng: 'In-app download source is disabled',
-                ),
+                    chs: '暂不作为应用内下载源，仍可手动下载',
+                    jpn: '現在、アプリ内ダウンロードソースとして使用されていません',
+                    eng: 'In-app download source is disabled',
+                    kor: '현재, 앱 내 다운로드 소스로써 사용되지않습니다'),
                 disabled: true,
               ),
             ],
@@ -111,7 +120,10 @@ class _GameDataPageState extends State<GameDataPage> {
               ),
               ListTile(
                 title: Text(LocalizedText.of(
-                    chs: '下载图标', jpn: 'アイコンをダウンロード', eng: 'Download Icons')),
+                    chs: '下载图标',
+                    jpn: 'アイコンをダウンロード',
+                    eng: 'Download Icons',
+                    kor: '아이콘 다운로드')),
                 subtitle: const Text('Icons only'),
                 onTap: downloadIcons,
               ),

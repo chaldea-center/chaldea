@@ -149,6 +149,7 @@ class MarkdownHelpPage extends StatefulWidget {
       chs: await _loadAsset(join(dir, asset)) ?? '',
       jpn: await _loadAsset(join(dir, assetJp ?? join('jp', asset))),
       eng: await _loadAsset(join(dir, assetEn ?? join('en', asset))),
+      kor: await _loadAsset(join(dir, assetEn ?? join('kor', asset))),
     );
     if (lapse != null) {
       await Future.delayed(lapse);

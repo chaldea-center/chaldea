@@ -238,7 +238,7 @@ class _ItemObtainEventPageState extends State<ItemObtainEventPage> {
     List<Widget> children = [];
     final campaigns = db.gameData.events.campaigns.values
         .where((event) => _whetherToShow(
-        db.curUser.events.campaignEventPlanOf(event.indexKey).enabled,
+            db.curUser.events.campaignEventPlanOf(event.indexKey).enabled,
             event.isOutdated()))
         .toList();
     EventBase.sortEvents(campaigns, reversed: false);

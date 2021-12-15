@@ -18,8 +18,8 @@ class _ImportGudaPageState extends State<ImportGudaPage> {
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
-        title: Text(
-            LocalizedText.of(chs: 'Guda数据', jpn: 'Gudaデータ', eng: 'Guda Data')),
+        title: Text(LocalizedText.of(
+            chs: 'Guda数据', jpn: 'Gudaデータ', eng: 'Guda Data', kor: '구다 데이터')),
         actions: [
           IconButton(
             onPressed: () {
@@ -29,7 +29,8 @@ class _ImportGudaPageState extends State<ImportGudaPage> {
                 content: Text(LocalizedText.of(
                     chs: '导入iOS应用"Guda"的数据，支持素材和从者',
                     jpn: 'iOSアプリ「Guda」のデータをインポートする',
-                    eng: 'Import item or servant data from iOS app "Guda"')),
+                    eng: 'Import item or servant data from iOS app "Guda"',
+                    kor: ' iOS 앱 "Guda"에서 재료와 서번트의 데이터를 가져와 주세요')),
               ).showDialog(context);
             },
             icon: const Icon(Icons.help),

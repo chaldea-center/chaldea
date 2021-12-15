@@ -160,6 +160,10 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           '(${suits.toStringAsFixed(2)}×10000='
           '${(suits * 10000).round()}円)';
       subtitle = 'あと$extraLeft回で1回ボーナス召喚';
+    } else if (Language.isKR) {
+      title = '합계: $totalPulls회 $totalQuartz석'
+          ' (${suits.toStringAsFixed(2)}×93200/95000=₩${(suits * 93200).round()}/${(suits * 95000).round()})';
+      subtitle = '$extraLeft번 더 돌리면 보너스 소환 기회 획득';
     } else {
       title = 'Total $totalPulls Pulls $totalQuartz SQ'
           ' (${suits.toStringAsFixed(2)}×100=\$${(suits * 100).round()})';

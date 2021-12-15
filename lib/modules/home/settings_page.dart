@@ -137,22 +137,22 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             ListTile(
               title: Text(LocalizedText.of(
-                  chs: '深色模式', jpn: 'ダークモード', eng: 'Dark Mode',kor: '다크 모드')),
+                  chs: '深色模式', jpn: 'ダークモード', eng: 'Dark Mode', kor: '다크 모드')),
               trailing: DropdownButton<ThemeMode>(
                 value: db.appSetting.themeMode ?? ThemeMode.system,
                 underline: Container(),
                 items: [
                   DropdownMenuItem(
                       child: Text(LocalizedText.of(
-                          chs: '系统', jpn: 'System', eng: 'System')),
+                          chs: '系统', jpn: 'System', eng: 'System', kor: '시스템')),
                       value: ThemeMode.system),
                   DropdownMenuItem(
                       child: Text(LocalizedText.of(
-                          chs: '浅色', jpn: 'Light', eng: 'Light')),
+                          chs: '浅色', jpn: 'Light', eng: 'Light', kor: '밝게')),
                       value: ThemeMode.light),
                   DropdownMenuItem(
                       child: Text(LocalizedText.of(
-                          chs: '深色', jpn: 'Dark', eng: 'Dark')),
+                          chs: '深色', jpn: 'Dark', eng: 'Dark', kor: '어둡게')),
                       value: ThemeMode.dark),
                 ],
                 onChanged: (v) {
@@ -227,7 +227,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: Text(LocalizedText.of(
                     chs: 'App Store评分',
                     jpn: 'App Storeでのレート ',
-                    eng: 'Rate on App Store')),
+                    eng: 'Rate on App Store',
+                    kor: '앱 스토어에서 평가하기')),
                 trailing: const Icon(Icons.star_half_rounded),
                 onTap: () {
                   launch(kAppStoreLink);
@@ -238,7 +239,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: Text(LocalizedText.of(
                     chs: 'Google Play评分',
                     jpn: 'Google Playでのレート ',
-                    eng: 'Rate on Google Play')),
+                    eng: 'Rate on Google Play',
+                    kor: 'Google Play에서 평가하기')),
                 trailing: const Icon(Icons.star_half_rounded),
                 onTap: () {
                   launch(kGooglePlayLink);

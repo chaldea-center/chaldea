@@ -55,7 +55,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m14(total, hidden) => "합계 : ${total} 결과 (${hidden} 숨기기)";
 
-  static String m15(server) => "${server} 와 연동";
+  static String m15(server) => "${server} 서버와 연동";
 
   static String m16(a, b) => "${a} ${b}";
 
@@ -103,14 +103,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "bond_craft": MessageLookupByLibrary.simpleMessage("인연예장"),
         "bond_eff": MessageLookupByLibrary.simpleMessage("인연 효율"),
         "bronze": MessageLookupByLibrary.simpleMessage("동색"),
-        "calc_weight": MessageLookupByLibrary.simpleMessage("무게"),
+        "calc_weight": MessageLookupByLibrary.simpleMessage("몸무게"),
         "calculate": MessageLookupByLibrary.simpleMessage("계산"),
         "calculator": MessageLookupByLibrary.simpleMessage("계산기"),
         "campaign_event": MessageLookupByLibrary.simpleMessage("캠페인"),
         "cancel": MessageLookupByLibrary.simpleMessage("취소"),
-        "card_description": MessageLookupByLibrary.simpleMessage("해설"),
+        "card_description": MessageLookupByLibrary.simpleMessage("상세 정보"),
         "card_info": MessageLookupByLibrary.simpleMessage("정보"),
-        "carousel_setting": MessageLookupByLibrary.simpleMessage("캐러셀 설정"),
+        "carousel_setting": MessageLookupByLibrary.simpleMessage("배너 설정"),
         "change_log": MessageLookupByLibrary.simpleMessage("업데이트 내역"),
         "characters_in_card": MessageLookupByLibrary.simpleMessage("캐릭터"),
         "check_update": MessageLookupByLibrary.simpleMessage("업데이트 확인"),
@@ -121,10 +121,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "clear_cache_hint":
             MessageLookupByLibrary.simpleMessage("일러스트와 음성을 포함"),
         "clear_userdata": MessageLookupByLibrary.simpleMessage("사용자 데이터 지우기"),
-        "cmd_code_title": MessageLookupByLibrary.simpleMessage("커맨드코드"),
-        "command_code": MessageLookupByLibrary.simpleMessage("커맨드코드"),
+        "cmd_code_title": MessageLookupByLibrary.simpleMessage("커맨드 코드"),
+        "command_code": MessageLookupByLibrary.simpleMessage("커맨드 코드"),
         "confirm": MessageLookupByLibrary.simpleMessage("확인"),
-        "consumed": MessageLookupByLibrary.simpleMessage("소비됨"),
+        "consumed": MessageLookupByLibrary.simpleMessage("소비량"),
         "copied": MessageLookupByLibrary.simpleMessage("복사됨"),
         "copy": MessageLookupByLibrary.simpleMessage("복사하기"),
         "copy_plan_menu": MessageLookupByLibrary.simpleMessage("다른 플랜에서 복사"),
@@ -148,7 +148,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "dataset_type_text": MessageLookupByLibrary.simpleMessage("텍스트 데이터"),
         "delete": MessageLookupByLibrary.simpleMessage("삭제"),
         "demands": MessageLookupByLibrary.simpleMessage("요구량"),
-        "display_setting": MessageLookupByLibrary.simpleMessage("디스플레이 설정"),
+        "display_setting": MessageLookupByLibrary.simpleMessage("화면 설정"),
         "download": MessageLookupByLibrary.simpleMessage("다운로드"),
         "download_complete": MessageLookupByLibrary.simpleMessage("다운로드 완료"),
         "download_full_gamedata":
@@ -177,7 +177,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "efficiency_type": MessageLookupByLibrary.simpleMessage("효율 타입"),
         "efficiency_type_ap": MessageLookupByLibrary.simpleMessage("20AP 효율"),
         "efficiency_type_drop": MessageLookupByLibrary.simpleMessage("드롭률"),
-        "enemy_list": MessageLookupByLibrary.simpleMessage("적들"),
+        "enemy_list": MessageLookupByLibrary.simpleMessage("적"),
         "enhance": MessageLookupByLibrary.simpleMessage("강화"),
         "enhance_warning":
             MessageLookupByLibrary.simpleMessage("강화하게 되면 다음 아이템이 소비됩니다"),
@@ -187,7 +187,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_collect_items": MessageLookupByLibrary.simpleMessage("아이템 수집"),
         "event_item_default":
             MessageLookupByLibrary.simpleMessage("상점/미션/포인트/퀘스트"),
-        "event_item_extra": MessageLookupByLibrary.simpleMessage("그 외 입수 방법"),
+        "event_item_extra": MessageLookupByLibrary.simpleMessage("기타 아이템"),
         "event_lottery_limit_hint": m3,
         "event_lottery_limited": MessageLookupByLibrary.simpleMessage("제한된 룰렛"),
         "event_lottery_unit": MessageLookupByLibrary.simpleMessage("룰렛"),
@@ -231,7 +231,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_category": MessageLookupByLibrary.simpleMessage("카테고리"),
         "filter_effects": MessageLookupByLibrary.simpleMessage("효과"),
         "filter_gender": MessageLookupByLibrary.simpleMessage("성별"),
-        "filter_match_all": MessageLookupByLibrary.simpleMessage("전부 선택"),
+        "filter_match_all": MessageLookupByLibrary.simpleMessage("모두 선택"),
         "filter_obtain": MessageLookupByLibrary.simpleMessage("습득 방법"),
         "filter_plan_not_reached":
             MessageLookupByLibrary.simpleMessage("계획 미달성"),
@@ -244,17 +244,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_sort_number": MessageLookupByLibrary.simpleMessage("번호"),
         "filter_sort_rarity": MessageLookupByLibrary.simpleMessage("레어도"),
         "filter_special_trait": MessageLookupByLibrary.simpleMessage("특별한 특성"),
-        "free_efficiency": MessageLookupByLibrary.simpleMessage("자유로운 효율"),
+        "free_efficiency": MessageLookupByLibrary.simpleMessage("자유 효율"),
         "free_progress": MessageLookupByLibrary.simpleMessage("퀘스트"),
         "free_progress_newest": MessageLookupByLibrary.simpleMessage("최신(일그오)"),
         "free_quest": MessageLookupByLibrary.simpleMessage("프리 퀘스트"),
-        "free_quest_calculator": MessageLookupByLibrary.simpleMessage("프리퀘스트"),
+        "free_quest_calculator": MessageLookupByLibrary.simpleMessage("프리 퀘스트"),
         "free_quest_calculator_short":
-            MessageLookupByLibrary.simpleMessage("프리퀘스트"),
+            MessageLookupByLibrary.simpleMessage("프리 퀘스트"),
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("홈"),
         "game_drop": MessageLookupByLibrary.simpleMessage("드롭"),
         "game_experience": MessageLookupByLibrary.simpleMessage("경험치"),
-        "game_kizuna": MessageLookupByLibrary.simpleMessage("인연"),
+        "game_kizuna": MessageLookupByLibrary.simpleMessage("몽화"),
         "game_rewards": MessageLookupByLibrary.simpleMessage("보상"),
         "gamedata": MessageLookupByLibrary.simpleMessage("게임 데이터"),
         "gold": MessageLookupByLibrary.simpleMessage("금색"),
@@ -324,8 +324,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "info_strength": MessageLookupByLibrary.simpleMessage("근력"),
         "info_trait": MessageLookupByLibrary.simpleMessage("속성"),
         "info_value": MessageLookupByLibrary.simpleMessage("값"),
-        "info_weak_to_ea": MessageLookupByLibrary.simpleMessage("에누마 엘리시에 약함"),
-        "info_weight": MessageLookupByLibrary.simpleMessage("무게"),
+        "info_weak_to_ea": MessageLookupByLibrary.simpleMessage("에누마 엘리시에 취약"),
+        "info_weight": MessageLookupByLibrary.simpleMessage("몸무게"),
         "input_invalid_hint":
             MessageLookupByLibrary.simpleMessage("입력이 유효하지 않습니다"),
         "install": MessageLookupByLibrary.simpleMessage("설치"),
@@ -354,7 +354,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_category_usual": MessageLookupByLibrary.simpleMessage("아이템"),
         "item_eff": MessageLookupByLibrary.simpleMessage("아이템 효율"),
         "item_exceed_hint": MessageLookupByLibrary.simpleMessage(
-            "플랜을 계산하기 전에 초과한 재료를 설정할 수 있습니다(프리퀘스트 플랜의 경우만)"),
+            "플랜을 계산하기 전에 초과한 재료를 설정할 수 있습니다(프리퀘스트 플랜의 경우에만)"),
         "item_left": MessageLookupByLibrary.simpleMessage("나머지"),
         "item_no_free_quests": MessageLookupByLibrary.simpleMessage("프리퀘스트 없음"),
         "item_only_show_lack":
@@ -366,7 +366,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "join_beta": MessageLookupByLibrary.simpleMessage("베타 프로그램에 참가하기"),
         "jump_to": m9,
         "language": MessageLookupByLibrary.simpleMessage("한국어"),
-        "language_en": MessageLookupByLibrary.simpleMessage("Korean"),
         "level": MessageLookupByLibrary.simpleMessage("레벨"),
         "limited_event": MessageLookupByLibrary.simpleMessage("기간 한정 이벤트"),
         "link": MessageLookupByLibrary.simpleMessage("링크"),
@@ -378,7 +377,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("비밀번호 변경"),
         "login_first_hint":
             MessageLookupByLibrary.simpleMessage("먼저 로그인을 해주세요"),
-        "login_forget_pwd": MessageLookupByLibrary.simpleMessage("비밀번호를 잊었습니다"),
+        "login_forget_pwd":
+            MessageLookupByLibrary.simpleMessage("비밀번호를 잊어버렸습니다"),
         "login_login": MessageLookupByLibrary.simpleMessage("로그인"),
         "login_logout": MessageLookupByLibrary.simpleMessage("로그아웃"),
         "login_new_password": MessageLookupByLibrary.simpleMessage("새 비밀번호"),
@@ -389,7 +389,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("이전 비밀번호와 같음"),
         "login_signup": MessageLookupByLibrary.simpleMessage("회원가입"),
         "login_state_not_login":
-            MessageLookupByLibrary.simpleMessage("로그인이 되어 있지않습니다"),
+            MessageLookupByLibrary.simpleMessage("로그인이 필요합니다"),
         "login_username": MessageLookupByLibrary.simpleMessage("사용자 이름"),
         "login_username_error":
             MessageLookupByLibrary.simpleMessage("4자리 이상의 문자 또는 숫자로 구성할수 있습니다"),
@@ -415,14 +415,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "next_card": MessageLookupByLibrary.simpleMessage("다음"),
         "nga": MessageLookupByLibrary.simpleMessage("NGA"),
         "nga_fgo": MessageLookupByLibrary.simpleMessage("NGA-FGO"),
-        "no": MessageLookupByLibrary.simpleMessage("아니요"),
+        "no": MessageLookupByLibrary.simpleMessage("X"),
         "no_servant_quest_hint":
             MessageLookupByLibrary.simpleMessage("막간의 이야기 또는 강화 퀘스트가 없습니다"),
         "no_servant_quest_hint_subtitle":
             MessageLookupByLibrary.simpleMessage("♡를 클릭해서 모든 퀘스트를 표시합니다"),
         "noble_phantasm": MessageLookupByLibrary.simpleMessage("보구"),
         "noble_phantasm_level": MessageLookupByLibrary.simpleMessage("보구 레벨"),
-        "obtain_methods": MessageLookupByLibrary.simpleMessage("Obtains"),
+        "obtain_methods": MessageLookupByLibrary.simpleMessage("습득방법"),
         "ok": MessageLookupByLibrary.simpleMessage("확인"),
         "open": MessageLookupByLibrary.simpleMessage("열기"),
         "open_condition": MessageLookupByLibrary.simpleMessage("개방 조건"),
@@ -446,7 +446,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "planning_free_quest_btn": MessageLookupByLibrary.simpleMessage("퀘스트"),
         "preview": MessageLookupByLibrary.simpleMessage("미리보기"),
         "previous_card": MessageLookupByLibrary.simpleMessage("이전"),
-        "priority": MessageLookupByLibrary.simpleMessage("우선순위"),
+        "priority": MessageLookupByLibrary.simpleMessage("우선 순위"),
         "project_homepage": MessageLookupByLibrary.simpleMessage("프로젝트 홈페이지"),
         "query_failed": MessageLookupByLibrary.simpleMessage("쿼리를 실패했습니다"),
         "quest": MessageLookupByLibrary.simpleMessage("퀘스트"),
@@ -482,7 +482,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "search_result_count_hide": m14,
         "select_copy_plan_source":
             MessageLookupByLibrary.simpleMessage("복사할 파일을 선택"),
-        "select_plan": MessageLookupByLibrary.simpleMessage("플랜 선택"),
+        "select_plan": MessageLookupByLibrary.simpleMessage("계획 선택"),
         "servant": MessageLookupByLibrary.simpleMessage("서번트"),
         "servant_coin": MessageLookupByLibrary.simpleMessage("서번트 코인"),
         "servant_title": MessageLookupByLibrary.simpleMessage("서번트"),
@@ -510,7 +510,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skill": MessageLookupByLibrary.simpleMessage("스킬"),
         "skill_up": MessageLookupByLibrary.simpleMessage("스킬 강화"),
         "skilled_max10": MessageLookupByLibrary.simpleMessage("스킬 최대(310)"),
-        "sprites": MessageLookupByLibrary.simpleMessage("모델"),
+        "sprites": MessageLookupByLibrary.simpleMessage("스프라이트"),
         "statistics_include_checkbox":
             MessageLookupByLibrary.simpleMessage("가진 아이템도 포함"),
         "statistics_title": MessageLookupByLibrary.simpleMessage("통계"),
@@ -561,9 +561,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("백업 파일을 업로드"),
         "valentine_craft": MessageLookupByLibrary.simpleMessage("발렌타인 예장"),
         "version": MessageLookupByLibrary.simpleMessage("버전"),
-        "view_illustration": MessageLookupByLibrary.simpleMessage("일러스트레이터 보기"),
+        "view_illustration": MessageLookupByLibrary.simpleMessage("일러스트 보기"),
         "voice": MessageLookupByLibrary.simpleMessage("음성"),
         "words_separate": m16,
-        "yes": MessageLookupByLibrary.simpleMessage("예")
+        "yes": MessageLookupByLibrary.simpleMessage("O")
       };
 }

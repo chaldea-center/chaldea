@@ -42,11 +42,12 @@ class _SvtSvtSpriteTabTabState extends SvtTabBaseState<SvtSpriteTab>
     // icon1, icon2, iconCostume
     // sprite ...
     if (s == 'iconCostume') {
-      return LocalizedText.of(chs: '灵衣图标', jpn: '霊衣アイコン', eng: 'Costume Icons');
+      return LocalizedText.of(
+          chs: '灵衣图标', jpn: '霊衣アイコン', eng: 'Costume Icons', kor: '영의 아이콘');
     }
     if (s == 'spriteCostume') {
       return LocalizedText.of(
-          chs: '灵衣模型', jpn: '霊衣モデル', eng: 'Costume Sprites');
+          chs: '灵衣模型', jpn: '霊衣モデル', eng: 'Costume Sprites', kor: '영의 스프라이트');
     }
     return s.replaceFirstMapped(RegExp(r'(icon|sprite)(\d)'), (match) {
       String suffix = match.group(2).toString();
