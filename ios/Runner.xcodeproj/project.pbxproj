@@ -39,6 +39,8 @@
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
+		937B17FA276A94B700264B71 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Main.strings; sourceTree = "<group>"; };
+		937B17FB276A94B700264B71 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		938F6D7425BAA9C100C3A1F8 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		938F6D7525BAA9C100C3A1F8 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		93CB6326259F163D00EFEE0F /* Info-Release.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-Release.plist"; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 				Base,
 				"zh-Hans",
 				ja,
+				ko,
 			);
 			mainGroup = 97C146E51CF9000F007C117D;
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
@@ -311,6 +314,7 @@
 				97C146FB1CF9000F007C117D /* Base */,
 				938F6D7425BAA9C100C3A1F8 /* zh-Hans */,
 				93D09B2325C34AEB0037A20F /* ja */,
+				937B17FA276A94B700264B71 /* ko */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -321,6 +325,7 @@
 				97C147001CF9000F007C117D /* Base */,
 				938F6D7525BAA9C100C3A1F8 /* zh-Hans */,
 				93D09B2425C34AEC0037A20F /* ja */,
+				937B17FB276A94B700264B71 /* ko */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
