@@ -1,5 +1,9 @@
 import 'package:chaldea/components/components.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:chaldea/generated/intl/messages_en.dart' as messages_en;
+import 'package:chaldea/generated/intl/messages_ja.dart' as messages_ja;
+import 'package:chaldea/generated/intl/messages_ko.dart' as messages_ko;
+import 'package:chaldea/generated/intl/messages_zh.dart' as messages_zh;
 
 import 'theme_palette.dart';
 
@@ -160,6 +164,28 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
               db.notifyAppUpdate();
             },
           ),
+        ),
+        ListTile(
+          horizontalTitleGap: 0,
+          leading: const Icon(Icons.translate),
+          title: const Text('Reload l10n'),
+          onTap: () {
+            messages_en.messages.messages.clear();
+            messages_en.messages.messages
+                .addAll(messages_en.MessageLookup().messages);
+
+            messages_ja.messages.messages.clear();
+            messages_ja.messages.messages
+                .addAll(messages_en.MessageLookup().messages);
+
+            messages_ko.messages.messages.clear();
+            messages_ko.messages.messages
+                .addAll(messages_en.MessageLookup().messages);
+
+            messages_zh.messages.messages.clear();
+            messages_zh.messages.messages
+                .addAll(messages_en.MessageLookup().messages);
+          },
         ),
         ListTile(
           horizontalTitleGap: 0,
