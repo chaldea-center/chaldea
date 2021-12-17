@@ -1,22 +1,90 @@
 import 'dart:async';
 
+class _RateLimitTask<T> {
+  final Completer<T> completer;
+  final FutureOr<T> Function()? onCalceled;
+
+  _RateLimitTask(this.completer, [this.onCalceled]);
+}
+
 class RateLimiter {
-  final Duration minInterval;
-  DateTime? _lastCalled;
+  final int maxCalls;
+  final Duration period;
+  final bool raiseOnLimit;
 
-  RateLimiter(this.minInterval);
+  DateTime _lastReset;
 
-  Future<T> call<T>(FutureOr<T> Function() func) async {
-    final now = DateTime.now();
-    if (_lastCalled != null) {
-      final elapsed = now.difference(_lastCalled!);
-      if (elapsed < minInterval) {
-        await Future.delayed(minInterval - elapsed);
+  RateLimiter({
+    this.maxCalls = 50,
+    this.period = const Duration(seconds: 5),
+    this.raiseOnLimit = false,
+  }) : _lastReset = DateTime.now();
+
+  final List<_RateLimitTask> _allTasks = [];
+  final List<_RateLimitTask> _periodTasks = [];
+
+  bool get isIdle => _allTasks.isEmpty;
+
+  Future<T> limited<T>(Future<T> Function() func,
+      {Future<T> Function()? onCalceled}) async {
+    final task = _RateLimitTask<T>(Completer(), onCalceled);
+
+    _allTasks.add(task);
+    Future.microtask(() async {
+      await _wait(task);
+      if (task.completer.isCompleted) return;
+      try {
+        final value = await func();
+        if (!task.completer.isCompleted) task.completer.complete(value);
+      } catch (e, s) {
+        if (!task.completer.isCompleted) task.completer.completeError(e, s);
+      } finally {
+        _allTasks.remove(task);
       }
-    }
-    _lastCalled = now;
-    return func();
+    });
+    return task.completer.future;
   }
 
-// Future<T> debounce<T>(T Function() func);
+  Future<void> _wait(_RateLimitTask task) async {
+    while (true) {
+      if (task.completer.isCompleted) return;
+      if (_periodTasks.length < maxCalls) {
+        _periodTasks.add(task);
+        return;
+      }
+      final remain = period - DateTime.now().difference(_lastReset);
+      if (raiseOnLimit) {
+        throw RateLimitError(remain);
+      }
+      await Future.delayed(remain);
+      if (_lastReset.add(period).isBefore(DateTime.now())) {
+        _periodTasks.removeWhere((e) => e.completer.isCompleted);
+        _lastReset = DateTime.now();
+      }
+    }
+  }
+
+  void cancelAll() {
+    for (final task in _allTasks) {
+      if (task.onCalceled != null) {
+        task.completer.complete(task.onCalceled!());
+      } else {
+        task.completer
+            .completeError(RateLimitCancelError(), StackTrace.current);
+      }
+    }
+    _allTasks.clear();
+  }
+}
+
+class RateLimitCancelError extends Error {}
+
+class RateLimitError extends Error {
+  final Duration? periodRemaining;
+  RateLimitError([this.periodRemaining]);
+
+  @override
+  String toString() {
+    return '$runtimeType: wait $periodRemaining';
+  }
 }

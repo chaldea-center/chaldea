@@ -18,7 +18,7 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
     if (!mounted) return;
     setState(() {
       progress =
-          '${count + 1}/$total (${(count / total * 100).toStringAsFixed(1)}%)\n'
+          '$count/$total (${(count / total * 100).toStringAsFixed(1)}%)\n'
           '$errors errors';
     });
   }
@@ -28,7 +28,7 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
     return AlertDialog(
       title: Text(S.current.icons),
       content: Text(
-        'Limit: 5 requests/second\n'
+        'Limit: 10/second\n'
         'Progress:\n$progress',
         style: kMonoStyle,
       ),
@@ -41,7 +41,7 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
           child: Text(S.current.cancel),
         ),
         TextButton(
-          onPressed: _manager.isCompleted ? _startCaching : null,
+          onPressed: _manager._running ? null : _startCaching,
           child: Text(S.current.download),
         ),
       ],
@@ -62,16 +62,15 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
 }
 
 class IconCacheManager {
-  bool _needCancel = false;
-  Completer? _completer;
+  final _limiter =
+      RateLimiter(maxCalls: 10, period: const Duration(seconds: 1));
 
-  Future? get future => _completer?.future;
+  bool _running = false;
 
   Future<void> cancel() async {
-    _needCancel = true;
+    _limiter.cancelAll();
+    _running = false;
   }
-
-  bool get isCompleted => _completer == null || _completer?.isCompleted == true;
 
   Future start({
     Function(int count, int total, int errors)? onProgress,
@@ -80,7 +79,7 @@ class IconCacheManager {
     if (!db.hasNetwork) {
       return;
     }
-    _completer = Completer();
+    _running = true;
     Set<String?> _icons = {};
     for (final svt in db.gameData.servants.values) {
       _icons.add(svt.icon);
@@ -122,30 +121,36 @@ class IconCacheManager {
         .toList();
     int total = resolvedIcons.length;
     int errors = 0;
+    int finished = 0;
 
-    final limiter = RateLimiter(interval);
+    List<Future> tasks = [];
 
     for (int index = 0; index < resolvedIcons.length; index++) {
-      if (_needCancel) {
-        _completer?.complete();
-        return;
-      }
       String key = resolvedIcons[index];
       String cacheName = db.getIconFullKey(key) ?? key;
       String originName = db.gameData.icons[cacheName] ?? cacheName;
       String fp = join(db.paths.gameIconDir, cacheName);
       if (!await File(fp).exists()) {
-        await limiter.call(() async {
+        tasks.add(_limiter.limited(() async {
           final url = await WikiUtil.resolveFileUrl(originName, fp);
           if (url == null) {
             errors += 1;
           }
+          finished += 1;
           print('download icon: $key -> $url');
-        });
-      }
-      if (onProgress != null) {
-        onProgress(index, total, errors);
+          if (onProgress != null) {
+            onProgress(finished, total, errors);
+          }
+        }));
+      } else {
+        finished += 1;
+        if (onProgress != null) {
+          onProgress(finished, total, errors);
+        }
       }
     }
+
+    await Future.wait(tasks);
+    _running = false;
   }
 }
