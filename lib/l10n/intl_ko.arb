@@ -1,6 +1,7 @@
 {
   "@@locale": "ko",
   "language": "한국어",
+  "language_en": "Korean",
   "hello": "안녕하십니까, 마스터.",
   "gallery_tab_name": "홈",
   "settings_tab_name": "설정",
@@ -421,5 +422,8 @@
   "effect_search": "버프 검색",
   "growth_curve": "성장 곡선",
   "demands": "요구량",
-  "consumed": "소비량"
+  "consumed": "소비량",
+  "reset_plan_shown": "계획 초기화 {n}(표시된)",
+  "reset_plan_all": "계획 초기화 {n}(모두)",
+  "set_plan_name": "계획 이름 설정"
 }

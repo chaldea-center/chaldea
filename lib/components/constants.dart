@@ -48,7 +48,7 @@ class Language {
   static const chs = Language('zh', '简体中文', Locale('zh', ''));
   static const jpn = Language('ja', '日本語', Locale('ja', ''));
   static const eng = Language('en', 'English', Locale('en', ''));
-  static const kor = Language('ko', '한국인', Locale('ko', ''));
+  static const kor = Language('ko', '한국어', Locale('ko', ''));
 
   static List<Language> get supportLanguages => const [chs, jpn, eng, kor];
 

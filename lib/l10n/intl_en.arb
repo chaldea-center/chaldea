@@ -420,5 +420,8 @@
   "effect_search": "Buff Search",
   "growth_curve": "Growth Curve",
   "demands": "Demands",
-  "consumed": "Consumed"
+  "consumed": "Consumed",
+  "reset_plan_shown": "Reset Plan {n}(Shown)",
+  "reset_plan_all": "Reset Plan {n}(All)",
+  "set_plan_name": "Set Plan Name"
 }

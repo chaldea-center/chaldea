@@ -51,13 +51,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(index) => "계획 ${index}";
 
-  static String m13(total) => "합계 : ${total}";
+  static String m13(n) => "계획 초기화 ${n}(모두)";
 
-  static String m14(total, hidden) => "합계 : ${total} 결과 (${hidden} 숨기기)";
+  static String m14(n) => "계획 초기화 ${n}(표시된)";
 
-  static String m15(server) => "${server} 서버와 연동";
+  static String m15(total) => "합계 : ${total}";
 
-  static String m16(a, b) => "${a} ${b}";
+  static String m16(total, hidden) => "합계 : ${total} 결과 (${hidden} 숨기기)";
+
+  static String m17(server) => "${server} 서버와 연동";
+
+  static String m18(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -366,6 +370,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "join_beta": MessageLookupByLibrary.simpleMessage("베타 프로그램에 참가하기"),
         "jump_to": m9,
         "language": MessageLookupByLibrary.simpleMessage("한국어"),
+        "language_en": MessageLookupByLibrary.simpleMessage("Korean"),
         "level": MessageLookupByLibrary.simpleMessage("레벨"),
         "limited_event": MessageLookupByLibrary.simpleMessage("기간 한정 이벤트"),
         "link": MessageLookupByLibrary.simpleMessage("링크"),
@@ -464,6 +469,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("이름 변경"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("복각 이벤트"),
         "reset": MessageLookupByLibrary.simpleMessage("초기화"),
+        "reset_plan_all": m13,
+        "reset_plan_shown": m14,
         "reset_success": MessageLookupByLibrary.simpleMessage("초기화 성공"),
         "reset_svt_enhance_state":
             MessageLookupByLibrary.simpleMessage("스킬/보구 초기화"),
@@ -478,8 +485,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "search": MessageLookupByLibrary.simpleMessage("검색"),
         "search_option_basic": MessageLookupByLibrary.simpleMessage("기본 옵션"),
         "search_options": MessageLookupByLibrary.simpleMessage("검색 옵션"),
-        "search_result_count": m13,
-        "search_result_count_hide": m14,
+        "search_result_count": m15,
+        "search_result_count_hide": m16,
         "select_copy_plan_source":
             MessageLookupByLibrary.simpleMessage("복사할 파일을 선택"),
         "select_plan": MessageLookupByLibrary.simpleMessage("계획 선택"),
@@ -491,6 +498,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "server_jp": MessageLookupByLibrary.simpleMessage("일본"),
         "server_na": MessageLookupByLibrary.simpleMessage("북미"),
         "server_tw": MessageLookupByLibrary.simpleMessage("대만"),
+        "set_plan_name": MessageLookupByLibrary.simpleMessage("계획 이름 설정"),
         "setting_auto_rotate": MessageLookupByLibrary.simpleMessage("자동 회전"),
         "settings_data": MessageLookupByLibrary.simpleMessage("데이터"),
         "settings_data_management":
@@ -539,7 +547,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("계획 초기화"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Slider/Dropdown 전환"),
-        "sync_server": m15,
+        "sync_server": m17,
         "tooltip_refresh_sliders":
             MessageLookupByLibrary.simpleMessage("슬라이드 갱신"),
         "total_ap": MessageLookupByLibrary.simpleMessage("AP 합계"),
@@ -563,7 +571,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "version": MessageLookupByLibrary.simpleMessage("버전"),
         "view_illustration": MessageLookupByLibrary.simpleMessage("일러스트 보기"),
         "voice": MessageLookupByLibrary.simpleMessage("음성"),
-        "words_separate": m16,
+        "words_separate": m18,
         "yes": MessageLookupByLibrary.simpleMessage("O")
       };
 }

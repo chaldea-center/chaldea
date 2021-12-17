@@ -51,13 +51,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(index) => "规划${index}";
 
-  static String m13(total) => "总计: ${total}";
+  static String m13(n) => "重置规划${n}(所有)";
 
-  static String m14(total, hidden) => "总计: ${total} (隐藏: ${hidden})";
+  static String m14(n) => "重置规划${n}(已显示)";
 
-  static String m15(server) => "同步${server}";
+  static String m15(total) => "总计: ${total}";
 
-  static String m16(a, b) => "${a}${b}";
+  static String m16(total, hidden) => "总计: ${total} (隐藏: ${hidden})";
+
+  static String m17(server) => "同步${server}";
+
+  static String m18(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -442,6 +446,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("重命名"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("复刻活动"),
         "reset": MessageLookupByLibrary.simpleMessage("重置"),
+        "reset_plan_all": m13,
+        "reset_plan_shown": m14,
         "reset_success": MessageLookupByLibrary.simpleMessage("已重置"),
         "reset_svt_enhance_state":
             MessageLookupByLibrary.simpleMessage("重置强化本状态"),
@@ -456,8 +462,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "search": MessageLookupByLibrary.simpleMessage("搜索"),
         "search_option_basic": MessageLookupByLibrary.simpleMessage("基础信息"),
         "search_options": MessageLookupByLibrary.simpleMessage("搜索范围"),
-        "search_result_count": m13,
-        "search_result_count_hide": m14,
+        "search_result_count": m15,
+        "search_result_count_hide": m16,
         "select_copy_plan_source":
             MessageLookupByLibrary.simpleMessage("选择复制来源"),
         "select_plan": MessageLookupByLibrary.simpleMessage("选择规划"),
@@ -469,6 +475,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "server_jp": MessageLookupByLibrary.simpleMessage("日服"),
         "server_na": MessageLookupByLibrary.simpleMessage("美服"),
         "server_tw": MessageLookupByLibrary.simpleMessage("台服"),
+        "set_plan_name": MessageLookupByLibrary.simpleMessage("设置规划名称"),
         "setting_auto_rotate": MessageLookupByLibrary.simpleMessage("自动旋转"),
         "settings_data": MessageLookupByLibrary.simpleMessage("数据"),
         "settings_data_management":
@@ -516,7 +523,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("重置规划"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("切换滑动条/下拉框"),
-        "sync_server": m15,
+        "sync_server": m17,
         "tooltip_refresh_sliders":
             MessageLookupByLibrary.simpleMessage("刷新轮播图"),
         "total_ap": MessageLookupByLibrary.simpleMessage("总AP"),
@@ -538,7 +545,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "version": MessageLookupByLibrary.simpleMessage("版本"),
         "view_illustration": MessageLookupByLibrary.simpleMessage("查看卡面"),
         "voice": MessageLookupByLibrary.simpleMessage("语音"),
-        "words_separate": m16,
+        "words_separate": m18,
         "yes": MessageLookupByLibrary.simpleMessage("是")
       };
 }

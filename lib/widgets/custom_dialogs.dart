@@ -80,10 +80,10 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
         },
         onSubmitted: (v) {
           FocusScope.of(context).unfocus();
+          Navigator.pop(context);
           if (widget.onSubmit != null) {
             widget.onSubmit!(v);
           }
-          Navigator.pop(context);
         },
       ),
       actions: <Widget>[

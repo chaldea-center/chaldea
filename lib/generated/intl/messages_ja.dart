@@ -51,13 +51,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(index) => "プラン${index}";
 
-  static String m13(total) => "合計：${total}";
+  static String m13(n) => "プラン${n}をリセット(すべて)";
 
-  static String m14(total, hidden) => "合計：${total} (非表示: ${hidden})";
+  static String m14(n) => "プラン${n}をリセット(表示のみ)";
 
-  static String m15(server) => "同步${server}";
+  static String m15(total) => "合計：${total}";
 
-  static String m16(a, b) => "${a}${b}";
+  static String m16(total, hidden) => "合計：${total} (非表示: ${hidden})";
+
+  static String m17(server) => "同步${server}";
+
+  static String m18(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -472,6 +476,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("名前変更"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("復刻イベント"),
         "reset": MessageLookupByLibrary.simpleMessage("リセット"),
+        "reset_plan_all": m13,
+        "reset_plan_shown": m14,
         "reset_success": MessageLookupByLibrary.simpleMessage("リセットしました"),
         "reset_svt_enhance_state":
             MessageLookupByLibrary.simpleMessage("サーヴァント強化状态をリセット"),
@@ -486,8 +492,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "search": MessageLookupByLibrary.simpleMessage("検索"),
         "search_option_basic": MessageLookupByLibrary.simpleMessage("基本情報"),
         "search_options": MessageLookupByLibrary.simpleMessage("検索範囲"),
-        "search_result_count": m13,
-        "search_result_count_hide": m14,
+        "search_result_count": m15,
+        "search_result_count_hide": m16,
         "select_copy_plan_source":
             MessageLookupByLibrary.simpleMessage("コピー元を選択"),
         "select_plan": MessageLookupByLibrary.simpleMessage("プランを選択"),
@@ -499,6 +505,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "server_jp": MessageLookupByLibrary.simpleMessage("日本"),
         "server_na": MessageLookupByLibrary.simpleMessage("北米"),
         "server_tw": MessageLookupByLibrary.simpleMessage("台湾"),
+        "set_plan_name": MessageLookupByLibrary.simpleMessage("プラン名を設定"),
         "setting_auto_rotate": MessageLookupByLibrary.simpleMessage("自動回転"),
         "settings_data": MessageLookupByLibrary.simpleMessage("データ"),
         "settings_data_management":
@@ -547,7 +554,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("プランをリセット"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Slider/Dropdownを切り替え"),
-        "sync_server": m15,
+        "sync_server": m17,
         "tooltip_refresh_sliders":
             MessageLookupByLibrary.simpleMessage("スライドを更新"),
         "total_ap": MessageLookupByLibrary.simpleMessage("合計AP"),
@@ -571,7 +578,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "version": MessageLookupByLibrary.simpleMessage("バージョン"),
         "view_illustration": MessageLookupByLibrary.simpleMessage("カードの画像を表示"),
         "voice": MessageLookupByLibrary.simpleMessage("ボイス"),
-        "words_separate": m16,
+        "words_separate": m18,
         "yes": MessageLookupByLibrary.simpleMessage("はい")
       };
 }

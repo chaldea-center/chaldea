@@ -420,5 +420,8 @@
   "effect_search": "Buff检索",
   "growth_curve": "成长曲线",
   "demands": "需求",
-  "consumed": "已消耗"
+  "consumed": "已消耗",
+  "reset_plan_shown": "重置规划{n}(已显示)",
+  "reset_plan_all": "重置规划{n}(所有)",
+  "set_plan_name": "设置规划名称"
 }

@@ -39,6 +39,7 @@ class User {
   @JsonKey(toJson: _servantPlansToJson)
   List<Map<int, ServantPlan>> servantPlans;
   int curSvtPlanNo;
+  Map<int, String> svtPlanNames;
 
   /// user own items, key: item name, value: item count
   Map<String, int> items;
@@ -71,6 +72,7 @@ class User {
     GameServer? server,
     Map<int, ServantStatus>? servants,
     int? curSvtPlanNo,
+    Map<int, String>? svtPlanNames,
     List<Map<int, ServantPlan>>? servantPlans,
     Map<String, int>? items,
     EventPlans? events,
@@ -89,6 +91,7 @@ class User {
         _server = server,
         servants = servants ?? {},
         curSvtPlanNo = curSvtPlanNo ?? 0,
+        svtPlanNames = svtPlanNames ?? {},
         servantPlans = servantPlans ?? [],
         items = items ?? {},
         events = events ?? EventPlans(),
@@ -112,6 +115,14 @@ class User {
   Map<int, ServantPlan> get curSvtPlan {
     curSvtPlanNo = fixValidRange(curSvtPlanNo, 0, servantPlans.length - 1);
     return servantPlans[curSvtPlanNo];
+  }
+
+  String getFriendlyPlanName([int? planNo]) {
+    planNo ??= curSvtPlanNo;
+    String name = '${S.current.plan} ${planNo + 1}';
+    String? customName = svtPlanNames[planNo];
+    if (customName != null && customName.isNotEmpty) name += ' - $customName';
+    return name;
   }
 
   Servant addDuplicatedForServant(Servant svt, [int? newNo]) {
@@ -329,8 +340,8 @@ class ServantPlan {
     dress.fillRange(0, dress.length, 0);
     appendSkills.fillRange(0, 3, 0);
     grail = 0;
-    fouHp = fouAtk = 0;
-    bondLimit = 5;
+    fouHp = fouAtk = -20;
+    bondLimit = 0;
   }
 
   bool get isEmpty {
@@ -340,9 +351,9 @@ class ServantPlan {
         dress.every((e) => e == 0) &&
         appendSkills.every((e) => e == 0) &&
         grail == 0 &&
-        fouHp == 0 &&
-        fouAtk == 0 &&
-        bondLimit == 5;
+        fouHp == -20 &&
+        fouAtk == -20 &&
+        bondLimit == 0;
   }
 
   void setMax({int skill = 10}) {

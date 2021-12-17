@@ -59,9 +59,7 @@ class _CarouselSettingPageState extends State<CarouselSettingPage> {
           CheckboxListTile(
             value: carousel.enableUs,
             title: const Text('NA News'),
-            subtitle: Text(
-                (PlatformU.isWindows ? 'BUG on Windows for NA\n' : '') +
-                    'https://webview.fate-go.us/'),
+            subtitle: const Text('https://webview.fate-go.us/'),
             onChanged: carousel.enabled && !PlatformU.isWindows
                 ? (v) => setState(() {
                       carousel.needUpdate = true;

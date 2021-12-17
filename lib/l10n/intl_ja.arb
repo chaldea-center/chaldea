@@ -422,5 +422,8 @@
   "effect_search": "バフ検索",
   "growth_curve": "成長曲線",
   "demands": "要件",
-  "consumed": "消費済"
+  "consumed": "消費済",
+  "reset_plan_shown": "プラン{n}をリセット(表示のみ)",
+  "reset_plan_all": "プラン{n}をリセット(すべて)",
+  "set_plan_name": "プラン名を設定"
 }

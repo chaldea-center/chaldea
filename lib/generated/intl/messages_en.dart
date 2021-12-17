@@ -52,14 +52,18 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(index) => "Plan ${index}";
 
-  static String m13(total) => "Total ${total} results";
+  static String m13(n) => "Reset Plan ${n}(All)";
 
-  static String m14(total, hidden) =>
+  static String m14(n) => "Reset Plan ${n}(Shown)";
+
+  static String m15(total) => "Total ${total} results";
+
+  static String m16(total, hidden) =>
       "Total ${total} results (${hidden} hidden)";
 
-  static String m15(server) => "Sync with ${server}";
+  static String m17(server) => "Sync with ${server}";
 
-  static String m16(a, b) => "${a} ${b}";
+  static String m18(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -531,6 +535,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rename": MessageLookupByLibrary.simpleMessage("Rename"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("Rerun"),
         "reset": MessageLookupByLibrary.simpleMessage("Reset"),
+        "reset_plan_all": m13,
+        "reset_plan_shown": m14,
         "reset_success":
             MessageLookupByLibrary.simpleMessage("Reset successfully"),
         "reset_svt_enhance_state":
@@ -547,8 +553,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "search": MessageLookupByLibrary.simpleMessage("Search"),
         "search_option_basic": MessageLookupByLibrary.simpleMessage("Basic"),
         "search_options": MessageLookupByLibrary.simpleMessage("Search Scopes"),
-        "search_result_count": m13,
-        "search_result_count_hide": m14,
+        "search_result_count": m15,
+        "search_result_count_hide": m16,
         "select_copy_plan_source":
             MessageLookupByLibrary.simpleMessage("Select copy source"),
         "select_plan": MessageLookupByLibrary.simpleMessage("Select Plan"),
@@ -562,6 +568,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "server_na": MessageLookupByLibrary.simpleMessage("English(NA)"),
         "server_tw":
             MessageLookupByLibrary.simpleMessage("Chinese(Traditional)"),
+        "set_plan_name": MessageLookupByLibrary.simpleMessage("Set Plan Name"),
         "setting_auto_rotate":
             MessageLookupByLibrary.simpleMessage("Auto Rotate"),
         "settings_data": MessageLookupByLibrary.simpleMessage("Data"),
@@ -615,7 +622,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("Reset Plan"),
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Switch Slider/Dropdown"),
-        "sync_server": m15,
+        "sync_server": m17,
         "tooltip_refresh_sliders":
             MessageLookupByLibrary.simpleMessage("Refresh slides"),
         "total_ap": MessageLookupByLibrary.simpleMessage("Total AP"),
@@ -643,7 +650,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "view_illustration":
             MessageLookupByLibrary.simpleMessage("View Illustration"),
         "voice": MessageLookupByLibrary.simpleMessage("Voice"),
-        "words_separate": m16,
+        "words_separate": m18,
         "yes": MessageLookupByLibrary.simpleMessage("Yes")
       };
 }

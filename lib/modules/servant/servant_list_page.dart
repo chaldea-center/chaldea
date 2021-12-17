@@ -73,14 +73,42 @@ class ServantListPageState
   }
 
   PreferredSizeWidget? get appBar {
+    Widget title = AutoSizeText(
+      widget.planMode ? db.curUser.getFriendlyPlanName() : S.current.servant,
+      maxLines: 1,
+      minFontSize: 12,
+      maxFontSize: 18,
+      overflow: TextOverflow.fade,
+    );
+    if (widget.planMode) {
+      title = Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(child: title),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 6),
+            child: Opacity(opacity: 0.7, child: Icon(Icons.edit, size: 14)),
+          ),
+        ],
+      );
+      title = InkWell(
+        child: title,
+        onTap: () {
+          InputCancelOkDialog(
+            title: S.current.set_plan_name,
+            text: db.curUser.svtPlanNames[db.curUser.curSvtPlanNo],
+            onSubmit: (s) {
+              setState(() {
+                s = s.trim();
+                db.curUser.svtPlanNames[db.curUser.curSvtPlanNo] = s;
+              });
+            },
+          ).showDialog(context);
+        },
+      );
+    }
     return AppBar(
-      title: AutoSizeText(
-        widget.planMode
-            ? '${S.current.plan} ${db.curUser.curSvtPlanNo + 1}'
-            : S.of(context).servant,
-        maxLines: 1,
-        overflow: TextOverflow.fade,
-      ),
+      title: title,
       leading: const MasterBackButton(),
       titleSpacing: 0,
       bottom: showSearchBar ? searchBar : null,
@@ -116,14 +144,46 @@ class ServantListPageState
         PopupMenuButton(
           itemBuilder: (context) {
             return [
+              if (!widget.planMode)
+                PopupMenuItem(
+                  child: Text(db.curUser.getFriendlyPlanName()),
+                  enabled: false,
+                ),
               PopupMenuItem(
                   value: 'switch_plan', child: Text(S.of(context).select_plan)),
-              if (widget.planMode)
+              if (widget.planMode) ...[
                 PopupMenuItem(
                     value: 'copy_plan',
                     child: Text(S.of(context).copy_plan_menu)),
-              if (widget.planMode)
+                PopupMenuItem(
+                    value: 'reset_plan_shown',
+                    child: Text(S.current
+                        .reset_plan_shown(db.curUser.curSvtPlanNo + 1))),
+                PopupMenuItem(
+                    value: 'reset_plan_all',
+                    child: Text(
+                        S.current.reset_plan_all(db.curUser.curSvtPlanNo + 1))),
+                PopupMenuItem(
+                  child: Text(
+                    LocalizedText.of(
+                        chs: '仅更改附加技能2',
+                        jpn: 'アペンドスキル2のみを変更 ',
+                        eng: 'Only Change 2nd Append Skill',
+                        kor: '어펜드 스킬 2만 변경'),
+                    style: db.appSetting.onlyAppendSkillTwo
+                        ? null
+                        : const TextStyle(
+                            decoration: TextDecoration.lineThrough),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      db.appSetting.onlyAppendSkillTwo =
+                          !db.appSetting.onlyAppendSkillTwo;
+                    });
+                  },
+                ),
                 PopupMenuItem(value: 'help', child: Text(S.current.help)),
+              ]
             ];
           },
           onSelected: (v) {
@@ -158,6 +218,30 @@ class ServantListPageState
                         """1. 계획 페이지는 서번트 목록 페이지와 유사하지만 영기재림/스킬/영의의 <현재/목표>값을 설정하는 데 주로 사용합니다
 2. 목록에 표시되어 있는 서번트만 변경합니다
 3. 필터/검색 기능을 통해 목록을 필터링하고 각 줄 끝에 있는 보기 버튼을 통해 특정 서번트를 개별적으로 표시/숨길 할 수 있습니다.""")),
+              ).showDialog(context);
+            } else if (v == 'reset_plan_shown') {
+              SimpleCancelOkDialog(
+                title: Text(S.current.confirm),
+                content: Text(
+                    S.current.reset_plan_shown(db.curUser.curSvtPlanNo + 1)),
+                onTapOk: () {
+                  for (final svt in shownList) {
+                    db.curPlan.remove(svt.no);
+                  }
+                  db.itemStat.updateSvtItems();
+                  setState(() {});
+                },
+              ).showDialog(context);
+            } else if (v == 'reset_plan_all') {
+              SimpleCancelOkDialog(
+                title: Text(S.current.confirm),
+                content:
+                    Text(S.current.reset_plan_all(db.curUser.curSvtPlanNo + 1)),
+                onTapOk: () {
+                  db.curPlan.clear();
+                  db.itemStat.updateSvtItems();
+                  setState(() {});
+                },
               ).showDialog(context);
             }
           },
@@ -299,9 +383,9 @@ class ServantListPageState
             i++)
           svtPlan.dress[i] > svtStat.curVal.dress[i],
         svtPlan.grail > svtStat.curVal.grail,
-        svtPlan.fouHp > svtStat.curVal.fouHp,
-        svtPlan.fouAtk > svtStat.curVal.fouAtk,
-        svtPlan.bondLimit > svtStat.curVal.bondLimit,
+        // svtPlan.fouHp > svtStat.curVal.fouHp,
+        // svtPlan.fouAtk > svtStat.curVal.fouAtk,
+        // svtPlan.bondLimit > svtStat.curVal.bondLimit,
       ].contains(true);
       if (filterData.planCompletion.options[planNotComplete ? '0' : '1'] !=
           true) return false;
@@ -607,6 +691,9 @@ class ServantListPageState
 
   @override
   Widget listItemBuilder(Servant svt) {
+    db.curUser
+        .svtPlanOf(svt.no)
+        .validate(db.curUser.svtStatusOf(svt.no).curVal);
     return widget.planMode
         ? _planListItemBuilder(svt)
         : _usualListItemBuilder(svt);
@@ -952,10 +1039,10 @@ class ServantListPageState
         title: Text(S.of(context).select_copy_plan_source),
         children: List.generate(db.curUser.servantPlans.length, (index) {
           bool isCur = index == db.curUser.curSvtPlanNo;
+          String title = db.curUser.getFriendlyPlanName(index);
+          if (isCur) title += ' (${S.current.current_})';
           return ListTile(
-            title: Text(S.of(context).plan_x(index + 1) +
-                ' ' +
-                (isCur ? '(${S.current.current_})' : '')),
+            title: Text(title),
             onTap: isCur
                 ? null
                 : () {

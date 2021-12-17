@@ -4265,6 +4265,36 @@ class S {
       args: [],
     );
   }
+
+  /// `重置规划{n}(已显示)`
+  String reset_plan_shown(Object n) {
+    return Intl.message(
+      '重置规划$n(已显示)',
+      name: 'reset_plan_shown',
+      desc: '',
+      args: [n],
+    );
+  }
+
+  /// `重置规划{n}(所有)`
+  String reset_plan_all(Object n) {
+    return Intl.message(
+      '重置规划$n(所有)',
+      name: 'reset_plan_all',
+      desc: '',
+      args: [n],
+    );
+  }
+
+  /// `设置规划名称`
+  String get set_plan_name {
+    return Intl.message(
+      '设置规划名称',
+      name: 'set_plan_name',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

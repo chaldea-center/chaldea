@@ -88,7 +88,7 @@ abstract class CommonBuilder {
         title: Text(S.current.select_plan),
         children: List.generate(db.curUser.servantPlans.length, (index) {
           return ListTile(
-            title: Text(S.current.plan_x(index + 1)),
+            title: Text(db.curUser.getFriendlyPlanName(index)),
             selected: index == db.curUser.curSvtPlanNo,
             onTap: () {
               Navigator.of(context).pop();

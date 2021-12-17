@@ -2424,6 +2424,11 @@ User _$UserFromJson(Map<String, dynamic> json) => $checkedCreate(
                         ServantStatus.fromJson(e as Map<String, dynamic>)),
                   )),
           curSvtPlanNo: $checkedConvert('curSvtPlanNo', (v) => v as int?),
+          svtPlanNames: $checkedConvert(
+              'svtPlanNames',
+              (v) => (v as Map<String, dynamic>?)?.map(
+                    (k, e) => MapEntry(int.parse(k), e as String),
+                  )),
           servantPlans: $checkedConvert(
               'servantPlans',
               (v) => (v as List<dynamic>?)
@@ -2498,6 +2503,8 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'servants': User._servantsToJson(instance.servants),
       'servantPlans': User._servantPlansToJson(instance.servantPlans),
       'curSvtPlanNo': instance.curSvtPlanNo,
+      'svtPlanNames':
+          instance.svtPlanNames.map((k, e) => MapEntry(k.toString(), e)),
       'items': instance.items,
       'events': instance.events,
       'crafts': User._craftsPlanToJson(instance.crafts),
