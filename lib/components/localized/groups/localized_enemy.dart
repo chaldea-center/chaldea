@@ -399,7 +399,7 @@ const _enemy = LocalizedGroup([
   LocalizedText(chs: '双角兽', jpn: '', eng: 'Bicorn', kor: '바이콘'),
   LocalizedText(chs: '凝视者', jpn: '', eng: 'Gazer', kor: '게이저'),
   LocalizedText(
-      chs: '噬魂者·乌修穆迦尔', jpn: '', eng: 'Soul Eater/Usumgallu', kor: ''),
+      chs: '噬魂者·乌修穆迦尔', jpn: '', eng: 'Soul Eater/Usumgallu', kor: '소울이터/우슘갈루'),
   LocalizedText(
       chs: '机械化步兵', jpn: '', eng: 'Mechanized Infantry', kor: '기계화 보병'),
   LocalizedText(chs: '凯尔特士兵', jpn: '', eng: 'Celtic Soldier', kor: '켈트 병사'),

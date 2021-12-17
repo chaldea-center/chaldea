@@ -1,24 +1,29 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/datatypes/effect_type/effect_type.dart';
+import 'package:chaldea/components/datatypes/effect_type/func_target_type.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
 
 class BuffFuncFilterData {
   FilterGroupData display;
   FilterGroupData effectScope;
+  FilterGroupData effectTarget;
   FilterGroupData funcBuff;
 
   BuffFuncFilterData({
     FilterGroupData? display,
     FilterGroupData? effectScope,
+    FilterGroupData? effectTarget,
     FilterGroupData? funcBuff,
   })  : display = display ?? FilterGroupData(options: {'List': true}),
         effectScope = effectScope ?? FilterGroupData(),
+        effectTarget = effectTarget ?? FilterGroupData(),
         funcBuff = funcBuff ?? FilterGroupData();
 
   bool get useGrid => display.isRadioVal('Grid');
 
   void reset() {
     effectScope.reset();
+    effectTarget.reset();
     funcBuff.reset();
   }
 }
@@ -70,6 +75,19 @@ class _BuffFuncFilterState extends FilterPageState<BuffFuncFilterData> {
             S.current.noble_phantasm,
             S.current.passive_skill
           ][int.parse(v)]),
+          onFilterChanged: (value) {
+            update();
+          },
+        ),
+        FilterGroup(
+          title: Text(LocalizedText.of(
+              chs: '效果对象(从者)',
+              jpn: '効果の対象(サーヴァント)',
+              eng: 'Effect Target(Servant)',
+              kor: '효과 대상(서번트)')),
+          options: FuncTargetType.allTypes,
+          values: filterData.effectTarget,
+          optionBuilder: (v) => Text(FuncTargetType.localizedOf(v)),
           onFilterChanged: (value) {
             update();
           },

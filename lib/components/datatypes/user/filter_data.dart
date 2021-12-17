@@ -28,6 +28,7 @@ class SvtFilterData {
   FilterGroupData trait;
   FilterGroupData special; //not used yet
   FilterGroupData effectScope;
+  FilterGroupData effectTarget;
   FilterGroupData effects;
 
   bool get useGrid => display.isRadioVal('Grid');
@@ -55,6 +56,7 @@ class SvtFilterData {
     FilterGroupData? trait,
     FilterGroupData? special,
     FilterGroupData? effectScope,
+    FilterGroupData? effectTarget,
     FilterGroupData? effects,
   })  : favorite = favorite ?? 0,
         planFavorite = planFavorite ?? 0,
@@ -78,6 +80,7 @@ class SvtFilterData {
         trait = trait ?? FilterGroupData(),
         special = special ?? FilterGroupData(),
         effectScope = effectScope ?? FilterGroupData(),
+        effectTarget = effectTarget ?? FilterGroupData(),
         effects = effects ?? FilterGroupData() {
     this.favorite = fixValidRange(this.favorite, 0, 2);
     this.planFavorite = fixValidRange(this.planFavorite, 0, 2);
@@ -103,6 +106,7 @@ class SvtFilterData {
         trait,
         special,
         effectScope,
+        effectTarget,
         effects,
         // traitSpecial
       ];
@@ -152,12 +156,12 @@ class SvtFilterData {
   static const alignment1Data = ['秩序', '混沌', '中立'];
   static const alignment2Data = ['善', '恶', '中庸', '新娘', '狂', '夏'];
   static const genderData = ['男性', '女性', '其他'];
-  static const traitData = [
+  static get traitData => [
     //
     '龙', '骑乘', '神性', '人型', '猛兽', '王', '罗马', '亚瑟', '阿尔托莉雅脸',
     'EA不特攻', '所爱之人', '希腊神话系男性', '人类的威胁', '阿耳戈船相关人员', '魔性',
     '超巨大', '天地(拟似除外)', '人科', '魔兽型', '活在当下的人类', '巨人', '孩童从者',
-    '领域外生命', '鬼', '源氏', '机械', '妖精', '圆桌骑士', '童话特性从者'
+    '领域外生命', '鬼', '源氏', '机械', '妖精', '圆桌骑士', '童话特性从者', '神灵'
   ];
   static const buffScope = ['0', '1', '2']; // active skill, NP, passive skill
 

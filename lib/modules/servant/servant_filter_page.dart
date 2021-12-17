@@ -1,5 +1,6 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/components/datatypes/effect_type/effect_type.dart';
+import 'package:chaldea/components/datatypes/effect_type/func_target_type.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
 
 class ServantFilterPage extends FilterPage<SvtFilterData> {
@@ -219,18 +220,6 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             update();
           },
         ),
-        // FilterGroup(
-        //   title: Text('Special', style: textStyle),
-        //   options: const ['充能(技能)', '充能(宝具)'],
-        //   values: filterData.special,
-        //   showInvert: true,
-        //   showMatchAll: true,
-        //   optionBuilder: (v) => Text(Localized.svtFilter.of(v)),
-        //   onFilterChanged: (value) {
-        //     // filterData.special = value;
-        //     update();
-        //   },
-        // ),
         groupDivider,
         FilterGroup(
           title: Text(LocalizedText.of(
@@ -245,6 +234,19 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             S.current.noble_phantasm,
             S.current.passive_skill
           ][int.parse(v)]),
+          onFilterChanged: (value) {
+            update();
+          },
+        ),
+        FilterGroup(
+          title: Text(LocalizedText.of(
+              chs: '效果对象',
+              jpn: '効果の対象',
+              eng: 'Effect Target',
+              kor: '효과 대상')),
+          options: FuncTargetType.allTypes,
+          values: filterData.effectTarget,
+          optionBuilder: (v) => Text(FuncTargetType.localizedOf(v)),
           onFilterChanged: (value) {
             update();
           },

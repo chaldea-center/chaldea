@@ -136,6 +136,7 @@ const _localizedSvtFilter = LocalizedGroup([
       chs: '圆桌骑士', jpn: '円卓の騎士', eng: 'Round Table Knight', kor: '원탁의 기사'),
   LocalizedText(
       chs: '童话特性从者', jpn: '童話特性のサーヴァント', eng: 'Fairy Tale Servant', kor: '동화'),
+  LocalizedText(chs: '神灵', jpn: '神霊', eng: 'Divine Spirit', kor: '신령'),
 
   LocalizedText(chs: '伊莉雅', jpn: 'イリヤ', eng: 'Illya', kor: '이리야'),
   LocalizedText(chs: '织田信长', jpn: '', eng: 'Nobunaga', kor: '노부나가'),

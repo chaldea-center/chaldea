@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/components/datatypes/effect_type/func_target_type.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
 
 import 'buff_func_filter.dart';
@@ -114,6 +115,10 @@ class _EffectSearchPageState
         for (final skill in card.niceSkills) ...skill.functions,
       ];
     }
+    functions.retainWhere((func) {
+      return filterData.effectTarget
+          .singleValueFilter(FuncTargetType.getType(func.funcTargetType));
+    });
     Set<String> funBuffTypes = {
       for (final func in functions) ...[
         func.funcType,

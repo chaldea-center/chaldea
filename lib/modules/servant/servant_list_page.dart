@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/components/datatypes/effect_type/func_target_type.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
 import 'package:chaldea/modules/shared/common_builders.dart';
 import 'package:chaldea/modules/shared/filter_page.dart';
@@ -454,6 +455,10 @@ class ServantListPageState
       if (_isScopeEmpty || filterData.effectScope.options['2'] == true)
         for (final skill in svt.niceClassPassive) ...skill.functions,
     ];
+    funcs.retainWhere((func) {
+      return filterData.effectTarget
+          .singleValueFilter(FuncTargetType.getType(func.funcTargetType));
+    });
     if (!WithNiceFunctionsMixin.testFunctionsStatic(
         funcs, filterData.effects)) {
       return false;
