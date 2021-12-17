@@ -760,13 +760,15 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
     return Container(
       decoration: BoxDecoration(
           border: Border(top: Divider.createBorderSide(context, width: 0.5))),
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: ButtonBar(
-            children: buttons,
-            buttonPadding: const EdgeInsets.symmetric(horizontal: 2),
+      child: SafeArea(
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: ButtonBar(
+              children: buttons,
+              buttonPadding: const EdgeInsets.symmetric(horizontal: 2),
+            ),
           ),
         ),
       ),

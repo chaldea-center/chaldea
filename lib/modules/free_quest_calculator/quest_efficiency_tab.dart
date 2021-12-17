@@ -159,7 +159,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
         Expanded(
             child: ListView(controller: _scrollController, children: children)),
         kDefaultDivider,
-        _buildButtonBar(),
+        SafeArea(child: _buildButtonBar()),
       ],
     );
   }

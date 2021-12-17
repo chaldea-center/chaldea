@@ -167,7 +167,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               title: Center(child: Text(S.of(context).drop_calc_empty_hint))),
         Expanded(child: _buildInputRows()),
         kDefaultDivider,
-        _buildButtonBar(),
+        SafeArea(child: _buildButtonBar())
       ],
     );
   }

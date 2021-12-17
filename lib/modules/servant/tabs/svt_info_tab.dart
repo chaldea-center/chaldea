@@ -354,13 +354,33 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
     return ListView(children: children);
   }
 
+  Widget _jumpToCardDetail(GameCardMixin card) {
+    return Center(
+      child: ElevatedButton.icon(
+        onPressed: () {
+          SplitRoute.push(context, card.resolveDetailPage());
+        },
+        icon: const Icon(Icons.launch),
+        label: Text(card.lName),
+        style: ElevatedButton.styleFrom(
+          // tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
+      ),
+    );
+  }
+
   Widget buildBondCraftTab() {
     if (svt.bondCraft > 0) {
       final ce = db.gameData.crafts[svt.bondCraft];
       if (ce == null) {
         return Container();
       } else {
-        return CraftDetailBasePage(ce: ce, lang: lang);
+        return ListView(
+          children: [
+            CraftDetailBasePage(ce: ce, lang: lang),
+            _jumpToCardDetail(ce),
+          ],
+        );
       }
     } else {
       return Center(child: Text(S.of(context).hint_no_bond_craft));
@@ -369,14 +389,16 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
 
   Widget buildValentineCraftTab() {
     if (svt.valentineCraft.isNotEmpty) {
-      // mash has two valentine crafts
+      List<Widget> children = [];
+      for (final valentine in svt.valentineCraft) {
+        final ce = db.gameData.crafts[valentine];
+        if (ce == null) continue;
+        children.add(CraftDetailBasePage(ce: ce, lang: lang));
+        children.add(_jumpToCardDetail(ce));
+      }
       return ListView.separated(
-        itemBuilder: (context, index) {
-          final ce = db.gameData.crafts[svt.valentineCraft[index]];
-          if (ce == null) return Container();
-          return CraftDetailBasePage(ce: ce, lang: lang);
-        },
-        separatorBuilder: (context, index) => const Divider(height: 20),
+        itemBuilder: (context, index) => children[index],
+        separatorBuilder: (context, index) => const SizedBox(),
         itemCount: svt.valentineCraft.length,
       );
     } else {

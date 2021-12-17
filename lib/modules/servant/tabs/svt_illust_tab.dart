@@ -75,10 +75,12 @@ class _SvtIllustTabState extends SvtTabBaseState<SvtIllustTab>
                     _tabController.animateTo(newIndex);
                   }
                 },
-                child: CachedImage(
-                  imageUrl: imageUrls[index],
-                  placeholder: placeholder,
-                  showSaveOnLongPress: true,
+                child: SafeArea(
+                  child: CachedImage(
+                    imageUrl: imageUrls[index],
+                    placeholder: placeholder,
+                    showSaveOnLongPress: true,
+                  ),
                 ),
               );
             }),

@@ -133,10 +133,6 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           ),
           kDefaultDivider,
           buttonBar,
-          Text(
-            S.current.import_http_body_hint_hide,
-            style: const TextStyle(color: Colors.grey, fontSize: 13),
-          )
         ],
       ),
     );
