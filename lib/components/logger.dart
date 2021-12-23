@@ -10,7 +10,7 @@ import 'package:logger/src/outputs/file_output.dart'; // ignore: implementation_
 /// default logger
 Logger _logger = Logger(
   filter: ProductionFilter(),
-  printer: PrettyPrinter(
+  printer: _CustomPrettyPrinter(
       methodCount: 2, colors: false, printEmojis: false, printTime: true),
 );
 
@@ -20,7 +20,7 @@ void initiateLoggerPath(String fp) {
   rollLogFiles(fp, 5, 10 * 1024 * 1024); //10MB
   _logger = Logger(
     filter: ProductionFilter(),
-    printer: PrettyPrinter(
+    printer: _CustomPrettyPrinter(
         methodCount: 2, colors: false, printEmojis: false, printTime: true),
     output: MultiOutput([
       ConsoleOutput(),
@@ -46,5 +46,70 @@ void rollLogFiles(String fp, int maxBackup, int maxSize) {
       var _f = File(_fpAt(i));
       if (_f.existsSync()) _f.renameSync(_fpAt(i + 1));
     }
+  }
+}
+
+class _CustomPrettyPrinter extends PrettyPrinter {
+  _CustomPrettyPrinter({
+    int stackTraceBeginIndex = 0,
+    int methodCount = 2,
+    int errorMethodCount = 8,
+    int lineLength = 120,
+    bool colors = true,
+    bool printEmojis = true,
+    bool printTime = false,
+    Map<Level, bool> excludeBox = const {},
+    bool noBoxingByDefault = false,
+  }) : super(
+          stackTraceBeginIndex: stackTraceBeginIndex,
+          methodCount: methodCount,
+          errorMethodCount: errorMethodCount,
+          lineLength: lineLength,
+          colors: colors,
+          printEmojis: printEmojis,
+          printTime: printTime,
+          excludeBox: excludeBox,
+          noBoxingByDefault: noBoxingByDefault,
+        );
+
+  @override
+  List<String> log(LogEvent event) {
+    String messageStr = stringifyMessage(event.message);
+
+    String? stackTraceStr;
+    if (event.stackTrace == null) {
+      if (methodCount > 0) {
+        stackTraceStr = formatStackTrace(
+            StackTrace.fromString(
+                StackTrace.current.toString().split('\n').skip(1).join('\n')),
+            methodCount);
+      }
+    } else if (errorMethodCount > 0) {
+      stackTraceStr = formatStackTrace(event.stackTrace, errorMethodCount);
+    }
+
+    String? errorStr = event.error?.toString();
+
+    String timeStr = DateTime.fromMillisecondsSinceEpoch(
+            DateTime.now().millisecondsSinceEpoch)
+        .toString();
+
+    List<String> buffer = [];
+
+    if (stackTraceStr != null) {
+      final lines = stackTraceStr.split('\n');
+      for (int index = 0; index < lines.length; index++) {
+        buffer.add((index == 0 ? '┌ ' : '│ ') + lines[index]);
+      }
+    }
+    if (errorStr != null) {
+      if (printEmojis) {
+        errorStr = (PrettyPrinter.levelEmojis[event.level] ?? '') + errorStr;
+      }
+      buffer.add('├ ' + errorStr);
+    }
+    String levelStr = event.level.toString().split('.').last.toUpperCase();
+    buffer.add('└ [$timeStr][$levelStr] $messageStr');
+    return buffer;
   }
 }
