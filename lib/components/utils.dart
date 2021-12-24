@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/platform_interface/file_plus/file_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -199,8 +199,8 @@ String b64(String source, [bool decode = true]) {
 
 Future<dynamic> readAndDecodeJsonAsync({String? fp, String? contents}) async {
   assert(fp != null || contents != null);
-  if (fp != null && await File(fp).exists()) {
-    contents = await File(fp).readAsString();
+  if (fp != null && await FilePlus(fp).exists()) {
+    contents = await FilePlus(fp).readAsString();
   }
   if (contents == null) return null;
   return compute(jsonDecode, contents);
