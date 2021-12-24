@@ -185,6 +185,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
             messages_zh.messages.messages.clear();
             messages_zh.messages.messages
                 .addAll(messages_en.MessageLookup().messages);
+            db.notifyAppUpdate();
           },
         ),
         ListTile(

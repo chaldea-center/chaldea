@@ -81,48 +81,63 @@ class _GalleryPageState extends State<GalleryPage> {
                 SplitRoute.push(context, AccountPage());
               },
             ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: S.of(context).tooltip_refresh_sliders,
-            onPressed: () async {
-              await AppNewsCarousel.resolveSliderImageUrls(true);
-              if (mounted) setState(() {});
-            },
-          ),
+          if (!PlatformU.isMobile && db.userData.carouselSetting.enabled)
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              tooltip: S.of(context).tooltip_refresh_sliders,
+              onPressed: () async {
+                EasyLoading.showToast(
+                    S.current.tooltip_refresh_sliders + ' ...');
+                await AppNewsCarousel.resolveSliderImageUrls(true);
+                if (mounted) setState(() {});
+              },
+            ),
         ],
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return ListView(
-            controller: _scrollController,
-            children: <Widget>[
-              ConstrainedBox(
-                constraints: BoxConstraints(
-                    minHeight:
-                        PlatformU.isDesktopOrWeb ? 0 : constraints.maxHeight),
-                child: Column(
-                  children: [
-                    if (db.userData.carouselSetting.enabled)
-                      AppNewsCarousel(maxWidth: constraints.maxWidth),
-                    if (db.userData.carouselSetting.enabled)
-                      const Divider(height: 0.5, thickness: 0.5),
-                    GridGallery(maxWidth: constraints.maxWidth),
-                  ],
-                ),
+      body: db.userData.carouselSetting.enabled
+          ? RefreshIndicator(
+              child: body,
+              onRefresh: () async {
+                await AppNewsCarousel.resolveSliderImageUrls(true);
+                if (mounted) setState(() {});
+              },
+            )
+          : body,
+    );
+  }
+
+  Widget get body {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return ListView(
+          controller: _scrollController,
+          children: <Widget>[
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                  minHeight:
+                      PlatformU.isDesktopOrWeb ? 0 : constraints.maxHeight),
+              child: Column(
+                children: [
+                  if (db.userData.carouselSetting.enabled)
+                    AppNewsCarousel(maxWidth: constraints.maxWidth),
+                  if (db.userData.carouselSetting.enabled)
+                    const Divider(height: 0.5, thickness: 0.5),
+                  GridGallery(maxWidth: constraints.maxWidth),
+                ],
               ),
-              const ListTile(
-                subtitle: Center(
-                    child: AutoSizeText(
-                  '~~~~~ ⁽⁽ଘ(ˊᵕˋ)ଓ⁾⁾* ~~~~~',
-                  maxLines: 1,
-                )),
-              ),
-              ...notifications,
-              if (kDebugMode) buildTestInfoPad(),
-            ],
-          );
-        },
-      ),
+            ),
+            const ListTile(
+              subtitle: Center(
+                  child: AutoSizeText(
+                '~~~~~ ⁽⁽ଘ(ˊᵕˋ)ଓ⁾⁾* ~~~~~',
+                maxLines: 1,
+              )),
+            ),
+            ...notifications,
+            if (kDebugMode) buildTestInfoPad(),
+          ],
+        );
+      },
     );
   }
 
