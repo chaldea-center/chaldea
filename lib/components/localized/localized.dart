@@ -301,4 +301,13 @@ class Localized {
     kor:
         '주의: FGO 6주년 때 프리 퀘스트의 드랍률이 약간 조정되었기 때문에 설정에서 새로운 데이터를 사용할지 어쩔지를 선택하여주세요. 이전 데이터는 2.5.5의 프리퀘스트까지 입니다.',
   );
+
+  static LocalizedText niceSkillFilterHint = const LocalizedText(
+    chs:
+        '技能效果筛选仅适用于直接生效的效果，特定时机生效的具体效果无法筛选。如登场/死亡/指令卡攻击/刻印的指令卡攻击时发动的效果被归类于各自的发动时机，而无法筛选具体效果。',
+    jpn:
+        'Skill effect filter is only applicable to "Immediate" effect. As for entering/dead/attack/command code attack/etc effects, are categrized by its timing, not detail effects.',
+    eng:
+        'Skill effect filter is only applicable to "Immediate" effect. As for entering/dead/attack/command code attack/etc effects, are categrized by its timing, not detail effects.',
+  );
 }

@@ -528,7 +528,8 @@ class EffectType {
 
   static final Map<String, EffectType> validEffectsMap = {
     for (final eff in svtEffects) eff.key: eff,
-    for (final eff in craftEffects) eff.key: eff,
+    // cmdCodeEffects already include craftEffects
+    for (final eff in cmdCodeEffects) eff.key: eff,
   };
 
   static Map<String, FuncBuffTypeBase> get allFuncBuff => Map.fromEntries([

@@ -86,6 +86,7 @@ class _CmdCodeFilterPageState extends FilterPageState<CmdCodeFilterData> {
             update();
           },
         ),
+        SFooter(Localized.niceSkillFilterHint.localized)
       ]),
     );
   }

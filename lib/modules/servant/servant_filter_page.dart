@@ -240,10 +240,11 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         ),
         FilterGroup(
           title: Text(LocalizedText.of(
-              chs: '效果对象',
-              jpn: '効果の対象',
-              eng: 'Effect Target',
-              kor: '효과 대상')),
+            chs: '效果对象',
+            jpn: '効果の対象',
+            eng: 'Effect Target',
+            kor: '효과 대상',
+          )),
           options: FuncTargetType.allTypes,
           values: filterData.effectTarget,
           optionBuilder: (v) => Text(FuncTargetType.localizedOf(v)),
@@ -262,6 +263,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             update();
           },
         ),
+        SFooter(Localized.niceSkillFilterHint.localized)
       ]),
     );
   }

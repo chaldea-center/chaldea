@@ -113,8 +113,7 @@ const _localizedSvtFilter = LocalizedGroup([
       eng: 'Earth or Sky',
       kor: '천 혹은 지속성 서번트'),
   LocalizedText(chs: '人型', jpn: '人型', eng: 'Humanoid', kor: '인간형'),
-  LocalizedText(
-      chs: '人科', jpn: 'ヒト科', eng: 'Hominidae Servant', kor: '인간형 서번트'),
+  LocalizedText(chs: '人科', jpn: 'ヒト科', eng: 'Hominidae Servant', kor: '사람과'),
   LocalizedText(
       chs: '魔兽型', jpn: '魔獣型', eng: 'Demonic Beast Servant', kor: '마수형'),
   LocalizedText(
@@ -149,7 +148,7 @@ const _localizedSvtFilter = LocalizedGroup([
   // Localized(chs: '死灵和恶魔', jpn: '死霊と悪魔', eng: 'Undead & Daemon', kor: ''),
 
   // Enemy filter
-  LocalizedText(chs: '人类', jpn: '', eng: 'Human', kor: '인간형'),
+  LocalizedText(chs: '人类', jpn: '人間', eng: 'Human', kor: '인간'),
   LocalizedText(chs: '女性', jpn: '', eng: 'Gender:Female', kor: '여성'),
   LocalizedText(chs: '男性', jpn: '', eng: 'Gender:Male', kor: '남성'),
   LocalizedText(chs: '野兽', jpn: '', eng: 'Beast', kor: '맹수'),

@@ -157,7 +157,13 @@ class _EnemyDetailPageState extends State<EnemyDetailPage> {
                 ),
               ),
             ],
-          )
+          ),
+          SFooter(LocalizedText.of(
+            chs: '注意: 敌人数据仅表示常用配置，实际关卡中任何数据均可能被覆盖',
+            jpn: 'ご注意ください、敵のデータは一般的に使用されるデータのみを表し、実際のクエストのデータは上書きされる可能性があります ',
+            eng:
+                'Warning: enemy data shown here only represents commonly used data, any attribute in the actual quest may be override.',
+          ))
         ],
       ),
     );

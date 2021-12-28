@@ -114,6 +114,7 @@ class _BuffFuncFilterState extends FilterPageState<BuffFuncFilterData> {
             style: Theme.of(context).textTheme.caption,
           ),
         ),
+        SFooter(Localized.niceSkillFilterHint.localized),
         FilterGroup(
           options: FuncTypes.withoutAddState.keys.toList(),
           values: filterData.funcBuff,

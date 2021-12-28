@@ -106,6 +106,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
             update();
           },
         ),
+        SFooter(Localized.niceSkillFilterHint.localized)
       ]),
     );
   }
