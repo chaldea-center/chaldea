@@ -11,7 +11,7 @@ import 'dart:typed_data';
 import 'package:archive/archive_io.dart';
 import 'package:catcher/catcher.dart';
 import 'package:chaldea/components/analytics.dart';
-import 'package:chaldea/platform_interface/platform/platform.dart';
+import 'package:chaldea/packages/packages.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart';
 import 'package:intl/intl_standalone.dart';
@@ -25,7 +25,6 @@ import '../config.dart';
 import '../constants.dart';
 import '../device_app_info.dart';
 import '../git_tool.dart';
-import '../logger.dart';
 import '../utils.dart' show b64;
 import 'catcher_config.dart';
 

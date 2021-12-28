@@ -2,11 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:chaldea/platform_interface/platform/platform.dart';
+import 'package:chaldea/packages/packages.dart';
 import 'package:hive/hive.dart';
 import 'package:path/path.dart' as pathlib;
-
-import '../logger.dart';
 
 class JsonStore<T> {
   final String fp;

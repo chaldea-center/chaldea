@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/platform_interface/platform/platform.dart';
+import 'package:chaldea/packages/packages.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,6 @@ import 'constants.dart';
 import 'device_app_info.dart';
 import 'extensions.dart';
 import 'localized/localized_base.dart';
-import 'logger.dart';
 
 enum GitSource { server, github, gitee }
 
@@ -548,19 +547,26 @@ class _DownloadDialogState extends State<DownloadDialog> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(LocalizedText.of(chs: '文件名', jpn: 'ファイル名', eng: 'Filename', kor: '파일이름'),
+          Text(
+              LocalizedText.of(
+                  chs: '文件名', jpn: 'ファイル名', eng: 'Filename', kor: '파일이름'),
               style: headerStyle),
           Text(fn, style: contentStyle),
           const SizedBox(height: 10),
           if (widget.notes != null) ...[
-            Text(LocalizedText.of(chs: '摘要', jpn: '概要', eng: 'Summary', kor: '요약'),
+            Text(
+                LocalizedText.of(
+                    chs: '摘要', jpn: '概要', eng: 'Summary', kor: '요약'),
                 style: headerStyle),
             Text(widget.notes!, style: contentStyle),
             const SizedBox(height: 10),
           ],
           Text(
               LocalizedText.of(
-                  chs: '下载进度', jpn: 'ダウンロードの進行状況', eng: 'Download Progress', kor: '다운로드 과정'),
+                  chs: '下载进度',
+                  jpn: 'ダウンロードの進行状況',
+                  eng: 'Download Progress',
+                  kor: '다운로드 과정'),
               style: headerStyle),
           widget.url?.isNotEmpty == true
               ? Text(progress,

@@ -2,10 +2,11 @@
 /// Wrap our logs inside a drawn box to make it easy to identify.
 import 'dart:io';
 
-import 'package:chaldea/platform_interface/platform/platform.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 import 'package:logger/src/outputs/file_output.dart'; // ignore: implementation_imports
+
+import 'platform/platform.dart';
 
 /// default logger
 Logger _logger = Logger(

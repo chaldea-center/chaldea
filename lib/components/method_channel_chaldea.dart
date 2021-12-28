@@ -1,5 +1,5 @@
 import 'package:chaldea/components/config.dart';
-import 'package:chaldea/platform_interface/platform/platform.dart';
+import 'package:chaldea/packages/packages.dart';
 import 'package:flutter/services.dart';
 
 // default channel

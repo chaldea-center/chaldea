@@ -3,9 +3,8 @@ import 'dart:convert';
 
 import 'package:catcher/catcher.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/packages/js_engine/js_engine.dart';
 import 'package:flutter/services.dart';
-
-import 'js_engine/js_engine.dart';
 
 class GLPKSolver {
   final JsEngine engine = JsEngine();

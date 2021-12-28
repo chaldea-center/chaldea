@@ -48,31 +48,58 @@ class Quest {
         LocalizedText(chs: '周四', jpn: '木曜', eng: 'THU:', kor: '목:'),
         LocalizedText(chs: '周五', jpn: '金曜', eng: 'FRI:', kor: '금:'),
         LocalizedText(chs: '周六', jpn: '土曜', eng: 'SAT:', kor: '토:'),
-        LocalizedText(chs: '剑之修炼场', jpn: '剣の修練場', eng: 'Saber Training Ground', kor: '검의 수련장'),
         LocalizedText(
-            chs: '弓之修炼场', jpn: '弓の修練場', eng: 'Archer Training Ground', kor: '궁의 수련장'),
+            chs: '剑之修炼场',
+            jpn: '剣の修練場',
+            eng: 'Saber Training Ground',
+            kor: '검의 수련장'),
         LocalizedText(
-            chs: '枪之修炼场', jpn: '槍の修練場', eng: 'Lancer Training Ground', kor: '창의 수련장'),
+            chs: '弓之修炼场',
+            jpn: '弓の修練場',
+            eng: 'Archer Training Ground',
+            kor: '궁의 수련장'),
         LocalizedText(
-            chs: '狂之修炼场', jpn: '狂の修練場', eng: 'Berserker Training Ground', kor: '광의 수련장'),
-        LocalizedText(chs: '骑之修炼场', jpn: '騎の修練場', eng: 'Rider Training Ground', kor: '기의 수련장'),
+            chs: '枪之修炼场',
+            jpn: '槍の修練場',
+            eng: 'Lancer Training Ground',
+            kor: '창의 수련장'),
         LocalizedText(
-            chs: '术之修炼场', jpn: '術の修練場', eng: 'Caster Training Ground', kor: '술의 수련장'),
+            chs: '狂之修炼场',
+            jpn: '狂の修練場',
+            eng: 'Berserker Training Ground',
+            kor: '광의 수련장'),
         LocalizedText(
-            chs: '杀之修炼场', jpn: '殺の修練場', eng: 'Assassin Training Ground', kor: '살의 수련장'),
+            chs: '骑之修炼场',
+            jpn: '騎の修練場',
+            eng: 'Rider Training Ground',
+            kor: '기의 수련장'),
+        LocalizedText(
+            chs: '术之修炼场',
+            jpn: '術の修練場',
+            eng: 'Caster Training Ground',
+            kor: '술의 수련장'),
+        LocalizedText(
+            chs: '杀之修炼场',
+            jpn: '殺の修練場',
+            eng: 'Assassin Training Ground',
+            kor: '살의 수련장'),
         LocalizedText(chs: '初级', jpn: '初級', eng: 'Novice', kor: '초급'),
         LocalizedText(chs: '中级', jpn: '中級', eng: 'Intermediate', kor: '중급'),
         LocalizedText(chs: '上级', jpn: '上級', eng: 'Advanced', kor: '상급'),
         LocalizedText(chs: '超级', jpn: '超級', eng: 'Expert', kor: '익스퍼트급'),
         LocalizedText(chs: '极级', jpn: '極級', eng: 'Extreme', kor: '익스트림급'),
         LocalizedText(
-            chs: '打开宝物库之门', jpn: '宝物庫の扉を開け', eng: 'Enter the Treasure Vault', kor: '보물창고의 문을 열어라'),
+            chs: '打开宝物库之门',
+            jpn: '宝物庫の扉を開け',
+            eng: 'Enter the Treasure Vault',
+            kor: '보물창고의 문을 열어라'),
       ]);
 
   static LocalizedGroup get _emberClsNameGroup => const LocalizedGroup([
         LocalizedText(chs: '剑·骑', jpn: '剣·騎', eng: 'Saber/Rider', kor: '검/기'),
         LocalizedText(chs: '弓·术', jpn: '弓·術', eng: 'Archer/Caster', kor: '궁/술'),
-        LocalizedText(chs: '枪·杀', jpn: '槍·殺', eng: 'Lancer/Assassin', kor: '창/살'),
+        LocalizedText(
+            chs: '枪·杀', jpn: '槍·殺', eng: 'Lancer/Assassin', kor: '창/살'),
         LocalizedText(chs: '随机', jpn: 'ランダム', eng: 'Random', kor: '랜덤'),
       ]);
 

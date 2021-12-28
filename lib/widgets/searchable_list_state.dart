@@ -3,7 +3,7 @@ import 'package:chaldea/components/localized/localized.dart';
 import 'package:chaldea/components/query.dart';
 import 'package:chaldea/components/utils.dart' show DelayedTimer, Utils;
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/platform_interface/platform/platform.dart';
+import 'package:chaldea/packages/packages.dart';
 import 'package:flutter/material.dart';
 
 import 'custom_tile.dart';

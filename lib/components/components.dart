@@ -2,13 +2,13 @@ export 'dart:io' show File, Directory;
 export 'dart:math' show min, max;
 
 export 'package:chaldea/generated/l10n.dart';
+export 'package:chaldea/packages/packages.dart';
 export 'package:flutter/foundation.dart' show kDebugMode, kReleaseMode;
 export 'package:flutter/material.dart';
 export 'package:flutter_easyloading/flutter_easyloading.dart';
 export 'package:intl/intl.dart' show Intl, DateFormat;
 export 'package:path/path.dart' show join;
 
-export '../platform_interface/platform/platform.dart';
 export '../widgets/widgets.dart';
 export 'config.dart';
 export 'constants.dart';
@@ -20,7 +20,6 @@ export 'glpk_solver.dart';
 export 'img_util.dart';
 export 'localized/localized.dart';
 export 'localized/localized_base.dart';
-export 'logger.dart';
 export 'mob_stat/mob_stat.dart';
 export 'query.dart';
 export 'server_api.dart';

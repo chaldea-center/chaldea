@@ -117,9 +117,10 @@ class Servant with GameCardMixin {
           ? activeSkillsEn
           : activeSkills;
 
-  List<Skill> get lPassiveSkills => Language.isEnOrKr && passiveSkillsEn.isNotEmpty
-      ? passiveSkillsEn
-      : passiveSkills;
+  List<Skill> get lPassiveSkills =>
+      Language.isEnOrKr && passiveSkillsEn.isNotEmpty
+          ? passiveSkillsEn
+          : passiveSkills;
 
   String get cardBackFace {
     final _colors = ['黑', '铜', '铜', '银', '金', '金'];

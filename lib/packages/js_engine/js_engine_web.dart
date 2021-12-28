@@ -1,22 +1,16 @@
 import 'dart:async';
+import 'dart:js' as js; // ignore: avoid_web_libraries_in_flutter
 
-import 'package:flutter_qjs/flutter_qjs.dart';
+import 'js_engine_interface.dart';
 
-import 'js_engine_interface.dart' as platform;
-
-class JsEngine implements platform.JsEngineMixin {
-  final IsolateQjs engine = IsolateQjs();
-
+class JsEngine implements JsEngineInterface {
   JsEngine();
 
   Completer? _completer;
 
   @override
   Future<void> init([Function? callback]) async {
-    if (_completer != null) return _completer!.future;
-    _completer = Completer();
     if (callback != null) await callback();
-    _completer!.complete();
   }
 
   @override
@@ -32,11 +26,9 @@ class JsEngine implements platform.JsEngineMixin {
 
   @override
   Future<String?> eval(String command, {String? name}) async {
-    return (await engine.evaluate(command, name: name)).toString();
+    return (await js.context.callMethod('eval', [command])).toString();
   }
 
   @override
-  void dispose() {
-    engine.close();
-  }
+  void dispose() {}
 }

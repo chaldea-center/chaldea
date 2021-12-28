@@ -21,6 +21,7 @@ import 'package:chaldea/modules/event/main_record_detail_page.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart' show ItemDetailPage;
 import 'package:chaldea/modules/servant/servant_detail_page.dart'
     show ServantDetailPage;
+import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/widgets/custom_tile.dart' show ImageWithText;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -32,7 +33,6 @@ import '../constants.dart';
 import '../extensions.dart';
 import '../git_tool.dart';
 import '../localized/localized.dart';
-import '../logger.dart';
 import '../split_route/split_route.dart';
 import '../tile_items.dart';
 import '../utils.dart';

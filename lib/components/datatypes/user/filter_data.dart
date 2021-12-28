@@ -139,8 +139,7 @@ class SvtFilterData {
     'Saber', 'Archer', 'Lancer', 'Rider', 'Caster', 'Assassin', 'Berserker',
   ];
 
-  static List<String> get extraClassesData =>
-      [
+  static List<String> get extraClassesData => [
         //
         'Shielder',
         'Ruler', 'Avenger', 'MoonCancer', 'Alterego', 'Foreigner', 'Pretender',
@@ -157,12 +156,12 @@ class SvtFilterData {
   static const alignment2Data = ['善', '恶', '中庸', '新娘', '狂', '夏'];
   static const genderData = ['男性', '女性', '其他'];
   static get traitData => [
-    //
-    '龙', '骑乘', '神性', '人型', '猛兽', '王', '罗马', '亚瑟', '阿尔托莉雅脸',
-    'EA不特攻', '所爱之人', '希腊神话系男性', '人类的威胁', '阿耳戈船相关人员', '魔性',
-    '超巨大', '天地(拟似除外)', '人科', '魔兽型', '活在当下的人类', '巨人', '孩童从者',
-    '领域外生命', '鬼', '源氏', '机械', '妖精', '圆桌骑士', '童话特性从者', '神灵'
-  ];
+        //
+        '龙', '骑乘', '神性', '人型', '猛兽', '王', '罗马', '亚瑟', '阿尔托莉雅脸',
+        'EA不特攻', '所爱之人', '希腊神话系男性', '人类的威胁', '阿耳戈船相关人员', '魔性',
+        '超巨大', '天地(拟似除外)', '人科', '魔兽型', '活在当下的人类', '巨人', '孩童从者',
+        '领域外生命', '鬼', '源氏', '机械', '妖精', '圆桌骑士', '童话特性从者', '神灵'
+      ];
   static const buffScope = ['0', '1', '2']; // active skill, NP, passive skill
 
   // json_serializable
@@ -207,8 +206,7 @@ class CraftFilterData {
     fillListValue(this.sortReversed, 2, (_) => true);
   }
 
-  List<FilterGroupData> get groupValues =>
-      [
+  List<FilterGroupData> get groupValues => [
         // display,
         rarity,
         category,

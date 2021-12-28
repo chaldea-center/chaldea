@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:chaldea/components/config.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/packages/packages.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -13,7 +14,6 @@ import 'package:json_annotation/json_annotation.dart';
 import '../widgets/custom_dialogs.dart';
 import 'extensions.dart';
 import 'localized/localized_base.dart';
-import 'logger.dart';
 
 part 'server_api.g.dart';
 
@@ -48,7 +48,8 @@ class ChaldeaResponse {
     if (context == null) return Future.value();
     title ??= success
         ? S.current.success
-        : LocalizedText.of(chs: '错误/提示', jpn: 'エラー/警告', eng: 'Error/Warning', kor: '에러/경고');
+        : LocalizedText.of(
+            chs: '错误/提示', jpn: 'エラー/警告', eng: 'Error/Warning', kor: '에러/경고');
     String content = msg.toString();
     if (showBody) content += '\n$body';
     return SimpleCancelOkDialog(

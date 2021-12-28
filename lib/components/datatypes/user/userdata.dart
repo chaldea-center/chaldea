@@ -88,7 +88,7 @@ class UserData {
     if (db.gameData.servants.isNotEmpty) {
       // TODO: if some servants missed in dataset, these data will be removed
       curUser.servants.removeWhere((key, value) =>
-      db.gameData.unavailableSvts.contains(key) ||
+          db.gameData.unavailableSvts.contains(key) ||
           db.gameData.servantsWithUser[key] == null);
       curUser.servantPlans.forEach((plans) {
         plans.removeWhere((key, value) =>

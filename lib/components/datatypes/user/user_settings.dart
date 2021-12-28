@@ -54,8 +54,7 @@ class AppSetting {
     List<SvtTab?>? sortedSvtTabs,
     Map<String, String>? priorityTags,
     bool? showAccountAtHome,
-  })
-      : autoResetFilter = autoResetFilter ?? true,
+  })  : autoResetFilter = autoResetFilter ?? true,
         downloadSource = fixValidRange(downloadSource ?? GitSource.server.index,
             0, GitSource.values.length),
         autoUpdateApp = autoUpdateApp ?? true,

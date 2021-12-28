@@ -320,8 +320,8 @@ class GLPKSolution {
   }
 
   void sortWeightVars() {
-    weightVars.sort((a, b) => sum(b.detail.values)
-        .compareTo(sum(a.detail.values)));
+    weightVars
+        .sort((a, b) => sum(b.detail.values).compareTo(sum(a.detail.values)));
   }
 
   List<String> getIgnoredKeys() {

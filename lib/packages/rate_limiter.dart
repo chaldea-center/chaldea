@@ -2,9 +2,9 @@ import 'dart:async';
 
 class _RateLimitTask<T> {
   final Completer<T> completer;
-  final FutureOr<T> Function()? onCalceled;
+  final FutureOr<T> Function()? onCanceled;
 
-  _RateLimitTask(this.completer, [this.onCalceled]);
+  _RateLimitTask(this.completer, [this.onCanceled]);
 }
 
 class RateLimiter {
@@ -26,8 +26,8 @@ class RateLimiter {
   bool get isIdle => _allTasks.isEmpty;
 
   Future<T> limited<T>(Future<T> Function() func,
-      {Future<T> Function()? onCalceled}) async {
-    final task = _RateLimitTask<T>(Completer(), onCalceled);
+      {Future<T> Function()? onCanceled}) async {
+    final task = _RateLimitTask<T>(Completer(), onCanceled);
 
     _allTasks.add(task);
     Future.microtask(() async {
@@ -66,8 +66,8 @@ class RateLimiter {
 
   void cancelAll() {
     for (final task in _allTasks) {
-      if (task.onCalceled != null) {
-        task.completer.complete(task.onCalceled!());
+      if (task.onCanceled != null) {
+        task.completer.complete(task.onCanceled!());
       } else {
         task.completer
             .completeError(RateLimitCancelError(), StackTrace.current);

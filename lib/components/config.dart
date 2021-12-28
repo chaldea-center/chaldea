@@ -7,7 +7,7 @@ import 'package:archive/archive_io.dart';
 import 'package:chaldea/components/json_store/json_store.dart';
 import 'package:chaldea/components/utils.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/platform_interface/platform/platform.dart';
+import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/widgets/icon_clipper.dart';
 import 'package:chaldea/widgets/image/image_viewer.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -28,7 +28,6 @@ import 'datatypes/effect_type/effect_type.dart';
 import 'device_app_info.dart';
 import 'git_tool.dart';
 import 'json_store/local_app_config.dart';
-import 'logger.dart';
 import 'method_channel_chaldea.dart';
 import 'shared_prefs.dart';
 import 'wiki_util.dart';
@@ -727,12 +726,16 @@ class RuntimeData {
 
   // debug
   bool _enableDebugTools = false;
+
   bool get enableDebugTools =>
       _enableDebugTools || kDebugMode || AppInfo.isDebugDevice;
+
   set enableDebugTools(bool v) => _enableDebugTools = v;
 
   bool _showDebugFAB = true;
+
   bool get showDebugFAB => _showDebugFAB && enableDebugTools;
+
   set showDebugFAB(bool value) => _showDebugFAB = value;
 
   bool showFps = false;

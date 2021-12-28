@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:catcher/catcher.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/js_engine/js_engine.dart';
 import 'package:chaldea/modules/shared/quest_card.dart';
+import 'package:chaldea/packages/js_engine/js_engine.dart';
 import 'package:flutter/services.dart';
 import 'package:lpinyin/lpinyin.dart';
 
@@ -202,6 +202,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
   }
 
   final Map<String, String> _shownTexts = {};
+
   String _getLocalizedKey(String key, {bool alphabetical = false}) {
     String text = _shownTexts[key] ??= localized.of(_removePrefix(key));
     if (alphabetical) {

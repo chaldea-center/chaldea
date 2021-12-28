@@ -1,8 +1,6 @@
-import 'dart:typed_data';
-
-import 'dart:io';
-
 import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 
 import 'file_plus.dart';
 

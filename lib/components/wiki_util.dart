@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:chaldea/platform_interface/platform/platform.dart';
+import 'package:chaldea/packages/packages.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path/path.dart' show join;
@@ -10,7 +10,6 @@ import 'package:pool/pool.dart';
 import 'config.dart' show db;
 import 'constants.dart';
 import 'json_store/json_store.dart';
-import 'logger.dart';
 import 'server_api.dart';
 
 class WikiUtil {

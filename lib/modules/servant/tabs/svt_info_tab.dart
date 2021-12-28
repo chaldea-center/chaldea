@@ -363,8 +363,8 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
         icon: const Icon(Icons.launch),
         label: Text(card.lName),
         style: ElevatedButton.styleFrom(
-          // tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        ),
+            // tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
       ),
     );
   }

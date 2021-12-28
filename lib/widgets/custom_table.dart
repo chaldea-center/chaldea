@@ -86,7 +86,7 @@ class CustomTableRow extends StatefulWidget {
     Color? color,
     VerticalDivider? divider = kVerticalDivider,
   }) : this(
-    key: key,
+          key: key,
           children: texts
               .map((text) => (defaults ?? TableCellData(text: text))
                   .copyWith(text: text, isHeader: isHeader))

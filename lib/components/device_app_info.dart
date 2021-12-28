@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:chaldea/platform_interface/platform/platform.dart';
+import 'package:chaldea/packages/packages.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:device_info_plus_windows/device_info_plus_windows.dart'
     as device_info_windows;
@@ -12,7 +12,6 @@ import 'package:uuid/uuid.dart';
 import 'config.dart' show db;
 import 'constants.dart';
 import 'git_tool.dart';
-import 'logger.dart';
 
 class AppInfo {
   AppInfo._();

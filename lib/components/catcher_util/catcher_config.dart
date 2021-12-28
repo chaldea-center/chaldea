@@ -1,13 +1,12 @@
 import 'dart:io';
 
 import 'package:catcher/catcher.dart';
-import 'package:chaldea/platform_interface/platform/platform.dart';
+import 'package:chaldea/packages/packages.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../config.dart';
 import '../device_app_info.dart';
-import '../logger.dart';
 import 'catcher_email_handler.dart';
 
 class CatcherUtility {
@@ -27,10 +26,10 @@ class CatcherUtility {
           attachments: PlatformU.isWeb
               ? []
               : [
-            File(db.paths.crashLog),
-            File(db.paths.userDataPath),
-            File(db.paths.appLog),
-          ],
+                  File(db.paths.crashLog),
+                  File(db.paths.userDataPath),
+                  File(db.paths.appLog),
+                ],
         ),
       ],
       customParameters: _getCatcherCustomParameters(),

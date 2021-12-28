@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/rate_limiter.dart';
+import 'package:chaldea/packages/rate_limiter.dart';
 
 class IconCacheManagePage extends StatefulWidget {
   IconCacheManagePage({Key? key}) : super(key: key);

@@ -1,13 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
-import 'dart:io';
-
-import 'dart:convert';
-
-import 'package:chaldea/components/logger.dart';
-
-import 'file_plus.dart';
 import 'package:hive/hive.dart';
+
+import '../logger.dart';
+import 'file_plus.dart';
 
 Future<void> initWebFileSystem() async {
   const fsName = 'webfs';

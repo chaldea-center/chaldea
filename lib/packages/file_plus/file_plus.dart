@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:io' show FileMode;
-
 import 'dart:typed_data';
 
-import 'package:chaldea/platform_interface/file_plus/file_plus_io.dart';
-import 'package:chaldea/platform_interface/file_plus/file_plus_web.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+
+import 'file_plus_io.dart';
+import 'file_plus_web.dart';
 
 abstract class FilePlus {
   factory FilePlus(String fp) {

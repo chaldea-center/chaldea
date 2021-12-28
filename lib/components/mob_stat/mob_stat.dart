@@ -1,5 +1,5 @@
 import 'package:baidu_mob_stat/baidu_mob_stat.dart';
-import 'package:chaldea/platform_interface/platform/platform.dart';
+import 'package:chaldea/packages/packages.dart';
 import 'package:flutter/foundation.dart';
 
 abstract class MobStat {

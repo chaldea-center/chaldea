@@ -1,4 +1,4 @@
-abstract class JsEngineMixin {
+abstract class JsEngineInterface {
   /// init if needed
   Future<void> init([Function? callback]);
 
