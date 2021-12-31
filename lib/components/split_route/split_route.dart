@@ -15,9 +15,12 @@
 ///  • Dart version 2.13.0 (build 2.13.0-222.0.dev)
 import 'dart:async';
 
-import 'package:chaldea/components/mob_stat/mob_stat.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart' show CupertinoRouteTransitionMixin;
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+
+import '../constants.dart';
+import '../mob_stat/mob_stat.dart';
 // ignore_for_file: unnecessary_null_comparison
 
 const int _kSplitMasterRatio = 38;
@@ -98,22 +101,43 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
         super(settings: settings, fullscreenDialog: fullscreenDialog);
 
   /// define your own builder for right space of master page
-  // ignore: prefer_function_declarations_over_variables
-  static WidgetBuilder defaultMasterFillPageBuilder = (context) => Container();
+  static WidgetBuilder? defaultMasterFillPageBuilder;
 
-  /// wrap master page here
+  bool? _lastSplitCache;
+  TransitionRoute? _nextRouteCache;
+
+  /// when switch layout from single view to master-detail view,
+  /// update route to remove the secondaryAnimation
   @override
   Widget buildContent(BuildContext context) {
+    Widget child;
     final layout = getLayout(context);
     switch (layout) {
       case SplitLayout.master:
-        return createMasterWidget(
+        child = createMasterWidget(
             context: context, child: builder(context, layout));
+        break;
       case SplitLayout.detail:
-        return builder(context, layout);
+        child = builder(context, layout);
+        break;
       case SplitLayout.none:
-        return builder(context, layout);
+        child = builder(context, layout);
+        break;
     }
+
+    bool? _last = _lastSplitCache;
+    bool _current = _lastSplitCache = isSplit(context);
+    if (!isCurrent &&
+        _last == false &&
+        _current == true &&
+        _nextRouteCache != null) {
+      SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+        didChangeNext(_nextRouteCache!);
+        _nextRouteCache!.didChangePrevious(this);
+      });
+      return Offstage(child: child);
+    }
+    return child;
   }
 
   @override
@@ -150,7 +174,8 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
 
   @override
   bool canTransitionTo(TransitionRoute nextRoute) {
-    if (_isSplitCache && nextRoute is SplitRoute && nextRoute.detail == true) {
+    _nextRouteCache = nextRoute;
+    if (isSplit(null) && nextRoute is SplitRoute && nextRoute.detail == true) {
       return false;
     }
     return super.canTransitionTo(nextRoute);
@@ -158,7 +183,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
 
   @override
   bool canTransitionFrom(TransitionRoute previousRoute) {
-    if (_isSplitCache &&
+    if (isSplit(null) &&
         previousRoute is SplitRoute &&
         previousRoute.detail == true) {
       return false;
@@ -199,22 +224,23 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
                       color: Theme.of(context).dividerColor),
                 ),
               ),
-              child: defaultMasterFillPageBuilder(context),
+              child: defaultMasterFillPageBuilder?.call(context) ??
+                  const Scaffold(),
             ),
           ),
       ],
     );
   }
 
-  static bool _isSplitCache = false;
+  // static bool _isSplitCache = false;
 
   /// Check current size to use split view or not.
   /// When the height is too small, split view is disabled.
   static bool isSplit(BuildContext? context) {
+    context ??= kAppKey.currentContext;
     if (context == null) return false;
     final size = MediaQuery.of(context).size;
-    return _isSplitCache =
-        size.width > size.height && size.width >= 720 && size.height > 320;
+    return size.width > size.height && size.width >= 720 && size.height > 320;
   }
 
   SplitLayout getLayout(BuildContext context) {

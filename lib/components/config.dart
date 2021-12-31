@@ -643,7 +643,7 @@ class PathManager {
     if (_appPath == null) {
       throw const OSError('Cannot resolve document folder');
     }
-
+    logger.i('appPath: $_appPath');
     // ensure directory exist
     for (String dir in [
       _persistentPath!,

@@ -72,6 +72,8 @@ class AppInfo {
     appParams["appName"] = _packageInfo?.appName;
     appParams["buildNumber"] = _packageInfo?.buildNumber;
     appParams["packageName"] = _packageInfo?.packageName;
+    logger.i('Resolved app version: ${_packageInfo?.packageName}'
+        ' ${_packageInfo?.version}+${_packageInfo?.buildNumber}');
   }
 
   static Future<PackageInfo> _loadApplicationInfoFromAsset() async {
@@ -174,7 +176,7 @@ class AppInfo {
       }
       if (originId?.isNotEmpty != true) {
         originId = const Uuid().v1();
-        uuidFile.writeAsStringSync(_uuid!);
+        uuidFile.writeAsStringSync(originId);
       }
     }
     _uuid = const Uuid().v5(Uuid.NAMESPACE_URL, originId!).toUpperCase();

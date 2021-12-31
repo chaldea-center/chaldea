@@ -303,8 +303,6 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
     _initiated = true;
     SplitRoute.of(context)?.detail = false;
 
-    logger.i('App version: ${AppInfo.appName} v${AppInfo.fullVersion}');
-    logger.i('appPath: ${db.paths.appPath}');
     db.notifyAppUpdate();
     // macOS审核太啰嗦了
     if (justUpdated && !AppInfo.isMacStoreApp) {

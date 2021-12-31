@@ -59,7 +59,7 @@ class AppSetting {
             0, GitSource.values.length),
         autoUpdateApp = autoUpdateApp ?? true,
         autoUpdateDataset = autoUpdateDataset ?? true,
-        autorotate = autorotate ?? false,
+        autorotate = autorotate ?? true,
         classFilterStyle = classFilterStyle ?? SvtListClassFilterStyle.auto,
         onlyAppendSkillTwo = onlyAppendSkillTwo ?? true,
         svtPlanSliderMode = svtPlanSliderMode ?? false,

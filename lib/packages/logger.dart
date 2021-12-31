@@ -80,10 +80,12 @@ class _CustomPrettyPrinter extends PrettyPrinter {
     String? stackTraceStr;
     if (event.stackTrace == null) {
       if (methodCount > 0) {
+        final lines = StackTrace.current.toString().split('\n');
+        lines.removeWhere((line) =>
+            line.contains('chaldea/packages/logger.dart') ||
+            line == '<asynchronous suspension>');
         stackTraceStr = formatStackTrace(
-            StackTrace.fromString(
-                StackTrace.current.toString().split('\n').skip(1).join('\n')),
-            methodCount);
+            StackTrace.fromString(lines.join('\n')), methodCount);
       }
     } else if (errorMethodCount > 0) {
       stackTraceStr = formatStackTrace(event.stackTrace, errorMethodCount);
@@ -97,10 +99,12 @@ class _CustomPrettyPrinter extends PrettyPrinter {
 
     List<String> buffer = [];
 
+    String levelStr = event.level.toString().split('.').last.toUpperCase();
+
     if (stackTraceStr != null) {
       final lines = stackTraceStr.split('\n');
       for (int index = 0; index < lines.length; index++) {
-        buffer.add((index == 0 ? '┌ ' : '│ ') + lines[index]);
+        buffer.add((index == 0 ? '├ ' : '│ ') + lines[index]);
       }
     }
     if (errorStr != null) {
@@ -109,8 +113,8 @@ class _CustomPrettyPrinter extends PrettyPrinter {
       }
       buffer.add('├ ' + errorStr);
     }
-    String levelStr = event.level.toString().split('.').last.toUpperCase();
-    buffer.add('└ [$timeStr][$levelStr] $messageStr');
+    buffer.add('├ [$timeStr][$levelStr] $messageStr');
+    buffer.add('└'.padRight(lineLength, '-'));
     return buffer;
   }
 }
