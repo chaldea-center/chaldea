@@ -88,7 +88,9 @@ class BiliReplaced {
   Map<int, UserSvtCoin> coinMap = {};
 
   @JsonKey(ignore: true)
-  Map<int, UserSvtAppendPassiveSkillLv> appendSkillMap = {};
+  Map<int, UserSvtAppendPassiveSkill> appendSkillMap = {};
+  @JsonKey(ignore: true)
+  Map<int, UserSvtAppendPassiveSkillLv> appendSkillLvMap = {};
 
   BiliReplaced({
     List<UserItem>? userItem,
@@ -110,12 +112,27 @@ class BiliReplaced {
     for (final e in this.userSvtCoin) {
       coinMap[e.svtId] = e;
     }
+    for (final e in this.userSvtAppendPassiveSkill) {
+      appendSkillMap[e.svtId] = e;
+    }
     for (final e in this.userSvtAppendPassiveSkillLv) {
-      appendSkillMap[e.userSvtId] = e;
+      appendSkillLvMap[e.userSvtId] = e;
     }
   }
 
   UserGame? get firstUser => userGame.getOrNull(0);
+
+  List<int> getSvtAppendSkillLv(UserSvt svt) {
+    final Map<int, int> lvs = Map.fromIterable(
+        appendSkillMap[svt.svtId]?.unlockNums ?? <int>[],
+        value: (_) => 1);
+    final appendLv = appendSkillLvMap[svt.id];
+    if (appendLv != null) {
+      lvs.addAll(Map.fromIterables(
+          appendLv.appendPassiveSkillNums, appendLv.appendPassiveSkillLvs));
+    }
+    return List.generate(3, (index) => lvs[100 + index] ?? 0);
+  }
 
   factory BiliReplaced.fromJson(Map<String, dynamic> data) =>
       _$BiliReplacedFromJson(data);
@@ -491,15 +508,15 @@ class UserSvtAppendPassiveSkillLv {
     required this.appendPassiveSkillLvs,
   }) : userSvtId = _toInt(userSvtId);
 
-  List<int> toLvs() {
-    final lvs =
-        Map.fromIterables(appendPassiveSkillNums, appendPassiveSkillLvs);
-    return [
-      lvs[100] ?? 0,
-      lvs[101] ?? 0,
-      lvs[102] ?? 0,
-    ];
-  }
+  // List<int> toLvs() {
+  //   final lvs =
+  //       Map.fromIterables(appendPassiveSkillNums, appendPassiveSkillLvs);
+  //   return [
+  //     lvs[100] ?? 0,
+  //     lvs[101] ?? 0,
+  //     lvs[102] ?? 0,
+  //   ];
+  // }
 
   factory UserSvtAppendPassiveSkillLv.fromJson(Map<String, dynamic> data) =>
       _$UserSvtAppendPassiveSkillLvFromJson(data);

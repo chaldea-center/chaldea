@@ -750,7 +750,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       if (svtIdMap.containsKey(svt.svtId)) {
         svt.indexKey = svtIdMap[svt.svtId]!.originNo;
         svt.inStorage = false;
-        svt.appendLvs = _topLogin.body.appendSkillMap[svt.id]?.toLvs();
+        svt.appendLvs = _topLogin.body.getSvtAppendSkillLv(svt);
         // cardCollections[svt.svtId] = _response.userSvtCollection
         //     .firstWhere((element) => element.svtId == svt.svtId);
         final group = servants.firstWhereOrNull(
@@ -767,7 +767,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       if (svtIdMap.containsKey(svt.svtId)) {
         svt.indexKey = svtIdMap[svt.svtId]!.originNo;
         svt.inStorage = true;
-        svt.appendLvs = _topLogin.body.appendSkillMap[svt.id]?.toLvs();
+        svt.appendLvs = _topLogin.body.getSvtAppendSkillLv(svt);
         // cardCollections[svt.svtId] = _response.userSvtCollection
         //     .firstWhere((element) => element.svtId == svt.svtId);
         final group = servants.firstWhereOrNull(
