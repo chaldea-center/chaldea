@@ -3,9 +3,9 @@
 library gamedata;
 
 import 'package:chaldea/components/utils.dart';
+import 'package:chaldea/packages/packages.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart' as pathlib;
-import 'package:chaldea/packages/packages.dart';
 
 part 'command_code.dart';
 

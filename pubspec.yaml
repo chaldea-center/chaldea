@@ -53,6 +53,7 @@ dependencies:
   flutter_picker: ^2.0.2
   flutter_qjs: ^0.3.6
   font_awesome_flutter: ^9.2.0
+  get: any
   hive: ^2.0.4
   html: ^0.15.0
   image: ^3.0.8

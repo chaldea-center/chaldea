@@ -41,8 +41,8 @@ class MysticCode {
   String get lDescription =>
       localizeNoun(description, descriptionJp, descriptionEn);
 
-  List<String> get lObtains =>
-      localizeNoun(obtains, null, obtainsEn, test: (v) => v.isNotEmpty);
+  List<String> get lObtains => localizeNoun(obtains, null, obtainsEn,
+      k: () => <String>[], test: (v) => v.isNotEmpty);
 
   factory MysticCode.fromJson(Map<String, dynamic> data) =>
       _$MysticCodeFromJson(data);

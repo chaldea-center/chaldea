@@ -92,7 +92,7 @@ class UserData {
           db.gameData.servantsWithUser[key] == null);
       curUser.servantPlans.forEach((plans) {
         plans.removeWhere((key, value) =>
-        db.gameData.unavailableSvts.contains(key) ||
+            db.gameData.unavailableSvts.contains(key) ||
             db.gameData.servantsWithUser[key] == null);
       });
       curUser.crafts
