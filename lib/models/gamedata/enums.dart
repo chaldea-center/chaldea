@@ -39,6 +39,7 @@ enum SvtClass {
   beastI,
   beastIIIR,
   beastIIIL,
+  beastIV,
   beastUnknown,
   unknown,
   agarthaPenth,
@@ -309,7 +310,9 @@ enum Trait {
   burningLove,
   buffStrongAgainstWildBeast,
   buffStrongAgainstDragon,
-  fairyTaleServant
+  fairyTaleServant,
+  classBeastIV,
+  havingAnimalsCharacteristics
 }
 
 enum Gender { male, female, unknown }

@@ -41,6 +41,7 @@ class Quest {
   int consume;
   List<ItemAmount> consumeItem;
   QuestAfterClearType afterClear;
+  String recommendLv;
   int spotId;
   int warId;
   String warLongName;
@@ -65,6 +66,7 @@ class Quest {
     required this.consume,
     required this.consumeItem,
     required this.afterClear,
+    required this.recommendLv,
     required this.spotId,
     required this.warId,
     required this.warLongName,
@@ -178,6 +180,7 @@ class Stage {
   Bgm bgm;
 
   // fieldAis
+  // calls
   List<QuestEnemy> enemies;
 
   Stage({
@@ -206,6 +209,8 @@ class EnemyDrop {
   int num;
   int dropCount;
   int runs;
+  double dropExpected;
+  double dropVariance;
 
   EnemyDrop({
     required this.type,
@@ -213,6 +218,8 @@ class EnemyDrop {
     required this.num,
     required this.dropCount,
     required this.runs,
+    required this.dropExpected,
+    required this.dropVariance,
   });
 
   factory EnemyDrop.fromJson(Map<String, dynamic> json) =>
@@ -343,6 +350,8 @@ class QuestPhase implements Quest {
   @override
   QuestAfterClearType afterClear;
   @override
+  String recommendLv;
+  @override
   int chapterId;
   @override
   int chapterSubId;
@@ -395,9 +404,11 @@ class QuestPhase implements Quest {
   List<QuestMessage> messages;
   List<SupportServant> supportServants;
   List<Stage> stages;
+  List<EnemyDrop> drops;
 
   QuestPhase({
     required this.afterClear,
+    required this.recommendLv,
     required this.chapterId,
     required this.chapterSubId,
     required this.chapterSubStr,
@@ -430,6 +441,7 @@ class QuestPhase implements Quest {
     required this.messages,
     required this.supportServants,
     required this.stages,
+    required this.drops,
   });
 
   factory QuestPhase.fromJson(Map<String, dynamic> json) =>

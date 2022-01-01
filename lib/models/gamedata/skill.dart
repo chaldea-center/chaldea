@@ -403,6 +403,8 @@ class SkillScript {
   List<int>? HP_VAL_LOWER;
   List<int>? HP_PER_HIGHER;
   List<int>? HP_PER_LOWER;
+  List<int>? additionalSkillId;
+  List<int>? additionalSkillActorType;
 
   SkillScript({
     this.NP_HIGHER,
@@ -413,6 +415,8 @@ class SkillScript {
     this.HP_VAL_LOWER,
     this.HP_PER_HIGHER,
     this.HP_PER_LOWER,
+    this.additionalSkillId,
+    this.additionalSkillActorType,
   });
 
   factory SkillScript.fromJson(Map<String, dynamic> json) =>

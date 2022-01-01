@@ -142,6 +142,7 @@ const _$SvtClassEnumMap = {
   SvtClass.beastI: 'beastI',
   SvtClass.beastIIIR: 'beastIIIR',
   SvtClass.beastIIIL: 'beastIIIL',
+  SvtClass.beastIV: 'beastIV',
   SvtClass.beastUnknown: 'beastUnknown',
   SvtClass.unknown: 'unknown',
   SvtClass.agarthaPenth: 'agarthaPenth',
@@ -162,11 +163,9 @@ const _$CardTypeEnumMap = {
 };
 
 DataVersion _$DataVersionFromJson(Map json) => DataVersion(
-      timestamp: json['timestamp'] as int? ?? 0,
+  timestamp: json['timestamp'] as int? ?? 0,
       utc: json['utc'] as String? ?? "",
-      minimalApp: json['minimalApp'] == null
-          ? const AppVersion(0, 0, 0)
-          : AppVersion.parse(json['minimalApp'] as String),
+      minimalApp: json['minimalApp'] ?? const AppVersion(0, 0, 0),
       files: (json['files'] as Map?)?.map(
             (k, e) => MapEntry(k as String,
                 DatFileVersion.fromJson(Map<String, dynamic>.from(e as Map))),
@@ -687,6 +686,8 @@ const _$TraitEnumMap = {
   Trait.buffStrongAgainstWildBeast: 'buffStrongAgainstWildBeast',
   Trait.buffStrongAgainstDragon: 'buffStrongAgainstDragon',
   Trait.fairyTaleServant: 'fairyTaleServant',
+  Trait.classBeastIV: 'classBeastIV',
+  Trait.havingAnimalsCharacteristics: 'havingAnimalsCharacteristics',
 };
 
 BuffRelationOverwrite _$BuffRelationOverwriteFromJson(Map json) =>
@@ -1865,7 +1866,7 @@ QuestPhaseScript _$QuestPhaseScriptFromJson(Map json) => QuestPhaseScript(
     );
 
 Quest _$QuestFromJson(Map json) => Quest(
-      id: json['id'] as int,
+  id: json['id'] as int,
       name: json['name'] as String,
       type: $enumDecode(_$QuestTypeEnumMap, json['type']),
       consumeType: $enumDecode(_$ConsumeTypeEnumMap, json['consumeType']),
@@ -1874,6 +1875,7 @@ Quest _$QuestFromJson(Map json) => Quest(
           .map((e) => ItemAmount.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
       afterClear: $enumDecode(_$QuestAfterClearTypeEnumMap, json['afterClear']),
+      recommendLv: json['recommendLv'] as String,
       spotId: json['spotId'] as int,
       warId: json['warId'] as int,
       warLongName: json['warLongName'] as String,
@@ -1971,11 +1973,13 @@ Stage _$StageFromJson(Map json) => Stage(
     );
 
 EnemyDrop _$EnemyDropFromJson(Map json) => EnemyDrop(
-      type: $enumDecode(_$GiftTypeEnumMap, json['type']),
+  type: $enumDecode(_$GiftTypeEnumMap, json['type']),
       objectId: json['objectId'] as int,
       num: json['num'] as int,
       dropCount: json['dropCount'] as int,
       runs: json['runs'] as int,
+      dropExpected: (json['dropExpected'] as num).toDouble(),
+      dropVariance: (json['dropVariance'] as num).toDouble(),
     );
 
 QuestEnemy _$QuestEnemyFromJson(Map json) => QuestEnemy(
@@ -2062,7 +2066,8 @@ EnemyPassive _$EnemyPassiveFromJson(Map json) => EnemyPassive(
     );
 
 QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
-      afterClear: $enumDecode(_$QuestAfterClearTypeEnumMap, json['afterClear']),
+  afterClear: $enumDecode(_$QuestAfterClearTypeEnumMap, json['afterClear']),
+      recommendLv: json['recommendLv'] as String,
       chapterId: json['chapterId'] as int,
       chapterSubId: json['chapterSubId'] as int,
       chapterSubStr: json['chapterSubStr'] as String,
@@ -2122,6 +2127,9 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
           .toList(),
       stages: (json['stages'] as List<dynamic>)
           .map((e) => Stage.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      drops: (json['drops'] as List<dynamic>)
+          .map((e) => EnemyDrop.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
     );
 
@@ -2977,6 +2985,13 @@ SkillScript _$SkillScriptFromJson(Map json) => SkillScript(
       HP_PER_LOWER: (json['HP_PER_LOWER'] as List<dynamic>?)
           ?.map((e) => e as int)
           .toList(),
+      additionalSkillId: (json['additionalSkillId'] as List<dynamic>?)
+          ?.map((e) => e as int)
+          .toList(),
+      additionalSkillActorType:
+          (json['additionalSkillActorType'] as List<dynamic>?)
+              ?.map((e) => e as int)
+              .toList(),
     );
 
 SkillAdd _$SkillAddFromJson(Map json) => SkillAdd(
