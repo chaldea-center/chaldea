@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:chaldea/components/catcher_util/catcher_config.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/method_channel_chaldea.dart';
+import 'package:chaldea/models/version.dart';
+import 'package:chaldea/packages/method_channel/method_channel_chaldea.dart';
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:chaldea/modules/home/home_page.dart';
 import 'package:chaldea/modules/home/subpage/support_donation_page.dart';
@@ -264,7 +265,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
     // if app updated, reload gamedata
     bool gameDataLoadSuccess = false;
     final previousVersion =
-        Version.tryParse(db.prefs.previousVersion.get() ?? '');
+        AppVersion.tryParse(db.prefs.previousVersion.get() ?? '');
     bool justUpdated =
         previousVersion == null || previousVersion < AppInfo.versionClass;
 

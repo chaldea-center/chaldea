@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/version.dart';
 import 'package:chaldea/packages/packages.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +13,7 @@ import 'package:path/path.dart' as pathlib;
 
 import 'config.dart' show db;
 import 'constants.dart';
-import 'device_app_info.dart';
-import 'extensions.dart';
+import '../packages/app_info.dart';
 import 'localized/localized_base.dart';
 
 enum GitSource { server, github, gitee }
@@ -28,94 +29,9 @@ extension GitSourceExtension on GitSource {
       GitSource.values.getOrNull(index) ?? GitSource.values.first;
 }
 
-/// When comparison, [build] will be ignored:
-///   - on iOS, cannot fetch [build] from server api
-///   - on Android, split-abi will change [build] from 25 to 1025/2025/4025
-class Version extends Comparable<Version> {
-  /// valid format:
-  ///   - v1.2.3+4,'v' and +4 is optional
-  ///   - 1.2.3.4, windows format
-  static final RegExp _fullVersionRegex =
-      RegExp(r'^v?(\d+)\.(\d+)\.(\d+)(?:[+.](\d+))?$', caseSensitive: false);
-  final int major;
-  final int minor;
-  final int patch;
-  final int? build;
-
-  Version(this.major, this.minor, this.patch, [this.build]);
-
-  String get version => '$major.$minor.$patch';
-
-  String get fullVersion => version + (build == null ? '' : '+$build');
-
-  /// compare [build] here
-  bool equalTo(String other) {
-    Version? _other = Version.tryParse(other);
-    if (_other == null) return false;
-    if (major == _other.major &&
-        minor == _other.minor &&
-        patch == _other.patch) {
-      return build == null || _other.build == null || build == _other.build;
-    } else {
-      return false;
-    }
-  }
-
-  @override
-  String toString() {
-    return '$runtimeType($major, $minor, $patch${build == null ? "" : ", $build"})';
-  }
-
-  static Version? tryParse(String versionString, [int? build]) {
-    versionString = versionString.trim();
-    if (!_fullVersionRegex.hasMatch(versionString)) {
-      if (versionString.isNotEmpty &&
-          !['svt_icons', 'ffo-data'].contains(versionString)) {
-        logger.e(ArgumentError.value(
-            versionString, 'versionString', 'Invalid version format'));
-      }
-      return null;
-    }
-    Match match = _fullVersionRegex.firstMatch(versionString)!;
-    int major = int.parse(match.group(1)!);
-    int minor = int.parse(match.group(2)!);
-    int patch = int.parse(match.group(3)!);
-    int? _build = int.tryParse(match.group(4) ?? '');
-    return Version(major, minor, patch, build ?? _build);
-  }
-
-  @override
-  int compareTo(Version other) {
-    // build(nullable) then major/minor/patch
-    // if (build != null && other.build != null && build != other.build) {
-    //   return build!.compareTo(other.build!);
-    // }
-    if (major != other.major) return major.compareTo(other.major);
-    if (minor != other.minor) return minor.compareTo(other.minor);
-    if (patch != other.patch) return patch.compareTo(other.patch);
-    return 0;
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is Version && compareTo(other) == 0;
-  }
-
-  bool operator <(Version other) => compareTo(other) < 0;
-
-  bool operator <=(Version other) => compareTo(other) <= 0;
-
-  bool operator >(Version other) => compareTo(other) > 0;
-
-  bool operator >=(Version other) => compareTo(other) >= 0;
-
-  @override
-  int get hashCode => toString().hashCode;
-}
-
 class DatasetVersion extends Comparable<DatasetVersion> {
   String createAt;
-  Version minimalApp;
+  AppVersion minimalApp;
   String hotfix;
 
   DatasetVersion(this.createAt, this.minimalApp, [this.hotfix = '']);
@@ -123,7 +39,7 @@ class DatasetVersion extends Comparable<DatasetVersion> {
   static DatasetVersion? tryParse(String source) {
     final segments = source.split('-');
     if (segments.length == 1) return null;
-    Version? app = Version.tryParse(segments[1]);
+    AppVersion? app = AppVersion.tryParse(segments[1]);
     if (app == null) return null;
     return DatasetVersion(segments[0], app, segments.getOrNull(2) ?? '');
   }
@@ -402,8 +318,8 @@ class GitTool {
     // don't limit app version for icons
     if (testRelease == null && !icons) {
       testRelease = (release) {
-        Version? minVersion =
-            Version.tryParse(release.name.split('-').getOrNull(1) ?? '');
+        AppVersion? minVersion =
+            AppVersion.tryParse(release.name.split('-').getOrNull(1) ?? '');
         return minVersion != null && minVersion <= AppInfo.versionClass;
       };
     }
@@ -422,7 +338,7 @@ class GitTool {
       [bool Function(GitRelease release)? test]) async {
     test ??= (release) =>
         !release.name.contains('ffo') &&
-        Version.tryParse(release.name) == AppInfo.versionClass;
+        AppVersion.tryParse(release.name) == AppInfo.versionClass;
     return (await appReleases).firstWhereOrNull(test)?.body;
   }
 

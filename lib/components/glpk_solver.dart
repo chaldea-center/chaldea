@@ -204,7 +204,7 @@ DropRateData _preProcess(
 
   // remove cols don't contain any objective rows
   for (int col = 0; col < data.colNames.length; col++) {
-    double apRateSum = sum(objective.keys.map((rowName) {
+    double apRateSum = Maths.sum(objective.keys.map((rowName) {
       return data.matrix[data.rowNames.indexOf(rowName)][col];
     }));
     if (apRateSum == 0) {

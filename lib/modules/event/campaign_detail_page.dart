@@ -137,7 +137,8 @@ class _CampaignDetailPageState extends State<CampaignDetailPage>
             title: Text(S.of(context).confirm),
             content: Text(S.of(context).event_collect_item_confirm),
             onTapOk: () {
-              sumDict([db.curUser.items, event.getItems(plan)], inPlace: true);
+              Maths.sumDict([db.curUser.items, event.getItems(plan)],
+                  inPlace: true);
               plan.enabled = false;
               db.itemStat.updateEventItems();
               setState(() {});

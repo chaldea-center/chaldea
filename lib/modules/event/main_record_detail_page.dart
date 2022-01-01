@@ -130,7 +130,7 @@ class _MainRecordDetailPageState extends State<MainRecordDetailPage>
             title: Text(S.of(context).confirm),
             content: Text(S.of(context).event_collect_item_confirm),
             onTapOk: () {
-              sumDict([db.curUser.items, widget.record.getItems(plan)],
+              Maths.sumDict([db.curUser.items, widget.record.getItems(plan)],
                   inPlace: true);
               plan
                 ..drop = false

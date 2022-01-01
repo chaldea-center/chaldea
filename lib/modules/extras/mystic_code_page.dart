@@ -28,7 +28,8 @@ class _MysticCodePageState extends State<MysticCodePage> {
     if (codes.isEmpty) return Container();
     _curCodeName ??= codes.keys.first;
     final MysticCode? mysticCode = db.gameData.mysticCodes[_curCodeName];
-    _level = fixValidRange(db.curUser.mysticCodes[_curCodeName] ?? 10, 1, 10);
+    _level =
+        Maths.fixValidRange(db.curUser.mysticCodes[_curCodeName] ?? 10, 1, 10);
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.mystic_code),
@@ -129,7 +130,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
   void _scrollTo(int dx) {
     List<String> keys = codes.keys.toList();
     int _curIndex = codes.keys.toList().indexOf(_curCodeName ?? '');
-    _curIndex = fixValidRange(_curIndex + dx, 0, codes.length - 1);
+    _curIndex = Maths.fixValidRange(_curIndex + dx, 0, codes.length - 1);
     setState(() {
       _curCodeName = keys[_curIndex];
     });

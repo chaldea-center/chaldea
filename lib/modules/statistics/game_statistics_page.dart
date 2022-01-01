@@ -160,12 +160,12 @@ class _StatItemConsumedTabState extends State<StatItemConsumedTab> {
         return;
       }
       final svt = db.gameData.servantsWithUser[no]!;
-      sumDict(
+      Maths.sumDict(
         [shownItems, svt.getAllCost(status: emptyPlan, target: svtStat.curVal)],
         inPlace: true,
       );
     });
-    sumDict([shownItems, if (includeOwnedItems) db.curUser.items],
+    Maths.sumDict([shownItems, if (includeOwnedItems) db.curUser.items],
         inPlace: true);
     shownItems.removeWhere((key, value) {
       int group = (db.gameData.items[key]?.id ?? 0) ~/ 100;
@@ -264,10 +264,10 @@ class _StatItemDemandsTabState extends State<StatItemDemandsTab> {
 
   void calculateItem() {
     shownItems = Map.of(db.itemStat.svtItems);
-    sumDict([
+    Maths.sumDict([
       shownItems,
-      if (subtractOwnedItems) multiplyDict(db.curUser.items, -1),
-      if (subtractEventItems) multiplyDict(db.itemStat.eventItems, -1),
+      if (subtractOwnedItems) Maths.multiplyDict(db.curUser.items, -1),
+      if (subtractEventItems) Maths.multiplyDict(db.itemStat.eventItems, -1),
     ], inPlace: true);
     shownItems.removeWhere((key, value) {
       int group = (db.gameData.items[key]?.id ?? 0) ~/ 100;

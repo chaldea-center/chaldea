@@ -802,7 +802,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
         padding: const EdgeInsets.only(right: 3),
       ));
     });
-    bool hasItem = sum(enhanceItems.values) > 0;
+    bool hasItem = Maths.sum(enhanceItems.values) > 0;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -829,7 +829,8 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
             child: Text(S.of(context).confirm),
             onPressed: () {
               if (hasItem) {
-                sumDict([db.curUser.items, multiplyDict(enhanceItems, -1)],
+                Maths.sumDict(
+                    [db.curUser.items, Maths.multiplyDict(enhanceItems, -1)],
                     inPlace: true);
                 status.curVal.copyFrom(enhancePlan);
                 enhanceMode = !enhanceMode;

@@ -353,7 +353,7 @@ class UserSvtCollection {
   bool get isOwned => status == 2;
 
   List<int> costumeIdsTo01() {
-    final n = MathUtils.max(costumeIds.map((e) => e.abs()));
+    final n = Maths.max(costumeIds.map((e) => e.abs()));
     final result = <int>[];
     for (int i = 11; i <= n; i++) {
       result.add(costumeIds.contains(i) ? 1 : 0);

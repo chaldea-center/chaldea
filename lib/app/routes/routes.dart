@@ -1,7 +1,7 @@
-import 'package:chaldea/components/extensions.dart';
-import 'package:chaldea/components/split_route/split_route.dart';
 import 'package:flutter/material.dart';
 
+import '../../packages/split_route/split_route.dart';
+import '../../utils/extension.dart';
 import '../modules/common/not_found.dart';
 import '../modules/home/home.dart';
 import '../modules/servant/servant_list.dart';

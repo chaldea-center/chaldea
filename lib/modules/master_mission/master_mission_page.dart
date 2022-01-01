@@ -501,7 +501,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
     List<Widget> children = [];
     Map<String, double> allCounts = {};
     for (int col = 0; col < params.colNames.length; col++) {
-      num count = sum(params.getCol(col));
+      num count = Maths.sum(params.getCol(col));
       if (count > 0) allCounts[params.colNames[col]] = count / params.cVec[col];
     }
     List<String> cols = allCounts.keys.toList();

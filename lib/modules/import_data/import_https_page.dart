@@ -139,7 +139,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   }
 
   final double _with = 56;
-  final double _height = 56 / Constants.iconAspectRatio; // ignore: unused_field
+  final double _height = 56 / (132 / 144);
 
   Widget get userInfoSliver {
     final user = replacedResponse?.firstUser;

@@ -1,5 +1,5 @@
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/components/method_channel_chaldea.dart';
+import 'package:chaldea/packages/method_channel/method_channel_chaldea.dart';
 
 import 'gallery_page.dart';
 import 'settings_page.dart';

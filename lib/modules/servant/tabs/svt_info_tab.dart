@@ -292,7 +292,8 @@ class _SvtInfoTabState extends SvtTabBaseState<SvtInfoTab>
                     for (int i = row * 5; i < row * 5 + 5; i++)
                       i >= svt.bondPoints.length
                           ? '-'
-                          : sum(svt.bondPoints.sublist(0, i + 1)).toString()
+                          : Maths.sum(svt.bondPoints.sublist(0, i + 1))
+                              .toString()
                   ],
                   defaults: TableCellData(maxLines: 1),
                 ),

@@ -41,8 +41,8 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
     final List<GLPKVariable> quests = List.of(widget.solution!.weightVars);
     switch (sortType) {
       case _EfficiencySort.item:
-        quests.sort(
-            (a, b) => sum(b.detail.values).compareTo(sum(a.detail.values)));
+        quests.sort((a, b) =>
+            Maths.sum(b.detail.values).compareTo(Maths.sum(a.detail.values)));
         break;
       case _EfficiencySort.bond:
         quests.sort((a, b) {
@@ -107,7 +107,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text(sum(drops.values).toStringAsFixed(3)),
+                        Text(Maths.sum(drops.values).toStringAsFixed(3)),
                         Text(
                           bondEff == double.negativeInfinity
                               ? '???'

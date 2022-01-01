@@ -1,17 +1,17 @@
 import 'dart:io';
 
-import 'package:chaldea/packages/packages.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:device_info_plus_windows/device_info_plus_windows.dart'
     as device_info_windows;
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:path/path.dart' as p;
+import 'package:path/path.dart' as pathlib;
 import 'package:uuid/uuid.dart';
 
-import 'config.dart' show db;
-import 'constants.dart';
-import 'git_tool.dart';
+import '../models/version.dart';
+import '../utils/constants.dart';
+import 'logger.dart';
+import 'platform/platform.dart';
 
 class AppInfo {
   AppInfo._();
@@ -22,7 +22,7 @@ class AppInfo {
   static bool _isIPad = false;
   static ABIType _abi = ABIType.unknown;
   static int? _androidSdk;
-  static Version? _innerVersion;
+  static AppVersion? _innerVersion;
 
   static final Map<String, dynamic> deviceParams = {};
   static final Map<String, dynamic> appParams = {};
@@ -77,7 +77,7 @@ class AppInfo {
   }
 
   static Future<PackageInfo> _loadApplicationInfoFromAsset() async {
-    final _v = Version.tryParse(await rootBundle.loadString('res/VERSION'));
+    final _v = AppVersion.tryParse(await rootBundle.loadString('res/VERSION'));
     PackageInfo packageInfo = PackageInfo(
       appName: kAppName,
       packageName: kPackageName,
@@ -89,7 +89,7 @@ class AppInfo {
     return packageInfo;
   }
 
-  static Future<void> _loadUniqueId() async {
+  static Future<void> _loadUniqueId(String appPath) async {
     final deviceInfoPlugin = DeviceInfoPlugin();
     String? originId;
     if (PlatformU.isWeb) {
@@ -170,7 +170,7 @@ class AppInfo {
       throw UnimplementedError(PlatformU.operatingSystem);
     }
     if (originId?.isNotEmpty != true) {
-      var uuidFile = File(p.join(db.paths.appPath, '.uuid'));
+      var uuidFile = File(pathlib.join(appPath, '.uuid'));
       if (uuidFile.existsSync()) {
         originId = uuidFile.readAsStringSync();
       }
@@ -185,12 +185,12 @@ class AppInfo {
   }
 
   /// resolve when init app, so no need to check null or resolve every time
-  static Future<void> resolve() async {
-    _innerVersion = Version.tryParse(await rootBundle
+  static Future<void> resolve(String appPath) async {
+    _innerVersion = AppVersion.tryParse(await rootBundle
         .loadString('res/VERSION')
         .catchError((e, s) => Future.value('')));
     assert(_innerVersion != null);
-    await _loadUniqueId();
+    await _loadUniqueId(appPath);
     await _loadDeviceInfo();
     await _loadApplicationInfo();
     _checkMacAppType();
@@ -202,10 +202,10 @@ class AppInfo {
       _macAppType = MacAppType.notMacApp;
     } else {
       final String executable = PlatformU.resolvedExecutable;
-      final String fpStore =
-          p.absolute(p.dirname(executable), '../_MASReceipt/receipt');
+      final String fpStore = pathlib.absolute(
+          pathlib.dirname(executable), '../_MASReceipt/receipt');
       final String fpNotarized =
-          p.absolute(p.dirname(executable), '../CodeResources');
+          pathlib.absolute(pathlib.dirname(executable), '../CodeResources');
       if (File(fpStore).existsSync()) {
         _macAppType = MacAppType.store;
       } else if (File(fpNotarized).existsSync()) {
@@ -246,7 +246,7 @@ class AppInfo {
     }
   }
 
-  static Version get versionClass => Version.tryParse(fullVersion)!;
+  static AppVersion get versionClass => AppVersion.tryParse(fullVersion)!;
 
   /// e.g. "1.2.3"
   static String get version => _packageInfo?.version ?? '';

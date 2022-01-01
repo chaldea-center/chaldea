@@ -369,11 +369,11 @@ class ExpUpData {
     }
     //sum
     stages.insert(0, '$startLv->$endLv');
-    exp5Stages.insert(0, sum(exp5Stages));
-    exp4Stages.insert(0, sum(exp4Stages));
-    exp3Stages.insert(0, sum(exp3Stages));
-    qpStages.insert(0, sum(qpStages));
-    grailStages.insert(0, sum(grailStages));
+    exp5Stages.insert(0, Maths.sum(exp5Stages));
+    exp4Stages.insert(0, Maths.sum(exp4Stages));
+    exp3Stages.insert(0, Maths.sum(exp3Stages));
+    qpStages.insert(0, Maths.sum(qpStages));
+    grailStages.insert(0, Maths.sum(grailStages));
   }
 
   // total EXP for every lv

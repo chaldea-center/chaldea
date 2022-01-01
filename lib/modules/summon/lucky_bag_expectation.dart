@@ -170,7 +170,8 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation>
       final block = data.svts.firstWhereOrNull((e) => e.rarity == 5);
       if (block == null || block.ids.isEmpty) continue;
       _ExpResult _result = _ExpResult(data, block);
-      _result.exp = sum(block.ids.map((id) => scoreOf(id))) / block.ids.length;
+      _result.exp =
+          Maths.sum(block.ids.map((id) => scoreOf(id))) / block.ids.length;
       _result.best5 = block.ids.where((id) => scoreOf(id) == 5).length;
       _result.worst1 = block.ids.where((id) => scoreOf(id) == 1).length;
       _result.moreThan =

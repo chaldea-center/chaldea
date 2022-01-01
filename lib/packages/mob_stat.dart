@@ -1,6 +1,10 @@
 import 'package:baidu_mob_stat/baidu_mob_stat.dart';
-import 'package:chaldea/packages/packages.dart';
 import 'package:flutter/foundation.dart';
+
+import 'platform/platform.dart';
+
+const _apiKeyIOS = 'bf8a02d588';
+const _apiKeyAndroid = '714a13d204';
 
 abstract class MobStat {
   static final bool _validPlatform = PlatformU.isMobile;
@@ -12,7 +16,7 @@ abstract class MobStat {
     bool browseMode = false,
   }) {
     if (!_validPlatform) return;
-    String appId = PlatformU.isIOS ? 'bf8a02d588' : '714a13d204';
+    String appId = PlatformU.isIOS ? _apiKeyIOS : _apiKeyAndroid;
     BaiduMobStatFlutter.start(
       appId: appId,
       debug: debug,

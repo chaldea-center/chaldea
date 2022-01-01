@@ -107,8 +107,8 @@ class ItemStatistics {
 
   void updateLeftItems({bool shouldBroadcast = true, Duration? lapse}) {
     void callback() {
-      leftItems =
-          sumDict([eventItems, curUser.items, multiplyDict(svtItems, -1)]);
+      leftItems = Maths.sumDict(
+          [eventItems, curUser.items, Maths.multiplyDict(svtItems, -1)]);
       if (shouldBroadcast) {
         db.notifyDbUpdate();
       }
@@ -163,11 +163,11 @@ class SvtCostItems {
       } else {
         a = SvtParts(k: () => {});
       }
-      a.summation = sumDict(a.values);
+      a.summation = Maths.sumDict(a.values);
       a.summation![Items.servantCoin] =
           max(0, (a.summation![Items.servantCoin] ?? 0) - (status?.coin ?? 0));
       b = svt.getAllCostParts(all: true);
-      b.summation = sumDict(b.values);
+      b.summation = Maths.sumDict(b.values);
       for (var i = 0; i < planCountBySvt.valuesWithSum.length; i++) {
         planCountBySvt.valuesWithSum[i][no] = a.valuesWithSum[i];
         if (_needUpdateAll) {
@@ -194,7 +194,7 @@ class SvtCostItems {
         }
       }
       planCountByItem.summation![itemKey] =
-          sumDict(planCountByItem.values.map((e) => e[itemKey]));
+          Maths.sumDict(planCountByItem.values.map((e) => e[itemKey]));
       if (itemKey == Items.servantCoin) {
         final svtCosts = planCountByItem.summation![itemKey]!;
         svtCosts.updateAll(
@@ -202,17 +202,17 @@ class SvtCostItems {
       }
       if (_needUpdateAll) {
         allCountByItem.summation![itemKey] =
-            sumDict(allCountByItem.values.map((e) => e[itemKey]));
+            Maths.sumDict(allCountByItem.values.map((e) => e[itemKey]));
       }
     }
 
     // itemCounts
     for (var i = 0; i < planItemCounts.valuesWithSum.length; i++) {
       for (String itemKey in db.gameData.items.keys) {
-        planItemCounts.valuesWithSum[i][itemKey] =
-            sum(planCountByItem.valuesWithSum[i][itemKey]?.values ?? <int>[]);
-        allItemCounts.valuesWithSum[i][itemKey] =
-            sum(allCountByItem.valuesWithSum[i][itemKey]?.values ?? <int>[]);
+        planItemCounts.valuesWithSum[i][itemKey] = Maths.sum(
+            planCountByItem.valuesWithSum[i][itemKey]?.values ?? <int>[]);
+        allItemCounts.valuesWithSum[i][itemKey] = Maths.sum(
+            allCountByItem.valuesWithSum[i][itemKey]?.values ?? <int>[]);
       }
     }
     _needUpdateAll = false;

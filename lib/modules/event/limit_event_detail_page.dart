@@ -372,22 +372,23 @@ class _ArchiveDialogState extends State<_ArchiveDialog> {
   void archive() {
     Map<String, int> _archived = {};
     if (_shopEnabled && _shop) {
-      sumDict([_archived, event.itemsWithRare(plan)], inPlace: true);
+      Maths.sumDict([_archived, event.itemsWithRare(plan)], inPlace: true);
     }
     if (_lotteryEnabled && _lottery) {
-      sumDict([_archived, multiplyDict(event.lottery, plan.lottery)],
+      Maths.sumDict(
+          [_archived, Maths.multiplyDict(event.lottery, plan.lottery)],
           inPlace: true);
       plan.lottery = 0;
     }
     if (_extraEnabled && _extra) {
-      sumDict([
+      Maths.sumDict([
         _archived,
         plan.extra..removeWhere((key, value) => !event.extra.containsKey(key)),
       ], inPlace: true);
       plan.extra.clear();
     }
     if (_extra2Enabled && _extra2) {
-      sumDict([
+      Maths.sumDict([
         _archived,
         plan.extra2
           ..removeWhere((key, value) => !event.extra2.containsKey(key)),
@@ -395,7 +396,7 @@ class _ArchiveDialogState extends State<_ArchiveDialog> {
       plan.extra2.clear();
     }
     _archived.removeWhere((key, value) => value <= 0);
-    sumDict([db.curUser.items, _archived], inPlace: true);
+    Maths.sumDict([db.curUser.items, _archived], inPlace: true);
     if (_shop && _lottery && _extra && _extra2) {
       plan.enabled = false;
     }

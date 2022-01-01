@@ -47,8 +47,8 @@ class SaintQuartzPlan {
   }
 
   void validate() {
-    continuousLogin = fixValidRange(continuousLogin, 1, 7);
-    eventDateDelta = fixValidRange(eventDateDelta, 0);
+    continuousLogin = Maths.fixValidRange(continuousLogin, 1, 7);
+    eventDateDelta = Maths.fixValidRange(eventDateDelta, 0);
     if (!endDate.isAfter(startDate)) {
       endDate = DateUtils.addDaysToDate(startDate, 365);
     }
@@ -142,7 +142,8 @@ class SaintQuartzPlan {
     db.gameData.events.mainRecords.values.forEach((e) => _checkEvent(event: e));
     db.gameData.events.campaigns.values.forEach((e) => _checkEvent(event: e));
     // check master mission
-    final extraMissionItems = sumDict(db.gameData.events.extraMasterMissions
+    final extraMissionItems = Maths.sumDict(db
+        .gameData.events.extraMasterMissions
         .where((e) => extraMissions[e.id] == true)
         .map((e) => e.itemRewards));
     _checkEvent(
@@ -199,7 +200,7 @@ class SQDayDetail {
     this.accApple = 0,
     List<EventBase>? events,
     List<Summon>? summons,
-  })  : continuousLogin = fixValidRange(continuousLogin, 1, 7),
+  })  : continuousLogin = Maths.fixValidRange(continuousLogin, 1, 7),
         events = events ?? [],
         summons = summons ?? [];
 }

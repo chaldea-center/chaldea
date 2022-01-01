@@ -261,7 +261,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
         (index) => SizedBox(
           width: 25,
           child: DropdownButton<int?>(
-            value: MathUtils.inRange(svtResult.skills[index], minSkill, 10)
+            value: Maths.inRange(svtResult.skills[index], minSkill, 10)
                 ? svtResult.skills[index]
                 : null,
             hint: const Text('-1'),

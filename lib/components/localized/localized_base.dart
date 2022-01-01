@@ -1,5 +1,5 @@
 import 'package:chaldea/components/constants.dart' show Language;
-import 'package:chaldea/components/extensions.dart';
+import 'package:chaldea/utils/extension.dart';
 
 export 'package:chaldea/components/constants.dart' show Language;
 

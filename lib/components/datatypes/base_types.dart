@@ -103,7 +103,7 @@ mixin GameCardMixin {
     VoidCallback? onTap,
   }) {
     if (textPadding == null) {
-      final size = MathUtils.fitSize(width, height, aspectRatio);
+      final size = Maths.fitSize(width, height, aspectRatio);
       textPadding = size == null
           ? EdgeInsets.zero
           : EdgeInsets.only(right: size.value / 22, bottom: size.value / 12);

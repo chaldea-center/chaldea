@@ -7,6 +7,7 @@ import 'package:archive/archive_io.dart';
 import 'package:chaldea/components/json_store/json_store.dart';
 import 'package:chaldea/components/utils.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/version.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/widgets/icon_clipper.dart';
 import 'package:chaldea/widgets/image/image_viewer.dart';
@@ -22,13 +23,13 @@ import 'package:path/path.dart' as pathlib;
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 
+import '../packages/method_channel/method_channel_chaldea.dart';
 import 'constants.dart';
 import 'datatypes/datatypes.dart';
 import 'datatypes/effect_type/effect_type.dart';
-import 'device_app_info.dart';
+import '../packages/app_info.dart';
 import 'git_tool.dart';
 import 'json_store/local_app_config.dart';
-import 'method_channel_chaldea.dart';
 import 'shared_prefs.dart';
 import 'wiki_util.dart';
 
@@ -126,7 +127,7 @@ class Database {
         lapse: const Duration(seconds: 3));
     persistentCfg = PersistentAppConfig(paths.persistentConfigPath);
     await WikiUtil.init();
-    await AppInfo.resolve();
+    await AppInfo.resolve(paths.appPath);
     await prefs.initiate();
     if (PlatformU.isWeb) {
       webFS = await Hive.openBox('WebFileSystem');
@@ -716,7 +717,7 @@ class PathManager {
 }
 
 class RuntimeData {
-  Version? upgradableVersion;
+  AppVersion? upgradableVersion;
   DatasetVersion? latestDatasetVersion;
   double? criticalWidth;
   Set<String> itemRecognizeImageFiles = {};

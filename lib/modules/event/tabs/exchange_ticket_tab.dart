@@ -146,8 +146,10 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     for (var i = 0; i < 3; i++) {
       final iconKey = ticket.items[i];
       int leftNum = db.itemStat.leftItems[iconKey] ?? 0;
-      monthPlan.setAt(i, fixValidRange(monthPlan.items[i], 0, ticket.days));
-      final int maxValue = ticket.days - sum(monthPlan.items.getRange(0, i));
+      monthPlan.setAt(
+          i, Maths.fixValidRange(monthPlan.items[i], 0, ticket.days));
+      final int maxValue =
+          ticket.days - Maths.sum(monthPlan.items.getRange(0, i));
       trailingItems.add(Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -207,8 +209,10 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                   onConfirm: (picker, values) {
                     monthPlan.setAt(i, picker.getSelectedValues()[0]);
                     for (var j = 0; j < 3; j++) {
-                      final int v = min(monthPlan.items[j],
-                          ticket.days - sum(monthPlan.items.getRange(0, j)));
+                      final int v = min(
+                          monthPlan.items[j],
+                          ticket.days -
+                              Maths.sum(monthPlan.items.getRange(0, j)));
                       monthPlan.setAt(j, v);
                     }
                     db.itemStat.updateEventItems();

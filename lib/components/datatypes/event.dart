@@ -46,7 +46,7 @@ class Events {
         resultList.add(event.getItems(eventPlans.exchangeTickets[name]));
       }
     });
-    return sumDict(resultList);
+    return Maths.sumDict(resultList);
   }
 
   Map<String, EventBase> get allEvents {
@@ -241,8 +241,8 @@ class LimitEvent extends EventBase {
       return {};
     }
     Map<String, int> lotterySum =
-        lottery.isNotEmpty ? multiplyDict(lottery, plan.lottery) : {};
-    return sumDict([
+        lottery.isNotEmpty ? Maths.multiplyDict(lottery, plan.lottery) : {};
+    return Maths.sumDict([
       itemsWithRare(plan),
       plan.extra..removeWhere((key, value) => !extra.containsKey(key)),
       plan.extra2..removeWhere((key, value) => !extra2.containsKey(key)),
@@ -269,7 +269,7 @@ class MainRecord extends EventBase {
 
   @override
   @JsonKey(ignore: true)
-  Map<String, int> get items => sumDict([drops, rewardsWithRare]);
+  Map<String, int> get items => Maths.sumDict([drops, rewardsWithRare]);
 
   MainRecord({
     required String name,
@@ -359,7 +359,7 @@ class MainRecord extends EventBase {
   Map<String, int> getItems([MainRecordPlan? plan]) {
     if (plan == null) return {};
     // assert(plan.length == 2, 'incorrect main record plan: $plan');
-    return sumDict([
+    return Maths.sumDict([
       if (plan.drop) drops,
       if (plan.reward) rewardsWithRare,
     ])

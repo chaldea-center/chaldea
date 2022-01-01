@@ -62,9 +62,9 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
     children.addAll(_oneRarity(
       selected: raritySelected.every((e) => e),
       title: 'ALL',
-      skillMax: sum(rarity999),
-      own: sum(rarityOwn),
-      total: sum(rarityTotal),
+      skillMax: Maths.sum(rarity999),
+      own: Maths.sum(rarityOwn),
+      total: Maths.sum(rarityTotal),
       onChanged: (v) {
         setState(() {
           raritySelected.fillRange(0, raritySelected.length, v);
@@ -188,7 +188,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
 
   Widget pieChart() {
     _calcServantClass();
-    int total = sum(svtClassCount.values);
+    int total = Maths.sum(svtClassCount.values);
     final iter = palette.iterator;
     return LayoutBuilder(
       builder: (context, constraints) {

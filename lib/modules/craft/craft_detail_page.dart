@@ -30,7 +30,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
   @override
   Widget build(BuildContext context) {
     int status = db.curUser.crafts[ce.no] ?? 0;
-    status = fixValidRange(status, 0, 2);
+    status = Maths.fixValidRange(status, 0, 2);
     return Scaffold(
       appBar: AppBar(
         title: AutoSizeText(ce.lName, maxLines: 1),

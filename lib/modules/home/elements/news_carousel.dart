@@ -175,7 +175,8 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
 
     final pages = getPages();
 
-    _curCarouselIndex = fixValidRange(_curCarouselIndex, 0, pages.length - 1);
+    _curCarouselIndex =
+        Maths.fixValidRange(_curCarouselIndex, 0, pages.length - 1);
 
     /// No slides, show app logo
     if (pages.isEmpty) {
@@ -255,7 +256,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
             onTap: (v) {
               setState(() {
                 _curCarouselIndex =
-                    fixValidRange(v.toInt(), 0, pages.length - 1);
+                    Maths.fixValidRange(v.toInt(), 0, pages.length - 1);
                 _carouselController.animateToPage(_curCarouselIndex);
               });
             },

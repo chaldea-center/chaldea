@@ -10,8 +10,8 @@ import 'dart:typed_data';
 
 import 'package:archive/archive_io.dart';
 import 'package:catcher/catcher.dart';
-import 'package:chaldea/components/analytics.dart';
 import 'package:chaldea/packages/packages.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart';
 import 'package:intl/intl_standalone.dart';
@@ -23,7 +23,7 @@ import 'package:pool/pool.dart';
 
 import '../config.dart';
 import '../constants.dart';
-import '../device_app_info.dart';
+import '../../packages/app_info.dart';
 import '../git_tool.dart';
 import '../utils.dart' show b64;
 import 'catcher_config.dart';
@@ -144,7 +144,7 @@ class EmailAutoHandlerCross extends EmailAutoHandler {
         message.html = await _setupHtmlMessageText(report);
       }
       _printLog("Sending email...");
-      if (Analyzer.skipReport()) {
+      if (kDebugMode || AppInfo.isDebugDevice) {
         await Future.delayed(const Duration(seconds: 2));
       } else {
         var result = await send(message, _setupSmtpServer());

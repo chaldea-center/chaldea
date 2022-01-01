@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:catcher/catcher.dart';
 import 'package:chaldea/components/components.dart';
+import 'package:chaldea/models/version.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -224,7 +225,7 @@ class AutoUpdateUtil {
     if (_downloadTask?.isCompleted == false) return;
     _downloadTask = Completer();
     GitRelease? release;
-    Version? version;
+    AppVersion? version;
     String? releaseNote;
     String? launchUrl; // release page, not download url
     bool upgradable = false;
@@ -251,12 +252,12 @@ class AutoUpdateUtil {
         final jsonData = jsonDecode(response.data.toString().trim());
         // logger.d(jsonData);
         final result = jsonData['results'][0];
-        version = Version.tryParse(result['version'] ?? '');
+        version = AppVersion.tryParse(result['version'] ?? '');
         releaseNote = result['releaseNotes'];
         // no set [release]
       } else {
         release = await git.latestAppRelease();
-        version = Version.tryParse(release?.name ?? '');
+        version = AppVersion.tryParse(release?.name ?? '');
         releaseNote = release?.body;
         launchUrl = release?.htmlUrl;
       }
@@ -409,7 +410,7 @@ class AutoUpdateUtil {
   }
 
   static Future<bool?> _showDialog({
-    required Version version,
+    required AppVersion version,
     String? fpInstaller,
     String? releaseNote,
     String? launchUrl,

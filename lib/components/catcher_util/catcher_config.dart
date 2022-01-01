@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../config.dart';
-import '../device_app_info.dart';
+import '../../packages/app_info.dart';
 import 'catcher_email_handler.dart';
 
 class CatcherUtility {

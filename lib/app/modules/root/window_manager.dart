@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../../components/method_channel_chaldea.dart';
+import '../../../packages/method_channel/method_channel_chaldea.dart';
 import '../../routes/root_delegate.dart';
 
 class WindowManager extends StatefulWidget {

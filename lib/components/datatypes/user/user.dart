@@ -107,13 +107,14 @@ class User {
         luckyBagSvtScores = luckyBagSvtScores ?? {},
         supportSetups = supportSetups ?? [] {
     this.curSvtPlanNo =
-        fixValidRange(this.curSvtPlanNo, 0, this.servantPlans.length);
+        Maths.fixValidRange(this.curSvtPlanNo, 0, this.servantPlans.length);
     fillListValue(this.servantPlans, max(5, this.servantPlans.length),
         (_) => <int, ServantPlan>{});
   }
 
   Map<int, ServantPlan> get curSvtPlan {
-    curSvtPlanNo = fixValidRange(curSvtPlanNo, 0, servantPlans.length - 1);
+    curSvtPlanNo =
+        Maths.fixValidRange(curSvtPlanNo, 0, servantPlans.length - 1);
     return servantPlans[curSvtPlanNo];
   }
 
@@ -240,9 +241,9 @@ class ServantStatus {
 
   void validate([Servant? svt]) {
     curVal.validate();
-    npLv = fixValidRange(npLv, 1, 5);
-    coin = fixValidRange(coin, 0);
-    npIndex = fixValidRange(
+    npLv = Maths.fixValidRange(npLv, 1, 5);
+    coin = Maths.fixValidRange(coin, 0);
+    npIndex = Maths.fixValidRange(
         npIndex, 0, svt == null ? null : svt.lNoblePhantasm.length - 1);
     int skillNum = svt?.lActiveSkills.length ?? 3;
     skillIndex.length = skillNum;
@@ -255,7 +256,7 @@ class ServantStatus {
         }
       }
     }
-    priority = fixValidRange(priority, 1, 5);
+    priority = Maths.fixValidRange(priority, 1, 5);
   }
 
   void reset() {
@@ -373,23 +374,24 @@ class ServantPlan {
 
   void validate([ServantPlan? lowerPlan, int? rarity]) {
     lowerPlan?.validate(null, rarity);
-    ascension = fixValidRange(ascension, lowerPlan?.ascension ?? 0, 4);
+    ascension = Maths.fixValidRange(ascension, lowerPlan?.ascension ?? 0, 4);
     for (int i = 0; i < skills.length; i++) {
-      skills[i] = fixValidRange(skills[i], lowerPlan?.skills[i] ?? 1, 10);
+      skills[i] = Maths.fixValidRange(skills[i], lowerPlan?.skills[i] ?? 1, 10);
     }
     for (int i = 0; i < appendSkills.length; i++) {
-      appendSkills[i] =
-          fixValidRange(appendSkills[i], lowerPlan?.appendSkills[i] ?? 0, 10);
+      appendSkills[i] = Maths.fixValidRange(
+          appendSkills[i], lowerPlan?.appendSkills[i] ?? 0, 10);
     }
     for (int i = 0; i < dress.length; i++) {
-      dress[i] = fixValidRange(dress[i], lowerPlan?.dress.getOrNull(i) ?? 0, 1);
+      dress[i] =
+          Maths.fixValidRange(dress[i], lowerPlan?.dress.getOrNull(i) ?? 0, 1);
     }
     // check grail max limit when used
-    grail = fixValidRange(grail, lowerPlan?.grail ?? 0,
+    grail = Maths.fixValidRange(grail, lowerPlan?.grail ?? 0,
         rarity == null ? null : Grail.maxGrailCount(rarity));
-    fouHp = fixValidRange(fouHp, lowerPlan?.fouHp ?? -20, 50);
-    fouAtk = fixValidRange(fouAtk, lowerPlan?.fouAtk ?? -20, 50);
-    bondLimit = fixValidRange(bondLimit, lowerPlan?.bondLimit ?? 5, 15);
+    fouHp = Maths.fixValidRange(fouHp, lowerPlan?.fouHp ?? -20, 50);
+    fouAtk = Maths.fixValidRange(fouAtk, lowerPlan?.fouAtk ?? -20, 50);
+    bondLimit = Maths.fixValidRange(bondLimit, lowerPlan?.bondLimit ?? 5, 15);
   }
 
   factory ServantPlan.fromJson(Map<String, dynamic> data) =>
@@ -635,7 +637,7 @@ class SupportSetup {
       svtNo == null ? null : db.curUser.svtStatusOf(svtNo!);
 
   String? get clsName {
-    index = fixValidRange(index, 0, allClasses.length);
+    index = Maths.fixValidRange(index, 0, allClasses.length);
     return servant?.stdClassName ?? allClasses[index];
   }
 

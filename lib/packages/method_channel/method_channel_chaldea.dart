@@ -1,6 +1,7 @@
 import 'package:chaldea/components/config.dart';
-import 'package:chaldea/packages/packages.dart';
 import 'package:flutter/services.dart';
+
+import '../platform/platform.dart';
 
 // default channel
 const MethodChannel kMethodChannel = MethodChannel('chaldea.narumi.cc/chaldea');

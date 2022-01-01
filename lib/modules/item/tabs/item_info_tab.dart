@@ -127,7 +127,7 @@ class ItemInfoTab extends StatelessWidget {
         CustomTableRow.fromTexts(texts: [
           'Lv.${index + 1}',
           bondCoins[index].toString(),
-          sum(bondCoins.sublist(0, index + 1)).toString()
+          Maths.sum(bondCoins.sublist(0, index + 1)).toString()
         ])
     ];
   }

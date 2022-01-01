@@ -67,8 +67,8 @@ class SWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.settingTile,
+    return Material(
+      color: Theme.of(context).cardColor,
       child: ListTile(
         leading: icon,
         title: Text(label),
@@ -91,8 +91,8 @@ class SModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.settingTile,
+    return Material(
+      color: Theme.of(context).cardColor,
       child: ListTile(
         leading: icon,
         title: Text(label),
@@ -125,8 +125,8 @@ class SSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.settingTile,
+    return Material(
+      color: Theme.of(context).cardColor,
       child: SwitchListTile(
         secondary: icon,
         title: Text(label),
