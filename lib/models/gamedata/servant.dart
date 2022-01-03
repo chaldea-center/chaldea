@@ -308,6 +308,7 @@ class LoreStatus {
 class NiceCostume {
   int id;
   int costumeCollectionNo;
+  int battleCharaId;
   String name;
   String shortName;
   String detail;
@@ -316,6 +317,7 @@ class NiceCostume {
   NiceCostume({
     required this.id,
     required this.costumeCollectionNo,
+    required this.battleCharaId,
     required this.name,
     required this.shortName,
     required this.detail,

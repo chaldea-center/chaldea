@@ -1,3 +1,4 @@
+import 'package:chaldea/_test_page.dart';
 import 'package:chaldea/widgets/movable_fab.dart';
 import 'package:flutter/material.dart';
 
@@ -36,7 +37,7 @@ class _WindowManagerFabState extends State<WindowManagerFab> {
       onPressed: () {
         setState(() {
           rootRouter.appState.showWindowManager =
-              !rootRouter.appState.showWindowManager;
+          !rootRouter.appState.showWindowManager;
         });
       },
     );
@@ -128,6 +129,10 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
             widget.state?.hide(60);
             Navigator.pop(context);
           },
+        ),
+        ListTile(
+          title: const Text('TestFunc'),
+          onTap: () => testFunction(context),
         ),
         Center(
           child: IconButton(

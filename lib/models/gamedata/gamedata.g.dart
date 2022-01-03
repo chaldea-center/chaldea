@@ -163,7 +163,7 @@ const _$CardTypeEnumMap = {
 };
 
 DataVersion _$DataVersionFromJson(Map json) => DataVersion(
-  timestamp: json['timestamp'] as int? ?? 0,
+      timestamp: json['timestamp'] as int? ?? 0,
       utc: json['utc'] as String? ?? "",
       minimalApp: json['minimalApp'] ?? const AppVersion(0, 0, 0),
       files: (json['files'] as Map?)?.map(
@@ -396,11 +396,11 @@ MappingBase<T> _$MappingBaseFromJson<T>(
   T Function(Object? json) fromJsonT,
 ) =>
     MappingBase<T>(
-      JP: _$nullableGenericFromJson(json['JP'], fromJsonT),
-      CN: _$nullableGenericFromJson(json['CN'], fromJsonT),
-      TW: _$nullableGenericFromJson(json['TW'], fromJsonT),
-      NA: _$nullableGenericFromJson(json['NA'], fromJsonT),
-      KR: _$nullableGenericFromJson(json['KR'], fromJsonT),
+      jp: _$nullableGenericFromJson(json['JP'], fromJsonT),
+      cn: _$nullableGenericFromJson(json['CN'], fromJsonT),
+      tw: _$nullableGenericFromJson(json['TW'], fromJsonT),
+      na: _$nullableGenericFromJson(json['NA'], fromJsonT),
+      kr: _$nullableGenericFromJson(json['KR'], fromJsonT),
     );
 
 T? _$nullableGenericFromJson<T>(
@@ -2179,7 +2179,7 @@ const _$AttributeEnumMap = {
   Attribute.earth: 'earth',
   Attribute.star: 'star',
   Attribute.beast: 'beast',
-  Attribute.void_: 'void_',
+  Attribute.Void: 'void',
 };
 
 ExtraAssetsUrl _$ExtraAssetsUrlFromJson(Map json) => ExtraAssetsUrl(
@@ -2347,8 +2347,9 @@ LoreStatus _$LoreStatusFromJson(Map json) => LoreStatus(
     );
 
 NiceCostume _$NiceCostumeFromJson(Map json) => NiceCostume(
-      id: json['id'] as int,
+  id: json['id'] as int,
       costumeCollectionNo: json['costumeCollectionNo'] as int,
+      battleCharaId: json['battleCharaId'] as int,
       name: json['name'] as String,
       shortName: json['shortName'] as String,
       detail: json['detail'] as String,

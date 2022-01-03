@@ -268,18 +268,23 @@ class MappingData {
 
 @JsonSerializable()
 class MappingBase<T> {
-  T? JP;
-  T? CN;
-  T? TW;
-  T? NA;
-  T? KR;
+  @JsonKey(name: 'JP')
+  T? jp;
+  @JsonKey(name: 'CN')
+  T? cn;
+  @JsonKey(name: 'TW')
+  T? tw;
+  @JsonKey(name: 'NA')
+  T? na;
+  @JsonKey(name: 'KR')
+  T? kr;
 
   MappingBase({
-    this.JP,
-    this.CN,
-    this.TW,
-    this.NA,
-    this.KR,
+    this.jp,
+    this.cn,
+    this.tw,
+    this.na,
+    this.kr,
   });
 
   factory MappingBase.fromJson(Map<String, dynamic> json) =>

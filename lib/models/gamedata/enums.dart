@@ -8,13 +8,14 @@ enum FuncApplyTarget { player, enemy, playerAndEnemy }
 
 enum ItemBGType { zero, bronze, silver, gold, questClearQPReward }
 
+@JsonEnum(fieldRename: FieldRename.snake)
 enum Attribute {
   human,
   sky,
   earth,
   star,
   beast,
-  void_,
+  Void,
 }
 
 enum SvtClass {
@@ -50,8 +51,6 @@ enum SvtClass {
 
 // enum AiType {}
 // enum AiTiming {}
-
-enum Region { NA, JP, CN, KR, TW }
 
 enum EnemyDeathType { escape, stand, effect, wait }
 

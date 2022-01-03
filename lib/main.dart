@@ -11,7 +11,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // final sp = await SharedPreferences.getInstance();
   // final beta = sp.getBool('beta') == true;
-  const beta = false;
+  const beta = true;
+  await db.paths.initRootPath();
+  await AppInfo.resolve(db.paths.appPath);
   if (beta && AppInfo.isDebugDevice && kDebugMode) {
     if (kIsWeb) {
       setUrlStrategy(PathUrlStrategy());
