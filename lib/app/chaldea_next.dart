@@ -38,7 +38,7 @@ class _ChaldeaNextState extends State<ChaldeaNext> {
   @override
   void initState() {
     super.initState();
-    if (showWindowFab) {
+    if (showWindowFab && !rootRouter.appState.showSidebar) {
       SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
         WindowManagerFab.createOverlay(router.navigatorKey.currentContext!);
       });

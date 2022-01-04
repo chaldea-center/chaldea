@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:flutter/material.dart';
 
 import '../../../packages/method_channel/method_channel_chaldea.dart';
@@ -25,18 +26,111 @@ class _WindowManagerState extends State<WindowManager> {
 
   @override
   Widget build(BuildContext context) {
-    return root.appState.showWindowManager ? _multiple(context) : _one(context);
+    return root.appState.showWindowManager
+        ? _multiple(context)
+        : root.appState.showSidebar && SplitRoute.isSplit(context)
+            ? _wrapSidebar(_one(context))
+            : _one(context);
+  }
+
+  Widget _wrapSidebar(Widget child) {
+    Widget listView = ListView.separated(
+      padding: const EdgeInsets.all(4),
+      itemCount: root.appState.children.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 4),
+      itemBuilder: (context, index) {
+        final isActive = index == root.appState.activeIndex;
+        return MaterialButton(
+          elevation: 1,
+          shape: const CircleBorder(),
+          padding: EdgeInsets.zero,
+          color: isActive
+              ? Theme.of(context).primaryColor
+              : Theme.of(context).canvasColor,
+          onPressed: () {
+            root.appState.activeIndex = index;
+          },
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: Center(
+              child: Text(
+                '${index + 1}',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: isActive
+                      ? Theme.of(context).colorScheme.onPrimary
+                      : Theme.of(context).hintColor,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+    final headerIcon = Container(
+      color: Theme.of(context).primaryColorDark,
+      height: kToolbarHeight,
+      padding: const EdgeInsets.all(6),
+      child: Icon(
+        Icons.menu,
+        color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.8),
+      ),
+    );
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Material(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          child: SizedBox(
+            width: 48,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                headerIcon,
+                Flexible(
+                  child: ScrollConfiguration(
+                    behavior: ScrollConfiguration.of(context)
+                        .copyWith(scrollbars: false),
+                    child: listView,
+                  ),
+                ),
+                const Divider(indent: 2, endIndent: 2),
+                IconButton(
+                  onPressed: () {
+                    root.appState.addWindow();
+                  },
+                  icon: const Icon(Icons.add),
+                  iconSize: 18,
+                ),
+                IconButton(
+                  onPressed: () {
+                    root.appState.showWindowManager = true;
+                  },
+                  icon: const Icon(Icons.grid_view),
+                )
+              ],
+            ),
+          ),
+        ),
+        VerticalDivider(
+          color: Theme.of(context).dividerColor.withOpacity(0.2),
+          width: 0,
+        ),
+        Expanded(child: child),
+      ],
+    );
   }
 
   Widget _one(BuildContext context) {
     return Scaffold(
       body: IndexedStack(
-        index: root.activeIndex,
+        index: root.appState.activeIndex,
         children: List.generate(
-          root.children.length,
+          root.appState.children.length,
           (index) {
-            final _delegate = root.children[index];
-            if (index == root.activeIndex) {
+            final _delegate = root.appState.children[index];
+            if (index == root.appState.activeIndex) {
               return _delegate.build(context);
             } else {
               return Offstage(child: _delegate.build(context));
@@ -50,46 +144,39 @@ class _WindowManagerState extends State<WindowManager> {
   Widget _multiple(BuildContext context) {
     final windowSize = MediaQuery.of(context).size;
     int crossCount = windowSize.width ~/ 300;
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        backgroundColor: Theme.of(context).highlightColor.withOpacity(0.8),
-        appBar: AppBar(
-          toolbarHeight: 0.0,
-          bottom: const TabBar(tabs: [Tab(text: 'Tabs'), Tab(text: 'Debug')]),
-        ),
-        body: SafeArea(
-          child: GridView.count(
-            crossAxisCount: max(crossCount, 2),
-            childAspectRatio: windowSize.aspectRatio,
-            padding: const EdgeInsets.fromLTRB(8, 8, 8, 72),
-            children: List.generate(
-              root.children.length,
-              (index) => _windowThumb(context, index),
-            ),
+    return Scaffold(
+      backgroundColor: Theme.of(context).highlightColor.withOpacity(0.8),
+      appBar: AppBar(title: const Text('Tabs')),
+      body: SafeArea(
+        child: GridView.count(
+          crossAxisCount: max(crossCount, 2),
+          childAspectRatio: windowSize.aspectRatio,
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 72),
+          children: List.generate(
+            root.appState.children.length,
+            (index) => _windowThumb(context, index),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () {
-            root.addDelegate();
-          },
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          root.appState.addWindow();
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
   Widget _windowThumb(BuildContext context, int index) {
-    final childDelegate = root.children[index];
+    final childDelegate = root.appState.children[index];
     final url = childDelegate.currentConfiguration?.url;
 
     Widget child = Padding(
       padding: const EdgeInsets.all(8),
       child: GestureDetector(
         onTap: () {
-          print('click $index');
-          root.activeIndex = index;
+          root.appState.activeIndex = index;
           root.appState.showWindowManager = false;
         },
         child: Stack(
@@ -116,7 +203,7 @@ class _WindowManagerState extends State<WindowManager> {
                   border: Border(
                     bottom: BorderSide(
                       width: 3,
-                      color: index == root.activeIndex
+                      color: index == root.appState.activeIndex
                           ? Theme.of(context).primaryColor
                           : Colors.transparent,
                     ),
@@ -127,8 +214,8 @@ class _WindowManagerState extends State<WindowManager> {
                   title: Text('Tab $index' + (url == null ? '' : ': $url')),
                   trailing: IconButton(
                     onPressed: () {
-                      if (root.children.length <= 1) return;
-                      root.removeDelegate(index);
+                      if (root.appState.children.length <= 1) return;
+                      root.appState.removeWindow(index);
                     },
                     icon: const Icon(Icons.clear),
                   ),

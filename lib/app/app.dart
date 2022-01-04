@@ -5,4 +5,4 @@ import 'routes/delegate.dart';
 
 final rootRouter = RootAppRouterDelegate();
 
-AppRouterDelegate get router => rootRouter.activeDelegate;
+AppRouterDelegate get router => rootRouter.appState.activeRouter;

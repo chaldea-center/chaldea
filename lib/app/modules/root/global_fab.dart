@@ -31,13 +31,13 @@ class _WindowManagerFabState extends State<WindowManagerFab> {
   Widget build(BuildContext context) {
     return MovableFab(
       icon: Icon(
-        rootRouter.appState.showWindowManager ? Icons.reply : Icons.table_view,
+        rootRouter.appState.showWindowManager ? Icons.reply : Icons.grid_view,
         size: 20,
       ),
       onPressed: () {
         setState(() {
           rootRouter.appState.showWindowManager =
-          !rootRouter.appState.showWindowManager;
+              !rootRouter.appState.showWindowManager;
         });
       },
     );

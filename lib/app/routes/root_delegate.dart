@@ -6,33 +6,21 @@ import 'delegate.dart';
 import 'routes.dart';
 
 class AppState extends ChangeNotifier {
-  bool _showWindowManager = false;
-
-  bool get showWindowManager => _showWindowManager;
-
-  set showWindowManager(bool v) {
-    _showWindowManager = v;
-    notifyListeners();
-  }
-}
-
-class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>
-    with ChangeNotifier, PopNavigatorRouterDelegateMixin<RouteConfiguration> {
-  final appState = AppState();
-
-  RootAppRouterDelegate() {
-    _children = [
-      AppRouterDelegate(this),
-    ];
-    appState.addListener(notifyListeners);
-  }
-
+  final RootAppRouterDelegate _root;
   late final List<AppRouterDelegate> _children;
 
+  AppState(this._root) {
+    addListener(_root.notifyListeners);
+    _children = [AppRouterDelegate(_root)];
+  }
+
+  /// windows(routers)
   List<AppRouterDelegate> get children => List.unmodifiable(_children);
   int _activeIndex = 0;
 
   int get activeIndex => _activeIndex;
+
+  AppRouterDelegate get activeRouter => _children[_activeIndex];
 
   set activeIndex(int index) {
     if (index >= 0 && index < _children.length) {
@@ -41,20 +29,20 @@ class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>
     }
   }
 
-  int addDelegate() {
-    _children.add(AppRouterDelegate(this));
+  int addWindow() {
+    _children.add(AppRouterDelegate(_root));
     _activeIndex = _children.length - 1;
     notifyListeners();
     return _activeIndex;
   }
 
-  int removeDelegate(int index) {
+  int removeWindow(int index) {
     assert(index >= 0 && index < _children.length);
     if (index < 0 || index >= _children.length) {
       return -1;
     }
     if (_children.length == 1) return -1;
-    final active = activeDelegate;
+    final active = activeRouter;
     _children.removeAt(index);
     int newIndex = _children.indexOf(active);
     _activeIndex = newIndex >= 0 ? newIndex : 0;
@@ -62,11 +50,38 @@ class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>
     return _activeIndex;
   }
 
-  AppRouterDelegate get activeDelegate => _children[_activeIndex];
+  /// _showWindowManager
+  bool _showWindowManager = false;
+
+  bool get showWindowManager => _showWindowManager;
+
+  set showWindowManager(bool v) {
+    _showWindowManager = v;
+    notifyListeners();
+  }
+
+  /// _showSidebar
+  bool _showSidebar = true;
+
+  bool get showSidebar => _showSidebar;
+
+  set showSidebar(bool v) {
+    _showSidebar = v;
+    notifyListeners();
+  }
+}
+
+class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>
+    with ChangeNotifier, PopNavigatorRouterDelegateMixin<RouteConfiguration> {
+  late final AppState appState;
+
+  RootAppRouterDelegate() {
+    appState = AppState(this);
+  }
 
   @override
   RouteConfiguration? get currentConfiguration =>
-      activeDelegate.currentConfiguration;
+      appState.activeRouter.currentConfiguration;
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +96,7 @@ class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>
           appState.showWindowManager = false;
           return true;
         }
-        return activeDelegate.onPopPage(route, result);
+        return appState.activeRouter.onPopPage(route, result);
       },
     );
   }
@@ -97,11 +112,11 @@ class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>
 
   @override
   Future<void> setNewRoutePath(RouteConfiguration configuration) {
-    return activeDelegate.setNewRoutePath(configuration);
+    return appState.activeRouter.setNewRoutePath(configuration);
   }
 
   @override
   Future<bool> popRoute() {
-    return activeDelegate.popRoute();
+    return appState.activeRouter.popRoute();
   }
 }
