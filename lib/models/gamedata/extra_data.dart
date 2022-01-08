@@ -27,7 +27,7 @@ class ServantExtra {
   List<SvtObtain> obtains;
   List<String> aprilFoolAssets;
   MappingBase<String> aprilFoolProfile;
-  MappingBase<List<LoreComment>> profileComment;
+  // MappingBase<List<LoreComment>> profileComment;
   String? mcLink;
   String? fandomLink;
 
@@ -37,7 +37,7 @@ class ServantExtra {
     required this.obtains,
     required this.aprilFoolAssets,
     required this.aprilFoolProfile,
-    required this.profileComment,
+    // required this.profileComment,
     this.mcLink,
     this.fandomLink,
   });
@@ -135,15 +135,16 @@ class EventExtra {
     required this.titleBanner,
     required this.noticeLink,
     required this.huntingQuestIds,
-    required this.startTime,
-    required this.endTime,
+    MappingBase<int>? startTime,
+    MappingBase<int>? endTime,
     required this.rarePrism,
     required this.grail,
     required this.crystal,
     required this.grail2crystal,
     required this.foukun4,
     required this.relatedSummons,
-  });
+  })  : startTime = startTime ?? MappingBase<int>(),
+        endTime = endTime ?? MappingBase<int>();
 
   factory EventExtra.fromJson(Map<String, dynamic> json) =>
       _$EventExtraFromJson(json);

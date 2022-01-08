@@ -2,13 +2,16 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 
 import '../logger.dart';
 import 'file_plus.dart';
 
+const fsName = 'webfs';
+
 Future<void> initWebFileSystem() async {
-  const fsName = 'webfs';
+  assert(kIsWeb, 'DO NOT init for non-web');
   try {
     FilePlusWeb._box = await Hive.openBox(fsName);
   } catch (e, s) {

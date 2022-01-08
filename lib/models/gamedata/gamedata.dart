@@ -4,6 +4,7 @@ library gamedata;
 
 import 'package:chaldea/components/utils.dart';
 import 'package:chaldea/packages/packages.dart';
+import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart' as pathlib;
 
@@ -53,8 +54,9 @@ class GameData {
   final Map<String, QuestPhase> questPhases;
   final MappingData mappingData;
   final ConstGameData constData;
+  final DropRateData dropRateData;
 
-  const GameData({
+  GameData({
     this.version = const DataVersion(),
     this.servants = const {},
     this.craftEssences = const {},
@@ -69,6 +71,7 @@ class GameData {
     this.questPhases = const {},
     this.mappingData = const MappingData(),
     this.constData = const ConstGameData(),
+    this.dropRateData = const DropRateData(),
   });
 
   factory GameData.fromJson(Map<String, dynamic> json) =>
@@ -112,13 +115,13 @@ class GameData {
 
 @JsonSerializable()
 class ExchangeTicket {
+  final int key;
   final int year;
   final int month;
   final List<int> items;
 
-  int get key => year * 100 + month;
-
   ExchangeTicket({
+    required this.key,
     required this.year,
     required this.month,
     required this.items,
@@ -160,7 +163,7 @@ class ConstGameData {
 class DataVersion {
   final int timestamp;
   final String utc;
-  @JsonKey(fromJson: AppVersion.parse)
+  @JsonKey(fromJson: DataVersion._parseAppVersion)
   final AppVersion minimalApp;
   final Map<String, DatFileVersion> files;
 
@@ -173,6 +176,8 @@ class DataVersion {
 
   factory DataVersion.fromJson(Map<String, dynamic> json) =>
       _$DataVersionFromJson(json);
+
+  static AppVersion _parseAppVersion(String s) => AppVersion.parse(s);
 }
 
 @JsonSerializable()
@@ -314,4 +319,38 @@ class MappingBase<T> {
     }
     return obj as T;
   }
+}
+
+@JsonSerializable()
+class DropRateData {
+  final DropRateSheet newData;
+  final DropRateSheet legacyData;
+
+  const DropRateData(
+      {this.newData = const DropRateSheet(),
+      this.legacyData = const DropRateSheet()});
+
+  factory DropRateData.fromJson(Map<String, dynamic> json) =>
+      _$DropRateDataFromJson(json);
+}
+
+@JsonSerializable()
+class DropRateSheet {
+  final List<int> questIds;
+  final List<int> itemIds;
+  final List<int> apCosts;
+  final List<int> runs;
+  @protected
+  final Map<int, Map<int, double>> sparseMatrix;
+
+  const DropRateSheet({
+    this.questIds = const [],
+    this.itemIds = const [],
+    this.apCosts = const [],
+    this.runs = const [],
+    this.sparseMatrix = const {},
+  });
+
+  factory DropRateSheet.fromJson(Map<String, dynamic> json) =>
+      _$DropRateSheetFromJson(json);
 }

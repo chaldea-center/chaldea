@@ -1179,7 +1179,11 @@ enum WarOverwriteType {
   materialParentWar,
   coordinates,
   effectChangeBlackMark,
-  questBoardSectionImage
+  questBoardSectionImage,
+  warForceDisp,
+  warForceHide,
+  startType,
+  noticeDialogText
 }
 
 // enum AiCond {}

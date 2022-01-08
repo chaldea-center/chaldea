@@ -76,9 +76,14 @@ GameData _$GameDataFromJson(Map json) => GameData(
           ? const ConstGameData()
           : ConstGameData.fromJson(
               Map<String, dynamic>.from(json['constData'] as Map)),
+      dropRateData: json['dropRateData'] == null
+          ? const DropRateData()
+          : DropRateData.fromJson(
+              Map<String, dynamic>.from(json['dropRateData'] as Map)),
     );
 
 ExchangeTicket _$ExchangeTicketFromJson(Map json) => ExchangeTicket(
+  key: json['key'] as int,
       year: json['year'] as int,
       month: json['month'] as int,
       items: (json['items'] as List<dynamic>).map((e) => e as int).toList(),
@@ -163,9 +168,11 @@ const _$CardTypeEnumMap = {
 };
 
 DataVersion _$DataVersionFromJson(Map json) => DataVersion(
-      timestamp: json['timestamp'] as int? ?? 0,
+  timestamp: json['timestamp'] as int? ?? 0,
       utc: json['utc'] as String? ?? "",
-      minimalApp: json['minimalApp'] ?? const AppVersion(0, 0, 0),
+      minimalApp: json['minimalApp'] == null
+          ? const AppVersion(0, 0, 0)
+          : DataVersion._parseAppVersion(json['minimalApp'] as String),
       files: (json['files'] as Map?)?.map(
             (k, e) => MapEntry(k as String,
                 DatFileVersion.fromJson(Map<String, dynamic>.from(e as Map))),
@@ -408,6 +415,40 @@ T? _$nullableGenericFromJson<T>(
   T Function(Object? json) fromJson,
 ) =>
     input == null ? null : fromJson(input);
+
+DropRateData _$DropRateDataFromJson(Map json) => DropRateData(
+      newData: json['newData'] == null
+          ? const DropRateSheet()
+          : DropRateSheet.fromJson(
+              Map<String, dynamic>.from(json['newData'] as Map)),
+      legacyData: json['legacyData'] == null
+          ? const DropRateSheet()
+          : DropRateSheet.fromJson(
+              Map<String, dynamic>.from(json['legacyData'] as Map)),
+    );
+
+DropRateSheet _$DropRateSheetFromJson(Map json) => DropRateSheet(
+      questIds:
+          (json['questIds'] as List<dynamic>?)?.map((e) => e as int).toList() ??
+              const [],
+      itemIds:
+          (json['itemIds'] as List<dynamic>?)?.map((e) => e as int).toList() ??
+              const [],
+      apCosts:
+          (json['apCosts'] as List<dynamic>?)?.map((e) => e as int).toList() ??
+              const [],
+      runs: (json['runs'] as List<dynamic>?)?.map((e) => e as int).toList() ??
+          const [],
+      sparseMatrix: (json['sparseMatrix'] as Map?)?.map(
+            (k, e) => MapEntry(
+                int.parse(k as String),
+                (e as Map).map(
+                  (k, e) =>
+                      MapEntry(int.parse(k as String), (e as num).toDouble()),
+                )),
+          ) ??
+          const {},
+    );
 
 CommandCode _$CommandCodeFromJson(Map json) => CommandCode(
       id: json['id'] as int,
@@ -1621,8 +1662,6 @@ ServantExtra _$ServantExtraFromJson(Map json) => ServantExtra(
           .toList(),
       aprilFoolProfile: MappingBase<String>.fromJson(
           Map<String, dynamic>.from(json['aprilFoolProfile'] as Map)),
-      profileComment: MappingBase<List<LoreComment>>.fromJson(
-          Map<String, dynamic>.from(json['profileComment'] as Map)),
       mcLink: json['mcLink'] as String?,
       fandomLink: json['fandomLink'] as String?,
     );
@@ -1699,10 +1738,14 @@ EventExtra _$EventExtraFromJson(Map json) => EventExtra(
       huntingQuestIds: (json['huntingQuestIds'] as List<dynamic>)
           .map((e) => e as int)
           .toList(),
-      startTime: MappingBase<int>.fromJson(
-          Map<String, dynamic>.from(json['startTime'] as Map)),
-      endTime: MappingBase<int>.fromJson(
-          Map<String, dynamic>.from(json['endTime'] as Map)),
+      startTime: json['startTime'] == null
+          ? null
+          : MappingBase<int>.fromJson(
+              Map<String, dynamic>.from(json['startTime'] as Map)),
+      endTime: json['endTime'] == null
+          ? null
+          : MappingBase<int>.fromJson(
+              Map<String, dynamic>.from(json['endTime'] as Map)),
       rarePrism: json['rarePrism'] as int,
       grail: json['grail'] as int,
       crystal: json['crystal'] as int,
@@ -3144,6 +3187,10 @@ const _$WarOverwriteTypeEnumMap = {
   WarOverwriteType.coordinates: 'coordinates',
   WarOverwriteType.effectChangeBlackMark: 'effectChangeBlackMark',
   WarOverwriteType.questBoardSectionImage: 'questBoardSectionImage',
+  WarOverwriteType.warForceDisp: 'warForceDisp',
+  WarOverwriteType.warForceHide: 'warForceHide',
+  WarOverwriteType.startType: 'startType',
+  WarOverwriteType.noticeDialogText: 'noticeDialogText',
 };
 
 NiceWar _$NiceWarFromJson(Map json) => NiceWar(

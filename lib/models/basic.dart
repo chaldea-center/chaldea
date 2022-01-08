@@ -1,7 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../utils/extension.dart';
+
+bool _runChaldeaNext = false;
+
+bool get runChaldeaNext => kDebugMode && _runChaldeaNext;
+
+set runChaldeaNext(bool v) => _runChaldeaNext = kDebugMode && v;
 
 class Language {
   final String code;
@@ -13,9 +20,9 @@ class Language {
 
   static const jp = Language('ja', '日本語', 'Japanese', Locale('ja', ''));
   static const chs =
-      Language('zh-CN', '简体中文', 'Simplified Chinese', Locale('zh', 'CN'));
+  Language('zh-CN', '简体中文', 'Simplified Chinese', Locale('zh', 'CN'));
   static const cht =
-      Language('zh-TW', '繁体中文', 'Traditional Chinese', Locale('zh', 'TW'));
+  Language('zh-TW', '繁体中文', 'Traditional Chinese', Locale('zh', 'TW'));
   static const en = Language('en', 'English', 'English', Locale('en', ''));
   static const kr = Language('ko', '한국어', 'Korean', Locale('ko', ''));
   static const ar = Language('ar', 'عربى', 'Arabic', Locale('ar', ''));
@@ -56,7 +63,7 @@ class Language {
   static Language? getLanguage(String? code) {
     if (code == null) return null;
     Language? language =
-        supportLanguages.firstWhereOrNull((lang) => lang.code == code);
+    supportLanguages.firstWhereOrNull((lang) => lang.code == code);
     language ??= supportLanguages
         .firstWhereOrNull((lang) => code.startsWith(lang.locale.languageCode));
     return language;

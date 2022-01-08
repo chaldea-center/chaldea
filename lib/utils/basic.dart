@@ -162,3 +162,20 @@ abstract class EnumUtil {
     }
   }
 }
+
+class StopwatchX extends Stopwatch {
+  final String? name;
+
+  StopwatchX([this.name, bool autostart = true]) : super() {
+    if (autostart) start();
+  }
+
+  String get elapsedMsg {
+    final buffer = StringBuffer('Stopwatch');
+    if (name != null) {
+      buffer.write('($name)');
+    }
+    buffer.write(': elapsed $elapsed');
+    return buffer.toString();
+  }
+}

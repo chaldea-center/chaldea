@@ -6,8 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 import 'package:logger/src/outputs/file_output.dart'; // ignore: implementation_imports
 
-import 'platform/platform.dart';
-
 /// default logger
 Logger _logger = Logger(
   filter: ProductionFilter(),
@@ -17,15 +15,17 @@ Logger _logger = Logger(
 
 Logger get logger => _logger;
 
-void initiateLoggerPath(String fp) {
-  rollLogFiles(fp, 5, 10 * 1024 * 1024); //10MB
+void initiateLoggerPath([String? fp]) {
+  if (fp != null) {
+    rollLogFiles(fp, 5, 10 * 1024 * 1024); //10MB
+  }
   _logger = Logger(
     filter: ProductionFilter(),
     printer: _CustomPrettyPrinter(
         methodCount: 2, colors: false, printEmojis: false, printTime: true),
     output: MultiOutput([
       ConsoleOutput(),
-      if (!PlatformU.isWeb) FileOutput(file: File(fp)),
+      if (!kIsWeb && fp != null) FileOutput(file: File(fp)),
     ]),
     level: kDebugMode ? null : Level.debug,
   );
@@ -33,8 +33,8 @@ void initiateLoggerPath(String fp) {
 
 /// fp, fp.1,...,fp.[maxCount], [maxSize] in bytes
 void rollLogFiles(String fp, int maxBackup, int maxSize) {
-  if (PlatformU.isWeb) {
-    print('ignore rolling log on web');
+  if (kIsWeb) {
+    debugPrint('ignore rolling log on web');
     return;
   }
   var f = File(fp);
