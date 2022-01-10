@@ -1,13 +1,8 @@
-import 'dart:convert';
-
-import 'package:chaldea/components/catcher_util/catcher_email_handler.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/extras/faq_page.dart';
+import 'package:chaldea/utils/catcher/server_feedback_handler.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:intl/intl_standalone.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:url_launcher/url_launcher.dart';
 
@@ -19,7 +14,6 @@ class FeedbackPage extends StatefulWidget {
 }
 
 class _FeedbackPageState extends State<FeedbackPage> {
-  final bool attachLog = true;
   late TextEditingController contactController;
   late TextEditingController subjectController;
   late TextEditingController bodyController;
@@ -319,46 +313,26 @@ class _FeedbackPageState extends State<FeedbackPage> {
     }
     EasyLoading.show(status: 'Sending', maskType: EasyLoadingMaskType.clear);
     try {
-      final message = Message()
-        ..from = const Address('chaldea-client@narumi.cc', 'Chaldea Feedback')
-        ..recipients.add(kSupportTeamEmailAddress);
-
       String subject = subjectController.text.trim();
       if (subject.isEmpty) subject = defaultSubject;
-      message.subject = subject;
 
-      message.html = await _emailBody();
-      message.attachments
-          .add(StringAttachment(bodyController.text, fileName: 'raw_msg.txt'));
-      if (!PlatformU.isWeb) {
-        if (attachLog) {
-          message.attachments.addAll(EmailAutoHandlerCross.archiveAttachments([
-            File(db.paths.crashLog),
-            File(db.paths.appLog),
-            File(db.paths.userDataPath)
-          ], join(db.paths.tempDir, '.feedback.tmp.zip')));
-        }
-        attachFiles.forEach((fp) {
-          var file = File(fp);
-          if (file.existsSync()) {
-            message.attachments.add(FileAttachment(File(file.path)));
-          }
-        });
-      }
+      final handler = ServerFeedbackHandler(
+        attachments: [
+          db.paths.crashLog,
+          db.paths.appLog,
+          db.paths.userDataPath,
+        ],
+        emailTitle: subject,
+        senderName: 'Chaldea Feedback',
+        screenshotController: db.runtimeData.screenshotController,
+      );
+
       if (!kDebugMode) {
-        final result = await send(
-          message,
-          SmtpServer(
-            'smtp.qiye.aliyun.com',
-            port: 465,
-            ssl: true,
-            username: 'chaldea-client@narumi.cc',
-            password: b64(
-              'Q2hhbGRlYUBjbGllbnQ=',
-            ),
-          ),
-        );
-        logger.i(result.toString());
+        final result = await handler.handle(
+            FeedbackReport(contactController.text, bodyController.text), null);
+        if (!result) {
+          throw 'Sending failed';
+        }
       } else {
         await Future.delayed(const Duration(seconds: 3));
       }
@@ -372,49 +346,5 @@ class _FeedbackPageState extends State<FeedbackPage> {
     } finally {
       EasyLoadingUtil.dismiss();
     }
-  }
-
-  Future<String> _emailBody() async {
-    final escape = const HtmlEscape().convert;
-    StringBuffer buffer = StringBuffer("");
-    buffer.write('<style>h3{margin:0.2em 0;}</style>');
-
-    if (contactController.text.isNotEmpty == true) {
-      buffer.write("<h3>Contact:</h3>");
-      buffer.write("${escape(contactController.text)}<br>");
-    }
-    buffer.write("<h3>Body:</h3>");
-    buffer
-        .write("${escape(bodyController.text).replaceAll('\n', '<br>\n')}<br>");
-    buffer.write("<h3>Summary:</h3>");
-    Map<String, dynamic> summary = {
-      'app': '${AppInfo.appName} v${AppInfo.fullVersion2}',
-      'dataset': db.gameData.version,
-      'os': '${PlatformU.operatingSystem} ${PlatformU.operatingSystemVersion}',
-      'lang': Language.current.code,
-      'locale': await findSystemLocale(),
-      'uuid': AppInfo.uuid,
-    };
-    for (var entry in summary.entries) {
-      buffer
-          .write("<b>${entry.key}</b>: ${escape(entry.value.toString())}<br>");
-    }
-    buffer.write('<hr>');
-
-    buffer.write("<h3>Device parameters:</h3>");
-    for (var entry in AppInfo.deviceParams.entries) {
-      buffer
-          .write("<b>${entry.key}</b>: ${escape(entry.value.toString())}<br>");
-    }
-    buffer.write("<hr>");
-
-    buffer.write("<h3>Application parameters:</h3>");
-    for (var entry in AppInfo.appParams.entries) {
-      buffer
-          .write("<b>${entry.key}</b>: ${escape(entry.value.toString())}<br>");
-    }
-    buffer.write("<hr>");
-
-    return buffer.toString();
   }
 }

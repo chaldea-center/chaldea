@@ -7,6 +7,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path/path.dart' show join;
 import 'package:pool/pool.dart';
 
+import '../packages/network.dart';
 import 'config.dart' show db;
 import 'constants.dart';
 import 'json_store/json_store.dart';
@@ -132,7 +133,7 @@ class WikiUtil {
     }
 
     String? url = wikiUrlCache.get(filename);
-    if (!db.hasNetwork) return url;
+    if (network.unavailable) return url;
     if (url != null && savePath != null) {
       return _download(url);
     }

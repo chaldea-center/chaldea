@@ -7,11 +7,9 @@ import 'package:archive/archive_io.dart';
 import 'package:chaldea/components/json_store/json_store.dart';
 import 'package:chaldea/components/utils.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/version.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/widgets/icon_clipper.dart';
 import 'package:chaldea/widgets/image/image_viewer.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -21,14 +19,15 @@ import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:path_provider/path_provider.dart';
-import 'package:screenshot/screenshot.dart';
 
+import '../models/runtime_data.dart';
+import '../packages/app_info.dart';
 import '../packages/method_channel/method_channel_chaldea.dart';
+import '../packages/network.dart';
+import '../utils/http_override.dart';
 import 'constants.dart';
 import 'datatypes/datatypes.dart';
 import 'datatypes/effect_type/effect_type.dart';
-import '../packages/app_info.dart';
-import 'git_tool.dart';
 import 'json_store/local_app_config.dart';
 import 'shared_prefs.dart';
 import 'wiki_util.dart';
@@ -46,8 +45,8 @@ class Database {
   AppSetting get appSetting => userData.appSetting;
 
   Dio get serverDio => Dio(BaseOptions(
-        baseUrl: kServerRoot,
-        // baseUrl: kDebugMode ? 'http://localhost:8183' : kServerRoot,
+        // baseUrl: kServerRoot,
+        baseUrl: kDebugMode ? 'http://localhost:8183' : kServerRoot,
         queryParameters: {
           'app_ver': AppInfo.version,
           'user_key': AppInfo.uuid,
@@ -102,24 +101,13 @@ class Database {
 
   PathManager get paths => _paths;
 
-  ConnectivityResult? _connectivity;
-
-  bool get hasNetwork =>
-      _connectivity != null && _connectivity != ConnectivityResult.none;
-
-  /// You should always check for connectivity status when your app is resumed
-  Future<ConnectivityResult> checkConnectivity() async {
-    _connectivity = await Connectivity().checkConnectivity();
-    return _connectivity!;
-  }
-
   Box? webFS;
 
   FlutterErrorDetails? initErrorDetail;
 
   // initialization before startup
   Future<void> initial() async {
-    HttpOverrides.global = _MyHttpOverrides();
+    HttpOverrides.global = CustomHttpOverrides();
 
     initiateFuncBuffInstances();
     await paths.initRootPath();
@@ -133,10 +121,7 @@ class Database {
       webFS = await Hive.openBox('WebFileSystem');
     }
     MethodChannelChaldea.configMethodChannel();
-    await checkConnectivity();
-    Connectivity().onConnectivityChanged.listen((result) {
-      _connectivity = result;
-    });
+    await network.init();
   }
 
   /// Automatically save user data when:
@@ -714,47 +699,6 @@ class PathManager {
   PathManager._internal();
 
   factory PathManager() => _instance;
-}
-
-class RuntimeData {
-  AppVersion? upgradableVersion;
-  DatasetVersion? latestDatasetVersion;
-  double? criticalWidth;
-  Set<String> itemRecognizeImageFiles = {};
-  Set<String> activeSkillRecognizeImageFiles = {};
-  Set<String> appendSkillRecognizeImageFiles = {};
-  bool googlePlayAccess = false;
-
-  // debug
-  bool _enableDebugTools = false;
-
-  bool get enableDebugTools =>
-      _enableDebugTools || kDebugMode || AppInfo.isDebugDevice;
-
-  set enableDebugTools(bool v) => _enableDebugTools = v;
-
-  bool _showDebugFAB = true;
-
-  bool get showDebugFAB => _showDebugFAB && enableDebugTools;
-
-  set showDebugFAB(bool value) => _showDebugFAB = value;
-
-  bool showFps = false;
-
-  /// Controller of [Screenshot] widget which set root [MaterialApp] as child
-  ScreenshotController? screenshotController;
-
-  /// store anything you like
-  Map<dynamic, dynamic> tempDict = {};
-}
-
-class _MyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-  }
 }
 
 Database db = Database();

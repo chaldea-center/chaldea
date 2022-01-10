@@ -1,10 +1,16 @@
+import 'dart:io';
+
+import 'package:chaldea/models/runtime_data.dart';
 import 'package:chaldea/utils/basic.dart';
+import 'package:chaldea/utils/http_override.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:hive/hive.dart';
 
 import '../packages/file_plus/file_plus.dart';
 import '../packages/file_plus/file_plus_web.dart';
+import '../packages/method_channel/method_channel_chaldea.dart';
+import '../packages/network.dart';
 import '../utils/json_helper.dart';
 import 'gamedata/gamedata.dart';
 import 'settings/local_settings.dart';
@@ -17,6 +23,7 @@ class _Database {
   LocalSettings settings = LocalSettings();
   UserData userData = UserData();
   GameData gameData = GameData();
+  RuntimeData runtimeData = RuntimeData();
 
   // singleton
   static final _instance = _Database._internal();
@@ -33,14 +40,17 @@ class _Database {
       initWebFileSystem();
     } else {
       Hive.init(paths.configDir);
+      HttpOverrides.global = CustomHttpOverrides();
     }
+    MethodChannelChaldea.configMethodChannel();
+    network.init();
 
-    settings = await JsonHelper.loadModel(
-      fp: joinPaths(paths.configDir, 'settings.json'),
-      fromJson: (data) => LocalSettings.fromJson(data),
-      onError: () => LocalSettings(),
-    );
-    userData = await loadUserData() ?? UserData();
+    // settings = await JsonHelper.loadModel(
+    //   fp: joinPaths(paths.configDir, 'settings.json'),
+    //   fromJson: (data) => LocalSettings.fromJson(data),
+    //   onError: () => LocalSettings(),
+    // );
+    // userData = await loadUserData() ?? UserData();
   }
 
   Future<UserData?> loadUserData([String? fp]) async {

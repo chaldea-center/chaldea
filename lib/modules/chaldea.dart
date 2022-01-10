@@ -1,12 +1,11 @@
 import 'dart:async';
 
-import 'package:chaldea/components/catcher_util/catcher_config.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/models/version.dart';
-import 'package:chaldea/packages/method_channel/method_channel_chaldea.dart';
 import 'package:chaldea/modules/blank_page.dart';
 import 'package:chaldea/modules/home/home_page.dart';
 import 'package:chaldea/modules/home/subpage/support_donation_page.dart';
+import 'package:chaldea/packages/method_channel/method_channel_chaldea.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/scheduler.dart';
@@ -14,6 +13,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:screenshot/screenshot.dart';
 
+import '../packages/network.dart';
+import '../utils/catcher/catcher_util.dart';
 import 'cmd_code/cmd_code_detail_page.dart';
 import 'craft/craft_detail_page.dart';
 import 'debug/debug_floating_menu.dart';
@@ -51,14 +52,13 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   void initState() {
     super.initState();
     db.notifyAppUpdate = onAppUpdate;
-    db.runtimeData.screenshotController = ScreenshotController();
     SplitRoute.defaultMasterFillPageBuilder = (context) => const BlankPage();
 
     SystemChannels.lifecycle.setMessageHandler((msg) async {
       debugPrint('SystemChannels> $msg');
       if (msg == AppLifecycleState.resumed.toString()) {
         // Actions when app is resumed
-        db.checkConnectivity();
+        network.check();
         // MobStat.pageStart(widget.runtimeType.toString());
       } else if (msg == AppLifecycleState.inactive.toString()) {
         db.saveUserData();
@@ -115,7 +115,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
               statusBarColor: Colors.transparent,
               systemNavigationBarColor: lightTheme.scaffoldBackgroundColor),
       child: Screenshot(
-        controller: db.runtimeData.screenshotController!,
+        controller: db.runtimeData.screenshotController,
         child: MaterialApp(
           title: kAppName,
           debugShowCheckedModeBanner: false,
@@ -132,7 +132,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
           supportedLocales: S.delegate.supportedLocales,
           scrollBehavior: DraggableScrollBehavior(),
           builder: (context, widget) {
-            ErrorWidget.builder = CatcherUtility.errorWidgetBuilder;
+            ErrorWidget.builder = CatcherUtil.errorWidgetBuilder;
             return FlutterEasyLoading(child: widget);
           },
           // let the initial route '/' become a SplitRoute

@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:chaldea/components/components.dart';
 
+import '../../packages/network.dart';
+
 class IconCacheManagePage extends StatefulWidget {
   IconCacheManagePage({Key? key}) : super(key: key);
 
@@ -48,7 +50,7 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
   }
 
   void _startCaching() {
-    if (!db.hasNetwork) {
+    if (network.unavailable) {
       EasyLoading.showInfo(S.current.error_no_network);
       return;
     }
@@ -75,7 +77,7 @@ class IconCacheManager {
     Function(int count, int total, int errors)? onProgress,
     Duration interval = const Duration(milliseconds: 200),
   }) async {
-    if (!db.hasNetwork) {
+    if (network.unavailable) {
       return;
     }
     _running = true;

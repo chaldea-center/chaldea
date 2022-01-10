@@ -340,6 +340,8 @@ class DropRateSheet {
   final List<int> itemIds;
   final List<int> apCosts;
   final List<int> runs;
+
+  /// drop rate, not ap rate
   @protected
   final Map<int, Map<int, double>> sparseMatrix;
 

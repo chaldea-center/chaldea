@@ -9,6 +9,8 @@ import 'package:html/parser.dart' as parser;
 import 'package:string_validator/string_validator.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../packages/network.dart';
+
 class AppNewsCarousel extends StatefulWidget {
   final double? maxWidth;
 
@@ -18,7 +20,7 @@ class AppNewsCarousel extends StatefulWidget {
   _AppNewsCarouselState createState() => _AppNewsCarouselState();
 
   static Future<void> resolveSliderImageUrls([bool showToast = false]) async {
-    if (!db.hasNetwork) {
+    if (network.unavailable) {
       if (showToast) EasyLoading.showInfo(S.current.error_no_network);
       return;
     }

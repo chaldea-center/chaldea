@@ -13,6 +13,8 @@ import 'package:path/path.dart';
 import 'package:rfc_6902/rfc_6902.dart' as jsonpatch;
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../packages/network.dart';
+
 class AutoUpdateUtil {
   static Dio get _dio => HttpUtils.defaultDio;
 
@@ -27,7 +29,7 @@ class AutoUpdateUtil {
     final git = GitTool.fromDb();
     try {
       final String baseFolder = join(db.paths.tempDir, 'dataset');
-      if (!db.hasNetwork) return;
+      if (network.unavailable) return;
       release = await git.latestDatasetRelease(testRelease: (_) => true);
       final url = release?.targetAsset?.browserDownloadUrl;
       if (url == null) {
@@ -100,7 +102,7 @@ class AutoUpdateUtil {
       EasyLoading.show(status: 'patching', maskType: EasyLoadingMaskType.clear);
     }
     try {
-      if (!db.hasNetwork) {
+      if (network.unavailable) {
         _reportResult(S.current.error_no_network);
         return;
       }
@@ -218,7 +220,7 @@ class AutoUpdateUtil {
       EasyLoading.showInfo('No update on web');
       return;
     }
-    if (!db.hasNetwork) {
+    if (network.unavailable) {
       if (!background) EasyLoading.showError('No network');
       return;
     }
