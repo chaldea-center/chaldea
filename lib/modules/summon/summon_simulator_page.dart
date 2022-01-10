@@ -147,7 +147,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     double suits = (totalQuartz / 167);
     String title, subtitle;
     int extraLeft = 9 - totalPulls % 11;
-    if (Language.isCN) {
+    if (Language.isZH) {
       title = '共计: $totalPulls抽'
           ' $totalQuartz石'
           '(${suits.toStringAsFixed(2)}单,'
@@ -160,7 +160,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           '(${suits.toStringAsFixed(2)}×10000='
           '${(suits * 10000).round()}円)';
       subtitle = 'あと$extraLeft回で1回ボーナス召喚';
-    } else if (Language.isKR) {
+    } else if (Language.isKO) {
       title = '합계: $totalPulls회 $totalQuartz석'
           ' (${suits.toStringAsFixed(2)}×93200/95000=₩${(suits * 93200).round()}/${(suits * 95000).round()})';
       subtitle = '$extraLeft번 더 돌리면 보너스 소환 기회 획득';

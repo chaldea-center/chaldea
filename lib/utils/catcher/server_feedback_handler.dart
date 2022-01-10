@@ -22,9 +22,9 @@ import 'package:screenshot/screenshot.dart';
 
 import '../../components/config.dart' show db;
 import '../../components/git_tool.dart';
-import '../../models/basic.dart';
 import '../../models/db.dart';
 import '../../packages/app_info.dart';
+import '../../packages/language.dart';
 import '../../packages/logger.dart' as logger_;
 import '../../packages/platform/platform.dart';
 import '../constants.dart';

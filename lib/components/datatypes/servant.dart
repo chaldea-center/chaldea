@@ -580,7 +580,7 @@ class ActiveSkill {
     if (index != null && index >= 0 && index < skills.length) {
       return skills[index];
     } else {
-      return Language.isCN
+      return Language.isZH
           ? skills.getOrNull(cnState) ?? skills.last
           : skills.last;
     }

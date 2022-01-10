@@ -300,9 +300,9 @@ class Utils {
   ///   * Japanese->Romaji
   static String toAlphabet(String text, {Language? lang}) {
     lang ??= Language.current;
-    if (lang == Language.chs) {
+    if (lang == Language.chs || lang == Language.cht) {
       return PinyinHelper.getPinyinE(text).toLowerCase();
-    } else if (lang == Language.jpn) {
+    } else if (lang == Language.jp) {
       return kanaKit.toRomaji(text).toLowerCase();
     } else {
       return text.toLowerCase();

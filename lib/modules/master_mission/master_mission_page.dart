@@ -206,7 +206,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
   String _getLocalizedKey(String key, {bool alphabetical = false}) {
     String text = _shownTexts[key] ??= localized.of(_removePrefix(key));
     if (alphabetical) {
-      if (Language.isCN) {
+      if (Language.isZH) {
         text = PinyinHelper.getPinyin(text);
       } else if (Language.isJP) {
         text = Utils.kanaKit.toRomaji(text);

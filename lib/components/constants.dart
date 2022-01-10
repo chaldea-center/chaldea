@@ -1,63 +1,11 @@
 import 'package:chaldea/packages/packages.dart';
-import 'package:chaldea/utils/extension.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+
 import '../packages/app_info.dart';
+import '../packages/language.dart';
 
-export 'package:chaldea/utils/constants.dart';
-
-//typedef
-//const value
-
-class Language {
-  final String code;
-  final String name;
-  final Locale locale;
-
-  const Language(this.code, this.name, this.locale);
-
-  static const chs = Language('zh', '简体中文', Locale('zh', ''));
-  static const jpn = Language('ja', '日本語', Locale('ja', ''));
-  static const eng = Language('en', 'English', Locale('en', ''));
-  static const kor = Language('ko', '한국어', Locale('ko', ''));
-
-  static List<Language> get supportLanguages => const [chs, jpn, eng, kor];
-
-  static Language? getLanguage(String? code) {
-    if (code == null) return null;
-    Language? language =
-        supportLanguages.firstWhereOrNull((lang) => lang.code == code);
-    language ??= supportLanguages
-        .firstWhereOrNull((lang) => code.startsWith(lang.locale.languageCode));
-    return language;
-  }
-
-  static String get currentLocaleCode => Intl.getCurrentLocale();
-
-  static bool get isCN => currentLocaleCode.startsWith('zh');
-
-  static bool get isJP => currentLocaleCode.startsWith('ja');
-
-  static bool get isEN => currentLocaleCode.startsWith('en');
-
-  static bool get isKR => currentLocaleCode.startsWith('ko');
-
-  static bool get isEnOrKr => isEN || isKR;
-
-  static Language get current => isJP
-      ? jpn
-      : isEN
-          ? eng
-          : isKR
-              ? kor
-              : chs;
-
-  @override
-  String toString() {
-    return "$runtimeType('$code', '$name')";
-  }
-}
+export '../packages/language.dart';
+export '../utils/constants.dart';
 
 class ClassName {
   final String name;
@@ -113,9 +61,9 @@ T localizeNoun<T>(T? nameCn, T? nameJp, T? nameEn,
   nameEn = _check(nameEn);
 
   primary ??= Language.current;
-  List<T?> names = primary == Language.chs
+  List<T?> names = primary == Language.chs || primary == Language.cht
       ? [nameCn, nameJp, nameEn]
-      : primary == Language.eng || primary == Language.kor
+      : primary == Language.en || primary == Language.ko
           ? [nameEn, nameJp, nameCn]
           : [nameJp, nameCn, nameEn];
   T? name = names[0] ?? names[1] ?? names[2] ?? k?.call();

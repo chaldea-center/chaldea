@@ -40,8 +40,8 @@ class _ProfileLangSwitchState extends State<ProfileLangSwitch> {
       values: data,
       options: [
         if (widget.showCn) Language.chs.code,
-        if (widget.showJp) Language.jpn.code,
-        if (widget.showEn) Language.eng.code,
+        if (widget.showJp) Language.jp.code,
+        if (widget.showEn) Language.en.code,
       ],
       optionBuilder: (code) {
         return SizedBox(
@@ -50,8 +50,8 @@ class _ProfileLangSwitchState extends State<ProfileLangSwitch> {
           child: Center(
               child: Text({
             Language.chs.code: '中',
-            Language.jpn.code: '日',
-            Language.eng.code: 'EN',
+            Language.jp.code: '日',
+            Language.en.code: 'EN',
           }[code]!)),
         );
       },

@@ -43,7 +43,7 @@ class _FreeQuestCalculatorPageState extends State<FreeQuestCalculatorPage>
         ],
         bottom: TabBar(
           controller: _tabController,
-          isScrollable: !Language.isCN,
+          isScrollable: !Language.isZH,
           tabs: [
             Tab(
                 text: LocalizedText.of(

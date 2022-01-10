@@ -124,7 +124,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
           theme: lightTheme,
           darkTheme: darkTheme,
           locale: Language.getLanguage(db.appSetting.language)?.locale ??
-              Language.eng.locale,
+              Language.en.locale,
           localizationsDelegates: const [
             S.delegate,
             ...GlobalMaterialLocalizations.delegates,

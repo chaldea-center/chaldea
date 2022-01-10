@@ -6,8 +6,8 @@ import 'package:chaldea/utils/constants.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../models/basic.dart';
 import '../../packages/app_info.dart';
+import '../../packages/language.dart';
 
 bool _defaultValidateStat(int? statusCode) {
   return statusCode != null;

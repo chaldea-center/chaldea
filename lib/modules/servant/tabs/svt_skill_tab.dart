@@ -115,7 +115,7 @@ class _SvtSkillTabState extends SvtTabBaseState<SvtSkillTab> {
                 contentPadding: const EdgeInsets.fromLTRB(16, 6, 22, 6),
                 leading: db.getIconImage(skill.icon, width: 33),
                 title: Text(Language.isJP ? nameJp : name),
-                subtitle: Language.isCN ? Text(nameJp) : null,
+                subtitle: Language.isZH ? Text(nameJp) : null,
                 trailing: Text('   CD: ${skill.cd}→${skill.cd - 2}')),
             for (Effect effect in skill.effects)
               ...CommonBuilder.buildEffect(

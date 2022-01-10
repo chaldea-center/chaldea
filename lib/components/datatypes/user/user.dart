@@ -13,14 +13,17 @@ class User {
       Language lang =
           Language.getLanguage(db.appSetting.language) ?? Language.current;
       switch (lang) {
-        case Language.eng:
+        case Language.en:
           _server = GameServer.en;
           break;
-        case Language.jpn:
+        case Language.jp:
           _server = GameServer.jp;
           break;
         case Language.chs:
           _server = GameServer.cn;
+          break;
+        case Language.cht:
+          _server = GameServer.tw;
           break;
         default:
           _server = GameServer.cn;

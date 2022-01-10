@@ -103,7 +103,7 @@ class EventBase {
   String get localizedName => localizeNoun(name, nameJp, nameEn);
 
   String? get lBannerUrl =>
-      Language.isCN ? bannerUrl ?? bannerUrlJp : bannerUrlJp ?? bannerUrl;
+      Language.isZH ? bannerUrl ?? bannerUrlJp : bannerUrlJp ?? bannerUrl;
 
   bool isOutdated() {
     return checkEventOutdated(

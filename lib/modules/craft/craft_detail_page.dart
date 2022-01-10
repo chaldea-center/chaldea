@@ -268,7 +268,7 @@ class CraftDetailBasePage extends StatelessWidget {
             ],
           ),
           // Only CN is supported
-          if (Language.isCN)
+          if (Language.isZH)
             for (var i = 0; i < ce.eventIcons.length; i++)
               CustomTableRow(
                 children: [

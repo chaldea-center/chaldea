@@ -48,11 +48,11 @@ class LocalizedText {
 
   String ofPrimary(Language primary) {
     switch (primary) {
-      case Language.jpn:
+      case Language.jp:
         return jpn;
-      case Language.eng:
+      case Language.en:
         return eng;
-      case Language.kor:
+      case Language.ko:
         return kor;
       default:
         return chs;
@@ -61,7 +61,7 @@ class LocalizedText {
 
   List<String> get _values {
     if (Language.isEN) return [eng, jpn, chs];
-    if (Language.isKR) return [kor, eng, jpn, chs];
+    if (Language.isKO) return [kor, eng, jpn, chs];
     if (Language.isJP) return [jpn, eng, chs];
     return [chs, jpn, eng];
   }

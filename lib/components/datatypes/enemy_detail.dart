@@ -56,7 +56,7 @@ class EnemyDetail {
 
   static String _localizeClassName(String? clsName) {
     if (clsName == null) return '';
-    if (Language.isCN) {
+    if (Language.isZH) {
       return clsName;
     } else if (Language.isJP) {
       return {

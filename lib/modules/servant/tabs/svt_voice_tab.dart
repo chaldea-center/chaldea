@@ -59,7 +59,7 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
         ),
       ));
     }
-    if (lang == Language.eng) {
+    if (lang == Language.en) {
       children.add(Center(
         child: Text(
           'Voices maybe mismatched',

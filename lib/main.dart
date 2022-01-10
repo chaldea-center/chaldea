@@ -4,10 +4,10 @@ import 'dart:typed_data';
 import 'package:catcher/catcher.dart';
 import 'package:chaldea/app/chaldea_next.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/models/basic.dart';
 import 'package:chaldea/modules/chaldea.dart';
 import 'package:chaldea/utils/catcher/server_feedback_handler.dart';
 
+import 'models/basic.dart';
 import 'models/db.dart';
 import 'utils/catcher/catcher_util.dart';
 

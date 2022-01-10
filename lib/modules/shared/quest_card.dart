@@ -341,7 +341,7 @@ class _QuestCardState extends State<QuestCard> {
 
   String _localizeClassName(String? clsName) {
     if (clsName == null) return '';
-    if (Language.isCN) {
+    if (Language.isZH) {
       return clsName;
     } else {
       return {
@@ -429,7 +429,7 @@ class _QuestCardState extends State<QuestCard> {
         if (displayName?.isNotEmpty == true) {
           lines.add(AutoSizeText(displayName!,
               maxFontSize: 14,
-              maxLines: Language.isCN ? 1 : 2,
+              maxLines: Language.isZH ? 1 : 2,
               textAlign: TextAlign.center));
         }
         lines.add(Row(

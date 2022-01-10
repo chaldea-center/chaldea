@@ -207,7 +207,7 @@ class _SettingsPageState extends State<SettingsPage> {
               subtitle: const Text(kProjectDocRoot),
               trailing: const Icon(Icons.menu_book),
               onTap: () {
-                launch(kProjectDocRoot + (Language.isCN ? '/zh/' : '/'));
+                launch(kProjectDocRoot + (Language.isZH ? '/zh/' : '/'));
               },
             ),
             if (!PlatformU.isApple || (db.cfg.launchTimes.get() ?? 0) > 5)
