@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:chaldea/models/runtime_data.dart';
@@ -7,15 +8,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:hive/hive.dart';
 
+import '../packages/app_info.dart';
 import '../packages/file_plus/file_plus.dart';
 import '../packages/file_plus/file_plus_web.dart';
 import '../packages/method_channel/method_channel_chaldea.dart';
-import '../packages/network.dart';
 import '../utils/json_helper.dart';
 import 'gamedata/gamedata.dart';
 import 'settings/local_settings.dart';
 import 'settings/paths.dart';
 import 'userdata/userdata.dart';
+
+void _emptyCallback() {}
 
 class _Database {
   // members
@@ -32,9 +35,14 @@ class _Database {
 
   _Database._internal();
 
+  VoidCallback notifyAppUpdate = _emptyCallback;
+
   // methods
   Future<void> initiate() async {
     await paths.initRootPath();
+    await AppInfo.resolve(paths.appPath);
+    MethodChannelChaldeaNext.configMethodChannel();
+
     if (kIsWeb) {
       setUrlStrategy(PathUrlStrategy());
       initWebFileSystem();
@@ -42,8 +50,6 @@ class _Database {
       Hive.init(paths.configDir);
       HttpOverrides.global = CustomHttpOverrides();
     }
-    MethodChannelChaldea.configMethodChannel();
-    network.init();
 
     // settings = await JsonHelper.loadModel(
     //   fp: joinPaths(paths.configDir, 'settings.json'),
@@ -53,11 +59,20 @@ class _Database {
     // userData = await loadUserData() ?? UserData();
   }
 
+  /// return the [UserData] instance, don't assign to [userData]
   Future<UserData?> loadUserData([String? fp]) async {
     return JsonHelper.loadModel<UserData?>(
-      fp: paths.userDataPath,
+      fp: fp ?? paths.userDataPath,
       fromJson: (data) => UserData.fromJson(data),
       onError: () => null,
+    );
+  }
+
+  Future<LocalSettings> loadSettings([String? fp]) async {
+    return settings = await JsonHelper.loadModel<LocalSettings>(
+      fp: fp ?? paths.settingsPath,
+      fromJson: (data) => LocalSettings.fromJson(data),
+      onError: () => LocalSettings(),
     );
   }
 
@@ -113,6 +128,11 @@ class _Database {
     print('ended parse: '
         '${DateTime.now().difference(t0).inMilliseconds} ms lapsed');
     return gamedata;
+  }
+
+  Future<void> saveData() async {
+    await FilePlus(paths.userDataPath).writeAsString(jsonEncode(userData));
+    await FilePlus(paths.settingsPath).writeAsString(jsonEncode(settings));
   }
 }
 

@@ -1,19 +1,19 @@
+import 'package:chaldea/components/config.dart';
 import 'package:flutter/services.dart';
 
-import '../../models/db.dart';
-import '../platform/platform.dart';
+import '../packages/platform/platform.dart';
 
 // default channel
 const MethodChannel kMethodChannel = MethodChannel('chaldea.narumi.cc/chaldea');
 
-class MethodChannelChaldeaNext {
+class MethodChannelChaldea {
   static void configMethodChannel() {
     kMethodChannel.setMethodCallHandler((call) async {
       print('[dart] on call: ${call.method}, ${call.arguments}');
       if (call.method == 'onWindowPos') {
         if (call.arguments != null && call.arguments['pos'] != null) {
           // print('onWindowRect: args=${call.arguments}');
-          db2.settings.windowPosition = call.arguments['pos'];
+          db.cfg.windowPos.set(call.arguments['pos']);
           return;
         } else {
           print('onWindowRect invalid args=${call.arguments}');
@@ -21,7 +21,7 @@ class MethodChannelChaldeaNext {
         }
       } else if (call.method == 'onCloseWindow') {
         // not always successful
-        db2.saveData();
+        db.saveUserData();
         // db.cfg.close();
         print('[dart] onCloseWindow');
       }
@@ -40,7 +40,7 @@ class MethodChannelChaldeaNext {
   /// only available on macOS
   static Future<void> setAlwaysOnTop([bool? onTop]) async {
     if (PlatformU.isWindows || PlatformU.isMacOS) {
-      onTop ??= db2.settings.alwaysOnTop;
+      onTop ??= db.cfg.alwaysOnTop.get() ?? false;
       return kMethodChannel.invokeMethod<bool?>(
         'alwaysOnTop',
         <String, dynamic>{
@@ -52,7 +52,7 @@ class MethodChannelChaldeaNext {
 
   static Future<void> setWindowPos([dynamic rect]) async {
     if (PlatformU.isWindows) {
-      rect ??= db2.settings.windowPosition;
+      rect ??= db.cfg.windowPos.get();
       print('rect ${rect.runtimeType}: $rect');
       if (rect != null &&
           rect is List &&

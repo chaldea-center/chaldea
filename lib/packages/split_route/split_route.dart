@@ -213,24 +213,26 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     required Widget child,
     int masterRatio = _kSplitMasterRatio,
   }) {
+    if (!isSplit(context)) {
+      return child;
+    }
     return Row(
       children: <Widget>[
         Flexible(flex: masterRatio, child: child),
-        if (isSplit(context))
-          Flexible(
-            flex: 100 - masterRatio,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                border: Border(
-                  left: Divider.createBorderSide(context,
-                      width: _kSplitDividerWidth,
-                      color: Theme.of(context).dividerColor),
-                ),
+        Flexible(
+          flex: 100 - masterRatio,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border(
+                left: Divider.createBorderSide(context,
+                    width: _kSplitDividerWidth,
+                    color: Theme.of(context).dividerColor),
               ),
-              child: defaultMasterFillPageBuilder?.call(context) ??
-                  const Scaffold(),
             ),
+            child:
+                defaultMasterFillPageBuilder?.call(context) ?? const Scaffold(),
           ),
+        ),
       ],
     );
   }

@@ -20,7 +20,7 @@ class _WindowManagerState extends State<WindowManager> {
 
   @override
   void initState() {
-    MethodChannelChaldea.setAlwaysOnTop(true);
+    MethodChannelChaldeaNext.setAlwaysOnTop(true);
     super.initState();
   }
 

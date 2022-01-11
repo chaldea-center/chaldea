@@ -22,13 +22,11 @@ import 'package:path_provider/path_provider.dart';
 
 import '../models/runtime_data.dart';
 import '../packages/app_info.dart';
-import '../packages/method_channel/method_channel_chaldea.dart';
-import '../packages/network.dart';
-import '../utils/http_override.dart';
 import 'constants.dart';
 import 'datatypes/datatypes.dart';
 import 'datatypes/effect_type/effect_type.dart';
 import 'json_store/local_app_config.dart';
+import 'method_channel_chaldea.dart';
 import 'shared_prefs.dart';
 import 'wiki_util.dart';
 
@@ -107,9 +105,8 @@ class Database {
 
   // initialization before startup
   Future<void> initial() async {
-    HttpOverrides.global = CustomHttpOverrides();
-
     initiateFuncBuffInstances();
+    MethodChannelChaldea.configMethodChannel();
     await paths.initRootPath();
     cfg = LocalAppConfig(pathlib.join(paths.configDir, 'cfg.json'),
         lapse: const Duration(seconds: 3));
@@ -120,8 +117,6 @@ class Database {
     if (PlatformU.isWeb) {
       webFS = await Hive.openBox('WebFileSystem');
     }
-    MethodChannelChaldea.configMethodChannel();
-    await network.init();
   }
 
   /// Automatically save user data when:

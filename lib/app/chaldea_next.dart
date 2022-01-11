@@ -1,7 +1,21 @@
 import 'package:chaldea/modules/chaldea.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:screenshot/screenshot.dart';
 
+import '../generated/l10n.dart';
+import '../models/db.dart';
+import '../packages/language.dart';
+import '../packages/method_channel/method_channel_chaldea.dart';
+import '../packages/mob_stat.dart';
+import '../packages/network.dart';
+import '../packages/platform/platform.dart';
+import '../utils/catcher/catcher_util.dart';
+import '../utils/constants.dart';
+import '../widgets/after_layout.dart';
 import 'app.dart';
 import 'modules/root/global_fab.dart';
 import 'routes/parser.dart';
@@ -13,31 +27,71 @@ class ChaldeaNext extends StatefulWidget {
   _ChaldeaNextState createState() => _ChaldeaNextState();
 }
 
-class _ChaldeaNextState extends State<ChaldeaNext> {
+class _ChaldeaNextState extends StateX<ChaldeaNext> with AfterLayoutMixin {
   final routeInformationParser = AppRouteInformationParser();
   final backButtonDispatcher = RootBackButtonDispatcher();
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Chaldea',
-      routeInformationParser: routeInformationParser,
-      routerDelegate: rootRouter,
-      backButtonDispatcher: backButtonDispatcher,
-      debugShowCheckedModeBanner: false,
-      theme: null,
-      darkTheme: null,
-      themeMode: ThemeMode.system,
-      scrollBehavior: DraggableScrollBehavior(),
+    final lightTheme = _getThemeData(dark: false);
+    final darkTheme = _getThemeData(dark: true);
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: db2.settings.isResolvedDarkMode
+          ? SystemUiOverlayStyle.dark.copyWith(
+              statusBarColor: Colors.transparent,
+              systemNavigationBarColor: darkTheme.scaffoldBackgroundColor)
+          : SystemUiOverlayStyle.dark.copyWith(
+              statusBarColor: Colors.transparent,
+              systemNavigationBarColor: lightTheme.scaffoldBackgroundColor),
+      child: Screenshot(
+        controller: db2.runtimeData.screenshotController,
+        child: MaterialApp.router(
+          title: kAppName,
+          routeInformationParser: routeInformationParser,
+          routerDelegate: rootRouter,
+          backButtonDispatcher: backButtonDispatcher,
+          debugShowCheckedModeBanner: false,
+          theme: lightTheme,
+          darkTheme: darkTheme,
+          themeMode: db2.settings.themeMode ?? ThemeMode.light,
+          scrollBehavior: DraggableScrollBehavior(),
+          locale: Language.getLanguage(db2.settings.language)?.locale,
+          localizationsDelegates: const [
+            S.delegate,
+            ...GlobalMaterialLocalizations.delegates
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          builder: (context, widget) {
+            ErrorWidget.builder = CatcherUtil.errorWidgetBuilder;
+            return FlutterEasyLoading(child: widget);
+          },
+        ),
+      ),
+    );
+  }
+
+  ThemeData _getThemeData({required bool dark}) {
+    var themeData = dark ? ThemeData.dark() : ThemeData.light();
+    return themeData.copyWith(
+      appBarTheme: themeData.appBarTheme.copyWith(
+        titleSpacing: 0,
+      ),
     );
   }
 
   bool showWindowFab = true;
   bool showDebugFab = true;
 
+  void onAppUpdate() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    db2.notifyAppUpdate = onAppUpdate;
     if (showWindowFab && !rootRouter.appState.showSidebar) {
       SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
         WindowManagerFab.createOverlay(router.navigatorKey.currentContext!);
@@ -48,5 +102,28 @@ class _ChaldeaNextState extends State<ChaldeaNext> {
         DebugFab.createOverlay(router.navigatorKey.currentContext!);
       });
     }
+
+    SystemChannels.lifecycle.setMessageHandler((msg) async {
+      debugPrint('SystemChannels> $msg');
+      if (msg == AppLifecycleState.resumed.toString()) {
+        // Actions when app is resumed
+        network.check();
+      } else if (msg == AppLifecycleState.inactive.toString()) {
+        db2.saveData();
+        debugPrint('save userdata before being inactive');
+      }
+      return null;
+    });
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    if (PlatformU.isWindows || PlatformU.isMacOS) {
+      MethodChannelChaldeaNext.setAlwaysOnTop();
+    }
+    if (PlatformU.isWindows) {
+      MethodChannelChaldeaNext.setWindowPos();
+    }
+    MobStat.start();
   }
 }

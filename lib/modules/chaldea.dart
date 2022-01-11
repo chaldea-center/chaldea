@@ -1,18 +1,17 @@
 import 'dart:async';
 
+import 'package:chaldea/app/modules/common/blank_page.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/models/version.dart';
-import 'package:chaldea/modules/blank_page.dart';
 import 'package:chaldea/modules/home/home_page.dart';
 import 'package:chaldea/modules/home/subpage/support_donation_page.dart';
-import 'package:chaldea/packages/method_channel/method_channel_chaldea.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:screenshot/screenshot.dart';
 
+import '../components/method_channel_chaldea.dart';
 import '../packages/network.dart';
 import '../utils/catcher/catcher_util.dart';
 import 'cmd_code/cmd_code_detail_page.dart';
@@ -23,7 +22,7 @@ import 'servant/costume_detail_page.dart';
 import 'servant/servant_detail_page.dart';
 
 class Chaldea extends StatefulWidget {
-  const Chaldea({Key? key}) : super(key: key);
+  Chaldea({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _ChaldeaState();
@@ -52,7 +51,6 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   void initState() {
     super.initState();
     db.notifyAppUpdate = onAppUpdate;
-    SplitRoute.defaultMasterFillPageBuilder = (context) => const BlankPage();
 
     SystemChannels.lifecycle.setMessageHandler((msg) async {
       debugPrint('SystemChannels> $msg');
@@ -66,22 +64,6 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         debugPrint('save userdata before being inactive');
       }
       return null;
-    });
-
-    LicenseRegistry.addLicense(() async* {
-      Map<String, String> licenses = {
-        'MOONCELL': 'doc/license/CC-BY-NC-SA-4.0.txt',
-        'FANDOM': 'doc/license/CC-BY-SA-3.0.txt',
-        'Atlas Academy': 'doc/license/ODC-BY 1.0.txt',
-      };
-      for (final entry in licenses.entries) {
-        String license =
-            await rootBundle.loadString(entry.value).catchError((e, s) async {
-          logger.e('load license(${entry.key}, ${entry.value}) failed.', e, s);
-          return 'load license failed';
-        });
-        yield LicenseEntryWithLineBreaks([entry.key], license);
-      }
     });
 
     // if failed to load userdata, backup and alert user

@@ -69,10 +69,11 @@ class _PaletteForTheme extends StatelessWidget {
           ),
           const Divider(thickness: 2),
           oneColor('colorScheme.primary', colorScheme.primary),
-          oneColor('colorScheme.primaryVariant', colorScheme.primaryVariant),
+          oneColor(
+              'colorScheme.primaryContainer', colorScheme.primaryContainer),
           oneColor('colorScheme.secondary', colorScheme.secondary),
           oneColor(
-              'colorScheme.secondaryVariant', colorScheme.secondaryVariant),
+              'colorScheme.secondaryContainer', colorScheme.secondaryContainer),
           oneColor('colorScheme.surface', colorScheme.surface),
           oneColor('colorScheme.background', colorScheme.background),
           oneColor('colorScheme.error', colorScheme.error),

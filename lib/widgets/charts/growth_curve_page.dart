@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/blank_page.dart';
+import 'package:chaldea/app/modules/common/blank_page.dart';
 import 'package:chaldea/widgets/charts/line_chart.dart';
 
 class GrowthCurvePage extends StatefulWidget {

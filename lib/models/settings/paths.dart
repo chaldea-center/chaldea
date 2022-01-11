@@ -147,7 +147,7 @@ class PathManager {
         : p;
   }
 
-  String hiveAsciiKey(String s) {
+  static String hiveAsciiKey(String s) {
     return Uri.tryParse(s)?.toString() ?? base64Encode(utf8.encode(s));
   }
 
@@ -162,6 +162,8 @@ class PathManager {
   String get downloadDir => pathlib.join(_appPath!, 'downloads');
 
   String get configDir => pathlib.join(_appPath!, 'config');
+
+  String get settingsPath => pathlib.join(configDir, 'settings.json');
 
   String get userDataPath => pathlib.join(userDir, kUserDataFilename);
 

@@ -3,7 +3,7 @@ import 'dart:math' show max;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-import '../components/utils.dart';
+import '../utils/basic.dart';
 
 const Divider kHorizontalDivider = Divider(
     color: Color.fromRGBO(162, 169, 177, 1), thickness: 0.2, height: 0.2);
@@ -257,7 +257,7 @@ class TableCellData {
   static const headerColorDark = Color.fromRGBO(70, 70, 70, 1);
 
   static Color resolveHeaderColor(BuildContext context) {
-    return Utils.isDarkMode(context) ? headerColorDark : headerColorLight;
+    return Utility.isDarkMode(context) ? headerColorDark : headerColorLight;
   }
 
   Color? resolveColor(BuildContext context) {

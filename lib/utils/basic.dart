@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/material.dart';
 import 'package:path/path.dart' as pathlib;
 
 String joinPaths(
@@ -145,7 +146,7 @@ class Maths {
   }
 }
 
-abstract class EnumUtil {
+class EnumUtil {
   static String shortString(Object? enumObj) {
     if (enumObj == null) return enumObj.toString();
     assert(enumObj.toString().contains('.'),
@@ -177,5 +178,13 @@ class StopwatchX extends Stopwatch {
     }
     buffer.write(': elapsed $elapsed');
     return buffer.toString();
+  }
+}
+
+class Utility {
+  Utility._();
+
+  static bool isDarkMode(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark;
   }
 }

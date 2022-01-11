@@ -1,4 +1,9 @@
-import 'package:chaldea/components/components.dart';
+// import 'package:chaldea/components/components.dart';
+import 'dart:math';
+
+import 'package:chaldea/utils/basic.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 class BlankPage extends StatelessWidget {
   final bool showIndicator;
@@ -34,11 +39,11 @@ class BlankPage extends StatelessWidget {
         image: AssetImage("res/img/chaldea.png"),
         filterQuality: FilterQuality.high,
       );
-      if (Utils.isDarkMode(context)) {
+      if (Utility.isDarkMode(context)) {
         // assume r=g=b
         int b = Theme.of(context).scaffoldBackgroundColor.blue;
         double v = (255 - b) / 255;
-        if (!PlatformU.isWeb) {
+        if (!kIsWeb) {
           img = ColorFiltered(
             colorFilter: ColorFilter.matrix([
               //R G  B  A  Const

@@ -48,8 +48,8 @@ class GalleryItem {
   Widget buildIcon(BuildContext context, {double size = 40}) {
     if (child != null) return child!;
     bool fa = icon!.fontFamily?.toLowerCase().startsWith('fontawesome') == true;
-    final _iconColor = Utils.isDarkMode(context)
-        ? Theme.of(context).colorScheme.secondaryVariant
+    final _iconColor = Utility.isDarkMode(context)
+        ? Theme.of(context).colorScheme.secondaryContainer
         : Theme.of(context).colorScheme.secondary;
     return fa
         ? Padding(

@@ -1,6 +1,6 @@
 import 'package:chaldea/components/animation/animate_on_scroll.dart';
 import 'package:chaldea/components/localized/localized.dart';
-import 'package:chaldea/components/query.dart';
+import 'package:chaldea/packages/query.dart';
 import 'package:chaldea/components/utils.dart' show DelayedTimer, Utils;
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/packages.dart';

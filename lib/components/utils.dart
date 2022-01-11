@@ -266,10 +266,6 @@ Future<void> catchErrorAsync(
 class Utils {
   Utils._();
 
-  static bool isDarkMode(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark;
-  }
-
   static T? findNextOrPrevious<T>({
     required List<T> list,
     required T cur,

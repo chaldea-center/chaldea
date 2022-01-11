@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:catcher/catcher.dart';
@@ -6,17 +7,21 @@ import 'package:chaldea/app/chaldea_next.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/chaldea.dart';
 import 'package:chaldea/utils/catcher/server_feedback_handler.dart';
+import 'package:chaldea/utils/http_override.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
+import 'app/modules/common/blank_page.dart';
 import 'models/basic.dart';
 import 'models/db.dart';
+import 'packages/network.dart';
 import 'utils/catcher/catcher_util.dart';
 
 void main() async {
   // make sure flutter packages like path_provider is working now
   WidgetsFlutterBinding.ensureInitialized();
-  runChaldeaNext = false;
-  await db.paths.initRootPath();
-  await AppInfo.resolve(db.paths.appPath);
+  runChaldeaNext = true;
+  await _initiateCommon();
   if (runChaldeaNext) {
     await _mainNext();
   } else {
@@ -26,6 +31,7 @@ void main() async {
 
 Future<void> _mainNext() async {
   await db2.initiate();
+  db2.loadSettings();
   final catcherOptions = CatcherUtil.getOptions(
     logPath: db2.paths.crashLog,
     feedbackHandler: ServerFeedbackHandler(
@@ -80,10 +86,10 @@ Future<void> _mainLegacy() async {
     ),
   );
   if (kDebugMode) {
-    runApp(const Chaldea());
+    runApp(Chaldea());
   } else {
     Catcher(
-      rootWidget: const Chaldea(),
+      rootWidget: Chaldea(),
       debugConfig: catcherOptions,
       profileConfig: catcherOptions,
       releaseConfig: catcherOptions,
@@ -92,4 +98,27 @@ Future<void> _mainLegacy() async {
       enableLogger: kDebugMode,
     );
   }
+}
+
+Future<void> _initiateCommon() async {
+  LicenseRegistry.addLicense(() async* {
+    Map<String, String> licenses = {
+      'MOONCELL': 'doc/license/CC-BY-NC-SA-4.0.txt',
+      'FANDOM': 'doc/license/CC-BY-SA-3.0.txt',
+      'Atlas Academy': 'doc/license/ODC-BY 1.0.txt',
+    };
+    for (final entry in licenses.entries) {
+      String license =
+          await rootBundle.loadString(entry.value).catchError((e, s) async {
+        logger.e('load license(${entry.key}, ${entry.value}) failed.', e, s);
+        return 'load license failed';
+      });
+      yield LicenseEntryWithLineBreaks([entry.key], license);
+    }
+  });
+  network.init();
+  if (kIsWeb) {
+    HttpOverrides.global = CustomHttpOverrides();
+  }
+  SplitRoute.defaultMasterFillPageBuilder = (context) => const BlankPage();
 }

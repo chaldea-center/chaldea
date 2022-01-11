@@ -1,7 +1,7 @@
 import 'package:chaldea/components/components.dart';
-import 'package:chaldea/packages/method_channel/method_channel_chaldea.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 
+import '../../../components/method_channel_chaldea.dart';
 import 'display_settings/carousel_setting_page.dart';
 import 'display_settings/svt_priority_tagging.dart';
 import 'display_settings/svt_tab_sorting.dart';
