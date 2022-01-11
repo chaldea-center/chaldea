@@ -17,7 +17,7 @@ abstract class FilePlus {
   }
 
   static Future<void> initiate() async {
-    if (kIsWeb) return initWebFileSystem();
+    if (kIsWeb) return FilePlusWeb.initWebFileSystem();
   }
 
   Future<bool> exists();

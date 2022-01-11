@@ -27,4 +27,10 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  @override
+  void initState() {
+    debugPrint('initiate $runtimeType');
+    super.initState();
+  }
 }

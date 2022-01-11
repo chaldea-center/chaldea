@@ -10,7 +10,6 @@ import 'package:hive/hive.dart';
 
 import '../packages/app_info.dart';
 import '../packages/file_plus/file_plus.dart';
-import '../packages/file_plus/file_plus_web.dart';
 import '../packages/method_channel/method_channel_chaldea.dart';
 import '../utils/json_helper.dart';
 import 'gamedata/gamedata.dart';
@@ -45,7 +44,7 @@ class _Database {
 
     if (kIsWeb) {
       setUrlStrategy(PathUrlStrategy());
-      initWebFileSystem();
+      await FilePlus.initiate();
     } else {
       Hive.init(paths.configDir);
       HttpOverrides.global = CustomHttpOverrides();

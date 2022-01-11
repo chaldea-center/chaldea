@@ -90,6 +90,7 @@ class _ChaldeaNextState extends StateX<ChaldeaNext> with AfterLayoutMixin {
 
   @override
   void initState() {
+    debugPrint('initiate $runtimeType');
     super.initState();
     db2.notifyAppUpdate = onAppUpdate;
     if (showWindowFab && !rootRouter.appState.showSidebar) {

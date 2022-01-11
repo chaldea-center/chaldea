@@ -10,17 +10,6 @@ import 'file_plus.dart';
 
 const fsName = 'webfs';
 
-Future<void> initWebFileSystem() async {
-  assert(kIsWeb, 'DO NOT init for non-web');
-  try {
-    FilePlusWeb._box = await Hive.openBox(fsName);
-  } catch (e, s) {
-    logger.e('initWebFileSystem failed', e, s);
-    await Hive.deleteBoxFromDisk(fsName);
-    FilePlusWeb._box = await Hive.openBox(fsName);
-  }
-}
-
 /// all async methods are not async actually
 class FilePlusWeb implements FilePlus {
   static late Box _box;
@@ -28,6 +17,18 @@ class FilePlusWeb implements FilePlus {
   final String _path;
 
   FilePlusWeb(String fp) : _path = normalizePath(fp);
+
+  static Future<void> initWebFileSystem() async {
+    assert(kIsWeb, 'DO NOT init for non-web');
+    try {
+      FilePlusWeb._box = await Hive.openBox(fsName);
+      logger.d('open $fsName box');
+    } catch (e, s) {
+      logger.e('initWebFileSystem failed', e, s);
+      await Hive.deleteBoxFromDisk(fsName);
+      FilePlusWeb._box = await Hive.openBox(fsName);
+    }
+  }
 
   static String normalizePath(String fp) {
     return fp.split(RegExp(r'[/\\]+')).join('/');
