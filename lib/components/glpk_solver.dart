@@ -163,26 +163,6 @@ DropRateData _preProcess(
   // inside pre processing, use [params.objective] not [items] and [counts]
   final objective = params.objectiveCounts;
 
-  // now filtrate data's rows/cols
-  Set<String> removeCols = {}; // not fit minCost
-  // at least one quest for every item, higher priority than removeRows
-  Set<String> retainCols = {};
-  Set<String> removeRows = {}; // no quest's drop contains the item.
-
-  // traverse originData rather new data
-  // remove unused rows
-  objective.removeWhere((key, value) {
-    if (!data.rowNames.contains(key) || value <= 0) {
-      removeRows.add(key);
-      return true;
-    } else {
-      return false;
-    }
-  });
-  List.from(data.rowNames).forEach((row) {
-    if (!objective.containsKey(row)) data.removeRow(row);
-  });
-
   // free quests for different server
   List<String> cols = data.colNames
       .sublist(0, params.maxColNum > 0 ? params.maxColNum : data.jpMaxColNum);
@@ -198,8 +178,30 @@ DropRateData _preProcess(
 
   // remove unused quests
   // create a new list since iterator will change the original values
-  List.from(data.colNames).forEach((col) {
-    if (!cols.contains(col)) data.removeCol(col);
+  for (final col in List.of(data.colNames)) {
+    if (!cols.contains(col)) {
+      data.removeCol(col);
+    }
+  }
+
+  // now filtrate data's rows/cols
+  Set<String> removeCols = {}; // not fit minCost
+  // at least one quest for every item, higher priority than removeRows
+  Set<String> retainCols = {};
+  Set<String> removeRows = {}; // no quest's drop contains the item.
+
+  // traverse originData rather new data
+  // remove unused rows
+  objective.removeWhere((key, value) {
+    int row = data.rowNames.indexOf(key);
+    if (row < 0 || value <= 0 || data.matrix[row].every((e) => e <= 0)) {
+      removeRows.add(key);
+      return true;
+    }
+    return false;
+  });
+  List.of(data.rowNames).forEach((row) {
+    if (!objective.containsKey(row)) data.removeRow(row);
   });
 
   // remove cols don't contain any objective rows
