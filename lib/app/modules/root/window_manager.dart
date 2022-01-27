@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:flutter/material.dart';
 
-import '../../../packages/method_channel/method_channel_chaldea.dart';
 import '../../routes/root_delegate.dart';
 
 class WindowManager extends StatefulWidget {
@@ -20,7 +19,6 @@ class _WindowManagerState extends State<WindowManager> {
 
   @override
   void initState() {
-    MethodChannelChaldeaNext.setAlwaysOnTop(true);
     super.initState();
   }
 

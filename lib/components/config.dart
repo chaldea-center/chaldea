@@ -46,7 +46,7 @@ class Database {
         // baseUrl: kServerRoot,
         baseUrl: kDebugMode ? 'http://localhost:8183' : kServerRoot,
         queryParameters: {
-          'app_ver': AppInfo.version,
+          'app_ver': AppInfo.versionString,
           'user_key': AppInfo.uuid,
           'lang': Language.current.code,
           'os': PlatformU.operatingSystem

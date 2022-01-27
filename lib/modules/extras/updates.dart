@@ -113,8 +113,7 @@ class AutoUpdateUtil {
           releases: releases, testRelease: (_) => true);
       if (_globalLatestRelease != null) {
         final dataVersion = DatasetVersion.tryParse(_globalLatestRelease.name);
-        if (dataVersion != null &&
-                dataVersion.minimalApp > AppInfo.versionClass ||
+        if (dataVersion != null && dataVersion.minimalApp > AppInfo.version ||
             kDebugMode) {
           db.runtimeData.latestDatasetVersion = dataVersion;
         }
@@ -277,10 +276,10 @@ class AutoUpdateUtil {
         });
       }
 
-      upgradable = version != null && version > AppInfo.versionClass;
+      upgradable = version != null && version > AppInfo.version;
       // if (kDebugMode) upgradable = true;
       db.runtimeData.upgradableVersion = upgradable ? version : null;
-      String newVersion = version?.version ?? '';
+      String newVersion = version?.versionString ?? '';
 
       if (kReleaseMode && (PlatformU.isIOS || AppInfo.isMacStoreApp)) {
         // Guideline 2.4.5(vii) - Performance
@@ -417,7 +416,7 @@ class AutoUpdateUtil {
     String? releaseNote,
     String? launchUrl,
   }) async {
-    bool upgradable = version > AppInfo.versionClass;
+    bool upgradable = version > AppInfo.version;
     EasyLoading.dismiss();
     String content = '';
     if (fpInstaller != null) {
@@ -428,7 +427,7 @@ class AutoUpdateUtil {
           kor: '인스톨러가 다운로드 되었습니다\n');
     }
     content += S.current.about_update_app_detail(
-        AppInfo.version, version.version, releaseNote ?? '-');
+        AppInfo.versionString, version.versionString, releaseNote ?? '-');
     return SimpleCancelOkDialog(
       title: Text(S.current.about_update_app),
       content: SingleChildScrollView(
@@ -441,7 +440,7 @@ class AutoUpdateUtil {
           TextButton(
             child: Text(S.current.ignore),
             onPressed: () {
-              db.prefs.ignoreAppVersion.set(version.version);
+              db.prefs.ignoreAppVersion.set(version.versionString);
               Navigator.of(context).pop();
             },
           ),

@@ -179,6 +179,26 @@ class StopwatchX extends Stopwatch {
     buffer.write(': elapsed $elapsed');
     return buffer.toString();
   }
+
+  Duration? _lastLogDuration;
+
+  void log([String? action]) {
+    final _elapsed = elapsed;
+    final buffer = StringBuffer('Stopwatch');
+    if (name != null || action != null) {
+      buffer.write('(${name ?? ""}');
+      if (action != null) {
+        buffer.write(':$action');
+      }
+      buffer.write(')');
+    }
+    buffer.write(': elapsed $elapsed');
+    if (_lastLogDuration != null) {
+      buffer.write(', $_lastLogDuration');
+    }
+    debugPrint(buffer.toString());
+    _lastLogDuration = _elapsed;
+  }
 }
 
 class Utility {

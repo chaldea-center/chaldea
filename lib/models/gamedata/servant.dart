@@ -135,7 +135,9 @@ class AscensionAddEntry<T> {
     if (obj is List) {
       if (obj.isEmpty) return List<NiceTrait>.from(obj) as T;
       if (obj[0] is Map && obj[0]['id'] != null && obj[0]['name'] != null) {
-        return obj.map((e) => NiceTrait.fromJson(e)).toList() as T;
+        return obj
+            .map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+            .toList() as T;
       }
     }
     throw FormatException('unknown type: ${obj.runtimeType}');
@@ -261,6 +263,24 @@ class ServantTrait {
 }
 
 @JsonSerializable()
+class LoreCommentAdd {
+  int idx;
+  CondType condType;
+  List<int> condValues;
+  int condValue2;
+
+  LoreCommentAdd({
+    required this.idx,
+    required this.condType,
+    required this.condValues,
+    required this.condValue2,
+  });
+
+  factory LoreCommentAdd.fromJson(Map<String, dynamic> json) =>
+      _$LoreCommentAddFromJson(json);
+}
+
+@JsonSerializable()
 class LoreComment {
   int id;
   int priority;
@@ -268,6 +288,7 @@ class LoreComment {
   CondType condType;
   List<int>? condValues;
   int condValue2;
+  List<LoreCommentAdd> additionalConds;
 
   LoreComment({
     required this.id,
@@ -276,6 +297,7 @@ class LoreComment {
     required this.condType,
     this.condValues,
     required this.condValue2,
+    required this.additionalConds,
   });
 
   factory LoreComment.fromJson(Map<String, dynamic> json) =>
@@ -290,6 +312,9 @@ class LoreStatus {
   String magic;
   String luck;
   String np;
+  ServantPolicy policy;
+  ServantPersonality personality;
+  String deity;
 
   LoreStatus({
     required this.strength,
@@ -298,6 +323,9 @@ class LoreStatus {
     required this.magic,
     required this.luck,
     required this.np,
+    required this.policy,
+    required this.personality,
+    required this.deity,
   });
 
   factory LoreStatus.fromJson(Map<String, dynamic> json) =>

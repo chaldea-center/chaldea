@@ -61,6 +61,24 @@ enum DetailMissionCondLinkType {
   masterMissionStart,
   randomMissionStart
 }
+enum ServantPolicy {
+  none,
+  neutral,
+  lawful,
+  chaotic,
+  unknown,
+}
+enum ServantPersonality {
+  none,
+  good,
+  madness,
+  balanced,
+  summer,
+  evil,
+  goodAndEvil,
+  bride,
+  unknown,
+}
 enum Trait {
   unknown,
   genderMale,
@@ -761,7 +779,8 @@ enum ItemType {
   continueItem,
   euqipSkillUseItem,
   svtCoin,
-  friendshipUpItem
+  friendshipUpItem,
+  pp,
 }
 enum GiftType {
   servant,
@@ -792,7 +811,8 @@ enum ShopType {
   limitMaterial,
   grailFragments,
   svtCostume,
-  startUpSummon
+  startUpSummon,
+  shop13
 }
 enum PayType {
   stone,

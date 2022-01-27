@@ -78,7 +78,9 @@ class _AboutPageState extends State<AboutPage> {
                     title: Text(S.current.check_update),
                     subtitle: Text(EnumUtil.titled(db.appSetting.gitSource)),
                     trailing: db.runtimeData.upgradableVersion != null
-                        ? Text(db.runtimeData.upgradableVersion!.version + '↑',
+                        ? Text(
+                            db.runtimeData.upgradableVersion!.versionString +
+                                '↑',
                             style: const TextStyle(color: Colors.redAccent))
                         : null,
                     onTap: () {

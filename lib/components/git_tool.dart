@@ -69,7 +69,8 @@ class DatasetVersion extends Comparable<DatasetVersion> {
   }
 
   String get readable =>
-      '$createAt-${minimalApp.version}' + (hotfix.isEmpty ? '' : '-$hotfix');
+      '$createAt-${minimalApp.versionString}' +
+      (hotfix.isEmpty ? '' : '-$hotfix');
 
   @override
   int get hashCode => toString().hashCode;
@@ -320,7 +321,7 @@ class GitTool {
       testRelease = (release) {
         AppVersion? minVersion =
             AppVersion.tryParse(release.name.split('-').getOrNull(1) ?? '');
-        return minVersion != null && minVersion <= AppInfo.versionClass;
+        return minVersion != null && minVersion <= AppInfo.version;
       };
     }
     return _latestReleaseWhereAsset(
@@ -338,7 +339,7 @@ class GitTool {
       [bool Function(GitRelease release)? test]) async {
     test ??= (release) =>
         !release.name.contains('ffo') &&
-        AppVersion.tryParse(release.name) == AppInfo.versionClass;
+        AppVersion.tryParse(release.name) == AppInfo.version;
     return (await appReleases).firstWhereOrNull(test)?.body;
   }
 

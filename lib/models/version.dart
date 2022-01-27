@@ -11,9 +11,9 @@ class AppVersion implements Comparable<AppVersion> {
 
   const AppVersion(this.major, this.minor, this.patch, [this.build]);
 
-  String get version => '$major.$minor.$patch';
+  String get versionString => '$major.$minor.$patch';
 
-  String get fullVersion => version + (build == null ? '' : '+$build');
+  String get fullVersion => versionString + (build == null ? '' : '+$build');
 
   /// compare [build] here
   bool equalTo(String other) {

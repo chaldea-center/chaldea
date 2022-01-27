@@ -1,77 +1,63 @@
-import 'dart:math';
-
-import 'package:chaldea/packages/platform/platform.dart';
+import 'package:chaldea/packages/split_route/split_route.dart';
+import 'package:chaldea/widgets/after_layout.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class SplashPage extends StatelessWidget {
-  final bool showIndicator;
-  final WidgetBuilder indicatorBuilder;
+import '../../../models/db.dart';
+import '../../../packages/logger.dart';
+import 'blank_page.dart';
 
-  const SplashPage({
-    Key? key,
-    this.showIndicator = false,
-    this.indicatorBuilder = _defaultIndicatorBuilder,
-  }) : super(key: key);
+class SplashPage extends StatefulWidget {
+  final String? nextPageUrl;
 
-  static Widget _defaultIndicatorBuilder(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      double w = min(50, min(constraints.maxHeight, constraints.maxWidth) - 40);
-      return Padding(
-        padding: const EdgeInsets.all(20),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: w, maxHeight: w),
-            child: const CircularProgressIndicator(),
-          ),
-        ),
-      );
-    });
+  const SplashPage({Key? key, this.nextPageUrl}) : super(key: key);
+
+  @override
+  _SplashPageState createState() => _SplashPageState();
+}
+
+class _SplashPageState extends State<SplashPage> with AfterLayoutMixin {
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      double imgWidth = min(270, constraints.biggest.width * 0.5);
-      double imgHeight = min(270, constraints.biggest.height * 0.5);
-      Widget img = const Image(
-        image: AssetImage("res/img/chaldea.png"),
-        filterQuality: FilterQuality.high,
-      );
-      if (Theme.of(context).brightness == Brightness.dark) {
-        // assume r=g=b
-        int b = Theme.of(context).scaffoldBackgroundColor.blue;
-        double v = (255 - b) / 255;
-        if (!PlatformU.isWeb) {
-          img = ColorFiltered(
-            colorFilter: ColorFilter.matrix([
-              //R G  B  A  Const
-              -v, 0, 0, 0, 255,
-              0, -v, 0, 0, 255,
-              0, 0, -v, 0, 255,
-              0, 0, 0, 0.8, 0,
-            ]),
-            child: img,
-          );
-        }
-      }
-      return Scaffold(
-        body: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: imgWidth,
-                  maxHeight: imgHeight,
-                ),
-                child: img,
-              ),
-              if (showIndicator) indicatorBuilder(context),
-            ],
-          ),
-        ),
-      );
-    });
+    return const BlankPage(showIndicator: !kIsWeb);
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) async {
+    await precacheImage(
+      const AssetImage("res/img/chaldea.png"),
+      context,
+      onError: (e, s) async {
+        logger.w('pre cache chaldea image error', e, s);
+      },
+    );
+    await Future.delayed(Duration.zero);
+    _prepareGameData();
+    if (db2.settings.tips.starter) {
+      await SplitRoute.push(context, const StarterGuidancePage(), detail: null);
+    }
+  }
+
+  Future<void> _prepareGameData() async {
+    //
+  }
+}
+
+class StarterGuidancePage extends StatefulWidget {
+  const StarterGuidancePage({Key? key}) : super(key: key);
+
+  @override
+  _StarterGuidancePageState createState() => _StarterGuidancePageState();
+}
+
+class _StarterGuidancePageState extends State<StarterGuidancePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }

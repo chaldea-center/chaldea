@@ -85,7 +85,7 @@ class HttpUtils {
 
   static Dio get defaultDio => Dio(BaseOptions(headers: headersWithUA()));
 
-  static String get userAgentChaldea => 'Chaldea/${AppInfo.version}';
+  static String get userAgentChaldea => 'Chaldea/${AppInfo.versionString}';
 
   static String get userAgentMacOS =>
       'Mozilla/5.0 (Macintosh; Intel Mac OS X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36 $userAgentChaldea';

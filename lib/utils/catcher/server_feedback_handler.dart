@@ -153,7 +153,7 @@ class ServerFeedbackHandler extends ReportHandler {
 
       final response = await ChaldeaApi.sendFeedback(
         subject: _getEmailTitle(report),
-        senderName: senderName ?? 'Chaldea ${AppInfo.version} Crash',
+        senderName: senderName ?? 'Chaldea ${AppInfo.versionString} Crash',
         html: sendHtml ? await _setupHtmlMessageText(report) : null,
         files: resolvedAttachments,
       );

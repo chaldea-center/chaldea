@@ -1,8 +1,6 @@
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:device_info_plus_windows/device_info_plus_windows.dart'
-    as device_info_windows;
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart' as pathlib;
@@ -43,9 +41,7 @@ class AppInfo {
       final linuxInfo = await DeviceInfoPlugin().linuxInfo;
       deviceParams.addAll(linuxInfo.toMap());
     } else if (PlatformU.isWindows) {
-      final windowsInfo =
-          await device_info_windows.DeviceInfoWindows().windowsInfo();
-      if (windowsInfo == null) return;
+      final windowsInfo = await DeviceInfoPlugin().windowsInfo;
       deviceParams['operatingSystem'] = PlatformU.operatingSystem;
       deviceParams['operatingSystemVersion'] = PlatformU.operatingSystemVersion;
       deviceParams.addAll(windowsInfo.toMap());
@@ -81,7 +77,7 @@ class AppInfo {
     PackageInfo packageInfo = PackageInfo(
       appName: kAppName,
       packageName: kPackageName,
-      version: _v?.version ?? 'unknown',
+      version: _v?.versionString ?? 'unknown',
       buildNumber: _v?.build.toString() ?? '0',
       buildSignature: '',
     );
@@ -246,10 +242,10 @@ class AppInfo {
     }
   }
 
-  static AppVersion get versionClass => AppVersion.tryParse(fullVersion)!;
+  static AppVersion get version => AppVersion.tryParse(fullVersion)!;
 
   /// e.g. "1.2.3"
-  static String get version => _packageInfo?.version ?? '';
+  static String get versionString => _packageInfo?.version ?? '';
 
   static int get buildNumber =>
       int.tryParse(_packageInfo?.buildNumber ?? '0') ?? 0;
@@ -273,14 +269,14 @@ class AppInfo {
   /// e.g. "1.2.3+4"
   static String get fullVersion {
     String s = '';
-    s += version;
+    s += versionString;
     if (buildNumber > 0) s += '+$buildNumber';
     return s;
   }
 
   /// e.g. "1.2.3 (4)"
   static String get fullVersion2 {
-    StringBuffer buffer = StringBuffer(version);
+    StringBuffer buffer = StringBuffer(versionString);
     if (buildNumber > 0) {
       buffer.write(' ($buildNumber');
       if (PlatformU.isAndroid) {

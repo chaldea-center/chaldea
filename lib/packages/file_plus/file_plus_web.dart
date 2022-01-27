@@ -12,7 +12,7 @@ const fsName = 'webfs';
 
 /// all async methods are not async actually
 class FilePlusWeb implements FilePlus {
-  static late Box _box;
+  static late Box<Uint8List> _box;
 
   final String _path;
 
@@ -22,7 +22,7 @@ class FilePlusWeb implements FilePlus {
     assert(kIsWeb, 'DO NOT init for non-web');
     try {
       FilePlusWeb._box = await Hive.openBox(fsName);
-      logger.d('open $fsName box');
+      logger.d('opened $fsName box');
     } catch (e, s) {
       logger.e('initWebFileSystem failed', e, s);
       await Hive.deleteBoxFromDisk(fsName);
@@ -47,7 +47,7 @@ class FilePlusWeb implements FilePlus {
   Future<Uint8List> readAsBytes() => Future.value(readAsBytesSync());
 
   @override
-  Uint8List readAsBytesSync() => _box.get(_path);
+  Uint8List readAsBytesSync() => Uint8List.fromList(_box.get(_path) ?? <int>[]);
 
   @override
   Future<List<String>> readAsLines({Encoding encoding = utf8}) =>
@@ -68,7 +68,7 @@ class FilePlusWeb implements FilePlus {
   @override
   Future<FilePlus> writeAsBytes(List<int> bytes,
       {FileMode mode = FileMode.write, bool flush = false}) async {
-    _box.put(_path, Uint8List.fromList(bytes));
+    await _box.put(_path, Uint8List.fromList(bytes));
     return this;
   }
 

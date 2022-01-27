@@ -249,7 +249,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
     final previousVersion =
         AppVersion.tryParse(db.prefs.previousVersion.get() ?? '');
     bool justUpdated =
-        previousVersion == null || previousVersion < AppInfo.versionClass;
+        previousVersion == null || previousVersion < AppInfo.version;
 
     try {
       if (PlatformU.isWeb) {
@@ -293,7 +293,7 @@ class _ChaldeaHomeState extends State<_ChaldeaHome> with AfterLayoutMixin {
         if (releaseNote?.isNotEmpty == true) {
           SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
             SimpleCancelOkDialog(
-              title: Text(AppInfo.version),
+              title: Text(AppInfo.versionString),
               content: Text(releaseNote!.replaceAll('\r\n', '\n')),
               hideCancel: true,
               scrollable: true,

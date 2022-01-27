@@ -74,43 +74,29 @@ class GameData {
     this.dropRateData = const DropRateData(),
   });
 
-  factory GameData.fromJson(Map<String, dynamic> json) =>
-      _$GameDataFromJson(json);
-
-  static Future<GameData> readFromFolder(String folder) async {
-    Map<String, dynamic> srcData = {};
-
-    Future<dynamic> _readJson(String key, {String? fn, String? l2mKey}) async {
-      final contents =
-          await FilePlus(pathlib.join(folder, (fn ?? key) + '.json'))
-              .readAsString();
-      dynamic decoded = await readAndDecodeJsonAsync(contents: contents);
-      if (l2mKey != null) {
-        decoded = Map.fromIterable(decoded, key: (x) => x[l2mKey].toString());
-      }
-      print('finish reading $key');
-      return srcData[key] = decoded;
+  factory GameData.fromMergedFile(Map<String, dynamic> data) {
+    Map<String, dynamic> data2 = Map.of(data);
+    void _list2map(String key, {String? id, String Function(dynamic)? idFn}) {
+      assert(id != null || idFn != null);
+      idFn ??= (item) => item[id!]!.toString();
+      data2[key] = Map.fromIterable(data2[key], key: idFn);
     }
 
-    await Future.wait([
-      _readJson('version'),
-      _readJson('servants', l2mKey: 'collectionNo'),
-      _readJson('craftEssences', fn: 'craft_essences', l2mKey: 'collectionNo'),
-      _readJson('commandCodes', fn: 'command_codes', l2mKey: 'collectionNo'),
-      _readJson('mysticCodes', fn: 'mystic_codes', l2mKey: 'id'),
-      _readJson('events', l2mKey: 'id'),
-      _readJson('wars', l2mKey: 'id'),
-      _readJson('items', l2mKey: 'id'),
-      _readJson('fixedDrops', fn: 'fixed_drops'),
-      _readJson('extraData', fn: 'extra_data'),
-      _readJson('exchangeTickets', fn: 'exchange_tickets'),
-      _readJson('questPhases', fn: 'quest_phases'),
-      _readJson('mappingData', fn: 'mapping_data'),
-      _readJson('constData', fn: 'const_data'),
-    ]);
-
-    return GameData.fromJson(srcData);
+    _list2map('servants', id: 'collectionNo');
+    _list2map('commandCodes', id: 'collectionNo');
+    _list2map('craftEssences', id: 'collectionNo');
+    _list2map('events', id: 'id');
+    _list2map('wars', id: 'id');
+    _list2map('exchangeTickets', id: 'key');
+    _list2map('items', id: 'id');
+    _list2map('mysticCodes', id: 'id');
+    _list2map('questPhases',
+        idFn: (phase) => '${phase["id"]}/${phase["phase"]}');
+    return GameData.fromJson(data2);
   }
+
+  factory GameData.fromJson(Map<String, dynamic> json) =>
+      _$GameDataFromJson(json);
 }
 
 @JsonSerializable()
@@ -159,39 +145,49 @@ class ConstGameData {
       _$ConstGameDataFromJson(json);
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: true)
 class DataVersion {
   final int timestamp;
   final String utc;
-  @JsonKey(fromJson: DataVersion._parseAppVersion)
-  final AppVersion minimalApp;
-  final Map<String, DatFileVersion> files;
+  @protected
+  final String minimalApp;
+  final Map<String, FileVersion> files;
 
   const DataVersion({
     this.timestamp = 0,
     this.utc = "",
-    this.minimalApp = const AppVersion(0, 0, 0),
+    this.minimalApp = '2.0.0',
     this.files = const {},
   });
+
+  AppVersion get appVersion => AppVersion.parse(minimalApp);
 
   factory DataVersion.fromJson(Map<String, dynamic> json) =>
       _$DataVersionFromJson(json);
 
-  static AppVersion _parseAppVersion(String s) => AppVersion.parse(s);
+  Map<String, dynamic> toJson() => _$DataVersionToJson(this);
 }
 
-@JsonSerializable()
-class DatFileVersion {
+@JsonSerializable(createToJson: true)
+class FileVersion {
+  String key;
+  String filename;
+  int size;
   int timestamp;
   String hash;
 
-  DatFileVersion({
+  FileVersion({
+    required this.key,
+    required this.filename,
+    required this.size,
     required this.timestamp,
     required this.hash,
   });
 
-  factory DatFileVersion.fromJson(Map<String, dynamic> json) =>
-      _$DatFileVersionFromJson(json);
+  factory FileVersion.fromJson(Map<String, dynamic> json) =>
+      _$FileVersionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FileVersionToJson(this);
 }
 
 @JsonSerializable()

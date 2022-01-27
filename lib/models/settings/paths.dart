@@ -1,9 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:chaldea/utils/basic.dart';
 import 'package:flutter/foundation.dart';
-import 'package:path/path.dart' as pathlib;
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -93,17 +92,17 @@ class PathManager {
       // _tempPath = (await getTemporaryDirectory())?.path;
       // set link:
       // in old version windows, it may need admin permission, so it may fail
-      String exeFolder = pathlib.dirname(PlatformU.resolvedExecutable);
+      String exeFolder = dirname(PlatformU.resolvedExecutable);
       _persistentPath = exeFolder;
-      _appPath = pathlib.join(exeFolder, 'userdata');
+      _appPath = join(exeFolder, 'userdata');
       if (kDebugMode) {
         // C:\Users\<user>\AppData\Roaming\cc.narumi\Chaldea
         _appPath = (await getApplicationSupportDirectory()).path;
       }
     } else if (PlatformU.isLinux) {
-      String exeFolder = pathlib.dirname(PlatformU.resolvedExecutable);
+      String exeFolder = dirname(PlatformU.resolvedExecutable);
       _persistentPath = exeFolder;
-      _appPath = pathlib.join(exeFolder, 'userdata');
+      _appPath = join(exeFolder, 'userdata');
       if (kDebugMode) {
         // Ubuntu: /home/<user>/.local/share/chaldea
         _appPath = (await getApplicationSupportDirectory()).path;
@@ -116,18 +115,21 @@ class PathManager {
       throw const OSError('Cannot resolve document folder');
     }
     if (runChaldeaNext) {
-      _appPath = joinPaths(_appPath!, 'next');
+      _appPath = join(_appPath!, 'next');
     }
     logger.i('appPath: $_appPath');
     // ensure directory exist
     for (String dir in [
       _persistentPath!,
-      userDir,
+      appPath,
       gameDir,
+      userDir,
       tempDir,
       downloadDir,
+      backupDir,
+      logDir,
+      hiveDir,
       gameIconDir,
-      logDir
     ]) {
       Directory(dir).createSync(recursive: true);
     }
@@ -151,38 +153,37 @@ class PathManager {
     return Uri.tryParse(s)?.toString() ?? base64Encode(utf8.encode(s));
   }
 
+  /// root dir
   String get appPath => _appPath!;
 
-  String get gameDir => pathlib.join(_appPath!, 'data');
+  String get gameDir => join(appPath, 'game');
 
-  String get userDir => pathlib.join(_appPath!, 'user');
+  String get userDir => join(appPath, 'user');
 
-  String get tempDir => pathlib.join(_appPath!, 'temp');
+  String get tempDir => join(appPath, 'temp');
 
-  String get downloadDir => pathlib.join(_appPath!, 'downloads');
+  String get downloadDir => join(appPath, 'downloads');
 
-  String get configDir => pathlib.join(_appPath!, 'config');
+  String get backupDir => join(appPath, 'backup');
 
-  String get settingsPath => pathlib.join(configDir, 'settings.json');
+  String get logDir => join(appPath, 'logs');
 
-  String get userDataPath => pathlib.join(userDir, kUserDataFilename);
+  String get hiveDir => join(appPath, 'hive');
 
-  String get userDataBackupDir => pathlib.join(appPath, 'backup');
+  /// game/
+  String get gameIconDir => join(gameDir, 'icons');
 
-  String get gameDataPath => pathlib.join(gameDir, kGameDataFilename);
+  /// user/
+  String get settingsPath => join(userDir, 'settings.json');
 
-  String get gameIconDir => pathlib.join(gameDir, 'icons');
+  String get userDataPath => join(userDir, kUserDataFilename);
 
-  String get logDir => pathlib.join(_appPath!, 'logs');
+  /// logs/
+  String get appLog => join(logDir, 'log.log');
 
-  String get appLog => pathlib.join(logDir, 'log.log');
-
-  String get crashLog => pathlib.join(logDir, 'crash.log');
-
-  String get datasetVersionFile => pathlib.join(gameDir, 'VERSION');
+  String get crashLog => join(logDir, 'crash.log');
 
   // persistent
   @Deprecated('use shared_preference instead')
-  String get persistentConfigPath =>
-      pathlib.join(_persistentPath!, 'setting.json');
+  String get persistentConfigPath => join(_persistentPath!, 'setting.json');
 }

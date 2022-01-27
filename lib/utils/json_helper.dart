@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:worker_manager/worker_manager.dart';
 
 import '../packages/file_plus/file_plus.dart';
 import '../packages/logger.dart';
@@ -35,6 +36,16 @@ class JsonHelper {
   }
 
   static Future<dynamic> decodeAsync<T>(String data) async {
-    return compute(jsonDecode, data);
+    if (kIsWeb || data.length < 10 * 1024) return jsonDecode(data);
+    return Executor().execute(fun1: jsonDecode, arg1: data);
+  }
+
+  static Future<dynamic> decodeBytesAsync<T>(List<int> bytes) async {
+    if (kIsWeb || bytes.length < 10 * 1024) return _decodeBytes(bytes);
+    return Executor().execute(fun1: _decodeBytes, arg1: bytes);
+  }
+
+  static dynamic _decodeBytes<T>(List<int> bytes) {
+    return jsonDecode(utf8.decode(bytes));
   }
 }

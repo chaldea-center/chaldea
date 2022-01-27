@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../packages/split_route/split_route.dart';
 import '../../utils/extension.dart';
 import '../modules/common/not_found.dart';
+import '../modules/common/splash.dart';
 import '../modules/home/home.dart';
 import '../modules/servant/servant_list.dart';
 
@@ -54,6 +55,13 @@ class RouteConfiguration {
   RouteConfiguration.fromUri(
       {this.uri, this.child, this.detail, this.arguments})
       : url = uri.toString();
+
+  RouteConfiguration.slash({required String nextPageUrl})
+      : url = null,
+        uri = null,
+        detail = null,
+        arguments = null,
+        child = SplashPage(nextPageUrl: nextPageUrl);
 
   String? get path => uri?.path ?? url;
 

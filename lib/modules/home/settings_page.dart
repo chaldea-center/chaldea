@@ -185,7 +185,7 @@ class _SettingsPageState extends State<SettingsPage> {
               trailing: db.runtimeData.upgradableVersion == null
                   ? const Icon(Icons.keyboard_arrow_right)
                   : Text(
-                      db.runtimeData.upgradableVersion!.version + ' ↑',
+                      db.runtimeData.upgradableVersion!.versionString + ' ↑',
                     ),
               onTap: () => SplitRoute.push(
                 context,

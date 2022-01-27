@@ -83,7 +83,7 @@ GameData _$GameDataFromJson(Map json) => GameData(
     );
 
 ExchangeTicket _$ExchangeTicketFromJson(Map json) => ExchangeTicket(
-  key: json['key'] as int,
+      key: json['key'] as int,
       year: json['year'] as int,
       month: json['month'] as int,
       items: (json['items'] as List<dynamic>).map((e) => e as int).toList(),
@@ -168,22 +168,40 @@ const _$CardTypeEnumMap = {
 };
 
 DataVersion _$DataVersionFromJson(Map json) => DataVersion(
-  timestamp: json['timestamp'] as int? ?? 0,
+      timestamp: json['timestamp'] as int? ?? 0,
       utc: json['utc'] as String? ?? "",
-      minimalApp: json['minimalApp'] == null
-          ? const AppVersion(0, 0, 0)
-          : DataVersion._parseAppVersion(json['minimalApp'] as String),
+      minimalApp: json['minimalApp'] as String? ?? '2.0.0',
       files: (json['files'] as Map?)?.map(
             (k, e) => MapEntry(k as String,
-                DatFileVersion.fromJson(Map<String, dynamic>.from(e as Map))),
+                FileVersion.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
     );
 
-DatFileVersion _$DatFileVersionFromJson(Map json) => DatFileVersion(
+Map<String, dynamic> _$DataVersionToJson(DataVersion instance) =>
+    <String, dynamic>{
+      'timestamp': instance.timestamp,
+      'utc': instance.utc,
+      'minimalApp': instance.minimalApp,
+      'files': instance.files.map((k, e) => MapEntry(k, e.toJson())),
+    };
+
+FileVersion _$FileVersionFromJson(Map json) => FileVersion(
+      key: json['key'] as String,
+      filename: json['filename'] as String,
+      size: json['size'] as int,
       timestamp: json['timestamp'] as int,
       hash: json['hash'] as String,
     );
+
+Map<String, dynamic> _$FileVersionToJson(FileVersion instance) =>
+    <String, dynamic>{
+      'key': instance.key,
+      'filename': instance.filename,
+      'size': instance.size,
+      'timestamp': instance.timestamp,
+      'hash': instance.hash,
+    };
 
 MappingData _$MappingDataFromJson(Map json) => MappingData(
       itemNames: (json['itemNames'] as Map?)?.map(
@@ -1281,6 +1299,7 @@ const _$ShopTypeEnumMap = {
   ShopType.grailFragments: 'grailFragments',
   ShopType.svtCostume: 'svtCostume',
   ShopType.startUpSummon: 'startUpSummon',
+  ShopType.shop13: 'shop13',
 };
 
 const _$PayTypeEnumMap = {
@@ -1848,6 +1867,7 @@ const _$ItemTypeEnumMap = {
   ItemType.euqipSkillUseItem: 'euqipSkillUseItem',
   ItemType.svtCoin: 'svtCoin',
   ItemType.friendshipUpItem: 'friendshipUpItem',
+  ItemType.pp: 'pp',
 };
 
 const _$ItemUseEnumMap = {
@@ -2110,16 +2130,16 @@ EnemyPassive _$EnemyPassiveFromJson(Map json) => EnemyPassive(
 
 QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
   afterClear: $enumDecode(_$QuestAfterClearTypeEnumMap, json['afterClear']),
-      recommendLv: json['recommendLv'] as String,
-      chapterId: json['chapterId'] as int,
-      chapterSubId: json['chapterSubId'] as int,
-      chapterSubStr: json['chapterSubStr'] as String,
-      closedAt: json['closedAt'] as int,
-      consume: json['consume'] as int,
-      consumeItem: (json['consumeItem'] as List<dynamic>)
-          .map((e) => ItemAmount.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-      consumeType: $enumDecode(_$ConsumeTypeEnumMap, json['consumeType']),
+  recommendLv: json['recommendLv'] as String,
+  chapterId: json['chapterId'] as int,
+  chapterSubId: json['chapterSubId'] as int,
+  chapterSubStr: json['chapterSubStr'] as String,
+  closedAt: json['closedAt'] as int,
+  consume: json['consume'] as int,
+  consumeItem: (json['consumeItem'] as List<dynamic>)
+      .map((e) => ItemAmount.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  consumeType: $enumDecode(_$ConsumeTypeEnumMap, json['consumeType']),
       gifts: (json['gifts'] as List<dynamic>)
           .map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
@@ -2360,37 +2380,75 @@ NiceServantCoin _$NiceServantCoinFromJson(Map json) => NiceServantCoin(
     );
 
 ServantTrait _$ServantTraitFromJson(Map json) => ServantTrait(
+  idx: json['idx'] as int,
+  trait: (json['trait'] as List<dynamic>)
+      .map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  limitCount: json['limitCount'] as int,
+  condType: $enumDecodeNullable(_$CondTypeEnumMap, json['condType']),
+  ondId: json['ondId'] as int?,
+  condNum: json['condNum'] as int?,
+);
+
+LoreCommentAdd _$LoreCommentAddFromJson(Map json) =>
+    LoreCommentAdd(
       idx: json['idx'] as int,
-      trait: (json['trait'] as List<dynamic>)
-          .map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-      limitCount: json['limitCount'] as int,
-      condType: $enumDecodeNullable(_$CondTypeEnumMap, json['condType']),
-      ondId: json['ondId'] as int?,
-      condNum: json['condNum'] as int?,
+      condType: $enumDecode(_$CondTypeEnumMap, json['condType']),
+      condValues:
+      (json['condValues'] as List<dynamic>).map((e) => e as int).toList(),
+      condValue2: json['condValue2'] as int,
     );
 
-LoreComment _$LoreCommentFromJson(Map json) => LoreComment(
+LoreComment _$LoreCommentFromJson(Map json) =>
+    LoreComment(
       id: json['id'] as int,
       priority: json['priority'] as int,
       condMessage: json['condMessage'] as String,
       condType: $enumDecode(_$CondTypeEnumMap, json['condType']),
       condValues:
-          (json['condValues'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      (json['condValues'] as List<dynamic>?)?.map((e) => e as int).toList(),
       condValue2: json['condValue2'] as int,
+      additionalConds: (json['additionalConds'] as List<dynamic>)
+          .map((e) =>
+          LoreCommentAdd.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
     );
 
 LoreStatus _$LoreStatusFromJson(Map json) => LoreStatus(
-      strength: json['strength'] as String,
+  strength: json['strength'] as String,
       endurance: json['endurance'] as String,
       agility: json['agility'] as String,
       magic: json['magic'] as String,
       luck: json['luck'] as String,
       np: json['np'] as String,
+      policy: $enumDecode(_$ServantPolicyEnumMap, json['policy']),
+      personality:
+          $enumDecode(_$ServantPersonalityEnumMap, json['personality']),
+      deity: json['deity'] as String,
     );
 
+const _$ServantPolicyEnumMap = {
+  ServantPolicy.none: 'none',
+  ServantPolicy.neutral: 'neutral',
+  ServantPolicy.lawful: 'lawful',
+  ServantPolicy.chaotic: 'chaotic',
+  ServantPolicy.unknown: 'unknown',
+};
+
+const _$ServantPersonalityEnumMap = {
+  ServantPersonality.none: 'none',
+  ServantPersonality.good: 'good',
+  ServantPersonality.madness: 'madness',
+  ServantPersonality.balanced: 'balanced',
+  ServantPersonality.summer: 'summer',
+  ServantPersonality.evil: 'evil',
+  ServantPersonality.goodAndEvil: 'goodAndEvil',
+  ServantPersonality.bride: 'bride',
+  ServantPersonality.unknown: 'unknown',
+};
+
 NiceCostume _$NiceCostumeFromJson(Map json) => NiceCostume(
-  id: json['id'] as int,
+      id: json['id'] as int,
       costumeCollectionNo: json['costumeCollectionNo'] as int,
       battleCharaId: json['battleCharaId'] as int,
       name: json['name'] as String,

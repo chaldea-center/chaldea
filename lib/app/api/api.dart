@@ -57,7 +57,7 @@ class ChaldeaApi {
       // baseUrl: kServerRoot,
       baseUrl: kDebugMode ? 'http://localhost:8183' : kServerRoot,
       headers: {
-        'chaldea-version': AppInfo.version,
+        'chaldea-version': AppInfo.versionString,
         'chaldea-build': AppInfo.buildNumber,
         'chaldea-lang': Language.current.code,
         'chaldea-os': PlatformU.operatingSystem,

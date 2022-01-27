@@ -14,6 +14,7 @@ class LocalSettings {
   @JsonKey(unknownEnumValue: ThemeMode.system)
   ThemeMode? themeMode;
   String? language;
+  TipsSetting tips;
 
   LocalSettings({
     this.beta = false,
@@ -23,7 +24,8 @@ class LocalSettings {
     this.launchTimes = 1,
     this.themeMode,
     this.language,
-  });
+    TipsSetting? tips,
+  }) : tips = tips ?? TipsSetting();
 
   factory LocalSettings.fromJson(Map<String, dynamic> json) =>
       _$LocalSettingsFromJson(json);
@@ -34,4 +36,25 @@ class LocalSettings {
     return themeMode == ThemeMode.dark ||
         SchedulerBinding.instance!.window.platformBrightness == Brightness.dark;
   }
+}
+
+/// true: should should show
+/// n>0: show tips after n times entrance
+/// n<=0: don't show tips
+@JsonSerializable()
+class TipsSetting {
+  bool starter;
+  int servantList;
+  int servantDetail;
+
+  TipsSetting({
+    this.starter = true,
+    this.servantList = 2,
+    this.servantDetail = 2,
+  });
+
+  factory TipsSetting.fromJson(Map<String, dynamic> json) =>
+      _$TipsSettingFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TipsSettingToJson(this);
 }

@@ -19,6 +19,16 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
           windowPosition: $checkedConvert('windowPosition',
               (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
           launchTimes: $checkedConvert('launchTimes', (v) => v as int? ?? 1),
+          themeMode: $checkedConvert(
+              'themeMode',
+              (v) => $enumDecodeNullable(_$ThemeModeEnumMap, v,
+                  unknownValue: ThemeMode.system)),
+          language: $checkedConvert('language', (v) => v as String?),
+          tips: $checkedConvert(
+              'tips',
+              (v) => v == null
+                  ? null
+                  : TipsSetting.fromJson(Map<String, dynamic>.from(v as Map))),
         );
         return val;
       },
@@ -31,4 +41,34 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'alwaysOnTop': instance.alwaysOnTop,
       'windowPosition': instance.windowPosition,
       'launchTimes': instance.launchTimes,
+      'themeMode': _$ThemeModeEnumMap[instance.themeMode],
+      'language': instance.language,
+      'tips': instance.tips.toJson(),
+    };
+
+const _$ThemeModeEnumMap = {
+  ThemeMode.system: 'system',
+  ThemeMode.light: 'light',
+  ThemeMode.dark: 'dark',
+};
+
+TipsSetting _$TipsSettingFromJson(Map json) => $checkedCreate(
+      'TipsSetting',
+      json,
+      ($checkedConvert) {
+        final val = TipsSetting(
+          starter: $checkedConvert('starter', (v) => v as bool? ?? true),
+          servantList: $checkedConvert('servantList', (v) => v as int? ?? 2),
+          servantDetail:
+              $checkedConvert('servantDetail', (v) => v as int? ?? 2),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$TipsSettingToJson(TipsSetting instance) =>
+    <String, dynamic>{
+      'starter': instance.starter,
+      'servantList': instance.servantList,
+      'servantDetail': instance.servantDetail,
     };
