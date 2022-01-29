@@ -88,6 +88,7 @@ class WikiUtil {
           return url;
         });
       }
+      return null;
     }
 
     Future<String?> _fullUrl() async {
@@ -155,6 +156,7 @@ class WikiUtil {
     if (url != null) {
       return await wikiFileCache.getSingleFile(url);
     }
+    return null;
   }
 
   static Future<T?> withPool<T>(
@@ -172,6 +174,7 @@ class WikiUtil {
         _errorTasks[key] = DateTime.now().millisecondsSinceEpoch;
         logger.e('withPool: $key', e, s);
       }
+      return null;
     });
   }
 

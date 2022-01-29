@@ -142,6 +142,7 @@ class RouteConfiguration {
       case Routes.summons:
         break;
     }
+    return null;
   }
 }
 

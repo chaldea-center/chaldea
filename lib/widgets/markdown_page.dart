@@ -170,6 +170,7 @@ class MarkdownHelpPage extends StatefulWidget {
     if (content?.trim().isNotEmpty == true) {
       return content;
     }
+    return null;
   }
 
   static Widget buildHelpBtn(BuildContext context, String asset) {

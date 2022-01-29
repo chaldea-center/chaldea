@@ -36,6 +36,7 @@ class ItemStatistics {
     } else {
       return Timer(lapse, callback);
     }
+    return null;
   }
 
   /// Update [itemState] after duration [lapse]

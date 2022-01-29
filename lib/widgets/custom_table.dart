@@ -265,6 +265,7 @@ class TableCellData {
     if (isHeader) {
       return resolveHeaderColor(context);
     }
+    return null;
   }
 
   TableCellData({

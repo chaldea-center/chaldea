@@ -281,6 +281,7 @@ class Utils {
     } else if (defaultFirst && list.isNotEmpty) {
       return list.first;
     }
+    return null;
   }
 
   static void scheduleFrameCallback(VoidCallback callback) {

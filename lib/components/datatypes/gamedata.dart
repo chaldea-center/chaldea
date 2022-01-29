@@ -112,6 +112,7 @@ class GameData {
       return freeQuests.values.firstWhereOrNull(
           (quest) => key == quest.placeJp || key == quest.place);
     }
+    return null;
   }
 
   factory GameData.fromJson(Map<String, dynamic> data) =>

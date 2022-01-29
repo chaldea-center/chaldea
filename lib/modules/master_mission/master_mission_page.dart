@@ -366,6 +366,7 @@ class _MasterMissionPageState extends State<MasterMissionPage>
             // print(result);
             return result?.trim();
           }
+          return null;
         }
 
         String _removeBrackets(String s) {

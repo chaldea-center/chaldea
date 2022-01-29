@@ -396,6 +396,7 @@ class AutoUpdateUtil {
       logger.d('already downloaded $fpInstaller');
     }
     if (validSHA1) return fpInstaller;
+    return null;
   }
 
   static Future<void> alertReload({bool pop = true}) async {

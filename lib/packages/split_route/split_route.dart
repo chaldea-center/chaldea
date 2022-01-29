@@ -346,5 +346,6 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   static SplitRoute<T2>? of<T2 extends Object?>(BuildContext context) {
     final route = ModalRoute.of<T2>(context);
     if (route is SplitRoute<T2>) return route;
+    return null;
   }
 }

@@ -99,6 +99,7 @@ class Maths {
     }
     if (width != null) return MapEntry(width, width / aspectRatio);
     if (height != null) return MapEntry(height * aspectRatio, height);
+    return null;
   }
 
   static T fixValidRange<T extends num>(T value, [T? minVal, T? maxVal]) {

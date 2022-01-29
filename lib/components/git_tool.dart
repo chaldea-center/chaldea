@@ -308,6 +308,7 @@ class GitTool {
       releases ??= await appReleases;
       return _latestReleaseWhereAsset(releases, testAsset: test);
     }
+    return null;
   }
 
   Future<GitRelease?> latestDatasetRelease({

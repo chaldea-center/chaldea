@@ -21,6 +21,7 @@ class _FreeQuestQueryTabState extends State<FreeQuestQueryTab> {
           return SplitRoute(
               builder: (context, _) => _ChapterList(), detail: null);
         }
+        return null;
       },
     );
   }

@@ -4,11 +4,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/servant/servant_list_page.dart';
 import 'package:dio/dio.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path/path.dart' as pathlib;
+
+import 'import_item_screenshot_page.dart';
 
 class ImportSkillScreenshotPage extends StatefulWidget {
   final bool isAppendSkill;
@@ -473,9 +474,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
   }
 
   void importImages() async {
-    FilePicker.platform
-        .pickFiles(type: FileType.image, allowMultiple: true)
-        .then((result) {
+    pickImageFiles(context: context).then((result) {
       results.clear();
       final paths = result?.paths.whereType<String>();
       if (paths != null) {
@@ -643,6 +642,7 @@ class __SkillResultLoaderState extends State<_SkillResultLoader> {
     }).catchError((e, s) async {
       logger.e('load skill result json file failed', e, s);
     });
+    return null;
   }
 
   @override

@@ -273,6 +273,7 @@ class _LoginPageState extends State<LoginPage> {
     if (!RegExp(r'^[a-zA-Z][a-zA-Z0-9]{3,}$').hasMatch(name)) {
       return S.current.login_username_error;
     }
+    return null;
   }
 
   String? _validatePwd([String? pwd]) {
@@ -281,6 +282,7 @@ class _LoginPageState extends State<LoginPage> {
     if (!RegExp(r'^[a-zA-Z0-9]{4,}$').hasMatch(pwd)) {
       return S.current.login_password_error;
     }
+    return null;
   }
 
   String? _validateNewPwd([String? newPwd]) {
