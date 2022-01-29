@@ -1,5 +1,6 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_list_page.dart';
+import 'package:file_picker/file_picker.dart';
 
 abstract class CommonBuilder {
   /// build a grid view with [ImageWithText] as its children.
@@ -170,6 +171,50 @@ abstract class CommonBuilder {
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
     ));
     return children;
+  }
+
+  static Future<FilePickerResult?> pickImageOrFiles(
+      {required BuildContext context, bool allowMultiple = true}) async {
+    FileType? fileType;
+    await showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        contentPadding: const EdgeInsets.fromLTRB(8.0, 12.0, 0.0, 16.0),
+        children: [
+          ListTile(
+            horizontalTitleGap: 0,
+            leading: const Icon(Icons.photo_library),
+            title: Text(LocalizedText.of(
+                chs: '从相册选取', jpn: 'アルバムから', eng: 'From Photos')),
+            onTap: () {
+              fileType = FileType.image;
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            horizontalTitleGap: 0,
+            leading: const Icon(Icons.file_copy),
+            title: Text(LocalizedText.of(
+                chs: '从文件选取', jpn: 'ファイルから', eng: 'From Files')),
+            onTap: () {
+              fileType = FileType.any;
+              Navigator.pop(context);
+            },
+          ),
+          SFooter(LocalizedText.of(
+              chs: '如果图片模式存在问题，请使用文件模式',
+              jpn: 'アルバモードに問題がある場合は、ファイルモードを使用してください ',
+              eng: 'If you have trouble picking images, use files instead')),
+          IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(Icons.clear),
+          ),
+        ],
+      ),
+    );
+    if (fileType == null) return null;
+    return FilePicker.platform
+        .pickFiles(type: fileType!, allowMultiple: allowMultiple);
   }
 }
 

@@ -87,8 +87,7 @@ class GalleryItem {
     statistics,
     importData,
     faq,
-    lostRoom,
-    if (kDebugMode) palette,
+    if (kDebugMode) ...[lostRoom, palette],
     more,
     // // unpublished
     // _apCal,

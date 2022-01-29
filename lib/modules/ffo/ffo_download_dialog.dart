@@ -11,33 +11,14 @@ class FfoDownloadDialog extends StatefulWidget {
 }
 
 class _FfoDownloadDialogState extends State<FfoDownloadDialog> {
-  bool resolving = true;
-  GitRelease? release;
-  List<GitAsset> assets = [];
-  late GitTool gitTool;
+  String url = '';
 
   @override
   void initState() {
     super.initState();
-    gitTool = GitTool.fromDb();
-    gitTool
-        .latestAppRelease(
-            test: (asset) =>
-                asset.name.contains('ffo') && asset.name.contains('zip'))
-        .then((_release) {
-      release = _release;
-      release?.assets.forEach((asset) {
-        if (asset.name.contains('ffo') && asset.browserDownloadUrl != null) {
-          assets.add(asset);
-        }
-      });
-    }).catchError((e, s) async {
-      logger.e(
-          'resolve ${gitTool.source.toShortString()} release failed', e, s);
-    }).whenComplete(() {
-      resolving = false;
-      if (mounted) setState(() {});
-    });
+    url = db.appSetting.gitSource == GitSource.github
+        ? 'https://github.com/chaldea-center/chaldea/releases/download/ffo-data/ffo.zip'
+        : 'https://download.fastgit.org/chaldea-center/chaldea/releases/download/ffo-data/ffo.zip';
   }
 
   @override
@@ -55,35 +36,31 @@ class _FfoDownloadDialogState extends State<FfoDownloadDialog> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (resolving) const Text('resolving download url'),
-          if (!resolving && assets.isNotEmpty) const Text("将从以下地址下载或自行下载后导入："),
-          if (!resolving && assets.isEmpty)
-            const Text('url解析失败，请前往以下网址查找并下载ffo-data'),
-          for (var asset in assets)
-            InkWell(
-              child: Text(
-                asset.browserDownloadUrl!,
-                style: const TextStyle(
-                    color: Colors.blue, decoration: TextDecoration.underline),
-              ),
-              onTap: () {
-                launch(asset.browserDownloadUrl!);
-              },
+          Text(LocalizedText.of(
+            chs: '自动下载或手动下载后导入zip',
+            jpn: '自動ダウンロードまたは手動ダウンロード後にzipをインポートする',
+            eng: 'Auto Download or import manual downloaded zip file',
+          )),
+          InkWell(
+            child: Text(
+              url,
+              style: const TextStyle(
+                  color: Colors.blue, decoration: TextDecoration.underline),
             ),
-          if (assets.isEmpty)
-            InkWell(
-              child: Text(
-                gitTool.ffoDataReleaseUrl,
-                style: const TextStyle(
-                    color: Colors.blue, decoration: TextDecoration.underline),
-              ),
-              onTap: () {
-                launch(gitTool.ffoDataReleaseUrl);
-              },
-            ),
+            onTap: () {
+              launch(url);
+            },
+          ),
+          Text(LocalizedText.of(
+            chs: '若导入出错，请参考文档手动解压至目标文件夹',
+            jpn: 'インポート中にエラーが発生した場合は、ドキュメントを参照して、ターゲットフォルダに手動で抽出してください。',
+            eng:
+                'If there is an error in importing, please refer to the docs to manually extract it to the target folder',
+          ))
         ],
       ),
       hideOk: true,
+      hideCancel: true,
       actions: [
         TextButton(
           onPressed: () async {
@@ -99,30 +76,22 @@ class _FfoDownloadDialogState extends State<FfoDownloadDialog> {
         ),
         TextButton(
           onPressed: () async {
-            if (assets.isEmpty) {
-              launch(gitTool.ffoDataReleaseUrl);
-              return;
-            } else {
-              for (var asset in assets) {
-                String fp = join(db.paths.tempDir, asset.name);
-                await showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) => DownloadDialog(
-                    url: asset.browserDownloadUrl!,
-                    savePath: fp,
-                    notes: release?.body,
-                    confirmText: S.of(context).import_data.toUpperCase(),
-                    onComplete: () async {
-                      await _extractZip(fp);
-                      Navigator.pop(context);
-                      if (mounted) setState(() {});
-                    },
-                  ),
-                );
-                await Future.delayed(const Duration(seconds: 1));
-              }
-            }
+            String fp = join(db.paths.tempDir, 'ffo.zip');
+            await showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => DownloadDialog(
+                url: url,
+                savePath: fp,
+                confirmText: S.of(context).import_data.toUpperCase(),
+                onComplete: () async {
+                  await _extractZip(fp);
+                  Navigator.pop(context);
+                  if (mounted) setState(() {});
+                },
+              ),
+            );
+            await Future.delayed(const Duration(seconds: 1));
           },
           child: Text(S.current.download),
         )

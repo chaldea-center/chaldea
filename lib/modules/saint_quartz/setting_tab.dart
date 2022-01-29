@@ -44,6 +44,7 @@ class _SQSettingTabState extends State<SQSettingTab> {
 
   @override
   Widget build(BuildContext context) {
+    const _decoration = InputDecoration(counter: SizedBox());
     return ListView(
       controller: _scrollController,
       children: [
@@ -60,6 +61,8 @@ class _SQSettingTabState extends State<SQSettingTab> {
               },
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               textAlign: TextAlign.center,
+              maxLength: 4,
+              decoration: _decoration,
             ),
           ),
         ),
@@ -76,6 +79,8 @@ class _SQSettingTabState extends State<SQSettingTab> {
               },
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               textAlign: TextAlign.center,
+              maxLength: 4,
+              decoration: _decoration,
             ),
           ),
         ),
@@ -92,6 +97,8 @@ class _SQSettingTabState extends State<SQSettingTab> {
               },
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               textAlign: TextAlign.center,
+              maxLength: 4,
+              decoration: _decoration,
             ),
           ),
         ),
@@ -145,6 +152,8 @@ class _SQSettingTabState extends State<SQSettingTab> {
               },
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               textAlign: TextAlign.center,
+              maxLength: 4,
+              decoration: _decoration,
             ),
           ),
         ),
@@ -155,7 +164,7 @@ class _SQSettingTabState extends State<SQSettingTab> {
             value: plan.continuousLogin,
             items: List.generate(
               7,
-              (index) => DropdownMenuItem(
+                  (index) => DropdownMenuItem(
                 child: Text((index + 1).toString()),
                 value: index + 1,
               ),
@@ -182,6 +191,8 @@ class _SQSettingTabState extends State<SQSettingTab> {
               },
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               textAlign: TextAlign.center,
+              maxLength: 4,
+              decoration: _decoration,
             ),
           ),
         ),
@@ -217,7 +228,7 @@ class _SQSettingTabState extends State<SQSettingTab> {
 エクストラマスターミッション報酬は最終日に決済されます。
 その他の記念イベント、メンテナンス補償、メールボックスに直接配布されるものは計算されず、自動的に数えられないからです。""",
                 eng:
-                    """Actual obtained resources should be MUCH MORE than calculated.
+                """Actual obtained resources should be MUCH MORE than calculated.
 
 Only the continuous login rewards, monthly prism store tickets, and quest rewards of limited events are calculated.
 

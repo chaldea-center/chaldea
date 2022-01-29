@@ -1,7 +1,7 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/item/item_detail_page.dart';
+import 'package:chaldea/modules/shared/common_builders.dart';
 import 'package:dio/dio.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path/path.dart' as pathlib;
 
@@ -216,7 +216,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
   }
 
   void importImages() async {
-    pickImageFiles(context: context).then((result) {
+    CommonBuilder.pickImageOrFiles(context: context).then((result) {
       output.clear();
       final paths = result?.paths.whereType<String>();
       if (paths != null) {
@@ -321,47 +321,4 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
       ],
     ).showDialog(context);
   }
-}
-
-Future<FilePickerResult?> pickImageFiles(
-    {required BuildContext context, bool allowMultiple = true}) async {
-  FileType? fileType;
-  await showDialog(
-    context: context,
-    builder: (context) => SimpleDialog(
-      title: Text(S.current.import_screenshot),
-      contentPadding: const EdgeInsets.fromLTRB(8.0, 12.0, 0.0, 16.0),
-      children: [
-        ListTile(
-          leading: const Icon(Icons.photo_library),
-          title: Text(LocalizedText.of(
-              chs: '从相册选取', jpn: 'アルバムから', eng: 'From Photos')),
-          onTap: () {
-            fileType = FileType.image;
-            Navigator.pop(context);
-          },
-        ),
-        ListTile(
-          leading: const Icon(Icons.file_copy),
-          title: Text(
-              LocalizedText.of(chs: '从文件选取', jpn: 'ファイルから', eng: 'From Files')),
-          onTap: () {
-            fileType = FileType.any;
-            Navigator.pop(context);
-          },
-        ),
-        SFooter(LocalizedText.of(
-            chs: '如果图片模式存在问题，请使用文件模式',
-            jpn: 'アルバモードに問題がある場合は、ファイルモードを使用してください ',
-            eng: 'If you have trouble picking images, use files instead')),
-        IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.clear),
-        ),
-      ],
-    ),
-  );
-  if (fileType == null) return null;
-  return FilePicker.platform
-      .pickFiles(type: fileType!, allowMultiple: allowMultiple);
 }

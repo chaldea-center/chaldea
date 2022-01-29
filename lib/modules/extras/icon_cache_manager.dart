@@ -132,17 +132,17 @@ class IconCacheManager {
       String originName = db.gameData.icons[cacheName] ?? cacheName;
       String fp = join(db.paths.gameIconDir, cacheName);
       if (!await File(fp).exists()) {
-        tasks.add(_limiter.limited(() async {
+        tasks.add(_limiter.limited<void>(() async {
           final url = await WikiUtil.resolveFileUrl(originName, fp);
           if (url == null) {
             errors += 1;
           }
           finished += 1;
-          print('download icon: $key -> $url');
+          // print('download icon: $key -> $url');
           if (onProgress != null) {
             onProgress(finished, total, errors);
           }
-        }));
+        }).catchError((e) => Future.value()));
       } else {
         finished += 1;
         if (onProgress != null) {

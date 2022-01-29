@@ -9,7 +9,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path/path.dart' as pathlib;
 
-import 'import_item_screenshot_page.dart';
+import '../shared/common_builders.dart';
 
 class ImportSkillScreenshotPage extends StatefulWidget {
   final bool isAppendSkill;
@@ -137,18 +137,30 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
       return Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: widget.isAppendSkill
-              ? Text(
-                  LocalizedText.of(
-                    chs: '注意! 此页面是附加技能，不是主动技能！！！',
-                    jpn: '注意！このページはアペンドスキルであり、保有スキルではありません！',
-                    eng:
-                        'Warning! For APPEND skills only! Not for active skills!',
-                    kor: '주의! 어펜드 스킬만! 액티브 스킬은 안됩니다!',
-                  ),
-                  style: Theme.of(context).textTheme.headline6,
-                )
-              : Text(S.current.active_skill),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              widget.isAppendSkill
+                  ? Text(
+                      LocalizedText.of(
+                        chs: '注意! 此页面是附加技能，不是主动技能！！！',
+                        jpn: '注意！このページはアペンドスキルであり、保有スキルではありません！',
+                        eng:
+                            'Warning! For APPEND skills only! Not for active skills!',
+                        kor: '주의! 어펜드 스킬만! 액티브 스킬은 안됩니다!',
+                      ),
+                      style: Theme.of(context).textTheme.headline6,
+                    )
+                  : Text(S.current.active_skill),
+              Text(LocalizedText.of(
+                chs: '服务器资源有限，解析任务越多，等待时间越长==、无能为力无可奈何',
+                jpn: 'サーバーリソースは限られており、解析タスクが多いほど速度が遅くなります==、',
+                eng:
+                    'Limited server resources, the more parsing tasks, the more waiting time ==、',
+              ))
+            ],
+          ),
         ),
       );
     }
@@ -474,7 +486,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
   }
 
   void importImages() async {
-    pickImageFiles(context: context).then((result) {
+    CommonBuilder.pickImageOrFiles(context: context).then((result) {
       results.clear();
       final paths = result?.paths.whereType<String>();
       if (paths != null) {

@@ -1,7 +1,7 @@
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/extras/faq_page.dart';
+import 'package:chaldea/modules/shared/common_builders.dart';
 import 'package:chaldea/utils/catcher/server_feedback_handler.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:url_launcher/url_launcher.dart';
@@ -270,7 +270,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
   Set<String> attachFiles = {};
 
   void _addAttachments() {
-    FilePicker.platform.pickFiles(allowMultiple: true).then((result) {
+    CommonBuilder.pickImageOrFiles(context: context, allowMultiple: true)
+        .then((result) {
       final paths = result?.paths.whereType<String>();
       if (paths != null) {
         attachFiles.addAll(paths);
