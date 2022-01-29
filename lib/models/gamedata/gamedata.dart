@@ -2,11 +2,8 @@
 
 library gamedata;
 
-import 'package:chaldea/components/utils.dart';
-import 'package:chaldea/packages/packages.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:path/path.dart' as pathlib;
 
 import '../version.dart';
 

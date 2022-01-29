@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io' show FileMode;
 import 'dart:typed_data';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, protected;
 
 import 'file_plus_io.dart';
 import 'file_plus_web.dart';
@@ -26,19 +26,23 @@ abstract class FilePlus {
 
   Future<Uint8List> readAsBytes();
 
+  @protected
   Uint8List readAsBytesSync();
 
   Future<String> readAsString({Encoding encoding = utf8});
 
+  @protected
   String readAsStringSync({Encoding encoding = utf8});
 
   Future<List<String>> readAsLines({Encoding encoding = utf8});
 
+  @protected
   List<String> readAsLinesSync({Encoding encoding = utf8});
 
   Future<FilePlus> writeAsBytes(List<int> bytes,
       {FileMode mode = FileMode.write, bool flush = false});
 
+  @protected
   void writeAsBytesSync(List<int> bytes,
       {FileMode mode = FileMode.write, bool flush = false});
 
@@ -47,10 +51,11 @@ abstract class FilePlus {
       Encoding encoding = utf8,
       bool flush = false});
 
+  @protected
   void writeAsStringSync(String contents,
       {FileMode mode = FileMode.write,
-      Encoding encoding = utf8,
-      bool flush = false});
+        Encoding encoding = utf8,
+        bool flush = false});
 
   String get path;
 }

@@ -1221,6 +1221,7 @@ const _$SvtFlagEnumMap = {
   SvtFlag.svtEquipChocolate: 'svtEquipChocolate',
   SvtFlag.normal: 'normal',
   SvtFlag.goetia: 'goetia',
+  SvtFlag.matDropRateUpCe: 'matDropRateUpCe',
 };
 
 ItemSet _$ItemSetFromJson(Map json) => ItemSet(
@@ -2128,18 +2129,26 @@ EnemyPassive _$EnemyPassiveFromJson(Map json) => EnemyPassive(
           .toList(),
     );
 
+QuestPhaseExtraDetail _$QuestPhaseExtraDetailFromJson(Map json) =>
+    QuestPhaseExtraDetail(
+      questSelect: (json['questSelect'] as List<dynamic>?)
+          ?.map((e) => e as int)
+          .toList(),
+      singleForceSvtId: json['singleForceSvtId'] as int?,
+    );
+
 QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
-  afterClear: $enumDecode(_$QuestAfterClearTypeEnumMap, json['afterClear']),
-  recommendLv: json['recommendLv'] as String,
-  chapterId: json['chapterId'] as int,
-  chapterSubId: json['chapterSubId'] as int,
-  chapterSubStr: json['chapterSubStr'] as String,
-  closedAt: json['closedAt'] as int,
-  consume: json['consume'] as int,
-  consumeItem: (json['consumeItem'] as List<dynamic>)
-      .map((e) => ItemAmount.fromJson(Map<String, dynamic>.from(e as Map)))
-      .toList(),
-  consumeType: $enumDecode(_$ConsumeTypeEnumMap, json['consumeType']),
+      afterClear: $enumDecode(_$QuestAfterClearTypeEnumMap, json['afterClear']),
+      recommendLv: json['recommendLv'] as String,
+      chapterId: json['chapterId'] as int,
+      chapterSubId: json['chapterSubId'] as int,
+      chapterSubStr: json['chapterSubStr'] as String,
+      closedAt: json['closedAt'] as int,
+      consume: json['consume'] as int,
+      consumeItem: (json['consumeItem'] as List<dynamic>)
+          .map((e) => ItemAmount.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      consumeType: $enumDecode(_$ConsumeTypeEnumMap, json['consumeType']),
       gifts: (json['gifts'] as List<dynamic>)
           .map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
@@ -2177,6 +2186,8 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
       exp: json['exp'] as int,
       bond: json['bond'] as int,
       battleBgId: json['battleBgId'] as int,
+      extraDetail: QuestPhaseExtraDetail.fromJson(
+          Map<String, dynamic>.from(json['extraDetail'] as Map)),
       scripts: (json['scripts'] as List<dynamic>)
           .map((e) => ScriptLink.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
@@ -2380,37 +2391,35 @@ NiceServantCoin _$NiceServantCoinFromJson(Map json) => NiceServantCoin(
     );
 
 ServantTrait _$ServantTraitFromJson(Map json) => ServantTrait(
-  idx: json['idx'] as int,
-  trait: (json['trait'] as List<dynamic>)
-      .map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-      .toList(),
-  limitCount: json['limitCount'] as int,
-  condType: $enumDecodeNullable(_$CondTypeEnumMap, json['condType']),
-  ondId: json['ondId'] as int?,
-  condNum: json['condNum'] as int?,
-);
+      idx: json['idx'] as int,
+      trait: (json['trait'] as List<dynamic>)
+          .map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      limitCount: json['limitCount'] as int,
+      condType: $enumDecodeNullable(_$CondTypeEnumMap, json['condType']),
+      ondId: json['ondId'] as int?,
+      condNum: json['condNum'] as int?,
+    );
 
-LoreCommentAdd _$LoreCommentAddFromJson(Map json) =>
-    LoreCommentAdd(
+LoreCommentAdd _$LoreCommentAddFromJson(Map json) => LoreCommentAdd(
       idx: json['idx'] as int,
       condType: $enumDecode(_$CondTypeEnumMap, json['condType']),
       condValues:
-      (json['condValues'] as List<dynamic>).map((e) => e as int).toList(),
+          (json['condValues'] as List<dynamic>).map((e) => e as int).toList(),
       condValue2: json['condValue2'] as int,
     );
 
-LoreComment _$LoreCommentFromJson(Map json) =>
-    LoreComment(
+LoreComment _$LoreCommentFromJson(Map json) => LoreComment(
       id: json['id'] as int,
       priority: json['priority'] as int,
       condMessage: json['condMessage'] as String,
       condType: $enumDecode(_$CondTypeEnumMap, json['condType']),
       condValues:
-      (json['condValues'] as List<dynamic>?)?.map((e) => e as int).toList(),
+          (json['condValues'] as List<dynamic>?)?.map((e) => e as int).toList(),
       condValue2: json['condValue2'] as int,
       additionalConds: (json['additionalConds'] as List<dynamic>)
           .map((e) =>
-          LoreCommentAdd.fromJson(Map<String, dynamic>.from(e as Map)))
+              LoreCommentAdd.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
     );
 
@@ -2830,6 +2839,7 @@ Vals _$ValsFromJson(Map json) => Vals(
       EventId: json['EventId'] as int?,
       AddCount: json['AddCount'] as int?,
       RateCount: json['RateCount'] as int?,
+      DropRateCount: json['DropRateCount'] as int?,
       DependFuncVals: json['DependFuncVals'] == null
           ? null
           : Vals.fromJson(

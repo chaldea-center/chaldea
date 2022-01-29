@@ -100,6 +100,7 @@ class Vals {
   int? EventId;
   int? AddCount;
   int? RateCount;
+  int? DropRateCount;
   Vals? DependFuncVals;
 
   Vals({
@@ -199,6 +200,7 @@ class Vals {
     this.EventId,
     this.AddCount,
     this.RateCount,
+    this.DropRateCount,
     this.DependFuncVals,
   });
 

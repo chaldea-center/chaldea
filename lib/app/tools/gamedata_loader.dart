@@ -2,20 +2,18 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:chaldea/models/gamedata/gamedata.dart';
-import 'package:chaldea/packages/logger.dart';
-import 'package:chaldea/packages/network.dart';
-import 'package:chaldea/utils/basic.dart';
-import 'package:chaldea/utils/json_helper.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:hive/hive.dart';
 
 import '../../models/db.dart';
+import '../../models/gamedata/gamedata.dart';
 import '../../packages/app_info.dart';
 import '../../packages/file_plus/file_plus.dart';
+import '../../packages/logger.dart';
+import '../../packages/network.dart';
+import '../../utils/basic.dart';
+import '../../utils/json_helper.dart';
 
 class GameDataLoader {
   GameDataLoader._();
@@ -26,21 +24,22 @@ class GameDataLoader {
     return _instance ??= GameDataLoader._();
   }
 
-  Future<T> _withHive<T>(FutureOr<T> Function(Box box) callback) async {
-    final _box = await Hive.openBox('gamedata-hive');
-    final result = await callback(_box);
-    await _box.close();
-    return result;
-  }
-
-  Future<GameData?> loadFromHive() async {
-    final data = await _withHive((box) => box.get('gamedata'));
-    final gamedata = GameData.fromMergedFile(Map.from(data));
-    print(
-        'gamedata version(hive): ${gamedata.version.toJson()..remove('files')}');
-    if (gamedata.version.appVersion <= AppInfo.version) {
-      return db2.gameData = gamedata;
+  Future<GameData?> loadFromFile() async {
+    var mapData = await JsonHelper.decodeFile(db2.paths.gameDataPath)
+        .catchError((e) => Future.value());
+    if (mapData == null) return null;
+    GameData? gameData;
+    try {
+      gameData = GameData.fromMergedFile(Map.from(mapData));
+      print('gamedata version(hive):'
+          ' ${gameData.version.toJson()..remove('files')}');
+      if (gameData.version.appVersion <= AppInfo.version) {
+        return gameData;
+      }
+    } catch (e, s) {
+      logger.e('fail to decode GameData', e, s);
     }
+    return null;
   }
 
   Completer<Map<String, dynamic>>? _completer;
@@ -51,7 +50,24 @@ class GameDataLoader {
   bool get success =>
       progresses.isNotEmpty && progresses.values.every((e) => e.success);
 
+  GameData? gameData;
   Map<String, dynamic>? gameDataMap;
+
+  Future<GameData?> reloadAndMerge(
+      {VoidCallback? onUpdate, bool offline = false}) async {
+    try {
+      gameData = GameData.fromMergedFile(
+          await reload(onUpdate: onUpdate, offline: offline));
+      if (gameDataMap != null) {
+        FilePlus(db2.paths.gameDataPath)
+            .writeAsString(jsonEncode(gameDataMap!));
+      }
+      return gameData;
+    } catch (e, s) {
+      logger.e('fail to reload&merge GameData', e, s);
+      return null;
+    }
+  }
 
   Future<Map<String, dynamic>> reload(
       {VoidCallback? onUpdate, bool offline = false}) async {
@@ -65,7 +81,7 @@ class GameDataLoader {
     progresses.clear();
     cancelToken = CancelToken();
     Future<void>.microtask(() => _reload(onUpdate: onUpdate, offline: offline)
-            .then((value) => _completer!.complete(value)))
+            .then((value) => _completer!.complete(gameDataMap = value)))
         .catchError(_completer!.completeError);
     return _completer!.future;
   }
@@ -78,18 +94,21 @@ class GameDataLoader {
 
     final versionFile = FilePlus(joinPaths(db2.paths.gameDir, 'version.json'));
     final DataVersion version;
+    String? _versionPlain;
     if (offline) {
       version = DataVersion.fromJson(
-          await JsonHelper.decodeBytesAsync(await versionFile.readAsBytes()));
+          await JsonHelper.decodeBytes(await versionFile.readAsBytes()));
     } else {
-      version = DataVersion.fromJson((await dio.get('version.json')).data);
-      await versionFile.writeAsString(jsonEncode(version));
+      _versionPlain = (await dio.get('version.json',
+              options: Options(responseType: ResponseType.plain)))
+          .data;
+      version = DataVersion.fromJson(jsonDecode(_versionPlain!));
     }
     mapData['version'] = version.toJson();
     logger.d('fetch gamedata version: ${version.toJson()..remove('files')}');
-    // if (version.appVersion > AppInfo.version && !kDebugMode) {
-    //   throw 'Required app version: ≥ ${version.appVersion.versionString}';
-    // }
+    if (version.appVersion > AppInfo.version) {
+      throw 'Required app version: ≥ ${version.appVersion.versionString}';
+    }
 
     Future<Uint8List> _checkAndDownload(_DownloadProgress dp) async {
       final file = FilePlus(joinPaths(db2.paths.gameDir, dp.file.filename));
@@ -126,7 +145,7 @@ class GameDataLoader {
       final dp = progresses[fv.filename] = _DownloadProgress(fv);
       futures.add(SchedulerBinding.instance!.scheduleTask(
         () => _checkAndDownload(dp).then((bytes) async {
-          final contents = await JsonHelper.decodeBytesAsync(bytes);
+          final contents = await JsonHelper.decodeBytes(bytes);
           if (contents is List) {
             List data = mapData.putIfAbsent(fv.key, () => []);
             data.addAll(contents);
@@ -150,10 +169,11 @@ class GameDataLoader {
     onUpdate?.call();
     await Future.wait(futures);
     onUpdate?.call();
-    if (kIsWeb) {
-      Hive.box<Uint8List>('webfs').flush();
-    }
     if (success) {
+      if (!offline && _versionPlain != null) {
+        await versionFile.writeAsString(_versionPlain);
+      }
+      await FilePlus(db2.paths.gameDataPath).writeAsString(jsonEncode(mapData));
       return gameDataMap = mapData;
     }
     throw 'some files failed';

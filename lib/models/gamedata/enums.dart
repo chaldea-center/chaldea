@@ -356,7 +356,8 @@ enum SvtFlag {
   svtEquipExp,
   svtEquipChocolate,
   normal,
-  goetia
+  goetia,
+  matDropRateUpCe
 }
 
 enum FuncType {

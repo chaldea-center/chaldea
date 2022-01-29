@@ -10,6 +10,7 @@ import 'package:chaldea/utils/catcher/server_feedback_handler.dart';
 import 'package:chaldea/utils/http_override.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:worker_manager/worker_manager.dart';
 
 import 'app/modules/common/blank_page.dart';
 import 'models/basic.dart';
@@ -30,6 +31,7 @@ void main() async {
 }
 
 Future<void> _mainNext() async {
+  await Executor().warmUp(log: kDebugMode);
   await db2.initiate();
   db2.loadSettings();
   final catcherOptions = CatcherUtil.getOptions(
@@ -44,7 +46,7 @@ Future<void> _mainNext() async {
       ],
       onGenerateAttachments: () => {
         'userdata.memory.json':
-            Uint8List.fromList(utf8.encode(jsonEncode(db2.userData)))
+        Uint8List.fromList(utf8.encode(jsonEncode(db2.userData)))
       },
     ),
   );

@@ -8,6 +8,10 @@ import '../packages/file_plus/file_plus.dart';
 import '../packages/logger.dart';
 
 class JsonHelper {
+  JsonHelper._();
+
+  static final Executor _executor = Executor();
+
   static Future<T> loadModel<T>({
     required String fp,
     required T Function(dynamic data) fromJson,
@@ -24,7 +28,7 @@ class JsonHelper {
       final content = await file.readAsString();
       final decoded = content.length < 10e5
           ? jsonDecode(content)
-          : await decodeAsync(content);
+          : await decodeString(content);
       return fromJson(decoded);
     } catch (e, s) {
       logger.e('failed to load $T json model', e, s);
@@ -35,17 +39,26 @@ class JsonHelper {
     }
   }
 
-  static Future<dynamic> decodeAsync<T>(String data) async {
+  static Future<dynamic> decodeString<T>(String data) async {
     if (kIsWeb || data.length < 10 * 1024) return jsonDecode(data);
-    return Executor().execute(fun1: jsonDecode, arg1: data);
+    return _executor.execute(fun1: jsonDecode, arg1: data);
   }
 
-  static Future<dynamic> decodeBytesAsync<T>(List<int> bytes) async {
+  static Future<dynamic> decodeBytes<T>(List<int> bytes) async {
     if (kIsWeb || bytes.length < 10 * 1024) return _decodeBytes(bytes);
-    return Executor().execute(fun1: _decodeBytes, arg1: bytes);
+    return _executor.execute(fun1: _decodeBytes, arg1: bytes);
+  }
+
+  static Future<dynamic> decodeFile<T>(String fp) async {
+    if (kIsWeb) return jsonDecode(await FilePlus(fp).readAsString());
+    return _executor.execute(fun1: _decodeFile, arg1: fp);
   }
 
   static dynamic _decodeBytes<T>(List<int> bytes) {
     return jsonDecode(utf8.decode(bytes));
+  }
+
+  static Future<dynamic> _decodeFile<T>(String fp) async {
+    return jsonDecode(utf8.decode(await FilePlus(fp).readAsBytes()));
   }
 }

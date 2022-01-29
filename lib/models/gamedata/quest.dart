@@ -346,6 +346,20 @@ class EnemyPassive {
 }
 
 @JsonSerializable()
+class QuestPhaseExtraDetail {
+  List<int>? questSelect;
+  int? singleForceSvtId;
+
+  QuestPhaseExtraDetail({
+    this.questSelect,
+    this.singleForceSvtId,
+  });
+
+  factory QuestPhaseExtraDetail.fromJson(Map<String, dynamic> json) =>
+      _$QuestPhaseExtraDetailFromJson(json);
+}
+
+@JsonSerializable()
 class QuestPhase implements Quest {
   @override
   QuestAfterClearType afterClear;
@@ -400,6 +414,7 @@ class QuestPhase implements Quest {
   int exp;
   int bond;
   int battleBgId;
+  QuestPhaseExtraDetail extraDetail;
   List<ScriptLink> scripts;
   List<QuestMessage> messages;
   List<SupportServant> supportServants;
@@ -437,6 +452,7 @@ class QuestPhase implements Quest {
     required this.exp,
     required this.bond,
     required this.battleBgId,
+    required this.extraDetail,
     required this.scripts,
     required this.messages,
     required this.supportServants,
