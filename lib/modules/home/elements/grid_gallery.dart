@@ -31,6 +31,9 @@ class _GridGalleryState extends State<GridGallery> {
     } else {
       crossCount = 4;
     }
+    if (crossCount < 4) {
+      crossCount = 4;
+    }
 
     Widget grid = GridView.count(
       padding: const EdgeInsets.all(8),

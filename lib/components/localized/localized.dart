@@ -289,6 +289,11 @@ class Localized {
             eng:
                 'Lostbelt No.6: Fairy Realm of the Round Table, Avalon le Fae, The Moment a Star is Born, Part II',
             kor: 'Lostbelt No.6 요정원탁영역 아발론･르･페이(후편) 별이 태어나는 때'),
+        LocalizedText(
+            chs: '非灵长生存圈 通古斯卡庇护所',
+            jpn: '非灵长生存圈 通古斯卡庇护所',
+            eng: 'Non-Primate Biosphere - Tunguska Sanctuary',
+            kor: null),
       ]);
 
   // temp

@@ -152,6 +152,33 @@ class _GalleryPageState extends State<GalleryPage> {
         child: _macIncompatibleWarning,
       ));
     }
+    final path = db.paths.appPath.toLowerCase();
+    if (PlatformU.isWindows &&
+        (path.contains('appdata\\local\\temp') ||
+            path.contains('c:\\program files'))) {
+      children.add(SimpleAccordion(
+        expanded: true,
+        headerBuilder: (_, __) => ListTile(
+          title: Text(LocalizedText.of(
+            chs: '无效启动路径!!!',
+            jpn: '起動パスが無効です!!!',
+            eng: 'Invalid startup path!!!',
+          )),
+          subtitle: Text(db.paths.appPath),
+        ),
+        contentBuilder: (context) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Text(
+              LocalizedText.of(
+                chs: '请解压至非系统目录后运行！例如"C:\\", "C:\\Program Files"等均无效。',
+                jpn:
+                    'システム以外のディレクトリに解凍して実行してください。"C:\\"、"C:\\Program Files"は許可されていません。',
+                eng:
+                    'Please extra zip to non-system path then start the app. "C:\\", "C:\\Program Files" are not allowed.',
+              ),
+            )),
+      ));
+    }
     if (_showRateCard == true) {
       children.add(Container(
         margin: const EdgeInsets.symmetric(horizontal: 8),
