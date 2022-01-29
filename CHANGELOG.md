@@ -1,8 +1,21 @@
+## 1.6.7
+
+- improve web support
+- set custom name for each Plan
+- add target selection in skill effect filter
+- fix append skill level in import https response
+
+## 1.6.6
+
+- Korean support for UI text
+
 ## 1.6.5
+
 - partially support Korean
 - enable 120Hz ProMotion by cycling power saving mode
 
 ## 1.6.4
+
 - improve performance when loading and updating game data
 - master mission: support search, sort traits by alphabetical
 - SQ plan: add missing monthly tickets from mana prism store

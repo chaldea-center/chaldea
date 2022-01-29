@@ -14,7 +14,7 @@ For more details or usage, please check our document: [English](https://docs.cha
 
 ## Features
 
-- support all platform: Android, iOS, Windows, macOS and Linux
+- support all platform: Android, iOS, Windows, macOS and Linux. Web support is Working In Progress.
 - profiles of **Servants**, **Craft Essences**, **Command Codes**, **Mystic Codes**, **Events**,
   **Items** and **Summons**
 - item/material planning

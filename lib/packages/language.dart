@@ -48,8 +48,7 @@ class Language {
     }
   }
 
-  static List<Language> get supportLanguages =>
-      const [jp, chs, cht, en, ko, ar, es];
+  static List<Language> get supportLanguages => const [jp, chs, cht, en, ko];
 
   static List<Language> get officialLanguages => const [jp, chs, cht, en, ko];
 
