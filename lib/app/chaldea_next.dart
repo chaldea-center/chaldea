@@ -1,9 +1,9 @@
 import 'package:chaldea/modules/chaldea.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart';
 import 'package:screenshot/screenshot.dart';
 
 import '../generated/l10n.dart';
@@ -17,7 +17,6 @@ import '../utils/catcher/catcher_util.dart';
 import '../utils/constants.dart';
 import '../widgets/after_layout.dart';
 import 'app.dart';
-import 'modules/root/global_fab.dart';
 import 'routes/parser.dart';
 
 class ChaldeaNext extends StatefulWidget {
@@ -53,7 +52,7 @@ class _ChaldeaNextState extends StateX<ChaldeaNext> with AfterLayoutMixin {
           debugShowCheckedModeBanner: false,
           theme: lightTheme,
           darkTheme: darkTheme,
-          themeMode: db2.settings.themeMode ?? ThemeMode.light,
+          themeMode: db2.settings.themeMode,
           scrollBehavior: DraggableScrollBehavior(),
           locale: Language.getLanguage(db2.settings.language)?.locale,
           localizationsDelegates: const [
@@ -79,9 +78,6 @@ class _ChaldeaNextState extends StateX<ChaldeaNext> with AfterLayoutMixin {
     );
   }
 
-  bool showWindowFab = true;
-  bool showDebugFab = true;
-
   void onAppUpdate() {
     if (mounted) {
       setState(() {});
@@ -93,15 +89,8 @@ class _ChaldeaNextState extends StateX<ChaldeaNext> with AfterLayoutMixin {
     debugPrint('initiate $runtimeType');
     super.initState();
     db2.notifyAppUpdate = onAppUpdate;
-    if (showWindowFab && !rootRouter.appState.showSidebar) {
-      SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
-        WindowManagerFab.createOverlay(router.navigatorKey.currentContext!);
-      });
-    }
-    if (showDebugFab) {
-      SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
-        DebugFab.createOverlay(router.navigatorKey.currentContext!);
-      });
+    if (db2.settings.language != null) {
+      Intl.defaultLocale = Language.current.code;
     }
 
     SystemChannels.lifecycle.setMessageHandler((msg) async {

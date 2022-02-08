@@ -21,7 +21,7 @@ import 'utils/catcher/catcher_util.dart';
 void main() async {
   // make sure flutter packages like path_provider is working now
   WidgetsFlutterBinding.ensureInitialized();
-  runChaldeaNext = false;
+  runChaldeaNext = true;
   await _initiateCommon();
   if (runChaldeaNext) {
     await _mainNext();
@@ -31,9 +31,12 @@ void main() async {
 }
 
 Future<void> _mainNext() async {
-  await Executor().warmUp(log: kDebugMode);
+  await Executor().warmUp();
   await db2.initiate();
-  db2.loadSettings();
+  await db2.loadSettings();
+  await db2.loadUserData().then((value) async {
+    if (value != null) db2.userData = value;
+  });
   final catcherOptions = CatcherUtil.getOptions(
     logPath: db2.paths.crashLog,
     feedbackHandler: ServerFeedbackHandler(

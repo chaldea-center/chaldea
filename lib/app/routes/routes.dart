@@ -1,3 +1,4 @@
+import 'package:chaldea/app/modules/home/bootstrap.dart';
 import 'package:flutter/material.dart';
 
 import '../../packages/split_route/split_route.dart';
@@ -9,6 +10,7 @@ import '../modules/servant/servant_list.dart';
 
 class Routes {
   static const String home = '/';
+  static const String bootstrap = '/welcome';
   static const String servants = '/servants';
   static const String servant = '/servant';
   static const String craftEssences = '/craft-essences';
@@ -52,8 +54,7 @@ class RouteConfiguration {
   RouteConfiguration({this.url, this.child, this.detail, this.arguments})
       : uri = url == null ? null : Uri.tryParse(url);
 
-  RouteConfiguration.fromUri(
-      {this.uri, this.child, this.detail, this.arguments})
+  RouteConfiguration.fromUri({this.uri, this.child, this.detail, this.arguments})
       : url = uri.toString();
 
   RouteConfiguration.slash({required String nextPageUrl})
@@ -87,6 +88,13 @@ class RouteConfiguration {
         child = null,
         arguments = null,
         detail = false;
+
+  RouteConfiguration.bootstrap([String? next])
+      : url = Routes.bootstrap,
+        uri = Uri.parse(Routes.bootstrap),
+        child = BootstrapPage(),
+        arguments = null,
+        detail = null;
 
   SplitPage createPage() {
     return SplitPage(
@@ -159,14 +167,14 @@ class SplitPage extends MaterialPage {
     Object? arguments,
     String? restorationId,
   }) : super(
-          key: key,
-          child: child,
-          maintainState: maintainState,
-          fullscreenDialog: fullscreenDialog,
-          name: name,
-          arguments: arguments,
-          restorationId: restorationId,
-        );
+    key: key,
+    child: child,
+    maintainState: maintainState,
+    fullscreenDialog: fullscreenDialog,
+    name: name,
+    arguments: arguments,
+    restorationId: restorationId,
+  );
 
   @override
   Route createRoute(BuildContext context) {

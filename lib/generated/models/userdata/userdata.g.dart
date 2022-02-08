@@ -36,9 +36,8 @@ User _$UserFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = User(
-          name: $checkedConvert('name', (v) => v as String? ?? 'default'),
-          masterGender: $checkedConvert('masterGender',
-              (v) => $enumDecodeNullable(_$GenderEnumMap, v) ?? Gender.female),
+          name: $checkedConvert('name', (v) => v as String? ?? 'Gudako'),
+          isGirl: $checkedConvert('isGirl', (v) => v as bool? ?? true),
           use6thDrops:
               $checkedConvert('use6thDrops', (v) => v as bool? ?? true),
           region: $checkedConvert('region',
@@ -84,7 +83,7 @@ User _$UserFromJson(Map json) => $checkedCreate(
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'name': instance.name,
-      'masterGender': _$GenderEnumMap[instance.masterGender],
+      'isGirl': instance.isGirl,
       'use6thDrops': instance.use6thDrops,
       'region': _$RegionEnumMap[instance.region],
       'servants':
@@ -99,12 +98,6 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'mysticCodes':
           instance.mysticCodes.map((k, e) => MapEntry(k.toString(), e)),
     };
-
-const _$GenderEnumMap = {
-  Gender.male: 'male',
-  Gender.female: 'female',
-  Gender.unknown: 'unknown',
-};
 
 const _$RegionEnumMap = {
   Region.jp: 'jp',

@@ -6,10 +6,10 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../packages/logger.dart';
-import '../../packages/platform/platform.dart';
-import '../../utils/constants.dart';
-import '../basic.dart';
+import '../packages/logger.dart';
+import '../packages/platform/platform.dart';
+import '../utils/constants.dart';
+import 'basic.dart';
 
 class PathManager {
   /// [_appPath] root path where app data stored, can be configured by user

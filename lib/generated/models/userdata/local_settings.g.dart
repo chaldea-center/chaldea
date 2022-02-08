@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'local_settings.dart';
+part of '../../../models/userdata/local_settings.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
@@ -21,9 +21,11 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
           launchTimes: $checkedConvert('launchTimes', (v) => v as int? ?? 1),
           themeMode: $checkedConvert(
               'themeMode',
-              (v) => $enumDecodeNullable(_$ThemeModeEnumMap, v,
-                  unknownValue: ThemeMode.system)),
+              (v) =>
+                  $enumDecodeNullable(_$ThemeModeEnumMap, v) ??
+                  ThemeMode.system),
           language: $checkedConvert('language', (v) => v as String?),
+          autoUpdate: $checkedConvert('autoUpdate', (v) => v as bool? ?? true),
           tips: $checkedConvert(
               'tips',
               (v) => v == null
@@ -42,8 +44,9 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'windowPosition': instance.windowPosition,
       'launchTimes': instance.launchTimes,
       'themeMode': _$ThemeModeEnumMap[instance.themeMode],
-      'language': instance.language,
+      'autoUpdate': instance.autoUpdate,
       'tips': instance.tips.toJson(),
+      'language': instance.language,
     };
 
 const _$ThemeModeEnumMap = {

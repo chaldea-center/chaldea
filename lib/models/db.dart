@@ -12,8 +12,8 @@ import '../packages/file_plus/file_plus.dart';
 import '../packages/method_channel/method_channel_chaldea.dart';
 import '../utils/json_helper.dart';
 import 'gamedata/gamedata.dart';
-import 'settings/local_settings.dart';
-import 'settings/paths.dart';
+import 'userdata/local_settings.dart';
+import 'paths.dart';
 import 'userdata/userdata.dart';
 
 void _emptyCallback() {}
@@ -25,6 +25,9 @@ class _Database {
   UserData userData = UserData();
   GameData gameData = GameData();
   RuntimeData runtimeData = RuntimeData();
+
+  // shortcut
+  User get curUser => userData.users[userData.curUserKey];
 
   // singleton
   static final _instance = _Database._internal();

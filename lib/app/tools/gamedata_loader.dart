@@ -4,7 +4,8 @@ import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:flutter/foundation.dart';
+import 'package:pool/pool.dart';
 
 import '../../models/db.dart';
 import '../../models/gamedata/gamedata.dart';
@@ -16,61 +17,35 @@ import '../../utils/basic.dart';
 import '../../utils/json_helper.dart';
 
 class GameDataLoader {
+  // final dio = Dio(BaseOptions(baseUrl: 'https://data.chaldea.center/'));
+  Dio get dio => Dio(BaseOptions(baseUrl: 'http://192.168.0.5:8002/'));
+
   GameDataLoader._();
 
-  static GameDataLoader? _instance;
+  static GameDataLoader? instance;
 
   factory GameDataLoader() {
-    return _instance ??= GameDataLoader._();
+    return instance ??= GameDataLoader._();
   }
 
-  Future<GameData?> loadFromFile() async {
-    var mapData = await JsonHelper.decodeFile(db2.paths.gameDataPath)
-        .catchError((e) => Future.value());
-    if (mapData == null) return null;
-    GameData? gameData;
-    try {
-      gameData = GameData.fromMergedFile(Map.from(mapData));
-      print('gamedata version(hive):'
-          ' ${gameData.version.toJson()..remove('files')}');
-      if (gameData.version.appVersion <= AppInfo.version) {
-        return gameData;
-      }
-    } catch (e, s) {
-      logger.e('fail to decode GameData', e, s);
-    }
-    return null;
-  }
-
-  Completer<Map<String, dynamic>>? _completer;
+  Completer<GameData>? _completer;
   CancelToken? cancelToken;
 
-  Map<String, _DownloadProgress> progresses = {};
+  GameData? loadedGameData;
+  Map<String, dynamic>? gameJson;
 
-  bool get success =>
-      progresses.isNotEmpty && progresses.values.every((e) => e.success);
+  double? get progress => _progress;
+  double? _progress;
 
-  GameData? gameData;
-  Map<String, dynamic>? gameDataMap;
+  dynamic error;
 
-  Future<GameData?> reloadAndMerge(
-      {VoidCallback? onUpdate, bool offline = false}) async {
-    try {
-      gameData = GameData.fromMergedFile(
-          await reload(onUpdate: onUpdate, offline: offline));
-      if (gameDataMap != null) {
-        FilePlus(db2.paths.gameDataPath)
-            .writeAsString(jsonEncode(gameDataMap!));
-      }
-      return gameData;
-    } catch (e, s) {
-      logger.e('fail to reload&merge GameData', e, s);
-      return null;
-    }
-  }
-
-  Future<Map<String, dynamic>> reload(
-      {VoidCallback? onUpdate, bool offline = false}) async {
+  Future<GameData> reload({
+    ValueChanged<double>? onUpdate,
+    bool offline = false,
+    bool updateOnly = false,
+    bool silent = false,
+  }) async {
+    assert(!(offline && updateOnly), [offline, updateOnly]);
     if (!offline && network.unavailable) {
       throw 'No network';
     }
@@ -78,129 +53,146 @@ class GameDataLoader {
       return _completer!.future;
     }
     _completer = Completer();
-    progresses.clear();
+    if (!updateOnly) gameJson = null;
+    _progress = null;
     cancelToken = CancelToken();
-    Future<void>.microtask(() => _reload(onUpdate: onUpdate, offline: offline)
-            .then((value) => _completer!.complete(gameDataMap = value)))
-        .catchError(_completer!.completeError);
+    Future<void>.microtask(() => _loadJson(offline, onUpdate, updateOnly)
+            .then((value) => _completer!.complete(loadedGameData = value)))
+        .catchError((e, s) async {
+      logger.e('load gamedata($offline)', e, s);
+      error = e;
+      _completer!.completeError(e, s);
+    });
+    gameJson = null;
     return _completer!.future;
   }
 
-  Future<Map<String, dynamic>> _reload(
-      {VoidCallback? onUpdate, required bool offline}) async {
-    onUpdate?.call();
-    Map<String, dynamic> mapData = {};
-    final dio = Dio(BaseOptions(baseUrl: 'https://data.chaldea.center/'));
-
-    final versionFile = FilePlus(joinPaths(db2.paths.gameDir, 'version.json'));
-    final DataVersion version;
-    String? _versionPlain;
+  Future<GameData> _loadJson(
+      bool offline, ValueChanged<double>? onUpdate, bool updateOnly) async {
+    final _versionFile = FilePlus(joinPaths(db2.paths.gameDir, 'version.json'));
+    DataVersion? oldVersion;
+    DataVersion newVersion;
+    try {
+      oldVersion =
+          DataVersion.fromJson(jsonDecode(await _versionFile.readAsString()));
+    } catch (e) {
+      print(e);
+    }
     if (offline) {
-      version = DataVersion.fromJson(
-          await JsonHelper.decodeBytes(await versionFile.readAsBytes()));
+      // if not exist, raise error
+      if (oldVersion == null) {
+        throw 'No version data found';
+      }
+      newVersion = oldVersion;
     } else {
-      _versionPlain = (await dio.get('version.json',
-              options: Options(responseType: ResponseType.plain)))
-          .data;
-      version = DataVersion.fromJson(jsonDecode(_versionPlain!));
+      oldVersion ??= DataVersion();
+      newVersion = DataVersion.fromJson((await dio.get('version.json')).data);
     }
-    mapData['version'] = version.toJson();
-    logger.d('fetch gamedata version: ${version.toJson()..remove('files')}');
-    if (version.appVersion > AppInfo.version) {
-      throw 'Required app version: ≥ ${version.appVersion.versionString}';
+    logger.d('fetch gamedata version: $newVersion');
+    if (newVersion.appVersion > AppInfo.version) {
+      throw 'Required app version: ≥ ${newVersion.appVersion.versionString}';
     }
 
-    Future<Uint8List> _checkAndDownload(_DownloadProgress dp) async {
-      final file = FilePlus(joinPaths(db2.paths.gameDir, dp.file.filename));
-      if (file.existsSync()) {
-        final bytes = await file.readAsBytes();
-        final hashCode = md5.convert(bytes).toString();
-        if (hashCode.startsWith(dp.file.hash.toLowerCase())) {
-          dp.cur = bytes.length;
-          return bytes;
+    Map<String, dynamic> _gameJson = {};
+    int finished = 0;
+    Future<void> _downloadCheck(FileVersion fv,
+        {String? l2mKey, dynamic Function(dynamic)? l2mFn}) async {
+      final _file = FilePlus(joinPaths(db2.paths.gameDir, fv.filename));
+      Uint8List? bytes;
+      String? _localHash;
+      if (_file.existsSync()) {
+        bytes = await _file.readAsBytes();
+      }
+      if (bytes != null) {
+        _localHash = md5.convert(bytes).toString().toLowerCase();
+      }
+      if (_localHash == null || !_localHash.startsWith(fv.hash)) {
+        if (offline) {
+          throw 'File ${fv.filename} not found or mismatched hash:'
+              ' ${fv.hash} - $_localHash';
+        }
+        final resp = await dio.get(
+          fv.filename,
+          // cancelToken: cancelToken,
+          options: Options(responseType: ResponseType.bytes),
+        );
+        final _hash = md5.convert(resp.data).toString().toLowerCase();
+        if (!_hash.startsWith(fv.hash)) {
+          throw 'Hash mismatch: ${fv.filename}: ${fv.hash} - $_hash';
+        }
+        _file.writeAsBytes(resp.data);
+        bytes = resp.data;
+      }
+      if (updateOnly) return;
+      dynamic fileJson = await JsonHelper.decodeBytes(bytes!);
+      l2mFn ??= l2mKey == null ? null : (e) => e[l2mKey].toString();
+      if (l2mFn != null) {
+        assert(fileJson is List, fileJson.runtimeType);
+        fileJson = Map.fromIterable(fileJson, key: l2mFn);
+      }
+      if (_gameJson[fv.key] == null) {
+        _gameJson[fv.key] = fileJson;
+      } else {
+        final value = _gameJson[fv.key]!;
+        if (value is Map) {
+          value.addAll(fileJson);
+        } else if (value is List) {
+          value.addAll(fileJson);
+        } else {
+          throw 'Unsupported type: ${value.runtimeType}';
         }
       }
-      final resp = await dio.get(
-        dp.file.filename,
-        options: Options(responseType: ResponseType.bytes),
-        cancelToken: cancelToken,
-        onReceiveProgress: (cur, total) {
-          dp.cur = cur;
-          onUpdate?.call();
-        },
-      );
-      final bytes = Uint8List.fromList(resp.data);
-      final hashCode = md5.convert(bytes).toString();
-      if (hashCode.startsWith(dp.file.hash.toLowerCase())) {
-        file.writeAsBytes(bytes);
-        return bytes;
-      } else {
-        throw 'mismatching hash value:\n${dp.file.hash}\n$hashCode';
-      }
+      print('loaded ${fv.filename}');
+      finished += 1;
+      _progress = finished / (newVersion.files.length + 0.1);
+      onUpdate?.call(_progress!);
     }
 
     List<Future> futures = [];
-    for (final fv in version.files.values) {
-      // LicenseRegistry.licenses
-      final dp = progresses[fv.filename] = _DownloadProgress(fv);
-      futures.add(SchedulerBinding.instance!.scheduleTask(
-        () => _checkAndDownload(dp).then((bytes) async {
-          final contents = await JsonHelper.decodeBytes(bytes);
-          if (contents is List) {
-            List data = mapData.putIfAbsent(fv.key, () => []);
-            data.addAll(contents);
-          } else if (contents is Map<String, dynamic>) {
-            Map<String, dynamic> data =
-                mapData.putIfAbsent(fv.key, () => <String, dynamic>{});
-            data.addAll(contents);
-          } else {
-            throw 'Unsupported data type: ${contents.runtimeType}';
-          }
-          dp.success = true;
-          onUpdate?.call();
-        }).catchError((e, s) async {
-          dp.error = e;
-          logger.e('download data file ${fv.filename} failed', e, s);
-          onUpdate?.call();
-        }),
-        Priority.animation,
-      ));
-    }
-    onUpdate?.call();
-    await Future.wait(futures);
-    onUpdate?.call();
-    if (success) {
-      if (!offline && _versionPlain != null) {
-        await versionFile.writeAsString(_versionPlain);
+    final _pool = Pool(offline ? 30 : 5);
+    Map<String, String> keys = {
+      'baseFunctions': 'funcId',
+      'baseSkills': 'id',
+      'bgms': 'id',
+      'commandCodes': 'id',
+      'craftEssences': 'id',
+      'entities': 'id',
+      'events': 'id',
+      'exchangeTickets': 'key',
+      'fixedDrops': 'key',
+      'items': 'id',
+      'mysticCodes': 'id',
+      // 'questPhases':'',
+      'servants': 'id',
+      'summons': 'id',
+      'wars': 'id',
+    };
+
+    for (final fv in newVersion.files.values) {
+      String? l2mKey;
+      dynamic Function(dynamic)? l2mFn;
+      l2mKey = keys[fv.key];
+      if (fv.key == 'questPhases') {
+        l2mFn = (e) => (e['id'] * 10 + e['phase']).toString();
       }
-      await FilePlus(db2.paths.gameDataPath).writeAsString(jsonEncode(mapData));
-      return gameDataMap = mapData;
+      futures.add(_pool.withResource(
+          () => _downloadCheck(fv, l2mKey: l2mKey, l2mFn: l2mFn)));
     }
-    throw 'some files failed';
-  }
-}
-
-class _DownloadProgress {
-  final FileVersion file;
-  int cur = 0;
-  bool success = false;
-  dynamic error;
-
-  _DownloadProgress(this.file);
-
-  @override
-  String toString() {
-    return 'Download ${file.filename}: $cur/${file.size}, error=$error';
-  }
-
-  String? get errorDetail {
-    if (error == null) return null;
-    if (error is DioError) {
-      final DioError _error = error;
-      return _error.message.isEmpty
-          ? _error.type.toString()
-          : '${_error.type}: ${_error.message}';
+    await Future.wait(futures);
+    if (!offline) {
+      _versionFile.writeAsString(jsonEncode(newVersion));
     }
-    return error.toString();
+    if (updateOnly) {
+      if (newVersion.timestamp > oldVersion.timestamp) {
+        db2.runtimeData.downloadedDataVersion = newVersion;
+      }
+      return GameData();
+    } // bypass null
+    gameJson = _gameJson;
+    final _gamedata = GameData.fromJson(_gameJson);
+    _gamedata.version = newVersion;
+    _progress = finished / newVersion.files.length;
+    onUpdate?.call(_progress!);
+    return _gamedata;
   }
 }

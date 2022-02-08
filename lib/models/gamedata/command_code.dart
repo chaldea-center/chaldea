@@ -1,4 +1,9 @@
-part of gamedata;
+import 'package:json_annotation/json_annotation.dart';
+
+import 'servant.dart';
+import 'skill.dart';
+
+part '../../generated/models/gamedata/command_code.g.dart';
 
 @JsonSerializable()
 class CommandCode {

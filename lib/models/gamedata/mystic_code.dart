@@ -1,4 +1,30 @@
-part of gamedata;
+import 'package:json_annotation/json_annotation.dart';
+
+import 'skill.dart';
+
+part '../../generated/models/gamedata/mystic_code.g.dart';
+
+@JsonSerializable()
+class MysticCode {
+  int id;
+  String name;
+  String detail;
+  ExtraMCAssets extraAssets;
+  List<NiceSkill> skills;
+  List<int> expRequired;
+
+  MysticCode({
+    required this.id,
+    required this.name,
+    required this.detail,
+    required this.extraAssets,
+    required this.skills,
+    required this.expRequired,
+  });
+
+  factory MysticCode.fromJson(Map<String, dynamic> json) =>
+      _$MysticCodeFromJson(json);
+}
 
 @JsonSerializable()
 class MCAssets {
@@ -28,26 +54,4 @@ class ExtraMCAssets {
 
   factory ExtraMCAssets.fromJson(Map<String, dynamic> json) =>
       _$ExtraMCAssetsFromJson(json);
-}
-
-@JsonSerializable()
-class MysticCode {
-  int id;
-  String name;
-  String detail;
-  ExtraMCAssets extraAssets;
-  List<NiceSkill> skills;
-  List<int> expRequired;
-
-  MysticCode({
-    required this.id,
-    required this.name,
-    required this.detail,
-    required this.extraAssets,
-    required this.skills,
-    required this.expRequired,
-  });
-
-  factory MysticCode.fromJson(Map<String, dynamic> json) =>
-      _$MysticCodeFromJson(json);
 }

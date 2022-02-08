@@ -1,83 +1,31 @@
-// ignore_for_file: non_constant_identifier_names
+import 'package:json_annotation/json_annotation.dart';
 
-part of gamedata;
+import '../../app/tools/gamedata_loader.dart';
+import 'event.dart';
+
+part '../../generated/models/gamedata/common.g.dart';
+
+part 'common_helper.dart';
 
 @JsonSerializable()
 class NiceTrait {
   int id;
-  Trait name;
   bool? negative;
+
+  Trait get name => traitIdMapping[id] ?? Trait.unknown;
 
   NiceTrait({
     required this.id,
-    required this.name,
     this.negative,
   });
 
   factory NiceTrait.fromJson(Map<String, dynamic> json) =>
       _$NiceTraitFromJson(json);
-}
 
-@JsonSerializable()
-class BuffRelationOverwrite {
-  Map<SvtClass, Map<SvtClass, dynamic>> atkSide;
-  Map<SvtClass, Map<SvtClass, dynamic>> defSide;
-
-  BuffRelationOverwrite({
-    required this.atkSide,
-    required this.defSide,
-  });
-
-  factory BuffRelationOverwrite.fromJson(Map<String, dynamic> json) =>
-      _$BuffRelationOverwriteFromJson(json);
-}
-
-@JsonSerializable()
-class BuffScript {
-  int? checkIndvType;
-  List<BuffType>? CheckOpponentBuffTypes;
-  BuffRelationOverwrite? relationId;
-  String? ReleaseText;
-  int? DamageRelease;
-  NiceTrait? INDIVIDUALITIE;
-  List<NiceTrait>? UpBuffRateBuffIndiv;
-  int? HP_LOWER;
-
-  BuffScript({
-    this.checkIndvType,
-    this.CheckOpponentBuffTypes,
-    this.relationId,
-    this.ReleaseText,
-    this.DamageRelease,
-    this.INDIVIDUALITIE,
-    this.UpBuffRateBuffIndiv,
-    this.HP_LOWER,
-  });
-
-  factory BuffScript.fromJson(Map<String, dynamic> json) =>
-      _$BuffScriptFromJson(json);
-}
-
-@JsonSerializable()
-class MasterMission {
-  int id;
-  int startedAt;
-  int endedAt;
-  int closedAt;
-  List<EventMission> missions;
-  List<dynamic> quests;
-
-  MasterMission({
-    required this.id,
-    required this.startedAt,
-    required this.endedAt,
-    required this.closedAt,
-    required this.missions,
-    required this.quests,
-  });
-
-  factory MasterMission.fromJson(Map<String, dynamic> json) =>
-      _$MasterMissionFromJson(json);
+  @override
+  String toString() {
+    return '$runtimeType($id)';
+  }
 }
 
 @JsonSerializable()
@@ -105,7 +53,7 @@ class BgmRelease {
 }
 
 @JsonSerializable()
-class BgmEnitity {
+class BgmEntity {
   int id;
   String name;
   String fileName;
@@ -117,7 +65,7 @@ class BgmEnitity {
   String logo;
   List<BgmRelease> releaseConditions;
 
-  BgmEnitity({
+  BgmEntity({
     required this.id,
     required this.name,
     required this.fileName,
@@ -130,8 +78,8 @@ class BgmEnitity {
     required this.releaseConditions,
   });
 
-  factory BgmEnitity.fromJson(Map<String, dynamic> json) =>
-      _$BgmEnitityFromJson(json);
+  factory BgmEntity.fromJson(Map<String, dynamic> json) =>
+      _$BgmEntityFromJson(json);
 }
 
 @JsonSerializable()
@@ -150,5 +98,473 @@ class Bgm {
     this.audioAsset,
   });
 
-  factory Bgm.fromJson(Map<String, dynamic> json) => _$BgmFromJson(json);
+  factory Bgm.fromJson(Map<String, dynamic> json) {
+    final bgm =
+        GameDataLoader.instance?.gameJson?['bgms']?[json['id'].toString()];
+    if (bgm != null) {
+      json.addAll(Map.from(bgm));
+    }
+    return _$BgmFromJson(json);
+  }
+}
+
+enum CardType {
+  none,
+  arts,
+  buster,
+  quick,
+  extra,
+  blank,
+  weak,
+  strength,
+}
+
+enum SvtClass {
+  saber,
+  archer,
+  lancer,
+  rider,
+  caster,
+  assassin,
+  berserker,
+  shielder,
+  ruler,
+  alterEgo,
+  avenger,
+  demonGodPillar,
+  moonCancer,
+  foreigner,
+  pretender,
+  grandCaster,
+  beastII,
+  ushiChaosTide,
+  beastI,
+  beastIIIR,
+  beastIIIL,
+  beastIV,
+  beastUnknown,
+  unknown,
+  agarthaPenth,
+  cccFinaleEmiyaAlter,
+  salemAbby,
+  ALL, // ignore: constant_identifier_names
+}
+
+enum Trait {
+  unknown,
+  genderMale,
+  genderFemale,
+  genderUnknown,
+  classSaber,
+  classLancer,
+  classArcher,
+  classRider,
+  classCaster,
+  classAssassin,
+  classBerserker,
+  classShielder,
+  classRuler,
+  classAlterEgo,
+  classAvenger,
+  classDemonGodPillar,
+  classGrandCaster,
+  classBeastI,
+  classBeastII,
+  classMoonCancer,
+  classBeastIIIR,
+  classForeigner,
+  classBeastIIIL,
+  classBeastUnknown,
+  classPretender,
+  attributeSky,
+  attributeEarth,
+  attributeHuman,
+  attributeStar,
+  attributeBeast,
+  alignmentLawful,
+  alignmentChaotic,
+  alignmentNeutral,
+  alignmentGood,
+  alignmentEvil,
+  alignmentBalanced,
+  alignmentMadness,
+  alignmentSummer,
+  basedOnServant,
+  human,
+  undead,
+  artificialDemon,
+  demonBeast,
+  daemon,
+  demon,
+  soldier,
+  amazoness,
+  skeleton,
+  zombie,
+  ghost,
+  automata,
+  golem,
+  spellBook,
+  homunculus,
+  lamia,
+  centaur,
+  werebeast,
+  chimera,
+  wyvern,
+  dragonType,
+  gazer,
+  handOrDoor,
+  demonGodPillar,
+  oni,
+  hand,
+  door,
+  threatToHumanity,
+  divine,
+  humanoid,
+  dragon,
+  dragonSlayer,
+  roman,
+  wildbeast,
+  atalante,
+  saberface,
+  weakToEnumaElish,
+  riding,
+  arthur,
+  skyOrEarth,
+  brynhildsBeloved,
+  undeadOrDaemon,
+  undeadOrDemon,
+  demonic,
+  skyOrEarthExceptPseudoAndDemi,
+  divineOrDaemonOrUndead,
+  divineOrDemonOrUndead,
+  saberClassServant,
+  superGiant,
+  king,
+  greekMythologyMales,
+  illya,
+  feminineLookingServant,
+  argonaut,
+  associatedToTheArgo,
+  genderCaenisServant,
+  hominidaeServant,
+  blessedByKur,
+  demonicBeastServant,
+  canBeInBattle,
+  notBasedOnServant,
+  livingHuman,
+  cardArts,
+  cardBuster,
+  cardQuick,
+  cardExtra,
+  buffPositiveEffect,
+  buffNegativeEffect,
+  buffIncreaseDamage,
+  buffIncreaseDefence,
+  buffDecreaseDamage,
+  buffDecreaseDefence,
+  buffMentalEffect,
+  buffPoison,
+  buffCharm,
+  buffPetrify,
+  buffStun,
+  buffBurn,
+  buffSpecialResistUp,
+  buffSpecialResistDown,
+  buffEvadeAndInvincible,
+  buffSureHit,
+  buffNpSeal,
+  buffEvade,
+  buffInvincible,
+  buffTargetFocus,
+  buffGuts,
+  skillSeal,
+  buffCurse,
+  buffAtkUp,
+  buffPowerModStrUp,
+  buffDamagePlus,
+  buffNpDamageUp,
+  buffCritDamageUp,
+  buffCritRateUp,
+  buffAtkDown,
+  buffPowerModStrDown,
+  buffDamageMinus,
+  buffNpDamageDown,
+  buffCritDamageDown,
+  buffCritRateDown,
+  buffDeathResistDown,
+  buffDefenceUp,
+  buffMaxHpUpPercent,
+  buffMaxHpDownPercent,
+  buffMaxHpUp,
+  buffMaxHpDown,
+  buffImmobilize,
+  buffIncreasePoisonEffectiveness,
+  buffPigify,
+  buffCurseEffectUp,
+  buffTerrorStunChanceAfterTurn,
+  buffConfusion,
+  buffOffensiveMode,
+  buffDefensiveMode,
+  buffLockCardsDeck,
+  buffDisableColorCard,
+  buffChangeField,
+  buffIncreaseDefenceAgainstIndividuality,
+  buffInvinciblePierce,
+  buffHpRecoveryPerTurn,
+  buffNegativeEffectImmunity,
+  buffNegativeEffectAtTurnEnd,
+  attackPhysical,
+  attackProjectile,
+  attackMagical,
+  criticalHit,
+  faceCard,
+  cardNP,
+  kingproteaGrowth,
+  kingproteaProliferation,
+  kingproteaProliferationNPDefense,
+  fieldSunlight,
+  fieldShore,
+  fieldForest,
+  fieldBurning,
+  fieldCity,
+  shadowServant,
+  aoeNP,
+  giant,
+  childServant,
+  buffSpecialInvincible,
+  buffSkillRankUp,
+  buffSleep,
+  nobunaga,
+  fieldImaginarySpace,
+  existenceOutsideTheDomain,
+  curse,
+  fieldShoreOrImaginarySpace,
+  shutenOnField,
+  shuten,
+  genji,
+  vengeance,
+  enemyGardenOfSinnersLivingCorpse,
+  enemyGardenOfSinnersApartmentGhostAndSkeleton,
+  enemyGardenOfSinnersBaseModel,
+  enemyGardenOfSinnersVengefulSpiritOfSevenPeople,
+  enemySaberEliWerebeastAndHomunculusAndKnight,
+  enemySaberEliSkeletonAndGhostAndLamia,
+  enemySaberEliBugAndGolem,
+  enemySeraphEater,
+  enemySeraphShapeshifter,
+  enemySeraphTypeI,
+  enemySeraphTypeSakura,
+  enemyHimejiCastleKnightAndGazerAndMassProduction,
+  enemyHimejiCastleDronesAndHomunculusAndAutomata,
+  enemyHimejiCastleSkeletonAndScarecrow,
+  enemyGuda3MiniNobu,
+  enemyDavinciTrueEnemy,
+  enemyDavinciFalseEnemy,
+  enemyCaseFilesRareEnemy,
+  enemyLasVegasBonusEnemy,
+  enemySummerCampRareEnemy,
+  enemyLittleBigTenguTsuwamonoEnemy,
+  eventSaberWars,
+  eventRashomon,
+  eventOnigashima,
+  eventOnigashimaRaid,
+  eventPrisma,
+  eventPrismaWorldEndMatch,
+  eventNeroFest2,
+  eventGuda2,
+  eventNeroFest3,
+  eventSetsubun,
+  eventApocrypha,
+  eventBattleInNewYork1,
+  eventOniland,
+  eventOoku,
+  eventGuda4,
+  eventLasVegas,
+  eventBattleInNewYork2,
+  eventSaberWarsII,
+  eventSummerCamp,
+  eventGuda5,
+  cursedBook,
+  buffCharmFemale,
+  mechanical,
+  fae,
+  hasCostume,
+  weakPointsRevealed,
+  chenGongNpBlock,
+  knightsOfTheRound,
+  divineSpirit,
+  buffNullifyBuff,
+  enemyGudaMiniNobu,
+  burningLove,
+  buffStrongAgainstWildBeast,
+  buffStrongAgainstDragon,
+  fairyTaleServant,
+  classBeastIV,
+  havingAnimalsCharacteristics
+}
+
+enum CondType {
+  none,
+  questClear,
+  itemGet,
+  useItemEternity,
+  useItemTime,
+  useItemCount,
+  svtLevel,
+  svtLimit,
+  svtGet,
+  svtFriendship,
+  svtGroup,
+  event,
+  date,
+  weekday,
+  purchaseQpShop,
+  purchaseStoneShop,
+  warClear,
+  flag,
+  svtCountStop,
+  birthDay,
+  eventEnd,
+  svtEventJoin,
+  missionConditionDetail,
+  eventMissionClear,
+  eventMissionAchieve,
+  questClearNum,
+  notQuestGroupClear,
+  raidAlive,
+  raidDead,
+  raidDamage,
+  questChallengeNum,
+  masterMission,
+  questGroupClear,
+  superBossDamage,
+  superBossDamageAll,
+  purchaseShop,
+  questNotClear,
+  notShopPurchase,
+  notSvtGet,
+  notEventShopPurchase,
+  svtHaving,
+  notSvtHaving,
+  questChallengeNumEqual,
+  questChallengeNumBelow,
+  questClearNumEqual,
+  questClearNumBelow,
+  questClearPhase,
+  notQuestClearPhase,
+  eventPointGroupWin,
+  eventNormaPointClear,
+  questAvailable,
+  questGroupAvailableNum,
+  eventNormaPointNotClear,
+  notItemGet,
+  costumeGet,
+  questResetAvailable,
+  svtGetBeforeEventEnd,
+  questClearRaw,
+  questGroupClearRaw,
+  eventGroupPointRatioInTerm,
+  eventGroupRankInTerm,
+  notEventRaceQuestOrNotAllGroupGoal,
+  eventGroupTotalWinEachPlayer,
+  eventScriptPlay,
+  svtCostumeReleased,
+  questNotClearAnd,
+  svtRecoverd,
+  shopReleased,
+  eventPoint,
+  eventRewardDispCount,
+  equipWithTargetCostume,
+  raidGroupDead,
+  notSvtGroup,
+  notQuestResetAvailable,
+  notQuestClearRaw,
+  notQuestGroupClearRaw,
+  notEventMissionClear,
+  notEventMissionAchieve,
+  notCostumeGet,
+  notSvtCostumeReleased,
+  notEventRaceQuestOrNotTargetRankGoal,
+  playerGenderType,
+  shopGroupLimitNum,
+  eventGroupPoint,
+  eventGroupPointBelow,
+  eventTotalPoint,
+  eventTotalPointBelow,
+  eventValue,
+  eventValueBelow,
+  eventFlag,
+  eventStatus,
+  notEventStatus,
+  forceFalse,
+  svtHavingLimitMax,
+  eventPointBelow,
+  svtEquipFriendshipHaving,
+  movieNotDownload,
+  multipleDate,
+  svtFriendshipAbove,
+  svtFriendshipBelow,
+  movieDownloaded,
+  routeSelect,
+  notRouteSelect,
+  limitCount,
+  limitCountAbove,
+  limitCountBelow,
+  badEndPlay,
+  commandCodeGet,
+  notCommandCodeGet,
+  allUsersBoxGachaCount,
+  totalTdLevel,
+  totalTdLevelAbove,
+  totalTdLevelBelow,
+  commonRelease,
+  battleResultWin,
+  battleResultLose,
+  eventValueEqual,
+  boardGameTokenHaving,
+  boardGameTokenGroupHaving,
+  eventFlagOn,
+  eventFlagOff,
+  questStatusFlagOn,
+  questStatusFlagOff,
+  eventValueNotEqual,
+  limitCountMaxEqual,
+  limitCountMaxAbove,
+  limitCountMaxBelow,
+  boardGameTokenGetNum,
+  battleLineWinAbove,
+  battleLineLoseAbove,
+  battleLineContinueWin,
+  battleLineContinueLose,
+  battleLineContinueWinBelow,
+  battleLineContinueLoseBelow,
+  battleGroupWinAvove,
+  battleGroupLoseAvove,
+  svtLimitClassNum,
+  overTimeLimitRaidAlive,
+  onTimeLimitRaidDead,
+  onTimeLimitRaidDeadNum,
+  raidBattleProgressAbove,
+  svtEquipRarityLevelNum,
+  latestMainScenarioWarClear,
+  eventMapValueContains,
+  resetBirthDay,
+  shopFlagOn,
+  shopFlagOff,
+  purchaseValidShopGroup,
+  svtLevelClassNum,
+  svtLevelIdNum,
+  limitCountImageEqual,
+  limitCountImageAbove,
+  limitCountImageBelow,
+  eventTypeStartTimeToEndDate,
+  existBoxGachaScriptReplaceGiftId,
+  notExistBoxGachaScriptReplaceGiftId,
+  limitedPeriodVoiceChangeTypeOn,
+  startRandomMission,
+  randomMissionClearNum,
+  progressValueEqual,
+  progressValueAbove,
+  progressValueBelow,
+  randomMissionTotalClearNum,
 }

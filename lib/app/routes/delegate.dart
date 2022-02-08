@@ -1,4 +1,5 @@
 import 'package:chaldea/app/routes/root_delegate.dart';
+import 'package:chaldea/components/components.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -32,6 +33,13 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
       pages: List.of(_pages),
       onPopPage: onPopPage,
     );
+  }
+
+  Widget buildSpecific(BuildContext context, List<Page> pages) {
+    _pages
+      ..clear()
+      ..addAll(pages);
+    return build(context);
   }
 
   bool onPopPage(Route route, dynamic result) {

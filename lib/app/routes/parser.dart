@@ -7,6 +7,7 @@ class AppRouteInformationParser
   @override
   Future<RouteConfiguration> parseRouteInformation(
       RouteInformation routeInformation) async {
+    // return RouteConfiguration.bootstrap(routeInformation.location);
     final uri = routeInformation.location == null
         ? null
         : Uri.tryParse(routeInformation.location!);

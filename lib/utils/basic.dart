@@ -167,6 +167,7 @@ class EnumUtil {
 
 class StopwatchX extends Stopwatch {
   final String? name;
+  ValueChanged<String>? onLog;
 
   StopwatchX([this.name, bool autostart = true]) : super() {
     if (autostart) start();
@@ -183,7 +184,7 @@ class StopwatchX extends Stopwatch {
 
   Duration? _lastLogDuration;
 
-  void log([String? action]) {
+  String log([String? action]) {
     final _elapsed = elapsed;
     final buffer = StringBuffer('Stopwatch');
     if (name != null || action != null) {
@@ -195,10 +196,13 @@ class StopwatchX extends Stopwatch {
     }
     buffer.write(': elapsed $elapsed');
     if (_lastLogDuration != null) {
-      buffer.write(', $_lastLogDuration');
+      buffer.write(', ${_elapsed - _lastLogDuration!}');
     }
-    debugPrint(buffer.toString());
+    final output = buffer.toString();
     _lastLogDuration = _elapsed;
+    print(output);
+    if (onLog != null) onLog!(output);
+    return output;
   }
 }
 

@@ -1,5 +1,6 @@
 ## 1.6.7
 
+- fix planner give wrong solution if containing ignored items
 - improve web support
 - set custom name for each Plan
 - add target selection in skill effect filter

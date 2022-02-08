@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/shared/lang_switch.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path/path.dart' as p;
 
 import '../servant_detail_page.dart';
@@ -171,8 +172,28 @@ class _SvtVoiceTabState extends SvtTabBaseState<SvtVoiceTab> {
                 final file = await WikiUtil.getWikiFile(record.voiceFile!);
                 if (file == null) return;
                 final fp = p.join(db.paths.downloadDir, record.voiceFile);
-                await SimpleCancelOkDialog.showSave(
-                    context: context, srcFile: file, savePath: fp);
+                await SimpleCancelOkDialog(
+                  title: Text(S.current.save),
+                  content: Text(db.paths.convertIosPath(fp)),
+                  actions: [
+                    if (PlatformU.isDesktop)
+                      TextButton(
+                        onPressed: () {
+                          OpenFile.open(db.paths.downloadDir);
+                        },
+                        child: Text(S.current.open),
+                      )
+                  ],
+                  onTapOk: () {
+                    if (PlatformU.isWeb) {
+                      EasyLoading.showError('Not support on web');
+                      return;
+                    }
+                    File(fp).createSync(recursive: true);
+                    file.copySync(fp);
+                    EasyLoading.showSuccess(S.current.saved);
+                  },
+                ).showDialog(context);
                 if (state.mounted) {
                   state.setState(() {
                     state.value = !state.value;

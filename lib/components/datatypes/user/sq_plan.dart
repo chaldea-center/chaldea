@@ -94,7 +94,8 @@ class SaintQuartzPlan {
         sq += 2;
       } else if (_continuousLogin == 7) {
         ticket += 1;
-      } else if (date.weekday == 1 && weeklyMission) {
+      }
+      if (date.weekday == 1 && weeklyMission) {
         sq += 3;
       }
       int _accLogin = accLogin + day;

@@ -1,12 +1,11 @@
 library userdata;
 
-import 'package:chaldea/utils/basic.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../utils/basic.dart';
 import '../../utils/extension.dart';
-import '../gamedata/gamedata.dart' show Gender;
 
-part 'userdata.g.dart';
+part '../../generated/models/userdata/userdata.g.dart';
 
 enum Region {
   jp,
@@ -53,7 +52,7 @@ class UserData {
 @JsonSerializable()
 class User {
   String name;
-  Gender masterGender;
+  bool isGirl;
   bool use6thDrops;
 
   Region region;
@@ -67,8 +66,8 @@ class User {
   Map<int, int> mysticCodes;
 
   User({
-    this.name = 'default',
-    this.masterGender = Gender.female,
+    this.name = 'Gudako',
+    this.isGirl = true,
     this.use6thDrops = true,
     this.region = Region.jp,
     Map<int, SvtStatus>? servants,

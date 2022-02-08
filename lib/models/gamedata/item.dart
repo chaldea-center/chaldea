@@ -1,4 +1,8 @@
-part of gamedata;
+import 'package:json_annotation/json_annotation.dart';
+
+import 'common.dart';
+
+part '../../generated/models/gamedata/item.g.dart';
 
 @JsonSerializable()
 class Item {
@@ -17,9 +21,9 @@ class Item {
     required this.id,
     required this.name,
     required this.type,
-    required this.uses,
+    this.uses = const [],
     required this.detail,
-    required this.individuality,
+    this.individuality = const [],
     required this.icon,
     required this.background,
     required this.priority,
@@ -31,13 +35,16 @@ class Item {
 
 @JsonSerializable()
 class ItemAmount {
-  Item item;
+  int itemId;
   int amount;
 
   ItemAmount({
-    required this.item,
+    Item? item,
+    int? itemId,
     required this.amount,
-  });
+  }) : itemId = item?.id ?? itemId ?? 0;
+
+  Item? get item => null;
 
   factory ItemAmount.fromJson(Map<String, dynamic> json) =>
       _$ItemAmountFromJson(json);
@@ -55,4 +62,52 @@ class LvlUpMaterial {
 
   factory LvlUpMaterial.fromJson(Map<String, dynamic> json) =>
       _$LvlUpMaterialFromJson(json);
+}
+
+enum ItemUse {
+  skill,
+  ascension,
+  costume,
+}
+
+enum ItemType {
+  qp,
+  stone,
+  apRecover,
+  apAdd,
+  mana,
+  key,
+  gachaClass,
+  gachaRelic,
+  gachaTicket,
+  limit,
+  skillLvUp,
+  tdLvUp,
+  friendPoint,
+  eventPoint,
+  eventItem,
+  questRewardQp,
+  chargeStone,
+  rpAdd,
+  boostItem,
+  stoneFragments,
+  anonymous,
+  rarePri,
+  costumeRelease,
+  itemSelect,
+  commandCardPrmUp,
+  dice,
+  continueItem,
+  euqipSkillUseItem,
+  svtCoin,
+  friendshipUpItem,
+  pp,
+}
+
+enum ItemBGType {
+  zero,
+  bronze,
+  silver,
+  gold,
+  questClearQPReward,
 }

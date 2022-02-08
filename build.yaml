@@ -6,13 +6,17 @@ targets:
         - lib/$lib$
         - pubspec.*
       exclude:
-        - lib/components/**
+        - lib/components/**  # exclude old models for V1
 
   gamedata:
     sources:
       include:
         - lib/models/gamedata/**
     builders:
+      source_gen|combining_builder:
+        options:
+          build_extensions:
+            'lib/models/{{0}}/{{1}}.dart': 'lib/generated/models/{{0}}/{{1}}.g.dart'
       json_serializable:
         options:
           any_map: true
@@ -25,12 +29,16 @@ targets:
           generic_argument_factories: true
           ignore_unannotated: false
           include_if_null: true
+
   userdata:
     sources:
       include:
         - lib/models/userdata/**
-        - lib/models/settings/**
     builders:
+      source_gen|combining_builder:
+        options:
+          build_extensions:
+            'lib/models/{{0}}/{{1}}.dart': 'lib/generated/models/{{0}}/{{1}}.g.dart'
       json_serializable:
         options:
           any_map: true

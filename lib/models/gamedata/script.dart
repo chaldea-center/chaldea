@@ -1,4 +1,26 @@
-part of gamedata;
+import 'package:json_annotation/json_annotation.dart';
+
+import 'quest.dart';
+
+part '../../generated/models/gamedata/script.g.dart';
+
+@JsonSerializable()
+class NiceScript {
+  String scriptId;
+  int scriptSizeBytes;
+  String script;
+  List<Quest> quests;
+
+  NiceScript({
+    required this.scriptId,
+    required this.scriptSizeBytes,
+    required this.script,
+    required this.quests,
+  });
+
+  factory NiceScript.fromJson(Map<String, dynamic> json) =>
+      _$NiceScriptFromJson(json);
+}
 
 @JsonSerializable()
 class ScriptLink {
@@ -46,22 +68,4 @@ class StageLink {
 
   factory StageLink.fromJson(Map<String, dynamic> json) =>
       _$StageLinkFromJson(json);
-}
-
-@JsonSerializable()
-class NiceScript {
-  String scriptId;
-  int scriptSizeBytes;
-  String script;
-  List<Quest> quests;
-
-  NiceScript({
-    required this.scriptId,
-    required this.scriptSizeBytes,
-    required this.script,
-    required this.quests,
-  });
-
-  factory NiceScript.fromJson(Map<String, dynamic> json) =>
-      _$NiceScriptFromJson(json);
 }

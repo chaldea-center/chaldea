@@ -1,12 +1,5 @@
-import 'dart:io';
-
-import 'package:chaldea/components/config.dart';
-import 'package:chaldea/components/extensions.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/packages/packages.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:open_file/open_file.dart';
 
 class InputCancelOkDialog extends StatefulWidget {
   final String? title;
@@ -186,34 +179,5 @@ class SimpleCancelOkDialog extends StatelessWidget {
       scrollable: scrollable,
       actions: children,
     );
-  }
-
-  static Future showSave({
-    required BuildContext context,
-    required File srcFile,
-    required String savePath,
-  }) async {
-    return SimpleCancelOkDialog(
-      title: Text(S.current.save),
-      content: Text(db.paths.convertIosPath(savePath)),
-      actions: [
-        if (PlatformU.isDesktop)
-          TextButton(
-            onPressed: () {
-              OpenFile.open(db.paths.downloadDir);
-            },
-            child: Text(S.current.open),
-          )
-      ],
-      onTapOk: () {
-        if (PlatformU.isWeb) {
-          EasyLoading.showError('Not support on web');
-          return;
-        }
-        File(savePath).createSync(recursive: true);
-        srcFile.copySync(savePath);
-        EasyLoading.showSuccess(S.current.saved);
-      },
-    ).showDialog(context);
   }
 }

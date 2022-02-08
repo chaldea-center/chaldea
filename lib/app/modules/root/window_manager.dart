@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:chaldea/app/modules/home/bootstrap.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:flutter/material.dart';
 
@@ -24,6 +25,9 @@ class _WindowManagerState extends State<WindowManager> {
 
   @override
   Widget build(BuildContext context) {
+    if (!root.appState.dataReady) {
+      return BootstrapPage();
+    }
     return root.appState.showWindowManager
         ? _multiple(context)
         : root.appState.showSidebar && SplitRoute.isSplit(context)
@@ -136,6 +140,9 @@ class _WindowManagerState extends State<WindowManager> {
           },
         ),
       ),
+      // if not set, FAB will animate from right to center
+      // when showing window manager
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
@@ -197,12 +204,16 @@ class _WindowManagerState extends State<WindowManager> {
               right: 0,
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: Theme.of(context).highlightColor.withOpacity(0.9),
+                  color: Theme.of(context).splashColor,
                   border: Border(
+                    top: BorderSide(
+                      width: 1,
+                      color: Theme.of(context).dividerColor,
+                    ),
                     bottom: BorderSide(
                       width: 3,
                       color: index == root.appState.activeIndex
-                          ? Theme.of(context).primaryColor
+                          ? Theme.of(context).colorScheme.secondary
                           : Colors.transparent,
                     ),
                   ),

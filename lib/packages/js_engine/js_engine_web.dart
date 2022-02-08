@@ -10,7 +10,12 @@ class JsEngine implements JsEngineInterface {
 
   @override
   Future<void> init([Function? callback]) async {
-    if (callback != null) await callback();
+    if (_completer != null) return _completer!.future;
+    _completer = Completer();
+    Future<void>.microtask(() async {
+      if (callback != null) await callback();
+    }).catchError(_completer!.completeError);
+    return _completer!.future;
   }
 
   @override

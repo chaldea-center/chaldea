@@ -16,9 +16,9 @@ class AppState extends ChangeNotifier {
 
   /// windows(routers)
   List<AppRouterDelegate> get children => List.unmodifiable(_children);
-  int _activeIndex = 0;
 
   int get activeIndex => _activeIndex;
+  int _activeIndex = 0;
 
   AppRouterDelegate get activeRouter => _children[_activeIndex];
 
@@ -51,9 +51,8 @@ class AppState extends ChangeNotifier {
   }
 
   /// _showWindowManager
-  bool _showWindowManager = false;
-
   bool get showWindowManager => _showWindowManager;
+  bool _showWindowManager = false;
 
   set showWindowManager(bool v) {
     _showWindowManager = v;
@@ -61,12 +60,20 @@ class AppState extends ChangeNotifier {
   }
 
   /// _showSidebar
-  bool _showSidebar = true;
-
   bool get showSidebar => _showSidebar;
+  bool _showSidebar = true;
 
   set showSidebar(bool v) {
     _showSidebar = v;
+    notifyListeners();
+  }
+
+  /// _dataReady
+  bool get dataReady => _dataReady;
+  bool _dataReady = false;
+
+  set dataReady(bool v) {
+    _dataReady = v;
     notifyListeners();
   }
 }

@@ -1,7 +1,10 @@
 import 'package:chaldea/_test_page.dart';
+import 'package:chaldea/models/db.dart';
+import 'package:chaldea/modules/debug/theme_palette.dart';
 import 'package:chaldea/widgets/movable_fab.dart';
 import 'package:flutter/material.dart';
 
+import '../../../packages/split_route/split_route.dart';
 import '../../app.dart';
 
 class WindowManagerFab extends StatefulWidget {
@@ -122,6 +125,27 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
       title: const Text('Debug Menu'),
       children: [
         ListTile(
+          leading: const Icon(Icons.dark_mode),
+          title: const Text('Toggle Dark Mode'),
+          horizontalTitleGap: 0,
+          onTap: () {
+            Navigator.pop(context);
+            db2.settings.themeMode = db2.settings.isResolvedDarkMode
+                ? ThemeMode.light
+                : ThemeMode.dark;
+            db2.notifyAppUpdate();
+          },
+        ),
+        ListTile(
+          horizontalTitleGap: 0,
+          leading: const Icon(Icons.color_lens_outlined),
+          title: const Text('Palette'),
+          onTap: () {
+            Navigator.pop(context);
+            SplitRoute.push(context, DarkLightThemePalette());
+          },
+        ),
+        ListTile(
           horizontalTitleGap: 0,
           leading: const Icon(Icons.timer),
           title: const Text('Hide 60s'),
@@ -133,6 +157,13 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
         ListTile(
           title: const Text('TestFunc'),
           onTap: () => testFunction(context),
+        ),
+        ListTile(
+          title: const Text('Save User Data'),
+          onTap: () {
+            db2.saveData();
+            Navigator.pop(context);
+          },
         ),
         Center(
           child: IconButton(

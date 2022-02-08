@@ -1,4 +1,32 @@
-part of gamedata;
+import 'package:json_annotation/json_annotation.dart';
+
+import 'common.dart';
+import 'item.dart';
+import 'quest.dart';
+
+part '../../generated/models/gamedata/event.g.dart';
+
+@JsonSerializable()
+class MasterMission {
+  int id;
+  int startedAt;
+  int endedAt;
+  int closedAt;
+  List<EventMission> missions;
+  List<BasicQuest> quests;
+
+  MasterMission({
+    required this.id,
+    required this.startedAt,
+    required this.endedAt,
+    required this.closedAt,
+    required this.missions,
+    required this.quests,
+  });
+
+  factory MasterMission.fromJson(Map<String, dynamic> json) =>
+      _$MasterMissionFromJson(json);
+}
 
 @JsonSerializable()
 class ItemSet {
@@ -20,16 +48,19 @@ class ItemSet {
 
 @JsonSerializable()
 class NiceShop {
-  int id;
-  int baseShopId;
+  // int id;
+  // int baseShopId;
   ShopType shopType;
-  int eventId;
+
+  // int eventId;
   int slot;
   int priority;
-  String name;
-  String detail;
+
+  // String name;
+  // String detail;
   String infoMessage;
-  String warningMessage;
+
+  // String warningMessage;
   PayType payType;
   ItemAmount cost;
   PurchaseType purchaseType;
@@ -40,34 +71,37 @@ class NiceShop {
   int defaultLv;
   int defaultLimitCount;
   String? scriptName;
+  String? scriptId;
   String? script;
-  int openedAt;
-  int closedAt;
+
+  // int openedAt;
+  // int closedAt;
 
   NiceShop({
-    required this.id,
-    required this.baseShopId,
-    required this.shopType,
-    required this.eventId,
+    // required this.id,
+    // required this.baseShopId,
+    this.shopType = ShopType.eventItem,
+    // required this.eventId,
     required this.slot,
     required this.priority,
-    required this.name,
-    required this.detail,
-    required this.infoMessage,
-    required this.warningMessage,
+    // required this.name,
+    // required this.detail,
+    this.infoMessage = "",
+    // this.warningMessage = "",
     required this.payType,
     required this.cost,
     required this.purchaseType,
-    required this.targetIds,
-    required this.itemSet,
-    required this.setNum,
+    this.targetIds = const [],
+    this.itemSet = const [],
+    this.setNum = 1,
     required this.limitNum,
-    required this.defaultLv,
-    required this.defaultLimitCount,
+    this.defaultLv = 0,
+    this.defaultLimitCount = 0,
     this.scriptName,
+    this.scriptId,
     this.script,
-    required this.openedAt,
-    required this.closedAt,
+    // required this.openedAt,
+    // required this.closedAt,
   });
 
   factory NiceShop.fromJson(Map<String, dynamic> json) =>
@@ -75,38 +109,20 @@ class NiceShop {
 }
 
 @JsonSerializable()
-class Gift {
-  int id;
-  GiftType type;
-  int objectId;
-  int priority;
-  int num;
-
-  Gift({
-    required this.id,
-    required this.type,
-    required this.objectId,
-    required this.priority,
-    required this.num,
-  });
-
-  factory Gift.fromJson(Map<String, dynamic> json) => _$GiftFromJson(json);
-}
-
-@JsonSerializable()
 class EventReward {
   int groupId;
   int point;
   List<Gift> gifts;
-  String bgImagePoint;
-  String bgImageGet;
+
+  // String bgImagePoint;
+  // String bgImageGet;
 
   EventReward({
     required this.groupId,
     required this.point,
     required this.gifts,
-    required this.bgImagePoint,
-    required this.bgImageGet,
+    // required this.bgImagePoint,
+    // required this.bgImageGet,
   });
 
   factory EventReward.fromJson(Map<String, dynamic> json) =>
@@ -136,18 +152,19 @@ class EventPointBuff {
   int groupId;
   int eventPoint;
   String name;
-  String detail;
+
+  // String detail;
   String icon;
   ItemBGType background;
   int value;
 
   EventPointBuff({
     required this.id,
-    required this.funcIds,
-    required this.groupId,
+    this.funcIds = const [],
+    this.groupId = 0,
     required this.eventPoint,
     required this.name,
-    required this.detail,
+    // required this.detail,
     required this.icon,
     required this.background,
     required this.value,
@@ -174,9 +191,9 @@ class EventMissionConditionDetail {
     required this.missionTargetId,
     required this.missionCondType,
     required this.logicType,
-    required this.targetIds,
-    required this.addTargetIds,
-    required this.targetQuestIndividualities,
+    this.targetIds = const [],
+    this.addTargetIds = const [],
+    this.targetQuestIndividualities = const [],
     required this.conditionLinkType,
     this.targetEventIds,
   });
@@ -190,12 +207,15 @@ class EventMissionCondition {
   int id;
   MissionProgressType missionProgressType;
   int priority;
-  int missionTargetId;
+
+  // int missionTargetId;
   int condGroup;
+  @JsonKey(fromJson: toEnumCondType)
   CondType condType;
   List<int> targetIds;
   int targetNum;
-  String conditionMessage;
+
+  // String conditionMessage;
   String closedMessage;
   int flag;
   EventMissionConditionDetail? detail;
@@ -203,15 +223,15 @@ class EventMissionCondition {
   EventMissionCondition({
     required this.id,
     required this.missionProgressType,
-    required this.priority,
-    required this.missionTargetId,
+    this.priority = 0,
+    // required this.missionTargetId,
     required this.condGroup,
     required this.condType,
     required this.targetIds,
     required this.targetNum,
-    required this.conditionMessage,
-    required this.closedMessage,
-    required this.flag,
+    // required this.conditionMessage,
+    this.closedMessage = "",
+    this.flag = 0,
     this.detail,
   });
 
@@ -222,12 +242,15 @@ class EventMissionCondition {
 @JsonSerializable()
 class EventMission {
   int id;
-  int flag;
+
+  // int flag;
   MissionType type;
-  int missionTargetId;
+
+  // int missionTargetId;
   int dispNo;
   String name;
-  String detail;
+
+  // String detail;
   int startedAt;
   int endedAt;
   int closedAt;
@@ -235,30 +258,31 @@ class EventMission {
   List<Gift> gifts;
   int bannerGroup;
   int priority;
-  int rewardRarity;
-  int notfyPriority;
-  int presentMessageId;
+
+  // int rewardRarity;
+  // int notfyPriority;
+  // int presentMessageId;
   List<EventMissionCondition> conds;
 
   EventMission({
     required this.id,
-    required this.flag,
-    required this.type,
-    required this.missionTargetId,
+    // required this.flag,
+    this.type = MissionType.event,
+    // required this.missionTargetId,
     required this.dispNo,
     required this.name,
-    required this.detail,
-    required this.startedAt,
-    required this.endedAt,
-    required this.closedAt,
+    // required this.detail,
+    this.startedAt = 0,
+    this.endedAt = 0,
+    this.closedAt = 0,
     required this.rewardType,
     required this.gifts,
-    required this.bannerGroup,
-    required this.priority,
-    required this.rewardRarity,
-    required this.notfyPriority,
-    required this.presentMessageId,
-    required this.conds,
+    this.bannerGroup = 0,
+    this.priority = 0,
+    // required this.rewardRarity,
+    // required this.notfyPriority,
+    // required this.presentMessageId,
+    this.conds = const [],
   });
 
   factory EventMission.fromJson(Map<String, dynamic> json) =>
@@ -269,16 +293,17 @@ class EventMission {
 class EventTowerReward {
   int floor;
   List<Gift> gifts;
-  String boardMessage;
-  String rewardGet;
-  String banner;
+
+  // String boardMessage;
+  // String rewardGet;
+  // String banner;
 
   EventTowerReward({
     required this.floor,
     required this.gifts,
-    required this.boardMessage,
-    required this.rewardGet,
-    required this.banner,
+    // required this.boardMessage,
+    // required this.rewardGet,
+    // required this.banner,
   });
 
   factory EventTowerReward.fromJson(Map<String, dynamic> json) =>
@@ -303,30 +328,32 @@ class EventTower {
 
 @JsonSerializable()
 class EventLotteryBox {
-  int id;
+  // int id;
   int boxIndex;
   int no;
   int type;
   List<Gift> gifts;
   int maxNum;
   bool isRare;
-  int priority;
-  String detail;
-  String icon;
-  String banner;
+
+  // int priority;
+  // String detail;
+
+  // String icon;
+  // String banner;
 
   EventLotteryBox({
-    required this.id,
-    required this.boxIndex,
+    // required this.id,
+    this.boxIndex = 0,
     required this.no,
-    required this.type,
-    required this.gifts,
+    this.type = 1,
+    this.gifts = const [],
     required this.maxNum,
-    required this.isRare,
-    required this.priority,
-    required this.detail,
-    required this.icon,
-    required this.banner,
+    this.isRare = false,
+    // this.priority=0,
+    // required this.detail,
+    // required this.icon,
+    // required this.banner,
   });
 
   factory EventLotteryBox.fromJson(Map<String, dynamic> json) =>
@@ -345,7 +372,7 @@ class EventLottery {
 
   EventLottery({
     required this.id,
-    required this.slot,
+    this.slot = 0,
     required this.payType,
     required this.cost,
     required this.priority,
@@ -361,14 +388,15 @@ class EventLottery {
 class CommonConsume {
   int id;
   int priority;
-  CommonConsumeType type;
+
+  // CommonConsumeType type;
   int objectId;
   int num;
 
   CommonConsume({
     required this.id,
     required this.priority,
-    required this.type,
+    // required this.type,
     required this.objectId,
     required this.num,
   });
@@ -449,27 +477,146 @@ class Event {
     required this.id,
     required this.type,
     required this.name,
-    required this.shortName,
+    this.shortName = "",
     required this.detail,
     this.noticeBanner,
     this.banner,
     this.icon,
-    required this.bannerPriority,
+    this.bannerPriority = 0,
     required this.noticeAt,
     required this.startedAt,
     required this.endedAt,
     required this.finishedAt,
     required this.materialOpenedAt,
-    required this.warIds,
-    required this.shop,
-    required this.rewards,
-    required this.pointGroups,
-    required this.pointBuffs,
-    required this.missions,
-    required this.towers,
-    required this.lotteries,
-    required this.treasureBoxes,
+    this.warIds = const [],
+    this.shop = const [],
+    this.rewards = const [],
+    this.pointGroups = const [],
+    this.pointBuffs = const [],
+    this.missions = const [],
+    this.towers = const [],
+    this.lotteries = const [],
+    this.treasureBoxes = const [],
   });
 
   factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
+}
+
+enum PurchaseType {
+  none,
+  item,
+  equip,
+  friendGacha,
+  servant,
+  setItem,
+  quest,
+  eventShop,
+  eventSvtGet,
+  manaShop,
+  storageSvt,
+  storageSvtequip,
+  bgm,
+  costumeRelease,
+  bgmRelease,
+  lotteryShop,
+  eventFactory,
+  itemAsPresent,
+  commandCode,
+  gift,
+  eventSvtJoin,
+  assist,
+  kiaraPunisherReset,
+}
+
+enum ShopType {
+  none,
+  eventItem,
+  mana,
+  rarePri,
+  svtStorage,
+  svtEquipStorage,
+  stoneFragments,
+  svtAnonymous,
+  bgm,
+  limitMaterial,
+  grailFragments,
+  svtCostume,
+  startUpSummon,
+  shop13,
+}
+enum MissionProgressType {
+  none,
+  regist,
+  openCondition,
+  start,
+  clear,
+  achieve,
+}
+
+enum MissionType {
+  none,
+  event,
+  weekly,
+  daily,
+  extra,
+  limited,
+  complete,
+  random,
+}
+enum MissionRewardType {
+  gift,
+  extra,
+  set,
+}
+enum PayType {
+  stone,
+  qp,
+  friendPoint,
+  mana,
+  ticket,
+  eventItem,
+  chargeStone,
+  stoneFragments,
+  anonymous,
+  rarePri,
+  item,
+  grailFragments,
+  free,
+}
+
+enum CommonConsumeType {
+  item,
+}
+enum EventType {
+  none,
+  raidBoss,
+  pvp,
+  point,
+  loginBonus,
+  combineCampaign,
+  shop,
+  questCampaign,
+  bank,
+  serialCampaign,
+  loginCampaign,
+  loginCampaignRepeat,
+  eventQuest,
+  svtequipCombineCampaign,
+  terminalBanner,
+  boxGacha,
+  boxGachaPoint,
+  loginCampaignStrict,
+  totalLogin,
+  comebackCampaign,
+  locationCampaign,
+  warBoard,
+  combineCosutumeItem,
+  treasureBox,
+}
+
+enum DetailMissionCondLinkType {
+  eventStart,
+  missionStart,
+  masterMissionStart,
+  randomMissionStart,
 }

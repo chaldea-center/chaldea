@@ -1,6 +1,259 @@
 // ignore_for_file: non_constant_identifier_names
+import 'package:json_annotation/json_annotation.dart';
 
-part of gamedata;
+import '../../app/tools/gamedata_loader.dart';
+import 'common.dart';
+
+part '../../generated/models/gamedata/skill.g.dart';
+
+@JsonSerializable()
+class BaseSkill {
+  int id;
+  String name;
+  String ruby;
+  String? unmodifiedDetail; // String? detail;
+  SkillType type;
+  String? icon;
+  List<int> coolDown;
+  List<NiceTrait> actIndividuality;
+  SkillScript script;
+  List<ExtraPassive> extraPassive;
+  List<SkillAdd> skillAdd;
+  Map<AiType, List<int>>? aiIds;
+  List<NiceFunction> functions;
+
+  BaseSkill({
+    required this.id,
+    required this.name,
+    this.ruby = '',
+    // this.detail,
+    this.unmodifiedDetail,
+    required this.type,
+    this.icon,
+    this.coolDown = const [],
+    this.actIndividuality = const [],
+    SkillScript? script,
+    this.extraPassive = const [],
+    this.skillAdd = const [],
+    this.aiIds,
+    required this.functions,
+  }) : script = script ?? SkillScript();
+
+  factory BaseSkill.fromJson(Map<String, dynamic> json) =>
+      _$BaseSkillFromJson(json);
+}
+
+@JsonSerializable()
+class NiceSkill implements BaseSkill {
+  @override
+  int id;
+  @override
+  String name;
+  @override
+  String ruby;
+  @override
+  String? unmodifiedDetail; // String detail
+  @override
+  SkillType type;
+  @override
+  String? icon;
+  @override
+  List<int> coolDown;
+  @override
+  List<NiceTrait> actIndividuality;
+  @override
+  SkillScript script;
+  @override
+  List<ExtraPassive> extraPassive;
+  @override
+  List<SkillAdd> skillAdd;
+  @override
+  Map<AiType, List<int>>? aiIds;
+  @override
+  List<NiceFunction> functions;
+
+  int num;
+  int strengthStatus;
+  int priority;
+  int condQuestId;
+  int condQuestPhase;
+  int condLv;
+  int condLimitCount;
+
+  NiceSkill({
+    required this.id,
+    required this.name,
+    this.ruby = '',
+    this.unmodifiedDetail,
+    required this.type,
+    this.icon,
+    this.coolDown = const [],
+    this.actIndividuality = const [],
+    SkillScript? script,
+    this.extraPassive = const [],
+    this.skillAdd = const [],
+    this.aiIds,
+    this.functions = const [],
+    this.num = 0,
+    this.strengthStatus = 0,
+    this.priority = 0,
+    this.condQuestId = 0,
+    this.condQuestPhase = 0,
+    this.condLv = 0,
+    this.condLimitCount = 0,
+  }) : script = script ?? SkillScript();
+
+  factory NiceSkill.fromJson(Map<String, dynamic> json) {
+    final baseSkill = GameDataLoader.instance?.gameJson?['baseSkills']
+        ?[json['id'].toString()];
+    if (baseSkill != null) {
+      json.addAll(Map.from(baseSkill));
+    }
+    return _$NiceSkillFromJson(json);
+  }
+}
+
+@JsonSerializable()
+class NiceTd {
+  int id;
+  int num;
+  CardType card;
+  String name;
+  String ruby;
+  String? icon;
+  String rank;
+  String type;
+
+  // String? detail;
+  String? unmodifiedDetail;
+  NpGain npGain;
+  List<int> npDistribution;
+  int strengthStatus;
+  int priority;
+  int condQuestId;
+  int condQuestPhase;
+  List<NiceTrait> individuality;
+  SkillScript script;
+  List<NiceFunction> functions;
+
+  NiceTd({
+    required this.id,
+    required this.num,
+    required this.card,
+    required this.name,
+    required this.ruby,
+    this.icon,
+    required this.rank,
+    required this.type,
+    // this.detail,
+    this.unmodifiedDetail,
+    required this.npGain,
+    required this.npDistribution,
+    this.strengthStatus = 0,
+    required this.priority,
+    this.condQuestId = 0,
+    this.condQuestPhase = 0,
+    required this.individuality,
+    required this.script,
+    required this.functions,
+  });
+
+  factory NiceTd.fromJson(Map<String, dynamic> json) => _$NiceTdFromJson(json);
+}
+
+@JsonSerializable()
+class NiceFunction implements BaseFunction {
+  @override
+  int funcId;
+  @override
+  FuncType funcType;
+  @override
+  FuncTargetType funcTargetType;
+  @override
+  FuncApplyTarget funcTargetTeam;
+  @override
+  String funcPopupText;
+  @override
+  String? funcPopupIcon;
+  @override
+  List<NiceTrait> functvals;
+  @override
+  List<NiceTrait> funcquestTvals;
+  @override
+  List<FuncGroup> funcGroup;
+  @override
+  List<NiceTrait> traitVals;
+  @override
+  List<Buff> buffs;
+  List<Vals> svals;
+  List<Vals>? svals2;
+  List<Vals>? svals3;
+  List<Vals>? svals4;
+  List<Vals>? svals5;
+  List<Vals>? followerVals;
+
+  NiceFunction({
+    required this.funcId,
+    required this.funcType,
+    required this.funcTargetType,
+    required this.funcTargetTeam,
+    this.funcPopupText = '',
+    this.funcPopupIcon,
+    this.functvals = const [],
+    this.funcquestTvals = const [],
+    this.funcGroup = const [],
+    this.traitVals = const [],
+    this.buffs = const [],
+    required this.svals,
+    this.svals2,
+    this.svals3,
+    this.svals4,
+    this.svals5,
+    this.followerVals,
+  });
+
+  factory NiceFunction.fromJson(Map<String, dynamic> json) {
+    final baseFunction = GameDataLoader.instance?.gameJson?['baseFunctions']
+        ?[json['funcId'].toString()];
+    if (baseFunction != null) {
+      json.addAll(Map.from(baseFunction));
+    }
+    return _$NiceFunctionFromJson(json);
+  }
+}
+
+@JsonSerializable()
+class Buff {
+  int id;
+  String name;
+  String detail;
+  String? icon;
+  BuffType type;
+  int buffGroup;
+  BuffScript script;
+  List<NiceTrait> vals;
+  List<NiceTrait> tvals;
+  List<NiceTrait> ckSelfIndv;
+  List<NiceTrait> ckOpIndv;
+  int maxRate;
+
+  Buff({
+    required this.id,
+    required this.name,
+    required this.detail,
+    this.icon,
+    required this.type,
+    this.buffGroup = 0,
+    BuffScript? script,
+    this.vals = const [],
+    this.tvals = const [],
+    this.ckSelfIndv = const [],
+    this.ckOpIndv = const [],
+    required this.maxRate,
+  }) : script = script ?? BuffScript();
+
+  factory Buff.fromJson(Map<String, dynamic> json) => _$BuffFromJson(json);
+}
 
 @JsonSerializable()
 class Vals {
@@ -212,6 +465,7 @@ class CommonRelease {
   int id;
   int priority;
   int condGroup;
+  @JsonKey(fromJson: toEnumCondType)
   CondType condType;
   int condId;
   int condNum;
@@ -230,36 +484,29 @@ class CommonRelease {
 }
 
 @JsonSerializable()
-class Buff {
-  int id;
-  String name;
-  String detail;
-  String? icon;
-  BuffType type;
-  int buffGroup;
-  dynamic script;
-  List<NiceTrait> vals;
-  List<NiceTrait> tvals;
-  List<NiceTrait> ckSelfIndv;
-  List<NiceTrait> ckOpIndv;
-  int maxRate;
+class BuffScript {
+  int? checkIndvType;
+  List<BuffType>? CheckOpponentBuffTypes;
+  BuffRelationOverwrite? relationId;
+  String? ReleaseText;
+  int? DamageRelease;
+  NiceTrait? INDIVIDUALITIE;
+  List<NiceTrait>? UpBuffRateBuffIndiv;
+  int? HP_LOWER;
 
-  Buff({
-    required this.id,
-    required this.name,
-    required this.detail,
-    this.icon,
-    required this.type,
-    required this.buffGroup,
-    required this.script,
-    required this.vals,
-    required this.tvals,
-    required this.ckSelfIndv,
-    required this.ckOpIndv,
-    required this.maxRate,
+  BuffScript({
+    this.checkIndvType,
+    this.CheckOpponentBuffTypes,
+    this.relationId,
+    this.ReleaseText,
+    this.DamageRelease,
+    this.INDIVIDUALITIE,
+    this.UpBuffRateBuffIndiv,
+    this.HP_LOWER,
   });
 
-  factory Buff.fromJson(Map<String, dynamic> json) => _$BuffFromJson(json);
+  factory BuffScript.fromJson(Map<String, dynamic> json) =>
+      _$BuffScriptFromJson(json);
 }
 
 @JsonSerializable()
@@ -286,81 +533,36 @@ class FuncGroup {
       _$FuncGroupFromJson(json);
 }
 
-abstract class BaseFunction {
-  int get funcId;
-
-  FuncType get funcType;
-
-  FuncTargetType get funcTargetType;
-
-  FuncApplyTarget get funcTargetTeam;
-
-  String get funcPopupText;
-
-  String? get funcPopupIcon;
-
-  List<NiceTrait> get functvals;
-
-  List<NiceTrait> get funcquestTvals;
-
-  List<FuncGroup> get funcGroup;
-
-  List<NiceTrait> get traitVals;
-
-  List<Buff> get buffs;
-}
-
 @JsonSerializable()
-class NiceFunction extends BaseFunction {
-  @override
+class BaseFunction {
   int funcId;
-  @override
   FuncType funcType;
-  @override
   FuncTargetType funcTargetType;
-  @override
   FuncApplyTarget funcTargetTeam;
-  @override
   String funcPopupText;
-  @override
   String? funcPopupIcon;
-  @override
   List<NiceTrait> functvals;
-  @override
   List<NiceTrait> funcquestTvals;
-  @override
   List<FuncGroup> funcGroup;
-  @override
   List<NiceTrait> traitVals;
-  @override
   List<Buff> buffs;
-  List<Vals>? svals2;
-  List<Vals>? svals3;
-  List<Vals>? svals4;
-  List<Vals>? svals5;
-  List<Vals>? followerVals;
 
-  NiceFunction({
+  BaseFunction({
     required this.funcId,
     required this.funcType,
     required this.funcTargetType,
     required this.funcTargetTeam,
-    required this.funcPopupText,
+    this.funcPopupText = "",
     this.funcPopupIcon,
-    required this.functvals,
-    required this.funcquestTvals,
-    required this.funcGroup,
-    required this.traitVals,
-    required this.buffs,
-    this.svals2,
-    this.svals3,
-    this.svals4,
-    this.svals5,
-    this.followerVals,
+    this.functvals = const [],
+    this.funcquestTvals = const [],
+    this.funcGroup = const [],
+    this.traitVals = const [],
+    this.buffs = const [],
   });
 
-  factory NiceFunction.fromJson(Map<String, dynamic> json) =>
-      _$NiceFunctionFromJson(json);
+  factory BaseFunction.fromJson(Map<String, dynamic> json) =>
+      _$BaseFunctionFromJson(json);
 }
 
 @JsonSerializable()
@@ -380,13 +582,13 @@ class ExtraPassive {
   ExtraPassive({
     required this.num,
     required this.priority,
-    required this.condQuestId,
-    required this.condQuestPhase,
-    required this.condLv,
-    required this.condLimitCount,
-    required this.condFriendshipRank,
-    required this.eventId,
-    required this.flag,
+    this.condQuestId = 0,
+    this.condQuestPhase = 0,
+    this.condLv = 0,
+    this.condLimitCount = 0,
+    this.condFriendshipRank = 0,
+    this.eventId = 0,
+    this.flag = 0,
     required this.startedAt,
     required this.endedAt,
   });
@@ -444,58 +646,6 @@ class SkillAdd {
 }
 
 @JsonSerializable()
-class NiceSkill {
-  int id;
-  int num = -1;
-  String name;
-  String ruby;
-  String? detail;
-  String? unmodifiedDetail;
-  SkillType type;
-  int strengthStatus = -1;
-  int priority = -1;
-  int condQuestId = -1;
-  int condQuestPhase = -1;
-  int condLv = -1;
-  int condLimitCount = -1;
-  String? icon;
-  List<int> coolDown;
-  List<NiceTrait> actIndividuality;
-  SkillScript script;
-  List<ExtraPassive> extraPassive;
-  List<SkillAdd> skillAdd;
-
-  // Map<AiType, List<int>> aiIds;
-  List<NiceFunction> functions;
-
-  NiceSkill({
-    required this.id,
-    this.num = -1,
-    required this.name,
-    required this.ruby,
-    this.detail,
-    this.unmodifiedDetail,
-    required this.type,
-    this.strengthStatus = -1,
-    this.priority = -1,
-    this.condQuestId = -1,
-    this.condQuestPhase = -1,
-    this.condLv = -1,
-    this.condLimitCount = -1,
-    this.icon,
-    required this.coolDown,
-    required this.actIndividuality,
-    required this.script,
-    required this.extraPassive,
-    required this.skillAdd,
-    required this.functions,
-  });
-
-  factory NiceSkill.fromJson(Map<String, dynamic> json) =>
-      _$NiceSkillFromJson(json);
-}
-
-@JsonSerializable()
 class NpGain {
   List<int> buster;
   List<int> arts;
@@ -517,48 +667,329 @@ class NpGain {
 }
 
 @JsonSerializable()
-class NiceTd {
-  int id;
-  int num;
-  CardType card;
-  String name;
-  String ruby;
-  String? icon;
-  String rank;
-  String type;
-  String? detail;
-  String? unmodifiedDetail;
-  NpGain npGain;
-  List<int> npDistribution;
-  int strengthStatus;
-  int priority;
-  int condQuestId;
-  int condQuestPhase;
-  List<NiceTrait> individuality;
-  SkillScript script;
-  List<NiceFunction> functions;
+class BuffRelationOverwrite {
+  Map<SvtClass, Map<SvtClass, dynamic>> atkSide;
+  Map<SvtClass, Map<SvtClass, dynamic>> defSide;
 
-  NiceTd({
-    required this.id,
-    required this.num,
-    required this.card,
-    required this.name,
-    required this.ruby,
-    this.icon,
-    required this.rank,
-    required this.type,
-    this.detail,
-    this.unmodifiedDetail,
-    required this.npGain,
-    required this.npDistribution,
-    required this.strengthStatus,
-    required this.priority,
-    required this.condQuestId,
-    required this.condQuestPhase,
-    required this.individuality,
-    required this.script,
-    required this.functions,
+  BuffRelationOverwrite({
+    required this.atkSide,
+    required this.defSide,
   });
 
-  factory NiceTd.fromJson(Map<String, dynamic> json) => _$NiceTdFromJson(json);
+  factory BuffRelationOverwrite.fromJson(Map<String, dynamic> json) =>
+      _$BuffRelationOverwriteFromJson(json);
+}
+
+@JsonSerializable()
+class RelationOverwriteDetail {
+  int damageRate;
+  ClassRelationOverwriteType type;
+
+  RelationOverwriteDetail({
+    required this.damageRate,
+    required this.type,
+  });
+
+  factory RelationOverwriteDetail.fromJson(Map<String, dynamic> json) =>
+      _$RelationOverwriteDetailFromJson(json);
+}
+
+enum BuffType {
+  none,
+  upCommandatk,
+  upStarweight,
+  upCriticalpoint,
+  downCriticalpoint,
+  regainNp,
+  regainStar,
+  regainHp,
+  reduceHp,
+  upAtk,
+  downAtk,
+  upDamage,
+  downDamage,
+  addDamage,
+  subDamage,
+  upNpdamage,
+  downNpdamage,
+  upDropnp,
+  upCriticaldamage,
+  downCriticaldamage,
+  upSelfdamage,
+  downSelfdamage,
+  addSelfdamage,
+  subSelfdamage,
+  avoidance,
+  breakAvoidance,
+  invincible,
+  upGrantstate,
+  downGrantstate,
+  upTolerance,
+  downTolerance,
+  avoidState,
+  donotAct,
+  donotSkill,
+  donotNoble,
+  donotRecovery,
+  disableGender,
+  guts,
+  upHate,
+  addIndividuality,
+  subIndividuality,
+  upDefence,
+  downDefence,
+  upCommandstar,
+  upCommandnp,
+  upCommandall,
+  downCommandall,
+  downStarweight,
+  reduceNp,
+  downDropnp,
+  upGainHp,
+  downGainHp,
+  downCommandatk,
+  downCommanstar,
+  downCommandnp,
+  upCriticalrate,
+  downCriticalrate,
+  pierceInvincible,
+  avoidInstantdeath,
+  upResistInstantdeath,
+  upNonresistInstantdeath,
+  delayFunction,
+  regainNpUsedNoble,
+  deadFunction,
+  upMaxhp,
+  downMaxhp,
+  addMaxhp,
+  subMaxhp,
+  battlestartFunction,
+  wavestartFunction,
+  selfturnendFunction,
+  damageFunction,
+  upGivegainHp,
+  downGivegainHp,
+  commandattackFunction,
+  deadattackFunction,
+  upSpecialdefence,
+  downSpecialdefence,
+  upDamagedropnp,
+  downDamagedropnp,
+  entryFunction,
+  upChagetd,
+  reflectionFunction,
+  upGrantSubstate,
+  downGrantSubstate,
+  upToleranceSubstate,
+  downToleranceSubstate,
+  upGrantInstantdeath,
+  downGrantInstantdeath,
+  gutsRatio,
+  upDefencecommandall,
+  downDefencecommandall,
+  overwriteBattleclass,
+  overwriteClassrelatioAtk,
+  overwriteClassrelatioDef,
+  upDamageIndividuality,
+  downDamageIndividuality,
+  upDamageIndividualityActiveonly,
+  downDamageIndividualityActiveonly,
+  upNpturnval,
+  downNpturnval,
+  multiattack,
+  upGiveNp,
+  downGiveNp,
+  upResistanceDelayNpturn,
+  downResistanceDelayNpturn,
+  pierceDefence,
+  upGutsHp,
+  downGutsHp,
+  upFuncgainNp,
+  downFuncgainNp,
+  upFuncHpReduce,
+  downFuncHpReduce,
+  upDefencecommanDamage,
+  downDefencecommanDamage,
+  npattackPrevBuff,
+  fixCommandcard,
+  donotGainnp,
+  fieldIndividuality,
+  donotActCommandtype,
+  upDamageEventPoint,
+  upDamageSpecial,
+  attackFunction,
+  commandcodeattackFunction,
+  donotNobleCondMismatch,
+  donotSelectCommandcard,
+  donotReplace,
+  shortenUserEquipSkill,
+  tdTypeChange,
+  overwriteClassRelation,
+  tdTypeChangeArts,
+  tdTypeChangeBuster,
+  tdTypeChangeQuick,
+  commandattackBeforeFunction,
+  gutsFunction,
+  upCriticalRateDamageTaken,
+  downCriticalRateDamageTaken,
+  upCriticalStarDamageTaken,
+  downCriticalStarDamageTaken,
+  skillRankUp,
+  avoidanceIndividuality,
+  changeCommandCardType,
+  specialInvincible,
+  preventDeathByDamage,
+  commandcodeattackAfterFunction,
+  attackBeforeFunction,
+  donotSkillSelect,
+  buffRate,
+  invisibleBattleChara,
+}
+
+enum FuncType {
+  none,
+  addState,
+  subState,
+  damage,
+  damageNp,
+  gainStar,
+  gainHp,
+  gainNp,
+  lossNp,
+  shortenSkill,
+  extendSkill,
+  releaseState,
+  lossHp,
+  instantDeath,
+  damageNpPierce,
+  damageNpIndividual,
+  addStateShort,
+  gainHpPer,
+  damageNpStateIndividual,
+  hastenNpturn,
+  delayNpturn,
+  damageNpHpratioHigh,
+  damageNpHpratioLow,
+  cardReset,
+  replaceMember,
+  lossHpSafe,
+  damageNpCounter,
+  damageNpStateIndividualFix,
+  damageNpSafe,
+  callServant,
+  ptShuffle,
+  lossStar,
+  changeServant,
+  changeBg,
+  damageValue,
+  withdraw,
+  fixCommandcard,
+  shortenBuffturn,
+  extendBuffturn,
+  shortenBuffcount,
+  extendBuffcount,
+  changeBgm,
+  displayBuffstring,
+  resurrection,
+  gainNpBuffIndividualSum,
+  setSystemAliveFlag,
+  forceInstantDeath,
+  damageNpRare,
+  gainNpFromTargets,
+  gainHpFromTargets,
+  lossHpPer,
+  lossHpPerSafe,
+  shortenUserEquipSkill,
+  quickChangeBg,
+  shiftServant,
+  damageNpAndCheckIndividuality,
+  absorbNpturn,
+  overwriteDeadType,
+  forceAllBuffNoact,
+  breakGaugeUp,
+  breakGaugeDown,
+  moveToLastSubmember,
+  expUp,
+  qpUp,
+  dropUp,
+  friendPointUp,
+  eventDropUp,
+  eventDropRateUp,
+  eventPointUp,
+  eventPointRateUp,
+  transformServant,
+  qpDropUp,
+  servantFriendshipUp,
+  userEquipExpUp,
+  classDropUp,
+  enemyEncountCopyRateUp,
+  enemyEncountRateUp,
+  enemyProbDown,
+  getRewardGift,
+  sendSupportFriendPoint,
+  movePosition,
+  revival,
+  damageNpIndividualSum,
+  damageValueSafe,
+  friendPointUpDuplicate,
+  moveState,
+  changeBgmCostume,
+  func126,
+  func127,
+  updateEntryPositions,
+}
+
+enum FuncTargetType {
+  self,
+  ptOne,
+  ptAnother,
+  ptAll,
+  enemy,
+  enemyAnother,
+  enemyAll,
+  ptFull,
+  enemyFull,
+  ptOther,
+  ptOneOther,
+  ptRandom,
+  enemyOther,
+  enemyRandom,
+  ptOtherFull,
+  enemyOtherFull,
+  ptselectOneSub,
+  ptselectSub,
+  ptOneAnotherRandom,
+  ptSelfAnotherRandom,
+  enemyOneAnotherRandom,
+  ptSelfAnotherFirst,
+  ptSelfBefore,
+  ptSelfAfter,
+  ptSelfAnotherLast,
+  commandTypeSelfTreasureDevice,
+  fieldOther,
+  enemyOneNoTargetNoAction,
+  ptOneHpLowestValue,
+  ptOneHpLowestRate,
+}
+
+enum FuncApplyTarget {
+  player,
+  enemy,
+  playerAndEnemy,
+}
+
+enum SkillType {
+  active,
+  passive,
+}
+
+enum ClassRelationOverwriteType {
+  overwriteForce,
+  overwriteMoreThanTarget,
+  overwriteLessThanTarget,
+}
+
+enum AiType {
+  svt,
+  field,
 }
