@@ -1,4 +1,5 @@
 // ignore_for_file: constant_identifier_names, non_constant_identifier_names
+import 'package:chaldea/utils/extension.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -146,6 +147,14 @@ class DataVersion {
       _$DataVersionFromJson(json);
 
   Map<String, dynamic> toJson() => _$DataVersionToJson(this);
+
+  String text([bool twoLine = true]) {
+    if (timestamp <= 0) return '0';
+    String s =
+        DateTime.fromMillisecondsSinceEpoch(timestamp * 1000).toStringShort();
+    if (twoLine) return s.replaceFirst(' ', '\n');
+    return s;
+  }
 
   @override
   String toString() {

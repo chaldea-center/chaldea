@@ -69,6 +69,7 @@ class _WindowManagerState extends State<WindowManager> {
         );
       },
     );
+    final mqData = MediaQuery.of(context);
     final headerIcon = Container(
       color: Theme.of(context).primaryColorDark,
       height: kToolbarHeight,
@@ -119,7 +120,13 @@ class _WindowManagerState extends State<WindowManager> {
           color: Theme.of(context).dividerColor.withOpacity(0.2),
           width: 0,
         ),
-        Expanded(child: child),
+        Expanded(
+          child: MediaQuery(
+            child: child,
+            data: mqData.copyWith(
+                size: Size(mqData.size.width - 48, mqData.size.height)),
+          ),
+        ),
       ],
     );
   }

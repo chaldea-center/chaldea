@@ -7,8 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pool/pool.dart';
 
-import '../../models/db.dart';
-import '../../models/gamedata/gamedata.dart';
+import '../../models/models.dart';
 import '../../packages/app_info.dart';
 import '../../packages/file_plus/file_plus.dart';
 import '../../packages/logger.dart';
@@ -17,8 +16,9 @@ import '../../utils/basic.dart';
 import '../../utils/json_helper.dart';
 
 class GameDataLoader {
-  // final dio = Dio(BaseOptions(baseUrl: 'https://data.chaldea.center/'));
-  Dio get dio => Dio(BaseOptions(baseUrl: 'http://192.168.0.5:8002/'));
+  final dio = Dio(BaseOptions(baseUrl: 'https://data.chaldea.center/'));
+
+  // Dio get dio => Dio(BaseOptions(baseUrl: 'http://192.168.0.5:8002/'));
 
   GameDataLoader._();
 
@@ -127,7 +127,7 @@ class GameDataLoader {
       dynamic fileJson = await JsonHelper.decodeBytes(bytes!);
       l2mFn ??= l2mKey == null ? null : (e) => e[l2mKey].toString();
       if (l2mFn != null) {
-        assert(fileJson is List, fileJson.runtimeType);
+        assert(fileJson is List, '${fv.filename}: ${fileJson.runtimeType}');
         fileJson = Map.fromIterable(fileJson, key: l2mFn);
       }
       if (_gameJson[fv.key] == null) {
@@ -154,8 +154,8 @@ class GameDataLoader {
       'baseFunctions': 'funcId',
       'baseSkills': 'id',
       'bgms': 'id',
-      'commandCodes': 'id',
-      'craftEssences': 'id',
+      'commandCodes': 'collectionNo',
+      'craftEssences': 'collectionNo',
       'entities': 'id',
       'events': 'id',
       'exchangeTickets': 'key',
@@ -163,7 +163,7 @@ class GameDataLoader {
       'items': 'id',
       'mysticCodes': 'id',
       // 'questPhases':'',
-      'servants': 'id',
+      'servants': 'collectionNo',
       'summons': 'id',
       'wars': 'id',
     };

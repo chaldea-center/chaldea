@@ -423,5 +423,15 @@
   "consumed": "已消耗",
   "reset_plan_shown": "重置规划{n}(已显示)",
   "reset_plan_all": "重置规划{n}(所有)",
-  "set_plan_name": "设置规划名称"
+  "set_plan_name": "设置规划名称",
+  "dark_mode": "深色模式",
+  "dark_mode_dark": "深色",
+  "dark_mode_light": "浅色",
+  "dark_mode_system": "系统",
+  "rate_app_store": "App Store评分",
+  "rate_play_store": "Google Play评分",
+  "move_up": "上移",
+  "move_down": "下移",
+  "auto_reset": "自动重置",
+  "not_implemented": "尚未实现"
 }

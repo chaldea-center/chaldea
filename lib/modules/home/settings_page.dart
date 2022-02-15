@@ -1,7 +1,7 @@
 import 'package:chaldea/_test_page.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/debug/debug_floating_menu.dart';
-import 'package:chaldea/modules/debug/frame_rate_layer.dart';
+import 'package:chaldea/app/modules/common/frame_rate_layer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'subpage/about_page.dart';
@@ -282,11 +282,11 @@ class _SettingsPageState extends State<SettingsPage> {
                 onTap: () => testFunction(context),
               ),
               SwitchListTile.adaptive(
-                value: db.runtimeData.showFps,
+                value: FrameRateLayer.showFps,
                 title: const Text('Show Frame Rate'),
                 onChanged: (v) {
                   setState(() {
-                    db.runtimeData.showFps = v;
+                    FrameRateLayer.showFps = v;
                   });
                   if (v) {
                     FrameRateLayer.createOverlay(context);

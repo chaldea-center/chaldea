@@ -29,7 +29,7 @@ class RuntimeData {
 
   set showDebugFAB(bool value) => _showDebugFAB = value;
 
-  bool showFps = false;
+  bool showWindowManager = false;
 
   /// Controller of [Screenshot] widget which set root [MaterialApp] as child
   final screenshotController = ScreenshotController();

@@ -12,9 +12,10 @@ class EffectSearchPage extends StatefulWidget {
   _EffectSearchPageState createState() => _EffectSearchPageState();
 }
 
-class _EffectSearchPageState
-    extends SearchableListState<GameCardMixin, EffectSearchPage>
-    with SingleTickerProviderStateMixin {
+class _EffectSearchPageState extends State<EffectSearchPage>
+    with
+        SearchableListState<GameCardMixin, EffectSearchPage>,
+        SingleTickerProviderStateMixin {
   late TabController _tabController;
   final filterData = BuffFuncFilterData();
 

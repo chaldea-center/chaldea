@@ -14,9 +14,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
 import 'package:kana_kit/kana_kit.dart';
 import 'package:lpinyin/lpinyin.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-import '../widgets/custom_dialogs.dart';
 import 'config.dart' show db;
 import 'constants.dart';
 
@@ -176,32 +174,6 @@ class TimeCounter {
     final d = stopwatch.elapsed.toString();
     logger.d('Stopwatch - $name: $d');
   }
-}
-
-Future<void> jumpToExternalLinkAlert(
-    {required String url, String? name}) async {
-  String shownLink = url;
-  String? safeLink = Uri.tryParse(url)?.toString();
-  if (safeLink != null) {
-    shownLink = Uri.decodeFull(safeLink);
-  }
-
-  return showDialog(
-    context: kAppKey.currentContext!,
-    builder: (context) => SimpleCancelOkDialog(
-      title: Text(S.of(context).jump_to(name ?? S.of(context).link)),
-      content: Text(shownLink,
-          style: const TextStyle(decoration: TextDecoration.underline)),
-      onTapOk: () async {
-        String link = safeLink ?? url;
-        if (await canLaunch(link)) {
-          launch(link);
-        } else {
-          EasyLoading.showToast('Could not launch url:\n$link');
-        }
-      },
-    ),
-  );
 }
 
 bool checkEventOutdated(

@@ -1,13 +1,22 @@
+import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:chaldea/components/components.dart';
+// import 'package:chaldea/components/components.dart';
+import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/db.dart';
+import 'package:chaldea/utils/utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:open_file/open_file.dart';
-import 'package:path/path.dart' as path;
+import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:uuid/uuid.dart';
+
+import '../../packages/packages.dart';
+import '../custom_dialogs.dart';
 
 class ImageActions {
   static Future showSaveShare({
@@ -67,12 +76,12 @@ class ImageActions {
               SimpleCancelOkDialog(
                 hideCancel: true,
                 title: Text(S.current.saved),
-                content: Text(db.paths.convertIosPath(destFp)),
+                content: Text(db2.paths.convertIosPath(destFp)),
                 actions: [
                   if (PlatformU.isDesktop)
                     TextButton(
                       onPressed: () {
-                        OpenFile.open(path.dirname(destFp));
+                        OpenFile.open(dirname(destFp));
                       },
                       child: Text(S.current.open),
                     ),
@@ -94,7 +103,7 @@ class ImageActions {
                 String fn = const Uuid()
                         .v5(Uuid.NAMESPACE_URL, data.hashCode.toString()) +
                     '.png';
-                String tmpFp = join(db.paths.tempDir, fn);
+                String tmpFp = join(db2.paths.tempDir, fn);
                 File(tmpFp)
                   ..createSync(recursive: true)
                   ..writeAsBytesSync(data);
@@ -121,7 +130,7 @@ class ImageActions {
           controller: ModalScrollController.of(context),
           itemBuilder: (context, index) => children[index],
           separatorBuilder: (_, __) =>
-              const Divider(height: 0.5, thickness: 0.5),
+          const Divider(height: 0.5, thickness: 0.5),
           itemCount: children.length,
         );
       },

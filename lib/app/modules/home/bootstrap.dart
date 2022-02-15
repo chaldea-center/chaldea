@@ -2,19 +2,18 @@ import 'dart:math';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
-import 'package:chaldea/components/tile_items.dart';
-import 'package:chaldea/models/db.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/after_layout.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
+import 'package:chaldea/widgets/tile_items.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-import '../../../models/userdata/userdata.dart';
 import '../../../packages/language.dart';
 import '../../../packages/logger.dart';
 import '../../../packages/network.dart';
@@ -299,7 +298,7 @@ class _BootstrapPageState extends State<BootstrapPage>
                       if (db2.gameData.version.timestamp > 0) {
                         db2.settings.tips.starter = false;
                         onDataReady(false);
-                        db2.saveData();
+                        db2.saveSettings();
                       } else {
                         showDialog(
                           context: context,
@@ -308,7 +307,7 @@ class _BootstrapPageState extends State<BootstrapPage>
                                 'Database is not downloaded, still continue?'),
                             onTapOk: () {
                               db2.settings.tips.starter = false;
-                              db2.saveData();
+                              db2.saveSettings();
                               onDataReady(false);
                             },
                           ),
@@ -446,10 +445,10 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
       children: [
         SwitchListTile.adaptive(
           title: const Text('Auto Update'),
-          value: db2.settings.autoUpdate,
+          value: db2.settings.autoUpdateData,
           onChanged: (v) {
             setState(() {
-              db2.settings.autoUpdate = v;
+              db2.settings.autoUpdateData = v;
             });
           },
         ),

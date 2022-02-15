@@ -6,13 +6,13 @@ import 'dart:typed_data';
 import 'package:chaldea/components/config.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/packages.dart';
+import 'package:chaldea/utils/extension.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../widgets/custom_dialogs.dart';
-import 'extensions.dart';
 import 'localized/localized_base.dart';
 
 part 'server_api.g.dart';

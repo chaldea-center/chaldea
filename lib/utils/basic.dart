@@ -16,6 +16,21 @@ String joinPaths(
   return pathlib.join(part1, part2, part3, part4, part5, part6, part7, part8);
 }
 
+String joinUrl(String part1, String part2, [String? part3]) {
+  String s = part1;
+  for (final part in [part2, part3]) {
+    if (part == null) continue;
+    if (!s.endsWith('/') && !part.startsWith('/')) {
+      s += '/' + part;
+    } else if (s.endsWith('/') && part.startsWith('/')) {
+      s += part.substring(1);
+    } else {
+      s += part;
+    }
+  }
+  return s;
+}
+
 /// [reversed] is used only when [compare] is null for default num values sort
 Map<K, V> sortDict<K, V>(
   Map<K, V> d, {
@@ -148,11 +163,17 @@ class Maths {
 }
 
 class EnumUtil {
+  EnumUtil._();
+
   static String shortString(Object? enumObj) {
     if (enumObj == null) return enumObj.toString();
     assert(enumObj.toString().contains('.'),
         'The provided object "$enumObj" is not an enum.');
     return enumObj.toString().split('.').last;
+  }
+
+  static String upperCase(Object? enumObj) {
+    return shortString(enumObj).toUpperCase();
   }
 
   static String titled(Object enumObj) {

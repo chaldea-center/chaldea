@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/constants.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 
 import '../../packages/app_info.dart';
 import '../../packages/language.dart';
@@ -16,13 +15,18 @@ bool _defaultValidateStat(int? statusCode) {
 class ChaldeaResponse {
   final Response? response;
 
-  ChaldeaResponse(this.response);
+  final dynamic error;
+
+  ChaldeaResponse(this.response) : error = null;
+
+  ChaldeaResponse.error(this.error) : response = null;
 
   int? get statusCode => response?.statusCode;
 
   Map? _cachedJson;
 
   Map? json() {
+    print(response?.data);
     if (_cachedJson != null) return _cachedJson;
     if (response?.data == null) return null;
     if (response!.data is Map) {
@@ -38,9 +42,9 @@ class ChaldeaResponse {
     }
   }
 
-  bool get success => json()?['success'] == true;
+  bool get success => error != null && json()?['success'] == true;
 
-  String? get message => json()?['message'];
+  String? get message => error?.toString() ?? json()?['message'];
 
   T? body<T>() {
     var _body = json()?['body'];
@@ -54,8 +58,8 @@ class ChaldeaApi {
 
   static Dio get dio {
     return Dio(BaseOptions(
-      // baseUrl: kServerRoot,
-      baseUrl: kDebugMode ? 'http://localhost:8183' : kServerRoot,
+      baseUrl: kServerRoot,
+      // baseUrl: kDebugMode ? 'http://localhost:8183' : kServerRoot,
       headers: {
         'chaldea-version': AppInfo.versionString,
         'chaldea-build': AppInfo.buildNumber,
@@ -68,11 +72,7 @@ class ChaldeaApi {
 
   static Future<ChaldeaResponse> wrap(
       Future<Response> Function(Dio dio) callback) async {
-    try {
-      return ChaldeaResponse(await callback(dio));
-    } catch (e) {
-      return ChaldeaResponse(null);
-    }
+    return ChaldeaResponse(await callback(dio));
   }
 
   static Future<ChaldeaResponse> sendFeedback({

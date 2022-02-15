@@ -12,7 +12,8 @@ class SummonListPage extends StatefulWidget {
   _SummonListPageState createState() => _SummonListPageState();
 }
 
-class _SummonListPageState extends SearchableListState<Summon, SummonListPage> {
+class _SummonListPageState extends State<SummonListPage>
+    with SearchableListState<Summon, SummonListPage> {
   @override
   Iterable<Summon> get wholeData => db.gameData.summons.values;
 

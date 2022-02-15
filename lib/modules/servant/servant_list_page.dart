@@ -21,8 +21,8 @@ class ServantListPage extends StatefulWidget {
   State<StatefulWidget> createState() => ServantListPageState();
 }
 
-class ServantListPageState
-    extends SearchableListState<Servant, ServantListPage> {
+class ServantListPageState extends State<ServantListPage>
+    with SearchableListState<Servant, ServantListPage> {
   @override
   Iterable<Servant> get wholeData => db.gameData.servantsWithUser.values;
 

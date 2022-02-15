@@ -30,6 +30,8 @@ class FilePlusWeb implements FilePlus {
     }
   }
 
+  static Iterable<String> list() => _box.keys.whereType<String>();
+
   static String normalizePath(String fp) {
     return fp
         .split(RegExp(r'[/\\]+'))

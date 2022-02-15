@@ -83,7 +83,7 @@ const _$AttributeEnumMap = {
   Attribute.earth: 'earth',
   Attribute.star: 'star',
   Attribute.beast: 'beast',
-  Attribute.Void: 'void',
+  Attribute.void_: 'void',
 };
 
 Servant _$ServantFromJson(Map json) => Servant(
@@ -475,9 +475,10 @@ LoreCommentAdd _$LoreCommentAddFromJson(Map json) => LoreCommentAdd(
     );
 
 LoreComment _$LoreCommentFromJson(Map json) => LoreComment(
-      id: json['id'] as int,
+  id: json['id'] as int,
       priority: json['priority'] as int? ?? 0,
       condMessage: json['condMessage'] as String? ?? "",
+      comment: json['comment'] as String? ?? '',
       condType: toEnumCondType(json['condType'] as Object),
       condValues:
           (json['condValues'] as List<dynamic>?)?.map((e) => e as int).toList(),
@@ -682,8 +683,9 @@ NiceLore _$NiceLoreFromJson(Map json) => NiceLore(
     );
 
 ServantScript _$ServantScriptFromJson(Map json) => ServantScript(
-      skillRankUp: (json['SkillRankUp'] as Map?)?.map(
+  skillRankUp: (json['SkillRankUp'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String),
             (e as List<dynamic>).map((e) => e as int).toList()),
       ),
+      svtBuffTurnExtend: json['svtBuffTurnExtend'] as bool?,
     );

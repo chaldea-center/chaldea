@@ -25,6 +25,6 @@ export '../packages/query.dart';
 export 'server_api.dart';
 export 'shared_prefs.dart';
 export '../packages/split_route/split_route.dart';
-export 'tile_items.dart';
+export '../widgets/tile_items.dart';
 export 'utils.dart';
 export 'wiki_util.dart';

@@ -14,8 +14,8 @@ class EnemyListPage extends StatefulWidget {
   State<StatefulWidget> createState() => EnemyListPageState();
 }
 
-class EnemyListPageState
-    extends SearchableListState<EnemyDetail, EnemyListPage> {
+class EnemyListPageState extends State<EnemyListPage>
+    with SearchableListState<EnemyDetail, EnemyListPage> {
   EnemyFilterData filterData = EnemyFilterData();
 
   @override

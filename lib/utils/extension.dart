@@ -1,5 +1,10 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart' as material;
+import 'package:flutter/material.dart';
+
+import 'constants.dart';
+
 extension ListX<T> on List<T> {
   /// support -1=last
   T? getOrNull(int index) {
@@ -18,6 +23,10 @@ extension ListX<T> on List<T> {
       addAll(List.generate(length - this.length, (index) => k()));
     }
   }
+
+  void sort2<V extends Comparable>(V Function(T e) compare) {
+    sort((a, b) => compare(a).compareTo(compare(b)));
+  }
 }
 
 extension IterableX<E> on Iterable<E> {
@@ -26,6 +35,16 @@ extension IterableX<E> on Iterable<E> {
       return firstWhere(test);
     } on StateError {
       return null;
+    }
+  }
+}
+
+extension SetX<E> on Set<E> {
+  void toggle(E value) {
+    if (contains(value)) {
+      remove(value);
+    } else {
+      add(value);
     }
   }
 }
@@ -121,5 +140,26 @@ extension DateTimeX on DateTime {
     } else {
       return 0;
     }
+  }
+}
+
+/// This widget should not have any dependency of outer [context]
+extension DialogShowMethod on material.Widget {
+  /// Don't use this when dialog children depends on [context]
+  Future<T?> showDialog<T>(material.BuildContext? context,
+      {bool barrierDismissible = true}) {
+    context ??= kAppKey.currentContext;
+    if (context == null) return Future.value();
+    return material.showDialog<T>(
+      context: context,
+      builder: (context) => this,
+      barrierDismissible: barrierDismissible,
+    );
+  }
+}
+
+extension ThemeDataX on ThemeData {
+  bool get isDarkMode {
+    return brightness == material.Brightness.dark;
   }
 }

@@ -14,8 +14,8 @@ class CmdCodeListPage extends StatefulWidget {
   State<StatefulWidget> createState() => CmdCodeListPageState();
 }
 
-class CmdCodeListPageState
-    extends SearchableListState<CommandCode, CmdCodeListPage> {
+class CmdCodeListPageState extends State<CmdCodeListPage>
+    with SearchableListState<CommandCode, CmdCodeListPage> {
   @override
   Iterable<CommandCode> get wholeData => db.gameData.cmdCodes.values;
 

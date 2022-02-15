@@ -1,8 +1,7 @@
 import 'dart:math' show max, min;
 
+import 'package:chaldea/utils/constants.dart';
 import 'package:flutter/material.dart';
-
-import 'constants.dart';
 
 class SHeader extends StatelessWidget {
   final String label;
@@ -229,6 +228,58 @@ class TileGroup extends StatelessWidget {
         ),
       );
     }
+  }
+}
+
+class SliverTileGroup extends StatelessWidget {
+  final List<Widget> children;
+  final String? header;
+  final String? footer;
+  final EdgeInsets? padding;
+  final Widget divider;
+  final bool innerDivider;
+  final Color? tileColor;
+  final CrossAxisAlignment crossAxisAlignment;
+  final bool scrollable;
+  final bool shrinkWrap;
+
+  SliverTileGroup({
+    Key? key,
+    this.children = const [],
+    this.header,
+    this.footer,
+    this.padding,
+    this.divider = const Divider(height: 1, thickness: 0.5),
+    this.innerDivider = false,
+    this.tileColor,
+    this.crossAxisAlignment = CrossAxisAlignment.start,
+    this.scrollable = false,
+    this.shrinkWrap = false,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> group;
+    if (innerDivider) {
+      group = divideTiles(children, divider: divider, top: true, bottom: true);
+    } else {
+      group = [divider, ...children, divider];
+    }
+    final _children = <Widget>[
+      if (header != null) SHeader(header!),
+      for (final e in group)
+        Material(
+          color: tileColor ?? Theme.of(context).cardColor,
+          child: e,
+        ),
+      if (footer != null) SFooter(footer!)
+    ];
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) => _children[index],
+        childCount: _children.length,
+      ),
+    );
   }
 }
 

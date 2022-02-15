@@ -53,6 +53,7 @@ class ServerFeedbackHandler extends ReportHandler {
   final String? screenshotPath;
   final List<String> attachments;
   final Map<String, Uint8List> Function()? onGenerateAttachments;
+  final Map<String, Uint8List> extraAttachments;
   final bool sendHtml;
   final bool printLogs;
 
@@ -68,6 +69,7 @@ class ServerFeedbackHandler extends ReportHandler {
     this.screenshotPath,
     this.attachments = const [],
     this.onGenerateAttachments,
+    this.extraAttachments = const {},
     this.sendHtml = true,
     this.printLogs = false,
   });
@@ -106,62 +108,59 @@ class ServerFeedbackHandler extends ReportHandler {
   }) async {
     if (network.unavailable) return false;
 
-    try {
-      if (await _isBlockedError(report)) return false;
+    if (await _isBlockedError(report)) return false;
 
-      String reportSummary = _getReportShortSummary(report);
-      // don't send email repeatedly
-      if (_sentReports.contains(reportSummary)) {
-        logger.fine('"${report.error}" has been sent before');
-        return true;
-      }
+    String reportSummary = _getReportShortSummary(report);
+    // don't send email repeatedly
+    if (_sentReports.contains(reportSummary)) {
+      logger.fine('"${report.error}" has been sent before');
+      return true;
+    }
 
-      if (_sentReports.length > _maxEmailCount) {
-        logger.warning(
-            'Already reach maximum limit($_maxEmailCount) of sent email, skip');
-        return false;
-      }
-
-      // wait a moment to let other handlers finish, e.g. FileHandler
-      await Future.delayed(const Duration(seconds: 1));
-      Map<String, Uint8List> resolvedAttachments = {};
-
-      Archive archive = Archive();
-
-      for (final fn in attachments) {
-        if (FilePlus(fn).existsSync()) {
-          final bytes = await FilePlus(fn).readAsBytes();
-          archive.addFile(ArchiveFile(p.basename(fn), bytes.length, bytes));
-        }
-      }
-      for (final entry in generatedAttachments.entries) {
-        archive
-            .addFile(ArchiveFile(entry.key, entry.value.length, entry.value));
-      }
-      List<int>? zippedBytes;
-      if (archive.isNotEmpty) {
-        zippedBytes = ZipEncoder().encode(archive);
-        if (zippedBytes != null) {
-          resolvedAttachments['attachment.zip'] =
-              Uint8List.fromList(zippedBytes);
-        }
-      }
-
-      if (screenshotBytes != null) {
-        resolvedAttachments['screenshot.jpg'] = screenshotBytes;
-      }
-
-      final response = await ChaldeaApi.sendFeedback(
-        subject: _getEmailTitle(report),
-        senderName: senderName ?? 'Chaldea ${AppInfo.versionString} Crash',
-        html: sendHtml ? await _setupHtmlMessageText(report) : null,
-        files: resolvedAttachments,
-      );
-      return response.success;
-    } catch (e, s) {
-      logger_.logger.e('failed to send mail', e, s);
+    if (_sentReports.length > _maxEmailCount) {
+      logger.warning(
+          'Already reach maximum limit($_maxEmailCount) of sent email, skip');
       return false;
     }
+
+    // wait a moment to let other handlers finish, e.g. FileHandler
+    await Future.delayed(const Duration(seconds: 1));
+    Map<String, Uint8List> resolvedAttachments = {};
+
+    Archive archive = Archive();
+
+    for (final fn in attachments) {
+      if (FilePlus(fn).existsSync()) {
+        final bytes = await FilePlus(fn).readAsBytes();
+        archive.addFile(ArchiveFile(p.basename(fn), bytes.length, bytes));
+      }
+    }
+    for (final entry in generatedAttachments.entries) {
+      archive.addFile(ArchiveFile(entry.key, entry.value.length, entry.value));
+    }
+    List<int>? zippedBytes;
+    if (archive.isNotEmpty) {
+      zippedBytes = ZipEncoder().encode(archive);
+      if (zippedBytes != null) {
+        resolvedAttachments['attachment.zip'] = Uint8List.fromList(zippedBytes);
+      }
+    }
+
+    if (screenshotBytes != null) {
+      resolvedAttachments['_screenshot.jpg'] = screenshotBytes;
+    }
+    resolvedAttachments.addAll(extraAttachments);
+
+    final response = await ChaldeaApi.sendFeedback(
+      subject: _getEmailTitle(report),
+      senderName: senderName ?? 'Chaldea ${AppInfo.versionString} Crash',
+      html: sendHtml ? await _setupHtmlMessageText(report) : null,
+      files: resolvedAttachments,
+    );
+    if (!response.success) {
+      logger_.logger.e('failed to send mail', response.message);
+    }
+    return response.success;
   }
 
   /// List temporary blocked error on gitee wiki

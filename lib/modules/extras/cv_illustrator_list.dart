@@ -12,7 +12,8 @@ class CvListPage extends StatefulWidget {
   _CvListPageState createState() => _CvListPageState();
 }
 
-class _CvListPageState extends SearchableListState<String, CvListPage> {
+class _CvListPageState extends State<CvListPage>
+    with SearchableListState<String, CvListPage> {
   @override
   Iterable<String> get wholeData => cvs;
 
@@ -188,8 +189,8 @@ class IllustratorListPage extends StatefulWidget {
   _IllustratorListPageState createState() => _IllustratorListPageState();
 }
 
-class _IllustratorListPageState
-    extends SearchableListState<String, IllustratorListPage> {
+class _IllustratorListPageState extends State<IllustratorListPage>
+    with SearchableListState<String, IllustratorListPage> {
   @override
   Iterable<String> get wholeData => illustrators;
   bool _initiated = false;

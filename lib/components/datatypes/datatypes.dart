@@ -34,7 +34,7 @@ import '../constants.dart';
 import '../git_tool.dart';
 import '../localized/localized.dart';
 import '../../packages/split_route/split_route.dart';
-import '../tile_items.dart';
+import '../../widgets/tile_items.dart';
 import '../utils.dart';
 import 'effect_type/effect_type.dart';
 

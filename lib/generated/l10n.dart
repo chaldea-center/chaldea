@@ -4295,6 +4295,106 @@ class S {
       args: [],
     );
   }
+
+  /// `深色模式`
+  String get dark_mode {
+    return Intl.message(
+      '深色模式',
+      name: 'dark_mode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `深色`
+  String get dark_mode_dark {
+    return Intl.message(
+      '深色',
+      name: 'dark_mode_dark',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `浅色`
+  String get dark_mode_light {
+    return Intl.message(
+      '浅色',
+      name: 'dark_mode_light',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `系统`
+  String get dark_mode_system {
+    return Intl.message(
+      '系统',
+      name: 'dark_mode_system',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `App Store评分`
+  String get rate_app_store {
+    return Intl.message(
+      'App Store评分',
+      name: 'rate_app_store',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Google Play评分`
+  String get rate_play_store {
+    return Intl.message(
+      'Google Play评分',
+      name: 'rate_play_store',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `上移`
+  String get move_up {
+    return Intl.message(
+      '上移',
+      name: 'move_up',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `下移`
+  String get move_down {
+    return Intl.message(
+      '下移',
+      name: 'move_down',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `自动重置`
+  String get auto_reset {
+    return Intl.message(
+      '自动重置',
+      name: 'auto_reset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `尚未实现`
+  String get not_implemented {
+    return Intl.message(
+      '尚未实现',
+      name: 'not_implemented',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

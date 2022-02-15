@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../models/db.dart';
 import '../utils/extension.dart';
 
 class Language {
@@ -21,32 +22,32 @@ class Language {
   static const ar = Language('ar', 'عربى', 'Arabic', Locale('ar', ''));
   static const es = Language('es', 'Española', 'Spanish', Locale('es', ''));
 
-  static List<Language>? _fallbackLanguages;
+  // static List<Language>? _fallbackLanguages;
+  //
+  // static List<Language> get fallbackLanguages =>
+  //     _fallbackLanguages ?? _defaultFallbackLanguages();
+  //
+  // static set fallbackLanguages(List<Language> languages) {
+  //   assert(languages.length == 5, languages);
+  //   _fallbackLanguages = languages;
+  // }
 
-  static List<Language> get fallbackLanguages =>
-      _fallbackLanguages ?? _defaultFallbackLanguages();
-
-  static set fallbackLanguages(List<Language> languages) {
-    assert(languages.length == 5, languages);
-    _fallbackLanguages = languages;
-  }
-
-  static List<Language> _defaultFallbackLanguages() {
-    String locale = Intl.canonicalizedLocale(null);
+  static Language _parseLang(String? code) {
+    String locale = Intl.canonicalizedLocale(code);
     if (locale.startsWith('zh') == true) {
       if (locale.contains('Hant')) {
-        return [cht, chs, jp, en, ko];
+        return cht;
       } else {
-        return [chs, jp, en, cht, ko];
+        return chs;
       }
     } else if (locale.startsWith('ko') == true) {
-      return [ko, en, jp, chs, cht];
+      return ko;
     } else if (locale.startsWith('en') == true) {
-      return [en, jp, chs, cht, ko];
+      return en;
     } else if (locale.startsWith('ja') == true) {
-      return [jp, chs, cht, en, ko];
+      return jp;
     } else {
-      return [en, jp, chs, cht, ko];
+      return en;
     }
   }
 
@@ -67,7 +68,7 @@ class Language {
   static String get currentLocaleCode => Intl.canonicalizedLocale(null);
 
   /// used for 5 region game data
-  static bool get isZH => [chs, cht].contains(fallbackLanguages.first);
+  static bool get isZH => isCHS || isCHT;
 
   static bool get isCHS => current == chs;
 
@@ -79,7 +80,7 @@ class Language {
 
   static bool get isKO => current == ko;
 
-  static Language get current => fallbackLanguages.first;
+  static Language get current => _parseLang(db2.settings.language);
 
   @override
   String toString() {

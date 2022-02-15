@@ -1,5 +1,8 @@
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class InputCancelOkDialog extends StatefulWidget {
   final String? title;
@@ -180,4 +183,30 @@ class SimpleCancelOkDialog extends StatelessWidget {
       actions: children,
     );
   }
+}
+
+Future<void> jumpToExternalLinkAlert(
+    {required String url, String? name}) async {
+  String shownLink = url;
+  String? safeLink = Uri.tryParse(url)?.toString();
+  if (safeLink != null) {
+    shownLink = Uri.decodeFull(safeLink);
+  }
+
+  return showDialog(
+    context: kAppKey.currentContext!,
+    builder: (context) => SimpleCancelOkDialog(
+      title: Text(S.current.jump_to(name ?? S.current.link)),
+      content: Text(shownLink,
+          style: const TextStyle(decoration: TextDecoration.underline)),
+      onTapOk: () async {
+        String link = safeLink ?? url;
+        if (await canLaunch(link)) {
+          launch(link);
+        } else {
+          EasyLoading.showToast('Could not launch url:\n$link');
+        }
+      },
+    ),
+  );
 }

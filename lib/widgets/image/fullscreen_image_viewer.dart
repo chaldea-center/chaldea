@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 import 'image_viewer.dart';
@@ -43,15 +42,16 @@ class FullscreenImageViewer extends StatefulWidget {
   /// mostly used
   static Future show({
     required BuildContext context,
-    required List<String> urls,
+    required List<String?> urls,
     PlaceholderWidgetBuilder? placeholder,
     int? initialPage,
     bool opaque = false,
   }) {
+    urls.removeWhere((v) => v == null);
     return Navigator.of(context).push(
       PageRouteBuilder(
         opaque: opaque, // to avoid create new state of lower routes
-        fullscreenDialog: true,
+        // fullscreenDialog: true,
         // add transition
         pageBuilder: (context, _, __) => FullscreenImageViewer(
           children: List.generate(
@@ -59,20 +59,20 @@ class FullscreenImageViewer extends StatefulWidget {
             (index) => CachedImage(
               imageUrl: urls[index],
               placeholder: placeholder,
-              showSaveOnLongPress: true,
-              photoViewOption: PhotoViewOption.limited().copyWith(
-                onTapUp: (ctx, _, __) {
-                  Navigator.pop(ctx, index);
-                },
+                      showSaveOnLongPress: true,
+                      photoViewOption: PhotoViewOption.limited().copyWith(
+                        onTapUp: (ctx, _, __) {
+                          Navigator.pop(ctx, index);
+                        },
+                      ),
+                    ),
+              ),
+              galleryOption: PhotoViewGalleryOption(
+                pageController: initialPage == null
+                    ? null
+                    : PageController(initialPage: initialPage),
               ),
             ),
-          ),
-          galleryOption: PhotoViewGalleryOption(
-            pageController: initialPage == null
-                ? null
-                : PageController(initialPage: initialPage),
-          ),
-        ),
       ),
     );
   }
@@ -87,18 +87,18 @@ class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
   @override
   void initState() {
     super.initState();
-    if (widget.fullscreen) {
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-    }
+    // if (widget.fullscreen) {
+    //   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+    // }
   }
 
   @override
   void dispose() {
     super.dispose();
-    if (widget.fullscreen) {
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-          overlays: SystemUiOverlay.values);
-    }
+    // if (widget.fullscreen) {
+    //   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+    //       overlays: SystemUiOverlay.values);
+    // }
   }
 
   @override

@@ -7,103 +7,103 @@ part of '../../../models/gamedata/wiki_data.dart';
 // **************************************************************************
 
 MappingData _$MappingDataFromJson(Map json) => MappingData(
-      itemNames: (json['itemNames'] as Map?)?.map(
+      itemNames: (json['item_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      mcNames: (json['mcNames'] as Map?)?.map(
+  mcNames: (json['mc_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      costumeNames: (json['costumeNames'] as Map?)?.map(
+  costumeNames: (json['costume_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      cvNames: (json['cvNames'] as Map?)?.map(
+  cvNames: (json['cv_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      illustratorNames: (json['illustratorNames'] as Map?)?.map(
+  illustratorNames: (json['illustrator_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      ccNames: (json['ccNames'] as Map?)?.map(
+  ccNames: (json['cc_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      svtNames: (json['svtNames'] as Map?)?.map(
+  svtNames: (json['svt_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      ceNames: (json['ceNames'] as Map?)?.map(
+  ceNames: (json['ce_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      eventNames: (json['eventNames'] as Map?)?.map(
+  eventNames: (json['event_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      warNames: (json['warNames'] as Map?)?.map(
+  warNames: (json['war_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      questNames: (json['questNames'] as Map?)?.map(
+  questNames: (json['quest_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      spotNames: (json['spotNames'] as Map?)?.map(
+  spotNames: (json['spot_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      entityNames: (json['entityNames'] as Map?)?.map(
+  entityNames: (json['entity_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      tdTypes: (json['tdTypes'] as Map?)?.map(
+  tdTypes: (json['td_types'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      bgmNames: (json['bgmNames'] as Map?)?.map(
+  bgmNames: (json['bgm_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      summonNames: (json['summonNames'] as Map?)?.map(
+  summonNames: (json['summon_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      charaNames: (json['charaNames'] as Map?)?.map(
+  charaNames: (json['chara_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      buffNames: (json['buffNames'] as Map?)?.map(
+  buffNames: (json['buff_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      buffDetail: (json['buffDetail'] as Map?)?.map(
+  buffDetail: (json['buff_detail'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      funcPopuptext: (json['funcPopuptext'] as Map?)?.map(
+  funcPopuptext: (json['func_popuptext'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      skillNames: (json['skillNames'] as Map?)?.map(
+  skillNames: (json['skill_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      skillDetail: (json['skillDetail'] as Map?)?.map(
+  skillDetail: (json['skill_detail'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      tdNames: (json['tdNames'] as Map?)?.map(
+  tdNames: (json['td_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      tdRuby: (json['tdRuby'] as Map?)?.map(
+  tdRuby: (json['td_ruby'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      tdDetail: (json['tdDetail'] as Map?)?.map(
+  tdDetail: (json['td_detail'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
@@ -111,19 +111,19 @@ MappingData _$MappingDataFromJson(Map json) => MappingData(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      mcDetail: (json['mcDetail'] as Map?)?.map(
+  mcDetail: (json['mc_detail'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      costumeDetail: (json['costumeDetail'] as Map?)?.map(
+  costumeDetail: (json['costume_detail'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      skillState: (json['skillState'] as Map?)?.map(
+  skillState: (json['skill_state'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      tdState: (json['tdState'] as Map?)?.map(
+  tdState: (json['td_state'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
@@ -207,9 +207,9 @@ const _$SvtObtainEnumMap = {
 };
 
 CraftEssenceExtra _$CraftEssenceExtraFromJson(Map json) => CraftEssenceExtra(
-      collectionNo: json['collectionNo'] as int,
-      type:
-          $enumDecodeNullable(_$CETypeEnumMap, json['type']) ?? CEType.unknown,
+  collectionNo: json['collectionNo'] as int,
+      obtain: $enumDecodeNullable(_$CEObtainEnumMap, json['obtain']) ??
+          CEObtain.unknown,
       profile: json['profile'] == null
           ? null
           : MappingBase<dynamic>.fromJson(
@@ -226,17 +226,17 @@ CraftEssenceExtra _$CraftEssenceExtraFromJson(Map json) => CraftEssenceExtra(
       fandomLink: json['fandomLink'] as String?,
     );
 
-const _$CETypeEnumMap = {
-  CEType.exp: 'exp',
-  CEType.shop: 'shop',
-  CEType.story: 'story',
-  CEType.permanent: 'permanent',
-  CEType.valentine: 'valentine',
-  CEType.limited: 'limited',
-  CEType.eventReward: 'eventReward',
-  CEType.campaign: 'campaign',
-  CEType.bond: 'bond',
-  CEType.unknown: 'unknown',
+const _$CEObtainEnumMap = {
+  CEObtain.exp: 'exp',
+  CEObtain.shop: 'shop',
+  CEObtain.story: 'story',
+  CEObtain.permanent: 'permanent',
+  CEObtain.valentine: 'valentine',
+  CEObtain.limited: 'limited',
+  CEObtain.eventReward: 'eventReward',
+  CEObtain.campaign: 'campaign',
+  CEObtain.bond: 'bond',
+  CEObtain.unknown: 'unknown',
 };
 
 CommandCodeExtra _$CommandCodeExtraFromJson(Map json) => CommandCodeExtra(

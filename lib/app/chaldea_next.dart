@@ -99,7 +99,7 @@ class _ChaldeaNextState extends StateX<ChaldeaNext> with AfterLayoutMixin {
         // Actions when app is resumed
         network.check();
       } else if (msg == AppLifecycleState.inactive.toString()) {
-        db2.saveData();
+        db2.saveAll();
         debugPrint('save userdata before being inactive');
       }
       return null;

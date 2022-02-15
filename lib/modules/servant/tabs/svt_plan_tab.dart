@@ -790,57 +790,60 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
       status: status,
       target: enhancePlan,
     ));
-    List<Widget> children = [];
-    enhanceItems.forEach((itemKey, number) {
-      children.add(ImageWithText(
-        onTap: () => SplitRoute.push(
-          context,
-          ItemDetailPage(itemKey: itemKey),
-        ),
-        image: db.getIconImage(itemKey),
-        text: formatNumber(number, compact: true),
-        padding: const EdgeInsets.only(right: 3),
-      ));
-    });
+
     bool hasItem = Maths.sum(enhanceItems.values) > 0;
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(S.of(context).enhance_warning),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-        content: SizedBox(
-          width: defaultDialogWidth(context),
-          child: hasItem
-              ? buildGridIcons(
-                  context: context,
-                  children: children,
-                  crossCount: 5,
-                )
-              : const ListTile(title: Text('Nothing')),
-        ),
-        actions: [
-          TextButton(
-            child: Text(S.of(context).cancel),
-            onPressed: () {
-              Navigator.of(context).pop(false);
-            },
+      builder: (context) {
+        List<Widget> children = [];
+        enhanceItems.forEach((itemKey, number) {
+          children.add(ImageWithText(
+            onTap: () => SplitRoute.push(
+              context,
+              ItemDetailPage(itemKey: itemKey),
+            ),
+            image: db.getIconImage(itemKey),
+            text: formatNumber(number, compact: true),
+            padding: const EdgeInsets.only(right: 3),
+          ));
+        });
+        return AlertDialog(
+          title: Text(S.of(context).enhance_warning),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+          content: SizedBox(
+            width: defaultDialogWidth(context),
+            child: hasItem
+                ? buildGridIcons(
+                    context: context,
+                    children: children,
+                    crossCount: 5,
+                  )
+                : const ListTile(title: Text('Nothing')),
           ),
-          TextButton(
-            child: Text(S.of(context).confirm),
-            onPressed: () {
-              if (hasItem) {
-                Maths.sumDict(
-                    [db.curUser.items, Maths.multiplyDict(enhanceItems, -1)],
-                    inPlace: true);
-                status.curVal.copyFrom(enhancePlan);
-                enhanceMode = !enhanceMode;
-                updateState();
-              }
-              Navigator.of(context).pop(true);
-            },
-          ),
-        ],
-      ),
+          actions: [
+            TextButton(
+              child: Text(S.of(context).cancel),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            TextButton(
+              child: Text(S.of(context).confirm),
+              onPressed: () {
+                if (hasItem) {
+                  Maths.sumDict(
+                      [db.curUser.items, Maths.multiplyDict(enhanceItems, -1)],
+                      inPlace: true);
+                  status.curVal.copyFrom(enhancePlan);
+                  enhanceMode = !enhanceMode;
+                  updateState();
+                }
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 

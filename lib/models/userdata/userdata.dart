@@ -2,18 +2,11 @@ library userdata;
 
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../packages/language.dart';
 import '../../utils/basic.dart';
 import '../../utils/extension.dart';
 
 part '../../generated/models/userdata/userdata.g.dart';
-
-enum Region {
-  jp,
-  cn,
-  tw,
-  na,
-  kr,
-}
 
 /// user data will be shared across devices and cloud
 @JsonSerializable()
@@ -62,7 +55,7 @@ class User {
   Map<int, int> items;
 
   //  events, main story, tickets
-  Map<int, int> craftEssences;
+  Map<int, CraftStatus> craftEssences;
   Map<int, int> mysticCodes;
 
   User({
@@ -74,12 +67,17 @@ class User {
     List<Map<int, SvtPlan>>? svtPlanGroups,
     this.curSvtPlanNo = 0,
     Map<int, int>? items,
-    Map<int, int>? craftEssences,
+    Map<int, CraftStatus?>? craftEssences,
     Map<int, int>? mysticCodes,
-  })  : servants = servants ?? {},
+  })
+      : servants = servants ?? {},
         svtPlanGroups = svtPlanGroups ?? [],
         items = items ?? {},
-        craftEssences = craftEssences ?? {},
+        craftEssences = {
+          if (craftEssences != null)
+            for (final e in craftEssences.entries)
+              if (e.value != null) e.key: e.value!
+        },
         mysticCodes = mysticCodes ?? {};
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
@@ -103,6 +101,8 @@ class User {
     }
   }
 }
+
+enum CraftStatus { owned, met, notMet }
 
 @JsonSerializable()
 class SvtStatus {
@@ -201,4 +201,28 @@ class SvtPlan {
     fouAtk = Maths.fixValidRange(fouAtk, lower?.fouAtk ?? 0, 50);
     bondLimit = Maths.fixValidRange(bondLimit, lower?.bondLimit ?? 10, 15);
   }
+}
+
+enum Region {
+  jp,
+  cn,
+  tw,
+  na,
+  kr,
+}
+
+const _regionLanguage = {
+  Region.jp: Language.jp,
+  Region.cn: Language.chs,
+  Region.tw: Language.cht,
+  Region.na: Language.en,
+  Region.kr: Language.ko,
+};
+
+extension RegionX on Region {
+  String toUpperCase() {
+    return EnumUtil.upperCase(this);
+  }
+
+  Language toLanguage() => _regionLanguage[this]!;
 }

@@ -1,9 +1,12 @@
 import 'dart:async';
 
-import 'package:chaldea/components/components.dart';
+import 'package:chaldea/utils/constants.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 class FrameRateLayer extends StatefulWidget {
+  static bool showFps = false;
+
   const FrameRateLayer({Key? key}) : super(key: key);
 
   static GlobalKey<_FrameRateLayerState> globalKey = GlobalKey();
@@ -33,7 +36,7 @@ int _count = 0;
 double fps = 0.0;
 
 void _registerFrameCallback(Duration timeStamp) {
-  if (!db.runtimeData.showFps) return;
+  if (!FrameRateLayer.showFps) return;
   final now = DateTime.now();
   if (_lastTime != null) {
     _durations[_count % _sampleNum] = now.difference(_lastTime!).inMilliseconds;

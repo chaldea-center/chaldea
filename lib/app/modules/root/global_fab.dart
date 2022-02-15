@@ -1,6 +1,7 @@
 import 'package:chaldea/_test_page.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/modules/debug/theme_palette.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/widgets/movable_fab.dart';
 import 'package:flutter/material.dart';
 
@@ -137,6 +138,25 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           },
         ),
         ListTile(
+          leading: const Icon(Icons.language),
+          title: const Text('Language'),
+          horizontalTitleGap: 0,
+          trailing: DropdownButton<Language>(
+            underline: const Divider(thickness: 0, color: Colors.transparent),
+            value: Language.getLanguage(
+                db2.settings.language ?? Language.currentLocaleCode),
+            items: Language.supportLanguages
+                .map((lang) =>
+                    DropdownMenuItem(value: lang, child: Text(lang.name)))
+                .toList(),
+            onChanged: (lang) {
+              if (lang == null) return;
+              db2.settings.language = lang.code;
+              db2.notifyAppUpdate();
+            },
+          ),
+        ),
+        ListTile(
           horizontalTitleGap: 0,
           leading: const Icon(Icons.color_lens_outlined),
           title: const Text('Palette'),
@@ -161,7 +181,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
         ListTile(
           title: const Text('Save User Data'),
           onTap: () {
-            db2.saveData();
+            db2.saveAll();
             Navigator.pop(context);
           },
         ),

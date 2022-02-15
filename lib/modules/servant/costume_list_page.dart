@@ -10,8 +10,8 @@ class CostumeListPage extends StatefulWidget {
   _CostumeListPageState createState() => _CostumeListPageState();
 }
 
-class _CostumeListPageState
-    extends SearchableListState<Costume, CostumeListPage> {
+class _CostumeListPageState extends State<CostumeListPage>
+    with SearchableListState<Costume, CostumeListPage> {
   bool reversed = false;
 
   @override

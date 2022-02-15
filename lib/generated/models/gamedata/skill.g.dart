@@ -176,22 +176,22 @@ NiceFunction _$NiceFunctionFromJson(Map json) => NiceFunction(
               .toList() ??
           const [],
       svals: (json['svals'] as List<dynamic>)
-          .map((e) => Vals.fromJson(Map<String, dynamic>.from(e as Map)))
+          .map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
       svals2: (json['svals2'] as List<dynamic>?)
-          ?.map((e) => Vals.fromJson(Map<String, dynamic>.from(e as Map)))
+          ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
       svals3: (json['svals3'] as List<dynamic>?)
-          ?.map((e) => Vals.fromJson(Map<String, dynamic>.from(e as Map)))
+          ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
       svals4: (json['svals4'] as List<dynamic>?)
-          ?.map((e) => Vals.fromJson(Map<String, dynamic>.from(e as Map)))
+          ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
       svals5: (json['svals5'] as List<dynamic>?)
-          ?.map((e) => Vals.fromJson(Map<String, dynamic>.from(e as Map)))
+          ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
       followerVals: (json['followerVals'] as List<dynamic>?)
-          ?.map((e) => Vals.fromJson(Map<String, dynamic>.from(e as Map)))
+          ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
     );
 
@@ -286,6 +286,7 @@ const _$FuncTypeEnumMap = {
   FuncType.func126: 'func126',
   FuncType.func127: 'func127',
   FuncType.updateEntryPositions: 'updateEntryPositions',
+  FuncType.buddyPointUp: 'buddyPointUp',
 };
 
 const _$FuncTargetTypeEnumMap = {
@@ -512,9 +513,10 @@ const _$BuffTypeEnumMap = {
   BuffType.donotSkillSelect: 'donotSkillSelect',
   BuffType.buffRate: 'buffRate',
   BuffType.invisibleBattleChara: 'invisibleBattleChara',
+  BuffType.counterFunction: 'counterFunction',
 };
 
-Vals _$ValsFromJson(Map json) => Vals(
+DataVals _$DataValsFromJson(Map json) => DataVals(
       Rate: json['Rate'] as int?,
       Turn: json['Turn'] as int?,
       Count: json['Count'] as int?,
@@ -631,6 +633,11 @@ Vals _$ValsFromJson(Map json) => Vals(
       ForceSubState: json['ForceSubState'] as int?,
       IgnoreIndivUnreleaseable: json['IgnoreIndivUnreleaseable'] as int?,
       OnParty: json['OnParty'] as int?,
+      CounterId: json['CounterId'] as int?,
+      CounterLv: json['CounterLv'] as int?,
+      CounterOc: json['CounterOc'] as int?,
+      UseTreasureDevice: json['UseTreasureDevice'] as int?,
+      SkillReaction: json['SkillReaction'] as int?,
       ApplySupportSvt: json['ApplySupportSvt'] as int?,
       Individuality: json['Individuality'] as int?,
       EventId: json['EventId'] as int?,
@@ -639,7 +646,7 @@ Vals _$ValsFromJson(Map json) => Vals(
       DropRateCount: json['DropRateCount'] as int?,
       DependFuncVals: json['DependFuncVals'] == null
           ? null
-          : Vals.fromJson(
+          : DataVals.fromJson(
               Map<String, dynamic>.from(json['DependFuncVals'] as Map)),
     );
 

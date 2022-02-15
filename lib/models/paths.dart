@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:chaldea/generated/l10n.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -145,7 +146,7 @@ class PathManager {
 
   String convertIosPath(String p) {
     return PlatformU.isIOS
-        ? p.replaceFirst(appPath, 'S.current.ios_app_path')
+        ? p.replaceFirst(appPath, S.current.ios_app_path)
         : p;
   }
 

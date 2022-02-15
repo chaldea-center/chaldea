@@ -1,10 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import '../db.dart';
+import '../userdata/filter_data.dart';
 import 'common.dart';
 import 'item.dart';
 import 'script.dart';
 import 'skill.dart';
+import 'wiki_data.dart';
 
 part '../../generated/models/gamedata/servant.g.dart';
 
@@ -149,6 +152,18 @@ class Servant {
   })  : extraAssets = extraAssets ?? ExtraAssets(),
         ascensionAdd = ascensionAdd ?? AscensionAdd();
 
+  // todo: support ascension
+  String? get icon => extraAssets.faces.ascension?[1];
+
+  String? get charaGraph => extraAssets.charaGraph.ascension?[1];
+
+  String? get borderedIcon => icon?.replaceFirst('.png', '_bordered.png');
+
+  Transl<String, String> get lName => Transl.svtNames(name);
+
+  ServantExtra get extra => db2.gameData.wikiData.servants[collectionNo] ??=
+      ServantExtra(collectionNo: collectionNo);
+
   factory Servant.fromJson(Map<String, dynamic> json) =>
       _$ServantFromJson(json);
 }
@@ -210,6 +225,28 @@ class CraftEssence {
 
   factory CraftEssence.fromJson(Map<String, dynamic> json) =>
       _$CraftEssenceFromJson(json);
+
+  String? get icon => extraAssets.faces.equip?[id];
+
+  String? get charaGraph => extraAssets.charaGraph.equip?[id];
+
+  String? get borderedIcon => icon?.replaceFirst('.png', '_bordered.png');
+
+  Transl<String, String> get lName => Transl.ceNames(name);
+
+  CraftEssenceExtra get extra =>
+      db2.gameData.wikiData.craftEssences[collectionNo] ??=
+          CraftEssenceExtra(collectionNo: collectionNo);
+
+  CraftATKType get atkType {
+    return atkMax > 0
+        ? hpMax > 0
+            ? CraftATKType.mix
+            : CraftATKType.atk
+        : hpMax > 0
+            ? CraftATKType.hp
+            : CraftATKType.none;
+  }
 }
 
 @JsonSerializable()
@@ -525,6 +562,7 @@ class LoreComment {
   int id;
   int priority;
   String condMessage;
+  String comment;
   @JsonKey(fromJson: toEnumCondType)
   CondType condType;
   List<int>? condValues;
@@ -535,6 +573,7 @@ class LoreComment {
     required this.id,
     this.priority = 0,
     this.condMessage = "",
+    this.comment = '',
     required this.condType,
     this.condValues,
     this.condValue2 = 0,
@@ -723,9 +762,11 @@ class NiceLore {
 class ServantScript {
   @JsonKey(name: 'SkillRankUp')
   Map<int, List<int>>? skillRankUp;
+  bool? svtBuffTurnExtend;
 
   ServantScript({
     this.skillRankUp,
+    this.svtBuffTurnExtend,
   });
 
   factory ServantScript.fromJson(Map<String, dynamic> json) =>
@@ -758,14 +799,14 @@ enum SvtFlag {
   matDropRateUpCe,
 }
 
-@JsonEnum(fieldRename: FieldRename.snake)
 enum Attribute {
   human,
   sky,
   earth,
   star,
   beast,
-  Void, // ignore: constant_identifier_names
+  @JsonValue('void')
+  void_,
 }
 enum ServantPolicy {
   none,

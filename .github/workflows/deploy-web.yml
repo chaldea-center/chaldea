@@ -1,0 +1,34 @@
+name: Deploy web
+
+on:
+  #  push:
+  #    branches:
+  #      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '2.10.0'
+          channel: 'beta'
+          cache: true
+      - run: flutter --version
+      - run: flutter pub get
+      - run: flutter clean
+      - run: flutter build web
+
+      - name: Patch web build
+        run: dart ./scripts/patch_web_build.dart
+
+      - name: Push to app repo
+        uses: crazy-max/ghaction-github-pages@v2.2.0
+        with:
+          repo: chaldea-center/app
+          target_branch: main
+          build_dir: build/web
+        env:
+          GH_PAT: ${{ secrets.GH_PAGES_TOKEN }}

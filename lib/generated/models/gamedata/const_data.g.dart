@@ -60,7 +60,7 @@ const _$AttributeEnumMap = {
   Attribute.earth: 'earth',
   Attribute.star: 'star',
   Attribute.beast: 'beast',
-  Attribute.Void: 'void',
+  Attribute.void_: 'void',
 };
 
 const _$BuffActionEnumMap = {
@@ -382,6 +382,7 @@ const _$BuffTypeEnumMap = {
   BuffType.donotSkillSelect: 'donotSkillSelect',
   BuffType.buffRate: 'buffRate',
   BuffType.invisibleBattleChara: 'invisibleBattleChara',
+  BuffType.counterFunction: 'counterFunction',
 };
 
 CardInfo _$CardInfoFromJson(Map json) => CardInfo(

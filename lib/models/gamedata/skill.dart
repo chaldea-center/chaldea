@@ -111,6 +111,10 @@ class NiceSkill implements BaseSkill {
     }
     return _$NiceSkillFromJson(json);
   }
+
+  String? get detail =>
+      _detail ??= unmodifiedDetail?.replaceAll(RegExp(r'\[[og]\]'), '');
+  String? _detail;
 }
 
 @JsonSerializable()
@@ -185,12 +189,12 @@ class NiceFunction implements BaseFunction {
   List<NiceTrait> traitVals;
   @override
   List<Buff> buffs;
-  List<Vals> svals;
-  List<Vals>? svals2;
-  List<Vals>? svals3;
-  List<Vals>? svals4;
-  List<Vals>? svals5;
-  List<Vals>? followerVals;
+  List<DataVals> svals;
+  List<DataVals>? svals2;
+  List<DataVals>? svals3;
+  List<DataVals>? svals4;
+  List<DataVals>? svals5;
+  List<DataVals>? followerVals;
 
   NiceFunction({
     required this.funcId,
@@ -256,7 +260,7 @@ class Buff {
 }
 
 @JsonSerializable()
-class Vals {
+class DataVals {
   int? Rate;
   int? Turn;
   int? Count;
@@ -348,15 +352,20 @@ class Vals {
   int? ForceSubState;
   int? IgnoreIndivUnreleaseable;
   int? OnParty;
+  int? CounterId;
+  int? CounterLv;
+  int? CounterOc;
+  int? UseTreasureDevice;
+  int? SkillReaction;
   int? ApplySupportSvt;
   int? Individuality;
   int? EventId;
   int? AddCount;
   int? RateCount;
   int? DropRateCount;
-  Vals? DependFuncVals;
+  DataVals? DependFuncVals;
 
-  Vals({
+  DataVals({
     this.Rate,
     this.Turn,
     this.Count,
@@ -448,6 +457,11 @@ class Vals {
     this.ForceSubState,
     this.IgnoreIndivUnreleaseable,
     this.OnParty,
+    this.CounterId,
+    this.CounterLv,
+    this.CounterOc,
+    this.UseTreasureDevice,
+    this.SkillReaction,
     this.ApplySupportSvt,
     this.Individuality,
     this.EventId,
@@ -457,7 +471,8 @@ class Vals {
     this.DependFuncVals,
   });
 
-  factory Vals.fromJson(Map<String, dynamic> json) => _$ValsFromJson(json);
+  factory DataVals.fromJson(Map<String, dynamic> json) =>
+      _$DataValsFromJson(json);
 }
 
 @JsonSerializable()
@@ -844,6 +859,7 @@ enum BuffType {
   donotSkillSelect,
   buffRate,
   invisibleBattleChara,
+  counterFunction,
 }
 
 enum FuncType {
@@ -937,6 +953,7 @@ enum FuncType {
   func126,
   func127,
   updateEntryPositions,
+  buddyPointUp,
 }
 
 enum FuncTargetType {

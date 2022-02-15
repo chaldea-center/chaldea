@@ -4,8 +4,8 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chaldea/components/config.dart';
 import 'package:chaldea/components/wiki_util.dart';
+import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
@@ -109,7 +109,7 @@ class CachedImage extends StatefulWidget {
       BuildContext context, String? url, dynamic error) {
     return Padding(
       padding: const EdgeInsets.all(10),
-      child: Image(image: db.errorImage),
+      child: Image(image: db2.errorImage),
     );
   }
 
@@ -248,7 +248,7 @@ class _CachedImageState extends State<CachedImage> {
             ImageActions.showSaveShare(
               context: context,
               data: data,
-              destFp: join(db.paths.downloadDir, fn),
+              destFp: join(db2.paths.downloadDir, fn),
               gallery: true,
               share: true,
             );
@@ -304,7 +304,7 @@ class _CachedImageState extends State<CachedImage> {
           return ImageActions.showSaveShare(
             context: context,
             srcFp: file.path,
-            destFp: join(db.paths.downloadDir, fn),
+            destFp: join(db2.paths.downloadDir, fn),
             gallery: true,
             share: true,
             shareText: fn,

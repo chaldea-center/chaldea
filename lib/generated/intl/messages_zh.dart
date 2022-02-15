@@ -97,6 +97,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ascension_short": MessageLookupByLibrary.simpleMessage("灵基"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("灵基再临"),
         "attachment": MessageLookupByLibrary.simpleMessage("附件"),
+        "auto_reset": MessageLookupByLibrary.simpleMessage("自动重置"),
         "auto_update": MessageLookupByLibrary.simpleMessage("自动更新"),
         "backup": MessageLookupByLibrary.simpleMessage("备份"),
         "backup_data_alert": MessageLookupByLibrary.simpleMessage("及！时！备！份！"),
@@ -141,6 +142,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "cur_account": MessageLookupByLibrary.simpleMessage("当前账号"),
         "cur_ap": MessageLookupByLibrary.simpleMessage("现有AP"),
         "current_": MessageLookupByLibrary.simpleMessage("当前"),
+        "dark_mode": MessageLookupByLibrary.simpleMessage("深色模式"),
+        "dark_mode_dark": MessageLookupByLibrary.simpleMessage("深色"),
+        "dark_mode_light": MessageLookupByLibrary.simpleMessage("浅色"),
+        "dark_mode_system": MessageLookupByLibrary.simpleMessage("系统"),
         "dataset_goto_download_page":
             MessageLookupByLibrary.simpleMessage("前往下载页"),
         "dataset_goto_download_page_hint":
@@ -395,6 +400,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "master_mission_tasklist": MessageLookupByLibrary.simpleMessage("任务列表"),
         "max_ap": MessageLookupByLibrary.simpleMessage("最大AP"),
         "more": MessageLookupByLibrary.simpleMessage("更多"),
+        "move_down": MessageLookupByLibrary.simpleMessage("下移"),
+        "move_up": MessageLookupByLibrary.simpleMessage("上移"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("魔术礼装"),
         "new_account": MessageLookupByLibrary.simpleMessage("新建账号"),
         "next_card": MessageLookupByLibrary.simpleMessage("下一张"),
@@ -407,6 +414,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("点击♡查看所有从者任务"),
         "noble_phantasm": MessageLookupByLibrary.simpleMessage("宝具"),
         "noble_phantasm_level": MessageLookupByLibrary.simpleMessage("宝具等级"),
+        "not_implemented": MessageLookupByLibrary.simpleMessage("尚未实现"),
         "obtain_methods": MessageLookupByLibrary.simpleMessage("获取方式"),
         "ok": MessageLookupByLibrary.simpleMessage("确定"),
         "open": MessageLookupByLibrary.simpleMessage("打开"),
@@ -437,6 +445,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest": MessageLookupByLibrary.simpleMessage("关卡"),
         "quest_condition": MessageLookupByLibrary.simpleMessage("开放条件"),
         "rarity": MessageLookupByLibrary.simpleMessage("稀有度"),
+        "rate_app_store": MessageLookupByLibrary.simpleMessage("App Store评分"),
+        "rate_play_store":
+            MessageLookupByLibrary.simpleMessage("Google Play评分"),
         "release_page": MessageLookupByLibrary.simpleMessage("下载页"),
         "reload_data_success": MessageLookupByLibrary.simpleMessage("导入成功"),
         "reload_default_gamedata":

@@ -1,11 +1,118 @@
+import 'package:chaldea/models/userdata/userdata.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import '../db.dart';
 import 'servant.dart';
 
 part '../../generated/models/gamedata/wiki_data.g.dart';
 
-@JsonSerializable()
+class Transl<K, V> {
+  final Map<K, MappingBase<V>> mapping;
+  final MappingBase<V>? _m;
+  final K key;
+  final V _default;
+
+  Transl(this.mapping, this.key, this._default) : _m = mapping[key];
+
+  V get jp => mapping[key]?.jp ?? _default;
+
+  V get cn => mapping[key]?.cn ?? _default;
+
+  V get tw => mapping[key]?.tw ?? _default;
+
+  V get na => mapping[key]?.na ?? _default;
+
+  V get kr => mapping[key]?.kr ?? _default;
+
+  V get l {
+    for (final region in db2.settings.resolvedPreferredRegions) {
+      final v = mapping[key]?.of(region);
+      if (v != null) return v;
+    }
+    return _default;
+  }
+
+  List<V?> get all => [_m?.jp, _m?.cn, _m?.tw, _m?.na, _m?.kr];
+
+  static MappingData get _md => db2.gameData.mappingData;
+
+  static Transl<String, String> itemNames(String jp) =>
+      Transl(_md.itemNames, jp, jp);
+
+  static Transl<String, String> mcNames(String jp) =>
+      Transl(_md.mcNames, jp, jp);
+
+  static Transl<String, String> costumeNames(String jp) =>
+      Transl(_md.costumeNames, jp, jp);
+
+  static Transl<String, String> cvNames(String jp) =>
+      Transl(_md.cvNames, jp, jp);
+
+  static Transl<String, String> illustratorNames(String jp) =>
+      Transl(_md.illustratorNames, jp, jp);
+
+  static Transl<String, String> ccNames(String jp) =>
+      Transl(_md.ccNames, jp, jp);
+
+  static Transl<String, String> svtNames(String jp) =>
+      Transl(_md.svtNames, jp, jp);
+
+  static Transl<String, String> ceNames(String jp) =>
+      Transl(_md.ceNames, jp, jp);
+
+  static Transl<String, String> eventNames(String jp) =>
+      Transl(_md.eventNames, jp, jp);
+
+  static Transl<String, String> warNames(String jp) =>
+      Transl(_md.warNames, jp, jp);
+
+  static Transl<String, String> questNames(String jp) =>
+      Transl(_md.questNames, jp, jp);
+
+  static Transl<String, String> spotNames(String jp) =>
+      Transl(_md.spotNames, jp, jp);
+
+  static Transl<String, String> entityNames(String jp) =>
+      Transl(_md.entityNames, jp, jp);
+
+  static Transl<String, String> tdTypes(String jp) =>
+      Transl(_md.tdTypes, jp, jp);
+
+  static Transl<String, String> bgmNames(String jp) =>
+      Transl(_md.bgmNames, jp, jp);
+
+  static Transl<String, String> summonNames(String jp) =>
+      Transl(_md.summonNames, jp, jp);
+
+  static Transl<String, String> charaNames(String cn) =>
+      Transl(_md.charaNames, cn, cn);
+
+  static Transl<String, String> buffNames(String jp) =>
+      Transl(_md.buffNames, jp, jp);
+
+  static Transl<String, String> buffDetail(String jp) =>
+      Transl(_md.buffDetail, jp, jp);
+
+  static Transl<String, String> funcPopuptext(String jp) =>
+      Transl(_md.funcPopuptext, jp, jp);
+
+  static Transl<String, String> skillNames(String jp) =>
+      Transl(_md.skillNames, jp, jp);
+
+  static Transl<String, String> skillDetail(String jp) =>
+      Transl(_md.skillDetail, jp, jp);
+
+  static Transl<String, String> tdNames(String jp) =>
+      Transl(_md.tdNames, jp, jp);
+
+  static Transl<String, String> tdRuby(String jp) => Transl(_md.tdRuby, jp, jp);
+
+  static Transl<String, String> tdDetail(String jp) =>
+      Transl(_md.tdDetail, jp, jp);
+}
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MappingData {
   final Map<String, MappingBase<String>> itemNames;
   final Map<String, MappingBase<String>> mcNames;
@@ -22,8 +129,8 @@ class MappingData {
   final Map<String, MappingBase<String>> entityNames;
   final Map<String, MappingBase<String>> tdTypes;
   final Map<String, MappingBase<String>> bgmNames;
-  final Map<String, MappingBase<String>> summonNames;
-  final Map<String, MappingBase<String>> charaNames;
+  final Map<String, MappingBase<String>> summonNames; //
+  final Map<String, MappingBase<String>> charaNames; // key: cn
   final Map<String, MappingBase<String>> buffNames;
   final Map<String, MappingBase<String>> buffDetail;
   final Map<String, MappingBase<String>> funcPopuptext;
@@ -32,9 +139,9 @@ class MappingData {
   final Map<String, MappingBase<String>> tdNames;
   final Map<String, MappingBase<String>> tdRuby;
   final Map<String, MappingBase<String>> tdDetail;
-  final Map<int, MappingBase<String>> trait;
-  final Map<int, MappingBase<String>> mcDetail;
-  final Map<int, MappingBase<String>> costumeDetail;
+  final Map<int, MappingBase<String>> trait; // key: trait id
+  final Map<int, MappingBase<String>> mcDetail; // key: mc id
+  final Map<int, MappingBase<String>> costumeDetail; // costume collectionNo
   final Map<int, MappingBase<Map<int, int>>> skillState;
   final Map<int, MappingBase<Map<int, int>>> tdState;
 
@@ -69,45 +176,57 @@ class MappingData {
     Map<dynamic, MappingBase>? costumeDetail,
     Map<dynamic, MappingBase>? skillState,
     Map<dynamic, MappingBase>? tdState,
-  })  : itemNames = _cast(itemNames),
-        mcNames = _cast(mcNames),
-        costumeNames = _cast(costumeNames),
-        cvNames = _cast(cvNames),
-        illustratorNames = _cast(illustratorNames),
-        ccNames = _cast(ccNames),
-        svtNames = _cast(svtNames),
-        ceNames = _cast(ceNames),
-        eventNames = _cast(eventNames),
-        warNames = _cast(warNames),
-        questNames = _cast(questNames),
-        spotNames = _cast(spotNames),
-        entityNames = _cast(entityNames),
-        tdTypes = _cast(tdTypes),
-        bgmNames = _cast(bgmNames),
-        summonNames = _cast(summonNames),
-        charaNames = _cast(charaNames),
-        buffNames = _cast(buffNames),
-        buffDetail = _cast(buffDetail),
-        funcPopuptext = _cast(funcPopuptext),
-        skillNames = _cast(skillNames),
-        skillDetail = _cast(skillDetail),
-        tdNames = _cast(tdNames),
-        tdRuby = _cast(tdRuby),
-        tdDetail = _cast(tdDetail),
+  })  : itemNames = _cast(itemNames, Region.jp),
+        mcNames = _cast(mcNames, Region.jp),
+        costumeNames = _cast(costumeNames, Region.jp),
+        cvNames = _cast(cvNames, Region.jp),
+        illustratorNames = _cast(illustratorNames, Region.jp),
+        ccNames = _cast(ccNames, Region.jp),
+        svtNames = _cast(svtNames, Region.jp),
+        ceNames = _cast(ceNames, Region.jp),
+        eventNames = _cast(eventNames, Region.jp),
+        warNames = _cast(warNames, Region.jp),
+        questNames = _cast(questNames, Region.jp),
+        spotNames = _cast(spotNames, Region.jp),
+        entityNames = _cast(entityNames, Region.jp),
+        tdTypes = _cast(tdTypes, Region.jp),
+        bgmNames = _cast(bgmNames, Region.jp),
+        summonNames = _cast(summonNames, Region.jp),
+        charaNames = _cast(charaNames, Region.cn),
+        buffNames = _cast(buffNames, Region.jp),
+        buffDetail = _cast(buffDetail, Region.jp),
+        funcPopuptext = _cast(funcPopuptext, Region.jp),
+        skillNames = _cast(skillNames, Region.jp),
+        skillDetail = _cast(skillDetail, Region.jp),
+        tdNames = _cast(tdNames, Region.jp),
+        tdRuby = _cast(tdRuby, Region.jp),
+        tdDetail = _cast(tdDetail, Region.jp),
         trait = _cast(trait),
         mcDetail = _cast(mcDetail),
         costumeDetail = _cast(costumeDetail),
         skillState = _cast(skillState),
-        tdState = _cast(tdState);
+        tdState = _cast(tdState) {
+    this.skillNames
+      ..addAll(this.ceNames)
+      ..addAll(this.ccNames);
+  }
 
-  static Map<K, MappingBase<V>> _cast<K, V>(Map<dynamic, MappingBase>? data) {
-    return data?.map((key, value) {
-          if (K == int && key is String) {
-            return MapEntry(int.parse(key) as K, value.cast());
-          }
-          return MapEntry(key, value.cast());
-        }) ??
-        {};
+  static Map<K, MappingBase<V>> _cast<K, V>(Map<dynamic, MappingBase>? data,
+      [Region? keyRegion]) {
+    if (data == null) return {};
+    return data.map((key, value) {
+      MapEntry<K, MappingBase<V>> entry;
+      if (K == int) {
+        entry = MapEntry(int.parse(key as String) as K, value.cast());
+      } else {
+        entry = MapEntry(key, value.cast());
+      }
+      if (keyRegion != null) {
+        assert(K == V && K == String, 'Only String supported: $K, $V');
+        entry.value.update(entry.key as V, keyRegion, true);
+      }
+      return entry;
+    });
   }
 
   factory MappingData.fromJson(Map<String, dynamic> json) =>
@@ -149,6 +268,49 @@ class MappingBase<T> {
     this.kr,
   });
 
+  T? get l {
+    for (final region in db2.settings.resolvedPreferredRegions) {
+      final v = of(region);
+      if (v != null) return v;
+    }
+    return null;
+  }
+
+  T? of(Region region) {
+    switch (region) {
+      case Region.jp:
+        return jp;
+      case Region.cn:
+        return cn;
+      case Region.tw:
+        return tw;
+      case Region.na:
+        return na;
+      case Region.kr:
+        return kr;
+    }
+  }
+
+  void update(T? value, Region region, [bool skipExist = false]) {
+    switch (region) {
+      case Region.jp:
+        jp = skipExist ? jp ?? value : value;
+        break;
+      case Region.cn:
+        cn = skipExist ? cn ?? value : value;
+        break;
+      case Region.tw:
+        tw = skipExist ? tw ?? value : value;
+        break;
+      case Region.na:
+        na = skipExist ? na ?? value : value;
+        break;
+      case Region.kr:
+        kr = skipExist ? kr ?? value : value;
+        break;
+    }
+  }
+
   factory MappingBase.fromJson(Map<String, dynamic> json) =>
       _$MappingBaseFromJson(json, _fromJsonT);
 
@@ -183,7 +345,7 @@ class MappingBase<T> {
       if (obj.isEmpty) return Map.from(obj) as T;
       if (obj.values.first is int) {
         return <int, int>{for (var e in obj.entries) int.parse(e.key): e.value}
-            as T;
+        as T;
       }
     }
     if (obj is List) {
@@ -246,7 +408,7 @@ class ServantExtra {
 @JsonSerializable()
 class CraftEssenceExtra {
   int collectionNo;
-  CEType type;
+  CEObtain obtain;
   MappingBase<String> profile;
   List<int> characters;
   List<String> unknownCharacters;
@@ -255,7 +417,7 @@ class CraftEssenceExtra {
 
   CraftEssenceExtra({
     required this.collectionNo,
-    this.type = CEType.unknown,
+    this.obtain = CEObtain.unknown,
     MappingBase? profile,
     this.characters = const [],
     this.unknownCharacters = const [],
@@ -417,6 +579,20 @@ class LimitedSummon {
 
   factory LimitedSummon.fromJson(Map<String, dynamic> json) =>
       _$LimitedSummonFromJson(json);
+
+  List<int> allCards(
+      {bool svt = false, bool ce = false, bool includeHidden = false}) {
+    List<int> cards = [];
+    for (final sub in subSummons) {
+      for (final prob in sub.probs) {
+        if (!prob.display && !includeHidden) continue;
+        if ((prob.isSvt && svt) || (!prob.isSvt && ce)) {
+          cards.addAll(prob.ids);
+        }
+      }
+    }
+    return cards;
+  }
 }
 
 @JsonSerializable()
@@ -473,7 +649,7 @@ enum SvtObtain {
   unknown,
 }
 
-enum CEType {
+enum CEObtain {
   exp,
   shop,
   story,
