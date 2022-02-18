@@ -28,15 +28,10 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData> {
       }),
       content: getListViewBody(children: [
         getGroup(header: S.of(context).filter_sort, children: [
-          FilterGroup<bool>(
-            padding: const EdgeInsets.only(right: 12),
-            options: const [false, true],
-            values: FilterRadioData(filterData.useGrid),
-            optionBuilder: (v) => Text(v ? 'Grid' : 'List'),
-            combined: true,
-            onFilterChanged: (v) {
-              filterData.useGrid =
-                  (v as FilterRadioData).selected ?? filterData.useGrid;
+          FilterGroup.display(
+            useGrid: filterData.useGrid,
+            onChanged: (v) {
+              if (v != null) filterData.useGrid = v;
               update();
             },
           ),

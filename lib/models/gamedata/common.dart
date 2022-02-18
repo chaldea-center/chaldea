@@ -1,3 +1,4 @@
+import 'package:chaldea/utils/atlas.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../app/tools/gamedata_loader.dart';
@@ -148,7 +149,95 @@ enum SvtClass {
   cccFinaleEmiyaAlter,
   salemAbby,
   ALL, // ignore: constant_identifier_names
+  EXTRA, // ignore: constant_identifier_names
+  MIX, // ignore: constant_identifier_names
 }
+
+extension SvtClassX on SvtClass {
+  int get id => kSvtClassIdsReverse[this]!;
+
+  String icon(int rarity) {
+    return Atlas.asset('ClassIcons/class${rarity}_$id.png');
+  }
+
+  static List<SvtClass> regularAll = [
+    ...regular,
+    ...extra,
+    SvtClass.beastII,
+  ];
+
+  static const regular = <SvtClass>[
+    SvtClass.saber,
+    SvtClass.archer,
+    SvtClass.lancer,
+    SvtClass.rider,
+    SvtClass.caster,
+    SvtClass.assassin,
+    SvtClass.berserker,
+  ];
+  static const extra = <SvtClass>[
+    SvtClass.shielder,
+    SvtClass.ruler,
+    SvtClass.avenger,
+    SvtClass.moonCancer,
+    SvtClass.alterEgo,
+    SvtClass.foreigner,
+    SvtClass.pretender,
+  ];
+  static const beasts = <SvtClass>[
+    SvtClass.beastII,
+    SvtClass.beastI,
+    SvtClass.beastIIIR,
+    SvtClass.beastIIIL,
+    SvtClass.beastIV,
+    SvtClass.beastUnknown,
+  ];
+}
+
+const kSvtClassIds = {
+  1: SvtClass.saber,
+  2: SvtClass.archer,
+  3: SvtClass.lancer,
+  4: SvtClass.rider,
+  5: SvtClass.caster,
+  6: SvtClass.assassin,
+  7: SvtClass.berserker,
+  8: SvtClass.shielder,
+  9: SvtClass.ruler,
+  10: SvtClass.alterEgo,
+  11: SvtClass.avenger,
+  12: SvtClass.demonGodPillar,
+// # 13
+// # 14
+// # 15
+// # 16
+  17: SvtClass.grandCaster,
+// # 18
+// # 19
+  20: SvtClass.beastII,
+  21: SvtClass.ushiChaosTide,
+  22: SvtClass.beastI,
+  23: SvtClass.moonCancer,
+  24: SvtClass.beastIIIR,
+  25: SvtClass.foreigner,
+  26: SvtClass.beastIIIL,
+  27: SvtClass.beastUnknown, //  # LB 5.2 beast
+  28: SvtClass.pretender,
+  29: SvtClass.beastIV,
+  97: SvtClass.unknown,
+// # 98
+// # 99
+// # 100
+  107: SvtClass.agarthaPenth,
+  124: SvtClass.cccFinaleEmiyaAlter,
+  125: SvtClass.salemAbby,
+// # 1000: SvtClass.OTHER,
+// # For Support List
+  1001: SvtClass.ALL,
+  1002: SvtClass.EXTRA,
+  1003: SvtClass.MIX,
+};
+final kSvtClassIdsReverse = kSvtClassIds.map((k, v) => MapEntry(v, k));
 
 enum Trait {
   unknown,

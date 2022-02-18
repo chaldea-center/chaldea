@@ -36,6 +36,20 @@ class FilterGroup<T> extends StatelessWidget {
     this.showCollapse = false,
   }) : super(key: key);
 
+  static FilterGroup display(
+      {required bool useGrid, required ValueChanged<bool?> onChanged}) {
+    return FilterGroup<bool>(
+      padding: const EdgeInsets.only(right: 12),
+      options: const [false, true],
+      values: FilterRadioData(useGrid),
+      optionBuilder: (v) => Text(v ? 'Grid' : 'List'),
+      combined: true,
+      onFilterChanged: (v) {
+        onChanged((v as FilterRadioData<bool>).selected);
+      },
+    );
+  }
+
   Widget _buildCheckbox(
       BuildContext context, bool checked, String text, VoidCallback onTap) {
     return GestureDetector(

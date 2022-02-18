@@ -61,6 +61,11 @@ User _$UserFromJson(Map json) => $checkedCreate(
                       ))
                   .toList()),
           curSvtPlanNo: $checkedConvert('curSvtPlanNo', (v) => v as int? ?? 0),
+          planNames: $checkedConvert(
+              'planNames',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), e as String),
+                  )),
           items: $checkedConvert(
               'items',
               (v) => (v as Map?)?.map(
@@ -93,6 +98,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
           .map((e) => e.map((k, e) => MapEntry(k.toString(), e.toJson())))
           .toList(),
       'curSvtPlanNo': instance.curSvtPlanNo,
+      'planNames': instance.planNames.map((k, e) => MapEntry(k.toString(), e)),
       'items': instance.items.map((k, e) => MapEntry(k.toString(), e)),
       'craftEssences': instance.craftEssences
           .map((k, e) => MapEntry(k.toString(), _$CraftStatusEnumMap[e])),
@@ -153,11 +159,8 @@ SvtPlan _$SvtPlanFromJson(Map json) => $checkedCreate(
               (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
           appendSkills: $checkedConvert('appendSkills',
               (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
-          costumes: $checkedConvert(
-              'costumes',
-              (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(int.parse(k as String), e as bool),
-                  )),
+          costumes: $checkedConvert('costumes',
+              (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
           grail: $checkedConvert('grail', (v) => v as int? ?? 0),
           fouHp: $checkedConvert('fouHp', (v) => v as int? ?? 0),
           fouAtk: $checkedConvert('fouAtk', (v) => v as int? ?? 0),
@@ -173,7 +176,7 @@ Map<String, dynamic> _$SvtPlanToJson(SvtPlan instance) => <String, dynamic>{
       'ascension': instance.ascension,
       'skills': instance.skills,
       'appendSkills': instance.appendSkills,
-      'costumes': instance.costumes.map((k, e) => MapEntry(k.toString(), e)),
+      'costumes': instance.costumes,
       'grail': instance.grail,
       'fouHp': instance.fouHp,
       'fouAtk': instance.fouAtk,

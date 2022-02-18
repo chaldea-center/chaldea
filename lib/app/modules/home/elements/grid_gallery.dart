@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/db.dart';
-import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:flutter/material.dart';
@@ -152,13 +152,9 @@ class _GridGalleryState extends State<GridGallery> {
               galleries[item.name] = !active;
             });
           } else {
-            if (item.page != null) {
-              SplitRoute.push(
-                context,
-                item.page!,
-                detail: item.isDetail,
-                popDetail: true,
-              );
+            if (item.url != null || item.page != null) {
+              router.push(
+                  url: item.url, child: item.page, detail: item.isDetail);
             }
           }
         },

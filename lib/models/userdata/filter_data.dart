@@ -19,6 +19,16 @@ class FilterGroupData<T> {
     Set<T>? options,
   }) : options = options ?? {};
 
+  T? get radioValue => throw UnimplementedError();
+
+  bool isEmpty(Iterable<T> values) {
+    return options.isEmpty || values.every((e) => !options.contains(e));
+  }
+
+  bool isAll(Iterable<T> values) {
+    return values.every((e) => options.contains(e));
+  }
+
   void toggle(T value) {
     options.toggle(value);
   }
@@ -51,24 +61,27 @@ class FilterGroupData<T> {
   }
 
   bool matchAny(
-    List<T> values, {
+    Iterable<T> values, {
     _FilterCompare<T>? compare,
     Map<T, _FilterCompare<T>>? compares,
   }) {
     if (options.isEmpty) return true;
     bool result;
     if (matchAll) {
-      result =
-          options.every((option) => _match(option, option, compare, compares));
+      result = options.every(
+          (option) => values.any((v) => _match(v, option, compare, compares)));
     } else {
-      result =
-          options.any((option) => _match(option, option, compare, compares));
+      result = options.any(
+          (option) => values.any((v) => _match(v, option, compare, compares)));
     }
     return invert ? !result : result;
   }
 }
 
 class FilterRadioData<T> extends FilterGroupData<T> {
+  @override
+  T? get radioValue => _selected;
+  @Deprecated('use radioValue instead`')
   T? get selected => _selected;
   T? _selected;
 
@@ -94,21 +107,55 @@ class FilterRadioData<T> extends FilterGroupData<T> {
   }
 }
 
+/// Servant
+enum SvtCompare { no, className, rarity, atk, hp, priority }
+
 @JsonSerializable(ignoreUnannotated: true)
 class SvtFilterData {
   @JsonKey()
   bool useGrid;
   @JsonKey()
   FavoriteState favorite;
+  @JsonKey()
+  FavoriteState planFavorite;
+  @JsonKey()
+  List<SvtCompare> sortKeys;
+  @JsonKey()
+  List<bool> sortReversed;
+
+  //
   FilterGroupData<SvtClass> svtClass = FilterGroupData();
   FilterGroupData<int> rarity = FilterGroupData();
   FilterGroupData<Attribute> attribute = FilterGroupData();
+  // FilterGroupData svtDuplicated= FilterGroupData();
+
+  // FilterGroupData planCompletion;
+  // FilterGroupData skillLevel;
+  FilterGroupData<int> priority = FilterGroupData();
+  FilterGroupData<SvtObtain> obtain = FilterGroupData();
+  FilterGroupData<CardType> npColor = FilterGroupData();
+  FilterGroupData<NpDamageType> npType = FilterGroupData();
+  FilterGroupData<Trait> alignment1 = FilterGroupData(); //秩序 混沌 中庸
+  FilterGroupData<Trait> alignment2 = FilterGroupData(); //善 恶 中立 夏 狂...
+  FilterGroupData<Gender> gender = FilterGroupData();
   FilterGroupData<Trait> trait = FilterGroupData();
+  // FilterGroupData special; //not used yet
+  // FilterGroupData effectScope;
+  // FilterGroupData effectTarget;
+  // FilterGroupData effects;
 
   SvtFilterData({
     this.useGrid = false,
     this.favorite = FavoriteState.all,
-  });
+    this.planFavorite = FavoriteState.all,
+    List<SvtCompare?>? sortKeys,
+    List<bool>? sortReversed,
+  })  : sortKeys = List.generate(SvtCompare.values.length,
+            (index) => sortKeys?.getOrNull(index) ?? SvtCompare.values[index],
+            growable: false),
+        sortReversed = List.generate(SvtCompare.values.length,
+            (index) => sortReversed?.getOrNull(index) ?? true,
+            growable: false);
 
   List<FilterGroupData> get _group => [svtClass, rarity, attribute, trait];
 
@@ -123,6 +170,48 @@ class SvtFilterData {
       _$SvtFilterDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$SvtFilterDataToJson(this);
+
+  static int compare(Servant? a, Servant? b,
+      {List<SvtCompare>? keys, List<bool>? reversed, User? user}) {
+    if (a == null && b == null) return 0;
+    if (a == null) return -1;
+    if (b == null) return 1;
+
+    if (keys == null || keys.isEmpty) {
+      keys = [SvtCompare.no];
+    }
+    for (var i = 0; i < keys.length; i++) {
+      int r;
+      switch (keys[i]) {
+        case SvtCompare.no:
+          r = a.collectionNo - b.collectionNo;
+          if (r == 0) r = a.id - b.id;
+          break;
+        case SvtCompare.className:
+          r = SvtClassX.regularAll.indexOf(a.className) -
+              SvtClassX.regularAll.indexOf(b.className);
+          break;
+        case SvtCompare.rarity:
+          r = a.rarity - b.rarity;
+          break;
+        case SvtCompare.atk:
+          r = (a.atkMax) - (b.atkMax);
+          break;
+        case SvtCompare.hp:
+          r = (a.hpMax) - (b.hpMax);
+          break;
+        case SvtCompare.priority:
+          final aa = user?.svtStatusOf(a.collectionNo),
+              bb = user?.svtStatusOf(b.collectionNo);
+          r = (aa?.priority ?? 1) - (bb?.priority ?? 1);
+          break;
+      }
+      if (r != 0) {
+        return (reversed?.elementAt(i) ?? false) ? -r : r;
+      }
+    }
+    return 0;
+  }
 }
 
 /// Craft Essence

@@ -836,6 +836,8 @@ const _$SvtClassEnumMap = {
   SvtClass.cccFinaleEmiyaAlter: 'cccFinaleEmiyaAlter',
   SvtClass.salemAbby: 'salemAbby',
   SvtClass.ALL: 'ALL',
+  SvtClass.EXTRA: 'EXTRA',
+  SvtClass.MIX: 'MIX',
 };
 
 RelationOverwriteDetail _$RelationOverwriteDetailFromJson(Map json) =>

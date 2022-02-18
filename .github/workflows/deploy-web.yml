@@ -19,7 +19,7 @@ jobs:
       - run: flutter --version
       - run: flutter pub get
       - run: flutter clean
-      - run: flutter build web
+      - run: flutter build web --web-renderer html
 
       - name: Patch web build
         run: dart ./scripts/patch_web_build.dart

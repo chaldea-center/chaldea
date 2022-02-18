@@ -1,6 +1,9 @@
+import 'package:chaldea/models/db.dart';
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'common.dart';
+import 'game_card.dart';
 
 part '../../generated/models/gamedata/item.g.dart';
 
@@ -31,6 +34,50 @@ class Item {
   });
 
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
+
+  String? get borderedIcon {
+    if (type == ItemType.svtCoin) return icon;
+    return icon.replaceFirst(RegExp(r'.png$'), '_bordered.png');
+  }
+
+  static Widget iconBuilder({
+    required BuildContext context,
+    required String? icon,
+    double? width,
+    double? height,
+    double? aspectRatio = 132 / 144,
+    String? text,
+    EdgeInsets? padding,
+    EdgeInsets? textPadding,
+    VoidCallback? onTap,
+    bool jumpToDetail = true,
+    bool popDetail = false,
+  }) {
+    if (onTap == null && jumpToDetail) {
+      // onTap = () {
+      //   SplitRoute.push(context, ItemDetailPage(itemKey: itemKey),
+      //       popDetail: popDetail);
+      // };
+    }
+    return GameCardMixin.cardIconBuilder(
+      context: context,
+      icon: icon,
+      width: width,
+      height: height,
+      aspectRatio: aspectRatio,
+      text: text,
+      padding: padding,
+      textPadding: textPadding,
+      onTap: onTap,
+    );
+  }
+}
+
+class Items {
+  const Items._();
+  static Map<int, Item> get _items => db2.gameData.items;
+  static Item get qp => _items[1]!;
+  static Item get grail => _items[7999]!;
 }
 
 @JsonSerializable()
@@ -42,9 +89,9 @@ class ItemAmount {
     Item? item,
     int? itemId,
     required this.amount,
-  }) : itemId = item?.id ?? itemId ?? 0;
+  }) : itemId = item?.id ?? itemId!;
 
-  Item? get item => null;
+  Item get item => db2.gameData.items[itemId]!;
 
   factory ItemAmount.fromJson(Map<String, dynamic> json) =>
       _$ItemAmountFromJson(json);

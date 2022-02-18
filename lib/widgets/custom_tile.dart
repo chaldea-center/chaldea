@@ -11,7 +11,7 @@ class CustomTile extends StatelessWidget {
   final Widget? trailingIcon;
 
   /// default: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0)
-  final EdgeInsets? contentPadding;
+  final EdgeInsetsGeometry? contentPadding;
 
   /// default: if leading is non-null, EdgeInsets.symmetric(horizontal: 6.0)
   /// if null, EdgeInsets.zero

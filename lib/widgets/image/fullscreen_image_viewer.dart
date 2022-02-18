@@ -59,20 +59,20 @@ class FullscreenImageViewer extends StatefulWidget {
             (index) => CachedImage(
               imageUrl: urls[index],
               placeholder: placeholder,
-                      showSaveOnLongPress: true,
-                      photoViewOption: PhotoViewOption.limited().copyWith(
-                        onTapUp: (ctx, _, __) {
-                          Navigator.pop(ctx, index);
-                        },
-                      ),
-                    ),
-              ),
-              galleryOption: PhotoViewGalleryOption(
-                pageController: initialPage == null
-                    ? null
-                    : PageController(initialPage: initialPage),
+              showSaveOnLongPress: true,
+              photoViewOption: PhotoViewOption.limited().copyWith(
+                onTapUp: (ctx, _, __) {
+                  Navigator.pop(ctx, index);
+                },
               ),
             ),
+          ),
+          galleryOption: PhotoViewGalleryOption(
+            pageController: initialPage == null
+                ? null
+                : PageController(initialPage: initialPage),
+          ),
+        ),
       ),
     );
   }

@@ -29,9 +29,12 @@ class LocalSettings {
   bool showAccountAtHome;
   bool autoResetFilter;
   bool useProxy;
-  bool? favoritePreferred;
+  FavoriteState? favoritePreferred;
   SvtListClassFilterStyle classFilterStyle;
   bool onlyAppendSkillTwo;
+  bool planPageFullScreen = false;
+  SvtPlanInputMode svtPlanInputMode;
+
   List<SvtTab> sortedSvtTabs;
   Map<int, String> priorityTags;
   Map<String, bool> galleries;
@@ -64,6 +67,8 @@ class LocalSettings {
     this.favoritePreferred,
     this.classFilterStyle = SvtListClassFilterStyle.auto,
     this.onlyAppendSkillTwo = true,
+    this.planPageFullScreen = false,
+    this.svtPlanInputMode = SvtPlanInputMode.dropdown,
     List<SvtTab?>? sortedSvtTabs,
     Map<int, String>? priorityTags,
     Map<String, bool>? galleries,
@@ -232,3 +237,5 @@ enum SvtTab {
   voice,
   quest,
 }
+
+enum SvtPlanInputMode { dropdown, slider, input }

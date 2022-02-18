@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <!--
+  <head>
+    <!--
     If you are serving your web app in a path other than the root, change the
     href value below to reflect the base path you are serving from.
 
@@ -13,84 +13,134 @@
 
     This is a placeholder for base href that will be replaced by the value of
     the `--base-href` argument provided to `flutter build`.
-  -->
-  <base href="$FLUTTER_BASE_HREF"/>
+    -->
+    <base href="$FLUTTER_BASE_HREF" />
 
-  <meta charset="UTF-8"/>
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible"/>
-  <link rel="icon" href="/favicon.png">
+    <meta charset="UTF-8" />
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+    <link rel="icon" href="/favicon.png" />
 
-  <!-- iOS meta tags & icons -->
-  <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
-  <meta name="apple-mobile-web-app-title" content="chaldea"/>
-  <link rel="apple-touch-icon" href="icons/Icon-192.png"/>
+    <!-- iOS meta tags & icons -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="chaldea" />
+    <link rel="apple-touch-icon" href="icons/Icon-192.png" />
 
-  <!-- social graph -->
-  <meta property="og:site_name" content="Chaldea">
-  <meta property="og:title" content="Chaldea">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://chaldea.center">
-  <meta property="og:image" content="https://chaldea.center/icons/Icon-192.png">
-  <meta property="og:image:type" content="image/png">
-  <meta property="og:image:width" content="300">
-  <meta property="og:image:height" content="300">
-  <meta property="og:image:alt" content="Chaldea Logo">
-  <meta property="og:description" content="Chaldea - Yet another planner for Fate/GO">
+    <!-- social graph -->
+    <meta property="og:site_name" content="Chaldea" />
+    <meta property="og:title" content="Chaldea" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://chaldea.center" />
+    <meta property="og:image" content="https://chaldea.center/icons/Icon-192.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="300" />
+    <meta property="og:image:height" content="300" />
+    <meta property="og:image:alt" content="Chaldea Logo" />
+    <meta property="og:description" content="Chaldea - Yet another planner for Fate/GO" />
 
-  <title>Chaldea</title>
-  <meta name="description" content="Chaldea - Yet Another Planner for Fate/GO"/>
-  <link rel="manifest" href="manifest.json"/>
-</head>
-<body>
-<!--
-  For CN:
-  1. load google fonts from font.im
-  2. load canvaskit from build, which is loaded from unpkg.com by default
--->
-<script>
-    let _host = window.location.hostname.toLowerCase();
-    window.isCNHost =
-      _host.startsWith("cn.") ||
-      ["localhost", "127.0.0.1", "0.0.0.0"].indexOf(_host) != -1;
-    if (window.isCNHost) {
+    <title>Chaldea</title>
+    <meta name="description" content="Chaldea - Yet Another Planner for Fate/GO" />
+    <link rel="manifest" href="manifest.json" />
+    <style>
+      .loading-hint {
+        margin-top: 100px;
+        color: #212529;
+        font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+      }
+      .loading-indicator {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        min-height: 100vh;
+      }
+      .lds-ripple {
+        display: inline-block;
+        position: absolute;
+        width: 80px;
+        height: 80px;
+      }
+      .lds-ripple div {
+        position: absolute;
+        border: 4px solid grey;
+        opacity: 1;
+        border-radius: 50%;
+        animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+      }
+      .lds-ripple div:nth-child(2) {
+        animation-delay: -0.5s;
+      }
+      @keyframes lds-ripple {
+        0% {
+          top: 36px;
+          left: 36px;
+          width: 0;
+          height: 0;
+          opacity: 1;
+        }
+        100% {
+          top: 0px;
+          left: 0px;
+          width: 72px;
+          height: 72px;
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- loading indicator, ref: loading.io -->
+    <div class="loading-indicator">
+      <div class="lds-ripple">
+        <div></div>
+        <div></div>
+      </div>
+      <div class="loading-hint">Loading Chaldea...</div>
+    </div>
+
+    <!--
+    For CN:
+    1. load google fonts from font.im
+    2. load canvaskit from build, which is loaded from unpkg.com by default
+    -->
+    <script>
+      let _host = window.location.hostname.toLowerCase();
+      window.isCNHost = _host.startsWith("cn.") || ["localhost", "127.0.0.1", "0.0.0.0"].indexOf(_host) != -1;
       window.flutterConfiguration = {
         canvasKitBaseUrl: "/canvaskit/",
       };
-    }
+    </script>
 
-</script>
-
-<!-- This script installs service_worker.js to provide PWA functionality to
+    <!-- This script installs service_worker.js to provide PWA functionality to
      application. For more information, see:
      https://developers.google.com/web/fundamentals/primers/service-workers -->
-<script>
-    var serviceWorkerVersion = null;
-    var scriptLoaded = false;
-    function loadMainDartJs() {
-      if (scriptLoaded) {
-        return;
+    <script>
+      var serviceWorkerVersion = null;
+      var scriptLoaded = false;
+      function loadMainDartJs() {
+        if (scriptLoaded) {
+          return;
+        }
+        scriptLoaded = true;
+        var scriptTag = document.createElement("script");
+        scriptTag.src = "main.dart.js";
+        scriptTag.type = "application/javascript";
+        document.body.append(scriptTag);
+        document.getElementsByClassName("loading-indicator")[0].remove();
       }
-      scriptLoaded = true;
-      var scriptTag = document.createElement('script');
-      scriptTag.src = 'main.dart.js';
-      scriptTag.type = 'application/javascript';
-      document.body.append(scriptTag);
-    }
 
-    if ('serviceWorker' in navigator) {
-      // Service workers are supported. Use them.
-      window.addEventListener('load', function () {
-        // Wait for registration to finish before dropping the <script> tag.
-        // Otherwise, the browser will load the script multiple times,
-        // potentially different versions.
-        var serviceWorkerUrl = 'flutter_service_worker.js?v=' + serviceWorkerVersion;
-        navigator.serviceWorker.register(serviceWorkerUrl)
-          .then((reg) => {
+      if ("serviceWorker" in navigator) {
+        // Service workers are supported. Use them.
+        window.addEventListener("load", function () {
+          // Wait for registration to finish before dropping the <script> tag.
+          // Otherwise, the browser will load the script multiple times,
+          // potentially different versions.
+          var serviceWorkerUrl = "flutter_service_worker.js?v=" + serviceWorkerVersion;
+          navigator.serviceWorker.register(serviceWorkerUrl).then((reg) => {
             function waitForActivation(serviceWorker) {
-              serviceWorker.addEventListener('statechange', () => {
-                if (serviceWorker.state == 'activated') {
-                  console.log('Installed new service worker.');
+              serviceWorker.addEventListener("statechange", () => {
+                if (serviceWorker.state == "activated") {
+                  console.log("Installed new service worker.");
                   loadMainDartJs();
                 }
               });
@@ -102,31 +152,30 @@
             } else if (!reg.active.scriptURL.endsWith(serviceWorkerVersion)) {
               // When the app updates the serviceWorkerVersion changes, so we
               // need to ask the service worker to update.
-              console.log('New service worker available.');
+              console.log("New service worker available.");
+              document.getElementsByClassName("loading-hint")[0].innerHTML = "Updating Chaldea...";
               reg.update();
               waitForActivation(reg.installing);
             } else {
               // Existing service worker is still good.
-              console.log('Loading app from service worker.');
+              console.log("Loading app from service worker.");
               loadMainDartJs();
             }
           });
 
-        // If service worker doesn't succeed in a reasonable amount of time,
-        // fallback to plaint <script> tag.
-        setTimeout(() => {
-          if (!scriptLoaded) {
-            console.warn(
-              'Failed to load app from service worker. Falling back to plain <script> tag.',
-            );
-            loadMainDartJs();
-          }
-        }, 4000);
-      });
-    } else {
-      // Service workers not supported. Just drop the <script> tag.
-      loadMainDartJs();
-    }
-  </script>
-</body>
+          // If service worker doesn't succeed in a reasonable amount of time,
+          // fallback to plaint <script> tag.
+          setTimeout(() => {
+            if (!scriptLoaded) {
+              console.warn("Failed to load app from service worker. Falling back to plain <script> tag.");
+              loadMainDartJs();
+            }
+          }, 4000);
+        });
+      } else {
+        // Service workers not supported. Just drop the <script> tag.
+        loadMainDartJs();
+      }
+    </script>
+  </body>
 </html>

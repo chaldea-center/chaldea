@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:chaldea/components/components.dart';
 import 'package:chaldea/app/modules/common/blank_page.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/charts/line_chart.dart';
+import 'package:flutter/material.dart';
 
 class GrowthCurvePage extends StatefulWidget {
   final String title;

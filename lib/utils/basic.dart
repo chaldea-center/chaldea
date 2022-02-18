@@ -80,11 +80,11 @@ class Maths {
   }
 
   static T max<T extends num>(Iterable<T> iterable) {
-    return iterable.fold<T>(_convertNum<T>(0), (p, c) => math.max(p, c));
+    return iterable.reduce((v, e) => math.max(v, e));
   }
 
   static T min<T extends num>(Iterable<T> iterable) {
-    return iterable.fold<T>(_convertNum<T>(0), (p, c) => math.min(p, c));
+    return iterable.reduce((v, e) => math.min(v, e));
   }
 
   static T sum<T extends num>(Iterable<T?> iterable) {
@@ -183,6 +183,11 @@ class EnumUtil {
     } else {
       return s;
     }
+  }
+
+  static T next<T>(List<T> values, T e) {
+    assert(values.contains(e));
+    return values[(values.indexOf(e) + 1) % values.length];
   }
 }
 

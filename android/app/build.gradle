@@ -75,6 +75,8 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
+            applicationIdSuffix ".release"
+            resValue "string", "app_name", "Chaldea Release"
             // proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         profile {

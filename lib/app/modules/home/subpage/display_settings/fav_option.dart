@@ -1,6 +1,7 @@
 import 'package:chaldea/components/localized/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
+import 'package:chaldea/models/userdata/filter_data.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 import 'package:flutter/material.dart';
 
@@ -26,7 +27,7 @@ class _FavOptionSettingState extends State<FavOptionSetting> {
         children: [
           TileGroup(
             children: [
-              RadioListTile<bool?>(
+              RadioListTile<FavoriteState?>(
                 value: null,
                 groupValue: db2.settings.favoritePreferred,
                 title: Text(LocalizedText.of(
@@ -37,8 +38,8 @@ class _FavOptionSettingState extends State<FavOptionSetting> {
                   });
                 },
               ),
-              RadioListTile<bool?>(
-                value: true,
+              RadioListTile<FavoriteState?>(
+                value: FavoriteState.owned,
                 groupValue: db2.settings.favoritePreferred,
                 title: Text(LocalizedText.of(
                     chs: '显示已关注',
@@ -48,19 +49,19 @@ class _FavOptionSettingState extends State<FavOptionSetting> {
                 secondary: const Icon(Icons.favorite),
                 onChanged: (v) {
                   setState(() {
-                    db2.settings.favoritePreferred = true;
+                    db2.settings.favoritePreferred = FavoriteState.owned;
                   });
                 },
               ),
-              RadioListTile<bool?>(
-                value: false,
+              RadioListTile<FavoriteState?>(
+                value: FavoriteState.all,
                 groupValue: db2.settings.favoritePreferred,
                 title: Text(LocalizedText.of(
                     chs: '显示全部', jpn: 'すべて表示', eng: 'Show All', kor: '전부 표시')),
                 secondary: const Icon(Icons.remove_circle_outline),
                 onChanged: (v) {
                   setState(() {
-                    db2.settings.favoritePreferred = false;
+                    db2.settings.favoritePreferred = FavoriteState.all;
                   });
                 },
               ),

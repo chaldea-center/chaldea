@@ -1,9 +1,11 @@
+import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../db.dart';
 import '../userdata/filter_data.dart';
 import 'common.dart';
+import 'game_card.dart';
 import 'item.dart';
 import 'script.dart';
 import 'skill.dart';
@@ -44,14 +46,17 @@ class BasicServant {
 }
 
 @JsonSerializable()
-class Servant {
+class Servant with GameCardMixin {
+  @override
   int id;
+  @override
   int collectionNo;
   String name;
   String ruby;
   SvtClass className;
   SvtType type;
   SvtFlag flag;
+  @override
   int rarity;
   int cost;
   int lvMax;
@@ -150,31 +155,80 @@ class Servant {
     required this.noblePhantasms,
     this.profile,
   })  : extraAssets = extraAssets ?? ExtraAssets(),
-        ascensionAdd = ascensionAdd ?? AscensionAdd();
+        ascensionAdd = ascensionAdd ?? AscensionAdd() {
+    preprocess();
+  }
+
+  late List<List<NiceSkill>> groupedActiveSkills;
+  late List<List<NiceTd>> groupedNoblePhantasms;
+
+  void preprocess() {
+    appendPassive.sort2((e) => e.num * 100 + e.priority);
+    // groupedActiveSkills
+    Map<int, List<NiceSkill>> dividedSkills = {};
+    for (final skill in skills) {
+      dividedSkills.putIfAbsent(skill.num, () => []).add(skill);
+    }
+    groupedActiveSkills = [
+      for (final key in dividedSkills.keys.toList()..sort())
+        dividedSkills[key]!..sort2((e) => e.priority)
+    ];
+    // groupedNoblePhantasms
+    Map<int, List<NiceTd>> dividedTds = {};
+    for (final td in noblePhantasms) {
+      dividedTds.putIfAbsent(td.num, () => []).add(td);
+    }
+    groupedNoblePhantasms = [
+      for (final key in dividedTds.keys.toList()..sort())
+        dividedTds[key]!..sort2((e) => e.priority)
+    ];
+  }
+
+  bool get isUserSvt =>
+      (type == SvtType.normal || type == SvtType.heroine) && collectionNo > 0;
 
   // todo: support ascension
-  String? get icon => extraAssets.faces.ascension?[1];
+  @override
+  String? get icon =>
+      extraAssets.faces.ascension?[1] ??
+      extraAssets.faces.ascension?.values.toList().getOrNull(0);
 
   String? get charaGraph => extraAssets.charaGraph.ascension?[1];
-
-  String? get borderedIcon => icon?.replaceFirst('.png', '_bordered.png');
 
   Transl<String, String> get lName => Transl.svtNames(name);
 
   ServantExtra get extra => db2.gameData.wikiData.servants[collectionNo] ??=
       ServantExtra(collectionNo: collectionNo);
 
+  Set<Trait> get traitsAll {
+    if (_traitsAll != null) return _traitsAll!;
+    List<NiceTrait> _traits = [];
+    _traits.addAll(traits);
+    for (var v in ascensionAdd.individuality.ascension.values) {
+      _traits.addAll(v);
+    }
+    for (var v in ascensionAdd.individuality.costume.values) {
+      _traits.addAll(v);
+    }
+    return _traitsAll = _traits.map((e) => e.name).toSet();
+  }
+
+  Set<Trait>? _traitsAll;
+
   factory Servant.fromJson(Map<String, dynamic> json) =>
       _$ServantFromJson(json);
 }
 
 @JsonSerializable()
-class CraftEssence {
+class CraftEssence with GameCardMixin {
+  @override
   int id;
+  @override
   int collectionNo;
   String name;
   SvtType type;
   SvtFlag flag;
+  @override
   int rarity;
   int cost;
   int lvMax;
@@ -226,11 +280,10 @@ class CraftEssence {
   factory CraftEssence.fromJson(Map<String, dynamic> json) =>
       _$CraftEssenceFromJson(json);
 
+  @override
   String? get icon => extraAssets.faces.equip?[id];
 
   String? get charaGraph => extraAssets.charaGraph.equip?[id];
-
-  String? get borderedIcon => icon?.replaceFirst('.png', '_bordered.png');
 
   Transl<String, String> get lName => Transl.ceNames(name);
 

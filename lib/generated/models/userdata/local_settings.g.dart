@@ -42,8 +42,8 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
           autoResetFilter:
               $checkedConvert('autoResetFilter', (v) => v as bool? ?? true),
           useProxy: $checkedConvert('useProxy', (v) => v as bool? ?? false),
-          favoritePreferred:
-              $checkedConvert('favoritePreferred', (v) => v as bool?),
+          favoritePreferred: $checkedConvert('favoritePreferred',
+              (v) => $enumDecodeNullable(_$FavoriteStateEnumMap, v)),
           classFilterStyle: $checkedConvert(
               'classFilterStyle',
               (v) =>
@@ -51,6 +51,13 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
                   SvtListClassFilterStyle.auto),
           onlyAppendSkillTwo:
               $checkedConvert('onlyAppendSkillTwo', (v) => v as bool? ?? true),
+          planPageFullScreen:
+              $checkedConvert('planPageFullScreen', (v) => v as bool? ?? false),
+          svtPlanInputMode: $checkedConvert(
+              'svtPlanInputMode',
+              (v) =>
+                  $enumDecodeNullable(_$SvtPlanInputModeEnumMap, v) ??
+                  SvtPlanInputMode.dropdown),
           sortedSvtTabs: $checkedConvert(
               'sortedSvtTabs',
               (v) => (v as List<dynamic>?)
@@ -113,10 +120,12 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'showAccountAtHome': instance.showAccountAtHome,
       'autoResetFilter': instance.autoResetFilter,
       'useProxy': instance.useProxy,
-      'favoritePreferred': instance.favoritePreferred,
+      'favoritePreferred': _$FavoriteStateEnumMap[instance.favoritePreferred],
       'classFilterStyle':
           _$SvtListClassFilterStyleEnumMap[instance.classFilterStyle],
       'onlyAppendSkillTwo': instance.onlyAppendSkillTwo,
+      'planPageFullScreen': instance.planPageFullScreen,
+      'svtPlanInputMode': _$SvtPlanInputModeEnumMap[instance.svtPlanInputMode],
       'sortedSvtTabs':
           instance.sortedSvtTabs.map((e) => _$SvtTabEnumMap[e]).toList(),
       'priorityTags':
@@ -144,12 +153,25 @@ const _$RegionEnumMap = {
   Region.kr: 'kr',
 };
 
+const _$FavoriteStateEnumMap = {
+  FavoriteState.all: 'all',
+  FavoriteState.owned: 'owned',
+  FavoriteState.planned: 'planned',
+  FavoriteState.other: 'other',
+};
+
 const _$SvtListClassFilterStyleEnumMap = {
   SvtListClassFilterStyle.auto: 'auto',
   SvtListClassFilterStyle.singleRow: 'singleRow',
   SvtListClassFilterStyle.singleRowExpanded: 'singleRowExpanded',
   SvtListClassFilterStyle.twoRow: 'twoRow',
   SvtListClassFilterStyle.doNotShow: 'doNotShow',
+};
+
+const _$SvtPlanInputModeEnumMap = {
+  SvtPlanInputMode.dropdown: 'dropdown',
+  SvtPlanInputMode.slider: 'slider',
+  SvtPlanInputMode.input: 'input',
 };
 
 const _$SvtTabEnumMap = {

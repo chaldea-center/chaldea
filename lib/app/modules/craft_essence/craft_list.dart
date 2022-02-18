@@ -1,4 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/language.dart';
@@ -9,8 +11,8 @@ import 'package:chaldea/widgets/searchable_list_state.dart';
 import 'package:flutter/material.dart';
 
 import '../common/filter_page_base.dart';
-import 'craft_detail.dart';
-import 'craft_filter_page.dart';
+import 'craft.dart';
+import 'filter.dart';
 
 class CraftListPage extends StatefulWidget {
   CraftListPage({Key? key}) : super(key: key);
@@ -63,7 +65,7 @@ class CraftListPageState extends State<CraftListPage>
               ),
             ),
           ),
-          searchIcon,
+          // searchIcon,
         ],
       ),
     );
@@ -102,13 +104,21 @@ class CraftListPageState extends State<CraftListPage>
         setState(() {
           selected = ce;
         });
-        SplitRoute.push(
-          context,
-          CraftDetailPage(
+        router.push(
+          url: Routes.craftEssence + '/${ce.collectionNo}',
+          child: CraftDetailPage(
             ce: ce,
             onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList),
           ),
+          detail: true,
         );
+        // SplitRoute.push(
+        //   context,
+        //   CraftDetailPage(
+        //     ce: ce,
+        //     onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList),
+        //   ),
+        // );
       },
     );
   }
@@ -138,7 +148,7 @@ class CraftListPageState extends State<CraftListPage>
 
   @override
   String getSummary(CraftEssence ce) {
-    return options!.getSummary(ce);
+    return options?.getSummary(ce) ?? '';
   }
 
   @override

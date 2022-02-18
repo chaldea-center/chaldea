@@ -1,8 +1,10 @@
 // ignore_for_file: non_constant_identifier_names
+import 'package:chaldea/utils/basic.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../app/tools/gamedata_loader.dart';
 import 'common.dart';
+import 'wiki_data.dart';
 
 part '../../generated/models/gamedata/skill.g.dart';
 
@@ -112,9 +114,13 @@ class NiceSkill implements BaseSkill {
     return _$NiceSkillFromJson(json);
   }
 
-  String? get detail =>
-      _detail ??= unmodifiedDetail?.replaceAll(RegExp(r'\[[og]\]'), '');
-  String? _detail;
+  String? get lDetail {
+    if (unmodifiedDetail == null) return null;
+    return Transl.skillDetail(unmodifiedDetail!)
+        .l
+        .replaceAll(RegExp(r'\[/?[og]\]'), '')
+        .replaceAll('{0}', 'Lv.');
+  }
 }
 
 @JsonSerializable()
@@ -163,7 +169,35 @@ class NiceTd {
   });
 
   factory NiceTd.fromJson(Map<String, dynamic> json) => _$NiceTdFromJson(json);
+
+  NpDamageType? _damageType;
+  NpDamageType get damageType {
+    if (_damageType != null) return _damageType!;
+    for (var func in functions) {
+      if (func.funcTargetTeam == FuncApplyTarget.enemy) continue;
+      if (EnumUtil.shortString(func.funcType).startsWith('damageNp')) {
+        if (func.funcTargetType == FuncTargetType.enemyAll) {
+          _damageType = NpDamageType.aoe;
+        } else if (func.funcTargetType == FuncTargetType.enemy) {
+          _damageType = NpDamageType.indiv;
+        } else {
+          throw 'Unknown damageType: ${func.funcTargetType}';
+        }
+      }
+    }
+    return _damageType ??= NpDamageType.none;
+  }
+
+  String? get lDetail {
+    if (unmodifiedDetail == null) return null;
+    return Transl.tdDetail(unmodifiedDetail!)
+        .l
+        .replaceAll(RegExp(r'\[/?[og]\]'), '')
+        .replaceAll('{0}', 'Lv.');
+  }
 }
+
+enum NpDamageType { none, indiv, aoe }
 
 @JsonSerializable()
 class NiceFunction implements BaseFunction {

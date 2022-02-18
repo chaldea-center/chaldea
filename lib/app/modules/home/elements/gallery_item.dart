@@ -1,3 +1,4 @@
+import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/basic.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,7 @@ class GalleryItem {
   final Widget? child;
 
   // final SplitPageBuilder? builder;
+  final String? url;
   final Widget? page;
   final bool isDetail;
 
@@ -47,6 +49,7 @@ class GalleryItem {
     required this.titleBuilder,
     this.icon,
     this.child,
+    this.url,
     this.page,
     required this.isDetail,
   }) : assert(icon != null || child != null);
@@ -88,8 +91,8 @@ class GalleryItem {
   );
 
   static List<GalleryItem> allItems = [
-    servant,
-    craftEssence,
+    servants,
+    craftEssences,
     // commandCode,
     // item,
     // event,
@@ -116,18 +119,19 @@ class GalleryItem {
     // _damageCalc,
   ];
 
-  static GalleryItem servant = GalleryItem(
-    name: 'servant',
+  static GalleryItem servants = GalleryItem(
+    name: 'servants',
     titleBuilder: () => S.current.servant_title,
     icon: FontAwesomeIcons.users,
+    url: Routes.servants,
     page: ServantListPage(),
     isDetail: false,
   );
-  static GalleryItem craftEssence = GalleryItem(
-    name: 'craft',
+  static GalleryItem craftEssences = GalleryItem(
+    name: 'crafts',
     titleBuilder: () => S.current.craft_essence,
     icon: FontAwesomeIcons.streetView,
-    // page: CraftListPage(),
+    url: Routes.craftEssences,
     page: CraftListPage(),
     isDetail: false,
   );

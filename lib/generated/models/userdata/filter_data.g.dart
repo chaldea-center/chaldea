@@ -17,6 +17,18 @@ SvtFilterData _$SvtFilterDataFromJson(Map json) => $checkedCreate(
               (v) =>
                   $enumDecodeNullable(_$FavoriteStateEnumMap, v) ??
                   FavoriteState.all),
+          planFavorite: $checkedConvert(
+              'planFavorite',
+              (v) =>
+                  $enumDecodeNullable(_$FavoriteStateEnumMap, v) ??
+                  FavoriteState.all),
+          sortKeys: $checkedConvert(
+              'sortKeys',
+              (v) => (v as List<dynamic>?)
+                  ?.map((e) => $enumDecodeNullable(_$SvtCompareEnumMap, e))
+                  .toList()),
+          sortReversed: $checkedConvert('sortReversed',
+              (v) => (v as List<dynamic>?)?.map((e) => e as bool).toList()),
         );
         return val;
       },
@@ -26,6 +38,9 @@ Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
     <String, dynamic>{
       'useGrid': instance.useGrid,
       'favorite': _$FavoriteStateEnumMap[instance.favorite],
+      'planFavorite': _$FavoriteStateEnumMap[instance.planFavorite],
+      'sortKeys': instance.sortKeys.map((e) => _$SvtCompareEnumMap[e]).toList(),
+      'sortReversed': instance.sortReversed,
     };
 
 const _$FavoriteStateEnumMap = {
@@ -33,6 +48,15 @@ const _$FavoriteStateEnumMap = {
   FavoriteState.owned: 'owned',
   FavoriteState.planned: 'planned',
   FavoriteState.other: 'other',
+};
+
+const _$SvtCompareEnumMap = {
+  SvtCompare.no: 'no',
+  SvtCompare.className: 'className',
+  SvtCompare.rarity: 'rarity',
+  SvtCompare.atk: 'atk',
+  SvtCompare.hp: 'hp',
+  SvtCompare.priority: 'priority',
 };
 
 CraftFilterData _$CraftFilterDataFromJson(Map json) => $checkedCreate(

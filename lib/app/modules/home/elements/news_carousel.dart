@@ -5,6 +5,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/network.dart';
+import 'package:chaldea/utils/atlas.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
@@ -73,7 +74,7 @@ class AppNewsCarousel extends StatefulWidget {
       // CORS issue
       if (kIsWeb) {
         result.add(CarouselItem(
-          image: 'https://static.atlasacademy.io/JP/Back/back10111.png',
+          image: Atlas.asset('Back/back10111.png'),
           fit: BoxFit.cover,
         ));
         updated = true;

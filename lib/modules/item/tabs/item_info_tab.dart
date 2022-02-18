@@ -42,7 +42,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                       TableCellData(
                         child: Text(itemInfo.name,
                             style:
-                            const TextStyle(fontWeight: FontWeight.bold)),
+                                const TextStyle(fontWeight: FontWeight.bold)),
                         isHeader: true,
                       )
                     ]),
@@ -95,7 +95,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                   text: itemInfo.description,
                   alignment: Alignment.centerLeft,
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                 )
               ],
             ),

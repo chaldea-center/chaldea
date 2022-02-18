@@ -54,7 +54,8 @@ class RouteConfiguration {
   RouteConfiguration({this.url, this.child, this.detail, this.arguments})
       : uri = url == null ? null : Uri.tryParse(url);
 
-  RouteConfiguration.fromUri({this.uri, this.child, this.detail, this.arguments})
+  RouteConfiguration.fromUri(
+      {this.uri, this.child, this.detail, this.arguments})
       : url = uri.toString();
 
   RouteConfiguration.slash({required String nextPageUrl})
@@ -167,14 +168,14 @@ class SplitPage extends MaterialPage {
     Object? arguments,
     String? restorationId,
   }) : super(
-    key: key,
-    child: child,
-    maintainState: maintainState,
-    fullscreenDialog: fullscreenDialog,
-    name: name,
-    arguments: arguments,
-    restorationId: restorationId,
-  );
+          key: key,
+          child: child,
+          maintainState: maintainState,
+          fullscreenDialog: fullscreenDialog,
+          name: name,
+          arguments: arguments,
+          restorationId: restorationId,
+        );
 
   @override
   Route createRoute(BuildContext context) {

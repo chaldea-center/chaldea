@@ -1,5 +1,6 @@
 library userdata;
 
+import 'package:chaldea/generated/l10n.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../packages/language.dart';
@@ -52,6 +53,8 @@ class User {
   Map<int, SvtStatus> servants;
   List<Map<int, SvtPlan>> svtPlanGroups;
   int curSvtPlanNo;
+  Map<int, String> planNames;
+
   Map<int, int> items;
 
   //  events, main story, tickets
@@ -66,12 +69,13 @@ class User {
     Map<int, SvtStatus>? servants,
     List<Map<int, SvtPlan>>? svtPlanGroups,
     this.curSvtPlanNo = 0,
+    Map<int, String>? planNames,
     Map<int, int>? items,
     Map<int, CraftStatus?>? craftEssences,
     Map<int, int>? mysticCodes,
-  })
-      : servants = servants ?? {},
+  })  : servants = servants ?? {},
         svtPlanGroups = svtPlanGroups ?? [],
+        planNames = planNames ?? {},
         items = items ?? {},
         craftEssences = {
           if (craftEssences != null)
@@ -83,6 +87,22 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserToJson(this);
+
+  Map<int, SvtPlan> get curPlan => svtPlanGroups[curSvtPlanNo];
+
+  void ensurePlanLarger() {
+    curPlan.forEach((key, plan) {
+      plan.validate(servants[key]?.cur);
+    });
+  }
+
+  SvtPlan svtPlanOf(int no) =>
+      curPlan.putIfAbsent(no, () => SvtPlan())..validate();
+
+  SvtStatus svtStatusOf(int no) {
+    final status = servants.putIfAbsent(no, () => SvtStatus())..cur.validate();
+    return status;
+  }
 
   void validate() {
     if (svtPlanGroups.isEmpty) {
@@ -99,6 +119,14 @@ class User {
         plan.value.validate(servants[plan.key]?.cur);
       }
     }
+  }
+
+  String getFriendlyPlanName([int? planNo]) {
+    planNo ??= curSvtPlanNo;
+    String name = '${S.current.plan} ${planNo + 1}';
+    String? customName = planNames[planNo];
+    if (customName != null && customName.isNotEmpty) name += ' - $customName';
+    return name;
   }
 }
 
@@ -121,7 +149,8 @@ class SvtStatus {
     this.bond = 0,
     List<int?>? equipCmdCodes,
   })  : cur = cur ?? SvtPlan(),
-        equipCmdCodes = equipCmdCodes ?? List.filled(5, null);
+        equipCmdCodes =
+            List.generate(5, (index) => equipCmdCodes?.getOrNull(index));
 
   factory SvtStatus.fromJson(Map<String, dynamic> json) =>
       _$SvtStatusFromJson(json);
@@ -145,7 +174,7 @@ class SvtPlan {
   int ascension;
   List<int> skills;
   List<int> appendSkills;
-  Map<int, bool> costumes;
+  List<int> costumes; // costume id
 
   int grail;
 
@@ -164,7 +193,7 @@ class SvtPlan {
     this.ascension = 0,
     List<int>? skills,
     List<int>? appendSkills,
-    Map<int, bool>? costumes,
+    List<int>? costumes,
     this.grail = 0,
     this.fouHp = 0,
     this.fouAtk = 0,
@@ -172,7 +201,7 @@ class SvtPlan {
     this.npLv,
   })  : skills = List.generate(3, (index) => skills?.getOrNull(index) ?? 1,
             growable: false),
-        costumes = costumes ?? {},
+        costumes = costumes ?? [],
         appendSkills = List.generate(
             3, (index) => appendSkills?.getOrNull(index) ?? 0,
             growable: false);
@@ -191,15 +220,37 @@ class SvtPlan {
       appendSkills[i] =
           Maths.fixValidRange(appendSkills[i], lower?.appendSkills[i] ?? 0, 10);
     }
-    if (lower != null) {
-      for (final id in lower.costumes.keys.toList()) {
-        costumes[id] = lower.costumes[id]! ? true : costumes[id] ?? false;
-      }
-    }
+    // if (lower != null) {
+    //   for (final id in lower.costumes.keys.toList()) {
+    //     costumes[id] = lower.costumes[id]! ? true : costumes[id] ?? false;
+    //   }
+    // }
     grail = Maths.fixValidRange(grail, 0);
     fouHp = Maths.fixValidRange(fouHp, lower?.fouHp ?? 0, 50);
     fouAtk = Maths.fixValidRange(fouAtk, lower?.fouAtk ?? 0, 50);
     bondLimit = Maths.fixValidRange(bondLimit, lower?.bondLimit ?? 10, 15);
+  }
+
+  void reset() {
+    favorite = false;
+    ascension = 0;
+    skills.fillRange(0, 3, 1);
+    costumes.fillRange(0, costumes.length, 0);
+    appendSkills.fillRange(0, 3, 0);
+    grail = 0;
+    fouHp = fouAtk = -20;
+    bondLimit = 0;
+  }
+
+  void setMax({int skill = 10}) {
+    // not change grail lv
+    favorite = true;
+    ascension = 4;
+    skills.fillRange(0, 3, skill);
+    costumes.fillRange(0, costumes.length, 1);
+    // appendSkills.fillRange(0, 3, skill);
+    // grail = grail;
+    // fouHp, fouAtk
   }
 }
 

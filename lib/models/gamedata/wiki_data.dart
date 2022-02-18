@@ -345,7 +345,7 @@ class MappingBase<T> {
       if (obj.isEmpty) return Map.from(obj) as T;
       if (obj.values.first is int) {
         return <int, int>{for (var e in obj.entries) int.parse(e.key): e.value}
-        as T;
+            as T;
       }
     }
     if (obj is List) {

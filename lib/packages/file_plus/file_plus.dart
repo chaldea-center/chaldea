@@ -54,8 +54,8 @@ abstract class FilePlus {
   @protected
   void writeAsStringSync(String contents,
       {FileMode mode = FileMode.write,
-        Encoding encoding = utf8,
-        bool flush = false});
+      Encoding encoding = utf8,
+      bool flush = false});
 
   String get path;
 }

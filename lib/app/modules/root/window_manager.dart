@@ -211,7 +211,7 @@ class _WindowManagerState extends State<WindowManager> {
               right: 0,
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: Theme.of(context).splashColor,
+                  color: Theme.of(context).secondaryHeaderColor.withOpacity(1),
                   border: Border(
                     top: BorderSide(
                       width: 1,

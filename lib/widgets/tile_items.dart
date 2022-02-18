@@ -36,13 +36,17 @@ class SHeader extends StatelessWidget {
 
 class SFooter extends StatelessWidget {
   final String label;
+  final EdgeInsetsGeometry padding;
 
-  const SFooter(this.label, {Key? key}) : super(key: key);
+  const SFooter(this.label,
+      {Key? key,
+      this.padding = const EdgeInsetsDirectional.fromSTEB(15, 7.5, 15, 5)})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 7.5),
+    return Padding(
+      padding: padding,
       child: Text(
         label,
         style: TextStyle(

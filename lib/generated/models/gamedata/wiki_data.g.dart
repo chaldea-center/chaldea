@@ -11,99 +11,99 @@ MappingData _$MappingDataFromJson(Map json) => MappingData(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  mcNames: (json['mc_names'] as Map?)?.map(
+      mcNames: (json['mc_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  costumeNames: (json['costume_names'] as Map?)?.map(
+      costumeNames: (json['costume_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  cvNames: (json['cv_names'] as Map?)?.map(
+      cvNames: (json['cv_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  illustratorNames: (json['illustrator_names'] as Map?)?.map(
+      illustratorNames: (json['illustrator_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  ccNames: (json['cc_names'] as Map?)?.map(
+      ccNames: (json['cc_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  svtNames: (json['svt_names'] as Map?)?.map(
+      svtNames: (json['svt_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  ceNames: (json['ce_names'] as Map?)?.map(
+      ceNames: (json['ce_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  eventNames: (json['event_names'] as Map?)?.map(
+      eventNames: (json['event_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  warNames: (json['war_names'] as Map?)?.map(
+      warNames: (json['war_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  questNames: (json['quest_names'] as Map?)?.map(
+      questNames: (json['quest_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  spotNames: (json['spot_names'] as Map?)?.map(
+      spotNames: (json['spot_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  entityNames: (json['entity_names'] as Map?)?.map(
+      entityNames: (json['entity_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  tdTypes: (json['td_types'] as Map?)?.map(
+      tdTypes: (json['td_types'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  bgmNames: (json['bgm_names'] as Map?)?.map(
+      bgmNames: (json['bgm_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  summonNames: (json['summon_names'] as Map?)?.map(
+      summonNames: (json['summon_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  charaNames: (json['chara_names'] as Map?)?.map(
+      charaNames: (json['chara_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  buffNames: (json['buff_names'] as Map?)?.map(
+      buffNames: (json['buff_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  buffDetail: (json['buff_detail'] as Map?)?.map(
+      buffDetail: (json['buff_detail'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  funcPopuptext: (json['func_popuptext'] as Map?)?.map(
+      funcPopuptext: (json['func_popuptext'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  skillNames: (json['skill_names'] as Map?)?.map(
+      skillNames: (json['skill_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  skillDetail: (json['skill_detail'] as Map?)?.map(
+      skillDetail: (json['skill_detail'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  tdNames: (json['td_names'] as Map?)?.map(
+      tdNames: (json['td_names'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  tdRuby: (json['td_ruby'] as Map?)?.map(
+      tdRuby: (json['td_ruby'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  tdDetail: (json['td_detail'] as Map?)?.map(
+      tdDetail: (json['td_detail'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
@@ -111,19 +111,19 @@ MappingData _$MappingDataFromJson(Map json) => MappingData(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  mcDetail: (json['mc_detail'] as Map?)?.map(
+      mcDetail: (json['mc_detail'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  costumeDetail: (json['costume_detail'] as Map?)?.map(
+      costumeDetail: (json['costume_detail'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  skillState: (json['skill_state'] as Map?)?.map(
+      skillState: (json['skill_state'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-  tdState: (json['td_state'] as Map?)?.map(
+      tdState: (json['td_state'] as Map?)?.map(
         (k, e) => MapEntry(k,
             MappingBase<dynamic>.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
@@ -207,7 +207,7 @@ const _$SvtObtainEnumMap = {
 };
 
 CraftEssenceExtra _$CraftEssenceExtraFromJson(Map json) => CraftEssenceExtra(
-  collectionNo: json['collectionNo'] as int,
+      collectionNo: json['collectionNo'] as int,
       obtain: $enumDecodeNullable(_$CEObtainEnumMap, json['obtain']) ??
           CEObtain.unknown,
       profile: json['profile'] == null

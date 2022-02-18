@@ -49,7 +49,7 @@ Future<void> _mainNext() async {
       ],
       onGenerateAttachments: () => {
         'userdata.memory.json':
-        Uint8List.fromList(utf8.encode(jsonEncode(db2.userData)))
+            Uint8List.fromList(utf8.encode(jsonEncode(db2.userData)))
       },
     ),
   );
