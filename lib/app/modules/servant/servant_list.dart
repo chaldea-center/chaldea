@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/modules/shared/common_builders.dart';
@@ -270,9 +271,10 @@ class ServantListPageState extends State<ServantListPage>
     if (widget.onSelected != null) {
       widget.onSelected!(svt);
     } else {
-      SplitRoute.push(
-        context,
-        ServantDetailPage(id: svt.id, svt: svt),
+      router.push(
+        url: svt.route,
+        child: ServantDetailPage(id: svt.id, svt: svt),
+        detail: true,
         popDetail: true,
       );
       selected = svt;

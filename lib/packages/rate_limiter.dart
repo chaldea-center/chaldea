@@ -81,6 +81,7 @@ class RateLimitCancelError extends Error {}
 
 class RateLimitError extends Error {
   final Duration? periodRemaining;
+
   RateLimitError([this.periodRemaining]);
 
   @override

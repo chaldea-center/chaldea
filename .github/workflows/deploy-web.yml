@@ -1,9 +1,9 @@
 name: Deploy web
 
 on:
-  #  push:
-  #    branches:
-  #      - main
+   push:
+     branches:
+       - main
   workflow_dispatch:
 
 jobs:
@@ -17,18 +17,34 @@ jobs:
           channel: 'beta'
           cache: true
       - run: flutter --version
-      - run: flutter pub get
       - run: flutter clean
-      - run: flutter build web --web-renderer html
+      - run: flutter pub get
 
-      - name: Patch web build
-        run: dart ./scripts/patch_web_build.dart
+      - name: Build with web-renderer=canvaskit
+        run: |
+            flutter build web --web-renderer canvaskit
+            dart ./scripts/patch_web_build.dart
 
       - name: Push to app repo
         uses: crazy-max/ghaction-github-pages@v2.2.0
         with:
           repo: chaldea-center/app
           target_branch: main
+          build_dir: build/web
+        env:
+          GH_PAT: ${{ secrets.GH_PAGES_TOKEN }}
+
+      - name: Build with web-renderer=html
+        run: |
+            rm -rf build/web/
+            flutter build web --web-renderer html
+            dart ./scripts/patch_web_build.dart
+      
+      - name: Publish to app repo html branch
+        uses: crazy-max/ghaction-github-pages@v2.2.0
+        with:
+          repo: chaldea-center/app
+          target_branch: html
           build_dir: build/web
         env:
           GH_PAT: ${{ secrets.GH_PAGES_TOKEN }}

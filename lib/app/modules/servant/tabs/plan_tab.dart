@@ -4,22 +4,22 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/components/utils.dart' show formatNumber;
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/atlas.dart';
 import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/custom_tile.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'leveling_cost_page.dart';
 
-import 'package:flutter/material.dart';
-import 'package:chaldea/models/models.dart';
-
 class SvtPlanTab extends StatefulWidget {
   final Servant svt;
+
   const SvtPlanTab({Key? key, required this.svt}) : super(key: key);
 
   @override
@@ -31,8 +31,11 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
   bool enhanceMode = false;
   late TextEditingController _coinEditController;
   SvtPlan enhancePlan = SvtPlan();
+
   Servant get svt => widget.svt;
+
   SvtPlan get plan => db2.curUser.svtPlanOf(svt.collectionNo);
+
   SvtStatus get status => db2.curUser.svtStatusOf(svt.collectionNo);
 
   @override

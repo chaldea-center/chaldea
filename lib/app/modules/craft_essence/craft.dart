@@ -70,7 +70,10 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
       body: Column(
         children: <Widget>[
           Expanded(
-              child: CraftDetailBasePage(ce: ce, lang: lang, showSummon: true)),
+            child: SingleChildScrollView(
+              child: CraftDetailBasePage(ce: ce, lang: lang, showSummon: true),
+            ),
+          ),
           ButtonBar(alignment: MainAxisAlignment.center, children: [
             // ProfileLangSwitch(
             //   primary: lang,
@@ -146,190 +149,186 @@ class CraftDetailBasePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final summons = getPickupSummons();
     // final summons = <LimitedSummon>[];
-    return SingleChildScrollView(
-      child: CustomTable(
-        children: <Widget>[
-          CustomTableRow(children: [
+    return CustomTable(
+      children: <Widget>[
+        CustomTableRow(children: [
+          TableCellData(
+            child: Text(ce.lName.l,
+                style: const TextStyle(fontWeight: FontWeight.bold)),
+            isHeader: true,
+          )
+        ]),
+        CustomTableRow(children: [
+          TableCellData(text: ce.lName.jp, textAlign: TextAlign.center)
+        ]),
+        CustomTableRow(children: [
+          TableCellData(text: ce.lName.na, textAlign: TextAlign.center)
+        ]),
+        CustomTableRow(
+          children: [
             TableCellData(
-              child: Text(ce.lName.l,
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
+              child: InkWell(
+                child: db2.getIconImage(ce.borderedIcon, height: 90),
+                onTap: () {
+                  FullscreenImageViewer.show(
+                    context: context,
+                    urls: [ce.charaGraph],
+                    placeholder: placeholder,
+                  );
+                },
+              ),
+              flex: 1,
+              padding: const EdgeInsets.all(3),
+            ),
+            TableCellData(
+              flex: 3,
+              padding: EdgeInsets.zero,
+              child: CustomTable(
+                hideOutline: true,
+                children: <Widget>[
+                  CustomTableRow.fromTexts(
+                      texts: ['No. ${ce.collectionNo}', 'No. ${ce.id}']),
+                  CustomTableRow(children: [
+                    TableCellData(text: S.current.illustrator, isHeader: true),
+                    TableCellData(
+                        text:
+                            Transl.illustratorNames(ce.profile!.illustrator).l,
+                        flex: 3,
+                        maxLines: 1)
+                  ]),
+                  CustomTableRow(children: [
+                    TableCellData(text: S.current.rarity, isHeader: true),
+                    TableCellData(text: ce.rarity.toString()),
+                    TableCellData(text: 'COST', isHeader: true),
+                    TableCellData(text: ce.cost.toString()),
+                  ]),
+                  GestureDetector(
+                    onTap: hasGrowth ? () => showGrowthCurves(context) : null,
+                    child: CustomTableRow(children: [
+                      TableCellData(text: 'ATK', isHeader: true),
+                      TableCellData(
+                        text: '${ce.atkBase}/${ce.atkMax}',
+                        maxLines: 1,
+                        style: TextStyle(
+                          color: hasGrowth
+                              ? Theme.of(context).colorScheme.primary
+                              : null,
+                        ),
+                      ),
+                      TableCellData(text: 'HP', isHeader: true),
+                      TableCellData(
+                        text: '${ce.hpBase}/${ce.hpMax}',
+                        style: TextStyle(
+                          color: hasGrowth
+                              ? Theme.of(context).colorScheme.primary
+                              : null,
+                        ),
+                        maxLines: 1,
+                      ),
+                    ]),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        CustomTableRow(
+          children: [
+            TableCellData(
+              child: CustomTile(
+                title: Center(child: Text(S.current.view_illustration)),
+                contentPadding: EdgeInsets.zero,
+                onTap: () {
+                  FullscreenImageViewer.show(
+                    context: context,
+                    urls: [ce.charaGraph],
+                    placeholder: placeholder,
+                  );
+                },
+              ),
               isHeader: true,
-            )
-          ]),
-          CustomTableRow(children: [
-            TableCellData(text: ce.lName.jp, textAlign: TextAlign.center)
-          ]),
-          CustomTableRow(children: [
-            TableCellData(text: ce.lName.na, textAlign: TextAlign.center)
-          ]),
+            ),
+          ],
+        ),
+        CustomTableRow(children: [
+          TableCellData(text: S.current.filter_category, isHeader: true)
+        ]),
+        CustomTableRow(children: [
+          TableCellData(
+            child: Text(EnumUtil.titled(ce.extra.obtain),
+                textAlign: TextAlign.center),
+          )
+        ]),
+        ..._relatedSvt(context),
+        CustomTableRow(
+            children: [TableCellData(text: S.current.skill, isHeader: true)]),
+        for (final skill in ce.skills..sort2((e) => e.num * 100 + e.priority))
           CustomTableRow(
             children: [
               TableCellData(
-                child: InkWell(
-                  child: db2.getIconImage(ce.borderedIcon, height: 90),
-                  onTap: () {
-                    FullscreenImageViewer.show(
-                      context: context,
-                      urls: [ce.charaGraph],
-                      placeholder: placeholder,
-                    );
-                  },
-                ),
+                padding: const EdgeInsets.all(6),
                 flex: 1,
-                padding: const EdgeInsets.all(3),
+                child: db2.getIconImage(skill.icon, height: 40),
               ),
               TableCellData(
-                flex: 3,
-                padding: EdgeInsets.zero,
-                child: CustomTable(
-                  hideOutline: true,
+                flex: 5,
+                alignment: Alignment.centerLeft,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    CustomTableRow.fromTexts(
-                        texts: ['No. ${ce.collectionNo}', 'No. ${ce.id}']),
-                    CustomTableRow(children: [
-                      TableCellData(
-                          text: S.current.illustrator, isHeader: true),
-                      TableCellData(
-                          text: Transl.illustratorNames(ce.profile!.illustrator)
-                              .l,
-                          flex: 3,
-                          maxLines: 1)
-                    ]),
-                    CustomTableRow(children: [
-                      TableCellData(text: S.current.rarity, isHeader: true),
-                      TableCellData(text: ce.rarity.toString()),
-                      TableCellData(text: 'COST', isHeader: true),
-                      TableCellData(text: ce.cost.toString()),
-                    ]),
-                    GestureDetector(
-                      onTap: hasGrowth ? () => showGrowthCurves(context) : null,
-                      child: CustomTableRow(children: [
-                        TableCellData(text: 'ATK', isHeader: true),
-                        TableCellData(
-                          text: '${ce.atkBase}/${ce.atkMax}',
-                          maxLines: 1,
-                          style: TextStyle(
-                            color: hasGrowth
-                                ? Theme.of(context).colorScheme.primary
-                                : null,
-                          ),
-                        ),
-                        TableCellData(text: 'HP', isHeader: true),
-                        TableCellData(
-                          text: '${ce.hpBase}/${ce.hpMax}',
-                          style: TextStyle(
-                            color: hasGrowth
-                                ? Theme.of(context).colorScheme.primary
-                                : null,
-                          ),
-                          maxLines: 1,
-                        ),
-                      ]),
+                    Text(
+                      Transl.skillNames(skill.name).l,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
+                    Text(Transl.skillDetail(skill.unmodifiedDetail ?? '???').l)
                   ],
                 ),
-              ),
+              )
             ],
           ),
-          CustomTableRow(
-            children: [
-              TableCellData(
-                child: CustomTile(
-                  title: Center(child: Text(S.current.view_illustration)),
-                  contentPadding: EdgeInsets.zero,
-                  onTap: () {
-                    FullscreenImageViewer.show(
-                      context: context,
-                      urls: [ce.charaGraph],
-                      placeholder: placeholder,
-                    );
-                  },
-                ),
-                isHeader: true,
-              ),
-            ],
-          ),
+        CustomTableRow(children: [
+          TableCellData(text: S.current.characters_in_card, isHeader: true)
+        ]),
+        CustomTableRow(
+            children: [TableCellData(child: localizeCharacters(context))]),
+        // CustomTableRow(children: [
+        //   TableCellData(text: S.current.card_description, isHeader: true)
+        // ]),
+        // CustomTableRow(
+        //   children: [
+        //     TableCellData(
+        //       text: ce.profile!.comments.first.comment,
+        //       alignment: Alignment.centerLeft,
+        //       padding:
+        //           const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        //     )
+        //   ],
+        // ),
+        if (showSummon && summons.isNotEmpty) ...[
           CustomTableRow(children: [
-            TableCellData(text: S.current.filter_category, isHeader: true)
+            TableCellData(text: S.current.summon, isHeader: true)
           ]),
           CustomTableRow(children: [
             TableCellData(
-              child: Text(EnumUtil.titled(ce.extra.obtain),
-                  textAlign: TextAlign.center),
-            )
-          ]),
-          ..._relatedSvt(context),
-          CustomTableRow(
-              children: [TableCellData(text: S.current.skill, isHeader: true)]),
-          for (final skill in ce.skills..sort2((e) => e.num * 100 + e.priority))
-            CustomTableRow(
+                child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                TableCellData(
-                  padding: const EdgeInsets.all(6),
-                  flex: 1,
-                  child: db2.getIconImage(skill.icon, height: 40),
-                ),
-                TableCellData(
-                  flex: 5,
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        Transl.skillNames(skill.name).l,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                          Transl.skillDetail(skill.unmodifiedDetail ?? '???').l)
-                    ],
-                  ),
-                )
+                for (var summon in summons)
+                  ListTile(
+                    title: Text(summon.name.l ?? '???', maxLines: 1),
+                    dense: true,
+                    visualDensity: VisualDensity.compact,
+                    onTap: () {
+                      // SplitRoute.push(
+                      //     context, SummonDetailPage(summon: summon));
+                    },
+                  )
               ],
-            ),
-          CustomTableRow(children: [
-            TableCellData(text: S.current.characters_in_card, isHeader: true)
-          ]),
-          CustomTableRow(
-              children: [TableCellData(child: localizeCharacters(context))]),
-          // CustomTableRow(children: [
-          //   TableCellData(text: S.current.card_description, isHeader: true)
-          // ]),
-          // CustomTableRow(
-          //   children: [
-          //     TableCellData(
-          //       text: ce.profile!.comments.first.comment,
-          //       alignment: Alignment.centerLeft,
-          //       padding:
-          //           const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-          //     )
-          //   ],
-          // ),
-          if (showSummon && summons.isNotEmpty) ...[
-            CustomTableRow(children: [
-              TableCellData(text: S.current.summon, isHeader: true)
-            ]),
-            CustomTableRow(children: [
-              TableCellData(
-                  child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  for (var summon in summons)
-                    ListTile(
-                      title: Text(summon.name.l ?? '???', maxLines: 1),
-                      dense: true,
-                      visualDensity: VisualDensity.compact,
-                      onTap: () {
-                        // SplitRoute.push(
-                        //     context, SummonDetailPage(summon: summon));
-                      },
-                    )
-                ],
-              ))
-            ])
-          ]
-        ],
-      ),
+            ))
+          ])
+        ]
+      ],
     );
   }
 

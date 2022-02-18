@@ -1,3 +1,4 @@
+import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -159,7 +160,9 @@ class Servant with GameCardMixin {
     preprocess();
   }
 
+  @JsonKey(ignore: true)
   late List<List<NiceSkill>> groupedActiveSkills;
+  @JsonKey(ignore: true)
   late List<List<NiceTd>> groupedNoblePhantasms;
 
   void preprocess() {
@@ -183,6 +186,8 @@ class Servant with GameCardMixin {
         dividedTds[key]!..sort2((e) => e.priority)
     ];
   }
+
+  String get route => '${Routes.servant}/$id';
 
   bool get isUserSvt =>
       (type == SvtType.normal || type == SvtType.heroine) && collectionNo > 0;
@@ -300,6 +305,8 @@ class CraftEssence with GameCardMixin {
             ? CraftATKType.hp
             : CraftATKType.none;
   }
+
+  String get route => '${Routes.craftEssence}/$id';
 }
 
 @JsonSerializable()
@@ -317,6 +324,14 @@ class ExtraAssetsUrl {
     this.equip,
     this.cc,
   });
+
+  Iterable<String> get allUrls sync* {
+    if (ascension != null) yield* ascension!.values;
+    if (costume != null) yield* costume!.values;
+    if (equip != null) yield* equip!.values;
+    if (cc != null) yield* cc!.values;
+    if (story != null) yield* story!.values;
+  }
 
   factory ExtraAssetsUrl.fromJson(Map<String, dynamic> json) =>
       _$ExtraAssetsUrlFromJson(json);

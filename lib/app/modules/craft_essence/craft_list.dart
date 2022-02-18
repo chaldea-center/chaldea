@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/language.dart';
@@ -105,12 +104,13 @@ class CraftListPageState extends State<CraftListPage>
           selected = ce;
         });
         router.push(
-          url: Routes.craftEssence + '/${ce.collectionNo}',
+          url: ce.route,
           child: CraftDetailPage(
             ce: ce,
             onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList),
           ),
           detail: true,
+          popDetail: true,
         );
         // SplitRoute.push(
         //   context,

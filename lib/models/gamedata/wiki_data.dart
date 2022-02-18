@@ -37,6 +37,8 @@ class Transl<K, V> {
 
   static MappingData get _md => db2.gameData.mappingData;
 
+  static Transl<int, String> trait(int id) => Transl(_md.trait, id, '$id');
+
   static Transl<String, String> itemNames(String jp) =>
       Transl(_md.itemNames, jp, jp);
 
@@ -580,11 +582,19 @@ class LimitedSummon {
   factory LimitedSummon.fromJson(Map<String, dynamic> json) =>
       _$LimitedSummonFromJson(json);
 
-  List<int> allCards(
-      {bool svt = false, bool ce = false, bool includeHidden = false}) {
+  List<int> allCards({
+    bool svt = false,
+    bool ce = false,
+    bool includeHidden = false,
+    bool includeGSSR = true,
+  }) {
     List<int> cards = [];
     for (final sub in subSummons) {
       for (final prob in sub.probs) {
+        if (includeGSSR && prob.rarity == 5) {
+          cards.addAll(prob.ids);
+          continue;
+        }
         if (!prob.display && !includeHidden) continue;
         if ((prob.isSvt && svt) || (!prob.isSvt && ce)) {
           cards.addAll(prob.ids);
@@ -592,6 +602,17 @@ class LimitedSummon {
       }
     }
     return cards;
+  }
+
+  bool hasSinglePickupSvt(int id) {
+    for (var data in subSummons) {
+      for (var block in data.probs) {
+        if (block.ids.length == 1 && block.ids.single == id) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }
 

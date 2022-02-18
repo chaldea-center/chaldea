@@ -5,7 +5,6 @@ import '../../app/tools/gamedata_loader.dart';
 import 'event.dart';
 
 part '../../generated/models/gamedata/common.g.dart';
-
 part 'common_helper.dart';
 
 @JsonSerializable()

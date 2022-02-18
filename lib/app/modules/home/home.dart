@@ -48,20 +48,22 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
           index: _curIndex,
           children: [GalleryPage(), SettingsPage()],
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _curIndex,
-          items: [
-            BottomNavigationBarItem(
-                icon: const Icon(Icons.layers),
-                label: S.current.gallery_tab_name),
-            BottomNavigationBarItem(
-                icon: const Icon(Icons.settings),
-                label: S.current.settings_tab_name),
-          ],
-          onTap: (index) {
-            // if (_curIndex != index) db2.saveData();
-            setState(() => _curIndex = index);
-          },
+        bottomNavigationBar: SafeArea(
+          child: BottomNavigationBar(
+            currentIndex: _curIndex,
+            items: [
+              BottomNavigationBarItem(
+                  icon: const Icon(Icons.layers),
+                  label: S.current.gallery_tab_name),
+              BottomNavigationBarItem(
+                  icon: const Icon(Icons.settings),
+                  label: S.current.settings_tab_name),
+            ],
+            onTap: (index) {
+              // if (_curIndex != index) db2.saveData();
+              setState(() => _curIndex = index);
+            },
+          ),
         ),
       ),
     );

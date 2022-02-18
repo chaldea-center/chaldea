@@ -1,9 +1,9 @@
 import 'package:chaldea/components/components.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:chaldea/generated/intl/messages_en.dart' as messages_en;
 import 'package:chaldea/generated/intl/messages_ja.dart' as messages_ja;
 import 'package:chaldea/generated/intl/messages_ko.dart' as messages_ko;
 import 'package:chaldea/generated/intl/messages_zh.dart' as messages_zh;
+import 'package:flutter/scheduler.dart';
 
 import 'theme_palette.dart';
 

@@ -2,7 +2,6 @@ import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/basic.dart';
 import 'package:flutter/material.dart';
-
 // import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
 // import 'package:chaldea/modules/craft/craft_list.dart';
 // import 'package:chaldea/modules/damage_calc/damage_calc_page.dart';

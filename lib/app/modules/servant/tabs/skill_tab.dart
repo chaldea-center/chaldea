@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 
 class SvtSkillTab extends StatelessWidget {
   final Servant svt;
+
   const SvtSkillTab({Key? key, required this.svt}) : super(key: key);
 
   @override

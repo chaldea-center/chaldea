@@ -1,7 +1,7 @@
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:json_annotation/json_annotation.dart';
 
+import '_helper.dart';
 import 'userdata.dart';
 
 part '../../generated/models/userdata/filter_data.g.dart';
@@ -81,6 +81,7 @@ class FilterGroupData<T> {
 class FilterRadioData<T> extends FilterGroupData<T> {
   @override
   T? get radioValue => _selected;
+
   @Deprecated('use radioValue instead`')
   T? get selected => _selected;
   T? _selected;
@@ -127,6 +128,7 @@ class SvtFilterData {
   FilterGroupData<SvtClass> svtClass = FilterGroupData();
   FilterGroupData<int> rarity = FilterGroupData();
   FilterGroupData<Attribute> attribute = FilterGroupData();
+
   // FilterGroupData svtDuplicated= FilterGroupData();
 
   // FilterGroupData planCompletion;
@@ -139,6 +141,7 @@ class SvtFilterData {
   FilterGroupData<Trait> alignment2 = FilterGroupData(); //善 恶 中立 夏 狂...
   FilterGroupData<Gender> gender = FilterGroupData();
   FilterGroupData<Trait> trait = FilterGroupData();
+
   // FilterGroupData special; //not used yet
   // FilterGroupData effectScope;
   // FilterGroupData effectTarget;

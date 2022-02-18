@@ -171,6 +171,7 @@ class NiceTd {
   factory NiceTd.fromJson(Map<String, dynamic> json) => _$NiceTdFromJson(json);
 
   NpDamageType? _damageType;
+
   NpDamageType get damageType {
     if (_damageType != null) return _damageType!;
     for (var func in functions) {

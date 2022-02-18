@@ -75,8 +75,11 @@ class Item {
 
 class Items {
   const Items._();
+
   static Map<int, Item> get _items => db2.gameData.items;
+
   static Item get qp => _items[1]!;
+
   static Item get grail => _items[7999]!;
 }
 

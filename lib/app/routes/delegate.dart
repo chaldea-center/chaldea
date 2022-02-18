@@ -68,8 +68,16 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     return Future.value(false);
   }
 
-  void push({String? url, Widget? child, dynamic arguments, bool? detail}) {
+  void push({
+    String? url,
+    Widget? child,
+    dynamic arguments,
+    bool? detail,
+    bool popDetail = false,
+  }) {
     assert(url != null || child != null);
+    // TODO: why not updated
+    // if (popDetail) popDetails();
     _pages.add(RouteConfiguration(
       url: url,
       child: child,
@@ -77,6 +85,17 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
       arguments: arguments,
     ).createPage());
     notifyListeners();
+  }
+
+  void popDetails() {
+    while (canPop()) {
+      final lastRoute = _pages.last;
+      if (lastRoute is SplitPage && lastRoute.detail == true) {
+        _pages.removeLast();
+      } else {
+        return;
+      }
+    }
   }
 
   void replace({

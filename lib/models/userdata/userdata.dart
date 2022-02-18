@@ -1,11 +1,11 @@
 library userdata;
 
 import 'package:chaldea/generated/l10n.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 import '../../packages/language.dart';
 import '../../utils/basic.dart';
 import '../../utils/extension.dart';
+import '_helper.dart';
 
 part '../../generated/models/userdata/userdata.g.dart';
 
@@ -60,6 +60,7 @@ class User {
   //  events, main story, tickets
   Map<int, CraftStatus> craftEssences;
   Map<int, int> mysticCodes;
+  Set<String> summons;
 
   User({
     this.name = 'Gudako',
@@ -73,6 +74,7 @@ class User {
     Map<int, int>? items,
     Map<int, CraftStatus?>? craftEssences,
     Map<int, int>? mysticCodes,
+    Set<String>? summons,
   })  : servants = servants ?? {},
         svtPlanGroups = svtPlanGroups ?? [],
         planNames = planNames ?? {},
@@ -82,7 +84,8 @@ class User {
             for (final e in craftEssences.entries)
               if (e.value != null) e.key: e.value!
         },
-        mysticCodes = mysticCodes ?? {};
+        mysticCodes = mysticCodes ?? {},
+        summons = summons ?? {};
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 

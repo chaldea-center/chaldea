@@ -22,6 +22,7 @@ class ItemDetailPage extends StatefulWidget {
 class _ItemDetailPageState extends State<ItemDetailPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+
   int get curTab => _tabController.index;
 
   // all

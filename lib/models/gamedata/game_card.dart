@@ -8,12 +8,15 @@ import '../../app/modules/servant/servant.dart';
 
 mixin GameCardMixin {
   int get id;
+
   int get collectionNo;
+
   int get rarity;
 
   // String get mcLink;
 
   String? get icon;
+
   String? get borderedIcon => icon?.replaceFirst('.png', '_bordered.png');
 
   // String get lName;

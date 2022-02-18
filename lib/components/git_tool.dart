@@ -11,9 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:path/path.dart' as pathlib;
 
+import '../packages/app_info.dart';
 import 'config.dart' show db;
 import 'constants.dart';
-import '../packages/app_info.dart';
 import 'localized/localized_base.dart';
 
 enum GitSource { server, github, gitee }

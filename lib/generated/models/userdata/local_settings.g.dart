@@ -180,7 +180,6 @@ const _$SvtTabEnumMap = {
   SvtTab.np: 'np',
   SvtTab.info: 'info',
   SvtTab.illustration: 'illustration',
-  SvtTab.sprite: 'sprite',
   SvtTab.summon: 'summon',
   SvtTab.voice: 'voice',
   SvtTab.quest: 'quest',

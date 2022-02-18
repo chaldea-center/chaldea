@@ -2,15 +2,15 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/utils/atlas.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:chaldea/models/models.dart';
 
 class SvtTdTab extends StatelessWidget {
   final Servant svt;
+
   const SvtTdTab({Key? key, required this.svt}) : super(key: key);
 
   @override
@@ -133,7 +133,33 @@ class SvtTdTab extends StatelessWidget {
         SFooter(
           td.lDetail ?? '???',
           padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 4),
-        )
+        ),
+        CustomTable(children: [
+          CustomTableRow(children: [
+            TableCellData(text: 'Hits', isHeader: true),
+            TableCellData(
+              text: td.npDistribution.isEmpty
+                  ? '   -'
+                  : '   ${td.npDistribution.length} Hits '
+                      '(${td.npDistribution.join(', ')})',
+              flex: 5,
+              alignment: Alignment.centerLeft,
+            )
+          ]),
+          CustomTableRow.fromTexts(
+              texts: const ['Buster', 'Arts', 'Quick', 'Extra', 'NP', 'Def'],
+              defaults: TableCellData(isHeader: true, maxLines: 1)),
+          CustomTableRow.fromTexts(
+            texts: [
+              svt.noblePhantasms.last.npGain.buster,
+              svt.noblePhantasms.last.npGain.arts,
+              svt.noblePhantasms.last.npGain.quick,
+              svt.noblePhantasms.last.npGain.extra,
+              svt.noblePhantasms.last.npGain.np,
+              svt.noblePhantasms.last.npGain.defence,
+            ].map((e) => '${e.first / 100}%').toList(),
+          ),
+        ]),
       ],
     );
   }

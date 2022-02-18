@@ -104,8 +104,8 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
         return S.current.card_info;
       case SvtTab.illustration:
         return S.current.illustration;
-      case SvtTab.sprite:
-        return S.current.sprites;
+      case SvtTab.relatedCards:
+        return 'Related Cards';
       case SvtTab.summon:
         return S.current.summon;
       case SvtTab.voice:

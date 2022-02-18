@@ -155,6 +155,7 @@ class SvtFilterData {
   static const alignment1Data = ['秩序', '混沌', '中立'];
   static const alignment2Data = ['善', '恶', '中庸', '新娘', '狂', '夏'];
   static const genderData = ['男性', '女性', '其他'];
+
   static get traitData => [
         //
         '龙', '骑乘', '神性', '人型', '猛兽', '王', '罗马', '亚瑟', '阿尔托莉雅脸',

@@ -13,6 +13,7 @@ class LevelingCostPage extends StatefulWidget {
   final int curLv;
   final int targetLv;
   final String title;
+
   // final String Function(int level)? levelFormatter;
 
   const LevelingCostPage({

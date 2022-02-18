@@ -1,25 +1,29 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/models.dart';
+import 'package:chaldea/modules/shared/common_builders.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/atlas.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/utils/wiki.dart';
+import 'package:chaldea/widgets/charts/growth_curve_page.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:chaldea/models/models.dart';
-import 'package:chaldea/modules/shared/common_builders.dart';
-import 'package:chaldea/widgets/charts/growth_curve_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../common/extra_assets_page.dart';
 import '../common/not_found.dart';
-
 // import 'tabs/svt_illust_tab.dart';
 // import 'tabs/svt_info_tab.dart';
-import 'tabs/svt_td_tab.dart';
-import 'tabs/svt_plan_tab.dart';
+import 'tabs/info_tab.dart';
+import 'tabs/plan_tab.dart';
 // import 'tabs/svt_quest_tab.dart';
-import 'tabs/svt_skill_tab.dart';
+import 'tabs/related_cards_tab.dart';
+import 'tabs/skill_tab.dart';
+import 'tabs/summon_tab.dart';
+import 'tabs/td_tab.dart';
+
 // import 'tabs/svt_sprite_tab.dart';
 // import 'tabs/svt_summon_tab.dart';
 // import 'tabs/svt_voice_tab.dart';
@@ -195,29 +199,31 @@ class ServantDetailPageState extends State<ServantDetailPage>
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.card_info,
-          // viewBuilder: (ctx) => SvtInfoTab(parent: this),
+          viewBuilder: (ctx) => SvtInfoTab(svt: svt),
         );
       case SvtTab.illustration:
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.illustration,
-          // viewBuilder: (ctx) => SvtIllustTab(parent: this),
+          viewBuilder: (ctx) => ExtraAssetsPage(assets: svt.extraAssets),
         );
-      case SvtTab.sprite:
-        // if (svt.icons.isEmpty && svt.sprites.isEmpty) return null;
+      case SvtTab.relatedCards:
         return _SubTabInfo(
           tab: tab,
-          tabBuilder: () => S.current.sprites,
-          // viewBuilder: (ctx) => SvtSpriteTab(parent: this),
+          tabBuilder: () => '关联礼装',
+          viewBuilder: (ctx) => SvtRelatedCardTab(svt: svt),
         );
       case SvtTab.summon:
-        if (!svt.isUserSvt || svt.type == SvtType.heroine) {
+        if (!svt.isUserSvt ||
+            svt.type == SvtType.heroine ||
+            svt.extra.obtains.contains(SvtObtain.eventReward) ||
+            svt.rarity < 3) {
           return null;
         }
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.summon,
-          // viewBuilder: (ctx) => SvtSummonTab(parent: this),
+          viewBuilder: (ctx) => SvtSummonTab(svt: svt),
         );
       case SvtTab.voice:
         // if (svt) return null;

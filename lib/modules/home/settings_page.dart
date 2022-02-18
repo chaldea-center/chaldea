@@ -1,7 +1,7 @@
 import 'package:chaldea/_test_page.dart';
+import 'package:chaldea/app/modules/common/frame_rate_layer.dart';
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/debug/debug_floating_menu.dart';
-import 'package:chaldea/app/modules/common/frame_rate_layer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'subpage/about_page.dart';

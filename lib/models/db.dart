@@ -35,6 +35,7 @@ class _Database {
 
   // shortcut
   User get curUser => userData.users[userData.curUserKey];
+
   Map<int, SvtPlan> get curPlan => curUser.curPlan;
   VoidCallback notifyAppUpdate = _emptyCallback;
 

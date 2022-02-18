@@ -99,7 +99,24 @@ class GameData {
         constData = constData ?? ConstGameData.empty(),
         dropRateData = dropRateData ?? DropRateData(),
         baseSkills = baseSkills ?? {},
-        baseFunctions = baseFunctions ?? {};
+        baseFunctions = baseFunctions ?? {} {
+    preprocess();
+  }
+
+  @JsonKey(ignore: true)
+  late Map<int, Servant> servantsById;
+  @JsonKey(ignore: true)
+  late Map<int, CraftEssence> craftEssencesById;
+  @JsonKey(ignore: true)
+  late Map<int, CommandCode> commandCodesById;
+
+  void preprocess() {
+    servantsById = servants.map((key, value) => MapEntry(value.id, value));
+    craftEssencesById =
+        craftEssences.map((key, value) => MapEntry(value.id, value));
+    commandCodesById =
+        commandCodes.map((key, value) => MapEntry(value.id, value));
+  }
 
   factory GameData.fromMergedFile(Map<String, dynamic> data) {
     Map<String, dynamic> data2 = Map.of(data);
