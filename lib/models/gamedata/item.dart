@@ -7,6 +7,15 @@ import 'game_card.dart';
 
 part '../../generated/models/gamedata/item.g.dart';
 
+enum SkillUpItemType {
+  none,
+  ascension,
+  skill,
+  normal,
+  special,
+  event,
+}
+
 @JsonSerializable()
 class Item {
   int id;
@@ -38,6 +47,16 @@ class Item {
   String? get borderedIcon {
     if (type == ItemType.svtCoin) return icon;
     return icon.replaceFirst(RegExp(r'.png$'), '_bordered.png');
+  }
+
+  SkillUpItemType get skillUpItemType {
+    if (type != ItemType.skillLvUp) return SkillUpItemType.none;
+    if (id >= 6000 && id < 6300) return SkillUpItemType.skill;
+    if (id >= 6500 && id < 7000) return SkillUpItemType.normal;
+    if (id >= 7000 && id < 7200) return SkillUpItemType.ascension;
+    if (id >= 94000000 && id < 94100000) return SkillUpItemType.event;
+    if (Items.specialItems.contains(id)) return SkillUpItemType.special;
+    return SkillUpItemType.none;
   }
 
   static Widget iconBuilder({
@@ -78,9 +97,67 @@ class Items {
 
   static Map<int, Item> get _items => db2.gameData.items;
 
-  static Item get qp => _items[1]!;
+  static int qpId = 1;
+  static int stoneId = 2;
+  static int manaPrismId = 3;
+  static int purePrismId = 46;
+  static int rarePrismId = 18;
+  static int summonTicketId = 4001;
+  static int bronzeAppleId = 102;
+  static int silverAppleId = 101;
+  static int goldAppleId = 100;
+  static int grailFragId = 7998;
+  static int grailId = 7999;
+  static int lanternId = 1000;
 
-  static Item get grail => _items[7999]!;
+  static Item get qp => _items[qpId]!;
+
+  static Item get stone => _items[stoneId]!;
+
+  static Item get manaPrism => _items[manaPrismId]!;
+
+  static Item get purePrism => _items[purePrismId]!;
+
+  static Item get rarePrism => _items[rarePrismId]!;
+
+  static Item get summonTicket => _items[summonTicketId]!;
+
+  static Item get bronzeApple => _items[bronzeAppleId]!;
+
+  static Item get silverApple => _items[silverAppleId]!;
+
+  static Item get goldApple => _items[goldAppleId]!;
+
+  static Item get grailFrag => _items[grailFragId]!;
+
+  static Item get grail => _items[grailId]!;
+
+  static Item get lantern => _items[lanternId]!;
+
+  static const List<int> specialItems = [
+    //
+    2, 3, 46, 18, 4001, 102, 101, 100,
+    1, 7998, 7999, 1000
+  ];
+  static const List<int> specialSvtMat = [
+    hpFou3,
+    atkFou3,
+    hpFou4,
+    atkFou4,
+  ];
+  static const int hpFou3 = 9570300;
+  static const int hpFou4 = 9570400;
+  static const int atkFou3 = 9670300;
+  static const int atkFou4 = 9670400;
+
+  static bool isStatItem(int itemId) {
+    final item = _items[itemId];
+    if (item != null && item.skillUpItemType != SkillUpItemType.none) {
+      return true;
+    }
+    if (specialSvtMat.contains(itemId)) return true;
+    return false;
+  }
 }
 
 @JsonSerializable()

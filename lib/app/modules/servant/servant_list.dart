@@ -873,13 +873,10 @@ class ServantListPageState extends State<ServantListPage>
                 final cur = db2.curUser.svtStatusOf(svt.collectionNo).cur,
                     target = db2.curUser.svtPlanOf(svt.collectionNo);
                 final costumes = changeTarget ? target.costumes : cur.costumes;
-                for (final id in svt.profile!.costume.keys) {
-                  if (_changedDress == true) {
-                    costumes.add(id);
-                  } else {
-                    costumes.remove(id);
-                  }
-                }
+                costumes
+                  ..clear()
+                  ..addAll(Map.fromIterable(svt.profile!.costume.keys,
+                      value: (k) => _changedDress == true ? 1 : 0));
               }
             });
           });
@@ -980,7 +977,7 @@ class ServantListPageState extends State<ServantListPage>
               children: [
                 db2.getIconImage(Atlas.asset('Items/23.png'),
                     width: 16, height: 16),
-                Text(status.cur.costumes.join('/')),
+                Text(status.cur.costumes.values.join('/')),
               ],
             ),
         ],

@@ -576,9 +576,9 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                     height: 48, padding: const EdgeInsets.all(4)),
                 InkWell(
                   onTap: () async {
-                    await SplitRoute.push(
-                      context,
-                      CmdCodeListPage(
+                    await SplitRoute.pushBuilder(
+                      context: context,
+                      builder: (context, _) => CmdCodeListPage(
                         onSelected: (selectedCode) {
                           status.equipCmdCodes[index] = selectedCode.no;
                           Navigator.of(context).pop();
@@ -587,6 +587,7 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
                       detail: false,
                       popDetail: false,
                     );
+
                     if (mounted) setState(() {});
                   },
                   child: db.getIconImage(code?.icon ?? '未知技能',
@@ -778,9 +779,11 @@ class _SvtPlanTabState extends SvtTabBaseState<SvtPlanTab> {
   void updateState() {
     db.itemStat.updateSvtItems(lapse: const Duration(seconds: 2));
     if (widget.parent != null) {
-      widget.parent?.setState(() {});
+      if (widget.parent?.mounted == true) {
+        widget.parent?.setState(() {});
+      }
     } else {
-      setState(() {});
+      if (mounted) setState(() {});
     }
   }
 

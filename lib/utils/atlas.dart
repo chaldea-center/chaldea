@@ -12,11 +12,11 @@ class Atlas {
     if (path.startsWith('/')) {
       path = path.substring(1);
     }
-    return '$assetHost${region.toUpperCase()}/$path';
+    return '$assetHost${region.toUpper()}/$path';
   }
 
   static String servant(int id, [Region region = Region.jp]) {
-    return '$appHost${region.toUpperCase()}/servant/$id';
+    return '$appHost${region.toUpper()}/servant/$id';
   }
 
   static String dbAsset(String path) {

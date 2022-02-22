@@ -70,7 +70,9 @@ class _ChaldeaNextState extends StateX<ChaldeaNext> with AfterLayoutMixin {
   }
 
   ThemeData _getThemeData({required bool dark}) {
-    var themeData = dark ? ThemeData.dark() : ThemeData.light();
+    var themeData = dark
+        ? ThemeData(brightness: Brightness.dark)
+        : ThemeData(brightness: Brightness.light);
     return themeData.copyWith(
       appBarTheme: themeData.appBarTheme.copyWith(
         titleSpacing: 0,

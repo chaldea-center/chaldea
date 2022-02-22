@@ -49,6 +49,30 @@ extension SetX<E> on Set<E> {
   }
 }
 
+extension NumMapDefault<K> on Map<K, int> {
+  int get(K key) {
+    return this[key] ?? 0;
+  }
+
+  int addNum(K key, int value) {
+    return this[key] = get(key) + value;
+  }
+
+  void addDict(Map<K, int> other) {
+    for (final entry in other.entries) {
+      addNum(entry.key, entry.value);
+    }
+  }
+
+  Map<K, int> multiple(int multiplier, {bool inplace = false}) {
+    final d = inplace ? this : Map.of(this);
+    for (final k in d.keys) {
+      d[k] = d[k]! * multiplier;
+    }
+    return d;
+  }
+}
+
 extension StringX on String {
   DateTime? toDateTime() {
     return DateTimeX.tryParse(this);
@@ -64,7 +88,9 @@ extension StringX on String {
   /// for half-width ascii: 1 char=1 byte, for full-width cn/jp 1 char=3 bytes mostly.
   /// assume there is no half-width cn/jp char.
   int get charWidth {
-    return (length + utf8.encode(this).length) ~/ 2;
+    return (length + utf8
+        .encode(this)
+        .length) ~/ 2;
   }
 
   String trimChar(String chars) {
@@ -119,7 +145,9 @@ extension DateTimeX on DateTime {
   }
 
   String toStringShort() {
-    return toString().split('.').first;
+    return toString()
+        .split('.')
+        .first;
   }
 
   String toDateString([String sep = '-']) {

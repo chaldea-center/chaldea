@@ -20,6 +20,8 @@ UserData _$UserDataFromJson(Map json) => $checkedCreate(
                   ?.map(
                       (e) => User.fromJson(Map<String, dynamic>.from(e as Map)))
                   .toList()),
+          itemAbundantValue: $checkedConvert('itemAbundantValue',
+              (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
         );
         return val;
       },
@@ -29,6 +31,7 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'version': instance.version,
       'curUserKey': instance.curUserKey,
       'users': instance.users.map((e) => e.toJson()).toList(),
+      'itemAbundantValue': instance.itemAbundantValue,
     };
 
 User _$UserFromJson(Map json) => $checkedCreate(
@@ -71,6 +74,30 @@ User _$UserFromJson(Map json) => $checkedCreate(
               (v) => (v as Map?)?.map(
                     (k, e) => MapEntry(int.parse(k as String), e as int),
                   )),
+          events: $checkedConvert(
+              'events',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(
+                        int.parse(k as String),
+                        EventPlan.fromJson(
+                            Map<String, dynamic>.from(e as Map))),
+                  )),
+          mainStories: $checkedConvert(
+              'mainStories',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(
+                        int.parse(k as String),
+                        MainStoryPlan.fromJson(
+                            Map<String, dynamic>.from(e as Map))),
+                  )),
+          exchangeTickets: $checkedConvert(
+              'exchangeTickets',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(
+                        int.parse(k as String),
+                        ExchangeTicketPlan.fromJson(
+                            Map<String, dynamic>.from(e as Map))),
+                  )),
           craftEssences: $checkedConvert(
               'craftEssences',
               (v) => (v as Map?)?.map(
@@ -102,6 +129,12 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'curSvtPlanNo': instance.curSvtPlanNo,
       'planNames': instance.planNames.map((k, e) => MapEntry(k.toString(), e)),
       'items': instance.items.map((k, e) => MapEntry(k.toString(), e)),
+      'events':
+          instance.events.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'mainStories': instance.mainStories
+          .map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'exchangeTickets': instance.exchangeTickets
+          .map((k, e) => MapEntry(k.toString(), e.toJson())),
       'craftEssences': instance.craftEssences
           .map((k, e) => MapEntry(k.toString(), _$CraftStatusEnumMap[e])),
       'mysticCodes':
@@ -162,12 +195,15 @@ SvtPlan _$SvtPlanFromJson(Map json) => $checkedCreate(
               (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
           appendSkills: $checkedConvert('appendSkills',
               (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
-          costumes: $checkedConvert('costumes',
-              (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          costumes: $checkedConvert(
+              'costumes',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                  )),
           grail: $checkedConvert('grail', (v) => v as int? ?? 0),
           fouHp: $checkedConvert('fouHp', (v) => v as int? ?? 0),
           fouAtk: $checkedConvert('fouAtk', (v) => v as int? ?? 0),
-          bondLimit: $checkedConvert('bondLimit', (v) => v as int? ?? 0),
+          bondLimit: $checkedConvert('bondLimit', (v) => v as int? ?? 10),
           npLv: $checkedConvert('npLv', (v) => v as int?),
         );
         return val;
@@ -179,10 +215,106 @@ Map<String, dynamic> _$SvtPlanToJson(SvtPlan instance) => <String, dynamic>{
       'ascension': instance.ascension,
       'skills': instance.skills,
       'appendSkills': instance.appendSkills,
-      'costumes': instance.costumes,
+      'costumes': instance.costumes.map((k, e) => MapEntry(k.toString(), e)),
       'grail': instance.grail,
       'fouHp': instance.fouHp,
       'fouAtk': instance.fouAtk,
       'bondLimit': instance.bondLimit,
       'npLv': instance.npLv,
+    };
+
+EventPlan _$EventPlanFromJson(Map json) => $checkedCreate(
+      'EventPlan',
+      json,
+      ($checkedConvert) {
+        final val = EventPlan(
+          planned: $checkedConvert('planned', (v) => v as bool? ?? false),
+          shop: $checkedConvert('shop', (v) => v as bool? ?? true),
+          shopExcludeItem: $checkedConvert('shopExcludeItem',
+              (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
+          point: $checkedConvert('point', (v) => v as bool? ?? true),
+          mission: $checkedConvert('mission', (v) => v as bool? ?? true),
+          tower: $checkedConvert('tower', (v) => v as bool? ?? true),
+          lotteries: $checkedConvert(
+              'lotteries',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                  )),
+          treasureBox:
+              $checkedConvert('treasureBox', (v) => v as bool? ?? true),
+          treasureBoxItems: $checkedConvert(
+              'treasureBoxItems',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                  )),
+          fixedDrop: $checkedConvert('fixedDrop', (v) => v as bool? ?? true),
+          questReward:
+              $checkedConvert('questReward', (v) => v as bool? ?? true),
+          extra: $checkedConvert('extra', (v) => v as bool? ?? true),
+          extraItems: $checkedConvert(
+              'extraItems',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(
+                        int.parse(k as String),
+                        (e as Map).map(
+                          (k, e) => MapEntry(int.parse(k as String), e as int),
+                        )),
+                  )),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$EventPlanToJson(EventPlan instance) => <String, dynamic>{
+      'planned': instance.planned,
+      'shop': instance.shop,
+      'shopExcludeItem': instance.shopExcludeItem.toList(),
+      'point': instance.point,
+      'mission': instance.mission,
+      'tower': instance.tower,
+      'lotteries': instance.lotteries.map((k, e) => MapEntry(k.toString(), e)),
+      'treasureBox': instance.treasureBox,
+      'treasureBoxItems':
+          instance.treasureBoxItems.map((k, e) => MapEntry(k.toString(), e)),
+      'fixedDrop': instance.fixedDrop,
+      'questReward': instance.questReward,
+      'extra': instance.extra,
+      'extraItems': instance.extraItems.map((k, e) =>
+          MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e)))),
+    };
+
+MainStoryPlan _$MainStoryPlanFromJson(Map json) => $checkedCreate(
+      'MainStoryPlan',
+      json,
+      ($checkedConvert) {
+        final val = MainStoryPlan(
+          fixedDrop: $checkedConvert('fixedDrop', (v) => v as bool? ?? false),
+          questReward:
+              $checkedConvert('questReward', (v) => v as bool? ?? false),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$MainStoryPlanToJson(MainStoryPlan instance) =>
+    <String, dynamic>{
+      'fixedDrop': instance.fixedDrop,
+      'questReward': instance.questReward,
+    };
+
+ExchangeTicketPlan _$ExchangeTicketPlanFromJson(Map json) => $checkedCreate(
+      'ExchangeTicketPlan',
+      json,
+      ($checkedConvert) {
+        final val = ExchangeTicketPlan(
+          counts: $checkedConvert('counts',
+              (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$ExchangeTicketPlanToJson(ExchangeTicketPlan instance) =>
+    <String, dynamic>{
+      'counts': instance.counts,
     };

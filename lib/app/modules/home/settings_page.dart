@@ -146,7 +146,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 trailing: db2.settingsBuilder((context, _, __) =>
                     _wrapArrowTrailing(Text(db2
                         .settings.resolvedPreferredRegions.first
-                        .toUpperCase()))),
+                        .toUpper()))),
                 onTap: () {
                   SplitRoute.push(
                     context,

@@ -29,7 +29,7 @@ T $checkedCreate<T>(
       return $checkedConvert<Q>(map, key, convertFunction,
           readValue: readValue);
     } catch (e, s) {
-      logger.e('checkedConvert error, return null', e, s);
+      logger.e('[$className.$key] checkedConvert error, return null', e, s);
       return null as Q;
     }
   }

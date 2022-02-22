@@ -117,6 +117,7 @@ class Maths {
     return null;
   }
 
+  @Deprecated('use num.clamp instead')
   static T fixValidRange<T extends num>(T value, [T? minVal, T? maxVal]) {
     if (minVal != null) {
       value = math.max(value, minVal);

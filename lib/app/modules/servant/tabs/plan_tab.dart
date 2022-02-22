@@ -573,9 +573,9 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                 ),
                 InkWell(
                   onTap: () async {
-                    // await SplitRoute.push(
+                    // await SplitRoute.pushBuilder(
                     //   context,
-                    //   CmdCodeListPage(
+                    //   (context, _) => CmdCodeListPage(
                     //     onSelected: (selectedCode) {
                     //       status.equipCmdCodes[index] = selectedCode.no;
                     //       Navigator.of(context).pop();

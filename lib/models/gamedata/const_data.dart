@@ -17,6 +17,13 @@ class ConstGameData {
   final GameConstants constants;
   final Map<int, Map<int, GrailCostDetail>> svtGrailCost;
   final Map<int, MasterUserLvDetail> userLevel;
+  final Map<int, int> bondLimitQp = {
+    11: 10000000,
+    12: 12000000,
+    13: 14000000,
+    14: 16000000,
+    15: 18000000
+  };
 
   ConstGameData({
     required this.attributeRelation,

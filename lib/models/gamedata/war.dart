@@ -1,6 +1,8 @@
+import 'package:chaldea/utils/utils.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'common.dart';
+import 'gamedata.dart';
 import 'quest.dart';
 
 part '../../generated/models/gamedata/war.g.dart';
@@ -57,6 +59,32 @@ class NiceWar {
 
   factory NiceWar.fromJson(Map<String, dynamic> json) =>
       _$NiceWarFromJson(json);
+
+  bool get isMainStory => id >= 100 && id < 1000;
+
+  @JsonKey(ignore: true)
+  Map<int, int> itemReward = {};
+  @JsonKey(ignore: true)
+  Map<int, int> itemDrop = {};
+
+  void calcItems(GameData gameData) {
+    itemReward.clear();
+    itemDrop.clear();
+    for (final spot in spots) {
+      for (final quest in spot.quests) {
+        for (final gift in quest.gifts) {
+          if (gift.isStatItem) {
+            itemReward.addNum(gift.objectId, gift.num);
+          }
+        }
+        for (final phase in quest.phases) {
+          final fixedDrop = gameData.fixedDrops[quest.id * 100 + phase];
+          if (fixedDrop == null) continue;
+          itemDrop.addDict(fixedDrop.items);
+        }
+      }
+    }
+  }
 }
 
 @JsonSerializable()

@@ -1,6 +1,9 @@
+import 'package:chaldea/models/db.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'common.dart';
+import 'gamedata.dart';
 import 'item.dart';
 import 'quest.dart';
 
@@ -500,6 +503,120 @@ class Event {
   });
 
   factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
+
+  EventExtra get extra => db2.gameData.wikiData.events
+      .putIfAbsent(id, () => EventExtra(id: id, name: name));
+
+  // statistics
+  @JsonKey(ignore: true)
+  Map<int, int> itemShop = {};
+  @JsonKey(ignore: true)
+  Map<int, int> itemPointReward = {};
+  @JsonKey(ignore: true)
+  Map<int, int> itemMission = {};
+  @JsonKey(ignore: true)
+  Map<int, int> itemTower = {};
+  @JsonKey(ignore: true)
+  Map<int, Map<int, Map<int, int>>> itemLottery = {}; // lottoeryId, boxNum
+  @JsonKey(ignore: true)
+  Set<int> itemTreasureBox = {};
+  @JsonKey(ignore: true)
+  Map<int, int> itemWarReward = {};
+  @JsonKey(ignore: true)
+  Map<int, int> itemWarDrop = {};
+
+  void calcItems(GameData gameData) {
+    // ensure war calcItems called before events
+    itemWarReward.clear();
+    itemWarDrop.clear();
+    for (final warId in warIds) {
+      final war = gameData.wars[warId];
+      if (war == null) continue;
+      itemWarReward.addDict(war.itemReward);
+      itemWarDrop.addDict(war.itemDrop);
+    }
+    itemShop.clear();
+    // shop
+    for (final shopItem in shop) {
+      if (shopItem.limitNum == 0) continue;
+      if (shopItem.purchaseType == PurchaseType.item ||
+          shopItem.purchaseType == PurchaseType.servant) {
+        for (final id in shopItem.targetIds) {
+          if (Items.isStatItem(id)) {
+            itemShop.addNum(id, shopItem.limitNum * shopItem.setNum);
+          }
+        }
+      } else if (shopItem.payType == PurchaseType.setItem) {
+        for (final set in shopItem.itemSet) {
+          if (set.purchaseType == PurchaseType.item ||
+              set.purchaseType == PurchaseType.servant) {
+            if (Items.isStatItem(set.targetId)) {
+              itemShop.addNum(set.targetId,
+                  set.setNum * shopItem.setNum * shopItem.limitNum);
+            }
+          }
+        }
+      }
+    }
+    // point rewards
+    itemPointReward.clear();
+    for (final point in rewards) {
+      for (final gift in point.gifts) {
+        if ((gift.type == GiftType.item || gift.type == GiftType.servant) &&
+            Items.isStatItem(gift.objectId)) {
+          itemPointReward.addNum(gift.objectId, gift.num);
+        }
+      }
+    }
+    // mission, exclude random mission
+    itemMission.clear();
+    for (final mission in missions) {
+      if (mission.rewardType != MissionType.event) continue;
+      if (mission.rewardType == MissionRewardType.gift) {
+        for (final gift in mission.gifts) {
+          if (Items.isStatItem(gift.objectId)) {
+            itemMission.addNum(gift.objectId, gift.num);
+          }
+        }
+      }
+    }
+    // tower, similar with point rewards
+    itemTower.clear();
+    for (final tower in towers) {
+      for (final reward in tower.rewards) {
+        for (final gift in reward.gifts) {
+          if (Items.isStatItem(gift.objectId)) {
+            itemTower.addNum(gift.objectId, gift.num);
+          }
+        }
+      }
+    }
+    //
+    itemLottery.clear();
+    for (final lottery in lotteries) {
+      for (final box in lottery.boxes) {
+        for (final gift in box.gifts) {
+          if (Items.isStatItem(gift.objectId)) {
+            itemLottery
+                .putIfAbsent(lottery.id, () => {})
+                .putIfAbsent(box.boxIndex, () => {})
+                .addNum(gift.objectId, gift.num);
+          }
+        }
+      }
+    }
+    //
+    itemTreasureBox.clear();
+    for (final box in treasureBoxes) {
+      for (final boxGifts in box.treasureBoxGifts) {
+        for (final gift in boxGifts.gifts) {
+          if (Items.isStatItem(gift.objectId)) {
+            itemTreasureBox.add(gift.objectId);
+          }
+        }
+      }
+    }
+  }
 }
 
 enum PurchaseType {

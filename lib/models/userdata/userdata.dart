@@ -5,6 +5,7 @@ import 'package:chaldea/generated/l10n.dart';
 import '../../packages/language.dart';
 import '../../utils/basic.dart';
 import '../../utils/extension.dart';
+import '../gamedata/servant.dart';
 import '_helper.dart';
 
 part '../../generated/models/userdata/userdata.g.dart';
@@ -18,12 +19,17 @@ class UserData {
 
   int curUserKey;
   List<User> users;
+  List<int> itemAbundantValue;
 
   UserData({
     this.version = UserData.modelVersion,
     this.curUserKey = 0,
     List<User>? users,
-  }) : users = users?.isNotEmpty == true ? users! : <User>[User()] {
+    List<int?>? itemAbundantValue,
+  })  : users = users?.isNotEmpty == true ? users! : <User>[User()],
+        itemAbundantValue = List.generate(
+            3, (index) => itemAbundantValue?.getOrNull(index) ?? 0,
+            growable: false) {
     validate();
   }
 
@@ -58,6 +64,10 @@ class User {
   Map<int, int> items;
 
   //  events, main story, tickets
+  Map<int, EventPlan> events;
+  Map<int, MainStoryPlan> mainStories;
+  Map<int, ExchangeTicketPlan> exchangeTickets;
+
   Map<int, CraftStatus> craftEssences;
   Map<int, int> mysticCodes;
   Set<String> summons;
@@ -72,6 +82,9 @@ class User {
     this.curSvtPlanNo = 0,
     Map<int, String>? planNames,
     Map<int, int>? items,
+    Map<int, EventPlan>? events,
+    Map<int, MainStoryPlan>? mainStories,
+    Map<int, ExchangeTicketPlan>? exchangeTickets,
     Map<int, CraftStatus?>? craftEssences,
     Map<int, int>? mysticCodes,
     Set<String>? summons,
@@ -79,6 +92,9 @@ class User {
         svtPlanGroups = svtPlanGroups ?? [],
         planNames = planNames ?? {},
         items = items ?? {},
+        events = events ?? {},
+        mainStories = mainStories ?? {},
+        exchangeTickets = exchangeTickets ?? {},
         craftEssences = {
           if (craftEssences != null)
             for (final e in craftEssences.entries)
@@ -106,6 +122,15 @@ class User {
     final status = servants.putIfAbsent(no, () => SvtStatus())..cur.validate();
     return status;
   }
+
+  EventPlan eventPlanOf(int eventId) =>
+      events.putIfAbsent(eventId, () => EventPlan());
+
+  MainStoryPlan mainStoryOf(int warId) =>
+      mainStories.putIfAbsent(warId, () => MainStoryPlan());
+
+  ExchangeTicketPlan ticketOf(int key) =>
+      exchangeTickets.putIfAbsent(key, () => ExchangeTicketPlan());
 
   void validate() {
     if (svtPlanGroups.isEmpty) {
@@ -177,7 +202,7 @@ class SvtPlan {
   int ascension;
   List<int> skills;
   List<int> appendSkills;
-  List<int> costumes; // costume id
+  Map<int, int> costumes; // costume id
 
   int grail;
 
@@ -196,18 +221,35 @@ class SvtPlan {
     this.ascension = 0,
     List<int>? skills,
     List<int>? appendSkills,
-    List<int>? costumes,
+    Map<int, int>? costumes,
     this.grail = 0,
     this.fouHp = 0,
     this.fouAtk = 0,
-    this.bondLimit = 0,
+    this.bondLimit = 10,
     this.npLv,
   })  : skills = List.generate(3, (index) => skills?.getOrNull(index) ?? 1,
             growable: false),
-        costumes = costumes ?? [],
+        costumes = costumes ?? {},
         appendSkills = List.generate(
             3, (index) => appendSkills?.getOrNull(index) ?? 0,
-            growable: false);
+            growable: false) {
+    validate();
+  }
+
+  static SvtPlan empty = SvtPlan();
+
+  SvtPlan.max(Servant svt)
+      : favorite = true,
+        ascension = 4,
+        skills = const [10, 10, 10],
+        appendSkills = const [10, 10, 10],
+        costumes = svt.costumeMaterials.map((key, value) => MapEntry(key, 1)),
+        grail = _grailCostByRarity[svt.rarity] + 10,
+        fouHp = 50,
+        fouAtk = 50,
+        bondLimit = 15,
+        npLv = 5;
+  static const _grailCostByRarity = [10, 10, 10, 9, 7, 5];
 
   factory SvtPlan.fromJson(Map<String, dynamic> json) =>
       _$SvtPlanFromJson(json);
@@ -215,30 +257,32 @@ class SvtPlan {
   Map<String, dynamic> toJson() => _$SvtPlanToJson(this);
 
   void validate([SvtPlan? lower]) {
-    ascension = Maths.fixValidRange(ascension, lower?.ascension ?? 0, 4);
+    ascension = ascension.clamp(lower?.ascension ?? 0, 4);
     for (int i = 0; i < skills.length; i++) {
-      skills[i] = Maths.fixValidRange(skills[i], lower?.skills[i] ?? 1, 10);
+      skills[i] = skills[i].clamp(lower?.skills[i] ?? 1, 10);
     }
     for (int i = 0; i < appendSkills.length; i++) {
-      appendSkills[i] =
-          Maths.fixValidRange(appendSkills[i], lower?.appendSkills[i] ?? 0, 10);
+      appendSkills[i] = appendSkills[i].clamp(lower?.appendSkills[i] ?? 0, 10);
     }
-    // if (lower != null) {
-    //   for (final id in lower.costumes.keys.toList()) {
-    //     costumes[id] = lower.costumes[id]! ? true : costumes[id] ?? false;
-    //   }
-    // }
-    grail = Maths.fixValidRange(grail, 0);
-    fouHp = Maths.fixValidRange(fouHp, lower?.fouHp ?? 0, 50);
-    fouAtk = Maths.fixValidRange(fouAtk, lower?.fouAtk ?? 0, 50);
-    bondLimit = Maths.fixValidRange(bondLimit, lower?.bondLimit ?? 10, 15);
+    for (final id in costumes.keys.toList()) {
+      costumes[id] = costumes[id] == 0 ? 0 : 1;
+    }
+    if (lower != null) {
+      for (final id in lower.costumes.keys.toList()) {
+        costumes[id] = (costumes[id] ?? 0).clamp(lower.costumes[id] ?? 0, 1);
+      }
+    }
+    grail = grail.clamp(0, 20);
+    fouHp = fouHp.clamp(lower?.fouHp ?? 0, 50);
+    fouAtk = fouAtk.clamp(lower?.fouAtk ?? 0, 50);
+    bondLimit = bondLimit.clamp(lower?.bondLimit ?? 10, 15);
   }
 
   void reset() {
     favorite = false;
     ascension = 0;
     skills.fillRange(0, 3, 1);
-    costumes.fillRange(0, costumes.length, 0);
+    costumes.clear();
     appendSkills.fillRange(0, 3, 0);
     grail = 0;
     fouHp = fouAtk = -20;
@@ -250,11 +294,117 @@ class SvtPlan {
     favorite = true;
     ascension = 4;
     skills.fillRange(0, 3, skill);
-    costumes.fillRange(0, costumes.length, 1);
+    // costumes;
     // appendSkills.fillRange(0, 3, skill);
     // grail = grail;
     // fouHp, fouAtk
   }
+}
+
+@JsonSerializable()
+class EventPlan {
+  bool planned;
+
+  bool shop;
+  Set<int> shopExcludeItem;
+  bool point;
+  bool mission;
+  bool tower;
+  Map<int, int> lotteries;
+  bool treasureBox;
+  Map<int, int> treasureBoxItems;
+  bool fixedDrop;
+  bool questReward;
+  bool extra;
+  Map<int, Map<int, int>> extraItems;
+
+  EventPlan({
+    this.planned = false,
+    this.shop = true,
+    Set<int>? shopExcludeItem,
+    this.point = true,
+    this.mission = true,
+    this.tower = true,
+    Map<int, int>? lotteries,
+    this.treasureBox = true,
+    Map<int, int>? treasureBoxItems,
+    this.fixedDrop = true,
+    this.questReward = true,
+    this.extra = true,
+    Map<int, Map<int, int>>? extraItems,
+  })  : shopExcludeItem = shopExcludeItem ?? {},
+        lotteries = lotteries ?? {},
+        treasureBoxItems = treasureBoxItems ?? {},
+        extraItems = extraItems ?? {};
+
+  factory EventPlan.fromJson(Map<String, dynamic> json) =>
+      _$EventPlanFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventPlanToJson(this);
+
+  void reset() {
+    planned = false;
+    shop = true;
+    shopExcludeItem.clear();
+    point = true;
+    mission = true;
+    tower = true;
+    lotteries.clear();
+    treasureBox = true;
+    treasureBoxItems.clear();
+    fixedDrop = true;
+    questReward = true;
+    extraItems.clear();
+  }
+
+  void planAll() {
+    planned = true;
+    shop = true;
+    // shopExcludeItem.clear();
+    point = true;
+    mission = true;
+    tower = true;
+    // lotteries.clear();
+    treasureBox = true;
+    // treasureBoxItems.clear();
+    fixedDrop = true;
+    questReward = true;
+    // extraItems.clear();
+  }
+}
+
+@JsonSerializable()
+class MainStoryPlan {
+  bool fixedDrop;
+  bool questReward;
+
+  MainStoryPlan({
+    this.fixedDrop = false,
+    this.questReward = false,
+  });
+
+  factory MainStoryPlan.fromJson(Map<String, dynamic> json) =>
+      _$MainStoryPlanFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MainStoryPlanToJson(this);
+
+  bool get planned => fixedDrop || questReward;
+}
+
+@JsonSerializable()
+class ExchangeTicketPlan {
+  List<int> counts;
+
+  ExchangeTicketPlan({List<int>? counts})
+      : counts = List.generate(3, (index) => counts?.getOrNull(index) ?? 0,
+            growable: false);
+
+  factory ExchangeTicketPlan.fromJson(Map<String, dynamic> json) =>
+      _$ExchangeTicketPlanFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ExchangeTicketPlanToJson(this);
+
+  bool get planned => counts.any((e) => e > 0);
 }
 
 enum Region {
@@ -274,7 +424,7 @@ const _regionLanguage = {
 };
 
 extension RegionX on Region {
-  String toUpperCase() {
+  String toUpper() {
     return EnumUtil.upperCase(this);
   }
 
