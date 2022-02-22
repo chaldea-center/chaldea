@@ -88,9 +88,7 @@ extension StringX on String {
   /// for half-width ascii: 1 char=1 byte, for full-width cn/jp 1 char=3 bytes mostly.
   /// assume there is no half-width cn/jp char.
   int get charWidth {
-    return (length + utf8
-        .encode(this)
-        .length) ~/ 2;
+    return (length + utf8.encode(this).length) ~/ 2;
   }
 
   String trimChar(String chars) {
@@ -145,9 +143,7 @@ extension DateTimeX on DateTime {
   }
 
   String toStringShort() {
-    return toString()
-        .split('.')
-        .first;
+    return toString().split('.').first;
   }
 
   String toDateString([String sep = '-']) {

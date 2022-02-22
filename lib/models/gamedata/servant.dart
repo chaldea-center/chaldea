@@ -187,7 +187,7 @@ class Servant with GameCardMixin {
     ];
   }
 
-  String get route => '${Routes.servant}/$id';
+  String get route => '${Routes.servant}/$collectionNo';
 
   bool get isUserSvt =>
       (type == SvtType.normal || type == SvtType.heroine) && collectionNo > 0;
@@ -306,7 +306,7 @@ class CraftEssence with GameCardMixin {
             : CraftATKType.none;
   }
 
-  String get route => '${Routes.craftEssence}/$id';
+  String get route => '${Routes.craftEssence}/$collectionNo';
 }
 
 @JsonSerializable()

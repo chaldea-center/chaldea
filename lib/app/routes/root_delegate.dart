@@ -87,8 +87,11 @@ class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>
   }
 
   @override
-  RouteConfiguration? get currentConfiguration =>
-      appState.activeRouter.currentConfiguration;
+  RouteConfiguration? get currentConfiguration {
+    final v = appState.activeRouter.currentConfiguration;
+    print('router config: ${v?.url}');
+    return v;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,12 +101,14 @@ class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>
         MaterialPage(child: WindowManager(delegate: this)),
       ],
       onPopPage: (route, result) {
+        if (!route.didPop(result)) return false;
         if (appState.showWindowManager) {
-          if (!route.didPop(result)) return false;
           appState.showWindowManager = false;
           return true;
         }
-        return appState.activeRouter.onPopPage(route, result);
+        // return appState.activeRouter.onPopPage(route, result);
+        notifyListeners();
+        return false;
       },
     );
   }

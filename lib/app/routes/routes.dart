@@ -1,4 +1,7 @@
+import 'package:chaldea/app/modules/craft_essence/craft.dart';
+import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
 import 'package:chaldea/app/modules/home/bootstrap.dart';
+import 'package:chaldea/app/modules/servant/servant.dart';
 import 'package:flutter/material.dart';
 
 import '../../packages/split_route/split_route.dart';
@@ -127,6 +130,7 @@ class RouteConfiguration {
 
   Widget? get resolvedChild {
     if (child != null) return child!;
+    int? _secondInt = second == null ? null : int.tryParse(second!);
     switch (first) {
       case Routes.home:
         return HomePage();
@@ -135,11 +139,13 @@ class RouteConfiguration {
       case Routes.servants:
         return ServantListPage();
       case Routes.servant:
-        break;
+        return ServantDetailPage(id: _secondInt);
       case Routes.plans:
         break;
       case Routes.craftEssences:
-        break;
+        return CraftListPage();
+      case Routes.craftEssence:
+        return CraftDetailPage(id: _secondInt);
       case Routes.commandCodes:
         break;
       case Routes.mysticCodes:

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:chaldea/app/modules/home/bootstrap.dart';
+import 'package:chaldea/app/routes/delegate.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:flutter/material.dart';
 
@@ -139,10 +140,16 @@ class _WindowManagerState extends State<WindowManager> {
           root.appState.children.length,
           (index) {
             final _delegate = root.appState.children[index];
+            final child = AppShell(
+              appState: root.appState,
+              routerDelegate: _delegate,
+              active: index == root.appState.activeIndex &&
+                  !root.appState.showWindowManager,
+            );
             if (index == root.appState.activeIndex) {
-              return _delegate.build(context);
+              return child;
             } else {
-              return Offstage(child: _delegate.build(context));
+              return Offstage(child: child);
             }
           },
         ),

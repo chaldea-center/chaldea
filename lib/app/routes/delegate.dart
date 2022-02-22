@@ -5,8 +5,52 @@ import 'package:flutter/material.dart';
 
 import 'routes.dart';
 
+class AppShell extends StatefulWidget {
+  final AppState appState;
+  final AppRouterDelegate routerDelegate;
+  final bool active;
+  const AppShell(
+      {Key? key,
+      required this.appState,
+      required this.routerDelegate,
+      this.active = false})
+      : super(key: key);
+
+  @override
+  _AppShellState createState() => _AppShellState();
+}
+
+class _AppShellState extends State<AppShell> {
+  ChildBackButtonDispatcher? _backButtonDispatcher;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _backButtonDispatcher = Router.of(context)
+        .backButtonDispatcher
+        ?.createChildBackButtonDispatcher();
+  }
+
+  @override
+  void didUpdateWidget(covariant AppShell oldWidget) {
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.active) {
+      _backButtonDispatcher?.takePriority();
+    }
+    return Router(
+      routerDelegate: widget.routerDelegate,
+      backButtonDispatcher: _backButtonDispatcher,
+    );
+  }
+}
+
 class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<RouteConfiguration> {
+  // final RootAppRouterDelegate _parent;
   final RootAppRouterDelegate _parent;
 
   AppRouterDelegate(this._parent) {

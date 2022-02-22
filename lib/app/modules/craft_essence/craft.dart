@@ -13,15 +13,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../routes/routes.dart';
+import '../common/not_found.dart';
+
 // import 'package:chaldea/modules/shared/lang_switch.dart';
 // import 'package:chaldea/modules/summon/summon_detail_page.dart';
 // import 'package:chaldea/widgets/charts/growth_curve_page.dart';
 
 class CraftDetailPage extends StatefulWidget {
-  final CraftEssence ce;
+  final int? id;
+  final CraftEssence? ce;
   final CraftEssence? Function(CraftEssence current, bool reversed)? onSwitch;
 
-  const CraftDetailPage({Key? key, required this.ce, this.onSwitch})
+  const CraftDetailPage({Key? key, this.id, this.ce, this.onSwitch})
       : super(key: key);
 
   @override
@@ -30,17 +34,21 @@ class CraftDetailPage extends StatefulWidget {
 
 class _CraftDetailPageState extends State<CraftDetailPage> {
   Language? lang;
+  CraftEssence? _ce;
 
-  late CraftEssence ce;
+  CraftEssence get ce => _ce!;
 
   @override
   void initState() {
     super.initState();
-    ce = widget.ce;
+    _ce = widget.ce ?? db2.gameData.craftEssences[widget.id];
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_ce == null) {
+      return NotRoundPage(url: Routes.servant + '/${widget.id}');
+    }
     final status =
         db2.curUser.craftEssences[ce.collectionNo] ?? CraftStatus.notMet;
     return Scaffold(
@@ -98,7 +106,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
                     EasyLoading.showToast(S.current.list_end_hint(i == 0));
                   } else {
                     setState(() {
-                      ce = nextCe!;
+                      _ce = nextCe!;
                     });
                   }
                 },
