@@ -15,7 +15,12 @@
 ///  • Dart version 2.13.0 (build 2.13.0-222.0.dev)
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart' show CupertinoRouteTransitionMixin;
+import 'package:flutter/cupertino.dart'
+    show
+        CupertinoFullscreenDialogTransition,
+        CupertinoPageTransition,
+        CupertinoRouteTransitionMixin;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -178,6 +183,33 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   }
 
   @override
+  bool get popGestureEnabled {
+    if (kIsWeb) return false;
+    if (isFirst) {
+      return false;
+    }
+    if (willHandlePopInternally) {
+      return false;
+    }
+    if (hasScopedWillPopCallback) {
+      return false;
+    }
+    if (fullscreenDialog) {
+      return false;
+    }
+    if (animation!.status != AnimationStatus.completed) {
+      return false;
+    }
+    if (secondaryAnimation!.status != AnimationStatus.dismissed) {
+      return false;
+    }
+    if (CupertinoRouteTransitionMixin.isPopGestureInProgress(this)) {
+      return false;
+    }
+    return true;
+  }
+
+  @override
   bool canTransitionTo(TransitionRoute nextRoute) {
     _nextRouteCache = nextRoute;
     if (isSplit(null) && nextRoute is SplitRoute && nextRoute.detail == true) {
@@ -199,14 +231,32 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child) {
-    return ClipRect(
-      child: super.buildTransitions(
+    if (kIsWeb) {
+      const bool linearTransition = false;
+      if (fullscreenDialog) {
+        child = CupertinoFullscreenDialogTransition(
+          primaryRouteAnimation: animation,
+          secondaryRouteAnimation: secondaryAnimation,
+          linearTransition: linearTransition,
+          child: child,
+        );
+      } else {
+        child = CupertinoPageTransition(
+          primaryRouteAnimation: animation,
+          secondaryRouteAnimation: secondaryAnimation,
+          linearTransition: linearTransition,
+          child: child,
+        );
+      }
+    } else {
+      child = super.buildTransitions(
         context,
         animation,
         secondaryAnimation,
         child,
-      ),
-    );
+      );
+    }
+    return ClipRect(child: child);
   }
 
   /// create master widget without scope wrapped
