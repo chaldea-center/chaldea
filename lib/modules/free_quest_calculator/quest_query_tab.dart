@@ -14,24 +14,6 @@ class _FreeQuestQueryTabState extends State<FreeQuestQueryTab> {
 
   @override
   Widget build(BuildContext context) {
-    return Navigator(
-      key: _navigatorKey,
-      onGenerateRoute: (settings) {
-        if (settings.name == '/') {
-          return SplitRoute(
-              builder: (context, _) => _ChapterList(), detail: null);
-        }
-        return null;
-      },
-    );
-  }
-}
-
-class _ChapterList extends StatelessWidget {
-  _ChapterList({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
     Map<String, List<Quest>> chapters = {};
     db.gameData.freeQuests.values.forEach((quest) {
       chapters.putIfAbsent(quest.chapter, () => []).add(quest);
@@ -61,11 +43,11 @@ class _ChapterList extends StatelessWidget {
         ),
         trailing: const Icon(Icons.keyboard_arrow_right),
         onTap: () {
-          Navigator.of(context).push(SplitRoute(
-            builder: (context, _) =>
-                _ChapterFreeQuests(chapter: chapter, quests: quests),
-            detail: null,
-          ));
+          SplitRoute.push(
+            context,
+            _ChapterFreeQuests(chapter: chapter, quests: quests),
+            detail: true,
+          );
         },
       ));
     });
@@ -88,27 +70,33 @@ class _ChapterFreeQuests extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: AutoSizeText(
+          Localized.chapter.of(chapter),
+          maxLines: 1,
+        ),
+      ),
       body: ListView(
         children: [
-          Card(
-            margin: const EdgeInsets.all(8),
-            child: Row(
-              children: [
-                const SizedBox(width: 4),
-                BackButton(color: Theme.of(context).hintColor),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(4, 6, 8, 6),
-                    child: Text(
-                      Localized.chapter.of(chapter),
-                      style: Theme.of(context).textTheme.bodyText1,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // Card(
+          //   margin: const EdgeInsets.all(8),
+          //   child: Row(
+          //     children: [
+          //       const SizedBox(width: 4),
+          //       BackButton(color: Theme.of(context).hintColor),
+          //       Expanded(
+          //         child: Padding(
+          //           padding: const EdgeInsets.fromLTRB(4, 6, 8, 6),
+          //           child: Text(
+          //             Localized.chapter.of(chapter),
+          //             style: Theme.of(context).textTheme.bodyText1,
+          //             textAlign: TextAlign.center,
+          //           ),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           for (final quest in quests)
             SimpleAccordion(
               headerBuilder: (context, _) => ListTile(

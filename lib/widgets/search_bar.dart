@@ -72,7 +72,7 @@ class _SearchBarState extends State<SearchBar> {
               style: textStyle,
               // don't set other language
               // placeholder height will change
-              placeholder: 'Search',
+              placeholder: 'Search: A +B -C',
               prefixInsets: const EdgeInsetsDirectional.fromSTEB(6, 0, 0, 0),
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               suffixIcon: const Icon(Icons.clear),
