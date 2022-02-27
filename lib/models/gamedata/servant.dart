@@ -1,6 +1,7 @@
 import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../db.dart';
@@ -44,6 +45,8 @@ class BasicServant {
 
   factory BasicServant.fromJson(Map<String, dynamic> json) =>
       _$BasicServantFromJson(json);
+
+  Transl<String, String> get lName => Transl.entityNames(name);
 }
 
 @JsonSerializable()
@@ -160,6 +163,8 @@ class Servant with GameCardMixin {
     preprocess();
   }
 
+  factory Servant.fromJson(Map<String, dynamic> json) =>
+      _$ServantFromJson(json);
   @JsonKey(ignore: true)
   late List<List<NiceSkill>> groupedActiveSkills;
   @JsonKey(ignore: true)
@@ -220,8 +225,29 @@ class Servant with GameCardMixin {
 
   Set<Trait>? _traitsAll;
 
-  factory Servant.fromJson(Map<String, dynamic> json) =>
-      _$ServantFromJson(json);
+  int grailedLv(int grails) {
+    final costs = db2.gameData.constData.svtGrailCost[rarity]?[grails];
+    if (costs == null) return lvMax;
+    return costs.addLvMax + lvMax;
+  }
+
+  Map<int, LvlUpMaterial> get grailUpMaterials {
+    Map<int, LvlUpMaterial> materials = {};
+    final costs = db2.gameData.constData.svtGrailCost[rarity];
+    if (costs != null) {
+      for (final endLv in costs.keys) {
+        materials[endLv - 1] = LvlUpMaterial(
+          items: [
+            ItemAmount(amount: 1, item: Items.grail),
+            if (lvMax + costs[endLv]!.addLvMax > 100)
+              ItemAmount(amount: 30, item: coin!.item)
+          ],
+          qp: costs[endLv]!.qp,
+        );
+      }
+    }
+    return materials;
+  }
 }
 
 @JsonSerializable()
@@ -702,6 +728,8 @@ class NiceCostume {
 
   factory NiceCostume.fromJson(Map<String, dynamic> json) =>
       _$NiceCostumeFromJson(json);
+
+  Transl<String, String> get lName => Transl.costumeNames(name);
 }
 
 @JsonSerializable()

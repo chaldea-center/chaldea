@@ -14,19 +14,12 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../common/extra_assets_page.dart';
 import '../common/not_found.dart';
-// import 'tabs/svt_illust_tab.dart';
-// import 'tabs/svt_info_tab.dart';
 import 'tabs/info_tab.dart';
 import 'tabs/plan_tab.dart';
-// import 'tabs/svt_quest_tab.dart';
 import 'tabs/related_cards_tab.dart';
 import 'tabs/skill_tab.dart';
 import 'tabs/summon_tab.dart';
 import 'tabs/td_tab.dart';
-
-// import 'tabs/svt_sprite_tab.dart';
-// import 'tabs/svt_summon_tab.dart';
-// import 'tabs/svt_voice_tab.dart';
 
 class _SubTabInfo {
   final SvtTab tab;
@@ -94,9 +87,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
             ),
             actions: <Widget>[
               if (svt.isUserSvt)
-                db2.userdataBuilder(
+                db2.onUserData(
                   (context, _, __) => IconButton(
-                    icon: status.cur.favorite
+                    icon: status.favorite
                         ? const Icon(Icons.favorite, color: Colors.redAccent)
                         : const Icon(Icons.favorite_border),
                     tooltip: S.of(context).favorite,
@@ -179,7 +172,8 @@ class ServantDetailPageState extends State<ServantDetailPage>
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.plan,
-          viewBuilder: (ctx) => SvtPlanTab(svt: svt),
+          viewBuilder: (ctx) =>
+              db2.onUserData((context, _, __) => SvtPlanTab(svt: svt)),
         );
       case SvtTab.skill:
         if (svt.skills.isEmpty) return null;
@@ -251,11 +245,35 @@ class ServantDetailPageState extends State<ServantDetailPage>
           PopupMenuItem(
             child: Text(S.of(context).select_plan),
             value: 'plan', // dialog
+            onTap: () async {
+              await null;
+              CommonBuilder.showSwitchPlanDialog(
+                context: context,
+                onChange: (index) {
+                  db2.curUser.curSvtPlanNo = index;
+                  db2.curUser.ensurePlanLarger();
+                  db2.itemCenter.calculate();
+                },
+              );
+            },
           ),
           if (svt.isUserSvt)
             PopupMenuItem<String>(
               child: Text(S.of(context).reset),
               value: 'reset', // dialog
+              onTap: () async {
+                await null;
+                SimpleCancelOkDialog(
+                  title: Text(S.of(context).reset),
+                  onTapOk: () {
+                    setState(() {
+                      status.cur.reset();
+                      plan.reset();
+                    });
+                    db2.itemCenter.updateSvts(svts: [svt]);
+                  },
+                ).showDialog(context);
+              },
             ),
           if (svt.isUserSvt)
             PopupMenuItem<String>(
@@ -265,19 +283,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
                 setState(() {
                   plan.reset();
                 });
-                // db2.itemStat.updateSvtItems();
+                db2.itemCenter.updateSvts(svts: [svt]);
               },
             ),
-          // if (svt.isAvailable)
-          //   PopupMenuItem<String>(
-          //     child: Text(S.of(context).reset_svt_enhance_state),
-          //     value: 'reset_enhance',
-          //     onTap: () {
-          //       setState(() {
-          //         status.resetEnhancement();
-          //       });
-          //     },
-          //   ),
           PopupMenuItem<String>(
             child: Text(S.of(context).jump_to('AtlasAcademy')),
             onTap: () {
@@ -322,35 +330,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
         ];
       },
       onSelected: (select) {
-        if (select == 'plan') {
-          CommonBuilder.showSwitchPlanDialog(
-            context: context,
-            onChange: (index) {
-              db2.curUser.curSvtPlanNo = index;
-              db2.curUser.ensurePlanLarger();
-              // db2.itemStat.updateSvtItems();
-            },
-          );
-        } else if (select == 'reset') {
-          SimpleCancelOkDialog(
-            title: Text(S.of(context).reset),
-            onTapOk: () {
-              setState(() {
-                status.cur.reset();
-                plan.reset();
-              });
-              // db2.itemStat.updateSvtItems();
-            },
-          ).showDialog(context);
-        } else if (select == 'reset_plan') {
-          // in onTap
-        } else if (select == 'reset_enhance') {
-          // in onTap
-        } else if (select == 'jump_mc') {
-          // in onTap
-        } else if (select == 'jump_fandom') {
-          // in onTap
-        } else if (select == 'duplicate_svt') {
+        if (select == 'duplicate_svt') {
           // final newSvt = db.curUser.addDuplicatedForServant(svt);
           // print('add ${newSvt.no}');
           // if (newSvt == svt) {
@@ -370,8 +350,6 @@ class ServantDetailPageState extends State<ServantDetailPage>
           // db.curUser.removeDuplicatedServant(svt.no);
           // db.notifyDbUpdate();
           // Navigator.pop(context);
-        } else if (select == 'switch_slider_dropdown') {
-          // in onTap
         }
       },
     );
@@ -442,7 +420,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
             ...getObtainBadges(),
           ],
         ),
-        trailing: db2.userdataBuilder(
+        trailing: db2.onUserData(
           (context, _, __) => Tooltip(
             message: S.of(context).priority,
             child: DropdownButton<int>(
@@ -497,17 +475,14 @@ class ServantDetailPageState extends State<ServantDetailPage>
   }
 
   List<Widget> getObtainBadges() {
-    // {初始获得, 常驻, 剧情, 活动, 限定, 友情点召唤, 无法召唤}
-    // {'活动赠送', '事前登录赠送', '初始获得', '友情点召唤', '期间限定', '通关报酬', '无法获得',
-    //   '圣晶石常驻', '剧情限定'}
-    const badgeColors = {
-      "初始获得": Color(0xFFA6A6A6),
-      "圣晶石常驻": Color(0xFF84B63C),
-      "剧情限定": Color(0xFFA443DF),
-      "活动赠送": Color(0xFF4487DF),
-      "期间限定": Color(0xFFE7815C),
-      "友情点召唤": Color(0xFFD19F76),
-      "无法召唤": Color(0xFFA6A6A6)
+    const badgeColors = <SvtObtain, Color>{
+      SvtObtain.heroine: Color(0xFFA6A6A6),
+      SvtObtain.permanent: Color(0xFF84B63C),
+      SvtObtain.story: Color(0xFFA443DF),
+      SvtObtain.eventReward: Color(0xFF4487DF),
+      SvtObtain.limited: Color(0xFFE7815C),
+      SvtObtain.friendPoint: Color(0xFFD19F76),
+      SvtObtain.unavailable: Color(0xFFA6A6A6)
     };
     return svt.extra.obtains.map((obtain) {
       final bgColor = badgeColors[obtain] ?? badgeColors['无法召唤']!;

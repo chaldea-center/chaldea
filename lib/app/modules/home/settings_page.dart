@@ -143,9 +143,8 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               ListTile(
                 title: const Text('Translations'),
-                trailing: db2.settingsBuilder((context, _, __) =>
-                    _wrapArrowTrailing(Text(db2
-                        .settings.resolvedPreferredRegions.first
+                trailing: db2.onSettings((context, _, __) => _wrapArrowTrailing(
+                    Text(db2.settings.resolvedPreferredRegions.first
                         .toUpper()))),
                 onTap: () {
                   SplitRoute.push(

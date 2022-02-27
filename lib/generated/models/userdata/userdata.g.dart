@@ -111,6 +111,8 @@ User _$UserFromJson(Map json) => $checkedCreate(
                   )),
           summons: $checkedConvert('summons',
               (v) => (v as List<dynamic>?)?.map((e) => e as String).toSet()),
+          use6thDropRate:
+              $checkedConvert('use6thDropRate', (v) => v as bool? ?? true),
         );
         return val;
       },
@@ -140,6 +142,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'mysticCodes':
           instance.mysticCodes.map((k, e) => MapEntry(k.toString(), e)),
       'summons': instance.summons.toList(),
+      'use6thDropRate': instance.use6thDropRate,
     };
 
 const _$RegionEnumMap = {

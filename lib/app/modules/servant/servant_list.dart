@@ -958,26 +958,21 @@ class ServantListPageState extends State<ServantListPage>
           //     Text(status.npLv.toString()),
           //   ],
           // ),
-          Text(status.cur.skills.join('/')),
-          // Row(
-          //   mainAxisSize: MainAxisSize.min,
-          //   children: [
-          //     // db.getIconImage('技能强化', width: 16, height: 16),
-          //     Text(status.cur.ascension.toString() + '-'),
-          //     Text(status.cur.skills.join('/')),
-          //   ],
-          // ),
+          Text(status.cur.ascension.toString() +
+              '-' +
+              status.cur.skills.join('/')),
           if (status.cur.appendSkills.any((e) => e > 0))
             Text(
                 status.cur.appendSkills.map((e) => e == 0 ? '-' : e).join('/')),
-          // TODO
           if (svt.profile!.costume.isNotEmpty)
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                db2.getIconImage(Atlas.asset('Items/23.png'),
+                db2.getIconImage(Atlas.assetItem(Items.costumeIconId),
                     width: 16, height: 16),
-                Text(status.cur.costumes.values.join('/')),
+                Text(svt.profile!.costume.values
+                    .map((e) => status.cur.costumes[e.id] ?? 0)
+                    .join('/')),
               ],
             ),
         ],

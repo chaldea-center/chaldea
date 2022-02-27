@@ -5,6 +5,12 @@ import 'dart:math';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 
+enum SvtMatCostDetailType {
+  consumed,
+  demands,
+  full,
+}
+
 class ItemCenter {
   final StreamController<ItemCenter> streamController = StreamController();
 
@@ -20,8 +26,8 @@ class ItemCenter {
 
   ItemCenter([this._user]);
 
-  final List<int> _validItems = [];
-  late final HashSet<int> _validItemSet;
+  List<int> _validItems = [];
+  late HashSet<int> _validItemSet;
   late _MatrixManager<int, int, SvtMatCostDetail<int>> _svtCur; //0->cur
   late _MatrixManager<int, int, SvtMatCostDetail<int>>
       _svtDemands; //cur->target
@@ -30,15 +36,15 @@ class ItemCenter {
 
   // statistics
   Map<int, int> _statSvtConsumed = {};
-  Map<int, int> _statSvtDemands = {};
+  Map<int, int> statSvtDemands = {};
   Map<int, int> _statSvtFull = {};
 
   Map<int, int> _statEvent = {};
   Map<int, int> _statMainStory = {};
   Map<int, int> _statTicket = {};
-  Map<int, int> _statObtain = {};
+  Map<int, int> statObtain = {};
 
-  Map<int, int> _itemLeft = {};
+  Map<int, int> itemLeft = {};
 
   void init() {
     _validItems.clear();
@@ -50,8 +56,8 @@ class ItemCenter {
     }
     _validItems.addAll(Items.specialItems);
     _validItems.addAll(Items.specialSvtMat);
+    _validItems = _validItems.toSet().toList();
     _validItemSet = HashSet.from(_validItems);
-
     // svt
     for (final svt in db2.gameData.servants.values) {
       if (svt.isUserSvt) _svtIds.add(svt.collectionNo);
@@ -74,6 +80,7 @@ class ItemCenter {
       dim2: _validItems,
       init: () => 0,
     );
+    calculate();
   }
 
   void calculate() {
@@ -86,20 +93,18 @@ class ItemCenter {
 
   void updateSvts(
       {List<Servant> svts = const [], bool all = false, bool notify = true}) {
+    for (final svt in svts) {
+      updateOneSvt(svt.collectionNo);
+    }
     if (all) {
       for (int svtId in _svtCur.dim1) {
-        updateOneSvt(svtId);
+        updateOneSvt(svtId, max: false);
+        updateOneSvt(svtId, max: true);
       }
-    } else {
-      for (final svt in svts) {
-        updateOneSvt(svt.collectionNo);
-      }
-    }
-    _updateSvtStat(_svtCur, _statSvtConsumed);
-    _updateSvtStat(_svtDemands, _statSvtDemands);
-    if (all) {
       _updateSvtStat(_svtFull, _statSvtFull);
     }
+    _updateSvtStat(_svtCur, _statSvtConsumed);
+    _updateSvtStat(_svtDemands, statSvtDemands);
     if (notify) {
       updateLeftItems();
     }
@@ -114,6 +119,7 @@ class ItemCenter {
         itemSum[itemIndex] += detail._matrix[svtIndex][itemIndex].all;
       }
     }
+    stat.addAll(Map.fromIterables(detail.dim2, itemSum));
   }
 
   void updateOneSvt(int svtId, {bool max = false}) {
@@ -127,15 +133,15 @@ class ItemCenter {
 
     for (int itemIndex = 0; itemIndex < _validItems.length; itemIndex++) {
       _svtCur._matrix[svtIndex][itemIndex].updateFrom<Map<int, int>>(
-          consumed, (part) => part[_validItems[itemIndex]] ?? 0);
+          consumed, (_, part) => part[_validItems[itemIndex]] ?? 0);
       _svtDemands._matrix[svtIndex][itemIndex].updateFrom<Map<int, int>>(
-          demands, (part) => part[_validItems[itemIndex]] ?? 0);
+          demands, (_, part) => part[_validItems[itemIndex]] ?? 0);
     }
     if (max) {
       final allDemands = calcOneSvt(svt, SvtPlan.empty, SvtPlan.max(svt));
       for (int itemIndex = 0; itemIndex < _validItems.length; itemIndex++) {
         _svtFull._matrix[svtIndex][itemIndex].updateFrom<Map<int, int>>(
-            allDemands, (part) => part[_validItems[itemIndex]] ?? 0);
+            allDemands, (_, part) => part[_validItems[itemIndex]] ?? 0);
       }
     }
   }
@@ -295,13 +301,36 @@ class ItemCenter {
   }
 
   void updateLeftItems() {
-    _itemLeft.clear();
-    _statObtain = Maths.sumDict([_statEvent, _statMainStory, _statTicket]);
-    _itemLeft
+    itemLeft.clear();
+    if (includingEvents) {
+      statObtain = Maths.sumDict([_statEvent, _statMainStory, _statTicket]);
+    } else {
+      statObtain = {};
+    }
+    itemLeft
       ..addDict(user.items)
-      ..addDict(_statObtain)
-      ..addDict(_statSvtDemands.multiple(-1));
+      ..addDict(statObtain)
+      ..addDict(statSvtDemands.multiple(-1));
     streamController.sink.add(this);
+  }
+
+  Map<int, SvtMatCostDetail<int>> getItemCostDetail(
+      int itemId, SvtMatCostDetailType type) {
+    Map<int, SvtMatCostDetail<int>> details = {};
+    final target = type == SvtMatCostDetailType.consumed
+        ? _svtCur
+        : type == SvtMatCostDetailType.demands
+            ? _svtDemands
+            : _svtFull;
+    int? itemIndex = target._dim2Map[itemId];
+    if (itemIndex == null) return details;
+    for (int i = 0; i < target.dim1.length; i++) {
+      final v = target._matrix[i][itemIndex];
+      if (v.all > 0) {
+        details[target.dim1[i]] = v.copy();
+      }
+    }
+    return details;
   }
 }
 
@@ -356,15 +385,59 @@ class SvtMatCostDetail<T> {
         special = k(),
         all = k();
 
+  SvtMatCostDetail._({
+    required this.ascension,
+    required this.activeSkill,
+    required this.appendSkill,
+    required this.costume,
+    required this.special,
+    required this.all,
+  });
+
+  // static SvtMatCostDetail<int> fromList(List<SvtMatCostDetail<int>> elements) {
+  //   return SvtMatCostDetail._(
+  //     ascension: ascension,
+  //     activeSkill: activeSkill,
+  //     appendSkill: appendSkill,
+  //     costume: costume,
+  //     special: special,
+  //     all: all,
+  //   );
+  // }
+
   List<T> get parts => [ascension, activeSkill, appendSkill, costume, special];
 
-  void updateFrom<S>(SvtMatCostDetail<S> other, T Function(S part) converter) {
-    ascension = converter(other.ascension);
-    activeSkill = converter(other.activeSkill);
-    appendSkill = converter(other.appendSkill);
-    costume = converter(other.costume);
-    special = converter(other.special);
-    all = converter(other.all);
+  void updateFrom<S>(
+      SvtMatCostDetail<S> other, T Function(T p1, S p2) converter) {
+    ascension = converter(ascension, other.ascension);
+    activeSkill = converter(activeSkill, other.activeSkill);
+    appendSkill = converter(appendSkill, other.appendSkill);
+    costume = converter(costume, other.costume);
+    special = converter(special, other.special);
+    all = converter(all, other.all);
+  }
+
+  @override
+  String toString() {
+    return '$runtimeType(\n'
+        '  ascension  : $ascension,\n'
+        '  activeSkill: $activeSkill,\n'
+        '  appendSkill: $appendSkill,\n'
+        '  costume    : $costume,\n'
+        '  special    : $special,\n'
+        '  all        : $all,\n'
+        ')';
+  }
+
+  SvtMatCostDetail<T> copy() {
+    return SvtMatCostDetail._(
+      ascension: ascension,
+      activeSkill: activeSkill,
+      appendSkill: appendSkill,
+      costume: costume,
+      special: special,
+      all: all,
+    );
   }
 }
 

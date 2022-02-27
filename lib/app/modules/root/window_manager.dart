@@ -234,7 +234,7 @@ class _WindowManagerState extends State<WindowManager> {
                 ),
                 child: ListTile(
                   dense: true,
-                  title: Text('Tab $index' + (url == null ? '' : ': $url')),
+                  title: Text('[$index] ' + (url == null ? '' : ': $url')),
                   trailing: IconButton(
                     onPressed: () {
                       if (root.appState.children.length <= 1) return;

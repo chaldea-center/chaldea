@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:chaldea/app/tools/item_center.dart';
 import 'package:chaldea/models/runtime_data.dart';
 import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/http_override.dart';
@@ -32,6 +33,7 @@ class _Database {
   GameData gameData = GameData();
   RuntimeData runtimeData = RuntimeData();
   CacheManager cacheManager = CacheManager(Config('chaldea'));
+  ItemCenter itemCenter = ItemCenter();
 
   // shortcut
   User get curUser => userData.users[userData.curUserKey];
@@ -68,14 +70,14 @@ class _Database {
     _settingNotifier.value = settings;
   }
 
-  Widget userdataBuilder(ValueWidgetBuilder<UserData> builder) {
+  Widget onUserData(ValueWidgetBuilder<UserData> builder) {
     return ValueListenableBuilder(
       valueListenable: _userNotifier,
       builder: builder,
     );
   }
 
-  Widget settingsBuilder(ValueWidgetBuilder<LocalSettings> builder) {
+  Widget onSettings(ValueWidgetBuilder<LocalSettings> builder) {
     return ValueListenableBuilder(
       valueListenable: _settingNotifier,
       builder: builder,

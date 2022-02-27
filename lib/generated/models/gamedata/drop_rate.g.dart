@@ -8,11 +8,11 @@ part of '../../../models/gamedata/drop_rate.dart';
 
 DropRateData _$DropRateDataFromJson(Map json) => DropRateData(
       newData: json['newData'] == null
-          ? const DropRateSheet()
+          ? null
           : DropRateSheet.fromJson(
               Map<String, dynamic>.from(json['newData'] as Map)),
       legacyData: json['legacyData'] == null
-          ? const DropRateSheet()
+          ? null
           : DropRateSheet.fromJson(
               Map<String, dynamic>.from(json['legacyData'] as Map)),
     );

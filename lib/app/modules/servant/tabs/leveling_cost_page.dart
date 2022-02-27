@@ -13,8 +13,7 @@ class LevelingCostPage extends StatefulWidget {
   final int curLv;
   final int targetLv;
   final String title;
-
-  // final String Function(int level)? levelFormatter;
+  final String Function(int level)? levelFormatter;
 
   const LevelingCostPage({
     Key? key,
@@ -22,7 +21,7 @@ class LevelingCostPage extends StatefulWidget {
     this.curLv = 0,
     this.targetLv = 0,
     this.title = '',
-    // this.levelFormatter,
+    this.levelFormatter,
   })  : assert(curLv <= targetLv),
         super(key: key);
 
@@ -53,7 +52,7 @@ class LevelingCostPageState extends State<LevelingCostPage> {
           shrinkWrap: true,
           children: List.generate(lvb - lva, (i) {
             return buildOneLevel(
-              lva + i,
+              '${_formatLevel(lva + i)} → ${_formatLevel(lva + i + 1)}',
               widget.costList[lva + i],
             );
           }),
@@ -76,7 +75,7 @@ class LevelingCostPageState extends State<LevelingCostPage> {
     );
   }
 
-  Widget buildOneLevel(int startLv, LvlUpMaterial? lvCost) {
+  Widget buildOneLevel(String title, LvlUpMaterial? lvCost) {
     List<Widget> items = [];
     if (lvCost != null) {
       for (final itemAmount in [
@@ -85,8 +84,7 @@ class LevelingCostPageState extends State<LevelingCostPage> {
       ]) {
         if (itemAmount.amount > 0) {
           items.add(ImageWithText(
-            image: Item.iconBuilder(
-                context: context, icon: itemAmount.item.borderedIcon),
+            image: Item.iconBuilder(context: context, item: itemAmount.item),
             width: 36,
             text: formatNumber(itemAmount.amount, compact: true),
           ));
@@ -96,7 +94,7 @@ class LevelingCostPageState extends State<LevelingCostPage> {
     return CustomTile(
       leading: SizedBox(
         width: 42,
-        child: AutoSizeText('$startLv→${startLv + 1}', maxLines: 1),
+        child: AutoSizeText(title, maxLines: 1),
       ),
       contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
       title: items.isEmpty
@@ -107,43 +105,10 @@ class LevelingCostPageState extends State<LevelingCostPage> {
               children: items,
             ),
     );
-    // return Padding(
-    //   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 3),
-    //   child: Column(
-    //     crossAxisAlignment: CrossAxisAlignment.start,
-    //     mainAxisSize: MainAxisSize.min,
-    //     children: <Widget>[
-    //       CustomTile(
-    //         title: Text(title),
-    //         subtitle: lvCost.isEmpty
-    //             ? Text(LocalizedText.of(
-    //                 chs: '不消耗素材',
-    //                 jpn: '素材消費なし',
-    //                 eng: 'No item consumption',
-    //                 kor: '소비된 소재 없음'))
-    //             : null,
-    //         contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-    //       ),
-    //       if (lvCost.isNotEmpty)
-    //         GridView.count(
-    //           crossAxisCount: 6,
-    //           childAspectRatio: 132 / 144,
-    //           shrinkWrap: true,
-    //           physics: const NeverScrollableScrollPhysics(),
-    //           children: lvCost.entries
-    //               .map((entry) => Padding(
-    //                     padding: const EdgeInsets.symmetric(
-    //                         horizontal: 2, vertical: 2),
-    //                     child: ImageWithText(
-    //                       image: Item.iconBuilder(
-    //                           context: context, itemKey: entry.key),
-    //                       text: formatNumber(entry.value, compact: true),
-    //                     ),
-    //                   ))
-    //               .toList(),
-    //         ),
-    //     ],
-    //   ),
-    // );
+  }
+
+  String _formatLevel(int lv) {
+    if (widget.levelFormatter != null) return widget.levelFormatter!(lv);
+    return lv.toString();
   }
 }

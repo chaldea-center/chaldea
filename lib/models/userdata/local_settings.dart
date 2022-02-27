@@ -34,6 +34,9 @@ class LocalSettings {
   bool onlyAppendSkillTwo;
   bool planPageFullScreen = false;
   SvtPlanInputMode svtPlanInputMode;
+  ItemDetailViewType itemDetailViewType;
+  ItemDetailSvtSort itemDetailSvtSort;
+  bool itemQuestsSortByAp;
 
   List<SvtTab> sortedSvtTabs;
   Map<int, String> priorityTags;
@@ -69,6 +72,9 @@ class LocalSettings {
     this.onlyAppendSkillTwo = true,
     this.planPageFullScreen = false,
     this.svtPlanInputMode = SvtPlanInputMode.dropdown,
+    this.itemDetailViewType = ItemDetailViewType.separated,
+    this.itemDetailSvtSort = ItemDetailSvtSort.collectionNo,
+    this.itemQuestsSortByAp = true,
     List<SvtTab?>? sortedSvtTabs,
     Map<int, String>? priorityTags,
     Map<String, bool>? galleries,
@@ -98,7 +104,9 @@ class LocalSettings {
   }
 
   List<Region> get resolvedPreferredRegions {
-    if (preferredRegions != null) return preferredRegions!;
+    if (preferredRegions != null && preferredRegions!.isNotEmpty) {
+      return preferredRegions!;
+    }
     switch (Language.getLanguage(_language)) {
       case Language.jp:
         return [Region.jp, Region.cn, Region.na, Region.tw, Region.kr];
@@ -239,3 +247,15 @@ enum SvtTab {
 }
 
 enum SvtPlanInputMode { dropdown, slider, input }
+
+enum ItemDetailViewType {
+  separated,
+  grid,
+  list,
+}
+
+enum ItemDetailSvtSort {
+  collectionNo,
+  clsName,
+  rarity,
+}

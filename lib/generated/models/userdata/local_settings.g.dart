@@ -58,6 +58,18 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
               (v) =>
                   $enumDecodeNullable(_$SvtPlanInputModeEnumMap, v) ??
                   SvtPlanInputMode.dropdown),
+          itemDetailViewType: $checkedConvert(
+              'itemDetailViewType',
+              (v) =>
+                  $enumDecodeNullable(_$ItemDetailViewTypeEnumMap, v) ??
+                  ItemDetailViewType.separated),
+          itemDetailSvtSort: $checkedConvert(
+              'itemDetailSvtSort',
+              (v) =>
+                  $enumDecodeNullable(_$ItemDetailSvtSortEnumMap, v) ??
+                  ItemDetailSvtSort.collectionNo),
+          itemQuestsSortByAp:
+              $checkedConvert('itemQuestsSortByAp', (v) => v as bool? ?? true),
           sortedSvtTabs: $checkedConvert(
               'sortedSvtTabs',
               (v) => (v as List<dynamic>?)
@@ -126,6 +138,11 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'onlyAppendSkillTwo': instance.onlyAppendSkillTwo,
       'planPageFullScreen': instance.planPageFullScreen,
       'svtPlanInputMode': _$SvtPlanInputModeEnumMap[instance.svtPlanInputMode],
+      'itemDetailViewType':
+          _$ItemDetailViewTypeEnumMap[instance.itemDetailViewType],
+      'itemDetailSvtSort':
+          _$ItemDetailSvtSortEnumMap[instance.itemDetailSvtSort],
+      'itemQuestsSortByAp': instance.itemQuestsSortByAp,
       'sortedSvtTabs':
           instance.sortedSvtTabs.map((e) => _$SvtTabEnumMap[e]).toList(),
       'priorityTags':
@@ -172,6 +189,18 @@ const _$SvtPlanInputModeEnumMap = {
   SvtPlanInputMode.dropdown: 'dropdown',
   SvtPlanInputMode.slider: 'slider',
   SvtPlanInputMode.input: 'input',
+};
+
+const _$ItemDetailViewTypeEnumMap = {
+  ItemDetailViewType.separated: 'separated',
+  ItemDetailViewType.grid: 'grid',
+  ItemDetailViewType.list: 'list',
+};
+
+const _$ItemDetailSvtSortEnumMap = {
+  ItemDetailSvtSort.collectionNo: 'collectionNo',
+  ItemDetailSvtSort.clsName: 'clsName',
+  ItemDetailSvtSort.rarity: 'rarity',
 };
 
 const _$SvtTabEnumMap = {

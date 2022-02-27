@@ -175,6 +175,12 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           },
         ),
         ListTile(
+          title: const Text('Init ItemCenter'),
+          onTap: () {
+            db2.itemCenter.init();
+          },
+        ),
+        ListTile(
           title: const Text('TestFunc'),
           onTap: () => testFunction(context),
         ),

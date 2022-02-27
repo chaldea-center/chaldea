@@ -1,6 +1,8 @@
 import 'package:chaldea/app/modules/craft_essence/craft.dart';
 import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
 import 'package:chaldea/app/modules/home/bootstrap.dart';
+import 'package:chaldea/app/modules/item/item.dart';
+import 'package:chaldea/app/modules/item/item_list.dart';
 import 'package:chaldea/app/modules/servant/servant.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +18,7 @@ class Routes {
   static const String bootstrap = '/welcome';
   static const String servants = '/servants';
   static const String servant = '/servant';
+  static String servantI(int id) => '/servant/$id';
   static const String craftEssences = '/craft-essences';
   static const String craftEssence = '/craft-essence';
   static const String commandCodes = '/command-codes';
@@ -27,6 +30,7 @@ class Routes {
   static const String event = '/event';
   static const String items = '/items';
   static const String item = '/item';
+  static String itemI(int id) => '/item/$id';
   static const String plans = '/plans';
   static const String freeCalc = '/free-calc';
   static const String masterMission = '/master-mission';
@@ -153,7 +157,9 @@ class RouteConfiguration {
       case Routes.events:
         break;
       case Routes.items:
-        break;
+        return ItemListPage();
+      case Routes.item:
+        return ItemDetailPage(itemId: _secondInt ?? 0);
       case Routes.summons:
         break;
     }

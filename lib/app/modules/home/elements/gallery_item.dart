@@ -29,6 +29,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../craft_essence/craft_list.dart';
+import '../../item/item_list.dart';
 import '../../servant/servant_list.dart';
 
 class GalleryItem {
@@ -89,34 +90,34 @@ class GalleryItem {
     isDetail: false,
   );
 
-  static List<GalleryItem> allItems = [
-    servants,
-    craftEssences,
-    // commandCode,
-    // item,
-    // event,
-    // plan,
-    // freeCalculator,
-    // masterMission,
-    // saintQuartz,
-    // mysticCode,
-    // effectSearch,
-    // costume,
-    // gacha,
-    // ffo,
-    // cvList,
-    // illustratorList,
-    // enemyList,
-    // expCard,
-    // statistics,
-    // importData,
-    // faq,
-    // if (kDebugMode) ...[lostRoom, palette],
-    // more,
-    // // unpublished
-    // _apCal,
-    // _damageCalc,
-  ];
+  static List<GalleryItem> get allItems => [
+        servants,
+        craftEssences,
+        // commandCode,
+        items,
+        // event,
+        // plan,
+        // freeCalculator,
+        // masterMission,
+        // saintQuartz,
+        // mysticCode,
+        // effectSearch,
+        // costume,
+        // gacha,
+        // ffo,
+        // cvList,
+        // illustratorList,
+        // enemyList,
+        // expCard,
+        // statistics,
+        // importData,
+        // faq,
+        // if (kDebugMode) ...[lostRoom, palette],
+        // more,
+        // // unpublished
+        // _apCal,
+        // _damageCalc,
+      ];
 
   static GalleryItem servants = GalleryItem(
     name: 'servants',
@@ -141,13 +142,13 @@ class GalleryItem {
 //   page: CmdCodeListPage(),
 //   isDetail: false,
 // );
-// static GalleryItem item = GalleryItem(
-//   name: 'item',
-//   titleBuilder: () => S.current.item_title,
-//   icon: Icons.category,
-//   page: ItemListPage(),
-//   isDetail: false,
-// );
+  static GalleryItem items = GalleryItem(
+    name: 'items',
+    titleBuilder: () => S.current.item_title,
+    icon: Icons.category,
+    page: ItemListPage(),
+    isDetail: false,
+  );
 // static GalleryItem event = GalleryItem(
 //   name: 'event',
 //   titleBuilder: () => S.current.event_title,

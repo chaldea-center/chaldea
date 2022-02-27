@@ -25,6 +25,9 @@ class Transl<K, V> {
 
   V get kr => mapping[key]?.kr ?? _default;
 
+  static bool get isJPFirst =>
+      db2.settings.resolvedPreferredRegions.first == Region.jp;
+
   V get l {
     for (final region in db2.settings.resolvedPreferredRegions) {
       final v = mapping[key]?.of(region);

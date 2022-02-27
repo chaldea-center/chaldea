@@ -5,7 +5,9 @@ import 'package:chaldea/generated/l10n.dart';
 import '../../packages/language.dart';
 import '../../utils/basic.dart';
 import '../../utils/extension.dart';
+import '../db.dart';
 import '../gamedata/servant.dart';
+import '../gamedata/wiki_data.dart';
 import '_helper.dart';
 
 part '../../generated/models/userdata/userdata.g.dart';
@@ -72,6 +74,8 @@ class User {
   Map<int, int> mysticCodes;
   Set<String> summons;
 
+  bool use6thDropRate;
+
   User({
     this.name = 'Gudako',
     this.isGirl = true,
@@ -88,6 +92,7 @@ class User {
     Map<int, CraftStatus?>? craftEssences,
     Map<int, int>? mysticCodes,
     Set<String>? summons,
+    this.use6thDropRate = true,
   })  : servants = servants ?? {},
         svtPlanGroups = svtPlanGroups ?? [],
         planNames = planNames ?? {},
@@ -111,7 +116,7 @@ class User {
 
   void ensurePlanLarger() {
     curPlan.forEach((key, plan) {
-      plan.validate(servants[key]?.cur);
+      plan.validate(servants[key]?.cur, db2.gameData.servants[key]);
     });
   }
 
@@ -193,6 +198,9 @@ class SvtStatus {
     cur.validate();
     // equipCmdCodes
   }
+
+  bool get favorite => cur.favorite;
+  set favorite(bool v) => cur.favorite = v;
 }
 
 @JsonSerializable()
@@ -214,7 +222,9 @@ class SvtPlan {
   int bondLimit;
 
   // set it later according to rarity and event svt?
-  int? npLv;
+  int? _npLv;
+  int get npLv => _npLv ?? 1;
+  set npLv(int v) => _npLv = v;
 
   SvtPlan({
     this.favorite = false,
@@ -226,13 +236,14 @@ class SvtPlan {
     this.fouHp = 0,
     this.fouAtk = 0,
     this.bondLimit = 10,
-    this.npLv,
+    int? npLv,
   })  : skills = List.generate(3, (index) => skills?.getOrNull(index) ?? 1,
             growable: false),
         costumes = costumes ?? {},
         appendSkills = List.generate(
             3, (index) => appendSkills?.getOrNull(index) ?? 0,
-            growable: false) {
+            growable: false),
+        _npLv = npLv {
     validate();
   }
 
@@ -248,7 +259,7 @@ class SvtPlan {
         fouHp = 50,
         fouAtk = 50,
         bondLimit = 15,
-        npLv = 5;
+        _npLv = 5;
   static const _grailCostByRarity = [10, 10, 10, 9, 7, 5];
 
   factory SvtPlan.fromJson(Map<String, dynamic> json) =>
@@ -256,7 +267,7 @@ class SvtPlan {
 
   Map<String, dynamic> toJson() => _$SvtPlanToJson(this);
 
-  void validate([SvtPlan? lower]) {
+  void validate([SvtPlan? lower, Servant? svt]) {
     ascension = ascension.clamp(lower?.ascension ?? 0, 4);
     for (int i = 0; i < skills.length; i++) {
       skills[i] = skills[i].clamp(lower?.skills[i] ?? 1, 10);
@@ -272,10 +283,21 @@ class SvtPlan {
         costumes[id] = (costumes[id] ?? 0).clamp(lower.costumes[id] ?? 0, 1);
       }
     }
-    grail = grail.clamp(0, 20);
+    final _grailLvs = db2.gameData.constData.svtGrailCost[svt?.rarity]?.keys;
+    grail = grail.clamp(0, _grailLvs == null ? 20 : Maths.max(_grailLvs));
     fouHp = fouHp.clamp(lower?.fouHp ?? 0, 50);
     fouAtk = fouAtk.clamp(lower?.fouAtk ?? 0, 50);
     bondLimit = bondLimit.clamp(lower?.bondLimit ?? 10, 15);
+
+    if (_npLv == null && svt != null) {
+      if (svt.rarity <= 3 ||
+          svt.extra.obtains.contains(SvtObtain.eventReward)) {
+        _npLv = 5;
+      }
+    }
+    if (_npLv != null) {
+      _npLv = _npLv!.clamp(lower?.npLv ?? 1, 5);
+    }
   }
 
   void reset() {

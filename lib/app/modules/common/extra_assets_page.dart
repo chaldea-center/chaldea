@@ -41,8 +41,12 @@ class ExtraAssetsPage extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               shrinkWrap: true,
               itemCount: urls.length,
-              itemBuilder: (context, index) =>
-                  CachedImage(imageUrl: urls[index]),
+              itemBuilder: (context, index) => CachedImage(
+                imageUrl: urls[index],
+                onTap: () {
+                  FullscreenImageViewer.show(context: context, urls: urls);
+                },
+              ),
               separatorBuilder: (context, index) => const SizedBox(width: 8),
             ),
           ),

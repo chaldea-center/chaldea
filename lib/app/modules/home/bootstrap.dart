@@ -50,10 +50,11 @@ class _BootstrapPageState extends State<BootstrapPage>
             if (mounted) setState(() {});
           },
         );
+        db2.itemCenter.init();
         onDataReady(true);
       }
-    } catch (e) {
-      //
+    } catch (e, s) {
+      logger.e('init data error', e, s);
     } finally {
       if (mounted) setState(() {});
     }
@@ -331,6 +332,7 @@ class _BootstrapPageState extends State<BootstrapPage>
   }
 
   void onDataReady(bool needCheckUpdate) async {
+    print('onDataReady: $needCheckUpdate');
     rootRouter.appState.dataReady = true;
     if (needCheckUpdate && network.available) {
       await Future.delayed(const Duration(seconds: 3));
@@ -479,6 +481,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                   },
                 );
                 db2.gameData = gamedata;
+                db2.itemCenter.init();
                 success = true;
               } catch (e, s) {
                 logger.e('download gamedata error', e, s);

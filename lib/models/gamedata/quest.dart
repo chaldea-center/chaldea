@@ -5,6 +5,7 @@ import 'item.dart';
 import 'script.dart';
 import 'servant.dart';
 import 'skill.dart';
+import 'wiki_data.dart';
 
 part '../../generated/models/gamedata/quest.g.dart';
 
@@ -51,6 +52,7 @@ class Quest {
   QuestAfterClearType afterClear;
   String recommendLv;
   int spotId;
+  String spotName;
   int warId;
   String warLongName;
   int chapterId;
@@ -76,6 +78,7 @@ class Quest {
     required this.afterClear,
     required this.recommendLv,
     required this.spotId,
+    required this.spotName,
     required this.warId,
     this.warLongName = '',
     this.chapterId = 0,
@@ -93,56 +96,23 @@ class Quest {
   });
 
   factory Quest.fromJson(Map<String, dynamic> json) => _$QuestFromJson(json);
+
+  Transl<String, String> get lName => Transl.questNames(name);
+  Transl<String, String> get lSpot => Transl.spotNames(spotName);
+
+  String get dispName {
+    // 群島-10308, 裏山-20314
+    if (type == QuestType.free) {
+      return const [10308, 20314].contains(spotId)
+          ? '${lSpot.l}(${lName.l})'
+          : lSpot.l;
+    }
+    return lName.l;
+  }
 }
 
 @JsonSerializable()
-class QuestPhase implements Quest {
-  @override
-  int id;
-  @override
-  String name;
-  @override
-  QuestType type;
-  @override
-  ConsumeType consumeType;
-  @override
-  int consume;
-  @override
-  List<ItemAmount> consumeItem;
-  @override
-  QuestAfterClearType afterClear;
-  @override
-  String recommendLv;
-  @override
-  int spotId;
-  @override
-  int warId;
-  @override
-  String warLongName;
-  @override
-  int chapterId;
-  @override
-  int chapterSubId;
-  @override
-  String chapterSubStr;
-  @override
-  List<Gift> gifts;
-  @override
-  List<QuestRelease> releaseConditions;
-  @override
-  List<int> phases;
-  @override
-  List<int> phasesWithEnemies;
-  @override
-  List<int> phasesNoBattle;
-  @override
-  List<QuestPhaseScript> phaseScripts;
-  @override
-  int noticeAt;
-  @override
-  int openedAt;
-  @override
-  int closedAt;
+class QuestPhase extends Quest {
   int phase;
   List<SvtClass> className;
   List<NiceTrait> individuality;
@@ -158,29 +128,30 @@ class QuestPhase implements Quest {
   List<EnemyDrop> drops;
 
   QuestPhase({
-    required this.id,
-    required this.name,
-    required this.type,
-    this.consumeType = ConsumeType.ap,
-    required this.consume,
-    this.consumeItem = const [],
-    required this.afterClear,
-    required this.recommendLv,
-    required this.spotId,
-    required this.warId,
-    this.warLongName = '',
-    this.chapterId = 0,
-    this.chapterSubId = 0,
-    this.chapterSubStr = "",
-    this.gifts = const [],
-    this.releaseConditions = const [],
-    required this.phases,
-    this.phasesWithEnemies = const [],
-    this.phasesNoBattle = const [],
-    this.phaseScripts = const [],
-    required this.noticeAt,
-    required this.openedAt,
-    required this.closedAt,
+    required int id,
+    required String name,
+    required QuestType type,
+    ConsumeType consumeType = ConsumeType.ap,
+    required int consume,
+    List<ItemAmount> consumeItem = const [],
+    required QuestAfterClearType afterClear,
+    required String recommendLv,
+    required int spotId,
+    required String spotName,
+    required int warId,
+    String warLongName = '',
+    int chapterId = 0,
+    int chapterSubId = 0,
+    String chapterSubStr = "",
+    List<Gift> gifts = const [],
+    List<QuestRelease> releaseConditions = const [],
+    required List<int> phases,
+    List<int> phasesWithEnemies = const [],
+    List<int> phasesNoBattle = const [],
+    List<QuestPhaseScript> phaseScripts = const [],
+    required int noticeAt,
+    required int openedAt,
+    required int closedAt,
     required this.phase,
     this.className = const [],
     this.individuality = const [],
@@ -194,7 +165,32 @@ class QuestPhase implements Quest {
     this.supportServants = const [],
     this.stages = const [],
     this.drops = const [],
-  });
+  }) : super(
+          id: id,
+          name: name,
+          type: type,
+          consumeType: consumeType,
+          consume: consume,
+          consumeItem: consumeItem,
+          afterClear: afterClear,
+          recommendLv: recommendLv,
+          spotId: spotId,
+          spotName: spotName,
+          warId: warId,
+          warLongName: warLongName,
+          chapterId: chapterId,
+          chapterSubId: chapterSubId,
+          chapterSubStr: chapterSubStr,
+          gifts: gifts,
+          releaseConditions: releaseConditions,
+          phases: phases,
+          phasesWithEnemies: phasesWithEnemies,
+          phasesNoBattle: phasesNoBattle,
+          phaseScripts: phaseScripts,
+          noticeAt: noticeAt,
+          openedAt: openedAt,
+          closedAt: closedAt,
+        );
 
   int get key => id * 10 + phase;
 

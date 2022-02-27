@@ -55,7 +55,7 @@ class GameData {
   WikiData wikiData;
   MappingData mappingData;
   ConstGameData constData;
-  DropRateData dropRateData;
+  DropRateData dropRate;
   Map<int, BaseSkill> baseSkills;
   Map<int, BaseFunction> baseFunctions;
 
@@ -77,7 +77,7 @@ class GameData {
     WikiData? wikiData,
     MappingData? mappingData,
     ConstGameData? constData,
-    DropRateData? dropRateData,
+    DropRateData? dropRate,
     Map<int, BaseSkill>? baseSkills,
     Map<int, BaseFunction>? baseFunctions,
   })  : version = version ?? DataVersion(),
@@ -97,7 +97,7 @@ class GameData {
         wikiData = wikiData ?? WikiData(),
         mappingData = mappingData ?? MappingData(),
         constData = constData ?? ConstGameData.empty(),
-        dropRateData = dropRateData ?? DropRateData(),
+        dropRate = dropRate ?? DropRateData(),
         baseSkills = baseSkills ?? {},
         baseFunctions = baseFunctions ?? {} {
     preprocess();

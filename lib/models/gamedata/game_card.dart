@@ -1,3 +1,4 @@
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -62,6 +63,21 @@ mixin GameCardMixin {
     bool jumpToDetail = true,
     bool popDetail = false,
   }) {
+    if (onTap == null && jumpToDetail) {
+      if (this is Servant) {
+        final instance = this as Servant;
+        onTap = () => router.push(
+            url: instance.route, child: ServantDetailPage(svt: instance));
+      } else if (this is CraftEssence) {
+        final instance = this as CraftEssence;
+        onTap = () => router.push(
+            url: instance.route, child: CraftDetailPage(ce: instance));
+      } else if (this is CommandCode) {
+        // final instance = this as CommandCode;
+        // onTap = () => router.push(
+        //     url: instance.route, child: CraftDetailPage(ce: instance));
+      }
+    }
     return cardIconBuilder(
       context: context,
       icon: borderedIcon,

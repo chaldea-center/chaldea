@@ -1,9 +1,12 @@
 import 'package:chaldea/models/db.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../app/app.dart';
 import 'common.dart';
 import 'game_card.dart';
+import 'wiki_data.dart';
 
 part '../../generated/models/gamedata/item.g.dart';
 
@@ -50,18 +53,22 @@ class Item {
   }
 
   SkillUpItemType get skillUpItemType {
-    if (type != ItemType.skillLvUp) return SkillUpItemType.none;
+    // if (type == ItemType.tdLvUp) return SkillUpItemType.ascension;
+    // if (type != ItemType.skillLvUp) return SkillUpItemType.none;
     if (id >= 6000 && id < 6300) return SkillUpItemType.skill;
     if (id >= 6500 && id < 7000) return SkillUpItemType.normal;
     if (id >= 7000 && id < 7200) return SkillUpItemType.ascension;
-    if (id >= 94000000 && id < 94100000) return SkillUpItemType.event;
+    if (type == ItemType.eventItem && uses.contains(ItemUse.ascension)) {
+      return SkillUpItemType.event;
+    }
     if (Items.specialItems.contains(id)) return SkillUpItemType.special;
     return SkillUpItemType.none;
   }
 
   static Widget iconBuilder({
     required BuildContext context,
-    required String? icon,
+    required Item? item,
+    String? icon,
     double? width,
     double? height,
     double? aspectRatio = 132 / 144,
@@ -72,15 +79,14 @@ class Item {
     bool jumpToDetail = true,
     bool popDetail = false,
   }) {
-    if (onTap == null && jumpToDetail) {
-      // onTap = () {
-      //   SplitRoute.push(context, ItemDetailPage(itemKey: itemKey),
-      //       popDetail: popDetail);
-      // };
+    if (onTap == null && jumpToDetail && item != null) {
+      onTap = () {
+        router.push(url: Routes.itemI(item.id), popDetail: popDetail);
+      };
     }
     return GameCardMixin.cardIconBuilder(
       context: context,
-      icon: icon,
+      icon: item?.borderedIcon ?? icon,
       width: width,
       height: height,
       aspectRatio: aspectRatio,
@@ -89,6 +95,29 @@ class Item {
       textPadding: textPadding,
       onTap: onTap,
     );
+  }
+
+  Transl<String, String> get lName => Transl.itemNames(name);
+
+  // include special items(entity)
+  static String getName(int id) {
+    return db2.gameData.items[id]?.lName.l ??
+        db2.gameData.entities[id]?.lName.l ??
+        id.toString();
+  }
+
+  static String? getIcon(int id) {
+    return db2.gameData.items[id]?.borderedIcon ??
+        db2.gameData.entities[id]?.face;
+  }
+
+  static Map<int, int> sortMapByPriority(Map<int, int> items) {
+    return {
+      for (final k
+          in items.keys.toList()
+            ..sort2((e) => db2.gameData.items[e]?.priority ?? e))
+        if (items[k]! > 0) k: items[k]!
+    };
   }
 }
 
@@ -109,6 +138,9 @@ class Items {
   static int grailFragId = 7998;
   static int grailId = 7999;
   static int lanternId = 1000;
+  // not item, icon only
+  static int costumeIconId = 23;
+  static int npRankUpIconId = 8;
 
   static Item get qp => _items[qpId]!;
 

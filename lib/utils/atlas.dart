@@ -19,6 +19,10 @@ class Atlas {
     return '$appHost${region.toUpper()}/servant/$id';
   }
 
+  static String assetItem(int id, [Region region = Region.jp]) {
+    return '$assetHost${region.toUpper()}/Items/$id.png';
+  }
+
   static String dbAsset(String path) {
     if (path.startsWith('/')) {
       path = path.substring(1);
