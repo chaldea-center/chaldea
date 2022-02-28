@@ -71,7 +71,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
       return NotRoundPage(
           url: Routes.servant + '/${widget.svt?.id ?? widget.id}');
     }
-    builders = db2.settings.sortedSvtTabs
+    builders = db2.settings.display.sortedSvtTabs
         .map((e) => _getBuilder(e))
         .whereType<_SubTabInfo>()
         .toList();
@@ -88,7 +88,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
             actions: <Widget>[
               if (svt.isUserSvt)
                 db2.onUserData(
-                  (context, _, __) => IconButton(
+                  (context, _) => IconButton(
                     icon: status.favorite
                         ? const Icon(Icons.favorite, color: Colors.redAccent)
                         : const Icon(Icons.favorite_border),
@@ -173,7 +173,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
           tab: tab,
           tabBuilder: () => S.current.plan,
           viewBuilder: (ctx) =>
-              db2.onUserData((context, _, __) => SvtPlanTab(svt: svt)),
+              db2.onUserData((context, _) => SvtPlanTab(svt: svt)),
         );
       case SvtTab.skill:
         if (svt.skills.isEmpty) return null;
@@ -322,8 +322,9 @@ class ServantDetailPageState extends State<ServantDetailPage>
             child: Text(S.current.svt_switch_slider_dropdown),
             value: 'switch_slider_dropdown',
             onTap: () {
-              db2.settings.svtPlanInputMode = EnumUtil.next(
-                  SvtPlanInputMode.values, db2.settings.svtPlanInputMode);
+              db2.settings.display.svtPlanInputMode = EnumUtil.next(
+                  SvtPlanInputMode.values,
+                  db2.settings.display.svtPlanInputMode);
               setState(() {});
             },
           ),
@@ -421,7 +422,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
           ],
         ),
         trailing: db2.onUserData(
-          (context, _, __) => Tooltip(
+          (context, _) => Tooltip(
             message: S.of(context).priority,
             child: DropdownButton<int>(
               value: status.priority,

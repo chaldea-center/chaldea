@@ -1,5 +1,5 @@
+import 'package:chaldea/components/components.dart';
 import 'package:chaldea/models/userdata/userdata.dart';
-import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../db.dart';
@@ -520,20 +520,57 @@ class EventExtra {
 
 @JsonSerializable()
 class ExchangeTicket {
-  final int key;
+  final int id;
   final int year;
   final int month;
   final List<int> items;
+  @protected
+  int? key;
 
   ExchangeTicket({
-    required this.key,
+    int? key,
+    int? id,
     required this.year,
     required this.month,
     required this.items,
-  });
+  }) : id = id ?? key!;
 
   factory ExchangeTicket.fromJson(Map<String, dynamic> json) =>
       _$ExchangeTicketFromJson(json);
+
+  int get monthDiff {
+    switch (db2.curUser.region) {
+      case Region.jp:
+        return 0;
+      case Region.cn:
+        return 15;
+      case Region.tw:
+        return 24;
+      case Region.na:
+      case Region.kr:
+        return 24;
+    }
+  }
+
+  bool isOutdated() {
+    final now = DateTime.now();
+    return year * 12 + month + monthDiff + 4 < now.year * 12 + now.month;
+  }
+
+  DateTime get date {
+    final diff = monthDiff;
+    return DateTime(year, month + diff);
+  }
+
+  int get days {
+    final d = date;
+    return DateUtils.getDaysInMonth(d.year, d.month);
+  }
+
+  String get dateStr {
+    final d = date;
+    return '${d.year}-${d.month}';
+  }
 }
 
 @JsonSerializable()

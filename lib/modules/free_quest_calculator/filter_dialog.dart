@@ -14,7 +14,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
   @override
   Widget build(BuildContext context) {
     final params = widget.params;
-    params.minCost = Maths.fixValidRange(params.minCost, 0, 19);
+    params.minCost = params.minCost.clamp2(0, 19);
     if (!params.dropRatesData.freeCounts.values.contains(params.maxColNum)) {
       params.maxColNum = -1;
     }

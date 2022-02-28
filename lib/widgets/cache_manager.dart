@@ -12,8 +12,6 @@ class MyCacheManager extends CacheManager with ImageCacheManager {
     return _instances[cacheKey] ??= MyCacheManager._(Config(cacheKey), delay);
   }
 
-  final List _pending = [];
-
   @override
   Future<FileInfo?> getFileFromCache(String key,
       {bool ignoreMemCache = false}) async {

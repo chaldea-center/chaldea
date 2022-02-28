@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
-import 'package:chaldea/components/utils.dart' show formatNumber;
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/atlas.dart';
@@ -52,7 +51,8 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
 
   @override
   Widget build(BuildContext context) {
-    final sliderMode = db2.settings.svtPlanInputMode == SvtPlanInputMode.slider;
+    final sliderMode =
+        db2.settings.display.svtPlanInputMode == SvtPlanInputMode.slider;
     if (svt.skills.isEmpty) {
       return Center(child: Text('${svt.lName.l} has no skills'));
     }

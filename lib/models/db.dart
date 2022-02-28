@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -47,14 +48,19 @@ class _Database {
   factory _Database() => _instance;
 
   _Database._internal() {
-    _userNotifier = ValueNotifier(userData);
-    _settingNotifier = ValueNotifier(settings);
+    _userNotifier = StreamController.broadcast();
+    _settingNotifier = StreamController.broadcast();
     // _gameNotifier = ValueNotifier(gameData);
   }
 
+  void dispose() {
+    _userNotifier.close();
+    _settingNotifier.close();
+  }
+
   // listenable
-  late final ValueNotifier<UserData> _userNotifier;
-  late final ValueNotifier<LocalSettings> _settingNotifier;
+  late final StreamController<UserData> _userNotifier;
+  late final StreamController<LocalSettings> _settingNotifier;
 
   // late final ValueNotifier<GameData> _gameNotifier;
 
@@ -63,23 +69,27 @@ class _Database {
   }
 
   void notifyUserdata() {
-    _userNotifier.value = userData;
+    print('notifyUserdata');
+    _userNotifier.sink.add(userData);
   }
 
   void notifySettings() {
-    _settingNotifier.value = settings;
+    print('notifySettings');
+    _settingNotifier.sink.add(settings);
   }
 
-  Widget onUserData(ValueWidgetBuilder<UserData> builder) {
-    return ValueListenableBuilder(
-      valueListenable: _userNotifier,
+  Widget onUserData(AsyncWidgetBuilder<UserData> builder) {
+    return StreamBuilder(
+      initialData: userData,
+      stream: _userNotifier.stream,
       builder: builder,
     );
   }
 
-  Widget onSettings(ValueWidgetBuilder<LocalSettings> builder) {
-    return ValueListenableBuilder(
-      valueListenable: _settingNotifier,
+  Widget onSettings(AsyncWidgetBuilder<LocalSettings> builder) {
+    return StreamBuilder(
+      initialData: settings,
+      stream: _settingNotifier.stream,
       builder: builder,
     );
   }

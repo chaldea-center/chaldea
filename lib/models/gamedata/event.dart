@@ -2,10 +2,8 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'common.dart';
+import '../userdata/userdata.dart';
 import 'gamedata.dart';
-import 'item.dart';
-import 'quest.dart';
 
 part '../../generated/models/gamedata/event.g.dart';
 
@@ -468,7 +466,7 @@ class Event {
   int materialOpenedAt;
   List<int> warIds;
   List<NiceShop> shop;
-  List<EventReward> rewards;
+  List<EventReward> rewards; // point rewards
   List<EventPointGroup> pointGroups;
   List<EventPointBuff> pointBuffs;
   List<EventMission> missions;
@@ -506,6 +504,19 @@ class Event {
 
   EventExtra get extra => db2.gameData.wikiData.events
       .putIfAbsent(id, () => EventExtra(id: id, name: name));
+
+  bool isOutdated([Duration diff = const Duration(days: 32)]) {
+    if (db2.curUser.region == Region.jp) {
+      return DateTime.now().difference(startedAt.sec2date()) >
+          const Duration(days: 31 * 4);
+    }
+    final t = db2.curUser.region == Region.jp
+        ? endedAt
+        : extra.endTime.of(db2.curUser.region);
+    return t != null && t.sec2date().isBefore(DateTime.now().subtract(diff));
+  }
+
+  Transl<String, String> get lName => Transl.eventNames(name);
 
   // statistics
   @JsonKey(ignore: true)

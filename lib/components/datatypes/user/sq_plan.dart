@@ -47,8 +47,8 @@ class SaintQuartzPlan {
   }
 
   void validate() {
-    continuousLogin = Maths.fixValidRange(continuousLogin, 1, 7);
-    eventDateDelta = Maths.fixValidRange(eventDateDelta, 0);
+    continuousLogin = continuousLogin.clamp2(1, 7);
+    eventDateDelta = eventDateDelta.clamp2(0);
     if (!endDate.isAfter(startDate)) {
       endDate = DateUtils.addDaysToDate(startDate, 365);
     }
@@ -201,7 +201,7 @@ class SQDayDetail {
     this.accApple = 0,
     List<EventBase>? events,
     List<Summon>? summons,
-  })  : continuousLogin = Maths.fixValidRange(continuousLogin, 1, 7),
+  })  : continuousLogin = continuousLogin.clamp2(1, 7),
         events = events ?? [],
         summons = summons ?? [];
 }

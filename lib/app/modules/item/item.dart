@@ -82,13 +82,13 @@ class _ItemDetailPageState extends State<ItemDetailPage>
       body: TabBarView(
         controller: _tabController,
         children: <Widget>[
-          db2.onUserData((context, _, __) => ItemCostSvtDetailTab(
+          db2.onUserData((context, _) => ItemCostSvtDetailTab(
                 itemId: widget.itemId,
                 matType: favorite
                     ? SvtMatCostDetailType.demands
                     : SvtMatCostDetailType.full,
               )),
-          db2.onUserData((context, _, __) => ItemCostSvtDetailTab(
+          db2.onUserData((context, _) => ItemCostSvtDetailTab(
                 itemId: widget.itemId,
                 matType: SvtMatCostDetailType.consumed,
               )),
@@ -123,8 +123,9 @@ class _ItemDetailPageState extends State<ItemDetailPage>
       tooltip: S.of(context).filter_shown_type,
       onPressed: () {
         setState(() {
-          db2.settings.itemDetailViewType = EnumUtil.next(
-              ItemDetailViewType.values, db2.settings.itemDetailViewType);
+          db2.settings.display.itemDetailViewType = EnumUtil.next(
+              ItemDetailViewType.values,
+              db2.settings.display.itemDetailViewType);
         });
       },
     );
@@ -133,13 +134,13 @@ class _ItemDetailPageState extends State<ItemDetailPage>
   Widget get sortButton {
     return IconButton(
       icon: const Icon(Icons.sort),
-      tooltip: _getSortTypeText(db2.settings.itemDetailSvtSort),
+      tooltip: _getSortTypeText(db2.settings.display.itemDetailSvtSort),
       onPressed: () {
         setState(() {
-          db2.settings.itemDetailSvtSort = EnumUtil.next(
-              ItemDetailSvtSort.values, db2.settings.itemDetailSvtSort);
+          db2.settings.display.itemDetailSvtSort = EnumUtil.next(
+              ItemDetailSvtSort.values, db2.settings.display.itemDetailSvtSort);
           EasyLoading.showToast(
-              _getSortTypeText(db2.settings.itemDetailSvtSort));
+              _getSortTypeText(db2.settings.display.itemDetailSvtSort));
         });
       },
     );

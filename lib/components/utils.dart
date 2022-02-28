@@ -9,9 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:intl/intl.dart';
 import 'package:kana_kit/kana_kit.dart';
 import 'package:lpinyin/lpinyin.dart';
 
@@ -20,52 +18,6 @@ import 'constants.dart';
 
 /// Math related
 ///
-
-/// Format number
-///
-/// If [compact] is true, other parameters are not used.
-String formatNumber(num? number,
-    {bool compact = false,
-    bool percent = false,
-    bool omit = true,
-    int precision = 3,
-    String? groupSeparator = ',',
-    num? minVal}) {
-  assert(!compact || !percent);
-  if (number == null || (minVal != null && number.abs() < minVal.abs())) {
-    return number.toString();
-  }
-
-  if (compact) {
-    return NumberFormat.compact(locale: 'en').format(number);
-  }
-
-  final pattern = [
-    if (groupSeparator != null) '###' + groupSeparator,
-    '###',
-    if (precision > 0) '.' + (omit ? '#' : '0') * precision,
-    if (percent) '%'
-  ].join();
-  return NumberFormat(pattern).format(number);
-}
-
-class NumberInputFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    if (newValue.selection.baseOffset == 0) {
-      return newValue;
-    }
-    int? value = int.tryParse(newValue.text);
-    if (value == null) {
-      return newValue;
-    }
-    String newText = formatNumber(value);
-    return newValue.copyWith(
-        text: newText,
-        selection: TextSelection.collapsed(offset: newText.length));
-  }
-}
 
 dynamic deepCopy(dynamic obj) {
   return jsonDecode(jsonEncode(obj));

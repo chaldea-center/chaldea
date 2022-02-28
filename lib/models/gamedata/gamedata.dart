@@ -104,6 +104,11 @@ class GameData {
   }
 
   @JsonKey(ignore: true)
+  late Map<int, NiceWar> mainStories;
+  @JsonKey(ignore: true)
+  late Map<int, Quest> quests;
+
+  @JsonKey(ignore: true)
   late Map<int, Servant> servantsById;
   @JsonKey(ignore: true)
   late Map<int, CraftEssence> craftEssencesById;
@@ -111,6 +116,15 @@ class GameData {
   late Map<int, CommandCode> commandCodesById;
 
   void preprocess() {
+    mainStories = {
+      for (final war in wars.values)
+        if (war.isMainStory) war.id: war
+    };
+    quests = {
+      for (final war in wars.values)
+        for (final spot in war.spots)
+          for (final quest in spot.quests) quest.id: quest
+    };
     servantsById = servants.map((key, value) => MapEntry(value.id, value));
     craftEssencesById =
         craftEssences.map((key, value) => MapEntry(value.id, value));

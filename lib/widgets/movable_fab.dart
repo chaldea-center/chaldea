@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../utils/basic.dart';
-
 class MovableFab extends StatefulWidget {
   final Widget icon;
   final double initialX;
@@ -101,8 +99,7 @@ class _MovableFabState extends State<MovableFab> {
 
   Offset limitOffset([Offset delta = Offset.zero]) {
     _offset = _offset + delta;
-    return _offset = Offset(
-        Maths.fixValidRange(_offset.dx, rect.left, rect.right),
-        Maths.fixValidRange(_offset.dy, rect.top, rect.bottom));
+    return _offset = Offset(_offset.dx.clamp(rect.left, rect.right),
+        _offset.dy.clamp(rect.top, rect.bottom));
   }
 }

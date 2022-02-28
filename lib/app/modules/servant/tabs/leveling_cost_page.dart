@@ -6,8 +6,6 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/custom_tile.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../components/utils.dart';
-
 class LevelingCostPage extends StatefulWidget {
   final Map<int, LvlUpMaterial> costList;
   final int curLv;

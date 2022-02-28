@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:chaldea/components/utils.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
@@ -350,7 +349,7 @@ class _ItemListTabState extends State<ItemListTab> {
 
   void setAll999() {
     SimpleCancelOkDialog(
-      content: Text('Set All 999'),
+      content: const Text('Set All 999'),
       onTapOk: () {
         _shownGroups.forEach((group) {
           if (group.data != Items.qpId) {

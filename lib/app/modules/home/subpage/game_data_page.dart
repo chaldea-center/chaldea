@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:chaldea/components/localized/localized_base.dart';
-import 'package:chaldea/components/wiki_util.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/modules/extras/icon_cache_manager.dart';
@@ -153,7 +152,6 @@ class _GameDataPageState extends State<GameDataPage> {
 
   Future<void> clearCache() async {
     await DefaultCacheManager().emptyCache();
-    await WikiUtil.clear();
     if (!kIsWeb) {
       Directory(db2.paths.tempDir)
         ..deleteSync(recursive: true)

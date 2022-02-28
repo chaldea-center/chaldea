@@ -12,7 +12,7 @@ class SvtTabsSortingSetting extends StatefulWidget {
 }
 
 class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
-  List<SvtTab> get tabs => db2.settings.sortedSvtTabs;
+  List<SvtTab> get tabs => db2.settings.display.sortedSvtTabs;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    db2.settings.sortedSvtTabs = List.of(SvtTab.values);
+                    db2.settings.display.sortedSvtTabs = List.of(SvtTab.values);
                   });
                 },
                 child: Text(S.current.reset),

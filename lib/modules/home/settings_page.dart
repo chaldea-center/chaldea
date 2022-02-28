@@ -349,8 +349,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ?.millisecondsSinceEpoch ??
           -1;
     } else {
-      db.curUser.msProgress =
-          Maths.fixValidRange(db.curUser.msProgress, -4, -1);
+      db.curUser.msProgress = db.curUser.msProgress.clamp2(-4, -1);
     }
     Widget _wrapText(String text) => Text(
           text,

@@ -44,7 +44,7 @@ class UserData {
     if (users.isEmpty) {
       users.add(User());
     }
-    curUserKey = Maths.fixValidRange(curUserKey, 0, users.length - 1);
+    curUserKey = curUserKey.clamp2(0, users.length - 1);
     for (final user in users) {
       user.validate();
     }
@@ -141,8 +141,7 @@ class User {
     if (svtPlanGroups.isEmpty) {
       svtPlanGroups.add(<int, SvtPlan>{});
     }
-    curSvtPlanNo =
-        Maths.fixValidRange(curSvtPlanNo, 0, svtPlanGroups.length - 1);
+    curSvtPlanNo = curSvtPlanNo.clamp2(0, svtPlanGroups.length - 1);
     servants.values.forEach((e) => e.validate());
     for (final status in servants.values) {
       status.validate();
@@ -191,10 +190,10 @@ class SvtStatus {
   Map<String, dynamic> toJson() => _$SvtStatusToJson(this);
 
   void validate() {
-    bond = Maths.fixValidRange(bond, 0, 15);
-    coin = Maths.fixValidRange(coin, 0);
-    priority = Maths.fixValidRange(priority, 1, 5);
-    cur.bondLimit = Maths.fixValidRange(cur.bondLimit, bond, 15);
+    bond = bond.clamp2(0, 15);
+    coin = coin.clamp2(0);
+    priority = priority.clamp2(1, 5);
+    cur.bondLimit = cur.bondLimit.clamp2(bond, 15);
     cur.validate();
     // equipCmdCodes
   }
@@ -268,26 +267,26 @@ class SvtPlan {
   Map<String, dynamic> toJson() => _$SvtPlanToJson(this);
 
   void validate([SvtPlan? lower, Servant? svt]) {
-    ascension = ascension.clamp(lower?.ascension ?? 0, 4);
+    ascension = ascension.clamp2(lower?.ascension ?? 0, 4);
     for (int i = 0; i < skills.length; i++) {
-      skills[i] = skills[i].clamp(lower?.skills[i] ?? 1, 10);
+      skills[i] = skills[i].clamp2(lower?.skills[i] ?? 1, 10);
     }
     for (int i = 0; i < appendSkills.length; i++) {
-      appendSkills[i] = appendSkills[i].clamp(lower?.appendSkills[i] ?? 0, 10);
+      appendSkills[i] = appendSkills[i].clamp2(lower?.appendSkills[i] ?? 0, 10);
     }
     for (final id in costumes.keys.toList()) {
       costumes[id] = costumes[id] == 0 ? 0 : 1;
     }
     if (lower != null) {
       for (final id in lower.costumes.keys.toList()) {
-        costumes[id] = (costumes[id] ?? 0).clamp(lower.costumes[id] ?? 0, 1);
+        costumes[id] = (costumes[id] ?? 0).clamp2(lower.costumes[id] ?? 0, 1);
       }
     }
     final _grailLvs = db2.gameData.constData.svtGrailCost[svt?.rarity]?.keys;
-    grail = grail.clamp(0, _grailLvs == null ? 20 : Maths.max(_grailLvs));
-    fouHp = fouHp.clamp(lower?.fouHp ?? 0, 50);
-    fouAtk = fouAtk.clamp(lower?.fouAtk ?? 0, 50);
-    bondLimit = bondLimit.clamp(lower?.bondLimit ?? 10, 15);
+    grail = grail.clamp2(0, _grailLvs == null ? 20 : Maths.max(_grailLvs));
+    fouHp = fouHp.clamp2(lower?.fouHp ?? 0, 50);
+    fouAtk = fouAtk.clamp2(lower?.fouAtk ?? 0, 50);
+    bondLimit = bondLimit.clamp2(lower?.bondLimit ?? 10, 15);
 
     if (_npLv == null && svt != null) {
       if (svt.rarity <= 3 ||
@@ -296,7 +295,7 @@ class SvtPlan {
       }
     }
     if (_npLv != null) {
-      _npLv = _npLv!.clamp(lower?.npLv ?? 1, 5);
+      _npLv = _npLv!.clamp2(lower?.npLv ?? 1, 5);
     }
   }
 
@@ -325,7 +324,7 @@ class SvtPlan {
 
 @JsonSerializable()
 class EventPlan {
-  bool planned;
+  bool enabled;
 
   bool shop;
   Set<int> shopExcludeItem;
@@ -341,7 +340,7 @@ class EventPlan {
   Map<int, Map<int, int>> extraItems;
 
   EventPlan({
-    this.planned = false,
+    this.enabled = false,
     this.shop = true,
     Set<int>? shopExcludeItem,
     this.point = true,
@@ -365,7 +364,7 @@ class EventPlan {
   Map<String, dynamic> toJson() => _$EventPlanToJson(this);
 
   void reset() {
-    planned = false;
+    enabled = false;
     shop = true;
     shopExcludeItem.clear();
     point = true;
@@ -380,7 +379,7 @@ class EventPlan {
   }
 
   void planAll() {
-    planned = true;
+    enabled = true;
     shop = true;
     // shopExcludeItem.clear();
     point = true;
@@ -410,7 +409,7 @@ class MainStoryPlan {
 
   Map<String, dynamic> toJson() => _$MainStoryPlanToJson(this);
 
-  bool get planned => fixedDrop || questReward;
+  bool get enabled => fixedDrop || questReward;
 }
 
 @JsonSerializable()
@@ -426,7 +425,7 @@ class ExchangeTicketPlan {
 
   Map<String, dynamic> toJson() => _$ExchangeTicketPlanToJson(this);
 
-  bool get planned => counts.any((e) => e > 0);
+  bool get enabled => counts.any((e) => e > 0);
 }
 
 enum Region {

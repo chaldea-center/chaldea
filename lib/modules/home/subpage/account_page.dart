@@ -144,7 +144,7 @@ class _AccountPageState extends State<AccountPage> {
     final keys = db.userData.users.keys.toList();
     int curIndex = keys.indexOf(key);
     int nextIndex = curIndex + dx;
-    nextIndex = Maths.fixValidRange(nextIndex, 0, keys.length - 1);
+    nextIndex = nextIndex.clamp2(0, keys.length - 1);
     keys.insert(nextIndex, keys.removeAt(curIndex));
     db.userData.users =
         Map.fromIterable(keys, value: (k) => db.userData.users[k]!);

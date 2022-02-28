@@ -226,15 +226,15 @@ class ServantListPageState extends State<ServantListPage>
                 PopupMenuItem(
                   child: Text(
                     'Only change Append 2',
-                    style: db2.settings.onlyAppendSkillTwo
+                    style: db2.settings.display.onlyAppendSkillTwo
                         ? null
                         : const TextStyle(
                             decoration: TextDecoration.lineThrough),
                   ),
                   onTap: () {
                     setState(() {
-                      db2.settings.onlyAppendSkillTwo =
-                          !db2.settings.onlyAppendSkillTwo;
+                      db2.settings.display.onlyAppendSkillTwo =
+                          !db2.settings.display.onlyAppendSkillTwo;
                     });
                   },
                 ),
@@ -242,10 +242,10 @@ class ServantListPageState extends State<ServantListPage>
                   child: const Text('Show Full Screen'),
                   enabled: SplitRoute.isSplit(context),
                   onTap: () {
-                    db2.settings.planPageFullScreen =
-                        !db2.settings.planPageFullScreen;
+                    db2.settings.display.planPageFullScreen =
+                        !db2.settings.display.planPageFullScreen;
                     SplitRoute.of(context)!.detail =
-                        db2.settings.planPageFullScreen ? null : false;
+                        db2.settings.display.planPageFullScreen ? null : false;
                   },
                 ),
                 PopupMenuItem(
@@ -508,7 +508,8 @@ class ServantListPageState extends State<ServantListPage>
                   : null,
             ),
     );
-    if (db2.settings.classFilterStyle == SvtListClassFilterStyle.doNotShow) {
+    if (db2.settings.display.classFilterStyle ==
+        SvtListClassFilterStyle.doNotShow) {
       return scrollable;
     }
     return Column(
@@ -532,7 +533,7 @@ class ServantListPageState extends State<ServantListPage>
         _oneClsBtn(clsName),
     ];
     final extraBtn = _oneClsBtn(SvtClass.EXTRA);
-    SvtListClassFilterStyle style = db2.settings.classFilterStyle;
+    SvtListClassFilterStyle style = db2.settings.display.classFilterStyle;
     // full window mode
     if (SplitRoute.isSplit(context) && SplitRoute.of(context)!.detail == null) {
       style = SvtListClassFilterStyle.singleRowExpanded;
@@ -810,7 +811,7 @@ class ServantListPageState extends State<ServantListPage>
         value: _changedAppend,
         icon: Container(),
         hint: Text(S.current.append_skill_short +
-            (db2.settings.onlyAppendSkillTwo ? '2' : '')),
+            (db2.settings.display.onlyAppendSkillTwo ? '2' : '')),
         items: List.generate(12, (i) {
           if (i == 0) {
             return const DropdownMenuItem(value: -1, child: Text('x + 1'));
@@ -819,7 +820,7 @@ class ServantListPageState extends State<ServantListPage>
               value: i - 1,
               child: Text(S.current.words_separate(
                   S.current.append_skill_short +
-                      (db2.settings.onlyAppendSkillTwo ? '2-' : '-'),
+                      (db2.settings.display.onlyAppendSkillTwo ? '2-' : '-'),
                   (i - 1).toString())),
             );
           }
@@ -832,8 +833,9 @@ class ServantListPageState extends State<ServantListPage>
               if (isSvtFavorite(svt) && !hiddenPlanServants.contains(svt)) {
                 final cur = db2.curUser.svtStatusOf(svt.collectionNo).cur,
                     target = db2.curUser.svtPlanOf(svt.collectionNo);
-                for (int i
-                    in (db2.settings.onlyAppendSkillTwo ? [1] : [0, 1, 2])) {
+                for (int i in (db2.settings.display.onlyAppendSkillTwo
+                    ? [1]
+                    : [0, 1, 2])) {
                   if (changeTarget) {
                     if (v == -1) {
                       target.appendSkills[i] = min(10, cur.appendSkills[i] + 1);
@@ -913,7 +915,7 @@ class ServantListPageState extends State<ServantListPage>
                       values: FilterRadioData(changeTarget),
                       onFilterChanged: (v) {
                         setState(() {
-                          changeTarget = (v as FilterRadioData).selected;
+                          changeTarget = v.radioValue!;
                           _changedAscension = null;
                           _changedSkill = null;
                           _changedAppend = null;

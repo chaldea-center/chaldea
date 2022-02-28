@@ -14,6 +14,7 @@ export '../packages/app_info.dart';
 export '../packages/mob_stat.dart';
 export '../packages/query.dart';
 export '../packages/split_route/split_route.dart';
+export '../utils/utils.dart';
 export '../utils/img_util.dart';
 export '../widgets/tile_items.dart';
 export '../widgets/widgets.dart';

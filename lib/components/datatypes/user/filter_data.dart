@@ -82,8 +82,8 @@ class SvtFilterData {
         effectScope = effectScope ?? FilterGroupData(),
         effectTarget = effectTarget ?? FilterGroupData(),
         effects = effects ?? FilterGroupData() {
-    this.favorite = Maths.fixValidRange(this.favorite, 0, 2);
-    this.planFavorite = Maths.fixValidRange(this.planFavorite, 0, 2);
+    this.favorite = this.favorite.clamp2(0, 2);
+    this.planFavorite = this.planFavorite.clamp2(0, 2);
     fillListValue(this.sortKeys, 3, (i) => sortKeyData[i]);
     fillListValue(this.sortReversed, 3, (_) => true);
   }

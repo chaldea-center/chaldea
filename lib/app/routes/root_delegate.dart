@@ -118,7 +118,6 @@ class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>
 
   @override
   Future<void> setInitialRoutePath(RouteConfiguration configuration) {
-    // TODO: do init and gamedata check
     return super.setInitialRoutePath(configuration);
   }
 

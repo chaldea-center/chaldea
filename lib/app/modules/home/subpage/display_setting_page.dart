@@ -64,7 +64,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   },
                 ),
               SwitchListTile.adaptive(
-                value: db2.settings.showAccountAtHome,
+                value: db2.settings.display.showAccountAtHome,
                 title: Text(LocalizedText.of(
                     chs: '首页显示当前账号',
                     jpn: 'ホームページにアカウントを表示 ',
@@ -72,7 +72,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                     kor: '홈페이지에 계정 표시')),
                 onChanged: (v) {
                   setState(() {
-                    db2.settings.showAccountAtHome = v;
+                    db2.settings.display.showAccountAtHome = v;
                   });
                   db2.notifyUserdata();
                 },
@@ -154,10 +154,10 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                     jpn: 'ホーム-プラン',
                     eng: 'Home-Plan List Page',
                     kor: '홈-계획 리스트 페이지')),
-                value: db2.settings.onlyAppendSkillTwo,
+                value: db2.settings.display.onlyAppendSkillTwo,
                 onChanged: (v) {
                   setState(() {
-                    db2.settings.onlyAppendSkillTwo = v;
+                    db2.settings.display.onlyAppendSkillTwo = v;
                   });
                 },
               ),

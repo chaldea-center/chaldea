@@ -37,44 +37,11 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
           autoUpdateApp:
               $checkedConvert('autoUpdateApp', (v) => v as bool? ?? true),
           autoRotate: $checkedConvert('autoRotate', (v) => v as bool? ?? true),
-          showAccountAtHome:
-              $checkedConvert('showAccountAtHome', (v) => v as bool? ?? false),
           autoResetFilter:
               $checkedConvert('autoResetFilter', (v) => v as bool? ?? true),
           useProxy: $checkedConvert('useProxy', (v) => v as bool? ?? false),
           favoritePreferred: $checkedConvert('favoritePreferred',
               (v) => $enumDecodeNullable(_$FavoriteStateEnumMap, v)),
-          classFilterStyle: $checkedConvert(
-              'classFilterStyle',
-              (v) =>
-                  $enumDecodeNullable(_$SvtListClassFilterStyleEnumMap, v) ??
-                  SvtListClassFilterStyle.auto),
-          onlyAppendSkillTwo:
-              $checkedConvert('onlyAppendSkillTwo', (v) => v as bool? ?? true),
-          planPageFullScreen:
-              $checkedConvert('planPageFullScreen', (v) => v as bool? ?? false),
-          svtPlanInputMode: $checkedConvert(
-              'svtPlanInputMode',
-              (v) =>
-                  $enumDecodeNullable(_$SvtPlanInputModeEnumMap, v) ??
-                  SvtPlanInputMode.dropdown),
-          itemDetailViewType: $checkedConvert(
-              'itemDetailViewType',
-              (v) =>
-                  $enumDecodeNullable(_$ItemDetailViewTypeEnumMap, v) ??
-                  ItemDetailViewType.separated),
-          itemDetailSvtSort: $checkedConvert(
-              'itemDetailSvtSort',
-              (v) =>
-                  $enumDecodeNullable(_$ItemDetailSvtSortEnumMap, v) ??
-                  ItemDetailSvtSort.collectionNo),
-          itemQuestsSortByAp:
-              $checkedConvert('itemQuestsSortByAp', (v) => v as bool? ?? true),
-          sortedSvtTabs: $checkedConvert(
-              'sortedSvtTabs',
-              (v) => (v as List<dynamic>?)
-                  ?.map((e) => $enumDecodeNullable(_$SvtTabEnumMap, e))
-                  .toList()),
           priorityTags: $checkedConvert(
               'priorityTags',
               (v) => (v as Map?)?.map(
@@ -85,6 +52,12 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
               (v) => (v as Map?)?.map(
                     (k, e) => MapEntry(k as String, e as bool),
                   )),
+          display: $checkedConvert(
+              'display',
+              (v) => v == null
+                  ? null
+                  : DisplaySettings.fromJson(
+                      Map<String, dynamic>.from(v as Map))),
           carousel: $checkedConvert(
               'carousel',
               (v) => v == null
@@ -129,25 +102,13 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'autoUpdateData': instance.autoUpdateData,
       'autoUpdateApp': instance.autoUpdateApp,
       'autoRotate': instance.autoRotate,
-      'showAccountAtHome': instance.showAccountAtHome,
       'autoResetFilter': instance.autoResetFilter,
       'useProxy': instance.useProxy,
       'favoritePreferred': _$FavoriteStateEnumMap[instance.favoritePreferred],
-      'classFilterStyle':
-          _$SvtListClassFilterStyleEnumMap[instance.classFilterStyle],
-      'onlyAppendSkillTwo': instance.onlyAppendSkillTwo,
-      'planPageFullScreen': instance.planPageFullScreen,
-      'svtPlanInputMode': _$SvtPlanInputModeEnumMap[instance.svtPlanInputMode],
-      'itemDetailViewType':
-          _$ItemDetailViewTypeEnumMap[instance.itemDetailViewType],
-      'itemDetailSvtSort':
-          _$ItemDetailSvtSortEnumMap[instance.itemDetailSvtSort],
-      'itemQuestsSortByAp': instance.itemQuestsSortByAp,
-      'sortedSvtTabs':
-          instance.sortedSvtTabs.map((e) => _$SvtTabEnumMap[e]).toList(),
       'priorityTags':
           instance.priorityTags.map((k, e) => MapEntry(k.toString(), e)),
       'galleries': instance.galleries,
+      'display': instance.display.toJson(),
       'carousel': instance.carousel.toJson(),
       'tips': instance.tips.toJson(),
       'useAndroidExternal': instance.useAndroidExternal,
@@ -177,13 +138,71 @@ const _$FavoriteStateEnumMap = {
   FavoriteState.other: 'other',
 };
 
-const _$SvtListClassFilterStyleEnumMap = {
-  SvtListClassFilterStyle.auto: 'auto',
-  SvtListClassFilterStyle.singleRow: 'singleRow',
-  SvtListClassFilterStyle.singleRowExpanded: 'singleRowExpanded',
-  SvtListClassFilterStyle.twoRow: 'twoRow',
-  SvtListClassFilterStyle.doNotShow: 'doNotShow',
-};
+DisplaySettings _$DisplaySettingsFromJson(Map json) => $checkedCreate(
+      'DisplaySettings',
+      json,
+      ($checkedConvert) {
+        final val = DisplaySettings(
+          showAccountAtHome:
+              $checkedConvert('showAccountAtHome', (v) => v as bool? ?? false),
+          svtPlanInputMode: $checkedConvert(
+              'svtPlanInputMode',
+              (v) =>
+                  $enumDecodeNullable(_$SvtPlanInputModeEnumMap, v) ??
+                  SvtPlanInputMode.dropdown),
+          itemDetailViewType: $checkedConvert(
+              'itemDetailViewType',
+              (v) =>
+                  $enumDecodeNullable(_$ItemDetailViewTypeEnumMap, v) ??
+                  ItemDetailViewType.separated),
+          itemDetailSvtSort: $checkedConvert(
+              'itemDetailSvtSort',
+              (v) =>
+                  $enumDecodeNullable(_$ItemDetailSvtSortEnumMap, v) ??
+                  ItemDetailSvtSort.collectionNo),
+          itemQuestsSortByAp:
+              $checkedConvert('itemQuestsSortByAp', (v) => v as bool? ?? true),
+          classFilterStyle: $checkedConvert(
+              'classFilterStyle',
+              (v) =>
+                  $enumDecodeNullable(_$SvtListClassFilterStyleEnumMap, v) ??
+                  SvtListClassFilterStyle.auto),
+          onlyAppendSkillTwo:
+              $checkedConvert('onlyAppendSkillTwo', (v) => v as bool? ?? true),
+          planPageFullScreen:
+              $checkedConvert('planPageFullScreen', (v) => v as bool? ?? false),
+          eventsShowOutdated:
+              $checkedConvert('eventsShowOutdated', (v) => v as bool? ?? false),
+          eventsReversed:
+              $checkedConvert('eventsReversed', (v) => v as bool? ?? true),
+          sortedSvtTabs: $checkedConvert(
+              'sortedSvtTabs',
+              (v) => (v as List<dynamic>?)
+                  ?.map((e) => $enumDecodeNullable(_$SvtTabEnumMap, e))
+                  .toList()),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$DisplaySettingsToJson(DisplaySettings instance) =>
+    <String, dynamic>{
+      'showAccountAtHome': instance.showAccountAtHome,
+      'svtPlanInputMode': _$SvtPlanInputModeEnumMap[instance.svtPlanInputMode],
+      'itemDetailViewType':
+          _$ItemDetailViewTypeEnumMap[instance.itemDetailViewType],
+      'itemDetailSvtSort':
+          _$ItemDetailSvtSortEnumMap[instance.itemDetailSvtSort],
+      'itemQuestsSortByAp': instance.itemQuestsSortByAp,
+      'classFilterStyle':
+          _$SvtListClassFilterStyleEnumMap[instance.classFilterStyle],
+      'onlyAppendSkillTwo': instance.onlyAppendSkillTwo,
+      'planPageFullScreen': instance.planPageFullScreen,
+      'eventsShowOutdated': instance.eventsShowOutdated,
+      'eventsReversed': instance.eventsReversed,
+      'sortedSvtTabs':
+          instance.sortedSvtTabs.map((e) => _$SvtTabEnumMap[e]).toList(),
+    };
 
 const _$SvtPlanInputModeEnumMap = {
   SvtPlanInputMode.dropdown: 'dropdown',
@@ -201,6 +220,14 @@ const _$ItemDetailSvtSortEnumMap = {
   ItemDetailSvtSort.collectionNo: 'collectionNo',
   ItemDetailSvtSort.clsName: 'clsName',
   ItemDetailSvtSort.rarity: 'rarity',
+};
+
+const _$SvtListClassFilterStyleEnumMap = {
+  SvtListClassFilterStyle.auto: 'auto',
+  SvtListClassFilterStyle.singleRow: 'singleRow',
+  SvtListClassFilterStyle.singleRowExpanded: 'singleRowExpanded',
+  SvtListClassFilterStyle.twoRow: 'twoRow',
+  SvtListClassFilterStyle.doNotShow: 'doNotShow',
 };
 
 const _$SvtTabEnumMap = {

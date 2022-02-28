@@ -2,33 +2,10 @@ import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/basic.dart';
 import 'package:flutter/material.dart';
-// import 'package:chaldea/modules/cmd_code/cmd_code_list_page.dart';
-// import 'package:chaldea/modules/craft/craft_list.dart';
-// import 'package:chaldea/modules/damage_calc/damage_calc_page.dart';
-// import 'package:chaldea/modules/debug/theme_palette.dart';
-// import 'package:chaldea/modules/effect_search/effect_search_page.dart';
-// import 'package:chaldea/modules/enemy/enemy_list_page.dart';
-// import 'package:chaldea/modules/event/events_page.dart';
-// import 'package:chaldea/modules/extras/ap_calc_page.dart';
-// import 'package:chaldea/modules/extras/cv_illustrator_list.dart';
-// import 'package:chaldea/modules/extras/exp_card_cost_page.dart';
-// import 'package:chaldea/modules/extras/faq_page.dart';
-// import 'package:chaldea/modules/extras/mystic_code_page.dart';
-// import 'package:chaldea/modules/ffo/ffo_page.dart';
-// import 'package:chaldea/modules/free_quest_calculator/free_calculator_page.dart';
-// import 'package:chaldea/modules/home/subpage/edit_gallery_page.dart';
-// import 'package:chaldea/modules/import_data/home_import_page.dart';
-// import 'package:chaldea/modules/item/item_list_page.dart';
-// import 'package:chaldea/modules/lostroom/lost_room.dart';
-// import 'package:chaldea/modules/master_mission/master_mission_page.dart';
-// import 'package:chaldea/modules/saint_quartz/sq_main.dart';
-// import 'package:chaldea/modules/servant/costume_list_page.dart';
-// import 'package:chaldea/modules/servant/servant_list_page.dart';
-// import 'package:chaldea/modules/statistics/game_statistics_page.dart';
-// import 'package:chaldea/modules/summon/summon_list_page.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../craft_essence/craft_list.dart';
+import '../../event/events_page.dart';
 import '../../item/item_list.dart';
 import '../../servant/servant_list.dart';
 
@@ -95,7 +72,7 @@ class GalleryItem {
         craftEssences,
         // commandCode,
         items,
-        // event,
+        events,
         // plan,
         // freeCalculator,
         // masterMission,
@@ -146,16 +123,18 @@ class GalleryItem {
     name: 'items',
     titleBuilder: () => S.current.item_title,
     icon: Icons.category,
+    url: Routes.items,
     page: ItemListPage(),
     isDetail: false,
   );
-// static GalleryItem event = GalleryItem(
-//   name: 'event',
-//   titleBuilder: () => S.current.event_title,
-//   icon: Icons.flag,
-//   page: EventListPage(),
-//   isDetail: false,
-// );
+  static GalleryItem events = GalleryItem(
+    name: 'events',
+    titleBuilder: () => S.current.event_title,
+    icon: Icons.flag,
+    url: Routes.events,
+    page: EventListPage(),
+    isDetail: false,
+  );
 // static GalleryItem plan = GalleryItem(
 //   name: 'plan',
 //   titleBuilder: () => S.current.plan_title,

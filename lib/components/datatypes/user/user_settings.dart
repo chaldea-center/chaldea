@@ -57,10 +57,8 @@ class AppSetting {
     bool? showAccountAtHome,
     bool? itemQuestsSortByAp,
   })  : autoResetFilter = autoResetFilter ?? true,
-        downloadSource = Maths.fixValidRange(
-            downloadSource ?? GitSource.server.index,
-            0,
-            GitSource.values.length),
+        downloadSource = downloadSource?.clamp2(0, GitSource.values.length) ??
+            GitSource.server.index,
         autoUpdateApp = autoUpdateApp ?? true,
         autoUpdateDataset = autoUpdateDataset ?? true,
         autorotate = autorotate ?? true,

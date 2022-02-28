@@ -29,7 +29,7 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
 
   @override
   Widget build(BuildContext context) {
-    _curHistory = Maths.fixValidRange(_curHistory, 0, history.length - 1);
+    _curHistory = _curHistory.clamp2(0, history.length - 1);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Freedom Order Summon'),

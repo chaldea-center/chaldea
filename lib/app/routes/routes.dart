@@ -1,5 +1,6 @@
 import 'package:chaldea/app/modules/craft_essence/craft.dart';
 import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
+import 'package:chaldea/app/modules/event/events_page.dart';
 import 'package:chaldea/app/modules/home/bootstrap.dart';
 import 'package:chaldea/app/modules/item/item.dart';
 import 'package:chaldea/app/modules/item/item_list.dart';
@@ -28,6 +29,9 @@ class Routes {
   // static const String mystic_code = '/mystic-code';
   static const String events = '/events';
   static const String event = '/event';
+  static String eventI(int id) => '/event/$id';
+  static const String war = '/war';
+  static String warI(int id) => '/war/$id';
   static const String items = '/items';
   static const String item = '/item';
   static String itemI(int id) => '/item/$id';
@@ -155,6 +159,8 @@ class RouteConfiguration {
       case Routes.mysticCodes:
         break;
       case Routes.events:
+        return EventListPage();
+      case Routes.war:
         break;
       case Routes.items:
         return ItemListPage();

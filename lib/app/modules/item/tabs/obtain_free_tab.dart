@@ -14,8 +14,8 @@ class ItemObtainFreeTab extends StatefulWidget {
 }
 
 class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
-  bool get sortByAP => db2.settings.itemQuestsSortByAp;
-  set sortByAP(bool v) => db2.settings.itemQuestsSortByAp = v;
+  bool get sortByAP => db2.settings.display.itemQuestsSortByAp;
+  set sortByAP(bool v) => db2.settings.display.itemQuestsSortByAp = v;
   bool use6th = db2.curUser.use6thDropRate;
 
   @override
@@ -100,8 +100,7 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
           dropRate = dropMatrix[i];
       final dropRateString = dropRate.toStringAsFixed(2),
           apRateString = apRate.toStringAsFixed(2);
-      final quest = db2.gameData.questPhases[questId * 10 + 3] ??
-          db2.gameData.questPhases[questId * 10 + 1];
+      final quest = db2.gameData.quests[questId];
 
       final child = ValueStatefulBuilder<bool>(
           initValue: false,

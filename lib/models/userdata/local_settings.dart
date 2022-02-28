@@ -26,21 +26,13 @@ class LocalSettings {
   bool autoUpdateData; // dataset
   bool autoUpdateApp;
   bool autoRotate;
-  bool showAccountAtHome;
   bool autoResetFilter;
   bool useProxy;
   FavoriteState? favoritePreferred;
-  SvtListClassFilterStyle classFilterStyle;
-  bool onlyAppendSkillTwo;
-  bool planPageFullScreen = false;
-  SvtPlanInputMode svtPlanInputMode;
-  ItemDetailViewType itemDetailViewType;
-  ItemDetailSvtSort itemDetailSvtSort;
-  bool itemQuestsSortByAp;
 
-  List<SvtTab> sortedSvtTabs;
   Map<int, String> priorityTags;
   Map<String, bool> galleries;
+  DisplaySettings display;
   CarouselSetting carousel;
   TipsSetting tips;
 
@@ -64,20 +56,12 @@ class LocalSettings {
     this.autoUpdateData = true,
     this.autoUpdateApp = true,
     this.autoRotate = true,
-    this.showAccountAtHome = false,
     this.autoResetFilter = true,
     this.useProxy = false,
     this.favoritePreferred,
-    this.classFilterStyle = SvtListClassFilterStyle.auto,
-    this.onlyAppendSkillTwo = true,
-    this.planPageFullScreen = false,
-    this.svtPlanInputMode = SvtPlanInputMode.dropdown,
-    this.itemDetailViewType = ItemDetailViewType.separated,
-    this.itemDetailSvtSort = ItemDetailSvtSort.collectionNo,
-    this.itemQuestsSortByAp = true,
-    List<SvtTab?>? sortedSvtTabs,
     Map<int, String>? priorityTags,
     Map<String, bool>? galleries,
+    DisplaySettings? display,
     CarouselSetting? carousel,
     TipsSetting? tips,
     SvtFilterData? svtFilterData,
@@ -88,10 +72,9 @@ class LocalSettings {
             : (List.of(Region.values)
               ..sort2(
                   (e) => preferredRegions.indexOf(e) % Region.values.length)),
-        sortedSvtTabs = sortedSvtTabs?.whereType<SvtTab>().toList() ??
-            List.of(SvtTab.values),
         priorityTags = priorityTags ?? {},
         galleries = galleries ?? {},
+        display = display ?? DisplaySettings(),
         carousel = carousel ?? CarouselSetting(),
         tips = tips ?? TipsSetting(),
         svtFilterData = svtFilterData ?? SvtFilterData(),
@@ -122,9 +105,8 @@ class LocalSettings {
   }
 
   void validateSvtTabs() {
-    sortedSvtTabs = List.of(SvtTab.values)
-      ..sort((a, b) =>
-          (sortedSvtTabs.indexOf(a)).compareTo(sortedSvtTabs.indexOf(b)));
+    display.sortedSvtTabs = List.of(SvtTab.values)
+      ..sort2((a) => display.sortedSvtTabs.indexOf(a));
   }
 
   factory LocalSettings.fromJson(Map<String, dynamic> json) =>
@@ -139,6 +121,41 @@ class LocalSettings {
     }
     return themeMode == ThemeMode.dark;
   }
+}
+
+@JsonSerializable()
+class DisplaySettings {
+  bool showAccountAtHome;
+  SvtPlanInputMode svtPlanInputMode;
+  ItemDetailViewType itemDetailViewType;
+  ItemDetailSvtSort itemDetailSvtSort;
+  bool itemQuestsSortByAp;
+  SvtListClassFilterStyle classFilterStyle;
+  bool onlyAppendSkillTwo;
+  bool planPageFullScreen = false;
+  bool eventsShowOutdated;
+  bool eventsReversed;
+  List<SvtTab> sortedSvtTabs;
+
+  DisplaySettings({
+    this.showAccountAtHome = false,
+    this.svtPlanInputMode = SvtPlanInputMode.dropdown,
+    this.itemDetailViewType = ItemDetailViewType.separated,
+    this.itemDetailSvtSort = ItemDetailSvtSort.collectionNo,
+    this.itemQuestsSortByAp = true,
+    this.classFilterStyle = SvtListClassFilterStyle.auto,
+    this.onlyAppendSkillTwo = true,
+    this.planPageFullScreen = false,
+    this.eventsShowOutdated = false,
+    this.eventsReversed = true,
+    List<SvtTab?>? sortedSvtTabs,
+  }) : sortedSvtTabs = sortedSvtTabs?.whereType<SvtTab>().toList() ??
+            List.of(SvtTab.values);
+
+  factory DisplaySettings.fromJson(Map<String, dynamic> data) =>
+      _$DisplaySettingsFromJson(data);
+
+  Map<String, dynamic> toJson() => _$DisplaySettingsToJson(this);
 }
 
 @JsonSerializable()

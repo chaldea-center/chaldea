@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart' as pathlib;
 
 String joinPaths(
@@ -117,17 +119,6 @@ class Maths {
     return null;
   }
 
-  @Deprecated('use num.clamp instead')
-  static T fixValidRange<T extends num>(T value, [T? minVal, T? maxVal]) {
-    if (minVal != null) {
-      value = math.max(value, minVal);
-    }
-    if (maxVal != null) {
-      value = math.min(value, maxVal);
-    }
-    return value;
-  }
-
   /// Sum a list of maps, map value must be number.
   /// iI [inPlace], the result is saved to the first map.
   /// null elements will be skipped.
@@ -160,6 +151,52 @@ class Maths {
       res[k] = (v * multiplier) as V;
     });
     return res;
+  }
+}
+
+/// Format number
+///
+/// If [compact] is true, other parameters are not used.
+String formatNumber(num? number,
+    {bool compact = false,
+    bool percent = false,
+    bool omit = true,
+    int precision = 3,
+    String? groupSeparator = ',',
+    num? minVal}) {
+  assert(!compact || !percent);
+  if (number == null || (minVal != null && number.abs() < minVal.abs())) {
+    return number.toString();
+  }
+
+  if (compact) {
+    return NumberFormat.compact(locale: 'en').format(number);
+  }
+
+  final pattern = [
+    if (groupSeparator != null) '###' + groupSeparator,
+    '###',
+    if (precision > 0) '.' + (omit ? '#' : '0') * precision,
+    if (percent) '%'
+  ].join();
+  return NumberFormat(pattern).format(number);
+}
+
+class NumberInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    if (newValue.selection.baseOffset == 0) {
+      return newValue;
+    }
+    int? value = int.tryParse(newValue.text);
+    if (value == null) {
+      return newValue;
+    }
+    String newText = formatNumber(value);
+    return newValue.copyWith(
+        text: newText,
+        selection: TextSelection.collapsed(offset: newText.length));
   }
 }
 
@@ -238,5 +275,23 @@ class Utility {
 
   static bool isDarkMode(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark;
+  }
+
+  static T? findNextOrPrevious<T>({
+    required List<T> list,
+    required T cur,
+    bool reversed = false,
+    bool defaultFirst = false,
+  }) {
+    int curIndex = list.indexOf(cur);
+    if (curIndex >= 0) {
+      int nextIndex = curIndex + (reversed ? -1 : 1);
+      if (nextIndex >= 0 && nextIndex < list.length) {
+        return list[nextIndex];
+      }
+    } else if (defaultFirst && list.isNotEmpty) {
+      return list.first;
+    }
+    return null;
   }
 }

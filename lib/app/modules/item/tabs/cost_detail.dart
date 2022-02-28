@@ -1,9 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/app/tools/item_center.dart';
-import 'package:chaldea/components/utils.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +43,8 @@ class ItemCostSvtDetailTab extends StatelessWidget {
 
     /////////////////////////////////////////////////////////
     List<Widget> children = [header];
-    if (db2.settings.itemDetailViewType == ItemDetailViewType.separated) {
+    if (db2.settings.display.itemDetailViewType ==
+        ItemDetailViewType.separated) {
       // 0 ascension 1 skill 2 dress 3 append 4 extra
       final headers = [
         S.current.ascension_up,
@@ -75,7 +75,8 @@ class ItemCostSvtDetailTab extends StatelessWidget {
           ));
         }
       }
-    } else if (db2.settings.itemDetailViewType == ItemDetailViewType.grid) {
+    } else if (db2.settings.display.itemDetailViewType ==
+        ItemDetailViewType.grid) {
       children.add(_buildSvtIconGrid(
           context, details.map((key, value) => MapEntry(key, value.all)),
           highlight: matType == SvtMatCostDetailType.full));
@@ -188,7 +189,7 @@ class ItemCostSvtDetailTab extends StatelessWidget {
   List<int> sortSvts(List<int> svts) {
     List<SvtCompare> sortKeys;
     List<bool> sortReversed;
-    switch (db2.settings.itemDetailSvtSort) {
+    switch (db2.settings.display.itemDetailSvtSort) {
       case ItemDetailSvtSort.collectionNo:
         sortKeys = [SvtCompare.no];
         sortReversed = [true];

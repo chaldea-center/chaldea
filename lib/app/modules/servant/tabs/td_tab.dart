@@ -82,7 +82,6 @@ class SvtTdTab extends StatelessWidget {
   }
 
   Widget _buildOneTd(BuildContext context, NiceTd td) {
-    final card = EnumUtil.shortString(td.card);
     final header = CustomTile(
       leading: Column(
         children: <Widget>[

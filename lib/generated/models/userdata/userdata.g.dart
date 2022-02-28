@@ -175,6 +175,7 @@ SvtStatus _$SvtStatusFromJson(Map json) => $checkedCreate(
           equipCmdCodes: $checkedConvert('equipCmdCodes',
               (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
         );
+        $checkedConvert('favorite', (v) => val.favorite = v as bool);
         return val;
       },
     );
@@ -185,6 +186,7 @@ Map<String, dynamic> _$SvtStatusToJson(SvtStatus instance) => <String, dynamic>{
       'priority': instance.priority,
       'bond': instance.bond,
       'equipCmdCodes': instance.equipCmdCodes,
+      'favorite': instance.favorite,
     };
 
 SvtPlan _$SvtPlanFromJson(Map json) => $checkedCreate(
@@ -231,7 +233,7 @@ EventPlan _$EventPlanFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = EventPlan(
-          planned: $checkedConvert('planned', (v) => v as bool? ?? false),
+          enabled: $checkedConvert('enabled', (v) => v as bool? ?? false),
           shop: $checkedConvert('shop', (v) => v as bool? ?? true),
           shopExcludeItem: $checkedConvert('shopExcludeItem',
               (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
@@ -269,7 +271,7 @@ EventPlan _$EventPlanFromJson(Map json) => $checkedCreate(
     );
 
 Map<String, dynamic> _$EventPlanToJson(EventPlan instance) => <String, dynamic>{
-      'planned': instance.planned,
+      'enabled': instance.enabled,
       'shop': instance.shop,
       'shopExcludeItem': instance.shopExcludeItem.toList(),
       'point': instance.point,

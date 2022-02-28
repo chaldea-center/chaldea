@@ -28,7 +28,7 @@ class _ClassFilterStyleSettingState extends State<ClassFilterStyleSetting> {
             children: [
               RadioListTile<SvtListClassFilterStyle>(
                 value: SvtListClassFilterStyle.auto,
-                groupValue: db2.settings.classFilterStyle,
+                groupValue: db2.settings.display.classFilterStyle,
                 title: Text(LocalizedText.of(
                     chs: '自动适配', jpn: '自动', eng: 'Auto', kor: '자동')),
                 subtitle: Text(LocalizedText.of(
@@ -40,7 +40,7 @@ class _ClassFilterStyleSettingState extends State<ClassFilterStyleSetting> {
               ),
               RadioListTile<SvtListClassFilterStyle>(
                 value: SvtListClassFilterStyle.singleRow,
-                groupValue: db2.settings.classFilterStyle,
+                groupValue: db2.settings.display.classFilterStyle,
                 title: Text(LocalizedText.of(
                     chs: '单行不展开Extra职阶',
                     jpn: '「Extraクラス」展開、単一行',
@@ -50,7 +50,7 @@ class _ClassFilterStyleSettingState extends State<ClassFilterStyleSetting> {
               ),
               RadioListTile<SvtListClassFilterStyle>(
                 value: SvtListClassFilterStyle.singleRowExpanded,
-                groupValue: db2.settings.classFilterStyle,
+                groupValue: db2.settings.display.classFilterStyle,
                 title: Text(LocalizedText.of(
                     chs: '单行并展开Extra职阶',
                     jpn: '単一行、「Extraクラス」を折り畳み',
@@ -60,7 +60,7 @@ class _ClassFilterStyleSettingState extends State<ClassFilterStyleSetting> {
               ),
               RadioListTile<SvtListClassFilterStyle>(
                 value: SvtListClassFilterStyle.twoRow,
-                groupValue: db2.settings.classFilterStyle,
+                groupValue: db2.settings.display.classFilterStyle,
                 title: Text(LocalizedText.of(
                     chs: 'Extra职阶显示在第二行',
                     jpn: '「Extraクラス」は2行目に表示',
@@ -70,7 +70,7 @@ class _ClassFilterStyleSettingState extends State<ClassFilterStyleSetting> {
               ),
               RadioListTile<SvtListClassFilterStyle>(
                 value: SvtListClassFilterStyle.doNotShow,
-                groupValue: db2.settings.classFilterStyle,
+                groupValue: db2.settings.display.classFilterStyle,
                 title: Text(LocalizedText.of(
                     chs: '隐藏', jpn: '非表示', eng: 'Hidden', kor: '숨김')),
                 onChanged: onChanged,
@@ -93,7 +93,7 @@ class _ClassFilterStyleSettingState extends State<ClassFilterStyleSetting> {
 
   void onChanged(SvtListClassFilterStyle? v) {
     setState(() {
-      if (v != null) db2.settings.classFilterStyle = v;
+      if (v != null) db2.settings.display.classFilterStyle = v;
     });
   }
 }

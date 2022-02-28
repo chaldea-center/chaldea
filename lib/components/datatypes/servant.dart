@@ -209,8 +209,8 @@ class Servant with GameCardMixin {
   }
 
   Map<String, int> getAscensionCost({int cur = 0, int target = 4}) {
-    cur = Maths.fixValidRange(cur, 0, 4);
-    target = Maths.fixValidRange(target, 0, 4);
+    cur = cur.clamp2(0, 4);
+    target = target.clamp2(0, 4);
     if (itemCost.ascension.isEmpty) return {};
     return Maths.sumDict(itemCost.ascension.sublist(cur, max(cur, target)));
   }
@@ -222,8 +222,8 @@ class Servant with GameCardMixin {
     Map<String, int> items = {};
 
     for (int i = 0; i < 3; i++) {
-      cur[i] = Maths.fixValidRange(cur[i], 1, 10);
-      target[i] = Maths.fixValidRange(target[i], 1, 10);
+      cur[i] = cur[i].clamp2(1, 10);
+      target[i] = target[i].clamp2(1, 10);
       // lv 1-10 -> 0-9
       for (int j = cur[i] - 1; j < target[i] - 1; j++) {
         Maths.sumDict([items, itemCost.skill[j]], inPlace: true);
@@ -241,8 +241,8 @@ class Servant with GameCardMixin {
     Map<String, int> items = {};
 
     for (int i = 0; i < 3; i++) {
-      cur[i] = Maths.fixValidRange(cur[i], 0, 10);
-      target[i] = Maths.fixValidRange(target[i], 0, 10);
+      cur[i] = cur[i].clamp2(0, 10);
+      target[i] = target[i].clamp2(0, 10);
       // lv 1-10 -> 0-9
       for (int j = cur[i]; j < target[i]; j++) {
         Maths.sumDict([items, itemCost.appendSkillWithCoin[j]], inPlace: true);
@@ -267,8 +267,8 @@ class Servant with GameCardMixin {
     }
 
     for (int i = 0; i < dressNum; i++) {
-      cur[i] = Maths.fixValidRange(cur[i], 0, 1);
-      target[i] = Maths.fixValidRange(target[i], 0, 1);
+      cur[i] = cur[i].clamp2(0, 1);
+      target[i] = target[i].clamp2(0, 1);
       if (cur[i] == 0 && target[i] == 1) {
         Maths.sumDict([items, db.gameData.costumes[costumeNos[i]]?.itemCost],
             inPlace: true);

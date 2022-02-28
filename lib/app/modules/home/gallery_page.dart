@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:chaldea/components/localized/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/modules/home/subpage/account_page.dart';
@@ -64,7 +63,7 @@ class _GalleryPageState extends State<GalleryPage> {
         title: const Text(kAppName),
         titleSpacing: NavigationToolbar.kMiddleSpacing,
         actions: <Widget>[
-          if (db2.settings.showAccountAtHome)
+          if (db2.settings.display.showAccountAtHome)
             InkWell(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(
@@ -157,23 +156,13 @@ class _GalleryPageState extends State<GalleryPage> {
       children.add(SimpleAccordion(
         expanded: true,
         headerBuilder: (_, __) => ListTile(
-          title: Text(LocalizedText.of(
-            chs: '无效启动路径!!!',
-            jpn: '起動パスが無効です!!!',
-            eng: 'Invalid startup path!!!',
-          )),
+          title: const Text('Invalid startup path!!!'),
           subtitle: Text(db2.paths.appPath),
         ),
-        contentBuilder: (context) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        contentBuilder: (context) => const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Text(
-              LocalizedText.of(
-                chs: '请解压至非系统目录后运行！例如"C:\\", "C:\\Program Files"等均无效。',
-                jpn:
-                    'システム以外のディレクトリに解凍して実行してください。"C:\\"、"C:\\Program Files"は許可されていません。',
-                eng:
-                    'Please extra zip to non-system path then start the app. "C:\\", "C:\\Program Files" are not allowed.',
-              ),
+              'Please extra zip to non-system path then start the app. "C:\\", "C:\\Program Files" are not allowed.',
             )),
       ));
     }
@@ -206,17 +195,9 @@ class _GalleryPageState extends State<GalleryPage> {
         horizontalTitleGap: 0,
         leading: const Icon(Icons.stars_rounded),
         contentPadding: const EdgeInsets.only(left: 8),
-        title: Text(LocalizedText.of(
-            chs: '走过路过给个评价反馈吧~',
-            jpn: 'アプリを評価する',
-            eng: 'Rating Chaldea',
-            kor: 'Chaldea 앱 평가하기')),
+        title: const Text('Rating Chaldea'),
         subtitle: AutoSizeText(
-          LocalizedText.of(
-              chs: '欢迎评分、评价、反馈、建议~',
-              jpn: '評価またはレビューがかかりましょう',
-              eng: 'Take a minute to rate/review',
-              kor: '평가 또는 리뷰를 남겨주세요'),
+          'Take a minute to rate/review',
           maxLines: 1,
           style: expanded ? null : const TextStyle(color: Colors.transparent),
         ),
@@ -231,9 +212,7 @@ class _GalleryPageState extends State<GalleryPage> {
                 _showRateCard = false;
               });
             },
-            child: Text(
-                LocalizedText.of(
-                    chs: '取消', jpn: '後で', eng: 'DISMISS', kor: '나중에'),
+            child: Text(S.current.cancel,
                 style: TextStyle(color: Theme.of(context).disabledColor)),
           ),
           TextButton(
@@ -248,8 +227,7 @@ class _GalleryPageState extends State<GalleryPage> {
                 _showRateCard = false;
               });
             },
-            child: Text(
-                LocalizedText.of(chs: '评分', jpn: '評価', eng: 'RATE', kor: '평가')),
+            child: const Text('RATE'),
           ),
         ],
       ),

@@ -151,7 +151,7 @@ class AppNewsCarousel extends StatefulWidget {
       }
 
       // key: img url, value: href url
-      if (updated) {
+      if (updated && !kIsWeb) {
         final blockedWiki = await GitTool.giteeWikiPage('blocked_carousel');
         List<String> blocked = blockedWiki
             .split('\n')
@@ -200,7 +200,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
     final pages = getPages();
 
     _curCarouselIndex =
-        Maths.fixValidRange(_curCarouselIndex, 0, pages.length - 1);
+        pages.isEmpty ? 0 : _curCarouselIndex.clamp(0, pages.length - 1);
 
     /// No slides, show app logo
     if (pages.isEmpty) {
@@ -279,8 +279,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
             ),
             onTap: (v) {
               setState(() {
-                _curCarouselIndex =
-                    Maths.fixValidRange(v.toInt(), 0, pages.length - 1);
+                _curCarouselIndex = v.toInt().clamp(0, pages.length - 1);
                 _carouselController.animateToPage(_curCarouselIndex);
               });
             },

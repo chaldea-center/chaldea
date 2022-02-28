@@ -5,6 +5,18 @@ import 'package:flutter/material.dart';
 
 import 'constants.dart';
 
+extension IntX on int {
+  DateTime sec2date() => DateTime.fromMillisecondsSinceEpoch(this * 1000);
+
+  /// if [upperLimit]<[lowerLimit], then [lowerLimit] is used
+  int clamp2(int? lowerLimit, [int? upperLimit]) {
+    int result = this;
+    if (upperLimit != null && upperLimit < result) result = upperLimit;
+    if (lowerLimit != null && lowerLimit > result) result = lowerLimit;
+    return result;
+  }
+}
+
 extension ListX<T> on List<T> {
   /// support -1=last
   T? getOrNull(int index) {
@@ -24,8 +36,13 @@ extension ListX<T> on List<T> {
     }
   }
 
-  void sort2<V extends Comparable>(V Function(T e) compare) {
-    sort((a, b) => compare(a).compareTo(compare(b)));
+  void sort2<V extends Comparable>(V Function(T e) compare,
+      {bool reversed = false}) {
+    if (reversed) {
+      sort((a, b) => compare(b).compareTo(compare(a)));
+    } else {
+      sort((a, b) => compare(a).compareTo(compare(b)));
+    }
   }
 }
 

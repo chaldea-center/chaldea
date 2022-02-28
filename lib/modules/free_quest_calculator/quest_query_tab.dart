@@ -10,8 +10,6 @@ class FreeQuestQueryTab extends StatefulWidget {
 }
 
 class _FreeQuestQueryTabState extends State<FreeQuestQueryTab> {
-  final _navigatorKey = GlobalKey<NavigatorState>();
-
   @override
   Widget build(BuildContext context) {
     Map<String, List<Quest>> chapters = {};

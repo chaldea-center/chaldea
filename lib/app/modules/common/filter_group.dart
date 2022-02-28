@@ -45,7 +45,7 @@ class FilterGroup<T> extends StatelessWidget {
       optionBuilder: (v) => Text(v ? 'Grid' : 'List'),
       combined: true,
       onFilterChanged: (v) {
-        onChanged((v as FilterRadioData<bool>).selected);
+        onChanged(v.radioValue);
       },
     );
   }

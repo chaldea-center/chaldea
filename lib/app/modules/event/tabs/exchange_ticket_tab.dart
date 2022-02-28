@@ -1,18 +1,23 @@
+import 'dart:math';
+
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:chaldea/components/components.dart';
-import 'package:chaldea/modules/item/item_detail_page.dart';
+import 'package:chaldea/app/app.dart';
+import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:flutter_picker/Picker.dart';
+import 'package:flutter/material.dart';
+import 'package:chaldea/models/models.dart';
 
 class ExchangeTicketTab extends StatefulWidget {
   /// If only show ONE month
-  final String? monthJp;
-  final bool reverse;
+  final int? id;
+  final bool reversed;
   final bool showOutdated;
 
   const ExchangeTicketTab({
     Key? key,
-    this.monthJp,
-    this.reverse = false,
+    this.id,
+    this.reversed = false,
     this.showOutdated = false,
   }) : super(key: key);
 
@@ -38,48 +43,42 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.monthJp != null) {
-      final ticket = db.gameData.events.exchangeTickets[widget.monthJp];
+    if (widget.id != null) {
+      final ticket = db2.gameData.exchangeTickets[widget.id];
       if (ticket == null) {
-        return ListTile(title: Text('${widget.monthJp} NOT FOUND'));
+        return ListTile(title: Text('${widget.id} NOT FOUND'));
       }
-      return db.streamBuilder((context) => buildOneMonth(ticket));
+      return db2.onUserData((context, _) => buildOneMonth(ticket));
     }
-    final tickets = db.gameData.events.exchangeTickets.values.toList();
-    if (!widget.showOutdated) {
-      tickets.removeWhere((ticket) {
-        if (!ticket.isOutdated()) return false;
-        final plan = db.curUser.events.exchangeTicketOf(ticket.monthJp);
-        if (plan.enabled) return false;
-        return true;
-      });
-    }
-    tickets.sort(
-        (a, b) => a.dateJp.compareTo(b.dateJp) * (widget.reverse ? -1 : 1));
-    return db.streamBuilder(
-      (context) => ListView(
+    final tickets = db2.gameData.exchangeTickets.values.toList();
+
+    return db2.onUserData((context, _) {
+      if (!widget.showOutdated) {
+        tickets.removeWhere((ticket) {
+          if (!ticket.isOutdated()) return false;
+          final plan = db2.curUser.ticketOf(ticket.id);
+          if (plan.enabled) return false;
+          return true;
+        });
+      }
+      tickets.sort2((e) => e.id, reversed: widget.reversed);
+      return ListView(
         controller: _scrollController,
-        shrinkWrap: widget.monthJp != null,
         children: [
           hintText,
           for (var ticket in tickets) buildOneMonth(ticket),
         ],
-      ),
-    );
+      );
+    });
   }
 
   Widget get hintText {
-    String curServer = db.curUser.server.localized;
     return Card(
       child: Center(
         child: Padding(
           padding: const EdgeInsets.all(6),
           child: Text(
-            LocalizedText.of(
-                chs: '当前区服: $curServer',
-                jpn: '現在のサーバー：$curServer ',
-                eng: 'Current Server: $curServer',
-                kor: '현재 서버: $curServer'),
+            'Current Server: ${db2.curUser.region.toUpper()}',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.caption,
           ),
@@ -89,7 +88,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
   }
 
   Widget buildOneMonth(ExchangeTicket ticket) {
-    bool planned = db.curUser.events.exchangeTicketOf(ticket.monthJp).enabled;
+    bool planned = db2.curUser.ticketOf(ticket.id).enabled;
     bool outdated = ticket.isOutdated();
     Color? _plannedColor = Theme.of(context).colorScheme.secondary;
     Color? _outdatedColor = Theme.of(context).textTheme.caption?.color;
@@ -101,7 +100,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
           child: ListTile(
             contentPadding: const EdgeInsets.only(left: 12),
             title: AutoSizeText(
-              ticket.dateToStr(),
+              ticket.dateStr,
               maxLines: 1,
               maxFontSize: 16,
               style: TextStyle(
@@ -114,9 +113,9 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
               ),
             ),
             subtitle: AutoSizeText(
-              db.curUser.server == GameServer.jp
+              db2.curUser.region == Region.jp
                   ? 'max: ${ticket.days}'
-                  : 'JP ${ticket.monthJp}\nmax: ${ticket.days}',
+                  : 'JP ${ticket.year}-${ticket.month}\nmax: ${ticket.days}',
               maxLines: 2,
               maxFontSize: 12,
               style: TextStyle(
@@ -141,26 +140,23 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
   }
 
   Widget buildTrailing(ExchangeTicket ticket) {
-    final monthPlan = db.curUser.events.exchangeTicketOf(ticket.monthJp);
+    final monthPlan = db2.curUser.ticketOf(ticket.id);
     List<Widget> trailingItems = [];
-    for (var i = 0; i < 3; i++) {
-      final iconKey = ticket.items[i];
-      int leftNum = db.itemStat.leftItems[iconKey] ?? 0;
-      monthPlan.setAt(i, monthPlan.items[i].clamp2(0, ticket.days));
+    for (int i = 0; i < 3; i++) {
+      final itemId = ticket.items[i];
+      final item = db2.gameData.items[itemId];
+      int leftNum = db2.itemCenter.itemLeft[itemId] ?? 0;
+      monthPlan.counts[i] = monthPlan.counts[i].clamp2(0, ticket.days);
       final int maxValue =
-          ticket.days - Maths.sum(monthPlan.items.getRange(0, i));
+          ticket.days - Maths.sum(monthPlan.counts.getRange(0, i));
       trailingItems.add(Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           GestureDetector(
-            onTap: () => SplitRoute.push(
-              context,
-              ItemDetailPage(itemKey: iconKey),
-              // if month specified, it's a widget somewhere, don't pop detail
-              // if month is null, it's a tab of events in master layout
-              popDetail: widget.monthJp == null,
-            ),
-            child: db.getIconImage(iconKey, width: 42),
+            onTap: () {
+              router.push(url: Routes.itemI(itemId));
+            },
+            child: db2.getIconImage(Item.getIcon(itemId), width: 42),
           ),
           SizedBox(
             width: 36,
@@ -168,14 +164,12 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
               padding: const EdgeInsets.symmetric(),
               child: Column(
                 children: <Widget>[
-                  Text(monthPlan.items[i] == 0
+                  Text(monthPlan.counts[i] == 0
                       ? ''
-                      : monthPlan.items[i].toString()),
+                      : monthPlan.counts[i].toString()),
                   const Divider(height: 1),
                   DefaultTextStyle(
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText2!, //body1->bodyText2
+                    style: Theme.of(context).textTheme.bodyText2!,
                     child: AutoSizeText(
                       leftNum.toString(),
                       maxLines: 1,
@@ -188,7 +182,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
               ),
               onPressed: () {
                 Picker(
-                  title: Text('${ticket.dateToStr()} ${Item.lNameOf(iconKey)}'),
+                  title: Text('${ticket.dateStr} ${item?.lName.l}'),
                   itemExtent: 36,
                   height: min(250, MediaQuery.of(context).size.height - 220),
                   hideHeader: true,
@@ -201,20 +195,20 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                       NumberPickerColumn(
                         items: List.generate(
                             maxValue + 2, (i) => i == 0 ? 0 : maxValue + 1 - i),
-                        initValue: monthPlan.items[i],
+                        initValue: monthPlan.counts[i],
                       ),
                     ],
                   ),
                   onConfirm: (picker, values) {
-                    monthPlan.setAt(i, picker.getSelectedValues()[0]);
+                    monthPlan.counts[i] = picker.getSelectedValues()[0];
                     for (var j = 0; j < 3; j++) {
                       final int v = min(
-                          monthPlan.items[j],
+                          monthPlan.counts[j],
                           ticket.days -
-                              Maths.sum(monthPlan.items.getRange(0, j)));
-                      monthPlan.setAt(j, v);
+                              Maths.sum(monthPlan.counts.getRange(0, j)));
+                      monthPlan.counts[j] = v;
                     }
-                    db.itemStat.updateEventItems();
+                    db2.itemCenter.updateExchangeTickets();
                   },
                 ).showDialog(context);
               },

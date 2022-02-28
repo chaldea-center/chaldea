@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:collection';
 import 'dart:math';
 
 import 'package:chaldea/models/models.dart';
@@ -27,7 +26,6 @@ class ItemCenter {
   ItemCenter([this._user]);
 
   List<int> _validItems = [];
-  late HashSet<int> _validItemSet;
   late _MatrixManager<int, int, SvtMatCostDetail<int>> _svtCur; //0->cur
   late _MatrixManager<int, int, SvtMatCostDetail<int>>
       _svtDemands; //cur->target
@@ -57,7 +55,6 @@ class ItemCenter {
     _validItems.addAll(Items.specialItems);
     _validItems.addAll(Items.specialSvtMat);
     _validItems = _validItems.toSet().toList();
-    _validItemSet = HashSet.from(_validItems);
     // svt
     for (final svt in db2.gameData.servants.values) {
       if (svt.isUserSvt) _svtIds.add(svt.collectionNo);
@@ -225,7 +222,7 @@ class ItemCenter {
     Map<int, int> result = {};
     // shop
     final plan = db2.curUser.eventPlanOf(event.id);
-    if (!plan.planned) return result;
+    if (!plan.enabled) return result;
     if (plan.shop) {
       result.addDict({
         for (final k in event.itemShop.keys)
@@ -290,7 +287,7 @@ class ItemCenter {
   void updateExchangeTickets({bool notify = true}) {
     _statTicket.clear();
     for (final ticket in db2.gameData.exchangeTickets.values) {
-      final plan = db2.curUser.ticketOf(ticket.key);
+      final plan = db2.curUser.ticketOf(ticket.id);
       for (int i = 0; i < 3; i++) {
         _statTicket.addNum(ticket.items[i], plan.counts[i]);
       }
@@ -312,6 +309,7 @@ class ItemCenter {
       ..addDict(statObtain)
       ..addDict(statSvtDemands.multiple(-1));
     streamController.sink.add(this);
+    db2.notifyUserdata();
   }
 
   Map<int, SvtMatCostDetail<int>> getItemCostDetail(
@@ -393,17 +391,6 @@ class SvtMatCostDetail<T> {
     required this.special,
     required this.all,
   });
-
-  // static SvtMatCostDetail<int> fromList(List<SvtMatCostDetail<int>> elements) {
-  //   return SvtMatCostDetail._(
-  //     ascension: ascension,
-  //     activeSkill: activeSkill,
-  //     appendSkill: appendSkill,
-  //     costume: costume,
-  //     special: special,
-  //     all: all,
-  //   );
-  // }
 
   List<T> get parts => [ascension, activeSkill, appendSkill, costume, special];
 
