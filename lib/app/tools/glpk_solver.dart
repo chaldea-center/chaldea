@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:catcher/catcher.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/js_engine/js_engine.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:chaldea/models/models.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class FreeLPSolver {

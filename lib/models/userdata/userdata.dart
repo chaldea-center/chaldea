@@ -63,8 +63,10 @@ class User {
   Region region;
   Map<int, SvtStatus> servants;
   List<Map<int, SvtPlan>> svtPlanGroups;
+
   int get curSvtPlanNo => _curSvtPlanNo.clamp(0, svtPlanGroups.length - 1);
   int _curSvtPlanNo;
+
   set curSvtPlanNo(int v) =>
       _curSvtPlanNo = v.clamp(0, svtPlanGroups.length - 1);
   Map<int, String> planNames;
@@ -211,6 +213,7 @@ class SvtStatus {
 
   @JsonKey(ignore: true)
   bool get favorite => cur.favorite;
+
   set favorite(bool v) => cur.favorite = v;
 }
 
@@ -234,7 +237,9 @@ class SvtPlan {
 
   // set it later according to rarity and event svt?
   int? _npLv;
+
   int get npLv => _npLv ?? 1;
+
   set npLv(int v) => _npLv = v;
 
   SvtPlan({

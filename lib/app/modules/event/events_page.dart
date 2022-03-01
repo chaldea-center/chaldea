@@ -2,8 +2,9 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'tabs/exchange_ticket_tab.dart';
 import 'tabs/limit_event_tab.dart';
 import 'tabs/main_story_tab.dart';
@@ -18,7 +19,9 @@ class EventListPage extends StatefulWidget {
 class _EventListPageState extends State<EventListPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+
   bool get reversed => db2.settings.display.eventsReversed;
+
   bool get showOutdated => db2.settings.display.eventsShowOutdated;
   bool showSpecialRewards = false;
 

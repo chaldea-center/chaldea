@@ -8,6 +8,7 @@ class AppShell extends StatefulWidget {
   final AppState appState;
   final AppRouterDelegate routerDelegate;
   final bool active;
+
   const AppShell(
       {Key? key,
       required this.appState,

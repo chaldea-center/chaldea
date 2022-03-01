@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../packages/mob_stat.dart';
 import 'routes/delegate.dart';
+
 export 'routes/routes.dart';
 
 final rootRouter = RootAppRouterDelegate();

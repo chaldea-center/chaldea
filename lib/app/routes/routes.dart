@@ -24,22 +24,27 @@ class Routes {
   static const String bootstrap = '/welcome';
   static const String servants = '/servants';
   static const String servant = '/servant';
+
   static String servantI(int id) => '/servant/$id';
   static const String craftEssences = '/craft-essences';
   static const String craftEssence = '/craft-essence';
   static const String commandCodes = '/command-codes';
   static const String commandCode = '/command-code';
+
   static String commandCodeI(int id) => '/command-code/$id';
   static const String mysticCodes = '/mystic-codes';
 
   // static const String mystic_code = '/mystic-code';
   static const String events = '/events';
   static const String event = '/event';
+
   static String eventI(int id) => '/event/$id';
   static const String war = '/war';
+
   static String warI(int id) => '/war/$id';
   static const String items = '/items';
   static const String item = '/item';
+
   static String itemI(int id) => '/item/$id';
   static const String plans = '/plans';
   static const String freeCalc = '/free-calc';

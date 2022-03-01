@@ -132,6 +132,7 @@ class SvtFilterData {
   // FilterGroupData svtDuplicated= FilterGroupData();
 
   FilterGroupData<bool> planCompletion = FilterGroupData();
+
   // FilterGroupData skillLevel;
   FilterGroupData<int> priority = FilterGroupData();
   FilterGroupData<SvtObtain> obtain = FilterGroupData();

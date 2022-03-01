@@ -1,8 +1,8 @@
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:chaldea/models/models.dart';
 
 import '../../common/quest_card.dart';
 
@@ -17,6 +17,7 @@ class ItemObtainFreeTab extends StatefulWidget {
 
 class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
   bool get sortByAP => db2.settings.display.itemQuestsSortByAp;
+
   set sortByAP(bool v) => db2.settings.display.itemQuestsSortByAp = v;
   bool use6th = db2.curUser.use6thDropRate;
 

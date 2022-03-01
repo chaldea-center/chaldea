@@ -1,7 +1,7 @@
 import 'package:chaldea/components/localized/localized.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:chaldea/models/models.dart';
 
 import '../../../generated/l10n.dart';
 import '../common/quest_card.dart';

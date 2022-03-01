@@ -102,6 +102,7 @@ class Item {
   }
 
   Transl<String, String> get lName => Transl.itemNames(name);
+
   String get route => Routes.itemI(id);
 
   // include special items(entity)
@@ -166,6 +167,7 @@ class Items {
   static int grailFragId = 7998;
   static int grailId = 7999;
   static int lanternId = 1000;
+
   // not item, icon only
   static int costumeIconId = 23;
   static int npRankUpIconId = 8;

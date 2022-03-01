@@ -27,7 +27,9 @@ class Transl<K, V> {
 
   static bool get isJP =>
       db2.settings.resolvedPreferredRegions.first == Region.jp;
+
   static get isCN => db2.settings.resolvedPreferredRegions.first == Region.cn;
+
   static get isEN => db2.settings.resolvedPreferredRegions.first == Region.na;
 
   V get l {

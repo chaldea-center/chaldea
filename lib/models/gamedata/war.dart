@@ -60,9 +60,13 @@ class NiceWar {
       _$NiceWarFromJson(json);
 
   bool get isMainStory => id >= 100 && id < 1000;
+
   Transl<String, String> get lLongName => Transl.warNames(longName);
+
   String get route => Routes.warI(id);
+
   bool isOutdated() => false;
+
   List<Quest> get quests => [for (final spot in spots) ...spot.quests];
 
   @JsonKey(ignore: true)

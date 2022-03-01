@@ -2,18 +2,20 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:chaldea/models/models.dart';
 import 'package:flutter/services.dart';
+
 import '../../common/not_found.dart';
 
 class EventDetailPage extends StatefulWidget {
   final int? eventId;
   final Event? event;
+
   EventDetailPage({Key? key, this.eventId, this.event}) : super(key: key);
 
   @override
@@ -22,6 +24,7 @@ class EventDetailPage extends StatefulWidget {
 
 class _EventDetailPageState extends State<EventDetailPage> {
   Event? _event;
+
   Event get event => _event!;
 
   @override

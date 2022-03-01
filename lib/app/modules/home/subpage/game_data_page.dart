@@ -25,6 +25,7 @@ class GameDataPage extends StatefulWidget {
 
 class _GameDataPageState extends State<GameDataPage> {
   final loader = GameDataLoader();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

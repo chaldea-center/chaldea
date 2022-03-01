@@ -765,8 +765,11 @@ class NiceCostume {
 
   String get face =>
       'https://static.atlasacademy.io/JP/Faces/f_${battleCharaId}0.png';
+
   String get icon => face;
+
   String get borderedIcon => icon.replaceAll('.png', '_bordered.png');
+
   String get charaGraph =>
       'https://static.atlasacademy.io/JP/CharaGraph/$battleCharaId/$battleCharaId.png';
 }

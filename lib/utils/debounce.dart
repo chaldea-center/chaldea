@@ -6,6 +6,7 @@ typedef EasyDebounceCallback = void Function();
 class _EasyDebounceOperation {
   EasyDebounceCallback callback;
   Timer timer;
+
   _EasyDebounceOperation(this.callback, this.timer);
 }
 

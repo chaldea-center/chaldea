@@ -10,6 +10,7 @@ class FreeQuestQueryTab extends StatefulWidget {
 
 class _FreeQuestQueryTabState extends State<FreeQuestQueryTab> {
   late ScrollController _scrollController;
+
   @override
   void initState() {
     super.initState();

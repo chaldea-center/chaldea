@@ -5,7 +5,9 @@ import 'localized_base.dart';
 export 'localized_base.dart';
 
 part 'groups/localized_basic.dart';
+
 part 'groups/localized_enemy.dart';
+
 part 'groups/localized_master_mission.dart';
 
 class Localized {

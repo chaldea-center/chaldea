@@ -738,6 +738,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
   void updateState() {
     svt.updateStat();
     setState(() {});
+    db2.saveUserData();
   }
 
   void _onEnhance() {

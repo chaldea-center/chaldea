@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 import 'platform_io.dart' if (dart.library.js) 'platform_web.dart';
+
 export 'platform_interface.dart' show WebRenderMode;
 
 class PlatformU {

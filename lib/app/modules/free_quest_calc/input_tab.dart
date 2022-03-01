@@ -1,13 +1,12 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter/material.dart';
-import 'package:chaldea/models/models.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import '../../tools/glpk_solver.dart';
 import 'filter_dialog.dart';
@@ -338,6 +337,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
 
 class _ItemSelectPage extends StatelessWidget {
   final ValueChanged<int> onSelected;
+
   const _ItemSelectPage({Key? key, required this.onSelected}) : super(key: key);
 
   @override

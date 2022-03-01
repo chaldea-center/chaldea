@@ -98,6 +98,7 @@ class Quest {
   factory Quest.fromJson(Map<String, dynamic> json) => _$QuestFromJson(json);
 
   Transl<String, String> get lName => Transl.questNames(name);
+
   Transl<String, String> get lSpot => Transl.spotNames(spotName);
 
   String get dispName {
@@ -366,9 +367,11 @@ class EnemyMisc {
   List<int>? equipTargetIds;
   int npcSvtClassId;
   int overwriteSvtId;
+
   // List<int> userCommandCodeIds;
   List<int>? commandCardParam;
   int status;
+
   EnemyMisc({
     this.displayType = 1,
     this.npcSvtType = 2,

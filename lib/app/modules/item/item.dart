@@ -1,16 +1,16 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/tools/item_center.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/basic.dart';
 import 'package:flutter/material.dart';
-import 'package:chaldea/models/models.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'tabs/cost_detail.dart';
+import 'tabs/item_info.dart';
 // import 'tabs/item_obtain_interlude.dart';
 import 'tabs/obtain_event.dart';
 import 'tabs/obtain_free.dart';
-import 'tabs/cost_detail.dart';
-import 'tabs/item_info.dart';
 import 'tabs/obtain_interlude.dart';
 
 class ItemDetailPage extends StatefulWidget {
