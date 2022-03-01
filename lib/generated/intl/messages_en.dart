@@ -67,7 +67,6 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m18(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about_app": MessageLookupByLibrary.simpleMessage("About"),
         "about_app_declaration_text": MessageLookupByLibrary.simpleMessage(
@@ -103,6 +102,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ascension_short": MessageLookupByLibrary.simpleMessage("Ascen"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("Ascension"),
         "attachment": MessageLookupByLibrary.simpleMessage("Attachment"),
+        "auto_reset": MessageLookupByLibrary.simpleMessage("Auto reset"),
         "auto_update": MessageLookupByLibrary.simpleMessage("Auto Update"),
         "backup": MessageLookupByLibrary.simpleMessage("Backup"),
         "backup_data_alert":
@@ -159,6 +159,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "cur_account": MessageLookupByLibrary.simpleMessage("Current Account"),
         "cur_ap": MessageLookupByLibrary.simpleMessage("Current AP"),
         "current_": MessageLookupByLibrary.simpleMessage("Current"),
+        "dark_mode": MessageLookupByLibrary.simpleMessage("Dark mode"),
+        "dark_mode_dark": MessageLookupByLibrary.simpleMessage("Dark"),
+        "dark_mode_light": MessageLookupByLibrary.simpleMessage("Light color"),
+        "dark_mode_system": MessageLookupByLibrary.simpleMessage("System"),
         "dataset_goto_download_page":
             MessageLookupByLibrary.simpleMessage("Goto download webpage"),
         "dataset_goto_download_page_hint":
@@ -474,6 +478,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Missions"),
         "max_ap": MessageLookupByLibrary.simpleMessage("Maximum AP"),
         "more": MessageLookupByLibrary.simpleMessage("More"),
+        "move_down": MessageLookupByLibrary.simpleMessage("Move down"),
+        "move_up": MessageLookupByLibrary.simpleMessage("Move up"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("Mystic Code"),
         "new_account": MessageLookupByLibrary.simpleMessage("New account"),
         "next_card": MessageLookupByLibrary.simpleMessage("Next"),
@@ -488,6 +494,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Noble Phantasm"),
         "noble_phantasm_level":
             MessageLookupByLibrary.simpleMessage("Noble Phantasm"),
+        "not_implemented":
+            MessageLookupByLibrary.simpleMessage("Not yet implemented"),
         "obtain_methods": MessageLookupByLibrary.simpleMessage("Obtains"),
         "ok": MessageLookupByLibrary.simpleMessage("OK"),
         "open": MessageLookupByLibrary.simpleMessage("Open"),
@@ -524,6 +532,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest": MessageLookupByLibrary.simpleMessage("Quest"),
         "quest_condition": MessageLookupByLibrary.simpleMessage("Conditions"),
         "rarity": MessageLookupByLibrary.simpleMessage("Rarity"),
+        "rate_app_store":
+            MessageLookupByLibrary.simpleMessage("Rate on App Store"),
+        "rate_play_store":
+            MessageLookupByLibrary.simpleMessage("Rate on Google Play"),
         "release_page": MessageLookupByLibrary.simpleMessage("Release Page"),
         "reload_data_success":
             MessageLookupByLibrary.simpleMessage("Import successfully"),
