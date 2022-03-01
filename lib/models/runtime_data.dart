@@ -5,6 +5,7 @@ import 'package:screenshot/screenshot.dart';
 
 import '../components/git_tool.dart';
 import '../packages/app_info.dart';
+import '../packages/platform/platform.dart';
 
 class RuntimeData {
   AppVersion? upgradableVersion;
@@ -39,4 +40,6 @@ class RuntimeData {
 
   /// for db2
   DataVersion? downloadedDataVersion;
+
+  WebRenderMode? webRendererCanvasKit;
 }

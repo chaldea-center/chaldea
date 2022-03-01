@@ -8,6 +8,7 @@ import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/tile_items.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -191,6 +192,39 @@ class _SettingsPageState extends State<SettingsPage> {
                   );
                 },
               ),
+              if (kIsWeb)
+                ListTile(
+                  title: const Text('Web Renderer'),
+                  subtitle: const Text('Restart to take affect'),
+                  trailing: DropdownButton<WebRenderMode>(
+                    value: db2.runtimeData.webRendererCanvasKit ??
+                        (kPlatformMethods.rendererCanvasKit
+                            ? WebRenderMode.canvaskit
+                            : WebRenderMode.html),
+                    items: const [
+                      DropdownMenuItem(
+                        child: Text('auto'),
+                        value: WebRenderMode.auto,
+                      ),
+                      DropdownMenuItem(
+                        child: Text('canvaskit'),
+                        value: WebRenderMode.canvaskit,
+                      ),
+                      DropdownMenuItem(
+                        child: Text('html'),
+                        value: WebRenderMode.html,
+                      ),
+                    ],
+                    onChanged: (v) {
+                      if (v != null) {
+                        kPlatformMethods.setLocalStorage(
+                            'flutterWebRenderer', v.name);
+                        db2.runtimeData.webRendererCanvasKit = v;
+                        setState(() {});
+                      }
+                    },
+                  ),
+                )
             ],
           ),
           SliverTileGroup(

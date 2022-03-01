@@ -20,9 +20,9 @@ jobs:
       - run: flutter clean
       - run: flutter pub get
 
-      - name: Build with web-renderer=canvaskit
+      - name: Build with web-renderer=auto
         run: |
-            flutter build web --web-renderer canvaskit
+            flutter build web --web-renderer auto
             dart ./scripts/patch_web_build.dart
 
       - name: Push to app repo

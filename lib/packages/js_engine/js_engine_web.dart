@@ -14,6 +14,7 @@ class JsEngine implements JsEngineInterface {
     _completer = Completer();
     Future<void>.microtask(() async {
       if (callback != null) await callback();
+      _completer!.complete();
     }).catchError(_completer!.completeError);
     return _completer!.future;
   }

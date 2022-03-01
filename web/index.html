@@ -111,6 +111,7 @@
     <script>
       let _host = window.location.hostname.toLowerCase();
       window.isCNHost =
+        window.localStorage.getItem("useProxy") == "true" ||
         _host.startsWith("cn.") ||
         ["localhost", "127.0.0.1", "0.0.0.0"].indexOf(_host) != -1 ||
         _host.startsWith("192.168");

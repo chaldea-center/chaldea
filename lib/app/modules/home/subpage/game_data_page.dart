@@ -66,22 +66,25 @@ class _GameDataPageState extends State<GameDataPage> {
                 )
             ],
           ),
-          if (!kIsWeb)
-            TileGroup(
-              header: S.current.download_source,
-              footer: '用于App更新, 若国内无法连接Github',
-              children: [
-                SwitchListTile.adaptive(
-                  value: db2.settings.useProxy,
-                  title: const Text('Use Proxy'),
-                  onChanged: (v) {
-                    setState(() {
-                      db2.settings.useProxy = v;
-                    });
-                  },
-                ),
-              ],
-            ),
+          TileGroup(
+            header: S.current.download_source,
+            footer: '用于App更新, 若国内无法连接Github',
+            children: [
+              SwitchListTile.adaptive(
+                value: db2.settings.useProxy,
+                title: const Text('Use Proxy'),
+                onChanged: (v) {
+                  setState(() {
+                    db2.settings.useProxy = v;
+                    if (kIsWeb) {
+                      kPlatformMethods.setLocalStorage(
+                          'useProxy', v.toString());
+                    }
+                  });
+                },
+              ),
+            ],
+          ),
           TileGroup(
             header: S.current.gamedata,
             footer: S.current.download_latest_gamedata_hint,

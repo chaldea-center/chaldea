@@ -627,11 +627,7 @@ class _ItemListTabState extends State<ItemListTab> {
     return ListTile(
       onTap: () {
         FocusScope.of(context).unfocus();
-        SplitRoute.push(
-          context,
-          ItemDetailPage(itemId: itemId),
-          popDetail: true,
-        );
+        router.push(url: Routes.itemI(itemId));
       },
       horizontalTitleGap: 8,
       contentPadding: const EdgeInsets.symmetric(horizontal: 6),
