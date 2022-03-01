@@ -358,6 +358,34 @@ class EnemyDrop {
 }
 
 @JsonSerializable()
+class EnemyMisc {
+  int displayType;
+  int npcSvtType;
+  List<int>? passiveSkill;
+  int equipTargetId1;
+  List<int>? equipTargetIds;
+  int npcSvtClassId;
+  int overwriteSvtId;
+  // List<int> userCommandCodeIds;
+  List<int>? commandCardParam;
+  int status;
+  EnemyMisc({
+    this.displayType = 1,
+    this.npcSvtType = 2,
+    this.passiveSkill,
+    this.equipTargetId1 = 0,
+    this.equipTargetIds,
+    this.npcSvtClassId = 0,
+    this.overwriteSvtId = 0,
+    this.commandCardParam,
+    this.status = 0,
+  });
+
+  factory EnemyMisc.fromJson(Map<String, dynamic> json) =>
+      _$EnemyMiscFromJson(json);
+}
+
+@JsonSerializable()
 class QuestEnemy {
   DeckType deck;
   int deckId;
@@ -388,10 +416,10 @@ class QuestEnemy {
   EnemyServerMod serverMod;
 
   // EnemyAi ai;
-  // EnemyScript enemyScript;
+  EnemyScript enemyScript;
 
   // limit
-  // misc
+  EnemyMisc misc;
 
   QuestEnemy({
     required this.deck,
@@ -420,11 +448,13 @@ class QuestEnemy {
     required this.serverMod,
     // required this.ai,
     EnemyScript? enemyScript,
-  }) : classPassive = classPassive ?? EnemyPassive();
+    EnemyMisc? misc,
+  })  : classPassive = classPassive ?? EnemyPassive(),
+        enemyScript = enemyScript ?? EnemyScript(),
+        misc = misc ?? EnemyMisc();
 
   // skills = skills ?? EnemySkill(),
   // noblePhantasm = noblePhantasm ?? EnemyTd(),
-  // enemyScript = enemyScript ?? EnemyScript();
 
   factory QuestEnemy.fromJson(Map<String, dynamic> json) =>
       _$QuestEnemyFromJson(json);

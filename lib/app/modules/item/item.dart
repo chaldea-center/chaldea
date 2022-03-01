@@ -11,6 +11,7 @@ import 'tabs/obtain_event.dart';
 import 'tabs/obtain_free.dart';
 import 'tabs/cost_detail.dart';
 import 'tabs/item_info.dart';
+import 'tabs/obtain_interlude.dart';
 
 class ItemDetailPage extends StatefulWidget {
   final int itemId;
@@ -95,9 +96,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
           ItemObtainFreeTab(itemId: widget.itemId),
           ItemObtainEventTab(
               itemId: widget.itemId, filtrateOutdated: filtrateOutdated),
-          const SizedBox(),
-          // ItemObtainInterludeTab(
-          //     itemKey: widget.itemKey, favorite: favorite, sortType: sortType),
+          ItemObtainInterludeTab(itemId: widget.itemId, favorite: favorite),
           ItemInfoTab(itemId: widget.itemId),
         ],
       ),

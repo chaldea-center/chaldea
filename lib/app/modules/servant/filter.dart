@@ -111,19 +111,17 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
         //     });
         //   },
         // ),
-        // FilterGroup(
-        //   title: Text(S.of(context).plan, style: textStyle),
-        //   options: SvtFilterData.planCompletionData,
-        //   values: filterData.planCompletion,
-        //   optionBuilder: (v) => Text(v == '0'
-        //       ? S.of(context).filter_plan_not_reached
-        //       : S.of(context).filter_plan_reached),
-        //   onFilterChanged: (value) {
-        //     // object should be the same, need not to update manually
-        //     filterData.planCompletion = value;
-        //     update();
-        //   },
-        // ),
+        FilterGroup<bool>(
+          title: Text(S.of(context).plan, style: textStyle),
+          options: const [false, true],
+          values: filterData.planCompletion,
+          optionBuilder: (v) => Text(v
+              ? S.of(context).filter_plan_reached
+              : S.of(context).filter_plan_not_reached),
+          onFilterChanged: (value) {
+            update();
+          },
+        ),
         // FilterGroup(
         //   title: Text(S.of(context).filter_skill_lv, style: textStyle),
         //   options: SvtFilterData.skillLevelData,
@@ -277,7 +275,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     children: List.generate(2, (index) {
-                      final icon = SvtClass.ALL.icon(index == 0 ? 3 : 1);
+                      final icon = SvtClass.ALL.icon(index == 0 ? 5 : 1);
                       return GestureDetector(
                         child: db2.getIconImage(icon),
                         onTap: () {
@@ -305,7 +303,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
                         final selected =
                             filterData.svtClass.options.contains(className);
                         Widget icon = db2.getIconImage(
-                            className.icon(selected ? 3 : 1),
+                            className.icon(selected ? 5 : 1),
                             aspectRatio: 1);
                         if (className == SvtClass.beastII && !selected) {
                           icon = Opacity(opacity: 0.5, child: icon);

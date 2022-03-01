@@ -113,9 +113,9 @@ class CraftListPageState extends State<CraftListPage>
   @override
   Widget gridItemBuilder(CraftEssence ce) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 3),
+      padding: const EdgeInsets.all(1),
       child: GestureDetector(
-        child: db2.getIconImage(ce.extraAssets.faces.equip?[0]),
+        child: db2.getIconImage(ce.borderedIcon),
         onTap: () => _onTapCard(ce),
       ),
     );

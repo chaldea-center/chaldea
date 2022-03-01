@@ -102,7 +102,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
   @override
   Widget gridItemBuilder(CommandCode cc) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 3),
+      padding: const EdgeInsets.all(1),
       child: GestureDetector(
         child: db2.getIconImage(cc.borderedIcon),
         onTap: () => _onTapCard(cc),

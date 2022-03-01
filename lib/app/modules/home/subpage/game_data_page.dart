@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/components/localized/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
@@ -22,6 +24,7 @@ class GameDataPage extends StatefulWidget {
 }
 
 class _GameDataPageState extends State<GameDataPage> {
+  final loader = GameDataLoader();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,13 +42,27 @@ class _GameDataPageState extends State<GameDataPage> {
                 ),
               ),
               // TODO: 不兼容版本提示
-              if (db2.runtimeData.downloadedDataVersion != null)
+              if (loader.loadedGameData != null &&
+                  loader.loadedGameData!.version.timestamp >
+                      db2.gameData.version.timestamp)
                 ListTile(
-                  title: const Text('数据有更新，请点击更新或重启'),
+                  title:
+                      const Text('Update Available, click or restart to load'),
                   trailing: Text(
                     db2.runtimeData.downloadedDataVersion!.text(true),
                     style: TextStyle(color: Theme.of(context).errorColor),
                   ),
+                  onTap: () {
+                    if (loader.loadedGameData != null) {
+                      for (final child in rootRouter.appState.children) {
+                        child.popAll();
+                      }
+                      db2.gameData = loader.loadedGameData!;
+                      db2.itemCenter.init();
+                      db2.notifyAppUpdate();
+                      EasyLoading.showSuccess('Updated');
+                    }
+                  },
                 )
             ],
           ),

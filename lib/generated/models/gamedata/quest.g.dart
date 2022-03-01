@@ -300,6 +300,24 @@ EnemyDrop _$EnemyDropFromJson(Map json) => EnemyDrop(
       runs: json['runs'] as int,
     );
 
+EnemyMisc _$EnemyMiscFromJson(Map json) => EnemyMisc(
+      displayType: json['displayType'] as int? ?? 1,
+      npcSvtType: json['npcSvtType'] as int? ?? 2,
+      passiveSkill: (json['passiveSkill'] as List<dynamic>?)
+          ?.map((e) => e as int)
+          .toList(),
+      equipTargetId1: json['equipTargetId1'] as int? ?? 0,
+      equipTargetIds: (json['equipTargetIds'] as List<dynamic>?)
+          ?.map((e) => e as int)
+          .toList(),
+      npcSvtClassId: json['npcSvtClassId'] as int? ?? 0,
+      overwriteSvtId: json['overwriteSvtId'] as int? ?? 0,
+      commandCardParam: (json['commandCardParam'] as List<dynamic>?)
+          ?.map((e) => e as int)
+          .toList(),
+      status: json['status'] as int? ?? 0,
+    );
+
 QuestEnemy _$QuestEnemyFromJson(Map json) => QuestEnemy(
       deck: $enumDecode(_$DeckTypeEnumMap, json['deck']),
       deckId: json['deckId'] as int,
@@ -330,6 +348,13 @@ QuestEnemy _$QuestEnemyFromJson(Map json) => QuestEnemy(
               Map<String, dynamic>.from(json['classPassive'] as Map)),
       serverMod: EnemyServerMod.fromJson(
           Map<String, dynamic>.from(json['serverMod'] as Map)),
+      enemyScript: json['enemyScript'] == null
+          ? null
+          : EnemyScript.fromJson(
+              Map<String, dynamic>.from(json['enemyScript'] as Map)),
+      misc: json['misc'] == null
+          ? null
+          : EnemyMisc.fromJson(Map<String, dynamic>.from(json['misc'] as Map)),
     );
 
 const _$DeckTypeEnumMap = {

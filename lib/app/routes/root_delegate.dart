@@ -89,7 +89,6 @@ class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>
   @override
   RouteConfiguration? get currentConfiguration {
     final v = appState.activeRouter.currentConfiguration;
-    print('router config: ${v?.url}');
     return v;
   }
 

@@ -6,6 +6,13 @@ part of '../../../models/gamedata/servant.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+BasicCostume _$BasicCostumeFromJson(Map json) => BasicCostume(
+      id: json['id'] as int,
+      costumeCollectionNo: json['costumeCollectionNo'] as int,
+      battleCharaId: json['battleCharaId'] as int,
+      shortName: json['shortName'] as String,
+    );
+
 BasicServant _$BasicServantFromJson(Map json) => BasicServant(
       id: json['id'] as int,
       collectionNo: json['collectionNo'] as int,
@@ -18,6 +25,11 @@ BasicServant _$BasicServantFromJson(Map json) => BasicServant(
       atkMax: json['atkMax'] as int,
       hpMax: json['hpMax'] as int,
       face: json['face'] as String,
+      costume: (json['costume'] as Map?)?.map(
+            (k, e) => MapEntry(int.parse(k as String),
+                BasicCostume.fromJson(Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
     );
 
 const _$SvtTypeEnumMap = {
@@ -355,6 +367,10 @@ ExtraAssets _$ExtraAssetsFromJson(Map json) => ExtraAssets(
           ? const ExtraAssetsUrl()
           : ExtraAssetsUrl.fromJson(
               Map<String, dynamic>.from(json['image'] as Map)),
+      spriteModel: json['spriteModel'] == null
+          ? const ExtraAssetsUrl()
+          : ExtraAssetsUrl.fromJson(
+              Map<String, dynamic>.from(json['spriteModel'] as Map)),
     );
 
 CardDetail _$CardDetailFromJson(Map json) => CardDetail(

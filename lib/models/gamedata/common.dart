@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import '../../app/tools/gamedata_loader.dart';
 import 'event.dart';
+import 'wiki_data.dart';
 
 part '../../generated/models/gamedata/common.g.dart';
 part 'common_helper.dart';
@@ -25,6 +26,12 @@ class NiceTrait {
   @override
   String toString() {
     return '$runtimeType($id)';
+  }
+
+  String get showName {
+    final s = Transl.trait(id).l;
+    if (negative == true) return 'Not $s';
+    return s;
   }
 }
 
@@ -152,12 +159,47 @@ enum SvtClass {
   MIX, // ignore: constant_identifier_names
 }
 
+const kSvtClassShotName = {
+  SvtClass.saber: '剣',
+  SvtClass.archer: '弓',
+  SvtClass.lancer: '槍',
+  SvtClass.rider: '騎',
+  SvtClass.caster: '術',
+  SvtClass.assassin: '殺',
+  SvtClass.berserker: '狂',
+  SvtClass.avenger: '讐',
+  SvtClass.ruler: '裁',
+  SvtClass.moonCancer: '月',
+  SvtClass.alterEgo: 'AE',
+  SvtClass.foreigner: '降',
+  SvtClass.shielder: '盾',
+  SvtClass.demonGodPillar: '?',
+  SvtClass.pretender: '偽',
+  SvtClass.grandCaster: '術',
+  SvtClass.beastII: '兽II',
+  SvtClass.ushiChaosTide: '?',
+  SvtClass.beastI: '獸I',
+  SvtClass.beastIIIR: '獸IIIR',
+  SvtClass.beastIIIL: '獸IIIL',
+  SvtClass.beastIV: '獸IV',
+  SvtClass.beastUnknown: '獸',
+  SvtClass.unknown: '?',
+  SvtClass.agarthaPenth: '?',
+  SvtClass.cccFinaleEmiyaAlter: '?',
+  SvtClass.salemAbby: '?',
+};
+
+const _kSvtClassRarityMap = {0: 0, 1: 1, 2: 1, 3: 2, 4: 3, 5: 3};
+
 extension SvtClassX on SvtClass {
   int get id => kSvtClassIdsReverse[this]!;
 
   String icon(int rarity) {
+    rarity = _kSvtClassRarityMap[rarity] ?? rarity;
     return Atlas.asset('ClassIcons/class${rarity}_$id.png');
   }
+
+  String get shortName => kSvtClassShotName[this] ?? '?';
 
   static List<SvtClass> regularAll = [
     ...regular,

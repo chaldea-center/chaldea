@@ -131,7 +131,7 @@ class SvtFilterData {
 
   // FilterGroupData svtDuplicated= FilterGroupData();
 
-  // FilterGroupData planCompletion;
+  FilterGroupData<bool> planCompletion = FilterGroupData();
   // FilterGroupData skillLevel;
   FilterGroupData<int> priority = FilterGroupData();
   FilterGroupData<SvtObtain> obtain = FilterGroupData();
@@ -164,6 +164,7 @@ class SvtFilterData {
         svtClass,
         rarity,
         attribute,
+        planCompletion,
         priority,
         obtain,
         npColor,
@@ -377,6 +378,5 @@ class CmdCodeFilterData {
 enum FavoriteState {
   all,
   owned,
-  planned,
   other,
 }

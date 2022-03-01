@@ -108,18 +108,17 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 eng: 'Servant List Page',
                 kor: '서번트 리스트 페이지'),
             children: [
-              // SwitchListTile.adaptive(
-              //   value: db.appSetting.showClassFilterOnTop,
-              //   title: Text(LocalizedText.of(
-              //       chs: '显示职阶筛选按钮',
-              //       jpn: 'クラスフィルターを表示',
-              //       eng: 'Show Class Filter',
-              //       kor: '클래스 필터 표시')),
-              //   onChanged: (v) async {
-              //     db.appSetting.showClassFilterOnTop = v;
-              //     setState(() {});
-              //   },
-              // ),
+              SwitchListTile.adaptive(
+                title: const Text('Auto Turn on PlanNotReach'),
+                subtitle: const Text('Plans List Page'),
+                value: db2.settings.display.autoTurnOnPlanNotReach,
+                onChanged: (v) {
+                  setState(() {
+                    db2.settings.display.autoTurnOnPlanNotReach = v;
+                  });
+                },
+                controlAffinity: ListTileControlAffinity.trailing,
+              ),
               ListTile(
                 title: Text(LocalizedText.of(
                   chs: '「关注」按钮默认筛选',

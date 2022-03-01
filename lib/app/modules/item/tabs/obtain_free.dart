@@ -4,6 +4,8 @@ import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:chaldea/models/models.dart';
 
+import '../../common/quest_card.dart';
+
 class ItemObtainFreeTab extends StatefulWidget {
   final int itemId;
 
@@ -96,13 +98,14 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
     for (var i = 0; i < dropRateData.questIds.length; i++) {
       if (dropMatrix[i] <= 0) continue;
       int questId = dropRateData.questIds[i];
-      final apRate = dropRateData.apCosts[i] / dropMatrix[i] * 100,
+      final apRate = dropRateData.apCosts[i] / dropMatrix[i],
           dropRate = dropMatrix[i];
-      final dropRateString = dropRate.toStringAsFixed(2),
+      final dropRateString = (dropRate * 100).toStringAsFixed(2),
           apRateString = apRate.toStringAsFixed(2);
       final quest = db2.gameData.quests[questId];
 
       final child = ValueStatefulBuilder<bool>(
+          key: quest == null ? null : Key('quest_${quest.id}'),
           initValue: false,
           builder: (context, state) {
             return Column(
@@ -123,8 +126,7 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
                           }),
                 ),
                 if (state.value && quest != null)
-                  // QuestCard(quest: quest, use6th: use6th)
-                  const Card(child: Text('TODO')),
+                  QuestCard(quest: quest, use6th: use6th),
               ],
             );
           });

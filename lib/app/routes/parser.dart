@@ -23,7 +23,6 @@ class AppRouteInformationParser
 
   @override
   RouteInformation? restoreRouteInformation(RouteConfiguration configuration) {
-    print('restoreRouteInformation: ${configuration.url}');
     return configuration.url != null
         ? RouteInformation(location: configuration.url)
         : null;

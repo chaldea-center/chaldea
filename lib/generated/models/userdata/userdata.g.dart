@@ -113,6 +113,11 @@ User _$UserFromJson(Map json) => $checkedCreate(
               (v) => (v as List<dynamic>?)?.map((e) => e as String).toSet()),
           use6thDropRate:
               $checkedConvert('use6thDropRate', (v) => v as bool? ?? true),
+          freeLPParams: $checkedConvert(
+              'freeLPParams',
+              (v) => v == null
+                  ? null
+                  : FreeLPParams.fromJson(Map<String, dynamic>.from(v as Map))),
         );
         return val;
       },
@@ -143,6 +148,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
           instance.mysticCodes.map((k, e) => MapEntry(k.toString(), e)),
       'summons': instance.summons.toList(),
       'use6thDropRate': instance.use6thDropRate,
+      'freeLPParams': instance.freeLPParams.toJson(),
     };
 
 const _$RegionEnumMap = {

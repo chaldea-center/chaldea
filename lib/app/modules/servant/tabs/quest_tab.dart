@@ -3,6 +3,8 @@ import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:chaldea/models/models.dart';
 
+import '../../common/quest_card.dart';
+
 class SvtQuestTab extends StatelessWidget {
   final Servant svt;
 
@@ -22,7 +24,7 @@ class SvtQuestTab extends StatelessWidget {
         children.add(SimpleAccordion(
           headerBuilder: (context, expanded) =>
               ListTile(title: Text(quest.lName.l)),
-          contentBuilder: (context) => const Text('TODO'),
+          contentBuilder: (context) => QuestCard(quest: quest),
         ));
       }
     }

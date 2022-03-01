@@ -9,10 +9,13 @@ import 'package:flutter/material.dart';
 
 import '../../packages/split_route/split_route.dart';
 import '../../utils/extension.dart';
+import '../modules/command_code/cmd_code.dart';
+import '../modules/command_code/cmd_code_list.dart';
 import '../modules/common/not_found.dart';
 import '../modules/common/splash.dart';
 import '../modules/event/detail/limit_event_detail_page.dart';
 import '../modules/event/detail/war_detail_page.dart';
+import '../modules/free_quest_calc/free_calculator_page.dart';
 import '../modules/home/home.dart';
 import '../modules/servant/servant_list.dart';
 
@@ -152,13 +155,15 @@ class RouteConfiguration {
       case Routes.servant:
         return ServantDetailPage(id: _secondInt);
       case Routes.plans:
-        break;
+        return ServantListPage(planMode: true);
       case Routes.craftEssences:
         return CraftListPage();
       case Routes.craftEssence:
         return CraftDetailPage(id: _secondInt);
       case Routes.commandCodes:
-        break;
+        return CmdCodeListPage();
+      case Routes.commandCode:
+        return CmdCodeDetailPage(id: _secondInt);
       case Routes.mysticCodes:
         break;
       case Routes.events:
@@ -173,6 +178,8 @@ class RouteConfiguration {
         return ItemDetailPage(itemId: _secondInt ?? 0);
       case Routes.summons:
         break;
+      case Routes.freeCalc:
+        return FreeQuestCalcPage();
     }
     return null;
   }

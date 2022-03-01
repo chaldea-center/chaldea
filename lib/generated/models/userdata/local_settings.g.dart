@@ -141,7 +141,6 @@ const _$RegionEnumMap = {
 const _$FavoriteStateEnumMap = {
   FavoriteState.all: 'all',
   FavoriteState.owned: 'owned',
-  FavoriteState.planned: 'planned',
   FavoriteState.other: 'other',
 };
 
@@ -169,6 +168,8 @@ DisplaySettings _$DisplaySettingsFromJson(Map json) => $checkedCreate(
                   ItemDetailSvtSort.collectionNo),
           itemQuestsSortByAp:
               $checkedConvert('itemQuestsSortByAp', (v) => v as bool? ?? true),
+          autoTurnOnPlanNotReach: $checkedConvert(
+              'autoTurnOnPlanNotReach', (v) => v as bool? ?? false),
           classFilterStyle: $checkedConvert(
               'classFilterStyle',
               (v) =>
@@ -201,6 +202,7 @@ Map<String, dynamic> _$DisplaySettingsToJson(DisplaySettings instance) =>
       'itemDetailSvtSort':
           _$ItemDetailSvtSortEnumMap[instance.itemDetailSvtSort],
       'itemQuestsSortByAp': instance.itemQuestsSortByAp,
+      'autoTurnOnPlanNotReach': instance.autoTurnOnPlanNotReach,
       'classFilterStyle':
           _$SvtListClassFilterStyleEnumMap[instance.classFilterStyle],
       'onlyAppendSkillTwo': instance.onlyAppendSkillTwo,

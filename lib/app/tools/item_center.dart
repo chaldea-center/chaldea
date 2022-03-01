@@ -123,11 +123,11 @@ class ItemCenter {
     final svtIndex = _svtCur._dim1Map[svtId];
     final svt = db2.gameData.servants[svtId];
     if (svt == null || svtIndex == null) return;
-    final consumed = calcOneSvt(svt, SvtPlan.empty, user.svtStatusOf(svtId).cur,
+    final cur = user.svtStatusOf(svtId).cur;
+    final consumed = calcOneSvt(svt, SvtPlan(favorite: cur.favorite), cur,
         priorityFiltered: true);
-    final demands = calcOneSvt(
-        svt, user.svtStatusOf(svtId).cur, user.svtPlanOf(svtId),
-        priorityFiltered: true);
+    final demands =
+        calcOneSvt(svt, cur, user.svtPlanOf(svtId), priorityFiltered: true);
 
     for (int itemIndex = 0; itemIndex < _validItems.length; itemIndex++) {
       _svtCur._matrix[svtIndex][itemIndex].updateFrom<Map<int, int>>(
@@ -136,7 +136,8 @@ class ItemCenter {
           demands, (_, part) => part[_validItems[itemIndex]] ?? 0);
     }
     if (max) {
-      final allDemands = calcOneSvt(svt, SvtPlan.empty, SvtPlan.max(svt));
+      final allDemands =
+          calcOneSvt(svt, SvtPlan(favorite: true), SvtPlan.max(svt));
       for (int itemIndex = 0; itemIndex < _validItems.length; itemIndex++) {
         _svtFull._matrix[svtIndex][itemIndex].updateFrom<Map<int, int>>(
             allDemands, (_, part) => part[_validItems[itemIndex]] ?? 0);

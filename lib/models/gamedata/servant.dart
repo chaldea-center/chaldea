@@ -16,6 +16,24 @@ import 'wiki_data.dart';
 part '../../generated/models/gamedata/servant.g.dart';
 
 @JsonSerializable()
+class BasicCostume {
+  int id;
+  int costumeCollectionNo;
+  int battleCharaId;
+  String shortName;
+
+  BasicCostume({
+    required this.id,
+    required this.costumeCollectionNo,
+    required this.battleCharaId,
+    required this.shortName,
+  });
+
+  factory BasicCostume.fromJson(Map<String, dynamic> json) =>
+      _$BasicCostumeFromJson(json);
+}
+
+@JsonSerializable()
 class BasicServant with GameCardMixin {
   @override
   int id;
@@ -31,6 +49,7 @@ class BasicServant with GameCardMixin {
   int atkMax;
   int hpMax;
   String face;
+  Map<int, BasicCostume> costume;
 
   BasicServant({
     required this.id,
@@ -44,6 +63,7 @@ class BasicServant with GameCardMixin {
     required this.atkMax,
     required this.hpMax,
     required this.face,
+    this.costume = const {},
   });
 
   factory BasicServant.fromJson(Map<String, dynamic> json) =>
@@ -403,6 +423,7 @@ class ExtraAssets implements ExtraCCAssets {
   ExtraAssetsUrl status;
   ExtraAssetsUrl equipFace;
   ExtraAssetsUrl image;
+  ExtraAssetsUrl spriteModel;
 
   ExtraAssets({
     this.charaGraph = const ExtraAssetsUrl(),
@@ -417,6 +438,7 @@ class ExtraAssets implements ExtraCCAssets {
     this.status = const ExtraAssetsUrl(),
     this.equipFace = const ExtraAssetsUrl(),
     this.image = const ExtraAssetsUrl(),
+    this.spriteModel = const ExtraAssetsUrl(),
   });
 
   factory ExtraAssets.fromJson(Map<String, dynamic> json) =>

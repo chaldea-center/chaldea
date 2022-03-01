@@ -173,7 +173,7 @@ class GameDataLoader {
       dynamic Function(dynamic)? l2mFn;
       l2mKey = keys[fv.key];
       if (fv.key == 'questPhases') {
-        l2mFn = (e) => (e['id'] * 10 + e['phase']).toString();
+        l2mFn = (e) => (e['id'] * 100 + e['phase']).toString();
       }
       futures.add(_pool.withResource(
           () => _downloadCheck(fv, l2mKey: l2mKey, l2mFn: l2mFn)));

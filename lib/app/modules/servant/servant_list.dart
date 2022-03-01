@@ -59,6 +59,11 @@ class ServantListPageState extends State<ServantListPage>
     }
     if (widget.planMode) {
       filterData.planFavorite = FavoriteState.owned;
+      if (db2.settings.display.autoTurnOnPlanNotReach) {
+        filterData.planCompletion.options
+          ..clear()
+          ..add(false);
+      }
     }
     // options = _ServantOptions(onChanged: (_) => safeSetState());
   }
@@ -120,17 +125,11 @@ class ServantListPageState extends State<ServantListPage>
       actions: <Widget>[
         IconButton(
             icon: Icon([
-              Icons.circle_outlined, //all
+              Icons.remove_circle, // other
               Icons.favorite, // owned
               Icons.favorite_border, // planned
-              Icons.remove_circle, // other
             ][favoriteState.index]),
-            tooltip: [
-              'All',
-              'Owned',
-              'Favorite',
-              'Others'
-            ][favoriteState.index],
+            tooltip: ['All', 'Owned', 'Others'][favoriteState.index],
             onPressed: () {
               setState(() {
                 favoriteState =
@@ -372,7 +371,7 @@ class ServantListPageState extends State<ServantListPage>
     final svtStat = db2.curUser.svtStatusOf(svt.collectionNo);
     final svtPlan = db2.curUser.svtPlanOf(svt.collectionNo);
     if ((favoriteState == FavoriteState.owned && !svtStat.cur.favorite) ||
-        (favoriteState == FavoriteState.planned && svtPlan.favorite)) {
+        (favoriteState == FavoriteState.other && svtPlan.favorite)) {
       return false;
     }
 
@@ -380,26 +379,24 @@ class ServantListPageState extends State<ServantListPage>
     //     .singleValueFilter(svt.originNo == svt.no ? '1' : '2')) {
     //   return false;
     // }
-    // if (filterData.planCompletion.options.containsValue(true)) {
-    //   if (!svtStat.favorite) return false;
-    //   bool planNotComplete = <bool>[
-    //     svtPlan.ascension > svtStat.cur.ascension,
-    //     for (var i = 0; i < 3; i++)
-    //       svtPlan.skills[i] > svtStat.cur.skills[i],
-    //     for (var i = 0; i < 3; i++)
-    //       svtPlan.appendSkills[i] > svtStat.cur.appendSkills[i],
-    //     for (var i = 0;
-    //         i < min(svtPlan.dress.length, svtStat.cur.dress.length);
-    //         i++)
-    //       svtPlan.dress[i] > svtStat.cur.dress[i],
-    //     svtPlan.grail > svtStat.cur.grail,
-    //     // svtPlan.fouHp > svtStat.cur.fouHp,
-    //     // svtPlan.fouAtk > svtStat.cur.fouAtk,
-    //     // svtPlan.bondLimit > svtStat.cur.bondLimit,
-    //   ].contains(true);
-    //   if (filterData.planCompletion.options[planNotComplete ? '0' : '1'] !=
-    //       true) return false;
-    // }
+
+    if (filterData.planCompletion.options.isNotEmpty) {
+      if (!svtStat.favorite) return false;
+      bool planCompletion = !<bool>[
+        svtPlan.ascension > svtStat.cur.ascension,
+        for (var i = 0; i < 3; i++) svtPlan.skills[i] > svtStat.cur.skills[i],
+        for (var i = 0; i < 3; i++)
+          svtPlan.appendSkills[i] > svtStat.cur.appendSkills[i],
+        for (var costume in svt.profile!.costume.values)
+          (svtPlan.costumes[costume.id] ?? 0) >
+              (svtStat.cur.costumes[costume.id] ?? 0),
+        svtPlan.grail > svtStat.cur.grail,
+        // svtPlan.fouHp > svtStat.cur.fouHp,
+        // svtPlan.fouAtk > svtStat.cur.fouAtk,
+        // svtPlan.bondLimit > svtStat.cur.bondLimit,
+      ].contains(true);
+      if (!filterData.planCompletion.matchOne(planCompletion)) return false;
+    }
     // svt data filter
     // skill level
     // if (filterData.skillLevel.options.containsValue(true)) {
@@ -622,18 +619,18 @@ class ServantListPageState extends State<ServantListPage>
     if (clsName == SvtClass.ALL) {
       rarity = filterData.svtClass.isEmpty(SvtClassX.regularAll) ||
               filterData.svtClass.isAll(SvtClassX.regularAll)
-          ? 3
+          ? 5
           : 1;
     } else if (clsName == SvtClass.EXTRA) {
       if (filterData.svtClass.isAll(extraClasses)) {
-        rarity = 3;
+        rarity = 5;
       } else if (filterData.svtClass.isEmpty(extraClasses)) {
         rarity = 1;
       } else {
-        rarity = 2;
+        rarity = 3;
       }
     } else {
-      rarity = filterData.svtClass.options.contains(clsName) ? 3 : 1;
+      rarity = filterData.svtClass.options.contains(clsName) ? 5 : 1;
     }
     Widget icon = db2.getIconImage(
       clsName.icon(rarity),
@@ -693,10 +690,8 @@ class ServantListPageState extends State<ServantListPage>
       );
     }
 
-    ;
-
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 3),
+      padding: const EdgeInsets.all(1),
       child: AspectRatio(
         aspectRatio: 132 / 144,
         child: db2.onUserData(

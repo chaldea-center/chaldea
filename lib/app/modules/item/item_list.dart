@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
+import 'package:chaldea/app/modules/free_quest_calc/free_calculator_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
@@ -125,18 +127,18 @@ class ItemListPageState extends State<ItemListPage>
   }
 
   void navToDropCalculator() {
-    Map<String, int> _getObjective() {
-      Map<String, int> objective = {};
-      // db2.itemCenter.itemLeft.forEach((itemKey, value) {
-      //   final rarity = db.gameData.items[itemKey]?.rarity ?? -1;
-      //   if (rarity > 0 && rarity <= 3) {
-      //     value -= db.userData.itemAbundantValue[rarity - 1];
-      //   }
-      //   if (db.gameData.planningData.getDropRate().rowNames.contains(itemKey) &&
-      //       value < 0) {
-      //     objective[itemKey] = -value;
-      //   }
-      // });
+    Map<int, int> _getObjective() {
+      Map<int, int> objective = {};
+      final itemIds = db2.gameData.dropRate.getSheet(true).itemIds;
+      db2.itemCenter.itemLeft.forEach((itemId, value) {
+        final rarity = db2.gameData.items[itemId]?.rarity ?? -1;
+        if (rarity > 0 && rarity <= 3) {
+          value -= db2.userData.itemAbundantValue[rarity - 1];
+        }
+        if (itemIds.contains(itemId) && value < 0) {
+          objective[itemId] = -value;
+        }
+      });
       return objective;
     }
 
@@ -183,11 +185,10 @@ class ItemListPageState extends State<ItemListPage>
       ),
       onTapOk: () {
         Future.delayed(const Duration(milliseconds: 500), () {
-          // SplitRoute.push(
-          //   context,
-          //   FreeQuestCalculatorPage(objectiveCounts: _getObjective()),
-          //   popDetail: true,
-          // );
+          router.push(
+            url: Routes.freeCalc,
+            child: FreeQuestCalcPage(objectiveCounts: _getObjective()),
+          );
         });
       },
       actions: [

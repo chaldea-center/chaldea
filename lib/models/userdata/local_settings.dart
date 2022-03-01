@@ -133,6 +133,7 @@ class DisplaySettings {
   ItemDetailViewType itemDetailViewType;
   ItemDetailSvtSort itemDetailSvtSort;
   bool itemQuestsSortByAp;
+  bool autoTurnOnPlanNotReach = false;
   SvtListClassFilterStyle classFilterStyle;
   bool onlyAppendSkillTwo;
   bool planPageFullScreen = false;
@@ -146,6 +147,7 @@ class DisplaySettings {
     this.itemDetailViewType = ItemDetailViewType.separated,
     this.itemDetailSvtSort = ItemDetailSvtSort.collectionNo,
     this.itemQuestsSortByAp = true,
+    this.autoTurnOnPlanNotReach = false,
     this.classFilterStyle = SvtListClassFilterStyle.auto,
     this.onlyAppendSkillTwo = true,
     this.planPageFullScreen = false,

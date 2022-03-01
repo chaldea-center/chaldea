@@ -100,6 +100,11 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     return _pages.length > 1;
   }
 
+  void popAll() {
+    _pages.clear();
+    notifyListeners();
+  }
+
   @override
   Future<bool> popRoute() {
     if (canPop()) {

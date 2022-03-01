@@ -9,6 +9,7 @@ import '../db.dart';
 import '../gamedata/servant.dart';
 import '../gamedata/wiki_data.dart';
 import '_helper.dart';
+import 'glpk.dart';
 
 part '../../generated/models/userdata/userdata.g.dart';
 
@@ -80,6 +81,7 @@ class User {
   Set<String> summons;
 
   bool use6thDropRate;
+  FreeLPParams freeLPParams;
 
   User({
     this.name = 'Gudako',
@@ -98,6 +100,7 @@ class User {
     Map<int, int>? mysticCodes,
     Set<String>? summons,
     this.use6thDropRate = true,
+    FreeLPParams? freeLPParams,
   })  : servants = servants ?? {},
         svtPlanGroups = List.generate(
             kSvtPlanMaxNum, (index) => svtPlanGroups?.getOrNull(index) ?? {}),
@@ -113,7 +116,8 @@ class User {
               if (e.value != null) e.key: e.value!
         },
         mysticCodes = mysticCodes ?? {},
-        summons = summons ?? {};
+        summons = summons ?? {},
+        freeLPParams = freeLPParams ?? FreeLPParams();
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 

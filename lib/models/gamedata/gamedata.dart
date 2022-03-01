@@ -162,6 +162,11 @@ class GameData {
 
   factory GameData.fromJson(Map<String, dynamic> json) =>
       _$GameDataFromJson(json);
+
+  QuestPhase? getQuestPhase(int id, [int? phase]) {
+    if (phase != null) return questPhases[id * 100 + phase];
+    return questPhases[id * 100 + 1] ?? questPhases[id * 100 + 3];
+  }
 }
 
 @JsonSerializable(createToJson: true)

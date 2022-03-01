@@ -46,7 +46,6 @@ Map<String, dynamic> _$SvtFilterDataToJson(SvtFilterData instance) =>
 const _$FavoriteStateEnumMap = {
   FavoriteState.all: 'all',
   FavoriteState.owned: 'owned',
-  FavoriteState.planned: 'planned',
   FavoriteState.other: 'other',
 };
 

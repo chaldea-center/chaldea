@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../command_code/cmd_code_list.dart';
 import '../../craft_essence/craft_list.dart';
 import '../../event/events_page.dart';
+import '../../free_quest_calc/free_calculator_page.dart';
 import '../../item/item_list.dart';
 import '../../servant/servant_list.dart';
 
@@ -74,8 +75,8 @@ class GalleryItem {
         commandCodes,
         items,
         events,
-        // plan,
-        // freeCalculator,
+        plans,
+        freeCalculator,
         // masterMission,
         // saintQuartz,
         // mysticCode,
@@ -137,20 +138,22 @@ class GalleryItem {
     page: EventListPage(),
     isDetail: false,
   );
-// static GalleryItem plan = GalleryItem(
-//   name: 'plan',
-//   titleBuilder: () => S.current.plan_title,
-//   icon: Icons.article_outlined,
-//   page: ServantListPage(planMode: true),
-//   isDetail: false,
-// );
-// static GalleryItem freeCalculator = GalleryItem(
-//   name: 'free_calculator',
-//   titleBuilder: () => S.current.free_quest_calculator_short,
-//   icon: FontAwesomeIcons.mapMarked,
-//   page: FreeQuestCalculatorPage(),
-//   isDetail: true,
-// );
+  static GalleryItem plans = GalleryItem(
+    name: 'plans',
+    titleBuilder: () => S.current.plan_title,
+    icon: Icons.article_outlined,
+    url: Routes.plans,
+    page: ServantListPage(planMode: true),
+    isDetail: false,
+  );
+  static GalleryItem freeCalculator = GalleryItem(
+    name: 'free_calculator',
+    titleBuilder: () => S.current.free_quest_calculator_short,
+    icon: FontAwesomeIcons.mapMarked,
+    url: Routes.freeCalc,
+    page: FreeQuestCalcPage(),
+    isDetail: true,
+  );
 // static GalleryItem masterMission = GalleryItem(
 //   name: 'master_mission',
 //   titleBuilder: () => S.current.master_mission,

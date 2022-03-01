@@ -47,7 +47,10 @@ class Item {
 
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
 
-  String? get borderedIcon {
+  int get rarity =>
+      background == ItemBGType.questClearQPReward ? 0 : background.index;
+
+  String get borderedIcon {
     if (type == ItemType.svtCoin) return icon;
     return icon.replaceFirst(RegExp(r'.png$'), '_bordered.png');
   }
@@ -99,6 +102,7 @@ class Item {
   }
 
   Transl<String, String> get lName => Transl.itemNames(name);
+  String get route => Routes.itemI(id);
 
   // include special items(entity)
   static String getName(int id) {
@@ -143,6 +147,10 @@ class Item {
 
 class Items {
   const Items._();
+
+  // for own use, no a exact id
+  static const int expPointId = -10;
+  static const int bondPointId = -11;
 
   static Map<int, Item> get _items => db2.gameData.items;
 
