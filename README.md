@@ -101,6 +101,6 @@ Finally thanks to all translators
 - English - Fandom & Reddit Translators
 - Japanese - Google Translate
 - Korean - M.Gallery & Cafe Translators
-- Spanish - Abilio Da Silva
+- Spanish - [Abilio Da Silva](https://github.com/abiliodasilva)
 
 Thanks for all above communities and contributors.
