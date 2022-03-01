@@ -100,6 +100,7 @@ class ItemCostSvtDetailTab extends StatelessWidget {
           context: context,
           text: formatNumber(count, compact: true, minVal: 10000),
           textPadding: const EdgeInsets.only(right: 2, bottom: 12),
+          overrideIcon: svt.customIcon,
         );
         if (shouldHighlight) {
           avatar = Stack(

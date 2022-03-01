@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 class ExtraAssetsPage extends StatelessWidget {
   final ExtraAssets assets;
 
-  const ExtraAssetsPage({Key? key, required this.assets}) : super(key: key);
+  const ExtraAssetsPage({Key? key, required this.assets})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +45,10 @@ class ExtraAssetsPage extends StatelessWidget {
               itemBuilder: (context, index) => CachedImage(
                 imageUrl: urls[index],
                 onTap: () {
-                  FullscreenImageViewer.show(context: context, urls: urls);
+                  FullscreenImageViewer.show(
+                      context: context, urls: urls, initialPage: index);
                 },
+                showSaveOnLongPress: true,
               ),
               separatorBuilder: (context, index) => const SizedBox(width: 8),
             ),

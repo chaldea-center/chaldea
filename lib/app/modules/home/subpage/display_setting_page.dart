@@ -102,6 +102,31 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
             ],
           ),
           TileGroup(
+            header: S.current.servant,
+            children: [
+              ListTile(
+                title: const Text('Ascension Icon'),
+                trailing: DropdownButton<int>(
+                  value: db2.userData.svtAscensionIcon,
+                  underline: const SizedBox(),
+                  items: List.generate(
+                    4,
+                    (index) => DropdownMenuItem(
+                      child: Text('${index + 1}'),
+                      value: index + 1,
+                    ),
+                  ),
+                  onChanged: (v) {
+                    if(v!=null) {
+                      db2.userData.svtAscensionIcon = v;
+                    }
+                    setState(() {});
+                  },
+                ),
+              )
+            ],
+          ),
+          TileGroup(
             header: LocalizedText.of(
                 chs: '从者列表页',
                 jpn: 'サーヴァントリストページ',

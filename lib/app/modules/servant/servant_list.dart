@@ -696,7 +696,7 @@ class ServantListPageState extends State<ServantListPage>
         aspectRatio: 132 / 144,
         child: db2.onUserData(
           (context, snapshot) => ImageWithText(
-            image: db2.getIconImage(svt.borderedIcon),
+            image: db2.getIconImage(svt.customIcon),
             shadowSize: 4,
             textBuilder: status.cur.favorite ? textBuilder : null,
             textStyle: const TextStyle(fontSize: 11, color: Colors.black),
@@ -989,7 +989,7 @@ class ServantListPageState extends State<ServantListPage>
         break;
     }
     return CustomTile(
-      leading: db2.getIconImage(svt.borderedIcon, width: 56),
+      leading: db2.getIconImage(svt.customIcon, width: 56),
       title: AutoSizeText(
         svt.lName.l,
         maxLines: 1,
@@ -1032,7 +1032,7 @@ class ServantListPageState extends State<ServantListPage>
     );
 
     return db2.onUserData((context, snapshot) => CustomTile(
-          leading: db2.getIconImage(svt.borderedIcon, width: 48),
+          leading: db2.getIconImage(svt.customIcon, width: 48),
           subtitle: _getDetailTable(svt),
           trailing: eyeWidget,
           selected: SplitRoute.isSplit(context) && selected == svt,

@@ -22,6 +22,13 @@ UserData _$UserDataFromJson(Map json) => $checkedCreate(
                   .toList()),
           itemAbundantValue: $checkedConvert('itemAbundantValue',
               (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
+          svtAscensionIcon:
+              $checkedConvert('svtAscensionIcon', (v) => v as int? ?? 1),
+          customSvtIcon: $checkedConvert(
+              'customSvtIcon',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), e as String?),
+                  )),
         );
         return val;
       },
@@ -32,6 +39,9 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'curUserKey': instance.curUserKey,
       'users': instance.users.map((e) => e.toJson()).toList(),
       'itemAbundantValue': instance.itemAbundantValue,
+      'svtAscensionIcon': instance.svtAscensionIcon,
+      'customSvtIcon':
+          instance.customSvtIcon.map((k, e) => MapEntry(k.toString(), e)),
     };
 
 User _$UserFromJson(Map json) => $checkedCreate(

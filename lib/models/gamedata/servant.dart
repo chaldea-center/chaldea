@@ -231,6 +231,13 @@ class Servant with GameCardMixin {
 
   String? get charaGraph => extraAssets.charaGraph.ascension?[1];
 
+  String? get customIcon {
+    final _icon = db2.userData.customSvtIcon[collectionNo] ??
+        extraAssets.faces.ascension?[db2.userData.svtAscensionIcon] ??
+        icon;
+    return bordered(_icon);
+  }
+
   Transl<String, String> get lName => Transl.svtNames(name);
 
   ServantExtra get extra => db2.gameData.wikiData.servants[collectionNo] ??=

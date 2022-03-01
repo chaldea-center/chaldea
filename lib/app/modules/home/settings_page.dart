@@ -201,6 +201,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         (kPlatformMethods.rendererCanvasKit
                             ? WebRenderMode.canvaskit
                             : WebRenderMode.html),
+                    underline: const SizedBox(),
                     items: const [
                       DropdownMenuItem(
                         child: Text('auto'),

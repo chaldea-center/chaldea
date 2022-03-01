@@ -20,7 +20,13 @@ mixin GameCardMixin {
 
   String? get icon;
 
-  String? get borderedIcon => icon?.replaceFirst('.png', '_bordered.png');
+  String? get borderedIcon => bordered(icon);
+
+  String? bordered(String? icon) {
+    if (icon == null) return null;
+    if (icon.contains('bordered.png')) return icon;
+    return icon.replaceAll('.png', '_bordered.png');
+  }
 
   // String get lName;
 

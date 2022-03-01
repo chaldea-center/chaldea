@@ -23,16 +23,21 @@ class UserData {
   int curUserKey;
   List<User> users;
   List<int> itemAbundantValue;
+  int svtAscensionIcon;
+  Map<int, String?> customSvtIcon;
 
   UserData({
     this.version = UserData.modelVersion,
     this.curUserKey = 0,
     List<User>? users,
     List<int?>? itemAbundantValue,
+    this.svtAscensionIcon = 1,
+    Map<int, String?>? customSvtIcon,
   })  : users = users?.isNotEmpty == true ? users! : <User>[User()],
         itemAbundantValue = List.generate(
             3, (index) => itemAbundantValue?.getOrNull(index) ?? 0,
-            growable: false) {
+            growable: false),
+        customSvtIcon = customSvtIcon ?? {} {
     validate();
   }
 
@@ -49,6 +54,7 @@ class UserData {
     for (final user in users) {
       user.validate();
     }
+    svtAscensionIcon = svtAscensionIcon.clamp(1, 4);
   }
 }
 

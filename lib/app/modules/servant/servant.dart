@@ -291,16 +291,77 @@ class ServantDetailPageState extends State<ServantDetailPage>
                 });
               },
             ),
+          PopupMenuItem(
+            child: const Text('Custom Ascension Icon'),
+            onTap: () async {
+              await null;
+              await showDialog(
+                context: context,
+                builder: (context) {
+                  List<Widget> children = [];
+                  void _addOne(String name, String? icon) {
+                    if (icon == null) return;
+                    children.add(ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: db2.getIconImage(svt.bordered(icon),
+                          padding: const EdgeInsets.symmetric(vertical: 2)),
+                      title: Text(name),
+                      onTap: () {
+                        db2.userData.customSvtIcon[svt.collectionNo] = icon;
+                        Navigator.pop(context);
+                      },
+                    ));
+                  }
+
+                  final faces = svt.extraAssets.faces;
+                  if (faces.ascension != null) {
+                    faces.ascension!.forEach((key, value) {
+                      _addOne(S.current.ascension + ' $key', value);
+                    });
+                  }
+                  if (faces.costume != null) {
+                    faces.costume!.forEach((key, value) {
+                      _addOne(
+                        svt.profile?.costume[key]?.lName.l ??
+                            '${S.current.costume} $key',
+                        value,
+                      );
+                    });
+                  }
+                  return SimpleCancelOkDialog(
+                    title: const Text('Custom Ascension Icon'),
+                    content: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: children,
+                      ),
+                    ),
+                    hideOk: true,
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          db2.userData.customSvtIcon.remove(svt.collectionNo);
+                          Navigator.pop(context);
+                        },
+                        child: Text(S.current.reset),
+                      ),
+                    ],
+                  );
+                },
+              );
+              if (mounted) setState(() {});
+            },
+          ),
           ...SharedBuilder.websitesPopupMenuItems(
             atlas: Atlas.dbServant(svt.id),
             mooncell: svt.extra.mcLink,
             fandom: svt.extra.fandomLink,
           ),
-          if (svt.isUserSvt)
-            PopupMenuItem<String>(
-              child: Text(S.current.create_duplicated_svt),
-              value: 'duplicate_svt', // push new page
-            ),
+          // if (svt.isUserSvt)
+          //   PopupMenuItem<String>(
+          //     child: Text(S.current.create_duplicated_svt),
+          //     value: 'duplicate_svt', // push new page
+          //   ),
           // if (svt.collectionNo != svt.originNo)
           //   PopupMenuItem<String>(
           //     child: Text(S.current.remove_duplicated_svt),
@@ -350,7 +411,11 @@ class ServantDetailPageState extends State<ServantDetailPage>
       firstChild: CustomTile(
         leading: InkWell(
           child: svt.iconBuilder(
-              context: context, height: 72, jumpToDetail: false),
+            context: context,
+            height: 72,
+            jumpToDetail: false,
+            overrideIcon: svt.customIcon,
+          ),
           onTap: () {
             FullscreenImageViewer.show(
               context: context,

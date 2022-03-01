@@ -94,7 +94,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     required this.builder,
     bool? detail = false,
     this.masterRatio = _kSplitMasterRatio,
-    this.transitionDuration = kSplitRouteDuration,
+    Duration? transitionDuration,
     Duration? reverseTransitionDuration,
     bool? opaque,
     this.maintainState = true,
@@ -105,8 +105,10 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
         assert(maintainState != null),
         assert(fullscreenDialog != null),
         _detail = detail,
-        reverseTransitionDuration =
-            reverseTransitionDuration ?? transitionDuration,
+        transitionDuration = transitionDuration ?? kSplitRouteDuration,
+        reverseTransitionDuration = reverseTransitionDuration ??
+            transitionDuration ??
+            kSplitRouteDuration,
         opaque = opaque ?? detail != true,
         super(settings: settings, fullscreenDialog: fullscreenDialog);
 
