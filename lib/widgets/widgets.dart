@@ -9,4 +9,5 @@ export 'search_bar.dart';
 export 'searchable_list_state.dart';
 export 'simple_accordion.dart';
 export 'sliver_grid.dart';
+export 'tile_items.dart';
 export 'widget_builders.dart';

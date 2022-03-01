@@ -22,6 +22,7 @@ export 'common.dart';
 export 'const_data.dart';
 export 'drop_rate.dart';
 export 'event.dart';
+export 'game_card.dart';
 export 'item.dart';
 export 'mystic_code.dart';
 export 'quest.dart';
@@ -116,6 +117,12 @@ class GameData {
   late Map<int, CommandCode> commandCodesById;
 
   void preprocess() {
+    for (final war in wars.values) {
+      war.calcItems(this);
+    }
+    for (final event in events.values) {
+      event.calcItems(this);
+    }
     mainStories = {
       for (final war in wars.values)
         if (war.isMainStory) war.id: war

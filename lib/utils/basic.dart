@@ -157,13 +157,15 @@ class Maths {
 /// Format number
 ///
 /// If [compact] is true, other parameters are not used.
-String formatNumber(num? number,
-    {bool compact = false,
-    bool percent = false,
-    bool omit = true,
-    int precision = 3,
-    String? groupSeparator = ',',
-    num? minVal}) {
+String formatNumber(
+  num? number, {
+  bool compact = true,
+  bool percent = false,
+  bool omit = true,
+  int precision = 3,
+  String? groupSeparator = ',',
+  num? minVal = 10000,
+}) {
   assert(!compact || !percent);
   if (number == null || (minVal != null && number.abs() < minVal.abs())) {
     return number.toString();

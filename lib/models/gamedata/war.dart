@@ -1,3 +1,4 @@
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -60,7 +61,9 @@ class NiceWar {
 
   bool get isMainStory => id >= 100 && id < 1000;
   Transl<String, String> get lLongName => Transl.warNames(longName);
+  String get route => Routes.warI(id);
   bool isOutdated() => false;
+  List<Quest> get quests => [for (final spot in spots) ...spot.quests];
 
   @JsonKey(ignore: true)
   Map<int, int> itemReward = {};
@@ -73,9 +76,7 @@ class NiceWar {
     for (final spot in spots) {
       for (final quest in spot.quests) {
         for (final gift in quest.gifts) {
-          if (gift.isStatItem) {
-            itemReward.addNum(gift.objectId, gift.num);
-          }
+          if (gift.isStatItem) itemReward.addNum(gift.objectId, gift.num);
         }
         for (final phase in quest.phases) {
           final fixedDrop = gameData.fixedDrops[quest.id * 100 + phase];

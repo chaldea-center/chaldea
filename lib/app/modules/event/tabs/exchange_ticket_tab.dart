@@ -154,7 +154,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
         children: <Widget>[
           GestureDetector(
             onTap: () {
-              router.push(url: Routes.itemI(itemId));
+              router.push(url: Routes.itemI(itemId), detail: true);
             },
             child: db2.getIconImage(Item.getIcon(itemId), width: 42),
           ),

@@ -93,3 +93,36 @@ const _$CraftCompareEnumMap = {
   CraftCompare.atk: 'atk',
   CraftCompare.hp: 'hp',
 };
+
+CmdCodeFilterData _$CmdCodeFilterDataFromJson(Map json) => $checkedCreate(
+      'CmdCodeFilterData',
+      json,
+      ($checkedConvert) {
+        final val = CmdCodeFilterData(
+          useGrid: $checkedConvert('useGrid', (v) => v as bool? ?? false),
+          favorite: $checkedConvert('favorite', (v) => v as bool? ?? false),
+          sortKeys: $checkedConvert(
+              'sortKeys',
+              (v) => (v as List<dynamic>?)
+                  ?.map((e) => $enumDecodeNullable(_$CmdCodeCompareEnumMap, e))
+                  .toList()),
+          sortReversed: $checkedConvert('sortReversed',
+              (v) => (v as List<dynamic>?)?.map((e) => e as bool).toList()),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$CmdCodeFilterDataToJson(CmdCodeFilterData instance) =>
+    <String, dynamic>{
+      'useGrid': instance.useGrid,
+      'favorite': instance.favorite,
+      'sortKeys':
+          instance.sortKeys.map((e) => _$CmdCodeCompareEnumMap[e]).toList(),
+      'sortReversed': instance.sortReversed,
+    };
+
+const _$CmdCodeCompareEnumMap = {
+  CmdCodeCompare.no: 'no',
+  CmdCodeCompare.rarity: 'rarity',
+};

@@ -81,6 +81,12 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
                   ? null
                   : CraftFilterData.fromJson(
                       Map<String, dynamic>.from(v as Map))),
+          cmdCodeFilterData: $checkedConvert(
+              'cmdCodeFilterData',
+              (v) => v == null
+                  ? null
+                  : CmdCodeFilterData.fromJson(
+                      Map<String, dynamic>.from(v as Map))),
         );
         $checkedConvert(
             'useAndroidExternal', (v) => val.useAndroidExternal = v as bool);
@@ -114,6 +120,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) =>
       'useAndroidExternal': instance.useAndroidExternal,
       'svtFilterData': instance.svtFilterData.toJson(),
       'craftFilterData': instance.craftFilterData.toJson(),
+      'cmdCodeFilterData': instance.cmdCodeFilterData.toJson(),
       'language': instance.language,
     };
 

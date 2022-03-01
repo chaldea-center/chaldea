@@ -1,3 +1,4 @@
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -383,6 +384,27 @@ class EventLottery {
 
   factory EventLottery.fromJson(Map<String, dynamic> json) =>
       _$EventLotteryFromJson(json);
+
+  int get maxBoxIndex =>
+      _maxBoxIndex ??= Maths.max(boxes.map((e) => e.boxIndex));
+  int? _maxBoxIndex;
+
+  Map<int, int> get lastBoxItems {
+    if (_lastBoxItems != null) return _lastBoxItems!;
+    Map<int, int> items = {};
+    final _maxBoxIndex = maxBoxIndex;
+    for (final box in boxes) {
+      if (box.boxIndex != _maxBoxIndex || box.isRare) continue;
+      for (final gift in box.gifts) {
+        if (gift.isStatItem) {
+          items.addNum(gift.objectId, gift.num * box.maxNum);
+        }
+      }
+    }
+    return items;
+  }
+
+  Map<int, int>? _lastBoxItems;
 }
 
 @JsonSerializable()
@@ -505,10 +527,20 @@ class Event {
   EventExtra get extra => db2.gameData.wikiData.events
       .putIfAbsent(id, () => EventExtra(id: id, name: name));
 
+  bool get isEmpty =>
+      warIds.isEmpty &&
+      shop.isEmpty &&
+      lotteries.isEmpty &&
+      missions.isEmpty &&
+      treasureBoxes.isEmpty &&
+      towers.isEmpty &&
+      rewards.isEmpty &&
+      extra.extraItems.isEmpty;
+
   bool isOutdated([Duration diff = const Duration(days: 32)]) {
     if (db2.curUser.region == Region.jp) {
       return DateTime.now().difference(startedAt.sec2date()) >
-          const Duration(days: 31 * 4);
+          const Duration(days: 31 * 12);
     }
     final t = db2.curUser.region == Region.jp
         ? endedAt
@@ -517,6 +549,8 @@ class Event {
   }
 
   Transl<String, String> get lName => Transl.eventNames(name);
+
+  String get route => Routes.eventI(id);
 
   // statistics
   @JsonKey(ignore: true)
@@ -528,15 +562,30 @@ class Event {
   @JsonKey(ignore: true)
   Map<int, int> itemTower = {};
   @JsonKey(ignore: true)
-  Map<int, Map<int, Map<int, int>>> itemLottery = {}; // lottoeryId, boxNum
+  Map<int, Map<int, Map<int, int>>> itemLottery = {}; // lotteryId, boxNum
   @JsonKey(ignore: true)
-  Set<int> itemTreasureBox = {};
+  Map<int, Map<int, int>> itemTreasureBox = {}; //treasureBox.id
   @JsonKey(ignore: true)
   Map<int, int> itemWarReward = {};
   @JsonKey(ignore: true)
   Map<int, int> itemWarDrop = {};
 
+  //
+  @JsonKey(ignore: true)
+  Map<int, int> statItemFixed = {};
+  @JsonKey(ignore: true)
+  Map<int, Map<int, int>> statItemLottery = {}; //unlimited
+  @JsonKey(ignore: true)
+  Set<int> statItemExtra = {}; // treasureBox, extraItems
+
+  void updateStat() {
+    db2.itemCenter.updateEvents(events: [this]);
+  }
+
   void calcItems(GameData gameData) {
+    statItemFixed.clear();
+    statItemLottery.clear();
+    statItemExtra.clear();
     // ensure war calcItems called before events
     itemWarReward.clear();
     itemWarDrop.clear();
@@ -546,6 +595,10 @@ class Event {
       itemWarReward.addDict(war.itemReward);
       itemWarDrop.addDict(war.itemDrop);
     }
+    statItemFixed
+      ..addDict(itemWarReward)
+      ..addDict(itemWarDrop);
+
     itemShop.clear();
     // shop
     for (final shopItem in shop) {
@@ -553,76 +606,85 @@ class Event {
       if (shopItem.purchaseType == PurchaseType.item ||
           shopItem.purchaseType == PurchaseType.servant) {
         for (final id in shopItem.targetIds) {
-          if (Items.isStatItem(id)) {
-            itemShop.addNum(id, shopItem.limitNum * shopItem.setNum);
-          }
+          itemShop.addNum(id, shopItem.limitNum * shopItem.setNum);
         }
       } else if (shopItem.payType == PurchaseType.setItem) {
         for (final set in shopItem.itemSet) {
           if (set.purchaseType == PurchaseType.item ||
               set.purchaseType == PurchaseType.servant) {
-            if (Items.isStatItem(set.targetId)) {
-              itemShop.addNum(set.targetId,
-                  set.setNum * shopItem.setNum * shopItem.limitNum);
-            }
+            itemShop.addNum(
+                set.targetId, set.setNum * shopItem.setNum * shopItem.limitNum);
           }
         }
       }
     }
+    statItemFixed.addDict(itemShop);
+
     // point rewards
     itemPointReward.clear();
     for (final point in rewards) {
       for (final gift in point.gifts) {
-        if ((gift.type == GiftType.item || gift.type == GiftType.servant) &&
-            Items.isStatItem(gift.objectId)) {
-          itemPointReward.addNum(gift.objectId, gift.num);
-        }
+        if (gift.isStatItem) itemPointReward.addNum(gift.objectId, gift.num);
       }
     }
+    statItemFixed.addDict(itemPointReward);
+
     // mission, exclude random mission
     itemMission.clear();
     for (final mission in missions) {
-      if (mission.rewardType != MissionType.event) continue;
+      if (mission.type == MissionType.random) continue;
       if (mission.rewardType == MissionRewardType.gift) {
         for (final gift in mission.gifts) {
-          if (Items.isStatItem(gift.objectId)) {
-            itemMission.addNum(gift.objectId, gift.num);
-          }
+          if (gift.isStatItem) itemMission.addNum(gift.objectId, gift.num);
         }
       }
     }
+    statItemFixed.addDict(itemMission);
+
     // tower, similar with point rewards
     itemTower.clear();
     for (final tower in towers) {
       for (final reward in tower.rewards) {
         for (final gift in reward.gifts) {
-          if (Items.isStatItem(gift.objectId)) {
-            itemTower.addNum(gift.objectId, gift.num);
-          }
+          if (gift.isStatItem) itemTower.addNum(gift.objectId, gift.num);
         }
       }
     }
+    statItemFixed.addDict(itemTower);
+
     //
     itemLottery.clear();
     for (final lottery in lotteries) {
+      final _lastBoxItems = lottery.lastBoxItems;
+      if (!lottery.limited) {
+        // what if multiple unlimited lottery?
+        statItemLottery[lottery.id] = _lastBoxItems;
+      }
       for (final box in lottery.boxes) {
         for (final gift in box.gifts) {
-          if (Items.isStatItem(gift.objectId)) {
+          if (gift.isStatItem) {
             itemLottery
                 .putIfAbsent(lottery.id, () => {})
                 .putIfAbsent(box.boxIndex, () => {})
-                .addNum(gift.objectId, gift.num);
+                .addNum(gift.objectId, gift.num * box.maxNum);
+            if (lottery.limited || !_lastBoxItems.containsKey(gift.objectId)) {
+              statItemFixed.addNum(gift.objectId, gift.num * box.maxNum);
+            }
           }
         }
       }
     }
+
     //
     itemTreasureBox.clear();
     for (final box in treasureBoxes) {
       for (final boxGifts in box.treasureBoxGifts) {
         for (final gift in boxGifts.gifts) {
-          if (Items.isStatItem(gift.objectId)) {
-            itemTreasureBox.add(gift.objectId);
+          if (gift.isStatItem) {
+            itemTreasureBox
+                .putIfAbsent(box.id, () => {})
+                .addNum(gift.objectId, gift.num);
+            statItemExtra.add(gift.objectId);
           }
         }
       }

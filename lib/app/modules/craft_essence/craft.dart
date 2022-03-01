@@ -1,24 +1,20 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/language.dart';
+import 'package:chaldea/utils/atlas.dart';
 import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/extension.dart';
-import 'package:chaldea/utils/wiki.dart';
 import 'package:chaldea/widgets/custom_table.dart';
 import 'package:chaldea/widgets/custom_tile.dart';
 import 'package:chaldea/widgets/image/fullscreen_image_viewer.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../routes/routes.dart';
 import '../common/not_found.dart';
-
-// import 'package:chaldea/modules/shared/lang_switch.dart';
-// import 'package:chaldea/modules/summon/summon_detail_page.dart';
-// import 'package:chaldea/widgets/charts/growth_curve_page.dart';
 
 class CraftDetailPage extends StatefulWidget {
   final int? id;
@@ -41,13 +37,25 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
   @override
   void initState() {
     super.initState();
-    _ce = widget.ce ?? db2.gameData.craftEssences[widget.id];
+    _ce = widget.ce ??
+        db2.gameData.craftEssences[widget.id] ??
+        db2.gameData.craftEssencesById[widget.id];
+  }
+
+  @override
+  void didUpdateWidget(covariant CraftDetailPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _ce = widget.ce ??
+        db2.gameData.craftEssences[widget.id] ??
+        db2.gameData.craftEssencesById[widget.id];
   }
 
   @override
   Widget build(BuildContext context) {
     if (_ce == null) {
-      return NotRoundPage(url: Routes.servant + '/${widget.id}');
+      return NotFoundPage(
+          title: S.current.craft_essence,
+          url: Routes.commandCodeI(widget.id ?? 0));
     }
     final status =
         db2.curUser.craftEssences[ce.collectionNo] ?? CraftStatus.notMet;
@@ -123,22 +131,11 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
   Widget get _popupButton {
     return PopupMenuButton(
       itemBuilder: (context) {
-        return [
-          if (ce.extra.mcLink != null)
-            PopupMenuItem<String>(
-              child: Text(S.current.jump_to('Mooncell')),
-              onTap: () {
-                launch(WikiTool.mcFullLink(ce.extra.mcLink!));
-              },
-            ),
-          if (ce.extra.fandomLink != null)
-            PopupMenuItem<String>(
-              child: Text(S.current.jump_to('Fandom')),
-              onTap: () {
-                launch(WikiTool.fandomFullLink(ce.extra.fandomLink!));
-              },
-            ),
-        ];
+        return SharedBuilder.websitesPopupMenuItems(
+          atlas: Atlas.dbCraftEssence(ce.id),
+          mooncell: ce.extra.mcLink,
+          fandom: ce.extra.fandomLink,
+        );
       },
     );
   }

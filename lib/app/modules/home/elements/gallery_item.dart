@@ -4,6 +4,7 @@ import 'package:chaldea/utils/basic.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../command_code/cmd_code_list.dart';
 import '../../craft_essence/craft_list.dart';
 import '../../event/events_page.dart';
 import '../../item/item_list.dart';
@@ -70,7 +71,7 @@ class GalleryItem {
   static List<GalleryItem> get allItems => [
         servants,
         craftEssences,
-        // commandCode,
+        commandCodes,
         items,
         events,
         // plan,
@@ -112,13 +113,14 @@ class GalleryItem {
     page: CraftListPage(),
     isDetail: false,
   );
-// static GalleryItem commandCode = GalleryItem(
-//   name: 'cmd_code',
-//   titleBuilder: () => S.current.command_code,
-//   icon: FontAwesomeIcons.expand,
-//   page: CmdCodeListPage(),
-//   isDetail: false,
-// );
+  static GalleryItem commandCodes = GalleryItem(
+    name: 'cmd_codes',
+    titleBuilder: () => S.current.command_code,
+    icon: FontAwesomeIcons.expand,
+    url: Routes.commandCodes,
+    page: CmdCodeListPage(),
+    isDetail: false,
+  );
   static GalleryItem items = GalleryItem(
     name: 'items',
     titleBuilder: () => S.current.item_title,

@@ -11,6 +11,8 @@ import '../../packages/split_route/split_route.dart';
 import '../../utils/extension.dart';
 import '../modules/common/not_found.dart';
 import '../modules/common/splash.dart';
+import '../modules/event/detail/limit_event_detail_page.dart';
+import '../modules/event/detail/war_detail_page.dart';
 import '../modules/home/home.dart';
 import '../modules/servant/servant_list.dart';
 
@@ -24,6 +26,7 @@ class Routes {
   static const String craftEssence = '/craft-essence';
   static const String commandCodes = '/command-codes';
   static const String commandCode = '/command-code';
+  static String commandCodeI(int id) => '/command-code/$id';
   static const String mysticCodes = '/mystic-codes';
 
   // static const String mystic_code = '/mystic-code';
@@ -110,8 +113,8 @@ class RouteConfiguration {
 
   SplitPage createPage() {
     return SplitPage(
-      child: resolvedChild ?? NotRoundPage(configuration: this),
-      detail: detail,
+      child: resolvedChild ?? NotFoundPage(configuration: this),
+      detail: detail ?? !Routes.masterRoutes.contains(url),
       name: url,
       arguments: this,
     );
@@ -143,7 +146,7 @@ class RouteConfiguration {
       case Routes.home:
         return HomePage();
       case Routes.notFound:
-        return NotRoundPage(configuration: this);
+        return NotFoundPage(configuration: this);
       case Routes.servants:
         return ServantListPage();
       case Routes.servant:
@@ -161,7 +164,9 @@ class RouteConfiguration {
       case Routes.events:
         return EventListPage();
       case Routes.war:
-        break;
+        return WarDetailPage(warId: _secondInt);
+      case Routes.event:
+        return EventDetailPage(eventId: _secondInt);
       case Routes.items:
         return ItemListPage();
       case Routes.item:

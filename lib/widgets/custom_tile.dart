@@ -223,6 +223,7 @@ class ImageWithText extends StatelessWidget {
   final bool outlined;
   final EdgeInsets padding;
   final double? width;
+  final double? height;
   final TextAlign? textAlign;
   final TextStyle? textStyle;
   final AlignmentDirectional alignment;
@@ -238,13 +239,16 @@ class ImageWithText extends StatelessWidget {
     this.outlined = true,
     this.padding = EdgeInsets.zero,
     this.width,
+    this.height,
     this.alignment = AlignmentDirectional.bottomEnd,
     this.textAlign,
     this.textStyle,
     this.shadowSize = 3,
     this.shadowColor,
     this.onTap,
-  }) : super(key: key);
+  })  : assert(width == null || width > 0),
+        assert(height == null || height > 0),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -297,9 +301,11 @@ class ImageWithText extends StatelessWidget {
     if (boxFit != null) {
       child = FittedBox(fit: boxFit, child: child);
     }
-    if (width != null && width! > 0.0) {
+    if (width != null || height != null) {
       return Container(
-        constraints: BoxConstraints(maxWidth: width!),
+        constraints: BoxConstraints(
+            maxWidth: width ?? double.infinity,
+            maxHeight: height ?? double.infinity),
         child: child,
       );
     }

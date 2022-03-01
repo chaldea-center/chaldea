@@ -1,19 +1,18 @@
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/utils/atlas.dart';
-import 'package:chaldea/utils/constants.dart';
+import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:chaldea/widgets/tile_items.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../command_code/cmd_code_list.dart';
+import '../../item/item.dart';
 import 'leveling_cost_page.dart';
 
 class SvtPlanTab extends StatefulWidget {
@@ -190,7 +189,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           },
         ),
         title: costume.lName.l,
-        subtitle: Transl.isJPFirst ? null : costume.name,
+        subtitle: Transl.isJP ? null : costume.name,
         start: curVal.costumes[costume.id] ?? 0,
         end: targetVal.costumes[costume.id] ?? 0,
         minVal: 0,
@@ -547,17 +546,18 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                 ),
                 InkWell(
                   onTap: () async {
-                    // await SplitRoute.pushBuilder(
-                    //   context,
-                    //   (context, _) => CmdCodeListPage(
-                    //     onSelected: (selectedCode) {
-                    //       status.equipCmdCodes[index] = selectedCode.no;
-                    //       Navigator.of(context).pop();
-                    //     },
-                    //   ),
-                    //   detail: false,
-                    //   popDetail: false,
-                    // );
+                    await SplitRoute.pushBuilder(
+                      context: context,
+                      builder: (context, _) => CmdCodeListPage(
+                        onSelected: (selectedCode) {
+                          status.equipCmdCodes[index] =
+                              selectedCode.collectionNo;
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      detail: false,
+                      popDetail: false,
+                    );
                     if (mounted) setState(() {});
                   },
                   child: db2.getIconImage(
@@ -736,9 +736,8 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
   }
 
   void updateState() {
-    db2.itemCenter.updateSvts(svts: [svt]);
+    svt.updateStat();
     setState(() {});
-    db2.notifyUserdata();
   }
 
   void _onEnhance() {
@@ -784,11 +783,12 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     updateState();
   }
 
-  void _showItemsDialog(
-      {required String title,
-      required Map<int, int> items,
-      required bool hideCancel,
-      VoidCallback? onConfirm}) {
+  void _showItemsDialog({
+    required String title,
+    required Map<int, int> items,
+    required bool hideCancel,
+    VoidCallback? onConfirm,
+  }) {
     showDialog(
       context: context,
       builder: (context) => SimpleCancelOkDialog(
@@ -807,10 +807,14 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                       item: db2.gameData.items[entry.key],
                       icon: Item.getIcon(entry.key),
                       text: formatNumber(entry.value, compact: true),
-                      width: 36,
+                      width: 48,
                       onTap: () {
-                        Navigator.pop(context);
-                        router.push(url: Routes.itemI(entry.key));
+                        // router will push new route under the dialog
+                        SplitRoute.push(
+                          context,
+                          ItemDetailPage(itemId: entry.key),
+                          detail: true,
+                        );
                       },
                     ),
                 ],

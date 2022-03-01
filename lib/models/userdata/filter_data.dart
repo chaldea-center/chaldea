@@ -160,7 +160,19 @@ class SvtFilterData {
             (index) => sortReversed?.getOrNull(index) ?? true,
             growable: false);
 
-  List<FilterGroupData> get _group => [svtClass, rarity, attribute, trait];
+  List<FilterGroupData> get _group => [
+        svtClass,
+        rarity,
+        attribute,
+        priority,
+        obtain,
+        npColor,
+        npType,
+        alignment1,
+        alignment2,
+        gender,
+        trait
+      ];
 
   void reset() {
     favorite = FavoriteState.all;
@@ -251,7 +263,7 @@ class CraftFilterData {
             (index) => sortReversed?.getOrNull(index) ?? true,
             growable: false);
 
-  List<FilterGroupData> get _group => [rarity];
+  List<FilterGroupData> get _group => [rarity, obtain, atkType, status];
 
   void reset() {
     favorite = false;
@@ -284,6 +296,74 @@ class CraftFilterData {
           break;
         case CraftCompare.hp:
           r = a.hpMax - b.hpMax;
+          break;
+      }
+      if (r != 0) {
+        return (reversed?.elementAt(i) ?? false) ? -r : r;
+      }
+    }
+    return 0;
+  }
+}
+
+/// Command Code
+enum CmdCodeCompare { no, rarity }
+
+@JsonSerializable(ignoreUnannotated: true)
+class CmdCodeFilterData {
+  @JsonKey()
+  bool useGrid;
+  @JsonKey()
+  bool favorite;
+  @JsonKey()
+  List<CmdCodeCompare> sortKeys;
+  @JsonKey()
+  List<bool> sortReversed;
+
+  // filter
+  FilterGroupData<int> rarity = FilterGroupData();
+
+  CmdCodeFilterData({
+    this.useGrid = false,
+    this.favorite = false,
+    List<CmdCodeCompare?>? sortKeys,
+    List<bool>? sortReversed,
+  })  : sortKeys = List.generate(
+            CmdCodeCompare.values.length,
+            (index) =>
+                sortKeys?.getOrNull(index) ?? CmdCodeCompare.values[index],
+            growable: false),
+        sortReversed = List.generate(CmdCodeCompare.values.length,
+            (index) => sortReversed?.getOrNull(index) ?? true,
+            growable: false);
+
+  List<FilterGroupData> get _group => [rarity];
+
+  void reset() {
+    favorite = false;
+    for (var value in _group) {
+      value.reset();
+    }
+  }
+
+  factory CmdCodeFilterData.fromJson(Map<String, dynamic> data) =>
+      _$CmdCodeFilterDataFromJson(data);
+
+  Map<String, dynamic> toJson() => _$CmdCodeFilterDataToJson(this);
+
+  static int compare(CommandCode a, CommandCode b,
+      {List<CmdCodeCompare>? keys, List<bool>? reversed}) {
+    if (keys == null || keys.isEmpty) {
+      keys = [CmdCodeCompare.no];
+    }
+    for (var i = 0; i < keys.length; i++) {
+      int r;
+      switch (keys[i]) {
+        case CmdCodeCompare.no:
+          r = a.collectionNo - b.collectionNo;
+          break;
+        case CmdCodeCompare.rarity:
+          r = a.rarity - b.rarity;
           break;
       }
       if (r != 0) {

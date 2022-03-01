@@ -177,6 +177,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
         ListTile(
           title: const Text('Init ItemCenter'),
           onTap: () {
+            db2.gameData.preprocess();
             db2.itemCenter.init();
           },
         ),

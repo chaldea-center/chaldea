@@ -11,12 +11,12 @@ import 'wiki_data.dart';
 part '../../generated/models/gamedata/item.g.dart';
 
 enum SkillUpItemType {
-  none,
+  normal,
   ascension,
   skill,
-  normal,
   special,
   event,
+  none,
 }
 
 @JsonSerializable()
@@ -81,7 +81,8 @@ class Item {
   }) {
     if (onTap == null && jumpToDetail && item != null) {
       onTap = () {
-        router.push(url: Routes.itemI(item.id), popDetail: popDetail);
+        router.push(
+            url: Routes.itemI(item.id), popDetail: popDetail, detail: true);
       };
     }
     return GameCardMixin.cardIconBuilder(
@@ -117,6 +118,25 @@ class Item {
           in items.keys.toList()
             ..sort2((e) => db2.gameData.items[e]?.priority ?? e))
         if (items[k]! > 0) k: items[k]!
+    };
+  }
+
+  static Map<SkillUpItemType, Map<int, int>> groupItems(Map<int, int> items) {
+    Map<SkillUpItemType, Map<int, int>> result = {
+      for (final type in SkillUpItemType.values) type: {},
+    };
+    for (int itemId in items.keys) {
+      SkillUpItemType? type = db2.gameData.items[itemId]?.skillUpItemType;
+      if (type == null && Items.specialSvtMat.contains(itemId)) {
+        type = SkillUpItemType.special;
+      }
+      type ??= SkillUpItemType.none;
+      result[type]![itemId] = items[itemId]!;
+    }
+
+    return {
+      for (final type in SkillUpItemType.values)
+        type: sortMapByPriority(result[type]!),
     };
   }
 }
@@ -182,6 +202,7 @@ class Items {
   static const int atkFou3 = 9670300;
   static const int atkFou4 = 9670400;
 
+  @Deprecated('to be evaluated')
   static bool isStatItem(int itemId) {
     final item = _items[itemId];
     if (item != null && item.skillUpItemType != SkillUpItemType.none) {

@@ -1,7 +1,13 @@
 {
     "cSpell.words": [
+        "chara",
+        "Cond",
         "easyloading",
+        "foukun",
         "gacha",
-        "Mooncell"
-    ]
+        "kizuna",
+        "Mooncell",
+        "svts"
+    ],
+    "prettier.printWidth": 120
 }

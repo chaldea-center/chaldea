@@ -2,9 +2,12 @@ import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/custom_tile.dart';
 import 'package:flutter/material.dart';
+
+import '../../item/item.dart';
 
 class LevelingCostPage extends StatefulWidget {
   final Map<int, LvlUpMaterial> costList;
@@ -82,8 +85,18 @@ class LevelingCostPageState extends State<LevelingCostPage> {
       ]) {
         if (itemAmount.amount > 0) {
           items.add(ImageWithText(
-            image: Item.iconBuilder(context: context, item: itemAmount.item),
-            width: 36,
+            image: Item.iconBuilder(
+              context: context,
+              item: itemAmount.item,
+              onTap: () {
+                SplitRoute.push(
+                  context,
+                  ItemDetailPage(itemId: itemAmount.itemId),
+                  detail: true,
+                );
+              },
+            ),
+            width: 42,
             text: formatNumber(itemAmount.amount, compact: true),
           ));
         }

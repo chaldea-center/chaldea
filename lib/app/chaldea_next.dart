@@ -1,4 +1,4 @@
-import 'package:chaldea/modules/chaldea.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -119,4 +119,12 @@ class _ChaldeaNextState extends StateX<ChaldeaNext> with AfterLayoutMixin {
     }
     MobStat.start();
   }
+}
+
+class DraggableScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+      };
 }

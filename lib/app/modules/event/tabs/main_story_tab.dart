@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -54,13 +55,29 @@ class MainStoryTab extends StatelessWidget {
               children: mainStories.map((record) {
                 final plan = db2.curUser.mainStoryOf(record.id);
                 bool outdated = record.isOutdated();
+                String originTitle = record.lLongName.l.trim();
+                String titleText;
+                String? subtitleText;
+                if (originTitle.contains('\n')) {
+                  titleText = originTitle.split('\n').first;
+                  subtitleText = originTitle.substring(titleText.length + 1);
+                } else {
+                  titleText = originTitle;
+                }
                 Widget? title, subtitle;
                 title = AutoSizeText(
-                  record.lLongName.l,
-                  maxLines: 2,
-                  maxFontSize: 16,
+                  titleText,
+                  maxLines: subtitleText == null ? 2 : 1,
+                  // maxFontSize: 16,
                   style: outdated ? TextStyle(color: _outdatedColor) : null,
                 );
+                if (subtitleText != null) {
+                  subtitle = AutoSizeText(
+                    subtitleText,
+                    maxLines: 1,
+                  );
+                }
+
                 Widget tile = ListTile(
                   title: title,
                   subtitle: subtitle,
@@ -83,11 +100,7 @@ class MainStoryTab extends StatelessWidget {
                     ],
                   ),
                   onTap: () {
-                    // SplitRoute.push(
-                    //   context,
-                    //   MainRecordDetailPage(record: record),
-                    //   popDetail: true,
-                    // );
+                    router.push(url: Routes.warI(record.id), detail: true);
                   },
                 );
                 if (showSpecialRewards) {

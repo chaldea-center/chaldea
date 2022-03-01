@@ -3,7 +3,6 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/tools/item_center.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:chaldea/widgets/tile_items.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:chaldea/models/models.dart';
@@ -104,24 +103,29 @@ class ItemCostSvtDetailTab extends StatelessWidget {
         );
         if (shouldHighlight) {
           avatar = Stack(
-            alignment: Alignment.topRight,
             children: [
               avatar,
-              Container(
-                padding: const EdgeInsets.all(1.5),
-                decoration: BoxDecoration(
-                    color: Colors.blueAccent,
-                    borderRadius: BorderRadius.circular(3)),
-                child: const Icon(
-                  Icons.favorite,
-                  color: Colors.white,
-                  size: 10,
+              Positioned(
+                top: 2,
+                right: 2,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                      color: Colors.blueAccent,
+                      borderRadius: BorderRadius.circular(3)),
+                  child: const Padding(
+                    padding: EdgeInsets.all(1.6),
+                    child: Icon(
+                      Icons.favorite,
+                      color: Colors.white,
+                      size: 10,
+                    ),
+                  ),
                 ),
               ),
             ],
           );
         }
-        children.add(Padding(padding: const EdgeInsets.all(2), child: avatar));
+        children.add(Padding(padding: const EdgeInsets.all(1), child: avatar));
       }
     });
     return GridView.extent(
@@ -178,7 +182,7 @@ class ItemCostSvtDetailTab extends StatelessWidget {
         ),
         trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () {
-          router.push(url: Routes.servantI(svtNo));
+          router.push(url: Routes.servantI(svtNo), detail: true);
         },
       ));
     }

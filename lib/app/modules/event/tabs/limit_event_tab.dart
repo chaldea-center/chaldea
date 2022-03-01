@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/utils/utils.dart';
 
 import 'package:flutter/material.dart';
@@ -23,15 +24,7 @@ class LimitEventTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Event> events = limitEvents.values.toList();
-    events.removeWhere((event) =>
-        event.warIds.isEmpty &&
-        event.shop.isEmpty &&
-        event.lotteries.isEmpty &&
-        event.missions.isEmpty &&
-        event.treasureBoxes.isEmpty &&
-        event.towers.isEmpty &&
-        event.rewards.isEmpty &&
-        event.extra.extraItems.isEmpty);
+    events.removeWhere((event) => event.isEmpty);
     if (!showOutdated) {
       events.removeWhere(
           (e) => e.isOutdated() && !db2.curUser.eventPlanOf(e.id).enabled);
@@ -72,18 +65,14 @@ class LimitEventTab extends StatelessWidget {
                   value: plan.enabled,
                   onChanged: (v) {
                     plan.enabled = v;
-                    db2.itemCenter.updateEvents(events: [event]);
+                    event.updateStat();
                   },
                 ),
               )
             ],
           ),
           onTap: () {
-            // SplitRoute.push(
-            //   context,
-            //   LimitEventDetailPage(event: event),
-            //   popDetail: true,
-            // );
+            router.push(url: Routes.eventI(event.id), detail: true);
           },
         );
         if (showSpecialRewards) {

@@ -1,21 +1,19 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/modules/shared/common_builders.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
-import 'package:chaldea/utils/atlas.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:chaldea/utils/wiki.dart';
 import 'package:chaldea/widgets/charts/growth_curve_page.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../common/extra_assets_page.dart';
 import '../common/not_found.dart';
 import 'tabs/info_tab.dart';
 import 'tabs/plan_tab.dart';
+import 'tabs/quest_tab.dart';
 import 'tabs/related_cards_tab.dart';
 import 'tabs/skill_tab.dart';
 import 'tabs/summon_tab.dart';
@@ -61,15 +59,24 @@ class ServantDetailPageState extends State<ServantDetailPage>
   @override
   void initState() {
     super.initState();
-    _svt = widget.svt ?? db2.gameData.servants[widget.id];
+    _svt = widget.svt ??
+        db2.gameData.servants[widget.id] ??
+        db2.gameData.servantsById[widget.id];
     db2.settings.validateSvtTabs();
+  }
+
+  @override
+  void didUpdateWidget(covariant ServantDetailPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _svt = widget.svt ??
+        db2.gameData.servants[widget.id] ??
+        db2.gameData.servantsById[widget.id];
   }
 
   @override
   Widget build(BuildContext context) {
     if (_svt == null) {
-      return NotRoundPage(
-          url: Routes.servant + '/${widget.svt?.id ?? widget.id}');
+      return NotFoundPage(url: Routes.servantI(widget.id ?? 0));
     }
     builders = db2.settings.display.sortedSvtTabs
         .map((e) => _getBuilder(e))
@@ -97,7 +104,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
                       setState(() {
                         status.cur.favorite = !status.cur.favorite;
                       });
-                      // db2.itemStat.updateSvtItems();
+                      svt.updateStat();
                     },
                   ),
                 ),
@@ -204,7 +211,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
       case SvtTab.relatedCards:
         return _SubTabInfo(
           tab: tab,
-          tabBuilder: () => '关联礼装',
+          tabBuilder: () => 'Cards',
           viewBuilder: (ctx) => SvtRelatedCardTab(svt: svt),
         );
       case SvtTab.summon:
@@ -227,13 +234,11 @@ class ServantDetailPageState extends State<ServantDetailPage>
           // viewBuilder: (ctx) => SvtVoiceTab(parent: this),
         );
       case SvtTab.quest:
-        if (svt.relateQuestIds.isEmpty) {
-          return null;
-        }
+        if (svt.relateQuestIds.isEmpty) return null;
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.quest,
-          // viewBuilder: (ctx) => SvtQuestTab(parent: this),
+          viewBuilder: (ctx) => SvtQuestTab(svt: svt),
         );
     }
   }
@@ -247,12 +252,12 @@ class ServantDetailPageState extends State<ServantDetailPage>
             value: 'plan', // dialog
             onTap: () async {
               await null;
-              CommonBuilder.showSwitchPlanDialog(
+              SharedBuilder.showSwitchPlanDialog(
                 context: context,
                 onChange: (index) {
                   db2.curUser.curSvtPlanNo = index;
                   db2.curUser.ensurePlanLarger();
-                  db2.itemCenter.calculate();
+                  db2.itemCenter.updateSvts(all: true);
                 },
               );
             },
@@ -269,8 +274,8 @@ class ServantDetailPageState extends State<ServantDetailPage>
                     setState(() {
                       status.cur.reset();
                       plan.reset();
+                      svt.updateStat();
                     });
-                    db2.itemCenter.updateSvts(svts: [svt]);
                   },
                 ).showDialog(context);
               },
@@ -282,31 +287,15 @@ class ServantDetailPageState extends State<ServantDetailPage>
               onTap: () {
                 setState(() {
                   plan.reset();
+                  svt.updateStat();
                 });
-                db2.itemCenter.updateSvts(svts: [svt]);
               },
             ),
-          PopupMenuItem<String>(
-            child: Text(S.of(context).jump_to('AtlasAcademy')),
-            onTap: () {
-              launch(Atlas.servant(svt.id));
-            },
+          ...SharedBuilder.websitesPopupMenuItems(
+            atlas: Atlas.dbServant(svt.id),
+            mooncell: svt.extra.mcLink,
+            fandom: svt.extra.fandomLink,
           ),
-          if (svt.extra.mcLink != null)
-            PopupMenuItem<String>(
-              child: Text(S.of(context).jump_to('Mooncell')),
-              onTap: () {
-                launch(WikiTool.mcFullLink(svt.extra.mcLink!));
-              },
-            ),
-          if (svt.extra.fandomLink != null)
-            PopupMenuItem<String>(
-              child: Text(S.of(context).jump_to('Fandom')),
-              onTap: () {
-                launch(WikiTool.fandomFullLink(svt.extra.fandomLink!));
-              },
-            ),
-
           if (svt.isUserSvt)
             PopupMenuItem<String>(
               child: Text(S.current.create_duplicated_svt),
@@ -486,7 +475,8 @@ class ServantDetailPageState extends State<ServantDetailPage>
       SvtObtain.unavailable: Color(0xFFA6A6A6)
     };
     return svt.extra.obtains.map((obtain) {
-      final bgColor = badgeColors[obtain] ?? badgeColors['无法召唤']!;
+      final bgColor =
+          badgeColors[obtain] ?? badgeColors[SvtObtain.unavailable]!;
       final String shownText = EnumUtil.titled(obtain);
       return DecoratedBox(
         decoration: BoxDecoration(
@@ -495,7 +485,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
           color: bgColor,
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          padding: const EdgeInsets.fromLTRB(8, 2, 8, 4),
           child: Text(shownText,
               style: const TextStyle(color: Colors.white, fontSize: 13)),
         ),

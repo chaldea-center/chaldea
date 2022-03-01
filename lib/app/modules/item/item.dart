@@ -7,10 +7,10 @@ import 'package:chaldea/models/models.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 // import 'tabs/item_obtain_interlude.dart';
-// import 'tabs/item_obtain_event_page.dart';
-import 'tabs/obtain_free_tab.dart';
+import 'tabs/obtain_event.dart';
+import 'tabs/obtain_free.dart';
 import 'tabs/cost_detail.dart';
-import 'tabs/item_info_tab.dart';
+import 'tabs/item_info.dart';
 
 class ItemDetailPage extends StatefulWidget {
   final int itemId;
@@ -93,9 +93,8 @@ class _ItemDetailPageState extends State<ItemDetailPage>
                 matType: SvtMatCostDetailType.consumed,
               )),
           ItemObtainFreeTab(itemId: widget.itemId),
-          const SizedBox(),
-          // ItemObtainEventPage(
-          //     itemKey: widget.itemKey, filtrateOutdated: filtrateOutdated),
+          ItemObtainEventTab(
+              itemId: widget.itemId, filtrateOutdated: filtrateOutdated),
           const SizedBox(),
           // ItemObtainInterludeTab(
           //     itemKey: widget.itemKey, favorite: favorite, sortType: sortType),

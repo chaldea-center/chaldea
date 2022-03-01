@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/material.dart';
 

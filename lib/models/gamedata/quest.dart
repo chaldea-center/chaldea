@@ -218,8 +218,8 @@ class Gift {
   factory Gift.fromJson(Map<String, dynamic> json) => _$GiftFromJson(json);
 
   bool get isStatItem {
-    return (type == GiftType.item || type == GiftType.servant) &&
-        Items.isStatItem(objectId);
+    if (type == GiftType.equip || type == GiftType.eventSvtJoin) return false;
+    return true;
   }
 }
 

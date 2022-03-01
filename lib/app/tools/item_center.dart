@@ -91,12 +91,12 @@ class ItemCenter {
   void updateSvts(
       {List<Servant> svts = const [], bool all = false, bool notify = true}) {
     for (final svt in svts) {
-      updateOneSvt(svt.collectionNo);
+      _updateOneSvt(svt.collectionNo);
     }
     if (all) {
       for (int svtId in _svtCur.dim1) {
-        updateOneSvt(svtId, max: false);
-        updateOneSvt(svtId, max: true);
+        _updateOneSvt(svtId, max: false);
+        _updateOneSvt(svtId, max: true);
       }
       _updateSvtStat(_svtFull, _statSvtFull);
     }
@@ -119,14 +119,15 @@ class ItemCenter {
     stat.addAll(Map.fromIterables(detail.dim2, itemSum));
   }
 
-  void updateOneSvt(int svtId, {bool max = false}) {
+  void _updateOneSvt(int svtId, {bool max = false}) {
     final svtIndex = _svtCur._dim1Map[svtId];
     final svt = db2.gameData.servants[svtId];
     if (svt == null || svtIndex == null) return;
-    final consumed =
-        calcOneSvt(svt, SvtPlan.empty, user.svtStatusOf(svtId).cur);
-    final demands =
-        calcOneSvt(svt, user.svtStatusOf(svtId).cur, user.svtPlanOf(svtId));
+    final consumed = calcOneSvt(svt, SvtPlan.empty, user.svtStatusOf(svtId).cur,
+        priorityFiltered: true);
+    final demands = calcOneSvt(
+        svt, user.svtStatusOf(svtId).cur, user.svtPlanOf(svtId),
+        priorityFiltered: true);
 
     for (int itemIndex = 0; itemIndex < _validItems.length; itemIndex++) {
       _svtCur._matrix[svtIndex][itemIndex].updateFrom<Map<int, int>>(
@@ -144,8 +145,19 @@ class ItemCenter {
   }
 
   SvtMatCostDetail<Map<int, int>> calcOneSvt(
-      Servant svt, SvtPlan cur, SvtPlan target) {
+      Servant svt, SvtPlan cur, SvtPlan target,
+      {bool priorityFiltered = false}) {
     final detail = SvtMatCostDetail<Map<int, int>>(() => {});
+    if (!cur.favorite) {
+      return detail;
+    }
+    if (priorityFiltered &&
+        !db2.settings.svtFilterData.priority
+            .matchOne(user.svtStatusOf(svt.collectionNo).priority)) {
+      print(
+          'ignore ${svt.lName.l} - p${user.svtStatusOf(svt.collectionNo).priority}');
+      return detail;
+    }
     detail.ascension = _sumMat(svt.ascensionMaterials,
         [for (int lv = cur.ascension; lv < target.ascension; lv++) lv]);
 
@@ -190,11 +202,11 @@ class ItemCenter {
     return detail;
   }
 
-  void updateOneEvent(int eventId) {
+  void _updateOneEvent(int eventId) {
     final eventIndex = _eventItem._dim1Map[eventId];
     final event = db2.gameData.events[eventId];
     if (eventIndex == null || event == null) return;
-    final eventItems = calcOneEvent(event);
+    final eventItems = calcOneEvent(event, user.eventPlanOf(event.id));
     for (int itemIndex = 0; itemIndex < _validItems.length; itemIndex++) {
       _eventItem._matrix[eventIndex][itemIndex] =
           eventItems[_validItems[itemIndex]] ?? 0;
@@ -203,25 +215,33 @@ class ItemCenter {
 
   void updateEvents(
       {List<Event> events = const [], bool all = false, bool notify = true}) {
+    for (final event in events) {
+      _updateOneEvent(event.id);
+    }
     if (all) {
       for (int eventId in _eventItem.dim1) {
-        updateOneEvent(eventId);
-      }
-    } else {
-      for (final event in events) {
-        updateOneEvent(event.id);
+        _updateOneEvent(eventId);
       }
     }
+    _statEvent.clear();
+    List<int> itemSum = List.generate(_eventItem.dim2.length, (index) => 0);
+    for (int itemIndex = 0; itemIndex < itemSum.length; itemIndex++) {
+      for (int eventIndex = 0;
+          eventIndex < _eventItem.dim1.length;
+          eventIndex++) {
+        itemSum[itemIndex] += _eventItem._matrix[eventIndex][itemIndex];
+      }
+    }
+    _statEvent.addAll(Map.fromIterables(_eventItem.dim2, itemSum));
     if (notify) {
       updateLeftItems();
     }
   }
 
   /// shop/point rewards/mission rewards/Tower rewards/lottery/treasureBox/fixedDrop/wars rewards
-  Map<int, int> calcOneEvent(Event event) {
+  Map<int, int> calcOneEvent(Event event, EventPlan plan) {
     Map<int, int> result = {};
     // shop
-    final plan = db2.curUser.eventPlanOf(event.id);
     if (!plan.enabled) return result;
     if (plan.shop) {
       result.addDict({
@@ -252,8 +272,11 @@ class ItemCenter {
         }
       }
     }
-    if (plan.treasureBox) {
-      result.addDict(plan.treasureBoxItems);
+    for (final box in event.treasureBoxes) {
+      event.itemTreasureBox[box.id]?.forEach((itemId, setNum) {
+        result.addNum(
+            itemId, setNum * (plan.treasureBoxItems[box.id]?[itemId] ?? 0));
+      });
     }
     if (plan.fixedDrop) {
       result.addDict(event.itemWarDrop);
@@ -267,7 +290,6 @@ class ItemCenter {
         result.addDict(plan.extraItems[idx]!);
       }
     }
-
     return result;
   }
 
@@ -275,8 +297,9 @@ class ItemCenter {
     _statMainStory.clear();
     for (final war in db2.gameData.wars.values) {
       if (war.isMainStory) {
-        db2.curUser.mainStoryOf(war.id);
-        _statMainStory.addDict(war.itemDrop);
+        final plan = user.mainStoryOf(war.id);
+        if (plan.fixedDrop) _statMainStory.addDict(war.itemDrop);
+        if (plan.questReward) _statMainStory.addDict(war.itemReward);
       }
     }
     if (notify) {
@@ -287,7 +310,7 @@ class ItemCenter {
   void updateExchangeTickets({bool notify = true}) {
     _statTicket.clear();
     for (final ticket in db2.gameData.exchangeTickets.values) {
-      final plan = db2.curUser.ticketOf(ticket.id);
+      final plan = user.ticketOf(ticket.id);
       for (int i = 0; i < 3; i++) {
         _statTicket.addNum(ticket.items[i], plan.counts[i]);
       }

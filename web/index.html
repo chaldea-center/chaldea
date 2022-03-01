@@ -47,6 +47,11 @@
         color: #212529;
         font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
       }
+      @media only screen and (max-width: 768px) {
+        .loading-hint {
+          font-size: 2em;
+        }
+      }
       .loading-indicator {
         display: flex;
         justify-content: center;
@@ -105,10 +110,24 @@
     -->
     <script>
       let _host = window.location.hostname.toLowerCase();
-      window.isCNHost = _host.startsWith("cn.") || ["localhost", "127.0.0.1", "0.0.0.0"].indexOf(_host) != -1;
+      window.isCNHost =
+        _host.startsWith("cn.") ||
+        ["localhost", "127.0.0.1", "0.0.0.0"].indexOf(_host) != -1 ||
+        _host.startsWith("192.168");
+
       window.flutterConfiguration = {
         canvasKitBaseUrl: "/canvaskit/",
       };
+
+      // config web renderer, only work when built with "auto" option
+      switch (window.localStorage.getItem("flutterWebRenderer")) {
+        case "html":
+          window.flutterWebRenderer = "html";
+          break;
+        case "canvaskit":
+          window.flutterWebRenderer = "canvaskit";
+          break;
+      }
     </script>
 
     <!-- This script installs service_worker.js to provide PWA functionality to

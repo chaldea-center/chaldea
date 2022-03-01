@@ -14,7 +14,9 @@ import 'craft.dart';
 import 'filter.dart';
 
 class CraftListPage extends StatefulWidget {
-  CraftListPage({Key? key}) : super(key: key);
+  final void Function(CraftEssence)? onSelected;
+
+  CraftListPage({Key? key, this.onSelected}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => CraftListPageState();
@@ -97,29 +99,14 @@ class CraftListPageState extends State<CraftListPage>
           Text('No.${ce.collectionNo}$additionalText'),
         ],
       ),
-      trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+      trailing: IconButton(
+        icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+        constraints: const BoxConstraints(minHeight: 48, minWidth: 2),
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        onPressed: () => _onTapCard(ce, true),
+      ),
       selected: SplitRoute.isSplit(context) && selected == ce,
-      onTap: () {
-        setState(() {
-          selected = ce;
-        });
-        router.push(
-          url: ce.route,
-          child: CraftDetailPage(
-            ce: ce,
-            onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList),
-          ),
-          detail: true,
-          popDetail: true,
-        );
-        // SplitRoute.push(
-        //   context,
-        //   CraftDetailPage(
-        //     ce: ce,
-        //     onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList),
-        //   ),
-        // );
-      },
+      onTap: () => _onTapCard(ce),
     );
   }
 
@@ -129,19 +116,7 @@ class CraftListPageState extends State<CraftListPage>
       padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 3),
       child: GestureDetector(
         child: db2.getIconImage(ce.extraAssets.faces.equip?[0]),
-        onTap: () {
-          setState(() {
-            selected = ce;
-          });
-          SplitRoute.push(
-            context,
-            CraftDetailPage(
-              ce: ce,
-              onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList),
-            ),
-            popDetail: true,
-          );
-        },
+        onTap: () => _onTapCard(ce),
       ),
     );
   }
@@ -172,6 +147,24 @@ class CraftListPageState extends State<CraftListPage>
     //   return false;
     // }
     return true;
+  }
+
+  void _onTapCard(CraftEssence ce, [bool forcePush = false]) {
+    if (widget.onSelected != null && !forcePush) {
+      widget.onSelected!(ce);
+    } else {
+      router.push(
+        url: ce.route,
+        child: CraftDetailPage(
+          ce: ce,
+          onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList),
+        ),
+        detail: true,
+        popDetail: true,
+      );
+      selected = ce;
+    }
+    setState(() {});
   }
 }
 

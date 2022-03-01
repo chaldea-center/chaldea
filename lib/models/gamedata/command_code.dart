@@ -1,6 +1,7 @@
 import 'package:chaldea/utils/utils.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../app/app.dart';
 import '../db.dart';
 import 'game_card.dart';
 import 'servant.dart';
@@ -47,7 +48,11 @@ class CommandCode with GameCardMixin {
   @override
   String? get borderedIcon => icon;
 
+  String? get charaGraph => extraAssets.charaGraph.cc?[id];
+
   CommandCodeExtra get extra =>
       db2.gameData.wikiData.commandCodes[collectionNo] ??=
           CommandCodeExtra(collectionNo: collectionNo);
+
+  String get route => Routes.commandCodeI(id);
 }

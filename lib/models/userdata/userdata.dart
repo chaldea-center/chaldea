@@ -51,6 +51,8 @@ class UserData {
   }
 }
 
+const kSvtPlanMaxNum = 5;
+
 @JsonSerializable()
 class User {
   String name;
@@ -60,7 +62,10 @@ class User {
   Region region;
   Map<int, SvtStatus> servants;
   List<Map<int, SvtPlan>> svtPlanGroups;
-  int curSvtPlanNo;
+  int get curSvtPlanNo => _curSvtPlanNo.clamp(0, svtPlanGroups.length - 1);
+  int _curSvtPlanNo;
+  set curSvtPlanNo(int v) =>
+      _curSvtPlanNo = v.clamp(0, svtPlanGroups.length - 1);
   Map<int, String> planNames;
 
   Map<int, int> items;
@@ -83,7 +88,7 @@ class User {
     this.region = Region.jp,
     Map<int, SvtStatus>? servants,
     List<Map<int, SvtPlan>>? svtPlanGroups,
-    this.curSvtPlanNo = 0,
+    int curSvtPlanNo = 0,
     Map<int, String>? planNames,
     Map<int, int>? items,
     Map<int, EventPlan>? events,
@@ -94,7 +99,9 @@ class User {
     Set<String>? summons,
     this.use6thDropRate = true,
   })  : servants = servants ?? {},
-        svtPlanGroups = svtPlanGroups ?? [],
+        svtPlanGroups = List.generate(
+            kSvtPlanMaxNum, (index) => svtPlanGroups?.getOrNull(index) ?? {}),
+        _curSvtPlanNo = curSvtPlanNo.clamp(0, kSvtPlanMaxNum - 1),
         planNames = planNames ?? {},
         items = items ?? {},
         events = events ?? {},
@@ -198,6 +205,7 @@ class SvtStatus {
     // equipCmdCodes
   }
 
+  @JsonKey(ignore: true)
   bool get favorite => cur.favorite;
   set favorite(bool v) => cur.favorite = v;
 }
@@ -333,7 +341,7 @@ class EventPlan {
   bool tower;
   Map<int, int> lotteries;
   bool treasureBox;
-  Map<int, int> treasureBoxItems;
+  Map<int, Map<int, int>> treasureBoxItems;
   bool fixedDrop;
   bool questReward;
   bool extra;
@@ -348,7 +356,7 @@ class EventPlan {
     this.tower = true,
     Map<int, int>? lotteries,
     this.treasureBox = true,
-    Map<int, int>? treasureBoxItems,
+    Map<int, Map<int, int>>? treasureBoxItems,
     this.fixedDrop = true,
     this.questReward = true,
     this.extra = true,
@@ -391,6 +399,25 @@ class EventPlan {
     fixedDrop = true;
     questReward = true;
     // extraItems.clear();
+  }
+
+  EventPlan copy() {
+    return EventPlan(
+      enabled: enabled,
+      shop: shop,
+      shopExcludeItem: Set.of(shopExcludeItem),
+      point: point,
+      mission: mission,
+      tower: tower,
+      lotteries: Map.of(lotteries),
+      treasureBox: treasureBox,
+      treasureBoxItems:
+          treasureBoxItems.map((key, value) => MapEntry(key, Map.of(value))),
+      fixedDrop: fixedDrop,
+      questReward: questReward,
+      extra: extra,
+      extraItems: extraItems.map((key, value) => MapEntry(key, Map.of(value))),
+    );
   }
 }
 

@@ -25,8 +25,10 @@ class Transl<K, V> {
 
   V get kr => mapping[key]?.kr ?? _default;
 
-  static bool get isJPFirst =>
+  static bool get isJP =>
       db2.settings.resolvedPreferredRegions.first == Region.jp;
+  static get isCN => db2.settings.resolvedPreferredRegions.first == Region.cn;
+  static get isEN => db2.settings.resolvedPreferredRegions.first == Region.na;
 
   V get l {
     for (final region in db2.settings.resolvedPreferredRegions) {
@@ -250,6 +252,8 @@ class MappingBase<T> {
   T? na;
   @JsonKey(name: 'KR')
   T? kr;
+
+  List<T?> get values => [jp, cn, tw, na, kr];
 
   /// For generator, use dynamic
   @protected
@@ -524,11 +528,10 @@ class ExchangeTicket {
   final int year;
   final int month;
   final List<int> items;
-  @protected
   int? key;
 
   ExchangeTicket({
-    int? key,
+    this.key,
     int? id,
     required this.year,
     required this.month,

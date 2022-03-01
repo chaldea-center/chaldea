@@ -3,9 +3,10 @@ import 'package:chaldea/app/modules/craft_essence/craft.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:chaldea/widgets/tile_items.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+
+import '../../command_code/cmd_code.dart';
 
 class SvtRelatedCardTab extends StatelessWidget {
   final Servant svt;
@@ -69,17 +70,11 @@ class SvtRelatedCardTab extends StatelessWidget {
                         ),
                         detail: true,
                       );
-                      // SplitRoute.push(
-                      //   context,
-                      //   CraftDetailPage(
-                      //     ce: ce,
-                      //   ),
-                      // );
                     },
                   )
               ],
             ),
-          if (charaCEs.isNotEmpty)
+          if (charaCCs.isNotEmpty)
             TileGroup(
               header: S.current.command_code,
               children: [
@@ -90,17 +85,16 @@ class SvtRelatedCardTab extends StatelessWidget {
                             height: 45, width: 45 / 144 * 132)),
                     title: Text(cc.lName.l),
                     onTap: () {
-                      // SplitRoute.push(
-                      //   context,
-                      //   CmdCodeDetailPage(
-                      //     code: code,
-                      //     onSwitch: (cur, next) =>
-                      //         Utils.findNextOrPrevious<CommandCode>(
-                      //             list: _relatedCodes,
-                      //             cur: cur,
-                      //             reversed: next),
-                      //   ),
-                      // );
+                      router.push(
+                        url: cc.route,
+                        child: CmdCodeDetailPage(
+                          cc: cc,
+                          onSwitch: (cur, next) =>
+                              Utility.findNextOrPrevious<CommandCode>(
+                                  list: charaCCs, cur: cur, reversed: next),
+                        ),
+                        detail: true,
+                      );
                     },
                   ),
               ],

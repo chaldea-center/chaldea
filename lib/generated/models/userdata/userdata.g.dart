@@ -175,7 +175,6 @@ SvtStatus _$SvtStatusFromJson(Map json) => $checkedCreate(
           equipCmdCodes: $checkedConvert('equipCmdCodes',
               (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
         );
-        $checkedConvert('favorite', (v) => val.favorite = v as bool);
         return val;
       },
     );
@@ -186,7 +185,6 @@ Map<String, dynamic> _$SvtStatusToJson(SvtStatus instance) => <String, dynamic>{
       'priority': instance.priority,
       'bond': instance.bond,
       'equipCmdCodes': instance.equipCmdCodes,
-      'favorite': instance.favorite,
     };
 
 SvtPlan _$SvtPlanFromJson(Map json) => $checkedCreate(
@@ -250,7 +248,11 @@ EventPlan _$EventPlanFromJson(Map json) => $checkedCreate(
           treasureBoxItems: $checkedConvert(
               'treasureBoxItems',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                    (k, e) => MapEntry(
+                        int.parse(k as String),
+                        (e as Map).map(
+                          (k, e) => MapEntry(int.parse(k as String), e as int),
+                        )),
                   )),
           fixedDrop: $checkedConvert('fixedDrop', (v) => v as bool? ?? true),
           questReward:
@@ -279,8 +281,8 @@ Map<String, dynamic> _$EventPlanToJson(EventPlan instance) => <String, dynamic>{
       'tower': instance.tower,
       'lotteries': instance.lotteries.map((k, e) => MapEntry(k.toString(), e)),
       'treasureBox': instance.treasureBox,
-      'treasureBoxItems':
-          instance.treasureBoxItems.map((k, e) => MapEntry(k.toString(), e)),
+      'treasureBoxItems': instance.treasureBoxItems.map((k, e) =>
+          MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e)))),
       'fixedDrop': instance.fixedDrop,
       'questReward': instance.questReward,
       'extra': instance.extra,

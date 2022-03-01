@@ -69,12 +69,10 @@ class _Database {
   }
 
   void notifyUserdata() {
-    print('notifyUserdata');
     _userNotifier.sink.add(userData);
   }
 
   void notifySettings() {
-    print('notifySettings');
     _settingNotifier.sink.add(settings);
   }
 

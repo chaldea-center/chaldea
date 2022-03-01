@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
-import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/scheduler.dart';
@@ -47,8 +47,6 @@ class ItemListPageState extends State<ItemListPage>
         3,
         (index) => TextEditingController(
             text: db2.userData.itemAbundantValue[index].toString()));
-    // db.itemStat.includingEvent = true;
-    // db.itemStat.update(lapse: kSplitRouteDuration);
     for (final item in db2.gameData.items.values) {
       categorized.putIfAbsent(item.skillUpItemType, () => []).add(item.id);
     }
@@ -62,8 +60,6 @@ class ItemListPageState extends State<ItemListPage>
   void dispose() {
     super.dispose();
     _tabController.dispose();
-    // db.itemStat.includingEvent = true;
-    // db.itemStat.update(lapse: kSplitRouteDuration);
   }
 
   @override
@@ -74,15 +70,15 @@ class ItemListPageState extends State<ItemListPage>
         leading: const MasterBackButton(),
         titleSpacing: 0,
         actions: <Widget>[
-          // CommonBuilder.buildSwitchPlanButton(
-          //   context: context,
-          //   onChange: (index) async {
-          //     db.curUser.curSvtPlanNo = index;
-          //     db.itemStat.update(lapse: const Duration());
-          //     setState(() {});
-          //   },
-          // ),
-          // CommonBuilder.priorityIcon(context: context),
+          SharedBuilder.buildSwitchPlanButton(
+            context: context,
+            onChange: (index) async {
+              db2.curUser.curSvtPlanNo = index;
+              db2.itemCenter.updateSvts(all: true);
+              setState(() {});
+            },
+          ),
+          SharedBuilder.priorityIcon(context: context),
           IconButton(
             icon: Icon(
                 filtered ? Icons.check_circle : Icons.check_circle_outline),
@@ -356,7 +352,7 @@ class _ItemListTabState extends State<ItemListTab> {
             db2.curUser.items[group.data] = 999;
           }
         });
-        // db.itemStat.updateLeftItems();
+        db2.itemCenter.updateLeftItems();
       },
     ).showDialog(context);
   }

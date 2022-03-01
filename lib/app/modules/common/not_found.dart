@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 
 import '../../routes/routes.dart';
 
-class NotRoundPage extends StatelessWidget {
+class NotFoundPage extends StatelessWidget {
+  final String? title;
   final String? url;
   final RouteConfiguration? configuration;
 
-  const NotRoundPage({Key? key, this.url, this.configuration})
+  const NotFoundPage({Key? key, this.title, this.url, this.configuration})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('404'),
+        title: Text(title ?? '404'),
         centerTitle: true,
       ),
       body: Center(

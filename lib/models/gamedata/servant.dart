@@ -16,14 +16,17 @@ import 'wiki_data.dart';
 part '../../generated/models/gamedata/servant.g.dart';
 
 @JsonSerializable()
-class BasicServant {
+class BasicServant with GameCardMixin {
+  @override
   int id;
+  @override
   int collectionNo;
   String name;
   SvtType type;
   SvtFlag flag;
   SvtClass className;
   Attribute attribute;
+  @override
   int rarity;
   int atkMax;
   int hpMax;
@@ -47,6 +50,9 @@ class BasicServant {
       _$BasicServantFromJson(json);
 
   Transl<String, String> get lName => Transl.entityNames(name);
+
+  @override
+  String get icon => face;
 }
 
 @JsonSerializable()
@@ -247,6 +253,10 @@ class Servant with GameCardMixin {
       }
     }
     return materials;
+  }
+
+  void updateStat() {
+    db2.itemCenter.updateSvts(svts: [this]);
   }
 }
 
@@ -730,6 +740,13 @@ class NiceCostume {
       _$NiceCostumeFromJson(json);
 
   Transl<String, String> get lName => Transl.costumeNames(name);
+
+  String get face =>
+      'https://static.atlasacademy.io/JP/Faces/f_${battleCharaId}0.png';
+  String get icon => face;
+  String get borderedIcon => icon.replaceAll('.png', '_bordered.png');
+  String get charaGraph =>
+      'https://static.atlasacademy.io/JP/CharaGraph/$battleCharaId/$battleCharaId.png';
 }
 
 @JsonSerializable()

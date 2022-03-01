@@ -3,13 +3,11 @@ import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/modules/shared/common_builders.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
-import 'package:chaldea/utils/atlas.dart';
-import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/material.dart';
 
@@ -67,8 +65,6 @@ class ServantListPageState extends State<ServantListPage>
 
   @override
   Widget build(BuildContext context) {
-    // db.curUser.ensurePlanLarger();
-    // filterShownList(compare: (a, b) => a.collectionNo - b.collectionNo);
     filterShownList(
       compare: (a, b) => SvtFilterData.compare(a, b,
           keys: filterData.sortKeys,
@@ -169,12 +165,12 @@ class ServantListPageState extends State<ServantListPage>
                 child: Text(S.current.select_plan),
                 onTap: () async {
                   await null;
-                  CommonBuilder.showSwitchPlanDialog(
+                  SharedBuilder.showSwitchPlanDialog(
                     context: context,
                     onChange: (index) {
                       db2.curUser.curSvtPlanNo = index;
-                      // db2.curUser.ensurePlanLarger();
-                      // db2.itemStat.updateSvtItems();
+                      db2.curUser.ensurePlanLarger();
+                      db2.itemCenter.updateSvts(all: true);
                     },
                   );
                 },
@@ -200,7 +196,7 @@ class ServantListPageState extends State<ServantListPage>
                         for (final svt in shownList) {
                           db2.curPlan.remove(svt.collectionNo);
                         }
-                        // db.itemStat.updateSvtItems();
+                        db2.itemCenter.updateSvts(all: true);
                         setState(() {});
                       },
                     ).showDialog(context);
@@ -217,7 +213,7 @@ class ServantListPageState extends State<ServantListPage>
                           .reset_plan_all(db2.curUser.curSvtPlanNo + 1)),
                       onTapOk: () {
                         db2.curPlan.clear();
-                        // db2.itemStat.updateSvtItems();
+                        db2.itemCenter.updateSvts(all: true);
                         setState(() {});
                       },
                     ).showDialog(context);
@@ -668,51 +664,52 @@ class ServantListPageState extends State<ServantListPage>
   @override
   Widget gridItemBuilder(Servant svt) {
     final status = db2.curUser.svtStatusOf(svt.collectionNo);
-    Widget Function(TextStyle)? textBuilder;
-    if (status.cur.favorite) {
-      textBuilder = (style) {
-        return RichText(
-          text: TextSpan(text: '', style: style, children: [
-            WidgetSpan(
-              style: style,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.white,
-                      blurRadius: 3,
-                      spreadRadius: 1,
-                    )
-                  ],
-                ),
-                child: db2.getIconImage(
-                    Atlas.asset('Terminal/Info/CommonUIAtlas/icon_nplv.png'),
-                    width: 13,
-                    height: 13),
+    Widget textBuilder(TextStyle style) {
+      return RichText(
+        text: TextSpan(text: '', style: style, children: [
+          WidgetSpan(
+            style: style,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.white,
+                    blurRadius: 3,
+                    spreadRadius: 1,
+                  )
+                ],
               ),
+              child: db2.getIconImage(
+                  Atlas.asset('Terminal/Info/CommonUIAtlas/icon_nplv.png'),
+                  width: 13,
+                  height: 13),
             ),
-            TextSpan(text: status.cur.npLv.toString()),
-            TextSpan(
-                text:
-                    '\n${status.cur.ascension}-' + status.cur.skills.join('/'))
-          ]),
-        );
-      };
+          ),
+          TextSpan(text: status.cur.npLv.toString()),
+          TextSpan(
+              text: '\n${status.cur.ascension}-' + status.cur.skills.join('/'))
+        ]),
+      );
     }
+
+    ;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 3),
       child: AspectRatio(
         aspectRatio: 132 / 144,
-        child: ImageWithText(
-          image: db2.getIconImage(svt.borderedIcon),
-          shadowSize: 4,
-          textBuilder: textBuilder,
-          textStyle: const TextStyle(fontSize: 11, color: Colors.black),
-          shadowColor: Colors.white,
-          alignment: AlignmentDirectional.bottomStart,
-          padding: const EdgeInsets.fromLTRB(2, 0, 0, 2),
-          onTap: () => _onTapSvt(svt),
+        child: db2.onUserData(
+          (context, snapshot) => ImageWithText(
+            image: db2.getIconImage(svt.borderedIcon),
+            shadowSize: 4,
+            textBuilder: status.cur.favorite ? textBuilder : null,
+            textStyle: const TextStyle(fontSize: 11, color: Colors.black),
+            shadowColor: Colors.white,
+            alignment: AlignmentDirectional.bottomStart,
+            padding: const EdgeInsets.fromLTRB(2, 0, 0, 2),
+            onTap: () => _onTapSvt(svt),
+          ),
         ),
       ),
     );
@@ -926,8 +923,7 @@ class ServantListPageState extends State<ServantListPage>
                     ),
                     IconButton(
                       onPressed: () {
-                        // db2.itemStat.updateSvtItems();
-                        // SplitRoute.push(context, ItemListPage(), detail: false);
+                        router.push(url: Routes.items);
                       },
                       color: Theme.of(context).colorScheme.secondary,
                       icon: const Icon(Icons.category),
@@ -947,9 +943,9 @@ class ServantListPageState extends State<ServantListPage>
 
   Widget _usualListItemBuilder(Servant svt) {
     final status = db2.curUser.svtStatusOf(svt.collectionNo);
-    Widget? statusText;
-    if (status.cur.favorite) {
-      statusText = Column(
+    Widget? getStatusText(BuildContext context) {
+      if (!status.cur.favorite) return null;
+      Widget statusText = Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
@@ -980,10 +976,12 @@ class ServantListPageState extends State<ServantListPage>
         ],
       );
       statusText = DefaultTextStyle(
-        style: const TextStyle(color: Colors.grey, fontSize: 14),
+        style: Theme.of(context).textTheme.caption ?? const TextStyle(),
         child: statusText,
       );
+      return statusText;
     }
+
     String additionalText = '';
     switch (filterData.sortKeys.first) {
       case SvtCompare.atk:
@@ -1010,7 +1008,8 @@ class ServantListPageState extends State<ServantListPage>
               'No.${svt.collectionNo} ${EnumUtil.titled(svt.className)}  $additionalText')
         ],
       ),
-      trailing: statusText,
+      trailing: db2.onUserData(
+          (context, snapshot) => getStatusText(context) ?? const SizedBox()),
       selected: SplitRoute.isSplit(context) && selected == svt,
       onTap: () => _onTapSvt(svt),
     );
@@ -1037,14 +1036,15 @@ class ServantListPageState extends State<ServantListPage>
       },
     );
 
-    return CustomTile(
-      leading: db2.getIconImage(svt.borderedIcon, width: 48),
-      subtitle: _getDetailTable(svt),
-      trailing: eyeWidget,
-      selected: SplitRoute.isSplit(context) && selected == svt,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 3),
-      onTap: () => _onTapSvt(svt),
-    );
+    return db2.onUserData((context, snapshot) => CustomTile(
+          leading: db2.getIconImage(svt.borderedIcon, width: 48),
+          subtitle: _getDetailTable(svt),
+          trailing: eyeWidget,
+          selected: SplitRoute.isSplit(context) && selected == svt,
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 3),
+          onTap: () => _onTapSvt(svt),
+        ));
   }
 
   void copyPlan() {
