@@ -128,6 +128,11 @@
         case "canvaskit":
           window.flutterWebRenderer = "canvaskit";
           break;
+        case "auto":
+          break;
+        default:
+          window.flutterWebRenderer = "html";
+          break;
       }
     </script>
 

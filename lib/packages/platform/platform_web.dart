@@ -13,6 +13,7 @@ class PlatformMethods implements PlatformMethodsInterface {
   void setLocalStorage(String key, String value) =>
       window.localStorage[key] = value;
 
+  @override
   bool get rendererCanvasKit {
     var r = js.context['flutterCanvasKit'];
     return r != null;

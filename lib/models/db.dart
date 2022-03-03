@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:chaldea/app/tools/item_center.dart';
 import 'package:chaldea/models/runtime_data.dart';
-import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/http_override.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/icon_clipper.dart';
