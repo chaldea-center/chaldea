@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -273,7 +274,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
             svt.lName.l,
             style: TextStyle(color: Theme.of(context).colorScheme.secondary),
           ),
-          // onTap: () => svt.pushDetail(context),
+          onTap: () => router.push(url: svt.route),
         ));
       }
     }

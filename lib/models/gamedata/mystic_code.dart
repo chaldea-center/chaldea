@@ -1,11 +1,16 @@
+import 'package:chaldea/app/routes/routes.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import '../db.dart';
+import 'game_card.dart';
 import 'skill.dart';
+import 'wiki_data.dart';
 
 part '../../generated/models/gamedata/mystic_code.g.dart';
 
 @JsonSerializable()
-class MysticCode {
+class MysticCode with GameCardMixin {
+  @override
   int id;
   String name;
   String detail;
@@ -26,6 +31,22 @@ class MysticCode {
 
   factory MysticCode.fromJson(Map<String, dynamic> json) =>
       _$MysticCodeFromJson(json);
+
+  @override
+  int get collectionNo => throw UnimplementedError();
+
+  @override
+  String? get icon => extraAssets.item.masterGender;
+
+  @override
+  String? get borderedIcon => icon;
+
+  @override
+  int get rarity => throw UnimplementedError();
+
+  Transl<String, String> get lName => Transl.mcNames(name);
+
+  String get route => Routes.mysticCodeI(id);
 }
 
 @JsonSerializable()
@@ -37,6 +58,8 @@ class MCAssets {
     required this.male,
     required this.female,
   });
+
+  String get masterGender => db2.curUser.isGirl ? female : male;
 
   factory MCAssets.fromJson(Map<String, dynamic> json) =>
       _$MCAssetsFromJson(json);

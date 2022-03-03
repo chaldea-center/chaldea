@@ -63,7 +63,7 @@ mixin GameCardMixin {
     required BuildContext context,
     double? width,
     double? height,
-    double? aspectRatio,
+    double? aspectRatio = 132 / 144,
     String? text,
     EdgeInsets? padding,
     EdgeInsets? textPadding,

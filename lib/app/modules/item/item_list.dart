@@ -315,7 +315,7 @@ class _ItemListTabState extends State<ItemListTab> {
           },
         ),
         controller: TextEditingController(),
-      );
+      )..focusNode.attach(context);
     }
 
     // sort by item id
@@ -516,7 +516,7 @@ class _ItemListTabState extends State<ItemListTab> {
               0;
         }
         db2.itemCenter.updateLeftItems();
-        // setState2(() {});
+        setState(() {});
       },
       onTap: () {
         // select all text at first tap
@@ -556,7 +556,7 @@ class _ItemListTabState extends State<ItemListTab> {
             flex: 1,
             child: AutoSizeText(
               '${S.current.item_total_demand}'
-              ' ${formatNumber(db2.itemCenter.statSvtDemands[itemId] ?? 0)}',
+              ' ${formatNumber(db2.itemCenter.statSvtDemands[itemId] ?? 0, compact: false)}',
               maxLines: 1,
               minFontSize: 1,
               overflow: TextOverflow.visible,
@@ -565,7 +565,7 @@ class _ItemListTabState extends State<ItemListTab> {
           Expanded(
             flex: 1,
             child: AutoSizeText(
-              '${S.current.item_left} ${formatNumber(db2.itemCenter.itemLeft[itemId] ?? 0)}',
+              '${S.current.item_left} ${formatNumber(db2.itemCenter.itemLeft[itemId] ?? 0, compact: false)}',
               maxLines: 1,
               style: highlightStyle,
               minFontSize: 1,

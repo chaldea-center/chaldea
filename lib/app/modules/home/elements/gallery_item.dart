@@ -9,6 +9,7 @@ import '../../craft_essence/craft_list.dart';
 import '../../event/events_page.dart';
 import '../../free_quest_calc/free_calculator_page.dart';
 import '../../item/item_list.dart';
+import '../../mystic_code/mystic_code_list.dart';
 import '../../servant/servant_list.dart';
 
 class GalleryItem {
@@ -79,7 +80,7 @@ class GalleryItem {
         freeCalculator,
         // masterMission,
         // saintQuartz,
-        // mysticCode,
+        mysticCodes,
         // effectSearch,
         // costume,
         // gacha,
@@ -168,13 +169,14 @@ class GalleryItem {
 //   page: SaintQuartzPlanning(),
 //   isDetail: true,
 // );
-// static GalleryItem mysticCode = GalleryItem(
-//   name: 'mystic_code',
-//   titleBuilder: () => S.current.mystic_code,
-//   icon: FontAwesomeIcons.diagnoses,
-//   page: MysticCodePage(),
-//   isDetail: true,
-// );
+  static GalleryItem mysticCodes = GalleryItem(
+    name: 'mystic_codes',
+    titleBuilder: () => S.current.mystic_code,
+    icon: FontAwesomeIcons.diagnoses,
+    url: Routes.mysticCodes,
+    page: MysticCodeListPage(),
+    isDetail: false,
+  );
 // static GalleryItem effectSearch = GalleryItem(
 //   name: 'effect_search',
 //   titleBuilder: () => S.current.effect_search,

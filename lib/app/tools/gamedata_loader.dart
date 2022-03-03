@@ -55,6 +55,7 @@ class GameDataLoader {
     _completer = Completer();
     if (!updateOnly) gameJson = null;
     _progress = null;
+    error = null;
     cancelToken = CancelToken();
     Future<void>.microtask(() => _loadJson(offline, onUpdate, updateOnly)
             .then((value) => _completer!.complete(loadedGameData = value)))
@@ -183,9 +184,6 @@ class GameDataLoader {
       _versionFile.writeAsString(jsonEncode(newVersion));
     }
     if (updateOnly) {
-      if (newVersion.timestamp > oldVersion.timestamp) {
-        db2.runtimeData.downloadedDataVersion = newVersion;
-      }
       return GameData();
     } // bypass null
     gameJson = _gameJson;

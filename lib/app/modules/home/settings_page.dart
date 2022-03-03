@@ -107,10 +107,11 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               ListTile(
                 title: Text(S.current.gamedata),
-                trailing: _wrapArrowTrailing(Text(
-                  db2.gameData.version.text(true),
-                  textAlign: TextAlign.end,
-                )),
+                trailing: db2
+                    .onUserData((context, snapshot) => _wrapArrowTrailing(Text(
+                          db2.gameData.version.text(true),
+                          textAlign: TextAlign.end,
+                        ))),
                 onTap: () {
                   SplitRoute.push(context, GameDataPage(), popDetail: true);
                 },

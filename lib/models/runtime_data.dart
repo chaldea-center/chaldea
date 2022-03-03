@@ -38,8 +38,5 @@ class RuntimeData {
   /// store anything you like
   Map<dynamic, dynamic> tempDict = {};
 
-  /// for db2
-  DataVersion? downloadedDataVersion;
-
   WebRenderMode? webRendererCanvasKit;
 }

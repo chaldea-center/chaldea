@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -349,7 +350,7 @@ class CraftDetailBasePage extends StatelessWidget {
             svt.lName.l,
             style: TextStyle(color: Theme.of(context).colorScheme.secondary),
           ),
-          // onTap: () => svt.pushDetail(context),
+          onTap: () => router.push(url: svt.route),
         ));
       }
     }
@@ -400,13 +401,13 @@ class CraftDetailBasePage extends StatelessWidget {
 
   List<Widget> _relatedSvt(BuildContext context) {
     List<Widget> children = [];
-    final bondSvt = db2.gameData.servants[ce.bondEquipOwner];
-    final valentineSvt = db2.gameData.servants[ce.valentineEquipOwner];
+    final bondSvt = db2.gameData.servantsById[ce.bondEquipOwner];
+    final valentineSvt = db2.gameData.servantsById[ce.valentineEquipOwner];
     for (var svt in [bondSvt, valentineSvt]) {
       if (svt == null) continue;
       children.add(TextButton(
         onPressed: () {
-          // TODO
+          router.push(url: svt.route);
         },
         child: Text(
           svt.lName.l,

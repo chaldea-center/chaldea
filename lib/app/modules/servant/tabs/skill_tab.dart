@@ -91,7 +91,6 @@ class SvtSkillTab extends StatelessWidget {
   }
 
   Widget _buildOneSkill(NiceSkill skill) {
-    final localName = Transl.skillNames(skill.name).l;
     int cd0 = 0, cd1 = 0;
     if (skill.coolDown.isNotEmpty) {
       cd0 = skill.coolDown.first;
@@ -100,8 +99,8 @@ class SvtSkillTab extends StatelessWidget {
     final header = CustomTile(
       contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 6, 22, 6),
       leading: db2.getIconImage(skill.icon, width: 33),
-      title: Text(Language.isJP ? skill.name : localName),
-      subtitle: Language.isZH ? Text(skill.name) : null,
+      title: Text(skill.lName.l),
+      subtitle: Transl.isJP ? null : Text(skill.name),
       trailing: cd0 <= 0 && cd1 <= 0
           ? null
           : cd0 == cd1

@@ -114,6 +114,8 @@ class NiceSkill implements BaseSkill {
     return _$NiceSkillFromJson(json);
   }
 
+  Transl<String, String> get lName => Transl.skillNames(name);
+
   String? get lDetail {
     if (unmodifiedDetail == null) return null;
     return Transl.skillDetail(unmodifiedDetail!)

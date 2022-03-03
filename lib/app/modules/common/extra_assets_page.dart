@@ -20,7 +20,7 @@ class ExtraAssetsPage extends StatelessWidget {
         _oneGroup('charaFigure', assets.charaFigure, 300),
         _oneGroup('narrowFigure', assets.narrowFigure, 300),
         _oneGroup('equipFace', assets.equipFace, 50),
-        // _oneGroup('Status', assets.status),
+        // _oneGroup('Status', assets?.status),
       ].whereType<Widget>().toList(),
     );
   }
@@ -28,33 +28,31 @@ class ExtraAssetsPage extends StatelessWidget {
   Widget? _oneGroup(String title, ExtraAssetsUrl assetsUrl, double height,
       [bool expanded = true]) {
     final urls = assetsUrl.allUrls.toList();
-    if (urls.isNotEmpty) {
-      return SimpleAccordion(
-        expanded: expanded,
-        headerBuilder: (context, _) => Text(title),
-        expandElevation: 0,
-        contentBuilder: (context) => SizedBox(
-          height: height,
-          child: Align(
-            alignment: AlignmentDirectional.centerStart,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              itemCount: urls.length,
-              itemBuilder: (context, index) => CachedImage(
-                imageUrl: urls[index],
-                onTap: () {
-                  FullscreenImageViewer.show(
-                      context: context, urls: urls, initialPage: index);
-                },
-                showSaveOnLongPress: true,
-              ),
-              separatorBuilder: (context, index) => const SizedBox(width: 8),
+    if (urls.isEmpty) return null;
+    return SimpleAccordion(
+      expanded: expanded,
+      headerBuilder: (context, _) => Text(title),
+      expandElevation: 0,
+      contentBuilder: (context) => SizedBox(
+        height: height,
+        child: Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            shrinkWrap: true,
+            itemCount: urls.length,
+            itemBuilder: (context, index) => CachedImage(
+              imageUrl: urls[index],
+              onTap: () {
+                FullscreenImageViewer.show(
+                    context: context, urls: urls, initialPage: index);
+              },
+              showSaveOnLongPress: true,
             ),
+            separatorBuilder: (context, index) => const SizedBox(width: 8),
           ),
         ),
-      );
-    }
-    return null;
+      ),
+    );
   }
 }

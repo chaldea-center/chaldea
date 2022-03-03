@@ -7,9 +7,8 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/modules/extras/icon_cache_manager.dart';
 import 'package:chaldea/packages/platform/platform.dart';
-import 'package:chaldea/utils/extension.dart';
-import 'package:chaldea/widgets/custom_dialogs.dart';
-import 'package:chaldea/widgets/tile_items.dart';
+import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -37,10 +36,10 @@ class _GameDataPageState extends State<GameDataPage> {
               ListTile(
                 title: Text(S.current.version),
                 subtitle: Text(S.current.gamedata),
-                trailing: Text(
-                  db2.gameData.version.text(true),
-                  textAlign: TextAlign.end,
-                ),
+                trailing: db2.onUserData((context, snapshot) => Text(
+                      db2.gameData.version.text(true),
+                      textAlign: TextAlign.end,
+                    )),
               ),
               // TODO: 不兼容版本提示
               if (loader.loadedGameData != null &&
@@ -50,8 +49,9 @@ class _GameDataPageState extends State<GameDataPage> {
                   title:
                       const Text('Update Available, click or restart to load'),
                   trailing: Text(
-                    db2.runtimeData.downloadedDataVersion!.text(true),
+                    loader.loadedGameData!.version.text(true),
                     style: TextStyle(color: Theme.of(context).errorColor),
+                    textAlign: TextAlign.end,
                   ),
                   onTap: () {
                     if (loader.loadedGameData != null) {
@@ -61,6 +61,7 @@ class _GameDataPageState extends State<GameDataPage> {
                       db2.gameData = loader.loadedGameData!;
                       db2.itemCenter.init();
                       db2.notifyAppUpdate();
+                      setState(() {});
                       EasyLoading.showSuccess('Updated');
                     }
                   },
@@ -99,6 +100,55 @@ class _GameDataPageState extends State<GameDataPage> {
                   });
                 },
               ),
+              ValueStatefulBuilder<double?>(
+                  initValue: loader.progress,
+                  builder: (context, state) {
+                    String hint;
+                    if (state.value == null) {
+                      hint = 'not started';
+                    } else {
+                      hint = (state.value! * 100).toStringAsFixed(2) + '%';
+                    }
+                    if (loader.error != null) {
+                      hint = loader.error!.toString();
+                    }
+                    return ListTile(
+                      title: Text(S.current.update),
+                      subtitle: Text('Progress: $hint', maxLines: 2),
+                      onTap: () async {
+                        loader
+                            .reload(
+                                offline: false,
+                                onUpdate: (v) {
+                                  state.value = v;
+                                  state.updateState();
+                                })
+                            .then((value) async {
+                          showDialog(
+                            context: kAppKey.currentContext!,
+                            builder: (context) {
+                              return SimpleCancelOkDialog(
+                                title: Text(S.current.update_dataset),
+                                content: Text(
+                                    'Current: ${db2.gameData.version.text(false)}\n'
+                                    'Latest : ${value.version.text(false)}'),
+                                onTapOk: () {
+                                  db2.gameData = value;
+                                  db2.itemCenter.calculate();
+                                  db2.notifyAppUpdate();
+                                },
+                              );
+                            },
+                          );
+                        }).onError((error, stackTrace) async {
+                          EasyLoading.showError('Update dataset failed!');
+                        }).whenComplete(() {
+                          state.updateState();
+                        });
+                        EasyLoading.showInfo('Background Updating...');
+                      },
+                    );
+                  }),
               ListTile(
                 title: Text(LocalizedText.of(
                     chs: '下载图标',
