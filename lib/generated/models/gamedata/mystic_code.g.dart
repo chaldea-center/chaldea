@@ -17,6 +17,11 @@ MysticCode _$MysticCodeFromJson(Map json) => MysticCode(
           .toList(),
       expRequired:
           (json['expRequired'] as List<dynamic>).map((e) => e as int).toList(),
+      costumes: (json['costumes'] as List<dynamic>?)
+              ?.map((e) => MysticCodeCostume.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
     );
 
 MCAssets _$MCAssetsFromJson(Map json) => MCAssets(
@@ -30,4 +35,15 @@ ExtraMCAssets _$ExtraMCAssetsFromJson(Map json) => ExtraMCAssets(
           Map<String, dynamic>.from(json['masterFace'] as Map)),
       masterFigure: MCAssets.fromJson(
           Map<String, dynamic>.from(json['masterFigure'] as Map)),
+    );
+
+MysticCodeCostume _$MysticCodeCostumeFromJson(Map json) => MysticCodeCostume(
+      id: json['id'] as int,
+      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
+              ?.map((e) =>
+                  CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      extraAssets: ExtraMCAssets.fromJson(
+          Map<String, dynamic>.from(json['extraAssets'] as Map)),
     );

@@ -12,6 +12,7 @@ class MysticCode {
   ExtraMCAssets extraAssets;
   List<NiceSkill> skills;
   List<int> expRequired;
+  List<MysticCodeCostume> costumes;
 
   MysticCode({
     required this.id,
@@ -20,6 +21,7 @@ class MysticCode {
     required this.extraAssets,
     required this.skills,
     required this.expRequired,
+    this.costumes = const [],
   });
 
   factory MysticCode.fromJson(Map<String, dynamic> json) =>
@@ -54,4 +56,20 @@ class ExtraMCAssets {
 
   factory ExtraMCAssets.fromJson(Map<String, dynamic> json) =>
       _$ExtraMCAssetsFromJson(json);
+}
+
+@JsonSerializable()
+class MysticCodeCostume {
+  int id;
+  List<CommonRelease> releaseConditions;
+  ExtraMCAssets extraAssets;
+
+  MysticCodeCostume({
+    required this.id,
+    this.releaseConditions = const [],
+    required this.extraAssets,
+  });
+
+  factory MysticCodeCostume.fromJson(Map<String, dynamic> json) =>
+      _$MysticCodeCostumeFromJson(json);
 }
