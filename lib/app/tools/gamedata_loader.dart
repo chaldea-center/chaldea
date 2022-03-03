@@ -158,7 +158,7 @@ class GameDataLoader {
       'craftEssences': 'collectionNo',
       'entities': 'id',
       'events': 'id',
-      'exchangeTickets': 'key',
+      'exchangeTickets': 'id',
       'fixedDrops': 'key',
       'items': 'id',
       'mysticCodes': 'id',

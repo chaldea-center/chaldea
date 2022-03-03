@@ -308,8 +308,7 @@ EventExtra _$EventExtraFromJson(Map json) => EventExtra(
     );
 
 ExchangeTicket _$ExchangeTicketFromJson(Map json) => ExchangeTicket(
-      key: json['key'] as int?,
-      id: json['id'] as int?,
+      id: json['id'] as int,
       year: json['year'] as int,
       month: json['month'] as int,
       items: (json['items'] as List<dynamic>).map((e) => e as int).toList(),

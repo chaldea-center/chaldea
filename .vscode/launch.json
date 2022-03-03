@@ -5,7 +5,7 @@
       "program": "lib/main.dart",
       "request": "launch",
       "type": "dart",
-      "args": ["--web-port=50091"]
+      "args": ["--web-port=50091", "--web-renderer=html"]
     },
     {
       "name": "Flutter (profile mode)",

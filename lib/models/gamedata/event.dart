@@ -801,7 +801,7 @@ enum EventType {
   locationCampaign,
   warBoard,
   combineCosutumeItem,
-  treasureBox,
+  myroomMultipleViewCampaign,
 }
 
 enum DetailMissionCondLinkType {

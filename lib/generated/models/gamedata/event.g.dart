@@ -407,5 +407,5 @@ const _$EventTypeEnumMap = {
   EventType.locationCampaign: 'locationCampaign',
   EventType.warBoard: 'warBoard',
   EventType.combineCosutumeItem: 'combineCosutumeItem',
-  EventType.treasureBox: 'treasureBox',
+  EventType.myroomMultipleViewCampaign: 'myroomMultipleViewCampaign',
 };

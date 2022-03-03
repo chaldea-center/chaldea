@@ -530,15 +530,13 @@ class ExchangeTicket {
   final int year;
   final int month;
   final List<int> items;
-  int? key;
 
   ExchangeTicket({
-    this.key,
-    int? id,
+    required this.id,
     required this.year,
     required this.month,
     required this.items,
-  }) : id = id ?? key!;
+  });
 
   factory ExchangeTicket.fromJson(Map<String, dynamic> json) =>
       _$ExchangeTicketFromJson(json);

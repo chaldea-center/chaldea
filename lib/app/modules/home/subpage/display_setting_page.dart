@@ -117,7 +117,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                     ),
                   ),
                   onChanged: (v) {
-                    if(v!=null) {
+                    if (v != null) {
                       db2.userData.svtAscensionIcon = v;
                     }
                     setState(() {});

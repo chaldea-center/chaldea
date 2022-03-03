@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 class ExtraAssetsPage extends StatelessWidget {
   final ExtraAssets assets;
 
-  const ExtraAssetsPage({Key? key, required this.assets})
-      : super(key: key);
+  const ExtraAssetsPage({Key? key, required this.assets}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
