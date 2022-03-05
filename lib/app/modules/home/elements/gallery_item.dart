@@ -9,6 +9,7 @@ import '../../craft_essence/craft_list.dart';
 import '../../event/events_page.dart';
 import '../../free_quest_calc/free_calculator_page.dart';
 import '../../item/item_list.dart';
+import '../../master_mission/master_mission_list.dart';
 import '../../mystic_code/mystic_code_list.dart';
 import '../../servant/servant_list.dart';
 
@@ -78,7 +79,7 @@ class GalleryItem {
         events,
         plans,
         freeCalculator,
-        // masterMission,
+        masterMissions,
         // saintQuartz,
         mysticCodes,
         // effectSearch,
@@ -155,13 +156,13 @@ class GalleryItem {
     page: FreeQuestCalcPage(),
     isDetail: true,
   );
-// static GalleryItem masterMission = GalleryItem(
-//   name: 'master_mission',
-//   titleBuilder: () => S.current.master_mission,
-//   icon: FontAwesomeIcons.tasks,
-//   page: MasterMissionPage(),
-//   isDetail: true,
-// );
+  static GalleryItem masterMissions = GalleryItem(
+    name: 'master_missions',
+    titleBuilder: () => S.current.master_mission,
+    icon: FontAwesomeIcons.tasks,
+    page: MasterMissionListPage(),
+    isDetail: true,
+  );
 // static GalleryItem saintQuartz = GalleryItem(
 //   name: 'saint_quartz',
 //   titleBuilder: () => Item.lNameOf(Items.quartz),

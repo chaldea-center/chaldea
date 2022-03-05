@@ -160,8 +160,7 @@ class AppNewsCarousel extends StatefulWidget {
         result.removeWhere((item) =>
             blocked.any((word) => item.image?.contains(word) == true));
         carouselSetting.items = result;
-        carouselSetting.updateTime =
-            DateTime.now().millisecondsSinceEpoch ~/ 1000;
+        carouselSetting.updateTime = DateTime.now().timestamp;
         if (showToast) {
           EasyLoading.showSuccess('slides updated');
         }

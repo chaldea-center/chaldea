@@ -71,6 +71,7 @@ class Item {
   static Widget iconBuilder({
     required BuildContext context,
     required Item? item,
+    int? itemId,
     String? icon,
     double? width,
     double? height,
@@ -82,15 +83,18 @@ class Item {
     bool jumpToDetail = true,
     bool popDetail = false,
   }) {
-    if (onTap == null && jumpToDetail && item != null) {
+    int? _itemId = item?.id ?? itemId;
+    item ??= db2.gameData.items[itemId];
+    icon ??= item?.borderedIcon;
+    if (onTap == null && jumpToDetail && itemId != null) {
       onTap = () {
         router.push(
-            url: Routes.itemI(item.id), popDetail: popDetail, detail: true);
+            url: Routes.itemI(_itemId!), popDetail: popDetail, detail: true);
       };
     }
     return GameCardMixin.cardIconBuilder(
       context: context,
-      icon: item?.borderedIcon ?? icon,
+      icon: icon,
       width: width,
       height: height,
       aspectRatio: aspectRatio,
@@ -104,6 +108,8 @@ class Item {
   Transl<String, String> get lName => Transl.itemNames(name);
 
   String get route => Routes.itemI(id);
+
+  void routeTo() => router.push(url: Routes.itemI(id));
 
   // include special items(entity)
   static String getName(int id) {

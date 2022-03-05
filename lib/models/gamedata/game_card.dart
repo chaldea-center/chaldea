@@ -14,9 +14,9 @@ mixin GameCardMixin {
 
   int get collectionNo;
 
-  int get rarity;
+  String get name;
 
-  // String get mcLink;
+  int get rarity;
 
   String? get icon;
 
@@ -28,7 +28,14 @@ mixin GameCardMixin {
     return icon.replaceAll('.png', '_bordered.png');
   }
 
-  // String get lName;
+  @protected
+  void routeToId(String path) {
+    router.push(url: '$path/$id');
+  }
+
+  void routeTo();
+
+  Transl<String, String> get lName;
 
   // Widget charactersToButtons(BuildContext context, List<String> characters) {
   //   if (characters.isEmpty) return const Text('-');

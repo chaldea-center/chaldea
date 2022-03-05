@@ -107,7 +107,7 @@ class Quest {
     return name.split(' ').map((e) => questNameGroup.of(e)).join(' ');
   }
 
-  /// [key] is [indexKey] which is used as map key
+  /// [cacheKey] is [indexKey] which is used as map key
   String get localizedKey {
     if (indexKey == place) {
       return localizedPlace;

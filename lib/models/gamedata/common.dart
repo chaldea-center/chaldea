@@ -235,6 +235,8 @@ extension SvtClassX on SvtClass {
   ];
 }
 
+const kSvtIdsPlayable = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 23, 25];
+
 const kSvtClassIds = {
   1: SvtClass.saber,
   2: SvtClass.archer,

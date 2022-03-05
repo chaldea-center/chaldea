@@ -39,6 +39,7 @@ class BasicServant with GameCardMixin {
   int id;
   @override
   int collectionNo;
+  @override
   String name;
   SvtType type;
   SvtFlag flag;
@@ -69,10 +70,14 @@ class BasicServant with GameCardMixin {
   factory BasicServant.fromJson(Map<String, dynamic> json) =>
       _$BasicServantFromJson(json);
 
+  @override
   Transl<String, String> get lName => Transl.entityNames(name);
 
   @override
   String get icon => face;
+
+  @override
+  void routeTo() => routeToId(Routes.servant);
 }
 
 @JsonSerializable()
@@ -81,6 +86,7 @@ class Servant with GameCardMixin {
   int id;
   @override
   int collectionNo;
+  @override
   String name;
   String ruby;
   SvtClass className;
@@ -220,6 +226,9 @@ class Servant with GameCardMixin {
 
   String get route => '${Routes.servant}/$collectionNo';
 
+  @override
+  void routeTo() => routeToId(Routes.servant);
+
   bool get isUserSvt =>
       (type == SvtType.normal || type == SvtType.heroine) && collectionNo > 0;
 
@@ -238,6 +247,7 @@ class Servant with GameCardMixin {
     return bordered(_icon);
   }
 
+  @override
   Transl<String, String> get lName => Transl.svtNames(name);
 
   ServantExtra get extra => db2.gameData.wikiData.servants[collectionNo] ??=
@@ -293,6 +303,7 @@ class CraftEssence with GameCardMixin {
   int id;
   @override
   int collectionNo;
+  @override
   String name;
   SvtType type;
   SvtFlag flag;
@@ -353,6 +364,7 @@ class CraftEssence with GameCardMixin {
 
   String? get charaGraph => extraAssets.charaGraph.equip?[id];
 
+  @override
   Transl<String, String> get lName => Transl.ceNames(name);
 
   CraftEssenceExtra get extra =>
@@ -370,6 +382,9 @@ class CraftEssence with GameCardMixin {
   }
 
   String get route => '${Routes.craftEssence}/$collectionNo';
+
+  @override
+  void routeTo() => routeToId(Routes.craftEssence);
 }
 
 @JsonSerializable()

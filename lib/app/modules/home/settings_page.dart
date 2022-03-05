@@ -1,4 +1,5 @@
 import 'package:chaldea/_test_page.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/frame_rate_layer.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -196,26 +197,19 @@ class _SettingsPageState extends State<SettingsPage> {
               if (kIsWeb)
                 ListTile(
                   title: const Text('Web Renderer'),
-                  subtitle: const Text('Restart to take affect'),
+                  subtitle: const Text('Restart to take effect'),
                   trailing: DropdownButton<WebRenderMode>(
                     value: db2.runtimeData.webRendererCanvasKit ??
                         (kPlatformMethods.rendererCanvasKit
                             ? WebRenderMode.canvaskit
                             : WebRenderMode.html),
                     underline: const SizedBox(),
-                    items: const [
-                      DropdownMenuItem(
-                        child: Text('auto'),
-                        value: WebRenderMode.auto,
-                      ),
-                      DropdownMenuItem(
-                        child: Text('canvaskit'),
-                        value: WebRenderMode.canvaskit,
-                      ),
-                      DropdownMenuItem(
-                        child: Text('html'),
-                        value: WebRenderMode.html,
-                      ),
+                    items: [
+                      for (final value in WebRenderMode.values)
+                        DropdownMenuItem(
+                          child: Text(value.name, textAlign: TextAlign.end),
+                          value: value,
+                        ),
                     ],
                     onChanged: (v) {
                       if (v != null) {
@@ -254,6 +248,13 @@ class _SettingsPageState extends State<SettingsPage> {
                     Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                 onTap: () {
                   SplitRoute.push(context, FeedbackPage(), popDetail: true);
+                },
+              ),
+              ListTile(
+                title: const Text('Bootstrap Page'),
+                onTap: () {
+                  db2.settings.tips.starter = true;
+                  rootRouter.appState.dataReady = false;
                 },
               ),
               ListTile(

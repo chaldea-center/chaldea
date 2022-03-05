@@ -57,7 +57,7 @@ class JsonStore<T> {
     }
   }
 
-  Future<void> loadSync() {
+  Future<void> loadSync() async {
     try {
       if (PlatformU.isWeb) {
         return load();
@@ -66,9 +66,8 @@ class JsonStore<T> {
         if (_file.existsSync()) {
           _data = _decode(File(fp).readAsStringSync());
         } else {
-          _file
-            ..createSync(recursive: true)
-            ..writeAsString('{}');
+          _file.createSync(recursive: true);
+          _file.writeAsStringSync('{}');
         }
       }
     } catch (e, s) {
@@ -77,14 +76,14 @@ class JsonStore<T> {
     return Future.value();
   }
 
-  void saveSync() {
+  Future<void> saveSync() async {
     try {
       if (PlatformU.isWeb) {
         Hive.openBox(_boxName).then((box) {
           box.put(_key, _encode());
         });
       } else {
-        File(fp).writeAsString(_encode());
+        File(fp).writeAsStringSync(_encode());
       }
     } catch (e, s) {
       logger.e('save JsonStore data failed', e, s);

@@ -4,6 +4,9 @@ import 'package:chaldea/app/modules/event/events_page.dart';
 import 'package:chaldea/app/modules/home/bootstrap.dart';
 import 'package:chaldea/app/modules/item/item.dart';
 import 'package:chaldea/app/modules/item/item_list.dart';
+import 'package:chaldea/app/modules/mystic_code/mystic_code.dart';
+import 'package:chaldea/app/modules/mystic_code/mystic_code_list.dart';
+import 'package:chaldea/app/modules/quest/quest.dart';
 import 'package:chaldea/app/modules/servant/servant.dart';
 import 'package:flutter/material.dart';
 
@@ -45,6 +48,9 @@ class Routes {
 
   static String warI(int id) => '/war/$id';
   static const String war = '/war';
+
+  static String questI(int id) => '/quest/$id';
+  static const String quest = '/quest';
 
   static String itemI(int id) => '/item/$id';
   static const String item = '/item';
@@ -175,7 +181,9 @@ class RouteConfiguration {
       case Routes.commandCode:
         return CmdCodeDetailPage(id: _secondInt);
       case Routes.mysticCodes:
-        break;
+        return MysticCodeListPage();
+      case Routes.mysticCode:
+        return MysticCodePage(id: _secondInt);
       case Routes.events:
         return EventListPage();
       case Routes.war:
@@ -186,6 +194,8 @@ class RouteConfiguration {
         return ItemListPage();
       case Routes.item:
         return ItemDetailPage(itemId: _secondInt ?? 0);
+      case Routes.quest:
+        return QuestDetailPage(id: _secondInt);
       case Routes.summons:
         break;
       case Routes.freeCalc:

@@ -12,25 +12,30 @@ const fsName = 'webfs';
 
 /// all async methods are not async actually
 class FilePlusWeb implements FilePlus {
-  static late LazyBox<Uint8List> _box;
+  static late LazyBox<Uint8List> _defaultBox;
 
   final String _path;
+  final LazyBox<Uint8List>? _box;
 
-  FilePlusWeb(String fp) : _path = normalizePath(fp);
+  LazyBox<Uint8List> get effectiveBox => _box ?? _defaultBox;
+
+  FilePlusWeb(String fp, {LazyBox<Uint8List>? box})
+      : _path = normalizePath(fp),
+        _box = box;
 
   static Future<void> initWebFileSystem() async {
     assert(kIsWeb, 'DO NOT init for non-web');
     try {
-      FilePlusWeb._box = await Hive.openLazyBox(fsName);
+      FilePlusWeb._defaultBox = await Hive.openLazyBox(fsName);
       logger.d('opened $fsName lazy box');
     } catch (e, s) {
       logger.e('initWebFileSystem failed', e, s);
       await Hive.deleteBoxFromDisk(fsName);
-      FilePlusWeb._box = await Hive.openLazyBox(fsName);
+      FilePlusWeb._defaultBox = await Hive.openLazyBox(fsName);
     }
   }
 
-  static Iterable<String> list() => _box.keys.whereType<String>();
+  static Iterable<String> list() => _defaultBox.keys.whereType<String>();
 
   static String normalizePath(String fp) {
     return fp
@@ -47,12 +52,12 @@ class FilePlusWeb implements FilePlus {
   Future<bool> exists() => Future.value(existsSync());
 
   @override
-  bool existsSync() => _box.containsKey(_path);
+  bool existsSync() => effectiveBox.containsKey(_path);
 
   /// raise error if not found
   @override
   Future<Uint8List> readAsBytes() async {
-    final bytes = await _box.get(_path);
+    final bytes = await effectiveBox.get(_path);
     if (bytes == null) {
       throw OSError('FileNotFound: $_path');
     }
@@ -87,13 +92,13 @@ class FilePlusWeb implements FilePlus {
   Future<FilePlus> writeAsBytes(List<int> bytes,
       {FileMode mode = FileMode.write, bool flush = false}) async {
     if (mode == FileMode.append) {
-      final previous = await _box.get(_path);
+      final previous = await effectiveBox.get(_path);
       if (previous != null) {
-        await _box.put(_path, previous..addAll(bytes));
+        await effectiveBox.put(_path, previous..addAll(bytes));
         return this;
       }
     }
-    await _box.put(_path, Uint8List.fromList(bytes));
+    await effectiveBox.put(_path, Uint8List.fromList(bytes));
     return this;
   }
 
@@ -120,4 +125,10 @@ class FilePlusWeb implements FilePlus {
       bool flush = false}) {
     writeAsString(contents, mode: mode, encoding: encoding, flush: flush);
   }
+
+  @override
+  Future<void> create({bool recursive = false}) => Future.value();
+
+  @override
+  Future<void> delete() => effectiveBox.delete(_path);
 }

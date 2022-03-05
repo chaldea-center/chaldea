@@ -217,7 +217,7 @@ class EventMissionCondition {
   List<int> targetIds;
   int targetNum;
 
-  // String conditionMessage;
+  String conditionMessage;
   String closedMessage;
   int flag;
   EventMissionConditionDetail? detail;
@@ -231,7 +231,7 @@ class EventMissionCondition {
     required this.condType,
     required this.targetIds,
     required this.targetNum,
-    // required this.conditionMessage,
+    required this.conditionMessage,
     this.closedMessage = "",
     this.flag = 0,
     this.detail,
@@ -551,6 +551,7 @@ class Event {
   Transl<String, String> get lName => Transl.eventNames(name);
 
   String get route => Routes.eventI(id);
+  void routeTo() => router.push(url: Routes.eventI(id));
 
   // statistics
   @JsonKey(ignore: true)
@@ -809,4 +810,37 @@ enum DetailMissionCondLinkType {
   missionStart,
   masterMissionStart,
   randomMissionStart,
+}
+
+/// https://github.com/atlasacademy/apps/blob/master/packages/api-connector/src/Schema/Mission.ts
+class DetailCondType {
+  const DetailCondType._();
+  static const int enemyKillNum = 1;
+  static const int enemyIndividualityKillNum = 2;
+  static const int itemGetTotal = 3;
+  static const int battleSvtInDeck = 4; // Unused
+  static const int battleSvtEquipInDeck = 5; // Unused
+  static const int targetQuestEnemyKillNum = 6;
+  static const int targetQuestEnemyIndividualityKillNum = 7;
+  static const int targetQuestItemGetTotal = 8;
+  static const int questClearOnce = 9;
+  static const int questClearNum1 = 10;
+  static const int itemGetBattle = 12;
+  static const int defeatEnemyIndividuality = 13;
+  static const int defeatEnemyClass = 14;
+  static const int defeatServantClass = 15;
+  static const int defeatEnemyNotServantClass = 16;
+  static const int battleSvtIndividualityInDeck = 17;
+  static const int battleSvtClassInDeck = 18; // Filter by svt class
+  static const int svtGetBattle = 19; // Embers are svt instead of items
+  static const int friendPointSummon = 21;
+  static const int battleSvtIdInDeck1 = 22;
+  static const int battleSvtIdInDeck2 = 23; // Filter by svt ID
+  static const int questClearNum2 =
+      24; // Not sure what's the difference QUEST_CLEAR_NUM_1
+  static const int diceUse = 25; // Probably Fate/Requiem event
+  static const int squareAdvanced = 26;
+  static const int moreFriendFollower = 27; // 5th Anniversary missions
+  static const int mainQuestDone = 28; // 22M Download Campaign
+  static const int questClearNumIncludingGrailFront = 31;
 }

@@ -409,7 +409,14 @@ class _OfflineLoadingPage extends StatelessWidget {
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
                       img,
-                      ListTile(subtitle: Center(child: Text(error.toString()))),
+                      ListTile(
+                        subtitle: Center(
+                          child: Text(
+                            'Loading Data Failed\n$error',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
           ),
@@ -505,6 +512,11 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                       ? Theme.of(context).errorColor
                       : Theme.of(context).colorScheme.primary,
                 ),
+              if (_loader.progress != null && _loader.progress! < 1.0)
+                Text(
+                  (_loader.progress! * 100).toInt().toString() + '%',
+                  style: const TextStyle(fontSize: 24),
+                ),
               Center(
                 child: SizedBox(
                   width: 120,
@@ -512,6 +524,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                   child: CircularProgressIndicator(
                     value: _loader.progress ?? 0,
                     color: error != null ? Theme.of(context).errorColor : null,
+                    backgroundColor: Theme.of(context).backgroundColor,
                   ),
                 ),
               ),

@@ -15,6 +15,10 @@ extension IntX on int {
     if (lowerLimit != null && lowerLimit > result) result = lowerLimit;
     return result;
   }
+
+  /// timestamp in seconds
+  String toDateTimeString() =>
+      DateTime.fromMillisecondsSinceEpoch(this * 1000).toStringShort();
 }
 
 extension ListX<T> on List<T> {
@@ -63,6 +67,10 @@ extension SetX<E> on Set<E> {
     } else {
       add(value);
     }
+  }
+
+  bool equalTo(Set<E> other) {
+    return length == other.length && length == {...this, ...other}.length;
   }
 }
 
@@ -182,6 +190,8 @@ extension DateTimeX on DateTime {
       return 0;
     }
   }
+
+  int get timestamp => millisecondsSinceEpoch ~/ 1000;
 }
 
 /// This widget should not have any dependency of outer [context]

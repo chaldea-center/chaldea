@@ -16,6 +16,7 @@ class CommandCode with GameCardMixin {
   int id;
   @override
   int collectionNo;
+  @override
   String name;
   @override
   int rarity;
@@ -38,6 +39,7 @@ class CommandCode with GameCardMixin {
   factory CommandCode.fromJson(Map<String, dynamic> json) =>
       _$CommandCodeFromJson(json);
 
+  @override
   Transl<String, String> get lName => Transl.ccNames(name);
 
   @override
@@ -55,4 +57,7 @@ class CommandCode with GameCardMixin {
           CommandCodeExtra(collectionNo: collectionNo);
 
   String get route => Routes.commandCodeI(id);
+
+  @override
+  void routeTo() => routeToId(Routes.commandCode);
 }

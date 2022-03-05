@@ -12,6 +12,7 @@ part '../../generated/models/gamedata/mystic_code.g.dart';
 class MysticCode with GameCardMixin {
   @override
   int id;
+  @override
   String name;
   String detail;
   ExtraMCAssets extraAssets;
@@ -44,9 +45,13 @@ class MysticCode with GameCardMixin {
   @override
   int get rarity => throw UnimplementedError();
 
+  @override
   Transl<String, String> get lName => Transl.mcNames(name);
 
   String get route => Routes.mysticCodeI(id);
+
+  @override
+  void routeTo() => routeToId(Routes.mysticCode);
 }
 
 @JsonSerializable()

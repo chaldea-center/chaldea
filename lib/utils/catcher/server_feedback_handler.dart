@@ -9,7 +9,7 @@ import 'dart:typed_data';
 import 'package:archive/archive_io.dart';
 import 'package:catcher/catcher.dart';
 import 'package:catcher/model/platform_type.dart';
-import 'package:chaldea/app/api/api.dart';
+import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/packages/file_plus/file_plus.dart';
 import 'package:chaldea/packages/network.dart';
 import 'package:flutter/foundation.dart';

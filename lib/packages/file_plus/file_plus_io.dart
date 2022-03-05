@@ -69,4 +69,11 @@ class FilePlusNative implements FilePlus {
           bool flush = false}) =>
       _file.writeAsStringSync(contents,
           mode: mode, encoding: encoding, flush: flush);
+
+  @override
+  Future<void> create({bool recursive = false}) =>
+      _file.create(recursive: recursive);
+
+  @override
+  Future<void> delete() => _file.delete();
 }

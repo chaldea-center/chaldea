@@ -15,7 +15,7 @@ class SimpleAccordion extends StatefulWidget {
   final double? expandElevation;
   final BorderSide topBorderSide;
 
-  const SimpleAccordion({
+  SimpleAccordion({
     Key? key,
     this.expanded = false,
     required this.headerBuilder,

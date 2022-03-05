@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../app/app.dart';
 import 'common.dart';
 import 'item.dart';
 import 'script.dart';
@@ -100,6 +101,8 @@ class Quest {
   Transl<String, String> get lName => Transl.questNames(name);
 
   Transl<String, String> get lSpot => Transl.spotNames(spotName);
+
+  void routeTo() => router.push(url: Routes.questI(id));
 
   String get dispName {
     // 群島-10308, 裏山-20314

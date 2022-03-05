@@ -73,68 +73,63 @@ class _AboutPageState extends State<AboutPage> {
                   : null,
             ),
           ),
-          if (!PlatformU.isWeb &&
-                  !AppInfo.isMacStoreApp &&
+          TileGroup(
+            header: S.current.update,
+            children: [
+              if (!AppInfo.isMacStoreApp &&
                   (!PlatformU.isIOS ||
-                      db2.runtimeData.upgradableVersion != null) ||
-              kDebugMode)
-            TileGroup(
-              header: S.current.update,
-              children: [
-                if (!AppInfo.isMacStoreApp &&
-                    (!PlatformU.isIOS ||
-                        db2.runtimeData.upgradableVersion != null))
-                  ListTile(
-                    title: Text(S.current.check_update),
-                    trailing: db2.runtimeData.upgradableVersion != null
-                        ? Text(
-                            db2.runtimeData.upgradableVersion!.versionString +
-                                '↑',
-                            style: const TextStyle(color: Colors.redAccent))
-                        : null,
-                    onTap: () {
-                      EasyLoading.showInfo('NotImplemented');
-                    },
-                  ),
-                if (!PlatformU.isIOS && !AppInfo.isMacStoreApp)
-                  SwitchListTile.adaptive(
-                    value: db2.settings.autoUpdateApp,
-                    title: Text(S.current.auto_update),
-                    onChanged: (v) {
-                      setState(() {
-                        db2.settings.autoUpdateApp = v;
-                      });
-                    },
-                  ),
+                      db2.runtimeData.upgradableVersion != null))
                 ListTile(
-                  title: const Text('README'),
-                  onTap: () async {
-                    SplitRoute.push(
-                      context,
-                      const _GithubMarkdownPage(
-                        title: 'README',
-                        link: '$kProjectHomepage/blob/master/README.md',
-                        assetKey: 'README.md',
-                      ),
-                    );
-                    // launch('$kProjectHomepage/blob/master/CHANGELOG.md');
+                  title: Text(S.current.check_update),
+                  trailing: db2.runtimeData.upgradableVersion != null
+                      ? Text(
+                          db2.runtimeData.upgradableVersion!.versionString +
+                              '↑',
+                          style: const TextStyle(color: Colors.redAccent))
+                      : null,
+                  onTap: () {
+                    EasyLoading.showInfo('NotImplemented');
                   },
                 ),
-                ListTile(
-                  title: Text(S.current.change_log),
-                  onTap: () async {
-                    SplitRoute.push(
-                      context,
-                      _GithubMarkdownPage(
-                        title: S.current.change_log,
-                        link: '$kProjectHomepage/blob/master/CHANGELOG.md',
-                        assetKey: 'CHANGELOG.md',
-                      ),
-                    );
+              if (!PlatformU.isIOS && !AppInfo.isMacStoreApp)
+                SwitchListTile.adaptive(
+                  value: db2.settings.autoUpdateApp,
+                  title: Text(S.current.auto_update),
+                  onChanged: (v) {
+                    setState(() {
+                      db2.settings.autoUpdateApp = v;
+                    });
                   },
                 ),
-              ],
-            ),
+              ListTile(
+                title: const Text('README'),
+                onTap: () async {
+                  SplitRoute.push(
+                    context,
+                    const _GithubMarkdownPage(
+                      title: 'README',
+                      link: '$kProjectHomepage/blob/master/README.md',
+                      assetKey: 'README.md',
+                    ),
+                  );
+                  // launch('$kProjectHomepage/blob/master/CHANGELOG.md');
+                },
+              ),
+              ListTile(
+                title: Text(S.current.change_log),
+                onTap: () async {
+                  SplitRoute.push(
+                    context,
+                    _GithubMarkdownPage(
+                      title: S.current.change_log,
+                      link: '$kProjectHomepage/blob/master/CHANGELOG.md',
+                      assetKey: 'CHANGELOG.md',
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
           ListTile(
             title: Text(S.current.about_app_declaration_text),
           ),

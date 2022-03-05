@@ -193,6 +193,7 @@ EventMissionCondition _$EventMissionConditionFromJson(Map json) =>
       targetIds:
           (json['targetIds'] as List<dynamic>).map((e) => e as int).toList(),
       targetNum: json['targetNum'] as int,
+      conditionMessage: json['conditionMessage'] as String,
       closedMessage: json['closedMessage'] as String? ?? "",
       flag: json['flag'] as int? ?? 0,
       detail: json['detail'] == null

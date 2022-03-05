@@ -201,7 +201,7 @@ class DataVersion {
 
   @override
   String toString() {
-    return 'DatVersion($utc, ${files.length} files)';
+    return '$runtimeType($utc, ${files.length} files)';
   }
 }
 

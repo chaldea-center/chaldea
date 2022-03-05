@@ -3,14 +3,17 @@ import 'dart:io' show FileMode;
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart' show kIsWeb, protected;
+import 'package:hive/hive.dart';
 
 import 'file_plus_io.dart';
 import 'file_plus_web.dart';
 
 abstract class FilePlus {
-  factory FilePlus(String fp) {
+  factory FilePlus(String fp, {LazyBox? box}) {
     if (kIsWeb) {
-      return FilePlusWeb(fp);
+      return FilePlusWeb(
+        fp,
+      );
     } else {
       return FilePlusNative(fp);
     }
@@ -56,6 +59,10 @@ abstract class FilePlus {
       {FileMode mode = FileMode.write,
       Encoding encoding = utf8,
       bool flush = false});
+
+  Future<void> create({bool recursive = false});
+
+  Future<void> delete();
 
   String get path;
 }
