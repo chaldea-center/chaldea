@@ -62,6 +62,7 @@ class Routes {
   static const String summons = '/summons';
   static const String summon = '/summon';
   static const String stats = '/stats';
+  static const String importData = '/import_data';
   static const String notFound = '/404';
 
   static const List<String> masterRoutes = [

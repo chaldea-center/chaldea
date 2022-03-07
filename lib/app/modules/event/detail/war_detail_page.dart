@@ -4,10 +4,12 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/not_found.dart';
+import '../../quest/quest_list.dart';
 
 class WarDetailPage extends StatefulWidget {
   final int? warId;
@@ -46,9 +48,20 @@ class _WarDetailPageState extends State<WarDetailPage> {
     }
     final plan =
         war.isMainStory ? db2.curUser.mainStoryOf(war.id) : MainStoryPlan();
+    final banners = [
+      ...war.extra.titleBanner.values.whereType<String>(),
+    ];
+    final eventBanners = db2
+        .gameData.events[war.eventId]?.extra.titleBanner.values
+        .whereType<String>()
+        .toList();
+    if (eventBanners != null && eventBanners.isNotEmpty) {
+      banners.addAll(eventBanners);
+    }
+
     List<Widget> children = [
-      if (war.banner != null)
-        Center(child: CachedImage(imageUrl: war.banner, height: 80)),
+      if (banners.isNotEmpty)
+        CarouselUtil.limitHeightWidget(context: context, imageUrls: banners),
     ];
     children.add(CustomTable(children: [
       CustomTableRow(children: [
@@ -72,6 +85,13 @@ class _WarDetailPageState extends State<WarDetailPage> {
         TableCellData(text: 'Age', isHeader: true),
         TableCellData(text: war.age, flex: 3),
       ]),
+      CustomTableRow(children: [
+        TableCellData(text: 'Banner', isHeader: true),
+        TableCellData(
+          flex: 3,
+          child: Center(child: db2.getIconImage(war.banner, height: 48)),
+        ),
+      ]),
       if (war.eventId > 0)
         CustomTableRow(children: [
           TableCellData(isHeader: true, text: S.current.event_title),
@@ -81,7 +101,13 @@ class _WarDetailPageState extends State<WarDetailPage> {
               onPressed: () {
                 router.push(url: Routes.eventI(war.eventId), detail: true);
               },
-              child: Text(Transl.eventNames(war.eventName).l),
+              child: Text(
+                Transl.eventNames(war.eventName).l,
+                textAlign: TextAlign.center,
+              ),
+              style: TextButton.styleFrom(
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
             ),
           )
         ]),
@@ -111,25 +137,43 @@ class _WarDetailPageState extends State<WarDetailPage> {
             ListTile(
               title: const Text('Main Quest'),
               trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-              onTap: () {},
+              onTap: () {
+                router.push(
+                  child: QuestListPage(title: 'Main Quest', quests: mainQuests),
+                );
+              },
             ),
           if (freeQuests.isNotEmpty)
             ListTile(
               title: Text(S.current.free_quest),
               trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-              onTap: () {},
+              onTap: () {
+                router.push(
+                  child: QuestListPage(
+                      title: S.current.free_quest, quests: freeQuests),
+                );
+              },
             ),
           if (bondQuests.isNotEmpty)
             ListTile(
               title: const Text('Interlude'),
               trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-              onTap: () {},
+              onTap: () {
+                router.push(
+                  child: QuestListPage(title: 'Interlude', quests: bondQuests),
+                );
+              },
             ),
           if (eventQuests.isNotEmpty)
             ListTile(
               title: const Text('Event Quest'),
               trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-              onTap: () {},
+              onTap: () {
+                router.push(
+                  child:
+                      QuestListPage(title: 'Event Quest', quests: eventQuests),
+                );
+              },
             ),
         ],
       ));
@@ -191,14 +235,18 @@ class _WarDetailPageState extends State<WarDetailPage> {
         title: AutoSizeText(
           war.lLongName.l.replaceAll('\n', ' '),
           maxLines: 1,
-          overflow: TextOverflow.fade,
         ),
         centerTitle: false,
         actions: [
           PopupMenuButton(
-            itemBuilder: (context) => SharedBuilder.websitesPopupMenuItems(
-              atlas: Atlas.dbWar(war.id),
-            ),
+            itemBuilder: (context) => [
+              ...SharedBuilder.websitesPopupMenuItems(
+                atlas: Atlas.dbWar(war.id),
+              ),
+              ...SharedBuilder.noticeLinkPopupMenuItems(
+                noticeLink: war.extra.noticeLink,
+              ),
+            ],
           )
         ],
       ),

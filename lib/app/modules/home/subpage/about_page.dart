@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/basic.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/platform/platform.dart';
@@ -7,7 +8,6 @@ import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/widgets/markdown_page.dart';
 import 'package:chaldea/widgets/tile_items.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -60,7 +60,7 @@ class _AboutPageState extends State<AboutPage> {
             },
             child: _AboutProgram(
               name: AppInfo.appName,
-              version: AppInfo.fullVersion2,
+              version: runChaldeaNext ? '2.0.0-alpha' : AppInfo.fullVersion2,
               icon: SizedBox(
                 height: 120,
                 child: Image.asset('res/img/launcher_icon/app_icon_logo.png',

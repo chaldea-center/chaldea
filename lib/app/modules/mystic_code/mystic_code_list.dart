@@ -38,8 +38,7 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
       useGrid: false,
       appBar: AppBar(
         leading: const MasterBackButton(),
-        title: AutoSizeText(S.current.mystic_code,
-            maxLines: 1, overflow: TextOverflow.fade),
+        title: AutoSizeText(S.current.mystic_code, maxLines: 1),
         titleSpacing: 0,
         bottom: showSearchBar ? searchBar : null,
         actions: [

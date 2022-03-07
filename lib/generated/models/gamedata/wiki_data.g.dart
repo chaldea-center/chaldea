@@ -149,25 +149,27 @@ T? _$nullableGenericFromJson<T>(
 
 WikiData _$WikiDataFromJson(Map json) => WikiData(
       servants: (json['servants'] as Map?)?.map(
-            (k, e) => MapEntry(int.parse(k as String),
-                ServantExtra.fromJson(Map<String, dynamic>.from(e as Map))),
-          ) ??
-          const {},
+        (k, e) => MapEntry(int.parse(k as String),
+            ServantExtra.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
       craftEssences: (json['craftEssences'] as Map?)?.map(
-            (k, e) => MapEntry(
-                int.parse(k as String),
-                CraftEssenceExtra.fromJson(
-                    Map<String, dynamic>.from(e as Map))),
-          ) ??
-          const {},
+        (k, e) => MapEntry(int.parse(k as String),
+            CraftEssenceExtra.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
       commandCodes: (json['commandCodes'] as Map?)?.map(
-            (k, e) => MapEntry(int.parse(k as String),
-                CommandCodeExtra.fromJson(Map<String, dynamic>.from(e as Map))),
-          ) ??
-          const {},
+        (k, e) => MapEntry(int.parse(k as String),
+            CommandCodeExtra.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
       events: (json['events'] as Map?)?.map(
-            (k, e) => MapEntry(int.parse(k as String),
-                EventExtra.fromJson(Map<String, dynamic>.from(e as Map))),
+        (k, e) => MapEntry(int.parse(k as String),
+            EventExtra.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+      wars: (json['wars'] as Map?)?.map(
+        (k, e) => MapEntry(int.parse(k as String),
+            WarExtra.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+      fsmSvtIdMapping: (json['fsmSvtIdMapping'] as Map?)?.map(
+            (k, e) => MapEntry(int.parse(k as String), e as int),
           ) ??
           const {},
     );
@@ -305,6 +307,20 @@ EventExtra _$EventExtraFromJson(Map json) => EventExtra(
               ?.map((e) => e as String)
               .toList() ??
           const [],
+    );
+
+WarExtra _$WarExtraFromJson(Map json) => WarExtra(
+      id: json['id'] as int,
+      mcLink: json['mcLink'] as String?,
+      fandomLink: json['fandomLink'] as String?,
+      titleBanner: json['titleBanner'] == null
+          ? null
+          : MappingBase<dynamic>.fromJson(
+              Map<String, dynamic>.from(json['titleBanner'] as Map)),
+      noticeLink: json['noticeLink'] == null
+          ? null
+          : MappingBase<dynamic>.fromJson(
+              Map<String, dynamic>.from(json['noticeLink'] as Map)),
     );
 
 ExchangeTicket _$ExchangeTicketFromJson(Map json) => ExchangeTicket(

@@ -152,7 +152,11 @@ class _StatItemConsumedTabState extends State<StatItemConsumedTab> {
 
   void calculateItem() {
     shownItems.clear();
-    final emptyPlan = ServantStatus()..curVal.favorite = true;
+    final emptyPlan = ServantStatus();
+    emptyPlan.curVal
+      ..favorite = true
+      ..fouHp = -20
+      ..fouAtk = -20;
     db.curUser.servants.forEach((no, svtStat) {
       if (!svtStat.favorite) return;
       if (!db.gameData.servantsWithUser.containsKey(no)) {

@@ -29,15 +29,25 @@ NiceWar _$NiceWarFromJson(Map json) => NiceWar(
       eventId: json['eventId'] as int? ?? 0,
       eventName: json['eventName'] as String? ?? "",
       lastQuestId: json['lastQuestId'] as int,
-      warAdds: (json['warAdds'] as List<dynamic>)
-          .map((e) => WarAdd.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-      maps: (json['maps'] as List<dynamic>)
-          .map((e) => NiceMap.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-      spots: (json['spots'] as List<dynamic>)
-          .map((e) => NiceSpot.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+      warAdds: (json['warAdds'] as List<dynamic>?)
+              ?.map((e) => WarAdd.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      maps: (json['maps'] as List<dynamic>?)
+              ?.map(
+                  (e) => NiceMap.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      spots: (json['spots'] as List<dynamic>?)
+              ?.map(
+                  (e) => NiceSpot.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      spotRoads: (json['spotRoads'] as List<dynamic>?)
+              ?.map(
+                  (e) => SpotRoad.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
     );
 
 const _$WarStartTypeEnumMap = {
@@ -79,6 +89,23 @@ NiceSpot _$NiceSpotFromJson(Map json) => NiceSpot(
               ?.map((e) => Quest.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+    );
+
+SpotRoad _$SpotRoadFromJson(Map json) => SpotRoad(
+      id: json['id'] as int,
+      warId: json['warId'] as int,
+      mapId: json['mapId'] as int,
+      srcSpotId: json['srcSpotId'] as int,
+      dstSpotId: json['dstSpotId'] as int,
+      dispCondType: toEnumCondType(json['dispCondType'] as Object),
+      dispTargetId: json['dispTargetId'] as int,
+      dispTargetValue: json['dispTargetValue'] as int,
+      dispCondType2: toEnumCondType(json['dispCondType2'] as Object),
+      dispTargetId2: json['dispTargetId2'] as int,
+      dispTargetValue2: json['dispTargetValue2'] as int,
+      activeCondType: toEnumCondType(json['activeCondType'] as Object),
+      activeTargetId: json['activeTargetId'] as int,
+      activeTargetValue: json['activeTargetValue'] as int,
     );
 
 WarAdd _$WarAddFromJson(Map json) => WarAdd(

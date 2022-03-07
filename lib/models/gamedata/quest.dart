@@ -1,6 +1,10 @@
+import 'package:chaldea/models/gamedata/game_card.dart';
+import 'package:chaldea/utils/basic.dart';
+import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../app/app.dart';
+import '../../utils/atlas.dart';
 import 'common.dart';
 import 'item.dart';
 import 'script.dart';
@@ -225,6 +229,58 @@ class Gift {
     if (type == GiftType.equip || type == GiftType.eventSvtJoin) return false;
     return true;
   }
+
+  Widget iconBuilder({
+    required BuildContext context,
+    String? icon,
+    double? width,
+    double? height,
+    double? aspectRatio = 132 / 144,
+    String? text,
+    EdgeInsets? padding,
+    EdgeInsets? textPadding,
+    VoidCallback? onTap,
+    bool jumpToDetail = true,
+    bool popDetail = false,
+  }) {
+    switch (type) {
+      case GiftType.servant:
+      case GiftType.item:
+      case GiftType.commandCode:
+      case GiftType.eventSvtJoin:
+      case GiftType.eventSvtGet:
+      case GiftType.costumeRelease:
+      case GiftType.costumeGet:
+        break;
+      case GiftType.friendship:
+        break;
+      case GiftType.userExp:
+        break;
+      case GiftType.equip:
+        break;
+      case GiftType.questRewardIcon:
+        icon ??= Atlas.assetItem(9);
+        break;
+      case GiftType.eventPointBuff:
+        break;
+      case GiftType.eventBoardGameToken:
+        break;
+    }
+    return GameCardMixin.anyCardItemBuilder(
+      context: context,
+      id: objectId,
+      icon: icon,
+      width: width,
+      height: height,
+      aspectRatio: aspectRatio,
+      text: text ?? (num > 0 ? formatNumber(num) : null),
+      padding: padding,
+      textPadding: textPadding,
+      onTap: onTap,
+      jumpToDetail: jumpToDetail,
+      popDetail: popDetail,
+    );
+  }
 }
 
 @JsonSerializable()
@@ -337,7 +393,7 @@ class SupportServant {
 }
 
 @JsonSerializable()
-class EnemyDrop {
+class EnemyDrop extends Gift {
   GiftType type;
   int objectId;
   int num;
@@ -355,7 +411,7 @@ class EnemyDrop {
     required this.runs,
     // required this.dropExpected,
     // required this.dropVariance,
-  });
+  }) : super(type: type, objectId: objectId, num: num);
 
   factory EnemyDrop.fromJson(Map<String, dynamic> json) =>
       _$EnemyDropFromJson(json);

@@ -232,7 +232,6 @@ class Servant with GameCardMixin {
   bool get isUserSvt =>
       (type == SvtType.normal || type == SvtType.heroine) && collectionNo > 0;
 
-  // todo: support ascension
   @override
   String? get icon =>
       extraAssets.faces.ascension?[1] ??

@@ -33,6 +33,14 @@ class Atlas {
     return dbUrl('war', id, region);
   }
 
+  static String dbQuest(int id, [int? phase, Region region = Region.jp]) {
+    String url = dbUrl('quest', id, region);
+    if (phase != null) {
+      url += '/$phase';
+    }
+    return url;
+  }
+
   static String asset(String path, [Region region = Region.jp]) {
     if (path.startsWith('/')) {
       path = path.substring(1);

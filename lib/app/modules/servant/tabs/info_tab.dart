@@ -219,7 +219,9 @@ class SvtInfoTab extends StatelessWidget {
                     for (int i = row * 5; i < row * 5 + 5; i++)
                       i >= svt.bondGrowth.length
                           ? '-'
-                          : svt.bondGrowth[i].toString()
+                          : ((svt.bondGrowth.getOrNull(i) ?? 0) -
+                                  (svt.bondGrowth.getOrNull(i - 1) ?? 0))
+                              .toString(),
                   ],
                   defaults: TableCellData(maxLines: 1),
                 ),
@@ -229,8 +231,7 @@ class SvtInfoTab extends StatelessWidget {
                     for (int i = row * 5; i < row * 5 + 5; i++)
                       i >= svt.bondGrowth.length
                           ? '-'
-                          : Maths.sum(svt.bondGrowth.sublist(0, i + 1))
-                              .toString()
+                          : svt.bondGrowth[i].toString(),
                   ],
                   defaults: TableCellData(maxLines: 1),
                 ),

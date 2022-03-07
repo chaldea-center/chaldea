@@ -148,9 +148,15 @@ class MultiDescriptor {
           (context, id) {
         final quest = db2.gameData.quests[id];
         final phase = db2.gameData.getQuestPhase(id);
+        final warName =
+            Transl.warNames(phase?.warLongName ?? quest?.warLongName ?? "?")
+                .l
+                .replaceAll('\n', ' ');
+        final spotName = phase?.lSpot.l ?? quest?.lSpot.l ?? '?';
         return ListTile(
           title: Text(quest?.lName.l ?? 'Quest $id'),
-          subtitle: Text('$id  ${phase?.lSpot.l ?? ""}'),
+          subtitle:
+              Text('$id  $spotName' + (warName.isEmpty ? "" : "\n$warName")),
           onTap: quest == null ? null : () => quest.routeTo(),
         );
       })
@@ -166,7 +172,7 @@ class MultiDescriptor {
           return inkWell(
             context: context,
             onTap: null,
-            text: Transl.trait(id).l,
+            text: '[${Transl.trait(id).l}]',
           );
         },
       );

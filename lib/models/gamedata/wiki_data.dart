@@ -42,6 +42,11 @@ class Transl<K, V> {
 
   List<V?> get all => [_m?.jp, _m?.cn, _m?.tw, _m?.na, _m?.kr];
 
+  @override
+  String toString() {
+    return '$runtimeType($key)';
+  }
+
   static MappingData get _md => db2.gameData.mappingData;
 
   static Transl<int, String> trait(int id) => Transl(_md.trait, id, '$id');
@@ -380,13 +385,21 @@ class WikiData {
   final Map<int, CraftEssenceExtra> craftEssences;
   final Map<int, CommandCodeExtra> commandCodes;
   final Map<int, EventExtra> events;
+  final Map<int, WarExtra> wars;
+  final Map<int, int> fsmSvtIdMapping;
 
   WikiData({
-    this.servants = const {},
-    this.craftEssences = const {},
-    this.commandCodes = const {},
-    this.events = const {},
-  });
+    Map<int, ServantExtra>? servants,
+    Map<int, CraftEssenceExtra>? craftEssences,
+    Map<int, CommandCodeExtra>? commandCodes,
+    Map<int, EventExtra>? events,
+    Map<int, WarExtra>? wars,
+    this.fsmSvtIdMapping = const {},
+  })  : servants = servants ?? {},
+        craftEssences = craftEssences ?? {},
+        commandCodes = commandCodes ?? {},
+        events = events ?? {},
+        wars = wars ?? {};
 
   factory WikiData.fromJson(Map<String, dynamic> json) =>
       _$WikiDataFromJson(json);
@@ -522,6 +535,27 @@ class EventExtra {
 
   factory EventExtra.fromJson(Map<String, dynamic> json) =>
       _$EventExtraFromJson(json);
+}
+
+@JsonSerializable()
+class WarExtra {
+  int id;
+  String? mcLink;
+  String? fandomLink;
+  MappingBase<String> titleBanner;
+  MappingBase<String> noticeLink;
+
+  WarExtra({
+    required this.id,
+    this.mcLink,
+    this.fandomLink,
+    MappingBase? titleBanner,
+    MappingBase? noticeLink,
+  })  : titleBanner = titleBanner?.cast() ?? MappingBase(),
+        noticeLink = noticeLink?.cast() ?? MappingBase();
+
+  factory WarExtra.fromJson(Map<String, dynamic> json) =>
+      _$WarExtraFromJson(json);
 }
 
 @JsonSerializable()

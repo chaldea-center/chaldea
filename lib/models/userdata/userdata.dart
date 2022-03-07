@@ -230,7 +230,7 @@ class SvtPlan {
   int ascension;
   List<int> skills;
   List<int> appendSkills;
-  Map<int, int> costumes; // costume id
+  Map<int, int> costumes; // costume id, 11~
 
   int grail;
 

@@ -8,6 +8,7 @@ import '../../command_code/cmd_code_list.dart';
 import '../../craft_essence/craft_list.dart';
 import '../../event/events_page.dart';
 import '../../free_quest_calc/free_calculator_page.dart';
+import '../../import_data/home_import_page.dart';
 import '../../item/item_list.dart';
 import '../../master_mission/master_mission_list.dart';
 import '../../mystic_code/mystic_code_list.dart';
@@ -91,7 +92,7 @@ class GalleryItem {
         // enemyList,
         // expCard,
         // statistics,
-        // importData,
+        importData,
         // faq,
         // if (kDebugMode) ...[lostRoom, palette],
         // more,
@@ -241,13 +242,14 @@ class GalleryItem {
 //   page: GameStatisticsPage(),
 //   isDetail: true,
 // );
-// static GalleryItem importData = GalleryItem(
-//   name: 'import_data',
-//   titleBuilder: () => S.current.import_data,
-//   icon: Icons.cloud_download,
-//   page: ImportPageHome(),
-//   isDetail: false,
-// );
+  static GalleryItem importData = GalleryItem(
+    name: 'import_data',
+    titleBuilder: () => S.current.import_data,
+    icon: Icons.cloud_download,
+    url: Routes.importData,
+    page: ImportPageHome(),
+    isDetail: false,
+  );
 // static GalleryItem faq = GalleryItem(
 //   name: 'faq',
 //   titleBuilder: () => 'FAQ',

@@ -76,7 +76,6 @@ class _GalleryPageState extends State<GalleryPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: Text(
                       db2.curUser.name,
-                      overflow: TextOverflow.ellipsis,
                       textScaleFactor: 0.8,
                     ),
                   ),

@@ -48,8 +48,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage>
       useGrid: filterData.useGrid,
       appBar: AppBar(
         leading: const MasterBackButton(),
-        title: AutoSizeText(S.current.command_code,
-            maxLines: 1, overflow: TextOverflow.fade),
+        title: AutoSizeText(S.current.command_code, maxLines: 1),
         titleSpacing: 0,
         bottom: showSearchBar ? searchBar : null,
         actions: <Widget>[

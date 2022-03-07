@@ -22,9 +22,9 @@ extension IntX on int {
 }
 
 extension ListX<T> on List<T> {
-  /// support -1=last
+  // add another method to support -1 index
   T? getOrNull(int index) {
-    if (index >= length || index < -length) {
+    if (index >= length || index < 0) {
       return null;
     }
     return elementAt(index % length);

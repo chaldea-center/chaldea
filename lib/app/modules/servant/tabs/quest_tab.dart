@@ -1,9 +1,8 @@
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:chaldea/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
-import '../../common/quest_card.dart';
+import '../../../app.dart';
 
 class SvtQuestTab extends StatelessWidget {
   final Servant svt;
@@ -15,23 +14,20 @@ class SvtQuestTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> children = [];
-    for (final questId in svt.relateQuestIds) {
-      final quest = db2.gameData.quests[questId];
-      if (quest == null) {
-        children.add(ListTile(title: Text('Quest $questId')));
-      } else {
-        children.add(SimpleAccordion(
-          headerBuilder: (context, expanded) =>
-              ListTile(title: Text(quest.lName.l)),
-          contentBuilder: (context) => QuestCard(quest: quest),
-        ));
-      }
-    }
     return ListView.separated(
-      itemBuilder: (context, index) => children[index],
+      itemBuilder: (context, index) {
+        final questId = svt.relateQuestIds[index];
+        final quest = db2.gameData.quests[questId];
+        return ListTile(
+          title: Text(quest?.lName.l ?? 'Quest $questId'),
+          trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+          onTap: () {
+            router.push(url: Routes.questI(questId));
+          },
+        );
+      },
       separatorBuilder: (context, index) => kDefaultDivider,
-      itemCount: children.length,
+      itemCount: svt.relateQuestIds.length,
     );
   }
 }

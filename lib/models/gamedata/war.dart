@@ -2,6 +2,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import '../db.dart';
 import 'gamedata.dart';
 
 part '../../generated/models/gamedata/war.g.dart';
@@ -30,6 +31,7 @@ class NiceWar {
   List<WarAdd> warAdds;
   List<NiceMap> maps;
   List<NiceSpot> spots;
+  List<SpotRoad> spotRoads;
 
   NiceWar({
     required this.id,
@@ -51,9 +53,10 @@ class NiceWar {
     this.eventId = 0,
     this.eventName = "",
     required this.lastQuestId,
-    required this.warAdds,
-    required this.maps,
-    required this.spots,
+    this.warAdds = const [],
+    this.maps = const [],
+    this.spots = const [],
+    this.spotRoads = const [],
   });
 
   factory NiceWar.fromJson(Map<String, dynamic> json) =>
@@ -68,6 +71,9 @@ class NiceWar {
   bool isOutdated() => false;
 
   List<Quest> get quests => [for (final spot in spots) ...spot.quests];
+
+  WarExtra get extra =>
+      db2.gameData.wikiData.wars.putIfAbsent(id, () => WarExtra(id: id));
 
   @JsonKey(ignore: true)
   Map<int, int> itemReward = {};
@@ -156,6 +162,47 @@ class NiceSpot {
 
   factory NiceSpot.fromJson(Map<String, dynamic> json) =>
       _$NiceSpotFromJson(json);
+}
+
+@JsonSerializable()
+class SpotRoad {
+  int id;
+  int warId;
+  int mapId;
+  int srcSpotId;
+  int dstSpotId;
+  @JsonKey(fromJson: toEnumCondType)
+  CondType dispCondType;
+  int dispTargetId;
+  int dispTargetValue;
+  @JsonKey(fromJson: toEnumCondType)
+  CondType dispCondType2;
+  int dispTargetId2;
+  int dispTargetValue2;
+  @JsonKey(fromJson: toEnumCondType)
+  CondType activeCondType;
+  int activeTargetId;
+  int activeTargetValue;
+
+  SpotRoad({
+    required this.id,
+    required this.warId,
+    required this.mapId,
+    required this.srcSpotId,
+    required this.dstSpotId,
+    required this.dispCondType,
+    required this.dispTargetId,
+    required this.dispTargetValue,
+    required this.dispCondType2,
+    required this.dispTargetId2,
+    required this.dispTargetValue2,
+    required this.activeCondType,
+    required this.activeTargetId,
+    required this.activeTargetValue,
+  });
+
+  factory SpotRoad.fromJson(Map<String, dynamic> json) =>
+      _$SpotRoadFromJson(json);
 }
 
 @JsonSerializable()

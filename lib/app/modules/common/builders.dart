@@ -1,6 +1,7 @@
 import 'package:chaldea/app/modules/item/item_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/utils/wiki.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -62,6 +63,26 @@ class SharedBuilder {
     );
   }
 
+  static Widget giftGrid({
+    required BuildContext context,
+    required Iterable<Gift> gifts,
+    double? width,
+    double? height,
+  }) {
+    return Wrap(
+      spacing: 1,
+      runSpacing: 1,
+      children: [
+        for (final gift in gifts)
+          gift.iconBuilder(
+            context: context,
+            width: width ?? 36,
+            height: height,
+          ),
+      ],
+    );
+  }
+
   static List<PopupMenuItem<T>> websitesPopupMenuItems<T>({
     String? atlas,
     String? mooncell,
@@ -87,6 +108,54 @@ class SharedBuilder {
           child: Text(S.current.jump_to('Fandom')),
           onTap: () {
             launch(WikiTool.fandomFullLink(fandom));
+          },
+        ),
+    ];
+  }
+
+  static List<PopupMenuItem<T>> noticeLinkPopupMenuItems<T>({
+    required MappingBase<String> noticeLink,
+  }) {
+    if (noticeLink.cn != null) {
+      assert(int.parse(noticeLink.cn!) > 0);
+    }
+    return [
+      if (noticeLink.jp != null)
+        PopupMenuItem<T>(
+          child: const Text('JP Notice'),
+          onTap: () {
+            launch(noticeLink.jp!);
+          },
+        ),
+      if (noticeLink.cn != null)
+        PopupMenuItem<T>(
+          child: const Text('CN Notice'),
+          onTap: () {
+            final url = PlatformU.isTargetMobile
+                ? 'https://game.bilibili.com/fgo/h5/news.html#detailId=${noticeLink.cn}'
+                : 'https://game.bilibili.com/fgo/news.html#!news/0/1/${noticeLink.cn}';
+            launch(url);
+          },
+        ),
+      if (noticeLink.na != null)
+        PopupMenuItem<T>(
+          child: const Text('NA Notice'),
+          onTap: () {
+            launch(noticeLink.na!);
+          },
+        ),
+      if (noticeLink.tw != null)
+        PopupMenuItem<T>(
+          child: const Text('TW Notice'),
+          onTap: () {
+            launch(noticeLink.tw!);
+          },
+        ),
+      if (noticeLink.kr != null)
+        PopupMenuItem<T>(
+          child: const Text('KR Notice'),
+          onTap: () {
+            launch(noticeLink.kr!);
           },
         ),
     ];

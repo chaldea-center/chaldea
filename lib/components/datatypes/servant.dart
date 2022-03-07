@@ -156,7 +156,7 @@ class Servant with GameCardMixin {
         getSkillCost(),
         getDressCost(),
         getAppendSkillCost(),
-        getExtraCost()
+        getExtraCost(cur: ServantPlan(fouHp: -20, fouAtk: -20))
       ]);
     }
     ServantPlan? cur = status?.curVal;
@@ -188,7 +188,7 @@ class Servant with GameCardMixin {
         skill: getSkillCost(),
         dress: getDressCost(),
         appendSkill: getAppendSkillCost(),
-        extra: getExtraCost(),
+        extra: getExtraCost(cur: ServantPlan(fouHp: -20, fouAtk: -20)),
       );
     }
     ServantPlan? cur = status?.curVal;

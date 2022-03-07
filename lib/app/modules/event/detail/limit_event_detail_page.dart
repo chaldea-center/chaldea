@@ -6,7 +6,6 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -49,11 +48,8 @@ class _EventDetailPageState extends State<EventDetailPage> {
     }
     final plan = db2.curUser.eventPlanOf(event.id);
     final banners = [
-      if (!kIsWeb) ...event.extra.titleBanner.values.whereType<String>(),
+      ...event.extra.titleBanner.values.whereType<String>(),
     ];
-    if (banners.isEmpty && event.banner != null) {
-      banners.add(event.banner!);
-    }
 
     List<Widget> children = [
       if (banners.isNotEmpty)
@@ -78,6 +74,13 @@ class _EventDetailPageState extends State<EventDetailPage> {
             color: TableCellData.resolveHeaderColor(context).withOpacity(0.5),
           )
         ]),
+      CustomTableRow(children: [
+        TableCellData(text: 'Banner', isHeader: true),
+        TableCellData(
+          flex: 3,
+          child: Center(child: db2.getIconImage(event.banner, height: 48)),
+        ),
+      ]),
       if (event.warIds.isNotEmpty)
         CustomTableRow(children: [
           TableCellData(isHeader: true, text: 'Wars'),
@@ -92,7 +95,12 @@ class _EventDetailPageState extends State<EventDetailPage> {
                       router.push(url: Routes.warI(warId), detail: true);
                     },
                     child: Text(
-                        db2.gameData.wars[warId]?.lLongName.l ?? 'War $warId'),
+                      db2.gameData.wars[warId]?.lLongName.l ?? 'War $warId',
+                      textAlign: TextAlign.center,
+                    ),
+                    style: TextButton.styleFrom(
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
                   )
               ],
             ),
@@ -270,7 +278,6 @@ class _EventDetailPageState extends State<EventDetailPage> {
         title: AutoSizeText(
           event.lName.l.replaceAll('\n', ' '),
           maxLines: 1,
-          overflow: TextOverflow.fade,
         ),
         centerTitle: false,
         actions: [
@@ -281,6 +288,8 @@ class _EventDetailPageState extends State<EventDetailPage> {
                 mooncell: event.extra.mcLink,
                 fandom: event.extra.fandomLink,
               ),
+              ...SharedBuilder.noticeLinkPopupMenuItems(
+                  noticeLink: event.extra.noticeLink),
             ],
           ),
         ],

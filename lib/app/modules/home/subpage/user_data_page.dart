@@ -81,7 +81,9 @@ class _UserDataPageState extends State<UserDataPage> {
                     kor: '데이터 폴더')),
                 subtitle: Text(db2.paths.convertIosPath(db2.paths.appPath)),
                 onTap: () {
-                  if (PlatformU.isDesktop) {
+                  if (PlatformU.isWeb) {
+                    EasyLoading.showInfo('Check it in IndexedDB');
+                  } else if (PlatformU.isDesktop) {
                     OpenFile.open(db2.paths.appPath);
                   } else {
                     EasyLoading.showInfo(LocalizedText.of(

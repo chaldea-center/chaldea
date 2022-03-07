@@ -72,10 +72,6 @@ class AppNewsCarousel extends StatefulWidget {
     try {
       // CORS issue
       if (kIsWeb) {
-        result.add(CarouselItem(
-          image: Atlas.asset('Back/back10111.png'),
-          fit: BoxFit.cover,
-        ));
         updated = true;
       } else {
         final _dio = Dio();
@@ -197,27 +193,23 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
 
     final pages = getPages();
 
+    pages.clear();
+    if (pages.isEmpty) {
+      pages.add(GestureDetector(
+        onTap: () {
+          launch(kProjectDocRoot);
+        },
+        child: AspectRatio(
+          aspectRatio: 8 / 3,
+          child: CachedImage(
+            imageUrl: Atlas.asset('Back/back10111.png'),
+            cachedOption: const CachedImageOption(fit: BoxFit.cover),
+          ),
+        ),
+      ));
+    }
     _curCarouselIndex =
         pages.isEmpty ? 0 : _curCarouselIndex.clamp(0, pages.length - 1);
-
-    /// No slides, show app logo
-    if (pages.isEmpty) {
-      final logo = FractionallySizedBox(
-        heightFactor: 0.6,
-        child: Image.asset('res/img/launcher_icon/app_icon_logo.png'),
-      );
-      if (limitOption.limited) {
-        return SizedBox(
-          height: limitOption.height,
-          child: logo,
-        );
-      } else {
-        return AspectRatio(
-          aspectRatio: 8 / 3,
-          child: Container(child: logo),
-        );
-      }
-    }
 
     CarouselOptions options = CarouselOptions(
         height: limitOption.height,

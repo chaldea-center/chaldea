@@ -14,7 +14,6 @@ import 'package:chaldea/widgets/tile_items.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-import '../../routes/routes.dart';
 import '../common/not_found.dart';
 
 class CraftDetailPage extends StatefulWidget {

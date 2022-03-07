@@ -3,7 +3,6 @@ import 'dart:typed_data';
 
 import 'package:chaldea/packages/file_plus/file_plus.dart';
 import 'package:chaldea/packages/logger.dart';
-import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:crclib/catalog.dart';
 import 'package:dio/dio.dart';
@@ -167,7 +166,7 @@ class _CacheManager {
         if (!_isExpired(key, entry.timestamp, expireAfter)) {
           final bytes = _memoryCache[key] ?? await file.readAsBytes();
           if (Crc32Xz().convert(bytes).toString() == entry.crc) {
-            return bytes;
+            return SynchronousFuture(bytes);
           }
         }
         _data.remove(key);
@@ -211,6 +210,15 @@ class AtlasApi {
   static final _CacheManager cacheManager = _CacheManager('atlas_api');
 
   static const String _atlasApiHost = 'https://api.atlasacademy.io';
+
+  static Future<Quest?> quest(int questId,
+      {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$_atlasApiHost/nice/${region.toUpper()}/quest/$questId',
+      (data) => Quest.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
 
   static Future<QuestPhase?> questPhase(int questId, int phase,
       {Region region = Region.jp, Duration? expireAfter}) async {

@@ -44,7 +44,8 @@ class _ItemServantCostPageState extends State<ItemServantCostPage> {
           ServantStatus(
             coin: 0,
             priority: status.priority,
-            curVal: ServantPlan(favorite: status.curVal.favorite),
+            curVal: ServantPlan(
+                favorite: status.curVal.favorite, fouHp: -20, fouAtk: -20),
           ))),
       servantPlans: [
         db.curUser.servants.map((key, status) => MapEntry(

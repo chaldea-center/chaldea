@@ -167,6 +167,7 @@ mixin GameCardMixin {
   static Widget anyCardItemBuilder({
     required BuildContext context,
     required int id,
+    String? icon,
     double? width,
     double? height,
     double? aspectRatio = 132 / 144,
@@ -182,6 +183,7 @@ mixin GameCardMixin {
       onItem: (item) => Item.iconBuilder(
         context: context,
         item: item,
+        icon: icon,
         width: width,
         height: height,
         aspectRatio: aspectRatio,
@@ -194,6 +196,7 @@ mixin GameCardMixin {
       ),
       onSvt: (svt) => svt.iconBuilder(
         context: context,
+        overrideIcon: icon,
         width: width,
         height: height,
         aspectRatio: aspectRatio,
@@ -206,6 +209,7 @@ mixin GameCardMixin {
       ),
       onCE: (ce) => ce.iconBuilder(
         context: context,
+        overrideIcon: icon,
         width: width,
         height: height,
         aspectRatio: aspectRatio,
@@ -218,6 +222,7 @@ mixin GameCardMixin {
       ),
       onCC: (cc) => cc.iconBuilder(
         context: context,
+        overrideIcon: icon,
         width: width,
         height: height,
         aspectRatio: aspectRatio,
@@ -230,6 +235,7 @@ mixin GameCardMixin {
       ),
       onBasicSvt: (svt) => svt.iconBuilder(
         context: context,
+        overrideIcon: icon,
         width: width,
         height: height,
         aspectRatio: aspectRatio,
@@ -251,15 +257,31 @@ mixin GameCardMixin {
         onTap: onTap,
         jumpToDetail: jumpToDetail,
         popDetail: popDetail,
-        overrideIcon: costume.icon,
+        overrideIcon: icon ?? costume.icon,
       ),
       onDefault: () {
-        // costume get/unlock: id=svtId*100+costumeId
+        if (icon != null) {
+          return cardIconBuilder(
+            context: context,
+            icon: icon,
+            width: width,
+            height: height,
+            aspectRatio: aspectRatio,
+            text: text,
+            padding: padding,
+            textPadding: textPadding,
+            onTap: onTap,
+          );
+        }
         final size = Maths.fitSize(width, height, aspectRatio);
         return ImageWithText(
-          image: AutoSizeText(
-            'ID $id',
-            minFontSize: 6,
+          image: SizedBox(
+            width: size?.key,
+            height: size?.value,
+            child: AutoSizeText(
+              'ID $id',
+              minFontSize: 6,
+            ),
           ),
           width: size?.key,
           height: size?.value,

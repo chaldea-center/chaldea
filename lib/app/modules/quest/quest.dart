@@ -1,15 +1,17 @@
-import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/modules/common/not_found.dart';
+import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/quest_card.dart';
+import 'package:chaldea/utils/atlas.dart';
 import 'package:flutter/material.dart';
 import 'package:chaldea/models/models.dart';
-
-import '../../../generated/l10n.dart';
 
 class QuestDetailPage extends StatefulWidget {
   final int? id;
   final Quest? quest;
-  const QuestDetailPage({Key? key, this.id, this.quest}) : super(key: key);
+  final Region region;
+  const QuestDetailPage(
+      {Key? key, this.id, this.quest, this.region = Region.jp})
+      : super(key: key);
 
   @override
   State<QuestDetailPage> createState() => _QuestDetailPageState();
@@ -18,26 +20,77 @@ class QuestDetailPage extends StatefulWidget {
 class _QuestDetailPageState extends State<QuestDetailPage> {
   Quest get quest => _quest!;
   Quest? _quest;
+  int? questId;
+  bool _loading = false;
+  late Region region;
 
   @override
   void initState() {
     super.initState();
-    _quest = widget.quest ?? db2.gameData.quests[widget.id];
+    region = widget.region;
+    _quest = widget.quest ??
+        (region == Region.jp ? db2.gameData.quests[widget.id] : null);
+    questId = _quest?.id ?? widget.id;
+    _resolveQuest();
+  }
+
+  Future<void> _resolveQuest() async {
+    if (_quest == null && questId != null) {
+      _loading = true;
+      if (mounted) setState(() {});
+      _quest = await AtlasApi.quest(questId!, region: region);
+      _loading = false;
+    }
+    if (mounted) setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_quest == null) {
-      return NotFoundPage(
-        title: S.current.quest,
-        url: Routes.questI(widget.id ?? 0),
-      );
-    }
     return Scaffold(
-      appBar: AppBar(title: Text(quest.lName.l)),
-      body: ListView(
-        children: [QuestCard(quest: quest)],
+      appBar: AppBar(
+        title: Text(_quest?.lName.l ?? 'Quest $questId'),
+        actions: [
+          DropdownButton<Region>(
+            value: region,
+            items: Region.values
+                .map((region) => DropdownMenuItem(
+                    value: region, child: Text(region.toUpper())))
+                .toList(),
+            onChanged: (v) {
+              setState(() {
+                if (v != null) {
+                  region = v;
+                  _quest = null;
+                  _resolveQuest();
+                  setState(() {});
+                }
+              });
+            },
+            underline: const SizedBox(),
+          ),
+          PopupMenuButton(
+            itemBuilder: (context) => SharedBuilder.websitesPopupMenuItems(
+              atlas: _quest == null
+                  ? null
+                  : Atlas.dbQuest(_quest!.id, null, region),
+            ),
+          )
+        ],
       ),
+      body: _quest == null
+          ? Center(
+              child: _loading
+                  ? const CircularProgressIndicator()
+                  : const Text('Not Found'),
+            )
+          : ListView(
+              children: [
+                QuestCard(
+                  quest: quest,
+                  simple: false,
+                )
+              ],
+            ),
     );
   }
 }

@@ -88,7 +88,6 @@ class ServantListPageState extends State<ServantListPage>
       maxLines: 1,
       minFontSize: 12,
       maxFontSize: 18,
-      overflow: TextOverflow.fade,
     );
     if (widget.planMode) {
       title = Row(
@@ -993,7 +992,6 @@ class ServantListPageState extends State<ServantListPage>
       title: AutoSizeText(
         svt.lName.l,
         maxLines: 1,
-        overflow: TextOverflow.ellipsis,
       ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -13,7 +13,6 @@ import 'package:chaldea/widgets/tile_items.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-import '../../routes/routes.dart';
 import '../common/not_found.dart';
 
 class CmdCodeDetailPage extends StatefulWidget {
@@ -157,7 +156,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
           children: [
             TableCellData(
               child: InkWell(
-                child: db2.getIconImage(cc.borderedIcon, height: 90),
+                child: db2.getIconImage(cc.borderedIcon, height: 80),
                 onTap: () {
                   FullscreenImageViewer.show(
                     context: context,

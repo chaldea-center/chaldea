@@ -1,4 +1,3 @@
-import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/models/version.dart';
 import 'package:flutter/foundation.dart';
 import 'package:screenshot/screenshot.dart';

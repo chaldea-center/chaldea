@@ -28,6 +28,9 @@ class PlatformU {
   static final String resolvedExecutable = kIsWeb
       ? throw UnimplementedError('Not for web')
       : Platform.resolvedExecutable;
+
+  static bool get isTargetMobile => [TargetPlatform.android, TargetPlatform.iOS]
+      .contains(defaultTargetPlatform);
 }
 
 final kPlatformMethods = PlatformMethods();

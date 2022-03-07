@@ -63,7 +63,11 @@ class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
       case DetailCondType.mainQuestDone:
         return Text('Clear any main quest in Arc 1 and Arc 2 $targetNum times');
       case DetailCondType.enemyKillNum:
-        return Text('Defeat $targetNum from enemies $targetIds');
+        return combineToRich(
+          context,
+          'Defeat $targetNum from enemies ',
+          MultiDescriptor.servants(context, targetIds),
+        );
       case DetailCondType.defeatEnemyIndividuality:
       case DetailCondType.enemyIndividualityKillNum:
         return combineToRich(

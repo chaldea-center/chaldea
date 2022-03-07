@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chaldea/app/tools/item_center.dart';
 import 'package:chaldea/models/runtime_data.dart';
 import 'package:chaldea/utils/http_override.dart';
@@ -177,6 +178,7 @@ class _Database {
     bool? clip,
     EdgeInsetsGeometry? padding,
     WidgetBuilder? placeholder,
+    LoadingErrorWidgetBuilder? errorWidget,
   }) {
     Widget image;
     if (iconUrl == null || iconUrl.isEmpty) {
@@ -196,11 +198,12 @@ class _Database {
         aspectRatio: aspectRatio,
         cachedOption: CachedImageOption(
           fit: fit,
-          errorWidget: (context, url, e) => SizedBox(
-            width: width,
-            height: height,
-            child: placeholder?.call(context),
-          ),
+          errorWidget: errorWidget ??
+              (context, url, e) => SizedBox(
+                    width: width,
+                    height: height,
+                    child: placeholder?.call(context),
+                  ),
           cacheManager: cacheManager,
         ),
         placeholder: (context, __) => SizedBox(

@@ -20,6 +20,11 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
   @override
   Widget build(BuildContext context) {
     masterMission.missions.sort2((e) => e.dispNo);
+    Map<MissionType, int> categorized = {};
+    for (final mission in masterMission.missions) {
+      categorized.addNum(mission.type, 1);
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.master_mission + ' ${masterMission.id}'),
@@ -38,6 +43,12 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
             title: const Text('Close'),
             trailing: Text(masterMission.closedAt.toDateTimeString()),
           ),
+          ListTile(
+            title: const Text('Missions'),
+            trailing: Text(categorized.entries
+                .map((e) => '${e.value} ${e.key.name}')
+                .join('\n')),
+          ),
           for (final mission in masterMission.missions)
             _oneEventMission(mission)
         ],
@@ -48,7 +59,7 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
   Widget _oneEventMission(EventMission mission) {
     return SimpleAccordion(
       headerBuilder: (context, _) => ListTile(
-        title: Text('${mission.dispNo} ${mission.name}'),
+        title: Text('${mission.dispNo}. ${mission.name}'),
       ),
       contentBuilder: (context) => Padding(
         padding: const EdgeInsetsDirectional.only(start: 24),

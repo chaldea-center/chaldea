@@ -86,10 +86,10 @@ class Item {
     int? _itemId = item?.id ?? itemId;
     item ??= db2.gameData.items[itemId];
     icon ??= item?.borderedIcon;
-    if (onTap == null && jumpToDetail && itemId != null) {
+    if (onTap == null && jumpToDetail && _itemId != null) {
       onTap = () {
         router.push(
-            url: Routes.itemI(_itemId!), popDetail: popDetail, detail: true);
+            url: Routes.itemI(_itemId), popDetail: popDetail, detail: true);
       };
     }
     return GameCardMixin.cardIconBuilder(

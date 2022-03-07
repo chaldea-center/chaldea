@@ -48,8 +48,7 @@ class CraftListPageState extends State<CraftListPage>
       useGrid: filterData.useGrid,
       appBar: AppBar(
         leading: const MasterBackButton(),
-        title: AutoSizeText(S.current.craft_essence,
-            maxLines: 1, overflow: TextOverflow.fade),
+        title: AutoSizeText(S.current.craft_essence, maxLines: 1),
         titleSpacing: 0,
         bottom: showSearchBar ? searchBar : null,
         actions: <Widget>[

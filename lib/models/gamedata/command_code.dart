@@ -47,9 +47,6 @@ class CommandCode with GameCardMixin {
       extraAssets.faces.cc?[id] ??
       extraAssets.faces.cc?.values.toList().getOrNull(0);
 
-  @override
-  String? get borderedIcon => icon;
-
   String? get charaGraph => extraAssets.charaGraph.cc?[id];
 
   CommandCodeExtra get extra =>

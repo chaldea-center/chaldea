@@ -90,7 +90,6 @@ class ServantDetailPageState extends State<ServantDetailPage>
             title: AutoSizeText(
               svt.lName.l,
               maxLines: 1,
-              overflow: TextOverflow.ellipsis,
             ),
             actions: <Widget>[
               if (svt.isUserSvt)
