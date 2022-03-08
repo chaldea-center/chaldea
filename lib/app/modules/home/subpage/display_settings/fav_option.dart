@@ -35,6 +35,7 @@ class _FavOptionSettingState extends State<FavOptionSetting> {
                 onChanged: (v) {
                   setState(() {
                     db2.settings.favoritePreferred = null;
+                    db2.saveSettings();
                   });
                 },
               ),
@@ -50,6 +51,7 @@ class _FavOptionSettingState extends State<FavOptionSetting> {
                 onChanged: (v) {
                   setState(() {
                     db2.settings.favoritePreferred = FavoriteState.owned;
+                    db2.saveSettings();
                   });
                 },
               ),
@@ -62,6 +64,7 @@ class _FavOptionSettingState extends State<FavOptionSetting> {
                 onChanged: (v) {
                   setState(() {
                     db2.settings.favoritePreferred = FavoriteState.all;
+                    db2.saveSettings();
                   });
                 },
               ),

@@ -139,6 +139,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   onChanged: (lang) {
                     if (lang == null) return;
                     db2.settings.language = lang.code;
+                    db2.saveSettings();
                     db2.notifyAppUpdate();
                   },
                 ),
@@ -177,6 +178,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   onChanged: (v) {
                     if (v != null) {
                       db2.settings.themeMode = v;
+                      db2.saveSettings();
                       db2.notifyAppUpdate();
                     }
                   },
@@ -329,6 +331,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   onChanged: (v) {
                     setState(() {
                       db2.settings.showDebugFab = v;
+                      db2.saveSettings();
                     });
                     if (v) {
                       DebugFab.createOverlay(context);

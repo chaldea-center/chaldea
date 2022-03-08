@@ -7,6 +7,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chaldea/components/wiki_util.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/packages.dart';
+import 'package:chaldea/packages/platform/platform.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -265,6 +267,17 @@ class _CachedImageState extends State<CachedImage> {
   Widget _withCached(String fullUrl) {
     final _cacheManager = cachedOption.cacheManager ??
         (_isMcFile ? WikiUtil.wikiFileCache : DefaultCacheManager());
+
+    if (kPlatformMethods.rendererCanvasKit) {
+      final uri = Uri.tryParse(fullUrl);
+      if (uri != null && uri.host == 'fgo.wiki') {
+        final hashValue = uri.queryParameters['sha1'];
+        if (hashValue != null && hashValue.length == 40) {
+          fullUrl = '$kStaticHostRoot/${uri.host}/$hashValue';
+        }
+      }
+    }
+
     Widget child = CachedNetworkImage(
       imageUrl: fullUrl,
       httpHeaders: cachedOption.httpHeaders,

@@ -18,7 +18,11 @@ class ItemObtainFreeTab extends StatefulWidget {
 class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
   bool get sortByAP => db2.settings.display.itemQuestsSortByAp;
 
-  set sortByAP(bool v) => db2.settings.display.itemQuestsSortByAp = v;
+  set sortByAP(bool v) {
+    db2.settings.display.itemQuestsSortByAp = v;
+    db2.saveSettings();
+  }
+
   bool use6th = db2.curUser.use6thDropRate;
 
   @override

@@ -374,6 +374,7 @@ class ServantDetailPageState extends State<ServantDetailPage>
               db2.settings.display.svtPlanInputMode = EnumUtil.next(
                   SvtPlanInputMode.values,
                   db2.settings.display.svtPlanInputMode);
+              db2.saveSettings();
               setState(() {});
             },
           ),

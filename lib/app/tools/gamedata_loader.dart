@@ -143,7 +143,7 @@ class GameDataLoader {
           throw 'Unsupported type: ${value.runtimeType}';
         }
       }
-      print('loaded ${fv.filename}');
+      // print('loaded ${fv.filename}');
       finished += 1;
       _progress = finished / (newVersion.files.length + 0.1);
       onUpdate?.call(_progress!);

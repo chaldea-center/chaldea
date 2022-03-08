@@ -36,6 +36,7 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
                 onPressed: () {
                   setState(() {
                     db2.settings.display.sortedSvtTabs = List.of(SvtTab.values);
+                    db2.saveSettings();
                   });
                 },
                 child: Text(S.current.reset),

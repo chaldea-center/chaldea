@@ -27,6 +27,7 @@ class _TranslationSettingState extends State<TranslationSetting> {
               onPressed: () {
                 setState(() {
                   db2.settings.preferredRegions = null;
+                  db2.saveSettings();
                 });
               },
             ),
@@ -63,6 +64,7 @@ class _TranslationSettingState extends State<TranslationSetting> {
           final item = regions.removeAt(oldIndex);
           regions.insert(newIndex, item);
           db2.settings.preferredRegions = regions;
+          db2.saveSettings();
         });
       },
     );

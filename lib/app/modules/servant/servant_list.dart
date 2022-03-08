@@ -60,6 +60,7 @@ class ServantListPageState extends State<ServantListPage>
     if (widget.planMode) {
       filterData.planFavorite = FavoriteState.owned;
       if (db2.settings.display.autoTurnOnPlanNotReach) {
+        filterData.favorite = FavoriteState.owned;
         filterData.planCompletion.options
           ..clear()
           ..add(false);
@@ -229,6 +230,7 @@ class ServantListPageState extends State<ServantListPage>
                     setState(() {
                       db2.settings.display.onlyAppendSkillTwo =
                           !db2.settings.display.onlyAppendSkillTwo;
+                      db2.saveSettings();
                     });
                   },
                 ),
@@ -238,6 +240,7 @@ class ServantListPageState extends State<ServantListPage>
                   onTap: () {
                     db2.settings.display.planPageFullScreen =
                         !db2.settings.display.planPageFullScreen;
+                    db2.saveSettings();
                     SplitRoute.of(context)!.detail =
                         db2.settings.display.planPageFullScreen ? null : false;
                   },

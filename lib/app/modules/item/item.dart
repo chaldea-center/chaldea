@@ -124,6 +124,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
           db2.settings.display.itemDetailViewType = EnumUtil.next(
               ItemDetailViewType.values,
               db2.settings.display.itemDetailViewType);
+          db2.saveSettings();
         });
       },
     );
@@ -137,6 +138,7 @@ class _ItemDetailPageState extends State<ItemDetailPage>
         setState(() {
           db2.settings.display.itemDetailSvtSort = EnumUtil.next(
               ItemDetailSvtSort.values, db2.settings.display.itemDetailSvtSort);
+          db2.saveSettings();
           EasyLoading.showToast(
               _getSortTypeText(db2.settings.display.itemDetailSvtSort));
         });

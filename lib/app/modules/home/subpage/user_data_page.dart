@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:chaldea/components/localized/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/modules/import_data/home_import_page.dart';
 import 'package:chaldea/packages/file_plus/file_plus_web.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
@@ -19,6 +18,8 @@ import 'package:open_file/open_file.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+
+import '../../import_data/home_import_page.dart';
 
 class UserDataPage extends StatefulWidget {
   UserDataPage({Key? key}) : super(key: key);
@@ -383,6 +384,7 @@ class _UserDataPageState extends State<UserDataPage> {
           TextButton(
             onPressed: () {
               db2.settings.useAndroidExternal = useExternal;
+              db2.saveSettings();
               Navigator.of(context).pop();
               SimpleCancelOkDialog(
                 title: const Text('⚠️ Warning'),
@@ -415,6 +417,7 @@ class _UserDataPageState extends State<UserDataPage> {
                       kor: '설정을 적용 시키기 위해 재기동하여 주십시오')),
                   hideCancel: true,
                 ).showDialog(context);
+                db2.saveSettings();
                 EasyLoading.dismiss();
               } catch (e, s) {
                 logger.e('migrate android data to external failed', e, s);

@@ -52,6 +52,7 @@ class _EventListPageState extends State<EventListPage>
             onPressed: () {
               setState(() {
                 db2.settings.display.eventsShowOutdated = !showOutdated;
+                db2.saveSettings();
               });
             },
             tooltip: 'Outdated',
@@ -65,8 +66,10 @@ class _EventListPageState extends State<EventListPage>
               size: 20,
             ),
             tooltip: 'Reversed',
-            onPressed: () =>
-                setState(() => db2.settings.display.eventsReversed = !reversed),
+            onPressed: () {
+              setState(() => db2.settings.display.eventsReversed = !reversed);
+              db2.saveSettings();
+            },
           ),
           PopupMenuButton(
             itemBuilder: (context) => [

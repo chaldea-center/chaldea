@@ -335,31 +335,32 @@ class _QuestCardState extends State<QuestCard> {
             ],
           ),
         ));
-        if (curPhase.drops.isNotEmpty == true) {
-          children.add(Padding(
-            padding: const EdgeInsets.symmetric(vertical: 3),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Rayshift\n' + S.current.game_drop,
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: Center(
-                    child: _getRayshiftDrops(curPhase.drops),
+      }
+
+      if (curPhase.drops.isNotEmpty == true) {
+        children.add(Padding(
+          padding: const EdgeInsets.symmetric(vertical: 3),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'Rayshift\n' + S.current.game_drop,
+                    textAlign: TextAlign.center,
                   ),
-                )
-              ],
-            ),
-          ));
-        }
+                ],
+              ),
+              Expanded(
+                child: Center(
+                  child: _getRayshiftDrops(curPhase.drops),
+                ),
+              )
+            ],
+          ),
+        ));
       }
     }
     if (quest.gifts.isNotEmpty) {
@@ -382,7 +383,7 @@ class _QuestCardState extends State<QuestCard> {
       ));
     }
 
-    if (quest.releaseConditions.isNotEmpty == true) {
+    if (quest.releaseConditions.isNotEmpty) {
       children.add(Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,

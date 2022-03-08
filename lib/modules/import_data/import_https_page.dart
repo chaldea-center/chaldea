@@ -74,8 +74,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
 
   @override
   Widget build(BuildContext context) {
-    final url =
-        '$kProjectDocRoot${Language.isZH ? "/zh" : ""}/import_https.html';
+    final url = '$kProjectDocRoot${Language.isZH ? "/zh" : ""}/import_https/';
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -702,7 +701,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                   jpn: 'チュートリアルを参照してください',
                   eng: 'Please refer thr tutorial',
                   kor: '듀토리얼을 참고해 주세요') +
-              '\nhttps://docs.chaldea.center/import_https.html'
+              '\nhttps://docs.chaldea.center/import_https/'
                   '\nhttps://docs.chaldea.center/zh/import_https/'),
         ).showDialog(context);
       }

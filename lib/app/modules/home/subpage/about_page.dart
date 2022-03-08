@@ -98,6 +98,7 @@ class _AboutPageState extends State<AboutPage> {
                   onChanged: (v) {
                     setState(() {
                       db2.settings.autoUpdateApp = v;
+                      db2.saveSettings();
                     });
                   },
                 ),

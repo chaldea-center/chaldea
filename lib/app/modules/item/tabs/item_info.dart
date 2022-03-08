@@ -43,13 +43,14 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                   children: <Widget>[
                     CustomTableRow(children: [
                       TableCellData(
-                        child: Text(item.name,
+                        child: Text(item.lName.l,
                             style:
                                 const TextStyle(fontWeight: FontWeight.bold)),
                         isHeader: true,
                       )
                     ]),
-                    CustomTableRow.fromTexts(texts: [item.name]),
+                    if (!Transl.isJP)
+                      CustomTableRow.fromTexts(texts: [item.name]),
                     CustomTableRow.fromTexts(texts: [item.lName.na]),
                     CustomTableRow(children: [
                       TableCellData(text: 'ID', isHeader: true),

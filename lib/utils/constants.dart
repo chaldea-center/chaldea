@@ -15,6 +15,7 @@ const String kGooglePlayLink =
     'https://play.google.com/store/apps/details?id=cc.narumi.chaldea';
 const String kProjectHomepage = 'https://github.com/chaldea-center/chaldea';
 const String kProjectDocRoot = 'https://docs.chaldea.center';
+const String kStaticHostRoot = 'https://static.chaldea.center';
 const String kDatasetHomepage =
     'https://github.com/chaldea-center/chaldea-dataset';
 

@@ -94,6 +94,7 @@ class _ClassFilterStyleSettingState extends State<ClassFilterStyleSetting> {
   void onChanged(SvtListClassFilterStyle? v) {
     setState(() {
       if (v != null) db2.settings.display.classFilterStyle = v;
+      db2.saveSettings();
     });
   }
 }

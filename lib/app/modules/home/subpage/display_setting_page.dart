@@ -46,6 +46,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                       kor: '항상 맨 위에 표시')),
                   onChanged: (v) async {
                     db2.settings.alwaysOnTop = v;
+                    db2.saveSettings();
                     MethodChannelChaldeaNext.setAlwaysOnTop(v);
                     setState(() {});
                   },
@@ -59,6 +60,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   onChanged: (v) {
                     setState(() {
                       db2.settings.autoRotate = v;
+                      db2.saveSettings();
                     });
                     db2.notifyAppUpdate();
                   },
@@ -73,6 +75,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 onChanged: (v) {
                   setState(() {
                     db2.settings.display.showAccountAtHome = v;
+                    db2.saveSettings();
                   });
                   db2.notifyUserdata();
                 },
@@ -96,6 +99,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 title: Text(S.current.auto_reset),
                 onChanged: (v) async {
                   db2.settings.autoResetFilter = v;
+                  db2.saveSettings();
                   setState(() {});
                 },
               ),
@@ -140,6 +144,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 onChanged: (v) {
                   setState(() {
                     db2.settings.display.autoTurnOnPlanNotReach = v;
+                    db2.saveSettings();
                   });
                 },
                 controlAffinity: ListTileControlAffinity.trailing,
@@ -182,6 +187,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 onChanged: (v) {
                   setState(() {
                     db2.settings.display.onlyAppendSkillTwo = v;
+                    db2.saveSettings();
                   });
                 },
               ),

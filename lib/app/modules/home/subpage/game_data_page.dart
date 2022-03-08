@@ -78,6 +78,7 @@ class _GameDataPageState extends State<GameDataPage> {
                 onChanged: (v) {
                   setState(() {
                     db2.settings.useProxy = v;
+                    db2.saveSettings();
                     if (kIsWeb) {
                       kPlatformMethods.setLocalStorage(
                           'useProxy', v.toString());
@@ -97,6 +98,7 @@ class _GameDataPageState extends State<GameDataPage> {
                 onChanged: (v) {
                   setState(() {
                     db2.settings.autoUpdateData = v;
+                    db2.saveSettings();
                   });
                 },
               ),

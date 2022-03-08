@@ -59,28 +59,29 @@ class _EventDetailPageState extends State<EventDetailPage> {
     children.add(CustomTable(children: [
       CustomTableRow(children: [
         TableCellData(
-          text: event.lName.l.replaceAll('\n', ' '),
+          text: event.lName.l,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 12),
+          style: const TextStyle(fontSize: 14),
           color: TableCellData.resolveHeaderColor(context),
         )
       ]),
       if (!Transl.isJP)
         CustomTableRow(children: [
           TableCellData(
-            text: event.lName.l.replaceAll('\n', ' '),
+            text: event.name,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 12),
+            style: const TextStyle(fontSize: 14),
             color: TableCellData.resolveHeaderColor(context).withOpacity(0.5),
           )
         ]),
-      CustomTableRow(children: [
-        TableCellData(text: 'Banner', isHeader: true),
-        TableCellData(
-          flex: 3,
-          child: Center(child: db2.getIconImage(event.banner, height: 48)),
-        ),
-      ]),
+      if (event.banner != null)
+        CustomTableRow(children: [
+          TableCellData(text: 'Banner', isHeader: true),
+          TableCellData(
+            flex: 3,
+            child: Center(child: db2.getIconImage(event.banner, height: 48)),
+          ),
+        ]),
       if (event.warIds.isNotEmpty)
         CustomTableRow(children: [
           TableCellData(isHeader: true, text: 'Wars'),

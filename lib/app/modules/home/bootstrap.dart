@@ -146,6 +146,7 @@ class _BootstrapPageState extends State<BootstrapPage>
             horizontalTitleGap: 0,
             onTap: () {
               db2.settings.language = lang.code;
+              db2.saveSettings();
               db2.notifyAppUpdate();
             },
           );
@@ -175,6 +176,7 @@ class _BootstrapPageState extends State<BootstrapPage>
             horizontalTitleGap: 0,
             onTap: () {
               db2.settings.themeMode = mode;
+              db2.saveSettings();
               db2.notifyAppUpdate();
             },
           );
@@ -458,6 +460,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
           onChanged: (v) {
             setState(() {
               db2.settings.autoUpdateData = v;
+              db2.saveSettings();
             });
           },
         ),

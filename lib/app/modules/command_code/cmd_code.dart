@@ -156,7 +156,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
           children: [
             TableCellData(
               child: InkWell(
-                child: db2.getIconImage(cc.borderedIcon, height: 80),
+                child: db2.getIconImage(cc.borderedIcon, height: 72),
                 onTap: () {
                   FullscreenImageViewer.show(
                     context: context,

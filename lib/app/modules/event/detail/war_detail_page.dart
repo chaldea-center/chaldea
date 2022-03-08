@@ -66,18 +66,18 @@ class _WarDetailPageState extends State<WarDetailPage> {
     children.add(CustomTable(children: [
       CustomTableRow(children: [
         TableCellData(
-          text: war.lLongName.l.replaceAll('\n', ' '),
+          text: war.lLongName.l,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 12),
+          style: const TextStyle(fontSize: 14),
           color: TableCellData.resolveHeaderColor(context),
         )
       ]),
       if (!Transl.isJP)
         CustomTableRow(children: [
           TableCellData(
-            text: war.longName.replaceAll('\n', ' '),
+            text: war.longName,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 12),
+            style: const TextStyle(fontSize: 14),
             color: TableCellData.resolveHeaderColor(context).withOpacity(0.5),
           )
         ]),
@@ -85,13 +85,14 @@ class _WarDetailPageState extends State<WarDetailPage> {
         TableCellData(text: 'Age', isHeader: true),
         TableCellData(text: war.age, flex: 3),
       ]),
-      CustomTableRow(children: [
-        TableCellData(text: 'Banner', isHeader: true),
-        TableCellData(
-          flex: 3,
-          child: Center(child: db2.getIconImage(war.banner, height: 48)),
-        ),
-      ]),
+      if (war.banner != null)
+        CustomTableRow(children: [
+          TableCellData(text: 'Banner', isHeader: true),
+          TableCellData(
+            flex: 3,
+            child: Center(child: db2.getIconImage(war.banner, height: 48)),
+          ),
+        ]),
       if (war.eventId > 0)
         CustomTableRow(children: [
           TableCellData(isHeader: true, text: S.current.event_title),

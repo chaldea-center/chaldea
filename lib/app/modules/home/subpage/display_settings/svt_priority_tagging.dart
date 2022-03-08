@@ -54,6 +54,7 @@ class _SvtPriorityTaggingState extends State<SvtPriorityTagging> {
                       maxLength: 10,
                       onChanged: (s) {
                         db2.settings.priorityTags[priority] = s;
+                        db2.saveSettings();
                       },
                     ),
                   ),
