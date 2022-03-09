@@ -7,6 +7,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   flutter_qjs
   libwinmedia
   url_launcher_linux
+  window_size
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)

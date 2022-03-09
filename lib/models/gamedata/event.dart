@@ -498,7 +498,7 @@ class Event {
 
   Event({
     required this.id,
-    required this.type,
+    this.type = EventType.none,
     required this.name,
     this.shortName = "",
     required this.detail,
@@ -803,6 +803,7 @@ enum EventType {
   warBoard,
   combineCosutumeItem,
   myroomMultipleViewCampaign,
+  relaxedQuestRequirementCampaign,
 }
 
 enum DetailMissionCondLinkType {

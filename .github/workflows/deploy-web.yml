@@ -33,18 +33,3 @@ jobs:
           build_dir: build/web
         env:
           GH_PAT: ${{ secrets.GH_PAGES_TOKEN }}
-
-      - name: Build with web-renderer=html
-        run: |
-            rm -rf build/web/
-            flutter build web --web-renderer html
-            dart ./scripts/patch_web_build.dart
-      
-      - name: Publish to app repo html branch
-        uses: crazy-max/ghaction-github-pages@v2.2.0
-        with:
-          repo: chaldea-center/app
-          target_branch: html
-          build_dir: build/web
-        env:
-          GH_PAT: ${{ secrets.GH_PAGES_TOKEN }}

@@ -326,7 +326,8 @@ EventTreasureBox _$EventTreasureBoxFromJson(Map json) => EventTreasureBox(
 
 Event _$EventFromJson(Map json) => Event(
       id: json['id'] as int,
-      type: $enumDecode(_$EventTypeEnumMap, json['type']),
+      type: $enumDecodeNullable(_$EventTypeEnumMap, json['type']) ??
+          EventType.none,
       name: json['name'] as String,
       shortName: json['shortName'] as String? ?? "",
       detail: json['detail'] as String,
@@ -409,4 +410,5 @@ const _$EventTypeEnumMap = {
   EventType.warBoard: 'warBoard',
   EventType.combineCosutumeItem: 'combineCosutumeItem',
   EventType.myroomMultipleViewCampaign: 'myroomMultipleViewCampaign',
+  EventType.relaxedQuestRequirementCampaign: 'relaxedQuestRequirementCampaign',
 };
