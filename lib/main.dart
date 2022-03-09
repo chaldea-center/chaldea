@@ -11,6 +11,7 @@ import 'package:chaldea/utils/http_override.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:worker_manager/worker_manager.dart';
+import 'package:window_size/window_size.dart';
 
 import 'app/modules/common/blank_page.dart';
 import 'models/basic.dart';
@@ -21,6 +22,15 @@ import 'utils/catcher/catcher_util.dart';
 void main() async {
   // make sure flutter packages like path_provider is working now
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Config min size of the window for desktops app
+  // (This is a prototype, and in the long term is expected to be replaced by functionality within the Flutter framework.)
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    setWindowTitle('Chaldea');
+    setWindowMinSize(const Size(375, 568));
+    setWindowMaxSize(Size.infinite);
+  }
+
   runChaldeaNext = true;
   await _initiateCommon();
   if (runChaldeaNext) {
