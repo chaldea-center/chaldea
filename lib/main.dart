@@ -110,7 +110,7 @@ Future<void> _mainLegacy() async {
 Future<void> _initiateCommon() async {
   // Config min size of the window for desktops app
   // (This is a prototype, and in the long term is expected to be replaced by functionality within the Flutter framework.)
-  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+  if (PlatformU.isDesktop) {
     setWindowTitle('Chaldea');
     setWindowMinSize(const Size(375, 568));
     setWindowMaxSize(Size.infinite);

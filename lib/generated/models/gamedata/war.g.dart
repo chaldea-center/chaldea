@@ -95,6 +95,7 @@ SpotRoad _$SpotRoadFromJson(Map json) => SpotRoad(
       id: json['id'] as int,
       warId: json['warId'] as int,
       mapId: json['mapId'] as int,
+      image: json['image'] as String?,
       srcSpotId: json['srcSpotId'] as int,
       dstSpotId: json['dstSpotId'] as int,
       dispCondType: toEnumCondType(json['dispCondType'] as Object),

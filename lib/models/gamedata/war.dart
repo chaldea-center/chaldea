@@ -169,6 +169,7 @@ class SpotRoad {
   int id;
   int warId;
   int mapId;
+  String? image;
   int srcSpotId;
   int dstSpotId;
   @JsonKey(fromJson: toEnumCondType)
@@ -188,6 +189,7 @@ class SpotRoad {
     required this.id,
     required this.warId,
     required this.mapId,
+    this.image,
     required this.srcSpotId,
     required this.dstSpotId,
     required this.dispCondType,
