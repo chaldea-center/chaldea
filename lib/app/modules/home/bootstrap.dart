@@ -32,6 +32,7 @@ class _BootstrapPageState extends State<BootstrapPage>
   int page = 0;
   List<Widget> pages = [];
   final _loader = GameDataLoader();
+  bool _offlineLoading = true;
 
   @override
   void initState() {
@@ -54,6 +55,7 @@ class _BootstrapPageState extends State<BootstrapPage>
         onDataReady(true);
       }
     } catch (e, s) {
+      _offlineLoading = false;
       logger.e('init data error', e, s);
     } finally {
       if (mounted) setState(() {});
@@ -62,7 +64,6 @@ class _BootstrapPageState extends State<BootstrapPage>
 
   @override
   Widget build(BuildContext context) {
-    bool showNav = true;
     if (db2.settings.tips.starter) {
       pages = [
         welcomePage,
@@ -71,11 +72,10 @@ class _BootstrapPageState extends State<BootstrapPage>
         createAccountPage,
         dataPage,
       ];
-    } else if (_loader.error != null) {
-      pages = [dataPage];
-    } else {
+    } else if (_offlineLoading) {
       pages = [_OfflineLoadingPage(progress: _loader.progress)];
-      showNav = false;
+    } else {
+      pages = [dataPage];
     }
     Widget child = PageView(
       controller: _pageController,
@@ -87,7 +87,7 @@ class _BootstrapPageState extends State<BootstrapPage>
       },
     );
 
-    if (showNav) {
+    if (!_offlineLoading) {
       child = Stack(children: [child, _bottom()]);
     }
     return Scaffold(

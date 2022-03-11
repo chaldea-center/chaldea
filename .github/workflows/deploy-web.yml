@@ -22,7 +22,7 @@ jobs:
 
       - name: Build with web-renderer=auto
         run: |
-            flutter build web --web-renderer auto
+            flutter build web --source-maps
             dart ./scripts/patch_web_build.dart
 
       - name: Push to app repo
