@@ -46,7 +46,7 @@ dependencies:
   dio_cookie_manager: ^2.0.0
   dots_indicator: ^2.0.0
   file_picker: ^4.3.2
-  fl_chart: ^0.41.0
+  fl_chart: ^0.45.1
   flutter_cache_manager: ^3.2.0
   flutter_easyloading: ^3.0.0
   flutter_email_sender: ^5.0.2
@@ -71,7 +71,7 @@ dependencies:
   open_file: ^3.2.1
   package_info_plus: ^1.3.0
   path_provider: ^2.0.8
-  permission_handler: ^8.3.0
+  permission_handler: ^9.2.0
   pool: ^1.5.0
   photo_view: ^0.13.0
   rfc_6902: ^0.1.0

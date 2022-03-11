@@ -394,9 +394,6 @@ class SupportServant {
 
 @JsonSerializable()
 class EnemyDrop extends Gift {
-  GiftType type;
-  int objectId;
-  int num;
   int dropCount;
   int runs;
 
@@ -404,9 +401,9 @@ class EnemyDrop extends Gift {
   // double dropVariance;
 
   EnemyDrop({
-    required this.type,
-    required this.objectId,
-    required this.num,
+    required GiftType type,
+    required int objectId,
+    required int num,
     required this.dropCount,
     required this.runs,
     // required this.dropExpected,

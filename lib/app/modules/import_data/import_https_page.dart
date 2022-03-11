@@ -94,7 +94,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
-        title: Text('HTTPS Sniffing'),
+        title: const Text('HTTPS Sniffing'),
         actions: [
           MarkdownHelpPage.buildHelpBtn(context, 'import_https_response.md'),
           IconButton(
