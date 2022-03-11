@@ -74,7 +74,6 @@ dependencies:
   permission_handler: ^8.3.0
   pool: ^1.5.0
   photo_view: ^0.13.0
-  rate_my_app: ^1.1.0+1
   rfc_6902: ^0.1.0
   screenshot: ^1.2.3
   share_plus: ^3.0.4

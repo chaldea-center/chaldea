@@ -496,13 +496,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.6"
-  flutter_rating_bar:
-    dependency: transitive
-    description:
-      name: flutter_rating_bar
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.0.0"
   flutter_spinkit:
     dependency: transitive
     description:
@@ -989,13 +982,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1+1"
-  rate_my_app:
-    dependency: "direct main"
-    description:
-      name: rate_my_app
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.2"
   rfc_6901:
     dependency: transitive
     description:

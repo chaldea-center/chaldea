@@ -10,8 +10,6 @@ import 'package:chaldea/widgets/tile_items.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:rate_my_app/rate_my_app.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../packages/packages.dart';
 import 'elements/grid_gallery.dart';
@@ -33,12 +31,6 @@ class _GalleryPageState extends State<GalleryPage> {
     _scrollController = ScrollController();
 
     Future.delayed(const Duration(seconds: 2)).then((_) async {
-      if (PlatformU.isApple || PlatformU.isAndroid) {
-        await rateMyApp.init();
-        _showRateCard = rateMyApp.shouldOpenDialog || kDebugMode;
-        if (mounted) setState(() {});
-      }
-
       if (kDebugMode || AppInfo.isDebugDevice) return;
       await Future.delayed(const Duration(seconds: 2));
       // await AutoUpdateUtil.checkAppUpdate(
@@ -165,73 +157,11 @@ class _GalleryPageState extends State<GalleryPage> {
             )),
       ));
     }
-    if (_showRateCard == true) {
-      children.add(Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8),
-        child: buildRateTile(),
-      ));
-    }
+
     return children;
   }
 
   /// Notifications
-  bool? _showRateCard;
-  final RateMyApp rateMyApp = RateMyApp(
-    minDays: 15,
-    minLaunches: 50,
-    remindDays: 75,
-    remindLaunches: 100,
-    appStoreIdentifier: '1548713491',
-    googlePlayIdentifier: 'cc.narumi.chaldea',
-  );
-
-  Widget buildRateTile() {
-    return SimpleAccordion(
-      // canTapOnHeader: false,
-      elevation: 0.5,
-      topBorderSide: Divider.createBorderSide(context, width: 0.5),
-      headerBuilder: (context, expanded) => ListTile(
-        horizontalTitleGap: 0,
-        leading: const Icon(Icons.stars_rounded),
-        contentPadding: const EdgeInsets.only(left: 8),
-        title: const Text('Rating Chaldea'),
-        subtitle: AutoSizeText(
-          'Take a minute to rate/review',
-          maxLines: 1,
-          style: expanded ? null : const TextStyle(color: Colors.transparent),
-        ),
-      ),
-      contentBuilder: (context) => ButtonBar(
-        alignment: MainAxisAlignment.end,
-        children: [
-          TextButton(
-            onPressed: () {
-              rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed);
-              setState(() {
-                _showRateCard = false;
-              });
-            },
-            child: Text(S.current.cancel,
-                style: TextStyle(color: Theme.of(context).disabledColor)),
-          ),
-          TextButton(
-            onPressed: () async {
-              rateMyApp.callEvent(RateMyAppEventType.rateButtonPressed);
-              launch(PlatformU.isAndroid
-                  ? kGooglePlayLink
-                  : PlatformU.isApple
-                      ? kAppStoreLink
-                      : kGooglePlayLink);
-              setState(() {
-                _showRateCard = false;
-              });
-            },
-            child: const Text('RATE'),
-          ),
-        ],
-      ),
-    );
-  }
 
   /// TEST
   Widget buildTestInfoPad() {
