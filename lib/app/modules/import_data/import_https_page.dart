@@ -462,9 +462,6 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   }
 
   Widget get craftSliver {
-    final notMeet = crafts.values.where((v) => v == 0).length;
-    final meet = crafts.values.where((v) => v == 1).length;
-    final own = crafts.values.where((v) => v == 2).length;
     return MultiSliver(
       pushPinnedChildren: true,
       children: [

@@ -43,8 +43,8 @@ class Database {
   AppSetting get appSetting => userData.appSetting;
 
   Dio get serverDio => Dio(BaseOptions(
-        // baseUrl: kServerRoot,
-        baseUrl: kDebugMode ? 'http://localhost:8183' : kServerRoot,
+        baseUrl: kServerRoot,
+        // baseUrl: kDebugMode ? 'http://localhost:8183' : kServerRoot,
         queryParameters: {
           'app_ver': AppInfo.versionString,
           'user_key': AppInfo.uuid,

@@ -20,8 +20,6 @@ class OldVersionDataImport extends StatefulWidget {
 class _OldVersionDataImportState extends State<OldVersionDataImport> {
   @override
   Widget build(BuildContext context) {
-    List<Widget> children = [];
-
     return DefaultTabController(
       length: users.length,
       child: Scaffold(

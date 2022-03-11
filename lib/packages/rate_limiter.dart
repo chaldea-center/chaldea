@@ -30,7 +30,7 @@ class RateLimiter {
     final task = _RateLimitTask<T>(Completer(), onCanceled);
 
     _allTasks.add(task);
-    Future.microtask(() async {
+    Future<void>.microtask(() async {
       await _wait(task);
       if (task.completer.isCompleted) return;
       try {
