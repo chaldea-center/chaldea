@@ -21,7 +21,7 @@ class AppNewsCarousel extends StatefulWidget {
 
   static Future<void> resolveSliderImageUrls([bool showToast = false]) async {
     if (network.unavailable) {
-      if (showToast) EasyLoading.showInfo(S.current.error_no_network);
+      if (showToast) EasyLoading.showInfo(S.current.error_no_internet);
       return;
     }
     final carouselSetting = db.userData.carouselSetting;

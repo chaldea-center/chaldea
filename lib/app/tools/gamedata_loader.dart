@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pool/pool.dart';
 
+import '../../generated/l10n.dart';
 import '../../models/models.dart';
 import '../../packages/app_info.dart';
 import '../../packages/file_plus/file_plus.dart';
@@ -47,7 +48,7 @@ class GameDataLoader {
   }) async {
     assert(!(offline && updateOnly), [offline, updateOnly]);
     if (!offline && network.unavailable) {
-      throw 'No network';
+      throw S.current.error_no_network;
     }
     if (_completer != null && !_completer!.isCompleted) {
       return _completer!.future;
@@ -82,7 +83,7 @@ class GameDataLoader {
     if (offline) {
       // if not exist, raise error
       if (oldVersion == null) {
-        throw 'No version data found';
+        throw S.current.error_no_version_data_found;
       }
       newVersion = oldVersion;
     } else {
@@ -91,7 +92,8 @@ class GameDataLoader {
     }
     logger.d('fetch gamedata version: $newVersion');
     if (newVersion.appVersion > AppInfo.version) {
-      throw 'Required app version: ≥ ${newVersion.appVersion.versionString}';
+      final String versionString = newVersion.appVersion.versionString;
+      throw S.current.error_required_app_version(versionString);
     }
 
     Map<String, dynamic> _gameJson = {};

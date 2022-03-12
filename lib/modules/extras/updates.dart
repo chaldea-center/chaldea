@@ -103,7 +103,7 @@ class AutoUpdateUtil {
     }
     try {
       if (network.unavailable) {
-        _reportResult(S.current.error_no_network);
+        _reportResult(S.current.error_no_internet);
         return;
       }
       final git = GitTool(GitSource.server);

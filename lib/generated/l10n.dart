@@ -1122,10 +1122,10 @@ class S {
   }
 
   /// `无网络连接`
-  String get error_no_network {
+  String get error_no_internet {
     return Intl.message(
       '无网络连接',
-      name: 'error_no_network',
+      name: 'error_no_internet',
       desc: '',
       args: [],
     );
@@ -4393,6 +4393,176 @@ class S {
       name: 'yes',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Select Language`
+  String get select_lang {
+    return Intl.message(
+      'Select Language',
+      name: 'select_lang',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Account`
+  String get cap_textfield_label {
+    return Intl.message(
+      'Account',
+      name: 'cap_textfield_label',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Any name`
+  String get cap_textfield_hint {
+    return Intl.message(
+      'Any name',
+      name: 'cap_textfield_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You can add more accounts later in Settings`
+  String get cap_textfield_helper {
+    return Intl.message(
+      'You can add more accounts later in Settings',
+      name: 'cap_textfield_helper',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Game Server`
+  String get cap_game_server {
+    return Intl.message(
+      'Game Server',
+      name: 'cap_game_server',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Database`
+  String get database {
+    return Intl.message(
+      'Database',
+      name: 'database',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Database is not downloaded, still continue?`
+  String get database_not_downloaded {
+    return Intl.message(
+      'Database is not downloaded, still continue?',
+      name: 'database_not_downloaded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update Now`
+  String get update_now {
+    return Intl.message(
+      'Update Now',
+      name: 'update_now',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Current Version`
+  String get current_version {
+    return Intl.message(
+      'Current Version',
+      name: 'current_version',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `PREV`
+  String get prev {
+    return Intl.message(
+      'PREV',
+      name: 'prev',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `NEXT`
+  String get next {
+    return Intl.message(
+      'NEXT',
+      name: 'next',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DONE`
+  String get done {
+    return Intl.message(
+      'DONE',
+      name: 'done',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading Data Failed\n{error}`
+  String loading_data_failed(Object error) {
+    return Intl.message(
+      'Loading Data Failed\n$error',
+      name: 'loading_data_failed',
+      desc: '',
+      args: [error],
+    );
+  }
+
+  /// `Not Found`
+  String get not_found {
+    return Intl.message(
+      'Not Found',
+      name: 'not_found',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No network`
+  String get error_no_network {
+    return Intl.message(
+      'No network',
+      name: 'error_no_network',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No version data found`
+  String get error_no_version_data_found {
+    return Intl.message(
+      'No version data found',
+      name: 'error_no_version_data_found',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Required app version: ≥ {version}`
+  String error_required_app_version(Object version) {
+    return Intl.message(
+      'Required app version: ≥ $version',
+      name: 'error_required_app_version',
+      desc: '',
+      args: [version],
     );
   }
 }

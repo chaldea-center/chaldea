@@ -14,6 +14,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+import '../../../generated/l10n.dart';
 import '../../../packages/language.dart';
 import '../../../packages/logger.dart';
 import '../../../packages/network.dart';
@@ -134,7 +135,7 @@ class _BootstrapPageState extends State<BootstrapPage>
   Widget get languagePage {
     return _IntroPage(
       icon: FontAwesomeIcons.globeAsia,
-      title: 'Select Language',
+      title: S.current.select_lang,
       content: ListView.separated(
         itemBuilder: (context, index) {
           final lang = Language.supportLanguages[index];
@@ -161,10 +162,21 @@ class _BootstrapPageState extends State<BootstrapPage>
     );
   }
 
+  String _themeModeName(ThemeMode mode) {
+    switch (EnumUtil.titled(mode)) {
+      case 'Dark':
+        return S.current.dark_mode_dark;
+      case 'Light':
+        return S.current.dark_mode_light;
+      default:
+        return S.current.dark_mode_system;
+    }
+  }
+
   Widget get darkModePage {
     return _IntroPage(
       icon: FontAwesomeIcons.adjust,
-      title: 'Dark Mode',
+      title: S.current.dark_mode,
       content: ListView.separated(
         itemBuilder: (context, index) {
           final mode = ThemeMode.values[index];
@@ -172,7 +184,7 @@ class _BootstrapPageState extends State<BootstrapPage>
             leading: db2.settings.themeMode == mode
                 ? const Icon(Icons.done_rounded)
                 : const SizedBox(),
-            title: Text(EnumUtil.titled(mode)),
+            title: Text(_themeModeName(mode)),
             horizontalTitleGap: 0,
             onTap: () {
               db2.settings.themeMode = mode;
@@ -201,16 +213,16 @@ class _BootstrapPageState extends State<BootstrapPage>
             padding: const EdgeInsets.all(16),
             child: TextField(
               controller: _accountEditing,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Account',
-                  hintText: 'Any name',
-                  helperText: 'You can add more accounts later in Settings'),
+              decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  labelText: S.current.cap_textfield_label,
+                  hintText: S.current.cap_textfield_hint,
+                  helperText: S.current.cap_textfield_helper),
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Game Server',
+          Text(
+            S.current.cap_game_server,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
@@ -244,7 +256,7 @@ class _BootstrapPageState extends State<BootstrapPage>
   Widget get dataPage {
     return _IntroPage(
       icon: FontAwesomeIcons.database,
-      title: 'Database',
+      title: S.current.database,
       content: _DatabaseIntro(),
     );
   }
@@ -262,7 +274,7 @@ class _BootstrapPageState extends State<BootstrapPage>
             child: page <= 0
                 ? const SizedBox()
                 : TextButton(
-                    child: const Text('PREV'),
+                    child: Text(S.current.prev),
                     onPressed: () {
                       _pageController.previousPage(
                         duration: kTabScrollDuration,
@@ -296,7 +308,7 @@ class _BootstrapPageState extends State<BootstrapPage>
             width: MediaQuery.of(context).size.width / 4,
             child: page >= pages.length - 1
                 ? TextButton(
-                    child: const Text('DONE'),
+                    child: Text(S.current.done),
                     onPressed: () {
                       if (db2.gameData.version.timestamp > 0) {
                         db2.settings.tips.starter = false;
@@ -306,8 +318,7 @@ class _BootstrapPageState extends State<BootstrapPage>
                         showDialog(
                           context: context,
                           builder: (context) => SimpleCancelOkDialog(
-                            content: const Text(
-                                'Database is not downloaded, still continue?'),
+                            content: Text(S.current.database_not_downloaded),
                             onTapOk: () {
                               db2.settings.tips.starter = false;
                               db2.saveSettings();
@@ -319,7 +330,7 @@ class _BootstrapPageState extends State<BootstrapPage>
                     },
                   )
                 : TextButton(
-                    child: const Text('NEXT'),
+                    child: Text(S.current.next),
                     onPressed: () {
                       _pageController.nextPage(
                         duration: kTabScrollDuration,
@@ -414,7 +425,7 @@ class _OfflineLoadingPage extends StatelessWidget {
                       ListTile(
                         subtitle: Center(
                           child: Text(
-                            'Loading Data Failed\n$error',
+                            S.current.loading_data_failed(error),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -455,7 +466,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
     return ListView(
       children: [
         SwitchListTile.adaptive(
-          title: const Text('Auto Update'),
+          title: Text(S.current.auto_update),
           value: db2.settings.autoUpdateData,
           onChanged: (v) {
             setState(() {
@@ -465,14 +476,14 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
           },
         ),
         ListTile(
-          title: const Text('Current Version'),
+          title: Text(S.current.current_version),
           trailing: Text(
             db2.gameData.version.timestamp > 0
                 ? DateTime.fromMillisecondsSinceEpoch(
                         db2.gameData.version.timestamp * 1000)
                     .toStringShort()
                     .replaceFirst(' ', '\n')
-                : 'NotFound',
+                : S.current.not_found,
             textAlign: TextAlign.end,
           ),
         ),
@@ -499,7 +510,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
               }
               if (mounted) setState(() {});
             },
-            child: const Text('Update Now'),
+            child: Text(S.current.update_now),
           ),
         ),
         Padding(
@@ -594,8 +605,8 @@ class _AnimatedHelloState extends State<_AnimatedHello> {
         'こんにちは',
         '哈嘍',
         '안녕하세요',
-        '¡¡Buenas!',
-        'مرحبا'
+        '¡Buenas!',
+        'مرحبا',
       ];
   bool shown = false;
   int index = 0;
