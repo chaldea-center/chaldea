@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../models/basic.dart';
 import '../models/db.dart';
 import '../utils/extension.dart';
 
@@ -22,23 +23,6 @@ class Language {
   static const ar = Language('ar', 'عربى', 'Arabic', Locale('ar', ''));
   static const es = Language('es', 'Español', 'Spanish', Locale('es', ''));
 
-  // static List<Language>? _fallbackLanguages;
-  //
-  // static List<Language> get fallbackLanguages =>
-  //     _fallbackLanguages ?? _defaultFallbackLanguages();
-  //
-  // static set fallbackLanguages(List<Language> languages) {
-  //   assert(languages.length == 5, languages);
-  //   _fallbackLanguages = languages;
-  // }
-
-  static Language _parseLang(String? code) {
-    code ??= systemLanguage;
-
-    return supportLanguages.firstWhere((lang) => code!.startsWith(lang.code),
-        orElse: () => en);
-  }
-
   static List<Language> get supportLanguages =>
       const [jp, chs, cht, en, ko, es, ar];
 
@@ -47,15 +31,15 @@ class Language {
 
   static List<Language> get officialLanguages => const [jp, chs, cht, en, ko];
 
+  /// warn that [Intl.canonicalizedLocale] cannot treat script code
   static Language? getLanguage(String? code) {
-    code ??= systemLanguage;
-    
-    return supportLanguages
+    code = Intl.canonicalizedLocale(code ??= systemLocale.toString());
+    return (runChaldeaNext ? supportLanguages : supportLanguagesLegacy)
         .firstWhereOrNull((lang) => code?.startsWith(lang.code) ?? false);
   }
 
-  static String get currentLocaleCode => Intl.canonicalizedLocale(null);
-  static String get systemLanguage => WidgetsBinding.instance!.platformDispatcher.locale.toString();
+  static Locale get systemLocale =>
+      WidgetsBinding.instance!.platformDispatcher.locale;
 
   /// used for 5 region game data
   static bool get isZH => isCHS || isCHT;
@@ -70,7 +54,7 @@ class Language {
 
   static bool get isKO => current == ko;
 
-  static Language get current => _parseLang(db2.settings.language);
+  static Language get current => getLanguage(db2.settings.language) ?? en;
 
   @override
   String toString() {

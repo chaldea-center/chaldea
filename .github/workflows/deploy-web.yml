@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - dev
   workflow_dispatch:
 
 jobs:
@@ -11,25 +12,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
+      - name: Extract branch name
+        id: extract-branch-name
+        run: |
+            echo ${GITHUB_REF#refs/heads/}
+            echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_REF#refs/heads/})"
+
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '2.11.0-0.1.pre'
           channel: 'beta'
           cache: true
-      - run: flutter --version
-      - run: flutter clean
-      - run: flutter pub get
 
-      - name: Build with web-renderer=auto
+      - run: |
+            flutter --version
+            flutter clean
+            flutter pub get
+
+      - name: Build with default auto web-renderer
         run: |
             flutter build web --source-maps
             dart ./scripts/patch_web_build.dart
-
-      - name: Push to app repo
+      
+      - name: Publish to app repo ${{ steps.extract-branch-name.outputs.BRANCH_NAME }} branch
         uses: crazy-max/ghaction-github-pages@v2.2.0
         with:
           repo: chaldea-center/app
-          target_branch: main
+          target_branch: ${{ steps.extract-branch-name.outputs.BRANCH_NAME }}
           build_dir: build/web
         env:
           GH_PAT: ${{ secrets.GH_PAGES_TOKEN }}

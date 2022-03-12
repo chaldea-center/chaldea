@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
+import 'package:chaldea/app/modules/home/subpage/account_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:file_picker/file_picker.dart';
@@ -51,6 +53,7 @@ class _OldVersionDataImportState extends State<OldVersionDataImport> {
                     onPressed: () {
                       db2.userData.users.addAll(users);
                       EasyLoading.showSuccess('Appended data to cur app');
+                      router.push(child: AccountPage());
                     },
                     child: Text(
                       S.current.import_data,
