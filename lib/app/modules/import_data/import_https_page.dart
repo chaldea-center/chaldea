@@ -94,7 +94,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
-        title: const Text('HTTPS Sniffing'),
+        title: Text('HTTPS Sniffing'),
         actions: [
           MarkdownHelpPage.buildHelpBtn(context, 'import_https_response.md'),
           IconButton(
@@ -462,6 +462,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   }
 
   Widget get craftSliver {
+    final notMeet = crafts.values.where((v) => v == 0).length;
+    final meet = crafts.values.where((v) => v == 1).length;
+    final own = crafts.values.where((v) => v == 2).length;
     return MultiSliver(
       pushPinnedChildren: true,
       children: [

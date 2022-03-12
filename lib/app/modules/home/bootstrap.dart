@@ -33,7 +33,6 @@ class _BootstrapPageState extends State<BootstrapPage>
   int page = 0;
   List<Widget> pages = [];
   final _loader = GameDataLoader();
-  bool _offlineLoading = true;
 
   @override
   void initState() {
@@ -56,7 +55,6 @@ class _BootstrapPageState extends State<BootstrapPage>
         onDataReady(true);
       }
     } catch (e, s) {
-      _offlineLoading = false;
       logger.e('init data error', e, s);
     } finally {
       if (mounted) setState(() {});
@@ -65,31 +63,39 @@ class _BootstrapPageState extends State<BootstrapPage>
 
   @override
   Widget build(BuildContext context) {
-    if (db2.settings.tips.starter) {
-      pages = [
-        welcomePage,
-        languagePage,
-        darkModePage,
-        createAccountPage,
-        dataPage,
-      ];
-    } else if (_offlineLoading) {
-      pages = [_OfflineLoadingPage(progress: _loader.progress)];
+    pages = !db2.settings.tips.starter
+        ? [
+            _OfflineLoadingPage(
+              progress: _loader.progress,
+              error: _loader.error,
+            ),
+            if (_loader.error != null) dataPage,
+          ]
+        : [
+            welcomePage,
+            languagePage,
+            darkModePage,
+            createAccountPage,
+            dataPage,
+          ];
+    Widget child;
+    if (pages.length > 1) {
+      child = Stack(
+        children: [
+          PageView(
+            controller: _pageController,
+            children: pages,
+            onPageChanged: (i) {
+              setState(() {
+                page = i;
+              });
+            },
+          ),
+          _bottom(),
+        ],
+      );
     } else {
-      pages = [dataPage];
-    }
-    Widget child = PageView(
-      controller: _pageController,
-      children: pages,
-      onPageChanged: (i) {
-        setState(() {
-          page = i;
-        });
-      },
-    );
-
-    if (!_offlineLoading) {
-      child = Stack(children: [child, _bottom()]);
+      child = pages.first;
     }
     return Scaffold(
       body: Center(
@@ -359,8 +365,10 @@ class _BootstrapPageState extends State<BootstrapPage>
 
 class _OfflineLoadingPage extends StatelessWidget {
   final double? progress;
+  final dynamic error;
 
-  _OfflineLoadingPage({Key? key, this.progress}) : super(key: key);
+  _OfflineLoadingPage({Key? key, this.progress, required this.error})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -405,12 +413,34 @@ class _OfflineLoadingPage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Expanded(child: Center(child: img)),
+        Expanded(
+          child: Center(
+            child: error == null
+                ? img
+                : ListView(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      img,
+                      ListTile(
+                        subtitle: Center(
+                          child: Text(
+                            S.current.loading_data_failed(error),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 48),
           child: LinearProgressIndicator(
             value: progress ?? 0,
-            color: Theme.of(context).primaryColorLight,
+            color: error != null
+                ? Theme.of(context).errorColor
+                : Theme.of(context).primaryColorLight,
             backgroundColor: Colors.transparent,
           ),
         ),
@@ -428,6 +458,7 @@ class _DatabaseIntro extends StatefulWidget {
 
 class _DatabaseIntroState extends State<_DatabaseIntro> {
   final GameDataLoader _loader = GameDataLoader();
+  dynamic error;
   bool success = false;
 
   @override
@@ -461,7 +492,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
             onPressed: () async {
               try {
                 setState(() {
-                  // error = null;
+                  error = null;
                   success = false;
                 });
                 final gamedata = await _loader.reload(
@@ -475,7 +506,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                 success = true;
               } catch (e, s) {
                 logger.e('download gamedata error', e, s);
-                // error = e;
+                error = e;
               }
               if (mounted) setState(() {});
             },
@@ -489,9 +520,9 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
             children: [
               if (_loader.progress == 1.0)
                 Icon(
-                  _loader.error != null ? Icons.clear_rounded : Icons.done,
+                  error != null ? Icons.close : Icons.done,
                   size: 80,
-                  color: _loader.error != null
+                  color: error != null
                       ? Theme.of(context).errorColor
                       : Theme.of(context).colorScheme.primary,
                 ),
@@ -506,9 +537,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                   height: 120,
                   child: CircularProgressIndicator(
                     value: _loader.progress ?? 0,
-                    color: _loader.error != null
-                        ? Theme.of(context).errorColor
-                        : null,
+                    color: error != null ? Theme.of(context).errorColor : null,
                     backgroundColor: Theme.of(context).backgroundColor,
                   ),
                 ),
@@ -516,10 +545,10 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
             ],
           ),
         ),
-        if (_loader.error != null)
+        if (error != null)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Center(child: Text(_loader.error.toString())),
+            child: Center(child: Text(error.toString())),
           ),
       ],
     );

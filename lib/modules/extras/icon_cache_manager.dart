@@ -133,7 +133,7 @@ class IconCacheManager {
       String fp = join(db.paths.gameIconDir, cacheName);
       if (!await File(fp).exists()) {
         tasks.add(_limiter.limited<void>(() async {
-          final url = await WikiUtil.saveImage(originName, fp);
+          final url = await WikiUtil.resolveFileUrl(originName, fp);
           if (url == null) {
             errors += 1;
           }

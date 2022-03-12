@@ -2815,8 +2815,6 @@ AppSetting _$AppSettingFromJson(Map<String, dynamic> json) => $checkedCreate(
               $checkedConvert('showAccountAtHome', (v) => v as bool?),
           itemQuestsSortByAp:
               $checkedConvert('itemQuestsSortByAp', (v) => v as bool?),
-          autoTurnOnPlanNotReach:
-              $checkedConvert('autoTurnOnPlanNotReach', (v) => v as bool?),
         );
         return val;
       },
@@ -2841,7 +2839,6 @@ Map<String, dynamic> _$AppSettingToJson(AppSetting instance) =>
       'priorityTags': instance.priorityTags,
       'showAccountAtHome': instance.showAccountAtHome,
       'itemQuestsSortByAp': instance.itemQuestsSortByAp,
-      'autoTurnOnPlanNotReach': instance.autoTurnOnPlanNotReach,
     };
 
 const _$ThemeModeEnumMap = {

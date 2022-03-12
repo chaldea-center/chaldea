@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:chaldea/utils/extension.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -65,12 +64,6 @@ class AppInfo {
     ///Only android, iOS and macOS are implemented
     _packageInfo = await PackageInfo.fromPlatform()
         .catchError((e) => _loadApplicationInfoFromAsset());
-    _packageInfo = PackageInfo(
-      appName: _packageInfo!.appName.toTitle(),
-      packageName: _packageInfo!.packageName,
-      version: _packageInfo!.version,
-      buildNumber: _packageInfo!.buildNumber,
-    );
     appParams["version"] = _packageInfo?.version;
     appParams["appName"] = _packageInfo?.appName;
     appParams["buildNumber"] = _packageInfo?.buildNumber;

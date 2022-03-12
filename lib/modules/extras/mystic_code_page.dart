@@ -250,8 +250,30 @@ class _MysticCodePageState extends State<MysticCodePage> {
     );
   }
 
+  List<String> getImageUrl(List<String> filenames) {
+    final List<String?> urls =
+        filenames.map((e) => WikiUtil.getCachedUrl(e)).toList();
+    Future<void> _resolve() async {
+      for (var fn in filenames) {
+        if (WikiUtil.getCachedUrl(fn) == null) {
+          //use await to ensure every image only resolve once
+          await WikiUtil.resolveFileUrl(fn);
+        }
+      }
+    }
+
+    if (urls.contains(null)) {
+      _resolve().then((value) {
+        if (mounted) {
+          setState(() {});
+        }
+      });
+    }
+    return urls.whereType<String>().toList();
+  }
+
   Widget buildCodeImages(MysticCode mysticCode) {
-    final urls = [mysticCode.image1, mysticCode.image2];
+    final urls = getImageUrl([mysticCode.image1, mysticCode.image2]);
     if (urls.isEmpty) return Container(height: 300);
     return FittedBox(
       child: SizedBox(

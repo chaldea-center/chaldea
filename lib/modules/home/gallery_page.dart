@@ -3,6 +3,8 @@ import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/extras/icon_cache_manager.dart';
 import 'package:chaldea/modules/extras/updates.dart';
 import 'package:chaldea/modules/home/subpage/account_page.dart';
+import 'package:rate_my_app/rate_my_app.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'elements/grid_gallery.dart';
 import 'elements/news_carousel.dart';
@@ -23,6 +25,12 @@ class _GalleryPageState extends State<GalleryPage> {
     _scrollController = ScrollController();
 
     Future.delayed(const Duration(seconds: 2)).then((_) async {
+      if (PlatformU.isApple || PlatformU.isAndroid) {
+        await rateMyApp.init();
+        _showRateCard = rateMyApp.shouldOpenDialog || kDebugMode;
+        if (mounted) setState(() {});
+      }
+
       if (kDebugMode || AppInfo.isDebugDevice) return;
       if (db.appSetting.autoUpdateDataset) {
         await AutoUpdateUtil.patchGameData();
@@ -171,7 +179,12 @@ class _GalleryPageState extends State<GalleryPage> {
             )),
       ));
     }
-
+    if (_showRateCard == true) {
+      children.add(Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8),
+        child: buildRateTile(),
+      ));
+    }
     return children;
   }
 
@@ -223,6 +236,74 @@ class _GalleryPageState extends State<GalleryPage> {
   }
 
   /// Notifications
+  bool? _showRateCard;
+  final RateMyApp rateMyApp = RateMyApp(
+    minDays: 15,
+    minLaunches: 50,
+    remindDays: 75,
+    remindLaunches: 100,
+    appStoreIdentifier: '1548713491',
+    googlePlayIdentifier: 'cc.narumi.chaldea',
+  );
+
+  Widget buildRateTile() {
+    return SimpleAccordion(
+      // canTapOnHeader: false,
+      elevation: 0.5,
+      topBorderSide: Divider.createBorderSide(context, width: 0.5),
+      headerBuilder: (context, expanded) => ListTile(
+        horizontalTitleGap: 0,
+        leading: const Icon(Icons.stars_rounded),
+        contentPadding: const EdgeInsets.only(left: 8),
+        title: Text(LocalizedText.of(
+            chs: '走过路过给个评价反馈吧~',
+            jpn: 'アプリを評価する',
+            eng: 'Rating Chaldea',
+            kor: 'Chaldea 앱 평가하기')),
+        subtitle: AutoSizeText(
+          LocalizedText.of(
+              chs: '欢迎评分、评价、反馈、建议~',
+              jpn: '評価またはレビューがかかりましょう',
+              eng: 'Take a minute to rate/review',
+              kor: '평가 또는 리뷰를 남겨주세요'),
+          maxLines: 1,
+          style: expanded ? null : const TextStyle(color: Colors.transparent),
+        ),
+      ),
+      contentBuilder: (context) => ButtonBar(
+        alignment: MainAxisAlignment.end,
+        children: [
+          TextButton(
+            onPressed: () {
+              rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed);
+              setState(() {
+                _showRateCard = false;
+              });
+            },
+            child: Text(
+                LocalizedText.of(
+                    chs: '取消', jpn: '後で', eng: 'DISMISS', kor: '나중에'),
+                style: TextStyle(color: Theme.of(context).disabledColor)),
+          ),
+          TextButton(
+            onPressed: () async {
+              rateMyApp.callEvent(RateMyAppEventType.rateButtonPressed);
+              launch(PlatformU.isAndroid
+                  ? kGooglePlayLink
+                  : PlatformU.isApple
+                      ? kAppStoreLink
+                      : kGooglePlayLink);
+              setState(() {
+                _showRateCard = false;
+              });
+            },
+            child: Text(
+                LocalizedText.of(chs: '评分', jpn: '評価', eng: 'RATE', kor: '평가')),
+          ),
+        ],
+      ),
+    );
+  }
 
   /// TEST
   Widget buildTestInfoPad() {

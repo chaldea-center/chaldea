@@ -52,11 +52,6 @@ class ServantListPageState extends State<ServantListPage>
     }
     if (widget.planMode) {
       filterData.planFavorite = 1;
-      if (db.appSetting.autoTurnOnPlanNotReach) {
-        filterData.planCompletion.options
-          ..clear()
-          ..addAll({'0': true});
-      }
     }
     options = _ServantOptions(onChanged: (_) => safeSetState());
   }

@@ -545,6 +545,7 @@ class _ItemListTabState extends State<ItemListTab> {
         moveToNext(group.focusNode);
       },
     );
+    final item = db2.gameData.items[itemId];
     Widget title, subtitle;
     if (isQp) {
       title = Row(

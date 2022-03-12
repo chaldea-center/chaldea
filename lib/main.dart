@@ -111,11 +111,11 @@ Future<void> _initiateCommon() async {
   // Config min size of the window for desktops app
   // (This is a prototype, and in the long term is expected to be replaced by functionality within the Flutter framework.)
   if (PlatformU.isDesktop) {
-    setWindowTitle(kAppName);
+    setWindowTitle('Chaldea');
     setWindowMinSize(const Size(375, 568));
     setWindowMaxSize(Size.infinite);
   }
-
+  
   LicenseRegistry.addLicense(() async* {
     Map<String, String> licenses = {
       'MOONCELL': 'doc/license/CC-BY-NC-SA-4.0.txt',

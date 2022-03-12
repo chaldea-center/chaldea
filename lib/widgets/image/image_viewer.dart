@@ -6,10 +6,10 @@ import 'dart:ui' as ui;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chaldea/components/wiki_util.dart';
 import 'package:chaldea/models/db.dart';
+import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:crypto/crypto.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -173,7 +173,7 @@ class _CachedImageState extends State<CachedImage> {
         return _shouldFadeIn ? _FadeIn(child: child) : child;
       } else {
         _shouldFadeIn = true;
-        WikiUtil.saveImage(widget.imageUrl!, savePath).then((_url) {
+        WikiUtil.resolveFileUrl(widget.imageUrl!, savePath).then((_url) {
           if (_url != null && mounted) {
             setState(() {});
           }
@@ -181,8 +181,16 @@ class _CachedImageState extends State<CachedImage> {
         return _withPlaceholder(context, widget.imageUrl!);
       }
     } else {
-      String trueUrl = WikiUtil.filenameToUrl(widget.imageUrl!);
-      return _withCached(trueUrl);
+      String? trueUrl = WikiUtil.getCachedUrl(widget.imageUrl!);
+      if (trueUrl != null) {
+        return _withCached(trueUrl);
+      }
+      WikiUtil.resolveFileUrl(widget.imageUrl!).then((_url) {
+        if (_url != null && mounted) {
+          setState(() {});
+        }
+      });
+      return _withPlaceholder(context, widget.imageUrl!);
     }
   }
 
@@ -260,7 +268,7 @@ class _CachedImageState extends State<CachedImage> {
     final _cacheManager = cachedOption.cacheManager ??
         (_isMcFile ? WikiUtil.wikiFileCache : DefaultCacheManager());
 
-    if (kIsWeb && kPlatformMethods.rendererCanvasKit) {
+    if (kPlatformMethods.rendererCanvasKit) {
       final uri = Uri.tryParse(fullUrl);
       if (uri != null && uri.host == 'fgo.wiki') {
         final hashValue = uri.queryParameters['sha1'];

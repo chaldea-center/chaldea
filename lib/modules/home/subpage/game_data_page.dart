@@ -36,14 +36,11 @@ class _GameDataPageState extends State<GameDataPage> {
                       jpn: '最新バージョン ',
                       eng: 'Latest Version',
                       kor: '최신 버전')),
-                  subtitle: db.runtimeData.latestDatasetVersion!.minimalApp >
-                          AppInfo.version
-                      ? Text(LocalizedText.of(
-                          chs: '需要升级APP',
-                          jpn: 'APPをアップグレードする必要があります',
-                          eng: 'Need to upgrade APP',
-                          kor: '앱을 업데이트 해야합니다'))
-                      : null,
+                  subtitle: Text(LocalizedText.of(
+                      chs: '需要升级APP',
+                      jpn: 'APPをアップグレードする必要があります',
+                      eng: 'Need to upgrade APP',
+                      kor: '앱을 업데이트 해야합니다')),
                   trailing: Text(
                     db.runtimeData.latestDatasetVersion!.readable,
                     style: TextStyle(color: Theme.of(context).errorColor),

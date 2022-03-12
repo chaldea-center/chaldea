@@ -150,11 +150,6 @@ final _localizedMasterMission = LocalizedGroup([
         kor: '광역 섬멸 병기'),
     LocalizedText(
         chs: '奥林波斯兵系', jpn: '', eng: 'Olympian Soldier', kor: '올림포스 병사'),
-    LocalizedText(chs: '咒语书系', jpn: '', eng: 'Spell Book'),
-    LocalizedText(chs: '土蜘蛛系', jpn: '', eng: 'Tsuchigumo'),
-    LocalizedText(chs: '大翁鬼系', jpn: '', eng: 'Hakushikijyo'),
-    LocalizedText(chs: '小鬼系', jpn: '', eng: 'Oni Imp'),
-    LocalizedText(chs: '龙牙兵系', jpn: '', eng: 'Dragon Tooth Warrior'),
 
     // fields
     LocalizedText(chs: '场地', jpn: 'フィールド', eng: 'Field', kor: '필드'),

@@ -81,7 +81,7 @@ class _SupportPartyPageState extends State<SupportPartyPage> {
               data: Theme.of(context).copyWith(brightness: Brightness.light),
               child: Scrollbar(
                 controller: _horizontalController,
-                thumbVisibility: true,
+                isAlwaysShown: true,
                 thickness: 10,
                 radius: const Radius.circular(5),
                 interactive: true,

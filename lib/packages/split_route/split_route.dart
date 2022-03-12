@@ -62,6 +62,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   bool? get detail => _detail;
 
   set detail(bool? v) {
+    print([v, _detail]);
     if (v == _detail) return;
     _detail = v;
     // changedInternalState();

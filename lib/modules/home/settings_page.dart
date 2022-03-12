@@ -125,7 +125,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     const Divider(thickness: 0, color: Colors.transparent),
                 value: Language.getLanguage(
                     db.appSetting.language ?? Language.currentLocaleCode),
-                items: Language.supportLanguagesLegacy.map((lang) {
+                items: Language.supportLanguages.map((lang) {
                   return DropdownMenuItem(value: lang, child: Text(lang.name));
                 }).toList(),
                 onChanged: (lang) {
@@ -194,15 +194,6 @@ class _SettingsPageState extends State<SettingsPage> {
               ).then((_) {
                 if (mounted) setState(() {});
               }),
-            ),
-            ListTile(
-              title: Text(MaterialLocalizations.of(context)
-                  .aboutListTileTitle('${AppInfo.appName} V2')),
-              onTap: () {
-                launch(Language.isZH
-                    ? 'https://docs.chaldea.center/zh/v2_release.html'
-                    : 'https://docs.chaldea.center/v2_release.html');
-              },
             ),
             ListTile(
               title: Text(S.of(context).about_feedback),

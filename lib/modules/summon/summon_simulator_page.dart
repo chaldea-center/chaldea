@@ -130,9 +130,10 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           Center(
             child: Text(
               LocalizedText.of(
-                  chs: '仅供娱乐, 如有雷同, 纯属巧合',
+                  chs: '仅供娱乐, 如有雷同, 纯属巧合\n保底机制使五星概率在1.04%左右',
                   jpn: '娯楽のみ',
-                  eng: 'Just for entertainment'),
+                  eng:
+                      'Just for entertainment\nGuarantee mechanism: 1%->1.04%'),
               style: const TextStyle(color: Colors.grey),
               textAlign: TextAlign.center,
             ),
