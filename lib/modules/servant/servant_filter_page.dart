@@ -138,6 +138,16 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData> {
             update();
           },
         ),
+        SFooter(
+          '*' +
+              [
+                S.current.ascension_short,
+                S.current.active_skill,
+                S.current.append_skill_short,
+                S.current.costume_unlock
+              ].join('/'),
+          padding: const EdgeInsetsDirectional.fromSTEB(15, 0, 15, 5),
+        ),
         FilterGroup(
           title: Text(S.of(context).filter_skill_lv, style: textStyle),
           options: SvtFilterData.skillLevelData,

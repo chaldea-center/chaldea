@@ -136,7 +136,7 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
         context, defaultHintText(shownList.length, wholeData.length));
     return Scrollbar(
       controller: scrollController,
-      showTrackOnHover: PlatformU.isDesktopOrWeb,
+      trackVisibility: PlatformU.isDesktopOrWeb,
       child: useGrid
           ? buildGridView()
           : buildListView(topHint: hintText, bottomHint: hintText),

@@ -39,6 +39,7 @@ class AppSetting {
   Map<String, String> priorityTags;
   bool showAccountAtHome;
   bool itemQuestsSortByAp;
+  bool autoTurnOnPlanNotReach;
 
   AppSetting({
     this.language,
@@ -56,6 +57,7 @@ class AppSetting {
     Map<String, String>? priorityTags,
     bool? showAccountAtHome,
     bool? itemQuestsSortByAp,
+    bool? autoTurnOnPlanNotReach,
   })  : autoResetFilter = autoResetFilter ?? true,
         downloadSource = downloadSource?.clamp2(0, GitSource.values.length) ??
             GitSource.server.index,
@@ -69,7 +71,8 @@ class AppSetting {
             List.of(SvtTab.values),
         priorityTags = priorityTags ?? {},
         showAccountAtHome = showAccountAtHome ?? false,
-        itemQuestsSortByAp = itemQuestsSortByAp ?? true {
+        itemQuestsSortByAp = itemQuestsSortByAp ?? true,
+        autoTurnOnPlanNotReach = autoTurnOnPlanNotReach ?? false {
     // gitee disabled
     if (this.downloadSource == 2) {
       this.downloadSource = 0;

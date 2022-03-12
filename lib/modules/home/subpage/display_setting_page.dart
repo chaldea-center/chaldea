@@ -94,6 +94,18 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   setState(() {});
                 },
               ),
+              SwitchListTile.adaptive(
+                value: db.appSetting.autoTurnOnPlanNotReach,
+                title: Text(LocalizedText.of(
+                  chs: '规划列表默认筛选未完成',
+                  jpn: '（プランページ）フィルターのディフォルトは未完成',
+                  eng: 'Plan Page show "Plan-Not-Reach" by default',
+                )),
+                onChanged: (v) async {
+                  db.appSetting.autoTurnOnPlanNotReach = v;
+                  setState(() {});
+                },
+              ),
             ],
           ),
           TileGroup(
