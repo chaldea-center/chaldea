@@ -20,7 +20,7 @@ class Language {
   static const en = Language('en', 'English', 'English', Locale('en', ''));
   static const ko = Language('ko', '한국어', 'Korean', Locale('ko', ''));
   static const ar = Language('ar', 'عربى', 'Arabic', Locale('ar', ''));
-  static const es = Language('es', 'Española', 'Spanish', Locale('es', ''));
+  static const es = Language('es', 'Español', 'Spanish', Locale('es', ''));
 
   // static List<Language>? _fallbackLanguages;
   //
@@ -33,22 +33,10 @@ class Language {
   // }
 
   static Language _parseLang(String? code) {
-    String locale = Intl.canonicalizedLocale(code);
-    if (locale.startsWith('zh') == true) {
-      if (locale.contains('Hant')) {
-        return cht;
-      } else {
-        return chs;
-      }
-    } else if (locale.startsWith('ko') == true) {
-      return ko;
-    } else if (locale.startsWith('en') == true) {
-      return en;
-    } else if (locale.startsWith('ja') == true) {
-      return jp;
-    } else {
-      return en;
-    }
+    code ??= systemLanguage;
+
+    return supportLanguages.firstWhere((lang) => code!.startsWith(lang.code),
+        orElse: () => en);
   }
 
   static List<Language> get supportLanguages =>
@@ -57,15 +45,14 @@ class Language {
   static List<Language> get officialLanguages => const [jp, chs, cht, en, ko];
 
   static Language? getLanguage(String? code) {
-    if (code == null) return null;
-    Language? language =
-        supportLanguages.firstWhereOrNull((lang) => lang.code == code);
-    language ??= supportLanguages
-        .firstWhereOrNull((lang) => code.startsWith(lang.locale.languageCode));
-    return language;
+    code ??= systemLanguage;
+    
+    return supportLanguages
+        .firstWhereOrNull((lang) => code?.startsWith(lang.code) ?? false);
   }
 
   static String get currentLocaleCode => Intl.canonicalizedLocale(null);
+  static String get systemLanguage => WidgetsBinding.instance!.platformDispatcher.locale.toString();
 
   /// used for 5 region game data
   static bool get isZH => isCHS || isCHT;
