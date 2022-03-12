@@ -51,7 +51,7 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
 
   void _startCaching() {
     if (network.unavailable) {
-      EasyLoading.showInfo(S.current.error_no_network);
+      EasyLoading.showInfo(S.current.error_no_internet);
       return;
     }
     _manager.start(

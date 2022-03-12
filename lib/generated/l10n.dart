@@ -1122,10 +1122,10 @@ class S {
   }
 
   /// `无网络连接`
-  String get error_no_network {
+  String get error_no_internet {
     return Intl.message(
       '无网络连接',
-      name: 'error_no_network',
+      name: 'error_no_internet',
       desc: '',
       args: [],
     );
@@ -4391,6 +4391,207 @@ class S {
     return Intl.message(
       '是',
       name: 'yes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Language`
+  String get select_lang {
+    return Intl.message(
+      'Select Language',
+      name: 'select_lang',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Account`
+  String get account_title {
+    return Intl.message(
+      'Account',
+      name: 'account_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Any name`
+  String get create_account_textfield_hint {
+    return Intl.message(
+      'Any name',
+      name: 'create_account_textfield_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You can add more accounts later in Settings`
+  String get create_account_textfield_helper {
+    return Intl.message(
+      'You can add more accounts later in Settings',
+      name: 'create_account_textfield_helper',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Game Server`
+  String get game_server {
+    return Intl.message(
+      'Game Server',
+      name: 'game_server',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Database`
+  String get database {
+    return Intl.message(
+      'Database',
+      name: 'database',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Database is not downloaded, still continue?`
+  String get database_not_downloaded {
+    return Intl.message(
+      'Database is not downloaded, still continue?',
+      name: 'database_not_downloaded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update Now`
+  String get update_now {
+    return Intl.message(
+      'Update Now',
+      name: 'update_now',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Current Version`
+  String get current_version {
+    return Intl.message(
+      'Current Version',
+      name: 'current_version',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `PREV`
+  String get prev {
+    return Intl.message(
+      'PREV',
+      name: 'prev',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `NEXT`
+  String get next {
+    return Intl.message(
+      'NEXT',
+      name: 'next',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DONE`
+  String get done {
+    return Intl.message(
+      'DONE',
+      name: 'done',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading Data Failed`
+  String get loading_data_failed {
+    return Intl.message(
+      'Loading Data Failed',
+      name: 'loading_data_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not Found`
+  String get not_found {
+    return Intl.message(
+      'Not Found',
+      name: 'not_found',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No network`
+  String get error_no_network {
+    return Intl.message(
+      'No network',
+      name: 'error_no_network',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No version data found`
+  String get error_no_version_data_found {
+    return Intl.message(
+      'No version data found',
+      name: 'error_no_version_data_found',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Required app version: ≥ {version}`
+  String error_required_app_version(Object version) {
+    return Intl.message(
+      'Required app version: ≥ $version',
+      name: 'error_required_app_version',
+      desc: '',
+      args: [version],
+    );
+  }
+
+  /// `File {filename} not found or mismatched hash: {hash} - {localHash}`
+  String file_not_found_or_mismatched_hash(
+      Object filename, Object hash, Object localHash) {
+    return Intl.message(
+      'File $filename not found or mismatched hash: $hash - $localHash',
+      name: 'file_not_found_or_mismatched_hash',
+      desc: '',
+      args: [filename, hash, localHash],
+    );
+  }
+
+  /// `Hash mismatch: {filename}: {hash} - {dataHash}`
+  String hash_mismatch(Object filename, Object hash, Object dataHash) {
+    return Intl.message(
+      'Hash mismatch: $filename: $hash - $dataHash',
+      name: 'hash_mismatch',
+      desc: '',
+      args: [filename, hash, dataHash],
+    );
+  }
+
+  /// `Unsupported type`
+  String get unsupported_type {
+    return Intl.message(
+      'Unsupported type',
+      name: 'unsupported_type',
       desc: '',
       args: [],
     );
