@@ -10,8 +10,8 @@ import 'package:chaldea/utils/catcher/server_feedback_handler.dart';
 import 'package:chaldea/utils/http_override.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:worker_manager/worker_manager.dart';
 import 'package:window_size/window_size.dart';
+import 'package:worker_manager/worker_manager.dart';
 
 import 'app/modules/common/blank_page.dart';
 import 'models/basic.dart';

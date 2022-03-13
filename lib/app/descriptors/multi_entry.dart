@@ -1,11 +1,12 @@
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:chaldea/models/models.dart';
 
-import '../../app.dart';
+import '../app.dart';
 
 class MultiDescriptor {
   const MultiDescriptor._();
+
   static const iconSize = 36.0;
 
   static List<Widget> list(
@@ -194,6 +195,7 @@ class _MultiEntriesList extends StatelessWidget {
   final String? title;
   final List<int> ids;
   final Widget Function(BuildContext context, int id) builder;
+
   const _MultiEntriesList(
       {Key? key, this.title, required this.ids, required this.builder})
       : super(key: key);

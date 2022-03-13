@@ -16,11 +16,16 @@ part '../../generated/models/userdata/userdata.g.dart';
 /// user data will be shared across devices and cloud
 @JsonSerializable()
 class UserData {
-  static const int modelVersion = 1;
+  static const int modelVersion = 3;
 
   final int version;
 
-  int curUserKey;
+  int get curUserKey => _curUserKey;
+  int _curUserKey;
+  set curUserKey(int v) {
+    _curUserKey = v.clamp(0, users.length - 1);
+  }
+
   List<User> users;
   List<int> itemAbundantValue;
   int svtAscensionIcon;
@@ -28,12 +33,13 @@ class UserData {
 
   UserData({
     this.version = UserData.modelVersion,
-    this.curUserKey = 0,
+    int curUserKey = 0,
     List<User>? users,
     List<int?>? itemAbundantValue,
     this.svtAscensionIcon = 1,
     Map<int, String?>? customSvtIcon,
-  })  : users = users?.isNotEmpty == true ? users! : <User>[User()],
+  })  : _curUserKey = curUserKey.clamp(0, (users?.length ?? 1) - 1),
+        users = users?.isNotEmpty == true ? users! : <User>[User()],
         itemAbundantValue = List.generate(
             3, (index) => itemAbundantValue?.getOrNull(index) ?? 0,
             growable: false),
@@ -41,8 +47,104 @@ class UserData {
     validate();
   }
 
-  factory UserData.fromJson(Map<String, dynamic> json) =>
-      _$UserDataFromJson(json);
+  String validUsername(String baseName) {
+    int i = 2;
+    String newName = baseName = baseName.replaceFirst(RegExp(r' \(\d+\)$'), '');
+    do {
+      newName = '$baseName ($i)';
+      i++;
+    } while (users.any((user) => user.name == newName));
+    return newName;
+  }
+
+  factory UserData.fromJson(Map<String, dynamic> json) {
+    if (json['version'] == 2) {
+      return UserData.fromLegacy(json);
+    }
+    return _$UserDataFromJson(json);
+  }
+
+  factory UserData.fromLegacy(Map<String, dynamic> oldData) {
+    List<User> users = [];
+    Map<String, int> itemNameMap = {};
+    for (final item in db2.gameData.items.values) {
+      itemNameMap[item.lName.cn] = item.id;
+    }
+    for (final oldUser
+        in Map<String, Map<String, dynamic>>.from(oldData['users']!).values) {
+      Map<int, SvtStatus> statuses = {};
+      List<Map<int, SvtPlan>> svtPlanGroups = [];
+      for (final String idStr in Map.from(oldUser['servants'] ?? {}).keys) {
+        final id = int.parse(idStr);
+        final oldStatus =
+            Map<String, dynamic>.from(oldUser['servants']?[idStr]);
+        statuses[id] = SvtStatus(
+          cur: _convertLegacyPlan(oldStatus['curVal'], oldStatus['npLv']),
+          coin: (oldStatus['coin'] as int?) ?? 0,
+          priority: (oldStatus['priority'] as int?) ?? 1,
+          equipCmdCodes: List.from((oldStatus['equipCmdCodes'] as List?) ?? []),
+        );
+      }
+      print(
+          'user ${oldUser['name']}: ${oldUser['servantPlans']?.length} plans');
+      for (final svtPlans
+          in List<Map<String, dynamic>>.from((oldUser['servantPlans'] ?? []))) {
+        svtPlanGroups.add(svtPlans.map((key, value) =>
+            MapEntry(int.parse(key), _convertLegacyPlan(value, null))));
+      }
+      final user = User(
+        name: oldUser['name'] ?? 'unknown',
+        isGirl: (oldUser['isMasterGirl'] as bool?) ?? true,
+        use6thDrops: (oldUser['use6thDropRate'] as bool?) ?? true,
+        region: {
+              'jp': Region.jp,
+              'cn': Region.cn,
+              'tw': Region.tw,
+              'en': Region.na
+            }[oldUser['server']] ??
+            Region.jp,
+        servants: statuses,
+        svtPlanGroups: svtPlanGroups,
+        curSvtPlanNo: 0,
+        planNames: null,
+        items: {},
+        events: null,
+        mainStories: null,
+        exchangeTickets: null,
+        craftEssences: null,
+        mysticCodes: null,
+        summons: null,
+        freeLPParams: null,
+      );
+      for (final entry
+          in Map<String, int>.from(oldUser['items'] ?? {}).entries) {
+        if (itemNameMap.containsKey(entry.key)) {
+          user.items[itemNameMap[entry.key]!] = entry.value;
+        }
+      }
+      user.validate();
+      users.add(user);
+    }
+    return UserData(users: users);
+  }
+
+  static SvtPlan _convertLegacyPlan(Map<String, dynamic>? oldPlan, int? npLv) {
+    if (oldPlan == null) return SvtPlan();
+    return SvtPlan(
+      favorite: (oldPlan['favorite'] as bool?) ?? false,
+      ascension: (oldPlan['ascension'] as int?) ?? 0,
+      skills: List.generate(
+          3, (index) => (oldPlan['skills'] as List?)?.getOrNull(index) ?? 0),
+      appendSkills: List.generate(3,
+          (index) => (oldPlan['appendSkills'] as List?)?.getOrNull(index) ?? 0),
+      costumes: null,
+      grail: (oldPlan['grail'] as int?) ?? 0,
+      fouHp: (oldPlan['fouHp'] as int?) ?? 0,
+      fouAtk: (oldPlan['fouAtk'] as int?) ?? 0,
+      bondLimit: (oldPlan['bondLimit'] as int?) ?? 0,
+      npLv: npLv,
+    );
+  }
 
   Map<String, dynamic> toJson() => _$UserDataToJson(this);
 

@@ -13,9 +13,13 @@ abstract class DescriptorBase {
   }
 
   Widget buildJP(BuildContext context);
+
   Widget buildCN(BuildContext context);
+
   Widget buildTW(BuildContext context);
+
   Widget buildNA(BuildContext context);
+
   Widget buildKR(BuildContext context);
 
   RichText combineToRich(

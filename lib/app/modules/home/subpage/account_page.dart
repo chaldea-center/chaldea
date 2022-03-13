@@ -54,7 +54,7 @@ class _AccountPageState extends State<AccountPage> {
               onChanged: (v) {
                 if (v != null) {
                   db2.userData.curUserKey = v;
-                  updateData();
+                  updateData(true);
                 }
               },
               controlAffinity: ListTileControlAffinity.leading,
@@ -81,10 +81,11 @@ class _AccountPageState extends State<AccountPage> {
                   ),
                   PopupMenuItem(
                     child: Text(S.current.clear),
-                    onTap: () => clearUser(user),
+                    onTap: () => clearUser(index),
                   ),
                   PopupMenuItem(
                     child: Text(S.current.delete),
+                    enabled: users.length > 1,
                     onTap: () => deleteUser(index),
                   ),
                 ],
@@ -99,7 +100,7 @@ class _AccountPageState extends State<AccountPage> {
   void addUser(String name) {
     users.add(User(name: name));
     db2.userData.curUserKey = users.length - 1;
-    updateData();
+    updateData(true);
   }
 
   void renameUser(User user) async {
@@ -117,7 +118,7 @@ class _AccountPageState extends State<AccountPage> {
         },
         onSubmit: (v) {
           user.name = v;
-          db2.notifyUserdata();
+          updateData();
         },
       ),
     );
@@ -127,23 +128,20 @@ class _AccountPageState extends State<AccountPage> {
     int newIndex = dx < 0 ? key - dx : key + dx - 1;
     final user = users.removeAt(key);
     users.insert(newIndex, user);
-    setState(() {});
+    db2.userData.curUserKey = users.indexOf(user);
+    updateData();
   }
 
   void copyUser(int key) {
     final originUser = users[key];
     final newUser = User.fromJson(originUser.toJson());
-    int i = 2;
-    String newName;
-    String baseName = originUser.name.replaceFirst(RegExp(r' \(\d+\)$'), '');
-    do {
-      newName = '$baseName ($i)';
-      i++;
-    } while (users.any((user) => user.name == newName));
+    newUser.name = db2.userData.validUsername(newUser.name);
     users.add(newUser);
+    updateData();
   }
 
-  void clearUser(User user) async {
+  void clearUser(int key) async {
+    final user = users[key];
     await Future.delayed(Duration.zero);
     SimpleCancelOkDialog(
       title: const Text('Clear Data'),
@@ -153,7 +151,7 @@ class _AccountPageState extends State<AccountPage> {
         user.items.clear();
         user.svtPlanGroups.forEach((e) => e.clear());
         user.mysticCodes.clear();
-        updateData();
+        updateData(key == db2.userData.curUserKey);
       },
     ).showDialog(context);
   }
@@ -161,27 +159,23 @@ class _AccountPageState extends State<AccountPage> {
   void deleteUser(int key) async {
     await Future.delayed(Duration.zero);
     print('delete user key $key...');
-    final canDelete = users.length > 1;
     final user = users[key];
     SimpleCancelOkDialog(
       title: Text('Delete ${user.name}'),
-      content:
-          canDelete ? null : const Text('Cannot delete, at least one account!'),
-      onTapOk: canDelete
-          ? () {
-              users.removeAt(key);
-              db2.userData.validate();
-              updateData();
-            }
-          : null,
+      onTapOk: () {
+        bool needCalc = key == db2.userData.curUserKey;
+        users.removeAt(key);
+        db2.userData.validate();
+        updateData(needCalc);
+      },
     ).showDialog(context);
   }
 
-  void updateData() async {
-    // notify updates, calc items
-    setState(() {});
-    // await db2.itemStat
-    //     .update(lapse: const Duration(seconds: 1), withFuture: true);
+  void updateData([bool needCalc = false]) async {
+    if (mounted) setState(() {});
+    if (needCalc) {
+      db2.itemCenter.init();
+    }
     db2.notifyUserdata();
   }
 }

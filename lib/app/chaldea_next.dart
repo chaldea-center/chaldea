@@ -111,7 +111,6 @@ class _ChaldeaNextState extends StateX<ChaldeaNext> with AfterLayoutMixin {
   @override
   void afterFirstLayout(BuildContext context) {
     if (PlatformU.isWindows || PlatformU.isMacOS) {
-      db2.settings.alwaysOnTop = true;
       MethodChannelChaldeaNext.setAlwaysOnTop();
     }
     if (PlatformU.isWindows) {

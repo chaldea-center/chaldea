@@ -1,11 +1,10 @@
-import 'package:chaldea/app/modules/descriptors/mission_cond_detail.dart';
-import 'package:chaldea/app/modules/descriptors/multi_entry.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/material.dart';
 
-import 'package:chaldea/models/models.dart';
-
 import 'descriptor_base.dart';
+import 'mission_cond_detail.dart';
+import 'multi_entry.dart';
 
 class CondTargetNumDescriptor extends StatelessWidget with DescriptorBase {
   final CondType condType;

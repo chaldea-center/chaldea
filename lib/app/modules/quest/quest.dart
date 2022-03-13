@@ -1,9 +1,9 @@
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/quest_card.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/atlas.dart';
 import 'package:flutter/material.dart';
-import 'package:chaldea/models/models.dart';
 
 class QuestDetailPage extends StatefulWidget {
   final int? id;

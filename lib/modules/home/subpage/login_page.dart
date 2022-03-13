@@ -91,6 +91,7 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 forgotPwdBtn,
                 logoutBtn,
+                deleteAccountBtn,
               ],
             ),
           if (kDebugMode)
@@ -135,6 +136,14 @@ class _LoginPageState extends State<LoginPage> {
         onPressed: doLogout,
         child: Text(
           S.current.login_logout,
+          style: TextStyle(color: Theme.of(context).errorColor),
+        ),
+      );
+
+  Widget get deleteAccountBtn => TextButton(
+        onPressed: doDelete,
+        child: Text(
+          S.current.delete,
           style: TextStyle(color: Theme.of(context).errorColor),
         ),
       );
@@ -344,7 +353,6 @@ class _LoginPageState extends State<LoginPage> {
     ).showDialog(context);
   }
 
-  @Deprecated('do not use')
   void doDelete() {
     String name = _nameController.text;
     String pwd = _pwdController.text;

@@ -1,13 +1,13 @@
-import 'package:chaldea/app/modules/descriptors/multi_entry.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:flutter/material.dart';
 
-import 'package:chaldea/models/models.dart';
-
 import 'descriptor_base.dart';
+import 'multi_entry.dart';
 
 class MissionCondDetailDescriptor extends StatelessWidget with DescriptorBase {
   final int targetNum;
   final EventMissionConditionDetail detail;
+
   const MissionCondDetailDescriptor(
       {Key? key, required this.targetNum, required this.detail})
       : super(key: key);

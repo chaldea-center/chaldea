@@ -1,9 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
-import 'package:chaldea/modules/home/subpage/account_page.dart';
 import 'package:chaldea/packages/app_info.dart';
-import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/widgets/simple_accordion.dart';
 import 'package:chaldea/widgets/tile_items.dart';
@@ -14,6 +13,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../../../packages/packages.dart';
 import 'elements/grid_gallery.dart';
 import 'elements/news_carousel.dart';
+import 'subpage/account_page.dart';
 
 class GalleryPage extends StatefulWidget {
   GalleryPage({Key? key}) : super(key: key);
@@ -74,7 +74,7 @@ class _GalleryPageState extends State<GalleryPage> {
                 ),
               ),
               onTap: () {
-                SplitRoute.push(context, AccountPage());
+                router.push(child: AccountPage());
               },
             ),
           if (!PlatformU.isMobile && db2.settings.carousel.enabled)
