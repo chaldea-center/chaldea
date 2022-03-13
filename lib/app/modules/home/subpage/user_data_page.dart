@@ -281,7 +281,6 @@ class _UserDataPageState extends State<UserDataPage> {
     //   },
     //   onSuccess: () {
     //     EasyLoading.showSuccess('Uploaded');
-    //     MobStat.logEvent('server_backup', {"action": "upload"});
     //   },
     //   onError: (e, s) => EasyLoading.showError(e.toString()),
     // ).whenComplete(() => EasyLoadingUtil.dismiss());
@@ -352,7 +351,6 @@ class _UserDataPageState extends State<UserDataPage> {
     //     db.itemStat.update();
     //     db.notifyAppUpdate();
     //     EasyLoading.showSuccess('Import $fn');
-    //     MobStat.logEvent('server_backup', {"action": "download"});
     //   },
     //   onError: (e, s) => EasyLoading.showError(e.toString()),
     // ).whenComplete(() => EasyLoadingUtil.dismiss());
