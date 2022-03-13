@@ -67,17 +67,19 @@ class _SettingsPageState extends State<SettingsPage> {
             children: [
               ListTile(
                 title: Text(S.current.cur_account),
-                trailing: _wrapArrowTrailing(Text(db2.curUser.name)),
+                trailing: _wrapArrowTrailing(db2
+                    .onUserData((context, snapshot) => Text(db2.curUser.name))),
                 onTap: () {
-                  SplitRoute.push(context, AccountPage(), popDetail: true);
+                  router.push(child: AccountPage());
                 },
               ),
               ListTile(
                 title: Text(S.current.server),
-                trailing: _wrapArrowTrailing(
-                    Text(EnumUtil.upperCase(db2.curUser.region))),
+                trailing: _wrapArrowTrailing(db2.onUserData(
+                    (context, snapshot) =>
+                        Text(EnumUtil.upperCase(db2.curUser.region)))),
                 onTap: () {
-                  SplitRoute.push(context, GameServerPage(), popDetail: true);
+                  router.push(child: GameServerPage());
                 },
               ),
             ],
@@ -103,7 +105,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 trailing:
                     Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                 onTap: () {
-                  SplitRoute.push(context, UserDataPage(), popDetail: true);
+                  router.push(child: UserDataPage());
                 },
               ),
               ListTile(
@@ -114,7 +116,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           textAlign: TextAlign.end,
                         ))),
                 onTap: () {
-                  SplitRoute.push(context, GameDataPage(), popDetail: true);
+                  router.push(child: GameDataPage());
                 },
               ),
             ],
@@ -126,21 +128,24 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: Text(S.current.settings_language),
                 subtitle:
                     Language.isEN ? const Text('语言') : const Text('Language'),
-                trailing: DropdownButton<Language>(
-                  underline:
-                      const Divider(thickness: 0, color: Colors.transparent),
-                  // need to check again
-                  value: Language.getLanguage(db2.settings.language),
-                  items: Language.supportLanguages
-                      .map((lang) =>
-                          DropdownMenuItem(value: lang, child: Text(lang.name)))
-                      .toList(),
-                  onChanged: (lang) {
-                    if (lang == null) return;
-                    db2.settings.setLanguage(lang);
-                    db2.saveSettings();
-                    db2.notifyAppUpdate();
-                  },
+                trailing: db2.onSettings(
+                  (context, snapshot) => DropdownButton<Language>(
+                    underline:
+                        const Divider(thickness: 0, color: Colors.transparent),
+                    // need to check again
+                    value: Language.getLanguage(db2.settings.language),
+                    items: Language.supportLanguages
+                        .map((lang) => DropdownMenuItem(
+                            value: lang, child: Text(lang.name)))
+                        .toList(),
+                    onChanged: (lang) {
+                      if (lang == null) return;
+                      db2.settings.setLanguage(lang);
+                      db2.saveSettings();
+                      db2.notifyAppUpdate();
+                      db2.notifySettings();
+                    },
+                  ),
                 ),
               ),
               ListTile(
@@ -149,38 +154,35 @@ class _SettingsPageState extends State<SettingsPage> {
                     Text(db2.settings.resolvedPreferredRegions.first
                         .toUpper()))),
                 onTap: () {
-                  SplitRoute.push(
-                    context,
-                    TranslationSetting(),
-                    popDetail: true,
-                  ).then((value) {
-                    if (mounted) setState(() {});
-                  });
+                  router.push(child: TranslationSetting());
                 },
               ),
               ListTile(
                 title: Text(S.current.dark_mode),
-                trailing: DropdownButton<ThemeMode>(
-                  value: db2.settings.themeMode,
-                  underline: Container(),
-                  items: [
-                    DropdownMenuItem(
-                        child: Text(S.current.dark_mode_system),
-                        value: ThemeMode.system),
-                    DropdownMenuItem(
-                        child: Text(S.current.dark_mode_light),
-                        value: ThemeMode.light),
-                    DropdownMenuItem(
-                        child: Text(S.current.dark_mode_dark),
-                        value: ThemeMode.dark),
-                  ],
-                  onChanged: (v) {
-                    if (v != null) {
-                      db2.settings.themeMode = v;
-                      db2.saveSettings();
-                      db2.notifyAppUpdate();
-                    }
-                  },
+                trailing: db2.onSettings(
+                  (context, snapshot) => DropdownButton<ThemeMode>(
+                    value: db2.settings.themeMode,
+                    underline: Container(),
+                    items: [
+                      DropdownMenuItem(
+                          child: Text(S.current.dark_mode_system),
+                          value: ThemeMode.system),
+                      DropdownMenuItem(
+                          child: Text(S.current.dark_mode_light),
+                          value: ThemeMode.light),
+                      DropdownMenuItem(
+                          child: Text(S.current.dark_mode_dark),
+                          value: ThemeMode.dark),
+                    ],
+                    onChanged: (v) {
+                      if (v != null) {
+                        db2.settings.themeMode = v;
+                        db2.saveSettings();
+                        db2.notifySettings();
+                        db2.notifyAppUpdate();
+                      }
+                    },
+                  ),
                 ),
               ),
               ListTile(

@@ -87,7 +87,7 @@ class LocalSettings {
   String? get language => _language;
 
   void setLanguage(Language lang) {
-    Intl.defaultLocale = lang.code;
+    _language = Intl.defaultLocale = lang.code;
     S.load(lang.locale, override: true);
   }
 

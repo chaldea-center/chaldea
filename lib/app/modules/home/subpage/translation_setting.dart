@@ -28,6 +28,7 @@ class _TranslationSettingState extends State<TranslationSetting> {
                 setState(() {
                   db2.settings.preferredRegions = null;
                   db2.saveSettings();
+                  db2.notifySettings();
                 });
               },
             ),
@@ -65,6 +66,7 @@ class _TranslationSettingState extends State<TranslationSetting> {
           regions.insert(newIndex, item);
           db2.settings.preferredRegions = regions;
           db2.saveSettings();
+          db2.notifySettings();
         });
       },
     );
