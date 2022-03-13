@@ -1,4 +1,5 @@
 import 'package:chaldea/_test_page.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/modules/debug/theme_palette.dart';
 import 'package:chaldea/packages/language.dart';
@@ -150,7 +151,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
                 .toList(),
             onChanged: (lang) {
               if (lang == null) return;
-              db2.settings.language = lang.code;
+              db2.settings.setLanguage(lang);
               db2.notifyAppUpdate();
             },
           ),

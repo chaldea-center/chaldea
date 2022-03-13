@@ -621,9 +621,11 @@ packages:
   intl_utils:
     dependency: "direct dev"
     description:
-      name: intl_utils
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "015bf0112cbd41b3d3e396b830ddd3c4a43cb6b1"
+      url: "https://github.com/narumishi/intl_utils"
+    source: git
     version: "2.6.1"
   io:
     dependency: transitive

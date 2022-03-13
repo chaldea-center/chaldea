@@ -24,15 +24,36 @@ import 'messages_zh.dart' as messages_zh;
 import 'messages_zh_Hant.dart' as messages_zh_hant;
 
 typedef Future<dynamic> LibraryLoader();
-Map<String, LibraryLoader> _deferredLibraries = {
-  'ar': () => new Future.value(null),
-  'en': () => new Future.value(null),
-  'es': () => new Future.value(null),
-  'ja': () => new Future.value(null),
-  'ko': () => new Future.value(null),
-  'zh': () => new Future.value(null),
-  'zh_Hant': () => new Future.value(null),
-};
+Map<String, LibraryLoader> get _deferredLibraries => {
+      'ar': () => new Future.value(null),
+      'en': () => new Future.value(null),
+      'es': () => new Future.value(null),
+      'ja': () => new Future.value(null),
+      'ko': () => new Future.value(null),
+      'zh': () => new Future.value(null),
+      'zh_Hant': () => new Future.value(null),
+    };
+
+Future<void> reloadMessages() async {
+  for (final lib in _deferredLibraries.values) {
+    await lib();
+  }
+  messages_ar.messages.messages.clear();
+  messages_ar.messages.messages.addAll(messages_ar.MessageLookup().messages);
+  messages_en.messages.messages.clear();
+  messages_en.messages.messages.addAll(messages_en.MessageLookup().messages);
+  messages_es.messages.messages.clear();
+  messages_es.messages.messages.addAll(messages_es.MessageLookup().messages);
+  messages_ja.messages.messages.clear();
+  messages_ja.messages.messages.addAll(messages_ja.MessageLookup().messages);
+  messages_ko.messages.messages.clear();
+  messages_ko.messages.messages.addAll(messages_ko.MessageLookup().messages);
+  messages_zh.messages.messages.clear();
+  messages_zh.messages.messages.addAll(messages_zh.MessageLookup().messages);
+  messages_zh_hant.messages.messages.clear();
+  messages_zh_hant.messages.messages
+      .addAll(messages_zh_hant.MessageLookup().messages);
+}
 
 MessageLookupByLibrary? _findExact(String localeName) {
   switch (localeName) {

@@ -137,7 +137,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       .toList(),
                   onChanged: (lang) {
                     if (lang == null) return;
-                    db2.settings.language = lang.code;
+                    db2.settings.setLanguage(lang);
                     db2.saveSettings();
                     db2.notifyAppUpdate();
                   },

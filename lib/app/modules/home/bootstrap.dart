@@ -140,7 +140,7 @@ class _BootstrapPageState extends State<BootstrapPage>
             title: Text(lang.name),
             horizontalTitleGap: 0,
             onTap: () {
-              db2.settings.language = lang.code;
+              db2.settings.setLanguage(lang);
               db2.saveSettings();
               db2.notifyAppUpdate();
             },

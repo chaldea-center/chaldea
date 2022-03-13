@@ -1,3 +1,4 @@
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -85,8 +86,9 @@ class LocalSettings {
 
   String? get language => _language;
 
-  set language(String? v) {
-    Intl.defaultLocale = _language = v;
+  void setLanguage(Language lang) {
+    Intl.defaultLocale = lang.code;
+    S.load(lang.locale, override: true);
   }
 
   List<Region> get resolvedPreferredRegions {

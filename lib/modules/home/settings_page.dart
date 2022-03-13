@@ -130,6 +130,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 onChanged: (lang) {
                   if (lang == null) return;
                   db.appSetting.language = lang.code;
+                  S.load(lang.locale, override: true);
                   db.notifyAppUpdate();
                 },
               ),

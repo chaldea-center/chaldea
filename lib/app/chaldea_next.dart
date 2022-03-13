@@ -1,3 +1,4 @@
+import 'package:chaldea/generated/intl/messages_all.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,6 +30,12 @@ class ChaldeaNext extends StatefulWidget {
 class _ChaldeaNextState extends StateX<ChaldeaNext> with AfterLayoutMixin {
   final routeInformationParser = AppRouteInformationParser();
   final backButtonDispatcher = RootBackButtonDispatcher();
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    reloadMessages();
+  }
 
   @override
   Widget build(BuildContext context) {

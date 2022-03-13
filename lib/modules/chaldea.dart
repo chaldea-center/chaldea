@@ -12,6 +12,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:screenshot/screenshot.dart';
 
 import '../components/method_channel_chaldea.dart';
+import '../generated/intl/messages_all.dart';
 import '../packages/network.dart';
 import '../utils/catcher/catcher_util.dart';
 import 'cmd_code/cmd_code_detail_page.dart';
@@ -37,6 +38,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   @override
   void reassemble() {
     super.reassemble();
+    reloadMessages();
   }
 
   void onAppUpdate() {

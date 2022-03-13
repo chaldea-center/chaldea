@@ -1,7 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -13,8 +12,20 @@ import 'intl/messages_all.dart';
 // ignore_for_file: join_return_with_assignment, prefer_final_in_for_each
 // ignore_for_file: avoid_redundant_argument_values, avoid_escaping_inner_quotes
 
+extension _LocaleEx on Locale {
+  String get canonicalizedName {
+    if (scriptCode == null) {
+      return Intl.canonicalizedLocale(toString());
+    }
+    return toString();
+  }
+}
+
 class S {
-  S();
+  final Locale locale;
+  final String localeName;
+
+  S(this.locale) : localeName = locale.canonicalizedName;
 
   static S? _current;
 
@@ -26,17 +37,15 @@ class S {
 
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
-  static Future<S> load(Locale locale) {
-    final name = (locale.countryCode?.isEmpty ?? false)
-        ? locale.languageCode
-        : locale.toString();
-    final localeName = Intl.canonicalizedLocale(name);
+  static Future<S> load(Locale locale, {bool override = false}) {
+    final localeName = locale.canonicalizedName;
     return initializeMessages(localeName).then((_) {
-      Intl.defaultLocale = localeName;
-      final instance = S();
-      S._current = instance;
-
-      return instance;
+      final localizations = S(locale);
+      if (override || S._current == null) {
+        Intl.defaultLocale = localeName;
+        S._current = localizations;
+      }
+      return localizations;
     });
   }
 
@@ -57,6 +66,7 @@ class S {
       '关于',
       name: 'about_app',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -67,6 +77,7 @@ class S {
       '　本应用所使用数据均来源于游戏及以下网站，游戏图片文本原文等版权属于TYPE MOON/FGO PROJECT。\n　程序功能与界面设计参考微信小程序"素材规划"以及iOS版Guda。',
       name: 'about_app_declaration_text',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -77,6 +88,7 @@ class S {
       'App Store评分',
       name: 'about_appstore_rating',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -87,6 +99,7 @@ class S {
       '数据来源',
       name: 'about_data_source',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -97,6 +110,7 @@ class S {
       '若存在未标注的来源或侵权敬请告知',
       name: 'about_data_source_footer',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -107,6 +121,7 @@ class S {
       '请将出错页面的截图以及日志文件发送到以下邮箱:\n $email\n日志文件路径: $logPath',
       name: 'about_email_dialog',
       desc: '',
+      locale: localeName,
       args: [email, logPath],
     );
   }
@@ -117,6 +132,7 @@ class S {
       '请附上出错页面截图和日志',
       name: 'about_email_subtitle',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -127,6 +143,7 @@ class S {
       '反馈',
       name: 'about_feedback',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -137,6 +154,7 @@ class S {
       '应用更新',
       name: 'about_update_app',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -147,6 +165,7 @@ class S {
       '请在App Store中检查更新',
       name: 'about_update_app_alert_ios_mac',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -158,6 +177,7 @@ class S {
       '当前版本: $curVersion\n最新版本: $newVersion\n更新内容:\n$releaseNote',
       name: 'about_update_app_detail',
       desc: '',
+      locale: localeName,
       args: [curVersion, newVersion, releaseNote],
     );
   }
@@ -168,6 +188,7 @@ class S {
       '保有技能',
       name: 'active_skill',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -178,6 +199,7 @@ class S {
       '添加',
       name: 'add',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -188,6 +210,7 @@ class S {
       '加入黑名单',
       name: 'add_to_blacklist',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -198,6 +221,7 @@ class S {
       'AP',
       name: 'ap',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -208,6 +232,7 @@ class S {
       '口算不及格的咕朗台.jpg',
       name: 'ap_calc_page_joke',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -218,6 +243,7 @@ class S {
       'AP计算',
       name: 'ap_calc_title',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -228,6 +254,7 @@ class S {
       'AP效率',
       name: 'ap_efficiency',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -238,6 +265,7 @@ class S {
       'AP溢出时间',
       name: 'ap_overflow_time',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -248,6 +276,7 @@ class S {
       '附加技能',
       name: 'append_skill',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -258,6 +287,7 @@ class S {
       '附加',
       name: 'append_skill_short',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -268,6 +298,7 @@ class S {
       '灵基',
       name: 'ascension',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -278,6 +309,7 @@ class S {
       '灵基',
       name: 'ascension_short',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -288,6 +320,7 @@ class S {
       '灵基再临',
       name: 'ascension_up',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -298,6 +331,7 @@ class S {
       '附件',
       name: 'attachment',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -308,6 +342,7 @@ class S {
       '自动重置',
       name: 'auto_reset',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -318,6 +353,7 @@ class S {
       '自动更新',
       name: 'auto_update',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -328,6 +364,7 @@ class S {
       '备份',
       name: 'backup',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -338,6 +375,7 @@ class S {
       '及！时！备！份！',
       name: 'backup_data_alert',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -348,6 +386,7 @@ class S {
       '历史备份',
       name: 'backup_history',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -358,6 +397,7 @@ class S {
       '备份成功',
       name: 'backup_success',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -368,6 +408,7 @@ class S {
       '黑名单',
       name: 'blacklist',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -378,6 +419,7 @@ class S {
       '羁绊',
       name: 'bond',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -388,6 +430,7 @@ class S {
       '羁绊礼装',
       name: 'bond_craft',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -398,6 +441,7 @@ class S {
       '羁绊效率',
       name: 'bond_eff',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -408,6 +452,7 @@ class S {
       '铜',
       name: 'bronze',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -418,6 +463,7 @@ class S {
       '权重',
       name: 'calc_weight',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -428,6 +474,7 @@ class S {
       '计算',
       name: 'calculate',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -438,6 +485,7 @@ class S {
       '计算器',
       name: 'calculator',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -448,6 +496,7 @@ class S {
       '纪念活动',
       name: 'campaign_event',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -458,6 +507,7 @@ class S {
       '取消',
       name: 'cancel',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -468,6 +518,7 @@ class S {
       '解说',
       name: 'card_description',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -478,6 +529,7 @@ class S {
       '资料',
       name: 'card_info',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -488,6 +540,7 @@ class S {
       '轮播设置',
       name: 'carousel_setting',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -498,6 +551,7 @@ class S {
       '更新历史',
       name: 'change_log',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -508,6 +562,7 @@ class S {
       '出场角色',
       name: 'characters_in_card',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -518,6 +573,7 @@ class S {
       '检查更新',
       name: 'check_update',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -528,6 +584,7 @@ class S {
       '选择Free本',
       name: 'choose_quest_hint',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -538,6 +595,7 @@ class S {
       '清空',
       name: 'clear',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -548,6 +606,7 @@ class S {
       '清除缓存',
       name: 'clear_cache',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -558,6 +617,7 @@ class S {
       '缓存已清理',
       name: 'clear_cache_finish',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -568,6 +628,7 @@ class S {
       '包括卡面语音等',
       name: 'clear_cache_hint',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -578,6 +639,7 @@ class S {
       '清空用户数据',
       name: 'clear_userdata',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -588,6 +650,7 @@ class S {
       '纹章',
       name: 'cmd_code_title',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -598,6 +661,7 @@ class S {
       '指令纹章',
       name: 'command_code',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -608,6 +672,7 @@ class S {
       '确定',
       name: 'confirm',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -618,6 +683,7 @@ class S {
       '已消耗',
       name: 'consumed',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -628,6 +694,7 @@ class S {
       '已复制',
       name: 'copied',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -638,6 +705,7 @@ class S {
       '复制',
       name: 'copy',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -648,6 +716,7 @@ class S {
       '拷贝自其它规划',
       name: 'copy_plan_menu',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -658,6 +727,7 @@ class S {
       '灵衣',
       name: 'costume',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -668,6 +738,7 @@ class S {
       '灵衣开放',
       name: 'costume_unlock',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -678,6 +749,7 @@ class S {
       '计数',
       name: 'counts',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -688,6 +760,7 @@ class S {
       '概念礼装',
       name: 'craft_essence',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -698,6 +771,7 @@ class S {
       '概念礼装',
       name: 'craft_essence_title',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -708,6 +782,7 @@ class S {
       '生成2号机',
       name: 'create_duplicated_svt',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -718,6 +793,7 @@ class S {
       '暴击',
       name: 'critical_attack',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -728,6 +804,7 @@ class S {
       '当前账号',
       name: 'cur_account',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -738,6 +815,7 @@ class S {
       '现有AP',
       name: 'cur_ap',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -748,6 +826,7 @@ class S {
       '当前',
       name: 'current_',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -758,6 +837,7 @@ class S {
       '深色模式',
       name: 'dark_mode',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -768,6 +848,7 @@ class S {
       '深色',
       name: 'dark_mode_dark',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -778,6 +859,7 @@ class S {
       '浅色',
       name: 'dark_mode_light',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -788,6 +870,7 @@ class S {
       '系统',
       name: 'dark_mode_system',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -798,6 +881,7 @@ class S {
       '前往下载页',
       name: 'dataset_goto_download_page',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -808,6 +892,7 @@ class S {
       '下载后手动导入',
       name: 'dataset_goto_download_page_hint',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -818,6 +903,7 @@ class S {
       '数据管理',
       name: 'dataset_management',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -828,6 +914,7 @@ class S {
       '图片数据包',
       name: 'dataset_type_image',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -838,6 +925,7 @@ class S {
       '文本数据包',
       name: 'dataset_type_text',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -848,6 +936,7 @@ class S {
       '删除',
       name: 'delete',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -858,6 +947,7 @@ class S {
       '需求',
       name: 'demands',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -868,6 +958,7 @@ class S {
       '显示设置',
       name: 'display_setting',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -878,6 +969,7 @@ class S {
       '下载',
       name: 'download',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -888,6 +980,7 @@ class S {
       '下载完成',
       name: 'download_complete',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -898,6 +991,7 @@ class S {
       '下载最新数据',
       name: 'download_full_gamedata',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -908,6 +1002,7 @@ class S {
       '完整zip数据包',
       name: 'download_full_gamedata_hint',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -918,6 +1013,7 @@ class S {
       '下载最新数据',
       name: 'download_latest_gamedata',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -928,6 +1024,7 @@ class S {
       '为确保兼容性，更新前请升级至最新版APP',
       name: 'download_latest_gamedata_hint',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -938,6 +1035,7 @@ class S {
       '下载源',
       name: 'download_source',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -948,6 +1046,7 @@ class S {
       '游戏数据和应用更新',
       name: 'download_source_hint',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -958,6 +1057,7 @@ class S {
       '源$name',
       name: 'download_source_of',
       desc: '',
+      locale: localeName,
       args: [name],
     );
   }
@@ -968,6 +1068,7 @@ class S {
       '已下载',
       name: 'downloaded',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -978,6 +1079,7 @@ class S {
       '下载中',
       name: 'downloading',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -988,6 +1090,7 @@ class S {
       '点击 + 添加素材',
       name: 'drop_calc_empty_hint',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -998,6 +1101,7 @@ class S {
       '最低AP',
       name: 'drop_calc_min_ap',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1008,6 +1112,7 @@ class S {
       '优化',
       name: 'drop_calc_optimize',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1018,6 +1123,7 @@ class S {
       '求解',
       name: 'drop_calc_solve',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1028,6 +1134,7 @@ class S {
       '掉率',
       name: 'drop_rate',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1038,6 +1145,7 @@ class S {
       '编辑',
       name: 'edit',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1048,6 +1156,7 @@ class S {
       'Buff检索',
       name: 'effect_search',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1058,6 +1167,7 @@ class S {
       '效率',
       name: 'efficiency',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1068,6 +1178,7 @@ class S {
       '效率类型',
       name: 'efficiency_type',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1078,6 +1189,7 @@ class S {
       '20AP效率',
       name: 'efficiency_type_ap',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1088,6 +1200,7 @@ class S {
       '每场掉率',
       name: 'efficiency_type_drop',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1098,6 +1211,7 @@ class S {
       '敌人一览',
       name: 'enemy_list',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1108,6 +1222,7 @@ class S {
       '强化',
       name: 'enhance',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1118,6 +1233,7 @@ class S {
       '强化将扣除以下素材',
       name: 'enhance_warning',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1128,6 +1244,7 @@ class S {
       '无网络连接',
       name: 'error_no_internet',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1138,6 +1255,7 @@ class S {
       '所有素材添加到素材仓库，并将该活动移出规划',
       name: 'event_collect_item_confirm',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1148,6 +1266,7 @@ class S {
       '收取素材',
       name: 'event_collect_items',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1158,6 +1277,7 @@ class S {
       '商店/任务/点数/关卡掉落奖励',
       name: 'event_item_default',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1168,6 +1288,7 @@ class S {
       '额外可获取素材',
       name: 'event_item_extra',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1178,6 +1299,7 @@ class S {
       '最多$n池',
       name: 'event_lottery_limit_hint',
       desc: '',
+      locale: localeName,
       args: [n],
     );
   }
@@ -1188,6 +1310,7 @@ class S {
       '有限池',
       name: 'event_lottery_limited',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1198,6 +1321,7 @@ class S {
       '池',
       name: 'event_lottery_unit',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1208,6 +1332,7 @@ class S {
       '无限池',
       name: 'event_lottery_unlimited',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1218,6 +1343,7 @@ class S {
       '活动未列入规划',
       name: 'event_not_planned',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1228,6 +1354,7 @@ class S {
       '进度',
       name: 'event_progress',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1238,6 +1365,7 @@ class S {
       '圣杯替换为传承结晶 $n 个',
       name: 'event_rerun_replace_grail',
       desc: '',
+      locale: localeName,
       args: [n],
     );
   }
@@ -1248,6 +1376,7 @@ class S {
       '活动',
       name: 'event_title',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1258,6 +1387,7 @@ class S {
       '素材交换券',
       name: 'exchange_ticket',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1268,6 +1398,7 @@ class S {
       '交换券',
       name: 'exchange_ticket_short',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1278,6 +1409,7 @@ class S {
       '等级规划',
       name: 'exp_card_plan_lv',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1288,6 +1420,7 @@ class S {
       '五星狗粮',
       name: 'exp_card_rarity5',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1298,6 +1431,7 @@ class S {
       '相同职阶',
       name: 'exp_card_same_class',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1308,6 +1442,7 @@ class S {
       '选择起始和目标等级',
       name: 'exp_card_select_lvs',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1318,6 +1453,7 @@ class S {
       '狗粮需求',
       name: 'exp_card_title',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1328,6 +1464,7 @@ class S {
       '失败',
       name: 'failed',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1338,6 +1475,7 @@ class S {
       '关注',
       name: 'favorite',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1348,6 +1486,7 @@ class S {
       '添加图像或文件附件',
       name: 'feedback_add_attachments',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1358,6 +1497,7 @@ class S {
       '添加崩溃日志',
       name: 'feedback_add_crash_log',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1368,6 +1508,7 @@ class S {
       '联系方式',
       name: 'feedback_contact',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1378,6 +1519,7 @@ class S {
       '反馈与建议',
       name: 'feedback_content_hint',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1388,6 +1530,7 @@ class S {
       '发送',
       name: 'feedback_send',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1398,6 +1541,7 @@ class S {
       '主题',
       name: 'feedback_subject',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1408,6 +1552,7 @@ class S {
       '背景',
       name: 'ffo_background',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1418,6 +1563,7 @@ class S {
       '身体',
       name: 'ffo_body',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1428,6 +1574,7 @@ class S {
       '裁剪',
       name: 'ffo_crop',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1438,6 +1585,7 @@ class S {
       '头部',
       name: 'ffo_head',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1448,6 +1596,7 @@ class S {
       '请先下载或导入FFO资源包↗',
       name: 'ffo_missing_data_hint',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1458,6 +1607,7 @@ class S {
       '同一从者',
       name: 'ffo_same_svt',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1468,6 +1618,7 @@ class S {
       '效率剧场',
       name: 'fgo_domus_aurea',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1478,6 +1629,7 @@ class S {
       '文件名',
       name: 'filename',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1488,6 +1640,7 @@ class S {
       '筛选',
       name: 'filter',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1498,6 +1651,7 @@ class S {
       '属性',
       name: 'filter_atk_hp_type',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1508,6 +1662,7 @@ class S {
       '阵营',
       name: 'filter_attribute',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1518,6 +1673,7 @@ class S {
       '分类',
       name: 'filter_category',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1528,6 +1684,7 @@ class S {
       '效果',
       name: 'filter_effects',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1538,6 +1695,7 @@ class S {
       '性别',
       name: 'filter_gender',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1548,6 +1706,7 @@ class S {
       '全匹配',
       name: 'filter_match_all',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1558,6 +1717,7 @@ class S {
       '获取方式',
       name: 'filter_obtain',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1568,6 +1728,7 @@ class S {
       '未满',
       name: 'filter_plan_not_reached',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1578,6 +1739,7 @@ class S {
       '已满',
       name: 'filter_plan_reached',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1588,6 +1750,7 @@ class S {
       '反向匹配',
       name: 'filter_revert',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1598,6 +1761,7 @@ class S {
       '显示',
       name: 'filter_shown_type',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1608,6 +1772,7 @@ class S {
       '技能练度',
       name: 'filter_skill_lv',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1618,6 +1783,7 @@ class S {
       '排序',
       name: 'filter_sort',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1628,6 +1794,7 @@ class S {
       '职阶',
       name: 'filter_sort_class',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1638,6 +1805,7 @@ class S {
       '序号',
       name: 'filter_sort_number',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1648,6 +1816,7 @@ class S {
       '星级',
       name: 'filter_sort_rarity',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1658,6 +1827,7 @@ class S {
       '特殊特性',
       name: 'filter_special_trait',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1668,6 +1838,7 @@ class S {
       'Free效率',
       name: 'free_efficiency',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1678,6 +1849,7 @@ class S {
       'Free进度',
       name: 'free_progress',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1688,6 +1860,7 @@ class S {
       '日服最新',
       name: 'free_progress_newest',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1698,6 +1871,7 @@ class S {
       'Free本',
       name: 'free_quest',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1708,6 +1882,7 @@ class S {
       'Free速查',
       name: 'free_quest_calculator',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1718,6 +1893,7 @@ class S {
       'Free速查',
       name: 'free_quest_calculator_short',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1728,6 +1904,7 @@ class S {
       '首页',
       name: 'gallery_tab_name',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1738,6 +1915,7 @@ class S {
       '掉落',
       name: 'game_drop',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1748,6 +1926,7 @@ class S {
       '经验',
       name: 'game_experience',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1758,6 +1937,7 @@ class S {
       '羁绊',
       name: 'game_kizuna',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1768,6 +1948,7 @@ class S {
       '通关奖励',
       name: 'game_rewards',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1778,6 +1959,7 @@ class S {
       '游戏数据',
       name: 'gamedata',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1788,6 +1970,7 @@ class S {
       '金',
       name: 'gold',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1798,6 +1981,7 @@ class S {
       '圣杯',
       name: 'grail',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1808,6 +1992,7 @@ class S {
       '圣杯等级',
       name: 'grail_level',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1818,6 +2003,7 @@ class S {
       '圣杯转临',
       name: 'grail_up',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1828,6 +2014,7 @@ class S {
       '成长曲线',
       name: 'growth_curve',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1838,6 +2025,7 @@ class S {
       'Guda素材数据',
       name: 'guda_item_data',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1848,6 +2036,7 @@ class S {
       'Guda从者数据',
       name: 'guda_servant_data',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1858,6 +2047,7 @@ class S {
       '你好！御主!',
       name: 'hello',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1868,6 +2058,7 @@ class S {
       '帮助',
       name: 'help',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1878,6 +2069,7 @@ class S {
       '隐藏已过期',
       name: 'hide_outdated',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1888,6 +2080,7 @@ class S {
       '无羁绊礼装',
       name: 'hint_no_bond_craft',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1898,6 +2091,7 @@ class S {
       '无情人节礼装',
       name: 'hint_no_valentine_craft',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1908,6 +2102,7 @@ class S {
       '图标',
       name: 'icons',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1918,6 +2113,7 @@ class S {
       '忽略',
       name: 'ignore',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1928,6 +2124,7 @@ class S {
       '卡面',
       name: 'illustration',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1938,6 +2135,7 @@ class S {
       '画师',
       name: 'illustrator',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1948,6 +2146,7 @@ class S {
       '图像解析',
       name: 'image_analysis',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1958,6 +2157,7 @@ class S {
       '导入',
       name: 'import_data',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1968,6 +2168,7 @@ class S {
       '导入失败，Error:\n$error',
       name: 'import_data_error',
       desc: '',
+      locale: localeName,
       args: [error],
     );
   }
@@ -1978,6 +2179,7 @@ class S {
       '成功导入数据',
       name: 'import_data_success',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1988,6 +2190,7 @@ class S {
       '导入Guda',
       name: 'import_guda_data',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -1998,6 +2201,7 @@ class S {
       '更新：保留本地数据并用导入的数据更新(推荐)\n覆盖：清楚本地数据再导入数据',
       name: 'import_guda_hint',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2008,6 +2212,7 @@ class S {
       '导入素材',
       name: 'import_guda_items',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2018,6 +2223,7 @@ class S {
       '导入从者',
       name: 'import_guda_servants',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2028,6 +2234,7 @@ class S {
       '允许2号机',
       name: 'import_http_body_duplicated',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2038,6 +2245,7 @@ class S {
       '点击右上角导入解密的HTTPS响应包以导入账户数据\n点击帮助以查看如何捕获并解密HTTPS响应内容',
       name: 'import_http_body_hint',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2048,6 +2256,7 @@ class S {
       '点击从者可隐藏/取消隐藏该从者',
       name: 'import_http_body_hint_hide',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2058,6 +2267,7 @@ class S {
       '仅锁定',
       name: 'import_http_body_locked',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2068,6 +2278,7 @@ class S {
       '已切换到账号$account',
       name: 'import_http_body_success_switch',
       desc: '',
+      locale: localeName,
       args: [account],
     );
   }
@@ -2078,6 +2289,7 @@ class S {
       '导入$itemNum个素材,$svtNum从者到',
       name: 'import_http_body_target_account_header',
       desc: '',
+      locale: localeName,
       args: [itemNum, svtNum],
     );
   }
@@ -2088,6 +2300,7 @@ class S {
       '导入截图',
       name: 'import_screenshot',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2098,6 +2311,7 @@ class S {
       '仅更新识别出的素材',
       name: 'import_screenshot_hint',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2108,6 +2322,7 @@ class S {
       '更新素材',
       name: 'import_screenshot_update_items',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2118,6 +2333,7 @@ class S {
       '导入源数据',
       name: 'import_source_file',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2128,6 +2344,7 @@ class S {
       '敏捷',
       name: 'info_agility',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2138,6 +2355,7 @@ class S {
       '属性',
       name: 'info_alignment',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2148,6 +2366,7 @@ class S {
       '羁绊点数',
       name: 'info_bond_points',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2158,6 +2377,7 @@ class S {
       '点数',
       name: 'info_bond_points_single',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2168,6 +2388,7 @@ class S {
       '累积',
       name: 'info_bond_points_sum',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2178,6 +2399,7 @@ class S {
       '配卡',
       name: 'info_cards',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2188,6 +2410,7 @@ class S {
       '暴击权重',
       name: 'info_critical_rate',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2198,6 +2421,7 @@ class S {
       '声优',
       name: 'info_cv',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2208,6 +2432,7 @@ class S {
       '即死率',
       name: 'info_death_rate',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2218,6 +2443,7 @@ class S {
       '耐久',
       name: 'info_endurance',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2228,6 +2454,7 @@ class S {
       '性别',
       name: 'info_gender',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2238,6 +2465,7 @@ class S {
       '身高',
       name: 'info_height',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2248,6 +2476,7 @@ class S {
       '人形',
       name: 'info_human',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2258,6 +2487,7 @@ class S {
       '幸运',
       name: 'info_luck',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2268,6 +2498,7 @@ class S {
       '魔力',
       name: 'info_mana',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2278,6 +2509,7 @@ class S {
       '宝具',
       name: 'info_np',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2288,6 +2520,7 @@ class S {
       'NP获得率',
       name: 'info_np_rate',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2298,6 +2531,7 @@ class S {
       '出星率',
       name: 'info_star_rate',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2308,6 +2542,7 @@ class S {
       '筋力',
       name: 'info_strength',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2318,6 +2553,7 @@ class S {
       '特性',
       name: 'info_trait',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2328,6 +2564,7 @@ class S {
       '数值',
       name: 'info_value',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2338,6 +2575,7 @@ class S {
       '被EA特攻',
       name: 'info_weak_to_ea',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2348,6 +2586,7 @@ class S {
       '体重',
       name: 'info_weight',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2358,6 +2597,7 @@ class S {
       '输入无效',
       name: 'input_invalid_hint',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2368,6 +2608,7 @@ class S {
       '安装',
       name: 'install',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2378,6 +2619,7 @@ class S {
       '幕间&强化',
       name: 'interlude_and_rankup',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2388,6 +2630,7 @@ class S {
       '"文件"应用/我的iPhone/Chaldea',
       name: 'ios_app_path',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2398,6 +2641,7 @@ class S {
       '常见问题',
       name: 'issues',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2408,6 +2652,7 @@ class S {
       '素材',
       name: 'item',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2418,6 +2663,7 @@ class S {
       '$name已存在',
       name: 'item_already_exist_hint',
       desc: '',
+      locale: localeName,
       args: [name],
     );
   }
@@ -2428,6 +2674,7 @@ class S {
       '职阶棋子',
       name: 'item_category_ascension',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2438,6 +2685,7 @@ class S {
       '铜素材',
       name: 'item_category_bronze',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2448,6 +2696,7 @@ class S {
       '活动从者灵基再临素材',
       name: 'item_category_event_svt_ascension',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2458,6 +2707,7 @@ class S {
       '辉石',
       name: 'item_category_gem',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2468,6 +2718,7 @@ class S {
       '技能石',
       name: 'item_category_gems',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2478,6 +2729,7 @@ class S {
       '金素材',
       name: 'item_category_gold',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2488,6 +2740,7 @@ class S {
       '魔石',
       name: 'item_category_magic_gem',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2498,6 +2751,7 @@ class S {
       '金像',
       name: 'item_category_monument',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2508,6 +2762,7 @@ class S {
       '其他',
       name: 'item_category_others',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2518,6 +2773,7 @@ class S {
       '银棋',
       name: 'item_category_piece',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2528,6 +2784,7 @@ class S {
       '秘石',
       name: 'item_category_secret_gem',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2538,6 +2795,7 @@ class S {
       '银素材',
       name: 'item_category_silver',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2548,6 +2806,7 @@ class S {
       '特殊素材',
       name: 'item_category_special',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2558,6 +2817,7 @@ class S {
       '普通素材',
       name: 'item_category_usual',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2568,6 +2828,7 @@ class S {
       '素材效率',
       name: 'item_eff',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2578,6 +2839,7 @@ class S {
       '计算规划前，可以设置不同材料的富余量(仅用于Free本规划)',
       name: 'item_exceed_hint',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2588,6 +2850,7 @@ class S {
       '剩余',
       name: 'item_left',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2598,6 +2861,7 @@ class S {
       '无Free本',
       name: 'item_no_free_quests',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2608,6 +2872,7 @@ class S {
       '仅显示不足',
       name: 'item_only_show_lack',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2618,6 +2883,7 @@ class S {
       '拥有',
       name: 'item_own',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2628,6 +2894,7 @@ class S {
       '素材截图',
       name: 'item_screenshot',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2638,6 +2905,7 @@ class S {
       '素材',
       name: 'item_title',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2648,6 +2916,7 @@ class S {
       '共需',
       name: 'item_total_demand',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2658,6 +2927,7 @@ class S {
       '加入Beta版',
       name: 'join_beta',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2668,6 +2938,7 @@ class S {
       '跳转到$site',
       name: 'jump_to',
       desc: '',
+      locale: localeName,
       args: [site],
     );
   }
@@ -2678,6 +2949,7 @@ class S {
       '简体中文',
       name: 'language',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2688,6 +2960,7 @@ class S {
       'Chinese',
       name: 'language_en',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2698,6 +2971,7 @@ class S {
       '等级',
       name: 'level',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2708,6 +2982,7 @@ class S {
       '限时活动',
       name: 'limited_event',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2718,6 +2993,7 @@ class S {
       '链接',
       name: 'link',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2733,6 +3009,7 @@ class S {
       },
       name: 'list_end_hint',
       desc: '',
+      locale: localeName,
       args: [first],
     );
   }
@@ -2743,6 +3020,7 @@ class S {
       '加载数据出错',
       name: 'load_dataset_error',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2753,6 +3031,7 @@ class S {
       '请在设置-游戏数据中重新加载默认资源',
       name: 'load_dataset_error_hint',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2763,6 +3042,7 @@ class S {
       '修改密码',
       name: 'login_change_password',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2773,6 +3053,7 @@ class S {
       '请先登陆',
       name: 'login_first_hint',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2783,6 +3064,7 @@ class S {
       '忘记密码',
       name: 'login_forget_pwd',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2793,6 +3075,7 @@ class S {
       '登陆',
       name: 'login_login',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2803,6 +3086,7 @@ class S {
       '登出',
       name: 'login_logout',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2813,6 +3097,7 @@ class S {
       '新密码',
       name: 'login_new_password',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2823,6 +3108,7 @@ class S {
       '密码',
       name: 'login_password',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2833,6 +3119,7 @@ class S {
       '只能包含字母与数字，不少于4位',
       name: 'login_password_error',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2843,6 +3130,7 @@ class S {
       '不能与旧密码相同',
       name: 'login_password_error_same_as_old',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2853,6 +3141,7 @@ class S {
       '注册',
       name: 'login_signup',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2863,6 +3152,7 @@ class S {
       '未登录',
       name: 'login_state_not_login',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2873,6 +3163,7 @@ class S {
       '用户名',
       name: 'login_username',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2883,6 +3174,7 @@ class S {
       '只能包含字母与数字，字母开头，不少于4位',
       name: 'login_username_error',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2893,6 +3185,7 @@ class S {
       '长按保存',
       name: 'long_press_to_save_hint',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2903,6 +3196,7 @@ class S {
       '福袋',
       name: 'lucky_bag',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2913,6 +3207,7 @@ class S {
       '主线记录',
       name: 'main_record',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2923,6 +3218,7 @@ class S {
       '通关奖励',
       name: 'main_record_bonus',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2933,6 +3229,7 @@ class S {
       '奖励',
       name: 'main_record_bonus_short',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2943,6 +3240,7 @@ class S {
       '章节',
       name: 'main_record_chapter',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2953,6 +3251,7 @@ class S {
       '固定掉落',
       name: 'main_record_fixed_drop',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2963,6 +3262,7 @@ class S {
       '掉落',
       name: 'main_record_fixed_drop_short',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2973,6 +3273,7 @@ class S {
       '御主任务',
       name: 'master_mission',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2983,6 +3284,7 @@ class S {
       '关联关卡',
       name: 'master_mission_related_quest',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -2993,6 +3295,7 @@ class S {
       '方案',
       name: 'master_mission_solution',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3003,6 +3306,7 @@ class S {
       '任务列表',
       name: 'master_mission_tasklist',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3013,6 +3317,7 @@ class S {
       '最大AP',
       name: 'max_ap',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3023,6 +3328,7 @@ class S {
       '更多',
       name: 'more',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3033,6 +3339,7 @@ class S {
       '下移',
       name: 'move_down',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3043,6 +3350,7 @@ class S {
       '上移',
       name: 'move_up',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3053,6 +3361,7 @@ class S {
       '魔术礼装',
       name: 'mystic_code',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3063,6 +3372,7 @@ class S {
       '新建账号',
       name: 'new_account',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3073,6 +3383,7 @@ class S {
       '下一张',
       name: 'next_card',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3083,6 +3394,7 @@ class S {
       'NGA',
       name: 'nga',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3093,6 +3405,7 @@ class S {
       'NGA-FGO',
       name: 'nga_fgo',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3103,6 +3416,7 @@ class S {
       '否',
       name: 'no',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3113,6 +3427,7 @@ class S {
       '无幕间或强化关卡',
       name: 'no_servant_quest_hint',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3123,6 +3438,7 @@ class S {
       '点击♡查看所有从者任务',
       name: 'no_servant_quest_hint_subtitle',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3133,6 +3449,7 @@ class S {
       '宝具',
       name: 'noble_phantasm',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3143,6 +3460,7 @@ class S {
       '宝具等级',
       name: 'noble_phantasm_level',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3153,6 +3471,7 @@ class S {
       '尚未实现',
       name: 'not_implemented',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3163,6 +3482,7 @@ class S {
       '获取方式',
       name: 'obtain_methods',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3173,6 +3493,7 @@ class S {
       '确定',
       name: 'ok',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3183,6 +3504,7 @@ class S {
       '打开',
       name: 'open',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3193,6 +3515,7 @@ class S {
       '开发条件',
       name: 'open_condition',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3203,6 +3526,7 @@ class S {
       '概览',
       name: 'overview',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3213,6 +3537,7 @@ class S {
       '覆盖',
       name: 'overwrite',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3223,6 +3548,7 @@ class S {
       '被动技能',
       name: 'passive_skill',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3233,6 +3559,7 @@ class S {
       '更新游戏数据',
       name: 'patch_gamedata',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3243,6 +3570,7 @@ class S {
       '找不到兼容此APP版本的数据版本',
       name: 'patch_gamedata_error_no_compatible',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3253,6 +3581,7 @@ class S {
       '服务器不存在当前版本，下载完整版资源ing',
       name: 'patch_gamedata_error_unknown_version',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3263,6 +3592,7 @@ class S {
       '打补丁',
       name: 'patch_gamedata_hint',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3273,6 +3603,7 @@ class S {
       '已更新数据版本至$version',
       name: 'patch_gamedata_success_to',
       desc: '',
+      locale: localeName,
       args: [version],
     );
   }
@@ -3283,6 +3614,7 @@ class S {
       '规划',
       name: 'plan',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3293,6 +3625,7 @@ class S {
       '规划最大化(310)',
       name: 'plan_max10',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3303,6 +3636,7 @@ class S {
       '规划最大化(999)',
       name: 'plan_max9',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3313,6 +3647,7 @@ class S {
       '规划目标',
       name: 'plan_objective',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3323,6 +3658,7 @@ class S {
       '规划',
       name: 'plan_title',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3333,6 +3669,7 @@ class S {
       '规划$index',
       name: 'plan_x',
       desc: '',
+      locale: localeName,
       args: [index],
     );
   }
@@ -3343,6 +3680,7 @@ class S {
       '规划Free本',
       name: 'planning_free_quest_btn',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3353,6 +3691,7 @@ class S {
       '预览',
       name: 'preview',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3363,6 +3702,7 @@ class S {
       '上一张',
       name: 'previous_card',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3373,6 +3713,7 @@ class S {
       '优先级',
       name: 'priority',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3383,6 +3724,7 @@ class S {
       '项目主页',
       name: 'project_homepage',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3393,6 +3735,7 @@ class S {
       '查询失败',
       name: 'query_failed',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3403,6 +3746,7 @@ class S {
       '关卡',
       name: 'quest',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3413,6 +3757,7 @@ class S {
       '开放条件',
       name: 'quest_condition',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3423,6 +3768,7 @@ class S {
       '稀有度',
       name: 'rarity',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3433,6 +3779,7 @@ class S {
       'App Store评分',
       name: 'rate_app_store',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3443,6 +3790,7 @@ class S {
       'Google Play评分',
       name: 'rate_play_store',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3453,6 +3801,7 @@ class S {
       '下载页',
       name: 'release_page',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3463,6 +3812,7 @@ class S {
       '导入成功',
       name: 'reload_data_success',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3473,6 +3823,7 @@ class S {
       '重新载入预装版本',
       name: 'reload_default_gamedata',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3483,6 +3834,7 @@ class S {
       '导入中',
       name: 'reloading_data',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3493,6 +3845,7 @@ class S {
       '销毁2号机',
       name: 'remove_duplicated_svt',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3503,6 +3856,7 @@ class S {
       '移出黑名单',
       name: 'remove_from_blacklist',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3513,6 +3867,7 @@ class S {
       '重命名',
       name: 'rename',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3523,6 +3878,7 @@ class S {
       '复刻活动',
       name: 'rerun_event',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3533,6 +3889,7 @@ class S {
       '重置',
       name: 'reset',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3543,6 +3900,7 @@ class S {
       '重置规划$n(所有)',
       name: 'reset_plan_all',
       desc: '',
+      locale: localeName,
       args: [n],
     );
   }
@@ -3553,6 +3911,7 @@ class S {
       '重置规划$n(已显示)',
       name: 'reset_plan_shown',
       desc: '',
+      locale: localeName,
       args: [n],
     );
   }
@@ -3563,6 +3922,7 @@ class S {
       '已重置',
       name: 'reset_success',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3573,6 +3933,7 @@ class S {
       '重置强化本状态',
       name: 'reset_svt_enhance_state',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3583,6 +3944,7 @@ class S {
       '宝具本/技能本恢复成国服状态',
       name: 'reset_svt_enhance_state_hint',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3593,6 +3955,7 @@ class S {
       '重启以更新应用，若更新失败，请手动复制source文件夹到destination',
       name: 'restart_to_upgrade_hint',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3603,6 +3966,7 @@ class S {
       '恢复',
       name: 'restore',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3613,6 +3977,7 @@ class S {
       '保存',
       name: 'save',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3623,6 +3988,7 @@ class S {
       '保存到相册',
       name: 'save_to_photos',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3633,6 +3999,7 @@ class S {
       '已保存',
       name: 'saved',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3643,6 +4010,7 @@ class S {
       '搜索',
       name: 'search',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3653,6 +4021,7 @@ class S {
       '基础信息',
       name: 'search_option_basic',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3663,6 +4032,7 @@ class S {
       '搜索范围',
       name: 'search_options',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3673,6 +4043,7 @@ class S {
       '总计: $total',
       name: 'search_result_count',
       desc: '',
+      locale: localeName,
       args: [total],
     );
   }
@@ -3683,6 +4054,7 @@ class S {
       '总计: $total (隐藏: $hidden)',
       name: 'search_result_count_hide',
       desc: '',
+      locale: localeName,
       args: [total, hidden],
     );
   }
@@ -3693,6 +4065,7 @@ class S {
       '选择复制来源',
       name: 'select_copy_plan_source',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3703,6 +4076,7 @@ class S {
       '选择规划',
       name: 'select_plan',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3713,6 +4087,7 @@ class S {
       '从者',
       name: 'servant',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3723,6 +4098,7 @@ class S {
       '从者硬币',
       name: 'servant_coin',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3733,6 +4109,7 @@ class S {
       '从者',
       name: 'servant_title',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3743,6 +4120,7 @@ class S {
       '服务器',
       name: 'server',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3753,6 +4131,7 @@ class S {
       '国服',
       name: 'server_cn',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3763,6 +4142,7 @@ class S {
       '日服',
       name: 'server_jp',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3773,6 +4153,7 @@ class S {
       '美服',
       name: 'server_na',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3783,6 +4164,7 @@ class S {
       '台服',
       name: 'server_tw',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3793,6 +4175,7 @@ class S {
       '设置规划名称',
       name: 'set_plan_name',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3803,6 +4186,7 @@ class S {
       '自动旋转',
       name: 'setting_auto_rotate',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3813,6 +4197,7 @@ class S {
       '数据',
       name: 'settings_data',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3823,6 +4208,7 @@ class S {
       '数据管理',
       name: 'settings_data_management',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3833,6 +4219,7 @@ class S {
       '使用文档',
       name: 'settings_documents',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3843,6 +4230,7 @@ class S {
       '通用',
       name: 'settings_general',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3853,6 +4241,7 @@ class S {
       '语言',
       name: 'settings_language',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3863,6 +4252,7 @@ class S {
       '设置',
       name: 'settings_tab_name',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3873,6 +4263,7 @@ class S {
       '使用移动数据下载',
       name: 'settings_use_mobile_network',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3883,6 +4274,7 @@ class S {
       '更新数据/版本/bug较多时，建议提前备份数据，卸载应用将导致内部备份丢失，及时转移到可靠的储存位置',
       name: 'settings_userdata_footer',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3893,6 +4285,7 @@ class S {
       '分享',
       name: 'share',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3903,6 +4296,7 @@ class S {
       '显示已过期',
       name: 'show_outdated',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3913,6 +4307,7 @@ class S {
       '银',
       name: 'silver',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3923,6 +4318,7 @@ class S {
       '模拟器',
       name: 'simulator',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3933,6 +4329,7 @@ class S {
       '技能',
       name: 'skill',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3943,6 +4340,7 @@ class S {
       '技能升级',
       name: 'skill_up',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3953,6 +4351,7 @@ class S {
       '练度最大化(310)',
       name: 'skilled_max10',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3963,6 +4362,7 @@ class S {
       '模型',
       name: 'sprites',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3973,6 +4373,7 @@ class S {
       '包含现有素材',
       name: 'statistics_include_checkbox',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3983,6 +4384,7 @@ class S {
       '统计',
       name: 'statistics_title',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -3993,6 +4395,7 @@ class S {
       '储存权限',
       name: 'storage_permission_title',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4003,6 +4406,7 @@ class S {
       '成功',
       name: 'success',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4013,6 +4417,7 @@ class S {
       '卡池',
       name: 'summon',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4023,6 +4428,7 @@ class S {
       '抽卡模拟器',
       name: 'summon_simulator',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4033,6 +4439,7 @@ class S {
       '卡池一览',
       name: 'summon_title',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4043,6 +4450,7 @@ class S {
       '支持与捐赠',
       name: 'support_chaldea',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4053,6 +4461,7 @@ class S {
       '助战编制',
       name: 'support_party',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4063,6 +4472,7 @@ class S {
       '基础资料',
       name: 'svt_info_tab_base',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4073,6 +4483,7 @@ class S {
       '羁绊故事',
       name: 'svt_info_tab_bond_story',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4083,6 +4494,7 @@ class S {
       '未关注',
       name: 'svt_not_planned',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4093,6 +4505,7 @@ class S {
       '活动赠送',
       name: 'svt_obtain_event',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4103,6 +4516,7 @@ class S {
       '友情点召唤',
       name: 'svt_obtain_friend_point',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4113,6 +4527,7 @@ class S {
       '初始获得',
       name: 'svt_obtain_initial',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4123,6 +4538,7 @@ class S {
       '期间限定',
       name: 'svt_obtain_limited',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4133,6 +4549,7 @@ class S {
       '圣晶石常驻',
       name: 'svt_obtain_permanent',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4143,6 +4560,7 @@ class S {
       '剧情限定',
       name: 'svt_obtain_story',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4153,6 +4571,7 @@ class S {
       '无法召唤',
       name: 'svt_obtain_unavailable',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4163,6 +4582,7 @@ class S {
       '已隐藏',
       name: 'svt_plan_hidden',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4173,6 +4593,7 @@ class S {
       '出场礼装/纹章',
       name: 'svt_related_cards',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4183,6 +4604,7 @@ class S {
       '重置规划',
       name: 'svt_reset_plan',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4193,6 +4615,7 @@ class S {
       '切换滑动条/下拉框',
       name: 'svt_switch_slider_dropdown',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4203,6 +4626,7 @@ class S {
       '同步$server',
       name: 'sync_server',
       desc: '',
+      locale: localeName,
       args: [server],
     );
   }
@@ -4213,6 +4637,7 @@ class S {
       '刷新轮播图',
       name: 'tooltip_refresh_sliders',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4223,6 +4648,7 @@ class S {
       '总AP',
       name: 'total_ap',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4233,6 +4659,7 @@ class S {
       '总数',
       name: 'total_counts',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4243,6 +4670,7 @@ class S {
       '更新',
       name: 'update',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4253,6 +4681,7 @@ class S {
       '已经是最新版本',
       name: 'update_already_latest',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4263,6 +4692,7 @@ class S {
       '更新资源包',
       name: 'update_dataset',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4273,6 +4703,7 @@ class S {
       '上传',
       name: 'upload',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4283,6 +4714,7 @@ class S {
       '用户数据',
       name: 'userdata',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4293,6 +4725,7 @@ class S {
       '用户数据已清空',
       name: 'userdata_cleared',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4303,6 +4736,7 @@ class S {
       '下载备份',
       name: 'userdata_download_backup',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4313,6 +4747,7 @@ class S {
       '选择一个备份',
       name: 'userdata_download_choose_backup',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4323,6 +4758,7 @@ class S {
       '同步数据',
       name: 'userdata_sync',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4333,6 +4769,7 @@ class S {
       '上传备份',
       name: 'userdata_upload_backup',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4343,6 +4780,7 @@ class S {
       '情人节礼装',
       name: 'valentine_craft',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4353,6 +4791,7 @@ class S {
       '版本',
       name: 'version',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4363,6 +4802,7 @@ class S {
       '查看卡面',
       name: 'view_illustration',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4373,6 +4813,7 @@ class S {
       '语音',
       name: 'voice',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4383,6 +4824,7 @@ class S {
       '$a$b',
       name: 'words_separate',
       desc: '',
+      locale: localeName,
       args: [a, b],
     );
   }
@@ -4393,6 +4835,7 @@ class S {
       '是',
       name: 'yes',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4403,6 +4846,7 @@ class S {
       'Select Language',
       name: 'select_lang',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4413,6 +4857,7 @@ class S {
       'Account',
       name: 'account_title',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4423,6 +4868,7 @@ class S {
       'Any name',
       name: 'create_account_textfield_hint',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4433,6 +4879,7 @@ class S {
       'You can add more accounts later in Settings',
       name: 'create_account_textfield_helper',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4443,6 +4890,7 @@ class S {
       'Game Server',
       name: 'game_server',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4453,6 +4901,7 @@ class S {
       'Database',
       name: 'database',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4463,6 +4912,7 @@ class S {
       'Database is not downloaded, still continue?',
       name: 'database_not_downloaded',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4473,6 +4923,7 @@ class S {
       'Update Now',
       name: 'update_now',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4483,6 +4934,7 @@ class S {
       'Current Version',
       name: 'current_version',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4493,6 +4945,7 @@ class S {
       'PREV',
       name: 'prev',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4503,6 +4956,7 @@ class S {
       'NEXT',
       name: 'next',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4513,6 +4967,7 @@ class S {
       'DONE',
       name: 'done',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4523,6 +4978,7 @@ class S {
       'Loading Data Failed',
       name: 'loading_data_failed',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4533,6 +4989,7 @@ class S {
       'Not Found',
       name: 'not_found',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4543,6 +5000,7 @@ class S {
       'No network',
       name: 'error_no_network',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4553,6 +5011,7 @@ class S {
       'No version data found',
       name: 'error_no_version_data_found',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
@@ -4563,6 +5022,7 @@ class S {
       'Required app version: ≥ $version',
       name: 'error_required_app_version',
       desc: '',
+      locale: localeName,
       args: [version],
     );
   }
@@ -4574,6 +5034,7 @@ class S {
       'File $filename not found or mismatched hash: $hash - $localHash',
       name: 'file_not_found_or_mismatched_hash',
       desc: '',
+      locale: localeName,
       args: [filename, hash, localHash],
     );
   }
@@ -4584,6 +5045,7 @@ class S {
       'Hash mismatch: $filename: $hash - $dataHash',
       name: 'hash_mismatch',
       desc: '',
+      locale: localeName,
       args: [filename, hash, dataHash],
     );
   }
@@ -4594,6 +5056,7 @@ class S {
       'Unsupported type',
       name: 'unsupported_type',
       desc: '',
+      locale: localeName,
       args: [],
     );
   }
