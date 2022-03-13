@@ -263,8 +263,6 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage>
       final resp2 = ChaldeaResponse.fromResponse(
           await _dio.post('/recognizer/item/new', data: formData));
       resp2.showMsg(context);
-      MobStat.logEvent('import_data',
-          {"from": "item_snap", "count": imageFiles.length.toString()});
     } catch (e, s) {
       logger.e('upload item screenshots to server error', e, s);
       showInformDialog(context, title: 'Error', content: e.toString());

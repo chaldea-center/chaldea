@@ -303,8 +303,6 @@ class _GameDataPageState extends State<GameDataPage> {
             }
             Navigator.of(context).pop();
             EasyLoading.showSuccess(S.of(context).import_data_success);
-            MobStat.logEvent('down_dataset',
-                {"src": GitTool.fromDb().source.toShortString()});
           } catch (e) {
             EasyLoading.showError(S.of(context).import_data_error(e));
           } finally {

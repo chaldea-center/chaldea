@@ -25,7 +25,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import '../../utils/constants.dart' show kAppKey;
-import '../mob_stat.dart';
 
 part 'master_back_button.dart';
 
@@ -381,8 +380,6 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
       settings ??= RouteSettings(name: page.runtimeType.toString());
       return true;
     }());
-    String pageName = page.runtimeType.toString();
-    MobStat.pageStart(pageName);
     return pushBuilder<T>(
       context: context,
       builder: (context, _) => page,
@@ -390,10 +387,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
       popDetail: popDetail,
       rootNavigator: rootNavigator,
       settings: settings,
-    ).then<T?>((value) {
-      MobStat.pageEnd(pageName);
-      return value;
-    });
+    );
   }
 
   static SplitRoute<T2>? of<T2 extends Object?>(BuildContext context) {

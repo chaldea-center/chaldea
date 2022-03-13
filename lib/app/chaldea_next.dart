@@ -11,7 +11,6 @@ import '../generated/l10n.dart';
 import '../models/db.dart';
 import '../packages/language.dart';
 import '../packages/method_channel/method_channel_chaldea.dart';
-import '../packages/mob_stat.dart';
 import '../packages/network.dart';
 import '../packages/platform/platform.dart';
 import '../utils/catcher/catcher_util.dart';
@@ -27,7 +26,7 @@ class ChaldeaNext extends StatefulWidget {
   _ChaldeaNextState createState() => _ChaldeaNextState();
 }
 
-class _ChaldeaNextState extends StateX<ChaldeaNext> with AfterLayoutMixin {
+class _ChaldeaNextState extends State<ChaldeaNext> with AfterLayoutMixin {
   final routeInformationParser = AppRouteInformationParser();
   final backButtonDispatcher = RootBackButtonDispatcher();
 
@@ -123,7 +122,6 @@ class _ChaldeaNextState extends StateX<ChaldeaNext> with AfterLayoutMixin {
     if (PlatformU.isWindows) {
       MethodChannelChaldeaNext.setWindowPos();
     }
-    MobStat.start();
   }
 }
 

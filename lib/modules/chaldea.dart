@@ -59,10 +59,8 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
       if (msg == AppLifecycleState.resumed.toString()) {
         // Actions when app is resumed
         network.check();
-        // MobStat.pageStart(widget.runtimeType.toString());
       } else if (msg == AppLifecycleState.inactive.toString()) {
         db.saveUserData();
-        // MobStat.pageEnd(widget.runtimeType.toString());
         debugPrint('save userdata before being inactive');
       }
       return null;
@@ -161,16 +159,6 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     //   await Analyzer.sendStat();
     //   await Analyzer.sendBdtj();
     // }
-    MobStat.start();
-    Future.delayed(const Duration(milliseconds: 100), () {
-      MobStat.logEvent('config', {
-        "theme": EnumUtil.shortString(db.appSetting.isResolvedDarkMode
-            ? ThemeMode.dark
-            : ThemeMode.light),
-        "lang": Language.current.code,
-      });
-      MobStat.pageStart(widget.runtimeType.toString());
-    });
   }
 
   /// In carousel link, prefix /chaldea/route

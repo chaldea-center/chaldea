@@ -178,7 +178,6 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
                   db.curPlan[record.svt.no] = record.target;
                 });
                 EasyLoading.showSuccess('Import ${svtResult.length} servants');
-                MobStat.logEvent('import_data', {"from": "fsm"});
               },
               child: Text(S.current.import_data),
             ),
@@ -222,7 +221,6 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage>
               onPressed: () {
                 db.curUser.items.addAll(itemResult);
                 EasyLoading.showSuccess('Import ${itemResult.length} items');
-                MobStat.logEvent('import_data', {"from": "fsm"});
               },
               child: Text(S.current.import_data),
             ),

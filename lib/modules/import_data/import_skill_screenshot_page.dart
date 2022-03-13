@@ -534,10 +534,6 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage>
       final resp2 = ChaldeaResponse.fromResponse(
           await _dio.post('/recognizer/skill/new', data: formData));
       resp2.showMsg(context);
-      MobStat.logEvent('import_data', {
-        "from": widget.isAppendSkill ? 'append_snap' : 'active_snap',
-        "count": imageFiles.length.toString()
-      });
     } catch (e, s) {
       logger.e('upload skill screenshots to server error', e, s);
       showInformDialog(context, title: 'Error', content: e.toString());
