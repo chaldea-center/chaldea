@@ -193,7 +193,6 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
 
     final pages = getPages();
 
-    pages.clear();
     if (pages.isEmpty) {
       pages.add(GestureDetector(
         onTap: () {
