@@ -37,8 +37,10 @@ class LevelingCostPageState extends State<LevelingCostPage> {
   Widget build(BuildContext context) {
     // final int offset = widget.costList.length == 9 ? -1 : 0;
     final bool _showAll = showAll || widget.curLv >= widget.targetLv;
-    final int lva = _showAll ? Maths.min(widget.costList.keys) : widget.curLv,
-        lvb = _showAll ? Maths.max(widget.costList.keys) + 1 : widget.targetLv;
+    final int lva =
+            _showAll ? Maths.min(widget.costList.keys, 0) : widget.curLv,
+        lvb =
+            _showAll ? Maths.max(widget.costList.keys, 0) + 1 : widget.targetLv;
     final size = MediaQuery.of(context).size;
     return AlertDialog(
       contentPadding: EdgeInsets.zero,

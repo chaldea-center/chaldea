@@ -86,9 +86,9 @@ class LocalSettings {
 
   String? get language => _language;
 
-  void setLanguage(Language lang) {
+  Future<S> setLanguage(Language lang) {
     _language = Intl.defaultLocale = lang.code;
-    S.load(lang.locale, override: true);
+    return S.load(lang.locale, override: true);
   }
 
   List<Region> get resolvedPreferredRegions {

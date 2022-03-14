@@ -318,7 +318,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
 
   void solve() async {
     FocusScope.of(context).unfocus();
-    if (Maths.max(params.counts) > 0) {
+    if (Maths.max(params.counts, 0) > 0) {
       setState(() {
         running = true;
       });

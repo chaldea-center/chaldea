@@ -81,11 +81,15 @@ class Maths {
     }
   }
 
-  static T max<T extends num>(Iterable<T> iterable) {
+  static T max<T extends num>(Iterable<T> iterable, [T? ifAbsent]) {
+    assert(iterable.isNotEmpty || ifAbsent != null);
+    if (iterable.isEmpty) return ifAbsent!;
     return iterable.reduce((v, e) => math.max(v, e));
   }
 
-  static T min<T extends num>(Iterable<T> iterable) {
+  static T min<T extends num>(Iterable<T> iterable, [T? ifAbsent]) {
+    assert(iterable.isNotEmpty || ifAbsent != null);
+    if (iterable.isEmpty) return ifAbsent!;
     return iterable.reduce((v, e) => math.min(v, e));
   }
 

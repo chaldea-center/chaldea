@@ -386,7 +386,7 @@ class EventLottery {
       _$EventLotteryFromJson(json);
 
   int get maxBoxIndex =>
-      _maxBoxIndex ??= Maths.max(boxes.map((e) => e.boxIndex));
+      _maxBoxIndex ??= Maths.max(boxes.map((e) => e.boxIndex), 0);
   int? _maxBoxIndex;
 
   Map<int, int> get lastBoxItems {

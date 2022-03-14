@@ -258,8 +258,8 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           start: curVal.grail,
           end: targetVal.grail,
           minVal: 0,
-          maxVal:
-              Maths.max(db2.gameData.constData.svtGrailCost[svt.rarity]!.keys),
+          maxVal: Maths.max(
+              db2.gameData.constData.svtGrailCost[svt.rarity]!.keys, 0),
           labelFormatter: (v) => svt.grailedLv(v).toString(),
           trailingLabelFormatter: (a, b) => '${svt.grailedLv(a)}→'
                   '${svt.grailedLv(b!)}'
