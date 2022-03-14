@@ -135,12 +135,12 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
-      title: const Text('Debug Menu'),
+      title: Text(S.current.debug_menu),
       children: [
         ListTile(
           horizontalTitleGap: 0,
           leading: const Icon(Icons.dark_mode),
-          title: const Text('Toggle Dark Mode'),
+          title: Text(S.current.toogle_dark_mode),
           onTap: () {
             Utils.debugChangeDarkMode();
             Navigator.of(context).pop();
@@ -149,7 +149,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
         ListTile(
           horizontalTitleGap: 0,
           leading: const Icon(Icons.language),
-          title: const Text('Language'),
+          title: Text(S.current.settings_language),
           trailing: DropdownButton<Language>(
             underline: const Divider(thickness: 0, color: Colors.transparent),
             value: Language.getLanguage(db.appSetting.language),

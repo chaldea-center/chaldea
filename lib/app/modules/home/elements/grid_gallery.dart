@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
@@ -57,9 +58,9 @@ class _GridGalleryState extends State<GridGallery> {
     if (db2.gameData.version.timestamp <= 0) {
       grid = GestureDetector(
         onTap: () {
-          const SimpleCancelOkDialog(
-            title: Text('Warning'),
-            content: Text('Game data not found, please download data first'),
+          SimpleCancelOkDialog(
+            title: Text(S.current.warning),
+            content: Text(S.current.game_data_not_found),
             hideCancel: true,
           ).showDialog(context);
         },

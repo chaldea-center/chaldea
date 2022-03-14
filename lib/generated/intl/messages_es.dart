@@ -107,6 +107,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "append_skill": MessageLookupByLibrary.simpleMessage("Append Skill"),
         "append_skill_short": MessageLookupByLibrary.simpleMessage("Append"),
         "ascension": MessageLookupByLibrary.simpleMessage("Ascension"),
+        "ascension_icon":
+            MessageLookupByLibrary.simpleMessage("Icono de Ascension"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("Ascen"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("Ascension"),
         "attachment": MessageLookupByLibrary.simpleMessage("Archivo adjunto"),
@@ -125,6 +127,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "bond": MessageLookupByLibrary.simpleMessage("Bond"),
         "bond_craft": MessageLookupByLibrary.simpleMessage("Bond Craft"),
         "bond_eff": MessageLookupByLibrary.simpleMessage("Bond Eff"),
+        "boostrap_page_title":
+            MessageLookupByLibrary.simpleMessage("Página de Arranque"),
         "bronze": MessageLookupByLibrary.simpleMessage("Bronce"),
         "calc_weight": MessageLookupByLibrary.simpleMessage("Peso"),
         "calculate": MessageLookupByLibrary.simpleMessage("Calcular"),
@@ -135,6 +139,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_info": MessageLookupByLibrary.simpleMessage("Información"),
         "carousel_setting":
             MessageLookupByLibrary.simpleMessage("Configuración del carrusel"),
+        "chaldea_user":
+            MessageLookupByLibrary.simpleMessage("Usuario de Chaldea"),
         "change_log":
             MessageLookupByLibrary.simpleMessage("Registro de cambios"),
         "characters_in_card":
@@ -149,6 +155,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Caché borrada"),
         "clear_cache_hint": MessageLookupByLibrary.simpleMessage(
             "Incluyendo ilustraciones, voces"),
+        "clear_data": MessageLookupByLibrary.simpleMessage("Borrar Datos"),
         "clear_userdata":
             MessageLookupByLibrary.simpleMessage("Borrar datos de usuario"),
         "cmd_code_title": MessageLookupByLibrary.simpleMessage("Command Codes"),
@@ -194,6 +201,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Conjunto de datos de iconos"),
         "dataset_type_text":
             MessageLookupByLibrary.simpleMessage("Conjunto de datos de texto"),
+        "debug": MessageLookupByLibrary.simpleMessage("Depurar"),
+        "debug_fab": MessageLookupByLibrary.simpleMessage("FAB de Depuración"),
+        "debug_menu": MessageLookupByLibrary.simpleMessage("Debug Menu"),
         "delete": MessageLookupByLibrary.simpleMessage("Eliminar"),
         "demands": MessageLookupByLibrary.simpleMessage("Demandado"),
         "display_setting":
@@ -326,11 +336,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "free_quest_calculator_short":
             MessageLookupByLibrary.simpleMessage("Free Quest"),
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("Inicio"),
+        "game_data_not_found": MessageLookupByLibrary.simpleMessage(
+            "No se encontraron los datos del juego, descargue los datos primero"),
         "game_drop": MessageLookupByLibrary.simpleMessage("Drop"),
         "game_experience": MessageLookupByLibrary.simpleMessage("Experiencia"),
         "game_kizuna": MessageLookupByLibrary.simpleMessage("Bond"),
         "game_rewards": MessageLookupByLibrary.simpleMessage("Recompensas"),
         "game_server": MessageLookupByLibrary.simpleMessage("Servidor"),
+        "game_server_cn":
+            MessageLookupByLibrary.simpleMessage("Chino (Simplificado)"),
+        "game_server_jp": MessageLookupByLibrary.simpleMessage("Japonés"),
+        "game_server_na":
+            MessageLookupByLibrary.simpleMessage("Norteamérica (NA)"),
+        "game_server_tw":
+            MessageLookupByLibrary.simpleMessage("Chino (Tradicional)"),
         "gamedata": MessageLookupByLibrary.simpleMessage("Datos del juego"),
         "gold": MessageLookupByLibrary.simpleMessage("Oro"),
         "grail": MessageLookupByLibrary.simpleMessage("Grial"),
@@ -417,6 +436,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "install": MessageLookupByLibrary.simpleMessage("Instalar"),
         "interlude_and_rankup":
             MessageLookupByLibrary.simpleMessage("Interlude & Rank Up"),
+        "invalid_input":
+            MessageLookupByLibrary.simpleMessage("Entrada inválida."),
+        "invalid_startup_path":
+            MessageLookupByLibrary.simpleMessage("¡Ruta de inicio inválida!"),
+        "invalid_startup_path_info": MessageLookupByLibrary.simpleMessage(
+            "Please, extract zip to non-system path then start the app. \"C:\\\", \"C:\\Program Files\" are not allowed."),
         "ios_app_path": MessageLookupByLibrary.simpleMessage(
             "Aplicación \"Archivos\"/En mi iPhone/Caldea"),
         "issues": MessageLookupByLibrary.simpleMessage("Problemas"),
@@ -511,6 +536,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_record_fixed_drop": MessageLookupByLibrary.simpleMessage("Drops"),
         "main_record_fixed_drop_short":
             MessageLookupByLibrary.simpleMessage("Drops"),
+        "master_detail_width":
+            MessageLookupByLibrary.simpleMessage("Ancho Master-Detalles"),
         "master_mission":
             MessageLookupByLibrary.simpleMessage("Misiones de Master"),
         "master_mission_related_quest":
@@ -538,6 +565,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Noble Phantasm"),
         "noble_phantasm_level":
             MessageLookupByLibrary.simpleMessage("Noble Phantasm"),
+        "not_available": MessageLookupByLibrary.simpleMessage("No disponible"),
         "not_found": MessageLookupByLibrary.simpleMessage("No encontrado"),
         "not_implemented":
             MessageLookupByLibrary.simpleMessage("Todavía sin implementar"),
@@ -604,6 +632,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Restablecer Habilidad/NP por defecto"),
         "reset_svt_enhance_state_hint": MessageLookupByLibrary.simpleMessage(
             "Restablecer el rango de las habilidades y el noble phantasm"),
+        "restart_to_take_effect": MessageLookupByLibrary.simpleMessage(
+            "Reiniciar para que surta efecto"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
             "Reiniciar para actualizar. Si la actualización falla, copie manualmente la carpeta de origen en el destino"),
         "restore": MessageLookupByLibrary.simpleMessage("Restaurar"),
@@ -624,25 +654,47 @@ class MessageLookup extends MessageLookupByLibrary {
         "select_plan": MessageLookupByLibrary.simpleMessage("Seleccionar Plan"),
         "servant": MessageLookupByLibrary.simpleMessage("Servants"),
         "servant_coin": MessageLookupByLibrary.simpleMessage("Servant Coin"),
+        "servant_detail_page": MessageLookupByLibrary.simpleMessage(
+            "Página de detalles del Servant"),
+        "servant_list_page":
+            MessageLookupByLibrary.simpleMessage("Pagína de lista de Servants"),
         "servant_title": MessageLookupByLibrary.simpleMessage("Servants"),
-        "server": MessageLookupByLibrary.simpleMessage("Server"),
-        "server_cn":
-            MessageLookupByLibrary.simpleMessage("Chino (Simplificado)"),
-        "server_jp": MessageLookupByLibrary.simpleMessage("Japonés"),
-        "server_na": MessageLookupByLibrary.simpleMessage("Norteamérica (NA)"),
-        "server_tw":
-            MessageLookupByLibrary.simpleMessage("Chino (Tradicional)"),
         "set_plan_name":
             MessageLookupByLibrary.simpleMessage("Establecer nombre del plan"),
+        "setting_always_on_top":
+            MessageLookupByLibrary.simpleMessage("Siempre al frente"),
         "setting_auto_rotate":
             MessageLookupByLibrary.simpleMessage("Auto rotar"),
+        "setting_auto_turn_on_plan_not_reach":
+            MessageLookupByLibrary.simpleMessage(
+                "Encendido automático cuando el Plan no se alcanza"),
+        "setting_home_plan_list_page": MessageLookupByLibrary.simpleMessage(
+            "Página de lista de Inicio-Plan"),
+        "setting_only_change_second_append_skill":
+            MessageLookupByLibrary.simpleMessage(
+                "Solo cambiar la 2da Append Skill"),
+        "setting_plans_list_page":
+            MessageLookupByLibrary.simpleMessage("Página de lista de Planes"),
+        "setting_priority_tagging":
+            MessageLookupByLibrary.simpleMessage("Prioridad de las Etiquetas"),
+        "setting_servant_class_filter_style":
+            MessageLookupByLibrary.simpleMessage(
+                "Estilo de filtro de la Clase de Servart"),
+        "setting_setting_favorite_button_default":
+            MessageLookupByLibrary.simpleMessage(
+                "Predeterminado del Botón Favorito"),
+        "setting_show_account_at_homepage":
+            MessageLookupByLibrary.simpleMessage(
+                "Mostrar cuenta en la página de Inicio"),
+        "setting_tabs_sorting":
+            MessageLookupByLibrary.simpleMessage("Orden de las Pestañas"),
         "settings_data": MessageLookupByLibrary.simpleMessage("Datos"),
         "settings_data_management":
             MessageLookupByLibrary.simpleMessage("Gestión de Datos"),
         "settings_documents":
             MessageLookupByLibrary.simpleMessage("Documentación"),
         "settings_general": MessageLookupByLibrary.simpleMessage("General"),
-        "settings_language": MessageLookupByLibrary.simpleMessage("Lenguaje"),
+        "settings_language": MessageLookupByLibrary.simpleMessage("Idioma"),
         "settings_tab_name":
             MessageLookupByLibrary.simpleMessage("Configuración"),
         "settings_use_mobile_network":
@@ -650,6 +702,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_userdata_footer": MessageLookupByLibrary.simpleMessage(
             "Realice una copia de seguridad de los datos del usuario antes de actualizar la aplicación y traslade las copias de seguridad a ubicaciones seguras fuera de la carpeta de documentos de la aplicación"),
         "share": MessageLookupByLibrary.simpleMessage("Compartir"),
+        "show_frame_rate": MessageLookupByLibrary.simpleMessage(
+            "Mostrar velocidad de fotogramas"),
         "show_outdated":
             MessageLookupByLibrary.simpleMessage("Mostrar desactualizado"),
         "silver": MessageLookupByLibrary.simpleMessage("Plata"),
@@ -695,10 +749,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_switch_slider_dropdown": MessageLookupByLibrary.simpleMessage(
             "Cambiar control deslizante/desplegable"),
         "sync_server": m20,
+        "toogle_dark_mode":
+            MessageLookupByLibrary.simpleMessage("Alternar tema"),
         "tooltip_refresh_sliders":
             MessageLookupByLibrary.simpleMessage("Actualizar diapositivas"),
         "total_ap": MessageLookupByLibrary.simpleMessage("AP total"),
         "total_counts": MessageLookupByLibrary.simpleMessage("Cantidad total"),
+        "translations": MessageLookupByLibrary.simpleMessage("Traducciones"),
         "unsupported_type":
             MessageLookupByLibrary.simpleMessage("Tipo no soportado"),
         "update": MessageLookupByLibrary.simpleMessage("Actualizar"),
@@ -725,6 +782,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "view_illustration":
             MessageLookupByLibrary.simpleMessage("Ver Ilustración"),
         "voice": MessageLookupByLibrary.simpleMessage("Voz"),
+        "warning": MessageLookupByLibrary.simpleMessage("Advertencia"),
+        "web_renderer":
+            MessageLookupByLibrary.simpleMessage("Renderizador Web"),
         "words_separate": m21,
         "yes": MessageLookupByLibrary.simpleMessage("Sí")
       };

@@ -144,8 +144,8 @@ class _AccountPageState extends State<AccountPage> {
     final user = users[key];
     await Future.delayed(Duration.zero);
     SimpleCancelOkDialog(
-      title: const Text('Clear Data'),
-      content: Text('Account: ${user.name}'),
+      title: Text(S.current.clear_data),
+      content: Text('${S.current.account_title}: ${user.name}'),
       onTapOk: () {
         user.servants.clear();
         user.items.clear();
@@ -161,7 +161,7 @@ class _AccountPageState extends State<AccountPage> {
     print('delete user key $key...');
     final user = users[key];
     SimpleCancelOkDialog(
-      title: Text('Delete ${user.name}'),
+      title: Text('${S.current.delete} ${user.name}'),
       onTapOk: () {
         bool needCalc = key == db2.userData.curUserKey;
         users.removeAt(key);

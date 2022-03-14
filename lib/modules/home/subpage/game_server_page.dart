@@ -12,7 +12,7 @@ class _GameServerPageState extends State<GameServerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.current.server),
+        title: Text(S.current.game_server),
       ),
       body: SingleChildScrollView(
         child: TileGroup(

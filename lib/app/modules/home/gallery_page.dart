@@ -147,14 +147,12 @@ class _GalleryPageState extends State<GalleryPage> {
       children.add(SimpleAccordion(
         expanded: true,
         headerBuilder: (_, __) => ListTile(
-          title: const Text('Invalid startup path!!!'),
+          title: Text(S.current.invalid_startup_path),
           subtitle: Text(db2.paths.appPath),
         ),
-        contentBuilder: (context) => const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Text(
-              'Please extra zip to non-system path then start the app. "C:\\", "C:\\Program Files" are not allowed.',
-            )),
+        contentBuilder: (context) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Text(S.current.invalid_startup_path_info)),
       ));
     }
 

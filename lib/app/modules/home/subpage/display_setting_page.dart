@@ -39,11 +39,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
               if (PlatformU.isMacOS || PlatformU.isWindows)
                 SwitchListTile.adaptive(
                   value: db2.settings.alwaysOnTop,
-                  title: Text(LocalizedText.of(
-                      chs: '置顶显示',
-                      jpn: 'スティッキー表示',
-                      eng: 'Always On Top',
-                      kor: '항상 맨 위에 표시')),
+                  title: Text(S.current.setting_always_on_top),
                   onChanged: (v) async {
                     db2.settings.alwaysOnTop = v;
                     db2.saveSettings();
@@ -67,11 +63,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 ),
               SwitchListTile.adaptive(
                 value: db2.settings.display.showAccountAtHome,
-                title: Text(LocalizedText.of(
-                    chs: '首页显示当前账号',
-                    jpn: 'ホームページにアカウントを表示 ',
-                    eng: 'Show Account at Homepage',
-                    kor: '홈페이지에 계정 표시')),
+                title: Text(S.current.setting_show_account_at_homepage),
                 onChanged: (v) {
                   setState(() {
                     db2.settings.display.showAccountAtHome = v;
@@ -109,7 +101,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
             header: S.current.servant,
             children: [
               ListTile(
-                title: const Text('Ascension Icon'),
+                title: Text(S.current.ascension_icon),
                 trailing: DropdownButton<int>(
                   value: db2.userData.svtAscensionIcon,
                   underline: const SizedBox(),
@@ -131,15 +123,11 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
             ],
           ),
           TileGroup(
-            header: LocalizedText.of(
-                chs: '从者列表页',
-                jpn: 'サーヴァントリストページ',
-                eng: 'Servant List Page',
-                kor: '서번트 리스트 페이지'),
+            header: S.current.servant_list_page,
             children: [
               SwitchListTile.adaptive(
-                title: const Text('Auto Turn on PlanNotReach'),
-                subtitle: const Text('Plans List Page'),
+                title: Text(S.current.setting_auto_turn_on_plan_not_reach),
+                subtitle: Text(S.current.setting_plans_list_page),
                 value: db2.settings.display.autoTurnOnPlanNotReach,
                 onChanged: (v) {
                   setState(() {
@@ -150,39 +138,22 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 controlAffinity: ListTileControlAffinity.trailing,
               ),
               ListTile(
-                title: Text(LocalizedText.of(
-                  chs: '「关注」按钮默认筛选',
-                  jpn: '「フォロー」ボタンディフォルト',
-                  eng: '「Favorite」Button Default',
-                  kor: '「즐겨찾기」버튼 디폴트',
-                )),
+                title: Text(S.current.setting_setting_favorite_button_default),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   SplitRoute.push(context, FavOptionSetting());
                 },
               ),
               ListTile(
-                title: Text(LocalizedText.of(
-                    chs: '从者职阶筛选样式',
-                    jpn: 'クラスフィルタースタイル ',
-                    eng: 'Servant Class Filter Style',
-                    kor: '서번트 클래스 필터 스타일')),
+                title: Text(S.current.setting_servant_class_filter_style),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   SplitRoute.push(context, ClassFilterStyleSetting());
                 },
               ),
               SwitchListTile.adaptive(
-                title: Text(LocalizedText.of(
-                    chs: '仅更改附加技能2',
-                    jpn: 'アペンドスキル2のみを変更 ',
-                    eng: 'Only Change 2nd Append Skill',
-                    kor: '어펜드 스킬 2만 변경')),
-                subtitle: Text(LocalizedText.of(
-                    chs: '首页-规划列表页',
-                    jpn: 'ホーム-プラン',
-                    eng: 'Home-Plan List Page',
-                    kor: '홈-계획 리스트 페이지')),
+                title: Text(S.current.setting_only_change_second_append_skill),
+                subtitle: Text(S.current.setting_home_plan_list_page),
                 value: db2.settings.display.onlyAppendSkillTwo,
                 onChanged: (v) {
                   setState(() {
@@ -194,29 +165,17 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
             ],
           ),
           TileGroup(
-            header: LocalizedText.of(
-                chs: '从者详情页',
-                jpn: 'サーヴァント詳細ページ',
-                eng: 'Servant Detail Page',
-                kor: '서번트 상세 페이지'),
+            header: S.current.servant_detail_page,
             children: [
               ListTile(
-                title: Text(LocalizedText.of(
-                    chs: '标签页排序',
-                    jpn: 'ページ表示順序',
-                    eng: 'Tabs Sorting',
-                    kor: '페이지 표시 순서')),
+                title: Text(S.current.setting_tabs_sorting),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   SplitRoute.push(context, SvtTabsSortingSetting());
                 },
               ),
               ListTile(
-                title: Text(LocalizedText.of(
-                    chs: '优先级备注',
-                    jpn: '優先順位ノート',
-                    eng: 'Priority Tagging',
-                    kor: '우선순위 매기기')),
+                title: Text(S.current.setting_priority_tagging),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   SplitRoute.push(context, SvtPriorityTagging());

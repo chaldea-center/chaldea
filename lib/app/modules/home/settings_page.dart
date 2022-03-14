@@ -59,7 +59,7 @@ class _SettingsPageState extends State<SettingsPage> {
         controller: _scrollController,
         slivers: [
           SliverTileGroup(
-            header: 'Chaldea User',
+            header: S.current.chaldea_user,
             children: [userTile],
           ),
           SliverTileGroup(
@@ -74,7 +74,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               ),
               ListTile(
-                title: Text(S.current.server),
+                title: Text(S.current.game_server),
                 trailing: _wrapArrowTrailing(db2.onUserData(
                     (context, snapshot) =>
                         Text(EnumUtil.upperCase(db2.curUser.region)))),
@@ -149,7 +149,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
               ListTile(
-                title: const Text('Translations'),
+                title: Text(S.current.translations),
                 trailing: db2.onSettings((context, _) => _wrapArrowTrailing(
                     Text(db2.settings.resolvedPreferredRegions.first
                         .toUpper()))),
@@ -199,8 +199,8 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               if (kIsWeb)
                 ListTile(
-                  title: const Text('Web Renderer'),
-                  subtitle: const Text('Restart to take effect'),
+                  title: Text(S.current.web_renderer),
+                  subtitle: Text(S.current.restart_to_take_effect),
                   trailing: DropdownButton<WebRenderMode>(
                     value: db2.runtimeData.webRendererCanvasKit ??
                         (kPlatformMethods.rendererCanvasKit
@@ -254,7 +254,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               ),
               ListTile(
-                title: const Text('Bootstrap Page'),
+                title: Text(S.current.boostrap_page_title),
                 onTap: () {
                   db2.settings.tips.starter = true;
                   rootRouter.appState.dataReady = false;
@@ -306,7 +306,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           if (db2.runtimeData.enableDebugTools)
             SliverTileGroup(
-              header: 'Debug',
+              header: S.current.debug,
               children: <Widget>[
                 ListTile(
                   title: const Text('Test Func'),
@@ -314,7 +314,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 SwitchListTile.adaptive(
                   value: FrameRateLayer.showFps,
-                  title: const Text('Show Frame Rate'),
+                  title: Text(S.current.show_frame_rate),
                   onChanged: (v) {
                     setState(() {
                       FrameRateLayer.showFps = v;
@@ -328,7 +328,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 SwitchListTile.adaptive(
                   value: db2.settings.showDebugFab,
-                  title: const Text('Debug FAB'),
+                  title: Text(S.current.debug_fab),
                   onChanged: (v) {
                     setState(() {
                       db2.settings.showDebugFab = v;
@@ -342,7 +342,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   },
                 ),
                 ListTile(
-                  title: const Text('Master-Detail width'),
+                  title: Text(S.current.master_detail_width),
                   trailing: DropdownButtonHideUnderline(
                     child: DropdownButton<double>(
                       value: db2.runtimeData.criticalWidth ?? 768,
@@ -377,7 +377,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget get userTile {
     return ListTile(
       title: Text(S.current.login_username),
-      trailing: const Text('NotAvailable'),
+      trailing: Text(S.current.not_available),
     );
   }
 }

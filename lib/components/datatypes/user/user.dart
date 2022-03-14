@@ -680,13 +680,13 @@ extension GameServerUtil on GameServer {
   String get localized {
     switch (this) {
       case GameServer.jp:
-        return S.current.server_jp;
+        return S.current.game_server_jp;
       case GameServer.cn:
-        return S.current.server_cn;
+        return S.current.game_server_cn;
       case GameServer.tw:
-        return S.current.server_tw;
+        return S.current.game_server_tw;
       case GameServer.en:
-        return S.current.server_na;
+        return S.current.game_server_na;
     }
   }
 }

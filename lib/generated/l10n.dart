@@ -1953,6 +1953,61 @@ class S {
     );
   }
 
+  /// `服务器`
+  String get game_server {
+    return Intl.message(
+      '服务器',
+      name: 'game_server',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `国服`
+  String get game_server_cn {
+    return Intl.message(
+      '国服',
+      name: 'game_server_cn',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `日服`
+  String get game_server_jp {
+    return Intl.message(
+      '日服',
+      name: 'game_server_jp',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `美服`
+  String get game_server_na {
+    return Intl.message(
+      '美服',
+      name: 'game_server_na',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `台服`
+  String get game_server_tw {
+    return Intl.message(
+      '台服',
+      name: 'game_server_tw',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `游戏数据`
   String get gamedata {
     return Intl.message(
@@ -4103,66 +4158,33 @@ class S {
     );
   }
 
+  /// `从者详情页`
+  String get servant_detail_page {
+    return Intl.message(
+      '从者详情页',
+      name: 'servant_detail_page',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `从者列表页`
+  String get servant_list_page {
+    return Intl.message(
+      '从者列表页',
+      name: 'servant_list_page',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `从者`
   String get servant_title {
     return Intl.message(
       '从者',
       name: 'servant_title',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `服务器`
-  String get server {
-    return Intl.message(
-      '服务器',
-      name: 'server',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `国服`
-  String get server_cn {
-    return Intl.message(
-      '国服',
-      name: 'server_cn',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `日服`
-  String get server_jp {
-    return Intl.message(
-      '日服',
-      name: 'server_jp',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `美服`
-  String get server_na {
-    return Intl.message(
-      '美服',
-      name: 'server_na',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `台服`
-  String get server_tw {
-    return Intl.message(
-      '台服',
-      name: 'server_tw',
       desc: '',
       locale: localeName,
       args: [],
@@ -4180,11 +4202,99 @@ class S {
     );
   }
 
+  /// `置顶显示`
+  String get setting_always_on_top {
+    return Intl.message(
+      '置顶显示',
+      name: 'setting_always_on_top',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `自动旋转`
   String get setting_auto_rotate {
     return Intl.message(
       '自动旋转',
       name: 'setting_auto_rotate',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `首页-规划列表页`
+  String get setting_home_plan_list_page {
+    return Intl.message(
+      '首页-规划列表页',
+      name: 'setting_home_plan_list_page',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `仅更改附加技能2`
+  String get setting_only_change_second_append_skill {
+    return Intl.message(
+      '仅更改附加技能2',
+      name: 'setting_only_change_second_append_skill',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `优先级备注`
+  String get setting_priority_tagging {
+    return Intl.message(
+      '优先级备注',
+      name: 'setting_priority_tagging',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `从者职阶筛选样式`
+  String get setting_servant_class_filter_style {
+    return Intl.message(
+      '从者职阶筛选样式',
+      name: 'setting_servant_class_filter_style',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `「关注」按钮默认筛选`
+  String get setting_setting_favorite_button_default {
+    return Intl.message(
+      '「关注」按钮默认筛选',
+      name: 'setting_setting_favorite_button_default',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `首页显示当前账号`
+  String get setting_show_account_at_homepage {
+    return Intl.message(
+      '首页显示当前账号',
+      name: 'setting_show_account_at_homepage',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `标签页排序`
+  String get setting_tabs_sorting {
+    return Intl.message(
+      '标签页排序',
+      name: 'setting_tabs_sorting',
       desc: '',
       locale: localeName,
       args: [],
@@ -4884,17 +4994,6 @@ class S {
     );
   }
 
-  /// `Game Server`
-  String get game_server {
-    return Intl.message(
-      'Game Server',
-      name: 'game_server',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Database`
   String get database {
     return Intl.message(
@@ -5055,6 +5154,237 @@ class S {
     return Intl.message(
       'Unsupported type',
       name: 'unsupported_type',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Invalid startup path!`
+  String get invalid_startup_path {
+    return Intl.message(
+      'Invalid startup path!',
+      name: 'invalid_startup_path',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Please, extract zip to non-system path then start the app. "C:\", "C:\Program Files" are not allowed.`
+  String get invalid_startup_path_info {
+    return Intl.message(
+      'Please, extract zip to non-system path then start the app. "C:\\", "C:\\Program Files" are not allowed.',
+      name: 'invalid_startup_path_info',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Chaldea User`
+  String get chaldea_user {
+    return Intl.message(
+      'Chaldea User',
+      name: 'chaldea_user',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Translations`
+  String get translations {
+    return Intl.message(
+      'Translations',
+      name: 'translations',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Web Renderer`
+  String get web_renderer {
+    return Intl.message(
+      'Web Renderer',
+      name: 'web_renderer',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Restart to take effect`
+  String get restart_to_take_effect {
+    return Intl.message(
+      'Restart to take effect',
+      name: 'restart_to_take_effect',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Bootstrap Page`
+  String get boostrap_page_title {
+    return Intl.message(
+      'Bootstrap Page',
+      name: 'boostrap_page_title',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Not Available`
+  String get not_available {
+    return Intl.message(
+      'Not Available',
+      name: 'not_available',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Debug`
+  String get debug {
+    return Intl.message(
+      'Debug',
+      name: 'debug',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Show Frame Rate`
+  String get show_frame_rate {
+    return Intl.message(
+      'Show Frame Rate',
+      name: 'show_frame_rate',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Debug FAB`
+  String get debug_fab {
+    return Intl.message(
+      'Debug FAB',
+      name: 'debug_fab',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Master-Detail width`
+  String get master_detail_width {
+    return Intl.message(
+      'Master-Detail width',
+      name: 'master_detail_width',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Warning`
+  String get warning {
+    return Intl.message(
+      'Warning',
+      name: 'warning',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Game data not found, please download data first`
+  String get game_data_not_found {
+    return Intl.message(
+      'Game data not found, please download data first',
+      name: 'game_data_not_found',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Clear Data`
+  String get clear_data {
+    return Intl.message(
+      'Clear Data',
+      name: 'clear_data',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Invalid input.`
+  String get invalid_input {
+    return Intl.message(
+      'Invalid input.',
+      name: 'invalid_input',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Debug Menu`
+  String get debug_menu {
+    return Intl.message(
+      'Debug Menu',
+      name: 'debug_menu',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Toggle Dark Mode`
+  String get toogle_dark_mode {
+    return Intl.message(
+      'Toggle Dark Mode',
+      name: 'toogle_dark_mode',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Ascension Icon`
+  String get ascension_icon {
+    return Intl.message(
+      'Ascension Icon',
+      name: 'ascension_icon',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Auto Turn on PlanNotReach`
+  String get setting_auto_turn_on_plan_not_reach {
+    return Intl.message(
+      'Auto Turn on PlanNotReach',
+      name: 'setting_auto_turn_on_plan_not_reach',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Plans List Page`
+  String get setting_plans_list_page {
+    return Intl.message(
+      'Plans List Page',
+      name: 'setting_plans_list_page',
       desc: '',
       locale: localeName,
       args: [],

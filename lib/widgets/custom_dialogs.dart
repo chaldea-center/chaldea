@@ -66,7 +66,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
         autocorrect: false,
         decoration: InputDecoration(
             hintText: widget.hintText,
-            errorText: validation ? null : "Invalid input."),
+            errorText: validation ? null : S.current.invalid_input),
         onChanged: (v) {
           if (widget.validate != null) {
             setState(() {

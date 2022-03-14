@@ -104,6 +104,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "append_skill": MessageLookupByLibrary.simpleMessage("アペンドスキル"),
         "append_skill_short": MessageLookupByLibrary.simpleMessage("アペンド"),
         "ascension": MessageLookupByLibrary.simpleMessage("霊基"),
+        "ascension_icon":
+            MessageLookupByLibrary.simpleMessage("Ascension Icon"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("霊基"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("霊基再臨"),
         "attachment": MessageLookupByLibrary.simpleMessage("アタッチメント"),
@@ -117,6 +119,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "bond": MessageLookupByLibrary.simpleMessage("絆"),
         "bond_craft": MessageLookupByLibrary.simpleMessage("絆礼装"),
         "bond_eff": MessageLookupByLibrary.simpleMessage("絆効率"),
+        "boostrap_page_title":
+            MessageLookupByLibrary.simpleMessage("Bootstrap Page"),
         "bronze": MessageLookupByLibrary.simpleMessage("銅"),
         "calc_weight": MessageLookupByLibrary.simpleMessage("重み"),
         "calculate": MessageLookupByLibrary.simpleMessage("計算する"),
@@ -126,6 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_description": MessageLookupByLibrary.simpleMessage("解説"),
         "card_info": MessageLookupByLibrary.simpleMessage("資料"),
         "carousel_setting": MessageLookupByLibrary.simpleMessage("カルーセル設定"),
+        "chaldea_user": MessageLookupByLibrary.simpleMessage("Chaldea User"),
         "change_log": MessageLookupByLibrary.simpleMessage("更新履歴"),
         "characters_in_card": MessageLookupByLibrary.simpleMessage("キャラクター"),
         "check_update": MessageLookupByLibrary.simpleMessage("更新の確認"),
@@ -135,6 +140,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "clear_cache_finish":
             MessageLookupByLibrary.simpleMessage("キャッシュがクリアされました"),
         "clear_cache_hint": MessageLookupByLibrary.simpleMessage("イラスト、ボイスなど"),
+        "clear_data": MessageLookupByLibrary.simpleMessage("Clear Data"),
         "clear_userdata": MessageLookupByLibrary.simpleMessage("ユーザーデータをクリア"),
         "cmd_code_title": MessageLookupByLibrary.simpleMessage("指令紋章"),
         "command_code": MessageLookupByLibrary.simpleMessage("指令紋章"),
@@ -171,6 +177,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("画像データパッケージ"),
         "dataset_type_text":
             MessageLookupByLibrary.simpleMessage("テキストデータパッケージ"),
+        "debug": MessageLookupByLibrary.simpleMessage("Debug"),
+        "debug_fab": MessageLookupByLibrary.simpleMessage("Debug FAB"),
+        "debug_menu": MessageLookupByLibrary.simpleMessage("Debug Menu"),
         "delete": MessageLookupByLibrary.simpleMessage("削除"),
         "demands": MessageLookupByLibrary.simpleMessage("要件"),
         "display_setting": MessageLookupByLibrary.simpleMessage("表示設定"),
@@ -286,11 +295,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "free_quest_calculator_short":
             MessageLookupByLibrary.simpleMessage("フリークエスト"),
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("ホーム"),
+        "game_data_not_found": MessageLookupByLibrary.simpleMessage(
+            "Game data not found, please download data first"),
         "game_drop": MessageLookupByLibrary.simpleMessage("ドロップ"),
         "game_experience": MessageLookupByLibrary.simpleMessage("EXP"),
         "game_kizuna": MessageLookupByLibrary.simpleMessage("絆"),
         "game_rewards": MessageLookupByLibrary.simpleMessage("クリア報酬"),
-        "game_server": MessageLookupByLibrary.simpleMessage("Game Server"),
+        "game_server": MessageLookupByLibrary.simpleMessage("サーバー"),
+        "game_server_cn": MessageLookupByLibrary.simpleMessage("中国"),
+        "game_server_jp": MessageLookupByLibrary.simpleMessage("日本"),
+        "game_server_na": MessageLookupByLibrary.simpleMessage("北米"),
+        "game_server_tw": MessageLookupByLibrary.simpleMessage("台湾"),
         "gamedata": MessageLookupByLibrary.simpleMessage("ゲームデータ"),
         "gold": MessageLookupByLibrary.simpleMessage("金"),
         "grail": MessageLookupByLibrary.simpleMessage("聖杯"),
@@ -367,6 +382,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "input_invalid_hint": MessageLookupByLibrary.simpleMessage("入力が無効です"),
         "install": MessageLookupByLibrary.simpleMessage("インスト"),
         "interlude_and_rankup": MessageLookupByLibrary.simpleMessage("幕間・強化"),
+        "invalid_input": MessageLookupByLibrary.simpleMessage("Invalid input."),
+        "invalid_startup_path":
+            MessageLookupByLibrary.simpleMessage("Invalid startup path!"),
+        "invalid_startup_path_info": MessageLookupByLibrary.simpleMessage(
+            "Please, extract zip to non-system path then start the app. \"C:\\\", \"C:\\Program Files\" are not allowed."),
         "ios_app_path": MessageLookupByLibrary.simpleMessage(
             "\"ファイル\"アプリ/このiPhone内/Chaldea"),
         "issues": MessageLookupByLibrary.simpleMessage("問題"),
@@ -442,6 +462,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_record_fixed_drop": MessageLookupByLibrary.simpleMessage("ドロップ"),
         "main_record_fixed_drop_short":
             MessageLookupByLibrary.simpleMessage("ドロップ"),
+        "master_detail_width":
+            MessageLookupByLibrary.simpleMessage("Master-Detail width"),
         "master_mission": MessageLookupByLibrary.simpleMessage("マスターミッション"),
         "master_mission_related_quest":
             MessageLookupByLibrary.simpleMessage("関連クエスト"),
@@ -463,6 +485,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("♡をクリックして、すべてのクエストを表示します"),
         "noble_phantasm": MessageLookupByLibrary.simpleMessage("宝具"),
         "noble_phantasm_level": MessageLookupByLibrary.simpleMessage("宝具レベル"),
+        "not_available": MessageLookupByLibrary.simpleMessage("Not Available"),
         "not_found": MessageLookupByLibrary.simpleMessage("Not Found"),
         "obtain_methods": MessageLookupByLibrary.simpleMessage("入手方法"),
         "ok": MessageLookupByLibrary.simpleMessage("OK"),
@@ -516,6 +539,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("サーヴァント強化状态をリセット"),
         "reset_svt_enhance_state_hint":
             MessageLookupByLibrary.simpleMessage("宝具/スキル強化"),
+        "restart_to_take_effect":
+            MessageLookupByLibrary.simpleMessage("Restart to take effect"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
             "再起動してアプリを更新します。更新に失敗した場合は、ソースフォルダをコピー先に手動でコピーしてください"),
         "restore": MessageLookupByLibrary.simpleMessage("復元"),
@@ -533,14 +558,32 @@ class MessageLookup extends MessageLookupByLibrary {
         "select_plan": MessageLookupByLibrary.simpleMessage("プランを選択"),
         "servant": MessageLookupByLibrary.simpleMessage("サーヴァント"),
         "servant_coin": MessageLookupByLibrary.simpleMessage("サーヴァントコイン"),
+        "servant_detail_page":
+            MessageLookupByLibrary.simpleMessage("サーヴァント詳細ページ"),
+        "servant_list_page":
+            MessageLookupByLibrary.simpleMessage("サーヴァントリストページ"),
         "servant_title": MessageLookupByLibrary.simpleMessage("サーヴァント"),
-        "server": MessageLookupByLibrary.simpleMessage("サーバー"),
-        "server_cn": MessageLookupByLibrary.simpleMessage("中国"),
-        "server_jp": MessageLookupByLibrary.simpleMessage("日本"),
-        "server_na": MessageLookupByLibrary.simpleMessage("北米"),
-        "server_tw": MessageLookupByLibrary.simpleMessage("台湾"),
         "set_plan_name": MessageLookupByLibrary.simpleMessage("プラン名を設定"),
+        "setting_always_on_top":
+            MessageLookupByLibrary.simpleMessage("スティッキー表示"),
         "setting_auto_rotate": MessageLookupByLibrary.simpleMessage("自動回転"),
+        "setting_auto_turn_on_plan_not_reach":
+            MessageLookupByLibrary.simpleMessage("Auto Turn on PlanNotReach"),
+        "setting_home_plan_list_page":
+            MessageLookupByLibrary.simpleMessage("ホーム-プラン"),
+        "setting_only_change_second_append_skill":
+            MessageLookupByLibrary.simpleMessage("アペンドスキル2のみを変更"),
+        "setting_plans_list_page":
+            MessageLookupByLibrary.simpleMessage("Plans List Page"),
+        "setting_priority_tagging":
+            MessageLookupByLibrary.simpleMessage("優先順位ノート"),
+        "setting_servant_class_filter_style":
+            MessageLookupByLibrary.simpleMessage("クラスフィルタースタイル"),
+        "setting_setting_favorite_button_default":
+            MessageLookupByLibrary.simpleMessage("「フォロー」ボタンディフォルト"),
+        "setting_show_account_at_homepage":
+            MessageLookupByLibrary.simpleMessage("ホームページにアカウントを表示"),
+        "setting_tabs_sorting": MessageLookupByLibrary.simpleMessage("ページ表示順序"),
         "settings_data": MessageLookupByLibrary.simpleMessage("データ"),
         "settings_data_management":
             MessageLookupByLibrary.simpleMessage("データベース"),
@@ -553,6 +596,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_userdata_footer": MessageLookupByLibrary.simpleMessage(
             "更新数据/版本/bug较多时，建议提前备份数据，卸载应用将导致内部备份丢失，及时转移到可靠的储存位置"),
         "share": MessageLookupByLibrary.simpleMessage("共有"),
+        "show_frame_rate":
+            MessageLookupByLibrary.simpleMessage("Show Frame Rate"),
         "show_outdated": MessageLookupByLibrary.simpleMessage("期限切れを表示"),
         "silver": MessageLookupByLibrary.simpleMessage("銀"),
         "simulator": MessageLookupByLibrary.simpleMessage("エミュレータ"),
@@ -589,10 +634,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_switch_slider_dropdown":
             MessageLookupByLibrary.simpleMessage("Slider/Dropdownを切り替え"),
         "sync_server": m20,
+        "toogle_dark_mode":
+            MessageLookupByLibrary.simpleMessage("Toggle Dark Mode"),
         "tooltip_refresh_sliders":
             MessageLookupByLibrary.simpleMessage("スライドを更新"),
         "total_ap": MessageLookupByLibrary.simpleMessage("合計AP"),
         "total_counts": MessageLookupByLibrary.simpleMessage("合計カウント"),
+        "translations": MessageLookupByLibrary.simpleMessage("Translations"),
         "unsupported_type":
             MessageLookupByLibrary.simpleMessage("Unsupported type"),
         "update": MessageLookupByLibrary.simpleMessage("更新"),
@@ -615,6 +663,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "version": MessageLookupByLibrary.simpleMessage("バージョン"),
         "view_illustration": MessageLookupByLibrary.simpleMessage("カードの画像を表示"),
         "voice": MessageLookupByLibrary.simpleMessage("ボイス"),
+        "warning": MessageLookupByLibrary.simpleMessage("Warning"),
+        "web_renderer": MessageLookupByLibrary.simpleMessage("Web Renderer"),
         "words_separate": m21,
         "yes": MessageLookupByLibrary.simpleMessage("はい")
       };

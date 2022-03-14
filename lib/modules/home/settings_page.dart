@@ -74,7 +74,7 @@ class _SettingsPageState extends State<SettingsPage> {
               },
             ),
             ListTile(
-              title: Text(S.current.server),
+              title: Text(S.current.game_server),
               trailing: _wrapArrowTrailing(Text(db.curUser.server.localized)),
               onTap: () {
                 SplitRoute.push(context, GameServerPage(), popDetail: true);
@@ -370,16 +370,16 @@ class _SettingsPageState extends State<SettingsPage> {
     final items = <DropdownMenuItem<int>>[
       DropdownMenuItem(
           value: -1,
-          child: _wrapText(S.current.sync_server(S.current.server_jp))),
+          child: _wrapText(S.current.sync_server(S.current.game_server_jp))),
       DropdownMenuItem(
           value: -2,
-          child: _wrapText(S.current.sync_server(S.current.server_cn))),
+          child: _wrapText(S.current.sync_server(S.current.game_server_cn))),
       DropdownMenuItem(
           value: -3,
-          child: _wrapText(S.current.sync_server(S.current.server_tw))),
+          child: _wrapText(S.current.sync_server(S.current.game_server_tw))),
       DropdownMenuItem(
           value: -4,
-          child: _wrapText(S.current.sync_server(S.current.server_na))),
+          child: _wrapText(S.current.sync_server(S.current.game_server_na))),
     ];
     for (var date in sortedDates) {
       items.add(DropdownMenuItem(
