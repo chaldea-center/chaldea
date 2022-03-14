@@ -42,7 +42,7 @@ class ChaldeaResponse {
     }
   }
 
-  bool get success => error != null && json()?['success'] == true;
+  bool get success => error == null && json()?['success'] == true;
 
   String? get message => error?.toString() ?? json()?['message'];
 

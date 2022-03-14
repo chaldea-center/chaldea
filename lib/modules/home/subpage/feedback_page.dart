@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:chaldea/components/components.dart';
 import 'package:chaldea/modules/extras/faq_page.dart';
 import 'package:chaldea/modules/shared/common_builders.dart';
@@ -80,20 +82,20 @@ class _FeedbackPageState extends State<FeedbackPage> {
 - 附加截图日志
 - 以及最好能够提供联系方式(邮箱等)''',
                         jpn:
-                            """フィードバックを送信する前に、<**FAQ**>を確認してください。 フィードバックを提供する際は、詳細に説明してください。
+                        """フィードバックを送信する前に、<**FAQ**>を確認してください。 フィードバックを提供する際は、詳細に説明してください。
 - 再現方法/期待されるパフォーマンス
 - アプリ/データのバージョン、デバイスシステム/バージョン
 - スクリーンショットとログを添付する
 - そして、連絡先情報（電子メールなど）を提供するのが良いです """,
                         eng:
-                            '''Please check <**FAQ**> first before sending feedback. And following detail is desired:
+                        '''Please check <**FAQ**> first before sending feedback. And following detail is desired:
 - How to reproduce, expected behaviour
 - App/dataset version, device system and version
 - Attach screenshots and logs
 - It's better to provide contact info (e.g. Email) 
 ''',
                         kor:
-                            '''피드백을 전송하기 전에, <**FAQ**>를 확인해주세요. 피드백을 적을 때에는 상세하게 적어주시길 바랍니다.
+                        '''피드백을 전송하기 전에, <**FAQ**>를 확인해주세요. 피드백을 적을 때에는 상세하게 적어주시길 바랍니다.
 - 재현 방법/기대하고 있는 퍼포먼스
 - 앱/데이터의 버전, 디바이스 시스템/버전
 - 스크린샷과 로그를 첨부한다
@@ -125,7 +127,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 ListTile(
                   title: Text(S.current.nga),
                   subtitle:
-                      const Text('https://bbs.nga.cn/read.php?tid=24926789'),
+                  const Text('https://bbs.nga.cn/read.php?tid=24926789'),
                   onTap: () => jumpToExternalLinkAlert(
                     url: 'https://bbs.nga.cn/read.php?tid=24926789',
                     name: S.of(context).nga_fgo,
@@ -173,7 +175,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 const SizedBox(height: 8),
                 Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   child: TextField(
                     controller: contactController,
                     decoration: InputDecoration(
@@ -181,12 +183,12 @@ class _FeedbackPageState extends State<FeedbackPage> {
                       border: const OutlineInputBorder(),
                       prefixIcon: const Icon(Icons.mail_outline),
                       hintText:
-                          LocalizedText.of(chs: '邮箱', jpn: 'メール', eng: 'Email'),
+                      LocalizedText.of(chs: '邮箱', jpn: 'メール', eng: 'Email'),
                       helperText: LocalizedText.of(
                           chs: '建议填写邮件联系方式，否则将无法得到回复！！！请勿填写QQ/微信/手机号！',
                           jpn: '連絡先情報ないと、返信ができません。',
                           eng:
-                              'Please fill in email address. Otherwise NO reply.',
+                          'Please fill in email address. Otherwise NO reply.',
                           kor: '연락처 정보가 없다면 답장이 불가능합니다.'),
                       helperMaxLines: 3,
                     ),
@@ -196,7 +198,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 const SizedBox(height: 8),
                 Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   child: TextField(
                     controller: subjectController,
                     decoration: InputDecoration(
@@ -208,7 +210,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 ),
                 Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   height: 200,
                   child: TextField(
                     controller: bodyController,
@@ -235,7 +237,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     onPressed: _addAttachments,
                   ),
                 ),
-                for (String fp in attachFiles)
+                for (String fp in attachFiles.keys)
                   ListTile(
                     leading: const Icon(Icons.attach_file),
                     title: Text(pathlib.basename(fp)),
@@ -252,7 +254,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   width: double.infinity,
                   child: Padding(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: ElevatedButton(
                       onPressed: sendEmail,
                       child: Text(S.of(context).feedback_send),
@@ -267,22 +269,26 @@ class _FeedbackPageState extends State<FeedbackPage> {
     );
   }
 
-  Set<String> attachFiles = {};
+  Map<String, Uint8List> attachFiles = {};
 
-  void _addAttachments() {
-    CommonBuilder.pickImageOrFiles(context: context, allowMultiple: true)
-        .then((result) {
-      final paths = result?.paths.whereType<String>();
-      if (paths != null) {
-        attachFiles.addAll(paths);
-      }
-      if (mounted) {
-        setState(() {});
-      }
-    }).catchError((e, s) async {
+  void _addAttachments() async {
+    final result = await CommonBuilder.pickImageOrFiles(
+            context: context, allowMultiple: true, withData: true)
+        .catchError((e, s) async {
       logger.e('pick attachment failed', e, s);
       EasyLoading.showError(e.toString());
     });
+
+    if (result != null) {
+      for (final file in result.files) {
+        if (file.bytes != null) {
+          attachFiles[file.name] = file.bytes!;
+        }
+      }
+    }
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void sendEmail() async {
@@ -326,16 +332,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
         emailTitle: subject,
         senderName: 'Chaldea Feedback',
         screenshotController: db.runtimeData.screenshotController,
+        extraAttachments: attachFiles,
       );
 
-      if (!kDebugMode) {
-        final result = await handler.handle(
-            FeedbackReport(contactController.text, bodyController.text), null);
-        if (!result) {
-          throw 'Sending failed';
-        }
-      } else {
-        await Future.delayed(const Duration(seconds: 3));
+      final result = await handler.handle(
+          FeedbackReport(contactController.text, bodyController.text), null);
+      if (!result) {
+        throw 'Sending failed';
       }
       subjectController.text = '';
       bodyController.text = '';

@@ -173,8 +173,11 @@ abstract class CommonBuilder {
     return children;
   }
 
-  static Future<FilePickerResult?> pickImageOrFiles(
-      {required BuildContext context, bool allowMultiple = true}) async {
+  static Future<FilePickerResult?> pickImageOrFiles({
+    required BuildContext context,
+    bool allowMultiple = true,
+    bool withData = false,
+  }) async {
     FileType? fileType;
     await showDialog(
       context: context,
@@ -213,8 +216,8 @@ abstract class CommonBuilder {
       ),
     );
     if (fileType == null) return null;
-    return FilePicker.platform
-        .pickFiles(type: fileType!, allowMultiple: allowMultiple);
+    return FilePicker.platform.pickFiles(
+        type: fileType!, allowMultiple: allowMultiple, withData: withData);
   }
 }
 
