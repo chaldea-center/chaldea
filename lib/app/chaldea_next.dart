@@ -65,7 +65,9 @@ class _ChaldeaNextState extends State<ChaldeaNext> with AfterLayoutMixin {
             S.delegate,
             ...GlobalMaterialLocalizations.delegates
           ],
-          supportedLocales: S.delegate.supportedLocales,
+          supportedLocales:
+              Language.getSortedSupportedLanguage(db2.settings.language)
+                  .map((e) => e.locale),
           builder: (context, widget) {
             ErrorWidget.builder = CatcherUtil.errorWidgetBuilder;
             return FlutterEasyLoading(child: widget);

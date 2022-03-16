@@ -32,11 +32,54 @@ class Language {
 
   static List<Language> get officialLanguages => const [jp, chs, cht, en, ko];
 
+  static List<Language> getSortedSupportedLanguage(String? langCode) {
+    if (runChaldeaNext) {
+      switch (getLanguage(langCode)) {
+        case jp:
+          return [jp, chs, cht, en, ko, ar, es];
+        case chs:
+          return [chs, cht, jp, en, ko, ar, es];
+        case cht:
+          return [cht, chs, jp, en, ko, ar, es];
+        case en:
+          return [en, jp, chs, cht, ko, ar, es];
+        case ko:
+          return [ko, jp, chs, cht, en, ar, es];
+        case ar:
+          return [ar, en, jp, chs, cht, ko, es];
+        case es:
+          return [es, en, jp, chs, cht, ko, ar];
+        default:
+          return [en, jp, chs, cht, ko, ar, es];
+      }
+    } else {
+      switch (getLanguage(langCode)) {
+        case jp:
+          return [jp, chs, cht, en, ko];
+        case chs:
+          return [chs, cht, jp, en, ko];
+        case cht:
+          return [cht, chs, jp, en, ko];
+        case en:
+          return [en, jp, chs, cht, ko];
+        case ko:
+          return [ko, jp, chs, cht, en];
+        default:
+          return [en, jp, chs, cht, ko];
+      }
+    }
+  }
+
   /// warn that [Intl.canonicalizedLocale] cannot treat script code
   static Language? getLanguage(String? code) {
     code = Intl.canonicalizedLocale(code ??= systemLocale.toString());
-    return (runChaldeaNext ? supportLanguages : supportLanguagesLegacy)
-        .firstWhereOrNull((lang) => code?.startsWith(lang.code) ?? false);
+    Language? lang =
+        (runChaldeaNext ? supportLanguages : supportLanguagesLegacy)
+            .firstWhereOrNull((lang) => code?.startsWith(lang.code) ?? false);
+    if (lang == null && code.startsWith('zh')) {
+      return chs;
+    }
+    return lang;
   }
 
   static Locale get systemLocale =>

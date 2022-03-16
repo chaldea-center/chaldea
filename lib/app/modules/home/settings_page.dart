@@ -133,7 +133,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     underline:
                         const Divider(thickness: 0, color: Colors.transparent),
                     // need to check again
-                    value: Language.getLanguage(db2.settings.language),
+                    value: Language.getLanguage(S.current.localeName),
                     items: Language.supportLanguages
                         .map((lang) => DropdownMenuItem(
                             value: lang, child: Text(lang.name)))

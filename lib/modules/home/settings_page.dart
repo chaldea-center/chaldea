@@ -123,7 +123,7 @@ class _SettingsPageState extends State<SettingsPage> {
               trailing: DropdownButton<Language>(
                 underline:
                     const Divider(thickness: 0, color: Colors.transparent),
-                value: Language.getLanguage(db.appSetting.language),
+                value: Language.getLanguage(S.current.localeName),
                 items: Language.supportLanguagesLegacy.map((lang) {
                   return DropdownMenuItem(value: lang, child: Text(lang.name));
                 }).toList(),

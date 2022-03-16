@@ -112,7 +112,8 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
             ...GlobalMaterialLocalizations.delegates,
           ],
           supportedLocales:
-              Language.supportLanguagesLegacy.map((e) => e.locale),
+              Language.getSortedSupportedLanguage(db.appSetting.language)
+                  .map((e) => e.locale),
           scrollBehavior: DraggableScrollBehavior(),
           builder: (context, widget) {
             ErrorWidget.builder = CatcherUtil.errorWidgetBuilder;
