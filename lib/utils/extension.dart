@@ -17,11 +17,9 @@ extension NumX on num {
     num? minVal = 10000,
   }) {
     assert(!compact || !percent);
-
     if (compact && (minVal == null || abs() > minVal)) {
       return NumberFormat.compact(locale: 'en').format(this);
     }
-
     final pattern = [
       if (groupSeparator != null && groupSeparator.isNotEmpty)
         '###' + groupSeparator,
@@ -29,7 +27,6 @@ extension NumX on num {
       if (precision > 0) '.' + (omit ? '#' : '0') * precision,
       if (percent) '%'
     ].join();
-    print('pattern: $pattern');
     return NumberFormat(pattern, 'en').format(this);
   }
 }

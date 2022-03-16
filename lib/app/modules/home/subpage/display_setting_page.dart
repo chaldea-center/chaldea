@@ -1,4 +1,3 @@
-import 'package:chaldea/components/localized/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/app_info.dart';
@@ -33,6 +32,18 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
       ),
       body: ListView(
         children: [
+          ReorderableListView(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            children: List.generate(
+              4,
+              (index) => ListTile(
+                key: Key('test_tile_$index'),
+                title: Text('List $index'),
+              ),
+            ),
+            onReorder: (_, __) {},
+          ),
           TileGroup(
             header: 'App',
             children: [

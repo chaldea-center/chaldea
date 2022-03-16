@@ -1,10 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:chaldea/components/localized/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/modules/extras/faq_page.dart';
 import 'package:chaldea/modules/shared/common_builders.dart';
 import 'package:chaldea/packages/app_info.dart';
-import 'package:chaldea/packages/file_plus/file_plus.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
@@ -242,15 +243,15 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     onPressed: _addAttachments,
                   ),
                 ),
-                for (String fp in attachFiles)
+                for (String fn in attachFiles.keys)
                   ListTile(
                     leading: const Icon(Icons.attach_file),
-                    title: Text(pathlib.basename(fp)),
+                    title: Text(pathlib.basename(fn)),
                     trailing: IconButton(
                       icon: const Icon(Icons.clear),
                       onPressed: () {
                         setState(() {
-                          attachFiles.remove(fp);
+                          attachFiles.remove(fn);
                         });
                       },
                     ),
@@ -274,22 +275,26 @@ class _FeedbackPageState extends State<FeedbackPage> {
     );
   }
 
-  Set<String> attachFiles = {};
+  Map<String, Uint8List> attachFiles = {};
 
-  void _addAttachments() {
-    CommonBuilder.pickImageOrFiles(context: context, allowMultiple: true)
-        .then((result) {
-      final paths = result?.paths.whereType<String>();
-      if (paths != null) {
-        attachFiles.addAll(paths);
-      }
-      if (mounted) {
-        setState(() {});
-      }
-    }).catchError((e, s) async {
+  void _addAttachments() async {
+    final result = await CommonBuilder.pickImageOrFiles(
+            context: context, allowMultiple: true, withData: true)
+        .catchError((e, s) async {
       logger.e('pick attachment failed', e, s);
       EasyLoading.showError(e.toString());
     });
+
+    if (result != null) {
+      for (final file in result.files) {
+        if (file.bytes != null) {
+          attachFiles[file.name] = file.bytes!;
+        }
+      }
+    }
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void sendEmail() async {
@@ -333,10 +338,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
         emailTitle: subject,
         senderName: 'Chaldea Feedback',
         screenshotController: db2.runtimeData.screenshotController,
-        extraAttachments: {
-          for (final f in attachFiles)
-            pathlib.basename(f): await FilePlus(f).readAsBytes(),
-        },
+        extraAttachments: Map.of(attachFiles),
       );
 
       if (!kDebugMode) {
