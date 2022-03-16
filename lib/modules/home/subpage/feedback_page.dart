@@ -158,6 +158,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   },
                 ),
                 ListTile(
+                  title: const Text('QQ频道'),
+                  onTap: () {
+                    launch(
+                        'https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&inviteCode=1bVHFW&from=181074&biz=ka&shareSource=5');
+                  },
+                ),
+                ListTile(
                   title: const Text('Discord'),
                   subtitle: const Text('https://discord.gg/5M6w5faqjP'),
                   onTap: () {
